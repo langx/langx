@@ -126,6 +126,8 @@ export default function AppLayout() {
         <Tabs.Screen name="wallet" options={FULL_SCREEN} />
         <Tabs.Screen name="tokens" options={FULL_SCREEN} />
         <Tabs.Screen name="kitchen" options={FULL_SCREEN} />
+        <Tabs.Screen name="app-language" options={FULL_SCREEN} />
+        <Tabs.Screen name="legal" options={FULL_SCREEN} />
       </Tabs>
     </SafeAreaView>
   )

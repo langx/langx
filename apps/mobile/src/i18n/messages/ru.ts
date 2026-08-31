@@ -821,6 +821,7 @@ export const ru: Localized<EnMessages> = {
     updateLocation: 'Обновить местоположение',
     updating: 'Обновляем…',
     languageSection: 'Язык',
+    appLanguage: 'Язык приложения',
     languageAuto: 'Устройство ({name})',
     blockedPeople: 'Заблокированные',
     showIntro: 'Показать вступление снова',

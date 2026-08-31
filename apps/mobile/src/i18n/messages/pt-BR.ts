@@ -707,6 +707,7 @@ export const ptBR: Localized<EnMessages> = {
     updateLocation: 'Atualizar minha localização',
     updating: 'Atualizando…',
     languageSection: 'Idioma',
+    appLanguage: 'Idioma do app',
     languageAuto: 'Aparelho ({name})',
     blockedPeople: 'Pessoas bloqueadas',
     showIntro: 'Ver a introdução de novo',

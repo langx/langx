@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { ACCOUNT_DELETION_GRACE_DAYS, TIER_BADGES, tierUnlocking } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -34,33 +33,17 @@ import {
   setAppIcon,
   type AppIcon,
 } from '../../src/lib/appIcon'
-import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
-import { openExternal } from '../../src/lib/openExternal'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
-import { useLocalePreference, useT, type LocalePreference, type MessageKey } from '../../src/i18n'
-import {
-  LOCALE_NAMES,
-  NOTIFICATION_TYPES,
-  notificationsAllowed,
-  SUPPORTED_LOCALES,
-} from '@langx/shared'
+import { useLocalePreference, useT, type MessageKey } from '../../src/i18n'
+import { LOCALE_NAMES, NOTIFICATION_TYPES, notificationsAllowed } from '@langx/shared'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import {
   makeStyles,
-  useTheme,
   useThemePreference,
   THEME_PREFERENCES,
   type ThemePreference,
 } from '../../src/lib/theme'
-
-/**
- * `auto` first, then the eight in the order `SUPPORTED_LOCALES` declares them —
- * English, then the rest. Not sorted alphabetically: alphabetical order is
- * itself locale-dependent, so the list would reshuffle underneath someone
- * switching between two languages.
- */
-const LOCALE_OPTIONS: readonly LocalePreference[] = ['auto', ...SUPPORTED_LOCALES]
 
 /** Keys, not words: a module constant is fixed at import time. */
 const THEME_LABELS: Record<ThemePreference, MessageKey> = {
@@ -70,10 +53,9 @@ const THEME_LABELS: Record<ThemePreference, MessageKey> = {
 }
 
 export default function SettingsScreen() {
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
-  const { preference: locale, setPreference: setLocale, deviceLocale } = useLocalePreference()
+  const { preference: locale, deviceLocale } = useLocalePreference()
   const { preference, setPreference } = useThemePreference()
 
   const me = useMe()
@@ -377,23 +359,21 @@ export default function SettingsScreen() {
       */}
       <Text style={styles.section}>{t('settings.languageSection')}</Text>
       <View>
-        {LOCALE_OPTIONS.map((option, index) => (
-          <ListRow
-            key={option}
-            title={
-              option === 'auto'
-                ? t('settings.languageAuto', { name: LOCALE_NAMES[deviceLocale] })
-                : LOCALE_NAMES[option]
-            }
-            last={index === LOCALE_OPTIONS.length - 1}
-            onPress={() => setLocale(option)}
-            accessory={
-              locale === option ? (
-                <Feather name="check" size={18} color={colors.accent} />
-              ) : undefined
-            }
-          />
-        ))}
+        {/*
+          One row showing the current value, not nine rows showing every value.
+          Stacked, the list read as nine settings rather than one with nine
+          options, and pushed Theme, Legal and Account below the fold.
+        */}
+        <ListRow
+          title={t('settings.appLanguage')}
+          value={
+            locale === 'auto'
+              ? t('settings.languageAuto', { name: LOCALE_NAMES[deviceLocale] })
+              : LOCALE_NAMES[locale]
+          }
+          last
+          onPress={() => router.push('/(app)/app-language')}
+        />
       </View>
 
       <Text style={styles.section}>{t('theme.section')}</Text>
@@ -449,14 +429,16 @@ export default function SettingsScreen() {
 
       <Text style={styles.section}>{t('settings.legalSection')}</Text>
       <View>
-        {LEGAL_LINKS.map((link, index) => (
-          <ListRow
-            key={link.url}
-            title={t(link.labelKey as never)}
-            onPress={() => void openExternal(link.url)}
-            last={index === LEGAL_LINKS.length - 1}
-          />
-        ))}
+        {/*
+          Five links every reader scrolls past to reach Community and Account.
+          They have to be reachable — two stores require it — but not in the
+          way, and one row naming what is behind it is as findable as five.
+        */}
+        <ListRow
+          title={t('settings.legalSection')}
+          last
+          onPress={() => router.push('/(app)/legal')}
+        />
       </View>
 
       <Text style={styles.section}>{t('settings.communitySection')}</Text>

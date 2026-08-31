@@ -721,6 +721,7 @@ export const tr: Localized<EnMessages> = {
     updateLocation: 'Konumumu güncelle',
     updating: 'Güncelleniyor…',
     languageSection: 'Dil',
+    appLanguage: 'Uygulama dili',
     languageAuto: 'Cihaz ({name})',
     blockedPeople: 'Engellenenler',
     showIntro: 'Tanıtımı tekrar göster',

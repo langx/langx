@@ -857,6 +857,7 @@ export const ar: Localized<EnMessages> = {
     updateLocation: 'تحديث موقعي',
     updating: 'جارٍ التحديث…',
     languageSection: 'اللغة',
+    appLanguage: 'لغة التطبيق',
     languageAuto: 'الجهاز ({name})',
     blockedPeople: 'المحظورون',
     showIntro: 'إظهار المقدمة مجددًا',
