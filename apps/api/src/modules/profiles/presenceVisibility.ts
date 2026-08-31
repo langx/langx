@@ -1,14 +1,19 @@
 import type { Profile } from './profiles'
 
 /**
- * Whether this profile's online status is hidden from everyone.
+ * Whether this profile's presence is hidden from everyone — both the green dot
+ * and `lastActiveAt`, which `toPublicProfile` omits entirely rather than
+ * nulling when this is true.
  *
- * Deliberately unlike `incognito`, which re-checks the tier at read time
- * (`profileViews.ts`). Doing that here would mean a lapsed subscription
- * silently makes someone visible as online again — a privacy setting revoked
- * by a billing event, without telling them. This is gated on *write* instead:
- * only a paid tier can turn it on, and turning it off is always allowed, so
- * nobody is ever stuck hidden either.
+ * No tier check, and there is no longer one anywhere: `hideOnlineStatus` is
+ * free on every plan. It was a paid capability until the app began *rendering*
+ * `lastActiveAt`; charging for the switch that turns off a disclosure we had
+ * just started making was not defensible, so the flag left `PLAN_LIMITS`
+ * instead.
+ *
+ * The reasoning that kept it out of `incognito`'s read-time tier check still
+ * holds and is now unconditional: a privacy setting must never be revoked by a
+ * billing event without telling the person who set it.
  */
 export function hidesOnlineStatus(profile: Pick<Profile, 'privacy'>): boolean {
   return profile.privacy.hideOnlineStatus === true

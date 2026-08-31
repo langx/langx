@@ -295,17 +295,11 @@ export default function SettingsScreen() {
           title={t('settings.hideOnline')}
           subtitle={t('settings.hideOnlineBody')}
           accessory={
-            <View style={styles.gated}>
-              {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
-              <Toggle
-                accessibilityLabel={t('settings.hideOnline')}
-                disabled={!isPro}
-                value={profile?.privacy.hideOnlineStatus ?? false}
-                onValueChange={(hideOnlineStatus) =>
-                  update.mutate({ privacy: { hideOnlineStatus } })
-                }
-              />
-            </View>
+            <Toggle
+              accessibilityLabel={t('settings.hideOnline')}
+              value={profile?.privacy.hideOnlineStatus ?? false}
+              onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
+            />
           }
         />
         <ListRow

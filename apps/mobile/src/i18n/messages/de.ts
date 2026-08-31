@@ -946,8 +946,6 @@ export const de: Localized<EnMessages> = {
     whoViewedBody: 'Nicht nur die Zahl — sieh, wer es war.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Sieh dir Profile an, ohne Spuren zu hinterlassen.',
-    hideOnline: 'Verbirg dich, wenn du online bist',
-    hideOnlineBody: 'Niemand sieht deinen grünen Punkt. Du siehst ihren weiter.',
     nearby: 'In der Nähe',
     nearbyBody:
       'Sortiere Entdecken nach Entfernung. Braucht deinen ungefähren Standort — vor dem Speichern gerundet und für andere nur als grobe Entfernung sichtbar.',

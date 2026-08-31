@@ -70,13 +70,20 @@ export interface PlanLimits {
   /** Browse without leaving a profileViews record. */
   incognito: boolean
   /**
-   * Turn off the green dot: nobody sees you as online, and you still see them.
+   * `hideOnlineStatus` used to live here as a paid capability and is now free
+   * on every tier, so it is not a plan limit at all — it is a privacy setting,
+   * like `activityMapVisible` beside it in `profile.privacy`.
    *
-   * Separate from `incognito`, which is about *who viewed my profile* and has
-   * never touched presence. One flag doing both would make the store's
-   * privacy description and the paywall copy wrong about each other.
+   * It was freed when the app started *rendering* `lastActiveAt`. The field was
+   * already on the wire but nothing had ever drawn it, so showing "last seen
+   * three months ago" publishes something about a dormant user that nobody had
+   * seen before — and charging for the switch that turns off a disclosure we
+   * have just started making is not defensible. Same argument as level, age and
+   * country going back to the free tier above.
+   *
+   * Do not re-add it as a uniform `true`: `hasFeature` and `tierUnlocking`
+   * would then keep answering a question that has no paid answer.
    */
-  hideOnlineStatus: boolean
   /**
    * Distance-sorted discovery (`sort=nearby`).
    *
@@ -120,7 +127,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: false,
     profileViewerIdentities: false,
     incognito: false,
-    hideOnlineStatus: false,
     nearby: false,
     copilot: false,
     maxPhotos: 6,
@@ -133,7 +139,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
-    hideOnlineStatus: true,
     nearby: false,
     copilot: false,
     maxPhotos: 6,
@@ -152,7 +157,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
-    hideOnlineStatus: true,
     nearby: true,
     copilot: true,
     maxPhotos: 6,
@@ -179,12 +183,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = [
-  'advancedFilters',
-  'profileViewerIdentities',
-  'incognito',
-  'hideOnlineStatus',
-] as const
+export const PRO_FEATURES = ['advancedFilters', 'profileViewerIdentities', 'incognito'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -220,7 +219,6 @@ export const PRO_BENEFITS = [
   'unlimitedTranslation',
   'profileViewerIdentities',
   'incognito',
-  'hideOnlineStatus',
   /**
    * A one-off welcome pack — cosmetics and streak freezes, never token. See
    * `PRO_WELCOME_PACKS`, and the note there on why granting token for money is
