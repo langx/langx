@@ -44,7 +44,9 @@ const ROUTE_RESERVED = [
   'settings',
   'starred',
   'store',
+  'tokens',
   'viewers',
+  'wallet',
 ] as const
 
 /**

@@ -597,7 +597,7 @@ export const tr: Localized<EnMessages> = {
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
     corrections: 'Düzeltme',
-    tokens: 'Jeton',
+    wallet: 'Cüzdan',
     previewProfile: 'Profilimi önizle',
     previewProfileBody: 'Profilini başkalarının gördüğü gibi gör',
     shareProfile: 'Profilimi paylaş',
@@ -729,12 +729,37 @@ export const tr: Localized<EnMessages> = {
   },
 
   store: {
-    intro:
-      'Mesajlaşarak ve başkalarını düzelterek kazanılır. Öğretmek, konuşmaktan daha ağır basar.',
+    restoreStreak: 'Serini geri getir',
+    restoreStreakBody: 'v1’deki {days} günlük serini geri al',
+    streakFreeze: 'Seri dondurma',
+    streakFreezeBody: 'Kaçırılan bir günü kurtarır · {banked}/{max} birikti',
+    ownedAccessibility: '{title}, sende var',
+    buy: '{title} için {price} jeton öde',
+    owned: 'Sende',
+    frameKind: 'Profil çerçevesi',
+    titleKind: 'Unvan',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Cüzdan',
+    balance: 'Bakiye',
+    earnedSpent: '{earned} kazanıldı · {spent} harcandı',
+    streakFreezes: 'Seri dondurma',
+    itemsOwned: 'Sahip olunan',
+    storeTitle: 'Mağaza',
     disclaimer:
-      'Jetonlar satın alınamaz, takas edilemez, çekilemez ve hiçbir Pro özelliğini açmaz — yalnızca seri dondurma ve görünüm içindir. Zincir, cüzdan ya da piyasa yoktur.',
-    todaysPool: 'Bugünün havuzu',
+      "Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve Pro'yu açamaz — yalnızca seri dondurma ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.",
+  },
+
+  tokens: {
+    title: 'Jetonlar',
+    intro:
+      'Mesajlaşarak ve başkalarının cümlelerini düzelterek kazanılır. Öğretmek, konuşmaktan daha ağır basar.',
+    thisWeek: 'Bu hafta',
+    thisMonth: 'Bu ay',
+    allTime: 'Tüm zamanlar',
+    poolTitle: 'Günlük havuz',
     activeToday: { one: 'bugün {count} kişi aktif', other: 'bugün {count} kişi aktif' },
     shareAmount: '+{count}',
     shareFor: '{day} için payın',
@@ -745,17 +770,6 @@ export const tr: Localized<EnMessages> = {
     historyEmpty: 'Henüz bir şey yok. Bir mesaj gönder ya da birini düzelt.',
     historySpent: '−{count} harcandı',
     historyMore: 'Daha fazla göster',
-    restoreStreak: 'Serini geri getir',
-    restoreStreakBody: 'v1’deki {days} günlük serini geri al',
-    streakFreeze: 'Seri dondurma',
-    streakFreezeBody: 'Kaçırılan bir günü kurtarır · {banked}/{max} birikti',
-    ownedAccessibility: '{title}, sende var',
-    buy: '{title} için {price} jeton öde',
-    title: 'Jetonlar',
-    balance: 'Bakiye',
-    owned: 'Sende',
-    frameKind: 'Profil çerçevesi',
-    titleKind: 'Unvan',
   },
 
   tokenKind: {

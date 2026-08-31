@@ -676,7 +676,7 @@ export const ru: Localized<EnMessages> = {
     editProfile: 'Изменить профиль',
     settings: 'Настройки',
     corrections: 'Исправления',
-    tokens: 'Жетоны',
+    wallet: 'Кошелёк',
     previewProfile: 'Посмотреть мой профиль',
     previewProfileBody: 'Взгляните на профиль глазами других',
     shareProfile: 'Поделиться профилем',
@@ -810,12 +810,36 @@ export const ru: Localized<EnMessages> = {
   },
 
   store: {
-    intro:
-      'Зарабатываются перепиской и исправлениями чужих ошибок. Обучение весит больше, чем разговор.',
+    restoreStreak: 'Восстанови серию',
+    restoreStreakBody: 'Верни серию из {days} дней, которая была у тебя в v1',
+    streakFreeze: 'Заморозка серии',
+    streakFreezeBody: 'Спасает один пропущенный день · накоплено {banked}/{max}',
+    ownedAccessibility: '{title}, уже есть',
+    buy: 'Купить {title} за {price} жетонов',
+    owned: 'Есть',
+    frameKind: 'Рамка профиля',
+    titleKind: 'Титул',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Кошелёк',
+    balance: 'Баланс',
+    earnedSpent: 'заработано {earned} · потрачено {spent}',
+    streakFreezes: 'Заморозки серии',
+    itemsOwned: 'Предметы',
+    storeTitle: 'Магазин',
     disclaimer:
-      'Жетоны нельзя купить, обменять, вывести или потратить на функции Pro — только на заморозку серии и оформление. Ни блокчейна, ни кошелька, ни рынка.',
-    todaysPool: 'Сегодняшний пул',
+      'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими Pro — только заморозки серии и косметика. Нет ни цепочки, ни контракта, ни рынка.',
+  },
+
+  tokens: {
+    title: 'Жетоны',
+    intro: 'Начисляются за сообщения и за исправления чужих фраз. Учить важнее, чем говорить.',
+    thisWeek: 'На этой неделе',
+    thisMonth: 'В этом месяце',
+    allTime: 'За всё время',
+    poolTitle: 'Ежедневный пул',
     activeToday: {
       one: 'сегодня активен {count} человек',
       few: 'сегодня активны {count} человека',
@@ -831,17 +855,6 @@ export const ru: Localized<EnMessages> = {
     historyEmpty: 'Пока пусто. Отправьте сообщение или исправьте кого-нибудь.',
     historySpent: '−{count} потрачено',
     historyMore: 'Показать ещё',
-    restoreStreak: 'Восстанови серию',
-    restoreStreakBody: 'Верни серию из {days} дней, которая была у тебя в v1',
-    streakFreeze: 'Заморозка серии',
-    streakFreezeBody: 'Спасает один пропущенный день · накоплено {banked}/{max}',
-    ownedAccessibility: '{title}, уже есть',
-    buy: 'Купить {title} за {price} жетонов',
-    title: 'Жетоны',
-    balance: 'Баланс',
-    owned: 'Есть',
-    frameKind: 'Рамка профиля',
-    titleKind: 'Титул',
   },
 
   tokenKind: {

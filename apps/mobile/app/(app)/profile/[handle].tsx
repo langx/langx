@@ -321,7 +321,7 @@ export default function ProfileScreen() {
               label={t('me.corrections')}
               value={String(summary.data.corrections ?? 0)}
             />
-            <StatTile label={t('me.tokens')} value={String(summary.data.tokens ?? 0)} />
+            <StatTile label={t('tokens.title')} value={String(summary.data.tokens ?? 0)} />
           </View>
           {summary.data.week ? <WeeklyChart week={summary.data.week} /> : null}
         </>
