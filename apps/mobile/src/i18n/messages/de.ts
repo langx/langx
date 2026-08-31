@@ -17,7 +17,6 @@ export const de: Localized<EnMessages> = {
     oneMoment: 'Einen Moment…',
     skip: 'Später',
     you: '(du)',
-    pro: '✦ Pro',
     comingSoon: 'BALD',
     continue: 'Weiter',
     next: 'Weiter',
@@ -323,8 +322,7 @@ export const de: Localized<EnMessages> = {
       'Ein Willkommensbonus für den Anfang. Mehr gibt es fürs Reden und Korrigieren.',
     streak: 'Beste Serie: {days}',
     streakBody: 'Bleibt als dein Rekord stehen. Deine laufende Serie fängt heute neu an.',
-    proForLife: 'LangX Pro, auf Lebenszeit',
-    proPlusForLife: 'LangX Pro+, auf Lebenszeit',
+    tierForLife: '{plan}, auf Lebenszeit',
     proBody:
       'Für das, was du in v1 aufgebaut hast. Es läuft nie ab und kostet nichts — danke, dass du von Anfang an dabei warst.',
   },
@@ -442,7 +440,7 @@ export const de: Localized<EnMessages> = {
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Übersetzung nicht verfügbar',
     translationQuota:
-      'Du hast deine kostenlosen Übersetzungen für heute aufgebraucht. Pro hebt das Limit auf.',
+      'Du hast die kostenlosen Übersetzungen für heute aufgebraucht. Ein bezahlter Tarif hebt das Limit auf.',
     translationFailed: 'Diese Nachricht konnte gerade nicht übersetzt werden.',
     sayHello: 'Sag {name} Hallo…',
     pinnedMessage: 'Angeheftete Nachricht',
@@ -596,12 +594,12 @@ export const de: Localized<EnMessages> = {
     dayStreak: 'Tagesserie',
     viewersTitle: 'Wer dein Profil angesehen hat',
     viewersLocked: {
-      one: '{count} Person hat geschaut — mit Pro siehst du, wer',
-      other: '{count} Leute haben geschaut — mit Pro siehst du, wer',
+      one: '{count} Person hat geschaut — mit {plan} sehen, wer',
+      other: '{count} Personen haben geschaut — mit {plan} sehen, wer',
     },
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
     leaderboardSubtitle: 'Serien, Korrekturen und alles andere, was du verdient hast',
-    proTitle: '✦ LangX Pro',
+    proTitle: '✦ Mehr erreichen',
     proBody: 'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und Inkognito-Modus.',
     newChatsLeft: 'Heute noch neue Chats:',
     editProfile: 'Profil bearbeiten',
@@ -769,7 +767,7 @@ export const de: Localized<EnMessages> = {
     itemsOwned: 'Besitz',
     storeTitle: 'Shop',
     disclaimer:
-      'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen Pro eintauschen — nur Serien-Freezes und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
+      'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },
 
   tokens: {
@@ -928,7 +926,8 @@ export const de: Localized<EnMessages> = {
   },
 
   paywall: {
-    everythingInPro: 'Alles aus Pro',
+    screenTitle: 'Tarife',
+    everythingInPro: 'Alles aus {plan}',
     restorePurchases: 'Käufe wiederherstellen',
     title: 'Mehr reden, schneller lernen',
     proTagline: 'Alles, was den kostenlosen Tarif klein wirken lässt.',
@@ -937,7 +936,7 @@ export const de: Localized<EnMessages> = {
     unlimitedChatsBody: '{count} am Tag im kostenlosen Tarif.',
     welcomePack: 'Ein Willkommenspaket',
     welcomePackBody:
-      'Ein Profilrahmen und zwei Serien-Freezes zum Start. Pro+ bringt das ganze Set.',
+      'Ein Profilrahmen und zwei Serien-Freezes zum Start. {plan} bringt das ganze Set.',
     advancedFilters: 'Erweiterte Filter',
     advancedFiltersBody: 'Suche nach Geschlecht und Stadt.',
     unlimitedTranslation: 'Unbegrenzte Übersetzung',

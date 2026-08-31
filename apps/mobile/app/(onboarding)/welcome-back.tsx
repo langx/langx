@@ -1,4 +1,4 @@
-import { TOKEN_RULES } from '@langx/shared'
+import { TIER_NAMES, TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -154,11 +154,7 @@ export default function WelcomeBackScreen() {
         {lifetimeGranted ? (
           <Line
             icon="✨"
-            title={t(
-              lifetimeGranted === 'pro_plus'
-                ? 'welcomeBack.proPlusForLife'
-                : 'welcomeBack.proForLife',
-            )}
+            title={t('welcomeBack.tierForLife', { plan: TIER_NAMES[lifetimeGranted] })}
             body={t('welcomeBack.proBody')}
           />
         ) : null}

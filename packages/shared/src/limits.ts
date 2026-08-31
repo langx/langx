@@ -163,6 +163,37 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   },
 }
 
+/**
+ * What the plans are called, in one place.
+ *
+ * Brand marks, not copy: the same words in every locale, and what the store
+ * listing and the receipt say. They lived as literals in six places — the
+ * paywall, `TierBadge`, `me`, three rows of Settings and the filters header —
+ * which is five opportunities for a rename to be half-applied.
+ *
+ * These are **display only**. The RevenueCat entitlement ids and the `PACKAGES`
+ * keys stay `pro` / `pro_plus` forever: an entitlement identifier cannot be
+ * renamed after creation, and fixing one was free exactly once, before there
+ * were customers.
+ */
+export const TIER_NAMES: Record<PlanTier, string> = {
+  free: 'Free',
+  pro: 'Fluent',
+  pro_plus: 'Polyglot',
+}
+
+/**
+ * The short form for a chip, or `null` where there should be no chip at all.
+ *
+ * Free is `null` rather than `'FREE'`: an absent badge is the free state, and a
+ * chip reading "FREE" is an insult, not information.
+ */
+export const TIER_BADGES: Record<PlanTier, string | null> = {
+  free: null,
+  pro: 'FLUENT',
+  pro_plus: 'POLYGLOT',
+}
+
 /** Quota buckets that are enforced with a rolling 24h timestamp array. */
 export const QUOTA_KINDS = ['initiations', 'translations', 'corrections', 'media'] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]

@@ -36,7 +36,6 @@ export const en = {
     oneMoment: 'One moment…',
     skip: 'Skip for now',
     you: '(you)',
-    pro: '✦ Pro',
     comingSoon: 'COMING SOON',
     continue: 'Continue',
     next: 'Next',
@@ -350,8 +349,7 @@ export const en = {
     tokensBonusBody: 'A welcome-back bonus to start with. Earn more by talking and by correcting.',
     streak: '{days} best streak',
     streakBody: 'Kept as your record. Your live streak starts fresh from today.',
-    proForLife: 'LangX Pro, for life',
-    proPlusForLife: 'LangX Pro+, for life',
+    tierForLife: '{plan}, for life',
     proBody:
       'For what you built in v1. It never expires and there is nothing to pay — thank you for being here first.',
   },
@@ -467,7 +465,7 @@ export const en = {
     photosPermission: 'LangX needs permission to open your photo library.',
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',
-    translationQuota: 'You’ve used today’s free translations. Pro removes the limit.',
+    translationQuota: 'You’ve used today’s free translations. A paid plan removes the limit.',
     translationFailed: 'Could not translate that message right now.',
     sayHello: 'Say hello to {name}…',
     pinnedMessage: 'Pinned message',
@@ -628,12 +626,12 @@ export const en = {
     dayStreak: 'Day streak',
     viewersTitle: 'Who viewed your profile',
     viewersLocked: {
-      one: '{count} person looked — see who with Pro',
-      other: '{count} people looked — see who with Pro',
+      one: '{count} person looked — see who with {plan}',
+      other: '{count} people looked — see who with {plan}',
     },
     viewersCount: { one: '{count} person', other: '{count} people' },
     leaderboardSubtitle: 'Streaks, corrections and everything else you have earned',
-    proTitle: '✦ LangX Pro',
+    proTitle: '✦ Go further',
     proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
     newChatsLeft: 'New chats left today:',
     editProfile: 'Edit profile',
@@ -799,7 +797,7 @@ export const en = {
     itemsOwned: 'Items owned',
     storeTitle: 'Store',
     disclaimer:
-      'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock Pro — only streak freezes and cosmetics. There is no chain, no contract and no market.',
+      'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes and cosmetics. There is no chain, no contract and no market.',
   },
 
   tokens: {
@@ -960,16 +958,17 @@ export const en = {
   },
 
   paywall: {
+    screenTitle: 'Plans',
     title: 'Talk more, learn faster',
     proTagline: 'Everything that makes the free plan feel small.',
-    everythingInPro: 'Everything in Pro',
+    everythingInPro: 'Everything in {plan}',
     restorePurchases: 'Restore purchases',
     partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
     welcomePack: 'A welcome pack',
     welcomePackBody:
-      'A profile frame and two streak freezes to start with. Pro+ brings the full set.',
+      'A profile frame and two streak freezes to start with. {plan} brings the full set.',
     advancedFilters: 'Advanced filters',
     advancedFiltersBody: 'Search by gender and city.',
     unlimitedTranslation: 'Unlimited translation',

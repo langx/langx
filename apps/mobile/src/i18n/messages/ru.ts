@@ -27,7 +27,6 @@ export const ru: Localized<EnMessages> = {
     oneMoment: 'Минуту…',
     skip: 'Пока пропустить',
     you: '(ты)',
-    pro: '✦ Pro',
     comingSoon: 'СКОРО',
     continue: 'Далее',
     next: 'Далее',
@@ -368,8 +367,7 @@ export const ru: Localized<EnMessages> = {
       'Подарок за возвращение, чтобы начать. Остальное зарабатывается общением и исправлениями.',
     streak: 'Лучшая серия: {days}',
     streakBody: 'Осталась как твой рекорд. Текущая серия начинается сегодня с нуля.',
-    proForLife: 'LangX Pro навсегда',
-    proPlusForLife: 'LangX Pro+ навсегда',
+    tierForLife: '{plan} навсегда',
     proBody:
       'За то, что ты построил в v1. Срок не истекает и платить ничего не нужно — спасибо, что был здесь первым.',
   },
@@ -485,7 +483,7 @@ export const ru: Localized<EnMessages> = {
     photosPermission: 'LangX нужен доступ, чтобы открыть галерею.',
     microphoneTitle: 'Микрофон',
     translationUnavailable: 'Перевод недоступен',
-    translationQuota: 'Бесплатные переводы на сегодня закончились. Pro снимает лимит.',
+    translationQuota: 'Бесплатные переводы на сегодня закончились. Платный тариф снимает лимит.',
     translationFailed: 'Сейчас не удалось перевести это сообщение.',
     sayHello: 'Поздоровайся с {name}…',
     pinnedMessage: 'Закреплённое сообщение',
@@ -671,10 +669,10 @@ export const ru: Localized<EnMessages> = {
     dayStreak: 'Серия дней',
     viewersTitle: 'Кто смотрел твой профиль',
     viewersLocked: {
-      one: 'Смотрел {count} человек — узнай кто с Pro',
-      few: 'Смотрели {count} человека — узнай кто с Pro',
-      many: 'Смотрели {count} человек — узнай кто с Pro',
-      other: 'Смотрели {count} человека — узнай кто с Pro',
+      one: 'Смотрел {count} человек — узнай кто с {plan}',
+      few: 'Смотрели {count} человека — узнай кто с {plan}',
+      many: 'Смотрели {count} человек — узнай кто с {plan}',
+      other: 'Смотрели {count} человека — узнай кто с {plan}',
     },
     viewersCount: {
       one: '{count} человек',
@@ -683,7 +681,7 @@ export const ru: Localized<EnMessages> = {
       other: '{count} человека',
     },
     leaderboardSubtitle: 'Серии, исправления и всё остальное, что вы заработали',
-    proTitle: '✦ LangX Pro',
+    proTitle: '✦ Больше возможностей',
     proBody: 'Безлимитные новые чаты, расширенные фильтры, перевод и невидимый просмотр.',
     newChatsLeft: 'Новых чатов осталось сегодня:',
     editProfile: 'Изменить профиль',
@@ -851,7 +849,7 @@ export const ru: Localized<EnMessages> = {
     itemsOwned: 'Предметы',
     storeTitle: 'Магазин',
     disclaimer:
-      'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими Pro — только заморозки серии и косметика. Нет ни цепочки, ни контракта, ни рынка.',
+      'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии и косметика. Нет ни цепочки, ни контракта, ни рынка.',
   },
 
   tokens: {
@@ -1045,7 +1043,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   paywall: {
-    everythingInPro: 'Всё из Pro',
+    screenTitle: 'Тарифы',
+    everythingInPro: 'Всё из {plan}',
     restorePurchases: 'Восстановить покупки',
     title: 'Больше общения — быстрее прогресс',
     proTagline: 'Всё, из-за чего бесплатный тариф кажется тесным.',
@@ -1053,7 +1052,7 @@ export const ru: Localized<EnMessages> = {
     unlimitedChats: 'Безлимитные новые чаты',
     unlimitedChatsBody: '{count} в день на бесплатном тарифе.',
     welcomePack: 'Приветственный набор',
-    welcomePackBody: 'Рамка профиля и две заморозки серии для начала. Pro+ даёт полный набор.',
+    welcomePackBody: 'Рамка профиля и две заморозки серии для начала. {plan} даёт полный набор.',
     advancedFilters: 'Расширенные фильтры',
     advancedFiltersBody: 'Поиск по полу и городу.',
     unlimitedTranslation: 'Безлимитный перевод',

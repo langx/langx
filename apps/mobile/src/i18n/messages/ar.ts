@@ -30,7 +30,6 @@ export const ar: Localized<EnMessages> = {
     oneMoment: 'لحظة…',
     skip: 'ليس الآن',
     you: '(أنت)',
-    pro: '✦ Pro',
     comingSoon: 'قريبًا',
     continue: 'متابعة',
     next: 'التالي',
@@ -384,8 +383,7 @@ export const ar: Localized<EnMessages> = {
     tokensBonusBody: 'هدية عودة للبداية. اكسب المزيد بالحديث والتصحيح.',
     streak: 'أفضل سلسلة: {days}',
     streakBody: 'محفوظة كرقمك القياسي. سلسلتك الحالية تبدأ من جديد اليوم.',
-    proForLife: 'LangX Pro مدى الحياة',
-    proPlusForLife: 'LangX Pro+ مدى الحياة',
+    tierForLife: '{plan} مدى الحياة',
     proBody:
       'مقابل ما بنيته في النسخة الأولى. لا تنتهي صلاحيته ولا شيء عليك دفعه — شكرًا لوجودك هنا أولًا.',
   },
@@ -498,7 +496,7 @@ export const ar: Localized<EnMessages> = {
     photosPermission: 'يحتاج LangX إلى إذن لفتح مكتبة صورك.',
     microphoneTitle: 'الميكروفون',
     translationUnavailable: 'الترجمة غير متاحة',
-    translationQuota: 'استخدمت ترجماتك المجانية لهذا اليوم. Pro يرفع الحد.',
+    translationQuota: 'لقد استخدمت ترجمات اليوم المجانية. الخطة المدفوعة تزيل الحد.',
     translationFailed: 'تعذّرت ترجمة هذه الرسالة الآن.',
     sayHello: 'ألقِ التحية على {name}…',
     pinnedMessage: 'رسالة مثبّتة',
@@ -694,12 +692,12 @@ export const ar: Localized<EnMessages> = {
     dayStreak: 'سلسلة الأيام',
     viewersTitle: 'من زار ملفك',
     viewersLocked: {
-      zero: 'زارك {count} شخص — اعرف من هم مع Pro',
-      one: 'زارك شخص واحد — اعرف من هو مع Pro',
-      two: 'زارك شخصان — اعرف من هما مع Pro',
-      few: 'زارك {count} أشخاص — اعرف من هم مع Pro',
-      many: 'زارك {count} شخصًا — اعرف من هم مع Pro',
-      other: 'زارك {count} شخص — اعرف من هم مع Pro',
+      zero: 'زارك {count} شخص — اعرف من هم مع {plan}',
+      one: 'زارك شخص واحد — اعرف من هو مع {plan}',
+      two: 'زارك شخصان — اعرف من هما مع {plan}',
+      few: 'زارك {count} أشخاص — اعرف من هم مع {plan}',
+      many: 'زارك {count} شخصًا — اعرف من هم مع {plan}',
+      other: 'زارك {count} شخص — اعرف من هم مع {plan}',
     },
     viewersCount: {
       zero: '{count} شخص',
@@ -710,7 +708,7 @@ export const ar: Localized<EnMessages> = {
       other: '{count} شخص',
     },
     leaderboardSubtitle: 'السلاسل والتصحيحات وكل ما حققته',
-    proTitle: '✦ LangX Pro',
+    proTitle: '✦ اذهب أبعد',
     proBody: 'محادثات جديدة بلا حدود، عوامل تصفية متقدمة، ترجمة وتصفح خفي.',
     newChatsLeft: 'المحادثات الجديدة المتبقية اليوم:',
     editProfile: 'تعديل الملف',
@@ -880,7 +878,7 @@ export const ar: Localized<EnMessages> = {
     itemsOwned: 'العناصر المملوكة',
     storeTitle: 'المتجر',
     disclaimer:
-      'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح Pro — فقط تجميدات السلسلة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
+      'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح خطة مدفوعة — فقط تجميدات السلسلة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
   },
 
   tokens: {
@@ -1088,7 +1086,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   paywall: {
-    everythingInPro: 'كل ما في Pro',
+    screenTitle: 'الخطط',
+    everythingInPro: 'كل ما في {plan}',
     restorePurchases: 'استعادة المشتريات',
     title: 'تحدّث أكثر، تعلّم أسرع',
     proTagline: 'كل ما يجعل الخطة المجانية تبدو ضيقة.',
@@ -1096,7 +1095,7 @@ export const ar: Localized<EnMessages> = {
     unlimitedChats: 'محادثات جديدة بلا حدود',
     unlimitedChatsBody: '{count} يوميًا في الخطة المجانية.',
     welcomePack: 'حزمة ترحيب',
-    welcomePackBody: 'إطار للملف الشخصي وتجميدتان للسلسلة للبداية. و‏Pro+ يمنح المجموعة كاملة.',
+    welcomePackBody: 'إطار للملف الشخصي وتجميدتان للسلسلة للبداية. و‏{plan} يمنح المجموعة كاملة.',
     advancedFilters: 'عوامل تصفية متقدمة',
     advancedFiltersBody: 'ابحث حسب الجنس والمدينة.',
     unlimitedTranslation: 'ترجمة بلا حدود',

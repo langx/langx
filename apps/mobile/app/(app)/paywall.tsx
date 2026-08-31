@@ -11,6 +11,7 @@ import {
   type PlanFeature,
   type ProBenefit,
   type ProPlusBenefit,
+  TIER_NAMES,
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -47,15 +48,6 @@ const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
 }
 
 /**
- * `name` is a brand — "Pro" and "Pro+" are the same words in every locale, and
- * they are what the store listing and the receipt say.
- */
-const TIER_NAME: Record<PaidPlanTier, string> = {
-  pro: 'Pro',
-  pro_plus: 'Pro+',
-}
-
-/**
  * Copy for every benefit in `PRO_BENEFITS`, keyed by it.
  *
  * `Record<ProBenefit, ...>` is the enforcement: add a benefit to the shared
@@ -67,17 +59,23 @@ const TIER_NAME: Record<PaidPlanTier, string> = {
 interface BenefitCopy {
   title: MessageKey
   body: MessageKey
-  /** Interpolated into `body`. The free-tier numbers come from `PLAN_LIMITS`
-   *  rather than being typed out, because a paywall quoting a limit the server
-   *  no longer enforces is the worst kind of wrong. */
-  count?: number
+  /**
+   * Interpolated into `body`. Free-tier numbers come from `PLAN_LIMITS` rather
+   * than being typed out, because a paywall quoting a limit the server no
+   * longer enforces is the worst kind of wrong; plan names come from
+   * `TIER_NAMES` for the same reason, one rename later.
+   *
+   * A bag rather than a bare `count` because a benefit can need both, and a
+   * second optional field per placeholder is how the two drift apart.
+   */
+  vars?: Record<string, string | number>
 }
 
 const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
   unlimitedInitiations: {
     title: 'paywall.unlimitedChats',
     body: 'paywall.unlimitedChatsBody',
-    count: PLAN_LIMITS.free.initiationsPer24h ?? 0,
+    vars: { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 },
   },
   advancedFilters: {
     title: 'paywall.advancedFilters',
@@ -86,7 +84,7 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
   unlimitedTranslation: {
     title: 'paywall.unlimitedTranslation',
     body: 'paywall.unlimitedTranslationBody',
-    count: PLAN_LIMITS.free.translationsPer24h ?? 0,
+    vars: { count: PLAN_LIMITS.free.translationsPer24h ?? 0 },
   },
   profileViewerIdentities: {
     title: 'paywall.whoViewed',
@@ -99,6 +97,7 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
   welcomePack: {
     title: 'paywall.welcomePack',
     body: 'paywall.welcomePackBody',
+    vars: { plan: TIER_NAMES.pro_plus },
   },
 }
 
@@ -222,8 +221,12 @@ export default function PaywallScreen() {
 
   return (
     <Screen scroll>
-      {/* "LangX Pro" is a brand, like the tier names — the same words in every locale. */}
-      <ScreenHeader title="LangX Pro" onBack={() => goBackTo('/(app)/me', from)} />
+      {/*
+        Translated, unlike the plan names below it. "LangX Pro" named one of the
+        two things this screen sells and would have read wrong above a Fluent
+        and a Polyglot column. A screen heading is copy, not a brand mark.
+      */}
+      <ScreenHeader title={t('paywall.screenTitle')} onBack={() => goBackTo('/(app)/me', from)} />
 
       {/*
         Says why this screen opened, when the caller knew. Someone who just
@@ -236,7 +239,7 @@ export default function PaywallScreen() {
           {feature && highlightTier ? (
             <Text style={styles.contextText}>
               <Text style={styles.contextFeature}>{t(FEATURE_TITLE[feature])}</Text>{' '}
-              {t('paywall.partOf')} {TIER_NAME[highlightTier]}.
+              {t('paywall.partOf')} {TIER_NAMES[highlightTier]}.
             </Text>
           ) : null}
           {remaining === 0 ? (
@@ -246,7 +249,7 @@ export default function PaywallScreen() {
           ) : null}
           {tier !== 'free' ? (
             <Text style={styles.contextText}>
-              {t('paywall.manageNotice', { plan: TIER_NAME[tier] })}
+              {t('paywall.manageNotice', { plan: TIER_NAMES[tier] })}
             </Text>
           ) : null}
         </View>
@@ -330,11 +333,13 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
   return (
     <View style={[styles.section, tier === 'pro_plus' && styles.sectionLast]}>
       {tier === 'pro' ? (
-        <Text style={styles.tierName}>{TIER_NAME.pro}</Text>
+        <Text style={styles.tierName}>{TIER_NAMES.pro}</Text>
       ) : (
         <View style={styles.plusHead}>
-          <Text style={styles.tierName}>{TIER_NAME.pro_plus}</Text>
-          <Text style={styles.plusTagline}>{t('paywall.everythingInPro')}</Text>
+          <Text style={styles.tierName}>{TIER_NAMES.pro_plus}</Text>
+          <Text style={styles.plusTagline}>
+            {t('paywall.everythingInPro', { plan: TIER_NAMES.pro })}
+          </Text>
         </View>
       )}
 
@@ -446,7 +451,7 @@ function BenefitRow({ copy, pending = false }: { copy: BenefitCopy; pending?: bo
         </Text>
         <Text style={styles.benefitBody}>
           {' — '}
-          {t(copy.body, copy.count === undefined ? undefined : { count: copy.count })}
+          {t(copy.body, copy.vars)}
         </Text>
         {pending ? <Text style={styles.pendingTag}> · {t('common.comingSoon')}</Text> : null}
       </Text>

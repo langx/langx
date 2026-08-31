@@ -26,7 +26,6 @@ export const tr: Localized<EnMessages> = {
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
     you: '(sen)',
-    pro: '✦ Pro',
     comingSoon: 'YAKINDA',
     continue: 'Devam',
     next: 'İleri',
@@ -325,8 +324,7 @@ export const tr: Localized<EnMessages> = {
       'Başlangıç için bir dönüş hediyesi. Konuşarak ve düzelterek daha fazlasını kazan.',
     streak: 'En iyi seri: {days}',
     streakBody: 'Rekorun olarak duruyor. Yaşayan serin bugünden sıfırdan başlıyor.',
-    proForLife: 'Ömür boyu LangX Pro',
-    proPlusForLife: 'Ömür boyu LangX Pro+',
+    tierForLife: 'Ömür boyu {plan}',
     proBody:
       'v1’de kurduğun şey için. Süresi hiç dolmaz, ödenecek bir şey de yok — ilk günden burada olduğun için teşekkürler.',
   },
@@ -442,7 +440,8 @@ export const tr: Localized<EnMessages> = {
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',
-    translationQuota: 'Bugünkü ücretsiz çevirilerini kullandın. Pro sınırı kaldırıyor.',
+    translationQuota:
+      'Bugünkü ücretsiz çevirilerini kullandın. Ücretli bir plan bu sınırı kaldırır.',
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
     sayHello: '{name} adlı kişiye merhaba de…',
     pinnedMessage: 'Sabitlenmiş mesaj',
@@ -599,12 +598,12 @@ export const tr: Localized<EnMessages> = {
     dayStreak: 'Günlük seri',
     viewersTitle: 'Profiline kim baktı',
     viewersLocked: {
-      one: '{count} kişi baktı — kim olduklarını Pro ile gör',
-      other: '{count} kişi baktı — kim olduklarını Pro ile gör',
+      one: '{count} kişi baktı — kimler olduğunu {plan} ile gör',
+      other: '{count} kişi baktı — kimler olduğunu {plan} ile gör',
     },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
     leaderboardSubtitle: 'Seriler, düzeltmeler ve kazandığın her şey',
-    proTitle: '✦ LangX Pro',
+    proTitle: '✦ Daha ileri git',
     proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve gizli gezinme.',
     newChatsLeft: 'Bugün kalan yeni sohbet:',
     editProfile: 'Profili düzenle',
@@ -770,7 +769,7 @@ export const tr: Localized<EnMessages> = {
     itemsOwned: 'Sahip olunan',
     storeTitle: 'Mağaza',
     disclaimer:
-      "Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve Pro'yu açamaz — yalnızca seri dondurma ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.",
+      'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
   },
 
   tokens: {
@@ -925,7 +924,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   paywall: {
-    everythingInPro: "Pro'daki her şey",
+    screenTitle: 'Planlar',
+    everythingInPro: '{plan} planındaki her şey',
     restorePurchases: 'Satın alımları geri yükle',
     title: 'Daha çok konuş, daha hızlı öğren',
     proTagline: 'Ücretsiz planı küçük gösteren her şey.',
@@ -934,7 +934,7 @@ export const tr: Localized<EnMessages> = {
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
     welcomePack: 'Hoş geldin paketi',
     welcomePackBody:
-      'Başlangıç için bir profil çerçevesi ve iki seri dondurma. Pro+ setin tamamını getirir.',
+      'Başlangıç için bir profil çerçevesi ve iki seri dondurma. {plan} setin tamamını getirir.',
     advancedFilters: 'Gelişmiş filtreler',
     advancedFiltersBody: 'Cinsiyete ve şehre göre ara.',
     unlimitedTranslation: 'Sınırsız çeviri',
