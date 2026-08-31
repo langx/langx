@@ -19,7 +19,7 @@ deployable unit on managed services.
 
 **The product.** Users declare the languages they speak and the ones they are
 learning. Discovery _ranks_ by mutual fit, but listing is not a gate — there is
-**no match/like/swipe mechanic**. Pro can message anyone; free can start 5 new
+**no match/like/swipe mechanic**. A paid plan can message anyone; free can start 5 new
 conversations per rolling 24 hours and reply to everything they receive without
 limit. HelloTalk/Tandem, not Tinder. Users correct each other's sentences, and
 the whole thing is wrapped in a game: streaks, token, leaderboards. Mobile
@@ -84,8 +84,9 @@ v2 breaks both:
 
 1. **Things that were free become paid.** v1's `community/filters.page` offers
    gender + country + level (CEFR) + min/max age filters, and
-   `settings/visitors.page` offers "who viewed me", both **free**. In v2 they
-   are Pro.
+   `settings/visitors.page` offers "who viewed me", both **free**. In v2 the gender and
+   city filters are Fluent and "who viewed me" is Polyglot; country, age and
+   level went back to free.
 2. **The token stays, but everything it implied goes.** v1's homepage sells a
    "Learn to Earn" token and the litepaper describes something tradable,
    staked and eventually listed. v2 keeps the **name** and drops all of that:
@@ -127,16 +128,16 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Pro bundle          | Unlimited conversations · advanced filters (gender, only-my-gender, city) · unlimited translation · who viewed me + incognito                                                                                                                                                                                                                                                                           |
-| Pro+ bundle         | Everything in Pro · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                                                                                                                      |
+| Fluent bundle       | Unlimited conversations · advanced filters (gender, only-my-gender, city) · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                      |
+| Polyglot bundle     | Everything in Fluent · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                             |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                       |
 | Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                                                                                    |
 | **Token**           | **Kept, not retired** (reversed 2026-08-27) — the name stays and v1 balances migrate at 1:100. What does not come across: the wallet/checkout UI, the `/token` leaderboard, and the on-chain roadmap                                                                                                                                                                                                    |
-| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Pro: unlimited within fair use                                                                                                                                                                                                                                                      |
+| **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                 |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`)                                                                                                                                                                                                                                                                               |
-| Token sinks         | **Only** streak freeze + cosmetics (frame/title). Tokens can never buy a Pro feature                                                                                                                                                                                                                                                                                                                    |
+| Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                       |
 | Streak condition    | At least one **meaningful action** per day (send a message or write a correction) — opening the app does not count                                                                                                                                                                                                                                                                                      |
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
 | Storage             | S3-compatible abstraction; **moving to R2**, B2 reachable by config                                                                                                                                                                                                                                                                                                                                     |
@@ -157,7 +158,7 @@ A public repo puts four items on the plan:
    anti-abuse thresholds are all readable. That is accepted: the defence is
    server-side validation, rate limiting and idempotency, not "nobody knows".
    `TOKEN_RULES` and `PLAN_LIMITS` are config, so weights can change at deploy.
-3. **Forks can disable the paywall.** Open source plus a Pro tier makes that
+3. **Forks can disable the paywall.** Open source plus a paid tier makes that
    inherently possible. It is a consequence of the model, not a bug; revenue
    comes from the instance we host.
 4. **Contribution surface.** `CONTRIBUTING.md`, `SECURITY.md` and
@@ -267,39 +268,66 @@ back door around authorisation, quota or token.
 
 ## Monetization
 
-### Free vs Pro vs Pro+
+### Free vs Fluent vs Polyglot
 
-|                            | Free                         | Pro                            | Pro+          |
-| -------------------------- | ---------------------------- | ------------------------------ | ------------- |
-| Starting new conversations | **5** per rolling 24h        | Unlimited                      | Unlimited     |
-| Replying                   | **Unlimited**                | Unlimited                      | Unlimited     |
-| Filters                    | Language, country, age, CEFR | + gender, only-my-gender, city | same as Pro   |
-| Sort by distance (Nearby)  | —                            | —                              | **Yes**       |
-| Translation                | N per day (config)           | Unlimited                      | Unlimited     |
-| **Message correction**     | **Unlimited**                | **Unlimited**                  | **Unlimited** |
-| Who viewed me              | Count only                   | Identities                     | Identities    |
-| Incognito                  | —                            | Yes                            | Yes           |
-| AI copilot                 | —                            | —                              | **Not built** |
+The tiers are `free | pro | pro_plus` in code and **Free**, **Fluent** and
+**Polyglot** on screen. The two are deliberately separate: a RevenueCat
+entitlement identifier cannot be renamed after creation, so the display names
+live in `TIER_NAMES` and the identifiers never move.
+
+|                            | Free                         | Fluent                         | Polyglot       |
+| -------------------------- | ---------------------------- | ------------------------------ | -------------- |
+| Starting new conversations | **5** per rolling 24h        | Unlimited                      | Unlimited      |
+| Replying                   | **Unlimited**                | Unlimited                      | Unlimited      |
+| Filters                    | Language, country, age, CEFR | + gender, only-my-gender, city | same as Fluent |
+| Sort by distance (Nearby)  | —                            | —                              | **Yes**        |
+| Translation                | **20** per rolling 24h       | **300**                        | **1000**       |
+| Languages you are learning | **1**                        | **2**                          | **5**          |
+| Languages you speak        | **1**                        | **2**                          | **5**          |
+| **Message correction**     | **Unlimited**                | **Unlimited**                  | **Unlimited**  |
+| Who viewed me              | Count only                   | Count only                     | **Identities** |
+| Incognito                  | —                            | —                              | **Yes**        |
+| Hiding that you are online | **Yes**                      | **Yes**                        | **Yes**        |
+| AI copilot                 | —                            | —                              | **Not built**  |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
 
-**Pro+ is a strict superset of Pro**, which is why its RevenueCat products
-grant both entitlements. The only two things it adds are Nearby and the
-copilot, and only the first exists.
+**No tier is unlimited on translation.** It is the one feature with a real
+per-request cost to a third party, so it carries a number on every tier rather
+than a promise the free tier subsidises. `PLAN_LIMITS` holds all three.
+
+**Hiding your online status is free on every tier**, and it is not in
+`PlanLimits` at all — a boolean that is `true` everywhere is a privacy setting,
+not a plan limit, and leaving it in the table would have kept `hasFeature`
+answering a question with no paid answer. It became free when the profile and
+the chat header started publishing "last seen": charging someone to hide data
+the app has only just begun to show about them is not defensible.
+
+**Both language lists are capped, and the cap is checked at write time only.**
+A profile that already holds more languages than its tier allows keeps working
+and can still be edited — the refusal is "this write would leave you with more
+than your plan allows _and_ more than you already had". Without the second
+half, every migrated v1 user with five languages could never edit a level or
+even remove one.
+
+**Polyglot is a superset of Fluent**, which is why its RevenueCat products
+grant both entitlements. It adds who-viewed-you, incognito, Nearby and the
+copilot, and raises both numbers again.
 
 **Distance is a sort, not a filter.** There is no "within X km" filter next to
 gender and country: Nearby re-orders the same list by distance, with a radius
 that bounds the search rather than narrowing a result set the user could
-otherwise have had. Sharing a location is free on every tier — a Pro+-only
+otherwise have had. Sharing a location is free on every tier — a Polyglot-only
 pool would have been empty on the day it shipped.
 
 **Correction quota was deliberately dropped:** writing a correction is a favour
 to the other person, and limiting it would shrink the value a free user
-_provides_ a Pro one. `PLAN_LIMITS.correctionsPer24h = null` on both tiers.
+_provides_ a paying one. `PLAN_LIMITS.correctionsPer24h = null` on both tiers.
 
 **Filters and visitors are a regression:** gender/country/age/CEFR filters and
-"who viewed me" were free in v1. Moving them to Pro is a deliberate change of
+"who viewed me" were free in v1. Moving gender, city and "who viewed me"
+behind a paid plan is a deliberate change of
 promise — the communication items above are part of that decision, not
 optional.
 
@@ -333,7 +361,9 @@ _Count-then-write_ overruns the quota under concurrent requests. The decrement
 is one atomic document update instead: `profiles.quota.initiations` is an array
 of timestamps, and a **pipeline update** both prunes entries older than 24h and
 conditionally appends a new one. If the array did not grow, the quota is spent
-→ `402 QUOTA_EXCEEDED`. Pro skips the step entirely. `GET /me/quota` returns
+→ `402 QUOTA_EXCEEDED`. A paid plan skips the step wherever its limit is
+`null`, which is every quota except translation — that one has a number on all
+three tiers. `GET /me/quota` returns
 what is left and when the next slot opens.
 
 ### Paywall rules (store compliance)
@@ -341,9 +371,9 @@ what is left and when the next slot opens.
 - Prices are read **dynamically** from the store / Web Billing; trial terms,
   auto-renewal, the cancellation path and links to Terms/Privacy are shown.
 - A **"Restore purchases"** button (required by Apple).
-- On a Pro-gated action the server returns `403 UPGRADE_REQUIRED` plus the
+- On a paid-gated action the server returns `403 UPGRADE_REQUIRED` plus the
   feature name, and the client opens a contextual paywall.
-- If a free user sends a Pro filter parameter the request is **rejected**, not
+- If a free user sends a paid filter parameter the request is **rejected**, not
   silently ignored.
 - **v1 was free with no IAP**, so adding a subscription invites a fresh review:
   subscription group setup, paid apps agreement, bank and tax details, Play
@@ -358,7 +388,7 @@ the wallet and checkout UI, the `/token` leaderboard, and the on-chain
 roadmap.
 
 **LangX Token cannot be bought, sold, traded, staked, withdrawn or
-transferred, and can never unlock a Pro feature.** That rule holds without
+transferred, and can never unlock a paid feature.** That rule holds without
 exception, and the reversal does not weaken it: nothing in v1 was ever
 purchased either. `CHECKOUT_COLLECTION` reads like a purchase log and is a
 daily payout calculation (see [`v1-reference.md`](./v1-reference.md)), so
@@ -461,9 +491,10 @@ deliberate: one is about fairness, the other about how it feels.
 
 ### Where tokens are spent
 
-**Only** two places: a **streak freeze** (rescuing one day) and **cosmetic
-frames and titles**. Tokens can never buy a Pro feature — if they could, Pro's
-value erodes and farming tokens becomes a substitute for subscribing.
+**Only** three places: a **streak freeze** (rescuing one day ahead of time),
+**filling in a missed day** afterwards, and **cosmetic frames and titles**.
+Tokens can never buy a paid feature — if they could, a subscription's value
+erodes and farming tokens becomes a substitute for subscribing.
 
 ### Anti-abuse
 
@@ -475,7 +506,7 @@ enforcement and idempotency, not secrecy.
 
 ### Copilot
 
-The only paid feature ever promised publicly. The plan keeps it as a **P1 Pro
+The only paid feature ever promised publicly. The plan keeps it as a **P1 Polyglot
 feature**. For the integrity of that promise it should land close to the v2
 launch; it does not block the MVP, but it is what the monetization story ought
 to be built around.
@@ -484,7 +515,7 @@ Verified live in v1: the chat screen header has a robot-icon toggle that checks
 what you are typing for grammar and phrasing errors in real time and suggests a
 correction ("I have a apple" → "I have an apple", with a short reason). v2
 rebuilds the same function under the name **Copilot**, as part of the chat
-module. Quota: free 5 uses a day, Pro unlimited within fair use.
+module. Quota: free 5 uses a day, Polyglot unlimited within fair use.
 
 ## MongoDB schema
 
@@ -590,7 +621,7 @@ The language list and CEFR levels are constants in `packages/shared`.
 $match:    discoverable, !deleted, !blocked (either direction),
            nativeLanguages.code ∈ my learning,      ← mutual fit
            learning.code ∈ my nativeLanguages
-           [if Pro] gender / country / age / CEFR
+           country / age / CEFR (free), [if Fluent] gender / city
 $addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
@@ -609,7 +640,7 @@ blocks and `discoverable` rule as the feed and deliberately **not** the mutual
 language fit — finding somebody whose name you already know cannot depend on
 whether you are learnable to each other.
 
-**`sort=nearby` (Pro+)** replaces that leading `$match` with a single
+**`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot
 share the position. The match above is handed to it as its `query` argument
 instead, so both still apply; what changes is that the 2dsphere index drives
@@ -863,7 +894,7 @@ only thing that matters is preserving store identity.
    (unlimited)**
 6. Translation service + usage quotas
 7. **Monetization:** RevenueCat (native + web), paywall, webhook → entitlement,
-   quota, Pro filters, who-viewed-me + incognito
+   quota, paid filters, who-viewed-me + incognito
 8. **Gamification:** streak, token ledger, daily pool, 4 leaderboards, streak
    freeze + cosmetic sinks
 9. Push notifications (message / streak reminder)

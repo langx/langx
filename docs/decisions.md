@@ -931,9 +931,9 @@ It is inert when the viewer's own gender is `undisclosed`: "people like me"
 cannot mean "people who also declined to say", and narrowing to that group
 would be a worse answer than not narrowing.
 
-**It is Pro, deliberately.** It was raised as a question — it is the one filter
+**It is paid, deliberately.** It was raised as a question — it is the one filter
 people use for safety rather than preference, and safety behind a paywall reads
-differently from convenience behind one — and the answer was to keep it Pro. It
+differently from convenience behind one — and the answer was to keep it paid — it is on Fluent. It
 is a gender filter, the server gates those together, and splitting one of them
 out would make the paywall's rule harder to explain than it is worth.
 
@@ -1012,6 +1012,11 @@ and nobody is promoted by a migration they did not ask for.
 about its contents.
 
 ## A third tier, and the four things two tiers were hiding
+
+> **Superseded in part — see _The plans are Fluent and Polyglot_ below.** The
+> tier identifiers are unchanged and everything about the shape of the table
+> still holds. What is no longer true is the sentence after this one: the two
+> tiers no longer share quotas or capability flags.
 
 `PLAN_TIERS` is `free | pro | pro_plus`. Pro+ is a **strict superset** of Pro:
 same quotas, same three capability flags, plus `nearby` and `copilot`.
@@ -1515,6 +1520,74 @@ The key is `posts/{userId}/…` rather than keyed by post, because the post does
 not exist when the URL is signed — unlike a conversation. That also keeps the
 deletion purge able to find a person's uploads by prefix.
 
+## The plans are Fluent and Polyglot, and three things moved
+
+`pro` and `pro_plus` are what the code calls them and what RevenueCat calls
+them; **Fluent** and **Polyglot** are what a person sees. The two are separate
+on purpose — a RevenueCat entitlement identifier cannot be renamed after it is
+created, so a display name that lives in the same string as an identifier is a
+rename waiting to be impossible. `TIER_NAMES` and `TIER_BADGES` in `limits.ts`
+are the only place the words appear; six screens read them, and `TierBadge`
+still gets its colour from a theme token rather than a name.
+
+Free keeps no badge. A chip reading "FREE" beside somebody's name is an insult,
+which is why `TIER_BADGES.free` is `null` rather than a string.
+
+**What moved, and why each one moved:**
+
+- **`profileViewerIdentities` and `incognito` are Polyglot.** Polyglot was
+  sold on two features that do not exist — `nearby` needs `$geoNear` in its own
+  pipeline and `copilot` has no code at all — so the tier above was, in
+  practice, a promise. These two exist and work, so the tier now has something
+  to be. The client needed no logic change for who-viewed-you: `profileViews`
+  already returns a `locked` flag the screen renders, so only the copy naming
+  the tier changed.
+- **Translation has a number on every tier: 20 / 300 / 1000.** "Unlimited
+  translation" was the one claim in the table with a real per-request cost to a
+  third party behind it, and no local engine to fall back on. A quota that is
+  generous and honest beats a promise that has to be quietly rate-limited the
+  first time somebody scripts it. `PRO_BENEFITS` therefore stops carrying
+  `unlimitedTranslation` and carries `translationQuota`, which the paywall
+  interpolates per tier — so the Fluent row says 300 and the Polyglot row says
+  1000 from the same copy entry.
+- **`hideOnlineStatus` left `PlanLimits` altogether.** It is `true` on every
+  tier now, and a boolean that is true everywhere is not a plan limit — it is a
+  privacy setting, like `activityMapVisible` beside it. Leaving it in the table
+  would have kept `hasFeature` and `tierUnlocking` answering a question with no
+  paid answer. It became free because the profile and the chat header started
+  publishing "last seen": charging someone to hide data the app has only just
+  started showing about them is not defensible, and it is the same argument
+  that gave country, age and level back to the free tier.
+
+**Both language lists are capped, on one ladder: 1 / 2 / 5.** Learning and
+native use the same numbers deliberately, so it is one rule over two arrays
+rather than two rules. zod cannot express a tier-dependent maximum — route
+schemas are registered at boot, before any request exists — so zod holds the
+ceiling (`pro_plus`'s row, so it cannot drift from the table) and the tier
+check lives in `updateProfile`, the one place that has both the tier and the
+stored profile.
+
+**The cap is checked at write time only, and the clause that makes that real
+is `&& > current.length`.** The refusal is "this write would leave you with
+more than your plan allows _and_ more than you already had". Without the second
+half every migrated v1 user holding five languages could never edit a level,
+reorder priorities, or even remove one — the profile would be frozen by a limit
+introduced after it was written. Applied per array, so being over on natives
+does not block a learning-language edit.
+
+Capping _native_ languages is not the same trade as capping learning ones, and
+it is worth naming: discovery's mutual-fit `$match` reads the viewer's
+`nativeLanguages`, so a free user held to one native language is not merely
+limited, they are **findable by fewer people**. For someone raised bilingual a
+second native language is an identity fact rather than a feature. The ladder is
+what was asked for and it is what shipped; the cost is recorded here so it is
+not rediscovered as a mystery.
+
+None of this introduced a `tier > 'free'` comparison. `hasFeature`,
+`tierUnlocking` and `effectivePlanTier` read the real table and were not
+touched — which is the property that let two capabilities change tier without a
+single call site moving with them.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is
@@ -1526,7 +1599,7 @@ deletion purge able to find a person's uploads by prefix.
   store.** The catalog, both entitlements and the client SDK are wired, so
   purchase and restore can be exercised in a dev build. What that cannot cover
   is anything only a real store produces: StoreKit/Play receipts, upgrade
-  proration between Pro and Pro+ in one subscription group, and review. Those
+  proration between Fluent and Polyglot in one subscription group, and review. Those
   still wait on the App Store Connect and Play Console prerequisites.
 - **The webhook has no configured endpoint yet.** Entitlement therefore only
   moves when the client calls `POST /billing/refresh`; a purchase made outside

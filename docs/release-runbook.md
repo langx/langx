@@ -454,7 +454,7 @@ image configured for 16 KB before the rollout widens past 10%.
 
 ## Location changes both privacy forms
 
-Nearby (Pro+) added the app's first location permission, so two answers that
+Nearby (Polyglot) added the app's first location permission, so two answers that
 were "no" are now "yes", and a store form that still says otherwise is a false
 declaration rather than a stale one:
 

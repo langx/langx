@@ -19,7 +19,8 @@ it inside the app. That is the entire definition.
 - **Not tradable, not staked, not listed.** There is no exchange, no market, no
   marketplace, and no plan to build one.
 - **Not on a blockchain.** There is no chain, no contract, no wallet address.
-- **It cannot unlock Pro.** LangX Pro is a subscription; tokens buy none of it.
+- **It cannot unlock a paid plan.** Fluent and Polyglot are subscriptions;
+  tokens buy no part of either.
 
 ## Words we do and do not use
 
@@ -34,7 +35,7 @@ crypto-adjacent, not whether a screen has a common English name.
 So the in-app disclaimer no longer says "no wallet", which would have
 contradicted the screen it sits on. It says what is actually true and actually
 load-bearing: no chain, no contract, no market, cannot be bought, cannot be
-traded, cannot unlock Pro.
+traded, cannot unlock a paid plan.
 
 New screens use Feather `award`/`gift`, never a coin.
 
@@ -84,16 +85,16 @@ that damages trust.
   a missed day** on your activity map (300 tokens, last 14 days, two a month),
   and on **cosmetic frames and titles** — ten of each, worn one at a time. That
   is the complete list of things to spend on, and it is complete on purpose: if
-  tokens could buy a Pro feature, farming tokens would become a substitute for
+  tokens could buy a paid feature, farming tokens would become a substitute for
   subscribing.
 - One frame, **Aurora**, cannot be bought at any balance: it needs a 365-day
   streak _and_ 5,000 corrections written. Say it as an achievement, never as a
   premium tier — the difference is that everybody can see the requirement and
   nobody can pay past it.
 
-## Subscribing: what Pro includes, and what it cannot
+## Subscribing: what a paid plan includes, and what it cannot
 
-Pro and Pro+ include a one-off **welcome pack** — a profile frame or two, and
+Fluent and Polyglot include a one-off **welcome pack** — a profile frame or two, and
 two streak freezes. Items, never token.
 
 That is not a stylistic preference. "There is no way to buy tokens, with money
@@ -103,7 +104,7 @@ would make it false. It is also not only wording: a balance is
 all-time leaderboard ranks — so granting token for money would sell rank on a
 table other people climb by writing corrections.
 
-Nothing in the pack is Pro-only. Every item in it is buyable with token by
+Nothing in the pack is subscriber-only. Every item in it is buyable with token by
 anybody; subscribing skips the saving, it does not unlock a shelf. Say it that
 way: **"a head start, not a shortcut"**, never "earn tokens faster".
 
