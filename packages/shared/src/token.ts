@@ -142,6 +142,12 @@ export interface TokenRules {
      * ahead of a day you might miss and costs you the foresight; a repair is
      * bought after one you did miss and costs nothing but tokens. Pricing the
      * retrospective one lower would make the freeze pointless.
+     *
+     * Read it against what a day is worth rather than against the freeze alone.
+     * `messagesPerDay` caps a day's earning at 200, so this is roughly three
+     * days of committed use to buy one day back — which is the ratio that keeps
+     * the foresight discount worth having. At 300 it was a day and a half, and
+     * a freeze at 200 was barely cheaper than simply not bothering.
      */
     dayRepair: number
     /** How far back a day can still be repaired. */
@@ -239,7 +245,7 @@ export const TOKEN_RULES: TokenRules = {
     maxBankedStreakFreezes: 2,
     streakRestorePerDay: 20,
     streakRestoreMax: 2000,
-    dayRepair: 300,
+    dayRepair: 600,
     dayRepairMaxAgeDays: 14,
     dayRepairPerMonth: 2,
   },
