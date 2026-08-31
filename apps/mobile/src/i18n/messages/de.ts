@@ -752,7 +752,8 @@ export const de: Localized<EnMessages> = {
     communitySection: 'Community',
     linkDeviceBody: 'Eine Anmeldung am Computer bestätigen.',
     showInDiscover: 'In Entdecken zeigen',
-    showInDiscoverBody: 'Schalte das aus, und niemand findet dich in Entdecken.',
+    showInDiscoverBody:
+      'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',

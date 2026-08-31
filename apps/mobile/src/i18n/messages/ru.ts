@@ -843,7 +843,7 @@ export const ru: Localized<EnMessages> = {
     communitySection: 'Сообщество',
     linkDeviceBody: 'Подтвердить вход на компьютере.',
     showInDiscover: 'Показывать меня в Поиске',
-    showInDiscoverBody: 'Выключи — и никто не найдёт тебя в Поиске.',
+    showInDiscoverBody: 'Выключи — и тебя не найдут: ни в «Обзоре», ни по имени пользователя.',
     incognito: 'Невидимый просмотр',
     incognitoBody: 'Ты не появишься в списке их посетителей.',
     hideOnline: 'Скрывать, когда я в сети',

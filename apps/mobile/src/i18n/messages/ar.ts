@@ -881,7 +881,7 @@ export const ar: Localized<EnMessages> = {
     communitySection: 'المجتمع',
     linkDeviceBody: 'وافق على تسجيل دخول على حاسوب.',
     showInDiscover: 'أظهرني في الاستكشاف',
-    showInDiscoverBody: 'أغلق هذا ولن يجدك أحد في الاستكشاف.',
+    showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
     incognito: 'تصفّح خفي',
     incognitoBody: 'لن تظهر ضمن زوّارهم.',
     hideOnline: 'أخفني عندما أكون متصلًا',

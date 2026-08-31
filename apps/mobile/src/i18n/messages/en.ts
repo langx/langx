@@ -771,7 +771,8 @@ export const en = {
     communitySection: 'Community',
     linkDeviceBody: 'Approve a sign-in on a computer.',
     showInDiscover: 'Show me in Discover',
-    showInDiscoverBody: 'Turn this off and nobody will find you in Discover.',
+    showInDiscoverBody:
+      'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',

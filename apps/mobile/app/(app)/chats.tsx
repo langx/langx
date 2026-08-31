@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native'
 import { useConversationFlags, useConversations, useMe } from '../../src/api/queries'
+import { PeopleSearch } from '../../src/components/PeopleSearch'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -45,6 +46,9 @@ export default function ChatsScreen() {
 
   const me = useMe()
   const [filter, setFilter] = useState<ConversationFilter>('all')
+  // Blanks the thread list while a search is open, so the results are not
+  // competing with a list of unrelated conversations underneath them.
+  const [searching, setSearching] = useState(false)
   const conversations = useConversations(filter)
   const flags = useConversationFlags()
 
@@ -80,6 +84,12 @@ export default function ChatsScreen() {
       */}
       <View style={styles.titleRow}>
         <Text style={styles.title}>{t('tabs.chats')}</Text>
+        {/*
+          Here as well as on Discover, because this is the other place people
+          arrive already knowing who they want: Discover is for finding someone,
+          Chats is for finding someone again.
+        */}
+        <PeopleSearch from="/(app)/chats" onSearchingChange={setSearching} />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('chats.starredMessages')}
@@ -117,7 +127,7 @@ export default function ChatsScreen() {
         </View>
       ) : (
         <FlatList
-          data={items}
+          data={searching ? [] : items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={
