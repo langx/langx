@@ -2,6 +2,7 @@ import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST } from '@lang
 import { betterAuth } from 'better-auth'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
+import { anonymous } from 'better-auth/plugins/anonymous'
 import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
@@ -164,6 +165,24 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
 
     plugins: [
       expo(),
+      /*
+       * A session for somebody who has not signed up yet, so the app can show
+       * them real people before asking for an email.
+       *
+       * Only half of this plugin is used. Its *linking* half is switched off by
+       * never being reached: `emailAndPassword` here has
+       * `requireEmailVerification: true` and `autoSignIn: false`, so
+       * `signUp.email` returns no session at all, and `onLinkAccount` would fire
+       * around a `newUser` that has none. The client signs the guest out and
+       * registers fresh instead — which loses nothing, because a guest cannot
+       * write and therefore owns no rows to carry over. The language choices
+       * travel in the device-side onboarding draft, which already survives a
+       * relaunch and is cleared only on a real submit.
+       *
+       * `.invalid` is reserved by RFC 2606 and can never resolve, so the
+       * synthetic addresses this mints cannot receive mail even by accident.
+       */
+      anonymous({ emailDomainName: 'guest.langx.invalid' }),
       /*
        * QR sign-in on the web, which is RFC 8628's device flow with a picture
        * in front of it: the browser asks for a code, shows it as a QR *and* as

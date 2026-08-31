@@ -28,7 +28,14 @@ import type { Profile } from './profiles'
  */
 export async function getSharedProfile(db: Db, handle: string): Promise<SharedProfile> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne(
-    { handle: handle.toLowerCase(), deletedAt: { $exists: false } },
+    {
+      handle: handle.toLowerCase(),
+      deletedAt: { $exists: false },
+      // A guest handle is `guest:<id>`, which `handleSchema` can never produce
+      // and no route can pass — but this read is the app's only unauthenticated
+      // one, so it says so rather than relying on that.
+      guest: { $exists: false },
+    },
     {
       projection: {
         handle: 1,

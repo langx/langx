@@ -4,18 +4,21 @@ import {
   locationInputSchema,
   onboardingProfileSchema,
   updateProfileSchema,
+  ERROR_CODES,
+  guestProfileSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { findConversationBetween } from '../modules/chat/conversations'
 import { countryFromHeaders } from '../lib/requestCountry'
-import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
 import {
   clearLocation,
+  createGuestProfile,
   createProfile,
   setCountryFromLocation,
   findProfileByHandleOrId,
@@ -69,7 +72,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.patch(
     '/profiles/me/country',
-    { preHandler: requireAuth, schema: { body: countryFromLocationSchema } },
+    { preHandler: requireMember, schema: { body: countryFromLocationSchema } },
     async (request, reply) => {
       const profile = await setCountryFromLocation(
         app.mongo.db,
@@ -146,9 +149,33 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  /**
+   * The one deliberate exception to `requireVerifiedEmail` on a profile write.
+   *
+   * A guest is `emailVerified: false` by construction — that is what closes
+   * every other write to them for free — so this route has to be `requireAuth`,
+   * and `createGuestProfile` is the only thing it can reach.
+   */
+  app.post(
+    '/profiles/guest',
+    { preHandler: requireAuth, schema: { body: guestProfileSchema } },
+    async (request, reply) => {
+      if (!request.isGuest) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Not a guest session')
+      }
+      const profile = await createGuestProfile(
+        app.mongo.db,
+        request.userId,
+        request.body,
+        countryFromHeaders(request.headers, app.env.EDGE_SECRET),
+      )
+      return reply.code(201).send(profile)
+    },
+  )
+
   app.patch(
     '/profiles/me',
-    { preHandler: requireAuth, schema: { body: updateProfileSchema } },
+    { preHandler: requireMember, schema: { body: updateProfileSchema } },
     async (request, reply) => {
       const profile = await updateProfile(app.mongo.db, request.userId, request.body)
       return reply.send(profile)
@@ -168,14 +195,14 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.post(
     '/profiles/me/location',
-    { preHandler: requireAuth, schema: { body: locationInputSchema } },
+    { preHandler: requireMember, schema: { body: locationInputSchema } },
     async (request, reply) => {
       const profile = await setLocation(app.mongo.db, request.userId, request.body)
       return reply.send(profile)
     },
   )
 
-  app.delete('/profiles/me/location', { preHandler: requireAuth }, async (request, reply) => {
+  app.delete('/profiles/me/location', { preHandler: requireMember }, async (request, reply) => {
     const profile = await clearLocation(app.mongo.db, request.userId)
     return reply.send(profile)
   })

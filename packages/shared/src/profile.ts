@@ -94,6 +94,34 @@ const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_L
  * country from the connection instead, and only falls back to this when the
  * edge cannot say (Tor, an unknown range). See `countryFromRequest`.
  */
+/**
+ * What a guest supplies: the two language lists and nothing else.
+ *
+ * Deliberately not a subset of `onboardingProfileSchema`, which requires a
+ * handle, a display name, a birth date and a gender. A guest supplies none of
+ * those because a guest cannot be looked at — they browse, they do not appear.
+ */
+/**
+ * How long a guest session is kept before it is swept away.
+ *
+ * Long enough that somebody who tries the app, closes it and comes back next
+ * week still has their languages; short enough that the collection does not
+ * fill with rows nobody will read again. Most guests never return, and the row
+ * exists only so `discoverProfiles` has a viewer document.
+ */
+export const GUEST_TTL_MS = 30 * 24 * 60 * 60 * 1000
+
+export const guestProfileSchema = z
+  .object({
+    nativeLanguages: nativeLanguagesSchema,
+    learning: learningLanguagesSchema,
+  })
+  .refine(learningDoesNotOverlapNative, {
+    message: 'A learning language cannot also be listed as native',
+    path: ['learning'],
+  })
+export type GuestProfileInput = z.infer<typeof guestProfileSchema>
+
 export const onboardingProfileSchema = z
   .object({
     /**

@@ -169,6 +169,11 @@ export async function discoverProfiles(
   const match: Document = {
     _id: { $nin: excludedIds },
     'settings.discoverable': true,
+    // Belt and braces. `discoverable: false` already excludes them, but a
+    // guest surfacing in somebody's results is the single worst failure of
+    // this feature, and one flag flipped by a future default should not be
+    // all that stands between here and there.
+    guest: { $exists: false },
     deletedAt: { $exists: false },
     // Mutual fit, both directions — the reason for the two split indexes.
     'nativeLanguages.code': { $in: wantTheirNative },
