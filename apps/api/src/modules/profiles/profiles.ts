@@ -109,7 +109,22 @@ export interface Profile {
   }
   quota: { initiations: Date[]; translations: Date[]; media: Date[] }
   photos?: { url: string; createdAt: Date }[]
-  streak: { current: number; longest: number; lastQualifiedDay: string | null }
+  streak: {
+    current: number
+    longest: number
+    /**
+     * The last day the streak was credited, by *anything* — a message, a
+     * correction, a recording, or simply opening the app.
+     */
+    lastQualifiedDay: string | null
+    /**
+     * The last day a **meaningful action** happened, which is a narrower thing
+     * and the one the milestone bonus is paid for. Absent on profiles written
+     * before check-ins existed; the reader treats that as "unknown", never as
+     * "never".
+     */
+    lastActionDay?: string | null
+  }
   /** Banked streak freezes; one is spent automatically to bridge a single missed day. */
   streakFreezes?: number
   /** All-time token spent. Earned token lives in `tokenAggregates` and is never decremented. */

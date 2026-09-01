@@ -120,13 +120,42 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       .toArray()
   }
 
-  function setStreak(userId: string, current: number, lastQualifiedDay: string | null) {
+  async function checkIn(user: SignedUpUser) {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/me/check-in',
+      headers: { cookie: user.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    return response.json<{ current: number; advanced: boolean; freezeUsed: boolean }>()
+  }
+
+  function streakDayRow(userId: string, day: string) {
     return handle.db
-      .collection<Profile>(COLLECTIONS.profiles)
-      .updateOne(
-        { _id: userId },
-        { $set: { 'streak.current': current, 'streak.lastQualifiedDay': lastQualifiedDay } },
-      )
+      .collection<StreakDay>(COLLECTIONS.streakDays)
+      .findOne({ _id: `${userId}:${day}` })
+  }
+
+  /**
+   * Rewinds the streak to a past day, as if nothing had happened since.
+   *
+   * Both fields, not just `lastQualifiedDay`. They came apart when check-ins
+   * arrived — one is "the streak is credited for this day", the other is "real
+   * work happened on this day" — and leaving the second at today would make a
+   * rewound user unable to earn today's milestone, which is a fact about this
+   * helper rather than about the code under test.
+   */
+  function setStreak(userId: string, current: number, lastQualifiedDay: string | null) {
+    return handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: {
+          'streak.current': current,
+          'streak.lastQualifiedDay': lastQualifiedDay,
+          'streak.lastActionDay': lastQualifiedDay,
+        },
+      },
+    )
   }
 
   beforeAll(async () => {
@@ -414,6 +443,119 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       await setStreak(a.userId, 6, shiftDayKey(streakDay, -1))
       await reply(a.userId, conversationId, 'replayed day seven')
       expect((await summary(a)).tokens.all - before).toBe(2 * TOKEN_RULES.award.message + milestone)
+    })
+  })
+
+  describe('opening the app holds the streak', () => {
+    it('starts a streak without paying anything', async () => {
+      const user = await newUser('checkin-start@example.com')
+      const before = (await summary(user)).tokens.all
+
+      const result = await checkIn(user)
+      expect(result.current).toBe(1)
+      expect(result.advanced).toBe(true)
+      expect((await summary(user)).tokens.all).toBe(before)
+      expect(await earnedLedgerOf(user.userId)).toHaveLength(0)
+    })
+
+    it('is idempotent within a day', async () => {
+      const user = await newUser('checkin-idempotent@example.com')
+      expect((await checkIn(user)).advanced).toBe(true)
+      const second = await checkIn(user)
+      expect(second.advanced).toBe(false)
+      expect(second.current).toBe(1)
+    })
+
+    it("does not pay a milestone, and the day's first real action does", async () => {
+      // The whole point of the relaxation, and its limit: the number on screen
+      // keeps going up for showing up, but the token behind it is still earned.
+      const a = await newUser('checkin-milestone-a@example.com')
+      const b = await newUser('checkin-milestone-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'day six')
+
+      const before = (await summary(a)).tokens.all
+      const milestone = TOKEN_RULES.streakMilestones[7] ?? 0
+      expect(milestone).toBeGreaterThan(0)
+      const today = localDayKey(new Date(), 'UTC')
+      await setStreak(a.userId, 6, shiftDayKey(today, -1))
+
+      const held = await checkIn(a)
+      expect(held.current).toBe(7)
+      expect((await summary(a)).tokens.all).toBe(before)
+
+      await reply(a.userId, conversationId, 'day seven, for real')
+      const after = await summary(a)
+      expect(after.streak.current).toBe(7)
+      expect(after.tokens.all - before).toBe(TOKEN_RULES.award.message + milestone)
+    })
+
+    it('pays the milestone only once when the action comes first', async () => {
+      const a = await newUser('checkin-after-action-a@example.com')
+      const b = await newUser('checkin-after-action-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'day six')
+
+      const before = (await summary(a)).tokens.all
+      const milestone = TOKEN_RULES.streakMilestones[7] ?? 0
+      const today = localDayKey(new Date(), 'UTC')
+      await setStreak(a.userId, 6, shiftDayKey(today, -1))
+
+      await reply(a.userId, conversationId, 'day seven')
+      await checkIn(a)
+      expect((await summary(a)).tokens.all - before).toBe(TOKEN_RULES.award.message + milestone)
+    })
+
+    it('fills the square without shading it, and a later message shades it', async () => {
+      // `actions` is a count of work, so a check-in must not increment it —
+      // otherwise every quiet day looks as busy as a day of teaching.
+      const a = await newUser('checkin-square-a@example.com')
+      const b = await newUser('checkin-square-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      const today = localDayKey(new Date(), 'UTC')
+
+      // `startConversation` already counted as work today, so start clean.
+      await handle.db.collection(COLLECTIONS.streakDays).deleteMany({ userId: a.userId })
+      await checkIn(a)
+
+      const opened = await streakDayRow(a.userId, today)
+      expect(opened?.source).toBe('checkIn')
+      expect(opened?.actions).toBe(0)
+
+      await reply(a.userId, conversationId, 'something real')
+      const worked = await streakDayRow(a.userId, today)
+      // The source says how the day *began* and does not move; `actions` is
+      // what the map reads to tell a quiet day from a busy one.
+      expect(worked?.source).toBe('checkIn')
+      expect(worked?.actions).toBe(1)
+    })
+
+    it('spends a banked freeze to bridge yesterday', async () => {
+      // Refusing to spend it here would let a check-in silently reset a streak
+      // the user had already paid to protect, with no later action able to
+      // undo it — the day would already be claimed.
+      const user = await newUser('checkin-freeze@example.com')
+      const today = localDayKey(new Date(), 'UTC')
+      await setStreak(user.userId, 9, shiftDayKey(today, -2))
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { streakFreezes: 1 } })
+
+      const result = await checkIn(user)
+      expect(result.freezeUsed).toBe(true)
+      expect(result.current).toBe(10)
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.streakFreezes).toBe(0)
+    })
+
+    it('resets on a gap it cannot bridge', async () => {
+      const user = await newUser('checkin-gap@example.com')
+      const today = localDayKey(new Date(), 'UTC')
+      await setStreak(user.userId, 40, shiftDayKey(today, -5))
+
+      const result = await checkIn(user)
+      expect(result.current).toBe(1)
+      expect(result.freezeUsed).toBe(false)
     })
   })
 

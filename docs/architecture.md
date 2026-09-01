@@ -138,7 +138,7 @@ This is communication work, and it is part of the delivery:
 | **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                 |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`)                                                                                                                                                                                                                                                                               |
 | Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                       |
-| Streak condition    | At least one **meaningful action** per day (send a message, write a correction, or answer a pronunciation request) — opening the app does not count                                                                                                                                                                                                                                                     |
+| Streak condition    | Opening the app holds the day. A **meaningful action** (send a message, write a correction, or answer a pronunciation request) is what pays the milestone bonus for it                                                                                                                                                                                                                                  |
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
 | Storage             | S3-compatible abstraction; **moving to R2**, B2 reachable by config                                                                                                                                                                                                                                                                                                                                     |
 | Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                          |
@@ -407,10 +407,23 @@ makes a one-off migration credit safe to apply exactly once.
 
 ### Streak
 
-- Condition: at least one **meaningful action** per day — sending a message,
-  writing a correction, or answering a pronunciation request with a recording.
-  Opening the app does not advance the streak; it only
-  triggers the check and shows a "send one message today" nudge.
+- Condition, in two halves. **Opening the app** credits the day and holds the
+  streak — `POST /me/check-in`, once per local day, idempotent. A **meaningful
+  action** — sending a message, writing a correction, or answering a
+  pronunciation request — is what pays the milestone bonus for that day.
+- The streak was strict for a while, and the cost of that was not the people it
+  motivated but the ones who had a quiet day and lost two hundred of them. A
+  streak that punishes a day with nothing to say teaches people to stop looking.
+  Paying the milestone for showing up would be the other error: 365 days of
+  opening an app is not worth five thousand token on a table other people climb
+  by teaching strangers.
+- Two fields, because the two facts came apart: `streak.lastQualifiedDay` is the
+  last day credited by anything, `streak.lastActionDay` the last day real work
+  happened. Each has its own conditional write, so a milestone crossed by a
+  check-in in the morning is paid by the first real action that evening.
+- A banked freeze **is** spent by a check-in. The gap it bridges is yesterday's;
+  refusing to spend it would let opening the app silently reset a streak the
+  user had paid to protect, with no later action able to undo it.
 - `profiles.streak = { current, longest, lastQualifiedDay: 'YYYY-MM-DD' }`. On
   an action: same day is a no-op, previous day increments, a gap resets to 1.
 - The day is the **user's local day**. Timezone updates are rate-limited to

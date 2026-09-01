@@ -8,6 +8,19 @@ export interface ActivityCell {
   intensity: Intensity
   /** `future` squares are drawn as gaps, `repairable` ones are tappable. */
   state: 'filled' | 'empty' | 'repairable' | 'future'
+  /**
+   * Filled by opening the app and nothing else.
+   *
+   * Its own flag rather than another `intensity` step, because intensity is a
+   * count of work and this day has none — folding it into the same scale would
+   * renumber every existing square to make room for a zero. Drawn fainter than
+   * the lightest worked day, so a run of quiet days is honest about being one
+   * without breaking the streak's line.
+   *
+   * Never set on somebody else's map: the public endpoint sends an intensity
+   * and no source, for the same reason it hides which squares were bought.
+   */
+  checkedIn: boolean
 }
 
 /**
@@ -24,6 +37,8 @@ export function activityGrid(input: {
   weeks: number
   /** Day → qualifying actions. A bought day is present with zero. */
   days: Map<string, number>
+  /** Days filled by a check-in alone. Own map only; see `ActivityCell`. */
+  checkIns?: ReadonlySet<string>
   maxAgeDays: number
   /**
    * The streak the profile claims, used to fill days the collection cannot
@@ -38,6 +53,7 @@ export function activityGrid(input: {
   streak?: { current: number; lastQualifiedDay: string | null } | undefined
 }): ActivityCell[][] {
   const { today, weeks, days, maxAgeDays } = input
+  const checkIns = input.checkIns ?? new Set<string>()
   const streakDays = impliedStreakDays(input.streak)
   const oldestRepairable = shiftDayKey(today, -maxAgeDays)
 
@@ -56,6 +72,7 @@ export function activityGrid(input: {
       cells.push({
         day,
         intensity: filled ? intensityOf(actions ?? 0) : 0,
+        checkedIn: filled && checkIns.has(day),
         state:
           day > today
             ? 'future'

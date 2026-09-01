@@ -1,7 +1,13 @@
 import { shiftDayKey } from '@langx/shared'
 
-/** What happened on one day, as the history reads it. */
-export type StreakDayKind = 'checkedIn' | 'bought' | 'missed'
+/**
+ * What happened on one day, as the history reads it.
+ *
+ * `checkedIn` means real work happened; `openedOnly` means the app was opened
+ * and nothing else. Both hold the streak, and the history is the one place that
+ * says which — the map can only make the square fainter.
+ */
+export type StreakDayKind = 'checkedIn' | 'openedOnly' | 'bought' | 'missed'
 
 export interface StreakHistoryRow {
   day: string
@@ -15,7 +21,7 @@ export interface StreakHistoryRow {
 interface HistoryDay {
   day: string
   actions: number
-  source: 'activity' | 'purchase'
+  source: 'activity' | 'purchase' | 'checkIn'
   firstAt?: string
 }
 
@@ -53,7 +59,13 @@ export function streakHistory(input: {
     }
     rows.push({
       day,
-      kind: entry.source === 'purchase' ? 'bought' : 'checkedIn',
+      /*
+       * `actions`, not `source`, decides between the two. A day that opened as
+       * a check-in and later saw a real message keeps `source: 'checkIn'` —
+       * the field says how the day *began* — so reading the source alone would
+       * report a day of work as an empty one.
+       */
+      kind: entry.source === 'purchase' ? 'bought' : entry.actions > 0 ? 'checkedIn' : 'openedOnly',
       actions: entry.actions,
       ...(entry.firstAt ? { firstAt: entry.firstAt } : {}),
     })

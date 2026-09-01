@@ -940,6 +940,7 @@ export const ar: Localized<EnMessages> = {
     longest: 'الأطول',
     missed: 'فائت',
     bought: 'مُلئ بالنقاط',
+    openedOnly: 'فتحت التطبيق',
     checkedInUnknownTime: 'كنت نشطًا',
     checkedInAt: {
       zero: 'في {time} · {count} إجراء',

@@ -772,6 +772,7 @@ export const ptBR: Localized<EnMessages> = {
     longest: 'A maior',
     missed: 'Perdido',
     bought: 'Preenchido com fichas',
+    openedOnly: 'Abriu o app',
     checkedInUnknownTime: 'Ativo',
     checkedInAt: {
       one: 'Às {time} · {count} ação',

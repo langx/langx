@@ -550,3 +550,22 @@ export function streakHeadDay(days: Set<string>, today: string): string | null {
   const head = days.has(today) ? today : shiftDayKey(today, -1)
   return days.has(head) ? head : null
 }
+
+/**
+ * `POST /me/check-in` — what opening the app does to the streak.
+ *
+ * `milestoneXp` is here and is always `0`, rather than being left out: a client
+ * reading the same shape from a check-in and from a message would otherwise
+ * have to know which one it asked for to know whether a bonus is missing or
+ * simply absent.
+ */
+export const checkInResultSchema = z.object({
+  current: z.number().int().nonnegative(),
+  longest: z.number().int().nonnegative(),
+  lastQualifiedDay: z.string(),
+  /** True only for the first check-in of a day that nothing else had credited. */
+  advanced: z.boolean(),
+  /** True when a banked freeze was spent to bridge yesterday's gap. */
+  freezeUsed: z.boolean(),
+})
+export type CheckInResult = z.infer<typeof checkInResultSchema>
