@@ -14,6 +14,7 @@ import { blockedUserIds } from '../moderation/blocks'
 import type { StorageProvider } from '../../storage/StorageProvider'
 import type { Profile } from '../profiles/profiles'
 import { awardTokens } from '../tokens/ledger'
+import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import { assertAttachable, deleteObjects } from './attachments'
 import type { Post, PronunciationAnswerDoc } from './documents'
@@ -179,6 +180,9 @@ async function awardForPronunciationAnswer(
     at,
   })
   if (profile) await recordQualifyingAction(db, profile, at)
+  // Reading a sentence out loud for somebody is the third earning path, and
+  // the referral gate is about having earned rather than about how.
+  if (profile?.referredBy && !frozen) await settleReferral(db, userId, at)
 }
 
 /** A request and the recordings left on it, oldest first. */

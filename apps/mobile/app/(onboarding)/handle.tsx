@@ -16,6 +16,7 @@ import {
   useOnboardingDraft,
 } from '../../src/hooks/useOnboardingDraft'
 import { useQueryClient } from '@tanstack/react-query'
+import { normalizeInviteCode } from '../../src/lib/inviteLink'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
@@ -69,6 +70,24 @@ export default function HandleStep() {
   const available = availability.data?.available
   const checking = debouncedHandle.length > 0 && availability.isFetching
 
+  // Opened by hand, or already open because a link filled it in.
+  const [inviteOpen, setInviteOpen] = useState(draft.referredByHandle.length > 0)
+
+  /*
+   * The *public* profile route, not `/profiles/:handleOrId`. That one calls
+   * `recordProfileView`, and typing somebody's code should not register as
+   * having looked at them.
+   */
+  const inviter = useQuery({
+    queryKey: ['invite-code', draft.referredByHandle],
+    queryFn: () =>
+      api.get<{ displayName: string }>(
+        `/public/profiles/${encodeURIComponent(draft.referredByHandle)}`,
+      ),
+    enabled: normalizeInviteCode(draft.referredByHandle) !== null,
+    retry: false,
+  })
+
   async function submit(): Promise<void> {
     setSubmitting(true)
     setSubmitError(undefined)
@@ -87,6 +106,9 @@ export default function HandleStep() {
         ...(current.city.trim() ? { city: current.city.trim() } : {}),
         ...(current.interests.length > 0 ? { interests: current.interests } : {}),
         ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
+        // Silently ignored by the server if it resolves to nobody — see
+        // `attachReferral`. Nothing here should be able to fail a sign-up.
+        ...(current.referredByHandle ? { referredByHandle: current.referredByHandle } : {}),
         // The device already knows the user's timezone; asking would be a
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
@@ -155,6 +177,42 @@ export default function HandleStep() {
         </View>
 
         {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
+
+        {/*
+          Not a wizard step of its own. Lengthening the flow for everybody to
+          serve the minority who arrived on somebody's link is the wrong trade,
+          so it collapses to one line until it is wanted — and expands by
+          itself when a link already put a handle there.
+
+          Advisory only: an unresolvable code shows a note and Continue stays
+          enabled, matching the server, which silently ignores a code that
+          resolves to nobody rather than failing the sign-up.
+        */}
+        {inviteOpen ? (
+          <>
+            <FormField
+              label={t('onboarding.inviteCodeLabel')}
+              value={draft.referredByHandle}
+              onChangeText={(value) =>
+                updateDraft({ referredByHandle: normalizeInviteCode(value) ?? value.trim() })
+              }
+              placeholder={t('onboarding.inviteCodePlaceholder')}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            {draft.referredByHandle ? (
+              <Text style={inviter.data ? styles.ok : styles.hint}>
+                {inviter.data
+                  ? t('onboarding.inviteCodeFound', { name: inviter.data.displayName })
+                  : t('onboarding.inviteCodeUnknown')}
+              </Text>
+            ) : null}
+          </>
+        ) : (
+          <Text style={styles.inviteToggle} onPress={() => setInviteOpen(true)}>
+            {t('onboarding.inviteCodeToggle')}
+          </Text>
+        )}
       </View>
 
       <Button
@@ -169,6 +227,8 @@ export default function HandleStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  inviteToggle: { ...font.label, color: colors.accent },
+  hint: { ...font.label, color: colors.textMuted },
   title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
   subtitle: {
     ...font.body,

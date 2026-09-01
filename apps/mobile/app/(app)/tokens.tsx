@@ -1,3 +1,4 @@
+import { router } from 'expo-router'
 import { TOKEN_RULES } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useState } from 'react'
@@ -5,6 +6,7 @@ import { useTokenHistory, useTokens } from '../../src/api/queries'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { ListRow } from '../../src/components/ui/ListRow'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { goBackTo } from '../../src/lib/navigation'
 import { buildTokenHistory } from '../../src/lib/tokenHistory'
@@ -75,6 +77,17 @@ export default function TokensScreen() {
       </View>
 
       <Text style={styles.body}>{t('tokens.intro')}</Text>
+
+      {/*
+        This screen's whole job is answering "where do tokens come from". A way
+        to earn a thousand of them that is not listed here is a way nobody
+        finds.
+      */}
+      <ListRow
+        title={t('tokens.inviteRow')}
+        subtitle={t('invite.step2', { activation: String(TOKEN_RULES.referral.activation) })}
+        onPress={() => router.push('/(app)/invite')}
+      />
 
       {pool ? (
         <View style={styles.section}>

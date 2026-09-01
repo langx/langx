@@ -1,6 +1,14 @@
-import { countryFlag, getCountry, profileUrl, type SharedProfile } from '@langx/shared'
+import {
+  countryFlag,
+  getCountry,
+  HANDLE_PATTERN,
+  INVITE_QUERY_PARAM,
+  profileUrl,
+  type SharedProfile,
+} from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { Redirect, useLocalSearchParams } from 'expo-router'
+import { useEffect } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { api } from '../src/api/client'
 import { authClient } from '../src/lib/auth-client'
@@ -9,6 +17,7 @@ import { Button } from '../src/components/ui/Button'
 import { EmptyState } from '../src/components/ui/EmptyState'
 import { LevelBars } from '../src/components/ui/LevelBars'
 import { Screen } from '../src/components/ui/Screen'
+import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useT } from '../src/i18n'
@@ -32,8 +41,22 @@ import { useDisplayNames, useT } from '../src/i18n'
  * to a screen instead of to them.
  */
 export default function SharedProfileScreen() {
-  const { username } = useLocalSearchParams<{ username: string }>()
-  const handle = (username ?? '').toLowerCase()
+  const params = useLocalSearchParams<{ username: string; invite?: string }>()
+  const handle = (params.username ?? '').toLowerCase()
+  /*
+   * The web half of the invite flow, and today the only half that fires: the
+   * app claims `app.langx.io` while links point at `app2.langx.io`, so on a
+   * phone an invite link opens a browser rather than the app. This screen is
+   * already what that browser lands on.
+   *
+   * Writing the flag here rather than in `usePendingInvite` because on web the
+   * router resolves the URL itself and the hook's `getInitialURL` is not the
+   * event that matters.
+   */
+  const invited = params[INVITE_QUERY_PARAM] === '1' && HANDLE_PATTERN.test(handle)
+  useEffect(() => {
+    if (invited) void writeFlag(FLAG_KEYS.pendingReferrer, handle)
+  }, [invited, handle])
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -115,7 +138,9 @@ export default function SharedProfileScreen() {
       ) : null}
 
       <View style={styles.cta}>
-        <Text style={styles.ctaBody}>{t('shared.ctaBody', { name: user.displayName })}</Text>
+        <Text style={styles.ctaBody}>
+          {invited ? t('shared.inviteBody') : t('shared.ctaBody', { name: user.displayName })}
+        </Text>
         {/* An external open rather than a route: this branch of the tree is
             the signed-out one, so pushing at `(auth)` from here would cross a
             `Stack.Protected` boundary that has not flipped yet. */}

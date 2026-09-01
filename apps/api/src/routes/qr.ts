@@ -1,10 +1,10 @@
-import { handleSchema, profileUrl, WEB_HOST } from '@langx/shared'
+import { handleSchema, INVITE_QUERY_PARAM, inviteUrl, profileUrl, WEB_HOST } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import QRCode from 'qrcode'
 import { z } from 'zod'
 
 /**
- * One day. The image is a pure function of the handle, so a cache that outlives
+ * One day. The image is a pure function of the handle and the invite marker, so a cache that outlives
  * a deploy is not a staleness risk — only a rename would change it, and a
  * rename changes the URL too.
  */
@@ -52,11 +52,23 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/public/qr/:handle',
     {
-      schema: { params: z.object({ handle: handleSchema }) },
+      schema: {
+        params: z.object({ handle: handleSchema }),
+        /*
+         * The one thing that changes what is drawn: the same handle and the
+         * same public link, plus the marker that makes a scan attributable.
+         * Still not a `?to=<anything>` renderer — the URL is built here from a
+         * handle, so this can only ever point at a profile on our own host.
+         */
+        querystring: z.object({ [INVITE_QUERY_PARAM]: z.literal('1').optional() }),
+      },
       config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
     },
     async (request, reply) => {
-      const svg = await QRCode.toString(profileUrl(request.params.handle), {
+      const target = request.query[INVITE_QUERY_PARAM]
+        ? inviteUrl(request.params.handle)
+        : profileUrl(request.params.handle)
+      const svg = await QRCode.toString(target, {
         type: 'svg',
         // `M` recovers ~15% of the image. Enough for a screen somebody is
         // pointing a camera at, and it keeps the grid coarse enough to scan

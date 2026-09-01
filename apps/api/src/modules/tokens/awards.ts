@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
+import { settleReferral } from '../referrals/settle'
 import { recordActivity } from './dailyActivity'
 import { awardTokens } from './ledger'
 import { recordQualifyingAction, type StreakResult } from './streak'
@@ -127,6 +128,22 @@ export async function awardForSend(
   // `streak` is exactly the state this action is deciding against.
   const streak = sender ? await recordQualifyingAction(db, sender, at) : null
   if (streak) tokens += streak.milestoneXp
+
+  /*
+   * The invitee's first real earning is what activates their referrer's award.
+   *
+   * Gated on `sender.referredBy` — a field this function has already read, so
+   * an account nobody invited, which is nearly all of them, pays a property
+   * access and nothing else. `settleReferral` re-verifies every condition
+   * itself; this call site only says "something happened, look again".
+   *
+   * `tokens > 0` is the earning signal, taken for free from the value already
+   * computed above: a capped send or a frozen sender writes no ledger row and
+   * so should activate nobody. The consequence is worth saying out loud — a
+   * frozen invitee never activates their referrer, so a farm of reported
+   * accounts pays out nothing. That is the design working.
+   */
+  if (sender?.referredBy && tokens > 0) await settleReferral(db, senderId, at)
 
   return { tokens, streak, capped }
 }

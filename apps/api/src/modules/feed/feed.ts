@@ -22,6 +22,7 @@ import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
 import { recordActivity } from '../tokens/dailyActivity'
 import { awardTokens } from '../tokens/ledger'
+import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import type { StorageProvider } from '../../storage/StorageProvider'
 import { assertAttachable, deleteObjects } from './attachments'
@@ -400,6 +401,8 @@ async function awardForPostCorrection(
     at,
   })
   if (profile) await recordQualifyingAction(db, profile, at)
+  // Teaching on a post is teaching. See the same call in `awardForSend`.
+  if (profile?.referredBy && !frozen) await settleReferral(db, userId, at)
 }
 
 /**

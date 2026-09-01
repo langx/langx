@@ -25,11 +25,11 @@ import {
   setCountryFromLocation,
   findProfileByHandleOrId,
   getProfile,
-  isEmailVerified,
   setLocation,
   toPublicProfile,
   updateProfile,
 } from '../modules/profiles/profiles'
+import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { readFollowState } from '../modules/social/follows'
 

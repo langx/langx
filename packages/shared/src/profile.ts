@@ -137,6 +137,21 @@ export const onboardingProfileSchema = z
     gender: genderSchema,
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
+    /**
+     * Who invited them. The referral code *is* a handle, so this is the
+     * *reading* schema — a v1 account holding a three-character handle can
+     * invite people, and `newHandleSchema`'s floor is about creating a name,
+     * not about naming one that already exists.
+     *
+     * `.catch(undefined)` is the product decision written into the schema: an
+     * invite code that does not parse is **ignored**, never a 400. Somebody
+     * who mistyped a friend's username must still be able to finish
+     * onboarding — failing the sign-up punishes the wrong person for the wrong
+     * mistake — and every other resolution failure (no such account, it is
+     * you, you already have a referrer) is silent in `attachReferral` for the
+     * same reason.
+     */
+    referredByHandle: handleSchema.optional().catch(undefined),
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
     country: countryCodeSchema.optional(),

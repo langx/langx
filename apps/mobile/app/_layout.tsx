@@ -21,6 +21,7 @@ import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
+import { usePendingInvite } from '../src/hooks/usePendingInvite'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
@@ -64,6 +65,11 @@ function RootShell() {
   const { colors, scheme } = useTheme()
   const { data: session, isPending } = authClient.useSession()
   const [queryClient] = useState(createQueryClient)
+
+  // Above `Stack.Protected`, because an invite link is by definition opened by
+  // somebody with no account. It only writes a flag; see the hook for why that
+  // is what makes mounting it this high safe.
+  usePendingInvite()
 
   /**
    * Binds RevenueCat to the signed-in account, and unbinds on sign-out.

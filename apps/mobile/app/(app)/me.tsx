@@ -228,6 +228,17 @@ export default function MeScreen() {
         onPress={() => router.push('/(app)/share-profile')}
       />
 
+      {/*
+        Beside sharing a profile, not inside it. They look alike and are not:
+        one is "here is me", the other is "come and try this", and the second
+        one pays.
+      */}
+      <ListRow
+        title={t('me.invite')}
+        subtitle={t('me.inviteBody')}
+        onPress={() => router.push('/(app)/invite')}
+      />
+
       {!isPro ? (
         <Pressable style={styles.proCard} onPress={() => openPaywall()}>
           <Text style={styles.proTitle}>{t('me.proTitle')}</Text>

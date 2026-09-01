@@ -31,6 +31,7 @@ const ROUTE_RESERVED = [
   'follows',
   'handle',
   'index',
+  'invite',
   'link',
   'intro',
   'kitchen',

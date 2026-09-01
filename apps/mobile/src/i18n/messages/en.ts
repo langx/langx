@@ -354,6 +354,11 @@ export const en = {
     whatNextBody:
       'Discover shows people who speak what you are learning and are learning what you speak. Say hello to one of them — a first message is worth tokens, and it is the only thing standing between you and a conversation.',
     findSomeone: 'Find someone to talk to',
+    inviteCodeToggle: 'Have an invite code?',
+    inviteCodeLabel: 'Invite code',
+    inviteCodePlaceholder: 'their username',
+    inviteCodeFound: 'You were invited by {name}.',
+    inviteCodeUnknown: 'We could not find that one — you can continue anyway.',
   },
 
   welcomeBack: {
@@ -741,6 +746,8 @@ export const en = {
     shareProfile: 'Share my profile',
     shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
+    invite: 'Invite a friend',
+    inviteBody: 'Earn tokens when they start using LangX',
   },
 
   editProfile: {
@@ -946,9 +953,47 @@ export const en = {
     historyEmpty: 'Nothing yet. Send a message, or correct someone.',
     historySpent: '−{count} spent',
     historyMore: 'Show more',
+    inviteRow: 'Invite a friend',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
+  invite: {
+    title: 'Invite a friend',
+    body: 'Share your link. When someone you invited signs up and starts talking to people, you both get somewhere — and you earn tokens.',
+    code: 'Your invite code',
+    qrAccessibility: 'A QR code for your invite link',
+    share: 'Share the link',
+    copy: 'Copy the link',
+    copied: 'Link copied',
+    shareMessage: 'Practise languages with me on LangX: {url}',
+    howTitle: 'How it works',
+    step1: 'Send your link to somebody learning your language.',
+    step2:
+      'They sign up and write their first message or correction — that is when you earn {activation} tokens.',
+    step3:
+      'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
+    totalsInvited: {
+      one: '{count} invited',
+      other: '{count} invited',
+    },
+    totalsActivated: {
+      one: '{count} active',
+      other: '{count} active',
+    },
+    totalsEarned: {
+      one: '{count} token',
+      other: '{count} tokens',
+    },
+    statusPending: 'Has not written yet',
+    statusActivated: 'Active',
+    statusSubscribed: 'Subscribed',
+    emptyTitle: 'Nobody yet',
+    emptyBody: 'Share your link and whoever joins will show up here.',
+    referredBy: '{name} invited you',
+    disclaimer:
+      'Tokens are in-app points. Nothing is paid for signing up — an invite earns only once the person you invited actually writes to somebody.',
+  },
+
   tokenKind: {
     message: 'Messages',
     correction: 'Corrections',
@@ -960,6 +1005,8 @@ export const en = {
     signupBonus: 'Signup bonus',
     spend: 'Spent',
     pronunciation: 'Pronunciation',
+    referral: 'Invite bonus',
+    referralSubscription: 'Invite subscription bonus',
   },
 
   cosmetics: {
@@ -1025,6 +1072,8 @@ export const en = {
     learning: 'Learning',
     ctaBody: '{name} practises languages on LangX. Join to say hello.',
     ctaLabel: 'Open LangX',
+    inviteTitle: '{name} invited you to LangX',
+    inviteBody: 'Practise with someone who is learning your language. Free to join.',
   },
 
   shareProfile: {
