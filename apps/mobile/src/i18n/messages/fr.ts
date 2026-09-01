@@ -938,16 +938,16 @@ export const fr: Localized<EnMessages> = {
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
     totalsInvited: {
-      one: '{count} invité',
-      other: '{count} invités',
+      one: 'invité',
+      other: 'invités',
     },
     totalsActivated: {
-      one: '{count} actif',
-      other: '{count} actifs',
+      one: 'actif',
+      other: 'actifs',
     },
     totalsEarned: {
-      one: '{count} token',
-      other: '{count} tokens',
+      one: 'token',
+      other: 'tokens',
     },
     statusPending: 'N’a pas encore écrit',
     statusActivated: 'Actif',
