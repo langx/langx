@@ -778,6 +778,7 @@ export const es: Localized<EnMessages> = {
     longest: 'La más larga',
     missed: 'Perdido',
     bought: 'Rellenado con tokens',
+    openedOnly: 'Abriste la app',
     checkedInUnknownTime: 'Activo',
     checkedInAt: {
       one: 'A las {time} · {count} acción',

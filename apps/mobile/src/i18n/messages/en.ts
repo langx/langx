@@ -817,6 +817,7 @@ export const en = {
     longest: 'Longest',
     missed: 'Missed',
     bought: 'Filled in with tokens',
+    openedOnly: 'Opened the app',
     checkedInUnknownTime: 'Checked in',
     checkedInAt: {
       one: 'Checked in at {time} · {count} action',

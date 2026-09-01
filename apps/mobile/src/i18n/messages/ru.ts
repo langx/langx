@@ -893,6 +893,7 @@ export const ru: Localized<EnMessages> = {
     longest: 'Рекорд',
     missed: 'Пропущено',
     bought: 'Заполнено жетонами',
+    openedOnly: 'Открыл приложение',
     checkedInUnknownTime: 'Был(а) активен',
     checkedInAt: {
       one: 'В {time} · {count} действие',

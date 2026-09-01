@@ -798,6 +798,7 @@ export const de: Localized<EnMessages> = {
     longest: 'Am längsten',
     missed: 'Verpasst',
     bought: 'Mit Token aufgefüllt',
+    openedOnly: 'App geöffnet',
     checkedInUnknownTime: 'Aktiv gewesen',
     checkedInAt: {
       one: 'Um {time} · {count} Aktion',

@@ -28,8 +28,15 @@ export interface StreakDay {
   userId: string
   /** `YYYY-MM-DD` in the user's own timezone, like the streak and unlike everything else. */
   day: string
-  /** How the square came to be filled. `purchase` is the only one that cost anything. */
-  source: 'activity' | 'purchase'
+  /**
+   * How the square came to be filled. `purchase` is the only one that cost
+   * anything; `checkIn` is the only one that took nothing but showing up.
+   *
+   * Written once, on insert, so it says how the day *began*. A day that opened
+   * as a `checkIn` and later saw a real message keeps the source and gains
+   * `actions` — which is the pair the map reads, not the source alone.
+   */
+  source: 'activity' | 'purchase' | 'checkIn'
   /**
    * When the first qualifying action of the day happened. Absent on days
    * recorded before this field existed, and on a bought day — which has no
@@ -96,6 +103,33 @@ export async function listStreakDays(
     .collection<StreakDay>(COLLECTIONS.streakDays)
     .find({ _id: { $gte: streakDayId(userId, from), $lte: streakDayId(userId, `${to}￿`) } })
     .toArray()
+}
+
+/**
+ * Fills today's square for somebody who only opened the app.
+ *
+ * `actions` stays at zero and nothing is incremented: a check-in is not a
+ * qualifying action, and counting it as one would make the map's shading — a
+ * count of real work — say something it does not mean. What it does is put the
+ * day in the set, which is what `streakFromDays` walks and what a repair later
+ * recomputes a streak length from.
+ *
+ * `$setOnInsert` throughout, so arriving after a real message of the same day
+ * changes nothing at all.
+ */
+export async function recordCheckInDay(
+  db: Db,
+  userId: string,
+  day: string,
+  at: Date,
+): Promise<void> {
+  await db
+    .collection<StreakDay>(COLLECTIONS.streakDays)
+    .updateOne(
+      { _id: streakDayId(userId, day) },
+      { $setOnInsert: { userId, day, source: 'checkIn', firstAt: at, actions: 0 } },
+      { upsert: true },
+    )
 }
 
 /** How many repairs this user has bought in the calendar month `day` falls in. */

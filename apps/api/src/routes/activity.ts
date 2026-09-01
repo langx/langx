@@ -14,6 +14,7 @@ import { getProfile } from '../modules/profiles/profiles'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { getPublicSummary } from '../modules/tokens/publicSummary'
 import { listStreakDays, repairsInMonth } from '../modules/tokens/streakDays'
+import { recordCheckIn } from '../modules/tokens/streak'
 import { repairDay } from '../modules/tokens/wallet'
 
 /**
@@ -79,6 +80,33 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
       })
     },
   )
+
+  /**
+   * Opening the app, as far as the streak is concerned.
+   *
+   * A route of its own rather than a side effect of `GET /me/activity` or of
+   * the socket connecting: a write hidden inside a read is the kind of thing
+   * that fires from a background refresh, a prefetch or a test, and "your
+   * streak advanced because something polled" is not a rule anybody could
+   * predict. The client says so explicitly, once a day.
+   *
+   * Idempotent by construction — the second call of the day finds the day
+   * already credited and changes nothing — so a client that loses the response
+   * and retries costs a document read.
+   */
+  app.post('/me/check-in', { preHandler: requireAuth }, async (request, reply) => {
+    const profile = await getProfile(app.mongo.db, request.userId)
+    if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+
+    const result = await recordCheckIn(app.mongo.db, profile, new Date())
+    return reply.send({
+      current: result.current,
+      longest: result.longest,
+      lastQualifiedDay: result.lastQualifiedDay,
+      advanced: result.advanced,
+      freezeUsed: result.freezeUsed,
+    })
+  })
 
   app.post(
     '/me/activity/repair',

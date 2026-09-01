@@ -9,6 +9,7 @@ import {
   type PaidPlanTier,
   type PlanFeature,
   type PlanTier,
+  type CheckInResult,
 } from '@langx/shared'
 import type {
   HandleSearchPage,
@@ -377,11 +378,11 @@ export function useMessages(conversationId: string) {
 export interface ActivityDayDto {
   day: string
   actions: number
-  source: 'activity' | 'purchase'
+  source: 'activity' | 'purchase' | 'checkIn'
   /**
-   * When the first qualifying action of that day happened. Absent on days
-   * recorded before the field existed, and on a bought day — which has no
-   * check-in, and must not be shown one.
+   * When the first qualifying action of that day happened, or when the app was
+   * opened on a `checkIn` day. Absent on days recorded before the field
+   * existed, and on a bought day — which has neither, and must not be shown one.
    */
   firstAt?: string
 }
@@ -445,6 +446,28 @@ export function useActivity(from: string, to: string, enabled = true) {
     // Off while the same component is drawing somebody else's map: the repair
     // rules it would fetch are not used there.
     enabled,
+  })
+}
+
+/**
+ * Tells the server the app was opened, which holds the streak for today.
+ *
+ * A mutation rather than something folded into a query, for the reason the
+ * route gives: a write that fires from a refetch is a write nobody can predict.
+ */
+export function useCheckIn() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post<CheckInResult>('/me/check-in'),
+    onSuccess: (result) => {
+      // Only when something moved. A check-in on a day already credited is the
+      // common case and refetching the map for it would be a request per app
+      // launch for a screen nobody is looking at.
+      if (!result.advanced) return
+      void queryClient.invalidateQueries({ queryKey: ['activity'] })
+      void queryClient.invalidateQueries({ queryKey: keys.tokens })
+      if (result.freezeUsed) void queryClient.invalidateQueries({ queryKey: keys.wallet })
+    },
   })
 }
 

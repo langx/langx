@@ -8,6 +8,7 @@ import { useT } from '../../src/i18n'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
+import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -36,19 +37,20 @@ export default function AppLayout() {
   const t = useT()
   const { data: session } = authClient.useSession()
   /*
-   * None of the four are for a guest, and the first one is not merely pointless
+   * None of the five are for a guest, and the first one is not merely pointless
    * — `ws/index.ts` rejects an unverified session outright, and a guest is
    * unverified by construction, so opening the socket here throws for every
    * guest that reaches this layout. It manifests as a blank screen.
    *
-   * The other three are simply wrong for them: a guest has no conversations to
+   * The other four are simply wrong for them: a guest has no conversations to
    * receive, no device worth registering, nowhere for a notification to route,
-   * and no location to refresh — and the presence heartbeat would make them
-   * show up as "online" to real people.
+   * no location to refresh, and no profile to hold a streak — and the presence
+   * heartbeat would make them show up as "online" to real people.
    */
   const isGuest = shouldGateGuest(session?.user)
   useSocket({ enabled: !isGuest })
   useLocationRefresh({ enabled: !isGuest })
+  useDailyCheckIn({ enabled: !isGuest })
   usePushRegistration({ enabled: !isGuest })
   // Here rather than in the root layout: every destination a notification has
   // is behind the sign-in gate, so routing from one before there is a session

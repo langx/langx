@@ -64,12 +64,28 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
     const days = handle
       ? new Map((theirs.data?.days ?? []).map((d) => [d.day, INTENSITY_ACTIONS[d.intensity] ?? 1]))
       : new Map((own.data?.days ?? []).map((d) => [d.day, d.actions]))
+    /*
+     * A day that opened as a check-in and later saw a real message is not one
+     * of these: `source` says how the day began, `actions` says whether work
+     * happened, and the faint square is for the days where none did.
+     *
+     * Only ever computed for your own map. `PublicActivityDto` carries no
+     * source, deliberately — the same privacy line that hides bought squares.
+     */
+    const checkIns = handle
+      ? undefined
+      : new Set(
+          (own.data?.days ?? [])
+            .filter((d) => d.source === 'checkIn' && d.actions === 0)
+            .map((d) => d.day),
+        )
     return activityGrid({
       today:
         (handle ? theirs.data?.today : own.data?.today) ?? new Date().toISOString().slice(0, 10),
       weeks: WEEKS,
       days,
       maxAgeDays: own.data?.repair.maxAgeDays ?? 0,
+      ...(checkIns ? { checkIns } : {}),
       streak: (handle ? theirs.data?.streak : own.data?.streak) ?? undefined,
     })
   }, [handle, own.data, theirs.data])
@@ -193,10 +209,14 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
                   { height: cell, width: cell },
                   square.state === 'future' && styles.future,
                   square.state === 'repairable' && styles.repairable,
-                  square.intensity > 0 && {
-                    backgroundColor: colors.streak,
-                    opacity: 0.25 + square.intensity * 0.1875,
-                  },
+                  // Fainter than the lightest worked day (0.4375), and still
+                  // clearly filled — the streak did not break.
+                  square.checkedIn && { backgroundColor: colors.streak, opacity: 0.18 },
+                  square.intensity > 0 &&
+                    !square.checkedIn && {
+                      backgroundColor: colors.streak,
+                      opacity: 0.25 + square.intensity * 0.1875,
+                    },
                 ]}
               />
             ))}

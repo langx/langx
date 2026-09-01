@@ -70,7 +70,11 @@ export default function StreakScreen() {
                     ? 'circle'
                     : row.kind === 'bought'
                       ? 'shopping-bag'
-                      : 'check-circle'
+                      : row.kind === 'openedOnly'
+                        ? // Held, not earned: an outline where a worked day is
+                          // solid, so a run of them is visible at a glance.
+                          'circle'
+                        : 'check-circle'
                 }
                 size={18}
                 color={
@@ -78,7 +82,9 @@ export default function StreakScreen() {
                     ? colors.textFaint
                     : row.kind === 'bought'
                       ? colors.streak
-                      : colors.success
+                      : row.kind === 'openedOnly'
+                        ? colors.textMuted
+                        : colors.success
                 }
               />
               <View style={styles.text}>
@@ -105,6 +111,7 @@ export default function StreakScreen() {
 function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
   if (row.kind === 'missed') return t('streak.missed')
   if (row.kind === 'bought') return t('streak.bought')
+  if (row.kind === 'openedOnly') return t('streak.openedOnly')
   if (!row.firstAt) return t('streak.checkedInUnknownTime')
   const at = new Date(row.firstAt)
   if (Number.isNaN(at.getTime())) return t('streak.checkedInUnknownTime')

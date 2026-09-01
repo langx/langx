@@ -788,6 +788,7 @@ export const tr: Localized<EnMessages> = {
     longest: 'En uzun',
     missed: 'Kaçırıldı',
     bought: 'Jetonla dolduruldu',
+    openedOnly: 'Uygulamayı açtın',
     checkedInUnknownTime: 'Giriş yapıldı',
     checkedInAt: {
       one: '{time} · {count} işlem',

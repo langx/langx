@@ -1929,3 +1929,59 @@ Every row written before this carries the old key, so until
 pre-existing correction and rewriting it is paid a second time. Bounded,
 one-time, and silent — nothing fails, the ledger just gains a row it should not
 have. **It must run before this deploys.**
+
+## Opening the app holds the streak, but does not pay for holding it
+
+The streak used to require a meaningful action every single day, and the rule
+was written down in four places as a point of principle: _"a streak should mean
+you practised, not that you visited"_.
+
+The principle is right about what a streak should _mean_ and wrong about what
+losing one does. The people it motivated were never the problem; the ones who
+had a day with nothing to say and lost two hundred of them were. A streak that
+punishes a quiet day does not teach people to practise, it teaches them to stop
+looking — and someone who opened the app on a bad day and left is exactly the
+person a streak is supposed to bring back tomorrow.
+
+So `POST /me/check-in` credits the day. The client calls it once per local day
+on foreground, never as a side effect of a query: a write that fires from a
+background refetch or a prefetch is a write nobody can predict, and "your streak
+advanced because something polled" is not a rule anyone could plan around.
+
+**It pays no milestone, ever.** That is the half that keeps the first half
+honest. The milestone is what makes a long streak worth token — 5,000 at a year
+— and the all-time leaderboard ranks token earned. Paying it for app launches
+would put somebody at the top of a table that other people climb by correcting
+strangers' sentences, without ever having corrected one. The number on screen
+goes up for showing up; the token behind it is still earned.
+
+A milestone crossed by a check-in is not lost, only deferred: the first real
+action of the same day pays it. That needed a **second** field —
+`streak.lastActionDay` beside `lastQualifiedDay` — because the two facts came
+apart the moment check-ins existed. The streak can be credited for today while
+no work has happened yet, and one boolean could not carry both. Each gets its
+own conditional write and its own race guard; the ledger's `refId: <day>` is
+still the thing that makes a double payment impossible.
+
+`lastActionDay` is absent on every profile written before this. `$ne` matches a
+missing field, so the first action of the day claims it, which is the right
+answer — and a milestone already paid today under the old rule is caught by the
+ledger anyway.
+
+**A check-in spends a banked freeze.** This looks like a silent purchase and is
+the opposite. A freeze exists to stop a gap ending a streak; the gap is
+yesterday's, not today's. Refusing to spend it here would mean a check-in
+quietly resetting a streak the user had already paid 200 token to protect — and
+no later action could undo it, because the day is claimed by then.
+
+The activity map tells the two kinds of day apart, and had to. `actions` is a
+count of work, so a check-in must not increment it or every quiet day would look
+as busy as a day of teaching. The square is filled at its own faint shade —
+`checkedIn` on the cell, not another step on the intensity scale, because
+intensity counts work and this day has none. The history screen names it
+outright. A day that opened as a check-in and later saw a real message keeps
+`source: 'checkIn'` — the field says how the day _began_ — so both readers go by
+`actions`, not by the source alone.
+
+Never on somebody else's map. The public activity endpoint sends an intensity
+and no source, the same line that already hides which squares were bought.
