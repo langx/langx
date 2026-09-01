@@ -973,16 +973,16 @@ export const en = {
     step3:
       'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
     totalsInvited: {
-      one: '{count} invited',
-      other: '{count} invited',
+      one: 'invited',
+      other: 'invited',
     },
     totalsActivated: {
-      one: '{count} active',
-      other: '{count} active',
+      one: 'active',
+      other: 'active',
     },
     totalsEarned: {
-      one: '{count} token',
-      other: '{count} tokens',
+      one: 'token',
+      other: 'tokens',
     },
     statusPending: 'Has not written yet',
     statusActivated: 'Active',

@@ -942,16 +942,16 @@ export const tr: Localized<EnMessages> = {
     step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
     step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
     totalsInvited: {
-      one: '{count} davet',
-      other: '{count} davet',
+      one: 'davet',
+      other: 'davet',
     },
     totalsActivated: {
-      one: '{count} aktif',
-      other: '{count} aktif',
+      one: 'aktif',
+      other: 'aktif',
     },
     totalsEarned: {
-      one: '{count} token',
-      other: '{count} token',
+      one: 'token',
+      other: 'token',
     },
     statusPending: 'Henüz yazmadı',
     statusActivated: 'Aktif',

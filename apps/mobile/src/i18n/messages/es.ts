@@ -933,16 +933,16 @@ export const es: Localized<EnMessages> = {
     step3:
       'Si algún día contrata un plan de pago, ganas {subscription} más. {max} en total, por persona.',
     totalsInvited: {
-      one: '{count} invitado',
-      other: '{count} invitados',
+      one: 'invitado',
+      other: 'invitados',
     },
     totalsActivated: {
-      one: '{count} activo',
-      other: '{count} activos',
+      one: 'activo',
+      other: 'activos',
     },
     totalsEarned: {
-      one: '{count} token',
-      other: '{count} tokens',
+      one: 'token',
+      other: 'tokens',
     },
     statusPending: 'Todavía no ha escrito',
     statusActivated: 'Activo',

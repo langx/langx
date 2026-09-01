@@ -929,16 +929,16 @@ export const ptBR: Localized<EnMessages> = {
     step3:
       'Se um dia ela assinar um plano pago, você ganha mais {subscription}. {max} no total, por pessoa.',
     totalsInvited: {
-      one: '{count} convidado',
-      other: '{count} convidados',
+      one: 'convidado',
+      other: 'convidados',
     },
     totalsActivated: {
-      one: '{count} ativo',
-      other: '{count} ativos',
+      one: 'ativo',
+      other: 'ativos',
     },
     totalsEarned: {
-      one: '{count} token',
-      other: '{count} tokens',
+      one: 'token',
+      other: 'tokens',
     },
     statusPending: 'Ainda não escreveu',
     statusActivated: 'Ativo',

@@ -955,16 +955,16 @@ export const de: Localized<EnMessages> = {
     step3:
       'Starten sie irgendwann ein bezahltes Abo, gibt es {subscription} mehr. {max} insgesamt, pro Person.',
     totalsInvited: {
-      one: '{count} eingeladen',
-      other: '{count} eingeladen',
+      one: 'eingeladen',
+      other: 'eingeladen',
     },
     totalsActivated: {
-      one: '{count} aktiv',
-      other: '{count} aktiv',
+      one: 'aktiv',
+      other: 'aktiv',
     },
     totalsEarned: {
-      one: '{count} Token',
-      other: '{count} Token',
+      one: 'Token',
+      other: 'Token',
     },
     statusPending: 'Hat noch nichts geschrieben',
     statusActivated: 'Aktiv',
