@@ -265,6 +265,7 @@ export const en = {
     continueWithApple: 'Continue with Apple',
     or: 'or',
     noAccount: 'Don’t have an account? ',
+    justLooking: 'Just looking?',
     haveAccount: 'Already have an account? ',
     createAccount: 'Create your account',
     minimumAge: 'You must be {age}+ to use LangX.',

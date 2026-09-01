@@ -230,6 +230,7 @@ export const ptBR: Localized<EnMessages> = {
     continueWithApple: 'Continuar com a Apple',
     or: 'ou',
     noAccount: 'Não tem conta? ',
+    justLooking: 'Só dando uma olhada?',
     haveAccount: 'Já tem conta? ',
     createAccount: 'Crie sua conta',
     minimumAge: 'Você precisa ter {age} anos ou mais para usar o LangX.',

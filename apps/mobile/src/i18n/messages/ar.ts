@@ -282,6 +282,7 @@ export const ar: Localized<EnMessages> = {
     continueWithApple: 'المتابعة باستخدام Apple',
     or: 'أو',
     noAccount: 'ليس لديك حساب؟ ',
+    justLooking: 'مجرد إلقاء نظرة؟',
     haveAccount: 'لديك حساب بالفعل؟ ',
     createAccount: 'أنشئ حسابك',
     minimumAge: 'يجب أن يكون عمرك {age} عامًا أو أكثر لاستخدام LangX.',

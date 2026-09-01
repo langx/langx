@@ -234,6 +234,7 @@ export const de: Localized<EnMessages> = {
     continueWithApple: 'Mit Apple fortfahren',
     or: 'oder',
     noAccount: 'Noch kein Konto? ',
+    justLooking: 'Nur schauen?',
     haveAccount: 'Schon ein Konto? ',
     createAccount: 'Erstelle dein Konto',
     minimumAge: 'Du musst {age} oder älter sein, um LangX zu nutzen.',

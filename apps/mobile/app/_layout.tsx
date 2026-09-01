@@ -23,6 +23,7 @@ import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
+import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
 import { I18nProvider } from '../src/i18n'
 
@@ -87,6 +88,31 @@ function RootShell() {
     if (userId && !isGuest) void identifyForPurchases(userId)
     else void forgetPurchasesIdentity()
   }, [userId])
+
+  /**
+   * Empties the query cache when the person behind it changes.
+   *
+   * The client is made once and this tree never unmounts, so without this
+   * every answer fetched for one account survives into the next session:
+   * signing out and browsing as a guest showed the previous account's
+   * conversations, because `useConversations` is handed its cached pages
+   * before the guest's own (empty) list can come back. Not only chats —
+   * `keys.me`, the feed and discovery are all cached the same way.
+   *
+   * `clear()` rather than `invalidateQueries()`: invalidating leaves the data
+   * in place and merely refetches it, which still paints somebody else's rows
+   * first and leaves them there for good if the refetch fails.
+   *
+   * At the root rather than in `signOut()` because sign-out is not the only
+   * way the session changes hands — an expired cookie ends one without
+   * passing through that button, and `sign-up.tsx` ends a guest's.
+   */
+  const seenUserId = useRef<string | null | undefined>(undefined)
+  useEffect(() => {
+    const current = userId ?? null
+    if (isAccountSwitch(seenUserId.current, current)) queryClient.clear()
+    seenUserId.current = current
+  }, [userId, queryClient])
 
   // useSession() sets isPending on every refetch, not just the first load —
   // sign-up, sign-in and sign-out all trigger one. Gating the whole <Stack>

@@ -7,6 +7,7 @@ import type { LoginResult } from '../../src/api/types'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { useAppConfig } from '../../src/hooks/useAppConfig'
+import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/lib/appleSignIn'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
@@ -15,6 +16,7 @@ import { useT } from '../../src/i18n'
 export default function SignIn() {
   const styles = useStyles()
   const t = useT()
+  const { start: browse } = useGuestBrowse()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -216,6 +218,20 @@ export default function SignIn() {
         <Link href="/(auth)/sign-up" style={styles.link}>
           {t('auth.signUp')}
         </Link>
+      </View>
+
+      {/*
+        The way out, for somebody who did not mean to be asked for a password.
+        The welcome screen offers this and leads with it, but this screen is
+        reachable without passing through it — a bookmark, a shared link, or
+        tapping "I already have an account" and thinking better of it — and it
+        draws no back control of its own, so on web that was a dead end.
+      */}
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>{t('auth.justLooking')}</Text>
+        <Text style={styles.link} onPress={() => void browse()}>
+          {t('welcome.browse')}
+        </Text>
       </View>
     </KeyboardAvoidingView>
   )

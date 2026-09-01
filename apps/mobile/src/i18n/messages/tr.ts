@@ -244,6 +244,7 @@ export const tr: Localized<EnMessages> = {
     continueWithApple: 'Apple ile devam et',
     or: 'ya da',
     noAccount: 'Hesabın yok mu? ',
+    justLooking: 'Sadece bakıyor musun?',
     haveAccount: 'Zaten hesabın var mı? ',
     createAccount: 'Hesabını oluştur',
     minimumAge: 'LangX’i kullanmak için {age} yaşından büyük olmalısın.',

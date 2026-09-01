@@ -1,14 +1,9 @@
 import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
-import { useQueryClient } from '@tanstack/react-query'
-import { keys } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { useT } from '../../src/i18n'
-import { showAlert } from '../../src/lib/alert'
-import { authClient } from '../../src/lib/auth-client'
-import { shouldGateGuest } from '../../src/lib/guestGate'
 import { makeStyles } from '../../src/lib/theme'
 
 /**
@@ -23,56 +18,8 @@ import { makeStyles } from '../../src/lib/theme'
  */
 export default function WelcomeScreen() {
   const t = useT()
-  const { data: session } = authClient.useSession()
   const styles = useStyles()
-  const queryClient = useQueryClient()
-  const [starting, setStarting] = useState(false)
-
-  async function browse(): Promise<void> {
-    if (starting) return
-    setStarting(true)
-    /*
-     * `try`, not just the returned `error`. Better Auth's client returns one
-     * for a rejected *request*, and throws for a failed *connection* — the
-     * offline case is the throw, and it is also the likeliest one on a first
-     * launch. Catching only the first left an uncaught error on the very first
-     * screen somebody sees.
-     */
-    const failed = await authClient.signIn
-      .anonymous()
-      .then(({ error }) => Boolean(error))
-      .catch(() => true)
-    if (failed) {
-      setStarting(false)
-      await showAlert(t('welcome.guestFailed'), t('common.retry'))
-      return
-    }
-    /*
-     * The session changed, so anything cached under the previous one is about
-     * to be answered differently — the gate reads `useMe` to decide where to
-     * send them, and a stale 404 or a stale profile would send them to the
-     * wrong place.
-     */
-    await queryClient.invalidateQueries({ queryKey: keys.me })
-    // The effect below does the navigating; see why there.
-  }
-
-  /*
-   * Navigating from inside `browse()` does not work, and neither of the two
-   * obvious targets does either.
-   *
-   * `/(onboarding)/languages` fails because at that instant `useSession` has
-   * not re-rendered the root layout, so `(onboarding)` is not mounted and the
-   * replace silently does nothing. And `/` fails differently: both this group
-   * and the root have an `index`, and expo-router resolves it to `(auth)/index`
-   * — which reads the intro flag and sends the reader straight back here.
-   *
-   * So it waits for the session to actually exist, which is also the only
-   * moment the destination is guaranteed to be mounted.
-   */
-  useEffect(() => {
-    if (shouldGateGuest(session?.user)) router.replace('/(onboarding)/languages')
-  }, [session])
+  const { start: browse, starting } = useGuestBrowse()
 
   return (
     <Screen>

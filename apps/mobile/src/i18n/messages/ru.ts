@@ -269,6 +269,7 @@ export const ru: Localized<EnMessages> = {
     continueWithApple: 'Продолжить с Apple',
     or: 'или',
     noAccount: 'Нет аккаунта? ',
+    justLooking: 'Просто смотришь?',
     haveAccount: 'Уже есть аккаунт? ',
     createAccount: 'Создай аккаунт',
     minimumAge: 'Чтобы пользоваться LangX, тебе должно быть {age} или больше.',
