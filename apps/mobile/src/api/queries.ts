@@ -18,8 +18,10 @@ import type {
   PublicProfileDto,
   Wallet,
   BadgeSummary,
+  CreatePostCommentInput,
   CreatePostCorrectionInput,
   CreatePostInput,
+  CreatePronunciationAnswerInput,
   FeedFilter,
   FeedPage,
   FeedPost,
@@ -30,8 +32,13 @@ import type {
   LikeTarget,
   LikeTargetType,
   PeoplePage,
+  PostComment,
+  PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
+  PostKind,
+  PronunciationAnswer,
+  PronunciationAnswersPage,
   TokenHistory,
   TokenSummary,
 } from './types'
@@ -45,7 +52,15 @@ import {
 import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
 import type { ConversationPageDto } from '../lib/conversationCache'
-import { applyCorrection, applyLike, applyLikeToThread } from '../lib/feedCache'
+import {
+  applyAnswer,
+  applyCommentCount,
+  applyCorrection,
+  applyLike,
+  applyLikeToAnswers,
+  applyLikeToThread,
+  removePost,
+} from '../lib/feedCache'
 import type { MessagePageDto } from '../lib/messageCache'
 
 /**
@@ -79,8 +94,15 @@ export const keys = {
   tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
-  feed: (filter: string) => ['feed', filter] as const,
+  /**
+   * The section is in the key, not just the filter. Everything that patches the
+   * feed matches on the `['feed']` prefix, so a third segment costs those call
+   * sites nothing while keeping the two sections' pages apart.
+   */
+  feed: (kind: string, filter: string) => ['feed', kind, filter] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
+  postComments: (id: string) => ['postComments', id] as const,
+  postAnswers: (id: string) => ['postAnswers', id] as const,
   likers: (targetType: string, targetId: string) => ['likers', targetType, targetId] as const,
   follows: (userId: string, which: string) => ['follows', userId, which] as const,
   quota: ['quota'] as const,
@@ -584,12 +606,12 @@ export function useConversationFlags() {
   })
 }
 
-export function useFeed(filter: FeedFilter) {
+export function useFeed(kind: PostKind, filter: FeedFilter) {
   return useInfiniteQuery({
-    queryKey: keys.feed(filter),
+    queryKey: keys.feed(kind, filter),
     queryFn: ({ pageParam }) =>
       api.get<FeedPage>(
-        `/feed?filter=${filter}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+        `/feed?kind=${kind}&filter=${filter}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -633,6 +655,10 @@ export function useSetLike() {
       client.setQueriesData<InfiniteData<PostCorrectionsPage>>(
         { queryKey: ['postCorrections'] },
         (data) => applyLikeToThread(data, targetType, targetId, state),
+      )
+      client.setQueriesData<InfiniteData<PronunciationAnswersPage>>(
+        { queryKey: ['postAnswers'] },
+        (data) => applyLikeToAnswers(data, targetType, targetId, state),
       )
       // Who liked it has changed by exactly one row, and that list is short
       // enough that refetching it is cheaper than reasoning about where the
@@ -746,6 +772,130 @@ export function useCorrectPost() {
       // A correction pays, and may cross a badge threshold.
       void client.invalidateQueries({ queryKey: keys.tokens })
       void client.invalidateQueries({ queryKey: keys.badges })
+    },
+  })
+}
+
+export function usePostComments(postId: string) {
+  return useInfiniteQuery({
+    queryKey: keys.postComments(postId),
+    queryFn: ({ pageParam }) =>
+      api.get<PostCommentsPage>(
+        `/posts/${postId}/comments${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * `enabled` because the post screen does not know which kind it is holding
+ * until the corrections page — the one that carries the post — has landed.
+ * Running this unconditionally would put a second request on every correction
+ * thread to learn that it has no recordings.
+ */
+export function usePostAnswers(postId: string, enabled = true) {
+  return useInfiniteQuery({
+    enabled,
+    queryKey: keys.postAnswers(postId),
+    queryFn: ({ pageParam }) =>
+      api.get<PronunciationAnswersPage>(
+        `/posts/${postId}/answers${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+export function useAddComment() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, ...input }: CreatePostCommentInput & { postId: string }) =>
+      api.post<PostComment>(`/posts/${postId}/comments`, input),
+    onSuccess: (_comment, { postId }) => {
+      // The count is patched because a refetch of the feed would re-sort it;
+      // the list itself is refetched because it is short, ascending, and
+      // appending to a keyset page by hand is how a duplicate row appears.
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyCommentCount(data, postId, 1),
+      )
+      void client.invalidateQueries({ queryKey: keys.postComments(postId) })
+    },
+  })
+}
+
+export function useDeleteComment() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, commentId }: { postId: string; commentId: string }) =>
+      api.delete<void>(`/posts/${postId}/comments/${commentId}`),
+    onSuccess: (_result, { postId }) => {
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyCommentCount(data, postId, -1),
+      )
+      void client.invalidateQueries({ queryKey: keys.postComments(postId) })
+    },
+  })
+}
+
+export function useAnswerPronunciation() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, ...input }: CreatePronunciationAnswerInput & { postId: string }) =>
+      api.post<PronunciationAnswer>(`/posts/${postId}/answers`, input),
+    onSuccess: (answer, { postId }) => {
+      // Patched rather than invalidated, for the reason `useCorrectPost` is:
+      // the pronunciation queue sorts unanswered first, so refetching here
+      // makes the card you just answered vanish.
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyAnswer(data, postId, answer),
+      )
+      void client.invalidateQueries({ queryKey: keys.postAnswers(postId) })
+      // A recording pays, and may cross a badge threshold.
+      void client.invalidateQueries({ queryKey: keys.tokens })
+      void client.invalidateQueries({ queryKey: keys.badges })
+    },
+  })
+}
+
+export function useDeleteAnswer() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, answerId }: { postId: string; answerId: string }) =>
+      api.delete<void>(`/posts/${postId}/answers/${answerId}`),
+    onSuccess: (_result, { postId }) => {
+      void client.invalidateQueries({ queryKey: ['feed'] })
+      void client.invalidateQueries({ queryKey: keys.postAnswers(postId) })
+    },
+  })
+}
+
+export function useDeleteCorrection() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, correctionId }: { postId: string; correctionId: string }) =>
+      api.delete<void>(`/posts/${postId}/corrections/${correctionId}`),
+    onSuccess: (_result, { postId }) => {
+      void client.invalidateQueries({ queryKey: ['feed'] })
+      void client.invalidateQueries({ queryKey: keys.postCorrections(postId) })
+    },
+  })
+}
+
+export function useDeletePost() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (postId: string) => api.delete<void>(`/posts/${postId}`),
+    onSuccess: (_result, postId) => {
+      // Patched, so the card leaves under the finger that deleted it. The
+      // detail screen's own queries are dropped rather than refetched: the
+      // post is gone, and refetching them would only 404.
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        removePost(data, postId),
+      )
+      client.removeQueries({ queryKey: keys.postCorrections(postId) })
+      client.removeQueries({ queryKey: keys.postComments(postId) })
+      client.removeQueries({ queryKey: keys.postAnswers(postId) })
     },
   })
 }

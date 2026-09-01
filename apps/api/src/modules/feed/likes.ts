@@ -190,8 +190,9 @@ async function resolveTarget(
  * is a farm — worse than a reaction, because two accounts liking each other is
  * a *reciprocal* farm, which is the exact shape the reciprocity bonus was
  * designed against. The streak's condition is a documented product rule
- * ("send a message or write a correction"); a third qualifying action rewrites
- * `docs/architecture.md`, not just this file.
+ * ("send a message, write a correction, or record a pronunciation answer"); a
+ * fourth qualifying action rewrites `docs/architecture.md`, not just this file.
+ * The third one cost exactly that, which is the price this paragraph is about.
  */
 export async function likeTarget(db: Db, userId: string, target: LikeTarget): Promise<LikeState> {
   const { _id, targetType } = await resolveTarget(db, userId, target)

@@ -6,11 +6,14 @@ import type {
   LikeTargetType,
   PostCorrection,
   PostCorrectionsPage,
+  PronunciationAnswer,
+  PronunciationAnswersPage,
 } from '@langx/shared'
 import { diffCorrection } from './correctionDiff'
 
 type Pages = InfiniteData<FeedPage> | undefined
 type ThreadPages = InfiniteData<PostCorrectionsPage> | undefined
+type AnswerPages = InfiniteData<PronunciationAnswersPage> | undefined
 
 /**
  * A correction patched into the loaded feed pages instead of invalidating them.
@@ -40,6 +43,71 @@ export function applyCorrection(data: Pages, postId: string, correction: PostCor
      */
     topCorrection: post.topCorrection ?? correction,
   }))
+}
+
+/**
+ * A recording patched in, on the same terms as a correction.
+ *
+ * The pronunciation queue sorts `answerCount` ascending for the same reason the
+ * correction queue sorts on its own count, so a refetch here has the same
+ * disappearing-card failure and the same answer: patch now, let the next
+ * natural refetch re-sort.
+ */
+export function applyAnswer(data: Pages, postId: string, answer: PronunciationAnswer): Pages {
+  return patchPost(data, postId, (post) => ({
+    ...post,
+    answerCount: post.answerCount + 1,
+    answeredByViewer: true,
+    // Oldest, not best — the same rule `topCorrection` follows. Yours is the
+    // oldest exactly when nobody had answered.
+    topAnswer: post.topAnswer ?? answer,
+  }))
+}
+
+/**
+ * The comment count moved by one.
+ *
+ * A delta rather than a written value, unlike every like patch here, because
+ * the server does not answer a comment with the post's new count — it answers
+ * with the comment. Safe because a comment is not idempotent: there is no
+ * retried request that could apply this twice for one row.
+ */
+export function applyCommentCount(data: Pages, postId: string, delta: number): Pages {
+  return patchPost(data, postId, (post) => ({
+    ...post,
+    commentCount: Math.max(0, post.commentCount + delta),
+  }))
+}
+
+/**
+ * A post removed from every loaded page.
+ *
+ * Deleting is the one feed action where a refetch would be honest and a patch
+ * is still better: the row is gone either way, and patching means the card
+ * leaves under the finger that deleted it rather than after a round trip.
+ */
+export function removePost(data: Pages, postId: string): Pages {
+  if (!data) return data
+  let found = false
+  const pages = data.pages.map((page) => {
+    if (!page.items.some((post) => post._id === postId)) return page
+    found = true
+    return { ...page, items: page.items.filter((post) => post._id !== postId) }
+  })
+  return found ? { ...data, pages } : data
+}
+
+/**
+ * The viewer's own correction taken back off a card.
+ *
+ * Used by the duplicate-correction path as well as by deleting: the server
+ * says "you have already corrected this" and the card, which thought otherwise,
+ * has to agree before the composer will close.
+ */
+export function markCorrected(data: Pages, postId: string): Pages {
+  return patchPost(data, postId, (post) =>
+    post.correctedByViewer ? post : { ...post, correctedByViewer: true },
+  )
 }
 
 /**
@@ -85,6 +153,28 @@ export function applyLike(
       return patched
     })
     return found ? { ...page, items } : page
+  })
+  return found ? { ...data, pages } : data
+}
+
+/** The same patch against a request's answers on the post detail screen. */
+export function applyLikeToAnswers(
+  data: AnswerPages,
+  targetType: LikeTargetType,
+  targetId: string,
+  state: LikeState,
+): AnswerPages {
+  if (!data) return data
+  let found = false
+  const pages = data.pages.map((page) => {
+    const post = likePost(page.post, targetType, targetId, state)
+    const items = page.items.map((answer) => {
+      if (targetType !== 'answer' || answer._id !== targetId) return answer
+      found = true
+      return { ...answer, ...state }
+    })
+    if (post !== page.post) found = true
+    return { ...page, post, items }
   })
   return found ? { ...data, pages } : data
 }
@@ -219,6 +309,10 @@ function likePost(
 ): FeedPost {
   if (targetType === 'post') {
     return post._id === targetId ? { ...post, ...state } : post
+  }
+  if (targetType === 'answer') {
+    if (post.topAnswer?._id !== targetId) return post
+    return { ...post, topAnswer: { ...post.topAnswer, ...state } }
   }
   if (post.topCorrection?._id !== targetId) return post
   return { ...post, topCorrection: { ...post.topCorrection, ...state } }

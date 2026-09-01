@@ -48,4 +48,21 @@ describe('counts that vary with user data inflect', () => {
     // which a single plural entry could never have got right.
     expect(line).toBe('На этой неделе: 1 сообщение и 3 исправления.')
   })
+
+  it('pluralises the new feed counts in the two languages that split hardest', () => {
+    // Recordings and comments arrived with the pronunciation section. Pinned
+    // here because a count key is one edit away from becoming a plain string,
+    // and the languages that show it are Russian and Arabic.
+    const ru = createTranslate('ru')
+    expect(ru('feed.answers', { count: 1 })).toBe('1 запись')
+    expect(ru('feed.answers', { count: 3 })).toBe('3 записи')
+    expect(ru('feed.answers', { count: 11 })).toBe('11 записей')
+    expect(ru('feed.comments', { count: 1 })).toBe('1 комментарий')
+    expect(ru('feed.comments', { count: 11 })).toBe('11 комментариев')
+
+    const ar = createTranslate('ar')
+    expect(ar('feed.answers', { count: 1 })).toBe('تسجيل واحد')
+    expect(ar('feed.answers', { count: 2 })).toBe('تسجيلان')
+    expect(ar('feed.answers', { count: 5 })).toBe('5 تسجيلات')
+  })
 })

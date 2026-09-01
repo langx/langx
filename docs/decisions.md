@@ -1526,6 +1526,11 @@ is a documented product rule ("send a message or write a correction"), so a
 third qualifying action would rewrite `architecture.md`, not just a module.
 A test pins it, next to the one that pins the same thing for reactions.
 
+That third action has since been added — a recorded pronunciation answer — and
+`architecture.md` was rewritten for it, deliberately and in the same change.
+The bar this paragraph sets is unchanged: it is not "never a third action", it
+is that one costs a product rule, and a like still does not clear it.
+
 ## Likes are counted, not denormalized — and must never become a sort key
 
 `posts.correctionCount` is denormalized, and its comment says why: it is the
@@ -1774,3 +1779,153 @@ single call site moving with them.
   not yet cover renewal or cancellation.
 - **The promise change** reaches the community as a broken promise unless it is
   explained deliberately.
+
+## A pronunciation answer is recorded twice; a voice note still is not
+
+The decision above — _"A voice note plays at half speed, rather than being
+recorded twice"_ — stands, and this bounds it rather than reversing it. That
+one is about a note somebody already sent: you nearly caught the sentence, and
+stretching the recording you have is the right tool, works on all 1,270 notes
+imported from v1, and costs nothing on the server.
+
+A pronunciation request is the other case. The asker has never heard the word,
+so there is no recording to stretch, and the thing they need is a person
+re-articulating — choosing different sounds, not the same sounds slower. The
+old decision conceded exactly this ("the two are not the same thing") while
+correctly ruling that the common case did not justify the machinery.
+
+So the second take exists only here, and it is **optional**. The fast one is
+the answer; the slow one is a bonus. Requiring both would leave requests
+unanswered while somebody re-records, which is a worse failure than a request
+answered once.
+
+It answers the question that decision named and left open: **two files spend
+one unit of the media quota, not two.** The quota is documented as a ceiling on
+abuse rather than a paywall, and charging per file would make the optional take
+feel expensive and be skipped — the one behaviour it exists to encourage. The
+byte ceiling is still per file, and that is the control that actually bounds
+storage. Every file is validated before any of them is charged for, so a
+rejected slow take does not burn a unit for an answer that was never written.
+
+`assertAttachable` takes a list for this, and the list is what makes the
+ordering explicit rather than incidental.
+
+## Comments pay nothing, and cannot be liked
+
+A like pays nothing because one tap is not worth paying for. A comment is one
+sentence, which is barely more, and unlike a correction there is nothing in its
+shape that makes it teaching. Two accounts can trade sentences all day.
+
+It is also not a likeable target. A like says "this helped", and it means
+something on a post, a correction or a recording because each of those is
+capped at one per person and each took real work. An unlimited, unpaid,
+uncapped row is the cheapest thing in the app to reciprocate on.
+
+Which is also why `postComments` has **no unique index**, alone among the
+child-of-post collections. Many comments per person per post is the point, and
+the absence is written down in `indexes.ts` so it does not read as an oversight
+and get "fixed" by symmetry.
+
+The count is computed at read time. `correctionCount` and `answerCount` earn
+their drift risk by being sort keys; nothing sorts by comments, and nothing may
+start to — the moment the feed ranks by chatter it stops being a correction
+queue.
+
+## The feed's kind is absent on every post that already exists
+
+`posts.kind` arrived with the pronunciation section, and every row already on
+disk is a correction post with no such field. There is no migration
+infrastructure in this repo and none was added for one boolean's worth of
+meaning.
+
+The correction section matches `{ kind: { $in: ['correction', null] } }`, which
+catches the missing field and stays index-bounded on
+`kind_needs_correction`. `{ $ne: 'pronunciation' }` reads identically, returns
+the same rows, and **cannot be bounded** — MongoDB has no bounds for a negation,
+so the main feed would quietly become a collection scan with nothing failing to
+say so. That is the whole reason the `$in` is written the way it is, and the
+reason a comment sits beside it.
+
+`answerCount`'s absence on legacy rows is harmless only while the sections stay
+separate: a legacy post never appears on the tab that sorts by it. If they are
+ever unified, that stops being true.
+
+The two new indexes are new _names_ rather than widened keys, because changing
+a live index's key is an `IndexOptionsConflict` rather than a rebuild — the
+failure this file has already recorded twice.
+
+## Pronunciation pays its own token kind, keyed on the request
+
+A recorded answer is the same act as a correction in a different medium, so it
+pays the same ten. It is a **separate `TokenKind`** all the same, because
+`countCorrectionsWritten` feeds the correction badges and the cosmetic gates,
+and folding a different act into that number moves a threshold that names the
+other one. It also earns its own line in the token history, which is the honest
+answer to "where did these come from".
+
+It advances the streak — the third qualifying action, which rewrites the
+product rule in `architecture.md` on purpose rather than by accident. It
+deliberately does **not** touch `dailyActivity` or the daily pool's weights:
+those are a published formula mirrored on the website and in two GitBook pages,
+and a fourth term is a pool rebalance, not a feature. The consequence is worth
+stating out loud: an answer pays its ten and advances the streak, and
+contributes nothing to that day's pool share.
+
+The `refId` is `pron:<postId>` — the request's id, not the answer's. See below.
+
+## Deleting a post takes its corrections with it
+
+Not a tombstone. `deleteMessage` leaves one because a withdrawn message still
+has a place in a thread; here the post _is_ the sentence its corrections are
+corrections of, and an empty one leaves a list of rewrites of nothing. Somebody
+removing a sentence they regret posting means it to be gone, and half-gone is
+the answer nobody asked for.
+
+So the post, its corrections, its recordings, its comments, its likes and every
+object behind them go together. **Earned token does not.** The ledger is
+append-only and the people who answered did the work; deleting the sentence
+does not undo their afternoon.
+
+There is no time limit, unlike the two-day window on withdrawing a message.
+That window bounds reaching into somebody else's device; a feed post was never
+on one, and "you may no longer delete your own words" is not a rule this app
+wants to explain.
+
+Ownership lives in the delete filter rather than in an `if` above it, and
+`deletedCount` is what tells the second of two racing devices that it lost —
+the same design `deleteMessage` uses. 404, never 403: a 403 confirms the row
+exists.
+
+One accepted residue: a `correctPost` racing between the post's deletion and
+its children's can leave one orphan row. It is invisible — every reader reaches
+a correction through its post, and that lookup now 404s — but its attachment
+stays in the bucket. Closing it would need a `deletingAt` flag and a two-phase
+delete, which is more machinery than one stranded object is worth.
+
+The account purge is a different question and keeps its own answer: posts and
+corrections survive it as "Deleted account", because that is somebody else's
+learning. **Recorded answers do not** — an answer is its bytes and nothing else,
+so stripping the media that the purge must delete would leave an empty row
+pretending to be an answer. They are deleted outright and `answerCount` comes
+down with them.
+
+## The correction award is keyed to the post, not to the row
+
+`awardForPostCorrection` used to file its ledger row under the correction's
+`_id`. That was safe exactly as long as a correction could not be deleted.
+
+It can now, and a deleted-then-rewritten correction mints a fresh `_id`, a
+fresh `refId`, and a second payment — an unbounded payout from one post. Keyed
+on the post (`postcorr:<postId>`, and `pron:<postId>` for recordings), the
+ledger's existing `{userId, kind, refId}` unique index _is_ the rule "paid once
+per post per person". No extra read, no "have I paid this before" flag,
+permanent.
+
+Prefixed for the reason `mutualRefId` is: a bare ObjectId hex says nothing
+about which collection it came from.
+
+Every row written before this carries the old key, so until
+`scripts/backfill-correction-refids.ts` has run, one user deleting one
+pre-existing correction and rewriting it is paid a second time. Bounded,
+one-time, and silent — nothing fails, the ledger just gains a row it should not
+have. **It must run before this deploys.**
