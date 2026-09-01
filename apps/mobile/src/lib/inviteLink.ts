@@ -1,5 +1,5 @@
-import { inviteHandleFromUrl } from '@langx/shared'
-import { HANDLE_PATTERN } from '@langx/shared'
+import { inviteHandleFromUrl, HANDLE_PATTERN } from '@langx/shared'
+import type { ReferralSource } from '@langx/shared'
 
 export { inviteHandleFromUrl }
 
@@ -29,4 +29,29 @@ export function normalizeInviteCode(input: string | null | undefined): string | 
   const pathish = trimmed.match(/^(?:[a-z][a-z0-9+.-]*:\/\/)?[^/\s]*\/([^/?#\s]+)/i)?.[1]
   const candidate = (pathish ?? trimmed).replace(/^@/, '').toLowerCase()
   return HANDLE_PATTERN.test(candidate) ? candidate : null
+}
+
+/**
+ * Which referrer onboarding should carry, given what the draft already holds
+ * and what an invite link left on the device.
+ *
+ * A pure function rather than a branch inside `hydrateDraft`, because that
+ * store cannot be reached by `vitest` — it only covers `src/lib` — and this is
+ * the part with a rule in it. The rule shipped once already as a flag that was
+ * written in two places and read in none, which is a link that silently
+ * attributes nobody; the point of pulling it out is that the next such gap
+ * fails a test instead.
+ *
+ * A code already in the draft wins. It was either typed, which is a more
+ * deliberate answer than a link, or it is this same flag from an earlier
+ * launch — and re-labelling that one `link` would overwrite a `manual` the
+ * reader chose.
+ */
+export function resolveReferrer(
+  draftHandle: string,
+  pending: string | null | undefined,
+): { handle: string; source: ReferralSource } | null {
+  if (draftHandle) return null
+  const handle = normalizeInviteCode(pending)
+  return handle ? { handle, source: 'link' } : null
 }

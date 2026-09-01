@@ -108,7 +108,12 @@ export default function HandleStep() {
         ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
         // Silently ignored by the server if it resolves to nobody — see
         // `attachReferral`. Nothing here should be able to fail a sign-up.
-        ...(current.referredByHandle ? { referredByHandle: current.referredByHandle } : {}),
+        ...(current.referredByHandle
+          ? {
+              referredByHandle: current.referredByHandle,
+              referredBySource: current.referredBySource,
+            }
+          : {}),
         // The device already knows the user's timezone; asking would be a
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
@@ -194,7 +199,11 @@ export default function HandleStep() {
               label={t('onboarding.inviteCodeLabel')}
               value={draft.referredByHandle}
               onChangeText={(value) =>
-                updateDraft({ referredByHandle: normalizeInviteCode(value) ?? value.trim() })
+                updateDraft({
+                  referredByHandle: normalizeInviteCode(value) ?? value.trim(),
+                  // Typed over, so it is no longer whatever the link said.
+                  referredBySource: 'manual',
+                })
               }
               placeholder={t('onboarding.inviteCodePlaceholder')}
               autoCapitalize="none"

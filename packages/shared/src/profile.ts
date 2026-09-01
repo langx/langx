@@ -3,6 +3,7 @@ import { PLAN_LIMITS } from './limits'
 import { notificationPrefsSchema } from './notifications'
 import { birthDateSchema } from './age'
 import { languageLevelSchema } from './level'
+import { referralSourceSchema } from './referral'
 import { handleSchema } from './handle'
 import { languageCodeSchema } from './languages'
 import { z } from 'zod'
@@ -152,6 +153,13 @@ export const onboardingProfileSchema = z
      * same reason.
      */
     referredByHandle: handleSchema.optional().catch(undefined),
+    /**
+     * Whether that handle came from a link or was typed. Defaulted rather than
+     * required, because an older client sends the handle and not this — and
+     * "somebody put it there by hand" is the safer thing to record when we do
+     * not know, since it is the claim that asserts less.
+     */
+    referredBySource: referralSourceSchema.optional().catch(undefined),
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
     country: countryCodeSchema.optional(),

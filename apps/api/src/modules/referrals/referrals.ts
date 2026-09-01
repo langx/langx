@@ -1,5 +1,5 @@
 import { ERROR_CODES, REFERRAL_LIST_LIMIT, TOKEN_RULES } from '@langx/shared'
-import type { PaidPlanTier, ReferralInvitee, ReferralStatus } from '@langx/shared'
+import type { PaidPlanTier, ReferralInvitee, ReferralSource, ReferralStatus } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
@@ -25,7 +25,7 @@ export interface Referral {
    */
   referrerHandle: string
   /** Where the code came from: a marked invite URL, or typed in at onboarding. */
-  source: 'link' | 'manual'
+  source: ReferralSource
   createdAt: Date
 
   /**

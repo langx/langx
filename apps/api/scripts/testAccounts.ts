@@ -205,6 +205,21 @@ export async function purgeTestAccounts(db: Db): Promise<void> {
     await db.collection(collection).deleteMany({ userId: { $in: stringIds } })
   }
 
+  /*
+   * Not in the loop above, because a referral has no `userId`: it is keyed by
+   * the *invitee* and carries the referrer separately, so both ends have to be
+   * named or a half-purged pair is left pointing at a profile that is gone.
+   *
+   * The reading side already survives that — `readReferralStatus` skips an
+   * invitee whose profile has been removed rather than drawing a blank row —
+   * but surviving litter is not the same as not leaving it.
+   */
+  const referrals = await db
+    .collection<{ _id: string; referrerId: string }>(COLLECTIONS.referrals)
+    .deleteMany({
+      $or: [{ _id: { $in: stringIds } }, { referrerId: { $in: stringIds } }],
+    })
+
   // `profiles._id` is the user id as a string, not an ObjectId.
   const profiles = await db
     .collection<{ _id: string }>(COLLECTIONS.profiles)
@@ -217,6 +232,7 @@ export async function purgeTestAccounts(db: Db): Promise<void> {
   console.log(
     `purged ${removed.deletedCount} users, ${profiles.deletedCount} profiles, ` +
       `${accounts.deletedCount} accounts, ${sessions.deletedCount} sessions, ` +
-      `${threads.deletedCount} conversations, ${messages.deletedCount} messages`,
+      `${threads.deletedCount} conversations, ${messages.deletedCount} messages, ` +
+      `${referrals.deletedCount} referrals`,
   )
 }
