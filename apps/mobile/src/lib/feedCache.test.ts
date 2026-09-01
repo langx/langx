@@ -1,7 +1,21 @@
 import type { InfiniteData } from '@tanstack/react-query'
-import type { FeedPage, FeedPost, PostCorrection, PostCorrectionsPage } from '@langx/shared'
+import type {
+  FeedPage,
+  FeedPost,
+  PostCorrection,
+  PostCorrectionsPage,
+  PronunciationAnswer,
+} from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { applyCorrection, applyLike, applyLikeToThread } from './feedCache'
+import {
+  applyAnswer,
+  applyCommentCount,
+  applyCorrection,
+  applyLike,
+  applyLikeToThread,
+  markCorrected,
+  removePost,
+} from './feedCache'
 
 const author = { _id: 'u2', handle: 'teacher', displayName: 'Teacher' }
 
@@ -16,6 +30,21 @@ function correction(id: string): PostCorrection {
   }
 }
 
+function answer(id: string): PronunciationAnswer {
+  return {
+    _id: id,
+    author,
+    media: {
+      url: 'https://cdn.example.com/posts/u/fast.m4a',
+      contentType: 'audio/m4a',
+      sizeBytes: 1,
+    },
+    likeCount: 0,
+    likedByViewer: false,
+    createdAt: '2026-08-29T12:00:00.000Z',
+  }
+}
+
 function post(overrides: Partial<FeedPost> = {}): FeedPost {
   return {
     _id: 'p1',
@@ -23,9 +52,14 @@ function post(overrides: Partial<FeedPost> = {}): FeedPost {
     body: 'Yo tener hambre.',
     language: 'es',
     level: 'intermediate',
+    kind: 'correction',
     correctionCount: 0,
+    answerCount: 0,
+    commentCount: 0,
     topCorrection: null,
+    topAnswer: null,
     correctedByViewer: false,
+    answeredByViewer: false,
     likeCount: 0,
     likedByViewer: false,
     createdAt: '2026-08-29T11:00:00.000Z',
@@ -127,5 +161,63 @@ describe('applyLikeToThread', () => {
   it('returns the identical object when nothing matched', () => {
     const data = thread()
     expect(applyLikeToThread(data, 'correction', 'missing', state)).toBe(data)
+  })
+})
+
+describe('applyAnswer', () => {
+  it('counts the recording and claims the card, without re-sorting it away', () => {
+    const data = pages([post({ kind: 'pronunciation' })])
+    const patched = applyAnswer(data, 'p1', answer('a1'))
+    const card = patched!.pages[0]!.items[0]!
+    expect(card.answerCount).toBe(1)
+    expect(card.answeredByViewer).toBe(true)
+    expect(card.topAnswer?._id).toBe('a1')
+  })
+
+  it('leaves an existing top answer alone', () => {
+    // Oldest, not newest — the same rule `topCorrection` follows.
+    const data = pages([
+      post({ kind: 'pronunciation', answerCount: 1, topAnswer: answer('first') }),
+    ])
+    const patched = applyAnswer(data, 'p1', answer('second'))
+    expect(patched!.pages[0]!.items[0]!.topAnswer?._id).toBe('first')
+  })
+})
+
+describe('applyCommentCount', () => {
+  it('moves the count by the delta', () => {
+    const data = pages([post({ commentCount: 2 })])
+    expect(applyCommentCount(data, 'p1', 1)!.pages[0]!.items[0]!.commentCount).toBe(3)
+    expect(applyCommentCount(data, 'p1', -1)!.pages[0]!.items[0]!.commentCount).toBe(1)
+  })
+
+  it('never goes below zero', () => {
+    // Two devices deleting the same comment would otherwise leave -1 on screen.
+    const data = pages([post({ commentCount: 0 })])
+    expect(applyCommentCount(data, 'p1', -1)!.pages[0]!.items[0]!.commentCount).toBe(0)
+  })
+})
+
+describe('removePost', () => {
+  it('drops the row and leaves the rest of the page', () => {
+    const data = pages([post(), post({ _id: 'p2' })])
+    const patched = removePost(data, 'p1')
+    expect(patched!.pages[0]!.items.map((item) => item._id)).toEqual(['p2'])
+  })
+
+  it('returns the identical object when the post is not loaded', () => {
+    // The same no-op contract every patcher here keeps, so React Query does not
+    // re-render a list nothing happened to.
+    const data = pages([post()])
+    expect(removePost(data, 'nope')).toBe(data)
+  })
+})
+
+describe('markCorrected', () => {
+  it('claims the card without touching the count', () => {
+    const data = pages([post({ correctionCount: 3 })])
+    const patched = markCorrected(data, 'p1')
+    expect(patched!.pages[0]!.items[0]!.correctedByViewer).toBe(true)
+    expect(patched!.pages[0]!.items[0]!.correctionCount).toBe(3)
   })
 })

@@ -138,7 +138,7 @@ This is communication work, and it is part of the delivery:
 | **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Polyglot: unlimited within fair use                                                                                                                                                                                                                                                 |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`)                                                                                                                                                                                                                                                                               |
 | Token sinks         | **Only** streak freeze, filling in a missed day, and cosmetics (frame/title). Tokens can never buy a paid feature                                                                                                                                                                                                                                                                                       |
-| Streak condition    | At least one **meaningful action** per day (send a message or write a correction) — opening the app does not count                                                                                                                                                                                                                                                                                      |
+| Streak condition    | At least one **meaningful action** per day (send a message, write a correction, or answer a pronunciation request) — opening the app does not count                                                                                                                                                                                                                                                     |
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
 | Storage             | S3-compatible abstraction; **moving to R2**, B2 reachable by config                                                                                                                                                                                                                                                                                                                                     |
 | Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                          |
@@ -407,8 +407,9 @@ makes a one-off migration credit safe to apply exactly once.
 
 ### Streak
 
-- Condition: at least one **meaningful action** per day — sending a message or
-  writing a correction. Opening the app does not advance the streak; it only
+- Condition: at least one **meaningful action** per day — sending a message,
+  writing a correction, or answering a pronunciation request with a recording.
+  Opening the app does not advance the streak; it only
   triggers the check and shows a "send one message today" nudge.
 - `profiles.streak = { current, longest, lastQualifiedDay: 'YYYY-MM-DD' }`. On
   an action: same day is a no-op, previous day increments, a gap resets to 1.
@@ -420,12 +421,17 @@ makes a one-off migration credit safe to apply exactly once.
 
 **1) Direct token**, immediate and deterministic:
 
-| Action               | Note                                                      |
-| -------------------- | --------------------------------------------------------- |
-| Sending a message    | Daily cap + **per-partner cap**                           |
-| Writing a correction | Weighted above messages — rewarding teaching is the point |
-| Reciprocity bonus    | Only conversations **both** sides have spoken in          |
-| Streak milestone     | Fixed bonus                                               |
+| Action                            | Note                                                                        |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| Sending a message                 | Daily cap + **per-partner cap**                                             |
+| Writing a correction              | Weighted above messages — rewarding teaching is the point                   |
+| Answering a pronunciation request | Its own kind, at the correction's rate — the same act in a different medium |
+| Reciprocity bonus                 | Only conversations **both** sides have spoken in                            |
+| Streak milestone                  | Fixed bonus                                                                 |
+
+Both teaching awards are filed under the **post's** id, not the row's, so
+deleting a correction or a recording and writing a new one cannot be paid
+twice: the ledger's `{userId, kind, refId}` unique index is the rule.
 
 **2) The daily pool**, paid out the morning after the day closes: a fixed daily
 pool `P` is split among that day's active users **in proportion to an activity
@@ -703,26 +709,52 @@ change wearing the clothes of a URL edit.
 
 ### Community feed
 
-Four collections, none of them a conversation with one participant: a post has
+Six collections, none of them a conversation with one participant: a post has
 no pair, no read state and no delivery, and every index on `messages` is built
 around `conversationId`.
 
 ```
-posts            { authorId, body, language, correctionCount, media?, createdAt }
-postCorrections  { postId, authorId, corrected, note?, media?, createdAt }
-likes            { targetType: 'post' | 'correction', targetId, userId, createdAt }
-follows          { followerId, followeeId, createdAt }
+posts                 { authorId, body, language, kind?, correctionCount, answerCount?, media?, createdAt }
+postCorrections       { postId, authorId, corrected, note?, media?, createdAt }
+pronunciationAnswers  { postId, authorId, media, slowMedia?, note?, createdAt }
+postComments          { postId, authorId, body, createdAt }
+likes                 { targetType: 'post' | 'correction' | 'answer', targetId, userId, createdAt }
+follows               { followerId, followeeId, createdAt }
 ```
 
-`posts.correctionCount` is the one denormalized count here, and it is
-denormalized because it is a **sort key**: the `needsCorrection` tab orders by
-it ascending, and an index cannot sort on a count it would have to join to
-find. Putting the uncorrected ones first is what makes the queue drain.
+The feed has two sections, and `posts.kind` is which one a post is in:
+`'correction'` for a sentence to be rewritten, `'pronunciation'` for a word to
+be said out loud. It is **absent on every post written before the sections
+existed**, and those are all corrections — the correction section matches
+`{ $in: ['correction', null] }` rather than backfilling. `$ne` would read the
+same and cannot be bounded by an index, which would turn the main feed into a
+collection scan.
 
-Like and follower counts are **not** stored, for the mirror-image reason:
-nothing sorts by them, so they are the `tokenAggregates` case — one source of
-truth, no second counter to drift. Likes must never become a sort key, or the
-feed stops being a correction queue and becomes a popularity contest.
+`correctionCount` and `answerCount` are the two denormalized counts here, and
+both are denormalized because they are **sort keys**: each section orders by its
+own count ascending, and an index cannot sort on a count it would have to join
+to find. Putting the unanswered ones first is what makes the queue drain.
+
+Comment, like and follower counts are **not** stored, for the mirror-image
+reason: nothing sorts by them, so they are the `tokenAggregates` case — one
+source of truth, no second counter to drift. Neither likes nor comments may
+become a sort key, or the feed stops being a correction queue and becomes a
+popularity contest.
+
+A comment is text only, unlimited per person, and pays nothing — the one thing
+in the feed that costs nothing to leave and earns nothing for leaving it, which
+is what makes it safe to be unlimited. It is not a likeable target, for the
+same reason.
+
+A pronunciation answer carries one required recording and an optional slower
+second take. Two files, **one** unit of the media quota: charging twice would
+make the optional take feel expensive and be skipped, which is the behaviour it
+exists to encourage. One per person per request, enforced by a unique index
+that doubles as the guarantee the award is paid once.
+
+Deleting your own post takes its corrections, answers, comments, likes and
+stored objects with it. Earned token is not clawed back — the ledger is
+append-only, and the people who answered did the work.
 
 Both counting reads are a `$group` after an index-backed `$match`, returning one
 row per target rather than one per like, so a post with four hundred likes costs
