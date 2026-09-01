@@ -332,6 +332,11 @@ export const tr: Localized<EnMessages> = {
     whatNextBody:
       'Keşfet, senin öğrendiğini konuşan ve senin konuştuğunu öğrenen kişileri gösterir. Birine merhaba de — ilk mesaj jeton kazandırır ve seninle bir sohbet arasındaki tek şey odur.',
     findSomeone: 'Konuşacak birini bul',
+    inviteCodeToggle: 'Davet kodun var mı?',
+    inviteCodeLabel: 'Davet kodu',
+    inviteCodePlaceholder: 'kullanıcı adı',
+    inviteCodeFound: 'Seni {name} davet etmiş.',
+    inviteCodeUnknown: 'Bunu bulamadık — yine de devam edebilirsin.',
   },
 
   welcomeBack: {
@@ -712,6 +717,8 @@ export const tr: Localized<EnMessages> = {
     shareProfile: 'Profilimi paylaş',
     shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
+    invite: 'Arkadaşını davet et',
+    inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
   },
 
   editProfile: {
@@ -918,6 +925,42 @@ export const tr: Localized<EnMessages> = {
     historyEmpty: 'Henüz bir şey yok. Bir mesaj gönder ya da birini düzelt.',
     historySpent: '−{count} harcandı',
     historyMore: 'Daha fazla göster',
+    inviteRow: 'Arkadaşını davet et',
+  },
+
+  invite: {
+    title: 'Arkadaşını davet et',
+    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de kazanırsınız — sen token kazanırsın.',
+    code: 'Davet kodun',
+    qrAccessibility: 'Davet linkinin QR kodu',
+    share: 'Linki paylaş',
+    copy: 'Linki kopyala',
+    copied: 'Link kopyalandı',
+    shareMessage: 'LangX’te benimle dil pratiği yap: {url}',
+    howTitle: 'Nasıl çalışıyor',
+    step1: 'Linkini, senin dilini öğrenen birine gönder.',
+    step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
+    step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
+    totalsInvited: {
+      one: '{count} davet',
+      other: '{count} davet',
+    },
+    totalsActivated: {
+      one: '{count} aktif',
+      other: '{count} aktif',
+    },
+    totalsEarned: {
+      one: '{count} token',
+      other: '{count} token',
+    },
+    statusPending: 'Henüz yazmadı',
+    statusActivated: 'Aktif',
+    statusSubscribed: 'Abone',
+    emptyTitle: 'Henüz kimse yok',
+    emptyBody: 'Linkini paylaş, katılanlar burada görünsün.',
+    referredBy: 'Seni {name} davet etti',
+    disclaimer:
+      'Tokenlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi gerçekten birine yazdığında kazandırır.',
   },
 
   tokenKind: {
@@ -931,6 +974,8 @@ export const tr: Localized<EnMessages> = {
     signupBonus: 'Kayıt ödülü',
     spend: 'Harcama',
     pronunciation: 'Telaffuz',
+    referral: 'Davet bonusu',
+    referralSubscription: 'Davet abonelik bonusu',
   },
 
   cosmetics: {
@@ -996,6 +1041,8 @@ export const tr: Localized<EnMessages> = {
     learning: 'Öğreniyor',
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
+    inviteTitle: '{name} seni LangX’e davet etti',
+    inviteBody: 'Senin dilini öğrenen biriyle pratik yap. Katılmak ücretsiz.',
   },
 
   shareProfile: {

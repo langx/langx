@@ -28,12 +28,12 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { effectiveTier } from './entitlement'
 import { ApiError } from '../../lib/ApiError'
-import { authId } from '../../lib/authId'
 import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { restoreByHash } from '../handles/legacyRestore'
+import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
 
 export interface Profile {
@@ -147,6 +147,22 @@ export interface Profile {
   /** Set when token earning is suspended pending review (report/block). Clears by unsetting. */
   tokenFrozenAt?: Date
   stats: { lastActiveAt: Date; messagesSent: number }
+  /**
+   * Who invited this account, if anybody. Written once by `attachReferral`
+   * during onboarding and never again — there is no endpoint that can set or
+   * change it.
+   *
+   * A pointer, not a counter, so it cannot drift; the relationship itself
+   * lives in `referrals`, keyed by this user. It is duplicated here for one
+   * reason: `awardForSend` runs on every message in the app and needs a free
+   * way to answer "is this person even referred". It already reads the
+   * sender's profile, so for the overwhelming majority — invited by nobody —
+   * the referral check costs a property access on a document already in
+   * memory.
+   *
+   * Deliberately absent from `toPublicProfile` and `getSharedProfile`.
+   */
+  referredBy?: string
   /**
    * Set once, when a v1 account was restored onto this one, and read by the
    * welcome-back screen — which is the only reason it is persisted at all.
@@ -328,6 +344,24 @@ export async function createProfile(
   // Idempotent on the ledger's unique index, so it does not matter that the
   // restore below may reach for it again.
   await grantSignupBonus(db, userId, now)
+
+  /*
+   * Who invited them, if anybody said so. Wrapped the way `auth.ts` wraps the
+   * legacy restore, and for the same reason: the account is real and the
+   * profile is already written, so a failure here must not fail onboarding.
+   * `attachReferral` is silent about every *expected* failure by itself; this
+   * catch is for the unexpected ones.
+   *
+   * Nothing is paid here. See `settleReferral` — the award waits until this
+   * person has written to somebody.
+   */
+  if (input.referredByHandle) {
+    try {
+      await attachReferral(db, userId, input.referredByHandle, 'manual')
+    } catch (error) {
+      console.error('[referral] attach failed', { userId, error })
+    }
+  }
 
   // Finishes a restore that could not run at verification time because the v1
   // record was missing something this form has just supplied. A no-op for
@@ -833,22 +867,6 @@ export function toPublicProfile(
   if (profile.city !== undefined) result.city = profile.city
   if (conversationId !== undefined) result.conversationId = conversationId
   return result
-}
-
-/**
- * Whether Better Auth considers this account's email verified.
- *
- * Its own routes carry the flag on the session, but that is the *viewer's*
- * session — a profile being looked at has none here, so the only way to the
- * value is the `user` document, through `authId` like every other crossing of
- * the two id worlds. A string `_id` matches nothing and would report every
- * profile unverified without erroring.
- */
-export async function isEmailVerified(db: Db, userId: string): Promise<boolean> {
-  const user = await db
-    .collection(COLLECTIONS.user)
-    .findOne({ _id: authId(userId) }, { projection: { emailVerified: 1 } })
-  return user?.emailVerified === true
 }
 
 /** Looks up by `@handle` or by user id — the two things a deep link can carry. */

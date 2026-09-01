@@ -20,9 +20,18 @@ import { awardTokens } from './ledger'
  * A returning user gets this *and* the welcome-back bonus. That is intended —
  * one is for having an account, the other is for coming back.
  *
- * There is no farming incentive to guard against: tokens cannot be bought,
- * sold, traded, transferred or withdrawn, so a second account earns its owner
- * nothing they can use on the first.
+ * A second account used to earn its owner nothing at all: token cannot be
+ * bought, sold, traded, transferred or withdrawn, so there was no way to move
+ * a balance between accounts and no reason to make one. The referral programme
+ * changed that — `referral` pays the *inviter*, so a throwaway account is now
+ * worth `TOKEN_RULES.referral.activation` to whoever made it.
+ *
+ * This grant is deliberately not part of that, and the two never compose: it
+ * is paid to the new account itself, and `attachReferral` refuses a
+ * self-referral. What guards the referral award is that it is not paid for
+ * signing up at all — it waits until the invitee has verified an email,
+ * finished onboarding and *earned* from writing to somebody, which costs a
+ * farmer a real conversation with a real person per fake account.
  */
 export async function grantSignupBonus(db: Db, userId: string, at?: Date): Promise<number> {
   const result = await awardTokens(db, {

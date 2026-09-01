@@ -28,6 +28,8 @@ export type {
   PostCommentsPage,
   PostCorrection,
   PostCorrectionsPage,
+  ReferralInvitee,
+  ReferralStatus,
   PostKind,
   PronunciationAnswer,
   PronunciationAnswersPage,

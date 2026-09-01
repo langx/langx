@@ -19,6 +19,7 @@ import type {
   PublicProfileDto,
   Wallet,
   BadgeSummary,
+  ReferralStatus,
   CreatePostCommentInput,
   CreatePostCorrectionInput,
   CreatePostInput,
@@ -95,6 +96,7 @@ export const keys = {
   tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
+  referrals: ['referrals'] as const,
   /**
    * The section is in the key, not just the filter. Everything that patches the
    * feed matches on the `['feed']` prefix, so a third segment costs those call
@@ -925,6 +927,20 @@ export function useDeletePost() {
 
 export function useBadges() {
   return useQuery({ queryKey: keys.badges, queryFn: () => api.get<BadgeSummary>('/me/badges') })
+}
+
+/**
+ * The invite screen's totals and list.
+ *
+ * A plain query rather than an infinite one: the server caps the list at
+ * `REFERRAL_LIST_LIMIT` and counts the totals over the whole group, so there
+ * is nothing to page and the number stays right past the cap.
+ */
+export function useReferrals() {
+  return useQuery({
+    queryKey: keys.referrals,
+    queryFn: () => api.get<ReferralStatus>('/me/referrals'),
+  })
 }
 
 export function useLeaderboard(period: PeriodType) {

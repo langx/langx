@@ -317,6 +317,23 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
   ],
 
+  [COLLECTIONS.referrals]: [
+    /*
+     * The invite screen's list: one person's invitees, newest first. The `_id`
+     * tiebreak is in the key from the start — `post_created` and
+     * `conversation_created` both had to be widened later under new names,
+     * because changing a live index's key is an IndexOptionsConflict rather
+     * than a rebuild.
+     *
+     * There is deliberately **no** unique index here. The uniqueness that
+     * matters — one referrer per invitee, forever — is `_id` itself, and the
+     * uniqueness that stops a double payment is
+     * `tokenLedger.user_kind_ref_unique`. A third would be a third thing to
+     * keep in step with neither.
+     */
+    { key: { referrerId: 1, createdAt: -1, _id: -1 }, name: 'referrer_created' },
+  ],
+
   [COLLECTIONS.subscriptions]: [
     // RevenueCat redelivers webhooks; this is what makes handling idempotent.
     { key: { eventId: 1 }, name: 'event_id_unique', unique: true },

@@ -430,7 +430,7 @@ makes a one-off migration credit safe to apply exactly once.
   stop someone farming a second day by moving their clock.
 - Milestones (7/30/100 days) pay bonus token.
 
-### Earning token — two channels
+### Earning token — three channels
 
 **1) Direct token**, immediate and deterministic:
 
@@ -446,7 +446,18 @@ Both teaching awards are filed under the **post's** id, not the row's, so
 deleting a correction or a recording and writing a new one cannot be paid
 twice: the ledger's `{userId, kind, refId}` unique index is the rule.
 
-**2) The daily pool**, paid out the morning after the day closes: a fixed daily
+**2) Referrals**, and the only award paid to somebody other than the person who
+acted. Nothing is paid for a sign-up: the invitee has to verify an email,
+finish onboarding and _earn_ — a message, a correction or a pronunciation
+answer — before their referrer is paid `TOKEN_RULES.referral.activation`. If
+that invitee later starts a paid plan, on `INITIAL_PURCHASE` only, the referrer
+gets `referral.subscription` on top, to `referral.maxPerInvitee` per person,
+ever. Both kinds are **grants**: all-time only, never the weekly table, because
+inviting is not practising. `referrals._id` is the invitee, so one person has
+one referrer forever; `tokenLedger`'s `{userId, kind, refId}` with the invitee
+as `refId` is what caps the pair.
+
+**3) The daily pool**, paid out the morning after the day closes: a fixed daily
 pool `P` is split among that day's active users **in proportion to an activity
 score**, with a per-user ceiling (5% of the pool by default).
 
@@ -564,6 +575,7 @@ write to them directly and never change their shape.
   photos: [{ url, createdAt }],
   bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',   ← set once, like birthDate
+  referredBy,                         ← who invited them; written once, never in a public view
   country, city, timezone, timezoneUpdatedAt,
   location: { type: 'Point', coordinates: [lng, lat] },
   nativeLanguages: [{ code: 'tr' }],

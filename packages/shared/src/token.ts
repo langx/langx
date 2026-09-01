@@ -39,6 +39,19 @@ export const TOKEN_KINDS = [
   /** One-off starting balance, so a new account has something to spend. */
   'signupBonus',
   /**
+   * Paid to the *referrer* when somebody they invited becomes real: verified,
+   * onboarded, and having earned from a message or a correction of their own.
+   * Never paid at sign-up — see `settleReferral`.
+   */
+  'referral',
+  /**
+   * The second and last thing one invitee can ever pay their referrer: a
+   * top-up, once, if that invitee starts a paid plan. `refId` is the invitee
+   * on both kinds, so the ledger's unique index caps the pair at
+   * `TOKEN_RULES.referral.maxPerInvitee` without a check anywhere.
+   */
+  'referralSubscription',
+  /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
    * leaderboard ranks token *earned*, so buying a frame must never drop someone
@@ -61,11 +74,21 @@ export type TokenKind = (typeof TOKEN_KINDS)[number]
  *
  * `adjustment` is not here on purpose. It exists to correct a real award, so
  * it has to land in the same periods that award did.
+ *
+ * The referral pair is the strongest case for this rule yet, and the first
+ * repeatable one. Twenty invitees activating in a week is twenty thousand
+ * tokens for somebody who did not send a message — every week, indefinitely —
+ * where a v1 conversion is a single launch-week distortion that never recurs.
+ * All-time is where a spendable balance comes from and these stay spendable;
+ * the week, month and year tables rank practising, and inviting is not
+ * practising.
  */
 export const TOKEN_GRANT_KINDS = [
   'legacyTokenConversion',
   'welcomeBack',
   'signupBonus',
+  'referral',
+  'referralSubscription',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {
@@ -204,6 +227,58 @@ export interface TokenRules {
    * a frame outright would make the cheapest frame mean nothing.
    */
   signupBonus: number
+  /**
+   * The referral programme.
+   *
+   * There is no generated code: the referral code *is* the handle, because a
+   * handle is already a public address (`/<handle>`), already unique, already
+   * memorable enough to say out loud, and already the thing people share. A
+   * second identifier would be a second thing to keep unique, a second thing
+   * to reserve, and a second thing to explain.
+   *
+   * Deliberately absent: a per-referrer lifetime cap. "Never hard-code a
+   * threshold" does not mean "invent thresholds you do not enforce" — the
+   * activation gate below already charges a farmer one real conversation with
+   * one real person per fake account, and a cap would buy a support surface
+   * ("why did my 51st invite pay nothing") for nothing. The ledger is
+   * append-only, so if one is ever needed it can be computed retroactively.
+   */
+  referral: {
+    /**
+     * Paid when the invitee is **activated** — email verified, onboarding
+     * finished, and at least one `message` or `correction` ledger row of their
+     * own. Deliberately not at sign-up: an award for creating an account is an
+     * award for creating accounts. Same reasoning as
+     * `pool.accountAgeRampUpHours`, expressed as a person rather than a clock.
+     *
+     * Large next to a message's 2 because it is not a wage for an action. It
+     * is what one new *user* is worth, and it is capped at one payment per
+     * person for the life of both accounts.
+     */
+    activation: number
+    /**
+     * Additional, once, if that invitee ever starts a paid plan. Only on
+     * `INITIAL_PURCHASE`, never on a renewal — see `processRevenueCatWebhook`.
+     *
+     * This does **not** break "tokens cannot be bought". Nobody can buy their
+     * own: the subscriber receives zero, and the only account this moves is
+     * one that spent nothing. `welcomePack.ts` still stands word for word —
+     * money buys items and never token, *for the person who paid*.
+     *
+     * Not paid until the invitee is activated, which is the whole guard on the
+     * one path where real money touches this economy: a stolen card on a
+     * throwaway account would otherwise be worth this much for no human
+     * effort.
+     */
+    subscription: number
+    /**
+     * The most one invitee can ever earn their referrer, and the number every
+     * piece of public copy quotes. Stored rather than derived so there is one
+     * place the promise lives; `rules.test.ts` asserts
+     * `activation + subscription === maxPerInvitee`.
+     */
+    maxPerInvitee: number
+  }
 }
 
 /**
@@ -270,6 +345,11 @@ export const TOKEN_RULES: TokenRules = {
   legacyTokenDivisor: 100,
   welcomeBackBonus: 250,
   signupBonus: 250,
+  referral: {
+    activation: 1000,
+    subscription: 4000,
+    maxPerInvitee: 5000,
+  },
 }
 
 export interface ActivityCounters {

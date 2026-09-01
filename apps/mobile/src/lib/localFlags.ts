@@ -27,6 +27,15 @@ export const FLAG_KEYS = {
   /** Same name and same meaning as v1's. */
   introSeen: 'introSeen',
   onboardingDraft: 'onboardingDraft',
+  /**
+   * The handle of whoever's invite link was opened, held until onboarding can
+   * send it.
+   *
+   * A device flag rather than anything on the account, because it is captured
+   * before there is an account — that is the whole point of an invite link.
+   * Cleared by `resetDraft`, so finishing onboarding leaves nothing behind.
+   */
+  pendingReferrer: 'pendingReferrer',
   /** `auto` | `light` | `dark`. A device preference, not an account one. */
   themePreference: 'themePreference',
   /**

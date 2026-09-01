@@ -323,6 +323,11 @@ export const es: Localized<EnMessages> = {
     whatNextBody:
       'Descubrir te muestra a gente que habla lo que aprendes y aprende lo que hablas. Saluda a alguien: el primer mensaje da fichas y es lo único que te separa de una conversación.',
     findSomeone: 'Buscar con quién hablar',
+    inviteCodeToggle: '¿Tienes un código de invitación?',
+    inviteCodeLabel: 'Código de invitación',
+    inviteCodePlaceholder: 'su nombre de usuario',
+    inviteCodeFound: 'Te invitó {name}.',
+    inviteCodeUnknown: 'No encontramos ese — puedes continuar igualmente.',
   },
 
   welcomeBack: {
@@ -702,6 +707,8 @@ export const es: Localized<EnMessages> = {
     shareProfile: 'Compartir mi perfil',
     shareMessage: 'Practica idiomas conmigo en LangX: {url}',
     badges: 'Insignias',
+    invite: 'Invitar a alguien',
+    inviteBody: 'Gana tokens cuando empiece a usar LangX',
   },
 
   editProfile: {
@@ -908,6 +915,43 @@ export const es: Localized<EnMessages> = {
     historyEmpty: 'Todavía nada. Envía un mensaje o corrige a alguien.',
     historySpent: '−{count} gastado',
     historyMore: 'Ver más',
+    inviteRow: 'Invitar a alguien',
+  },
+
+  invite: {
+    title: 'Invitar a alguien',
+    body: 'Comparte tu enlace. Cuando alguien que invitaste se registra y empieza a hablar con gente, ganas tokens.',
+    code: 'Tu código de invitación',
+    qrAccessibility: 'Código QR de tu enlace de invitación',
+    share: 'Compartir el enlace',
+    copy: 'Copiar el enlace',
+    copied: 'Enlace copiado',
+    shareMessage: 'Practica idiomas conmigo en LangX: {url}',
+    howTitle: 'Cómo funciona',
+    step1: 'Envía tu enlace a alguien que esté aprendiendo tu idioma.',
+    step2: 'Se registra y escribe su primer mensaje o corrección — ahí ganas {activation} tokens.',
+    step3:
+      'Si algún día contrata un plan de pago, ganas {subscription} más. {max} en total, por persona.',
+    totalsInvited: {
+      one: '{count} invitado',
+      other: '{count} invitados',
+    },
+    totalsActivated: {
+      one: '{count} activo',
+      other: '{count} activos',
+    },
+    totalsEarned: {
+      one: '{count} token',
+      other: '{count} tokens',
+    },
+    statusPending: 'Todavía no ha escrito',
+    statusActivated: 'Activo',
+    statusSubscribed: 'Suscrito',
+    emptyTitle: 'Nadie todavía',
+    emptyBody: 'Comparte tu enlace y quien se una aparecerá aquí.',
+    referredBy: '{name} te invitó',
+    disclaimer:
+      'Los tokens son puntos dentro de la app. Registrarse no paga nada — una invitación gana solo cuando la persona invitada escribe de verdad a alguien.',
   },
 
   tokenKind: {
@@ -921,6 +965,8 @@ export const es: Localized<EnMessages> = {
     signupBonus: 'Bonus de registro',
     spend: 'Gasto',
     pronunciation: 'Pronunciación',
+    referral: 'Bono por invitación',
+    referralSubscription: 'Bono por suscripción de invitado',
   },
 
   cosmetics: {
@@ -986,6 +1032,8 @@ export const es: Localized<EnMessages> = {
     learning: 'Aprende',
     ctaBody: '{name} practica idiomas en LangX. Únete para saludar.',
     ctaLabel: 'Abrir LangX',
+    inviteTitle: '{name} te invitó a LangX',
+    inviteBody: 'Practica con alguien que está aprendiendo tu idioma. Unirse es gratis.',
   },
 
   shareProfile: {

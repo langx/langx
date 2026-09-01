@@ -17,6 +17,12 @@ export interface OnboardingDraft {
   bio: string
   city: string
   interests: string[]
+  /**
+   * Whoever's invite link brought them here, or what they typed in. Kept on
+   * the draft so it survives a relaunch mid-onboarding, exactly like the
+   * languages — the link is opened once and the form is finished later.
+   */
+  referredByHandle: string
   country: string
   /** Uploaded during the wizard; written by `POST /profiles`, not by `confirm`. */
   avatarUrl: string
@@ -32,6 +38,7 @@ const EMPTY: OnboardingDraft = {
   bio: '',
   city: '',
   interests: [],
+  referredByHandle: '',
   country: '',
   avatarUrl: '',
 }
@@ -133,6 +140,10 @@ export function resetDraft(): void {
   // Cleared rather than overwritten with an empty object: a finished
   // onboarding should leave nothing behind on the device.
   void clearFlag(FLAG_KEYS.onboardingDraft)
+  // The captured invite goes with it. It has either been sent with the profile
+  // or been abandoned, and either way it must not attach itself to whoever
+  // signs up on this device next.
+  void clearFlag(FLAG_KEYS.pendingReferrer)
   emit()
 }
 

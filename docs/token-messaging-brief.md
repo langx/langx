@@ -110,6 +110,33 @@ way: **"a head start, not a shortcut"**, never "earn tokens faster".
 
 Cosmetics are not taken back when a subscription lapses.
 
+One amendment, since the referral programme shipped: the sentence above is
+"money never produces token" and it is now, precisely, **"money never produces
+token for the person who paid"**. If somebody was invited and then subscribes,
+their _inviter_ earns a one-off top-up. Nobody can buy their own token, no
+purchase raises the buyer's own balance or rank, and every bullet in "what the
+token is not" stays literally true — that is the list a reviewer checks, and it
+is unchanged.
+
+## Referrals: what to say
+
+You cannot buy tokens. You can earn them by bringing somebody to LangX who then
+actually uses it — including if they go on to subscribe. The tokens go to the
+person who did the inviting, never to the person who paid.
+
+Two things to keep in the copy, because they are what make it defensible:
+
+- **Nothing is paid for signing up.** An invite earns only once the invited
+  person has verified an email, finished their profile and written to somebody.
+  Do not write "get 1000 tokens per sign-up"; write "when they start talking".
+- **It is capped per person, forever.** One invitee is worth
+  `TOKEN_RULES.referral.maxPerInvitee` at most, ever — not per month, not per
+  renewal.
+
+Never: "refer and earn", "affiliate", "commission", "payout". They are the
+vocabulary of a scheme that pays money, and this pays a point that buys streak
+freezes and frames.
+
 ## Returning v1 users: what to tell them
 
 **Balances carry over.** Nothing in v1 was ever bought or sold — what looked
@@ -132,6 +159,6 @@ frozen and can be restored by spending tokens.
 
 ## One-line version
 
-> LangX Token is an in-app point you earn by practising and teaching, and spend
-> on streak freezes and cosmetics. It is not a cryptocurrency: it cannot be
+> LangX Token is an in-app point you earn by practising, teaching and bringing
+> people in, and spend on streak freezes and cosmetics. It is not a cryptocurrency: it cannot be
 > bought, sold, traded, staked or withdrawn, and it never will be.

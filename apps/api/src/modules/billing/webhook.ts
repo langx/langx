@@ -7,6 +7,7 @@ import {
 } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
 import { refreshEntitlement } from './refresh'
 import type { RevenueCatClient } from './revenueCatClient'
@@ -106,6 +107,28 @@ export async function processRevenueCatWebhook(
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
     await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
+
+    /*
+     * `INITIAL_PURCHASE` and nothing else, and this is the only place in the
+     * system where that distinction exists — the client's `POST
+     * /billing/refresh` fallback sees a tier, never an event.
+     * `ENTITLEMENT_GRANT_EVENTS` also contains RENEWAL, PRODUCT_CHANGE,
+     * UNCANCELLATION and four more; every one of them is a grant and none of
+     * them is somebody starting to pay for the first time.
+     *
+     * Failure is swallowed for the reason `grantWelcomePack`'s is: the
+     * subscription is what the user paid for and it is already recorded above,
+     * and losing a referral top-up to a transient write is not worth failing
+     * the webhook RevenueCat is waiting on. `settleReferral` is idempotent, so
+     * the client's refresh picks it up.
+     */
+    if (event.type === 'INITIAL_PURCHASE') {
+      try {
+        await creditReferrerForSubscription(db, userId, entitlement.tier, now)
+      } catch (error) {
+        console.error('[referral] subscription credit failed', { userId, error })
+      }
+    }
   } else if (REVOKE_SET.has(event.type)) {
     // An EXPIRATION says something ended — never what is left. A subscriber
     // whose Pro+ lapses while a separate Pro subscription runs on must land on

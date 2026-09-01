@@ -357,6 +357,11 @@ export const ru: Localized<EnMessages> = {
     whatNextBody:
       'В Поиске появляются люди, которые говорят на том, что ты учишь, и учат то, на чём говоришь ты. Поздоровайся с кем-нибудь — первое сообщение приносит жетоны и это единственное, что отделяет тебя от разговора.',
     findSomeone: 'Найти собеседника',
+    inviteCodeToggle: 'Есть код приглашения?',
+    inviteCodeLabel: 'Код приглашения',
+    inviteCodePlaceholder: 'имя пользователя',
+    inviteCodeFound: 'Вас пригласил(а) {name}.',
+    inviteCodeUnknown: 'Такого не нашли — можно продолжить и так.',
   },
 
   welcomeBack: {
@@ -817,6 +822,8 @@ export const ru: Localized<EnMessages> = {
     shareProfile: 'Поделиться профилем',
     shareMessage: 'Практикуйте языки со мной в LangX: {url}',
     badges: 'Значки',
+    invite: 'Пригласить друга',
+    inviteBody: 'Получайте токены, когда он начнёт пользоваться LangX',
   },
 
   editProfile: {
@@ -1030,6 +1037,49 @@ export const ru: Localized<EnMessages> = {
     historyEmpty: 'Пока пусто. Отправьте сообщение или исправьте кого-нибудь.',
     historySpent: '−{count} потрачено',
     historyMore: 'Показать ещё',
+    inviteRow: 'Пригласить друга',
+  },
+
+  invite: {
+    title: 'Пригласить друга',
+    body: 'Поделитесь ссылкой. Когда приглашённый зарегистрируется и начнёт общаться, вы получите токены.',
+    code: 'Ваш код приглашения',
+    qrAccessibility: 'QR-код вашей ссылки-приглашения',
+    share: 'Поделиться ссылкой',
+    copy: 'Скопировать ссылку',
+    copied: 'Ссылка скопирована',
+    shareMessage: 'Практикуй языки со мной в LangX: {url}',
+    howTitle: 'Как это работает',
+    step1: 'Отправьте ссылку тому, кто учит ваш язык.',
+    step2:
+      'Он регистрируется и пишет первое сообщение или исправление — тогда вы получаете {activation} токенов.',
+    step3: 'Если он оформит платный план, вы получите ещё {subscription}. Всего {max} за человека.',
+    totalsInvited: {
+      one: '{count} приглашён',
+      few: '{count} приглашено',
+      many: '{count} приглашено',
+      other: '{count} приглашено',
+    },
+    totalsActivated: {
+      one: '{count} активен',
+      few: '{count} активны',
+      many: '{count} активных',
+      other: '{count} активных',
+    },
+    totalsEarned: {
+      one: '{count} токен',
+      few: '{count} токена',
+      many: '{count} токенов',
+      other: '{count} токенов',
+    },
+    statusPending: 'Пока не писал',
+    statusActivated: 'Активен',
+    statusSubscribed: 'Подписан',
+    emptyTitle: 'Пока никого',
+    emptyBody: 'Поделитесь ссылкой — те, кто присоединится, появятся здесь.',
+    referredBy: '{name} пригласил вас',
+    disclaimer:
+      'Токены — это внутренние очки. За саму регистрацию ничего не платят: приглашение приносит токены только когда приглашённый действительно кому-то напишет.',
   },
 
   tokenKind: {
@@ -1043,6 +1093,8 @@ export const ru: Localized<EnMessages> = {
     signupBonus: 'Бонус за регистрацию',
     spend: 'Трата',
     pronunciation: 'Произношение',
+    referral: 'Бонус за приглашение',
+    referralSubscription: 'Бонус за подписку приглашённого',
   },
 
   cosmetics: {
@@ -1138,6 +1190,8 @@ export const ru: Localized<EnMessages> = {
     learning: 'Учит',
     ctaBody: '{name} практикует языки в LangX. Присоединяйтесь, чтобы поздороваться.',
     ctaLabel: 'Открыть LangX',
+    inviteTitle: '{name} приглашает вас в LangX',
+    inviteBody: 'Практикуйтесь с тем, кто учит ваш язык. Присоединиться бесплатно.',
   },
 
   shareProfile: {

@@ -376,6 +376,11 @@ export const ar: Localized<EnMessages> = {
     whatNextBody:
       'يعرض لك الاستكشاف أشخاصًا يتكلمون ما تتعلّمه ويتعلّمون ما تتكلمه. ألقِ التحية على أحدهم — الرسالة الأولى تكسب رموزًا وهي الشيء الوحيد بينك وبين محادثة.',
     findSomeone: 'ابحث عن شخص للحديث معه',
+    inviteCodeToggle: 'هل لديك رمز دعوة؟',
+    inviteCodeLabel: 'رمز الدعوة',
+    inviteCodePlaceholder: 'اسم المستخدم',
+    inviteCodeFound: 'دعاك {name}.',
+    inviteCodeUnknown: 'لم نجد هذا الرمز — يمكنك المتابعة على أي حال.',
   },
 
   welcomeBack: {
@@ -864,6 +869,8 @@ export const ar: Localized<EnMessages> = {
     shareProfile: 'مشاركة ملفي الشخصي',
     shareMessage: 'تدرّب على اللغات معي في LangX: ‏{url}',
     badges: 'الشارات',
+    invite: 'ادعُ صديقًا',
+    inviteBody: 'اكسب توكنات عندما يبدأ باستخدام LangX',
   },
 
   editProfile: {
@@ -1082,6 +1089,51 @@ export const ar: Localized<EnMessages> = {
     historyEmpty: 'لا شيء بعد. أرسل رسالة أو صحّح لأحدهم.',
     historySpent: '−{count} أُنفقت',
     historyMore: 'عرض المزيد',
+    inviteRow: 'ادعُ صديقًا',
+  },
+
+  invite: {
+    title: 'ادعُ صديقًا',
+    body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسب توكنات.',
+    code: 'رمز الدعوة الخاص بك',
+    qrAccessibility: 'رمز QR لرابط الدعوة',
+    share: 'مشاركة الرابط',
+    copy: 'نسخ الرابط',
+    copied: 'تم نسخ الرابط',
+    shareMessage: 'تدرّب على اللغات معي في LangX: {url}',
+    howTitle: 'كيف تعمل',
+    step1: 'أرسل رابطك إلى شخص يتعلّم لغتك.',
+    step2: 'يسجّل ويكتب أول رسالة أو تصحيح — عندها تكسب {activation} توكن.',
+    step3: 'وإذا اشترك يومًا في خطة مدفوعة تكسب {subscription} إضافية. {max} إجمالًا لكل شخص.',
+    totalsInvited: {
+      one: 'مدعو واحد',
+      two: '{count} مدعوان',
+      few: '{count} مدعوين',
+      many: '{count} مدعوًا',
+      other: '{count} مدعو',
+    },
+    totalsActivated: {
+      one: 'نشط واحد',
+      two: '{count} نشطان',
+      few: '{count} نشطين',
+      many: '{count} نشطًا',
+      other: '{count} نشط',
+    },
+    totalsEarned: {
+      one: 'توكن واحد',
+      two: '{count} توكن',
+      few: '{count} توكنات',
+      many: '{count} توكنًا',
+      other: '{count} توكن',
+    },
+    statusPending: 'لم يكتب بعد',
+    statusActivated: 'نشط',
+    statusSubscribed: 'مشترك',
+    emptyTitle: 'لا أحد بعد',
+    emptyBody: 'شارك رابطك وسيظهر هنا كل من ينضم.',
+    referredBy: 'دعاك {name}',
+    disclaimer:
+      'التوكنات نقاط داخل التطبيق. التسجيل وحده لا يدفع شيئًا — الدعوة تكسب فقط عندما يكتب المدعو فعلًا إلى شخص ما.',
   },
 
   tokenKind: {
@@ -1095,6 +1147,8 @@ export const ar: Localized<EnMessages> = {
     signupBonus: 'مكافأة التسجيل',
     spend: 'إنفاق',
     pronunciation: 'النطق',
+    referral: 'مكافأة الدعوة',
+    referralSubscription: 'مكافأة اشتراك المدعو',
   },
 
   cosmetics: {
@@ -1202,6 +1256,8 @@ export const ar: Localized<EnMessages> = {
     learning: 'يتعلّم',
     ctaBody: '‏{name} يتدرّب على اللغات في LangX. انضم لتقول مرحبًا.',
     ctaLabel: 'افتح LangX',
+    inviteTitle: 'دعاك {name} إلى LangX',
+    inviteBody: 'تدرّب مع شخص يتعلّم لغتك. الانضمام مجاني.',
   },
 
   shareProfile: {

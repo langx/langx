@@ -33,6 +33,7 @@ import { profileRoutes } from './routes/profiles'
 import { qrRoutes } from './routes/qr'
 import { translationRoutes } from './routes/translate'
 import { leaderboardRoutes } from './routes/leaderboard'
+import { referralRoutes } from './routes/referrals'
 import { xpRoutes } from './routes/tokens'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
@@ -227,6 +228,7 @@ export async function buildApp({
   await app.register(translationRoutes)
   await app.register(billingRoutes)
   await app.register(xpRoutes)
+  await app.register(referralRoutes)
   await app.register(activityRoutes)
   await app.register(leaderboardRoutes)
   await app.register(moderationRoutes)

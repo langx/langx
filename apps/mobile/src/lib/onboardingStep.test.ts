@@ -12,6 +12,7 @@ const EMPTY: OnboardingDraft = {
   bio: '',
   city: '',
   interests: [],
+  referredByHandle: '',
   country: '',
   avatarUrl: '',
 }

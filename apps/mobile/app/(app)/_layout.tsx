@@ -142,6 +142,7 @@ export default function AppLayout() {
         <Tabs.Screen name="intro" options={FULL_SCREEN} />
         <Tabs.Screen name="link-device" options={FULL_SCREEN} />
         <Tabs.Screen name="share-profile" options={FULL_SCREEN} />
+        <Tabs.Screen name="invite" options={FULL_SCREEN} />
         <Tabs.Screen name="wallet" options={FULL_SCREEN} />
         <Tabs.Screen name="tokens" options={FULL_SCREEN} />
         <Tabs.Screen name="kitchen" options={FULL_SCREEN} />

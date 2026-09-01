@@ -1101,6 +1101,96 @@ The client is told how many more are needed rather than just that it cannot,
 and the camera is disabled rather than hidden. A control that vanishes teaches
 nothing, and a rule nobody knows about deters nobody.
 
+## Referrals — the handle is the code, and the award waits for a real message
+
+**There is no generated code.** The handle already is one: a public address at
+`/<handle>`, already unique, already memorable enough to say out loud, already
+the thing people share. A second identifier would be a second thing to keep
+unique, a second thing to reserve, and a second thing to explain. The invite
+link is the profile link plus `?invite=1`, so every link ever shared still
+resolves and the failure mode when the marker is stripped is today's behaviour
+rather than a 404.
+
+**Nothing is paid for signing up.** This is the whole design. `signupBonus.ts`
+used to say, correctly, that there was no farming incentive to guard against —
+token cannot be bought, sold, traded, transferred or withdrawn, so a second
+account earned its owner nothing. A referral award breaks exactly that: it is
+the first mechanism where a throwaway account is worth something to the account
+that made it. So the award does not fire on the sign-up. It fires when the
+invitee has verified an email, finished onboarding, and _earned_ — a message, a
+correction or a pronunciation answer. Farming it costs a real conversation with
+a real person per fake account, which is the price this whole economy is built
+to charge. The comment in `signupBonus.ts` has been rewritten to say so rather
+than left to become quietly false.
+
+**Two kinds, not one.** `refId` is unique per `{userId, kind, refId}`, so one
+kind keyed on the invitee can pay exactly once. The alternative was a prefixed
+second refId, the `mutualRefId` trick — which is right when the _same_ award is
+earned for different things, and this is not that. `tokenHistory.ts` labels a
+row by its kind, and one kind would show two rows both reading "Invite bonus",
+one worth a thousand and one worth four, on the same day. Telling somebody
+where their tokens came from is the only job that screen has.
+
+**Both are grant kinds.** All-time only, never the week or month. The existing
+argument for that list was launch week — a converted v1 balance topping the
+weekly table with tokens earned in 2023 — and referrals are worse in kind
+because they are _repeatable_: twenty activations in a week is twenty thousand
+tokens for somebody who did not send a message, every week, indefinitely. The
+week and month tables rank practising, and inviting is not practising.
+
+**The subscription top-up does not break "tokens cannot be bought."** The claim
+is that nobody can buy their own, and that survives exactly: the subscriber
+receives zero, and the only account that moves is one that spent nothing.
+`welcomePack.ts` stands word for word — money buys items and never token, _for
+the person who paid_. What does change is that an all-time rank can now move
+because somebody else paid. That is a real cost and it is accepted knowingly,
+with `legacyTokenConversion` as the yardstick.
+
+It is also gated behind the activation, which is the guard on the one path
+where real money touches this economy. Without it, a stolen card on a throwaway
+account is worth four thousand tokens for no human effort.
+
+**`INITIAL_PURCHASE` and nothing else**, plus a free → paid transition edge in
+`refreshEntitlement` for the webhook that never arrives.
+`ENTITLEMENT_GRANT_EVENTS` also holds RENEWAL, PRODUCT_CHANGE, UNCANCELLATION
+and four more; every one is a grant and none is somebody starting to pay for
+the first time. Three independent things stop a renewal paying: the explicit
+event check, the pre-image edge, and `refId` being the invitee. The third is
+sufficient on its own — and relying on it alone would mean the _first_ renewal
+after launch pays, which is harmless today only because `referrals` starts
+empty. That is luck, not a property.
+
+**`referrals._id` is the invitee**, not a field with a unique index on it.
+"A person has exactly one referrer, ever" is the primary key rather than an
+optimisation somebody could drop: it needs no declaration in `indexes.ts`, and
+a second attach is an E11000 rather than a race two readers both win.
+
+**Every attach failure is silent.** An unknown handle, a deleted referrer, a
+self-referral, a second attempt: all write nothing and throw nothing. The
+caller is `createProfile`, the account is real and the profile is written
+either way, and failing a sign-up over a mistyped username punishes the wrong
+person for the wrong mistake. `referredByHandle` carries `.catch(undefined)` so
+even a malformed code is a 201 rather than a 400.
+
+**The award is settled from the earning path, not a sweep.** A nightly job
+would need a partial index over rows that never expire and would land the
+reward hours after anything the referrer did — for a referral programme, that
+is most of the value gone. `awardForSend` already holds the sender's profile as
+a pre-image, so `referredBy` is a property access on a document in memory:
+somebody nobody invited, which is nearly everyone, pays nothing for the check.
+
+**Award first, latch second.** A crash between them under-records the audit row
+and self-heals on the next call, because `awardTokens` answers `duplicate` and
+the latch is rewritten. The reverse marks a referral paid that never was, which
+nothing can recover.
+
+**Returning v1 users cannot be attributed, and that is accepted.**
+`restoreLegacyProfile` writes the profile directly and fires from
+`afterEmailVerification`, where there is no request body to carry a code. The
+alternative — a post-onboarding endpoint — would destroy the property
+everything else rests on: attribution is written exactly once, at account
+creation, and nothing can change it afterwards. No copy promises otherwise.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form

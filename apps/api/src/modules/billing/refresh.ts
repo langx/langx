@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient } from './revenueCatClient'
+import { creditReferrerForSubscription } from '../referrals/settle'
 import { grantWelcomePack } from './welcomePack'
 
 /**
@@ -38,9 +39,39 @@ export async function refreshEntitlement(
     : { tier: 'free', willRenew: false, updatedAt: now }
   if (entitlement?.expiresAt) next.expiresAt = entitlement.expiresAt
 
-  await db
+  /*
+   * The pre-image, for one reason: a referral top-up is a function of an
+   * *event*, and this is the only edge in this file that is one.
+   * `grantWelcomePack` below is a function of the tier and is safely re-run on
+   * every refresh; paying somebody again on every refresh would not be.
+   */
+  const before = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .updateOne({ _id: userId }, { $set: { entitlement: next, updatedAt: now } })
+    .findOneAndUpdate(
+      { _id: userId },
+      { $set: { entitlement: next, updatedAt: now } },
+      { returnDocument: 'before' },
+    )
+
+  /*
+   * The transition, not the state. A renewal's pre-image is already paid, so
+   * it cannot fire here — which is the point, since this path cannot see the
+   * event type at all. It exists because a webhook that never arrives (a
+   * RevenueCat outage, a misconfigured dashboard secret) would otherwise mean
+   * the top-up is never paid, and this fallback is documented above as being
+   * for exactly that case.
+   *
+   * A lapse and re-subscribe reaches this edge a second time and pays nothing,
+   * because `refId` is the invitee: the pair is capped whatever calls this.
+   * Swallowed for the same reason `grantWelcomePack` is.
+   */
+  if (before?.entitlement.tier === 'free' && next.tier !== 'free') {
+    try {
+      await creditReferrerForSubscription(db, userId, next.tier, now)
+    } catch {
+      // Intentionally ignored; see above.
+    }
+  }
 
   /*
    * After the entitlement is written, not before: if the grant threw, a retry

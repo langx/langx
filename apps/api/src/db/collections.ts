@@ -88,6 +88,12 @@ export const COLLECTIONS = {
   // billing
   subscriptions: 'subscriptions',
 
+  /**
+   * Who invited whom. `_id` is the **invitee**, so "one referrer per person,
+   * ever" is the primary key rather than an index somebody could drop.
+   */
+  referrals: 'referrals',
+
   // gamification
   tokenLedger: 'tokenLedger',
   tokenAggregates: 'tokenAggregates',
