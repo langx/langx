@@ -12,7 +12,7 @@ import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { blockedUserIds } from '../moderation/blocks'
 import type { Profile } from '../profiles/profiles'
-import type { Post, PostCorrectionDoc } from './feed'
+import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
 
 export interface Like {
   _id: ObjectId
@@ -55,6 +55,10 @@ export function likeStateOf(
  * over the same documents: that index is unique, so it reads at most one row
  * per target by definition.
  *
+ * All three target lists are **required**, empty array and all. An optional one
+ * would let a new call site quietly stop counting a whole kind of like, and the
+ * only symptom would be a zero that looks like nobody had liked it.
+ *
  * Deliberately **not** block-filtered. Filtering the count would make a
  * page-wide aggregate viewer-dependent to hide a number nobody can attribute;
  * the likers *list* is filtered, which is where a blocked person would actually
@@ -63,7 +67,7 @@ export function likeStateOf(
 export async function readLikeSummary(
   db: Db,
   userId: string,
-  targets: { postIds: ObjectId[]; correctionIds: ObjectId[] },
+  targets: { postIds: ObjectId[]; correctionIds: ObjectId[]; answerIds: ObjectId[] },
 ): Promise<LikeSummary> {
   const clauses: Document[] = []
   if (targets.postIds.length > 0) {
@@ -71,6 +75,9 @@ export async function readLikeSummary(
   }
   if (targets.correctionIds.length > 0) {
     clauses.push({ targetType: 'correction', targetId: { $in: targets.correctionIds } })
+  }
+  if (targets.answerIds.length > 0) {
+    clauses.push({ targetType: 'answer', targetId: { $in: targets.answerIds } })
   }
   if (clauses.length === 0) return EMPTY_LIKE_SUMMARY
 
@@ -106,6 +113,7 @@ export async function readLikeSummary(
  * button. A correction is checked against its parent post's author too: a
  * correction is only ever read inside a post, so blocking the post's author
  * should make the whole thread absent rather than leaving its replies likeable.
+ * A recorded answer is checked the same way, for the same reason.
  *
  * `NOT_FOUND` rather than `FORBIDDEN` throughout, for the reason the profile
  * route gives: a 403 would confirm that the thing exists.
@@ -130,6 +138,23 @@ async function resolveTarget(
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot like your own post')
     }
     return { _id, targetType: 'post' }
+  }
+
+  if (target.targetType === 'answer') {
+    const answer = await db
+      .collection<PronunciationAnswerDoc>(COLLECTIONS.pronunciationAnswers)
+      .findOne({ _id })
+    if (!answer || hidden.includes(answer.authorId)) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nothing to like')
+    }
+    if (answer.authorId === userId) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot like your own answer')
+    }
+    const parent = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id: answer.postId })
+    if (!parent || hidden.includes(parent.authorId)) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nothing to like')
+    }
+    return { _id, targetType: 'answer' }
   }
 
   const correction = await db
@@ -202,6 +227,7 @@ async function readState(
   const summary = await readLikeSummary(db, userId, {
     postIds: targetType === 'post' ? [targetId] : [],
     correctionIds: targetType === 'correction' ? [targetId] : [],
+    answerIds: targetType === 'answer' ? [targetId] : [],
   })
   return likeStateOf(summary, targetType, targetId)
 }

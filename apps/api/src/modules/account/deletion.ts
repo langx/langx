@@ -5,7 +5,7 @@ import {
   type DataExport,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
-import type { Db } from 'mongodb'
+import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
@@ -122,6 +122,25 @@ export async function purgeExpiredAccounts(
   for (const profile of expired) {
     const userId = profile._id
 
+    /**
+     * Which requests this account answered, and how many times each — read
+     * before the rows go, and outside the storage branch because the counters
+     * have to come down whether or not a bucket is configured.
+     */
+    const answered = await db
+      .collection<{ postId: ObjectId }>(COLLECTIONS.pronunciationAnswers)
+      .find({ authorId: userId }, { projection: { postId: 1 } })
+      .toArray()
+    const feedAnswerPostIds = [
+      ...answered
+        .reduce(
+          (acc, row) =>
+            acc.set(row.postId.toHexString(), (acc.get(row.postId.toHexString()) ?? 0) + 1),
+          new Map<string, number>(),
+        )
+        .entries(),
+    ].map(([hex, count]) => [new ObjectId(hex), count] as const)
+
     // Their images have to leave the bucket too. Deleting the documents while
     // the files stay publicly fetchable by URL would make "permanently
     // removed" false, which is what the privacy policy promises.
@@ -135,10 +154,42 @@ export async function purgeExpiredAccounts(
         .find({ senderId: userId, media: { $exists: true } }, { projection: { media: 1 } })
         .toArray()
 
+      /**
+       * The same for everything they attached to the feed.
+       *
+       * The rows themselves survive — a post outlives the account that wrote
+       * it — but the bytes are theirs alone, exactly as a message attachment
+       * is. Missing until now, which made "permanently removed" false for
+       * every photo and voice note ever posted; a recorded answer carries two
+       * of them, so the gap only got wider.
+       */
+      const feedMedia = await Promise.all([
+        db
+          .collection<{ media?: { url: string } }>(COLLECTIONS.posts)
+          .find({ authorId: userId, media: { $exists: true } }, { projection: { media: 1 } })
+          .toArray(),
+        db
+          .collection<{ media?: { url: string } }>(COLLECTIONS.postCorrections)
+          .find({ authorId: userId, media: { $exists: true } }, { projection: { media: 1 } })
+          .toArray(),
+        db
+          .collection<{ media?: { url: string }; slowMedia?: { url: string } }>(
+            COLLECTIONS.pronunciationAnswers,
+          )
+          .find({ authorId: userId }, { projection: { media: 1, slowMedia: 1 } })
+          .toArray(),
+      ])
+
       const urls = [
         profile.avatarUrl,
         ...(profile.photos ?? []).map((p) => p.url),
         ...sentMedia.map((m) => m.media?.url),
+        ...feedMedia
+          .flat()
+          .flatMap((row) => [
+            row.media?.url,
+            (row as { slowMedia?: { url: string } }).slowMedia?.url,
+          ]),
       ]
       for (const url of urls) {
         if (!url) continue
@@ -158,6 +209,32 @@ export async function purgeExpiredAccounts(
         }
       }
     }
+
+    /**
+     * The references go with the objects. A surviving row pointing at a deleted
+     * file renders as a broken image or a voice note that never plays, which is
+     * worse than a post with no attachment.
+     *
+     * A post and a correction survive that, because the words are the content
+     * and the attachment was an extra. **A recorded answer does not** — it is
+     * the bytes and nothing else, so stripping its media leaves an empty row
+     * pretending to be an answer. Those are deleted outright, and the request's
+     * `answerCount` comes down with them: it is a sort key, and a count that
+     * outlives its rows would park an answered request at the front of the
+     * queue forever.
+     */
+    await Promise.all([
+      db.collection(COLLECTIONS.posts).updateMany({ authorId: userId }, { $unset: { media: '' } }),
+      db
+        .collection(COLLECTIONS.postCorrections)
+        .updateMany({ authorId: userId }, { $unset: { media: '' } }),
+      db.collection(COLLECTIONS.pronunciationAnswers).deleteMany({ authorId: userId }),
+      ...feedAnswerPostIds.map(([postId, count]) =>
+        db
+          .collection(COLLECTIONS.posts)
+          .updateOne({ _id: postId }, { $inc: { answerCount: -count } }),
+      ),
+    ])
 
     await db.collection<Message>(COLLECTIONS.messages).updateMany(
       { senderId: userId },
@@ -194,6 +271,13 @@ export async function purgeExpiredAccounts(
       // on content that survives the author, the same way a post outlives the
       // account that wrote it.
       db.collection(COLLECTIONS.likes).deleteMany({ userId }),
+      // Comments go with the account. They are chatter — nobody's thread
+      // depends on one, nothing was paid for it, and unlike a post or a
+      // correction there is no learner whose page it would leave a hole in.
+      // Recorded answers deliberately stay, for the reason posts and
+      // corrections do: deleting one would rewrite somebody else's answered
+      // request.
+      db.collection(COLLECTIONS.postComments).deleteMany({ authorId: userId }),
       // Both directions. Leaving the incoming edges would keep a deleted
       // account sitting in other people's follower lists, drawn as a name
       // whose profile no longer exists.
@@ -242,6 +326,8 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     devices,
     posts,
     postCorrections,
+    postComments,
+    pronunciationAnswers,
     likes,
     follows,
   ] = await Promise.all([
@@ -255,6 +341,8 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     db.collection(COLLECTIONS.devices).find({ userId }).toArray(),
     db.collection(COLLECTIONS.posts).find({ authorId: userId }).toArray(),
     db.collection(COLLECTIONS.postCorrections).find({ authorId: userId }).toArray(),
+    db.collection(COLLECTIONS.postComments).find({ authorId: userId }).toArray(),
+    db.collection(COLLECTIONS.pronunciationAnswers).find({ authorId: userId }).toArray(),
     db.collection(COLLECTIONS.likes).find({ userId }).toArray(),
     db.collection(COLLECTIONS.follows).find({ followerId: userId }).toArray(),
   ])
@@ -273,6 +361,8 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     devices,
     posts,
     postCorrections,
+    postComments,
+    pronunciationAnswers,
     likes,
     follows,
   }

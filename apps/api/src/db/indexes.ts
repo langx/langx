@@ -356,6 +356,49 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { correctionCount: 1, createdAt: -1, _id: -1 }, name: 'needs_correction' },
     { key: { createdAt: -1, _id: -1 }, name: 'recent' },
     { key: { authorId: 1, createdAt: -1 }, name: 'author' },
+    /**
+     * The two feed sections, each led by `kind`.
+     *
+     * New names rather than widening `needs_correction` and `recent` in place:
+     * changing a live index's key is an `IndexOptionsConflict`, not a rebuild,
+     * which this file has already been bitten by twice. The two narrower ones
+     * still serve the author-scoped reads and can be dropped once these have
+     * shipped and the query plans have been checked.
+     *
+     * The correction section matches `kind: { $in: ['correction', null] }`,
+     * because every post written before this field existed has no `kind` and is
+     * a correction post. `$in` bounds the scan on this index; `$ne` reads the
+     * same and cannot be bounded, which would quietly turn the main feed into a
+     * collection scan.
+     */
+    { key: { kind: 1, correctionCount: 1, createdAt: -1, _id: -1 }, name: 'kind_needs_correction' },
+    { key: { kind: 1, answerCount: 1, createdAt: -1, _id: -1 }, name: 'kind_answer_queue' },
+  ],
+
+  [COLLECTIONS.pronunciationAnswers]: [
+    /**
+     * One answer per person per request, and the source-side guarantee that the
+     * `pronunciation` award is paid once — the same two jobs
+     * `post_author_unique` does on `postCorrections`, for the same reason.
+     */
+    { key: { postId: 1, authorId: 1 }, name: 'post_author_unique', unique: true },
+    // The post detail screen pages a request's answers ascending, tiebreak in
+    // the key from the start rather than added later under a second name.
+    { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
+    // Everything one person has recorded: the data export and the purge sweep.
+    { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
+  ],
+
+  [COLLECTIONS.postComments]: [
+    /**
+     * **No unique index here, deliberately.** Every other child-of-post
+     * collection in this file has one, so its absence would otherwise read as
+     * an oversight: many comments per person per post is the point. Nothing is
+     * paid for a comment, so there is nothing a repeat could farm.
+     */
+    { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
+    // The purge and the export, both of which name only the author.
+    { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
   ],
 
   [COLLECTIONS.postCorrections]: [

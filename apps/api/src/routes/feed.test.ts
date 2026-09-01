@@ -1,4 +1,5 @@
 import { TOKEN_RULES } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -93,6 +94,66 @@ describe('community feed', () => {
       url: `/posts/${postId}/corrections${qs ? `?${qs}` : ''}`,
       headers: { cookie: user.cookie },
     })
+  }
+
+  async function ask(user: SignedUpUser, body: string, language = 'en') {
+    return app.inject({
+      method: 'POST',
+      url: '/posts',
+      headers: { cookie: user.cookie },
+      payload: { body, language, kind: 'pronunciation' },
+    })
+  }
+
+  const take = (name: string) => ({
+    url: `https://cdn.example.com/posts/u/${name}.m4a`,
+    contentType: 'audio/m4a',
+    sizeBytes: 4096,
+    durationSeconds: 3,
+  })
+
+  async function answer(
+    user: SignedUpUser,
+    postId: string,
+    payload: Record<string, unknown> = { media: take('fast') },
+  ) {
+    return app.inject({
+      method: 'POST',
+      url: `/posts/${postId}/answers`,
+      headers: { cookie: user.cookie },
+      payload,
+    })
+  }
+
+  async function answers(user: SignedUpUser, postId: string, qs = '') {
+    return app.inject({
+      method: 'GET',
+      url: `/posts/${postId}/answers${qs ? `?${qs}` : ''}`,
+      headers: { cookie: user.cookie },
+    })
+  }
+
+  async function comment(user: SignedUpUser, postId: string, body: string) {
+    return app.inject({
+      method: 'POST',
+      url: `/posts/${postId}/comments`,
+      headers: { cookie: user.cookie },
+      payload: { body },
+    })
+  }
+
+  async function comments(user: SignedUpUser, postId: string, qs = '') {
+    return app.inject({
+      method: 'GET',
+      url: `/posts/${postId}/comments${qs ? `?${qs}` : ''}`,
+      headers: { cookie: user.cookie },
+    })
+  }
+
+  function ledgerRows(userId: string, kind?: string) {
+    return handle.db
+      .collection(COLLECTIONS.tokenLedger)
+      .countDocuments({ userId, ...(kind ? { kind } : {}) })
   }
 
   beforeAll(async () => {
@@ -569,6 +630,527 @@ describe('community feed', () => {
         payload: { kind: 'image', contentType: 'application/pdf' },
       })
       expect(bad.statusCode).toBe(400)
+    })
+  })
+
+  describe('post kind', () => {
+    it('treats a post written before kinds existed as a correction post', async () => {
+      // Written straight into the collection, because the API cannot produce a
+      // post with no `kind` any more — and this is the exact shape every post
+      // on disk has. It is the only test that proves the `$in: [..., null]`
+      // reader, which is the difference between the main feed working and the
+      // main feed being empty.
+      const author = await newUser('legacy-kind-author@example.com')
+      const reader = await newUser('legacy-kind-reader@example.com')
+      const _id = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id,
+        authorId: author.userId,
+        body: 'A sentence from before the sections.',
+        language: 'en',
+        correctionCount: 0,
+        createdAt: new Date(),
+      })
+
+      const onCorrection = (await feed(reader, 'kind=correction')).json<{
+        items: { _id: string; kind: string }[]
+      }>().items
+      const onPronunciation = (await feed(reader, 'kind=pronunciation')).json<{
+        items: { _id: string }[]
+      }>().items
+
+      expect(onCorrection.find((i) => i._id === _id.toHexString())?.kind).toBe('correction')
+      expect(onPronunciation.some((i) => i._id === _id.toHexString())).toBe(false)
+    })
+
+    it('keeps the two sections apart', async () => {
+      const author = await newUser('sections-author@example.com')
+      const reader = await newUser('sections-reader@example.com')
+      const askId = (await ask(author, 'schadenfreude')).json<{ _id: string }>()._id
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+
+      const corrections = (await feed(reader, 'kind=correction')).json<{
+        items: { _id: string }[]
+      }>().items
+      const pronunciation = (await feed(reader, 'kind=pronunciation')).json<{
+        items: { _id: string }[]
+      }>().items
+
+      expect(corrections.map((i) => i._id)).toContain(postId)
+      expect(corrections.map((i) => i._id)).not.toContain(askId)
+      expect(pronunciation.map((i) => i._id)).toEqual([askId])
+    })
+
+    it('refuses a correction on a pronunciation request', async () => {
+      const author = await newUser('wrongkind-asker@example.com')
+      const helper = await newUser('wrongkind-corrector@example.com')
+      const askId = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+      expect((await correct(helper, askId, 'squirrel')).statusCode).toBe(400)
+    })
+
+    it('refuses a recording on a correction post', async () => {
+      const author = await newUser('wrongkind-poster@example.com')
+      const helper = await newUser('wrongkind-answerer@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      expect((await answer(helper, postId)).statusCode).toBe(400)
+    })
+  })
+
+  describe('comments', () => {
+    it('counts a comment on the card and lists it on the post', async () => {
+      const author = await newUser('comment-author@example.com')
+      const reader = await newUser('comment-reader@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+
+      expect((await comment(reader, postId, 'Nearly!')).statusCode).toBe(201)
+
+      const card = (await feed(reader))
+        .json<{ items: { _id: string; commentCount: number }[] }>()
+        .items.find((i) => i._id === postId)
+      expect(card?.commentCount).toBe(1)
+
+      const listed = (await comments(reader, postId)).json<{ items: { body: string }[] }>().items
+      expect(listed.map((c) => c.body)).toEqual(['Nearly!'])
+    })
+
+    it('lets the same person comment twice', async () => {
+      // The deliberate absence of a unique index, pinned. Every other
+      // child-of-post collection has one, so this is the test that stops
+      // somebody adding a fourth by symmetry.
+      const author = await newUser('comment-twice-author@example.com')
+      const reader = await newUser('comment-twice-reader@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+
+      expect((await comment(reader, postId, 'One.')).statusCode).toBe(201)
+      expect((await comment(reader, postId, 'Two.')).statusCode).toBe(201)
+
+      const card = (await feed(reader))
+        .json<{ items: { _id: string; commentCount: number }[] }>()
+        .items.find((i) => i._id === postId)
+      expect(card?.commentCount).toBe(2)
+    })
+
+    it('pays nothing, and does not advance the streak', async () => {
+      const author = await newUser('comment-pay-author@example.com')
+      const reader = await newUser('comment-pay-reader@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+
+      const before = await ledgerRows(reader.userId)
+      const profileBefore = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: reader.userId })
+
+      await comment(reader, postId, 'Nice one.')
+
+      expect(await ledgerRows(reader.userId)).toBe(before)
+      const profileAfter = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: reader.userId })
+      expect(profileAfter?.streak?.lastQualifiedDay).toBe(profileBefore?.streak?.lastQualifiedDay)
+    })
+
+    it('lets you comment on your own post, unlike correcting it', async () => {
+      const author = await newUser('comment-own@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      expect((await comment(author, postId, 'Actually I meant have.')).statusCode).toBe(201)
+      expect((await correct(author, postId, 'I have a pen.')).statusCode).toBe(400)
+    })
+
+    it("pages a post's comments oldest first", async () => {
+      const author = await newUser('comment-page-author@example.com')
+      const reader = await newUser('comment-page-reader@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      for (const body of ['One.', 'Two.', 'Three.']) await comment(reader, postId, body)
+
+      const first = (await comments(reader, postId, 'limit=2')).json<{
+        items: { body: string }[]
+        nextCursor: string | null
+      }>()
+      expect(first.items.map((c) => c.body)).toEqual(['One.', 'Two.'])
+      expect(first.nextCursor).not.toBeNull()
+
+      const second = (
+        await comments(reader, postId, `limit=2&cursor=${encodeURIComponent(first.nextCursor!)}`)
+      ).json<{ items: { body: string }[] }>()
+      expect(second.items.map((c) => c.body)).toEqual(['Three.'])
+    })
+
+    it('is not a likeable target', async () => {
+      const author = await newUser('comment-like-author@example.com')
+      const reader = await newUser('comment-like-reader@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const commentId = (await comment(reader, postId, 'Nice.')).json<{ _id: string }>()._id
+
+      const response = await app.inject({
+        method: 'PUT',
+        url: '/likes',
+        headers: { cookie: author.cookie },
+        payload: { targetType: 'comment', targetId: commentId },
+      })
+      // Rejected by the enum, before anything looks the id up.
+      expect(response.statusCode).toBe(400)
+    })
+  })
+
+  describe('pronunciation', () => {
+    it('pays a recorded answer under its own kind, keyed on the request', async () => {
+      const asker = await newUser('pron-asker@example.com')
+      const helper = await newUser('pron-helper@example.com')
+      const askId = (await ask(asker, 'thoroughly')).json<{ _id: string }>()._id
+
+      expect((await answer(helper, askId)).statusCode).toBe(201)
+
+      const row = await handle.db
+        .collection(COLLECTIONS.tokenLedger)
+        .findOne({ userId: helper.userId, kind: 'pronunciation' })
+      expect(row?.amount).toBe(TOKEN_RULES.award.pronunciation)
+      expect(row?.refId).toBe(`pron:${askId}`)
+      // Its own kind, so the correction badges keep meaning corrections.
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(0)
+    })
+
+    it('accepts a fast take alone, and a fast take with a slow one', async () => {
+      const asker = await newUser('pron-takes-asker@example.com')
+      const one = await newUser('pron-takes-one@example.com')
+      const two = await newUser('pron-takes-two@example.com')
+      const a = (await ask(asker, 'colonel')).json<{ _id: string }>()._id
+      const b = (await ask(asker, 'lieutenant')).json<{ _id: string }>()._id
+
+      expect((await answer(one, a)).statusCode).toBe(201)
+      const both = await answer(two, b, { media: take('fast'), slowMedia: take('slow') })
+      expect(both.statusCode).toBe(201)
+      expect(both.json<{ slowMedia?: { url: string } }>().slowMedia?.url).toContain('slow.m4a')
+    })
+
+    it('refuses an answer with no recording, and an image as one', async () => {
+      const asker = await newUser('pron-bad-asker@example.com')
+      const helper = await newUser('pron-bad-helper@example.com')
+      const askId = (await ask(asker, 'worcestershire')).json<{ _id: string }>()._id
+
+      expect((await answer(helper, askId, { note: 'Just words.' })).statusCode).toBe(400)
+      const asImage = await answer(helper, askId, {
+        media: {
+          url: 'https://cdn.example.com/posts/u/1.jpg',
+          contentType: 'image/jpeg',
+          sizeBytes: 1024,
+        },
+      })
+      expect(asImage.statusCode).toBe(400)
+    })
+
+    it('spends one media unit for a two-take answer', async () => {
+      // The ruling the half-speed decision left open. Two files, one unit —
+      // charging twice would make the optional slow take feel expensive and be
+      // skipped, which is the behaviour it exists to encourage.
+      const asker = await newUser('pron-quota-asker@example.com')
+      const helper = await newUser('pron-quota-helper@example.com')
+      const askId = (await ask(asker, 'anemone')).json<{ _id: string }>()._id
+
+      await answer(helper, askId, { media: take('fast'), slowMedia: take('slow') })
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: helper.userId })
+      expect(profile?.quota?.media).toHaveLength(1)
+    })
+
+    it('spends nothing when the second take is rejected', async () => {
+      // Assert-all-then-consume, pinned: a bad slow take must not burn a unit
+      // for an answer that never got written.
+      const asker = await newUser('pron-quota2-asker@example.com')
+      const helper = await newUser('pron-quota2-helper@example.com')
+      const askId = (await ask(asker, 'quinoa')).json<{ _id: string }>()._id
+
+      const response = await answer(helper, askId, {
+        media: take('fast'),
+        slowMedia: { ...take('slow'), url: 'https://evil.example.net/slow.m4a' },
+      })
+      expect(response.statusCode).toBe(400)
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: helper.userId })
+      expect(profile?.quota?.media ?? []).toHaveLength(0)
+    })
+
+    it('refuses answering your own request, and answering twice', async () => {
+      const asker = await newUser('pron-own-asker@example.com')
+      const helper = await newUser('pron-own-helper@example.com')
+      const askId = (await ask(asker, 'gnocchi')).json<{ _id: string }>()._id
+
+      expect((await answer(asker, askId)).statusCode).toBe(400)
+      expect((await answer(helper, askId)).statusCode).toBe(201)
+      expect((await answer(helper, askId)).statusCode).toBe(400)
+    })
+
+    it('pays exactly once however many times the answer is replayed', async () => {
+      const asker = await newUser('pron-race-asker@example.com')
+      const helper = await newUser('pron-race-helper@example.com')
+      const askId = (await ask(asker, 'phenomenon')).json<{ _id: string }>()._id
+
+      const results = await Promise.all([
+        answer(helper, askId),
+        answer(helper, askId),
+        answer(helper, askId),
+      ])
+      expect(results.filter((r) => r.statusCode === 201)).toHaveLength(1)
+
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.pronunciationAnswers)
+          .countDocuments({ authorId: helper.userId }),
+      ).toBe(1)
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(1)
+      // The one the sequential duplicate test cannot catch: an `$inc` that
+      // drifted above the unique-index guard.
+      const request = await handle.db
+        .collection<{ answerCount?: number }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(askId) })
+      expect(request?.answerCount).toBe(1)
+    })
+
+    it('puts unanswered requests first', async () => {
+      const asker = await newUser('pron-queue-asker@example.com')
+      const helper = await newUser('pron-queue-helper@example.com')
+      const answered = (await ask(asker, 'first word')).json<{ _id: string }>()._id
+      await answer(helper, answered)
+      const untouched = (await ask(asker, 'second word')).json<{ _id: string }>()._id
+
+      const items = (await feed(helper, 'kind=pronunciation')).json<{ items: { _id: string }[] }>()
+        .items
+      expect(items[0]?._id).toBe(untouched)
+      expect(items.map((i) => i._id)).toContain(answered)
+    })
+
+    it('pages the pronunciation queue across an answerCount boundary', async () => {
+      const asker = await newUser('pron-page-asker@example.com')
+      const helper = await newUser('pron-page-helper@example.com')
+      const answered = (await ask(asker, 'alpha')).json<{ _id: string }>()._id
+      await answer(helper, answered)
+      const open1 = (await ask(asker, 'bravo')).json<{ _id: string }>()._id
+      const open2 = (await ask(asker, 'charlie')).json<{ _id: string }>()._id
+
+      // Paged to exhaustion rather than compared to a fixed list: the feed is
+      // global, so other tests' requests share these pages. What is being
+      // pinned is the keyset itself — every row exactly once, and the answered
+      // one after both open ones, across a boundary where `answerCount`
+      // changes.
+      const seen: string[] = []
+      let cursor: string | null = null
+      for (let page = 0; page < 20; page++) {
+        const body: { items: { _id: string }[]; nextCursor: string | null } = (
+          await feed(
+            helper,
+            `kind=pronunciation&limit=2${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`,
+          )
+        ).json()
+        seen.push(...body.items.map((i) => i._id))
+        cursor = body.nextCursor
+        if (!cursor) break
+      }
+
+      expect(new Set(seen).size).toBe(seen.length)
+      for (const id of [open1, open2, answered]) expect(seen).toContain(id)
+      expect(seen.indexOf(answered)).toBeGreaterThan(seen.indexOf(open1))
+      expect(seen.indexOf(answered)).toBeGreaterThan(seen.indexOf(open2))
+    })
+
+    it('carries the top answer and the viewer flag on the card', async () => {
+      const asker = await newUser('pron-card-asker@example.com')
+      const helper = await newUser('pron-card-helper@example.com')
+      const askId = (await ask(asker, 'espresso')).json<{ _id: string }>()._id
+      await answer(helper, askId, { media: take('fast'), slowMedia: take('slow') })
+
+      const card = (await feed(helper, 'kind=pronunciation'))
+        .json<{
+          items: {
+            _id: string
+            answerCount: number
+            answeredByViewer: boolean
+            topAnswer: { slowMedia?: { url: string } } | null
+          }[]
+        }>()
+        .items.find((i) => i._id === askId)
+      expect(card?.answerCount).toBe(1)
+      expect(card?.answeredByViewer).toBe(true)
+      expect(card?.topAnswer?.slowMedia?.url).toContain('slow.m4a')
+    })
+
+    it("counts a frozen user's answer even though it pays nothing", async () => {
+      const asker = await newUser('pron-frozen-asker@example.com')
+      const helper = await newUser('pron-frozen-helper@example.com')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: helper.userId }, { $set: { tokenFrozenAt: new Date() } })
+      const askId = (await ask(asker, 'jalapeno')).json<{ _id: string }>()._id
+
+      expect((await answer(helper, askId)).statusCode).toBe(201)
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(0)
+      const request = await handle.db
+        .collection<{ answerCount?: number }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(askId) })
+      expect(request?.answerCount).toBe(1)
+    })
+
+    it("pages a request's answers oldest first, and carries the request", async () => {
+      const asker = await newUser('pron-list-asker@example.com')
+      const one = await newUser('pron-list-one@example.com')
+      const two = await newUser('pron-list-two@example.com')
+      const askId = (await ask(asker, 'sixth')).json<{ _id: string }>()._id
+      await answer(one, askId)
+      await answer(two, askId)
+
+      const page = (await answers(asker, askId)).json<{
+        post: { _id: string; kind: string }
+        items: { author: { _id: string } }[]
+      }>()
+      expect(page.post._id).toBe(askId)
+      expect(page.post.kind).toBe('pronunciation')
+      expect(page.items.map((i) => i.author._id)).toEqual([one.userId, two.userId])
+    })
+  })
+
+  describe('deleting your own things', () => {
+    it('takes the corrections, answers, comments and likes with the post', async () => {
+      const author = await newUser('del-post-author@example.com')
+      const helper = await newUser('del-post-helper@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const correctionId = (await correct(helper, postId, 'I have a pen.')).json<{ _id: string }>()
+        ._id
+      await comment(helper, postId, 'Close.')
+      await app.inject({
+        method: 'PUT',
+        url: '/likes',
+        headers: { cookie: helper.cookie },
+        payload: { targetType: 'post', targetId: postId },
+      })
+
+      const paidBefore = await ledgerRows(helper.userId, 'correction')
+      expect(paidBefore).toBe(1)
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: `/posts/${postId}`,
+        headers: { cookie: author.cookie },
+      })
+      expect(response.statusCode).toBe(204)
+
+      const _id = new ObjectId(postId)
+      expect(await handle.db.collection(COLLECTIONS.posts).countDocuments({ _id })).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.postCorrections).countDocuments({ postId: _id }),
+      ).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.postComments).countDocuments({ postId: _id }),
+      ).toBe(0)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.likes)
+          .countDocuments({ targetId: { $in: [_id, new ObjectId(correctionId)] } }),
+      ).toBe(0)
+      // Nobody loses what they earned: the ledger is append-only, and the
+      // person who corrected this still did the work.
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(paidBefore)
+    })
+
+    it("refuses to delete somebody else's post, comment or correction", async () => {
+      const author = await newUser('del-other-author@example.com')
+      const helper = await newUser('del-other-helper@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const correctionId = (await correct(helper, postId, 'I have a pen.')).json<{ _id: string }>()
+        ._id
+      const commentId = (await comment(helper, postId, 'Close.')).json<{ _id: string }>()._id
+
+      const del = (url: string, user: SignedUpUser) =>
+        app.inject({ method: 'DELETE', url, headers: { cookie: user.cookie } })
+
+      // 404, never 403 — a 403 confirms the row exists.
+      expect((await del(`/posts/${postId}`, helper)).statusCode).toBe(404)
+      expect((await del(`/posts/${postId}/corrections/${correctionId}`, author)).statusCode).toBe(
+        404,
+      )
+      expect((await del(`/posts/${postId}/comments/${commentId}`, author)).statusCode).toBe(404)
+    })
+
+    it('lets you rewrite a deleted correction, and does not pay for it twice', async () => {
+      // The reason the award is keyed on the post rather than on the row.
+      // Without it, delete-and-rewrite is an unbounded payout from one post.
+      const author = await newUser('del-rewrite-author@example.com')
+      const helper = await newUser('del-rewrite-helper@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const correctionId = (await correct(helper, postId, 'I have a pen.')).json<{ _id: string }>()
+        ._id
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(1)
+
+      const removed = await app.inject({
+        method: 'DELETE',
+        url: `/posts/${postId}/corrections/${correctionId}`,
+        headers: { cookie: helper.cookie },
+      })
+      expect(removed.statusCode).toBe(204)
+      const post_ = await handle.db
+        .collection<{ correctionCount: number }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(postId) })
+      expect(post_?.correctionCount).toBe(0)
+
+      expect((await correct(helper, postId, 'I have a pen!')).statusCode).toBe(201)
+      expect(await ledgerRows(helper.userId, 'correction')).toBe(1)
+    })
+
+    it('lets you re-record a deleted answer, and does not pay for it twice', async () => {
+      const asker = await newUser('del-answer-asker@example.com')
+      const helper = await newUser('del-answer-helper@example.com')
+      const askId = (await ask(asker, 'brioche')).json<{ _id: string }>()._id
+      const answerId = (await answer(helper, askId)).json<{ _id: string }>()._id
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(1)
+
+      const removed = await app.inject({
+        method: 'DELETE',
+        url: `/posts/${askId}/answers/${answerId}`,
+        headers: { cookie: helper.cookie },
+      })
+      expect(removed.statusCode).toBe(204)
+      const request = await handle.db
+        .collection<{ answerCount?: number }>(COLLECTIONS.posts)
+        .findOne({ _id: new ObjectId(askId) })
+      expect(request?.answerCount).toBe(0)
+
+      expect((await answer(helper, askId)).statusCode).toBe(201)
+      expect(await ledgerRows(helper.userId, 'pronunciation')).toBe(1)
+    })
+
+    it('deletes a post once when two devices press delete together', async () => {
+      const author = await newUser('del-race-author@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+
+      const del = () =>
+        app.inject({
+          method: 'DELETE',
+          url: `/posts/${postId}`,
+          headers: { cookie: author.cookie },
+        })
+      const results = await Promise.all([del(), del()])
+      expect(results.filter((r) => r.statusCode === 204)).toHaveLength(1)
+      expect(results.filter((r) => r.statusCode === 404)).toHaveLength(1)
+    })
+
+    it('drops the comment count when a comment is deleted', async () => {
+      const author = await newUser('del-comment-author@example.com')
+      const helper = await newUser('del-comment-helper@example.com')
+      const postId = (await post(author, 'I has a pen.')).json<{ _id: string }>()._id
+      const commentId = (await comment(helper, postId, 'Close.')).json<{ _id: string }>()._id
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: `/posts/${postId}/comments/${commentId}`,
+        headers: { cookie: helper.cookie },
+      })
+      expect(response.statusCode).toBe(204)
+
+      const card = (await feed(helper))
+        .json<{ items: { _id: string; commentCount: number }[] }>()
+        .items.find((i) => i._id === postId)
+      expect(card?.commentCount).toBe(0)
     })
   })
 })

@@ -59,9 +59,25 @@ export const COLLECTIONS = {
   posts: 'posts',
   postCorrections: 'postCorrections',
   /**
-   * Likes on feed content — a post or a correction, told apart by
-   * `targetType`. One collection rather than one per likeable thing, so a third
-   * kind needs a value in an enum and no migration.
+   * Recorded answers to a pronunciation request. The `postCorrections` of the
+   * other half of the feed: one per person per request, and it pays.
+   *
+   * Not a row in `postCorrections` with an empty `corrected`, because the two
+   * are answers to different questions — a correction rewrites the sentence, a
+   * recording says it — and because a shared collection would have made the
+   * unique index mean "one of either", which is not the rule.
+   */
+  pronunciationAnswers: 'pronunciationAnswers',
+  /**
+   * Text remarks on a post. Unlimited, unpaid, unlikeable — the one thing in
+   * the feed that costs nothing to leave and earns nothing for leaving it,
+   * which is what makes it safe to be unlimited.
+   */
+  postComments: 'postComments',
+  /**
+   * Likes on feed content — a post, a correction or a recorded answer, told
+   * apart by `targetType`. One collection rather than one per likeable thing,
+   * which is why the third kind cost a value in an enum and no migration.
    *
    * `targetId` is an `ObjectId`, which quietly rules out ever liking a
    * *profile*: profiles are keyed by string. That is the architecture's
