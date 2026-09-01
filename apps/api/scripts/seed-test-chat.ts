@@ -47,6 +47,13 @@ import { PASSWORD, emailFor, ensureAccount, purgeTestAccounts, resolveDbName } f
 
 type Side = 'george' | 'marina'
 
+/**
+ * George first, and not only for readability: `Object.keys` preserves
+ * insertion order, `seed()` walks it in that order, and Marina names George as
+ * her referrer. `attachReferral` resolves a handle against profiles that
+ * already exist, so an invitee created before their referrer is silently not
+ * attributed — which is the correct behaviour and a confusing fixture.
+ */
 const CAST: Record<Side, OnboardingProfileInput> = {
   george: {
     handle: 'test_george',
@@ -62,6 +69,16 @@ const CAST: Record<Side, OnboardingProfileInput> = {
   },
   marina: {
     handle: 'test_marina',
+    /*
+     * So the invite screen has a *paid* row rather than only pending ones.
+     * Nothing here credits George: Marina earns from the conversation below
+     * like anybody else, `awardForSend` calls `settleReferral`, and the
+     * activation lands through the real path. That is the whole point of
+     * putting it here instead of writing a ledger row — the fixture
+     * demonstrates the rule (an invitation earns only once the invited person
+     * turns up) rather than asserting it.
+     */
+    referredByHandle: 'test_george',
     displayName: 'Marina',
     birthDate: '1996-06-15',
     gender: 'female',

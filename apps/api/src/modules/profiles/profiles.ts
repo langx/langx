@@ -357,7 +357,7 @@ export async function createProfile(
    */
   if (input.referredByHandle) {
     try {
-      await attachReferral(db, userId, input.referredByHandle, 'manual')
+      await attachReferral(db, userId, input.referredByHandle, input.referredBySource ?? 'manual')
     } catch (error) {
       console.error('[referral] attach failed', { userId, error })
     }

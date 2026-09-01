@@ -86,6 +86,19 @@ export function inviteHandleFromUrl(url: string | null | undefined): string | nu
  */
 export const REFERRAL_LIST_LIMIT = 50
 
+/**
+ * Where an invite code came from.
+ *
+ * `link` means a marked invite URL put it there; `manual` means somebody typed
+ * or pasted it into onboarding. The distinction exists to answer a question
+ * the product will ask — whether an unmarked profile link should count as an
+ * invitation too — with data rather than a guess. The server cannot infer it,
+ * so the client says.
+ */
+export const REFERRAL_SOURCES = ['link', 'manual'] as const
+export type ReferralSource = (typeof REFERRAL_SOURCES)[number]
+export const referralSourceSchema = z.enum(REFERRAL_SOURCES)
+
 export const REFERRAL_STATUSES = ['pending', 'activated', 'subscribed'] as const
 export type ReferralInviteeStatus = (typeof REFERRAL_STATUSES)[number]
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { inviteHandleFromUrl, normalizeInviteCode } from './inviteLink'
+import { inviteHandleFromUrl, normalizeInviteCode, resolveReferrer } from './inviteLink'
 
 /**
  * These run on paths where a throw is not an error message but a launch that
@@ -54,5 +54,30 @@ describe('inviteHandleFromUrl, as the app calls it', () => {
   it('reads only a marked link, so sharing a profile is not an attribution', () => {
     expect(inviteHandleFromUrl('https://app2.langx.io/deniz?invite=1')).toBe('deniz')
     expect(inviteHandleFromUrl('https://app2.langx.io/deniz')).toBeNull()
+  })
+})
+
+/**
+ * The gap this closes: `pendingReferrer` shipped written in two places and
+ * read in none, so an invite link stored a handle that onboarding never saw.
+ * The link path attributed nobody and only a typed code worked.
+ */
+describe('resolveReferrer', () => {
+  it('takes the handle an invite link left on the device', () => {
+    expect(resolveReferrer('', 'deniz')).toEqual({ handle: 'deniz', source: 'link' })
+  })
+
+  it('leaves a code already in the draft alone, and does not relabel it', () => {
+    expect(resolveReferrer('typed', 'deniz')).toBeNull()
+  })
+
+  it('has nothing to say when no link was opened', () => {
+    for (const pending of [null, undefined, '', 'not a handle!!']) {
+      expect(resolveReferrer('', pending), String(pending)).toBeNull()
+    }
+  })
+
+  it('normalises what it found, since the flag is written from a URL', () => {
+    expect(resolveReferrer('', '@Deniz')?.handle).toBe('deniz')
   })
 })

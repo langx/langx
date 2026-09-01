@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
-import type { LanguageLevel, Gender } from '@langx/shared'
-import { FLAG_KEYS, clearFlag, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
+import type { LanguageLevel, Gender, ReferralSource } from '@langx/shared'
+import { resolveReferrer } from '../lib/inviteLink'
+import { FLAG_KEYS, clearFlag, readFlag, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
 
 export interface OnboardingDraft {
   nativeLanguages: string[]
@@ -23,6 +24,13 @@ export interface OnboardingDraft {
    * languages — the link is opened once and the form is finished later.
    */
   referredByHandle: string
+  /**
+   * Which of those two it was. The server stores it on the referral row, and
+   * it is the only way to answer a question the product will ask: whether an
+   * unmarked profile link should count as an invitation too. Without it every
+   * row says "typed", including the ones that were not.
+   */
+  referredBySource: ReferralSource
   country: string
   /** Uploaded during the wizard; written by `POST /profiles`, not by `confirm`. */
   avatarUrl: string
@@ -39,6 +47,7 @@ const EMPTY: OnboardingDraft = {
   city: '',
   interests: [],
   referredByHandle: '',
+  referredBySource: 'manual',
   country: '',
   avatarUrl: '',
 }
@@ -104,6 +113,26 @@ export async function hydrateDraft(): Promise<void> {
   if (hydrated) return
   const stored = await readJsonFlag<Partial<OnboardingDraft>>(FLAG_KEYS.onboardingDraft)
   if (stored) draft = { ...EMPTY, ...stored, ...diffFromEmpty(draft) }
+
+  /*
+   * Whoever's invite link opened the app, if the draft has not already been
+   * told. Read here rather than on the handle screen because the flag is
+   * written long before that screen exists — often before there is an account
+   * at all — and this is the one place the draft is assembled from everything
+   * the device remembers.
+   *
+   * A code already in the draft wins. It was either typed, which is a more
+   * deliberate answer than a link, or it came from this same flag on an
+   * earlier launch.
+   */
+  const referrer = resolveReferrer(
+    draft.referredByHandle,
+    await readFlag(FLAG_KEYS.pendingReferrer),
+  )
+  if (referrer) {
+    draft = { ...draft, referredByHandle: referrer.handle, referredBySource: referrer.source }
+  }
+
   hydrated = true
   // Anything typed while the read was in flight has not been written yet,
   // because `schedulePersist` refuses to run before this point.

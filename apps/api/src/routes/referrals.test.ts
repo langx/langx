@@ -155,6 +155,23 @@ describe('referrals', () => {
       expect(await ledgerOf(a.userId, 'referral')).toHaveLength(0)
     })
 
+    /**
+     * The client says where the code came from; the server cannot infer it.
+     * Without this the column is always `manual`, including for the links —
+     * and the question it exists to answer (should an unmarked profile link
+     * count as an invitation?) has no data behind it.
+     */
+    it('records whether the code came from a link or was typed', async () => {
+      const a = await newUser()
+      const b = await newUser({ referredByHandle: a.handle, referredBySource: 'link' })
+      expect((await rowOf(b.userId))?.source).toBe('link')
+
+      const c = await newUser()
+      const d = await newUser({ referredByHandle: c.handle })
+      // Absent from an older client, and "typed" is the claim that asserts less.
+      expect((await rowOf(d.userId))?.source).toBe('manual')
+    })
+
     it('ignores an unknown code rather than failing the sign-up', async () => {
       const b = await newUser({ referredByHandle: 'nobodyhere' })
       expect(await rowOf(b.userId)).toBeNull()

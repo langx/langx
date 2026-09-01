@@ -21,6 +21,20 @@ import { PASSWORD, emailFor, ensureAccount, purgeTestAccounts, resolveDbName } f
  * mutual fit Discover needs to return anyone at all for an English speaker
  * learning Russian. The rest are there so filtering by language visibly
  * changes the result rather than always matching everyone.
+ *
+ * Three of them name Anna as their referrer, so the invite screen has a list
+ * rather than an empty state. The order matters and is not incidental:
+ * `attachReferral` resolves a handle against profiles that already exist, so
+ * an invitee has to come *after* the person who invited them in this array.
+ *
+ * One of them arrives by link and two by typing the code, so `referrals.source`
+ * holds both of its values rather than only the default.
+ *
+ * Nothing here pays anybody. The awards are settled by `seed-test-chat.ts`
+ * when the cast actually talks, through `awardForSend` like any other
+ * message — which is the point. A fixture that credited the referrer directly
+ * would prove the ledger writes and nothing about the rule the feature is,
+ * which is that an invitation earns only once the invited person turns up.
  */
 const PEOPLE: OnboardingProfileInput[] = [
   {
@@ -52,6 +66,10 @@ const PEOPLE: OnboardingProfileInput[] = [
   },
   {
     handle: 'test_katya',
+    referredByHandle: 'test_anna',
+    // One of the three arrived on a link rather than typing the code, so the
+    // column has both values in it and a query against it means something.
+    referredBySource: 'link',
     displayName: 'Katya',
     birthDate: '2001-06-15',
     gender: 'female',
@@ -64,6 +82,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   },
   {
     handle: 'test_pavel',
+    referredByHandle: 'test_anna',
     displayName: 'Pavel',
     birthDate: '1988-06-15',
     gender: 'male',
@@ -76,6 +95,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   },
   {
     handle: 'test_olga',
+    referredByHandle: 'test_anna',
     displayName: 'Olga',
     birthDate: '1995-06-15',
     gender: 'female',
