@@ -66,6 +66,33 @@ describe('likes', () => {
     return response.json<{ _id: string }>()._id
   }
 
+  async function ask(user: SignedUpUser, body: string) {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/posts',
+      headers: { cookie: user.cookie },
+      payload: { body, language: 'en', kind: 'pronunciation' },
+    })
+    return response.json<{ _id: string }>()._id
+  }
+
+  async function answer(user: SignedUpUser, postId: string) {
+    const response = await app.inject({
+      method: 'POST',
+      url: `/posts/${postId}/answers`,
+      headers: { cookie: user.cookie },
+      payload: {
+        media: {
+          url: 'https://cdn.example.com/posts/u/take.m4a',
+          contentType: 'audio/m4a',
+          sizeBytes: 4096,
+          durationSeconds: 3,
+        },
+      },
+    })
+    return response.json<{ _id: string }>()._id
+  }
+
   function like(user: SignedUpUser, targetType: string, targetId: string) {
     return app.inject({
       method: 'PUT',
@@ -103,6 +130,8 @@ describe('likes', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      // A pronunciation answer is audio, and audio has to come from our bucket.
+      STORAGE_PUBLIC_BASE_URL: 'https://cdn.example.com',
     })
 
     await ensureIndexes(handle.db)
@@ -320,5 +349,56 @@ describe('likes', () => {
     const filtered = (await likers(viewer, 'post', postId)).json<{ items: { _id: string }[] }>()
     expect(filtered.items.map((item) => item._id)).not.toContain(fans[0]!.userId)
     expect(filtered.items).toHaveLength(2)
+  })
+
+  it('likes a recorded answer, and keeps it apart from its request', async () => {
+    const asker = await newUser('answer-like-asker@example.com')
+    const helper = await newUser('answer-like-helper@example.com')
+    const viewer = await newUser('answer-like-viewer@example.com')
+    const askId = await ask(asker, 'onomatopoeia')
+    const answerId = await answer(helper, askId)
+
+    const liked = await like(viewer, 'answer', answerId)
+    expect(liked.statusCode).toBe(200)
+    expect(liked.json<{ likeCount: number; likedByViewer: boolean }>()).toEqual({
+      likeCount: 1,
+      likedByViewer: true,
+    })
+
+    // The request itself is untouched: `answer` is a third id space, not an
+    // alias for the post it hangs off.
+    expect((await likers(viewer, 'post', askId)).json<{ items: unknown[] }>().items).toHaveLength(0)
+
+    const cleared = await unlike(viewer, 'answer', answerId)
+    expect(cleared.json<{ likeCount: number }>().likeCount).toBe(0)
+  })
+
+  it('refuses a like on your own answer', async () => {
+    const asker = await newUser('answer-selflike-asker@example.com')
+    const helper = await newUser('answer-selflike-helper@example.com')
+    const answerId = await answer(helper, await ask(asker, 'sesquipedalian'))
+    expect((await like(helper, 'answer', answerId)).statusCode).toBe(400)
+  })
+
+  it('carries answer like state on the pronunciation feed', async () => {
+    const asker = await newUser('answer-feedlike-asker@example.com')
+    const helper = await newUser('answer-feedlike-helper@example.com')
+    const viewer = await newUser('answer-feedlike-viewer@example.com')
+    const askId = await ask(asker, 'antidisestablishmentarianism')
+    const answerId = await answer(helper, askId)
+    await like(viewer, 'answer', answerId)
+
+    const card = (
+      await app.inject({
+        method: 'GET',
+        url: '/feed?kind=pronunciation',
+        headers: { cookie: viewer.cookie },
+      })
+    )
+      .json<{
+        items: { _id: string; topAnswer: { likeCount: number; likedByViewer: boolean } | null }[]
+      }>()
+      .items.find((i) => i._id === askId)
+    expect(card?.topAnswer).toMatchObject({ likeCount: 1, likedByViewer: true })
   })
 })

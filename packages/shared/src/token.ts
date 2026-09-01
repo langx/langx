@@ -19,6 +19,16 @@ import { shiftDayKey, utcDayKey } from './periods'
 export const TOKEN_KINDS = [
   'message',
   'correction',
+  /**
+   * A recorded answer to a pronunciation request.
+   *
+   * Its own kind rather than `correction`, because the correction badges and
+   * the cosmetic gates count corrections written, and quietly folding a
+   * different act into that number moves a threshold that names the other one.
+   * It also earns its own line in the token history, which is the honest
+   * answer to "where did these come from".
+   */
+  'pronunciation',
   'streak',
   'dailyPool',
   'adjustment',
@@ -68,6 +78,11 @@ export interface TokenRules {
   award: {
     message: number
     correction: number
+    /**
+     * Paid once per request per person, keyed on the request rather than on the
+     * answer — so deleting an answer and writing a new one does not pay twice.
+     */
+    pronunciation: number
     /** Granted once per conversation, the first time both sides have spoken. */
     mutualConversation: number
   }
@@ -205,6 +220,9 @@ export const TOKEN_RULES: TokenRules = {
     message: 2,
     // Weighted above messages on purpose: teaching is the behaviour worth paying for.
     correction: 10,
+    // The same as a correction, because it is the same act in a different
+    // medium: somebody spending their own time on a stranger's sentence.
+    pronunciation: 10,
     mutualConversation: 15,
   },
   caps: {

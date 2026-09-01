@@ -1,16 +1,34 @@
 import {
+  createPostCommentSchema,
   createPostCorrectionSchema,
   createPostSchema,
+  createPronunciationAnswerSchema,
   listFeedQuerySchema,
+  listPostCommentsQuerySchema,
   listPostCorrectionsQuerySchema,
+  listPronunciationAnswersQuerySchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth } from '../middleware/requireAuth'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
-import { correctPost, createPost, listFeed, listPostCorrections } from '../modules/feed/feed'
+import { addComment, deleteComment, listPostComments } from '../modules/feed/comments'
+import {
+  correctPost,
+  createPost,
+  deleteCorrection,
+  deletePost,
+  listFeed,
+  listPostCorrections,
+} from '../modules/feed/feed'
+import {
+  answerPronunciation,
+  deleteAnswer,
+  listPronunciationAnswers,
+} from '../modules/feed/pronunciation'
 
 const postParamsSchema = z.object({ id: z.string() })
+const childParamsSchema = z.object({ postId: z.string(), id: z.string() })
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -70,6 +88,125 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         app.env.STORAGE_PUBLIC_BASE_URL,
       )
       return reply.code(201).send(correction)
+    },
+  )
+
+  /**
+   * Deleting your own post takes its corrections, answers, comments and likes
+   * with it. `requireAuth` rather than `requireVerifiedEmail`: removing your
+   * own words is not a thing to gate behind an inbox you may no longer have.
+   */
+  app.delete(
+    '/posts/:id',
+    { preHandler: requireAuth, schema: { params: postParamsSchema } },
+    async (request, reply) => {
+      await deletePost(app.mongo.db, request.userId, request.params.id, app.storage)
+      return reply.code(204).send()
+    },
+  )
+
+  app.get(
+    '/posts/:id/comments',
+    {
+      preHandler: requireAuth,
+      schema: { params: postParamsSchema, querystring: listPostCommentsQuerySchema },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await listPostComments(app.mongo.db, request.userId, request.params.id, request.query),
+      )
+    },
+  )
+
+  app.post(
+    '/posts/:id/comments',
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { params: postParamsSchema, body: createPostCommentSchema },
+    },
+    async (request, reply) => {
+      const comment = await addComment(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.body,
+      )
+      return reply.code(201).send(comment)
+    },
+  )
+
+  app.delete(
+    '/posts/:postId/comments/:id',
+    { preHandler: requireAuth, schema: { params: childParamsSchema } },
+    async (request, reply) => {
+      await deleteComment(app.mongo.db, request.userId, request.params.postId, request.params.id)
+      return reply.code(204).send()
+    },
+  )
+
+  app.delete(
+    '/posts/:postId/corrections/:id',
+    { preHandler: requireAuth, schema: { params: childParamsSchema } },
+    async (request, reply) => {
+      await deleteCorrection(
+        app.mongo.db,
+        request.userId,
+        request.params.postId,
+        request.params.id,
+        app.storage,
+      )
+      return reply.code(204).send()
+    },
+  )
+
+  app.get(
+    '/posts/:id/answers',
+    {
+      preHandler: requireAuth,
+      schema: { params: postParamsSchema, querystring: listPronunciationAnswersQuerySchema },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await listPronunciationAnswers(
+          app.mongo.db,
+          request.userId,
+          request.params.id,
+          request.query,
+        ),
+      )
+    },
+  )
+
+  app.post(
+    '/posts/:id/answers',
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { params: postParamsSchema, body: createPronunciationAnswerSchema },
+    },
+    async (request, reply) => {
+      const answer = await answerPronunciation(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.body,
+        app.env.STORAGE_PUBLIC_BASE_URL,
+      )
+      return reply.code(201).send(answer)
+    },
+  )
+
+  app.delete(
+    '/posts/:postId/answers/:id',
+    { preHandler: requireAuth, schema: { params: childParamsSchema } },
+    async (request, reply) => {
+      await deleteAnswer(
+        app.mongo.db,
+        request.userId,
+        request.params.postId,
+        request.params.id,
+        app.storage,
+      )
+      return reply.code(204).send()
     },
   )
 }
