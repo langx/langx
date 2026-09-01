@@ -18,11 +18,17 @@
  * **Idempotent.** A row already carrying a `postcorr:` key is skipped, so a
  * re-run after a partial failure only finishes the job.
  *
- * A row whose correction no longer exists is left alone and reported. It
+ * **Most rows this query returns are not post corrections at all.** A chat
+ * correction pays under the same `correction` kind, with the message's `_id` as
+ * its `refId` — on production that is 34 of the 35 rows. They are left alone,
+ * correctly: a chat correction has no post, cannot be deleted and rewritten for
+ * a second payment, and re-keying one would be meaningless.
+ *
+ * The same branch also covers a post correction whose row is genuinely gone. It
  * cannot be re-keyed — there is nothing left to read the post id from — and it
- * cannot be double-paid either, because the correction it paid for is gone and
- * `post_author_unique` was released with it. That combination is only reachable
- * through the account purge, which deletes nothing here.
+ * cannot be double-paid either, because `post_author_unique` was released with
+ * it. Both are counted as `skipped`: the script cannot tell them apart and does
+ * not need to, because the action is the same.
  *
  * Usage:
  *   pnpm --filter @langx/api exec tsx scripts/backfill-correction-refids.ts          # dry run
@@ -43,25 +49,26 @@ interface LedgerRow {
 async function backfill(
   db: Db,
   apply: boolean,
-): Promise<{ seen: number; written: number; orphaned: number }> {
+): Promise<{ seen: number; written: number; skipped: number }> {
   const rows = await db
     .collection<LedgerRow>(COLLECTIONS.tokenLedger)
     .find({ kind: 'correction', refId: { $exists: true, $not: /^postcorr:/ } })
     .toArray()
 
   let written = 0
-  let orphaned = 0
+  let skipped = 0
 
   for (const row of rows) {
     if (!row.refId || !ObjectId.isValid(row.refId)) {
-      orphaned++
+      skipped++
       continue
     }
+    // Not found: a chat correction, or a post correction since deleted.
     const correction = await db
       .collection<{ postId: ObjectId }>(COLLECTIONS.postCorrections)
       .findOne({ _id: new ObjectId(row.refId) }, { projection: { postId: 1 } })
     if (!correction) {
-      orphaned++
+      skipped++
       continue
     }
 
@@ -73,7 +80,7 @@ async function backfill(
     }
   }
 
-  return { seen: rows.length, written, orphaned }
+  return { seen: rows.length, written, skipped }
 }
 
 async function main(): Promise<void> {
@@ -82,9 +89,9 @@ async function main(): Promise<void> {
   const handle = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
 
   try {
-    const { seen, written, orphaned } = await backfill(handle.db, apply)
+    const { seen, written, skipped } = await backfill(handle.db, apply)
     console.log(
-      `tokenLedger: ${seen} correction rows on the old key, ${written} ${apply ? 'rewritten' : 'to rewrite'}, ${orphaned} left alone`,
+      `tokenLedger: ${seen} correction rows on the old key, ${written} ${apply ? 'rewritten' : 'to rewrite'}, ${skipped} not post corrections`,
     )
     if (!apply) console.log('\nDry run. Re-run with --apply to write.')
   } finally {
