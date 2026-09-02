@@ -22,11 +22,14 @@ export const TOKEN_KINDS = [
   /**
    * A recorded answer to a pronunciation request.
    *
-   * Its own kind rather than `correction`, because the correction badges and
-   * the cosmetic gates count corrections written, and quietly folding a
-   * different act into that number moves a threshold that names the other one.
-   * It also earns its own line in the token history, which is the honest
-   * answer to "where did these come from".
+   * Its own kind rather than `correction`, because `refId` uniqueness, the
+   * daily pool and every report need the two acts distinguishable. It also
+   * earns its own line in the token history, which is the honest answer to
+   * "where did these come from".
+   *
+   * A separate kind, not a lesser one: the profile's correction count and the
+   * badges above it read recordings and written corrections together. See
+   * `countCorrectionsWritten`.
    */
   'pronunciation',
   'streak',

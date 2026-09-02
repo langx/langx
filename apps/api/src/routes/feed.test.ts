@@ -496,6 +496,47 @@ describe('community feed', () => {
     expect(paid).toBe(0)
   })
 
+  it('counts a recording as teaching, alongside written corrections', async () => {
+    // Reading a sentence out loud for somebody who cannot say it is the same
+    // act in a different medium, and it pays the same ten tokens. It used to
+    // leave the profile's number untouched, so an account that mostly answered
+    // pronunciation requests looked like it had never helped anyone.
+    const asker = await newUser('recording-asker@example.com')
+    const helper = await newUser('recording-helper@example.com')
+
+    const askId = (await ask(asker, 'squirrel')).json<{ _id: string }>()._id
+    expect((await answer(helper, askId)).statusCode).toBe(201)
+
+    const lifetime = async (user: SignedUpUser) => {
+      const summary = await app.inject({
+        method: 'GET',
+        url: '/me/tokens',
+        headers: { cookie: user.cookie },
+      })
+      expect(summary.statusCode).toBe(200)
+      return summary.json<{ lifetime: { corrections: number } }>().lifetime.corrections
+    }
+
+    expect(await lifetime(helper)).toBe(1)
+
+    // The two sources add up rather than replacing each other.
+    const postId = (await post(asker, 'I has been there.')).json<{ _id: string }>()._id
+    expect((await correct(helper, postId, 'I have been there.')).statusCode).toBe(201)
+    expect(await lifetime(helper)).toBe(2)
+
+    // Asking is not teaching. Only the person who recorded gets the number.
+    expect(await lifetime(asker)).toBe(0)
+
+    // Put the request back where it was found: the pronunciation section is
+    // small enough that another test asserts its exact contents.
+    const removed = await app.inject({
+      method: 'DELETE',
+      url: `/posts/${askId}`,
+      headers: { cookie: asker.cookie },
+    })
+    expect(removed.statusCode).toBe(204)
+  })
+
   it("pages a post's corrections oldest first, and carries the post", async () => {
     const author = await newUser('detail-author@example.com')
     const viewer = await newUser('detail-viewer@example.com')
