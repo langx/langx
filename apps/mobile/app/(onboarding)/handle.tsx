@@ -70,8 +70,15 @@ export default function HandleStep() {
   const available = availability.data?.available
   const checking = debouncedHandle.length > 0 && availability.isFetching
 
-  // Opened by hand, or already open because a link filled it in.
-  const [inviteOpen, setInviteOpen] = useState(draft.referredByHandle.length > 0)
+  /*
+   * Derived, not seeded. `useState`'s initialiser runs once, on the first
+   * render — and the draft hydrates asynchronously, so at that moment an
+   * invite link's handle has not arrived yet. Seeding it left the row
+   * collapsed for exactly the people it is for: the code was submitted, and
+   * they never saw that they had been invited.
+   */
+  const [inviteOpenedByHand, setInviteOpenedByHand] = useState(false)
+  const inviteOpen = inviteOpenedByHand || draft.referredByHandle.length > 0
 
   /*
    * The *public* profile route, not `/profiles/:handleOrId`. That one calls
@@ -218,7 +225,7 @@ export default function HandleStep() {
             ) : null}
           </>
         ) : (
-          <Text style={styles.inviteToggle} onPress={() => setInviteOpen(true)}>
+          <Text style={styles.inviteToggle} onPress={() => setInviteOpenedByHand(true)}>
             {t('onboarding.inviteCodeToggle')}
           </Text>
         )}
