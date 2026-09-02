@@ -1026,25 +1026,41 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
 
       /**
        * The reason the condition is in the update's filter and not only in the
-       * read before it: fired together, the second buy reads a profile that
-       * does not own the first rung yet. Without the filter both would land
-       * and the ladder would be climbable two rungs at a time by tapping fast.
+       * read before it.
+       *
+       * What is asserted is the *outcome*, not which of the two requests won.
+       * Fired together they may genuinely serialise — slate commits, bronze's
+       * filter then sees it, and bronze lands legitimately, because buying the
+       * two in order is exactly what the ladder allows. An earlier version of
+       * this test demanded that bronze be refused, which held locally and
+       * failed on CI for no reason other than timing.
+       *
+       * The invariant that does hold under every interleaving: what ends up
+       * owned is a **prefix** of the ladder. Never bronze without slate, which
+       * is the thing the filter exists to make impossible.
        */
-      it('cannot be climbed two rungs at once by firing both together', async () => {
+      it('never lands a rung above one that is not owned, however they interleave', async () => {
         const user = await rich('frame.bronze')
 
         const [slate, bronze] = await Promise.all([
           buy(user, 'frame.slate'),
           buy(user, 'frame.bronze'),
         ])
-
+        // Slate has no predecessor, so it is always allowed.
         expect(slate.statusCode, slate.body).toBe(200)
-        expect(bronze.statusCode, bronze.body).toBe(400)
+        expect([200, 400]).toContain(bronze.statusCode)
 
         const profile = await handle.db
           .collection<Profile>(COLLECTIONS.profiles)
           .findOne({ _id: user.userId })
-        expect(profile?.cosmetics ?? []).toEqual(['frame.slate'])
+        const owned = profile?.cosmetics ?? []
+        const ladder = COSMETICS.filter((c) => c.kind === 'frame').map((c) => c.id)
+        expect(owned.length).toBeGreaterThan(0)
+        expect([...owned].sort()).toEqual(ladder.slice(0, owned.length).sort())
+
+        // And the charge matches what was actually granted, either way.
+        const spent = owned.reduce((sum, id) => sum + COSMETICS.find((c) => c.id === id)!.price, 0)
+        expect(profile?.tokenSpent ?? 0).toBe(spent)
       })
     })
 
