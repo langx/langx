@@ -1,5 +1,6 @@
+import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
@@ -13,7 +14,7 @@ import { FormField } from '../../src/components/ui/FormField'
 import { Button } from '../../src/components/ui/Button'
 import { uploadPostMedia } from '../../src/api/queries'
 import { useCorrectPost, useCreatePost, useDeletePost, useFeed, useMe } from '../../src/api/queries'
-import type { CreatePostInput, FeedPost } from '../../src/api/types'
+import type { FeedPost } from '../../src/api/types'
 import { AttachmentBar, type PendingAttachment } from '../../src/components/AttachmentBar'
 import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -22,12 +23,16 @@ import { authClient } from '../../src/lib/auth-client'
 import { requireAccount } from '../../src/lib/requireAccount'
 import { LikeButton } from '../../src/components/LikeButton'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { Dropdown, type AnchorRect } from '../../src/components/ui/Dropdown'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { foldCorrection } from '../../src/lib/feedCache'
 import { openPost, openProfile } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
+import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
+import { postLanguages, resolvePostLanguage } from '../../src/lib/postLanguage'
+import { LABEL_MARKER, splitLabel } from '../../src/lib/splitLabel'
 import { makeStyles } from '../../src/lib/theme'
 import { useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
 import { isImageContentType } from '@langx/shared'
@@ -71,6 +76,49 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
   )
 }
 
+/**
+ * The field's label, with the language in it as the control that changes it.
+ *
+ * When there is only one language to post in the marker never arrives and this
+ * is a plain line of text — the same one it always was. `splitLabel` returning
+ * `null` lands in the same branch, which is what a translation that dropped the
+ * placeholder should degrade to.
+ */
+function ComposerLabel({
+  text,
+  language,
+  onPress,
+  anchorRef,
+  styles,
+}: {
+  text: string
+  language: string
+  onPress: () => void
+  anchorRef: React.RefObject<View | null>
+  styles: ReturnType<typeof useStyles>
+}) {
+  const parts = splitLabel(text)
+  if (!parts) return <Text style={styles.label}>{text}</Text>
+
+  return (
+    <View style={styles.labelLine}>
+      {parts.before ? <Text style={styles.label}>{parts.before}</Text> : null}
+      <Pressable
+        ref={anchorRef}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: false }}
+        hitSlop={8}
+        onPress={onPress}
+        style={({ pressed }) => [styles.languageButton, pressed && styles.pressed]}
+      >
+        <Text style={styles.languageText}>{language}</Text>
+        <Feather name="chevron-down" size={14} style={styles.chevron} />
+      </Pressable>
+      {parts.after ? <Text style={styles.label}>{parts.after}</Text> : null}
+    </View>
+  )
+}
+
 export default function FeedScreen() {
   const styles = useStyles()
   const t = useT()
@@ -107,11 +155,60 @@ export default function FeedScreen() {
   })
 
   /**
-   * The language you post in is the first one you are learning. Asking which
-   * would be a second question on top of the sentence, and the overwhelming
-   * majority of people here are learning exactly one.
+   * The language you post in defaults to the most important one you are
+   * learning, and is only ever *asked* about when there is more than one — the
+   * free tier allows exactly one, so for most people this is still no question
+   * at all.
+   *
+   * State holds the raw wish, never the resolved code. `askLanguage` is derived
+   * on every render, so a language dropped in `edit-profile` — or a wish
+   * restored from this device that belongs to somebody else's account — falls
+   * back to the default instead of leaving the composer pointed at a language
+   * the server would refuse the post in.
    */
-  const askLanguage = me.data?.learning[0]?.code
+  const [chosenLanguage, setChosenLanguage] = useState<string | null>(null)
+  const askLanguages = useMemo(() => postLanguages(me.data?.learning), [me.data])
+  const askLanguage = resolvePostLanguage(askLanguages, chosenLanguage)
+
+  // Read-once hydration, the same shape `ThemeProvider` uses: `readFlag` is
+  // async, and until it lands the composer shows the default — which is what
+  // the stored value usually says anyway.
+  useEffect(() => {
+    let cancelled = false
+    void readFlag(FLAG_KEYS.postLanguage).then((stored) => {
+      if (!cancelled && stored) setChosenLanguage(stored)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  /**
+   * The language sits *inside* the field's own label — "Your sentence in
+   * **Russian**" — and opens a menu when pressed.
+   *
+   * A row of chips above the field said the same thing twice: the chips named
+   * the languages and the label underneath named the chosen one again. Putting
+   * the control in the sentence leaves one place to read and one to press, and
+   * costs the composer no height at all for the people who never change it.
+   */
+  const languageRef = useRef<View | null>(null)
+  const [languageAnchor, setLanguageAnchor] = useState<AnchorRect | null>(null)
+
+  function openLanguages(): void {
+    // Measured on press rather than on layout: the composer moves as the draft
+    // grows, and a rect captured at mount would place the menu where the word
+    // used to be.
+    languageRef.current?.measureInWindow((x, y, width, height) =>
+      setLanguageAnchor({ x, y, width, height }),
+    )
+  }
+
+  function chooseLanguage(code: string): void {
+    setChosenLanguage(code)
+    setLanguageAnchor(null)
+    void writeFlag(FLAG_KEYS.postLanguage, code)
+  }
 
   /**
    * The attachment is uploaded here, on submit, not when it was picked.
@@ -177,11 +274,9 @@ export default function FeedScreen() {
     setUploading(false)
 
     createPost.mutate(
-      // `Profile.learning[].code` is a bare string on the DTO; `CreatePostInput`
-      // wants the code union. The server validates it again either way.
       {
         body: draft.trim(),
-        language: askLanguage as CreatePostInput['language'],
+        language: askLanguage,
         kind: section,
         ...(media ? { media } : {}),
       },
@@ -264,9 +359,17 @@ export default function FeedScreen() {
         {asking && askLanguage ? (
           <View style={styles.compose}>
             <FormField
-              label={t(pronouncing ? 'feed.pronounceTitle' : 'feed.askTitle', {
-                language: names.language(askLanguage),
-              })}
+              label={
+                <ComposerLabel
+                  text={t(pronouncing ? 'feed.pronounceTitle' : 'feed.askTitle', {
+                    language: askLanguages.length > 1 ? LABEL_MARKER : names.language(askLanguage),
+                  })}
+                  language={names.language(askLanguage)}
+                  onPress={openLanguages}
+                  anchorRef={languageRef}
+                  styles={styles}
+                />
+              }
               value={draft}
               onChangeText={setDraft}
               placeholder={t(pronouncing ? 'feed.pronouncePlaceholder' : 'feed.askPlaceholder')}
@@ -289,6 +392,17 @@ export default function FeedScreen() {
               />
             </View>
           </View>
+        ) : null}
+
+        {languageAnchor && askLanguage ? (
+          <Dropdown
+            anchor={languageAnchor}
+            options={askLanguages.map((code) => ({ value: code, label: names.language(code) }))}
+            selected={askLanguage}
+            onSelect={chooseLanguage}
+            onDismiss={() => setLanguageAnchor(null)}
+            accessibilityLabel={t('feed.postLanguage')}
+          />
         ) : null}
 
         <View style={styles.sections}>
@@ -669,6 +783,18 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   ask: { color: colors.accent, fontSize: 16, fontWeight: '700' },
   sections: { marginTop: 18 },
   compose: { gap: spacing.md, marginTop: spacing.md },
+  labelLine: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' },
+  label: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  // Underlined, not just tinted: colour alone does not say "press me" to a
+  // reader who cannot separate it from the label beside it.
+  languageButton: { alignItems: 'center', flexDirection: 'row', gap: 2 },
+  languageText: {
+    ...font.caption,
+    color: colors.text,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
+  chevron: { color: colors.textMuted },
   grow: { flex: 1, width: 'auto' },
   loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl },

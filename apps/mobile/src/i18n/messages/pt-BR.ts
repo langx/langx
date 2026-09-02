@@ -572,6 +572,7 @@ export const ptBR: Localized<EnMessages> = {
     topTag: 'Melhor',
     ask: '+ Perguntar',
     askTitle: 'Sua frase em {language}',
+    postLanguage: 'Idioma da publicação',
     askPlaceholder: 'A frase da qual você não tem certeza…',
     posting: 'Publicando…',
     posted: 'Publicado. Alguém vai corrigir.',

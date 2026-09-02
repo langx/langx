@@ -579,6 +579,7 @@ export const fr: Localized<EnMessages> = {
     topTag: 'Meilleure',
     ask: '+ Demander',
     askTitle: 'Ta phrase en {language}',
+    postLanguage: 'Langue de la publication',
     askPlaceholder: 'La phrase dont tu n’es pas sûr…',
     posting: 'Publication…',
     posted: 'Publié. Quelqu’un la corrigera.',

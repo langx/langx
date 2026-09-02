@@ -691,6 +691,7 @@ export const ar: Localized<EnMessages> = {
     topTag: 'الأفضل',
     ask: '+ اسأل',
     askTitle: 'جملتك بلغة {language}',
+    postLanguage: 'لغة المنشور',
     askPlaceholder: 'الجملة التي لست متأكدًا منها…',
     posting: 'جارٍ النشر…',
     posted: 'نُشرت. سيصحّحها أحدهم.',

@@ -587,6 +587,7 @@ export const tr: Localized<EnMessages> = {
     topTag: 'En iyi',
     ask: '+ Sor',
     askTitle: '{language} dilindeki cümlen',
+    postLanguage: 'Paylaşacağın dil',
     askPlaceholder: 'Emin olmadığın cümle…',
     posting: 'Paylaşılıyor…',
     posted: 'Paylaşıldı. Birisi düzeltecektir.',
