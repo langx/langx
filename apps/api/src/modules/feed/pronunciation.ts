@@ -153,9 +153,12 @@ function isDuplicate(error: unknown): boolean {
  * Paid at the same rate as a correction, under its own kind.
  *
  * The same rate because it is the same act in a different medium: somebody
- * spending their own time on a stranger's sentence. Its own kind because the
- * correction badges and cosmetic gates count corrections *written*, and folding
- * a different act into that number moves a threshold that names the other one.
+ * spending their own time on a stranger's sentence. Its own kind because
+ * `refId`, the token history and the daily pool all need to tell the two acts
+ * apart — not because the two are counted separately on a profile. They are
+ * not: `countCorrectionsWritten` reads this collection too, so a recording
+ * moves the correction tile, the badges and the cosmetic gates exactly as a
+ * written correction does.
  *
  * No `recordActivity`. The daily pool's weights are a published formula
  * mirrored on the website and in two GitBook pages, and adding a fourth term is
