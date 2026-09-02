@@ -80,6 +80,61 @@ async function readCorrectionSummary(
   }
 }
 
+/**
+ * A page of posts turned into what a card needs: the author, the one reply
+ * shown under it, the viewer's own like and reply state, and the comment count.
+ *
+ * `want` is here because the two readers disagree about which reply matters. A
+ * section of the feed shows one kind at a time — a correction page never draws
+ * a `topAnswer`, a pronunciation page never draws a `topCorrection` — and
+ * running both aggregates would make each section pay for the other's on every
+ * page. A list that mixes the kinds has to ask for both, and can afford to:
+ * it is one person's own posts, not the whole collection.
+ */
+async function hydratePosts(
+  db: Db,
+  userId: string,
+  items: Post[],
+  want: { corrections: boolean; answers: boolean },
+): Promise<FeedPost[]> {
+  const ids = items.map((post) => post._id)
+  const [corrections, answers, commentCounts] = await Promise.all([
+    want.corrections ? readCorrectionSummary(db, userId, ids) : EMPTY_CORRECTION_SUMMARY,
+    want.answers ? readAnswerSummary(db, userId, ids) : EMPTY_ANSWER_SUMMARY,
+    readCommentSummary(db, ids),
+  ])
+  const tops = [...corrections.topByPost.values()]
+  const topAnswers = [...answers.topByPost.values()]
+
+  const [authors, likes] = await Promise.all([
+    loadAuthors(db, [
+      ...items.map((post) => post.authorId),
+      ...tops.map((c) => c.authorId),
+      ...topAnswers.map((a) => a.authorId),
+    ]),
+    // One call for the whole page — every post *and* the one reply each card
+    // shows. Lists rather than calls, because they share a query.
+    readLikeSummary(db, userId, {
+      postIds: ids,
+      correctionIds: tops.map((c) => c._id),
+      answerIds: topAnswers.map((a) => a._id),
+    }),
+  ])
+
+  return items.map((post) => {
+    const key = post._id.toHexString()
+    return postDto(post, {
+      authors,
+      likes,
+      top: corrections.topByPost.get(key) ?? null,
+      topAnswer: answers.topByPost.get(key) ?? null,
+      correctedByViewer: corrections.viewerCorrected.has(key),
+      answeredByViewer: answers.viewerAnswered.has(key),
+      commentCount: commentCounts.get(key) ?? 0,
+    })
+  })
+}
+
 export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Promise<FeedPage> {
   const posts = db.collection<Post>(COLLECTIONS.posts)
 
@@ -210,51 +265,10 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   }
   const last = items.at(-1)
 
-  const ids = items.map((post) => post._id)
-  /**
-   * Only the summary this section can use. A correction page never shows a
-   * `topAnswer` and a pronunciation page never shows a `topCorrection`, so
-   * running both would make each tab pay for the other's aggregate on every
-   * page. The comment count is the one both need — a single extra `$group`, and
-   * the only new per-page cost here.
-   */
-  const [corrections, answers, commentCounts] = await Promise.all([
-    pronunciation
-      ? Promise.resolve(EMPTY_CORRECTION_SUMMARY)
-      : readCorrectionSummary(db, userId, ids),
-    pronunciation ? readAnswerSummary(db, userId, ids) : Promise.resolve(EMPTY_ANSWER_SUMMARY),
-    readCommentSummary(db, ids),
-  ])
-  const tops = [...corrections.topByPost.values()]
-  const topAnswers = [...answers.topByPost.values()]
-
-  const [authors, likes] = await Promise.all([
-    loadAuthors(db, [
-      ...items.map((post) => post.authorId),
-      ...tops.map((c) => c.authorId),
-      ...topAnswers.map((a) => a.authorId),
-    ]),
-    // One call for the whole page — every post *and* the one reply each card
-    // shows. Lists rather than calls, because they share a query.
-    readLikeSummary(db, userId, {
-      postIds: ids,
-      correctionIds: tops.map((c) => c._id),
-      answerIds: topAnswers.map((a) => a._id),
-    }),
-  ])
-
   return {
-    items: items.map((post) => {
-      const key = post._id.toHexString()
-      return postDto(post, {
-        authors,
-        likes,
-        top: corrections.topByPost.get(key) ?? null,
-        topAnswer: answers.topByPost.get(key) ?? null,
-        correctedByViewer: corrections.viewerCorrected.has(key),
-        answeredByViewer: answers.viewerAnswered.has(key),
-        commentCount: commentCounts.get(key) ?? 0,
-      })
+    items: await hydratePosts(db, userId, items, {
+      corrections: !pronunciation,
+      answers: pronunciation,
     }),
     nextCursor:
       hasMore && last
