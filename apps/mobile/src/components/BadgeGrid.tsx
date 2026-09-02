@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
 import type { Locale } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
@@ -19,14 +19,21 @@ function earnedMonth(iso: string, locale: Locale): string {
  * as a whole rather than recolouring, so the two states differ in exactly one
  * way each.
  */
-function BadgeRow({ badge }: { badge: EarnedBadge }) {
+function BadgeRow({
+  badge,
+  onShare,
+}: {
+  badge: EarnedBadge
+  onShare?: ((label: string) => void) | undefined
+}) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
+  const label = badgeLabel({ t, locale }, badge.kind, badge.threshold)
 
-  return (
-    <View style={[styles.row, !badge.earned && styles.locked]}>
+  const content = (
+    <>
       {/*
         The glyph comes off the badge, not off a `kind === 'streak'` ternary.
         That ternary handed every kind added after it the correction tick, and
@@ -44,7 +51,7 @@ function BadgeRow({ badge }: { badge: EarnedBadge }) {
         )}
       </View>
       <Text style={styles.name} numberOfLines={1}>
-        {badgeLabel({ t, locale }, badge.kind, badge.threshold)}
+        {label}
       </Text>
       <Text style={[styles.state, badge.earned && styles.stateEarned]}>
         {badge.earned
@@ -53,15 +60,42 @@ function BadgeRow({ badge }: { badge: EarnedBadge }) {
             : t('badges.earnedLabel')
           : t('badges.locked')}
       </Text>
-    </View>
+    </>
+  )
+
+  /*
+   * Earned rows are the only ones that press. A locked badge is a promise,
+   * not a result, and "share the badge I do not have" is a sentence nobody
+   * means; keeping the row inert also keeps the faded state honest — nothing
+   * happens there yet.
+   */
+  if (!badge.earned || !onShare) {
+    return <View style={[styles.row, !badge.earned && styles.locked]}>{content}</View>
+  }
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t('share.badge', { label })}
+      onPress={() => onShare(label)}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+    >
+      {content}
+    </Pressable>
   )
 }
 
-export function BadgeGrid({ badges }: { badges: readonly EarnedBadge[] }) {
+export function BadgeGrid({
+  badges,
+  onShare,
+}: {
+  badges: readonly EarnedBadge[]
+  /** Given, an earned row opens the share sheet with its name. */
+  onShare?: (label: string) => void
+}) {
   return (
     <View>
       {badges.map((badge) => (
-        <BadgeRow key={badge.id} badge={badge} />
+        <BadgeRow key={badge.id} badge={badge} onShare={onShare} />
       ))}
     </View>
   )
@@ -79,6 +113,7 @@ const useStyles = makeStyles(({ colors, font }) => ({
     paddingVertical: 17,
   },
   locked: { opacity: 0.45 },
+  pressed: { opacity: 0.7 },
   slot: { alignItems: 'flex-start', width: 32 },
   emoji: { fontSize: 22 },
   name: { ...font.body, color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },

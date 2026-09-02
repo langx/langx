@@ -70,6 +70,7 @@ export const fr: Localized<EnMessages> = {
     unpin: 'Désépingler',
     report: 'Signaler',
     correctedCannotEdit: 'Corrigé — non modifiable',
+    share: 'Partager',
   },
 
   messageMeta: {
@@ -1045,6 +1046,30 @@ export const fr: Localized<EnMessages> = {
     share: 'Partager',
     copy: 'Copier le lien',
     copied: 'Lien copié',
+  },
+
+  share: {
+    action: 'Partager',
+    copied: 'Lien copié',
+    copiedText: 'Texte copié',
+    profile: 'Partager le profil',
+    profileMessage: 'Fais connaissance avec {name} sur LangX : {url}',
+    post: 'Partager la publication',
+    postMessage: '« {excerpt} » — {language}, en pratique sur LangX : {url}',
+    streak: 'Partager ma série',
+    streakMessage: {
+      one: '🔥 Série de {count} jour sur LangX. Pratique avec moi : {url}',
+      other: '🔥 Série de {count} jours sur LangX. Pratique avec moi : {url}',
+    },
+    rank: 'Partager mon classement',
+    leaderboardMessage: {
+      week: 'Je suis n° {rank} sur LangX cette semaine. Pratique avec moi : {url}',
+      month: 'Je suis n° {rank} sur LangX ce mois-ci. Pratique avec moi : {url}',
+      year: 'Je suis n° {rank} sur LangX cette année. Pratique avec moi : {url}',
+      all: 'Je suis n° {rank} sur LangX, toutes périodes confondues. Pratique avec moi : {url}',
+    },
+    badge: 'Partager le badge {label}',
+    badgeMessage: 'J’ai obtenu le badge « {label} » sur LangX. Pratique avec moi : {url}',
   },
 
   linkDevice: {

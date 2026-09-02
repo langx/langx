@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
 import {
@@ -42,7 +43,9 @@ import { listState } from '../../../src/lib/listState'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { relativeTime } from '../../../src/lib/format'
 import { showToast } from '../../../src/lib/toast'
-import { makeStyles } from '../../../src/lib/theme'
+import { shareLink } from '../../../src/lib/share'
+import { postShareText } from '../../../src/lib/shareText'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
@@ -74,6 +77,7 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
  */
 export default function PostScreen() {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
@@ -145,6 +149,17 @@ export default function PostScreen() {
   })
 
   const mine = post ? post.author._id === me.data?._id : false
+
+  function share(): void {
+    if (!post) return
+    void shareLink(
+      postShareText(t, {
+        id: post._id,
+        body: post.body,
+        languageName: names.language(post.language),
+      }),
+    )
+  }
   const replyCount = post ? (pronouncing ? post.answerCount : post.correctionCount) : 0
   const answeredByViewer = post
     ? pronouncing
@@ -265,7 +280,23 @@ export default function PostScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('feed.post')} onBack={() => goBackTo('/(app)/feed', from)} />
+      <ScreenHeader
+        title={t('feed.post')}
+        onBack={() => goBackTo('/(app)/feed', from)}
+        trailing={
+          post ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('share.post')}
+              hitSlop={12}
+              onPress={share}
+              style={({ pressed }) => (pressed ? styles.pressed : null)}
+            >
+              <Feather name="share" size={20} color={colors.textMuted} />
+            </Pressable>
+          ) : null
+        }
+      />
 
       {state === 'skeleton' || !post ? (
         <ActivityIndicator style={styles.loading} />
@@ -344,6 +375,15 @@ export default function PostScreen() {
                       ? t('feed.comment')
                       : t('feed.comments', { count: post.commentCount })}
                   </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('share.post')}
+                    hitSlop={8}
+                    onPress={share}
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                  >
+                    <Text style={styles.commentCount}>{t('share.action')}</Text>
+                  </Pressable>
                   {mine ? (
                     <Pressable
                       accessibilityRole="button"

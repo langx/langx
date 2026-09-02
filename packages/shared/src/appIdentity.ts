@@ -70,6 +70,23 @@ export function profileUrl(handle: string): string {
 }
 
 /**
+ * The link somebody shares for a feed post.
+ *
+ * Built on `WEB_HOST` for the same reason `inviteUrl` is: when the app finally
+ * claims the host its links point at, this is not a second line to remember.
+ * `post` is a reserved handle, so no profile can ever sit under this path.
+ *
+ * Unlike a profile link there is no signed-out card behind it — `/post/[id]`
+ * lives inside `Stack.Protected`, so on the web a stranger lands on sign-in
+ * and a member lands on the post. That is accepted: a post is written to
+ * members, and the sentence sent with the link carries an excerpt so the
+ * recipient knows what they are being asked to open.
+ */
+export function postUrl(postId: string): string {
+  return `https://${WEB_HOST}/post/${encodeURIComponent(postId)}`
+}
+
+/**
  * SHA-256 fingerprints of the certificates Android accepts as "this app", for
  * `assetlinks.json`.
  *

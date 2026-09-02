@@ -2,7 +2,8 @@ import Feather from '@expo/vector-icons/Feather'
 import { shiftDayKey } from '@langx/shared'
 import { useMemo } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
-import { useActivity, useTokens } from '../../src/api/queries'
+import { useActivity, useMe, useTokens } from '../../src/api/queries'
+import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -11,6 +12,8 @@ import { useLocale, useT } from '../../src/i18n'
 import type { TranslateFn } from '../../src/i18n/runtime'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo } from '../../src/lib/navigation'
+import { shareLink } from '../../src/lib/share'
+import { streakShareText } from '../../src/lib/shareText'
 import { streakHistory, type StreakHistoryRow } from '../../src/lib/streakHistory'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
@@ -31,6 +34,7 @@ export default function StreakScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const tokens = useTokens()
+  const me = useMe()
 
   const to = new Date().toISOString().slice(0, 10)
   const from = shiftDayKey(to, -DAYS)
@@ -57,6 +61,23 @@ export default function StreakScreen() {
         <StatTile label={t('me.dayStreak')} value={`🔥 ${streak?.current ?? 0}`} />
         <StatTile label={t('streak.longest')} value={String(streak?.longest ?? 0)} />
       </View>
+
+      {/*
+        Only once there is a number worth saying. A zero-day streak shared is
+        an invitation to laugh, not to join — and the sentence carries the
+        invite link, so it is that too.
+      */}
+      {streak && streak.current > 0 && me.data ? (
+        <View style={styles.share}>
+          <Button
+            label={t('share.streak')}
+            variant="secondary"
+            onPress={() =>
+              void shareLink(streakShareText(t, { count: streak.current, handle: me.data.handle }))
+            }
+          />
+        </View>
+      ) : null}
 
       {rows.length === 0 ? (
         <EmptyState icon="calendar" title={t('streak.emptyTitle')} body={t('streak.emptyBody')} />
@@ -123,6 +144,7 @@ function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { paddingVertical: spacing.xl },
+  share: { marginTop: spacing.md },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

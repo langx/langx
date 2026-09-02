@@ -81,6 +81,7 @@ export const ar: Localized<EnMessages> = {
     unpin: 'إلغاء التثبيت',
     report: 'إبلاغ',
     correctedCannotEdit: 'مُصحَّحة — لا يمكن تعديلها',
+    share: 'مشاركة',
   },
 
   messageMeta: {
@@ -1263,6 +1264,34 @@ export const ar: Localized<EnMessages> = {
     share: 'مشاركة',
     copy: 'نسخ الرابط',
     copied: 'تم نسخ الرابط',
+  },
+
+  share: {
+    action: 'مشاركة',
+    copied: 'تم نسخ الرابط',
+    copiedText: 'تم نسخ النص',
+    profile: 'مشاركة الملف',
+    profileMessage: 'تعرّف على {name} في LangX: {url}',
+    post: 'مشاركة المنشور',
+    postMessage: '«{excerpt}» — تدريب على {language} في LangX: {url}',
+    streak: 'مشاركة سلسلتي',
+    streakMessage: {
+      zero: '🔥 سلسلة {count} يوم في LangX. تدرّب معي: {url}',
+      one: '🔥 سلسلة يوم واحد في LangX. تدرّب معي: {url}',
+      two: '🔥 سلسلة يومين في LangX. تدرّب معي: {url}',
+      few: '🔥 سلسلة {count} أيام في LangX. تدرّب معي: {url}',
+      many: '🔥 سلسلة {count} يومًا في LangX. تدرّب معي: {url}',
+      other: '🔥 سلسلة {count} يوم في LangX. تدرّب معي: {url}',
+    },
+    rank: 'مشاركة ترتيبي',
+    leaderboardMessage: {
+      week: 'أنا في المركز {rank} في LangX هذا الأسبوع. تدرّب معي: {url}',
+      month: 'أنا في المركز {rank} في LangX هذا الشهر. تدرّب معي: {url}',
+      year: 'أنا في المركز {rank} في LangX هذه السنة. تدرّب معي: {url}',
+      all: 'أنا في المركز {rank} في LangX على مدار الوقت. تدرّب معي: {url}',
+    },
+    badge: 'مشاركة شارة {label}',
+    badgeMessage: 'حصلت على شارة «{label}» في LangX. تدرّب معي: {url}',
   },
 
   linkDevice: {

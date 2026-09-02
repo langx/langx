@@ -57,6 +57,7 @@ import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { pickImageAsset } from '../../../src/lib/pickImageAsset'
+import { shareLink } from '../../../src/lib/share'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -423,6 +424,8 @@ export default function ChatScreen() {
     } else if (picked.id === 'copy') {
       await Clipboard.setStringAsync(message.body)
       showToast(t('chat.copied'))
+    } else if (picked.id === 'share') {
+      await shareLink({ message: message.body })
     } else if (picked.id === 'translate') {
       await translate(message, alreadyTranslated)
     } else if (picked.id === 'correct') {

@@ -30,6 +30,7 @@ describe('messageActionsFor', () => {
       'delete',
       'star',
       'pin',
+      'share',
       'report',
     ])
   })
@@ -51,8 +52,13 @@ describe('messageActionsFor', () => {
     }
   })
 
-  it('has nothing to copy on a captionless voice note', () => {
+  it('has nothing to copy or share on a captionless voice note', () => {
     expect(ids({ type: 'audio', hasBody: false })).not.toContain('copy')
+    expect(ids({ type: 'audio', hasBody: false })).not.toContain('share')
+  })
+
+  it('shares text from either side of the conversation', () => {
+    for (const mine of [true, false]) expect(ids({ mine })).toContain('share')
   })
 
   /** A filter on your own copy, so it never depends on age or authorship. */
@@ -96,7 +102,7 @@ describe('paginateActions', () => {
 
   it('puts the rest behind More', () => {
     const { actions, hasMore } = paginateActions(all, 'more')
-    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'report'])
+    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'share', 'report'])
     expect(hasMore).toBe(false)
   })
 

@@ -78,6 +78,7 @@ export const ru: Localized<EnMessages> = {
     unpin: 'Открепить',
     report: 'Пожаловаться',
     correctedCannotEdit: 'Исправлено — изменить нельзя',
+    share: 'Поделиться',
   },
 
   messageMeta: {
@@ -1197,6 +1198,32 @@ export const ru: Localized<EnMessages> = {
     share: 'Поделиться',
     copy: 'Скопировать ссылку',
     copied: 'Ссылка скопирована',
+  },
+
+  share: {
+    action: 'Поделиться',
+    copied: 'Ссылка скопирована',
+    copiedText: 'Текст скопирован',
+    profile: 'Поделиться профилем',
+    profileMessage: 'Познакомьтесь с {name} в LangX: {url}',
+    post: 'Поделиться постом',
+    postMessage: '«{excerpt}» — {language}, практика в LangX: {url}',
+    streak: 'Поделиться серией',
+    streakMessage: {
+      one: '🔥 Серия {count} день в LangX. Занимайтесь со мной: {url}',
+      few: '🔥 Серия {count} дня в LangX. Занимайтесь со мной: {url}',
+      many: '🔥 Серия {count} дней в LangX. Занимайтесь со мной: {url}',
+      other: '🔥 Серия {count} дня в LangX. Занимайтесь со мной: {url}',
+    },
+    rank: 'Поделиться местом',
+    leaderboardMessage: {
+      week: 'Я на {rank}-м месте в LangX на этой неделе. Занимайтесь со мной: {url}',
+      month: 'Я на {rank}-м месте в LangX в этом месяце. Занимайтесь со мной: {url}',
+      year: 'Я на {rank}-м месте в LangX в этом году. Занимайтесь со мной: {url}',
+      all: 'Я на {rank}-м месте в LangX за всё время. Занимайтесь со мной: {url}',
+    },
+    badge: 'Поделиться значком {label}',
+    badgeMessage: 'У меня значок «{label}» в LangX. Занимайтесь со мной: {url}',
   },
 
   linkDevice: {

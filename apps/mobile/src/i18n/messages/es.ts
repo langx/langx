@@ -71,6 +71,7 @@ export const es: Localized<EnMessages> = {
     unpin: 'Dejar de fijar',
     report: 'Denunciar',
     correctedCannotEdit: 'Corregido: no se puede editar',
+    share: 'Compartir',
   },
 
   messageMeta: {
@@ -1039,6 +1040,30 @@ export const es: Localized<EnMessages> = {
     share: 'Compartir',
     copy: 'Copiar enlace',
     copied: 'Enlace copiado',
+  },
+
+  share: {
+    action: 'Compartir',
+    copied: 'Enlace copiado',
+    copiedText: 'Texto copiado',
+    profile: 'Compartir perfil',
+    profileMessage: 'Conoce a {name} en LangX: {url}',
+    post: 'Compartir publicación',
+    postMessage: '“{excerpt}” — práctica de {language} en LangX: {url}',
+    streak: 'Compartir mi racha',
+    streakMessage: {
+      one: '🔥 Racha de {count} día en LangX. Practica conmigo: {url}',
+      other: '🔥 Racha de {count} días en LangX. Practica conmigo: {url}',
+    },
+    rank: 'Compartir mi puesto',
+    leaderboardMessage: {
+      week: 'Soy el n.º {rank} en LangX esta semana. Practica conmigo: {url}',
+      month: 'Soy el n.º {rank} en LangX este mes. Practica conmigo: {url}',
+      year: 'Soy el n.º {rank} en LangX este año. Practica conmigo: {url}',
+      all: 'Soy el n.º {rank} en LangX de todos los tiempos. Practica conmigo: {url}',
+    },
+    badge: 'Compartir la insignia {label}',
+    badgeMessage: 'Gané la insignia “{label}” en LangX. Practica conmigo: {url}',
   },
 
   linkDevice: {

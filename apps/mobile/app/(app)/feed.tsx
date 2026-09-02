@@ -32,6 +32,8 @@ import { makeStyles } from '../../src/lib/theme'
 import { useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
 import { isImageContentType } from '@langx/shared'
 import { ApiRequestError } from '../../src/api/client'
+import { shareLink } from '../../src/lib/share'
+import { postShareText } from '../../src/lib/shareText'
 import { showToast } from '../../src/lib/toast'
 import { relativeTime } from '../../src/lib/format'
 
@@ -424,6 +426,23 @@ export default function FeedScreen() {
                         ? t('feed.comment')
                         : t('feed.comments', { count: item.commentCount })}
                     </Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('share.post')}
+                    hitSlop={8}
+                    onPress={() =>
+                      void shareLink(
+                        postShareText(t, {
+                          id: item._id,
+                          body: item.body,
+                          languageName: names.language(item.language),
+                        }),
+                      )
+                    }
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                  >
+                    <Text style={styles.commentCount}>{t('share.action')}</Text>
                   </Pressable>
                   {mine ? (
                     <Pressable

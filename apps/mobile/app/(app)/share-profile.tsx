@@ -1,7 +1,7 @@
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
-import { ActivityIndicator, Share, Text, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { useMe } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
@@ -10,6 +10,7 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { API_URL } from '../../src/lib/apiUrl'
 import { showAlert } from '../../src/lib/alert'
 import { goBackTo } from '../../src/lib/navigation'
+import { shareLink } from '../../src/lib/share'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
@@ -78,14 +79,7 @@ export default function ShareProfileScreen() {
       <View style={styles.actions}>
         <Button
           label={t('shareProfile.share')}
-          onPress={() =>
-            void Share.share({
-              message: t('me.shareMessage', { url }),
-              // iOS reads `url` and `message` as separate fields; Android has
-              // only the one, which is why the URL is in both.
-              url,
-            })
-          }
+          onPress={() => void shareLink({ message: t('me.shareMessage', { url }), url })}
         />
         <Button
           label={t('shareProfile.copy')}

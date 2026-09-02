@@ -30,6 +30,8 @@ import { StatTile } from '../../../src/components/ui/StatTile'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo, openFollows } from '../../../src/lib/navigation'
+import { shareLink } from '../../../src/lib/share'
+import { profileShareText } from '../../../src/lib/shareText'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
@@ -173,12 +175,19 @@ export default function ProfileScreen() {
       )
   }
 
-  /** The kebab is a shortcut to the same two actions the footer offers. */
+  /**
+   * The kebab: share first, then the two actions the footer also offers.
+   * Share sits on somebody else's profile only — your own has a screen for it
+   * under Me, with a code that can be photographed.
+   */
   async function openActions(): Promise<void> {
     const action = await chooseAlert(user.displayName, undefined, [
+      { label: t('share.profile'), value: 'share' },
       { label: t('common.report'), value: 'report' },
       { label: t('common.block'), value: 'block' },
     ])
+    if (action === 'share')
+      void shareLink(profileShareText(t, { name: user.displayName, handle: user.handle }))
     if (action === 'report') void confirmReport()
     if (action === 'block') void confirmBlock()
   }
@@ -198,7 +207,7 @@ export default function ProfileScreen() {
         {isSelf ? null : (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`${t('common.report')} · ${t('common.block')}`}
+            accessibilityLabel={`${t('share.profile')} · ${t('common.report')} · ${t('common.block')}`}
             onPress={() => void openActions()}
             hitSlop={12}
             style={({ pressed }) => [styles.iconButton, pressed && styles.iconPressed]}

@@ -83,6 +83,7 @@ export const tr: Localized<EnMessages> = {
     unpin: 'Sabitlemeyi kaldır',
     report: 'Bildir',
     correctedCannotEdit: 'Düzeltilmiş — değiştirilemez',
+    share: 'Paylaş',
   },
 
   messageMeta: {
@@ -1048,6 +1049,30 @@ export const tr: Localized<EnMessages> = {
     share: 'Paylaş',
     copy: 'Linki kopyala',
     copied: 'Link kopyalandı',
+  },
+
+  share: {
+    action: 'Paylaş',
+    copied: 'Link kopyalandı',
+    copiedText: 'Metin kopyalandı',
+    profile: 'Profili paylaş',
+    profileMessage: 'LangX’te {name} ile tanış: {url}',
+    post: 'Gönderiyi paylaş',
+    postMessage: '“{excerpt}” — LangX’te {language} pratiği: {url}',
+    streak: 'Serimi paylaş',
+    streakMessage: {
+      one: 'LangX’te 🔥 {count} günlük seri. Benimle pratik yap: {url}',
+      other: 'LangX’te 🔥 {count} günlük seri. Benimle pratik yap: {url}',
+    },
+    rank: 'Sıramı paylaş',
+    leaderboardMessage: {
+      week: 'Bu hafta LangX’te {rank}. sıradayım. Benimle pratik yap: {url}',
+      month: 'Bu ay LangX’te {rank}. sıradayım. Benimle pratik yap: {url}',
+      year: 'Bu yıl LangX’te {rank}. sıradayım. Benimle pratik yap: {url}',
+      all: 'LangX’te tüm zamanlarda {rank}. sıradayım. Benimle pratik yap: {url}',
+    },
+    badge: '{label} rozetini paylaş',
+    badgeMessage: 'LangX’te “{label}” rozetini kazandım. Benimle pratik yap: {url}',
   },
 
   linkDevice: {

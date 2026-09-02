@@ -2098,3 +2098,36 @@ with the recency tab; every feed page now sorts on a count.
 
 The pronunciation section is unchanged — one queue, no graph in it yet — and
 takes the same code path with an empty audience.
+
+## Sharing is a sentence and a link, not a card
+
+Six more things can leave the app through the share sheet — somebody else's
+profile, a post, a streak, a rank, a badge, a message — and every one of them
+goes out as words with a URL after them. The obvious alternative was a shareable
+image: a streak card, a badge tile, the kind of thing that does well on a
+story. It was not built, for three reasons that each stand on their own.
+
+**No image export.** Drawing a card means `react-native-view-shot`, a native
+module: a new binary for every store, and no OTA for a picture. The QR code
+already went server-side for exactly this reason, and a share card is a bigger
+picture with the same cost.
+
+**No new public reads.** `GET /public/profiles/:handle` is the one
+unauthenticated endpoint and it hides streak, tokens and tier on purpose. A
+"view this post" page for strangers would be a second one, with a post's full
+text behind a guessable id. So a post link resolves inside `Stack.Protected`:
+sign-in for a stranger, the post for a member — and the sentence carries an
+excerpt so the recipient knows what they are being asked to open. Accepted
+until universal links land, when the same link opens the app.
+
+**The wording is the product, so it is tested.** `shareText.ts` is pure and
+`share.ts` is the only file that touches `Share.share`. Two rules live there:
+an achievement carries `inviteUrl`, because "look at my streak" is the moment a
+friend tries the app and the referral marker costs nothing; and a token total
+never appears — `token-messaging-brief.md` says an achievement, never money,
+and a share is the most public sentence the app writes.
+
+One quirk worth knowing: only the web rejects when the sheet is closed
+(`AbortError`), and desktop browsers without `navigator.share` reject with
+"not supported". `shareLink` treats the first as nothing and the second as
+"copy it instead", with a toast — the button never silently does nothing.

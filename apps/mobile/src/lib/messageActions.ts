@@ -9,6 +9,7 @@ export const MESSAGE_ACTION_IDS = [
   'edit',
   'star',
   'pin',
+  'share',
   'report',
 ] as const
 export type MessageActionId = (typeof MESSAGE_ACTION_IDS)[number]
@@ -156,6 +157,19 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     icon: 'pin-outline',
     page: 'more',
   })
+
+  // Out through the platform sheet, as text: a message has no address of its
+  // own, and a link into a private thread would resolve for nobody but the
+  // two people already in it. Same gate as copy — a captionless voice note has
+  // nothing to hand over.
+  if (context.hasBody) {
+    actions.push({
+      id: 'share',
+      label: t('messageActions.share'),
+      icon: 'share-outline',
+      page: 'more',
+    })
+  }
 
   if (!context.mine) {
     actions.push({

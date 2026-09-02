@@ -94,6 +94,7 @@ export const en = {
     unpin: 'Unpin',
     report: 'Report',
     correctedCannotEdit: 'Corrected — can’t be edited',
+    share: 'Share',
   },
 
   messageMeta: {
@@ -1079,6 +1080,30 @@ export const en = {
     share: 'Share',
     copy: 'Copy link',
     copied: 'Link copied',
+  },
+
+  share: {
+    action: 'Share',
+    copied: 'Link copied',
+    copiedText: 'Text copied',
+    profile: 'Share profile',
+    profileMessage: 'Meet {name} on LangX: {url}',
+    post: 'Share post',
+    postMessage: '“{excerpt}” — {language} practice on LangX: {url}',
+    streak: 'Share my streak',
+    streakMessage: {
+      one: '🔥 {count}-day streak on LangX. Practise with me: {url}',
+      other: '🔥 {count}-day streak on LangX. Practise with me: {url}',
+    },
+    rank: 'Share my rank',
+    leaderboardMessage: {
+      week: 'I’m #{rank} on LangX this week. Practise with me: {url}',
+      month: 'I’m #{rank} on LangX this month. Practise with me: {url}',
+      year: 'I’m #{rank} on LangX this year. Practise with me: {url}',
+      all: 'I’m #{rank} on LangX, all time. Practise with me: {url}',
+    },
+    badge: 'Share the {label} badge',
+    badgeMessage: 'I earned the “{label}” badge on LangX. Practise with me: {url}',
   },
 
   linkDevice: {

@@ -1,7 +1,8 @@
 import { findCosmetic, type CosmeticTone, type PeriodType } from '@langx/shared'
+import Feather from '@expo/vector-icons/Feather'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { useBadges, useLeaderboard, useTokens } from '../../src/api/queries'
+import { useBadges, useLeaderboard, useMe, useTokens } from '../../src/api/queries'
 import { BadgeGrid } from '../../src/components/BadgeGrid'
 import { CosmeticTitle } from '../../src/components/CosmeticTitle'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -11,7 +12,9 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
-import { makeStyles } from '../../src/lib/theme'
+import { shareLink } from '../../src/lib/share'
+import { badgeShareText, leaderboardShareText } from '../../src/lib/shareText'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { badgeLabel, periodLabel, useLocale, useT } from '../../src/i18n'
 import { dedupeById } from '../../src/lib/dedupeById'
 
@@ -21,6 +24,7 @@ const MEDALS = ['🥇', '🥈', '🥉']
 
 export default function LeaderboardScreen() {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const { locale } = useLocale()
 
@@ -28,6 +32,8 @@ export default function LeaderboardScreen() {
   const board = useLeaderboard(period)
   const xp = useTokens()
   const badges = useBadges()
+  const me = useMe()
+  const handle = me.data?.handle
 
   const streak = xp.data?.streak
   const next = badges.data?.next
@@ -36,6 +42,10 @@ export default function LeaderboardScreen() {
   )
   // The viewer's own standing is about the whole table, not this page.
   const viewer = board.data?.pages[0]?.viewer
+  // Built here rather than in the handler so the button exists only when the
+  // sentence does: a rank of null is "not on the board", not "#0".
+  const rankShare =
+    viewer?.rank && handle ? leaderboardShareText(t, { rank: viewer.rank, period, handle }) : null
 
   return (
     <Screen fluid>
@@ -91,7 +101,14 @@ export default function LeaderboardScreen() {
         </View>
       ) : null}
 
-      {badges.data ? <BadgeGrid badges={badges.data.badges} /> : null}
+      {badges.data ? (
+        <BadgeGrid
+          badges={badges.data.badges}
+          {...(handle
+            ? { onShare: (label: string) => void shareLink(badgeShareText(t, { label, handle })) }
+            : {})}
+        />
+      ) : null}
 
       {streak ? (
         <Text style={styles.streakHint}>
@@ -108,6 +125,18 @@ export default function LeaderboardScreen() {
           accessibilityLabel={t('leaderboard.periodPicker')}
         />
       </View>
+
+      {rankShare ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void shareLink(rankShare)}
+          hitSlop={8}
+          style={({ pressed }) => [styles.shareRank, pressed && styles.rowPressed]}
+        >
+          <Feather name="share" size={16} color={colors.textMuted} />
+          <Text style={styles.shareRankLabel}>{t('share.rank')}</Text>
+        </Pressable>
+      ) : null}
 
       {board.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -197,6 +226,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   nextMeta: { color: colors.textMuted, fontSize: 13, marginTop: 10 },
   streakHint: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
   tabs: { marginTop: spacing.lg },
+  shareRank: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.xs,
+    marginTop: spacing.sm,
+  },
+  shareRankLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },

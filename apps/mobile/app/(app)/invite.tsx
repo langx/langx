@@ -1,7 +1,7 @@
 import { inviteQrUrl, inviteUrl, TOKEN_RULES } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
-import { ActivityIndicator, Share, Text, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { useMe, useReferrals } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
@@ -13,6 +13,7 @@ import { useLocale, useT } from '../../src/i18n'
 import { API_URL } from '../../src/lib/apiUrl'
 import { showAlert } from '../../src/lib/alert'
 import { goBackTo } from '../../src/lib/navigation'
+import { shareLink } from '../../src/lib/share'
 import { makeStyles } from '../../src/lib/theme'
 
 const RULES = TOKEN_RULES.referral
@@ -70,14 +71,7 @@ export default function InviteScreen() {
       <View style={styles.actions}>
         <Button
           label={t('invite.share')}
-          onPress={() =>
-            void Share.share({
-              message: t('invite.shareMessage', { url }),
-              // iOS reads `url` and `message` as separate fields; Android has
-              // only the one, which is why the URL is in both.
-              url,
-            })
-          }
+          onPress={() => void shareLink({ message: t('invite.shareMessage', { url }), url })}
         />
         <Button
           label={t('invite.copy')}

@@ -70,6 +70,7 @@ export const de: Localized<EnMessages> = {
     unpin: 'Losheften',
     report: 'Melden',
     correctedCannotEdit: 'Korrigiert — nicht mehr änderbar',
+    share: 'Teilen',
   },
 
   messageMeta: {
@@ -1062,6 +1063,30 @@ export const de: Localized<EnMessages> = {
     share: 'Teilen',
     copy: 'Link kopieren',
     copied: 'Link kopiert',
+  },
+
+  share: {
+    action: 'Teilen',
+    copied: 'Link kopiert',
+    copiedText: 'Text kopiert',
+    profile: 'Profil teilen',
+    profileMessage: 'Lern {name} auf LangX kennen: {url}',
+    post: 'Beitrag teilen',
+    postMessage: '„{excerpt}“ — {language} üben auf LangX: {url}',
+    streak: 'Meine Serie teilen',
+    streakMessage: {
+      one: '🔥 {count} Tag Serie auf LangX. Üb mit mir: {url}',
+      other: '🔥 {count} Tage Serie auf LangX. Üb mit mir: {url}',
+    },
+    rank: 'Meinen Platz teilen',
+    leaderboardMessage: {
+      week: 'Ich bin diese Woche Platz {rank} auf LangX. Üb mit mir: {url}',
+      month: 'Ich bin diesen Monat Platz {rank} auf LangX. Üb mit mir: {url}',
+      year: 'Ich bin dieses Jahr Platz {rank} auf LangX. Üb mit mir: {url}',
+      all: 'Ich bin insgesamt Platz {rank} auf LangX. Üb mit mir: {url}',
+    },
+    badge: 'Abzeichen {label} teilen',
+    badgeMessage: 'Ich habe auf LangX das Abzeichen „{label}“ verdient. Üb mit mir: {url}',
   },
 
   linkDevice: {

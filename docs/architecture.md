@@ -732,6 +732,35 @@ Three consequences for handles:
 purpose — collapsing them would make re-pointing links a store-submission
 change wearing the clothes of a URL edit.
 
+### What can be shared
+
+Every share is a sentence and a link through the platform share sheet — one
+call site, `src/lib/share.ts`, and the wording in `src/lib/shareText.ts`, which
+is pure so the sentences are tested. Nothing is rendered to an image: a card
+would need `react-native-view-shot`, a native module, for a picture.
+
+| What                     | Where                                     | Link         |
+| ------------------------ | ----------------------------------------- | ------------ |
+| Your own profile, QR too | Me → Share my profile                     | `profileUrl` |
+| Somebody else's profile  | the kebab on their profile                | `profileUrl` |
+| A feed post              | the row's action strip, the post's header | `postUrl`    |
+| Your streak              | the streak screen, once it is above zero  | `inviteUrl`  |
+| Your leaderboard rank    | the leaderboard, when you are on it       | `inviteUrl`  |
+| An earned badge          | its row on the leaderboard screen         | `inviteUrl`  |
+| A chat message           | long-press → More… → Share, text only     | none         |
+
+Two rules. An **achievement carries the invite link**: a streak, a rank and a
+badge are the moment a friend is most likely to try the app, and `inviteUrl`
+is the profile link with the referral marker, so the brag and the invite are
+one sentence. And **no balances**: `token-messaging-brief.md` says an
+achievement, never money, so a token total never goes out on the sheet.
+
+The profile card above is still the only unauthenticated read. A post link
+resolves inside `Stack.Protected`, so on the web a stranger lands on sign-in
+and a member on the post; the excerpt in the sentence is what tells the
+recipient whether that is worth doing. When the app claims the host its links
+point at, the same links open the app instead — nothing here changes.
+
 ### Community feed
 
 Six collections, none of them a conversation with one participant: a post has

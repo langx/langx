@@ -68,6 +68,7 @@ export const ptBR: Localized<EnMessages> = {
     unpin: 'Desafixar',
     report: 'Denunciar',
     correctedCannotEdit: 'Corrigida — não dá para editar',
+    share: 'Compartilhar',
   },
 
   messageMeta: {
@@ -1036,6 +1037,30 @@ export const ptBR: Localized<EnMessages> = {
     share: 'Compartilhar',
     copy: 'Copiar link',
     copied: 'Link copiado',
+  },
+
+  share: {
+    action: 'Compartilhar',
+    copied: 'Link copiado',
+    copiedText: 'Texto copiado',
+    profile: 'Compartilhar perfil',
+    profileMessage: 'Conheça {name} no LangX: {url}',
+    post: 'Compartilhar publicação',
+    postMessage: '“{excerpt}” — prática de {language} no LangX: {url}',
+    streak: 'Compartilhar minha sequência',
+    streakMessage: {
+      one: '🔥 Sequência de {count} dia no LangX. Pratique comigo: {url}',
+      other: '🔥 Sequência de {count} dias no LangX. Pratique comigo: {url}',
+    },
+    rank: 'Compartilhar minha posição',
+    leaderboardMessage: {
+      week: 'Estou em {rank}º no LangX esta semana. Pratique comigo: {url}',
+      month: 'Estou em {rank}º no LangX este mês. Pratique comigo: {url}',
+      year: 'Estou em {rank}º no LangX este ano. Pratique comigo: {url}',
+      all: 'Estou em {rank}º no LangX, no geral. Pratique comigo: {url}',
+    },
+    badge: 'Compartilhar a insígnia {label}',
+    badgeMessage: 'Ganhei a insígnia “{label}” no LangX. Pratique comigo: {url}',
   },
 
   linkDevice: {
