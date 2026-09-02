@@ -226,8 +226,15 @@ function RootShell() {
             <AlertHost />
             <MessageMenuHost />
             <Stack screenOptions={{ headerShown: false }}>
+              {/*
+                Outside both guards, because it *is* the guard: `index` is the
+                only screen at `/` in every state, and it reads the session
+                itself. Behind `!!session` it was one of two screens matching
+                the empty path, and which one answered a returning guest was
+                decided by route-file order.
+              */}
+              <Stack.Screen name="index" />
               <Stack.Protected guard={!!session}>
-                <Stack.Screen name="index" />
                 <Stack.Screen name="(onboarding)" />
                 <Stack.Screen name="(app)" />
               </Stack.Protected>
