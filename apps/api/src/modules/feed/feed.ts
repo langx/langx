@@ -83,30 +83,27 @@ async function readCorrectionSummary(
 export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Promise<FeedPage> {
   const posts = db.collection<Post>(COLLECTIONS.posts)
 
+  /**
+   * The section decides which posts are in the queue and which count it drains
+   * by. Both sections sort the same way — fewest answers first, then newest —
+   * and only the *meaning* of the integer changes, which is why one field name
+   * and not two code paths.
+   */
+  const pronunciation = query.kind === 'pronunciation'
+  const countField: 'correctionCount' | 'answerCount' = pronunciation
+    ? 'answerCount'
+    : 'correctionCount'
+
   // Blocks are symmetric here as everywhere else: `blockedUserIds` returns
   // both directions, so neither party appears in the other's feed.
   // Independent of each other, so they go together: the block list does not
-  // narrow the conversation lookup, it filters its result.
-  /**
-   * The section, and the two things it decides: which posts are in it, and what
-   * the queue is ordered by. `filter` is a *correction*-section control, so it
-   * is read only when the section is that one — the pronunciation tab has one
-   * order (unanswered first) and no tabs of its own.
-   */
-  const pronunciation = query.kind === 'pronunciation'
-  const following = !pronunciation && query.filter === 'following'
-  const needsFirst = !pronunciation && query.filter === 'needsCorrection'
-  const countField: 'correctionCount' | 'answerCount' | null = pronunciation
-    ? 'answerCount'
-    : needsFirst
-      ? 'correctionCount'
-      : null
-
+  // narrow the audience lookups, it filters their result.
   const [hidden, follows, conversations] = await Promise.all([
     blockedUserIds(db, userId),
-    following ? followingIds(db, userId, FEED_FOLLOWING_SOURCE_LIMIT) : Promise.resolve([]),
-    following
-      ? db
+    pronunciation ? Promise.resolve([]) : followingIds(db, userId, FEED_FOLLOWING_SOURCE_LIMIT),
+    pronunciation
+      ? Promise.resolve([])
+      : db
           .collection<{ participants: string[] }>(COLLECTIONS.conversations)
           .find({ participants: userId })
           // Sorted and capped, which is what makes the truncation below mean
@@ -115,10 +112,29 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
           .sort({ 'lastMessage.createdAt': -1 })
           .limit(FEED_FOLLOWING_SOURCE_LIMIT)
           .project<{ participants: string[] }>({ participants: 1 })
-          .toArray()
-      : Promise.resolve([]),
+          .toArray(),
   ])
-  const filter: Document = hidden.length > 0 ? { authorId: { $nin: hidden } } : {}
+
+  /*
+   * Who comes first: the union of two relationships, not one.
+   *
+   * The follow graph is the real answer, and the people you have actually
+   * talked to are the one this app had before there was a graph — dropping
+   * them would have emptied the old "Following" tab for every existing user on
+   * the day the Follow button shipped, and a conversation partner is somebody
+   * you are following in every sense except the button.
+   *
+   * Bounded, because the result is an `$in`: see
+   * `FEED_FOLLOWING_SOURCE_LIMIT`. Follows come first in the union so that a
+   * deliberate choice outranks an incidental one when the cap bites.
+   *
+   * Empty for the pronunciation section, which has one queue and no graph in
+   * it yet — so it falls straight through to the second query below.
+   */
+  const partners = conversations.flatMap((c) => c.participants).filter((id) => id !== userId)
+  const audience = [...new Set([...follows, ...partners])]
+    .filter((id) => id !== userId && !hidden.includes(id))
+    .slice(0, FEED_FOLLOWING_SOURCE_LIMIT)
 
   /**
    * `$in` with `null`, not `$ne`.
@@ -130,62 +146,68 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
    * and cannot be bounded — it would quietly turn the main feed into a
    * collection scan, which nothing would fail to warn about.
    */
-  filter.kind = pronunciation ? 'pronunciation' : { $in: ['correction', null] }
-
-  if (following) {
-    /*
-     * The union of two relationships, not one.
-     *
-     * The follow graph is the real answer, and the people you have actually
-     * talked to are the one this app had before there was a graph — dropping
-     * them would empty the tab for every existing user on the day the Follow
-     * button shipped, and a conversation partner is somebody you are following
-     * in every sense except the button.
-     *
-     * Bounded, because the result is an `$in`: see
-     * `FEED_FOLLOWING_SOURCE_LIMIT`. Follows come first in the union so that a
-     * deliberate choice outranks an incidental one when the cap bites.
-     */
-    const partners = conversations.flatMap((c) => c.participants).filter((id) => id !== userId)
-    const audience = [...new Set([...follows, ...partners])]
-      .filter((id) => id !== userId && !hidden.includes(id))
-      .slice(0, FEED_FOLLOWING_SOURCE_LIMIT)
-    if (audience.length === 0) return { items: [], nextCursor: null }
-    filter.authorId = { $in: audience }
-  }
+  const base: Document = { kind: pronunciation ? 'pronunciation' : { $in: ['correction', null] } }
+  const sort: Document = { [countField]: 1, createdAt: -1, _id: -1 }
 
   /**
-   * The cursor carries the sort's own keys — `(count, createdAt, _id)` whenever
-   * the sort leads with a count, and paging that with a `createdAt`-only cursor
-   * would silently skip every post whose count differs, which is most of them.
-   *
-   * Both counting sections share one encoding, because they are structurally
-   * the same sort: an ascending integer, then newest first. Only the *meaning*
-   * of the integer changes, which is why `countField` and not a second cursor
-   * format.
+   * The cursor carries the sort's own keys — `(count, createdAt, _id)` — and
+   * which of the two queries below it stopped in. Paging a count-led sort with
+   * a `createdAt`-only cursor would silently skip every post whose count
+   * differs, which is most of them.
    */
-  if (query.cursor) {
-    const { date, id, count } = decodeFeedCursor(query.cursor)
-    const after: Document[] = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
-    filter.$and = [
-      countField && count !== null
-        ? { $or: [{ [countField]: { $gt: count } }, { [countField]: count, $or: after }] }
-        : { $or: after },
-    ]
+  const cursor = query.cursor ? decodeFeedCursor(query.cursor) : null
+  const after = (c: NonNullable<typeof cursor>): Document => ({
+    $or: [
+      { [countField]: { $gt: c.count } },
+      {
+        [countField]: c.count,
+        $or: [{ createdAt: { $lt: c.date } }, { createdAt: c.date, _id: { $lt: c.id } }],
+      },
+    ],
+  })
+
+  /**
+   * Two queries stitched into one page, rather than one sort.
+   *
+   * "People you follow first" is not a field on the post, so no index can sort
+   * by it, and computing it per document (`$addFields` + `$in`) would make
+   * every page an in-memory sort of the whole collection. Reading the
+   * audience's posts to exhaustion and then everybody else's is the same
+   * order, served from `kind_needs_correction` both times, and the cursor
+   * remembers which half it is in so page two does not start the first half
+   * again.
+   *
+   * The second query runs even when the first filled the page exactly: its
+   * `+1` is what tells the client whether there *is* a page two.
+   */
+  const items: Post[] = []
+  let hasMore = false
+  let fromAudience = 0
+  if (audience.length > 0 && (!cursor || cursor.followed)) {
+    const filter: Document = { ...base, authorId: { $in: audience } }
+    if (cursor) filter.$and = [after(cursor)]
+    const page = await posts
+      .find(filter)
+      .sort(sort)
+      .limit(query.limit + 1)
+      .toArray()
+    hasMore = page.length > query.limit
+    items.push(...page.slice(0, query.limit))
+    fromAudience = items.length
   }
-
-  const sort: Document = countField
-    ? { [countField]: 1, createdAt: -1, _id: -1 }
-    : { createdAt: -1, _id: -1 }
-
-  const page = await posts
-    .find(filter)
-    .sort(sort)
-    .limit(query.limit + 1)
-    .toArray()
-
-  const hasMore = page.length > query.limit
-  const items = hasMore ? page.slice(0, query.limit) : page
+  if (!hasMore) {
+    const remaining = query.limit - items.length
+    const excluded = [...hidden, ...audience]
+    const filter: Document = excluded.length > 0 ? { ...base, authorId: { $nin: excluded } } : base
+    if (cursor && !cursor.followed) filter.$and = [after(cursor)]
+    const page = await posts
+      .find(filter)
+      .sort(sort)
+      .limit(remaining + 1)
+      .toArray()
+    hasMore = page.length > remaining
+    items.push(...page.slice(0, remaining))
+  }
   const last = items.at(-1)
 
   const ids = items.map((post) => post._id)
@@ -236,7 +258,14 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
     }),
     nextCursor:
       hasMore && last
-        ? encodeFeedCursor(last.createdAt, last._id, countField ? (last[countField] ?? 0) : null)
+        ? encodeFeedCursor(
+            last.createdAt,
+            last._id,
+            last[countField] ?? 0,
+            // The page ended inside the audience exactly when nothing after
+            // it came from the second query.
+            items.length === fromAudience,
+          )
         : null,
   }
 }

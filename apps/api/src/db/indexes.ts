@@ -367,7 +367,7 @@ export const INDEXES: Partial<IndexSpec> = {
   ],
 
   [COLLECTIONS.posts]: [
-    // The `needsCorrection` tab, and the plain recency feed behind it. Both
+    // The correction queue, and the plain recency feed behind it. Both
     // read newest-first within a `correctionCount` bucket, so one compound
     // index serves both orders.
     { key: { correctionCount: 1, createdAt: -1, _id: -1 }, name: 'needs_correction' },

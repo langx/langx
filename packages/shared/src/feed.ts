@@ -19,24 +19,27 @@ export const MAX_POST_NOTE_LENGTH = 500
 export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
 
 /**
- * `needsCorrection` is the default, and it is the whole reason the feed has
- * tabs. Sorting a feed by recency alone means the newest post gets every
- * correction and a post that sat unanswered for an hour never gets one; putting
- * the uncorrected ones first is what makes the queue drain.
+ * One queue, not a recency feed. Sorting by recency alone means the newest
+ * post gets every correction and a post that sat unanswered for an hour never
+ * gets one; putting the uncorrected ones first is what makes the queue drain.
+ *
+ * Within that, the people you follow come first. There used to be a second
+ * tab for them; it split one small feed into two smaller ones and made the
+ * reader choose between helping a friend and helping whoever waited longest.
+ * Now it is one list: your people, uncorrected first — then everybody else,
+ * uncorrected first.
  */
-export const FEED_FILTERS = ['needsCorrection', 'following'] as const
-export type FeedFilter = (typeof FEED_FILTERS)[number]
 
 /**
- * How many people the "Following" tab reads from.
+ * How many people the front of the feed reads from.
  *
  * The audience is an `$in`, and an `$in` is a list the query planner has to
  * carry — so it needs a ceiling that does not grow with how social somebody is.
  * Truncated by recency, which is the tiebreak the rest of the app already uses:
  * somebody following nine hundred people cares most about the ones they most
- * recently chose. Above this the tab is a sample of the graph rather than all
- * of it, and that is a deliberate trade against a fan-out table we do not need
- * yet.
+ * recently chose. Above this the front of the feed is a sample of the graph
+ * rather than all of it, and that is a deliberate trade against a fan-out
+ * table we do not need yet.
  */
 export const FEED_FOLLOWING_SOURCE_LIMIT = 500
 
@@ -270,9 +273,8 @@ export const postMediaUploadUrlSchema = z.object({
 export type PostMediaUploadUrlInput = z.infer<typeof postMediaUploadUrlSchema>
 
 export const listFeedQuerySchema = z.object({
-  /** Which section. `filter` below is read only when this is `'correction'`. */
+  /** Which section. */
   kind: z.enum(POST_KINDS).default('correction'),
-  filter: z.enum(FEED_FILTERS).default('needsCorrection'),
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 })

@@ -27,7 +27,7 @@ export interface Post {
   kind?: 'correction' | 'pronunciation'
   /**
    * Denormalized, and one of the two numbers here that are. It is the sort key
-   * for the `needsCorrection` tab, and an index cannot sort on a count it would
+   * for the correction queue, and an index cannot sort on a count it would
    * have to join to find. Written only by `$inc` inside the same call that
    * inserts the correction, so it cannot drift the way a periodically-rebuilt
    * counter would.

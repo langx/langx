@@ -646,16 +646,12 @@ export const ru: Localized<EnMessages> = {
 
   feed: {
     topTag: 'Лучшая',
-    needsCorrection: 'Нужно исправление',
     ask: '+ Спросить',
     askTitle: 'Твоё предложение на языке {language}',
     askPlaceholder: 'Предложение, в котором ты не уверен…',
     posting: 'Публикуем…',
     posted: 'Опубликовано. Кто-нибудь исправит.',
     correctionSent: 'Исправление отправлено. Спасибо.',
-    followingEmptyTitle: 'Ничего от тех, на кого вы подписаны',
-    followingEmptyBody:
-      'На этой вкладке — посты тех, на кого вы подписаны или с кем говорили. Подпишитесь, и посты появятся здесь.',
     correctedEmptyTitle: 'Всё исправлено',
     correctedEmptyBody:
       'Сейчас никто не ждёт помощи. Опубликуй своё предложение или загляни позже.',
@@ -702,7 +698,6 @@ export const ru: Localized<EnMessages> = {
     correctionsEmptyTitle: 'Исправлений пока нет',
     correctionsEmptyBody: 'Исправьте это предложение первым.',
     title: 'Лента',
-    following: 'Подписки',
     post: 'Опубликовать',
     correctionSection: 'Исправления',
     pronunciationSection: 'Произношение',
