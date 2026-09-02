@@ -176,7 +176,20 @@ const config: ExpoConfig = {
     ],
     [
       'expo-image-picker',
-      { photosPermission: 'LangX uses your photo library so you can share photos in chat.' },
+      {
+        photosPermission: 'LangX uses your photo library so you can share photos in chat.',
+        /*
+         * Worded, not defaulted. Without this key the plugin still writes
+         * `NSCameraUsageDescription` — its own generic "Allow $(PRODUCT_NAME)
+         * to access your camera" — so the camera already worked in shipped
+         * builds; what it did not have was a sentence saying what for.
+         *
+         * Android needs nothing here: `CAMERA` comes from expo-image-picker's
+         * own manifest, and the plugin only ever *blocks* it, when this is
+         * explicitly `false`.
+         */
+        cameraPermission: 'LangX uses your camera so you can take a photo to send.',
+      },
     ],
     // Only ever requested when someone turns on location sharing in Settings,
     // and only ever "when in use" — there is no background permission here and

@@ -50,6 +50,13 @@ export const ar: Localized<EnMessages> = {
 
   tabs: { discover: 'استكشاف', chats: 'المحادثات', feed: 'الأخبار', me: 'أنا' },
 
+  media: {
+    sourceTitle: 'إضافة صورة',
+    sourceCamera: 'التقاط صورة',
+    sourceLibrary: 'الاختيار من المعرض',
+    cameraTitle: 'الكاميرا',
+    cameraPermission: 'يحتاج LangX إذنًا لاستخدام الكاميرا.',
+  },
   tips: {
     dismiss: 'إخفاء هذه النصيحة',
     section: 'نصائح',

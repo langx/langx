@@ -250,7 +250,13 @@ export default function ChatScreen() {
   async function pickImage(): Promise<void> {
     const picked = await pickImageAsset()
     if (picked.status === 'denied') {
-      void showAlert(t('chat.photosTitle'), t('chat.photosPermission'))
+      // Which permission was refused, not "photos" for both: being told to
+      // allow the photo library after declining the camera is advice that
+      // does not work.
+      void showAlert(
+        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
+        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
+      )
       return
     }
     if (picked.status === 'cancelled') return

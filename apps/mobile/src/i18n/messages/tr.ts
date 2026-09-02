@@ -51,6 +51,13 @@ export const tr: Localized<EnMessages> = {
     me: 'Ben',
   },
 
+  media: {
+    sourceTitle: 'Fotoğraf ekle',
+    sourceCamera: 'Fotoğraf çek',
+    sourceLibrary: 'Galeriden seç',
+    cameraTitle: 'Kamera',
+    cameraPermission: 'LangX kameranı kullanmak için izin istiyor.',
+  },
   tips: {
     dismiss: 'Bu ipucunu kapat',
     section: 'İpuçları',

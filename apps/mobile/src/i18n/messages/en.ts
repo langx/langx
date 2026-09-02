@@ -61,6 +61,13 @@ export const en = {
     me: 'Me',
   },
 
+  media: {
+    sourceTitle: 'Add a photo',
+    sourceCamera: 'Take a photo',
+    sourceLibrary: 'Choose from library',
+    cameraTitle: 'Camera',
+    cameraPermission: 'LangX needs permission to use your camera.',
+  },
   tips: {
     dismiss: 'Dismiss this tip',
     section: 'Tips',

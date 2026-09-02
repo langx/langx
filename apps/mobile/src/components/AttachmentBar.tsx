@@ -45,7 +45,9 @@ export function AttachmentBar({ pending, onPick, onClear, disabled }: Attachment
   async function pick(): Promise<void> {
     const picked = await pickImageAsset()
     if (picked.status === 'denied') {
-      showToast(t('feed.photosPermission'))
+      showToast(
+        picked.source === 'camera' ? t('media.cameraPermission') : t('feed.photosPermission'),
+      )
       return
     }
     if (picked.status === 'cancelled') return

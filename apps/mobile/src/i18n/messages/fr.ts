@@ -37,6 +37,13 @@ export const fr: Localized<EnMessages> = {
 
   tabs: { discover: 'Découvrir', chats: 'Discussions', feed: 'Fil', me: 'Moi' },
 
+  media: {
+    sourceTitle: 'Ajouter une photo',
+    sourceCamera: 'Prendre une photo',
+    sourceLibrary: 'Choisir dans la galerie',
+    cameraTitle: 'Appareil photo',
+    cameraPermission: 'LangX a besoin de votre autorisation pour utiliser l’appareil photo.',
+  },
   tips: {
     dismiss: 'Masquer ce conseil',
     section: 'Conseils',

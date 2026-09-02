@@ -10,7 +10,6 @@ import {
   getLanguage,
   type LanguageLevel,
 } from '@langx/shared'
-import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
@@ -36,17 +35,10 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
+import { pickImageAsset } from '../../src/lib/pickImageAsset'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, interestLabel, levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
-
-/** What the picker returns has no mime type on every platform; infer from the extension. */
-function contentTypeFor(uri: string): string {
-  const extension = uri.split('?')[0]?.split('.').pop()?.toLowerCase()
-  if (extension === 'png') return 'image/png'
-  if (extension === 'webp') return 'image/webp'
-  return 'image/jpeg'
-}
 
 /**
  * Splitting the form out of the loading state is not cosmetic.
@@ -117,23 +109,23 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const learningCodes = learning.map((l) => l.code)
 
   async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!permission.granted) {
-      void showAlert(t('chat.photosTitle'), t('chat.photosPermission'))
+    const picked = await pickImageAsset({ allowsEditing: true })
+    if (picked.status === 'denied') {
+      // Which permission was refused, not "photos" for both: being told to
+      // allow the photo library after declining the camera is advice that
+      // does not work.
+      void showAlert(
+        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
+        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
+      )
       return
     }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      quality: 0.8,
-      // HEIC from an iPhone camera roll arrives as JPEG this way; see
-      // `pickImageAsset` for the whole story.
-      preferredAssetRepresentationMode:
-        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
-    })
-    const asset = result.assets?.[0]
-    if (result.canceled || !asset) return
-    then(asset.uri, asset.mimeType ?? contentTypeFor(asset.uri))
+    if (picked.status === 'unsupported') {
+      void showAlert(t('errors.uploadFailed'), t('errors.attachmentUnsupported'))
+      return
+    }
+    if (picked.status === 'cancelled') return
+    then(picked.image.uri, picked.image.contentType)
   }
 
   function onUploadError(caught: unknown): void {

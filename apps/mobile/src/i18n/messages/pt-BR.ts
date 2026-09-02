@@ -37,6 +37,13 @@ export const ptBR: Localized<EnMessages> = {
 
   tabs: { discover: 'Descobrir', chats: 'Conversas', feed: 'Feed', me: 'Eu' },
 
+  media: {
+    sourceTitle: 'Adicionar uma foto',
+    sourceCamera: 'Tirar uma foto',
+    sourceLibrary: 'Escolher da galeria',
+    cameraTitle: 'Câmera',
+    cameraPermission: 'O LangX precisa de permissão para usar sua câmera.',
+  },
   tips: {
     dismiss: 'Ocultar esta dica',
     section: 'Dicas',

@@ -47,6 +47,13 @@ export const ru: Localized<EnMessages> = {
 
   tabs: { discover: 'Поиск', chats: 'Чаты', feed: 'Лента', me: 'Я' },
 
+  media: {
+    sourceTitle: 'Добавить фото',
+    sourceCamera: 'Сделать фото',
+    sourceLibrary: 'Выбрать из галереи',
+    cameraTitle: 'Камера',
+    cameraPermission: 'LangX нужно разрешение на использование камеры.',
+  },
   tips: {
     dismiss: 'Скрыть подсказку',
     section: 'Подсказки',

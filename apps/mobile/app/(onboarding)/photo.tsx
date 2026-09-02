@@ -1,5 +1,4 @@
 import { INTEREST_SUGGESTIONS, MAX_INTERESTS } from '@langx/shared'
-import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -11,6 +10,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
+import { pickImageAsset } from '../../src/lib/pickImageAsset'
 import { makeStyles } from '../../src/lib/theme'
 import { interestLabel, useT } from '../../src/i18n'
 
@@ -36,28 +36,23 @@ export default function PhotoStep() {
   const [uploading, setUploading] = useState(false)
 
   async function pickPhoto(): Promise<void> {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!permission.granted) {
-      void showAlert(t('onboarding.photoUnavailable'), t('onboarding.photoPermission'))
+    const picked = await pickImageAsset({ allowsEditing: true, aspect: [1, 1] })
+    if (picked.status === 'denied') {
+      void showAlert(
+        picked.source === 'camera' ? t('media.cameraTitle') : t('onboarding.photoUnavailable'),
+        picked.source === 'camera' ? t('media.cameraPermission') : t('onboarding.photoPermission'),
+      )
       return
     }
-
-    const picked = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-      // HEIC from an iPhone camera roll arrives as JPEG this way; see
-      // `pickImageAsset` for the whole story.
-      preferredAssetRepresentationMode:
-        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
-    })
-    const asset = picked.assets?.[0]
-    if (picked.canceled || !asset) return
+    if (picked.status === 'unsupported') {
+      void showAlert(t('errors.uploadFailed'), t('errors.attachmentUnsupported'))
+      return
+    }
+    if (picked.status === 'cancelled') return
 
     setUploading(true)
     try {
-      const url = await uploadAvatarBytes(asset.uri, asset.mimeType ?? 'image/jpeg')
+      const url = await uploadAvatarBytes(picked.image.uri, picked.image.contentType)
       updateDraft({ avatarUrl: url })
     } catch {
       void showAlert(t('errors.uploadFailed'), t('onboarding.photoUploadFailed'))

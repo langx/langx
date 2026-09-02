@@ -40,6 +40,13 @@ export const es: Localized<EnMessages> = {
 
   tabs: { discover: 'Descubrir', chats: 'Chats', feed: 'Muro', me: 'Yo' },
 
+  media: {
+    sourceTitle: 'Añadir una foto',
+    sourceCamera: 'Hacer una foto',
+    sourceLibrary: 'Elegir de la galería',
+    cameraTitle: 'Cámara',
+    cameraPermission: 'LangX necesita permiso para usar tu cámara.',
+  },
   tips: {
     dismiss: 'Ocultar este consejo',
     section: 'Consejos',
