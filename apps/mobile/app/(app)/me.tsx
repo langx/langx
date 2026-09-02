@@ -174,6 +174,10 @@ export default function MeScreen() {
       */}
       <ActivityMap />
 
+      {/* First of the rows, because it is the one that answers a question
+          somebody actually arrives with: where the thing I asked went. */}
+      <ListRow title={t('me.myPosts')} onPress={() => router.push('/(app)/my-posts')} />
+
       {/* Free users get the count and a locked list; that contrast is the
           entire argument for Pro, so it is shown rather than hidden. */}
       <ListRow

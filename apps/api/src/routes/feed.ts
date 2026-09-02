@@ -4,6 +4,7 @@ import {
   createPostSchema,
   createPronunciationAnswerSchema,
   listFeedQuerySchema,
+  listMyPostsQuerySchema,
   listPostCommentsQuerySchema,
   listPostCorrectionsQuerySchema,
   listPronunciationAnswersQuerySchema,
@@ -19,6 +20,7 @@ import {
   deleteCorrection,
   deletePost,
   listFeed,
+  listMyPosts,
   listPostCorrections,
 } from '../modules/feed/feed'
 import {
@@ -37,6 +39,22 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireAuth, schema: { querystring: listFeedQuerySchema } },
     async (request, reply) => {
       return reply.send(await listFeed(app.mongo.db, request.userId, request.query))
+    },
+  )
+
+  /**
+   * Your own posts, newest first.
+   *
+   * Hangs off `/me` for the same reason `/me/corrections` and `/me/starred` do:
+   * it is a read across the whole collection that names only you. Paged rather
+   * than capped, because the answer to "where is the thing I asked last month"
+   * has to still be reachable in a year.
+   */
+  app.get(
+    '/me/posts',
+    { preHandler: requireAuth, schema: { querystring: listMyPostsQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await listMyPosts(app.mongo.db, request.userId, request.query))
     },
   )
 

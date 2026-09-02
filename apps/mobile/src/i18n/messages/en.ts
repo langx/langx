@@ -409,6 +409,12 @@ export const en = {
     emptyBody:
       'Hold a message in a chat and choose Correct — it is the most useful thing you can do here.',
   },
+  myPosts: {
+    title: 'Posts you wrote',
+    emptyTitle: 'Nothing asked yet',
+    emptyBody:
+      'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
+  },
   discover: {
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
@@ -737,6 +743,7 @@ export const en = {
     editProfile: 'Edit profile',
     settings: 'Settings',
     corrections: 'Corrections',
+    myPosts: 'Your posts',
     wallet: 'Wallet',
     previewProfile: 'Preview my profile',
     previewProfileBody: 'See your profile the way other people do',

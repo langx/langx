@@ -376,6 +376,12 @@ export const es: Localized<EnMessages> = {
     emptyTitle: 'Aún no hay correcciones',
     emptyBody: 'Mantén pulsado un mensaje y elige Corregir: es lo más útil que puedes hacer aquí.',
   },
+  myPosts: {
+    title: 'Publicaciones que escribiste',
+    emptyTitle: 'Todavía no has preguntado nada',
+    emptyBody:
+      'Pregunta por una frase que no tienes clara, o una palabra que no sabes decir — aparecerá aquí.',
+  },
   discover: {
     searchHandles: 'Buscar por nombre de usuario',
     searchPlaceholder: 'Nombre de usuario',
@@ -698,6 +704,7 @@ export const es: Localized<EnMessages> = {
     editProfile: 'Editar perfil',
     settings: 'Ajustes',
     corrections: 'Correcciones',
+    myPosts: 'Tus publicaciones',
     wallet: 'Cartera',
     previewProfile: 'Ver mi perfil',
     previewProfileBody: 'Mira tu perfil como lo ven los demás',
