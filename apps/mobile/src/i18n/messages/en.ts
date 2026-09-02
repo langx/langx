@@ -195,6 +195,7 @@ export const en = {
     invalidEmail: 'That does not look like an email address.',
     invalidToken: 'That link is no longer valid.',
     uploadFailed: 'Upload failed',
+    loadFailed: 'Could not load this. Check your connection and try again.',
   },
 
   location: {

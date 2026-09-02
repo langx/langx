@@ -159,6 +159,7 @@ export const ptBR: Localized<EnMessages> = {
     invalidEmail: 'Isso não parece um endereço de e-mail.',
     invalidToken: 'Esse link não é mais válido.',
     uploadFailed: 'Falha no envio',
+    loadFailed: 'Não deu para carregar. Confira sua conexão e tente de novo.',
   },
 
   location: {

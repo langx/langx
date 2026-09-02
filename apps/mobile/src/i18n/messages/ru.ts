@@ -199,6 +199,7 @@ export const ru: Localized<EnMessages> = {
     invalidEmail: 'Это не похоже на адрес почты.',
     invalidToken: 'Эта ссылка больше не действует.',
     uploadFailed: 'Не удалось загрузить',
+    loadFailed: 'Не удалось загрузить. Проверь соединение и попробуй снова.',
   },
 
   location: {

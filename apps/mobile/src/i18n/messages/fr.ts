@@ -161,6 +161,7 @@ export const fr: Localized<EnMessages> = {
     invalidEmail: 'Cela ne ressemble pas à une adresse e-mail.',
     invalidToken: 'Ce lien n’est plus valable.',
     uploadFailed: 'Échec de l’envoi',
+    loadFailed: 'Impossible de charger. Vérifie ta connexion et réessaie.',
   },
 
   location: {
