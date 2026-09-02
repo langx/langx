@@ -53,6 +53,7 @@ import {
 import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
 import type { ConversationPageDto } from '../lib/conversationCache'
+import { putWithProgress } from '../lib/putWithProgress'
 import {
   applyAnswer,
   applyCommentCount,
@@ -1110,13 +1111,7 @@ async function uploadImage(
   const target = await api.post<UploadUrlDto>(path, { contentType })
 
   const blob = await (await fetch(uri)).blob()
-  const put = await fetch(target.uploadUrl, {
-    method: 'PUT',
-    body: blob,
-    // Must match the signed content type exactly or the signature is rejected.
-    headers: { 'content-type': contentType },
-  })
-  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
+  await putWithProgress({ url: target.uploadUrl, body: blob, contentType })
 
   return target.publicUrl
 }
@@ -1183,6 +1178,8 @@ export async function uploadMessageMedia(input: {
   durationSeconds?: number
   width?: number
   height?: number
+  /** Bytes sent so far, and the whole; `0` for a total nobody could measure. */
+  onProgress?: (loaded: number, total: number) => void
 }): Promise<{
   url: string
   contentType: string
@@ -1198,12 +1195,12 @@ export async function uploadMessageMedia(input: {
   })
 
   const blob = await (await fetch(input.uri)).blob()
-  const put = await fetch(target.uploadUrl, {
-    method: 'PUT',
+  await putWithProgress({
+    url: target.uploadUrl,
     body: blob,
-    headers: { 'content-type': input.contentType },
+    contentType: input.contentType,
+    ...(input.onProgress ? { onProgress: input.onProgress } : {}),
   })
-  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
 
   return {
     url: target.publicUrl,
@@ -1239,13 +1236,7 @@ export async function uploadPostMedia(input: {
   })
 
   const blob = await (await fetch(input.uri)).blob()
-  const put = await fetch(target.uploadUrl, {
-    method: 'PUT',
-    body: blob,
-    // Must match the signed content type exactly or the signature is rejected.
-    headers: { 'content-type': input.contentType },
-  })
-  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
+  await putWithProgress({ url: target.uploadUrl, body: blob, contentType: input.contentType })
 
   return {
     url: target.publicUrl,

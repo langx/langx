@@ -532,6 +532,9 @@ export const en = {
     lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
   },
   chat: {
+    sendingAttachment: 'Sending…',
+    preparingUpload: 'Preparing…',
+    uploadingPercent: 'Uploading… {percent}%',
     title: 'Chat',
     typing: 'typing…',
     notSentRetry: 'Not sent — tap to try again',

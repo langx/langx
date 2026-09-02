@@ -522,6 +522,9 @@ export const de: Localized<EnMessages> = {
     },
   },
   chat: {
+    sendingAttachment: 'Wird gesendet…',
+    preparingUpload: 'Wird vorbereitet…',
+    uploadingPercent: 'Wird hochgeladen… {percent} %',
     title: 'Chat',
     typing: 'schreibt…',
     notSentRetry: 'Nicht gesendet — zum Wiederholen tippen',

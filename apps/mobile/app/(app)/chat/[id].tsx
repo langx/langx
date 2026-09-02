@@ -59,6 +59,22 @@ import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { pickImageAsset } from '../../../src/lib/pickImageAsset'
+import { PendingMediaBubble } from '../../../src/components/PendingMediaBubble'
+import {
+  addPending,
+  expirePending,
+  newPendingId,
+  removePending,
+  updatePending,
+  type PendingMedia,
+} from '../../../src/lib/pendingMedia'
+import {
+  UPLOAD_START,
+  advanceUpload,
+  uploadFailed,
+  uploadSent,
+  type UploadProgress,
+} from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
@@ -123,6 +139,18 @@ export default function ChatScreen() {
    * for no reason the reader can see.
    */
   const [viewing, setViewing] = useState<string | null>(null)
+  const [pending, setPending] = useState<PendingMedia[]>([])
+
+  /*
+   * An ack that never arrives would otherwise leave a bubble uploading for as
+   * long as the screen stays open: media messages carry no `clientId`, so the
+   * echoed message cannot be matched back to the attempt that made it.
+   */
+  useEffect(() => {
+    if (pending.length === 0) return
+    const timer = setInterval(() => setPending((list) => expirePending(list, new Date())), 5000)
+    return () => clearInterval(timer)
+  }, [pending.length])
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const windowed = useMessageWindow(conversationId, jumpAnchor)
@@ -229,16 +257,39 @@ export default function ChatScreen() {
     },
   ): Promise<void> {
     setSendingMedia(true)
+    /*
+     * The row goes up before a single byte moves. The whole point is that the
+     * thread stops looking like it ignored the tap, so it cannot wait for the
+     * upload it is reporting on.
+     */
+    const clientId = newPendingId()
+    setPending((list) => addPending(list, { clientId, conversationId, kind, ...input }, new Date()))
     try {
-      const media = await uploadMessageMedia({ conversationId, kind, ...input })
+      const media = await uploadMessageMedia({
+        conversationId,
+        kind,
+        ...input,
+        onProgress: (loaded, total) =>
+          setPending((list) =>
+            list.map((row) =>
+              row.clientId === clientId
+                ? { ...row, progress: advanceUpload(row.progress, loaded, total) }
+                : row,
+            ),
+          ),
+      })
+      // The bytes are up; the socket round-trip is what is left.
+      setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
       const socket = await getSocket()
       await emitWithAck(socket, 'message:media', { conversationId, kind, media })
+      setPending((list) => removePending(list, clientId))
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched
       // and the quota message had never once been shown.
       const code = errorCodeOf(error)
       if (code === 'QUOTA_EXCEEDED') {
+        setPending((list) => removePending(list, clientId))
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         openPaywall(undefined, `/(app)/chat/${conversationId}`)
         return
@@ -254,10 +305,19 @@ export default function ChatScreen() {
             : code === 'MEDIA_LOCKED'
               ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
               : t('chat.attachmentFailed')
+      // Kept as a row rather than an alert-and-discard: the picked file is
+      // still there, and tapping it tries again. A quota refusal is the
+      // exception — retrying cannot help, so that one is dropped above.
+      setPending((list) => updatePending(list, clientId, uploadFailed(startOf(list, clientId))))
       void showAlert(t('chat.couldNotSend'), reason)
     } finally {
       setSendingMedia(false)
     }
+  }
+
+  /** The row's progress as it stands, for the transitions that build on it. */
+  function startOf(list: readonly PendingMedia[], clientId: string): UploadProgress {
+    return list.find((row) => row.clientId === clientId)?.progress ?? UPLOAD_START
   }
 
   async function pickImage(): Promise<void> {
@@ -743,6 +803,28 @@ export default function ChatScreen() {
                 {/* Above the composer, where a hint is read rather than
                     scrolled past. */}
                 <Tip slot="chat" />
+                {pending.length > 0 ? (
+                  <View style={styles.unsentBlock}>
+                    {pending.map((row) => (
+                      <PendingMediaBubble
+                        key={row.clientId}
+                        item={row}
+                        onRetry={() => {
+                          setPending((list) => removePending(list, row.clientId))
+                          void sendMedia(row.kind, {
+                            uri: row.uri,
+                            contentType: row.contentType,
+                            ...(row.durationSeconds !== undefined
+                              ? { durationSeconds: row.durationSeconds }
+                              : {}),
+                            ...(row.width !== undefined ? { width: row.width } : {}),
+                            ...(row.height !== undefined ? { height: row.height } : {}),
+                          })
+                        }}
+                      />
+                    ))}
+                  </View>
+                ) : null}
                 {unsent.length > 0 ? (
                   <View style={styles.unsentBlock}>
                     {unsent.map((message) => (

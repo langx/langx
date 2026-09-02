@@ -1,0 +1,52 @@
+/**
+ * What "uploading" means to somebody watching it.
+ *
+ * Three phases rather than one number, because the first of them has no number
+ * to give: `fetch(uri).blob()` reads the whole file into memory before a single
+ * byte is sent, and on a 4 MB photo that is a real pause. Reporting 0% through
+ * it would be a lie that looks like a stall; saying "preparing" is the truth.
+ *
+ * Pure, so the tests can reach it — `putWithProgress` cannot be tested here,
+ * there is no `XMLHttpRequest` in the test environment.
+ */
+export type UploadPhase = 'reading' | 'uploading' | 'sending' | 'failed'
+
+export interface UploadProgress {
+  phase: UploadPhase
+  /** 0–1, and only meaningful while `phase` is `uploading`. */
+  fraction: number
+}
+
+export const UPLOAD_START: UploadProgress = { phase: 'reading', fraction: 0 }
+
+/** Clamped, and never allowed to run backwards — a retried chunk is not progress lost. */
+export function advanceUpload(
+  current: UploadProgress,
+  loaded: number,
+  total: number,
+): UploadProgress {
+  if (current.phase === 'failed' || current.phase === 'sending') return current
+  if (!Number.isFinite(loaded) || !Number.isFinite(total) || total <= 0) {
+    return { phase: 'uploading', fraction: current.fraction }
+  }
+  const next = Math.min(1, Math.max(0, loaded / total))
+  return { phase: 'uploading', fraction: Math.max(current.fraction, next) }
+}
+
+/**
+ * The bytes are up; what is left is the socket round-trip that turns them into
+ * a message. Pinned at 1 so the bar does not sit at 97% while it waits.
+ */
+export function uploadSent(current: UploadProgress): UploadProgress {
+  if (current.phase === 'failed') return current
+  return { phase: 'sending', fraction: 1 }
+}
+
+export function uploadFailed(current: UploadProgress): UploadProgress {
+  return { phase: 'failed', fraction: current.fraction }
+}
+
+/** Whole percent, for the label. Rounded down so it never reads 100 before it is. */
+export function percentOf(progress: UploadProgress): number {
+  return Math.floor(progress.fraction * 100)
+}

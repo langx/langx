@@ -495,6 +495,9 @@ export const ptBR: Localized<EnMessages> = {
     lastSeenYears: { one: 'Visto há {count} ano', other: 'Visto há {count} anos' },
   },
   chat: {
+    sendingAttachment: 'Enviando…',
+    preparingUpload: 'Preparando…',
+    uploadingPercent: 'Enviando… {percent}%',
     title: 'Conversa',
     typing: 'digitando…',
     notSentRetry: 'Não enviado — toque para tentar de novo',

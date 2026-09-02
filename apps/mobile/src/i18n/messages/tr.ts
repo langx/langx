@@ -506,6 +506,9 @@ export const tr: Localized<EnMessages> = {
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
   },
   chat: {
+    sendingAttachment: 'Gönderiliyor…',
+    preparingUpload: 'Hazırlanıyor…',
+    uploadingPercent: 'Yükleniyor… %{percent}',
     title: 'Sohbet',
     typing: 'yazıyor…',
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',

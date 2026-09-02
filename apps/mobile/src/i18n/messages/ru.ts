@@ -572,6 +572,9 @@ export const ru: Localized<EnMessages> = {
     },
   },
   chat: {
+    sendingAttachment: 'Отправка…',
+    preparingUpload: 'Подготовка…',
+    uploadingPercent: 'Загрузка… {percent}%',
     title: 'Чат',
     typing: 'печатает…',
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',

@@ -505,6 +505,9 @@ export const fr: Localized<EnMessages> = {
     lastSeenYears: { one: 'Vu il y a {count} an', other: 'Vu il y a {count} ans' },
   },
   chat: {
+    sendingAttachment: 'Envoi…',
+    preparingUpload: 'Préparation…',
+    uploadingPercent: 'Envoi… {percent} %',
     title: 'Discussion',
     typing: 'écrit…',
     notSentRetry: 'Non envoyé — touche pour réessayer',
