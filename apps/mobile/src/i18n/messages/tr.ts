@@ -578,16 +578,12 @@ export const tr: Localized<EnMessages> = {
 
   feed: {
     topTag: 'En iyi',
-    needsCorrection: 'Düzeltme bekliyor',
     ask: '+ Sor',
     askTitle: '{language} dilindeki cümlen',
     askPlaceholder: 'Emin olmadığın cümle…',
     posting: 'Paylaşılıyor…',
     posted: 'Paylaşıldı. Birisi düzeltecektir.',
     correctionSent: 'Düzeltme gönderildi. Teşekkürler.',
-    followingEmptyTitle: 'Takip ettiklerinden bir şey yok',
-    followingEmptyBody:
-      'Bu sekme, takip ettiğin ya da konuştuğun kişilerin gönderilerini gösterir. Birini takip et, gönderileri burada görünsün.',
     correctedEmptyTitle: 'Her şey düzeltilmiş',
     correctedEmptyBody:
       'Şu anda yardım bekleyen kimse yok. Kendi cümleni paylaş ya da sonra tekrar uğra.',
@@ -619,7 +615,6 @@ export const tr: Localized<EnMessages> = {
     correctionsEmptyTitle: 'Henüz düzeltme yok',
     correctionsEmptyBody: 'Bu cümleyi ilk düzelten sen ol.',
     title: 'Akış',
-    following: 'Takip',
     post: 'Paylaş',
     correctionSection: 'Düzeltmeler',
     pronunciationSection: 'Telaffuz',

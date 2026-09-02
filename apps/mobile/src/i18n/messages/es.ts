@@ -569,16 +569,12 @@ export const es: Localized<EnMessages> = {
 
   feed: {
     topTag: 'Mejor',
-    needsCorrection: 'Necesita corrección',
     ask: '+ Preguntar',
     askTitle: 'Tu frase en {language}',
     askPlaceholder: 'La frase de la que no estás seguro…',
     posting: 'Publicando…',
     posted: 'Publicado. Alguien lo corregirá.',
     correctionSent: 'Corrección enviada. Gracias.',
-    followingEmptyTitle: 'Nada de las personas que sigues',
-    followingEmptyBody:
-      'Esta pestaña muestra publicaciones de personas a las que sigues o con las que has hablado. Sigue a alguien y sus publicaciones aparecerán aquí.',
     correctedEmptyTitle: 'Todo está corregido',
     correctedEmptyBody:
       'Ahora mismo nadie espera ayuda. Publica una frase tuya o vuelve más tarde.',
@@ -610,7 +606,6 @@ export const es: Localized<EnMessages> = {
     correctionsEmptyTitle: 'Aún no hay correcciones',
     correctionsEmptyBody: 'Sé la primera persona en corregir esta frase.',
     title: 'Muro',
-    following: 'Siguiendo',
     post: 'Publicar',
     correctionSection: 'Correcciones',
     pronunciationSection: 'Pronunciación',

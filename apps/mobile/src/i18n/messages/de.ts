@@ -587,16 +587,12 @@ export const de: Localized<EnMessages> = {
 
   feed: {
     topTag: 'Top',
-    needsCorrection: 'Braucht eine Korrektur',
     ask: '+ Fragen',
     askTitle: 'Dein Satz auf {language}',
     askPlaceholder: 'Der Satz, bei dem du unsicher bist…',
     posting: 'Wird gepostet…',
     posted: 'Gepostet. Jemand wird ihn korrigieren.',
     correctionSent: 'Korrektur gesendet. Danke.',
-    followingEmptyTitle: 'Nichts von Leuten, denen du folgst',
-    followingEmptyBody:
-      'Dieser Tab zeigt Beiträge von Leuten, denen du folgst oder mit denen du geschrieben hast. Folge jemandem, und die Beiträge erscheinen hier.',
     correctedEmptyTitle: 'Alles ist korrigiert',
     correctedEmptyBody:
       'Gerade wartet niemand auf Hilfe. Poste einen eigenen Satz oder komm später wieder.',
@@ -628,7 +624,6 @@ export const de: Localized<EnMessages> = {
     correctionsEmptyTitle: 'Noch keine Korrekturen',
     correctionsEmptyBody: 'Korrigiere diesen Satz als Erste oder Erster.',
     title: 'Feed',
-    following: 'Gefolgt',
     post: 'Posten',
     correctionSection: 'Korrekturen',
     pronunciationSection: 'Aussprache',

@@ -562,16 +562,12 @@ export const ptBR: Localized<EnMessages> = {
 
   feed: {
     topTag: 'Melhor',
-    needsCorrection: 'Precisa de correção',
     ask: '+ Perguntar',
     askTitle: 'Sua frase em {language}',
     askPlaceholder: 'A frase da qual você não tem certeza…',
     posting: 'Publicando…',
     posted: 'Publicado. Alguém vai corrigir.',
     correctionSent: 'Correção enviada. Obrigado.',
-    followingEmptyTitle: 'Nada de quem você segue',
-    followingEmptyBody:
-      'Esta aba mostra publicações de pessoas que você segue ou com quem já conversou. Siga alguém e as publicações aparecerão aqui.',
     correctedEmptyTitle: 'Está tudo corrigido',
     correctedEmptyBody:
       'Ninguém está esperando ajuda agora. Publique uma frase sua ou volte mais tarde.',
@@ -603,7 +599,6 @@ export const ptBR: Localized<EnMessages> = {
     correctionsEmptyTitle: 'Ainda sem correções',
     correctionsEmptyBody: 'Seja a primeira pessoa a corrigir esta frase.',
     title: 'Feed',
-    following: 'Seguindo',
     post: 'Publicar',
     correctionSection: 'Correções',
     pronunciationSection: 'Pronúncia',

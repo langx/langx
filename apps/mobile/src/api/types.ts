@@ -14,7 +14,6 @@ export type {
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
-  FeedFilter,
   FeedPage,
   FeedPost,
   FollowState,

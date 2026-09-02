@@ -607,16 +607,12 @@ export const en = {
 
   feed: {
     topTag: 'Top',
-    needsCorrection: 'Needs a correction',
     ask: '+ Ask',
     askTitle: 'Your sentence in {language}',
     askPlaceholder: 'The sentence you are unsure about…',
     posting: 'Posting…',
     posted: 'Posted. Somebody will correct it.',
     correctionSent: 'Correction sent. Thank you.',
-    followingEmptyTitle: 'Nothing from people you follow',
-    followingEmptyBody:
-      'This tab shows posts by people you follow or have talked to. Follow someone and their posts appear here.',
     correctedEmptyTitle: 'Everything is corrected',
     correctedEmptyBody:
       'Nobody is waiting for help right now. Post a sentence of your own, or come back later.',
@@ -648,7 +644,6 @@ export const en = {
     correctionsEmptyTitle: 'No corrections yet',
     correctionsEmptyBody: 'Be the first to correct this sentence.',
     title: 'Feed',
-    following: 'Following',
     post: 'Post',
     correctionSection: 'Corrections',
     pronunciationSection: 'Pronunciation',

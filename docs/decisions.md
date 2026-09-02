@@ -2075,3 +2075,26 @@ outright. A day that opened as a check-in and later saw a real message keeps
 
 Never on somebody else's map. The public activity endpoint sends an intensity
 and no source, the same line that already hides which squares were bought.
+
+## The feed has one queue, and the people you follow come first
+
+The correction section had two tabs, "Needs a correction" and "Following". The
+second one split a small feed into two smaller ones, and made the reader choose
+between helping a friend and helping whoever had waited longest — a choice the
+app can make for them. It is one list now: the people you follow (and have
+talked to, the union from the section above), uncorrected first; then everybody
+else, uncorrected first. Following outranks the count, so a friend's answered
+sentence still sits above a stranger's open one.
+
+"People you follow" is not a field on the post, so no index can sort by it, and
+computing it per document would make every page an in-memory sort of the whole
+collection. `listFeed` is two queries stitched end to end instead — the
+audience's posts to exhaustion, then everybody else's, both served from
+`kind_needs_correction` — and the cursor carries an `f.` prefix while it is
+still inside the first half, so page two does not start it again. The second
+query runs even when the first filled the page exactly: its `+1` is the only
+thing that can say whether there is a page two. The countless cursor form went
+with the recency tab; every feed page now sorts on a count.
+
+The pronunciation section is unchanged — one queue, no graph in it yet — and
+takes the same code path with an empty audience.

@@ -682,16 +682,12 @@ export const ar: Localized<EnMessages> = {
 
   feed: {
     topTag: 'الأفضل',
-    needsCorrection: 'بحاجة إلى تصحيح',
     ask: '+ اسأل',
     askTitle: 'جملتك بلغة {language}',
     askPlaceholder: 'الجملة التي لست متأكدًا منها…',
     posting: 'جارٍ النشر…',
     posted: 'نُشرت. سيصحّحها أحدهم.',
     correctionSent: 'أُرسل التصحيح. شكرًا.',
-    followingEmptyTitle: 'لا شيء ممن تتابعهم',
-    followingEmptyBody:
-      'تعرض هذه العلامة منشورات من تتابعهم أو تحدثت إليهم. تابع أحدهم لتظهر منشوراته هنا.',
     correctedEmptyTitle: 'كل شيء مُصحَّح',
     correctedEmptyBody: 'لا أحد ينتظر المساعدة الآن. انشر جملة لك أو عد لاحقًا.',
     noCorrections: 'لا تصحيحات بعد',
@@ -736,7 +732,6 @@ export const ar: Localized<EnMessages> = {
     correctionsEmptyTitle: 'لا توجد تصحيحات بعد',
     correctionsEmptyBody: 'كن أول من يصحح هذه الجملة.',
     title: 'الأخبار',
-    following: 'المتابَعون',
     post: 'نشر',
     correctionSection: 'التصحيحات',
     pronunciationSection: 'النطق',

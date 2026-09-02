@@ -19,7 +19,7 @@ type AnswerPages = InfiniteData<PronunciationAnswersPage> | undefined
  * A correction patched into the loaded feed pages instead of invalidating them.
  *
  * The invalidation was not a performance choice that went too far, it was a
- * disappearing card. `needsCorrection` sorts `correctionCount` **ascending**,
+ * disappearing card. The correction queue sorts `correctionCount` **ascending**,
  * so a refetch right after you answer re-sorts that post behind every
  * unanswered post in the collection — the card you just acted on vanished
  * rather than flipping to "You corrected this". That sort is not the bug: it is

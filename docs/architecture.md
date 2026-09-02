@@ -789,9 +789,11 @@ a page the same as one with two.
 a profile, since profiles are keyed by a string — the no-like/match/swipe rule
 expressed as a type. A like grants nothing, pays nothing and opens no channel.
 
-`follows` is one-directional and unconfirmed. The feed's "Following" tab reads
-the union of the follow graph and the people you have talked to, capped at
-`FEED_FOLLOWING_SOURCE_LIMIT`; see `decisions.md`.
+`follows` is one-directional and unconfirmed. The feed has no tabs: it puts
+posts by the union of the follow graph and the people you have talked to first,
+capped at `FEED_FOLLOWING_SOURCE_LIMIT`, then everybody else — uncorrected first
+within each half. Two queries stitched end to end, with the cursor recording
+which half it stopped in; see `decisions.md`.
 
 ## Updates, maintenance and remote config
 

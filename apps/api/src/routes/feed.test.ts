@@ -75,7 +75,7 @@ describe('community feed', () => {
     })
   }
 
-  /** The `following` tab's audience is who you have talked to, so tests need one. */
+  /** The front of the feed is who you have talked to, so tests need someone. */
   async function talkTo(user: SignedUpUser, toUserId: string) {
     const response = await app.inject({
       method: 'POST',
@@ -271,9 +271,7 @@ describe('community feed', () => {
     const newer = (await post(author, 'The second sentence is wrong.')).json<{ _id: string }>()._id
     await correct(helper, newer, 'The second sentence is fine.')
 
-    const items = (await feed(helper, 'filter=needsCorrection')).json<{
-      items: { _id: string }[]
-    }>().items
+    const items = (await feed(helper)).json<{ items: { _id: string }[] }>().items
     // `newer` is more recent, so plain recency would put it first. The queue
     // exists so an unanswered post does not sink under every newer one.
     expect(items.findIndex((i) => i._id === older)).toBeLessThan(
@@ -350,41 +348,89 @@ describe('community feed', () => {
     const items = (await feed(viewer)).json<{ items: { _id: string }[] }>().items
     expect(items.some((item) => item._id === postId)).toBe(false)
   })
-  it('pages the following tab', async () => {
-    // The regression that made this tab a one-page feed. Its cursor carries no
-    // count, and the countless branch was unreachable — `indexOf('.')` found
-    // the milliseconds in the ISO timestamp, so page two was always a 400.
-    const viewer = await newUser('following-pager-viewer@example.com')
-    const author = await newUser('following-pager-author@example.com')
-    await talkTo(viewer, author.userId)
+  it('puts the people you follow first, even when their post is already corrected', async () => {
+    // Following outranks the queue: a friend's answered sentence still comes
+    // before a stranger's unanswered one. Within each half the queue order
+    // holds, which is what keeps the front from turning into a recency feed.
+    const viewer = await newUser('front-viewer@example.com')
+    const friend = await newUser('front-friend@example.com')
+    const stranger = await newUser('front-stranger@example.com')
+    const helper = await newUser('front-helper@example.com')
+    await talkTo(viewer, friend.userId)
 
-    const ids: string[] = []
-    for (let i = 0; i < 3; i++) {
-      ids.push((await post(author, `Sentence number ${i}.`)).json<{ _id: string }>()._id)
-    }
+    const friendCorrected = (await post(friend, 'A friend, corrected.')).json<{ _id: string }>()._id
+    const friendOpen = (await post(friend, 'A friend, waiting.')).json<{ _id: string }>()._id
+    const strangerOpen = (await post(stranger, 'A stranger, waiting.')).json<{ _id: string }>()._id
+    await correct(helper, friendCorrected, 'A friend, corrected indeed.')
 
-    const first = await feed(viewer, 'filter=following&limit=2')
-    expect(first.statusCode).toBe(200)
-    const page1 = first.json<{ items: { _id: string }[]; nextCursor: string | null }>()
-    expect(page1.items).toHaveLength(2)
-    expect(page1.nextCursor).not.toBeNull()
-
-    const second = await feed(
-      viewer,
-      `filter=following&limit=2&cursor=${encodeURIComponent(page1.nextCursor!)}`,
-    )
-    expect(second.statusCode).toBe(200)
-    const page2 = second.json<{ items: { _id: string }[] }>()
-
-    const seen = [...page1.items, ...page2.items].map((item) => item._id)
-    expect(new Set(seen).size).toBe(seen.length)
-    for (const id of ids) expect(seen).toContain(id)
+    const items = (await feed(viewer, 'limit=50')).json<{ items: { _id: string }[] }>().items
+    const at = (id: string) => items.findIndex((i) => i._id === id)
+    expect(at(friendOpen)).toBe(0)
+    expect(at(friendCorrected)).toBe(1)
+    expect(at(strangerOpen)).toBeGreaterThan(1)
   })
 
-  it('shows both the people you follow and the people you have talked to', async () => {
-    // The tab is a union, not a replacement. Dropping the conversation
-    // stand-in would have emptied it for every existing user on the day the
-    // Follow button shipped.
+  it('pages across the boundary between the people you follow and everybody else', async () => {
+    // Two queries stitched into one list. The cursor has to say which half it
+    // stopped in, or page two starts the first half again; and a page that
+    // ends exactly on the boundary still has to know there is a page two.
+    const viewer = await newUser('boundary-viewer@example.com')
+    const friend = await newUser('boundary-friend@example.com')
+    const stranger = await newUser('boundary-stranger@example.com')
+    await talkTo(viewer, friend.userId)
+
+    const friendIds: string[] = []
+    for (let i = 0; i < 2; i++) {
+      friendIds.push((await post(friend, `Friend sentence ${i}.`)).json<{ _id: string }>()._id)
+    }
+    const strangerIds: string[] = []
+    for (let i = 0; i < 3; i++) {
+      strangerIds.push(
+        (await post(stranger, `Stranger sentence ${i}.`)).json<{ _id: string }>()._id,
+      )
+    }
+
+    type Page = { items: { _id: string }[]; nextCursor: string | null }
+    async function walk(firstLimit: number): Promise<{ first: Page; all: string[] }> {
+      const first = (await feed(viewer, `limit=${firstLimit}`)).json<Page>()
+      const all = first.items.map((i) => i._id)
+      let cursor = first.nextCursor
+      while (cursor) {
+        const next = await feed(viewer, `limit=50&cursor=${encodeURIComponent(cursor)}`)
+        expect(next.statusCode).toBe(200)
+        const page = next.json<Page>()
+        all.push(...page.items.map((i) => i._id))
+        cursor = page.nextCursor
+      }
+      return { first, all }
+    }
+
+    // A page that ends exactly where the friend's posts do.
+    const exact = await walk(2)
+    expect(exact.first.items.map((i) => i._id)).toEqual(expect.arrayContaining(friendIds))
+    expect(exact.first.items).toHaveLength(2)
+    expect(exact.first.nextCursor).not.toBeNull()
+
+    // A page that runs out of friend and is topped up with everybody else.
+    const stitched = await walk(3)
+    expect(stitched.first.items).toHaveLength(3)
+    expect(friendIds).toContain(stitched.first.items[0]!._id)
+    expect(friendIds).toContain(stitched.first.items[1]!._id)
+    expect(friendIds).not.toContain(stitched.first.items[2]!._id)
+
+    for (const { all } of [exact, stitched]) {
+      expect(new Set(all).size).toBe(all.length)
+      for (const id of [...friendIds, ...strangerIds]) expect(all).toContain(id)
+      const lastFriend = Math.max(...friendIds.map((id) => all.indexOf(id)))
+      const firstStranger = Math.min(...strangerIds.map((id) => all.indexOf(id)))
+      expect(lastFriend).toBeLessThan(firstStranger)
+    }
+  })
+
+  it('puts both the people you follow and the people you have talked to first', async () => {
+    // The front of the feed is a union, not a replacement. Dropping the
+    // conversation stand-in would have emptied it for every existing user on
+    // the day the Follow button shipped.
     const viewer = await newUser('union-viewer@example.com')
     const followed = await newUser('union-followed@example.com')
     const partner = await newUser('union-partner@example.com')
@@ -411,14 +457,12 @@ describe('community feed', () => {
       stranger: (await post(stranger, 'From a stranger.')).json<{ _id: string }>()._id,
     }
 
-    const items = (await feed(viewer, 'filter=following')).json<{ items: { _id: string }[] }>()
-      .items
+    const items = (await feed(viewer, 'limit=50')).json<{ items: { _id: string }[] }>().items
     const seen = items.map((item) => item._id)
 
-    expect(seen).toContain(ids.followed)
-    expect(seen).toContain(ids.partner)
-    expect(seen).toContain(ids.both)
-    expect(seen).not.toContain(ids.stranger)
+    expect(seen.slice(0, 3)).toEqual(expect.arrayContaining([ids.followed, ids.partner, ids.both]))
+    // The stranger is still in the feed — just behind everybody you know.
+    expect(seen.indexOf(ids.stranger)).toBeGreaterThan(2)
     // Being both is not being twice.
     expect(seen.filter((id) => id === ids.both)).toHaveLength(1)
   })

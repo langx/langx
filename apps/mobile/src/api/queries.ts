@@ -24,7 +24,6 @@ import type {
   CreatePostCorrectionInput,
   CreatePostInput,
   CreatePronunciationAnswerInput,
-  FeedFilter,
   FeedPage,
   FeedPost,
   FollowState,
@@ -102,7 +101,7 @@ export const keys = {
    * feed matches on the `['feed']` prefix, so a third segment costs those call
    * sites nothing while keeping the two sections' pages apart.
    */
-  feed: (kind: string, filter: string) => ['feed', kind, filter] as const,
+  feed: (kind: string) => ['feed', kind] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
   postComments: (id: string) => ['postComments', id] as const,
   postAnswers: (id: string) => ['postAnswers', id] as const,
@@ -631,12 +630,12 @@ export function useConversationFlags() {
   })
 }
 
-export function useFeed(kind: PostKind, filter: FeedFilter) {
+export function useFeed(kind: PostKind) {
   return useInfiniteQuery({
-    queryKey: keys.feed(kind, filter),
+    queryKey: keys.feed(kind),
     queryFn: ({ pageParam }) =>
       api.get<FeedPage>(
-        `/feed?kind=${kind}&filter=${filter}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+        `/feed?kind=${kind}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -743,8 +742,8 @@ export function useSetFollow(handleOrId: string) {
       const previous = client.getQueryData<PublicProfileDto>(keys.profile(handleOrId))
       if (previous)
         client.setQueryData<PublicProfileDto>(keys.profile(handleOrId), { ...previous, follow })
-      // Following somebody changes what the Following tab contains, and the
-      // follower list has gained or lost exactly one row.
+      // Following somebody moves their posts to the front of the feed, and
+      // the follower list has gained or lost exactly one row.
       void client.invalidateQueries({ queryKey: ['feed'] })
       void client.invalidateQueries({ queryKey: ['follows'] })
     },
@@ -767,9 +766,9 @@ export function useCreatePost() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: CreatePostInput) => api.post<FeedPost>('/posts', input),
-    // Both tabs, and the badges: a post changes neither, but the correction
-    // below does, and invalidating one list and not the other is how a feed
-    // starts disagreeing with itself.
+    // Both sections, and the badges: a post changes neither, but the
+    // correction below does, and invalidating one list and not the other is
+    // how a feed starts disagreeing with itself.
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['feed'] })
     },

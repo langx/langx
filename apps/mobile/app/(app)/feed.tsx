@@ -1,10 +1,4 @@
-import {
-  FEED_FILTERS,
-  MAX_POST_LENGTH,
-  POST_KINDS,
-  type FeedFilter,
-  type PostKind,
-} from '@langx/shared'
+import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { useMemo, useState } from 'react'
 import {
   ActivityIndicator,
@@ -41,15 +35,10 @@ import { ApiRequestError } from '../../src/api/client'
 import { showToast } from '../../src/lib/toast'
 import { relativeTime } from '../../src/lib/format'
 
-const FILTER_LABELS: Record<FeedFilter, MessageKey> = {
-  needsCorrection: 'feed.needsCorrection',
-  following: 'feed.following',
-}
-
 /**
- * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list,
- * for the same reason `FILTER_LABELS` is one: adding a section without a label
- * has to be a compile error, not a screen that renders the enum value.
+ * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list
+ * so that adding a section without a label is a compile error, not a screen
+ * that renders the enum value.
  */
 const SECTION_LABELS: Record<PostKind, MessageKey> = {
   correction: 'feed.correctionSection',
@@ -87,7 +76,6 @@ export default function FeedScreen() {
   const { locale } = useLocale()
 
   const [section, setSection] = useState<PostKind>('correction')
-  const [filter, setFilter] = useState<FeedFilter>('needsCorrection')
   /**
    * Composing happens inline rather than in a modal. Both things being written
    * here are *about* something on screen — a sentence you are unsure of, or
@@ -103,7 +91,7 @@ export default function FeedScreen() {
   const [uploading, setUploading] = useState(false)
   const { data: session } = authClient.useSession()
   const me = useMe()
-  const feed = useFeed(section, filter)
+  const feed = useFeed(section)
   const createPost = useCreatePost()
   const correctPost = useCorrectPost()
   const deletePost = useDeletePost()
@@ -312,26 +300,6 @@ export default function FeedScreen() {
             accessibilityLabel={t('feed.title')}
           />
         </View>
-
-        {/*
-          `needsCorrection` and `following` are controls on the correction
-          queue, not on the feed as a whole: the pronunciation section has one
-          order — unanswered first — and nothing to filter by yet. Showing them
-          there would offer two switches that change nothing.
-        */}
-        {pronouncing ? null : (
-          <View style={styles.filters}>
-            <SegmentedControl<FeedFilter>
-              options={FEED_FILTERS.map((option) => ({
-                value: option,
-                label: t(FILTER_LABELS[option]),
-              }))}
-              selected={[filter]}
-              onToggle={setFilter}
-              accessibilityLabel={t('feed.title')}
-            />
-          </View>
-        )}
       </View>
 
       {state === 'skeleton' ? (
@@ -354,12 +322,6 @@ export default function FeedScreen() {
                 icon="mic"
                 title={t('feed.pronounceEmptyTitle')}
                 body={t('feed.pronounceEmptyBody')}
-              />
-            ) : filter === 'following' ? (
-              <EmptyState
-                icon="users"
-                title={t('feed.followingEmptyTitle')}
-                body={t('feed.followingEmptyBody')}
               />
             ) : (
               <EmptyState
@@ -687,7 +649,6 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   title: { ...font.title, color: colors.text, fontSize: 34 },
   ask: { color: colors.accent, fontSize: 16, fontWeight: '700' },
   sections: { marginTop: 18 },
-  filters: { marginTop: spacing.sm },
   compose: { gap: spacing.md, marginTop: spacing.md },
   grow: { flex: 1, width: 'auto' },
   loading: { marginTop: spacing.xxl },
