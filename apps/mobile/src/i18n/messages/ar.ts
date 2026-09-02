@@ -778,7 +778,7 @@ export const ar: Localized<EnMessages> = {
       other: '{count} تسجيل',
     },
     noAnswers: 'لا تسجيلات بعد',
-    answerThis: 'انطقها له',
+    answerThis: 'سجّل',
     normalTake: 'السرعة العادية',
     slowTake: 'منطوقة ببطء',
     addSlowTake: 'أضف تسجيلًا بطيئًا',

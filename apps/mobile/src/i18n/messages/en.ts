@@ -680,7 +680,7 @@ export const en = {
       other: '{count} recordings',
     },
     noAnswers: 'No recordings yet',
-    answerThis: 'Say it for them',
+    answerThis: 'Record',
     normalTake: 'Normal speed',
     slowTake: 'Said slowly',
     addSlowTake: 'Add a slow take',

@@ -651,7 +651,7 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kayıt',
     },
     noAnswers: 'Henüz kayıt yok',
-    answerThis: 'Sen söyle',
+    answerThis: 'Kaydet',
     normalTake: 'Normal hız',
     slowTake: 'Yavaş söylenişi',
     addSlowTake: 'Yavaş bir kayıt ekle',

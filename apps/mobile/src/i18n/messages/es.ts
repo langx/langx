@@ -642,7 +642,7 @@ export const es: Localized<EnMessages> = {
       other: '{count} grabaciones',
     },
     noAnswers: 'Aún no hay grabaciones',
-    answerThis: 'Dilo por ellos',
+    answerThis: 'Grabar',
     normalTake: 'Velocidad normal',
     slowTake: 'Dicho despacio',
     addSlowTake: 'Añadir una toma lenta',

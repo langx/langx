@@ -636,7 +636,7 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} gravações',
     },
     noAnswers: 'Ainda sem gravações',
-    answerThis: 'Fale por eles',
+    answerThis: 'Gravar',
     normalTake: 'Velocidade normal',
     slowTake: 'Falado devagar',
     addSlowTake: 'Adicionar uma versão lenta',

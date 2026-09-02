@@ -644,7 +644,7 @@ export const fr: Localized<EnMessages> = {
       other: '{count} enregistrements',
     },
     noAnswers: 'Aucun enregistrement',
-    answerThis: 'Dites-le pour eux',
+    answerThis: 'Enregistrer',
     normalTake: 'Vitesse normale',
     slowTake: 'Dit lentement',
     addSlowTake: 'Ajouter une prise lente',

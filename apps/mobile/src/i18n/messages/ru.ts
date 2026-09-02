@@ -741,7 +741,7 @@ export const ru: Localized<EnMessages> = {
       other: '{count} записи',
     },
     noAnswers: 'Пока нет записей',
-    answerThis: 'Произнесите за них',
+    answerThis: 'Записать',
     normalTake: 'Обычная скорость',
     slowTake: 'Медленно',
     addSlowTake: 'Добавить медленную запись',

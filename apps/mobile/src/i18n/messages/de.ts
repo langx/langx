@@ -661,7 +661,7 @@ export const de: Localized<EnMessages> = {
       other: '{count} Aufnahmen',
     },
     noAnswers: 'Noch keine Aufnahmen',
-    answerThis: 'Sprich es vor',
+    answerThis: 'Aufnehmen',
     normalTake: 'Normale Geschwindigkeit',
     slowTake: 'Langsam gesprochen',
     addSlowTake: 'Langsame Aufnahme hinzufügen',
