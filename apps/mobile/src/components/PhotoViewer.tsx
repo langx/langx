@@ -1,0 +1,326 @@
+import { Image } from 'expo-image'
+import { useCallback, useEffect, useRef } from 'react'
+import { Animated, Modal, PanResponder, Platform, Pressable, Text, View } from 'react-native'
+import { useT } from '../i18n'
+import { makeStyles } from '../lib/theme'
+import {
+  DISMISS_DRAG_PX,
+  DOUBLE_TAP_MS,
+  DOUBLE_TAP_SCALE,
+  MIN_SCALE,
+  type Point,
+  type Size,
+  clampOffset,
+  clampScale,
+  distanceBetween,
+  fittedSize,
+  isDoubleTap,
+  midpointOf,
+  offsetForFocus,
+} from '../lib/pinch'
+
+/**
+ * The browser's own pinch-zoom and scroll would fight ours, and unlike
+ * `MessageBubble`'s `pan-y` this view wants every axis: it is a modal, there is
+ * nothing behind it to scroll.
+ */
+const WEB_NO_TOUCH_ACTION = Platform.OS === 'web' ? ({ touchAction: 'none' } as const) : null
+
+export interface PhotoViewerProps {
+  photos: { url: string }[]
+  /** `null` is closed. The index is owned by the host so a list can open at one. */
+  index: number | null
+  onClose: () => void
+  onIndexChange?: (index: number) => void
+}
+
+/**
+ * One full-screen picture, zoomable.
+ *
+ * Split out of `PhotoGallery`, which owned both a thumbnail strip and a viewer
+ * and could therefore only be used by something that wanted both. A chat bubble
+ * and a feed card want the second half and already have their own first half,
+ * and three viewers is three sets of gesture bugs.
+ *
+ * The gesture is `PanResponder` and `Animated`, for the reason `pinch.ts`
+ * records. `evt.nativeEvent.touches` is where the second finger lives —
+ * `gestureState` only ever describes the centroid, so a pinch is invisible to
+ * it.
+ */
+export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoViewerProps) {
+  const styles = useStyles()
+  const t = useT()
+
+  const scale = useRef(new Animated.Value(MIN_SCALE)).current
+  const translateX = useRef(new Animated.Value(0)).current
+  const translateY = useRef(new Animated.Value(0)).current
+
+  /**
+   * `Animated.Value` cannot be read back synchronously, and a gesture needs the
+   * value it is continuing from on every frame. These mirror the three above;
+   * everything writes both or neither.
+   */
+  const rest = useRef({ scale: MIN_SCALE, x: 0, y: 0 })
+  const frame = useRef<Size>({ width: 0, height: 0 })
+  const natural = useRef<Size>({ width: 0, height: 0 })
+  const start = useRef({ distance: 0, scale: MIN_SCALE, x: 0, y: 0, focus: { x: 0, y: 0 } })
+  const lastTap = useRef<{ at: number } | null>(null)
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const settle = useCallback(
+    (next: { scale: number; x: number; y: number }, animate: boolean) => {
+      rest.current = next
+      if (animate) {
+        Animated.parallel([
+          Animated.spring(scale, { toValue: next.scale, useNativeDriver: true, bounciness: 0 }),
+          Animated.spring(translateX, { toValue: next.x, useNativeDriver: true, bounciness: 0 }),
+          Animated.spring(translateY, { toValue: next.y, useNativeDriver: true, bounciness: 0 }),
+        ]).start()
+        return
+      }
+      scale.setValue(next.scale)
+      translateX.setValue(next.x)
+      translateY.setValue(next.y)
+    },
+    [scale, translateX, translateY],
+  )
+
+  const reset = useCallback(() => settle({ scale: MIN_SCALE, x: 0, y: 0 }, false), [settle])
+
+  // A new picture starts life-size. Without this, paging while zoomed lands the
+  // next one already halfway off the screen.
+  useEffect(() => {
+    natural.current = { width: 0, height: 0 }
+    reset()
+  }, [index, reset])
+
+  useEffect(
+    () => () => {
+      if (tapTimer.current) clearTimeout(tapTimer.current)
+    },
+    [],
+  )
+
+  function clampTo(offset: Point, at: number): Point {
+    return clampOffset(offset, at, frame.current, fittedSize(natural.current, frame.current))
+  }
+
+  function toggleZoom(focus: Point): void {
+    if (rest.current.scale > MIN_SCALE) {
+      settle({ scale: MIN_SCALE, x: 0, y: 0 }, true)
+      return
+    }
+    const next = DOUBLE_TAP_SCALE
+    const offset = clampTo(offsetForFocus(focus, next), next)
+    settle({ scale: next, ...offset }, true)
+  }
+
+  const pan = useRef(
+    PanResponder.create({
+      // Claimed on touch-down, unlike the list rows: this view is the whole
+      // modal, so there is no tap of anyone else's to swallow.
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (event) => {
+        const touches = event.nativeEvent.touches
+        start.current = {
+          distance:
+            touches.length >= 2 ? distanceBetween(pointOf(touches[0]), pointOf(touches[1])) : 0,
+          scale: rest.current.scale,
+          x: rest.current.x,
+          y: rest.current.y,
+          focus: { x: 0, y: 0 },
+        }
+      },
+      onPanResponderMove: (event, gesture) => {
+        const touches = event.nativeEvent.touches
+        if (touches.length >= 2) {
+          const a = pointOf(touches[0])
+          const b = pointOf(touches[1])
+          const spread = distanceBetween(a, b)
+          // The second finger can land after the first, so the reference
+          // distance is taken here rather than only in `onPanResponderGrant`.
+          if (start.current.distance === 0) {
+            start.current = { ...start.current, distance: spread, scale: rest.current.scale }
+          }
+          const centre = midpointOf(a, b)
+          const focus = {
+            x: centre.x - frame.current.width / 2,
+            y: centre.y - frame.current.height / 2,
+          }
+          const next = clampScale((start.current.scale * spread) / start.current.distance)
+          const offset = clampTo(offsetForFocus(focus, next), next)
+          rest.current = { scale: next, ...offset }
+          scale.setValue(next)
+          translateX.setValue(offset.x)
+          translateY.setValue(offset.y)
+          return
+        }
+
+        if (rest.current.scale > MIN_SCALE) {
+          const offset = clampTo(
+            { x: start.current.x + gesture.dx, y: start.current.y + gesture.dy },
+            rest.current.scale,
+          )
+          rest.current = { ...rest.current, ...offset }
+          translateX.setValue(offset.x)
+          translateY.setValue(offset.y)
+          return
+        }
+
+        // Life-size: the drag is a dismissal, and the picture follows it so the
+        // gesture is visible before it is committed to.
+        translateY.setValue(gesture.dy)
+        translateX.setValue(gesture.dx / 3)
+      },
+      onPanResponderRelease: (event, gesture) => {
+        const travelled = Math.hypot(gesture.dx, gesture.dy)
+        const now = Date.now()
+
+        if (event.nativeEvent.touches.length === 0 && travelled <= 12) {
+          const focus = {
+            x: gesture.x0 - frame.current.width / 2,
+            y: gesture.y0 - frame.current.height / 2,
+          }
+          if (isDoubleTap(lastTap.current, now, travelled)) {
+            if (tapTimer.current) clearTimeout(tapTimer.current)
+            lastTap.current = null
+            toggleZoom(focus)
+            return
+          }
+          lastTap.current = { at: now }
+          /*
+           * A single tap closes, but only once a second one can no longer
+           * arrive. Acting immediately would make double-tap-to-zoom
+           * unreachable — the viewer would already be gone.
+           */
+          if (rest.current.scale === MIN_SCALE) {
+            if (tapTimer.current) clearTimeout(tapTimer.current)
+            tapTimer.current = setTimeout(onClose, DOUBLE_TAP_MS)
+          }
+          return
+        }
+
+        lastTap.current = null
+
+        if (rest.current.scale === MIN_SCALE) {
+          if (Math.abs(gesture.dy) > DISMISS_DRAG_PX) {
+            onClose()
+            return
+          }
+          settle({ scale: MIN_SCALE, x: 0, y: 0 }, true)
+          return
+        }
+        settle({ ...rest.current, ...clampTo(rest.current, rest.current.scale) }, true)
+      },
+      onPanResponderTerminate: () => {
+        settle(rest.current, true)
+      },
+    }),
+  ).current
+
+  if (index === null) return null
+  const photo = photos[index]
+  if (!photo) return null
+
+  function page(step: number): void {
+    onIndexChange?.((index! + photos.length + step) % photos.length)
+  }
+
+  return (
+    <Modal
+      visible
+      transparent
+      animationType="fade"
+      // Android's hardware back has to close the viewer, or it closes the
+      // screen behind it and the reader loses their place.
+      onRequestClose={onClose}
+    >
+      <View style={styles.backdrop}>
+        <Animated.View
+          style={[styles.stage, WEB_NO_TOUCH_ACTION]}
+          onLayout={(event) => {
+            const { width, height } = event.nativeEvent.layout
+            frame.current = { width, height }
+          }}
+          {...pan.panHandlers}
+        >
+          <Animated.View
+            style={[styles.stage, { transform: [{ translateX }, { translateY }, { scale }] }]}
+          >
+            <Image
+              source={{ uri: photo.url }}
+              style={styles.full}
+              contentFit="contain"
+              onLoad={(event) => {
+                natural.current = {
+                  width: event.source?.width ?? 0,
+                  height: event.source?.height ?? 0,
+                }
+              }}
+            />
+          </Animated.View>
+        </Animated.View>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('photo.close')}
+          style={styles.close}
+          onPress={onClose}
+          hitSlop={12}
+        >
+          <Text style={styles.closeText}>✕</Text>
+        </Pressable>
+
+        {photos.length > 1 ? (
+          <View style={styles.pager}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('photo.previous')}
+              onPress={() => page(-1)}
+              hitSlop={12}
+            >
+              <Text style={styles.pagerArrow}>‹</Text>
+            </Pressable>
+            <Text style={styles.pagerCount}>
+              {t('photo.counter', { index: index + 1, total: photos.length })}
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('photo.next')}
+              onPress={() => page(1)}
+              hitSlop={12}
+            >
+              <Text style={styles.pagerArrow}>›</Text>
+            </Pressable>
+          </View>
+        ) : null}
+      </View>
+    </Modal>
+  )
+}
+
+function pointOf(touch: { pageX: number; pageY: number } | undefined): Point {
+  return { x: touch?.pageX ?? 0, y: touch?.pageY ?? 0 }
+}
+
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  backdrop: { backgroundColor: colors.scrimStrong, flex: 1, justifyContent: 'center' },
+  stage: { flex: 1, width: '100%' },
+  full: { flex: 1, width: '100%' },
+  close: { end: spacing.lg, position: 'absolute', top: spacing.xxl, zIndex: 1 },
+  closeText: { color: colors.onScrim, fontSize: 24 },
+  pager: {
+    alignItems: 'center',
+    bottom: 0,
+    flexDirection: 'row',
+    gap: spacing.xl,
+    justifyContent: 'center',
+    left: 0,
+    paddingBottom: spacing.xxl,
+    position: 'absolute',
+    right: 0,
+  },
+  pagerArrow: { color: colors.onScrim, fontSize: 32 },
+  pagerCount: { ...font.caption, color: colors.onScrim, fontVariant: ['tabular-nums'] },
+}))

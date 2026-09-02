@@ -27,6 +27,7 @@ import {
 } from '../../../src/api/queries'
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
+import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
@@ -120,6 +121,8 @@ export default function PostScreen() {
   const recorder = useVoiceRecorder()
   const [slot, setSlot] = useState<'fast' | 'slow' | null>(null)
   const [takes, setTakes] = useState<{ fast?: Media; slow?: Media }>({})
+  /** Owned by the screen: a comment row is recycled out from under its viewer. */
+  const [viewing, setViewing] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
 
   // One list, two row shapes. `'corrected' in item` is the discriminator the
@@ -355,7 +358,7 @@ export default function PostScreen() {
                 {post.media ? (
                   <View style={styles.media}>
                     {isImageContentType(post.media.contentType) ? (
-                      <ImageBubble media={post.media} />
+                      <ImageBubble media={post.media} onPress={() => setViewing(post.media!.url)} />
                     ) : (
                       <AudioBubble media={post.media} />
                     )}
@@ -448,7 +451,7 @@ export default function PostScreen() {
               {'corrected' in item && item.media ? (
                 <View style={styles.media}>
                   {isImageContentType(item.media.contentType) ? (
-                    <ImageBubble media={item.media} />
+                    <ImageBubble media={item.media} onPress={() => setViewing(item.media!.url)} />
                   ) : (
                     <AudioBubble media={item.media} />
                   )}
@@ -666,6 +669,11 @@ export default function PostScreen() {
           </View>
         )
       ) : null}
+      <PhotoViewer
+        photos={viewing ? [{ url: viewing }] : []}
+        index={viewing ? 0 : null}
+        onClose={() => setViewing(null)}
+      />
     </Screen>
   )
 }

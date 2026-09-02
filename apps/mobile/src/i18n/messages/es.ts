@@ -47,6 +47,13 @@ export const es: Localized<EnMessages> = {
     cameraTitle: 'Cámara',
     cameraPermission: 'LangX necesita permiso para usar tu cámara.',
   },
+  photo: {
+    open: 'Abrir la foto',
+    close: 'Cerrar la foto',
+    previous: 'Foto anterior',
+    next: 'Foto siguiente',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Ocultar este consejo',
     section: 'Consejos',

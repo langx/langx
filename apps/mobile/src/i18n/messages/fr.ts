@@ -44,6 +44,13 @@ export const fr: Localized<EnMessages> = {
     cameraTitle: 'Appareil photo',
     cameraPermission: 'LangX a besoin de votre autorisation pour utiliser l’appareil photo.',
   },
+  photo: {
+    open: 'Ouvrir la photo',
+    close: 'Fermer la photo',
+    previous: 'Photo précédente',
+    next: 'Photo suivante',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Masquer ce conseil',
     section: 'Conseils',

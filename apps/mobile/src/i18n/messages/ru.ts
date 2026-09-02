@@ -54,6 +54,13 @@ export const ru: Localized<EnMessages> = {
     cameraTitle: 'Камера',
     cameraPermission: 'LangX нужно разрешение на использование камеры.',
   },
+  photo: {
+    open: 'Открыть фото',
+    close: 'Закрыть фото',
+    previous: 'Предыдущее фото',
+    next: 'Следующее фото',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Скрыть подсказку',
     section: 'Подсказки',

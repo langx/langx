@@ -58,6 +58,13 @@ export const tr: Localized<EnMessages> = {
     cameraTitle: 'Kamera',
     cameraPermission: 'LangX kameranı kullanmak için izin istiyor.',
   },
+  photo: {
+    open: 'Fotoğrafı aç',
+    close: 'Fotoğrafı kapat',
+    previous: 'Önceki fotoğraf',
+    next: 'Sonraki fotoğraf',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Bu ipucunu kapat',
     section: 'İpuçları',

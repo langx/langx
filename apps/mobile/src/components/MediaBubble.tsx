@@ -137,15 +137,16 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
  * read out of the file header, so this is the path a good number of imported
  * photos take.
  */
-export function ImageBubble({ media }: { media: Media }) {
+export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => void }) {
   const styles = useStyles()
+  const t = useT()
 
   const { width, height, url } = media
   const [measured, setMeasured] = useState<number | null>(null)
   const ratio = width && height ? width / height : measured
   if (!url) return null
 
-  return (
+  const picture = (
     <Image
       source={{ uri: url }}
       style={[styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]}
@@ -156,6 +157,19 @@ export function ImageBubble({ media }: { media: Media }) {
         setMeasured(source.width / source.height)
       }}
     />
+  )
+
+  /*
+   * Optional, because a chat bubble already is a `Pressable` — it carries the
+   * long press for the message menu — and nesting a second one inside it would
+   * make the two negotiate for every touch. There the whole bubble opens the
+   * viewer; here, on a feed card, the picture is the only part that should.
+   */
+  if (!onPress) return picture
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={t('photo.open')} onPress={onPress}>
+      {picture}
+    </Pressable>
   )
 }
 

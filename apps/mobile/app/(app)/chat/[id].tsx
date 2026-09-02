@@ -35,6 +35,7 @@ import { api } from '../../../src/api/client'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { Tip } from '../../../src/components/Tip'
 import { MessageBubble } from '../../../src/components/MessageBubble'
+import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -110,6 +111,17 @@ export default function ChatScreen() {
   const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
+  /*
+   * The viewer is opened by a bubble and owned by the thread. Inside the
+   * bubble it would be unmounted by the same virtualisation that recycles the
+   * row, and a picture would close itself as its bubble scrolled away.
+   *
+   * One url rather than the thread's whole photo history: only the loaded
+   * pages could be collected, so the arrows would page through however much of
+   * the conversation happened to be in memory — a different set every time,
+   * for no reason the reader can see.
+   */
+  const [viewing, setViewing] = useState<string | null>(null)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const windowed = useMessageWindow(conversationId, jumpAnchor)
@@ -803,6 +815,7 @@ export default function ChatScreen() {
                   onLongPress={onLongPress}
                   onReply={onReply}
                   onJumpTo={onJumpTo}
+                  onOpenImage={setViewing}
                 />
               )
             }
@@ -1034,6 +1047,11 @@ export default function ChatScreen() {
           </Text>
         </View>
       </KeyboardAvoidingView>
+      <PhotoViewer
+        photos={viewing ? [{ url: viewing }] : []}
+        index={viewing ? 0 : null}
+        onClose={() => setViewing(null)}
+      />
     </Screen>
   )
 }

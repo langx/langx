@@ -50,6 +50,8 @@ export interface MessageBubbleProps {
   onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
   onReply: (message: MessageDto) => void
   onJumpTo: (messageId: string) => void
+  /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
+  onOpenImage: (url: string) => void
 }
 
 /**
@@ -74,6 +76,7 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   onReply,
   onJumpTo,
+  onOpenImage,
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -308,9 +311,21 @@ export const MessageBubble = memo(function MessageBubble({
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
 
   if (message.type === 'image' || message.type === 'audio') {
+    const imageUrl = message.type === 'image' ? message.media?.url : undefined
     return shell(
       <Pressable
         onLongPress={press}
+        /*
+         * A picture in a thread is a thumbnail — 220 points of something worth
+         * looking at. Tapping it was the one thing it did not do: the bubble
+         * had a long press for the menu and a swipe for a reply, and nothing
+         * for the obvious gesture.
+         *
+         * Only an image takes it. A voice note's bubble is already a play
+         * button, and giving the whole thing a second meaning would make the
+         * two overlap.
+         */
+        onPress={imageUrl ? () => onOpenImage(imageUrl) : undefined}
         style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
       >
         {quote}

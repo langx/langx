@@ -44,6 +44,13 @@ export const ptBR: Localized<EnMessages> = {
     cameraTitle: 'Câmera',
     cameraPermission: 'O LangX precisa de permissão para usar sua câmera.',
   },
+  photo: {
+    open: 'Abrir a foto',
+    close: 'Fechar a foto',
+    previous: 'Foto anterior',
+    next: 'Próxima foto',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Ocultar esta dica',
     section: 'Dicas',

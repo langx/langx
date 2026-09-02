@@ -68,6 +68,13 @@ export const en = {
     cameraTitle: 'Camera',
     cameraPermission: 'LangX needs permission to use your camera.',
   },
+  photo: {
+    open: 'Open photo',
+    close: 'Close photo',
+    previous: 'Previous photo',
+    next: 'Next photo',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'Dismiss this tip',
     section: 'Tips',

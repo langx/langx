@@ -57,6 +57,13 @@ export const ar: Localized<EnMessages> = {
     cameraTitle: 'الكاميرا',
     cameraPermission: 'يحتاج LangX إذنًا لاستخدام الكاميرا.',
   },
+  photo: {
+    open: 'فتح الصورة',
+    close: 'إغلاق الصورة',
+    previous: 'الصورة السابقة',
+    next: 'الصورة التالية',
+    counter: '{index} / {total}',
+  },
   tips: {
     dismiss: 'إخفاء هذه النصيحة',
     section: 'نصائح',
