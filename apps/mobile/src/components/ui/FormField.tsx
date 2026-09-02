@@ -1,11 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Pressable, Text, TextInput, type TextInputProps, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useT } from '../../i18n'
 
 interface FormFieldProps extends TextInputProps {
-  label: string
+  /**
+   * A node, not just a string: the feed composer draws part of its label as a
+   * control — the language you are posting in, which opens a menu. Every other
+   * caller still passes a plain string and gets the same `Text` as before.
+   */
+  label: ReactNode
   error?: string | undefined
   /**
    * Shows a live `used / max` counter beside the label. The limits live in
@@ -37,7 +42,7 @@ export function FormField({ label, error, maxLength, style, ...inputProps }: For
   return (
     <View style={styles.container}>
       <View style={styles.labelRow}>
-        <Text style={styles.label}>{label}</Text>
+        {typeof label === 'string' ? <Text style={styles.label}>{label}</Text> : label}
         {showCount ? (
           <Text style={[styles.count, used > maxLength ? styles.countOver : null]}>
             {used} / {maxLength}

@@ -55,6 +55,16 @@ export const FLAG_KEYS = {
    * have read is a fact about you having read it on this phone.
    */
   tips: 'tips',
+  /**
+   * Which of your learning languages the feed composer is set to.
+   *
+   * Device-level like the theme and the locale, and for a reason of its own:
+   * the value is a *wish*, never a fact. It can name a language the account
+   * signed in here is not learning — a shared phone, or a language dropped
+   * since it was written. `resolvePostLanguage` sanitises it on read, so
+   * nothing here has to be kept in step with the profile.
+   */
+  postLanguage: 'postLanguage',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

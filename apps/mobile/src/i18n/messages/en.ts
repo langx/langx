@@ -610,6 +610,7 @@ export const en = {
     topTag: 'Top',
     ask: '+ Ask',
     askTitle: 'Your sentence in {language}',
+    postLanguage: 'Language to post in',
     askPlaceholder: 'The sentence you are unsure about…',
     posting: 'Posting…',
     posted: 'Posted. Somebody will correct it.',

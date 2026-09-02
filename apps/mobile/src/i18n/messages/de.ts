@@ -590,6 +590,7 @@ export const de: Localized<EnMessages> = {
     topTag: 'Top',
     ask: '+ Fragen',
     askTitle: 'Dein Satz auf {language}',
+    postLanguage: 'Sprache des Beitrags',
     askPlaceholder: 'Der Satz, bei dem du unsicher bist…',
     posting: 'Wird gepostet…',
     posted: 'Gepostet. Jemand wird ihn korrigieren.',

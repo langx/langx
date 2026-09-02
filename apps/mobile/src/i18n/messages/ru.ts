@@ -648,6 +648,7 @@ export const ru: Localized<EnMessages> = {
     topTag: 'Лучшая',
     ask: '+ Спросить',
     askTitle: 'Твоё предложение на языке {language}',
+    postLanguage: 'Язык публикации',
     askPlaceholder: 'Предложение, в котором ты не уверен…',
     posting: 'Публикуем…',
     posted: 'Опубликовано. Кто-нибудь исправит.',
