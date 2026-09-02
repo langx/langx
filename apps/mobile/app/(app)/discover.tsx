@@ -21,6 +21,7 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { Tip } from '../../src/components/Tip'
 import {
   activeCount,
   hasProFilters,
@@ -228,6 +229,10 @@ export default function DiscoverScreen() {
             : null}
         </View>
       </View>
+
+      {/* Above the list rather than inside it: a hint that scrolls away is
+          one nobody reads. */}
+      {searching ? null : <Tip slot="discover" />}
 
       {state === 'skeleton' ? (
         <View style={styles.list}>

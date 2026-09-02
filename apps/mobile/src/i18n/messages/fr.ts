@@ -52,6 +52,24 @@ export const fr: Localized<EnMessages> = {
     counter: '{index} / {total}',
   },
   tips: {
+    composerCorrect: 'Appui long pour corriger',
+    composerReply: 'Glissez un message pour répondre',
+    composerStar: 'Appui long pour épingler ou traduire',
+    composerVoice: 'Maintenez le micro pour un vocal',
+    chatStar: 'Appuyez longuement sur un message et choisissez Épingler pour le retrouver.',
+    chatTranslate:
+      'Appuyez longuement sur un message pour le traduire sans quitter la conversation.',
+    chatVoice:
+      'Maintenez le micro pour envoyer un vocal — entendre un mot, c’est la moitié du travail.',
+    chatsSwipe: 'Faites glisser une conversation sur le côté pour l’épingler ou l’archiver.',
+    chatsPin: 'Épinglez les conversations où vous revenez : elles restent en haut.',
+    chatsUnreplied: 'L’onglet Sans réponse, ce sont tous ceux qui vous attendent encore.',
+    discoverRadius:
+      'Élargissez le rayon si personne n’est à proximité — la plupart ne le sont pas.',
+    discoverSearch: 'Vous cherchez quelqu’un en particulier ? Cherchez son identifiant.',
+    feedCorrect:
+      'Corriger une phrase prend un instant et c’est le plus utile que vous puissiez faire ici.',
+    feedPronounce: 'Vous ne savez pas dire un mot ? Demandez, quelqu’un l’enregistrera pour vous.',
     dismiss: 'Masquer ce conseil',
     section: 'Conseils',
     show: 'Afficher les conseils',
@@ -499,7 +517,6 @@ export const fr: Localized<EnMessages> = {
     yourCorrection: 'Ta correction',
     correctionFrom: 'Correction de {name}',
     them: 'l’autre personne',
-    holdToCorrect: 'Appuie longuement sur un message pour le corriger',
     tokensPerMessage: '+{count} jetons / message',
     unlimitedEveryPlan: 'Illimité sur tous les forfaits',
     voiceMessage: 'Message vocal',

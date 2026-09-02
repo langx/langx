@@ -9,9 +9,37 @@
  * in the hook; the rules live here.
  */
 
-/** Every tip the app can show. A union, so a typo is a compile error. */
-export const TIP_IDS = ['chatCorrect', 'chatSwipeReply', 'discoverFilters', 'feedAsk'] as const
-export type TipId = (typeof TIP_IDS)[number]
+/**
+ * Every tip, grouped by the place that shows it.
+ *
+ * A screen asks for a *slot*, not a tip. Before this, `Tip` took an id and a
+ * message key together, which made one id mean one fixed sentence — so a
+ * screen could only ever teach the same thing, and the chat taught it on every
+ * single visit until it was dismissed. Three of the four ids declared here were
+ * translated into all eight languages and rendered nowhere at all.
+ *
+ * Order within a slot is the order they are shown in.
+ */
+export const TIP_SLOTS = {
+  chat: ['chatCorrect', 'chatSwipeReply', 'chatStar', 'chatTranslate', 'chatVoice'],
+  chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied'],
+  discover: ['discoverFilters', 'discoverRadius', 'discoverSearch'],
+  feed: ['feedAsk', 'feedCorrect', 'feedPronounce'],
+  /**
+   * The line under the chat composer, which is not a `Tip`: it has no dismiss
+   * button and half a row to live in, so its entries are four words rather
+   * than a sentence. It rotates through the same cursor because the problem
+   * was the same one — it said "hold a message to correct it" forever, beneath
+   * a yellow tip saying exactly that.
+   */
+  composer: ['composerCorrect', 'composerReply', 'composerStar', 'composerVoice'],
+} as const satisfies Record<string, readonly string[]>
+
+export type TipSlot = keyof typeof TIP_SLOTS
+/** A union, so a typo is a compile error — and derived, so a slot cannot drift. */
+export type TipId = (typeof TIP_SLOTS)[TipSlot][number]
+export const TIP_IDS: readonly TipId[] = Object.values(TIP_SLOTS).flat()
+export const TIP_SLOT_NAMES = Object.keys(TIP_SLOTS) as TipSlot[]
 
 /** What is written to the device: dismissed ids, plus the global switch. */
 export interface TipState {
@@ -23,9 +51,17 @@ export interface TipState {
    */
   enabled: boolean
   dismissed: Partial<Record<TipId, true>>
+  /**
+   * How far through each slot's list the reader has got.
+   *
+   * Persisted, and that is the point: a counter that reset each launch would
+   * show the same first tip on every cold start, which is the complaint this
+   * whole thing answers.
+   */
+  seen: Partial<Record<TipSlot, number>>
 }
 
-export const DEFAULT_TIP_STATE: TipState = { enabled: true, dismissed: {} }
+export const DEFAULT_TIP_STATE: TipState = { enabled: true, dismissed: {}, seen: {} }
 
 /**
  * Whatever came back from storage, made safe.
@@ -44,11 +80,52 @@ export function parseTipState(raw: unknown): TipState {
       if ((dismissedRaw as Record<string, unknown>)[id] === true) dismissed[id] = true
     }
   }
+  const seenRaw = record.seen
+  const seen: Partial<Record<TipSlot, number>> = {}
+  if (typeof seenRaw === 'object' && seenRaw !== null) {
+    for (const slot of TIP_SLOT_NAMES) {
+      const value = (seenRaw as Record<string, unknown>)[slot]
+      // A cursor is only ever an index into a list that may since have been
+      // reordered or shortened, so anything not a whole number in range is
+      // simply the start.
+      if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
+        seen[slot] = value % TIP_SLOTS[slot].length
+      }
+    }
+  }
+
   return {
     // Anything that is not an explicit `false` is on: tips default to shown,
     // and a corrupt value must not silently turn a feature off.
     enabled: record.enabled !== false,
     dismissed,
+    seen,
+  }
+}
+
+/**
+ * The tip this slot should show now, or `null` when there is nothing left.
+ *
+ * Starts at the slot's cursor and walks forward past anything dismissed, so a
+ * reader who has sent three away still gets the fourth rather than a gap.
+ */
+export function pickTip(state: TipState, slot: TipSlot): TipId | null {
+  if (!state.enabled) return null
+  const pool = TIP_SLOTS[slot]
+  const start = state.seen[slot] ?? 0
+  for (let offset = 0; offset < pool.length; offset++) {
+    const id = pool[(start + offset) % pool.length]
+    if (id !== undefined && state.dismissed[id] !== true) return id
+  }
+  return null
+}
+
+/** Moves a slot on, so the next visit teaches the next thing. */
+export function advanceSlot(state: TipState, slot: TipSlot): TipState {
+  const pool = TIP_SLOTS[slot]
+  return {
+    ...state,
+    seen: { ...state.seen, [slot]: ((state.seen[slot] ?? 0) + 1) % pool.length },
   }
 }
 
@@ -68,5 +145,7 @@ export function dismissTip(state: TipState, id: TipId): TipState {
  * again would show only the ones they never reached.
  */
 export function setTipsEnabled(state: TipState, enabled: boolean): TipState {
-  return enabled ? { enabled: true, dismissed: {} } : { ...state, enabled: false }
+  // The cursors go with the dismissals: turning tips back on means starting
+  // over, not resuming four-fifths of the way through a list.
+  return enabled ? { enabled: true, dismissed: {}, seen: {} } : { ...state, enabled: false }
 }

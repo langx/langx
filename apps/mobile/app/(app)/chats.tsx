@@ -18,6 +18,7 @@ import {
   useMe,
 } from '../../src/api/queries'
 import { PeopleSearch } from '../../src/components/PeopleSearch'
+import { Tip } from '../../src/components/Tip'
 import { SwipeableRow } from '../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -157,6 +158,10 @@ export default function ChatsScreen() {
           />
         </View>
       )}
+
+      {/* Above the list rather than inside it: a hint that scrolls away is
+          one nobody reads. */}
+      {searching ? null : <Tip slot="chats" />}
 
       {state === 'skeleton' ? (
         <View style={styles.list}>

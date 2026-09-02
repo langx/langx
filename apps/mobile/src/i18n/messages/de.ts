@@ -52,6 +52,23 @@ export const de: Localized<EnMessages> = {
     counter: '{index} / {total}',
   },
   tips: {
+    composerCorrect: 'Gedrückt halten zum Korrigieren',
+    composerReply: 'Wischen, um zu antworten',
+    composerStar: 'Gedrückt halten zum Markieren oder Übersetzen',
+    composerVoice: 'Mikrofon halten für eine Sprachnachricht',
+    chatStar: 'Halte eine Nachricht gedrückt und wähle Markieren, um sie wiederzufinden.',
+    chatTranslate:
+      'Halte eine Nachricht gedrückt, um sie zu übersetzen, ohne das Gespräch zu verlassen.',
+    chatVoice:
+      'Halte das Mikrofon gedrückt für eine Sprachnachricht — ein Wort zu hören ist die halbe Miete.',
+    chatsSwipe: 'Wische einen Chat zur Seite, um ihn anzuheften oder zu archivieren.',
+    chatsPin: 'Hefte die Chats an, zu denen du zurückkommst — sie bleiben oben.',
+    chatsUnreplied: 'Der Tab Unbeantwortet sind alle, die noch auf dich warten.',
+    discoverRadius:
+      'Erweitere den Radius, wenn niemand in der Nähe ist — die meisten sind es nicht.',
+    discoverSearch: 'Suchst du jemand Bestimmten? Such nach dem Namen.',
+    feedCorrect: 'Einen Satz zu korrigieren dauert einen Moment und ist das Nützlichste hier.',
+    feedPronounce: 'Du weißt nicht, wie ein Wort klingt? Frag, und jemand nimmt es für dich auf.',
     dismiss: 'Tipp ausblenden',
     section: 'Tipps',
     show: 'Tipps anzeigen',
@@ -517,7 +534,6 @@ export const de: Localized<EnMessages> = {
     yourCorrection: 'Deine Korrektur',
     correctionFrom: 'Korrektur von {name}',
     them: 'der anderen Person',
-    holdToCorrect: 'Halte eine Nachricht gedrückt, um sie zu korrigieren',
     tokensPerMessage: '+{count} Token / Nachricht',
     unlimitedEveryPlan: 'In jedem Tarif unbegrenzt',
     voiceMessage: 'Sprachnachricht',

@@ -33,6 +33,7 @@ import {
 import * as Clipboard from 'expo-clipboard'
 import { api } from '../../../src/api/client'
 import { PresenceLine } from '../../../src/components/PresenceLine'
+import { ComposerHint } from '../../../src/components/ComposerHint'
 import { Tip } from '../../../src/components/Tip'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
@@ -741,7 +742,7 @@ export default function ChatScreen() {
               <>
                 {/* Above the composer, where a hint is read rather than
                     scrolled past. */}
-                <Tip id="chatCorrect" body="tips.chatCorrect" />
+                <Tip slot="chat" />
                 {unsent.length > 0 ? (
                   <View style={styles.unsentBlock}>
                     {unsent.map((message) => (
@@ -1041,7 +1042,7 @@ export default function ChatScreen() {
           rather than being written into the copy.
         */}
         <View style={styles.composerHint}>
-          <Text style={styles.hintLeft}>{t('chat.holdToCorrect')}</Text>
+          <ComposerHint style={styles.hintLeft} />
           <Text style={styles.hintRight}>
             {t('chat.tokensPerMessage', { count: TOKEN_RULES.award.message })}
           </Text>

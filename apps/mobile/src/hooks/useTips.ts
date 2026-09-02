@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
 import {
   DEFAULT_TIP_STATE,
+  advanceSlot,
   dismissTip as dismissIn,
   parseTipState,
+  pickTip,
   setTipsEnabled as setEnabledIn,
   shouldShowTip,
   type TipId,
+  type TipSlot,
   type TipState,
 } from '../lib/tips'
 
@@ -23,6 +26,7 @@ import {
  */
 let state: TipState = DEFAULT_TIP_STATE
 let hydrated = false
+let settled = false
 const listeners = new Set<() => void>()
 
 function publish(next: TipState): void {
@@ -39,6 +43,7 @@ async function hydrate(): Promise<void> {
   const stored = await readJsonFlag<unknown>(FLAG_KEYS.tips)
   const parsed = parseTipState(stored)
   state = parsed
+  settled = true
   for (const listener of listeners) listener()
 }
 
@@ -56,7 +61,15 @@ export function useTips() {
 
   return {
     enabled: state.enabled,
+    /**
+     * Whether the stored state has actually been read yet. A slot must not
+     * choose before it has, or it picks the first tip in the list — including
+     * one the reader dismissed months ago.
+     */
+    settled,
     isVisible: (id: TipId) => shouldShowTip(state, id),
+    pick: (slot: TipSlot) => pickTip(state, slot),
+    advance: (slot: TipSlot) => publish(advanceSlot(state, slot)),
     dismiss: (id: TipId) => publish(dismissIn(state, id)),
     setEnabled: (enabled: boolean) => publish(setEnabledIn(state, enabled)),
   }

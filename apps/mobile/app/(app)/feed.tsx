@@ -24,6 +24,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { requireAccount } from '../../src/lib/requireAccount'
 import { LikeButton } from '../../src/components/LikeButton'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { Tip } from '../../src/components/Tip'
 import { Dropdown, type AnchorRect } from '../../src/components/ui/Dropdown'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -428,6 +429,10 @@ export default function FeedScreen() {
           />
         </View>
       </View>
+
+      {/* Above the list rather than inside it: a hint that scrolls away is
+          one nobody reads. */}
+      <Tip slot="feed" />
 
       {state === 'skeleton' ? (
         <ActivityIndicator style={styles.loading} />
