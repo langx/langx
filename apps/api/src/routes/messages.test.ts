@@ -1414,4 +1414,122 @@ describe('Faz 5 — conversation/message history REST', () => {
       ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
     })
   })
+
+  describe('deleting a conversation', () => {
+    async function twoWay(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const { _id: conversationId } = await startConversation(a, b.userId, 'from a')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await sendTextMessage(handle.db, b.userId, { conversationId, body: 'from b' })
+      return { a, b, conversationId }
+    }
+
+    async function listFor(user: SignedUpUser, filter = 'all') {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations?filter=${filter}`,
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+      return response.json<{ items: { _id: string }[] }>().items
+    }
+
+    /**
+     * Hidden rows come back flagged rather than missing — `listMessages` says
+     * why, and `messageCache` is what drops them on the client — so "gone for
+     * me" is asserted on the flag.
+     */
+    async function messagesFor(user: SignedUpUser, conversationId: string) {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+      return response.json<{ items: { body: string; hidden?: boolean }[] }>().items
+    }
+
+    const visible = (items: { body: string; hidden?: boolean }[]) =>
+      items.filter((row) => !row.hidden).map((row) => row.body)
+
+    it('takes the thread off my list and leaves theirs alone', async () => {
+      const { a, b, conversationId } = await twoWay('del-basic')
+
+      const deleted = await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${conversationId}`,
+        headers: { cookie: a.cookie },
+      })
+      expect(deleted.statusCode).toBe(204)
+
+      expect(await listFor(a)).toHaveLength(0)
+      expect((await listFor(b)).map((row) => row._id)).toEqual([conversationId])
+      // Their copy is untouched — both messages, neither hidden.
+      expect(visible(await messagesFor(b, conversationId))).toEqual(['from a', 'from b'])
+    })
+
+    /** Gone means gone: the archive tab is not a hiding place for it either. */
+    it('is gone from the archive tab as well', async () => {
+      const { a, conversationId } = await twoWay('del-archived')
+      await app.inject({
+        method: 'PATCH',
+        url: `/conversations/${conversationId}/flags`,
+        headers: { cookie: a.cookie },
+        payload: { archived: true },
+      })
+      await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${conversationId}`,
+        headers: { cookie: a.cookie },
+      })
+      expect(await listFor(a, 'archived')).toHaveLength(0)
+    })
+
+    /**
+     * The whole point of "for me": writing again has to reach somebody, so the
+     * thread comes back — carrying only what was said after the delete.
+     */
+    it('comes back empty when they write again', async () => {
+      const { a, b, conversationId } = await twoWay('del-revived')
+      await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${conversationId}`,
+        headers: { cookie: a.cookie },
+      })
+
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await sendTextMessage(handle.db, b.userId, { conversationId, body: 'still there?' })
+
+      expect((await listFor(a)).map((row) => row._id)).toEqual([conversationId])
+      expect(visible(await messagesFor(a, conversationId))).toEqual(['still there?'])
+      // And nothing was taken from them.
+      expect(visible(await messagesFor(b, conversationId))).toEqual([
+        'from a',
+        'from b',
+        'still there?',
+      ])
+    })
+
+    it('refuses a conversation that is not mine', async () => {
+      const { conversationId } = await twoWay('del-outsider')
+      const outsider = await newUser('del-outsider-c@example.com')
+      const response = await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${conversationId}`,
+        headers: { cookie: outsider.cookie },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+
+    it('is a 404 for an id that is not one', async () => {
+      const a = await newUser('del-badid-a@example.com')
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/conversations/not-an-object-id',
+        headers: { cookie: a.cookie },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+  })
 })

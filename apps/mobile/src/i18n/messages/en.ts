@@ -466,6 +466,10 @@ export const en = {
   },
 
   chats: {
+    delete: 'Delete',
+    deleteTitle: 'Delete this chat?',
+    deleteBody: 'It stays on their side, and comes back here if they write again.',
+    deleted: 'Chat deleted',
     tab_all: 'All',
     tab_unreplied: 'Unreplied',
     tab_archived: 'Archived',

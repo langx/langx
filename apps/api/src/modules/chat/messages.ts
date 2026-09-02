@@ -101,6 +101,17 @@ async function recordMessage(
       // Riding the write that was already happening. The media gate reads this
       // and must not pay for a `countDocuments` on the send path.
       $inc: { messageCount: 1, ...(recipientId ? { [`unread.${recipientId}`]: 1 } : {}) },
+      /*
+       * A new message brings a deleted thread back, on both sides. Deleting is
+       * "I am done with this conversation", not "block me from it" — the other
+       * person knows nothing about it and writing again has to reach somebody.
+       *
+       * It comes back empty for whoever deleted it: the messages it used to
+       * hold carry their id in `hiddenFor`, and only the new one does not.
+       * Unconditional because `$unset` on an absent key is free, which is
+       * cheaper than reading the document to decide.
+       */
+      $unset: Object.fromEntries(conversation.participants.map((id) => [`deletedBy.${id}`, ''])),
     },
     { returnDocument: 'after' },
   )
@@ -563,6 +574,10 @@ export async function listConversations(
   const archivedPath = `archivedBy.${userId}`
   if (filter === 'archived') base[archivedPath] = true
   else base[archivedPath] = { $ne: true }
+
+  // Deleted threads are gone from every tab, archive included — `$ne: true`
+  // for the same reason as above, since coming back leaves the key unset.
+  base[`deletedBy.${userId}`] = { $ne: true }
 
   // "They spoke last." See `toConversationView` for why this is not `unread`.
   if (filter === 'unreplied') base['lastMessage.senderId'] = { $ne: userId }

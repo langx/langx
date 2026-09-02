@@ -1,23 +1,29 @@
 /**
- * Swiping a row in a list to act on it.
+ * Swiping a row in a list to reach its actions.
  *
  * A sibling of `swipeToReply`, and deliberately the same shape: the thresholds
- * live here as plain numbers and the gesture logic is a pure function, so the
- * two things that are easy to get wrong — when a diagonal flick stops being a
- * scroll, and how far the row may travel — are testable without a renderer.
+ * live here as plain numbers and the geometry is pure functions, so the two
+ * things that are easy to get wrong — when a diagonal flick stops being a
+ * scroll, and where the row is allowed to come to rest — are testable without
+ * a renderer.
  *
- * Unlike swipe-to-reply this is **two-directional**, because a chat row has two
- * actions and a list has no second axis to spend.
+ * **The row rests open.** It used to commit on release: swipe far enough and
+ * the action fired as the row sprang back. That is fine for one action a side
+ * and impossible for two, since a single gesture cannot say which of them was
+ * meant. Opening a drawer and letting the reader tap costs a second gesture and
+ * buys the thing they already expect from every other list on their phone —
+ * and it makes a destructive action reachable without ever being reachable by
+ * accident.
  */
 
-/** Past this, releasing performs the action. */
-export const ACTION_ACTIVATE_PX = 72
-/** Where the row stops following the finger one-to-one. */
-export const ACTION_MAX_PX = 96
+/** One action button's width, and therefore the unit the row opens in. */
+export const ACTION_WIDTH_PX = 84
 /** Movement below this is still undecided. */
 export const ACTION_LOCK_PX = 12
-/** How much of the overshoot past `ACTION_MAX_PX` still moves the row. */
+/** How much of the overshoot past a fully open drawer still moves the row. */
 const RUBBER = 0.15
+/** Past this much of a drawer's width, releasing opens it rather than closing. */
+const OPEN_AT = 0.4
 /**
  * How much more horizontal than vertical the movement has to be.
  *
@@ -34,23 +40,34 @@ export function shouldCaptureRowSwipe(dx: number, dy: number): boolean {
   return Math.abs(dx) > ACTION_LOCK_PX && Math.abs(dx) > Math.abs(dy) * HORIZONTAL_BIAS
 }
 
-/** Follows the finger, then resists — so the limit is felt, not hit. */
-export function rowTranslation(dx: number): number {
-  const sign = dx < 0 ? -1 : 1
-  const distance = Math.abs(dx)
-  const eased =
-    distance <= ACTION_MAX_PX ? distance : ACTION_MAX_PX + (distance - ACTION_MAX_PX) * RUBBER
-  return sign * eased
+/** How wide the drawer on one side is, given how many buttons it holds. */
+export function drawerWidth(actionCount: number): number {
+  return Math.max(0, actionCount) * ACTION_WIDTH_PX
 }
 
 /**
- * Which action a release fires, or `null` for a swipe that did not go far
- * enough — which springs back and does nothing.
+ * Follows the finger, then resists — so the limit is felt, not hit.
+ *
+ * `right` is the drawer revealed by pulling the row to the right, `left` the
+ * one revealed by pulling it to the left; a side with no actions cannot be
+ * opened at all, and the rubber band is all that is left of the gesture there.
  */
-export function rowReleased(dx: number): SwipeDirection | null {
-  if (dx >= ACTION_ACTIVATE_PX) return 'right'
-  if (dx <= -ACTION_ACTIVATE_PX) return 'left'
-  return null
+export function rowTranslation(x: number, right: number, left: number): number {
+  const limit = x >= 0 ? right : left
+  const distance = Math.abs(x)
+  const eased = distance <= limit ? distance : limit + (distance - limit) * RUBBER
+  return x < 0 ? -eased : eased
+}
+
+/**
+ * Where the row comes to rest when the finger lifts: closed, or one of the two
+ * drawers fully open. Never anywhere in between — a half-open row is a row
+ * whose buttons are half-tappable.
+ */
+export function settleOffset(x: number, right: number, left: number): number {
+  if (x > 0) return right > 0 && x >= right * OPEN_AT ? right : 0
+  if (x < 0) return left > 0 && -x >= left * OPEN_AT ? -left : 0
+  return 0
 }
 
 /**

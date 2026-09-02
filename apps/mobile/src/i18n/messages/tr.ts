@@ -440,6 +440,10 @@ export const tr: Localized<EnMessages> = {
   },
 
   chats: {
+    delete: 'Sil',
+    deleteTitle: 'Bu sohbet silinsin mi?',
+    deleteBody: 'Karşı tarafta kalır; tekrar yazarsa burada yeniden açılır.',
+    deleted: 'Sohbet silindi',
     tab_all: 'Tümü',
     tab_unreplied: 'Cevapsız',
     tab_archived: 'Arşiv',

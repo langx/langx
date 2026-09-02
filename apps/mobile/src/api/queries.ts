@@ -625,6 +625,24 @@ export function useHandleSearch(term: string) {
  * the ones not on screen. Patching one and leaving the others is how the
  * archive tab ends up showing a thread the list already un-archived.
  */
+/**
+ * Deletes a conversation for the reader only.
+ *
+ * Unlike `useConversationFlags` below, a failure here is surfaced. Pinning
+ * silently is survivable — the row simply does not move — but somebody who
+ * confirmed a destructive action and was shown nothing has every reason to
+ * believe it worked.
+ */
+export function useDeleteConversation() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (conversationId: string) => api.delete<void>(`/conversations/${conversationId}`),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+}
+
 export function useConversationFlags() {
   const client = useQueryClient()
   return useMutation({

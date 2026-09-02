@@ -11,7 +11,12 @@ import {
   Text,
   View,
 } from 'react-native'
-import { useConversationFlags, useConversations, useMe } from '../../src/api/queries'
+import {
+  useDeleteConversation,
+  useConversationFlags,
+  useConversations,
+  useMe,
+} from '../../src/api/queries'
 import { PeopleSearch } from '../../src/components/PeopleSearch'
 import { SwipeableRow } from '../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
@@ -21,7 +26,8 @@ import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
-import { chooseAlert } from '../../src/lib/alert'
+import { chooseAlert, confirmAlert, showAlert } from '../../src/lib/alert'
+import { showToast } from '../../src/lib/toast'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -52,6 +58,30 @@ export default function ChatsScreen() {
   const [searching, setSearching] = useState(false)
   const conversations = useConversations(filter)
   const flags = useConversationFlags()
+  const removeConversation = useDeleteConversation()
+  /** One row at a time: two open drawers is two sets of buttons and no way to tell them apart. */
+  const [openRow, setOpenRow] = useState<string | null>(null)
+
+  /**
+   * Confirmed, and destructive, because it cannot be undone from here — unlike
+   * archiving, which has a tab of its own to come back from. `profile`'s note
+   * on unfollow states the rule this follows.
+   */
+  async function confirmDelete(conversationId: string): Promise<void> {
+    const yes = await confirmAlert({
+      title: t('chats.deleteTitle'),
+      message: t('chats.deleteBody'),
+      confirmLabel: t('chats.delete'),
+      destructive: true,
+    })
+    if (!yes) return
+    removeConversation.mutate(conversationId, {
+      onSuccess: () => showToast(t('chats.deleted')),
+      // Said out loud: somebody who confirmed a destructive action and saw
+      // nothing has every reason to think it worked.
+      onError: () => void showAlert(t('chats.deleteTitle'), t('common.retry')),
+    })
+  }
 
   /*
    * Pinned first, then the rest. The server returns them as two lists because
@@ -182,24 +212,57 @@ export default function ChatsScreen() {
             const unread = item.unread
             const mine = item.lastMessage.senderId === me.data?._id
 
+            const pin = {
+              id: 'pin',
+              icon: item.pinned ? ('chevrons-down' as const) : ('chevrons-up' as const),
+              label: item.pinned ? t('chats.unpin') : t('chats.pin'),
+              colour: colors.accent,
+              onAction: () => {
+                setOpenRow(null)
+                flags.mutate({ conversationId: item._id, pinned: !item.pinned })
+              },
+            }
+            const archive = {
+              id: 'archive',
+              icon: item.archived ? ('inbox' as const) : ('archive' as const),
+              label: item.archived ? t('chats.unarchive') : t('chats.archive'),
+              colour: colors.textMuted,
+              onAction: () => {
+                setOpenRow(null)
+                flags.mutate({ conversationId: item._id, archived: !item.archived })
+              },
+            }
+            const remove = {
+              id: 'delete',
+              icon: 'trash-2' as const,
+              label: t('chats.delete'),
+              colour: colors.danger,
+              destructive: true,
+              onAction: () => {
+                setOpenRow(null)
+                void confirmDelete(item._id)
+              },
+            }
+
             return (
               <SwipeableRow
-                right={{
-                  icon: item.pinned ? 'chevrons-down' : 'chevrons-up',
-                  label: item.pinned ? t('chats.unpin') : t('chats.pin'),
-                  colour: colors.accent,
-                  onAction: () => flags.mutate({ conversationId: item._id, pinned: !item.pinned }),
-                }}
-                left={{
-                  icon: item.archived ? 'inbox' : 'archive',
-                  label: item.archived ? t('chats.unarchive') : t('chats.archive'),
-                  colour: colors.textMuted,
-                  onAction: () =>
-                    flags.mutate({ conversationId: item._id, archived: !item.archived }),
-                }}
+                // Delete is last, so it is the furthest thing from a thumb that
+                // opened the drawer meaning to archive.
+                right={[pin]}
+                left={[archive, remove]}
+                open={openRow === item._id}
+                onOpenChange={(open) => setOpenRow(open ? item._id : null)}
               >
                 <Pressable
-                  onPress={() => router.push(`/(app)/chat/${item._id}`)}
+                  /*
+                   * An open row closes rather than opening the thread. Tapping
+                   * the part of a row that is holding its own buttons open
+                   * means "never mind", and navigating away from a drawer that
+                   * was never closed leaves it open behind you.
+                   */
+                  onPress={() =>
+                    openRow === item._id ? setOpenRow(null) : router.push(`/(app)/chat/${item._id}`)
+                  }
                   /*
                   Long press rather than a swipe. `react-native-gesture-handler`
                   is deliberately absent from this package, and the app already
@@ -218,6 +281,10 @@ export default function ChatsScreen() {
                         label: item.archived ? t('chats.unarchive') : t('chats.archive'),
                         value: 'archive',
                       },
+                      // Also here, and not only behind the swipe: on a desktop
+                      // browser the gesture is not offered at all, so this menu
+                      // is the only way to reach any of them.
+                      { label: t('chats.delete'), value: 'delete' },
                     ]).then((choice) => {
                       if (choice === 'pin') {
                         flags.mutate({ conversationId: item._id, pinned: !item.pinned })
@@ -225,6 +292,7 @@ export default function ChatsScreen() {
                       if (choice === 'archive') {
                         flags.mutate({ conversationId: item._id, archived: !item.archived })
                       }
+                      if (choice === 'delete') void confirmDelete(item._id)
                     })
                   }}
                   style={({ pressed }) => [

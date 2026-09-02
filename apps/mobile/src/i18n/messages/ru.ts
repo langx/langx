@@ -482,6 +482,10 @@ export const ru: Localized<EnMessages> = {
   },
 
   chats: {
+    delete: 'Удалить',
+    deleteTitle: 'Удалить этот чат?',
+    deleteBody: 'У собеседника он останется и вернётся сюда, если он напишет снова.',
+    deleted: 'Чат удалён',
     tab_all: 'Все',
     tab_unreplied: 'Без ответа',
     tab_archived: 'Архив',

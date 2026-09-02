@@ -31,6 +31,15 @@ export interface Conversation {
    */
   pinnedBy?: Record<string, true>
   archivedBy?: Record<string, true>
+  /**
+   * "I deleted this chat." A map for the same reason the two above are, and
+   * per-user because a thread is half of somebody else's: their copy, and
+   * every message in it, is untouched.
+   *
+   * Cleared when the next message arrives, so the thread comes back — empty on
+   * this side, because the messages it used to hold are in their `hiddenFor`.
+   */
+  deletedBy?: Record<string, true>
   /** One per conversation, replaced rather than appended — see `MAX_PINNED_PER_CONVERSATION`. */
   pinned?: { messageId: ObjectId; byUserId: string; at: Date }
   firstMessageBy: string

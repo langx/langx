@@ -18,7 +18,11 @@ import {
 } from '../modules/chat/messages'
 import { toMessageView } from '../modules/chat/messageView'
 import { listCorrectionsWritten } from '../modules/chat/corrections'
-import { listStarredMessages, setConversationFlag } from '../modules/chat/mutations'
+import {
+  deleteConversationForUser,
+  listStarredMessages,
+  setConversationFlag,
+} from '../modules/chat/mutations'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -59,6 +63,24 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       }
       if (!view) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Nothing to change')
       return reply.send(view)
+    },
+  )
+
+  /*
+   * Its own route rather than a third flag: pinning and archiving are two
+   * states of a row that can be set either way, and this is neither. Nothing
+   * comes back — the thread is gone from every list, so there is no view left
+   * to return.
+   */
+  app.delete(
+    '/conversations/:id',
+    {
+      preHandler: requireAuth,
+      schema: { params: z.object({ id: z.string().trim().min(1) }) },
+    },
+    async (request, reply) => {
+      await deleteConversationForUser(app.mongo.db, request.params.id, request.userId)
+      return reply.code(204).send()
     },
   )
 

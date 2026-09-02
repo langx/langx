@@ -438,6 +438,10 @@ export const fr: Localized<EnMessages> = {
   },
 
   chats: {
+    delete: 'Supprimer',
+    deleteTitle: 'Supprimer cette conversation ?',
+    deleteBody: 'Elle reste de leur côté et revient ici s’ils vous réécrivent.',
+    deleted: 'Conversation supprimée',
     tab_all: 'Tous',
     tab_unreplied: 'Sans réponse',
     tab_archived: 'Archivés',

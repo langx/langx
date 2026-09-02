@@ -499,6 +499,10 @@ export const ar: Localized<EnMessages> = {
   },
 
   chats: {
+    delete: 'حذف',
+    deleteTitle: 'حذف هذه المحادثة؟',
+    deleteBody: 'تبقى لدى الطرف الآخر، وتعود هنا إن راسلك مجددًا.',
+    deleted: 'تم حذف المحادثة',
     tab_all: 'الكل',
     tab_unreplied: 'بلا رد',
     tab_archived: 'الأرشيف',

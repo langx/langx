@@ -434,6 +434,10 @@ export const es: Localized<EnMessages> = {
   },
 
   chats: {
+    delete: 'Eliminar',
+    deleteTitle: '¿Eliminar este chat?',
+    deleteBody: 'Se queda en su lado y vuelve aquí si escriben otra vez.',
+    deleted: 'Chat eliminado',
     tab_all: 'Todos',
     tab_unreplied: 'Sin responder',
     tab_archived: 'Archivados',

@@ -422,6 +422,66 @@ export async function listStarredMessages(
  * then un-archived" are the same document and the list's `$ne: true` reads
  * both the same way.
  */
+/**
+ * "Delete for me": the thread leaves this reader's list and its messages stop
+ * being shown to them. The other side is untouched — their copy of the thread,
+ * and every message in it, is exactly as it was.
+ *
+ * The same mechanism message-level "delete for me" already uses, applied to
+ * every message at once. Nothing is removed: a message is half of somebody
+ * else's conversation, so it is projected away rather than deleted.
+ *
+ * Writing to every message is unbounded work in principle. It is bounded in
+ * practice by `MAX_MESSAGES_PER_DELETE`, and a thread longer than that leaves
+ * its oldest messages visible — which is the failure that shows itself, rather
+ * than a request that times out halfway and leaves no way to tell how far it
+ * got. The caller can simply delete again.
+ */
+/**
+ * How many messages one delete will hide. Generous enough that no ordinary
+ * thread reaches it, small enough that the write cannot run long.
+ */
+const MAX_MESSAGES_PER_DELETE = 5000
+
+export async function deleteConversationForUser(
+  db: Db,
+  conversationId: string,
+  userId: string,
+): Promise<void> {
+  let _id: ObjectId
+  try {
+    _id = new ObjectId(conversationId)
+  } catch {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+  }
+  await assertConversationAccess(db, conversationId, userId)
+
+  const messages = db.collection<Message>(COLLECTIONS.messages)
+  const stale = await messages
+    .find({ conversationId: _id, hiddenFor: { $ne: userId } }, { projection: { _id: 1 } })
+    .limit(MAX_MESSAGES_PER_DELETE)
+    .toArray()
+  if (stale.length > 0) {
+    await messages.updateMany(
+      { _id: { $in: stale.map((row) => row._id) } },
+      { $addToSet: { hiddenFor: userId } },
+    )
+  }
+
+  /*
+   * The thread flag last. If the message pass fails halfway the thread is
+   * still listed, which is recoverable by deleting again; the other order
+   * would hide a thread whose messages are still there and give no way back
+   * to it.
+   */
+  const updated = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .updateOne({ _id }, { $set: { [`deletedBy.${userId}`]: true } })
+  if (updated.matchedCount === 0) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+  }
+}
+
 export async function setConversationFlag(
   db: Db,
   conversationId: string,

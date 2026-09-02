@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import {
-  ACTION_ACTIVATE_PX,
   ACTION_LOCK_PX,
-  ACTION_MAX_PX,
-  rowReleased,
+  ACTION_WIDTH_PX,
+  drawerWidth,
   rowSwipeEnabled,
   rowTranslation,
+  settleOffset,
   shouldCaptureRowSwipe,
 } from './swipeAction'
+
+const ONE = drawerWidth(1)
+const TWO = drawerWidth(2)
 
 describe('shouldCaptureRowSwipe', () => {
   it('ignores movement that has not committed yet', () => {
@@ -30,32 +33,64 @@ describe('shouldCaptureRowSwipe', () => {
   })
 })
 
-describe('rowTranslation', () => {
-  it('follows the finger up to the limit, in both directions', () => {
-    expect(rowTranslation(50)).toBe(50)
-    expect(rowTranslation(-50)).toBe(-50)
-    expect(rowTranslation(ACTION_MAX_PX)).toBe(ACTION_MAX_PX)
+describe('drawerWidth', () => {
+  it('is one width per button', () => {
+    expect(drawerWidth(1)).toBe(ACTION_WIDTH_PX)
+    expect(drawerWidth(2)).toBe(ACTION_WIDTH_PX * 2)
   })
 
-  it('resists past the limit rather than stopping dead', () => {
-    const over = rowTranslation(ACTION_MAX_PX + 100)
-    expect(over).toBeGreaterThan(ACTION_MAX_PX)
-    expect(over).toBeLessThan(ACTION_MAX_PX + 100)
-    expect(rowTranslation(-(ACTION_MAX_PX + 100))).toBe(-over)
+  it('is nothing for a side with no actions', () => {
+    expect(drawerWidth(0)).toBe(0)
   })
 })
 
-describe('rowReleased', () => {
-  it('names the direction once it has gone far enough', () => {
-    expect(rowReleased(ACTION_ACTIVATE_PX)).toBe('right')
-    expect(rowReleased(-ACTION_ACTIVATE_PX)).toBe('left')
+describe('rowTranslation', () => {
+  it('follows the finger up to the drawer it is opening', () => {
+    expect(rowTranslation(50, ONE, TWO)).toBe(50)
+    expect(rowTranslation(-50, ONE, TWO)).toBe(-50)
+    expect(rowTranslation(ONE, ONE, TWO)).toBe(ONE)
   })
 
-  /** A short swipe springs back and does nothing — no accidental archiving. */
-  it('is null for a swipe that stopped short', () => {
-    expect(rowReleased(ACTION_ACTIVATE_PX - 1)).toBeNull()
-    expect(rowReleased(-(ACTION_ACTIVATE_PX - 1))).toBeNull()
-    expect(rowReleased(0)).toBeNull()
+  it('resists past a fully open drawer rather than stopping dead', () => {
+    const over = rowTranslation(ONE + 100, ONE, TWO)
+    expect(over).toBeGreaterThan(ONE)
+    expect(over).toBeLessThan(ONE + 100)
+  })
+
+  /** Two buttons is twice the room, so the same pull is still inside it. */
+  it('lets the wider side travel further before resisting', () => {
+    expect(rowTranslation(-TWO, ONE, TWO)).toBe(-TWO)
+    expect(rowTranslation(TWO, ONE, TWO)).toBeLessThan(TWO)
+  })
+
+  it('gives a side with no actions nothing but rubber', () => {
+    expect(rowTranslation(100, 0, TWO)).toBeLessThan(20)
+  })
+})
+
+describe('settleOffset', () => {
+  it('opens once the pull is far enough in', () => {
+    expect(settleOffset(-TWO, ONE, TWO)).toBe(-TWO)
+    expect(settleOffset(ONE, ONE, TWO)).toBe(ONE)
+  })
+
+  /** A short pull closes again — nothing is fired, and nothing is left ajar. */
+  it('closes again when it stopped short', () => {
+    expect(settleOffset(-10, ONE, TWO)).toBe(0)
+    expect(settleOffset(10, ONE, TWO)).toBe(0)
+    expect(settleOffset(0, ONE, TWO)).toBe(0)
+  })
+
+  /** Half-open is a row whose buttons are half-tappable. */
+  it('never rests part-way', () => {
+    for (const x of [-160, -80, -30, 30, 80, 160]) {
+      expect([0, ONE, -TWO]).toContain(settleOffset(x, ONE, TWO))
+    }
+  })
+
+  it('cannot open a side that has no actions', () => {
+    expect(settleOffset(300, 0, TWO)).toBe(0)
+    expect(settleOffset(-300, ONE, 0)).toBe(0)
   })
 })
 
