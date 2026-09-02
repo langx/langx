@@ -114,6 +114,36 @@ const config: ExpoConfig = {
 
   plugins: [
     'expo-router',
+    /*
+     * The static splash the OS draws before any JS exists. Its whole job is to
+     * be indistinguishable from `AppSplash`'s first frame — same ground, same
+     * badge, same size — so that hiding it is not a blink.
+     *
+     * `imageWidth` here and `TILE_SIZE` in `AppSplash.tsx` are one number in
+     * two files: this file is evaluated by Node under plain ESM resolution and
+     * cannot import from the app. Changing one without the other makes the
+     * badge jump size at the exact moment the handover is meant to be
+     * invisible.
+     *
+     * The two hexes are `colors.bg` from `theme/tokens.ts`, written out, for
+     * the same reason. Keep them in step by hand.
+     *
+     * The badges are circles on a transparent surround, and that is not a
+     * style choice: Android 12+ draws the splash icon through the platform
+     * SplashScreen API, which masks it to a circle. A square icon becomes a
+     * disc there and stays square on iOS, so the mark would change shape
+     * between the two and again when the JS layer took over.
+     */
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/splash/badge.png',
+        imageWidth: 160,
+        resizeMode: 'contain',
+        backgroundColor: '#ffffff',
+        dark: { image: './assets/splash/badge-dark.png', backgroundColor: '#1c1f24' },
+      },
+    ],
     /**
      * A second home-screen icon, for Pro. Native only and **native only in the
      * strong sense**: switching icons is an OS call, it cannot travel in an

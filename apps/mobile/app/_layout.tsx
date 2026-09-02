@@ -9,16 +9,18 @@
 import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'
 import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'
 import { useFonts } from 'expo-font'
+import * as SplashScreen from 'expo-splash-screen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
 import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
+import { AppSplash, SplashFill } from '../src/components/AppSplash'
 import { Button } from '../src/components/ui/Button'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
@@ -39,6 +41,15 @@ import { I18nProvider, useT } from '../src/i18n'
  * seconds is far longer than a slow answer and far shorter than forever.
  */
 const BOOT_STALL_MS = 10_000
+
+/*
+ * Global scope on purpose. The package's own doc says so, and the reason is
+ * that by the time an effect could run the native splash may already have
+ * auto-hidden — which is precisely the blank frame this exists to remove. A
+ * no-op on the web: expo-splash-screen's non-native build returns `false` from
+ * every export, which is why there is no `Platform` branch here.
+ */
+void SplashScreen.preventAutoHideAsync().catch(() => undefined)
 
 function createQueryClient(): QueryClient {
   return new QueryClient({
@@ -189,17 +200,7 @@ function RootShell() {
       <QueryClientProvider client={queryClient}>
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         {showSpinner ? (
-          <View
-            style={{
-              alignItems: 'center',
-              backgroundColor: colors.bg,
-              flex: 1,
-              gap: 16,
-              justifyContent: 'center',
-              paddingHorizontal: 32,
-            }}
-          >
-            <ActivityIndicator />
+          <SplashFill>
             {stalled ? (
               <>
                 <Text style={{ color: colors.textMuted, textAlign: 'center' }}>
@@ -215,7 +216,7 @@ function RootShell() {
                 />
               </>
             ) : null}
-          </View>
+          </SplashFill>
         ) : (
           <AppGate>
             {/*
@@ -257,6 +258,18 @@ function RootShell() {
             <ToastHost />
           </AppGate>
         )}
+        {/*
+          Outside the branch above, so it is on screen from the very first
+          render — before the session resolves and before the fonts land. That
+          ordering is what lets the native splash be torn down without a blank
+          frame between the two. It also sits above the navigator, so it
+          outlives `index` redirecting into onboarding or `(app)`.
+
+          Its own five-second fallback is deliberately shorter than
+          `BOOT_STALL_MS`: the logo gets out of the way first, and the retry
+          this branch offers appears under it rather than behind it.
+        */}
+        <AppSplash />
       </QueryClientProvider>
     </>
   )

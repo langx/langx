@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
+import { useSignalAppReady } from '../hooks/useAppReady'
 import { makeStyles } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
@@ -84,6 +85,13 @@ export function AppGate({ children }: { children: ReactNode }) {
   }, [])
 
   const data = config.data
+
+  /*
+   * A blocked app never mounts a route, so nothing downstream would ever say
+   * the opening is over — the animation would sit on top of the maintenance
+   * notice for its full timeout before revealing it.
+   */
+  useSignalAppReady(Boolean(data?.maintenance.enabled || data?.updateRequired))
 
   if (data?.maintenance.enabled) {
     // Rendered in the viewer's own locale — an expected return time is the one

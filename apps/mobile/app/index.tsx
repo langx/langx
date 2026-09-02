@@ -1,14 +1,14 @@
 import { Redirect } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
 import { ApiRequestError } from '../src/api/client'
+import { SplashFill } from '../src/components/AppSplash'
+import { useSignalAppReady } from '../src/hooks/useAppReady'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../src/lib/localFlags'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
-import { useTheme } from '../src/lib/theme'
 
 /**
  * The one screen at `/`, and the gate `Stack.Protected` alone cannot express:
@@ -67,12 +67,20 @@ export default function Index() {
     }
   }, [])
 
+  /*
+   * Both branches below wait on something, and until one of them can redirect
+   * this screen is the last thing standing between a cold start and the first
+   * screen anyone wanted. Saying so here is what lets the opening animation
+   * cover the whole redirect chain instead of ending a beat too early.
+   */
+  useSignalAppReady(signedIn ? !isPending && draftReady : introSeen !== null)
+
   if (!signedIn) {
-    if (introSeen === null) return <Waiting />
+    if (introSeen === null) return <SplashFill />
     return <Redirect href={authLandingHref(introSeen)} />
   }
 
-  if (isPending || !draftReady) return <Waiting />
+  if (isPending || !draftReady) return <SplashFill />
 
   const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
   // Back to the step the draft has actually earned, not always the first one.
@@ -90,22 +98,4 @@ export default function Index() {
   }
 
   return <Redirect href="/(app)/discover" />
-}
-
-/** Every branch above waits on something; none of them has anything to draw. */
-function Waiting() {
-  const { colors } = useTheme()
-
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        backgroundColor: colors.bg,
-        flex: 1,
-        justifyContent: 'center',
-      }}
-    >
-      <ActivityIndicator color={colors.accent} />
-    </View>
-  )
 }
