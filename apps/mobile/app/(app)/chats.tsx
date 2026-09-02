@@ -288,13 +288,22 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   filters: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   // `zIndex` for the same reason Discover's copy of this row carries one:
   // the search results float, and a later sibling would paint over them.
+  //
+  // No `justifyContent`: the title's `flex: 1` is what holds the actions on the
+  // trailing edge. `space-between` was right while this row was the title and
+  // the star, and became wrong the moment search was dropped between them —
+  // with three content-sized children it splits the slack into both gaps and
+  // leaves the magnifier stranded in the middle of the row. `ScreenHeader` and
+  // `me.tsx` both pin their actions with a flexible middle instead; this is
+  // that. Discover's `marginStart: 'auto'` does the same job, but only while
+  // the element carrying it is rendered.
   titleRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: spacing.md,
     zIndex: 2,
   },
-  title: { ...font.title, color: colors.text, fontSize: 34, paddingTop: spacing.md },
+  title: { ...font.title, color: colors.text, flex: 1, fontSize: 34, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
   row: {

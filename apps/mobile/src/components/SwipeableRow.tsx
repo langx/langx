@@ -101,7 +101,16 @@ export function SwipeableRow({ right, left, children }: SwipeableRowProps) {
         <Action action={right} align="flex-start" styles={styles} />
         <Action action={left} align="flex-end" styles={styles} />
       </View>
-      <Animated.View style={{ transform: [{ translateX }] }} {...pan.panHandlers}>
+      {/*
+        Opaque, and that is not decoration. `behind` is a child of `wrap`, so it
+        paints over `wrap`'s background — the only one in the stack, since the
+        chat row itself sets none. Without a background of its own this layer is
+        glass, and the archive icon sits visible on every row at rest with the
+        timestamp printed on top of it. It has to be the layer that moves: a
+        background on `wrap` cannot travel with the row and would only mask the
+        actions the swipe is meant to reveal.
+      */}
+      <Animated.View style={[styles.moving, { transform: [{ translateX }] }]} {...pan.panHandlers}>
         {children}
       </Animated.View>
     </View>
@@ -129,6 +138,7 @@ function Action({
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   wrap: { backgroundColor: colors.bg, overflow: 'hidden' },
+  moving: { backgroundColor: colors.bg },
   behind: {
     ...({ position: 'absolute' } as const),
     alignItems: 'center',
