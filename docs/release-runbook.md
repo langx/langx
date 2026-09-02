@@ -395,11 +395,12 @@ of it runs together.
       so it gates the iOS release rather than merely improving it. Until both
       are set the sign-in screen simply does not draw the buttons
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
-- [ ] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
-      profiles in `eas.json`. Only `development` sets it today, and only to
-      localhost — which a development build rewrites to the dev server's
-      address at runtime, but a released build has no dev server and would
-      ship pointing at the phone itself
+- [x] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
+      profiles in `eas.json` — both point at `https://api2.langx.io`.
+      `development` still points at localhost, which a development build
+      rewrites to the dev server's address at runtime; a released build has no
+      dev server and would ship pointing at the phone itself, which is what
+      this item existed to prevent
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
       yet enabled — deliberately, rather than shipping a button that cannot work)
@@ -484,7 +485,10 @@ image configured for 16 KB before the rollout widens past 10%.
 
 Nearby (Polyglot) added the app's first location permission, so two answers that
 were "no" are now "yes", and a store form that still says otherwise is a false
-declaration rather than a stale one:
+declaration rather than a stale one. The box-by-box version of everything below,
+including two answers that are already live and wrong, is
+[`store/privacy-forms-checklist.md`](store/privacy-forms-checklist.md) — open it
+next to the Console rather than working from this section:
 
 - [ ] Play Data Safety → **Location → Approximate location**: collected, not
       shared, optional, purpose "App functionality". **Precise location stays
