@@ -1197,4 +1197,95 @@ describe('community feed', () => {
       expect(card?.commentCount).toBe(0)
     })
   })
+
+  describe('your own posts', () => {
+    async function mine(user: SignedUpUser, qs = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/me/posts${qs ? `?${qs}` : ''}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    it('mixes both sections, newest first, and nobody else', async () => {
+      const author = await newUser('mine-author@example.com')
+      const other = await newUser('mine-other@example.com')
+
+      const corrected = (await post(author, 'I has a question.')).json<{ _id: string }>()._id
+      const asked = (await ask(author, 'squirrel')).json<{ _id: string }>()._id
+      const theirs = (await post(other, 'Not yours.')).json<{ _id: string }>()._id
+
+      const items = (await mine(author)).json<{ items: { _id: string; kind: string }[] }>().items
+      // Newest first: the pronunciation request was written second.
+      expect(items.map((i) => i._id)).toEqual([asked, corrected])
+      // Which is the point of the mix — the section is not a filter here.
+      expect(items.map((i) => i.kind)).toEqual(['pronunciation', 'correction'])
+      expect(items.map((i) => i._id)).not.toContain(theirs)
+
+      // And the other way round, so this is not just an ordering coincidence.
+      expect(
+        (await mine(other)).json<{ items: { _id: string }[] }>().items.map((i) => i._id),
+      ).toEqual([theirs])
+    })
+
+    it('carries what a card draws, for both kinds', async () => {
+      const author = await newUser('mine-card-author@example.com')
+      const helper = await newUser('mine-card-helper@example.com')
+
+      const corrected = (await post(author, 'I has been there.')).json<{ _id: string }>()._id
+      const asked = (await ask(author, 'thorough')).json<{ _id: string }>()._id
+      expect((await correct(helper, corrected, 'I have been there.')).statusCode).toBe(201)
+      expect((await answer(helper, asked)).statusCode).toBe(201)
+
+      const items = (await mine(author)).json<{
+        items: {
+          _id: string
+          author: { handle: string }
+          topCorrection: { corrected: string } | null
+          topAnswer: { _id: string } | null
+        }[]
+      }>().items
+
+      // The reason `hydratePosts` is asked for both summaries here: a list that
+      // mixes the sections needs the reply each kind shows.
+      expect(items.find((i) => i._id === corrected)?.topCorrection?.corrected).toBe(
+        'I have been there.',
+      )
+      expect(items.find((i) => i._id === asked)?.topAnswer).not.toBeNull()
+      expect(items[0]?.author.handle).toBeTruthy()
+    })
+
+    it('pages without repeating or dropping a post', async () => {
+      const author = await newUser('mine-paging@example.com')
+      const ids: string[] = []
+      for (let i = 0; i < 5; i++) {
+        ids.unshift((await post(author, `Sentence number ${i}.`)).json<{ _id: string }>()._id)
+      }
+
+      const first = (await mine(author, 'limit=2')).json<{
+        items: { _id: string }[]
+        nextCursor: string | null
+      }>()
+      expect(first.items.map((i) => i._id)).toEqual(ids.slice(0, 2))
+      expect(first.nextCursor).toBeTruthy()
+
+      const second = (
+        await mine(author, `limit=2&cursor=${encodeURIComponent(first.nextCursor ?? '')}`)
+      ).json<{ items: { _id: string }[]; nextCursor: string | null }>()
+      expect(second.items.map((i) => i._id)).toEqual(ids.slice(2, 4))
+
+      const third = (
+        await mine(author, `limit=2&cursor=${encodeURIComponent(second.nextCursor ?? '')}`)
+      ).json<{ items: { _id: string }[]; nextCursor: string | null }>()
+      expect(third.items.map((i) => i._id)).toEqual(ids.slice(4))
+      expect(third.nextCursor).toBeNull()
+    })
+
+    it('says nothing rather than everything when you have posted nothing', async () => {
+      const quiet = await newUser('mine-quiet@example.com')
+      const page = (await mine(quiet)).json<{ items: unknown[]; nextCursor: string | null }>()
+      expect(page.items).toEqual([])
+      expect(page.nextCursor).toBeNull()
+    })
+  })
 })

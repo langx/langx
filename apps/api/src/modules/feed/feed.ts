@@ -7,6 +7,7 @@ import {
   type FeedPost,
   FEED_FOLLOWING_SOURCE_LIMIT,
   type ListFeedQuery,
+  type ListMyPostsQuery,
   type ListPostCorrectionsQuery,
   type PostCorrectionsPage,
   type PostCorrection,
@@ -281,6 +282,48 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
             items.length === fromAudience,
           )
         : null,
+  }
+}
+
+/**
+ * Everything you have posted, newest first.
+ *
+ * Separate from `listFeed` rather than a filter on it, because almost nothing
+ * they do is shared. There is no queue to drain here — the count-led sort that
+ * puts unanswered sentences first is the wrong order for looking back at your
+ * own — no section to pick, and no audience to stitch two queries around.
+ * Blocks do not apply either: these are your posts, and you cannot be hidden
+ * from yourself. What is left is a plain keyset over `{ authorId, createdAt }`,
+ * which is the `author` index this collection has always carried.
+ */
+export async function listMyPosts(
+  db: Db,
+  userId: string,
+  query: ListMyPostsQuery,
+): Promise<FeedPage> {
+  const filter: Document = { authorId: userId }
+  if (query.cursor) {
+    const { date, id } = decodeDateIdCursor(query.cursor)
+    filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+  }
+
+  // One over, so "is there another page" is answered without a second count.
+  const page = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(query.limit + 1)
+    .toArray()
+
+  const hasMore = page.length > query.limit
+  const items = hasMore ? page.slice(0, query.limit) : page
+  const last = items.at(-1)
+
+  return {
+    // Both, because the list mixes the sections: a sentence you asked to have
+    // corrected and a word you asked to hear said sit next to each other here.
+    items: await hydratePosts(db, userId, items, { corrections: true, answers: true }),
+    nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
 }
 

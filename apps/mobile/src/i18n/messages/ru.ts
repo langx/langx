@@ -423,6 +423,12 @@ export const ru: Localized<EnMessages> = {
     emptyBody:
       'Задержи палец на сообщении и выбери «Исправить» — это самое полезное, что тут можно сделать.',
   },
+  myPosts: {
+    title: 'Твои публикации',
+    emptyTitle: 'Ты ещё ничего не спросил',
+    emptyBody:
+      'Спроси про предложение, в котором не уверен, или про слово, которое не можешь произнести — оно появится здесь.',
+  },
   discover: {
     searchHandles: 'Поиск по имени пользователя',
     searchPlaceholder: 'Имя пользователя',
@@ -812,6 +818,7 @@ export const ru: Localized<EnMessages> = {
     editProfile: 'Изменить профиль',
     settings: 'Настройки',
     corrections: 'Исправления',
+    myPosts: 'Твои публикации',
     wallet: 'Кошелёк',
     previewProfile: 'Посмотреть мой профиль',
     previewProfileBody: 'Взгляните на профиль глазами других',

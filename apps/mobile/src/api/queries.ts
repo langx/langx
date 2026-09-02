@@ -102,6 +102,12 @@ export const keys = {
    * sites nothing while keeping the two sections' pages apart.
    */
   feed: (kind: string) => ['feed', kind] as const,
+  /*
+   * Under `feed` on purpose: writing or deleting a post already
+   * invalidates the whole `['feed']` prefix, so this list stays honest
+   * without a second invalidation to remember.
+   */
+  myPosts: () => ['feed', 'mine'] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
   postComments: (id: string) => ['postComments', id] as const,
   postAnswers: (id: string) => ['postAnswers', id] as const,
@@ -647,6 +653,16 @@ export function useFeed(kind: PostKind) {
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     // Same reason as `useDiscovery`: switching tab must not blank the list.
     placeholderData: keepPreviousData,
+  })
+}
+
+export function useMyPosts() {
+  return useInfiniteQuery({
+    queryKey: keys.myPosts(),
+    queryFn: ({ pageParam }) =>
+      api.get<FeedPage>(`/me/posts${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 

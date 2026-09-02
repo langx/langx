@@ -372,6 +372,12 @@ export const ptBR: Localized<EnMessages> = {
     emptyBody:
       'Segure uma mensagem e escolha Corrigir — é a coisa mais útil que você pode fazer aqui.',
   },
+  myPosts: {
+    title: 'Publicações que você escreveu',
+    emptyTitle: 'Você ainda não perguntou nada',
+    emptyBody:
+      'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
+  },
   discover: {
     searchHandles: 'Buscar por nome de usuário',
     searchPlaceholder: 'Nome de usuário',
@@ -691,6 +697,7 @@ export const ptBR: Localized<EnMessages> = {
     editProfile: 'Editar perfil',
     settings: 'Configurações',
     corrections: 'Correções',
+    myPosts: 'Suas publicações',
     wallet: 'Carteira',
     previewProfile: 'Ver meu perfil',
     previewProfileBody: 'Veja seu perfil como as outras pessoas veem',

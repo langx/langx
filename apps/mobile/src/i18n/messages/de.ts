@@ -381,6 +381,12 @@ export const de: Localized<EnMessages> = {
     emptyBody:
       'Halte eine Nachricht gedrückt und wähle Korrigieren — das Nützlichste, was du hier tun kannst.',
   },
+  myPosts: {
+    title: 'Beiträge, die du geschrieben hast',
+    emptyTitle: 'Noch nichts gefragt',
+    emptyBody:
+      'Frag nach einem Satz, bei dem du unsicher bist, oder einem Wort, das du nicht aussprechen kannst — er erscheint hier.',
+  },
   discover: {
     searchHandles: 'Nach Benutzername suchen',
     searchPlaceholder: 'Benutzername',
@@ -716,6 +722,7 @@ export const de: Localized<EnMessages> = {
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
     corrections: 'Korrekturen',
+    myPosts: 'Deine Beiträge',
     wallet: 'Geldbörse',
     previewProfile: 'Mein Profil ansehen',
     previewProfileBody: 'Sieh dein Profil so, wie andere es sehen',

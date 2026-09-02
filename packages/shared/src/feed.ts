@@ -280,6 +280,20 @@ export const listFeedQuerySchema = z.object({
 })
 export type ListFeedQuery = z.infer<typeof listFeedQuerySchema>
 
+/**
+ * Your own posts, and deliberately without a `kind`.
+ *
+ * The feed is split into sections because a stranger arriving to help wants one
+ * job at a time. Looking for something you wrote yourself is the opposite
+ * errand — you remember asking, not which half of the screen you asked from —
+ * so this list mixes the two and sorts by when you wrote them.
+ */
+export const listMyPostsQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+export type ListMyPostsQuery = z.infer<typeof listMyPostsQuerySchema>
+
 export const feedPageSchema = z.object({
   items: z.array(feedPostSchema),
   nextCursor: z.string().nullable(),

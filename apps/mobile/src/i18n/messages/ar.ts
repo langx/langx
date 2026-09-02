@@ -445,6 +445,11 @@ export const ar: Localized<EnMessages> = {
     emptyTitle: 'لا تصحيحات بعد',
     emptyBody: 'اضغط مطولًا على رسالة واختر «صحّح» — أنفع ما يمكنك فعله هنا.',
   },
+  myPosts: {
+    title: 'المنشورات التي كتبتها',
+    emptyTitle: 'لم تسأل عن شيء بعد',
+    emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
+  },
   discover: {
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
@@ -859,6 +864,7 @@ export const ar: Localized<EnMessages> = {
     editProfile: 'تعديل الملف',
     settings: 'الإعدادات',
     corrections: 'التصحيحات',
+    myPosts: 'منشوراتك',
     wallet: 'المحفظة',
     previewProfile: 'معاينة ملفي الشخصي',
     previewProfileBody: 'شاهد ملفك كما يراه الآخرون',
