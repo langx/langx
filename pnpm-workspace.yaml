@@ -32,7 +32,7 @@ catalog:
   esbuild: ^0.28.2
   better-auth: ^1.7.1
   '@better-auth/expo': ^1.7.1
-  resend: ^6.24.0
+  resend: ^6.25.0
   jose: ^6.2.10
   '@aws-sdk/client-s3': ^3.1119.0
   '@aws-sdk/s3-request-presigner': ^3.1119.0
