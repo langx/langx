@@ -615,6 +615,29 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     const dayKey = (offsetDays: number) =>
       new Date(Date.now() - offsetDays * 86_400_000).toISOString().slice(0, 10)
 
+    /**
+     * `n` consecutive repairable days that all fall in one calendar month,
+     * newest first.
+     *
+     * The cap is *per calendar month* — `repairsInMonth` counts against the
+     * month the repaired day is in — so a test that simply takes the last
+     * three days asserts nothing for the first days of a month, when those
+     * three days straddle two months and neither reaches the cap. It passed
+     * for twenty-seven days out of thirty and failed on the rest, which is the
+     * worst way for a test to be wrong.
+     *
+     * Walking backwards always finds a run: `dayRepairMaxAgeDays` is 14 and
+     * the shortest month is 28, so the fourteen days behind any date always
+     * contain a same-month run of at least fourteen at one end or the other.
+     */
+    function sameMonthDays(n: number): string[] {
+      for (let start = 1; start + n - 1 <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; start++) {
+        const run = Array.from({ length: n }, (_, i) => dayKey(start + i))
+        if (new Set(run.map((day) => day.slice(0, 7))).size === 1) return run
+      }
+      throw new Error('no same-month run inside the repair window')
+    }
+
     it('records the day a message was sent, and counts the ones after it', async () => {
       const a = await newUser('activity-sender@example.com')
       const b = await newUser('activity-partner@example.com')
@@ -859,18 +882,21 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     /** The cap, not the price, is what stops a balance buying a streak. */
     it('allows only two repairs a month however much token is held', async () => {
       const user = await funded('repair-cap@example.com', 100_000)
+      const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+      const days = sameMonthDays(cap + 1)
+
       const codes: number[] = []
-      for (const offset of [1, 2, 3]) {
+      for (const day of days) {
         const response = await app.inject({
           method: 'POST',
           url: '/me/activity/repair',
           headers: { cookie: user.cookie },
-          payload: { day: dayKey(offset) },
+          payload: { day },
         })
         codes.push(response.statusCode)
       }
-      expect(codes.slice(0, TOKEN_RULES.sinks.dayRepairPerMonth)).toEqual([200, 200])
-      expect(codes[2]).toBe(400)
+      expect(codes.slice(0, cap)).toEqual(Array.from({ length: cap }, () => 200))
+      expect(codes[cap]).toBe(400)
     })
 
     /**
