@@ -156,6 +156,9 @@ export const fr: Localized<EnMessages> = {
     appleSignInFailed: 'Connexion Apple impossible',
     resetFailed: 'Réinitialisation impossible',
     invalidCredentials: 'Cet e-mail et ce mot de passe ne correspondent à aucun compte.',
+    attachmentUnsupported:
+      'Ce format de photo n’est pas pris en charge. Utilise une image JPEG, PNG ou WebP.',
+    attachmentTooLarge: 'Ce fichier est trop volumineux pour être envoyé.',
     userExists: 'Un compte existe déjà avec cet e-mail.',
     emailNotVerified: 'Vérifie d’abord ton adresse e-mail — regarde ta boîte de réception.',
     passwordTooShort: 'Ce mot de passe est trop court.',

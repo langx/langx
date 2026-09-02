@@ -44,6 +44,18 @@ export const ERROR_CODES = {
    * saying out loud.
    */
   MEDIA_LOCKED: 'MEDIA_LOCKED',
+  /**
+   * An attachment whose content type we do not serve — `image/heic` from an
+   * iPhone camera roll is the one that actually happens.
+   *
+   * Its own code rather than `VALIDATION_FAILED` because the client's answer
+   * is specific ("use a JPEG, PNG or WebP") and, on the picker paths, the
+   * request was well-formed: the phone chose the format, not the person. The
+   * generic "could not be sent" hid this for a whole test cycle.
+   */
+  UNSUPPORTED_MEDIA_TYPE: 'UNSUPPORTED_MEDIA_TYPE',
+  /** An attachment over `MAX_IMAGE_BYTES` / `MAX_AUDIO_BYTES`. Same reasoning as above. */
+  MEDIA_TOO_LARGE: 'MEDIA_TOO_LARGE',
 
   // discovery
   /**
@@ -98,6 +110,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,
   MEDIA_LOCKED: 409,
+  UNSUPPORTED_MEDIA_TYPE: 415,
+  MEDIA_TOO_LARGE: 413,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
   HANDLE_ALREADY_CLAIMED: 409,

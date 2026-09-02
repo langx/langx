@@ -684,7 +684,8 @@ describe('community feed', () => {
         contentType: 'application/pdf',
         url: 'https://cdn.example.com/posts/u/1.pdf',
       })
-      expect(response.statusCode).toBe(400)
+      expect(response.statusCode).toBe(415)
+      expect(response.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
     })
 
     it('spends the media quota only when there is an attachment', async () => {
@@ -714,7 +715,8 @@ describe('community feed', () => {
         headers: { cookie: author.cookie },
         payload: { kind: 'image', contentType: 'application/pdf' },
       })
-      expect(bad.statusCode).toBe(400)
+      expect(bad.statusCode).toBe(415)
+      expect(bad.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
     })
   })
 
@@ -920,7 +922,9 @@ describe('community feed', () => {
           sizeBytes: 1024,
         },
       })
-      expect(asImage.statusCode).toBe(400)
+      // A photo where a recording belongs is the wrong *kind* of media, which
+      // is what 415 says; 400 would claim the request itself was malformed.
+      expect(asImage.statusCode).toBe(415)
     })
 
     it('spends one media unit for a two-take answer', async () => {

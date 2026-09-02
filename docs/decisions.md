@@ -2131,3 +2131,31 @@ One quirk worth knowing: only the web rejects when the sheet is closed
 (`AbortError`), and desktop browsers without `navigator.share` reject with
 "not supported". `shareLink` treats the first as nothing and the second as
 "copy it instead", with a toast — the button never silently does nothing.
+
+## An iPhone's own photos could not be sent, and nothing said why
+
+Every attachment test on iOS failed with "That attachment could not be sent.
+Try again." The storage was fine — presign, PUT and the socket send all worked
+from a script against the same bucket. The photo was HEIC.
+
+An iPhone camera stores HEIC by default, and expo-image-picker passes HEIC
+through untouched even with `quality: 0.8`: its iOS converter re-encodes only
+the formats it does not recognise, and HEIC is one it does (`case
+UTType.heic: return (rawData, ".heic")`). The server refused `image/heic`, as
+designed — browsers cannot show it — and the chat screen folded that 400 into
+the same sentence it uses for a dropped connection. Retrying, as invited, hit
+the same wall.
+
+Two changes, both small. `pickImageAsset` asks PhotoKit for the
+**`Compatible`** representation, so HEIC arrives as JPEG before any of our
+code sees it; the avatar pickers do the same, although `allowsEditing` already
+had them exporting JPEG. And the media checks now raise
+**`UNSUPPORTED_MEDIA_TYPE`** (415) and **`MEDIA_TOO_LARGE`** (413) rather than
+`VALIDATION_FAILED`, so the chat and feed screens can say "use a JPEG, PNG or
+WebP" or "too large" instead of "try again". The picker also refuses a format
+it could not convert — a TIFF, say — with the same sentence, before the round
+trip.
+
+The lesson is the one the quota message taught earlier in this file: a catch
+that generalises every failure into one string hides the failures that have a
+specific fix. The chat screen now logs the code before it generalises.

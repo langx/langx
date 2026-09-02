@@ -224,12 +224,24 @@ export default function ChatScreen() {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched
       // and the quota message had never once been shown.
-      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+      const code = errorCodeOf(error)
+      if (code === 'QUOTA_EXCEEDED') {
         await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         openPaywall(undefined, `/(app)/chat/${conversationId}`)
-      } else {
-        void showAlert(t('chat.couldNotSend'), t('chat.attachmentFailed'))
+        return
       }
+      // Logged before it is generalised: "could not be sent" once covered an
+      // unsupported HEIC for a whole test cycle, and nothing anywhere said so.
+      console.warn('attachment failed', code ?? error)
+      const reason =
+        code === 'UNSUPPORTED_MEDIA_TYPE'
+          ? t('errors.attachmentUnsupported')
+          : code === 'MEDIA_TOO_LARGE'
+            ? t('errors.attachmentTooLarge')
+            : code === 'MEDIA_LOCKED'
+              ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
+              : t('chat.attachmentFailed')
+      void showAlert(t('chat.couldNotSend'), reason)
     } finally {
       setSendingMedia(false)
     }
@@ -242,6 +254,10 @@ export default function ChatScreen() {
       return
     }
     if (picked.status === 'cancelled') return
+    if (picked.status === 'unsupported') {
+      void showAlert(t('chat.couldNotSend'), t('errors.attachmentUnsupported'))
+      return
+    }
     await sendMedia('image', picked.image)
   }
 

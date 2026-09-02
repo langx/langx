@@ -169,6 +169,9 @@ export const tr: Localized<EnMessages> = {
     appleSignInFailed: 'Apple ile giriş yapılamadı',
     resetFailed: 'Parola sıfırlanamadı',
     invalidCredentials: 'Bu e-posta ve parola bir hesapla eşleşmiyor.',
+    attachmentUnsupported:
+      'Bu fotoğraf biçimi desteklenmiyor. JPEG, PNG veya WebP bir görsel kullan.',
+    attachmentTooLarge: 'Bu dosya gönderilemeyecek kadar büyük.',
     userExists: 'Bu e-posta ile bir hesap zaten var.',
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',

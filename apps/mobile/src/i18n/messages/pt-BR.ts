@@ -154,6 +154,9 @@ export const ptBR: Localized<EnMessages> = {
     appleSignInFailed: 'Não foi possível entrar com a Apple',
     resetFailed: 'Não foi possível redefinir a senha',
     invalidCredentials: 'Esse e-mail e essa senha não correspondem a nenhuma conta.',
+    attachmentUnsupported:
+      'Esse formato de foto não é compatível. Use uma imagem JPEG, PNG ou WebP.',
+    attachmentTooLarge: 'Esse arquivo é grande demais para enviar.',
     userExists: 'Já existe uma conta com esse e-mail.',
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
     passwordTooShort: 'Essa senha é curta demais.',

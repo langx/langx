@@ -106,7 +106,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
       if (!allowed) {
         throw new ApiError(
-          ERROR_CODES.VALIDATION_FAILED,
+          ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
       }
@@ -141,7 +141,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
       if (!allowed) {
         throw new ApiError(
-          ERROR_CODES.VALIDATION_FAILED,
+          ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
       }

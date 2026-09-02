@@ -126,6 +126,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       mediaTypes: ['images'],
       allowsEditing: true,
       quality: 0.8,
+      // HEIC from an iPhone camera roll arrives as JPEG this way; see
+      // `pickImageAsset` for the whole story.
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     })
     const asset = result.assets?.[0]
     if (result.canceled || !asset) return

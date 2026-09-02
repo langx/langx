@@ -239,6 +239,14 @@ export default function FeedScreen() {
       showToast(t('feed.mediaQuota'))
       return
     }
+    if (caught.code === 'UNSUPPORTED_MEDIA_TYPE') {
+      showToast(t('errors.attachmentUnsupported'))
+      return
+    }
+    if (caught.code === 'MEDIA_TOO_LARGE') {
+      showToast(t('errors.attachmentTooLarge'))
+      return
+    }
     showToast(
       caught.code === 'VALIDATION_FAILED' ? t('feed.wrongPostKind') : t('feed.attachmentFailed'),
     )

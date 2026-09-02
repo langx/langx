@@ -209,6 +209,8 @@ export const ar: Localized<EnMessages> = {
     appleSignInFailed: 'تعذّر تسجيل الدخول بحساب Apple',
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
     invalidCredentials: 'هذا البريد وكلمة المرور لا يطابقان أي حساب.',
+    attachmentUnsupported: 'صيغة هذه الصورة غير مدعومة. استخدم صورة بصيغة JPEG أو PNG أو WebP.',
+    attachmentTooLarge: 'هذا الملف أكبر من أن يُرسل.',
     userExists: 'يوجد حساب بهذا البريد بالفعل.',
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
     passwordTooShort: 'كلمة المرور قصيرة جدًا.',

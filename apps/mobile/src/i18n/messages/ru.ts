@@ -194,6 +194,9 @@ export const ru: Localized<EnMessages> = {
     appleSignInFailed: 'Не удалось войти через Apple',
     resetFailed: 'Не удалось сбросить пароль',
     invalidCredentials: 'Эта почта и пароль не подходят ни к одному аккаунту.',
+    attachmentUnsupported:
+      'Этот формат фото не поддерживается. Используй изображение JPEG, PNG или WebP.',
+    attachmentTooLarge: 'Этот файл слишком большой для отправки.',
     userExists: 'Аккаунт с такой почтой уже есть.',
     emailNotVerified: 'Сначала подтверди почту — посмотри входящие.',
     passwordTooShort: 'Этот пароль слишком короткий.',

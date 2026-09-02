@@ -704,7 +704,10 @@ describe('Faz 5 — conversation/message history REST', () => {
           { conversationId, kind: 'audio', media: { ...image, contentType: 'image/jpeg' } },
           BUCKET,
         ),
-      ).rejects.toThrow(/not a supported audio type/)
+      ).rejects.toMatchObject({
+        code: 'UNSUPPORTED_MEDIA_TYPE',
+        message: /not a supported audio type/,
+      })
     })
 
     it('refuses an oversized attachment', async () => {
@@ -717,7 +720,7 @@ describe('Faz 5 — conversation/message history REST', () => {
           { conversationId, kind: 'image', media: { ...image, sizeBytes: MAX_IMAGE_BYTES + 1 } },
           BUCKET,
         ),
-      ).rejects.toThrow(/too large/)
+      ).rejects.toMatchObject({ code: 'MEDIA_TOO_LARGE', message: /too large/ })
     })
 
     /**

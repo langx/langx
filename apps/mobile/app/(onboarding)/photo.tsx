@@ -47,6 +47,10 @@ export default function PhotoStep() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
+      // HEIC from an iPhone camera roll arrives as JPEG this way; see
+      // `pickImageAsset` for the whole story.
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     })
     const asset = picked.assets?.[0]
     if (picked.canceled || !asset) return

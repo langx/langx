@@ -40,14 +40,14 @@ export function assertMediaAllowed(
   const kind = mediaKindOf(media)
   if (!kind || (expected && kind !== expected)) {
     throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
+      ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
       `${media.contentType} is not a supported ${expected ?? 'attachment'} type`,
     )
   }
 
   const maxBytes = kind === 'image' ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES
   if (media.sizeBytes > maxBytes) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `That ${kind} is too large`)
+    throw new ApiError(ERROR_CODES.MEDIA_TOO_LARGE, `That ${kind} is too large`)
   }
 
   if (!storagePublicBaseUrl || !media.url.startsWith(storagePublicBaseUrl)) {

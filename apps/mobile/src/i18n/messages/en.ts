@@ -190,6 +190,8 @@ export const en = {
     appleSignInFailed: 'Apple sign-in failed',
     resetFailed: 'Could not reset password',
     invalidCredentials: 'That email and password do not match an account.',
+    attachmentUnsupported: 'That photo format isn’t supported. Use a JPEG, PNG or WebP image.',
+    attachmentTooLarge: 'That file is too large to send.',
     userExists: 'An account already exists for that email.',
     emailNotVerified: 'Verify your email address first — check your inbox.',
     passwordTooShort: 'That password is too short.',

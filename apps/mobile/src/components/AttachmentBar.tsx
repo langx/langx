@@ -49,6 +49,10 @@ export function AttachmentBar({ pending, onPick, onClear, disabled }: Attachment
       return
     }
     if (picked.status === 'cancelled') return
+    if (picked.status === 'unsupported') {
+      showToast(t('errors.attachmentUnsupported'))
+      return
+    }
     onPick({ kind: 'image', ...picked.image })
   }
 
