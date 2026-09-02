@@ -141,8 +141,46 @@ belong to the published LangX app.
 ## Storage: B2 or R2
 
 `StorageProvider` is one interface over `@aws-sdk/client-s3`, so B2 and R2 are
-a config swap, not a code change. R2 is the recommended default purely because
-it charges no egress — a language-exchange app serves a lot of avatars.
+a config swap, not a code change. R2 charges no egress, which matters for an
+app that serves a lot of avatars; the published app nevertheless runs on
+Backblaze B2 because v1's media already lives in that account and the
+migration copies it bucket to bucket. Either works.
+
+**Backblaze B2 with the `b2` CLI** (`brew install b2-tools`, then
+`b2 account authorize`):
+
+```bash
+# Public bucket. The CORS rule is for the web build, which PUTs straight to the
+# bucket from the browser — native apps send no preflight and do not need it.
+b2 bucket create --cors-rules '[{"corsRuleName":"webUploads","allowedOrigins":["https://app.example.com","http://localhost:8081"],"allowedHeaders":["content-type"],"allowedOperations":["s3_put","s3_get","s3_head","b2_download_file_by_name","b2_download_file_by_id"],"exposeHeaders":["etag"],"maxAgeSeconds":3600}]' <bucket> allPublic
+
+# A key that can reach only this bucket. The master key cannot use the S3 API.
+b2 key create --bucket <bucket> langx-api listBuckets,listFiles,readFiles,writeFiles,deleteFiles
+```
+
+The `key create` line prints `<keyId> <secret>` once; those are
+`STORAGE_ACCESS_KEY_ID` and `STORAGE_SECRET_ACCESS_KEY`. The rest follows from
+the account's region, which `b2 account get` shows as `downloadUrl`
+(`https://f003.backblazeb2.com` → region `eu-central-003`):
+
+| Variable                  | Value                                        |
+| ------------------------- | -------------------------------------------- |
+| `STORAGE_ENDPOINT`        | `https://s3.eu-central-003.backblazeb2.com`  |
+| `STORAGE_REGION`          | `eu-central-003`                             |
+| `STORAGE_BUCKET`          | `<bucket>`                                   |
+| `STORAGE_PUBLIC_BASE_URL` | `https://f003.backblazeb2.com/file/<bucket>` |
+
+**Choose `STORAGE_PUBLIC_BASE_URL` once.** It is baked into every stored URL,
+and `assertOwnBucket` and `keyFromPublicUrl` recognise our own objects by that
+prefix — change it later and the account purge treats every older photo as
+someone else's and leaves it in the bucket. To put Cloudflare in front of B2
+(free egress under the Bandwidth Alliance), CNAME a proxied `media.` subdomain
+to `f003.backblazeb2.com` and use `https://media.example.com/file/<bucket>` from
+the start.
+
+Keep development and production in separate buckets with separate keys. A
+laptop's `.env` pointing at the production bucket puts test uploads next to
+real user media, and the purge cannot tell them apart.
 
 ## What is NOT in this repo
 

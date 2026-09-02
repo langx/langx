@@ -406,6 +406,34 @@ of it runs together.
 
 ## Migration cutover
 
+Storage first. Steps 2 and 3 copy media into our bucket and write its public
+URL into the staged records, so `STORAGE_*` has to be final — not just set —
+before either runs.
+
+- [x] Bucket created and verified on 2 September 2026: Backblaze B2
+      `langx-media`, `allPublic`, region `eu-central-003`, in the same account
+      as v1's `langxapp` (Appwrite's encrypted store, 8,236 objects — leave it
+      alone, the ETL reads it through Appwrite). One CORS rule for
+      `app.langx.io` and the local Expo origins. The key is scoped to this
+      bucket only. Presign → PUT → public GET → delete → 404 passed from the
+      local `.env`. `docs/self-host.md` → Storage has the commands.
+      **Production only**: local development uses the separate
+      `langx-media-dev` bucket (same region, localhost-only CORS, its own
+      key), which is what `.env` points at — so nothing tested on a laptop
+      can land next to migrated user media
+- [ ] Decide the public base URL **before the first real upload and before
+      the ETLs**: `https://f003.backblazeb2.com/file/langx-media` (the shape the dev
+      `.env` uses today, with `-dev`) or `https://media.langx.io/file/langx-media` behind
+      Cloudflare (free egress; needs one proxied CNAME to
+      `f003.backblazeb2.com`). Whatever is stored is permanent — see the
+      self-host doc for why
+- [ ] `fly secrets set STORAGE_*` on `langx-api`, pointing at `langx-media`.
+      Create a fresh bucket-scoped key for it at that moment with
+      `b2 key create --bucket langx-media ...` — B2 shows a secret once, and the one made on
+      2 September was not kept. Not set as of 2 September 2026; the deploy's
+      upload endpoints still answer "Storage is not configured". Setting
+      secrets restarts the machine
+
 1. Run the reservation ETL: `tsx scripts/migrate-appwrite.ts --apply`
    (dry run first — last verified 3479 profiles → 3401 reservation candidates)
 2. Run the profile ETL: `tsx scripts/migrate-profiles.ts --apply`
