@@ -174,6 +174,7 @@ export const tr: Localized<EnMessages> = {
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',
     invalidToken: 'Bu bağlantı artık geçerli değil.',
     uploadFailed: 'Yüklenemedi',
+    loadFailed: 'Bu yüklenemedi. Bağlantını kontrol edip tekrar dene.',
   },
 
   location: {

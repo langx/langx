@@ -1,8 +1,9 @@
 import { TIER_NAMES, TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
@@ -76,13 +77,24 @@ export default function WelcomeBackScreen() {
     }
   }
 
-  if (me.isPending || !restored) {
+  /*
+   * Split from `!restored`, which used to be the same condition. `useMe` does
+   * not retry, so a refused request left this on a spinner with no end; and a
+   * profile that arrived with nothing to restore did too, forever, on a screen
+   * whose whole content is the restore.
+   */
+  if (!me.data) {
     return (
       <Screen>
-        <ActivityIndicator />
+        {me.isError ? <LoadFailed onRetry={() => void me.refetch()} /> : <ActivityIndicator />}
       </Screen>
     )
   }
+
+  // Only the gate sends people here, and only with a restore record. Reaching
+  // it any other way — a deep link, or a refetch landing after the
+  // acknowledgement — belongs in the app rather than on a blank version of it.
+  if (!restored) return <Redirect href="/(app)/discover" />
 
   const handle = me.data?.handle ?? ''
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored

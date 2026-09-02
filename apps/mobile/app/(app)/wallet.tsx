@@ -2,6 +2,7 @@ import { COSMETICS } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { useMe, usePurchase, useTokens, useUpdateProfile, useWallet } from '../../src/api/queries'
 import { EquipPicker } from '../../src/components/store/EquipPicker'
 import { StoreRow } from '../../src/components/store/StoreRow'
@@ -38,10 +39,21 @@ export default function WalletScreen() {
   // The shop needs both to draw a gate's progress; the wallet itself does not.
   const xp = useTokens()
 
-  if (me.isPending || !me.data) {
+  /*
+   * `!me.data` rather than `isPending`, and an error branch beside it.
+   * `useMe` does not retry, so a refused request settles at once with nothing
+   * — and `isPending || !me.data` stayed true forever, leaving this screen on
+   * a spinner with no end and nothing to press. Data already in hand still
+   * wins over a failed refetch, which is what checking it first says.
+   */
+  if (!me.data) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        {me.isError ? (
+          <LoadFailed onRetry={() => void me.refetch()} />
+        ) : (
+          <ActivityIndicator style={styles.loading} />
+        )}
       </Screen>
     )
   }

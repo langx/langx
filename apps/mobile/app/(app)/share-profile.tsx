@@ -2,6 +2,7 @@ import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
 import { ActivityIndicator, Share, Text, View } from 'react-native'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { useMe } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -30,10 +31,21 @@ export default function ShareProfileScreen() {
   const t = useT()
   const me = useMe()
 
-  if (me.isPending || !me.data) {
+  /*
+   * `!me.data` rather than `isPending`, and an error branch beside it.
+   * `useMe` does not retry, so a refused request settles at once with nothing
+   * — and `isPending || !me.data` stayed true forever, leaving this screen on
+   * a spinner with no end and nothing to press. Data already in hand still
+   * wins over a failed refetch, which is what checking it first says.
+   */
+  if (!me.data) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        {me.isError ? (
+          <LoadFailed onRetry={() => void me.refetch()} />
+        ) : (
+          <ActivityIndicator style={styles.loading} />
+        )}
       </Screen>
     )
   }

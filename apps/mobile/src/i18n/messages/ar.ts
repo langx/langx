@@ -214,6 +214,7 @@ export const ar: Localized<EnMessages> = {
     invalidEmail: 'هذا لا يبدو عنوان بريد.',
     invalidToken: 'هذا الرابط لم يعد صالحًا.',
     uploadFailed: 'فشل الرفع',
+    loadFailed: 'تعذّر التحميل. تحقّق من اتصالك وحاول مرة أخرى.',
   },
 
   location: {
