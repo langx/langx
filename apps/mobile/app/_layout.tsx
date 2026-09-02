@@ -13,20 +13,32 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
 import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
+import { Button } from '../src/components/ui/Button'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
+import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
 import { usePendingInvite } from '../src/hooks/usePendingInvite'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
-import { I18nProvider } from '../src/i18n'
+import { I18nProvider, useT } from '../src/i18n'
+
+/**
+ * How long the launch spinner is allowed to mean "nearly there" before it has
+ * to admit it is waiting on something that may never arrive.
+ *
+ * Nothing below has a timeout: `useSession` clears `isPending` only when the
+ * `/get-session` round-trip settles, and a stalled socket never settles. Ten
+ * seconds is far longer than a slow answer and far shorter than forever.
+ */
+const BOOT_STALL_MS = 10_000
 
 function createQueryClient(): QueryClient {
   return new QueryClient({
@@ -63,8 +75,16 @@ export default function RootLayout() {
  */
 function RootShell() {
   const { colors, scheme } = useTheme()
-  const { data: session, isPending } = authClient.useSession()
+  const t = useT()
+  const { data: session, isPending, refetch } = authClient.useSession()
   const [queryClient] = useState(createQueryClient)
+
+  /*
+   * Above everything else that reads the session: a guest session that
+   * outlived the app being closed is ended here, before the navigator can be
+   * built around it. See the hook for what that state does to routing.
+   */
+  const { resetting } = useGuestSessionReset()
 
   // Above `Stack.Protected`, because an invite link is by definition opened by
   // somebody with no account. It only writes a flag; see the hook for why that
@@ -137,7 +157,32 @@ function RootShell() {
    * open on a font that is never going to arrive.
    */
   const [fontsLoaded, fontError] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold })
-  const showSpinner = (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError)
+  const showSpinner =
+    (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError) || resetting
+
+  /**
+   * The way out of a spinner that is never going to end.
+   *
+   * Every condition above waits on something with no timeout of its own, and
+   * the branch below draws an `ActivityIndicator` and nothing else — so a
+   * request that hangs rather than fails leaves the app with no screen, no
+   * error and no button, which is what a stranger opening it for the second
+   * time actually hit. After `BOOT_STALL_MS` the spinner keeps spinning but
+   * gains a way to ask again.
+   */
+  const [stalled, setStalled] = useState(false)
+  // `stalled` is a dependency as well as the thing set: pressing "try again"
+  // clears it, and that has to start the clock over rather than spend the
+  // button.
+  useEffect(() => {
+    if (!showSpinner) {
+      setStalled(false)
+      return
+    }
+    if (stalled) return
+    const timer = setTimeout(() => setStalled(true), BOOT_STALL_MS)
+    return () => clearTimeout(timer)
+  }, [showSpinner, stalled])
 
   return (
     <>
@@ -149,10 +194,27 @@ function RootShell() {
               alignItems: 'center',
               backgroundColor: colors.bg,
               flex: 1,
+              gap: 16,
               justifyContent: 'center',
+              paddingHorizontal: 32,
             }}
           >
             <ActivityIndicator />
+            {stalled ? (
+              <>
+                <Text style={{ color: colors.textMuted, textAlign: 'center' }}>
+                  {t('common.retry')}
+                </Text>
+                <Button
+                  label={t('common.tryAgain')}
+                  onPress={() => {
+                    setStalled(false)
+                    void refetch()
+                  }}
+                  style={{ minWidth: 200 }}
+                />
+              </>
+            ) : null}
           </View>
         ) : (
           <AppGate>

@@ -29,6 +29,7 @@ import {
   toPublicProfile,
   updateProfile,
 } from '../modules/profiles/profiles'
+import { deleteGuest } from '../modules/profiles/purgeGuests'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { readFollowState } from '../modules/social/follows'
@@ -193,6 +194,28 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.code(201).send(profile)
     },
   )
+
+  /**
+   * Ends a guest session and takes the guest with it.
+   *
+   * The app calls this on a cold start that finds a guest session still in
+   * place, because a guest session is not meant to outlive a launch: while one
+   * does, both `Stack.Protected` branches are mounted at once and `/` resolves
+   * to two different screens. Deleting the rows here rather than only signing
+   * out is what stops an abandoned guest sitting in `user` forever — the
+   * hourly sweep only catches them 30 days later.
+   *
+   * `requireAuth`, and a guest check of its own, for the same reason
+   * `POST /profiles/guest` above has one: this route exists for exactly the
+   * session that every other guard is built to turn away.
+   */
+  app.delete('/profiles/guest', { preHandler: requireAuth }, async (request, reply) => {
+    if (!request.isGuest) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Not a guest session')
+    }
+    await deleteGuest(app.mongo.db, request.userId)
+    return reply.code(204).send()
+  })
 
   app.patch(
     '/profiles/me',
