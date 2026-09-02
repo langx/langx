@@ -16,7 +16,6 @@ export interface OnboardingDraft {
   birthDate: string
   gender: Gender
   bio: string
-  city: string
   interests: string[]
   /**
    * Whoever's invite link brought them here, or what they typed in. Kept on
@@ -44,7 +43,6 @@ const EMPTY: OnboardingDraft = {
   birthDate: '',
   gender: 'undisclosed',
   bio: '',
-  city: '',
   interests: [],
   referredByHandle: '',
   referredBySource: 'manual',

@@ -10,7 +10,6 @@ const EMPTY: OnboardingDraft = {
   birthDate: '',
   gender: 'undisclosed',
   bio: '',
-  city: '',
   interests: [],
   referredByHandle: '',
   referredBySource: 'manual' as const,

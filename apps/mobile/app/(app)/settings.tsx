@@ -353,6 +353,22 @@ export default function SettingsScreen() {
             />
           }
         />
+        {/*
+          Not a Pro feature, unlike the two above — a preference, like the
+          activity map. It is here rather than beside "share location" because
+          it is about what other people see, not about what is collected.
+        */}
+        <ListRow
+          title={t('settings.hideCity')}
+          subtitle={t('settings.hideCityBody')}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.hideCity')}
+              value={profile?.privacy.hideCity ?? false}
+              onValueChange={(hideCity) => update.mutate({ privacy: { hideCity } })}
+            />
+          }
+        />
         <ListRow
           title={t('settings.shareLocation')}
           subtitle={t('settings.shareLocationBody')}

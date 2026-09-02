@@ -154,6 +154,10 @@ export interface MeProfile {
   birthDate: string
   gender: Gender
   country?: string
+  /**
+   * Read off the location, not typed. Absent for anyone not sharing one, and
+   * for anyone who turned it off in Settings.
+   */
   city?: string
   timezone?: string
   photos?: { url: string }[]
@@ -166,6 +170,7 @@ export interface MeProfile {
     hideOnlineStatus: boolean
     activityMapVisible?: boolean
     statsVisible?: boolean
+    hideCity?: boolean
   }
   /**
    * Present only while the user is sharing one, which is exactly what the
@@ -608,6 +613,27 @@ export function useWallet() {
  * settled keystroke — the results are a jump-to, and a target that disappears
  * while you reach for it is worse than a slightly stale one.
  */
+export interface CityOption {
+  id: string
+  name: string
+  countryCode: string
+  admin1?: string
+}
+
+/**
+ * The city picker's list. Same shape as the handle search beside it, and the
+ * same two-character floor: one letter matches most of the world.
+ */
+export function useCitySearch(term: string) {
+  const trimmed = term.trim()
+  return useQuery({
+    queryKey: ['cities', trimmed] as const,
+    queryFn: () => api.get<{ items: CityOption[] }>(`/cities?q=${encodeURIComponent(trimmed)}`),
+    enabled: trimmed.length >= 2,
+    placeholderData: keepPreviousData,
+  })
+}
+
 export function useHandleSearch(term: string) {
   const trimmed = term.trim().toLowerCase()
   return useQuery({

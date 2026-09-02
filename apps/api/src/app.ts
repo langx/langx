@@ -18,6 +18,7 @@ import { appConfigRoutes } from './routes/appConfig'
 import { loginRoutes } from './routes/login'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
+import { cityRoutes } from './routes/cities'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
 import { feedRoutes } from './routes/feed'
@@ -220,6 +221,7 @@ export async function buildApp({
   await app.register(followRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
+  await app.register(cityRoutes)
   await app.register(discoveryRoutes)
   await app.register(feedRoutes)
   await app.register(likeRoutes)

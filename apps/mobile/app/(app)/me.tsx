@@ -91,6 +91,9 @@ export default function MeScreen() {
   const meta = [
     `@${profile.handle}`,
     TIER_BADGES[tier],
+    // Before the country, and only when there is one: it is worked out from a
+    // shared location, so most people have none and nobody typed it.
+    profile.city ?? null,
     profile.country ? countryLabel(profile.country) : null,
   ]
     .filter(Boolean)

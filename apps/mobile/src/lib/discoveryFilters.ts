@@ -31,8 +31,14 @@ export interface DiscoveryFilters {
   // list, and which the server answers 403 against rather than ignoring the
   // parameter.
   gender?: Gender
-  /** Pro. Free text, matched on a folded key server-side. */
-  city?: string
+  /** Pro. */
+  /**
+   * A canonical id, plus the name to draw on the chip — the picker knows both
+   * and the id alone would leave the filter row unable to say what it is
+   * filtering by without a lookup.
+   */
+  cityId?: string
+  cityName?: string
 }
 
 /**
@@ -77,8 +83,10 @@ export function parseFilters(
   if (Number.isInteger(ageMin) && ageMin > 0) filters.ageMin = ageMin
   const ageMax = Number(one(params.ageMax))
   if (Number.isInteger(ageMax) && ageMax > 0) filters.ageMax = ageMax
-  const city = one(params.city)?.trim()
-  if (city) filters.city = city
+  const cityId = one(params.cityId)?.trim()
+  const cityName = one(params.cityName)?.trim()
+  if (cityId) filters.cityId = cityId
+  if (cityId && cityName) filters.cityName = cityName
 
   return filters
 }
@@ -94,7 +102,8 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
   if (filters.maxLevel) params.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) params.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) params.ageMax = String(filters.ageMax)
-  if (filters.city) params.city = filters.city
+  if (filters.cityId) params.cityId = filters.cityId
+  if (filters.cityName) params.cityName = filters.cityName
   return params
 }
 
@@ -113,7 +122,7 @@ export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   if (filters.maxLevel) query.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) query.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) query.ageMax = String(filters.ageMax)
-  if (filters.city) query.city = filters.city
+  if (filters.cityId) query.cityId = filters.cityId
   return query
 }
 
@@ -127,7 +136,7 @@ export function activeCount(filters: DiscoveryFilters): number {
   if (filters.minLevel || filters.maxLevel) count++
   // One age *range*, however many bounds express it.
   if (filters.ageMin !== undefined || filters.ageMax !== undefined) count++
-  if (filters.city) count++
+  if (filters.cityId) count++
   return count
 }
 

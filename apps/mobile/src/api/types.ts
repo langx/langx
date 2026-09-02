@@ -59,6 +59,10 @@ export interface PublicProfileDto {
   age: number
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
+  /**
+   * Read off the location, not typed. Absent for anyone not sharing one, and
+   * for anyone who turned it off in Settings.
+   */
   city?: string
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]

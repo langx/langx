@@ -163,6 +163,12 @@ If you find a security vulnerability, please email
 
 - **Github Sponsor:** https://github.com/sponsors/langx
 
+## Third-party data
+
+This work is based on data from [GeoNames](https://www.geonames.org/), licensed
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). See
+[`docs/data-sources.md`](docs/data-sources.md).
+
 ## License
 
 This project is licensed under the BSD-3-Clause License - see the

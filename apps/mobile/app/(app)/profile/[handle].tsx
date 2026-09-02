@@ -101,6 +101,7 @@ export default function ProfileScreen() {
   // v3's identity block folds the badge chips into one muted line.
   const metaLine = [
     String(user.age),
+    user.city ?? null,
     user.country ? countryLabel(user.country) : null,
     user.streak.current > 0 ? `🔥 ${days(t, user.streak.current)}` : null,
     user.emailVerified ? t('profile.verifiedEmail') : null,

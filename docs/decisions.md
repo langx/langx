@@ -2159,3 +2159,42 @@ trip.
 The lesson is the one the quota message taught earlier in this file: a catch
 that generalises every failure into one string hides the failures that have a
 specific fix. The chat screen now logs the code before it generalises.
+
+## Nobody types their city
+
+The profile had a `city` text field, asked for in two forms, matched by the Pro
+discovery filter through a fold (`cityKey`) that existed to make "İstanbul",
+"Istanbul" and "istanbul" agree — and drawn on **no screen at all**. The store
+privacy declaration said "shown on profile", which was simply not true.
+
+Meanwhile the coordinate that answers the same question exactly was already
+being stored, coarsened to about a kilometre, for distance.
+
+So the field is gone and the answer is derived: the nearest place in a fixed
+list, `$geoNear` against the coordinates already there. That removes the fold,
+the free text on both sides of the filter, and the "optional" field that was
+blank for almost everyone.
+
+**Three things follow from it, and each is a decision of its own.**
+
+_It is shown, behind a switch._ Showing a derived value is a new disclosure —
+worse, one nobody chose. Somebody who turned on location sharing to find people
+nearby did not thereby agree to name the town they live in. `privacy.hideCity`
+is free, not a Pro feature, and sits with the activity-map preference rather
+than with incognito.
+
+_No location, no city._ Cloudflare's free tier gives `CF-IPCountry` and nothing
+finer, so the country still comes from the connection and the city cannot. A
+user who does not share their location has a country and no city, and does not
+appear in city-filtered results. That is stated on the filter screen: a filter
+that silently excluded most of the app would read as broken.
+
+_The old values were cleared, not migrated._ A typed string cannot be matched
+to a canonical id with any confidence — three Springfields, four spellings, a
+country nobody wrote down — and guessing would put people in the wrong place.
+`scripts/unset-city.ts` clears them and drops `city_key`, which `ensureIndexes`
+would never have removed on its own.
+
+The city list is GeoNames' `cities15000`, CC BY 4.0. The attribution is a
+licence condition and lives in three places; `docs/data-sources.md` is the one
+that explains why.

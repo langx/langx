@@ -42,7 +42,6 @@ function learningDoesNotOverlapNative(data: {
  */
 export const MAX_LEARNING_LANGUAGES = PLAN_LIMITS.pro_plus.maxLearningLanguages
 export const MAX_NATIVE_LANGUAGES = PLAN_LIMITS.pro_plus.maxNativeLanguages
-export const CITY_MAX_LENGTH = 100
 export const MAX_INTERESTS = 10
 
 /**
@@ -163,7 +162,6 @@ export const onboardingProfileSchema = z
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
     country: countryCodeSchema.optional(),
-    city: z.string().trim().min(1).max(CITY_MAX_LENGTH).optional(),
     timezone: z.string().trim().min(1).optional(),
     /**
      * Uploaded during onboarding, when there is no profile yet to `confirm`
@@ -238,7 +236,6 @@ export const updateProfileSchema = z
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
     interests: interestsSchema,
-    city: z.string().trim().min(1).max(CITY_MAX_LENGTH),
     timezone: z.string().trim().min(1),
     /**
      * Which owned cosmetic to wear. A slot set to `null` clears it.
@@ -282,6 +279,16 @@ export const updateProfileSchema = z
          * anyone who would rather not be measured in public.
          */
         statsVisible: z.boolean(),
+        /**
+         * The city on a public profile.
+         *
+         * Default on, and a real switch rather than a formality: this is the
+         * one thing here nobody typed. It is worked out from the coordinates
+         * already stored for distance, so somebody who turned on location
+         * sharing to find people nearby did not thereby agree to name the
+         * place they live.
+         */
+        hideCity: z.boolean(),
       })
       .partial(),
   })

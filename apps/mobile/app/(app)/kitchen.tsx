@@ -62,6 +62,13 @@ export default function KitchenScreen() {
 
       {isDebugPanelEnabled() ? <ComponentGallery /> : null}
 
+      {/*
+        A licence condition, not a courtesy: the city list is CC BY 4.0 and the
+        attribution has to be somewhere a person can find it. `docs/data-sources.md`
+        records the other two places it appears.
+      */}
+      <Text style={styles.footer}>{t('kitchen.dataCredit')}</Text>
+
       <Text style={styles.footer}>{t('kitchen.footer')}</Text>
     </Screen>
   )

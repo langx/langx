@@ -2,7 +2,6 @@ import {
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
-  cityKey,
   PLAN_LIMITS,
   type DiscloseGenderInput,
   type GuestProfileInput,
@@ -24,8 +23,9 @@ import {
   type PlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
-import { MongoServerError, type Db } from 'mongodb'
+import { MongoServerError, type Db, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
 import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
@@ -57,13 +57,18 @@ export interface Profile {
   birthDate: string
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
-  city?: string
   /**
-   * `city` folded for matching — see `cityKey`. Written alongside the display
-   * value, never instead of it: how somebody spells their own city is theirs,
-   * and only the discovery filter reads this.
+   * Worked out from `location`, never sent by a client — there is no longer
+   * anywhere to type one. `cityId` is what the discovery filter matches on;
+   * the name and country are denormalised beside it so drawing a profile does
+   * not need a second lookup.
+   *
+   * All three go when the location does: somebody who withdrew their location
+   * did not leave the city it was worked out from behind.
    */
-  cityKey?: string
+  cityId?: string
+  cityName?: string
+  cityCountryCode?: string
   timezone?: string
   timezoneUpdatedAt?: Date
   /**
@@ -99,6 +104,7 @@ export interface Profile {
     hideOnlineStatus?: boolean
     activityMapVisible?: boolean
     statsVisible?: boolean
+    hideCity?: boolean
   }
   entitlement: {
     tier: PlanTier
@@ -310,10 +316,6 @@ export async function createProfile(
   // come through Cloudflare at all.
   const country = connectionCountry ?? input.country
   if (country !== undefined) profile.country = country
-  if (input.city !== undefined) {
-    profile.city = input.city
-    profile.cityKey = cityKey(input.city)
-  }
   if (input.timezone !== undefined) {
     profile.timezone = input.timezone
     profile.timezoneUpdatedAt = now
@@ -595,16 +597,6 @@ export async function updateProfile(
     }
   }
 
-  /*
-   * `cityKey` is derived, never sent. Deriving it here rather than trusting a
-   * client keeps the stored key and the query's key the product of one
-   * function — if they ever disagreed the filter would quietly answer for
-   * nobody, which is the failure mode that looks like an empty city.
-   */
-  if (typeof definedUpdates.city === 'string') {
-    definedUpdates.cityKey = cityKey(definedUpdates.city)
-  }
-
   /**
    * `privacy` is written key by key, not as a sub-document.
    *
@@ -717,13 +709,36 @@ export async function updateProfile(
  */
 export async function setLocation(db: Db, userId: string, input: LocationInput): Promise<Profile> {
   const now = new Date()
+  const point = toGeoPoint(input)
+
+  /*
+   * The city is worked out here rather than asked for. It used to be a text
+   * field in two forms, which meant it was blank for most people, stale for
+   * the rest, and never shown anywhere — while the coordinate that could
+   * answer the same question exactly was already being stored for distance.
+   *
+   * `null` is a real answer: the sea, or anywhere further than
+   * `CITY_MATCH_MAX_METRES` from a city on the list. Written as an `$unset` so
+   * a stale city cannot outlive the coordinate that produced it.
+   */
+  const city = await nearestCity(db, point.coordinates)
+  const always = { location: point, locationUpdatedAt: now, updatedAt: now }
+  // One operator or the other, never both on the same field: Mongo refuses an
+  // update that `$set`s and `$unset`s the same path.
+  const update: UpdateFilter<Profile> = city
+    ? {
+        $set: {
+          ...always,
+          cityId: city._id,
+          cityName: city.name,
+          cityCountryCode: city.countryCode,
+        },
+      }
+    : { $set: always, $unset: { cityId: '', cityName: '', cityCountryCode: '' } }
+
   const result = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOneAndUpdate(
-      { _id: userId },
-      { $set: { location: toGeoPoint(input), locationUpdatedAt: now, updatedAt: now } },
-      { returnDocument: 'after' },
-    )
+    .findOneAndUpdate({ _id: userId }, update, { returnDocument: 'after' })
   if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
   return result
 }
@@ -738,7 +753,16 @@ export async function clearLocation(db: Db, userId: string): Promise<Profile> {
   const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
     { _id: userId },
     {
-      $unset: { location: '', locationUpdatedAt: '' },
+      // The city goes with it. It was only ever a reading of this coordinate,
+      // and leaving it would name the place of somebody who withdrew the
+      // location that named it.
+      $unset: {
+        location: '',
+        locationUpdatedAt: '',
+        cityId: '',
+        cityName: '',
+        cityCountryCode: '',
+      },
       $set: { updatedAt: new Date() },
     },
     { returnDocument: 'after' },
@@ -864,7 +888,11 @@ export function toPublicProfile(
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.country !== undefined) result.country = profile.country
-  if (profile.city !== undefined) result.city = profile.city
+  // Behind its own switch, unlike `country`. The country is coarse and was
+  // half-declared anyway; the city is neither, and nobody typed it.
+  if (profile.cityName !== undefined && profile.privacy?.hideCity !== true) {
+    result.city = profile.cityName
+  }
   if (conversationId !== undefined) result.conversationId = conversationId
   return result
 }

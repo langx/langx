@@ -3,7 +3,6 @@ import {
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
-  cityKey,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
@@ -189,13 +188,15 @@ export async function discoverProfiles(
   if (query.onlyMyGender && viewer.gender !== 'undisclosed') match.gender = viewer.gender
   if (query.country) match.country = query.country
   /*
-   * On the folded key, never on `city` itself. The field is free text with no
-   * picker behind it, so the same place arrives as "İstanbul", "Istanbul" and
-   * "istanbul"; matching raw would answer only for people who typed it the
-   * way the searcher did, and return a short list rather than an empty one —
-   * which reads as a working filter.
+   * An id, matched exactly. Both ends of this comparison now come from the
+   * same canonical list — the searcher picked one, and the profile's was
+   * worked out from its coordinates — so there is nothing left to normalise.
+   *
+   * It answers only for people who share their location, since that is where
+   * the city comes from. The filter screen says so; a filter that silently
+   * excluded most of the app would read as broken.
    */
-  if (query.city) match.cityKey = cityKey(query.city)
+  if (query.cityId) match.cityId = query.cityId
   if (query.minLevel || query.maxLevel) {
     // How well *they* speak *my* native language — the language they're
     // learning from me, not the one I'm learning from them (native speakers

@@ -330,8 +330,6 @@ export const tr: Localized<EnMessages> = {
     displayName: 'Görünen ad',
     yearOfBirth: 'Doğum yılı',
     undisclosedNote: 'Bunu seçersen cinsiyete göre filtrelenen aramalarda çıkmazsın.',
-    city: 'Şehir',
-    cityPlaceholder: 'İstanbul',
     aboutYouOptional: 'Senin hakkında (isteğe bağlı)',
     aboutYouPlaceholder: 'Ne konuşmayı seversin?',
     tooYoung: 'LangX {age} yaş ve üzeri içindir.',
@@ -448,7 +446,9 @@ export const tr: Localized<EnMessages> = {
     title: 'Filtreler',
     speaks: 'Konuşuyor',
     city: 'Şehir',
-    cityBody: 'Aynı şehirdekileri bul. Yazım, aksan ve büyük-küçük harf uyuşmak zorunda değil.',
+    cityBody:
+      'Tek bir şehirdekileri bul. Listeden seç — profillerdeki şehir de aynı listeden geliyor.',
+    cityNeedsLocation: 'Şehir yalnızca konumunu paylaşanlarda var, yani bu filtre onlara daraltır.',
     cityPlaceholder: 'İstanbul',
     gender: 'Cinsiyet',
     age: 'Yaş',
@@ -770,8 +770,6 @@ export const tr: Localized<EnMessages> = {
     aboutYou: 'Senin hakkında',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'Ne konuşmayı seversin?',
-    city: 'Şehir (isteğe bağlı)',
-    cityPlaceholder: 'İstanbul',
     country: 'Ülke',
     interests: 'İlgi alanları',
     gender: 'Cinsiyet',
@@ -806,6 +804,7 @@ export const tr: Localized<EnMessages> = {
   kitchen: {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',
+    dataCredit: 'Yer adları GeoNames’ten, CC BY 4.0 lisansıyla.',
     footer: 'Açık kaynak; kullananlar yapıyor.',
     contributors: 'Katkıda bulunanlar',
     fundamentals: 'Katkıda bulunan herkes',
@@ -866,6 +865,9 @@ export const tr: Localized<EnMessages> = {
     hideOnline: 'Çevrimiçiyken gizlen',
     hideOnlineBody:
       'Yeşil noktanı ve en son ne zaman burada olduğunu gizler. Sen onlarınkini görmeye devam edersin.',
+    hideCity: 'Şehrimi gizle',
+    hideCityBody:
+      'Şehrin konumundan çıkarılıyor. Bu, onu profilinden kaldırır; mesafe ve ülke etkilenmez.',
     shareLocation: 'Yaklaşık konumu paylaş',
     shareLocationBody: 'Başkaları bir nokta değil, bir mesafe aralığı görür.',
     activityMap: 'Etkinlik haritamı göster',

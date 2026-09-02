@@ -1,5 +1,4 @@
 import {
-  CITY_MAX_LENGTH,
   GENDERS,
   LANGUAGE_LEVELS,
   levelRank,
@@ -8,9 +7,10 @@ import {
   type LanguageLevel,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useDebounced } from '../../src/hooks/useDebounced'
 import { useState } from 'react'
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { useHasFeature, useMe } from '../../src/api/queries'
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useCitySearch, useHasFeature, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -88,11 +88,15 @@ export default function FiltersScreen() {
    * it is also the only well-typed way to say it.
    */
   /*
-   * The city field is drafted locally and committed on blur, unlike every
-   * other control here, which commits on press. Committing per keystroke would
-   * rewrite the route params — and therefore refetch Discover — once a letter.
+   * Drafted locally: the filter is committed when a city is chosen from the
+   * list, not on each keystroke, which would rewrite the route params — and
+   * therefore refetch Discover — once a letter.
    */
-  const [cityDraft, setCityDraft] = useState(filters.city ?? '')
+  const [cityDraft, setCityDraft] = useState(filters.cityName ?? '')
+  // The query follows the settled value, so typing stays responsive and
+  // "istanbul" is one request rather than eight.
+  const cityResults = useCitySearch(useDebounced(cityDraft))
+  const cityOptions = cityResults.data?.items ?? []
 
   function set(patch: FilterPatch, pro = false): void {
     if (pro && !isPro) {
@@ -317,11 +321,15 @@ export default function FiltersScreen() {
         </View>
 
         {/*
-          Free text, not a picker: there is no city list to pick from, and the
-          server matches on a folded key so case, accents and punctuation do
-          not have to agree. Locked as a whole rather than per keystroke — a
-          paywall that fires on the first letter typed is a worse way to learn
-          the rule than one tap on a field that says PRO.
+          A picker, not a text box. Both ends of this filter used to be free
+          text — somebody typed their city, somebody else typed the one they
+          were looking for, and a fold on both sides made them meet. A profile's
+          city is now read off its coordinates against a fixed list, so the only
+          honest way to search it is to choose from the same list.
+
+          Locked as a whole rather than per keystroke: a paywall that fires on
+          the first letter typed is a worse way to learn the rule than one tap
+          on a field that says PRO.
         */}
         <View style={[styles.section, styles.last]}>
           <SectionTitle title={t('filters.city')} locked={!isPro} />
@@ -333,18 +341,49 @@ export default function FiltersScreen() {
             <TextInput
               value={cityDraft}
               editable={isPro}
-              onChangeText={setCityDraft}
-              onEndEditing={() => set({ city: cityDraft.trim() || undefined }, true)}
+              onChangeText={(text) => {
+                setCityDraft(text)
+                // Clearing the box clears the filter. Leaving the old id behind
+                // while the box reads empty is a filter nobody can see.
+                if (!text.trim() && filters.cityId)
+                  set({ cityId: undefined, cityName: undefined }, true)
+              }}
               placeholder={t('filters.cityPlaceholder')}
               placeholderTextColor={colors.textFaint}
               autoCapitalize="words"
               autoCorrect={false}
-              maxLength={CITY_MAX_LENGTH}
+              maxLength={64}
               style={styles.cityInput}
               // A disabled input still has to announce why it is disabled.
               pointerEvents={isPro ? 'auto' : 'none'}
             />
           </Pressable>
+          {isPro && cityOptions.length > 0 && cityDraft.trim() !== filters.cityName ? (
+            <View style={styles.cityList}>
+              {cityOptions.map((option) => (
+                <Pressable
+                  key={option.id}
+                  accessibilityRole="button"
+                  onPress={() => {
+                    setCityDraft(option.name)
+                    set({ cityId: option.id, cityName: option.name }, true)
+                  }}
+                  style={({ pressed }) => [styles.cityOption, pressed && styles.pressed]}
+                >
+                  <Text style={styles.cityOptionName}>{option.name}</Text>
+                  <Text style={styles.cityOptionWhere}>
+                    {[option.admin1, option.countryCode].filter(Boolean).join(', ')}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+          {/*
+            Said plainly rather than left to be discovered: a city is worked out
+            from a shared location, so this filter can only ever answer for
+            people who share one.
+          */}
+          <Text style={styles.hint}>{t('filters.cityNeedsLocation')}</Text>
         </View>
 
         <View style={styles.actions}>
@@ -392,6 +431,18 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
   },
+  /** Under the field, like the search results on Discover's own row. */
+  cityList: { borderRadius: radius.md, marginTop: spacing.sm, overflow: 'hidden' },
+  cityOption: {
+    backgroundColor: colors.fill,
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 2,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  cityOptionName: { ...font.body, color: colors.text },
+  cityOptionWhere: { ...font.caption, color: colors.textMuted },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
   levelRow: { flexDirection: 'row', gap: 7, marginTop: spacing.md },
   levelPill: {

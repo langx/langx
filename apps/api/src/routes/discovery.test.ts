@@ -638,7 +638,7 @@ describe('Faz 3 — discovery aggregation', () => {
 
     it('still refuses a free account the two filters that stayed paid', async () => {
       const viewer = await newUser('free-still-paid@example.com')
-      for (const query of ['gender=female', 'city=Istanbul']) {
+      for (const query of ['gender=female', 'cityId=geonames:745044']) {
         const response = await discover(viewer, query)
         expect(response.statusCode, query).toBe(403)
         expect(response.json(), query).toMatchObject({
@@ -649,12 +649,16 @@ describe('Faz 3 — discovery aggregation', () => {
     })
 
     /**
-     * `city` is free text with no picker behind it, so the same place arrives
-     * spelled several ways. Matching the raw field would answer only for
-     * people who typed it exactly as the searcher did — and return a short
-     * list rather than an empty one, which reads as a working filter.
+     * Both ends of this filter come from the same canonical list now — the
+     * searcher picked one, and the candidate's was worked out from their
+     * coordinates — so an id is the whole of the matching. The spelling test
+     * this replaces existed because both ends used to be typed.
+     *
+     * Written straight into the documents: deriving a city needs the `cities`
+     * collection seeded from GeoNames, which is not something a test suite
+     * should carry.
      */
-    it('matches a city however either side spelled it', async () => {
+    it('matches on the city id, and only that city', async () => {
       const viewer = await newUser('city-viewer@example.com', {
         nativeLanguages: [{ code: 'fi' }],
         learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
@@ -664,21 +668,45 @@ describe('Faz 3 — discovery aggregation', () => {
       const here = await newUser('city-here@example.com', {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
-        city: 'İstanbul',
       })
       const elsewhere = await newUser('city-elsewhere@example.com', {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
-        city: 'Ankara',
+      })
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+      await profiles.updateOne(
+        { _id: here.userId },
+        { $set: { cityId: 'geonames:745044', cityName: 'Istanbul', cityCountryCode: 'TR' } },
+      )
+      await profiles.updateOne(
+        { _id: elsewhere.userId },
+        { $set: { cityId: 'geonames:323786', cityName: 'Ankara', cityCountryCode: 'TR' } },
+      )
+
+      const response = await discover(viewer, 'cityId=geonames%3A745044')
+      expect(response.statusCode).toBe(200)
+      const ids = response.json<DiscoveryPage>().items.map((item) => item._id)
+      expect(ids).toContain(here.userId)
+      expect(ids).not.toContain(elsewhere.userId)
+    })
+
+    /** Nobody without a shared location has one, and the filter says so. */
+    it('leaves out anyone with no city at all', async () => {
+      const viewer = await newUser('city-none-viewer@example.com', {
+        nativeLanguages: [{ code: 'fi' }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
+      })
+      await makePro(viewer.userId)
+      const nowhere = await newUser('city-none@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
       })
 
-      for (const spelling of ['Istanbul', 'istanbul', 'İSTANBUL', ' istanbul ']) {
-        const response = await discover(viewer, `city=${encodeURIComponent(spelling)}`)
-        expect(response.statusCode, spelling).toBe(200)
-        const ids = response.json<DiscoveryPage>().items.map((item) => item._id)
-        expect(ids, spelling).toContain(here.userId)
-        expect(ids, spelling).not.toContain(elsewhere.userId)
-      }
+      const response = await discover(viewer, 'cityId=geonames%3A745044')
+      expect(response.statusCode).toBe(200)
+      expect(response.json<DiscoveryPage>().items.map((item) => item._id)).not.toContain(
+        nowhere.userId,
+      )
     })
 
     it('minLevel filters on how well the candidate speaks the viewer own native language', async () => {

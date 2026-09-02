@@ -91,16 +91,19 @@ export const INDEXES: Partial<IndexSpec> = {
     },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },
     /**
-     * The Pro city filter, on the folded key rather than on `city` itself.
+     * The Pro city filter, on the canonical id.
      *
-     * Sparse because the field is optional and most profiles have never filled
-     * it in — an index entry per absent city is the bulk of the collection for
-     * no gain. Not compounded with `stats.lastActiveAt` the way the two
-     * discovery indexes above are: a city is far more selective than a
-     * language, so the planner is better off narrowing on it and sorting the
-     * handful that remain.
+     * Sparse because only somebody sharing their location has a city at all —
+     * an index entry per absent one is most of the collection for no gain. Not
+     * compounded with `stats.lastActiveAt` the way the two discovery indexes
+     * above are: a city is far more selective than a language, so the planner
+     * is better off narrowing on it and sorting the handful that remain.
+     *
+     * Replaces `city_key`, which indexed a fold of typed free text.
+     * `ensureIndexes` only ever creates, so the old one has to be dropped by
+     * hand — `scripts/unset-city.ts` does it.
      */
-    { key: { cityKey: 1 }, name: 'city_key', sparse: true },
+    { key: { cityId: 1 }, name: 'city_id', sparse: true },
     /**
      * Backs `sort=nearby`'s `$geoNear`, which is the *only* stage that can
      * read it — MongoDB refuses `$geoNear` outright without this index, so its
@@ -475,6 +478,19 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1 }, name: 'user' },
   ],
 
+  /**
+   * The only read-only collection here: seeded from GeoNames, never written by
+   * the app. Both of these are optimisations rather than invariants — nothing
+   * about correctness depends on them — but `$geoNear` is the exception that
+   * refuses to run at all without its index, so its absence would be a broken
+   * profile save rather than a slow one.
+   */
+  [COLLECTIONS.cities]: [
+    { key: { location: '2dsphere' }, name: 'city_location_2dsphere' },
+    // Prefix search, then population as the tie-break: somebody typing "san"
+    // means the large one.
+    { key: { asciiName: 1, population: -1 }, name: 'city_name_population' },
+  ],
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
   [COLLECTIONS.streakReminders]: [

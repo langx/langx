@@ -326,8 +326,6 @@ export const fr: Localized<EnMessages> = {
     displayName: 'Nom affiché',
     yearOfBirth: 'Année de naissance',
     undisclosedNote: 'Ce choix te tient à l’écart des recherches filtrées par genre.',
-    city: 'Ville',
-    cityPlaceholder: 'Istanbul',
     aboutYouOptional: 'À propos de toi (facultatif)',
     aboutYouPlaceholder: 'De quoi aimes-tu parler ?',
     tooYoung: 'LangX est réservé aux personnes de {age} ans et plus.',
@@ -450,7 +448,9 @@ export const fr: Localized<EnMessages> = {
     speaks: 'Parle',
     city: 'Ville',
     cityBody:
-      'Trouve des gens au même endroit. L’orthographe, les accents et la casse n’ont pas à correspondre.',
+      'Trouvez des gens dans une ville. Choisissez-la dans la liste, celle d’où vient aussi la ville d’un profil.',
+    cityNeedsLocation:
+      'Seuls ceux qui partagent leur position ont une ville : la recherche se limite à eux.',
     cityPlaceholder: 'Istanbul',
     gender: 'Genre',
     age: 'Âge',
@@ -768,8 +768,6 @@ export const fr: Localized<EnMessages> = {
     aboutYou: 'À propos de toi',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'De quoi aimes-tu parler ?',
-    city: 'Ville (facultatif)',
-    cityPlaceholder: 'Lyon',
     country: 'Pays',
     interests: 'Centres d’intérêt',
     gender: 'Genre',
@@ -804,6 +802,7 @@ export const fr: Localized<EnMessages> = {
   kitchen: {
     title: 'Notre cuisine',
     intro: 'Là où LangX se fabrique, et ceux qui le font.',
+    dataCredit: 'Noms de lieux issus de GeoNames, sous licence CC BY 4.0.',
     footer: 'Construit à ciel ouvert, par ceux qui s’en servent.',
     contributors: 'Contributeurs',
     fundamentals: 'Toutes les contributions',
@@ -863,6 +862,9 @@ export const fr: Localized<EnMessages> = {
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
     hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
+    hideCity: 'Masquer ma ville',
+    hideCityBody:
+      'Votre ville est déduite de votre position. Ceci la retire de votre profil ; la distance et le pays ne changent pas.',
     shareLocation: 'Partager ma position approximative',
     shareLocationBody: 'Les autres voient une plage de distance, jamais un point.',
     activityMap: 'Afficher ma carte d’activité',

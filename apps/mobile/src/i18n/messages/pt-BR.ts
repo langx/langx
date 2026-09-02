@@ -316,8 +316,6 @@ export const ptBR: Localized<EnMessages> = {
     displayName: 'Nome de exibição',
     yearOfBirth: 'Ano de nascimento',
     undisclosedNote: 'Escolher isso deixa você fora das buscas filtradas por gênero.',
-    city: 'Cidade',
-    cityPlaceholder: 'Istambul',
     aboutYouOptional: 'Sobre você (opcional)',
     aboutYouPlaceholder: 'Do que você gosta de falar?',
     tooYoung: 'O LangX é para pessoas de {age} anos ou mais.',
@@ -440,7 +438,9 @@ export const ptBR: Localized<EnMessages> = {
     speaks: 'Fala',
     city: 'Cidade',
     cityBody:
-      'Encontre pessoas em um mesmo lugar. Grafia, acentos e maiúsculas não precisam coincidir.',
+      'Encontre gente em uma cidade. Escolha na lista — a mesma de onde vem a cidade de um perfil.',
+    cityNeedsLocation:
+      'Só quem compartilha a localização tem cidade, então isso limita a busca a essas pessoas.',
     cityPlaceholder: 'Istambul',
     gender: 'Gênero',
     age: 'Idade',
@@ -755,8 +755,6 @@ export const ptBR: Localized<EnMessages> = {
     aboutYou: 'Sobre você',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'Do que você gosta de falar?',
-    city: 'Cidade (opcional)',
-    cityPlaceholder: 'São Paulo',
     country: 'País',
     interests: 'Interesses',
     gender: 'Gênero',
@@ -791,6 +789,7 @@ export const ptBR: Localized<EnMessages> = {
   kitchen: {
     title: 'Nossa cozinha',
     intro: 'Onde o LangX é feito, e quem o faz.',
+    dataCredit: 'Nomes de lugares do GeoNames, sob licença CC BY 4.0.',
     footer: 'Feito às claras, por quem usa.',
     contributors: 'Colaboradores',
     fundamentals: 'Todo mundo que já contribuiu',
@@ -851,6 +850,9 @@ export const ptBR: Localized<EnMessages> = {
     hideOnline: 'Esconder quando eu estiver on-line',
     hideOnlineBody:
       'Oculta seu ponto verde e quando você esteve aqui pela última vez. Você continua vendo o dos outros.',
+    hideCity: 'Ocultar minha cidade',
+    hideCityBody:
+      'Sua cidade é deduzida da sua localização. Isto a tira do seu perfil; distância e país não mudam.',
     shareLocation: 'Compartilhar localização aproximada',
     shareLocationBody: 'Os outros veem uma faixa de distância, nunca um ponto.',
     activityMap: 'Mostrar meu mapa de atividade',

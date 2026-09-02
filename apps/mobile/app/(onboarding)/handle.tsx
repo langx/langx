@@ -110,7 +110,6 @@ export default function HandleStep() {
         // wizard's third step will not continue without them.
         learning: current.learning.map((l, index) => ({ ...l, priority: index + 1 })),
         ...(current.bio.trim() ? { bio: current.bio.trim() } : {}),
-        ...(current.city.trim() ? { city: current.city.trim() } : {}),
         ...(current.interests.length > 0 ? { interests: current.interests } : {}),
         ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
         // Silently ignored by the server if it resolves to nobody — see

@@ -25,7 +25,8 @@ describe('withoutProFilters', () => {
     country: 'US',
     gender: 'female',
     onlyMyGender: true,
-    city: 'Istanbul',
+    cityId: 'geonames:745044',
+    cityName: 'Istanbul',
   }
 
   it('keeps every free filter', () => {
@@ -43,7 +44,7 @@ describe('withoutProFilters', () => {
   it('drops exactly the paid ones', () => {
     const free = withoutProFilters(everything)
     expect(free.gender).toBeUndefined()
-    expect(free.city).toBeUndefined()
+    expect(free.cityId).toBeUndefined()
   })
 
   /**
@@ -69,7 +70,7 @@ describe('hasProFilters', () => {
 
   it('is true for each paid filter on its own', () => {
     expect(hasProFilters({ gender: 'female' })).toBe(true)
-    expect(hasProFilters({ city: 'Istanbul' })).toBe(true)
+    expect(hasProFilters({ cityId: 'geonames:745044' })).toBe(true)
   })
 
   it('is false for only-my-gender, which no longer costs anything', () => {
@@ -87,20 +88,27 @@ describe('the URL round trip', () => {
       ageMax: 40,
       country: 'US',
       gender: 'female',
-      city: 'İstanbul',
+      cityId: 'geonames:745044',
+      cityName: 'İstanbul',
     }
     expect(parseFilters(toParams(filters))).toEqual(filters)
   })
 
   it('reads a city out of a pasted URL, trimmed', () => {
-    expect(parseFilters({ city: '  Istanbul ' }).city).toBe('Istanbul')
-    expect(parseFilters({ city: '   ' }).city).toBeUndefined()
+    const parsed = parseFilters({ cityId: '  geonames:745044 ', cityName: ' Istanbul ' })
+    expect(parsed.cityId).toBe('geonames:745044')
+    expect(parsed.cityName).toBe('Istanbul')
+    expect(parseFilters({ cityId: '   ' }).cityId).toBeUndefined()
+    // A name with no id is not a filter, only a label with nothing behind it.
+    expect(parseFilters({ cityName: 'Istanbul' }).cityName).toBeUndefined()
   })
 
   /** `'1'` is the URL's spelling of a boolean; `'true'` is the API's. */
   it('sends booleans the way the API coerces them', () => {
-    const query = toQuery({ onlyMyGender: true, city: 'Istanbul' })
-    expect(query).toMatchObject({ onlyMyGender: 'true', city: 'Istanbul' })
+    const query = toQuery({ onlyMyGender: true, cityId: 'geonames:745044', cityName: 'Istanbul' })
+    // Only the id goes to the server; the name is this screen's own label.
+    expect(query).toMatchObject({ onlyMyGender: 'true', cityId: 'geonames:745044' })
+    expect(query.cityName).toBeUndefined()
   })
 })
 
@@ -112,8 +120,8 @@ describe('activeCount', () => {
   })
 
   it('counts city as its own filter', () => {
-    expect(activeCount({ city: 'Istanbul' })).toBe(1)
-    expect(activeCount({ city: 'Istanbul', country: 'US' })).toBe(2)
+    expect(activeCount({ cityId: 'geonames:745044' })).toBe(1)
+    expect(activeCount({ cityId: 'geonames:745044', country: 'US' })).toBe(2)
   })
 
   it('is zero for no filters', () => {

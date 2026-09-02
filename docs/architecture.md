@@ -576,7 +576,7 @@ write to them directly and never change their shape.
   bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',   ← set once, like birthDate
   referredBy,                         ← who invited them; written once, never in a public view
-  country, city, timezone, timezoneUpdatedAt,
+  country, cityId, cityName, cityCountryCode, timezone, timezoneUpdatedAt,
   location: { type: 'Point', coordinates: [lng, lat] },
   nativeLanguages: [{ code: 'tr' }],
   learning: [{ code: 'en', level: 'B1', priority: 1 }],

@@ -357,8 +357,6 @@ export const ru: Localized<EnMessages> = {
     displayName: 'Отображаемое имя',
     yearOfBirth: 'Год рождения',
     undisclosedNote: 'С этим выбором ты не попадёшь в поиск с фильтром по полу.',
-    city: 'Город',
-    cityPlaceholder: 'Стамбул',
     aboutYouOptional: 'О тебе (необязательно)',
     aboutYouPlaceholder: 'О чём тебе нравится говорить?',
     tooYoung: 'LangX — для людей от {age} лет.',
@@ -492,7 +490,10 @@ export const ru: Localized<EnMessages> = {
     title: 'Фильтры',
     speaks: 'Говорит',
     city: 'Город',
-    cityBody: 'Найдите людей в одном городе. Написание, диакритика и регистр совпадать не обязаны.',
+    cityBody:
+      'Найдите людей в одном городе. Выберите его из списка — из того же, откуда берётся город в профиле.',
+    cityNeedsLocation:
+      'Город есть только у тех, кто делится геопозицией, так что поиск сузится до них.',
     cityPlaceholder: 'Стамбул',
     gender: 'Пол',
     age: 'Возраст',
@@ -878,8 +879,6 @@ export const ru: Localized<EnMessages> = {
     aboutYou: 'О тебе',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'О чём тебе нравится говорить?',
-    city: 'Город (необязательно)',
-    cityPlaceholder: 'Москва',
     country: 'Страна',
     interests: 'Интересы',
     gender: 'Пол',
@@ -914,6 +913,7 @@ export const ru: Localized<EnMessages> = {
   kitchen: {
     title: 'Наша кухня',
     intro: 'Где делают LangX — и все, кто его делает.',
+    dataCredit: 'Названия мест — GeoNames, лицензия CC BY 4.0.',
     footer: 'Делается открыто, теми, кто им пользуется.',
     contributors: 'Участники',
     fundamentals: 'Все, кто внёс вклад',
@@ -975,6 +975,9 @@ export const ru: Localized<EnMessages> = {
     hideOnline: 'Скрывать, когда я в сети',
     hideOnlineBody:
       'Скрывает зелёную точку и время последнего визита. Их статус ты по-прежнему видишь.',
+    hideCity: 'Скрыть мой город',
+    hideCityBody:
+      'Город определяется по геопозиции. Это убирает его из профиля; расстояние и страна не меняются.',
     shareLocation: 'Делиться примерным местоположением',
     shareLocationBody: 'Другие видят диапазон расстояния, а не точку.',
     activityMap: 'Показывать карту активности',

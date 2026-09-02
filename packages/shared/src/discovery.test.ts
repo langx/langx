@@ -39,7 +39,7 @@ describe('DISCOVERY_PRO_FILTER_KEYS', () => {
    * still pass.
    */
   it('is naming a gender and naming a city, and nothing else', () => {
-    expect([...DISCOVERY_PRO_FILTER_KEYS].sort()).toEqual(['city', 'gender'])
+    expect([...DISCOVERY_PRO_FILTER_KEYS].sort()).toEqual(['cityId', 'gender'])
   })
 
   /**
@@ -61,12 +61,12 @@ describe('DISCOVERY_PRO_FILTER_KEYS', () => {
     }
   })
 
-  it('accepts a city and normalises the whitespace around it', () => {
-    const parsed = discoveryQuerySchema.parse({ city: '  İstanbul  ' })
-    expect(parsed.city).toBe('İstanbul')
+  it('accepts a city id and trims it', () => {
+    const parsed = discoveryQuerySchema.parse({ cityId: '  geonames:745044  ' })
+    expect(parsed.cityId).toBe('geonames:745044')
   })
 
-  it('refuses an empty city rather than matching everyone with no city set', () => {
-    expect(discoveryQuerySchema.safeParse({ city: '   ' }).success).toBe(false)
+  it('refuses an empty city id rather than matching everyone with no city', () => {
+    expect(discoveryQuerySchema.safeParse({ cityId: '   ' }).success).toBe(false)
   })
 })

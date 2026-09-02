@@ -17,6 +17,13 @@ export const COLLECTIONS = {
 
   // domain
   profiles: 'profiles',
+  /**
+   * Canonical places, seeded from GeoNames rather than written by the app —
+   * the only read-only collection here. `scripts/seed-cities.ts` fills it, and
+   * `docs/data-sources.md` records where the data comes from and under what
+   * licence.
+   */
+  cities: 'cities',
   handleReservations: 'handleReservations',
   /**
    * v1 profile data, staged by the Faz 11 ETL and keyed by the Appwrite

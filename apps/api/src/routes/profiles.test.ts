@@ -1430,4 +1430,157 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.json<{ lastActiveAt?: string }>().lastActiveAt).toBeDefined()
     })
   })
+
+  describe('the city, which nobody types', () => {
+    /** Upserted, so each test can ask for it without minding who ran first. */
+    async function seedCities(): Promise<void> {
+      await handle.db.collection(COLLECTIONS.cities).updateOne(
+        { _id: 'geonames:745044' as unknown as never },
+        {
+          $set: {
+            name: 'Istanbul',
+            asciiName: 'Istanbul',
+            countryCode: 'TR',
+            population: 15_000_000,
+            location: { type: 'Point', coordinates: [28.9784, 41.0082] },
+          },
+        },
+        { upsert: true },
+      )
+    }
+
+    /** `newUser` only signs up; a location attaches to a profile. */
+    async function onboardedUser(email: string, handleName: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: handleName }),
+      })
+      if (response.statusCode !== 201) {
+        throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+      }
+      return user
+    }
+
+    async function profileOf(userId: string) {
+      return handle.db
+        .collection<{ _id: string; cityId?: string; cityName?: string }>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+    }
+
+    it('is worked out from the location, not asked for', async () => {
+      await seedCities()
+      const user = await onboardedUser('city-derive@example.com', 'cityderive')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: { lat: 41.01, lng: 28.98 },
+      })
+      expect(response.statusCode).toBe(200)
+
+      const stored = await profileOf(user.userId)
+      expect(stored?.cityId).toBe('geonames:745044')
+      expect(stored?.cityName).toBe('Istanbul')
+    })
+
+    /** The sea. A city hundreds of kilometres away is not where somebody is. */
+    it('is left unset when the coordinate is nowhere near a city', async () => {
+      await seedCities()
+      const user = await onboardedUser('city-nowhere@example.com', 'citynowhere')
+      await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: { lat: 30, lng: -30 },
+      })
+      const stored = await profileOf(user.userId)
+      expect(stored?.cityId).toBeUndefined()
+      expect(stored?.cityName).toBeUndefined()
+    })
+
+    it('goes when the location goes', async () => {
+      await seedCities()
+      const user = await onboardedUser('city-cleared@example.com', 'citycleared')
+      await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: { lat: 41.01, lng: 28.98 },
+      })
+      expect((await profileOf(user.userId))?.cityId).toBe('geonames:745044')
+
+      const cleared = await app.inject({
+        method: 'DELETE',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+      })
+      expect(cleared.statusCode).toBe(200)
+      expect((await profileOf(user.userId))?.cityId).toBeUndefined()
+    })
+
+    it('cannot be set by a client, because there is no longer a field for it', async () => {
+      const user = await onboardedUser('city-not-settable@example.com', 'citynotset')
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { city: 'Somewhere' },
+      })
+      // Unknown keys are stripped rather than refused, so the tell is the
+      // absence of the field afterwards.
+      expect(response.statusCode).toBe(200)
+      expect((await profileOf(user.userId)) as { city?: string }).not.toHaveProperty('city')
+    })
+
+    describe('showing it', () => {
+      async function publicViewOf(target: SignedUpUser, viewer: SignedUpUser) {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/profiles/${target.userId}`,
+          headers: { cookie: viewer.cookie },
+        })
+        expect(response.statusCode).toBe(200)
+        return response.json<{ city?: string }>()
+      }
+
+      it('is on a public profile by default', async () => {
+        await seedCities()
+        const them = await onboardedUser('city-shown@example.com', 'cityshown')
+        const viewer = await onboardedUser('city-shown-viewer@example.com', 'cityshownv')
+        await app.inject({
+          method: 'POST',
+          url: '/profiles/me/location',
+          headers: { cookie: them.cookie },
+          payload: { lat: 41.01, lng: 28.98 },
+        })
+        expect((await publicViewOf(them, viewer)).city).toBe('Istanbul')
+      })
+
+      /**
+       * The switch this feature exists behind: sharing a location to find
+       * people nearby is not agreeing to name the place you live.
+       */
+      it('is withheld when the switch is on', async () => {
+        await seedCities()
+        const them = await onboardedUser('city-hidden@example.com', 'cityhidden')
+        const viewer = await onboardedUser('city-hidden-viewer@example.com', 'cityhiddenv')
+        await app.inject({
+          method: 'POST',
+          url: '/profiles/me/location',
+          headers: { cookie: them.cookie },
+          payload: { lat: 41.01, lng: 28.98 },
+        })
+        await app.inject({
+          method: 'PATCH',
+          url: '/profiles/me',
+          headers: { cookie: them.cookie },
+          payload: { privacy: { hideCity: true } },
+        })
+        expect((await publicViewOf(them, viewer)).city).toBeUndefined()
+      })
+    })
+  })
 })

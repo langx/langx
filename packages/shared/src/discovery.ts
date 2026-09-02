@@ -2,7 +2,7 @@ import { languageLevelSchema, levelRank } from './level'
 import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
-import { CITY_MAX_LENGTH, genderSchema } from './profile'
+import { genderSchema } from './profile'
 import { z } from 'zod'
 
 /**
@@ -73,7 +73,7 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
  * it back before that document is published.
  *
  * The rule that decides the rest: **a paid filter names somebody else's
- * attribute; a free one names only your own.** `gender` and `city` take a
+ * attribute; a free one names only your own.** `gender` and `cityId` take a
  * value and point it at other people — they are ways of searching. The one
  * that left, `onlyMyGender`, takes no value at all: it is resolved from the
  * caller's own profile and is inert for anybody who did not disclose one, so
@@ -88,7 +88,7 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
  * already being shown too few people, and what it learns is that the app is
  * empty. It is a comfort setting, and comfort is not a thing to sell.
  */
-export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'city'] as const
+export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'cityId'] as const
 
 export const discoveryQuerySchema = z
   .object({
@@ -141,12 +141,14 @@ export const discoveryQuerySchema = z
     // Pro-only from here down.
     gender: genderSchema.optional(),
     /**
-     * Free text, matched on `cityKey` rather than on itself — see `city.ts`.
-     * Length-bounded for the same reason every other free-text query is: it
-     * reaches a database index, and an unbounded string is a way to make it
-     * scan.
+     * A canonical city id, not a name.
+     *
+     * It used to be free text folded through `cityKey`, because the city it
+     * matched was free text too — somebody typed it. Both sides are now
+     * chosen from the same list, so the id is the whole of the matching and
+     * "Istanbul" against "İSTANBUL" stops being a problem anyone has to have.
      */
-    city: z.string().trim().min(1).max(CITY_MAX_LENGTH).optional(),
+    cityId: z.string().trim().min(1).max(64).optional(),
   })
   .refine((q) => q.ageMin === undefined || q.ageMax === undefined || q.ageMin <= q.ageMax, {
     message: 'ageMin cannot exceed ageMax',

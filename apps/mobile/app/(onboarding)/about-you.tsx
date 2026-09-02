@@ -1,4 +1,4 @@
-import { CITY_MAX_LENGTH, GENDERS, MINIMUM_AGE, birthDateSchema } from '@langx/shared'
+import { GENDERS, MINIMUM_AGE, birthDateSchema } from '@langx/shared'
 import { router } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import { BirthDateField } from '../../src/components/BirthDateField'
@@ -87,21 +87,6 @@ export default function AboutYouStep() {
             <Text style={styles.genderNote}>{t('onboarding.undisclosedNote')}</Text>
           ) : null}
         </View>
-
-        {/*
-          Asked here rather than left to the profile editor nobody opens.
-          `city` sat in the schema from the start with no screen behind it, so
-          it was always empty — and discovery now sells a filter over it, which
-          a field nobody is asked for cannot honestly answer.
-        */}
-        <FormField
-          label={t('onboarding.city')}
-          value={draft.city}
-          onChangeText={(city) => updateDraft({ city })}
-          placeholder={t('onboarding.cityPlaceholder')}
-          autoCapitalize="words"
-          maxLength={CITY_MAX_LENGTH}
-        />
 
         <FormField
           label={t('onboarding.aboutYouOptional')}

@@ -325,8 +325,6 @@ export const de: Localized<EnMessages> = {
     displayName: 'Anzeigename',
     yearOfBirth: 'Geburtsjahr',
     undisclosedNote: 'Damit tauchst du in nach Geschlecht gefilterten Suchen nicht auf.',
-    city: 'Stadt',
-    cityPlaceholder: 'Istanbul',
     aboutYouOptional: 'Über dich (optional)',
     aboutYouPlaceholder: 'Worüber redest du gern?',
     tooYoung: 'LangX ist für Menschen ab {age} Jahren.',
@@ -452,7 +450,9 @@ export const de: Localized<EnMessages> = {
     speaks: 'Spricht',
     city: 'Stadt',
     cityBody:
-      'Finde Leute an einem Ort. Schreibweise, Akzente und Groß-/Kleinschreibung müssen nicht passen.',
+      'Finde Leute in einer Stadt. Wähle sie aus der Liste — derselben, aus der die Stadt eines Profils kommt.',
+    cityNeedsLocation:
+      'Nur wer seinen Standort teilt, hat eine Stadt; die Suche beschränkt sich darauf.',
     cityPlaceholder: 'Istanbul',
     gender: 'Geschlecht',
     age: 'Alter',
@@ -783,8 +783,6 @@ export const de: Localized<EnMessages> = {
     aboutYou: 'Über dich',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'Worüber redest du gern?',
-    city: 'Stadt (optional)',
-    cityPlaceholder: 'Berlin',
     country: 'Land',
     interests: 'Interessen',
     gender: 'Geschlecht',
@@ -820,6 +818,7 @@ export const de: Localized<EnMessages> = {
   kitchen: {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
+    dataCredit: 'Ortsnamen von GeoNames, lizenziert unter CC BY 4.0.',
     footer: 'Offen entwickelt, von den Leuten, die es benutzen.',
     contributors: 'Mitwirkende',
     fundamentals: 'Alle Mitwirkenden',
@@ -880,6 +879,9 @@ export const de: Localized<EnMessages> = {
     hideOnline: 'Verbergen, wenn ich online bin',
     hideOnlineBody:
       'Verbirgt deinen grünen Punkt und wann du zuletzt hier warst. Du siehst ihren weiterhin.',
+    hideCity: 'Meine Stadt verbergen',
+    hideCityBody:
+      'Deine Stadt wird aus deinem Standort ermittelt. Das nimmt sie aus deinem Profil; Entfernung und Land bleiben.',
     shareLocation: 'Ungefähren Standort teilen',
     shareLocationBody: 'Andere sehen eine Entfernungsspanne, nie einen Punkt.',
     activityMap: 'Meine Aktivitätskarte zeigen',
