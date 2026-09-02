@@ -64,10 +64,8 @@ export function useGuestBrowse(): { start: () => Promise<void>; starting: boolea
    *
    * `/(onboarding)/languages` fails because at that instant `useSession` has
    * not re-rendered the root layout, so `(onboarding)` is not mounted and the
-   * replace silently does nothing. And `/` fails differently: both the auth
-   * group and the root have an `index`, and expo-router resolves it to
-   * `(auth)/index` — which reads the intro flag and sends the reader straight
-   * back to where they started.
+   * replace silently does nothing. And `/` is the gate, which at that instant
+   * still reads a session that is not there yet.
    *
    * So it waits for the session to actually exist, which is also the only
    * moment the destination is guaranteed to be mounted.

@@ -6,10 +6,10 @@ import { FLAG_KEYS, setBoolFlag } from '../../src/lib/localFlags'
  * The intro as the signed-out entry point plays it: once, before sign-in.
  *
  * The carousel itself lives in `src/components` because `(app)/intro` replays
- * the same three slides for a signed-in user, and `Stack.Protected` never has
- * both groups mounted at once — a guest is the one session for which both
- * guards are true, and `useGuestSessionReset` ends that one at boot, so it
- * only ever exists inside a launch that started it.
+ * the same three slides for a signed-in user. Both groups *are* mounted at once
+ * for a guest, so `/intro` is ambiguous the way `/` used to be — harmless only
+ * because the two screens show the same slides. `/` is not ambiguous any more:
+ * there is one `index`, in `app/`.
  */
 export default function IntroScreen() {
   function finish(): void {

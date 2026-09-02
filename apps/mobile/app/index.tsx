@@ -4,12 +4,26 @@ import { ActivityIndicator, View } from 'react-native'
 import { ApiRequestError } from '../src/api/client'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
+import { authClient } from '../src/lib/auth-client'
+import { authLandingHref } from '../src/lib/authLanding'
+import { FLAG_KEYS, readBoolFlag } from '../src/lib/localFlags'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
 import { useTheme } from '../src/lib/theme'
 
 /**
- * The gate `Stack.Protected` alone cannot express: signed out, signed in
- * *without* a profile, back from v1 and not yet told about it, and ready.
+ * The one screen at `/`, and the gate `Stack.Protected` alone cannot express:
+ * signed out, signed in *without* a profile, back from v1 and not yet told
+ * about it, and ready.
+ *
+ * The signed-out branch used to live in `app/(auth)/index.tsx`, which is why
+ * this file is the only `index` left. Two of them was a bug with no visible
+ * cause: expo-router strips group segments, so both resolved to the empty path
+ * and the tie was broken by route-file order. For a signed-in user it did not
+ * show, because the `(auth)` branch was unmounted and React Navigation dropped
+ * the unknown route. A **guest** is the one session for which both branches are
+ * mounted — so a returning guest was routed by enumeration order rather than by
+ * anything written here, and landed on a spinner with nothing to press. One
+ * screen at `/` is what makes that impossible rather than unlikely.
  *
  * The middle state is real and common — Better Auth creates the account, but
  * `profiles` is ours and onboarding writes it. Routing straight to the app
@@ -17,9 +31,14 @@ import { useTheme } from '../src/lib/theme'
  * exist. A 404 from `/profiles/me` is that state, not an error.
  */
 export default function Index() {
-  const { colors } = useTheme()
-  const { data: profile, isPending, error } = useMe()
+  const { data: session } = authClient.useSession()
+  const signedIn = Boolean(session)
+  // Disabled while signed out: without a session `/profiles/me` is a 401, and
+  // an unread failed request per launch is the least of it — `needsOnboarding`
+  // below reads "no profile" off exactly that shape.
+  const { data: profile, isPending, error } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
+  const [introSeen, setIntroSeen] = useState<boolean | null>(null)
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
   // would send someone who was three screens in back to screen one — the exact
@@ -35,20 +54,25 @@ export default function Index() {
     }
   }, [draftReady])
 
-  if (isPending || !draftReady) {
-    return (
-      <View
-        style={{
-          alignItems: 'center',
-          backgroundColor: colors.bg,
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
-        <ActivityIndicator />
-      </View>
-    )
+  // Held on a spinner until the flag resolves rather than defaulting to one
+  // branch: guessing "not seen" would replay the intro on every cold start for
+  // everyone, and guessing "seen" would mean nobody ever sees it.
+  useEffect(() => {
+    let cancelled = false
+    void readBoolFlag(FLAG_KEYS.introSeen).then((value) => {
+      if (!cancelled) setIntroSeen(value)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  if (!signedIn) {
+    if (introSeen === null) return <Waiting />
+    return <Redirect href={authLandingHref(introSeen)} />
   }
+
+  if (isPending || !draftReady) return <Waiting />
 
   const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
   // Back to the step the draft has actually earned, not always the first one.
@@ -66,4 +90,22 @@ export default function Index() {
   }
 
   return <Redirect href="/(app)/discover" />
+}
+
+/** Every branch above waits on something; none of them has anything to draw. */
+function Waiting() {
+  const { colors } = useTheme()
+
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        backgroundColor: colors.bg,
+        flex: 1,
+        justifyContent: 'center',
+      }}
+    >
+      <ActivityIndicator color={colors.accent} />
+    </View>
+  )
 }

@@ -114,10 +114,16 @@ export const keys = {
   blocks: ['blocks'] as const,
 }
 
-export function useMe() {
+/**
+ * `enabled` because the root gate calls this before it knows there is anybody
+ * to call it for: signed out, `/profiles/me` is a 401, and the gate reads
+ * "no profile" off a 404. Every other caller is already behind the session.
+ */
+export function useMe(enabled = true) {
   return useQuery({
     queryKey: keys.me,
     queryFn: () => api.get<MeProfile>('/profiles/me'),
+    enabled,
     // A 404 here means "signed in but no profile yet" — onboarding, not an
     // error to retry.
     retry: false,

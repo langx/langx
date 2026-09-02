@@ -1,23 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
-import { api } from '../api/client'
+import { ApiRequestError, api } from '../api/client'
 import { authClient } from '../lib/auth-client'
-import { shouldEndGuestSession } from '../lib/guestGate'
+import { isRestoredGuestSession } from '../lib/guestGate'
 
 /**
- * Ends a guest session that survived the app being closed.
+ * Deletes a guest who left before answering anything.
  *
- * Looking around without an account is a thing you do in one sitting: a guest
- * owns nothing, cannot write, and the only thing they have filled in — the two
- * language questions — lives in the device-side onboarding draft, which
- * outlives this and is restored the moment they tap "look around" again. So
- * the session buys nothing across a launch, and it costs plenty: while it
- * exists at boot, both `Stack.Protected` branches are mounted and `/` matches
- * two screens at once, which is how a returning guest ended up on a spinner
- * with no way forward. See `shouldEndGuestSession` for the routing detail.
+ * Tapping "look around" mints an anonymous account immediately, because that is
+ * what lets somebody see the app without handing over an email. Most of those
+ * taps end there — the app is closed a screen later — and what stays behind is
+ * a `user` row that will never be read again, with a session attached to it.
+ * Nothing else would collect them: the hourly sweep looks for a guest
+ * *profile*, and this guest never got far enough to have one.
  *
- * Deleting rather than only signing out, because nothing else would ever
- * collect the rows: a guest who never reached the language step has no
- * `profiles` document, and the hourly sweep used to be keyed on exactly that.
+ * **Only the ones with nothing behind them.** Picking two languages writes a
+ * guest profile, and somebody with one is browsing — closing the app and
+ * opening it again should put them back where they were, not throw the session
+ * away and ask again. So the profile is the line, and the server draws it: a
+ * 404 from `/profiles/me` is "answered nothing", and it is the same 404 the
+ * root gate reads.
+ *
+ * Anything other than a 404 — offline, a 5xx — leaves the session alone. It is
+ * not evidence of an abandoned guest, and being wrong in that direction only
+ * costs a row the sweep will take later; being wrong the other way signs
+ * somebody out mid-visit.
  */
 export function useGuestSessionReset(): { resetting: boolean } {
   const { data: session, isPending, refetch } = authClient.useSession()
@@ -29,32 +35,51 @@ export function useGuestSessionReset(): { resetting: boolean } {
 
   useEffect(() => {
     const settled = !isPending
-    const end = shouldEndGuestSession({
+    const restored = isRestoredGuestSession({
       settled,
       seenBefore: seenBefore.current,
       user: session?.user,
     })
     if (settled) seenBefore.current = true
-    if (!end) return
+    if (!restored) return
 
     setResetting(true)
-    void endGuestSession()
-      .then(() => {
-        /*
-         * The session the client holds has to agree with the server, and
-         * `signOut` is not enough on its own: the row it wants to delete is
-         * already gone, so the server answers it with an error and the client
-         * keeps the guest in hand. Refetching gets the `null` that ends the
-         * session locally however sign-out went.
-         */
-        void refetch()
-      })
-      .finally(() => setResetting(false))
+    void (async () => {
+      if (await answeredSomething()) return
+      await endGuestSession()
+      /*
+       * The session the client holds has to agree with the server, and
+       * `signOut` is not enough on its own: the row it wants to delete is
+       * already gone, so the server answers it with an error and the client
+       * keeps the guest in hand. Refetching gets the `null` that ends the
+       * session locally however sign-out went.
+       */
+      await refetch()
+    })().finally(() => setResetting(false))
     // `isPending` alone would miss the resolution that arrives with the data
     // in the same tick.
   }, [isPending, session, refetch])
 
   return { resetting }
+}
+
+/**
+ * Whether this guest got as far as a profile.
+ *
+ * A second `/profiles/me` — the root gate asks the same question a moment
+ * later through `useMe`. It cannot be shared: this runs above
+ * `QueryClientProvider`, which is mounted inside the same component, and it
+ * has to answer before the navigator is built. One request on a guest's cold
+ * start is the price.
+ */
+async function answeredSomething(): Promise<boolean> {
+  try {
+    await api.get('/profiles/me')
+    return true
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) return false
+    return true
+  }
 }
 
 async function endGuestSession(): Promise<void> {

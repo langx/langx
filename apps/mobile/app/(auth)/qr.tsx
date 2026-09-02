@@ -87,7 +87,7 @@ export default function QrSignInScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('qrSignIn.title')} onBack={() => router.replace('/(auth)')} />
+      <ScreenHeader title={t('qrSignIn.title')} onBack={() => router.replace('/')} />
 
       {state === 'starting' ? <ActivityIndicator style={styles.loading} /> : null}
 
