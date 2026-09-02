@@ -1,5 +1,5 @@
 import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { keys } from '../api/queries'
 import { useT } from '../i18n'
@@ -21,6 +21,12 @@ export function useGuestBrowse(): { start: () => Promise<void>; starting: boolea
   const { data: session } = authClient.useSession()
   const queryClient = useQueryClient()
   const [starting, setStarting] = useState(false)
+  /*
+   * Whether *this hook* is the reason there is a guest session. A ref rather
+   * than `starting`, which is cleared only on failure and would still be true
+   * at the moment the effect below wants to read it.
+   */
+  const started = useRef(false)
 
   async function start(): Promise<void> {
     if (starting) return
@@ -41,6 +47,7 @@ export function useGuestBrowse(): { start: () => Promise<void>; starting: boolea
       await showAlert(t('welcome.guestFailed'), t('common.retry'))
       return
     }
+    started.current = true
     /*
      * The session changed, so anything cached under the previous one is about
      * to be answered differently — the gate reads `useMe` to decide where to
@@ -64,9 +71,17 @@ export function useGuestBrowse(): { start: () => Promise<void>; starting: boolea
    *
    * So it waits for the session to actually exist, which is also the only
    * moment the destination is guaranteed to be mounted.
+   *
+   * `started` is what keeps this a consequence of the tap rather than of the
+   * session. Without it the effect fired on every mount that happened to hold
+   * a guest session, and both screens that use this hook stay mounted for a
+   * guest: opening `(auth)/sign-in` bounced straight to the language step, so
+   * a guest could not sign into the account they already had.
    */
   useEffect(() => {
-    if (shouldGateGuest(session?.user)) router.replace('/(onboarding)/languages')
+    if (started.current && shouldGateGuest(session?.user)) {
+      router.replace('/(onboarding)/languages')
+    }
   }, [session])
 
   return { start, starting }

@@ -1,3 +1,4 @@
+import { GUEST_TTL_MS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance, InjectOptions } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -5,18 +6,23 @@ import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
+import { authId } from '../lib/authId'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import type { Profile } from '../modules/profiles/profiles'
+import { purgeStaleGuests } from '../modules/profiles/purgeGuests'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { createStorageProvider } from '../storage/createStorageProvider'
-import { CapturingEmailSender } from '../testSupport/authFlow'
+import { CapturingEmailSender, signUpAndSignIn } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
+
+const MEMBER_PASSWORD = 'correct horse battery staple'
 
 describe('guests', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
+  let emailSender: CapturingEmailSender
 
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
@@ -31,6 +37,7 @@ describe('guests', () => {
     handle = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
     await ensureIndexes(handle.db)
     const revenueCat = createRevenueCatClientFromEnv(env)
+    emailSender = new CapturingEmailSender()
     app = await buildApp({
       env,
       db: handle.db,
@@ -39,7 +46,7 @@ describe('guests', () => {
         env,
         db: handle.db,
         client: handle.client,
-        emailSender: new CapturingEmailSender(),
+        emailSender,
         revenueCat,
       }),
       storage: createStorageProvider(env),
@@ -47,6 +54,28 @@ describe('guests', () => {
       revenueCat,
     })
     await app.ready()
+
+    /*
+     * The same warm-up `follows.test.ts` does, and for the same reason: the
+     * first sign-up against an empty database creates `account` from inside
+     * Better Auth's transaction, and MongoDB answers that catalog change with
+     * a transient write conflict. Retried rather than asserted, because the
+     * point is only to get the collection made.
+     */
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const warmUp = await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-up/email',
+        payload: {
+          email: `warmup-${attempt}@example.com`,
+          password: MEMBER_PASSWORD,
+          name: 'Warm Up',
+        },
+      })
+      if (warmUp.statusCode === 200) break
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+    emailSender.messages.length = 0
   }, 120_000)
 
   afterAll(async () => {
@@ -63,6 +92,27 @@ describe('guests', () => {
     }
     const cookie = response.headers['set-cookie']
     return Array.isArray(cookie) ? cookie.join('; ') : String(cookie)
+  }
+
+  /** The guest's own user id, for the rows that outlive the profile. */
+  async function guestUserId(cookie: string): Promise<string> {
+    const session = await app.inject({
+      method: 'GET',
+      url: '/api/auth/get-session',
+      headers: { cookie },
+    })
+    return session.json<{ user: { id: string } }>().user.id
+  }
+
+  /** What Better Auth holds for one user, across its three collections. */
+  async function authRowsFor(userId: string): Promise<number> {
+    const id = authId(userId)
+    const counts = await Promise.all([
+      handle.db.collection(COLLECTIONS.user).countDocuments({ _id: id }),
+      handle.db.collection(COLLECTIONS.session).countDocuments({ userId: id }),
+      handle.db.collection(COLLECTIONS.account).countDocuments({ userId: id }),
+    ])
+    return counts.reduce((total, count) => total + count, 0)
   }
 
   const guestBody = {
@@ -185,5 +235,89 @@ describe('guests', () => {
       .collection<Profile>(COLLECTIONS.profiles)
       .countDocuments({ guest: true, 'settings.discoverable': true })
     expect(guests).toBe(0)
+  })
+  /**
+   * A guest session is not meant to survive the app being closed — while one
+   * does, the app mounts both halves of its router and `/` stops resolving to
+   * one screen. The app ends it on the next launch through this route.
+   */
+  it('deletes the guest, the profile and every Better Auth row', async () => {
+    const cookie = await signInAsGuest()
+    const userId = await guestUserId(cookie)
+    await app.inject({
+      method: 'POST',
+      url: '/profiles/guest',
+      headers: { cookie },
+      payload: guestBody,
+    })
+
+    const deleted = await app.inject({
+      method: 'DELETE',
+      url: '/profiles/guest',
+      headers: { cookie },
+    })
+    expect(deleted.statusCode, deleted.body).toBe(204)
+
+    expect(
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).countDocuments({ _id: userId }),
+    ).toBe(0)
+    expect(await authRowsFor(userId)).toBe(0)
+
+    // The cookie in hand is worth nothing now, which is the half a plain
+    // sign-out would have got right and a profile-only delete would not.
+    const after = await app.inject({ method: 'GET', url: '/profiles/me', headers: { cookie } })
+    expect(after.statusCode).toBe(401)
+  })
+
+  /**
+   * The case the hourly sweep could not see: it looks for `profiles.guest`,
+   * and somebody who tapped "look around" and closed the app has no profile
+   * at all. Their user row used to stay forever.
+   */
+  it('deletes a guest who never picked a language', async () => {
+    const cookie = await signInAsGuest()
+    const userId = await guestUserId(cookie)
+
+    const deleted = await app.inject({
+      method: 'DELETE',
+      url: '/profiles/guest',
+      headers: { cookie },
+    })
+    expect(deleted.statusCode, deleted.body).toBe(204)
+    expect(await authRowsFor(userId)).toBe(0)
+  })
+
+  it('refuses to delete a real account', async () => {
+    const member = await signUpAndSignIn(app, emailSender, {
+      email: 'not-a-guest@example.com',
+      password: MEMBER_PASSWORD,
+      name: 'Not A Guest',
+    })
+
+    const refused = await app.inject({
+      method: 'DELETE',
+      url: '/profiles/guest',
+      headers: { cookie: member.cookie },
+    })
+    expect(refused.statusCode, refused.body).toBe(400)
+    expect(refused.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+    expect(await authRowsFor(member.userId)).toBeGreaterThan(0)
+  })
+  /**
+   * The safety net behind the delete above, for the guests the app never gets
+   * to end — killed mid-launch, or offline when it tried. Keyed on
+   * `isAnonymous` rather than on a profile, which is the whole point: this
+   * guest has no profile to be found by.
+   *
+   * Last in the file: it sweeps every guest in the database.
+   */
+  it('sweeps a profile-less guest once it is past its TTL', async () => {
+    const cookie = await signInAsGuest()
+    const userId = await guestUserId(cookie)
+    expect(await authRowsFor(userId)).toBeGreaterThan(0)
+
+    const swept = await purgeStaleGuests(handle.db, new Date(Date.now() + GUEST_TTL_MS + 1000))
+    expect(swept.purged).toBeGreaterThan(0)
+    expect(await authRowsFor(userId)).toBe(0)
   })
 })
