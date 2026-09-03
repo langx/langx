@@ -148,7 +148,7 @@ importers:
         version: 3.1119.0
       '@better-auth/expo':
         specifier: 'catalog:'
-        version: 1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.15)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))
+        version: 1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.15)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))
       '@dicebear/collection':
         specifier: ^9.4.2
         version: 9.4.2(@dicebear/core@9.4.3)
@@ -172,7 +172,7 @@ importers:
         version: 10.71.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))
       better-auth:
         specifier: 'catalog:'
-        version: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)))
+        version: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)))
       fastify:
         specifier: 'catalog:'
         version: 5.12.1
@@ -230,13 +230,13 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
   apps/mobile:
     dependencies:
       '@better-auth/expo':
         specifier: 'catalog:'
-        version: 1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.14)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))
+        version: 1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.14)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))
       '@expo-google-fonts/nunito':
         specifier: ^0.4.2
         version: 0.4.2
@@ -257,7 +257,7 @@ importers:
         version: 5.102.6(react@19.2.3)
       better-auth:
         specifier: 'catalog:'
-        version: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)))
+        version: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)))
       expo:
         specifier: ~57.0.16
         version: 57.0.16(@babel/core@7.29.7)(@expo/dom-webview@57.0.1)(@expo/metro-runtime@57.0.13)(expo-router@57.0.16)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.10.1(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
@@ -325,8 +325,8 @@ importers:
         specifier: ~57.0.2
         version: 57.0.2(expo@57.0.16)(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))
       expo-updates:
-        specifier: ~57.0.18
-        version: 57.0.18(expo-dev-client@57.0.16(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
+        specifier: ~57.0.19
+        version: 57.0.19(expo-dev-client@57.0.16(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
       expo-web-browser:
         specifier: ~57.0.1
         version: 57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))
@@ -372,7 +372,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/shared:
     dependencies:
@@ -385,7 +385,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
 
 packages:
 
@@ -2079,36 +2079,42 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-arm64-musl@1.2.6':
     resolution: {integrity: sha512-muWCk27FVBEZtv0MsK8gnfSmgczA8KQ0uRVJbTABKhkRfQc38aUrcb7fhi3BNiyseFmgcRsoMfQsSNJ+DbZdSw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rolldown/binding-linux-ppc64-gnu@1.2.6':
     resolution: {integrity: sha512-eWDoSfU7Co2qj3vgB3Dt4lj1mG6CoWbcJQkRMP3XJplyCMtuaq3LHvPFjS9QIPvMGWVadJC04Xiy0IdcVPtnwQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-s390x-gnu@1.2.6':
     resolution: {integrity: sha512-2bWNjRSIayvupRKxXUY2tWG9fYdoUlTqWywHRvE8Eq3GvuQ+f2HeIkve697fIt+IQs/PV8yFsdWuhp1aJ1PdnA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-x64-gnu@1.2.6':
     resolution: {integrity: sha512-KekI0gS0wLxe1UBSQSjenBVwou/JkcQPDzBPICGZjxUv9k3RteHDPBQaiOicZUFKRIH2wKEimGwVpnJsbPzu7w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-x64-musl@1.2.6':
     resolution: {integrity: sha512-TvtPnfVr+HtyGiDmPK4VWmlNm7QhNNAcK5Q9A7aOXsI8545yCyaoMaicXrFZ72JzeYjaUVk7yT243zT0jzjFKQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rolldown/binding-openharmony-arm64@1.2.6':
     resolution: {integrity: sha512-iOo0VEay2XFhaCcH0sps5XIimkSuOnNaZrf6+ZkoSOQBJPKNU48RkmJv0/lSpipexu5P+ouFgafe5IGr/DiQfg==}
@@ -3318,8 +3324,8 @@ packages:
     peerDependencies:
       expo: '*'
 
-  expo-updates@57.0.18:
-    resolution: {integrity: sha512-guTp5U6RbMOivi3GWXsflZA6M/4oTZKj1/M69sEzVW9MII/FQt+lPgbbEHwcIGrpXBr4RuJIYVrh492kkptJvQ==}
+  expo-updates@57.0.19:
+    resolution: {integrity: sha512-xX4KIUa8H2xKmiVDe/uEehD96MV6nyyF/OCrE+PBYfOEp6BbS8bYkHZfNFcoDCKMRuT6pg9JrCi8OmnoWlM/2A==}
     hasBin: true
     peerDependencies:
       expo: '*'
@@ -3593,8 +3599,8 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  ignore@7.0.6:
-    resolution: {integrity: sha512-BAg6QkE8W+TuQLrrw0Ugr7HegXduRuuj8/ti2kSOc+jz1dmx8/WNcjr6XGnq5YpDWxFwwaavqD0+jIUOKelTsw==}
+  ignore@7.0.8:
+    resolution: {integrity: sha512-YYNsSlXBjMk92SKnkwvB5LOVSa6OznlFUGcsvrFgNJbJCd0M1XKeFVRc8ZByeCqz32FivYNHJVooLmdqrmvp/Q==}
     engines: {node: '>= 4'}
 
   image-size@1.2.1:
@@ -3794,24 +3800,28 @@ packages:
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.33.0:
     resolution: {integrity: sha512-yiO5ROMuYQgXbC60yjZU5CYSFZGKXL0HFATXt9mHJn1+zW55oCtMI9NfcVhYLMFDL7gV7oBPon/EmMMGg2OvtQ==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.33.0:
     resolution: {integrity: sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.33.0:
     resolution: {integrity: sha512-RYiYbkokw0trfKqqzfF55lginwEPrD3OJDfTuJzFs1MK6iFnDenaz1fqLLtX4ITG3OktJQXOeTaw1awrBAlZPw==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.33.0:
     resolution: {integrity: sha512-1K+MPfLSFVpphzpdbfkhlWk6wBrTObBzS2T6db10PNOZgR9GoVsAWzwNyuhUYYbTp23j+4RrncfujZ4uAzXvwA==}
@@ -4847,6 +4857,11 @@ packages:
 
   terser@5.51.0:
     resolution: {integrity: sha512-myiQ6aFnxDOjdiXdTlC8ngVccQD88uHXTx5RUQOSEnarDYgJMjDagwAQszcOusjvmf4YqWsxoD1+MY+oAJRmpw==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  terser@5.51.2:
+    resolution: {integrity: sha512-bWnjSNscmuI+GJze6ZupnHP8G/cTcsJF+bXCeQknk2SHQsgbNJnLrqiH9jZ2W4STPVXH2mDKKRX3iwPhc9Cn/Q==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5980,11 +5995,11 @@ snapshots:
       '@better-auth/core': 1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2)
       '@better-auth/utils': 0.4.2
 
-  '@better-auth/expo@1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.15)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))':
+  '@better-auth/expo@1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.15)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))':
     dependencies:
       '@better-auth/core': 1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2)
       '@better-fetch/fetch': 1.3.1
-      better-auth: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)))
+      better-auth: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)))
       better-call: 1.4.0(zod@4.4.3)
       zod: 4.4.3
     optionalDependencies:
@@ -5994,11 +6009,11 @@ snapshots:
       expo-secure-store: 57.0.1(expo@57.0.16)
       expo-web-browser: 57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))
 
-  '@better-auth/expo@1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.14)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))':
+  '@better-auth/expo@1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))))(expo-constants@57.0.14)(expo-linking@57.0.7)(expo-network@57.0.1(expo@57.0.16)(react@19.2.3))(expo-secure-store@57.0.1(expo@57.0.16))(expo-web-browser@57.0.2(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))':
     dependencies:
       '@better-auth/core': 1.7.1(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2)
       '@better-fetch/fetch': 1.3.1
-      better-auth: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)))
+      better-auth: 1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)))
       better-call: 1.4.0(zod@4.4.3)
       zod: 4.4.3
     optionalDependencies:
@@ -7459,7 +7474,7 @@ snapshots:
       '@typescript-eslint/utils': 8.68.0(eslint@10.9.1)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.68.0
       eslint: 10.9.1
-      ignore: 7.0.6
+      ignore: 7.0.8
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -7552,13 +7567,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.11(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -7816,7 +7831,7 @@ snapshots:
 
   baseline-browser-mapping@2.11.19: {}
 
-  better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))):
+  better-auth@1.7.1(@opentelemetry/api@1.9.1)(mongodb@7.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))):
     dependencies:
       '@better-auth/core': 1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2)
       '@better-auth/drizzle-adapter': 1.7.1(@better-auth/core@1.7.1(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(@better-auth/utils@0.4.2)
@@ -7839,7 +7854,7 @@ snapshots:
       mongodb: 7.6.0
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@opentelemetry/api'
@@ -8619,7 +8634,7 @@ snapshots:
     dependencies:
       expo: 57.0.16(@babel/core@7.29.7)(@expo/dom-webview@57.0.1)(@expo/metro-runtime@57.0.13)(expo-router@57.0.16)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.10.1(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
 
-  expo-updates@57.0.18(expo-dev-client@57.0.16(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3):
+  expo-updates@57.0.19(expo-dev-client@57.0.16(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3)))(expo@57.0.16)(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3):
     dependencies:
       '@expo/code-signing-certificates': 0.0.6
       '@expo/plist': 0.8.1
@@ -8925,7 +8940,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  ignore@7.0.6: {}
+  ignore@7.0.8: {}
 
   image-size@1.2.1:
     dependencies:
@@ -9300,7 +9315,7 @@ snapshots:
   metro-minify-terser@0.87.0:
     dependencies:
       flow-enums-runtime: 0.0.6
-      terser: 5.51.0
+      terser: 5.51.2
 
   metro-resolver@0.84.5:
     dependencies:
@@ -10419,6 +10434,13 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
+  terser@5.51.2:
+    dependencies:
+      '@jridgewell/source-map': 0.3.11
+      acorn: 8.18.0
+      commander: 2.20.3
+      source-map-support: 0.5.21
+
   text-decoder@1.2.7:
     dependencies:
       b4a: 1.8.1
@@ -10560,7 +10582,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0):
+  vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -10571,14 +10593,14 @@ snapshots:
       '@types/node': 24.13.3
       esbuild: 0.28.2
       fsevents: 2.3.3
-      terser: 5.51.0
+      terser: 5.51.2
       tsx: 4.23.12
       yaml: 2.9.0
 
-  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)):
+  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.11(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -10595,7 +10617,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.12)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
