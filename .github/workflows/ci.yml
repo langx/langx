@@ -42,7 +42,7 @@ jobs:
       # directory removes the download on all but the first run; fetching the
       # binary once here removes the race on that first run.
       - name: Cache the mongodb-memory-server binary
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/mongodb-binaries
           key: mongodb-binaries-${{ runner.os }}
