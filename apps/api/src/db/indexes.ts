@@ -515,6 +515,14 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { sentOn: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
   ],
 
+  [COLLECTIONS.emailCampaigns]: [
+    // The invariant that makes a re-run unable to mail somebody twice — the
+    // same doctrine as `jobRuns`, in the database rather than in the script's
+    // care. No TTL: "we already sent them the launch email" has to be true
+    // next year, or a second campaign with a reused id would go out again.
+    { key: { campaignId: 1, userId: 1 }, name: 'campaign_user_unique', unique: true },
+  ],
+
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },
