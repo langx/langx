@@ -4,6 +4,8 @@ import { runDailyPool } from './pool'
 
 export interface SchedulerLogger {
   info: (obj: object, msg: string) => void
+  /** For the half-failures: a pass that finished, having skipped something. */
+  warn: (obj: object, msg: string) => void
   error: (obj: object, msg: string) => void
 }
 
