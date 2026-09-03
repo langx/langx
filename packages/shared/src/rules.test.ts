@@ -27,19 +27,19 @@ import {
 const NOW = new Date('2026-08-26T00:00:00Z')
 
 describe('age gate', () => {
-  it('is 18+', () => {
-    expect(MINIMUM_AGE).toBe(18)
+  it('is 16+', () => {
+    expect(MINIMUM_AGE).toBe(16)
   })
 
   /**
    * Still counted by year, now that the whole date is known: somebody who
-   * turns 18 in December is let in in January. Making that strict is a product
+   * turns 16 in December is let in in January. Making that strict is a product
    * decision — the point of this test is that collecting the day did not
    * quietly change who gets in.
    */
-  it('accepts someone turning 18 this year and rejects 17', () => {
-    expect(meetsMinimumAge('2008-12-31', NOW)).toBe(true) // turns 18 in 2026
-    expect(meetsMinimumAge('2009-01-01', NOW)).toBe(false)
+  it('accepts someone turning 16 this year and rejects 15', () => {
+    expect(meetsMinimumAge('2010-12-31', NOW)).toBe(true) // turns 16 in 2026
+    expect(meetsMinimumAge('2011-01-01', NOW)).toBe(false)
   })
 
   it('rejects an underage birth date through the schema', () => {

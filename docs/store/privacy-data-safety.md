@@ -13,7 +13,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Email address of a v1 account its owner deleted | `v1DeletedContacts`                     | One announcement that the new app exists, then the collection is dropped; the mail's unsubscribe link deletes the address on the spot (`docs/decisions.md` → _Every v1 account has a v2 `user` row_)              | Temporary — gone after that one send  |
 | Name / display name                             | `profiles.displayName`                  | Shown on your profile                                                                                                                                                                                             | Required                              |
 | Username                                        | `profiles.handle`                       | Your public identity                                                                                                                                                                                              | Required                              |
-| Date of birth                                   | `profiles.birthDate`                    | 18+ age gate, and birthdays; only the **age** is ever shown to others (`toPublicProfile`)                                                                                                                         | Required                              |
+| Date of birth                                   | `profiles.birthDate`                    | 16+ age gate, and birthdays; only the **age** is ever shown to others (`toPublicProfile`)                                                                                                                         | Required                              |
 | Gender                                          | `profiles.gender`                       | Shown on profile; used by the Pro gender filter                                                                                                                                                                   | `undisclosed` is a valid answer       |
 | Country                                         | `profiles.country`                      | Shown on profile; Pro country filter. Derived from the connection's IP at sign-up (Cloudflare's `CF-IPCountry`); the address itself is never stored                                                               | Required, not editable by hand        |
 | City                                            | `profiles.cityName`                     | Shown on profile, and the Pro city filter. **Derived**, not entered: read off the shared location against a fixed list of places. Nothing to fill in, and removable from the profile with Settings → Hide my city | Only exists if location sharing is on |
@@ -200,13 +200,18 @@ party to.
 
 ## Play "target audience and content"
 
-LangX is **18+** and the age gate is enforced server-side at profile creation
+LangX is **16+** and the age gate is enforced server-side at profile creation
 (`meetsMinimumAge`, `packages/shared/src/age.ts`) for all three sign-up paths.
-Do not declare a Families audience: it contradicts the 18+ policy and changes
-which SDKs and data practices are permitted.
+Declare the **16–17** and **18 and over** age groups and nothing younger. Do not
+declare a Families audience: it applies as soon as an under-13 group is ticked,
+contradicts the 16+ policy and changes which SDKs and data practices are
+permitted.
 
 ## Age rating inputs
 
 Unrestricted user-to-user text communication and user-generated photos, with
-in-app blocking and reporting. That combination normally lands at 17+/18+ on
-both stores, which matches the age gate.
+in-app blocking and reporting. The questionnaires rated that **13+ on Apple**
+and **Teen on Google** (September 2026). A rating describes the content; the
+16+ floor is a term of use enforced at profile creation. The two are allowed to
+differ, and they do: a 14-year-old can install the app and is refused at
+onboarding.

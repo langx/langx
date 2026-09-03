@@ -2634,3 +2634,34 @@ other fresh-gated endpoint is `/unlink-account`, which the app never calls.
 All of it is covered end to end in `routes/deviceFlow.test.ts`, including the
 case as it was lived — approve without claim — and a test that fails without
 the `freshAge` line.
+
+## The age gate went from 18 to 16
+
+LangX launched v2 as 18+. The number came from v1's published Terms and from
+the reasoning in `age.ts`: at 18 neither COPPA nor GDPR's Article 8 can apply,
+so nothing about parental consent ever had to be built. The store docs went a
+step further and predicted that unrestricted chat plus user photos would rate
+17+/18+ on both stores, "which matches the age gate".
+
+The questionnaires came back 13+ on Apple and Teen on Google. That is a rating
+of the content and says nothing about who may hold an account, but it made the
+question unavoidable: 18 was a choice, not a constraint. Behic lowered it to 16
+on 3 September 2026.
+
+Why 16 and not the 13 the stores suggest: Article 8 lets each EU state set its
+digital-consent age between 13 and 16, and several chose 16. At 16 no country
+in the EU or UK needs a parental-consent flow; COPPA covers under-13s and stays
+irrelevant. 13 would have needed consent flows in half of Europe and the extra
+duties that come with minors on a stranger-to-stranger chat. 16 needed a
+constant, a handful of sentences and a Play Console declaration.
+
+Two things did not change. The arithmetic is still whole years from the birth
+year, so somebody who turns 16 in December is admitted in January; the strict
+version was possible and is still not adopted. And nobody already inside was
+affected — lowering a floor only admits people. The one visible side effect is
+in `legacyRestore.ts`, which treats an under-age v1 birth date as a missing
+field: v1 holders aged 16 and 17, bounced back to onboarding until now, can
+finish the restore.
+
+The lesson is about the docs, not the number: a prediction about what a form
+will say should not be written as if the form had been filled in.

@@ -1,15 +1,22 @@
 import { z } from 'zod'
 
 /**
- * LangX is 18+. This is already the published policy in the v1 Terms
- * ("You must be at least 18 years old to create an account and use the LangX
- * app") and it keeps the app clear of COPPA / GDPR-K, which matters because
- * discovery collects location and gender.
+ * LangX is 16+.
+ *
+ * It was 18+ until September 2026, inherited from v1's published Terms and
+ * chosen so that COPPA / GDPR-K could not apply — discovery collects location
+ * and gender. Then the store questionnaires rated the content 13+ (Apple) and
+ * Teen (Google): a rating of the content, not a floor on who may sign up, but
+ * it showed 18 was a policy choice rather than a constraint. 16 is the highest
+ * digital-consent age any EU state picked under GDPR Article 8, so at 16 no
+ * country in the EU or UK needs a parental-consent flow, and COPPA (under-13s)
+ * stays irrelevant. 13 would have needed both, which is why the floor stopped
+ * here. See docs/decisions.md.
  *
  * Enforced server-side before a profile is written — the client date picker is
  * a convenience, not a gate.
  */
-export const MINIMUM_AGE = 18
+export const MINIMUM_AGE = 16
 
 /** Oldest birth year we accept, to reject obvious garbage. */
 export const EARLIEST_BIRTH_YEAR = 1900
@@ -63,10 +70,10 @@ export function ageFromBirthDate(birthDate: string, now: Date = new Date()): num
 /**
  * True when the user is at least {@link MINIMUM_AGE}.
  *
- * Someone born in `now.year - 18` turns 18 at some point this year but may not
- * have yet. We accept them: requiring the birthday to have passed would lock
- * out every genuine 18-year-old for up to a year, and that was the call when
- * only the year was collected. Collecting the full date makes the strict
+ * Someone born in `now.year - MINIMUM_AGE` reaches the age at some point this
+ * year but may not have yet. We accept them: requiring the birthday to have
+ * passed would lock out every genuine sixteen-year-old for up to a year, and
+ * that was the call when only the year was collected. Collecting the full date makes the strict
  * version *possible*; it does not make it decided.
  */
 export function meetsMinimumAge(birthDate: string, now: Date = new Date()): boolean {

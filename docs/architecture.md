@@ -23,7 +23,7 @@ learning. Discovery _ranks_ by mutual fit, but listing is not a gate — there i
 conversations per rolling 24 hours and reply to everything they receive without
 limit. HelloTalk/Tandem, not Tinder. Users correct each other's sentences, and
 the whole thing is wrapped in a game: streaks, token, leaderboards. Mobile
-(iOS/Android) and web come out of **one Expo codebase**. Minimum age **18**.
+(iOS/Android) and web come out of **one Expo codebase**. Minimum age **16**.
 
 **v2 stays open source** — BSD 3-Clause, public repo. That is an architectural
 constraint, not a footnote: no secrets in the repo, entitlement enforced
@@ -102,14 +102,15 @@ This is communication work, and it is part of the delivery:
 - `langx.io/terms-conditions`: dated 7 June 2024. Add subscription terms,
   cancellation, renewal, and the token's non-transferability. **Clean up §11** — today
   it contains both "under-18s may not use this" and "our users may be children,
-  we follow the Families policy / COPPA". 18+ wins.
+  we follow the Families policy / COPPA". 18+ wins. (Lowered to 16+ in
+  September 2026 — see `decisions.md`.)
 - Privacy policy: new backend, Sentry, location, gender, activity/token data.
 - The `docs.langx.io` litepaper: state plainly that the on-chain design in it
   is not being built, and that tokens are not transferable.
 - Store listing copy and the **App Privacy / Data Safety** forms.
 - **Check Play Console's "target audience" declaration** — a Families
   declaration changes Data Safety, ad SDK rules and content policy entirely,
-  and contradicts an 18+ policy.
+  and contradicts an adults-and-teens-only policy.
 
 > **Flag — community reaction.** Making this change without explaining it to
 > the community on Discord, Reddit and GitHub damages the brand's strongest
@@ -142,7 +143,7 @@ This is communication work, and it is part of the delivery:
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
 | Storage             | S3-compatible abstraction; **Backblaze B2** today (v1's account, new bucket), R2 reachable by config                                                                                                                                                                                                                                                                                                    |
 | Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                          |
-| **Minimum age**     | **18+** (already in the Terms); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                                                           |
+| **Minimum age**     | **16+** (was 18+ until September 2026; the Terms moved with it); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                          |
 | **Licence**         | **BSD 3-Clause, public repo** — same as v1                                                                                                                                                                                                                                                                                                                                                              |
 | **Codebase**        | Written from scratch in langx2; the abandoned Expo rewrite used only as a screen/route reference                                                                                                                                                                                                                                                                                                        |
 | Release model       | Brownfield update — same bundle ID and package name, staged rollout                                                                                                                                                                                                                                                                                                                                     |
@@ -237,9 +238,9 @@ files.
   the browser — the token endpoint is OAuth and answers with a bearer token
   nothing in this app sends. See `decisions.md` → _Device sign-in_.
 - **Age gate:** `birthDate` (`YYYY-MM-DD`) is required at onboarding and
-  under-18s cannot complete it. The check is server-side, before `profiles` is
+  under-16s cannot complete it. The check is server-side, before `profiles` is
   written — the client's date picker is not trusted. The rule still counts
-  whole years from the birth _year_, so somebody who turns 18 in December is
+  whole years from the birth _year_, so somebody who turns 16 in December is
   admitted in January; collecting the day made the strict version possible and
   did not adopt it. Only the age is ever public — the date itself never leaves
   `GET /profiles/me`.
@@ -978,7 +979,7 @@ only thing that matters is preserving store identity.
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Play App Signing status**           | If enabled, a lost keystore is recoverable via an upload key reset. If disabled and the original keystore is lost, that listing **cannot** be updated |
 | Apple Developer + Play Console access | Certificates, provisioning, listing management                                                                                                        |
-| Play "target audience" declaration    | A Families declaration contradicts the 18+ policy and changes Data Safety and SDK rules                                                               |
+| Play "target audience" declaration    | A Families declaration contradicts the 16+ policy and changes Data Safety and SDK rules                                                               |
 | Install base OS distribution          | minSdk is rising; devices below the threshold stop receiving updates                                                                                  |
 | iOS associated domains                | If `app.langx.io` is declared on iOS too, it must move into entitlements                                                                              |
 
@@ -1001,7 +1002,7 @@ only thing that matters is preserving store identity.
 ## MVP (P0)
 
 1. Sign-up/sign-in (email + Google + Apple), verification, password reset,
-   **18+ age gate**
+   **16+ age gate** (18+ at launch)
 2. Onboarding: languages + levels → gender/bio/avatar/interests → **username
    claim**
 3. Profile view/edit, presigned avatar upload + **multi-photo gallery**
