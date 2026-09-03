@@ -157,7 +157,30 @@ export interface Profile {
   welcomePackAt?: Partial<Record<'pro' | 'pro_plus', Date>>
   /** Set when token earning is suspended pending review (report/block). Clears by unsetting. */
   tokenFrozenAt?: Date
-  stats: { lastActiveAt: Date; messagesSent: number }
+  stats: {
+    lastActiveAt: Date
+    messagesSent: number
+    /**
+     * Which badges this account has already been *told* about.
+     *
+     * Not a second copy of the badges — those stay derived, and this cannot
+     * disagree with them about anything, because it grants nothing. It is a
+     * notification log: the badge round-up needs to know what is new, and
+     * "new" is unanswerable from a set that is recomputed from scratch every
+     * time it is asked for.
+     *
+     * On the profile rather than in `notificationLedger` because that
+     * collection expires its rows after thirty days, which is right for "we
+     * already nudged them today" and wrong for "they have had this badge since
+     * March" — an expiring row would re-announce every badge every month.
+     *
+     * Bounded by the badge catalogue, and absent on every account that
+     * predates it: `runBadgeRoundUpPass` treats a missing list as "everything
+     * they have now is already known", so nobody is congratulated on a
+     * two-year-old streak the day this ships.
+     */
+    notifiedBadgeIds?: string[]
+  }
   /**
    * Who invited this account, if anybody. Written once by `attachReferral`
    * during onboarding and never again — there is no endpoint that can set or

@@ -2,7 +2,8 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
 /** Which scheduled pass a row belongs to; first component of the `_id`. */
-export type NotificationJob = 'unreadDigest' | 'profileVisitsPush' | 'profileVisitsEmail'
+export type NotificationJob =
+  'unreadDigest' | 'profileVisitsPush' | 'profileVisitsEmail' | 'badgeEarned'
 
 export interface NotificationLedgerEntry {
   _id: string

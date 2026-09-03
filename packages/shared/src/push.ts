@@ -21,7 +21,7 @@ export const registerDeviceSchema = z.object({
 })
 export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>
 
-export const PUSH_KINDS = ['message', 'streakReminder', 'profileVisits'] as const
+export const PUSH_KINDS = ['message', 'streakReminder', 'badgeEarned', 'profileVisits'] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 
 /**
@@ -46,3 +46,13 @@ export const PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY = 1
 
 /** How many visitors a weekly summary names, for the tier allowed to see them. */
 export const PROFILE_VISITS_EMAIL_MAX_NAMES = 5
+
+/**
+ * When the round-up of badges earned since yesterday goes out.
+ *
+ * Evening, but two hours before the streak nudge rather than beside it: most
+ * of what earns a badge — a streak day, a correction, the thousandth message —
+ * happens during the day, and telling somebody at 18:00 what they achieved is
+ * a better note to end on than telling them at breakfast about yesterday.
+ */
+export const BADGE_ROUND_UP_LOCAL_HOUR = 18

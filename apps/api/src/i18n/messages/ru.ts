@@ -20,6 +20,12 @@ export const ru: Localized<ServerMessages> = {
       other: 'Ваш профиль посмотрели: {count}',
     },
     profileVisitsBody: 'Нажмите, чтобы увидеть кто.',
+    badgeOneTitle: 'Новый значок: {label} 🏅',
+    badgeManyTitle: {
+      one: 'Вы получили 1 новый значок 🏅',
+      other: 'Вы получили новых значков: {count} 🏅',
+    },
+    badgeBody: 'Отличная работа. Так держать.',
   },
 
   email: {
@@ -69,6 +75,14 @@ export const ru: Localized<ServerMessages> = {
     visitsNames: 'Среди них: {names}.',
     visitsLocked: 'Оформите подписку, чтобы увидеть кто.',
     visitsButton: 'Посмотреть, кто заходил',
+
+    badgeOneSubject: 'Новый значок: {label}',
+    badgeManySubject: {
+      one: 'Вы получили 1 новый значок',
+      other: 'Вы получили новых значков: {count}',
+    },
+    badgeBody: 'Он уже в вашем профиле — его видно всем.',
+    badgeButton: 'Посмотреть значки',
 
     unsubscribeTitle: 'Отключить эти письма?',
     unsubscribeBody:

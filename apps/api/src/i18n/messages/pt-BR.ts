@@ -10,6 +10,12 @@ export const ptBR: Localized<ServerMessages> = {
       other: '{count} pessoas viram seu perfil',
     },
     profileVisitsBody: 'Toque para ver quem.',
+    badgeOneTitle: 'Nova medalha: {label} 🏅',
+    badgeManyTitle: {
+      one: 'Você ganhou 1 medalha nova 🏅',
+      other: 'Você ganhou {count} medalhas novas 🏅',
+    },
+    badgeBody: 'Mandou bem. Continue assim.',
   },
 
   email: {
@@ -59,6 +65,14 @@ export const ptBR: Localized<ServerMessages> = {
     visitsNames: 'Entre elas: {names}.',
     visitsLocked: 'Faça upgrade para ver quem foram.',
     visitsButton: 'Ver quem visitou',
+
+    badgeOneSubject: 'Nova medalha: {label}',
+    badgeManySubject: {
+      one: 'Você ganhou 1 medalha nova',
+      other: 'Você ganhou {count} medalhas novas',
+    },
+    badgeBody: 'Já está no seu perfil, à vista de quem entrar.',
+    badgeButton: 'Ver suas medalhas',
 
     unsubscribeTitle: 'Desativar estes e-mails?',
     unsubscribeBody:

@@ -234,3 +234,35 @@ export function profileVisitsEmail(
     text: notificationText(locale, [body, detail, '', cta.url], unsubscribe),
   }
 }
+
+/**
+ * "You earned a badge", for somebody with no phone signed in.
+ *
+ * `label` is the badge's own name and comes from the catalogue in English —
+ * `BADGES` builds it from the threshold. So it is used only when exactly one
+ * badge is new; several become a count, because five English labels inside an
+ * Arabic sentence read worse than a number does.
+ */
+export function badgeEarnedEmail(
+  locale: Locale,
+  { count, label, unsubscribe }: { count: number; label: string | null; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const title = label
+    ? t('email.badgeOneSubject', { label })
+    : t('email.badgeManySubject', { count })
+  const body = t('email.badgeBody')
+  const cta = { url: webUrl('/me'), label: t('email.badgeButton') }
+
+  return {
+    subject: title,
+    html: notificationEmail(locale, {
+      preheader: title,
+      bodyHtml: `<p><strong>${title}</strong></p><p>${body}</p>`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
+  }
+}

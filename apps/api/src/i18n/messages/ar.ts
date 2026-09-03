@@ -15,6 +15,9 @@ export const ar: Localized<ServerMessages> = {
     streakBody: 'أرسل رسالة اليوم للحفاظ عليها.',
     profileVisitsTitle: { one: 'شخص واحد اطّلع على ملفك', other: '{count} أشخاص اطّلعوا على ملفك' },
     profileVisitsBody: 'اضغط لترى مَن.',
+    badgeOneTitle: 'شارة جديدة: {label} 🏅',
+    badgeManyTitle: { one: 'حصلت على شارة جديدة 🏅', other: 'حصلت على {count} شارات جديدة 🏅' },
+    badgeBody: 'عمل رائع. واصل.',
   },
 
   email: {
@@ -64,6 +67,11 @@ export const ar: Localized<ServerMessages> = {
     visitsNames: 'منهم: {names}.',
     visitsLocked: 'ارتقِ بخطتك لترى مَن كانوا.',
     visitsButton: 'شاهد مَن زار ملفك',
+
+    badgeOneSubject: 'شارة جديدة: {label}',
+    badgeManySubject: { one: 'حصلت على شارة جديدة', other: 'حصلت على {count} شارات جديدة' },
+    badgeBody: 'صارت على ملفك الآن، يراها كل من يزوره.',
+    badgeButton: 'اطّلع على شاراتك',
 
     unsubscribeTitle: 'إيقاف هذه الرسائل؟',
     unsubscribeBody: 'لن تصلك {kind} عبر البريد بعد الآن. إشعارات الهاتف لا تتأثر.',

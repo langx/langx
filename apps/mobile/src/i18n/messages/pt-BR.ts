@@ -386,6 +386,8 @@ export const ptBR: Localized<EnMessages> = {
     streak: 'Lembrete de sequência',
     streakBody:
       'À noite, se sua sequência estiver prestes a quebrar. Por e-mail se nenhum telefone estiver conectado.',
+    badges: 'Medalhas',
+    badgesBody: 'Quando você ganha uma. Um resumo à noite, não um aviso a cada vez.',
     profileVisits: 'Visitas ao perfil',
     profileVisitsBody:
       'Uma vez por dia, quantas pessoas olharam seu perfil. Um resumo por e-mail toda semana.',

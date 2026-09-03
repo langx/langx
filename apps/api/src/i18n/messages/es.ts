@@ -10,6 +10,12 @@ export const es: Localized<ServerMessages> = {
       other: '{count} personas vieron tu perfil',
     },
     profileVisitsBody: 'Toca para ver quién.',
+    badgeOneTitle: 'Nueva insignia: {label} 🏅',
+    badgeManyTitle: {
+      one: 'Ganaste 1 insignia nueva 🏅',
+      other: 'Ganaste {count} insignias nuevas 🏅',
+    },
+    badgeBody: 'Bien hecho. Sigue así.',
   },
 
   email: {
@@ -59,6 +65,14 @@ export const es: Localized<ServerMessages> = {
     visitsNames: 'Entre ellas: {names}.',
     visitsLocked: 'Mejora tu plan para ver quiénes fueron.',
     visitsButton: 'Ver quién te visitó',
+
+    badgeOneSubject: 'Nueva insignia: {label}',
+    badgeManySubject: {
+      one: 'Ganaste 1 insignia nueva',
+      other: 'Ganaste {count} insignias nuevas',
+    },
+    badgeBody: 'Ya está en tu perfil, a la vista de quien entre.',
+    badgeButton: 'Ver tus insignias',
 
     unsubscribeTitle: '¿Desactivar estos correos?',
     unsubscribeBody:
