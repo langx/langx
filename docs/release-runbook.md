@@ -95,17 +95,21 @@ deadline exists for; it is listed with the other prerequisites below.
 
 Once the host answers, the webhook is a five-minute dashboard task:
 
-- [ ] RevenueCat → project LangX (`94ab2b94`) → Integrations → Webhooks →
-      `https://<host>/webhooks/revenuecat`, with an "Authorization header
-      value" you choose
-- [ ] The identical string in `REVENUECAT_WEBHOOK_AUTH_HEADER`, plus
+- [x] RevenueCat → project LangX (`94ab2b94`) → Integrations → Webhooks →
+      `https://api.langx.io/webhooks/revenuecat`, with an "Authorization header
+      value" you choose. Done 3 Sept 2026, both Production and Sandbox
+- [x] The identical string in `REVENUECAT_WEBHOOK_AUTH_HEADER`, plus
       `REVENUECAT_SECRET_API_KEY`. RevenueCat does not sign webhooks
       cryptographically, so that literal-string comparison is the whole
       defense; left unset the route refuses every request rather than
-      trusting one
-- [ ] Confirm with a Test Store purchase: a 200 in RevenueCat's webhook log,
-      and `profiles.entitlement` updating without the client calling
-      `POST /billing/refresh`
+      trusting one. The project had **no** secret key until then — the only
+      key on it was the Test Store's public SDK key, which is not the same
+      thing and cannot grant anything
+- [x] Confirmed without waiting for a store purchase: a promotional grant to a
+      throwaway subscriber produced a webhook within a second and the API
+      answered 200. RevenueCat's own event list showed nothing for it — that
+      list is not evidence, the API's logs are. A Test Store purchase is still
+      worth doing for the _purchase_ path, which this does not exercise
 
 Without the webhook the app still sells subscriptions — the paywall calls
 `POST /billing/refresh` after a purchase and on restore. What is missed is
@@ -506,7 +510,17 @@ of it runs together.
       this item existed to prevent
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
-      yet enabled — deliberately, rather than shipping a button that cannot work)
+      yet enabled — deliberately, rather than shipping a button that cannot work).
+      All three are empty, so `isPurchasesAvailable()` is false on every
+      platform. Setting `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough
+      to exercise the whole paywall before the store products exist
+- [ ] **Buying on the web is not built at all**, and no key changes that:
+      `react-native-purchases` is native-only, so `purchases.ts` returns early
+      on `Platform.OS === 'web'` and the paywall says purchasing is
+      unavailable. It needs RevenueCat Web Billing — a Stripe connection on
+      their side, web products and packages, `@revenuecat/purchases-js` as a
+      dependency, and a third branch in `purchases.ts`. A project of its own,
+      not a configuration gap
 
 ## Migration cutover
 
