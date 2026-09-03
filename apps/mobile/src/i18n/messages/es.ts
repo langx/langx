@@ -656,7 +656,6 @@ export const es: Localized<EnMessages> = {
     attachPhoto: 'Adjuntar una foto',
     recordVoice: 'Grabar una nota de voz',
     removeAttachment: 'Quitar el archivo adjunto',
-    photoAttached: 'Foto adjunta',
     voiceAttached: 'Nota de voz adjunta',
     photosPermission: 'LangX necesita acceso a tus fotos para adjuntar una.',
     attachmentFailed: 'El archivo adjunto no se subió. Inténtalo de nuevo.',

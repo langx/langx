@@ -677,7 +677,6 @@ export const de: Localized<EnMessages> = {
     attachPhoto: 'Foto anhängen',
     recordVoice: 'Sprachnotiz aufnehmen',
     removeAttachment: 'Anhang entfernen',
-    photoAttached: 'Foto angehängt',
     voiceAttached: 'Sprachnotiz angehängt',
     photosPermission: 'LangX braucht Zugriff auf deine Fotos, um eines anzuhängen.',
     attachmentFailed: 'Der Anhang wurde nicht hochgeladen. Versuch es noch einmal.',

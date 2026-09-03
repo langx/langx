@@ -660,7 +660,6 @@ export const fr: Localized<EnMessages> = {
     attachPhoto: 'Joindre une photo',
     recordVoice: 'Enregistrer une note vocale',
     removeAttachment: 'Retirer la pièce jointe',
-    photoAttached: 'Photo jointe',
     voiceAttached: 'Note vocale jointe',
     photosPermission: 'LangX a besoin d’accéder à vos photos pour en joindre une.',
     attachmentFailed: 'La pièce jointe n’a pas été envoyée. Réessayez.',

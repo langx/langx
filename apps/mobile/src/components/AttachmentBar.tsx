@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { Pressable, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
@@ -18,8 +19,69 @@ export interface PendingAttachment {
 interface AttachmentBarProps {
   pending: PendingAttachment | null
   onPick: (attachment: PendingAttachment) => void
-  onClear: () => void
   disabled?: boolean
+}
+
+interface AttachmentPreviewProps {
+  pending: PendingAttachment | null
+  onClear: () => void
+}
+
+/**
+ * What is attached, drawn above the composer's buttons rather than inside them.
+ *
+ * It used to be the words "Photo attached" on the same line as Post, which
+ * answered neither question somebody asks after picking: *which* photo, and
+ * how do I take it back. A thumbnail answers the first by being the picture,
+ * and the cross on its corner is the second — the same gesture every gallery
+ * uses.
+ *
+ * Its own component, and its own row, because the row it used to share is the
+ * one holding the submit button. Anything that grows in there is competing for
+ * width with the only control that sends the post.
+ */
+export function AttachmentPreview({ pending, onClear }: AttachmentPreviewProps) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+
+  if (!pending) return null
+
+  if (pending.kind === 'image') {
+    return (
+      <View style={styles.previewRow}>
+        <View>
+          <Image source={{ uri: pending.uri }} style={styles.thumb} contentFit="cover" />
+          <Pressable
+            onPress={onClear}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('feed.removeAttachment')}
+            style={styles.removeBadge}
+          >
+            <Feather name="x" size={12} color={colors.bg} />
+          </Pressable>
+        </View>
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.previewRow}>
+      <Feather name="mic" size={16} color={colors.textMuted} />
+      <Text style={styles.attached} numberOfLines={1}>
+        {t('feed.voiceAttached')}
+      </Text>
+      <Pressable
+        onPress={onClear}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={t('feed.removeAttachment')}
+      >
+        <Feather name="x" size={16} color={colors.textMuted} />
+      </Pressable>
+    </View>
+  )
 }
 
 /**
@@ -36,7 +98,7 @@ interface AttachmentBarProps {
  * while recording, which is chat's arrangement. A component with enough props
  * to serve both would not be a component.
  */
-export function AttachmentBar({ pending, onPick, onClear, disabled }: AttachmentBarProps) {
+export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -86,28 +148,12 @@ export function AttachmentBar({ pending, onPick, onClear, disabled }: Attachment
     )
   }
 
-  if (pending) {
-    return (
-      <View style={styles.row}>
-        <Feather
-          name={pending.kind === 'image' ? 'image' : 'mic'}
-          size={16}
-          color={colors.textMuted}
-        />
-        <Text style={styles.attached} numberOfLines={1}>
-          {pending.kind === 'image' ? t('feed.photoAttached') : t('feed.voiceAttached')}
-        </Text>
-        <Pressable
-          onPress={onClear}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel={t('feed.removeAttachment')}
-        >
-          <Feather name="x" size={16} color={colors.textMuted} />
-        </Pressable>
-      </View>
-    )
-  }
+  /*
+   * Nothing while something is attached. A post carries one attachment, so a
+   * second camera is an offer the composer cannot keep, and the row it would
+   * sit in belongs to the submit button.
+   */
+  if (pending) return null
 
   return (
     <View style={styles.row}>
@@ -135,8 +181,24 @@ export function AttachmentBar({ pending, onPick, onClear, disabled }: Attachment
   )
 }
 
-const useStyles = makeStyles(({ colors, font }) => ({
-  row: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  // `flexShrink` so this can never starve the submit button beside it: a row
+  // whose child asks for `flex: 1` measures at the full width offered to it,
+  // and React Native does not shrink a flex item unless it is told to.
+  row: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: 10 },
+  previewRow: { alignItems: 'center', flexDirection: 'row', gap: 10, marginBottom: spacing.sm },
+  thumb: { borderRadius: radius.md, height: 64, width: 64 },
+  removeBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.text,
+    borderRadius: radius.pill,
+    height: 20,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: -6,
+    top: -6,
+    width: 20,
+  },
   // v3 draws attachment controls as bare muted glyphs; the 36 box keeps the
   // touch target the outlined circle used to give them.
   button: {

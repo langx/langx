@@ -693,7 +693,6 @@ export const en = {
     attachPhoto: 'Attach a photo',
     recordVoice: 'Record a voice note',
     removeAttachment: 'Remove attachment',
-    photoAttached: 'Photo attached',
     voiceAttached: 'Voice note attached',
     photosPermission: 'LangX needs access to your photos to attach one.',
     attachmentFailed: 'The attachment did not upload. Try again.',
