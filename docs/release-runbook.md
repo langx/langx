@@ -303,6 +303,48 @@ pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
 - One campaign is one language. For a bilingual send, run it twice with
   different ids and `--locale`.
 
+## Shipping runs on expo.dev
+
+Builds, store submissions and over-the-air updates are all EAS jobs, defined
+in `apps/mobile/.eas/workflows/`. GitHub Actions only tests. The three
+workflows, and what each costs:
+
+| Workflow             | Trigger                  | Cost                                  |
+| -------------------- | ------------------------ | ------------------------------------- |
+| `preview-update.yml` | every merge to `main`    | nothing — an OTA update, no build     |
+| `preview-build.yml`  | by hand, pick a platform | one build of the free plan's 15/month |
+| `release.yml`        | by hand, pick a platform | one build, then `eas submit`          |
+
+The free plan allows 15 Android and 15 iOS cloud builds a month and 1,000
+monthly active users on updates. JS-only changes never need a build: a
+preview install picks them up on the next launch from the `preview` channel,
+and a store build from the `production` channel once one exists. Only a
+native change — a new module, a permission, an SDK bump, an icon — needs a
+build, and those are started by hand so the quota is spent on purpose.
+
+- [ ] **Link the GitHub repo once**, or the push trigger never fires: expo.dev
+      → project `langx` → Project settings → GitHub → connect `langx/langx`,
+      base directory `apps/mobile`. Manual runs work without it:
+      `eas workflow:run preview-build.yml` from `apps/mobile`.
+- [ ] **iOS credentials.** EAS holds the APNs key but no distribution
+      certificate or provisioning profile, and no App Store Connect API key
+      for submission. One interactive `eas credentials -p ios` on a Mac with
+      the Apple ID signed in creates the first two; the API key is made in
+      App Store Connect → Users and Access → Integrations and uploaded on the
+      same screen. Until then `preview-build.yml` and `release.yml` only work
+      for Android.
+- [ ] **Play submit permissions.** The service account
+      `eas-submit@langx-48eb0.iam.gserviceaccount.com` is uploaded to EAS but
+      Play does not know it yet: Play Console → Users and permissions → invite
+      that address with release permissions, and enable the Google Play
+      Android Developer API on the `langx-48eb0` project. Until then
+      `release.yml` builds Android and fails at the submit step.
+
+What is already in EAS: the Android application identifier with the real
+upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
+account and the APNs key for push, and `GOOGLE_SERVICES_JSON` /
+`GOOGLE_SERVICES_PLIST` as file variables on every environment.
+
 ## Actions that succeed silently
 
 `src/lib/alert.ts` and `AlertHost` give the app a dialog that works in the

@@ -1,0 +1,29 @@
+# A store release: production builds for both platforms, then submission.
+#
+# Started by hand, on purpose. `production` auto-increments the build number
+# and `eas.json`'s submit profile opens Android at a 10% staged rollout; iOS
+# goes to App Store Connect for review. The iOS half needs a distribution
+# certificate and an App Store Connect API key in EAS before it can run.
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: Which platform to release
+        default: android
+        options: [android, ios]
+
+jobs:
+  build_production:
+    type: build
+    params:
+      platform: ${{ inputs.platform }}
+      profile: production
+
+  submit_production:
+    type: submit
+    needs: [build_production]
+    params:
+      build_id: ${{ needs.build_production.outputs.build_id }}
+      profile: production
