@@ -84,6 +84,7 @@ export const tr: Localized<ServerMessages> = {
       profileVisits: 'profil ziyareti özetleri',
       promotions: 'haberler ve kampanyalar',
       all: 'LangX’ten gelen e-postalar',
+      v1contact: 'yeni LangX hakkındaki tek mesaj',
     },
   },
 }

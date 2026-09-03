@@ -94,6 +94,7 @@ export const ar: Localized<ServerMessages> = {
       profileVisits: 'ملخّصات زيارات الملف',
       promotions: 'الأخبار والعروض',
       all: 'رسائل LangX',
+      v1contact: 'الرسالة الوحيدة عن LangX الجديد',
     },
   },
 }

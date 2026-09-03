@@ -98,6 +98,7 @@ export const es: Localized<ServerMessages> = {
       profileVisits: 'los resúmenes de visitas a tu perfil',
       promotions: 'las novedades y ofertas',
       all: 'el correo de LangX',
+      v1contact: 'el único mensaje sobre el nuevo LangX',
     },
   },
 }

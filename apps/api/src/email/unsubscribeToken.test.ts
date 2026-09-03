@@ -14,6 +14,14 @@ describe('unsubscribe tokens', () => {
     expect(verifyUnsubscribeToken(SECRET, token)?.scope).toBe('all')
   })
 
+  it('round-trips the v1-contact scope, which names a contact row rather than a user', () => {
+    const token = signUnsubscribeToken(SECRET, 'appwrite-id', 'v1contact')
+    expect(verifyUnsubscribeToken(SECRET, token)).toEqual({
+      userId: 'appwrite-id',
+      scope: 'v1contact',
+    })
+  })
+
   it('refuses a tampered signature', () => {
     const token = signUnsubscribeToken(SECRET, 'user-1', 'messages')
     expect(verifyUnsubscribeToken(SECRET, `${token}x`)).toBeNull()

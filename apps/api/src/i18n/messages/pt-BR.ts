@@ -97,6 +97,7 @@ export const ptBR: Localized<ServerMessages> = {
       profileVisits: 'os resumos de visitas ao perfil',
       promotions: 'as novidades e ofertas',
       all: 'os e-mails do LangX',
+      v1contact: 'a única mensagem sobre o novo LangX',
     },
   },
 }

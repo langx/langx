@@ -99,6 +99,7 @@ export const de: Localized<ServerMessages> = {
       profileVisits: 'Übersichten zu Profilbesuchen',
       promotions: 'Neues und Angebote',
       all: 'E-Mails von LangX',
+      v1contact: 'die eine Nachricht über das neue LangX',
     },
   },
 }

@@ -2455,7 +2455,12 @@ kept for **one** announcement, so the script writes them to
 `v1DeletedContacts`, the only place a v1 email is stored in the clear. That
 mail is to people who ended their relationship with the product, so it is
 one mail, with an unsubscribe, and the collection is dropped afterwards —
-keeping it would turn a courtesy into a list.
+keeping it would turn a courtesy into a list. That send is
+`scripts/send-v1-deleted-announcement.ts`: it claims each row before the
+batch goes out, so a re-run cannot mail anybody twice; its unsubscribe link
+carries the `v1contact` scope, which has no preference to switch off and
+simply forgets the address; and `--drop` removes the collection only once
+nobody is left unsent.
 
 Appwrite is still running and is the only place the plaintext v1 emails live;
 the script needs it. If it goes away before the script has run, the rows
