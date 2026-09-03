@@ -777,7 +777,6 @@ export const ar: Localized<EnMessages> = {
     attachPhoto: 'إرفاق صورة',
     recordVoice: 'تسجيل مقطع صوتي',
     removeAttachment: 'إزالة المرفق',
-    photoAttached: 'أُرفقت صورة',
     voiceAttached: 'أُرفق مقطع صوتي',
     photosPermission: 'يحتاج LangX إلى الوصول إلى صورك لإرفاق واحدة.',
     attachmentFailed: 'لم يُرفع المرفق. حاول مرة أخرى.',

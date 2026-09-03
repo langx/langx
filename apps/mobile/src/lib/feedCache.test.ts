@@ -14,6 +14,7 @@ import {
   applyLike,
   applyLikeToThread,
   markCorrected,
+  prependPost,
   removePost,
 } from './feedCache'
 
@@ -195,6 +196,34 @@ describe('applyCommentCount', () => {
     // Two devices deleting the same comment would otherwise leave -1 on screen.
     const data = pages([post({ commentCount: 0 })])
     expect(applyCommentCount(data, 'p1', -1)!.pages[0]!.items[0]!.commentCount).toBe(0)
+  })
+})
+
+describe('prependPost', () => {
+  it('puts the new post at the top of the first page', () => {
+    const data = pages([post({ _id: 'p1' }), post({ _id: 'p2' })])
+    const patched = prependPost(data, post({ _id: 'new' }))
+    expect(patched!.pages[0]!.items.map((item) => item._id)).toEqual(['new', 'p1', 'p2'])
+  })
+
+  it('does not draw the post twice when it is already loaded', () => {
+    // The server can hand back a post the pages already hold — a refetch that
+    // landed between the write and this patch. Two identical cards is the
+    // visible failure, so the old copy goes.
+    const data = pages([post({ _id: 'p1' })], [post({ _id: 'new' }), post({ _id: 'p2' })])
+    const patched = prependPost(data, post({ _id: 'new', body: 'edited' }))
+    expect(patched!.pages[0]!.items.map((item) => item._id)).toEqual(['new', 'p1'])
+    expect(patched!.pages[1]!.items.map((item) => item._id)).toEqual(['p2'])
+  })
+
+  it('leaves later pages alone when nothing has to be dropped from them', () => {
+    const data = pages([post({ _id: 'p1' })], [post({ _id: 'p2' })])
+    const patched = prependPost(data, post({ _id: 'new' }))
+    expect(patched!.pages[1]).toBe(data.pages[1])
+  })
+
+  it('does nothing when the feed has not been loaded', () => {
+    expect(prependPost(undefined, post({ _id: 'new' }))).toBeUndefined()
   })
 })
 

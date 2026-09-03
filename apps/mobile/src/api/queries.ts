@@ -63,6 +63,7 @@ import {
   applyLike,
   applyLikeToAnswers,
   applyLikeToThread,
+  prependPost,
   removePost,
 } from '../lib/feedCache'
 import type { MessagePageDto } from '../lib/messageCache'
@@ -863,11 +864,22 @@ export function useCreatePost() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: CreatePostInput) => api.post<FeedPost>('/posts', input),
-    // Both sections, and the badges: a post changes neither, but the
-    // correction below does, and invalidating one list and not the other is
-    // how a feed starts disagreeing with itself.
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['feed'] })
+    /*
+     * A patch, not an invalidation — see `prependPost`. The refetch applied
+     * the server's order, which puts your own post behind everyone you
+     * follow, so the sentence you had just written landed far below the fold.
+     *
+     * `POST /posts` answers with the whole card, so nothing is missing.
+     * `myPosts` is a child of the `['feed']` prefix but not of the section
+     * key, so it is patched by name.
+     */
+    onSuccess: (post) => {
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: keys.feed(post.kind) }, (data) =>
+        prependPost(data, post),
+      )
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: keys.myPosts() }, (data) =>
+        prependPost(data, post),
+      )
     },
   })
 }

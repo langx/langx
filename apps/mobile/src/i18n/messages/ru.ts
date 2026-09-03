@@ -748,7 +748,6 @@ export const ru: Localized<EnMessages> = {
     attachPhoto: 'Прикрепить фото',
     recordVoice: 'Записать голосовую заметку',
     removeAttachment: 'Убрать вложение',
-    photoAttached: 'Фото прикреплено',
     voiceAttached: 'Голосовая заметка прикреплена',
     photosPermission: 'LangX нужен доступ к вашим фото, чтобы прикрепить одно.',
     attachmentFailed: 'Вложение не загрузилось. Попробуйте ещё раз.',

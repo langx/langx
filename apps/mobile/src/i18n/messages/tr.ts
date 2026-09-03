@@ -660,7 +660,6 @@ export const tr: Localized<EnMessages> = {
     attachPhoto: 'Fotoğraf ekle',
     recordVoice: 'Ses kaydı al',
     removeAttachment: 'Eki kaldır',
-    photoAttached: 'Fotoğraf eklendi',
     voiceAttached: 'Ses kaydı eklendi',
     photosPermission: 'Fotoğraf eklemek için LangX’in fotoğraflarına erişmesi gerekiyor.',
     attachmentFailed: 'Ek yüklenemedi. Tekrar dene.',

@@ -114,6 +114,35 @@ export function markCorrected(data: Pages, postId: string): Pages {
  * Returns the identical object when nothing matched, so React Query sees an
  * unchanged cache and does not re-render every card in the list.
  */
+/**
+ * A post you just wrote, put at the top of the loaded pages instead of
+ * refetching for it.
+ *
+ * The feed is stitched from two queries — the people you follow or have talked
+ * to, then everybody else — and the viewer is not in their own audience, so a
+ * post of yours always lands in the second half, behind every post by somebody
+ * you know. Invalidating on success meant the refetch applied that order and
+ * the sentence you had just written appeared far below the fold, which reads
+ * as "it did not post".
+ *
+ * Same treatment as `applyCorrection`, for the same reason: patch now, and let
+ * the next natural refetch put it where the server says it belongs. The server
+ * order is not wrong — a queue that drains has to sort by how few answers a
+ * post has, not by who wrote it — it just should not decide where your own
+ * post goes in the frame where you wrote it.
+ */
+export function prependPost(data: Pages, post: FeedPost): Pages {
+  if (!data) return data
+  const pages = data.pages.map((page, index) => {
+    const items = page.items.filter((existing) => existing._id !== post._id)
+    // Only the first page gains it; dropping a duplicate elsewhere keeps a
+    // post that was already loaded from being drawn twice.
+    if (index === 0) return { ...page, items: [post, ...items] }
+    return items.length === page.items.length ? page : { ...page, items }
+  })
+  return { ...data, pages }
+}
+
 function patchPost(data: Pages, postId: string, patch: (post: FeedPost) => FeedPost): Pages {
   if (!data) return data
   let found = false

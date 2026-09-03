@@ -647,7 +647,6 @@ export const ptBR: Localized<EnMessages> = {
     attachPhoto: 'Anexar uma foto',
     recordVoice: 'Gravar um áudio',
     removeAttachment: 'Remover anexo',
-    photoAttached: 'Foto anexada',
     voiceAttached: 'Áudio anexado',
     photosPermission: 'O LangX precisa acessar suas fotos para anexar uma.',
     attachmentFailed: 'O anexo não foi enviado. Tente de novo.',

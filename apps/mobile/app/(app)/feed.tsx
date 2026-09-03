@@ -15,7 +15,11 @@ import { Button } from '../../src/components/ui/Button'
 import { uploadPostMedia } from '../../src/api/queries'
 import { useCorrectPost, useCreatePost, useDeletePost, useFeed, useMe } from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
-import { AttachmentBar, type PendingAttachment } from '../../src/components/AttachmentBar'
+import {
+  AttachmentBar,
+  AttachmentPreview,
+  type PendingAttachment,
+} from '../../src/components/AttachmentBar'
 import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
 import { PhotoViewer } from '../../src/components/PhotoViewer'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -389,11 +393,11 @@ export default function FeedScreen() {
               autoCapitalize="sentences"
               maxLength={MAX_POST_LENGTH}
             />
+            <AttachmentPreview pending={askMedia} onClear={() => setAskMedia(null)} />
             <View style={styles.composeActions}>
               <AttachmentBar
                 pending={askMedia}
                 onPick={setAskMedia}
-                onClear={() => setAskMedia(null)}
                 disabled={createPost.isPending || uploading}
               />
               <Button
@@ -716,10 +720,13 @@ export default function FeedScreen() {
                       autoCapitalize="sentences"
                       maxLength={MAX_POST_LENGTH}
                     />
+                    <AttachmentPreview
+                      pending={correctionMedia}
+                      onClear={() => setCorrectionMedia(null)}
+                    />
                     <AttachmentBar
                       pending={correctionMedia}
                       onPick={setCorrectionMedia}
-                      onClear={() => setCorrectionMedia(null)}
                       disabled={correctPost.isPending || uploading}
                     />
                     <View style={styles.actions}>
