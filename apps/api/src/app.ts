@@ -1,4 +1,4 @@
-import cors from '@fastify/cors'
+import cors, { type FastifyCorsOptions } from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
 import { ERROR_CODES, ERROR_STATUS, type ApiErrorBody } from '@langx/shared'
@@ -103,6 +103,15 @@ export interface BuildAppOptions {
   version?: string
 }
 
+/**
+ * `/public/*` is the API's contract with pages it does not serve: no session,
+ * readable from any origin. The same prefix `routes/public.ts` and the shared
+ * profile card already use, so a route is public by its name and nothing else.
+ */
+function isPublicPath(url: string): boolean {
+  return (url.split('?')[0] ?? '').startsWith('/public/')
+}
+
 export async function buildApp({
   env,
   client,
@@ -148,7 +157,30 @@ export async function buildApp({
 
   await app.register(helmet, { contentSecurityPolicy: false })
 
-  await app.register(cors, {
+  /**
+   * Two CORS policies, and the path decides which one answers.
+   *
+   * Everything under `/public/` exists for pages on other origins — the
+   * newsletter form on langx.io, the high-score board on token.langx.io — and
+   * none of it carries a session. A browser discards a cross-origin response
+   * unread unless `Access-Control-Allow-Origin` names the page, and the first
+   * deploy of those routes sent no such header: curl saw a 200 while both
+   * pages saw a CORS error. Wildcarded here rather than adding the two sites
+   * to `TRUSTED_ORIGINS`, because that list also feeds Better Auth's
+   * `trustedOrigins`, and a marketing page has no business being trusted with
+   * a session. Everything else keeps the credentialed policy.
+   *
+   * A delegator rather than per-route `config.cors`, because the preflight
+   * never reaches the route: `@fastify/cors` answers `OPTIONS` from its own
+   * wildcard route, whose config is empty. The path is the one thing the
+   * preflight and the real request have in common.
+   */
+  const publicCors: FastifyCorsOptions = {
+    origin: '*',
+    credentials: false,
+    methods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
+  }
+  const trustedCors: FastifyCorsOptions = {
     origin: env.TRUSTED_ORIGINS.length > 0 ? env.TRUSTED_ORIGINS : true,
     // Better Auth uses cookies on web; native sends the session as a header.
     credentials: true,
@@ -168,6 +200,11 @@ export async function buildApp({
      * here has to be added *here* too.
      */
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  }
+  await app.register(cors, {
+    delegator: (request, callback) => {
+      callback(null, isPublicPath(request.url) ? publicCors : trustedCors)
+    },
   })
 
   await app.register(rateLimit, {

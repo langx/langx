@@ -13,6 +13,9 @@ import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender } from '../testSupport/authFlow'
 
+/** Stands in for the web build's origin; the two sites below are not on it. */
+const TRUSTED_ORIGIN = 'https://app.example.test'
+
 /**
  * The two routes that let api.langx.io move off v1's Express without the
  * newsletter form or token.langx.io going dark. Neither has a session, so the
@@ -33,6 +36,7 @@ describe('the public routes v1 used to serve', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      TRUSTED_ORIGINS: TRUSTED_ORIGIN,
       // Deliberately no RESEND_AUDIENCE_ID: the unconfigured path is the one
       // a self-hosted instance hits, and it must refuse rather than lie.
     })
@@ -141,6 +145,57 @@ describe('the public routes v1 used to serve', () => {
         expect(entry).not.toHaveProperty('userId')
       }
       expect(body).not.toHaveProperty('viewer')
+    })
+  })
+
+  /**
+   * Both pages live on other origins, so the browser only hands them a
+   * response that names their origin. The first deploy did not, and curl's
+   * 200 hid a CORS error on every page load.
+   */
+  describe('CORS on /public/*', () => {
+    it('lets any origin read a public route, without credentials', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/public/leaderboard/token',
+        headers: { origin: 'https://token.langx.io' },
+      })
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['access-control-allow-origin']).toBe('*')
+      expect(response.headers['access-control-allow-credentials']).toBeUndefined()
+    })
+
+    it('answers the JSON preflight the newsletter form sends', async () => {
+      const response = await app.inject({
+        method: 'OPTIONS',
+        url: '/public/newsletter',
+        headers: {
+          origin: 'https://langx.io',
+          'access-control-request-method': 'POST',
+          'access-control-request-headers': 'content-type',
+        },
+      })
+      expect(response.statusCode).toBe(204)
+      expect(response.headers['access-control-allow-origin']).toBe('*')
+      expect(response.headers['access-control-allow-methods']).toContain('POST')
+      expect(response.headers['access-control-allow-headers']).toContain('content-type')
+    })
+
+    it('keeps every other route on the trusted-origin list', async () => {
+      const stranger = await app.inject({
+        method: 'GET',
+        url: '/health',
+        headers: { origin: 'https://token.langx.io' },
+      })
+      expect(stranger.headers['access-control-allow-origin']).toBeUndefined()
+
+      const trusted = await app.inject({
+        method: 'GET',
+        url: '/health',
+        headers: { origin: TRUSTED_ORIGIN },
+      })
+      expect(trusted.headers['access-control-allow-origin']).toBe(TRUSTED_ORIGIN)
+      expect(trusted.headers['access-control-allow-credentials']).toBe('true')
     })
   })
 })
