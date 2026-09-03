@@ -124,6 +124,12 @@ export const COLLECTIONS = {
    * collection is a migration for nothing.
    */
   notificationLedger: 'notificationLedger',
+  /**
+   * One row per person per campaign, written *before* the send. The unique
+   * index on `{campaignId, userId}` is the only thing that makes re-running a
+   * half-finished campaign safe.
+   */
+  emailCampaigns: 'emailCampaigns',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]
