@@ -17,6 +17,25 @@ import { Platform } from 'react-native'
 export const APP_ICONS = ['default', 'dark'] as const
 export type AppIcon = (typeof APP_ICONS)[number]
 
+/**
+ * The config plugin PascalCases every icon name it writes into the native
+ * project (`dark` becomes `Dark` in `CFBundleAlternateIcons` and in the
+ * Android activity-alias), and the JS module passes whatever it is given
+ * straight through. So the name this file uses and the name the OS knows
+ * differ by one letter, and only at this boundary. Translate here, once, or
+ * `setAlternateAppIcon('dark')` rejects on every device with "icon not found"
+ * while the code above it looks correct.
+ */
+function toNativeName(icon: AppIcon): string {
+  return icon.charAt(0).toUpperCase() + icon.slice(1)
+}
+
+function fromNativeName(name: string | null): AppIcon {
+  if (!name) return 'default'
+  const lower = name.charAt(0).toLowerCase() + name.slice(1)
+  return (APP_ICONS as readonly string[]).includes(lower) ? (lower as AppIcon) : 'default'
+}
+
 export function isSupported(): boolean {
   if (Platform.OS === 'web') return false
   try {
@@ -34,8 +53,7 @@ export function currentAppIcon(): AppIcon {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports -- lazy on purpose, see above
     const module = require('expo-alternate-app-icons') as { getAppIconName: () => string | null }
-    const name = module.getAppIconName()
-    return name && (APP_ICONS as readonly string[]).includes(name) ? (name as AppIcon) : 'default'
+    return fromNativeName(module.getAppIconName())
   } catch {
     return 'default'
   }
@@ -57,7 +75,7 @@ export async function setAppIcon(icon: AppIcon): Promise<boolean> {
       await module.resetAppIcon()
       return true
     }
-    await module.setAlternateAppIcon(icon)
+    await module.setAlternateAppIcon(toNativeName(icon))
     return true
   } catch {
     return false

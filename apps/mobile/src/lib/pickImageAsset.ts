@@ -57,7 +57,7 @@ export async function pickImageAsset(options: PickImageOptions = {}): Promise<Pi
   const permission =
     source === 'camera'
       ? await ImagePicker.requestCameraPermissionsAsync()
-      : await ImagePicker.requestMediaLibraryPermissionsAsync()
+      : await requestLibraryPermission()
   if (!permission.granted) return { status: 'denied', source }
 
   const launchOptions: ImagePicker.ImagePickerOptions = {
@@ -90,6 +90,22 @@ export async function pickImageAsset(options: PickImageOptions = {}): Promise<Pi
       ...(asset.height ? { height: asset.height } : {}),
     },
   }
+}
+
+/**
+ * The Android library needs no permission, so none is asked for. On 13+ the
+ * module itself asks for nothing; below that it asks for
+ * `READ_EXTERNAL_STORAGE`, which `app.config.ts` blocks so that Play does not
+ * treat the app as one with broad gallery access — and a request for a
+ * permission the manifest does not declare comes back denied, which would have
+ * read here as the person refusing. The picker that opens is the system photo
+ * picker (or the documents UI on older phones), and the URI it returns is
+ * readable without any grant. iOS keeps asking: PhotoKit's limited-library
+ * choice is worth surfacing there.
+ */
+async function requestLibraryPermission(): Promise<{ granted: boolean }> {
+  if (Platform.OS === 'android') return { granted: true }
+  return ImagePicker.requestMediaLibraryPermissionsAsync()
 }
 
 /**
