@@ -33,6 +33,11 @@
  *   pnpm --filter @langx/api exec tsx scripts/migrate-messages.ts --apply
  *   pnpm --filter @langx/api exec tsx scripts/migrate-messages.ts --apply --skip-media
  *   pnpm --filter @langx/api exec tsx scripts/migrate-messages.ts --limit 25    # try a slice first
+ *
+ * `--media-dir <path>` is where the bytes come from. v1's upload volume is
+ * empty — see `legacyMediaBackup.ts` — so without it every attachment copy
+ * finds nothing, and the paragraph above about this being the last chance to
+ * read those files is already one migration too late.
  */
 import { MAX_AUDIO_BYTES, MAX_IMAGE_BYTES, type MessageMedia } from '@langx/shared'
 import { Client, Databases, Query, Storage } from 'node-appwrite'
@@ -45,6 +50,7 @@ import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut, type StorageProviderWithPut } from '../src/storage/StorageProvider'
 import { imageDimensions } from '../src/lib/imageDimensions'
 import { isServableLegacyMedia, normalizeLegacyContentType } from '../src/lib/legacyMedia'
+import { buildBackupIndex, mediaDirFrom, readBackupBytes } from './legacyMediaBackup'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
 const ROOMS_COLLECTION = '6507510fc71f989d5d1c'
@@ -77,6 +83,8 @@ interface Summary {
   roomsSeen: number
   roomsSkippedNoStagedUser: number
   roomsSkippedImported: number
+  /** Finished by an earlier run; only counted under `--resume`. */
+  roomsSkippedResumed: number
   roomsStaged: number
   roomsBothSidesStaged: number
   messagesStaged: number
@@ -84,6 +92,8 @@ interface Summary {
   messagesSkippedEmpty: number
   imagesCopied: number
   audioCopied: number
+  /** Referenced by v1, absent from the backup — the bytes no longer exist. */
+  mediaMissing: number
   mediaFailures: number
   mediaTooLarge: number
   mediaUnsupported: number
@@ -162,6 +172,7 @@ async function copyAttachment(
   kind: 'image' | 'audio',
   key: string,
   summary: Summary,
+  backup: Map<string, string> | undefined,
 ): Promise<MessageMedia | null> {
   const file = await storage.getFile({ bucketId, fileId })
   // v1's own name for the type, translated — its voice notes all report
@@ -179,7 +190,14 @@ async function copyAttachment(
     return null
   }
 
-  const bytes = new Uint8Array(await storage.getFileDownload({ bucketId, fileId }))
+  // The backup is the only place the bytes still are; see legacyMediaBackup.ts.
+  const bytes = backup
+    ? readBackupBytes(backup, fileId)
+    : new Uint8Array(await storage.getFileDownload({ bucketId, fileId }))
+  if (!bytes) {
+    summary.mediaMissing++
+    return null
+  }
   const extension = contentType.split('/')[1]?.split('+')[0] ?? (kind === 'image' ? 'jpg' : 'm4a')
   const url = await provider.putObject(`${key}.${extension}`, bytes, contentType)
 
@@ -203,8 +221,12 @@ async function copyAttachment(
 async function main(): Promise<void> {
   const apply = process.argv.includes('--apply')
   const skipMedia = process.argv.includes('--skip-media')
+  const resume = process.argv.includes('--resume')
   const limitIndex = process.argv.indexOf('--limit')
   const limit = limitIndex >= 0 ? Number(process.argv[limitIndex + 1]) : Number.POSITIVE_INFINITY
+  const mediaDir = mediaDirFrom(process.argv)
+  const backup = mediaDir ? buildBackupIndex(mediaDir) : undefined
+  if (backup) console.log(`Media backup: ${backup.size} files indexed from ${mediaDir}`)
 
   const env = loadEnv()
   if (!env.APPWRITE_ENDPOINT || !env.APPWRITE_PROJECT_ID || !env.APPWRITE_API_KEY) {
@@ -244,6 +266,31 @@ async function main(): Promise<void> {
     ).map((row) => row._id),
   )
   console.log(`  ${stagedIds.size} profiles staged — run migrate-profiles.ts first if that is 0`)
+
+  /**
+   * Rooms a previous run already finished, so an interrupted migration does
+   * not pay for its first three hours twice.
+   *
+   * Safe to trust because of the write order at the bottom of the loop: the
+   * messages go in first and the room document last, so a room that is here
+   * is a room whose messages are too. A crash between the two leaves no room
+   * document and the thread is simply done again.
+   *
+   * It skips the *media* retry as well, which is the one thing to know before
+   * using it: an attachment that failed on a dropped connection stays missing
+   * until the script is run again without `--resume`.
+   */
+  const alreadyStaged = resume
+    ? new Set(
+        (
+          await db
+            .collection<LegacyRoom>(COLLECTIONS.legacyRooms)
+            .find({}, { projection: { _id: 1 } })
+            .toArray()
+        ).map((row) => row._id),
+      )
+    : new Set<string>()
+  if (resume) console.log(`  ${alreadyStaged.size} rooms already staged — skipping those`)
   console.log(
     apply
       ? `Applying${skipMedia ? ' (text only, media skipped)' : ' with media copy'}…`
@@ -254,6 +301,7 @@ async function main(): Promise<void> {
     roomsSeen: 0,
     roomsSkippedNoStagedUser: 0,
     roomsSkippedImported: 0,
+    roomsSkippedResumed: 0,
     roomsStaged: 0,
     roomsBothSidesStaged: 0,
     messagesStaged: 0,
@@ -261,6 +309,7 @@ async function main(): Promise<void> {
     messagesSkippedEmpty: 0,
     imagesCopied: 0,
     audioCopied: 0,
+    mediaMissing: 0,
     mediaFailures: 0,
     mediaTooLarge: 0,
     mediaUnsupported: 0,
@@ -277,6 +326,11 @@ async function main(): Promise<void> {
     const staged = participants.filter((id) => stagedIds.has(id))
     if (staged.length === 0) {
       summary.roomsSkippedNoStagedUser++
+      continue
+    }
+    // Before `fetchMessages`, which is the expensive call this exists to avoid.
+    if (alreadyStaged.has(roomDoc.$id)) {
+      summary.roomsSkippedResumed++
       continue
     }
     if (staged.length === 2) summary.roomsBothSidesStaged++
@@ -336,6 +390,7 @@ async function main(): Promise<void> {
                 type,
                 `legacy/rooms/${roomDoc.$id}/${messageDoc.$id}`,
                 summary,
+                backup,
               )
               if (media) {
                 record.media = media
@@ -395,6 +450,7 @@ async function main(): Promise<void> {
   console.log(`Rooms seen:                        ${summary.roomsSeen}`)
   console.log(`  neither user staged (skipped):   ${summary.roomsSkippedNoStagedUser}`)
   console.log(`  already imported (skipped):      ${summary.roomsSkippedImported}`)
+  if (resume) console.log(`  finished by an earlier run:      ${summary.roomsSkippedResumed}`)
   console.log(`Rooms staged:                      ${summary.roomsStaged}`)
   console.log(`  ...both sides staged:            ${summary.roomsBothSidesStaged}`)
   console.log(`Messages staged:                   ${summary.messagesStaged}`)
@@ -404,6 +460,7 @@ async function main(): Promise<void> {
   if (apply && !skipMedia) {
     console.log(`Images copied:                     ${summary.imagesCopied}`)
     console.log(`Voice notes copied:                ${summary.audioCopied}`)
+    console.log(`Bytes gone (not in the backup):     ${summary.mediaMissing}`)
     console.log(`Media over the size ceiling:       ${summary.mediaTooLarge}`)
     console.log(`Media of a type v2 cannot serve:   ${summary.mediaUnsupported}`)
     console.log(`Media failures:                    ${summary.mediaFailures}`)

@@ -25,6 +25,10 @@
  *   pnpm --filter @langx/api exec tsx scripts/migrate-profiles.ts --apply         # write, media included
  *   pnpm --filter @langx/api exec tsx scripts/migrate-profiles.ts --apply --skip-media
  *   pnpm --filter @langx/api exec tsx scripts/migrate-profiles.ts --limit 25      # try a slice first
+ *
+ * `--media-dir <path>` reads the bytes from a filesystem copy of v1's uploads
+ * instead of from Appwrite. It is not an optimisation: v1's upload volume is
+ * empty, so without it every copy fails. See `copyFile`.
  */
 import { handleSchema } from '@langx/shared'
 import { Client, Databases, Query, Storage, Users } from 'node-appwrite'
@@ -41,11 +45,25 @@ import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
 import { hashLegacyEmail } from '../src/modules/handles/legacyEmailHash'
 import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut } from '../src/storage/StorageProvider'
+import { buildBackupIndex, mediaDirFrom, readBackupBytes } from './legacyMediaBackup'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
 const USERS_COLLECTION = '65103e2d3a6b4d9494c8'
 const USER_BUCKET = '6515f94d20becd47cb40' // "user" bucket — profilePic + otherPics
 const WALLET_COLLECTION = '66622b8a000b305b236c'
+/**
+ * v1's placeholder avatar, and the reason `profilePic` being set means less
+ * than it looks: 2277 of the 3497 profiles point at this one file. It is the
+ * grey silhouette v1 wrote when somebody never chose a picture, not a photo
+ * anybody uploaded.
+ *
+ * Copying it would give two thirds of the returning users an avatar they never
+ * picked, and — worse — one v2 would treat as a real upload: it survives
+ * onboarding, shows in Discover, and nothing would ever prompt them to replace
+ * it. Left out, they arrive with no avatar, which is true, and v2 draws its
+ * own placeholder.
+ */
+const V1_DEFAULT_AVATAR_ID = '652d582c65bb47ac5de0'
 const PAGE_SIZE = 100
 
 interface V1Profile {
@@ -74,6 +92,10 @@ interface Summary {
   withBalance: number
   avatarsCopied: number
   photosCopied: number
+  /** Referenced by v1, absent from the backup — the bytes no longer exist. */
+  mediaMissing: number
+  /** Profiles whose only "picture" was v1's placeholder; deliberately not copied. */
+  defaultAvatars: number
   mediaFailures: number
 }
 
@@ -138,18 +160,38 @@ async function* fetchProfiles(databases: Databases, limit: number): AsyncGenerat
   }
 }
 
-/** Appwrite serves the bytes; the extension is inferred from what it sends back. */
+/**
+ * Copies one file into our own bucket, or returns `null` when its bytes no
+ * longer exist anywhere.
+ *
+ * The mime type always comes from Appwrite, whose *metadata* is intact even
+ * where the file is not — the backup stores bytes under bare ids with no
+ * extension, so it cannot answer that question itself.
+ *
+ * `null` rather than a throw because a missing file is the ordinary case here,
+ * not a fault: roughly three quarters of v1's real avatars are simply gone.
+ * The caller counts them separately from an actual failure, which is the
+ * difference between "the backup does not have this" and "something broke".
+ */
 async function copyFile(
   storage: Storage,
   put: (key: string, body: Uint8Array, contentType: string) => Promise<string>,
   fileId: string,
   key: string,
-): Promise<string> {
+  backup: Map<string, string> | undefined,
+): Promise<string | null> {
   const file = await storage.getFile({ bucketId: USER_BUCKET, fileId })
-  const bytes = await storage.getFileDownload({ bucketId: USER_BUCKET, fileId })
   const contentType = file.mimeType || 'image/jpeg'
   const extension = contentType.split('/')[1]?.split('+')[0] ?? 'jpg'
-  return put(`${key}.${extension}`, new Uint8Array(bytes), contentType)
+
+  let bytes: Uint8Array | null
+  if (backup) {
+    bytes = readBackupBytes(backup, fileId)
+    if (!bytes) return null
+  } else {
+    bytes = new Uint8Array(await storage.getFileDownload({ bucketId: USER_BUCKET, fileId }))
+  }
+  return put(`${key}.${extension}`, bytes, contentType)
 }
 
 async function main(): Promise<void> {
@@ -157,6 +199,7 @@ async function main(): Promise<void> {
   const skipMedia = process.argv.includes('--skip-media')
   const limitIndex = process.argv.indexOf('--limit')
   const limit = limitIndex >= 0 ? Number(process.argv[limitIndex + 1]) : Number.POSITIVE_INFINITY
+  const mediaDir = mediaDirFrom(process.argv)
 
   const env = loadEnv()
   if (!env.APPWRITE_ENDPOINT || !env.APPWRITE_PROJECT_ID || !env.APPWRITE_API_KEY) {
@@ -176,6 +219,9 @@ async function main(): Promise<void> {
         'Set STORAGE_* in .env, or re-run with --skip-media to stage text fields only.',
     )
   }
+
+  const backup = mediaDir ? buildBackupIndex(mediaDir) : undefined
+  if (backup) console.log(`Media backup: ${backup.size} files indexed from ${mediaDir}`)
 
   const client = new Client()
     .setEndpoint(env.APPWRITE_ENDPOINT)
@@ -211,6 +257,8 @@ async function main(): Promise<void> {
     withBalance: 0,
     avatarsCopied: 0,
     photosCopied: 0,
+    mediaMissing: 0,
+    defaultAvatars: 0,
     mediaFailures: 0,
   }
 
@@ -278,18 +326,31 @@ async function main(): Promise<void> {
       const put = storageProvider.putObject.bind(storageProvider)
       // Only copy what is not already copied — a re-run after a partial
       // failure should cost the bandwidth of the remainder, not of everything.
-      if (typeof doc.profilePic === 'string' && doc.profilePic && !record.avatarUrl) {
+      if (
+        typeof doc.profilePic === 'string' &&
+        doc.profilePic &&
+        doc.profilePic !== V1_DEFAULT_AVATAR_ID &&
+        !record.avatarUrl
+      ) {
         try {
-          record.avatarUrl = await copyFile(
+          const url = await copyFile(
             storage,
             put,
             doc.profilePic,
             `legacy/${doc.$id}/avatar`,
+            backup,
           )
-          summary.avatarsCopied++
+          if (url) {
+            record.avatarUrl = url
+            summary.avatarsCopied++
+          } else {
+            summary.mediaMissing++
+          }
         } catch {
           summary.mediaFailures++
         }
+      } else if (doc.profilePic === V1_DEFAULT_AVATAR_ID) {
+        summary.defaultAvatars++
       }
 
       const otherPics = Array.isArray(doc.otherPics) ? (doc.otherPics as unknown[]) : []
@@ -298,9 +359,19 @@ async function main(): Promise<void> {
         if (index < alreadyCopied) continue
         if (typeof fileId !== 'string' || !fileId) continue
         try {
-          const url = await copyFile(storage, put, fileId, `legacy/${doc.$id}/photo-${index}`)
-          record.photos.push({ url })
-          summary.photosCopied++
+          const url = await copyFile(
+            storage,
+            put,
+            fileId,
+            `legacy/${doc.$id}/photo-${index}`,
+            backup,
+          )
+          if (url) {
+            record.photos.push({ url })
+            summary.photosCopied++
+          } else {
+            summary.mediaMissing++
+          }
         } catch {
           summary.mediaFailures++
         }
@@ -328,6 +399,8 @@ async function main(): Promise<void> {
   if (apply && !skipMedia) {
     console.log(`Avatars copied:                  ${summary.avatarsCopied}`)
     console.log(`Gallery photos copied:           ${summary.photosCopied}`)
+    console.log(`Bytes gone (not in the backup):  ${summary.mediaMissing}`)
+    console.log(`v1 default avatar, not copied:   ${summary.defaultAvatars}`)
     console.log(`Media failures:                  ${summary.mediaFailures}`)
   }
   if (!apply) console.log('\n(dry run — re-run with --apply to write)')
