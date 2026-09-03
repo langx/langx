@@ -1,49 +1,30 @@
-import Constants from 'expo-constants'
-import * as Device from 'expo-device'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
 import { currentLocale } from '../i18n/runtime'
+import { messagingModule, type MessagingModule } from '../lib/pushMessaging'
 
 /**
- * Expo needs to know which project a push token belongs to. It can usually
- * work this out from the app config on its own, but when it cannot it throws —
- * and every caller here swallows errors, so the failure would show up as
- * notifications simply never arriving, with nothing logged anywhere. Passing
- * it explicitly costs one line and removes that failure mode.
- */
-function pushTokenOptions(): { projectId?: string } {
-  const eas = Constants.expoConfig?.extra?.eas as { projectId?: string } | undefined
-  // Omitted rather than passed as undefined, which `exactOptionalPropertyTypes`
-  // rejects — and omitting it leaves Expo to work it out, the old behaviour.
-  return eas?.projectId ? { projectId: eas.projectId } : {}
-}
-
-/**
- * Registers this device's Expo push token with the API.
+ * Registers this device's FCM token with the API.
  *
  * Assumes permission is already granted; the caller checks. Safe to call more
  * than once — `/me/devices` upserts on the token.
  */
 export async function registerPushToken(): Promise<void> {
   try {
-    if (Platform.OS === 'web' || !Device.isDevice) return
-
-    // Imported here, not at module scope. Inside Expo Go on Android,
-    // `expo-notifications` throws the moment it is imported — remote push was
-    // removed from Expo Go there in SDK 53. At module scope that throw takes
-    // down the layout importing this hook, and every signed-in screen with it;
-    // expo-router surfaces it as the very misleading "Route (app)/_layout.tsx
-    // is missing the required default export". A development build has the
-    // native module and works normally.
-    const Notifications = await import('expo-notifications')
-
-    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
+    const fm = await messagingModule()
+    if (!fm) return
+    const messaging = fm.getMessaging()
+    // iOS hands out a token only once the app is registered for remote
+    // messages; Android does this on its own. Idempotent on both.
+    if (Platform.OS === 'ios') await fm.registerDeviceForRemoteMessages(messaging)
+    const token = await fm.getToken(messaging)
+    if (!token) return
     await api.post('/me/devices', {
       // The device's language, not the account's: a streak reminder arrives
       // when the app is closed, so nothing else can decide what it says.
       locale: currentLocale(),
-      pushToken: token.data,
+      pushToken: token,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
     })
   } catch {
@@ -68,14 +49,14 @@ export async function registerPushToken(): Promise<void> {
  */
 export async function unregisterPushToken(): Promise<void> {
   try {
-    if (Platform.OS === 'web' || !Device.isDevice) return
-    const Notifications = await import('expo-notifications')
-    const existing = await Notifications.getPermissionsAsync()
+    const fm = await messagingModule()
+    if (!fm) return
+    const messaging = fm.getMessaging()
+    const status = await fm.hasPermission(messaging)
     // No permission means no token was ever registered from this device.
-    if (!existing.granted) return
-
-    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
-    await api.delete(`/me/devices/${encodeURIComponent(token.data)}`)
+    if (!granted(fm, status)) return
+    const token = await fm.getToken(messaging)
+    if (token) await api.delete(`/me/devices/${encodeURIComponent(token)}`)
   } catch {
     // See above: never block a sign-out.
   }
@@ -100,19 +81,25 @@ export function usePushRegistration({ enabled = true }: { enabled?: boolean } = 
     if (!enabled) return
     void (async () => {
       try {
-        if (Platform.OS === 'web' || !Device.isDevice) return
-        const Notifications = await import('expo-notifications')
-
-        // `granted` is read through expo's own field rather than comparing the
-        // status to a string literal — the two are not the same type, and the
-        // literal comparison silently never matches.
-        const existing = await Notifications.getPermissionsAsync()
-        if (!existing.granted) return
-
+        const fm = await messagingModule()
+        if (!fm) return
+        const status = await fm.hasPermission(fm.getMessaging())
+        if (!granted(fm, status)) return
         await registerPushToken()
       } catch {
         // Never let notification setup break the app it is decorating.
       }
     })()
   }, [enabled])
+}
+
+/**
+ * Provisional counts. On iOS it is the quiet "deliver to the notification
+ * centre, no banner" grant, and a token registered under it still gets every
+ * message — the person just has to open the shade to see them.
+ */
+export function granted(fm: MessagingModule, status: number): boolean {
+  return (
+    status === fm.AuthorizationStatus.AUTHORIZED || status === fm.AuthorizationStatus.PROVISIONAL
+  )
 }

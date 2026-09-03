@@ -16,7 +16,7 @@ Everything else is optional and the app boots without it: no email provider
 means verification links and notification mail are printed to the log, no
 unsubscribe secret means those links are signed with the auth secret instead,
 no translation credentials means `/translate` returns a clear "not configured"
-error, no RevenueCat means everyone stays on the free tier, no push credentials
+error, no RevenueCat means everyone stays on the free tier, no `FCM_SERVICE_ACCOUNT_JSON`
 means notifications are logged instead of sent. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
 

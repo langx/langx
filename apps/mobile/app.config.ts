@@ -52,6 +52,14 @@ const config: ExpoConfig = {
     // same credential, so signing in on the phone offers the password the
     // person already has. Both halves are declared in the AASA file.
     associatedDomains: [`applinks:${APP_LINK_HOST}`, `webcredentials:${APP_LINK_HOST}`],
+    /**
+     * Firebase's iOS client config, the twin of the Android one below and
+     * gated the same way. Needed now that push goes through Firebase on iOS
+     * too — it is what lets the SDK mint an FCM token for this device.
+     */
+    ...(process.env.GOOGLE_SERVICES_PLIST
+      ? { googleServicesFile: process.env.GOOGLE_SERVICES_PLIST }
+      : {}),
   },
 
   android: {
@@ -114,6 +122,15 @@ const config: ExpoConfig = {
 
   plugins: [
     'expo-router',
+    /*
+     * Push goes straight to Firebase Cloud Messaging on both platforms. The
+     * two plugins wire the native SDKs; `useFrameworks: 'static'` is what the
+     * Firebase iOS SDK requires to link at all, and it changes nothing for the
+     * other modules.
+     */
+    '@react-native-firebase/app',
+    '@react-native-firebase/messaging',
+    ['expo-build-properties', { ios: { useFrameworks: 'static' } }],
     /*
      * The static splash the OS draws before any JS exists. Its whole job is to
      * be indistinguishable from `AppSplash`'s first frame — same ground, same
