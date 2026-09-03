@@ -40,6 +40,22 @@ export function MessageBannerHost() {
   const profiles = useProfileCache(banner ? [banner.senderId] : [])
   const sender = banner ? profiles[banner.senderId] : undefined
 
+  /**
+   * The slide is decoration; being visible is not. The card is drawn at full
+   * opacity from its first frame and only its position animates, so a banner
+   * whose animation never runs is a banner sitting 16pt too high, not a banner
+   * nobody saw.
+   *
+   * That is what the first iOS device test produced: the socket handler ran,
+   * `showMessageBanner` was called, the host mounted — and nothing was on
+   * screen. The first banner of a launch is the one case where the view mounts
+   * with its `Animated.Value` still JS-side and the native driver connects to
+   * an already-mounted view from a passive effect; every later banner mounts
+   * against a value that is native already. A fade from 0 gates the whole
+   * card on that first connect succeeding, and it did not. `ToastHost` still
+   * fades in the same way on purpose: it is left as the control until the
+   * same test has been run on it.
+   */
   useEffect(() => {
     if (!banner) return
     slide.setValue(0)
@@ -63,7 +79,6 @@ export function MessageBannerHost() {
         styles.layer,
         {
           paddingTop: insets.top + spacing.sm,
-          opacity: slide,
           transform: [
             { translateY: slide.interpolate({ inputRange: [0, 1], outputRange: [-16, 0] }) },
           ],
