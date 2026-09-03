@@ -27,6 +27,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
+import { usePushPermissionPrompt } from '../../src/hooks/usePushRegistration'
 import { chooseAlert, confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
 import { dedupeById } from '../../src/lib/dedupeById'
@@ -53,6 +54,7 @@ export default function ChatsScreen() {
   const { locale } = useLocale()
 
   const me = useMe()
+  usePushPermissionPrompt()
   const [filter, setFilter] = useState<ConversationFilter>('all')
   // Blanks the thread list while a search is open, so the results are not
   // competing with a list of unrelated conversations underneath them.

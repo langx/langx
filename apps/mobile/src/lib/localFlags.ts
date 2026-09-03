@@ -65,6 +65,15 @@ export const FLAG_KEYS = {
    * nothing here has to be kept in step with the profile.
    */
   postLanguage: 'postLanguage',
+  /**
+   * Whether the chats tab has already put up the OS notification dialog.
+   *
+   * iOS only ever shows that dialog once, but Android 13+ will show it again
+   * after a soft refusal, and a tab that re-asks on every visit is the fastest
+   * way to turn a "not now" into a permanent block. Device-level because the
+   * dialog is a fact about this phone, not about the account.
+   */
+  pushAsked: 'pushAsked',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
