@@ -30,6 +30,15 @@ export const tr: Localized<ServerMessages> = {
     /** The one button a streak email has. */
     openChats: 'Mesaj gönder',
 
+    digestSubject: { one: 'LangX’te 1 okunmamış mesaj', other: 'LangX’te {count} okunmamış mesaj' },
+    digestPreheader: 'Senden haber bekleyenler var',
+    digestBody: {
+      one: 'Sen yokken {names} sana yazdı.',
+      other: '{names} tarafından yazılmış {count} okunmamış mesajın var.',
+    },
+    digestMore: { one: 'Bir sohbet daha var.', other: '{count} sohbet daha var.' },
+    digestButton: 'Oku ve yanıtla',
+
     unsubscribeTitle: 'Bu e-postalar kapatılsın mı?',
     unsubscribeBody: '{kind} artık e-postayla gelmeyecek. Telefonundaki bildirimler etkilenmez.',
     unsubscribeConfirm: 'Kapat',

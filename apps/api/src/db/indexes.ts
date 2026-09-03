@@ -90,6 +90,13 @@ export const INDEXES: Partial<IndexSpec> = {
       name: 'discovery_learning_active',
     },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },
+    /*
+     * "Who has been away long enough to email?" — a bare range over one field.
+     * The two discovery indexes above both lead with a language array, so
+     * neither can serve it, and without this the digest pass is a collection
+     * scan every half hour.
+     */
+    { key: { 'stats.lastActiveAt': 1 }, name: 'last_active' },
     /**
      * The Pro city filter, on the canonical id.
      *
@@ -498,6 +505,14 @@ export const INDEXES: Partial<IndexSpec> = {
     // stops the collection growing forever — a nudge from last month proves
     // nothing today.
     { key: { sentOn: 1 }, name: 'ttl_7d', expireAfterSeconds: 7 * 24 * 60 * 60 },
+  ],
+
+  [COLLECTIONS.notificationLedger]: [
+    // `_id` is `<job>:<userId>:<periodKey>` and carries the uniqueness — the
+    // insert failing *is* the check that nobody is told twice. This only stops
+    // the collection growing forever, and it is thirty days rather than seven
+    // because a weekly period key has to outlive its own week.
+    { key: { sentOn: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
   ],
 
   [COLLECTIONS.jobRuns]: [

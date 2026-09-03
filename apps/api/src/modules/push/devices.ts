@@ -3,6 +3,7 @@ import {
   DEFAULT_LOCALE,
   STREAK_REMINDER_LOCAL_HOUR,
   localDayKey,
+  localHour,
   type Locale,
   type PushKind,
   type PushPlatform,
@@ -267,14 +268,7 @@ export async function streakReminderCandidates(
     const email = notificationsAllowed(profile.settings?.notifications, 'streak', 'email')
     if (!push && !email) continue
     const zone = profile.timezone ?? 'UTC'
-    const localHour = Number(
-      new Intl.DateTimeFormat('en-GB', {
-        timeZone: zone,
-        hour: '2-digit',
-        hour12: false,
-      }).format(now),
-    )
-    if (localHour !== STREAK_REMINDER_LOCAL_HOUR) continue
+    if (localHour(now, zone) !== STREAK_REMINDER_LOCAL_HOUR) continue
     if (profile.streak.lastQualifiedDay === localDayKey(now, zone)) continue
     candidates.push({ userId: profile._id, streak: profile.streak.current, push, email })
   }

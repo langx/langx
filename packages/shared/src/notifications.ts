@@ -160,3 +160,33 @@ export function resolveNotificationPrefs(
   }
   return resolved
 }
+
+/**
+ * How long somebody has to have been gone before unread mail is worth sending.
+ *
+ * Eight hours rather than one: the point is a person who is not going to see
+ * the message today, and anything shorter competes with the push that already
+ * went to their phone. Long enough to have slept through it, short enough that
+ * the answer is still useful.
+ */
+export const UNREAD_DIGEST_AWAY_HOURS = 8
+
+/**
+ * And the far end. Somebody gone a fortnight has had their one digest; mailing
+ * them again is not a reminder, it is a campaign, and there is a separate
+ * switch for those.
+ */
+export const UNREAD_DIGEST_MAX_AWAY_DAYS = 14
+
+/** Named in the digest before it says "and N more". */
+export const UNREAD_DIGEST_MAX_SENDERS = 3
+
+/**
+ * The window a notification email may be sent in, on the reader's own clock.
+ *
+ * A push is a phone buzzing and is worth an exact hour; an email is read
+ * whenever the inbox is opened. But a phone shows mail too, and a 3am arrival
+ * is the same buzz — so the send is fenced into waking hours rather than
+ * fired the moment the condition is met.
+ */
+export const NOTIFICATION_EMAIL_LOCAL_HOURS = { earliest: 9, latest: 21 } as const

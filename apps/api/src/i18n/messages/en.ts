@@ -42,6 +42,15 @@ export const en = {
     /** The one button a streak email has. */
     openChats: 'Send a message',
 
+    digestSubject: { one: '1 unread message on LangX', other: '{count} unread messages on LangX' },
+    digestPreheader: 'People are waiting to hear back from you',
+    digestBody: {
+      one: '{names} wrote to you while you were away.',
+      other: 'You have {count} unread messages, from {names}.',
+    },
+    digestMore: { one: 'And 1 more conversation.', other: 'And {count} more conversations.' },
+    digestButton: 'Read and reply',
+
     unsubscribeTitle: 'Turn off these emails?',
     unsubscribeBody:
       'You will stop getting {kind} by email. Notifications on your phone are not affected.',

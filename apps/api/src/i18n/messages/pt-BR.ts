@@ -30,6 +30,18 @@ export const ptBR: Localized<ServerMessages> = {
     /** The one button a streak email has. */
     openChats: 'Enviar uma mensagem',
 
+    digestSubject: {
+      one: '1 mensagem não lida no LangX',
+      other: '{count} mensagens não lidas no LangX',
+    },
+    digestPreheader: 'Tem gente esperando sua resposta',
+    digestBody: {
+      one: '{names} te escreveu enquanto você esteve fora.',
+      other: 'Você tem {count} mensagens não lidas, de {names}.',
+    },
+    digestMore: { one: 'E mais uma conversa.', other: 'E mais {count} conversas.' },
+    digestButton: 'Ler e responder',
+
     unsubscribeTitle: 'Desativar estes e-mails?',
     unsubscribeBody:
       'Você deixará de receber {kind} por e-mail. As notificações no telefone não mudam.',

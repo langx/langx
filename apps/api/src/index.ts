@@ -15,6 +15,7 @@ import type { NotificationEmailContext } from './email/notify'
 import { AppwriteLegacyVerifier, DisabledLegacyVerifier } from './modules/handles/legacyLogin'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
+import { startNotificationScheduler } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
 
 async function main(): Promise<void> {
@@ -87,6 +88,7 @@ async function main(): Promise<void> {
     startPurgeScheduler(db, app.log, { storage }),
     startStreakReminderScheduler(db, push, notificationEmail, app.log),
     startLegacyImportScheduler(db, app.log),
+    startNotificationScheduler(db, notificationEmail, app.log),
   ]
 
   const shutdown = async (signal: string): Promise<void> => {

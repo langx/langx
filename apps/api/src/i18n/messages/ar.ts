@@ -38,6 +38,18 @@ export const ar: Localized<ServerMessages> = {
     /** The one button a streak email has. */
     openChats: 'أرسل رسالة',
 
+    digestSubject: {
+      one: 'رسالة واحدة غير مقروءة في LangX',
+      other: '{count} رسائل غير مقروءة في LangX',
+    },
+    digestPreheader: 'هناك من ينتظر ردّك',
+    digestBody: {
+      one: 'راسلك {names} أثناء غيابك.',
+      other: 'لديك {count} رسائل غير مقروءة من {names}.',
+    },
+    digestMore: { one: 'ومحادثة أخرى.', other: 'و{count} محادثات أخرى.' },
+    digestButton: 'اقرأ وردّ',
+
     unsubscribeTitle: 'إيقاف هذه الرسائل؟',
     unsubscribeBody: 'لن تصلك {kind} عبر البريد بعد الآن. إشعارات الهاتف لا تتأثر.',
     unsubscribeConfirm: 'أوقفها',
