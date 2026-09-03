@@ -89,11 +89,17 @@ Set up once, in dashboards, not in code:
   replay, surveys and heatmaps stay off in the project settings as well — the
   app does not enable them, but a project-level default is one fewer thing to
   rely on the app for.
-- **RevenueCat → Integrations → PostHog**, with the same project key.
-  RevenueCat sends `INITIAL_PURCHASE`, `RENEWAL`, `CANCELLATION`, `EXPIRATION`
-  and the rest as events under the `app_user_id` — which is the Better Auth
-  user id (`purchases.ts`), the same id the app identifies with — so a Play
-  subscriber and a Stripe subscriber land in one funnel.
+- **RevenueCat → Integrations → PostHog**, region EU, with the same project
+  key. Leave the sandbox key empty (test-store purchases have no business in
+  the production project), leave "send subscriber attributes as person
+  properties" off (the app sets no attributes, and the id is meant to be the
+  only thing on the person), and take the default event names —
+  `rc_initial_purchase_event`, `rc_renewal_event`, `rc_cancellation_event`,
+  `rc_expiration_event` and the rest. The paywall event names are for
+  RevenueCat's own hosted paywalls, which this app does not use. Events land
+  under the `app_user_id` — the Better Auth user id (`purchases.ts`), the same
+  id the app identifies with — so a Play subscriber and a Stripe subscriber
+  are one person in one funnel.
 - **The store forms**, before the first build with a key ships: the answers
   in [`store/privacy-forms-checklist.md`](store/privacy-forms-checklist.md) §5.
 
