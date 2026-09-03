@@ -108,13 +108,10 @@ const envSchema = z.object({
    */
   APPLE_DOMAIN_ASSOCIATION: emptyToUndefined(z.string().optional()),
 
-  /**
-   * Push goes straight to Firebase Cloud Messaging. The service account's
-   * JSON *content*, not a path — same reason as the translation key below: a
-   * container secret store holds strings. Unset, push is a logged no-op and
-   * everything else works.
-   */
-  FCM_SERVICE_ACCOUNT_JSON: emptyToUndefined(z.string().optional()),
+  // Only needed when the Expo project has enhanced push security enabled, in
+  // which case an unauthenticated send is rejected outright. Expo dashboard →
+  // Access tokens. Unset is the normal case and sends work without it.
+  EXPO_ACCESS_TOKEN: emptyToUndefined(z.string().optional()),
 
   // Faz 2: avatar upload. Same S3-compatible code path works for both B2 and
   // R2 — only these values change. Left unset, the upload-url endpoint
