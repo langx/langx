@@ -880,6 +880,9 @@ export const fr: Localized<EnMessages> = {
       'Votre ville est déduite de votre position. Ceci la retire de votre profil ; la distance et le pays ne changent pas.',
     shareLocation: 'Partager ma position approximative',
     shareLocationBody: 'Les autres voient une plage de distance, jamais un point.',
+    shareUsage: 'Partager les données d’utilisation',
+    shareUsageBody:
+      'Quels écrans et boutons sont utilisés — jamais ce que vous écrivez. Cela nous montre où les gens bloquent.',
     activityMap: 'Afficher ma carte d’activité',
     activityMapBody: 'Les carrés sur ton profil. Ta série reste visible dans tous les cas.',
     updateLocation: 'Mettre à jour ma position',

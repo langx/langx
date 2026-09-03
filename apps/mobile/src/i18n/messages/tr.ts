@@ -881,6 +881,9 @@ export const tr: Localized<EnMessages> = {
       'Şehrin konumundan çıkarılıyor. Bu, onu profilinden kaldırır; mesafe ve ülke etkilenmez.',
     shareLocation: 'Yaklaşık konumu paylaş',
     shareLocationBody: 'Başkaları bir nokta değil, bir mesafe aralığı görür.',
+    shareUsage: 'Kullanım verisi paylaş',
+    shareUsageBody:
+      'Hangi ekranların ve düğmelerin kullanıldığı — yazdıkların asla. İnsanların nerede takıldığını görmemizi sağlar.',
     activityMap: 'Etkinlik haritamı göster',
     activityMapBody: 'Profilindeki kareler. Serin her hâlükârda görünür kalır.',
     updateLocation: 'Konumumu güncelle',

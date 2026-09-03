@@ -874,6 +874,9 @@ export const es: Localized<EnMessages> = {
       'Tu ciudad se deduce de tu ubicación. Esto la quita de tu perfil; la distancia y el país no cambian.',
     shareLocation: 'Compartir ubicación aproximada',
     shareLocationBody: 'Los demás ven un rango de distancia, nunca un punto.',
+    shareUsage: 'Compartir datos de uso',
+    shareUsageBody:
+      'Qué pantallas y botones se usan, nunca lo que escribes. Nos muestra dónde se atasca la gente.',
     activityMap: 'Mostrar mi mapa de actividad',
     activityMapBody: 'Los cuadrados de tu perfil. Tu racha se ve igualmente.',
     updateLocation: 'Actualizar mi ubicación',

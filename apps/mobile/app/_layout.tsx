@@ -29,6 +29,8 @@ import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
 import { usePendingInvite } from '../src/hooks/usePendingInvite'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
+import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '../src/lib/analytics'
+import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
 import { I18nProvider, useT } from '../src/i18n'
@@ -103,8 +105,21 @@ function RootShell() {
   // is what makes mounting it this high safe.
   usePendingInvite()
 
+  /*
+   * Reads the stored opt-out and, unless it says no, starts the SDK. Nothing
+   * is sent until that answer is in; the screens captured meanwhile wait
+   * behind it. Screens are captured from here, above the navigator, for the
+   * same reason the socket is opened in the app layout: a hook inside a
+   * screen misses every screen it is not on.
+   */
+  useEffect(() => {
+    void startAnalytics()
+  }, [])
+  useScreenTracking()
+
   /**
-   * Binds RevenueCat to the signed-in account, and unbinds on sign-out.
+   * Binds RevenueCat and analytics to the signed-in account, and unbinds on
+   * sign-out.
    *
    * This lives at the root rather than on the paywall because the identity has
    * to be right *before* a purchase is possible, not at the moment one is
@@ -123,8 +138,16 @@ function RootShell() {
      * later `logIn` can move a purchase made under it. Guests cannot buy
      * anything anyway; the paywall's buy button is behind `requireAccount`.
      */
-    if (userId && !isGuest) void identifyForPurchases(userId)
-    else void forgetPurchasesIdentity()
+    if (userId && !isGuest) {
+      void identifyForPurchases(userId)
+      // The same rule for the same reason: analytics keyed by our user id is
+      // what makes a deleted account's events findable, and a guest's id is
+      // thrown away at registration.
+      identifyForAnalytics(userId)
+    } else {
+      void forgetPurchasesIdentity()
+      forgetAnalyticsIdentity()
+    }
   }, [userId])
 
   /**

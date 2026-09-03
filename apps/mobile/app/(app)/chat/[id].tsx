@@ -32,6 +32,7 @@ import {
   type MessageDto,
 } from '../../../src/api/queries'
 import * as Clipboard from 'expo-clipboard'
+import { track } from '../../../src/lib/analytics'
 import { setActiveConversation } from '../../../src/lib/activeConversation'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ComposerHint } from '../../../src/components/ComposerHint'
@@ -293,6 +294,7 @@ export default function ChatScreen() {
       setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
       const socket = await getSocket()
       await emitWithAck(socket, 'message:media', { conversationId, kind, media })
+      track({ name: 'message_sent', properties: { kind, reply: false } })
       setPending((list) => removePending(list, clientId))
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
@@ -386,6 +388,7 @@ export default function ChatScreen() {
         ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
       })
       setUnsent((list) => removeUnsent(list, clientId))
+      track({ name: 'message_sent', properties: { kind: 'text', reply: replyingTo !== null } })
       setReplyingTo(null)
     } catch {
       /*
@@ -433,6 +436,7 @@ export default function ChatScreen() {
           corrected: body,
         })
         setCorrecting(null)
+        track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
       } else {
         // `deliver` never rejects — a failure becomes an unsent row — so the
         // composer clears either way. The text is not lost, it has moved into

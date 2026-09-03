@@ -20,6 +20,7 @@ import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
 import {
   getOffers,
@@ -212,10 +213,23 @@ export default function PaywallScreen() {
     }
   }, [])
 
+  // Once per opening, with what sent them here. The paywall is the end of the
+  // funnel, and which capability people hit it from is the question. Mount
+  // only: the tier changing after a purchase is not a second viewing.
+  useEffect(() => {
+    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier } })
+  }, [])
+
   async function buy(offerId: string): Promise<void> {
     setNotice(null)
     setBusyOfferId(offerId)
+    // The client's view of the store sheet, for the funnel. Revenue truth
+    // comes from RevenueCat's own integration, not from here.
+    const chosen = offers?.find((offer) => offer.id === offerId)
+    const sale = { offer: offerId, tier: chosen?.tier ?? null, period: chosen?.period ?? null }
+    track({ name: 'purchase_started', properties: sale })
     const outcome = await purchaseOffer(offerId)
+    track({ name: 'purchase_finished', properties: { ...sale, outcome } })
     setBusyOfferId(null)
 
     // A store purchase is only half of it: entitlement lives in

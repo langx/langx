@@ -74,6 +74,21 @@ export const FLAG_KEYS = {
    * dialog is a fact about this phone, not about the account.
    */
   pushAsked: 'pushAsked',
+  /**
+   * `1` when usage analytics has been switched off in Settings.
+   *
+   * Stored as the refusal rather than the consent, which fixes the failure
+   * mode: every read here that throws reads as "nothing stored", and nothing
+   * stored has to mean the default. The default is on — the store forms say
+   * "optional, opt-out in Settings" — so an unreadable store means on, the
+   * same as a fresh install. PostHog keeps its own copy of the refusal in its
+   * storage and `lib/analytics.ts` never opts back in on boot, so a refusal
+   * survives this flag being lost for as long as the SDK's own file does.
+   *
+   * Device-level like the theme: it is honoured before there is an account,
+   * which is when the first screens are captured.
+   */
+  analyticsOptOut: 'analyticsOptOut',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

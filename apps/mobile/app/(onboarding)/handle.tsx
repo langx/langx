@@ -16,6 +16,7 @@ import {
   useOnboardingDraft,
 } from '../../src/hooks/useOnboardingDraft'
 import { useQueryClient } from '@tanstack/react-query'
+import { track } from '../../src/lib/analytics'
 import { normalizeInviteCode } from '../../src/lib/inviteLink'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
@@ -126,6 +127,16 @@ export default function HandleStep() {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
       resetDraft()
+      // Counts and flags only — the profile itself just went to the server,
+      // and none of it belongs in an analytics event.
+      track({
+        name: 'onboarding_completed',
+        properties: {
+          referred: Boolean(current.referredByHandle),
+          native_languages: current.nativeLanguages.length,
+          learning_languages: current.learning.length,
+        },
+      })
       await queryClient.invalidateQueries({ queryKey: keys.me })
       // To the finish screen, not straight into discovery: a list of strangers
       // with no instruction is a poor first thing to hand someone who has just
