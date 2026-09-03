@@ -10,6 +10,7 @@ import {
   subscribeToMessageBanner,
   type MessageBanner,
 } from '../lib/inAppNotifications'
+import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Avatar } from './ui/Avatar'
 
@@ -113,11 +114,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // signed-in screen is where the tab bar is, and this one is tappable.
   layer: {
     alignItems: 'center',
+    // Not decoration: without it this layer paints *behind* the navigator's
+    // screens on native, whatever order the tree puts it in. See
+    // `overlayLayers.ts` — this is the bug the first iOS device test hit.
+    elevation: OVERLAY_LAYER.messageBanner,
     left: 0,
     paddingHorizontal: spacing.lg,
     position: 'absolute',
     right: 0,
     top: 0,
+    zIndex: OVERLAY_LAYER.messageBanner,
   },
   // A surface card rather than the toast's solid yellow: this is somebody
   // else's message, not the app reporting on itself, and it carries a face.

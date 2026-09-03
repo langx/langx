@@ -2288,27 +2288,33 @@ keeps the JS thread alive in the background — the chat screen can be the
 focused route with nobody looking at it, and marking a message read there
 clears a badge for something never seen.
 
-## An entry animation never gates visibility
+## The root overlays carry a paint order, not just a place in the tree
 
-The first iOS device test sent a message while the app sat on another tab, and
-no banner appeared — though the socket handler ran, the decision was `banner`,
-and the host mounted, which the sender-profile fetch in the API log shows. A
-banner drawn later in the same session was fine.
+The first iOS device test sent a message while the app sat on another tab and
+no banner appeared, though the socket handler ran, the decision was `banner`
+and the host mounted. A banner drawn later in the same session, after moving
+around the app, was fine.
 
-The first banner of a launch is structurally different from every later one.
-Its `Animated.Value` is still JS-side when the view mounts with `opacity: 0`,
-and a passive effect then starts a native-driver timing that has to connect
-the node to an already-mounted view. Every later banner mounts against a
-value that is native already and connects during commit. A fade from zero
-gates the whole card on that first connect succeeding, and on this device it
-did not.
+`AppSplash` had the answer written on it already: its layer carries
+`zIndex`/`elevation` with the comment _"over `react-native-screens`, which a
+plain later-sibling is not enough for"_. `ToastHost` and `MessageBannerHost`
+are the same kind of absolutely-positioned sibling of `<Stack>` and carried
+neither, so on native they painted behind the navigator's screen containers in
+an order nothing guarantees — which is exactly a banner that is missing, then
+present once the stack has changed under it. The dialogs escaped it by being
+`Modal`s, which are their own native window. On the web, DOM order alone puts
+them on top, so nothing about this was ever visible there.
 
-So the card is drawn at full opacity from its first frame and only its
-position animates. An animation that never runs now costs sixteen points of
-placement rather than the notification. `ToastHost` keeps its fade for the
-moment, deliberately: it is the control. If the first toast of an iOS launch
-turns out to be invisible too, it gets the same treatment; if it is not, the
-cause is narrower than this entry claims and worth chasing.
+The three numbers now live together in `src/lib/overlayLayers.ts`: splash over
+banner over toast, the order `app/_layout.tsx` renders them in. `elevation` as
+well as `zIndex`, because Android orders by the first and iOS by the second.
+
+The banner was hardened at the same time, and that part is belt-and-braces
+rather than a diagnosis: it is drawn at full opacity and only its position
+animates, so it no longer depends on the first native-driver animation of a
+launch having connected. `ToastHost` still fades, which is fine — a fade that
+never runs on a layer that paints where it should is a toast that appears
+without sliding, not a toast nobody sees.
 
 ## Scheduled notifications claim before they send
 

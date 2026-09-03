@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Animated, Pressable, Text } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { dismissToast, subscribeToToasts, type Toast } from '../lib/toast'
+import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles, useTheme } from '../lib/theme'
 
 /**
@@ -64,11 +65,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // heading, which nobody was going to press.
   layer: {
     alignItems: 'center',
+    // The same reason the message banner carries one; see `overlayLayers.ts`.
+    // Nobody had reported a missing toast, but it is the same absolute layer
+    // over the same navigator, so it was the same latent bug.
+    elevation: OVERLAY_LAYER.toast,
     left: 0,
     paddingHorizontal: spacing.lg,
     position: 'absolute',
     right: 0,
     top: 0,
+    zIndex: OVERLAY_LAYER.toast,
   },
   // Neutral dark rather than `colors.success`: these sentences report what
   // happened, and green would dress "Signed out" up as a celebration.
