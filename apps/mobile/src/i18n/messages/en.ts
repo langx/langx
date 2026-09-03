@@ -777,7 +777,6 @@ export const en = {
 
   me: {
     languages: 'Languages',
-    dayStreak: 'Day streak',
     viewersTitle: 'Who viewed your profile',
     viewersLocked: {
       one: '{count} person looked — see who with {plan}',
@@ -800,6 +799,7 @@ export const en = {
     badges: 'Badges',
     invite: 'Invite a friend',
     inviteBody: 'Earn tokens when they start using LangX',
+    dayStreak: 'Day streak',
   },
 
   editProfile: {
@@ -1088,7 +1088,6 @@ export const en = {
     title: 'Leaderboard',
     periodPicker: 'Leaderboard period',
     nextMilestone: 'Next milestone',
-    dayStreak: 'day streak',
     towards: '{current} of {threshold} toward {label}',
     toGo: '{amount} to go',
     doneToday: 'Today is done. See you tomorrow.',
@@ -1103,6 +1102,12 @@ export const en = {
     corrections: 'corrections',
     toGoPlain: '{count} to go',
     you: 'You',
+    streakTitle: 'Streak table',
+    metricCurrent: 'Now',
+    metricLongest: 'Longest',
+    streakPicker: 'Streak ranking',
+    streakEmptyTitle: 'No streaks yet',
+    streakEmptyBody: 'Show up on two days in a row and you are on this table.',
   },
 
   badges: {

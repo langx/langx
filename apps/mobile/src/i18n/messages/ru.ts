@@ -850,7 +850,6 @@ export const ru: Localized<EnMessages> = {
 
   me: {
     languages: 'Языки',
-    dayStreak: 'Серия дней',
     viewersTitle: 'Кто смотрел твой профиль',
     viewersLocked: {
       one: 'Смотрел {count} человек — узнай кто с {plan}',
@@ -880,6 +879,7 @@ export const ru: Localized<EnMessages> = {
     badges: 'Значки',
     invite: 'Пригласить друга',
     inviteBody: 'Получайте токены, когда он начнёт пользоваться LangX',
+    dayStreak: 'Серия дней',
   },
 
   editProfile: {
@@ -1180,7 +1180,6 @@ export const ru: Localized<EnMessages> = {
     title: 'Таблица лидеров',
     periodPicker: 'Период таблицы лидеров',
     nextMilestone: 'Следующая веха',
-    dayStreak: 'дней серии',
     towards: '{current} из {threshold} к «{label}»',
     toGo: 'осталось {amount}',
     doneToday: 'На сегодня всё. До завтра.',
@@ -1200,6 +1199,12 @@ export const ru: Localized<EnMessages> = {
     corrections: 'исправлений',
     toGoPlain: 'осталось {count}',
     you: 'Ты',
+    streakTitle: 'Таблица серий',
+    metricCurrent: 'Сейчас',
+    metricLongest: 'Самая длинная',
+    streakPicker: 'Рейтинг серий',
+    streakEmptyTitle: 'Серий пока нет',
+    streakEmptyBody: 'Заходи два дня подряд — и попадёшь в эту таблицу.',
   },
 
   badges: {

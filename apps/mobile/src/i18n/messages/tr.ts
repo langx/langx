@@ -746,7 +746,6 @@ export const tr: Localized<EnMessages> = {
 
   me: {
     languages: 'Diller',
-    dayStreak: 'Günlük seri',
     viewersTitle: 'Profiline kim baktı',
     viewersLocked: {
       one: '{count} kişi baktı — kimler olduğunu {plan} ile gör',
@@ -769,6 +768,7 @@ export const tr: Localized<EnMessages> = {
     badges: 'Rozetler',
     invite: 'Arkadaşını davet et',
     inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
+    dayStreak: 'Günlük seri',
   },
 
   editProfile: {
@@ -1055,7 +1055,6 @@ export const tr: Localized<EnMessages> = {
     title: 'Liderlik tablosu',
     periodPicker: 'Liderlik tablosu dönemi',
     nextMilestone: 'Sıradaki eşik',
-    dayStreak: 'günlük seri',
     towards: '{threshold} hedefinde {current} — {label}',
     toGo: '{amount} kaldı',
     doneToday: 'Bugünlük tamam. Yarın görüşürüz.',
@@ -1070,6 +1069,12 @@ export const tr: Localized<EnMessages> = {
     corrections: 'düzeltme',
     toGoPlain: '{count} kaldı',
     you: 'Sen',
+    streakTitle: 'Seri tablosu',
+    metricCurrent: 'Şu an',
+    metricLongest: 'En uzun',
+    streakPicker: 'Seri sıralaması',
+    streakEmptyTitle: 'Henüz seri yok',
+    streakEmptyBody: 'Üst üste iki gün uğra, bu tabloya girersin.',
   },
 
   badges: {

@@ -1,18 +1,28 @@
-import { COSMETICS } from '@langx/shared'
+import { COSMETICS, type PeriodType } from '@langx/shared'
+import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
 import { LoadFailed } from '../../src/components/LoadFailed'
-import { useMe, usePurchase, useTokens, useUpdateProfile, useWallet } from '../../src/api/queries'
+import {
+  useLeaderboard,
+  useMe,
+  usePurchase,
+  useTokens,
+  useUpdateProfile,
+  useWallet,
+} from '../../src/api/queries'
 import { EquipPicker } from '../../src/components/store/EquipPicker'
 import { StoreRow } from '../../src/components/store/StoreRow'
+import { LeaderboardSection } from '../../src/components/LeaderboardSection'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { goBackTo } from '../../src/lib/navigation'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
+import { periodLabel, useT } from '../../src/i18n'
+import { leaderboardShareText } from '../../src/lib/shareText'
 
 /**
  * The wallet: what you have, and what it buys.
@@ -27,6 +37,9 @@ import { useT } from '../../src/i18n'
  * would mean a gesture-handler dependency that does not resolve from this
  * package, for a surface that cannot be linked to or backed out of.
  */
+/** The four tabs, in the order the board has always drawn them. */
+const PERIOD_TABS: readonly PeriodType[] = ['week', 'month', 'year', 'all']
+
 export default function WalletScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -34,6 +47,8 @@ export default function WalletScreen() {
 
   const me = useMe()
   const wallet = useWallet()
+  const [period, setPeriod] = useState<PeriodType>('week')
+  const board = useLeaderboard(period)
   const purchase = usePurchase()
   const update = useUpdateProfile()
   // The shop needs both to draw a gate's progress; the wallet itself does not.
@@ -74,6 +89,16 @@ export default function WalletScreen() {
     void Promise.all([me.refetch(), wallet.refetch(), xp.refetch()])
   }
 
+  /*
+   * Built here rather than in the section so the button exists only when the
+   * sentence does: a rank of null is "not on the board", not "#0". The text is
+   * period-keyed, which is why it moved here with the tabs.
+   */
+  const viewerRank = board.data?.viewer.rank
+  const rankShare = viewerRank
+    ? leaderboardShareText(t, { rank: viewerRank, period, handle: me.data.handle })
+    : undefined
+
   return (
     <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
       <ScreenHeader title={t('wallet.title')} onBack={() => goBackTo('/(app)/me')} />
@@ -101,6 +126,28 @@ export default function WalletScreen() {
           <Feather name="chevron-right" size={18} color={colors.textFaint} />
         </View>
       </Pressable>
+
+      {/*
+        The token board, directly under the balance it ranks. It used to live
+        on the badges page, where it shared a non-scrolling screen with a badge
+        grid and could not be reached.
+      */}
+      <LeaderboardSection
+        title={t('leaderboard.title')}
+        options={PERIOD_TABS.map((tab) => ({ value: tab, label: periodLabel(t, tab) }))}
+        selected={period}
+        onSelect={setPeriod}
+        pickerLabel={t('leaderboard.periodPicker')}
+        entries={board.data?.entries ?? []}
+        viewer={board.data?.viewer}
+        valueOf={(row) => String((row as { tokens?: number }).tokens ?? 0)}
+        viewerValue={String(board.data?.viewer.tokens ?? 0)}
+        loading={board.isPending}
+        emptyTitle={t('leaderboard.emptyTitle')}
+        emptyBody={t('leaderboard.emptyBody')}
+        backTo="/(app)/wallet"
+        share={rankShare}
+      />
 
       <View style={styles.tiles}>
         <StatTile

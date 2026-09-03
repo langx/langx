@@ -123,6 +123,19 @@ export const INDEXES: Partial<IndexSpec> = {
      * candidate, and the opt-in enforces itself.
      */
     { key: { location: '2dsphere' }, name: 'location_2dsphere' },
+    /*
+     * The two streak boards, each a sort over one field with `_id` as the
+     * tiebreak the query already asks for. Without them the board is a
+     * collection scan and an in-memory sort of every profile, on a screen
+     * anybody can open.
+     *
+     * `streak.lastQualifiedDay` is deliberately not in the key. It is a
+     * residual predicate on the `current` board — the liveness rule — and
+     * putting it second would stop the index serving the sort, which is the
+     * expensive half.
+     */
+    { key: { 'streak.current': -1, _id: 1 }, name: 'streak_current_board' },
+    { key: { 'streak.longest': -1, _id: 1 }, name: 'streak_longest_board' },
     // Soft-deleted accounts must drop out of every list; sparse keeps it small.
     {
       key: { deletedAt: 1 },

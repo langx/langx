@@ -887,7 +887,6 @@ export const ar: Localized<EnMessages> = {
 
   me: {
     languages: 'اللغات',
-    dayStreak: 'سلسلة الأيام',
     viewersTitle: 'من زار ملفك',
     viewersLocked: {
       zero: 'زارك {count} شخص — اعرف من هم مع {plan}',
@@ -921,6 +920,7 @@ export const ar: Localized<EnMessages> = {
     badges: 'الشارات',
     invite: 'ادعُ صديقًا',
     inviteBody: 'اكسب توكنات عندما يبدأ باستخدام LangX',
+    dayStreak: 'سلسلة الأيام',
   },
 
   editProfile: {
@@ -1228,7 +1228,6 @@ export const ar: Localized<EnMessages> = {
     title: 'لوحة الصدارة',
     periodPicker: 'فترة لوحة الصدارة',
     nextMilestone: 'المحطة التالية',
-    dayStreak: 'يومًا في السلسلة',
     towards: '{current} من {threshold} نحو {label}',
     toGo: 'بقي {amount}',
     doneToday: 'انتهى يومك. إلى الغد.',
@@ -1250,6 +1249,12 @@ export const ar: Localized<EnMessages> = {
     corrections: 'تصحيحات',
     toGoPlain: 'بقي {count}',
     you: 'أنت',
+    streakTitle: 'جدول السلاسل',
+    metricCurrent: 'الآن',
+    metricLongest: 'الأطول',
+    streakPicker: 'ترتيب السلاسل',
+    streakEmptyTitle: 'لا سلاسل بعد',
+    streakEmptyBody: 'احضر يومين متتاليين وستظهر في هذا الجدول.',
   },
 
   badges: {

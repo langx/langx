@@ -16,6 +16,8 @@ import type {
   HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
+  StreakLeaderboard,
+  StreakMetric,
   PeriodType,
   PublicProfileDto,
   Wallet,
@@ -119,6 +121,7 @@ export const keys = {
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
+  streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   blocks: ['blocks'] as const,
 }
 
@@ -1039,15 +1042,27 @@ export function useReferrals() {
   })
 }
 
-export function useLeaderboard(period: PeriodType) {
-  return useInfiniteQuery({
+/**
+ * One page, not an infinite one.
+ *
+ * The board is a section inside a scrolling page now rather than a screen that
+ * owns a list, so there is nothing to trigger a second page and nowhere for it
+ * to go. The top of a ranking plus the viewer's own pinned row is what a
+ * ranking is for; the cursor still exists on the API for anything that needs
+ * to walk further.
+ */
+export function useLeaderboard(period: PeriodType, limit = 50) {
+  return useQuery({
     queryKey: keys.leaderboard(period),
-    queryFn: ({ pageParam }) =>
-      api.get<Leaderboard>(
-        `/leaderboard?period=${period}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
-      ),
-    initialPageParam: '',
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    queryFn: () => api.get<Leaderboard>(`/leaderboard?period=${period}&limit=${limit}`),
+  })
+}
+
+export function useStreakLeaderboard(metric: StreakMetric, limit = 50) {
+  return useQuery({
+    queryKey: [...keys.streakLeaderboard(metric)],
+    queryFn: () =>
+      api.get<StreakLeaderboard>(`/leaderboard/streak?metric=${metric}&limit=${limit}`),
   })
 }
 

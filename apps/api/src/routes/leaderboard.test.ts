@@ -8,6 +8,7 @@ import {
   utcDayKey,
   type BadgeSummary,
   type Leaderboard,
+  type StreakLeaderboard,
   type Wallet,
   type TokenSummary,
 } from '@langx/shared'
@@ -107,6 +108,26 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     })
     expect(response.statusCode, response.body).toBe(200)
     return response.json<Leaderboard>()
+  }
+
+  async function streakBoard(user: SignedUpUser, query = ''): Promise<StreakLeaderboard> {
+    const response = await app.inject({
+      method: 'GET',
+      url: `/leaderboard/streak${query}`,
+      headers: { cookie: user.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    return response.json<StreakLeaderboard>()
+  }
+
+  /** Writes a streak straight onto the profile, as the daily check-in would. */
+  function setStreak(
+    userId: string,
+    streak: { current: number; longest: number; lastQualifiedDay: string | null },
+  ) {
+    return handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: userId }, { $set: { streak } })
   }
 
   async function wallet(user: SignedUpUser): Promise<Wallet> {
@@ -375,6 +396,114 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       // Sole participant, so an uncapped share would be the whole pool.
       expect(row?.amount).toBe(Math.floor(TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool))
       expect(row?.amount).toBeLessThan(TOKEN_RULES.pool.total)
+    })
+  })
+
+  describe('streak leaderboard', () => {
+    const today = utcDayKey(new Date())
+    const yesterday = shiftDayKey(today, -1)
+    const longAgo = shiftDayKey(today, -30)
+
+    it('ranks by the streak somebody is holding now', async () => {
+      const leader = await newUser()
+      const second = await newUser()
+      await setStreak(leader.userId, { current: 12, longest: 30, lastQualifiedDay: today })
+      await setStreak(second.userId, { current: 5, longest: 5, lastQualifiedDay: today })
+
+      const result = await streakBoard(leader)
+      const mine = result.entries.find((e) => e.userId === leader.userId)
+      const theirs = result.entries.find((e) => e.userId === second.userId)
+      expect(mine?.rank).toBe(1)
+      expect(mine?.streak).toBe(12)
+      expect(mine?.isViewer).toBe(true)
+      expect(theirs?.rank).toBeGreaterThan(1)
+      expect(result.viewer).toMatchObject({ rank: 1, streak: 12, inPage: true })
+    })
+
+    it('leaves a lapsed streak off the current board and keeps it on longest', async () => {
+      /*
+       * The reason the liveness rule exists: nothing decays `streak.current`,
+       * so a profile abandoned a month ago still carries its number. Without
+       * the rule the current board is a list of people who have stopped.
+       */
+      const ghost = await newUser()
+      await setStreak(ghost.userId, { current: 40, longest: 40, lastQualifiedDay: longAgo })
+
+      const current = await streakBoard(ghost, '?metric=current')
+      expect(current.entries.some((e) => e.userId === ghost.userId)).toBe(false)
+      // And they are told so, rather than given a rank on a board they are
+      // not on.
+      expect(current.viewer.rank).toBeNull()
+
+      const longest = await streakBoard(ghost, '?metric=longest')
+      const row = longest.entries.find((e) => e.userId === ghost.userId)
+      expect(row?.streak).toBe(40)
+      expect(longest.viewer.rank).not.toBeNull()
+    })
+
+    it('still counts somebody who has not opened the app yet today', async () => {
+      const sleeper = await newUser()
+      await setStreak(sleeper.userId, { current: 7, longest: 7, lastQualifiedDay: yesterday })
+      const result = await streakBoard(sleeper)
+      expect(result.entries.some((e) => e.userId === sleeper.userId)).toBe(true)
+    })
+
+    it('gives a tie one rank, and agrees with the rank counted from outside', async () => {
+      const tied = await newUser()
+      const alsoTied = await newUser()
+      await setStreak(tied.userId, { current: 9, longest: 9, lastQualifiedDay: today })
+      await setStreak(alsoTied.userId, { current: 9, longest: 9, lastQualifiedDay: today })
+
+      const result = await streakBoard(tied)
+      const a = result.entries.find((e) => e.userId === tied.userId)
+      const b = result.entries.find((e) => e.userId === alsoTied.userId)
+      expect(a?.rank).toBe(b?.rank)
+      // The viewer's own rank is counted, not read off the page — the two
+      // numbers must not disagree on a tie.
+      expect(result.viewer.rank).toBe(a?.rank)
+    })
+
+    it('drops a blocked account without promoting the viewer past it', async () => {
+      const viewer = await newUser()
+      const blocked = await newUser()
+      await setStreak(blocked.userId, { current: 50, longest: 50, lastQualifiedDay: today })
+      await setStreak(viewer.userId, { current: 20, longest: 20, lastQualifiedDay: today })
+      await handle.db
+        .collection(COLLECTIONS.blocks)
+        .insertOne({ blockerId: viewer.userId, blockedId: blocked.userId })
+
+      const result = await streakBoard(viewer)
+      expect(result.entries.some((e) => e.userId === blocked.userId)).toBe(false)
+      // The gap is the point: the place stays occupied.
+      const mine = result.entries.find((e) => e.userId === viewer.userId)
+      expect(mine?.rank).toBeGreaterThan(1)
+    })
+
+    it('leaves out a deleted account', async () => {
+      const gone = await newUser()
+      await setStreak(gone.userId, { current: 99, longest: 99, lastQualifiedDay: today })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: gone.userId }, { $set: { deletedAt: new Date() } })
+
+      const viewer = await newUser()
+      const result = await streakBoard(viewer)
+      expect(result.entries.some((e) => e.userId === gone.userId)).toBe(false)
+    })
+
+    it('tells a viewer their rank even when the page does not reach them', async () => {
+      const viewer = await newUser()
+      await setStreak(viewer.userId, { current: 1, longest: 1, lastQualifiedDay: today })
+      const result = await streakBoard(viewer, '?metric=current&limit=1')
+      expect(result.entries).toHaveLength(1)
+      expect(result.viewer.inPage).toBe(result.entries[0]?.userId === viewer.userId)
+      expect(result.viewer.rank).not.toBeNull()
+    })
+
+    it('has nothing to say about somebody with no streak at all', async () => {
+      const fresh = await newUser()
+      const result = await streakBoard(fresh)
+      expect(result.viewer).toMatchObject({ rank: null, streak: 0, inPage: false })
     })
   })
 

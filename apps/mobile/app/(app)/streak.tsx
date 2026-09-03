@@ -1,8 +1,9 @@
 import Feather from '@expo/vector-icons/Feather'
-import { shiftDayKey } from '@langx/shared'
-import { useMemo } from 'react'
+import { shiftDayKey, STREAK_METRICS, type StreakMetric } from '@langx/shared'
+import { useMemo, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
-import { useActivity, useMe, useTokens } from '../../src/api/queries'
+import { useActivity, useMe, useStreakLeaderboard, useTokens } from '../../src/api/queries'
+import { LeaderboardSection } from '../../src/components/LeaderboardSection'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -16,6 +17,8 @@ import { shareLink } from '../../src/lib/share'
 import { streakShareText } from '../../src/lib/shareText'
 import { streakHistory, type StreakHistoryRow } from '../../src/lib/streakHistory'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+
+const STREAK_TABS: readonly StreakMetric[] = STREAK_METRICS
 
 /** Enough to read as a history without becoming a year of scrolling. */
 const DAYS = 60
@@ -35,6 +38,8 @@ export default function StreakScreen() {
   const { colors } = useTheme()
   const tokens = useTokens()
   const me = useMe()
+  const [metric, setMetric] = useState<StreakMetric>('current')
+  const board = useStreakLeaderboard(metric)
 
   const to = new Date().toISOString().slice(0, 10)
   const from = shiftDayKey(to, -DAYS)
@@ -118,6 +123,32 @@ export default function StreakScreen() {
           ))}
         </View>
       )}
+
+      {/*
+        Below the history, because the history is why this page gets opened —
+        the board is the answer to "how am I doing", which is the second
+        question, not the first.
+      */}
+      <LeaderboardSection
+        title={t('leaderboard.streakTitle')}
+        options={STREAK_TABS.map((metric) => ({
+          value: metric,
+          label: t(
+            metric === 'current' ? 'leaderboard.metricCurrent' : 'leaderboard.metricLongest',
+          ),
+        }))}
+        selected={metric}
+        onSelect={setMetric}
+        pickerLabel={t('leaderboard.streakPicker')}
+        entries={board.data?.entries ?? []}
+        viewer={board.data?.viewer}
+        valueOf={(row) => String((row as { streak?: number }).streak ?? 0)}
+        viewerValue={String(board.data?.viewer.streak ?? 0)}
+        loading={board.isPending}
+        emptyTitle={t('leaderboard.streakEmptyTitle')}
+        emptyBody={t('leaderboard.streakEmptyBody')}
+        backTo="/(app)/streak"
+      />
     </Screen>
   )
 }

@@ -23,7 +23,7 @@ import type { TokenAggregate } from './ledger'
  * score would be told different positions depending on whether they made the
  * page. Positional ranking (index + 1) would do exactly that.
  */
-function rankOf(
+export function rankOf(
   index: number,
   tokens: number,
   previous: { rank: number; tokens: number } | null,
