@@ -17,9 +17,11 @@
  * `{campaignId, userId}` is what enforces it; a batch that fails releases its
  * own claim so the next run retries exactly those people.
  *
- * The HTML and text files must both contain `{{unsubscribeUrl}}`. The script
- * refuses to send otherwise — a promotional email without a way out is the one
- * mistake here with a regulator attached.
+ * The HTML must contain `{{unsubscribeUrl}}`, and so must a `--text-file` if
+ * one is given. The script refuses to send otherwise — a promotional email
+ * with no way out is the one mistake here with a regulator attached. A text
+ * part derived from the HTML gets the link appended instead, because
+ * stripping tags takes away the `href` it was written in.
  *
  * Usage:
  *   pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
@@ -40,13 +42,15 @@ import { loadEnv, publicApiUrl, unsubscribeSecret } from '../src/env'
 import {
   campaignRecipients,
   claimCampaignRecipients,
+  deriveTextBody,
   releaseCampaignRecipients,
+  UNSUBSCRIBE_PLACEHOLDER,
 } from '../src/modules/notifications/campaign'
 
 /** Resend's default is two requests a second; this stays comfortably under. */
 const BATCH_DELAY_MS = 700
 
-const PLACEHOLDER = '{{unsubscribeUrl}}'
+const PLACEHOLDER = UNSUBSCRIBE_PLACEHOLDER
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -72,23 +76,30 @@ async function main(): Promise<void> {
   }
 
   const html = readFileSync(htmlFile, 'utf8')
-  // Stripping tags rather than demanding a second file: a text part is
-  // required by every deliverability guide, and one that is missing is a
-  // worse default than one that is plain.
-  const text = textFile
-    ? readFileSync(textFile, 'utf8')
-    : html
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
+  if (!html.includes(PLACEHOLDER)) {
+    throw new Error(`the html body must contain ${PLACEHOLDER} — refusing to send without one`)
+  }
 
-  for (const [name, body] of [
-    ['html', html],
-    ['text', text],
-  ] as const) {
-    if (!body.includes(PLACEHOLDER)) {
-      throw new Error(`the ${name} body must contain ${PLACEHOLDER} — refusing to send without one`)
+  /**
+   * A plain-text part, because every deliverability guide asks for one and a
+   * missing part is a worse default than a plain one.
+   *
+   * Deriving it by stripping tags loses the placeholder every time it is
+   * written the way anybody actually writes it — inside
+   * `<a href="{{unsubscribeUrl}}">` — so the strip takes the attribute with
+   * it, and the check then refuses a campaign that was perfectly correct.
+   * Appending it to a derived body fixes that. A hand-written `--text-file` is
+   * still held to the same standard as the html, because there the omission is
+   * a real one.
+   */
+  let text: string
+  if (textFile) {
+    text = readFileSync(textFile, 'utf8')
+    if (!text.includes(PLACEHOLDER)) {
+      throw new Error(`the text body must contain ${PLACEHOLDER} — refusing to send without one`)
     }
+  } else {
+    text = deriveTextBody(html)
   }
 
   const env = loadEnv()

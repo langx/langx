@@ -5,6 +5,29 @@ import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../push/devices'
 import type { Profile } from '../profiles/profiles'
 
+/** The token both campaign bodies must carry, replaced per recipient. */
+export const UNSUBSCRIBE_PLACEHOLDER = '{{unsubscribeUrl}}'
+
+/**
+ * A plain-text part for a campaign that only supplied HTML.
+ *
+ * Every deliverability guide asks for one, and a missing part is a worse
+ * default than a plain one. The catch is the placeholder: it is written the
+ * way anybody writes it, inside `<a href="{{unsubscribeUrl}}">`, so stripping
+ * tags takes the attribute with it — and the caller's check would then refuse
+ * a campaign that was perfectly correct. Appending it is what makes the
+ * derived body satisfy the same rule the HTML does.
+ */
+export function deriveTextBody(html: string): string {
+  const stripped = html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return stripped.includes(UNSUBSCRIBE_PLACEHOLDER)
+    ? stripped
+    : `${stripped}\n\n${UNSUBSCRIBE_PLACEHOLDER}`
+}
+
 export interface CampaignSend {
   campaignId: string
   userId: string
