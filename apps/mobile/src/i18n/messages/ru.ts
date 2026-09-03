@@ -435,13 +435,18 @@ export const ru: Localized<EnMessages> = {
 
   notifications: {
     messages: 'Сообщения',
-    messagesBody: 'Когда вам пишут.',
+    messagesBody: 'Когда вам пишут. На почту — только если вас давно не было.',
     streak: 'Напоминание о стрике',
-    streakBody: 'Вечером, если стрик вот-вот прервётся.',
+    streakBody:
+      'Вечером, если стрик вот-вот прервётся. На почту, если ни один телефон не вошёл в аккаунт.',
     profileVisits: 'Визиты в профиль',
-    profileVisitsBody: 'Когда кто-то смотрит ваш профиль.',
+    profileVisitsBody:
+      'Раз в день, сколько человек посмотрели ваш профиль. Раз в неделю сводка на почту.',
     promotions: 'Новости и предложения',
     promotionsBody: 'Изредка о новом. Выключено, пока не включите.',
+    /** The two halves of every kind above; the row title, so no kind name in it. */
+    channel: { push: 'Пуш', email: 'Почта' },
+    emailUnverified: 'Подтвердите адрес почты, чтобы включить это.',
     primingTitle: 'Включить уведомления?',
     primingBody:
       'Только две вещи: когда тебе пишут и напоминание в {hour}:00, если серия вот-вот прервётся.',

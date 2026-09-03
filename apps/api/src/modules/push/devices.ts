@@ -58,7 +58,12 @@ export interface PushMessage {
   to: string[]
   title: string
   body: string
-  data: { kind: PushKind; conversationId?: string }
+  /**
+   * What the app needs to act on the tap, and — for a message — to draw the
+   * in-app banner that replaces the OS one while the app is open. `senderId`
+   * is there for the avatar; the notification's own title is only a name.
+   */
+  data: { kind: PushKind; conversationId?: string; senderId?: string }
 }
 
 /**
@@ -215,11 +220,17 @@ export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale
  *
  * Local hour, like the streak itself — a reminder at 8pm UTC is 5am in Tokyo,
  * which is not a nudge, it is an alarm clock.
+ *
+ * Both channels come back on the candidate rather than being decided here.
+ * The nudge is a push to whoever has a phone signed in and an email to whoever
+ * does not, and only the caller — which has already claimed the day in the
+ * ledger — can see which of those it turned out to be. Filtering to
+ * push-allowed here would drop the web-only accounts that the email exists for.
  */
 export async function streakReminderCandidates(
   db: Db,
   now: Date = new Date(),
-): Promise<{ userId: string; streak: number }[]> {
+): Promise<{ userId: string; streak: number; push: boolean; email: boolean }[]> {
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find({
@@ -234,9 +245,11 @@ export async function streakReminderCandidates(
     })
     .toArray()
 
-  const candidates: { userId: string; streak: number }[] = []
+  const candidates: { userId: string; streak: number; push: boolean; email: boolean }[] = []
   for (const profile of profiles) {
-    if (!notificationsAllowed(profile.settings?.notifications, 'streak')) continue
+    const push = notificationsAllowed(profile.settings?.notifications, 'streak', 'push')
+    const email = notificationsAllowed(profile.settings?.notifications, 'streak', 'email')
+    if (!push && !email) continue
     const zone = profile.timezone ?? 'UTC'
     const localHour = Number(
       new Intl.DateTimeFormat('en-GB', {
@@ -247,7 +260,7 @@ export async function streakReminderCandidates(
     )
     if (localHour !== STREAK_REMINDER_LOCAL_HOUR) continue
     if (profile.streak.lastQualifiedDay === localDayKey(now, zone)) continue
-    candidates.push({ userId: profile._id, streak: profile.streak.current })
+    candidates.push({ userId: profile._id, streak: profile.streak.current, push, email })
   }
   return candidates
 }

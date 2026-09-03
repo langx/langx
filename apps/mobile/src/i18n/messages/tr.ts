@@ -392,13 +392,16 @@ export const tr: Localized<EnMessages> = {
 
   notifications: {
     messages: 'Mesajlar',
-    messagesBody: 'Biri sana yazdığında.',
+    messagesBody: 'Biri sana yazdığında. E-posta yalnızca bir süredir uzaktaysan.',
     streak: 'Streak hatırlatması',
-    streakBody: 'Akşam, streak’in kırılmak üzereyse.',
+    streakBody: 'Akşam, streak’in kırılmak üzereyse. Girişli telefonun yoksa e-postayla.',
     profileVisits: 'Profil ziyaretleri',
-    profileVisitsBody: 'Biri profiline baktığında.',
+    profileVisitsBody: 'Günde bir kez, profiline kaç kişinin baktığı. Haftada bir e-postayla özet.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. İstemedikçe kapalı.',
+    /** The two halves of every kind above; the row title, so no kind name in it. */
+    channel: { push: 'Anlık bildirim', email: 'E-posta' },
+    emailUnverified: 'Bunu açmak için e-posta adresini doğrula.',
     primingTitle: 'Bildirimler açılsın mı?',
     primingBody:
       'Sadece iki şey: biri sana mesaj attığında ve serin kopmak üzereyse saat {hour}:00’da bir dürtme.',

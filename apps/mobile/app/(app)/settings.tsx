@@ -42,7 +42,12 @@ import {
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { useLocale, useLocalePreference, useT, type MessageKey } from '../../src/i18n'
-import { LOCALE_NAMES, NOTIFICATION_TYPES, notificationsAllowed } from '@langx/shared'
+import {
+  LOCALE_NAMES,
+  NOTIFICATION_CHANNELS,
+  NOTIFICATION_TYPES,
+  resolveNotificationPrefs,
+} from '@langx/shared'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import {
   makeStyles,
@@ -77,6 +82,19 @@ export default function SettingsScreen() {
 
   const profile = me.data
   const isPro = useIsPro()
+  /**
+   * The eight cells, with every stored shape already resolved — an account
+   * from v1 carries one boolean for all of this, and a screen drawing switches
+   * off `profile.settings.notifications` directly would read that as "off".
+   */
+  const notifications = resolveNotificationPrefs(profile?.settings.notifications)
+  /**
+   * An email switch on an unverified address is a switch that sends nothing,
+   * which is the exact fault that had the email column removed the first time.
+   * Disabled with a reason under it rather than hidden: somebody who verifies
+   * their address later should find the control where they last saw it.
+   */
+  const emailVerified = authClient.useSession().data?.user.emailVerified === true
   /*
    * The incognito row asks about *incognito*, not "any paid plan". They agreed
    * while every privacy flag was Fluent's; now that this one is Polyglot's,
@@ -404,37 +422,57 @@ export default function SettingsScreen() {
       </View>
 
       {/*
-        Four kinds, one switch each. It was one switch for everything, which
+        Four kinds, two channels each. It was one switch for everything, which
         meant that somebody who did not want a nudge about their streak had to
         turn off the message they were waiting for as well.
 
-        It was briefly two switches per kind, push and email. The email column
-        never sent anything — nothing in the app sends mail except verification
-        and password reset — so six of those eight switches did nothing, and a
-        choice that changes nothing is worse than no choice at all.
+        The channel axis was here once before and was taken out again, because
+        nothing sent mail except verification and password reset: six of the
+        eight switches did nothing, and a choice that changes nothing is worse
+        than no choice at all. It is back because every cell now reaches a
+        sender, and the email half is disabled until an address is verified —
+        that rule, not the axis, is what keeps a dead switch off this screen.
 
-        Promotions default to off; consent is given, not withdrawn.
+        Two rows per kind rather than two toggles in one row: `ListRow` has one
+        accessory slot, and two unlabelled switches side by side are a coin
+        flip for anyone reading the screen aloud.
+
+        Promotions default to off on both; consent is given, not withdrawn.
       */}
       <Text style={styles.section}>{t('settings.notificationsSection')}</Text>
-      <View>
-        {NOTIFICATION_TYPES.map((type, index) => (
-          <ListRow
-            key={type}
-            title={t(`notifications.${type}` as MessageKey)}
-            subtitle={t(`notifications.${type}Body` as MessageKey)}
-            last={index === NOTIFICATION_TYPES.length - 1}
-            accessory={
-              <Toggle
-                accessibilityLabel={t(`notifications.${type}` as MessageKey)}
-                value={notificationsAllowed(profile?.settings.notifications, type)}
-                onValueChange={(next) =>
-                  update.mutate({ settings: { notifications: { [type]: next } } })
-                }
-              />
-            }
-          />
-        ))}
-      </View>
+      {NOTIFICATION_TYPES.map((type) => (
+        <View key={type}>
+          <Text style={styles.kindTitle}>{t(`notifications.${type}` as MessageKey)}</Text>
+          <Text style={styles.kindBody}>{t(`notifications.${type}Body` as MessageKey)}</Text>
+          <View>
+            {NOTIFICATION_CHANNELS.map((channel, index) => {
+              const disabled = channel === 'email' && !emailVerified
+              return (
+                <ListRow
+                  key={channel}
+                  title={t(`notifications.channel.${channel}` as MessageKey)}
+                  subtitle={disabled ? t('notifications.emailUnverified') : undefined}
+                  last={index === NOTIFICATION_CHANNELS.length - 1}
+                  accessory={
+                    <Toggle
+                      accessibilityLabel={`${t(`notifications.${type}` as MessageKey)} — ${t(
+                        `notifications.channel.${channel}` as MessageKey,
+                      )}`}
+                      disabled={disabled}
+                      value={notifications[type][channel]}
+                      onValueChange={(next) =>
+                        update.mutate({
+                          settings: { notifications: { [type]: { [channel]: next } } },
+                        })
+                      }
+                    />
+                  }
+                />
+              )
+            })}
+          </View>
+        </View>
+      ))}
 
       {/*
         A device preference rather than an account one, so it is deliberately
@@ -634,6 +672,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     color: colors.textFaint,
     marginTop: spacing.xl,
   },
+  /** The kind a pair of channel rows belongs to, above them rather than beside. */
+  kindTitle: { ...font.body, color: colors.text, fontWeight: '600', marginTop: spacing.lg },
+  kindBody: { ...font.caption, color: colors.textMuted, marginBottom: spacing.xs },
   theme: { paddingVertical: spacing.xs },
   signOut: { marginTop: spacing.xl },
   build: {

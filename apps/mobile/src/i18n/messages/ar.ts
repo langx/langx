@@ -455,13 +455,17 @@ export const ar: Localized<EnMessages> = {
 
   notifications: {
     messages: 'الرسائل',
-    messagesBody: 'عندما يكتب إليك أحد.',
+    messagesBody: 'عندما يكتب إليك أحد. وبالبريد فقط إن غبت مدة.',
     streak: 'تذكير السلسلة',
-    streakBody: 'مساءً، إذا كانت سلسلتك على وشك الانقطاع.',
+    streakBody:
+      'مساءً، إذا كانت سلسلتك على وشك الانقطاع. وبالبريد إن لم يكن هناك هاتف مسجَّل الدخول.',
     profileVisits: 'زيارات الملف',
-    profileVisitsBody: 'عندما يطّلع أحد على ملفك.',
+    profileVisitsBody: 'مرة كل يوم، كم شخصًا اطّلع على ملفك. وملخّص بالبريد كل أسبوع.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. مغلق ما لم تطلبه.',
+    /** The two halves of every kind above; the row title, so no kind name in it. */
+    channel: { push: 'إشعار فوري', email: 'البريد' },
+    emailUnverified: 'وثّق عنوان بريدك لتفعيل هذا.',
     primingTitle: 'تفعيل الإشعارات؟',
     primingBody:
       'أمران فقط: حين يراسلك أحد، وتذكير عند الساعة {hour}:00 إن كانت سلسلتك على وشك الانقطاع.',
