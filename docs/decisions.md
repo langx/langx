@@ -2277,6 +2277,28 @@ keeps the JS thread alive in the background — the chat screen can be the
 focused route with nobody looking at it, and marking a message read there
 clears a badge for something never seen.
 
+## An entry animation never gates visibility
+
+The first iOS device test sent a message while the app sat on another tab, and
+no banner appeared — though the socket handler ran, the decision was `banner`,
+and the host mounted, which the sender-profile fetch in the API log shows. A
+banner drawn later in the same session was fine.
+
+The first banner of a launch is structurally different from every later one.
+Its `Animated.Value` is still JS-side when the view mounts with `opacity: 0`,
+and a passive effect then starts a native-driver timing that has to connect
+the node to an already-mounted view. Every later banner mounts against a
+value that is native already and connects during commit. A fade from zero
+gates the whole card on that first connect succeeding, and on this device it
+did not.
+
+So the card is drawn at full opacity from its first frame and only its
+position animates. An animation that never runs now costs sixteen points of
+placement rather than the notification. `ToastHost` keeps its fade for the
+moment, deliberately: it is the control. If the first toast of an iOS launch
+turns out to be invisible too, it gets the same treatment; if it is not, the
+cause is narrower than this entry claims and worth chasing.
+
 ## Scheduled notifications claim before they send
 
 Every pass writes a row into `notificationLedger` — `_id` is
