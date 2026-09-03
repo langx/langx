@@ -3,10 +3,12 @@ import type { InfiniteData } from '@tanstack/react-query'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { AppState } from 'react-native'
+import type { Socket } from 'socket.io-client'
 import type { MeProfile, MessageDto } from '../api/queries'
 import { invalidateUnread, keys, markConversationRead } from '../api/queries'
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
+import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
 import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
 import {
   appendIncomingMessage,
@@ -32,10 +34,50 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     if (!enabled) return
     let cancelled = false
     let heartbeat: ReturnType<typeof setInterval> | null = null
+    let opened: Socket | null = null
+
+    /**
+     * What the socket missed while it was away.
+     *
+     * Events are not replayed. A phone in the background has no connection,
+     * so a message sent then became a push and never a `message:new` — and
+     * tapping that push opened a thread already mounted as the hidden tab,
+     * with its cached pages and without the message. The two signals that a
+     * gap happened are the app coming back from the background and the
+     * socket reconnecting after a drop while the app was open; both end in
+     * the same invalidation. They can fire within a second of each other
+     * after a resume, and the second merely restarts the fetch the first
+     * began.
+     *
+     * Here rather than in `useNotificationRouting` (the tap is one way back,
+     * not the only one), the chat screen's focus effect (which would refetch
+     * every loaded page on every navigation) or a `focusManager` wiring
+     * (every mounted screen on every foreground): the gap is the socket's,
+     * so the socket owns it. `resumedFromBackground` says which transitions
+     * count.
+     */
+    const resync = (): void => {
+      void invalidateMissedEvents(queryClient)
+    }
+    let lastAppState = AppState.currentState
+    const appStateSubscription = AppState.addEventListener('change', (next) => {
+      if (resumedFromBackground(lastAppState, next)) resync()
+      lastAppState = next
+    })
 
     void (async () => {
       const socket = await getSocket()
       if (cancelled) return
+      opened = socket
+
+      /*
+       * On the Manager, not the socket: `reconnect` is the Manager's event,
+       * and it fires only for an automatic reconnection — the one case where
+       * something may have happened in between. socket.io-client keeps one
+       * Manager per URL across `closeSocket()`, so the cleanup below has to
+       * take this handler off again or every re-run of this effect stacks one.
+       */
+      socket.io.on('reconnect', resync)
 
       /**
        * Says "still here" while the app is open. Without it `lastActiveAt`
@@ -210,6 +252,8 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     return () => {
       cancelled = true
       if (heartbeat) clearInterval(heartbeat)
+      appStateSubscription.remove()
+      opened?.io.off('reconnect', resync)
       closeSocket()
     }
   }, [enabled, queryClient])
