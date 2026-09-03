@@ -26,7 +26,12 @@ import type { ExpoConfig } from 'expo/config'
  *     against a file on the domain, so these entries do nothing until
  *     `apps/mobile/public/.well-known/` is actually served from that host.
  *
- * versionCode/buildNumber must stay above the published 119.
+ * The build number and Android versionCode are deliberately absent: `eas.json`
+ * sets `appVersionSource: "remote"`, so EAS owns them and hands one out per
+ * build. They were declared here until 3 September 2026, which silently broke
+ * every `production` build — `autoIncrement` cannot write back into a dynamic
+ * config, so the build failed before it started. The remote counter has to
+ * stay above the published 119.
  */
 // Existing EAS project, carried over from the abandoned rewrite.
 const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
@@ -41,8 +46,12 @@ const config: ExpoConfig = {
 
   ios: {
     bundleIdentifier: IOS_BUNDLE_ID,
-    buildNumber: '120',
     supportsTablet: true,
+    // The app encrypts nothing of its own; it only speaks HTTPS through the
+    // system stack, which Apple's export rules exempt. Answering that here
+    // answers it once — without it every upload sits in App Store Connect as
+    // "Missing Compliance" and TestFlight will not hand the build to anyone.
+    infoPlist: { ITSAppUsesNonExemptEncryption: false },
     // Adds the Sign in with Apple entitlement. Without it the native sheet
     // opens and then fails with no identity token, which reads like a bug in
     // the app rather than a missing capability.
@@ -56,7 +65,6 @@ const config: ExpoConfig = {
 
   android: {
     package: ANDROID_PACKAGE,
-    versionCode: 120,
     /**
      * FCM's Android client config. Only set when the file is actually there:
      * naming a file that does not exist fails the prebuild, and this repo is
