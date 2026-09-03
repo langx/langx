@@ -105,9 +105,17 @@ describe.each(SUPPORTED_LOCALES.filter((l) => l !== 'en'))('%s', (locale: Locale
     // A locale wired to `en` as a placeholder is the failure this branch went
     // through twice; identical sentences here would mean it happened again.
     const mine = leaves(catalogs[locale])
-    const same = [...leaves(en)].filter(([path, text]) => mine.get(path) === text)
-    // Brand names, emoji labels and a few short words legitimately match.
-    expect(same.length).toBeLessThan(60)
+    const english = [...leaves(en)]
+    const same = english.filter(([path, text]) => mine.get(path) === text)
+    /*
+     * A share rather than a count. Brand names, emoji labels and short words
+     * like "Push" or "Photo" legitimately match, and there are more of them
+     * every time the catalogue grows — a fixed ceiling turns into a number
+     * somebody raises by one whenever it fails, which is a dead test. A
+     * placeholder locale scores 1.0; the worst real one here is well under a
+     * fifth.
+     */
+    expect(same.length / english.length).toBeLessThan(0.2)
   })
 })
 

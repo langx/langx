@@ -533,6 +533,10 @@ export const ar: Localized<EnMessages> = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'شخص ما',
+    bannerA11y: 'رسالة جديدة من {name}',
+    preview: { image: '📷 صورة', audio: '🎤 رسالة صوتية', correction: '✍️ تصحيح' },
     delete: 'حذف',
     deleteTitle: 'حذف هذه المحادثة؟',
     deleteBody: 'تبقى لدى الطرف الآخر، وتعود هنا إن راسلك مجددًا.',

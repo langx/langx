@@ -467,6 +467,10 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'Alguém',
+    bannerA11y: 'Nova mensagem de {name}',
+    preview: { image: '📷 Foto', audio: '🎤 Mensagem de voz', correction: '✍️ Correção' },
     delete: 'Excluir',
     deleteTitle: 'Excluir esta conversa?',
     deleteBody: 'Ela fica do lado deles e volta aqui se escreverem de novo.',

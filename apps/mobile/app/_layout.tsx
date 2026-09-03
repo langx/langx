@@ -22,6 +22,7 @@ import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { AppSplash, SplashFill } from '../src/components/AppSplash'
 import { Button } from '../src/components/ui/Button'
+import { MessageBannerHost } from '../src/components/MessageBannerHost'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
 import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
@@ -256,6 +257,12 @@ function RootShell() {
               is a matter of coming later in the tree.
             */}
             <ToastHost />
+            {/*
+              Last, so it paints over the toast as well: a message arriving is
+              the more urgent of the two, and both at once is rare enough that
+              the toast losing four seconds costs nothing.
+            */}
+            <MessageBannerHost />
           </AppGate>
         )}
         {/*

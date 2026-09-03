@@ -473,6 +473,10 @@ export const tr: Localized<EnMessages> = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'Biri',
+    bannerA11y: '{name} kişisinden yeni mesaj',
+    preview: { image: '📷 Fotoğraf', audio: '🎤 Sesli mesaj', correction: '✍️ Düzeltme' },
     delete: 'Sil',
     deleteTitle: 'Bu sohbet silinsin mi?',
     deleteBody: 'Karşı tarafta kalır; tekrar yazarsa burada yeniden açılır.',

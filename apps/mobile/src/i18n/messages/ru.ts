@@ -520,6 +520,10 @@ export const ru: Localized<EnMessages> = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'Кто-то',
+    bannerA11y: 'Новое сообщение от {name}',
+    preview: { image: '📷 Фото', audio: '🎤 Голосовое сообщение', correction: '✍️ Исправление' },
     delete: 'Удалить',
     deleteTitle: 'Удалить этот чат?',
     deleteBody: 'У собеседника он останется и вернётся сюда, если он напишет снова.',

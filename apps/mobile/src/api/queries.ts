@@ -50,6 +50,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  type QueryClient,
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
@@ -126,6 +127,28 @@ export const keys = {
  * to call it for: signed out, `/profiles/me` is a 401, and the gate reads
  * "no profile" off a 404. Every other caller is already behind the session.
  */
+/**
+ * "I have seen this thread."
+ *
+ * Here rather than in the chat screen because two places post it now: opening
+ * the thread, and a message arriving while it is already open. Two copies
+ * would be two chances for one of them to forget the invalidation and leave a
+ * stale unread count on the list behind.
+ */
+export async function markConversationRead(
+  conversationId: string,
+  queryClient: QueryClient,
+): Promise<void> {
+  if (!conversationId) return
+  try {
+    await api.post(`/conversations/${conversationId}/read`)
+    await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+  } catch {
+    // Best-effort: failing to clear an unread badge must never surface as an
+    // error over a conversation the user is reading perfectly happily.
+  }
+}
+
 export function useMe(enabled = true) {
   return useQuery({
     queryKey: keys.me,
