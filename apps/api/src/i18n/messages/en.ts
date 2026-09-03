@@ -1,6 +1,6 @@
 /**
- * Everything the **server** words for a user: two emails and one push
- * notification.
+ * Everything the **server** words for a user: the mail it sends and the
+ * notifications it pushes.
  *
  * Deliberately not the app's catalogue. The two have almost nothing in common
  * — the app words screens, this words things that arrive when the app is
@@ -29,6 +29,35 @@ export const en = {
     resetBody: 'Someone requested a password reset for this account. If that was you:',
     resetButton: 'Reset password',
     resetText: 'Reset your LangX password: {url}',
+
+    /*
+     * The footer every notification email carries, and the page its link
+     * leads to. Not the same as `ignore` above: this mail was asked for, so it
+     * says why it came and how to stop it rather than how to disregard it.
+     */
+    whyThisMail: 'You’re getting this because of your LangX notification settings.',
+    unsubscribeLink: 'Turn these emails off',
+    unsubscribeText: 'Turn these emails off: {url}',
+    managePrefs: 'All notification settings',
+
+    unsubscribeTitle: 'Turn off these emails?',
+    unsubscribeBody:
+      'You will stop getting {kind} by email. Notifications on your phone are not affected.',
+    unsubscribeConfirm: 'Turn them off',
+    unsubscribeAll: 'Or turn off every LangX email',
+    unsubscribedTitle: 'Done — no more of these.',
+    unsubscribedBody: 'You can turn them back on any time in LangX under Settings → Notifications.',
+    unsubscribeInvalid:
+      'This link is not valid. Open LangX and change it under Settings → Notifications.',
+
+    /** Named in the sentence above, so they read as objects, not headings. */
+    kind: {
+      messages: 'message summaries',
+      streak: 'streak reminders',
+      profileVisits: 'profile-visit summaries',
+      promotions: 'news and offers',
+      all: 'email from LangX',
+    },
   },
 } as const
 

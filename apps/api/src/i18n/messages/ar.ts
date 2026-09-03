@@ -30,5 +30,26 @@ export const ar: Localized<ServerMessages> = {
     resetBody: 'طلب أحدهم إعادة تعيين كلمة المرور لهذا الحساب. إذا كنت أنت:',
     resetButton: 'إعادة تعيين كلمة المرور',
     resetText: 'إعادة تعيين كلمة مرور LangX: {url}',
+
+    whyThisMail: 'تصلك هذه الرسالة بسبب إعدادات الإشعارات في LangX.',
+    unsubscribeLink: 'أوقف هذه الرسائل',
+    unsubscribeText: 'أوقف هذه الرسائل: {url}',
+    managePrefs: 'كل إعدادات الإشعارات',
+
+    unsubscribeTitle: 'إيقاف هذه الرسائل؟',
+    unsubscribeBody: 'لن تصلك {kind} عبر البريد بعد الآن. إشعارات الهاتف لا تتأثر.',
+    unsubscribeConfirm: 'أوقفها',
+    unsubscribeAll: 'أو أوقف كل رسائل LangX',
+    unsubscribedTitle: 'تم — لن تصلك بعد الآن.',
+    unsubscribedBody: 'يمكنك تشغيلها متى شئت من LangX في الإعدادات ← الإشعارات.',
+    unsubscribeInvalid: 'هذا الرابط غير صالح. افتح LangX وغيّره من الإعدادات ← الإشعارات.',
+
+    kind: {
+      messages: 'ملخّصات الرسائل',
+      streak: 'تذكيرات السلسلة',
+      profileVisits: 'ملخّصات زيارات الملف',
+      promotions: 'الأخبار والعروض',
+      all: 'رسائل LangX',
+    },
   },
 }

@@ -50,6 +50,19 @@ const envSchema = z.object({
   // resend.dev requires no domain verification, so this works immediately;
   // point it at a verified langx.io sender before Faz 13's launch.
   EMAIL_FROM: z.string().min(1).default('LangX <onboarding@resend.dev>'),
+  /**
+   * Signs the unsubscribe link in the footer of every notification email.
+   *
+   * Its own secret rather than `BETTER_AUTH_SECRET`, and the difference is
+   * rotation: the auth secret is what you change the morning a session store
+   * leaks, and doing that must not silently break the unsubscribe link in
+   * every email ever sent — those links live in inboxes for years and are the
+   * legal way out of the mail. **Generate once and never rotate.**
+   *
+   * Optional, so the app still boots without it: unset, it falls back to the
+   * auth secret, which works and merely inherits that rotation problem.
+   */
+  EMAIL_UNSUBSCRIBE_SECRET: emptyToUndefined(z.string().min(32).optional()),
 
   // OAuth. Each provider activates only once both of its variables are set —
   // see socialProviders() in auth.ts — so leaving these blank still boots a
@@ -167,6 +180,31 @@ const envSchema = z.object({
 })
 
 export type Env = z.infer<typeof envSchema>
+
+/**
+ * Where this API answers from the outside, which is what an unsubscribe link
+ * in an email has to point at.
+ *
+ * The same resolution `createAuth` does for its `baseURL`, extracted so the
+ * two cannot drift: a link built against a different host than the one Better
+ * Auth thinks it is serving is a 404 in somebody's inbox.
+ */
+export function publicApiUrl(env: Env): string {
+  return (
+    env.BETTER_AUTH_URL ?? `http://${env.HOST === '0.0.0.0' ? 'localhost' : env.HOST}:${env.PORT}`
+  )
+}
+
+/**
+ * The secret the unsubscribe links are signed with.
+ *
+ * Falls back to the auth secret so an instance without its own still sends
+ * working links — at the cost of those links dying the day that secret is
+ * rotated, which is the whole reason `EMAIL_UNSUBSCRIBE_SECRET` exists.
+ */
+export function unsubscribeSecret(env: Env): string {
+  return env.EMAIL_UNSUBSCRIBE_SECRET ?? env.BETTER_AUTH_SECRET
+}
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   const parsed = envSchema.safeParse(source)

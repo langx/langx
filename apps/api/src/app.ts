@@ -14,6 +14,7 @@ import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
+import { emailRoutes } from './routes/email'
 import { appConfigRoutes } from './routes/appConfig'
 import { loginRoutes } from './routes/login'
 import { registerAuthRoutes } from './routes/auth'
@@ -39,6 +40,7 @@ import { xpRoutes } from './routes/tokens'
 import { wellKnownRoutes } from './routes/wellKnown'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
+import { ConsoleEmailSender, type EmailSender } from './email/sender'
 import { DisabledLegacyVerifier, type LegacyVerifier } from './modules/handles/legacyLogin'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
@@ -54,6 +56,12 @@ declare module 'fastify' {
     translation: TranslationProvider
     revenueCat: RevenueCatClient
     push: PushSender
+    /**
+     * The same sender Better Auth was handed, so that one array in a test
+     * holds both the verification mail and the notification mail — they are
+     * one outbox from the reader's side, and were two from ours.
+     */
+    email: EmailSender
     legacyVerifier: LegacyVerifier
     appVersion: string
     /**
@@ -81,6 +89,11 @@ export interface BuildAppOptions {
    */
   push?: PushSender
   /**
+   * Defaults to the console sender for the same reason `push` defaults to the
+   * logging one: a test that never sends mail should not have to name it.
+   */
+  email?: EmailSender
+  /**
    * Checks a v1 password against the still-running Appwrite. Defaults to the
    * disabled one, so tests and any instance without APPWRITE_* simply never
    * take the bridge path.
@@ -98,6 +111,7 @@ export async function buildApp({
   translation,
   revenueCat,
   push = new LoggingPushSender(),
+  email = new ConsoleEmailSender(console),
   legacyVerifier = new DisabledLegacyVerifier(),
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
@@ -127,6 +141,7 @@ export async function buildApp({
   app.decorate('translation', translation)
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
+  app.decorate('email', email)
   app.decorate('legacyVerifier', legacyVerifier)
   app.decorate('appVersion', version)
 
@@ -237,6 +252,7 @@ export async function buildApp({
   await app.register(leaderboardRoutes)
   await app.register(moderationRoutes)
   await app.register(accountRoutes)
+  await app.register(emailRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the
