@@ -1,8 +1,8 @@
 import { STREAK_REMINDER_LOCAL_HOUR } from '@langx/shared'
-import * as Device from 'expo-device'
 import { useEffect, useState } from 'react'
-import { Platform, Pressable, Text, View } from 'react-native'
-import { registerPushToken } from '../hooks/usePushRegistration'
+import { Pressable, Text, View } from 'react-native'
+import { granted, registerPushToken } from '../hooks/usePushRegistration'
+import { messagingModule } from '../lib/pushMessaging'
 import { makeStyles } from '../lib/theme'
 import { useT } from '../i18n'
 
@@ -29,15 +29,14 @@ export function NotificationPriming() {
   useEffect(() => {
     let cancelled = false
     void (async () => {
-      if (Platform.OS === 'web' || !Device.isDevice) return
       try {
-        // Lazily imported for the same reason `usePushRegistration` does it:
-        // inside Expo Go on Android the module throws on import.
-        const Notifications = await import('expo-notifications')
-        const current = await Notifications.getPermissionsAsync()
-        // `canAskAgain` false means the OS will not show a dialog however
-        // nicely we ask, so offering the button would be a lie.
-        if (!cancelled && !current.granted && current.canAskAgain) setVisible(true)
+        const fm = await messagingModule()
+        if (!fm) return
+        const status = await fm.hasPermission(fm.getMessaging())
+        // Only while the OS has never been asked. `DENIED` means it will not
+        // show a dialog however nicely we ask, so offering the button would be
+        // a lie; the person has to go to Settings for that.
+        if (!cancelled && status === fm.AuthorizationStatus.NOT_DETERMINED) setVisible(true)
       } catch {
         // No notifications module, nothing to prime.
       }
@@ -52,9 +51,11 @@ export function NotificationPriming() {
   async function enable(): Promise<void> {
     setBusy(true)
     try {
-      const Notifications = await import('expo-notifications')
-      const result = await Notifications.requestPermissionsAsync()
-      if (result.status === Notifications.PermissionStatus.GRANTED) await registerPushToken()
+      const fm = await messagingModule()
+      if (!fm) return
+      // Android 13+ asks POST_NOTIFICATIONS through the same call.
+      const status = await fm.requestPermission(fm.getMessaging())
+      if (granted(fm, status)) await registerPushToken()
     } catch {
       // A declined or broken permission is a normal outcome, not an error.
     } finally {

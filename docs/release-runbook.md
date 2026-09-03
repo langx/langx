@@ -211,47 +211,52 @@ EAS holds for this project, which is the upload key. It needs no password.
 Nothing here is secret. Android serves these fingerprints from every device
 that has the app installed, which is why they belong in a public repo.
 
-## Push needs credentials in three places
+## Push needs one secret on the server and two files in the builds
 
 The pipeline is complete in code — a token is registered, a message send fans
-out to the recipient's devices, a nudge goes out at 20:00 local, a tapped
-notification opens the conversation — and none of it reaches a phone until
-Expo can talk to Apple and Google on our behalf. There are three separate
-pieces and missing any one of them looks identical from the app: nothing
-arrives, nothing errors.
+out to the recipient's devices, the evening passes go out on local time, a
+tapped notification opens the conversation — and none of it reaches a phone
+until Firebase can be spoken to. Push goes **straight to Firebase Cloud
+Messaging** on both platforms; there is no Expo relay and nothing to upload to
+Expo. Firebase project: **`langx-48eb0`** (the original one is suspended).
 
-- [ ] **APNs key (iOS).** Apple Developer → Keys → a key with the Apple Push
-      Notifications service enabled. `eas credentials` uploads it. One key
-      covers development and production.
-- [ ] **FCM v1 service account (Android).** Firebase console → Project
-      settings → Service accounts → generate a private key, then upload the
-      JSON with `eas credentials`. The legacy server key is gone; FCM v1 is
-      the only option now.
-- [ ] **`google-services.json` in the build.** The same Firebase project's
-      Android app config, which carries the sender id the client registers
-      with. It is gitignored — this repo is public — so point
-      `GOOGLE_SERVICES_JSON` at a local path or an EAS file secret.
-      `app.config.ts` only sets `googleServicesFile` when that variable is
-      present, so a build without it succeeds and simply never receives a
-      remote notification.
+- [ ] **`FCM_SERVICE_ACCOUNT_JSON` on Fly.** Firebase console → Project
+      settings → Service accounts → generate a private key. Paste the JSON's
+      _content_ as one line (the same shape as the translation key). Without
+      it every push is a logged no-op and nothing else breaks.
+- [ ] **`google-services.json` in the Android build.** Project settings →
+      Your apps → the Android app with package `tech.newchapter.languageXchange`.
+      Gitignored — this repo is public — so point `GOOGLE_SERVICES_JSON` at
+      the file for a local build, or make it an EAS file secret.
+- [ ] **`GoogleService-Info.plist` in the iOS build.** Same page, the iOS app
+      with bundle id `tech.newchapter.languageXchange`; register it if it is
+      not there. `GOOGLE_SERVICES_PLIST` points at it, gated the same way.
+- [ ] **The APNs key in Firebase, not on our server.** Apple Developer → Keys
+      → a key with Apple Push Notifications service; upload the `.p8` under
+      Project settings → Cloud Messaging → Apple app configuration. Firebase
+      talks to Apple with it; we never see an APNs token.
 
-The Firebase project must use the same package name,
-`tech.newchapter.languageXchange`. A mismatch registers tokens that Expo
-accepts and FCM silently drops.
+A package or bundle id mismatch registers tokens Firebase accepts and then
+silently drops. Both ids are byte-identical to v1's, on purpose.
 
-Verify with a real device before submitting — a simulator cannot receive
-remote notifications at all:
+Verify the server half before any build exists: with the service account in
+hand, a send to a deliberately fake token answers `400 INVALID_ARGUMENT`
+(credentials and API fine, token fake) rather than `401`/`403` (key or API
+wrong). Then, on a real device — a simulator cannot receive remote
+notifications — register, read the token out of `devices`, and:
 
 ```bash
-curl -X POST https://exp.host/--/api/v2/push/send \
-  -H 'content-type: application/json' \
-  -d '{"to":"ExponentPushToken[…]","title":"test","body":"hello"}'
+# an access token from the service account, then one send
+ACCESS=$(node -e '…mint a JWT-bearer token from FCM_SERVICE_ACCOUNT_JSON…')
+curl -X POST https://fcm.googleapis.com/v1/projects/langx-48eb0/messages:send \
+  -H "authorization: Bearer $ACCESS" -H 'content-type: application/json' \
+  -d '{"message":{"token":"<fcm token>","notification":{"title":"test","body":"hello"},"data":{"kind":"message","conversationId":"…","senderId":"…"}}}'
 ```
 
-A `DeviceNotRegistered` ticket in the reply means the credentials are wrong,
-not the token. The API prunes tokens that come back with it, so a
-misconfigured send also quietly empties the devices collection — fix the
-credentials before running the streak reminder against real users.
+`UNREGISTERED` in the reply means the app was uninstalled, and the API prunes
+that token on its next send; `INVALID_ARGUMENT` on a token you just read out
+of the database means it was minted against a different Firebase project —
+an older build — and the device needs the new build.
 
 ## Email needs a verified sender and a secret that is never rotated
 

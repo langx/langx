@@ -2355,3 +2355,36 @@ Everything a notification sender does goes through `sendNotificationEmail`,
 which checks deleted, then the preference, then the address, in that order — a
 consent check that lives in five places is one that four of them will
 eventually get wrong.
+
+## Push goes straight to Firebase, on both platforms
+
+It went through Expo's push relay first: the app registered an Expo token,
+the API posted to `exp.host`, and Expo forwarded to FCM and APNs. That is
+one line of code on the server and it is genuinely convenient — right up to
+the moment you set it up, because the relay needs our FCM service account
+_and_ our Apple key uploaded to Expo, and holding them there is the whole
+reason it works.
+
+We are not uploading credentials to Expo. The builds are made locally, the
+keystore stays on one machine, and Expo's account holds nothing but the
+over-the-air updates. So push had to stop depending on Expo too, and the
+direct path is not much longer: a signed JWT, one POST per device, and a
+prune on `UNREGISTERED`. The one key lives on our server.
+
+iOS goes through Firebase as well rather than through APNs from our side.
+Two senders would mean two credentials in two formats and two failure modes;
+Firebase holding the APNs key is one credential, in a console somebody
+already has open, and the same device token type on both platforms.
+
+That means the Firebase iOS SDK on the phone, which is what mints an FCM
+token there — hence `@react-native-firebase/app` and `/messaging` and the
+static frameworks the iOS SDK insists on. `expo-notifications` survives for
+exactly one call, the Android channel, and is never imported on iOS: both
+libraries hook the same iOS delegate, and two answers to one delivery is the
+bug that comes from keeping both.
+
+A push that arrives while the app is in the foreground is handed to JS and
+the OS draws nothing. For a message that is what we want — the in-app banner
+draws it. The once-a-day kinds are not drawn in the foreground at all: they
+have no in-app shape, and somebody using the app at that moment is one tap
+from the screen they are about.

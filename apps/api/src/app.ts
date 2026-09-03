@@ -84,7 +84,7 @@ export interface BuildAppOptions {
   translation: TranslationProvider
   revenueCat: RevenueCatClient
   /**
-   * Defaults to the logging no-op. Production passes `ExpoPushSender`
+   * Defaults to the logging no-op. Production passes `FcmPushSender`
    * explicitly from index.ts; leaving it optional keeps every test from having
    * to name a dependency it never exercises.
    */

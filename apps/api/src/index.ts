@@ -10,7 +10,8 @@ import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
-import { ExpoPushSender } from './modules/push/devices'
+import { LoggingPushSender } from './modules/push/devices'
+import { FcmPushSender } from './modules/push/fcm'
 import type { NotificationEmailContext } from './email/notify'
 import { AppwriteLegacyVerifier, DisabledLegacyVerifier } from './modules/handles/legacyLogin'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
@@ -37,7 +38,12 @@ async function main(): Promise<void> {
 
   const translation = createTranslationProvider(env)
 
-  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
+  // Without the service account, push is logged rather than sent — the app
+  // boots and everything else works, which is the rule for every optional
+  // service here.
+  const push = env.FCM_SERVICE_ACCOUNT_JSON
+    ? new FcmPushSender(env.FCM_SERVICE_ACCOUNT_JSON)
+    : new LoggingPushSender()
 
   /**
    * What every notification sender needs: an outbox, the secret its
