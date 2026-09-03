@@ -418,9 +418,11 @@ export const fr: Localized<EnMessages> = {
     title: 'Tes corrections',
     emptyTitle: 'Pas encore de corrections',
     emptyBody: 'Appuie longuement sur un message et choisis Corriger — c’est le plus utile ici.',
+    combinedTitle: 'Ce que tu as écrit',
+    tabCorrections: 'Corrections',
+    tabPosts: 'Publications',
   },
   myPosts: {
-    title: 'Publications que tu as écrites',
     emptyTitle: 'Tu n’as encore rien demandé',
     emptyBody:
       'Pose une question sur une phrase dont tu n’es pas sûr, ou un mot que tu n’arrives pas à dire — elle apparaîtra ici.',
@@ -760,7 +762,6 @@ export const fr: Localized<EnMessages> = {
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
     corrections: 'Corrections',
-    myPosts: 'Tes publications',
     wallet: 'Portefeuille',
     previewProfile: 'Aperçu de mon profil',
     previewProfileBody: 'Vois ton profil comme les autres le voient',

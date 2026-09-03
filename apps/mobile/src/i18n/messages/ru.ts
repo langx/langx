@@ -461,9 +461,11 @@ export const ru: Localized<EnMessages> = {
     emptyTitle: 'Исправлений пока нет',
     emptyBody:
       'Задержи палец на сообщении и выбери «Исправить» — это самое полезное, что тут можно сделать.',
+    combinedTitle: 'Написанное тобой',
+    tabCorrections: 'Исправления',
+    tabPosts: 'Публикации',
   },
   myPosts: {
-    title: 'Твои публикации',
     emptyTitle: 'Ты ещё ничего не спросил',
     emptyBody:
       'Спроси про предложение, в котором не уверен, или про слово, которое не можешь произнести — оно появится здесь.',
@@ -871,7 +873,6 @@ export const ru: Localized<EnMessages> = {
     editProfile: 'Изменить профиль',
     settings: 'Настройки',
     corrections: 'Исправления',
-    myPosts: 'Твои публикации',
     wallet: 'Кошелёк',
     previewProfile: 'Посмотреть мой профиль',
     previewProfileBody: 'Взгляните на профиль глазами других',

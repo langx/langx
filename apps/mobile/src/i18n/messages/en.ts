@@ -443,9 +443,11 @@ export const en = {
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct — it is the most useful thing you can do here.',
+    combinedTitle: 'Your writing',
+    tabCorrections: 'Corrections',
+    tabPosts: 'Posts',
   },
   myPosts: {
-    title: 'Posts you wrote',
     emptyTitle: 'Nothing asked yet',
     emptyBody:
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
@@ -791,7 +793,6 @@ export const en = {
     editProfile: 'Edit profile',
     settings: 'Settings',
     corrections: 'Corrections',
-    myPosts: 'Your posts',
     wallet: 'Wallet',
     previewProfile: 'Preview my profile',
     previewProfileBody: 'See your profile the way other people do',

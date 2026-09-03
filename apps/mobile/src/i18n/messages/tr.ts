@@ -416,9 +416,11 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz düzeltme yok',
     emptyBody:
       'Bir sohbette mesaja basılı tut ve Düzelt’i seç — burada yapabileceğin en faydalı şey bu.',
+    combinedTitle: 'Yazdıkların',
+    tabCorrections: 'Düzeltmeler',
+    tabPosts: 'Gönderiler',
   },
   myPosts: {
-    title: 'Yazdığın gönderiler',
     emptyTitle: 'Henüz bir şey sormadın',
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
@@ -760,7 +762,6 @@ export const tr: Localized<EnMessages> = {
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
     corrections: 'Düzeltme',
-    myPosts: 'Gönderilerin',
     wallet: 'Cüzdan',
     previewProfile: 'Profilimi önizle',
     previewProfileBody: 'Profilini başkalarının gördüğü gibi gör',
