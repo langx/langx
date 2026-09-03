@@ -2355,3 +2355,24 @@ Everything a notification sender does goes through `sendNotificationEmail`,
 which checks deleted, then the preference, then the address, in that order — a
 consent check that lives in five places is one that four of them will
 eventually get wrong.
+
+## Push stays on Expo's relay, after a day on Firebase directly
+
+For most of 3 September 2026 push went straight to Firebase Cloud Messaging:
+a JWT-signed sender on the API, the Firebase SDK on the phone, the APNs key
+in Firebase. It worked, and it was reverted the same evening.
+
+The argument for it was "upload nothing to Expo" — builds were going to be
+made locally and Expo was going to hold only the over-the-air updates. That
+premise changed once Behic used the EAS dashboard: the keystore is in EAS,
+builds run in the cloud, and he wants shipping — builds, submissions, updates,
+push — managed in one place. With credentials in Expo anyway, the relay costs
+nothing and removes the Firebase SDK from the app, the static frameworks from
+iOS, and one more credential from the server.
+
+So the revert is deliberate, not a rollback of something broken. What the day
+left behind is worth keeping: the runbook's check that a service account can
+reach FCM (`400 INVALID_ARGUMENT` on a fake token), which still proves the
+key Expo is handed is a working one before any build exists; and the lesson
+that `expo-notifications` and the Firebase SDK both hook the same iOS delegate
+and should not share a build.
