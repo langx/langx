@@ -75,7 +75,7 @@ export default function ViewersScreen() {
               onPress={() => openProfile(item.handle, '/(app)/viewers')}
               style={({ pressed }) => [styles.row, pressed && styles.pressed]}
             >
-              <Avatar url={item.avatarUrl} name={item.displayName} />
+              <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} />
               <View style={styles.body}>
                 <Text style={styles.name}>{item.displayName}</Text>
                 <Text style={styles.time}>{new Date(item.lastViewedAt).toLocaleDateString()}</Text>

@@ -473,7 +473,12 @@ export default function FeedScreen() {
                     accessibilityRole="button"
                     onPress={() => openProfile(item.author.handle, '/(app)/feed')}
                   >
-                    <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={40} />
+                    <Avatar
+                      url={item.author.avatarUrl}
+                      name={item.author.displayName}
+                      seed={item.author._id}
+                      size={40}
+                    />
                     <View style={styles.who}>
                       <Text style={styles.name} numberOfLines={1}>
                         {item.author.displayName}

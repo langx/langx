@@ -1,4 +1,8 @@
-import { Image, Text, View } from 'react-native'
+import { generatedAvatarUrl } from '@langx/shared'
+import { Image } from 'expo-image'
+import { useState } from 'react'
+import { Text, View } from 'react-native'
+import { API_URL } from '../../lib/apiUrl'
 // `layout` stays a direct import: it is scheme-independent, and a default
 // parameter value is evaluated before any hook could have run.
 import { frameColors, layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
@@ -7,6 +11,12 @@ import type { CosmeticTone } from '@langx/shared'
 interface AvatarProps {
   url?: string | undefined
   name: string
+  /**
+   * The account's id. With it, an account that has uploaded nothing gets a
+   * drawn face from the API rather than its initials — the same face on every
+   * screen, because it is generated from this and nothing else.
+   */
+  seed?: string | undefined
   size?: number
   online?: boolean
   /** A cosmetic tone from `COSMETICS`. Omitted means no frame. */
@@ -39,15 +49,37 @@ function initialsOf(name: string): string {
 }
 
 /**
- * Falls back to an initial rather than a broken image or a grey square: most
- * accounts in a fresh install have no avatar, and a wall of identical grey
- * squares makes a discovery list unreadable.
+ * A photo, or a face drawn for the account, or its initials — in that order.
+ *
+ * The initials used to be what a photoless account looked like, which in a
+ * discovery list is a column of coloured squares with letters on them. They
+ * are now only the fallback's fallback: no id to generate from, or a picture
+ * that failed to load. Everything about that path — the three fills, the two
+ * letters — is kept for exactly those cases.
+ *
+ * `expo-image` rather than react-native's `Image`, because the generated face
+ * is an SVG and RN's own cannot draw one on iOS or Android.
  */
-export function Avatar({ url, name, size = layout.avatar, online = false, frame }: AvatarProps) {
+export function Avatar({
+  url,
+  name,
+  seed,
+  size = layout.avatar,
+  online = false,
+  frame,
+}: AvatarProps) {
   const { colors, scheme } = useTheme()
   const styles = useStyles()
+  const [failed, setFailed] = useState(false)
   const dimension = { borderRadius: size / 2, height: size, width: size }
   const fill = avatarFill(colors, name)
+
+  /*
+   * The uploaded photo wins. Below it the generated face, and only if both are
+   * missing — or the image never arrived, which is what `failed` records — the
+   * initials.
+   */
+  const source = url ?? (seed ? generatedAvatarUrl(API_URL, seed) : undefined)
 
   /*
    * The ring is a *wrapper*, not a border on the avatar itself.
@@ -67,8 +99,13 @@ export function Avatar({ url, name, size = layout.avatar, online = false, frame 
     // absolutely against this view, and a parent with no dimensions of its own
     // fills the row instead, dropping the dot wherever that ends up.
     <View style={dimension}>
-      {url ? (
-        <Image source={{ uri: url }} style={[styles.image, dimension]} />
+      {source && !failed ? (
+        <Image
+          source={{ uri: source }}
+          style={[styles.image, dimension]}
+          contentFit="cover"
+          onError={() => setFailed(true)}
+        />
       ) : (
         <View style={[styles.fallback, dimension, { backgroundColor: fill }]}>
           <Text

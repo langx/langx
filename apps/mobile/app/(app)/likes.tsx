@@ -83,7 +83,7 @@ export default function LikesScreen() {
               ]}
               onPress={() => openProfile(item.handle, here)}
             >
-              <Avatar url={item.avatarUrl} name={item.displayName} size={40} />
+              <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} size={40} />
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}

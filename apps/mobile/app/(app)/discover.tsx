@@ -302,6 +302,7 @@ export default function DiscoverScreen() {
               <Avatar
                 url={item.avatarUrl}
                 name={item.displayName}
+                seed={item._id}
                 size={56}
                 online={item.isOnline}
               />

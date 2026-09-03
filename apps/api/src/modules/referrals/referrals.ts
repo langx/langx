@@ -195,6 +195,10 @@ export async function readReferralStatus(db: Db, userId: string): Promise<Referr
       if (!profile) return []
       return [
         {
+          // Same reason as everywhere else an avatar is drawn: without the id
+          // this row falls back to initials while the same person has a face
+          // on every other screen.
+          _id: profile._id,
           handle: profile.handle,
           displayName: profile.displayName,
           ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),

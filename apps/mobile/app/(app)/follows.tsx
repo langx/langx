@@ -96,7 +96,7 @@ export default function FollowsScreen() {
               ]}
               onPress={() => openProfile(item.handle, here)}
             >
-              <Avatar url={item.avatarUrl} name={item.displayName} />
+              <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} />
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}

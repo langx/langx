@@ -107,6 +107,12 @@ export default function SharedProfileScreen() {
   return (
     <Screen scroll>
       <View style={styles.hero}>
+        {/*
+          No generated face here, and deliberately. The public profile DTO does
+          not carry the account id — a test asserts it — and the avatar route
+          takes an id and nothing else, so this page keeps the initials rather
+          than reopening a decision made for the open internet.
+        */}
         <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
         <Text style={styles.name}>{user.displayName}</Text>
         <Text style={styles.handle}>

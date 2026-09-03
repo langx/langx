@@ -312,6 +312,7 @@ export default function ChatsScreen() {
                     <Avatar
                       url={partner.avatarUrl}
                       name={partner.displayName}
+                      seed={partner._id}
                       online={partner.isOnline}
                       size={AVATAR_SIZE}
                     />

@@ -403,6 +403,20 @@ export async function createProfile(
   return profile
 }
 
+/**
+ * The one field the generated-avatar route needs, and nothing else.
+ *
+ * A projected read rather than `getProfile`, because this runs on an
+ * unauthenticated route for every face on every screen: the less it loads, the
+ * less there is to leak by accident.
+ */
+export async function getProfileGender(db: Db, userId: string): Promise<Profile['gender'] | null> {
+  const row = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { gender: 1 } })
+  return row?.gender ?? null
+}
+
 export async function getProfile(db: Db, userId: string): Promise<Profile | null> {
   return db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
 }

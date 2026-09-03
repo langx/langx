@@ -124,6 +124,7 @@ export function LeaderboardSection<Option extends string>({
               <Avatar
                 url={item.avatarUrl}
                 name={item.displayName}
+                seed={item.userId}
                 size={36}
                 frame={item.frame as CosmeticTone | undefined}
               />

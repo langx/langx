@@ -109,6 +109,11 @@ Location stays unchecked on both.
 >
 > Until it is built, both forms must say no analytics are collected.
 
+**Placeholder avatars are generated on our own API**, from the account id, and
+neither collect nor disclose anything: no third party sees a user, no email
+hash leaves the device, and nothing new is stored. They are not a data
+practice and belong in neither form.
+
 v1 self-hosted Plausible and published the dashboard. v2 will use PostHog's EU
 Cloud and keep the dashboard internal; the reasoning is in
 [`decisions.md`](../decisions.md). For the store forms what matters is that

@@ -90,7 +90,7 @@ export default function WalletScreen() {
 
   const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
-  const viewer = { name: me.data.displayName, avatarUrl: me.data.avatarUrl }
+  const viewer = { _id: me.data._id, name: me.data.displayName, avatarUrl: me.data.avatarUrl }
   const offers = buildStoreOffers({
     t,
     balance,

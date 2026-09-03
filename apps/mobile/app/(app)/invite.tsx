@@ -125,7 +125,7 @@ export default function InviteScreen() {
           key={invitee.handle}
           style={[styles.row, index < referrals.data.invitees.length - 1 && styles.divided]}
         >
-          <Avatar url={invitee.avatarUrl} name={invitee.displayName} size={40} />
+          <Avatar url={invitee.avatarUrl} name={invitee.displayName} seed={invitee._id} size={40} />
           <View style={styles.rowText}>
             <Text style={styles.name}>{invitee.displayName}</Text>
             <Text style={styles.status}>
