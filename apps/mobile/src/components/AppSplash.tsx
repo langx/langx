@@ -9,6 +9,7 @@ import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { markAppReady } from '../lib/appReady'
 import { SPLASH_TIMING, msUntilExitAllowed } from '../lib/splashTiming'
+import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles, useTheme } from '../lib/theme'
 
 /**
@@ -227,7 +228,15 @@ export function SplashFill({ children }: { children?: ReactNode }) {
 
 const useStyles = makeStyles(({ colors }) => ({
   // Over `react-native-screens`, which a plain later-sibling is not enough for.
-  layer: { alignItems: 'center', elevation: 100, justifyContent: 'center', zIndex: 100 },
+  // Over `react-native-screens`, which a plain later-sibling is not enough
+  // for. The number moved to `overlayLayers.ts` when the toast and the banner
+  // turned out to need the same thing.
+  layer: {
+    alignItems: 'center',
+    elevation: OVERLAY_LAYER.splash,
+    justifyContent: 'center',
+    zIndex: OVERLAY_LAYER.splash,
+  },
   fill: {
     alignItems: 'center',
     backgroundColor: colors.bg,
