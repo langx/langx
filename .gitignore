@@ -11,6 +11,16 @@ coverage/
 # does not match.
 *.env
 !.env.example
+# Signing keys, which arrive as a download with a name nobody chooses:
+# Apple's Sign in with Apple and APNs keys are `AuthKey_XXXXXXXXXX.p8` and
+# land in whatever directory the browser was pointed at. One of them sat
+# untracked in this repo's root on 3 September 2026 — a public repo, one
+# `git add -A` away from publishing the private half of an Apple credential.
+*.p8
+*.pem
+*.key
+*.keystore
+*.jks
 
 # expo
 .expo/
