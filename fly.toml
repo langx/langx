@@ -31,9 +31,7 @@ primary_region = 'fra'
 # has no volumes, which is blue-green's other requirement.
 #
 # It doubles the machine count *during* a deploy only — the extra one is
-# released when the switch completes. Running two permanently would also
-# survive a crash-loop, which a single machine does not; that is a separate
-# decision with a monthly price on it.
+# released when the switch completes.
 [deploy]
   strategy = 'bluegreen'
 
@@ -48,7 +46,19 @@ primary_region = 'fra'
   # user's timezone. See "Background work" in docs/self-host.md.
   auto_stop_machines = 'off'
   auto_start_machines = true
-  min_machines_running = 1
+  # Two, so a crash-loop is a degradation rather than an outage. One machine
+  # meant the API was simply gone whenever that machine could not boot — which
+  # happened on 3 September 2026, when a deleted Atlas cluster left it
+  # restarting until it gave up, and nothing was left to answer.
+  #
+  # Safe for the same reason blue-green is: every scheduler in this process
+  # claims its work with a conditional update or a unique index, so two of them
+  # ticking at once is a race nobody loses. The Mongo driver pools up to 100
+  # connections per instance, so two stay well inside Atlas's limit.
+  #
+  # `min_machines_running` is a floor, not a count — `fly scale count 2` is
+  # what actually creates the second machine.
+  min_machines_running = 2
   processes = ['app']
 
   [http_service.concurrency]
