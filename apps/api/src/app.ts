@@ -36,6 +36,7 @@ import { translationRoutes } from './routes/translate'
 import { leaderboardRoutes } from './routes/leaderboard'
 import { referralRoutes } from './routes/referrals'
 import { xpRoutes } from './routes/tokens'
+import { wellKnownRoutes } from './routes/wellKnown'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import { DisabledLegacyVerifier, type LegacyVerifier } from './modules/handles/legacyLogin'
@@ -213,6 +214,7 @@ export async function buildApp({
   registerMaintenanceGate(app)
 
   await app.register(healthRoutes)
+  await app.register(wellKnownRoutes)
   await app.register(appConfigRoutes)
   await app.register(loginRoutes)
   await registerAuthRoutes(app, auth)

@@ -10,9 +10,11 @@ import { getAppConfig } from '../modules/appConfig/appConfig'
  * because it is how the client learns *why* it is being refused. Better Auth's
  * routes because an admin has to be able to sign in to verify the fix before
  * reopening; every other route still refuses them, so a signed-in non-admin
- * gains nothing.
+ * gains nothing. `/.well-known/` because everything under it is a proof of
+ * ownership fetched by Apple or Google on their own schedule, and a 503 there
+ * does not delay a request — it invalidates a configuration.
  */
-const ALWAYS_OPEN = ['/health', '/app-config', '/api/auth/']
+const ALWAYS_OPEN = ['/health', '/app-config', '/api/auth/', '/.well-known/']
 
 function isAlwaysOpen(url: string): boolean {
   const path = url.split('?')[0] ?? ''

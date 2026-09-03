@@ -72,6 +72,22 @@ const envSchema = z.object({
       .optional(),
   ),
 
+  /**
+   * The token Apple hands you when a domain is added to a Services ID's Web
+   * Authentication Configuration, served back at
+   * `/.well-known/apple-developer-domain-association.txt`. Apple refuses to
+   * save the return URL until it can fetch that file over HTTPS, with no
+   * redirect, from the domain the *return URL* is on — this API's host, not
+   * the app's, which is why the app's `public/.well-known/` cannot carry it.
+   *
+   * Public, not secret: it is served to anyone who asks. It lives in the
+   * environment rather than the source because it belongs to one deployment's
+   * Services ID — a self-hosted install verifies a different domain with a
+   * different token, and should not have to edit code to do it. Unset, the
+   * path simply 404s.
+   */
+  APPLE_DOMAIN_ASSOCIATION: emptyToUndefined(z.string().optional()),
+
   // Only needed when the Expo project has enhanced push security enabled, in
   // which case an unauthenticated send is rejected outright. Expo dashboard →
   // Access tokens. Unset is the normal case and sends work without it.

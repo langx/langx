@@ -394,6 +394,12 @@ of it runs together.
       variables set. **Apple requires this if any other social login ships**,
       so it gates the iOS release rather than merely improving it. Until both
       are set the sign-in screen simply does not draw the buttons
+- [ ] `APPLE_DOMAIN_ASSOCIATION` set, **before** the Services ID's return URL
+      can be saved. Apple verifies the domain of the return URL — `api2.langx.io`,
+      the API's host, not the web app's — by fetching
+      `/.well-known/apple-developer-domain-association.txt` from it over HTTPS
+      with no redirect. The API serves that path from this variable; unset, it
+      404s and the portal refuses to save
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
 - [x] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
       profiles in `eas.json` — both point at `https://api2.langx.io`.
