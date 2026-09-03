@@ -96,7 +96,7 @@ And for the token section:
 | Token            | Redefine it: an in-app point with no cash value. Non-transferable, cannot be purchased, sold, traded, staked or withdrawn. State that v1 balances carry over at 1:100 and that nothing is redeemable for money |
 | Virtual items    | Cover the streak freeze, filled-in activity days and cosmetics; forfeited on account deletion                                                                                                                  |
 | Account deletion | 30-day grace period, then permanent. Messages you sent stay in the other person's conversation with their content removed                                                                                      |
-| Minimum age      | 18+, enforced at profile creation                                                                                                                                                                              |
+| Minimum age      | 16+ (was 18+), enforced at profile creation                                                                                                                                                                    |
 
 ### Store listings
 
@@ -116,9 +116,12 @@ the store forms and the GitBook copy still need them.
 
 - **A date of birth, not a year.** v1 stored a full birthdate and only ever
   used the year; v2 now keeps and uses the whole day, so that birthdays can
-  exist. The age gate is unchanged — whole years, so somebody who turns 18 in
-  December is admitted in January. Only the age is ever shown to another user;
-  the date is visible to nobody but its owner.
+  exist. The arithmetic is unchanged — whole years, so somebody who reaches
+  the minimum age in December is admitted in January — but the floor itself
+  moved from 18 to **16** in September 2026, once the store questionnaires
+  rated the content 13+/Teen. A v1 account whose holder is 16 or 17 can now
+  finish the restore; under 16 still cannot. Only the age is ever shown to
+  another user; the date is visible to nobody but its owner.
 - **The country is derived from the connection's IP** at profile creation,
   rather than typed. A country filter anybody can set by hand is not a filter.
   The address is not stored — only the two-letter code it resolved to — and the

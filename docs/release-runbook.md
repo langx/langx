@@ -625,6 +625,10 @@ next to the Console rather than working from this section:
 - [ ] The privacy policy has to describe it: what is stored, that it is
       optional, that it is rounded, and that other users see only a bucketed
       distance. `docs/store/privacy-data-safety.md` is the source text
+- [ ] Play → **Target audience and content**: tick **16–17** and **18 and
+      over**, nothing younger. The minimum age went from 18 to 16 in September
+      2026 and the declaration still says 18+ until somebody changes it. The
+      content rating (Teen / Apple 13+) does not need resubmitting
 
 The permission itself is **when-in-use only** and declared in
 `app.config.ts`. Nothing here needs a background-location declaration, and

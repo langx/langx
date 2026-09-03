@@ -1,3 +1,4 @@
+import { MINIMUM_AGE } from './age'
 import { languageLevelSchema, levelRank } from './level'
 import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
@@ -109,8 +110,8 @@ export const discoveryQuerySchema = z
     minLevel: languageLevelSchema.optional(),
     maxLevel: languageLevelSchema.optional(),
     /** Free filters. */
-    ageMin: z.coerce.number().int().min(18).optional(),
-    ageMax: z.coerce.number().int().min(18).optional(),
+    ageMin: z.coerce.number().int().min(MINIMUM_AGE).optional(),
+    ageMax: z.coerce.number().int().min(MINIMUM_AGE).optional(),
     country: countryCodeSchema.optional(),
     /**
      * How far `sort=nearby` looks. Ignored by every other sort.

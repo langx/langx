@@ -9,6 +9,7 @@ import {
   effectivePlanTier,
   isOnlineAt,
   findCosmetic,
+  MINIMUM_AGE,
   meetsMinimumAge,
   NOTIFICATION_TYPES,
   newHandleSchema,
@@ -259,7 +260,7 @@ export async function createProfile(
   }
 
   if (!meetsMinimumAge(input.birthDate)) {
-    throw new ApiError(ERROR_CODES.UNDERAGE, 'You must be 18 or older to use LangX')
+    throw new ApiError(ERROR_CODES.UNDERAGE, `You must be ${MINIMUM_AGE} or older to use LangX`)
   }
 
   /**

@@ -118,7 +118,7 @@ document. Every row is "collected, not shared".
 | --------------------------------------------- | ------------------------------------------------------------------ |
 | Personal info → Name, Email address           | display name, handle, sign-in email — required                     |
 | Personal info → User IDs                      | account id                                                         |
-| Personal info → Other info                    | date of birth (18+ gate; only the age is shown), gender, bio, city |
+| Personal info → Other info                    | date of birth (16+ gate; only the age is shown), gender, bio, city |
 | Location → Approximate location               | optional, see above                                                |
 | Photos and videos → Photos                    | avatar and gallery — optional                                      |
 | Messages → Other in-app messages              | chat bodies                                                        |
@@ -128,9 +128,10 @@ document. Every row is "collected, not shared".
 | Financial info                                | nothing — purchase state only, never a card number                 |
 | Contacts, Calendar, Health, Microphone, Ad ID | nothing                                                            |
 
-Target audience: **18+**, enforced server-side at profile creation. Do not
-declare a Families audience — it contradicts the age gate and changes which
-SDKs are permitted.
+Target audience: **16+**, enforced server-side at profile creation. Declare the
+**16–17** and **18 and over** groups and nothing younger. Do not declare a
+Families audience — it applies once any under-13 group is ticked, contradicts
+the age gate and changes which SDKs are permitted.
 
 > **City is collected, and that is all the form asks.** `privacy-data-safety.md`
 > describes it as "shown on profile", which is not true today — nothing renders
