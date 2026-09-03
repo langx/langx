@@ -88,6 +88,23 @@ export function localDayKey(date: Date, timeZone: string): string {
   }
 }
 
+/**
+ * The hour on the user's own clock, 0-23.
+ *
+ * Every scheduled notification fires on a local hour rather than a UTC one:
+ * 20:00 UTC is 5am in Tokyo, which is not a nudge, it is an alarm clock. Falls
+ * back to UTC for an unknown zone, like `localDayKey` and for the same reason.
+ */
+export function localHour(date: Date, timeZone: string): number {
+  try {
+    return Number(
+      new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', hour12: false }).format(date),
+    )
+  } catch {
+    return date.getUTCHours()
+  }
+}
+
 /** Shift a `YYYY-MM-DD` key by whole days. */
 export function shiftDayKey(dayKey: string, days: number): string {
   const ms = Date.parse(`${dayKey}T00:00:00Z`)

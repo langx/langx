@@ -40,6 +40,18 @@ export const ru: Localized<ServerMessages> = {
     /** The one button a streak email has. */
     openChats: 'Отправить сообщение',
 
+    digestSubject: {
+      one: '1 непрочитанное сообщение в LangX',
+      other: 'Непрочитанных сообщений в LangX: {count}',
+    },
+    digestPreheader: 'Вам ждут ответа',
+    digestBody: {
+      one: '{names} написал(а) вам, пока вас не было.',
+      other: 'У вас {count} непрочитанных сообщений — от {names}.',
+    },
+    digestMore: { one: 'И ещё один диалог.', other: 'И ещё диалогов: {count}.' },
+    digestButton: 'Прочитать и ответить',
+
     unsubscribeTitle: 'Отключить эти письма?',
     unsubscribeBody:
       'Вы перестанете получать {kind} на почту. Уведомления на телефоне не изменятся.',

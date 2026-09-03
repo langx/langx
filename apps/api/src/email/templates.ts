@@ -150,3 +150,53 @@ export function streakReminderEmail(
     text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
   }
 }
+
+/**
+ * "You have unread messages", naming who wrote and how many — and nothing
+ * they said.
+ *
+ * That restriction is the design. The privacy sheet describes notification
+ * mail as counts and display names; a line of somebody's message sitting in
+ * Resend's logs, and in an inbox that may not be private, is a different
+ * disclosure than the one anyone agreed to.
+ */
+export function unreadDigestEmail(
+  locale: Locale,
+  {
+    count,
+    names,
+    moreThreads,
+    url,
+    unsubscribe,
+  }: { count: number; names: string[]; moreThreads: number; url: string; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const subject = t('email.digestSubject', { count })
+  // `Intl.ListFormat` because "Ada, Bo and Cy" is not "Ada, Bo, Cy" in most of
+  // the eight languages, and joining with a comma is wrong in all of them.
+  const joined = formatList(locale, names)
+  const body = t('email.digestBody', { count, names: joined })
+  const more = moreThreads > 0 ? t('email.digestMore', { count: moreThreads }) : ''
+  const cta = { url, label: t('email.digestButton') }
+
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: t('email.digestPreheader'),
+      bodyHtml: `<p>${body}</p>${more ? `<p style="color:#888;">${more}</p>` : ''}`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(locale, [body, ...(more ? [more] : []), '', cta.url], unsubscribe),
+  }
+}
+
+/** Falls back to a comma join where the runtime has no list formatter. */
+function formatList(locale: Locale, items: string[]): string {
+  try {
+    return new Intl.ListFormat(locale, { type: 'conjunction' }).format(items)
+  } catch {
+    return items.join(', ')
+  }
+}

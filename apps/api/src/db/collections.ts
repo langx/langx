@@ -114,6 +114,16 @@ export const COLLECTIONS = {
   /** A single document (`_id: 'current'`) — maintenance, min versions, feature flags. */
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
+  /**
+   * "We already told them." One row per notification a scheduled pass has
+   * sent, keyed `<job>:<userId>:<periodKey>`.
+   *
+   * One collection rather than one per sender: they are the same document with
+   * the same TTL, and the job name is already the first thing in the `_id`.
+   * `streakReminders` predates it and stays where it is — renaming a live
+   * collection is a migration for nothing.
+   */
+  notificationLedger: 'notificationLedger',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]
