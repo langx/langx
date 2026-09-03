@@ -5,7 +5,7 @@ export const PUSH_PLATFORMS = ['ios', 'android', 'web'] as const
 export type PushPlatform = (typeof PUSH_PLATFORMS)[number]
 
 export const registerDeviceSchema = z.object({
-  /** The device's FCM registration token, on both platforms. */
+  /** Expo push token, e.g. `ExponentPushToken[xxx]`. */
   pushToken: z.string().trim().min(1),
   platform: z.enum(PUSH_PLATFORMS),
   /**

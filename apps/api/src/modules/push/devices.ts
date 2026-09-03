@@ -26,7 +26,7 @@ export interface Device {
 
 /**
  * Upsert keyed on the **token**, not the user: a phone handed on to someone
- * else keeps the same FCM token, and the unique index on `pushToken` is what
+ * else keeps the same Expo token, and the unique index on `pushToken` is what
  * stops the previous owner's notifications following it. Re-registering simply
  * moves the token to whoever is signed in now.
  */
@@ -69,7 +69,7 @@ export interface PushMessage {
 
 /**
  * What a send tells us afterwards. Only the failures worth acting on: a token
- * FCM says is no longer installed anywhere.
+ * Expo says is no longer installed anywhere.
  */
 export interface PushResult {
   invalidTokens: string[]
@@ -90,6 +90,78 @@ export class LoggingPushSender implements PushSender {
   send(message: PushMessage): Promise<PushResult> {
     this.sent.push(message)
     return Promise.resolve({ invalidTokens: [] })
+  }
+}
+
+/** Expo accepts at most this many messages in one request. */
+const EXPO_BATCH_SIZE = 100
+
+/** Expo's push service — one HTTP call, no SDK, no per-platform certificates. */
+export class ExpoPushSender implements PushSender {
+  readonly #endpoint = 'https://exp.host/--/api/v2/push/send'
+  readonly #accessToken: string | undefined
+
+  /**
+   * `accessToken` is only needed when the Expo project has enhanced push
+   * security switched on, which makes an unauthenticated send fail wholesale.
+   * Unset is the normal case.
+   */
+  constructor(accessToken?: string) {
+    this.#accessToken = accessToken
+  }
+
+  async send(message: PushMessage): Promise<PushResult> {
+    const invalidTokens: string[] = []
+
+    // Chunked because Expo rejects a request carrying more than 100 messages —
+    // one popular account's devices will not reach that, but the streak
+    // reminder fanning out over a whole timezone can.
+    for (let index = 0; index < message.to.length; index += EXPO_BATCH_SIZE) {
+      const batch = message.to.slice(index, index + EXPO_BATCH_SIZE)
+      const response = await fetch(this.#endpoint, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+          ...(this.#accessToken ? { authorization: `Bearer ${this.#accessToken}` } : {}),
+        },
+        body: JSON.stringify(
+          batch.map((token) => ({
+            to: token,
+            title: message.title,
+            body: message.body,
+            data: message.data,
+            sound: 'default',
+          })),
+        ),
+      })
+
+      /**
+       * The response was previously thrown away, which is the difference
+       * between push working and push appearing to work. Expo answers 200 with
+       * a *per-token* ticket, and a token belonging to an app that has been
+       * uninstalled comes back `DeviceNotRegistered` — forever. Unread, those
+       * tokens accumulate on the account and every later send wastes a slot on
+       * a phone that will never show anything.
+       *
+       * Tickets are positional, so a ticket's index is its token's index.
+       */
+      if (!response.ok) continue
+      const payload = (await response.json()) as {
+        data?: { status: string; details?: { error?: string } }[]
+      }
+      payload.data?.forEach((ticket, ticketIndex) => {
+        if (ticket.status === 'ok') return
+        // Only DeviceNotRegistered is permanent. MessageRateExceeded and
+        // MessageTooBig say something about this send, not about the device,
+        // and deleting a token over either would silence a real phone.
+        if (ticket.details?.error !== 'DeviceNotRegistered') return
+        const token = batch[ticketIndex]
+        if (token) invalidTokens.push(token)
+      })
+    }
+
+    return { invalidTokens }
   }
 }
 
@@ -122,8 +194,8 @@ export async function tokensFor(db: Db, userId: string): Promise<string[]> {
 /**
  * The same tokens, grouped by the language to word the notification in.
  *
- * One send per group rather than per device: a person with a phone and a
- * tablet in the same language is one send, and the two-language case — rare,
+ * One Expo request per group rather than per device: a person with a phone and
+ * a tablet in the same language is one send, and the two-language case — rare,
  * and the whole reason the locale is on the device — is two.
  *
  * A device that predates the field falls back to English rather than to the
