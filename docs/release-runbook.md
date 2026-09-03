@@ -601,31 +601,62 @@ stands — as repair work, not as a schedule for the repoint.
 | `website/src/lib/components/molecules/NewsletterForm.svelte`               | `/api/mail` — the newsletter form on langx.io |
 | `token-website/js/leaderboard-token.js`                                    | `/api/leaderboard/token`                      |
 
-It also answers `/api/update`, driven by `ANDROID_VERSION`,
+It also answered `/api/update`, driven by `ANDROID_VERSION`,
 `ANDROID_MAINTENANCE`, `IOS_*` and `WEB_*` in its `.env` (env only — a version
-bump needs no commit). That endpoint is the **only channel that can tell a v1
-install to update or that the service is down**, and v1 installs are exactly
+bump needed no commit). That endpoint was the **only channel that could tell a
+v1 install to update or that the service is down**, and v1 installs are exactly
 the users this release exists to migrate. Its fourth flag,
-`COPILOT_MAINTENANCE`, has no caller left in `copilot/` and blocks nothing.
+`COPILOT_MAINTENANCE`, had no caller left in `copilot/` and blocked nothing.
 
 Archiving the GitHub repo does not stop the deploy — archiving is a read-only
 flag — but it does declare dead a service the shipped app still depends on and
 leaves nobody able to push a fix to it. Do these first, in order:
 
-- [ ] Move the newsletter form off `/api/mail`. v2 has **no mail route**, so
-      this is real work, not a URL swap: add one to `apps/api`, or post to
-      SendGrid from the site
-- [ ] Point `token-website`'s leaderboard at v2's
-      `apps/api/src/routes/leaderboard.ts`
+- [x] Move the newsletter form off `/api/mail`. Done 3 September 2026:
+      `POST /public/newsletter` in `apps/api/src/routes/public.ts`
+      (langx/langx#1080) puts the address on the Resend audience named by
+      `RESEND_AUDIENCE_ID` — already a Fly secret — and answers v1's
+      `{ status: 'ok' }` so the form did not have to change shape. The form
+      posts there on `website`'s `main` (langx/website#132, deployed) and on
+      `redesign/v3-mobile-language`, which had branched off before the fix.
+      v1's SendGrid list is not migrated; the addresses on it stay there
+- [x] Point `token-website`'s leaderboard at v2. Done the same day:
+      `GET /public/leaderboard/token` (langx/langx#1080) serves the all-time
+      top ten as `{ period, entries: [{ rank, handle, displayName, tokens }] }`
+      — no `userId`, `streak` or viewer fields, so the open internet sees
+      less than a guest in the app does — and `js/leaderboard-token.js`
+      reads that shape (langx/token-website#21, deployed). The board is empty
+      until the migration ETL loads all-time aggregates into production
+- [x] Ship the CORS change (`fix/public-cors`, merged 3 September 2026).
+      Until it deployed **both pages were broken in a browser**: the API
+      answered `/public/*` without `Access-Control-Allow-Origin` for
+      `langx.io` or `token.langx.io`, since `TRUSTED_ORIGINS` names only the
+      web build. curl saw a 200; the page saw "No 'Access-Control-Allow-Origin'
+      header is present" and an empty board (checked on token.langx.io the
+      same day). After any deploy that touches CORS, verify with the command
+      under this list — the header, not the status
 - [ ] Confirm every migrated client takes its version and maintenance flags
       from v2's `appConfig` route and `middleware/maintenance.ts`
-- [ ] Let the v0.15 install base drain far enough that losing `/api/update`
-      strands nobody — the same install-base numbers the `minSdk` decision
-      under **Release** turns on
-- [ ] Only then repoint `api.langx.io`, stop the deploy, and archive the repo
+- [x] ~~Let the v0.15 install base drain far enough that losing `/api/update`
+      strands nobody~~ — overtaken. The repoint on 3 September 2026 took
+      `/api/update` down with it, so a v0.15 install can no longer be told to
+      update or that the service is down; the store listings and a forced
+      minimum version in the stores are the only levers left. The
+      install-base numbers under **Release** still decide `minSdk`
+- [ ] ~~Only then repoint `api.langx.io`~~ (done 3 September 2026), then stop
+      the v1 deploy and archive the repo
 
-Keep `/api/update` answering while any v1 client remains, even after the other
-two callers are gone: the user who never updates is the one it exists for.
+The check that would have caught the CORS gap on deploy day — the status code
+says nothing, only the header does:
+
+```bash
+curl -sI -H 'Origin: https://token.langx.io' https://api.langx.io/public/leaderboard/token | grep -i access-control-allow-origin   # must print *
+```
+
+`/api/update` stopped answering with the repoint. Nothing in v2 replaces it
+for a v1 client — `/app-config` speaks to v2 installs only — which is why the
+migration campaign, not this endpoint, is now what reaches the user who never
+updates.
 
 One unknown to resolve before pulling it down — where it actually runs.
 `netlify.toml` says Netlify (with `npm run start` as the build command) while
