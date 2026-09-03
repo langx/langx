@@ -144,6 +144,12 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { restoredBy: 1 }, name: 'restored_by', sparse: true },
   ],
 
+  [COLLECTIONS.v1DeletedContacts]: [
+    // One address once, however many times the script is re-run; the send
+    // that reads this must not be able to mail anybody twice.
+    { key: { email: 1 }, name: 'v1_deleted_email_uidx', unique: true },
+  ],
+
   [COLLECTIONS.legacyRooms]: [
     // "Which of this returning user's threads exist?" — the multikey lookup
     // the import runs once per restore.

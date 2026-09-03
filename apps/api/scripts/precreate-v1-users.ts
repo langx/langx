@@ -19,6 +19,12 @@
  * staged had no profile in v1; the row is opened all the same, and they go
  * through onboarding as a new user would, under the account they remember.
  *
+ * Accounts their owners **deleted** in v1 (Appwrite `status: false`, which is
+ * what v1's "delete account" did — it never hard-deleted) get no row: a
+ * deleted account must not come back as a live one. Their address is kept in
+ * `v1DeletedContacts` instead, for one announcement and nothing else, and
+ * that collection is meant to be dropped once it has gone out.
+ *
  * Idempotent and re-runnable: an address that already has a `user` — from an
  * earlier run, or from a real sign-up that got there first — is left exactly
  * as it is. Needs the live v1 Appwrite (`APPWRITE_*`) for the plaintext
@@ -37,6 +43,15 @@ import { insertPrecreatedUser, normalizeEmail } from '../src/modules/handles/leg
 import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
 
 const PAGE_SIZE = 100
+
+interface DeletedContact {
+  /** The Appwrite user id. */
+  _id: string
+  email: string
+  name: string
+  legacyUserId: string
+  recordedAt: Date
+}
 
 interface V1User {
   id: string
@@ -77,6 +92,7 @@ interface Summary {
   seen: number
   noEmail: number
   blockedInV1: number
+  deletedContactsKept: number
   /** Informational: opened all the same, restore has nothing to find. */
   notStaged: number
   /** Informational: opened all the same, see the module doc. */
@@ -129,6 +145,7 @@ async function main(): Promise<void> {
     seen: 0,
     noEmail: 0,
     blockedInV1: 0,
+    deletedContactsKept: 0,
     notStaged: 0,
     unverifiedInV1: 0,
     hashMismatch: 0,
@@ -150,6 +167,16 @@ async function main(): Promise<void> {
     }
     if (!user.status) {
       summary.blockedInV1++
+      if (apply) {
+        const kept = await db.collection<DeletedContact>(COLLECTIONS.v1DeletedContacts).updateOne(
+          { _id: user.id },
+          {
+            $setOnInsert: { email, name: user.name, legacyUserId: user.id, recordedAt: new Date() },
+          },
+          { upsert: true },
+        )
+        if (kept.upsertedCount > 0) summary.deletedContactsKept++
+      }
       continue
     }
 
@@ -185,7 +212,8 @@ async function main(): Promise<void> {
   console.log('\n=== Summary ===')
   console.log(`v1 Auth users seen:               ${summary.seen}`)
   console.log(`No email on the Auth user:        ${summary.noEmail}`)
-  console.log(`Blocked in v1:                    ${summary.blockedInV1}`)
+  console.log(`Deleted in v1 (no row opened):    ${summary.blockedInV1}`)
+  if (apply) console.log(`  …of which newly kept as contacts: ${summary.deletedContactsKept}`)
   console.log(`Nothing staged (opened anyway):   ${summary.notStaged}`)
   console.log(`Unverified in v1 (opened anyway): ${summary.unverifiedInV1}`)
   console.log(`Email hash does not match ETL:    ${summary.hashMismatch}`)

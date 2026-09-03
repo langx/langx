@@ -2448,6 +2448,15 @@ not by the script: a consent dated to a moment nobody was present for is not
 one, and continuing past the sign-in screen is the same act the social
 providers already count.
 
+Accounts their owners deleted in v1 — Appwrite `status: false`, which is what
+v1's "delete account" set, since it never hard-deleted — get no row: a deleted
+account must not come back as a live one. Behic wants those 837 addresses
+kept for **one** announcement, so the script writes them to
+`v1DeletedContacts`, the only place a v1 email is stored in the clear. That
+mail is to people who ended their relationship with the product, so it is
+one mail, with an unsubscribe, and the collection is dropped afterwards —
+keeping it would turn a courtesy into a list.
+
 Appwrite is still running and is the only place the plaintext v1 emails live;
 the script needs it. If it goes away before the script has run, the rows
 cannot be opened and this whole path is lost — see the runbook.
