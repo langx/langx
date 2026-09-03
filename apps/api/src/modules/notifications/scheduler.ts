@@ -40,7 +40,7 @@ export function startNotificationScheduler(
         run('unread digest', () => runUnreadDigestPass(db, senders.email, now)),
         run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
         run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
-        run('badge round-up', () => runBadgeRoundUpPass(db, senders, now)),
+        run('badge round-up', () => runBadgeRoundUpPass(db, senders, now, logger)),
       ])
     } finally {
       running = false
@@ -48,10 +48,14 @@ export function startNotificationScheduler(
   }
 
   /** Each pass on its own, so one throwing does not starve the two after it. */
-  async function run(name: string, pass: () => Promise<{ sent: number }>): Promise<void> {
+  async function run(
+    name: string,
+    pass: () => Promise<{ sent: number; failed?: number }>,
+  ): Promise<void> {
     try {
-      const { sent } = await pass()
+      const { sent, failed } = await pass()
       if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
+      if (failed) logger.warn({ failed, pass: name }, 'notifications skipped')
     } catch (error) {
       logger.error({ err: error, pass: name }, 'notification pass failed')
     }

@@ -11,6 +11,7 @@ import { sendNotificationEmail, type NotificationEmailContext } from '../../emai
 import { badgeEarnedEmail } from '../../email/templates'
 import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
+import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { getBadgeSummary } from '../tokens/badges'
 import { claimOnce } from './ledger'
@@ -44,7 +45,8 @@ export async function runBadgeRoundUpPass(
   db: Db,
   senders: { push: PushSender; email: NotificationEmailContext },
   now: Date = new Date(),
-): Promise<{ sent: number; seeded: number }> {
+  logger?: Pick<SchedulerLogger, 'warn'>,
+): Promise<{ sent: number; seeded: number; failed: number }> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const candidates = await profiles
     .find({
@@ -57,10 +59,37 @@ export async function runBadgeRoundUpPass(
 
   let sent = 0
   let seeded = 0
+  let failed = 0
 
   for (const profile of candidates) {
+    /*
+     * One profile at a time, and one profile's failure is its own.
+     *
+     * `getBadgeSummary` reads `profile.streak.longest` without a guard,
+     * because every path that writes a profile writes a streak — but this is
+     * the first thing to walk *every* profile in the database rather than the
+     * one that just asked for its own badges. A single row written by an old
+     * import, or by a migration that has since been deleted, would throw here
+     * and take the whole pass with it; the scheduler would log it, wait thirty
+     * minutes and do exactly the same thing again, forever, and nobody would
+     * ever get a badge notification.
+     *
+     * Same doctrine as `fanOutMessage`: a notification that fails must never
+     * be able to stop the ones behind it.
+     */
+    try {
+      await notifyOne(profile)
+    } catch (error) {
+      failed++
+      logger?.warn({ err: error, userId: profile._id }, 'badge round-up skipped one profile')
+    }
+  }
+
+  return { sent, seeded, failed }
+
+  async function notifyOne(profile: Profile): Promise<void> {
     const zone = profile.timezone ?? 'UTC'
-    if (localHour(now, zone) !== BADGE_ROUND_UP_LOCAL_HOUR) continue
+    if (localHour(now, zone) !== BADGE_ROUND_UP_LOCAL_HOUR) return
 
     const wantsPush = notificationsAllowed(profile.settings?.notifications, 'badges', 'push')
     const wantsEmail = notificationsAllowed(profile.settings?.notifications, 'badges', 'email')
@@ -74,19 +103,19 @@ export async function runBadgeRoundUpPass(
       // the news starts from here.
       await profiles.updateOne({ _id: profile._id }, { $set: { 'stats.notifiedBadgeIds': earned } })
       seeded++
-      continue
+      return
     }
 
     const knownSet = new Set(known)
     const fresh = earned.filter((id) => !knownSet.has(id))
-    if (fresh.length === 0) continue
+    if (fresh.length === 0) return
 
     // Recorded before the send, like every ledger claim in this app: a
     // notification nobody got is better than one that arrives every evening
     // because the write that would have stopped it never happened.
     await profiles.updateOne({ _id: profile._id }, { $set: { 'stats.notifiedBadgeIds': earned } })
-    if (!wantsPush && !wantsEmail) continue
-    if (!(await claimOnce(db, 'badgeEarned', profile._id, localDayKey(now, zone)))) continue
+    if (!wantsPush && !wantsEmail) return
+    if (!(await claimOnce(db, 'badgeEarned', profile._id, localDayKey(now, zone)))) return
 
     // The label is English in the catalogue — `BADGES` builds it from the
     // threshold — so the notification names it only when there is exactly one,
@@ -108,10 +137,10 @@ export async function runBadgeRoundUpPass(
         })
       }
       sent++
-      continue
+      return
     }
 
-    if (!wantsEmail) continue
+    if (!wantsEmail) return
     const outcome = await sendNotificationEmail(db, senders.email, {
       userId: profile._id,
       type: 'badges',
@@ -124,6 +153,4 @@ export async function runBadgeRoundUpPass(
     })
     if (outcome === 'sent') sent++
   }
-
-  return { sent, seeded }
 }
