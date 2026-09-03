@@ -3,8 +3,6 @@ import { Link, router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
-import { api } from '../../src/api/client'
-import type { LoginResult } from '../../src/api/types'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { useAppConfig } from '../../src/hooks/useAppConfig'
@@ -49,67 +47,28 @@ export default function SignIn() {
   const providers = useAppConfig().data?.authProviders
 
   /**
-   * Normal sign-in, then the v1 bridge, then the error.
-   *
-   * A v1 user's password hash cannot be migrated — it is a one-way hash from a
-   * different system — so their credentials only exist inside the old
-   * Appwrite. `POST /auth/login` checks them there and, if they are good,
-   * creates a v2 account with the same password and restores the profile.
-   * Without this fallback a returning user types the password they have always
-   * used and is simply told it is wrong.
-   *
-   * **The second `signIn.email` is deliberate and load-bearing.**
-   * `@better-auth/expo` writes the session cookie by wrapping its own `fetch`,
-   * so a `set-cookie` that comes back through our `api` client is written
-   * nowhere on native and the user stays signed out while appearing to have
-   * succeeded. Rather than carrying the cookie by hand, we let Better Auth
-   * remain the only thing that ever writes a session: by this point the v2
-   * account exists with this exact password, so the ordinary path works. That
-   * makes `/auth/login`'s own first step redundant here, which is harmless —
-   * we only ever reach it after a normal sign-in has already failed.
+   * Only Better Auth's own sign-in. A v1 password cannot be checked here — the
+   * hash is one-way and from another system — and the bridge that once asked
+   * v1 to check it is gone: every v1 account now has a v2 `user` row, so a
+   * returning person resets the password or continues with Google or Apple
+   * (`docs/decisions.md` → _Every v1 account has a v2 `user` row_). The error
+   * copy says exactly that.
    */
   async function onSubmit() {
     setError(undefined)
     setLoading(true)
     try {
       const { error: signInError } = await authClient.signIn.email({ email, password })
-      if (!signInError) {
-        // The root layout's Stack.Protected re-evaluates on the session change
-        // this triggers, but replacing the route now avoids a stale "sign in"
-        // screen flash while that catches up.
-        router.replace('/')
-        return
-      }
-
-      const bridged = await tryLegacyLogin()
-      if (!bridged) {
+      if (signInError) {
         setError(t(authErrorKey(signInError) ?? 'errors.signInFailed'))
         return
       }
-
-      const { error: retryError } = await authClient.signIn.email({ email, password })
-      if (retryError) {
-        setError(t(authErrorKey(retryError) ?? 'errors.signInFailed'))
-        return
-      }
+      // The root layout's Stack.Protected re-evaluates on the session change
+      // this triggers, but replacing the route now avoids a stale "sign in"
+      // screen flash while that catches up.
       router.replace('/')
     } finally {
       setLoading(false)
-    }
-  }
-
-  /**
-   * `true` only when the bridge actually adopted this account. Any failure —
-   * no v1 record, wrong password, Appwrite unreachable — returns `false` so
-   * the caller shows the original sign-in error rather than a second, stranger
-   * one about a system the user has never heard of.
-   */
-  async function tryLegacyLogin(): Promise<boolean> {
-    try {
-      const result = await api.post<LoginResult>('/auth/login', { email, password })
-      return result.migratedFromV1
-    } catch {
-      return false
     }
   }
 

@@ -454,7 +454,7 @@ as something bought rather than as the product.
       collection, so it crosses the id boundary and goes through
       `lib/authId.ts`. One thing to know before reading the badge as a signal:
       it is true for **every** profile today, because onboarding is gated on
-      `requireVerifiedEmail` and the v1 bridge marks the address verified
+      `requireVerifiedEmail`, and a pre-created v1 row is verified from the start
       itself, so nothing can currently produce an unverified profile. It is
       read from `user` rather than assumed, so that an email-change flow later
       does not turn it into a badge that lies
