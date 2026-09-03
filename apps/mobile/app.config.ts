@@ -39,6 +39,10 @@ const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 const config: ExpoConfig = {
   name: 'LangX',
   slug: 'langx',
+  // The project lives in the `langx` org. Without this, a personal token —
+  // EXPO_TOKEN in .env, what the CLI uses non-interactively — is refused as
+  // "owner does not match the logged in user" even though it is an org owner.
+  owner: 'langx',
   version: '2.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
