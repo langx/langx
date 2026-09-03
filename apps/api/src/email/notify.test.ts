@@ -35,7 +35,7 @@ describe('sendNotificationEmail', () => {
     }
     u1 = new ObjectId().toHexString()
     sender = new CapturingEmailSender()
-    ctx = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api2.langx.io' }
+    ctx = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' }
   })
 
   async function seed(

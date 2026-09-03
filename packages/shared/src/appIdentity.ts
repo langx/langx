@@ -44,19 +44,20 @@ export const APP_LINK_HOST = 'app.langx.io'
  * Where the web build is actually served, and therefore what a shared link
  * points at.
  *
- * **Not the same constant as `APP_LINK_HOST`, on purpose.** That one is the
- * host the *app* claims: it is written into `associatedDomains`, into
- * `assetlinks.json` and `apple-app-site-association`, and it is carried over
- * from v1's AndroidManifest. Collapsing the two would mean that pointing links
- * at a different host silently re-declares the universal-link association as
- * well, which is a store-submission change wearing the clothes of a URL edit.
+ * **Still not the same constant as `APP_LINK_HOST`, even though they now hold
+ * the same string.** That one is the host the *app* claims: it is written into
+ * `associatedDomains`, into `assetlinks.json` and
+ * `apple-app-site-association`, and changing it is a store-submission change.
+ * This one is where links point. They agree today because the cutover below
+ * happened; merging them would mean the next time links move hosts, the
+ * universal-link association moves with them silently.
  *
- * Today the deployment lives at `app2.langx.io` while `app.langx.io` is still
- * being pointed at it — see `release-runbook.md`, where serving
- * `/.well-known/*` from that domain is an open item. When it closes, this is
- * the one line that changes.
+ * The web build lived at `app2.langx.io` until 2026-09-03, while
+ * `app.langx.io` still served v1's Angular app. That was the temporary state
+ * this comment used to describe, and this line is the one it said would
+ * change.
  */
-export const WEB_HOST = 'app2.langx.io'
+export const WEB_HOST = 'app.langx.io'
 
 /**
  * Any screen of the web build, as a link a mail client can follow.

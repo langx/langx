@@ -45,7 +45,7 @@ export default function SharedProfileScreen() {
   const handle = (params.username ?? '').toLowerCase()
   /*
    * The web half of the invite flow, and today the only half that fires: the
-   * app claims `app.langx.io` while links point at `app2.langx.io`, so on a
+   * app claims `app.langx.io` while links point at `app.langx.io`, so on a
    * phone an invite link opens a browser rather than the app. This screen is
    * already what that browser lands on.
    *

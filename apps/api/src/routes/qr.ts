@@ -35,7 +35,7 @@ const CACHE_SECONDS = 86_400
  *
  * Helmet sets `Cross-Origin-Resource-Policy: same-origin` for everything,
  * which is right for an API and wrong for a picture: the web build lives on
- * `app2.langx.io` and the image on `api2.langx.io`, so the browser blocked it
+ * `app.langx.io` and the image on `api.langx.io`, so the browser blocked it
  * outright — `ERR_BLOCKED_BY_RESPONSE.NotSameOrigin`, with no request logged
  * server-side and nothing on screen.
  *

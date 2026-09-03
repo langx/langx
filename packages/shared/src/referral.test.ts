@@ -5,7 +5,7 @@ import { INVITE_QUERY_PARAM, inviteHandleFromUrl, inviteQrUrl, inviteUrl } from 
 
 describe('the invite link', () => {
   it('is a profile link with a marker, so every link already shared still works', () => {
-    expect(inviteUrl('deniz')).toBe('https://app2.langx.io/deniz?invite=1')
+    expect(inviteUrl('deniz')).toBe('https://app.langx.io/deniz?invite=1')
   })
 
   it('drops a leading @, the way profileUrl does', () => {
@@ -13,8 +13,8 @@ describe('the invite link', () => {
   })
 
   it('points the QR at the same marker the server branches on', () => {
-    expect(inviteQrUrl('https://api2.langx.io', 'deniz')).toBe(
-      'https://api2.langx.io/public/qr/deniz?invite=1',
+    expect(inviteQrUrl('https://api.langx.io', 'deniz')).toBe(
+      'https://api.langx.io/public/qr/deniz?invite=1',
     )
   })
 
@@ -30,9 +30,9 @@ describe('inviteHandleFromUrl', () => {
    * would attribute people who were never invited.
    */
   it('refuses an unmarked profile link', () => {
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz')).toBeNull()
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz?invite=0')).toBeNull()
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz?other=1')).toBeNull()
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz')).toBeNull()
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz?invite=0')).toBeNull()
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz?other=1')).toBeNull()
   })
 
   it('reads a custom-scheme deep link, where URL parsers disagree', () => {
@@ -41,12 +41,12 @@ describe('inviteHandleFromUrl', () => {
   })
 
   it('takes the marker among other parameters, and ignores a fragment', () => {
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz?utm=x&invite=1')).toBe('deniz')
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz?invite=1#top')).toBe('deniz')
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz?utm=x&invite=1')).toBe('deniz')
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz?invite=1#top')).toBe('deniz')
   })
 
   it('lower-cases, because a handle is lower-case and a link is typed by hand', () => {
-    expect(inviteHandleFromUrl('https://app2.langx.io/DENIZ?invite=1')).toBe('deniz')
+    expect(inviteHandleFromUrl('https://app.langx.io/DENIZ?invite=1')).toBe('deniz')
   })
 
   /**
@@ -59,9 +59,9 @@ describe('inviteHandleFromUrl', () => {
       undefined,
       '',
       'not a url',
-      'https://app2.langx.io/?invite=1',
-      'https://app2.langx.io/no!thandle?invite=1',
-      'https://app2.langx.io/ab?invite=1',
+      'https://app.langx.io/?invite=1',
+      'https://app.langx.io/no!thandle?invite=1',
+      'https://app.langx.io/ab?invite=1',
     ]) {
       expect(inviteHandleFromUrl(input), String(input)).toBeNull()
     }
@@ -72,7 +72,7 @@ describe('inviteHandleFromUrl', () => {
    * handle, so a link to it is not an invite from anybody.
    */
   it('does not read a route as a referrer', () => {
-    const handle = inviteHandleFromUrl(`https://app2.langx.io/discover?${INVITE_QUERY_PARAM}=1`)
+    const handle = inviteHandleFromUrl(`https://app.langx.io/discover?${INVITE_QUERY_PARAM}=1`)
     expect(handle === null || RESERVED_HANDLES.has(handle)).toBe(true)
   })
 })

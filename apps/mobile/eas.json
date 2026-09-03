@@ -15,7 +15,7 @@
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api2.langx.io"
+        "EXPO_PUBLIC_API_URL": "https://api.langx.io"
       },
       "android": {
         "buildType": "apk"
@@ -25,7 +25,7 @@
       "channel": "production",
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api2.langx.io"
+        "EXPO_PUBLIC_API_URL": "https://api.langx.io"
       },
       "android": {
         "buildType": "app-bundle"

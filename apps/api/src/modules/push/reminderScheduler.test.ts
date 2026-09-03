@@ -55,7 +55,7 @@ describe('the streak reminder pass', () => {
     }
     push = new LoggingPushSender()
     sender = new CapturingEmailSender()
-    email = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api2.langx.io' }
+    email = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' }
   })
 
   async function seed(

@@ -23,22 +23,13 @@ describe('normalizeInviteCode', () => {
    * labelled "invite code" is not ambiguous about intent.
    */
   it('accepts a pasted link, marked or not', () => {
-    expect(normalizeInviteCode('https://app2.langx.io/deniz?invite=1')).toBe('deniz')
-    expect(normalizeInviteCode('https://app2.langx.io/deniz')).toBe('deniz')
-    expect(normalizeInviteCode('app2.langx.io/deniz')).toBe('deniz')
+    expect(normalizeInviteCode('https://app.langx.io/deniz?invite=1')).toBe('deniz')
+    expect(normalizeInviteCode('https://app.langx.io/deniz')).toBe('deniz')
+    expect(normalizeInviteCode('app.langx.io/deniz')).toBe('deniz')
   })
 
   it('answers null for anything that is not a handle', () => {
-    for (const input of [
-      null,
-      undefined,
-      '',
-      '   ',
-      'nope!',
-      'ab',
-      '@',
-      'https://app2.langx.io/',
-    ]) {
+    for (const input of [null, undefined, '', '   ', 'nope!', 'ab', '@', 'https://app.langx.io/']) {
       expect(normalizeInviteCode(input), String(input)).toBeNull()
     }
   })
@@ -52,8 +43,8 @@ describe('inviteHandleFromUrl, as the app calls it', () => {
   })
 
   it('reads only a marked link, so sharing a profile is not an attribution', () => {
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz?invite=1')).toBe('deniz')
-    expect(inviteHandleFromUrl('https://app2.langx.io/deniz')).toBeNull()
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz?invite=1')).toBe('deniz')
+    expect(inviteHandleFromUrl('https://app.langx.io/deniz')).toBeNull()
   })
 })
 
