@@ -33,6 +33,14 @@ declare global {
        * land anywhere — see `docs/billing-testing.md`.
        */
       readonly EXPO_PUBLIC_REVENUECAT_FAKE_STORE?: string
+      /**
+       * PostHog project API key and ingestion host. Public by design, like the
+       * RevenueCat keys: the key can only write events, never read them. Unset,
+       * the SDK is never loaded, Settings shows no analytics row and nothing
+       * leaves the device — see `lib/analytics.ts`.
+       */
+      readonly EXPO_PUBLIC_POSTHOG_KEY?: string
+      readonly EXPO_PUBLIC_POSTHOG_HOST?: string
     }
   }
 }

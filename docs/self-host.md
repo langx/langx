@@ -125,6 +125,12 @@ a static site in `dist/`. Serve it from any static host. It needs
 `EXPO_PUBLIC_API_URL` set at build time, and that origin must appear in the
 API's `TRUSTED_ORIGINS` or the browser will block the session cookie.
 
+**Analytics** is optional. Set `EXPO_PUBLIC_POSTHOG_KEY` (and
+`EXPO_PUBLIC_POSTHOG_HOST` for a region other than the EU) at build time and
+the app sends screen views and a short list of funnel events to that PostHog
+project, with an opt-out in Settings; leave it unset and the SDK is never
+loaded and Settings shows no such row. See [`analytics.md`](analytics.md).
+
 Cloudflare Pages is the host this repo is set up for — a static export needs
 no server of its own, so it needs no machine and costs nothing:
 

@@ -6,9 +6,10 @@ answer is in [`privacy-data-safety.md`](privacy-data-safety.md); this file only
 says which box to tick. If the two disagree, `privacy-data-safety.md` is the
 source and this page is stale.
 
-Three things need to change in the same sitting. Two of them are corrections to
+Four things need to change in the same sitting. Two of them are corrections to
 answers that are already live and wrong; the third is the new location
-permission.
+permission; the fourth is analytics, which the app did not have when this page
+was first written.
 
 ## 1. Play Data Safety — corrections to what is live today
 
@@ -41,9 +42,8 @@ that were "no" are now "yes".
 - [ ] **Location → Precise location: leave unchecked.** The client asks the OS
       for `Accuracy.Lowest` and the server rounds to two decimals (~1 km)
       before storing, so no precise value is ever written.
-- [ ] Everything else on the form stays as it is. In particular **no analytics
-      row** — there is no PostHog SDK in the app and no opt-out control, so
-      declaring "App activity" would describe a system that does not exist.
+- [ ] Everything else on the form stays as it is, except the analytics rows
+      in §5 below.
 
 ## 3. Apple App Privacy — the same change
 
@@ -70,6 +70,45 @@ happen. Four points, in plain words, source text in
 - [ ] **Turning it off deletes it**, which also removes the profile from
       everyone else's Nearby results. No retention period to declare.
 
+## 5. Analytics — new answers on both forms
+
+The app ships a PostHog SDK with an opt-out in Settings (source:
+[`privacy-data-safety.md`](privacy-data-safety.md) → _Analytics_). Both forms
+gain rows. None of them is "shared" — PostHog processes for us — and all of
+them are optional. **These answers go in before the first build carrying
+`EXPO_PUBLIC_POSTHOG_KEY` is submitted**, not after.
+
+### Play Data Safety
+
+- [ ] **App activity → App interactions: collected.**
+  - Shared with third parties: **no**
+  - Required or optional: **optional** — Settings → Privacy → _Share usage
+    data_
+  - Purpose: **Analytics** (only)
+  - Processed ephemerally: **no**
+- [ ] **Device or other IDs: collected.** PostHog's own anonymous id before
+      sign-in, our account id after. Not shared, optional, purpose Analytics.
+- [ ] **App info and performance → Crash logs, Diagnostics: leave unchecked.**
+      Error tracking is not enabled in the SDK.
+
+### Apple App Privacy
+
+- [ ] **Usage Data → Product Interaction: collected.** Linked to the user:
+      **yes**. Used for tracking: **no**. Purpose: **Analytics** (only).
+- [ ] **Identifiers → User ID: collected.** Linked, Analytics, not tracking.
+- [ ] **Identifiers → Device ID: collected.** Linked, Analytics, not tracking.
+      It is the SDK's random id, not IDFA — there is still no IDFA and no
+      `NSUserTrackingUsageDescription`.
+- [ ] **Tracking: stays "no".** Nothing is linked to other companies' data and
+      nothing goes to a broker.
+
+### The privacy policy
+
+- [ ] It names PostHog and the EU region, says it is optional and where the
+      switch is, says message bodies are never sent, and says deletion of
+      analytics data is on request until it is automated
+      ([`analytics.md`](../analytics.md) → _Deletion_).
+
 ## Reference — the rest of the Play form
 
 Unchanged by this pass; listed so a full re-verification does not need a second
@@ -83,6 +122,8 @@ document. Every row is "collected, not shared".
 | Location → Approximate location               | optional, see above                                                |
 | Photos and videos → Photos                    | avatar and gallery — optional                                      |
 | Messages → Other in-app messages              | chat bodies                                                        |
+| App activity → App interactions               | screen names and funnel events — optional, see §5                  |
+| Device or other IDs                           | PostHog's anonymous id, then the account id — optional, see §5     |
 | App info and performance                      | nothing                                                            |
 | Financial info                                | nothing — purchase state only, never a card number                 |
 | Contacts, Calendar, Health, Microphone, Ad ID | nothing                                                            |

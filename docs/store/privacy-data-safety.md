@@ -34,14 +34,15 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Purchase state | `subscriptions` | Knowing whether you have Pro | Only if you subscribe |
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
+| Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
-**Analytics are not collected, and must not be declared.** This table used to
-list PostHog events as "automatic, opt-out in Settings". There is no PostHog in
-the code and no opt-out in Settings — the declaration described a system that
-was planned and never built, which on a store privacy form is a false
-declaration rather than a stale note. If analytics are added
-(`langx2-marketing-funnel.md`, B0), this row goes back **with** the opt-out
-control, and not before: the form has to follow the code, never lead it.
+**Analytics are collected, and declared.** A PostHog SDK ships in the app with
+an opt-out in Settings; the row above and the section below are written from
+the code (`apps/mobile/src/lib/analytics.ts`, `analyticsEvents.ts`). An earlier
+version of this file declared the same row for a system that had been planned
+and never built, and had to take it back: the form follows the code, never
+leads it — in both directions, so if the SDK is ever removed the row goes with
+it.
 
 ## What is NOT collected
 
@@ -100,55 +101,63 @@ collected, not shared, optional, "App functionality". Apple → **Location →
 Coarse Location**, linked to the user, purpose **App Functionality**. Precise
 Location stays unchecked on both.
 
-## Analytics — PostHog, **not built yet**
+## Analytics — PostHog
 
-> **Nothing in this section is shipped.** There is no PostHog SDK in the app,
-> no events are sent, and there is no opt-out control. It is written here as
-> the specification to satisfy _before_ analytics may be declared on either
-> store form — every paragraph below is a requirement, not a description.
->
-> Until it is built, both forms must say no analytics are collected.
+One third-party SDK sees user behaviour: PostHog, on its EU Cloud, with the
+dashboard internal (the reasoning is in [`decisions.md`](../decisions.md)). What
+it receives is listed in [`analytics.md`](../analytics.md); for the forms it is
+**screen names, a short list of funnel events, and our user id**, and it must
+be declared: Play Data Safety wants **App activity → App interactions** and
+**Device or other IDs**, Apple wants **Product Interaction**, **User ID** and
+**Device ID** under the **Analytics** purpose. All of it "collected, not
+shared" — PostHog processes it for us and for nothing of its own — and all of
+it **optional**: Settings → Privacy → _Share usage data_ turns it off, and a
+refusal is honoured before sign-in.
 
 **Placeholder avatars are generated on our own API**, from the account id, and
 neither collect nor disclose anything: no third party sees a user, no email
 hash leaves the device, and nothing new is stored. They are not a data
 practice and belong in neither form.
 
-v1 self-hosted Plausible and published the dashboard. v2 will use PostHog's EU
-Cloud and keep the dashboard internal; the reasoning is in
-[`decisions.md`](../decisions.md). For the store forms what matters is that
-this will be the app's **only** third-party SDK that sees user behaviour, and
-it must then be declared: Play Data Safety wants "App activity — app
-interactions",
-Apple wants **Product Interaction** and **Device ID** under the **Analytics**
-purpose.
-
 Three configuration facts belong in the declaration rather than in the code,
-because the honest answer on the forms changes if any of them changes:
+because the honest answer on the forms changes if any of them changes. Each is
+set in `apps/mobile/src/lib/analytics.ts`, and the file says so:
 
 - **Message bodies never reach it.** Events carry screen and action names
-  only. Session replay masks all text input, so a recording of the chat
-  screen shows that someone typed, not what they typed.
+  only, and the event list is a closed type (`analyticsEvents.ts`) with the
+  obvious keys — body, text, email, handle — refused at compile time and
+  stripped at runtime. Session replay is **off** (`enableSessionReplay:
+false`); turning it on would be a new answer on both forms, and this is a
+  messaging app.
 - **The id is ours, not the device's.** PostHog is identified with the same
-  user id the API uses, so a deleted account's events are deletable with it.
-- **IP-derived location is coarse, and off unless deliberately enabled.**
-  PostHog resolves an IP to a country, and that is what "approximate
-  location" means on the forms if it is left on. Precise location remains
-  not collected either way.
+  user id the API uses, and with nothing else, so a deleted account's events
+  are findable by that id. Before sign-in the SDK's own anonymous id stands
+  in — that is the "Device ID" Apple asks about; it is a random value the SDK
+  makes, not IDFA or the Android advertising id.
+- **IP-derived location is off.** `disableGeoip: true`: PostHog does not turn
+  the address into a country, so analytics adds no location, coarse or
+  otherwise, to the location row above. Precise location remains not
+  collected either way.
 
-Purchase events reach PostHog through RevenueCat's server-side integration,
-not through a second SDK in the app.
+Purchase events reach PostHog through RevenueCat's server-side integration, not
+through a second SDK in the app; what RevenueCat sends is its own subscription
+events, under the same user id.
+
+**Deletion is not automatic yet.** `/me/delete` does not call PostHog's
+person-deletion API; until it does, analytics data for a deleted account is
+removed by hand ([`analytics.md`](../analytics.md) → _Deletion_). The privacy
+policy must not say otherwise.
 
 ## Sharing with third parties
 
-| Recipient                    | What it receives                                                                                                                                               | Why                                                                                    |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Resend                       | Your email address, and — for notification mail — how many messages are waiting and the display names of who wrote or looked. **Never the text of a message.** | Verification and password-reset mail, and the notification emails you have switched on |
-| Google Cloud Translation     | The text you asked to translate                                                                                                                                | Machine translation. Results are cached by a hash of the source text                   |
-| RevenueCat                   | Your user id and purchase events                                                                                                                               | Subscription state                                                                     |
-| Expo push service            | Your push token and the notification text                                                                                                                      | Delivering notifications                                                               |
-| Cloudflare R2 / Backblaze B2 | Your photos                                                                                                                                                    | Hosting them                                                                           |
-| ~~PostHog (EU Cloud)~~       | _Nothing — not integrated. Listed only so it is not forgotten when it is._                                                                                     | _See "Analytics" above: not built, and must not be declared until it is._              |
+| Recipient                    | What it receives                                                                                                                                               | Why                                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Resend                       | Your email address, and — for notification mail — how many messages are waiting and the display names of who wrote or looked. **Never the text of a message.** | Verification and password-reset mail, and the notification emails you have switched on       |
+| Google Cloud Translation     | The text you asked to translate                                                                                                                                | Machine translation. Results are cached by a hash of the source text                         |
+| RevenueCat                   | Your user id and purchase events                                                                                                                               | Subscription state                                                                           |
+| Expo push service            | Your push token and the notification text                                                                                                                      | Delivering notifications                                                                     |
+| Cloudflare R2 / Backblaze B2 | Your photos                                                                                                                                                    | Hosting them                                                                                 |
+| PostHog (EU Cloud)           | Screen names, the funnel events in `docs/analytics.md`, and our user id — never a message body                                                                 | Product analytics. A processor acting for us, which is "collected, not shared" on both forms |
 
 None of these receive data for their own advertising or profiling. There are no
 data brokers.

@@ -907,6 +907,17 @@ something to sell — true, and a worse thing to say out loud than saying
 nothing. The transparency claim it made is not being replaced by a smaller
 claim; it is being replaced by the stats page, or by nothing.
 
+**Shipped on 3 September 2026**, with three choices the paragraphs above did
+not make. The opt-out is a device flag rather than a profile field, because
+the first screens are captured before there is an account, and a refusal that
+only takes effect after sign-in is not one. It is stored as the refusal, not
+the consent, so that the failure every device flag is designed around — an
+unreadable store — lands on the default rather than on a phantom "yes". And
+session replay is off: a recording of a messaging app, however masked, is a
+new answer on both store forms and a cost the funnel question does not need
+paid. `docs/analytics.md` has the event list; the store consequences are in
+`docs/store/privacy-data-safety.md`.
+
 ## Discovery filters live in the URL, not a store
 
 The filter screen is pushed on top of Discover and has to hand its result back,

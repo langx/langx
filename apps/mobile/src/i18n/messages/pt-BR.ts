@@ -868,6 +868,9 @@ export const ptBR: Localized<EnMessages> = {
       'Sua cidade é deduzida da sua localização. Isto a tira do seu perfil; distância e país não mudam.',
     shareLocation: 'Compartilhar localização aproximada',
     shareLocationBody: 'Os outros veem uma faixa de distância, nunca um ponto.',
+    shareUsage: 'Compartilhar dados de uso',
+    shareUsageBody:
+      'Quais telas e botões são usados — nunca o que você escreve. Mostra onde as pessoas travam.',
     activityMap: 'Mostrar meu mapa de atividade',
     activityMapBody:
       'Os quadradinhos do seu perfil. Sua sequência continua visível de qualquer jeito.',

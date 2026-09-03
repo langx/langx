@@ -40,6 +40,8 @@ import {
   type AppIcon,
 } from '../../src/lib/appIcon'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
+import { isAnalyticsAvailable } from '../../src/lib/analytics'
+import { useAnalyticsPreference } from '../../src/hooks/useAnalyticsPreference'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { useLocale, useLocalePreference, useT, type MessageKey } from '../../src/i18n'
 import {
@@ -121,6 +123,10 @@ export default function SettingsScreen() {
           }
   const manageUrl = tier === 'free' ? null : manageSubscriptionUrl(null, Platform.OS)
   const tips = useTips()
+  const analytics = useAnalyticsPreference()
+  // No row without a key: a switch that changes nothing is worse than none,
+  // and a self-hosted build with no PostHog project has nothing to switch.
+  const analyticsRow = isAnalyticsAvailable()
   // Each tag names the plan that unlocks *that* row. Incognito reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   // The app icon is not in `PLAN_LIMITS` at all — it is a local cosmetic gated
@@ -390,7 +396,7 @@ export default function SettingsScreen() {
         <ListRow
           title={t('settings.shareLocation')}
           subtitle={t('settings.shareLocationBody')}
-          last={!sharingLocation}
+          last={!sharingLocation && !analyticsRow}
           accessory={
             <Toggle
               accessibilityLabel={t('settings.shareLocation')}
@@ -416,7 +422,28 @@ export default function SettingsScreen() {
             }
             value={shareLocation.isPending ? t('settings.updating') : undefined}
             onPress={() => void toggleLocation(true)}
+            last={!analyticsRow}
+          />
+        ) : null}
+        {/*
+          Last in Privacy, because it is the one row here about what leaves the
+          device for *us* rather than for other users. Device-level, like the
+          theme: the refusal belongs to the phone, and is honoured before there
+          is an account to attach it to. What is sent, and what never is, is in
+          `lib/analyticsEvents.ts`.
+        */}
+        {analyticsRow ? (
+          <ListRow
+            title={t('settings.shareUsage')}
+            subtitle={t('settings.shareUsageBody')}
             last
+            accessory={
+              <Toggle
+                accessibilityLabel={t('settings.shareUsage')}
+                value={analytics.enabled}
+                onValueChange={(next) => void analytics.setEnabled(next)}
+              />
+            }
           />
         ) : null}
       </View>

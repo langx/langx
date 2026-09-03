@@ -897,6 +897,9 @@ export const de: Localized<EnMessages> = {
       'Deine Stadt wird aus deinem Standort ermittelt. Das nimmt sie aus deinem Profil; Entfernung und Land bleiben.',
     shareLocation: 'Ungefähren Standort teilen',
     shareLocationBody: 'Andere sehen eine Entfernungsspanne, nie einen Punkt.',
+    shareUsage: 'Nutzungsdaten teilen',
+    shareUsageBody:
+      'Welche Bildschirme und Schaltflächen genutzt werden — nie, was du schreibst. So sehen wir, wo Leute hängen bleiben.',
     activityMap: 'Meine Aktivitätskarte zeigen',
     activityMapBody: 'Die Kästchen auf deinem Profil. Deine Serie bleibt so oder so sichtbar.',
     updateLocation: 'Meinen Standort aktualisieren',

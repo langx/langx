@@ -911,6 +911,9 @@ export const en = {
       'Your city is worked out from your location. This keeps it off your profile; distance and country are unaffected.',
     shareLocation: 'Share rough location',
     shareLocationBody: 'Others see a distance bucket, never a point.',
+    shareUsage: 'Share usage data',
+    shareUsageBody:
+      'Which screens and buttons get used — never what you write. It shows us where people get stuck.',
     activityMap: 'Show my activity map',
     activityMapBody: 'The squares on your profile. Your streak stays visible either way.',
     updateLocation: 'Update my location',
