@@ -187,10 +187,12 @@ describe('sign-in, and the bridge to v1 behind it', () => {
       .findOne({ handle: 'returninguser' })
     expect(profile?.displayName).toBe('Returning User')
     expect(profile?.learning[0]?.code).toBe('en')
-    // The streak's length came back; its currency did not.
+    // The streak comes back alive, not as a souvenir: the length is theirs
+    // again and today already counts, so tomorrow is the first day they have
+    // to show up for.
     expect(profile?.streak.longest).toBe(12)
-    expect(profile?.streak.current).toBe(0)
-    expect(profile?.streak.lastQualifiedDay).toBeNull()
+    expect(profile?.streak.current).toBe(12)
+    expect(profile?.streak.lastQualifiedDay).toBeTruthy()
   })
 
   /**

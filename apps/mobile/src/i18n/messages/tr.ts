@@ -928,8 +928,6 @@ export const tr: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Serini geri getir',
-    restoreStreakBody: 'v1’deki {days} günlük serini geri al',
     streakFreeze: 'Seri dondurma',
     streakFreezeBody: 'Kaçırılan bir günü kurtarır · {banked}/{max} birikti',
     ownedAccessibility: '{title}, sende var',

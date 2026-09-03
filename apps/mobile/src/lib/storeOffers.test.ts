@@ -1,4 +1,4 @@
-import { COSMETICS, STREAK_FREEZE_SKU, STREAK_RESTORE_SKU, TOKEN_RULES } from '@langx/shared'
+import { COSMETICS, STREAK_FREEZE_SKU, TOKEN_RULES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
 import { buildStoreOffers, type StoreInput } from './storeOffers'
@@ -9,7 +9,6 @@ const base: StoreInput = {
   streakFreezes: 0,
   longestStreak: 0,
   lifetimeCorrections: 0,
-  restorableStreak: 0,
   t: createTranslate('en'),
 }
 const byId = (input: Partial<StoreInput>, id: string) =>
@@ -19,26 +18,6 @@ describe('buildStoreOffers', () => {
   it('always lists the freeze and every cosmetic', () => {
     const ids = buildStoreOffers(base).map((offer) => offer.id)
     expect(ids).toEqual([STREAK_FREEZE_SKU, ...COSMETICS.map((c) => c.id)])
-  })
-
-  describe('streak restore', () => {
-    it('is absent for someone who never came from v1', () => {
-      expect(byId({}, STREAK_RESTORE_SKU)).toBeUndefined()
-    })
-
-    /** The caller resolves the `streakRestoredAt` latch into a 0. */
-    it('is priced per day once there is a streak to buy back', () => {
-      const offer = byId({ restorableStreak: 30, balance: 10_000 }, STREAK_RESTORE_SKU)
-      expect(offer).toMatchObject({
-        price: 30 * TOKEN_RULES.sinks.streakRestorePerDay,
-        affordable: true,
-      })
-    })
-
-    it('is capped rather than priced without limit', () => {
-      const offer = byId({ restorableStreak: 10_000, balance: 1_000_000 }, STREAK_RESTORE_SKU)
-      expect(offer?.price).toBe(TOKEN_RULES.sinks.streakRestoreMax)
-    })
   })
 
   describe('streak freeze', () => {

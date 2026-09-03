@@ -4,9 +4,7 @@ import {
   previousCosmetic,
   type CosmeticTone,
   STREAK_FREEZE_SKU,
-  STREAK_RESTORE_SKU,
   TOKEN_RULES,
-  streakRestorePrice,
 } from '@langx/shared'
 import type { MessageKey, TranslateFn } from '../i18n/runtime'
 
@@ -52,12 +50,6 @@ export interface StoreInput {
   owned: readonly string[]
   streakFreezes: number
   /**
-   * The v1 streak still available to buy back, or 0. The caller resolves the
-   * latch (`restoredFromV1 && !streakRestoredAt`) because only it can see the
-   * profile; everything downstream of that decision lives here.
-   */
-  restorableStreak: number
-  /**
    * Passed in rather than reached for, so this stays a pure function the tests
    * can call without a React tree — and so the wording of an offer is decided
    * by the reader's locale rather than by the module's import time.
@@ -77,10 +69,10 @@ function cosmeticKey(id: string): MessageKey {
 /**
  * The whole store catalogue, priced and gated.
  *
- * Pulled out of the profile screen's JSX, where the streak-restore latch, the
- * banked-freeze cap, cosmetic ownership and affordability were four rules
- * expressed as nested ternaries inside `disabled` props — correct, and
- * untestable, since `vitest.config.ts` only reaches `src/lib`.
+ * Pulled out of the profile screen's JSX, where the banked-freeze cap,
+ * cosmetic ownership and affordability were rules expressed as nested
+ * ternaries inside `disabled` props — correct, and untestable, since
+ * `vitest.config.ts` only reaches `src/lib`.
  *
  * Affordability is advisory. The purchase route re-checks the balance
  * atomically, which is what actually prevents overspending; this only decides
@@ -103,20 +95,6 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     owned,
     affordable: !owned && input.balance >= price,
   })
-
-  // Only ever offered to someone who came back from v1 and has not bought it
-  // yet — the caller has already resolved the latch into `restorableStreak`.
-  if (input.restorableStreak > 0) {
-    const price = streakRestorePrice(input.restorableStreak)
-    offers.push(
-      priced(
-        STREAK_RESTORE_SKU,
-        t('store.restoreStreak'),
-        t('store.restoreStreakBody', { days: input.restorableStreak }),
-        price,
-      ),
-    )
-  }
 
   const maxFreezes = TOKEN_RULES.sinks.maxBankedStreakFreezes
   const freezeOffer = priced(

@@ -1086,8 +1086,6 @@ export const ar: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'استرجع سلسلتك',
-    restoreStreakBody: 'استعد سلسلة الـ {days} يومًا التي كانت لديك في النسخة الأولى',
     streakFreeze: 'تجميد السلسلة',
     streakFreezeBody: 'ينقذ يومًا فائتًا · {banked}/{max} مُدّخر',
     ownedAccessibility: '{title}، مملوك',

@@ -10,6 +10,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { awardTokens } from '../tokens/ledger'
+import { streakDay } from '../tokens/streak'
 import { grantSignupBonus } from '../tokens/signupBonus'
 import type { Profile } from '../profiles/profiles'
 import { resolveHandleClaim } from './handleReservations'
@@ -122,8 +123,18 @@ export async function restoreByHash(
     if (legacy.photos.length > 0 && (existing.photos ?? []).length === 0) {
       update.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
     }
-    if (legacy.frozenStreak && legacy.frozenStreak > existing.streak.longest) {
-      update['streak.longest'] = legacy.frozenStreak
+    /**
+     * Same rule as a fresh restore, but it must not *cost* them anything they
+     * already have: someone who onboarded first may have started a streak here
+     * before proving the old email. So each half moves only upwards — a v1
+     * streak of 40 replaces a current 3, a v1 streak of 3 leaves a current 40
+     * alone — and the day is only stamped when the number actually changed.
+     */
+    const frozen = legacy.frozenStreak ?? 0
+    if (frozen > existing.streak.longest) update['streak.longest'] = frozen
+    if (frozen > existing.streak.current) {
+      update['streak.current'] = frozen
+      update['streak.lastQualifiedDay'] = streakDay(existing, now)
     }
     await profiles.updateOne({ _id: userId }, { $set: update })
   }
@@ -253,6 +264,7 @@ function missingForProfile(legacy: LegacyProfile): string[] {
 }
 
 function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile {
+  const frozen = legacy.frozenStreak ?? 0
   const profile: Profile = {
     _id: userId,
     handle: legacy.handle,
@@ -272,12 +284,23 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
     /**
-     * The streak's *length* comes back but not its currency. `current` starts
-     * at zero and `lastQualifiedDay` stays null, so what they built in v1 is a
-     * record rather than a live streak — restoring the day would hand back
-     * something nobody earned here. `frozenStreak` is what they can buy back.
+     * The streak comes back **alive**, not as a souvenir.
+     *
+     * It used to arrive as a record — `current: 0`, `longest: frozenStreak` —
+     * and the length was then sold back for token. The reasoning was that a
+     * day nobody spent here should not be handed back, which reads differently
+     * from the other side: those days were earned, in this app, under this
+     * name. Charging someone to buy their own history back is a strange way to
+     * greet the person we are asking to move.
+     *
+     * `lastQualifiedDay` is **today**, not yesterday. The streak is alive on
+     * arrival and tomorrow is the day they have to show up for; dating it
+     * yesterday would break it the moment they closed the app.
      */
-    streak: { current: 0, longest: legacy.frozenStreak ?? 0, lastQualifiedDay: null },
+    streak:
+      frozen > 0
+        ? { current: frozen, longest: frozen, lastQualifiedDay: streakDay({}, now) }
+        : { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },
     createdAt: now,
     updatedAt: now,

@@ -1042,8 +1042,6 @@ export const ru: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Восстанови серию',
-    restoreStreakBody: 'Верни серию из {days} дней, которая была у тебя в v1',
     streakFreeze: 'Заморозка серии',
     streakFreezeBody: 'Спасает один пропущенный день · накоплено {banked}/{max}',
     ownedAccessibility: '{title}, уже есть',

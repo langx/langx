@@ -921,8 +921,6 @@ export const es: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Recupera tu racha',
-    restoreStreakBody: 'Recupera la racha de {days} días que tenías en la v1',
     streakFreeze: 'Congelar racha',
     streakFreezeBody: 'Salva un día perdido · {banked}/{max} guardadas',
     ownedAccessibility: '{title}, ya lo tienes',

@@ -945,8 +945,6 @@ export const de: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Serie wiederherstellen',
-    restoreStreakBody: 'Hol dir die {days}-Tage-Serie aus v1 zurück',
     streakFreeze: 'Serienschutz',
     streakFreezeBody: 'Rettet einen verpassten Tag · {banked}/{max} auf Vorrat',
     ownedAccessibility: '{title}, bereits vorhanden',

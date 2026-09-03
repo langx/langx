@@ -927,8 +927,6 @@ export const fr: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Restaure ta série',
-    restoreStreakBody: 'Récupère la série de {days} jours que tu avais sur la v1',
     streakFreeze: 'Gel de série',
     streakFreezeBody: 'Sauve un jour manqué · {banked}/{max} en réserve',
     ownedAccessibility: '{title}, déjà acquis',

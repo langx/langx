@@ -916,8 +916,6 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   store: {
-    restoreStreak: 'Recupere sua sequência',
-    restoreStreakBody: 'Traga de volta a sequência de {days} dias que você tinha na v1',
     streakFreeze: 'Congelar sequência',
     streakFreezeBody: 'Salva um dia perdido · {banked}/{max} guardados',
     ownedAccessibility: '{title}, você já tem',

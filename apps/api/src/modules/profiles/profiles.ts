@@ -218,8 +218,6 @@ export interface Profile {
     /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
     lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: Date
-    /** Latch: the frozen streak can be bought back exactly once. */
-    streakRestoredAt?: Date
   }
   deletedAt?: Date
   createdAt: Date

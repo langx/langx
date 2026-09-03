@@ -58,7 +58,6 @@ export default function WalletScreen() {
     )
   }
 
-  const restored = me.data.restoredFromV1
   const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
   const viewer = { name: me.data.displayName, avatarUrl: me.data.avatarUrl }
@@ -69,7 +68,6 @@ export default function WalletScreen() {
     lifetimeCorrections: xp.data?.lifetime.corrections ?? 0,
     owned,
     streakFreezes: wallet.data?.streakFreezes ?? 0,
-    restorableStreak: restored && !restored.streakRestoredAt ? restored.frozenStreak : 0,
   })
 
   function refresh(): void {

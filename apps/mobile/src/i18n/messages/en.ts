@@ -958,8 +958,6 @@ export const en = {
   },
 
   store: {
-    restoreStreak: 'Restore your streak',
-    restoreStreakBody: 'Bring back the {days}-day streak you had in v1',
     streakFreeze: 'Streak freeze',
     streakFreezeBody: 'Saves one missed day · {banked}/{max} banked',
     ownedAccessibility: '{title}, owned',
