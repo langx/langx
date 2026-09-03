@@ -400,7 +400,7 @@ export const es: Localized<EnMessages> = {
     emailUnverified: 'Verifica tu dirección de correo para activarlo.',
     primingTitle: '¿Activar las notificaciones?',
     primingBody:
-      'Solo dos cosas: cuando alguien te escribe y un aviso a las {hour}:00 si tu racha está a punto de romperse.',
+      'Cuando alguien te escribe, un aviso a las {hour}:00 si tu racha está a punto de romperse, y una vez al día cuánta gente vio tu perfil.',
     notNow: 'Ahora no',
     microphonePermission: 'LangX necesita acceso al micrófono para grabar un mensaje de voz.',
   },

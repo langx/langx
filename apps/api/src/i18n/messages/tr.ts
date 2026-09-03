@@ -5,6 +5,8 @@ export const tr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: '{count} günlük seri! 🔥', other: '{count} günlük seri! 🔥' },
     streakBody: 'Seriyi sürdürmek için bugün bir mesaj gönder.',
+    profileVisitsTitle: { one: '1 kişi profiline baktı', other: '{count} kişi profiline baktı' },
+    profileVisitsBody: 'Kim olduğunu görmek için dokun.',
   },
 
   email: {
@@ -38,6 +40,19 @@ export const tr: Localized<ServerMessages> = {
     },
     digestMore: { one: 'Bir sohbet daha var.', other: '{count} sohbet daha var.' },
     digestButton: 'Oku ve yanıtla',
+
+    visitsSubject: {
+      one: 'Bu hafta 1 kişi profiline baktı',
+      other: 'Bu hafta {count} kişi profiline baktı',
+    },
+    visitsPreheader: 'Profilin ilgi çekiyor',
+    visitsBody: {
+      one: 'Son bir haftada 1 kişi profiline baktı.',
+      other: 'Son bir haftada {count} kişi profiline baktı.',
+    },
+    visitsNames: 'Aralarında: {names}.',
+    visitsLocked: 'Kim olduklarını görmek için yükselt.',
+    visitsButton: 'Kimlerin baktığını gör',
 
     unsubscribeTitle: 'Bu e-postalar kapatılsın mı?',
     unsubscribeBody: '{kind} artık e-postayla gelmeyecek. Telefonundaki bildirimler etkilenmez.',

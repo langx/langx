@@ -31,5 +31,9 @@ export function notificationRoute(data: unknown): Href | null {
       // The nudge asks for one message, so the useful destination is the list
       // of people already being talked to, not the feed of strangers.
       return '/chats'
+    case 'profileVisits':
+      // The count is what the notification said; the names are behind the
+      // paywall this screen draws. Landing here is the whole point of it.
+      return '/viewers'
   }
 }

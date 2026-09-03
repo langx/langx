@@ -431,7 +431,7 @@ export const en = {
     emailUnverified: 'Verify your email address to turn this on.',
     primingTitle: 'Turn on notifications?',
     primingBody:
-      'Two things only: when someone messages you, and a nudge at {hour}:00 if your streak is about to break.',
+      'When someone messages you, a nudge at {hour}:00 if your streak is about to break, and once a day how many people viewed your profile.',
     notNow: 'Not now',
     microphonePermission: 'LangX needs microphone access to record a voice message.',
   },

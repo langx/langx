@@ -200,3 +200,37 @@ function formatList(locale: Locale, items: string[]): string {
     return items.join(', ')
   }
 }
+
+/**
+ * "People looked at your profile this week."
+ *
+ * `names` is `null` for a free account — not empty, which would read as
+ * nobody. The count is the free half of the feature and the names are the Pro
+ * half, so this says how many either way and adds the line about upgrading
+ * only when it has something to withhold.
+ */
+export function profileVisitsEmail(
+  locale: Locale,
+  { count, names, unsubscribe }: { count: number; names: string[] | null; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const subject = t('email.visitsSubject', { count })
+  const body = t('email.visitsBody', { count })
+  const detail =
+    names && names.length > 0
+      ? t('email.visitsNames', { names: formatList(locale, names) })
+      : t('email.visitsLocked')
+  const cta = { url: webUrl('/viewers'), label: t('email.visitsButton') }
+
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: t('email.visitsPreheader'),
+      bodyHtml: `<p>${body}</p><p style="color:#888;">${detail}</p>`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(locale, [body, detail, '', cta.url], unsubscribe),
+  }
+}
