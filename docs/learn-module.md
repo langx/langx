@@ -218,8 +218,10 @@ should be made on purpose. If it is taken, the unit should be a completed
 session of `SRS_RULES.sessionSize` cards, never a single card, or the condition
 becomes "open the app and tap once" under another name.
 
-No new leaderboard. There are four already, and a fifth would split attention
-rather than add any.
+No leaderboard of its own. The token board has four period tabs and the streak
+page carries a streak table (added 3 September 2026 — current run and longest,
+see `modules/tokens/streakLeaderboard.ts`); a review count ranked beside them
+would split attention rather than add any.
 
 ## Plan limits
 
