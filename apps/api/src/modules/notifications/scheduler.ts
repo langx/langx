@@ -1,6 +1,8 @@
 import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
+import type { PushSender } from '../push/devices'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
+import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
 import { runUnreadDigestPass } from './unreadDigest'
 
 /**
@@ -21,7 +23,7 @@ export const NOTIFICATION_INTERVAL_MS = 30 * 60 * 1000
  */
 export function startNotificationScheduler(
   db: Db,
-  email: NotificationEmailContext,
+  senders: { push: PushSender; email: NotificationEmailContext },
   logger: SchedulerLogger,
   options: { intervalMs?: number } = {},
 ): { stop: () => void } {
@@ -31,13 +33,25 @@ export function startNotificationScheduler(
   async function tick(): Promise<void> {
     if (running) return
     running = true
+    const now = new Date()
     try {
-      const digest = await runUnreadDigestPass(db, email, new Date())
-      if (digest.sent > 0) logger.info({ sent: digest.sent }, 'unread digests sent')
-    } catch (error) {
-      logger.error({ err: error }, 'unread digest pass failed')
+      await Promise.allSettled([
+        run('unread digest', () => runUnreadDigestPass(db, senders.email, now)),
+        run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
+        run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
+      ])
     } finally {
       running = false
+    }
+  }
+
+  /** Each pass on its own, so one throwing does not starve the two after it. */
+  async function run(name: string, pass: () => Promise<{ sent: number }>): Promise<void> {
+    try {
+      const { sent } = await pass()
+      if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
+    } catch (error) {
+      logger.error({ err: error, pass: name }, 'notification pass failed')
     }
   }
 

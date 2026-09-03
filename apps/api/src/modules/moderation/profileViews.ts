@@ -72,6 +72,57 @@ export async function recordProfileView(
 }
 
 /**
+ * How many people looked, in a window, and who — if this account may know.
+ *
+ * The tier gate and the block filter both live here rather than in the
+ * notification pass, so the free/Pro line is drawn in exactly one module.
+ * `viewers` is `null`, not empty, when the identities are locked: a
+ * notification that named somebody to a free user would hand out the thing
+ * the paywall is arguing about, and an empty array would read as "nobody".
+ */
+export async function viewSummarySince(
+  db: Db,
+  userId: string,
+  since: Date,
+  limit = 5,
+): Promise<{ count: number; viewers: { displayName: string }[] | null } | null> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const me = await profiles.findOne({ _id: userId })
+  if (!me) return null
+
+  const hidden = await blockedUserIds(db, userId)
+  const filter: Filter<ProfileView> = {
+    viewedId: userId,
+    lastViewedAt: { $gte: since },
+    viewerId: { $nin: hidden },
+  }
+  const count = await db.collection<ProfileView>(COLLECTIONS.profileViews).countDocuments(filter)
+  if (count === 0) return { count: 0, viewers: null }
+  if (!hasFeature(effectiveTier(me), 'profileViewerIdentities')) return { count, viewers: null }
+
+  const recent = await db
+    .collection<ProfileView>(COLLECTIONS.profileViews)
+    .find(filter)
+    .sort({ lastViewedAt: -1, _id: -1 })
+    .limit(limit)
+    .toArray()
+  const viewerProfiles = await profiles
+    .find(
+      { _id: { $in: recent.map((view) => view.viewerId) }, deletedAt: { $exists: false } },
+      { projection: { handle: 1, displayName: 1 } },
+    )
+    .toArray()
+  const byId = new Map(viewerProfiles.map((p) => [p._id, p]))
+
+  const viewers: { displayName: string }[] = []
+  for (const view of recent) {
+    const profile = byId.get(view.viewerId)
+    if (profile) viewers.push({ displayName: profile.displayName ?? profile.handle })
+  }
+  return { count, viewers }
+}
+
+/**
  * "Who viewed me". The count is free; the identities are the Pro hook.
  *
  * Returning `locked: true` with a real total rather than a 403 is deliberate —

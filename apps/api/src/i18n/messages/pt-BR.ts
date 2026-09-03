@@ -5,6 +5,11 @@ export const ptBR: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: 'Sequência de {count} dia! 🔥', other: 'Sequência de {count} dias! 🔥' },
     streakBody: 'Mande uma mensagem hoje para mantê-la.',
+    profileVisitsTitle: {
+      one: '1 pessoa viu seu perfil',
+      other: '{count} pessoas viram seu perfil',
+    },
+    profileVisitsBody: 'Toque para ver quem.',
   },
 
   email: {
@@ -41,6 +46,19 @@ export const ptBR: Localized<ServerMessages> = {
     },
     digestMore: { one: 'E mais uma conversa.', other: 'E mais {count} conversas.' },
     digestButton: 'Ler e responder',
+
+    visitsSubject: {
+      one: '1 pessoa viu seu perfil esta semana',
+      other: '{count} pessoas viram seu perfil esta semana',
+    },
+    visitsPreheader: 'Seu perfil está chamando atenção',
+    visitsBody: {
+      one: '1 pessoa olhou seu perfil na última semana.',
+      other: '{count} pessoas olharam seu perfil na última semana.',
+    },
+    visitsNames: 'Entre elas: {names}.',
+    visitsLocked: 'Faça upgrade para ver quem foram.',
+    visitsButton: 'Ver quem visitou',
 
     unsubscribeTitle: 'Desativar estes e-mails?',
     unsubscribeBody:

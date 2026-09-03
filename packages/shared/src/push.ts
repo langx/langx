@@ -21,7 +21,7 @@ export const registerDeviceSchema = z.object({
 })
 export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>
 
-export const PUSH_KINDS = ['message', 'streakReminder'] as const
+export const PUSH_KINDS = ['message', 'streakReminder', 'profileVisits'] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 
 /**
@@ -30,3 +30,19 @@ export type PushKind = (typeof PUSH_KINDS)[number]
  * early enough that they still can.
  */
 export const STREAK_REMINDER_LOCAL_HOUR = 20
+
+/**
+ * And when the profile-visit round-up goes out.
+ *
+ * Eight hours from the streak nudge, so the two can never land in the same
+ * evening — the fastest way to make somebody turn both off is to make the app
+ * feel like it is pestering them. Lunchtime also happens to be when "people
+ * looked at you" is something a person can act on.
+ */
+export const PROFILE_VISITS_LOCAL_HOUR = 12
+
+/** Monday, on the reader's own calendar. `Date.getUTCDay()` numbering. */
+export const PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY = 1
+
+/** How many visitors a weekly summary names, for the tier allowed to see them. */
+export const PROFILE_VISITS_EMAIL_MAX_NAMES = 5

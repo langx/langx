@@ -404,7 +404,7 @@ export const tr: Localized<EnMessages> = {
     emailUnverified: 'Bunu açmak için e-posta adresini doğrula.',
     primingTitle: 'Bildirimler açılsın mı?',
     primingBody:
-      'Sadece iki şey: biri sana mesaj attığında ve serin kopmak üzereyse saat {hour}:00’da bir dürtme.',
+      'Biri sana mesaj attığında, serin kopmak üzereyse saat {hour}:00’da bir dürtme ve günde bir kez profiline kaç kişinin baktığı.',
     notNow: 'Şimdi değil',
     microphonePermission: 'Sesli mesaj kaydetmek için LangX’in mikrofon iznine ihtiyacı var.',
   },

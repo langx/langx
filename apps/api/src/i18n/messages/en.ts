@@ -12,6 +12,11 @@ export const en = {
   push: {
     streakTitle: { one: '{count} day streak! 🔥', other: '{count} day streak! 🔥' },
     streakBody: 'Send one message today to keep it going.',
+    profileVisitsTitle: {
+      one: '1 person viewed your profile',
+      other: '{count} people viewed your profile',
+    },
+    profileVisitsBody: 'Tap to see who.',
   },
 
   email: {
@@ -50,6 +55,19 @@ export const en = {
     },
     digestMore: { one: 'And 1 more conversation.', other: 'And {count} more conversations.' },
     digestButton: 'Read and reply',
+
+    visitsSubject: {
+      one: '1 person viewed your profile this week',
+      other: '{count} people viewed your profile this week',
+    },
+    visitsPreheader: 'Your profile is getting attention',
+    visitsBody: {
+      one: '1 person looked at your profile in the last week.',
+      other: '{count} people looked at your profile in the last week.',
+    },
+    visitsNames: 'Among them: {names}.',
+    visitsLocked: 'Upgrade to see who they were.',
+    visitsButton: 'See who viewed you',
 
     unsubscribeTitle: 'Turn off these emails?',
     unsubscribeBody:

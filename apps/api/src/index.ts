@@ -88,7 +88,7 @@ async function main(): Promise<void> {
     startPurgeScheduler(db, app.log, { storage }),
     startStreakReminderScheduler(db, push, notificationEmail, app.log),
     startLegacyImportScheduler(db, app.log),
-    startNotificationScheduler(db, notificationEmail, app.log),
+    startNotificationScheduler(db, { push, email: notificationEmail }, app.log),
   ]
 
   const shutdown = async (signal: string): Promise<void> => {

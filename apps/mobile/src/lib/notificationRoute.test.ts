@@ -27,4 +27,9 @@ describe('notificationRoute', () => {
     expect(notificationRoute('message')).toBeNull()
     expect(notificationRoute({ kind: 42 })).toBeNull()
   })
+  it('lands a profile-visit round-up on the viewers screen', () => {
+    // The push carried a count and no names; this screen is where the
+    // difference between the free count and the Pro list is drawn.
+    expect(notificationRoute({ kind: 'profileVisits' })).toBe('/viewers')
+  })
 })

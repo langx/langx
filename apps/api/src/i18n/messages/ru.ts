@@ -15,6 +15,11 @@ export const ru: Localized<ServerMessages> = {
       other: 'Серия из {count} дня! 🔥',
     },
     streakBody: 'Отправьте сегодня сообщение, чтобы её сохранить.',
+    profileVisitsTitle: {
+      one: '1 человек посмотрел ваш профиль',
+      other: 'Ваш профиль посмотрели: {count}',
+    },
+    profileVisitsBody: 'Нажмите, чтобы увидеть кто.',
   },
 
   email: {
@@ -51,6 +56,19 @@ export const ru: Localized<ServerMessages> = {
     },
     digestMore: { one: 'И ещё один диалог.', other: 'И ещё диалогов: {count}.' },
     digestButton: 'Прочитать и ответить',
+
+    visitsSubject: {
+      one: 'На этой неделе ваш профиль посмотрел 1 человек',
+      other: 'На этой неделе ваш профиль посмотрели: {count}',
+    },
+    visitsPreheader: 'Ваш профиль замечают',
+    visitsBody: {
+      one: 'За последнюю неделю ваш профиль посмотрел 1 человек.',
+      other: 'За последнюю неделю ваш профиль посмотрели: {count}.',
+    },
+    visitsNames: 'Среди них: {names}.',
+    visitsLocked: 'Оформите подписку, чтобы увидеть кто.',
+    visitsButton: 'Посмотреть, кто заходил',
 
     unsubscribeTitle: 'Отключить эти письма?',
     unsubscribeBody:

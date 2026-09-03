@@ -13,6 +13,8 @@ export const ar: Localized<ServerMessages> = {
       other: 'سلسلة من {count} يوم! 🔥',
     },
     streakBody: 'أرسل رسالة اليوم للحفاظ عليها.',
+    profileVisitsTitle: { one: 'شخص واحد اطّلع على ملفك', other: '{count} أشخاص اطّلعوا على ملفك' },
+    profileVisitsBody: 'اضغط لترى مَن.',
   },
 
   email: {
@@ -49,6 +51,19 @@ export const ar: Localized<ServerMessages> = {
     },
     digestMore: { one: 'ومحادثة أخرى.', other: 'و{count} محادثات أخرى.' },
     digestButton: 'اقرأ وردّ',
+
+    visitsSubject: {
+      one: 'اطّلع على ملفك شخص واحد هذا الأسبوع',
+      other: 'اطّلع على ملفك {count} أشخاص هذا الأسبوع',
+    },
+    visitsPreheader: 'ملفك يلفت الانتباه',
+    visitsBody: {
+      one: 'خلال الأسبوع الماضي اطّلع على ملفك شخص واحد.',
+      other: 'خلال الأسبوع الماضي اطّلع على ملفك {count} أشخاص.',
+    },
+    visitsNames: 'منهم: {names}.',
+    visitsLocked: 'ارتقِ بخطتك لترى مَن كانوا.',
+    visitsButton: 'شاهد مَن زار ملفك',
 
     unsubscribeTitle: 'إيقاف هذه الرسائل؟',
     unsubscribeBody: 'لن تصلك {kind} عبر البريد بعد الآن. إشعارات الهاتف لا تتأثر.',

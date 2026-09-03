@@ -408,7 +408,7 @@ export const de: Localized<EnMessages> = {
     emailUnverified: 'Bestätige deine E-Mail-Adresse, um das einzuschalten.',
     primingTitle: 'Mitteilungen einschalten?',
     primingBody:
-      'Nur zwei Dinge: wenn dir jemand schreibt, und ein Anstupser um {hour}:00 Uhr, wenn deine Serie zu reißen droht.',
+      'Wenn dir jemand schreibt, ein Anstupser um {hour}:00 Uhr, wenn deine Serie zu reißen droht, und einmal am Tag, wie viele dein Profil angesehen haben.',
     notNow: 'Jetzt nicht',
     microphonePermission: 'LangX braucht Mikrofonzugriff, um eine Sprachnachricht aufzunehmen.',
   },

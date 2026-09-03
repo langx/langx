@@ -396,7 +396,7 @@ export const ptBR: Localized<EnMessages> = {
     emailUnverified: 'Verifique seu endereço de e-mail para ativar isto.',
     primingTitle: 'Ativar as notificações?',
     primingBody:
-      'Só duas coisas: quando alguém te manda mensagem, e um lembrete às {hour}:00 se sua sequência estiver prestes a quebrar.',
+      'Quando alguém te manda mensagem, um lembrete às {hour}:00 se sua sequência estiver prestes a quebrar, e uma vez por dia quantas pessoas viram seu perfil.',
     notNow: 'Agora não',
     microphonePermission: 'O LangX precisa do microfone para gravar uma mensagem de voz.',
   },

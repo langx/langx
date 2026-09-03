@@ -407,7 +407,7 @@ export const fr: Localized<EnMessages> = {
     emailUnverified: 'Vérifiez votre adresse e-mail pour l’activer.',
     primingTitle: 'Activer les notifications ?',
     primingBody:
-      'Deux choses seulement : quand quelqu’un t’écrit, et un rappel à {hour}h00 si ta série est sur le point de se rompre.',
+      'Quand quelqu’un t’écrit, un rappel à {hour}h00 si ta série est sur le point de se rompre, et une fois par jour combien de personnes ont vu ton profil.',
     notNow: 'Pas maintenant',
     microphonePermission: 'LangX a besoin du micro pour enregistrer un message vocal.',
   },
