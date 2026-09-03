@@ -2376,3 +2376,27 @@ reach FCM (`400 INVALID_ARGUMENT` on a fake token), which still proves the
 key Expo is handed is a working one before any build exists; and the lesson
 that `expo-notifications` and the Firebase SDK both hook the same iOS delegate
 and should not share a build.
+
+## Shipping lives on expo.dev, and only tests live on GitHub
+
+Behic's call on 3 September 2026, after a day of weighing the alternative:
+builds, store submissions and over-the-air updates are EAS workflows in
+`apps/mobile/.eas/workflows/`, started from Expo's dashboard or by a push to
+`main`. GitHub Actions keeps `ci.yml` and nothing else. The API and the web
+build are unaffected — Fly and Cloudflare Pages are still deployed by hand,
+see the runbook.
+
+Two things decided the shape of the workflows.
+
+_Updates are automatic, builds are not._ A merge to `main` publishes an OTA
+update to the `preview` channel for nothing; a cloud build spends one of the
+free plan's fifteen a month. So the only workflow on a push trigger is the
+update, and both build workflows are `workflow_dispatch` with a platform
+input. Somebody spends a build on purpose, not because a README changed.
+
+_Production updates are manual too._ An update on the `production` channel
+reaches every store install at once, and `runtimeVersion` is the SDK version,
+so a JS change that assumes a native module which is not in the store build
+would land on phones that cannot run it. Publishing to production is a
+deliberate `eas update --channel production` after the matching build has
+shipped, not a side effect of merging.
