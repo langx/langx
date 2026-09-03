@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
+  countUnread,
   listConversations,
   listMessages,
   listMessagesAround,
@@ -92,6 +93,16 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(page)
     },
   )
+
+  /*
+   * One number for the tab badge. Its own route rather than a field on the
+   * conversations page: the badge has to be right on a screen that never
+   * opened the chats list, and the list is paged besides.
+   */
+  app.get('/me/unread', { preHandler: requireAuth }, async (request, reply) => {
+    const total = await countUnread(app.mongo.db, request.userId)
+    return reply.send({ total })
+  })
 
   app.get(
     '/conversations/:id/messages',

@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { AppState } from 'react-native'
 import type { MeProfile, MessageDto } from '../api/queries'
-import { keys, markConversationRead } from '../api/queries'
+import { invalidateUnread, keys, markConversationRead } from '../api/queries'
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
@@ -99,6 +99,9 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           },
         )
         if (!patched) void queryClient.invalidateQueries({ queryKey: ['conversations'] })
+        // The tab badge is on screen on every tab, including the ones that
+        // never load this list, so the patch above does not reach it.
+        invalidateUnread(queryClient)
         void queryClient.invalidateQueries({ queryKey: keys.tokens })
 
         /**
@@ -153,6 +156,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         // one thing this cannot patch from here.
         if (message.deleted) {
           void queryClient.invalidateQueries({ queryKey: ['conversations'] })
+          invalidateUnread(queryClient)
         }
       })
 

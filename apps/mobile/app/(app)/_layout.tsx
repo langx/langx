@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import type { ColorValue } from 'react-native'
+import { useUnreadTotal } from '../../src/api/queries'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTheme } from '../../src/lib/theme'
@@ -12,6 +13,7 @@ import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useSocket } from '../../src/hooks/useSocket'
+import { unreadBadge } from '../../src/lib/unreadBadge'
 
 /** Not a tab, and no tab bar under it either. */
 const FULL_SCREEN = { href: null, tabBarStyle: { display: 'none' } } as const
@@ -49,6 +51,12 @@ export default function AppLayout() {
    */
   const isGuest = shouldGateGuest(session?.user)
   useSocket({ enabled: !isGuest })
+  // A guest has no conversations, so asking for a total would be a request
+  // that can only ever answer zero.
+  const unread = useUnreadTotal(!isGuest)
+  // Spread rather than passed as `undefined`: the option is typed as present
+  // or absent, and an explicit `undefined` is neither.
+  const badge = unreadBadge(unread.data)
   useLocationRefresh({ enabled: !isGuest })
   useDailyCheckIn({ enabled: !isGuest })
   usePushRegistration({ enabled: !isGuest })
@@ -90,6 +98,21 @@ export default function AppLayout() {
           options={{
             title: t('tabs.chats'),
             tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
+            /*
+             * A message that arrives while somebody is on another tab was
+             * invisible until they went looking for it. The count comes from
+             * the server rather than from the loaded chat list, which is paged
+             * and would only ever total what had been scrolled to.
+             */
+            ...(badge
+              ? {
+                  tabBarBadge: badge,
+                  tabBarBadgeStyle: {
+                    backgroundColor: colors.danger,
+                    color: colors.textInverse,
+                  },
+                }
+              : {}),
           }}
         />
         <Tabs.Screen

@@ -122,6 +122,13 @@ export const keys = {
   follows: (userId: string, which: string) => ['follows', userId, which] as const,
   quota: ['quota'] as const,
   sessions: ['sessions'] as const,
+  /*
+   * Deliberately not under `['conversations']`, tempting as that is: the
+   * socket patches that prefix with `setQueriesData`, and the patcher walks
+   * `data.pages`. A single number sitting in that prefix would be handed to it
+   * and would throw. `invalidateUnread` is what keeps the two in step instead.
+   */
+  unread: ['unread'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
@@ -141,6 +148,32 @@ export const keys = {
  * would be two chances for one of them to forget the invalidation and leave a
  * stale unread count on the list behind.
  */
+/**
+ * The number on the Chats tab.
+ *
+ * Server-side rather than summed from the loaded list: the list is paged and
+ * excludes the archive, so a total added up in the cache is a total of
+ * whatever the user happened to have scrolled to.
+ */
+export function useUnreadTotal(enabled = true) {
+  return useQuery({
+    queryKey: keys.unread,
+    queryFn: async () => (await api.get<{ total: number }>('/me/unread')).total,
+    enabled,
+  })
+}
+
+/**
+ * Called wherever the conversations cache is written or invalidated.
+ *
+ * The badge is on screen on every tab, including the ones that never load the
+ * chat list, so it cannot ride along on that list's own refetch — every event
+ * that changes an unread count has to say so here too.
+ */
+export function invalidateUnread(client: QueryClient): void {
+  void client.invalidateQueries({ queryKey: keys.unread })
+}
+
 export async function markConversationRead(
   conversationId: string,
   queryClient: QueryClient,
@@ -149,6 +182,7 @@ export async function markConversationRead(
   try {
     await api.post(`/conversations/${conversationId}/read`)
     await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    invalidateUnread(queryClient)
   } catch {
     // Best-effort: failing to clear an unread badge must never surface as an
     // error over a conversation the user is reading perfectly happily.
@@ -702,6 +736,8 @@ export function useDeleteConversation() {
     mutationFn: (conversationId: string) => api.delete<void>(`/conversations/${conversationId}`),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['conversations'] })
+      // A deleted thread takes its unread messages with it.
+      invalidateUnread(client)
     },
   })
 }
@@ -719,6 +755,8 @@ export function useConversationFlags() {
     }) => api.patch<ConversationDto>(`/conversations/${conversationId}/flags`, flags),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['conversations'] })
+      // Archiving hides a thread from the badge as well as from the list.
+      invalidateUnread(client)
     },
   })
 }
