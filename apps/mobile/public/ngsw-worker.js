@@ -1,3 +1,4 @@
+/* global self, caches */
 /**
  * Kill switch for the service worker v1 left behind on app.langx.io.
  *
