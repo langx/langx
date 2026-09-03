@@ -79,6 +79,20 @@ const config: ExpoConfig = {
     ...(process.env.GOOGLE_SERVICES_JSON
       ? { googleServicesFile: process.env.GOOGLE_SERVICES_JSON }
       : {}),
+    /**
+     * expo-image-picker declares `READ_EXTERNAL_STORAGE` (up to API 32) and
+     * Play's photo-and-video policy counts that as broad gallery access: the
+     * first production upload was refused with "developers requesting access
+     * to the photo and video permissions are required to tell Google Play
+     * about the core functionality of their app". Picking a photo does not
+     * need it — Android 13+ never asked for it, and below that the picker is
+     * the system photo picker or the documents UI, both of which hand back a
+     * URI the app can read without any permission. `pickImageAsset` knows not
+     * to request it. `WRITE_EXTERNAL_STORAGE` stays: the camera on Android 9
+     * and below cannot save its capture without it, and the policy does not
+     * cover it.
+     */
+    blockedPermissions: ['android.permission.READ_EXTERNAL_STORAGE'],
     intentFilters: [
       {
         action: 'VIEW',
