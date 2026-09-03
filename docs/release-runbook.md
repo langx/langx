@@ -389,7 +389,12 @@ of it runs together.
 - [ ] RevenueCat project connected to both, API keys issued. The webhook is a
       separate step and needs the API deployed first — see above
 - [ ] Google OAuth client created (Web application type) and
-      `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set
+      `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set. Authorized redirect URIs
+      are the API's callback, one per environment —
+      `https://api2.langx.io/api/auth/callback/google` and
+      `http://localhost:4000/api/auth/callback/google`. There is no third one
+      for a phone: Google refuses a private LAN address, so a development build
+      on a real device can only sign in against the deployed API
 - [ ] Sign in with Apple: Services ID, key (.p8) and the four `APPLE_*`
       variables set. **Apple requires this if any other social login ships**,
       so it gates the iOS release rather than merely improving it. Until both

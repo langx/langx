@@ -45,6 +45,32 @@ export function authErrorKey(
 }
 
 /**
+ * Codes that mean "the person changed their mind", not "something broke".
+ *
+ * Google answers a cancelled consent screen with OAuth 2.0's own
+ * `access_denied`; Apple's web flow has a word of its own for it. Neither is a
+ * failure, and reporting one is scolding somebody for a decision they were
+ * invited to make — the same rule the native Apple sheet already follows.
+ */
+const OAUTH_CANCELLED_CODES = new Set(['access_denied', 'user_cancelled_authorize'])
+
+/**
+ * What to show for the `?error=<code>` a failed OAuth redirect carries back to
+ * the sign-in screen.
+ *
+ * Deliberately one message for everything that is left. Those codes describe
+ * our configuration rather than anything the reader did — a provider that is
+ * not registered, a code the API could not exchange, a profile that came back
+ * without an email — and none of them would have them do anything differently.
+ * What they need to know is that this attempt did not work and the form below
+ * still does.
+ */
+export function oauthReturnErrorKey(code: string | undefined): MessageKey | undefined {
+  if (!code || OAUTH_CANCELLED_CODES.has(code)) return undefined
+  return 'errors.signInFailed'
+}
+
+/**
  * The API's error code, whichever transport the failure came back on.
  *
  * REST rejects with an `ApiRequestError`; a socket ack rejects with a plain

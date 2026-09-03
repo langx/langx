@@ -1,4 +1,5 @@
-import { Link, router } from 'expo-router'
+import * as Linking from 'expo-linking'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
@@ -10,7 +11,7 @@ import { useAppConfig } from '../../src/hooks/useAppConfig'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/lib/appleSignIn'
 import { authClient } from '../../src/lib/auth-client'
-import { authErrorKey } from '../../src/lib/errors'
+import { authErrorKey, oauthReturnErrorKey } from '../../src/lib/errors'
 import { useT } from '../../src/i18n'
 
 export default function SignIn() {
@@ -21,7 +22,20 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
-  const [socialError, setSocialError] = useState<string>()
+  /**
+   * A redirect sign-in that failed comes back *here*, as `?error=<code>` on
+   * the URL — see `socialRedirects` below — because by then the call that
+   * started it is long gone and there is nothing left to hand a value back to.
+   *
+   * Read once, as the initial state: on the web the return is a fresh page
+   * load, and on a device the browser sheet closes without the URL ever
+   * reaching the router, so there is no later render for it to fight with.
+   */
+  const { error: returnedError } = useLocalSearchParams<{ error?: string }>()
+  const [socialError, setSocialError] = useState<string | undefined>(() => {
+    const key = oauthReturnErrorKey(returnedError)
+    return key ? t(key) : undefined
+  })
 
   /**
    * Which of the two buttons to draw at all.
@@ -99,11 +113,47 @@ export default function SignIn() {
     }
   }
 
+  /**
+   * Where the provider sends the browser back to, on success and on failure.
+   *
+   * Both are optional to Better Auth and neither may be left out. An absent
+   * `callbackURL` defaults to the *API's* own base URL, which is the wrong
+   * address on both platforms that redirect: on the web it strands the reader
+   * on the API's host holding a session the app never sees, and on a device
+   * it is an `https` URL, so the auth session `@better-auth/expo` opened never
+   * recognises the redirect as its own — the sheet sits on a page nobody asked
+   * for and the session cookie it was waiting for is never handed over.
+   *
+   * `Linking.createURL` answers both platforms in one call: the app's own
+   * origin on the web, the app's scheme (`langx:///…`) on a device. The API
+   * trusts each of those already — `trustedOrigins` in apps/api/src/auth.ts,
+   * which is what makes an origin usable here at all.
+   *
+   * Called per press rather than computed once at module scope: the web build
+   * is prerendered in Node, where there is no `window` to read an origin from
+   * and this returns an empty string.
+   */
+  function socialRedirects() {
+    return {
+      callbackURL: Linking.createURL('/'),
+      /**
+       * Without this a failure lands on Better Auth's own error page, which
+       * on a device is a page inside a sheet that has no way to close itself.
+       * Coming back to this screen means the browser closes and — on the web,
+       * where the URL survives — `returnedError` above has something to say.
+       */
+      errorCallbackURL: Linking.createURL('/sign-in'),
+    }
+  }
+
   async function onGoogle() {
     setSocialError(undefined)
     // No `router.replace` after this one: the browser redirect comes back into
     // the app on its own and the root layout reacts to the new session.
-    const { error: googleError } = await authClient.signIn.social({ provider: 'google' })
+    const { error: googleError } = await authClient.signIn.social({
+      provider: 'google',
+      ...socialRedirects(),
+    })
     if (googleError) setSocialError(t(authErrorKey(googleError) ?? 'errors.googleSignInFailed'))
   }
 
@@ -111,7 +161,10 @@ export default function SignIn() {
     setSocialError(undefined)
     try {
       if (!(await isNativeAppleSignInAvailable())) {
-        const { error: webError } = await authClient.signIn.social({ provider: 'apple' })
+        const { error: webError } = await authClient.signIn.social({
+          provider: 'apple',
+          ...socialRedirects(),
+        })
         if (webError) setSocialError(t(authErrorKey(webError) ?? 'errors.appleSignInFailed'))
         return
       }
