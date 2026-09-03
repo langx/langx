@@ -59,15 +59,18 @@ v1 version. They are currently 120.
 ## The API has to be deployed, and it has to be deployed early
 
 Everything below this line assumes the v2 API answers on a public URL. For a
-long time nothing did: `api.langx.io` still points at v1's Appwrite host, and
-the repo had no deploy configuration at all. That single gap blocked the
+long time nothing did: `api.langx.io` pointed at v1's Appwrite host, and the
+repo had no deploy configuration at all. That single gap blocked the
 RevenueCat webhook, which cannot be configured without a URL to point at.
 
 `Dockerfile` and `fly.toml` at the repo root are the deploy; `docs/self-host.md`
-has the commands and the Cloudflare caveat. Use a **new** subdomain rather than
-`api.langx.io` — v1 is still serving from that name and moving it now breaks
-the users we are trying to migrate. What has to happen before that name can be
-freed is **Retiring the v1 API** at the end of this runbook.
+has the commands and the Cloudflare caveat. Since 3 September 2026
+`api.langx.io` resolves to the Fly app `langx-api` and `app.langx.io` serves
+the web build; the temporary `api2.langx.io` / `app2.langx.io` names used
+while v1 still owned those hosts were removed the same day. That repoint
+happened **before** the checklist in **Retiring the v1 API** at the end of
+this runbook was worked through, so its remaining items are now about
+repairing the callers it lists, not about when to move the name.
 
 - [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
       set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
@@ -443,7 +446,7 @@ of it runs together.
 - [ ] Google OAuth client created (Web application type) and
       `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set. Authorized redirect URIs
       are the API's callback, one per environment —
-      `https://api2.langx.io/api/auth/callback/google` and
+      `https://api.langx.io/api/auth/callback/google` and
       `http://localhost:4000/api/auth/callback/google`. There is no third one
       for a phone: Google refuses a private LAN address, so a development build
       on a real device can only sign in against the deployed API
@@ -452,14 +455,14 @@ of it runs together.
       so it gates the iOS release rather than merely improving it. Until both
       are set the sign-in screen simply does not draw the buttons
 - [ ] `APPLE_DOMAIN_ASSOCIATION` set, **before** the Services ID's return URL
-      can be saved. Apple verifies the domain of the return URL — `api2.langx.io`,
+      can be saved. Apple verifies the domain of the return URL — `api.langx.io`,
       the API's host, not the web app's — by fetching
       `/.well-known/apple-developer-domain-association.txt` from it over HTTPS
       with no redirect. The API serves that path from this variable; unset, it
       404s and the portal refuses to save
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
 - [x] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
-      profiles in `eas.json` — both point at `https://api2.langx.io`.
+      profiles in `eas.json` — both point at `https://api.langx.io`.
       `development` still points at localhost, which a development build
       rewrites to the dev server's address at runtime; a released build has no
       dev server and would ship pointing at the phone itself, which is what
@@ -580,10 +583,17 @@ that rejects them.
 
 ## Retiring the v1 API (`langx/api`) — after the rollout, not before
 
-`langx/api` is v1's Express + Appwrite API behind `api.langx.io`. Nothing has
-been committed to it since June 2024 and `REPO_MAP.md` files it under archive,
-so it reads as dead. It is not: it still serves production traffic for three
-callers.
+`langx/api` is v1's Express + Appwrite API that answered on `api.langx.io`.
+Nothing has been committed to it since June 2024 and `REPO_MAP.md` files it
+under archive, so it reads as dead. It was not: it served production traffic
+for three callers. **On 3 September 2026 `api.langx.io` was repointed at v2
+before this list was worked through.** Two of the callers have since been
+moved to v2's `/public/newsletter` and `/public/leaderboard/token` (#1080),
+but as of the same day `api.langx.io` sends no `Access-Control-Allow-Origin`
+for `langx.io` or `token.langx.io` — only `app.langx.io` is in
+`TRUSTED_ORIGINS` — so in a browser both still fail until that is fixed. The
+v0.15 install base has no replacement for `/api/update`. The list still
+stands — as repair work, not as a schedule for the repoint.
 
 | Caller                                                                     | Endpoint                                      |
 | -------------------------------------------------------------------------- | --------------------------------------------- |
