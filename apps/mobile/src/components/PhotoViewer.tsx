@@ -1,6 +1,15 @@
 import { Image } from 'expo-image'
 import { useCallback, useEffect, useRef } from 'react'
-import { Animated, Modal, PanResponder, Platform, Pressable, Text, View } from 'react-native'
+import {
+  Animated,
+  Modal,
+  PanResponder,
+  Platform,
+  Pressable,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native'
 import { useT } from '../i18n'
 import { makeStyles } from '../lib/theme'
 import {
@@ -23,8 +32,16 @@ import {
  * The browser's own pinch-zoom and scroll would fight ours, and unlike
  * `MessageBubble`'s `pan-y` this view wants every axis: it is a modal, there is
  * nothing behind it to scroll.
+ *
+ * `as unknown as ViewStyle` for the reason `MessageBubble` records at its own
+ * copy of this: react-native's `ViewStyle` has no `touchAction` and
+ * react-native-web's does, so which of the two a checkout resolves decides
+ * whether a plain cast is an error or a redundant one. Going through `unknown`
+ * is the one spelling both agree on — and the difference is real enough that
+ * this compiled locally and failed in CI.
  */
-const WEB_NO_TOUCH_ACTION = Platform.OS === 'web' ? ({ touchAction: 'none' } as const) : null
+const WEB_NO_TOUCH_ACTION =
+  Platform.OS === 'web' ? ({ touchAction: 'none' } as unknown as ViewStyle) : null
 
 export interface PhotoViewerProps {
   photos: { url: string }[]
