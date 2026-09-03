@@ -24,5 +24,29 @@ export const fr: Localized<ServerMessages> = {
       'Quelqu’un a demandé la réinitialisation du mot de passe de ce compte. S’il s’agit de vous :',
     resetButton: 'Réinitialiser le mot de passe',
     resetText: 'Réinitialisez votre mot de passe LangX : {url}',
+
+    whyThisMail: 'Vous recevez ceci en raison de vos réglages de notifications LangX.',
+    unsubscribeLink: 'Désactiver ces e-mails',
+    unsubscribeText: 'Désactiver ces e-mails : {url}',
+    managePrefs: 'Tous les réglages de notifications',
+
+    unsubscribeTitle: 'Désactiver ces e-mails ?',
+    unsubscribeBody:
+      'Vous ne recevrez plus {kind} par e-mail. Les notifications sur votre téléphone ne changent pas.',
+    unsubscribeConfirm: 'Les désactiver',
+    unsubscribeAll: 'Ou désactiver tous les e-mails de LangX',
+    unsubscribedTitle: 'C’est fait — vous n’en recevrez plus.',
+    unsubscribedBody:
+      'Vous pouvez les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
+    unsubscribeInvalid:
+      'Ce lien n’est pas valide. Ouvrez LangX et modifiez-le dans Réglages → Notifications.',
+
+    kind: {
+      messages: 'les résumés de messages',
+      streak: 'les rappels de série',
+      profileVisits: 'les résumés de visites de profil',
+      promotions: 'les actualités et offres',
+      all: 'les e-mails de LangX',
+    },
   },
 }

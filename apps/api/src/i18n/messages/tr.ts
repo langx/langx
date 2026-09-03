@@ -22,5 +22,27 @@ export const tr: Localized<ServerMessages> = {
     resetBody: 'Bu hesap için bir parola sıfırlama isteği geldi. Bu sensen:',
     resetButton: 'Parolayı sıfırla',
     resetText: 'LangX parolanı sıfırla: {url}',
+
+    whyThisMail: 'Bunu LangX bildirim ayarların yüzünden alıyorsun.',
+    unsubscribeLink: 'Bu e-postaları kapat',
+    unsubscribeText: 'Bu e-postaları kapat: {url}',
+    managePrefs: 'Tüm bildirim ayarları',
+
+    unsubscribeTitle: 'Bu e-postalar kapatılsın mı?',
+    unsubscribeBody: '{kind} artık e-postayla gelmeyecek. Telefonundaki bildirimler etkilenmez.',
+    unsubscribeConfirm: 'Kapat',
+    unsubscribeAll: 'Ya da LangX’ten gelen tüm e-postaları kapat',
+    unsubscribedTitle: 'Tamam — artık gelmeyecek.',
+    unsubscribedBody: 'İstediğin zaman LangX’te Ayarlar → Bildirimler’den geri açabilirsin.',
+    unsubscribeInvalid:
+      'Bu bağlantı geçerli değil. LangX’i açıp Ayarlar → Bildirimler’den değiştir.',
+
+    kind: {
+      messages: 'mesaj özetleri',
+      streak: 'streak hatırlatmaları',
+      profileVisits: 'profil ziyareti özetleri',
+      promotions: 'haberler ve kampanyalar',
+      all: 'LangX’ten gelen e-postalar',
+    },
   },
 }

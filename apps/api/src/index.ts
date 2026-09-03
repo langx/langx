@@ -54,6 +54,7 @@ async function main(): Promise<void> {
     translation,
     revenueCat,
     push,
+    email: emailSender,
     legacyVerifier,
   })
 

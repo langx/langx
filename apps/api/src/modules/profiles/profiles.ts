@@ -10,6 +10,7 @@ import {
   isOnlineAt,
   findCosmetic,
   meetsMinimumAge,
+  NOTIFICATION_TYPES,
   newHandleSchema,
   resolveNotificationPrefs,
   toGeoPoint,
@@ -720,6 +721,40 @@ export async function updateProfile(
  * and, worse, that a client could park coordinates in a request whose visible
  * subject was something else entirely.
  */
+/**
+ * Turns the email half of one kind — or of all four — off, for somebody who
+ * clicked the footer of a message rather than opening the app.
+ *
+ * A repository function rather than a call to `updateProfile`, because there
+ * is no session here: an unsubscribe link is followed by a mail client, or by
+ * a person who left months ago and cannot sign in. The token is the authority.
+ *
+ * Push is deliberately untouched. Somebody stopping email said nothing about
+ * their phone, and silencing that too would be answering a question they were
+ * not asked.
+ */
+export async function setEmailNotifications(
+  db: Db,
+  userId: string,
+  scope: NotificationType | 'all',
+  enabled: boolean,
+): Promise<boolean> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const current = await profiles.findOne({ _id: userId }, { projection: { settings: 1 } })
+  if (!current) return false
+
+  const resolved = resolveNotificationPrefs(current.settings?.notifications)
+  const kinds = scope === 'all' ? NOTIFICATION_TYPES : [scope]
+  const paths: Record<string, unknown> = {}
+  // Whole per kind, for the reason `updateProfile` gives: the path one level
+  // deeper cannot enter the bare boolean older profiles still carry.
+  for (const type of kinds)
+    paths[`settings.notifications.${type}`] = { ...resolved[type], email: enabled }
+
+  await profiles.updateOne({ _id: userId }, { $set: paths })
+  return true
+}
+
 export async function setLocation(db: Db, userId: string, input: LocationInput): Promise<Profile> {
   const now = new Date()
   const point = toGeoPoint(input)

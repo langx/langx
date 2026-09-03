@@ -59,6 +59,18 @@ export const APP_LINK_HOST = 'app.langx.io'
 export const WEB_HOST = 'app2.langx.io'
 
 /**
+ * Any screen of the web build, as a link a mail client can follow.
+ *
+ * Every deep link in a notification email goes through here rather than being
+ * written out: the app claims these paths through `/.well-known/*`, so on a
+ * phone with LangX installed the same URL opens the screen rather than the
+ * browser — and there is one place to change when the host does.
+ */
+export function webUrl(path: string): string {
+  return `https://${WEB_HOST}${path.startsWith('/') ? path : `/${path}`}`
+}
+
+/**
  * The link somebody shares for their own profile.
  *
  * Root-level, so it is short enough to say out loud, which is the whole point

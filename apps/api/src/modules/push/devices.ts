@@ -214,6 +214,22 @@ export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale
 }
 
 /**
+ * What language to word something for this person in, when there is no request
+ * to read it off.
+ *
+ * The newest device wins: re-registering stamps `updatedAt`, so the most
+ * recently opened app is the phone they actually use. There is no account
+ * language to fall back on — deliberately, see `tokensByLocale` — so somebody
+ * who only ever uses the web gets English.
+ */
+export async function localeFor(db: Db, userId: string): Promise<Locale> {
+  const device = await db
+    .collection<Device>(COLLECTIONS.devices)
+    .findOne({ userId }, { sort: { updatedAt: -1 }, projection: { locale: 1 } })
+  return device?.locale ?? DEFAULT_LOCALE
+}
+
+/**
  * Users who should get tonight's "keep your streak" nudge: it is
  * `STREAK_REMINDER_LOCAL_HOUR` **where they are**, they have a streak worth
  * saving, and they have not already acted today.
