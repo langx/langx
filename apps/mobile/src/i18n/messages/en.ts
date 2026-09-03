@@ -421,6 +421,8 @@ export const en = {
     streak: 'Streak reminder',
     streakBody:
       'In the evening, if your streak is about to break. By email if no phone is signed in.',
+    badges: 'Badges',
+    badgesBody: 'When you earn one. A round-up in the evening, not a buzz each time.',
     profileVisits: 'Profile visits',
     profileVisitsBody:
       'Once a day, how many people looked at your profile. A summary by email each week.',

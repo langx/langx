@@ -7,6 +7,9 @@ export const tr: Localized<ServerMessages> = {
     streakBody: 'Seriyi sürdürmek için bugün bir mesaj gönder.',
     profileVisitsTitle: { one: '1 kişi profiline baktı', other: '{count} kişi profiline baktı' },
     profileVisitsBody: 'Kim olduğunu görmek için dokun.',
+    badgeOneTitle: 'Yeni rozet: {label} 🏅',
+    badgeManyTitle: { one: '1 yeni rozet kazandın 🏅', other: '{count} yeni rozet kazandın 🏅' },
+    badgeBody: 'Güzel iş. Böyle devam.',
   },
 
   email: {
@@ -53,6 +56,11 @@ export const tr: Localized<ServerMessages> = {
     visitsNames: 'Aralarında: {names}.',
     visitsLocked: 'Kim olduklarını görmek için yükselt.',
     visitsButton: 'Kimlerin baktığını gör',
+
+    badgeOneSubject: 'Yeni rozet: {label}',
+    badgeManySubject: { one: '1 yeni rozet kazandın', other: '{count} yeni rozet kazandın' },
+    badgeBody: 'Artık profilinde, bakan herkes görüyor.',
+    badgeButton: 'Rozetlerine bak',
 
     unsubscribeTitle: 'Bu e-postalar kapatılsın mı?',
     unsubscribeBody: '{kind} artık e-postayla gelmeyecek. Telefonundaki bildirimler etkilenmez.',

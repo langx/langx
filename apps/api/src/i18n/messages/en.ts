@@ -17,6 +17,9 @@ export const en = {
       other: '{count} people viewed your profile',
     },
     profileVisitsBody: 'Tap to see who.',
+    badgeOneTitle: 'New badge: {label} 🏅',
+    badgeManyTitle: { one: 'You earned 1 new badge 🏅', other: 'You earned {count} new badges 🏅' },
+    badgeBody: 'Nice work. Keep it going.',
   },
 
   email: {
@@ -68,6 +71,11 @@ export const en = {
     visitsNames: 'Among them: {names}.',
     visitsLocked: 'Upgrade to see who they were.',
     visitsButton: 'See who viewed you',
+
+    badgeOneSubject: 'New badge: {label}',
+    badgeManySubject: { one: 'You earned 1 new badge', other: 'You earned {count} new badges' },
+    badgeBody: 'It is on your profile now, for anyone who looks.',
+    badgeButton: 'See your badges',
 
     unsubscribeTitle: 'Turn off these emails?',
     unsubscribeBody:

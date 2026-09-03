@@ -10,6 +10,12 @@ export const de: Localized<ServerMessages> = {
       other: '{count} Personen haben dein Profil angesehen',
     },
     profileVisitsBody: 'Tippe, um zu sehen, wer.',
+    badgeOneTitle: 'Neues Abzeichen: {label} 🏅',
+    badgeManyTitle: {
+      one: 'Du hast 1 neues Abzeichen 🏅',
+      other: 'Du hast {count} neue Abzeichen 🏅',
+    },
+    badgeBody: 'Stark. Weiter so.',
   },
 
   email: {
@@ -63,6 +69,11 @@ export const de: Localized<ServerMessages> = {
     visitsNames: 'Darunter: {names}.',
     visitsLocked: 'Upgrade, um zu sehen, wer es war.',
     visitsButton: 'Ansehen, wer da war',
+
+    badgeOneSubject: 'Neues Abzeichen: {label}',
+    badgeManySubject: { one: 'Du hast 1 neues Abzeichen', other: 'Du hast {count} neue Abzeichen' },
+    badgeBody: 'Es steht jetzt in deinem Profil, für alle sichtbar.',
+    badgeButton: 'Abzeichen ansehen',
 
     unsubscribeTitle: 'Diese E-Mails abstellen?',
     unsubscribeBody:

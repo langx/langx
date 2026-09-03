@@ -397,6 +397,8 @@ export const fr: Localized<EnMessages> = {
     streak: 'Rappel de série',
     streakBody:
       'Le soir, si votre série est sur le point de s’interrompre. Par e-mail si aucun téléphone n’est connecté.',
+    badges: 'Badges',
+    badgesBody: 'Quand vous en gagnez un. Un récapitulatif le soir, pas une alerte à chaque fois.',
     profileVisits: 'Visites de profil',
     profileVisitsBody:
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',

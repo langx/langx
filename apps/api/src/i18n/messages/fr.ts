@@ -10,6 +10,12 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} personnes ont consulté votre profil',
     },
     profileVisitsBody: 'Touchez pour voir qui.',
+    badgeOneTitle: 'Nouveau badge : {label} 🏅',
+    badgeManyTitle: {
+      one: 'Vous avez gagné 1 nouveau badge 🏅',
+      other: 'Vous avez gagné {count} nouveaux badges 🏅',
+    },
+    badgeBody: 'Beau travail. Continuez.',
   },
 
   email: {
@@ -61,6 +67,14 @@ export const fr: Localized<ServerMessages> = {
     visitsNames: 'Parmi elles : {names}.',
     visitsLocked: 'Passez à l’offre supérieure pour voir qui.',
     visitsButton: 'Voir qui vous a consulté',
+
+    badgeOneSubject: 'Nouveau badge : {label}',
+    badgeManySubject: {
+      one: 'Vous avez gagné 1 nouveau badge',
+      other: 'Vous avez gagné {count} nouveaux badges',
+    },
+    badgeBody: 'Il est sur votre profil, visible par tous.',
+    badgeButton: 'Voir vos badges',
 
     unsubscribeTitle: 'Désactiver ces e-mails ?',
     unsubscribeBody:

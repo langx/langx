@@ -390,6 +390,8 @@ export const es: Localized<EnMessages> = {
     streak: 'Recordatorio de racha',
     streakBody:
       'Por la tarde, si tu racha está a punto de romperse. Por correo si no hay ningún teléfono con sesión iniciada.',
+    badges: 'Insignias',
+    badgesBody: 'Cuando ganas una. Un resumen por la tarde, no un aviso cada vez.',
     profileVisits: 'Visitas a tu perfil',
     profileVisitsBody:
       'Una vez al día, cuánta gente miró tu perfil. Un resumen por correo cada semana.',

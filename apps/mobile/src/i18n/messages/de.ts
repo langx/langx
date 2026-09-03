@@ -398,6 +398,8 @@ export const de: Localized<EnMessages> = {
     streak: 'Streak-Erinnerung',
     streakBody:
       'Abends, wenn dein Streak zu reißen droht. Per E-Mail, wenn kein Telefon angemeldet ist.',
+    badges: 'Abzeichen',
+    badgesBody: 'Wenn du eines bekommst. Abends gesammelt, nicht jedes Mal einzeln.',
     profileVisits: 'Profilbesuche',
     profileVisitsBody:
       'Einmal am Tag, wie viele dein Profil angesehen haben. Wöchentlich eine Zusammenfassung per E-Mail.',

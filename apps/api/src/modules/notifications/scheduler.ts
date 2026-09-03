@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
+import { runBadgeRoundUpPass } from './badges'
 import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
 import { runUnreadDigestPass } from './unreadDigest'
 
@@ -39,6 +40,7 @@ export function startNotificationScheduler(
         run('unread digest', () => runUnreadDigestPass(db, senders.email, now)),
         run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
         run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
+        run('badge round-up', () => runBadgeRoundUpPass(db, senders, now)),
       ])
     } finally {
       running = false

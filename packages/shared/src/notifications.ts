@@ -20,7 +20,13 @@ import { z } from 'zod'
  * disables the email half until an address is verified, which is what stops
  * "a switch that does nothing" coming back.
  */
-export const NOTIFICATION_TYPES = ['messages', 'streak', 'profileVisits', 'promotions'] as const
+export const NOTIFICATION_TYPES = [
+  'messages',
+  'streak',
+  'badges',
+  'profileVisits',
+  'promotions',
+] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
 
 export const NOTIFICATION_CHANNELS = ['push', 'email'] as const
@@ -55,6 +61,14 @@ export type StoredNotificationPrefs = Partial<
 export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
   messages: { push: true, email: true },
   streak: { push: true, email: true },
+  /*
+   * Push on, email off. A badge is a small good thing that belongs on the
+   * screen you earned it on; an unasked-for email about one is the kind of
+   * mail people describe as spam even when they like the app. The switch is
+   * real either way — turned on, the same words arrive by mail for somebody
+   * with no phone signed in.
+   */
+  badges: { push: true, email: false },
   profileVisits: { push: true, email: true },
   promotions: { push: false, email: false },
 }
@@ -71,6 +85,7 @@ export const notificationPrefsSchema = z
   .object({
     messages: channelPrefsSchema,
     streak: channelPrefsSchema,
+    badges: channelPrefsSchema,
     profileVisits: channelPrefsSchema,
     promotions: channelPrefsSchema,
   })
