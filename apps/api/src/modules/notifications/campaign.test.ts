@@ -6,7 +6,13 @@ import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import { authId } from '../../lib/authId'
 import type { Device } from '../push/devices'
-import { campaignRecipients, claimCampaignRecipients, releaseCampaignRecipients } from './campaign'
+import {
+  campaignRecipients,
+  claimCampaignRecipients,
+  deriveTextBody,
+  releaseCampaignRecipients,
+  UNSUBSCRIBE_PLACEHOLDER,
+} from './campaign'
 
 const CAMPAIGN = '2026-09-launch'
 
@@ -195,5 +201,27 @@ describe('claiming a batch', () => {
     await releaseCampaignRecipients(handle.db, CAMPAIGN, claimed)
 
     expect(await claimCampaignRecipients(handle.db, CAMPAIGN, ['a', 'b'])).toEqual(['a', 'b'])
+  })
+})
+
+describe('the plain-text part of a campaign', () => {
+  /**
+   * The bug this exists for: the placeholder is written inside
+   * `<a href="{{unsubscribeUrl}}">`, so stripping tags takes it away — and the
+   * script then refused a campaign that was perfectly correct, every time.
+   */
+  it('keeps a way out even when the link was written as an anchor', () => {
+    const text = deriveTextBody('<p>Hello</p><p><a href="{{unsubscribeUrl}}">Unsubscribe</a></p>')
+    expect(text).toContain(UNSUBSCRIBE_PLACEHOLDER)
+    expect(text).toContain('Hello')
+  })
+
+  it('does not repeat one that survived the strip', () => {
+    const text = deriveTextBody('<p>Hello. Out: {{unsubscribeUrl}}</p>')
+    expect(text.match(/\{\{unsubscribeUrl\}\}/g)).toHaveLength(1)
+  })
+
+  it('reads as text, not as markup', () => {
+    expect(deriveTextBody('<p>One</p><p>Two {{unsubscribeUrl}}</p>')).not.toContain('<')
   })
 })
