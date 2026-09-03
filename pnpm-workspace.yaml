@@ -17,7 +17,7 @@ catalog:
   tsx: ^4.23.12
 
   # shared runtime
-  zod: ^4.4.3
+  zod: ^4.5.4
 
   # api
   fastify: ^5.12.1
