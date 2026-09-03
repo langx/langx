@@ -248,9 +248,10 @@ export const updateProfileSchema = z
       .object({
         discoverable: z.boolean(),
         /**
-         * Four kinds, two channels. `.partial()` here as well, so a screen
-         * flipping one switch does not have to restate the other seven — the
-         * repository writes dotted paths for the same reason `privacy` does.
+         * Four kinds, two channels. `.partial()` at both levels, so a screen
+         * flipping one switch does not have to restate the other seven — and
+         * the repository writes each kind whole, because a path one level
+         * deeper cannot enter the bare boolean older profiles still hold.
          */
         notifications: notificationPrefsSchema,
       })

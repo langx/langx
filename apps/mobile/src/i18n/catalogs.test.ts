@@ -3,6 +3,7 @@ import {
   GENDERS,
   INTEREST_SUGGESTIONS,
   LANGUAGE_LEVELS,
+  NOTIFICATION_CHANNELS,
   NOTIFICATION_TYPES,
   PERIOD_TYPES,
   SUPPORTED_LOCALES,
@@ -168,6 +169,14 @@ describe('dynamically built keys', () => {
     for (const type of NOTIFICATION_TYPES) {
       expect(t(`notifications.${type}` as never), type).not.toContain('notifications.')
       expect(t(`notifications.${type}Body` as never), type).not.toContain('notifications.')
+    }
+  })
+
+  it('resolves a label for every channel a kind can be sent on', () => {
+    for (const channel of NOTIFICATION_CHANNELS) {
+      expect(t(`notifications.channel.${channel}` as never), channel).not.toContain(
+        'notifications.',
+      )
     }
   })
 

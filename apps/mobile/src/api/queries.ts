@@ -1,6 +1,7 @@
 import {
   type ConversationFilter,
   type NotificationPrefs,
+  type StoredNotificationPrefs,
   effectivePlanTier,
   hasFeature,
   isPaidTier,
@@ -164,7 +165,14 @@ export interface MeProfile {
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
-  settings: { discoverable: boolean; notifications: NotificationPrefs | boolean }
+  /**
+   * Whatever shape the server has stored, verbatim — three of them are live at
+   * once. Only `resolveNotificationPrefs` reads it.
+   */
+  settings: {
+    discoverable: boolean
+    notifications: StoredNotificationPrefs | NotificationPrefs | boolean
+  }
   privacy: {
     incognito: boolean
     hideOnlineStatus: boolean

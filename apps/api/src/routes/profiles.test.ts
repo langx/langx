@@ -363,9 +363,9 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
   })
 
   /**
-   * Four booleans and the settings screen flips one at a time. Writing
+   * Eight switches and the settings screen flips one at a time. Writing
    * `settings` whole — which is what the old single-boolean shape allowed —
-   * would clear the other three on every toggle.
+   * would clear the other seven on every toggle.
    */
   it('changes one notification switch without touching the others', async () => {
     const user = await newUser('prefs@example.com')
@@ -380,27 +380,60 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       method: 'PATCH',
       url: '/profiles/me',
       headers: { cookie: user.cookie },
-      payload: { settings: { notifications: { streak: false } } },
+      payload: { settings: { notifications: { streak: { email: false } } } },
     })
 
     expect(updated.statusCode, updated.body).toBe(200)
     const settings = updated.json<{
-      settings: { discoverable: boolean; notifications: Record<string, boolean> }
+      settings: { discoverable: boolean; notifications: Record<string, unknown> }
     }>().settings
-    expect(settings.notifications.streak).toBe(false)
-    expect(settings.notifications.messages).toBe(true)
-    expect(settings.notifications.promotions).toBe(false)
+    // The other half of the kind that moved is written back, not dropped.
+    expect(settings.notifications.streak).toEqual({ push: true, email: false })
+    expect(settings.notifications.messages).toEqual({ push: true, email: true })
+    expect(settings.notifications.promotions).toEqual({ push: false, email: false })
     expect(settings.discoverable).toBe(true)
   })
 
   /**
-   * The dotted path is also the migration. A profile still holding the retired
-   * `{push, email}` matrix converts that kind to a boolean the first time its
-   * owner touches the switch — Mongo allows a `$set` to change a field's type
-   * — and the kinds nobody touches stay as they are, for `notificationsAllowed`
-   * to read.
+   * Explicit consent is stored as given. Promotions default to off on both
+   * channels, so this is the one cell that can only ever become true by
+   * somebody saying so.
    */
-  it('replaces a stored push/email matrix with the switch that replaced it', async () => {
+  it('records a promotions opt-in', async () => {
+    const user = await newUser('promo-prefs@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'promoprefs' }),
+    })
+
+    const updated = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { notifications: { promotions: { email: true } } } },
+    })
+
+    expect(updated.statusCode, updated.body).toBe(200)
+    expect(
+      updated.json<{ settings: { notifications: Record<string, unknown> } }>().settings
+        .notifications.promotions,
+    ).toEqual({ push: false, email: true })
+  })
+
+  /**
+   * The write is also the migration, one kind at a time. A profile still
+   * holding a bare boolean per kind — the shape written while there was no
+   * channel axis — gets that kind resolved and rewritten as an object the
+   * first time its owner touches either of its switches, and the kinds nobody
+   * touches stay as they are for `notificationsAllowed` to read.
+   *
+   * It has to be written whole rather than as a path one level deeper:
+   * `settings.notifications.streak.email` is a path *into* a sub-document, and
+   * over a boolean there is none to enter — Mongo refuses the write outright.
+   */
+  it('converts a stored bare boolean into the kind it is now', async () => {
     const user = await newUser('matrix-prefs@example.com')
     await app.inject({
       method: 'POST',
@@ -413,10 +446,10 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       {
         $set: {
           'settings.notifications': {
-            messages: { push: true, email: false },
-            streak: { push: true, email: false },
-            profileVisits: { push: true, email: false },
-            promotions: { push: false, email: false },
+            messages: true,
+            streak: true,
+            profileVisits: false,
+            promotions: false,
           },
         },
       },
@@ -426,16 +459,17 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       method: 'PATCH',
       url: '/profiles/me',
       headers: { cookie: user.cookie },
-      payload: { settings: { notifications: { streak: false } } },
+      payload: { settings: { notifications: { streak: { email: false } } } },
     })
 
     expect(updated.statusCode, updated.body).toBe(200)
     const notifications = updated.json<{
       settings: { notifications: Record<string, unknown> }
     }>().settings.notifications
-    expect(notifications.streak).toBe(false)
+    expect(notifications.streak).toEqual({ push: true, email: false })
     // Untouched, so still the old shape — and still readable.
-    expect(notifications.messages).toEqual({ push: true, email: false })
+    expect(notifications.messages).toBe(true)
+    expect(notifications.profileVisits).toBe(false)
   })
 
   describe('handles as public addresses', () => {

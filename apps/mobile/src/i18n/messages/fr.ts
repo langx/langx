@@ -393,13 +393,18 @@ export const fr: Localized<EnMessages> = {
 
   notifications: {
     messages: 'Messages',
-    messagesBody: 'Quand quelqu’un vous écrit.',
+    messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
-    streakBody: 'Le soir, si votre série est sur le point de s’interrompre.',
+    streakBody:
+      'Le soir, si votre série est sur le point de s’interrompre. Par e-mail si aucun téléphone n’est connecté.',
     profileVisits: 'Visites de profil',
-    profileVisitsBody: 'Quand quelqu’un consulte votre profil.',
+    profileVisitsBody:
+      'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Désactivé sauf demande.',
+    /** The two halves of every kind above; the row title, so no kind name in it. */
+    channel: { push: 'Push', email: 'E-mail' },
+    emailUnverified: 'Vérifiez votre adresse e-mail pour l’activer.',
     primingTitle: 'Activer les notifications ?',
     primingBody:
       'Deux choses seulement : quand quelqu’un t’écrit, et un rappel à {hour}h00 si ta série est sur le point de se rompre.',

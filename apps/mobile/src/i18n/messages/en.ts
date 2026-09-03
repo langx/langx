@@ -417,13 +417,18 @@ export const en = {
 
   notifications: {
     messages: 'Messages',
-    messagesBody: 'When somebody writes to you.',
+    messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',
-    streakBody: 'In the evening, if your streak is about to break.',
+    streakBody:
+      'In the evening, if your streak is about to break. By email if no phone is signed in.',
     profileVisits: 'Profile visits',
-    profileVisitsBody: 'When somebody looks at your profile.',
+    profileVisitsBody:
+      'Once a day, how many people looked at your profile. A summary by email each week.',
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. Off unless you ask.',
+    /** The two halves of every kind above; the row title, so no kind name in it. */
+    channel: { push: 'Push', email: 'Email' },
+    emailUnverified: 'Verify your email address to turn this on.',
     primingTitle: 'Turn on notifications?',
     primingBody:
       'Two things only: when someone messages you, and a nudge at {hour}:00 if your streak is about to break.',
