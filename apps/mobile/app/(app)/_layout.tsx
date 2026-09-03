@@ -150,7 +150,6 @@ export default function AppLayout() {
         <Tabs.Screen name="legal" options={FULL_SCREEN} />
         <Tabs.Screen name="streak" options={FULL_SCREEN} />
         <Tabs.Screen name="corrections" options={FULL_SCREEN} />
-        <Tabs.Screen name="my-posts" options={FULL_SCREEN} />
       </Tabs>
     </SafeAreaView>
   )

@@ -410,9 +410,11 @@ export const ptBR: Localized<EnMessages> = {
     emptyTitle: 'Ainda sem correções',
     emptyBody:
       'Segure uma mensagem e escolha Corrigir — é a coisa mais útil que você pode fazer aqui.',
+    combinedTitle: 'O que você escreveu',
+    tabCorrections: 'Correções',
+    tabPosts: 'Publicações',
   },
   myPosts: {
-    title: 'Publicações que você escreveu',
     emptyTitle: 'Você ainda não perguntou nada',
     emptyBody:
       'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
@@ -748,7 +750,6 @@ export const ptBR: Localized<EnMessages> = {
     editProfile: 'Editar perfil',
     settings: 'Configurações',
     corrections: 'Correções',
-    myPosts: 'Suas publicações',
     wallet: 'Carteira',
     previewProfile: 'Ver meu perfil',
     previewProfileBody: 'Veja seu perfil como as outras pessoas veem',

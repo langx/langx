@@ -1,62 +1,93 @@
-import { useMemo } from 'react'
-import { ActivityIndicator, FlatList, Pressable, Text } from 'react-native'
+import { useMemo, useState } from 'react'
+import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
-import { useCorrectionsWritten, type MessageDto } from '../../src/api/queries'
+import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/api/queries'
+import type { FeedPost } from '../../src/api/types'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
-import { useLocale, useT } from '../../src/i18n'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { useDisplayNames, useLocale, useT } from '../../src/i18n'
 import type { Locale } from '@langx/shared'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { foldCorrection } from '../../src/lib/feedCache'
+import { relativeTime } from '../../src/lib/format'
 import { dayLabel } from '../../src/lib/messageGroups'
-import { goBackTo } from '../../src/lib/navigation'
+import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
 
 /**
- * Every correction you have written, newest first.
+ * What you have written: your corrections, and your own posts.
  *
- * The count on the profile was a number with nothing behind it, and the
- * corrections themselves were scattered one per conversation — findable only by
- * remembering who you had helped.
+ * Two lists behind one door rather than two rows on the profile. They answer
+ * the same question — "the thing I wrote, where is it" — and neither was worth
+ * a tile of its own from a screen that already has too many.
  *
- * Chat corrections only. Post corrections live in another collection with a
- * different shape (no `original` of their own — the original is the post's
- * body), the feed already lists them per post, and merging the two in one query
- * is not possible. The count on the profile includes both, so this screen says
- * which half it is showing rather than quietly disagreeing with the tile.
+ * Still two lists, not one merged feed. A correction is something you did for
+ * somebody else and opens a chat at that message; a post is something you
+ * asked and opens the post. Interleaving them by date would make a list where
+ * the next row is a different kind of thing every time.
+ *
+ * The corrections half is chat corrections only. Post corrections live in
+ * another collection with a different shape (no `original` of their own — the
+ * original is the post's body), the feed already lists them per post, and
+ * merging the two in one query is not possible. The count on the profile
+ * includes both, so this tab says which half it is showing rather than quietly
+ * disagreeing with the tile.
  */
-export default function CorrectionsScreen() {
+export default function WritingScreen() {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
-  const page = useCorrectionsWritten()
+  const [tab, setTab] = useState<'corrections' | 'posts'>('corrections')
 
-  const items = useMemo(
+  const page = useCorrectionsWritten()
+  // Both queries mount, because switching tabs must not stall on a request
+  // that could have been made while the first tab was being read.
+  const posts = useMyPosts()
+
+  const corrections = useMemo(
     () => dedupeById(page.data?.pages.flatMap((p) => p.items) ?? []),
     [page.data],
   )
+  const myPosts = useMemo(
+    () => dedupeById(posts.data?.pages.flatMap((p) => p.items) ?? []),
+    [posts.data],
+  )
+
+  const active = tab === 'corrections' ? page : posts
   const state = listState({
-    isPending: page.isPending,
-    isError: page.isError,
-    itemCount: items.length,
+    isPending: active.isPending,
+    isError: active.isError,
+    itemCount: tab === 'corrections' ? corrections.length : myPosts.length,
   })
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('corrections.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('corrections.combinedTitle')} onBack={() => goBackTo('/(app)/me')} />
+
+      <SegmentedControl
+        options={[
+          { value: 'corrections', label: t('corrections.tabCorrections') },
+          { value: 'posts', label: t('corrections.tabPosts') },
+        ]}
+        selected={[tab]}
+        onToggle={(value) => setTab(value)}
+        accessibilityLabel={`${t('corrections.tabCorrections')} / ${t('corrections.tabPosts')}`}
+      />
+
       {state === 'skeleton' ? (
         <ActivityIndicator style={styles.loading} />
       ) : state === 'empty' ? (
         <EmptyState
-          icon="edit-3"
-          title={t('corrections.emptyTitle')}
-          body={t('corrections.emptyBody')}
+          icon={tab === 'corrections' ? 'edit-3' : 'message-square'}
+          title={t(tab === 'corrections' ? 'corrections.emptyTitle' : 'myPosts.emptyTitle')}
+          body={t(tab === 'corrections' ? 'corrections.emptyBody' : 'myPosts.emptyBody')}
         />
-      ) : (
+      ) : tab === 'corrections' ? (
         <FlatList
-          data={items}
+          data={corrections}
           keyExtractor={(item) => String(item._id)}
           onEndReached={() => {
             if (page.hasNextPage && !page.isFetchingNextPage) void page.fetchNextPage()
@@ -67,8 +98,66 @@ export default function CorrectionsScreen() {
           }
           renderItem={({ item }) => <Row message={item} t={t} locale={locale} styles={styles} />}
         />
+      ) : (
+        <FlatList
+          data={myPosts}
+          keyExtractor={(item) => String(item._id)}
+          onEndReached={() => {
+            if (posts.hasNextPage && !posts.isFetchingNextPage) void posts.fetchNextPage()
+          }}
+          onEndReachedThreshold={0.4}
+          ListFooterComponent={
+            posts.isFetchingNextPage ? <ActivityIndicator style={styles.loading} /> : null
+          }
+          renderItem={({ item }) => <PostRow post={item} styles={styles} />}
+        />
       )}
     </Screen>
+  )
+}
+
+/**
+ * A compact row rather than the feed's card. The card carries a composer, a
+ * like button and a correction panel — affordances for acting on *somebody
+ * else's* sentence, none of which belong on a list whose whole job is to get
+ * you back to your own. Tapping opens the post, where all of it is.
+ */
+function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof useStyles> }) {
+  const t = useT()
+  const { locale } = useLocale()
+  const names = useDisplayNames()
+
+  /*
+   * Which number a row shows follows the post's own kind, not a screen-wide
+   * flag — this is the one list where the two sit next to each other, so the
+   * count and the word for it have to be read off the post.
+   */
+  const pronunciation = post.kind === 'pronunciation'
+  const replies = pronunciation ? post.answerCount : post.correctionCount
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => openPost(post._id, '/(app)/corrections')}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+    >
+      <Text style={styles.postBody} numberOfLines={2}>
+        {post.body}
+      </Text>
+      <View style={styles.meta}>
+        <Text style={styles.kind}>
+          {t(pronunciation ? 'feed.pronunciationSection' : 'feed.correctionSection')}
+        </Text>
+        <Text style={styles.when}>· {names.language(post.language)}</Text>
+        <Text style={styles.when}>
+          ·{' '}
+          {replies > 0
+            ? t(pronunciation ? 'feed.answers' : 'feed.corrections', { count: replies })
+            : t(pronunciation ? 'feed.noAnswers' : 'feed.noCorrections')}
+        </Text>
+        <Text style={styles.when}>· {relativeTime(post.createdAt, { t, locale })}</Text>
+      </View>
+    </Pressable>
   )
 }
 
@@ -147,4 +236,9 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   added: { color: colors.success, fontWeight: '600' },
   note: { ...font.caption, color: colors.textMuted },
   when: { ...font.caption, color: colors.textFaint },
+  postBody: { ...font.body, color: colors.text, fontSize: 15, lineHeight: 22 },
+  // Wraps, because four facts and a long language name do not fit one line on
+  // a narrow phone — and truncating the middle of them tells the reader least.
+  meta: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
+  kind: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
 }))
