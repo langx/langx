@@ -32,5 +32,28 @@ export const ru: Localized<ServerMessages> = {
     resetBody: 'Кто-то запросил сброс пароля для этого аккаунта. Если это были вы:',
     resetButton: 'Сбросить пароль',
     resetText: 'Сброс пароля LangX: {url}',
+
+    whyThisMail: 'Вы получаете это из-за настроек уведомлений в LangX.',
+    unsubscribeLink: 'Отключить эти письма',
+    unsubscribeText: 'Отключить эти письма: {url}',
+    managePrefs: 'Все настройки уведомлений',
+
+    unsubscribeTitle: 'Отключить эти письма?',
+    unsubscribeBody:
+      'Вы перестанете получать {kind} на почту. Уведомления на телефоне не изменятся.',
+    unsubscribeConfirm: 'Отключить',
+    unsubscribeAll: 'Или отключить все письма от LangX',
+    unsubscribedTitle: 'Готово — больше не придут.',
+    unsubscribedBody: 'Включить обратно можно в любой момент в LangX: Настройки → Уведомления.',
+    unsubscribeInvalid:
+      'Ссылка недействительна. Откройте LangX и измените это в Настройках → Уведомления.',
+
+    kind: {
+      messages: 'сводки сообщений',
+      streak: 'напоминания о стрике',
+      profileVisits: 'сводки визитов в профиль',
+      promotions: 'новости и предложения',
+      all: 'письма от LangX',
+    },
   },
 }

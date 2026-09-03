@@ -11,7 +11,7 @@ import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
 import { resetPasswordEmail, verificationEmail } from './email/templates'
 import { localeFromHeader } from './i18n'
-import type { Env } from './env'
+import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 
 export interface CreateAuthOptions {
@@ -33,8 +33,7 @@ export interface CreateAuthOptions {
  * JWT first (see auth/appleClientSecret.ts), so construction is async.
  */
 export async function createAuth({ env, db, client, emailSender, revenueCat }: CreateAuthOptions) {
-  const baseURL =
-    env.BETTER_AUTH_URL ?? `http://${env.HOST === '0.0.0.0' ? 'localhost' : env.HOST}:${env.PORT}`
+  const baseURL = publicApiUrl(env)
 
   const socialProviders: NonNullable<Parameters<typeof betterAuth>[0]['socialProviders']> = {}
 

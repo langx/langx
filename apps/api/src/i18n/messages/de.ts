@@ -23,5 +23,29 @@ export const de: Localized<ServerMessages> = {
       'Jemand hat für dieses Konto eine Passwortzurücksetzung angefordert. Wenn du das warst:',
     resetButton: 'Passwort zurücksetzen',
     resetText: 'Setze dein LangX-Passwort zurück: {url}',
+
+    whyThisMail: 'Du bekommst das wegen deiner LangX-Benachrichtigungseinstellungen.',
+    unsubscribeLink: 'Diese E-Mails abstellen',
+    unsubscribeText: 'Diese E-Mails abstellen: {url}',
+    managePrefs: 'Alle Benachrichtigungseinstellungen',
+
+    unsubscribeTitle: 'Diese E-Mails abstellen?',
+    unsubscribeBody:
+      '{kind} bekommst du dann nicht mehr per E-Mail. Mitteilungen auf dem Telefon bleiben davon unberührt.',
+    unsubscribeConfirm: 'Abstellen',
+    unsubscribeAll: 'Oder jede E-Mail von LangX abstellen',
+    unsubscribedTitle: 'Erledigt — nichts mehr davon.',
+    unsubscribedBody:
+      'Du kannst sie jederzeit in LangX unter Einstellungen → Mitteilungen wieder einschalten.',
+    unsubscribeInvalid:
+      'Dieser Link ist ungültig. Öffne LangX und ändere es unter Einstellungen → Mitteilungen.',
+
+    kind: {
+      messages: 'Nachrichtenübersichten',
+      streak: 'Streak-Erinnerungen',
+      profileVisits: 'Übersichten zu Profilbesuchen',
+      promotions: 'Neues und Angebote',
+      all: 'E-Mails von LangX',
+    },
   },
 }
