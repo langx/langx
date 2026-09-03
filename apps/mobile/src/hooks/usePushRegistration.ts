@@ -1,9 +1,11 @@
 import Constants from 'expo-constants'
 import * as Device from 'expo-device'
-import { useEffect } from 'react'
+import { useFocusEffect } from 'expo-router'
+import { useCallback, useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
 import { currentLocale } from '../i18n/runtime'
+import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
 
 /**
  * Expo needs to know which project a push token belongs to. It can usually
@@ -91,7 +93,9 @@ export async function unregisterPushToken(): Promise<void> {
  * seconds costs every future message notification.
  *
  * Asking now belongs to `NotificationPriming`, on a screen the user arrived at
- * deliberately and which says what the notifications are for. This hook only
+ * deliberately and which says what the notifications are for, and to
+ * `usePushPermissionPrompt` on the chats tab for everyone who never saw that
+ * screen — see below. This hook only
  * registers the token for someone who has *already* granted permission, so
  * everyone who said yes before is entirely unaffected.
  */
@@ -115,4 +119,38 @@ export function usePushRegistration({ enabled = true }: { enabled?: boolean } = 
       }
     })()
   }, [enabled])
+}
+
+/**
+ * Asks for notification permission the first time the chats tab is opened.
+ *
+ * `NotificationPriming` only mounts on the two onboarding exits, so an
+ * existing account signing in on a new phone — a reinstall, an upgrade — was
+ * never asked at all: the push toggles in Settings read as on while no token
+ * was ever registered. The chats tab is the one place where the dialog needs
+ * no explanation; somebody opening it is there for messages.
+ *
+ * Once per device (`pushAsked`), whatever the answer: a refusal here must not
+ * turn into a dialog on every visit. A grant registers the token straight
+ * away, the same as the priming card does.
+ */
+export function usePushPermissionPrompt(): void {
+  useFocusEffect(
+    useCallback(() => {
+      void (async () => {
+        try {
+          if (Platform.OS === 'web' || !Device.isDevice) return
+          if (await readBoolFlag(FLAG_KEYS.pushAsked)) return
+          const Notifications = await import('expo-notifications')
+          const current = await Notifications.getPermissionsAsync()
+          if (current.granted || !current.canAskAgain) return
+          await setBoolFlag(FLAG_KEYS.pushAsked, true)
+          const result = await Notifications.requestPermissionsAsync()
+          if (result.granted) await registerPushToken()
+        } catch {
+          // Never let notification setup break the screen it is decorating.
+        }
+      })()
+    }, []),
+  )
 }

@@ -181,11 +181,13 @@ export const ptBR: Localized<EnMessages> = {
     googleSignInFailed: 'Não foi possível entrar com o Google',
     appleSignInFailed: 'Não foi possível entrar com a Apple',
     resetFailed: 'Não foi possível redefinir a senha',
-    invalidCredentials: 'Esse e-mail e essa senha não correspondem a nenhuma conta.',
+    invalidCredentials:
+      'Esse e-mail e essa senha não correspondem a nenhuma conta. Tinha uma conta no app anterior? Redefina sua senha ou continue com Google ou Apple.',
     attachmentUnsupported:
       'Esse formato de foto não é compatível. Use uma imagem JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Esse arquivo é grande demais para enviar.',
-    userExists: 'Já existe uma conta com esse e-mail.',
+    userExists:
+      'Já existe uma conta com esse e-mail. Entre, redefina sua senha ou continue com Google ou Apple.',
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
     passwordTooShort: 'Essa senha é curta demais.',
     invalidEmail: 'Isso não parece um endereço de e-mail.',
@@ -647,7 +649,6 @@ export const ptBR: Localized<EnMessages> = {
     attachPhoto: 'Anexar uma foto',
     recordVoice: 'Gravar um áudio',
     removeAttachment: 'Remover anexo',
-    photoAttached: 'Foto anexada',
     voiceAttached: 'Áudio anexado',
     photosPermission: 'O LangX precisa acessar suas fotos para anexar uma.',
     attachmentFailed: 'O anexo não foi enviado. Tente de novo.',

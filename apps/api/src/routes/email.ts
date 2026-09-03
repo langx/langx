@@ -2,6 +2,7 @@ import { webUrl } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { publicApiUrl, unsubscribeSecret } from '../env'
 import { localeFromHeader, translator } from '../i18n'
+import { removeDeletedContact } from '../modules/notifications/v1DeletedContacts'
 import { setEmailNotifications } from '../modules/profiles/profiles'
 import {
   signUnsubscribeToken,
@@ -119,7 +120,13 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
 
       // Idempotent on purpose: a mail client may retry, and a second press of
       // the button must not be an error page for something already done.
-      await setEmailNotifications(app.mongo.db, claim.userId, claim.scope, false)
+      if (claim.scope === 'v1contact') {
+        // No account, so no preference to switch off: the address itself is
+        // what goes. See `v1DeletedContacts.ts`.
+        await removeDeletedContact(app.mongo.db, claim.userId)
+      } else {
+        await setEmailNotifications(app.mongo.db, claim.userId, claim.scope, false)
+      }
       request.log.info({ scope: claim.scope }, 'unsubscribed from notification email')
 
       return reply.type('text/html; charset=utf-8').send(

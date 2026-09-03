@@ -36,6 +36,13 @@ export const ar: Localized<ServerMessages> = {
     resetButton: 'إعادة تعيين كلمة المرور',
     resetText: 'إعادة تعيين كلمة مرور LangX: {url}',
 
+    existingSubject: 'لديك حساب LangX بالفعل',
+    existingPreheader: 'لديك حساب LangX بالفعل',
+    existingBody:
+      'حاول أحدهم التسجيل بهذا البريد، لكن يوجد حساب لهذا العنوان بالفعل. للدخول، أعد تعيين كلمة المرور أو سجّل الدخول عبر Google أو Apple بهذا العنوان.',
+    existingButton: 'إعادة تعيين كلمة المرور',
+    existingText: 'لديك حساب LangX بالفعل. أعد تعيين كلمة المرور من هنا: {url}',
+
     whyThisMail: 'تصلك هذه الرسالة بسبب إعدادات الإشعارات في LangX.',
     unsubscribeLink: 'أوقف هذه الرسائل',
     unsubscribeText: 'أوقف هذه الرسائل: {url}',
@@ -87,6 +94,7 @@ export const ar: Localized<ServerMessages> = {
       profileVisits: 'ملخّصات زيارات الملف',
       promotions: 'الأخبار والعروض',
       all: 'رسائل LangX',
+      v1contact: 'الرسالة الوحيدة عن LangX الجديد',
     },
   },
 }

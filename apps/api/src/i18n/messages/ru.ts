@@ -44,6 +44,13 @@ export const ru: Localized<ServerMessages> = {
     resetButton: 'Сбросить пароль',
     resetText: 'Сброс пароля LangX: {url}',
 
+    existingSubject: 'У вас уже есть аккаунт LangX',
+    existingPreheader: 'У вас уже есть аккаунт LangX',
+    existingBody:
+      'Кто-то попытался зарегистрироваться с этой почтой, но аккаунт для неё уже существует. Чтобы войти, сбросьте пароль или войдите через Google или Apple с этим адресом.',
+    existingButton: 'Сбросить пароль',
+    existingText: 'У вас уже есть аккаунт LangX. Сбросьте пароль здесь: {url}',
+
     whyThisMail: 'Вы получаете это из-за настроек уведомлений в LangX.',
     unsubscribeLink: 'Отключить эти письма',
     unsubscribeText: 'Отключить эти письма: {url}',
@@ -100,6 +107,7 @@ export const ru: Localized<ServerMessages> = {
       profileVisits: 'сводки визитов в профиль',
       promotions: 'новости и предложения',
       all: 'письма от LangX',
+      v1contact: 'единственное сообщение о новом LangX',
     },
   },
 }

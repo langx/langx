@@ -1,8 +1,13 @@
 import { NOTIFICATION_TYPES, type NotificationType } from '@langx/shared'
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
-/** Every kind, plus the "stop all of it" the confirmation page also offers. */
-export type UnsubscribeScope = NotificationType | 'all'
+/**
+ * Every kind, plus the "stop all of it" the confirmation page also offers,
+ * plus the one scope that names no preference: `v1contact` is the link in the
+ * single announcement sent to v1 accounts their owners deleted, where the
+ * "user id" is the contact row and stopping means forgetting the address.
+ */
+export type UnsubscribeScope = NotificationType | 'all' | 'v1contact'
 
 const VERSION = 'v1'
 
@@ -41,7 +46,12 @@ export function verifyUnsubscribeToken(
   if (parts.length !== 4) return null
   const [version, userId, scope, provided] = parts as [string, string, string, string]
   if (version !== VERSION || !userId) return null
-  if (scope !== 'all' && !NOTIFICATION_TYPES.includes(scope as NotificationType)) return null
+  if (
+    scope !== 'all' &&
+    scope !== 'v1contact' &&
+    !NOTIFICATION_TYPES.includes(scope as NotificationType)
+  )
+    return null
 
   const expected = signature(secret, userId, scope as UnsubscribeScope)
   // `timingSafeEqual` throws on a length mismatch rather than returning false,

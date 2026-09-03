@@ -36,6 +36,13 @@ export const fr: Localized<ServerMessages> = {
     resetButton: 'Réinitialiser le mot de passe',
     resetText: 'Réinitialisez votre mot de passe LangX : {url}',
 
+    existingSubject: 'Vous avez déjà un compte LangX',
+    existingPreheader: 'Vous avez déjà un compte LangX',
+    existingBody:
+      'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais un compte existe déjà pour cette adresse. Pour vous connecter, réinitialisez votre mot de passe ou connectez-vous avec Google ou Apple avec cette adresse.',
+    existingButton: 'Réinitialiser le mot de passe',
+    existingText: 'Vous avez déjà un compte LangX. Réinitialisez votre mot de passe ici : {url}',
+
     whyThisMail: 'Vous recevez ceci en raison de vos réglages de notifications LangX.',
     unsubscribeLink: 'Désactiver ces e-mails',
     unsubscribeText: 'Désactiver ces e-mails : {url}',
@@ -93,6 +100,7 @@ export const fr: Localized<ServerMessages> = {
       profileVisits: 'les résumés de visites de profil',
       promotions: 'les actualités et offres',
       all: 'les e-mails de LangX',
+      v1contact: 'le message unique sur le nouveau LangX',
     },
   },
 }
