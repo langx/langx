@@ -27,6 +27,8 @@ export const ptBR: Localized<ServerMessages> = {
     unsubscribeLink: 'Desativar estes e-mails',
     unsubscribeText: 'Desativar estes e-mails: {url}',
     managePrefs: 'Todas as configurações de notificações',
+    /** The one button a streak email has. */
+    openChats: 'Enviar uma mensagem',
 
     unsubscribeTitle: 'Desativar estes e-mails?',
     unsubscribeBody:

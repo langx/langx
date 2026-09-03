@@ -29,6 +29,8 @@ export const fr: Localized<ServerMessages> = {
     unsubscribeLink: 'Désactiver ces e-mails',
     unsubscribeText: 'Désactiver ces e-mails : {url}',
     managePrefs: 'Tous les réglages de notifications',
+    /** The one button a streak email has. */
+    openChats: 'Envoyer un message',
 
     unsubscribeTitle: 'Désactiver ces e-mails ?',
     unsubscribeBody:

@@ -5,12 +5,13 @@ import { connectToDatabase } from './db/client'
 import { ensureIndexes } from './db/indexes'
 import { createEmailSender } from './email/sender'
 import { attachSentryErrorHandler, initSentry } from './observability/sentry'
-import { loadEnv } from './env'
+import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
+import type { NotificationEmailContext } from './email/notify'
 import { AppwriteLegacyVerifier, DisabledLegacyVerifier } from './modules/handles/legacyLogin'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
@@ -36,6 +37,18 @@ async function main(): Promise<void> {
   const translation = createTranslationProvider(env)
 
   const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
+
+  /**
+   * What every notification sender needs: an outbox, the secret its
+   * unsubscribe links are signed with, and the address those links point back
+   * at. Built once so no scheduler assembles its own and gets one of the three
+   * subtly wrong.
+   */
+  const notificationEmail: NotificationEmailContext = {
+    sender: emailSender,
+    unsubscribeSecret: unsubscribeSecret(env),
+    apiBaseUrl: publicApiUrl(env),
+  }
 
   // The bridge only exists while v1 is still running. Without APPWRITE_* it is
   // simply off, and a returning user goes through the normal reset-password
@@ -72,7 +85,7 @@ async function main(): Promise<void> {
   const schedulers = [
     startDailyPoolScheduler(db, app.log),
     startPurgeScheduler(db, app.log, { storage }),
-    startStreakReminderScheduler(db, push, app.log),
+    startStreakReminderScheduler(db, push, notificationEmail, app.log),
     startLegacyImportScheduler(db, app.log),
   ]
 
