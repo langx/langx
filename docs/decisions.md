@@ -2377,6 +2377,39 @@ key Expo is handed is a working one before any build exists; and the lesson
 that `expo-notifications` and the Firebase SDK both hook the same iOS delegate
 and should not share a build.
 
+## A resume refetches what the socket missed
+
+The socket is the only realtime channel and nothing replays it. A phone in the
+background has no JS running and no connection; a message sent then reaches
+the server, becomes a push, and never becomes a `message:new`. On the first
+iOS device test, tapping that push opened the right thread with the message
+missing — `chat/[id]` was already mounted as the hidden tab and kept its
+cached pages, and nothing anywhere invalidated them. `useNotificationRouting`
+only navigates, `markConversationRead` only touches the list, and TanStack's
+`focusManager` is not wired to `AppState` on native, so `refetchOnWindowFocus`
+had never once fired.
+
+Two signals say a gap happened, and `useSocket` listens for both: the app
+coming back from the background, and the socket's Manager reporting a
+reconnection after a drop while the app was open. Both invalidate the
+`['conversations']` and `['messages']` prefixes and nothing else. Only active
+queries refetch — the mounted chat list and the one thread the hidden tab
+holds — so the "every loaded page" cost the `message:new` handler refuses to
+pay per message is paid once per gap.
+
+Three other places were considered and passed over. The routing hook covers
+the tap and nothing else; the chat screen's focus effect would refetch every
+loaded page on every navigation; a `focusManager` wiring would refetch every
+mounted screen on every foreground. Only `background → active` counts as a
+resume: `inactive → active` is the notification shade or Face ID going away a
+second later, the socket never dropped, and on iOS that happens far more
+often.
+
+Left as it was: the ~45 s after a resume during which the server may still
+see the old socket in the user's room, so a message sent in that window gets
+neither a push nor a delivery stamp until the ping timeout. That is fan-out
+semantics, not this bug.
+
 ## Shipping lives on expo.dev, and only tests live on GitHub
 
 Behic's call on 3 September 2026, after a day of weighing the alternative:
