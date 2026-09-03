@@ -866,7 +866,7 @@ export const fr: Localized<EnMessages> = {
     showStatsBody: 'Série, corrections, jetons et le graphique de la semaine sur votre profil.',
     legalSection: 'Mentions légales',
     communitySection: 'Communauté',
-    linkDeviceBody: 'Approuver une connexion sur un ordinateur.',
+    linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody:
       'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
@@ -1136,7 +1136,7 @@ export const fr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Se connecter sur un autre appareil',
     body: 'Saisis le code affiché sur l’autre écran, ou scanne-le là-bas.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'N’approuve qu’un code que tu vois toi-même. Quiconque le saisit obtient un accès complet à ton compte.',
     approve: 'Approuver',
@@ -1145,6 +1145,12 @@ export const fr: Localized<EnMessages> = {
     denied: 'Refusé',
     failed: 'Ce code n’est plus valide.',
     hint: 'Pas maintenant',
+    devices: 'Appareils connectés',
+    thisDevice: 'cet appareil',
+    signOutDevice: 'Se déconnecter',
+    signOutOthers: 'Se déconnecter partout ailleurs',
+    signedOutDevice: 'Déconnecté.',
+    unknownDevice: 'Appareil inconnu',
   },
 
   qrSignIn: {

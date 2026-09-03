@@ -1,3 +1,5 @@
+import { APP_SCHEME } from './appScheme'
+
 /**
  * Who this app *is*, to Apple, Google and the web — the values that have to be
  * byte-identical across five places or something breaks silently.
@@ -165,4 +167,21 @@ export function profileQrUrl(apiBaseUrl: string, handle: string): string {
  */
 export function deviceLinkQrUrl(apiBaseUrl: string, userCode: string): string {
   return `${apiBaseUrl.replace(/\/$/, '')}/public/qr/link/${encodeURIComponent(userCode)}`
+}
+
+/**
+ * What that QR actually encodes: a link that opens the app, not the website.
+ *
+ * The picture is scanned with the phone's own camera, and the phone is where
+ * the session already is. Encoding an `https://` address sent it to a browser
+ * on that same phone, where nobody is signed in — the one place the approval
+ * cannot happen. A scheme URL hands it to the installed app instead, which is
+ * both a shorter path and the only one that works.
+ *
+ * Not a universal link on the web host: those need `.well-known` files served
+ * from a host that currently answers with v1, which is an infrastructure move
+ * rather than a change to a QR code.
+ */
+export function deviceLinkTarget(userCode: string): string {
+  return `${APP_SCHEME}://link-device?user_code=${encodeURIComponent(userCode)}`
 }

@@ -1,4 +1,10 @@
-import { handleSchema, INVITE_QUERY_PARAM, inviteUrl, profileUrl, WEB_HOST } from '@langx/shared'
+import {
+  deviceLinkTarget,
+  handleSchema,
+  INVITE_QUERY_PARAM,
+  inviteUrl,
+  profileUrl,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import QRCode from 'qrcode'
 import { z } from 'zod'
@@ -101,12 +107,17 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
       config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
     },
     async (request, reply) => {
-      // `user_code`, because that is the name Better Auth puts in its own
-      // `verification_uri_complete` — a QR that used a different one would
-      // send people to the same page with the field left empty.
-      const target = `https://${WEB_HOST}/link-device?user_code=${encodeURIComponent(
-        request.params.code,
-      )}`
+      /*
+       * A link into the app, not the website. This picture is scanned with the
+       * phone's own camera, and the phone is where the session already is —
+       * an https address opened a browser on that same phone, signed in as
+       * nobody, which is the one place the approval cannot be given.
+       *
+       * `user_code` is the parameter name because that is what Better Auth
+       * puts in its own `verification_uri_complete`, and what the screen
+       * reads.
+       */
+      const target = deviceLinkTarget(request.params.code)
       const svg = await QRCode.toString(target, {
         type: 'svg',
         errorCorrectionLevel: 'M',

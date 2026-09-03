@@ -866,7 +866,7 @@ export const tr: Localized<EnMessages> = {
     showStatsBody: 'Profilinde streak, düzeltme, token ve bu haftanın grafiği.',
     legalSection: 'Hukuki',
     communitySection: 'Topluluk',
-    linkDeviceBody: 'Bilgisayardaki bir girişi onayla.',
+    linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody:
       'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
@@ -1132,7 +1132,7 @@ export const tr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Başka cihazda oturum aç',
     body: 'Diğer ekranda görünen kodu gir, ya da oradan okut.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Sadece kendi gördüğün bir kodu onayla. Bu kodu geçiren herkes hesabına tam erişim kazanır.',
     approve: 'Onayla',
@@ -1141,6 +1141,12 @@ export const tr: Localized<EnMessages> = {
     denied: 'Reddedildi',
     failed: 'Bu kod artık geçerli değil.',
     hint: 'Şimdi değil',
+    devices: 'Giriş yapılmış cihazlar',
+    thisDevice: 'bu cihaz',
+    signOutDevice: 'Çıkış yap',
+    signOutOthers: 'Diğer her yerden çıkış yap',
+    signedOutDevice: 'Çıkış yapıldı.',
+    unknownDevice: 'Bilinmeyen cihaz',
   },
 
   qrSignIn: {

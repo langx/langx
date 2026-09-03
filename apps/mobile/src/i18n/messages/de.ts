@@ -882,7 +882,7 @@ export const de: Localized<EnMessages> = {
     showStatsBody: 'Streak, Korrekturen, Tokens und das Wochendiagramm auf deinem Profil.',
     legalSection: 'Rechtliches',
     communitySection: 'Community',
-    linkDeviceBody: 'Eine Anmeldung am Computer bestätigen.',
+    linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',
     showInDiscover: 'In Entdecken zeigen',
     showInDiscoverBody:
       'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
@@ -1152,7 +1152,7 @@ export const de: Localized<EnMessages> = {
   linkDevice: {
     title: 'Auf einem anderen Gerät anmelden',
     body: 'Gib den Code vom anderen Bildschirm ein, oder scanne ihn dort.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Bestätige nur einen Code, den du selbst siehst. Wer ihn eingibt, bekommt vollen Zugriff auf dein Konto.',
     approve: 'Bestätigen',
@@ -1161,6 +1161,12 @@ export const de: Localized<EnMessages> = {
     denied: 'Abgelehnt',
     failed: 'Dieser Code gilt nicht mehr.',
     hint: 'Jetzt nicht',
+    devices: 'Angemeldete Geräte',
+    thisDevice: 'dieses Gerät',
+    signOutDevice: 'Abmelden',
+    signOutOthers: 'Überall sonst abmelden',
+    signedOutDevice: 'Abgemeldet.',
+    unknownDevice: 'Unbekanntes Gerät',
   },
 
   qrSignIn: {
