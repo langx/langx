@@ -509,6 +509,37 @@ export async function markPendingDelivered(db: Db, userId: string): Promise<Deli
   return swept
 }
 
+/**
+ * How many unread messages this account has, everywhere.
+ *
+ * Summed on the server because the app cannot do it: the list is paged, so a
+ * client only ever holds the threads it has scrolled to, and the archive is
+ * excluded from every other tab — a total added up in the cache would be a
+ * total of whatever happened to be loaded.
+ *
+ * Blocked counterparts are left out for the same reason their threads are left
+ * out of the list: a badge that counts a conversation nobody can open is a
+ * number with nowhere to go.
+ */
+export async function countUnread(db: Db, userId: string): Promise<number> {
+  const hidden = await blockedUserIds(db, userId)
+  const unreadPath = `unread.${userId}`
+  const rows = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .aggregate<{ total: number }>([
+      {
+        $match: {
+          participants: hidden.length > 0 ? { $eq: userId, $nin: hidden } : userId,
+          [`archivedBy.${userId}`]: { $ne: true },
+          [unreadPath]: { $gt: 0 },
+        },
+      },
+      { $group: { _id: null, total: { $sum: `$${unreadPath}` } } },
+    ])
+    .toArray()
+  return rows[0]?.total ?? 0
+}
+
 export async function markConversationRead(
   db: Db,
   userId: string,

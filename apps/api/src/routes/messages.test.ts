@@ -250,6 +250,86 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.items[0]?.participants).toContain(newer.userId) // most recent activity first
   })
 
+  describe('the unread total behind the tab badge', () => {
+    async function unreadTotal(viewer: SignedUpUser) {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/unread',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{ total: number }>().total
+    }
+
+    it('adds up every thread, and drops to nothing when they are read', async () => {
+      const viewer = await newUser('unread-viewer@example.com')
+      const first = await newUser('unread-first@example.com')
+      const second = await newUser('unread-second@example.com')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+
+      expect(await unreadTotal(viewer)).toBe(0)
+
+      const one = (await startConversation(first, viewer.userId, 'hello'))._id
+      const two = (await startConversation(second, viewer.userId, 'hi there'))._id
+      await sendTextMessage(handle.db, first.userId, {
+        conversationId: one,
+        body: 'and another',
+        clientId: 'unread-1',
+      })
+      // Two threads, three messages — the badge is a sum, not a thread count.
+      expect(await unreadTotal(viewer)).toBe(3)
+
+      // The sender sees none of their own.
+      expect(await unreadTotal(first)).toBe(0)
+
+      await app.inject({
+        method: 'POST',
+        url: `/conversations/${one}/read`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(await unreadTotal(viewer)).toBe(1)
+
+      await app.inject({
+        method: 'POST',
+        url: `/conversations/${two}/read`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(await unreadTotal(viewer)).toBe(0)
+    })
+
+    it('leaves out threads the badge cannot lead anywhere', async () => {
+      const viewer = await newUser('unread-hidden-viewer@example.com')
+      const archived = await newUser('unread-archived@example.com')
+      const blocked = await newUser('unread-blocked@example.com')
+
+      const quiet = (await startConversation(archived, viewer.userId, 'archive me'))._id
+      await app.inject({
+        method: 'PATCH',
+        url: `/conversations/${quiet}/flags`,
+        headers: { cookie: viewer.cookie },
+        payload: { archived: true },
+      })
+      // Archived: still unread, deliberately not counted — the archive tab is
+      // where it lives and the badge does not point there.
+      expect(await unreadTotal(viewer)).toBe(0)
+
+      await startConversation(blocked, viewer.userId, 'you cannot open this')
+      // One before the block, so the zero below is the block doing the work
+      // rather than the thread never having counted.
+      expect(await unreadTotal(viewer)).toBe(1)
+      await handle.db
+        .collection(COLLECTIONS.blocks)
+        .insertOne({ blockerId: viewer.userId, blockedId: blocked.userId })
+      // A blocked counterpart's thread is gone from the list, so counting it
+      // would be a number with nowhere to go.
+      expect(await unreadTotal(viewer)).toBe(0)
+    })
+
+    it('needs a session', async () => {
+      expect((await app.inject({ method: 'GET', url: '/me/unread' })).statusCode).toBe(401)
+    })
+  })
+
   describe('tabs, pins and the view layer', () => {
     async function list(viewer: SignedUpUser, filter?: string) {
       const response = await app.inject({
