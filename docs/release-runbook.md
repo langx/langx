@@ -253,6 +253,53 @@ not the token. The API prunes tokens that come back with it, so a
 misconfigured send also quietly empties the devices collection — fix the
 credentials before running the streak reminder against real users.
 
+## Email needs a verified sender and a secret that is never rotated
+
+Push reaches a phone once Apple and Google are configured. Notification email
+reaches an inbox once three things are true, and the first is the one that
+takes days rather than minutes.
+
+- [ ] **A verified sending domain.** Resend → Domains → `langx.io`, then the
+      SPF, DKIM and DMARC records it prints, in Cloudflare DNS. Until this is
+      done `EMAIL_FROM` has to stay on `onboarding@resend.dev`, which works but
+      puts a stranger's domain on every email the app sends.
+- [ ] **`EMAIL_FROM` pointed at it**, e.g. `LangX <hello@langx.io>`. The TODO
+      in `env.ts` comes out with it.
+- [ ] **`EMAIL_UNSUBSCRIBE_SECRET` set**, `openssl rand -base64 32`.
+      **Generate once and never rotate it.** It signs the unsubscribe link in
+      every notification email ever sent, and those links live in inboxes for
+      years — rotating it breaks all of them at once, which is the legal way
+      out of the mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and
+      inherits exactly that problem.
+
+Read one before anybody else does: leave `RESEND_API_KEY` unset locally and the
+sender prints each message to the log instead, headers included.
+
+### Sending a campaign
+
+The only notification that is not automatic, and the only one that can annoy
+several thousand people at once.
+
+```bash
+# Counts and prints; sends nothing.
+pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
+  --campaign 2026-09-launch --subject "LangX v2 is here" \
+  --html-file ./campaigns/launch.html
+
+# Same command, plus --confirm.
+```
+
+- The dry run is not optional in practice: it prints the recipient count and
+  five masked addresses, and a count that surprises you is the cheapest bug
+  report available.
+- Both bodies must contain `{{unsubscribeUrl}}`; the script refuses otherwise.
+- A re-run after a crash cannot mail anybody twice — recipients are claimed in
+  `emailCampaigns` before the batch, and the unique index enforces it.
+- Watch Resend's dashboard afterwards. A complaint rate above 0.1% means stop
+  and work out why before the next one.
+- One campaign is one language. For a bilingual send, run it twice with
+  different ids and `--locale`.
+
 ## Actions that succeed silently
 
 `src/lib/alert.ts` and `AlertHost` give the app a dialog that works in the

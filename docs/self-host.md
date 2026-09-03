@@ -13,10 +13,11 @@ nothing here phones home.
 | An S3-compatible bucket | avatars, gallery photos                                                                                                                         | Cloudflare R2 (no egress fees), Backblaze B2                                                     |
 
 Everything else is optional and the app boots without it: no email provider
-means verification links are printed to the log, no translation credentials
-means `/translate` returns a clear "not configured" error, no RevenueCat means
-everyone stays on the free tier, no push credentials means notifications are
-logged instead of sent. That is deliberate — a self-hoster should be able to
+means verification links and notification mail are printed to the log, no
+unsubscribe secret means those links are signed with the auth secret instead,
+no translation credentials means `/translate` returns a clear "not configured"
+error, no RevenueCat means everyone stays on the free tier, no push credentials
+means notifications are logged instead of sent. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
 
 ## Quick start
@@ -54,7 +55,7 @@ whole collection.
 
 ## Background work
 
-Three schedulers start with the API. None of them is a cron expression — each
+Four schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
 
@@ -62,10 +63,18 @@ during the window catches up on its next tick instead of skipping silently.
 | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days. |
 | Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                             |
-| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day.                                                         |
+| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.      |
+| Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.   |
 
 Running several API instances is safe. The pool's `jobRuns` unique index means
-only one instance can own a given day.
+only one instance can own a given day, and every notification pass claims a row
+in `notificationLedger` before it sends, so nobody is told the same thing twice.
+
+Without `RESEND_API_KEY` the notification email is printed to the log rather
+than sent, exactly like the verification link. Without `EMAIL_UNSUBSCRIBE_SECRET`
+the unsubscribe links are signed with `BETTER_AUTH_SECRET` instead — which
+works, but means rotating that secret breaks every unsubscribe link already
+sitting in somebody's inbox.
 
 ## Deploying
 
