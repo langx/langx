@@ -134,6 +134,31 @@ describe('createRevenueCatClient', () => {
     )
   })
 
+  /**
+   * The v1 loyalty gift is handed out when an email is verified, which is
+   * regularly before the phone has launched the app and registered the user
+   * with RevenueCat — so the subscriber does not exist and the grant 404s.
+   * Measured against the live project; the gift was being lost to it.
+   */
+  it('creates the subscriber and retries when RevenueCat has never seen the id', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 404, text: () => Promise.resolve('7259') })
+      .mockResolvedValueOnce({ ok: true, status: 201, text: () => Promise.resolve('{}') })
+      .mockResolvedValueOnce({ ok: true, status: 201, text: () => Promise.resolve('{}') })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await createRevenueCatClient('sk').grantLifetimeEntitlement('newcomer', 'pro_plus')
+
+    expect(fetchMock).toHaveBeenCalledTimes(3)
+    // The middle call is the bare subscriber URL — a GET, which is what
+    // creates the record. No method means fetch's default.
+    expect(fetchMock.mock.calls[1]?.[0]).toBe('https://api.revenuecat.com/v1/subscribers/newcomer')
+    expect(fetchMock.mock.calls[1]?.[1]).not.toHaveProperty('method')
+    expect(fetchMock.mock.calls[2]?.[0]).toContain('/entitlements/pro_plus/promotional')
+  })
+
+  /** One retry, not a loop: a 404 that survives the create is a real refusal. */
   it('throws when a grant is refused, so the caller can report no gift', async () => {
     vi.stubGlobal(
       'fetch',
