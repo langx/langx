@@ -63,6 +63,13 @@ const envSchema = z.object({
    * auth secret, which works and merely inherits that rotation problem.
    */
   EMAIL_UNSUBSCRIBE_SECRET: emptyToUndefined(z.string().min(32).optional()),
+  /**
+   * The Resend audience the langx.io newsletter form subscribes people to.
+   * Replaces v1's SendGrid list — this API takes over `api.langx.io` and the
+   * form on the site posts here. Optional: unset, the route answers that it
+   * is not configured rather than pretending to subscribe anybody.
+   */
+  RESEND_AUDIENCE_ID: emptyToUndefined(z.string().optional()),
 
   // OAuth. Each provider activates only once both of its variables are set —
   // see socialProviders() in auth.ts — so leaving these blank still boots a
