@@ -28,6 +28,13 @@ export const tr: Localized<ServerMessages> = {
     resetButton: 'Parolayı sıfırla',
     resetText: 'LangX parolanı sıfırla: {url}',
 
+    existingSubject: 'Zaten bir LangX hesabın var',
+    existingPreheader: 'Zaten bir LangX hesabın var',
+    existingBody:
+      'Biri bu e-posta ile kayıt olmayı denedi ama bu adrese ait bir hesap zaten var. Giriş yapmak için parolanı sıfırla ya da bu adresle Google veya Apple üzerinden giriş yap.',
+    existingButton: 'Parolayı sıfırla',
+    existingText: 'Zaten bir LangX hesabın var. Parolanı buradan sıfırla: {url}',
+
     whyThisMail: 'Bunu LangX bildirim ayarların yüzünden alıyorsun.',
     unsubscribeLink: 'Bu e-postaları kapat',
     unsubscribeText: 'Bu e-postaları kapat: {url}',

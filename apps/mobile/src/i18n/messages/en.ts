@@ -217,10 +217,12 @@ export const en = {
     googleSignInFailed: 'Google sign-in failed',
     appleSignInFailed: 'Apple sign-in failed',
     resetFailed: 'Could not reset password',
-    invalidCredentials: 'That email and password do not match an account.',
+    invalidCredentials:
+      'That email and password do not match an account. If you had an account in the previous app, reset your password or continue with Google or Apple.',
     attachmentUnsupported: 'That photo format isn’t supported. Use a JPEG, PNG or WebP image.',
     attachmentTooLarge: 'That file is too large to send.',
-    userExists: 'An account already exists for that email.',
+    userExists:
+      'An account already exists for that email. Sign in, reset your password, or continue with Google or Apple.',
     emailNotVerified: 'Verify your email address first — check your inbox.',
     passwordTooShort: 'That password is too short.',
     invalidEmail: 'That does not look like an email address.',

@@ -187,11 +187,13 @@ export const fr: Localized<EnMessages> = {
     googleSignInFailed: 'Connexion Google impossible',
     appleSignInFailed: 'Connexion Apple impossible',
     resetFailed: 'Réinitialisation impossible',
-    invalidCredentials: 'Cet e-mail et ce mot de passe ne correspondent à aucun compte.',
+    invalidCredentials:
+      'Cet e-mail et ce mot de passe ne correspondent à aucun compte. Vous aviez un compte dans l’ancienne appli ? Réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
     attachmentUnsupported:
       'Ce format de photo n’est pas pris en charge. Utilise une image JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Ce fichier est trop volumineux pour être envoyé.',
-    userExists: 'Un compte existe déjà avec cet e-mail.',
+    userExists:
+      'Un compte existe déjà avec cet e-mail. Connectez-vous, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
     emailNotVerified: 'Vérifie d’abord ton adresse e-mail — regarde ta boîte de réception.',
     passwordTooShort: 'Ce mot de passe est trop court.',
     invalidEmail: 'Cela ne ressemble pas à une adresse e-mail.',

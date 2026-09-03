@@ -2400,3 +2400,63 @@ so a JS change that assumes a native module which is not in the store build
 would land on phones that cannot run it. Publishing to production is a
 deliberate `eas update --channel production` after the matching build has
 shipped, not a side effect of merging.
+
+## Every v1 account has a v2 `user` row before its owner comes back
+
+Behic's call on 3 September 2026, after the question "can an old user get in
+through forgot-password?" turned out to have the answer "no, and nothing tells
+them so".
+
+The staged v1 data — `legacyProfiles`, `handleReservations` — was keyed on a
+hash of the email, and no `user` row existed until the person signed up again.
+That was a sound way to avoid carrying plaintext addresses, and it made the
+one route people actually try a dead end: Better Auth's reset endpoint looks
+the address up in `user`, finds nobody, and by design answers "check your
+email" either way. The password bridge in `routes/login.ts` would have caught
+the same person had it been on, but it needs Appwrite credentials the server
+does not have, and it was only ever a stopgap. The real way in was to sign up
+again with the old address and click the verification link, which nobody
+guesses from a sign-in screen.
+
+So `scripts/precreate-v1-users.ts` opens a `user` row for **every** v1 Auth
+account, and the row is **verified** from the start with **no credential**
+behind it. Three consequences, all intended:
+
+- "Forgot password" now works: the reset finds the row, mails the link, and
+  the new password is the first credential the account ever has.
+- Google and Apple link onto the row. This is why it has to be verified —
+  Better Auth refuses to link a social sign-in onto an unverified local user,
+  and rightly so, since that rule is the defence against a password account
+  squatting on someone else's address. There is no password here to squat
+  with, so the defence is not needed and the address is proven by the very
+  act that first uses the row.
+- Signing up fresh with the address is refused as "already exists", which is
+  what we want — the old profile belongs to this row and a second account
+  would strand it. The sign-up and sign-in errors now say what to do instead.
+
+Whether v1 had verified the address is reported, not filtered on: an
+unverified v1 address still cannot do anything with the row until a reset
+link arrives at it.
+
+The row is written by a script, so the `user.create.after` hook that stamps
+the terms and restores a profile never fires for it, and neither a reset nor a
+social link creates a user. The first _session_ is the event those routes
+share, so `session.create.after` does both for rows carrying
+`precreatedFromV1` — idempotently, since sessions are made on every sign-in —
+and is a single indexed read for everyone else. The consent is stamped then,
+not by the script: a consent dated to a moment nobody was present for is not
+one, and continuing past the sign-in screen is the same act the social
+providers already count.
+
+Accounts their owners deleted in v1 — Appwrite `status: false`, which is what
+v1's "delete account" set, since it never hard-deleted — get no row: a deleted
+account must not come back as a live one. Behic wants those 837 addresses
+kept for **one** announcement, so the script writes them to
+`v1DeletedContacts`, the only place a v1 email is stored in the clear. That
+mail is to people who ended their relationship with the product, so it is
+one mail, with an unsubscribe, and the collection is dropped afterwards —
+keeping it would turn a courtesy into a list.
+
+Appwrite is still running and is the only place the plaintext v1 emails live;
+the script needs it. If it goes away before the script has run, the rows
+cannot be opened and this whole path is lost — see the runbook.

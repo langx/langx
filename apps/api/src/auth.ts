@@ -1,4 +1,4 @@
-import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST } from '@langx/shared'
+import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST, webUrl } from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -6,10 +6,11 @@ import { anonymous } from 'better-auth/plugins/anonymous'
 import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
+import { settlePrecreatedUser } from './modules/handles/legacyPrecreate'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
-import { resetPasswordEmail, verificationEmail } from './email/templates'
+import { existingAccountEmail, resetPasswordEmail, verificationEmail } from './email/templates'
 import { localeFromHeader } from './i18n'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
@@ -106,6 +107,23 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
         )
         await emailSender.send({ to: user.email, ...email })
       },
+      /**
+       * A sign-up for an address that already has an account is answered with
+       * the same "check your email" as a fresh one — Better Auth's
+       * anti-enumeration answer, in force here because email verification is
+       * required — and then nothing arrives. This is the hook meant for that
+       * gap: tell them, over the one channel that leaks nothing, that the
+       * account exists and how to get into it. Written for the v1 rows
+       * `legacyPrecreate.ts` opens, whose owners will mostly try signing up
+       * first; right for anyone else who forgot they had an account, too.
+       */
+      onExistingUserSignUp: async ({ user }, request) => {
+        const email = existingAccountEmail(
+          webUrl('/forgot-password'),
+          localeFromHeader(request?.headers.get('accept-language') ?? undefined),
+        )
+        await emailSender.send({ to: user.email, ...email })
+      },
     },
 
     emailVerification: {
@@ -155,6 +173,25 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
 
             if (!user.emailVerified) return
             await tryRestore(user.id, user.email)
+          },
+        },
+      },
+      session: {
+        create: {
+          /**
+           * The one route the hook above cannot see: a `user` row the
+           * pre-creation script wrote for a v1 account, which its owner then
+           * claims with a password reset or a Google/Apple link — neither of
+           * which creates a user. The first session is where that account
+           * gets the terms stamp and the restore every other route already
+           * had. See `legacyPrecreate.ts`; a no-op for everyone else.
+           */
+          after: async (session) => {
+            try {
+              await settlePrecreatedUser(db, session.userId, tryRestore)
+            } catch (error) {
+              console.error('[legacy-precreate] settle failed', { userId: session.userId, error })
+            }
           },
         },
       },

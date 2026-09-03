@@ -577,8 +577,16 @@ before either runs.
    it, while the discovery `minLevel` filter matches none of them — silently,
    in both cases. **Order matters:** run it _after_ the profile ETL, or the ETL
    writes fresh CEFR values behind it.
-6. Verify a returning user's handle claim end to end before opening the gates.
-7. Verify chat history too: restore two accounts that talked to each other in
+6. Open the v2 accounts:
+   `tsx --env-file=../../.env --env-file=../../.env.prod scripts/precreate-v1-users.ts --apply`
+   (dry run first). Writes a verified, passwordless `user` row for every v1
+   Auth account, so "forgot password" and Google/Apple work for returning
+   users and nobody has to sign up again — see `docs/decisions.md` → _Every
+   v1 account has a v2 `user` row_. **Also needs the live Appwrite**: it is
+   the only source of the plaintext emails. Idempotent; an address that
+   already has a v2 user is left alone.
+7. Verify a returning user's handle claim end to end before opening the gates.
+8. Verify chat history too: restore two accounts that talked to each other in
    v1 and confirm the thread arrives with its photos and voice notes. A
    conversation is only imported once **both** sides are back, so testing with
    one account proves nothing.

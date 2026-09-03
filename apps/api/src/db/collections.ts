@@ -130,6 +130,16 @@ export const COLLECTIONS = {
    * half-finished campaign safe.
    */
   emailCampaigns: 'emailCampaigns',
+  /**
+   * The v1 accounts whose owners deleted them, kept as plaintext addresses for
+   * **one** announcement and nothing else. Written by
+   * `scripts/precreate-v1-users.ts`, which opens no `user` row for them —
+   * a deleted account must not come back as a live one. This is the only
+   * place a v1 email is stored in the clear; drop the collection once that
+   * one mail has gone out. See `docs/decisions.md` → _Every v1 account has a
+   * v2 `user` row_.
+   */
+  v1DeletedContacts: 'v1DeletedContacts',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

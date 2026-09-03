@@ -123,6 +123,30 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
 }
 
 /**
+ * What a sign-up for an address that already has an account gets instead of
+ * an error. Better Auth answers such a sign-up exactly as it answers a new one
+ * — so the form cannot be used to learn which addresses are registered — and
+ * this mail is the only channel left that can say "you already have an
+ * account" to the one person entitled to hear it. The link is the app's own
+ * forgot-password screen, not a token: nothing here was asked for by proof
+ * of ownership, so nothing here may grant any.
+ */
+export function existingAccountEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.existingSubject'),
+    html: wrap(
+      locale,
+      t('email.existingPreheader'),
+      `<p>${t('email.existingBody')}</p>
+       <p>${button(url, t('email.existingButton'))}</p>
+       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.existingText', { url }),
+  }
+}
+
+/**
  * The streak nudge, for somebody with no phone signed in.
  *
  * Deliberately the same two sentences as the push — `push.streakTitle` and
