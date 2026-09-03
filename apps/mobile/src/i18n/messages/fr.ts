@@ -748,7 +748,6 @@ export const fr: Localized<EnMessages> = {
 
   me: {
     languages: 'Langues',
-    dayStreak: 'Série de jours',
     viewersTitle: 'Qui a vu ton profil',
     viewersLocked: {
       one: '{count} personne a regardé — voir qui avec {plan}',
@@ -771,6 +770,7 @@ export const fr: Localized<EnMessages> = {
     badges: 'Badges',
     invite: 'Inviter quelqu’un',
     inviteBody: 'Gagne des tokens quand la personne se met à utiliser LangX',
+    dayStreak: 'Série de jours',
   },
 
   editProfile: {
@@ -1060,7 +1060,6 @@ export const fr: Localized<EnMessages> = {
     title: 'Classement',
     periodPicker: 'Période du classement',
     nextMilestone: 'Prochain palier',
-    dayStreak: 'jours de série',
     towards: '{current} sur {threshold} vers {label}',
     toGo: 'encore {amount}',
     doneToday: 'C’est fait pour aujourd’hui. À demain.',
@@ -1076,6 +1075,12 @@ export const fr: Localized<EnMessages> = {
     corrections: 'corrections',
     toGoPlain: 'encore {count}',
     you: 'Toi',
+    streakTitle: 'Classement des séries',
+    metricCurrent: 'En cours',
+    metricLongest: 'La plus longue',
+    streakPicker: 'Classement des séries',
+    streakEmptyTitle: 'Pas encore de séries',
+    streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce tableau.',
   },
 
   badges: {

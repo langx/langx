@@ -63,3 +63,55 @@ export const leaderboardSchema = z.object({
   }),
 })
 export type Leaderboard = z.infer<typeof leaderboardSchema>
+
+/**
+ * The two ways a streak can be ranked.
+ *
+ * `current` is the run somebody is holding right now, which is the one that
+ * can be lost — and so the one worth showing first. `longest` is what they
+ * have ever held, which nothing can take away and which therefore never
+ * changes hands from one day to the next.
+ */
+export const STREAK_METRICS = ['current', 'longest'] as const
+export type StreakMetric = (typeof STREAK_METRICS)[number]
+
+/**
+ * No cursor and no period, unlike the token board.
+ *
+ * A streak is not scored per period — it is a property of the account today —
+ * so there is nothing for `periodKey` to select. And the board is one page by
+ * design: it sits inside a scrolling page rather than owning a list of its
+ * own, so a cursor would have nothing to page.
+ */
+export const streakLeaderboardQuerySchema = z.object({
+  metric: z.enum(STREAK_METRICS).default('current'),
+  limit: z.coerce.number().int().min(1).max(LEADERBOARD_PAGE_SIZE).default(50),
+})
+export type StreakLeaderboardQuery = z.infer<typeof streakLeaderboardQuerySchema>
+
+export const streakLeaderboardEntrySchema = z.object({
+  /** Competition ranking, on the same terms as the token board. */
+  rank: z.number().int(),
+  userId: z.string(),
+  handle: z.string(),
+  displayName: z.string(),
+  avatarUrl: z.string().optional(),
+  /** Days: whichever of the two metrics was asked for. */
+  streak: z.number().int(),
+  frame: z.string().optional(),
+  title: z.string().optional(),
+  isViewer: z.boolean(),
+})
+export type StreakLeaderboardEntry = z.infer<typeof streakLeaderboardEntrySchema>
+
+export const streakLeaderboardSchema = z.object({
+  metric: z.enum(STREAK_METRICS),
+  entries: z.array(streakLeaderboardEntrySchema),
+  viewer: z.object({
+    /** `null` when the viewer has no streak, or has let a live one lapse. */
+    rank: z.number().int().nullable(),
+    streak: z.number().int(),
+    inPage: z.boolean(),
+  }),
+})
+export type StreakLeaderboard = z.infer<typeof streakLeaderboardSchema>

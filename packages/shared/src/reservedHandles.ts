@@ -19,6 +19,7 @@ import { HANDLE_PATTERN } from './handle'
  * screen is harmless; the list only ever needs to be a superset.
  */
 const ROUTE_RESERVED = [
+  'badges',
   'blocked',
   'chat',
   'chats',

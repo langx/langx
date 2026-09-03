@@ -126,7 +126,7 @@ export default function AppLayout() {
           do. It is reached from the profile, which is where the badge count
           already lives.
         */}
-        <Tabs.Screen name="leaderboard" options={FULL_SCREEN} />
+        <Tabs.Screen name="badges" options={FULL_SCREEN} />
         <Tabs.Screen name="chat/[id]" options={FULL_SCREEN} />
         <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
         <Tabs.Screen name="post/[id]" options={FULL_SCREEN} />

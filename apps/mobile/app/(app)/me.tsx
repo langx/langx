@@ -199,7 +199,7 @@ export default function MeScreen() {
       <ListRow
         title={t('me.badges')}
         subtitle={t('me.leaderboardSubtitle')}
-        onPress={() => router.push('/(app)/leaderboard')}
+        onPress={() => router.push('/(app)/badges')}
       />
       {/*
         One row, not the two titled sections this used to be: v3 states the
