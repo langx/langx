@@ -190,7 +190,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       <ScreenHeader title={t('editProfile.title')} onBack={() => goBackTo('/(app)/me')} />
 
       <View style={styles.avatarRow}>
-        <Avatar url={profile.avatarUrl} name={profile.displayName} size={60} />
+        <Avatar url={profile.avatarUrl} name={profile.displayName} seed={profile._id} size={60} />
         {/* v3's second action is plain accent text, not a boxed button. */}
         <Pressable
           accessibilityRole="button"

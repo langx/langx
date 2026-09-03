@@ -110,6 +110,7 @@ export default function MeScreen() {
         <Avatar
           url={profile.avatarUrl}
           name={profile.displayName}
+          seed={profile._id}
           size={72}
           frame={wornFrame?.tone}
         />

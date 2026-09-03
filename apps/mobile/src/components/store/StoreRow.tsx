@@ -23,7 +23,7 @@ export function StoreRow({
   pending: boolean
   last?: boolean
   onBuy: (offer: StoreOffer) => void
-  viewer?: { name: string; avatarUrl?: string | undefined }
+  viewer?: { _id: string; name: string; avatarUrl?: string | undefined }
 }) {
   const t = useT()
   const { locale } = useLocale()
@@ -40,7 +40,13 @@ export function StoreRow({
         opened to be understood is a catalogue nobody reads.
       */}
       {offer.tone && viewer ? (
-        <Avatar url={viewer.avatarUrl} name={viewer.name} size={30} frame={offer.tone} />
+        <Avatar
+          url={viewer.avatarUrl}
+          name={viewer.name}
+          seed={viewer._id}
+          size={30}
+          frame={offer.tone}
+        />
       ) : null}
       <View style={styles.text}>
         <Text style={styles.name}>{offer.title}</Text>

@@ -25,7 +25,7 @@ export function EquipPicker({
   kind: CosmeticKind
   owned: readonly string[]
   equipped: Equipped | undefined
-  viewer: { name: string; avatarUrl?: string | undefined }
+  viewer: { _id: string; name: string; avatarUrl?: string | undefined }
   onEquip: (id: string | null) => void
 }) {
   const styles = useStyles()
@@ -66,7 +66,13 @@ export function EquipPicker({
               style={[styles.pill, on && styles.pillOn]}
             >
               {item.tone ? (
-                <Avatar url={viewer.avatarUrl} name={viewer.name} size={20} frame={item.tone} />
+                <Avatar
+                  url={viewer.avatarUrl}
+                  name={viewer.name}
+                  seed={viewer._id}
+                  size={20}
+                  frame={item.tone}
+                />
               ) : null}
               <Text style={[styles.pillLabel, on && styles.pillLabelOn]}>
                 {cosmeticLabel(t, item.id)}

@@ -126,7 +126,7 @@ export function PeopleSearch({ from, onSearchingChange }: PeopleSearchProps) {
             onPress={() => openProfile(result.handle, from)}
             style={({ pressed }) => [styles.row, pressed && styles.pressed]}
           >
-            <Avatar url={result.avatarUrl} name={result.displayName} size={36} />
+            <Avatar url={result.avatarUrl} name={result.displayName} seed={result._id} size={36} />
             <View style={styles.text}>
               <Text style={styles.name} numberOfLines={1}>
                 {result.displayName}

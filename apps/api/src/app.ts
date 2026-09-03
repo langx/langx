@@ -31,6 +31,7 @@ import { activityRoutes } from './routes/activity'
 import { messageRoutes } from './routes/messages'
 import { moderationRoutes } from './routes/moderation'
 import { profileRoutes } from './routes/profiles'
+import { avatarRoutes } from './routes/avatar'
 import { qrRoutes } from './routes/qr'
 import { publicRoutes } from './routes/public'
 import { translationRoutes } from './routes/translate'
@@ -261,6 +262,7 @@ export async function buildApp({
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
   await app.register(qrRoutes)
+  await app.register(avatarRoutes)
   await app.register(publicRoutes)
   await app.register(followRoutes)
   await app.register(handleRoutes)

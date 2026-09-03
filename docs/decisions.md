@@ -2472,3 +2472,47 @@ in production anyway: it needed `APPWRITE_*` on the server, which was never
 set, and it was the one path that forwarded a password to another system.
 The sign-in screen now calls Better Auth alone. If it goes away before the script has run, the rows
 cannot be opened and this whole path is lost — see the runbook.
+
+## An account without a photo gets a drawn face, not its initials
+
+Two initials on one of three fills is what a photoless account used to look
+like. In a discovery list that is a column of coloured squares with letters on
+them, and most accounts in a fresh install have no photo — so the wall of
+squares was the ordinary case, not the edge one. A face is recognisable, and
+being generated from the account id it is the _same_ face on every screen and
+every device until a photo replaces it.
+
+**DiceBear's Notionists, rendered by our own API.** The style is one import: it
+draws line-art faces that read at the sizes this app uses, and swapping it
+later is a one-line change, not a migration, because nothing is stored.
+
+Not Gravatar, and not DiceBear's hosted API. Both put a third party between the
+device and a picture of our users — Gravatar additionally on a hash of their
+email address — and `docs/store/privacy-data-safety.md` promises exactly one
+third-party SDK. The library is MIT and runs on our own server.
+
+Not a client-side SVG renderer either. That means `react-native-svg`, a native
+module, so a new binary for a picture and nothing that can ship over the air.
+The QR route already settled this question the same way, and this follows it
+exactly: SVG from the API, drawn with `expo-image`.
+
+**Mild gender steering, resolved on the server.** `male` raises the beard
+probability, `female` removes it, and the two private answers — `other` and
+`undisclosed` — get DiceBear's untouched defaults, so an account that declined
+to say is drawn from the same pool as one that was never asked. Notionists'
+hair variants are unnamed (`variant01`…`variant63`), so the beard is the only
+lever the style names outright, and taking more would mean hard-coding
+somebody's idea of which numbered hairstyle is which gender.
+
+The gender is read from the account by the route, never sent by the caller.
+Most of the DTOs that feed an avatar — a feed author, a chat partner, a
+leaderboard row — carry no gender at all, so a `?g=` parameter would give the
+same person a beard on one screen and none on the next.
+
+Two consequences follow, both deliberate. An id nobody holds gets a face and a
+200 rather than a 404, because with a lookup behind it a 404 would answer
+"does this account exist" one id at a time. And the cache is a week rather
+than `immutable`, because the picture is no longer a pure function of its URL —
+gender is writable exactly once, from `undisclosed` to a value, and a
+cache-busting parameter would have to carry the very field this keeps off the
+wire.

@@ -103,6 +103,8 @@ export const REFERRAL_STATUSES = ['pending', 'activated', 'subscribed'] as const
 export type ReferralInviteeStatus = (typeof REFERRAL_STATUSES)[number]
 
 export const referralInviteeSchema = z.object({
+  /** For the generated avatar; without it this row falls back to initials. */
+  _id: z.string(),
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),

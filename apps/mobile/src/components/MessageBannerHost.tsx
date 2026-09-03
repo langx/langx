@@ -79,7 +79,7 @@ export function MessageBannerHost() {
         }}
         style={styles.card}
       >
-        <Avatar url={sender?.avatarUrl} name={name} size={36} />
+        <Avatar url={sender?.avatarUrl} name={name} seed={banner.senderId} size={36} />
         <View style={styles.text}>
           <Text style={styles.name} numberOfLines={1}>
             {name}

@@ -222,6 +222,7 @@ export default function ProfileScreen() {
         <Avatar
           url={user.avatarUrl}
           name={user.displayName}
+          seed={user._id}
           size={84}
           frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
           online={user.isOnline}

@@ -322,7 +322,12 @@ export default function PostScreen() {
                     onPress={() => openProfile(post.author.handle, here)}
                     accessibilityRole="button"
                   >
-                    <Avatar url={post.author.avatarUrl} name={post.author.displayName} size={40} />
+                    <Avatar
+                      url={post.author.avatarUrl}
+                      name={post.author.displayName}
+                      seed={post.author._id}
+                      size={40}
+                    />
                     <View style={styles.whoText}>
                       <Text style={styles.name} numberOfLines={1}>
                         {post.author.displayName}
@@ -413,7 +418,12 @@ export default function PostScreen() {
                 onPress={() => openProfile(item.author.handle, here)}
                 accessibilityRole="button"
               >
-                <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={28} />
+                <Avatar
+                  url={item.author.avatarUrl}
+                  name={item.author.displayName}
+                  seed={item.author._id}
+                  size={28}
+                />
                 <Text style={styles.correctionName} numberOfLines={1}>
                   {item.author.displayName}
                 </Text>
@@ -493,7 +503,12 @@ export default function PostScreen() {
                     onPress={() => openProfile(item.author.handle, here)}
                     accessibilityRole="button"
                   >
-                    <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={24} />
+                    <Avatar
+                      url={item.author.avatarUrl}
+                      name={item.author.displayName}
+                      seed={item.author._id}
+                      size={24}
+                    />
                     <Text style={styles.correctionName} numberOfLines={1}>
                       {item.author.displayName}
                     </Text>

@@ -67,7 +67,7 @@ export default function BlockedScreen() {
             const name = profile?.displayName ?? `@${item.blockedId.slice(-6)}`
             return (
               <View style={styles.row}>
-                <Avatar url={profile?.avatarUrl} name={name} />
+                <Avatar url={profile?.avatarUrl} name={name} seed={item.blockedId} />
                 <View style={styles.body}>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.since}>
