@@ -170,6 +170,26 @@ describe('claiming a batch', () => {
     expect(await handle.db.collection(COLLECTIONS.emailCampaigns).countDocuments({})).toBe(3)
   })
 
+  /**
+   * The first version read the claim back by `sentAt`, which is the same
+   * millisecond for two batches on a fast machine — so the second call
+   * reported having claimed people the first one had, and the script would
+   * have mailed them twice. Pinning the timestamp is what makes that failure
+   * deterministic rather than a matter of how quick the runner is.
+   */
+  it('does not claim somebody just because they share a timestamp', async () => {
+    const sameInstant = new Date('2026-09-03T00:00:00.000Z')
+    await claimCampaignRecipients(handle.db, CAMPAIGN, ['a'], sameInstant)
+    const claimed = await claimCampaignRecipients(handle.db, CAMPAIGN, ['a', 'b'], sameInstant)
+
+    expect(claimed).toEqual(['b'])
+  })
+
+  it('claims nobody when the whole batch was already sent', async () => {
+    await claimCampaignRecipients(handle.db, CAMPAIGN, ['a', 'b'])
+    expect(await claimCampaignRecipients(handle.db, CAMPAIGN, ['a', 'b'])).toEqual([])
+  })
+
   it('gives them back when the send fails', async () => {
     const claimed = await claimCampaignRecipients(handle.db, CAMPAIGN, ['a', 'b'])
     await releaseCampaignRecipients(handle.db, CAMPAIGN, claimed)

@@ -95,8 +95,15 @@ export async function campaignRecipients(
  * did, so it cannot send to them either. Same doctrine as `jobRuns` — the
  * invariant is in the database rather than in the caller's care.
  *
- * Returns whoever was claimed. `ordered: false` so one duplicate in a batch of
- * a hundred does not abandon the other ninety-nine.
+ * Returns whoever *this call* claimed. `ordered: false` so one duplicate in a
+ * batch of a hundred does not abandon the other ninety-nine, and the answer is
+ * read from the write errors' positions rather than from the rows afterwards.
+ *
+ * Reading it back by timestamp was the obvious version and it was wrong: two
+ * claims inside the same millisecond — which is every batch on a fast machine
+ * — share a `sentAt`, so the second call reported having claimed people the
+ * first one had, and the script would have mailed them twice. CI caught it;
+ * a local run did not, because it was slower.
  */
 export async function claimCampaignRecipients(
   db: Db,
@@ -107,19 +114,20 @@ export async function claimCampaignRecipients(
   if (userIds.length === 0) return []
   const rows = userIds.map((userId) => ({ campaignId, userId, sentAt: at }))
   try {
-    await db.collection<CampaignSend>(COLLECTIONS.emailCampaigns).insertMany(rows, {
-      ordered: false,
-    })
+    await db
+      .collection<CampaignSend>(COLLECTIONS.emailCampaigns)
+      .insertMany(rows, { ordered: false })
     return userIds
   } catch (error) {
-    // A duplicate-key error still inserts everything else. Ask the database
-    // which of them landed rather than guessing from the error shape.
     if ((error as { code?: number }).code !== 11000) throw error
-    const inserted = await db
-      .collection<CampaignSend>(COLLECTIONS.emailCampaigns)
-      .find({ campaignId, userId: { $in: userIds }, sentAt: at }, { projection: { userId: 1 } })
-      .toArray()
-    return inserted.map((row) => row.userId)
+    // Each write error carries the index of the row it rejected, which points
+    // straight back into `userIds`. Everything else in the batch did land.
+    const rejected = new Set(
+      ((error as { writeErrors?: { index?: number }[] }).writeErrors ?? [])
+        .map((writeError) => writeError.index)
+        .filter((index): index is number => typeof index === 'number'),
+    )
+    return userIds.filter((_, index) => !rejected.has(index))
   }
 }
 
