@@ -100,6 +100,7 @@ export const fr: Localized<ServerMessages> = {
       profileVisits: 'les résumés de visites de profil',
       promotions: 'les actualités et offres',
       all: 'les e-mails de LangX',
+      v1contact: 'le message unique sur le nouveau LangX',
     },
   },
 }

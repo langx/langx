@@ -194,4 +194,44 @@ describe('unsubscribing from a link in an email', () => {
     expect((await app.inject({ method: 'GET', url: '/email/unsubscribe' })).statusCode).toBe(400)
     expect((await app.inject({ method: 'POST', url: '/email/unsubscribe' })).statusCode).toBe(400)
   })
+
+  /**
+   * The link in the one mail to v1 accounts their owners deleted. No account
+   * behind it, so the only thing "stop" can mean is forgetting the address.
+   */
+  it('the v1-contact scope forgets the address, and only on the POST', async () => {
+    const contacts = handle.db.collection(COLLECTIONS.v1DeletedContacts)
+    await contacts.insertOne({
+      _id: 'appwrite-gone' as never,
+      email: 'gone@example.com',
+      name: 'Gone',
+      legacyUserId: 'appwrite-gone',
+      recordedAt: new Date(),
+    })
+    const token = signUnsubscribeToken(SECRET, 'appwrite-gone', 'v1contact')
+
+    const asked = await app.inject({
+      method: 'GET',
+      url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
+    })
+    expect(asked.statusCode).toBe(200)
+    expect(asked.body).toContain('the one message about the new LangX')
+    expect(await contacts.countDocuments({ _id: 'appwrite-gone' as never })).toBe(1)
+
+    const done = await app.inject({
+      method: 'POST',
+      url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      payload: 'List-Unsubscribe=One-Click',
+    })
+    expect(done.statusCode).toBe(200)
+    expect(await contacts.countDocuments({ _id: 'appwrite-gone' as never })).toBe(0)
+
+    // A second press is not an error page.
+    const again = await app.inject({
+      method: 'POST',
+      url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
+    })
+    expect(again.statusCode).toBe(200)
+  })
 })

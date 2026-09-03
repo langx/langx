@@ -107,6 +107,7 @@ export const ru: Localized<ServerMessages> = {
       profileVisits: 'сводки визитов в профиль',
       promotions: 'новости и предложения',
       all: 'письма от LangX',
+      v1contact: 'единственное сообщение о новом LangX',
     },
   },
 }

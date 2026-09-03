@@ -101,6 +101,7 @@ export const en = {
       profileVisits: 'profile-visit summaries',
       promotions: 'news and offers',
       all: 'email from LangX',
+      v1contact: 'the one message about the new LangX',
     },
   },
 } as const
