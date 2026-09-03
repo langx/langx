@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
+    "babel-preset-expo": "~57.0.8",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
