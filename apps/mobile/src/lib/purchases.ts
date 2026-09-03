@@ -41,6 +41,14 @@ const isSupportedPlatform = Platform.OS === 'ios' || Platform.OS === 'android'
  * A released build uses the per-platform key for its real store app. Until
  * those exist, the Test Store key is the only one this project has, and it
  * covers both platforms — hence the fallback rather than a second branch.
+ *
+ * The fallback is **development-only**. The RevenueCat SDK does not treat a
+ * Test Store key in a release build as a misconfiguration to report: it calls
+ * `fatalError` inside `configure()`, before the `try` around it can catch
+ * anything, and the process dies on the first screen that identifies the
+ * user. A Release build on a phone with the dev `.env` inlined went down that
+ * way on the language screen after sign-in. Without the key the paywall says
+ * purchasing is unavailable, which is the degradation rule 1 promises.
  */
 function apiKey(): string | null {
   if (!isSupportedPlatform) return null
@@ -48,7 +56,8 @@ function apiKey(): string | null {
     Platform.OS === 'ios'
       ? process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY
       : process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY
-  return platformKey || process.env.EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY || null
+  if (platformKey) return platformKey
+  return __DEV__ ? process.env.EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY || null : null
 }
 
 export function isPurchasesAvailable(): boolean {
