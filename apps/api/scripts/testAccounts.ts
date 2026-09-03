@@ -24,6 +24,18 @@ import { COLLECTIONS } from '../src/db/collections'
 import { createProfile, type Profile } from '../src/modules/profiles/profiles'
 
 /**
+ * The suffix a database must carry before a fixture script will write to it.
+ *
+ * One Atlas user reaches every database on the cluster, so nothing about the
+ * connection distinguishes `langx_dev` from `langx` — the name is the only
+ * thing that does, and this is where that name is checked. Deliberately a
+ * *shape* rather than a list of allowed names: a new environment invents its
+ * own database and would otherwise have to remember to add itself here, and
+ * the one that forgets is the one that reaches for `--db langx` instead.
+ */
+const FIXTURE_DB_SUFFIX = '_dev'
+
+/**
  * Which database a fixture script writes to.
  *
  * `--db` is a guard, not a convenience: one Atlas user reaches both `langx_dev`
@@ -34,14 +46,29 @@ import { createProfile, type Profile } from '../src/modules/profiles/profiles'
  * that picked up a shell fragment — from reaching a live cluster under a name
  * nobody meant. It is also what stops `process.argv` counting as a live source
  * all the way into the writes downstream.
+ *
+ * The suffix check is the second half, and it covers the case the flag cannot:
+ * **the fallback**. Without `--db` the name comes from `MONGODB_DB`, which
+ * under the production overlay is `langx` — so a fixture script run with the
+ * wrong env file loaded, and no flag at all, used to seed real accounts with a
+ * shared password into production and say nothing. There is no override on
+ * purpose. These accounts exist to make Discover and chat show something on a
+ * developer's machine; a reason to want them in production is a reason to stop
+ * and think, not a flag to pass.
  */
 export function resolveDbName(args: string[], fallback: string): string {
   const flag = args.indexOf('--db')
-  if (flag === -1) return fallback
+  const requested = flag === -1 ? fallback : (args[flag + 1] ?? fallback)
 
-  const requested = args[flag + 1] ?? fallback
   if (!/^[A-Za-z0-9_-]{1,63}$/.test(requested)) {
     throw new Error(`--db must be a plain database name, got "${requested}"`)
+  }
+  if (!requested.endsWith(FIXTURE_DB_SUFFIX)) {
+    throw new Error(
+      `Refusing to seed "${requested}": fixture accounts only go into a ` +
+        `database whose name ends in "${FIXTURE_DB_SUFFIX}". ` +
+        `Pass --db ${requested}${FIXTURE_DB_SUFFIX}, or check which env file is loaded.`,
+    )
   }
   return requested
 }
