@@ -48,7 +48,7 @@ describe('the unread-message digest', () => {
       await handle.db.collection(name).deleteMany({})
     }
     sender = new CapturingEmailSender()
-    ctx = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api2.langx.io' }
+    ctx = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' }
   })
 
   async function newProfile(

@@ -55,7 +55,7 @@ describe('the badge round-up', () => {
     sender = new CapturingEmailSender()
     senders = {
       push,
-      email: { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api2.langx.io' },
+      email: { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' },
     }
   })
 

@@ -53,8 +53,8 @@ describe('unsubscribe tokens', () => {
 
   it('builds a url that survives a token in a query string', () => {
     const token = signUnsubscribeToken(SECRET, 'user/1', 'messages')
-    const url = unsubscribeUrl('https://api2.langx.io/', token)
-    expect(url.startsWith('https://api2.langx.io/email/unsubscribe?token=')).toBe(true)
+    const url = unsubscribeUrl('https://api.langx.io/', token)
+    expect(url.startsWith('https://api.langx.io/email/unsubscribe?token=')).toBe(true)
     const parsed = new URL(url)
     expect(verifyUnsubscribeToken(SECRET, parsed.searchParams.get('token') ?? undefined)).toEqual({
       userId: 'user/1',

@@ -55,12 +55,12 @@ describe('the sentences', () => {
 
   it('links a profile to the profile, not to an invite', () => {
     const { url } = profileShareText(t, { name: 'Deniz', handle: 'deniz' })
-    expect(url).toBe('https://app2.langx.io/deniz')
+    expect(url).toBe('https://app.langx.io/deniz')
   })
 
   it('links a post to the post', () => {
     const { url, message } = postShareText(t, { id: 'abc', body: 'Hola', languageName: 'Spanish' })
-    expect(url).toBe('https://app2.langx.io/post/abc')
+    expect(url).toBe('https://app.langx.io/post/abc')
     expect(message).toContain('Hola')
     expect(message).toContain('Spanish')
   })
@@ -72,7 +72,7 @@ describe('the sentences', () => {
       leaderboardShareText(t, { rank: 3, period: 'all', handle: 'deniz' }),
       badgeShareText(t, { label: '30 days', handle: 'deniz' }),
     ]) {
-      expect(url).toBe('https://app2.langx.io/deniz?invite=1')
+      expect(url).toBe('https://app.langx.io/deniz?invite=1')
     }
   })
 

@@ -20,7 +20,7 @@ import { FLAG_KEYS, writeFlag } from '../lib/localFlags'
  *
  * Today this is mostly dormant. `APP_LINK_HOST` is `app.langx.io` — what the
  * app claims in its association files — while shared links point at
- * `WEB_HOST`, `app2.langx.io`, so on a phone an invite link opens the browser
+ * `WEB_HOST`, `app.langx.io`, so on a phone an invite link opens the browser
  * rather than the app. The web build is where it actually fires, and
  * `app/[username].tsx` covers that case directly. This is written now so that
  * the day the hosts converge, the flow already works.
