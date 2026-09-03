@@ -39,6 +39,10 @@ const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 const config: ExpoConfig = {
   name: 'LangX',
   slug: 'langx',
+  // The EAS project lives under the `langx` organisation, not under whoever is
+  // logged in. Without this every `eas` command refuses to run for a personal
+  // account, even one that owns the organisation.
+  owner: 'langx',
   version: '2.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
