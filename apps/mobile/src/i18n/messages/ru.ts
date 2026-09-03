@@ -1045,7 +1045,7 @@ export const ru: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'Заморозка серии',
-    streakFreezeBody: 'Спасает один пропущенный день · накоплено {banked}/{max}',
+    streakFreezeBody: 'Покроет следующий пропущенный день · {banked}/{max} в запасе',
     ownedAccessibility: '{title}, уже есть',
     buy: 'Купить {title} за {price} жетонов',
     yourFrames: 'Ваши рамки',
@@ -1060,6 +1060,10 @@ export const ru: Localized<EnMessages> = {
     frameKind: 'Рамка профиля',
     titleKind: 'Титул',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Вернуть день',
+    repairDayBody: 'Закрывает пропущенный день · осталось {left} в этом месяце',
+    bought: '{title} — твой',
+    buyFailed: 'Не удалось купить',
   },
 
   wallet: {
@@ -1070,7 +1074,7 @@ export const ru: Localized<EnMessages> = {
     itemsOwned: 'Предметы',
     storeTitle: 'Магазин',
     disclaimer:
-      'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии и косметика. Нет ни цепочки, ни контракта, ни рынка.',
+      'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии, пропущенные дни и косметика. Нет ни цепочки, ни контракта, ни рынка.',
   },
 
   tokens: {

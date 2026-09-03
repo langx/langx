@@ -961,7 +961,7 @@ export const en = {
 
   store: {
     streakFreeze: 'Streak freeze',
-    streakFreezeBody: 'Saves one missed day · {banked}/{max} banked',
+    streakFreezeBody: 'Covers the next day you miss · {banked}/{max} banked',
     ownedAccessibility: '{title}, owned',
     buy: 'Buy {title} for {price} tokens',
     yourFrames: 'Your frames',
@@ -976,6 +976,10 @@ export const en = {
     frameKind: 'Profile frame',
     titleKind: 'Title',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Buy a day back',
+    repairDayBody: 'Fills in a day you missed · {left} left this month',
+    bought: '{title} is yours',
+    buyFailed: 'Could not buy that',
   },
 
   wallet: {
@@ -986,7 +990,7 @@ export const en = {
     itemsOwned: 'Items owned',
     storeTitle: 'Store',
     disclaimer:
-      'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes and cosmetics. There is no chain, no contract and no market.',
+      'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes, missed days and cosmetics. There is no chain, no contract and no market.',
   },
 
   tokens: {

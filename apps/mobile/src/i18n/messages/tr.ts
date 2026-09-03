@@ -931,7 +931,7 @@ export const tr: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'Seri dondurma',
-    streakFreezeBody: 'Kaçırılan bir günü kurtarır · {banked}/{max} birikti',
+    streakFreezeBody: 'Kaçıracağın ilk günü karşılar · {banked}/{max} bankada',
     ownedAccessibility: '{title}, sende var',
     buy: '{title} için {price} jeton öde',
     yourFrames: 'Çerçevelerin',
@@ -946,6 +946,10 @@ export const tr: Localized<EnMessages> = {
     frameKind: 'Profil çerçevesi',
     titleKind: 'Unvan',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Bir günü geri al',
+    repairDayBody: 'Kaçırdığın bir günü doldurur · bu ay {left} hakkın var',
+    bought: '{title} senin',
+    buyFailed: 'Satın alınamadı',
   },
 
   wallet: {
@@ -956,7 +960,7 @@ export const tr: Localized<EnMessages> = {
     itemsOwned: 'Sahip olunan',
     storeTitle: 'Mağaza',
     disclaimer:
-      'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
+      'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma, kaçırılan günler ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
   },
 
   tokens: {

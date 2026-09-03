@@ -579,6 +579,21 @@ export const repairDaySchema = z.object({
  * Yesterday is where an unfinished today starts from — a user who has not sent
  * anything yet today still has the run that ended yesterday.
  */
+/**
+ * Whether a missed day is still inside the window a repair can reach.
+ *
+ * Two dates and nothing else. It used to take a timezone and a clock as well,
+ * and derive today from them — but every caller already knows what today is,
+ * because everything else about a streak is keyed on that same day string. The
+ * extra arguments were a second way to compute the same answer, which is a
+ * second way to get it wrong.
+ */
+export function isRepairable(day: string, today: string): boolean {
+  // Today is earned rather than bought, and tomorrow has not happened.
+  if (day >= today) return false
+  return day >= shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays)
+}
+
 export function streakFromDays(days: Set<string>, today: string): number {
   let cursor = streakHeadDay(days, today)
   if (cursor === null) return 0

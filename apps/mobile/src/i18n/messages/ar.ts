@@ -1089,7 +1089,7 @@ export const ar: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'تجميد السلسلة',
-    streakFreezeBody: 'ينقذ يومًا فائتًا · {banked}/{max} مُدّخر',
+    streakFreezeBody: 'يغطّي أول يوم تفوته · {banked}/{max} في الرصيد',
     ownedAccessibility: '{title}، مملوك',
     buy: 'شراء {title} مقابل {price} رمزًا',
     yourFrames: 'إطاراتك',
@@ -1104,6 +1104,10 @@ export const ar: Localized<EnMessages> = {
     frameKind: 'إطار الملف',
     titleKind: 'لقب',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'استرجع يومًا',
+    repairDayBody: 'يملأ يومًا فاتك · بقي لك {left} هذا الشهر',
+    bought: '{title} أصبح لك',
+    buyFailed: 'تعذّر الشراء',
   },
 
   wallet: {
@@ -1114,7 +1118,7 @@ export const ar: Localized<EnMessages> = {
     itemsOwned: 'العناصر المملوكة',
     storeTitle: 'المتجر',
     disclaimer:
-      'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح خطة مدفوعة — فقط تجميدات السلسلة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
+      'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح خطة مدفوعة — فقط تجميدات السلسلة والأيام الفائتة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
   },
 
   tokens: {

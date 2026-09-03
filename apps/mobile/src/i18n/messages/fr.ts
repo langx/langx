@@ -930,7 +930,7 @@ export const fr: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'Gel de série',
-    streakFreezeBody: 'Sauve un jour manqué · {banked}/{max} en réserve',
+    streakFreezeBody: 'Couvre le prochain jour manqué · {banked}/{max} en réserve',
     ownedAccessibility: '{title}, déjà acquis',
     buy: 'Acheter {title} pour {price} jetons',
     yourFrames: 'Tes cadres',
@@ -945,6 +945,10 @@ export const fr: Localized<EnMessages> = {
     frameKind: 'Cadre de profil',
     titleKind: 'Titre',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Racheter un jour',
+    repairDayBody: 'Comble un jour manqué · il t’en reste {left} ce mois-ci',
+    bought: '{title} est à toi',
+    buyFailed: 'Achat impossible',
   },
 
   wallet: {
@@ -955,7 +959,7 @@ export const fr: Localized<EnMessages> = {
     itemsOwned: 'Objets possédés',
     storeTitle: 'Boutique',
     disclaimer:
-      'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer une formule payante — seulement des gels de série et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
+      'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer une formule payante — seulement des gels de série, des jours manqués et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
   },
 
   tokens: {

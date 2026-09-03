@@ -1,5 +1,3 @@
-import { localDayKey, shiftDayKey, TOKEN_RULES } from '@langx/shared'
-
 // Re-exported so callers here keep one import; the walk itself lives in shared,
 // because the client has to predict the same number before a repair is bought.
 // `streakHeadDay` travels with it: they share the rule about where an
@@ -141,10 +139,11 @@ export async function repairsInMonth(db: Db, userId: string, day: string): Promi
   })
 }
 
-/** Whether a day is inside the window a repair may still reach. */
-export function isRepairable(day: string, today: string, timeZone: string, now: Date): boolean {
-  // Today is earned, not bought, and tomorrow has not happened.
-  if (day >= today) return false
-  const oldest = shiftDayKey(localDayKey(now, timeZone), -TOKEN_RULES.sinks.dayRepairMaxAgeDays)
-  return day >= oldest
-}
+/*
+ * Moved to `@langx/shared` so the app can ask the same question the server
+ * answers — the store row for a repair has to know which day is still
+ * reachable, and a second copy of that rule in the client is how the two
+ * would come to disagree. Re-exported here because this is where every
+ * server-side caller already looks for it.
+ */
+export { isRepairable } from '@langx/shared'

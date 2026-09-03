@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRepairable, streakDayId, streakFromDays } from './streakDays'
+import { streakDayId, streakFromDays } from './streakDays'
 
 describe('streakFromDays', () => {
   const today = '2026-08-29'
@@ -38,28 +38,6 @@ describe('streakFromDays', () => {
   it('ignores days after today', () => {
     const days = new Set(['2026-08-30', '2026-08-29'])
     expect(streakFromDays(days, today)).toBe(1)
-  })
-})
-
-describe('isRepairable', () => {
-  const now = new Date('2026-08-29T12:00:00.000Z')
-  const today = '2026-08-29'
-
-  it('refuses today, which is earned rather than bought', () => {
-    expect(isRepairable(today, today, 'UTC', now)).toBe(false)
-  })
-
-  it('refuses a day that has not happened', () => {
-    expect(isRepairable('2026-08-30', today, 'UTC', now)).toBe(false)
-  })
-
-  it('allows yesterday and the edge of the window', () => {
-    expect(isRepairable('2026-08-28', today, 'UTC', now)).toBe(true)
-    expect(isRepairable('2026-08-15', today, 'UTC', now)).toBe(true)
-  })
-
-  it('refuses one day past the window', () => {
-    expect(isRepairable('2026-08-14', today, 'UTC', now)).toBe(false)
   })
 })
 

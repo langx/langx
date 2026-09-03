@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { streakFromDays, streakHeadDay } from './token'
+import { isRepairable, streakFromDays, streakHeadDay } from './token'
 
 const days = (...list: string[]) => new Set(list)
 
@@ -46,5 +46,26 @@ describe('streakHeadDay', () => {
     const set = days('2026-08-27', '2026-08-28', '2026-08-29', '2026-08-30')
     expect(streakHeadDay(set, '2026-08-31')).toBe('2026-08-30')
     expect(streakFromDays(set, '2026-08-31')).toBe(4)
+  })
+})
+
+describe('isRepairable', () => {
+  const today = '2026-08-29'
+
+  it('refuses today, which is earned rather than bought', () => {
+    expect(isRepairable(today, today)).toBe(false)
+  })
+
+  it('refuses a day that has not happened', () => {
+    expect(isRepairable('2026-08-30', today)).toBe(false)
+  })
+
+  it('allows yesterday and the edge of the window', () => {
+    expect(isRepairable('2026-08-28', today)).toBe(true)
+    expect(isRepairable('2026-08-15', today)).toBe(true)
+  })
+
+  it('refuses one day past the window', () => {
+    expect(isRepairable('2026-08-14', today)).toBe(false)
   })
 })

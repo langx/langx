@@ -22,7 +22,7 @@ export function StoreRow({
   offer: StoreOffer
   pending: boolean
   last?: boolean
-  onBuy: (id: string) => void
+  onBuy: (offer: StoreOffer) => void
   viewer?: { name: string; avatarUrl?: string | undefined }
 }) {
   const t = useT()
@@ -74,7 +74,7 @@ export function StoreRow({
         }
         accessibilityState={{ disabled: !buyable }}
         disabled={!buyable}
-        onPress={() => onBuy(offer.id)}
+        onPress={() => onBuy(offer)}
         style={({ pressed }) => [
           styles.price,
           // Yellow only when the tap does something. An affordable, unowned
