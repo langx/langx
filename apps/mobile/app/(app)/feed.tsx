@@ -1,15 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../src/components/ui/FormField'
 import { Button } from '../../src/components/ui/Button'
 import { uploadPostMedia } from '../../src/api/queries'
@@ -41,6 +33,7 @@ import { isImageContentType } from '@langx/shared'
 import { ApiRequestError } from '../../src/api/client'
 import { shareLink } from '../../src/lib/share'
 import { postShareText } from '../../src/lib/shareText'
+import { confirmAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
 import { relativeTime } from '../../src/lib/format'
 
@@ -256,19 +249,18 @@ export default function FeedScreen() {
     )
   }
 
-  function confirmDelete(postId: string): void {
-    Alert.alert(t('feed.deleteConfirmTitle'), t('feed.deletePostConfirmBody'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('feed.deletePost'),
-        style: 'destructive',
-        onPress: () =>
-          deletePost.mutate(postId, {
-            onSuccess: () => showToast(t('feed.deleted')),
-            onError: () => showToast(t('common.retry')),
-          }),
-      },
-    ])
+  async function confirmDelete(postId: string): Promise<void> {
+    const yes = await confirmAlert({
+      title: t('feed.deleteConfirmTitle'),
+      message: t('feed.deletePostConfirmBody'),
+      confirmLabel: t('feed.deletePost'),
+      destructive: true,
+    })
+    if (!yes) return
+    deletePost.mutate(postId, {
+      onSuccess: () => showToast(t('feed.deleted')),
+      onError: () => showToast(t('common.retry')),
+    })
   }
 
   async function submitAsk(): Promise<void> {
@@ -579,7 +571,7 @@ export default function FeedScreen() {
                       accessibilityRole="button"
                       hitSlop={8}
                       disabled={deletePost.isPending}
-                      onPress={() => confirmDelete(item._id)}
+                      onPress={() => void confirmDelete(item._id)}
                       style={({ pressed }) => (pressed ? styles.pressed : null)}
                     >
                       <Text style={styles.deleteAction}>{t('feed.deletePost')}</Text>

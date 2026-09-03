@@ -43,6 +43,30 @@ export default tseslint.config(
     },
   },
   {
+    // `Alert` from react-native is an empty static on react-native-web, so a
+    // confirmation written with it is a no-op in the browser: the dialog never
+    // appears and the `onPress` behind it never runs. Deleting a post did
+    // nothing on the web build for exactly this reason. `src/lib/alert` draws
+    // the same dialogs with `Modal`, which web does implement. This rule is the
+    // regression test — mobile vitest cannot load react-native, so nothing else
+    // can catch the import coming back.
+    files: ['apps/mobile/**/*.ts', 'apps/mobile/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-native',
+              importNames: ['Alert'],
+              message: 'Alert is a no-op on react-native-web. Use src/lib/alert.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/vitest.config.ts'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
