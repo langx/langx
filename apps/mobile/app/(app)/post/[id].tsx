@@ -1,15 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { MAX_COMMENT_LENGTH, MAX_POST_LENGTH } from '@langx/shared'
 import {
   uploadPostMedia,
@@ -43,6 +35,7 @@ import { foldCorrection } from '../../../src/lib/feedCache'
 import { listState } from '../../../src/lib/listState'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { relativeTime } from '../../../src/lib/format'
+import { confirmAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
 import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
@@ -248,23 +241,22 @@ export default function PostScreen() {
     )
   }
 
-  function confirmDeletePost(): void {
+  async function confirmDeletePost(): Promise<void> {
     if (!post) return
-    Alert.alert(t('feed.deleteConfirmTitle'), t('feed.deletePostConfirmBody'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('feed.deletePost'),
-        style: 'destructive',
-        onPress: () =>
-          deletePost.mutate(post._id, {
-            onSuccess: () => {
-              showToast(t('feed.deleted'))
-              goBackTo('/(app)/feed', from)
-            },
-            onError: () => showToast(t('common.retry')),
-          }),
+    const yes = await confirmAlert({
+      title: t('feed.deleteConfirmTitle'),
+      message: t('feed.deletePostConfirmBody'),
+      confirmLabel: t('feed.deletePost'),
+      destructive: true,
+    })
+    if (!yes) return
+    deletePost.mutate(post._id, {
+      onSuccess: () => {
+        showToast(t('feed.deleted'))
+        goBackTo('/(app)/feed', from)
       },
-    ])
+      onError: () => showToast(t('common.retry')),
+    })
   }
 
   function removeReply(replyId: string): void {
@@ -392,7 +384,7 @@ export default function PostScreen() {
                       accessibilityRole="button"
                       hitSlop={8}
                       disabled={deletePost.isPending}
-                      onPress={confirmDeletePost}
+                      onPress={() => void confirmDeletePost()}
                       style={({ pressed }) => (pressed ? styles.pressed : null)}
                     >
                       <Text style={styles.deleteAction}>{t('feed.deletePost')}</Text>
