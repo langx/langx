@@ -924,7 +924,7 @@ export const es: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'Congelar racha',
-    streakFreezeBody: 'Salva un día perdido · {banked}/{max} guardadas',
+    streakFreezeBody: 'Cubre el próximo día que falles · {banked}/{max} guardados',
     ownedAccessibility: '{title}, ya lo tienes',
     buy: 'Comprar {title} por {price} fichas',
     yourFrames: 'Tus marcos',
@@ -939,6 +939,10 @@ export const es: Localized<EnMessages> = {
     frameKind: 'Marco de perfil',
     titleKind: 'Título',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Recupera un día',
+    repairDayBody: 'Rellena un día que perdiste · te quedan {left} este mes',
+    bought: '{title} es tuyo',
+    buyFailed: 'No se pudo comprar',
   },
 
   wallet: {
@@ -949,7 +953,7 @@ export const es: Localized<EnMessages> = {
     itemsOwned: 'Objetos',
     storeTitle: 'Tienda',
     disclaimer:
-      'Las fichas son puntos dentro de la app. No se pueden comprar, intercambiar, retirar ni usar para desbloquear un plan de pago: solo congelaciones de racha y cosméticos. No hay cadena, ni contrato, ni mercado.',
+      'Las fichas son puntos dentro de la app. No se pueden comprar, intercambiar, retirar ni usar para desbloquear un plan de pago: solo congelaciones de racha, días perdidos y cosméticos. No hay cadena, ni contrato, ni mercado.',
   },
 
   tokens: {

@@ -1,13 +1,15 @@
-import { COSMETICS, type PeriodType } from '@langx/shared'
+import { COSMETICS, shiftDayKey, TOKEN_RULES, type PeriodType } from '@langx/shared'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import {
+  useActivity,
   useLeaderboard,
   useMe,
   usePurchase,
+  useRepairDay,
   useTokens,
   useUpdateProfile,
   useWallet,
@@ -15,13 +17,17 @@ import {
 import { EquipPicker } from '../../src/components/store/EquipPicker'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { LeaderboardSection } from '../../src/components/LeaderboardSection'
+import type { StoreOffer } from '../../src/lib/storeOffers'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../src/components/ui/StatTile'
+import { showAlert } from '../../src/lib/alert'
 import { goBackTo } from '../../src/lib/navigation'
+import { confirmAndRepair } from '../../src/lib/repairFlow'
+import { showToast } from '../../src/lib/toast'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { periodLabel, useT } from '../../src/i18n'
+import { periodLabel, useLocale, useT } from '../../src/i18n'
 import { leaderboardShareText } from '../../src/lib/shareText'
 
 /**
@@ -44,11 +50,20 @@ export default function WalletScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
 
   const me = useMe()
   const wallet = useWallet()
   const [period, setPeriod] = useState<PeriodType>('week')
   const board = useLeaderboard(period)
+  /*
+   * The window a repair can still reach, so the store can offer the newest day
+   * inside it. Same query the heatmap on `/me` already runs, so it is usually
+   * in cache by the time somebody walks over here.
+   */
+  const today = new Date().toISOString().slice(0, 10)
+  const activity = useActivity(shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays), today)
+  const repairDay = useRepairDay()
   const purchase = usePurchase()
   const update = useUpdateProfile()
   // The shop needs both to draw a gate's progress; the wallet itself does not.
@@ -83,10 +98,54 @@ export default function WalletScreen() {
     lifetimeCorrections: xp.data?.lifetime.corrections ?? 0,
     owned,
     streakFreezes: wallet.data?.streakFreezes ?? 0,
+    ...(activity.data
+      ? {
+          repair: {
+            today: activity.data.today,
+            filled: new Set(activity.data.days.map((day) => day.day)),
+            price: activity.data.repair.price,
+            usedThisMonth: activity.data.repair.usedThisMonth,
+          },
+        }
+      : {}),
   })
 
+  /**
+   * Buying, and saying so.
+   *
+   * Both halves were missing. The purchase was `purchase.mutate(id)` with no
+   * success and no error handler, so a freeze bought at a full bank failed in
+   * silence — the button dimmed, nothing else moved, and there was no way to
+   * tell a refusal from a slow network.
+   *
+   * A repair is a different endpoint and a different confirmation, which is
+   * why the row carries the day rather than the screen parsing it back out of
+   * an id.
+   */
+  function buy(offer: StoreOffer): void {
+    if (offer.repairDay && activity.data) {
+      void confirmAndRepair({
+        day: offer.repairDay,
+        today: activity.data.today,
+        filled: new Set(activity.data.days.map((day) => day.day)),
+        price: activity.data.repair.price,
+        balance,
+        left: Math.max(0, activity.data.repair.perMonth - activity.data.repair.usedThisMonth),
+        perMonth: activity.data.repair.perMonth,
+        t,
+        locale,
+        repair: (day, handlers) => repairDay.mutate(day, handlers),
+      })
+      return
+    }
+    purchase.mutate(offer.id, {
+      onSuccess: () => showToast(t('store.bought', { title: offer.title })),
+      onError: () => void showAlert(t('store.buyFailed'), t('common.retry')),
+    })
+  }
+
   function refresh(): void {
-    void Promise.all([me.refetch(), wallet.refetch(), xp.refetch()])
+    void Promise.all([me.refetch(), wallet.refetch(), xp.refetch(), activity.refetch()])
   }
 
   /*
@@ -182,7 +241,7 @@ export default function WalletScreen() {
             offer={offer}
             pending={purchase.isPending}
             last={index === offers.length - 1}
-            onBuy={(id) => purchase.mutate(id)}
+            onBuy={buy}
             viewer={viewer}
           />
         ))}

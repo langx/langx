@@ -948,7 +948,7 @@ export const de: Localized<EnMessages> = {
 
   store: {
     streakFreeze: 'Serienschutz',
-    streakFreezeBody: 'Rettet einen verpassten Tag · {banked}/{max} auf Vorrat',
+    streakFreezeBody: 'Deckt den nächsten verpassten Tag · {banked}/{max} auf Lager',
     ownedAccessibility: '{title}, bereits vorhanden',
     buy: '{title} für {price} Token kaufen',
     yourFrames: 'Deine Rahmen',
@@ -963,6 +963,10 @@ export const de: Localized<EnMessages> = {
     frameKind: 'Profilrahmen',
     titleKind: 'Titel',
     todayCounts: '{messages} · {corrections}',
+    repairDay: 'Einen Tag zurückkaufen',
+    repairDayBody: 'Füllt einen verpassten Tag · diesen Monat noch {left}',
+    bought: '{title} gehört dir',
+    buyFailed: 'Kauf nicht möglich',
   },
 
   wallet: {
@@ -973,7 +977,7 @@ export const de: Localized<EnMessages> = {
     itemsOwned: 'Besitz',
     storeTitle: 'Shop',
     disclaimer:
-      'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
+      'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes, verpasste Tage und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },
 
   tokens: {

@@ -5,6 +5,8 @@ import {
   type CosmeticTone,
   STREAK_FREEZE_SKU,
   TOKEN_RULES,
+  isRepairable,
+  shiftDayKey,
 } from '@langx/shared'
 import type { MessageKey, TranslateFn } from '../i18n/runtime'
 
@@ -39,6 +41,15 @@ export interface StoreOffer {
   /** Whether the balance covers the price. Separate from `owned`: an owned
    *  item is never buyable however much the balance is. */
   affordable: boolean
+  /**
+   * The day this offer would fill in, when it is a repair.
+   *
+   * Carried explicitly rather than parsed back out of `id`. The id is
+   * `dayRepair:<day>` because the row needs a stable key and the day is what
+   * makes it unique — but a screen reading the day by slicing the id is a
+   * screen that breaks the moment the id gains a second part.
+   */
+  repairDay?: string
 }
 
 export interface StoreInput {
@@ -49,6 +60,19 @@ export interface StoreInput {
   /** Cosmetic ids already bought, from `GET /me/wallet`. */
   owned: readonly string[]
   streakFreezes: number
+  /**
+   * The missed days a repair could still reach, or nothing when the screen has
+   * no activity loaded. Optional so the store is buildable without it — a
+   * caller that cannot say which days are filled must not be given a repair
+   * row it cannot price honestly.
+   */
+  repair?: {
+    today: string
+    /** Days already active or already bought back. */
+    filled: ReadonlySet<string>
+    price: number
+    usedThisMonth: number
+  }
   /**
    * Passed in rather than reached for, so this stays a pure function the tests
    * can call without a React tree — and so the wording of an offer is decided
@@ -110,6 +134,44 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     ...freezeOffer,
     affordable: freezeOffer.affordable && input.streakFreezes < maxFreezes,
   })
+
+  /*
+   * The day repair, sold where the freeze is sold.
+   *
+   * The freeze is prospective — it covers the *next* day you miss — and that
+   * is deliberate, but it left nothing in the store for the day you have
+   * already missed. The repair existed and could only be reached by finding
+   * the right grey square on the heatmap.
+   *
+   * The newest missed day, not the oldest. The oldest is the one about to fall
+   * out of the window, but the newest is the one adjacent to a live streak,
+   * which is the one repairing it actually rescues.
+   */
+  const repair = input.repair
+  if (repair && repair.usedThisMonth < TOKEN_RULES.sinks.dayRepairPerMonth) {
+    let day: string | null = null
+    for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
+      const candidate = shiftDayKey(repair.today, -back)
+      if (!isRepairable(candidate, repair.today)) break
+      if (!repair.filled.has(candidate)) {
+        day = candidate
+        break
+      }
+    }
+    if (day) {
+      offers.push({
+        ...priced(
+          `dayRepair:${day}`,
+          t('store.repairDay'),
+          t('store.repairDayBody', {
+            left: TOKEN_RULES.sinks.dayRepairPerMonth - repair.usedThisMonth,
+          }),
+          repair.price,
+        ),
+        repairDay: day,
+      })
+    }
+  }
 
   const progress = {
     longestStreak: input.longestStreak,

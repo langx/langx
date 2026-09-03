@@ -6,14 +6,11 @@ import {
   ACTIVITY_CELL_GAP,
   activityCellSize,
   activityGrid,
-  repairEffect,
   type ActivityCell,
 } from '../lib/activityMap'
-import { confirmAlert, showAlert } from '../lib/alert'
-import { dayLabel } from '../lib/messageGroups'
+import { confirmAndRepair } from '../lib/repairFlow'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
-import { showToast } from '../lib/toast'
 
 /** Half a year, which is as much as fits without the squares becoming dots. */
 const WEEKS = 26
@@ -104,56 +101,17 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
 
   async function onPressDay(cell: ActivityCell): Promise<void> {
     if (handle || cell.state !== 'repairable') return
-    if (left === 0) {
-      await showAlert(
-        t('activity.noRepairsTitle'),
-        t('activity.perMonth', { count: rules.perMonth }),
-      )
-      return
-    }
-
-    const effect = repairEffect({
+    await confirmAndRepair({
       day: cell.day,
       today,
       filled,
       price: rules.price,
       balance: wallet.data?.balance ?? 0,
-    })
-    if (!effect.affordable) {
-      await showAlert(
-        t('activity.notEnoughTokensTitle'),
-        t('activity.notEnoughTokensBody', {
-          price: rules.price,
-          balance: wallet.data?.balance ?? 0,
-        }),
-      )
-      return
-    }
-
-    /**
-     * The whole point of the confirmation: it says what the purchase does
-     * *before* it happens, including when the answer is "nothing much". A
-     * square in the middle of a fortnight nobody was active in fills and joins
-     * no streak, and saying so is worth more than the sale.
-     */
-    const label = dayLabel(cell.day, { t, locale, now: new Date(`${today}T12:00:00`) })
-    const streakLine = effect.changesStreak
-      ? t('activity.streakChange', { before: effect.streakBefore, count: effect.streakAfter })
-      : t('activity.noStreakChange')
-    const confirmed = await confirmAlert({
-      title: t('activity.fillInTitle', { day: label }),
-      message: t('activity.balanceChange', {
-        streakLine,
-        before: wallet.data?.balance ?? 0,
-        after: effect.balanceAfter,
-      }),
-      confirmLabel: t('activity.fillIt'),
-    })
-    if (!confirmed) return
-
-    repair.mutate(cell.day, {
-      onSuccess: () => showToast(t('activity.filled')),
-      onError: () => void showAlert(t('activity.fillFailed'), t('common.retry')),
+      left,
+      perMonth: rules.perMonth,
+      t,
+      locale,
+      repair: (day, handlers) => repair.mutate(day, handlers),
     })
   }
 

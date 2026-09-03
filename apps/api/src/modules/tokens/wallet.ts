@@ -260,7 +260,7 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
   const timeZone = profile.timezone ?? 'UTC'
   const today = localDayKey(now, timeZone)
 
-  if (!isRepairable(day, today, timeZone, now)) {
+  if (!isRepairable(day, today)) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
       `Only the last ${TOKEN_RULES.sinks.dayRepairMaxAgeDays} days, and not today — today is earned`,

@@ -1,4 +1,4 @@
-import { COSMETICS, STREAK_FREEZE_SKU, TOKEN_RULES } from '@langx/shared'
+import { COSMETICS, shiftDayKey, STREAK_FREEZE_SKU, TOKEN_RULES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
 import { buildStoreOffers, type StoreInput } from './storeOffers'
@@ -18,6 +18,72 @@ describe('buildStoreOffers', () => {
   it('always lists the freeze and every cosmetic', () => {
     const ids = buildStoreOffers(base).map((offer) => offer.id)
     expect(ids).toEqual([STREAK_FREEZE_SKU, ...COSMETICS.map((c) => c.id)])
+  })
+
+  describe('the day repair', () => {
+    const today = '2026-09-03'
+    const repairs = (over: Partial<NonNullable<StoreInput['repair']>> = {}) => ({
+      today,
+      filled: new Set<string>(),
+      price: TOKEN_RULES.sinks.dayRepair,
+      usedThisMonth: 0,
+      ...over,
+    })
+    const repairOffer = (input: Partial<StoreInput>) =>
+      buildStoreOffers({ ...base, ...input }).find((offer) => offer.repairDay !== undefined)
+
+    it('offers the newest missed day, not the oldest', () => {
+      /*
+       * The oldest is the one about to fall out of the window, but the newest
+       * is the one next to a live streak — which is the one that repairing
+       * actually rescues.
+       */
+      const filled = new Set([shiftDayKey(today, -1)])
+      const offer = repairOffer({ balance: 5_000, repair: repairs({ filled }) })
+      expect(offer?.repairDay).toBe(shiftDayKey(today, -2))
+      expect(offer?.id).toBe(`dayRepair:${shiftDayKey(today, -2)}`)
+    })
+
+    it('offers nothing when every day in the window is already filled', () => {
+      const filled = new Set(
+        Array.from({ length: TOKEN_RULES.sinks.dayRepairMaxAgeDays + 1 }, (_, i) =>
+          shiftDayKey(today, -i),
+        ),
+      )
+      expect(repairOffer({ balance: 5_000, repair: repairs({ filled }) })).toBeUndefined()
+    })
+
+    it('offers nothing at the monthly cap', () => {
+      expect(
+        repairOffer({
+          balance: 5_000,
+          repair: repairs({ usedThisMonth: TOKEN_RULES.sinks.dayRepairPerMonth }),
+        }),
+      ).toBeUndefined()
+    })
+
+    it('offers nothing without the activity window', () => {
+      // A screen that cannot say which days are filled must not be handed a
+      // row it would price wrongly.
+      expect(repairOffer({ balance: 5_000 })).toBeUndefined()
+    })
+
+    it('is unaffordable below the price, and never locked', () => {
+      const offer = repairOffer({
+        balance: TOKEN_RULES.sinks.dayRepair - 1,
+        repair: repairs(),
+      })
+      expect(offer).toMatchObject({ affordable: false, owned: false })
+      // `locked` means "you cannot have this yet", which is a different
+      // sentence from "come back richer" — a repair is never the former.
+      expect(offer?.locked).toBeUndefined()
+    })
+
+    it('sits below the freeze, where the streak things belong', () => {
+      const ids = buildStoreOffers({ ...base, balance: 5_000, repair: repairs() }).map((o) => o.id)
+      expect(ids[0]).toBe(STREAK_FREEZE_SKU)
+      expect(ids[1]).toBe(`dayRepair:${shiftDayKey(today, -1)}`)
+    })
   })
 
   describe('streak freeze', () => {
