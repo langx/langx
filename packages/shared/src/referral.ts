@@ -22,8 +22,8 @@ import { HANDLE_PATTERN } from './handle'
 export const INVITE_QUERY_PARAM = 'invite'
 
 /** The link somebody shares to invite a friend. Built on `profileUrl`, so
- *  `WEB_HOST` stays the single line that changes when the app finally claims
- *  the host its links point at. */
+ *  `WEB_HOST` stays the single line that changes if the web build ever moves
+ *  host. */
 export function inviteUrl(handle: string): string {
   return `${profileUrl(handle)}?${INVITE_QUERY_PARAM}=1`
 }
