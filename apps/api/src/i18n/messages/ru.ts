@@ -37,6 +37,8 @@ export const ru: Localized<ServerMessages> = {
     unsubscribeLink: 'Отключить эти письма',
     unsubscribeText: 'Отключить эти письма: {url}',
     managePrefs: 'Все настройки уведомлений',
+    /** The one button a streak email has. */
+    openChats: 'Отправить сообщение',
 
     unsubscribeTitle: 'Отключить эти письма?',
     unsubscribeBody:

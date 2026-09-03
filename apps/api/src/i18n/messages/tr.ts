@@ -27,6 +27,8 @@ export const tr: Localized<ServerMessages> = {
     unsubscribeLink: 'Bu e-postaları kapat',
     unsubscribeText: 'Bu e-postaları kapat: {url}',
     managePrefs: 'Tüm bildirim ayarları',
+    /** The one button a streak email has. */
+    openChats: 'Mesaj gönder',
 
     unsubscribeTitle: 'Bu e-postalar kapatılsın mı?',
     unsubscribeBody: '{kind} artık e-postayla gelmeyecek. Telefonundaki bildirimler etkilenmez.',

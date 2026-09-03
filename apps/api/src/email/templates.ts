@@ -1,4 +1,4 @@
-import type { Locale } from '@langx/shared'
+import { webUrl, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
@@ -119,5 +119,34 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
        <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.resetText', { url }),
+  }
+}
+
+/**
+ * The streak nudge, for somebody with no phone signed in.
+ *
+ * Deliberately the same two sentences as the push — `push.streakTitle` and
+ * `push.streakBody`, not a second wording. One person may have a phone this
+ * month and only the web the next, and a reminder that changes its voice
+ * depending on how it arrived reads as two different features.
+ */
+export function streakReminderEmail(
+  locale: Locale,
+  { count, unsubscribe }: { count: number; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const title = t('push.streakTitle', { count })
+  const body = t('push.streakBody')
+  const cta = { url: webUrl('/chats'), label: t('email.openChats') }
+  return {
+    subject: title,
+    html: notificationEmail(locale, {
+      preheader: body,
+      bodyHtml: `<p><strong>${title}</strong></p><p>${body}</p>`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
   }
 }

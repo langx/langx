@@ -28,6 +28,8 @@ export const de: Localized<ServerMessages> = {
     unsubscribeLink: 'Diese E-Mails abstellen',
     unsubscribeText: 'Diese E-Mails abstellen: {url}',
     managePrefs: 'Alle Benachrichtigungseinstellungen',
+    /** The one button a streak email has. */
+    openChats: 'Nachricht senden',
 
     unsubscribeTitle: 'Diese E-Mails abstellen?',
     unsubscribeBody:

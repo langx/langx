@@ -35,6 +35,8 @@ export const ar: Localized<ServerMessages> = {
     unsubscribeLink: 'أوقف هذه الرسائل',
     unsubscribeText: 'أوقف هذه الرسائل: {url}',
     managePrefs: 'كل إعدادات الإشعارات',
+    /** The one button a streak email has. */
+    openChats: 'أرسل رسالة',
 
     unsubscribeTitle: 'إيقاف هذه الرسائل؟',
     unsubscribeBody: 'لن تصلك {kind} عبر البريد بعد الآن. إشعارات الهاتف لا تتأثر.',

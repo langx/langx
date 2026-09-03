@@ -39,6 +39,8 @@ export const en = {
     unsubscribeLink: 'Turn these emails off',
     unsubscribeText: 'Turn these emails off: {url}',
     managePrefs: 'All notification settings',
+    /** The one button a streak email has. */
+    openChats: 'Send a message',
 
     unsubscribeTitle: 'Turn off these emails?',
     unsubscribeBody:
