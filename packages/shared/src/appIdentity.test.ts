@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { deviceLinkQrUrl, deviceLinkTarget, postUrl, profileUrl, WEB_HOST } from './appIdentity'
+import { deviceLinkQrUrl, postUrl, profileUrl, WEB_HOST } from './appIdentity'
+import { deviceLinkTarget } from './appScheme'
 import { RESERVED_HANDLES } from './reservedHandles'
 
 describe('postUrl', () => {
