@@ -18,6 +18,25 @@ primary_region = 'fra'
   LOG_LEVEL = 'info'
   MONGODB_DB = 'langx'
 
+# One machine means a rolling deploy is a stop and a start, and the app is
+# down for the length of a boot — Mongo connect, ensureIndexes() and the Better
+# Auth warm-up, so tens of seconds, not one. Blue-green boots the new version
+# alongside the old, waits for the health check below to pass on it, and only
+# then moves traffic across.
+#
+# Safe here because nothing in this process assumes it is alone: the four
+# schedulers all claim their work with a conditional update or a unique index
+# (`jobRuns`'s `{job, periodKey}`, and the same pattern in the purge and import
+# sweeps), so the moment where both versions are running costs nothing. The app
+# has no volumes, which is blue-green's other requirement.
+#
+# It doubles the machine count *during* a deploy only — the extra one is
+# released when the switch completes. Running two permanently would also
+# survive a crash-loop, which a single machine does not; that is a separate
+# decision with a monthly price on it.
+[deploy]
+  strategy = 'bluegreen'
+
 [http_service]
   internal_port = 8080
   force_https = true
