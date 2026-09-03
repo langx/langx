@@ -196,11 +196,13 @@ export const tr: Localized<EnMessages> = {
     googleSignInFailed: 'Google ile giriş yapılamadı',
     appleSignInFailed: 'Apple ile giriş yapılamadı',
     resetFailed: 'Parola sıfırlanamadı',
-    invalidCredentials: 'Bu e-posta ve parola bir hesapla eşleşmiyor.',
+    invalidCredentials:
+      'Bu e-posta ve parola bir hesapla eşleşmiyor. Önceki uygulamada hesabın vardıysa parolanı sıfırla ya da Google veya Apple ile devam et.',
     attachmentUnsupported:
       'Bu fotoğraf biçimi desteklenmiyor. JPEG, PNG veya WebP bir görsel kullan.',
     attachmentTooLarge: 'Bu dosya gönderilemeyecek kadar büyük.',
-    userExists: 'Bu e-posta ile bir hesap zaten var.',
+    userExists:
+      'Bu e-posta ile bir hesap zaten var. Giriş yap, parolanı sıfırla ya da Google veya Apple ile devam et.',
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',

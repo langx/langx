@@ -34,6 +34,13 @@ export const ptBR: Localized<ServerMessages> = {
     resetButton: 'Redefinir senha',
     resetText: 'Redefina sua senha do LangX: {url}',
 
+    existingSubject: 'Você já tem uma conta no LangX',
+    existingPreheader: 'Você já tem uma conta no LangX',
+    existingBody:
+      'Alguém tentou se cadastrar com este e-mail, mas já existe uma conta para ele. Para entrar, redefina sua senha ou entre com Google ou Apple usando este endereço.',
+    existingButton: 'Redefinir senha',
+    existingText: 'Você já tem uma conta no LangX. Redefina sua senha aqui: {url}',
+
     whyThisMail: 'Você recebe isto por causa das suas configurações de notificações do LangX.',
     unsubscribeLink: 'Desativar estes e-mails',
     unsubscribeText: 'Desativar estes e-mails: {url}',

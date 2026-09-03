@@ -38,6 +38,13 @@ export const en = {
     resetButton: 'Reset password',
     resetText: 'Reset your LangX password: {url}',
 
+    existingSubject: 'You already have a LangX account',
+    existingPreheader: 'You already have a LangX account',
+    existingBody:
+      'Someone tried to sign up with this email, but an account already exists for it. To get in, reset your password, or sign in with Google or Apple using this address.',
+    existingButton: 'Reset password',
+    existingText: 'You already have a LangX account. Reset your password here: {url}',
+
     /*
      * The footer every notification email carries, and the page its link
      * leads to. Not the same as `ignore` above: this mail was asked for, so it

@@ -223,11 +223,13 @@ export const ru: Localized<EnMessages> = {
     googleSignInFailed: 'Не удалось войти через Google',
     appleSignInFailed: 'Не удалось войти через Apple',
     resetFailed: 'Не удалось сбросить пароль',
-    invalidCredentials: 'Эта почта и пароль не подходят ни к одному аккаунту.',
+    invalidCredentials:
+      'Эта почта и пароль не подходят ни к одному аккаунту. Был аккаунт в старом приложении? Сбросьте пароль или войдите через Google или Apple.',
     attachmentUnsupported:
       'Этот формат фото не поддерживается. Используй изображение JPEG, PNG или WebP.',
     attachmentTooLarge: 'Этот файл слишком большой для отправки.',
-    userExists: 'Аккаунт с такой почтой уже есть.',
+    userExists:
+      'Аккаунт с такой почтой уже есть. Войдите, сбросьте пароль или продолжите через Google или Apple.',
     emailNotVerified: 'Сначала подтверди почту — посмотри входящие.',
     passwordTooShort: 'Этот пароль слишком короткий.',
     invalidEmail: 'Это не похоже на адрес почты.',

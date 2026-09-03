@@ -186,11 +186,13 @@ export const de: Localized<EnMessages> = {
     googleSignInFailed: 'Google-Anmeldung fehlgeschlagen',
     appleSignInFailed: 'Apple-Anmeldung fehlgeschlagen',
     resetFailed: 'Passwort konnte nicht zurückgesetzt werden',
-    invalidCredentials: 'Diese E-Mail und dieses Passwort passen zu keinem Konto.',
+    invalidCredentials:
+      'Diese E-Mail und dieses Passwort passen zu keinem Konto. Hattest du ein Konto in der alten App? Setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
     attachmentUnsupported:
       'Dieses Fotoformat wird nicht unterstützt. Verwende ein JPEG-, PNG- oder WebP-Bild.',
     attachmentTooLarge: 'Diese Datei ist zu groß zum Senden.',
-    userExists: 'Mit dieser E-Mail gibt es bereits ein Konto.',
+    userExists:
+      'Mit dieser E-Mail gibt es bereits ein Konto. Melde dich an, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
     emailNotVerified: 'Bestätige zuerst deine E-Mail-Adresse — schau in dein Postfach.',
     passwordTooShort: 'Dieses Passwort ist zu kurz.',
     invalidEmail: 'Das sieht nicht nach einer E-Mail-Adresse aus.',

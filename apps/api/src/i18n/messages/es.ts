@@ -34,6 +34,13 @@ export const es: Localized<ServerMessages> = {
     resetButton: 'Restablecer contraseña',
     resetText: 'Restablece tu contraseña de LangX: {url}',
 
+    existingSubject: 'Ya tienes una cuenta de LangX',
+    existingPreheader: 'Ya tienes una cuenta de LangX',
+    existingBody:
+      'Alguien ha intentado registrarse con este correo, pero ya existe una cuenta para esta dirección. Para entrar, restablece tu contraseña o inicia sesión con Google o Apple usando este correo.',
+    existingButton: 'Restablecer contraseña',
+    existingText: 'Ya tienes una cuenta de LangX. Restablece tu contraseña aquí: {url}',
+
     whyThisMail: 'Recibes esto por tus ajustes de notificaciones de LangX.',
     unsubscribeLink: 'Desactivar estos correos',
     unsubscribeText: 'Desactivar estos correos: {url}',

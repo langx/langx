@@ -236,10 +236,12 @@ export const ar: Localized<EnMessages> = {
     googleSignInFailed: 'تعذّر تسجيل الدخول بحساب Google',
     appleSignInFailed: 'تعذّر تسجيل الدخول بحساب Apple',
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
-    invalidCredentials: 'هذا البريد وكلمة المرور لا يطابقان أي حساب.',
+    invalidCredentials:
+      'هذا البريد وكلمة المرور لا يطابقان أي حساب. هل كان لديك حساب في التطبيق السابق؟ أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
     attachmentUnsupported: 'صيغة هذه الصورة غير مدعومة. استخدم صورة بصيغة JPEG أو PNG أو WebP.',
     attachmentTooLarge: 'هذا الملف أكبر من أن يُرسل.',
-    userExists: 'يوجد حساب بهذا البريد بالفعل.',
+    userExists:
+      'يوجد حساب بهذا البريد بالفعل. سجّل الدخول أو أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
     passwordTooShort: 'كلمة المرور قصيرة جدًا.',
     invalidEmail: 'هذا لا يبدو عنوان بريد.',
