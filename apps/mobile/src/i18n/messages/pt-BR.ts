@@ -852,7 +852,7 @@ export const ptBR: Localized<EnMessages> = {
     showStatsBody: 'Sequência, correções, tokens e o gráfico da semana no seu perfil.',
     legalSection: 'Jurídico',
     communitySection: 'Comunidade',
-    linkDeviceBody: 'Aprove um login em um computador.',
+    linkDeviceBody: 'Aprove um login e veja onde você está conectado.',
     showInDiscover: 'Mostrar em Descobrir',
     showInDiscoverBody:
       'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
@@ -1122,7 +1122,7 @@ export const ptBR: Localized<EnMessages> = {
   linkDevice: {
     title: 'Entrar em outro dispositivo',
     body: 'Digite o código da outra tela, ou escaneie por lá.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Aprove apenas um código que você mesmo esteja vendo. Quem o inserir ganha acesso total à sua conta.',
     approve: 'Aprovar',
@@ -1131,6 +1131,12 @@ export const ptBR: Localized<EnMessages> = {
     denied: 'Recusado',
     failed: 'Esse código não é mais válido.',
     hint: 'Agora não',
+    devices: 'Dispositivos conectados',
+    thisDevice: 'este dispositivo',
+    signOutDevice: 'Sair',
+    signOutOthers: 'Sair de todos os outros',
+    signedOutDevice: 'Sessão encerrada.',
+    unknownDevice: 'Dispositivo desconhecido',
   },
 
   qrSignIn: {

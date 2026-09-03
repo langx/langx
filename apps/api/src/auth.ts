@@ -1,5 +1,7 @@
 import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST } from '@langx/shared'
 import { betterAuth } from 'better-auth'
+import { createAuthMiddleware } from 'better-auth/api'
+import { setSessionCookie } from 'better-auth/cookies'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
 import { anonymous } from 'better-auth/plugins/anonymous'
@@ -126,6 +128,45 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       },
     },
 
+    session: {
+      /*
+       * `/list-sessions` sits behind Better Auth's freshness check, whose
+       * default is 24 hours. A phone that signed in last week is exactly the
+       * device somebody wants to see their sessions on, and it was answered
+       * with 403 SESSION_NOT_FRESH — the list could not even be read, let
+       * alone acted on.
+       *
+       * Zero turns the check off for that endpoint. It does not weaken
+       * revocation: `/revoke-session` and `/revoke-other-sessions` use the
+       * authoritative-session check, not the freshness one, and they are
+       * unchanged. The only other fresh-gated endpoint is `/unlink-account`,
+       * which this app never calls.
+       */
+      freshAge: 0,
+    },
+
+    hooks: {
+      /**
+       * Give the browser a session cookie when the device grant hands out a
+       * session.
+       *
+       * `/device/token` is an OAuth endpoint, so it answers with a bearer
+       * token and nothing else — correct for the RFC, useless here. Nothing in
+       * this app sends an `Authorization` header; every client is cookie-based,
+       * so the browser polling for approval was handed a token it had no way
+       * to use and stayed signed out with a 200 in its hand.
+       *
+       * The plugin has already created the real session and put it on the
+       * context, so this only writes the cookie for it. Anything else that
+       * creates a session sets its own.
+       */
+      after: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== '/device/token') return
+        const created = ctx.context.newSession
+        if (created) await setSessionCookie(ctx, created)
+      }),
+    },
+
     databaseHooks: {
       user: {
         create: {
@@ -185,24 +226,28 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       /*
        * QR sign-in on the web, which is RFC 8628's device flow with a picture
        * in front of it: the browser asks for a code, shows it as a QR *and* as
-       * six characters, and polls `/device/token` until a signed-in phone
+       * eight characters, and polls `/device/token` until a signed-in phone
        * approves it.
        *
        * The plugin rather than something hand-rolled — this is a protocol with
        * known failure modes (`slow_down`, `authorization_pending`, single-use
        * codes, expiry) and it already implements them.
        *
-       * Scanning is **not** what makes it work. The six-character user code is
-       * the primary path and the QR is a shortcut, which is deliberate:
+       * Scanning is **not** what makes it work. The eight-character user code
+       * is the primary path and the QR is a shortcut, which is deliberate:
        * `expo-camera` is not in this app, and adding it means a new native
        * build with a new camera permission — so a scanner cannot ship over the
        * air. Typing the code works today on every platform.
+       *
+       * The QR encodes a `langx://` link rather than a web address: it is
+       * scanned by the phone's own camera, and the phone is where the session
+       * is — an https link opened a browser signed in as nobody.
        */
       deviceAuthorization({
         /*
-         * Two minutes. Long enough to pick up a phone and read six characters,
-         * short enough that a code photographed off somebody's screen is
-         * worthless by the time they have walked away.
+         * Two minutes. Long enough to pick up a phone and read eight
+         * characters, short enough that a code photographed off somebody's
+         * screen is worthless by the time they have walked away.
          */
         expiresIn: '2m',
         /** What the poller is told to wait between attempts. */

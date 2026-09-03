@@ -1021,7 +1021,7 @@ export const ar: Localized<EnMessages> = {
     showStatsBody: 'السلسلة والتصحيحات والتوكنات ورسم هذا الأسبوع على ملفك.',
     legalSection: 'القانونية',
     communitySection: 'المجتمع',
-    linkDeviceBody: 'وافق على تسجيل دخول على حاسوب.',
+    linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
     showInDiscover: 'أظهرني في الاستكشاف',
     showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
     incognito: 'تصفّح خفي',
@@ -1350,7 +1350,7 @@ export const ar: Localized<EnMessages> = {
   linkDevice: {
     title: 'تسجيل الدخول على جهاز آخر',
     body: 'أدخل الرمز الظاهر على الشاشة الأخرى، أو امسحه هناك.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning: 'وافق فقط على رمز تراه بنفسك. من يُدخله يحصل على وصول كامل إلى حسابك.',
     approve: 'موافقة',
     deny: 'رفض',
@@ -1358,6 +1358,12 @@ export const ar: Localized<EnMessages> = {
     denied: 'تم الرفض',
     failed: 'لم يعد هذا الرمز صالحًا.',
     hint: 'ليس الآن',
+    devices: 'الأجهزة المسجّلة الدخول',
+    thisDevice: 'هذا الجهاز',
+    signOutDevice: 'تسجيل الخروج',
+    signOutOthers: 'تسجيل الخروج من كل مكان آخر',
+    signedOutDevice: 'تم تسجيل الخروج.',
+    unknownDevice: 'جهاز غير معروف',
   },
 
   qrSignIn: {

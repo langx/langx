@@ -1,4 +1,5 @@
-import { CURRENT_TERMS_VERSION, PLAN_LIMITS } from '@langx/shared'
+import { CURRENT_TERMS_VERSION, deviceLinkTarget, PLAN_LIMITS, WEB_HOST } from '@langx/shared'
+import QRCode from 'qrcode'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -578,9 +579,29 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     it('lets the device link code be embedded too', async () => {
       const response = await app.inject({ method: 'GET', url: '/public/qr/link/ABCD1234' })
       expect(response.statusCode, response.body).toBe(200)
+      expect(response.headers['content-type']).toBe('image/svg+xml')
       expect(response.headers['cross-origin-resource-policy']).toBe('cross-origin')
       // Two minutes of life; caching the picture past that serves the dead.
       expect(response.headers['cache-control']).toBe('no-store')
+    })
+
+    /*
+     * The scan happens on the phone that already holds the session, so the
+     * link inside has to open the app. Encoded as an https address it opened a
+     * browser on that same phone, signed in as nobody.
+     */
+    it('encodes a link that opens the app, not the website', async () => {
+      const response = await app.inject({ method: 'GET', url: '/public/qr/link/ABCD2345' })
+      // Compared against the same encoder rather than decoded: the picture is
+      // a pure function of the string, so an identical SVG is an identical
+      // payload, and it costs the suite no new dependency.
+      const expected = await QRCode.toString(deviceLinkTarget('ABCD2345'), {
+        type: 'svg',
+        errorCorrectionLevel: 'M',
+        margin: 2,
+      })
+      expect(response.body).toBe(expected)
+      expect(response.body).not.toContain(WEB_HOST)
     })
   })
 

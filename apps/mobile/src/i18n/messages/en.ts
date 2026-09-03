@@ -896,7 +896,7 @@ export const en = {
     showStatsBody: 'Streak, corrections, tokens and this week’s chart on your profile.',
     legalSection: 'Legal',
     communitySection: 'Community',
-    linkDeviceBody: 'Approve a sign-in on a computer.',
+    linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
       'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
@@ -1164,7 +1164,7 @@ export const en = {
   linkDevice: {
     title: 'Sign in on another device',
     body: 'Enter the code shown on the other screen, or scan it there.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Only approve a code you are looking at yourself. Anyone who gets it in gains full access to your account.',
     approve: 'Approve',
@@ -1173,6 +1173,12 @@ export const en = {
     denied: 'Denied',
     failed: 'That code is no longer valid.',
     hint: 'Not now',
+    devices: 'Signed-in devices',
+    thisDevice: 'this device',
+    signOutDevice: 'Sign out',
+    signOutOthers: 'Sign out everywhere else',
+    signedOutDevice: 'Signed out.',
+    unknownDevice: 'Unknown device',
   },
 
   qrSignIn: {

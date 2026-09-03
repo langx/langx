@@ -978,7 +978,7 @@ export const ru: Localized<EnMessages> = {
     showStatsBody: 'Стрик, исправления, токены и график недели в профиле.',
     legalSection: 'Правовые документы',
     communitySection: 'Сообщество',
-    linkDeviceBody: 'Подтвердить вход на компьютере.',
+    linkDeviceBody: 'Подтвердить вход и посмотреть, где вы вошли.',
     showInDiscover: 'Показывать меня в Поиске',
     showInDiscoverBody: 'Выключи — и тебя не найдут: ни в «Обзоре», ни по имени пользователя.',
     incognito: 'Невидимый просмотр',
@@ -1288,7 +1288,7 @@ export const ru: Localized<EnMessages> = {
   linkDevice: {
     title: 'Вход на другом устройстве',
     body: 'Введите код с другого экрана или отсканируйте его там.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Подтверждайте только код, который видите сами. Тот, кто его введёт, получит полный доступ к аккаунту.',
     approve: 'Подтвердить',
@@ -1297,6 +1297,12 @@ export const ru: Localized<EnMessages> = {
     denied: 'Отклонено',
     failed: 'Этот код больше не действителен.',
     hint: 'Не сейчас',
+    devices: 'Устройства с активным входом',
+    thisDevice: 'это устройство',
+    signOutDevice: 'Выйти',
+    signOutOthers: 'Выйти на всех остальных',
+    signedOutDevice: 'Выход выполнен.',
+    unknownDevice: 'Неизвестное устройство',
   },
 
   qrSignIn: {

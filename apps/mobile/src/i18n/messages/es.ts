@@ -858,7 +858,7 @@ export const es: Localized<EnMessages> = {
     showStatsBody: 'Racha, correcciones, tokens y el gráfico de la semana en tu perfil.',
     legalSection: 'Legal',
     communitySection: 'Comunidad',
-    linkDeviceBody: 'Aprueba un inicio de sesión en un ordenador.',
+    linkDeviceBody: 'Aprueba un inicio de sesión y mira dónde tienes la sesión abierta.',
     showInDiscover: 'Mostrarme en Descubrir',
     showInDiscoverBody:
       'Desactívalo y nadie te encontrará: ni en Descubrir ni buscando tu nombre de usuario.',
@@ -1125,7 +1125,7 @@ export const es: Localized<EnMessages> = {
   linkDevice: {
     title: 'Iniciar sesión en otro dispositivo',
     body: 'Escribe el código de la otra pantalla, o escanéalo allí.',
-    placeholder: 'ABCDEF',
+    placeholder: 'ABCD2345',
     warning:
       'Aprueba solo un código que estés viendo tú. Quien lo introduzca obtiene acceso total a tu cuenta.',
     approve: 'Aprobar',
@@ -1134,6 +1134,12 @@ export const es: Localized<EnMessages> = {
     denied: 'Rechazado',
     failed: 'Ese código ya no es válido.',
     hint: 'Ahora no',
+    devices: 'Dispositivos con sesión',
+    thisDevice: 'este dispositivo',
+    signOutDevice: 'Cerrar sesión',
+    signOutOthers: 'Cerrar sesión en todos los demás',
+    signedOutDevice: 'Sesión cerrada.',
+    unknownDevice: 'Dispositivo desconocido',
   },
 
   qrSignIn: {

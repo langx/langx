@@ -54,6 +54,7 @@ import {
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
+import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
 import {
@@ -117,6 +118,7 @@ export const keys = {
   likers: (targetType: string, targetId: string) => ['likers', targetType, targetId] as const,
   follows: (userId: string, which: string) => ['follows', userId, which] as const,
   quota: ['quota'] as const,
+  sessions: ['sessions'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
   blocks: ['blocks'] as const,
@@ -1436,6 +1438,51 @@ export function useDiscloseGender() {
       // The filter row reads `me.gender` to decide whether `onlyMyGender` does
       // anything, and discovery results change the moment it does.
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+  })
+}
+
+/**
+ * Where this account is signed in.
+ *
+ * Better Auth owns these three endpoints, so they go through `authClient`
+ * rather than our own `api` client — same cookie, different base path, and no
+ * DTO of ours in between.
+ */
+export function useSessions(enabled = true) {
+  return useQuery({
+    queryKey: keys.sessions,
+    queryFn: async () => {
+      const { data, error } = await authClient.listSessions()
+      if (error) throw new Error(error.message ?? 'could not list sessions')
+      return data ?? []
+    },
+    enabled,
+  })
+}
+
+export function useRevokeSession() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: async (token: string) => {
+      const { error } = await authClient.revokeSession({ token })
+      if (error) throw new Error(error.message ?? 'could not sign that device out')
+    },
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.sessions })
+    },
+  })
+}
+
+export function useRevokeOtherSessions() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await authClient.revokeOtherSessions()
+      if (error) throw new Error(error.message ?? 'could not sign the other devices out')
+    },
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.sessions })
     },
   })
 }
