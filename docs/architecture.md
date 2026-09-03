@@ -187,9 +187,11 @@ A public repo puts four items on the plan:
 - Validation: zod + `fastify-type-provider-zod`. Indexes are declared in
   `src/db/indexes.ts` and applied at boot by `ensureIndexes()`.
 - `socket.io`, `pino`, Sentry.
-- **Scheduled work:** the daily token pool, account purging and streak reminders.
-  A unique `{job, periodKey}` in `jobRuns` makes a double run physically
-  impossible.
+- **Scheduled work:** the daily token pool, account purging, streak reminders,
+  and the notification passes (unread digest, profile visits, badge round-up).
+  A unique `{job, periodKey}` in `jobRuns` makes a double run of the pool
+  physically impossible; the notification passes use `notificationLedger`,
+  whose `_id` is `<job>:<userId>:<periodKey>`, for the same reason.
 
 **Infrastructure:** MongoDB Atlas · one container on Railway/Render ·
 Backblaze B2 (R2 by config) · Resend · RevenueCat + Stripe · a translation provider. No Redis
@@ -581,7 +583,7 @@ write to them directly and never change their shape.
   nativeLanguages: [{ code: 'tr' }],
   learning: [{ code: 'en', level: 'B1', priority: 1 }],
   interests: ['music', 'tech'],
-  settings: { discoverable, notifications },
+  settings: { discoverable, notifications: { <kind>: { push, email } } },
   locationUpdatedAt,
   privacy: { incognito: false },
   entitlement: { tier: 'free' | 'pro', expiresAt?, willRenew?, store?, updatedAt },
@@ -1001,7 +1003,8 @@ only thing that matters is preserving store identity.
    quota, paid filters, who-viewed-me + incognito
 8. **Gamification:** streak, token ledger, daily pool, 4 leaderboards, streak
    freeze + cosmetic sinks
-9. Push notifications (message / streak reminder)
+9. Notifications: push, email and in-app (message / streak / badge / profile
+   visits / promotions)
 10. Block + report
 11. **Account deletion + data export**
 12. Web: same code, responsive, working URLs

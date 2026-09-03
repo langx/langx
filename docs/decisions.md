@@ -2198,3 +2198,160 @@ would never have removed on its own.
 The city list is GeoNames' `cities15000`, CC BY 4.0. The attribution is a
 licence condition and lives in three places; `docs/data-sources.md` is the one
 that explains why.
+
+## The notification matrix is back, because every cell has a sender now
+
+The channel axis was removed on 30 August with a good argument: nothing in the
+app sent mail except verification and password reset, so six of the eight
+switches did nothing, and a screen offering a choice which changes nothing is
+worse than one that does not offer it.
+
+That argument was about the senders, not about the shape. Building them —
+a digest for unread messages, an evening streak mail, a weekly profile-visit
+summary, a badge round-up, a campaign script — makes the same reasoning point
+the other way. The axis returns, and the rule that keeps a dead switch off the
+screen is written down rather than implied: **the email half of a row is
+disabled until the address is verified.**
+
+Three stored shapes are live at once and `notificationsAllowed(prefs, kind,
+channel)` is the only thing allowed to read them.
+
+- A bare `boolean` for everything is a v1 account. `false` is silence;
+  `true` is the defaults, which keeps promotions off.
+- A bare boolean per kind is what the app wrote in between. **Push reads it
+  literally** — push was the only channel with a sender, so the switch was in
+  practice a push switch and a `true` on promotions is a real decision to be
+  pushed at. **Email cannot.** Nobody was shown an email option while that
+  shape was being written, so nothing in it consented to mail; email falls to
+  the default, which is off for promotions.
+- A `{push, email}` object is both the retired matrix and what this version
+  writes, byte-identical, and both halves are read literally. While no sender
+  existed, reading `email` would have been reading a preference filed against
+  nothing; now it is somebody's decision. The matrix lived for hours on a build
+  that reached no store, so the accounts whose `email` predates a sender were
+  counted by hand before this shipped rather than reasoned about in code —
+  `scripts/inspect-notification-prefs.ts`.
+
+The write stops at the kind, not the channel.
+`settings.notifications.streak.email` is a path _into_ a sub-document, and over
+the bare boolean older profiles still hold there is none to enter: Mongo
+refuses it outright rather than replacing the boolean. So each touched kind is
+resolved and written whole, which is also what migrates it — one kind at a
+time, on the first switch its owner touches.
+
+## A message in the foreground is an in-app banner, not an OS one
+
+Phase 10 decided that a push only goes out if the recipient has no live socket:
+somebody with the thread open does not need their phone to buzz. What it left
+was a gap — somebody with the app open and a message arriving in a _different_
+thread was told nothing at all, and on the web, where there is no push, that
+was the whole notification story.
+
+The banner fills it, and three things about it were decided rather than
+defaulted.
+
+_It replaces rather than queues_, unlike `toast.ts` beside it. A toast reports
+the outcome of something the user did and has to be seen, or the app has
+silently swallowed an answer. A banner points at the chat list, which already
+shows every one of these messages with an unread count. Three quick messages
+must not hold the top of the screen for fifteen seconds.
+
+_It obeys the messages/push switch._ It is that channel's foreground face, and
+one switch labelled "Messages — Push" has to silence every unsolicited
+"somebody wrote to you", wherever it happens to be drawn. The chat list and its
+counts still update, because that is data arriving rather than a notification
+being sent — and on the web this is the only thing that switch does.
+
+_An OS notification for a message while the app is in front is suppressed and
+handed to the same banner._ A heads-up sliding over the app somebody is already
+using is the most irritating thing this system can do, and it says nothing the
+banner does not. The badge still ticks. Streak, badge and profile-visit
+notifications keep the OS presentation: once a day, no in-app equivalent, and
+worth swiping away and finding again in the shade.
+
+The read receipt moved from mount to **focus** at the same time, which fixed a
+bug that was already there: `chat/[id]` is a hidden tab route and never
+unmounts, so returning to an open thread posted nothing and the app went on
+believing it was being read. `appActive` is checked separately, because Android
+keeps the JS thread alive in the background — the chat screen can be the
+focused route with nobody looking at it, and marking a message read there
+clears a badge for something never seen.
+
+## Scheduled notifications claim before they send
+
+Every pass writes a row into `notificationLedger` — `_id` is
+`<job>:<userId>:<periodKey>` — and the insert failing on a duplicate key _is_
+the check. A read followed by a write has a gap, and two half-hourly ticks
+landing in that gap is somebody told the same thing twice, which is how a
+notification permission gets revoked.
+
+The claim happens **before** the send, deliberately. A send that then fails is
+one notification nobody got. A claim that fails to record is one they get again
+every thirty minutes until the hour passes.
+
+The period key is not always a day. The unread digest keys on
+`stats.lastActiveAt`, which does not move while somebody is away — so a
+fortnight of absence is one email rather than fourteen, and coming back and
+leaving again is a new key, which is exactly when a second digest is worth
+sending. A daily key would have made it the thing an unread-message email is
+usually guilty of.
+
+Badges are the exception, and they are on the profile instead:
+`stats.notifiedBadgeIds`. The ledger expires its rows after thirty days, which
+is right for "already nudged them today" and catastrophic for "they have had
+this badge since March" — an expiring row would re-announce every badge every
+month. That field is a log of what was sent rather than a second copy of the
+badges: it grants nothing and cannot disagree with them. An account it has
+never seen is **seeded, not congratulated**, so nobody was notified about a
+year of past achievements the day it shipped.
+
+## Profile visits are batched, and the count is the free half
+
+The viewer _list_ is Polyglot's; the count is free. So a push on every view
+would hand a free user the paywall's argument several times an afternoon, and
+any name in it would give away the thing being sold.
+
+One push a day, carrying a number and naming nobody, landing on `/viewers` —
+which draws the free/Pro line itself. One email a week, which may name people,
+for the tier allowed to see them. `viewSummarySince` decides that, not either
+sender, so the line is drawn in one module; there is a test that Fluent, which
+buys other things, still does not get the names in writing.
+
+The daily push has no email fallback, unlike the streak nudge. Somebody with no
+phone gets the weekly summary _instead of_ a daily notification, not as well as.
+
+Noon local, eight hours from the streak nudge at 20:00 and two from the badge
+round-up at 18:00. The fastest way to make somebody turn all three off is to
+let them arrive together.
+
+## Unsubscribe is a signed, non-expiring token on a POST
+
+The link in the footer of a notification email carries its own authority. No
+session, no login: somebody who left the app, forgot the password and still
+gets mail must be able to stop it, and RFC 8058's one-click is a mail server
+following a link with no way to sign in at all.
+
+**It never expires.** A footer sits in an inbox for years and has to keep
+working; CAN-SPAM's thirty days is a floor, not a design. The safety is the
+HMAC — 256 bits keyed by a 32-character secret, and the worst a replay achieves
+is switching off mail its holder already receives.
+
+**Its secret is its own**, not `BETTER_AUTH_SECRET`. The auth secret is what
+you rotate the morning a session store leaks, and doing that must not silently
+break the legal way out of every email ever sent. `EMAIL_UNSUBSCRIBE_SECRET` is
+generated once and never rotated; unset, it falls back and inherits the problem.
+
+**The GET only asks.** Scanners, link previewers and click-protection proxies
+all fetch a URL before a human sees the message, so a GET that acted would
+unsubscribe people who never opened the mail. The change is on the POST, which
+also parses a form body — one-click clients send an empty one, and Fastify
+answers 415 for a content-type nothing can read.
+
+**Unsubscribing touches email only.** Somebody stopping mail said nothing about
+their phone, and silencing that too would be answering a question they were not
+asked.
+
+Everything a notification sender does goes through `sendNotificationEmail`,
+which checks deleted, then the preference, then the address, in that order — a
+consent check that lives in five places is one that four of them will
+eventually get wrong.

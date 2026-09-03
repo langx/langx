@@ -29,6 +29,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 > Answer the form's location questions with both in mind.
 
 | Push token | `devices.pushToken` | Sending notifications | Only if you grant permission |
+| Notification record | `notificationLedger`, `stats.notifiedBadgeIds`, `emailCampaigns` | Not telling you the same thing twice — which day you were nudged, which badges you have been told about, which campaigns reached you | Automatic; the ledger is deleted after 30 days (TTL index) |
 | Purchase state | `subscriptions` | Knowing whether you have Pro | Only if you subscribe |
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
@@ -134,14 +135,14 @@ not through a second SDK in the app.
 
 ## Sharing with third parties
 
-| Recipient                    | What it receives                                                           | Why                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Resend                       | Your email address and the message body                                    | Sending verification and password-reset mail                              |
-| Google Cloud Translation     | The text you asked to translate                                            | Machine translation. Results are cached by a hash of the source text      |
-| RevenueCat                   | Your user id and purchase events                                           | Subscription state                                                        |
-| Expo push service            | Your push token and the notification text                                  | Delivering notifications                                                  |
-| Cloudflare R2 / Backblaze B2 | Your photos                                                                | Hosting them                                                              |
-| ~~PostHog (EU Cloud)~~       | _Nothing — not integrated. Listed only so it is not forgotten when it is._ | _See "Analytics" above: not built, and must not be declared until it is._ |
+| Recipient                    | What it receives                                                                                                                                               | Why                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Resend                       | Your email address, and — for notification mail — how many messages are waiting and the display names of who wrote or looked. **Never the text of a message.** | Verification and password-reset mail, and the notification emails you have switched on |
+| Google Cloud Translation     | The text you asked to translate                                                                                                                                | Machine translation. Results are cached by a hash of the source text                   |
+| RevenueCat                   | Your user id and purchase events                                                                                                                               | Subscription state                                                                     |
+| Expo push service            | Your push token and the notification text                                                                                                                      | Delivering notifications                                                               |
+| Cloudflare R2 / Backblaze B2 | Your photos                                                                                                                                                    | Hosting them                                                                           |
+| ~~PostHog (EU Cloud)~~       | _Nothing — not integrated. Listed only so it is not forgotten when it is._                                                                                     | _See "Analytics" above: not built, and must not be declared until it is._              |
 
 None of these receive data for their own advertising or profiling. There are no
 data brokers.
