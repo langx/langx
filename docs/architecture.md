@@ -225,6 +225,17 @@ files.
   `authClient.getCookie()` and attached by hand with `credentials: "omit"`, all
   of it hidden behind one `apiFetch` wrapper.
 - The Socket.io handshake validates the same session → `socket.data.userId`.
+- **Sessions are visible and revocable.** Settings → _Sign in on another
+  device_ lists every session (`GET /list-sessions`) with a per-row sign-out
+  (`POST /revoke-session`) and _sign out everywhere else_. `freshAge: 0` in
+  `auth.ts` is what makes the list readable: the default gates it behind a
+  24-hour freshness check, and a phone that signed in last week got a 403.
+- **QR sign-in on the web** is RFC 8628's device flow. The browser polls
+  `/device/token`; the phone claims the code (`GET /device?user_code=`) and
+  then approves. The QR encodes a `langx://link-device` link so the phone's own
+  camera lands in the app, and an `after` hook writes the session cookie for
+  the browser — the token endpoint is OAuth and answers with a bearer token
+  nothing in this app sends. See `decisions.md` → _Device sign-in_.
 - **Age gate:** `birthDate` (`YYYY-MM-DD`) is required at onboarding and
   under-18s cannot complete it. The check is server-side, before `profiles` is
   written — the client's date picker is not trusted. The rule still counts

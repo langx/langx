@@ -2516,3 +2516,49 @@ than `immutable`, because the picture is no longer a pure function of its URL �
 gender is writable exactly once, from `undisclosed` to a value, and a
 cache-busting parameter would have to carry the very field this keeps off the
 wire.
+
+## Device sign-in: claim first, a scheme link in the QR, and a cookie the plugin does not set
+
+Fixed on 3 September 2026, after "that code is no longer valid" turned out to
+be the answer to every approval ever attempted from the phone. Three separate
+faults sat on the path between the browser showing a code and the phone
+approving it, and none of them was the expiry the message described.
+
+**The claim.** Better Auth's device plugin will not approve a code until a
+signed-in `GET /device?user_code=` has attached it to an account. The screen
+called `approve` straight away, so every attempt came back
+`DEVICE_CODE_NOT_CLAIMED`. The claim runs first now, and its response — which
+names the client asking — is only returned to the account that claimed, so the
+confirmation can say what is being approved. The single failure message stays
+deliberately vague across expired, used and unknown codes, so guessing a code
+learns nothing.
+
+**The session.** `/device/token` is an OAuth endpoint: it answers with a bearer
+token and nothing else. Nothing in this app sends an `Authorization` header —
+every client is cookie-based — so even a correct approval left the browser with
+a 200 and no session. A `hooks.after` middleware in `auth.ts` writes the
+session cookie for the session the plugin has already created. It is scoped to
+that one path; everything else that creates a session sets its own.
+
+**The QR.** It encoded an `https://` link to the web app. The picture is scanned
+with the phone's own camera, and the phone is where the session already is —
+so the link opened a browser on that same phone, signed in as nobody, which is
+the one place the approval cannot be given. It encodes `langx://link-device`
+now (`deviceLinkTarget` in `packages/shared`), which the installed app resolves
+to the approval screen. No native code, ships over the air. Not a universal
+link on the web host: that needs `.well-known` served from a host that still
+answers with v1, which is an infrastructure move rather than a QR change. Some
+Android cameras ignore custom schemes, so the eight-character code stays the
+primary path — eight, not the six three comments and a placeholder claimed.
+
+**`freshAge: 0`.** The same screen lists where the account is signed in, which
+is also the only feedback that an approval landed, since the device it signed
+in is somewhere else. Better Auth puts `/list-sessions` behind a 24-hour
+freshness check by default, so a phone that signed in last week could not open
+the list at all. Zero turns the check off. Revocation uses the
+authoritative-session check, not the freshness one, and is unaffected; the only
+other fresh-gated endpoint is `/unlink-account`, which the app never calls.
+
+All of it is covered end to end in `routes/deviceFlow.test.ts`, including the
+case as it was lived — approve without claim — and a test that fails without
+the `freshAge` line.
