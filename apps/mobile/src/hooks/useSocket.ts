@@ -1,9 +1,12 @@
-import { PRESENCE_HEARTBEAT_MS } from '@langx/shared'
+import { notificationsAllowed, PRESENCE_HEARTBEAT_MS } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import type { MessageDto } from '../api/queries'
-import { keys } from '../api/queries'
+import { AppState } from 'react-native'
+import type { MeProfile, MessageDto } from '../api/queries'
+import { keys, markConversationRead } from '../api/queries'
+import { getActiveConversation } from '../lib/activeConversation'
+import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
 import {
   appendIncomingMessage,
@@ -97,6 +100,33 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         )
         if (!patched) void queryClient.invalidateQueries({ queryKey: ['conversations'] })
         void queryClient.invalidateQueries({ queryKey: keys.tokens })
+
+        /**
+         * And then say so, if there is anybody to say it to.
+         *
+         * The server sends no push while this socket is in the user's room —
+         * see `fanOut.ts` — so without this, somebody reading their settings
+         * learns nothing about a message arriving in another thread until they
+         * happen to open the chat list. On the web, where there is no push at
+         * all, this is the only notice there is.
+         */
+        const prefs = queryClient.getQueryData<MeProfile>(keys.me)?.settings.notifications
+        const decision = shouldShowIncomingBanner({
+          message,
+          meId,
+          activeConversationId: getActiveConversation(),
+          appActive: AppState.currentState === 'active',
+          messagesPushAllowed: notificationsAllowed(prefs, 'messages', 'push'),
+        })
+        if (decision === 'markRead') void markConversationRead(conversationId, queryClient)
+        else if (decision === 'banner') {
+          showMessageBanner({
+            conversationId,
+            senderId: message.senderId,
+            preview: previewOf(message.type),
+            body: message.body,
+          })
+        }
       })
 
       /**

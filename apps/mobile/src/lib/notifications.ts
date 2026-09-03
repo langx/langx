@@ -1,4 +1,5 @@
-import { Platform } from 'react-native'
+import { AppState, Platform } from 'react-native'
+import { presentationFor } from './foregroundPush'
 
 /**
  * Two things that have to be set before the first notification arrives, and
@@ -19,15 +20,29 @@ export async function configureNotifications(): Promise<void> {
      * delivered to the JS layer and shown nowhere — so someone reading one
      * conversation never learns about a message in another. Both platforms
      * default to silence here; it is a decision, not a default.
+     *
+     * The exception is a *message* while the app is in front, which becomes
+     * the in-app banner instead. A heads-up notification sliding over the app
+     * somebody is already using is the most irritating thing this system can
+     * do, and it says nothing the banner does not. The badge still ticks, so
+     * the count on the icon stays honest.
+     *
+     * In practice this path only fires when the socket is down while the app
+     * is open — the server sends no push to somebody holding a live socket —
+     * so the two cannot draw a banner for the same message.
      */
     Notifications.setNotificationHandler({
-      handleNotification: () =>
-        Promise.resolve({
-          shouldShowBanner: true,
-          shouldShowList: true,
-          shouldPlaySound: true,
+      handleNotification: (notification) => {
+        const suppress =
+          presentationFor(notification.request.content.data, AppState.currentState === 'active') ===
+          'suppress'
+        return Promise.resolve({
+          shouldShowBanner: !suppress,
+          shouldShowList: !suppress,
+          shouldPlaySound: !suppress,
           shouldSetBadge: true,
-        }),
+        })
+      },
     })
 
     if (Platform.OS === 'android') {

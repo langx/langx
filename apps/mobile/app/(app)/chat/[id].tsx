@@ -7,7 +7,7 @@ import {
   TOKEN_RULES,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
-import { useLocalSearchParams } from 'expo-router'
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -22,6 +22,7 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import {
+  markConversationRead,
   uploadMessageMedia,
   useMe,
   useMessages,
@@ -31,7 +32,7 @@ import {
   type MessageDto,
 } from '../../../src/api/queries'
 import * as Clipboard from 'expo-clipboard'
-import { api } from '../../../src/api/client'
+import { setActiveConversation } from '../../../src/lib/activeConversation'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ComposerHint } from '../../../src/components/ComposerHint'
 import { Tip } from '../../../src/components/Tip'
@@ -205,14 +206,24 @@ export default function ChatScreen() {
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
 
-  // Opening the thread is the read receipt. Doing it here rather than on a
-  // scroll-to-bottom keeps it honest for short threads that never scroll.
-  useEffect(() => {
-    if (!conversationId) return
-    void api.post(`/conversations/${conversationId}/read`).then(() => {
-      void queryClient.invalidateQueries({ queryKey: ['conversations'] })
-    })
-  }, [conversationId, queryClient])
+  /**
+   * Opening the thread is the read receipt — and *focusing* it, not mounting
+   * it. This screen is a hidden tab route, so it stays mounted after the user
+   * navigates away: on mount alone, coming back to a thread already open
+   * posted nothing, and the app went on believing this conversation was being
+   * read for the rest of the session.
+   *
+   * Which also matters to the in-app banner: `activeConversation` is what
+   * stops a message buzzing at somebody who is looking straight at it.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      if (!conversationId) return
+      setActiveConversation(conversationId)
+      void markConversationRead(conversationId, queryClient)
+      return () => setActiveConversation(null)
+    }, [conversationId, queryClient]),
+  )
 
   useEffect(() => {
     let cancelled = false

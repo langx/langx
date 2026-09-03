@@ -470,6 +470,10 @@ export const es: Localized<EnMessages> = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'Alguien',
+    bannerA11y: 'Nuevo mensaje de {name}',
+    preview: { image: '📷 Foto', audio: '🎤 Mensaje de voz', correction: '✍️ Corrección' },
     delete: 'Eliminar',
     deleteTitle: '¿Eliminar este chat?',
     deleteBody: 'Se queda en su lado y vuelve aquí si escriben otra vez.',

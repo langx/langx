@@ -501,6 +501,10 @@ export const en = {
   },
 
   chats: {
+    /** The in-app banner: a face, a name and one line that is never the body. */
+    someone: 'Someone',
+    bannerA11y: 'New message from {name}',
+    preview: { image: '📷 Photo', audio: '🎤 Voice message', correction: '✍️ Correction' },
     delete: 'Delete',
     deleteTitle: 'Delete this chat?',
     deleteBody: 'It stays on their side, and comes back here if they write again.',
