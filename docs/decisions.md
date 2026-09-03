@@ -2463,5 +2463,12 @@ simply forgets the address; and `--drop` removes the collection only once
 nobody is left unsent.
 
 Appwrite is still running and is the only place the plaintext v1 emails live;
-the script needs it. If it goes away before the script has run, the rows
+the script needs it.
+
+With every v1 account holding a row, the password bridge — `POST /auth/login`
+asking v1 to check an old password, then creating the v2 account with it —
+lost its reason to exist and was removed the same day. It had never been on
+in production anyway: it needed `APPWRITE_*` on the server, which was never
+set, and it was the one path that forwarded a password to another system.
+The sign-in screen now calls Better Auth alone. If it goes away before the script has run, the rows
 cannot be opened and this whole path is lost — see the runbook.

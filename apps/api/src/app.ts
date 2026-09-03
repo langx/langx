@@ -16,7 +16,6 @@ import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
 import { emailRoutes } from './routes/email'
 import { appConfigRoutes } from './routes/appConfig'
-import { loginRoutes } from './routes/login'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { cityRoutes } from './routes/cities'
@@ -42,7 +41,6 @@ import { wellKnownRoutes } from './routes/wellKnown'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import { ConsoleEmailSender, type EmailSender } from './email/sender'
-import { DisabledLegacyVerifier, type LegacyVerifier } from './modules/handles/legacyLogin'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
@@ -63,7 +61,6 @@ declare module 'fastify' {
      * one outbox from the reader's side, and were two from ours.
      */
     email: EmailSender
-    legacyVerifier: LegacyVerifier
     appVersion: string
     /**
      * The pinned server type, not socket.io's default. Its generics default
@@ -94,12 +91,6 @@ export interface BuildAppOptions {
    * logging one: a test that never sends mail should not have to name it.
    */
   email?: EmailSender
-  /**
-   * Checks a v1 password against the still-running Appwrite. Defaults to the
-   * disabled one, so tests and any instance without APPWRITE_* simply never
-   * take the bridge path.
-   */
-  legacyVerifier?: LegacyVerifier
   version?: string
 }
 
@@ -122,7 +113,6 @@ export async function buildApp({
   revenueCat,
   push = new LoggingPushSender(),
   email = new ConsoleEmailSender(console),
-  legacyVerifier = new DisabledLegacyVerifier(),
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -152,7 +142,6 @@ export async function buildApp({
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
   app.decorate('email', email)
-  app.decorate('legacyVerifier', legacyVerifier)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -269,7 +258,6 @@ export async function buildApp({
   await app.register(healthRoutes)
   await app.register(wellKnownRoutes)
   await app.register(appConfigRoutes)
-  await app.register(loginRoutes)
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
   await app.register(qrRoutes)

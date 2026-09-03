@@ -162,12 +162,10 @@ const envSchema = z.object({
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),
 
-  // Read by the one-off ETLs (scripts/migrate-*.ts, precreate-v1-users.ts)
-  // and, only if set on the server, by the legacy password bridge in
-  // routes/login.ts. Not set on Fly, so the bridge is off in production and
-  // the running server never talks to Appwrite. The v1 instance is still up
-  // and is the only place the plaintext v1 emails live — the staging tables
-  // carry a hash on purpose.
+  // Read only by the one-off ETLs (scripts/migrate-*.ts,
+  // precreate-v1-users.ts); the running server never talks to Appwrite. Not
+  // set on Fly. The v1 instance is still up and is the only place the
+  // plaintext v1 emails live — the staging tables carry a hash on purpose.
   APPWRITE_ENDPOINT: emptyToUndefined(z.url().optional()),
   APPWRITE_PROJECT_ID: emptyToUndefined(z.string().optional()),
   APPWRITE_API_KEY: emptyToUndefined(z.string().optional()),

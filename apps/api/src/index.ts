@@ -12,7 +12,6 @@ import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCa
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
 import type { NotificationEmailContext } from './email/notify'
-import { AppwriteLegacyVerifier, DisabledLegacyVerifier } from './modules/handles/legacyLogin'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startNotificationScheduler } from './modules/notifications/scheduler'
@@ -51,14 +50,6 @@ async function main(): Promise<void> {
     apiBaseUrl: publicApiUrl(env),
   }
 
-  // The bridge only exists while v1 is still running. Without APPWRITE_* it is
-  // simply off, and a returning user goes through the normal reset-password
-  // route instead.
-  const legacyVerifier =
-    env.APPWRITE_ENDPOINT && env.APPWRITE_PROJECT_ID
-      ? new AppwriteLegacyVerifier(env.APPWRITE_ENDPOINT, env.APPWRITE_PROJECT_ID)
-      : new DisabledLegacyVerifier()
-
   const app = await buildApp({
     env,
     client,
@@ -69,7 +60,6 @@ async function main(): Promise<void> {
     revenueCat,
     push,
     email: emailSender,
-    legacyVerifier,
   })
 
   // Declarative indexes are applied before the first request is served, so a

@@ -119,14 +119,3 @@ export interface HandleSearchResult {
 export interface HandleSearchPage {
   items: HandleSearchResult[]
 }
-
-/** Body of `POST /auth/login` — see `packages/shared/src/account.ts`. */
-export interface LoginResult {
-  /** True when the v1 bridge was what accepted the password. */
-  migratedFromV1: boolean
-  restored: {
-    handle: string
-    tokensCredited: number
-    frozenStreak: number
-  } | null
-}
