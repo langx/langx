@@ -1,0 +1,32 @@
+# Every merge to main becomes an over-the-air update on the `production`
+# channel, which is the only channel there is.
+#
+# JS and assets only, no store build and no build quota: an installed app
+# picks the new bundle up in the background and runs it on the next launch.
+# A native change still needs release.yml.
+#
+# `environment: production` is load-bearing, not decoration. `EXPO_PUBLIC_*`
+# values are inlined into the bundle when it is built, and this job builds it
+# on EAS from a fresh checkout with no `.env` in it. The `env` block in
+# eas.json belongs to *build* profiles and an update job never reads it, so
+# without an environment naming somewhere that defines `EXPO_PUBLIC_API_URL`
+# the bundle falls back to `http://localhost:4000` — see resolveApiUrl.ts,
+# which only rewrites loopback in development. Every update published before
+# 4 September 2026 shipped that fallback. The value lives in the EAS
+# `production` environment.
+name: Update
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mobile/**
+      - packages/shared/**
+      - '!**/*.md'
+
+jobs:
+  publish:
+    type: update
+    environment: production
+    params:
+      channel: production
+      message: ${{ github.event.head_commit.message || 'main' }}

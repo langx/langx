@@ -2665,3 +2665,43 @@ finish the restore.
 
 The lesson is about the docs, not the number: a prediction about what a form
 will say should not be written as if the form had been filled in.
+
+## One update channel, and merging is releasing
+
+Mobile shipping arrived with two channels. `preview` took an over-the-air
+update on every merge to `main` and fed internal APK installs; `production`
+was reserved for store builds and nothing ever published to it, on the
+argument that an update there reaches everyone at once.
+
+Behic removed the split on 4 September 2026: one channel, `production`, and
+every merge to `main` publishes to it automatically. The staging tier was
+buying very little. Nothing had shipped to a store, so `production` had never
+carried a single update, and the only installs on `preview` were a handful of
+test devices. The cost of the split was a release step that had to be
+remembered by hand and a second set of profiles and workflows to keep honest.
+
+What it costs instead: what merges is what ships, for JS changes, with no
+stage in between. `release.yml` still needs a decision because a native build
+does, but a JS regression now reaches users on their next launch. That is the
+trade, and it is only defensible while the tests are the gate.
+
+Removing the split also uncovered why it had never worked. `EXPO_PUBLIC_*`
+values are inlined into the bundle when it is built, an update job builds on
+EAS from a fresh checkout with no `.env`, and `eas.json`'s `env` blocks belong
+to build profiles that an update job never reads. So every update published
+before this change was bundled with `EXPO_PUBLIC_API_URL` unset, and
+`resolveApiUrl` only rewrites loopback in development. Each one shipped
+`http://localhost:4000` to whoever installed it. Nobody caught it because the
+device tests ran against the binary, which had the URL compiled in from the
+build profile, and an OTA overwrote it only on a later launch.
+
+The fix is `environment: production` on the update job plus the variable in
+the EAS `production` environment. A local export proved both halves: without
+the variable the Android bundle contains `http://localhost:4000` and no
+`api.langx.io` at all.
+
+One more trap on the way, worth writing down because it wastes an hour
+silently. Metro caches transforms, and the inlined value is part of one. An
+export re-run with the variable corrected returned a byte-identical bundle,
+still holding the old address. `--clear` is required whenever an
+`EXPO_PUBLIC_*` value changes.
