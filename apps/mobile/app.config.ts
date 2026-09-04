@@ -127,10 +127,24 @@ const config: ExpoConfig = {
   /**
    * An update is only offered to a build with the same runtime version, which
    * is what stops a JS bundle expecting a native module the installed binary
-   * does not have. Tied to the SDK, so it changes exactly when the native
-   * layer does.
+   * does not have.
+   *
+   * `fingerprint` hashes the native layer itself — the native dependencies,
+   * the config plugins, everything `expo prebuild` would produce — so the
+   * version changes exactly when the binary would have had to change. The
+   * `sdkVersion` policy this replaces was one number for a whole SDK release:
+   * adding a native module inside SDK 57 left the runtime at
+   * `exposdk:57.0.0`, so the update was still offered to a store build that
+   * could not run it. That is the guard that lets every merge to `main`
+   * publish straight to `production` (`decisions.md`); with one number per SDK
+   * it was not a guard at all. A mismatched phone now simply sees no update
+   * and keeps the bundle it shipped with.
+   *
+   * The cost is that a build made under the old policy — 2.0.0 (121), the
+   * first store release — has runtime `exposdk:57.0.0` and will never match a
+   * fingerprint. It cannot be reached over the air; the next build can.
    */
-  runtimeVersion: { policy: 'sdkVersion' },
+  runtimeVersion: { policy: 'fingerprint' },
 
   /**
    * The brand mark, from `branding/app-resources`. There was no `icon` at all

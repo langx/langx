@@ -2461,17 +2461,44 @@ see the runbook.
 Two things decided the shape of the workflows.
 
 _Updates are automatic, builds are not._ A merge to `main` publishes an OTA
-update to the `preview` channel for nothing; a cloud build spends one of the
-free plan's fifteen a month. So the only workflow on a push trigger is the
-update, and both build workflows are `workflow_dispatch` with a platform
-input. Somebody spends a build on purpose, not because a README changed.
+update for nothing; a cloud build is the metered thing. So the only workflow
+on a push trigger is the update, and `release.yml` is `workflow_dispatch` with
+a platform input. Somebody spends a build on purpose, not because a README
+changed.
 
-_Production updates are manual too._ An update on the `production` channel
-reaches every store install at once, and `runtimeVersion` is the SDK version,
-so a JS change that assumes a native module which is not in the store build
-would land on phones that cannot run it. Publishing to production is a
-deliberate `eas update --channel production` after the matching build has
-shipped, not a side effect of merging.
+_Production updates were manual too, at first._ An update reaches every store
+install at once, so publishing was a deliberate `eas update --channel
+production` after the matching build had shipped. That step is gone — see
+_One update channel, and merging is releasing_ — and what replaced it is
+below, because removing the human without replacing the guard would have been
+the worst of both.
+
+## The runtime version is a fingerprint, so merging can release
+
+The manual production publish was a person standing in for a check the tooling
+was not making. `runtimeVersion` was `{ policy: 'sdkVersion' }` — one number
+for the whole of SDK 57 — so a commit that added a native module left the
+runtime at `exposdk:57.0.0` and its JS would still have been offered to a
+store binary without the module. The manual step was what stopped that, and it
+stopped it by being slow rather than by knowing anything.
+
+`{ policy: 'fingerprint' }` hashes the native layer itself: the native
+dependencies, the config plugins, everything `expo prebuild` would produce. A
+commit that changes the binary changes the version, and the update is then
+offered to nobody — a mismatched phone sees no update and keeps the bundle it
+shipped with. The check the human was performing is now a property of the
+version, which is the only reason every merge may publish straight to
+`production`.
+
+This landed a day after the channel merge rather than with it, and for that
+day `main` published automatically with `sdkVersion` still in place — the
+guard removed and its replacement not yet written. Nothing shipped through the
+gap.
+
+It is paid for once. 2.0.0 (121) was built under the old policy, carries
+runtime `exposdk:57.0.0`, and can never match a fingerprint: the first store
+release is unreachable over the air. The next build is not. A bad JS-only
+update is still undone with `eas update:rollback`.
 
 ## Every v1 account has a v2 `user` row before its owner comes back
 

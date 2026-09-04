@@ -843,22 +843,29 @@ which half it stopped in; see `decisions.md`.
 Three layers ship independently, and the difference between them decides how
 fast a fix reaches anyone.
 
-| Layer                  | How it updates                                    | How long                 |
-| ---------------------- | ------------------------------------------------- | ------------------------ |
-| Web                    | redeploy the static export                        | next page load           |
-| API                    | redeploy the container                            | immediate                |
-| Mobile — JS and assets | **EAS Update** (`eas update --branch production`) | minutes, next app launch |
-| Mobile — native        | EAS Build + store submission                      | days, store review       |
+| Layer                  | How it updates                           | How long                 |
+| ---------------------- | ---------------------------------------- | ------------------------ |
+| Web                    | redeploy the static export               | next page load           |
+| API                    | redeploy the container                   | immediate                |
+| Mobile — JS and assets | **EAS Update**, on every merge to `main` | minutes, next app launch |
+| Mobile — native        | EAS Build + store submission             | days, store review       |
 
 ### Over-the-air updates
 
-`expo-updates` points at EAS Update on the `production` and `preview` channels
-already declared in `eas.json`. Screens, logic, copy and most bug fixes go out
-this way without a store review; a new native module, a new permission or an
-SDK bump still needs a build.
+`expo-updates` points at EAS Update on the one channel this project has,
+`production`; both build profiles in `eas.json` use it, so an internal APK and
+a store install read the same stream. Screens, logic, copy and most bug fixes
+go out this way without a store review; a new native module, a new permission
+or an SDK bump still needs a build.
 
-`runtimeVersion` follows the SDK version, which is what stops a JS bundle
-being offered to a binary whose native layer cannot run it.
+Publishing is automatic: `update.yml` runs on every merge to `main`. There is
+no second channel to hold a change back on — see `decisions.md` for why, and
+for the guard that makes it safe.
+
+`runtimeVersion` is `{ policy: 'fingerprint' }`, a hash of the native layer
+itself, so a bundle is only ever offered to a binary that can run it. A commit
+that changes the native side changes the fingerprint, and the update reaches
+nobody until the matching build ships.
 
 Launch never blocks on the network (`fallbackToCacheTimeout: 0`): the app
 starts on the bundle it has and picks up a new one in the background, applied
