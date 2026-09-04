@@ -23,6 +23,7 @@
     "@fastify/helmet": "catalog:",
     "@fastify/rate-limit": "catalog:",
     "@langx/shared": "workspace:*",
+    "@resvg/resvg-js": "^2.6.2",
     "@sentry/node": "catalog:",
     "better-auth": "catalog:",
     "fastify": "catalog:",
@@ -33,6 +34,7 @@
     "pino": "catalog:",
     "qrcode": "^1.5.4",
     "resend": "catalog:",
+    "satori": "^0.33.4",
     "socket.io": "catalog:",
     "zod": "catalog:"
   },

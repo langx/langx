@@ -305,6 +305,8 @@ export const ru: Localized<EnMessages> = {
     title: 'Практикуйся с тем, кто учит твой язык',
     subtitle: 'Сначала осмотрись — можно выбрать языки и увидеть, кто здесь, ещё до регистрации.',
     browse: 'Сначала осмотреться',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Языковые обмены',
     createAccount: 'Создать аккаунт',
     haveAccount: 'У меня уже есть аккаунт',
     guestFailed: 'Не удалось начать',
@@ -322,6 +324,7 @@ export const ru: Localized<EnMessages> = {
     name: 'Имя',
     forgotPassword: 'Забыл пароль?',
     signIn: 'Войти',
+    signingIn: 'Выполняется вход…',
     signUp: 'Зарегистрироваться',
     continueWithGoogle: 'Продолжить с Google',
     continueWithApple: 'Продолжить с Apple',
@@ -421,6 +424,9 @@ export const ru: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Восстанавливаем профиль',
+    restoringBody:
+      'Ваш аккаунт LangX возвращается — языки, фотографии и серия. Это может занять минуту, не покидайте экран.',
     startExploring: 'Начать знакомство',
     title: 'С возвращением',
     subtitle: 'Вот что вернулось вместе с тобой.',
@@ -938,6 +944,7 @@ export const ru: Localized<EnMessages> = {
     photoAdded: 'Фото добавлено.',
     photoUpdated: 'Фото обновлено.',
     saved: 'Профиль сохранён.',
+    savingLanguages: 'Сохранение языков…',
     saveFailed: 'Не удалось сохранить профиль.',
     storageUnconfigured: 'Хранилище фото на этом сервере ещё не настроено.',
     uploadRetry: 'Не удалось загрузить это изображение. Попробуй ещё раз.',
@@ -1142,6 +1149,9 @@ export const ru: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'ваша доля за {day}',
     noShareYet: 'Доли пока нет — пул выплачивает после первого полного дня.',
+    firstShareAt: 'Первая доля придёт {when}.',
+    todayActivity:
+      'Сегодня: {score} активности · {messages} сообщений, {corrections} исправлений, {partners} собеседников.',
     poolCap: 'Не более {cap} в день. Ваша доля зависит от активности остальных.',
     poolPaidAt: 'Начисляется каждую ночь в {hour}:00 UTC.',
     history: 'История',
@@ -1320,6 +1330,16 @@ export const ru: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Поделиться картинкой',
+    cardStreakCaption: 'дней подряд в LangX',
+    cardBadgeCaption: 'значок получен в LangX',
+    cardRankCaption: 'в таблице токенов LangX',
+    cardBody: 'Выберите, куда — карточка нарисуется под неё.',
+    shapeStory: 'История Instagram / TikTok',
+    shapeSquare: 'Пост в Instagram',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Только ссылка',
+    cardFailed: 'Не удалось создать картинку. Отправляем ссылку.',
     action: 'Поделиться',
     copied: 'Ссылка скопирована',
     copiedText: 'Текст скопирован',
@@ -1386,6 +1406,12 @@ export const ru: Localized<EnMessages> = {
       other: 'человека смотрели твой профиль',
     },
     seeWho: 'Узнать, кто это',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Посетителей пока нет',
     emptyBody: 'Заполненный профиль помогает.',
   },

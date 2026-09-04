@@ -6,8 +6,6 @@ import { Avatar } from './ui/Avatar'
 import { EmptyState } from './ui/EmptyState'
 import { SegmentedControl } from './ui/SegmentedControl'
 import { openProfile } from '../lib/navigation'
-import { shareLink } from '../lib/share'
-import type { ShareContent } from '../lib/shareText'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 
@@ -41,8 +39,15 @@ interface LeaderboardSectionProps<Option extends string> {
   emptyBody: string
   /** Where a tapped row should come back to. */
   backTo: string
-  /** Ready share content, or nothing — the button exists only when it does. */
-  share?: ShareContent | undefined
+  /**
+   * What to do when the rank is shared, or nothing — the button exists only
+   * when it does.
+   *
+   * A handler rather than a ready sentence, since sharing a rank now opens a
+   * sheet that asks where the picture is going. The section still decides
+   * *whether* there is a rank to share; it no longer decides how.
+   */
+  onShare?: (() => void) | undefined
 }
 
 /**
@@ -73,7 +78,7 @@ export function LeaderboardSection<Option extends string>({
   emptyTitle,
   emptyBody,
   backTo,
-  share,
+  onShare,
 }: LeaderboardSectionProps<Option>) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -91,10 +96,10 @@ export function LeaderboardSection<Option extends string>({
         />
       </View>
 
-      {share ? (
+      {onShare ? (
         <Pressable
           accessibilityRole="button"
-          onPress={() => void shareLink(share)}
+          onPress={onShare}
           hitSlop={8}
           style={({ pressed }) => [styles.shareRank, pressed && styles.rowPressed]}
         >

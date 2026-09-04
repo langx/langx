@@ -25,7 +25,12 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import type { Profile } from '../modules/profiles/profiles'
 import type { DailyActivity } from '../modules/tokens/dailyActivity'
 import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
-import { DAILY_POOL_JOB, runDailyPool, type JobRun } from '../modules/tokens/pool'
+import {
+  DAILY_POOL_JOB,
+  POOL_LOCK_STALE_MS,
+  runDailyPool,
+  type JobRun,
+} from '../modules/tokens/pool'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -349,6 +354,51 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(second.ran).toBe(true) // the lock let it through...
       expect(second.ran && second.result.paid).toBe(0) // ...but the ledger did not
       expect(await totalXp()).toBe(afterFirst)
+    })
+
+    it('recovers a day whose lock was left behind by a run that died', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId)
+      const day = shiftDayKey(YESTERDAY, -9)
+      await seedActivity(user.userId, { messages: 10, partners: ['q'] }, day)
+
+      /*
+       * Exactly the wreckage a crash leaves: the lock is taken, no work was
+       * done, and `finishedAt` never arrived. Before `clearStaleLock` this
+       * state was permanent — every later tick read it as "already ran" and
+       * the day went unpaid for everybody, silently and forever.
+       */
+      await handle.db.collection<JobRun>(COLLECTIONS.jobRuns).insertOne({
+        job: DAILY_POOL_JOB,
+        periodKey: day,
+        startedAt: new Date(Date.now() - POOL_LOCK_STALE_MS - 60_000),
+      })
+
+      const outcome = await runDailyPool(handle.db, { day })
+      expect(outcome.ran).toBe(true)
+      expect(outcome.ran && outcome.result.paid).toBe(1)
+    })
+
+    it('leaves a lock alone while the run holding it could still be alive', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId)
+      const day = shiftDayKey(YESTERDAY, -10)
+      await seedActivity(user.userId, { messages: 10, partners: ['r'] }, day)
+
+      // Same shape as above, but young: another instance is working on it.
+      await handle.db.collection<JobRun>(COLLECTIONS.jobRuns).insertOne({
+        job: DAILY_POOL_JOB,
+        periodKey: day,
+        startedAt: new Date(),
+      })
+
+      const outcome = await runDailyPool(handle.db, { day })
+      expect(outcome.ran).toBe(false)
+      expect(
+        await handle.db
+          .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+          .countDocuments({ kind: 'dailyPool', refId: day }),
+      ).toBe(0)
     })
 
     it('pays no share to an account younger than the ramp-up window', async () => {

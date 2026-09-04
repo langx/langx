@@ -9,6 +9,7 @@ import { Checkbox } from '../../src/components/ui/Checkbox'
 import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { openExternal } from '../../src/lib/openExternal'
 import { FormField } from '../../src/components/ui/FormField'
+import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
@@ -160,6 +161,8 @@ export default function SignUp() {
       </Checkbox>
 
       <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />
+
+      <SocialAuthButtons />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{t('auth.haveAccount')}</Text>

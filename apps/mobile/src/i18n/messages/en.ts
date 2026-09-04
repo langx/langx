@@ -306,6 +306,8 @@ export const en = {
     subtitle:
       'Have a look first — you can pick your languages and see who is here before you sign up for anything.',
     browse: 'Look around first',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Language exchanges',
     createAccount: 'Create an account',
     haveAccount: 'I already have an account',
     guestFailed: 'Could not start',
@@ -323,6 +325,7 @@ export const en = {
     name: 'Name',
     forgotPassword: 'Forgot password?',
     signIn: 'Sign in',
+    signingIn: 'Signing you in…',
     signUp: 'Sign up',
     continueWithGoogle: 'Continue with Google',
     continueWithApple: 'Continue with Apple',
@@ -423,6 +426,9 @@ export const en = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Restoring your profile',
+    restoringBody:
+      'Your LangX account is coming back — your languages, your photos and your streak. This can take a moment; please stay on this screen.',
     startExploring: 'Start exploring',
     title: 'Welcome back',
     subtitle: 'Here is what came with you.',
@@ -866,6 +872,7 @@ export const en = {
     photoAdded: 'Photo added.',
     photoUpdated: 'Photo updated.',
     saved: 'Profile saved.',
+    savingLanguages: 'Saving languages…',
     saveFailed: 'Could not save your profile.',
     storageUnconfigured: 'Photo storage is not configured on this server yet.',
     uploadRetry: 'Could not upload that image. Try again.',
@@ -1062,6 +1069,9 @@ export const en = {
     shareAmount: '+{count}',
     shareFor: 'your share for {day}',
     noShareYet: 'No share yet — the pool pays out after your first full day.',
+    firstShareAt: 'Your first share lands {when}.',
+    todayActivity:
+      'Today so far: {score} activity · {messages} messages, {corrections} corrections, {partners} people.',
     poolCap: "Cap {cap} a day. Your share moves with everyone else's.",
     poolPaidAt: 'Paid every night at {hour}:00 UTC.',
     history: 'History',
@@ -1206,6 +1216,16 @@ export const en = {
   },
 
   share: {
+    cardTitle: 'Share as a picture',
+    cardStreakCaption: 'day streak on LangX',
+    cardBadgeCaption: 'badge earned on LangX',
+    cardRankCaption: 'on the LangX token board',
+    cardBody: 'Pick where it is going — the card is drawn to fit.',
+    shapeStory: 'Instagram / TikTok story',
+    shapeSquare: 'Instagram post',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Just the link',
+    cardFailed: 'Could not make the picture. Sharing the link instead.',
     action: 'Share',
     copied: 'Link copied',
     copiedText: 'Text copied',
@@ -1270,6 +1290,12 @@ export const en = {
      */
     countLabel: { one: 'person viewed your profile', other: 'people viewed your profile' },
     seeWho: 'See who they are',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'No visitors yet',
     emptyBody: 'Filling in your profile helps.',
   },

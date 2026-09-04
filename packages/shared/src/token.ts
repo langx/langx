@@ -386,6 +386,45 @@ export function newestPayableDay(now: Date, rules: TokenRules = TOKEN_RULES): st
 }
 
 /**
+ * When the account's *first* pool share can land, as a UTC instant — or null
+ * once one already has.
+ *
+ * Two rules stack, and the app has to state their combination rather than
+ * either half. A day is paid at `pool.payoutHourUtc` the morning after it
+ * closes, and an account younger than `pool.accountAgeRampUpHours` at that
+ * close earns nothing for it. So an account created today (UTC) is not paid
+ * for today at all: its first payable day is tomorrow, settled the morning
+ * after that.
+ *
+ * This exists because "No share yet" was indistinguishable from a broken
+ * feature. Somebody who signed up, sent messages and got replies had done
+ * everything the screen asks for and was told nothing had happened — which is
+ * true, correct, and reads exactly like a bug.
+ */
+export function firstPayoutAt(
+  createdAt: Date,
+  now: Date,
+  rules: TokenRules = TOKEN_RULES,
+): Date | null {
+  const rampUpMs = rules.pool.accountAgeRampUpHours * 60 * 60 * 1000
+
+  /** Midnight UTC at the end of `day` — the instant its activity is final. */
+  const closeOf = (day: string): number => Date.parse(`${shiftDayKey(day, 1)}T00:00:00.000Z`)
+
+  // Walk forward from today to the first day that both closes after the
+  // ramp-up has elapsed and is settled in the future. Two steps is always
+  // enough: today fails only on the ramp-up, and tomorrow's close is a further
+  // 24 hours out, which is the ramp-up's own length.
+  for (let ahead = 0; ahead <= 2; ahead++) {
+    const day = shiftDayKey(utcDayKey(now), ahead)
+    if (closeOf(day) - createdAt.getTime() < rampUpMs) continue
+    const paidAt = closeOf(day) + rules.pool.payoutHourUtc * 60 * 60 * 1000
+    if (paidAt > now.getTime()) return new Date(paidAt)
+  }
+  return null
+}
+
+/**
  * The UTC day a ledger row belongs to *for the reader*.
  *
  * Every other kind is filed on the day it was written, but a pool share is

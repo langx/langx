@@ -12,6 +12,8 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type CreateShareCardInput,
+  type ShareCardResult,
 } from '@langx/shared'
 import type {
   HandleSearchPage,
@@ -908,6 +910,18 @@ export function useFollows(userId: string, which: 'followers' | 'following') {
   })
 }
 
+/**
+ * Renders a share card and returns the page it is shared as.
+ *
+ * No cache to touch: a card is written once and then only ever read by whoever
+ * the link reaches, which is not this app.
+ */
+export function useCreateShareCard() {
+  return useMutation({
+    mutationFn: (input: CreateShareCardInput) => api.post<ShareCardResult>('/me/share-card', input),
+  })
+}
+
 export function useCreatePost() {
   const client = useQueryClient()
   return useMutation({
@@ -1146,10 +1160,13 @@ export interface ViewerPageDto {
   locked: boolean
   viewers: {
     userId: string
-    handle: string
-    displayName: string
+    /** Absent while `locked` — the server does not send identities behind the paywall. */
+    handle?: string
+    displayName?: string
     avatarUrl?: string
     lastViewedAt: string
+    /** How many times they have been back. At least 1. */
+    viewCount: number
   }[]
   nextCursor: string | null
 }

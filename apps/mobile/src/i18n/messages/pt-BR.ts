@@ -264,6 +264,8 @@ export const ptBR: Localized<EnMessages> = {
     subtitle:
       'Dá uma olhada antes: você pode escolher seus idiomas e ver quem está aqui sem se cadastrar.',
     browse: 'Dar uma olhada',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Intercâmbios de idiomas',
     createAccount: 'Criar uma conta',
     haveAccount: 'Já tenho uma conta',
     guestFailed: 'Não foi possível começar',
@@ -281,6 +283,7 @@ export const ptBR: Localized<EnMessages> = {
     name: 'Nome',
     forgotPassword: 'Esqueceu a senha?',
     signIn: 'Entrar',
+    signingIn: 'Entrando…',
     signUp: 'Criar conta',
     continueWithGoogle: 'Continuar com o Google',
     continueWithApple: 'Continuar com a Apple',
@@ -381,6 +384,9 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Restaurando seu perfil',
+    restoringBody:
+      'Sua conta LangX está voltando: seus idiomas, suas fotos e sua sequência. Pode levar um instante; permaneça nesta tela.',
     startExploring: 'Comece a explorar',
     title: 'Que bom te ver de novo',
     subtitle: 'Isto veio junto com você.',
@@ -815,6 +821,7 @@ export const ptBR: Localized<EnMessages> = {
     photoAdded: 'Foto adicionada.',
     photoUpdated: 'Foto atualizada.',
     saved: 'Perfil salvo.',
+    savingLanguages: 'Salvando idiomas…',
     saveFailed: 'Não deu para salvar seu perfil.',
     storageUnconfigured: 'O armazenamento de fotos ainda não está configurado neste servidor.',
     uploadRetry: 'Não deu para enviar essa imagem. Tente de novo.',
@@ -1013,6 +1020,9 @@ export const ptBR: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'sua parte de {day}',
     noShareYet: 'Ainda sem parte — o fundo paga depois do seu primeiro dia completo.',
+    firstShareAt: 'Sua primeira parte chega em {when}.',
+    todayActivity:
+      'Hoje até agora: {score} de atividade · {messages} mensagens, {corrections} correções, {partners} pessoas.',
     poolCap: 'Limite de {cap} por dia. Sua parte muda com a de todo mundo.',
     poolPaidAt: 'Pago toda noite às {hour}:00 UTC.',
     history: 'Histórico',
@@ -1157,6 +1167,16 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Compartilhar como imagem',
+    cardStreakCaption: 'dias seguidos no LangX',
+    cardBadgeCaption: 'medalha no LangX',
+    cardRankCaption: 'no ranking de tokens do LangX',
+    cardBody: 'Escolha o destino — o card é desenhado sob medida.',
+    shapeStory: 'Story do Instagram / TikTok',
+    shapeSquare: 'Post do Instagram',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Só o link',
+    cardFailed: 'Não foi possível criar a imagem. Compartilhando o link.',
     action: 'Compartilhar',
     copied: 'Link copiado',
     copiedText: 'Texto copiado',
@@ -1219,6 +1239,12 @@ export const ptBR: Localized<EnMessages> = {
       other: 'pessoas viram seu perfil',
     },
     seeWho: 'Ver quem são',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Nenhuma visita ainda',
     emptyBody: 'Preencher seu perfil ajuda.',
   },

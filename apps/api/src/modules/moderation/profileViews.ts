@@ -23,16 +23,30 @@ export interface ProfileView {
 
 export interface ViewerSummary {
   total: number
-  /** Populated only for Pro — free tier gets the count and a paywall. */
+  /**
+   * The rows themselves are returned either way; what a locked row omits is
+   * **who**.
+   *
+   * A locked row carries the real timestamp and the real repeat count — facts
+   * about the reader's own profile, which they are entitled to — but no
+   * `handle` and no `displayName`, and an `avatarUrl` that is a shape rather
+   * than a face. The client blurs them, and blurring is all it does: sending
+   * the real identities and relying on the client to obscure them would put
+   * the whole paid feature in the response body for anyone who reads the JSON.
+   */
   viewers: {
     userId: string
-    handle: string
-    displayName: string
+    /** Absent while `locked` — it is the identity. */
+    handle?: string
+    /** Absent while `locked`. */
+    displayName?: string
     avatarUrl?: string
     lastViewedAt: string
+    /** How many times this person has been back. Always at least 1. */
+    viewCount: number
   }[]
   locked: boolean
-  /** `null` on the last page, and always `null` while `locked`. */
+  /** `null` on the last page. */
   nextCursor: string | null
 }
 
@@ -145,9 +159,7 @@ export async function getViewers(
   // tier is shown, and the thing the paywall is arguing about.
   const total = await db.collection<ProfileView>(COLLECTIONS.profileViews).countDocuments(filter)
 
-  if (!hasFeature(effectiveTier(me), 'profileViewerIdentities')) {
-    return { total, viewers: [], locked: true, nextCursor: null }
-  }
+  const locked = !hasFeature(effectiveTier(me), 'profileViewerIdentities')
 
   const paged: Filter<ProfileView> = { ...filter }
   if (query.cursor) {
@@ -169,16 +181,41 @@ export async function getViewers(
   const views = hasMore ? page.slice(0, query.limit) : page
   const lastView = views.at(-1)
 
-  const viewerProfiles = await profiles
-    .find(
-      { _id: { $in: views.map((v) => v.viewerId) }, deletedAt: { $exists: false } },
-      { projection: { handle: 1, displayName: 1, avatarUrl: 1 } },
-    )
-    .toArray()
-  const byId = new Map(viewerProfiles.map((p) => [p._id, p]))
+  /*
+   * Not read at all while locked. The projection is narrow, but the surest way
+   * for an identity not to reach a free account is for the query that would
+   * have found it never to run.
+   */
+  const byId = locked
+    ? new Map<string, Pick<Profile, '_id' | 'handle' | 'displayName' | 'avatarUrl'>>()
+    : new Map(
+        (
+          await profiles
+            .find(
+              { _id: { $in: views.map((v) => v.viewerId) }, deletedAt: { $exists: false } },
+              { projection: { handle: 1, displayName: 1, avatarUrl: 1 } },
+            )
+            .toArray()
+        ).map((p) => [p._id, p]),
+      )
 
   const viewers: ViewerSummary['viewers'] = []
   for (const view of views) {
+    /*
+     * A locked row keeps its place in the list. It is the shape of the list —
+     * how many people, how recently, who came back — that the paywall is
+     * arguing about, and an empty list argues nothing.
+     */
+    if (locked) {
+      viewers.push({
+        userId: view.viewerId,
+        lastViewedAt: view.lastViewedAt.toISOString(),
+        // `?? 1` for the rows written before the counter existed: a view
+        // that was recorded is at least one view.
+        viewCount: view.count ?? 1,
+      })
+      continue
+    }
     const profile = byId.get(view.viewerId)
     if (!profile) continue
     const entry: ViewerSummary['viewers'][number] = {
@@ -186,6 +223,7 @@ export async function getViewers(
       handle: profile.handle,
       displayName: profile.displayName ?? profile.handle,
       lastViewedAt: view.lastViewedAt.toISOString(),
+      viewCount: view.count ?? 1,
     }
     if (profile.avatarUrl !== undefined) entry.avatarUrl = profile.avatarUrl
     viewers.push(entry)
@@ -194,7 +232,7 @@ export async function getViewers(
   return {
     total,
     viewers,
-    locked: false,
+    locked,
     // Off the raw page, not off `viewers`: a view whose profile was deleted is
     // dropped from the output but still consumed a place in the page, and
     // cursoring from the last *rendered* row would replay it.

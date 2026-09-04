@@ -1,7 +1,6 @@
-import Feather from '@expo/vector-icons/Feather'
-import { MAX_POST_LENGTH, MAX_VIDEO_SECONDS, POST_KINDS, type PostKind } from '@langx/shared'
-import { useFocusEffect } from 'expo-router'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
+import { router, useFocusEffect } from 'expo-router'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../../src/components/ui/FormField'
 import { Button } from '../../../src/components/ui/Button'
@@ -14,13 +13,7 @@ import {
   type ActiveUpload,
 } from '../../../src/lib/uploadProgress'
 import { playableIds, shouldPlay } from '../../../src/lib/videoVisibility'
-import {
-  useCorrectPost,
-  useCreatePost,
-  useDeletePost,
-  useFeed,
-  useMe,
-} from '../../../src/api/queries'
+import { useCorrectPost, useDeletePost, useFeed, useMe } from '../../../src/api/queries'
 import type { FeedPost } from '../../../src/api/types'
 import {
   AttachmentBar,
@@ -32,20 +25,17 @@ import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { authClient } from '../../../src/lib/auth-client'
+import { reportWriteError } from '../../../src/lib/reportWriteError'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { LikeButton } from '../../../src/components/LikeButton'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Tip } from '../../../src/components/Tip'
-import { Dropdown, type AnchorRect } from '../../../src/components/ui/Dropdown'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
 import { openPost, openProfile } from '../../../src/lib/navigation'
 import { listState } from '../../../src/lib/listState'
-import { FLAG_KEYS, readFlag, writeFlag } from '../../../src/lib/localFlags'
-import { postLanguages, resolvePostLanguage } from '../../../src/lib/postLanguage'
-import { LABEL_MARKER, splitLabel } from '../../../src/lib/splitLabel'
 import { makeStyles } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { attachmentsOf, type Media } from '@langx/shared'
@@ -95,49 +85,6 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
   )
 }
 
-/**
- * The field's label, with the language in it as the control that changes it.
- *
- * When there is only one language to post in the marker never arrives and this
- * is a plain line of text — the same one it always was. `splitLabel` returning
- * `null` lands in the same branch, which is what a translation that dropped the
- * placeholder should degrade to.
- */
-function ComposerLabel({
-  text,
-  language,
-  onPress,
-  anchorRef,
-  styles,
-}: {
-  text: string
-  language: string
-  onPress: () => void
-  anchorRef: React.RefObject<View | null>
-  styles: ReturnType<typeof useStyles>
-}) {
-  const parts = splitLabel(text)
-  if (!parts) return <Text style={styles.label}>{text}</Text>
-
-  return (
-    <View style={styles.labelLine}>
-      {parts.before ? <Text style={styles.label}>{parts.before}</Text> : null}
-      <Pressable
-        ref={anchorRef}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: false }}
-        hitSlop={8}
-        onPress={onPress}
-        style={({ pressed }) => [styles.languageButton, pressed && styles.pressed]}
-      >
-        <Text style={styles.languageText}>{language}</Text>
-        <Feather name="chevron-down" size={14} style={styles.chevron} />
-      </Pressable>
-      {parts.after ? <Text style={styles.label}>{parts.after}</Text> : null}
-    </View>
-  )
-}
-
 export default function FeedScreen() {
   useScreenInteractive()
   const styles = useStyles()
@@ -152,11 +99,8 @@ export default function FeedScreen() {
    * somebody else's sentence — and a sheet that covers the thing it refers to
    * makes the writer work from memory.
    */
-  const [asking, setAsking] = useState(false)
-  const [draft, setDraft] = useState('')
   const [correctingId, setCorrectingId] = useState<string | null>(null)
   const [correction, setCorrection] = useState('')
-  const [askMedia, setAskMedia] = useState<PendingAttachment[]>([])
   const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment[]>([])
   const [uploading, setUploading] = useState(false)
   /**
@@ -192,7 +136,6 @@ export default function FeedScreen() {
   const me = useMe()
   const feed = useFeed(section)
   const pull = usePullToRefresh(() => feed.refetch())
-  const createPost = useCreatePost()
   const correctPost = useCorrectPost()
   const deletePost = useDeletePost()
   const pronouncing = section === 'pronunciation'
@@ -204,46 +147,6 @@ export default function FeedScreen() {
     itemCount: items.length,
   })
 
-  /**
-   * The language you post in defaults to the most important one you are
-   * learning, and is only ever *asked* about when there is more than one — the
-   * free tier allows exactly one, so for most people this is still no question
-   * at all.
-   *
-   * State holds the raw wish, never the resolved code. `askLanguage` is derived
-   * on every render, so a language dropped in `edit-profile` — or a wish
-   * restored from this device that belongs to somebody else's account — falls
-   * back to the default instead of leaving the composer pointed at a language
-   * the server would refuse the post in.
-   */
-  const [chosenLanguage, setChosenLanguage] = useState<string | null>(null)
-  const askLanguages = useMemo(() => postLanguages(me.data?.learning), [me.data])
-  const askLanguage = resolvePostLanguage(askLanguages, chosenLanguage)
-
-  // Read-once hydration, the same shape `ThemeProvider` uses: `readFlag` is
-  // async, and until it lands the composer shows the default — which is what
-  // the stored value usually says anyway.
-  useEffect(() => {
-    let cancelled = false
-    void readFlag(FLAG_KEYS.postLanguage).then((stored) => {
-      if (!cancelled && stored) setChosenLanguage(stored)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  /**
-   * The language sits *inside* the field's own label — "Your sentence in
-   * **Russian**" — and opens a menu when pressed.
-   *
-   * A row of chips above the field said the same thing twice: the chips named
-   * the languages and the label underneath named the chosen one again. Putting
-   * the control in the sentence leaves one place to read and one to press, and
-   * costs the composer no height at all for the people who never change it.
-   */
-  const languageRef = useRef<View | null>(null)
-  const [languageAnchor, setLanguageAnchor] = useState<AnchorRect | null>(null)
   /** Owned by the screen, not the card: a card is recycled out from under it. */
   /**
    * What the viewer is showing and where it opened. A post carries a gallery
@@ -251,21 +154,6 @@ export default function FeedScreen() {
    * paging and hunting.
    */
   const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
-
-  function openLanguages(): void {
-    // Measured on press rather than on layout: the composer moves as the draft
-    // grows, and a rect captured at mount would place the menu where the word
-    // used to be.
-    languageRef.current?.measureInWindow((x, y, width, height) =>
-      setLanguageAnchor({ x, y, width, height }),
-    )
-  }
-
-  function chooseLanguage(code: string): void {
-    setChosenLanguage(code)
-    setLanguageAnchor(null)
-    void writeFlag(FLAG_KEYS.postLanguage, code)
-  }
 
   /**
    * The attachments are uploaded here, on submit, not when they were picked.
@@ -321,35 +209,6 @@ export default function FeedScreen() {
    * already corrected this", which is not an error the writer can act on by
    * retrying and is exactly what the retry it invited would hit again.
    */
-  function reportWriteError(caught: unknown): void {
-    // REST, so `instanceof` is the right check here. The `errorCodeOf`
-    // workaround in the chat screen exists only because `emitWithAck` rejects
-    // with a plain Error.
-    if (!(caught instanceof ApiRequestError)) {
-      showToast(t('feed.attachmentFailed'))
-      return
-    }
-    if (caught.code === 'QUOTA_EXCEEDED') {
-      showToast(t('feed.mediaQuota'))
-      return
-    }
-    if (caught.code === 'UNSUPPORTED_MEDIA_TYPE') {
-      showToast(t('errors.attachmentUnsupported'))
-      return
-    }
-    if (caught.code === 'MEDIA_TOO_LARGE') {
-      showToast(t('errors.attachmentTooLarge'))
-      return
-    }
-    if (caught.code === 'MEDIA_TOO_LONG') {
-      showToast(t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS }))
-      return
-    }
-    showToast(
-      caught.code === 'VALIDATION_FAILED' ? t('feed.wrongPostKind') : t('feed.attachmentFailed'),
-    )
-  }
-
   async function confirmDelete(postId: string): Promise<void> {
     const yes = await confirmAlert({
       title: t('feed.deleteConfirmTitle'),
@@ -362,39 +221,6 @@ export default function FeedScreen() {
       onSuccess: () => showToast(t('feed.deleted')),
       onError: () => showToast(t('common.retry')),
     })
-  }
-
-  async function submitAsk(): Promise<void> {
-    if (!requireAccount(session?.user)) return
-    if (!askLanguage || !draft.trim() || uploading) return
-    setUploading(true)
-    let attachments
-    try {
-      attachments = await attach(askMedia)
-    } catch {
-      setUploading(false)
-      showToast(t('feed.attachmentFailed'))
-      return
-    }
-    setUploading(false)
-
-    createPost.mutate(
-      {
-        body: draft.trim(),
-        language: askLanguage,
-        kind: section,
-        ...(attachments ? { attachments } : {}),
-      },
-      {
-        onSuccess: () => {
-          setDraft('')
-          setAskMedia([])
-          setAsking(false)
-          showToast(t('feed.posted'))
-        },
-        onError: reportWriteError,
-      },
-    )
   }
 
   function startCorrecting(post: FeedPost): void {
@@ -439,7 +265,7 @@ export default function FeedScreen() {
             void feed.refetch()
             return
           }
-          reportWriteError(caught)
+          reportWriteError(caught, t)
         },
       },
     )
@@ -453,67 +279,12 @@ export default function FeedScreen() {
           <Pressable
             accessibilityRole="button"
             hitSlop={8}
-            onPress={() => setAsking((open) => !open)}
+            onPress={() => router.push(`/(app)/compose?kind=${section}`)}
             style={({ pressed }) => (pressed ? styles.pressed : null)}
           >
-            <Text style={styles.ask}>
-              {asking ? t('common.cancel') : pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}
-            </Text>
+            <Text style={styles.ask}>{pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}</Text>
           </Pressable>
         </View>
-        {asking && askLanguage ? (
-          <View style={styles.compose}>
-            <FormField
-              label={
-                <ComposerLabel
-                  text={t(pronouncing ? 'feed.pronounceTitle' : 'feed.askTitle', {
-                    language: askLanguages.length > 1 ? LABEL_MARKER : names.language(askLanguage),
-                  })}
-                  language={names.language(askLanguage)}
-                  onPress={openLanguages}
-                  anchorRef={languageRef}
-                  styles={styles}
-                />
-              }
-              value={draft}
-              onChangeText={setDraft}
-              placeholder={t(pronouncing ? 'feed.pronouncePlaceholder' : 'feed.askPlaceholder')}
-              multiline
-              autoCapitalize="sentences"
-              maxLength={MAX_POST_LENGTH}
-            />
-            <AttachmentPreviewRow
-              pending={askMedia}
-              onRemove={(index) => setAskMedia((items) => items.filter((_, at) => at !== index))}
-              progress={uploadProgress}
-            />
-            <View style={styles.composeActions}>
-              <AttachmentBar
-                pending={askMedia}
-                onPick={(picked) => setAskMedia((items) => [...items, ...picked])}
-                disabled={createPost.isPending || uploading}
-              />
-              <Button
-                label={createPost.isPending || uploading ? t('feed.posting') : t('feed.post')}
-                disabled={!draft.trim() || createPost.isPending || uploading}
-                onPress={() => void submitAsk()}
-                style={styles.grow}
-              />
-            </View>
-          </View>
-        ) : null}
-
-        {languageAnchor && askLanguage ? (
-          <Dropdown
-            anchor={languageAnchor}
-            options={askLanguages.map((code) => ({ value: code, label: names.language(code) }))}
-            selected={askLanguage}
-            onSelect={chooseLanguage}
-            onDismiss={() => setLanguageAnchor(null)}
-            accessibilityLabel={t('feed.postLanguage')}
-          />
-        ) : null}
-
         <View style={styles.sections}>
           <SegmentedControl<PostKind>
             options={POST_KINDS.map((option) => ({

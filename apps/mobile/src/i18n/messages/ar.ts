@@ -316,6 +316,8 @@ export const ar: Localized<EnMessages> = {
     title: 'تدرّب مع من يتعلّم لغتك',
     subtitle: 'ألقِ نظرة أولًا — يمكنك اختيار لغاتك ورؤية من هنا قبل التسجيل.',
     browse: 'ألقِ نظرة أولًا',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'تبادلات لغوية',
     createAccount: 'أنشئ حسابًا',
     haveAccount: 'لديّ حساب بالفعل',
     guestFailed: 'تعذّر البدء',
@@ -333,6 +335,7 @@ export const ar: Localized<EnMessages> = {
     name: 'الاسم',
     forgotPassword: 'نسيت كلمة المرور؟',
     signIn: 'تسجيل الدخول',
+    signingIn: 'جارٍ تسجيل الدخول…',
     signUp: 'إنشاء حساب',
     continueWithGoogle: 'المتابعة باستخدام Google',
     continueWithApple: 'المتابعة باستخدام Apple',
@@ -438,6 +441,9 @@ export const ar: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'جارٍ استعادة ملفك الشخصي',
+    restoringBody:
+      'حسابك في LangX يعود — لغاتك وصورك وسلسلتك. قد يستغرق هذا لحظة؛ يُرجى البقاء في هذه الشاشة.',
     startExploring: 'ابدأ الاستكشاف',
     title: 'أهلًا بعودتك',
     subtitle: 'هذا ما عاد معك.',
@@ -981,6 +987,7 @@ export const ar: Localized<EnMessages> = {
     photoAdded: 'أُضيفت الصورة.',
     photoUpdated: 'حُدّثت الصورة.',
     saved: 'حُفظ الملف.',
+    savingLanguages: 'جارٍ حفظ اللغات…',
     saveFailed: 'تعذّر حفظ ملفك.',
     storageUnconfigured: 'لم يُضبط تخزين الصور على هذا الخادم بعد.',
     uploadRetry: 'تعذّر رفع تلك الصورة. حاول مرة أخرى.',
@@ -1190,6 +1197,9 @@ export const ar: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'نصيبك عن {day}',
     noShareYet: 'لا نصيب بعد — يوزّع الوعاء بعد أول يوم كامل لك.',
+    firstShareAt: 'ستصل حصتك الأولى في {when}.',
+    todayActivity:
+      'اليوم حتى الآن: {score} نشاط · {messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
     poolCap: 'الحد الأقصى {cap} في اليوم. يتغير نصيبك مع نشاط الآخرين.',
     poolPaidAt: 'يُدفع كل ليلة في {hour}:00 بتوقيت UTC.',
     history: 'السجل',
@@ -1382,6 +1392,16 @@ export const ar: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'مشاركة كصورة',
+    cardStreakCaption: 'يوم متتالٍ في LangX',
+    cardBadgeCaption: 'شارة في LangX',
+    cardRankCaption: 'في لوحة رموز LangX',
+    cardBody: 'اختر الوجهة — تُرسم البطاقة لتناسبها.',
+    shapeStory: 'قصة إنستغرام / تيك توك',
+    shapeSquare: 'منشور إنستغرام',
+    shapeWide: 'إكس / تويتر',
+    justTheLink: 'الرابط فقط',
+    cardFailed: 'تعذّر إنشاء الصورة. تتم مشاركة الرابط.',
     action: 'مشاركة',
     copied: 'تم نسخ الرابط',
     copiedText: 'تم نسخ النص',
@@ -1451,6 +1471,12 @@ export const ar: Localized<EnMessages> = {
       other: 'شخص زار ملفك',
     },
     seeWho: 'اعرف من هم',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'لا زوّار بعد',
     emptyBody: 'إكمال ملفك يساعد.',
   },

@@ -278,6 +278,8 @@ export const tr: Localized<EnMessages> = {
     subtitle:
       'Önce bir bak — hiçbir şeye kaydolmadan dillerini seçip kimlerin burada olduğunu görebilirsin.',
     browse: 'Önce bir bakayım',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Dil değişimleri',
     createAccount: 'Hesap oluştur',
     haveAccount: 'Zaten hesabım var',
     guestFailed: 'Başlatılamadı',
@@ -295,6 +297,7 @@ export const tr: Localized<EnMessages> = {
     name: 'Ad',
     forgotPassword: 'Parolanı mı unuttun?',
     signIn: 'Giriş yap',
+    signingIn: 'Giriş yapılıyor…',
     signUp: 'Kayıt ol',
     continueWithGoogle: 'Google ile devam et',
     continueWithApple: 'Apple ile devam et',
@@ -394,6 +397,9 @@ export const tr: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Profilin geri getiriliyor',
+    restoringBody:
+      'LangX hesabın geri geliyor — dillerin, fotoğrafların ve serin. Bu biraz sürebilir; lütfen bu ekranda kal.',
     startExploring: 'Keşfetmeye başla',
     title: 'Tekrar hoş geldin',
     subtitle: 'Seninle birlikte gelenler.',
@@ -827,6 +833,7 @@ export const tr: Localized<EnMessages> = {
     photoAdded: 'Fotoğraf eklendi.',
     photoUpdated: 'Fotoğraf güncellendi.',
     saved: 'Profil kaydedildi.',
+    savingLanguages: 'Diller kaydediliyor…',
     saveFailed: 'Profilin kaydedilemedi.',
     storageUnconfigured: 'Bu sunucuda fotoğraf depolama henüz ayarlanmamış.',
     uploadRetry: 'Bu görsel yüklenemedi. Tekrar dene.',
@@ -1024,6 +1031,9 @@ export const tr: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: '{day} için payın',
     noShareYet: 'Henüz pay yok — havuz, ilk tam gününden sonra dağıtım yapar.',
+    firstShareAt: 'İlk payın {when} tarihinde düşecek.',
+    todayActivity:
+      'Bugün şu ana kadar: {score} aktivite · {messages} mesaj, {corrections} düzeltme, {partners} kişi.',
     poolCap: 'Günlük tavan {cap}. Payın herkesin gününe göre değişir.',
     poolPaidAt: 'Her gece {hour}:00 UTC’de yatar.',
     history: 'Geçmiş',
@@ -1165,6 +1175,16 @@ export const tr: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Görsel olarak paylaş',
+    cardStreakCaption: 'gün LangX serisi',
+    cardBadgeCaption: 'LangX’te kazanılan rozet',
+    cardRankCaption: 'LangX token sıralamasında',
+    cardBody: 'Nereye gideceğini seç — kart ona göre çizilir.',
+    shapeStory: 'Instagram / TikTok hikâye',
+    shapeSquare: 'Instagram gönderisi',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Sadece link',
+    cardFailed: 'Görsel oluşturulamadı. Link paylaşılıyor.',
     action: 'Paylaş',
     copied: 'Link kopyalandı',
     copiedText: 'Metin kopyalandı',
@@ -1224,6 +1244,12 @@ export const tr: Localized<EnMessages> = {
     empty: 'Profiline henüz kimse bakmadı.',
     countLabel: { one: 'kişi profiline baktı', other: 'kişi profiline baktı' },
     seeWho: 'Kim olduklarını gör',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Henüz ziyaretçi yok',
     emptyBody: 'Profilini doldurmak işe yarıyor.',
   },
