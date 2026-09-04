@@ -13,7 +13,7 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview",
+      "channel": "production",
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.langx.io"
       },

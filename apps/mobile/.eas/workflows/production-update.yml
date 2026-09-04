@@ -1,0 +1,33 @@
+# Every merge to main becomes an over-the-air update on the `production`
+# channel — the store installs, and the only channel this repo publishes to.
+#
+# JS and assets only, no store build and no build quota: everyone on the
+# current runtime gets the new code on the next launch. What makes that safe
+# is `runtimeVersion: { policy: 'fingerprint' }` in app.config.ts — a commit
+# that changes the native layer changes the fingerprint, and the update is
+# then offered to nobody until the matching build ships. See decisions.md.
+#
+# There is one job because there is one channel. `preview` was deleted on
+# 3 September 2026 and the `preview` build profile now points at `production`
+# too: an update job is a runner of its own, and publishing the same bundle
+# twice per merge paid for nothing — both profiles build against the same
+# `EXPO_PUBLIC_API_URL`.
+#
+# Needs the GitHub repo linked in the Expo project's settings (base directory
+# apps/mobile); until then it can only be started by hand with
+# `eas workflow:run production-update.yml`.
+name: Production update
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mobile/**
+      - packages/shared/**
+      - '!**/*.md'
+
+jobs:
+  publish_production:
+    type: update
+    params:
+      channel: production
+      message: ${{ github.event.head_commit.message || 'main' }}

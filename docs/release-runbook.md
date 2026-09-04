@@ -313,18 +313,40 @@ Builds, store submissions and over-the-air updates are all EAS jobs, defined
 in `apps/mobile/.eas/workflows/`. GitHub Actions only tests. The three
 workflows, and what each costs:
 
-| Workflow             | Trigger                  | Cost                                  |
-| -------------------- | ------------------------ | ------------------------------------- |
-| `preview-update.yml` | every merge to `main`    | nothing — an OTA update, no build     |
-| `preview-build.yml`  | by hand, pick a platform | one build of the free plan's 15/month |
-| `release.yml`        | by hand, pick a platform | one build, then `eas submit`          |
+| Workflow                | Trigger                  | Cost                                   |
+| ----------------------- | ------------------------ | -------------------------------------- |
+| `production-update.yml` | every merge to `main`    | ~15–20 metered CI/CD minutes, no build |
+| `preview-build.yml`     | by hand, pick a platform | one metered cloud build                |
+| `release.yml`           | by hand, pick a platform | one metered build, then `eas submit`   |
 
-The free plan allows 15 Android and 15 iOS cloud builds a month and 1,000
-monthly active users on updates. JS-only changes never need a build: a
-preview install picks them up on the next launch from the `preview` channel,
-and a store build from the `production` channel once one exists. Only a
-native change — a new module, a permission, an SDK bump, an icon — needs a
-build, and those are started by hand so the quota is spent on purpose.
+The account moved from the free plan to **Starter** ($19/month) on 3 September
+2026, after the free plan's 60 CI/CD minutes ran out mid-day and a merge
+stopped publishing. Starter carries $45 of build credit and then charges for
+builds and CI/CD minutes by use, and raises EAS Update to 3,000 monthly active
+users. So nothing hits a wall any more — but every workflow run is money, and
+a cloud build is far more of it than an update. `eas workflow:runs` says
+whether the last merge actually published.
+
+Publishing from a Mac with
+`eas update --branch production --environment production` costs no CI/CD
+minutes at all and is the cheaper habit for a flurry of small fixes.
+
+JS-only changes never need a build: every install, internal APK and store
+alike, picks them up on the next launch from the `production` channel — there
+is only that one channel, and both build profiles use it. Only a native
+change — a new module, a permission, an SDK bump, an icon — needs a build, and
+those are started by hand so the money is spent on purpose. Because
+`runtimeVersion` is a fingerprint of the native layer, a native change also
+means the automatic update reaches nobody until that build ships, which is the
+intended behaviour and not a failure.
+
+The fingerprint's inputs are wider than the native modules: `eas.json` and
+`.gitignore` are both in it (`npx expo-updates runtimeversion:resolve
+--platform ios` prints every source). So editing a submit profile — the
+Android rollout percentage, say — changes the runtime version and cuts the
+installed builds off from further updates just as surely as adding a native
+module does. Change `eas.json` in the same series of commits as the build it
+ships with, not between two of them.
 
 - [ ] **Link the GitHub repo once**, or the push trigger never fires: expo.dev
       → project `langx` → Project settings → GitHub → connect `langx/langx`,

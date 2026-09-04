@@ -1,8 +1,10 @@
 # An internal-distribution build, started by hand only.
 #
-# Deliberately not on push: a cloud build spends one of the free plan's
-# fifteen per platform per month, and a code change that only touches JS
-# reaches preview installs through preview-update.yml for nothing.
+# Deliberately not on push: a cloud build is the expensive thing on the plan,
+# and a code change that only touches JS reaches an install over the air
+# instead — automatically, through production-update.yml. The profile is
+# still called `preview` (an APK, internal distribution) but it publishes and
+# reads on the `production` channel like everything else.
 name: Preview build
 on:
   workflow_dispatch:

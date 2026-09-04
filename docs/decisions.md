@@ -2460,18 +2460,53 @@ see the runbook.
 
 Two things decided the shape of the workflows.
 
-_Updates are automatic, builds are not._ A merge to `main` publishes an OTA
-update to the `preview` channel for nothing; a cloud build spends one of the
-free plan's fifteen a month. So the only workflow on a push trigger is the
-update, and both build workflows are `workflow_dispatch` with a platform
-input. Somebody spends a build on purpose, not because a README changed.
+_Updates are automatic, builds are not._ An OTA update is cheap and a cloud
+build is not — on the Starter plan both are metered, and a build is the one
+that eats the credit. So the only workflow on a push trigger is the update,
+and both build workflows are `workflow_dispatch` with a platform input.
+Somebody spends a build on purpose, not because a README changed.
 
-_Production updates are manual too._ An update on the `production` channel
-reaches every store install at once, and `runtimeVersion` is the SDK version,
-so a JS change that assumes a native module which is not in the store build
-would land on phones that cannot run it. Publishing to production is a
-deliberate `eas update --channel production` after the matching build has
-shipped, not a side effect of merging.
+_The automatic update goes to `production`, and only there._ Revised the same
+evening, after starting as its opposite. The first rule published merges to
+`preview` and left `production` to a deliberate `eas update --channel
+production` once the matching build had shipped, because an update there
+reaches every store install at once and `runtimeVersion` was the SDK version —
+one number for the whole of SDK 57. A commit adding a native module kept that
+number, so its JS would still have been offered to a store binary without the
+module.
+
+The answer was to make the runtime version honest rather than to keep a human
+in the loop. `runtimeVersion` is now `{ policy: 'fingerprint' }`, a hash of the
+native layer itself, so exactly those commits produce a version no shipped
+binary matches and the update is offered to nobody — the phone keeps the bundle
+it has. What the manual step was guarding is now a property of the runtime
+version, and a bad JS-only update is still undone with `eas update:rollback`.
+
+There is one update job, not one per channel, and `preview` is gone entirely —
+channel and branch both deleted on 3 September 2026. Each update job is a
+runner of its own, so publishing the same bundle twice per merge costs twice;
+on the free plan that was fatal rather than merely wasteful (three runs died on
+a transient npm 404 after ~30 minutes each, and the next merge, `899c0ef2`,
+failed in under a second with "Free plan CI/CD 60 minute limit reached" —
+which is what sent this account to Starter the same evening). Metered rather
+than capped now, but a second copy of the same bundle still buys nothing:
+`preview` and `production` build against the same `EXPO_PUBLIC_API_URL`, so
+the two bundles were identical.
+
+What internal testers install is still the `preview` **build profile** — an
+APK, internal distribution — but it now carries `"channel": "production"`, so
+an internal install rides the same update stream as a store install. Leaving
+it pointing at a channel nobody publishes to would have been the quiet kind of
+broken: the first `preview` build would have recreated the channel and then
+never received an update.
+
+Publishing from a Mac (`eas update --branch production --environment
+production`) is the fallback when a workflow run is not wanted; it spends no
+CI/CD minutes.
+
+The fingerprint switch is paid for once: 2.0.0 (121), built under the old
+policy, carries runtime `exposdk:57.0.0` and can never match a fingerprint, so
+the first store release is unreachable over the air. The next build is not.
 
 ## Every v1 account has a v2 `user` row before its owner comes back
 
