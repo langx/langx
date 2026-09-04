@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import {
   canDeleteForEveryone,
   canEditMessage,
+  isTranslatableLanguage,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
@@ -558,13 +559,15 @@ export default function ChatScreen() {
   const isMine = (message: MessageDto) => message.senderId === me.data?._id
 
   /**
-   * Translates into the caller's first native language — the one they read
-   * fluently. Asking which language every time would be a question with an
-   * obvious answer, and translating into what they are *learning* would defeat
-   * the purpose.
+   * Translates into the caller's first native language *that can be written*
+   * — the one they read fluently. Asking which language every time would be a
+   * question with an obvious answer, and translating into what they are
+   * *learning* would defeat the purpose. A signed language is skipped: it has
+   * no written form, and the server refuses it as a target.
    */
+  const translateTarget = me.data?.nativeLanguages.find((l) => isTranslatableLanguage(l.code))?.code
   async function translate(message: MessageDto, alreadyTranslated: boolean): Promise<void> {
-    const target = me.data?.nativeLanguages[0]?.code
+    const target = translateTarget
     if (!target || alreadyTranslated) return
     setTranslating(message._id)
     try {
@@ -600,6 +603,7 @@ export default function ChatScreen() {
     // one thing anyone might want — hiding it — is offered through the same
     // row, so it is still worth opening.
     const actions = messageActionsFor({
+      canTranslate: translateTarget !== undefined,
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,

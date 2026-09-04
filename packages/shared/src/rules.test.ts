@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { MINIMUM_AGE, birthDateSchema, meetsMinimumAge } from './age'
 import { LANGUAGE_LEVELS, levelRank } from './level'
-import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
+import {
+  getLanguage,
+  isLanguageCode,
+  isTranslatableLanguage,
+  LANGUAGES,
+  languageCodeSchema,
+} from './languages'
+import { translateRequestSchema } from './translation'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
 import {
   PLAN_FEATURES,
@@ -333,11 +340,22 @@ describe('xp rules', () => {
 })
 
 describe('language + level tables', () => {
-  it('exposes ISO 639-1 codes with unique entries', () => {
+  it('exposes ISO 639-1 and 639-3 codes with unique entries', () => {
     const codes = LANGUAGES.map((l) => l.code)
     expect(new Set(codes).size).toBe(codes.length)
     expect(codes.length).toBeGreaterThan(150)
-    expect(codes.every((c) => /^[a-z]{2}$/.test(c))).toBe(true)
+    expect(codes.every((c) => /^[a-z]{2,3}$/.test(c))).toBe(true)
+  })
+
+  /** The first code in the table that ISO 639-1 does not have. */
+  it('lists American Sign Language, which has no written form to translate to', () => {
+    expect(isLanguageCode('ase')).toBe(true)
+    expect(getLanguage('ase')?.name).toBe('American Sign Language')
+    expect(isTranslatableLanguage('ase')).toBe(false)
+    expect(isTranslatableLanguage('en')).toBe(true)
+    expect(isTranslatableLanguage('zz')).toBe(false)
+    expect(translateRequestSchema.safeParse({ text: 'hi', targetLang: 'ase' }).success).toBe(false)
+    expect(translateRequestSchema.safeParse({ text: 'hi', targetLang: 'en' }).success).toBe(true)
   })
 
   it('looks codes up and rejects unknown ones', () => {

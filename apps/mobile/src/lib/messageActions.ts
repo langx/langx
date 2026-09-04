@@ -33,6 +33,12 @@ export interface MessageAction {
 }
 
 export interface MessageActionContext {
+  /**
+   * Whether the reader has a language a translation can be written in. A
+   * reader whose only native language is signed has none, and offering the
+   * action would offer a request the server refuses.
+   */
+  canTranslate?: boolean
   /** Whether the signed-in user sent it. */
   mine: boolean
   type: 'text' | 'correction' | 'image' | 'audio' | 'video'
@@ -93,7 +99,8 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     !context.mine &&
     context.hasBody &&
     context.type !== 'correction' &&
-    !context.alreadyTranslated
+    !context.alreadyTranslated &&
+    context.canTranslate !== false
   ) {
     actions.push({
       id: 'translate',

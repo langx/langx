@@ -1,7 +1,9 @@
 import { z } from 'zod'
 
 /**
- * The full ISO 639-1 set, as `[code, englishName, nativeName]`.
+ * The full ISO 639-1 set, plus ISO 639-3 codes for languages 639-1 does not
+ * cover, as `[code, englishName, nativeName]`. The table is the contract, not
+ * the standard: a code is a language here because it is in this list.
  *
  * This is the single dictionary behind three things that must never disagree:
  * the onboarding language picker, the discovery filter UI, and the
@@ -15,6 +17,8 @@ const RAW = [
   ['af', 'Afrikaans', 'Afrikaans'],
   ['ak', 'Akan', 'Akan'],
   ['sq', 'Albanian', 'Shqip'],
+  // ISO 639-3. No standard written form, so the native name is the English one.
+  ['ase', 'American Sign Language', 'American Sign Language'],
   ['am', 'Amharic', 'አማርኛ'],
   ['ar', 'Arabic', 'العربية'],
   ['an', 'Aragonese', 'aragonés'],
@@ -221,10 +225,27 @@ export function isLanguageCode(code: string): code is LanguageCode {
 }
 
 /**
- * Validates an ISO 639-1 code against the table above. Deliberately strict:
- * discovery indexes are built on these values, so an unknown code would create
- * a bucket nobody can ever be matched out of.
+ * Languages with no written form. Legitimate to be native in and to be
+ * learning — and never a thing to translate *into*: the chat translates a
+ * message into the reader's first native language, and a Deaf reader whose
+ * first language is ASL would otherwise send every translate tap to Google for
+ * a language it does not have, after the quota had been spent. Adding another
+ * signed language is one line here and one in the table.
+ */
+export const SIGNED_LANGUAGE_CODES = ['ase'] as const satisfies readonly LanguageCode[]
+
+const SIGNED = new Set<string>(SIGNED_LANGUAGE_CODES)
+
+/** Whether a language can be a machine-translation source or target. */
+export function isTranslatableLanguage(code: string): boolean {
+  return isLanguageCode(code) && !SIGNED.has(code)
+}
+
+/**
+ * Validates a code against the table above. Deliberately strict: discovery
+ * indexes are built on these values, so an unknown code would create a bucket
+ * nobody can ever be matched out of.
  */
 export const languageCodeSchema = z
   .string()
-  .refine(isLanguageCode, { message: 'Unknown ISO 639-1 language code' })
+  .refine(isLanguageCode, { message: 'Unknown language code' })
