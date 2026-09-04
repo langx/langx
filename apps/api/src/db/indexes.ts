@@ -219,6 +219,13 @@ export const INDEXES: Partial<IndexSpec> = {
      * has shipped.
      */
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
+    /**
+     * "How many did *they* send in this thread" — the media gate's fallback
+     * for conversations written before `messageCountBy` existed. A count-only
+     * scan of this index, instead of filtering `senderId` over every message
+     * in the thread through `conversation_created`.
+     */
+    { key: { conversationId: 1, senderId: 1 }, name: 'conversation_sender' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
     /**
      * Counting one sender's corrections. `sender_created` carries no `type`, so

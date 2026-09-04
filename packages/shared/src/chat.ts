@@ -62,8 +62,16 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
  * first so the migration can bring the whole thread.
  */
 /**
- * How many messages a conversation has to carry before a photo or a voice note
- * can be sent into it. Counted across both people, not per sender.
+ * How many messages you have to have *received* from the other person before
+ * you can send them a photo or a voice note.
+ *
+ * Received, not exchanged. This counted both people's messages together until
+ * 4 September 2026, and that had a hole the size of the rule: send five
+ * messages to a stranger yourself and the sixth could be a photograph. The
+ * gate never required the other person's participation at all, which is the
+ * only thing that can stand in for their consent. Counting what they sent
+ * makes it theirs to open. It is asymmetric on purpose — one side can be
+ * unlocked while the other is not — because consent is.
  *
  * This is the one rule in the app with no exception anywhere: not for Pro, not
  * for Polyglot, not for somebody you have talked to for a year and then
@@ -82,7 +90,7 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
  * photograph, which is the one nobody consented to and the one no amount of
  * moderation can un-see.
  */
-export const MEDIA_UNLOCKS_AFTER_MESSAGES = 5
+export const MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES = 5
 
 export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio', 'video'] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]

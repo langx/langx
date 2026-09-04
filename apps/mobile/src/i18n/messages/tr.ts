@@ -560,8 +560,8 @@ export const tr: Localized<EnMessages> = {
     playAtNormalSpeed: 'Normal hızda çal',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
-      one: 'Fotoğraf, video ve ses kaydı bir mesaj sonra açılır.',
-      other: 'Fotoğraf, video ve ses kaydı {count} mesaj sonra açılır.',
+      one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',
+      other: 'Fotoğraf ve sesli mesajlar, karşı taraftan {count} mesaj daha gelince açılır.',
     },
     copied: 'Kopyalandı',
     couldNotSend: 'Gönderilemedi',

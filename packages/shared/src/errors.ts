@@ -33,8 +33,8 @@ export const ERROR_CODES = {
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
   /**
-   * A photo or voice note into a conversation that has not exchanged
-   * `MEDIA_UNLOCKS_AFTER_MESSAGES` messages yet.
+   * A photo or voice note to somebody who has not yet sent you
+   * `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages.
    *
    * Its own code rather than `VALIDATION_FAILED` because the request is
    * well-formed and the fix is not in it — the client has to say *how many

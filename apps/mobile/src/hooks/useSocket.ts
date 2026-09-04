@@ -103,9 +103,11 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * `appendIncomingMessage` decides for itself whether a given cache is
          * one a new message belongs in.
          */
+        const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
+
         queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
           { queryKey: keys.messages(conversationId) },
-          (old) => appendIncomingMessage(old, message) ?? old,
+          (old) => appendIncomingMessage(old, message, meId) ?? old,
         )
 
         /**
@@ -116,7 +118,6 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * invalidating is for a conversation that has scrolled out of the
          * loaded pages, which is the one case this cannot patch.
          */
-        const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
         let patched = false
         /*
          * `setQueriesData` on the prefix, not `setQueryData` on one key. The

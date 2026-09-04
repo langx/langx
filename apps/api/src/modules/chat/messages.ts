@@ -115,7 +115,11 @@ async function recordMessage(
       },
       // Riding the write that was already happening. The media gate reads this
       // and must not pay for a `countDocuments` on the send path.
-      $inc: { messageCount: 1, ...(recipientId ? { [`unread.${recipientId}`]: 1 } : {}) },
+      $inc: {
+        messageCount: 1,
+        [`messageCountBy.${message.senderId}`]: 1,
+        ...(recipientId ? { [`unread.${recipientId}`]: 1 } : {}),
+      },
       /*
        * A new message brings a deleted thread back, on both sides. Deleting is
        * "I am done with this conversation", not "block me from it" — the other
@@ -253,7 +257,7 @@ export async function sendMediaMessage(
   // The belt to the upload URL's braces. A URL signed a moment before the
   // fifth message was deleted would otherwise still land, and any future
   // transport that forgets the first check lands here instead of nowhere.
-  await assertMediaUnlocked(db, conversation)
+  await assertMediaUnlocked(db, conversation, senderId)
 
   // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
   // cost control, and there must be exactly one copy of them. The kind comes
@@ -376,7 +380,7 @@ export async function listMessages(
     // The thread header needs the counterpart even before anyone has replied,
     // and a one-sided thread has no message to read a partner id off.
     participants: conversation.participants,
-    mediaLockedFor: mediaLockedFor(conversation),
+    mediaLockedFor: mediaLockedFor(conversation, userId),
     pinned: conversation.pinned
       ? {
           messageId: conversation.pinned.messageId.toHexString(),
@@ -459,7 +463,7 @@ export async function listMessagesAround(
     nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
     prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
     participants: conversation.participants,
-    mediaLockedFor: mediaLockedFor(conversation),
+    mediaLockedFor: mediaLockedFor(conversation, userId),
     pinned: conversation.pinned
       ? {
           messageId: conversation.pinned.messageId.toHexString(),

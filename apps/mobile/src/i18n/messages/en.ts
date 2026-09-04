@@ -589,8 +589,8 @@ export const en = {
     playAtNormalSpeed: 'Play at normal speed',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
-      one: 'Photos, videos and voice notes unlock after one more message.',
-      other: 'Photos, videos and voice notes unlock after {count} more messages.',
+      one: 'Photos and voice notes unlock after one more message from them.',
+      other: 'Photos and voice notes unlock after {count} more messages from them.',
     },
     copied: 'Copied',
     couldNotSend: 'Could not send',

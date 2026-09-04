@@ -1069,25 +1069,33 @@ The toggle is local state, not a preference. This is per sentence, not per
 person: the note you need slowed is the one you did not follow, and the next
 one is usually fine.
 
-## No photo in the first five messages. From anybody.
+## No photo until they have written to you five times. From anybody.
 
 The failure this exists to prevent has one shape: the first thing a stranger
 sends is a photograph, and the person receiving it did not agree to look at it.
 Moderation cannot fix that one. A report arrives after the picture has been
 seen, and being right afterwards is not the same as it not happening.
 
-So the rule is structural rather than punitive: a conversation carries no
-attachment until it has carried `MEDIA_UNLOCKS_AFTER_MESSAGES` messages,
-counted across both people. Nothing has to be detected, nobody has to be
-judged, and there is no model deciding what a photograph contains.
+So the rule is structural rather than punitive: you can send no attachment to
+somebody until they have sent you `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`
+messages. Nothing has to be detected, nobody has to be judged, and there is no
+model deciding what a photograph contains.
+
+**Received, not exchanged.** The first version counted both people's messages
+together, and that had a hole the size of the rule: send five messages to a
+stranger yourself and the sixth could be a photograph. A shared total never
+required the other person to take part, which is the one thing that can stand
+in for their consent. Counting what _they_ sent makes the gate theirs to open,
+and asymmetric on purpose — one side of a thread can be unlocked while the
+other is not.
 
 **There is no exception, and that is the feature.** Not for Pro, not for
 Polyglot, not for somebody with a long history who has opened a new thread. A
 paid tier attached to this rule would say the behaviour is acceptable from
 customers, and it is not acceptable from anybody. It is also the only version
-that survives being said in one sentence: _photos unlock after five messages,
-for everyone._ Every carve-out costs a clause, and a rule people cannot repeat
-is a rule that does not deter.
+that survives being said in one sentence: _photos unlock once they have written
+to you five times, for everyone._ Every carve-out costs a clause, and a rule
+people cannot repeat is a rule that does not deter.
 
 Five, because it is more than a greeting and fewer than a conversation. Two is
 cleared by "hi" / "hi". Twenty breaks the ordinary case of sending a picture of
@@ -1101,12 +1109,14 @@ what stops the bytes. `sendMediaMessage` checks too, for a URL signed a moment
 before the fifth message was deleted and for any future transport that forgets
 the first check — that one is the belt, not the braces.
 
-`messageCount` rides the `findOneAndUpdate` that `recordMessage` was already
-issuing for `lastMessage` and `unread`, so the counter is free. Its **absence**
-means something specific: the conversation predates it. Those are the threads
-with the most history, so `messagesInThread` counts them rather than reading a
-missing field as zero and locking a two-year-old conversation out of sending a
-photo — a cost that decays to nothing as old threads get their next message.
+`messageCountBy` — the count split by sender — rides the `findOneAndUpdate`
+that `recordMessage` was already issuing for `lastMessage` and `unread`, so the
+counter is free. Its **absence** means something specific: the conversation
+predates it. Those are the threads with the most history, so
+`messagesReceivedFrom` counts them through the `conversation_sender` index
+rather than reading a missing field as zero and locking a two-year-old
+conversation out of sending a photo — a cost that decays to nothing as old
+threads get their next message.
 
 The client is told how many more are needed rather than just that it cannot,
 and the camera is disabled rather than hidden. A control that vanishes teaches

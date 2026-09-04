@@ -551,8 +551,9 @@ export const ptBR: Localized<EnMessages> = {
     playAtNormalSpeed: 'Tocar em velocidade normal',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
-      one: 'Fotos, vídeos e mensagens de voz liberam depois de mais uma mensagem.',
-      other: 'Fotos, vídeos e mensagens de voz liberam depois de mais {count} mensagens.',
+      one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
+      other:
+        'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
     },
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',

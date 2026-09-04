@@ -578,8 +578,9 @@ export const de: Localized<EnMessages> = {
     playAtNormalSpeed: 'Mit normaler Geschwindigkeit abspielen',
     mediaLockedTitle: 'Noch nicht',
     mediaLocked: {
-      one: 'Fotos, Videos und Sprachnachrichten gibt es nach einer weiteren Nachricht.',
-      other: 'Fotos, Videos und Sprachnachrichten gibt es nach {count} weiteren Nachrichten.',
+      one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
+      other:
+        'Fotos und Sprachnachrichten werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
     },
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',

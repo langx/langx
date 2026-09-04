@@ -561,8 +561,9 @@ export const fr: Localized<EnMessages> = {
     playAtNormalSpeed: 'Lire à vitesse normale',
     mediaLockedTitle: 'Pas encore',
     mediaLocked: {
-      one: 'Les photos, vidéos et notes vocales s’ouvrent après un message de plus.',
-      other: 'Les photos, vidéos et notes vocales s’ouvrent après {count} messages de plus.',
+      one: 'Les photos, vidéos et notes vocales se débloquent après un message de plus de l’autre personne.',
+      other:
+        'Les photos, vidéos et notes vocales se débloquent après {count} messages de plus de l’autre personne.',
     },
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
