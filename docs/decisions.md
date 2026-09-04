@@ -2846,6 +2846,19 @@ that list precisely because a browser has no other output, so the one case the
 check existed for was the one case it answered wrong. `canDecodeAudio` takes
 the platform.
 
+**And the label was not even true.** The note that started this was stored as
+`audio/m4a`, under a `.m4a` key, with WebM/Opus inside — 2,243 bytes for three
+seconds, which is not a bitrate AAC has. An older web build labelled every
+recording `audio/m4a` whatever `MediaRecorder` had produced, so the one
+attribute anything downstream could check was the one that had been guessed. A
+conversion keyed on `contentType` would have walked straight past it, and the
+first run of the backfill found nothing at all. So the server fetches every
+voice note and decides on its first four bytes — EBML or `OggS` — which also
+means it never has to recognise the formats that are fine. The converted file
+then lands on the key it came from, and the delete-the-original step is skipped
+when that is the same key, because otherwise it would delete what was just
+written.
+
 **Firefox still records WebM, so the server converts.** `docs/architecture.md`
 says media is stored exactly as uploaded and that stays true of everything
 else; this is the exception, and it is affordable for the same reason video is

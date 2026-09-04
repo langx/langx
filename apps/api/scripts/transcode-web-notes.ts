@@ -1,10 +1,11 @@
 /**
- * Converts the voice notes that were recorded in a browser before the server
- * started doing it on the way in.
+ * Converts the voice notes an iPhone cannot decode into ones it can.
  *
- * Those are WebM/Opus, which no iPhone can decode — the bubble showed a
- * spinner that never resolved, and after the client fix it says the note will
- * not play. This is what makes the ones already stored play instead.
+ * Those are WebM/Opus, and they are **not** reliably labelled as such: the note
+ * this was written for was stored as `audio/m4a`, under a `.m4a` key, with
+ * Opus inside, because an older web build labelled every recording `audio/m4a`
+ * whatever the browser had produced. So every voice note is fetched and judged
+ * on its bytes; the ones already playable are left exactly as they are.
  *
  * Four collections and two shapes: `messages`, `posts` and `postCorrections`
  * keep a list in `attachments` with the first file repeated in `media`, while
@@ -39,7 +40,15 @@ import {
 import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut } from '../src/storage/StorageProvider'
 
-const WEB_AUDIO = { $in: ['audio/webm', 'audio/ogg'] }
+/*
+ * Every voice note, not the ones labelled WebM — the label is exactly what
+ * cannot be trusted here. The first note this was written for said
+ * `audio/m4a`, sat under a `.m4a` key, and was Opus inside; an older web build
+ * labelled every recording `audio/m4a` whatever `MediaRecorder` produced. The
+ * normaliser fetches each file and decides on the bytes, and leaves anything
+ * already playable alone.
+ */
+const ANY_AUDIO = { $regex: '^audio/' }
 
 interface Summary {
   seen: number
@@ -63,7 +72,7 @@ async function convertLists(
 ): Promise<void> {
   const rows = await db
     .collection<Document>(collection)
-    .find({ 'attachments.contentType': WEB_AUDIO })
+    .find({ 'attachments.contentType': ANY_AUDIO })
     .limit(limit)
     .toArray()
 
@@ -77,7 +86,7 @@ async function convertLists(
     const converted = await normalize(attachments)
     if (converted.every((item, index) => item.url === attachments[index]?.url)) {
       summary.unchanged += 1
-      console.log(`  unchanged ${collection}/${String(row._id)} — see the log above for why`)
+      console.log(`  already playable ${collection}/${String(row._id)}`)
       continue
     }
     await db.collection<Document>(collection).updateOne(
@@ -102,7 +111,7 @@ async function convertAnswers(
 ): Promise<void> {
   const rows = await db
     .collection<Document>(COLLECTIONS.pronunciationAnswers)
-    .find({ $or: [{ 'media.contentType': WEB_AUDIO }, { 'slowMedia.contentType': WEB_AUDIO }] })
+    .find({ $or: [{ 'media.contentType': ANY_AUDIO }, { 'slowMedia.contentType': ANY_AUDIO }] })
     .limit(limit)
     .toArray()
 
