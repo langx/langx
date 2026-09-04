@@ -23,10 +23,11 @@ import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import {
   AGE_SLIDER,
+  type DiscoveryFilters,
   activeCount,
   parseFilters,
+  scopeOf,
   toParams,
-  type DiscoveryFilters,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { genderLabel, levelShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
@@ -76,6 +77,27 @@ export default function FiltersScreen() {
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))
 
   const learning = me.data?.learning ?? []
+  const learningCodes = learning.map((l) => l.code)
+  const native = me.data?.nativeLanguages ?? []
+  const nativeCodes = native.map((l) => l.code)
+
+  /**
+   * The language scope, as chips: every language ticked until one is not. The
+   * same two lists the header's sheet edits, through the same params, so the
+   * two controls cannot disagree. The last ticked language in a group stays
+   * ticked — a search with no language is refused by the server.
+   */
+  function toggleScope(key: 'learningLanguages' | 'nativeLanguages', code: string): void {
+    const all = key === 'learningLanguages' ? learningCodes : nativeCodes
+    const picked = filters[key] ?? all
+    const next = picked.includes(code) ? picked.filter((c) => c !== code) : [...picked, code]
+    if (next.length === 0) return
+    set(
+      key === 'learningLanguages'
+        ? { learningLanguages: scopeOf(next, all) }
+        : { nativeLanguages: scopeOf(next, all) },
+    )
+  }
 
   /**
    * Every control in a locked section routes to the paywall instead of
@@ -193,17 +215,27 @@ export default function FiltersScreen() {
           <SectionTitle title={t('filters.speaks')} />
           <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
           <View style={styles.row}>
-            <Chip
-              label={t('common.any')}
-              selected={!filters.targetLanguage}
-              onPress={() => set({ targetLanguage: undefined })}
-            />
             {learning.map((language) => (
               <Chip
                 key={language.code}
                 label={names.language(language.code)}
-                selected={filters.targetLanguage === language.code}
-                onPress={() => set({ targetLanguage: language.code })}
+                selected={(filters.learningLanguages ?? learningCodes).includes(language.code)}
+                onPress={() => toggleScope('learningLanguages', language.code)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.learns')} />
+          <Text style={styles.hint}>{t('filters.learnsBody')}</Text>
+          <View style={styles.row}>
+            {native.map((language) => (
+              <Chip
+                key={language.code}
+                label={names.language(language.code)}
+                selected={(filters.nativeLanguages ?? nativeCodes).includes(language.code)}
+                onPress={() => toggleScope('nativeLanguages', language.code)}
               />
             ))}
           </View>

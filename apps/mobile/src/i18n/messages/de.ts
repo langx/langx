@@ -449,6 +449,12 @@ export const de: Localized<EnMessages> = {
       'Frag nach einem Satz, bei dem du unsicher bist, oder einem Wort, das du nicht aussprechen kannst — er erscheint hier.',
   },
   discover: {
+    languagesTitle: 'Sprachen in dieser Suche',
+    languagesBody:
+      'Alle hier sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Nimm den Haken weg, um eine Sprache aus der Suche zu lassen.',
+    iSpeak: 'Ich spreche',
+    imLearning: 'Ich lerne',
+    languagesA11y: 'Wähle, mit welchen deiner Sprachen gesucht wird',
     searchHandles: 'Nach Benutzername suchen',
     searchPlaceholder: 'Benutzername',
     searchNone: 'Kein Konto mit diesem Benutzernamen.',
@@ -474,6 +480,8 @@ export const de: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Lernt',
+    learnsBody: 'Welche deiner Sprachen die Person lernen sollte.',
     title: 'Filter',
     speaks: 'Spricht',
     city: 'Stadt',

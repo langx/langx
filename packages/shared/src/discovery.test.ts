@@ -21,8 +21,18 @@ describe('discoveryQuerySchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('rejects an unknown language code for targetLanguage', () => {
-    expect(discoveryQuerySchema.safeParse({ targetLanguage: 'xx' }).success).toBe(false)
+  it('reads the language scope as a comma list of real codes, and refuses an empty one', () => {
+    expect(discoveryQuerySchema.parse({ learningLanguages: 'en, ru' }).learningLanguages).toEqual([
+      'en',
+      'ru',
+    ])
+    expect(discoveryQuerySchema.parse({ nativeLanguages: 'tr' }).nativeLanguages).toEqual(['tr'])
+    expect(discoveryQuerySchema.safeParse({ learningLanguages: 'xx' }).success).toBe(false)
+    // An empty scope is a question with no answer, not "everyone".
+    expect(discoveryQuerySchema.safeParse({ learningLanguages: '' }).success).toBe(false)
+    expect(discoveryQuerySchema.safeParse({ learningLanguages: ' , ' }).success).toBe(false)
+    // Absent means all, which is what every search was before the control.
+    expect(discoveryQuerySchema.parse({}).learningLanguages).toBeUndefined()
   })
 
   it('rejects an unknown sort value', () => {
@@ -56,7 +66,15 @@ describe('DISCOVERY_PRO_FILTER_KEYS', () => {
   })
 
   it('leaves fit filters free — level, age and country are how a match is found', () => {
-    for (const key of ['minLevel', 'maxLevel', 'ageMin', 'ageMax', 'country', 'targetLanguage']) {
+    for (const key of [
+      'minLevel',
+      'maxLevel',
+      'ageMin',
+      'ageMax',
+      'country',
+      'learningLanguages',
+      'nativeLanguages',
+    ]) {
       expect(DISCOVERY_PRO_FILTER_KEYS as readonly string[], key).not.toContain(key)
     }
   })

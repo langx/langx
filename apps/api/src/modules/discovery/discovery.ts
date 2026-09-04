@@ -113,6 +113,28 @@ function levelsInBand(
   return LANGUAGE_LEVELS.slice(from, to)
 }
 
+/**
+ * The viewer's own codes, narrowed to the ones the request named — or all of
+ * them when it named none. A code the viewer does not have is a 400, not a
+ * silent drop: a query composed by hand that asks for a language you are not
+ * learning is a query composed wrong.
+ */
+function scopedTo(
+  own: readonly string[],
+  requested: readonly string[] | undefined,
+  field: 'learningLanguages' | 'nativeLanguages',
+): string[] {
+  if (!requested) return [...own]
+  const unknown = requested.filter((code) => !own.includes(code))
+  if (unknown.length > 0) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `${field} must be among your own languages (not: ${unknown.join(', ')})`,
+    )
+  }
+  return [...requested]
+}
+
 export async function discoverProfiles(
   db: Db,
   viewerId: string,
@@ -148,18 +170,21 @@ export async function discoverProfiles(
     }
   }
 
-  const myNativeCodes = viewer.nativeLanguages.map((l) => l.code)
-  const myLearningCodes = viewer.learning.map((l) => l.code)
-
-  if (query.targetLanguage && !myLearningCodes.includes(query.targetLanguage)) {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'targetLanguage must be one of your own learning languages',
-    )
-  }
-  // Their native language must be something I'm learning — narrowed to one
-  // language if the caller asked for a specific target, otherwise any of mine.
-  const wantTheirNative = query.targetLanguage ? [query.targetLanguage] : myLearningCodes
+  // Which of the viewer's own languages this search is made with: all of them
+  // unless the request narrowed a side, and a request can only narrow to
+  // languages the viewer actually has. Their native must be something I'm
+  // learning; their learning must be something I speak.
+  const myNativeCodes = scopedTo(
+    viewer.nativeLanguages.map((l) => l.code),
+    query.nativeLanguages,
+    'nativeLanguages',
+  )
+  const myLearningCodes = scopedTo(
+    viewer.learning.map((l) => l.code),
+    query.learningLanguages,
+    'learningLanguages',
+  )
+  const wantTheirNative = myLearningCodes
 
   // One helper for "everyone I must not see", shared with the conversation
   // list, the leaderboard and profile views — see `blockedUserIds`.

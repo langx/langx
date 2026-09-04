@@ -473,6 +473,12 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
+    languagesTitle: 'Languages in this search',
+    languagesBody:
+      'Everyone shown speaks one of the languages you are learning and is learning one you speak. Untick a language to leave it out of the search.',
+    iSpeak: 'I speak',
+    imLearning: "I'm learning",
+    languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
     searchNone: 'No account with that username.',
@@ -498,6 +504,8 @@ export const en = {
   },
 
   filters: {
+    learns: 'Learns',
+    learnsBody: 'Which of the languages you speak they should be learning.',
     title: 'Filters',
     speaks: 'Speaks',
     city: 'City',

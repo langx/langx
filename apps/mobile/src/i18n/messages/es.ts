@@ -441,6 +441,12 @@ export const es: Localized<EnMessages> = {
       'Pregunta por una frase que no tienes clara, o una palabra que no sabes decir — aparecerá aquí.',
   },
   discover: {
+    languagesTitle: 'Idiomas de esta búsqueda',
+    languagesBody:
+      'Todas las personas mostradas hablan un idioma que estás aprendiendo y aprenden uno que tú hablas. Desmarca un idioma para dejarlo fuera.',
+    iSpeak: 'Hablo',
+    imLearning: 'Estoy aprendiendo',
+    languagesA11y: 'Elige con cuáles de tus idiomas buscar',
     searchHandles: 'Buscar por nombre de usuario',
     searchPlaceholder: 'Nombre de usuario',
     searchNone: 'No hay ninguna cuenta con ese nombre de usuario.',
@@ -466,6 +472,8 @@ export const es: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Aprende',
+    learnsBody: 'Cuál de los idiomas que hablas debería estar aprendiendo.',
     title: 'Filtros',
     speaks: 'Habla',
     city: 'Ciudad',

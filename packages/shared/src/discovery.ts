@@ -3,6 +3,7 @@ import { languageLevelSchema, levelRank } from './level'
 import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
+import { PLAN_LIMITS } from './limits'
 import { genderSchema } from './profile'
 import { z } from 'zod'
 
@@ -91,6 +92,30 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
  */
 export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'cityId'] as const
 
+/**
+ * `en,ru` → `['en', 'ru']`. Capped at the largest allowance any tier has, so
+ * a crafted query cannot post two hundred codes, and each code is a real one.
+ */
+const languageListSchema = z
+  .string()
+  .transform((value) =>
+    value
+      .split(',')
+      .map((code) => code.trim())
+      .filter((code) => code.length > 0),
+  )
+  .pipe(
+    z
+      .array(languageCodeSchema)
+      .min(1)
+      .max(
+        Math.max(
+          PLAN_LIMITS.pro_plus.maxLearningLanguages,
+          PLAN_LIMITS.pro_plus.maxNativeLanguages,
+        ),
+      ),
+  )
+
 export const discoveryQuerySchema = z
   .object({
     sort: discoverySortSchema.default('recommended'),
@@ -102,8 +127,23 @@ export const discoveryQuerySchema = z
       .min(1)
       .max(DISCOVERY_PAGE_SIZE_MAX)
       .default(DISCOVERY_PAGE_SIZE_DEFAULT),
-    /** Free filter: narrow to one specific language out of the viewer's own learning list. */
-    targetLanguage: languageCodeSchema.optional(),
+    /**
+     * Which of the viewer's own languages this search is made with. Free.
+     *
+     * Absent means all of them, which is what every search was before the
+     * header became a control: the server always matched on every language
+     * on both sides. These narrow, never widen — each code must be one the
+     * viewer actually has, which `discoverProfiles` checks — and an empty list
+     * is refused rather than read as "all": a search with no language is a
+     * question with no answer, and letting it mean "everyone" would show a
+     * pool the user explicitly excluded.
+     *
+     * `learningLanguages` is matched against *their* native languages;
+     * `nativeLanguages` against what *they* are learning. Comma-joined in the
+     * query string, so a search stays one pasteable URL.
+     */
+    learningLanguages: languageListSchema.optional(),
+    nativeLanguages: languageListSchema.optional(),
     /** Free filter: their level in the viewer's language, as an inclusive band.
      *  One bound on its own is still valid — `minLevel` alone means "at least",
      *  which is what the pre-v3 filter offered and what old clients still send. */

@@ -26,9 +26,17 @@ import {
   activeCount,
   hasProFilters,
   parseFilters,
+  scopeOf,
+  toParams,
   toQuery,
   withoutProFilters,
+  type DiscoveryFilters,
 } from '../../src/lib/discoveryFilters'
+import {
+  LanguageScopeSheet,
+  scopeLabel,
+  type LanguageScope,
+} from '../../src/components/LanguageScopeSheet'
 import { showAlert } from '../../src/lib/alert'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
@@ -86,12 +94,36 @@ export default function DiscoverScreen() {
   const sharingLocation = me.data?.location !== undefined
   const filters = useMemo(() => parseFilters(params), [params])
 
-  /** "TR → ES" — the first of each, since the header has room for one pair. */
-  const pair = useMemo(() => {
-    const speaks = me.data?.nativeLanguages[0]?.code
-    const learns = me.data?.learning[0]?.code
-    return speaks && learns ? `${speaks.toUpperCase()} → ${learns.toUpperCase()}` : null
-  }, [me.data])
+  /**
+   * Which of the viewer's own languages this search is made with — all of
+   * them unless the params narrowed a side. The header used to print the
+   * *first* of each and call it the match direction, while the server matched
+   * on every language on both sides; now the label says what the search is
+   * made with, and tapping it opens the sheet that changes it.
+   */
+  const nativeCodes = useMemo(() => me.data?.nativeLanguages.map((l) => l.code) ?? [], [me.data])
+  const learningCodes = useMemo(() => me.data?.learning.map((l) => l.code) ?? [], [me.data])
+  const scope = useMemo<LanguageScope>(
+    () => ({
+      native: filters.nativeLanguages ?? nativeCodes,
+      learning: filters.learningLanguages ?? learningCodes,
+    }),
+    [filters, nativeCodes, learningCodes],
+  )
+  const pair = scopeLabel(scope)
+  const [scopeOpen, setScopeOpen] = useState(false)
+
+  /** Written to the route, like every other filter, so the URL stays the search. */
+  function changeScope(next: LanguageScope): void {
+    const nextFilters: DiscoveryFilters = { ...filters }
+    delete nextFilters.nativeLanguages
+    delete nextFilters.learningLanguages
+    const native = scopeOf(next.native, nativeCodes)
+    const learning = scopeOf(next.learning, learningCodes)
+    if (native) nextFilters.nativeLanguages = native
+    if (learning) nextFilters.learningLanguages = learning
+    router.replace({ pathname: '/(app)/discover', params: toParams(nextFilters) })
+  }
 
   /**
    * Nearby has two preconditions and they fail differently, so the chip
@@ -166,7 +198,17 @@ export default function DiscoverScreen() {
               someone native in what you are learning and learning what you
               speak, and without this the list looks unsorted rather than
               matched. */}
-          {pair && !searching ? <Text style={styles.pair}>{pair}</Text> : null}
+          {pair && !searching ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('discover.languagesA11y')}
+              onPress={() => setScopeOpen(true)}
+              hitSlop={8}
+              style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
+            >
+              <Text style={styles.pair}>{pair}</Text>
+            </Pressable>
+          ) : null}
           {/* Advanced filters are the Pro hook, so the control is shown to
               everyone and the *screen* handles the upsell — hiding it makes
               the paywall a surprise instead of an offer. Free filters still
@@ -195,6 +237,14 @@ export default function DiscoverScreen() {
             </Pressable>
           )}
         </View>
+        <LanguageScopeSheet
+          visible={scopeOpen}
+          onClose={() => setScopeOpen(false)}
+          nativeCodes={nativeCodes}
+          learningCodes={learningCodes}
+          scope={scope}
+          onChange={changeScope}
+        />
         {/* Search takes the screen, not a strip of it: a sort control above a
             list that has been blanked is answering a question nobody asked. */}
         {searching ? null : (
@@ -355,13 +405,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
    */
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, zIndex: 2 },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
-  pair: {
-    ...font.label,
-    color: colors.accent,
-    fontSize: 14,
-    fontWeight: '700',
-    marginStart: 'auto',
-  },
+  pairButton: { marginStart: 'auto' },
+  pair: { ...font.label, color: colors.accent, fontSize: 14, fontWeight: '700' },
   filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   filterCount: {
     backgroundColor: colors.accent,

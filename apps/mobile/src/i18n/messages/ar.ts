@@ -508,6 +508,12 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
+    languagesTitle: 'اللغات في هذا البحث',
+    languagesBody:
+      'كل من يظهر هنا يتحدث لغة تتعلمها ويتعلم لغة تتحدثها. أزل التحديد عن لغة لاستبعادها من البحث.',
+    iSpeak: 'أتحدث',
+    imLearning: 'أتعلم',
+    languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
     searchNone: 'لا يوجد حساب بهذا الاسم.',
@@ -531,6 +537,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'يتعلم',
+    learnsBody: 'أي لغة من لغاتك ينبغي أن يتعلمها الطرف الآخر.',
     title: 'عوامل التصفية',
     speaks: 'يتكلم',
     city: 'المدينة',

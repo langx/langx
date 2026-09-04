@@ -444,6 +444,12 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
+    languagesTitle: 'Bu aramadaki diller',
+    languagesBody:
+      'Gösterilen herkes öğrendiğin dillerden birini konuşuyor ve konuştuğun dillerden birini öğreniyor. Bir dili aramanın dışında bırakmak için işaretini kaldır.',
+    iSpeak: 'Konuştuğum',
+    imLearning: 'Öğrendiğim',
+    languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'Kullanıcı adıyla ara',
     searchPlaceholder: 'Kullanıcı adı',
     searchNone: 'Bu kullanıcı adında bir hesap yok.',
@@ -469,6 +475,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Öğreniyor',
+    learnsBody: 'Konuştuğun dillerden hangisini öğreniyor olmalı.',
     title: 'Filtreler',
     speaks: 'Konuşuyor',
     city: 'Şehir',
