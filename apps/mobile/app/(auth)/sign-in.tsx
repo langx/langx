@@ -1,15 +1,13 @@
-import * as Linking from 'expo-linking'
-import { Link, router, useLocalSearchParams } from 'expo-router'
+import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
-import { useAppConfig } from '../../src/hooks/useAppConfig'
+import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
-import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/lib/appleSignIn'
 import { authClient } from '../../src/lib/auth-client'
-import { authErrorKey, oauthReturnErrorKey } from '../../src/lib/errors'
+import { authErrorKey } from '../../src/lib/errors'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -22,32 +20,6 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
-  /**
-   * A redirect sign-in that failed comes back *here*, as `?error=<code>` on
-   * the URL — see `socialRedirects` below — because by then the call that
-   * started it is long gone and there is nothing left to hand a value back to.
-   *
-   * Read once, as the initial state: on the web the return is a fresh page
-   * load, and on a device the browser sheet closes without the URL ever
-   * reaching the router, so there is no later render for it to fight with.
-   */
-  const { error: returnedError } = useLocalSearchParams<{ error?: string }>()
-  const [socialError, setSocialError] = useState<string | undefined>(() => {
-    const key = oauthReturnErrorKey(returnedError)
-    return key ? t(key) : undefined
-  })
-
-  /**
-   * Which of the two buttons to draw at all.
-   *
-   * Undefined while the config request is in flight, and after it fails —
-   * both of which hide the buttons. That is the right way round: a provider
-   * we cannot confirm is one we cannot complete a sign-in with, and a button
-   * that opens a browser only to come back with "provider not found" is worse
-   * than no button. Email and password never depend on this.
-   */
-  const providers = useAppConfig().data?.authProviders
-
   /**
    * Only Better Auth's own sign-in. A v1 password cannot be checked here — the
    * hash is one-way and from another system — and the bridge that once asked
@@ -71,82 +43,6 @@ export default function SignIn() {
       router.replace('/')
     } finally {
       setLoading(false)
-    }
-  }
-
-  /**
-   * Where the provider sends the browser back to, on success and on failure.
-   *
-   * Both are optional to Better Auth and neither may be left out. An absent
-   * `callbackURL` defaults to the *API's* own base URL, which is the wrong
-   * address on both platforms that redirect: on the web it strands the reader
-   * on the API's host holding a session the app never sees, and on a device
-   * it is an `https` URL, so the auth session `@better-auth/expo` opened never
-   * recognises the redirect as its own — the sheet sits on a page nobody asked
-   * for and the session cookie it was waiting for is never handed over.
-   *
-   * `Linking.createURL` answers both platforms in one call: the app's own
-   * origin on the web, the app's scheme (`langx:///…`) on a device. The API
-   * trusts each of those already — `trustedOrigins` in apps/api/src/auth.ts,
-   * which is what makes an origin usable here at all.
-   *
-   * Called per press rather than computed once at module scope: the web build
-   * is prerendered in Node, where there is no `window` to read an origin from
-   * and this returns an empty string.
-   */
-  function socialRedirects() {
-    return {
-      callbackURL: Linking.createURL('/'),
-      /**
-       * Without this a failure lands on Better Auth's own error page, which
-       * on a device is a page inside a sheet that has no way to close itself.
-       * Coming back to this screen means the browser closes and — on the web,
-       * where the URL survives — `returnedError` above has something to say.
-       */
-      errorCallbackURL: Linking.createURL('/sign-in'),
-    }
-  }
-
-  async function onGoogle() {
-    setSocialError(undefined)
-    // No `router.replace` after this one: the browser redirect comes back into
-    // the app on its own and the root layout reacts to the new session.
-    const { error: googleError } = await authClient.signIn.social({
-      provider: 'google',
-      ...socialRedirects(),
-    })
-    if (googleError) setSocialError(t(authErrorKey(googleError) ?? 'errors.googleSignInFailed'))
-  }
-
-  async function onApple() {
-    setSocialError(undefined)
-    try {
-      if (!(await isNativeAppleSignInAvailable())) {
-        const { error: webError } = await authClient.signIn.social({
-          provider: 'apple',
-          ...socialRedirects(),
-        })
-        if (webError) setSocialError(t(authErrorKey(webError) ?? 'errors.appleSignInFailed'))
-        return
-      }
-
-      const identity = await requestAppleIdentity()
-      // The person closed the sheet. Saying anything here would be scolding
-      // them for changing their mind.
-      if (!identity) return
-
-      const { error: appleError } = await authClient.signIn.social({
-        provider: 'apple',
-        idToken: identity,
-      })
-      if (appleError) {
-        setSocialError(t(authErrorKey(appleError) ?? 'errors.appleSignInFailed'))
-        return
-      }
-      // The native path never leaves the app, so nothing else will navigate.
-      router.replace('/')
-    } catch {
-      setSocialError(t('errors.appleSignInFailed'))
     }
   }
 
@@ -195,24 +91,7 @@ export default function SignIn() {
         disabled={!email || !password}
       />
 
-      {providers?.google || providers?.apple ? (
-        <>
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>{t('auth.or')}</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
-
-          {providers.google ? (
-            <Button label={t('auth.continueWithGoogle')} onPress={onGoogle} variant="secondary" />
-          ) : null}
-          {providers.apple ? (
-            <Button label={t('auth.continueWithApple')} onPress={onApple} variant="secondary" />
-          ) : null}
-        </>
-      ) : null}
+      <SocialAuthButtons />
 
       {/*
         Web only. On a phone you already have the app, so "sign in with your
@@ -274,15 +153,6 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     marginTop: spacing.xs,
   },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
-  divider: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginVertical: spacing.xs,
-  },
-  dividerLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
-  dividerText: { ...font.label, color: colors.textFaint, fontWeight: '400' },
-  socialError: { ...font.body, color: colors.danger },
   footerText: { color: colors.textMuted, fontSize: 15 },
   footer: {
     alignItems: 'center',

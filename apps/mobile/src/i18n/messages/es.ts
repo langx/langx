@@ -288,6 +288,7 @@ export const es: Localized<EnMessages> = {
     signUp: 'Crear cuenta',
     continueWithGoogle: 'Continuar con Google',
     continueWithApple: 'Continuar con Apple',
+    providerSoon: 'Pronto',
     or: 'o',
     noAccount: '¿No tienes cuenta? ',
     justLooking: '¿Solo mirando?',

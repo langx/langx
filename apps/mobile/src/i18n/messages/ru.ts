@@ -325,6 +325,7 @@ export const ru: Localized<EnMessages> = {
     signUp: 'Зарегистрироваться',
     continueWithGoogle: 'Продолжить с Google',
     continueWithApple: 'Продолжить с Apple',
+    providerSoon: 'Скоро',
     or: 'или',
     noAccount: 'Нет аккаунта? ',
     justLooking: 'Просто смотришь?',
