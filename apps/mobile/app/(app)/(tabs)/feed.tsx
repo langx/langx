@@ -833,7 +833,8 @@ export default function FeedScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  header: { paddingTop: spacing.md },
+  // The bottom half is the gap above the tip; `Tip` owns the one below it.
+  header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   titleRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
   title: { ...font.title, color: colors.text, fontSize: 34 },
   ask: { color: colors.accent, fontSize: 16, fontWeight: '700' },

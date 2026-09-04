@@ -263,21 +263,24 @@ export default function DiscoverScreen() {
             />
           </View>
         )}
-        <View style={styles.chips}>
-          {/* Only while it applies. A radius control above a list that is not
-              sorted by distance would be a control with nothing to control. */}
-          {sort === 'nearby'
-            ? NEARBY_RADIUS_OPTIONS_KM.map((km) => (
-                <Chip
-                  key={km}
-                  label={t('discover.distanceKm', { km })}
-                  tone="accent"
-                  selected={radiusKm === km}
-                  onPress={() => setRadiusKm(km)}
-                />
-              ))
-            : null}
-        </View>
+        {/* Only while it applies. A radius control above a list that is not
+            sorted by distance would be a control with nothing to control —
+            and the row is dropped rather than emptied, because an empty one
+            still spends its `marginTop` and that stray 14px was the gap above
+            this screen's tip. */}
+        {sort === 'nearby' ? (
+          <View style={styles.chips}>
+            {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
+              <Chip
+                key={km}
+                label={t('discover.distanceKm', { km })}
+                tone="accent"
+                selected={radiusKm === km}
+                onPress={() => setRadiusKm(km)}
+              />
+            ))}
+          </View>
+        ) : null}
       </View>
 
       {/* Above the list rather than inside it: a hint that scrolls away is
@@ -400,7 +403,8 @@ export default function DiscoverScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
-  header: { paddingTop: spacing.md },
+  // The bottom half is the gap above the tip; `Tip` owns the one below it.
+  header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
   pairButton: { marginStart: 'auto' },

@@ -378,7 +378,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     gap: spacing.md,
   },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34, paddingTop: spacing.md },
-  list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
+  list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   row: {
     alignItems: 'center',
