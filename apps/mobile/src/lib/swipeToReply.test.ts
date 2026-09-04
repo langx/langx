@@ -2,31 +2,10 @@ import { describe, expect, it } from 'vitest'
 import {
   SWIPE_ACTIVATE_PX,
   SWIPE_MAX_PX,
-  shouldCaptureSwipe,
   swipeReleased,
   swipeToReplyEnabled,
   swipeTranslation,
 } from './swipeToReply'
-
-describe('shouldCaptureSwipe', () => {
-  it('ignores movement too small to have a direction yet', () => {
-    expect(shouldCaptureSwipe(4, 0)).toBe(false)
-  })
-
-  it('takes a clearly horizontal drag to the right', () => {
-    expect(shouldCaptureSwipe(40, 5)).toBe(true)
-  })
-
-  /** The case that decides whether the thread still scrolls. */
-  it('leaves a diagonal flick to the list', () => {
-    expect(shouldCaptureSwipe(30, 25)).toBe(false)
-    expect(shouldCaptureSwipe(30, -25)).toBe(false)
-  })
-
-  it('never captures a leftward drag', () => {
-    expect(shouldCaptureSwipe(-40, 2)).toBe(false)
-  })
-})
 
 describe('swipeTranslation', () => {
   it('follows the finger up to the limit', () => {

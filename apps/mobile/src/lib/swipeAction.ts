@@ -18,27 +18,35 @@
 
 /** One action button's width, and therefore the unit the row opens in. */
 export const ACTION_WIDTH_PX = 84
-/** Movement below this is still undecided. */
+/**
+ * Movement below this is still undecided.
+ *
+ * Read by `Gesture.Pan().activeOffsetX(...)` and `.failOffsetY(...)` rather
+ * than by a predicate here — the same two questions, asked natively before the
+ * gesture reaches JS, which is also what gives those first pixels back to the
+ * row instead of leaving it trailing the thumb by them.
+ */
 export const ACTION_LOCK_PX = 12
 /** How much of the overshoot past a fully open drawer still moves the row. */
 const RUBBER = 0.15
 /** Past this much of a drawer's width, releasing opens it rather than closing. */
 const OPEN_AT = 0.4
 /**
- * How much more horizontal than vertical the movement has to be.
+ * A flick this fast opens the drawer however far it actually travelled, in
+ * points per second.
  *
- * Same 1.5 as `swipeToReply`, and for the same reason: a flick down a long list
- * is never perfectly vertical, and at 1.0 a slightly diagonal one reads as a
- * swipe and eats the scroll.
+ * Distance alone was the whole of the complaint that this row "wants to be
+ * pulled all the way": with two actions the drawer is 168px, so `OPEN_AT`
+ * asked for 67px of travel — and a natural flick moves the thumb perhaps 60px
+ * before it lifts. The row then sprang shut on a gesture that felt decisive,
+ * which reads as the swipe having failed rather than as a threshold missed.
+ *
+ * 500 is roughly the speed of a deliberate flick and roughly twice that of the
+ * drag somebody makes while deciding, which is the distinction worth drawing:
+ * a slow half-open drag still asks the distance question.
  */
-const HORIZONTAL_BIAS = 1.5
-
+const FLICK_VELOCITY = 500
 export type SwipeDirection = 'left' | 'right'
-
-/** Is this a row swipe, or the list scrolling? */
-export function shouldCaptureRowSwipe(dx: number, dy: number): boolean {
-  return Math.abs(dx) > ACTION_LOCK_PX && Math.abs(dx) > Math.abs(dy) * HORIZONTAL_BIAS
-}
 
 /** How wide the drawer on one side is, given how many buttons it holds. */
 export function drawerWidth(actionCount: number): number {
@@ -63,8 +71,25 @@ export function rowTranslation(x: number, right: number, left: number): number {
  * Where the row comes to rest when the finger lifts: closed, or one of the two
  * drawers fully open. Never anywhere in between — a half-open row is a row
  * whose buttons are half-tappable.
+ *
+ * `velocity` is how fast the finger was moving when it lifted, in points per
+ * second, and it is what makes a flick work. A gesture that is fast **and
+ * heading the right way** opens the drawer it is heading towards regardless of
+ * distance; a fast flick heading *back* closes the row regardless of where it
+ * had got to, which is the same rule read in the other direction.
+ *
+ * Defaulted, so every existing caller and every existing test still describes
+ * a slow drag.
  */
-export function settleOffset(x: number, right: number, left: number): number {
+export function settleOffset(x: number, right: number, left: number, velocity = 0): number {
+  const flickedRight = velocity >= FLICK_VELOCITY
+  const flickedLeft = velocity <= -FLICK_VELOCITY
+
+  if (flickedRight && right > 0 && x > 0) return right
+  if (flickedLeft && left > 0 && x < 0) return -left
+  // A flick back towards centre closes, however far the row had been dragged.
+  if ((flickedLeft && x > 0) || (flickedRight && x < 0)) return 0
+
   if (x > 0) return right > 0 && x >= right * OPEN_AT ? right : 0
   if (x < 0) return left > 0 && -x >= left * OPEN_AT ? -left : 0
   return 0

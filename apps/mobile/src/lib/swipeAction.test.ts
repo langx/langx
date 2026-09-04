@@ -1,37 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
-  ACTION_LOCK_PX,
   ACTION_WIDTH_PX,
   drawerWidth,
   rowSwipeEnabled,
   rowTranslation,
   settleOffset,
-  shouldCaptureRowSwipe,
 } from './swipeAction'
 
 const ONE = drawerWidth(1)
 const TWO = drawerWidth(2)
-
-describe('shouldCaptureRowSwipe', () => {
-  it('ignores movement that has not committed yet', () => {
-    expect(shouldCaptureRowSwipe(ACTION_LOCK_PX, 0)).toBe(false)
-    expect(shouldCaptureRowSwipe(-ACTION_LOCK_PX, 0)).toBe(false)
-  })
-
-  it('takes a clear horizontal drag either way', () => {
-    expect(shouldCaptureRowSwipe(40, 5)).toBe(true)
-    expect(shouldCaptureRowSwipe(-40, 5)).toBe(true)
-  })
-
-  /**
-   * The whole answer to "why does the list not scroll any more". A flick down a
-   * long list is never perfectly vertical.
-   */
-  it('leaves a diagonal flick to the list', () => {
-    expect(shouldCaptureRowSwipe(30, 30)).toBe(false)
-    expect(shouldCaptureRowSwipe(-30, 25)).toBe(false)
-  })
-})
 
 describe('drawerWidth', () => {
   it('is one width per button', () => {
@@ -86,6 +63,28 @@ describe('settleOffset', () => {
     for (const x of [-160, -80, -30, 30, 80, 160]) {
       expect([0, ONE, -TWO]).toContain(settleOffset(x, ONE, TWO))
     }
+  })
+
+  /**
+   * The half that was missing, and the half the complaint was actually about:
+   * with two actions the drawer is 168px, so distance alone asked for 67px of
+   * travel — more than a natural flick moves before the thumb lifts.
+   */
+  it('opens on a fast flick that stopped short', () => {
+    expect(settleOffset(30, ONE, TWO, 900)).toBe(ONE)
+    expect(settleOffset(-30, ONE, TWO, -900)).toBe(-TWO)
+    // The same short pull, made slowly, still closes.
+    expect(settleOffset(30, ONE, TWO, 100)).toBe(0)
+  })
+
+  it('closes on a fast flick back, however far it had been dragged', () => {
+    expect(settleOffset(ONE, ONE, TWO, -900)).toBe(0)
+    expect(settleOffset(-TWO, ONE, TWO, 900)).toBe(0)
+  })
+
+  it('cannot be flicked into a side that has no actions', () => {
+    expect(settleOffset(300, 0, TWO, 900)).toBe(0)
+    expect(settleOffset(-300, ONE, 0, -900)).toBe(0)
   })
 
   it('cannot open a side that has no actions', () => {

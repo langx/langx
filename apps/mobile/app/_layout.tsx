@@ -15,6 +15,7 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useRef, useState } from 'react'
 import { Text } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
@@ -73,13 +74,21 @@ function createQueryClient(): QueryClient {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <I18nProvider>
-        <ThemeProvider>
-          <RootShell />
-        </ThemeProvider>
-      </I18nProvider>
-    </SafeAreaProvider>
+    /*
+     * Outside `SafeAreaProvider`, which is where gesture-handler's own docs put
+     * it: it has to be the outermost view for a gesture anywhere in the tree to
+     * be recognised. `flex: 1` is required — without it the view collapses and
+     * the whole app renders as nothing.
+     */
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            <RootShell />
+          </ThemeProvider>
+        </I18nProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }
 

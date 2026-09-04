@@ -9,9 +9,13 @@ import { makeStyles, radius } from '../../lib/theme'
  *
  * RN's `Animated` rather than Reanimated, following `ToastHost`. Opacity with
  * `useNativeDriver` already runs off the JS thread, which is the only thing
- * Reanimated would have bought — and Reanimated 4 is imported by nothing in
- * this app, so reaching for it here would put its worklets bundle into the
- * shipped web build for a nicer easing curve.
+ * Reanimated would have bought here.
+ *
+ * The second half of that argument no longer holds: `SwipeableRow` now imports
+ * Reanimated, so its worklets bundle is in the shipped web build whatever this
+ * file does. That was paid for a gesture that has to track a finger; a pulse
+ * on a placeholder is not one, and there is still nothing to gain by
+ * rewriting it.
  */
 export function Skeleton({
   width,
