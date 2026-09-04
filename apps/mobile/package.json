@@ -10,8 +10,8 @@
     "web": "expo start --web",
     "build:web": "expo export --platform web --clear && cp dist/+not-found.html dist/404.html",
     "deploy:web": "npx wrangler pages deploy dist --project-name langx-web --branch main",
-    "ios": "expo start --ios",
-    "android": "expo start --android",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
