@@ -9,7 +9,7 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
-import { refreshEntitlement } from './refresh'
+import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
 import type { RevenueCatClient } from './revenueCatClient'
 
 export interface SubscriptionRecord {
@@ -98,8 +98,12 @@ export async function processRevenueCatWebhook(
      *
      * The `INITIAL_PURCHASE` referral credit is not lost on this path:
      * `refreshEntitlement` pays it on the free → paid transition itself.
+     *
+     * A record that holds *nothing* is not believed on a grant: the event
+     * says something was just bought or given, so an empty answer is a record
+     * that has not caught up with its own webhook, and the event decides.
      */
-    if (client && (await reconciled(db, client, userId))) return { processed: true }
+    if (client && (await reconciledIfHeld(db, client, userId))) return { processed: true }
 
     const tier = tierFromEntitlementIds(event.entitlement_ids)
 
@@ -176,6 +180,19 @@ async function reconciled(db: Db, client: RevenueCatClient, userId: string): Pro
   try {
     await refreshEntitlement(db, client, userId)
     return true
+  } catch {
+    return false
+  }
+}
+
+/** `reconciled`, for a grant: also `false` when the record holds nothing yet. */
+async function reconciledIfHeld(
+  db: Db,
+  client: RevenueCatClient,
+  userId: string,
+): Promise<boolean> {
+  try {
+    return await refreshEntitlementIfHeld(db, client, userId)
   } catch {
     return false
   }
