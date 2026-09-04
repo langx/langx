@@ -207,7 +207,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   tile: { backgroundColor: colors.fill, borderRadius: radius.sm, overflow: 'hidden' },
   tileFill: { height: '100%', width: '100%' },
-  tileVideo: { backgroundColor: colors.fill, height: '100%', width: '100%' },
   tilePlay: {
     alignItems: 'center',
     bottom: 0,
@@ -217,7 +216,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     right: 0,
     top: 0,
   },
-  tilePlayGlyph: { color: colors.textMuted, fontSize: 18 },
+  // White with a shadow rather than a muted grey: it sits on whatever the
+  // first frame happens to be, which is as often bright as dark.
+  tilePlayGlyph: {
+    color: '#fff',
+    fontSize: 18,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowRadius: 4,
+  },
 }))
 
 /**
@@ -258,6 +264,18 @@ export function VideoBubble({ media }: { media: Media }) {
         fullscreenOptions={{ enable: true }}
       />
     </View>
+  )
+}
+
+/** A gallery tile's picture: the video, paused on its first frame. */
+function VideoTile({ url }: { url: string }) {
+  const styles = useStyles()
+  const player = useVideoPlayer(url, (instance) => {
+    instance.muted = true
+  })
+
+  return (
+    <VideoView player={player} style={styles.tileFill} contentFit="cover" nativeControls={false} />
   )
 }
 
@@ -315,11 +333,12 @@ export function MediaGallery({
             {video ? (
               <>
                 {/*
-                 * A still, not a player. Six players in one bubble is six
-                 * decoders for pictures nobody has asked to watch yet; the
-                 * viewer is where a tile becomes a video.
+                 * Paused on its first frame, which is the tile's picture. A
+                 * grey square with a play glyph was the alternative and it
+                 * reads as a video that failed to load. Nothing plays until
+                 * the tile is tapped, so the decoders stay idle.
                  */}
-                <View style={styles.tileVideo} />
+                <VideoTile url={item.url} />
                 <View style={styles.tilePlay} pointerEvents="none">
                   <Text style={styles.tilePlayGlyph}>▶</Text>
                 </View>

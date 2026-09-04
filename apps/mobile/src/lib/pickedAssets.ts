@@ -25,7 +25,23 @@ export interface PickedMedia {
  * again", which would hit the same wall on the next attempt.
  */
 export type PickRefusal =
-  { reason: 'unsupported'; contentType: string } | { reason: 'tooLong' } | { reason: 'tooLarge' }
+  | { reason: 'unsupported'; contentType: string }
+  | { reason: 'tooLong' }
+  | { reason: 'tooLarge' }
+  | { reason: 'tooMany' }
+
+/**
+ * What `duration` is counted in, which is not the same on every platform.
+ *
+ * expo-image-picker documents milliseconds and its native modules return them;
+ * its web implementation reads HTML5 `video.duration`, which is **seconds**,
+ * and passes it straight through. A sixty-one second clip therefore measured
+ * 0.061 in the browser and sailed past a sixty-second ceiling. The caller
+ * knows which platform it is on, so it says, rather than this guessing from
+ * the magnitude — a guess that would be wrong for exactly the short clips
+ * nobody would notice.
+ */
+export type DurationUnit = 'milliseconds' | 'seconds'
 
 /** The subset of `ImagePicker.ImagePickerAsset` this has to read. */
 export interface PickedAssetLike {
@@ -51,7 +67,10 @@ export interface PickedAssetLike {
  *
  * Pure, and importing nothing from react-native, so the rules are tested.
  */
-export function validatePickedAssets(assets: readonly PickedAssetLike[]): {
+export function validatePickedAssets(
+  assets: readonly PickedAssetLike[],
+  options: { durationUnit: DurationUnit; room?: number } = { durationUnit: 'milliseconds' },
+): {
   media: PickedMedia[]
   refused?: PickRefusal
 } {
@@ -70,7 +89,9 @@ export function validatePickedAssets(assets: readonly PickedAssetLike[]): {
         continue
       }
       const durationSeconds =
-        typeof asset.duration === 'number' ? Math.ceil(asset.duration / 1000) : undefined
+        typeof asset.duration === 'number'
+          ? Math.ceil(options.durationUnit === 'seconds' ? asset.duration : asset.duration / 1000)
+          : undefined
       if (durationSeconds === undefined) {
         // The server requires a duration, so a clip whose length nobody can
         // read is refused rather than sent to be refused.
@@ -111,6 +132,12 @@ export function validatePickedAssets(assets: readonly PickedAssetLike[]): {
       ...(asset.width ? { width: asset.width } : {}),
       ...(asset.height ? { height: asset.height } : {}),
     })
+  }
+
+  // More than there was room for. Said rather than silently trimmed: six of
+  // seven arriving with no explanation looks like one failed to attach.
+  if (options.room !== undefined && media.length > options.room) {
+    return { media: media.slice(0, options.room), refused: refused ?? { reason: 'tooMany' } }
   }
 
   return { media, ...(refused ? { refused } : {}) }

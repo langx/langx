@@ -83,3 +83,30 @@ describe('validatePickedAssets', () => {
     expect(media[0]).toMatchObject({ kind: 'video', contentType: 'video/mp4' })
   })
 })
+
+describe('validatePickedAssets, platform units and room', () => {
+  it('reads a web duration as seconds rather than milliseconds', () => {
+    // expo-image-picker documents milliseconds and its web implementation
+    // returns HTML5 `video.duration`, which is seconds. Read the wrong way, a
+    // 61-second clip measures 0.061 and sails past a 60-second ceiling.
+    const web = { uri: 'file:///a.mp4', mimeType: 'video/mp4', type: 'video', duration: 61 }
+    expect(validatePickedAssets([web], { durationUnit: 'seconds' }).refused).toEqual({
+      reason: 'tooLong',
+    })
+    expect(validatePickedAssets([web], { durationUnit: 'milliseconds' }).media).toHaveLength(1)
+  })
+
+  it('says so when more files came back than there was room for', () => {
+    const photos = Array.from({ length: 7 }, () => ({
+      uri: 'file:///a.jpg',
+      mimeType: 'image/jpeg',
+      type: 'image',
+    }))
+    const { media, refused } = validatePickedAssets(photos, {
+      durationUnit: 'milliseconds',
+      room: 6,
+    })
+    expect(media).toHaveLength(6)
+    expect(refused).toEqual({ reason: 'tooMany' })
+  })
+})
