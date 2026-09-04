@@ -476,6 +476,63 @@ as something bought rather than as the product.
       `branding/`, which is out of scope for work — the shots are needed, the
       repo is still not one to work in
 
+## The paywall sells the trial and the saving
+
+Both yearly subscriptions carry a **seven-day free trial** — an introductory
+offer, free, one week, all 175 storefronts, no end date — configured in App
+Store Connect on 4 September 2026. For a few hours nothing in the app said so:
+the yearly button read `Yearly — ₺1.099,99` and stopped there, which threw the
+whole offer away, and the website had been promising it all along
+(`website/src/lib/data/plans.ts`, "Fluent and Polyglot are monthly or yearly,
+with a free trial") — a live claim with nothing behind it.
+
+It was not a copy problem. `PurchaseOffer` carried `id`, `tier`, `priceString`
+and `period`, and `getOffers` built it out of `pkg.product.priceString` alone;
+RevenueCat hands the introductory offer over on the same object and it was
+dropped on the floor, so the screen could not have rendered a trial even if the
+words had existed.
+
+The second omission was the saving. A year costs about 40% less than twelve
+months bought one at a time, in every storefront:
+
+|                | Monthly ×12 | Yearly    | Saving |
+| -------------- | ----------- | --------- | ------ |
+| Fluent (USD)   | $83.88      | $49.99    | 40%    |
+| Polyglot (USD) | $155.88     | $94.99    | 39%    |
+| Fluent (TRY)   | ₺1.799,88   | ₺1.099,99 | 39%    |
+| Polyglot (TRY) | ₺2.999,88   | ₺1.799,99 | 40%    |
+
+- [x] **The trial leads.** `OfferCaption` in `app/(app)/paywall.tsx` draws it
+      above the button and before the price, because someone weighing a year of
+      anything wants to know they can leave first
+- [x] The introductory offer travels on `PurchaseOffer` as `freeTrialDays`.
+      `introPrice` describes any introductory offer, so the **zero price** is
+      what separates a free trial from a discounted first period we do not
+      sell; a month reads as 30 days rather than earning a message per unit in
+      eight languages. It renders per package, not per tier — a trial can exist
+      on one and not the other
+- [x] **The saving is computed from the store's own numbers, per storefront,
+      and "40%" appears nowhere in the bundle.** `yearlySavingPercent` in
+      `src/lib/planSaving.ts` divides the yearly price by twelve monthly ones,
+      both from the same offering and therefore the same currency, and refuses
+      anything under 5% — below that it is a rounding artefact of two price
+      points, not a discount anyone chose. Per-country prices are edited by
+      hand (Türkiye already is), and a literal would have become a false price
+      claim the next time one moved
+- [x] Both strings go through `src/i18n/messages/en.ts`, `freeTrial` as a
+      plural, translated into all eight locales
+- [ ] State the terms in full wherever the trial is advertised: how long it
+      runs, **then what it renews at**. The caption says "7 days free" and the
+      button under it says the price, which is close but does not spell out the
+      sequence; the footer carries the general renewal sentence. Guideline
+      3.1.2 wants the trial's own terms beside the offer, not only in the small
+      print — worth one more copy pass before a paid tier goes live
+- [ ] Nobody has seen this on a device yet. It is covered by
+      `src/lib/planSaving.test.ts` and by types, and the fake store
+      (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) now carries a trial and a real
+      ratio so the harness exercises the row — but the screen itself has not
+      been looked at since the change. Check it in the next build
+
 ## Prerequisites that are business process, not code
 
 None of these can be done from this repo, and Faz 7's subscription work cannot

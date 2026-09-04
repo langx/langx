@@ -1277,6 +1277,8 @@ export const tr: Localized<EnMessages> = {
     legal:
       'Abonelikler iptal edilene kadar otomatik yenilenir. Apple ya da Google hesabından istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
     offer: '{period} — {price}',
+    freeTrial: { one: '{count} gün ücretsiz', other: '{count} gün ücretsiz' },
+    saving: '%{percent} indirim',
     terms: 'Koşullar',
     privacy: 'Gizlilik',
     monthly: 'Aylık',

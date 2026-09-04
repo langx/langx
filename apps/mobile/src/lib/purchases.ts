@@ -73,6 +73,44 @@ export interface PurchaseOffer {
   /** Localised and currency-correct, straight from the store. Never formatted here: store compliance requires the real price, not one we compute. */
   priceString: string
   period: BillingPeriod
+  /**
+   * The same amount as a number, in the storefront's currency.
+   *
+   * Only ever compared against another offer from the same offering — which is
+   * to say the same storefront and the same currency — and never rendered. A
+   * price a person reads has to be `priceString`, the store's own text.
+   */
+  price: number
+  /**
+   * Days of free trial the store will grant on a first purchase, or `null` when
+   * this package has no trial.
+   */
+  freeTrialDays: number | null
+}
+
+/**
+ * A month counted as 30 days and a year as 365.
+ *
+ * The screen says "30 days free", which is what every other subscription app
+ * says and what people compare against. The alternative is a message per unit
+ * in eight languages, for trial lengths we do not sell.
+ */
+const DAYS_PER_PERIOD_UNIT: Record<string, number> = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 }
+
+/**
+ * The free-trial length of an introductory offer, or `null` when there is none.
+ *
+ * `introPrice` describes *any* introductory offer — pay-as-you-go and
+ * pay-up-front discounts included — so the zero price is the whole test. A
+ * discounted first period is a real thing the stores can sell and this app
+ * currently does not, and calling one a free trial would be a false claim
+ * rather than a missing feature.
+ */
+function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number | null {
+  if (intro === null || intro.price !== 0) return null
+  const days = DAYS_PER_PERIOD_UNIT[intro.periodUnit.toUpperCase()]
+  if (days === undefined || intro.periodNumberOfUnits <= 0) return null
+  return days * intro.periodNumberOfUnits
 }
 
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'unavailable' | 'failed'
@@ -174,6 +212,8 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
         tier: definition.tier,
         priceString: pkg.product.priceString,
         period: definition.period,
+        price: pkg.product.price,
+        freeTrialDays: freeTrialDays(pkg.product.introPrice),
       })
     }
     return offers
