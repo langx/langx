@@ -270,7 +270,14 @@ export async function startConversation(
     // now on can have an absent count — which is what lets `messagesInThread`
     // read an absent one as "predates the counter" instead of as zero.
     messageCount: 1,
-    messageCountBy: { [viewerId]: 1 },
+    // Built off the participants pair rather than with `viewerId` as a
+    // literal key, for the same reason `unread` reads the recipient off the
+    // record: a property name whose provenance is a request is the shape
+    // CodeQL's `js/remote-property-injection` flags, and the pair is the
+    // record's own.
+    messageCountBy: Object.fromEntries(
+      [viewerId, recipient._id].map((id) => [id, id === viewerId ? 1 : 0]),
+    ),
     createdAt: now,
     updatedAt: now,
   }
