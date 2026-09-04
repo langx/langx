@@ -602,18 +602,23 @@ before either runs.
 
 ## Release
 
-- **Play:** staged rollout starting at 10% (`eas.json` sets `rollout: 0.1`).
+- **Play:** full release (`eas.json` sets `releaseStatus: completed`). It was a
+  10% staged rollout until 4 September 2026; Behic's call to release to
+  everyone at once. What the stage was buying is written below, and is now
+  bought by watching after the fact instead of before.
 - **iOS:** phased release.
-- Watch crash-free sessions before widening. The `minSdk` bump means some v1
-  devices will stop receiving updates — check the install base's OS
-  distribution first so that is a decision, not a surprise.
+- Watch crash-free sessions. The `minSdk` bump means some v1 devices will stop
+  receiving updates — check the install base's OS distribution first so that is
+  a decision, not a surprise.
 
 ## The 16 KB page size requirement
 
 Android's deadline was **31 May 2026 — already passed**. Expo SDK 57 / RN 0.86
 handle this, but any third-party native library that has not been rebuilt for
 16 KB pages will fail on newer devices. Verify with a real device or emulator
-image configured for 16 KB before the rollout widens past 10%.
+image configured for 16 KB. This used to be gated behind the 10% stage; with a
+full release there is no stage to catch it, so it has to be checked on a device
+before the submission rather than after.
 
 ## Location changes both privacy forms
 
