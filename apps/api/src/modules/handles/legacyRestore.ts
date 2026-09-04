@@ -8,6 +8,7 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { refreshEntitlement } from '../billing/refresh'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { awardTokens } from '../tokens/ledger'
 import { streakDay } from '../tokens/streak'
@@ -142,6 +143,7 @@ export async function restoreByHash(
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
   const conversations = await tryImportConversations(db, userId, legacy._id)
   const lifetimeGranted = await tryGrantLifetime(billing, userId, legacy)
+  if (lifetimeGranted && billing) await tryRefreshEntitlement(db, billing, userId)
 
   /**
    * Written once, after both numbers are known, and for both branches above —
@@ -231,6 +233,31 @@ async function tryGrantLifetime(
   }
 
   return rung.tier
+}
+
+/**
+ * Brings the gift down from RevenueCat into `profiles.entitlement` straight
+ * away, rather than leaving it to the webhooks and the paywall.
+ *
+ * The grant above writes only to RevenueCat, on purpose — it is the single
+ * authority. But nothing else on the restore path reads it back: the
+ * webhooks arrive when they arrive, and the app calls `/billing/refresh` only
+ * from the paywall. Between the two, someone who has just been told
+ * "Polyglot, for life" opens Settings and sees "Free". One read closes that.
+ *
+ * Swallowed like every other optional step here, and safe to be: `refreshEntitlement`
+ * is idempotent and the next webhook or refresh writes the same answer.
+ */
+async function tryRefreshEntitlement(
+  db: Db,
+  billing: RevenueCatClient,
+  userId: string,
+): Promise<void> {
+  try {
+    await refreshEntitlement(db, billing, userId)
+  } catch (error) {
+    console.error('[legacy-restore] entitlement refresh after grant failed', { userId, error })
+  }
 }
 
 /**

@@ -1379,8 +1379,10 @@ lands on a rung by accident, and the thresholds can move without touching code.
 `profiles.entitlement` looks like the whole feature and survives about as long
 as the user's next visit to the paywall: `refreshEntitlement` replaces the
 stored tier with whatever RevenueCat reports, so a database-only gift is erased
-by the first `/billing/refresh` — and the paywall calls it on open and on
-restore. Anything that grants entitlement has to go through RevenueCat, which
+by the first `/billing/refresh` — which the paywall calls after a purchase and
+on "Restore purchases", and which the restore itself now calls the moment the
+grant is in, so the tier is right before the welcome-back screen is even read.
+Anything that grants entitlement has to go through RevenueCat, which
 is what `grantLifetimeEntitlement` does (`POST .../entitlements/{id}/promotional`,
 `duration: 'lifetime'` — there is no `end_time_ms` that means "never expires").
 Granted there it also survives a reinstall, shows up in the dashboard, and can

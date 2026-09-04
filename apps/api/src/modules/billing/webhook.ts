@@ -83,22 +83,32 @@ export async function processRevenueCatWebhook(
   const now = new Date()
 
   if (GRANT_SET.has(event.type)) {
-    const tier = tierFromEntitlementIds(event.entitlement_ids)
+    /*
+     * A grant event says what just *arrived*, never what the subscriber now
+     * holds, and the two differ. Pro+ products grant `pro` as well as
+     * `pro_plus`, and the v1 loyalty gift hands the two out as separate
+     * promotional grants — so a second `NON_RENEWING_PURCHASE` carrying only
+     * `pro` follows the one that carried `pro_plus`. Written from the event
+     * alone, that second one downgraded every Polyglot to Fluent (observed on
+     * `hi@langx.io`, 4 September 2026: `pro_plus` at 04:58:40.710, `pro` at
+     * 04:58:40.992). So the subscriber record is asked instead, which resolves
+     * the overlap by `ENTITLEMENT_PRECEDENCE` — the same thing `EXPIRATION`
+     * and `TRANSFER` already did, now for every grant. The event-derived
+     * write below stays as the fallback for when RevenueCat cannot be asked.
+     *
+     * The `INITIAL_PURCHASE` referral credit is not lost on this path:
+     * `refreshEntitlement` pays it on the free → paid transition itself.
+     */
+    if (client && (await reconciled(db, client, userId))) return { processed: true }
 
-    // TRANSFER carries no entitlement information — not even `product_id` —
-    // so which tier just arrived is unknowable from the event. Ask RevenueCat
-    // what the recipient holds now; the generic fallback below still covers
-    // the client being unavailable.
-    if (tier === null && event.type === 'TRANSFER' && client) {
-      if (await reconciled(db, client, userId)) return { processed: true }
-    }
+    const tier = tierFromEntitlementIds(event.entitlement_ids)
 
     // Falls back to the *lowest paid* tier rather than to free. A grant event
     // whose `entitlement_ids` we cannot read still means the user bought
     // something; defaulting to free would revoke access on a malformed
     // payload, which is the one direction that is never safe to guess in.
     // This is also what makes `PRODUCT_CHANGE` — the upgrade/downgrade event —
-    // finally land on the tier that was actually changed *to*.
+    // land on the tier that was actually changed *to* when there is no client.
     const entitlement: Profile['entitlement'] = {
       tier: tier ?? 'pro',
       willRenew: true,
