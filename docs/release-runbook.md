@@ -90,8 +90,9 @@ compiled into the client bundle, so the host has to exist and be final before
 the build that goes to the stores. Build first and deploy after, and the
 binary in review is pointing at `http://localhost:4000` — which passes every
 local test and fails on every real device. Setting that variable on the
-`preview` and `production` profiles in `eas.json` is the checklist item this
-deadline exists for; it is listed with the other prerequisites below.
+`production` profile in `eas.json`, and in the EAS `production` environment
+for update jobs, is the checklist item this deadline exists for; it is listed
+with the other prerequisites below.
 
 Once the host answers, the webhook is a five-minute dashboard task:
 
@@ -310,33 +311,39 @@ pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
 ## Shipping runs on expo.dev
 
 Builds, store submissions and over-the-air updates are all EAS jobs, defined
-in `apps/mobile/.eas/workflows/`. GitHub Actions only tests. The three
+in `apps/mobile/.eas/workflows/`. GitHub Actions only tests. The two
 workflows, and what each costs:
 
-| Workflow             | Trigger                  | Cost                                  |
-| -------------------- | ------------------------ | ------------------------------------- |
-| `preview-update.yml` | every merge to `main`    | nothing — an OTA update, no build     |
-| `preview-build.yml`  | by hand, pick a platform | one build of the free plan's 15/month |
-| `release.yml`        | by hand, pick a platform | one build, then `eas submit`          |
+| Workflow      | Trigger                  | Cost                              |
+| ------------- | ------------------------ | --------------------------------- |
+| `update.yml`  | every merge to `main`    | nothing — an OTA update, no build |
+| `release.yml` | by hand, pick a platform | one build, then `eas submit`      |
 
-The free plan allows 15 Android and 15 iOS cloud builds a month and 1,000
-monthly active users on updates. JS-only changes never need a build: a
-preview install picks them up on the next launch from the `preview` channel,
-and a store build from the `production` channel once one exists. Only a
-native change — a new module, a permission, an SDK bump, an icon — needs a
-build, and those are started by hand so the quota is spent on purpose.
+**There is one channel, `production`, and merging to `main` publishes to it.**
+A JS-only change reaches every installed app on its next launch without a
+build and without asking anyone. That is the whole release process for a JS
+change, so what merges is what ships: there is no staging channel left to
+catch a mistake, and `release.yml` is the only thing that still needs a
+decision. Only a native change — a new module, a permission, an SDK bump, an
+icon — needs a build.
+
+An update job builds the bundle on EAS from a fresh checkout, and
+`EXPO_PUBLIC_*` values are inlined at that moment. `eas.json`'s `env` blocks
+belong to _build_ profiles and an update job never reads them, so `update.yml`
+names `environment: production` and the value lives in the EAS `production`
+environment. Without it the bundle falls back to `http://localhost:4000` and
+every install loses the API on its next launch.
 
 - [ ] **Link the GitHub repo once**, or the push trigger never fires: expo.dev
       → project `langx` → Project settings → GitHub → connect `langx/langx`,
       base directory `apps/mobile`. Manual runs work without it:
-      `eas workflow:run preview-build.yml` from `apps/mobile`.
+      `eas workflow:run update.yml` from `apps/mobile`.
 - [ ] **iOS credentials.** EAS holds the APNs key but no distribution
       certificate or provisioning profile, and no App Store Connect API key
       for submission. One interactive `eas credentials -p ios` on a Mac with
       the Apple ID signed in creates the first two; the API key is made in
       App Store Connect → Users and Access → Integrations and uploaded on the
-      same screen. Until then `preview-build.yml` and `release.yml` only work
-      for Android.
+      same screen. Until then `release.yml` only works for Android.
 - [ ] **Play submit permissions.** The service account
       `eas-submit@langx-48eb0.iam.gserviceaccount.com` is uploaded to EAS but
       Play does not know it yet: Play Console → Users and permissions → invite
@@ -502,12 +509,14 @@ of it runs together.
       with no redirect. The API serves that path from this variable; unset, it
       404s and the portal refuses to save
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
-- [x] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
-      profiles in `eas.json` — both point at `https://api.langx.io`.
-      `development` still points at localhost, which a development build
-      rewrites to the dev server's address at runtime; a released build has no
-      dev server and would ship pointing at the phone itself, which is what
-      this item existed to prevent
+- [x] `EXPO_PUBLIC_API_URL` set on the `production` build profile in
+      `eas.json` **and** in the EAS `production` environment, both pointing at
+      `https://api.langx.io`. The first covers builds, the second covers
+      update jobs, which do not read `eas.json`. `development` still points at
+      localhost, which a development build rewrites to the dev server's
+      address at runtime; a released build has no dev server and would ship
+      pointing at the phone itself, which is what this item existed to
+      prevent
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
       yet enabled — deliberately, rather than shipping a button that cannot work).
