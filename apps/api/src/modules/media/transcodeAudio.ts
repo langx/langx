@@ -34,8 +34,8 @@ import { supportsPut, type StorageProvider } from '../../storage/StorageProvider
  * rest of the optional services make — see `docs/self-host.md`.
  */
 
-/** What a browser records, and what no iPhone will decode. */
-const TRANSCODE_FROM = new Set(['audio/webm', 'audio/ogg'])
+/** Every audio type the upload endpoint signs, honest label or not. */
+const AUDIO_PREFIX = 'audio/'
 /** AAC in MP4: what both phones record natively, so one playback path serves all of it. */
 export const TRANSCODE_TO = 'audio/mp4'
 /**
@@ -45,8 +45,35 @@ export const TRANSCODE_TO = 'audio/mp4'
  */
 const TRANSCODE_TIMEOUT_MS = 8_000
 
-export function needsTranscode(contentType: string): boolean {
-  return TRANSCODE_FROM.has(contentType.split(';')[0]?.trim().toLowerCase() ?? '')
+/**
+ * Whether a file is worth looking inside, which is every voice note.
+ *
+ * The label is not enough, and the note that started this proves it: it was
+ * stored as `audio/m4a`, under a `.m4a` key, and the bytes were WebM. An older
+ * web build labelled every recording `audio/m4a` regardless of what
+ * `MediaRecorder` had produced, so the one attribute a reader could check was
+ * the one thing that had been guessed. A file that says `.m4a` and is Opus is
+ * exactly a bubble that will not play with nothing anywhere saying why.
+ *
+ * The cost is a GET per voice note — a hundred kilobytes or so, from a bucket
+ * in the next region, inside a send that already waits on a socket ack. A
+ * photo, a video and a note that turns out to be AAC are all untouched.
+ */
+function worthSniffing(contentType: string): boolean {
+  return contentType.split(';')[0]?.trim().toLowerCase().startsWith(AUDIO_PREFIX) ?? false
+}
+
+/**
+ * What the bytes actually are, for the two containers iOS cannot open.
+ *
+ * `1A 45 DF A3` is EBML, which is Matroska and therefore WebM; `OggS` is Ogg.
+ * Anything else — AAC in MP4, ADTS, MP3 — is left alone, so this says "no"
+ * for every honest file and does not have to recognise them.
+ */
+export function isUndecodableOnIos(bytes: Uint8Array): boolean {
+  const ebml = [0x1a, 0x45, 0xdf, 0xa3]
+  const ogg = [0x4f, 0x67, 0x67, 0x53]
+  return [ebml, ogg].some((magic) => magic.every((byte, index) => bytes[index] === byte))
 }
 
 /**
@@ -138,22 +165,37 @@ export async function normalizeAttachments(
 }
 
 async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
-  if (!needsTranscode(media.contentType)) return media
+  if (!worthSniffing(media.contentType)) return media
   const key = deps.keyOf(media.url)
   if (!key) return media
 
   try {
-    const converted = await deps.transcode(await deps.get(key))
+    const bytes = await deps.get(key)
+    // The label may say anything; this is what the phone will actually be
+    // handed. An honest `audio/mp4` and a mislabelled one both end here.
+    if (!isUndecodableOnIos(bytes)) return media
+
+    const converted = await deps.transcode(bytes)
     if (!converted) return media
 
-    const url = await deps.put(transcodedKey(key), converted, TRANSCODE_TO)
-    // Best-effort, and after the new object exists: a leaked original costs
-    // bytes, while deleting first and then failing to write costs the note.
-    // `deleteAttachment` swallows in the same way and for the same reason.
-    try {
-      await deps.del(key)
-    } catch (error) {
-      deps.warn(error, 'could not remove the original of a transcoded voice note')
+    const target = transcodedKey(key)
+    const url = await deps.put(target, converted, TRANSCODE_TO)
+
+    /*
+     * Only when the conversion landed somewhere else. A mislabelled note is
+     * already under a `.m4a` key, so the new object *is* the old one — and
+     * deleting it here would delete the file just written, which is the one
+     * way this could lose a message rather than merely fail to improve it.
+     */
+    if (target !== key) {
+      // Best-effort, and after the new object exists: a leaked original costs
+      // bytes, while deleting first and then failing to write costs the note.
+      // `deleteAttachment` swallows in the same way and for the same reason.
+      try {
+        await deps.del(key)
+      } catch (error) {
+        deps.warn(error, 'could not remove the original of a transcoded voice note')
+      }
     }
 
     return { ...media, url, contentType: TRANSCODE_TO, sizeBytes: converted.byteLength }

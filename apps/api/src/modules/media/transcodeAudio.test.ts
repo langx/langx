@@ -1,13 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { Media } from '@langx/shared'
 import {
-  needsTranscode,
+  isUndecodableOnIos,
   normalizeAttachments,
   transcodedKey,
   type TranscodeDeps,
 } from './transcodeAudio'
 
 const BUCKET = 'https://cdn.example.com'
+/** EBML, which is what a browser's recording starts with. */
+const WEBM_BYTES = new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0x01, 0x02])
+/** An MP4 box header, which is what a phone's recording starts with. */
+const AAC_BYTES = new Uint8Array([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70])
 
 function webmNote(overrides: Partial<Media> = {}): Media {
   return {
@@ -26,7 +30,7 @@ function webmNote(overrides: Partial<Media> = {}): Media {
  */
 function deps(overrides: Partial<TranscodeDeps> = {}) {
   const spies = {
-    get: vi.fn(() => Promise.resolve(new Uint8Array([1, 2, 3]))),
+    get: vi.fn(() => Promise.resolve(WEBM_BYTES)),
     put: vi.fn((key: string) => Promise.resolve(`${BUCKET}/${key}`)),
     del: vi.fn(() => Promise.resolve()),
     transcode: vi.fn(() => Promise.resolve(new Uint8Array([9, 9]))),
@@ -42,18 +46,12 @@ function deps(overrides: Partial<TranscodeDeps> = {}) {
   return { deps: all, ...spies, ...overrides }
 }
 
-describe('needsTranscode', () => {
-  it('is the two containers a browser records and no iPhone decodes', () => {
-    expect(needsTranscode('audio/webm')).toBe(true)
-    expect(needsTranscode('audio/ogg')).toBe(true)
-    // With the codec parameter `MediaRecorder` likes to append.
-    expect(needsTranscode('audio/webm;codecs=opus')).toBe(true)
-  })
-
-  it('leaves what both phones already record alone', () => {
-    for (const type of ['audio/mp4', 'audio/m4a', 'audio/aac', 'audio/mpeg']) {
-      expect(needsTranscode(type), type).toBe(false)
-    }
+describe('isUndecodableOnIos', () => {
+  it('knows WebM and Ogg by their magic, and nothing else', () => {
+    expect(isUndecodableOnIos(WEBM_BYTES)).toBe(true)
+    expect(isUndecodableOnIos(new Uint8Array([0x4f, 0x67, 0x67, 0x53, 0x00]))).toBe(true)
+    expect(isUndecodableOnIos(AAC_BYTES)).toBe(false)
+    expect(isUndecodableOnIos(new Uint8Array())).toBe(false)
   })
 })
 
@@ -82,15 +80,40 @@ describe('normalizeAttachments', () => {
     expect(del).toHaveBeenCalledWith('messages/c1/a.webm')
   })
 
-  it('leaves everything else untouched, without fetching it', async () => {
-    const { deps: d, get } = deps()
+  /*
+   * The case the label check missed entirely: an older web build called every
+   * recording `audio/m4a` whatever the browser produced, so this is a `.m4a`
+   * key holding Opus — and it is the note that was reported.
+   */
+  it('converts a note whose label lies about what is inside it', async () => {
+    const { deps: d, put, del } = deps()
+    const mislabelled: Media = {
+      url: `${BUCKET}/messages/c1/a.m4a`,
+      contentType: 'audio/m4a',
+      sizeBytes: 2243,
+      durationSeconds: 3,
+    }
+
+    const [note] = await normalizeAttachments(d, [mislabelled])
+    expect(note?.contentType).toBe('audio/mp4')
+    expect(note?.url).toBe(`${BUCKET}/messages/c1/a.m4a`)
+    expect(put).toHaveBeenCalledWith('messages/c1/a.m4a', expect.anything(), 'audio/mp4')
+    // The converted file went to the key the original was under, so deleting
+    // "the original" would delete what was just written.
+    expect(del).not.toHaveBeenCalled()
+  })
+
+  it('leaves a real AAC note alone, and never fetches a picture', async () => {
+    const { deps: d, get, put } = deps({ get: vi.fn(() => Promise.resolve(AAC_BYTES)) })
     const items: Media[] = [
       { url: `${BUCKET}/messages/c1/a.m4a`, contentType: 'audio/mp4', sizeBytes: 1000 },
       { url: `${BUCKET}/messages/c1/a.jpg`, contentType: 'image/jpeg', sizeBytes: 2000 },
     ]
 
     expect(await normalizeAttachments(d, items)).toEqual(items)
-    expect(get).not.toHaveBeenCalled()
+    // Once, for the audio; never for the picture.
+    expect(get).toHaveBeenCalledTimes(1)
+    expect(put).not.toHaveBeenCalled()
   })
 
   // The whole bargain: a missing ffmpeg, a timeout or a file it cannot read
