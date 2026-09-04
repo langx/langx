@@ -1,10 +1,5 @@
-import {
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorder,
-  useAudioRecorderState,
-} from 'expo-audio'
+import { AudioModule, RecordingPresets, useAudioRecorder, useAudioRecorderState } from 'expo-audio'
+import { ensurePlaybackAudioMode, ensureRecordingAudioMode } from '../lib/audioSession'
 import { currentTranslate } from '../i18n/runtime'
 import { useCallback, useState } from 'react'
 import { MAX_AUDIO_SECONDS } from '@langx/shared'
@@ -36,7 +31,7 @@ export function useVoiceRecorder() {
     }
     // Without this, iOS records at a much lower quality and playback routes to
     // the earpiece rather than the speaker.
-    await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true })
+    await ensureRecordingAudioMode()
     await recorder.prepareToRecordAsync()
     recorder.record()
     return true
@@ -44,7 +39,9 @@ export function useVoiceRecorder() {
 
   const stop = useCallback(async (): Promise<Recording | null> => {
     await recorder.stop()
-    await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true })
+    // Back to playback, so the note that is about to be played — and every
+    // note played later in this session — is not left in a recording session.
+    await ensurePlaybackAudioMode()
     if (!recorder.uri) return null
     return {
       uri: recorder.uri,
@@ -55,7 +52,7 @@ export function useVoiceRecorder() {
 
   const cancel = useCallback(async (): Promise<void> => {
     if (state.isRecording) await recorder.stop()
-    await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true })
+    await ensurePlaybackAudioMode()
   }, [recorder, state.isRecording])
 
   const seconds = Math.floor((state.durationMillis ?? 0) / 1000)

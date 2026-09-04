@@ -4,6 +4,7 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
+import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
@@ -60,21 +61,36 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   // accent on your own progress is the only mark of whose note it is.
   const tint = mine ? colors.accent : colors.text
 
+  /**
+   * Configures the audio session *before* every play, not once at mount.
+   *
+   * `_layout.tsx` already sets it at start, which covers the reported bug — a
+   * note played on a silent-switched iPhone by someone who had not recorded.
+   * This second call covers the other direction: `useVoiceRecorder` puts the
+   * session into recording mode, and a note played after that would otherwise
+   * come out of the earpiece rather than the speaker. `audioSession` memoises,
+   * so in the common case this is a no-op.
+   */
+  const toggle = async (): Promise<void> => {
+    if (status.playing) {
+      player.pause()
+      return
+    }
+    await ensurePlaybackAudioMode()
+    // Replay from the start once it has finished, rather than sitting at
+    // the end doing nothing when tapped.
+    // `seekTo` is async but `play` does not need to wait for it — the
+    // player queues the seek ahead of playback itself.
+    if (total > 0 && elapsed >= total - 0.25) void player.seekTo(0)
+    player.play()
+  }
+
   return (
     <View style={styles.audioRow}>
       <Pressable
         hitSlop={8}
         onPress={() => {
-          if (status.playing) {
-            player.pause()
-            return
-          }
-          // Replay from the start once it has finished, rather than sitting at
-          // the end doing nothing when tapped.
-          // `seekTo` is async but `play` does not need to wait for it — the
-          // player queues the seek ahead of playback itself.
-          if (total > 0 && elapsed >= total - 0.25) void player.seekTo(0)
-          player.play()
+          void toggle()
         }}
       >
         <Text style={[styles.playIcon, { color: colors.text }]}>{status.playing ? '❚❚' : '▶'}</Text>
