@@ -38,8 +38,19 @@ function argOf(flag: string): string | undefined {
   return at >= 0 ? process.argv[at + 1] : undefined
 }
 
-/** A HEAD against our own bucket: is the object we recorded actually there? */
-async function head(url: string): Promise<string> {
+/**
+ * A HEAD against **our own bucket**: is the object we recorded actually there?
+ *
+ * The prefix check is not ceremony. These URLs come out of the database, so
+ * without it this script would fetch whatever a row happens to contain — and
+ * a stored URL pointing somewhere other than our bucket is itself the answer
+ * to the question being asked, so refusing to follow it loses nothing and
+ * says more.
+ */
+async function head(url: string, publicBase: string | undefined): Promise<string> {
+  if (!publicBase) return 'skipped (STORAGE_PUBLIC_BASE_URL not set)'
+  const base = publicBase.replace(/\/$/, '')
+  if (!url.startsWith(`${base}/`)) return `not in our bucket (${base})`
   try {
     const response = await fetch(url, { method: 'HEAD' })
     return `${response.status} ${response.headers.get('content-type') ?? '—'}`
@@ -102,7 +113,9 @@ async function main(): Promise<void> {
       ...(profile?.photos ?? []).map((p, i) => [`profile photo ${i}`, p.url] as const),
     ]
     if (stored.length === 0) console.log('  none recorded anywhere')
-    for (const [label, url] of stored) console.log(`  ${label.padEnd(16)} ${await head(url)}`)
+    for (const [label, url] of stored) {
+      console.log(`  ${label.padEnd(16)} ${await head(url, env.STORAGE_PUBLIC_BASE_URL)}`)
+    }
 
     console.log(`\n=== v1 (Appwrite) ===`)
     if (!legacy) {
