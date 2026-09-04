@@ -39,6 +39,8 @@ export const de: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Anhang entfernen',
+    preparingUpload: 'Wird vorbereitet…',
+    uploadingPercent: 'Wird hochgeladen… {percent} %',
     attachMedia: 'Fotos oder Videos anhängen',
   },
 
@@ -563,8 +565,6 @@ export const de: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Wird gesendet…',
-    preparingUpload: 'Wird vorbereitet…',
-    uploadingPercent: 'Wird hochgeladen… {percent} %',
     title: 'Chat',
     typing: 'schreibt…',
     notSentRetry: 'Nicht gesendet — zum Wiederholen tippen',

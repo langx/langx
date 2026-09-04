@@ -1365,10 +1365,13 @@ export async function uploadMessageMedia(input: {
 /**
  * Upload an attachment for a post or a correction.
  *
- * Same three steps as `uploadMessageMedia` against a different signing route.
- * Not folded into one function: the message version has to name a conversation
- * so the server can check access before signing, and this one has nothing to
- * name yet — the post does not exist until the upload has already succeeded.
+ * Same three steps as `uploadMessageMedia` against a different signing route,
+ * `onProgress` included — the feed could report no percentage at all until
+ * this took one, which is the only thing that ever differed between them
+ * besides the route. Not folded into one function: the message version has to
+ * name a conversation so the server can check access before signing, and this
+ * one has nothing to name yet — the post does not exist until the upload has
+ * already succeeded.
  */
 export async function uploadPostMedia(input: {
   kind: MediaKind
@@ -1377,6 +1380,8 @@ export async function uploadPostMedia(input: {
   durationSeconds?: number
   width?: number
   height?: number
+  /** Bytes sent so far, and the whole; `0` for a total nobody could measure. */
+  onProgress?: (loaded: number, total: number) => void
 }): Promise<Media> {
   // Blob first, then sign — see `uploadMessageMedia` for why the order matters.
   const blob = await (await fetch(input.uri)).blob()
@@ -1386,7 +1391,12 @@ export async function uploadPostMedia(input: {
     contentType,
   })
 
-  await putWithProgress({ url: target.uploadUrl, body: blob, contentType })
+  await putWithProgress({
+    url: target.uploadUrl,
+    body: blob,
+    contentType,
+    ...(input.onProgress ? { onProgress: input.onProgress } : {}),
+  })
 
   return {
     url: target.publicUrl,

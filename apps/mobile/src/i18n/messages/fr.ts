@@ -39,6 +39,8 @@ export const fr: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Retirer la pièce jointe',
+    preparingUpload: 'Préparation…',
+    uploadingPercent: 'Envoi… {percent} %',
     attachMedia: 'Joindre des photos ou des vidéos',
   },
 
@@ -546,8 +548,6 @@ export const fr: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Envoi…',
-    preparingUpload: 'Préparation…',
-    uploadingPercent: 'Envoi… {percent} %',
     title: 'Discussion',
     typing: 'écrit…',
     notSentRetry: 'Non envoyé — touche pour réessayer',

@@ -2813,6 +2813,27 @@ that fixed HEIC does the second half of this on iOS: it makes PhotoKit export
 an HEVC `.mov` as H.264, without which an iPhone-to-Android video is a black
 frame.
 
+**The feed autoplays, and the thread does not.** This entry used to argue
+against autoplay everywhere, on the grounds that "a thread of clips that all
+start as they scroll past is somebody's data allowance and somebody else's
+quiet carriage". That reasoning was never about video, it was about a
+conversation — and it still holds for one. A feed is a different act: it is
+scanned rather than read, and a still frame behind native controls in a scanned
+list reads as a video that is broken, which is exactly how it was reported.
+
+So `VideoBubble` has two modes. The feed and a post's own attachment get
+`'preview'` — muted, looping, no controls, playing only while the post is more
+than 60% on screen and the tab still has focus, with a tap opening it full
+screen with sound through `PhotoViewer`. A thread keeps `'controls'` and never
+autoplays, and so does a list of corrections or answers, where several clips
+would start at once. Muted and on-screen-only is what makes the data cost
+defensible; unmuted or off-screen would not be.
+
+The same change fixed something older and quieter: `MediaGallery`'s
+single-attachment branch returned a `VideoBubble` that had no `onPress` prop at
+all, so a one-video post — the ordinary case — could not be opened full screen
+anywhere, while a video in a multi-attachment grid could.
+
 **It needs a build, and the runtime version is what makes that safe.**
 `expo-video` is the first native module to arrive since _The runtime version is
 a fingerprint_ landed, and so the first thing that guard actually stops: under

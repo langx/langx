@@ -63,6 +63,8 @@ export const en = {
 
   composer: {
     removeAttachment: 'Remove attachment',
+    preparingUpload: 'Preparing…',
+    uploadingPercent: 'Uploading… {percent}%',
     attachMedia: 'Attach photos or videos',
   },
 
@@ -574,8 +576,6 @@ export const en = {
   },
   chat: {
     sendingAttachment: 'Sending…',
-    preparingUpload: 'Preparing…',
-    uploadingPercent: 'Uploading… {percent}%',
     title: 'Chat',
     typing: 'typing…',
     notSentRetry: 'Not sent — tap to try again',

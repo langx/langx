@@ -49,6 +49,8 @@ export const ru: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Убрать вложение',
+    preparingUpload: 'Подготовка…',
+    uploadingPercent: 'Загрузка… {percent}%',
     attachMedia: 'Прикрепить фото или видео',
   },
 
@@ -614,8 +616,6 @@ export const ru: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Отправка…',
-    preparingUpload: 'Подготовка…',
-    uploadingPercent: 'Загрузка… {percent}%',
     title: 'Чат',
     typing: 'печатает…',
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',

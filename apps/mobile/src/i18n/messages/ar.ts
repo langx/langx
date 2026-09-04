@@ -52,6 +52,8 @@ export const ar: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'إزالة المرفق',
+    preparingUpload: 'جارٍ التحضير…',
+    uploadingPercent: 'جارٍ الرفع… {percent}%',
     attachMedia: 'إرفاق صور أو مقاطع فيديو',
   },
 
@@ -638,8 +640,6 @@ export const ar: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'جارٍ الإرسال…',
-    preparingUpload: 'جارٍ التحضير…',
-    uploadingPercent: 'جارٍ الرفع… {percent}%',
     title: 'محادثة',
     typing: 'يكتب…',
     notSentRetry: 'لم يُرسل — اضغط للمحاولة مرة أخرى',

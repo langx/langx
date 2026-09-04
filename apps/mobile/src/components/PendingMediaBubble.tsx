@@ -75,10 +75,10 @@ export function PendingMediaBubble({ item, onRetry }: { item: PendingMedia; onRe
                 and should not claim to be one.
               */}
               {item.progress.phase === 'reading'
-                ? t('chat.preparingUpload')
+                ? t('composer.preparingUpload')
                 : item.progress.phase === 'sending'
                   ? t('chat.sendingAttachment')
-                  : t('chat.uploadingPercent', { percent })}
+                  : t('composer.uploadingPercent', { percent })}
             </Text>
           </>
         )}

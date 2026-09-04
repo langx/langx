@@ -39,6 +39,8 @@ export const ptBR: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Remover anexo',
+    preparingUpload: 'Preparando…',
+    uploadingPercent: 'Enviando… {percent}%',
     attachMedia: 'Anexar fotos ou vídeos',
   },
 
@@ -536,8 +538,6 @@ export const ptBR: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Enviando…',
-    preparingUpload: 'Preparando…',
-    uploadingPercent: 'Enviando… {percent}%',
     title: 'Conversa',
     typing: 'digitando…',
     notSentRetry: 'Não enviado — toque para tentar de novo',

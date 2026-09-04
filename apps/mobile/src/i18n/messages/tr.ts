@@ -53,6 +53,8 @@ export const tr: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Eki kaldır',
+    preparingUpload: 'Hazırlanıyor…',
+    uploadingPercent: 'Yükleniyor… %{percent}',
     attachMedia: 'Fotoğraf veya video ekle',
   },
 
@@ -545,8 +547,6 @@ export const tr: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Gönderiliyor…',
-    preparingUpload: 'Hazırlanıyor…',
-    uploadingPercent: 'Yükleniyor… %{percent}',
     title: 'Sohbet',
     typing: 'yazıyor…',
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',

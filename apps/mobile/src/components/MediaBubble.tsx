@@ -1,7 +1,7 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { audioProgress } from '../lib/audioProgress'
@@ -289,26 +289,58 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
 }))
 
 /**
- * A video in a thread, playing in place.
+ * A video, in one of two modes.
  *
- * `nativeControls` rather than our own: a scrub bar, a mute and a fullscreen
- * button are three things every platform already draws correctly, and the
- * fullscreen one is what makes a 220-point bubble enough.
- *
- * It does not autoplay, and that is deliberate. A thread of clips that all
+ * `'controls'` is the thread: `nativeControls` rather than our own — a scrub
+ * bar, a mute and a fullscreen button are three things every platform already
+ * draws correctly — and **it never autoplays**. A thread of clips that all
  * start as they scroll past is somebody's data allowance and somebody else's
- * quiet carriage. `useVideoPlayer` releases the native player when the bubble
- * unmounts, so a long thread does not accumulate them.
+ * quiet carriage, and that reasoning still holds for a conversation.
+ *
+ * `'preview'` is the feed, and it deliberately does the opposite: muted,
+ * looping, no controls, playing only while its post is on screen, with a tap
+ * opening it full screen with sound. The two surfaces differ because reading a
+ * feed and reading a conversation are different acts — a feed is scanned, and
+ * a still frame with no controls in a scanned list reads as a video that is
+ * broken. See `docs/decisions.md` → *A video is one file*.
+ *
+ * `useVideoPlayer` releases the native player when the bubble unmounts, so a
+ * long list does not accumulate them.
  *
  * `contain`, not `cover`: `ImageBubble` records why cropping a picture to a
  * guessed shape is worse than letterboxing it, and here the controls would sit
  * over the cropped part as well.
  */
-export function VideoBubble({ media }: { media: Media }) {
+export function VideoBubble({
+  media,
+  mode = 'controls',
+  playing = false,
+  onPress,
+}: {
+  media: Media
+  mode?: 'controls' | 'preview'
+  /** `'preview'` only: whether this one is on screen right now. */
+  playing?: boolean
+  onPress?: () => void
+}) {
   const styles = useStyles()
+  const t = useT()
+  const preview = mode === 'preview'
   const player = useVideoPlayer(media.url, (instance) => {
-    instance.loop = false
+    instance.loop = preview
+    instance.muted = preview
   })
+
+  /*
+   * Driven from the outside rather than from a viewability check in here: one
+   * post can hold several videos, and they have to start and stop together
+   * with the post rather than each deciding for itself.
+   */
+  useEffect(() => {
+    if (!preview) return
+    if (playing) player.play()
+    else player.pause()
+  }, [playing, player, preview])
 
   const { width, height } = media
   // 16:9 when the message carries no dimensions — every phone camera is
@@ -316,15 +348,32 @@ export function VideoBubble({ media }: { media: Media }) {
   // wrong guess letterboxes rather than crops.
   const ratio = width && height ? width / height : 16 / 9
 
+  const view = (
+    <VideoView
+      player={player}
+      style={styles.videoFill}
+      contentFit="contain"
+      nativeControls={!preview}
+      fullscreenOptions={{ enable: !preview }}
+    />
+  )
+
   return (
     <View style={[styles.video, { aspectRatio: ratio }]}>
-      <VideoView
-        player={player}
-        style={styles.videoFill}
-        contentFit="contain"
-        nativeControls
-        fullscreenOptions={{ enable: true }}
-      />
+      {preview && onPress ? (
+        // Only in preview mode. With native controls on, a `Pressable` around
+        // them competes with the scrub bar for the same touch.
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('media.playVideo')}
+          onPress={onPress}
+          style={styles.videoFill}
+        >
+          {view}
+        </Pressable>
+      ) : (
+        view
+      )}
     </View>
   )
 }
@@ -356,10 +405,15 @@ export function MediaGallery({
   items,
   mine,
   onOpen,
+  videoMode = 'controls',
+  videoPlaying = false,
 }: {
   items: readonly Media[]
   mine?: boolean
   onOpen?: (index: number) => void
+  /** The feed asks for `'preview'`; chat keeps the thread's controls. */
+  videoMode?: 'controls' | 'preview'
+  videoPlaying?: boolean
 }) {
   const styles = useStyles()
   const t = useT()
@@ -368,7 +422,22 @@ export function MediaGallery({
   if (!first) return null
 
   if (items.length === 1) {
-    if (isVideoContentType(first.contentType)) return <VideoBubble media={first} />
+    if (isVideoContentType(first.contentType)) {
+      /*
+       * The `onPress` the single-image branch below has always had, and the
+       * single-video branch never did: `VideoBubble` had no such prop at all,
+       * so a one-video post — the ordinary case — could not be opened full
+       * screen anywhere, while a video in a *grid* could.
+       */
+      return (
+        <VideoBubble
+          media={first}
+          mode={videoMode}
+          playing={videoPlaying}
+          {...(onOpen ? { onPress: () => onOpen(0) } : {})}
+        />
+      )
+    }
     if (isImageContentType(first.contentType)) {
       return <ImageBubble media={first} {...(onOpen ? { onPress: () => onOpen(0) } : {})} />
     }

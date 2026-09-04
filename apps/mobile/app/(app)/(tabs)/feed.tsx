@@ -1,10 +1,18 @@
 import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, MAX_VIDEO_SECONDS, POST_KINDS, type PostKind } from '@langx/shared'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFocusEffect } from 'expo-router'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../../src/components/ui/FormField'
 import { Button } from '../../../src/components/ui/Button'
 import { uploadPostMedia } from '../../../src/api/queries'
+import {
+  advanceUpload,
+  UPLOAD_START,
+  uploadSent,
+  type ActiveUpload,
+} from '../../../src/lib/uploadProgress'
+import { playableIds, shouldPlay } from '../../../src/lib/videoVisibility'
 import {
   useCorrectPost,
   useCreatePost,
@@ -53,6 +61,9 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
  * so that adding a section without a label is a compile error, not a screen
  * that renders the enum value.
  */
+/** 60% of a post on screen before its video is allowed to run. */
+const VIEWABILITY = { itemVisiblePercentThreshold: 60 }
+
 const SECTION_LABELS: Record<PostKind, MessageKey> = {
   correction: 'feed.correctionSection',
   pronunciation: 'feed.pronunciationSection',
@@ -145,6 +156,35 @@ export default function FeedScreen() {
   const [askMedia, setAskMedia] = useState<PendingAttachment[]>([])
   const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment[]>([])
   const [uploading, setUploading] = useState(false)
+  /**
+   * Which attachment is in flight and how far along, or `null`.
+   *
+   * One piece of state for both composers on this screen because only one can
+   * be submitting at a time — the ask box and the correction box are never
+   * both sending.
+   */
+  const [uploadProgress, setUploadProgress] = useState<ActiveUpload | null>(null)
+
+  /**
+   * The posts whose videos are allowed to run: on screen, and on a tab that
+   * still has focus. Leaving the tab has to stop them — a muted loop playing
+   * behind another screen is a decoder and a battery spent on nobody.
+   */
+  const [viewablePosts, setViewablePosts] = useState<string[]>([])
+  const [focused, setFocused] = useState(true)
+  useFocusEffect(
+    useCallback(() => {
+      setFocused(true)
+      return () => setFocused(false)
+    }, []),
+  )
+  const playingPosts = playableIds({ viewable: viewablePosts, focused })
+  // Held in a ref because `FlatList` refuses a changed `onViewableItemsChanged`.
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: { key: string }[] }) => {
+      setViewablePosts(viewableItems.map((entry) => entry.key))
+    },
+  )
   const { data: session } = authClient.useSession()
   const me = useMe()
   const feed = useFeed(section)
@@ -232,12 +272,34 @@ export default function FeedScreen() {
    *
    * One at a time rather than `Promise.all`. Each file is read into memory as
    * a blob before it is sent, and six of them at a video's ceiling is not a
-   * budget a phone has.
+   * budget a phone has — which is also what makes a per-file percentage the
+   * honest thing to show: the batch's total is not known until the last blob
+   * has been read.
    */
   async function attach(pending: readonly PendingAttachment[]) {
     if (pending.length === 0) return undefined
     const uploaded = []
-    for (const item of pending) uploaded.push(await uploadPostMedia(item))
+    try {
+      for (const [index, item] of pending.entries()) {
+        setUploadProgress({ index, progress: UPLOAD_START })
+        uploaded.push(
+          await uploadPostMedia({
+            ...item,
+            onProgress: (loaded, total) =>
+              setUploadProgress((current) =>
+                current && current.index === index
+                  ? { index, progress: advanceUpload(current.progress, loaded, total) }
+                  : current,
+              ),
+          }),
+        )
+        setUploadProgress({ index, progress: uploadSent(UPLOAD_START) })
+      }
+    } finally {
+      // Cleared on the way out either way: a failure leaves the files in the
+      // row with their crosses back, which is what a retry needs.
+      setUploadProgress(null)
+    }
     return uploaded
   }
 
@@ -411,6 +473,7 @@ export default function FeedScreen() {
             <AttachmentPreviewRow
               pending={askMedia}
               onRemove={(index) => setAskMedia((items) => items.filter((_, at) => at !== index))}
+              progress={uploadProgress}
             />
             <View style={styles.composeActions}>
               <AttachmentBar
@@ -463,6 +526,16 @@ export default function FeedScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
+          /*
+           * Which posts count as on screen. 60% rather than any pixel of them:
+           * a video that starts the moment its first row appears is playing
+           * for somebody who is still scrolling past it.
+           *
+           * `onViewableItemsChanged` must not be recreated between renders —
+           * RN throws outright on a changed handler — hence the ref below.
+           */
+          viewabilityConfig={VIEWABILITY}
+          onViewableItemsChanged={onViewableItemsChanged.current}
           refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
@@ -551,6 +624,8 @@ export default function FeedScreen() {
                     <MediaGallery
                       items={attachmentsOf(item)}
                       onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                      videoMode="preview"
+                      videoPlaying={shouldPlay(item._id, playingPosts)}
                     />
                   </View>
                 ) : null}
@@ -747,6 +822,7 @@ export default function FeedScreen() {
                       onRemove={(index) =>
                         setCorrectionMedia((items) => items.filter((_, at) => at !== index))
                       }
+                      progress={uploadProgress}
                     />
                     <AttachmentBar
                       pending={correctionMedia}

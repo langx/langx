@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { UPLOAD_START, advanceUpload, percentOf, uploadFailed, uploadSent } from './uploadProgress'
+import {
+  UPLOAD_START,
+  advanceUpload,
+  percentOf,
+  thumbProgress,
+  uploadFailed,
+  uploadSent,
+} from './uploadProgress'
 
 describe('advanceUpload', () => {
   it('leaves "preparing" behind on the first byte', () => {
@@ -56,5 +63,18 @@ describe('percentOf', () => {
     expect(percentOf({ phase: 'uploading', fraction: 0.999 })).toBe(99)
     expect(percentOf({ phase: 'sending', fraction: 1 })).toBe(100)
     expect(percentOf(UPLOAD_START)).toBe(0)
+  })
+})
+
+describe('thumbProgress', () => {
+  it('draws nothing until something is being sent', () => {
+    expect(thumbProgress(0, null)).toBeNull()
+  })
+
+  it('fills the row left to right, one file at a time', () => {
+    const active = { index: 1, progress: { phase: 'uploading', fraction: 0.4 } as const }
+    expect(thumbProgress(0, active)).toEqual({ phase: 'sending', fraction: 1 })
+    expect(thumbProgress(1, active)).toBe(active.progress)
+    expect(thumbProgress(2, active)).toBeNull()
   })
 })
