@@ -33,7 +33,7 @@ export interface PendingAttachment {
  * the grounds that in a thread picking is sending; it does not any more, so
  * the two hold a file the same way and the row that shows it is one component.
  */
-function VideoThumb({ uri }: { uri: string }) {
+function VideoThumb({ uri, uploading }: { uri: string; uploading: boolean }) {
   const styles = useStyles()
   const { colors } = useTheme()
   /*
@@ -54,9 +54,17 @@ function VideoThumb({ uri }: { uri: string }) {
         contentFit="cover"
         nativeControls={false}
       />
-      <View style={styles.playBadge} pointerEvents="none">
-        <Feather name="play" size={12} color={colors.bg} />
-      </View>
+      {/*
+        Not while it is uploading. The badge sits in the corner of the same
+        64pt square the progress label is centred in, so the two shared it —
+        a play triangle showing through a scrim under a number that moved
+        around it. The upload is the only thing worth saying at that moment.
+      */}
+      {uploading ? null : (
+        <View style={styles.playBadge} pointerEvents="none">
+          <Feather name="play" size={12} color={colors.bg} />
+        </View>
+      )}
     </View>
   )
 }
@@ -87,7 +95,7 @@ function AttachmentThumb({
       {attachment.kind === 'image' ? (
         <Image source={{ uri: attachment.uri }} style={styles.thumb} contentFit="cover" />
       ) : attachment.kind === 'video' ? (
-        <VideoThumb uri={attachment.uri} />
+        <VideoThumb uri={attachment.uri} uploading={progress !== null} />
       ) : (
         // A recording has no picture, so the square says what it is instead of
         // showing a grey box that looks like a photo that failed to load.
@@ -113,14 +121,16 @@ function AttachmentThumb({
          */
         <View style={[styles.thumb, styles.uploading]} pointerEvents="none">
           {/*
-            The same three waits `PendingMediaBubble` names: reading the file
-            into memory has no number to give, so it says so rather than
-            sitting at 0%.
+            A number and nothing else, unlike `PendingMediaBubble`, which has a
+            bubble's width to spell it out in. Reading the file into memory has
+            no number to give and says so with an ellipsis rather than sitting
+            at a 0% it does not mean; once the bytes are up, `sending` is the
+            round-trip, and 100% is true for the whole of it.
           */}
-          <Text style={styles.uploadingText} numberOfLines={2}>
+          <Text style={styles.uploadingText} numberOfLines={1}>
             {progress.phase === 'reading'
-              ? t('composer.preparingUpload')
-              : t('composer.uploadingPercent', { percent: percentOf(progress) })}
+              ? t('composer.percentPending')
+              : t('composer.percentOnly', { percent: percentOf(progress) })}
           </Text>
         </View>
       )}
@@ -192,10 +202,27 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   uploading: {
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.55)',
+    bottom: 0,
     justifyContent: 'center',
+    // Spelled out rather than left to the static-position fallback, which is
+    // what `PendingMediaBubble`'s veil does and what keeps the scrim exactly
+    // over the square when the label inside it changes width.
+    left: 0,
     position: 'absolute',
+    right: 0,
+    top: 0,
   },
-  uploadingText: { color: '#fff', fontSize: 11, fontWeight: '700' },
+  /*
+   * Tabular figures, because the whole point is that it does not move. With
+   * proportional ones the centred string re-measures on every tick — 9%, 49%,
+   * 100% are three different widths — and the number visibly slides.
+   */
+  uploadingText: {
+    color: '#fff',
+    fontSize: 13,
+    fontVariant: ['tabular-nums'],
+    fontWeight: '700',
+  },
   previewRow: {
     alignItems: 'center',
     flexDirection: 'row',

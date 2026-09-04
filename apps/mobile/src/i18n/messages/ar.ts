@@ -54,6 +54,8 @@ export const ar: Localized<EnMessages> = {
     removeAttachment: 'إزالة المرفق',
     preparingUpload: 'جارٍ التحضير…',
     uploadingPercent: 'جارٍ الرفع… {percent}%',
+    percentOnly: '{percent}٪',
+    percentPending: '…',
     attachMedia: 'إرفاق صور أو مقاطع فيديو',
   },
 

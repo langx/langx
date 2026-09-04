@@ -3,6 +3,7 @@ import {
   UPLOAD_START,
   advanceUpload,
   percentOf,
+  sameDisplayedProgress,
   thumbProgress,
   uploadFailed,
   uploadSent,
@@ -76,5 +77,33 @@ describe('thumbProgress', () => {
     expect(thumbProgress(0, active)).toEqual({ phase: 'sending', fraction: 1 })
     expect(thumbProgress(1, active)).toBe(active.progress)
     expect(thumbProgress(2, active)).toBeNull()
+  })
+})
+
+describe('sameDisplayedProgress', () => {
+  it('is true while the whole percent has not moved', () => {
+    expect(
+      sameDisplayedProgress(
+        { phase: 'uploading', fraction: 0.491 },
+        { phase: 'uploading', fraction: 0.499 },
+      ),
+    ).toBe(true)
+  })
+
+  it('is false across a percent boundary', () => {
+    expect(
+      sameDisplayedProgress(
+        { phase: 'uploading', fraction: 0.499 },
+        { phase: 'uploading', fraction: 0.5 },
+      ),
+    ).toBe(false)
+  })
+
+  // The label reads the phase too: `sending` and a finished `uploading` are
+  // both 100%, and only one of them says the round-trip is still going.
+  it('is false when only the phase changed', () => {
+    expect(
+      sameDisplayedProgress({ phase: 'uploading', fraction: 1 }, { phase: 'sending', fraction: 1 }),
+    ).toBe(false)
   })
 })

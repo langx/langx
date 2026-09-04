@@ -52,6 +52,19 @@ export function percentOf(progress: UploadProgress): number {
 }
 
 /**
+ * Whether two progresses would draw the same thing.
+ *
+ * `XMLHttpRequest` fires a progress event per chunk — dozens a second on a
+ * video — and each one used to `setState` on the screen that owns the feed's
+ * `FlatList`, re-rendering every visible post to move a label that shows whole
+ * percents and often had not changed at all. The label is the only reader, so
+ * this is what "changed" means to it.
+ */
+export function sameDisplayedProgress(a: UploadProgress, b: UploadProgress): boolean {
+  return a.phase === b.phase && percentOf(a) === percentOf(b)
+}
+
+/**
  * Which of a composer's attachments is in flight, and how far along.
  *
  * The feed uploads its files one at a time on submit — a batch percentage

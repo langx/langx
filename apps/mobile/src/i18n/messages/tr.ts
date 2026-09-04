@@ -55,6 +55,8 @@ export const tr: Localized<EnMessages> = {
     removeAttachment: 'Eki kaldır',
     preparingUpload: 'Hazırlanıyor…',
     uploadingPercent: 'Yükleniyor… %{percent}',
+    percentOnly: '%{percent}',
+    percentPending: '…',
     attachMedia: 'Fotoğraf veya video ekle',
   },
 

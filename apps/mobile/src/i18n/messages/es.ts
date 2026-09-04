@@ -44,6 +44,8 @@ export const es: Localized<EnMessages> = {
     removeAttachment: 'Quitar el archivo adjunto',
     preparingUpload: 'Preparando…',
     uploadingPercent: 'Subiendo… {percent}%',
+    percentOnly: '{percent}%',
+    percentPending: '…',
     attachMedia: 'Adjuntar fotos o vídeos',
   },
 

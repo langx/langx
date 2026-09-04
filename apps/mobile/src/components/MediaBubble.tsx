@@ -355,6 +355,14 @@ export function VideoBubble({
       contentFit="contain"
       nativeControls={!preview}
       fullscreenOptions={{ enable: !preview }}
+      /*
+       * In preview mode the tap belongs to the `Pressable` wrapped around
+       * this, and a native video surface will happily swallow it — which is
+       * why a one-video post could not be opened while a video in a grid,
+       * whose tile has an overlay above the surface, always could. With no
+       * controls of its own there is nothing here that wants a touch.
+       */
+      pointerEvents={preview ? 'none' : 'auto'}
     />
   )
 
@@ -370,6 +378,19 @@ export function VideoBubble({
           style={styles.videoFill}
         >
           {view}
+          {/*
+            The glyph the grid tile has always had, and the single video never
+            did. A preview only plays while its post is on screen, so the rest
+            of the time it is a still frame with no controls and nothing to say
+            it is a video at all — and before the player is ready it is not
+            even a frame, just the box's fill. That is the whole of "the video
+            looks broken".
+          */}
+          {playing ? null : (
+            <View style={styles.tilePlay} pointerEvents="none">
+              <Text style={styles.tilePlayGlyph}>▶</Text>
+            </View>
+          )}
         </Pressable>
       ) : (
         view
