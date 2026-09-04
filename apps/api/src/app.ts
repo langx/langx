@@ -43,6 +43,10 @@ import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import { ConsoleEmailSender, type EmailSender } from './email/sender'
 import type { StorageProvider } from './storage/StorageProvider'
+import {
+  createAttachmentNormalizer,
+  type AttachmentNormalizer,
+} from './modules/media/transcodeAudio'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
 import type { AppServer } from './ws/types'
@@ -53,6 +57,13 @@ declare module 'fastify' {
     auth: Auth
     env: Env
     storage: StorageProvider
+    /**
+     * The attachments as they should be stored, which is only ever different
+     * for a voice note recorded in a browser — see `media/transcodeAudio`.
+     * Decorated rather than built per call so the ffmpeg path and the logger
+     * are settled once, and so a test can hand the insert paths their own.
+     */
+    normalizeAttachments: AttachmentNormalizer
     translation: TranslationProvider
     revenueCat: RevenueCatClient
     push: PushSender
@@ -139,6 +150,12 @@ export async function buildApp({
   app.decorate('auth', auth)
   app.decorate('env', env)
   app.decorate('storage', storage)
+  app.decorate(
+    'normalizeAttachments',
+    createAttachmentNormalizer(storage, env.FFMPEG_PATH, (err, message) =>
+      app.log.warn({ err }, message),
+    ),
+  )
   app.decorate('translation', translation)
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)

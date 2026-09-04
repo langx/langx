@@ -1045,6 +1045,45 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(result.message.media?.url).toBe(image.url)
     })
 
+    it('stores a browser voice note as what the normaliser made of it', async () => {
+      const { a, conversationId } = await pair('media-transcode')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+
+      /*
+       * The real one shells out to ffmpeg and reads the bucket back, neither
+       * of which belongs in this suite — what matters here is that the send
+       * stores the converted attachment rather than the picked one, in both
+       * the list and the field repeated beside it.
+       */
+      const webm = {
+        url: `${BUCKET}/messages/x/a.webm`,
+        contentType: 'audio/webm',
+        sizeBytes: 40_000,
+        durationSeconds: 7,
+      }
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, attachments: [webm] },
+        BUCKET,
+        () =>
+          Promise.resolve([
+            {
+              ...webm,
+              url: `${BUCKET}/messages/x/a.m4a`,
+              contentType: 'audio/mp4',
+              sizeBytes: 9_000,
+            },
+          ]),
+      )
+
+      expect(result.message.attachments?.[0]?.contentType).toBe('audio/mp4')
+      expect(result.message.media?.url).toBe(`${BUCKET}/messages/x/a.m4a`)
+      // Still a voice note: the kind came from the bytes before the swap, and
+      // AAC and Opus are both audio.
+      expect(result.message.type).toBe('audio')
+    })
+
     it('refuses a voice note sent alongside a photo', async () => {
       const { a, conversationId } = await pair('media-mixed')
       const { sendMediaMessage } = await import('../modules/chat/messages')

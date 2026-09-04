@@ -9,6 +9,30 @@ export interface AudioStatus {
   currentTime?: number
   didJustFinish?: boolean
   reasonForWaitingToPlay?: string | null
+  /** `'failed'` is AVFoundation giving up on the item. */
+  playbackState?: string
+  /** The message it gave up with, or `null`. */
+  error?: string | null
+}
+
+/**
+ * Whether this platform can decode this file at all.
+ *
+ * Not the server's allowlist, which is what this used to ask and why the
+ * branch below never once fired: `audio/webm` is *in* that list, because a
+ * browser's recorder has no other output and refusing the upload would mean
+ * refusing to record. iOS has no Opus or WebM decoder at any level, so the one
+ * case the check exists for was the one case it answered wrong.
+ *
+ * The server converts those notes now, so this is the fallback for the two
+ * cases conversion cannot reach: a note stored before it existed, and a host
+ * with no ffmpeg.
+ */
+export function canDecodeAudio(platform: string, contentType: string | undefined): boolean {
+  if (!contentType) return true
+  const type = contentType.split(';')[0]?.trim().toLowerCase() ?? ''
+  if (platform === 'ios' && (type === 'audio/webm' || type === 'audio/ogg')) return false
+  return isAudioContentType(type)
 }
 
 export interface AudioProgress {
@@ -40,6 +64,7 @@ const END_EPSILON_SECONDS = 0.25
 export function audioProgress(
   media: { contentType?: string | undefined; durationSeconds?: number | undefined },
   status: AudioStatus,
+  platform = 'ios',
 ): AudioProgress {
   const stored = usable(media.durationSeconds)
   const reported = usable(status.duration)
@@ -53,17 +78,26 @@ export function audioProgress(
     // With no total there is nothing to compare against, so the player's own
     // "it ended" is the only thing left to ask.
     canReplay: total > 0 ? elapsed >= total - END_EPSILON_SECONDS : Boolean(status.didJustFinish),
-    state: stateOf(media, status),
+    state: stateOf(media, status, platform),
   }
 }
 
 function stateOf(
   media: { contentType?: string | undefined },
   status: AudioStatus,
+  platform: string,
 ): AudioProgress['state'] {
-  // A type the platform will not decode — a WebM note opened on an iPhone is
-  // the case that used to present as a play button that did nothing at all.
-  if (media.contentType && !isAudioContentType(media.contentType)) return 'unsupported'
+  // A type this platform will not decode — a WebM note opened on an iPhone.
+  if (!canDecodeAudio(platform, media.contentType)) return 'unsupported'
+  /*
+   * The player's own verdict, and it has to be read before anything else.
+   * When AVFoundation fails an item it reports `isLoaded: false` *and*
+   * `isBuffering: true` — a failed item is neither likely to keep up nor
+   * holding any buffer, which is exactly what its "am I buffering" test asks.
+   * So the branch below read a dead player as a loading one and the bubble sat
+   * on `⋯` forever, which is the shape the original bug came back in.
+   */
+  if (status.playbackState === 'failed' || status.error) return 'error'
   if (status.playing) return 'playing'
   if (status.isLoaded === false) {
     // `reasonForWaitingToPlay` is how the player says "still fetching" as

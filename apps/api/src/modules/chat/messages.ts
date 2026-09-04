@@ -13,6 +13,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
+import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
@@ -252,6 +253,7 @@ export async function sendMediaMessage(
   senderId: string,
   input: SendMediaMessageInput,
   storagePublicBaseUrl: string | undefined,
+  normalizeAttachments?: AttachmentNormalizer,
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
   // The belt to the upload URL's braces. A URL signed a moment before the
@@ -266,8 +268,19 @@ export async function sendMediaMessage(
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
 
+  /*
+   * After the checks above and before the insert, which is the only correct
+   * place for it: a URL that is not ours must never be fetched by this server,
+   * and the row must not name a file that does not exist yet. In practice this
+   * changes exactly one thing — a voice note recorded in a browser becomes AAC
+   * so an iPhone can play it. Everything else comes back as it went in.
+   */
+  const attachments = normalizeAttachments
+    ? await normalizeAttachments(input.attachments)
+    : input.attachments
+
   // Non-empty by schema; the guard is for `noUncheckedIndexedAccess`.
-  const first = input.attachments[0]
+  const first = attachments[0]
 
   const message: Message = {
     _id: new ObjectId(),
@@ -275,7 +288,7 @@ export async function sendMediaMessage(
     senderId,
     type: kind,
     body: input.body ?? '',
-    attachments: input.attachments,
+    attachments,
     /*
      * Written twice, on purpose, and only for as long as binaries that predate
      * `attachments` are installed: they read `media` and would show an empty

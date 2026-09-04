@@ -659,7 +659,12 @@ the first of `attachments` so that a binary predating the list shows a photo
 rather than an empty bubble, and everything reads through `attachmentsOf`.
 Nothing is migrated — dropping `media` is a change of its own. Video is stored
 exactly as uploaded: no transcoding, and no thumbnail file, because the player
-already holds the first frame. Size is capped when the upload
+already holds the first frame. Audio has exactly one exception, and it is the
+only thing this server converts: a voice note recorded in a browser is
+WebM/Opus, which no iPhone can decode at any level, so `normalizeAttachments`
+fetches it, runs ffmpeg over it and stores AAC in MP4 instead — before the
+insert, so the row is right the first time anything reads it. Everything else
+comes back as it went in, and a host without ffmpeg stores the original. Size is capped when the upload
 URL is _signed_ rather than after the bytes have been paid for, and
 `PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
 rather than a paywall, since v1 offered both free. Corrections stay uncapped

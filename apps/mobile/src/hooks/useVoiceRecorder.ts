@@ -1,7 +1,7 @@
 import { AudioModule, RecordingPresets, useAudioRecorder, useAudioRecorderState } from 'expo-audio'
 import { Platform } from 'react-native'
 import { ensurePlaybackAudioMode, ensureRecordingAudioMode } from '../lib/audioSession'
-import { nativeRecordingType, webRecordingType } from '../lib/recordingFormat'
+import { nativeRecordingType, webRecorderMimeType, webRecordingType } from '../lib/recordingFormat'
 import { currentTranslate } from '../i18n/runtime'
 import { useCallback, useState } from 'react'
 import { MAX_AUDIO_SECONDS } from '@langx/shared'
@@ -31,8 +31,31 @@ function mediaRecorderSupports(type: string): boolean {
   return recorder?.isTypeSupported?.(type) ?? false
 }
 
+/**
+ * The preset, with the web asked for AAC where it can produce it.
+ *
+ * `HIGH_QUALITY` is AAC in MP4 on both phones and `audio/webm` on the web, and
+ * that last part is not a label — expo-audio hands it to `MediaRecorder`, so
+ * every note recorded in a browser really was Opus, which no iPhone can
+ * decode. The server converts them now; this shortens the path wherever the
+ * browser can simply record the right thing.
+ *
+ * Outside the hook because `useAudioRecorder` keys on the options object, and
+ * a fresh one per render restarts the recorder mid-recording.
+ */
+const WEB_MIME_TYPE = webRecorderMimeType(mediaRecorderSupports)
+const RECORDING_OPTIONS = {
+  ...RecordingPresets.HIGH_QUALITY,
+  web: {
+    ...RecordingPresets.HIGH_QUALITY.web,
+    // Spread rather than passed as `undefined`: the option is typed as present
+    // or absent, and leaving it absent is what keeps the preset's own value.
+    ...(WEB_MIME_TYPE ? { mimeType: WEB_MIME_TYPE } : {}),
+  },
+}
+
 export function useVoiceRecorder() {
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
+  const recorder = useAudioRecorder(RECORDING_OPTIONS)
   const state = useAudioRecorderState(recorder)
   const [error, setError] = useState<string | null>(null)
 

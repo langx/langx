@@ -207,7 +207,13 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
               quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
             )
           }
-          return sendMediaMessage(app.mongo.db, userId, input, app.env.STORAGE_PUBLIC_BASE_URL)
+          return sendMediaMessage(
+            app.mongo.db,
+            userId,
+            input,
+            app.env.STORAGE_PUBLIC_BASE_URL,
+            app.normalizeAttachments,
+          )
         })
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })

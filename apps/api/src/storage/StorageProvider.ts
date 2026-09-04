@@ -26,6 +26,17 @@ export interface StorageProviderWithPut extends StorageProvider {
   putObject(key: string, body: Uint8Array, contentType: string): Promise<string>
 
   /**
+   * Reads an object's bytes back into this process.
+   *
+   * The mirror of `putObject` and it exists for one caller: a voice note
+   * recorded in a browser arrives as WebM/Opus, which no iPhone can decode, so
+   * it is fetched, transcoded to AAC and written back. Everything else about
+   * this bucket is write-once — nothing else needs the bytes after the client
+   * has sent them.
+   */
+  getObject(key: string): Promise<Uint8Array>
+
+  /**
    * Removes an object. Used by the account purge — a deleted account's photos
    * have to leave the bucket, or "your data is permanently removed" is not
    * true and the URLs stay publicly fetchable forever.

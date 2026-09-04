@@ -17,7 +17,9 @@ means verification links and notification mail are printed to the log, no
 unsubscribe secret means those links are signed with the auth secret instead,
 no translation credentials means `/translate` returns a clear "not configured"
 error, no RevenueCat means everyone stays on the free tier, no push credentials
-means notifications are logged instead of sent. That is deliberate — a self-hoster should be able to
+means notifications are logged instead of sent, and no ffmpeg on the host means
+a voice note recorded in a browser is stored as recorded — WebM, which iPhones
+cannot play, and which the app then says it cannot play. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
 
 ## Quick start

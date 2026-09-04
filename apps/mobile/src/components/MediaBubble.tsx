@@ -2,7 +2,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Platform, Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { audioProgress } from '../lib/audioProgress'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
@@ -57,7 +57,9 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   /** A `play()` that threw; the status alone cannot report one. */
   const [failed, setFailed] = useState(false)
 
-  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status)
+  // `Platform.OS` passed in rather than read there, so `audioProgress` stays
+  // free of `react-native` and testable without a renderer.
+  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status, Platform.OS)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
   const tint = mine ? colors.accent : colors.text
