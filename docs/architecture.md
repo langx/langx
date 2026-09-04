@@ -204,8 +204,7 @@ Keys are prefixed `avatars/{userId}/`, `photos/{userId}/`,
 `messages/{conversationId}/` and `posts/{userId}/`. The feed's prefix is keyed
 by user rather than by post because the post does not exist when the URL is
 signed; every prefix is one the account purge can sweep. Attachments on posts
-and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with chat —
-one shape, one ceiling table, one abuse budget. The ceilings are per kind, in
+and corrections share `mediaSchema` with chat — one shape, one ceiling table. The ceilings are per kind, in
 `MEDIA_LIMITS`: 8MB for an image, 16MB and two minutes for a voice note, 64MB
 and sixty seconds for a video. A message or a post carries up to
 `MAX_ATTACHMENTS` of them and spends one unit of the budget however many that
@@ -659,10 +658,10 @@ rather than an empty bubble, and everything reads through `attachmentsOf`.
 Nothing is migrated — dropping `media` is a change of its own. Video is stored
 exactly as uploaded: no transcoding, and no thumbnail file, because the player
 already holds the first frame. Size is capped when the upload
-URL is _signed_ rather than after the bytes have been paid for, and
-`PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
-rather than a paywall, since v1 offered both free. Corrections stay uncapped
-because they cost nothing to store.
+URL is _signed_ rather than after the bytes have been paid for, and that
+per-file ceiling is now the only thing bounding storage:
+`PLAN_LIMITS.mediaPer24h` is `null` on every tier since 4 September 2026, so a
+message costs the same whether it carries something or not.
 
 Index `{ conversationId: 1, createdAt: -1 }` → cursor pagination, with `_id` as
 the tiebreak for a true keyset.

@@ -1123,21 +1123,23 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(reply.message.replyTo?.preview).toBe('🎬 Video')
     })
 
-    it('charges the media quota, which text and corrections do not', async () => {
+    it('charges nothing for an attachment, on any tier', async () => {
+      // Unlimited everywhere since 4 September 2026. `consumeQuota` returns
+      // early on a `null` limit and never touches the bucket, so this asserts
+      // the absence rather than a number — a limit reappearing would fail it.
       const { a, conversationId } = await pair('media-quota')
       const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')
       const { consumeQuota } = await import('../lib/quota')
 
       await sendTextMessage(handle.db, a.userId, { conversationId, body: 'free of charge' })
       await sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [image] }, BUCKET)
-      // The send path itself does not spend it — the socket handler does, so
-      // spend one here and check the bucket is the media one.
-      await consumeQuota(handle.db, a.userId, 'free', 'media')
+      const spent = await consumeQuota(handle.db, a.userId, 'free', 'media')
+      expect(spent.consumed).toBe(true)
 
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: a.userId })
-      expect(profile?.quota.media).toHaveLength(1)
+      expect(profile?.quota.media ?? []).toHaveLength(0)
       expect(profile?.quota.initiations).toHaveLength(1) // just the conversation they opened
     })
   })

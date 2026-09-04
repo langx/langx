@@ -712,23 +712,19 @@ describe('community feed', () => {
       expect(response.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
     })
 
-    it('spends the media quota only when there is an attachment', async () => {
-      // The same bucket chat uses: it is the same abuse surface, and a second
-      // one would be a free tier that is really twice the limit through two
-      // doors.
+    it('charges nothing for an attachment on a post either', async () => {
+      // The same bucket chat uses, and it is empty on every tier now — see
+      // `PLAN_LIMITS.mediaPer24h`. Kept rather than deleted so a limit coming
+      // back has to come back through a failing test.
       const author = await newUser('media-quota@example.com')
 
       await post(author, 'A sentence with nothing attached.')
-      const afterPlain = await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .findOne({ _id: author.userId })
-      expect(afterPlain?.quota.media ?? []).toHaveLength(0)
-
       await postWithMedia(author, 'A sentence with a photo.', image)
-      const afterMedia = await handle.db
+
+      const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: author.userId })
-      expect(afterMedia?.quota.media ?? []).toHaveLength(1)
+      expect(profile?.quota.media ?? []).toHaveLength(0)
     })
 
     it('carries a gallery back on the feed', async () => {
@@ -796,19 +792,19 @@ describe('community feed', () => {
       expect(response.statusCode).toBe(400)
     })
 
-    it('spends one media unit for a gallery, not one per file', async () => {
-      // The byte ceiling is per file and is the control that bounds storage;
-      // the daily count is a ceiling on abuse, and six photos are one post.
+    it('takes a gallery without charging for it', async () => {
+      // The per-file byte ceiling is the only thing bounding storage now.
       const author = await newUser('media-gallery-quota@example.com')
-      await postWithAttachments(author, 'Three of them.', [
+      const response = await postWithAttachments(author, 'Three of them.', [
         image,
         { ...image, url: 'https://cdn.example.com/posts/u/2.jpg' },
         { ...image, url: 'https://cdn.example.com/posts/u/3.jpg' },
       ])
+      expect(response.statusCode).toBe(201)
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: author.userId })
-      expect(profile?.quota.media ?? []).toHaveLength(1)
+      expect(profile?.quota.media ?? []).toHaveLength(0)
     })
 
     it('signs an upload URL only for a type we serve', async () => {
@@ -1039,25 +1035,31 @@ describe('community feed', () => {
       expect(asImage.statusCode).toBe(415)
     })
 
-    it('spends one media unit for a two-take answer', async () => {
-      // The ruling the half-speed decision left open. Two files, one unit —
-      // charging twice would make the optional slow take feel expensive and be
-      // skipped, which is the behaviour it exists to encourage.
+    it('takes a two-take answer without charging for it', async () => {
+      // The ruling the half-speed decision left open was two files, one unit.
+      // It is now two files and nothing, because attachments are unlimited on
+      // every tier — but the shape it protected still holds: an answer must
+      // never be more expensive for having recorded the slow take.
       const asker = await newUser('pron-quota-asker@example.com')
       const helper = await newUser('pron-quota-helper@example.com')
       const askId = (await ask(asker, 'anemone')).json<{ _id: string }>()._id
 
-      await answer(helper, askId, { media: take('fast'), slowMedia: take('slow') })
+      const response = await answer(helper, askId, {
+        media: take('fast'),
+        slowMedia: take('slow'),
+      })
+      expect(response.statusCode).toBe(201)
 
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: helper.userId })
-      expect(profile?.quota?.media).toHaveLength(1)
+      expect(profile?.quota?.media ?? []).toHaveLength(0)
     })
 
-    it('spends nothing when the second take is rejected', async () => {
-      // Assert-all-then-consume, pinned: a bad slow take must not burn a unit
-      // for an answer that never got written.
+    it('refuses the whole answer when the second take is rejected', async () => {
+      // Assert-all-then-write, pinned: a bad slow take must not leave half an
+      // answer behind. It used to be phrased as "must not burn a unit"; there
+      // is no unit any more, and the write is the thing that matters.
       const asker = await newUser('pron-quota2-asker@example.com')
       const helper = await newUser('pron-quota2-helper@example.com')
       const askId = (await ask(asker, 'quinoa')).json<{ _id: string }>()._id
@@ -1068,10 +1070,10 @@ describe('community feed', () => {
       })
       expect(response.statusCode).toBe(400)
 
-      const profile = await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .findOne({ _id: helper.userId })
-      expect(profile?.quota?.media ?? []).toHaveLength(0)
+      const answers = await handle.db
+        .collection(COLLECTIONS.pronunciationAnswers)
+        .countDocuments({ authorId: helper.userId })
+      expect(answers).toBe(0)
     })
 
     it('refuses answering your own request, and answering twice', async () => {

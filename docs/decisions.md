@@ -1743,21 +1743,17 @@ when the cap bites.
 The conversation query is sorted now, which it was not. Truncating an unsorted
 find would have kept whichever rows Mongo happened to return.
 
-## Feed attachments share chat's media quota, and its ceilings
+## Feed attachments share chat's ceilings
 
-A post and a correction can carry a photo or a voice note. They are the same
-shape as a chat attachment — one `mediaSchema`, one set of size limits — and
-they spend the same `mediaPer24h` bucket.
+A post and a correction can carry a photo, a video or a voice note. They are
+the same shape as a chat attachment — one `mediaSchema`, one set of size
+limits.
 
-The same bucket, not a second one, because it is the same abuse surface: bytes
-stored and served forever. `PLAN_LIMITS.mediaPer24h` is documented as a ceiling
-on abuse rather than a paywall, and a second bucket would mean a second limit
-key, a second quota kind, and a free tier that is really a hundred a day
-through two doors. The consequence is user-visible and belongs in the release
-note: **a heavy day in chat leaves fewer attachments for the feed.**
-
-The quota is spent only when there is an attachment, so a plain sentence still
-costs nothing.
+They shared a daily count as well, `mediaPer24h`, on the argument that it was
+one abuse surface and a second bucket would be a free tier that is really twice
+the limit through two doors. That count is `null` on every tier now — see _An
+attachment costs nothing, and a message is a message_ — so what they share is
+the per-file byte ceiling, which is the whole of the cost control.
 
 ## The attachment uploads on submit, not on pick
 
@@ -2810,3 +2806,28 @@ have crashed on an import. Now those phones are offered no update at all and
 keep what they shipped with, until a build carrying `expo-video` replaces it.
 That belongs in the release note either way — nobody sees video until they
 install a new binary.
+
+## An attachment costs nothing, and a message is a message
+
+`PLAN_LIMITS.mediaPer24h` was 50 on the free tier. It is `null` everywhere as
+of 4 September 2026, Behic's call, asked for in those words: a message is a
+message and whether it has something attached is not the user's problem.
+
+It never counted files. Six photos in one message spent one unit, the way a
+pronunciation answer's two takes always did, so the number people met was a
+number of _messages_ — which is exactly why the pricing page's line was wrong
+before it was rewritten: "50 photo, video or voice messages a day" reads as a
+cap on messages, and there has never been one. Replies and corrections are
+unlimited two lines above it on the same page.
+
+**What this gives up, written down because it is not free.** The count was the
+ceiling on abuse; the per-file byte ceiling is now the only thing bounding
+storage, and video raised that ceiling to sixty-four megabytes. One account can
+upload as many sixty-four megabyte videos as it has hours in the day. Nothing
+in the code stops it, and storage is billed by the byte.
+
+The field and the plumbing stay — `consumeQuota` returns early on a `null`
+limit and touches nothing, and the tests assert the absence rather than being
+deleted, so a limit coming back has to come back through a failing test. But
+reinstating one means taking back something people were told they had, which is
+a different kind of change from setting it in the first place.

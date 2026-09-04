@@ -47,13 +47,21 @@ export interface PlanLimits {
    */
   correctionsPer24h: Limit
   /**
-   * Image and voice messages per rolling 24 hours.
+   * Messages carrying a photo, a video or a voice note, per rolling 24 hours.
    *
-   * Capped on the free tier where corrections are not, and the difference is
-   * cost: a correction is text someone else benefits from, while an
-   * attachment is bytes we store and serve forever. Set high enough that a
-   * normal conversation never meets it — this is a ceiling on abuse, not a
-   * paywall, and v1 offered both features free.
+   * `null` on every tier since 4 September 2026 — Behic's call: a message is a
+   * message, and whether it has something attached is not the user's problem.
+   * The free tier's 50 went with it.
+   *
+   * It counted messages, never files: six photos in one message spent one
+   * unit, the way a pronunciation answer's two takes always did.
+   *
+   * The field stays, and so does the plumbing around it, because the cost it
+   * was answering has not gone anywhere: an attachment is bytes we store and
+   * serve forever, and video raised the per-file ceiling to
+   * `MAX_VIDEO_BYTES`. What bounds storage now is that ceiling alone. If a
+   * ceiling has to come back, it comes back here and nothing else changes —
+   * but it will be taking back something people were told they had.
    */
   mediaPer24h: Limit
   /**
@@ -164,7 +172,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     initiationsPer24h: 5,
     translationsPer24h: 20,
     correctionsPer24h: null,
-    mediaPer24h: 50,
+    mediaPer24h: null,
     advancedFilters: false,
     profileViewerIdentities: false,
     incognito: false,
