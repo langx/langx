@@ -1,6 +1,7 @@
 import { router } from 'expo-router'
 import { IntroCarousel } from '../../src/components/IntroCarousel'
 import { FLAG_KEYS, setBoolFlag } from '../../src/lib/localFlags'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The intro as the signed-out entry point plays it: once, before sign-in.
@@ -12,6 +13,7 @@ import { FLAG_KEYS, setBoolFlag } from '../../src/lib/localFlags'
  * there is one `index`, in `app/`.
  */
 export default function IntroScreen() {
+  useScreenInteractive()
   function finish(): void {
     // Not awaited: the flag is a convenience and a slow write must not hold the
     // user on a screen they have asked to leave. If it fails they see the intro

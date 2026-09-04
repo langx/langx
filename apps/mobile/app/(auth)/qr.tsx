@@ -10,6 +10,7 @@ import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Sign in here by approving it on a phone that is already signed in.
@@ -23,6 +24,7 @@ import { useT } from '../../src/i18n'
  * — a native module, so a new binary — and this ships over the air.
  */
 export default function QrSignInScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const [state, setState] = useState<'starting' | 'waiting' | 'expired' | 'error'>('starting')

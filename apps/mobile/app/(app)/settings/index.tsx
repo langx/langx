@@ -12,6 +12,7 @@ import { useT } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
 import { matchSettings, SETTINGS_SECTIONS } from '../../../src/lib/settingsRegistry'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 /**
  * Settings, as categories.
@@ -26,6 +27,7 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * in a hurry.
  */
 export default function SettingsScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { colors } = useTheme()

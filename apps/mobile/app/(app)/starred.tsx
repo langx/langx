@@ -8,6 +8,7 @@ import { dayLabel } from '../../src/lib/messageGroups'
 import { useLocale, useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Every starred message, newest first, across every conversation.
@@ -18,6 +19,7 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
  * quote uses; the star does not copy the message, it points at it.
  */
 export default function StarredScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const starred = useStarred()

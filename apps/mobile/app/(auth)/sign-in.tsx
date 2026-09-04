@@ -11,8 +11,10 @@ import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/li
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey, oauthReturnErrorKey } from '../../src/lib/errors'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function SignIn() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { start: browse } = useGuestBrowse()

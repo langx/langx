@@ -17,6 +17,7 @@ import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Our Kitchen — where the project is made, and everything around it: the people
@@ -28,6 +29,7 @@ import { useT } from '../../src/i18n'
  * every row goes through the in-app browser rather than switching away.
  */
 export default function KitchenScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

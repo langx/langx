@@ -56,6 +56,23 @@ interface Summary {
   unchanged: number
 }
 
+/**
+ * Whether the normaliser left this file alone.
+ *
+ * Not the URL by itself, which is what this asked first and got wrong on the
+ * only row it had to get right: a mislabelled note is already under a `.m4a`
+ * key, so the conversion lands on that same key and the URL does not move. The
+ * bytes in the bucket had been replaced and the row was left saying
+ * `audio/m4a`, 2,243 bytes, about a file that was now AAC and 2,031.
+ */
+function sameAttachment(next: Media, previous: Media | undefined): boolean {
+  return (
+    next.url === previous?.url &&
+    next.contentType === previous.contentType &&
+    next.sizeBytes === previous.sizeBytes
+  )
+}
+
 function argOf(flag: string): string | undefined {
   const at = process.argv.indexOf(flag)
   return at >= 0 ? process.argv[at + 1] : undefined
@@ -84,7 +101,7 @@ async function convertLists(
       continue
     }
     const converted = await normalize(attachments)
-    if (converted.every((item, index) => item.url === attachments[index]?.url)) {
+    if (converted.every((item, index) => sameAttachment(item, attachments[index]))) {
       summary.unchanged += 1
       console.log(`  already playable ${collection}/${String(row._id)}`)
       continue
@@ -123,7 +140,7 @@ async function convertAnswers(
       continue
     }
     const [media = takes[0], slowMedia] = await normalize(takes)
-    if (!media || media.url === takes[0]?.url) {
+    if (!media || sameAttachment(media, takes[0])) {
       summary.unchanged += 1
       continue
     }

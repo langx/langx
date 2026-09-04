@@ -6,6 +6,7 @@ import { useT } from '../../src/i18n'
 import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The legal links, on their own screen.
@@ -15,6 +16,7 @@ import { openExternal } from '../../src/lib/openExternal'
  * the way, and one row that says what is behind it is as findable as five.
  */
 export default function LegalScreen() {
+  useScreenInteractive()
   const t = useT()
 
   return (

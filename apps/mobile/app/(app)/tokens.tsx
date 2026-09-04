@@ -14,6 +14,7 @@ import { dayLabel } from '../../src/lib/messageGroups'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Where the tokens came from: the totals, the pool, and the ledger a day at a
@@ -24,6 +25,7 @@ import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
  * day — so the thing you can act on was below the thing you can only read.
  */
 export default function TokensScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

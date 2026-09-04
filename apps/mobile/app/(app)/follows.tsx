@@ -12,6 +12,7 @@ import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 type Tab = 'followers' | 'following'
 
@@ -23,6 +24,7 @@ type Tab = 'followers' | 'following'
  * for a URL nobody types.
  */
 export default function FollowsScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { userId, tab, from } = useLocalSearchParams<{ userId: string; tab?: Tab; from?: string }>()

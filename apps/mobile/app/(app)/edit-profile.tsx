@@ -38,6 +38,7 @@ import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, interestLabel, levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Splitting the form out of the loading state is not cosmetic.
@@ -56,6 +57,7 @@ import { genderLabel, interestLabel, levelShortLabel, useDisplayNames, useT } fr
 const DISCLOSABLE_GENDERS = ['female', 'male', 'other'] as const
 
 export default function EditProfileScreen() {
+  useScreenInteractive()
   const styles = useStyles()
 
   const me = useMe()

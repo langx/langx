@@ -11,6 +11,7 @@ import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Who liked one post or one correction.
@@ -23,6 +24,7 @@ import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
  * contradiction on screen; counting the rows removes it.
  */
 export default function LikesScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { targetType, targetId, from } = useLocalSearchParams<{

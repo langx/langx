@@ -13,6 +13,7 @@ import { sessionLabel } from '../../src/lib/sessionLabel'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useLocale, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Approve a sign-in somewhere else.
@@ -28,6 +29,7 @@ import { useLocale, useT } from '../../src/i18n'
  * button rather than a silent redirect after a scan.
  */
 export default function LinkDeviceScreen() {
+  useScreenInteractive()
   /*
    * Two names for one thing, and both are read. Better Auth's own
    * `verification_uri_complete` uses `user_code`; `code` is what a hand-typed

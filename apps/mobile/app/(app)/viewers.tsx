@@ -11,8 +11,10 @@ import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function ViewersScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

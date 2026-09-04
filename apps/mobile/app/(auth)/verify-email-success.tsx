@@ -2,6 +2,7 @@ import { Link, useLocalSearchParams } from 'expo-router'
 import { Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Landing screen after tapping the emailed verification link.
@@ -15,6 +16,7 @@ import { useT } from '../../src/i18n'
  * them at sign-in rather than leaving them on a bare browser tab.
  */
 export default function VerifyEmailSuccess() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { error } = useLocalSearchParams<{ error?: string }>()

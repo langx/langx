@@ -12,6 +12,7 @@ import {
   passwordPairReady,
 } from '../../src/lib/passwordForm'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Reached via the email link's redirect: the server validates the token
@@ -19,6 +20,7 @@ import { useT } from '../../src/i18n'
  * See api/routes/password.mjs's `requestPasswordReset`.
  */
 export default function ResetPassword() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { token, error: linkError } = useLocalSearchParams<{ token?: string; error?: string }>()

@@ -13,6 +13,7 @@ import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The link, big enough to point a camera at.
@@ -28,6 +29,7 @@ import { useT } from '../../src/i18n'
  * OTA update, for a picture.
  */
 export default function ShareProfileScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const me = useMe()

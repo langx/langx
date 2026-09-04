@@ -70,6 +70,11 @@ function worthSniffing(contentType: string): boolean {
  * Anything else — AAC in MP4, ADTS, MP3 — is left alone, so this says "no"
  * for every honest file and does not have to recognise them.
  */
+export function isMp4(bytes: Uint8Array): boolean {
+  // `ftyp` is the first box of every MP4, at offset 4 after its length.
+  return [0x66, 0x74, 0x79, 0x70].every((byte, index) => bytes[index + 4] === byte)
+}
+
 export function isUndecodableOnIos(bytes: Uint8Array): boolean {
   const ebml = [0x1a, 0x45, 0xdf, 0xa3]
   const ogg = [0x4f, 0x67, 0x67, 0x53]
@@ -164,6 +169,21 @@ export async function normalizeAttachments(
   return await Promise.all(attachments.map((media) => normalizeOne(deps, media)))
 }
 
+/**
+ * The row as the file would describe itself.
+ *
+ * Only ever reached for a note that plays, so this changes nothing anyone can
+ * hear — but a row saying `audio/m4a`, 2,243 bytes about a file that is AAC
+ * and 2,031 is how the last hour was spent, and a reader who trusts either
+ * number is being lied to. `sizeBytes` is the upload's claim, not a
+ * measurement, and the two part company whenever the file is rewritten.
+ */
+function described(media: Media, bytes: Uint8Array): Media {
+  const contentType = isMp4(bytes) ? TRANSCODE_TO : media.contentType
+  if (contentType === media.contentType && bytes.byteLength === media.sizeBytes) return media
+  return { ...media, contentType, sizeBytes: bytes.byteLength }
+}
+
 async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
   if (!worthSniffing(media.contentType)) return media
   const key = deps.keyOf(media.url)
@@ -173,7 +193,7 @@ async function normalizeOne(deps: TranscodeDeps, media: Media): Promise<Media> {
     const bytes = await deps.get(key)
     // The label may say anything; this is what the phone will actually be
     // handed. An honest `audio/mp4` and a mislabelled one both end here.
-    if (!isUndecodableOnIos(bytes)) return media
+    if (!isUndecodableOnIos(bytes)) return described(media, bytes)
 
     const converted = await deps.transcode(bytes)
     if (!converted) return media

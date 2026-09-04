@@ -6,8 +6,10 @@ import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { authClient } from '../../src/lib/auth-client'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function CheckEmail() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { email } = useLocalSearchParams<{ email: string }>()
