@@ -1,22 +1,21 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useEffect, useRef, type ReactNode } from 'react'
-import {
-  Animated,
-  PanResponder,
-  Platform,
-  Pressable,
-  Text,
-  View,
-  type AccessibilityActionEvent,
-} from 'react-native'
+import { useEffect, type ReactNode } from 'react'
+import { Platform, Pressable, Text, View, type AccessibilityActionEvent } from 'react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated'
 import { makeStyles } from '../lib/theme'
 import {
+  ACTION_LOCK_PX,
   ACTION_WIDTH_PX,
   drawerWidth,
   rowSwipeEnabled,
   rowTranslation,
   settleOffset,
-  shouldCaptureRowSwipe,
 } from '../lib/swipeAction'
 
 /**
@@ -59,11 +58,24 @@ interface SwipeableRowProps {
  * Which row is open lives in the list, not here: two rows open at once is two
  * sets of buttons and no way to tell which the next tap belongs to.
  *
- * RN's `PanResponder` and `Animated`, not gesture-handler and not Reanimated:
- * `react-native-gesture-handler` is not a dependency at all (only a transitive
- * peer of expo-router's drawer, unreachable under pnpm's isolated layout), and
- * `ui/Skeleton.tsx` records why pulling Reanimated in would put its worklets
- * bundle into the shipped web build.
+ * **gesture-handler and Reanimated, and it used to be `PanResponder` and
+ * `Animated`.** That was not a tuning problem. `translateX.setValue` ran on
+ * the JS thread for every finger move while the release spring ran with
+ * `useNativeDriver: true` — the drag was bridge-bound and the settle was not,
+ * so the row lagged behind the thumb and then caught up in one jump. The
+ * capture threshold made it worse: 12px had to be travelled before anything
+ * moved and nothing gave those 12px back, so the row started behind the finger
+ * and stayed there.
+ *
+ * Now the pan is recognised natively (`activeOffsetX`/`failOffsetY`, which is
+ * also what removes the dead zone), the offset is a shared value, and the
+ * settle is a spring on the UI thread. The geometry stays in
+ * `lib/swipeAction.ts`, still plain maths and still tested without a renderer —
+ * it is worklet-safe as written.
+ *
+ * The cost is real and was argued against here for a year: Reanimated's
+ * worklets bundle now enters the shipped web build. See `docs/decisions.md` →
+ * *The row swipe runs on the UI thread*.
  *
  * Off for a mouse. `rowSwipeEnabled` states why; the actions are still reachable
  * through `accessibilityActions` and through whatever menu the row itself
@@ -71,60 +83,61 @@ interface SwipeableRowProps {
  */
 export function SwipeableRow({ right, left, open, onOpenChange, children }: SwipeableRowProps) {
   const styles = useStyles()
-  const translateX = useRef(new Animated.Value(0)).current
-  /**
-   * Where the row is resting. Read during the gesture without re-rendering,
-   * and — unlike the old version, which only ever started from zero — added to
-   * `gesture.dx`, because `dx` is measured from the start of *this* drag and an
-   * already-open row would otherwise jump back to nearly closed on the second.
-   */
-  const restingAt = useRef(0)
+  /** Where the row is now, and where it is resting between gestures. */
+  const translateX = useSharedValue(0)
+  const restingAt = useSharedValue(0)
 
   const enabled = rowSwipeEnabled(Platform.OS, HAS_TOUCH)
   const rightWidth = drawerWidth(right.length)
   const leftWidth = drawerWidth(left.length)
 
-  /** Kept fresh for the responder, which is built once and closes over nothing else. */
-  const geometry = useRef({ rightWidth, leftWidth, onOpenChange })
-  geometry.current = { rightWidth, leftWidth, onOpenChange }
-
   const settle = (to: number): void => {
-    restingAt.current = to
-    Animated.spring(translateX, { toValue: to, useNativeDriver: true, bounciness: 0 }).start()
+    restingAt.value = to
+    // `bounciness: 0`'s successor: a drawer that overshoots its own width
+    // shows the row's background through the gap it opens.
+    translateX.value = withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true })
   }
 
   // The list closes this row by flipping `open`; the row is what animates.
   useEffect(() => {
-    // `settle` touches two refs and one `Animated.Value`, all stable, so it is
-    // deliberately not a dependency — listing it would rebuild this on every
-    // render and close the row mid-gesture.
-    if (!open && restingAt.current !== 0) settle(0)
+    // `settle` touches two shared values, both stable, so it is deliberately
+    // not a dependency — listing it would rebuild this on every render.
+    if (!open && restingAt.value !== 0) settle(0)
   }, [open])
 
-  const pan = useRef(
-    PanResponder.create({
-      // Never on start: that would swallow the tap that opens the thread and
-      // the long press that opens the menu.
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_event, gesture) =>
-        enabled && shouldCaptureRowSwipe(gesture.dx, gesture.dy),
-      // The list asking for the responder back mid-scroll wins, always.
-      onPanResponderTerminationRequest: () => true,
-      onPanResponderMove: (_event, gesture) => {
-        const { rightWidth: r, leftWidth: l } = geometry.current
-        translateX.setValue(rowTranslation(restingAt.current + gesture.dx, r, l))
-      },
-      onPanResponderRelease: (_event, gesture) => {
-        const { rightWidth: r, leftWidth: l, onOpenChange: notify } = geometry.current
-        const to = settleOffset(restingAt.current + gesture.dx, r, l)
-        settle(to)
-        notify(to !== 0)
-      },
-      onPanResponderTerminate: () => {
-        settle(restingAt.current)
-      },
-    }),
-  ).current
+  const pan = Gesture.Pan()
+    .enabled(enabled)
+    /*
+     * The capture rule, now native and now free of the dead zone.
+     * `activeOffsetX` is the same 12px `shouldCaptureRowSwipe` used, but
+     * gesture-handler reports `translationX` from where the gesture *began*
+     * rather than from where it was recognised — so those first pixels are
+     * given back and the row starts under the thumb rather than behind it.
+     *
+     * `failOffsetY` is the other half of what `HORIZONTAL_BIAS` was doing: a
+     * flick that has gone further down than across is the list scrolling, and
+     * failing rather than competing is what keeps the scroll smooth.
+     */
+    .activeOffsetX([-ACTION_LOCK_PX, ACTION_LOCK_PX])
+    .failOffsetY([-ACTION_LOCK_PX, ACTION_LOCK_PX])
+    .onUpdate((event) => {
+      translateX.value = rowTranslation(restingAt.value + event.translationX, rightWidth, leftWidth)
+    })
+    .onEnd((event) => {
+      const to = settleOffset(
+        restingAt.value + event.translationX,
+        rightWidth,
+        leftWidth,
+        event.velocityX,
+      )
+      restingAt.value = to
+      translateX.value = withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true })
+      // The list's state lives in React, so crossing back costs one hop —
+      // once, on release, rather than on every frame.
+      runOnJS(onOpenChange)(to !== 0)
+    })
+
+  const movingStyle = useAnimatedStyle(() => ({ transform: [{ translateX: translateX.value }] }))
 
   /**
    * The actions again, for anyone not using a gesture. Swipe-only actions are
@@ -159,14 +172,15 @@ export function SwipeableRow({ right, left, open, onOpenChange, children }: Swip
         glass, and the buttons sit visible on every row at rest with the row's
         own text printed on top of them.
       */}
-      <Animated.View
-        accessibilityActions={all.map((action) => ({ name: action.id, label: action.label }))}
-        onAccessibilityAction={onAccessibilityAction}
-        style={[styles.moving, { transform: [{ translateX }] }]}
-        {...pan.panHandlers}
-      >
-        {children}
-      </Animated.View>
+      <GestureDetector gesture={pan}>
+        <Animated.View
+          accessibilityActions={all.map((action) => ({ name: action.id, label: action.label }))}
+          onAccessibilityAction={onAccessibilityAction}
+          style={[styles.moving, movingStyle]}
+        >
+          {children}
+        </Animated.View>
+      </GestureDetector>
     </View>
   )
 }

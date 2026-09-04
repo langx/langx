@@ -1,15 +1,14 @@
 import Feather from '@expo/vector-icons/Feather'
 import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import {
-  Animated,
-  PanResponder,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native'
+import { Animated, Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import Reanimated, {
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
 import { diffCorrection } from '../lib/correctionDiff'
 import { attachmentsOf, type Media } from '@langx/shared'
@@ -17,7 +16,7 @@ import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
   SWIPE_ACTIVATE_PX,
-  shouldCaptureSwipe,
+  SWIPE_LOCK_PX,
   swipeReleased,
   swipeToReplyEnabled,
   swipeTranslation,
@@ -115,26 +114,27 @@ export const MessageBubble = memo(function MessageBubble({
    * half of making it work on a touchscreen: without it the browser claims the
    * horizontal pan for its own scrolling before the responder ever sees it.
    */
-  const translateX = useRef(new Animated.Value(0)).current
-  const responder = useMemo(() => {
-    const settle = () =>
-      Animated.spring(translateX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start()
-    return PanResponder.create({
-      // Never on start: that would swallow the tap and the long press.
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_event, gesture) => shouldCaptureSwipe(gesture.dx, gesture.dy),
-      onPanResponderMove: (_event, gesture) => translateX.setValue(swipeTranslation(gesture.dx)),
-      onPanResponderRelease: (_event, gesture) => {
-        if (swipeReleased(gesture.dx)) onReply(message)
-        settle()
-      },
-      onPanResponderTerminate: settle,
-      // The list asking for the responder back mid-scroll wins, always.
-      onPanResponderTerminationRequest: () => true,
+  const translateX = useSharedValue(0)
+  const pan = Gesture.Pan()
+    .enabled(swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
+    /*
+     * The same two thresholds `shouldCaptureSwipe` applied, now decided
+     * natively — which is what stops the drag from competing with the list's
+     * own scroll on the JS thread.
+     *
+     * A single positive number, not a pair: reply is a rightwards gesture
+     * only, and leaving the other direction unclaimed keeps it free for a
+     * later action, exactly as `shouldCaptureSwipe` said.
+     */
+    .activeOffsetX(SWIPE_LOCK_PX)
+    .failOffsetY([-SWIPE_LOCK_PX, SWIPE_LOCK_PX])
+    .onUpdate((event) => {
+      translateX.value = swipeTranslation(event.translationX)
     })
-  }, [message, onReply, translateX])
-
-  const pan = swipeToReplyEnabled(Platform.OS, HAS_TOUCH) ? responder.panHandlers : {}
+    .onEnd((event) => {
+      if (swipeReleased(event.translationX)) runOnJS(onReply)(message)
+      translateX.value = withSpring(0, { damping: 20, stiffness: 220, overshootClamping: true })
+    })
   const flash = highlighted ? styles.highlighted : null
 
   /**
@@ -145,9 +145,11 @@ export const MessageBubble = memo(function MessageBubble({
   /**
    * A bounce on arrival that a tap can replay.
    *
-   * RN's `Animated`, not Reanimated: Reanimated 4 is a dependency that nothing
-   * imports, and pulling it in for one spring would put its worklets bundle
-   * into the shipped web build. `Button` already does exactly this shape.
+   * RN's `Animated`, still, even though Reanimated is now imported a few lines
+   * up for the swipe. This is a one-shot spring on a property nothing else
+   * reads and no gesture drives — the case `Animated` handles perfectly well
+   * with `useNativeDriver` — and moving it would buy nothing. `Button` does
+   * exactly this shape.
    *
    * A tap is free to take: every `Pressable` in this file has only
    * `onLongPress`, and the shell's `PanResponder` returns false from
@@ -178,15 +180,23 @@ export const MessageBubble = memo(function MessageBubble({
 
   /**
    * The arrow WhatsApp shows under the bubble as it slides. Driven by the same
-   * `Animated.Value` as the bubble, so it fades in exactly as far as the
-   * gesture has travelled and reaches full strength at the point where letting
-   * go actually replies.
+   * value as the bubble, so it fades in exactly as far as the gesture has
+   * travelled and reaches full strength at the point where letting go actually
+   * replies.
+   *
+   * This is where the old version had a real bug rather than only a slow one:
+   * `translateX` was `setValue`-driven, spring-animated with
+   * `useNativeDriver: true`, *and* read here by a JS-side `interpolate` — the
+   * classic "this animated node has been moved to the native side" mismatch.
+   * The arrow simply stopped following after the first swipe. On the UI thread
+   * there is one value and one reader.
    */
-  const arrowOpacity = translateX.interpolate({
-    inputRange: [0, SWIPE_ACTIVATE_PX],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  })
+  const arrowStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(translateX.value, [0, SWIPE_ACTIVATE_PX], [0, 1], 'clamp'),
+  }))
+  const sliderStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }))
 
   /**
    * Every branch below is the same shell: the arrow underneath, the bubble on
@@ -194,12 +204,14 @@ export const MessageBubble = memo(function MessageBubble({
    */
   const shell = (children: ReactNode): ReactNode => (
     <View style={styles.row}>
-      <Animated.View style={[styles.arrow, { opacity: arrowOpacity }]} pointerEvents="none">
+      <Reanimated.View style={[styles.arrow, arrowStyle]} pointerEvents="none">
         <Feather name="corner-up-left" size={15} color={colors.textMuted} />
-      </Animated.View>
-      <Animated.View ref={box} style={styles.slider} {...pan}>
-        <Animated.View style={{ transform: [{ translateX }] }}>{children}</Animated.View>
-      </Animated.View>
+      </Reanimated.View>
+      <GestureDetector gesture={pan}>
+        <Animated.View ref={box} style={styles.slider}>
+          <Reanimated.View style={sliderStyle}>{children}</Reanimated.View>
+        </Animated.View>
+      </GestureDetector>
     </View>
   )
 

@@ -17,8 +17,10 @@ interface ButtonProps {
  * v3 tightens the rule: yellow appears exactly once per screen, on this.
  *
  * The press animates scale as well as colour. RN's `Animated` rather than
- * Reanimated, following `Skeleton`: a transform on the native driver is all
- * this needs, and Reanimated is imported by nothing else in the app.
+ * Reanimated, following `Skeleton`: a transform on the native driver is all a
+ * press needs. Reanimated *is* in the bundle now — `SwipeableRow` pulled it in
+ * for a gesture that tracks a finger — but that is a reason to leave this
+ * alone rather than to rewrite it.
  */
 export function Button({
   label,

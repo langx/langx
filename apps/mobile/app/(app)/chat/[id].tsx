@@ -746,6 +746,19 @@ export default function ChatScreen() {
   )
 
   const onReply = useCallback((message: MessageDto) => setReplyingTo(message), [])
+  /**
+   * Stable, for the same reason `onLongPress` below is.
+   *
+   * It was an inline arrow passed straight into a `memo`'d `MessageBubble`, so
+   * every bubble's props were unequal on every render — which meant every
+   * keystroke in the composer re-rendered every visible bubble, on the same JS
+   * thread the swipe gesture used to run on. `setViewing` is a setter and is
+   * already stable, so this needs no ref.
+   */
+  const onOpenMedia = useCallback(
+    (items: Media[], index: number) => setViewing({ items, index }),
+    [],
+  )
 
   /**
    * Centre the window on what it was opened for, once — not on every page it
@@ -1015,7 +1028,7 @@ export default function ChatScreen() {
                     onLongPress={onLongPress}
                     onReply={onReply}
                     onJumpTo={onJumpTo}
-                    onOpenMedia={(items, index) => setViewing({ items, index })}
+                    onOpenMedia={onOpenMedia}
                   />
                 )
               }

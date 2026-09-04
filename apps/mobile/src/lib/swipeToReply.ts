@@ -2,29 +2,17 @@
 export const SWIPE_ACTIVATE_PX = 56
 /** Where the bubble stops following the finger one-to-one. */
 export const SWIPE_MAX_PX = 80
-/** Movement below this is still undecided. */
+/**
+ * Movement below this is still undecided.
+ *
+ * Now read by `Gesture.Pan().activeOffsetX(...)` and `.failOffsetY(...)`
+ * rather than by a predicate here: the same two questions — has it gone far
+ * enough sideways, and has it gone too far down to still be a swipe — are
+ * asked natively, before the gesture is ever handed to JS.
+ */
 export const SWIPE_LOCK_PX = 10
 /** How much of the overshoot past `SWIPE_MAX_PX` still moves the bubble. */
 const RUBBER = 0.15
-/**
- * How much more horizontal than vertical the movement has to be.
- *
- * This ratio is the whole answer to "why does the thread not scroll any more".
- * A flick up a long thread is never perfectly vertical, and at 1.0 a slightly
- * diagonal one reads as a swipe and eats the scroll.
- */
-const HORIZONTAL_BIAS = 1.5
-
-/**
- * Is this a reply swipe, or the list scrolling?
- *
- * Rightwards only. One accepted sign keeps the test above meaningful and
- * leaves the other direction free for a later action.
- */
-export function shouldCaptureSwipe(dx: number, dy: number): boolean {
-  return dx > SWIPE_LOCK_PX && dx > Math.abs(dy) * HORIZONTAL_BIAS
-}
-
 /** Follows the finger, then resists — so the limit is felt, not hit. */
 export function swipeTranslation(dx: number): number {
   if (dx <= 0) return 0

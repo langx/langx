@@ -2781,6 +2781,51 @@ pictures — two recordings can, because that is the answer's two takes — sinc
 mixing kinds would make a message's type, and so its preview line and its
 notification, a coin toss between "photo" and "voice message".
 
+## The row swipe runs on the UI thread, and Reanimated is the price
+
+Three comments in this repo argued against exactly this change —
+`SwipeableRow`, `ui/Skeleton` and `MessageBubble` all said that Reanimated 4
+was a dependency nothing imported and that pulling it in would put its worklets
+bundle into the shipped web build. The reasoning was sound and the conclusion
+has been reversed, so all three are rewritten rather than left to contradict
+the code beside them.
+
+**What the JS-thread version actually cost.** `translateX.setValue(...)` ran on
+the JS thread for every finger move while the release spring ran with
+`useNativeDriver: true`. The drag was bridge-bound and the settle was not, so
+the row lagged the thumb and then caught up in one jump — on the same thread
+that re-renders the list, which on the chats tab is doing real work. The
+capture threshold compounded it: 12px had to be travelled before anything
+moved and nothing gave those pixels back, so the row started behind the finger
+and stayed there. `MessageBubble`'s swipe-to-reply had a fault the row did not:
+its `translateX` was `setValue`-driven, spring-animated on the native driver,
+**and** read by a JS-side `interpolate` for the reply arrow — the classic "this
+animated node has been moved to the native side" mismatch, which is why the
+arrow stopped following after the first swipe.
+
+**Velocity was the missing half.** `settleOffset` was distance-only: past 40%
+of the drawer it opened, and with two actions that drawer is 168px, so it asked
+for 67px of travel. A natural flick moves the thumb perhaps 60px before it
+lifts, and the row sprang shut on a gesture that felt decisive — which reads as
+the swipe failing, not as a threshold missed. It now takes the release velocity
+too, and that single argument answers most of the complaint. It is plain maths
+and stays tested without a renderer, as does all the other geometry: those
+functions are worklet-safe as written, which is why the move cost no logic.
+
+**What it costs.** The web bundle, measured with `expo export --platform web`
+before and after: 3,595,072 → 4,639,644 bytes raw, 915,242 → 1,116,102
+gzipped. About 200 KB gzipped, 22% more. That is the price the three comments
+were protecting against and it is real; what changed is the other side of the
+trade, once the gesture was understood to be janky rather than merely
+old-fashioned. `Skeleton` and `Button` keep RN's `Animated`: the bundle is paid
+for either way now, and a pulse and a press are not gestures that track a
+finger.
+
+**It needs a new binary.** `runtimeVersion` is `{ policy: 'fingerprint' }`, and
+`react-native-gesture-handler` is a native module, so installed apps are
+offered no update at all until a build carrying it ships — the same constraint
+`expo-video` had, and it belongs in the release note.
+
 ## A video is one file, and playing it needs a new build
 
 **No thumbnail.** The obvious build is a poster image uploaded beside the
