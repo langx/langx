@@ -1003,7 +1003,10 @@ only thing that matters is preserving store identity.
 
 ### Releasing
 
-- **Staged:** 5–10% staged rollout on Play, phased release on iOS.
+- **Play releases to everyone at once**, phased release on iOS. It was a 5–10%
+  staged rollout on Play until 4 September 2026 — see the release runbook for
+  what the stage was buying and what now has to be checked before the
+  submission instead of after it.
 - The existing keystore is imported into EAS; `versionCode`/`buildNumber` start
   **above 119**.
 - **App Privacy / Data Safety forms updated** — see
