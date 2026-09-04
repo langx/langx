@@ -24,6 +24,20 @@ export const ar: Localized<ServerMessages> = {
     ignore: 'إذا لم تطلب ذلك، يمكنك تجاهل هذا البريد.',
     orPaste: 'أو الصق هذا الرابط: {url}',
 
+    deleteSubject: 'أكّد رغبتك في حذف حساب LangX',
+    deletePreheader: 'خطوة أخيرة لحذف حساب LangX',
+    deleteBody:
+      'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك 30 يومًا لتغيير رأيك بتسجيل الدخول من جديد.',
+    deleteButton: 'حذف حسابي',
+    deleteText: 'أكّد حذف حساب LangX: {url}',
+    deleteInvalid: 'انتهت صلاحية هذا الرابط أو استُخدم من قبل.',
+    deleteConfirmTitle: 'حذف حساب LangX',
+    deleteConfirmBody: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال 30 يومًا يلغي ذلك.',
+    deleteConfirmButton: 'نعم، احذف حسابي',
+    deleteDoneTitle: 'حسابك مُجدول للحذف',
+    deleteDoneBody: 'سجّل الدخول خلال {days} يومًا ويعود كل شيء.',
+    deleteDonePurge: 'تُحذف البيانات في {date}.',
+
     verifySubject: 'تأكيد بريدك في LangX',
     verifyPreheader: 'أكّد بريدك لإكمال إعداد LangX',
     verifyBody: 'أكّد أن هذا هو عنوان بريدك لإكمال إعداد حسابك.',

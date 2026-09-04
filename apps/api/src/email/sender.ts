@@ -27,6 +27,16 @@ export interface EmailMessage {
 export interface EmailSender {
   send(message: EmailMessage): Promise<void>
   /**
+   * Whether a message sent through this will actually reach a mailbox.
+   *
+   * `false` on `ConsoleEmailSender`, where every mail goes to the log. Almost
+   * nothing needs to know — a verification mail that only reaches a log is a
+   * self-host running as documented — but account deletion does: it is the one
+   * flow that may not become unreachable because email is unconfigured, since
+   * App Store 5.1.1(v) requires it in-app. See `POST /me/delete/request`.
+   */
+  readonly deliverable: boolean
+  /**
    * Optional: only the campaign script sends enough at once to care, and a
    * sender that cannot batch is not broken, just slower. Resend takes 100 per
    * request, each item carrying its own recipient and headers — which it must,
@@ -39,6 +49,7 @@ export interface EmailSender {
 export const EMAIL_BATCH_SIZE = 100
 
 export class ResendEmailSender implements EmailSender {
+  readonly deliverable = true
   readonly #client: Resend
   readonly #from: string
 
@@ -89,6 +100,7 @@ export class ResendEmailSender implements EmailSender {
  * gone and created a Resend account.
  */
 export class ConsoleEmailSender implements EmailSender {
+  readonly deliverable = false
   readonly #logger: EmailSenderLogger
 
   constructor(logger: EmailSenderLogger) {

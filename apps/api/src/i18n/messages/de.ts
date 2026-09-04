@@ -22,6 +22,21 @@ export const de: Localized<ServerMessages> = {
     ignore: 'Wenn du das nicht angefordert hast, kannst du diese E-Mail ignorieren.',
     orPaste: 'Oder füge diesen Link ein: {url}',
 
+    deleteSubject: 'Bestätige die Löschung deines LangX-Kontos',
+    deletePreheader: 'Ein letzter Schritt, um dein LangX-Konto zu löschen',
+    deleteBody:
+      'Du hast die Löschung deines LangX-Kontos angefordert. Bestätige unten, dann wird es zur Löschung vorgemerkt — du hast 30 Tage, es dir anders zu überlegen: melde dich einfach wieder an.',
+    deleteButton: 'Mein Konto löschen',
+    deleteText: 'Bestätige die Löschung deines LangX-Kontos: {url}',
+    deleteInvalid: 'Dieser Link ist abgelaufen oder wurde bereits verwendet.',
+    deleteConfirmTitle: 'LangX-Konto löschen',
+    deleteConfirmBody:
+      'Damit wird dein Konto zur Löschung vorgemerkt. Eine Anmeldung binnen 30 Tagen bricht das ab.',
+    deleteConfirmButton: 'Ja, mein Konto löschen',
+    deleteDoneTitle: 'Dein Konto ist zur Löschung vorgemerkt',
+    deleteDoneBody: 'Melde dich binnen {days} Tagen an, und alles ist wieder da.',
+    deleteDonePurge: 'Die Daten werden am {date} entfernt.',
+
     verifySubject: 'Bestätige deine LangX-E-Mail',
     verifyPreheader: 'Bestätige deine E-Mail, um LangX fertig einzurichten',
     verifyBody: 'Bestätige, dass dies deine E-Mail-Adresse ist, um dein Konto fertig einzurichten.',

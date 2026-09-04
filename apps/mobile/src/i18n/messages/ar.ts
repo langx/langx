@@ -1091,6 +1091,11 @@ export const ar: Localized<EnMessages> = {
     deleteAccount: 'حذف الحساب',
     deleteAccountBody: 'تسجيل الدخول خلال {days} يومًا يلغي الحذف.',
     deleteConfirmTitle: 'حذف حسابك',
+    deleteExplain:
+      'سيُجدول ملفك الشخصي ورسائلك وصورك للحذف. سجّل الدخول خلال {days} يومًا ويعود كل شيء؛ بعد ذلك يزول نهائيًا.',
+    deleteTypeHandle: 'اكتب اسم المستخدم الخاص بك، {handle}، للمتابعة.',
+    deleteCheckEmail: 'تحقّق من {email}. الرابط في تلك الرسالة هو ما يبدأ الحذف.',
+    deleteNothingYet: 'لم يحدث شيء لحسابك بعد.',
     deleteConfirmBody:
       'يختفي حسابك فورًا. تُحفظ بياناتك {days} يومًا — وتسجيل الدخول خلال تلك المدة يلغي الحذف.',
     deleted: 'حُذف الحساب. تسجيل الدخول خلال {days} يومًا يلغي الحذف.',

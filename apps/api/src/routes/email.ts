@@ -1,9 +1,11 @@
-import { webUrl } from '@langx/shared'
+import { ACCOUNT_DELETION_GRACE_DAYS, webUrl } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { publicApiUrl, unsubscribeSecret } from '../env'
 import { localeFromHeader, translator } from '../i18n'
 import { removeDeletedContact } from '../modules/notifications/v1DeletedContacts'
 import { setEmailNotifications } from '../modules/profiles/profiles'
+import { requestDeletion } from '../modules/account/deletion'
+import { burnDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
 import {
   signUnsubscribeToken,
   unsubscribeUrl,
@@ -135,6 +137,84 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
           t('email.unsubscribedTitle'),
           `<p>${escapeHtml(t('email.unsubscribedBody'))}</p>
          <p style="margin-top:24px;"><a href="${webUrl('/settings')}" style="color:#888;font-size:13px;">${escapeHtml(t('email.managePrefs'))}</a></p>`,
+        ),
+      )
+    },
+  )
+
+  /**
+   * The link in the deletion email. **It only asks.**
+   *
+   * Same split, and the same reason, as `/email/unsubscribe` above: link
+   * previewers, spam scanners and "protect the click" proxies all follow a GET
+   * before any human sees the message, so a GET that deleted an account would
+   * be triggered by a mail client drawing a preview. The POST below is what
+   * acts, and nothing follows a POST by accident.
+   */
+  app.get('/account/delete/confirm', async (request, reply) => {
+    const locale = localeFromHeader(request.headers['accept-language'])
+    const t = translator(locale)
+    const token = (request.query as { token?: string }).token
+    const userId = await verifyDeletionToken(app.mongo.db, token)
+
+    if (!userId) {
+      return reply
+        .code(400)
+        .type('text/html; charset=utf-8')
+        .send(page(locale, 'LangX', `<p>${escapeHtml(t('email.deleteInvalid'))}</p>`))
+    }
+
+    return reply.type('text/html; charset=utf-8').send(
+      page(
+        locale,
+        t('email.deleteConfirmTitle'),
+        `<p>${escapeHtml(t('email.deleteConfirmBody'))}</p>
+         <form method="post" action="/account/delete/confirm?token=${encodeURIComponent(token ?? '')}">
+           <button type="submit" style="background:#c0392b;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;cursor:pointer;">
+             ${escapeHtml(t('email.deleteConfirmButton'))}
+           </button>
+         </form>`,
+      ),
+    )
+  })
+
+  /**
+   * And this is what acts. It starts the **existing** 30-day grace period
+   * rather than wiping anything: `requestDeletion` is the same function the
+   * in-app path has always called, so `DeletionBanner`, "Keep it" and the
+   * purge scheduler all still apply, and the promise in
+   * `docs/legal/promise-change.md` stays true.
+   */
+  app.post(
+    '/account/delete/confirm',
+    { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } },
+    async (request, reply) => {
+      const locale = localeFromHeader(request.headers['accept-language'])
+      const t = translator(locale)
+      const fromQuery = (request.query as { token?: string }).token
+      const fromBody = (request.body as { token?: string } | undefined)?.token
+      const token = fromQuery ?? fromBody
+      const userId = await verifyDeletionToken(app.mongo.db, token)
+
+      // Spent before the account is touched, and only once: a token that
+      // survived its own use would delete an account a second time for anyone
+      // the mail was later forwarded to.
+      if (!userId || !token || !(await burnDeletionToken(app.mongo.db, token))) {
+        return reply
+          .code(400)
+          .type('text/html; charset=utf-8')
+          .send(page(locale, 'LangX', `<p>${escapeHtml(t('email.deleteInvalid'))}</p>`))
+      }
+
+      const status = await requestDeletion(app.mongo.db, userId)
+      return reply.type('text/html; charset=utf-8').send(
+        page(
+          locale,
+          t('email.deleteDoneTitle'),
+          `<p>${escapeHtml(t('email.deleteDoneBody', { days: String(ACCOUNT_DELETION_GRACE_DAYS) }))}</p>
+           <p style="color:#888;font-size:13px;">${escapeHtml(
+             t('email.deleteDonePurge', { date: status.purgeAt?.slice(0, 10) ?? '' }),
+           )}</p>`,
         ),
       )
     },

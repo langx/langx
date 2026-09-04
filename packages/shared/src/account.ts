@@ -17,6 +17,46 @@ export const deleteAccountSchema = z.object({
 })
 export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>
 
+/**
+ * Step one of the two-step deletion: the viewer types their own handle, and
+ * the server sends the confirming link.
+ *
+ * The handle rather than a literal like `DELETE`: a word every user of every
+ * app types without reading is not a gate, and their own handle is the one
+ * string that cannot be typed by somebody who picked up the phone.
+ */
+export const deletionRequestSchema = z.object({
+  handle: z.string().trim().min(1).max(64),
+})
+export type DeletionRequestInput = z.infer<typeof deletionRequestSchema>
+
+/**
+ * What that request answers.
+ *
+ * `deliverable: false` means the deployment cannot send mail at all — no
+ * `RESEND_API_KEY`, so every message lands in a log — and the app must then
+ * fall back to the direct `POST /me/delete`. In-app deletion is an App Store
+ * requirement and cannot be allowed to depend on email being configured.
+ */
+export const deletionRequestResultSchema = z.object({
+  sent: z.boolean(),
+  deliverable: z.boolean(),
+})
+export type DeletionRequestResult = z.infer<typeof deletionRequestResultSchema>
+
+/**
+ * Whether what somebody typed is their own handle.
+ *
+ * Shared so the screen and the route agree exactly: case is not significant —
+ * handles are stored lowercase — and a leading `@` is what half the world
+ * types when asked for one. Anything else is a mismatch, deliberately: this is
+ * the last gate before an account ends.
+ */
+export function handlesMatch(typed: string, actual: string): boolean {
+  const clean = (value: string): string => value.trim().replace(/^@+/, '').toLowerCase()
+  return clean(typed).length > 0 && clean(typed) === clean(actual)
+}
+
 export const accountDeletionStatusSchema = z.object({
   pending: z.boolean(),
   deletedAt: z.string().nullable(),

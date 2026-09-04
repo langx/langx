@@ -935,6 +935,12 @@ export const fr: Localized<EnMessages> = {
     deleteAccount: 'Supprimer le compte',
     deleteAccountBody: 'Te reconnecter sous {days} jours annule la suppression.',
     deleteConfirmTitle: 'Supprimer ton compte',
+    deleteExplain:
+      'Votre profil, vos messages et vos photos seront programmés pour suppression. Reconnectez-vous sous {days} jours et tout revient ; ensuite, c’est définitif.',
+    deleteTypeHandle: 'Saisissez votre identifiant, {handle}, pour continuer.',
+    deleteCheckEmail:
+      'Consultez {email}. C’est le lien de ce message qui programme la suppression.',
+    deleteNothingYet: 'Rien n’est encore arrivé à votre compte.',
     deleteConfirmBody:
       'Ton compte disparaît immédiatement. Tes données sont conservées {days} jours — te reconnecter pendant ce délai annule la suppression.',
     deleted: 'Compte supprimé. Te reconnecter sous {days} jours annule la suppression.',

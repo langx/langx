@@ -958,9 +958,25 @@ only makes them legible.
 App Store guideline 5.1.1(v) requires in-app account deletion for any app that
 creates accounts; GDPR additionally requires access and portability.
 
-- `POST /me/delete` → typed confirmation, then a **soft delete**:
-  `profiles.deletedAt` is written, the user drops out of every list, sessions
-  are destroyed and push tokens deleted.
+- **Two steps, and neither is a dialog.** `settings/delete-account` asks the
+  viewer to type their own handle — not a literal like `DELETE`, which is a
+  word people type without reading — and `POST /me/delete/request` re-checks it
+  server-side (a client-side gate is a suggestion) before mailing a link.
+  Typing proves it is you at the keyboard; the link proves it is you at the
+  mailbox, so a borrowed unlocked phone gets through neither.
+- The token is **stored, not signed**, unlike the unsubscribe HMAC: it expires
+  in a day and is spendable once, so a forwarded mail cannot delete an account
+  twice. Only its hash is kept (`deletionTokens`, TTL-indexed).
+- `GET /account/delete/confirm` only **asks**; the `POST` acts. Previewers and
+  scanners follow a GET before any human sees the message.
+- That POST calls the same `requestDeletion` the direct path always did → a
+  **soft delete**: `profiles.deletedAt` is written, the user drops out of every
+  list, sessions are destroyed and push tokens deleted.
+- `POST /me/delete` still exists and is the fallback for a deployment with no
+  `RESEND_API_KEY`, where the sender is `ConsoleEmailSender` and a link would
+  only reach a log. The request endpoint answers `deliverable: false` in that
+  case rather than leaving the client to guess — 5.1.1(v) does not care that
+  email is unconfigured.
 - After 30 days a scheduler **hard-deletes**: `profiles`, Better Auth's
   `user`/`session`/`account`, `blocks`, `devices`, `profileViews`, the token
   ledger and aggregates. Messages the user _sent_ stay in place with their

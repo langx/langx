@@ -935,6 +935,11 @@ export const tr: Localized<EnMessages> = {
     deleteAccount: 'Hesabı sil',
     deleteAccountBody: '{days} gün içinde tekrar giriş yaparsan iptal olur.',
     deleteConfirmTitle: 'Hesabını sil',
+    deleteExplain:
+      'Profilin, mesajların ve fotoğrafların silinmek üzere sıraya alınır. {days} gün içinde tekrar giriş yaparsan her şey geri gelir; sonrasında kalıcı olarak gider.',
+    deleteTypeHandle: 'Devam etmek için kullanıcı adını yaz: {handle}',
+    deleteCheckEmail: '{email} adresine bak. Silmeyi başlatan şey o mesajdaki bağlantı.',
+    deleteNothingYet: 'Hesabına henüz bir şey olmadı.',
     deleteConfirmBody:
       'Hesabın anında kaybolur. Verilerin {days} gün saklanır — bu süre içinde tekrar giriş yaparsan silme iptal olur.',
     deleted: 'Hesap silindi. {days} gün içinde tekrar giriş yaparsan iptal olur.',

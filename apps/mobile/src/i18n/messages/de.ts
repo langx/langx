@@ -952,6 +952,11 @@ export const de: Localized<EnMessages> = {
     deleteAccount: 'Konto löschen',
     deleteAccountBody: 'Meldest du dich innerhalb von {days} Tagen wieder an, wird es abgebrochen.',
     deleteConfirmTitle: 'Dein Konto löschen',
+    deleteExplain:
+      'Dein Profil, deine Nachrichten und Fotos werden zur Löschung vorgemerkt. Melde dich binnen {days} Tagen wieder an, und alles ist zurück; danach ist es endgültig weg.',
+    deleteTypeHandle: 'Gib deinen Namen, {handle}, ein, um fortzufahren.',
+    deleteCheckEmail: 'Sieh in {email} nach. Der Link in dieser Nachricht startet die Löschung.',
+    deleteNothingYet: 'Mit deinem Konto ist noch nichts passiert.',
     deleteConfirmBody:
       'Dein Konto verschwindet sofort. Deine Daten werden {days} Tage aufbewahrt — meldest du dich in dieser Zeit wieder an, wird die Löschung abgebrochen.',
     deleted:

@@ -966,6 +966,11 @@ export const en = {
     deleteAccount: 'Delete account',
     deleteAccountBody: 'Signing back in within {days} days cancels it.',
     deleteConfirmTitle: 'Delete your account',
+    deleteExplain:
+      'Your profile, messages and photos are scheduled for deletion. Sign back in within {days} days and everything comes back; after that it is gone for good.',
+    deleteTypeHandle: 'Type your handle, {handle}, to continue.',
+    deleteCheckEmail: 'Check {email}. The link in that message is what schedules the deletion.',
+    deleteNothingYet: 'Nothing has happened to your account yet.',
     deleteConfirmBody:
       'Your account disappears immediately. Your data is kept for {days} days — signing back in during that window cancels the deletion.',
     deleted: 'Account deleted. Signing back in within {days} days cancels it.',

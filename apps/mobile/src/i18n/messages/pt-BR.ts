@@ -924,6 +924,11 @@ export const ptBR: Localized<EnMessages> = {
     deleteAccount: 'Excluir conta',
     deleteAccountBody: 'Entrar de novo em até {days} dias cancela.',
     deleteConfirmTitle: 'Excluir sua conta',
+    deleteExplain:
+      'Seu perfil, mensagens e fotos entram na fila de exclusão. Entre novamente em {days} dias e tudo volta; depois disso, some de vez.',
+    deleteTypeHandle: 'Digite seu usuário, {handle}, para continuar.',
+    deleteCheckEmail: 'Confira {email}. O link dessa mensagem é o que agenda a exclusão.',
+    deleteNothingYet: 'Nada aconteceu com sua conta ainda.',
     deleteConfirmBody:
       'Sua conta some na hora. Seus dados ficam guardados por {days} dias — entrar de novo nesse período cancela a exclusão.',
     deleted: 'Conta excluída. Entrar de novo em até {days} dias cancela.',

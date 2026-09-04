@@ -367,6 +367,18 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { lastViewedAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
   ],
 
+  [COLLECTIONS.deletionTokens]: [
+    // The lookup, and the "one live link per user" rule in one index: minting
+    // a second replaces the first rather than leaving both spendable.
+    { key: { tokenHash: 1 }, name: 'token_hash_unique', unique: true },
+    { key: { userId: 1 }, name: 'user_unique', unique: true },
+    // Mongo removes the row when `expiresAt` passes, so an unspent link stops
+    // existing without anything having to sweep for it. `verifyDeletionToken`
+    // still checks the date itself — a TTL monitor runs about once a minute,
+    // and "about" is not a security property.
+    { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
+  ],
+
   [COLLECTIONS.translationCache]: [
     { key: { sourceHash: 1, targetLang: 1 }, name: 'source_target_unique', unique: true },
     { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },

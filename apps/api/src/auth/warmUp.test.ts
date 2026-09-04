@@ -26,7 +26,7 @@ describe('Faz 1 — auth collection warm-up', () => {
       MONGODB_DB: 'langx_warmup_test',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
     })
-    const noopEmailSender: EmailSender = { send: () => Promise.resolve() }
+    const noopEmailSender: EmailSender = { deliverable: true, send: () => Promise.resolve() }
     const auth = await createAuth({
       env,
       db: handle.db,

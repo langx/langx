@@ -1,14 +1,7 @@
-import {
-  ACCOUNT_DELETION_GRACE_DAYS,
-  TIER_BADGES,
-  TIER_NAMES,
-  resolveNotificationPrefs,
-  tierUnlocking,
-} from '@langx/shared'
+import { TIER_BADGES, TIER_NAMES, resolveNotificationPrefs, tierUnlocking } from '@langx/shared'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import { api } from '../api/client'
 import {
   useEffectiveTier,
   useHasFeature,
@@ -57,7 +50,6 @@ export function useSettingsModel() {
 
   const me = useMe()
   const update = useUpdateProfile()
-  const [busy, setBusy] = useState(false)
   const iconSupported = isSupported()
   const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
     iconSupported ? currentAppIcon() : 'default',
@@ -194,34 +186,6 @@ export function useSettingsModel() {
     await Linking.openURL(url)
   }
 
-  async function confirmDelete(): Promise<void> {
-    const yes = await confirmAlert({
-      title: t('settings.deleteConfirmTitle'),
-      message: t('settings.deleteConfirmBody', { days: ACCOUNT_DELETION_GRACE_DAYS }),
-      confirmLabel: t('common.delete'),
-      destructive: true,
-    })
-    if (!yes) return
-
-    setBusy(true)
-    try {
-      await api.post('/me/delete', { confirm: 'DELETE' })
-      await syncIconBadge(0)
-      await authClient.signOut()
-      router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
-      // The grace period is the one thing worth repeating here: the dialog said
-      // it before the account existed in this state, and this is the first
-      // moment it is true.
-      showToast(t('settings.deleted', { days: ACCOUNT_DELETION_GRACE_DAYS }))
-    } catch (error) {
-      // The API's message is English and written for a developer.
-      void error
-      await showAlert(t('settings.deleteFailed'), t('common.retry'))
-    } finally {
-      setBusy(false)
-    }
-  }
-
   async function signOut(): Promise<void> {
     const yes = await confirmAlert({
       title: t('settings.signOut'),
@@ -258,7 +222,6 @@ export function useSettingsModel() {
     theme,
     profile,
     update,
-    busy,
     iconSupported,
     appIcon,
     appIcons: APP_ICONS,
@@ -283,7 +246,6 @@ export function useSettingsModel() {
     locationBusy,
     toggleLocation,
     exportData,
-    confirmDelete,
     signOut,
     replayIntro,
   }

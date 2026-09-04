@@ -930,6 +930,11 @@ export const es: Localized<EnMessages> = {
     deleteAccount: 'Eliminar cuenta',
     deleteAccountBody: 'Si vuelves a entrar en {days} días, se cancela.',
     deleteConfirmTitle: 'Eliminar tu cuenta',
+    deleteExplain:
+      'Tu perfil, mensajes y fotos quedan programados para eliminarse. Si vuelves a iniciar sesión en {days} días, todo regresa; después se pierde para siempre.',
+    deleteTypeHandle: 'Escribe tu usuario, {handle}, para continuar.',
+    deleteCheckEmail: 'Revisa {email}. El enlace de ese mensaje es lo que programa la eliminación.',
+    deleteNothingYet: 'Todavía no ha pasado nada con tu cuenta.',
     deleteConfirmBody:
       'Tu cuenta desaparece de inmediato. Tus datos se guardan {days} días: si vuelves a entrar durante ese tiempo, se cancela la eliminación.',
     deleted: 'Cuenta eliminada. Si vuelves a entrar en {days} días, se cancela.',

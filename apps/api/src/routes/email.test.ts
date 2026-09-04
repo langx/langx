@@ -8,6 +8,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { signUnsubscribeToken } from '../email/unsubscribeToken'
+import { mintDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -233,5 +234,61 @@ describe('unsubscribing from a link in an email', () => {
       url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
     })
     expect(again.statusCode).toBe(200)
+  })
+
+  /**
+   * The same GET/POST split, on the link that ends an account — where getting
+   * it wrong costs rather more than an unwanted unsubscribe.
+   */
+  describe('the delete-account link', () => {
+    async function deletedAt(id: string): Promise<Date | undefined> {
+      const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+      return profile?.deletedAt
+    }
+
+    it('asks on GET, and a link previewer cannot delete anything', async () => {
+      const token = await mintDeletionToken(handle.db, userId)
+      const response = await app.inject({
+        method: 'GET',
+        url: `/account/delete/confirm?token=${token}`,
+      })
+
+      expect(response.statusCode).toBe(200)
+      expect(response.body).toContain('<form method="post"')
+      expect(await deletedAt(userId)).toBeUndefined()
+      // And the token is still spendable afterwards: asking must not burn it.
+      expect(await verifyDeletionToken(handle.db, token)).toBe(userId)
+    })
+
+    it('schedules the deletion on POST', async () => {
+      const token = await mintDeletionToken(handle.db, userId)
+      const response = await app.inject({
+        method: 'POST',
+        url: `/account/delete/confirm?token=${token}`,
+      })
+
+      expect(response.statusCode).toBe(200)
+      expect(await deletedAt(userId)).toBeInstanceOf(Date)
+    })
+
+    it('refuses the same link twice', async () => {
+      const token = await mintDeletionToken(handle.db, userId)
+      await app.inject({ method: 'POST', url: `/account/delete/confirm?token=${token}` })
+
+      const again = await app.inject({
+        method: 'POST',
+        url: `/account/delete/confirm?token=${token}`,
+      })
+      expect(again.statusCode).toBe(400)
+    })
+
+    it('refuses a token nobody minted', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/account/delete/confirm?token=made-up',
+      })
+      expect(response.statusCode).toBe(400)
+      expect(await deletedAt(userId)).toBeUndefined()
+    })
   })
 })
