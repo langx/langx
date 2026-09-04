@@ -829,6 +829,7 @@ export const fr: Localized<EnMessages> = {
     photoAdded: 'Photo ajoutée.',
     photoUpdated: 'Photo mise à jour.',
     saved: 'Profil enregistré.',
+    savingLanguages: 'Enregistrement des langues…',
     saveFailed: 'Impossible d’enregistrer ton profil.',
     storageUnconfigured: 'Le stockage des photos n’est pas encore configuré sur ce serveur.',
     uploadRetry: 'Impossible d’envoyer cette image. Réessaie.',

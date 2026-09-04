@@ -828,6 +828,7 @@ export const tr: Localized<EnMessages> = {
     photoAdded: 'Fotoğraf eklendi.',
     photoUpdated: 'Fotoğraf güncellendi.',
     saved: 'Profil kaydedildi.',
+    savingLanguages: 'Diller kaydediliyor…',
     saveFailed: 'Profilin kaydedilemedi.',
     storageUnconfigured: 'Bu sunucuda fotoğraf depolama henüz ayarlanmamış.',
     uploadRetry: 'Bu görsel yüklenemedi. Tekrar dene.',

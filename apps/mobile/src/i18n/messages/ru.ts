@@ -939,6 +939,7 @@ export const ru: Localized<EnMessages> = {
     photoAdded: 'Фото добавлено.',
     photoUpdated: 'Фото обновлено.',
     saved: 'Профиль сохранён.',
+    savingLanguages: 'Сохранение языков…',
     saveFailed: 'Не удалось сохранить профиль.',
     storageUnconfigured: 'Хранилище фото на этом сервере ещё не настроено.',
     uploadRetry: 'Не удалось загрузить это изображение. Попробуй ещё раз.',

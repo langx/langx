@@ -71,6 +71,22 @@ export function LanguagePicker({
 
   const atLimit = max !== undefined && selected.length >= max
 
+  /**
+   * Adding clears the search; removing does not.
+   *
+   * The asymmetry is the point. After picking a language the query has done
+   * its job, and leaving it behind meant the next pick started against a list
+   * still filtered by the last one — with the keyboard up, hiding the field
+   * that would have explained why. Removing is the case the pinning above was
+   * built for: chosen rows stay visible through any query, so deselecting from
+   * a filtered list is deliberate and must not throw the query away.
+   */
+  function toggle(code: string): void {
+    const adding = !selected.includes(code)
+    onToggle(code)
+    if (adding) setQuery('')
+  }
+
   return (
     <View style={styles.root}>
       <View style={styles.searchRow}>
@@ -82,7 +98,18 @@ export function LanguagePicker({
           placeholderTextColor={colors.textFaint}
           style={styles.search}
           autoCorrect={false}
+          returnKeyType="search"
         />
+        {query ? (
+          <Pressable
+            accessibilityLabel={t('common.clear')}
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => setQuery('')}
+          >
+            <Feather name="x" size={17} color={colors.textFaint} />
+          </Pressable>
+        ) : null}
       </View>
       <FlatList
         data={results}
@@ -96,7 +123,7 @@ export function LanguagePicker({
           return (
             <Pressable
               disabled={isDisabled}
-              onPress={() => onToggle(item.code)}
+              onPress={() => toggle(item.code)}
               style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
             >
               <View style={styles.rowText}>

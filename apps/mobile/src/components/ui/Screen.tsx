@@ -43,6 +43,18 @@ export function Screen({
         style={[styles.root, padding]}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        /*
+         * The keyboard insets the scroll view and the focused field is kept
+         * above it. Without this a `TextInput` low on a scrolling screen is
+         * simply covered as you type into it — the language picker's search
+         * box was, which made adding a second language look broken.
+         *
+         * iOS-only by design, and a no-op elsewhere: Android resizes the
+         * window for the keyboard already (`adjustResize`), so doing this
+         * there would inset twice. `useKeyboardInset` exists for the screens
+         * that do not scroll and documents the same split.
+         */
+        automaticallyAdjustKeyboardInsets
         {...(onRefresh
           ? { refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
           : {})}

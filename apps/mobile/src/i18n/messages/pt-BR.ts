@@ -816,6 +816,7 @@ export const ptBR: Localized<EnMessages> = {
     photoAdded: 'Foto adicionada.',
     photoUpdated: 'Foto atualizada.',
     saved: 'Perfil salvo.',
+    savingLanguages: 'Salvando idiomas…',
     saveFailed: 'Não deu para salvar seu perfil.',
     storageUnconfigured: 'O armazenamento de fotos ainda não está configurado neste servidor.',
     uploadRetry: 'Não deu para enviar essa imagem. Tente de novo.',

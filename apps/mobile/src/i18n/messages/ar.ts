@@ -982,6 +982,7 @@ export const ar: Localized<EnMessages> = {
     photoAdded: 'أُضيفت الصورة.',
     photoUpdated: 'حُدّثت الصورة.',
     saved: 'حُفظ الملف.',
+    savingLanguages: 'جارٍ حفظ اللغات…',
     saveFailed: 'تعذّر حفظ ملفك.',
     storageUnconfigured: 'لم يُضبط تخزين الصور على هذا الخادم بعد.',
     uploadRetry: 'تعذّر رفع تلك الصورة. حاول مرة أخرى.',

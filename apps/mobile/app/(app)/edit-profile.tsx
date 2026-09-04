@@ -1,7 +1,6 @@
 import {
   BIO_MAX_LENGTH,
   LANGUAGE_LEVELS,
-  LEVEL_SHORT_LABELS,
   DISPLAY_NAME_MAX_LENGTH,
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
@@ -9,7 +8,7 @@ import {
   getLanguage,
   type LanguageLevel,
 } from '@langx/shared'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
   useAddPhoto,
@@ -24,6 +23,7 @@ import {
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { ApiRequestError } from '../../src/api/client'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
+import { useDebounced } from '../../src/hooks/useDebounced'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -104,9 +104,64 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [editing, setEditing] = useState<'none' | 'native' | 'learning'>('none')
   const tier = useEffectiveTier()
   const [error, setError] = useState<string | undefined>()
+  const [languageStatus, setLanguageStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
 
   const photos = profile.photos ?? []
   const learningCodes = learning.map((l) => l.code)
+
+  /*
+   * Languages save themselves; the Save button is for the fields you type.
+   *
+   * Picking a language and picking a level are complete decisions on their own
+   * — there is nothing half-entered about either — so making them wait behind
+   * a button meant the most common edit on this screen was also the easiest to
+   * lose by leaving. The typed fields keep the button because a half-written
+   * bio is exactly what an autosave should not publish.
+   *
+   * Debounced and driven off a signature rather than called from each handler,
+   * so that stepping A1 → A2 → B1 is one request rather than three racing ones
+   * whose replies would each overwrite `keys.me` in whatever order they landed.
+   */
+  const languageSignature = `${native.join(',')}|${learning
+    .map((l) => `${l.code}:${l.level}`)
+    .join(',')}`
+  const settledLanguages = useDebounced(languageSignature, 600)
+  const savedLanguages = useRef(languageSignature)
+
+  useEffect(() => {
+    // Still settling: another tap landed after this one was scheduled.
+    if (settledLanguages !== languageSignature) return
+    if (settledLanguages === savedLanguages.current) return
+
+    // The same two rules `save()` applies. An intermediate state on the way to
+    // a valid one — the moment after removing your only native language — is
+    // not an error worth shouting about, so it just does not save.
+    if (native.some((code) => learningCodes.includes(code))) {
+      setError(t('editProfile.bothNativeAndLearning'))
+      return
+    }
+    if (native.length === 0 || learning.length === 0) return
+
+    setError(undefined)
+    savedLanguages.current = settledLanguages
+    setLanguageStatus('saving')
+    update
+      .mutateAsync({
+        nativeLanguages: native.map((code) => ({ code })),
+        learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
+      })
+      .then(() => setLanguageStatus('saved'))
+      .catch((caught: unknown) => {
+        // Forget what was saved so the next edit retries this one with it.
+        void caught
+        savedLanguages.current = ''
+        setLanguageStatus('idle')
+        setError(t('editProfile.saveFailed'))
+      })
+    // `update` and `t` are deliberately absent: both change identity on a
+    // render this effect can itself cause, and depending on them would make a
+    // save schedule the next one.
+  }, [settledLanguages, languageSignature, native, learning, learningCodes])
 
   async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
     const picked = await pickImageAsset({ allowsEditing: true })
@@ -347,9 +402,24 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         </Pressable>
       </View>
 
+      {languageStatus === 'idle' ? null : (
+        <Text style={styles.languageStatus}>
+          {t(languageStatus === 'saving' ? 'editProfile.savingLanguages' : 'editProfile.saved')}
+        </Text>
+      )}
+
       {editing !== 'none' ? (
         <View style={styles.pickerPane}>
           <LanguagePicker
+            /*
+             * Remounts when the mode changes, which drops the search query.
+             * Without it React reuses the instance — same element type, same
+             * position — and a query typed while picking a native language was
+             * still filtering the list when the learning picker opened, with
+             * nothing on screen to say why most languages were missing.
+             * `(onboarding)/languages.tsx` keys its two pickers for this.
+             */
+            key={editing}
             selected={editing === 'native' ? native : learningCodes}
             disabledCodes={editing === 'native' ? learningCodes : native}
             /* The viewer's own tier, not a fixed number: an over-limit profile
@@ -385,7 +455,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                     {LANGUAGE_LEVELS.map((level) => (
                       <Chip
                         key={level}
-                        label={LEVEL_SHORT_LABELS[level]}
+                        label={levelShortLabel(t, level)}
                         selected={entry.level === level}
                         onPress={() =>
                           setLearning((current) =>
@@ -497,6 +567,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   editChipActive: { borderColor: colors.accent },
   editChipLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   editChipLabelActive: { color: colors.accent },
+  languageStatus: {
+    ...font.label,
+    color: colors.textMuted,
+    fontWeight: '400',
+    marginTop: spacing.xs,
+  },
   pickerPane: { height: 320, marginTop: spacing.md },
   levels: {
     borderTopColor: colors.border,

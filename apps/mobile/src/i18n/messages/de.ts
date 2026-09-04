@@ -844,6 +844,7 @@ export const de: Localized<EnMessages> = {
     photoAdded: 'Foto hinzugefügt.',
     photoUpdated: 'Foto aktualisiert.',
     saved: 'Profil gespeichert.',
+    savingLanguages: 'Sprachen werden gespeichert…',
     saveFailed: 'Dein Profil konnte nicht gespeichert werden.',
     storageUnconfigured: 'Der Fotospeicher ist auf diesem Server noch nicht eingerichtet.',
     uploadRetry: 'Dieses Bild konnte nicht hochgeladen werden. Versuch es noch einmal.',

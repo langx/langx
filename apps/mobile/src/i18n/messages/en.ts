@@ -867,6 +867,7 @@ export const en = {
     photoAdded: 'Photo added.',
     photoUpdated: 'Photo updated.',
     saved: 'Profile saved.',
+    savingLanguages: 'Saving languages…',
     saveFailed: 'Could not save your profile.',
     storageUnconfigured: 'Photo storage is not configured on this server yet.',
     uploadRetry: 'Could not upload that image. Try again.',
