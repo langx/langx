@@ -1528,6 +1528,15 @@ export const ar: Localized<EnMessages> = {
     legal:
       'تتجدد الاشتراكات تلقائيًا حتى إلغائها. يمكنك الإلغاء في أي وقت من حساب Apple أو Google — يوقف الإلغاء التجديد التالي ويُبقي الوصول حتى نهاية الفترة الحالية.',
     offer: '{period} — {price}',
+    freeTrial: {
+      zero: '{count} يوم مجانًا',
+      one: 'يوم واحد مجانًا',
+      two: 'يومان مجانًا',
+      few: '{count} أيام مجانًا',
+      many: '{count} يومًا مجانًا',
+      other: '{count} يوم مجانًا',
+    },
+    saving: 'وفّر {percent}%',
     terms: 'الشروط',
     privacy: 'الخصوصية',
     monthly: 'شهري',

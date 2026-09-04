@@ -1349,6 +1349,8 @@ export const en = {
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
     offer: '{period} — {price}',
+    freeTrial: { one: '{count} day free', other: '{count} days free' },
+    saving: 'Save {percent}%',
     terms: 'Terms',
     privacy: 'Privacy',
     monthly: 'Monthly',

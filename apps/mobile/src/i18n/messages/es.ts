@@ -1302,6 +1302,8 @@ export const es: Localized<EnMessages> = {
     legal:
       'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras desde tu cuenta de Apple o Google: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
     offer: '{period} — {price}',
+    freeTrial: { one: '{count} día gratis', other: '{count} días gratis' },
+    saving: 'Ahorra un {percent}%',
     terms: 'Términos',
     privacy: 'Privacidad',
     monthly: 'Mensual',

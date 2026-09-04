@@ -34,17 +34,29 @@ export function isFakePurchasesEnabled(): boolean {
  * built here — they come from the store, formatted and in the user's currency,
  * which is a store-compliance requirement and not a preference.
  *
- * `Record<keyof typeof PACKAGES, string>` means a package added to the shared
+ * `Record<keyof typeof PACKAGES, number>` means a package added to the shared
  * table without a price here stops this file compiling, matching how the
  * paywall's own copy tables are enforced.
+ *
+ * The amount is the number and the `TEST` label is added once below, rather
+ * than both being typed out: the paywall now computes the yearly saving from
+ * these numbers, so a string and a number that could disagree would let the
+ * harness advertise a discount its own prices do not contain.
  */
-const TEST_PRICES: Record<keyof typeof PACKAGES, string> = {
-  $rc_monthly: 'TEST $4.99',
-  $rc_annual: 'TEST $39.99',
-  $rc_lifetime: 'TEST $99.99',
-  pro_plus_monthly: 'TEST $9.99',
-  pro_plus_yearly: 'TEST $79.99',
+const TEST_AMOUNTS: Record<keyof typeof PACKAGES, number> = {
+  $rc_monthly: 4.99,
+  $rc_annual: 39.99,
+  $rc_lifetime: 99.99,
+  pro_plus_monthly: 9.99,
+  pro_plus_yearly: 79.99,
 }
+
+/**
+ * Both yearly packages carry a seven-day free trial in App Store Connect, so
+ * the harness carries one too. A screen exercised without the trial row is not
+ * the screen that ships.
+ */
+const TEST_FREE_TRIAL_DAYS = 7
 
 /**
  * Every package the app sells, in `PACKAGES` order.
@@ -63,8 +75,10 @@ export function fakeOffers(): PurchaseOffer[] {
   return ids.map((id) => ({
     id,
     tier: PACKAGES[id].tier,
-    priceString: TEST_PRICES[id],
+    priceString: `TEST $${TEST_AMOUNTS[id].toFixed(2)}`,
     period: PACKAGES[id].period,
+    price: TEST_AMOUNTS[id],
+    freeTrialDays: PACKAGES[id].period === 'yearly' ? TEST_FREE_TRIAL_DAYS : null,
   }))
 }
 

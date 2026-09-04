@@ -22,6 +22,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
+import { yearlySavingPercent } from '../../src/lib/planSaving'
 import {
   getOffers,
   isPurchasesAvailable,
@@ -376,6 +377,10 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
   const offerDisabled = (offer: PurchaseOffer) =>
     isCurrent || (busyOfferId !== null && busyOfferId !== offer.id)
 
+  // What the yearly saving is measured against. Taken from the offers the store
+  // just returned rather than from a constant — `planSaving.ts` says why.
+  const monthly = tierOffers.find((offer) => offer.period === 'monthly')
+
   return (
     <View style={[styles.section, tier === 'pro_plus' && styles.sectionLast]}>
       {tier === 'pro' ? (
@@ -406,28 +411,70 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
         </Text>
       ) : tier === 'pro' ? (
         orderedOffers.map((offer, index) => (
-          <Button
-            key={offer.id}
-            label={offerLabel(offer)}
-            variant={offer === featured ? 'primary' : 'secondary'}
-            loading={busyOfferId === offer.id}
-            disabled={offerDisabled(offer)}
-            onPress={() => onBuy(offer.id)}
-            style={index === 0 ? styles.offerFirst : styles.offerNext}
-          />
+          <View key={offer.id} style={index === 0 ? styles.offerFirst : styles.offerNext}>
+            <OfferCaption offer={offer} monthly={monthly} />
+            <Button
+              label={offerLabel(offer)}
+              variant={offer === featured ? 'primary' : 'secondary'}
+              loading={busyOfferId === offer.id}
+              disabled={offerDisabled(offer)}
+              onPress={() => onBuy(offer.id)}
+            />
+          </View>
         ))
       ) : (
         orderedOffers.map((offer, index) => (
-          <PlusOfferButton
-            key={offer.id}
-            label={offerLabel(offer)}
-            loading={busyOfferId === offer.id}
-            disabled={offerDisabled(offer)}
-            onPress={() => void onBuy(offer.id)}
-            first={index === 0}
-          />
+          <View key={offer.id} style={index === 0 ? styles.offerFirst : styles.offerNext}>
+            <OfferCaption offer={offer} monthly={monthly} />
+            <PlusOfferButton
+              label={offerLabel(offer)}
+              loading={busyOfferId === offer.id}
+              disabled={offerDisabled(offer)}
+              onPress={() => void onBuy(offer.id)}
+            />
+          </View>
         ))
       )}
+    </View>
+  )
+}
+
+/**
+ * What the store is giving away, above the price rather than beside it.
+ *
+ * The trial comes first because it is the decision on offer: someone weighing a
+ * year of anything wants to know they can leave before they want to know what
+ * it costs. Neither line is written unless the store actually returned it — a
+ * storefront with no trial, or a tier whose monthly price is missing, renders
+ * the button on its own rather than a claim nobody can check.
+ *
+ * The two sit apart by `gap` rather than by a separator character, because a
+ * punctuation mark between two sentences is a user-facing string, and those
+ * live in `messages/en.ts` with the other seven locales typed against them.
+ */
+function OfferCaption({
+  offer,
+  monthly,
+}: {
+  offer: PurchaseOffer
+  monthly: PurchaseOffer | undefined
+}) {
+  const styles = useStyles()
+  const t = useT()
+
+  const saving = yearlySavingPercent(offer, monthly)
+  if (offer.freeTrialDays === null && saving === null) return null
+
+  return (
+    <View style={styles.caption}>
+      {offer.freeTrialDays !== null ? (
+        <Text style={styles.captionTrial}>
+          {t('paywall.freeTrial', { count: offer.freeTrialDays })}
+        </Text>
+      ) : null}
+      {saving !== null ? (
+        <Text style={styles.captionSaving}>{t('paywall.saving', { percent: saving })}</Text>
+      ) : null}
     </View>
   )
 }
@@ -443,13 +490,11 @@ function PlusOfferButton({
   label,
   loading,
   disabled,
-  first,
   onPress,
 }: {
   label: string
   loading: boolean
   disabled: boolean
-  first: boolean
   onPress: () => void
 }) {
   const { colors } = useTheme()
@@ -464,7 +509,6 @@ function PlusOfferButton({
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.plusOffer,
-        first ? styles.offerFirst : styles.offerNext,
         isDisabled && styles.plusOfferDisabled,
         pressed && !isDisabled && styles.plusOfferPressed,
       ]}
@@ -542,6 +586,17 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
 
   offerFirst: { marginTop: spacing.lg },
   offerNext: { marginTop: spacing.sm },
+  // Inset to the pill's own curve, so the line reads as belonging to the button
+  // under it rather than to the benefit list above.
+  caption: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: 6,
+    paddingHorizontal: spacing.md,
+  },
+  captionTrial: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  captionSaving: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   offersLoading: { marginTop: spacing.lg },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
 
