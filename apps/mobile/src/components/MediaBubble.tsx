@@ -2,7 +2,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Platform, Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { audioProgress } from '../lib/audioProgress'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
@@ -57,7 +57,9 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   /** A `play()` that threw; the status alone cannot report one. */
   const [failed, setFailed] = useState(false)
 
-  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status)
+  // `Platform.OS` passed in rather than read there, so `audioProgress` stays
+  // free of `react-native` and testable without a renderer.
+  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status, Platform.OS)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
   const tint = mine ? colors.accent : colors.text
@@ -355,6 +357,14 @@ export function VideoBubble({
       contentFit="contain"
       nativeControls={!preview}
       fullscreenOptions={{ enable: !preview }}
+      /*
+       * In preview mode the tap belongs to the `Pressable` wrapped around
+       * this, and a native video surface will happily swallow it — which is
+       * why a one-video post could not be opened while a video in a grid,
+       * whose tile has an overlay above the surface, always could. With no
+       * controls of its own there is nothing here that wants a touch.
+       */
+      pointerEvents={preview ? 'none' : 'auto'}
     />
   )
 
@@ -370,6 +380,19 @@ export function VideoBubble({
           style={styles.videoFill}
         >
           {view}
+          {/*
+            The glyph the grid tile has always had, and the single video never
+            did. A preview only plays while its post is on screen, so the rest
+            of the time it is a still frame with no controls and nothing to say
+            it is a video at all — and before the player is ready it is not
+            even a frame, just the box's fill. That is the whole of "the video
+            looks broken".
+          */}
+          {playing ? null : (
+            <View style={styles.tilePlay} pointerEvents="none">
+              <Text style={styles.tilePlayGlyph}>▶</Text>
+            </View>
+          )}
         </Pressable>
       ) : (
         view

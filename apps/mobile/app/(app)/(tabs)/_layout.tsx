@@ -41,12 +41,22 @@ export default function TabsLayout() {
   // Spread rather than passed as `undefined`: the option is typed as present
   // or absent, and an explicit `undefined` is neither.
   const badge = unreadBadge(unread.data)
-  // The icon follows the same number as the tab, from the same query — see
-  // `syncIconBadge`. Whatever changes the total invalidates that query, so
-  // this runs on read, on a new message and on archive alike.
+  /*
+   * The icon follows the same number as the tab, from the same query — see
+   * `syncIconBadge`. Whatever changes the total invalidates that query, so
+   * this runs on read, on a new message and on archive alike.
+   *
+   * Keyed on `dataUpdatedAt` as well as the number, because the icon has a
+   * second writer: a push notification carries its own `badge` and sets it
+   * without asking this app. When the phone comes back and the refetch
+   * returns the same total it already held, the value is unchanged, this
+   * effect would not run, and the number the push left behind would stand —
+   * which is how the icon, the tab and the row ended up disagreeing. The
+   * timestamp moves on every fetch, so a confirmed total always overwrites.
+   */
   useEffect(() => {
     if (unread.data !== undefined) void syncIconBadge(unread.data)
-  }, [unread.data])
+  }, [unread.data, unread.dataUpdatedAt])
 
   return (
     <Tabs

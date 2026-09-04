@@ -59,15 +59,22 @@ export interface PhotoViewerProps {
 }
 
 /**
- * The opened video, playing straight away.
+ * The opened video, playing straight away and again after that.
  *
  * Autoplay here and not in the bubble: opening one is the request to watch it,
  * where scrolling past one is not.
+ *
+ * Looping, like the feed's inline preview and unlike a thread's. What gets
+ * posted here is a few seconds of a word being said, and this is the only
+ * place it has sound — so the thing somebody opened it for is the thing they
+ * will want twice. Ending on a frozen last frame with a scrub bar under it
+ * makes them find the start again by hand. The controls are still there for
+ * anyone who wants to stop.
  */
 function FullscreenVideo({ url }: { url: string }) {
   const styles = useStyles()
   const player = useVideoPlayer(url, (instance) => {
-    instance.loop = false
+    instance.loop = true
     instance.play()
   })
 

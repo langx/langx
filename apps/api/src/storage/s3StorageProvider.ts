@@ -1,4 +1,9 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import type { StorageProviderWithPut, UploadUrl } from './StorageProvider'
 
@@ -67,6 +72,12 @@ export class S3StorageProvider implements StorageProviderWithPut {
       }),
     )
     return `${this.#publicBaseUrl}/${key}`
+  }
+
+  async getObject(key: string): Promise<Uint8Array> {
+    const result = await this.#client.send(new GetObjectCommand({ Bucket: this.#bucket, Key: key }))
+    if (!result.Body) throw new Error(`Object ${key} has no body`)
+    return await result.Body.transformToByteArray()
   }
 
   async deleteObject(key: string): Promise<void> {

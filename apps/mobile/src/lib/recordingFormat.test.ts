@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { isAllowedAudioType, nativeRecordingType, webRecordingType } from './recordingFormat'
+import {
+  isAllowedAudioType,
+  nativeRecordingType,
+  webRecorderMimeType,
+  webRecordingType,
+} from './recordingFormat'
 
 describe('recordingFormat', () => {
   it('calls a native recording what it is: AAC in MP4', () => {
@@ -28,5 +33,24 @@ describe('recordingFormat', () => {
   it('knows what the allowlist holds', () => {
     expect(isAllowedAudioType('audio/m4a')).toBe(true)
     expect(isAllowedAudioType('audio/flac')).toBe(false)
+  })
+})
+
+describe('webRecorderMimeType', () => {
+  it('asks for AAC with the codec spelled out where the browser can', () => {
+    expect(webRecorderMimeType(() => true)).toBe('audio/mp4;codecs=mp4a.40.2')
+  })
+
+  // `isTypeSupported('audio/mp4')` is true in browsers that then produce
+  // something else, so the codec is asked for first and this is the fallback.
+  it('falls back to bare audio/mp4', () => {
+    expect(webRecorderMimeType((type) => type === 'audio/mp4')).toBe('audio/mp4')
+  })
+
+  // Firefox. Undefined leaves the preset's own `audio/webm` in place, which is
+  // what the server converts.
+  it('asks for nothing when the browser can produce neither', () => {
+    expect(webRecorderMimeType(() => false)).toBeUndefined()
+    expect(webRecorderMimeType()).toBeUndefined()
   })
 })

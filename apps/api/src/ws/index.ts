@@ -207,7 +207,13 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
               quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
             )
           }
-          return sendMediaMessage(app.mongo.db, userId, input, app.env.STORAGE_PUBLIC_BASE_URL)
+          return sendMediaMessage(
+            app.mongo.db,
+            userId,
+            input,
+            app.env.STORAGE_PUBLIC_BASE_URL,
+            app.normalizeAttachments,
+          )
         })
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
@@ -301,14 +307,23 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .parseAsync(payload)
         .then(({ conversationId }) =>
           markConversationRead(app.mongo.db, userId, conversationId).then((conversation) => {
+            const readAt = new Date().toISOString()
             const otherId = conversation.participants.find((id) => id !== userId)
             if (otherId) {
               io.to(userRoom(otherId)).emit('conversation:read', {
                 conversationId,
                 readBy: userId,
-                readAt: new Date().toISOString(),
+                readAt,
               })
             }
+            // The reader's own room as well — a second device of theirs is
+            // holding an unread badge for messages that have just been read.
+            // See the REST twin in `routes/messages.ts`.
+            io.to(userRoom(userId)).emit('conversation:read', {
+              conversationId,
+              readBy: userId,
+              readAt,
+            })
             ack?.({ ok: true })
           }),
         )

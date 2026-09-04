@@ -51,6 +51,8 @@ export const ru: Localized<EnMessages> = {
     removeAttachment: 'Убрать вложение',
     preparingUpload: 'Подготовка…',
     uploadingPercent: 'Загрузка… {percent}%',
+    percentOnly: '{percent}%',
+    percentPending: '…',
     attachMedia: 'Прикрепить фото или видео',
   },
 

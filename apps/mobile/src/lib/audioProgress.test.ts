@@ -45,6 +45,34 @@ describe('audioProgress', () => {
     expect(audioProgress({ contentType: 'audio/m4a' }, { isLoaded: true }).state).toBe('idle')
   })
 
+  /*
+   * The real case, and the one the check used to get wrong: `audio/webm` is on
+   * the server's allowlist because a browser's recorder produces nothing else,
+   * so asking that list whether an iPhone can play it always answered yes.
+   */
+  it('is per platform: a browser note plays everywhere but on iOS', () => {
+    const webm = { contentType: 'audio/webm' }
+    expect(audioProgress(webm, { isLoaded: true }, 'ios').state).toBe('unsupported')
+    expect(audioProgress(webm, { isLoaded: true }, 'android').state).toBe('idle')
+    expect(audioProgress(webm, { isLoaded: true }, 'web').state).toBe('idle')
+  })
+
+  /*
+   * A failed item reports `isBuffering: true` on iOS — it is neither likely to
+   * keep up nor holding a buffer — so without reading the verdict itself the
+   * bubble showed a spinner for a note that was never going to play.
+   */
+  it('believes the player when it says the item failed', () => {
+    expect(
+      audioProgress({}, { isLoaded: false, isBuffering: true, playbackState: 'failed' }).state,
+    ).toBe('error')
+    expect(audioProgress({}, { isLoaded: false, isBuffering: true, error: 'boom' }).state).toBe(
+      'error',
+    )
+    // And a failure outranks playing, which cannot both be true.
+    expect(audioProgress({}, { playing: true, playbackState: 'failed' }).state).toBe('error')
+  })
+
   it('reports playing over everything but an undecodable type', () => {
     expect(audioProgress({}, { isLoaded: true, playing: true }).state).toBe('playing')
   })

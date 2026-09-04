@@ -22,15 +22,21 @@ describe('resumedFromBackground', () => {
 
 describe('invalidateMissedEvents', () => {
   /**
-   * Every list tab and every cache under a thread, including a jump window —
-   * and nothing else. `me` is the control: a resume is not a reason to ask
-   * who the user is again.
+   * Every list tab, the unread total the tab badge and the app icon read, and
+   * every cache under a thread including a jump window — and nothing else.
+   * `me` is the control: a resume is not a reason to ask who the user is
+   * again.
    */
   it('marks every chat list and thread cache stale, and nothing else', async () => {
     const client = new QueryClient()
     const stale = [
       ['conversations', 'all'],
-      ['conversations', 'unread'],
+      ['conversations', 'unreplied'],
+      // The tab badge and the app icon read this one, and it is the whole
+      // reason the three counts used to disagree after a resume. It looked
+      // covered here for a while by `['conversations', 'unread']` — which is
+      // not a key anything writes: the filters are all/unreplied/archived.
+      ['unread'],
       ['messages', 'c1'],
       ['messages', 'c1', 'around', 'm9'],
     ]

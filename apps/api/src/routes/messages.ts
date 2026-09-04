@@ -181,14 +181,24 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post('/conversations/:id/read', { preHandler: requireMember }, async (request, reply) => {
     const { id } = request.params as { id: string }
     const conversation = await markConversationRead(app.mongo.db, request.userId, id)
+    const readAt = new Date().toISOString()
     const otherId = conversation.participants.find((p) => p !== request.userId)
     if (otherId) {
       app.io.to(`user:${otherId}`).emit('conversation:read', {
         conversationId: id,
         readBy: request.userId,
-        readAt: new Date().toISOString(),
+        readAt,
       })
     }
+    // And the reader's own other devices, which is not the same thing: the
+    // sender learns their message was read, while a second phone learns its
+    // unread total just dropped. Without this it keeps a badge for messages
+    // that were read on another device until something else invalidates.
+    app.io.to(`user:${request.userId}`).emit('conversation:read', {
+      conversationId: id,
+      readBy: request.userId,
+      readAt,
+    })
     return reply.send(conversation)
   })
 }

@@ -495,6 +495,14 @@ export default function PostScreen() {
                   <MediaGallery
                     items={attachmentsOf(item)}
                     onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                    /*
+                     * As the post's own attachment above, and for the same
+                     * reason: in `controls` mode `onOpen` is ignored, so a
+                     * correction's video was the one thing on this screen that
+                     * would not open.
+                     */
+                    videoMode="preview"
+                    videoPlaying={focused}
                   />
                 </View>
               ) : null}

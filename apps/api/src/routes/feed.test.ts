@@ -1021,6 +1021,52 @@ describe('community feed', () => {
       expect(both.json<{ slowMedia?: { url: string } }>().slowMedia?.url).toContain('slow.m4a')
     })
 
+    it('stores both takes as the normaliser leaves them', async () => {
+      const asker = await newUser('pron-normalise-asker@example.com')
+      const helper = await newUser('pron-normalise-helper@example.com')
+      const askId = (await ask(asker, 'squirrel')).json<{ _id: string }>()._id
+
+      /*
+       * An answer is the one place a recording is two fields rather than a
+       * list, so it is the one place the pair could come back in the wrong
+       * order or lose a take. It is also the page most likely to be recorded
+       * in a browser, which is what the conversion exists for.
+       */
+      const real = app.normalizeAttachments
+      app.normalizeAttachments = (items) =>
+        Promise.resolve(
+          items.map((item) => ({
+            ...item,
+            url: item.url.replace('.webm', '.m4a'),
+            contentType: 'audio/mp4',
+          })),
+        )
+
+      try {
+        const webm = (name: string) => ({
+          url: `https://cdn.example.com/posts/u/${name}.webm`,
+          contentType: 'audio/webm',
+          sizeBytes: 4096,
+          durationSeconds: 3,
+        })
+        const response = await answer(helper, askId, {
+          media: webm('fast'),
+          slowMedia: webm('slow'),
+        })
+
+        expect(response.statusCode, response.body).toBe(201)
+        const body = response.json<{
+          media: { url: string; contentType: string }
+          slowMedia?: { url: string }
+        }>()
+        expect(body.media.contentType).toBe('audio/mp4')
+        expect(body.media.url).toContain('fast.m4a')
+        expect(body.slowMedia?.url).toContain('slow.m4a')
+      } finally {
+        app.normalizeAttachments = real
+      }
+    })
+
     it('refuses an answer with no recording, and an image as one', async () => {
       const asker = await newUser('pron-bad-asker@example.com')
       const helper = await newUser('pron-bad-helper@example.com')

@@ -27,6 +27,7 @@ import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import type { StorageProvider } from '../../storage/StorageProvider'
 import { assertAttachable, deleteObjects } from './attachments'
+import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { readCommentSummary } from './comments'
 import type { PostCommentDoc } from './documents'
 import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
@@ -341,6 +342,7 @@ export async function createPost(
   userId: string,
   input: CreatePostInput,
   storagePublicBaseUrl?: string,
+  normalizeAttachments?: AttachmentNormalizer,
 ): Promise<FeedPost> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
@@ -351,10 +353,13 @@ export async function createPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning')
   }
 
-  const attachments = input.attachments ?? []
-  if (attachments.length > 0) {
-    await assertAttachable(db, userId, profile, attachments, storagePublicBaseUrl)
+  const picked = input.attachments ?? []
+  if (picked.length > 0) {
+    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl)
   }
+  // Checked first, stored second — see `sendMediaMessage` for why the order is
+  // the whole of it. A voice note recorded in a browser becomes AAC here.
+  const attachments = normalizeAttachments ? await normalizeAttachments(picked) : picked
 
   const doc: Post = {
     _id: new ObjectId(),
@@ -393,6 +398,7 @@ export async function correctPost(
   postId: string,
   input: CreatePostCorrectionInput,
   storagePublicBaseUrl?: string,
+  normalizeAttachments?: AttachmentNormalizer,
 ): Promise<PostCorrection> {
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
@@ -413,12 +419,13 @@ export async function correctPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own post')
   }
 
-  const attachments = input.attachments ?? []
-  if (attachments.length > 0) {
+  const picked = input.attachments ?? []
+  if (picked.length > 0) {
     const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
     if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
-    await assertAttachable(db, userId, profile, attachments, storagePublicBaseUrl)
+    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl)
   }
+  const attachments = normalizeAttachments ? await normalizeAttachments(picked) : picked
 
   const doc: PostCorrectionDoc = {
     _id: new ObjectId(),

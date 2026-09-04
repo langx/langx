@@ -41,6 +41,8 @@ export const ptBR: Localized<EnMessages> = {
     removeAttachment: 'Remover anexo',
     preparingUpload: 'Preparando…',
     uploadingPercent: 'Enviando… {percent}%',
+    percentOnly: '{percent}%',
+    percentPending: '…',
     attachMedia: 'Anexar fotos ou vídeos',
   },
 

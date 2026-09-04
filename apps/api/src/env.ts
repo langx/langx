@@ -124,6 +124,15 @@ const envSchema = z.object({
   STORAGE_SECRET_ACCESS_KEY: emptyToUndefined(z.string().optional()),
   STORAGE_PUBLIC_BASE_URL: emptyToUndefined(z.url().optional()),
 
+  /*
+   * How to run ffmpeg, for the one thing this server transcodes: a voice note
+   * recorded in a browser is WebM/Opus, which no iPhone can decode. The
+   * Dockerfile installs it, so the default is right in production; a
+   * self-hoster without it loses nothing but that conversion, and the app
+   * already says when a note will not play. See `modules/media/transcodeAudio`.
+   */
+  FFMPEG_PATH: z.string().min(1).default('ffmpeg'),
+
   // Faz 6: translation. Left unset, `/translate` returns a clear
   // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.
   // The service-account key's *content* goes here (not a file path like

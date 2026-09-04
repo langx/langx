@@ -589,6 +589,40 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.unread[b.userId]).toBe(0)
   })
 
+  it('reading tells the sender and the reader own other devices', async () => {
+    const a = await newUser('read-fanout-a@example.com')
+    const b = await newUser('read-fanout-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'hey b')
+
+    /*
+     * Both rooms matter and they mean different things. The sender's room
+     * gets a read receipt; the reader's own room gets "your unread total
+     * dropped", which is what a second device of theirs needs to hear before
+     * it will stop drawing a badge for a thread already read elsewhere.
+     */
+    const rooms: string[] = []
+    const io = app.io as unknown as { to: (room: string) => { emit: (event: string) => void } }
+    const realTo = io.to.bind(io)
+    io.to = (room: string) => {
+      rooms.push(room)
+      return realTo(room)
+    }
+
+    try {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/read`,
+        headers: { cookie: b.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+    } finally {
+      io.to = realTo
+    }
+
+    expect(rooms).toContain(`user:${a.userId}`)
+    expect(rooms).toContain(`user:${b.userId}`)
+  })
+
   it('reading over REST marks the thread delivered as well as read', async () => {
     const a = await newUser('read-implies-a@example.com')
     const b = await newUser('read-implies-b@example.com')
@@ -1009,6 +1043,45 @@ describe('Faz 5 — conversation/message history REST', () => {
       // Repeated for a build that predates the list; it shows the first file
       // rather than an empty bubble.
       expect(result.message.media?.url).toBe(image.url)
+    })
+
+    it('stores a browser voice note as what the normaliser made of it', async () => {
+      const { a, conversationId } = await pair('media-transcode')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+
+      /*
+       * The real one shells out to ffmpeg and reads the bucket back, neither
+       * of which belongs in this suite — what matters here is that the send
+       * stores the converted attachment rather than the picked one, in both
+       * the list and the field repeated beside it.
+       */
+      const webm = {
+        url: `${BUCKET}/messages/x/a.webm`,
+        contentType: 'audio/webm',
+        sizeBytes: 40_000,
+        durationSeconds: 7,
+      }
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, attachments: [webm] },
+        BUCKET,
+        () =>
+          Promise.resolve([
+            {
+              ...webm,
+              url: `${BUCKET}/messages/x/a.m4a`,
+              contentType: 'audio/mp4',
+              sizeBytes: 9_000,
+            },
+          ]),
+      )
+
+      expect(result.message.attachments?.[0]?.contentType).toBe('audio/mp4')
+      expect(result.message.media?.url).toBe(`${BUCKET}/messages/x/a.m4a`)
+      // Still a voice note: the kind came from the bytes before the swap, and
+      // AAC and Opus are both audio.
+      expect(result.message.type).toBe('audio')
     })
 
     it('refuses a voice note sent alongside a photo', async () => {

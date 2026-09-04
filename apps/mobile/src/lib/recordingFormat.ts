@@ -22,6 +22,31 @@ export function nativeRecordingType(): string {
 }
 
 /**
+ * What to *ask* a browser's `MediaRecorder` for.
+ *
+ * `webRecordingType` below labels what came out; this decides what goes in,
+ * and until it existed nothing did. `RecordingPresets.HIGH_QUALITY` names
+ * `audio/webm` for the web, expo-audio passes that straight to `MediaRecorder`
+ * whenever the browser supports it, and every browser that matters supports
+ * it — so the preference for `audio/mp4` a few lines down could never once
+ * have been reached. Chrome from 126 and every Safari can record AAC in MP4,
+ * which is the only thing an iPhone will play, so asking is free.
+ *
+ * The codec has to be spelled out: `isTypeSupported('audio/mp4')` is true in
+ * browsers that then hand back something else, and `mp4a.40.2` is plain AAC-LC.
+ * Firefox says no to all of it and keeps recording WebM, which the server
+ * converts — this only shortens the path where the browser can take it.
+ */
+export function webRecorderMimeType(
+  isTypeSupported?: (type: string) => boolean,
+): string | undefined {
+  const aac = 'audio/mp4;codecs=mp4a.40.2'
+  if (isTypeSupported?.(aac)) return aac
+  if (isTypeSupported?.('audio/mp4')) return 'audio/mp4'
+  return undefined
+}
+
+/**
  * Web: the recorder's own answer, narrowed to what the server accepts.
  *
  * `audio/mp4` is preferred where the browser can produce it — Safari and

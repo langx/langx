@@ -8,6 +8,7 @@ import { Button } from '../../../src/components/ui/Button'
 import { uploadPostMedia } from '../../../src/api/queries'
 import {
   advanceUpload,
+  sameDisplayedProgress,
   UPLOAD_START,
   uploadSent,
   type ActiveUpload,
@@ -285,12 +286,21 @@ export default function FeedScreen() {
         uploaded.push(
           await uploadPostMedia({
             ...item,
+            /*
+             * Returning `current` unchanged when the label would not move is
+             * not an optimisation to be tidy about: this state lives on the
+             * screen that owns the feed's `FlatList`, so every chunk event
+             * re-rendered every visible post — during an upload, which is
+             * exactly when the phone is busy.
+             */
             onProgress: (loaded, total) =>
-              setUploadProgress((current) =>
-                current && current.index === index
-                  ? { index, progress: advanceUpload(current.progress, loaded, total) }
-                  : current,
-              ),
+              setUploadProgress((current) => {
+                if (!current || current.index !== index) return current
+                const next = advanceUpload(current.progress, loaded, total)
+                return sameDisplayedProgress(current.progress, next)
+                  ? current
+                  : { index, progress: next }
+              }),
           }),
         )
         setUploadProgress({ index, progress: uploadSent(UPLOAD_START) })
@@ -756,6 +766,15 @@ export default function FeedScreen() {
                           onOpen={(index) =>
                             setViewing({ items: attachmentsOf(item.topCorrection!), index })
                           }
+                          /*
+                           * The same preview the post above it draws. Without
+                           * this a correction's video came out in `controls`
+                           * mode, where `onOpen` is deliberately ignored — so
+                           * it was the one video on the screen that could not
+                           * be opened, for no reason a reader could see.
+                           */
+                          videoMode="preview"
+                          videoPlaying={shouldPlay(item._id, playingPosts)}
                         />
                       </View>
                     ) : null}

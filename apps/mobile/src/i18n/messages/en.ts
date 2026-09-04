@@ -65,6 +65,15 @@ export const en = {
     removeAttachment: 'Remove attachment',
     preparingUpload: 'Preparing…',
     uploadingPercent: 'Uploading… {percent}%',
+    /*
+     * The same two waits, for a 64pt square rather than a chat bubble. The
+     * sentence does not fit there: it wraps, and where it wraps changes with
+     * the digit count, so the label re-lays-out on every tick and lands on
+     * the video badge underneath. A percentage on its own says the same
+     * thing and holds still.
+     */
+    percentOnly: '{percent}%',
+    percentPending: '…',
     attachMedia: 'Attach photos or videos',
   },
 

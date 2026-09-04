@@ -2307,6 +2307,42 @@ keeps the JS thread alive in the background — the chat screen can be the
 focused route with nobody looking at it, and marking a message read there
 clears a badge for something never seen.
 
+## One unread number, three places, and the resync that only covered two
+
+The phone showed a dot on the icon, a `1` on the Chats tab and a `5` on the
+one conversation in the list, all at the same time and all from the same
+field: `conversations.unread[userId]`, which `countUnread` sums for
+`/me/unread` and for a push's `badge`. Nothing was counted twice — the three
+readers were simply refreshed on different paths, and one of them had a hole.
+
+The chat rows live under `['conversations']`, which `invalidateMissedEvents`
+refetches when the app comes back from the background. The tab badge and the
+icon read `['unread']`, which sits outside that prefix on purpose: the socket
+patches `['conversations']` with `setQueriesData` and the patcher walks
+`data.pages`, so a bare number under that prefix would be handed to it and
+throw. The consequence went unnoticed. The only things that invalidated
+`['unread']` were socket events, and a message that arrives while the phone is
+in the background is precisely _not_ one — it is a push. So the row came back
+correct, the badge kept the number it had when the app was last awake, and the
+icon kept whatever the push had written.
+
+The test that looked like it covered this listed `['conversations', 'unread']`
+among the keys it expected to go stale — a key nothing writes, since the
+filters are `all`/`unreplied`/`archived`. It passed for the same reason it was
+meaningless.
+
+So `invalidateMissedEvents` invalidates `['unread']` too, and the icon effect
+is keyed on `dataUpdatedAt` as well as the value: the icon has a second writer
+in the push payload, and a refetch that confirms the number it already held
+must still overwrite what that push left behind. A gap is a gap for all three.
+
+**And a read on one device is news on your other ones.** `conversation:read`
+went only to the other participant, where it means "they have seen it". The
+reader's own second device is holding a badge for messages that no longer
+count, and it has no way to know: it hears nothing, and the total is the
+server's to give. Both emitters now also publish to the reader's own room, and
+the client invalidates the badge when it arrives.
+
 ## The root overlays carry a paint order, not just a place in the tree
 
 The first iOS device test sent a message while the app sat on another tab and
@@ -2781,6 +2817,62 @@ pictures — two recordings can, because that is the answer's two takes — sinc
 mixing kinds would make a message's type, and so its preview line and its
 notification, a coin toss between "photo" and "voice message".
 
+## The one thing this server converts: a browser's voice note
+
+A note recorded on the site did not play on an iPhone. The bubble showed `⋯`
+and never resolved — not the "this will not play" the app already had a string
+for, which made it look like a network problem rather than a file the phone
+could not open.
+
+Two faults, and they had been covering for each other.
+
+**The file really was unplayable.** `webRecordingType` prefers `audio/mp4`
+where a browser can produce it, and that preference had never once been
+reached: it labels what came _out_ of `MediaRecorder`, while what goes _in_ is
+`RecordingPresets.HIGH_QUALITY`, which names `audio/webm` for the web and which
+expo-audio passes straight through. So every browser note was Opus, honestly
+labelled and undecodable on iOS. `useVoiceRecorder` now asks for
+`audio/mp4;codecs=mp4a.40.2` where `isTypeSupported` says yes — Chrome from 126
+and every Safari — which is free and shortens the path.
+
+**And the bubble read a dead player as a loading one.** When AVFoundation fails
+an item it reports `isLoaded: false` _and_ `isBuffering: true`: its "am I
+buffering" test asks whether the item is neither likely to keep up nor holding
+a buffer, and a failed item is both. `audioProgress` read that as `'loading'`.
+It reads `playbackState === 'failed'` first now. The `'unsupported'` branch
+beside it was dead in a more embarrassing way — it asked the _server's_
+allowlist whether the platform could decode the type, and `audio/webm` is on
+that list precisely because a browser has no other output, so the one case the
+check existed for was the one case it answered wrong. `canDecodeAudio` takes
+the platform.
+
+**Firefox still records WebM, so the server converts.** `docs/architecture.md`
+says media is stored exactly as uploaded and that stays true of everything
+else; this is the exception, and it is affordable for the same reason video is
+not. A two-minute note is under a megabyte and an Opus→AAC pass is about a
+second of CPU, against a video's tens of megabytes and minutes.
+
+Synchronous, inside the send, rather than a job: a queue would need a claim
+across two Fly machines, a second socket event for chat, and something the feed
+does not have at all — there is no `post:*` event, so a post's note would stay
+wrong until its reader happened to refetch. Converting before the insert means
+the row is right the first time anything reads it, and the cost is latency
+inside the twelve seconds the client already waits for its ack. ffmpeg gets
+eight of them.
+
+It never fails a send. No ffmpeg, a timeout, bytes that cannot be read back:
+the original is stored, exactly as before any of this existed, and the bubble
+says what it now says correctly. That is the same bargain every optional
+service in `self-host.md` makes. The old original is deleted only _after_ the
+new object exists — a leaked file costs bytes, and the other order costs the
+note.
+
+`scripts/transcode-web-notes.ts` does the same to the rows already stored. It
+walks four collections in two shapes: `messages`, `posts` and `postCorrections`
+keep a list with the first file repeated in `media`, while a pronunciation
+answer keeps `media` and `slowMedia` as separate fields — which is also the
+page most likely to have been recorded in a browser in the first place.
+
 ## The row swipe runs on the UI thread, and Reanimated is the price
 
 Three comments in this repo argued against exactly this change —
@@ -2876,8 +2968,9 @@ that can be bypassed by omitting a field is not a ceiling.
 **mp4 and quicktime, not webm.** iOS has no VP8 or VP9 decoder at any level, so
 accepting webm would store files half the recipients cannot open with nothing
 anywhere saying why. `audio/webm` is accepted only because a browser's recorder
-has no other output; the video picker hands us whatever the camera wrote, so it
-has no such excuse. The same `preferredAssetRepresentationMode: Compatible`
+has no other output — and that turned out to be the same bug wearing the other
+hat, which the entry below is about; the video picker hands us whatever the
+camera wrote, so it has no such excuse. The same `preferredAssetRepresentationMode: Compatible`
 that fixed HEIC does the second half of this on iOS: it makes PhotoKit export
 an HEVC `.mov` as H.264, without which an iPhone-to-Android video is a black
 frame.

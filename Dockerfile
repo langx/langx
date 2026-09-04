@@ -44,6 +44,17 @@ FROM node:24-slim AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
+# The one native binary this image needs, and only for one thing: a voice note
+# recorded in a browser is WebM/Opus, which no iPhone can decode, so the API
+# converts it to AAC before storing it (`modules/media/transcodeAudio`). It is
+# a couple of hundred megabytes on an otherwise lean image, which is the reason
+# it is installed here in the runtime stage rather than in the build one, where
+# it would be baked into a layer nothing runs. Missing ffmpeg is not fatal —
+# those notes are then stored as recorded.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ffmpeg \
+  && rm -rf /var/lib/apt/lists/*
+
 # The bundle is ESM with a .js extension, so package.json and its
 # `"type": "module"` have to travel with it or Node parses it as CommonJS and
 # dies on the first import. packages/shared is deliberately absent — the build

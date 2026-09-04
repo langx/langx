@@ -17,6 +17,7 @@ import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import { assertAttachable, deleteObjects } from './attachments'
+import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import type { Post, PronunciationAnswerDoc } from './documents'
 import { answerDto, loadAuthors, postDto } from './dto'
 import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
@@ -82,6 +83,7 @@ export async function answerPronunciation(
   postId: string,
   input: CreatePronunciationAnswerInput,
   storagePublicBaseUrl?: string,
+  normalizeAttachments?: AttachmentNormalizer,
 ): Promise<PronunciationAnswer> {
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
@@ -108,21 +110,25 @@ export async function answerPronunciation(
   // `'audio'` is what stops a photo of a mouth being submitted as a recording.
   // Both takes together, so they cost one unit and neither is charged for
   // before the other has been checked.
-  await assertAttachable(
-    db,
-    userId,
-    profile,
-    [input.media, ...(input.slowMedia ? [input.slowMedia] : [])],
-    storagePublicBaseUrl,
-    'audio',
-  )
+  const takes = [input.media, ...(input.slowMedia ? [input.slowMedia] : [])]
+  await assertAttachable(db, userId, profile, takes, storagePublicBaseUrl, 'audio')
+
+  /*
+   * The one place a recording is two fields rather than a list, so the pair
+   * goes through together and comes back apart. This is the page most likely
+   * to be recorded on a laptop — somebody demonstrating a word into a browser
+   * — and therefore the one that needed the conversion most.
+   */
+  const [media = input.media, slowMedia] = normalizeAttachments
+    ? await normalizeAttachments(takes)
+    : takes
 
   const doc: PronunciationAnswerDoc = {
     _id: new ObjectId(),
     postId: _id,
     authorId: userId,
-    media: input.media,
-    ...(input.slowMedia ? { slowMedia: input.slowMedia } : {}),
+    media,
+    ...(slowMedia ? { slowMedia } : {}),
     ...(input.note ? { note: input.note } : {}),
     createdAt: new Date(),
   }

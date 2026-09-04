@@ -73,6 +73,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
             request.userId,
             request.body,
             app.env.STORAGE_PUBLIC_BASE_URL,
+            app.normalizeAttachments,
           ),
         )
     },
@@ -104,6 +105,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.id,
         request.body,
         app.env.STORAGE_PUBLIC_BASE_URL,
+        app.normalizeAttachments,
       )
       return reply.code(201).send(correction)
     },
@@ -208,6 +210,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.id,
         request.body,
         app.env.STORAGE_PUBLIC_BASE_URL,
+        app.normalizeAttachments,
       )
       return reply.code(201).send(answer)
     },
