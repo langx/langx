@@ -4,6 +4,7 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
+import { audioProgress } from '../lib/audioProgress'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
@@ -53,13 +54,18 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
    * next one is usually fine.
    */
   const [slow, setSlow] = useState(false)
+  /** A `play()` that threw; the status alone cannot report one. */
+  const [failed, setFailed] = useState(false)
 
-  const total = media.durationSeconds ?? status.duration ?? 0
-  const elapsed = status.currentTime ?? 0
-  const progress = total > 0 ? Math.min(1, elapsed / total) : 0
+  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
   const tint = mine ? colors.accent : colors.text
+  // `unsupported` is a type this platform will not decode; `error` is a load
+  // that failed. Both leave nothing to press, and both used to be a button
+  // that did nothing at all.
+  const broken = failed || state === 'error' || state === 'unsupported'
+  const loading = state === 'loading'
 
   /**
    * Configures the audio session *before* every play, not once at mount.
@@ -81,61 +87,98 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
     // the end doing nothing when tapped.
     // `seekTo` is async but `play` does not need to wait for it — the
     // player queues the seek ahead of playback itself.
-    if (total > 0 && elapsed >= total - 0.25) void player.seekTo(0)
-    player.play()
+    if (canReplay) void player.seekTo(0)
+    try {
+      player.play()
+    } catch {
+      // A throw here used to be the whole failure: nothing moved, nothing was
+      // said, and the button looked identical to one that had worked. The
+      // status the bubble already draws carries it now.
+      setFailed(true)
+    }
   }
 
   return (
     <View style={styles.audioRow}>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t(status.playing ? 'chat.pauseVoiceMessage' : 'chat.playVoiceMessage')}
+        accessibilityState={{ disabled: broken }}
+        disabled={broken}
         hitSlop={8}
         onPress={() => {
           void toggle()
         }}
       >
-        <Text style={[styles.playIcon, { color: colors.text }]}>{status.playing ? '❚❚' : '▶'}</Text>
+        <Text style={[styles.playIcon, { color: broken ? colors.textFaint : colors.text }]}>
+          {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
+        </Text>
       </Pressable>
 
-      <View style={styles.track}>
-        <View style={[styles.trackFill, { backgroundColor: tint, width: `${progress * 100}%` }]} />
-      </View>
+      {broken ? (
+        <Text style={[styles.unavailable, { color: colors.textFaint }]} numberOfLines={2}>
+          {t('chat.voiceMessageUnavailable')}
+        </Text>
+      ) : (
+        <>
+          <View style={styles.track}>
+            {/*
+              An unknown total draws a full-width faint bar rather than a 0%
+              one: v1's notes report no duration at all, and a bar frozen at
+              zero while the audio plays reads as a broken player.
+            */}
+            <View
+              style={[
+                styles.trackFill,
+                {
+                  backgroundColor: tint,
+                  opacity: fraction === null ? 0.35 : 1,
+                  width: `${(fraction ?? 1) * 100}%`,
+                },
+              ]}
+            />
+          </View>
 
-      <Text style={[styles.duration, { color: colors.textFaint }]}>
-        {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
-      </Text>
+          <Text style={[styles.duration, { color: colors.textFaint }]}>
+            {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
+          </Text>
+        </>
+      )}
 
       {/*
         Marked only when it is on. An always-visible "1x" beside every voice
         note in a thread is a control nobody asked for; the off state is the
         absence of one.
       */}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ selected: slow }}
-        accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
-        hitSlop={8}
-        onPress={() => {
-          const next = !slow
-          setSlow(next)
-          /*
-           * `'high'` is not decoration, and it does something different on
-           * each platform. iOS reads it as the pitch algorithm and already
-           * corrects pitch by default; Android ignores the argument entirely
-           * and preserves pitch anyway; **web only turns pitch correction on
-           * when this exact value is passed** — `AudioPlayer.web.ts` sets
-           * `preservesPitch = (quality === 'high')`, starting from `false`.
-           * Drop it and the web build, which is the one at app2, plays a growl.
-           *
-           * Applied to the live player rather than saved for the next play, so
-           * a tap part-way through a word slows that word.
-           */
-          player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
-        }}
-      >
-        <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
-          {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
-        </Text>
-      </Pressable>
+      {broken ? null : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: slow }}
+          accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
+          hitSlop={8}
+          onPress={() => {
+            const next = !slow
+            setSlow(next)
+            /*
+             * `'high'` is not decoration, and it does something different on
+             * each platform. iOS reads it as the pitch algorithm and already
+             * corrects pitch by default; Android ignores the argument entirely
+             * and preserves pitch anyway; **web only turns pitch correction on
+             * when this exact value is passed** — `AudioPlayer.web.ts` sets
+             * `preservesPitch = (quality === 'high')`, starting from `false`.
+             * Drop it and the web build, which is the one at app2, plays a growl.
+             *
+             * Applied to the live player rather than saved for the next play, so
+             * a tap part-way through a word slows that word.
+             */
+            player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
+          }}
+        >
+          <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
+            {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -200,6 +243,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
   duration: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'] },
+  // Takes the track's place rather than sitting under it: the row is one line
+  // tall in a bubble, and a note that cannot play has no progress to show.
+  unavailable: { ...font.caption, flex: 1, fontSize: 11 },
   // Same size and tabular figures as the duration beside it, so "0:07" and
   // "0.5x" sit on one line without the row shifting when either changes.
   rate: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'], fontWeight: '600' },

@@ -60,6 +60,7 @@ import { api } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
+import { isAllowedAudioType } from '../lib/recordingFormat'
 import {
   applyAnswer,
   applyCommentCount,
@@ -1290,6 +1291,22 @@ export function useRemovePhoto() {
 }
 
 /**
+ * What to sign an upload as: the caller's claim, corrected by the blob.
+ *
+ * Only for audio, and only on the web, which is where the two can disagree.
+ * `useVoiceRecorder` cannot know what `MediaRecorder` actually produced until
+ * the blob exists, and it used to assert `audio/m4a` regardless — so a
+ * WebM/Opus note was stored under a name no iPhone could act on. A picture or
+ * a video is never second-guessed: the picker already reports those correctly
+ * and the blob's type on native is frequently blank.
+ */
+function resolveUploadType(kind: MediaKind, claimed: string, blobType: string): string {
+  if (kind !== 'audio') return claimed
+  const real = blobType.split(';')[0]?.trim().toLowerCase()
+  return real && isAllowedAudioType(real) ? real : claimed
+}
+
+/**
  * Uploads an attachment and returns what the send needs to describe it.
  *
  * The upload URL is signed per conversation, and the server checks access
@@ -1314,23 +1331,28 @@ export async function uploadMessageMedia(input: {
   width?: number
   height?: number
 }> {
+  // The blob first, then the signature. On the web the recorder's real output
+  // is only knowable from the blob, and the signed type, the request header
+  // and the bytes all have to agree — a note signed as one thing and uploaded
+  // as another is exactly the silent failure this order removes.
+  const blob = await (await fetch(input.uri)).blob()
+  const contentType = resolveUploadType(input.kind, input.contentType, blob.type)
   const target = await api.post<UploadUrlDto>('/messages/upload-url', {
     conversationId: input.conversationId,
     kind: input.kind,
-    contentType: input.contentType,
+    contentType,
   })
 
-  const blob = await (await fetch(input.uri)).blob()
   await putWithProgress({
     url: target.uploadUrl,
     body: blob,
-    contentType: input.contentType,
+    contentType,
     ...(input.onProgress ? { onProgress: input.onProgress } : {}),
   })
 
   return {
     url: target.publicUrl,
-    contentType: input.contentType,
+    contentType,
     // The server re-checks this against its own ceiling; sending it lets the
     // check happen before the message row is written rather than after.
     sizeBytes: blob.size,
@@ -1356,17 +1378,19 @@ export async function uploadPostMedia(input: {
   width?: number
   height?: number
 }): Promise<Media> {
+  // Blob first, then sign — see `uploadMessageMedia` for why the order matters.
+  const blob = await (await fetch(input.uri)).blob()
+  const contentType = resolveUploadType(input.kind, input.contentType, blob.type)
   const target = await api.post<UploadUrlDto>('/posts/upload-url', {
     kind: input.kind,
-    contentType: input.contentType,
+    contentType,
   })
 
-  const blob = await (await fetch(input.uri)).blob()
-  await putWithProgress({ url: target.uploadUrl, body: blob, contentType: input.contentType })
+  await putWithProgress({ url: target.uploadUrl, body: blob, contentType })
 
   return {
     url: target.publicUrl,
-    contentType: input.contentType,
+    contentType,
     sizeBytes: blob.size,
     ...(input.durationSeconds !== undefined ? { durationSeconds: input.durationSeconds } : {}),
     ...(input.width !== undefined ? { width: input.width } : {}),

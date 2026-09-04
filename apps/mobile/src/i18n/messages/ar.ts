@@ -659,6 +659,9 @@ export const ar: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'تشغيل بطيء',
     playAtNormalSpeed: 'تشغيل بالسرعة العادية',
+    playVoiceMessage: 'تشغيل الرسالة الصوتية',
+    pauseVoiceMessage: 'إيقاف الرسالة الصوتية مؤقتًا',
+    voiceMessageUnavailable: 'لا يمكن تشغيل هذه الرسالة الصوتية على هذا الجهاز.',
     mediaLockedTitle: 'ليس بعد',
     mediaLocked: {
       one: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد أن يرسل لك الطرف الآخر رسالة واحدة أخرى.',

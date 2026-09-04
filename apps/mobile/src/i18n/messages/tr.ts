@@ -566,6 +566,9 @@ export const tr: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Yavaş çal',
     playAtNormalSpeed: 'Normal hızda çal',
+    playVoiceMessage: 'Sesli mesajı çal',
+    pauseVoiceMessage: 'Sesli mesajı duraklat',
+    voiceMessageUnavailable: 'Bu sesli mesaj bu cihazda çalınamıyor.',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
       one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',

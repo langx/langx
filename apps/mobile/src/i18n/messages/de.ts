@@ -584,6 +584,9 @@ export const de: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Langsam abspielen',
     playAtNormalSpeed: 'Mit normaler Geschwindigkeit abspielen',
+    playVoiceMessage: 'Sprachnachricht abspielen',
+    pauseVoiceMessage: 'Sprachnachricht pausieren',
+    voiceMessageUnavailable: 'Diese Sprachnachricht lässt sich auf diesem Gerät nicht abspielen.',
     mediaLockedTitle: 'Noch nicht',
     mediaLocked: {
       one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',

@@ -595,6 +595,9 @@ export const en = {
     speedNormal: '1x',
     playSlowly: 'Play slowly',
     playAtNormalSpeed: 'Play at normal speed',
+    playVoiceMessage: 'Play voice message',
+    pauseVoiceMessage: 'Pause voice message',
+    voiceMessageUnavailable: 'This voice message will not play on this device.',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
       one: 'Photos and voice notes unlock after one more message from them.',

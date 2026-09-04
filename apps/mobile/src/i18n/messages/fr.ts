@@ -567,6 +567,9 @@ export const fr: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Lire lentement',
     playAtNormalSpeed: 'Lire à vitesse normale',
+    playVoiceMessage: 'Lire le message vocal',
+    pauseVoiceMessage: 'Mettre le message vocal en pause',
+    voiceMessageUnavailable: 'Ce message vocal ne peut pas être lu sur cet appareil.',
     mediaLockedTitle: 'Pas encore',
     mediaLocked: {
       one: 'Les photos, vidéos et notes vocales se débloquent après un message de plus de l’autre personne.',

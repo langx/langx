@@ -635,6 +635,9 @@ export const ru: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Медленное воспроизведение',
     playAtNormalSpeed: 'Обычная скорость',
+    playVoiceMessage: 'Воспроизвести голосовое сообщение',
+    pauseVoiceMessage: 'Приостановить голосовое сообщение',
+    voiceMessageUnavailable: 'Это голосовое сообщение не воспроизводится на этом устройстве.',
     mediaLockedTitle: 'Пока нет',
     mediaLocked: {
       one: 'Фото, видео и голосовые откроются, когда собеседник напишет ещё одно сообщение.',

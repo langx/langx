@@ -557,6 +557,9 @@ export const ptBR: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Tocar devagar',
     playAtNormalSpeed: 'Tocar em velocidade normal',
+    playVoiceMessage: 'Tocar mensagem de voz',
+    pauseVoiceMessage: 'Pausar mensagem de voz',
+    voiceMessageUnavailable: 'Esta mensagem de voz não toca neste dispositivo.',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
       one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
