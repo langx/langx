@@ -37,6 +37,7 @@ import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
+import { cameFromV1 } from '../handles/legacyPrecreate'
 import { restoreByHash } from '../handles/legacyRestore'
 import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
@@ -121,6 +122,14 @@ export interface Profile {
   }
   quota: { initiations: Date[]; translations: Date[]; media: Date[] }
   photos?: { url: string; createdAt: Date }[]
+  /**
+   * Where a `promotions.email: true` on this profile came from, when it was
+   * not the person tapping the switch — today only `scripts/adopt-v1-consent.ts`
+   * writes it, recording that the consent was given at v1's sign-up. Absent on
+   * everybody who answered for themselves, which is the majority it should
+   * stay. Read by nothing; it exists so the question has an answer later.
+   */
+  promotionsConsent?: { source: string; at: Date }
   streak: {
     current: number
     longest: number
@@ -310,6 +319,25 @@ export async function createProfile(
     }
   }
 
+  /*
+   * A consent given at v1's sign-up, written into the only place this app
+   * reads consent from.
+   *
+   * `promotions.email` is otherwise never inferred — `DEFAULT_NOTIFICATION_PREFS`
+   * keeps it off and no stored shape may imply it — and that rule is not being
+   * loosened here. What changes is that a returning v1 account carries an
+   * answer somebody actually gave, on a form this project no longer runs, and
+   * the profile is where it has to live for `send-campaign.ts` to see it. Its
+   * owner sees the same switch in Settings, on, from the first day, and one
+   * tap withdraws it: a consent recorded where the person it belongs to can
+   * read it, which is the whole difference between this and a list kept
+   * elsewhere. `scripts/adopt-v1-consent.ts` does the same for accounts whose
+   * profile already exists; `promotionsConsent` records which of the two.
+   *
+   * Push stays off. v1 had no promotional push and nobody agreed to one.
+   */
+  const fromV1 = await cameFromV1(db, userId)
+
   const now = new Date()
   const profile: Profile = {
     _id: userId,
@@ -322,7 +350,9 @@ export async function createProfile(
     interests: input.interests ?? [],
     settings: {
       discoverable: true,
-      notifications: DEFAULT_NOTIFICATION_PREFS,
+      notifications: fromV1
+        ? { ...DEFAULT_NOTIFICATION_PREFS, promotions: { push: false, email: true } }
+        : DEFAULT_NOTIFICATION_PREFS,
     },
     privacy: {
       incognito: false,
@@ -337,6 +367,7 @@ export async function createProfile(
     createdAt: now,
     updatedAt: now,
   }
+  if (fromV1) profile.promotionsConsent = { source: 'v1', at: now }
   if (input.bio !== undefined) profile.bio = input.bio
   // The connection wins. Somebody's own answer is the fallback, for the cases
   // the edge cannot resolve — Tor, an unrouted range, a request that did not

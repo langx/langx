@@ -5,7 +5,10 @@ import {
   NOTIFICATION_TYPES,
   notificationPrefsSchema,
   notificationsAllowed,
+  notificationsUntouched,
+  promotionsRefused,
   resolveNotificationPrefs,
+  type StoredNotificationPrefs,
 } from './notifications'
 
 describe('notification defaults', () => {
@@ -153,5 +156,105 @@ describe('notificationPrefsSchema', () => {
    */
   it('refuses the channel-less shape it replaces', () => {
     expect(notificationPrefsSchema.safeParse({ messages: false }).success).toBe(false)
+  })
+})
+
+describe('promotionsRefused', () => {
+  /**
+   * The distinction `notificationsAllowed` deliberately does not make. Both
+   * of these are "do not send" to a sender; only one of them is a decision.
+   */
+  it('separates a refusal from a question nobody answered', () => {
+    expect(promotionsRefused({ promotions: { email: false } }, 'email')).toBe(true)
+    expect(promotionsRefused({}, 'email')).toBe(false)
+    expect(promotionsRefused(undefined, 'email')).toBe(false)
+  })
+
+  it("reads v1's single switch as a refusal only when it was turned off", () => {
+    expect(promotionsRefused(false, 'email')).toBe(true)
+    expect(promotionsRefused(true, 'email')).toBe(false)
+  })
+
+  it('does not read a yes on one channel as a no on the other', () => {
+    expect(promotionsRefused({ promotions: { push: false, email: true } }, 'email')).toBe(false)
+    expect(promotionsRefused({ promotions: { push: false, email: true } }, 'push')).toBe(true)
+  })
+
+  it('keeps every path in step with the sender that must not send', () => {
+    const shapes: (StoredNotificationPrefs | boolean | undefined)[] = [
+      undefined,
+      true,
+      false,
+      {},
+      { promotions: true },
+      { promotions: false },
+    ]
+    for (const prefs of shapes) {
+      if (promotionsRefused(prefs, 'email')) {
+        expect(notificationsAllowed(prefs, 'promotions', 'email')).toBe(false)
+      }
+    }
+  })
+})
+
+describe('notificationsUntouched', () => {
+  /**
+   * `createProfile` stores this object whole, so it is what almost every
+   * account carries — and it is not an answer to anything.
+   */
+  it('recognises the defaults it is given at sign-up', () => {
+    expect(notificationsUntouched(DEFAULT_NOTIFICATION_PREFS)).toBe(true)
+    expect(notificationsUntouched(undefined)).toBe(true)
+    expect(notificationsUntouched({})).toBe(true)
+  })
+
+  it('counts one moved switch anywhere as having been answered', () => {
+    expect(
+      notificationsUntouched({
+        ...DEFAULT_NOTIFICATION_PREFS,
+        badges: { push: false, email: false },
+      }),
+    ).toBe(false)
+    expect(notificationsUntouched({ promotions: { email: false } })).toBe(false)
+  })
+
+  /**
+   * The shape almost every production account written before 3 September
+   * carries. It came out of a `createProfile` that stored the default of the
+   * day, so it is nobody's answer either.
+   */
+  it('recognises the defaults of the two shapes it replaced', () => {
+    expect(
+      notificationsUntouched({
+        messages: true,
+        streak: true,
+        profileVisits: true,
+        promotions: false,
+      }),
+    ).toBe(true)
+    expect(
+      notificationsUntouched({
+        messages: { push: true, email: false },
+        streak: { push: true, email: false },
+        profileVisits: { push: true, email: false },
+        promotions: { push: false, email: false },
+      }),
+    ).toBe(true)
+  })
+
+  it('stops recognising one the moment a row differs from it', () => {
+    expect(
+      notificationsUntouched({
+        messages: false,
+        streak: true,
+        profileVisits: true,
+        promotions: false,
+      }),
+    ).toBe(false)
+  })
+
+  it("takes v1's silence as a decision and its default as none", () => {
+    expect(notificationsUntouched(false)).toBe(false)
+    expect(notificationsUntouched(true)).toBe(true)
   })
 })
