@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { useDisplayNames, useT } from '../i18n'
 import { makeStyles } from '../lib/theme'
+import { Button } from './ui/Button'
 import { Checkbox } from './ui/Checkbox'
 
 export interface LanguageScope {
@@ -71,8 +72,10 @@ export function LanguageScopeSheet({
 
   return (
     <Modal transparent animationType="fade" visible onRequestClose={onClose}>
-      {/* Tapping outside is the same as Done: the choice is already applied. */}
-      <Pressable style={styles.backdrop} onPress={onClose} accessibilityRole="button">
+      {/* Tapping outside is the same as Done: the choice is already applied.
+          No role on the backdrop: on web a role of button renders a <button>,
+          and the rows inside would then be buttons nested in one. */}
+      <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={styles.sheet} onPress={() => {}}>
           <Text style={styles.title}>{t('discover.languagesTitle')}</Text>
           <Text style={styles.body}>{t('discover.languagesBody')}</Text>
@@ -101,13 +104,7 @@ export function LanguageScopeSheet({
               </View>
             ))}
           </ScrollView>
-          <Pressable
-            accessibilityRole="button"
-            onPress={onClose}
-            style={({ pressed }) => [styles.done, pressed && styles.pressed]}
-          >
-            <Text style={styles.doneText}>{t('common.done')}</Text>
-          </Pressable>
+          <Button label={t('common.done')} onPress={onClose} style={styles.done} />
         </Pressable>
       </Pressable>
     </Modal>
@@ -148,13 +145,5 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   row: { paddingVertical: spacing.xs },
   rowText: { ...font.body, color: colors.text },
   rowTextLast: { color: colors.textMuted },
-  done: {
-    alignItems: 'center',
-    backgroundColor: colors.text,
-    borderRadius: radius.pill,
-    marginTop: spacing.sm,
-    paddingVertical: spacing.md,
-  },
-  doneText: { ...font.label, color: colors.textInverse, fontSize: 15 },
-  pressed: { opacity: 0.8 },
+  done: { marginTop: spacing.sm },
 }))
