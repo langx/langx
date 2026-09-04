@@ -89,12 +89,25 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     titleKey: 'settings.notificationsSection',
     bodyKey: 'settings.notificationsBody',
     route: '/(app)/settings/notifications',
-    // One item per kind; the row draws the kind's two channels under it.
-    items: NOTIFICATION_TYPES.map((type) => ({
-      id: `notifications.${type}`,
-      titleKey: `notifications.${type}` as MessageKey,
-      bodyKey: `notifications.${type}Body` as MessageKey,
-    })),
+    items: [
+      /*
+       * First, above the kinds, because it outranks them: the kinds say
+       * *what* and are account-wide, this says *where* and belongs to the
+       * phone it is read on. Turning it off here leaves the account's other
+       * devices receiving.
+       */
+      {
+        id: 'notifications.thisDevice',
+        titleKey: 'settings.pushThisDevice',
+        bodyKey: 'settings.pushThisDeviceBody',
+      },
+      // Then one item per kind; the row draws the kind's two channels under it.
+      ...NOTIFICATION_TYPES.map((type) => ({
+        id: `notifications.${type}`,
+        titleKey: `notifications.${type}` as MessageKey,
+        bodyKey: `notifications.${type}Body` as MessageKey,
+      })),
+    ],
   },
   {
     id: 'appearance',

@@ -20,15 +20,41 @@ export interface Device {
   platform: PushPlatform
   /** Absent on devices registered before the app started sending one. */
   locale?: Locale
+  /**
+   * The installation's own id. Absent on rows written by a build that predates
+   * it — which is why every query here treats its absence as ordinary rather
+   * than as a fault.
+   */
+  deviceId?: string
+  /**
+   * `false` when notifications have been switched off **on this phone**. The
+   * account's per-kind settings are a different question and live on the
+   * profile: those say *what*, this says *where*.
+   *
+   * Absent means on, so no existing row had to be backfilled.
+   */
+  pushEnabled?: boolean
   createdAt: Date
   updatedAt: Date
 }
 
+/** Rows a send may go to: everything but a device somebody has silenced. */
+const DELIVERABLE = { pushEnabled: { $ne: false } } as const
+
 /**
- * Upsert keyed on the **token**, not the user: a phone handed on to someone
- * else keeps the same Expo token, and the unique index on `pushToken` is what
- * stops the previous owner's notifications following it. Re-registering simply
- * moves the token to whoever is signed in now.
+ * Records a phone, keyed on the installation where there is one.
+ *
+ * **With a `deviceId`** the row belongs to `(userId, deviceId)`, so an Expo
+ * token that rotates updates the phone's own row instead of leaving an orphan
+ * that receives nothing and is never pruned. Any other row still holding that
+ * token is deleted first: the token is unique across the collection, and that
+ * uniqueness is what stops a phone handed on to somebody else from carrying
+ * the previous owner's notifications with it.
+ *
+ * **Without one** — every build already on a phone — this is exactly what it
+ * was: an upsert keyed on the token, which moves it to whoever is signed in
+ * now. Both paths have to keep working for as long as those builds are
+ * installed, which is why `deviceId` is optional in the schema.
  */
 export async function registerDevice(
   db: Db,
@@ -36,23 +62,76 @@ export async function registerDevice(
   input: RegisterDeviceInput,
 ): Promise<void> {
   const now = new Date()
-  await db.collection<Device>(COLLECTIONS.devices).updateOne(
-    { pushToken: input.pushToken },
+  const devices = db.collection<Device>(COLLECTIONS.devices)
+  const shared = {
+    userId,
+    platform: input.platform,
+    updatedAt: now,
+    ...(input.locale ? { locale: input.locale } : {}),
+    ...(input.pushEnabled === undefined ? {} : { pushEnabled: input.pushEnabled }),
+  }
+
+  if (!input.deviceId) {
+    await devices.updateOne(
+      { pushToken: input.pushToken },
+      { $set: shared, $setOnInsert: { pushToken: input.pushToken, createdAt: now } },
+      { upsert: true },
+    )
+    return
+  }
+
+  // Whoever else was holding this token is not holding it any more. Scoped by
+  // token rather than by user so it also catches the row this same phone wrote
+  // under a previous account.
+  await devices.deleteMany({
+    pushToken: input.pushToken,
+    $or: [{ userId: { $ne: userId } }, { deviceId: { $ne: input.deviceId } }],
+  })
+  await devices.updateOne(
+    { userId, deviceId: input.deviceId },
     {
-      $set: {
-        userId,
-        platform: input.platform,
-        updatedAt: now,
-        ...(input.locale ? { locale: input.locale } : {}),
-      },
-      $setOnInsert: { pushToken: input.pushToken, createdAt: now },
+      $set: { ...shared, pushToken: input.pushToken },
+      $setOnInsert: { deviceId: input.deviceId, createdAt: now },
     },
     { upsert: true },
   )
 }
 
-export async function unregisterDevice(db: Db, userId: string, pushToken: string): Promise<void> {
-  await db.collection<Device>(COLLECTIONS.devices).deleteOne({ userId, pushToken })
+/**
+ * Forgets a phone. By installation where the caller knows one — signing out on
+ * a phone whose token has rotated since it registered would otherwise leave
+ * the row behind, still receiving.
+ */
+export async function unregisterDevice(
+  db: Db,
+  userId: string,
+  input: { pushToken?: string; deviceId?: string },
+): Promise<void> {
+  if (input.deviceId) {
+    await db.collection<Device>(COLLECTIONS.devices).deleteOne({ userId, deviceId: input.deviceId })
+    return
+  }
+  if (!input.pushToken) return
+  await db.collection<Device>(COLLECTIONS.devices).deleteOne({ userId, pushToken: input.pushToken })
+}
+
+/**
+ * The switch on one device, which is the whole point of having an id for it:
+ * silencing the phone in your pocket must leave the tablet receiving.
+ *
+ * Answers whether it matched, so the route can 404 rather than report success
+ * for a device this account does not have.
+ */
+export async function setDevicePushEnabled(
+  db: Db,
+  userId: string,
+  deviceId: string,
+  pushEnabled: boolean,
+): Promise<boolean> {
+  const result = await db
+    .collection<Device>(COLLECTIONS.devices)
+    .updateOne({ userId, deviceId }, { $set: { pushEnabled, updatedAt: new Date() } })
+  return result.matchedCount > 0
 }
 
 export interface PushMessage {
@@ -196,8 +275,44 @@ export async function sendPush(
 }
 
 export async function tokensFor(db: Db, userId: string): Promise<string[]> {
-  const devices = await db.collection<Device>(COLLECTIONS.devices).find({ userId }).toArray()
+  const devices = await db
+    .collection<Device>(COLLECTIONS.devices)
+    .find({ userId, ...DELIVERABLE })
+    .toArray()
   return devices.map((d) => d.pushToken)
+}
+
+/**
+ * The rows themselves, for a caller that has to decide per device rather than
+ * per account — which today is the chat fan-out, and its reason is in
+ * `devicesToPush`.
+ */
+export async function devicesFor(db: Db, userId: string): Promise<Device[]> {
+  return db
+    .collection<Device>(COLLECTIONS.devices)
+    .find({ userId, ...DELIVERABLE })
+    .toArray()
+}
+
+/**
+ * Which of someone's devices should be woken, given the ones currently holding
+ * a socket.
+ *
+ * The fan-out used to skip push entirely the moment the recipient held **any**
+ * live socket, and that is what "only one of my two phones gets notifications"
+ * turned out to be: the phone you have open silences the one in your pocket.
+ * A socket is a fact about a device, not about an account.
+ *
+ * `connected` carries only the sockets that named a device. A client too old
+ * to name one is handled by the caller, which keeps the old behaviour for it —
+ * an installed build already draws its own in-app banner and must not start
+ * getting an OS one on top.
+ */
+export function devicesToPush(devices: readonly Device[], connected: readonly string[]): string[] {
+  const holding = new Set(connected)
+  return devices
+    .filter((device) => !(device.deviceId !== undefined && holding.has(device.deviceId)))
+    .map((device) => device.pushToken)
 }
 
 /**
@@ -212,7 +327,10 @@ export async function tokensFor(db: Db, userId: string): Promise<string[]> {
  * stored one, deliberately.
  */
 export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale, string[]>> {
-  const devices = await db.collection<Device>(COLLECTIONS.devices).find({ userId }).toArray()
+  const devices = await db
+    .collection<Device>(COLLECTIONS.devices)
+    .find({ userId, ...DELIVERABLE })
+    .toArray()
   const grouped = new Map<Locale, string[]>()
   for (const device of devices) {
     const locale = device.locale ?? DEFAULT_LOCALE

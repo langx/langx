@@ -98,6 +98,14 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     authenticateSocket(app, socket).then(
       (userId) => {
         socket.data.userId = userId
+        /*
+         * Which phone this connection is, so the fan-out can push to the other
+         * one. Read from the same `auth` object the session cookie travels in,
+         * and absent on every build that predates it — `fanOut` keeps the old
+         * account-wide behaviour when any connected socket cannot say.
+         */
+        const deviceId = (socket.handshake.auth as { deviceId?: string } | undefined)?.deviceId
+        if (typeof deviceId === 'string' && deviceId.length > 0) socket.data.deviceId = deviceId
         next()
       },
       (error: unknown) => next(error instanceof Error ? error : new Error('UNAUTHENTICATED')),

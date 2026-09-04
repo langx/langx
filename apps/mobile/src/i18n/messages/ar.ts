@@ -1110,6 +1110,8 @@ export const ar: Localized<EnMessages> = {
     manageSubscription: 'إدارة أو إلغاء',
     upgrade: 'شاهد الخطط',
     notificationsSection: 'الإشعارات',
+    pushThisDevice: 'الإشعارات على هذا الجهاز',
+    pushThisDeviceBody: 'أوقفها هنا وستستمر أجهزتك الأخرى في استقبالها.',
     accountSection: 'الحساب',
   },
 

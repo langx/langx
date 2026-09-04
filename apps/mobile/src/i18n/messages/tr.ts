@@ -954,6 +954,8 @@ export const tr: Localized<EnMessages> = {
     manageSubscription: 'Yönet veya iptal et',
     upgrade: 'Planlara bak',
     notificationsSection: 'Bildirimler',
+    pushThisDevice: 'Bu cihazda bildirimler',
+    pushThisDeviceBody: 'Burada kapatırsan diğer cihazlarına gelmeye devam eder.',
     accountSection: 'Hesap',
   },
 

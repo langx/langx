@@ -1066,6 +1066,8 @@ export const ru: Localized<EnMessages> = {
     manageSubscription: 'Управлять или отменить',
     upgrade: 'Посмотреть тарифы',
     notificationsSection: 'Уведомления',
+    pushThisDevice: 'Уведомления на этом устройстве',
+    pushThisDeviceBody: 'Выключите здесь — на других устройствах они продолжат приходить.',
     accountSection: 'Аккаунт',
   },
 

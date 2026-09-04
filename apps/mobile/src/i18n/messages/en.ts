@@ -985,6 +985,8 @@ export const en = {
     manageSubscription: 'Manage or cancel',
     upgrade: 'See the plans',
     notificationsSection: 'Notifications',
+    pushThisDevice: 'Notifications on this device',
+    pushThisDeviceBody: 'Turn these off here and your other devices keep receiving them.',
     accountSection: 'Account',
   },
 

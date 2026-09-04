@@ -4,6 +4,8 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback, useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
+import { deviceId } from '../lib/deviceId'
+import { pushEnabledOnThisDevice } from '../lib/devicePush'
 import { currentLocale } from '../i18n/runtime'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
 
@@ -25,7 +27,7 @@ function pushTokenOptions(): { projectId?: string } {
  * Registers this device's Expo push token with the API.
  *
  * Assumes permission is already granted; the caller checks. Safe to call more
- * than once — `/me/devices` upserts on the token.
+ * than once — `/me/devices` upserts on the installation.
  */
 export async function registerPushToken(): Promise<void> {
   try {
@@ -47,6 +49,17 @@ export async function registerPushToken(): Promise<void> {
       locale: currentLocale(),
       pushToken: token.data,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
+      /*
+       * Who this phone is, so its row survives a token rotation and so a
+       * second device can be silenced without silencing this one.
+       */
+      deviceId: await deviceId(),
+      /*
+       * Sent on every registration rather than only when it changes: this
+       * flag lives on the device, so a reinstall or a fresh sign-in is
+       * exactly when the server needs to be told again.
+       */
+      pushEnabled: await pushEnabledOnThisDevice(),
     })
   } catch {
     // Never let notification setup break the app it is decorating.
@@ -77,7 +90,12 @@ export async function unregisterPushToken(): Promise<void> {
     if (!existing.granted) return
 
     const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
-    await api.delete(`/me/devices/${encodeURIComponent(token.data)}`)
+    // The id as well as the token: a phone whose token has rotated since it
+    // registered would otherwise leave its row behind, still receiving.
+    const id = await deviceId()
+    await api.delete(
+      `/me/devices/${encodeURIComponent(token.data)}?deviceId=${encodeURIComponent(id)}`,
+    )
   } catch {
     // See above: never block a sign-out.
   }
@@ -102,6 +120,7 @@ export async function unregisterPushToken(): Promise<void> {
 export function usePushRegistration({ enabled = true }: { enabled?: boolean } = {}): void {
   useEffect(() => {
     if (!enabled) return
+    let subscription: { remove: () => void } | undefined
     void (async () => {
       try {
         if (Platform.OS === 'web' || !Device.isDevice) return
@@ -114,10 +133,22 @@ export function usePushRegistration({ enabled = true }: { enabled?: boolean } = 
         if (!existing.granted) return
 
         await registerPushToken()
+
+        /*
+         * Expo is free to hand out a new token while the app is running, and
+         * nothing used to notice: the old row kept the account's
+         * notifications and received none of them, and only Expo's
+         * `DeviceNotRegistered` would ever have cleared it. Now the row is
+         * keyed on the installation, so re-registering updates it in place.
+         */
+        subscription = Notifications.addPushTokenListener(() => {
+          void registerPushToken()
+        })
       } catch {
         // Never let notification setup break the app it is decorating.
       }
     })()
+    return () => subscription?.remove()
   }, [enabled])
 }
 

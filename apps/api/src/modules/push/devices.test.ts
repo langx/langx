@@ -3,7 +3,16 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
-import { ExpoPushSender, registerDevice, sendPush, tokensFor, type Device } from './devices'
+import {
+  devicesToPush,
+  ExpoPushSender,
+  registerDevice,
+  sendPush,
+  setDevicePushEnabled,
+  tokensFor,
+  unregisterDevice,
+  type Device,
+} from './devices'
 
 /** One Expo ticket per token, in the order the tokens were sent. */
 function ticketsFor(statuses: ('ok' | 'DeviceNotRegistered' | 'MessageRateExceeded')[]): Response {
@@ -191,5 +200,141 @@ describe('sendPush', () => {
 
     const devices = await handle.db.collection<Device>(COLLECTIONS.devices).countDocuments()
     expect(devices).toBe(1)
+  })
+
+  /**
+   * Identity. A device used to be its Expo push token and nothing else, which
+   * made "which phone is this" a question only Expo could answer — and it is
+   * free to change its mind.
+   */
+  describe('keyed on the installation', () => {
+    it('keeps one row when a phone’s token rotates', async () => {
+      await registerDevice(handle.db, 'cy', {
+        pushToken: 'token-old',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+      await registerDevice(handle.db, 'cy', {
+        pushToken: 'token-new',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+
+      // The old row used to survive, receiving nothing, until Expo happened to
+      // report the dead token back.
+      expect(await tokensFor(handle.db, 'cy')).toEqual(['token-new'])
+    })
+
+    it('keeps two rows for two phones on one account', async () => {
+      await registerDevice(handle.db, 'di', {
+        pushToken: 'token-1',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+      await registerDevice(handle.db, 'di', {
+        pushToken: 'token-2',
+        platform: 'android',
+        deviceId: 'phone-b',
+      })
+
+      expect((await tokensFor(handle.db, 'di')).sort()).toEqual(['token-1', 'token-2'])
+    })
+
+    it('moves a token to whoever registered it last', async () => {
+      await registerDevice(handle.db, 'el', {
+        pushToken: 'shared',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+      await registerDevice(handle.db, 'fi', {
+        pushToken: 'shared',
+        platform: 'ios',
+        deviceId: 'phone-b',
+      })
+
+      // A phone handed on must not keep carrying the previous owner's
+      // notifications, which is what the unique index on the token is for.
+      expect(await tokensFor(handle.db, 'el')).toEqual([])
+      expect(await tokensFor(handle.db, 'fi')).toEqual(['shared'])
+    })
+
+    it('still accepts a build that sends no id at all', async () => {
+      await registerDevice(handle.db, 'gu', { pushToken: 'old-build', platform: 'android' })
+      expect(await tokensFor(handle.db, 'gu')).toEqual(['old-build'])
+    })
+
+    it('forgets a phone by its id, whatever its token has become', async () => {
+      await registerDevice(handle.db, 'ha', {
+        pushToken: 'token-x',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+      await unregisterDevice(handle.db, 'ha', { pushToken: 'stale', deviceId: 'phone-a' })
+      expect(await tokensFor(handle.db, 'ha')).toEqual([])
+    })
+  })
+
+  /** The switch: one phone silenced, the other still receiving. */
+  describe('silencing one device', () => {
+    it('drops only that device from the send', async () => {
+      await registerDevice(handle.db, 'io', {
+        pushToken: 'keep',
+        platform: 'ios',
+        deviceId: 'phone-a',
+      })
+      await registerDevice(handle.db, 'io', {
+        pushToken: 'quiet',
+        platform: 'android',
+        deviceId: 'phone-b',
+      })
+
+      expect(await setDevicePushEnabled(handle.db, 'io', 'phone-b', false)).toBe(true)
+      expect(await tokensFor(handle.db, 'io')).toEqual(['keep'])
+
+      expect(await setDevicePushEnabled(handle.db, 'io', 'phone-b', true)).toBe(true)
+      expect((await tokensFor(handle.db, 'io')).sort()).toEqual(['keep', 'quiet'])
+    })
+
+    it('reports a device this account does not have, rather than succeeding', async () => {
+      expect(await setDevicePushEnabled(handle.db, 'jo', 'not-mine', false)).toBe(false)
+    })
+
+    it('honours the flag sent with a registration, so a reinstall re-syncs', async () => {
+      await registerDevice(handle.db, 'ka', {
+        pushToken: 'token-k',
+        platform: 'ios',
+        deviceId: 'phone-a',
+        pushEnabled: false,
+      })
+      expect(await tokensFor(handle.db, 'ka')).toEqual([])
+    })
+  })
+
+  /**
+   * The decision behind the reported bug: a socket is a fact about a device,
+   * and the fan-out used to read it as a fact about the account.
+   */
+  describe('devicesToPush', () => {
+    const rows = [
+      { deviceId: 'phone-a', pushToken: 'token-a' },
+      { deviceId: 'phone-b', pushToken: 'token-b' },
+    ] as Device[]
+
+    it('skips the device that is holding the socket, not the account', () => {
+      expect(devicesToPush(rows, ['phone-a'])).toEqual(['token-b'])
+    })
+
+    it('pushes to everything when nobody is connected', () => {
+      expect(devicesToPush(rows, [])).toEqual(['token-a', 'token-b'])
+    })
+
+    it('pushes to nothing when every device is connected', () => {
+      expect(devicesToPush(rows, ['phone-a', 'phone-b'])).toEqual([])
+    })
+
+    it('cannot skip a row that has no id to match', () => {
+      const legacy = [{ pushToken: 'token-old' }] as Device[]
+      expect(devicesToPush(legacy, ['phone-a'])).toEqual(['token-old'])
+    })
   })
 })

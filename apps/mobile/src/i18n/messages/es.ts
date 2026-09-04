@@ -949,6 +949,8 @@ export const es: Localized<EnMessages> = {
     manageSubscription: 'Gestionar o cancelar',
     upgrade: 'Ver los planes',
     notificationsSection: 'Notificaciones',
+    pushThisDevice: 'Notificaciones en este dispositivo',
+    pushThisDeviceBody: 'Si las desactivas aquí, tus otros dispositivos las seguirán recibiendo.',
     accountSection: 'Cuenta',
   },
 

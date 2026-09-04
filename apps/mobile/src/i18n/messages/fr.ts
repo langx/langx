@@ -954,6 +954,8 @@ export const fr: Localized<EnMessages> = {
     manageSubscription: 'Gérer ou résilier',
     upgrade: 'Voir les formules',
     notificationsSection: 'Notifications',
+    pushThisDevice: 'Notifications sur cet appareil',
+    pushThisDeviceBody: 'Désactivez-les ici et vos autres appareils continueront de les recevoir.',
     accountSection: 'Compte',
   },
 

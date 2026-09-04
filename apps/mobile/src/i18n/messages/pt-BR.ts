@@ -943,6 +943,8 @@ export const ptBR: Localized<EnMessages> = {
     manageSubscription: 'Gerenciar ou cancelar',
     upgrade: 'Ver os planos',
     notificationsSection: 'Notificações',
+    pushThisDevice: 'Notificações neste dispositivo',
+    pushThisDeviceBody: 'Desative aqui e seus outros dispositivos continuam recebendo.',
     accountSection: 'Conta',
   },
 

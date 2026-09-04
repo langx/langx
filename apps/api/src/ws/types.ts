@@ -4,6 +4,12 @@ import type { SocketRateLimiter } from './rateLimit'
 
 export interface SocketData {
   userId: string
+  /**
+   * Which installation this connection belongs to, when the client is new
+   * enough to say. Absent from every build that predates it, which the chat
+   * fan-out treats as "cannot tell devices apart" rather than as an error.
+   */
+  deviceId?: string
   /** Per-connection token buckets; see ws/rateLimit.ts. */
   limiter: SocketRateLimiter
   /** Per-connection floor on presence writes; see modules/presence. */

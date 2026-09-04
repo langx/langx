@@ -6,7 +6,7 @@ import {
   tierUnlocking,
 } from '@langx/shared'
 import { router } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { api } from '../api/client'
 import {
@@ -30,6 +30,7 @@ import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
 import { captureLocation, reportLocationFailure } from '../lib/location'
+import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
@@ -61,6 +62,24 @@ export function useSettingsModel() {
   const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
     iconSupported ? currentAppIcon() : 'default',
   )
+  /**
+   * Notifications on this phone, as opposed to the account-wide switches
+   * below it — those say *what*, this says *where*.
+   *
+   * Read from device storage rather than from the profile, so it is right
+   * before any request has answered and stays right on a phone that is
+   * silenced while another one is not. Defaults to on, which is what an
+   * unreadable store also reads as.
+   */
+  const [pushOnThisDevice, setPushOnThisDevice] = useState(true)
+  useEffect(() => {
+    void pushEnabledOnThisDevice().then(setPushOnThisDevice)
+  }, [])
+
+  async function togglePushOnThisDevice(next: boolean): Promise<void> {
+    setPushOnThisDevice(next)
+    await setPushEnabledOnThisDevice(next)
+  }
 
   const profile = me.data
   const isPro = useIsPro()
@@ -246,6 +265,8 @@ export function useSettingsModel() {
     chooseIcon,
     isPro,
     notifications,
+    pushOnThisDevice,
+    togglePushOnThisDevice,
     emailVerified,
     canIncognito,
     tier,

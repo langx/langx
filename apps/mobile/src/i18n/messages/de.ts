@@ -972,6 +972,8 @@ export const de: Localized<EnMessages> = {
     manageSubscription: 'Verwalten oder kündigen',
     upgrade: 'Tarife ansehen',
     notificationsSection: 'Mitteilungen',
+    pushThisDevice: 'Mitteilungen auf diesem Gerät',
+    pushThisDeviceBody: 'Hier ausschalten — deine anderen Geräte bekommen sie weiterhin.',
     accountSection: 'Konto',
   },
 

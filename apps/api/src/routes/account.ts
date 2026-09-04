@@ -1,4 +1,9 @@
-import { deleteAccountSchema, registerDeviceSchema } from '@langx/shared'
+import {
+  deleteAccountSchema,
+  ERROR_CODES,
+  registerDeviceSchema,
+  updateDeviceSchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
@@ -8,8 +13,9 @@ import {
   requestDeletion,
 } from '../modules/account/deletion'
 import type { Profile } from '../modules/profiles/profiles'
-import { registerDevice, unregisterDevice } from '../modules/push/devices'
+import { registerDevice, setDevicePushEnabled, unregisterDevice } from '../modules/push/devices'
 import { COLLECTIONS } from '../db/collections'
+import { ApiError } from '../lib/ApiError'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -71,7 +77,36 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.delete('/me/devices/:token', { preHandler: requireMember }, async (request, reply) => {
     const { token } = request.params as { token: string }
-    await unregisterDevice(app.mongo.db, request.userId, decodeURIComponent(token))
+    const { deviceId } = request.query as { deviceId?: string }
+    // By installation where the client knows one: a phone whose Expo token has
+    // rotated since it registered would otherwise leave its row behind on
+    // sign-out, still receiving that account's notifications.
+    await unregisterDevice(app.mongo.db, request.userId, {
+      pushToken: decodeURIComponent(token),
+      ...(deviceId ? { deviceId } : {}),
+    })
     return reply.code(204).send()
   })
+
+  /**
+   * The switch on one phone. Scoped by `userId`, so it can only ever silence a
+   * device of the account making the request — and 404 rather than 204 when it
+   * matches nothing, because reporting success for a device that is not there
+   * is how a setting silently fails to apply.
+   */
+  app.patch(
+    '/me/devices/:deviceId',
+    { preHandler: requireMember, schema: { body: updateDeviceSchema } },
+    async (request, reply) => {
+      const { deviceId } = request.params as { deviceId: string }
+      const updated = await setDevicePushEnabled(
+        app.mongo.db,
+        request.userId,
+        decodeURIComponent(deviceId),
+        request.body.pushEnabled,
+      )
+      if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Device not found')
+      return reply.code(204).send()
+    },
+  )
 }

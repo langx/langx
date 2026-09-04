@@ -18,8 +18,27 @@ export const registerDeviceSchema = z.object({
    * register at all.
    */
   locale: localeSchema.optional(),
+  /**
+   * The installation's own id, stable across token rotations and sign-outs.
+   *
+   * **Optional, and it has to stay optional**: builds already on people's
+   * phones send neither this nor `pushEnabled`, and they must keep working
+   * exactly as they do. Its absence is what selects the old token-keyed path
+   * in `registerDevice`.
+   */
+  deviceId: z.string().trim().min(1).max(128).optional(),
+  /**
+   * Whether this device wants notifications at all. Separate from the
+   * account's per-kind settings, which say *what* rather than *where*; both
+   * have to allow before anything is sent.
+   */
+  pushEnabled: z.boolean().optional(),
 })
 export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>
+
+/** `PATCH /me/devices/:deviceId` — the switch on the device itself. */
+export const updateDeviceSchema = z.object({ pushEnabled: z.boolean() })
+export type UpdateDeviceInput = z.infer<typeof updateDeviceSchema>
 
 export const PUSH_KINDS = ['message', 'streakReminder', 'badgeEarned', 'profileVisits'] as const
 export type PushKind = (typeof PUSH_KINDS)[number]

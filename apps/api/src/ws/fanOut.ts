@@ -4,7 +4,7 @@ import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
 import { attachmentsOf, notificationsAllowed } from '@langx/shared'
-import { sendPush, tokensFor } from '../modules/push/devices'
+import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
 
 /** The parts of a conversation this needs; `Conversation` itself carries far more. */
@@ -54,10 +54,18 @@ export async function fanOutMessage(
     const recipientId = conversation.participants.find((id) => id !== message.senderId)
     if (!recipientId) return
 
-    // Asked once and branched on, rather than asked again per effect: someone
-    // holding a socket has just received the emit above and needs no
-    // notification, someone away has nothing to deliver to. Two lookups would
-    // only create room for the answer to change in between.
+    /*
+     * Asked once and branched on, rather than asked again per effect: two
+     * lookups would only create room for the answer to change in between.
+     *
+     * A socket is a fact about a **device**, not about an account, and this
+     * used to treat it as the latter: any live socket at all skipped push
+     * entirely, so the phone somebody had open silenced the one in their
+     * pocket. That is what "notifications only reach the device I used last"
+     * turned out to be. Delivery is still stamped the moment any socket is
+     * holding — the message really has arrived — but the notification now goes
+     * to every device that is *not* holding one.
+     */
     const sockets = await io.in(userRoom(recipientId)).fetchSockets()
     if (sockets.length > 0) {
       const deliveredAt = await markDelivered(app.mongo.db, conversation._id, recipientId)
@@ -68,19 +76,31 @@ export async function fanOutMessage(
           deliveredAt: deliveredAt.toISOString(),
         })
       }
-      return
     }
     if (!pushWhenAway) return
 
-    const [sender, recipient, tokens] = await Promise.all([
+    /*
+     * A socket that cannot name its device keeps the old behaviour for the
+     * whole account. That is not caution for its own sake: an installed build
+     * draws its own in-app banner for a message it received over the socket,
+     * and pushing as well would give it two. Once it updates, it names itself.
+     */
+    const connectedDevices = sockets.map((socket) => socket.data.deviceId)
+    if (sockets.length > 0 && connectedDevices.some((id) => id === undefined)) return
+
+    const [sender, recipient, devices] = await Promise.all([
       app.mongo.db
         .collection<{ displayName?: string; handle: string }>('profiles')
         .findOne({ _id: message.senderId as unknown as never }),
       app.mongo.db
         .collection<{ settings?: { notifications?: unknown } }>('profiles')
         .findOne({ _id: recipientId as unknown as never }, { projection: { settings: 1 } }),
-      tokensFor(app.mongo.db, recipientId),
+      devicesFor(app.mongo.db, recipientId),
     ])
+    const tokens = devicesToPush(
+      devices,
+      connectedDevices.filter((id) => id !== undefined),
+    )
     if (tokens.length === 0) return
     // The recipient's choice, per kind now rather than one switch for
     // everything: somebody who wants no streak nudge still wants this.

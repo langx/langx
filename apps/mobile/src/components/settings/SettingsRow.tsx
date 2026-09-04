@@ -375,6 +375,22 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
     case 'about.intro':
       return <ListRow title={t('settings.showIntro')} last={last} onPress={model.replayIntro} />
 
+    case 'notifications.thisDevice':
+      return (
+        <ListRow
+          title={t('settings.pushThisDevice')}
+          subtitle={t('settings.pushThisDeviceBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.pushThisDevice')}
+              value={model.pushOnThisDevice}
+              onValueChange={(next) => void model.togglePushOnThisDevice(next)}
+            />
+          }
+        />
+      )
+
     default: {
       /*
        * Notification kinds: one item per kind, two channel rows under a

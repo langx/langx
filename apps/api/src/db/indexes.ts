@@ -340,6 +340,25 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.devices]: [
     { key: { pushToken: 1 }, name: 'push_token_unique', unique: true },
     { key: { userId: 1 }, name: 'user' },
+    {
+      /**
+       * One row per installation, which is what lets a phone be silenced while
+       * the tablet keeps receiving — and what stops a rotated Expo token from
+       * leaving an orphan row behind.
+       *
+       * `partialFilterExpression`, **not** `sparse`, for the reason spelled out
+       * on `messages.sender_client_id_unique` above: a compound sparse index is
+       * only sparse when *every* indexed field is missing, and `userId` is
+       * always there — so a sparse version would index every pre-`deviceId` row
+       * with a null id and then allow exactly one device per account. Every row
+       * written before this field existed is outside the filter and stays
+       * exactly as it is.
+       */
+      key: { userId: 1, deviceId: 1 },
+      name: 'user_device_unique',
+      unique: true,
+      partialFilterExpression: { deviceId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.profileViews]: [

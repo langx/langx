@@ -89,6 +89,33 @@ export const FLAG_KEYS = {
    * which is when the first screens are captured.
    */
   analyticsOptOut: 'analyticsOptOut',
+  /**
+   * This installation's own id, minted on first use and never sent anywhere
+   * but `/me/devices`.
+   *
+   * Push registration used to identify a device by its Expo token and nothing
+   * else, which made device identity a value Expo is free to rotate — and a
+   * rotation left an orphan row that received nothing and was never pruned.
+   * A stable id is also what lets one phone be silenced while another keeps
+   * receiving, and what lets the server tell "this device is holding a socket"
+   * from "somebody on this account is".
+   *
+   * Device-level for the plainest reason on this list: it *is* the device. It
+   * deliberately survives signing out, so the same phone signing back in
+   * updates its row instead of adding one.
+   */
+  deviceId: 'deviceId',
+  /**
+   * `1` when notifications have been switched off **on this phone**.
+   *
+   * Stored as the refusal, like `analyticsOptOut` and for the same reason: an
+   * unreadable store has to read as the default, and the default is on.
+   *
+   * The account's own per-kind notification settings are a different question
+   * and live on the profile — those say *what*, this says *where*. Both have
+   * to allow before anything is sent.
+   */
+  pushOffOnThisDevice: 'pushOffOnThisDevice',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
