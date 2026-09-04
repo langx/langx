@@ -5,19 +5,29 @@ import { z } from 'zod'
 export {
   AUDIO_CONTENT_TYPES,
   IMAGE_CONTENT_TYPES,
+  MAX_ATTACHMENTS,
   MAX_AUDIO_BYTES,
   MAX_AUDIO_SECONDS,
   MAX_IMAGE_BYTES,
+  MAX_VIDEO_BYTES,
+  MAX_VIDEO_SECONDS,
+  VIDEO_CONTENT_TYPES,
+  attachmentsOf,
+  attachmentsSchema,
   audioContentTypeSchema,
   imageContentTypeSchema,
   isAudioContentType,
   isImageContentType,
+  isVideoContentType,
+  mediaKindSchema,
   mediaSchema,
   messageMediaSchema,
+  videoContentTypeSchema,
   type Media,
+  type MediaKind,
   type MessageMedia,
 } from './media'
-import { mediaSchema } from './media'
+import { attachmentsSchema, mediaKindSchema } from './media'
 
 export const MAX_MESSAGE_LENGTH = 2000
 
@@ -74,7 +84,7 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
  */
 export const MEDIA_UNLOCKS_AFTER_MESSAGES = 5
 
-export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio'] as const
+export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio', 'video'] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
 /**
@@ -359,22 +369,38 @@ export type ConversationFlagsInput = z.infer<typeof conversationFlagsSchema>
 
 export const mediaUploadUrlSchema = z.object({
   conversationId: z.string().trim().min(1),
-  kind: z.enum(['image', 'audio']),
+  kind: mediaKindSchema,
   contentType: z.string().trim().min(1),
 })
 export type MediaUploadUrlInput = z.infer<typeof mediaUploadUrlSchema>
 
 /**
- * Sending an attachment. `body` stays optional and separate: an image with a
- * caption is one message, not two, and a voice note usually has no text at all.
+ * Sending attachments. `body` stays optional and separate: photos with a
+ * caption are one message, not two, and a voice note usually has no text at
+ * all.
+ *
+ * The `preprocess` is what keeps an installed build working. Every binary in
+ * the wild emits `{ kind, media }` — one file, with its kind spelled out —
+ * and it cannot be updated in step with the server, so that shape is rewritten
+ * here into the one the rest of the code now reads. `kind` is dropped rather
+ * than trusted: the content type answers the same question and cannot
+ * disagree with the bytes.
  */
-export const sendMediaMessageSchema = z.object({
-  conversationId: z.string().trim().min(1),
-  kind: z.enum(['image', 'audio']),
-  media: mediaSchema,
-  body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
-  replyToMessageId: z.string().trim().min(1).optional(),
-})
+export const sendMediaMessageSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'object' || value === null) return value
+    const body = value as { attachments?: unknown; media?: unknown; kind?: unknown }
+    if (body.attachments !== undefined || body.media === undefined) return value
+    const { media, kind: _kind, ...rest } = body
+    return { ...rest, attachments: [media] }
+  },
+  z.object({
+    conversationId: z.string().trim().min(1),
+    attachments: attachmentsSchema,
+    body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
+    replyToMessageId: z.string().trim().min(1).optional(),
+  }),
+)
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
 
 /**
