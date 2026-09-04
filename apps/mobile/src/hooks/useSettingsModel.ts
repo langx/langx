@@ -29,7 +29,7 @@ import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../lib/location'
+import { captureLocation, reportLocationFailure } from '../lib/location'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
@@ -153,25 +153,9 @@ export function useSettingsModel() {
     }
     const fix = await captureLocation()
     if (!fix.ok) {
-      /**
-       * A refusal is not an error to report, it is a switch somewhere else.
-       * iOS never asks twice, and Android stops asking after the second no, so
-       * an alert that says "denied" leaves someone holding a toggle that will
-       * not move and no idea why. Say where the switch is, and offer to open
-       * the page it is on.
-       */
-      if (fix.reason === 'denied') {
-        const open = await confirmAlert({
-          title: t('location.deniedTitle'),
-          message: t(
-            Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid',
-          ),
-          confirmLabel: t('location.openSettings'),
-        })
-        if (open) await Linking.openSettings()
-        return
-      }
-      void showAlert(t('location.unavailableTitle'), t(LOCATION_FAILURE_KEY[fix.reason]))
+      // Shared with Discover and the country picker; see the helper for why a
+      // refusal is answered with a route to the switch rather than an error.
+      await reportLocationFailure(fix.reason, t, 'location.unavailableTitle')
       return
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })

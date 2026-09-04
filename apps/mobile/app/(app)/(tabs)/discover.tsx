@@ -37,8 +37,12 @@ import {
   scopeLabel,
   type LanguageScope,
 } from '../../../src/components/LanguageScopeSheet'
-import { showAlert } from '../../../src/lib/alert'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../../../src/lib/location'
+import {
+  captureLocation,
+  locationPermissionState,
+  reportLocationFailure,
+} from '../../../src/lib/location'
+import { shouldRefreshLocation } from '../../../src/lib/locationRefresh'
 import { openPaywall } from '../../../src/lib/paywall'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
@@ -140,7 +144,28 @@ export default function DiscoverScreen() {
       openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }
-    if (!sharingLocation && !(await enableSharing())) return
+    /*
+     * The **OS**, not only the server's flag, and that is the whole of this
+     * fix. A profile keeps its `location` forever once shared, so
+     * `sharingLocation` stayed true after the permission was revoked in
+     * Settings — and the short-circuit then skipped the ask entirely: no
+     * dialog, no error, a `$geoNear` around a point nobody could update and an
+     * empty list with nothing on screen to explain it.
+     */
+    const permission = await locationPermissionState()
+    if (!permission.granted || !sharingLocation) {
+      if (!(await enableSharing())) return
+    } else if (
+      shouldRefreshLocation({
+        hasLocation: true,
+        locationUpdatedAt: me.data?.locationUpdatedAt,
+      })
+    ) {
+      // Sorting by distance around where somebody used to live is worse than
+      // spending a second on a fresh fix. Silent: they have already granted
+      // it, so nothing can pop up here.
+      await enableSharing()
+    }
     setSort('nearby')
   }
 
@@ -148,7 +173,9 @@ export default function DiscoverScreen() {
   async function enableSharing(): Promise<boolean> {
     const fix = await captureLocation()
     if (!fix.ok) {
-      void showAlert(t('location.needed'), t(LOCATION_FAILURE_KEY[fix.reason]))
+      // `location.needed` says what it was for; the helper adds the route to
+      // the switch, which this screen used to be the only one not to offer.
+      await reportLocationFailure(fix.reason, t, 'location.needed')
       return false
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
