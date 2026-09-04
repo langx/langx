@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { languageCodeSchema } from './languages'
 import { languageLevelSchema } from './level'
-import { mediaSchema } from './media'
+import { attachmentsSchema, mediaKindSchema, mediaSchema } from './media'
 
 /**
  * The community feed: a sentence somebody is unsure about, and the corrections
@@ -13,6 +13,19 @@ import { mediaSchema } from './media'
  * and nobody to spend them on. It pays through exactly the same `correction`
  * award as a chat correction, because it is the same behaviour.
  */
+/**
+ * Rewrites the one-attachment body an installed build sends into the many-
+ * attachment one everything now reads. The chat half of this lives in
+ * `sendMediaMessageSchema`; the reasoning is written down there.
+ */
+function withLegacyMedia(value: unknown): unknown {
+  if (typeof value !== 'object' || value === null) return value
+  const body = value as { attachments?: unknown; media?: unknown }
+  if (body.attachments !== undefined || body.media === undefined) return value
+  const { media, ...rest } = body
+  return { ...rest, attachments: [media] }
+}
+
 export const MAX_POST_LENGTH = 300
 export const MAX_POST_NOTE_LENGTH = 500
 
@@ -58,33 +71,40 @@ export const FEED_FOLLOWING_SOURCE_LIMIT = 500
 export const POST_KINDS = ['correction', 'pronunciation'] as const
 export type PostKind = (typeof POST_KINDS)[number]
 
-export const createPostSchema = z.object({
-  body: postBodySchema,
-  /** What language the sentence is in — the one the author is learning. */
-  language: languageCodeSchema,
-  /**
-   * A photo of the sentence, or a recording of it being said.
-   *
-   * An attachment to a sentence, not a replacement for one: `body` stays
-   * required. With no text there is nothing for `corrected` to be an edit of,
-   * and the correction composer seeds itself with the post's words. Loosening
-   * this later is backwards-compatible; tightening it would not be.
-   */
-  media: mediaSchema.optional(),
-  /**
-   * Defaulted, so a client that predates the pronunciation section keeps
-   * posting exactly what it always posted.
-   */
-  kind: z.enum(POST_KINDS).default('correction'),
-})
+export const createPostSchema = z.preprocess(
+  withLegacyMedia,
+  z.object({
+    body: postBodySchema,
+    /** What language the sentence is in — the one the author is learning. */
+    language: languageCodeSchema,
+    /**
+     * Photos or short videos of the thing being asked about, or a recording of
+     * the sentence being said.
+     *
+     * An attachment to a sentence, not a replacement for one: `body` stays
+     * required. With no text there is nothing for `corrected` to be an edit of,
+     * and the correction composer seeds itself with the post's words. Loosening
+     * this later is backwards-compatible; tightening it would not be.
+     */
+    attachments: attachmentsSchema.optional(),
+    /**
+     * Defaulted, so a client that predates the pronunciation section keeps
+     * posting exactly what it always posted.
+     */
+    kind: z.enum(POST_KINDS).default('correction'),
+  }),
+)
 export type CreatePostInput = z.infer<typeof createPostSchema>
 
-export const createPostCorrectionSchema = z.object({
-  corrected: postBodySchema,
-  note: z.string().trim().min(1).max(MAX_POST_NOTE_LENGTH).optional(),
-  /** Usually a recording: hearing it said is the half a written correction cannot give. */
-  media: mediaSchema.optional(),
-})
+export const createPostCorrectionSchema = z.preprocess(
+  withLegacyMedia,
+  z.object({
+    corrected: postBodySchema,
+    note: z.string().trim().min(1).max(MAX_POST_NOTE_LENGTH).optional(),
+    /** Usually a recording: hearing it said is the half a written correction cannot give. */
+    attachments: attachmentsSchema.optional(),
+  }),
+)
 export type CreatePostCorrectionInput = z.infer<typeof createPostCorrectionSchema>
 
 /**
@@ -178,6 +198,8 @@ export const postCorrectionSchema = z.object({
   /** Flat, to read the same way `correctionCount` does one level up. */
   likeCount: z.number().int().nonnegative(),
   likedByViewer: z.boolean(),
+  /** As on a post: `attachments` is the field, `media` its first item. */
+  attachments: z.array(mediaSchema).optional(),
   media: mediaSchema.optional(),
   createdAt: z.string(),
 })
@@ -256,18 +278,22 @@ export const feedPostSchema = z.object({
   likedByViewer: z.boolean(),
   /**
    * The attachment's own kind is not written down: a post's attachment is
-   * unambiguous from its content type, so `isImageContentType` derives it and
-   * there is one less field to keep in step with the bytes. `kind` above is a
-   * different question — what the post is asking for, which nothing in the
-   * bytes can answer.
+   * unambiguous from its content type, so `mediaKindOfContentType` derives it
+   * and there is one less field to keep in step with the bytes. `kind` above
+   * is a different question — what the post is asking for, which nothing in
+   * the bytes can answer.
+   *
+   * `media` is the first attachment, repeated, so a build that predates
+   * `attachments` still shows something. Read through `attachmentsOf`.
    */
+  attachments: z.array(mediaSchema).optional(),
   media: mediaSchema.optional(),
   createdAt: z.string(),
 })
 export type FeedPost = z.infer<typeof feedPostSchema>
 
 export const postMediaUploadUrlSchema = z.object({
-  kind: z.enum(['image', 'audio']),
+  kind: mediaKindSchema,
   contentType: z.string().trim().min(1),
 })
 export type PostMediaUploadUrlInput = z.infer<typeof postMediaUploadUrlSchema>

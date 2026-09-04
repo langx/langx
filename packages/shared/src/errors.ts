@@ -54,8 +54,17 @@ export const ERROR_CODES = {
    * generic "could not be sent" hid this for a whole test cycle.
    */
   UNSUPPORTED_MEDIA_TYPE: 'UNSUPPORTED_MEDIA_TYPE',
-  /** An attachment over `MAX_IMAGE_BYTES` / `MAX_AUDIO_BYTES`. Same reasoning as above. */
+  /** An attachment over its kind's `MEDIA_LIMITS.maxBytes`. Same reasoning as above. */
   MEDIA_TOO_LARGE: 'MEDIA_TOO_LARGE',
+  /**
+   * An attachment longer than its kind's `MEDIA_LIMITS.maxSeconds`.
+   *
+   * Its own code rather than `MEDIA_TOO_LARGE` because a sixty-one-second clip
+   * of six megabytes is not large, and the answer is different: trim it, do
+   * not re-encode it. Folding the two together is exactly the mistake
+   * `UNSUPPORTED_MEDIA_TYPE` was split out to undo.
+   */
+  MEDIA_TOO_LONG: 'MEDIA_TOO_LONG',
 
   // discovery
   /**
@@ -112,6 +121,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   MEDIA_LOCKED: 409,
   UNSUPPORTED_MEDIA_TYPE: 415,
   MEDIA_TOO_LARGE: 413,
+  MEDIA_TOO_LONG: 413,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
   HANDLE_ALREADY_CLAIMED: 409,
