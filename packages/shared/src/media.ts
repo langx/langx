@@ -160,8 +160,8 @@ export const attachmentsSchema = z.array(mediaSchema).min(1).max(MAX_ATTACHMENTS
  * message sent this morning look the same to everything downstream.
  */
 export function attachmentsOf(source: {
-  attachments?: readonly Media[] | null
-  media?: Media | null
+  attachments?: readonly Media[] | null | undefined
+  media?: Media | null | undefined
 }): Media[] {
   if (source.attachments?.length) return [...source.attachments]
   return source.media ? [source.media] : []

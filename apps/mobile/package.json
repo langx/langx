@@ -48,6 +48,7 @@
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.2",
     "expo-updates": "~57.0.18",
+    "expo-video": "~57.0.3",
     "expo-web-browser": "~57.0.1",
     "posthog-react-native": "^4.67.0",
     "react": "catalog:",

@@ -35,7 +35,7 @@ export interface MessageAction {
 export interface MessageActionContext {
   /** Whether the signed-in user sent it. */
   mine: boolean
-  type: 'text' | 'correction' | 'image' | 'audio'
+  type: 'text' | 'correction' | 'image' | 'audio' | 'video'
   /** A voice note without a caption has nothing to copy, quote or translate. */
   hasBody: boolean
   alreadyTranslated: boolean

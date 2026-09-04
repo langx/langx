@@ -10,7 +10,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
-import { pickImageAsset } from '../../src/lib/pickImageAsset'
+import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { makeStyles } from '../../src/lib/theme'
 import { interestLabel, useT } from '../../src/i18n'
 

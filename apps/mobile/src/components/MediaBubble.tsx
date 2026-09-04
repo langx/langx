@@ -1,8 +1,9 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
+import { useVideoPlayer, VideoView } from 'expo-video'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import type { Media } from '@langx/shared'
+import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
@@ -173,6 +174,10 @@ export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => 
   )
 }
 
+/** The width a multi-attachment bubble occupies, and the seam between tiles. */
+const GALLERY_WIDTH = 240
+const GALLERY_GAP = 2
+
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
@@ -185,4 +190,146 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   image: { backgroundColor: colors.fill, borderRadius: radius.md, width: 220 },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },
+  video: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.md,
+    // Android's VideoView does not clip to the rounded corner on its own.
+    overflow: 'hidden',
+    width: 220,
+  },
+  videoFill: { height: '100%', width: '100%' },
+  gallery: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GALLERY_GAP,
+    overflow: 'hidden',
+    width: GALLERY_WIDTH,
+  },
+  tile: { backgroundColor: colors.fill, borderRadius: radius.sm, overflow: 'hidden' },
+  tileFill: { height: '100%', width: '100%' },
+  tileVideo: { backgroundColor: colors.fill, height: '100%', width: '100%' },
+  tilePlay: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  tilePlayGlyph: { color: colors.textMuted, fontSize: 18 },
 }))
+
+/**
+ * A video in a thread, playing in place.
+ *
+ * `nativeControls` rather than our own: a scrub bar, a mute and a fullscreen
+ * button are three things every platform already draws correctly, and the
+ * fullscreen one is what makes a 220-point bubble enough.
+ *
+ * It does not autoplay, and that is deliberate. A thread of clips that all
+ * start as they scroll past is somebody's data allowance and somebody else's
+ * quiet carriage. `useVideoPlayer` releases the native player when the bubble
+ * unmounts, so a long thread does not accumulate them.
+ *
+ * `contain`, not `cover`: `ImageBubble` records why cropping a picture to a
+ * guessed shape is worse than letterboxing it, and here the controls would sit
+ * over the cropped part as well.
+ */
+export function VideoBubble({ media }: { media: Media }) {
+  const styles = useStyles()
+  const player = useVideoPlayer(media.url, (instance) => {
+    instance.loop = false
+  })
+
+  const { width, height } = media
+  // 16:9 when the message carries no dimensions — every phone camera is
+  // landscape or portrait video at a standard ratio, and `contain` means a
+  // wrong guess letterboxes rather than crops.
+  const ratio = width && height ? width / height : 16 / 9
+
+  return (
+    <View style={[styles.video, { aspectRatio: ratio }]}>
+      <VideoView
+        player={player}
+        style={styles.videoFill}
+        contentFit="contain"
+        nativeControls
+        fullscreenOptions={{ enable: true }}
+      />
+    </View>
+  )
+}
+
+/**
+ * One attachment, or several as a grid.
+ *
+ * By content type rather than by the message's `type`: a feed post has no type
+ * at all, and on a message the server has already checked that the two agree.
+ *
+ * The grid is square tiles because a row of mixed aspect ratios is a ragged
+ * edge, and a gallery is scanned rather than looked at — the full shape is one
+ * tap away in the viewer. A single attachment keeps its own proportions, which
+ * is the case that is looked at.
+ */
+export function MediaGallery({
+  items,
+  mine,
+  onOpen,
+}: {
+  items: readonly Media[]
+  mine?: boolean
+  onOpen?: (index: number) => void
+}) {
+  const styles = useStyles()
+  const t = useT()
+
+  const first = items[0]
+  if (!first) return null
+
+  if (items.length === 1) {
+    if (isVideoContentType(first.contentType)) return <VideoBubble media={first} />
+    if (isImageContentType(first.contentType)) {
+      return <ImageBubble media={first} {...(onOpen ? { onPress: () => onOpen(0) } : {})} />
+    }
+    return <AudioBubble media={first} {...(mine !== undefined ? { mine } : {})} />
+  }
+
+  // Two columns up to four, three beyond it, so a tile never falls below a
+  // third of the bubble's width.
+  const columns = items.length <= 4 ? 2 : 3
+  const size = (GALLERY_WIDTH - GALLERY_GAP * (columns - 1)) / columns
+
+  return (
+    <View style={styles.gallery}>
+      {items.map((item, index) => {
+        const video = isVideoContentType(item.contentType)
+        return (
+          <Pressable
+            key={`${item.url}-${index}`}
+            accessibilityRole="button"
+            accessibilityLabel={video ? t('media.playVideo') : t('photo.open')}
+            onPress={onOpen ? () => onOpen(index) : undefined}
+            style={[styles.tile, { height: size, width: size }]}
+          >
+            {video ? (
+              <>
+                {/*
+                 * A still, not a player. Six players in one bubble is six
+                 * decoders for pictures nobody has asked to watch yet; the
+                 * viewer is where a tile becomes a video.
+                 */}
+                <View style={styles.tileVideo} />
+                <View style={styles.tilePlay} pointerEvents="none">
+                  <Text style={styles.tilePlayGlyph}>▶</Text>
+                </View>
+              </>
+            ) : (
+              <Image source={{ uri: item.url }} style={styles.tileFill} contentFit="cover" />
+            )}
+          </Pressable>
+        )
+      })}
+    </View>
+  )
+}

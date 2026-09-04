@@ -37,7 +37,15 @@ export const ptBR: Localized<EnMessages> = {
 
   tabs: { discover: 'Descobrir', chats: 'Conversas', feed: 'Feed', me: 'Eu' },
 
+  composer: {
+    removeAttachment: 'Remover anexo',
+    attachMedia: 'Anexar fotos ou vídeos',
+  },
+
   media: {
+    sourceMediaTitle: 'Adicionar foto ou vídeo',
+    sourceMediaCamera: 'Tirar foto ou gravar vídeo',
+    playVideo: 'Reproduzir vídeo',
     sourceTitle: 'Adicionar uma foto',
     sourceCamera: 'Tirar uma foto',
     sourceLibrary: 'Escolher da galeria',
@@ -100,6 +108,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'Vídeo',
     sent: 'Enviada',
     delivered: 'Entregue',
     read: 'Lida',
@@ -186,6 +195,14 @@ export const ptBR: Localized<EnMessages> = {
     attachmentUnsupported:
       'Esse formato de foto não é compatível. Use uma imagem JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Esse arquivo é grande demais para enviar.',
+    videoTooLong: {
+      one: 'Os vídeos podem ter no máximo um segundo.',
+      other: 'Os vídeos podem ter no máximo {count} segundos.',
+    },
+    tooManyAttachments: {
+      one: 'Você pode anexar um arquivo.',
+      other: 'Você pode anexar até {count} arquivos.',
+    },
     userExists:
       'Já existe uma conta com esse e-mail. Entre, redefina sua senha ou continue com Google ou Apple.',
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
@@ -534,13 +551,12 @@ export const ptBR: Localized<EnMessages> = {
     playAtNormalSpeed: 'Tocar em velocidade normal',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
-      one: 'Fotos e áudios liberam depois de mais uma mensagem.',
-      other: 'Fotos e áudios liberam depois de mais {count} mensagens.',
+      one: 'Fotos, vídeos e mensagens de voz liberam depois de mais uma mensagem.',
+      other: 'Fotos, vídeos e mensagens de voz liberam depois de mais {count} mensagens.',
     },
-    attachPhoto: 'Anexar uma foto',
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',
-    mediaQuota: 'Você chegou ao limite de hoje para fotos e mensagens de voz.',
+    mediaQuota: 'Você atingiu o limite de hoje para fotos, vídeos e mensagens de voz.',
     attachmentFailed: 'Esse anexo não pôde ser enviado. Tente de novo.',
     photosTitle: 'Fotos',
     photosPermission: 'O LangX precisa de permissão para abrir sua galeria.',
@@ -648,11 +664,11 @@ export const ptBR: Localized<EnMessages> = {
     likedBy: 'Curtido por',
     likersEmptyTitle: 'Ainda sem curtidas',
     likersEmptyBody: 'Seja a primeira pessoa a dizer que isso ajudou.',
-    attachPhoto: 'Anexar uma foto',
     recordVoice: 'Gravar um áudio',
-    removeAttachment: 'Remover anexo',
+    photoAttached: 'Foto anexada',
+    videoAttached: 'Vídeo anexado',
     voiceAttached: 'Áudio anexado',
-    photosPermission: 'O LangX precisa acessar suas fotos para anexar uma.',
+    photosPermission: 'O LangX precisa acessar suas fotos e vídeos para anexar um.',
     attachmentFailed: 'O anexo não foi enviado. Tente de novo.',
     mediaQuota: 'Você atingiu o limite de anexos de hoje.',
     allCorrections: 'Todas as correções',

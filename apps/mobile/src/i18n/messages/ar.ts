@@ -50,7 +50,15 @@ export const ar: Localized<EnMessages> = {
 
   tabs: { discover: 'استكشاف', chats: 'المحادثات', feed: 'الأخبار', me: 'أنا' },
 
+  composer: {
+    removeAttachment: 'إزالة المرفق',
+    attachMedia: 'إرفاق صور أو مقاطع فيديو',
+  },
+
   media: {
+    sourceMediaTitle: 'إضافة صورة أو فيديو',
+    sourceMediaCamera: 'التقاط صورة أو فيديو',
+    playVideo: 'تشغيل الفيديو',
     sourceTitle: 'إضافة صورة',
     sourceCamera: 'التقاط صورة',
     sourceLibrary: 'الاختيار من المعرض',
@@ -113,6 +121,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'فيديو',
     sent: 'أُرسلت',
     delivered: 'وصلت',
     read: 'قُرئت',
@@ -238,8 +247,17 @@ export const ar: Localized<EnMessages> = {
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
     invalidCredentials:
       'هذا البريد وكلمة المرور لا يطابقان أي حساب. هل كان لديك حساب في التطبيق السابق؟ أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
-    attachmentUnsupported: 'صيغة هذه الصورة غير مدعومة. استخدم صورة بصيغة JPEG أو PNG أو WebP.',
+    attachmentUnsupported:
+      'هذه الصيغة غير مدعومة. استخدم صورة JPEG أو PNG أو WebP، أو فيديو MP4 أو MOV.',
     attachmentTooLarge: 'هذا الملف أكبر من أن يُرسل.',
+    videoTooLong: {
+      one: 'يمكن أن تصل مدة الفيديو إلى ثانية واحدة.',
+      other: 'يمكن أن تصل مدة الفيديو إلى {count} ثانية.',
+    },
+    tooManyAttachments: {
+      one: 'يمكنك إرفاق ملف واحد.',
+      other: 'يمكنك إرفاق ما يصل إلى {count} ملفات.',
+    },
     userExists:
       'يوجد حساب بهذا البريد بالفعل. سجّل الدخول أو أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
@@ -635,13 +653,12 @@ export const ar: Localized<EnMessages> = {
     playAtNormalSpeed: 'تشغيل بالسرعة العادية',
     mediaLockedTitle: 'ليس بعد',
     mediaLocked: {
-      one: 'تُفتح الصور والرسائل الصوتية بعد رسالة واحدة أخرى.',
-      other: 'تُفتح الصور والرسائل الصوتية بعد {count} رسائل أخرى.',
+      one: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد رسالة واحدة أخرى.',
+      other: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد {count} رسائل أخرى.',
     },
-    attachPhoto: 'إرفاق صورة',
     copied: 'تم النسخ',
     couldNotSend: 'تعذّر الإرسال',
-    mediaQuota: 'بلغت حدّ اليوم للصور والرسائل الصوتية.',
+    mediaQuota: 'لقد بلغت حد اليوم للصور ومقاطع الفيديو والرسائل الصوتية.',
     attachmentFailed: 'تعذّر إرسال هذا المرفق. حاول مرة أخرى.',
     photosTitle: 'الصور',
     photosPermission: 'يحتاج LangX إلى إذن لفتح مكتبة صورك.',
@@ -778,11 +795,11 @@ export const ar: Localized<EnMessages> = {
     likedBy: 'أعجب به',
     likersEmptyTitle: 'لا إعجابات بعد',
     likersEmptyBody: 'كن أول من يقول إن هذا ساعده.',
-    attachPhoto: 'إرفاق صورة',
     recordVoice: 'تسجيل مقطع صوتي',
-    removeAttachment: 'إزالة المرفق',
+    photoAttached: 'تم إرفاق صورة',
+    videoAttached: 'تم إرفاق فيديو',
     voiceAttached: 'أُرفق مقطع صوتي',
-    photosPermission: 'يحتاج LangX إلى الوصول إلى صورك لإرفاق واحدة.',
+    photosPermission: 'يحتاج LangX إلى الوصول إلى صورك ومقاطع الفيديو لديك لإرفاق واحد.',
     attachmentFailed: 'لم يُرفع المرفق. حاول مرة أخرى.',
     mediaQuota: 'بلغت حد المرفقات لهذا اليوم.',
     allCorrections: 'كل التصحيحات',

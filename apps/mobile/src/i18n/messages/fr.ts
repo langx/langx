@@ -37,7 +37,15 @@ export const fr: Localized<EnMessages> = {
 
   tabs: { discover: 'Découvrir', chats: 'Discussions', feed: 'Fil', me: 'Moi' },
 
+  composer: {
+    removeAttachment: 'Retirer la pièce jointe',
+    attachMedia: 'Joindre des photos ou des vidéos',
+  },
+
   media: {
+    sourceMediaTitle: 'Ajouter une photo ou une vidéo',
+    sourceMediaCamera: 'Prendre une photo ou une vidéo',
+    playVideo: 'Lire la vidéo',
     sourceTitle: 'Ajouter une photo',
     sourceCamera: 'Prendre une photo',
     sourceLibrary: 'Choisir dans la galerie',
@@ -106,6 +114,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'Vidéo',
     sent: 'Envoyé',
     delivered: 'Distribué',
     read: 'Lu',
@@ -192,6 +201,14 @@ export const fr: Localized<EnMessages> = {
     attachmentUnsupported:
       'Ce format de photo n’est pas pris en charge. Utilise une image JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Ce fichier est trop volumineux pour être envoyé.',
+    videoTooLong: {
+      one: 'Les vidéos ne peuvent pas dépasser une seconde.',
+      other: 'Les vidéos ne peuvent pas dépasser {count} secondes.',
+    },
+    tooManyAttachments: {
+      one: 'Vous pouvez joindre un fichier.',
+      other: 'Vous pouvez joindre jusqu’à {count} fichiers.',
+    },
     userExists:
       'Un compte existe déjà avec cet e-mail. Connectez-vous, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
     emailNotVerified: 'Vérifie d’abord ton adresse e-mail — regarde ta boîte de réception.',
@@ -544,13 +561,12 @@ export const fr: Localized<EnMessages> = {
     playAtNormalSpeed: 'Lire à vitesse normale',
     mediaLockedTitle: 'Pas encore',
     mediaLocked: {
-      one: 'Photos et messages vocaux après un message de plus.',
-      other: 'Photos et messages vocaux après {count} messages de plus.',
+      one: 'Les photos, vidéos et notes vocales s’ouvrent après un message de plus.',
+      other: 'Les photos, vidéos et notes vocales s’ouvrent après {count} messages de plus.',
     },
-    attachPhoto: 'Joindre une photo',
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
-    mediaQuota: 'Tu as atteint la limite du jour pour les photos et les messages vocaux.',
+    mediaQuota: 'Vous avez atteint la limite du jour pour les photos, vidéos et messages vocaux.',
     attachmentFailed: 'Cette pièce jointe n’a pas pu être envoyée. Réessaie.',
     photosTitle: 'Photos',
     photosPermission: 'LangX a besoin d’une autorisation pour ouvrir ta photothèque.',
@@ -659,11 +675,11 @@ export const fr: Localized<EnMessages> = {
     likedBy: 'Aimé par',
     likersEmptyTitle: 'Pas encore de j’aime',
     likersEmptyBody: 'Soyez la première personne à dire que cela a aidé.',
-    attachPhoto: 'Joindre une photo',
     recordVoice: 'Enregistrer une note vocale',
-    removeAttachment: 'Retirer la pièce jointe',
+    photoAttached: 'Photo jointe',
+    videoAttached: 'Vidéo jointe',
     voiceAttached: 'Note vocale jointe',
-    photosPermission: 'LangX a besoin d’accéder à vos photos pour en joindre une.',
+    photosPermission: 'LangX a besoin d’accéder à vos photos et vidéos pour en joindre une.',
     attachmentFailed: 'La pièce jointe n’a pas été envoyée. Réessayez.',
     mediaQuota: 'Vous avez atteint la limite de pièces jointes du jour.',
     allCorrections: 'Toutes les corrections',

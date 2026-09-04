@@ -11,6 +11,7 @@ import {
   type PlanFeature,
   type PlanTier,
   type CheckInResult,
+  type MediaKind,
 } from '@langx/shared'
 import type {
   HandleSearchPage,
@@ -416,8 +417,11 @@ export interface MessageDto {
   _id: string
   conversationId: string
   senderId: string
-  type: 'text' | 'correction' | 'image' | 'audio'
+  type: 'text' | 'correction' | 'image' | 'audio' | 'video'
   body: string
+  /** Everything attached, in the order it was sent. Read with `attachmentsOf`. */
+  attachments?: MessageMediaDto[]
+  /** The first attachment, repeated by the server for builds without the list. */
   media?: MessageMediaDto
   correction?: { original: string; corrected: string; note?: string }
   /** A snapshot taken when the reply was sent, so it survives the target. */
@@ -1294,7 +1298,7 @@ export function useRemovePhoto() {
  */
 export async function uploadMessageMedia(input: {
   conversationId: string
-  kind: 'image' | 'audio'
+  kind: MediaKind
   uri: string
   contentType: string
   durationSeconds?: number
@@ -1345,7 +1349,7 @@ export async function uploadMessageMedia(input: {
  * name yet — the post does not exist until the upload has already succeeded.
  */
 export async function uploadPostMedia(input: {
-  kind: 'image' | 'audio'
+  kind: MediaKind
   uri: string
   contentType: string
   durationSeconds?: number

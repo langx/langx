@@ -47,7 +47,15 @@ export const ru: Localized<EnMessages> = {
 
   tabs: { discover: 'Поиск', chats: 'Чаты', feed: 'Лента', me: 'Я' },
 
+  composer: {
+    removeAttachment: 'Убрать вложение',
+    attachMedia: 'Прикрепить фото или видео',
+  },
+
   media: {
+    sourceMediaTitle: 'Добавить фото или видео',
+    sourceMediaCamera: 'Снять фото или видео',
+    playVideo: 'Воспроизвести видео',
     sourceTitle: 'Добавить фото',
     sourceCamera: 'Сделать фото',
     sourceLibrary: 'Выбрать из галереи',
@@ -112,6 +120,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'Видео',
     sent: 'Отправлено',
     delivered: 'Доставлено',
     read: 'Прочитано',
@@ -228,6 +237,14 @@ export const ru: Localized<EnMessages> = {
     attachmentUnsupported:
       'Этот формат фото не поддерживается. Используй изображение JPEG, PNG или WebP.',
     attachmentTooLarge: 'Этот файл слишком большой для отправки.',
+    videoTooLong: {
+      one: 'Видео может длиться не больше одной секунды.',
+      other: 'Видео может длиться не больше {count} секунд.',
+    },
+    tooManyAttachments: {
+      one: 'Можно прикрепить один файл.',
+      other: 'Можно прикрепить до {count} файлов.',
+    },
     userExists:
       'Аккаунт с такой почтой уже есть. Войдите, сбросьте пароль или продолжите через Google или Apple.',
     emailNotVerified: 'Сначала подтверди почту — посмотри входящие.',
@@ -612,13 +629,12 @@ export const ru: Localized<EnMessages> = {
     playAtNormalSpeed: 'Обычная скорость',
     mediaLockedTitle: 'Пока нет',
     mediaLocked: {
-      one: 'Фото и голосовые откроются ещё через одно сообщение.',
-      other: 'Фото и голосовые откроются ещё через {count} сообщения.',
+      one: 'Фото, видео и голосовые откроются ещё через одно сообщение.',
+      other: 'Фото, видео и голосовые откроются ещё через {count} сообщения.',
     },
-    attachPhoto: 'Прикрепить фото',
     copied: 'Скопировано',
     couldNotSend: 'Не удалось отправить',
-    mediaQuota: 'Ты исчерпал дневной лимит на фото и голосовые.',
+    mediaQuota: 'Вы достигли сегодняшнего лимита на фото, видео и голосовые сообщения.',
     attachmentFailed: 'Это вложение не отправилось. Попробуй ещё раз.',
     photosTitle: 'Фото',
     photosPermission: 'LangX нужен доступ, чтобы открыть галерею.',
@@ -749,11 +765,11 @@ export const ru: Localized<EnMessages> = {
     likedBy: 'Понравилось',
     likersEmptyTitle: 'Пока нет отметок',
     likersEmptyBody: 'Скажите первым, что это помогло.',
-    attachPhoto: 'Прикрепить фото',
     recordVoice: 'Записать голосовую заметку',
-    removeAttachment: 'Убрать вложение',
+    photoAttached: 'Фото прикреплено',
+    videoAttached: 'Видео прикреплено',
     voiceAttached: 'Голосовая заметка прикреплена',
-    photosPermission: 'LangX нужен доступ к вашим фото, чтобы прикрепить одно.',
+    photosPermission: 'LangX нужен доступ к вашим фото и видео, чтобы прикрепить их.',
     attachmentFailed: 'Вложение не загрузилось. Попробуйте ещё раз.',
     mediaQuota: 'Вы достигли сегодняшнего лимита вложений.',
     allCorrections: 'Все исправления',

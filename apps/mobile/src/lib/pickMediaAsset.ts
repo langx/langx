@@ -2,6 +2,7 @@ import { isImageContentType } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { Platform } from 'react-native'
 import { chooseAlert } from './alert'
+import { validatePickedAssets, type PickRefusal, type PickedMedia } from './pickedAssets'
 import { currentTranslate } from '../i18n/runtime'
 
 export interface PickedImage {
@@ -124,4 +125,61 @@ async function chooseSource(): Promise<PickSource | null> {
     { label: t('media.sourceCamera'), value: 'camera' },
     { label: t('media.sourceLibrary'), value: 'library' },
   ])
+}
+
+export type PickMediaResult =
+  | { status: 'picked'; media: PickedMedia[]; refused?: PickRefusal }
+  | { status: 'cancelled' }
+  | { status: 'denied'; source: PickSource }
+
+export interface PickMediaOptions {
+  /** How many more files the composer has room for. */
+  remaining: number
+}
+
+/**
+ * The composers' picker: photos *and* videos, several at a time.
+ *
+ * One button and one grid rather than a second "attach video" control. The OS
+ * picker already shows both in one list, they share the one photo-library
+ * permission, and a second button would double the composer's chrome for a
+ * choice the person has already made by the time they look at their library.
+ *
+ * The camera stays single: `allowsMultipleSelection` means nothing to a
+ * capture, and recording is one clip at a time by nature.
+ *
+ * Anything the server would refuse is dropped here with a reason — see
+ * `validatePickedAssets`, which holds the rules and is where they are tested.
+ */
+export async function pickMediaAssets(options: PickMediaOptions): Promise<PickMediaResult> {
+  const source = await chooseSource()
+  if (!source) return { status: 'cancelled' }
+
+  const permission =
+    source === 'camera'
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await requestLibraryPermission()
+  if (!permission.granted) return { status: 'denied', source }
+
+  const launchOptions: ImagePicker.ImagePickerOptions = {
+    mediaTypes: ['images', 'videos'],
+    quality: 0.8,
+    // Also what makes an iPhone hand back H.264 rather than HEVC, which
+    // Android and every browser but Safari would otherwise show as a black
+    // frame. Same option, second reason — see the note above.
+    preferredAssetRepresentationMode:
+      ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
+    ...(source === 'library'
+      ? { allowsMultipleSelection: true, selectionLimit: Math.max(1, options.remaining) }
+      : {}),
+  }
+  const result =
+    source === 'camera'
+      ? await ImagePicker.launchCameraAsync(launchOptions)
+      : await ImagePicker.launchImageLibraryAsync(launchOptions)
+
+  if (result.canceled || !result.assets?.length) return { status: 'cancelled' }
+
+  const { media, refused } = validatePickedAssets(result.assets)
+  return { status: 'picked', media, ...(refused ? { refused } : {}) }
 }

@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
+import { MAX_POST_LENGTH, MAX_VIDEO_SECONDS, POST_KINDS, type PostKind } from '@langx/shared'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../src/components/ui/FormField'
@@ -9,10 +9,10 @@ import { useCorrectPost, useCreatePost, useDeletePost, useFeed, useMe } from '..
 import type { FeedPost } from '../../src/api/types'
 import {
   AttachmentBar,
-  AttachmentPreview,
+  AttachmentPreviewRow,
   type PendingAttachment,
 } from '../../src/components/AttachmentBar'
-import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
+import { AudioBubble, MediaGallery } from '../../src/components/MediaBubble'
 import { PhotoViewer } from '../../src/components/PhotoViewer'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { LevelBars } from '../../src/components/ui/LevelBars'
@@ -33,7 +33,7 @@ import { postLanguages, resolvePostLanguage } from '../../src/lib/postLanguage'
 import { LABEL_MARKER, splitLabel } from '../../src/lib/splitLabel'
 import { makeStyles } from '../../src/lib/theme'
 import { useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
-import { isImageContentType } from '@langx/shared'
+import { attachmentsOf, type Media } from '@langx/shared'
 import { ApiRequestError } from '../../src/api/client'
 import { shareLink } from '../../src/lib/share'
 import { postShareText } from '../../src/lib/shareText'
@@ -135,8 +135,8 @@ export default function FeedScreen() {
   const [draft, setDraft] = useState('')
   const [correctingId, setCorrectingId] = useState<string | null>(null)
   const [correction, setCorrection] = useState('')
-  const [askMedia, setAskMedia] = useState<PendingAttachment | null>(null)
-  const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment | null>(null)
+  const [askMedia, setAskMedia] = useState<PendingAttachment[]>([])
+  const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment[]>([])
   const [uploading, setUploading] = useState(false)
   const { data: session } = authClient.useSession()
   const me = useMe()
@@ -194,7 +194,12 @@ export default function FeedScreen() {
   const languageRef = useRef<View | null>(null)
   const [languageAnchor, setLanguageAnchor] = useState<AnchorRect | null>(null)
   /** Owned by the screen, not the card: a card is recycled out from under it. */
-  const [viewing, setViewing] = useState<string | null>(null)
+  /**
+   * What the viewer is showing and where it opened. A post carries a gallery
+   * now, so arriving on the tile that was tapped is the difference between
+   * paging and hunting.
+   */
+  const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
 
   function openLanguages(): void {
     // Measured on press rather than on layout: the composer moves as the draft
@@ -212,14 +217,20 @@ export default function FeedScreen() {
   }
 
   /**
-   * The attachment is uploaded here, on submit, not when it was picked.
+   * The attachments are uploaded here, on submit, not when they were picked.
    *
    * Picking is not committing: uploading then would spend a day's media quota
    * and leave bytes in the bucket for a post the writer went on to abandon.
+   *
+   * One at a time rather than `Promise.all`. Each file is read into memory as
+   * a blob before it is sent, and six of them at a video's ceiling is not a
+   * budget a phone has.
    */
-  async function attach(pending: PendingAttachment | null) {
-    if (!pending) return undefined
-    return uploadPostMedia(pending)
+  async function attach(pending: readonly PendingAttachment[]) {
+    if (pending.length === 0) return undefined
+    const uploaded = []
+    for (const item of pending) uploaded.push(await uploadPostMedia(item))
+    return uploaded
   }
 
   /**
@@ -248,6 +259,10 @@ export default function FeedScreen() {
       showToast(t('errors.attachmentTooLarge'))
       return
     }
+    if (caught.code === 'MEDIA_TOO_LONG') {
+      showToast(t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS }))
+      return
+    }
     showToast(
       caught.code === 'VALIDATION_FAILED' ? t('feed.wrongPostKind') : t('feed.attachmentFailed'),
     )
@@ -271,9 +286,9 @@ export default function FeedScreen() {
     if (!requireAccount(session?.user)) return
     if (!askLanguage || !draft.trim() || uploading) return
     setUploading(true)
-    let media
+    let attachments
     try {
-      media = await attach(askMedia)
+      attachments = await attach(askMedia)
     } catch {
       setUploading(false)
       showToast(t('feed.attachmentFailed'))
@@ -286,12 +301,12 @@ export default function FeedScreen() {
         body: draft.trim(),
         language: askLanguage,
         kind: section,
-        ...(media ? { media } : {}),
+        ...(attachments ? { attachments } : {}),
       },
       {
         onSuccess: () => {
           setDraft('')
-          setAskMedia(null)
+          setAskMedia([])
           setAsking(false)
           showToast(t('feed.posted'))
         },
@@ -312,9 +327,9 @@ export default function FeedScreen() {
     if (!requireAccount(session?.user)) return
     if (!correction.trim() || uploading) return
     setUploading(true)
-    let media
+    let attachments
     try {
-      media = await attach(correctionMedia)
+      attachments = await attach(correctionMedia)
     } catch {
       setUploading(false)
       showToast(t('feed.attachmentFailed'))
@@ -323,12 +338,12 @@ export default function FeedScreen() {
     setUploading(false)
 
     correctPost.mutate(
-      { postId, corrected: correction.trim(), ...(media ? { media } : {}) },
+      { postId, corrected: correction.trim(), ...(attachments ? { attachments } : {}) },
       {
         onSuccess: () => {
           setCorrectingId(null)
           setCorrection('')
-          setCorrectionMedia(null)
+          setCorrectionMedia([])
           showToast(t('feed.correctionSent'))
         },
         onError: (caught) => {
@@ -337,7 +352,7 @@ export default function FeedScreen() {
           // that cannot succeed.
           if (caught instanceof ApiRequestError && caught.code === 'VALIDATION_FAILED') {
             setCorrectingId(null)
-            setCorrectionMedia(null)
+            setCorrectionMedia([])
             showToast(t('feed.alreadyCorrected'))
             void feed.refetch()
             return
@@ -385,11 +400,14 @@ export default function FeedScreen() {
               autoCapitalize="sentences"
               maxLength={MAX_POST_LENGTH}
             />
-            <AttachmentPreview pending={askMedia} onClear={() => setAskMedia(null)} />
+            <AttachmentPreviewRow
+              pending={askMedia}
+              onRemove={(index) => setAskMedia((items) => items.filter((_, at) => at !== index))}
+            />
             <View style={styles.composeActions}>
               <AttachmentBar
                 pending={askMedia}
-                onPick={setAskMedia}
+                onPick={(picked) => setAskMedia((items) => [...items, ...picked])}
                 disabled={createPost.isPending || uploading}
               />
               <Button
@@ -522,13 +540,12 @@ export default function FeedScreen() {
 
                 <Text style={styles.body}>{item.body}</Text>
 
-                {item.media ? (
+                {attachmentsOf(item).length > 0 ? (
                   <View style={styles.media}>
-                    {isImageContentType(item.media.contentType) ? (
-                      <ImageBubble media={item.media} onPress={() => setViewing(item.media!.url)} />
-                    ) : (
-                      <AudioBubble media={item.media} />
-                    )}
+                    <MediaGallery
+                      items={attachmentsOf(item)}
+                      onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                    />
                   </View>
                 ) : null}
 
@@ -647,16 +664,14 @@ export default function FeedScreen() {
                     {item.topCorrection.note ? (
                       <Text style={styles.topNote}>{item.topCorrection.note}</Text>
                     ) : null}
-                    {item.topCorrection.media ? (
+                    {attachmentsOf(item.topCorrection).length > 0 ? (
                       <View style={styles.media}>
-                        {isImageContentType(item.topCorrection.media.contentType) ? (
-                          <ImageBubble
-                            media={item.topCorrection.media}
-                            onPress={() => setViewing(item.topCorrection!.media!.url)}
-                          />
-                        ) : (
-                          <AudioBubble media={item.topCorrection.media} />
-                        )}
+                        <MediaGallery
+                          items={attachmentsOf(item.topCorrection)}
+                          onOpen={(index) =>
+                            setViewing({ items: attachmentsOf(item.topCorrection!), index })
+                          }
+                        />
                       </View>
                     ) : null}
                     <View style={styles.likeRow}>
@@ -717,13 +732,15 @@ export default function FeedScreen() {
                       autoCapitalize="sentences"
                       maxLength={MAX_POST_LENGTH}
                     />
-                    <AttachmentPreview
+                    <AttachmentPreviewRow
                       pending={correctionMedia}
-                      onClear={() => setCorrectionMedia(null)}
+                      onRemove={(index) =>
+                        setCorrectionMedia((items) => items.filter((_, at) => at !== index))
+                      }
                     />
                     <AttachmentBar
                       pending={correctionMedia}
-                      onPick={setCorrectionMedia}
+                      onPick={(picked) => setCorrectionMedia((items) => [...items, ...picked])}
                       disabled={correctPost.isPending || uploading}
                     />
                     <View style={styles.actions}>
@@ -742,7 +759,7 @@ export default function FeedScreen() {
                         variant="secondary"
                         onPress={() => {
                           setCorrectingId(null)
-                          setCorrectionMedia(null)
+                          setCorrectionMedia([])
                         }}
                         style={styles.grow}
                       />
@@ -796,9 +813,10 @@ export default function FeedScreen() {
         />
       )}
       <PhotoViewer
-        photos={viewing ? [{ url: viewing }] : []}
-        index={viewing ? 0 : null}
+        photos={viewing?.items ?? []}
+        index={viewing?.index ?? null}
         onClose={() => setViewing(null)}
+        onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
       />
     </Screen>
   )

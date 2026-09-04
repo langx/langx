@@ -2,6 +2,9 @@ import Feather from '@expo/vector-icons/Feather'
 import {
   canDeleteForEveryone,
   canEditMessage,
+  MAX_ATTACHMENTS,
+  MAX_VIDEO_SECONDS,
+  type Media,
   MESSAGE_REACTIONS,
   PLAN_LIMITS,
   TOKEN_RULES,
@@ -39,6 +42,10 @@ import { ComposerHint } from '../../../src/components/ComposerHint'
 import { Tip } from '../../../src/components/Tip'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
+import {
+  AttachmentPreviewRow,
+  type PendingAttachment,
+} from '../../../src/components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -60,7 +67,7 @@ import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
-import { pickImageAsset } from '../../../src/lib/pickImageAsset'
+import { pickMediaAssets } from '../../../src/lib/pickMediaAsset'
 import { PendingMediaBubble } from '../../../src/components/PendingMediaBubble'
 import {
   addPending,
@@ -130,6 +137,18 @@ export default function ChatScreen() {
   const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
+  /**
+   * Picked, and waiting for the send button.
+   *
+   * Chat used to upload the moment you picked, on the grounds that in a thread
+   * picking *is* sending. It is not: it is choosing, and the two questions
+   * somebody asks straight afterwards — which photo, and how do I take it back
+   * — had no answer at all. These sit above the composer as thumbnails with a
+   * cross, and go up when the message does, which also means a caption can be
+   * typed for them first. The rows below with a progress bar are the *next*
+   * state, after the send.
+   */
+  const [pendingMedia, setPendingMedia] = useState<PendingAttachment[]>([])
   /*
    * The viewer is opened by a bubble and owned by the thread. Inside the
    * bubble it would be unmounted by the same virtualisation that recycles the
@@ -140,7 +159,12 @@ export default function ChatScreen() {
    * the conversation happened to be in memory — a different set every time,
    * for no reason the reader can see.
    */
-  const [viewing, setViewing] = useState<string | null>(null)
+  /**
+   * The viewer's contents and where it opened, rather than one URL: a message
+   * can carry six attachments now, and arriving in the viewer on the tile that
+   * was tapped is the difference between paging and hunting.
+   */
+  const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
   const [pending, setPending] = useState<PendingMedia[]>([])
 
   /*
@@ -258,16 +282,87 @@ export default function ChatScreen() {
     typingTimer.current = setTimeout(() => notifyTyping(false), 3000)
   }
 
-  async function sendMedia(
-    kind: 'image' | 'audio',
-    input: {
-      uri: string
-      contentType: string
-      durationSeconds?: number
-      width?: number
-      height?: number
-    },
+  /** A single-file row, back in the shape a send takes, for a retry. */
+  function attachmentOf(row: PendingMedia): PendingAttachment {
+    return {
+      kind: row.kind,
+      uri: row.uri,
+      contentType: row.contentType,
+      ...(row.durationSeconds !== undefined ? { durationSeconds: row.durationSeconds } : {}),
+      ...(row.width !== undefined ? { width: row.width } : {}),
+      ...(row.height !== undefined ? { height: row.height } : {}),
+    }
+  }
+
+  /** The row's progress as it stands, for the transitions that build on it. */
+  function startOf(list: readonly PendingMedia[], clientId: string): UploadProgress {
+    return list.find((row) => row.clientId === clientId)?.progress ?? UPLOAD_START
+  }
+
+  async function pickMedia(): Promise<void> {
+    const remaining = MAX_ATTACHMENTS - pendingMedia.length
+    if (remaining <= 0) {
+      void showAlert(
+        t('chat.couldNotSend'),
+        t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS }),
+      )
+      return
+    }
+    const picked = await pickMediaAssets({ remaining })
+    if (picked.status === 'denied') {
+      // Which permission was refused, not "photos" for both: being told to
+      // allow the photo library after declining the camera is advice that
+      // does not work.
+      void showAlert(
+        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
+        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
+      )
+      return
+    }
+    if (picked.status === 'cancelled') return
+    // Said once, for the first file that was dropped: naming each of six would
+    // be a stack of alerts nobody dismisses.
+    if (picked.refused) {
+      void showAlert(
+        t('chat.couldNotSend'),
+        picked.refused.reason === 'tooLong'
+          ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
+          : picked.refused.reason === 'tooLarge'
+            ? t('errors.attachmentTooLarge')
+            : t('errors.attachmentUnsupported'),
+      )
+    }
+    if (picked.media.length === 0) return
+    setPendingMedia((items) => [...items, ...picked.media.slice(0, remaining)])
+  }
+
+  async function toggleRecording(): Promise<void> {
+    // Guarded at the microphone rather than at the send, because starting a
+    // recording somebody is not allowed to send is a worse answer than not
+    // starting one: they would speak, then be told.
+    if (mediaLockedFor > 0) {
+      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    if (!recorder.isRecording) {
+      const started = await recorder.start()
+      if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
+      return
+    }
+    const recording = await recorder.stop()
+    if (!recording) return
+    // A recording still goes on stop. Holding it for the send button would
+    // make somebody press two things to do what one gesture already finished,
+    // and it cannot be sent beside a picture anyway.
+    await sendAttachments([{ kind: 'audio', ...recording }], undefined)
+  }
+
+  async function sendAttachments(
+    items: readonly PendingAttachment[],
+    body: string | undefined,
   ): Promise<void> {
+    const first = items[0]
+    if (!first) return
     setSendingMedia(true)
     /*
      * The row goes up before a single byte moves. The whole point is that the
@@ -275,27 +370,56 @@ export default function ChatScreen() {
      * upload it is reporting on.
      */
     const clientId = newPendingId()
-    setPending((list) => addPending(list, { clientId, conversationId, kind, ...input }, new Date()))
+    setPending((list) =>
+      addPending(
+        list,
+        { clientId, conversationId, ...first, ...(items.length > 1 ? { files: [...items] } : {}) },
+        new Date(),
+      ),
+    )
     try {
-      const media = await uploadMessageMedia({
-        conversationId,
-        kind,
-        ...input,
-        onProgress: (loaded, total) =>
-          setPending((list) =>
-            list.map((row) =>
-              row.clientId === clientId
-                ? { ...row, progress: advanceUpload(row.progress, loaded, total) }
-                : row,
-            ),
-          ),
-      })
+      const uploaded = []
+      for (const [index, item] of items.entries()) {
+        uploaded.push(
+          await uploadMessageMedia({
+            conversationId,
+            ...item,
+            /*
+             * One bar for the whole message, not one per file. Each upload
+             * reports its own bytes, so a file's fraction is folded into the
+             * slice of the bar that belongs to it — otherwise the bar would
+             * restart at zero six times and read as six failures.
+             */
+            onProgress: (loaded, total) =>
+              setPending((list) =>
+                list.map((row) =>
+                  row.clientId === clientId
+                    ? {
+                        ...row,
+                        progress: advanceUpload(
+                          row.progress,
+                          index + (total > 0 ? loaded / total : 0),
+                          items.length,
+                        ),
+                      }
+                    : row,
+                ),
+              ),
+          }),
+        )
+      }
       // The bytes are up; the socket round-trip is what is left.
       setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
       const socket = await getSocket()
-      await emitWithAck(socket, 'message:media', { conversationId, kind, media })
-      track({ name: 'message_sent', properties: { kind, reply: false } })
+      await emitWithAck(socket, 'message:media', {
+        conversationId,
+        attachments: uploaded,
+        ...(body ? { body } : {}),
+        ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+      })
+      track({ name: 'message_sent', properties: { kind: first.kind, reply: replyingTo !== null } })
       setPending((list) => removePending(list, clientId))
+      setReplyingTo(null)
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched
@@ -315,10 +439,12 @@ export default function ChatScreen() {
           ? t('errors.attachmentUnsupported')
           : code === 'MEDIA_TOO_LARGE'
             ? t('errors.attachmentTooLarge')
-            : code === 'MEDIA_LOCKED'
-              ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
-              : t('chat.attachmentFailed')
-      // Kept as a row rather than an alert-and-discard: the picked file is
+            : code === 'MEDIA_TOO_LONG'
+              ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
+              : code === 'MEDIA_LOCKED'
+                ? t('chat.mediaLocked', { count: Math.max(1, mediaLockedFor) })
+                : t('chat.attachmentFailed')
+      // Kept as a row rather than an alert-and-discard: the picked files are
       // still there, and tapping it tries again. A quota refusal is the
       // exception — retrying cannot help, so that one is dropped above.
       setPending((list) => updatePending(list, clientId, uploadFailed(startOf(list, clientId))))
@@ -326,49 +452,6 @@ export default function ChatScreen() {
     } finally {
       setSendingMedia(false)
     }
-  }
-
-  /** The row's progress as it stands, for the transitions that build on it. */
-  function startOf(list: readonly PendingMedia[], clientId: string): UploadProgress {
-    return list.find((row) => row.clientId === clientId)?.progress ?? UPLOAD_START
-  }
-
-  async function pickImage(): Promise<void> {
-    const picked = await pickImageAsset()
-    if (picked.status === 'denied') {
-      // Which permission was refused, not "photos" for both: being told to
-      // allow the photo library after declining the camera is advice that
-      // does not work.
-      void showAlert(
-        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
-        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
-      )
-      return
-    }
-    if (picked.status === 'cancelled') return
-    if (picked.status === 'unsupported') {
-      void showAlert(t('chat.couldNotSend'), t('errors.attachmentUnsupported'))
-      return
-    }
-    await sendMedia('image', picked.image)
-  }
-
-  async function toggleRecording(): Promise<void> {
-    // Guarded at the microphone rather than at the send, because starting a
-    // recording somebody is not allowed to send is a worse answer than not
-    // starting one: they would speak, then be told.
-    if (mediaLockedFor > 0) {
-      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
-      return
-    }
-    if (!recorder.isRecording) {
-      const started = await recorder.start()
-      if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
-      return
-    }
-    const recording = await recorder.stop()
-    if (!recording) return
-    await sendMedia('audio', recording)
   }
 
   /**
@@ -415,6 +498,18 @@ export default function ChatScreen() {
 
   async function send(): Promise<void> {
     const body = draft.trim()
+    // The attachments are the message when there are any; the draft becomes
+    // their caption, which is why this runs before the empty-body guard.
+    if (pendingMedia.length > 0) {
+      if (sending || sendingMedia) return
+      const items = pendingMedia
+      setPendingMedia([])
+      setDraft('')
+      notifyTyping(false)
+      await sendAttachments(items, body || undefined)
+      listRef.current?.scrollToOffset({ offset: 0, animated: true })
+      return
+    }
     if (!body || sending) return
     setSending(true)
     try {
@@ -827,15 +922,7 @@ export default function ChatScreen() {
                         item={row}
                         onRetry={() => {
                           setPending((list) => removePending(list, row.clientId))
-                          void sendMedia(row.kind, {
-                            uri: row.uri,
-                            contentType: row.contentType,
-                            ...(row.durationSeconds !== undefined
-                              ? { durationSeconds: row.durationSeconds }
-                              : {}),
-                            ...(row.width !== undefined ? { width: row.width } : {}),
-                            ...(row.height !== undefined ? { height: row.height } : {}),
-                          })
+                          void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
                         }}
                       />
                     ))}
@@ -914,7 +1001,7 @@ export default function ChatScreen() {
                   onLongPress={onLongPress}
                   onReply={onReply}
                   onJumpTo={onJumpTo}
-                  onOpenImage={setViewing}
+                  onOpenMedia={(items, index) => setViewing({ items, index })}
                 />
               )
             }
@@ -1037,6 +1124,13 @@ export default function ChatScreen() {
       {/* Android had no `behavior` at all, which is the same as not wrapping
           it — the keyboard covered the composer and the hint row under it. */}
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {/* Above the row rather than inside it: the row holds the send
+            button, and anything that grows in there competes for width with
+            the only control that sends the message. */}
+        <AttachmentPreviewRow
+          pending={pendingMedia}
+          onRemove={(index) => setPendingMedia((items) => items.filter((_, at) => at !== index))}
+        />
         <View style={styles.composer}>
           {recorder.isRecording ? (
             <View style={styles.recording}>
@@ -1053,7 +1147,7 @@ export default function ChatScreen() {
               accessibilityLabel={
                 mediaLockedFor > 0
                   ? t('chat.mediaLocked', { count: mediaLockedFor })
-                  : t('chat.attachPhoto')
+                  : t('composer.attachMedia')
               }
               onPress={() =>
                 mediaLockedFor > 0
@@ -1061,9 +1155,9 @@ export default function ChatScreen() {
                       t('chat.mediaLockedTitle'),
                       t('chat.mediaLocked', { count: mediaLockedFor }),
                     )
-                  : void pickImage()
+                  : void pickMedia()
               }
-              disabled={sendingMedia}
+              disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
               hitSlop={8}
               style={styles.attach}
             >
@@ -1103,15 +1197,17 @@ export default function ChatScreen() {
               : {})}
           />
           {/* The button becomes a microphone when there is nothing to send,
-              which is the gesture people already expect from a chat app. */}
-          {draft.trim() ? (
+              which is the gesture people already expect from a chat app. An
+              attachment with no caption is something to send, so a picked
+              photo turns it back into an arrow. */}
+          {draft.trim() || pendingMedia.length > 0 ? (
             <Pressable
               onPress={() => void send()}
-              disabled={sending}
-              style={[styles.sendButton, sending && styles.sendDisabled]}
+              disabled={sending || sendingMedia}
+              style={[styles.sendButton, (sending || sendingMedia) && styles.sendDisabled]}
             >
               <Feather
-                name={sending ? 'more-horizontal' : 'arrow-up'}
+                name={sending || sendingMedia ? 'more-horizontal' : 'arrow-up'}
                 size={20}
                 color={colors.primaryText}
               />
@@ -1147,8 +1243,8 @@ export default function ChatScreen() {
         </View>
       </KeyboardAvoidingView>
       <PhotoViewer
-        photos={viewing ? [{ url: viewing }] : []}
-        index={viewing ? 0 : null}
+        photos={viewing?.items ?? []}
+        index={viewing?.index ?? null}
         onClose={() => setViewing(null)}
       />
     </Screen>
