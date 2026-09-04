@@ -150,7 +150,15 @@ export function AttachmentPreview({
 
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   previewScroll: { flexGrow: 0, marginBottom: spacing.sm },
-  previewRow: { alignItems: 'center', flexDirection: 'row', gap: 10, paddingTop: 6 },
+  previewRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    // Aligned with the composer's own inset, and enough on top for the crosses,
+    // which sit outside their squares.
+    paddingHorizontal: 14,
+    paddingTop: 8,
+  },
   thumb: {
     backgroundColor: colors.fill,
     borderRadius: radius.md,

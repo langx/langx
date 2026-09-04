@@ -180,6 +180,11 @@ export async function pickMediaAssets(options: PickMediaOptions): Promise<PickMe
 
   if (result.canceled || !result.assets?.length) return { status: 'cancelled' }
 
-  const { media, refused } = validatePickedAssets(result.assets)
+  const { media, refused } = validatePickedAssets(result.assets, {
+    // See `DurationUnit`: the web implementation reports seconds where the
+    // native modules report milliseconds.
+    durationUnit: Platform.OS === 'web' ? 'seconds' : 'milliseconds',
+    room: options.remaining,
+  })
   return { status: 'picked', media, ...(refused ? { refused } : {}) }
 }

@@ -329,7 +329,9 @@ export default function ChatScreen() {
           ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
           : picked.refused.reason === 'tooLarge'
             ? t('errors.attachmentTooLarge')
-            : t('errors.attachmentUnsupported'),
+            : picked.refused.reason === 'tooMany'
+              ? t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS })
+              : t('errors.attachmentUnsupported'),
       )
     }
     if (picked.media.length === 0) return

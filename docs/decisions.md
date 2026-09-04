@@ -2801,12 +2801,12 @@ that fixed HEIC does the second half of this on iOS: it makes PhotoKit export
 an HEVC `.mov` as H.264, without which an iPhone-to-Android video is a black
 frame.
 
-**`runtimeVersion` moves from `sdkVersion` to `fingerprint`.** This is the
-first native module added since the SDK 57 builds, and it is what proved the
-old policy too coarse: every SDK 57 build shares one runtime string, so
-publishing this would have sent a bundle to binaries that do not contain
-`expo-video` and crashed them on the first video bubble — to everyone at once,
-now that merging to main publishes to the production channel. `fingerprint`
-hashes the native project and changes exactly when a build is genuinely needed.
-The cost is real and belongs in the release note: builds installed before this
-change stop receiving updates until they are replaced.
+**It needs a build, and the runtime version is what makes that safe.**
+`expo-video` is the first native module to arrive since _The runtime version is
+a fingerprint_ landed, and so the first thing that guard actually stops: under
+the old `sdkVersion` policy, merging this would have published a bundle to
+store binaries that do not contain the module, and the first video bubble would
+have crashed on an import. Now those phones are offered no update at all and
+keep what they shipped with, until a build carrying `expo-video` replaces it.
+That belongs in the release note either way — nobody sees video until they
+install a new binary.
