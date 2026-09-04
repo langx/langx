@@ -103,16 +103,38 @@ describe('normalizeAttachments', () => {
     expect(del).not.toHaveBeenCalled()
   })
 
-  it('leaves a real AAC note alone, and never fetches a picture', async () => {
+  it('converts nothing for a real AAC note, and never fetches a picture', async () => {
     const { deps: d, get, put } = deps({ get: vi.fn(() => Promise.resolve(AAC_BYTES)) })
     const items: Media[] = [
-      { url: `${BUCKET}/messages/c1/a.m4a`, contentType: 'audio/mp4', sizeBytes: 1000 },
+      {
+        url: `${BUCKET}/messages/c1/a.m4a`,
+        contentType: 'audio/mp4',
+        sizeBytes: AAC_BYTES.byteLength,
+      },
       { url: `${BUCKET}/messages/c1/a.jpg`, contentType: 'image/jpeg', sizeBytes: 2000 },
     ]
 
     expect(await normalizeAttachments(d, items)).toEqual(items)
     // Once, for the audio; never for the picture.
     expect(get).toHaveBeenCalledTimes(1)
+    expect(put).not.toHaveBeenCalled()
+  })
+
+  /*
+   * Nothing anyone can hear changes here — the file already played. But a row
+   * saying `audio/m4a` and 2,243 bytes about a file that is AAC and 2,031 is
+   * how an afternoon was spent, and `sizeBytes` is the upload's claim rather
+   * than a measurement, so the two part company whenever a file is rewritten.
+   */
+  it('corrects a row that describes a playable file wrongly', async () => {
+    const { deps: d, put } = deps({ get: vi.fn(() => Promise.resolve(AAC_BYTES)) })
+    const [note] = await normalizeAttachments(d, [
+      { url: `${BUCKET}/messages/c1/a.m4a`, contentType: 'audio/m4a', sizeBytes: 2243 },
+    ])
+
+    expect(note?.contentType).toBe('audio/mp4')
+    expect(note?.sizeBytes).toBe(AAC_BYTES.byteLength)
+    // Corrected, not rewritten: the bytes in the bucket were already right.
     expect(put).not.toHaveBeenCalled()
   })
 
