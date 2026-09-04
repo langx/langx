@@ -88,9 +88,11 @@ export async function restoreByHash(
 
   const missing = missingForProfile(legacy)
   if (missing.length > 0) {
-    // Leave the record staged. Onboarding will pre-fill from it and the
-    // restore happens there instead, so nothing is lost — the user just has a
-    // form to finish.
+    // Leave the record staged. The restore runs again from `createProfile`
+    // once the form is finished, and the else branch below copies what the
+    // form did not ask for or the user left empty. (`GET /handle-reservation`
+    // also hands the staged fields to the client for pre-filling; the app
+    // currently reads only the handle from it.)
     return { kind: 'needs-onboarding', missing }
   }
 
@@ -117,9 +119,17 @@ export async function restoreByHash(
     // too. Idempotent, so the overlap with `createProfile` costs nothing.
     await grantSignupBonus(db, userId, now)
   } else {
-    // They onboarded first and are only now proving the email. Restore the
-    // parts the form never asked for.
+    // They onboarded first and are only now proving the email. Restore what
+    // they did not fill in themselves — each field only where the form left
+    // it empty, so nothing they just typed is overwritten by their old self.
+    //
+    // `bio` and `country` used to be missing from this list. The form does
+    // ask for both, but the app never pre-filled them from the staged record,
+    // so someone who skipped the about-you text lost the v1 one for good:
+    // `markRestored` makes this a one-shot and nothing ever came back to it.
     const update: Record<string, unknown> = { updatedAt: now }
+    if (legacy.bio && !existing.bio) update.bio = legacy.bio
+    if (legacy.countryCode && !existing.country) update.country = legacy.countryCode
     if (legacy.avatarUrl && !existing.avatarUrl) update.avatarUrl = legacy.avatarUrl
     if (legacy.photos.length > 0 && (existing.photos ?? []).length === 0) {
       update.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))

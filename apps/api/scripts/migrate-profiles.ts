@@ -354,9 +354,17 @@ async function main(): Promise<void> {
       }
 
       const otherPics = Array.isArray(doc.otherPics) ? (doc.otherPics as unknown[]) : []
-      const alreadyCopied = record.photos.length
+      // Keyed by the slot the photo was written to, not by count: a re-run
+      // after photo 0 was missing and photo 1 copied would otherwise see one
+      // photo, skip index 0 and copy index 1 again — the same picture twice.
+      const alreadyCopied = new Set(
+        record.photos.flatMap((photo) => {
+          const slot = /\/photo-(\d+)\.[a-z0-9]+$/i.exec(photo.url)
+          return slot?.[1] ? [Number(slot[1])] : []
+        }),
+      )
       for (const [index, fileId] of otherPics.entries()) {
-        if (index < alreadyCopied) continue
+        if (alreadyCopied.has(index)) continue
         if (typeof fileId !== 'string' || !fileId) continue
         try {
           const url = await copyFile(
