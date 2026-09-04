@@ -240,13 +240,23 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       /**
        * Still invalidated, unlike `message:new` above. This fires once when
        * someone opens a thread, not once per message, so refetching the
-       * loaded pages is cheap here — and the event is delivered only to the
-       * *other* participant, carrying `readBy`, which is not the unread count
-       * this client draws. Patching it would change nothing visible.
+       * loaded pages is cheap here.
+       *
+       * It reaches two audiences now. For the *other* participant it carries
+       * `readBy` and means "they have seen it", which is a tick on a bubble.
+       * For the reader's own other devices — the second half, added because a
+       * phone left holding a badge for a thread read on a laptop keeps it —
+       * it means their unread total has dropped, and that number is the
+       * server's to give.
        */
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
         void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
         void queryClient.invalidateQueries({ queryKey: ['conversations'] })
+        // This now also reaches the reader's own other devices, where it
+        // means "your unread total just dropped" rather than "they saw it".
+        // The badge cannot be recomputed from here, so it goes back to the
+        // server — the same reason this event is invalidated, not patched.
+        invalidateUnread(queryClient)
       })
     })()
 

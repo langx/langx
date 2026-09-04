@@ -2307,6 +2307,42 @@ keeps the JS thread alive in the background — the chat screen can be the
 focused route with nobody looking at it, and marking a message read there
 clears a badge for something never seen.
 
+## One unread number, three places, and the resync that only covered two
+
+The phone showed a dot on the icon, a `1` on the Chats tab and a `5` on the
+one conversation in the list, all at the same time and all from the same
+field: `conversations.unread[userId]`, which `countUnread` sums for
+`/me/unread` and for a push's `badge`. Nothing was counted twice — the three
+readers were simply refreshed on different paths, and one of them had a hole.
+
+The chat rows live under `['conversations']`, which `invalidateMissedEvents`
+refetches when the app comes back from the background. The tab badge and the
+icon read `['unread']`, which sits outside that prefix on purpose: the socket
+patches `['conversations']` with `setQueriesData` and the patcher walks
+`data.pages`, so a bare number under that prefix would be handed to it and
+throw. The consequence went unnoticed. The only things that invalidated
+`['unread']` were socket events, and a message that arrives while the phone is
+in the background is precisely _not_ one — it is a push. So the row came back
+correct, the badge kept the number it had when the app was last awake, and the
+icon kept whatever the push had written.
+
+The test that looked like it covered this listed `['conversations', 'unread']`
+among the keys it expected to go stale — a key nothing writes, since the
+filters are `all`/`unreplied`/`archived`. It passed for the same reason it was
+meaningless.
+
+So `invalidateMissedEvents` invalidates `['unread']` too, and the icon effect
+is keyed on `dataUpdatedAt` as well as the value: the icon has a second writer
+in the push payload, and a refetch that confirms the number it already held
+must still overwrite what that push left behind. A gap is a gap for all three.
+
+**And a read on one device is news on your other ones.** `conversation:read`
+went only to the other participant, where it means "they have seen it". The
+reader's own second device is holding a badge for messages that no longer
+count, and it has no way to know: it hears nothing, and the total is the
+server's to give. Both emitters now also publish to the reader's own room, and
+the client invalidates the badge when it arrives.
+
 ## The root overlays carry a paint order, not just a place in the tree
 
 The first iOS device test sent a message while the app sat on another tab and

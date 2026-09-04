@@ -589,6 +589,40 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.unread[b.userId]).toBe(0)
   })
 
+  it('reading tells the sender and the reader own other devices', async () => {
+    const a = await newUser('read-fanout-a@example.com')
+    const b = await newUser('read-fanout-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'hey b')
+
+    /*
+     * Both rooms matter and they mean different things. The sender's room
+     * gets a read receipt; the reader's own room gets "your unread total
+     * dropped", which is what a second device of theirs needs to hear before
+     * it will stop drawing a badge for a thread already read elsewhere.
+     */
+    const rooms: string[] = []
+    const io = app.io as unknown as { to: (room: string) => { emit: (event: string) => void } }
+    const realTo = io.to.bind(io)
+    io.to = (room: string) => {
+      rooms.push(room)
+      return realTo(room)
+    }
+
+    try {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/read`,
+        headers: { cookie: b.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+    } finally {
+      io.to = realTo
+    }
+
+    expect(rooms).toContain(`user:${a.userId}`)
+    expect(rooms).toContain(`user:${b.userId}`)
+  })
+
   it('reading over REST marks the thread delivered as well as read', async () => {
     const a = await newUser('read-implies-a@example.com')
     const b = await newUser('read-implies-b@example.com')

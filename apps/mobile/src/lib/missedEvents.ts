@@ -35,6 +35,16 @@ export function resumedFromBackground(previous: AppStateName, next: AppStateName
  * the rest stale for their next mount. The infinite-query "every loaded page"
  * cost that `useSocket` refuses to pay per message is paid once per gap here.
  *
+ * `['unread']` is the third, and leaving it out is what made the app show
+ * three different unread counts at once. It sits outside the `['conversations']`
+ * prefix deliberately (`api/queries` says why — the socket's page-walking
+ * patcher would choke on a bare number), so nothing here reached it, and the
+ * only things that invalidate it are socket events. A message that arrives
+ * while the phone is in the background is precisely *not* a socket event: it
+ * is a push. So the row refetched and read 5, the tab badge kept the 1 it had
+ * from the last `message:new`, and the icon kept whatever the push wrote.
+ * Same gap, same resync.
+ *
  * The literals rather than `keys` from `api/queries`: that module reaches the
  * API client, which the test setup cannot load.
  */
@@ -42,5 +52,6 @@ export async function invalidateMissedEvents(queryClient: QueryClient): Promise<
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: ['conversations'] }),
     queryClient.invalidateQueries({ queryKey: ['messages'] }),
+    queryClient.invalidateQueries({ queryKey: ['unread'] }),
   ])
 }
