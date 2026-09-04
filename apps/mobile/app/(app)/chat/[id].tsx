@@ -798,7 +798,7 @@ export default function ChatScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('common.backPlain')}
-          onPress={() => goBackTo('/(app)/chats')}
+          onPress={() => goBackTo('/(app)/(tabs)/chats')}
           hitSlop={12}
           style={styles.back}
         >

@@ -88,7 +88,7 @@ export default function ProfileScreen() {
         <Button
           label={t('common.backPlain')}
           variant="secondary"
-          onPress={() => goBackTo('/(app)/discover', from)}
+          onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
         />
       </Screen>
     )
@@ -137,7 +137,7 @@ export default function ProfileScreen() {
           return
         }
         if (caught.code === 'CONVERSATION_EXISTS') {
-          router.replace('/(app)/chats')
+          router.replace('/(app)/(tabs)/chats')
           return
         }
         setError(caught.message)
@@ -157,7 +157,7 @@ export default function ProfileScreen() {
     if (yes)
       block.mutate(user._id, {
         onSuccess: () => {
-          router.replace('/(app)/discover')
+          router.replace('/(app)/(tabs)/discover')
           showToast(t('profile.blocked', { name: user.displayName }))
         },
       })
@@ -199,7 +199,7 @@ export default function ProfileScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('common.backPlain')}
-          onPress={() => goBackTo('/(app)/discover', from)}
+          onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
           hitSlop={12}
           style={({ pressed }) => [styles.iconButton, pressed && styles.iconPressed]}
         >

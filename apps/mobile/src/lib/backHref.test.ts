@@ -3,11 +3,11 @@ import { backHref } from './backHref'
 
 describe('backHref', () => {
   it('falls back when no origin was carried', () => {
-    expect(backHref(undefined, '/(app)/me')).toBe('/(app)/me')
+    expect(backHref(undefined, '/(app)/(tabs)/me')).toBe('/(app)/(tabs)/me')
   })
 
   it('honours an origin inside the signed-in area', () => {
-    expect(backHref('/(app)/chats', '/(app)/discover')).toBe('/(app)/chats')
+    expect(backHref('/(app)/(tabs)/chats', '/(app)/(tabs)/discover')).toBe('/(app)/(tabs)/chats')
   })
 
   /** `from` is a string off a URL; a back button is not a redirector. */
@@ -19,7 +19,7 @@ describe('backHref', () => {
       '/(app)/../../etc',
       '',
     ]) {
-      expect(backHref(hostile, '/(app)/me')).toBe('/(app)/me')
+      expect(backHref(hostile, '/(app)/(tabs)/me')).toBe('/(app)/(tabs)/me')
     }
   })
 })

@@ -2,9 +2,10 @@ import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { api } from '../api/client'
 import { keys, useMe } from '../api/queries'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, spacing } from '../lib/theme'
 import { useT } from '../i18n'
 
 function daysLeft(deletedAt: string): number {
@@ -33,6 +34,7 @@ export function DeletionBanner() {
   const me = useMe()
   const queryClient = useQueryClient()
   const [busy, setBusy] = useState(false)
+  const insets = useSafeAreaInsets()
 
   const deletedAt = me.data?.deletedAt
   if (!deletedAt) return null
@@ -53,7 +55,10 @@ export function DeletionBanner() {
   }
 
   return (
-    <View style={styles.root}>
+    // Its own top inset: it sits above the navigator, outside every `Screen`,
+    // and the layout no longer insets for it — doing so insetted every screen
+    // twice.
+    <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
       <View style={styles.text}>
         <Text style={styles.title}>
           {left === 0

@@ -266,7 +266,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       {/*
         First, above Privacy: on a paid product this is what people open

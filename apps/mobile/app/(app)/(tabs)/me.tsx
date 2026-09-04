@@ -1,5 +1,5 @@
-import { LoadFailed } from '../../src/components/LoadFailed'
-import { ActivityMap } from '../../src/components/ActivityMap'
+import { LoadFailed } from '../../../src/components/LoadFailed'
+import { ActivityMap } from '../../../src/components/ActivityMap'
 import {
   countryFlag,
   getCountry,
@@ -20,21 +20,21 @@ import {
   useViewers,
   useWallet,
   useTokens,
-} from '../../src/api/queries'
-import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
-import { PhotoGallery } from '../../src/components/PhotoGallery'
-import { WeeklyChart } from '../../src/components/WeeklyChart'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { CosmeticTitle } from '../../src/components/CosmeticTitle'
-import { Button } from '../../src/components/ui/Button'
-import { LevelBars } from '../../src/components/ui/LevelBars'
-import { ListRow } from '../../src/components/ui/ListRow'
-import { Screen } from '../../src/components/ui/Screen'
-import { StatTile } from '../../src/components/ui/StatTile'
-import { openProfile } from '../../src/lib/navigation'
-import { openPaywall } from '../../src/lib/paywall'
-import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useDisplayNames, useT } from '../../src/i18n'
+} from '../../../src/api/queries'
+import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
+import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { WeeklyChart } from '../../../src/components/WeeklyChart'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
+import { Button } from '../../../src/components/ui/Button'
+import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { ListRow } from '../../../src/components/ui/ListRow'
+import { Screen } from '../../../src/components/ui/Screen'
+import { StatTile } from '../../../src/components/ui/StatTile'
+import { openProfile } from '../../../src/lib/navigation'
+import { openPaywall } from '../../../src/lib/paywall'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useDisplayNames, useT } from '../../../src/i18n'
 
 export default function MeScreen() {
   const { colors } = useTheme()
@@ -242,7 +242,7 @@ export default function MeScreen() {
       <ListRow
         title={t('me.previewProfile')}
         subtitle={t('me.previewProfileBody')}
-        onPress={() => openProfile(profile.handle, '/(app)/me')}
+        onPress={() => openProfile(profile.handle, '/(app)/(tabs)/me')}
       />
       {/*
         A screen rather than the share sheet directly: sending a link and

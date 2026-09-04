@@ -65,7 +65,7 @@ export default function LevelsStep() {
         })),
       })
       await queryClient.invalidateQueries({ queryKey: keys.me })
-      router.replace('/(app)/discover')
+      router.replace('/(app)/(tabs)/discover')
     } catch {
       setSubmitting(false)
       await showAlert(t('welcome.guestFailed'), t('common.retry'))

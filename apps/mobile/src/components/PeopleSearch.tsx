@@ -8,7 +8,7 @@ import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Avatar } from './ui/Avatar'
 
-type SearchHost = '/(app)/discover' | '/(app)/chats'
+type SearchHost = '/(app)/(tabs)/discover' | '/(app)/(tabs)/chats'
 
 interface PeopleSearchProps {
   /** Where a tapped result should come back to. */

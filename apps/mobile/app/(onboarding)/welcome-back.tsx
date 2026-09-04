@@ -73,7 +73,7 @@ export default function WelcomeBackScreen() {
       // and refusing to move them on would be a far worse answer than that.
     } finally {
       setBusy(false)
-      router.replace('/(app)/discover')
+      router.replace('/(app)/(tabs)/discover')
     }
   }
 
@@ -94,7 +94,7 @@ export default function WelcomeBackScreen() {
   // Only the gate sends people here, and only with a restore record. Reaching
   // it any other way — a deep link, or a refetch landing after the
   // acknowledgement — belongs in the app rather than on a blank version of it.
-  if (!restored) return <Redirect href="/(app)/discover" />
+  if (!restored) return <Redirect href="/(app)/(tabs)/discover" />
 
   const handle = me.data?.handle ?? ''
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored

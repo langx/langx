@@ -267,7 +267,10 @@ export default function PaywallScreen() {
         two things this screen sells and would have read wrong above a Fluent
         and a Polyglot column. A screen heading is copy, not a brand mark.
       */}
-      <ScreenHeader title={t('paywall.screenTitle')} onBack={() => goBackTo('/(app)/me', from)} />
+      <ScreenHeader
+        title={t('paywall.screenTitle')}
+        onBack={() => goBackTo('/(app)/(tabs)/me', from)}
+      />
 
       {/*
         Says why this screen opened, when the caller knew. Someone who just

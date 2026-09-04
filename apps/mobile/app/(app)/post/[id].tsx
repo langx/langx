@@ -258,7 +258,7 @@ export default function PostScreen() {
     deletePost.mutate(post._id, {
       onSuccess: () => {
         showToast(t('feed.deleted'))
-        goBackTo('/(app)/feed', from)
+        goBackTo('/(app)/(tabs)/feed', from)
       },
       onError: () => showToast(t('common.retry')),
     })
@@ -282,7 +282,7 @@ export default function PostScreen() {
     <Screen fluid>
       <ScreenHeader
         title={t('feed.post')}
-        onBack={() => goBackTo('/(app)/feed', from)}
+        onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
         trailing={
           post ? (
             <Pressable

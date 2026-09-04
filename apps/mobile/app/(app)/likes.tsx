@@ -38,7 +38,7 @@ export default function LikesScreen() {
     <Screen fluid>
       <ScreenHeader
         title={t('feed.likedBy')}
-        onBack={() => goBackTo('/(app)/feed', from)}
+        onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
         trailing={
           items.length > 0 ? (
             <Text style={styles.countText}>{t('feed.likes', { count: items.length })}</Text>

@@ -1,11 +1,7 @@
-import Feather from '@expo/vector-icons/Feather'
-import { Tabs } from 'expo-router'
-import type { ColorValue } from 'react-native'
-import { useUnreadTotal } from '../../src/api/queries'
+import { Stack } from 'expo-router'
+import { View } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTheme } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
@@ -13,22 +9,19 @@ import { useDailyCheckIn } from '../../src/hooks/useDailyCheckIn'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useSocket } from '../../src/hooks/useSocket'
-import { unreadBadge } from '../../src/lib/unreadBadge'
-
-/** Not a tab, and no tab bar under it either. */
-const FULL_SCREEN = { href: null, tabBarStyle: { display: 'none' } } as const
 
 /**
- * Feather rather than Lucide, which is what the design specifies: Lucide is a
- * fork of Feather and draws the same glyphs, but `lucide-react-native` needs
- * `react-native-svg`, and @expo/vector-icons is already a dependency. A whole
- * native module for a set of icons we already have is not a trade worth making.
- */
-function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: ColorValue }) {
-  return <Feather name={name} size={22} color={color} />
-}
-
-/**
+ * The signed-in area: a native stack whose first entry is the tab navigator.
+ *
+ * It was one flat `Tabs` with every detail screen registered as a hidden tab,
+ * which meant `router.push('/(app)/settings')` switched tab rather than
+ * pushing, so iOS had nothing to swipe back to and every back control was a
+ * `router.replace` (see `backHref` for what that did to "back"). A stack is
+ * the shape a back gesture needs: detail screens are pushed, `router.back()`
+ * pops, Android's system back pops the same entry, and the tab bar is simply
+ * not part of the screens above it — no `href: null`, no hidden bar, no
+ * bottom inset counted twice.
+ *
  * The socket and the push registration are started here, once, for the whole
  * signed-in area — not per screen. A socket opened in the chat screen would
  * miss the message that arrives while the user is on the discovery tab, which
@@ -36,7 +29,6 @@ function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: 
  */
 export default function AppLayout() {
   const { colors } = useTheme()
-  const t = useT()
   const { data: session } = authClient.useSession()
   /*
    * None of the five are for a guest, and the first one is not merely pointless
@@ -51,12 +43,6 @@ export default function AppLayout() {
    */
   const isGuest = shouldGateGuest(session?.user)
   useSocket({ enabled: !isGuest })
-  // A guest has no conversations, so asking for a total would be a request
-  // that can only ever answer zero.
-  const unread = useUnreadTotal(!isGuest)
-  // Spread rather than passed as `undefined`: the option is typed as present
-  // or absent, and an explicit `undefined` is neither.
-  const badge = unreadBadge(unread.data)
   useLocationRefresh({ enabled: !isGuest })
   useDailyCheckIn({ enabled: !isGuest })
   usePushRegistration({ enabled: !isGuest })
@@ -66,114 +52,40 @@ export default function AppLayout() {
   useNotificationRouting({ enabled: !isGuest })
 
   return (
-    /**
-     * The banner lives above the navigator so a pending deletion is visible on
-     * every screen rather than only where someone happens to look. `edges` is
-     * top-only: the tab bar owns the bottom inset.
+    /*
+     * A plain view, not a `SafeAreaView`. This used to inset the top edge for
+     * the banner's sake, and `Screen` insets the top edge too — so every
+     * screen started two insets down, 118pt on an iPhone 16 Pro, with the
+     * title well below the clock. `Screen` keeps its inset (it is the one
+     * place that is right for the auth and onboarding groups as well); the
+     * banner takes its own when it renders.
      */
-    <SafeAreaView style={{ backgroundColor: colors.bg, flex: 1 }} edges={['top']}>
+    <View style={{ backgroundColor: colors.bg, flex: 1 }}>
+      {/* Above the navigator so a pending deletion is visible on every screen. */}
       <DeletionBanner />
-      <Tabs
+      <Stack
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: colors.accent,
-          // `textFaint`, not `textMuted`: v3's inactive tab is the tertiary
-          // grey, so the active blue is the only thing with weight in the bar.
-          tabBarInactiveTintColor: colors.textFaint,
-          // v3 brings the words back under the icons — 11px, semibold.
-          tabBarShowLabel: true,
-          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
-          tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+          /*
+           * The whole screen swipes back, not the 20pt edge strip. Only iOS
+           * reads these; Android has the system gesture and web has the
+           * header's own arrow.
+           */
+          gestureEnabled: true,
+          fullScreenGestureEnabled: true,
+          animation: 'slide_from_right',
         }}
       >
-        <Tabs.Screen
-          name="discover"
-          options={{
-            title: t('tabs.discover'),
-            tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="chats"
-          options={{
-            title: t('tabs.chats'),
-            tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
-            /*
-             * A message that arrives while somebody is on another tab was
-             * invisible until they went looking for it. The count comes from
-             * the server rather than from the loaded chat list, which is paged
-             * and would only ever total what had been scrolled to.
-             */
-            ...(badge
-              ? {
-                  tabBarBadge: badge,
-                  tabBarBadgeStyle: {
-                    backgroundColor: colors.danger,
-                    color: colors.textInverse,
-                  },
-                }
-              : {}),
-          }}
-        />
-        <Tabs.Screen
-          name="feed"
-          options={{
-            title: t('tabs.feed'),
-            tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="me"
-          options={{
-            title: t('tabs.me'),
-            tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
-          }}
-        />
+        {/* The root of the area: nothing to pop to, so nothing to swipe to. */}
+        <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
         {/*
-        Reachable by navigation, never a tab.
-
-        `href: null` only removes the *button*; the screen is still a tab route
-        so the bar keeps being drawn under it — a strip of four tabs beneath
-        every conversation, settings page and paywall. `FULL_SCREEN` hides the
-        bar itself.
-
-        Doing so also corrects a layout bug rather than causing one: `Screen`
-        adds `paddingBottom: insets.bottom` unconditionally *and* the navigator
-        insets content above the bar, so these screens carried the bottom
-        padding twice.
-      */}
-        {/*
-          Badges left the tab bar to make room for the feed, which is the
-          design's call and the right one: the leaderboard is somewhere you go
-          occasionally, and the feed is somewhere there is always something to
-          do. It is reached from the profile, which is where the badge count
-          already lives.
+          Edge-only here: a message bubble's swipe-to-reply is the same
+          rightward drag as the full-screen gesture, and the native recognizer
+          would win it. The edge is where iOS's own apps keep the gesture when
+          the content swipes too.
         */}
-        <Tabs.Screen name="badges" options={FULL_SCREEN} />
-        <Tabs.Screen name="chat/[id]" options={FULL_SCREEN} />
-        <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
-        <Tabs.Screen name="post/[id]" options={FULL_SCREEN} />
-        <Tabs.Screen name="likes" options={FULL_SCREEN} />
-        <Tabs.Screen name="follows" options={FULL_SCREEN} />
-        <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
-        <Tabs.Screen name="blocked" options={FULL_SCREEN} />
-        <Tabs.Screen name="settings" options={FULL_SCREEN} />
-        <Tabs.Screen name="starred" options={FULL_SCREEN} />
-        <Tabs.Screen name="paywall" options={FULL_SCREEN} />
-        <Tabs.Screen name="viewers" options={FULL_SCREEN} />
-        <Tabs.Screen name="filters" options={FULL_SCREEN} />
-        <Tabs.Screen name="intro" options={FULL_SCREEN} />
-        <Tabs.Screen name="link-device" options={FULL_SCREEN} />
-        <Tabs.Screen name="share-profile" options={FULL_SCREEN} />
-        <Tabs.Screen name="invite" options={FULL_SCREEN} />
-        <Tabs.Screen name="wallet" options={FULL_SCREEN} />
-        <Tabs.Screen name="tokens" options={FULL_SCREEN} />
-        <Tabs.Screen name="kitchen" options={FULL_SCREEN} />
-        <Tabs.Screen name="app-language" options={FULL_SCREEN} />
-        <Tabs.Screen name="legal" options={FULL_SCREEN} />
-        <Tabs.Screen name="streak" options={FULL_SCREEN} />
-        <Tabs.Screen name="corrections" options={FULL_SCREEN} />
-      </Tabs>
-    </SafeAreaView>
+        <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
+      </Stack>
+    </View>
   )
 }

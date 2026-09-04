@@ -1,18 +1,15 @@
 import type { Href } from 'expo-router'
 
 /**
- * Where a full-screen route's back control should go.
+ * Where a full-screen route's back control should go when there is nothing to
+ * pop.
  *
- * **Not `router.back()`.** Every screen under `(app)` is registered as a
- * `Tabs.Screen` with `href: null` — see that layout's comment on why it has to
- * be — which makes them tabs rather than stack entries. Moving between tabs
- * replaces instead of stacking, so there is nothing to pop and `back()` resets
- * to the first tab. It reset to Discover until Chats was moved first, at which
- * point every back button in the app started opening Chats.
- *
- * `router.canGoBack()` is no help: measured in a browser it returns `true`
- * from these screens and `back()` still lands on the first tab. Guarding on it
- * would look correct and change nothing.
+ * Until 4 September 2026 every screen under `(app)` was a `Tabs.Screen` with
+ * `href: null`, so nothing was ever pushed and `router.back()` reset to the
+ * first tab; every back control was a `replace` through this. The area is a
+ * stack now and `goBackTo` pops first — this is the fallback for a deep link
+ * opened in a fresh tab, where the history is empty and the `from` param is
+ * the only record of where the reader came from.
  *
  * Separate file from `navigation.ts` so this stays testable — importing
  * `expo-router` for a value pulls in react-native, which the mobile test setup

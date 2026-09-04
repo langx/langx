@@ -16,26 +16,26 @@ import {
   useConversationFlags,
   useConversations,
   useMe,
-} from '../../src/api/queries'
-import { PeopleSearch, PeopleSearchResults } from '../../src/components/PeopleSearch'
-import { Tip } from '../../src/components/Tip'
-import { SwipeableRow } from '../../src/components/SwipeableRow'
-import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { EmptyState } from '../../src/components/ui/EmptyState'
-import { Screen } from '../../src/components/ui/Screen'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { Skeleton } from '../../src/components/ui/Skeleton'
-import { useProfileCache } from '../../src/hooks/useProfileCache'
-import { usePushPermissionPrompt } from '../../src/hooks/usePushRegistration'
-import { chooseAlert, confirmAlert, showAlert } from '../../src/lib/alert'
-import { showToast } from '../../src/lib/toast'
-import { dedupeById } from '../../src/lib/dedupeById'
-import { listState } from '../../src/lib/listState'
-import { makeStyles, useTheme } from '../../src/lib/theme'
-import { relativeTimeCompact } from '../../src/lib/format'
-import { useLocale, useT } from '../../src/i18n'
-import type { MessageKey } from '../../src/i18n/runtime'
+} from '../../../src/api/queries'
+import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
+import { Tip } from '../../../src/components/Tip'
+import { SwipeableRow } from '../../../src/components/SwipeableRow'
+import { ConversationRowSkeleton } from '../../../src/components/skeletons/ConversationRowSkeleton'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { Screen } from '../../../src/components/ui/Screen'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
+import { useProfileCache } from '../../../src/hooks/useProfileCache'
+import { usePushPermissionPrompt } from '../../../src/hooks/usePushRegistration'
+import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
+import { showToast } from '../../../src/lib/toast'
+import { dedupeById } from '../../../src/lib/dedupeById'
+import { listState } from '../../../src/lib/listState'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { relativeTimeCompact } from '../../../src/lib/format'
+import { useLocale, useT } from '../../../src/i18n'
+import type { MessageKey } from '../../../src/i18n/runtime'
 
 /** v3 draws chat avatars at 52, one step up from the 48 default. */
 const AVATAR_SIZE = 52
@@ -125,7 +125,7 @@ export default function ChatsScreen() {
           arrive already knowing who they want: Discover is for finding someone,
           Chats is for finding someone again.
         */}
-        <PeopleSearch from="/(app)/chats" onSearchingChange={setSearching} />
+        <PeopleSearch from="/(app)/(tabs)/chats" onSearchingChange={setSearching} />
         {searching ? null : (
           <Pressable
             accessibilityRole="button"
@@ -172,7 +172,7 @@ export default function ChatsScreen() {
           ))}
         </View>
       ) : searching ? (
-        <PeopleSearchResults from="/(app)/chats" />
+        <PeopleSearchResults from="/(app)/(tabs)/chats" />
       ) : (
         <FlatList
           data={items}
@@ -210,7 +210,7 @@ export default function ChatsScreen() {
               {...(filter === 'all'
                 ? {
                     actionLabel: t('chats.goToDiscover'),
-                    onAction: () => router.push('/(app)/discover'),
+                    onAction: () => router.push('/(app)/(tabs)/discover'),
                   }
                 : {})}
             />

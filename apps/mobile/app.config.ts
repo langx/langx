@@ -70,6 +70,14 @@ const config: ExpoConfig = {
   android: {
     package: ANDROID_PACKAGE,
     /**
+     * Android 13+'s predictive back: the system previews where back leads
+     * before the gesture commits. `react-native-screens` drives the stack's
+     * animation from it. Off by default because a screen that intercepts back
+     * itself would misbehave — none here does; the only custom handling is
+     * `Modal`'s own `onRequestClose`.
+     */
+    predictiveBackGestureEnabled: true,
+    /**
      * FCM's Android client config. Only set when the file is actually there:
      * naming a file that does not exist fails the prebuild, and this repo is
      * public so the file is not committed. Without it the app builds and runs

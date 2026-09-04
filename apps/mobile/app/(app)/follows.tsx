@@ -38,7 +38,7 @@ export default function FollowsScreen() {
     <Screen fluid>
       <ScreenHeader
         title={which === 'followers' ? followersLabel : followingLabel}
-        onBack={() => goBackTo('/(app)/me', from)}
+        onBack={() => goBackTo('/(app)/(tabs)/me', from)}
       />
 
       <SegmentedControl

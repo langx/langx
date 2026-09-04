@@ -2,44 +2,50 @@ import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, MAX_VIDEO_SECONDS, POST_KINDS, type PostKind } from '@langx/shared'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { FormField } from '../../src/components/ui/FormField'
-import { Button } from '../../src/components/ui/Button'
-import { uploadPostMedia } from '../../src/api/queries'
-import { useCorrectPost, useCreatePost, useDeletePost, useFeed, useMe } from '../../src/api/queries'
-import type { FeedPost } from '../../src/api/types'
+import { FormField } from '../../../src/components/ui/FormField'
+import { Button } from '../../../src/components/ui/Button'
+import { uploadPostMedia } from '../../../src/api/queries'
+import {
+  useCorrectPost,
+  useCreatePost,
+  useDeletePost,
+  useFeed,
+  useMe,
+} from '../../../src/api/queries'
+import type { FeedPost } from '../../../src/api/types'
 import {
   AttachmentBar,
   AttachmentPreviewRow,
   type PendingAttachment,
-} from '../../src/components/AttachmentBar'
-import { AudioBubble, MediaGallery } from '../../src/components/MediaBubble'
-import { PhotoViewer } from '../../src/components/PhotoViewer'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { LevelBars } from '../../src/components/ui/LevelBars'
-import { authClient } from '../../src/lib/auth-client'
-import { requireAccount } from '../../src/lib/requireAccount'
-import { LikeButton } from '../../src/components/LikeButton'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { Tip } from '../../src/components/Tip'
-import { Dropdown, type AnchorRect } from '../../src/components/ui/Dropdown'
-import { EmptyState } from '../../src/components/ui/EmptyState'
-import { Screen } from '../../src/components/ui/Screen'
-import { dedupeById } from '../../src/lib/dedupeById'
-import { foldCorrection } from '../../src/lib/feedCache'
-import { openPost, openProfile } from '../../src/lib/navigation'
-import { listState } from '../../src/lib/listState'
-import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
-import { postLanguages, resolvePostLanguage } from '../../src/lib/postLanguage'
-import { LABEL_MARKER, splitLabel } from '../../src/lib/splitLabel'
-import { makeStyles } from '../../src/lib/theme'
-import { useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
+} from '../../../src/components/AttachmentBar'
+import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
+import { PhotoViewer } from '../../../src/components/PhotoViewer'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { authClient } from '../../../src/lib/auth-client'
+import { requireAccount } from '../../../src/lib/requireAccount'
+import { LikeButton } from '../../../src/components/LikeButton'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Tip } from '../../../src/components/Tip'
+import { Dropdown, type AnchorRect } from '../../../src/components/ui/Dropdown'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { Screen } from '../../../src/components/ui/Screen'
+import { dedupeById } from '../../../src/lib/dedupeById'
+import { foldCorrection } from '../../../src/lib/feedCache'
+import { openPost, openProfile } from '../../../src/lib/navigation'
+import { listState } from '../../../src/lib/listState'
+import { FLAG_KEYS, readFlag, writeFlag } from '../../../src/lib/localFlags'
+import { postLanguages, resolvePostLanguage } from '../../../src/lib/postLanguage'
+import { LABEL_MARKER, splitLabel } from '../../../src/lib/splitLabel'
+import { makeStyles } from '../../../src/lib/theme'
+import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { attachmentsOf, type Media } from '@langx/shared'
-import { ApiRequestError } from '../../src/api/client'
-import { shareLink } from '../../src/lib/share'
-import { postShareText } from '../../src/lib/shareText'
-import { confirmAlert } from '../../src/lib/alert'
-import { showToast } from '../../src/lib/toast'
-import { relativeTime } from '../../src/lib/format'
+import { ApiRequestError } from '../../../src/api/client'
+import { shareLink } from '../../../src/lib/share'
+import { postShareText } from '../../../src/lib/shareText'
+import { confirmAlert } from '../../../src/lib/alert'
+import { showToast } from '../../../src/lib/toast'
+import { relativeTime } from '../../../src/lib/format'
 
 /**
  * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list
@@ -489,7 +495,7 @@ export default function FeedScreen() {
                   <Pressable
                     style={styles.whoRow}
                     accessibilityRole="button"
-                    onPress={() => openProfile(item.author.handle, '/(app)/feed')}
+                    onPress={() => openProfile(item.author.handle, '/(app)/(tabs)/feed')}
                   >
                     <Avatar
                       url={item.author.avatarUrl}
@@ -523,7 +529,7 @@ export default function FeedScreen() {
                   */}
                   <Pressable
                     accessibilityRole="button"
-                    onPress={() => openPost(item._id, '/(app)/feed')}
+                    onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
                     hitSlop={8}
                   >
                     <Text
@@ -556,7 +562,7 @@ export default function FeedScreen() {
                     likeCount={item.likeCount}
                     likedByViewer={item.likedByViewer}
                     disabled={mine}
-                    from="/(app)/feed"
+                    from="/(app)/(tabs)/feed"
                   />
                   {/*
                     Beside the like, and shown at zero as an invitation rather
@@ -566,7 +572,7 @@ export default function FeedScreen() {
                   <Pressable
                     accessibilityRole="button"
                     hitSlop={8}
-                    onPress={() => openPost(item._id, '/(app)/feed')}
+                    onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
                     style={({ pressed }) => (pressed ? styles.pressed : null)}
                   >
                     <Text style={styles.commentCount}>
@@ -609,7 +615,9 @@ export default function FeedScreen() {
                   <View style={styles.top}>
                     <Pressable
                       accessibilityRole="button"
-                      onPress={() => openProfile(item.topAnswer!.author.handle, '/(app)/feed')}
+                      onPress={() =>
+                        openProfile(item.topAnswer!.author.handle, '/(app)/(tabs)/feed')
+                      }
                       hitSlop={6}
                     >
                       <Text style={styles.topLabel}>
@@ -643,7 +651,7 @@ export default function FeedScreen() {
                         likeCount={item.topAnswer.likeCount}
                         likedByViewer={item.topAnswer.likedByViewer}
                         disabled={item.topAnswer.author._id === me.data?._id}
-                        from="/(app)/feed"
+                        from="/(app)/(tabs)/feed"
                       />
                     </View>
                   </View>
@@ -653,7 +661,9 @@ export default function FeedScreen() {
                   <View style={styles.top}>
                     <Pressable
                       accessibilityRole="button"
-                      onPress={() => openProfile(item.topCorrection!.author.handle, '/(app)/feed')}
+                      onPress={() =>
+                        openProfile(item.topCorrection!.author.handle, '/(app)/(tabs)/feed')
+                      }
                       hitSlop={6}
                     >
                       <Text style={styles.topLabel}>
@@ -681,7 +691,7 @@ export default function FeedScreen() {
                         likeCount={item.topCorrection.likeCount}
                         likedByViewer={item.topCorrection.likedByViewer}
                         disabled={item.topCorrection.author._id === me.data?._id}
-                        from="/(app)/feed"
+                        from="/(app)/(tabs)/feed"
                       />
                     </View>
                   </View>
@@ -700,7 +710,7 @@ export default function FeedScreen() {
                     ) : (
                       <Pressable
                         accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/feed')}
+                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
                         style={({ pressed }) => [styles.correctPill, pressed && styles.pressed]}
                       >
                         <Text style={styles.correctPillLabel}>{t('feed.answerThis')}</Text>
@@ -709,7 +719,7 @@ export default function FeedScreen() {
                     {item.answerCount > 0 ? (
                       <Pressable
                         accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/feed')}
+                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
                         style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
                       >
                         <Text style={styles.seeAll}>
@@ -797,7 +807,7 @@ export default function FeedScreen() {
                     {item.correctionCount > 0 ? (
                       <Pressable
                         accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/feed')}
+                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
                         style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
                       >
                         <Text style={styles.seeAll}>

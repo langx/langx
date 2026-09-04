@@ -137,7 +137,7 @@ export default function FiltersScreen() {
   function apply(): void {
     // `replace`, not `push`: the filter screen has done its job and should not
     // sit in the history behind the results it produced.
-    router.replace({ pathname: '/(app)/discover', params: toParams(filters) })
+    router.replace({ pathname: '/(app)/(tabs)/discover', params: toParams(filters) })
   }
 
   /**
@@ -203,7 +203,7 @@ export default function FiltersScreen() {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <ScreenHeader
           title={t('filters.title')}
-          onBack={() => goBackTo('/(app)/discover')}
+          onBack={() => goBackTo('/(app)/(tabs)/discover')}
           trailing={
             <Pressable onPress={() => setFilters({})} hitSlop={8}>
               <Text style={styles.reset}>{t('common.reset')}</Text>

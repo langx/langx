@@ -258,10 +258,16 @@ function RootShell() {
                 the empty path, and which one answered a returning guest was
                 decided by route-file order.
               */}
-              <Stack.Screen name="index" />
+              {/*
+                No swipe between the groups. They switch by `replace` and
+                `<Redirect>`, so there is nothing to pop to today — this is
+                what keeps a future `push` from ever swiping a signed-in user
+                back onto the sign-in form.
+              */}
+              <Stack.Screen name="index" options={{ gestureEnabled: false }} />
               <Stack.Protected guard={!!session}>
-                <Stack.Screen name="(onboarding)" />
-                <Stack.Screen name="(app)" />
+                <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
+                <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
               </Stack.Protected>
               {/*
                 `!session` alone was right while every session meant an account.
@@ -271,7 +277,7 @@ function RootShell() {
                 `(app)`, one tap away from `(auth)`.
               */}
               <Stack.Protected guard={!session || isGuest}>
-                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(auth)" options={{ gestureEnabled: false }} />
               </Stack.Protected>
             </Stack>
             {/*

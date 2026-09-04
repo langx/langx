@@ -176,7 +176,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         nativeLanguages: native.map((code) => ({ code })),
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
-      goBackTo('/(app)/me')
+      goBackTo('/(app)/(tabs)/me')
       showToast(t('editProfile.saved'))
     } catch (caught) {
       // The API's message is English and written for a developer.
@@ -187,7 +187,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('editProfile.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('editProfile.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       <View style={styles.avatarRow}>
         <Avatar url={profile.avatarUrl} name={profile.displayName} seed={profile._id} size={60} />

@@ -15,5 +15,17 @@ export default function OnboardingLayout() {
     void hydrateDraft()
   }, [])
 
-  return <Stack screenOptions={{ headerShown: false }} />
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {/*
+        The steps swipe back to each other — the draft persists, so going back
+        a step loses nothing, and the arrow already allows it. The first step
+        has nothing behind it but the gate, and the two terminal screens are
+        reached by `replace` and are not a place to go back from.
+      */}
+      <Stack.Screen name="languages" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="welcome-back" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="done" options={{ gestureEnabled: false }} />
+    </Stack>
+  )
 }

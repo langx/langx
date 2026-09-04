@@ -44,7 +44,7 @@ export default function BadgesScreen() {
     >
       <ScreenHeader
         title={t('leaderboard.badges')}
-        onBack={() => goBackTo('/(app)/me')}
+        onBack={() => goBackTo('/(app)/(tabs)/me')}
         trailing={
           badges.data ? (
             <Text style={styles.count}>

@@ -53,7 +53,7 @@ export default function InviteScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('invite.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('invite.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       <View style={styles.card}>
         <Image

@@ -6,22 +6,22 @@ import {
   type DiscoverySort,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { openProfile } from '../../src/lib/navigation'
+import { openProfile } from '../../../src/lib/navigation'
 import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../src/api/queries'
-import { ApiRequestError } from '../../src/api/client'
-import type { DiscoveryItem } from '../../src/api/types'
-import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryCardSkeleton'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { PeopleSearch, PeopleSearchResults } from '../../src/components/PeopleSearch'
-import { Chip } from '../../src/components/ui/Chip'
-import { EmptyState } from '../../src/components/ui/EmptyState'
-import { LevelBars } from '../../src/components/ui/LevelBars'
-import { Screen } from '../../src/components/ui/Screen'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { Tip } from '../../src/components/Tip'
+import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
+import { ApiRequestError } from '../../../src/api/client'
+import type { DiscoveryItem } from '../../../src/api/types'
+import { DiscoveryCardSkeleton } from '../../../src/components/skeletons/DiscoveryCardSkeleton'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
+import { Chip } from '../../../src/components/ui/Chip'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { Screen } from '../../../src/components/ui/Screen'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Tip } from '../../../src/components/Tip'
 import {
   activeCount,
   hasProFilters,
@@ -31,19 +31,19 @@ import {
   toQuery,
   withoutProFilters,
   type DiscoveryFilters,
-} from '../../src/lib/discoveryFilters'
+} from '../../../src/lib/discoveryFilters'
 import {
   LanguageScopeSheet,
   scopeLabel,
   type LanguageScope,
-} from '../../src/components/LanguageScopeSheet'
-import { showAlert } from '../../src/lib/alert'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
-import { openPaywall } from '../../src/lib/paywall'
-import { dedupeById } from '../../src/lib/dedupeById'
-import { listState } from '../../src/lib/listState'
-import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useDisplayNames, useT, type MessageKey } from '../../src/i18n'
+} from '../../../src/components/LanguageScopeSheet'
+import { showAlert } from '../../../src/lib/alert'
+import { captureLocation, LOCATION_FAILURE_KEY } from '../../../src/lib/location'
+import { openPaywall } from '../../../src/lib/paywall'
+import { dedupeById } from '../../../src/lib/dedupeById'
+import { listState } from '../../../src/lib/listState'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -122,7 +122,7 @@ export default function DiscoverScreen() {
     const learning = scopeOf(next.learning, learningCodes)
     if (native) nextFilters.nativeLanguages = native
     if (learning) nextFilters.learningLanguages = learning
-    router.replace({ pathname: '/(app)/discover', params: toParams(nextFilters) })
+    router.replace({ pathname: '/(app)/(tabs)/discover', params: toParams(nextFilters) })
   }
 
   /**
@@ -136,7 +136,7 @@ export default function DiscoverScreen() {
    */
   async function chooseNearby(): Promise<void> {
     if (!canUseNearby) {
-      openPaywall('nearby', '/(app)/discover')
+      openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }
     if (!sharingLocation && !(await enableSharing())) return
@@ -217,7 +217,7 @@ export default function DiscoverScreen() {
           {/* Beside the filters, not above the list: the two are the same
               question asked two ways — "narrow this" and "I already know who
               I am looking for". */}
-          <PeopleSearch from="/(app)/discover" onSearchingChange={setSearching} />
+          <PeopleSearch from="/(app)/(tabs)/discover" onSearchingChange={setSearching} />
           {searching ? null : (
             <Pressable
               accessibilityRole="button"
@@ -307,7 +307,7 @@ export default function DiscoverScreen() {
       ) : searching ? (
         /* In the list's place, in normal flow — not floated over it. See
            `PeopleSearch` for what floating cost. */
-        <PeopleSearchResults from="/(app)/discover" />
+        <PeopleSearchResults from="/(app)/(tabs)/discover" />
       ) : (
         <FlatList
           data={items}
@@ -346,7 +346,7 @@ export default function DiscoverScreen() {
           }
           renderItem={({ item, index }) => (
             <Pressable
-              onPress={() => openProfile(item.handle, '/(app)/discover')}
+              onPress={() => openProfile(item.handle, '/(app)/(tabs)/discover')}
               style={({ pressed }) => [
                 styles.row,
                 index === items.length - 1 && styles.rowLast,
