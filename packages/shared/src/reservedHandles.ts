@@ -23,6 +23,7 @@ const ROUTE_RESERVED = [
   'blocked',
   'chat',
   'chats',
+  'compose',
   'corrections',
   'corrections',
   'discover',
