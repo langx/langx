@@ -13,6 +13,7 @@ import { buildTokenHistory } from '../../src/lib/tokenHistory'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 /**
  * Where the tokens came from: the totals, the pool, and the ledger a day at a
@@ -54,9 +55,8 @@ export default function TokensScreen() {
     locale,
   })
 
-  function refresh(): void {
-    void Promise.all([xp.refetch(), history.refetch()])
-  }
+  // Above the early return, where hooks have to be.
+  const pull = usePullToRefresh(() => Promise.all([xp.refetch(), history.refetch()]))
 
   if (xp.isPending) {
     return (
@@ -67,7 +67,7 @@ export default function TokensScreen() {
   }
 
   return (
-    <Screen scroll onRefresh={refresh} refreshing={xp.isFetching}>
+    <Screen scroll {...pull}>
       <ScreenHeader title={t('tokens.title')} onBack={() => goBackTo('/(app)/wallet')} />
 
       <View style={styles.tiles}>

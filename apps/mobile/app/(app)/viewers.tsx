@@ -10,12 +10,14 @@ import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 export default function ViewersScreen() {
   const styles = useStyles()
   const t = useT()
 
   const viewers = useViewers()
+  const pull = usePullToRefresh(() => viewers.refetch())
   // `total` and `locked` describe the whole list, so the first page is the
   // authority on both; only `viewers` accumulates.
   const summary = viewers.data?.pages[0]
@@ -53,12 +55,7 @@ export default function ViewersScreen() {
           data={items}
           keyExtractor={(item) => item.userId}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={viewers.isRefetching}
-              onRefresh={() => void viewers.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (viewers.hasNextPage && !viewers.isFetchingNextPage) void viewers.fetchNextPage()

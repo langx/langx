@@ -11,6 +11,7 @@ import { dedupeById } from '../../src/lib/dedupeById'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 /**
  * Blocking is one tap from a profile; unblocking has to live somewhere, and it
@@ -21,6 +22,7 @@ export default function BlockedScreen() {
   const styles = useStyles()
 
   const blocks = useBlocks()
+  const pull = usePullToRefresh(() => blocks.refetch())
   const unblock = useUnblockUser()
   const t = useT()
   const { locale } = useLocale()
@@ -40,12 +42,7 @@ export default function BlockedScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={blocks.isRefetching}
-              onRefresh={() => void blocks.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (blocks.hasNextPage && !blocks.isFetchingNextPage) void blocks.fetchNextPage()

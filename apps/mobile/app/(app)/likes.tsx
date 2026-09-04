@@ -10,6 +10,7 @@ import { dedupeById } from '../../src/lib/dedupeById'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 /**
  * Who liked one post or one correction.
@@ -32,6 +33,7 @@ export default function LikesScreen() {
 
   const here = `/(app)/likes?targetType=${targetType}&targetId=${targetId}`
   const likers = useLikers(targetType, targetId)
+  const pull = usePullToRefresh(() => likers.refetch())
   const items = dedupeById(likers.data?.pages.flatMap((page) => page.items) ?? [])
 
   return (
@@ -53,12 +55,7 @@ export default function LikesScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={likers.isRefetching}
-              onRefresh={() => void likers.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (likers.hasNextPage && !likers.isFetchingNextPage) void likers.fetchNextPage()

@@ -41,6 +41,7 @@ import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -90,6 +91,11 @@ export default function PostScreen() {
   const post = query.data?.pages[0]?.post
   const pronouncing = post?.kind === 'pronunciation'
   const answerQuery = usePostAnswers(id, pronouncing)
+  // Both queries behind one spinner: the answer list is part of this screen,
+  // so a pull that refreshed only half of it would be a lie about the other.
+  const pull = usePullToRefresh(() =>
+    Promise.all([query.refetch(), ...(pronouncing ? [answerQuery.refetch()] : [])]),
+  )
   const commentQuery = usePostComments(id)
 
   const correctPost = useCorrectPost()
@@ -305,15 +311,7 @@ export default function PostScreen() {
           data={replies}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching}
-              onRefresh={() => {
-                void query.refetch()
-                if (pronouncing) void answerQuery.refetch()
-              }}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage()

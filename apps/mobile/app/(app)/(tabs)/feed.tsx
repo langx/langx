@@ -46,6 +46,7 @@ import { postShareText } from '../../../src/lib/shareText'
 import { confirmAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 /**
  * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list
@@ -147,6 +148,7 @@ export default function FeedScreen() {
   const { data: session } = authClient.useSession()
   const me = useMe()
   const feed = useFeed(section)
+  const pull = usePullToRefresh(() => feed.refetch())
   const createPost = useCreatePost()
   const correctPost = useCorrectPost()
   const deletePost = useDeletePost()
@@ -461,9 +463,7 @@ export default function FeedScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl refreshing={feed.isRefetching} onRefresh={() => void feed.refetch()} />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()

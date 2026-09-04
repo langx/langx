@@ -44,6 +44,7 @@ import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -169,6 +170,7 @@ export default function DiscoverScreen() {
     // keyed on and refetch every list each time the radius changed.
     ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
   })
+  const pull = usePullToRefresh(() => query.refetch())
 
   // Deduped for the reason `dedupeById` gives: presence moves
   // `stats.lastActiveAt` about once a minute now, so the `active` keyset can
@@ -316,12 +318,7 @@ export default function DiscoverScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching}
-              onRefresh={() => void query.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
