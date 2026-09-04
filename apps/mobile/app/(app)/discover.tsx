@@ -15,7 +15,7 @@ import { ApiRequestError } from '../../src/api/client'
 import type { DiscoveryItem } from '../../src/api/types'
 import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryCardSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
-import { PeopleSearch } from '../../src/components/PeopleSearch'
+import { PeopleSearch, PeopleSearchResults } from '../../src/components/PeopleSearch'
 import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { LevelBars } from '../../src/components/ui/LevelBars'
@@ -304,9 +304,13 @@ export default function DiscoverScreen() {
           actionLabel={shareLocation.isPending ? t('discover.turningOn') : t('discover.turnOn')}
           onAction={() => void enableSharing()}
         />
+      ) : searching ? (
+        /* In the list's place, in normal flow — not floated over it. See
+           `PeopleSearch` for what floating cost. */
+        <PeopleSearchResults from="/(app)/discover" />
       ) : (
         <FlatList
-          data={searching ? [] : items}
+          data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={
@@ -320,7 +324,7 @@ export default function DiscoverScreen() {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
           }}
           ListEmptyComponent={
-            searching ? null : sort === 'nearby' ? (
+            sort === 'nearby' ? (
               // Two things narrow this list that narrow no other, and a user
               // who is not told about the second one concludes the feature is
               // broken rather than that the pool is small.
@@ -397,13 +401,7 @@ export default function DiscoverScreen() {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
   header: { paddingTop: spacing.md },
-  /*
-   * `zIndex` so `PeopleSearch`'s floated results paint over the list below.
-   * The results carry their own, but `zIndex` only orders within a stacking
-   * context — without one here the segmented control, a later sibling, is
-   * painted after this whole row and covers them.
-   */
-  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, zIndex: 2 },
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
   pairButton: { marginStart: 'auto' },
   pair: { ...font.label, color: colors.accent, fontSize: 14, fontWeight: '700' },

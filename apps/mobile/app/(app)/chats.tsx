@@ -17,7 +17,7 @@ import {
   useConversations,
   useMe,
 } from '../../src/api/queries'
-import { PeopleSearch } from '../../src/components/PeopleSearch'
+import { PeopleSearch, PeopleSearchResults } from '../../src/components/PeopleSearch'
 import { Tip } from '../../src/components/Tip'
 import { SwipeableRow } from '../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
@@ -171,9 +171,11 @@ export default function ChatsScreen() {
             <ConversationRowSkeleton key={key} />
           ))}
         </View>
+      ) : searching ? (
+        <PeopleSearchResults from="/(app)/chats" />
       ) : (
         <FlatList
-          data={searching ? [] : items}
+          data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={
@@ -362,9 +364,6 @@ export default function ChatsScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   filters: { paddingBottom: spacing.sm, paddingTop: spacing.md },
-  // `zIndex` for the same reason Discover's copy of this row carries one:
-  // the search results float, and a later sibling would paint over them.
-  //
   // No `justifyContent`: the title's `flex: 1` is what holds the actions on the
   // trailing edge. `space-between` was right while this row was the title and
   // the star, and became wrong the moment search was dropped between them —
@@ -377,7 +376,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md,
-    zIndex: 2,
   },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
