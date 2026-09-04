@@ -156,6 +156,104 @@ export function notificationsAllowed(
 }
 
 /**
+ * Whether somebody **turned promotions off** on this channel, as opposed to
+ * never having been asked.
+ *
+ * `notificationsAllowed` collapses the two into one "no", which is the only
+ * safe answer to "may I send this?" — and it stays the answer, because the
+ * sender must keep asking that question and no other. This is the second
+ * question, and exactly one caller has it: `audience.ts`, syncing addresses
+ * that consented to marketing somewhere else — at v1's sign-up, on a form —
+ * where a v2 switch nobody has touched is silence rather than refusal. A
+ * refusal is not silence, and it wins over any consent recorded elsewhere.
+ *
+ * A v1 boolean `false` counts: it was one switch over everything, and the
+ * person who set it asked for silence. A v1 `true` does not mean the
+ * opposite here — it never spoke about marketing at all — so it is silence,
+ * and the same goes for a bare `true` per kind.
+ */
+/**
+ * Every set of preferences this codebase has ever **written on somebody's
+ * behalf**, newest first.
+ *
+ * The list is the point. `createProfile` stores the defaults in full rather
+ * than leaving the field empty, so "off because nobody was asked" and "off
+ * because its owner said so" are the same bytes — and the shape of those
+ * written defaults changed twice: the matrix that lived for hours, the bare
+ * boolean per kind from the months when the channel axis was gone, and
+ * today's. An account created under any of them was answered by nobody, and
+ * reading it as a refusal would cancel a consent given somewhere else.
+ *
+ * Only `audience.ts` needs this, through `notificationsUntouched`. A sender
+ * must keep asking `notificationsAllowed` and nothing else: for *sending*,
+ * an unanswered default and a refusal are the same "no", and that is correct.
+ */
+const SYSTEM_WRITTEN_DEFAULTS: StoredNotificationPrefs[] = [
+  DEFAULT_NOTIFICATION_PREFS,
+  // The bare boolean per kind — no `badges`, which did not exist yet.
+  { messages: true, streak: true, profileVisits: true, promotions: false },
+  // The retired matrix, in the shape it was written in.
+  {
+    messages: { push: true, email: false },
+    streak: { push: true, email: false },
+    profileVisits: { push: true, email: false },
+    promotions: { push: false, email: false },
+  },
+]
+
+/** One kind's stored value against the same kind in a default. */
+function sameChoice(
+  stored: StoredNotificationPrefs[NotificationType],
+  expected: StoredNotificationPrefs[NotificationType],
+): boolean {
+  if (typeof stored === 'boolean' || typeof expected === 'boolean') return stored === expected
+  if (!stored || !expected) return false
+  return stored.push === expected.push && stored.email === expected.email
+}
+
+/**
+ * Whether nobody has ever moved a switch on this account.
+ *
+ * True for an absent or empty value, for v1's bare `true` — one switch that
+ * said nothing about marketing — and for any of the defaults this codebase
+ * wrote itself. False once anything differs, anywhere in the object: somebody
+ * who opened that screen and changed one row saw the promotions switch and
+ * left it where it was, which is an answer. v1's `false` is an answer too.
+ *
+ * The whole object is compared rather than the one cell, because a single
+ * `promotions.email: false` is exactly what both a default and a refusal look
+ * like; only its neighbours say which one it is.
+ */
+export function notificationsUntouched(
+  prefs: StoredNotificationPrefs | boolean | undefined,
+): boolean {
+  if (prefs === undefined) return true
+  if (typeof prefs === 'boolean') return prefs
+  const stored = Object.keys(prefs)
+  if (stored.length === 0) return true
+  return SYSTEM_WRITTEN_DEFAULTS.some((snapshot) => {
+    const expected = Object.keys(snapshot) as NotificationType[]
+    return (
+      stored.length === expected.length &&
+      expected.every((type) => sameChoice(prefs[type], snapshot[type]))
+    )
+  })
+}
+
+export function promotionsRefused(
+  prefs: StoredNotificationPrefs | boolean | undefined,
+  channel: NotificationChannel,
+): boolean {
+  if (prefs === undefined) return false
+  if (typeof prefs === 'boolean') return prefs === false
+
+  const chosen = prefs.promotions
+  if (chosen === undefined) return false
+  if (typeof chosen === 'boolean') return chosen === false
+  return chosen[channel] === false
+}
+
+/**
  * The whole eight-cell matrix, with every stored shape already resolved.
  *
  * The settings screen needs all eight to draw its switches, and `updateProfile`

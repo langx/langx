@@ -122,6 +122,22 @@ export async function insertPrecreatedUser(
  * common case — every ordinary sign-in — costs one indexed read and nothing
  * else.
  */
+/**
+ * Whether this account was opened by `precreate-v1-users.ts` rather than by
+ * somebody signing up.
+ *
+ * One indexed read on a field the row either has or does not. `audience.ts`
+ * asks the same question in bulk, off its own sweep of `user`; this is the
+ * single-account form, for the one place that needs it while writing a
+ * profile.
+ */
+export async function cameFromV1(db: Db, userId: string): Promise<boolean> {
+  const user = await db
+    .collection<{ _id: ObjectId; precreatedFromV1?: unknown }>(COLLECTIONS.user)
+    .findOne({ _id: authId(userId) }, { projection: { precreatedFromV1: 1 } })
+  return Boolean(user?.precreatedFromV1)
+}
+
 export async function settlePrecreatedUser(
   db: Db,
   userId: string,

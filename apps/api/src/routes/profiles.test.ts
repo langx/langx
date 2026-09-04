@@ -121,6 +121,56 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(response.json()).toMatchObject({ _id: user.userId, handle: 'freshhandle' })
   })
 
+  /**
+   * The consent v1 took at its sign-up, landing where this app reads consent.
+   * Nothing else may infer `promotions.email`, and nothing does — this is a
+   * recorded answer rather than a guessed one, and its owner sees the switch
+   * on and can turn it off. Push stays off: v1 sent no promotional push.
+   */
+  it('starts a returning v1 account with promotional email on, and says why', async () => {
+    const user = await newUser('precreated-v1@example.com')
+    await handle.db
+      .collection(COLLECTIONS.user)
+      .updateOne(
+        { _id: authId(user.userId) },
+        { $set: { precreatedFromV1: { at: new Date(), legacyUserId: 'v1-id' } } },
+      )
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'returningone' }),
+    })
+    expect(response.statusCode, response.body).toBe(201)
+
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: user.userId })
+    expect(profile?.settings.notifications).toMatchObject({
+      promotions: { push: false, email: true },
+    })
+    expect(profile?.promotionsConsent?.source).toBe('v1')
+  })
+
+  it('leaves promotional email off for somebody who signed up here', async () => {
+    const user = await newUser('fresh-consent@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'freshconsent' }),
+    })
+
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: user.userId })
+    expect(profile?.settings.notifications).toMatchObject({
+      promotions: { push: false, email: false },
+    })
+    expect(profile?.promotionsConsent).toBeUndefined()
+  })
+
   it('rejects a second profile for the same account', async () => {
     const user = await newUser('double-onboard@example.com')
 
