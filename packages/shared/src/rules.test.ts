@@ -26,6 +26,7 @@ import {
   activityScore,
   convertLegacyTokens,
   earnedDayOf,
+  firstPayoutAt,
   newestPayableDay,
   poolShare,
   streakMilestoneBonus,
@@ -321,6 +322,34 @@ describe('xp rules', () => {
     expect(newestPayableDay(new Date('2026-05-10T03:59:59.000Z'))).toBe('2026-05-08')
     expect(newestPayableDay(new Date('2026-05-10T04:00:00.000Z'))).toBe('2026-05-09')
     expect(newestPayableDay(new Date('2026-05-10T23:59:00.000Z'))).toBe('2026-05-09')
+  })
+
+  it('tells a new account when its first share can actually land', () => {
+    // Signed up mid-morning on the 10th. Today closes at 00:00 on the 11th,
+    // which is under the 24-hour ramp-up, so today earns nothing however busy
+    // it is. The 11th closes on the 12th, comfortably past it, and is settled
+    // at 04:00 that morning.
+    expect(
+      firstPayoutAt(new Date('2026-05-10T09:30:00.000Z'), new Date('2026-05-10T10:00:00.000Z')),
+    ).toEqual(new Date('2026-05-12T04:00:00.000Z'))
+
+    // Signed up a week ago, so today is payable: settled tomorrow at 04:00.
+    expect(
+      firstPayoutAt(new Date('2026-05-03T09:30:00.000Z'), new Date('2026-05-10T10:00:00.000Z')),
+    ).toEqual(new Date('2026-05-11T04:00:00.000Z'))
+
+    // Between midnight and the payout hour, yesterday is still ahead of them.
+    expect(
+      firstPayoutAt(new Date('2026-05-03T09:30:00.000Z'), new Date('2026-05-10T02:00:00.000Z')),
+    ).toEqual(new Date('2026-05-11T04:00:00.000Z'))
+
+    // Created exactly at a UTC midnight: that day closes exactly 24 hours
+    // later, and the ramp-up check is `<`, so it qualifies rather than slipping
+    // a day. The boundary is worth pinning — it is the one an off-by-one here
+    // would move without any test noticing.
+    expect(
+      firstPayoutAt(new Date('2026-05-10T00:00:00.000Z'), new Date('2026-05-10T10:00:00.000Z')),
+    ).toEqual(new Date('2026-05-11T04:00:00.000Z'))
   })
 
   it('files a pool share under the day it rewards, not the day it was written', () => {

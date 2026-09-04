@@ -1,8 +1,8 @@
 import { router } from 'expo-router'
-import { TOKEN_RULES } from '@langx/shared'
+import { TOKEN_RULES, firstPayoutAt } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useState } from 'react'
-import { useTokenHistory, useTokens } from '../../src/api/queries'
+import { useMe, useTokenHistory, useTokens } from '../../src/api/queries'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -32,6 +32,7 @@ export default function TokensScreen() {
   const { locale } = useLocale()
 
   const xp = useTokens()
+  const me = useMe()
   const history = useTokenHistory()
   const [openDay, setOpenDay] = useState<string | null>(null)
 
@@ -50,6 +51,21 @@ export default function TokensScreen() {
    */
   const shareCap = TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool
   const lastPayout = pool?.lastPayout ?? null
+  const today = xp.data?.today
+
+  /*
+   * When the next share can land, for somebody who has never had one.
+   *
+   * Not a projected amount — the note on `tokenSummarySchema.pool` explains
+   * why there is deliberately no such number — but a *time*, which is a fact
+   * and the one thing the empty state was missing. "No share yet" on its own
+   * is what a broken pool would say too, and the two rules that make it the
+   * right answer (a day is settled the morning after it closes; an account
+   * inside the ramp-up earns nothing for the day it signed up on) are not
+   * guessable from the screen.
+   */
+  const createdAt = me.data?.createdAt
+  const nextPayoutAt = createdAt ? firstPayoutAt(new Date(createdAt), new Date()) : null
 
   const historyRows = buildTokenHistory({
     days: history.data?.pages.flatMap((page) => page.days) ?? [],
@@ -114,8 +130,33 @@ export default function TokensScreen() {
               />
             </>
           ) : (
-            <Text style={styles.meta}>{t('tokens.noShareYet')}</Text>
+            <Text style={styles.meta}>
+              {nextPayoutAt
+                ? t('tokens.firstShareAt', {
+                    when: nextPayoutAt.toLocaleString(locale, {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    }),
+                  })
+                : t('tokens.noShareYet')}
+            </Text>
           )}
+          {/*
+            Today's own numbers, so the card says something true about the
+            day you are in rather than only about a day that has closed. This
+            is what makes "no share yet" legible: the counters move while you
+            talk, which is the evidence the pool is reading you at all.
+          */}
+          {today ? (
+            <Text style={styles.meta}>
+              {t('tokens.todayActivity', {
+                score: Math.round(today.activityScore),
+                messages: today.messages,
+                corrections: today.corrections,
+                partners: today.distinctPartners,
+              })}
+            </Text>
+          ) : null}
           <Text style={styles.meta}>{t('tokens.poolCap', { cap: shareCap })}</Text>
           <Text style={styles.meta}>
             {t('tokens.poolPaidAt', { hour: TOKEN_RULES.pool.payoutHourUtc })}

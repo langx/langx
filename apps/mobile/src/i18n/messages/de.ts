@@ -1044,6 +1044,9 @@ export const de: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'dein Anteil für {day}',
     noShareYet: 'Noch kein Anteil — der Pool zahlt nach deinem ersten vollen Tag aus.',
+    firstShareAt: 'Dein erster Anteil kommt am {when}.',
+    todayActivity:
+      'Heute bisher: {score} Aktivität · {messages} Nachrichten, {corrections} Korrekturen, {partners} Personen.',
     poolCap: 'Höchstens {cap} pro Tag. Dein Anteil bewegt sich mit allen anderen.',
     poolPaidAt: 'Wird jede Nacht um {hour}:00 UTC ausgezahlt.',
     history: 'Verlauf',

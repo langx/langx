@@ -1026,6 +1026,9 @@ export const tr: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: '{day} için payın',
     noShareYet: 'Henüz pay yok — havuz, ilk tam gününden sonra dağıtım yapar.',
+    firstShareAt: 'İlk payın {when} tarihinde düşecek.',
+    todayActivity:
+      'Bugün şu ana kadar: {score} aktivite · {messages} mesaj, {corrections} düzeltme, {partners} kişi.',
     poolCap: 'Günlük tavan {cap}. Payın herkesin gününe göre değişir.',
     poolPaidAt: 'Her gece {hour}:00 UTC’de yatar.',
     history: 'Geçmiş',

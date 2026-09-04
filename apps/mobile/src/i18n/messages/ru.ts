@@ -1144,6 +1144,9 @@ export const ru: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'ваша доля за {day}',
     noShareYet: 'Доли пока нет — пул выплачивает после первого полного дня.',
+    firstShareAt: 'Первая доля придёт {when}.',
+    todayActivity:
+      'Сегодня: {score} активности · {messages} сообщений, {corrections} исправлений, {partners} собеседников.',
     poolCap: 'Не более {cap} в день. Ваша доля зависит от активности остальных.',
     poolPaidAt: 'Начисляется каждую ночь в {hour}:00 UTC.',
     history: 'История',

@@ -1021,6 +1021,9 @@ export const es: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'tu parte del {day}',
     noShareYet: 'Aún no hay parte: el fondo reparte tras tu primer día completo.',
+    firstShareAt: 'Tu primera parte llegará el {when}.',
+    todayActivity:
+      'Hoy hasta ahora: {score} de actividad · {messages} mensajes, {corrections} correcciones, {partners} personas.',
     poolCap: 'Tope de {cap} al día. Tu parte se mueve con la de los demás.',
     poolPaidAt: 'Se paga cada noche a las {hour}:00 UTC.',
     history: 'Historial',

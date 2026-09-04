@@ -1015,6 +1015,9 @@ export const ptBR: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'sua parte de {day}',
     noShareYet: 'Ainda sem parte — o fundo paga depois do seu primeiro dia completo.',
+    firstShareAt: 'Sua primeira parte chega em {when}.',
+    todayActivity:
+      'Hoje até agora: {score} de atividade · {messages} mensagens, {corrections} correções, {partners} pessoas.',
     poolCap: 'Limite de {cap} por dia. Sua parte muda com a de todo mundo.',
     poolPaidAt: 'Pago toda noite às {hour}:00 UTC.',
     history: 'Histórico',

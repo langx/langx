@@ -1192,6 +1192,9 @@ export const ar: Localized<EnMessages> = {
     shareAmount: '+{count}',
     shareFor: 'نصيبك عن {day}',
     noShareYet: 'لا نصيب بعد — يوزّع الوعاء بعد أول يوم كامل لك.',
+    firstShareAt: 'ستصل حصتك الأولى في {when}.',
+    todayActivity:
+      'اليوم حتى الآن: {score} نشاط · {messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
     poolCap: 'الحد الأقصى {cap} في اليوم. يتغير نصيبك مع نشاط الآخرين.',
     poolPaidAt: 'يُدفع كل ليلة في {hour}:00 بتوقيت UTC.',
     history: 'السجل',

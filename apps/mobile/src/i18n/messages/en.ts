@@ -1064,6 +1064,9 @@ export const en = {
     shareAmount: '+{count}',
     shareFor: 'your share for {day}',
     noShareYet: 'No share yet — the pool pays out after your first full day.',
+    firstShareAt: 'Your first share lands {when}.',
+    todayActivity:
+      'Today so far: {score} activity · {messages} messages, {corrections} corrections, {partners} people.',
     poolCap: "Cap {cap} a day. Your share moves with everyone else's.",
     poolPaidAt: 'Paid every night at {hour}:00 UTC.',
     history: 'History',
