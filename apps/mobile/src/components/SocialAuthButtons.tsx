@@ -7,6 +7,7 @@ import { useT } from '../i18n'
 import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../lib/appleSignIn'
 import { authClient } from '../lib/auth-client'
 import { authErrorKey, oauthReturnErrorKey } from '../lib/errors'
+import { withSignInProgress } from '../lib/signInProgress'
 import { makeStyles } from '../lib/theme'
 import { Button } from './ui/Button'
 
@@ -69,10 +70,9 @@ export function SocialAuthButtons() {
     setSocialError(undefined)
     // No `router.replace` after this one: the browser redirect comes back into
     // the app on its own and the root layout reacts to the new session.
-    const { error: googleError } = await authClient.signIn.social({
-      provider: 'google',
-      ...socialRedirects(),
-    })
+    const { error: googleError } = await withSignInProgress(() =>
+      authClient.signIn.social({ provider: 'google', ...socialRedirects() }),
+    )
     if (googleError) setSocialError(t(authErrorKey(googleError) ?? 'errors.googleSignInFailed'))
   }
 
@@ -93,10 +93,9 @@ export function SocialAuthButtons() {
       // them for changing their mind.
       if (!identity) return
 
-      const { error: appleError } = await authClient.signIn.social({
-        provider: 'apple',
-        idToken: identity,
-      })
+      const { error: appleError } = await withSignInProgress(() =>
+        authClient.signIn.social({ provider: 'apple', idToken: identity }),
+      )
       if (appleError) {
         setSocialError(t(authErrorKey(appleError) ?? 'errors.appleSignInFailed'))
         return

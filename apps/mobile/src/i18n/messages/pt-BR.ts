@@ -281,6 +281,7 @@ export const ptBR: Localized<EnMessages> = {
     name: 'Nome',
     forgotPassword: 'Esqueceu a senha?',
     signIn: 'Entrar',
+    signingIn: 'Entrando…',
     signUp: 'Criar conta',
     continueWithGoogle: 'Continuar com o Google',
     continueWithApple: 'Continuar com a Apple',
@@ -382,6 +383,9 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Restaurando seu perfil',
+    restoringBody:
+      'Sua conta LangX está voltando: seus idiomas, suas fotos e sua sequência. Pode levar um instante; permaneça nesta tela.',
     startExploring: 'Comece a explorar',
     title: 'Que bom te ver de novo',
     subtitle: 'Isto veio junto com você.',

@@ -323,6 +323,7 @@ export const en = {
     name: 'Name',
     forgotPassword: 'Forgot password?',
     signIn: 'Sign in',
+    signingIn: 'Signing you in…',
     signUp: 'Sign up',
     continueWithGoogle: 'Continue with Google',
     continueWithApple: 'Continue with Apple',
@@ -424,6 +425,9 @@ export const en = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Restoring your profile',
+    restoringBody:
+      'Your LangX account is coming back — your languages, your photos and your streak. This can take a moment; please stay on this screen.',
     startExploring: 'Start exploring',
     title: 'Welcome back',
     subtitle: 'Here is what came with you.',

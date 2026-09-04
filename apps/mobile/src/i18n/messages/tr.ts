@@ -295,6 +295,7 @@ export const tr: Localized<EnMessages> = {
     name: 'Ad',
     forgotPassword: 'Parolanı mı unuttun?',
     signIn: 'Giriş yap',
+    signingIn: 'Giriş yapılıyor…',
     signUp: 'Kayıt ol',
     continueWithGoogle: 'Google ile devam et',
     continueWithApple: 'Apple ile devam et',
@@ -395,6 +396,9 @@ export const tr: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Profilin geri getiriliyor',
+    restoringBody:
+      'LangX hesabın geri geliyor — dillerin, fotoğrafların ve serin. Bu biraz sürebilir; lütfen bu ekranda kal.',
     startExploring: 'Keşfetmeye başla',
     title: 'Tekrar hoş geldin',
     subtitle: 'Seninle birlikte gelenler.',

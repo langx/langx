@@ -322,6 +322,7 @@ export const ru: Localized<EnMessages> = {
     name: 'Имя',
     forgotPassword: 'Забыл пароль?',
     signIn: 'Войти',
+    signingIn: 'Выполняется вход…',
     signUp: 'Зарегистрироваться',
     continueWithGoogle: 'Продолжить с Google',
     continueWithApple: 'Продолжить с Apple',
@@ -422,6 +423,9 @@ export const ru: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Восстанавливаем профиль',
+    restoringBody:
+      'Ваш аккаунт LangX возвращается — языки, фотографии и серия. Это может занять минуту, не покидайте экран.',
     startExploring: 'Начать знакомство',
     title: 'С возвращением',
     subtitle: 'Вот что вернулось вместе с тобой.',

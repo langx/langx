@@ -333,6 +333,7 @@ export const ar: Localized<EnMessages> = {
     name: 'الاسم',
     forgotPassword: 'نسيت كلمة المرور؟',
     signIn: 'تسجيل الدخول',
+    signingIn: 'جارٍ تسجيل الدخول…',
     signUp: 'إنشاء حساب',
     continueWithGoogle: 'المتابعة باستخدام Google',
     continueWithApple: 'المتابعة باستخدام Apple',
@@ -439,6 +440,9 @@ export const ar: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'جارٍ استعادة ملفك الشخصي',
+    restoringBody:
+      'حسابك في LangX يعود — لغاتك وصورك وسلسلتك. قد يستغرق هذا لحظة؛ يُرجى البقاء في هذه الشاشة.',
     startExploring: 'ابدأ الاستكشاف',
     title: 'أهلًا بعودتك',
     subtitle: 'هذا ما عاد معك.',

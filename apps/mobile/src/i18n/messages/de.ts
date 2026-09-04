@@ -288,6 +288,7 @@ export const de: Localized<EnMessages> = {
     name: 'Name',
     forgotPassword: 'Passwort vergessen?',
     signIn: 'Anmelden',
+    signingIn: 'Anmeldung läuft…',
     signUp: 'Registrieren',
     continueWithGoogle: 'Mit Google fortfahren',
     continueWithApple: 'Mit Apple fortfahren',
@@ -392,6 +393,9 @@ export const de: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    restoringTitle: 'Dein Profil wird wiederhergestellt',
+    restoringBody:
+      'Dein LangX-Konto kommt zurück — deine Sprachen, deine Fotos und deine Serie. Das kann einen Moment dauern; bitte bleib auf diesem Bildschirm.',
     startExploring: 'Jetzt loslegen',
     title: 'Willkommen zurück',
     subtitle: 'Das ist mit dir mitgekommen.',

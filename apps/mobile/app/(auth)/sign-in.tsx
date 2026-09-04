@@ -8,6 +8,7 @@ import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
+import { withSignInProgress } from '../../src/lib/signInProgress'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -32,7 +33,12 @@ export default function SignIn() {
     setError(undefined)
     setLoading(true)
     try {
-      const { error: signInError } = await authClient.signIn.email({ email, password })
+      // Narrated if it drags: a returning v1 account is restored inside this
+      // request, so for those people it is genuinely slow (see
+      // `lib/signInProgress.ts`).
+      const { error: signInError } = await withSignInProgress(() =>
+        authClient.signIn.email({ email, password }),
+      )
       if (signInError) {
         setError(t(authErrorKey(signInError) ?? 'errors.signInFailed'))
         return
