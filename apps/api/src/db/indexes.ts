@@ -584,6 +584,12 @@ export const INDEXES: Partial<IndexSpec> = {
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },
   ],
+
+  [COLLECTIONS.shareCards]: [
+    // The purge reads this to find a deleted account's cards; without it that
+    // is a collection scan per deletion.
+    { key: { userId: 1, createdAt: -1 }, name: 'card_owner' },
+  ],
 }
 
 export interface EnsureIndexesResult {

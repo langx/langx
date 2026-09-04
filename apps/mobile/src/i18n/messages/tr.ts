@@ -1176,6 +1176,16 @@ export const tr: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Görsel olarak paylaş',
+    cardStreakCaption: 'gün LangX serisi',
+    cardBadgeCaption: 'LangX’te kazanılan rozet',
+    cardRankCaption: 'LangX token sıralamasında',
+    cardBody: 'Nereye gideceğini seç — kart ona göre çizilir.',
+    shapeStory: 'Instagram / TikTok hikâye',
+    shapeSquare: 'Instagram gönderisi',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Sadece link',
+    cardFailed: 'Görsel oluşturulamadı. Link paylaşılıyor.',
     action: 'Paylaş',
     copied: 'Link kopyalandı',
     copiedText: 'Metin kopyalandı',

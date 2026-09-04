@@ -15,6 +15,7 @@ import {
   useWallet,
 } from '../../src/api/queries'
 import { EquipPicker } from '../../src/components/store/EquipPicker'
+import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { LeaderboardSection } from '../../src/components/LeaderboardSection'
 import type { StoreOffer } from '../../src/lib/storeOffers'
@@ -58,6 +59,7 @@ export default function WalletScreen() {
   const me = useMe()
   const wallet = useWallet()
   const [period, setPeriod] = useState<PeriodType>('week')
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
   const board = useLeaderboard(period)
   /*
    * The window a repair can still reach, so the store can offer the newest day
@@ -158,7 +160,17 @@ export default function WalletScreen() {
    */
   const viewerRank = board.data?.viewer.rank
   const rankShare = viewerRank
-    ? leaderboardShareText(t, { rank: viewerRank, period, handle: me.data.handle })
+    ? () =>
+        setCard({
+          kind: 'rank',
+          headline: `#${viewerRank}`,
+          caption: t('share.cardRankCaption'),
+          fallback: leaderboardShareText(t, {
+            rank: viewerRank,
+            period,
+            handle: me.data.handle,
+          }),
+        })
     : undefined
 
   return (
@@ -208,7 +220,7 @@ export default function WalletScreen() {
         emptyTitle={t('leaderboard.emptyTitle')}
         emptyBody={t('leaderboard.emptyBody')}
         backTo="/(app)/wallet"
-        share={rankShare}
+        onShare={rankShare}
       />
 
       <View style={styles.tiles}>
@@ -251,6 +263,7 @@ export default function WalletScreen() {
       </View>
 
       <Text style={styles.hint}>{t('wallet.disclaimer')}</Text>
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }

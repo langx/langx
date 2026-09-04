@@ -1331,6 +1331,16 @@ export const ru: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Поделиться картинкой',
+    cardStreakCaption: 'дней подряд в LangX',
+    cardBadgeCaption: 'значок получен в LangX',
+    cardRankCaption: 'в таблице токенов LangX',
+    cardBody: 'Выберите, куда — карточка нарисуется под неё.',
+    shapeStory: 'История Instagram / TikTok',
+    shapeSquare: 'Пост в Instagram',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Только ссылка',
+    cardFailed: 'Не удалось создать картинку. Отправляем ссылку.',
     action: 'Поделиться',
     copied: 'Ссылка скопирована',
     copiedText: 'Текст скопирован',

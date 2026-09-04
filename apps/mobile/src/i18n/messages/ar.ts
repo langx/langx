@@ -1393,6 +1393,16 @@ export const ar: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'مشاركة كصورة',
+    cardStreakCaption: 'يوم متتالٍ في LangX',
+    cardBadgeCaption: 'شارة في LangX',
+    cardRankCaption: 'في لوحة رموز LangX',
+    cardBody: 'اختر الوجهة — تُرسم البطاقة لتناسبها.',
+    shapeStory: 'قصة إنستغرام / تيك توك',
+    shapeSquare: 'منشور إنستغرام',
+    shapeWide: 'إكس / تويتر',
+    justTheLink: 'الرابط فقط',
+    cardFailed: 'تعذّر إنشاء الصورة. تتم مشاركة الرابط.',
     action: 'مشاركة',
     copied: 'تم نسخ الرابط',
     copiedText: 'تم نسخ النص',

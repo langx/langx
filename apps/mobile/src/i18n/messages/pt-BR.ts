@@ -1168,6 +1168,16 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Compartilhar como imagem',
+    cardStreakCaption: 'dias seguidos no LangX',
+    cardBadgeCaption: 'medalha no LangX',
+    cardRankCaption: 'no ranking de tokens do LangX',
+    cardBody: 'Escolha o destino — o card é desenhado sob medida.',
+    shapeStory: 'Story do Instagram / TikTok',
+    shapeSquare: 'Post do Instagram',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Só o link',
+    cardFailed: 'Não foi possível criar a imagem. Compartilhando o link.',
     action: 'Compartilhar',
     copied: 'Link copiado',
     copiedText: 'Texto copiado',

@@ -12,6 +12,8 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type CreateShareCardInput,
+  type ShareCardResult,
 } from '@langx/shared'
 import type {
   HandleSearchPage,
@@ -905,6 +907,18 @@ export function useFollows(userId: string, which: 'followers' | 'following') {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * Renders a share card and returns the page it is shared as.
+ *
+ * No cache to touch: a card is written once and then only ever read by whoever
+ * the link reaches, which is not this app.
+ */
+export function useCreateShareCard() {
+  return useMutation({
+    mutationFn: (input: CreateShareCardInput) => api.post<ShareCardResult>('/me/share-card', input),
   })
 }
 

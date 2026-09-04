@@ -1182,6 +1182,16 @@ export const fr: Localized<EnMessages> = {
   },
 
   share: {
+    cardTitle: 'Partager en image',
+    cardStreakCaption: 'jours de suite sur LangX',
+    cardBadgeCaption: 'badge obtenu sur LangX',
+    cardRankCaption: 'au classement des jetons LangX',
+    cardBody: 'Choisissez la destination — la carte s’y adapte.',
+    shapeStory: 'Story Instagram / TikTok',
+    shapeSquare: 'Publication Instagram',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Juste le lien',
+    cardFailed: 'Impossible de créer l’image. Le lien est partagé.',
     action: 'Partager',
     copied: 'Lien copié',
     copiedText: 'Texte copié',

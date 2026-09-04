@@ -1217,6 +1217,16 @@ export const en = {
   },
 
   share: {
+    cardTitle: 'Share as a picture',
+    cardStreakCaption: 'day streak on LangX',
+    cardBadgeCaption: 'badge earned on LangX',
+    cardRankCaption: 'on the LangX token board',
+    cardBody: 'Pick where it is going — the card is drawn to fit.',
+    shapeStory: 'Instagram / TikTok story',
+    shapeSquare: 'Instagram post',
+    shapeWide: 'X / Twitter',
+    justTheLink: 'Just the link',
+    cardFailed: 'Could not make the picture. Sharing the link instead.',
     action: 'Share',
     copied: 'Link copied',
     copiedText: 'Text copied',

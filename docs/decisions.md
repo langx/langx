@@ -2129,6 +2129,45 @@ with the recency tab; every feed page now sorts on a count.
 The pronunciation section is unchanged — one queue, no graph in it yet — and
 takes the same code path with an empty audience.
 
+## Achievements share as a picture; everything else is still a sentence
+
+Reversing most of the section below, in September 2026, after using the thing.
+A streak shared as a line of text is a line of text in a feed of pictures — it
+is the one moment somebody is willing to post about this app and it looked like
+nothing. Streaks, badges and ranks now render a card; profiles, posts and
+messages still do not, for the second reason below, which did not change.
+
+The first objection was the binding one and server rendering answers it. The
+card is drawn by `satori` and rasterised by `@resvg/resvg-js` inside the API —
+no `react-native-view-shot`, no native module, no new binary for a picture, and
+the whole thing ships over the air. That is the same move `avatar.ts` and
+`qr.ts` already made, for the same reason, and this is the third time it has
+been the right one.
+
+The third objection stands and is honoured: `shareText.ts` is untouched and
+still pure, and it is still what gets shared when there is no card — a failed
+render falls back to the sentence rather than reporting an error for something
+the user asked to _share_.
+
+Three shapes, because there is no ratio that survives all three destinations: a
+9:16 card on a timeline is a stamp and a 16:9 card in a story is a band across
+an empty screen. The app asks where it is going before the picture is drawn.
+
+**What gets shared is a page, not the picture.** `app.langx.io/s/<id>` carries
+the OpenGraph tags, shows the card and offers the download; a raw
+`media.langx.io` URL unfurls as a bare image with no title and gives whoever
+taps it nowhere to go. That page is a Cloudflare Pages Function rather than an
+Expo route, because the web build is a static export — every route ships the
+same empty shell and fills it in on the client, so a crawler fetching one sees
+no title and no image. Meta tags have to be in the bytes the crawler is handed.
+
+The card carries the sharer's profile QR. That is what makes it worth posting
+rather than just nice to look at: a story is watched on one phone and scanned
+with another, and without the code the only route from the picture back to the
+person is reading a handle off the screen and typing it. It points at
+`inviteUrl`, per the rule below that an achievement carries the referral
+marker.
+
 ## Sharing is a sentence and a link, not a card
 
 Six more things can leave the app through the share sheet — somebody else's

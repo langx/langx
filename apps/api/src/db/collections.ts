@@ -115,6 +115,12 @@ export const COLLECTIONS = {
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
   /**
+   * One row per share card ever rendered. The `_id` is the whole of the public
+   * `app.langx.io/s/<id>` address, so it is a random 22 characters rather than
+   * anything derived — a guessable id would let a stranger walk the list.
+   */
+  shareCards: 'shareCards',
+  /**
    * "We already told them." One row per notification a scheduled pass has
    * sent, keyed `<job>:<userId>:<periodKey>`.
    *

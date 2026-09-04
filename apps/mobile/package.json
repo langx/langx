@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 client — iOS, Android and web from one Expo codebase",
+  "description": "LangX v2 client \u2014 iOS, Android and web from one Expo codebase",
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start",
@@ -12,7 +12,7 @@
     "deploy:web": "npx wrangler pages deploy dist --project-name langx-web --branch main",
     "ios": "expo run:ios",
     "android": "expo run:android",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
     "test": "vitest run"
   },
   "dependencies": {
@@ -67,6 +67,7 @@
     "socket.io-client": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260904.1",
     "@react-native/metro-config": "0.86.3",
     "@types/react": "catalog:",
     "babel-preset-expo": "~57.0.8",

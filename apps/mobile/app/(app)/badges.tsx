@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useBadges, useMe, useTokens } from '../../src/api/queries'
 import { BadgeGrid } from '../../src/components/BadgeGrid'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
@@ -5,7 +6,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { Text, View } from 'react-native'
 import { goBackTo } from '../../src/lib/navigation'
-import { shareLink } from '../../src/lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { badgeShareText } from '../../src/lib/shareText'
 import { makeStyles } from '../../src/lib/theme'
 import { badgeLabel, useLocale, useT } from '../../src/i18n'
@@ -23,6 +24,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  */
 export default function BadgesScreen() {
   useScreenInteractive()
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -96,7 +98,15 @@ export default function BadgesScreen() {
         <BadgeGrid
           badges={badges.data.badges}
           {...(handle
-            ? { onShare: (label: string) => void shareLink(badgeShareText(t, { label, handle })) }
+            ? {
+                onShare: (label: string) =>
+                  setCard({
+                    kind: 'badge',
+                    headline: label,
+                    caption: t('share.cardBadgeCaption'),
+                    fallback: badgeShareText(t, { label, handle }),
+                  }),
+              }
             : {})}
         />
       ) : null}
@@ -106,6 +116,7 @@ export default function BadgesScreen() {
           {t(streak.qualifiedToday ? 'leaderboard.doneToday' : 'leaderboard.keepGoing')}
         </Text>
       ) : null}
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }

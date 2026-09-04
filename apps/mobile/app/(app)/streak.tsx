@@ -13,7 +13,7 @@ import { useLocale, useT } from '../../src/i18n'
 import type { TranslateFn } from '../../src/i18n/runtime'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo } from '../../src/lib/navigation'
-import { shareLink } from '../../src/lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { streakShareText } from '../../src/lib/shareText'
 import { streakHistory, type StreakHistoryRow } from '../../src/lib/streakHistory'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -41,6 +41,7 @@ export default function StreakScreen() {
   const tokens = useTokens()
   const me = useMe()
   const [metric, setMetric] = useState<StreakMetric>('current')
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
   const board = useStreakLeaderboard(metric)
 
   const to = new Date().toISOString().slice(0, 10)
@@ -80,7 +81,15 @@ export default function StreakScreen() {
             label={t('share.streak')}
             variant="secondary"
             onPress={() =>
-              void shareLink(streakShareText(t, { count: streak.current, handle: me.data.handle }))
+              setCard({
+                kind: 'streak',
+                headline: String(streak.current),
+                caption: t('share.cardStreakCaption'),
+                fallback: streakShareText(t, {
+                  count: streak.current,
+                  handle: me.data.handle,
+                }),
+              })
             }
           />
         </View>
@@ -151,6 +160,7 @@ export default function StreakScreen() {
         emptyBody={t('leaderboard.streakEmptyBody')}
         backTo="/(app)/streak"
       />
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }

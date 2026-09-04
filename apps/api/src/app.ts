@@ -34,6 +34,7 @@ import { profileRoutes } from './routes/profiles'
 import { avatarRoutes } from './routes/avatar'
 import { qrRoutes } from './routes/qr'
 import { publicRoutes } from './routes/public'
+import { shareCardRoutes } from './routes/shareCards'
 import { translationRoutes } from './routes/translate'
 import { leaderboardRoutes } from './routes/leaderboard'
 import { referralRoutes } from './routes/referrals'
@@ -281,6 +282,7 @@ export async function buildApp({
   await app.register(qrRoutes)
   await app.register(avatarRoutes)
   await app.register(publicRoutes)
+  await app.register(shareCardRoutes)
   await app.register(followRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
