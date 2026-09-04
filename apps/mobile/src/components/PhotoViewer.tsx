@@ -1,4 +1,6 @@
+import { isVideoContentType } from '@langx/shared'
 import { Image } from 'expo-image'
+import { useVideoPlayer, VideoView } from 'expo-video'
 import { useCallback, useEffect, useRef } from 'react'
 import {
   Animated,
@@ -44,11 +46,39 @@ const WEB_NO_TOUCH_ACTION =
   Platform.OS === 'web' ? ({ touchAction: 'none' } as unknown as ViewStyle) : null
 
 export interface PhotoViewerProps {
-  photos: { url: string }[]
+  /**
+   * `contentType` is optional because a profile gallery has only ever held
+   * pictures and has none to give. Anything without one is drawn as one.
+   */
+  photos: { url: string; contentType?: string }[]
   /** `null` is closed. The index is owned by the host so a list can open at one. */
   index: number | null
   onClose: () => void
   onIndexChange?: (index: number) => void
+}
+
+/**
+ * The opened video, playing straight away.
+ *
+ * Autoplay here and not in the bubble: opening one is the request to watch it,
+ * where scrolling past one is not.
+ */
+function FullscreenVideo({ url }: { url: string }) {
+  const styles = useStyles()
+  const player = useVideoPlayer(url, (instance) => {
+    instance.loop = false
+    instance.play()
+  })
+
+  return (
+    <VideoView
+      player={player}
+      style={styles.full}
+      contentFit="contain"
+      nativeControls
+      fullscreenOptions={{ enable: true }}
+    />
+  )
 }
 
 /**
@@ -254,30 +284,42 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
       onRequestClose={onClose}
     >
       <View style={styles.backdrop}>
-        <Animated.View
-          style={[styles.stage, WEB_NO_TOUCH_ACTION]}
-          onLayout={(event) => {
-            const { width, height } = event.nativeEvent.layout
-            frame.current = { width, height }
-          }}
-          {...pan.panHandlers}
-        >
+        {isVideoContentType(photo.contentType ?? '') ? (
+          /*
+           * No pinch and no pan for a video: the gesture layer below exists to
+           * zoom a still, and wrapping a player in it would take the drag the
+           * scrub bar needs. Full screen with native controls is what a video
+           * being "opened" means.
+           */
+          <View style={styles.stage}>
+            <FullscreenVideo url={photo.url} />
+          </View>
+        ) : (
           <Animated.View
-            style={[styles.stage, { transform: [{ translateX }, { translateY }, { scale }] }]}
+            style={[styles.stage, WEB_NO_TOUCH_ACTION]}
+            onLayout={(event) => {
+              const { width, height } = event.nativeEvent.layout
+              frame.current = { width, height }
+            }}
+            {...pan.panHandlers}
           >
-            <Image
-              source={{ uri: photo.url }}
-              style={styles.full}
-              contentFit="contain"
-              onLoad={(event) => {
-                natural.current = {
-                  width: event.source?.width ?? 0,
-                  height: event.source?.height ?? 0,
-                }
-              }}
-            />
+            <Animated.View
+              style={[styles.stage, { transform: [{ translateX }, { translateY }, { scale }] }]}
+            >
+              <Image
+                source={{ uri: photo.url }}
+                style={styles.full}
+                contentFit="contain"
+                onLoad={(event) => {
+                  natural.current = {
+                    width: event.source?.width ?? 0,
+                    height: event.source?.height ?? 0,
+                  }
+                }}
+              />
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
+        )}
 
         <Pressable
           accessibilityRole="button"

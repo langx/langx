@@ -143,6 +143,9 @@ const config: ExpoConfig = {
    * The cost is that a build made under the old policy — 2.0.0 (121), the
    * first store release — has runtime `exposdk:57.0.0` and will never match a
    * fingerprint. It cannot be reached over the air; the next build can.
+   *
+   * `expo-video`, added for video attachments, is the first native module to
+   * arrive under the new policy and the first thing it protects.
    */
   runtimeVersion: { policy: 'fingerprint' },
 
@@ -222,6 +225,12 @@ const config: ExpoConfig = {
     // have claimed a feature the app does not have. Turning it off removes the
     // permissions and the service rather than blocking the permission and
     // leaving a service that could never legally start.
+    /*
+     * Video playback. No options: background playback and picture-in-picture
+     * both stay off, because a clip in a thread needs neither and each of them
+     * adds a background mode the store forms then have to account for.
+     */
+    'expo-video',
     [
       'expo-audio',
       {
@@ -232,7 +241,8 @@ const config: ExpoConfig = {
     [
       'expo-image-picker',
       {
-        photosPermission: 'LangX uses your photo library so you can share photos in chat.',
+        photosPermission:
+          'LangX uses your photo library so you can share photos and videos in chat.',
         /*
          * Worded, not defaulted. Without this key the plugin still writes
          * `NSCameraUsageDescription` — its own generic "Allow $(PRODUCT_NAME)

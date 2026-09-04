@@ -18,14 +18,14 @@ import {
   usePostCorrections,
 } from '../../../src/api/queries'
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
-import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
+import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { LikeButton } from '../../../src/components/LikeButton'
-import { isImageContentType } from '@langx/shared'
+import { attachmentsOf } from '@langx/shared'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -115,7 +115,12 @@ export default function PostScreen() {
   const [slot, setSlot] = useState<'fast' | 'slow' | null>(null)
   const [takes, setTakes] = useState<{ fast?: Media; slow?: Media }>({})
   /** Owned by the screen: a comment row is recycled out from under its viewer. */
-  const [viewing, setViewing] = useState<string | null>(null)
+  /**
+   * What the viewer is showing and where it opened. A post carries a gallery
+   * now, so arriving on the tile that was tapped is the difference between
+   * paging and hunting.
+   */
+  const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
   const [uploading, setUploading] = useState(false)
 
   // One list, two row shapes. `'corrected' in item` is the discriminator the
@@ -352,13 +357,12 @@ export default function PostScreen() {
                   </Text>
                 </View>
                 <Text style={styles.body}>{post.body}</Text>
-                {post.media ? (
+                {attachmentsOf(post).length > 0 ? (
                   <View style={styles.media}>
-                    {isImageContentType(post.media.contentType) ? (
-                      <ImageBubble media={post.media} onPress={() => setViewing(post.media!.url)} />
-                    ) : (
-                      <AudioBubble media={post.media} />
-                    )}
+                    <MediaGallery
+                      items={attachmentsOf(post)}
+                      onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
+                    />
                   </View>
                 ) : null}
                 <View style={styles.likeRow}>
@@ -450,13 +454,12 @@ export default function PostScreen() {
                 </>
               )}
               {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-              {'corrected' in item && item.media ? (
+              {'corrected' in item && attachmentsOf(item).length > 0 ? (
                 <View style={styles.media}>
-                  {isImageContentType(item.media.contentType) ? (
-                    <ImageBubble media={item.media} onPress={() => setViewing(item.media!.url)} />
-                  ) : (
-                    <AudioBubble media={item.media} />
-                  )}
+                  <MediaGallery
+                    items={attachmentsOf(item)}
+                    onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                  />
                 </View>
               ) : null}
               <View style={styles.likeRow}>
@@ -677,9 +680,10 @@ export default function PostScreen() {
         )
       ) : null}
       <PhotoViewer
-        photos={viewing ? [{ url: viewing }] : []}
-        index={viewing ? 0 : null}
+        photos={viewing?.items ?? []}
+        index={viewing?.index ?? null}
         onClose={() => setViewing(null)}
+        onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
       />
     </Screen>
   )

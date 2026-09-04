@@ -51,7 +51,15 @@ export const tr: Localized<EnMessages> = {
     me: 'Ben',
   },
 
+  composer: {
+    removeAttachment: 'Eki kaldır',
+    attachMedia: 'Fotoğraf veya video ekle',
+  },
+
   media: {
+    sourceMediaTitle: 'Fotoğraf veya video ekle',
+    sourceMediaCamera: 'Fotoğraf veya video çek',
+    playVideo: 'Videoyu oynat',
     sourceTitle: 'Fotoğraf ekle',
     sourceCamera: 'Fotoğraf çek',
     sourceLibrary: 'Galeriden seç',
@@ -115,6 +123,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'Video',
     sent: 'Gönderildi',
     delivered: 'İletildi',
     read: 'Okundu',
@@ -201,6 +210,14 @@ export const tr: Localized<EnMessages> = {
     attachmentUnsupported:
       'Bu fotoğraf biçimi desteklenmiyor. JPEG, PNG veya WebP bir görsel kullan.',
     attachmentTooLarge: 'Bu dosya gönderilemeyecek kadar büyük.',
+    videoTooLong: {
+      one: 'Videolar en fazla bir saniye olabilir.',
+      other: 'Videolar en fazla {count} saniye olabilir.',
+    },
+    tooManyAttachments: {
+      one: 'Tek dosya ekleyebilirsin.',
+      other: 'En fazla {count} dosya ekleyebilirsin.',
+    },
     userExists:
       'Bu e-posta ile bir hesap zaten var. Giriş yap, parolanı sıfırla ya da Google veya Apple ile devam et.',
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
@@ -543,13 +560,12 @@ export const tr: Localized<EnMessages> = {
     playAtNormalSpeed: 'Normal hızda çal',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
-      one: 'Fotoğraf ve ses kaydı bir mesaj sonra açılır.',
-      other: 'Fotoğraf ve ses kaydı {count} mesaj sonra açılır.',
+      one: 'Fotoğraf, video ve ses kaydı bir mesaj sonra açılır.',
+      other: 'Fotoğraf, video ve ses kaydı {count} mesaj sonra açılır.',
     },
-    attachPhoto: 'Fotoğraf ekle',
     copied: 'Kopyalandı',
     couldNotSend: 'Gönderilemedi',
-    mediaQuota: 'Bugünkü fotoğraf ve sesli mesaj sınırına ulaştın.',
+    mediaQuota: 'Bugünkü fotoğraf, video ve sesli mesaj sınırına ulaştın.',
     attachmentFailed: 'Bu ek gönderilemedi. Tekrar dene.',
     photosTitle: 'Fotoğraflar',
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
@@ -661,11 +677,11 @@ export const tr: Localized<EnMessages> = {
     likedBy: 'Beğenenler',
     likersEmptyTitle: 'Henüz beğeni yok',
     likersEmptyBody: 'Bunun işe yaradığını ilk söyleyen sen ol.',
-    attachPhoto: 'Fotoğraf ekle',
     recordVoice: 'Ses kaydı al',
-    removeAttachment: 'Eki kaldır',
+    photoAttached: 'Fotoğraf eklendi',
+    videoAttached: 'Video eklendi',
     voiceAttached: 'Ses kaydı eklendi',
-    photosPermission: 'Fotoğraf eklemek için LangX’in fotoğraflarına erişmesi gerekiyor.',
+    photosPermission: 'LangX’in ekleyebilmek için fotoğraf ve videolarına erişmesi gerekiyor.',
     attachmentFailed: 'Ek yüklenemedi. Tekrar dene.',
     mediaQuota: 'Bugünkü ek sınırına ulaştın.',
     allCorrections: 'Tüm düzeltmeler',

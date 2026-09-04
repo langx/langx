@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { diffCorrection } from '../lib/correctionDiff'
+import { attachmentsOf, type Media } from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
@@ -22,7 +23,7 @@ import {
   swipeTranslation,
 } from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
-import { AudioBubble, ImageBubble } from './MediaBubble'
+import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
 import { useT } from '../i18n'
 
@@ -51,7 +52,8 @@ export interface MessageBubbleProps {
   onReply: (message: MessageDto) => void
   onJumpTo: (messageId: string) => void
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
-  onOpenImage: (url: string) => void
+  /** Opens the viewer on this message's attachments, at the one that was tapped. */
+  onOpenMedia: (items: Media[], index: number) => void
 }
 
 /**
@@ -76,7 +78,7 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   onReply,
   onJumpTo,
-  onOpenImage,
+  onOpenMedia,
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -310,8 +312,9 @@ export const MessageBubble = memo(function MessageBubble({
 
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
 
-  if (message.type === 'image' || message.type === 'audio') {
-    const imageUrl = message.type === 'image' ? message.media?.url : undefined
+  if (message.type === 'image' || message.type === 'audio' || message.type === 'video') {
+    const attachments = attachmentsOf(message)
+    const openable = message.type !== 'audio' && attachments.length > 0
     return shell(
       <Pressable
         onLongPress={press}
@@ -321,20 +324,25 @@ export const MessageBubble = memo(function MessageBubble({
          * had a long press for the menu and a swipe for a reply, and nothing
          * for the obvious gesture.
          *
-         * Only an image takes it. A voice note's bubble is already a play
-         * button, and giving the whole thing a second meaning would make the
-         * two overlap.
+         * Not a voice note: its bubble is already a play button, and giving
+         * the whole thing a second meaning would make the two overlap. Not a
+         * gallery either — there the tile that was tapped decides which one
+         * opens, so the press belongs to the tile.
          */
-        onPress={imageUrl ? () => onOpenImage(imageUrl) : undefined}
+        onPress={
+          openable && attachments.length === 1 ? () => onOpenMedia(attachments, 0) : undefined
+        }
         style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
       >
         {quote}
-        {message.media ? (
-          message.type === 'image' ? (
-            <ImageBubble media={message.media} />
-          ) : (
-            <AudioBubble media={message.media} mine={mine} />
-          )
+        {attachments.length > 0 ? (
+          <MediaGallery
+            items={attachments}
+            mine={mine}
+            {...(attachments.length > 1
+              ? { onOpen: (index: number) => onOpenMedia(attachments, index) }
+              : {})}
+          />
         ) : null}
         {message.body ? (
           <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>

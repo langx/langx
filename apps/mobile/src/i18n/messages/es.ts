@@ -40,7 +40,15 @@ export const es: Localized<EnMessages> = {
 
   tabs: { discover: 'Descubrir', chats: 'Chats', feed: 'Muro', me: 'Yo' },
 
+  composer: {
+    removeAttachment: 'Quitar el archivo adjunto',
+    attachMedia: 'Adjuntar fotos o vídeos',
+  },
+
   media: {
+    sourceMediaTitle: 'Añadir una foto o un vídeo',
+    sourceMediaCamera: 'Hacer una foto o un vídeo',
+    playVideo: 'Reproducir vídeo',
     sourceTitle: 'Añadir una foto',
     sourceCamera: 'Hacer una foto',
     sourceLibrary: 'Elegir de la galería',
@@ -104,6 +112,7 @@ export const es: Localized<EnMessages> = {
   },
 
   messageMeta: {
+    video: 'Vídeo',
     sent: 'Enviado',
     delivered: 'Entregado',
     read: 'Leído',
@@ -187,8 +196,17 @@ export const es: Localized<EnMessages> = {
     resetFailed: 'No se pudo restablecer la contraseña',
     invalidCredentials:
       'Ese correo y esa contraseña no coinciden con ninguna cuenta. ¿Tenías una cuenta en la app anterior? Restablece tu contraseña o continúa con Google o Apple.',
-    attachmentUnsupported: 'Ese formato de foto no es compatible. Usa una imagen JPEG, PNG o WebP.',
+    attachmentUnsupported:
+      'Ese formato no es compatible. Usa una imagen JPEG, PNG o WebP, o un vídeo MP4 o MOV.',
     attachmentTooLarge: 'Ese archivo es demasiado grande para enviarlo.',
+    videoTooLong: {
+      one: 'Los vídeos pueden durar un segundo como máximo.',
+      other: 'Los vídeos pueden durar {count} segundos como máximo.',
+    },
+    tooManyAttachments: {
+      one: 'Puedes adjuntar un archivo.',
+      other: 'Puedes adjuntar hasta {count} archivos.',
+    },
     userExists:
       'Ya existe una cuenta con ese correo. Inicia sesión, restablece tu contraseña o continúa con Google o Apple.',
     emailNotVerified: 'Verifica primero tu correo: mira tu bandeja de entrada.',
@@ -540,13 +558,12 @@ export const es: Localized<EnMessages> = {
     playAtNormalSpeed: 'Reproducir a velocidad normal',
     mediaLockedTitle: 'Todavía no',
     mediaLocked: {
-      one: 'Las fotos y las notas de voz se activan tras un mensaje más.',
-      other: 'Las fotos y las notas de voz se activan tras {count} mensajes más.',
+      one: 'Las fotos, los vídeos y las notas de voz se desbloquean tras un mensaje más.',
+      other: 'Las fotos, los vídeos y las notas de voz se desbloquean tras {count} mensajes más.',
     },
-    attachPhoto: 'Adjuntar una foto',
     copied: 'Copiado',
     couldNotSend: 'No se pudo enviar',
-    mediaQuota: 'Has llegado al límite de hoy para fotos y mensajes de voz.',
+    mediaQuota: 'Has alcanzado el límite de hoy para fotos, vídeos y mensajes de voz.',
     attachmentFailed: 'Ese adjunto no se pudo enviar. Inténtalo de nuevo.',
     photosTitle: 'Fotos',
     photosPermission: 'LangX necesita permiso para abrir tu galería.',
@@ -655,11 +672,11 @@ export const es: Localized<EnMessages> = {
     likedBy: 'Le gusta a',
     likersEmptyTitle: 'Aún no hay me gusta',
     likersEmptyBody: 'Sé la primera persona en decir que esto ayudó.',
-    attachPhoto: 'Adjuntar una foto',
     recordVoice: 'Grabar una nota de voz',
-    removeAttachment: 'Quitar el archivo adjunto',
+    photoAttached: 'Foto adjunta',
+    videoAttached: 'Vídeo adjunto',
     voiceAttached: 'Nota de voz adjunta',
-    photosPermission: 'LangX necesita acceso a tus fotos para adjuntar una.',
+    photosPermission: 'LangX necesita acceso a tus fotos y vídeos para adjuntar uno.',
     attachmentFailed: 'El archivo adjunto no se subió. Inténtalo de nuevo.',
     mediaQuota: 'Has alcanzado el límite de archivos adjuntos de hoy.',
     allCorrections: 'Todas las correcciones',

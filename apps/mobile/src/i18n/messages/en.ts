@@ -61,7 +61,15 @@ export const en = {
     me: 'Me',
   },
 
+  composer: {
+    removeAttachment: 'Remove attachment',
+    attachMedia: 'Attach photos or videos',
+  },
+
   media: {
+    sourceMediaTitle: 'Add a photo or video',
+    sourceMediaCamera: 'Take a photo or video',
+    playVideo: 'Play video',
     sourceTitle: 'Add a photo',
     sourceCamera: 'Take a photo',
     sourceLibrary: 'Choose from library',
@@ -126,6 +134,7 @@ export const en = {
   },
 
   messageMeta: {
+    video: 'Video',
     sent: 'Sent',
     delivered: 'Delivered',
     read: 'Read',
@@ -219,8 +228,17 @@ export const en = {
     resetFailed: 'Could not reset password',
     invalidCredentials:
       'That email and password do not match an account. If you had an account in the previous app, reset your password or continue with Google or Apple.',
-    attachmentUnsupported: 'That photo format isn’t supported. Use a JPEG, PNG or WebP image.',
+    attachmentUnsupported:
+      'That format isn’t supported. Use a JPEG, PNG or WebP image, or an MP4 or MOV video.',
     attachmentTooLarge: 'That file is too large to send.',
+    videoTooLong: {
+      one: 'Videos can be up to one second long.',
+      other: 'Videos can be up to {count} seconds long.',
+    },
+    tooManyAttachments: {
+      one: 'You can attach one file.',
+      other: 'You can attach up to {count} files.',
+    },
     userExists:
       'An account already exists for that email. Sign in, reset your password, or continue with Google or Apple.',
     emailNotVerified: 'Verify your email address first — check your inbox.',
@@ -571,13 +589,12 @@ export const en = {
     playAtNormalSpeed: 'Play at normal speed',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
-      one: 'Photos and voice notes unlock after one more message.',
-      other: 'Photos and voice notes unlock after {count} more messages.',
+      one: 'Photos, videos and voice notes unlock after one more message.',
+      other: 'Photos, videos and voice notes unlock after {count} more messages.',
     },
-    attachPhoto: 'Attach a photo',
     copied: 'Copied',
     couldNotSend: 'Could not send',
-    mediaQuota: 'You’ve reached today’s limit for photos and voice messages.',
+    mediaQuota: 'You’ve reached today’s limit for photos, videos and voice messages.',
     attachmentFailed: 'That attachment could not be sent. Try again.',
     photosTitle: 'Photos',
     photosPermission: 'LangX needs permission to open your photo library.',
@@ -692,11 +709,11 @@ export const en = {
     likedBy: 'Liked by',
     likersEmptyTitle: 'No likes yet',
     likersEmptyBody: 'Be the first to say this helped.',
-    attachPhoto: 'Attach a photo',
     recordVoice: 'Record a voice note',
-    removeAttachment: 'Remove attachment',
+    photoAttached: 'Photo attached',
+    videoAttached: 'Video attached',
     voiceAttached: 'Voice note attached',
-    photosPermission: 'LangX needs access to your photos to attach one.',
+    photosPermission: 'LangX needs access to your photos and videos to attach one.',
     attachmentFailed: 'The attachment did not upload. Try again.',
     mediaQuota: 'You have reached today’s attachment limit.',
     allCorrections: 'All corrections',

@@ -23,13 +23,28 @@ export interface PendingMedia {
   /** Client-minted, so the row exists before the server has given it an id. */
   clientId: string
   conversationId: string
-  kind: 'image' | 'audio'
+  kind: 'image' | 'audio' | 'video'
   /** The local `file://` the picker returned. `ImageBubble` draws it as-is. */
   uri: string
   contentType: string
   width?: number
   height?: number
   durationSeconds?: number
+  /**
+   * Every file this row is uploading, when there is more than one.
+   *
+   * The row is one message, not one file — a gallery arrives as a single
+   * bubble — so it shows the first picture and says how many are behind it.
+   * A retry needs the whole set, which is the other reason it is kept.
+   */
+  files?: {
+    uri: string
+    contentType: string
+    kind: 'image' | 'audio' | 'video'
+    width?: number
+    height?: number
+    durationSeconds?: number
+  }[]
   progress: UploadProgress
   startedAt: string
 }

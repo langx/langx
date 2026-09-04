@@ -30,7 +30,7 @@ export type AnalyticsEvent =
   | {
       /** One message left the composer and the server acknowledged it. Never its body. */
       name: 'message_sent'
-      properties: { kind: 'text' | 'correction' | 'image' | 'audio'; reply: boolean }
+      properties: { kind: 'text' | 'correction' | 'image' | 'audio' | 'video'; reply: boolean }
     }
   | {
       name: 'paywall_viewed'

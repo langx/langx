@@ -1,97 +1,31 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Image } from 'expo-image'
+import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS } from '@langx/shared'
 import { Pressable, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
-import { pickImageAsset } from '../lib/pickImageAsset'
+import { pickMediaAssets } from '../lib/pickMediaAsset'
 import { showToast } from '../lib/toast'
 import { makeStyles, useTheme } from '../lib/theme'
+import { AttachmentPreviewRow, type PendingAttachment } from './AttachmentPreview'
 
-export interface PendingAttachment {
-  kind: 'image' | 'audio'
-  uri: string
-  contentType: string
-  durationSeconds?: number
-  width?: number
-  height?: number
-}
+export type { PendingAttachment }
+export { AttachmentPreviewRow }
 
 interface AttachmentBarProps {
-  pending: PendingAttachment | null
-  onPick: (attachment: PendingAttachment) => void
+  pending: readonly PendingAttachment[]
+  onPick: (attachments: PendingAttachment[]) => void
   disabled?: boolean
 }
 
-interface AttachmentPreviewProps {
-  pending: PendingAttachment | null
-  onClear: () => void
-}
-
 /**
- * What is attached, drawn above the composer's buttons rather than inside them.
+ * Attach photos and videos, or record a voice note, for the feed's two
+ * composers.
  *
- * It used to be the words "Photo attached" on the same line as Post, which
- * answered neither question somebody asks after picking: *which* photo, and
- * how do I take it back. A thumbnail answers the first by being the picture,
- * and the cross on its corner is the second — the same gesture every gallery
- * uses.
- *
- * Its own component, and its own row, because the row it used to share is the
- * one holding the submit button. Anything that grows in there is competing for
- * width with the only control that sends the post.
- */
-export function AttachmentPreview({ pending, onClear }: AttachmentPreviewProps) {
-  const styles = useStyles()
-  const { colors } = useTheme()
-  const t = useT()
-
-  if (!pending) return null
-
-  if (pending.kind === 'image') {
-    return (
-      <View style={styles.previewRow}>
-        <View>
-          <Image source={{ uri: pending.uri }} style={styles.thumb} contentFit="cover" />
-          <Pressable
-            onPress={onClear}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={t('feed.removeAttachment')}
-            style={styles.removeBadge}
-          >
-            <Feather name="x" size={12} color={colors.bg} />
-          </Pressable>
-        </View>
-      </View>
-    )
-  }
-
-  return (
-    <View style={styles.previewRow}>
-      <Feather name="mic" size={16} color={colors.textMuted} />
-      <Text style={styles.attached} numberOfLines={1}>
-        {t('feed.voiceAttached')}
-      </Text>
-      <Pressable
-        onPress={onClear}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityLabel={t('feed.removeAttachment')}
-      >
-        <Feather name="x" size={16} color={colors.textMuted} />
-      </Pressable>
-    </View>
-  )
-}
-
-/**
- * Attach a photo or record a voice note, for the feed's two composers.
- *
- * **Attach, do not send.** The chat composer uploads the moment you pick,
- * because in a thread picking *is* sending. Here there is a sentence still
- * being written, and uploading on pick would spend a day's media quota and put
- * bytes in the bucket for a post the writer then abandons. So this only holds
- * the local file; the screen uploads it when the post is actually submitted.
+ * **Attach, do not send.** Nothing is uploaded until the post is submitted:
+ * uploading on pick would spend a day's media quota and put bytes in the
+ * bucket for a post the writer then abandons. Chat used to be the exception,
+ * on the grounds that in a thread picking *is* sending; it is not one any
+ * more, and both composers now hold the local file the same way.
  *
  * Its own layout rather than the chat composer's: that one swaps its send
  * button for a microphone when the draft is empty and its camera for a timer
@@ -104,8 +38,14 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
   const t = useT()
   const recorder = useVoiceRecorder()
 
+  const remaining = MAX_ATTACHMENTS - pending.length
+
   async function pick(): Promise<void> {
-    const picked = await pickImageAsset()
+    if (remaining <= 0) {
+      showToast(t('errors.tooManyAttachments', { count: MAX_ATTACHMENTS }))
+      return
+    }
+    const picked = await pickMediaAssets({ remaining })
     if (picked.status === 'denied') {
       showToast(
         picked.source === 'camera' ? t('media.cameraPermission') : t('feed.photosPermission'),
@@ -113,11 +53,18 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
       return
     }
     if (picked.status === 'cancelled') return
-    if (picked.status === 'unsupported') {
-      showToast(t('errors.attachmentUnsupported'))
-      return
+    // Said once, for the first file that was dropped: naming each of six would
+    // be a stack of toasts nobody reads.
+    if (picked.refused) {
+      showToast(
+        picked.refused.reason === 'tooLong'
+          ? t('errors.videoTooLong', { count: MAX_VIDEO_SECONDS })
+          : picked.refused.reason === 'tooLarge'
+            ? t('errors.attachmentTooLarge')
+            : t('errors.attachmentUnsupported'),
+      )
     }
-    onPick({ kind: 'image', ...picked.image })
+    if (picked.media.length > 0) onPick(picked.media.slice(0, remaining))
   }
 
   async function toggleRecording(): Promise<void> {
@@ -128,7 +75,7 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
     }
     const recording = await recorder.stop()
     if (!recording) return
-    onPick({ kind: 'audio', ...recording })
+    onPick([{ kind: 'audio', ...recording }])
   }
 
   if (recorder.isRecording) {
@@ -149,27 +96,26 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
   }
 
   /*
-   * Nothing while something is attached. A post carries one attachment, so a
-   * second camera is an offer the composer cannot keep, and the row it would
-   * sit in belongs to the submit button.
+   * A voice note is the message, so once one is attached there is nothing more
+   * to add; the server refuses a recording sent beside a picture anyway.
    */
-  if (pending) return null
+  const hasVoice = pending.some((item) => item.kind === 'audio')
 
   return (
     <View style={styles.row}>
       <Pressable
         onPress={() => void pick()}
-        disabled={disabled}
+        disabled={disabled || hasVoice || remaining <= 0}
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel={t('feed.attachPhoto')}
+        accessibilityLabel={t('composer.attachMedia')}
         style={styles.button}
       >
         <Feather name="camera" size={18} color={colors.textMuted} />
       </Pressable>
       <Pressable
         onPress={() => void toggleRecording()}
-        disabled={disabled}
+        disabled={disabled || pending.length > 0}
         hitSlop={8}
         accessibilityRole="button"
         accessibilityLabel={t('feed.recordVoice')}
