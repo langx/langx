@@ -80,7 +80,11 @@ repairing the callers it lists, not about when to move the name.
       are being switched on. Nothing secret goes in `fly.toml` — this repo is
       public
 - [ ] `fly certs add <host>`, with the Cloudflare record on DNS-only (grey
-      cloud) or the certificate never issues
+      cloud) or the certificate never issues. **Turn the proxy back on once it
+      has**, and set `EDGE_SECRET` with a matching transform rule — see the
+      **Country** bullet in `docs/architecture.md`. `api.langx.io`
+      sat grey for months and the whole country feature was silently dead the
+      entire time
 - [ ] `TRUSTED_ORIGINS` includes the web origin and both app schemes, or the
       browser drops the session cookie and sign-in appears to succeed and do
       nothing

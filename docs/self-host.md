@@ -106,10 +106,23 @@ fly certs add <your-domain>     # Let's Encrypt, issued and renewed automaticall
 
 If DNS is behind Cloudflare, the record has to be DNS-only (grey cloud) for
 the certificate to issue — a proxied record answers Fly's challenge itself and
-the certificate stays pending forever. Leaving it grey afterwards is the
-simpler setup; a proxied record additionally needs Cloudflare's SSL mode on
-Full (strict), because "Flexible" talks HTTP to an origin that redirects to
-HTTPS and the request loops.
+the certificate stays pending forever.
+
+Leaving it grey afterwards is the simpler setup, and it costs you one feature:
+`CF-IPCountry` only exists on a request that went through the edge, so with a
+grey record no profile is ever given a country and the country filter in
+discovery matches nobody. Nothing fails — `countryFromHeaders` returns
+`undefined` and onboarding carries on — which is exactly why it went unnoticed
+here for months.
+
+A proxied record needs two more things. Cloudflare's SSL mode has to be Full
+(strict), because "Flexible" talks HTTP to an origin that redirects to HTTPS
+and the request loops. And the origin stays reachable by its own address, so
+anyone can send `CF-IPCountry` straight to it and be whatever country they
+like: set `EDGE_SECRET`, add a transform rule putting the same value in
+`x-langx-edge`, and the header is only believed when it arrives with the
+secret. Without the secret the header is taken at face value, which is right
+for a private origin and wrong for a public one.
 
 Do not let the platform scale the API to zero. The four schedulers above are
 interval ticks inside the process, not platform cron: a suspended machine runs

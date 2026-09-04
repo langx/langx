@@ -252,7 +252,13 @@ files.
   Cloudflare's header is only believed on a request carrying `EDGE_SECRET`,
   since the Fly origin is reachable directly by IP. A device that grants
   location permission can overwrite it through `PATCH /profiles/me/country`;
-  nothing else can.
+  nothing else can. **The header only exists on a proxied record**, and
+  `api.langx.io` was DNS-only until 4 September 2026 — so between the day the
+  onboarding question was removed and that day, every account was created
+  without a country and nothing anywhere reported it. A returning v1 account
+  still gets one, because the restore fills `country` from the staged record;
+  a v2-native account from that window has nothing on file to recover it from.
+  See `scripts/backfill-country.ts`.
 
 **Username claim**
 
