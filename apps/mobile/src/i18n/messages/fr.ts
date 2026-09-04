@@ -295,7 +295,6 @@ export const fr: Localized<EnMessages> = {
     signUp: 'S’inscrire',
     continueWithGoogle: 'Continuer avec Google',
     continueWithApple: 'Continuer avec Apple',
-    providerSoon: 'Bientôt',
     or: 'ou',
     noAccount: 'Pas encore de compte ? ',
     justLooking: 'Juste un coup d’œil ?',

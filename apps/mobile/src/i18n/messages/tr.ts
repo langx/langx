@@ -301,7 +301,6 @@ export const tr: Localized<EnMessages> = {
     signUp: 'Kayıt ol',
     continueWithGoogle: 'Google ile devam et',
     continueWithApple: 'Apple ile devam et',
-    providerSoon: 'Yakında',
     or: 'ya da',
     noAccount: 'Hesabın yok mu? ',
     justLooking: 'Sadece bakıyor musun?',

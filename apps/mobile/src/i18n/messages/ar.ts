@@ -339,7 +339,6 @@ export const ar: Localized<EnMessages> = {
     signUp: 'إنشاء حساب',
     continueWithGoogle: 'المتابعة باستخدام Google',
     continueWithApple: 'المتابعة باستخدام Apple',
-    providerSoon: 'قريباً',
     or: 'أو',
     noAccount: 'ليس لديك حساب؟ ',
     justLooking: 'مجرد إلقاء نظرة؟',

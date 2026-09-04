@@ -329,7 +329,6 @@ export const en = {
     signUp: 'Sign up',
     continueWithGoogle: 'Continue with Google',
     continueWithApple: 'Continue with Apple',
-    providerSoon: 'Soon',
     or: 'or',
     noAccount: 'Don’t have an account? ',
     justLooking: 'Just looking?',

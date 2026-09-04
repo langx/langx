@@ -287,7 +287,6 @@ export const ptBR: Localized<EnMessages> = {
     signUp: 'Criar conta',
     continueWithGoogle: 'Continuar com o Google',
     continueWithApple: 'Continuar com a Apple',
-    providerSoon: 'Em breve',
     or: 'ou',
     noAccount: 'Não tem conta? ',
     justLooking: 'Só dando uma olhada?',

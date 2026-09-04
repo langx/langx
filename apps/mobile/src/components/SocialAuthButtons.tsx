@@ -14,28 +14,28 @@ import { Button } from './ui/Button'
 /**
  * The "or continue with" block, shared by sign-in and sign-up.
  *
- * **The buttons are always drawn, even for a provider this deployment cannot
- * complete a sign-in with** — then they are disabled and labelled "soon".
- * That is a reversal of the rule `packages/shared/src/appConfig.ts` states
- * ("a button which cannot work should not be drawn"), and the reasoning has
- * changed rather than been forgotten: the store listing and the marketing
- * site both promise Google and Apple sign-in, so on the deployment those
- * screenshots come from their absence reads as a broken build, not as a
- * feature that has not landed. `authProviders` still decides whether a button
- * can be *pressed*, which is what kept a self-hosted instance from opening a
- * browser onto "provider not found" — the failure the old rule was about.
+ * **A provider this deployment cannot complete a sign-in with is not drawn at
+ * all**, per `packages/shared/src/appConfig.ts`. Drawing them disabled with a
+ * "soon" label was tried and reverted before it shipped: a visible but inert
+ * *Sign in with Apple* is a guideline 4.8 conversation nobody wants to have
+ * during review, and a reviewer has no way to tell a button that is waiting on
+ * credentials from one that is broken.
  *
  * Both handlers live here rather than on each screen so there is one Apple
- * flow, not two that drift.
+ * flow, not two that drift — which is the part of this worth keeping, and the
+ * reason sign-up has the block at all. A returning v1 user is told to continue
+ * with Google or Apple, and sign-up is the screen most of them land on first.
  */
 export function SocialAuthButtons() {
   const styles = useStyles()
   const t = useT()
 
   /**
-   * Undefined while the config request is in flight, and after it fails. Both
-   * mean "cannot confirm", which disables rather than hides — a button that is
-   * there but not yet pressable is a smaller lie than one that vanishes.
+   * Undefined while the config request is in flight, and after it fails —
+   * both of which hide the buttons. That is the right way round: a provider we
+   * cannot confirm is one we cannot complete a sign-in with, and a button that
+   * opens a browser only to come back with "provider not found" is worse than
+   * no button. Email and password never depend on this.
    */
   const providers = useAppConfig().data?.authProviders
 
@@ -107,6 +107,8 @@ export function SocialAuthButtons() {
     }
   }
 
+  if (!providers?.google && !providers?.apple) return null
+
   return (
     <>
       <View style={styles.divider}>
@@ -117,56 +119,25 @@ export function SocialAuthButtons() {
 
       {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
 
-      <SocialButton
-        enabled={providers?.google === true}
-        label={t('auth.continueWithGoogle')}
-        onPress={onGoogle}
-      />
-      <SocialButton
-        enabled={providers?.apple === true}
-        label={t('auth.continueWithApple')}
-        onPress={onApple}
-      />
+      {providers.google ? (
+        <Button
+          label={t('auth.continueWithGoogle')}
+          onPress={() => void onGoogle()}
+          variant="secondary"
+        />
+      ) : null}
+      {providers.apple ? (
+        <Button
+          label={t('auth.continueWithApple')}
+          onPress={() => void onApple()}
+          variant="secondary"
+        />
+      ) : null}
     </>
   )
 }
 
-/**
- * One provider row. The "soon" pill sits beside the button rather than inside
- * its label, so the label stays the provider's own wording — which is what
- * both Google's and Apple's branding rules require it to be.
- */
-function SocialButton({
-  enabled,
-  label,
-  onPress,
-}: {
-  enabled: boolean
-  label: string
-  onPress: () => void | Promise<void>
-}) {
-  const styles = useStyles()
-  const t = useT()
-
-  return (
-    <View style={styles.socialRow}>
-      <Button
-        disabled={!enabled}
-        label={label}
-        onPress={() => void onPress()}
-        style={styles.socialButton}
-        variant="secondary"
-      />
-      {enabled ? null : (
-        <View style={styles.soonPill} pointerEvents="none">
-          <Text style={styles.soonText}>{t('auth.providerSoon')}</Text>
-        </View>
-      )}
-    </View>
-  )
-}
-
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   divider: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -176,21 +147,4 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   dividerLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
   dividerText: { ...font.label, color: colors.textFaint, fontWeight: '400' },
   socialError: { ...font.body, color: colors.danger },
-  socialRow: { justifyContent: 'center' },
-  socialButton: { width: '100%' },
-  /**
-   * Absolutely placed so the pill cannot change the button's height, which
-   * would make the two rows disagree whenever only one provider is live.
-   */
-  soonPill: {
-    backgroundColor: colors.border,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    position: 'absolute',
-    right: spacing.md,
-    top: '50%',
-    transform: [{ translateY: -11 }],
-  },
-  soonText: { ...font.label, color: colors.textMuted, fontSize: 11, fontWeight: '600' },
 }))
