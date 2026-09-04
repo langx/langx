@@ -1,8 +1,10 @@
 import {
+  attachmentsOf,
   languageLevelSchema,
   type FeedPost,
   type PostComment,
   type PostCorrection,
+  type Media,
   type PronunciationAnswer,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
@@ -20,6 +22,22 @@ export async function loadAuthors(db: Db, ids: string[]): Promise<AuthorMap> {
     .find({ _id: { $in: [...new Set(ids)] } })
     .toArray()
   return new Map(profiles.map((profile) => [profile._id, profile]))
+}
+
+/**
+ * Both attachment fields, normalised.
+ *
+ * `attachments` is what a client should read; `media` stays beside it as the
+ * first file so a build that predates the list still shows something. See
+ * `attachmentsOf`.
+ */
+function attachmentFields(doc: { attachments?: Media[]; media?: Media }): {
+  attachments?: Media[]
+  media?: Media
+} {
+  const attachments = attachmentsOf(doc)
+  if (attachments.length === 0) return {}
+  return { attachments, ...(attachments[0] ? { media: attachments[0] } : {}) }
 }
 
 export function authorDto(profile: Profile | undefined, id: string): FeedPost['author'] {
@@ -45,7 +63,7 @@ export function correctionDto(
     corrected: doc.corrected,
     ...(doc.note ? { note: doc.note } : {}),
     ...likeStateOf(likes, 'correction', doc._id),
-    ...(doc.media ? { media: doc.media } : {}),
+    ...attachmentFields(doc),
     createdAt: doc.createdAt.toISOString(),
   }
 }
@@ -106,7 +124,7 @@ export function postDto(post: Post, context: PostDtoContext): FeedPost {
     correctedByViewer: context.correctedByViewer,
     answeredByViewer: context.answeredByViewer,
     ...likeStateOf(context.likes, 'post', post._id),
-    ...(post.media ? { media: post.media } : {}),
+    ...attachmentFields(post),
     createdAt: post.createdAt.toISOString(),
   }
 }

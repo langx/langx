@@ -2,8 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
-import { markDelivered } from '../modules/chat/messages'
-import { notificationsAllowed } from '@langx/shared'
+import { markDelivered, previewFor } from '../modules/chat/messages'
+import { attachmentsOf, notificationsAllowed } from '@langx/shared'
 import { sendPush, tokensFor } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
 
@@ -90,7 +90,10 @@ export async function fanOutMessage(
     await sendPush(app.mongo.db, app.push, {
       to: tokens,
       title: sender?.displayName ?? sender?.handle ?? 'LangX',
-      body: message.body.slice(0, 120),
+      // A caption-less attachment used to push an empty line: `previewFor` is
+      // what the chat list has always shown for one, and the notification has
+      // no more reason to be blank than the list does.
+      body: (message.body || previewFor(message.type, attachmentsOf(message).length)).slice(0, 120),
       data: {
         kind: 'message',
         conversationId: message.conversationId.toHexString(),

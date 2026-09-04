@@ -1,4 +1,5 @@
 import {
+  attachmentsOf,
   canDeleteForEveryone,
   MAX_PINNED_CONVERSATIONS,
   canEditMessage,
@@ -173,7 +174,7 @@ export async function deleteMessage(
     { _id: message._id, senderId: userId, deletedAt: { $exists: false } },
     {
       $set: { deletedAt: now, deletedBy: userId, body: '' },
-      $unset: { media: '', correction: '', replyTo: '' },
+      $unset: { attachments: '', media: '', correction: '', replyTo: '' },
     },
   )
 
@@ -240,14 +241,18 @@ async function applyDeleteSideEffects(
  * undo a deletion the user has already been told happened.
  */
 async function deleteAttachment(message: Message, storage?: StorageProvider): Promise<void> {
-  const url = message.media?.url
-  if (!url || !storage || !supportsPut(storage)) return
-  const key = storage.keyFromPublicUrl(url)
-  if (!key) return
-  try {
-    await storage.deleteObject(key)
-  } catch {
-    // Swallowed on purpose: the row is already a tombstone.
+  if (!storage || !supportsPut(storage)) return
+  // Every file, not just the first: a gallery leaves as many objects behind as
+  // it put there, and `attachmentsOf` is what makes one deleted photo and six
+  // the same code path.
+  for (const item of attachmentsOf(message)) {
+    const key = storage.keyFromPublicUrl(item.url)
+    if (!key) continue
+    try {
+      await storage.deleteObject(key)
+    } catch {
+      // Swallowed on purpose: the row is already a tombstone.
+    }
   }
 }
 

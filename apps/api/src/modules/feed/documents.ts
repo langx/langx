@@ -40,6 +40,12 @@ export interface Post {
    * appears on the tab that sorts by it.
    */
   answerCount?: number
+  /**
+   * Everything attached, in the order it was picked. Read through
+   * `attachmentsOf` — a post written before the field has only `media`.
+   */
+  attachments?: Media[]
+  /** The first of `attachments`, repeated for builds that predate the list. */
   media?: Media
   createdAt: Date
 }
@@ -50,6 +56,8 @@ export interface PostCorrectionDoc {
   authorId: string
   corrected: string
   note?: string
+  /** As on a post: the list, and its first item repeated. */
+  attachments?: Media[]
   media?: Media
   createdAt: Date
 }

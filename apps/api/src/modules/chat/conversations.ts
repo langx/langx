@@ -83,6 +83,15 @@ export interface Message {
     preview: string
   }
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
+  /**
+   * Everything attached to this message, in the order it was picked.
+   *
+   * Read through `attachmentsOf`, never directly: a v1-imported message and
+   * anything sent by an installed binary has `media` and no `attachments`, and
+   * the two must look the same to everything downstream.
+   */
+  attachments?: MessageMedia[]
+  /** The first of `attachments`, repeated for builds that predate the list. */
   media?: MessageMedia
   /**
    * The v1 message id this was imported from — absent on everything sent in

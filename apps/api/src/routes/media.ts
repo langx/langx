@@ -2,8 +2,7 @@ import {
   avatarContentTypeSchema,
   avatarConfirmSchema,
   ERROR_CODES,
-  isAudioContentType,
-  isImageContentType,
+  mediaKindOfContentType,
   mediaUploadUrlSchema,
   photoAddSchema,
   postMediaUploadUrlSchema,
@@ -16,13 +15,8 @@ import { ApiError } from '../lib/ApiError'
 import { assertOwnBucket } from '../lib/assertOwnBucket'
 import { requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
+import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
-
-const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-}
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -33,7 +27,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: { body: z.object({ contentType: avatarContentTypeSchema }) },
     },
     async (request, reply) => {
-      const extension = EXTENSION_BY_CONTENT_TYPE[request.body.contentType]
+      const extension = objectExtension(request.body.contentType)
       const key = `avatars/${request.userId}/${randomUUID()}.${extension}`
 
       const upload = await app.storage.getUploadUrl(key, request.body.contentType)
@@ -64,7 +58,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: { body: z.object({ contentType: avatarContentTypeSchema }) },
     },
     async (request, reply) => {
-      const extension = EXTENSION_BY_CONTENT_TYPE[request.body.contentType]
+      const extension = objectExtension(request.body.contentType)
       const key = `photos/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, request.body.contentType))
     },
@@ -102,9 +96,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       await assertMediaUnlocked(app.mongo.db, conversation)
 
       const { kind, contentType } = request.body
-      const allowed =
-        kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
-      if (!allowed) {
+      if (mediaKindOfContentType(contentType) !== kind) {
         throw new ApiError(
           ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
@@ -113,7 +105,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
 
       // Keyed by conversation so the account purge can find a user's
       // attachments, and so a leaked key reveals nothing about who is talking.
-      const extension = contentType.split('/')[1]?.split(';')[0] ?? 'bin'
+      const extension = objectExtension(contentType)
       const key = `messages/${conversation._id.toHexString()}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
@@ -137,18 +129,15 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireVerifiedEmail, schema: { body: postMediaUploadUrlSchema } },
     async (request, reply) => {
       const { kind, contentType } = request.body
-      const allowed =
-        kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
-      if (!allowed) {
+      if (mediaKindOfContentType(contentType) !== kind) {
         throw new ApiError(
           ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
       }
 
-      // `EXTENSION_BY_CONTENT_TYPE` only covers images; audio needs the same
-      // derivation the messages route uses.
-      const extension = contentType.split('/')[1]?.split(';')[0] ?? 'bin'
+      // One table for every kind now — see `objectExtension`.
+      const extension = objectExtension(contentType)
       const key = `posts/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },

@@ -1,4 +1,4 @@
-import { TOKEN_RULES } from '@langx/shared'
+import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS, TOKEN_RULES } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -609,12 +609,31 @@ describe('community feed', () => {
       height: 600,
     }
 
+    const video = {
+      url: 'https://cdn.example.com/posts/u/1.mp4',
+      contentType: 'video/mp4',
+      sizeBytes: 4 * 1024 * 1024,
+      durationSeconds: 30,
+      width: 1280,
+      height: 720,
+    }
+
+    /** The one-attachment body an installed build still sends. */
     function postWithMedia(user: SignedUpUser, body: string, media: unknown) {
       return app.inject({
         method: 'POST',
         url: '/posts',
         headers: { cookie: user.cookie },
         payload: { body, language: 'en', media },
+      })
+    }
+
+    function postWithAttachments(user: SignedUpUser, body: string, attachments: unknown[]) {
+      return app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { body, language: 'en', attachments },
       })
     }
 
@@ -674,7 +693,12 @@ describe('community feed', () => {
         ...image,
         sizeBytes: 32 * 1024 * 1024,
       })
-      expect(response.statusCode).toBe(400)
+      // 413 rather than the 400 this used to be: now that video raises the
+      // schema's outer bound to its own ceiling, 32MB is a well-formed number
+      // that is simply too large for an image, and the per-kind check is what
+      // says so.
+      expect(response.statusCode).toBe(413)
+      expect(response.json<{ code: string }>().code).toBe('MEDIA_TOO_LARGE')
     })
 
     it('refuses a content type we do not serve', async () => {
@@ -707,6 +731,86 @@ describe('community feed', () => {
       expect(afterMedia?.quota.media ?? []).toHaveLength(1)
     })
 
+    it('carries a gallery back on the feed', async () => {
+      const author = await newUser('media-gallery@example.com')
+      const response = await postWithAttachments(author, 'Which of these is right?', [
+        image,
+        { ...image, url: 'https://cdn.example.com/posts/u/2.jpg' },
+        video,
+      ])
+      expect(response.statusCode).toBe(201)
+      const body = response.json<{ attachments?: unknown[]; media?: { url: string } }>()
+      expect(body.attachments).toHaveLength(3)
+      // Repeated as `media` so a build that predates the list shows the first.
+      expect(body.media?.url).toBe(image.url)
+    })
+
+    it('still accepts the one-attachment body an installed build sends', async () => {
+      const author = await newUser('media-legacy@example.com')
+      const response = await postWithMedia(author, 'One photo, old client.', image)
+      expect(response.statusCode).toBe(201)
+      expect(response.json<{ attachments?: unknown[] }>().attachments).toHaveLength(1)
+    })
+
+    it('accepts a video on a post', async () => {
+      const author = await newUser('media-video@example.com')
+      const response = await postWithMedia(author, 'Am I saying this right?', video)
+      expect(response.statusCode).toBe(201)
+      expect(response.json<{ media?: { contentType: string } }>().media?.contentType).toBe(
+        'video/mp4',
+      )
+    })
+
+    it('accepts a video on a correction', async () => {
+      const author = await newUser('media-video-post@example.com')
+      const helper = await newUser('media-video-corrector@example.com')
+      const postId = (await post(author, 'I has said it wrong.')).json<{ _id: string }>()._id
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: helper.cookie },
+        payload: { corrected: 'I said it wrong.', attachments: [video] },
+      })
+      expect(response.statusCode).toBe(201)
+      expect(response.json<{ attachments?: unknown[] }>().attachments).toHaveLength(1)
+    })
+
+    it('refuses a video longer than the ceiling', async () => {
+      const author = await newUser('media-long@example.com')
+      const response = await postWithMedia(author, 'A whole film.', {
+        ...video,
+        durationSeconds: MAX_VIDEO_SECONDS + 1,
+      })
+      expect(response.statusCode).toBe(413)
+      expect(response.json<{ code: string }>().code).toBe('MEDIA_TOO_LONG')
+    })
+
+    it('refuses more attachments than one post may carry', async () => {
+      const author = await newUser('media-toomany@example.com')
+      const response = await postWithAttachments(
+        author,
+        'Every photo I own.',
+        Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image),
+      )
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('spends one media unit for a gallery, not one per file', async () => {
+      // The byte ceiling is per file and is the control that bounds storage;
+      // the daily count is a ceiling on abuse, and six photos are one post.
+      const author = await newUser('media-gallery-quota@example.com')
+      await postWithAttachments(author, 'Three of them.', [
+        image,
+        { ...image, url: 'https://cdn.example.com/posts/u/2.jpg' },
+        { ...image, url: 'https://cdn.example.com/posts/u/3.jpg' },
+      ])
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: author.userId })
+      expect(profile?.quota.media ?? []).toHaveLength(1)
+    })
+
     it('signs an upload URL only for a type we serve', async () => {
       const author = await newUser('media-sign@example.com')
       const bad = await app.inject({
@@ -717,6 +821,14 @@ describe('community feed', () => {
       })
       expect(bad.statusCode).toBe(415)
       expect(bad.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
+
+      const webm = await app.inject({
+        method: 'POST',
+        url: '/posts/upload-url',
+        headers: { cookie: author.cookie },
+        payload: { kind: 'video', contentType: 'video/webm' },
+      })
+      expect(webm.statusCode).toBe(415)
     })
   })
 

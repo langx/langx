@@ -1,4 +1,12 @@
-import { MAX_IMAGE_BYTES, MEDIA_UNLOCKS_AFTER_MESSAGES, PLAN_LIMITS } from '@langx/shared'
+import {
+  MAX_ATTACHMENTS,
+  MAX_IMAGE_BYTES,
+  MAX_VIDEO_BYTES,
+  MAX_VIDEO_SECONDS,
+  MEDIA_UNLOCKS_AFTER_MESSAGES,
+  PLAN_LIMITS,
+  sendMediaMessageSchema,
+} from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -691,7 +699,7 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
   })
 
-  describe('image and voice messages', () => {
+  describe('image, video and voice messages', () => {
     const BUCKET = 'https://cdn.example.com'
     const image = {
       url: `${BUCKET}/messages/x/a.jpg`,
@@ -699,6 +707,14 @@ describe('Faz 5 — conversation/message history REST', () => {
       sizeBytes: 1024,
       width: 800,
       height: 600,
+    }
+    const video = {
+      url: `${BUCKET}/messages/x/a.mp4`,
+      contentType: 'video/mp4',
+      sizeBytes: 4 * 1024 * 1024,
+      durationSeconds: 30,
+      width: 1280,
+      height: 720,
     }
 
     /**
@@ -733,7 +749,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const result = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, kind: 'image', media: image },
+        { conversationId, attachments: [image] },
         BUCKET,
       )
       expect(result.message.type).toBe('image')
@@ -748,7 +764,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const result = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, kind: 'image', media: image, body: 'look at this' },
+        { conversationId, attachments: [image], body: 'look at this' },
         BUCKET,
       )
       expect(result.message.body).toBe('look at this')
@@ -766,27 +782,30 @@ describe('Faz 5 — conversation/message history REST', () => {
           a.userId,
           {
             conversationId,
-            kind: 'image',
-            media: { ...image, url: 'https://evil.example.net/x.jpg' },
+            attachments: [{ ...image, url: 'https://evil.example.net/x.jpg' }],
           },
           BUCKET,
         ),
       ).rejects.toThrow(/own storage bucket/)
     })
 
-    it('refuses a content type that does not match the kind', async () => {
+    it('refuses a content type we do not serve', async () => {
       const { a, conversationId } = await pair('media-mismatch')
       const { sendMediaMessage } = await import('../modules/chat/messages')
+      // The kind is no longer taken from the sender — it comes off the bytes —
+      // so the mismatch that used to be expressible here is now impossible to
+      // state, and what is left is a type we never agreed to host. The sign
+      // route still takes a kind, and its own test covers the disagreement.
       await expect(
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, kind: 'audio', media: { ...image, contentType: 'image/jpeg' } },
+          { conversationId, attachments: [{ ...image, contentType: 'application/pdf' }] },
           BUCKET,
         ),
       ).rejects.toMatchObject({
         code: 'UNSUPPORTED_MEDIA_TYPE',
-        message: /not a supported audio type/,
+        message: /not a supported attachment type/,
       })
     })
 
@@ -797,7 +816,7 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, kind: 'image', media: { ...image, sizeBytes: MAX_IMAGE_BYTES + 1 } },
+          { conversationId, attachments: [{ ...image, sizeBytes: MAX_IMAGE_BYTES + 1 }] },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'MEDIA_TOO_LARGE', message: /too large/ })
@@ -849,12 +868,7 @@ describe('Faz 5 — conversation/message history REST', () => {
         const { a, conversationId } = await pair('media-gate-send', { warm: false })
         const { sendMediaMessage } = await import('../modules/chat/messages')
         await expect(
-          sendMediaMessage(
-            handle.db,
-            a.userId,
-            { conversationId, kind: 'image', media: image },
-            BUCKET,
-          ),
+          sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [image] }, BUCKET),
         ).rejects.toThrow(/unlock after/)
       })
 
@@ -943,18 +957,179 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(response.statusCode).toBe(404)
     })
 
+    it('sends a video and labels it in the chat list', async () => {
+      const { a, conversationId } = await pair('media-video')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, attachments: [video] },
+        BUCKET,
+      )
+      expect(result.message.type).toBe('video')
+      expect(result.conversation.lastMessage.body).toBe('🎬 Video')
+    })
+
+    it('carries a gallery, and counts it in the chat list', async () => {
+      const { a, conversationId } = await pair('media-gallery')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        {
+          conversationId,
+          attachments: [image, { ...image, url: `${BUCKET}/messages/x/b.jpg` }, video],
+        },
+        BUCKET,
+      )
+      expect(result.message.attachments).toHaveLength(3)
+      // The kind of the first file decides the type, and so the label.
+      expect(result.message.type).toBe('image')
+      expect(result.conversation.lastMessage.body).toBe('📷 3 photos')
+      // Repeated for a build that predates the list; it shows the first file
+      // rather than an empty bubble.
+      expect(result.message.media?.url).toBe(image.url)
+    })
+
+    it('refuses a voice note sent alongside a photo', async () => {
+      const { a, conversationId } = await pair('media-mixed')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      const voice = {
+        url: `${BUCKET}/messages/x/a.m4a`,
+        contentType: 'audio/m4a',
+        sizeBytes: 2048,
+        durationSeconds: 7,
+      }
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [image, voice] },
+          BUCKET,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED', message: /on its own/ })
+    })
+
+    it('refuses more attachments than one message may carry', () => {
+      const tooMany = Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image)
+      expect(() =>
+        sendMediaMessageSchema.parse({ conversationId: 'c1', attachments: tooMany }),
+      ).toThrow()
+    })
+
+    it('still accepts the one-attachment body an installed build sends', async () => {
+      const { a, conversationId } = await pair('media-legacy')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      // Binaries in the wild emit `{ kind, media }` and cannot be updated in
+      // step with the server.
+      const input = sendMediaMessageSchema.parse({ conversationId, kind: 'image', media: image })
+      const result = await sendMediaMessage(handle.db, a.userId, input, BUCKET)
+      expect(result.message.attachments).toEqual([image])
+    })
+
+    it('refuses a video longer than the ceiling', async () => {
+      const { a, conversationId } = await pair('media-long')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      // Well within the schema's outer bound, which is the audio ceiling — the
+      // per-kind check is the only thing that can refuse this.
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [{ ...video, durationSeconds: MAX_VIDEO_SECONDS + 1 }] },
+          BUCKET,
+        ),
+      ).rejects.toMatchObject({ code: 'MEDIA_TOO_LONG', message: /longer than/ })
+    })
+
+    it('refuses a video heavier than the ceiling', async () => {
+      const { a, conversationId } = await pair('media-heavy')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [{ ...video, sizeBytes: MAX_VIDEO_BYTES + 1 }] },
+          BUCKET,
+        ),
+      ).rejects.toMatchObject({ code: 'MEDIA_TOO_LARGE' })
+    })
+
+    it('refuses a video that does not say how long it is', async () => {
+      const { a, conversationId } = await pair('media-nodur')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      const { durationSeconds: _omitted, ...withoutDuration } = video
+      // A ceiling that can be bypassed by omitting the field is not a ceiling.
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [withoutDuration] },
+          BUCKET,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED', message: /how long/ })
+    })
+
+    it('refuses a video container we cannot serve everywhere', async () => {
+      const { a, conversationId } = await pair('media-webm')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      // iOS has no VP8 or VP9 decoder, so a webm would be unplayable for half
+      // the people it was sent to.
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, attachments: [{ ...video, contentType: 'video/webm' }] },
+          BUCKET,
+        ),
+      ).rejects.toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
+    })
+
+    it('signs a video URL only for a video content type', async () => {
+      const { a, conversationId } = await pair('media-signvideo')
+      const wrongWay = await app.inject({
+        method: 'POST',
+        url: '/messages/upload-url',
+        headers: { cookie: a.cookie },
+        payload: { conversationId, kind: 'video', contentType: 'image/jpeg' },
+      })
+      expect(wrongWay.statusCode).toBe(415)
+
+      const otherWay = await app.inject({
+        method: 'POST',
+        url: '/messages/upload-url',
+        headers: { cookie: a.cookie },
+        payload: { conversationId, kind: 'image', contentType: 'video/mp4' },
+      })
+      expect(otherWay.statusCode).toBe(415)
+    })
+
+    it('quotes a caption-less video with its label rather than an empty line', async () => {
+      const { a, b, conversationId } = await pair('media-replyvideo')
+      const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')
+      const sent = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, attachments: [video] },
+        BUCKET,
+      )
+      const reply = await sendTextMessage(handle.db, b.userId, {
+        conversationId,
+        body: 'nice',
+        replyToMessageId: sent.message._id.toHexString(),
+      })
+      expect(reply.message.replyTo?.preview).toBe('🎬 Video')
+    })
+
     it('charges the media quota, which text and corrections do not', async () => {
       const { a, conversationId } = await pair('media-quota')
       const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')
       const { consumeQuota } = await import('../lib/quota')
 
       await sendTextMessage(handle.db, a.userId, { conversationId, body: 'free of charge' })
-      await sendMediaMessage(
-        handle.db,
-        a.userId,
-        { conversationId, kind: 'image', media: image },
-        BUCKET,
-      )
+      await sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [image] }, BUCKET)
       // The send path itself does not spend it — the socket handler does, so
       // spend one here and check the bucket is the media one.
       await consumeQuota(handle.db, a.userId, 'free', 'media')

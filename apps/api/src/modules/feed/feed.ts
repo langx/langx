@@ -351,8 +351,9 @@ export async function createPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning')
   }
 
-  if (input.media) {
-    await assertAttachable(db, userId, profile, [input.media], storagePublicBaseUrl)
+  const attachments = input.attachments ?? []
+  if (attachments.length > 0) {
+    await assertAttachable(db, userId, profile, attachments, storagePublicBaseUrl)
   }
 
   const doc: Post = {
@@ -365,7 +366,10 @@ export async function createPost(
     kind: input.kind,
     correctionCount: 0,
     ...(input.kind === 'pronunciation' ? { answerCount: 0 } : {}),
-    ...(input.media ? { media: input.media } : {}),
+    ...(attachments.length > 0 ? { attachments } : {}),
+    // The first file, repeated, for builds that predate `attachments`. See the
+    // same two lines in `sendMediaMessage`.
+    ...(attachments[0] ? { media: attachments[0] } : {}),
     createdAt: new Date(),
   }
   await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
@@ -409,10 +413,11 @@ export async function correctPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own post')
   }
 
-  if (input.media) {
+  const attachments = input.attachments ?? []
+  if (attachments.length > 0) {
     const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
     if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
-    await assertAttachable(db, userId, profile, [input.media], storagePublicBaseUrl)
+    await assertAttachable(db, userId, profile, attachments, storagePublicBaseUrl)
   }
 
   const doc: PostCorrectionDoc = {
@@ -421,7 +426,8 @@ export async function correctPost(
     authorId: userId,
     corrected: input.corrected,
     ...(input.note ? { note: input.note } : {}),
-    ...(input.media ? { media: input.media } : {}),
+    ...(attachments.length > 0 ? { attachments } : {}),
+    ...(attachments[0] ? { media: attachments[0] } : {}),
     createdAt: new Date(),
   }
 
