@@ -2,9 +2,10 @@ import { MINIMUM_AGE } from '@langx/shared'
 import * as Linking from 'expo-linking'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
+import { Screen } from '../../src/components/ui/Screen'
 import { Checkbox } from '../../src/components/ui/Checkbox'
 import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { openExternal } from '../../src/lib/openExternal'
@@ -88,10 +89,7 @@ export default function SignUp() {
     !loading && !!name && !!email && passwordPairReady(password, confirmation) && accepted
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <Screen scroll style={styles.form}>
       <Text style={styles.title}>{t('auth.createAccount')}</Text>
       <Text style={styles.subtitle}>{t('auth.minimumAge', { age: MINIMUM_AGE })}</Text>
 
@@ -170,18 +168,20 @@ export default function SignUp() {
           {t('auth.signIn')}
         </Link>
       </View>
-    </KeyboardAvoidingView>
+    </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  container: {
-    backgroundColor: colors.bg,
-    flex: 1,
-    gap: spacing.lg,
-    justifyContent: 'center',
-    padding: spacing.xl,
-  },
+  /**
+   * Only the gap. `Screen` owns the background, the safe-area inset, the
+   * horizontal padding and the scrolling — which is the point: this screen
+   * used to centre a form taller than the phone inside a bare
+   * `KeyboardAvoidingView`, so the overflow went equally out of the top and
+   * the bottom and put the title under the Dynamic Island, with no scroll to
+   * bring it back.
+   */
+  form: { gap: spacing.lg },
   title: { ...font.title, color: colors.text, fontSize: 28, lineHeight: 36 },
   subtitle: {
     ...font.body,
