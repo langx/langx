@@ -13,6 +13,7 @@ import { showAlert } from '../../src/lib/alert'
 import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { makeStyles } from '../../src/lib/theme'
 import { interestLabel, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Step 4 of 5, and both halves of it are skippable.
@@ -29,6 +30,7 @@ import { interestLabel, useT } from '../../src/i18n'
  * draft and `POST /profiles` writes it, running the same bucket check.
  */
 export default function PhotoStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

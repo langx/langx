@@ -37,6 +37,7 @@ import { relativeTimeCompact } from '../../../src/lib/format'
 import { useLocale, useT } from '../../../src/i18n'
 import type { MessageKey } from '../../../src/i18n/runtime'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 /** v3 draws chat avatars at 52, one step up from the 48 default. */
 const AVATAR_SIZE = 52
@@ -49,6 +50,7 @@ const EMPTY_COPY: Record<ConversationFilter, { title: MessageKey; body: MessageK
 }
 
 export default function ChatsScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

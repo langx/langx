@@ -5,6 +5,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { useT } from '../../src/i18n'
 import { makeStyles } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The first thing somebody sees, once the intro has played.
@@ -17,6 +18,7 @@ import { makeStyles } from '../../src/lib/theme'
  * nothing.
  */
 export default function WelcomeScreen() {
+  useScreenInteractive()
   const t = useT()
   const styles = useStyles()
   const { start: browse, starting } = useGuestBrowse()

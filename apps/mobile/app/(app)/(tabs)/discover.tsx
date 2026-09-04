@@ -49,6 +49,7 @@ import { listState } from '../../../src/lib/listState'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -77,6 +78,7 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 }
 
 export default function DiscoverScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

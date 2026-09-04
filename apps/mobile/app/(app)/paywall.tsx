@@ -31,6 +31,7 @@ import {
 } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT, type MessageKey } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Both dated 7 June 2024 and, per `architecture.md:101`, **still missing the
@@ -177,6 +178,7 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
 }
 
 export default function PaywallScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

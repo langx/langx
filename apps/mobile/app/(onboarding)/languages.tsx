@@ -13,6 +13,7 @@ import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 type LanguageTab = 'native' | 'learning'
 
@@ -26,6 +27,7 @@ type LanguageTab = 'native' | 'learning'
  * Levels stay on their own step — they only exist because of this one.
  */
 export default function LanguagesStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

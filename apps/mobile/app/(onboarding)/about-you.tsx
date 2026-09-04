@@ -9,8 +9,10 @@ import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function AboutYouStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

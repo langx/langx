@@ -16,6 +16,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Step 2 of 5: how far along you are in each learning language.
@@ -27,6 +28,7 @@ import { levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
  * that quietly decides who finds them.
  */
 export default function LevelsStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

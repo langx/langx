@@ -48,6 +48,7 @@ import {
   UPLOAD_START,
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -77,6 +78,7 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
  * rest live, and until it existed the card's "See all N" was a label on nothing.
  */
 export default function PostScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

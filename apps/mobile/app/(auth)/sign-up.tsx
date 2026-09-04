@@ -18,6 +18,7 @@ import {
   passwordPairReady,
 } from '../../src/lib/passwordForm'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Pulled from the same table Settings renders, so a URL that moves moves here
@@ -28,6 +29,7 @@ const TERMS_LINK = LEGAL_LINKS.find((link) => link.labelKey === 'legal.terms')!
 const PRIVACY_LINK = LEGAL_LINKS.find((link) => link.labelKey === 'legal.privacy')!
 
 export default function SignUp() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const [name, setName] = useState('')

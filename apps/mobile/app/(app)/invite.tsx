@@ -15,6 +15,7 @@ import { showAlert } from '../../src/lib/alert'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
 import { makeStyles } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 const RULES = TOKEN_RULES.referral
 
@@ -32,6 +33,7 @@ const RULES = TOKEN_RULES.referral
  * second copy to keep in step for no gain.
  */
 export default function InviteScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()

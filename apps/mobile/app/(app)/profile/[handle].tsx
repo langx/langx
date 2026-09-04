@@ -43,8 +43,10 @@ import {
   useDisplayNames,
   useT,
 } from '../../../src/i18n'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 export default function ProfileScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

@@ -17,6 +17,7 @@ import { shareLink } from '../../src/lib/share'
 import { streakShareText } from '../../src/lib/shareText'
 import { streakHistory, type StreakHistoryRow } from '../../src/lib/streakHistory'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 const STREAK_TABS: readonly StreakMetric[] = STREAK_METRICS
 
@@ -32,6 +33,7 @@ const DAYS = 60
  * a calendar and a list are not substitutes for one another.
  */
 export default function StreakScreen() {
+  useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()

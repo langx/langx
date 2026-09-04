@@ -31,6 +31,7 @@ import {
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { genderLabel, levelShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
@@ -57,6 +58,7 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
 }
 
 export default function FiltersScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

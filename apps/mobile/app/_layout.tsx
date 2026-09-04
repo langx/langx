@@ -9,6 +9,7 @@
 import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'
 import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'
 import { useFonts } from 'expo-font'
+import { ObserveRoot } from 'expo-observe'
 import * as SplashScreen from 'expo-splash-screen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
@@ -32,6 +33,7 @@ import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '../src/lib/analytics'
 import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
+import { configureObserve } from '../src/lib/observe'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
@@ -56,6 +58,13 @@ const BOOT_STALL_MS = 10_000
  */
 void SplashScreen.preventAutoHideAsync().catch(() => undefined)
 
+/*
+ * Module scope, and it has to be: the `expo-router` integration is read once
+ * when `ObserveRoot`'s provider mounts and throws if the answer changes after
+ * that, so there is no effect early enough to do this in.
+ */
+configureObserve()
+
 function createQueryClient(): QueryClient {
   return new QueryClient({
     defaultOptions: {
@@ -72,7 +81,7 @@ function createQueryClient(): QueryClient {
   })
 }
 
-export default function RootLayout() {
+function RootLayout() {
   return (
     /*
      * Outside `SafeAreaProvider`, which is where gesture-handler's own docs put
@@ -91,6 +100,27 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   )
 }
+
+/**
+ * EAS Observe's root. The HOC times the launch itself — the gap between the
+ * process starting and this tree's first render (Time to First Render) — which
+ * is why it wraps the default export rather than being mounted as a provider
+ * somewhere inside it: anything below has already cost the measurement the
+ * part it exists to measure.
+ *
+ * Time to Interactive is *not* marked here. With the `expo-router`
+ * integration on, `markInteractive` is attributed to whichever route it is
+ * called from, and this component sits above the navigator — there is no route
+ * here to attribute it to. Each screen asks for its own; see
+ * `useScreenInteractive`.
+ *
+ * A no-op where there is no native module: `expo-observe` ships a web shim
+ * whose every method returns without doing anything, so the static web export
+ * and its prerender pass are unaffected. Metrics from debug builds are also
+ * held back unless `dispatchInDebug` is turned on in `configureObserve`, so
+ * what this reports is production only.
+ */
+export default ObserveRoot.wrap(RootLayout)
 
 /**
  * Split from `RootLayout` only so it sits *inside* `ThemeProvider` and can call

@@ -11,6 +11,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 function Line({
   icon,
@@ -52,6 +53,7 @@ function Line({
  * are the whole argument for having migrated anything at all.
  */
 export default function WelcomeBackScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

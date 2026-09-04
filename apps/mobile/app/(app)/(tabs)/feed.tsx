@@ -56,6 +56,7 @@ import { confirmAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 /**
  * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list
@@ -138,6 +139,7 @@ function ComposerLabel({
 }
 
 export default function FeedScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()

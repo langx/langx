@@ -6,6 +6,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The end of the wizard, and three things at once: the moment of arrival, the
@@ -22,6 +23,7 @@ import { useT } from '../../src/i18n'
  * short of full would say otherwise.
  */
 export default function DoneStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

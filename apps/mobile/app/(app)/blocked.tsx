@@ -12,6 +12,7 @@ import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Blocking is one tap from a profile; unblocking has to live somewhere, and it
@@ -19,6 +20,7 @@ import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
  * Without this screen a block is irreversible in practice.
  */
 export default function BlockedScreen() {
+  useScreenInteractive()
   const styles = useStyles()
 
   const blocks = useBlocks()

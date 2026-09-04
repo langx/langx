@@ -16,6 +16,7 @@ import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * What you have written: your corrections, and your own posts.
@@ -37,6 +38,7 @@ import { makeStyles } from '../../src/lib/theme'
  * disagreeing with the tile.
  */
 export default function WritingScreen() {
+  useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()

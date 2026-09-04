@@ -21,6 +21,7 @@ import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useT } from '../src/i18n'
+import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 
 /**
  * `/<handle>` — the address somebody shares for their own profile.
@@ -41,6 +42,7 @@ import { useDisplayNames, useT } from '../src/i18n'
  * to a screen instead of to them.
  */
 export default function SharedProfileScreen() {
+  useScreenInteractive()
   const params = useLocalSearchParams<{ username: string; invite?: string }>()
   const handle = (params.username ?? '').toLowerCase()
   /*

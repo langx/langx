@@ -1,6 +1,7 @@
 import { router } from 'expo-router'
 import { IntroCarousel } from '../../src/components/IntroCarousel'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Settings' "Show intro again", as a screen inside the signed-in group.
@@ -20,6 +21,7 @@ import { useT } from '../../src/i18n'
  * place that can reach here, so it is also where finishing belongs.
  */
 export default function IntroReplayScreen() {
+  useScreenInteractive()
   const t = useT()
 
   return (

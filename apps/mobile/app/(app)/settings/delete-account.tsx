@@ -16,6 +16,7 @@ import { FLAG_KEYS, readBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 /**
  * The front door to deleting an account, which used to be one tap behind a
@@ -36,6 +37,7 @@ import { showToast } from '../../../src/lib/toast'
  * apply and the promise in `docs/legal/promise-change.md` stays true.
  */
 export default function DeleteAccountScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

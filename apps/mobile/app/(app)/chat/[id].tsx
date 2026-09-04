@@ -93,8 +93,10 @@ import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/message
 import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 export default function ChatScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

@@ -7,6 +7,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { useTheme } from '../../src/lib/theme'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * `auto` leads because it is what almost everyone wants and what nobody has to
@@ -28,6 +29,7 @@ const LOCALE_OPTIONS = ['auto', ...SUPPORTED_LOCALES] as const
  * change language when somebody else signs in. See `I18nProvider`.
  */
 export default function AppLanguageScreen() {
+  useScreenInteractive()
   const t = useT()
   const { colors } = useTheme()
   const { preference, setPreference, deviceLocale } = useLocalePreference()

@@ -30,6 +30,7 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { periodLabel, useLocale, useT } from '../../src/i18n'
 import { leaderboardShareText } from '../../src/lib/shareText'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * The wallet: what you have, and what it buys.
@@ -48,6 +49,7 @@ import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 const PERIOD_TABS: readonly PeriodType[] = ['week', 'month', 'year', 'all']
 
 export default function WalletScreen() {
+  useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()

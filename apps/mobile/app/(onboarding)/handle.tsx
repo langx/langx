@@ -20,6 +20,7 @@ import { track } from '../../src/lib/analytics'
 import { normalizeInviteCode } from '../../src/lib/inviteLink'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 function useDebounced<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value)
@@ -39,6 +40,7 @@ function useDebounced<T>(value: T, delay = 400): T {
  * user having to remember what it was.
  */
 export default function HandleStep() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
 

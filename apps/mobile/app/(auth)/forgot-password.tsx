@@ -7,8 +7,10 @@ import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 import { useT } from '../../src/i18n'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function ForgotPassword() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const [email, setEmail] = useState('')

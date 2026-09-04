@@ -10,6 +10,7 @@ import { badgeShareText } from '../../src/lib/shareText'
 import { makeStyles } from '../../src/lib/theme'
 import { badgeLabel, useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
  * Badges, and what the next one takes.
@@ -21,6 +22,7 @@ import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
  * to the wallet, streaks to the streak page — and this one scrolls.
  */
 export default function BadgesScreen() {
+  useScreenInteractive()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
