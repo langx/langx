@@ -1,3 +1,12 @@
+/**
+ * Swiping a bubble to reply to it.
+ *
+ * **`swipeTranslation` and `swipeReleased` are worklets, and that is not
+ * optional** — the same rule, and the same crash, as `swipeAction`: they are
+ * called from `Gesture.Pan().onUpdate`/`.onEnd`, which run on the UI thread,
+ * and a plain function reached from there throws where nothing can catch it.
+ */
+
 /** Past this, the gesture is a reply rather than a scroll. */
 export const SWIPE_ACTIVATE_PX = 56
 /** Where the bubble stops following the finger one-to-one. */
@@ -15,11 +24,13 @@ export const SWIPE_LOCK_PX = 10
 const RUBBER = 0.15
 /** Follows the finger, then resists — so the limit is felt, not hit. */
 export function swipeTranslation(dx: number): number {
+  'worklet'
   if (dx <= 0) return 0
   return dx <= SWIPE_MAX_PX ? dx : SWIPE_MAX_PX + (dx - SWIPE_MAX_PX) * RUBBER
 }
 
 export function swipeReleased(dx: number): boolean {
+  'worklet'
   return dx >= SWIPE_ACTIVATE_PX
 }
 

@@ -7,6 +7,15 @@
  * scroll, and where the row is allowed to come to rest — are testable without
  * a renderer.
  *
+ * **The geometry functions are worklets, and that is not optional.** They are
+ * called from `Gesture.Pan().onUpdate`/`.onEnd`, which the worklets Babel
+ * plugin compiles to run on the UI thread. A plain function captured by a
+ * worklet arrives there as a stub that throws when called, and a throw on the
+ * UI runtime is not a red box — it is `SIGABRT`. That is what shipped in
+ * 2.0.0 (125): every swipe in the app killed it, in a build whose comments
+ * claimed this file was "worklet-safe as written". The directive is what
+ * makes it so; on Node it is an inert string, so the tests are unchanged.
+ *
  * **The row rests open.** It used to commit on release: swipe far enough and
  * the action fired as the row sprang back. That is fine for one action a side
  * and impossible for two, since a single gesture cannot say which of them was
@@ -50,6 +59,7 @@ export type SwipeDirection = 'left' | 'right'
 
 /** How wide the drawer on one side is, given how many buttons it holds. */
 export function drawerWidth(actionCount: number): number {
+  'worklet'
   return Math.max(0, actionCount) * ACTION_WIDTH_PX
 }
 
@@ -61,6 +71,7 @@ export function drawerWidth(actionCount: number): number {
  * opened at all, and the rubber band is all that is left of the gesture there.
  */
 export function rowTranslation(x: number, right: number, left: number): number {
+  'worklet'
   const limit = x >= 0 ? right : left
   const distance = Math.abs(x)
   const eased = distance <= limit ? distance : limit + (distance - limit) * RUBBER
@@ -82,6 +93,7 @@ export function rowTranslation(x: number, right: number, left: number): number {
  * a slow drag.
  */
 export function settleOffset(x: number, right: number, left: number, velocity = 0): number {
+  'worklet'
   const flickedRight = velocity >= FLICK_VELOCITY
   const flickedLeft = velocity <= -FLICK_VELOCITY
 

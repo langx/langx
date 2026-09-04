@@ -2809,8 +2809,7 @@ for 67px of travel. A natural flick moves the thumb perhaps 60px before it
 lifts, and the row sprang shut on a gesture that felt decisive — which reads as
 the swipe failing, not as a threshold missed. It now takes the release velocity
 too, and that single argument answers most of the complaint. It is plain maths
-and stays tested without a renderer, as does all the other geometry: those
-functions are worklet-safe as written, which is why the move cost no logic.
+and stays tested without a renderer, as does all the other geometry.
 
 **What it costs.** The web bundle, measured with `expo export --platform web`
 before and after: 3,595,072 → 4,639,644 bytes raw, 915,242 → 1,116,102
@@ -2825,6 +2824,31 @@ finger.
 `react-native-gesture-handler` is a native module, so installed apps are
 offered no update at all until a build carrying it ships — the same constraint
 `expo-video` had, and it belongs in the release note.
+
+**And then it crashed the app.** The paragraph above used to end "those
+functions are worklet-safe as written, which is why the move cost no logic".
+That sentence was wrong, and it shipped: 2.0.0 (125) aborted on the first
+swipe, anywhere in the app. The TestFlight report (incident 37EFEA45, iOS
+26.6.1) is `EXC_CRASH (SIGABRT)` with a stack that names every step —
+`RNGestureHandler handleGesture:` → `REANodesManager dispatchEvent:` →
+`UIEventHandlerRegistry::processEvent` → `worklets::runSyncOnRuntime` → Hermes
+`throwPendingError` → `abort`.
+
+`react-native-worklets/plugin` auto-workletises `Gesture.Pan().onUpdate` and
+`.onEnd` — they are in the plugin's own list of builder methods — so those two
+callbacks are compiled to run on the UI runtime. A plain function they call is
+captured as a stub that throws when invoked, and a JS exception on the UI
+runtime has no handler above it: it leaves Hermes as a C++ exception and
+terminates the process. There is no red box even in development, and nothing
+in the type system says a word about it.
+
+So the rule, which is the whole lesson: **anything a gesture callback calls is
+a worklet and needs the directive** — `rowTranslation`, `settleOffset`,
+`swipeTranslation` and `swipeReleased` all carry `'worklet'` now. On Node the
+directive is an inert string, so the tests that made this code look proven
+still run unchanged — and that is exactly why they proved nothing here. What
+was missing was one swipe on a device: the simulator build in the tree and the
+last device build both predated the commit.
 
 ## A video is one file, and playing it needs a new build
 

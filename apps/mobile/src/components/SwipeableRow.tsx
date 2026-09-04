@@ -70,8 +70,14 @@ interface SwipeableRowProps {
  * Now the pan is recognised natively (`activeOffsetX`/`failOffsetY`, which is
  * also what removes the dead zone), the offset is a shared value, and the
  * settle is a spring on the UI thread. The geometry stays in
- * `lib/swipeAction.ts`, still plain maths and still tested without a renderer —
- * it is worklet-safe as written.
+ * `lib/swipeAction.ts`, still plain maths and still tested without a renderer,
+ * and **every function `onUpdate`/`onEnd` reaches carries `'worklet'`**. An
+ * earlier version of this comment said that file was "worklet-safe as
+ * written", which was wrong in the way that costs a release: those callbacks
+ * are compiled onto the UI thread, a plain function reached from there is a
+ * stub that throws, and the throw aborts the process rather than showing a
+ * red box. 2.0.0 (125) crashed on the first swipe. Anything new called from
+ * inside these two callbacks needs the directive too.
  *
  * The cost is real and was argued against here for a year: Reanimated's
  * worklets bundle now enters the shipped web build. See `docs/decisions.md` →
