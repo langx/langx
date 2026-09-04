@@ -1,6 +1,6 @@
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
-  MEDIA_UNLOCKS_AFTER_MESSAGES,
+  MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   REPORTS_TO_FREEZE_XP,
   type AccountDeletionStatus,
   type DataExport,
@@ -710,15 +710,12 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       const started = await startConversation(me, partner.userId, 'here is a photo')
       const conversationId = started.json<{ _id: string }>()._id
 
-      // An attachment needs a thread that has been talked in — see
-      // `MEDIA_UNLOCKS_AFTER_MESSAGES`. This test is about the purge, not the
-      // gate, so the conversation is warmed past it first.
+      // An attachment needs the other person to have written back — see
+      // `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`. This test is about the purge,
+      // not the gate, so the partner talks the gate open first.
       const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')
-      for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
-        await sendTextMessage(handle.db, sent % 2 === 1 ? partner.userId : me.userId, {
-          conversationId,
-          body: `filler ${sent}`,
-        })
+      for (let sent = 1; sent <= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES; sent++) {
+        await sendTextMessage(handle.db, partner.userId, { conversationId, body: `filler ${sent}` })
       }
 
       await sendMediaMessage(

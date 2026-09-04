@@ -23,7 +23,7 @@ type Pages = InfiniteData<MessagePageDto> | undefined
  * `pages[0]` is the newest page and `pages[n]` the oldest, and a new message
  * always belongs at the end of `pages[0]`.
  */
-export function appendIncomingMessage(data: Pages, message: MessageDto): Pages {
+export function appendIncomingMessage(data: Pages, message: MessageDto, viewerId?: string): Pages {
   if (!data) return data
   const [first, ...rest] = data.pages
   if (!first) return data
@@ -44,8 +44,13 @@ export function appendIncomingMessage(data: Pages, message: MessageDto): Pages {
         // Counted down here rather than waiting for a refetch, so the composer
         // unlocks on the message that unlocked it. The server decides for
         // real when it signs the upload URL; this only keeps the button from
-        // lying for a few seconds.
-        mediaLockedFor: Math.max(0, first.mediaLockedFor - 1),
+        // lying for a few seconds. Only a message from the *other* person
+        // counts — the gate is on what you have received, and letting your
+        // own messages tick it down would be the old loophole in the client.
+        mediaLockedFor:
+          viewerId !== undefined && message.senderId === viewerId
+            ? first.mediaLockedFor
+            : Math.max(0, first.mediaLockedFor - 1),
       },
       ...rest,
     ],

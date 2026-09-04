@@ -160,7 +160,7 @@ export default function WalletScreen() {
 
   return (
     <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
-      <ScreenHeader title={t('wallet.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('wallet.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       {/*
         The balance is the way into the ledger, so it is pressable — and says

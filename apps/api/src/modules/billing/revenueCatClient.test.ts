@@ -169,6 +169,35 @@ describe('createRevenueCatClient', () => {
     ).rejects.toThrow('404')
   })
 
+  /**
+   * What the v1 loyalty grant actually looks like in the subscriber record,
+   * copied from production on 4 September 2026: a synthetic product, a store
+   * of `promotional`, and an expiry two centuries out standing in for "never".
+   */
+  it('reports a promotional lifetime as a lifetime, not as renewing in 2226', async () => {
+    mockSubscriber({
+      entitlements: {
+        pro_plus: {
+          expires_date: '2226-07-18T04:58:40Z',
+          product_identifier: 'rc_promo_pro_plus_lifetime',
+        },
+        pro: { expires_date: '2226-07-18T04:58:41Z', product_identifier: 'rc_promo_pro_lifetime' },
+      },
+      subscriptions: {
+        rc_promo_pro_plus_lifetime: { store: 'promotional' },
+        rc_promo_pro_lifetime: { store: 'promotional' },
+      },
+    })
+
+    expect(await createRevenueCatClient('sk').getEntitlement('u1')).toEqual({
+      tier: 'pro_plus',
+      expiresAt: null,
+      productId: 'rc_promo_pro_plus_lifetime',
+      store: 'promotional',
+      willRenew: false,
+    })
+  })
+
   it('throws on a non-2xx so callers cannot mistake an outage for free', async () => {
     vi.stubGlobal(
       'fetch',

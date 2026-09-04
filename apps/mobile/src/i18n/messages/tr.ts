@@ -444,6 +444,12 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
+    languagesTitle: 'Bu aramadaki diller',
+    languagesBody:
+      'Gösterilen herkes öğrendiğin dillerden birini konuşuyor ve konuştuğun dillerden birini öğreniyor. Bir dili aramanın dışında bırakmak için işaretini kaldır.',
+    iSpeak: 'Konuştuğum',
+    imLearning: 'Öğrendiğim',
+    languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'Kullanıcı adıyla ara',
     searchPlaceholder: 'Kullanıcı adı',
     searchNone: 'Bu kullanıcı adında bir hesap yok.',
@@ -469,6 +475,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Öğreniyor',
+    learnsBody: 'Konuştuğun dillerden hangisini öğreniyor olmalı.',
     title: 'Filtreler',
     speaks: 'Konuşuyor',
     city: 'Şehir',
@@ -560,8 +568,8 @@ export const tr: Localized<EnMessages> = {
     playAtNormalSpeed: 'Normal hızda çal',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
-      one: 'Fotoğraf, video ve ses kaydı bir mesaj sonra açılır.',
-      other: 'Fotoğraf, video ve ses kaydı {count} mesaj sonra açılır.',
+      one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',
+      other: 'Fotoğraf ve sesli mesajlar, karşı taraftan {count} mesaj daha gelince açılır.',
     },
     copied: 'Kopyalandı',
     couldNotSend: 'Gönderilemedi',
@@ -872,6 +880,16 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Bir mesaj gönder ya da bir düzeltme yaz; bugün ilk günün olsun.',
   },
   settings: {
+    subscriptionBody: 'Planın, yenileme ve yönetimi',
+    privacyBody: 'Seni kim bulabilir, neyi görebilir',
+    notificationsBody: 'Sana ne ulaşır — bildirimle ve e-postayla',
+    appearanceSection: 'Görünüm',
+    appearanceBody: 'Tema, uygulama simgesi, dil ve ipuçları',
+    accountBody: 'Cihazlar, engellenenler, verilerin',
+    aboutSection: 'Hakkında',
+    aboutBody: 'Yasal, topluluk ve tanıtım',
+    search: 'Ayarlarda ara',
+    searchNone: 'Buna uyan bir ayar yok.',
     appIconSection: 'Uygulama ikonu',
     appIcon: 'Ana ekran ikonu',
     appIconBody: 'Ana ekranında hangisi dursun.',

@@ -211,6 +211,13 @@ async function importRoom(
   }
 
   const senders = new Set(staged.map((message) => userIdByLegacyId[message.senderId]))
+  // Per sender as well as in total, so a restored thread opens the media gate
+  // for the side that has genuinely been written to.
+  const messageCountBy: Record<string, number> = {}
+  for (const message of staged) {
+    const senderId = userIdByLegacyId[message.senderId]
+    if (senderId) messageCountBy[senderId] = (messageCountBy[senderId] ?? 0) + 1
+  }
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
 
   const seed: Conversation = {
@@ -229,6 +236,7 @@ async function importRoom(
     // Imported history counts. A restored thread with two years of messages in
     // it is not a stranger's opening move, and the media gate reads this.
     messageCount: staged.length,
+    messageCountBy,
     // The thread is as old as its first message. Dating it "now" would sort a
     // 2023 conversation above everything the user has actually been doing.
     createdAt: first.createdAt,
@@ -347,6 +355,11 @@ async function mergeIntoExisting(
   // is counted on demand — see `messagesInThread`.
   if (seed.messageCount && typeof existing.messageCount === 'number') {
     increments.messageCount = seed.messageCount
+  }
+  if (seed.messageCountBy && existing.messageCountBy) {
+    for (const [senderId, count] of Object.entries(seed.messageCountBy)) {
+      if (count > 0) increments[`messageCountBy.${senderId}`] = count
+    }
   }
 
   await conversations.updateOne(

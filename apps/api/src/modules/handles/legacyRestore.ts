@@ -8,6 +8,7 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { refreshEntitlement } from '../billing/refresh'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { awardTokens } from '../tokens/ledger'
 import { streakDay } from '../tokens/streak'
@@ -87,9 +88,11 @@ export async function restoreByHash(
 
   const missing = missingForProfile(legacy)
   if (missing.length > 0) {
-    // Leave the record staged. Onboarding will pre-fill from it and the
-    // restore happens there instead, so nothing is lost — the user just has a
-    // form to finish.
+    // Leave the record staged. The restore runs again from `createProfile`
+    // once the form is finished, and the else branch below copies what the
+    // form did not ask for or the user left empty. (`GET /handle-reservation`
+    // also hands the staged fields to the client for pre-filling; the app
+    // currently reads only the handle from it.)
     return { kind: 'needs-onboarding', missing }
   }
 
@@ -116,9 +119,17 @@ export async function restoreByHash(
     // too. Idempotent, so the overlap with `createProfile` costs nothing.
     await grantSignupBonus(db, userId, now)
   } else {
-    // They onboarded first and are only now proving the email. Restore the
-    // parts the form never asked for.
+    // They onboarded first and are only now proving the email. Restore what
+    // they did not fill in themselves — each field only where the form left
+    // it empty, so nothing they just typed is overwritten by their old self.
+    //
+    // `bio` and `country` used to be missing from this list. The form does
+    // ask for both, but the app never pre-filled them from the staged record,
+    // so someone who skipped the about-you text lost the v1 one for good:
+    // `markRestored` makes this a one-shot and nothing ever came back to it.
     const update: Record<string, unknown> = { updatedAt: now }
+    if (legacy.bio && !existing.bio) update.bio = legacy.bio
+    if (legacy.countryCode && !existing.country) update.country = legacy.countryCode
     if (legacy.avatarUrl && !existing.avatarUrl) update.avatarUrl = legacy.avatarUrl
     if (legacy.photos.length > 0 && (existing.photos ?? []).length === 0) {
       update.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
@@ -142,6 +153,7 @@ export async function restoreByHash(
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
   const conversations = await tryImportConversations(db, userId, legacy._id)
   const lifetimeGranted = await tryGrantLifetime(billing, userId, legacy)
+  if (lifetimeGranted && billing) await tryRefreshEntitlement(db, billing, userId)
 
   /**
    * Written once, after both numbers are known, and for both branches above —
@@ -231,6 +243,31 @@ async function tryGrantLifetime(
   }
 
   return rung.tier
+}
+
+/**
+ * Brings the gift down from RevenueCat into `profiles.entitlement` straight
+ * away, rather than leaving it to the webhooks and the paywall.
+ *
+ * The grant above writes only to RevenueCat, on purpose — it is the single
+ * authority. But nothing else on the restore path reads it back: the
+ * webhooks arrive when they arrive, and the app calls `/billing/refresh` only
+ * from the paywall. Between the two, someone who has just been told
+ * "Polyglot, for life" opens Settings and sees "Free". One read closes that.
+ *
+ * Swallowed like every other optional step here, and safe to be: `refreshEntitlement`
+ * is idempotent and the next webhook or refresh writes the same answer.
+ */
+async function tryRefreshEntitlement(
+  db: Db,
+  billing: RevenueCatClient,
+  userId: string,
+): Promise<void> {
+  try {
+    await refreshEntitlement(db, billing, userId)
+  } catch (error) {
+    console.error('[legacy-restore] entitlement refresh after grant failed', { userId, error })
+  }
 }
 
 /**

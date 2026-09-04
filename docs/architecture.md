@@ -546,13 +546,14 @@ deliberate: one is about fairness, the other about how it feels.
 Tokens can never buy a paid feature — if they could, a subscription's value
 erodes and farming tokens becomes a substitute for subscribing.
 
-### Attachments unlock after five messages
+### Attachments unlock after five messages from the other person
 
-A conversation carries no image, video or voice note until it has carried
-`MEDIA_UNLOCKS_AFTER_MESSAGES` messages, counted across both participants. No
-tier is exempt. Enforced when the upload URL is **signed** — the client PUTs
+You can send no image, video or voice note to somebody until they have sent
+you `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages — what you received, not
+what the thread carries, so one person cannot open the gate alone. No tier is
+exempt. Enforced when the upload URL is **signed** — the client PUTs
 straight to the bucket, so a check at send time would arrive after the bytes —
-and re-checked in `sendMediaMessage`. `conversations.messageCount` backs it and
+and re-checked in `sendMediaMessage`. `conversations.messageCountBy` backs it and
 rides the write `recordMessage` was already making; an absent value means the
 thread predates the counter and is counted on demand.
 

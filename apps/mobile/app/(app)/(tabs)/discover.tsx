@@ -6,36 +6,44 @@ import {
   type DiscoverySort,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { openProfile } from '../../src/lib/navigation'
+import { openProfile } from '../../../src/lib/navigation'
 import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../src/api/queries'
-import { ApiRequestError } from '../../src/api/client'
-import type { DiscoveryItem } from '../../src/api/types'
-import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryCardSkeleton'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { PeopleSearch } from '../../src/components/PeopleSearch'
-import { Chip } from '../../src/components/ui/Chip'
-import { EmptyState } from '../../src/components/ui/EmptyState'
-import { LevelBars } from '../../src/components/ui/LevelBars'
-import { Screen } from '../../src/components/ui/Screen'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { Tip } from '../../src/components/Tip'
+import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
+import { ApiRequestError } from '../../../src/api/client'
+import type { DiscoveryItem } from '../../../src/api/types'
+import { DiscoveryCardSkeleton } from '../../../src/components/skeletons/DiscoveryCardSkeleton'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
+import { Chip } from '../../../src/components/ui/Chip'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { Screen } from '../../../src/components/ui/Screen'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Tip } from '../../../src/components/Tip'
 import {
   activeCount,
   hasProFilters,
   parseFilters,
+  scopeOf,
+  toParams,
   toQuery,
   withoutProFilters,
-} from '../../src/lib/discoveryFilters'
-import { showAlert } from '../../src/lib/alert'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
-import { openPaywall } from '../../src/lib/paywall'
-import { dedupeById } from '../../src/lib/dedupeById'
-import { listState } from '../../src/lib/listState'
-import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useDisplayNames, useT, type MessageKey } from '../../src/i18n'
+  type DiscoveryFilters,
+} from '../../../src/lib/discoveryFilters'
+import {
+  LanguageScopeSheet,
+  scopeLabel,
+  type LanguageScope,
+} from '../../../src/components/LanguageScopeSheet'
+import { showAlert } from '../../../src/lib/alert'
+import { captureLocation, LOCATION_FAILURE_KEY } from '../../../src/lib/location'
+import { openPaywall } from '../../../src/lib/paywall'
+import { dedupeById } from '../../../src/lib/dedupeById'
+import { listState } from '../../../src/lib/listState'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -86,12 +94,36 @@ export default function DiscoverScreen() {
   const sharingLocation = me.data?.location !== undefined
   const filters = useMemo(() => parseFilters(params), [params])
 
-  /** "TR → ES" — the first of each, since the header has room for one pair. */
-  const pair = useMemo(() => {
-    const speaks = me.data?.nativeLanguages[0]?.code
-    const learns = me.data?.learning[0]?.code
-    return speaks && learns ? `${speaks.toUpperCase()} → ${learns.toUpperCase()}` : null
-  }, [me.data])
+  /**
+   * Which of the viewer's own languages this search is made with — all of
+   * them unless the params narrowed a side. The header used to print the
+   * *first* of each and call it the match direction, while the server matched
+   * on every language on both sides; now the label says what the search is
+   * made with, and tapping it opens the sheet that changes it.
+   */
+  const nativeCodes = useMemo(() => me.data?.nativeLanguages.map((l) => l.code) ?? [], [me.data])
+  const learningCodes = useMemo(() => me.data?.learning.map((l) => l.code) ?? [], [me.data])
+  const scope = useMemo<LanguageScope>(
+    () => ({
+      native: filters.nativeLanguages ?? nativeCodes,
+      learning: filters.learningLanguages ?? learningCodes,
+    }),
+    [filters, nativeCodes, learningCodes],
+  )
+  const pair = scopeLabel(scope)
+  const [scopeOpen, setScopeOpen] = useState(false)
+
+  /** Written to the route, like every other filter, so the URL stays the search. */
+  function changeScope(next: LanguageScope): void {
+    const nextFilters: DiscoveryFilters = { ...filters }
+    delete nextFilters.nativeLanguages
+    delete nextFilters.learningLanguages
+    const native = scopeOf(next.native, nativeCodes)
+    const learning = scopeOf(next.learning, learningCodes)
+    if (native) nextFilters.nativeLanguages = native
+    if (learning) nextFilters.learningLanguages = learning
+    router.replace({ pathname: '/(app)/(tabs)/discover', params: toParams(nextFilters) })
+  }
 
   /**
    * Nearby has two preconditions and they fail differently, so the chip
@@ -104,7 +136,7 @@ export default function DiscoverScreen() {
    */
   async function chooseNearby(): Promise<void> {
     if (!canUseNearby) {
-      openPaywall('nearby', '/(app)/discover')
+      openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }
     if (!sharingLocation && !(await enableSharing())) return
@@ -166,7 +198,17 @@ export default function DiscoverScreen() {
               someone native in what you are learning and learning what you
               speak, and without this the list looks unsorted rather than
               matched. */}
-          {pair && !searching ? <Text style={styles.pair}>{pair}</Text> : null}
+          {pair && !searching ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('discover.languagesA11y')}
+              onPress={() => setScopeOpen(true)}
+              hitSlop={8}
+              style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
+            >
+              <Text style={styles.pair}>{pair}</Text>
+            </Pressable>
+          ) : null}
           {/* Advanced filters are the Pro hook, so the control is shown to
               everyone and the *screen* handles the upsell — hiding it makes
               the paywall a surprise instead of an offer. Free filters still
@@ -175,7 +217,7 @@ export default function DiscoverScreen() {
           {/* Beside the filters, not above the list: the two are the same
               question asked two ways — "narrow this" and "I already know who
               I am looking for". */}
-          <PeopleSearch from="/(app)/discover" onSearchingChange={setSearching} />
+          <PeopleSearch from="/(app)/(tabs)/discover" onSearchingChange={setSearching} />
           {searching ? null : (
             <Pressable
               accessibilityRole="button"
@@ -195,6 +237,14 @@ export default function DiscoverScreen() {
             </Pressable>
           )}
         </View>
+        <LanguageScopeSheet
+          visible={scopeOpen}
+          onClose={() => setScopeOpen(false)}
+          nativeCodes={nativeCodes}
+          learningCodes={learningCodes}
+          scope={scope}
+          onChange={changeScope}
+        />
         {/* Search takes the screen, not a strip of it: a sort control above a
             list that has been blanked is answering a question nobody asked. */}
         {searching ? null : (
@@ -254,9 +304,13 @@ export default function DiscoverScreen() {
           actionLabel={shareLocation.isPending ? t('discover.turningOn') : t('discover.turnOn')}
           onAction={() => void enableSharing()}
         />
+      ) : searching ? (
+        /* In the list's place, in normal flow — not floated over it. See
+           `PeopleSearch` for what floating cost. */
+        <PeopleSearchResults from="/(app)/(tabs)/discover" />
       ) : (
         <FlatList
-          data={searching ? [] : items}
+          data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={
@@ -270,7 +324,7 @@ export default function DiscoverScreen() {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
           }}
           ListEmptyComponent={
-            searching ? null : sort === 'nearby' ? (
+            sort === 'nearby' ? (
               // Two things narrow this list that narrow no other, and a user
               // who is not told about the second one concludes the feature is
               // broken rather than that the pool is small.
@@ -292,7 +346,7 @@ export default function DiscoverScreen() {
           }
           renderItem={({ item, index }) => (
             <Pressable
-              onPress={() => openProfile(item.handle, '/(app)/discover')}
+              onPress={() => openProfile(item.handle, '/(app)/(tabs)/discover')}
               style={({ pressed }) => [
                 styles.row,
                 index === items.length - 1 && styles.rowLast,
@@ -347,21 +401,10 @@ export default function DiscoverScreen() {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
   header: { paddingTop: spacing.md },
-  /*
-   * `zIndex` so `PeopleSearch`'s floated results paint over the list below.
-   * The results carry their own, but `zIndex` only orders within a stacking
-   * context — without one here the segmented control, a later sibling, is
-   * painted after this whole row and covers them.
-   */
-  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, zIndex: 2 },
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
-  pair: {
-    ...font.label,
-    color: colors.accent,
-    fontSize: 14,
-    fontWeight: '700',
-    marginStart: 'auto',
-  },
+  pairButton: { marginStart: 'auto' },
+  pair: { ...font.label, color: colors.accent, fontSize: 14, fontWeight: '700' },
   filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   filterCount: {
     backgroundColor: colors.accent,

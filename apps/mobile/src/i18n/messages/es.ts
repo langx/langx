@@ -441,6 +441,12 @@ export const es: Localized<EnMessages> = {
       'Pregunta por una frase que no tienes clara, o una palabra que no sabes decir — aparecerá aquí.',
   },
   discover: {
+    languagesTitle: 'Idiomas de esta búsqueda',
+    languagesBody:
+      'Todas las personas mostradas hablan un idioma que estás aprendiendo y aprenden uno que tú hablas. Desmarca un idioma para dejarlo fuera.',
+    iSpeak: 'Hablo',
+    imLearning: 'Estoy aprendiendo',
+    languagesA11y: 'Elige con cuáles de tus idiomas buscar',
     searchHandles: 'Buscar por nombre de usuario',
     searchPlaceholder: 'Nombre de usuario',
     searchNone: 'No hay ninguna cuenta con ese nombre de usuario.',
@@ -466,6 +472,8 @@ export const es: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Aprende',
+    learnsBody: 'Cuál de los idiomas que hablas debería estar aprendiendo.',
     title: 'Filtros',
     speaks: 'Habla',
     city: 'Ciudad',
@@ -558,8 +566,9 @@ export const es: Localized<EnMessages> = {
     playAtNormalSpeed: 'Reproducir a velocidad normal',
     mediaLockedTitle: 'Todavía no',
     mediaLocked: {
-      one: 'Las fotos, los vídeos y las notas de voz se desbloquean tras un mensaje más.',
-      other: 'Las fotos, los vídeos y las notas de voz se desbloquean tras {count} mensajes más.',
+      one: 'Las fotos, los vídeos y las notas de voz se desbloquean cuando la otra persona te envíe un mensaje más.',
+      other:
+        'Las fotos, los vídeos y las notas de voz se desbloquean cuando la otra persona te envíe {count} mensajes más.',
     },
     copied: 'Copiado',
     couldNotSend: 'No se pudo enviar',
@@ -866,6 +875,16 @@ export const es: Localized<EnMessages> = {
     emptyBody: 'Envía un mensaje o escribe una corrección y hoy será tu primer día.',
   },
   settings: {
+    subscriptionBody: 'Tu plan, la renovación y cómo gestionarlo',
+    privacyBody: 'Quién puede encontrarte y qué ve',
+    notificationsBody: 'Qué te llega, por notificación y por correo',
+    appearanceSection: 'Apariencia',
+    appearanceBody: 'Tema, icono de la app, idioma y consejos',
+    accountBody: 'Dispositivos, personas bloqueadas, tus datos',
+    aboutSection: 'Acerca de',
+    aboutBody: 'Legal, comunidad y la introducción',
+    search: 'Buscar en ajustes',
+    searchNone: 'Ningún ajuste coincide.',
     appIconSection: 'Icono de la app',
     appIcon: 'Icono en la pantalla de inicio',
     appIconBody: 'Elige cuál aparece en tu pantalla de inicio.',

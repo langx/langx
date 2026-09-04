@@ -1,4 +1,4 @@
-import { MEDIA_UNLOCKS_AFTER_MESSAGES } from '@langx/shared'
+import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
 import type { Conversation } from './conversations'
 
 /**
@@ -36,17 +36,22 @@ export interface ConversationView {
 }
 
 /**
- * How many more messages before an attachment is allowed, or 0.
+ * How many more messages the viewer has to *receive* before an attachment is
+ * allowed, or 0.
  *
- * One function, read by both projections. An absent `messageCount` means the
- * conversation predates the counter, never that it is empty — see
- * `messagesInThread`, which is the server's own reading of the same field.
- * Those threads have history, so the composer is unlocked rather than showing
- * a countdown that would be wrong; signing an upload URL still checks properly.
+ * One function, read by both projections, and per viewer: the count is the
+ * other person's, so one side of a thread can be unlocked while the other is
+ * not. An absent `messageCountBy` means the conversation predates the map,
+ * never that nothing arrived — see `messagesReceivedFrom`, which is the
+ * server's own reading of the same field. Those threads have history, so the
+ * composer is unlocked rather than showing a countdown that would be wrong;
+ * signing an upload URL still counts properly.
  */
-export function mediaLockedFor(conversation: Conversation): number {
-  const sent = conversation.messageCount ?? MEDIA_UNLOCKS_AFTER_MESSAGES
-  return Math.max(0, MEDIA_UNLOCKS_AFTER_MESSAGES - sent)
+export function mediaLockedFor(conversation: Conversation, viewerId: string): number {
+  if (!conversation.messageCountBy) return 0
+  const other = conversation.participants.find((id) => id !== viewerId)
+  const received = other ? (conversation.messageCountBy[other] ?? 0) : 0
+  return Math.max(0, MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES - received)
 }
 
 export function toConversationView(conversation: Conversation, viewerId: string): ConversationView {
@@ -65,7 +70,7 @@ export function toConversationView(conversation: Conversation, viewerId: string)
      */
     unreplied: conversation.lastMessage.senderId !== viewerId,
     bothSpoke: conversation.bothSpoke,
-    mediaLockedFor: mediaLockedFor(conversation),
+    mediaLockedFor: mediaLockedFor(conversation, viewerId),
     updatedAt: conversation.updatedAt,
   }
 }

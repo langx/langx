@@ -1,7 +1,7 @@
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
-import type { RevenueCatClient } from './revenueCatClient'
+import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
 import { creditReferrerForSubscription } from '../referrals/settle'
 import { grantWelcomePack } from './welcomePack'
 
@@ -23,7 +23,32 @@ export async function refreshEntitlement(
   client: RevenueCatClient,
   userId: string,
 ): Promise<Profile['entitlement']> {
+  return applyEntitlement(db, userId, await client.getEntitlement(userId))
+}
+
+/**
+ * The same refresh, for a *grant* webhook: writes only when RevenueCat holds
+ * something. A grant event means a purchase or a promotional grant exists,
+ * so a subscriber record that answers "nothing" is one that has not caught up
+ * with its own webhook yet — and writing `free` off it would revoke access
+ * on the strength of a race. `false` hands the decision back to the event.
+ */
+export async function refreshEntitlementIfHeld(
+  db: Db,
+  client: RevenueCatClient,
+  userId: string,
+): Promise<boolean> {
   const entitlement = await client.getEntitlement(userId)
+  if (!entitlement) return false
+  await applyEntitlement(db, userId, entitlement)
+  return true
+}
+
+async function applyEntitlement(
+  db: Db,
+  userId: string,
+  entitlement: SubscriberEntitlement | null,
+): Promise<Profile['entitlement']> {
   const now = new Date()
 
   const next: Profile['entitlement'] = entitlement

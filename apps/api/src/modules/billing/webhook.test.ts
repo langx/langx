@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import type { RevenueCatClient } from './revenueCatClient'
 import { processRevenueCatWebhook } from './webhook'
 
 function minimalProfile(id: string): Profile {
@@ -148,5 +149,113 @@ describe('processRevenueCatWebhook', () => {
       .collection(COLLECTIONS.subscriptions)
       .findOne({ eventId: 'evt-billing-issue' })
     expect(recorded).toMatchObject({ type: 'BILLING_ISSUE', userId: 'billing-issue-user' })
+  })
+
+  /**
+   * The v1 loyalty gift, as RevenueCat actually delivers it: two promotional
+   * grants, two `NON_RENEWING_PURCHASE` events, the second carrying only
+   * `pro`. Written from the events alone the second one downgraded the
+   * account — `hi@langx.io` sat on Fluent for three minutes on 4 September
+   * 2026 until a paywall visit happened to refresh it. With a client the
+   * handler asks RevenueCat instead, and RevenueCat holds both.
+   */
+  describe('a grant event with a client reconciles against the subscriber record', () => {
+    const lifetimePlus: RevenueCatClient = {
+      getEntitlement: () =>
+        Promise.resolve({
+          tier: 'pro_plus',
+          expiresAt: null,
+          productId: 'rc_promo_pro_plus_lifetime',
+          store: 'promotional',
+          willRenew: false,
+        }),
+      grantLifetimeEntitlement: () => Promise.resolve(),
+    }
+
+    it('keeps Pro+ when the trailing pro-only grant event arrives', async () => {
+      await insertProfile(minimalProfile('gift-user'))
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-gift-plus',
+          type: 'NON_RENEWING_PURCHASE',
+          app_user_id: 'gift-user',
+          product_id: 'rc_promo_pro_plus_lifetime',
+          store: 'PROMOTIONAL',
+          entitlement_ids: ['pro_plus'],
+        },
+        lifetimePlus,
+      )
+      expect((await getProfile('gift-user'))?.entitlement.tier).toBe('pro_plus')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-gift-pro',
+          type: 'NON_RENEWING_PURCHASE',
+          app_user_id: 'gift-user',
+          product_id: 'rc_promo_pro_lifetime',
+          store: 'PROMOTIONAL',
+          entitlement_ids: ['pro'],
+        },
+        lifetimePlus,
+      )
+
+      const profile = await getProfile('gift-user')
+      expect(profile?.entitlement).toMatchObject({
+        tier: 'pro_plus',
+        willRenew: false,
+        store: 'promotional',
+      })
+      expect(profile?.entitlement.expiresAt).toBeUndefined()
+    })
+
+    it('does not depend on entitlement_ids being present', async () => {
+      await insertProfile(minimalProfile('gift-user-bare'))
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-gift-bare',
+          type: 'NON_RENEWING_PURCHASE',
+          app_user_id: 'gift-user-bare',
+          product_id: 'rc_promo_pro_lifetime',
+          store: 'PROMOTIONAL',
+        },
+        lifetimePlus,
+      )
+
+      expect((await getProfile('gift-user-bare'))?.entitlement.tier).toBe('pro_plus')
+    })
+
+    it('falls back to the event when RevenueCat cannot be asked', async () => {
+      await insertProfile({
+        ...minimalProfile('gift-user-offline'),
+        entitlement: { tier: 'pro_plus', willRenew: false, updatedAt: new Date() },
+      })
+      const down: RevenueCatClient = {
+        getEntitlement: () => Promise.reject(new Error('RevenueCat is down')),
+        grantLifetimeEntitlement: () => Promise.resolve(),
+      }
+
+      const result = await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-gift-offline',
+          type: 'NON_RENEWING_PURCHASE',
+          app_user_id: 'gift-user-offline',
+          product_id: 'rc_promo_pro_lifetime',
+          store: 'PROMOTIONAL',
+          entitlement_ids: ['pro'],
+        },
+        down,
+      )
+
+      // Still a 2xx — RevenueCat would retry forever otherwise — and the
+      // event-derived answer, which is the best available without the record.
+      expect(result.processed).toBe(true)
+      expect((await getProfile('gift-user-offline'))?.entitlement.tier).toBe('pro')
+    })
   })
 })

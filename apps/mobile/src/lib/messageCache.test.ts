@@ -107,13 +107,19 @@ describe('the media lock counts down as messages arrive', () => {
     return { ...data, pages: [{ ...data.pages[0]!, mediaLockedFor: n }] }
   }
 
-  it('drops by one for each message appended', () => {
-    const after = appendIncomingMessage(locked(3), message('b', ME))
+  it('drops by one for each message that arrives from them', () => {
+    const after = appendIncomingMessage(locked(3), message('b', THEM), ME)
     expect(after?.pages[0]?.mediaLockedFor).toBe(2)
   })
 
+  /** The gate counts what you received; your own messages are not that. */
+  it('does not move for a message the viewer sent', () => {
+    const after = appendIncomingMessage(locked(3), message('b', ME), ME)
+    expect(after?.pages[0]?.mediaLockedFor).toBe(3)
+  })
+
   it('stops at zero rather than going negative', () => {
-    const after = appendIncomingMessage(locked(0), message('b', ME))
+    const after = appendIncomingMessage(locked(0), message('b', THEM), ME)
     expect(after?.pages[0]?.mediaLockedFor).toBe(0)
   })
 

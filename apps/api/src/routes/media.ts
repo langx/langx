@@ -93,7 +93,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // bytes: the client PUTs straight to the bucket and only then sends the
       // message, so refusing at send time would refuse a message pointing at a
       // photograph we had already stored.
-      await assertMediaUnlocked(app.mongo.db, conversation)
+      await assertMediaUnlocked(app.mongo.db, conversation, request.userId)
 
       const { kind, contentType } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {

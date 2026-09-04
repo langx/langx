@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   activeCount,
+  scopeOf,
   hasProFilters,
   parseFilters,
   toParams,
@@ -17,7 +18,8 @@ import {
  */
 describe('withoutProFilters', () => {
   const everything: DiscoveryFilters = {
-    targetLanguage: 'en',
+    learningLanguages: ['en'],
+    nativeLanguages: ['tr', 'ku'],
     minLevel: 'beginner',
     maxLevel: 'fluent',
     ageMin: 25,
@@ -31,7 +33,8 @@ describe('withoutProFilters', () => {
 
   it('keeps every free filter', () => {
     expect(withoutProFilters(everything)).toEqual({
-      targetLanguage: 'en',
+      learningLanguages: ['en'],
+      nativeLanguages: ['tr', 'ku'],
       minLevel: 'beginner',
       maxLevel: 'fluent',
       ageMin: 25,
@@ -65,7 +68,9 @@ describe('withoutProFilters', () => {
 
 describe('hasProFilters', () => {
   it('is false for a set that is entirely free', () => {
-    expect(hasProFilters({ targetLanguage: 'en', minLevel: 'beginner', ageMin: 30 })).toBe(false)
+    expect(hasProFilters({ learningLanguages: ['en'], minLevel: 'beginner', ageMin: 30 })).toBe(
+      false,
+    )
   })
 
   it('is true for each paid filter on its own', () => {
@@ -81,7 +86,8 @@ describe('hasProFilters', () => {
 describe('the URL round trip', () => {
   it('survives every filter', () => {
     const filters: DiscoveryFilters = {
-      targetLanguage: 'en',
+      learningLanguages: ['en', 'ru'],
+      nativeLanguages: ['tr'],
       minLevel: 'beginner',
       maxLevel: 'fluent',
       ageMin: 25,
@@ -109,6 +115,35 @@ describe('the URL round trip', () => {
     // Only the id goes to the server; the name is this screen's own label.
     expect(query).toMatchObject({ onlyMyGender: 'true', cityId: 'geonames:745044' })
     expect(query.cityName).toBeUndefined()
+  })
+})
+
+describe('the language scope', () => {
+  const mine = ['en', 'ru', 'de']
+
+  it('is absent when every language is picked, so a full selection filters nothing', () => {
+    expect(scopeOf(['en', 'ru', 'de'], mine)).toBeUndefined()
+    expect(toParams({})).toEqual({})
+  })
+
+  it('keeps the viewer own order and drops codes that are not theirs', () => {
+    expect(scopeOf(['de', 'xx', 'en'], mine)).toEqual(['en', 'de'])
+  })
+
+  it('never narrows to nothing — the last language cannot be unpicked', () => {
+    expect(scopeOf([], mine)).toBeUndefined()
+  })
+
+  it('goes over the wire as a comma list, and comes back as one', () => {
+    expect(toQuery({ learningLanguages: ['en', 'ru'] })).toEqual({ learningLanguages: 'en,ru' })
+    expect(parseFilters({ learningLanguages: 'en, ru,' })).toEqual({
+      learningLanguages: ['en', 'ru'],
+    })
+    expect(parseFilters({ learningLanguages: '' })).toEqual({})
+  })
+
+  it('counts as one active filter however many sides narrow it', () => {
+    expect(activeCount({ learningLanguages: ['en'], nativeLanguages: ['tr'] })).toBe(1)
   })
 })
 

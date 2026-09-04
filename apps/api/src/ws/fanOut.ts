@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
-import { markDelivered, previewFor } from '../modules/chat/messages'
+import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
 import { attachmentsOf, notificationsAllowed } from '@langx/shared'
 import { sendPush, tokensFor } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -89,6 +89,9 @@ export async function fanOutMessage(
 
     await sendPush(app.mongo.db, app.push, {
       to: tokens,
+      // After this message's own $inc has landed, so the icon shows the
+      // number the Chats tab will show when the app is opened.
+      badge: await countUnread(app.mongo.db, recipientId),
       title: sender?.displayName ?? sender?.handle ?? 'LangX',
       // A caption-less attachment used to push an empty line: `previewFor` is
       // what the chat list has always shown for one, and the notification has

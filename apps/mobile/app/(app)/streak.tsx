@@ -60,7 +60,7 @@ export default function StreakScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       <View style={styles.tiles}>
         <StatTile label={t('me.dayStreak')} value={`🔥 ${streak?.current ?? 0}`} />

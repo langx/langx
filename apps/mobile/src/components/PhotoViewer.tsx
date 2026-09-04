@@ -12,8 +12,9 @@ import {
   View,
   type ViewStyle,
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT } from '../i18n'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, spacing } from '../lib/theme'
 import {
   DISMISS_DRAG_PX,
   DOUBLE_TAP_MS,
@@ -97,6 +98,13 @@ function FullscreenVideo({ url }: { url: string }) {
 export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoViewerProps) {
   const styles = useStyles()
   const t = useT()
+  /*
+   * A `Modal` is outside every `SafeAreaView` and every `Screen`, so the
+   * chrome has to ask for the insets itself. The close button used to sit at
+   * a fixed distance from the physical top — inside the status bar, beside
+   * the Dynamic Island, on every notched iPhone.
+   */
+  const insets = useSafeAreaInsets()
 
   const scale = useRef(new Animated.Value(MIN_SCALE)).current
   const translateX = useRef(new Animated.Value(0)).current
@@ -324,7 +332,11 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('photo.close')}
-          style={styles.close}
+          style={({ pressed }) => [
+            styles.close,
+            { top: insets.top + spacing.sm },
+            pressed && styles.closePressed,
+          ]}
           onPress={onClose}
           hitSlop={12}
         >
@@ -332,7 +344,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         </Pressable>
 
         {photos.length > 1 ? (
-          <View style={styles.pager}>
+          <View style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('photo.previous')}
@@ -367,8 +379,23 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   backdrop: { backgroundColor: colors.scrimStrong, flex: 1, justifyContent: 'center' },
   stage: { flex: 1, width: '100%' },
   full: { flex: 1, width: '100%' },
-  close: { end: spacing.lg, position: 'absolute', top: spacing.xxl, zIndex: 1 },
-  closeText: { color: colors.onScrim, fontSize: 24 },
+  /*
+   * A disc on a scrim rather than a bare glyph: over a light photo the glyph
+   * alone disappeared. 36pt plus the hit slop is the platform's 44pt target.
+   */
+  close: {
+    alignItems: 'center',
+    backgroundColor: colors.scrim,
+    borderRadius: 18,
+    end: spacing.lg,
+    height: 36,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: 36,
+    zIndex: 1,
+  },
+  closePressed: { opacity: 0.7 },
+  closeText: { color: colors.onScrim, fontSize: 18, fontWeight: '600' },
   pager: {
     alignItems: 'center',
     bottom: 0,
@@ -376,7 +403,6 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     gap: spacing.xl,
     justifyContent: 'center',
     left: 0,
-    paddingBottom: spacing.xxl,
     position: 'absolute',
     right: 0,
   },

@@ -437,6 +437,12 @@ export const ptBR: Localized<EnMessages> = {
       'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
   },
   discover: {
+    languagesTitle: 'Idiomas desta busca',
+    languagesBody:
+      'Todo mundo aqui fala um idioma que você está aprendendo e aprende um que você fala. Desmarque um idioma para deixá-lo de fora.',
+    iSpeak: 'Eu falo',
+    imLearning: 'Estou aprendendo',
+    languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome de usuário',
     searchPlaceholder: 'Nome de usuário',
     searchNone: 'Nenhuma conta com esse nome de usuário.',
@@ -462,6 +468,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Aprende',
+    learnsBody: 'Qual dos idiomas que você fala a pessoa deve estar aprendendo.',
     title: 'Filtros',
     speaks: 'Fala',
     city: 'Cidade',
@@ -551,8 +559,9 @@ export const ptBR: Localized<EnMessages> = {
     playAtNormalSpeed: 'Tocar em velocidade normal',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
-      one: 'Fotos, vídeos e mensagens de voz liberam depois de mais uma mensagem.',
-      other: 'Fotos, vídeos e mensagens de voz liberam depois de mais {count} mensagens.',
+      one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
+      other:
+        'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
     },
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',
@@ -859,6 +868,16 @@ export const ptBR: Localized<EnMessages> = {
     emptyBody: 'Mande uma mensagem ou escreva uma correção, e hoje vira seu primeiro dia.',
   },
   settings: {
+    subscriptionBody: 'Seu plano, a renovação e como gerenciá-lo',
+    privacyBody: 'Quem pode encontrar você e o que vê',
+    notificationsBody: 'O que chega até você, por notificação e por e-mail',
+    appearanceSection: 'Aparência',
+    appearanceBody: 'Tema, ícone do app, idioma e dicas',
+    accountBody: 'Dispositivos, pessoas bloqueadas, seus dados',
+    aboutSection: 'Sobre',
+    aboutBody: 'Jurídico, comunidade e a introdução',
+    search: 'Buscar nas configurações',
+    searchNone: 'Nenhuma configuração corresponde.',
     appIconSection: 'Ícone do app',
     appIcon: 'Ícone na tela inicial',
     appIconBody: 'Escolha qual fica na sua tela inicial.',

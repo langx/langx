@@ -1,4 +1,4 @@
-import { ERROR_CODES, MEDIA_UNLOCKS_AFTER_MESSAGES } from '@langx/shared'
+import { ERROR_CODES, MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
@@ -49,29 +49,34 @@ export async function assertConversationAccess(
 }
 
 /**
- * How many messages this thread has actually carried.
+ * How many messages `userId` has received in this thread — the other
+ * participant's share of the count.
  *
- * Reads the denormalized counter, and falls back to counting for the
- * conversations that predate it. An absent `messageCount` cannot mean "no
- * messages" — every conversation is created with at least one, and with the
- * field set — so it can only mean the document was written before the counter
- * existed. Those are exactly the threads with the most history, and reading
- * their absence as zero would lock two-year-old conversations out of sending a
- * photo.
- *
- * The count is not written back. It is one query, on the media path only, for
- * a set of documents that shrinks every time one of them gets a message.
+ * Reads the denormalized per-sender map, and falls back to counting for the
+ * conversations that predate it. An absent `messageCountBy` cannot mean "they
+ * never wrote": the map is written on the same `$inc` as `messageCount`, so it
+ * is only missing from documents that predate it — the threads with the most
+ * history, whose absence read as zero would lock a two-year-old conversation
+ * out of sending a photo. Those are counted, on the media path only, through
+ * the `conversation_sender` index; the set shrinks every time one of them
+ * gets a message.
  */
-async function messagesInThread(db: Db, conversation: Conversation): Promise<number> {
-  if (typeof conversation.messageCount === 'number') return conversation.messageCount
+export async function messagesReceivedFrom(
+  db: Db,
+  conversation: Conversation,
+  userId: string,
+): Promise<number> {
+  const other = conversation.participants.find((id) => id !== userId)
+  if (!other) return 0
+  if (conversation.messageCountBy) return conversation.messageCountBy[other] ?? 0
   return db
     .collection<Message>(COLLECTIONS.messages)
-    .countDocuments({ conversationId: conversation._id })
+    .countDocuments({ conversationId: conversation._id, senderId: other })
 }
 
 /**
- * Refuses a photo or a voice note into a conversation that has not said
- * `MEDIA_UNLOCKS_AFTER_MESSAGES` things yet.
+ * Refuses a photo or a voice note from somebody who has not yet received
+ * `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages from the other person.
  *
  * Called from two places on purpose, and the *first* one is the one that
  * matters. `POST /messages/upload-url` is where the bytes are stopped: the
@@ -82,14 +87,18 @@ async function messagesInThread(db: Db, conversation: Conversation): Promise<num
  * fifth message was undone — and any future transport that forgets the first.
  *
  * No tier check anywhere in here, deliberately. See
- * `MEDIA_UNLOCKS_AFTER_MESSAGES`.
+ * `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES`.
  */
-export async function assertMediaUnlocked(db: Db, conversation: Conversation): Promise<void> {
-  const sent = await messagesInThread(db, conversation)
-  if (sent >= MEDIA_UNLOCKS_AFTER_MESSAGES) return
+export async function assertMediaUnlocked(
+  db: Db,
+  conversation: Conversation,
+  senderId: string,
+): Promise<void> {
+  const received = await messagesReceivedFrom(db, conversation, senderId)
+  if (received >= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES) return
   throw new ApiError(
     ERROR_CODES.MEDIA_LOCKED,
-    `Photos and voice notes unlock after ${MEDIA_UNLOCKS_AFTER_MESSAGES} messages`,
-    { max: MEDIA_UNLOCKS_AFTER_MESSAGES },
+    `Photos and voice notes unlock after ${MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES} messages from them`,
+    { max: MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES },
   )
 }

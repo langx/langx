@@ -1,5 +1,5 @@
-import { LoadFailed } from '../../src/components/LoadFailed'
-import { ActivityMap } from '../../src/components/ActivityMap'
+import { LoadFailed } from '../../../src/components/LoadFailed'
+import { ActivityMap } from '../../../src/components/ActivityMap'
 import {
   countryFlag,
   getCountry,
@@ -20,21 +20,21 @@ import {
   useViewers,
   useWallet,
   useTokens,
-} from '../../src/api/queries'
-import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
-import { PhotoGallery } from '../../src/components/PhotoGallery'
-import { WeeklyChart } from '../../src/components/WeeklyChart'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { CosmeticTitle } from '../../src/components/CosmeticTitle'
-import { Button } from '../../src/components/ui/Button'
-import { LevelBars } from '../../src/components/ui/LevelBars'
-import { ListRow } from '../../src/components/ui/ListRow'
-import { Screen } from '../../src/components/ui/Screen'
-import { StatTile } from '../../src/components/ui/StatTile'
-import { openProfile } from '../../src/lib/navigation'
-import { openPaywall } from '../../src/lib/paywall'
-import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useDisplayNames, useT } from '../../src/i18n'
+} from '../../../src/api/queries'
+import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
+import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { WeeklyChart } from '../../../src/components/WeeklyChart'
+import { Avatar } from '../../../src/components/ui/Avatar'
+import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
+import { Button } from '../../../src/components/ui/Button'
+import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { ListRow } from '../../../src/components/ui/ListRow'
+import { Screen } from '../../../src/components/ui/Screen'
+import { StatTile } from '../../../src/components/ui/StatTile'
+import { openProfile } from '../../../src/lib/navigation'
+import { openPaywall } from '../../../src/lib/paywall'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useDisplayNames, useT } from '../../../src/i18n'
 
 export default function MeScreen() {
   const { colors } = useTheme()
@@ -142,6 +142,14 @@ export default function MeScreen() {
         </Pressable>
       </View>
 
+      {/*
+        The about text, on the owner's own screen. It was only ever drawn on
+        the public profile, so someone whose v1 bio had come back concluded
+        from here that it had not — the one screen that must not invite that
+        reading about its own owner. Same shape as the public profile's.
+      */}
+      {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
+
       <View style={styles.tiles}>
         {/* Same affordance as the wallet tile beside it: a number nobody can
             act on reads as decoration. */}
@@ -234,7 +242,7 @@ export default function MeScreen() {
       <ListRow
         title={t('me.previewProfile')}
         subtitle={t('me.previewProfileBody')}
-        onPress={() => openProfile(profile.handle, '/(app)/me')}
+        onPress={() => openProfile(profile.handle, '/(app)/(tabs)/me')}
       />
       {/*
         A screen rather than the share sheet directly: sending a link and
@@ -294,6 +302,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   heroText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 24 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
+  bio: { ...font.body, color: colors.text, marginTop: spacing.sm },
   pressed: { opacity: 0.7 },
   // `shrink` on the row's own text so a five-language pair truncates instead
   // of pushing the bars and the chevron off the end of the row.

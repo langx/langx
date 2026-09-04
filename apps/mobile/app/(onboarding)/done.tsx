@@ -47,7 +47,7 @@ export default function DoneStep() {
 
       <Button
         label={t('onboarding.findSomeone')}
-        onPress={() => router.replace('/(app)/discover')}
+        onPress={() => router.replace('/(app)/(tabs)/discover')}
         style={styles.cta}
       />
     </Screen>

@@ -2,8 +2,20 @@ import { router, type Href } from 'expo-router'
 import { backHref, isAppRoute } from './backHref'
 import { profileHref } from './profileHref'
 
-/** Go to this screen's parent. See `backHref` for why it is not `router.back()`. */
+/**
+ * Go to this screen's parent.
+ *
+ * Pops when there is something to pop — which, now that the signed-in area is
+ * a stack, is every screen reached by a push — and otherwise replaces to
+ * where the caller says it came from, or to its fallback. The second branch is
+ * the web deep link: a `/profile/sofia` opened in a fresh tab has no history,
+ * and the `from` param is how the header's arrow still knows where to go.
+ */
 export function goBackTo(fallback: Href, from?: string): void {
+  if (router.canGoBack()) {
+    router.back()
+    return
+  }
   router.replace(backHref(from, fallback))
 }
 

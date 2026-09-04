@@ -65,7 +65,10 @@ export default function WritingScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('corrections.combinedTitle')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader
+        title={t('corrections.combinedTitle')}
+        onBack={() => goBackTo('/(app)/(tabs)/me')}
+      />
 
       <SegmentedControl
         options={[

@@ -114,6 +114,22 @@ function isActive(expiresAt: Date | null): boolean {
   return expiresAt === null || expiresAt.getTime() > Date.now()
 }
 
+/**
+ * A promotional grant made with `duration: 'lifetime'`.
+ *
+ * RevenueCat has no way to store "never", so it writes a lifetime promotion as
+ * an expiry two hundred years out — `2226-07-18` on the first v1 loyalty
+ * grant — under a synthetic product `rc_promo_<entitlement>_lifetime`, with a
+ * `subscriptions` entry whose store is `promotional`. Read literally, that is
+ * a subscription that renews in 2226, and Settings drew exactly that: "Renews
+ * on 18/07/2226". It is a lifetime, and is reported as one — no expiry,
+ * nothing to renew — which is what `SubscriberEntitlement` says a lifetime
+ * looks like.
+ */
+function isPromotionalLifetime(productId: string): boolean {
+  return productId.startsWith('rc_promo_') && productId.endsWith('_lifetime')
+}
+
 export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
   return {
     async getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
@@ -135,14 +151,18 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
       for (const id of ENTITLEMENT_PRECEDENCE) {
         const entitlement = body.subscriber.entitlements[id]
         if (!entitlement) continue
-        const expiresAt = entitlement.expires_date ? new Date(entitlement.expires_date) : null
+        const lifetime = isPromotionalLifetime(entitlement.product_identifier)
+        const expiresAt =
+          !lifetime && entitlement.expires_date ? new Date(entitlement.expires_date) : null
         if (!isActive(expiresAt)) continue
         return {
           tier: ENTITLEMENT_TIERS[id],
           expiresAt,
           productId: entitlement.product_identifier,
           store: storeForProduct(body.subscriber, entitlement.product_identifier),
-          willRenew: willRenewProduct(body.subscriber, entitlement.product_identifier),
+          willRenew: lifetime
+            ? false
+            : willRenewProduct(body.subscriber, entitlement.product_identifier),
         }
       }
       return null

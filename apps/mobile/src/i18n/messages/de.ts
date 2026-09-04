@@ -449,6 +449,12 @@ export const de: Localized<EnMessages> = {
       'Frag nach einem Satz, bei dem du unsicher bist, oder einem Wort, das du nicht aussprechen kannst — er erscheint hier.',
   },
   discover: {
+    languagesTitle: 'Sprachen in dieser Suche',
+    languagesBody:
+      'Alle hier sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Nimm den Haken weg, um eine Sprache aus der Suche zu lassen.',
+    iSpeak: 'Ich spreche',
+    imLearning: 'Ich lerne',
+    languagesA11y: 'Wähle, mit welchen deiner Sprachen gesucht wird',
     searchHandles: 'Nach Benutzername suchen',
     searchPlaceholder: 'Benutzername',
     searchNone: 'Kein Konto mit diesem Benutzernamen.',
@@ -474,6 +480,8 @@ export const de: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'Lernt',
+    learnsBody: 'Welche deiner Sprachen die Person lernen sollte.',
     title: 'Filter',
     speaks: 'Spricht',
     city: 'Stadt',
@@ -578,8 +586,9 @@ export const de: Localized<EnMessages> = {
     playAtNormalSpeed: 'Mit normaler Geschwindigkeit abspielen',
     mediaLockedTitle: 'Noch nicht',
     mediaLocked: {
-      one: 'Fotos, Videos und Sprachnachrichten gibt es nach einer weiteren Nachricht.',
-      other: 'Fotos, Videos und Sprachnachrichten gibt es nach {count} weiteren Nachrichten.',
+      one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
+      other:
+        'Fotos und Sprachnachrichten werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
     },
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',
@@ -888,6 +897,16 @@ export const de: Localized<EnMessages> = {
     emptyBody: 'Schreib eine Nachricht oder eine Korrektur — heute wird dein erster Tag.',
   },
   settings: {
+    subscriptionBody: 'Dein Plan, Verlängerung und Verwaltung',
+    privacyBody: 'Wer dich finden kann und was sichtbar ist',
+    notificationsBody: 'Was dich erreicht — per Push und per E-Mail',
+    appearanceSection: 'Darstellung',
+    appearanceBody: 'Design, App-Symbol, Sprache und Tipps',
+    accountBody: 'Geräte, blockierte Personen, deine Daten',
+    aboutSection: 'Über',
+    aboutBody: 'Rechtliches, Community und die Einführung',
+    search: 'Einstellungen durchsuchen',
+    searchNone: 'Keine Einstellung passt dazu.',
     appIconSection: 'App-Symbol',
     appIcon: 'Symbol auf dem Homescreen',
     appIconBody: 'Wähle, welches auf deinem Homescreen steht.',

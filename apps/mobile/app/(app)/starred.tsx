@@ -27,7 +27,11 @@ export default function StarredScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => goBackTo('/(app)/chats')} hitSlop={12} style={styles.backRow}>
+      <Pressable
+        onPress={() => goBackTo('/(app)/(tabs)/chats')}
+        hitSlop={12}
+        style={styles.backRow}
+      >
         <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
       <Text style={styles.title}>{t('starred.title')}</Text>

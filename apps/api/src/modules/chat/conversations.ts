@@ -58,6 +58,16 @@ export interface Conversation {
    * cost decays to nothing as old threads get their next message.
    */
   messageCount?: number
+  /**
+   * The same count split by sender, keyed by user id. The media gate reads
+   * the *other* participant's entry — how many messages you have received —
+   * because a shared total let one person clear a gate meant to need two.
+   *
+   * Optional for the same reason as `messageCount`, and absent means the same
+   * thing: written before the map existed. `messagesReceivedFrom` counts on
+   * demand for those; it never reads absence as zero.
+   */
+  messageCountBy?: Record<string, number>
   createdAt: Date
   updatedAt: Date
 }
@@ -260,6 +270,14 @@ export async function startConversation(
     // now on can have an absent count — which is what lets `messagesInThread`
     // read an absent one as "predates the counter" instead of as zero.
     messageCount: 1,
+    // Built off the participants pair rather than with `viewerId` as a
+    // literal key, for the same reason `unread` reads the recipient off the
+    // record: a property name whose provenance is a request is the shape
+    // CodeQL's `js/remote-property-injection` flags, and the pair is the
+    // record's own.
+    messageCountBy: Object.fromEntries(
+      [viewerId, recipient._id].map((id) => [id, id === viewerId ? 1 : 0]),
+    ),
     createdAt: now,
     updatedAt: now,
   }

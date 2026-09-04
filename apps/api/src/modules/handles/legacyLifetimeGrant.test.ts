@@ -1,4 +1,9 @@
-import { ENTITLEMENT_TIERS, LOYALTY_LIFETIME_GRANTS, lifetimeGrantFor } from '@langx/shared'
+import {
+  ENTITLEMENT_PRECEDENCE,
+  ENTITLEMENT_TIERS,
+  LOYALTY_LIFETIME_GRANTS,
+  lifetimeGrantFor,
+} from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -22,8 +27,22 @@ class RecordingBilling implements RevenueCatClient {
   readonly grants: { appUserId: string; entitlementId: string }[] = []
   failing = false
 
-  getEntitlement(): Promise<SubscriberEntitlement | null> {
-    return Promise.resolve(null)
+  /**
+   * Answers from what it was asked to grant, highest precedence first — the
+   * way the real subscriber record does once the promotional grants land. The
+   * restore reads this straight back into `profiles.entitlement`.
+   */
+  getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
+    const held = this.grants.filter((g) => g.appUserId === appUserId).map((g) => g.entitlementId)
+    const id = ENTITLEMENT_PRECEDENCE.find((candidate) => held.includes(candidate))
+    if (!id) return Promise.resolve(null)
+    return Promise.resolve({
+      tier: ENTITLEMENT_TIERS[id],
+      expiresAt: null,
+      productId: `rc_promo_${id}_lifetime`,
+      store: 'promotional',
+      willRenew: false,
+    })
   }
 
   grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
@@ -190,16 +209,28 @@ describe('v1 loyalty lifetime grant', () => {
   /**
    * The gift is delivered through RevenueCat and never by writing the tier
    * locally — `refreshEntitlement` would overwrite a local write with whatever
-   * RevenueCat reports. The stored tier staying `free` here is that contract
-   * holding: the real entitlement now lives in RevenueCat, and the next
-   * refresh is what brings it down.
+   * RevenueCat reports. What the restore *does* do, once the grant is in, is
+   * read it straight back: the stored tier is what RevenueCat says, which is
+   * why the stub answers from its own grants. Before this the tier stayed
+   * `free` until a webhook or a paywall visit — and the welcome-back screen
+   * had already said "Polyglot, for life".
    */
-  it('does not write the tier locally — RevenueCat stays the only authority', async () => {
-    const hash = await stageLegacy(PRO_MIN)
+  it('reads the granted tier back from RevenueCat rather than writing it', async () => {
+    const hash = await stageLegacy(PLUS_MIN)
     await restoreByHash(handle.db, 'user-authority', hash, billing)
 
     const stored = await profile('user-authority')
-    expect(stored?.entitlement.tier).toBe('free')
+    expect(stored?.entitlement).toMatchObject({
+      tier: 'pro_plus',
+      willRenew: false,
+      store: 'promotional',
+    })
+  })
+
+  it('leaves the tier at free when no rung is earned', async () => {
+    const hash = await stageLegacy(20)
+    await restoreByHash(handle.db, 'user-no-rung', hash, billing)
+    expect((await profile('user-no-rung'))?.entitlement.tier).toBe('free')
   })
 
   /**

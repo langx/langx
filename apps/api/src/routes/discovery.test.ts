@@ -433,11 +433,11 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(response.statusCode, response.body).toBe(200)
     })
 
-    it('targetLanguage narrows to one of the viewer own learning languages, and rejects anything else', async () => {
-      // Two learning languages is a paid allowance now, so the viewer is set up
-      // as one. The filter under test is free either way — this is about
-      // `targetLanguage`, not about billing.
-      const viewer = await newUser('target-lang-viewer@example.com', {
+    it('narrows a side of the match to the languages named, and refuses one the viewer does not have', async () => {
+      // Two languages on each side is a paid allowance now, so the viewer is
+      // set up as one. The scope under test is free either way — this is about
+      // which languages a search is made with, not about billing.
+      const viewer = await newUser('scope-viewer@example.com', {
         nativeLanguages: [{ code: 'tr' }],
         learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       })
@@ -446,6 +446,7 @@ describe('Faz 3 — discovery aggregation', () => {
         {
           $set: {
             'entitlement.tier': 'pro_plus',
+            nativeLanguages: [{ code: 'tr' }, { code: 'ku' }],
             learning: [
               { code: 'en', level: 'intermediate', priority: 1 },
               { code: 'de', level: 'beginner', priority: 2 },
@@ -453,24 +454,45 @@ describe('Faz 3 — discovery aggregation', () => {
           },
         },
       )
-      const englishNative = await newUser('english-native@example.com', {
+      const englishNative = await newUser('scope-english-native@example.com', {
         nativeLanguages: [{ code: 'en' }],
         learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
-      const germanNative = await newUser('german-native@example.com', {
+      const germanNative = await newUser('scope-german-native@example.com', {
         nativeLanguages: [{ code: 'de' }],
         learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
+      const learnsKurdish = await newUser('scope-learns-kurdish@example.com', {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'ku', level: 'beginner', priority: 1 }],
+      })
+      const handlesOf = (response: Awaited<ReturnType<typeof discover>>) =>
+        response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
 
-      const onlyGerman = await discover(viewer, 'targetLanguage=de')
-      const germanHandles = onlyGerman
-        .json<{ items: { handle: string }[] }>()
-        .items.map((i) => i.handle)
-      expect(germanHandles).toContain(germanNative.handle)
-      expect(germanHandles).not.toContain(englishNative.handle)
+      // Nothing named: every language on both sides, which is what every
+      // search was before the header became a control.
+      const everyone = handlesOf(await discover(viewer))
+      expect(everyone).toEqual(
+        expect.arrayContaining([englishNative.handle, germanNative.handle, learnsKurdish.handle]),
+      )
 
-      const rejected = await discover(viewer, 'targetLanguage=fr')
-      expect(rejected.statusCode).toBe(400)
+      // Their native ∈ the learning languages I named.
+      const onlyGerman = handlesOf(await discover(viewer, 'learningLanguages=de'))
+      expect(onlyGerman).toContain(germanNative.handle)
+      expect(onlyGerman).not.toContain(englishNative.handle)
+
+      // Their learning ∈ the native languages I named.
+      const onlyTurkishLearners = handlesOf(await discover(viewer, 'nativeLanguages=tr'))
+      expect(onlyTurkishLearners).toContain(englishNative.handle)
+      expect(onlyTurkishLearners).not.toContain(learnsKurdish.handle)
+
+      // Two codes, one URL.
+      const both = handlesOf(await discover(viewer, 'learningLanguages=en,de'))
+      expect(both).toEqual(expect.arrayContaining([englishNative.handle, germanNative.handle]))
+
+      expect((await discover(viewer, 'learningLanguages=fr')).statusCode).toBe(400)
+      expect((await discover(viewer, 'nativeLanguages=en')).statusCode).toBe(400)
+      expect((await discover(viewer, 'learningLanguages=')).statusCode).toBe(400)
     })
   })
 

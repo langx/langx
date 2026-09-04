@@ -16,7 +16,7 @@ import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
-import { assertConversationAccess } from '../modules/chat/access'
+import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { toMessageView } from '../modules/chat/messageView'
 import {
   deleteMessage,
@@ -181,6 +181,15 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(async (input) => {
           const profile = await getProfile(app.mongo.db, userId)
           if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+
+          // Before the quota, not after: a refused attachment used to spend a
+          // media slot on the way to its own refusal. `sendMediaMessage`
+          // checks again, cheaply, for the transport that forgets this.
+          await assertMediaUnlocked(
+            app.mongo.db,
+            await assertConversationAccess(app.mongo.db, input.conversationId, userId),
+            userId,
+          )
 
           const quota = await consumeQuota(app.mongo.db, userId, effectiveTier(profile), 'media')
           if (!quota.consumed) {

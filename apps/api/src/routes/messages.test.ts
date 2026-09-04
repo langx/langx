@@ -3,7 +3,7 @@ import {
   MAX_IMAGE_BYTES,
   MAX_VIDEO_BYTES,
   MAX_VIDEO_SECONDS,
-  MEDIA_UNLOCKS_AFTER_MESSAGES,
+  MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   PLAN_LIMITS,
   sendMediaMessageSchema,
 } from '@langx/shared'
@@ -731,14 +731,15 @@ describe('Faz 5 — conversation/message history REST', () => {
       return { a, b, conversationId: conversation._id }
     }
 
-    /** Talks until an attachment is allowed. `startConversation` wrote one. */
-    async function warmPast(conversationId: string, aId: string, bId: string) {
+    /**
+     * `b` writes back until `a` may send an attachment. The gate counts what
+     * `a` has *received*, so it is `b` who has to do the talking — `a`'s own
+     * opener counts for nothing.
+     */
+    async function warmPast(conversationId: string, _aId: string, bId: string) {
       const { sendTextMessage } = await import('../modules/chat/messages')
-      for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
-        await sendTextMessage(handle.db, sent % 2 === 1 ? bId : aId, {
-          conversationId,
-          body: `filler ${sent}`,
-        })
+      for (let sent = 1; sent <= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES; sent++) {
+        await sendTextMessage(handle.db, bId, { conversationId, body: `filler ${sent}` })
       }
     }
 
@@ -823,12 +824,14 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
 
     /**
-     * The rule with no exceptions: no photo and no voice note until the thread
-     * has carried `MEDIA_UNLOCKS_AFTER_MESSAGES` messages. Not a Pro feature,
-     * not a setting, not something a report has to catch after the fact — the
-     * first message from a stranger cannot be a photograph, of anybody, ever.
+     * The rule with no exceptions: no photo and no voice note to somebody until
+     * they have sent you `MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES` messages. Not
+     * a Pro feature, not a setting, not something a report has to catch after
+     * the fact — the first message from a stranger cannot be a photograph, of
+     * anybody, ever. And not something the stranger can talk their own way
+     * past: the count is theirs to raise, not yours.
      */
-    describe('attachments are locked until the thread has been talked in', () => {
+    describe('attachments are locked until the other person has written to you', () => {
       async function uploadUrl(user: SignedUpUser, conversationId: string) {
         return app.inject({
           method: 'POST',
@@ -860,7 +863,7 @@ describe('Faz 5 — conversation/message history REST', () => {
         expect(response.statusCode, response.body).toBe(409)
         expect(response.json()).toMatchObject({
           code: 'MEDIA_LOCKED',
-          max: MEDIA_UNLOCKS_AFTER_MESSAGES,
+          max: MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
         })
       })
 
@@ -872,29 +875,32 @@ describe('Faz 5 — conversation/message history REST', () => {
         ).rejects.toThrow(/unlock after/)
       })
 
-      it('opens on the message that reaches the threshold, not the one after', async () => {
+      it('opens on the reply that reaches the threshold, not the one after', async () => {
         const { a, b, conversationId } = await pair('media-gate-open', { warm: false })
         const { sendTextMessage } = await import('../modules/chat/messages')
 
-        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
-          expect(await locked(a, conversationId), `after ${sent}`).toBe(true)
-          await sendTextMessage(handle.db, sent % 2 === 1 ? b.userId : a.userId, {
-            conversationId,
-            body: `filler ${sent}`,
-          })
+        for (let received = 0; received < MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES; received++) {
+          expect(await locked(a, conversationId), `after ${received}`).toBe(true)
+          await sendTextMessage(handle.db, b.userId, { conversationId, body: `b ${received}` })
         }
 
         expect(await locked(a, conversationId)).toBe(false)
       })
 
-      /** Both sides count. It is a conversation, not a quota per person. */
-      it('counts what either of them said, not what one of them did', async () => {
-        const { a, b, conversationId } = await pair('media-gate-both', { warm: false })
+      /**
+       * The loophole the shared count had: five messages of your own used to
+       * open the gate. They open nothing now — not for you, and not for the
+       * person you sent them to either.
+       */
+      it('does not open for somebody who only talked to themselves', async () => {
+        const { a, b, conversationId } = await pair('media-gate-monologue', { warm: false })
         const { sendTextMessage } = await import('../modules/chat/messages')
-        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
-          await sendTextMessage(handle.db, b.userId, { conversationId, body: `b ${sent}` })
+        for (let sent = 1; sent <= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES * 2; sent++) {
+          await sendTextMessage(handle.db, a.userId, { conversationId, body: `a ${sent}` })
         }
-        expect(await locked(a, conversationId)).toBe(false)
+        expect(await locked(a, conversationId)).toBe(true)
+        // `b` has received plenty, though: the gate is per side.
+        expect(await locked(b, conversationId)).toBe(false)
       })
 
       /**
@@ -920,14 +926,25 @@ describe('Faz 5 — conversation/message history REST', () => {
       it('counts the messages of a conversation that predates the counter', async () => {
         const { a, b, conversationId } = await pair('media-gate-legacy', { warm: false })
         const { sendTextMessage } = await import('../modules/chat/messages')
-        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
+        for (let sent = 1; sent <= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES; sent++) {
           await sendTextMessage(handle.db, b.userId, { conversationId, body: `b ${sent}` })
         }
         await handle.db
           .collection(COLLECTIONS.conversations)
-          .updateOne({ _id: new ObjectId(conversationId) }, { $unset: { messageCount: '' } })
+          .updateOne(
+            { _id: new ObjectId(conversationId) },
+            { $unset: { messageCount: '', messageCountBy: '' } },
+          )
 
         expect(await locked(a, conversationId)).toBe(false)
+        // Their own messages, counted the same way, still open nothing.
+        const { conversationId: other, a: c } = await pair('media-gate-legacy-self', {
+          warm: false,
+        })
+        await handle.db
+          .collection(COLLECTIONS.conversations)
+          .updateOne({ _id: new ObjectId(other) }, { $unset: { messageCountBy: '' } })
+        expect(await locked(c, other)).toBe(true)
       })
 
       it('tells the client how many more are needed, so it can say so', async () => {
@@ -937,8 +954,9 @@ describe('Faz 5 — conversation/message history REST', () => {
           url: `/conversations/${conversationId}/messages`,
           headers: { cookie: a.cookie },
         })
+        // The opener was theirs, so nothing has been received yet.
         expect(page.json<{ mediaLockedFor: number }>().mediaLockedFor).toBe(
-          MEDIA_UNLOCKS_AFTER_MESSAGES - 1,
+          MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
         )
       })
     })

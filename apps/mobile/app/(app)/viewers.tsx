@@ -28,7 +28,7 @@ export default function ViewersScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('viewers.title')} onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('viewers.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       {viewers.isPending ? (
         <ActivityIndicator style={styles.loading} />

@@ -11,8 +11,14 @@ import { DISCOVERY_PRO_FILTER_KEYS, type LanguageLevel, type Gender } from '@lan
  * someone is worth having for free.
  */
 export interface DiscoveryFilters {
-  /** Free. One of the viewer's own learning languages. */
-  targetLanguage?: string
+  /**
+   * Free. Which of the viewer's own languages the search is made with —
+   * absent means all of them. `learningLanguages` picks which of the
+   * languages I'm learning they must speak; `nativeLanguages` picks which of
+   * the languages I speak they must be learning.
+   */
+  learningLanguages?: string[]
+  nativeLanguages?: string[]
   /** Free. Their level in my language, as an inclusive band. */
   minLevel?: LanguageLevel
   maxLevel?: LanguageLevel
@@ -62,12 +68,36 @@ function one(value: string | string[] | undefined): string | undefined {
   return first && first.length > 0 ? first : undefined
 }
 
+/** `en,ru` in a URL is a list; an empty one is no filter at all. */
+function list(value: string | string[] | undefined): string[] | undefined {
+  const codes = (one(value) ?? '')
+    .split(',')
+    .map((code) => code.trim())
+    .filter((code) => code.length > 0)
+  return codes.length > 0 ? codes : undefined
+}
+
+/**
+ * The scope a list of the viewer's own languages amounts to, or `undefined`
+ * when every one of them is picked — which is what an absent param means, so
+ * a full selection does not write a filter into the URL that changes nothing.
+ * Never empty: a search with no language is refused by the server, so the last
+ * language cannot be unpicked.
+ */
+export function scopeOf(picked: readonly string[], all: readonly string[]): string[] | undefined {
+  const kept = all.filter((code) => picked.includes(code))
+  if (kept.length === 0 || kept.length === all.length) return undefined
+  return kept
+}
+
 export function parseFilters(
   params: Record<string, string | string[] | undefined>,
 ): DiscoveryFilters {
   const filters: DiscoveryFilters = {}
-  const target = one(params.targetLanguage)
-  if (target) filters.targetLanguage = target
+  const learningLanguages = list(params.learningLanguages)
+  if (learningLanguages) filters.learningLanguages = learningLanguages
+  const nativeLanguages = list(params.nativeLanguages)
+  if (nativeLanguages) filters.nativeLanguages = nativeLanguages
 
   const gender = one(params.gender)
   if (gender) filters.gender = gender as Gender
@@ -94,7 +124,8 @@ export function parseFilters(
 /** Route params. Only what is set — an empty string in a URL is still a filter. */
 export function toParams(filters: DiscoveryFilters): Record<string, string> {
   const params: Record<string, string> = {}
-  if (filters.targetLanguage) params.targetLanguage = filters.targetLanguage
+  if (filters.learningLanguages) params.learningLanguages = filters.learningLanguages.join(',')
+  if (filters.nativeLanguages) params.nativeLanguages = filters.nativeLanguages.join(',')
   if (filters.gender) params.gender = filters.gender
   if (filters.onlyMyGender) params.onlyMyGender = '1'
   if (filters.country) params.country = filters.country
@@ -114,7 +145,8 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
  */
 export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   const query: Record<string, string> = {}
-  if (filters.targetLanguage) query.targetLanguage = filters.targetLanguage
+  if (filters.learningLanguages) query.learningLanguages = filters.learningLanguages.join(',')
+  if (filters.nativeLanguages) query.nativeLanguages = filters.nativeLanguages.join(',')
   if (filters.gender) query.gender = filters.gender
   if (filters.onlyMyGender) query.onlyMyGender = 'true'
   if (filters.country) query.country = filters.country
@@ -129,7 +161,8 @@ export function toQuery(filters: DiscoveryFilters): Record<string, string> {
 /** How many filters are on, for the badge on the Discover chip. */
 export function activeCount(filters: DiscoveryFilters): number {
   let count = 0
-  if (filters.targetLanguage) count++
+  // One language *scope*, however many codes on however many sides narrow it.
+  if (filters.learningLanguages || filters.nativeLanguages) count++
   if (filters.gender || filters.onlyMyGender) count++
   if (filters.country) count++
   // One level *band*, however many bounds express it.
@@ -152,7 +185,8 @@ export function hasProFilters(filters: DiscoveryFilters): boolean {
 
 export function withoutProFilters(filters: DiscoveryFilters): DiscoveryFilters {
   const free: DiscoveryFilters = {}
-  if (filters.targetLanguage) free.targetLanguage = filters.targetLanguage
+  if (filters.learningLanguages) free.learningLanguages = filters.learningLanguages
+  if (filters.nativeLanguages) free.nativeLanguages = filters.nativeLanguages
   if (filters.minLevel) free.minLevel = filters.minLevel
   if (filters.maxLevel) free.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) free.ageMin = filters.ageMin

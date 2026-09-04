@@ -46,6 +46,12 @@ describe('messageActionsFor', () => {
     expect(ids({ alreadyTranslated: true })).not.toContain('translate')
   })
 
+  /** A reader with no written native language — signed only — is offered no translation. */
+  it('drops translate when there is no language to translate into', () => {
+    expect(ids({ canTranslate: false })).not.toContain('translate')
+    expect(ids({ canTranslate: true })).toContain('translate')
+  })
+
   it('only corrects text, never an attachment or another correction', () => {
     for (const type of ['image', 'audio', 'correction'] as const) {
       expect(ids({ type })).not.toContain('correct')

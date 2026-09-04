@@ -473,6 +473,12 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
+    languagesTitle: 'Languages in this search',
+    languagesBody:
+      'Everyone shown speaks one of the languages you are learning and is learning one you speak. Untick a language to leave it out of the search.',
+    iSpeak: 'I speak',
+    imLearning: "I'm learning",
+    languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
     searchNone: 'No account with that username.',
@@ -498,6 +504,8 @@ export const en = {
   },
 
   filters: {
+    learns: 'Learns',
+    learnsBody: 'Which of the languages you speak they should be learning.',
     title: 'Filters',
     speaks: 'Speaks',
     city: 'City',
@@ -589,8 +597,8 @@ export const en = {
     playAtNormalSpeed: 'Play at normal speed',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
-      one: 'Photos, videos and voice notes unlock after one more message.',
-      other: 'Photos, videos and voice notes unlock after {count} more messages.',
+      one: 'Photos and voice notes unlock after one more message from them.',
+      other: 'Photos and voice notes unlock after {count} more messages from them.',
     },
     copied: 'Copied',
     couldNotSend: 'Could not send',
@@ -904,6 +912,16 @@ export const en = {
     emptyBody: 'Send a message or write a correction, and today becomes your first day.',
   },
   settings: {
+    subscriptionBody: 'Your plan, renewal and how to manage it',
+    privacyBody: 'Who can find you, and what they see',
+    notificationsBody: 'What reaches you, by push and by email',
+    appearanceSection: 'Appearance',
+    appearanceBody: 'Theme, app icon, language and tips',
+    accountBody: 'Devices, blocked people, your data',
+    aboutSection: 'About',
+    aboutBody: 'Legal, community and the intro',
+    search: 'Search settings',
+    searchNone: 'No setting matches that.',
     appIconSection: 'App icon',
     appIcon: 'Home screen icon',
     appIconBody: 'Pick which one sits on your home screen.',

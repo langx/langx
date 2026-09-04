@@ -508,6 +508,12 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
+    languagesTitle: 'اللغات في هذا البحث',
+    languagesBody:
+      'كل من يظهر هنا يتحدث لغة تتعلمها ويتعلم لغة تتحدثها. أزل التحديد عن لغة لاستبعادها من البحث.',
+    iSpeak: 'أتحدث',
+    imLearning: 'أتعلم',
+    languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
     searchNone: 'لا يوجد حساب بهذا الاسم.',
@@ -531,6 +537,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   filters: {
+    learns: 'يتعلم',
+    learnsBody: 'أي لغة من لغاتك ينبغي أن يتعلمها الطرف الآخر.',
     title: 'عوامل التصفية',
     speaks: 'يتكلم',
     city: 'المدينة',
@@ -653,8 +661,9 @@ export const ar: Localized<EnMessages> = {
     playAtNormalSpeed: 'تشغيل بالسرعة العادية',
     mediaLockedTitle: 'ليس بعد',
     mediaLocked: {
-      one: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد رسالة واحدة أخرى.',
-      other: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد {count} رسائل أخرى.',
+      one: 'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد أن يرسل لك الطرف الآخر رسالة واحدة أخرى.',
+      other:
+        'تُفتح الصور ومقاطع الفيديو والرسائل الصوتية بعد أن يرسل لك الطرف الآخر {count} رسائل أخرى.',
     },
     copied: 'تم النسخ',
     couldNotSend: 'تعذّر الإرسال',
@@ -1029,6 +1038,16 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'أرسل رسالة أو اكتب تصحيحًا، ويصبح اليوم أول أيامك.',
   },
   settings: {
+    subscriptionBody: 'خطتك وتجديدها وإدارتها',
+    privacyBody: 'من يستطيع العثور عليك وما يراه',
+    notificationsBody: 'ما يصلك عبر الإشعارات والبريد',
+    appearanceSection: 'المظهر',
+    appearanceBody: 'السمة ورمز التطبيق واللغة والنصائح',
+    accountBody: 'الأجهزة والمحظورون وبياناتك',
+    aboutSection: 'حول',
+    aboutBody: 'القانوني والمجتمع والمقدمة',
+    search: 'البحث في الإعدادات',
+    searchNone: 'لا يوجد إعداد يطابق ذلك.',
     appIconSection: 'أيقونة التطبيق',
     appIcon: 'الأيقونة على الشاشة الرئيسية',
     appIconBody: 'اختر أيها يظهر على شاشتك الرئيسية.',
