@@ -246,6 +246,32 @@ const config: ExpoConfig = {
         isIosBackgroundLocationEnabled: false,
       },
     ],
+    /*
+     * R8. The Expo template generates
+     * `minifyEnabled findProperty('android.enableMinifyInReleaseBuilds') ?: false`,
+     * so a release build ships unoptimised unless this plugin writes the
+     * property — which is why 2.0.0 (121) reads **App optimisation: Low,
+     * obfuscation 2 %** in Play Console, against a February 2027 deadline.
+     * `shrinkResources` is only legal with minification on, hence both
+     * together.
+     *
+     * The cost is that R8 renames what it cannot see being used, and
+     * everything reached by reflection is invisible to it. Debug builds never
+     * run R8, so nothing here shows up until a release build is exercised on a
+     * device; a missing keep rule surfaces as a crash in one screen, not a
+     * build failure. Anything that breaks gets a rule in
+     * `android/proguard-rules.pro` — which `expo prebuild` regenerates, so it
+     * belongs in this plugin's `extraProguardRules`, not in the generated file.
+     */
+    [
+      'expo-build-properties',
+      {
+        android: {
+          enableProguardInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+        },
+      },
+    ],
   ],
 
   experiments: {
