@@ -1,4 +1,4 @@
-import type { MessageType } from '@langx/shared'
+import { attachmentsOf, type MessageType } from '@langx/shared'
 import type { Message } from './conversations'
 
 /**
@@ -23,6 +23,9 @@ export interface MessageView {
   senderId: string
   type: MessageType
   body: string
+  /** Everything attached, in the order it was picked. */
+  attachments?: Message['attachments']
+  /** The first of `attachments`, for builds that predate the list. */
   media?: Message['media']
   correction?: {
     targetMessageId: string
@@ -80,7 +83,15 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (message.clientId && message.senderId === viewerId) view.clientId = message.clientId
   if (!deleted && message.editedAt) view.editedAt = message.editedAt.toISOString()
   if (!deleted && message.correctedAt) view.corrected = true
-  if (!deleted && message.media) view.media = message.media
+  if (!deleted) {
+    const attachments = attachmentsOf(message)
+    if (attachments.length > 0) {
+      view.attachments = attachments
+      // Repeated as `media` for a build that predates the list, exactly as it
+      // is stored. See `attachmentsOf`.
+      view.media = attachments[0]
+    }
+  }
   if (!deleted && message.correction) {
     view.correction = {
       targetMessageId: message.correction.targetMessageId.toHexString(),

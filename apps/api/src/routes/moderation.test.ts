@@ -726,12 +726,13 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         me.userId,
         {
           conversationId,
-          kind: 'image',
-          media: {
-            url: 'https://cdn.example.com/messages/c/x.jpg',
-            contentType: 'image/jpeg',
-            sizeBytes: 500,
-          },
+          attachments: [
+            {
+              url: 'https://cdn.example.com/messages/c/x.jpg',
+              contentType: 'image/jpeg',
+              sizeBytes: 500,
+            },
+          ],
         },
         'https://cdn.example.com',
       )

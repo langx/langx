@@ -168,15 +168,20 @@ export function attachmentsOf(source: {
 }
 
 /**
- * A voice note travels alone.
+ * A voice note does not travel with pictures.
  *
  * Not a technical limit — the schema would carry it — but a recording is the
  * message, where a photo illustrates one. Mixing them would also make the
  * message's `type`, and so its preview line and its notification, a coin toss
  * between "photo" and "voice message".
+ *
+ * Two recordings together are fine, and have to be: a pronunciation answer is
+ * a take at ordinary speed and a slower second one, which is the one case
+ * where two audio files really are a single message.
  */
 export function attachmentKindsValid(items: readonly Media[]): 'ok' | 'audio-must-be-alone' {
   const kinds = items.map((item) => mediaKindOfContentType(item.contentType))
-  if (items.length > 1 && kinds.includes('audio')) return 'audio-must-be-alone'
-  return 'ok'
+  const hasAudio = kinds.includes('audio')
+  const hasOther = kinds.some((kind) => kind !== null && kind !== 'audio')
+  return hasAudio && hasOther ? 'audio-must-be-alone' : 'ok'
 }

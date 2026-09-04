@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   MAX_PINNED_CONVERSATIONS,
   REPLY_PREVIEW_MAX_LENGTH,
+  attachmentsOf,
   type ConversationFilter,
   type SendCorrectionInput,
   type SendMediaMessageInput,
@@ -11,7 +12,7 @@ import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
-import { assertMediaAllowed } from '../media/assertMedia'
+import { assertAttachmentsAllowed } from '../media/assertMedia'
 import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
@@ -32,8 +33,19 @@ export interface SendResult {
  * "sending a message" means for the conversation document, and so the socket
  * transport earns tokens through exactly the same code REST does.
  */
-function previewFor(type: Message['type']): string {
-  if (type === 'image') return '📷 Photo'
+/**
+ * The line the chat list and a reply quote show for a message with no words
+ * of its own.
+ *
+ * English, from the server, and so the one string in a message that does not
+ * come from the app's catalogues — it is denormalized into
+ * `conversations.lastMessage` at send time, where the reader's language is not
+ * known and cannot be. Localising it would mean either storing it per reader
+ * or re-deriving the list's preview on every read.
+ */
+export function previewFor(type: Message['type'], count = 1): string {
+  if (type === 'image') return count > 1 ? `📷 ${count} photos` : '📷 Photo'
+  if (type === 'video') return count > 1 ? `🎬 ${count} videos` : '🎬 Video'
   if (type === 'audio') return '🎤 Voice message'
   return ''
 }
@@ -70,7 +82,10 @@ async function resolveReplyTo(
   return {
     messageId: target._id,
     senderId: target.senderId,
-    preview: (target.body || previewFor(target.type)).slice(0, REPLY_PREVIEW_MAX_LENGTH),
+    preview: (target.body || previewFor(target.type, attachmentsOf(target).length)).slice(
+      0,
+      REPLY_PREVIEW_MAX_LENGTH,
+    ),
   }
 }
 
@@ -91,7 +106,7 @@ async function recordMessage(
         lastMessage: {
           // The chat list shows this verbatim, so an attachment needs a label
           // rather than the empty string a caption-less voice note carries.
-          body: message.body || previewFor(message.type),
+          body: message.body || previewFor(message.type, attachmentsOf(message).length),
           senderId: message.senderId,
           createdAt: message.createdAt,
         },
@@ -241,18 +256,30 @@ export async function sendMediaMessage(
   await assertMediaUnlocked(db, conversation)
 
   // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
-  // cost control, and there must be exactly one copy of them.
-  assertMediaAllowed(input.media, storagePublicBaseUrl, input.kind)
+  // cost control, and there must be exactly one copy of them. The kind comes
+  // from the bytes rather than from the sender, so the two cannot disagree.
+  const kind = assertAttachmentsAllowed(input.attachments, storagePublicBaseUrl)
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+
+  // Non-empty by schema; the guard is for `noUncheckedIndexedAccess`.
+  const first = input.attachments[0]
 
   const message: Message = {
     _id: new ObjectId(),
     conversationId: conversation._id,
     senderId,
-    type: input.kind,
+    type: kind,
     body: input.body ?? '',
-    media: input.media,
+    attachments: input.attachments,
+    /*
+     * Written twice, on purpose, and only for as long as binaries that predate
+     * `attachments` are installed: they read `media` and would show an empty
+     * bubble otherwise. They see the first file of a gallery rather than all of
+     * it, which is the honest degradation. Dropping this field is a migration
+     * of its own, not a line in this one.
+     */
+    ...(first ? { media: first } : {}),
     ...(replyTo ? { replyTo } : {}),
     createdAt: new Date(),
   }

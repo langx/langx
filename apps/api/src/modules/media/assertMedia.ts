@@ -1,26 +1,25 @@
 import {
   ERROR_CODES,
-  MAX_AUDIO_BYTES,
-  MAX_IMAGE_BYTES,
-  isAudioContentType,
-  isImageContentType,
+  MEDIA_LIMITS,
+  attachmentKindsValid,
+  mediaKindOfContentType,
   type Media,
+  type MediaKind,
 } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
 
-export type MediaKind = 'image' | 'audio'
+export type { MediaKind }
 
 /** Which kind an attachment is, from its content type alone. */
 export function mediaKindOf(media: Media): MediaKind | null {
-  if (isImageContentType(media.contentType)) return 'image'
-  if (isAudioContentType(media.contentType)) return 'audio'
-  return null
+  return mediaKindOfContentType(media.contentType)
 }
 
 /**
- * The three things that must be true of any attachment before it is stored
+ * The four things that must be true of any attachment before it is stored
  * against anything: the content type is one we serve, the bytes are within the
- * ceiling for that kind, and the URL points into our own bucket.
+ * ceiling for that kind, the duration is too, and the URL points into our own
+ * bucket.
  *
  * Extracted from `sendMediaMessage` rather than copied into the feed. The
  * ceilings are the real cost control — storage is billed by the byte — and two
@@ -45,9 +44,29 @@ export function assertMediaAllowed(
     )
   }
 
-  const maxBytes = kind === 'image' ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES
-  if (media.sizeBytes > maxBytes) {
+  const limits = MEDIA_LIMITS[kind]
+  if (media.sizeBytes > limits.maxBytes) {
     throw new ApiError(ERROR_CODES.MEDIA_TOO_LARGE, `That ${kind} is too large`)
+  }
+
+  if (kind === 'video') {
+    // Required for video and not for audio, which is not an inconsistency: a
+    // recording is made by us and always carries its length, where a video
+    // arrives from a picker. A ceiling that can be bypassed by omitting the
+    // field is not a ceiling.
+    if (media.durationSeconds === undefined) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A video must say how long it is')
+    }
+  }
+
+  const maxSeconds = 'maxSeconds' in limits ? limits.maxSeconds : undefined
+  if (maxSeconds !== undefined && media.durationSeconds !== undefined) {
+    if (media.durationSeconds > maxSeconds) {
+      throw new ApiError(
+        ERROR_CODES.MEDIA_TOO_LONG,
+        `That ${kind} is longer than ${maxSeconds} seconds`,
+      )
+    }
   }
 
   if (!storagePublicBaseUrl || !media.url.startsWith(storagePublicBaseUrl)) {
@@ -58,4 +77,29 @@ export function assertMediaAllowed(
   }
 
   return kind
+}
+
+/**
+ * Every attachment on one message or one post, and what kind the set is.
+ *
+ * The kind of the *first* file is the message's type, and so its preview line
+ * and its push notification. `attachmentKindsValid` is what keeps that from
+ * being a coin toss: a voice note cannot ride along with photos.
+ */
+export function assertAttachmentsAllowed(
+  items: readonly Media[],
+  storagePublicBaseUrl: string | undefined,
+  expected?: MediaKind,
+): MediaKind {
+  const first = items[0]
+  if (!first) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An attachment message needs an attachment')
+  }
+
+  const kinds = items.map((item) => assertMediaAllowed(item, storagePublicBaseUrl, expected))
+  if (attachmentKindsValid(items) !== 'ok') {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A voice note is sent on its own')
+  }
+
+  return kinds[0] as MediaKind
 }

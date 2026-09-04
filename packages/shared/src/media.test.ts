@@ -69,9 +69,15 @@ describe('attachmentKindsValid', () => {
     expect(attachmentKindsValid([image, video])).toBe('ok')
   })
 
-  it('sends a voice note alone', () => {
+  it('does not send a voice note alongside a picture', () => {
     expect(attachmentKindsValid([voice])).toBe('ok')
     expect(attachmentKindsValid([image, voice])).toBe('audio-must-be-alone')
+    expect(attachmentKindsValid([voice, video])).toBe('audio-must-be-alone')
+  })
+
+  it('lets a pronunciation answer carry its two takes', () => {
+    // The fast take and the deliberate slow one are one message, not two.
+    expect(attachmentKindsValid([voice, { ...voice, url: `${voice.url}-slow` }])).toBe('ok')
   })
 })
 

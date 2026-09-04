@@ -1,8 +1,10 @@
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
   ERROR_CODES,
+  attachmentsOf,
   type AccountDeletionStatus,
   type DataExport,
+  type Media,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
 import { ObjectId, type Db } from 'mongodb'
@@ -10,6 +12,12 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
 import type { StorageProvider } from '../../storage/StorageProvider'
+
+/** Only the two attachment fields — the purge needs nothing else off a row. */
+interface AttachmentRow {
+  attachments?: Media[]
+  media?: Media
+}
 import { supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
@@ -151,7 +159,10 @@ export async function purgeExpiredAccounts(
       // applies to the avatar.
       const sentMedia = await db
         .collection<Message>(COLLECTIONS.messages)
-        .find({ senderId: userId, media: { $exists: true } }, { projection: { media: 1 } })
+        .find(
+          { senderId: userId, $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }] },
+          { projection: { media: 1, attachments: 1 } },
+        )
         .toArray()
 
       /**
@@ -165,17 +176,21 @@ export async function purgeExpiredAccounts(
        */
       const feedMedia = await Promise.all([
         db
-          .collection<{ media?: { url: string } }>(COLLECTIONS.posts)
-          .find({ authorId: userId, media: { $exists: true } }, { projection: { media: 1 } })
-          .toArray(),
-        db
-          .collection<{ media?: { url: string } }>(COLLECTIONS.postCorrections)
-          .find({ authorId: userId, media: { $exists: true } }, { projection: { media: 1 } })
-          .toArray(),
-        db
-          .collection<{ media?: { url: string }; slowMedia?: { url: string } }>(
-            COLLECTIONS.pronunciationAnswers,
+          .collection<AttachmentRow>(COLLECTIONS.posts)
+          .find(
+            { authorId: userId, $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }] },
+            { projection: { media: 1, attachments: 1 } },
           )
+          .toArray(),
+        db
+          .collection<AttachmentRow>(COLLECTIONS.postCorrections)
+          .find(
+            { authorId: userId, $or: [{ media: { $exists: true } }, { attachments: { $ne: [] } }] },
+            { projection: { media: 1, attachments: 1 } },
+          )
+          .toArray(),
+        db
+          .collection<AttachmentRow & { slowMedia?: Media }>(COLLECTIONS.pronunciationAnswers)
           .find({ authorId: userId }, { projection: { media: 1, slowMedia: 1 } })
           .toArray(),
       ])
@@ -183,12 +198,15 @@ export async function purgeExpiredAccounts(
       const urls = [
         profile.avatarUrl,
         ...(profile.photos ?? []).map((p) => p.url),
-        ...sentMedia.map((m) => m.media?.url),
+        // Every file, not the first: a gallery leaves as many objects behind
+        // as it put there. `attachmentsOf` reads both fields, so a v1-imported
+        // message and one sent this morning sweep the same way.
+        ...sentMedia.flatMap((m) => attachmentsOf(m).map((item) => item.url)),
         ...feedMedia
           .flat()
           .flatMap((row) => [
-            row.media?.url,
-            (row as { slowMedia?: { url: string } }).slowMedia?.url,
+            ...attachmentsOf(row).map((item) => item.url),
+            (row as { slowMedia?: Media }).slowMedia?.url,
           ]),
       ]
       for (const url of urls) {
