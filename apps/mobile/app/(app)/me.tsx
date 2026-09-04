@@ -142,6 +142,14 @@ export default function MeScreen() {
         </Pressable>
       </View>
 
+      {/*
+        The about text, on the owner's own screen. It was only ever drawn on
+        the public profile, so someone whose v1 bio had come back concluded
+        from here that it had not — the one screen that must not invite that
+        reading about its own owner. Same shape as the public profile's.
+      */}
+      {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
+
       <View style={styles.tiles}>
         {/* Same affordance as the wallet tile beside it: a number nobody can
             act on reads as decoration. */}
@@ -294,6 +302,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   heroText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 24 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
+  bio: { ...font.body, color: colors.text, marginTop: spacing.sm },
   pressed: { opacity: 0.7 },
   // `shrink` on the row's own text so a five-language pair truncates instead
   // of pushing the bars and the chevron off the end of the row.
