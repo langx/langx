@@ -36,10 +36,21 @@ export interface CaptureOptions {
    * anything they tapped — which is how a feature teaches people to say no.
    */
   promptIfNeeded?: boolean
+  /**
+   * Skip the cached fix and ask the OS for a position now.
+   *
+   * `true` only when the user did something that *means* "where am I" — the
+   * Nearby button. A cached fix is the right default everywhere else, but a
+   * person who taps Nearby after moving expects the list to have moved with
+   * them, and being handed an hour-old position looks like the feature is
+   * broken rather than thrifty.
+   */
+  fresh?: boolean
 }
 
 export async function captureLocation({
   promptIfNeeded = true,
+  fresh = false,
 }: CaptureOptions = {}): Promise<LocationResult> {
   // `getForegroundPermissionsAsync` first, so a user who has already granted
   // it is never re-prompted; `request` only runs the first time.
@@ -55,11 +66,14 @@ export async function captureLocation({
   if (!(await Location.hasServicesEnabledAsync())) return { ok: false, reason: 'disabled' }
 
   try {
-    // A cached fix is fine and usually instant. `maxAge` of an hour matches
-    // how coarse the stored value is — a position from an hour ago and one
-    // from now land in the same grid cell unless the user has travelled, and
-    // if they have, the next refresh catches it.
-    const position = await Location.getLastKnownPositionAsync({ maxAge: 60 * 60 * 1000 })
+    // A cached fix is fine and usually instant, and `maxAge` of an hour
+    // matches how coarse the stored value is: a position from an hour ago and
+    // one from now land in the same grid cell unless the user has travelled,
+    // and if they have, the next refresh catches it. `fresh` is the caller
+    // saying it cannot wait for that next refresh.
+    const position = fresh
+      ? null
+      : await Location.getLastKnownPositionAsync({ maxAge: 60 * 60 * 1000 })
     const fix = position ?? (await Location.getCurrentPositionAsync({ accuracy: ACCURACY }))
     return { ok: true, lat: fix.coords.latitude, lng: fix.coords.longitude }
   } catch {

@@ -42,7 +42,6 @@ import {
   locationPermissionState,
   reportLocationFailure,
 } from '../../../src/lib/location'
-import { shouldRefreshLocation } from '../../../src/lib/locationRefresh'
 import { openPaywall } from '../../../src/lib/paywall'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
@@ -157,23 +156,28 @@ export default function DiscoverScreen() {
     const permission = await locationPermissionState()
     if (!permission.granted || !sharingLocation) {
       if (!(await enableSharing())) return
-    } else if (
-      shouldRefreshLocation({
-        hasLocation: true,
-        locationUpdatedAt: me.data?.locationUpdatedAt,
-      })
-    ) {
-      // Sorting by distance around where somebody used to live is worse than
-      // spending a second on a fresh fix. Silent: they have already granted
-      // it, so nothing can pop up here.
-      await enableSharing()
+    } else {
+      /*
+       * Unconditionally, and **not** behind `shouldRefreshLocation`.
+       *
+       * That gate exists for the refresh nobody asked for — the one on
+       * `useLocationRefresh`'s timer, where six hours is the right price for a
+       * GPS wake-up. Pressing Nearby is the opposite kind of event: it is
+       * somebody saying "where am I" out loud, and answering it from a fix
+       * taken up to seven hours ago (six from the gate, one more from
+       * `captureLocation`'s cached read) is how the feature came to look
+       * broken to a person who had simply moved since lunch.
+       *
+       * Silent: permission is already granted, so nothing can pop up here.
+       */
+      await enableSharing({ fresh: true })
     }
     setSort('nearby')
   }
 
   /** Captures a fix and sends it. `false` when the user or the device said no. */
-  async function enableSharing(): Promise<boolean> {
-    const fix = await captureLocation()
+  async function enableSharing({ fresh = false } = {}): Promise<boolean> {
+    const fix = await captureLocation({ fresh })
     if (!fix.ok) {
       // `location.needed` says what it was for; the helper adds the route to
       // the switch, which this screen used to be the only one not to offer.
