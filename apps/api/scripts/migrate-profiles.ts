@@ -28,7 +28,7 @@
  *
  * `--media-dir <path>` reads the bytes from a filesystem copy of v1's uploads
  * instead of from Appwrite. It is not an optimisation: v1's upload volume is
- * empty, so without it every copy fails. See `copyFile`.
+ * empty, so without it every copy fails. See `src/lib/legacyMediaCopy.ts`.
  */
 import { handleSchema } from '@langx/shared'
 import { Client, Databases, Query, Storage, Users } from 'node-appwrite'
@@ -45,7 +45,8 @@ import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
 import { hashLegacyEmail } from '../src/modules/handles/legacyEmailHash'
 import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut } from '../src/storage/StorageProvider'
-import { buildBackupIndex, mediaDirFrom, readBackupBytes } from './legacyMediaBackup'
+import { buildBackupIndex, mediaDirFrom } from '../src/lib/legacyMediaBackup'
+import { copyLegacyFile } from '../src/lib/legacyMediaCopy'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
 const USERS_COLLECTION = '65103e2d3a6b4d9494c8'
@@ -160,40 +161,6 @@ async function* fetchProfiles(databases: Databases, limit: number): AsyncGenerat
   }
 }
 
-/**
- * Copies one file into our own bucket, or returns `null` when its bytes no
- * longer exist anywhere.
- *
- * The mime type always comes from Appwrite, whose *metadata* is intact even
- * where the file is not — the backup stores bytes under bare ids with no
- * extension, so it cannot answer that question itself.
- *
- * `null` rather than a throw because a missing file is the ordinary case here,
- * not a fault: roughly three quarters of v1's real avatars are simply gone.
- * The caller counts them separately from an actual failure, which is the
- * difference between "the backup does not have this" and "something broke".
- */
-async function copyFile(
-  storage: Storage,
-  put: (key: string, body: Uint8Array, contentType: string) => Promise<string>,
-  fileId: string,
-  key: string,
-  backup: Map<string, string> | undefined,
-): Promise<string | null> {
-  const file = await storage.getFile({ bucketId: USER_BUCKET, fileId })
-  const contentType = file.mimeType || 'image/jpeg'
-  const extension = contentType.split('/')[1]?.split('+')[0] ?? 'jpg'
-
-  let bytes: Uint8Array | null
-  if (backup) {
-    bytes = readBackupBytes(backup, fileId)
-    if (!bytes) return null
-  } else {
-    bytes = new Uint8Array(await storage.getFileDownload({ bucketId: USER_BUCKET, fileId }))
-  }
-  return put(`${key}.${extension}`, bytes, contentType)
-}
-
 async function main(): Promise<void> {
   const apply = process.argv.includes('--apply')
   const skipMedia = process.argv.includes('--skip-media')
@@ -221,7 +188,12 @@ async function main(): Promise<void> {
   }
 
   const backup = mediaDir ? buildBackupIndex(mediaDir) : undefined
-  if (backup) console.log(`Media backup: ${backup.size} files indexed from ${mediaDir}`)
+  if (backup) {
+    console.log(
+      `Media backup: ${backup.filesSeen} files in ${backup.directories} directories, ` +
+        `${backup.byId.size} ids indexed${backup.collisions > 0 ? `, ${backup.collisions} collisions` : ''} (${mediaDir})`,
+    )
+  }
 
   const client = new Client()
     .setEndpoint(env.APPWRITE_ENDPOINT)
@@ -333,12 +305,9 @@ async function main(): Promise<void> {
         !record.avatarUrl
       ) {
         try {
-          const url = await copyFile(
-            storage,
-            put,
-            doc.profilePic,
-            `legacy/${doc.$id}/avatar`,
-            backup,
+          const url = await copyLegacyFile(
+            { storage, put, backup },
+            { bucketId: USER_BUCKET, fileId: doc.profilePic, key: `legacy/${doc.$id}/avatar` },
           )
           if (url) {
             record.avatarUrl = url
@@ -367,12 +336,9 @@ async function main(): Promise<void> {
         if (alreadyCopied.has(index)) continue
         if (typeof fileId !== 'string' || !fileId) continue
         try {
-          const url = await copyFile(
-            storage,
-            put,
-            fileId,
-            `legacy/${doc.$id}/photo-${index}`,
-            backup,
+          const url = await copyLegacyFile(
+            { storage, put, backup },
+            { bucketId: USER_BUCKET, fileId, key: `legacy/${doc.$id}/photo-${index}` },
           )
           if (url) {
             record.photos.push({ url })

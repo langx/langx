@@ -26,6 +26,21 @@ export const en = {
     ignore: 'If you didn’t request this, you can ignore this email.',
     orPaste: 'Or paste this link: {url}',
 
+    deleteSubject: 'Confirm you want to delete your LangX account',
+    deletePreheader: 'One more step to delete your LangX account',
+    deleteBody:
+      'You asked to delete your LangX account. Confirm below and it will be scheduled for deletion — you have 30 days to change your mind by signing back in.',
+    deleteButton: 'Delete my account',
+    deleteText: 'Confirm deleting your LangX account: {url}',
+    deleteInvalid: 'This link has expired or has already been used.',
+    deleteConfirmTitle: 'Delete your LangX account',
+    deleteConfirmBody:
+      'This schedules your account for deletion. Signing back in within 30 days cancels it.',
+    deleteConfirmButton: 'Yes, delete my account',
+    deleteDoneTitle: 'Your account is scheduled for deletion',
+    deleteDoneBody: 'Sign back in within {days} days and everything comes back.',
+    deleteDonePurge: 'The data is removed on {date}.',
+
     verifySubject: 'Verify your LangX email',
     verifyPreheader: 'Verify your email to finish setting up LangX',
     verifyBody: 'Confirm this is your email address to finish setting up your account.',

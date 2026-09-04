@@ -1,4 +1,11 @@
-import { deleteAccountSchema, registerDeviceSchema } from '@langx/shared'
+import {
+  deleteAccountSchema,
+  deletionRequestSchema,
+  ERROR_CODES,
+  handlesMatch,
+  registerDeviceSchema,
+  updateDeviceSchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
@@ -8,8 +15,14 @@ import {
   requestDeletion,
 } from '../modules/account/deletion'
 import type { Profile } from '../modules/profiles/profiles'
-import { registerDevice, unregisterDevice } from '../modules/push/devices'
+import { registerDevice, setDevicePushEnabled, unregisterDevice } from '../modules/push/devices'
 import { COLLECTIONS } from '../db/collections'
+import { ApiError } from '../lib/ApiError'
+import { publicApiUrl } from '../env'
+import { deleteAccountEmail } from '../email/templates'
+import { emailFor } from '../modules/profiles/emailFor'
+import { deletionConfirmUrl, mintDeletionToken } from '../modules/account/deletionTokens'
+import { localeFor } from '../modules/push/devices'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -71,7 +84,84 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.delete('/me/devices/:token', { preHandler: requireMember }, async (request, reply) => {
     const { token } = request.params as { token: string }
-    await unregisterDevice(app.mongo.db, request.userId, decodeURIComponent(token))
+    const { deviceId } = request.query as { deviceId?: string }
+    // By installation where the client knows one: a phone whose Expo token has
+    // rotated since it registered would otherwise leave its row behind on
+    // sign-out, still receiving that account's notifications.
+    await unregisterDevice(app.mongo.db, request.userId, {
+      pushToken: decodeURIComponent(token),
+      ...(deviceId ? { deviceId } : {}),
+    })
     return reply.code(204).send()
   })
+
+  /**
+   * Step one of deleting an account: prove it is you at the keyboard, then
+   * prove it is you at the mailbox.
+   *
+   * The handle is re-checked here and not only in the app. A client-side gate
+   * is a suggestion — the request it guards is one `curl` away — and this is
+   * the request that ends an account.
+   *
+   * Answers whether the mail can actually reach anybody. With no
+   * `RESEND_API_KEY` the sender is `ConsoleEmailSender` and the link only ever
+   * reaches a log, so the app has to be able to fall back to the direct path:
+   * App Store 5.1.1(v) requires in-app deletion and does not care that email
+   * is down. `"deliverable": false` is that answer, and it is the server's to
+   * give rather than the client's to guess.
+   */
+  app.post(
+    '/me/delete/request',
+    {
+      preHandler: requireMember,
+      schema: { body: deletionRequestSchema },
+      config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const profile = await app.mongo.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: request.userId }, { projection: { handle: 1 } })
+      if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+      if (!handlesMatch(request.body.handle, profile.handle)) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Handle does not match')
+      }
+
+      const address = await emailFor(app.mongo.db, request.userId)
+      // No verified address means there is no mailbox to prove anything with,
+      // and the app falls back to the direct route.
+      if (!address?.verified || !app.email.deliverable) {
+        return reply.send({ sent: false, deliverable: false })
+      }
+
+      const token = await mintDeletionToken(app.mongo.db, request.userId)
+      const locale = await localeFor(app.mongo.db, request.userId)
+      await app.email.send({
+        to: address.email,
+        ...deleteAccountEmail(deletionConfirmUrl(publicApiUrl(app.env), token), locale),
+      })
+      return reply.send({ sent: true, deliverable: true })
+    },
+  )
+
+  /**
+   * The switch on one phone. Scoped by `userId`, so it can only ever silence a
+   * device of the account making the request — and 404 rather than 204 when it
+   * matches nothing, because reporting success for a device that is not there
+   * is how a setting silently fails to apply.
+   */
+  app.patch(
+    '/me/devices/:deviceId',
+    { preHandler: requireMember, schema: { body: updateDeviceSchema } },
+    async (request, reply) => {
+      const { deviceId } = request.params as { deviceId: string }
+      const updated = await setDevicePushEnabled(
+        app.mongo.db,
+        request.userId,
+        decodeURIComponent(deviceId),
+        request.body.pushEnabled,
+      )
+      if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Device not found')
+      return reply.code(204).send()
+    },
+  )
 }

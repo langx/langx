@@ -42,6 +42,8 @@ export const es: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Quitar el archivo adjunto',
+    preparingUpload: 'Preparando…',
+    uploadingPercent: 'Subiendo… {percent}%',
     attachMedia: 'Adjuntar fotos o vídeos',
   },
 
@@ -543,8 +545,6 @@ export const es: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Enviando…',
-    preparingUpload: 'Preparando…',
-    uploadingPercent: 'Subiendo… {percent}%',
     title: 'Chat',
     typing: 'escribiendo…',
     notSentRetry: 'No enviado: toca para reintentar',
@@ -564,6 +564,9 @@ export const es: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Reproducir despacio',
     playAtNormalSpeed: 'Reproducir a velocidad normal',
+    playVoiceMessage: 'Reproducir mensaje de voz',
+    pauseVoiceMessage: 'Pausar mensaje de voz',
+    voiceMessageUnavailable: 'Este mensaje de voz no se puede reproducir en este dispositivo.',
     mediaLockedTitle: 'Todavía no',
     mediaLocked: {
       one: 'Las fotos, los vídeos y las notas de voz se desbloquean cuando la otra persona te envíe un mensaje más.',
@@ -927,6 +930,11 @@ export const es: Localized<EnMessages> = {
     deleteAccount: 'Eliminar cuenta',
     deleteAccountBody: 'Si vuelves a entrar en {days} días, se cancela.',
     deleteConfirmTitle: 'Eliminar tu cuenta',
+    deleteExplain:
+      'Tu perfil, mensajes y fotos quedan programados para eliminarse. Si vuelves a iniciar sesión en {days} días, todo regresa; después se pierde para siempre.',
+    deleteTypeHandle: 'Escribe tu usuario, {handle}, para continuar.',
+    deleteCheckEmail: 'Revisa {email}. El enlace de ese mensaje es lo que programa la eliminación.',
+    deleteNothingYet: 'Todavía no ha pasado nada con tu cuenta.',
     deleteConfirmBody:
       'Tu cuenta desaparece de inmediato. Tus datos se guardan {days} días: si vuelves a entrar durante ese tiempo, se cancela la eliminación.',
     deleted: 'Cuenta eliminada. Si vuelves a entrar en {days} días, se cancela.',
@@ -946,6 +954,8 @@ export const es: Localized<EnMessages> = {
     manageSubscription: 'Gestionar o cancelar',
     upgrade: 'Ver los planes',
     notificationsSection: 'Notificaciones',
+    pushThisDevice: 'Notificaciones en este dispositivo',
+    pushThisDeviceBody: 'Si las desactivas aquí, tus otros dispositivos las seguirán recibiendo.',
     accountSection: 'Cuenta',
   },
 

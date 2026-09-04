@@ -140,6 +140,16 @@ export const COLLECTIONS = {
    * v2 `user` row_.
    */
   v1DeletedContacts: 'v1DeletedContacts',
+  /**
+   * Live "yes, really delete my account" links, one per user.
+   *
+   * Stored rather than signed, unlike `unsubscribeToken.ts`, and the
+   * difference is the point: an unsubscribe link is deliberately eternal
+   * because it is followed months later by somebody who cannot sign in, and a
+   * link that ends an account has to expire and has to be spendable once. Only
+   * a hash is kept, so the row is useless to anyone who reads the database.
+   */
+  deletionTokens: 'deletionTokens',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

@@ -1,14 +1,7 @@
-import {
-  ACCOUNT_DELETION_GRACE_DAYS,
-  TIER_BADGES,
-  TIER_NAMES,
-  resolveNotificationPrefs,
-  tierUnlocking,
-} from '@langx/shared'
+import { TIER_BADGES, TIER_NAMES, resolveNotificationPrefs, tierUnlocking } from '@langx/shared'
 import { router } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import { api } from '../api/client'
 import {
   useEffectiveTier,
   useHasFeature,
@@ -29,7 +22,8 @@ import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../lib/location'
+import { captureLocation, reportLocationFailure } from '../lib/location'
+import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
@@ -56,11 +50,28 @@ export function useSettingsModel() {
 
   const me = useMe()
   const update = useUpdateProfile()
-  const [busy, setBusy] = useState(false)
   const iconSupported = isSupported()
   const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
     iconSupported ? currentAppIcon() : 'default',
   )
+  /**
+   * Notifications on this phone, as opposed to the account-wide switches
+   * below it — those say *what*, this says *where*.
+   *
+   * Read from device storage rather than from the profile, so it is right
+   * before any request has answered and stays right on a phone that is
+   * silenced while another one is not. Defaults to on, which is what an
+   * unreadable store also reads as.
+   */
+  const [pushOnThisDevice, setPushOnThisDevice] = useState(true)
+  useEffect(() => {
+    void pushEnabledOnThisDevice().then(setPushOnThisDevice)
+  }, [])
+
+  async function togglePushOnThisDevice(next: boolean): Promise<void> {
+    setPushOnThisDevice(next)
+    await setPushEnabledOnThisDevice(next)
+  }
 
   const profile = me.data
   const isPro = useIsPro()
@@ -153,25 +164,9 @@ export function useSettingsModel() {
     }
     const fix = await captureLocation()
     if (!fix.ok) {
-      /**
-       * A refusal is not an error to report, it is a switch somewhere else.
-       * iOS never asks twice, and Android stops asking after the second no, so
-       * an alert that says "denied" leaves someone holding a toggle that will
-       * not move and no idea why. Say where the switch is, and offer to open
-       * the page it is on.
-       */
-      if (fix.reason === 'denied') {
-        const open = await confirmAlert({
-          title: t('location.deniedTitle'),
-          message: t(
-            Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid',
-          ),
-          confirmLabel: t('location.openSettings'),
-        })
-        if (open) await Linking.openSettings()
-        return
-      }
-      void showAlert(t('location.unavailableTitle'), t(LOCATION_FAILURE_KEY[fix.reason]))
+      // Shared with Discover and the country picker; see the helper for why a
+      // refusal is answered with a route to the switch rather than an error.
+      await reportLocationFailure(fix.reason, t, 'location.unavailableTitle')
       return
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
@@ -189,34 +184,6 @@ export function useSettingsModel() {
       return
     }
     await Linking.openURL(url)
-  }
-
-  async function confirmDelete(): Promise<void> {
-    const yes = await confirmAlert({
-      title: t('settings.deleteConfirmTitle'),
-      message: t('settings.deleteConfirmBody', { days: ACCOUNT_DELETION_GRACE_DAYS }),
-      confirmLabel: t('common.delete'),
-      destructive: true,
-    })
-    if (!yes) return
-
-    setBusy(true)
-    try {
-      await api.post('/me/delete', { confirm: 'DELETE' })
-      await syncIconBadge(0)
-      await authClient.signOut()
-      router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
-      // The grace period is the one thing worth repeating here: the dialog said
-      // it before the account existed in this state, and this is the first
-      // moment it is true.
-      showToast(t('settings.deleted', { days: ACCOUNT_DELETION_GRACE_DAYS }))
-    } catch (error) {
-      // The API's message is English and written for a developer.
-      void error
-      await showAlert(t('settings.deleteFailed'), t('common.retry'))
-    } finally {
-      setBusy(false)
-    }
   }
 
   async function signOut(): Promise<void> {
@@ -255,13 +222,14 @@ export function useSettingsModel() {
     theme,
     profile,
     update,
-    busy,
     iconSupported,
     appIcon,
     appIcons: APP_ICONS,
     chooseIcon,
     isPro,
     notifications,
+    pushOnThisDevice,
+    togglePushOnThisDevice,
     emailVerified,
     canIncognito,
     tier,
@@ -278,7 +246,6 @@ export function useSettingsModel() {
     locationBusy,
     toggleLocation,
     exportData,
-    confirmDelete,
     signOut,
     replayIntro,
   }

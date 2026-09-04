@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useLocalSearchParams } from 'expo-router'
-import { useMemo, useState } from 'react'
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'
+import { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { MAX_COMMENT_LENGTH, MAX_POST_LENGTH } from '@langx/shared'
 import {
@@ -41,6 +41,13 @@ import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import {
+  advanceUpload,
+  percentOf,
+  UPLOAD_START,
+  type UploadProgress,
+} from '../../../src/lib/uploadProgress'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -90,6 +97,11 @@ export default function PostScreen() {
   const post = query.data?.pages[0]?.post
   const pronouncing = post?.kind === 'pronunciation'
   const answerQuery = usePostAnswers(id, pronouncing)
+  // Both queries behind one spinner: the answer list is part of this screen,
+  // so a pull that refreshed only half of it would be a lie about the other.
+  const pull = usePullToRefresh(() =>
+    Promise.all([query.refetch(), ...(pronouncing ? [answerQuery.refetch()] : [])]),
+  )
   const commentQuery = usePostComments(id)
 
   const correctPost = useCorrectPost()
@@ -122,6 +134,22 @@ export default function PostScreen() {
    */
   const [viewing, setViewing] = useState<{ items: Media[]; index: number } | null>(null)
   const [uploading, setUploading] = useState(false)
+  /**
+   * How far the take being sent has got, or `null`.
+   *
+   * The feed's composer shows this on the thumbnail; here there is no
+   * thumbnail, so it goes on the send button's own label — the only thing on
+   * screen while a recording is on its way.
+   */
+  const [takeProgress, setTakeProgress] = useState<UploadProgress | null>(null)
+  /** Leaving the screen stops the post's own video; see `MediaGallery` below. */
+  const [focused, setFocused] = useState(true)
+  useFocusEffect(
+    useCallback(() => {
+      setFocused(true)
+      return () => setFocused(false)
+    }, []),
+  )
 
   // One list, two row shapes. `'corrected' in item` is the discriminator the
   // renderer branches on — the two DTOs have no shared tag, and inventing one
@@ -198,12 +226,19 @@ export default function PostScreen() {
         // Uploaded on stop rather than on submit, unlike the feed's attachment
         // bar: a take has to be playable back before it is worth sending, and
         // `AudioBubble` plays a URL, not a local recording handle.
-        const media = await uploadPostMedia({ kind: 'audio', ...recording })
+        setTakeProgress(UPLOAD_START)
+        const media = await uploadPostMedia({
+          kind: 'audio',
+          ...recording,
+          onProgress: (loaded, total) =>
+            setTakeProgress((current) => advanceUpload(current ?? UPLOAD_START, loaded, total)),
+        })
         setTakes((current) => ({ ...current, [filling]: media }))
       } catch {
         showToast(t('feed.attachmentFailed'))
       } finally {
         setUploading(false)
+        setTakeProgress(null)
       }
       return
     }
@@ -305,15 +340,7 @@ export default function PostScreen() {
           data={replies}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching}
-              onRefresh={() => {
-                void query.refetch()
-                if (pronouncing) void answerQuery.refetch()
-              }}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage()
@@ -362,6 +389,15 @@ export default function PostScreen() {
                     <MediaGallery
                       items={attachmentsOf(post)}
                       onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
+                      /*
+                       * The same preview the feed draws, so a video does not
+                       * change character between the list and the post it was
+                       * tapped from. The replies below keep the thread's
+                       * controls: several clips starting at once in a list of
+                       * answers is the case autoplay is wrong for.
+                       */
+                      videoMode="preview"
+                      videoPlaying={focused}
                     />
                   </View>
                 ) : null}
@@ -619,7 +655,11 @@ export default function PostScreen() {
                 <View style={styles.composeActions}>
                   <Button
                     label={
-                      answerPost.isPending || uploading ? t('feed.sending') : t('feed.sendAnswer')
+                      takeProgress && takeProgress.phase !== 'reading'
+                        ? t('composer.uploadingPercent', { percent: percentOf(takeProgress) })
+                        : answerPost.isPending || uploading
+                          ? t('feed.sending')
+                          : t('feed.sendAnswer')
                     }
                     disabled={!takes.fast || answerPost.isPending || uploading}
                     onPress={submitAnswer}

@@ -29,6 +29,7 @@ import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { periodLabel, useLocale, useT } from '../../src/i18n'
 import { leaderboardShareText } from '../../src/lib/shareText'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 /**
  * The wallet: what you have, and what it buys.
@@ -68,6 +69,10 @@ export default function WalletScreen() {
   const update = useUpdateProfile()
   // The shop needs both to draw a gate's progress; the wallet itself does not.
   const xp = useTokens()
+  // Above the early return, where hooks have to be; all four behind one pull.
+  const pull = usePullToRefresh(() =>
+    Promise.all([me.refetch(), wallet.refetch(), xp.refetch(), activity.refetch()]),
+  )
 
   /*
    * `!me.data` rather than `isPending`, and an error branch beside it.
@@ -144,10 +149,6 @@ export default function WalletScreen() {
     })
   }
 
-  function refresh(): void {
-    void Promise.all([me.refetch(), wallet.refetch(), xp.refetch(), activity.refetch()])
-  }
-
   /*
    * Built here rather than in the section so the button exists only when the
    * sentence does: a rank of null is "not on the board", not "#0". The text is
@@ -159,7 +160,7 @@ export default function WalletScreen() {
     : undefined
 
   return (
-    <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
+    <Screen scroll {...pull}>
       <ScreenHeader title={t('wallet.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       {/*

@@ -1,9 +1,11 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
+import { audioProgress } from '../lib/audioProgress'
+import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
@@ -52,74 +54,131 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
    * next one is usually fine.
    */
   const [slow, setSlow] = useState(false)
+  /** A `play()` that threw; the status alone cannot report one. */
+  const [failed, setFailed] = useState(false)
 
-  const total = media.durationSeconds ?? status.duration ?? 0
-  const elapsed = status.currentTime ?? 0
-  const progress = total > 0 ? Math.min(1, elapsed / total) : 0
+  const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
   const tint = mine ? colors.accent : colors.text
+  // `unsupported` is a type this platform will not decode; `error` is a load
+  // that failed. Both leave nothing to press, and both used to be a button
+  // that did nothing at all.
+  const broken = failed || state === 'error' || state === 'unsupported'
+  const loading = state === 'loading'
+
+  /**
+   * Configures the audio session *before* every play, not once at mount.
+   *
+   * `_layout.tsx` already sets it at start, which covers the reported bug — a
+   * note played on a silent-switched iPhone by someone who had not recorded.
+   * This second call covers the other direction: `useVoiceRecorder` puts the
+   * session into recording mode, and a note played after that would otherwise
+   * come out of the earpiece rather than the speaker. `audioSession` memoises,
+   * so in the common case this is a no-op.
+   */
+  const toggle = async (): Promise<void> => {
+    if (status.playing) {
+      player.pause()
+      return
+    }
+    await ensurePlaybackAudioMode()
+    // Replay from the start once it has finished, rather than sitting at
+    // the end doing nothing when tapped.
+    // `seekTo` is async but `play` does not need to wait for it — the
+    // player queues the seek ahead of playback itself.
+    if (canReplay) void player.seekTo(0)
+    try {
+      player.play()
+    } catch {
+      // A throw here used to be the whole failure: nothing moved, nothing was
+      // said, and the button looked identical to one that had worked. The
+      // status the bubble already draws carries it now.
+      setFailed(true)
+    }
+  }
 
   return (
     <View style={styles.audioRow}>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t(status.playing ? 'chat.pauseVoiceMessage' : 'chat.playVoiceMessage')}
+        accessibilityState={{ disabled: broken }}
+        disabled={broken}
         hitSlop={8}
         onPress={() => {
-          if (status.playing) {
-            player.pause()
-            return
-          }
-          // Replay from the start once it has finished, rather than sitting at
-          // the end doing nothing when tapped.
-          // `seekTo` is async but `play` does not need to wait for it — the
-          // player queues the seek ahead of playback itself.
-          if (total > 0 && elapsed >= total - 0.25) void player.seekTo(0)
-          player.play()
+          void toggle()
         }}
       >
-        <Text style={[styles.playIcon, { color: colors.text }]}>{status.playing ? '❚❚' : '▶'}</Text>
+        <Text style={[styles.playIcon, { color: broken ? colors.textFaint : colors.text }]}>
+          {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
+        </Text>
       </Pressable>
 
-      <View style={styles.track}>
-        <View style={[styles.trackFill, { backgroundColor: tint, width: `${progress * 100}%` }]} />
-      </View>
+      {broken ? (
+        <Text style={[styles.unavailable, { color: colors.textFaint }]} numberOfLines={2}>
+          {t('chat.voiceMessageUnavailable')}
+        </Text>
+      ) : (
+        <>
+          <View style={styles.track}>
+            {/*
+              An unknown total draws a full-width faint bar rather than a 0%
+              one: v1's notes report no duration at all, and a bar frozen at
+              zero while the audio plays reads as a broken player.
+            */}
+            <View
+              style={[
+                styles.trackFill,
+                {
+                  backgroundColor: tint,
+                  opacity: fraction === null ? 0.35 : 1,
+                  width: `${(fraction ?? 1) * 100}%`,
+                },
+              ]}
+            />
+          </View>
 
-      <Text style={[styles.duration, { color: colors.textFaint }]}>
-        {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
-      </Text>
+          <Text style={[styles.duration, { color: colors.textFaint }]}>
+            {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
+          </Text>
+        </>
+      )}
 
       {/*
         Marked only when it is on. An always-visible "1x" beside every voice
         note in a thread is a control nobody asked for; the off state is the
         absence of one.
       */}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ selected: slow }}
-        accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
-        hitSlop={8}
-        onPress={() => {
-          const next = !slow
-          setSlow(next)
-          /*
-           * `'high'` is not decoration, and it does something different on
-           * each platform. iOS reads it as the pitch algorithm and already
-           * corrects pitch by default; Android ignores the argument entirely
-           * and preserves pitch anyway; **web only turns pitch correction on
-           * when this exact value is passed** — `AudioPlayer.web.ts` sets
-           * `preservesPitch = (quality === 'high')`, starting from `false`.
-           * Drop it and the web build, which is the one at app2, plays a growl.
-           *
-           * Applied to the live player rather than saved for the next play, so
-           * a tap part-way through a word slows that word.
-           */
-          player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
-        }}
-      >
-        <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
-          {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
-        </Text>
-      </Pressable>
+      {broken ? null : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: slow }}
+          accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
+          hitSlop={8}
+          onPress={() => {
+            const next = !slow
+            setSlow(next)
+            /*
+             * `'high'` is not decoration, and it does something different on
+             * each platform. iOS reads it as the pitch algorithm and already
+             * corrects pitch by default; Android ignores the argument entirely
+             * and preserves pitch anyway; **web only turns pitch correction on
+             * when this exact value is passed** — `AudioPlayer.web.ts` sets
+             * `preservesPitch = (quality === 'high')`, starting from `false`.
+             * Drop it and the web build, which is the one at app2, plays a growl.
+             *
+             * Applied to the live player rather than saved for the next play, so
+             * a tap part-way through a word slows that word.
+             */
+            player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
+          }}
+        >
+          <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
+            {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -184,6 +243,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
   duration: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'] },
+  // Takes the track's place rather than sitting under it: the row is one line
+  // tall in a bubble, and a note that cannot play has no progress to show.
+  unavailable: { ...font.caption, flex: 1, fontSize: 11 },
   // Same size and tabular figures as the duration beside it, so "0:07" and
   // "0.5x" sit on one line without the row shifting when either changes.
   rate: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'], fontWeight: '600' },
@@ -227,26 +289,58 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
 }))
 
 /**
- * A video in a thread, playing in place.
+ * A video, in one of two modes.
  *
- * `nativeControls` rather than our own: a scrub bar, a mute and a fullscreen
- * button are three things every platform already draws correctly, and the
- * fullscreen one is what makes a 220-point bubble enough.
- *
- * It does not autoplay, and that is deliberate. A thread of clips that all
+ * `'controls'` is the thread: `nativeControls` rather than our own — a scrub
+ * bar, a mute and a fullscreen button are three things every platform already
+ * draws correctly — and **it never autoplays**. A thread of clips that all
  * start as they scroll past is somebody's data allowance and somebody else's
- * quiet carriage. `useVideoPlayer` releases the native player when the bubble
- * unmounts, so a long thread does not accumulate them.
+ * quiet carriage, and that reasoning still holds for a conversation.
+ *
+ * `'preview'` is the feed, and it deliberately does the opposite: muted,
+ * looping, no controls, playing only while its post is on screen, with a tap
+ * opening it full screen with sound. The two surfaces differ because reading a
+ * feed and reading a conversation are different acts — a feed is scanned, and
+ * a still frame with no controls in a scanned list reads as a video that is
+ * broken. See `docs/decisions.md` → *A video is one file*.
+ *
+ * `useVideoPlayer` releases the native player when the bubble unmounts, so a
+ * long list does not accumulate them.
  *
  * `contain`, not `cover`: `ImageBubble` records why cropping a picture to a
  * guessed shape is worse than letterboxing it, and here the controls would sit
  * over the cropped part as well.
  */
-export function VideoBubble({ media }: { media: Media }) {
+export function VideoBubble({
+  media,
+  mode = 'controls',
+  playing = false,
+  onPress,
+}: {
+  media: Media
+  mode?: 'controls' | 'preview'
+  /** `'preview'` only: whether this one is on screen right now. */
+  playing?: boolean
+  onPress?: () => void
+}) {
   const styles = useStyles()
+  const t = useT()
+  const preview = mode === 'preview'
   const player = useVideoPlayer(media.url, (instance) => {
-    instance.loop = false
+    instance.loop = preview
+    instance.muted = preview
   })
+
+  /*
+   * Driven from the outside rather than from a viewability check in here: one
+   * post can hold several videos, and they have to start and stop together
+   * with the post rather than each deciding for itself.
+   */
+  useEffect(() => {
+    if (!preview) return
+    if (playing) player.play()
+    else player.pause()
+  }, [playing, player, preview])
 
   const { width, height } = media
   // 16:9 when the message carries no dimensions — every phone camera is
@@ -254,15 +348,32 @@ export function VideoBubble({ media }: { media: Media }) {
   // wrong guess letterboxes rather than crops.
   const ratio = width && height ? width / height : 16 / 9
 
+  const view = (
+    <VideoView
+      player={player}
+      style={styles.videoFill}
+      contentFit="contain"
+      nativeControls={!preview}
+      fullscreenOptions={{ enable: !preview }}
+    />
+  )
+
   return (
     <View style={[styles.video, { aspectRatio: ratio }]}>
-      <VideoView
-        player={player}
-        style={styles.videoFill}
-        contentFit="contain"
-        nativeControls
-        fullscreenOptions={{ enable: true }}
-      />
+      {preview && onPress ? (
+        // Only in preview mode. With native controls on, a `Pressable` around
+        // them competes with the scrub bar for the same touch.
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('media.playVideo')}
+          onPress={onPress}
+          style={styles.videoFill}
+        >
+          {view}
+        </Pressable>
+      ) : (
+        view
+      )}
     </View>
   )
 }
@@ -294,10 +405,15 @@ export function MediaGallery({
   items,
   mine,
   onOpen,
+  videoMode = 'controls',
+  videoPlaying = false,
 }: {
   items: readonly Media[]
   mine?: boolean
   onOpen?: (index: number) => void
+  /** The feed asks for `'preview'`; chat keeps the thread's controls. */
+  videoMode?: 'controls' | 'preview'
+  videoPlaying?: boolean
 }) {
   const styles = useStyles()
   const t = useT()
@@ -306,7 +422,22 @@ export function MediaGallery({
   if (!first) return null
 
   if (items.length === 1) {
-    if (isVideoContentType(first.contentType)) return <VideoBubble media={first} />
+    if (isVideoContentType(first.contentType)) {
+      /*
+       * The `onPress` the single-image branch below has always had, and the
+       * single-video branch never did: `VideoBubble` had no such prop at all,
+       * so a one-video post — the ordinary case — could not be opened full
+       * screen anywhere, while a video in a *grid* could.
+       */
+      return (
+        <VideoBubble
+          media={first}
+          mode={videoMode}
+          playing={videoPlaying}
+          {...(onOpen ? { onPress: () => onOpen(0) } : {})}
+        />
+      )
+    }
     if (isImageContentType(first.contentType)) {
       return <ImageBubble media={first} {...(onOpen ? { onPress: () => onOpen(0) } : {})} />
     }

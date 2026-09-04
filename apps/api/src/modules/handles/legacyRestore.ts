@@ -17,7 +17,12 @@ import type { Profile } from '../profiles/profiles'
 import { resolveHandleClaim } from './handleReservations'
 import { hashLegacyEmail } from './legacyEmailHash'
 import { importLegacyConversations } from './legacyConversations'
-import { findLegacyProfile, markRestored, type LegacyProfile } from './legacyProfiles'
+import {
+  applyLegacyMedia,
+  findLegacyProfile,
+  markRestored,
+  type LegacyProfile,
+} from './legacyProfiles'
 
 export type RestoreOutcome =
   /** No v1 account behind this email. The overwhelmingly common case. */
@@ -130,10 +135,6 @@ export async function restoreByHash(
     const update: Record<string, unknown> = { updatedAt: now }
     if (legacy.bio && !existing.bio) update.bio = legacy.bio
     if (legacy.countryCode && !existing.country) update.country = legacy.countryCode
-    if (legacy.avatarUrl && !existing.avatarUrl) update.avatarUrl = legacy.avatarUrl
-    if (legacy.photos.length > 0 && (existing.photos ?? []).length === 0) {
-      update.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
-    }
     /**
      * Same rule as a fresh restore, but it must not *cost* them anything they
      * already have: someone who onboarded first may have started a streak here
@@ -148,6 +149,10 @@ export async function restoreByHash(
       update['streak.lastQualifiedDay'] = streakDay(existing, now)
     }
     await profiles.updateOne({ _id: userId }, { $set: update })
+    // The pictures go through the shared rule rather than two more `if`s here:
+    // the media backfill writes the same fields under the same "only where
+    // they have none" condition, and two copies of that drift.
+    await applyLegacyMedia(db, userId, legacy, now)
   }
 
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)

@@ -3,6 +3,8 @@ import type { EmailMessage, EmailSender } from '../email/sender'
 
 /** Captures every email instead of sending it, so a test can pull the token/url out. */
 export class CapturingEmailSender implements EmailSender {
+  /** A test sender stands in for a real one, so the flows that check are exercised. */
+  readonly deliverable = true
   readonly messages: EmailMessage[] = []
 
   send(message: EmailMessage): Promise<void> {

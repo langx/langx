@@ -22,6 +22,21 @@ export const es: Localized<ServerMessages> = {
     ignore: 'Si no has solicitado esto, puedes ignorar este correo.',
     orPaste: 'O pega este enlace: {url}',
 
+    deleteSubject: 'Confirma que quieres eliminar tu cuenta de LangX',
+    deletePreheader: 'Un paso más para eliminar tu cuenta de LangX',
+    deleteBody:
+      'Pediste eliminar tu cuenta de LangX. Confírmalo abajo y quedará programada para eliminarse: tienes 30 días para cambiar de opinión volviendo a iniciar sesión.',
+    deleteButton: 'Eliminar mi cuenta',
+    deleteText: 'Confirma la eliminación de tu cuenta de LangX: {url}',
+    deleteInvalid: 'Este enlace ha caducado o ya se ha usado.',
+    deleteConfirmTitle: 'Eliminar tu cuenta de LangX',
+    deleteConfirmBody:
+      'Esto programa la eliminación de tu cuenta. Si vuelves a iniciar sesión en 30 días, se cancela.',
+    deleteConfirmButton: 'Sí, eliminar mi cuenta',
+    deleteDoneTitle: 'Tu cuenta está programada para eliminarse',
+    deleteDoneBody: 'Vuelve a iniciar sesión en {days} días y todo regresa.',
+    deleteDonePurge: 'Los datos se eliminan el {date}.',
+
     verifySubject: 'Verifica tu correo de LangX',
     verifyPreheader: 'Verifica tu correo para terminar de configurar LangX',
     verifyBody: 'Confirma que esta es tu dirección de correo para terminar de crear tu cuenta.',

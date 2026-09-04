@@ -39,6 +39,8 @@ export const fr: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Retirer la pièce jointe',
+    preparingUpload: 'Préparation…',
+    uploadingPercent: 'Envoi… {percent} %',
     attachMedia: 'Joindre des photos ou des vidéos',
   },
 
@@ -546,8 +548,6 @@ export const fr: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Envoi…',
-    preparingUpload: 'Préparation…',
-    uploadingPercent: 'Envoi… {percent} %',
     title: 'Discussion',
     typing: 'écrit…',
     notSentRetry: 'Non envoyé — touche pour réessayer',
@@ -567,6 +567,9 @@ export const fr: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Lire lentement',
     playAtNormalSpeed: 'Lire à vitesse normale',
+    playVoiceMessage: 'Lire le message vocal',
+    pauseVoiceMessage: 'Mettre le message vocal en pause',
+    voiceMessageUnavailable: 'Ce message vocal ne peut pas être lu sur cet appareil.',
     mediaLockedTitle: 'Pas encore',
     mediaLocked: {
       one: 'Les photos, vidéos et notes vocales se débloquent après un message de plus de l’autre personne.',
@@ -932,6 +935,12 @@ export const fr: Localized<EnMessages> = {
     deleteAccount: 'Supprimer le compte',
     deleteAccountBody: 'Te reconnecter sous {days} jours annule la suppression.',
     deleteConfirmTitle: 'Supprimer ton compte',
+    deleteExplain:
+      'Votre profil, vos messages et vos photos seront programmés pour suppression. Reconnectez-vous sous {days} jours et tout revient ; ensuite, c’est définitif.',
+    deleteTypeHandle: 'Saisissez votre identifiant, {handle}, pour continuer.',
+    deleteCheckEmail:
+      'Consultez {email}. C’est le lien de ce message qui programme la suppression.',
+    deleteNothingYet: 'Rien n’est encore arrivé à votre compte.',
     deleteConfirmBody:
       'Ton compte disparaît immédiatement. Tes données sont conservées {days} jours — te reconnecter pendant ce délai annule la suppression.',
     deleted: 'Compte supprimé. Te reconnecter sous {days} jours annule la suppression.',
@@ -951,6 +960,8 @@ export const fr: Localized<EnMessages> = {
     manageSubscription: 'Gérer ou résilier',
     upgrade: 'Voir les formules',
     notificationsSection: 'Notifications',
+    pushThisDevice: 'Notifications sur cet appareil',
+    pushThisDeviceBody: 'Désactivez-les ici et vos autres appareils continueront de les recevoir.',
     accountSection: 'Compte',
   },
 

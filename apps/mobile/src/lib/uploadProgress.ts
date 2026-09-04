@@ -50,3 +50,28 @@ export function uploadFailed(current: UploadProgress): UploadProgress {
 export function percentOf(progress: UploadProgress): number {
   return Math.floor(progress.fraction * 100)
 }
+
+/**
+ * Which of a composer's attachments is in flight, and how far along.
+ *
+ * The feed uploads its files one at a time on submit — a batch percentage
+ * would need a denominator nobody has, because each blob's size is only known
+ * once it has been read. So the row reports per file and fills up left to
+ * right, which is true the whole way.
+ */
+export interface ActiveUpload {
+  index: number
+  progress: UploadProgress
+}
+
+/**
+ * What to draw over one thumbnail: `null` leaves the picture alone, anything
+ * else is a scrim. Files already sent read as finished rather than reverting
+ * to untouched, so the row itself shows the batch's progress.
+ */
+export function thumbProgress(index: number, active: ActiveUpload | null): UploadProgress | null {
+  if (!active) return null
+  if (index < active.index) return { phase: 'sending', fraction: 1 }
+  if (index > active.index) return null
+  return active.progress
+}

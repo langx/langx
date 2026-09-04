@@ -927,7 +927,7 @@ export default function ChatScreen() {
                 <>
                   {/* Above the composer, where a hint is read rather than
                     scrolled past. */}
-                  <Tip slot="chat" />
+                  <Tip slot="chat" spaced={false} />
                   {pending.length > 0 ? (
                     <View style={styles.unsentBlock}>
                       {pending.map((row) => (

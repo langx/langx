@@ -22,6 +22,20 @@ export const ptBR: Localized<ServerMessages> = {
     ignore: 'Se você não pediu isso, pode ignorar este e-mail.',
     orPaste: 'Ou cole este link: {url}',
 
+    deleteSubject: 'Confirme que você quer excluir sua conta LangX',
+    deletePreheader: 'Mais um passo para excluir sua conta LangX',
+    deleteBody:
+      'Você pediu para excluir sua conta LangX. Confirme abaixo e ela entrará na fila de exclusão — você tem 30 dias para mudar de ideia, basta entrar novamente.',
+    deleteButton: 'Excluir minha conta',
+    deleteText: 'Confirme a exclusão da sua conta LangX: {url}',
+    deleteInvalid: 'Este link expirou ou já foi usado.',
+    deleteConfirmTitle: 'Excluir sua conta LangX',
+    deleteConfirmBody: 'Isso agenda a exclusão da sua conta. Entrar novamente em 30 dias cancela.',
+    deleteConfirmButton: 'Sim, excluir minha conta',
+    deleteDoneTitle: 'Sua conta está agendada para exclusão',
+    deleteDoneBody: 'Entre de novo em até {days} dias e tudo volta.',
+    deleteDonePurge: 'Os dados são removidos em {date}.',
+
     verifySubject: 'Confirme seu e-mail no LangX',
     verifyPreheader: 'Confirme seu e-mail para terminar de configurar o LangX',
     verifyBody: 'Confirme que este é o seu e-mail para terminar de criar sua conta.',

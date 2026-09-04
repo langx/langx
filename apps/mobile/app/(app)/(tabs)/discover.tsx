@@ -37,13 +37,18 @@ import {
   scopeLabel,
   type LanguageScope,
 } from '../../../src/components/LanguageScopeSheet'
-import { showAlert } from '../../../src/lib/alert'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../../../src/lib/location'
+import {
+  captureLocation,
+  locationPermissionState,
+  reportLocationFailure,
+} from '../../../src/lib/location'
+import { shouldRefreshLocation } from '../../../src/lib/locationRefresh'
 import { openPaywall } from '../../../src/lib/paywall'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -139,7 +144,28 @@ export default function DiscoverScreen() {
       openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }
-    if (!sharingLocation && !(await enableSharing())) return
+    /*
+     * The **OS**, not only the server's flag, and that is the whole of this
+     * fix. A profile keeps its `location` forever once shared, so
+     * `sharingLocation` stayed true after the permission was revoked in
+     * Settings — and the short-circuit then skipped the ask entirely: no
+     * dialog, no error, a `$geoNear` around a point nobody could update and an
+     * empty list with nothing on screen to explain it.
+     */
+    const permission = await locationPermissionState()
+    if (!permission.granted || !sharingLocation) {
+      if (!(await enableSharing())) return
+    } else if (
+      shouldRefreshLocation({
+        hasLocation: true,
+        locationUpdatedAt: me.data?.locationUpdatedAt,
+      })
+    ) {
+      // Sorting by distance around where somebody used to live is worse than
+      // spending a second on a fresh fix. Silent: they have already granted
+      // it, so nothing can pop up here.
+      await enableSharing()
+    }
     setSort('nearby')
   }
 
@@ -147,7 +173,9 @@ export default function DiscoverScreen() {
   async function enableSharing(): Promise<boolean> {
     const fix = await captureLocation()
     if (!fix.ok) {
-      void showAlert(t('location.needed'), t(LOCATION_FAILURE_KEY[fix.reason]))
+      // `location.needed` says what it was for; the helper adds the route to
+      // the switch, which this screen used to be the only one not to offer.
+      await reportLocationFailure(fix.reason, t, 'location.needed')
       return false
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
@@ -169,6 +197,7 @@ export default function DiscoverScreen() {
     // keyed on and refetch every list each time the radius changed.
     ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
   })
+  const pull = usePullToRefresh(() => query.refetch())
 
   // Deduped for the reason `dedupeById` gives: presence moves
   // `stats.lastActiveAt` about once a minute now, so the `active` keyset can
@@ -263,21 +292,24 @@ export default function DiscoverScreen() {
             />
           </View>
         )}
-        <View style={styles.chips}>
-          {/* Only while it applies. A radius control above a list that is not
-              sorted by distance would be a control with nothing to control. */}
-          {sort === 'nearby'
-            ? NEARBY_RADIUS_OPTIONS_KM.map((km) => (
-                <Chip
-                  key={km}
-                  label={t('discover.distanceKm', { km })}
-                  tone="accent"
-                  selected={radiusKm === km}
-                  onPress={() => setRadiusKm(km)}
-                />
-              ))
-            : null}
-        </View>
+        {/* Only while it applies. A radius control above a list that is not
+            sorted by distance would be a control with nothing to control —
+            and the row is dropped rather than emptied, because an empty one
+            still spends its `marginTop` and that stray 14px was the gap above
+            this screen's tip. */}
+        {sort === 'nearby' ? (
+          <View style={styles.chips}>
+            {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
+              <Chip
+                key={km}
+                label={t('discover.distanceKm', { km })}
+                tone="accent"
+                selected={radiusKm === km}
+                onPress={() => setRadiusKm(km)}
+              />
+            ))}
+          </View>
+        ) : null}
       </View>
 
       {/* Above the list rather than inside it: a hint that scrolls away is
@@ -313,12 +345,7 @@ export default function DiscoverScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching}
-              onRefresh={() => void query.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
@@ -400,7 +427,8 @@ export default function DiscoverScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
-  header: { paddingTop: spacing.md },
+  // The bottom half is the gap above the tip; `Tip` owns the one below it.
+  header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
   pairButton: { marginStart: 'auto' },

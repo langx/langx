@@ -17,6 +17,9 @@ describe('objectExtension', () => {
   it('maps the ones whose subtype is a name rather than an extension', () => {
     expect(objectExtension('image/jpeg')).toBe('jpg')
     expect(objectExtension('audio/mpeg')).toBe('mp3')
+    // A voice note keeps the key it has always had, even though the app now
+    // signs it under AAC-in-MP4's registered name: `.mp4` reads as a video.
+    expect(objectExtension('audio/mp4')).toBe('m4a')
   })
 
   it('ignores parameters after the type', () => {

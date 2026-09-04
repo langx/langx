@@ -35,6 +35,7 @@ import { openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useT } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 export default function MeScreen() {
   const { colors } = useTheme()
@@ -57,6 +58,14 @@ export default function MeScreen() {
   // this below it renders nothing at all.
   const isPro = useIsPro()
   const tier = useEffectiveTier()
+  /**
+   * Everything on this screen comes from a different query, so the pull is not
+   * done until all four are — and it is above the early return, because a hook
+   * cannot be called conditionally.
+   */
+  const pull = usePullToRefresh(() =>
+    Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), quota.refetch()]),
+  )
 
   /*
    * `!me.data` rather than `isPending`, and an error branch beside it.
@@ -99,13 +108,8 @@ export default function MeScreen() {
     .filter(Boolean)
     .join(' · ')
 
-  /** Everything on this screen comes from a different query. */
-  function refresh(): void {
-    void Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), quota.refetch()])
-  }
-
   return (
-    <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
+    <Screen scroll {...pull}>
       <View style={styles.hero}>
         <Avatar
           url={profile.avatarUrl}

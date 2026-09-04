@@ -10,6 +10,16 @@ import type { TipId, TipSlot } from '../lib/tips'
 
 interface TipProps {
   slot: TipSlot
+  /**
+   * Whether the tip owns the gap below itself. True everywhere it sits in a
+   * plain column, which is every screen but one.
+   *
+   * False in `chat/[id].tsx`, where it is part of an **inverted** list's
+   * header: the list's own `gap` already spaces that cell, and a margin inside
+   * a flipped cell lands visually *above* the tip rather than below it, so it
+   * would double the gap at the top and leave none at the bottom.
+   */
+  spaced?: boolean
 }
 
 /**
@@ -24,7 +34,7 @@ interface TipProps {
  * Renders nothing once dismissed, and nothing at all when tips are switched
  * off. Both are the same check, so a screen never has to ask twice.
  */
-export function Tip({ slot }: TipProps) {
+export function Tip({ slot, spaced = true }: TipProps) {
   const t = useT()
   const tips = useTips()
   const styles = useStyles()
@@ -61,7 +71,7 @@ export function Tip({ slot }: TipProps) {
   const body = `tips.${id}` as MessageKey
 
   return (
-    <View style={[styles.root, { backgroundColor: bg }]}>
+    <View style={[styles.root, spaced && styles.spaced, { backgroundColor: bg }]}>
       <Feather name="info" size={16} color={fg} style={styles.icon} />
       <Text style={[styles.body, { color: fg }]}>{t(body)}</Text>
       <Pressable
@@ -88,6 +98,21 @@ const useStyles = makeStyles(({ font, radius, spacing }) => ({
     gap: spacing.sm,
     padding: spacing.md,
   },
+  /**
+   * The gap below a tip belongs to the tip, not to the list under it.
+   *
+   * It used to belong to whatever happened to sit above: chats spelled it as
+   * `filters.paddingBottom` *and* `list.paddingTop`, feed had neither, and
+   * discover got 14 by accident from an empty chip row's `marginTop`. Three
+   * screens spaced three different ways, and the feed's tip ended up flush
+   * against the segmented control above it.
+   *
+   * Below rather than above, because a dismissed tip renders `null` and a
+   * component that renders nothing cannot leave a margin behind — so the space
+   * *above* has to stay with the header, which keeps the gap correct once the
+   * tip is gone.
+   */
+  spaced: { marginBottom: spacing.sm },
   // Nudged to sit on the first line of a wrapping sentence.
   icon: { marginTop: 1 },
   body: { ...font.caption, flex: 1, fontSize: 13, lineHeight: 19 },

@@ -1,10 +1,10 @@
 import { countryFlag, getCountry } from '@langx/shared'
 import * as Location from 'expo-location'
-import { Linking, Platform, Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
 import { useSetCountryFromLocation } from '../api/queries'
 import { Button } from './ui/Button'
-import { confirmAlert, showAlert } from '../lib/alert'
-import { captureLocation, LOCATION_FAILURE_KEY } from '../lib/location'
+import { showAlert } from '../lib/alert'
+import { captureLocation, reportLocationFailure } from '../lib/location'
 import { makeStyles } from '../lib/theme'
 import { showToast } from '../lib/toast'
 import { useDisplayNames, useT } from '../i18n'
@@ -32,20 +32,7 @@ export function CountryFromLocation({ country }: { country: string | undefined }
   async function useMyLocation(): Promise<void> {
     const fix = await captureLocation()
     if (!fix.ok) {
-      if (fix.reason === 'denied') {
-        // The OS will not ask twice. Explaining where the switch is beats an
-        // error that says "denied" and leaves someone with nothing to do.
-        const open = await confirmAlert({
-          title: t('location.deniedTitle'),
-          message: t(
-            Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid',
-          ),
-          confirmLabel: t('location.openSettings'),
-        })
-        if (open) await Linking.openSettings()
-        return
-      }
-      await showAlert(t('location.failedTitle'), t(LOCATION_FAILURE_KEY[fix.reason]))
+      await reportLocationFailure(fix.reason, t, 'location.failedTitle')
       return
     }
 

@@ -11,6 +11,7 @@ import { dedupeById } from '../../src/lib/dedupeById'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 type Tab = 'followers' | 'following'
 
@@ -29,6 +30,7 @@ export default function FollowsScreen() {
 
   const here = `/(app)/follows?userId=${userId}&tab=${which}`
   const follows = useFollows(userId, which)
+  const pull = usePullToRefresh(() => follows.refetch())
   const items = dedupeById(follows.data?.pages.flatMap((page) => page.items) ?? [])
 
   const followersLabel = t('profile.followersTitle')
@@ -58,12 +60,7 @@ export default function FollowsScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={follows.isRefetching}
-              onRefresh={() => void follows.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (follows.hasNextPage && !follows.isFetchingNextPage) void follows.fetchNextPage()

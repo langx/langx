@@ -13,6 +13,12 @@ const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
   'image/jpeg': 'jpg',
   'video/quicktime': 'mov',
   'audio/mpeg': 'mp3',
+  // AAC in an MP4 container. `.mp4` would be read as a video by every player
+  // and every "save as" dialog; `.m4a` is what that content has always been
+  // called. The app now signs voice notes as `audio/mp4` — the registered
+  // name — rather than the invented `audio/m4a`, and this keeps the key the
+  // same as it has always been.
+  'audio/mp4': 'm4a',
 }
 
 export function objectExtension(contentType: string): string {

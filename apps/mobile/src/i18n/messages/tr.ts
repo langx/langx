@@ -53,6 +53,8 @@ export const tr: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Eki kaldır',
+    preparingUpload: 'Hazırlanıyor…',
+    uploadingPercent: 'Yükleniyor… %{percent}',
     attachMedia: 'Fotoğraf veya video ekle',
   },
 
@@ -545,8 +547,6 @@ export const tr: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Gönderiliyor…',
-    preparingUpload: 'Hazırlanıyor…',
-    uploadingPercent: 'Yükleniyor… %{percent}',
     title: 'Sohbet',
     typing: 'yazıyor…',
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',
@@ -566,6 +566,9 @@ export const tr: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Yavaş çal',
     playAtNormalSpeed: 'Normal hızda çal',
+    playVoiceMessage: 'Sesli mesajı çal',
+    pauseVoiceMessage: 'Sesli mesajı duraklat',
+    voiceMessageUnavailable: 'Bu sesli mesaj bu cihazda çalınamıyor.',
     mediaLockedTitle: 'Henüz değil',
     mediaLocked: {
       one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',
@@ -932,6 +935,11 @@ export const tr: Localized<EnMessages> = {
     deleteAccount: 'Hesabı sil',
     deleteAccountBody: '{days} gün içinde tekrar giriş yaparsan iptal olur.',
     deleteConfirmTitle: 'Hesabını sil',
+    deleteExplain:
+      'Profilin, mesajların ve fotoğrafların silinmek üzere sıraya alınır. {days} gün içinde tekrar giriş yaparsan her şey geri gelir; sonrasında kalıcı olarak gider.',
+    deleteTypeHandle: 'Devam etmek için kullanıcı adını yaz: {handle}',
+    deleteCheckEmail: '{email} adresine bak. Silmeyi başlatan şey o mesajdaki bağlantı.',
+    deleteNothingYet: 'Hesabına henüz bir şey olmadı.',
     deleteConfirmBody:
       'Hesabın anında kaybolur. Verilerin {days} gün saklanır — bu süre içinde tekrar giriş yaparsan silme iptal olur.',
     deleted: 'Hesap silindi. {days} gün içinde tekrar giriş yaparsan iptal olur.',
@@ -951,6 +959,8 @@ export const tr: Localized<EnMessages> = {
     manageSubscription: 'Yönet veya iptal et',
     upgrade: 'Planlara bak',
     notificationsSection: 'Bildirimler',
+    pushThisDevice: 'Bu cihazda bildirimler',
+    pushThisDeviceBody: 'Burada kapatırsan diğer cihazlarına gelmeye devam eder.',
     accountSection: 'Hesap',
   },
 

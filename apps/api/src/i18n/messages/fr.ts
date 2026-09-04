@@ -22,6 +22,21 @@ export const fr: Localized<ServerMessages> = {
     ignore: 'Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.',
     orPaste: 'Ou collez ce lien : {url}',
 
+    deleteSubject: 'Confirmez la suppression de votre compte LangX',
+    deletePreheader: 'Une dernière étape pour supprimer votre compte LangX',
+    deleteBody:
+      'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez 30 jours pour changer d’avis en vous reconnectant.',
+    deleteButton: 'Supprimer mon compte',
+    deleteText: 'Confirmez la suppression de votre compte LangX : {url}',
+    deleteInvalid: 'Ce lien a expiré ou a déjà été utilisé.',
+    deleteConfirmTitle: 'Supprimer votre compte LangX',
+    deleteConfirmBody:
+      'Votre compte sera programmé pour suppression. Vous reconnecter sous 30 jours l’annule.',
+    deleteConfirmButton: 'Oui, supprimer mon compte',
+    deleteDoneTitle: 'Votre compte est programmé pour suppression',
+    deleteDoneBody: 'Reconnectez-vous sous {days} jours et tout revient.',
+    deleteDonePurge: 'Les données sont supprimées le {date}.',
+
     verifySubject: 'Vérifiez votre e-mail LangX',
     verifyPreheader: 'Vérifiez votre e-mail pour terminer la configuration de LangX',
     verifyBody:

@@ -340,12 +340,43 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.devices]: [
     { key: { pushToken: 1 }, name: 'push_token_unique', unique: true },
     { key: { userId: 1 }, name: 'user' },
+    {
+      /**
+       * One row per installation, which is what lets a phone be silenced while
+       * the tablet keeps receiving — and what stops a rotated Expo token from
+       * leaving an orphan row behind.
+       *
+       * `partialFilterExpression`, **not** `sparse`, for the reason spelled out
+       * on `messages.sender_client_id_unique` above: a compound sparse index is
+       * only sparse when *every* indexed field is missing, and `userId` is
+       * always there — so a sparse version would index every pre-`deviceId` row
+       * with a null id and then allow exactly one device per account. Every row
+       * written before this field existed is outside the filter and stays
+       * exactly as it is.
+       */
+      key: { userId: 1, deviceId: 1 },
+      name: 'user_device_unique',
+      unique: true,
+      partialFilterExpression: { deviceId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.profileViews]: [
     { key: { viewerId: 1, viewedId: 1 }, name: 'viewer_viewed_unique', unique: true },
     { key: { viewedId: 1, lastViewedAt: -1 }, name: 'viewed_recent' },
     { key: { lastViewedAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
+  ],
+
+  [COLLECTIONS.deletionTokens]: [
+    // The lookup, and the "one live link per user" rule in one index: minting
+    // a second replaces the first rather than leaving both spendable.
+    { key: { tokenHash: 1 }, name: 'token_hash_unique', unique: true },
+    { key: { userId: 1 }, name: 'user_unique', unique: true },
+    // Mongo removes the row when `expiresAt` passes, so an unspent link stops
+    // existing without anything having to sweep for it. `verifyDeletionToken`
+    // still checks the date itself — a TTL monitor runs about once a minute,
+    // and "about" is not a security property.
+    { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 },
   ],
 
   [COLLECTIONS.translationCache]: [

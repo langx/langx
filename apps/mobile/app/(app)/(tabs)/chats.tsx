@@ -36,6 +36,7 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { relativeTimeCompact } from '../../../src/lib/format'
 import { useLocale, useT } from '../../../src/i18n'
 import type { MessageKey } from '../../../src/i18n/runtime'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 
 /** v3 draws chat avatars at 52, one step up from the 48 default. */
 const AVATAR_SIZE = 52
@@ -60,6 +61,7 @@ export default function ChatsScreen() {
   // competing with a list of unrelated conversations underneath them.
   const [searching, setSearching] = useState(false)
   const conversations = useConversations(filter)
+  const pull = usePullToRefresh(() => conversations.refetch())
   const flags = useConversationFlags()
   const removeConversation = useDeleteConversation()
   /** One row at a time: two open drawers is two sets of buttons and no way to tell them apart. */
@@ -178,12 +180,7 @@ export default function ChatsScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={conversations.isRefetching}
-              onRefresh={() => void conversations.refetch()}
-            />
-          }
+          refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (conversations.hasNextPage && !conversations.isFetchingNextPage) {
@@ -378,7 +375,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     gap: spacing.md,
   },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34, paddingTop: spacing.md },
-  list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
+  list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   row: {
     alignItems: 'center',

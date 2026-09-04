@@ -15,7 +15,7 @@ import { loadEnv } from './env'
 describe('Faz 1 — OAuth providers activate only when fully configured', () => {
   let mongod: MongoMemoryServer
   let handle: DbHandle
-  const noopEmailSender: EmailSender = { send: () => Promise.resolve() }
+  const noopEmailSender: EmailSender = { deliverable: true, send: () => Promise.resolve() }
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create()

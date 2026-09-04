@@ -123,6 +123,31 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
 }
 
 /**
+ * The confirmation for a deletion somebody asked for in the app.
+ *
+ * The link starts the existing 30-day grace period rather than wiping
+ * anything: `DeletionBanner`, "Keep it" and the purge scheduler all still
+ * apply, and the promise in `docs/legal/promise-change.md` stays true. What
+ * the second step buys is that ending an account now needs the mailbox as well
+ * as the session — a borrowed unlocked phone cannot do it, and neither can a
+ * mis-tap.
+ */
+export function deleteAccountEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.deleteSubject'),
+    html: wrap(
+      locale,
+      t('email.deletePreheader'),
+      `<p>${t('email.deleteBody')}</p>
+       <p>${button(url, t('email.deleteButton'))}</p>
+       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.deleteText', { url }),
+  }
+}
+
+/**
  * What a sign-up for an address that already has an account gets instead of
  * an error. Better Auth answers such a sign-up exactly as it answers a new one
  * — so the form cannot be used to learn which addresses are registered — and

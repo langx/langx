@@ -39,6 +39,8 @@ export const ptBR: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Remover anexo',
+    preparingUpload: 'Preparando…',
+    uploadingPercent: 'Enviando… {percent}%',
     attachMedia: 'Anexar fotos ou vídeos',
   },
 
@@ -536,8 +538,6 @@ export const ptBR: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Enviando…',
-    preparingUpload: 'Preparando…',
-    uploadingPercent: 'Enviando… {percent}%',
     title: 'Conversa',
     typing: 'digitando…',
     notSentRetry: 'Não enviado — toque para tentar de novo',
@@ -557,6 +557,9 @@ export const ptBR: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Tocar devagar',
     playAtNormalSpeed: 'Tocar em velocidade normal',
+    playVoiceMessage: 'Tocar mensagem de voz',
+    pauseVoiceMessage: 'Pausar mensagem de voz',
+    voiceMessageUnavailable: 'Esta mensagem de voz não toca neste dispositivo.',
     mediaLockedTitle: 'Ainda não',
     mediaLocked: {
       one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
@@ -921,6 +924,11 @@ export const ptBR: Localized<EnMessages> = {
     deleteAccount: 'Excluir conta',
     deleteAccountBody: 'Entrar de novo em até {days} dias cancela.',
     deleteConfirmTitle: 'Excluir sua conta',
+    deleteExplain:
+      'Seu perfil, mensagens e fotos entram na fila de exclusão. Entre novamente em {days} dias e tudo volta; depois disso, some de vez.',
+    deleteTypeHandle: 'Digite seu usuário, {handle}, para continuar.',
+    deleteCheckEmail: 'Confira {email}. O link dessa mensagem é o que agenda a exclusão.',
+    deleteNothingYet: 'Nada aconteceu com sua conta ainda.',
     deleteConfirmBody:
       'Sua conta some na hora. Seus dados ficam guardados por {days} dias — entrar de novo nesse período cancela a exclusão.',
     deleted: 'Conta excluída. Entrar de novo em até {days} dias cancela.',
@@ -940,6 +948,8 @@ export const ptBR: Localized<EnMessages> = {
     manageSubscription: 'Gerenciar ou cancelar',
     upgrade: 'Ver os planos',
     notificationsSection: 'Notificações',
+    pushThisDevice: 'Notificações neste dispositivo',
+    pushThisDeviceBody: 'Desative aqui e seus outros dispositivos continuam recebendo.',
     accountSection: 'Conta',
   },
 

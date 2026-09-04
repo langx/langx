@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -100,5 +101,55 @@ describe('restoring a v1 record onto a profile that already exists', () => {
     await restoreByHash(handle.db, 'user-filled-form', hash)
 
     expect(await profile('user-filled-form')).toMatchObject({ bio: 'new text', country: 'TR' })
+  })
+
+  /**
+   * The pictures, which had no coverage at all — and which are the half the
+   * media backfill shares through `applyLegacyMedia`. Two rules: fill a gap,
+   * never overwrite, and never seat anyone above the gallery limit.
+   */
+  it('gives an empty gallery the v1 one', async () => {
+    const hash = await stage({
+      photos: [{ url: 'https://m/1.jpg' }, { url: 'https://m/2.jpg' }],
+    })
+    await onboarded('user-no-gallery')
+
+    await restoreByHash(handle.db, 'user-no-gallery', hash)
+
+    const restored = await profile('user-no-gallery')
+    expect(restored?.photos?.map((photo) => photo.url)).toEqual([
+      'https://m/1.jpg',
+      'https://m/2.jpg',
+    ])
+  })
+
+  it('keeps the avatar and the gallery they chose themselves', async () => {
+    const hash = await stage({
+      avatarUrl: 'https://m/old.jpg',
+      photos: [{ url: 'https://m/old-1.jpg' }],
+    })
+    await onboarded('user-own-pictures', {
+      avatarUrl: 'https://m/mine.jpg',
+      photos: [{ url: 'https://m/mine-1.jpg', createdAt: new Date() }],
+    })
+
+    await restoreByHash(handle.db, 'user-own-pictures', hash)
+
+    const restored = await profile('user-own-pictures')
+    expect(restored?.avatarUrl).toBe('https://m/mine.jpg')
+    expect(restored?.photos?.map((photo) => photo.url)).toEqual(['https://m/mine-1.jpg'])
+  })
+
+  it('truncates a v1 gallery longer than the plan allows', async () => {
+    const over = PLAN_LIMITS.free.maxPhotos + 3
+    const hash = await stage({
+      photos: Array.from({ length: over }, (_, i) => ({ url: `https://m/p${i}.jpg` })),
+    })
+    await onboarded('user-long-gallery')
+
+    await restoreByHash(handle.db, 'user-long-gallery', hash)
+
+    const restored = await profile('user-long-gallery')
+    expect(restored?.photos).toHaveLength(PLAN_LIMITS.free.maxPhotos)
   })
 })

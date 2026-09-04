@@ -49,6 +49,8 @@ export const ru: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Убрать вложение',
+    preparingUpload: 'Подготовка…',
+    uploadingPercent: 'Загрузка… {percent}%',
     attachMedia: 'Прикрепить фото или видео',
   },
 
@@ -614,8 +616,6 @@ export const ru: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Отправка…',
-    preparingUpload: 'Подготовка…',
-    uploadingPercent: 'Загрузка… {percent}%',
     title: 'Чат',
     typing: 'печатает…',
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',
@@ -635,6 +635,9 @@ export const ru: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Медленное воспроизведение',
     playAtNormalSpeed: 'Обычная скорость',
+    playVoiceMessage: 'Воспроизвести голосовое сообщение',
+    pauseVoiceMessage: 'Приостановить голосовое сообщение',
+    voiceMessageUnavailable: 'Это голосовое сообщение не воспроизводится на этом устройстве.',
     mediaLockedTitle: 'Пока нет',
     mediaLocked: {
       one: 'Фото, видео и голосовые откроются, когда собеседник напишет ещё одно сообщение.',
@@ -1044,6 +1047,11 @@ export const ru: Localized<EnMessages> = {
     deleteAccount: 'Удалить аккаунт',
     deleteAccountBody: 'Если войдёшь снова в течение {days} дней, удаление отменится.',
     deleteConfirmTitle: 'Удалить аккаунт',
+    deleteExplain:
+      'Профиль, сообщения и фотографии будут поставлены в очередь на удаление. Войдите в течение {days} дней — и всё вернётся; после этого данные исчезнут навсегда.',
+    deleteTypeHandle: 'Введите своё имя пользователя, {handle}, чтобы продолжить.',
+    deleteCheckEmail: 'Проверьте {email}. Удаление запускает именно ссылка из этого письма.',
+    deleteNothingYet: 'С вашим аккаунтом пока ничего не произошло.',
     deleteConfirmBody:
       'Аккаунт исчезнет сразу. Данные хранятся {days} дней — если войдёшь снова за это время, удаление отменится.',
     deleted: 'Аккаунт удалён. Если войдёшь снова в течение {days} дней, удаление отменится.',
@@ -1063,6 +1071,8 @@ export const ru: Localized<EnMessages> = {
     manageSubscription: 'Управлять или отменить',
     upgrade: 'Посмотреть тарифы',
     notificationsSection: 'Уведомления',
+    pushThisDevice: 'Уведомления на этом устройстве',
+    pushThisDeviceBody: 'Выключите здесь — на других устройствах они продолжат приходить.',
     accountSection: 'Аккаунт',
   },
 

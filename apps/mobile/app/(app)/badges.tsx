@@ -9,6 +9,7 @@ import { shareLink } from '../../src/lib/share'
 import { badgeShareText } from '../../src/lib/shareText'
 import { makeStyles } from '../../src/lib/theme'
 import { badgeLabel, useLocale, useT } from '../../src/i18n'
+import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 
 /**
  * Badges, and what the next one takes.
@@ -29,19 +30,14 @@ export default function BadgesScreen() {
   const me = useMe()
   const handle = me.data?.handle
 
+  const pull = usePullToRefresh(() => Promise.all([badges.refetch(), xp.refetch()]))
+
   const streak = xp.data?.streak
   const next = badges.data?.next
 
   return (
     // The fix: this was `fluid`, a plain non-scrolling column.
-    <Screen
-      scroll
-      refreshing={badges.isRefetching}
-      onRefresh={() => {
-        void badges.refetch()
-        void xp.refetch()
-      }}
-    >
+    <Screen scroll {...pull}>
       <ScreenHeader
         title={t('leaderboard.badges')}
         onBack={() => goBackTo('/(app)/(tabs)/me')}

@@ -14,6 +14,7 @@ import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
+import type { LoggingPushSender } from '../modules/push/devices'
 
 const PASSWORD = 'correct horse battery staple'
 
@@ -83,11 +84,14 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     return response.json<{ _id: string }>()
   }
 
-  function connectSocket(cookie: string | undefined): Promise<ClientSocket> {
+  function connectSocket(cookie: string | undefined, deviceId?: string): Promise<ClientSocket> {
     return new Promise((resolve, reject) => {
       const socket = ioClient(baseUrl, {
         transports: ['websocket'],
-        auth: cookie ? { cookie } : {},
+        auth: {
+          ...(cookie ? { cookie } : {}),
+          ...(deviceId ? { deviceId } : {}),
+        },
         forceNew: true,
         reconnection: false,
       })
@@ -692,6 +696,92 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       })
       expect(ack.ok).toBe(false)
       expect(ack.error?.code).toBe('NOT_FOUND')
+    })
+  })
+
+  /**
+   * The reported bug: two phones, permission granted on both, and only the one
+   * most recently used ever buzzed. Nothing limited the *send* to one device —
+   * the fan-out skipped push altogether the moment the recipient held any
+   * socket at all, so the phone that was open silenced the one in the pocket.
+   */
+  describe('a message reaches the devices that are not holding a socket', () => {
+    /** Tokens are unique across the collection, so each test gets its own. */
+    async function twoDevices(userId: string): Promise<{ open: string; pocket: string }> {
+      const open = `token-open-${userId}`
+      const pocket = `token-pocket-${userId}`
+      await handle.db.collection(COLLECTIONS.devices).insertMany([
+        {
+          userId,
+          deviceId: 'phone-open',
+          pushToken: open,
+          platform: 'ios',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          userId,
+          deviceId: 'phone-pocket',
+          pushToken: pocket,
+          platform: 'android',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ])
+      return { open, pocket }
+    }
+
+    it('pushes to the idle phone while the other one is open', async () => {
+      const sender = await newUser(`push-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const recipient = await newUser(
+        `push-recipient-${Math.random().toString(36).slice(2)}@example.com`,
+      )
+      const tokens = await twoDevices(recipient.userId)
+      const push = app.push as LoggingPushSender
+      push.sent.length = 0
+
+      // The recipient is looking at one of their two phones.
+      await connectSocket(recipient.cookie, 'phone-open')
+      await startConversation(sender, recipient.userId, 'are you there')
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      expect(push.sent.flatMap((message) => message.to)).toEqual([tokens.pocket])
+    })
+
+    it('pushes to both when neither is open', async () => {
+      const sender = await newUser(`push-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const recipient = await newUser(
+        `push-recipient-${Math.random().toString(36).slice(2)}@example.com`,
+      )
+      const tokens = await twoDevices(recipient.userId)
+      const push = app.push as LoggingPushSender
+      push.sent.length = 0
+
+      await startConversation(sender, recipient.userId, 'anyone home')
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      expect(push.sent.flatMap((message) => message.to).sort()).toEqual(
+        [tokens.open, tokens.pocket].sort(),
+      )
+    })
+
+    it('keeps the old behaviour for a client too old to name its device', async () => {
+      const sender = await newUser(`push-sender-${Math.random().toString(36).slice(2)}@example.com`)
+      const recipient = await newUser(
+        `push-recipient-${Math.random().toString(36).slice(2)}@example.com`,
+      )
+      await twoDevices(recipient.userId)
+      const push = app.push as LoggingPushSender
+      push.sent.length = 0
+
+      // No `deviceId` in the handshake. Such a build draws its own in-app
+      // banner for the message it just received over this socket, so pushing
+      // as well would give it two.
+      await connectSocket(recipient.cookie)
+      await startConversation(sender, recipient.userId, 'old build')
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      expect(push.sent).toEqual([])
     })
   })
 })

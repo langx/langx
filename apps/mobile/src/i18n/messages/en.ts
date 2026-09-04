@@ -63,6 +63,8 @@ export const en = {
 
   composer: {
     removeAttachment: 'Remove attachment',
+    preparingUpload: 'Preparing…',
+    uploadingPercent: 'Uploading… {percent}%',
     attachMedia: 'Attach photos or videos',
   },
 
@@ -574,8 +576,6 @@ export const en = {
   },
   chat: {
     sendingAttachment: 'Sending…',
-    preparingUpload: 'Preparing…',
-    uploadingPercent: 'Uploading… {percent}%',
     title: 'Chat',
     typing: 'typing…',
     notSentRetry: 'Not sent — tap to try again',
@@ -595,6 +595,9 @@ export const en = {
     speedNormal: '1x',
     playSlowly: 'Play slowly',
     playAtNormalSpeed: 'Play at normal speed',
+    playVoiceMessage: 'Play voice message',
+    pauseVoiceMessage: 'Pause voice message',
+    voiceMessageUnavailable: 'This voice message will not play on this device.',
     mediaLockedTitle: 'Not yet',
     mediaLocked: {
       one: 'Photos and voice notes unlock after one more message from them.',
@@ -963,6 +966,11 @@ export const en = {
     deleteAccount: 'Delete account',
     deleteAccountBody: 'Signing back in within {days} days cancels it.',
     deleteConfirmTitle: 'Delete your account',
+    deleteExplain:
+      'Your profile, messages and photos are scheduled for deletion. Sign back in within {days} days and everything comes back; after that it is gone for good.',
+    deleteTypeHandle: 'Type your handle, {handle}, to continue.',
+    deleteCheckEmail: 'Check {email}. The link in that message is what schedules the deletion.',
+    deleteNothingYet: 'Nothing has happened to your account yet.',
     deleteConfirmBody:
       'Your account disappears immediately. Your data is kept for {days} days — signing back in during that window cancels the deletion.',
     deleted: 'Account deleted. Signing back in within {days} days cancels it.',
@@ -982,6 +990,8 @@ export const en = {
     manageSubscription: 'Manage or cancel',
     upgrade: 'See the plans',
     notificationsSection: 'Notifications',
+    pushThisDevice: 'Notifications on this device',
+    pushThisDeviceBody: 'Turn these off here and your other devices keep receiving them.',
     accountSection: 'Account',
   },
 

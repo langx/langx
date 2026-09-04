@@ -1,5 +1,7 @@
-import type { MessageKey } from '../i18n/runtime'
+import type { MessageKey, TranslateFn } from '../i18n/runtime'
 import * as Location from 'expo-location'
+import { Linking, Platform } from 'react-native'
+import { confirmAlert, showAlert } from './alert'
 
 /**
  * Reading the device's position, and the one decision that makes this file
@@ -77,4 +79,63 @@ export const LOCATION_FAILURE_KEY: Record<
   denied: 'location.denied',
   disabled: 'location.disabled',
   unavailable: 'location.unavailable',
+}
+
+/**
+ * What the OS currently thinks, as opposed to what the server has stored.
+ *
+ * The two drift apart in a way that used to be silent: a profile keeps its
+ * `location` forever once shared, so a screen that trusts the server's flag
+ * skips asking even after the permission has been revoked in OS settings —
+ * and then sorts by distance around a point nobody can update.
+ *
+ * `granted` is the only thing worth returning beyond `canAskAgain`, which is
+ * what separates "we can raise the dialog" from "only the Settings app can
+ * fix this now".
+ */
+export async function locationPermissionState(): Promise<{
+  granted: boolean
+  canAskAgain: boolean
+}> {
+  try {
+    const permission = await Location.getForegroundPermissionsAsync()
+    return { granted: permission.granted, canAskAgain: permission.canAskAgain }
+  } catch {
+    // Web without the API, or a platform that has no such notion. Treat it as
+    // askable: `captureLocation` is the thing that actually decides, and it
+    // fails cleanly.
+    return { granted: false, canAskAgain: true }
+  }
+}
+
+/**
+ * Tells someone why a fix did not arrive, and where the switch is.
+ *
+ * A refusal is not an error to report, it is a setting somewhere else: iOS
+ * never asks twice and Android stops after the second no, so an alert that
+ * says "denied" leaves a person holding a control that will not move and no
+ * idea why. Settings and the country picker each wrote this block out in full;
+ * Discover had only `showAlert(t('location.needed'), …)`, which is why a
+ * revoked permission there produced an empty list and nothing else.
+ *
+ * Only the non-refusal title stays with the caller, because the three screens
+ * legitimately word that case differently — Settings says "unavailable", the
+ * country picker says "failed", and Discover says what it needed it for.
+ */
+export async function reportLocationFailure(
+  reason: Extract<LocationResult, { ok: false }>['reason'],
+  t: TranslateFn,
+  /** The title for everything that is not a refusal; the three screens differ. */
+  failedTitleKey: MessageKey,
+): Promise<void> {
+  if (reason === 'denied') {
+    const open = await confirmAlert({
+      title: t('location.deniedTitle'),
+      message: t(Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid'),
+      confirmLabel: t('location.openSettings'),
+    })
+    if (open) await Linking.openSettings()
+    return
+  }
+  await showAlert(t(failedTitleKey), t(LOCATION_FAILURE_KEY[reason]))
 }

@@ -1,9 +1,15 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { Pressable, ScrollView, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
+import {
+  percentOf,
+  thumbProgress,
+  type ActiveUpload,
+  type UploadProgress,
+} from '../lib/uploadProgress'
 
 /** A file the composer is holding, before anything has been uploaded. */
 export interface PendingAttachment {
@@ -58,9 +64,12 @@ function VideoThumb({ uri }: { uri: string }) {
 function AttachmentThumb({
   attachment,
   onRemove,
+  progress,
 }: {
   attachment: PendingAttachment
   onRemove: () => void
+  /** Where this file is, or `null` when it is not being sent. */
+  progress: UploadProgress | null
 }) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -86,15 +95,35 @@ function AttachmentThumb({
           <Feather name="mic" size={18} color={colors.textMuted} />
         </View>
       )}
-      <Pressable
-        onPress={onRemove}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityLabel={t('composer.removeAttachment')}
-        style={styles.removeBadge}
-      >
-        <Feather name="x" size={12} color={colors.bg} />
-      </Pressable>
+      {progress === null ? (
+        <Pressable
+          onPress={onRemove}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('composer.removeAttachment')}
+          style={styles.removeBadge}
+        >
+          <Feather name="x" size={12} color={colors.bg} />
+        </Pressable>
+      ) : (
+        /*
+         * The scrim replaces the cross rather than sitting beside it: once the
+         * post is submitted the file is on its way and taking it back is not
+         * something the composer can still offer.
+         */
+        <View style={[styles.thumb, styles.uploading]} pointerEvents="none">
+          {/*
+            The same three waits `PendingMediaBubble` names: reading the file
+            into memory has no number to give, so it says so rather than
+            sitting at 0%.
+          */}
+          <Text style={styles.uploadingText} numberOfLines={2}>
+            {progress.phase === 'reading'
+              ? t('composer.preparingUpload')
+              : t('composer.uploadingPercent', { percent: percentOf(progress) })}
+          </Text>
+        </View>
+      )}
     </View>
   )
 }
@@ -109,9 +138,16 @@ function AttachmentThumb({
 export function AttachmentPreviewRow({
   pending,
   onRemove,
+  progress = null,
 }: {
   pending: readonly PendingAttachment[]
   onRemove: (index: number) => void
+  /**
+   * Which file is being sent and how far along, or `null` when nothing is.
+   * Chat passes nothing: there, picking is sending, and the progress belongs
+   * on the bubble that is already in the thread (`PendingMediaBubble`).
+   */
+  progress?: ActiveUpload | null
 }) {
   const styles = useStyles()
 
@@ -130,6 +166,7 @@ export function AttachmentPreviewRow({
           key={`${attachment.uri}-${index}`}
           attachment={attachment}
           onRemove={() => onRemove(index)}
+          progress={thumbProgress(index, progress)}
         />
       ))}
     </ScrollView>
@@ -150,6 +187,15 @@ export function AttachmentPreview({
 
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   previewScroll: { flexGrow: 0, marginBottom: spacing.sm },
+  // Over the thumbnail, not beside it: the row is already as wide as the
+  // screen with six files in it.
+  uploading: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'center',
+    position: 'absolute',
+  },
+  uploadingText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   previewRow: {
     alignItems: 'center',
     flexDirection: 'row',

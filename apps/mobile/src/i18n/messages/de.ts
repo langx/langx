@@ -39,6 +39,8 @@ export const de: Localized<EnMessages> = {
 
   composer: {
     removeAttachment: 'Anhang entfernen',
+    preparingUpload: 'Wird vorbereitet…',
+    uploadingPercent: 'Wird hochgeladen… {percent} %',
     attachMedia: 'Fotos oder Videos anhängen',
   },
 
@@ -563,8 +565,6 @@ export const de: Localized<EnMessages> = {
   },
   chat: {
     sendingAttachment: 'Wird gesendet…',
-    preparingUpload: 'Wird vorbereitet…',
-    uploadingPercent: 'Wird hochgeladen… {percent} %',
     title: 'Chat',
     typing: 'schreibt…',
     notSentRetry: 'Nicht gesendet — zum Wiederholen tippen',
@@ -584,6 +584,9 @@ export const de: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Langsam abspielen',
     playAtNormalSpeed: 'Mit normaler Geschwindigkeit abspielen',
+    playVoiceMessage: 'Sprachnachricht abspielen',
+    pauseVoiceMessage: 'Sprachnachricht pausieren',
+    voiceMessageUnavailable: 'Diese Sprachnachricht lässt sich auf diesem Gerät nicht abspielen.',
     mediaLockedTitle: 'Noch nicht',
     mediaLocked: {
       one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
@@ -949,6 +952,11 @@ export const de: Localized<EnMessages> = {
     deleteAccount: 'Konto löschen',
     deleteAccountBody: 'Meldest du dich innerhalb von {days} Tagen wieder an, wird es abgebrochen.',
     deleteConfirmTitle: 'Dein Konto löschen',
+    deleteExplain:
+      'Dein Profil, deine Nachrichten und Fotos werden zur Löschung vorgemerkt. Melde dich binnen {days} Tagen wieder an, und alles ist zurück; danach ist es endgültig weg.',
+    deleteTypeHandle: 'Gib deinen Namen, {handle}, ein, um fortzufahren.',
+    deleteCheckEmail: 'Sieh in {email} nach. Der Link in dieser Nachricht startet die Löschung.',
+    deleteNothingYet: 'Mit deinem Konto ist noch nichts passiert.',
     deleteConfirmBody:
       'Dein Konto verschwindet sofort. Deine Daten werden {days} Tage aufbewahrt — meldest du dich in dieser Zeit wieder an, wird die Löschung abgebrochen.',
     deleted:
@@ -969,6 +977,8 @@ export const de: Localized<EnMessages> = {
     manageSubscription: 'Verwalten oder kündigen',
     upgrade: 'Tarife ansehen',
     notificationsSection: 'Mitteilungen',
+    pushThisDevice: 'Mitteilungen auf diesem Gerät',
+    pushThisDeviceBody: 'Hier ausschalten — deine anderen Geräte bekommen sie weiterhin.',
     accountSection: 'Konto',
   },
 

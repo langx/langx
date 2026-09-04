@@ -30,6 +30,7 @@ import { usePendingInvite } from '../src/hooks/usePendingInvite'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '../src/lib/analytics'
+import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
@@ -114,6 +115,15 @@ function RootShell() {
    */
   useEffect(() => {
     void startAnalytics()
+    /*
+     * And the audio session, for the same "before anything needs it" reason.
+     * A voice note played by someone who has not recorded in this session used
+     * to land in iOS's ambient category, which the ringer switch mutes — see
+     * `lib/audioSession.ts`. Setting it once at start means the first tap on
+     * the first note is already right; `AudioBubble` asks again on play,
+     * because recording flips it back.
+     */
+    void ensurePlaybackAudioMode()
   }, [])
   useScreenTracking()
 

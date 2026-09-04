@@ -3,6 +3,7 @@ import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
 import { API_URL } from './apiUrl'
 import { authClient } from './auth-client'
+import { deviceId } from './deviceId'
 
 let socket: Socket | null = null
 
@@ -26,6 +27,15 @@ export async function getSocket(): Promise<Socket> {
   if (Platform.OS !== 'web') {
     auth.cookie = (await authClient.getCookie()) ?? ''
   }
+  /*
+   * Which phone is holding this connection, on both platforms.
+   *
+   * The server used to know only *that* the account had a socket, and skipped
+   * the push notification for every one of its devices on the strength of it —
+   * so the phone you had open silenced the one in your pocket. With this it
+   * can push to the devices that are not here.
+   */
+  auth.deviceId = await deviceId()
 
   socket ??= io(API_URL, {
     auth,

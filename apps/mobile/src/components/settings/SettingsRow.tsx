@@ -348,7 +348,9 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           subtitle={t('settings.deleteAccountBody', { days: ACCOUNT_DELETION_GRACE_DAYS })}
           destructive
           last={last}
-          onPress={model.busy ? undefined : () => void model.confirmDelete()}
+          // A screen, not a dialog: `AlertHost` draws buttons and no text
+          // field, and the gate in front of this is a typed handle.
+          onPress={() => router.push('/(app)/settings/delete-account')}
         />
       )
 
@@ -374,6 +376,22 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     case 'about.intro':
       return <ListRow title={t('settings.showIntro')} last={last} onPress={model.replayIntro} />
+
+    case 'notifications.thisDevice':
+      return (
+        <ListRow
+          title={t('settings.pushThisDevice')}
+          subtitle={t('settings.pushThisDeviceBody')}
+          last={last}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.pushThisDevice')}
+              value={model.pushOnThisDevice}
+              onValueChange={(next) => void model.togglePushOnThisDevice(next)}
+            />
+          }
+        />
+      )
 
     default: {
       /*
