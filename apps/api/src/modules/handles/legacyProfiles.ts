@@ -1,6 +1,7 @@
-import type { LanguageLevel, Gender } from '@langx/shared'
+import { PLAN_LIMITS, type LanguageLevel, type Gender } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import type { Profile } from '../profiles/profiles'
 
 /**
  * One v1 profile, already mapped into v2's vocabulary by the Faz 11 ETL.
@@ -66,4 +67,50 @@ export async function markRestored(db: Db, legacyId: string, userId: string): Pr
       { $set: { restoredBy: userId, restoredAt: new Date() } },
     )
   return result.modifiedCount > 0
+}
+
+/**
+ * Puts a staged record's pictures onto a profile that already exists, filling
+ * gaps and never overwriting.
+ *
+ * The rule was `legacyRestore`'s, inline, and the media backfill needed the
+ * identical one — two copies of "only where they have none" is exactly the
+ * kind of pair that drifts until one of them starts overwriting a picture
+ * somebody chose themselves. So it lives here, is tested, and both callers use
+ * it.
+ *
+ * The gallery is capped at `PLAN_LIMITS.free.maxPhotos`. The restore path used
+ * to write the array wholesale and could seat a returning user above the limit
+ * the rest of the app enforces — a number that is config everywhere else has
+ * no business being unbounded on one path.
+ *
+ * Returns what it actually wrote, because a backfill that cannot say how many
+ * profiles it changed is a backfill nobody can check.
+ */
+export async function applyLegacyMedia(
+  db: Db,
+  userId: string,
+  legacy: Pick<LegacyProfile, 'avatarUrl' | 'photos'>,
+  at: Date,
+): Promise<{ avatar: boolean; photos: number }> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const existing = await profiles.findOne({ _id: userId })
+  if (!existing) return { avatar: false, photos: 0 }
+
+  const update: Record<string, unknown> = {}
+  const avatar = Boolean(legacy.avatarUrl) && !existing.avatarUrl
+  if (avatar) update.avatarUrl = legacy.avatarUrl
+
+  const photos =
+    legacy.photos.length > 0 && (existing.photos ?? []).length === 0
+      ? legacy.photos.slice(0, PLAN_LIMITS.free.maxPhotos)
+      : []
+  if (photos.length > 0) {
+    update.photos = photos.map((photo) => ({ url: photo.url, createdAt: at }))
+  }
+
+  if (Object.keys(update).length === 0) return { avatar: false, photos: 0 }
+  update.updatedAt = at
+  await profiles.updateOne({ _id: userId }, { $set: update })
+  return { avatar, photos: photos.length }
 }

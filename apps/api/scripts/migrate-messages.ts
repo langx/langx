@@ -50,7 +50,12 @@ import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut, type StorageProviderWithPut } from '../src/storage/StorageProvider'
 import { imageDimensions } from '../src/lib/imageDimensions'
 import { isServableLegacyMedia, normalizeLegacyContentType } from '../src/lib/legacyMedia'
-import { buildBackupIndex, mediaDirFrom, readBackupBytes } from './legacyMediaBackup'
+import {
+  buildBackupIndex,
+  mediaDirFrom,
+  readBackupBytes,
+  type BackupIndex,
+} from '../src/lib/legacyMediaBackup'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
 const ROOMS_COLLECTION = '6507510fc71f989d5d1c'
@@ -172,7 +177,7 @@ async function copyAttachment(
   kind: 'image' | 'audio',
   key: string,
   summary: Summary,
-  backup: Map<string, string> | undefined,
+  backup: BackupIndex | undefined,
 ): Promise<MessageMedia | null> {
   const file = await storage.getFile({ bucketId, fileId })
   // v1's own name for the type, translated — its voice notes all report
@@ -226,7 +231,12 @@ async function main(): Promise<void> {
   const limit = limitIndex >= 0 ? Number(process.argv[limitIndex + 1]) : Number.POSITIVE_INFINITY
   const mediaDir = mediaDirFrom(process.argv)
   const backup = mediaDir ? buildBackupIndex(mediaDir) : undefined
-  if (backup) console.log(`Media backup: ${backup.size} files indexed from ${mediaDir}`)
+  if (backup) {
+    console.log(
+      `Media backup: ${backup.filesSeen} files in ${backup.directories} directories, ` +
+        `${backup.byId.size} ids indexed${backup.collisions > 0 ? `, ${backup.collisions} collisions` : ''} (${mediaDir})`,
+    )
+  }
 
   const env = loadEnv()
   if (!env.APPWRITE_ENDPOINT || !env.APPWRITE_PROJECT_ID || !env.APPWRITE_API_KEY) {
