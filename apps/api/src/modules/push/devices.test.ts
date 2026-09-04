@@ -57,6 +57,30 @@ describe('ExpoPushSender', () => {
     expect(result.invalidTokens).toEqual([])
   })
 
+  /** The unread total rides the message push; every other kind leaves the icon alone. */
+  it('forwards a badge count when one is given, and omits the field when not', async () => {
+    // A fresh Response per call: a body can only be read once.
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(ticketsFor(['ok'])))
+    vi.stubGlobal('fetch', fetchMock)
+    const sender = new ExpoPushSender()
+    const sentBody = (call: number): { badge?: number }[] => {
+      const init = fetchMock.mock.calls[call]?.[1] as { body: string } | undefined
+      return JSON.parse(init?.body ?? '[]') as { badge?: number }[]
+    }
+
+    await sender.send({
+      to: ['t'],
+      title: 'hi',
+      body: 'there',
+      data: { kind: 'message' },
+      badge: 3,
+    })
+    expect(sentBody(0)[0]?.badge).toBe(3)
+
+    await sender.send({ to: ['t'], title: 'hi', body: 'there', data: { kind: 'streakReminder' } })
+    expect(sentBody(1)[0]).not.toHaveProperty('badge')
+  })
+
   it('splits more than 100 recipients across requests', async () => {
     const fetchMock = vi
       .fn()

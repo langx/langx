@@ -65,6 +65,14 @@ export interface PushMessage {
    * is there for the avatar; the notification's own title is only a name.
    */
   data: { kind: PushKind; conversationId?: string; senderId?: string }
+  /**
+   * The number to put on the app icon — the recipient's unread total, from
+   * the same `countUnread` that `/me/unread` answers with, so the icon, the
+   * Chats tab and the list never disagree. Only the message push sets it;
+   * absent means "leave the icon as it is", which is what every other kind
+   * of push wants.
+   */
+  badge?: number
 }
 
 /**
@@ -132,6 +140,7 @@ export class ExpoPushSender implements PushSender {
             body: message.body,
             data: message.data,
             sound: 'default',
+            ...(message.badge !== undefined ? { badge: message.badge } : {}),
           })),
         ),
       })

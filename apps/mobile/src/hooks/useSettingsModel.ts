@@ -33,6 +33,7 @@ import { captureLocation, LOCATION_FAILURE_KEY } from '../lib/location'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
+import { syncIconBadge } from '../lib/iconBadge'
 import { showToast } from '../lib/toast'
 
 /**
@@ -202,6 +203,7 @@ export function useSettingsModel() {
     setBusy(true)
     try {
       await api.post('/me/delete', { confirm: 'DELETE' })
+      await syncIconBadge(0)
       await authClient.signOut()
       router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
       // The grace period is the one thing worth repeating here: the dialog said
@@ -226,6 +228,8 @@ export function useSettingsModel() {
     if (!yes) return
     // Before the session goes: unregistering needs one.
     await unregisterPushToken()
+    // A count that belonged to this account must not outlive it on the icon.
+    await syncIconBadge(0)
     await authClient.signOut()
     router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
   }

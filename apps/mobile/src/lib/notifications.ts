@@ -57,6 +57,9 @@ export async function configureNotifications(): Promise<void> {
         name: 'Messages and reminders',
         importance: Notifications.AndroidImportance.HIGH,
         sound: 'default',
+        // The unread count on the icon, where the launcher draws one. Whether
+        // it is a number or a dot is the launcher's decision, not the app's.
+        showBadge: true,
       })
     }
   } catch {
