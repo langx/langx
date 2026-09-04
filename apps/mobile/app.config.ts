@@ -196,9 +196,24 @@ const config: ExpoConfig = {
     // Microphone access is only ever requested when the user taps record, but
     // the string has to be declared here or iOS terminates the app the first
     // time it is asked for.
+    //
+    // `enableBackgroundPlayback` defaults to **true**, which is where
+    // `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_MEDIA_PLAYBACK` came from,
+    // along with a `mediaPlayback` media-session service and iOS's `audio`
+    // background mode. Nothing here plays audio in the background: the only
+    // playback is a voice message in an open chat (`MediaBubble`), and the
+    // recorder never keeps running once the app is away. Play treats the
+    // permission as a declarable one — version 121 sat overdue on App content →
+    // Foreground service permissions because of it — and a declaration would
+    // have claimed a feature the app does not have. Turning it off removes the
+    // permissions and the service rather than blocking the permission and
+    // leaving a service that could never legally start.
     [
       'expo-audio',
-      { microphonePermission: 'LangX uses the microphone so you can send voice messages.' },
+      {
+        microphonePermission: 'LangX uses the microphone so you can send voice messages.',
+        enableBackgroundPlayback: false,
+      },
     ],
     [
       'expo-image-picker',
