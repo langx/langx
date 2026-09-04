@@ -412,11 +412,41 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         headers: { cookie: viewed.cookie },
       })
       expect(response.statusCode, response.body).toBe(200)
-      const body = response.json<{ total: number; locked: boolean; viewers: unknown[] }>()
+      const body = response.json<{
+        total: number
+        locked: boolean
+        viewers: { userId: string; handle?: string; displayName?: string; viewCount: number }[]
+      }>()
       // The count is the paywall's argument, so it is still real.
       expect(body.total).toBe(1)
       expect(body.locked).toBe(true)
-      expect(body.viewers).toHaveLength(0)
+      /*
+       * The row is returned so the list can be drawn and blurred; the identity
+       * is not in it. This is the assertion that keeps the paid feature out of
+       * the response body — blurring on the client would leave it readable to
+       * anyone who opens the JSON.
+       */
+      expect(body.viewers).toHaveLength(1)
+      expect(body.viewers[0]?.handle).toBeUndefined()
+      expect(body.viewers[0]?.displayName).toBeUndefined()
+      expect(body.viewers[0]?.viewCount).toBe(1)
+    })
+
+    it('counts a returning viewer as one row that says how often', async () => {
+      const viewer = await newUser()
+      const viewed = await newUser()
+      // Three visits, one pair: `viewer_viewed_unique` makes this one row.
+      await get(viewer, `/profiles/${viewed.userId}`)
+      await get(viewer, `/profiles/${viewed.userId}`)
+      await get(viewer, `/profiles/${viewed.userId}`)
+
+      const body = (await get(viewed, '/me/viewers')).json<{
+        total: number
+        viewers: { viewCount: number }[]
+      }>()
+      expect(body.total).toBe(1)
+      expect(body.viewers).toHaveLength(1)
+      expect(body.viewers[0]?.viewCount).toBe(3)
     })
 
     it('gives free users the count and Pro users the identities', async () => {
@@ -426,12 +456,15 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
 
       const free = (await get(viewed, '/me/viewers')).json<{
         total: number
-        viewers: unknown[]
+        viewers: { handle?: string; displayName?: string; avatarUrl?: string }[]
         locked: boolean
       }>()
       expect(free.total).toBe(1)
       expect(free.locked).toBe(true)
-      expect(free.viewers).toHaveLength(0)
+      expect(free.viewers).toHaveLength(1)
+      expect(free.viewers[0]).not.toHaveProperty('handle')
+      expect(free.viewers[0]).not.toHaveProperty('displayName')
+      expect(free.viewers[0]).not.toHaveProperty('avatarUrl')
 
       await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
         { _id: viewed.userId },

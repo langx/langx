@@ -1229,6 +1229,12 @@ export const tr: Localized<EnMessages> = {
     empty: 'Profiline henüz kimse bakmadı.',
     countLabel: { one: 'kişi profiline baktı', other: 'kişi profiline baktı' },
     seeWho: 'Kim olduklarını gör',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Henüz ziyaretçi yok',
     emptyBody: 'Profilini doldurmak işe yarıyor.',
   },

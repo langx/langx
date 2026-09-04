@@ -1391,6 +1391,12 @@ export const ru: Localized<EnMessages> = {
       other: 'человека смотрели твой профиль',
     },
     seeWho: 'Узнать, кто это',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Посетителей пока нет',
     emptyBody: 'Заполненный профиль помогает.',
   },

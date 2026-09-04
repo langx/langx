@@ -1238,6 +1238,12 @@ export const fr: Localized<EnMessages> = {
       other: 'personnes ont vu ton profil',
     },
     seeWho: 'Voir qui c’est',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Pas encore de visite',
     emptyBody: 'Remplir ton profil aide.',
   },

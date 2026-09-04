@@ -30,6 +30,7 @@
     "expo-application": "~57.0.2",
     "expo-asset": "~57.0.16",
     "expo-audio": "~57.0.4",
+    "expo-blur": "~57.0.2",
     "expo-clipboard": "~57.0.1",
     "expo-constants": "~57.0.17",
     "expo-dev-client": "~57.0.18",
@@ -66,8 +67,8 @@
     "socket.io-client": "catalog:"
   },
   "devDependencies": {
-    "@types/react": "catalog:",
     "@react-native/metro-config": "0.86.3",
+    "@types/react": "catalog:",
     "babel-preset-expo": "~57.0.8",
     "typescript": "catalog:",
     "vitest": "catalog:"

@@ -1146,10 +1146,13 @@ export interface ViewerPageDto {
   locked: boolean
   viewers: {
     userId: string
-    handle: string
-    displayName: string
+    /** Absent while `locked` — the server does not send identities behind the paywall. */
+    handle?: string
+    displayName?: string
     avatarUrl?: string
     lastViewedAt: string
+    /** How many times they have been back. At least 1. */
+    viewCount: number
   }[]
   nextCursor: string | null
 }

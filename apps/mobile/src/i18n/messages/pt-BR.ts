@@ -1224,6 +1224,12 @@ export const ptBR: Localized<EnMessages> = {
       other: 'pessoas viram seu perfil',
     },
     seeWho: 'Ver quem são',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Nenhuma visita ainda',
     emptyBody: 'Preencher seu perfil ajuda.',
   },

@@ -1456,6 +1456,12 @@ export const ar: Localized<EnMessages> = {
       other: 'شخص زار ملفك',
     },
     seeWho: 'اعرف من هم',
+    /**
+     * How many times one person has been back, beside their name. A numeral
+     * and a sign rather than a word, so it stays a badge at any width — and a
+     * plural entry regardless, because a count is never a bare string here.
+     */
+    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'لا زوّار بعد',
     emptyBody: 'إكمال ملفك يساعد.',
   },
