@@ -14,8 +14,8 @@ import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  Animated,
   FlatList,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   Text,
@@ -37,6 +37,7 @@ import {
 import * as Clipboard from 'expo-clipboard'
 import { track } from '../../../src/lib/analytics'
 import { setActiveConversation } from '../../../src/lib/activeConversation'
+import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ComposerHint } from '../../../src/components/ComposerHint'
 import { Tip } from '../../../src/components/Tip'
@@ -134,6 +135,7 @@ export default function ChatScreen() {
   const [jumpAnchor, setJumpAnchor] = useState<string | null>(at ?? null)
   const [highlighted, setHighlighted] = useState<string | null>(null)
   const translateApi = useTranslate()
+  const keyboardInset = useKeyboardInset()
   const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
@@ -794,467 +796,474 @@ export default function ChatScreen() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <View style={styles.header}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('common.backPlain')}
-          onPress={() => goBackTo('/(app)/(tabs)/chats')}
-          hitSlop={12}
-          style={styles.back}
-        >
-          <Feather name="arrow-left" size={19} color={colors.text} />
-        </Pressable>
-        <Pressable
-          style={styles.headerUser}
-          onPress={() => partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)}
-        >
-          <Avatar
-            url={partner?.avatarUrl}
-            name={partner?.displayName ?? '?'}
-            seed={partner?._id}
-            size={40}
-            online={partner?.isOnline ?? false}
-          />
-          <View style={styles.headerText}>
-            <Text style={styles.headerName} numberOfLines={1}>
-              {partner?.displayName ?? t('chat.title')}
-            </Text>
-            {/*
+      {/*
+        The whole screen pads for the keyboard, by the keyboard's own reported
+        height — see `useKeyboardInset` for why `KeyboardAvoidingView` did not
+        do this job here, around the composer or around the screen.
+      */}
+      <Animated.View style={[styles.avoid, { paddingBottom: keyboardInset }]}>
+        <View style={styles.header}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.backPlain')}
+            onPress={() => goBackTo('/(app)/(tabs)/chats')}
+            hitSlop={12}
+            style={styles.back}
+          >
+            <Feather name="arrow-left" size={19} color={colors.text} />
+          </Pressable>
+          <Pressable
+            style={styles.headerUser}
+            onPress={() => partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)}
+          >
+            <Avatar
+              url={partner?.avatarUrl}
+              name={partner?.displayName ?? '?'}
+              seed={partner?._id}
+              size={40}
+              online={partner?.isOnline ?? false}
+            />
+            <View style={styles.headerText}>
+              <Text style={styles.headerName} numberOfLines={1}>
+                {partner?.displayName ?? t('chat.title')}
+              </Text>
+              {/*
               One line that is either presence or typing, never both stacked —
               the header is 40px tall and a third line pushes the avatar out of
               alignment with the name. `PresenceLine` keeps that true: online
               and last-seen are mutually exclusive states of one line, not two.
             */}
-            {partnerTyping ? (
-              <Text style={styles.typing}>{t('chat.typing')}</Text>
-            ) : (
-              <PresenceLine lastActiveAt={partner?.lastActiveAt} />
-            )}
-          </View>
-        </Pressable>
-      </View>
+              {partnerTyping ? (
+                <Text style={styles.typing}>{t('chat.typing')}</Text>
+              ) : (
+                <PresenceLine lastActiveAt={partner?.lastActiveAt} />
+              )}
+            </View>
+          </Pressable>
+        </View>
 
-      {/*
+        {/*
         Above the thread rather than floating over it: a pin is a standing fact
         about the conversation, not a transient control, and it has to survive
         scrolling to the top of the history.
       */}
-      {pinned ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('chat.goToPinned')}
-          onPress={() => onJumpTo(pinned.messageId)}
-          style={styles.pinBanner}
-        >
-          <Feather name="bookmark" size={14} color={colors.accent} />
-          <Text style={styles.pinText} numberOfLines={1}>
-            {items.find((m) => m._id === pinned.messageId)?.body ?? t('chat.pinnedMessage')}
-          </Text>
+        {pinned ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={t('messageActions.unpin')}
-            hitSlop={8}
-            onPress={() => void emit('conversation:pin', { conversationId, messageId: null })}
+            accessibilityLabel={t('chat.goToPinned')}
+            onPress={() => onJumpTo(pinned.messageId)}
+            style={styles.pinBanner}
           >
-            <Feather name="x" size={15} color={colors.textMuted} />
+            <Feather name="bookmark" size={14} color={colors.accent} />
+            <Text style={styles.pinText} numberOfLines={1}>
+              {items.find((m) => m._id === pinned.messageId)?.body ?? t('chat.pinnedMessage')}
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('messageActions.unpin')}
+              hitSlop={8}
+              onPress={() => void emit('conversation:pin', { conversationId, messageId: null })}
+            >
+              <Feather name="x" size={15} color={colors.textMuted} />
+            </Pressable>
           </Pressable>
-        </Pressable>
-      ) : null}
+        ) : null}
 
-      {/* The jump button floats over the thread, so it lives in the thread's
+        {/* The jump button floats over the thread, so it lives in the thread's
           own box rather than the screen's — that keeps it above the composer
           whatever height the composer has grown to. */}
-      <View style={styles.listWrap}>
-        {state === 'skeleton' ? (
-          // `flex: 1` because the FlatList it stands in for takes the whole
-          // height; without it the composer rides up under the placeholders and
-          // then drops when the real thread arrives.
-          <View style={[styles.list, styles.skeletonFill]}>
-            {SKELETON_BUBBLES.map((key, index) => (
-              <MessageBubbleSkeleton key={key} index={index} />
-            ))}
-          </View>
-        ) : (
-          <FlatList
-            ref={listRef}
-            data={rows}
-            keyExtractor={(row) => row.key}
-            contentContainerStyle={styles.list}
-            /**
-             * The newest message sits at offset 0, and the list grows upward.
-             *
-             * This one prop replaces all the scroll anchoring this screen used
-             * to do by hand. Staying pinned to the newest message becomes the
-             * resting state rather than a `scrollToEnd` chased one frame behind
-             * layout, and a page of history is appended at the *far* end, off
-             * screen, so it can no longer shove what the reader is looking at.
-             * The `atBottom` ref, the `requestAnimationFrame` and the
-             * top-offset threshold all existed to approximate those two
-             * properties, and none of them could do it while the reader was
-             * scrolling.
-             */
-            inverted
-            /**
-             * "End" is the end of the data, and inverted that is the oldest
-             * message — so the same prop that means "load more" everywhere else
-             * in the app means "load older" here. It also sidesteps
-             * `onStartReached`, which react-native-web's FlatList does not have.
-             */
-            onEndReached={() => {
-              if (thread.hasNextPage && !thread.isFetchingNextPage) {
-                void thread.fetchNextPage()
-              }
-            }}
-            onEndReachedThreshold={0.4}
-            /**
-             * Header, not footer: inverted, the header is what sits at the
-             * bottom — under the newest message and directly above the
-             * composer, which is where something that failed to send belongs.
-             */
-            ListHeaderComponent={
-              <>
-                {/* Above the composer, where a hint is read rather than
+        <View style={styles.listWrap}>
+          {state === 'skeleton' ? (
+            // `flex: 1` because the FlatList it stands in for takes the whole
+            // height; without it the composer rides up under the placeholders and
+            // then drops when the real thread arrives.
+            <View style={[styles.list, styles.skeletonFill]}>
+              {SKELETON_BUBBLES.map((key, index) => (
+                <MessageBubbleSkeleton key={key} index={index} />
+              ))}
+            </View>
+          ) : (
+            <FlatList
+              ref={listRef}
+              data={rows}
+              keyExtractor={(row) => row.key}
+              contentContainerStyle={styles.list}
+              /**
+               * The newest message sits at offset 0, and the list grows upward.
+               *
+               * This one prop replaces all the scroll anchoring this screen used
+               * to do by hand. Staying pinned to the newest message becomes the
+               * resting state rather than a `scrollToEnd` chased one frame behind
+               * layout, and a page of history is appended at the *far* end, off
+               * screen, so it can no longer shove what the reader is looking at.
+               * The `atBottom` ref, the `requestAnimationFrame` and the
+               * top-offset threshold all existed to approximate those two
+               * properties, and none of them could do it while the reader was
+               * scrolling.
+               */
+              inverted
+              /**
+               * "End" is the end of the data, and inverted that is the oldest
+               * message — so the same prop that means "load more" everywhere else
+               * in the app means "load older" here. It also sidesteps
+               * `onStartReached`, which react-native-web's FlatList does not have.
+               */
+              onEndReached={() => {
+                if (thread.hasNextPage && !thread.isFetchingNextPage) {
+                  void thread.fetchNextPage()
+                }
+              }}
+              onEndReachedThreshold={0.4}
+              /**
+               * Header, not footer: inverted, the header is what sits at the
+               * bottom — under the newest message and directly above the
+               * composer, which is where something that failed to send belongs.
+               */
+              ListHeaderComponent={
+                <>
+                  {/* Above the composer, where a hint is read rather than
                     scrolled past. */}
-                <Tip slot="chat" />
-                {pending.length > 0 ? (
-                  <View style={styles.unsentBlock}>
-                    {pending.map((row) => (
-                      <PendingMediaBubble
-                        key={row.clientId}
-                        item={row}
-                        onRetry={() => {
-                          setPending((list) => removePending(list, row.clientId))
-                          void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
-                        }}
-                      />
-                    ))}
-                  </View>
-                ) : null}
-                {unsent.length > 0 ? (
-                  <View style={styles.unsentBlock}>
-                    {unsent.map((message) => (
-                      <Pressable
-                        key={message.clientId}
-                        accessibilityRole="button"
-                        accessibilityLabel={t('chat.notSentRetry')}
-                        onPress={() => void retry(message)}
-                        style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
-                      >
-                        <Text style={styles.unsentBody}>{message.body}</Text>
-                        <Text style={styles.unsentNote}>
-                          <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                ) : null}
-              </>
-            }
-            /** Footer, not header: inverted, the footer is what sits on top. */
-            ListFooterComponent={
-              thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
-            }
-            /**
-             * Mandatory, not defensive: bubbles are variable height and there
-             * is no `getItemLayout`, so `scrollToIndex` throws outright on a
-             * row the list has not measured. Nudging to an estimate and asking
-             * again is the documented recovery.
-             */
-            onScrollToIndexFailed={(info) => {
-              listRef.current?.scrollToOffset({
-                offset: info.averageItemLength * info.index,
-                animated: false,
-              })
-              setTimeout(
-                () =>
-                  listRef.current?.scrollToIndex({
-                    index: info.index,
-                    viewPosition: 0.5,
-                    animated: false,
-                  }),
-                120,
-              )
-            }}
-            onScroll={({ nativeEvent }) => {
-              // Nothing to measure against the content height any more: the
-              // bottom of an inverted list is offset 0.
-              if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
-                if (awayFrom !== null) setAwayFrom(null)
-              } else if (awayFrom === null) {
-                setAwayFrom(items[0] ? String(items[0]._id) : null)
+                  <Tip slot="chat" />
+                  {pending.length > 0 ? (
+                    <View style={styles.unsentBlock}>
+                      {pending.map((row) => (
+                        <PendingMediaBubble
+                          key={row.clientId}
+                          item={row}
+                          onRetry={() => {
+                            setPending((list) => removePending(list, row.clientId))
+                            void sendAttachments(row.files ?? [attachmentOf(row)], undefined)
+                          }}
+                        />
+                      ))}
+                    </View>
+                  ) : null}
+                  {unsent.length > 0 ? (
+                    <View style={styles.unsentBlock}>
+                      {unsent.map((message) => (
+                        <Pressable
+                          key={message.clientId}
+                          accessibilityRole="button"
+                          accessibilityLabel={t('chat.notSentRetry')}
+                          onPress={() => void retry(message)}
+                          style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
+                        >
+                          <Text style={styles.unsentBody}>{message.body}</Text>
+                          <Text style={styles.unsentNote}>
+                            <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  ) : null}
+                </>
               }
-            }}
-            scrollEventThrottle={16}
-            renderItem={({ item: row }) =>
-              row.kind === 'day' ? (
-                <View style={styles.dayRow}>
-                  <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
-                </View>
-              ) : (
-                <MessageBubble
-                  message={row.message}
-                  mine={isMine(row.message)}
-                  endsGroup={row.endsGroup}
-                  partnerName={partner?.displayName ?? t('chat.them')}
-                  translation={translations[row.message._id]}
-                  translating={translating === row.message._id}
-                  replyToMine={row.message.replyTo?.senderId === me.data?._id}
-                  highlighted={highlighted === row.message._id}
-                  onLongPress={onLongPress}
-                  onReply={onReply}
-                  onJumpTo={onJumpTo}
-                  onOpenMedia={(items, index) => setViewing({ items, index })}
-                />
-              )
-            }
-          />
-        )}
+              /** Footer, not header: inverted, the footer is what sits on top. */
+              ListFooterComponent={
+                thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
+              }
+              /**
+               * Mandatory, not defensive: bubbles are variable height and there
+               * is no `getItemLayout`, so `scrollToIndex` throws outright on a
+               * row the list has not measured. Nudging to an estimate and asking
+               * again is the documented recovery.
+               */
+              onScrollToIndexFailed={(info) => {
+                listRef.current?.scrollToOffset({
+                  offset: info.averageItemLength * info.index,
+                  animated: false,
+                })
+                setTimeout(
+                  () =>
+                    listRef.current?.scrollToIndex({
+                      index: info.index,
+                      viewPosition: 0.5,
+                      animated: false,
+                    }),
+                  120,
+                )
+              }}
+              onScroll={({ nativeEvent }) => {
+                // Nothing to measure against the content height any more: the
+                // bottom of an inverted list is offset 0.
+                if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
+                  if (awayFrom !== null) setAwayFrom(null)
+                } else if (awayFrom === null) {
+                  setAwayFrom(items[0] ? String(items[0]._id) : null)
+                }
+              }}
+              scrollEventThrottle={16}
+              renderItem={({ item: row }) =>
+                row.kind === 'day' ? (
+                  <View style={styles.dayRow}>
+                    <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
+                  </View>
+                ) : (
+                  <MessageBubble
+                    message={row.message}
+                    mine={isMine(row.message)}
+                    endsGroup={row.endsGroup}
+                    partnerName={partner?.displayName ?? t('chat.them')}
+                    translation={translations[row.message._id]}
+                    translating={translating === row.message._id}
+                    replyToMine={row.message.replyTo?.senderId === me.data?._id}
+                    highlighted={highlighted === row.message._id}
+                    onLongPress={onLongPress}
+                    onReply={onReply}
+                    onJumpTo={onJumpTo}
+                    onOpenMedia={(items, index) => setViewing({ items, index })}
+                  />
+                )
+              }
+            />
+          )}
 
-        {/*
+          {/*
           A window is a detour, and the way back has to be obvious — otherwise
           the only exit is sending a message or leaving the screen.
         */}
-        {jumpAnchor !== null ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setJumpAnchor(null)}
-            style={styles.backToLatest}
-          >
-            <Feather name="arrow-down-circle" size={15} color={colors.textInverse} />
-            <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
-          </Pressable>
-        ) : null}
+          {jumpAnchor !== null ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setJumpAnchor(null)}
+              style={styles.backToLatest}
+            >
+              <Feather name="arrow-down-circle" size={15} color={colors.textInverse} />
+              <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
+            </Pressable>
+          ) : null}
 
-        {awayFrom !== null && jumpAnchor === null ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={
-              missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
-            }
-            onPress={() => {
-              listRef.current?.scrollToOffset({ offset: 0, animated: true })
-              setAwayFrom(null)
-            }}
-            style={styles.jump}
-          >
-            <Feather name="arrow-down" size={18} color={colors.textInverse} />
-            {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
-          </Pressable>
-        ) : null}
-      </View>
+          {awayFrom !== null && jumpAnchor === null ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
+              }
+              onPress={() => {
+                listRef.current?.scrollToOffset({ offset: 0, animated: true })
+                setAwayFrom(null)
+              }}
+              style={styles.jump}
+            >
+              <Feather name="arrow-down" size={18} color={colors.textInverse} />
+              {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
+            </Pressable>
+          ) : null}
+        </View>
 
-      {/*
+        {/*
         The correction composer, and the success pair again — the same colour
         the sent correction will be, so the writer can already see what they are
         making. It shows the sentence being corrected in full rather than
         truncated to a line: a correction is an edit, and an edit made from a
         half-remembered original is how a wrong one gets sent.
       */}
-      {/*
+        {/*
         Sibling of the correcting banner below, and deliberately quieter: a
         reply is the ordinary case and a correction is the teaching one, so the
         correction keeps the success colour and this gets the accent edge.
       */}
-      {replyingTo && !correcting && !editing ? (
-        <View style={styles.replyingBanner}>
-          <View style={styles.replyingBar} />
-          <View style={styles.replyingText}>
-            <Text style={styles.replyingTitle} numberOfLines={1}>
-              {isMine(replyingTo)
-                ? t('chat.replyingToYourself')
-                : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') })}
-            </Text>
-            <Text style={styles.replyingPreview} numberOfLines={1}>
-              {replyingTo.body || t(messageTypeKey(replyingTo.type))}
-            </Text>
+        {replyingTo && !correcting && !editing ? (
+          <View style={styles.replyingBanner}>
+            <View style={styles.replyingBar} />
+            <View style={styles.replyingText}>
+              <Text style={styles.replyingTitle} numberOfLines={1}>
+                {isMine(replyingTo)
+                  ? t('chat.replyingToYourself')
+                  : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') })}
+              </Text>
+              <Text style={styles.replyingPreview} numberOfLines={1}>
+                {replyingTo.body || t(messageTypeKey(replyingTo.type))}
+              </Text>
+            </View>
+            <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
+              <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
+            </Pressable>
           </View>
-          <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
-            <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
-          </Pressable>
-        </View>
-      ) : null}
+        ) : null}
 
-      {editing ? (
-        <View style={styles.replyingBanner}>
-          <View style={[styles.replyingBar, styles.editingBar]} />
-          <View style={styles.replyingText}>
-            <Text style={[styles.replyingTitle, styles.editingTitle]}>{t('chat.editing')}</Text>
-            <Text style={styles.replyingPreview} numberOfLines={1}>
-              {editing.body}
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => {
-              setEditing(null)
-              setDraft('')
-            }}
-            hitSlop={8}
-          >
-            <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
-          </Pressable>
-        </View>
-      ) : null}
-
-      {correcting ? (
-        <View style={styles.correctingBanner}>
-          <View style={styles.correctingHead}>
-            <Feather name="edit-3" size={14} color={colors.success} />
-            <Text style={styles.correctingTitle}>{t('chat.correcting')}</Text>
+        {editing ? (
+          <View style={styles.replyingBanner}>
+            <View style={[styles.replyingBar, styles.editingBar]} />
+            <View style={styles.replyingText}>
+              <Text style={[styles.replyingTitle, styles.editingTitle]}>{t('chat.editing')}</Text>
+              <Text style={styles.replyingPreview} numberOfLines={1}>
+                {editing.body}
+              </Text>
+            </View>
             <Pressable
               onPress={() => {
-                setCorrecting(null)
+                setEditing(null)
                 setDraft('')
               }}
               hitSlop={8}
             >
-              <Text style={styles.correctingCancel}>{t('common.cancel')}</Text>
+              <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
             </Pressable>
           </View>
-          <Text style={styles.correctingOriginal}>{correcting.body}</Text>
-          {/*
+        ) : null}
+
+        {correcting ? (
+          <View style={styles.correctingBanner}>
+            <View style={styles.correctingHead}>
+              <Feather name="edit-3" size={14} color={colors.success} />
+              <Text style={styles.correctingTitle}>{t('chat.correcting')}</Text>
+              <Pressable
+                onPress={() => {
+                  setCorrecting(null)
+                  setDraft('')
+                }}
+                hitSlop={8}
+              >
+                <Text style={styles.correctingCancel}>{t('common.cancel')}</Text>
+              </Pressable>
+            </View>
+            <Text style={styles.correctingOriginal}>{correcting.body}</Text>
+            {/*
             The one reassurance worth spending a line on. Corrections are the
             behaviour the whole product exists for, and a user who suspects
             they are rationed writes fewer of them — so the limit is stated
             from `PLAN_LIMITS` rather than left to be guessed.
           */}
-          {PLAN_LIMITS.free.correctionsPer24h === null ? (
-            <Text style={styles.correctingFree}>{t('chat.unlimitedEveryPlan')}</Text>
-          ) : null}
-        </View>
-      ) : null}
+            {PLAN_LIMITS.free.correctionsPer24h === null ? (
+              <Text style={styles.correctingFree}>{t('chat.unlimitedEveryPlan')}</Text>
+            ) : null}
+          </View>
+        ) : null}
 
-      {/* Android had no `behavior` at all, which is the same as not wrapping
-          it — the keyboard covered the composer and the hint row under it. */}
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        {/* Above the row rather than inside it: the row holds the send
+        <View>
+          {/* Above the row rather than inside it: the row holds the send
             button, and anything that grows in there competes for width with
             the only control that sends the message. */}
-        <AttachmentPreviewRow
-          pending={pendingMedia}
-          onRemove={(index) => setPendingMedia((items) => items.filter((_, at) => at !== index))}
-        />
-        <View style={styles.composer}>
-          {recorder.isRecording ? (
-            <View style={styles.recording}>
-              <Text style={styles.recordingDot}>●</Text>
-              <Text style={styles.recordingTime}>
-                {Math.floor(recorder.seconds / 60)}:{String(recorder.seconds % 60).padStart(2, '0')}
-              </Text>
-              <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
-                <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <Pressable
-              accessibilityLabel={
-                mediaLockedFor > 0
-                  ? t('chat.mediaLocked', { count: mediaLockedFor })
-                  : t('composer.attachMedia')
-              }
-              onPress={() =>
-                mediaLockedFor > 0
-                  ? void showAlert(
-                      t('chat.mediaLockedTitle'),
-                      t('chat.mediaLocked', { count: mediaLockedFor }),
-                    )
-                  : void pickMedia()
-              }
-              disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
-              hitSlop={8}
-              style={styles.attach}
-            >
-              <Feather
-                name="camera"
-                size={20}
-                color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
-              />
-            </Pressable>
-          )}
-          <TextInput
-            value={draft}
-            onChangeText={onChangeDraft}
-            placeholder={correcting ? t('chat.writeCorrection') : t('chat.writeMessage')}
-            placeholderTextColor={colors.textFaint}
-            style={styles.input}
-            multiline
-            /**
-             * Web only, and it has to be a key handler: `multiline` is a
-             * `<textarea>` in the browser, where `onSubmitEditing` never
-             * fires — the handler that used to be here had never run. On
-             * native the return key inserts a newline and the send button is
-             * the way to send, which is what people expect there.
-             */
-            {...(Platform.OS === 'web'
-              ? {
-                  onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-                    const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
-                      shiftKey?: boolean
-                    }
-                    if (!shouldSubmitOnEnter(key, shiftKey === true)) return
-                    // Otherwise the newline lands in the box behind the send.
-                    event.preventDefault()
-                    void send()
-                  },
-                }
-              : {})}
+          <AttachmentPreviewRow
+            pending={pendingMedia}
+            onRemove={(index) => setPendingMedia((items) => items.filter((_, at) => at !== index))}
           />
-          {/* The button becomes a microphone when there is nothing to send,
+          <View style={styles.composer}>
+            {recorder.isRecording ? (
+              <View style={styles.recording}>
+                <Text style={styles.recordingDot}>●</Text>
+                <Text style={styles.recordingTime}>
+                  {Math.floor(recorder.seconds / 60)}:
+                  {String(recorder.seconds % 60).padStart(2, '0')}
+                </Text>
+                <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
+                  <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Pressable
+                accessibilityLabel={
+                  mediaLockedFor > 0
+                    ? t('chat.mediaLocked', { count: mediaLockedFor })
+                    : t('composer.attachMedia')
+                }
+                onPress={() =>
+                  mediaLockedFor > 0
+                    ? void showAlert(
+                        t('chat.mediaLockedTitle'),
+                        t('chat.mediaLocked', { count: mediaLockedFor }),
+                      )
+                    : void pickMedia()
+                }
+                disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
+                hitSlop={8}
+                style={styles.attach}
+              >
+                <Feather
+                  name="camera"
+                  size={20}
+                  color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
+                />
+              </Pressable>
+            )}
+            <TextInput
+              value={draft}
+              onChangeText={onChangeDraft}
+              placeholder={correcting ? t('chat.writeCorrection') : t('chat.writeMessage')}
+              placeholderTextColor={colors.textFaint}
+              style={styles.input}
+              multiline
+              /**
+               * Web only, and it has to be a key handler: `multiline` is a
+               * `<textarea>` in the browser, where `onSubmitEditing` never
+               * fires — the handler that used to be here had never run. On
+               * native the return key inserts a newline and the send button is
+               * the way to send, which is what people expect there.
+               */
+              {...(Platform.OS === 'web'
+                ? {
+                    onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+                      const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
+                        shiftKey?: boolean
+                      }
+                      if (!shouldSubmitOnEnter(key, shiftKey === true)) return
+                      // Otherwise the newline lands in the box behind the send.
+                      event.preventDefault()
+                      void send()
+                    },
+                  }
+                : {})}
+            />
+            {/* The button becomes a microphone when there is nothing to send,
               which is the gesture people already expect from a chat app. An
               attachment with no caption is something to send, so a picked
               photo turns it back into an arrow. */}
-          {draft.trim() || pendingMedia.length > 0 ? (
-            <Pressable
-              onPress={() => void send()}
-              disabled={sending || sendingMedia}
-              style={[styles.sendButton, (sending || sendingMedia) && styles.sendDisabled]}
-            >
-              <Feather
-                name={sending || sendingMedia ? 'more-horizontal' : 'arrow-up'}
-                size={20}
-                color={colors.primaryText}
-              />
-            </Pressable>
-          ) : (
-            <Pressable
-              onPress={() => void toggleRecording()}
-              disabled={sendingMedia}
-              style={[
-                styles.sendButton,
-                recorder.isRecording && styles.recordButtonActive,
-                sendingMedia && styles.sendDisabled,
-              ]}
-            >
-              <Feather
-                name={recorder.isRecording ? 'square' : 'mic'}
-                size={20}
-                color={recorder.isRecording ? colors.textInverse : colors.primaryText}
-              />
-            </Pressable>
-          )}
-        </View>
-        {/*
+            {draft.trim() || pendingMedia.length > 0 ? (
+              <Pressable
+                onPress={() => void send()}
+                disabled={sending || sendingMedia}
+                style={[styles.sendButton, (sending || sendingMedia) && styles.sendDisabled]}
+              >
+                <Feather
+                  name={sending || sendingMedia ? 'more-horizontal' : 'arrow-up'}
+                  size={20}
+                  color={colors.primaryText}
+                />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => void toggleRecording()}
+                disabled={sendingMedia}
+                style={[
+                  styles.sendButton,
+                  recorder.isRecording && styles.recordButtonActive,
+                  sendingMedia && styles.sendDisabled,
+                ]}
+              >
+                <Feather
+                  name={recorder.isRecording ? 'square' : 'mic'}
+                  size={20}
+                  color={recorder.isRecording ? colors.textInverse : colors.primaryText}
+                />
+              </Pressable>
+            )}
+          </View>
+          {/*
           The two facts a first-time user cannot discover: that a long press
           corrects, and that a message pays. Both come from `TOKEN_RULES`
           rather than being written into the copy.
         */}
-        <View style={styles.composerHint}>
-          <ComposerHint style={styles.hintLeft} />
-          <Text style={styles.hintRight}>
-            {t('chat.tokensPerMessage', { count: TOKEN_RULES.award.message })}
-          </Text>
+          <View style={styles.composerHint}>
+            <ComposerHint style={styles.hintLeft} />
+            <Text style={styles.hintRight}>
+              {t('chat.tokensPerMessage', { count: TOKEN_RULES.award.message })}
+            </Text>
+          </View>
         </View>
-      </KeyboardAvoidingView>
-      <PhotoViewer
-        photos={viewing?.items ?? []}
-        index={viewing?.index ?? null}
-        onClose={() => setViewing(null)}
-      />
+        <PhotoViewer
+          photos={viewing?.items ?? []}
+          index={viewing?.index ?? null}
+          onClose={() => setViewing(null)}
+        />
+      </Animated.View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   screen: { paddingHorizontal: 0 },
+  avoid: { flex: 1 },
   header: {
     alignItems: 'center',
     backgroundColor: colors.surface,
