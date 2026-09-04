@@ -49,7 +49,7 @@ catalog:
   # react / expo (SDK 57)
   react: 19.2.3
   react-dom: 19.2.3
-  react-native: 0.86.2
+  react-native: 0.86.3
   react-native-web: ~0.21.0
   '@types/react': ~19.2.2
 
@@ -59,5 +59,12 @@ onlyBuiltDependencies:
   - mongodb-memory-server
 
 # Keep the React Native toolchain on one minor. Expo SDK 57 targets RN 0.86.
+#
+# The override alone never bit. Nothing *depends* on `@react-native/metro-config`
+# — react-native and react-native-worklets only declare it as a peer — and an
+# override rewrites dependency specs, so there was no spec to rewrite and the
+# peer resolved to whatever the registry offered, which was 0.87.1 from the next
+# minor. It is listed as a devDependency of apps/mobile as well, which is what
+# actually puts a 0.86 copy in the tree for the override to hold at.
 overrides:
-  '@react-native/metro-config': 0.86.2
+  '@react-native/metro-config': 0.86.3

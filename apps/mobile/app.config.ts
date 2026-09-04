@@ -166,6 +166,17 @@ const config: ExpoConfig = {
   plugins: [
     'expo-router',
     /*
+     * Three that carry a config plugin but take no configuration: they only
+     * need naming so `prebuild` runs them. Listed because `expo-doctor`
+     * reports their absence, and because `runtimeVersion` is a fingerprint —
+     * a plugin that should be in the native build and is not makes every
+     * fingerprint computed here disagree with the one a build machine
+     * computes from the same source.
+     */
+    'expo-font',
+    'expo-image',
+    'expo-secure-store',
+    /*
      * The static splash the OS draws before any JS exists. Its whole job is to
      * be indistinguishable from `AppSplash`'s first frame — same ground, same
      * badge, same size — so that hiding it is not a blink.
