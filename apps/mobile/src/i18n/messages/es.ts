@@ -267,6 +267,8 @@ export const es: Localized<EnMessages> = {
     title: 'Practica con alguien que está aprendiendo el tuyo',
     subtitle: 'Mira primero: puedes elegir tus idiomas y ver quién está aquí antes de registrarte.',
     browse: 'Echar un vistazo',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Intercambios de idiomas',
     createAccount: 'Crear una cuenta',
     haveAccount: 'Ya tengo una cuenta',
     guestFailed: 'No se pudo empezar',

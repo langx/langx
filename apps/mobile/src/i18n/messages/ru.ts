@@ -305,6 +305,8 @@ export const ru: Localized<EnMessages> = {
     title: 'Практикуйся с тем, кто учит твой язык',
     subtitle: 'Сначала осмотрись — можно выбрать языки и увидеть, кто здесь, ещё до регистрации.',
     browse: 'Сначала осмотреться',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Языковые обмены',
     createAccount: 'Создать аккаунт',
     haveAccount: 'У меня уже есть аккаунт',
     guestFailed: 'Не удалось начать',

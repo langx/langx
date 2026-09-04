@@ -306,6 +306,8 @@ export const en = {
     subtitle:
       'Have a look first — you can pick your languages and see who is here before you sign up for anything.',
     browse: 'Look around first',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Language exchanges',
     createAccount: 'Create an account',
     haveAccount: 'I already have an account',
     guestFailed: 'Could not start',

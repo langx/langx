@@ -264,6 +264,8 @@ export const ptBR: Localized<EnMessages> = {
     subtitle:
       'Dá uma olhada antes: você pode escolher seus idiomas e ver quem está aqui sem se cadastrar.',
     browse: 'Dar uma olhada',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Intercâmbios de idiomas',
     createAccount: 'Criar uma conta',
     haveAccount: 'Já tenho uma conta',
     guestFailed: 'Não foi possível começar',

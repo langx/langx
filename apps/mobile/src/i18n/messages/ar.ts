@@ -316,6 +316,8 @@ export const ar: Localized<EnMessages> = {
     title: 'تدرّب مع من يتعلّم لغتك',
     subtitle: 'ألقِ نظرة أولًا — يمكنك اختيار لغاتك ورؤية من هنا قبل التسجيل.',
     browse: 'ألقِ نظرة أولًا',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'تبادلات لغوية',
     createAccount: 'أنشئ حسابًا',
     haveAccount: 'لديّ حساب بالفعل',
     guestFailed: 'تعذّر البدء',

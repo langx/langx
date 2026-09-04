@@ -271,6 +271,8 @@ export const fr: Localized<EnMessages> = {
     subtitle:
       'Regarde d’abord : tu peux choisir tes langues et voir qui est là avant de t’inscrire.',
     browse: 'Jeter un œil',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Échanges linguistiques',
     createAccount: 'Créer un compte',
     haveAccount: 'J’ai déjà un compte',
     guestFailed: 'Impossible de démarrer',

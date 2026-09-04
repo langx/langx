@@ -278,6 +278,8 @@ export const tr: Localized<EnMessages> = {
     subtitle:
       'Önce bir bak — hiçbir şeye kaydolmadan dillerini seçip kimlerin burada olduğunu görebilirsin.',
     browse: 'Önce bir bakayım',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Dil değişimleri',
     createAccount: 'Hesap oluştur',
     haveAccount: 'Zaten hesabım var',
     guestFailed: 'Başlatılamadı',

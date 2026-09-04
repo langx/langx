@@ -270,6 +270,8 @@ export const de: Localized<EnMessages> = {
     subtitle:
       'Sieh dich erst um — du kannst deine Sprachen wählen und sehen, wer hier ist, bevor du dich anmeldest.',
     browse: 'Erst umsehen',
+    /** Screen-reader name for the row of example exchanges. */
+    pairsLabel: 'Sprachtandems',
     createAccount: 'Konto erstellen',
     haveAccount: 'Ich habe schon ein Konto',
     guestFailed: 'Konnte nicht starten',
