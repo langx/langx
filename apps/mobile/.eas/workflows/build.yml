@@ -1,0 +1,30 @@
+# A production build, and nothing after it.
+#
+# `release.yml` is the same build with a submission chained onto it; this is
+# the half you want when the artefact is for testing, or when a build is
+# needed before a JS-only release can reach anybody.
+#
+# Started on EAS rather than from a laptop, and that is the point rather than
+# a convenience. Under the `fingerprint` runtime policy the CLI computes a
+# runtime version locally and the builder computes its own, and the build is
+# refused if they disagree. They always disagree for Android: `app.config.ts`
+# reads `GOOGLE_SERVICES_JSON`, which is a **secret** file variable, so it is
+# materialised on the builder and cannot be read anywhere else — the file
+# joins one fingerprint and not the other, whatever environment the CLI is
+# told to use. Run from here there is no second machine to disagree with.
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: Which platform to build
+        default: android
+        options: [android, ios, all]
+
+jobs:
+  build_production:
+    type: build
+    params:
+      platform: ${{ inputs.platform }}
+      profile: production
