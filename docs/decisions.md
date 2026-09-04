@@ -1761,11 +1761,18 @@ costs nothing.
 
 ## The attachment uploads on submit, not on pick
 
-The chat composer uploads the moment you pick, because in a thread picking _is_
-sending. The feed composer holds the local file and uploads when the post is
-actually submitted: there is still a sentence being written, and uploading on
-pick would spend a day's media quota and leave bytes in the bucket for a post
-the writer then abandons.
+Both composers hold the local file and upload when the message or the post is
+actually sent. Uploading on pick spends a day's media quota and leaves bytes in
+the bucket for something the writer then abandons.
+
+Chat used to be the exception, on the argument that in a thread picking _is_
+sending. That was wrong in a way the feed had already got right. Picking is
+choosing, and the two questions somebody asks immediately afterwards — which
+photo did I pick, and how do I take it back — had no answer at all: the file
+went up and the message appeared, and an accident was a message to delete. A
+thumbnail with a cross answers both, and it is also what makes a caption
+possible, since the draft is still there to be typed into when the send
+happens.
 
 ## A post still needs words
 
@@ -2732,3 +2739,74 @@ silently. Metro caches transforms, and the inlined value is part of one. An
 export re-run with the variable corrected returned a byte-identical bundle,
 still holding the old address. `--clear` is required whenever an
 `EXPO_PUBLIC_*` value changes.
+
+## Six attachments, a field beside the old one, and one unit of quota
+
+A message and a post carry a list now. Three decisions hold it up.
+
+**`attachments` sits next to `media` rather than replacing it.** Every binary
+in the wild writes and reads a single `media`, and cannot be updated in step
+with the server; so do the 3,604 messages the v1 import brought over. The send
+schemas rewrite a `{ kind, media }` body into the new shape, every new write
+fills `media` with the first file, and everything reads through
+`attachmentsOf`. An installed app therefore keeps working and shows the first
+photo of a gallery — the honest degradation, and visibly better than an empty
+bubble. Migrating the collection and dropping the field is a change of its own,
+with no deadline attached: the duplicated field costs a few bytes a row and
+nothing else.
+
+**Six, matching `PLAN_LIMITS.maxPhotos` on a profile.** One number to remember
+rather than two that differ for no reason. It is not a cost control — the
+per-file ceilings are — it is what keeps a gallery a gallery instead of an
+album, and it bounds how many video players one row can allocate.
+
+**One message is one unit of `mediaPer24h`, however many files it holds.** The
+two-take pronunciation answer already established this, and for the same
+reason: charging per file makes the second take feel expensive and it stops
+being recorded. Bytes are billed by the byte, so the per-file ceiling is the
+control that actually bounds storage. A voice note still cannot ride along with
+pictures — two recordings can, because that is the answer's two takes — since
+mixing kinds would make a message's type, and so its preview line and its
+notification, a coin toss between "photo" and "voice message".
+
+## A video is one file, and playing it needs a new build
+
+**No thumbnail.** The obvious build is a poster image uploaded beside the
+video, and it costs exactly what the second voice-note take would have cost: a
+field on `Media`, a second presigned upload, a second `assertMediaAllowed`, and
+a ruling on whether the pair spends one unit of quota or two. `expo-video`
+holds the first frame already — a paused player _is_ the thumbnail — so the
+whole feature is a `VideoView` that has not been told to play.
+
+**Two ceilings, sixty seconds and sixty-four megabytes.** Either alone lets the
+other through: seconds alone admit a 4K minute at several hundred megabytes,
+bytes alone admit a long heavily-compressed clip nobody scrolls past. A minute
+is a sentence being demonstrated, which is what this is for; longer is a video
+call, and that is a different feature and out of scope.
+
+A duration over the ceiling is `MEDIA_TOO_LONG`, not `MEDIA_TOO_LARGE`. A
+sixty-one-second clip of six megabytes is not large, and the answer is to trim
+it rather than to re-encode it — the same argument that split
+`UNSUPPORTED_MEDIA_TYPE` out of `VALIDATION_FAILED` one entry above. Duration
+is also _required_ for a video, unlike audio: a recording is made by us and
+always carries its length, where a video arrives from a picker, and a ceiling
+that can be bypassed by omitting a field is not a ceiling.
+
+**mp4 and quicktime, not webm.** iOS has no VP8 or VP9 decoder at any level, so
+accepting webm would store files half the recipients cannot open with nothing
+anywhere saying why. `audio/webm` is accepted only because a browser's recorder
+has no other output; the video picker hands us whatever the camera wrote, so it
+has no such excuse. The same `preferredAssetRepresentationMode: Compatible`
+that fixed HEIC does the second half of this on iOS: it makes PhotoKit export
+an HEVC `.mov` as H.264, without which an iPhone-to-Android video is a black
+frame.
+
+**`runtimeVersion` moves from `sdkVersion` to `fingerprint`.** This is the
+first native module added since the SDK 57 builds, and it is what proved the
+old policy too coarse: every SDK 57 build shares one runtime string, so
+publishing this would have sent a bundle to binaries that do not contain
+`expo-video` and crashed them on the first video bubble — to everyone at once,
+now that merging to main publishes to the production channel. `fingerprint`
+hashes the native project and changes exactly when a build is genuinely needed.
+The cost is real and belongs in the release note: builds installed before this
+change stop receiving updates until they are replaced.

@@ -205,7 +205,11 @@ Keys are prefixed `avatars/{userId}/`, `photos/{userId}/`,
 by user rather than by post because the post does not exist when the URL is
 signed; every prefix is one the account purge can sweep. Attachments on posts
 and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with chat —
-one shape, one ceiling, one abuse budget.
+one shape, one ceiling table, one abuse budget. The ceilings are per kind, in
+`MEDIA_LIMITS`: 8MB for an image, 16MB and two minutes for a voice note, 64MB
+and sixty seconds for a video. A message or a post carries up to
+`MAX_ATTACHMENTS` of them and spends one unit of the budget however many that
+is — the per-file byte ceiling is what bounds storage, not the count.
 
 **Translation:** a `TranslationProvider` interface. Default **Google Cloud
 Translation v3** for its language coverage; DeepL as an optional quality
@@ -544,7 +548,7 @@ erodes and farming tokens becomes a substitute for subscribing.
 
 ### Attachments unlock after five messages
 
-A conversation carries no image or voice note until it has carried
+A conversation carries no image, video or voice note until it has carried
 `MEDIA_UNLOCKS_AFTER_MESSAGES` messages, counted across both participants. No
 tier is exempt. Enforced when the upload URL is **signed** — the client PUTs
 straight to the bucket, so a check at send time would arrive after the bytes —
@@ -639,15 +643,22 @@ denormalized `lastMessage`, `unread: {<userId>: n}`, `firstMessageBy`,
 **`messages`** — a separate collection; embedding would hit the 16MB limit.
 
 ```ts
-{ conversationId, senderId, type: 'text'|'correction'|'image'|'audio',
-  body,                                    // caption for an attachment
+{ conversationId, senderId, type: 'text'|'correction'|'image'|'audio'|'video',
+  body,                                    // caption for the attachments
   correction?: { targetMessageId, original, corrected, note },
-  media?: { url, contentType, sizeBytes, durationSeconds?, width?, height? },
+  attachments?: [{ url, contentType, sizeBytes, durationSeconds?, width?, height? }],
+  media?: <attachments[0]>,                // legacy; see below
   readAt?, createdAt, deletedWithAccount? }
 ```
 
 Attachments restore v1 parity and are what let the message migration bring a
-whole thread rather than a text-only skeleton. Size is capped when the upload
+whole thread rather than a text-only skeleton. `media` is the field they were
+written to before there could be more than one; every new write fills it with
+the first of `attachments` so that a binary predating the list shows a photo
+rather than an empty bubble, and everything reads through `attachmentsOf`.
+Nothing is migrated — dropping `media` is a change of its own. Video is stored
+exactly as uploaded: no transcoding, and no thumbnail file, because the player
+already holds the first frame. Size is capped when the upload
 URL is _signed_ rather than after the bytes have been paid for, and
 `PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
 rather than a paywall, since v1 offered both free. Corrections stay uncapped
