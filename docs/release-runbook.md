@@ -676,16 +676,33 @@ of it runs together.
       real sale; the other candidates on the list are `txcd_10000000` (General
       — Electronically Supplied Services) and `txcd_10103001` (SaaS, business
       use)
-- [ ] **Stripe Tax has its own setup, on Stripe's side**, and this switch does
-      not do it: an origin address, and a registration per jurisdiction you
-      actually collect in. Until those exist Stripe Tax computes nothing, so
-      the checkout looks the same and no tax is added. Stripe dashboard →
-      _Tax_. Behic's, because it turns on a tax obligation
-- [ ] Decide the settings still left at their defaults, under _Web → LangX
-      (RevenueCat Billing) → Billing_: **renewal emails** — all three are off,
-      and the "upcoming yearly renewal" one is the notice several jurisdictions
-      expect for an annual subscription — and the **invoice footer**, which
-      names the legal entity and is empty
+- [ ] **Stripe Tax has its own setup, on Stripe's side**, and the RevenueCat
+      switch does not do it. Checked on 5 September 2026: the Stripe account
+      (`acct_1O1p6JFsZedeNj7H`, live mode, no activation banner) has **no tax
+      registrations**, and its own Tax page says so — "1 step remaining to
+      start collecting tax automatically. Next up: Add a tax registration".
+      Stripe Tax only collects where a registration exists, so **today nothing
+      is added to any price**: a $6.99 subscription charges $6.99. Stripe
+      tracks transactions and flags potential obligations under _Tax →
+      Locations_ (which showed no live transactions at all yet). A registration
+      is a declaration that you collect in that jurisdiction, so it is Behic's
+      and his accountant's, not something to add on anyone's behalf
+- [ ] While there: Stripe's **account-level preset product tax code** is
+      _General — Services_, whereas RevenueCat sends `txcd_10103000` (SaaS,
+      personal use) per charge. The per-charge code is what a customer is taxed
+      under, so the money is right either way — but Stripe's obligation
+      monitoring reads the preset, so the two disagreeing makes the threshold
+      alerts less accurate than they look
+- [x] The two remaining checkout settings, both under _Web → LangX (RevenueCat
+      Billing) → Billing_, set on 5 September 2026. **Renewal emails**: the
+      "upcoming yearly renewal" notice is on, which is what several
+      jurisdictions expect for an annual subscription; the other two stay off
+      because neither applies — our free trial is seven days, not the "longer
+      than 1 month" those cover, and there are no introductory offers.
+      **Invoice footer**: "LangX is operated by New Chapter Technology LLC,
+      Wyoming, USA." The registered name in the Wyoming Articles of
+      Organization is _New Chapter Technology Limited Liability Company_; the
+      footer uses the everyday short form
 - [ ] Buy once on `app.langx.io` with a real card, then check `subscriptions`
       for the event (`store: "rc_billing"`), the tier on the profile, and that
       Settings' _Manage subscription_ row opens RevenueCat's portal. The Test
