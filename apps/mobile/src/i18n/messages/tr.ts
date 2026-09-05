@@ -980,6 +980,7 @@ export const tr: Localized<EnMessages> = {
     updateLocation: 'Konumumu güncelle',
     locationUpdated: '{time} önce güncellendi',
     updating: 'Güncelleniyor…',
+    privacyFailed: 'Ayar kaydedilemedi',
     languageSection: 'Dil',
     appLanguage: 'Uygulama dili',
     translateTo: 'Çeviri dili',

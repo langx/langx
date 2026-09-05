@@ -57,7 +57,16 @@ interface SettingsRowProps {
 export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
   const styles = useStyles()
   const names = useDisplayNames()
-  const { t, profile, update } = model
+  const { t, profile, update, setPrivacy, pendingPrivacy } = model
+  /**
+   * A privacy toggle's value and busy state in one place: while its own
+   * request is in flight the switch shows what was asked for, so it moves
+   * under the finger, and settles on what the server answered.
+   */
+  const privacyToggle = (field: keyof NonNullable<typeof pendingPrivacy>, stored: boolean) => {
+    const pending = pendingPrivacy?.[field]
+    return { busy: pending !== undefined, value: pending ?? stored }
+  }
 
   switch (id) {
     case 'plan.current':
@@ -114,8 +123,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
               <Toggle
                 accessibilityLabel={t('settings.incognito')}
                 disabled={!model.canIncognito}
-                value={profile?.privacy.incognito ?? false}
-                onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
+                {...privacyToggle('incognito', profile?.privacy.incognito ?? false)}
+                onValueChange={(incognito) => setPrivacy({ incognito })}
               />
             </View>
           }
@@ -133,10 +142,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           accessory={
             <Toggle
               accessibilityLabel={t('settings.activityMap')}
-              value={profile?.privacy.activityMapVisible ?? true}
-              onValueChange={(activityMapVisible) =>
-                update.mutate({ privacy: { activityMapVisible } })
-              }
+              {...privacyToggle('activityMapVisible', profile?.privacy.activityMapVisible ?? true)}
+              onValueChange={(activityMapVisible) => setPrivacy({ activityMapVisible })}
             />
           }
         />
@@ -154,8 +161,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           accessory={
             <Toggle
               accessibilityLabel={t('settings.showWeekChart')}
-              value={profile?.privacy.weekChartVisible ?? true}
-              onValueChange={(weekChartVisible) => update.mutate({ privacy: { weekChartVisible } })}
+              {...privacyToggle('weekChartVisible', profile?.privacy.weekChartVisible ?? true)}
+              onValueChange={(weekChartVisible) => setPrivacy({ weekChartVisible })}
             />
           }
         />
@@ -169,8 +176,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           accessory={
             <Toggle
               accessibilityLabel={t('settings.hideOnline')}
-              value={profile?.privacy.hideOnlineStatus ?? false}
-              onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
+              {...privacyToggle('hideOnlineStatus', profile?.privacy.hideOnlineStatus ?? false)}
+              onValueChange={(hideOnlineStatus) => setPrivacy({ hideOnlineStatus })}
             />
           }
         />
@@ -186,8 +193,8 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           accessory={
             <Toggle
               accessibilityLabel={t('settings.hideCity')}
-              value={profile?.privacy.hideCity ?? false}
-              onValueChange={(hideCity) => update.mutate({ privacy: { hideCity } })}
+              {...privacyToggle('hideCity', profile?.privacy.hideCity ?? false)}
+              onValueChange={(hideCity) => setPrivacy({ hideCity })}
             />
           }
         />

@@ -181,6 +181,29 @@ export function invalidateUnread(client: QueryClient): void {
   void client.invalidateQueries({ queryKey: keys.unread })
 }
 
+/**
+ * The caches that show this profile the way other people see it.
+ *
+ * `keys.me` is written from every profile mutation's response, but "Preview my
+ * profile" is the public screen, which reads three other queries — the
+ * profile by handle, its summary (the week chart) and its activity map — and
+ * with a 30-second `staleTime` those kept showing the old privacy switches
+ * until a pull-to-refresh. Invalidated rather than patched: the chart and the
+ * map are computed on the server from the switch, so the client has nothing
+ * correct to write. By handle, which is what the preview navigates with, and
+ * by id, which is what a deep link carries.
+ */
+function invalidateOwnPublicViews(queryClient: QueryClient, profile: MeProfile): void {
+  for (const key of [
+    keys.profile(profile.handle),
+    keys.profile(profile._id),
+    ['profileSummary', profile.handle],
+    ['profileActivity', profile.handle],
+  ]) {
+    void queryClient.invalidateQueries({ queryKey: key })
+  }
+}
+
 export async function markConversationRead(
   conversationId: string,
   queryClient: QueryClient,
@@ -226,10 +249,13 @@ export interface MeProfile {
   gender: Gender
   country?: string
   /**
-   * Read off the location, not typed. Absent for anyone not sharing one, and
-   * for anyone who turned it off in Settings.
+   * Read off the location, not typed, and named as the server stores it — the
+   * raw document is what `/profiles/me` sends. Absent for anyone not sharing a
+   * location. *Not* gated by `privacy.hideCity`: that switch is about other
+   * people, and the owner's screen applies it itself so the setting stays
+   * visible in the one place it can be checked.
    */
-  city?: string
+  cityName?: string
   timezone?: string
   photos?: { url: string }[]
   nativeLanguages: { code: string }[]
@@ -1579,6 +1605,8 @@ export function useShareLocation() {
       api.post<MeProfile>('/profiles/me/location', at),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
+      // The city on the public profile is read off this point.
+      invalidateOwnPublicViews(queryClient, profile)
       // The prefix every `keys.discovery(filters)` starts with: nearby results
       // are ordered by a distance that just changed, and which filter string
       // produced the cached page is not something this mutation can know.
@@ -1602,6 +1630,7 @@ export function useSetCountryFromLocation() {
       api.patch<MeProfile>('/profiles/me/country', { country, source: 'location' }),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
+      invalidateOwnPublicViews(queryClient, profile)
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })
     },
   })
@@ -1613,17 +1642,30 @@ export function useStopSharingLocation() {
     mutationFn: () => api.delete<MeProfile>('/profiles/me/location'),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
+      invalidateOwnPublicViews(queryClient, profile)
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })
     },
   })
 }
 
+/**
+ * What `PATCH /profiles/me` accepts, as far as the app needs to know: the
+ * privacy switches are named so a settings row can tell, from the mutation's
+ * `variables`, whether the request in flight is its own. Everything else stays
+ * loose — the server's `updateProfileSchema` is the real contract and strips
+ * what it does not know.
+ */
+export interface ProfilePatch extends Record<string, unknown> {
+  privacy?: Partial<MeProfile['privacy']>
+}
+
 export function useUpdateProfile() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: Record<string, unknown>) => api.patch<MeProfile>('/profiles/me', input),
+    mutationFn: (input: ProfilePatch) => api.patch<MeProfile>('/profiles/me', input),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
+      invalidateOwnPublicViews(queryClient, profile)
     },
   })
 }
@@ -1641,6 +1683,7 @@ export function useDiscloseGender() {
       api.post<MeProfile>('/profiles/me/gender', { gender }),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
+      invalidateOwnPublicViews(queryClient, profile)
       // The filter row reads `me.gender` to decide whether `onlyMyGender` does
       // anything, and discovery results change the moment it does.
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })

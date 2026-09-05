@@ -3,6 +3,7 @@ import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import {
+  type MeProfile,
   useEffectiveTier,
   useHasFeature,
   useIsPro,
@@ -182,6 +183,27 @@ export function useSettingsModel() {
     showToast(t('settings.appIconChanged'))
   }
 
+  /**
+   * One privacy switch, flipped. The five rows share `update`, so the failure
+   * handling lives here once; the toggle's own busy state (read off
+   * `update.variables`) covers the time in between. A refused change is told
+   * rather than swallowed — the switch has already sprung back, and a silent
+   * spring-back looks like a bug in the switch rather than a request that
+   * failed.
+   */
+  function setPrivacy(patch: Partial<MeProfile['privacy']>): void {
+    update.mutate(
+      { privacy: patch },
+      { onError: () => void showAlert(t('settings.privacyFailed'), t('common.retry')) },
+    )
+  }
+
+  /**
+   * Which privacy field the in-flight `PATCH` is changing, if any — what each
+   * row reads to show *its* toggle as busy and not its neighbours'.
+   */
+  const pendingPrivacy = update.isPending ? update.variables?.privacy : undefined
+
   async function toggleLocation(next: boolean): Promise<void> {
     if (!next) {
       stopSharingLocation.mutate()
@@ -247,6 +269,8 @@ export function useSettingsModel() {
     theme,
     profile,
     update,
+    setPrivacy,
+    pendingPrivacy,
     iconSupported,
     appIcon,
     appIcons: APP_ICONS,

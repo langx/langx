@@ -1751,6 +1751,38 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
         return response.json<{ city?: string }>()
       }
 
+      /**
+       * The document as stored, `cityName` and all: the Me screen reads this
+       * field and applies `hideCity` itself. This is the test that would have
+       * caught the app reading `city` off a response that never carried it.
+       */
+      it('is on the own profile as cityName, regardless of the switch', async () => {
+        await seedCities()
+        const user = await onboardedUser('city-own@example.com', 'cityown')
+        await app.inject({
+          method: 'POST',
+          url: '/profiles/me/location',
+          headers: { cookie: user.cookie },
+          payload: { lat: 41.01, lng: 28.98 },
+        })
+        await app.inject({
+          method: 'PATCH',
+          url: '/profiles/me',
+          headers: { cookie: user.cookie },
+          payload: { privacy: { hideCity: true } },
+        })
+        const response = await app.inject({
+          method: 'GET',
+          url: '/profiles/me',
+          headers: { cookie: user.cookie },
+        })
+        expect(response.statusCode).toBe(200)
+        const own = response.json<{ cityName?: string; cityCountryCode?: string; city?: string }>()
+        expect(own.cityName).toBe('Istanbul')
+        expect(own.cityCountryCode).toBe('TR')
+        expect(own.city).toBeUndefined()
+      })
+
       it('is on a public profile by default', async () => {
         await seedCities()
         const them = await onboardedUser('city-shown@example.com', 'cityshown')

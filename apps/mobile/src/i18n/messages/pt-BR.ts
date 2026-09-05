@@ -970,6 +970,7 @@ export const ptBR: Localized<EnMessages> = {
     updateLocation: 'Atualizar minha localização',
     locationUpdated: 'Atualizado há {time}',
     updating: 'Atualizando…',
+    privacyFailed: 'Não foi possível salvar a configuração',
     languageSection: 'Idioma',
     appLanguage: 'Idioma do app',
     translateTo: 'Traduzir para',

@@ -105,8 +105,10 @@ export default function MeScreen() {
     `@${profile.handle}`,
     TIER_BADGES[tier],
     // Before the country, and only when there is one: it is worked out from a
-    // shared location, so most people have none and nobody typed it.
-    profile.city ?? null,
+    // shared location, so most people have none and nobody typed it. Withheld
+    // here too when "Hide my city" is on, so this line and what other people
+    // see cannot disagree about the setting.
+    profile.privacy.hideCity ? null : (profile.cityName ?? null),
     profile.country ? countryLabel(profile.country) : null,
   ]
     .filter(Boolean)
