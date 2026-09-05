@@ -70,3 +70,26 @@ export function relativeTimeCompact(
   if (elapsedDays < 7) return t('format.daysCompact', { count: elapsedDays })
   return at.toLocaleDateString(locale)
 }
+
+/**
+ * A count that has to fit in a tile: `845`, `1.1k`, `19k`, `2.3M`.
+ *
+ * Below a thousand it is the number, grouped for the locale. From a thousand
+ * up it is shortened, with one decimal only while the leading figure is a
+ * single digit — `1.1k` says something `1k` does not, `19.4k` says nothing
+ * `19k` does not. Rounded down, never up: a balance that reads `2k` when it
+ * is 1,950 is a promise the wallet cannot keep. The decimal separator is the
+ * locale's; the letter is not translated, `k` and `M` being what every
+ * locale here already reads on a screen.
+ */
+export function compactCount(value: number, locale: string): string {
+  const abs = Math.abs(value)
+  if (abs < 1000) return value.toLocaleString(locale)
+  const [divisor, suffix] = abs < 1_000_000 ? [1000, 'k'] : [1_000_000, 'M']
+  const scaled = abs / divisor
+  const digits = scaled < 10 ? 1 : 0
+  const factor = 10 ** digits
+  const floored = Math.floor(scaled * factor) / factor
+  const sign = value < 0 ? '-' : ''
+  return `${sign}${floored.toLocaleString(locale, { maximumFractionDigits: digits })}${suffix}`
+}
