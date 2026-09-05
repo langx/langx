@@ -1,4 +1,5 @@
 import { router } from 'expo-router'
+import * as Updates from 'expo-updates'
 import { useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { SettingsRow } from '../../../src/components/settings/SettingsRow'
@@ -86,12 +87,19 @@ export default function SettingsScreen() {
       />
 
       {/*
-        The two things a support reply always has to ask for. v1 showed both on
-        its account page; v2 showed neither, so every "it is broken" message
-        started with two extra round trips.
+        The things a support reply always has to ask for. v1 showed the version
+        and the account id on its account page; v2 showed neither, so every "it
+        is broken" message started with two extra round trips.
+
+        The update id is the third, and the one that actually says which code
+        is running: every merge to main ships over the air without touching the
+        version, so two phones on 2.0 can be weeks apart. It is null where no
+        update has been applied — the web, a dev build, the bundle the binary
+        shipped with — and simply absent then.
       */}
       <Text style={styles.build} selectable>
-        LangX {appVersion()} {t('settings.licence')}
+        LangX {appVersion()}
+        {Updates.updateId ? ` (${Updates.updateId.slice(0, 8)})` : ''} {t('settings.licence')}
         {model.profile ? `\n${model.profile._id}` : ''}
       </Text>
     </Screen>

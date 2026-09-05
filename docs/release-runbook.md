@@ -54,7 +54,8 @@ leftovers. They are not.
 | App links                | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest. Declaring them is half the job; see the next section                     |
 
 `versionCode` and `buildNumber` must both start **above 119**, the published
-v1 version. They are currently 120.
+v1 version. EAS owns them (`appVersionSource: "remote"`) and hands one out per
+build; the version name is a separate thing, see _Shipping runs on expo.dev_ below.
 
 ## The API has to be deployed, and it has to be deployed early
 
@@ -329,13 +330,29 @@ pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
 ## Shipping runs on expo.dev
 
 Builds, store submissions and over-the-air updates are all EAS jobs, defined
-in `apps/mobile/.eas/workflows/`. GitHub Actions only tests. The two
-workflows, and what each costs:
+in `apps/mobile/.eas/workflows/`. GitHub Actions tests, and turns a version tag
+into a Release page (see below). The two workflows, and what each costs:
 
 | Workflow      | Trigger                  | Cost                              |
 | ------------- | ------------------------ | --------------------------------- |
 | `update.yml`  | every merge to `main`    | nothing — an OTA update, no build |
 | `release.yml` | by hand, pick a platform | one build, then `eas submit`      |
+
+**The version number is `major.minor` and lives in the root `package.json`.**
+`app.config.ts` imports it, so the binaries and the web build carry whatever
+is there. To name a release:
+
+```bash
+pnpm release minor        # 2.0 -> 2.1: bumps, commits "Release 2.1", tags v2.1
+git push -u origin <branch>   # the release commit goes through a PR like any other
+git push origin v2.1          # once it is on main; the tag creates the GitHub Release
+```
+
+The tag is the only GitHub-side automation: `github-release.yml` checks it
+against `package.json` and writes a Release with notes from the merged pull
+requests. It builds nothing. A new number reaches the stores with the next
+`release.yml` run on expo.dev and the web with the next `pnpm deploy:web`;
+installed apps keep showing the binary's own number until a store build ships.
 
 **There is one channel, `production`, and merging to `main` publishes to it.**
 A JS-only change reaches every installed app on its next launch without a

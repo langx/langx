@@ -1,6 +1,6 @@
 {
   "name": "langx",
-  "version": "2.0.0",
+  "version": "2.0",
   "private": true,
   "description": "LangX v2 \u2014 language exchange app (Expo mobile/web + Fastify API + MongoDB Atlas)",
   "license": "BSD-3-Clause",
@@ -23,7 +23,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "release": "node scripts/release.mjs"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

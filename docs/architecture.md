@@ -903,6 +903,12 @@ Publishing is automatic: `update.yml` runs on every merge to `main`. There is
 no second channel to hold a change back on — see `decisions.md` for why, and
 for the guard that makes it safe.
 
+The version is `major.minor`, written once in the root `package.json` and
+imported by `app.config.ts`. `pnpm release minor` bumps, commits and tags it;
+pushing the tag creates the GitHub Release. Over-the-air updates never change
+it, so the settings footer also shows the update id — that is the number that
+says which code a phone is actually running.
+
 `runtimeVersion` is `{ policy: 'fingerprint' }`, a hash of the native layer
 itself, so a bundle is only ever offered to a binary that can run it. A commit
 that changes the native side changes the fingerprint, and the update reaches

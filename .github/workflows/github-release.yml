@@ -1,0 +1,40 @@
+# A pushed version tag becomes a GitHub Release, with the notes written from
+# the pull requests merged since the previous tag.
+#
+# The tag is the trigger and `pnpm release` is what makes one: it bumps the
+# version, commits and tags, and the person pushes. So this is the only
+# workflow here besides CI, and it builds nothing — shipping still lives on
+# expo.dev (`apps/mobile/.eas/workflows/`), and a store build is still a
+# decision someone makes there.
+#
+# The guard is the tag having to match the version in package.json. A tag
+# typed by hand, or pushed from a commit that is not the release commit,
+# fails here instead of becoming a Release that names a version nothing
+# ships as.
+name: GitHub Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: The tag must be the version in package.json
+        run: |
+          version="$(node scripts/release.mjs --print)"
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "tag ${GITHUB_REF_NAME} does not match package.json version ${version}" >&2
+            exit 1
+          fi
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" --title "LangX ${GITHUB_REF_NAME#v}" --generate-notes
