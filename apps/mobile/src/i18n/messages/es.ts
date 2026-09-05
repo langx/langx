@@ -890,6 +890,9 @@ export const es: Localized<EnMessages> = {
   },
   streak: {
     title: 'Tu racha',
+    historyBody: 'Cada día de los últimos dos meses y qué contó',
+    leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
+    freezesBody: 'Los protectores guardados cubren un día que te saltes',
     longest: 'La más larga',
     missed: 'Perdido',
     bought: 'Rellenado con tokens',

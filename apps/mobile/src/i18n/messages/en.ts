@@ -934,6 +934,9 @@ export const en = {
   },
   streak: {
     title: 'Your streak',
+    historyBody: 'Every day of the last two months, and what counted',
+    leaderboardBody: 'Who has the longest run right now, and ever',
+    freezesBody: 'Banked freezes cover a day you miss',
     longest: 'Longest',
     missed: 'Missed',
     bought: 'Filled in with tokens',

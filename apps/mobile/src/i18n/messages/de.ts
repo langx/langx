@@ -912,6 +912,9 @@ export const de: Localized<EnMessages> = {
   },
   streak: {
     title: 'Deine Serie',
+    historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
+    leaderboardBody: 'Wer gerade und überhaupt die längste Serie hat',
+    freezesBody: 'Gesparte Schutze decken einen verpassten Tag ab',
     longest: 'Am längsten',
     missed: 'Verpasst',
     bought: 'Mit Token aufgefüllt',

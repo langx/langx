@@ -1006,6 +1006,9 @@ export const ru: Localized<EnMessages> = {
   },
   streak: {
     title: 'Твоя серия',
+    historyBody: 'Каждый день за два месяца и что засчиталось',
+    leaderboardBody: 'У кого самая длинная серия сейчас и за всё время',
+    freezesBody: 'Запасённые заморозки закрывают пропущенный день',
     longest: 'Рекорд',
     missed: 'Пропущено',
     bought: 'Заполнено жетонами',

@@ -1047,6 +1047,9 @@ export const ar: Localized<EnMessages> = {
   },
   streak: {
     title: 'سلسلتك',
+    historyBody: 'كل يوم في الشهرين الأخيرين وما احتُسب',
+    leaderboardBody: 'من لديه أطول سلسلة الآن وعلى الإطلاق',
+    freezesBody: 'التجميدات المدّخرة تغطي يومًا فائتًا',
     longest: 'الأطول',
     missed: 'فائت',
     bought: 'مُلئ بالنقاط',

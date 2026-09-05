@@ -883,6 +883,9 @@ export const ptBR: Localized<EnMessages> = {
   },
   streak: {
     title: 'Sua sequência',
+    historyBody: 'Cada dia dos últimos dois meses e o que contou',
+    leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
+    freezesBody: 'Congelamentos guardados cobrem um dia perdido',
     longest: 'A maior',
     missed: 'Perdido',
     bought: 'Preenchido com fichas',
