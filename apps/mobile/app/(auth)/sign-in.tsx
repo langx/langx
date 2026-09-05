@@ -67,12 +67,18 @@ export default function SignIn() {
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label={t('auth.email')}
+        label={t('auth.emailOrHandle')}
         value={email}
         onChangeText={setEmail}
+        // Still the email keyboard: it puts `@` and `.` on the first layer,
+        // which an address needs and a handle never minds. `username` rather
+        // than `emailAddress` for the autofill hints, so a password manager
+        // offers the saved credential for this site whichever of the two was
+        // stored — `emailAddress` offers addresses from the contact card, most
+        // of which have never been used here.
         keyboardType="email-address"
-        textContentType="emailAddress"
-        autoComplete="email"
+        textContentType="username"
+        autoComplete="username"
       />
       <FormField
         returnKeyType="go"
