@@ -25,6 +25,7 @@ import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
+import { storeManagementUrl } from '../lib/purchases'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
 import { syncIconBadge } from '../lib/iconBadge'
@@ -112,7 +113,31 @@ export function useSettingsModel() {
             label: entitlement.willRenew ? t('settings.renewsOn') : t('settings.endsOn'),
             value: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
           }
-  const manageUrl = tier === 'free' ? null : manageSubscriptionUrl(null, Platform.OS)
+  /**
+   * RevenueCat's per-customer link, which only the web store has one of, and
+   * only for someone who bought there — so it is asked for rather than known,
+   * and only once there is a plan to manage. On iOS and Android it stays
+   * `null` and `manageSubscriptionUrl` falls back to the store's own address,
+   * exactly as before.
+   */
+  const [rcManageUrl, setRcManageUrl] = useState<string | null>(null)
+  const isPaid = tier !== 'free'
+  useEffect(() => {
+    if (!isPaid) {
+      setRcManageUrl(null)
+      return
+    }
+    let cancelled = false
+    void storeManagementUrl().then((url) => {
+      if (!cancelled) setRcManageUrl(url)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [isPaid])
+  const manageUrl = isPaid
+    ? manageSubscriptionUrl({ managementURL: rcManageUrl }, Platform.OS)
+    : null
   const tips = useTips()
   const analytics = useAnalyticsPreference()
   // No row without a key: a switch that changes nothing is worse than none,

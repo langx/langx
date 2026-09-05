@@ -32,10 +32,20 @@ export interface LinkSection {
 const SITE = 'https://langx.io'
 const REPO = 'https://github.com/langx/langx'
 
+/**
+ * The two documents a purchase is made under, named separately because they
+ * are read from more than the Legal list: the paywall links to both, and the
+ * web checkout is handed the terms so they are reachable from the last screen
+ * before a charge. Three spellings of the same address is how one of them ends
+ * up pointing at a page that has moved.
+ */
+export const PRIVACY_URL = `${SITE}/privacy-policy`
+export const TERMS_URL = `${SITE}/terms-conditions`
+
 /** The five the stores and the law expect to be reachable from inside the app. */
 export const LEGAL_LINKS: readonly ExternalLink[] = [
-  { icon: 'shield', labelKey: 'legal.privacy', url: `${SITE}/privacy-policy` },
-  { icon: 'file-text', labelKey: 'legal.terms', url: `${SITE}/terms-conditions` },
+  { icon: 'shield', labelKey: 'legal.privacy', url: PRIVACY_URL },
+  { icon: 'file-text', labelKey: 'legal.terms', url: TERMS_URL },
   { icon: 'coffee', labelKey: 'legal.cookies', url: `${SITE}/cookie-policy` },
   { icon: 'trash-2', labelKey: 'legal.dataDeletion', url: `${SITE}/data-deletion` },
   { icon: 'lock', labelKey: 'legal.security', url: `${REPO}/blob/main/SECURITY.md` },
