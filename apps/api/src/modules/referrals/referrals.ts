@@ -36,6 +36,8 @@ export interface Referral {
    */
   activatedAt?: Date
   activationAward?: number
+  /** What the invitee was paid at the same moment; 0 when withheld. */
+  inviteeAward?: number
 
   subscribedAt?: Date
   subscriptionAward?: number

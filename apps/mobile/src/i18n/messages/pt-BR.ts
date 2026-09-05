@@ -1071,6 +1071,7 @@ export const ptBR: Localized<EnMessages> = {
       'A pessoa entra e escreve a primeira mensagem ou correção — é aí que você ganha {activation} tokens.',
     step3:
       'Se um dia ela assinar um plano pago, você ganha mais {subscription}. {max} no total, por pessoa.',
+    step4: 'Nesse mesmo momento eles ganham {invitee} tokens para si — boas-vindas, não salário.',
     totalsInvited: {
       one: 'convidado',
       other: 'convidados',
@@ -1106,6 +1107,7 @@ export const ptBR: Localized<EnMessages> = {
     pronunciation: 'Pronúncia',
     referral: 'Bônus de convite',
     referralSubscription: 'Bônus de assinatura do convidado',
+    referralWelcome: 'Bônus de boas-vindas por convite',
   },
 
   cosmetics: {

@@ -132,6 +132,10 @@ Two things to keep in the copy, because they are what make it defensible:
 - **It is capped per person, forever.** One invitee is worth
   `TOKEN_RULES.referral.maxPerInvitee` at most, ever — not per month, not per
   renewal.
+- **The invited person gets a welcome, too** (since 5 September 2026):
+  `TOKEN_RULES.referral.inviteeActivation`, the size of the sign-up bonus, at
+  the same activation moment — never at sign-up. Say "a welcome", not
+  "a reward for joining"; the first sentence above still holds for both sides.
 
 Never: "refer and earn", "affiliate", "commission", "payout". They are the
 vocabulary of a scheme that pays money, and this pays a point that buys streak

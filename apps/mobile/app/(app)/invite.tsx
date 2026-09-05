@@ -94,6 +94,7 @@ export default function InviteScreen() {
           max: n(RULES.maxPerInvitee),
         })}
       </Text>
+      <Text style={styles.step}>{t('invite.step4', { invitee: n(RULES.inviteeActivation) })}</Text>
 
       {totals ? (
         <View style={styles.tiles}>

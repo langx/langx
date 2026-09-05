@@ -1246,6 +1246,7 @@ export const ar: Localized<EnMessages> = {
     step1: 'أرسل رابطك إلى شخص يتعلّم لغتك.',
     step2: 'يسجّل ويكتب أول رسالة أو تصحيح — عندها تكسب {activation} توكن.',
     step3: 'وإذا اشترك يومًا في خطة مدفوعة تكسب {subscription} إضافية. {max} إجمالًا لكل شخص.',
+    step4: 'في اللحظة نفسها يحصلون هم على {invitee} رمزًا لأنفسهم — ترحيب، لا أجر.',
     totalsInvited: {
       one: 'مدعو',
       two: 'مدعوان',
@@ -1290,6 +1291,7 @@ export const ar: Localized<EnMessages> = {
     pronunciation: 'النطق',
     referral: 'مكافأة الدعوة',
     referralSubscription: 'مكافأة اشتراك المدعو',
+    referralWelcome: 'مكافأة ترحيب بالدعوة',
   },
 
   cosmetics: {

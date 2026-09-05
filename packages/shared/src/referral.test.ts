@@ -97,8 +97,14 @@ describe('referral rules', () => {
    * start ranking invitations — which is the one thing the leaderboard is not
    * for. Nothing else would fail.
    */
-  it('keeps both kinds out of the weekly leaderboard', () => {
-    for (const kind of ['referral', 'referralSubscription'] as const) {
+  /** A welcome, not a wage: the invitee's award is the size of the sign-up bonus. */
+  it('pays the invitee no more than a sign-up bonus', () => {
+    expect(TOKEN_RULES.referral.inviteeActivation).toBeGreaterThan(0)
+    expect(TOKEN_RULES.referral.inviteeActivation).toBeLessThanOrEqual(TOKEN_RULES.signupBonus)
+  })
+
+  it('keeps all three kinds out of the weekly leaderboard', () => {
+    for (const kind of ['referral', 'referralSubscription', 'referralWelcome'] as const) {
       expect(TOKEN_KINDS as readonly string[], kind).toContain(kind)
       expect(TOKEN_GRANT_KINDS as readonly string[], kind).toContain(kind)
       expect(isGrantKind(kind), kind).toBe(true)

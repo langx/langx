@@ -1076,6 +1076,7 @@ export const es: Localized<EnMessages> = {
     step2: 'Se registra y escribe su primer mensaje o corrección — ahí ganas {activation} tokens.',
     step3:
       'Si algún día contrata un plan de pago, ganas {subscription} más. {max} en total, por persona.',
+    step4: 'En ese mismo momento reciben {invitee} tokens propios: una bienvenida, no un sueldo.',
     totalsInvited: {
       one: 'invitado',
       other: 'invitados',
@@ -1111,6 +1112,7 @@ export const es: Localized<EnMessages> = {
     pronunciation: 'Pronunciación',
     referral: 'Bono por invitación',
     referralSubscription: 'Bono por suscripción de invitado',
+    referralWelcome: 'Bono de bienvenida por invitación',
   },
 
   cosmetics: {

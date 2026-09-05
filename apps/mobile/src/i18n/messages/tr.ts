@@ -1080,6 +1080,7 @@ export const tr: Localized<EnMessages> = {
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
     step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
     step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
+    step4: 'Aynı anda onlar da kendilerine {invitee} token alır — bir hoş geldin, maaş değil.',
     totalsInvited: {
       one: 'davet',
       other: 'davet',
@@ -1115,6 +1116,7 @@ export const tr: Localized<EnMessages> = {
     pronunciation: 'Telaffuz',
     referral: 'Davet bonusu',
     referralSubscription: 'Davet abonelik bonusu',
+    referralWelcome: 'Davetle gelme bonusu',
   },
 
   cosmetics: {

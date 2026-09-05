@@ -1198,6 +1198,7 @@ export const ru: Localized<EnMessages> = {
     step2:
       'Он регистрируется и пишет первое сообщение или исправление — тогда вы получаете {activation} токенов.',
     step3: 'Если он оформит платный план, вы получите ещё {subscription}. Всего {max} за человека.',
+    step4: 'В тот же момент они получают {invitee} токенов себе — приветствие, а не зарплата.',
     totalsInvited: {
       one: 'приглашён',
       few: 'приглашено',
@@ -1239,6 +1240,7 @@ export const ru: Localized<EnMessages> = {
     pronunciation: 'Произношение',
     referral: 'Бонус за приглашение',
     referralSubscription: 'Бонус за подписку приглашённого',
+    referralWelcome: 'Приветственный бонус по приглашению',
   },
 
   cosmetics: {

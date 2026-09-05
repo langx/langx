@@ -1121,6 +1121,7 @@ export const en = {
       'They sign up and write their first message or correction — that is when you earn {activation} tokens.',
     step3:
       'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
+    step4: 'They get {invitee} tokens of their own at that same moment — a welcome, not a wage.',
     totalsInvited: {
       one: 'invited',
       other: 'invited',
@@ -1156,6 +1157,7 @@ export const en = {
     pronunciation: 'Pronunciation',
     referral: 'Invite bonus',
     referralSubscription: 'Invite subscription bonus',
+    referralWelcome: 'Invite welcome bonus',
   },
 
   cosmetics: {
