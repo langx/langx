@@ -29,9 +29,18 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
   const url = path.startsWith('http') ? path : `${API_URL}${path}`
 
   if (Platform.OS === 'web') {
+    /*
+     * `/public/` answers with the wildcard origin (`app.ts`, `publicCors`),
+     * and a browser refuses a wildcard on a request that carries
+     * credentials — before the request is sent, so the server logs nothing.
+     * The invite landing page and the onboarding invite-code preview both
+     * read `/public/profiles/:handle` and both showed "Nothing here" on the
+     * web for exactly this reason. Those routes carry no session by design,
+     * so the cookie stays home.
+     */
     return fetch(url, {
       ...init,
-      credentials: 'include',
+      credentials: path.startsWith('/public/') ? 'omit' : 'include',
       headers: { ...init.headers, ...versionHeaders() },
     })
   }
