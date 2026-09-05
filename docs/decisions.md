@@ -3152,3 +3152,72 @@ have crashed on an import. Now those phones are offered no update at all and
 keep what they shipped with, until a build carrying `expo-video` replaces it.
 That belongs in the release note either way — nobody sees video until they
 install a new binary.
+
+## The browser signs in when the phone says so, and the phone sees it happen
+
+**The session store has to be told.** Better Auth's client refetches
+`useSession()` after a fixed list of its own endpoints — sign-in, sign-out,
+change-password and so on — and `/device/token` is not on it, nor does the
+device-authorization client plugin add a listener of its own. So the QR screen
+was doing the one thing that looked right and was wrong: the poll succeeded,
+the cookie was set, `router.replace('/')` ran, and `index.tsx` saw a store that
+still said signed out and sent the browser to the welcome page. Every approval
+from a phone ended on the page that asks you to sign in. The fix is the one
+`magic-link.tsx` already carries for the same reason — `notify('$sessionSignal')`
+— plus a rule the magic link does not yet follow: **navigate only when the
+session is actually in the store**, from an effect that watches it, with a
+spinner in the meantime. The old comment claiming the guard "flips as soon as
+the session query sees it" was describing the bug.
+
+**Approving does not create the session.** The plugin marks the code approved;
+the _browser_ creates its session on its next poll, up to one interval later.
+The phone's device list refetched once, the instant the approval returned, and
+so always ran before the row existed — the laptop appeared only after leaving
+the screen and coming back, or, if the person dismissed the alert slowly
+enough, sometimes at once, which is the kind of intermittency that gets filed
+as "flaky". The list now keeps asking on the browser's own rhythm until a row it
+has not seen before shows up, says so while it waits, and highlights the row
+when it lands. The poll interval came down from five seconds to two — it is the
+delay between "yes" on the phone and signed-in on the laptop, and the traffic
+is one signed-out browser asking one small question for at most two minutes.
+The client reads the interval off the `/device/code` response rather than
+assuming it, since polling faster than the server allows earns `slow_down`.
+
+## The hourly gift is rolled on the server and never touches a leaderboard
+
+**Why a gift at all.** The store had nothing in it that did not ask for
+something. A small free thing once an hour is a reason to open the wallet
+that is not "I want to spend", and the numbers are sized so that it stays a
+small pleasure rather than an income: about 11 tokens an open on average, nine
+in ten at 30 or under, an outright empty box a third of the time, and 250 once
+in a thousand. Somebody opening every hour of the day tops out near 270 —
+beside the 200 that messages pay at their daily cap — so it cannot out-earn
+practising by much even for the most devoted opener. `maxClaimsPerDay` is
+reserved in the rules for the day that turns out to be wrong.
+
+**The server owns both halves.** Whether a gift opens is one conditional
+`findOneAndUpdate` on `profiles.lastGiftAt` whose filter _is_ the cooldown
+check, so two devices opening at once cannot both win and there is no
+read-then-write window. What it holds is drawn from `node:crypto` _after_ the
+claim, so nothing the client sends can steer it; the distribution itself is a
+pure function in `packages/shared` (`rollGift`) with the tier table beside the
+other rules and a statistical test pinning its shape. The client only ever
+sees a result. A refusal answers `RATE_LIMITED` with `retryAt`, which the app
+writes straight back into its wallet cache — the card was stale, and the
+refusal is the correction.
+
+**A grant kind, not an award.** Gift tokens credit the all-time bucket only,
+like the sign-up bonus and the referral payouts, so the week, month and year
+tables never see them. The leaderboard ranks practice, and a table that could
+be climbed by opening boxes on the hour would be ranking alarm clocks. For the
+same reason a moderation freeze consumes the hour and pays nothing — the act
+happens, the payout stops — and an empty gift writes no ledger row, because
+"you received nothing" is not a transaction.
+
+**Shake is decoration on a button.** The gift box is a `Pressable` first; the
+accelerometer, when it arrives, only calls the same handler. That keeps the
+screen usable with a screen reader, on the web build, and on a binary that does
+not yet carry `expo-sensors` — the store build that adds the sensor and the
+haptics ships behind this, and the hooks it fills in are already there with the
+shape it needs. The copy says "tap" until the hook reports the sensor is real.
+The words are the token brief's: a gift, never a prize, never a spin.

@@ -109,6 +109,16 @@ them are optional. **These answers go in before the first build carrying
       analytics data is on request until it is automated
       ([`analytics.md`](../analytics.md) → _Deletion_).
 
+## 6. The hourly gift — no new answers
+
+The wallet's store gained a free hourly gift on 5 September 2026: a random
+number of tokens, 0–250, decided on the server. It changes nothing on either
+form. Nothing is purchased or staked, the token has no cash value and cannot
+be redeemed, and the outcome is a free grant rather than a wager — so Apple's
+"Simulated Gambling" and "Contests" answers stay **No** and Play's content
+questionnaire (gambling, loot boxes bought with money) stays as it is. The
+messaging rules that keep it that way are in `docs/token-messaging-brief.md`.
+
 ## Reference — the rest of the Play form
 
 Unchanged by this pass; listed so a full re-verification does not need a second
