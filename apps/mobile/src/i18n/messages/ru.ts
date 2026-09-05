@@ -891,7 +891,7 @@ export const ru: Localized<EnMessages> = {
     followingEmptyBody: 'Подпишитесь, и посты появятся в вашей ленте.',
     followFailed: 'Не получилось. Попробуйте ещё раз.',
     notFound: 'Профиль не найден.',
-    verifiedEmail: '✓ Почта подтверждена',
+    verifiedEmail: 'Почта подтверждена',
     registeredLabel: 'Зарегистрирован',
     interests: 'Интересы',
     registered: '· зарегистрирован {age}',

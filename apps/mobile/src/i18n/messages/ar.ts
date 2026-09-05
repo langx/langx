@@ -928,7 +928,7 @@ export const ar: Localized<EnMessages> = {
     followingEmptyBody: 'تابع أحدهم لتظهر منشوراته في تدفقك.',
     followFailed: 'لم ينجح ذلك. حاول مرة أخرى.',
     notFound: 'الملف غير موجود.',
-    verifiedEmail: '✓ بريد مؤكَّد',
+    verifiedEmail: 'بريد مؤكَّد',
     registeredLabel: 'مسجّل',
     interests: 'الاهتمامات',
     registered: '· مسجّل {age}',

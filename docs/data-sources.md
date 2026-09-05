@@ -7,9 +7,12 @@ attribution obligations.
 ## Cities — GeoNames
 
 `cities` holds every place with a population over fifteen thousand — about
-twenty-four thousand rows. A profile's city is read off its stored coordinates
-against this list, and the discovery filter searches the same list, so the two
-ends of that filter cannot disagree.
+thirty-two thousand rows once the seed drops what nobody calls home: the
+export also lists neighbourhoods (`PPLX`, a "section of populated place") and
+historical, abandoned or destroyed places, and a Toronto waterfront district
+outranking Toronto is what happens when they are left in. A profile's city is
+read off its stored coordinates against this list, and the discovery filter
+searches the same list, so the two ends of that filter cannot disagree.
 
 |             |                                                             |
 | ----------- | ----------------------------------------------------------- |
@@ -25,7 +28,10 @@ The required notice, which must appear wherever the data is credited:
 
 Refreshing it is a re-run of the seed script against a newly downloaded export;
 every row is upserted by its own id, so ids are stable across updates and a
-profile's `cityId` survives.
+profile's `cityId` survives. A row the export no longer carries — or one the
+seed now skips — is deleted, and every profile that pointed at it has its city
+worked out again from its stored coordinates, so a city never outlives the
+list it came from.
 
 **Attribution is a licence condition, not a courtesy.** Removing it from any of
 the three places above is a licence breach, and the repo is public.

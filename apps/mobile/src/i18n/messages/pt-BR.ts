@@ -775,7 +775,7 @@ export const ptBR: Localized<EnMessages> = {
     followingEmptyBody: 'Siga alguém e as publicações aparecerão no seu feed.',
     followFailed: 'Não deu certo. Tente de novo.',
     notFound: 'Perfil não encontrado.',
-    verifiedEmail: '✓ E-mail confirmado',
+    verifiedEmail: 'E-mail confirmado',
     registeredLabel: 'Cadastro',
     interests: 'Interesses',
     registered: '· cadastro {age}',

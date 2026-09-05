@@ -782,7 +782,7 @@ export const es: Localized<EnMessages> = {
     followingEmptyBody: 'Sigue a alguien y sus publicaciones aparecerán en tu feed.',
     followFailed: 'No funcionó. Inténtalo de nuevo.',
     notFound: 'Perfil no encontrado.',
-    verifiedEmail: '✓ Correo verificado',
+    verifiedEmail: 'Correo verificado',
     registeredLabel: 'Registrado',
     interests: 'Intereses',
     registered: '· registrado {age}',

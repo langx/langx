@@ -1,14 +1,8 @@
 import { LoadFailed } from '../../../src/components/LoadFailed'
-import {
-  countryFlag,
-  getCountry,
-  wornCosmetic,
-  TIER_BADGES,
-  TIER_NAMES,
-  tierUnlocking,
-} from '@langx/shared'
+import { wornCosmetic, TIER_BADGES, TIER_NAMES, tierUnlocking } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
+import { placeLabel } from '../../../src/lib/placeLabel'
 import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import {
   useBadges,
@@ -45,12 +39,6 @@ export default function MeScreen() {
   const t = useT()
   const { locale } = useLocale()
   const names = useDisplayNames()
-
-  /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
-  const countryLabel = (code: string): string => {
-    const country = getCountry(code)
-    return country ? `${countryFlag(country.code)} ${names.country(country.code)}` : code
-  }
 
   const me = useMe()
   const xp = useTokens()
@@ -104,12 +92,16 @@ export default function MeScreen() {
   const meta = [
     `@${profile.handle}`,
     TIER_BADGES[tier],
-    // Before the country, and only when there is one: it is worked out from a
-    // shared location, so most people have none and nobody typed it. Withheld
-    // here too when "Hide my city" is on, so this line and what other people
-    // see cannot disagree about the setting.
-    profile.privacy.hideCity ? null : (profile.cityName ?? null),
-    profile.country ? countryLabel(profile.country) : null,
+    // The city is worked out from a shared location, so most people have none
+    // and nobody typed it. Withheld here too when "Hide my city" is on, so this
+    // line and what other people see cannot disagree about the setting.
+    placeLabel(
+      {
+        city: profile.privacy.hideCity ? undefined : profile.cityName,
+        country: profile.country,
+      },
+      names.country,
+    ) ?? null,
   ]
     .filter(Boolean)
     .join(' · ')

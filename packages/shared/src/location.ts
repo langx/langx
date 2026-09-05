@@ -39,15 +39,19 @@ export const LOCATION_PRECISION_DECIMALS = 2
 /**
  * How stale a shared location may get before the app quietly refreshes it.
  *
- * Six hours, and the number follows from `LOCATION_PRECISION_DECIMALS`: the
- * stored point is rounded to about a kilometre, so anything finer than a few
- * hours mostly writes the same cell back and spends a GPS wake-up to do it.
+ * One hour. It was six, on the argument that `LOCATION_PRECISION_DECIMALS`
+ * rounds the point to about a kilometre so a finer refresh mostly writes the
+ * same cell back — true, and also how a person who crossed a city after lunch
+ * stayed "nearby" the wrong people until the evening. An hour is the age the
+ * device's own cached fix is allowed to have (`captureLocation`'s `maxAge`),
+ * so a gap below it would only re-read the cache; this is the floor at which
+ * a refresh can actually learn something.
  *
  * There is no background permission — `app.config.ts` disables it on both
  * platforms and says why — so this is a floor on how often a *foreground*
  * refresh may happen, not a schedule.
  */
-export const LOCATION_REFRESH_MIN_GAP_MS = 6 * 60 * 60 * 1000
+export const LOCATION_REFRESH_MIN_GAP_MS = 60 * 60 * 1000
 
 export const NEARBY_MAX_KM = 500
 
