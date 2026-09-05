@@ -605,32 +605,24 @@ of it runs together.
       All three are empty, so `isPurchasesAvailable()` is false on every
       platform. Setting `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough
       to exercise the whole paywall before the store products exist
-- [ ] **Translation has never been configured**, on any environment, as of
-      5 September 2026. The provider (`apps/api/src/translation/`), the
-      per-tier quotas and the cache all shipped in Faz 6, but
+- [x] **Translation is configured on production** as of 5 September 2026.
+      The provider (`apps/api/src/translation/`), the per-tier quotas and the
+      cache shipped in Faz 6 but ran against no credentials for two days —
+      every Translate tap answered "Could not translate". What it took: a
+      billing account on the Google account that owns project `langx-48eb0`
+      (it had none; the first attempt stalled because the billing account
+      was created for Canada while the only payments profile is the US
+      company one — the country has to match), _Cloud Translation API_
+      enabled, service account `langx-translate` with **Cloud Translation
+      API User** only, one JSON key, and the two secrets
       `GOOGLE_TRANSLATE_PROJECT_ID` / `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON`
-      are set nowhere, so every Translate tap in production answers "Could
-      not translate". In the Google Cloud project that already owns the
-      OAuth client above: enable _Cloud Translation API_, attach billing
-      (the first 500 000 characters a month are free, then $20 per million;
-      the 20/300/1000 daily quotas and the 30-day cache bound the spend),
-      create a service account with **Cloud Translation API User** and a
-      JSON key. The key's _content_ goes into the second variable — a
-      container secret store holds strings, not files — with
-      `fly secrets set -a langx-api GOOGLE_TRANSLATE_PROJECT_ID=<id>`
-      `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON="$(cat key.json)"`, which
-      restarts the API by itself. Keep the key file outside every checkout;
-      the repo is public
-- [ ] **Translation is blocked on a billing account that does not exist**, as
-      of 5 September 2026, checked twice from the console. The project is
-      `langx-48eb0`, and the Google account that owns it has no billing
-      account at all — not unlinked, none — and the Translation API refuses
-      to enable without one ("Billing required"). The first step is
-      therefore Behic's alone: `console.cloud.google.com/billing` → _Create
-      account_ (a card is required, even for the free tier) → link it to
-      `langx-48eb0`. Everything after that — enabling the API, the service
-      account, the key, the two secrets — can be done from a browser session
-      by Claude
+      set on `langx-api` with `fly secrets set` (the key's _content_, not a
+      path; the restart is automatic). The key file lives outside every
+      checkout at `~/Developer/langx/secrets/`; the repo is public. Verified
+      by translating a Turkish sentence through the provider with that key.
+      Billing note: the first 500 000 characters a month are free, then $20
+      per million; the 20/300/1000 daily quotas and the 30-day cache bound
+      the spend
 - [ ] **Buying on the web is not built at all**, and no key changes that:
       `react-native-purchases` is native-only, so `purchases.ts` returns early
       on `Platform.OS === 'web'` and the paywall says purchasing is
