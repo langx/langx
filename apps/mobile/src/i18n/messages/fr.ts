@@ -787,7 +787,7 @@ export const fr: Localized<EnMessages> = {
     followingEmptyBody: 'Suivez quelqu’un et ses publications apparaîtront dans votre fil.',
     followFailed: 'Cela n’a pas fonctionné. Réessayez.',
     notFound: 'Profil introuvable.',
-    verifiedEmail: '✓ E-mail vérifié',
+    verifiedEmail: 'E-mail vérifié',
     registeredLabel: 'Inscrit',
     interests: 'Centres d’intérêt',
     registered: '· inscrit {age}',

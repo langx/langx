@@ -786,7 +786,7 @@ export const tr: Localized<EnMessages> = {
     followingEmptyBody: 'Birini takip et, gönderileri akışında görünsün.',
     followFailed: 'Olmadı. Tekrar dene.',
     notFound: 'Profil bulunamadı.',
-    verifiedEmail: '✓ E-posta doğrulanmış',
+    verifiedEmail: 'E-posta doğrulanmış',
     registeredLabel: 'Kayıt',
     interests: 'İlgi alanları',
     registered: '· kayıt {age}',

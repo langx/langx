@@ -803,7 +803,7 @@ export const de: Localized<EnMessages> = {
     followingEmptyBody: 'Folge jemandem, und die Beiträge erscheinen in deinem Feed.',
     followFailed: 'Das hat nicht geklappt. Versuch es noch einmal.',
     notFound: 'Profil nicht gefunden.',
-    verifiedEmail: '✓ E-Mail bestätigt',
+    verifiedEmail: 'E-Mail bestätigt',
     registeredLabel: 'Registriert',
     interests: 'Interessen',
     registered: '· registriert {age}',

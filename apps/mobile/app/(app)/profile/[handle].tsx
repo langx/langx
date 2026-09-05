@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { countryFlag, getCountry, wornCosmetic } from '@langx/shared'
+import { wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
@@ -19,6 +19,7 @@ import {
 import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { PresenceLine } from '../../../src/components/PresenceLine'
+import { placeLabel } from '../../../src/lib/placeLabel'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
@@ -35,7 +36,6 @@ import { shareLink } from '../../../src/lib/share'
 import { profileShareText } from '../../../src/lib/shareText'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
-import { days } from '../../../src/lib/format'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { accountAgeLabel, interestLabel, useDisplayNames, useT } from '../../../src/i18n'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -46,12 +46,6 @@ export default function ProfileScreen() {
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
-
-  /** "🇹🇷 Türkiye", not "TR" — the code alone means nothing to a reader. */
-  const countryLabel = (code: string): string => {
-    const country = getCountry(code)
-    return country ? `${countryFlag(country.code)} ${names.country(country.code)}` : code
-  }
 
   // `from` is set by whoever pushed here — this screen is reachable from
   // Discover, Chats, the viewer list, the leaderboard and a chat header, so a
@@ -96,14 +90,13 @@ export default function ProfileScreen() {
   const isSelf = user?._id === me.data?._id
   const canSend = message.trim().length > 0 && !startConversation.isPending
 
-  // v3's identity block folds the badge chips into one muted line.
-  const metaLine = [
-    String(user.age),
-    user.city ?? null,
-    user.country ? countryLabel(user.country) : null,
-    user.streak.current > 0 ? `🔥 ${days(t, user.streak.current)}` : null,
-    user.emailVerified ? t('profile.verifiedEmail') : null,
-  ]
+  /*
+   * v3's identity block folds the badge chips into one muted line — and it
+   * has to stay one line. It used to carry the streak and "Verified email"
+   * too, wrapped on every phone, and said the streak twice: the tile below
+   * already has it. The verified mark is now beside the name.
+   */
+  const metaLine = [String(user.age), placeLabel(user, names.country) ?? null]
     .filter(Boolean)
     .join(' · ')
 
@@ -247,6 +240,18 @@ export default function ProfileScreen() {
         )}
         <View style={styles.nameRow}>
           <Text style={styles.name}>{user.displayName}</Text>
+          {/* A mark rather than the words: the words cost a third of the meta
+              line, and a check by the name is what every other app taught
+              people it means. The label is for the screen reader. */}
+          {user.emailVerified ? (
+            <Feather
+              name="check-circle"
+              size={16}
+              color={colors.success}
+              accessibilityLabel={t('profile.verifiedEmail')}
+              style={styles.verified}
+            />
+          ) : null}
           <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
         </View>
         {/*
@@ -265,7 +270,13 @@ export default function ProfileScreen() {
           @{user.handle} · {t('profile.registeredLabel')}{' '}
           {accountAgeLabel(t, new Date(user.createdAt))}
         </Text>
-        {metaLine ? <Text style={styles.meta}>{metaLine}</Text> : null}
+        {/* One line, whatever the city is called — the tail is the country
+            name's job to lose, and the flag before it survives. */}
+        {metaLine ? (
+          <Text style={styles.meta} numberOfLines={1}>
+            {metaLine}
+          </Text>
+        ) : null}
         {user.tier !== 'free' ? (
           <View style={styles.tierRow}>
             <TierBadge tier={user.tier} />
@@ -445,15 +456,9 @@ export default function ProfileScreen() {
               {error ? <Text style={styles.error}>{error}</Text> : null}
             </>
           )}
-
-          <View style={styles.danger}>
-            <Pressable onPress={() => void confirmReport()} hitSlop={8}>
-              <Text style={styles.dangerText}>{t('common.report')}</Text>
-            </Pressable>
-            <Pressable onPress={() => void confirmBlock()} hitSlop={8}>
-              <Text style={styles.dangerText}>{t('common.block')}</Text>
-            </Pressable>
-          </View>
+          {/* Report and Block live in the top-right menu only. They used to be
+              repeated as a row down here, which made the bottom of every
+              profile read as a warning. */}
         </>
       )}
     </Screen>
@@ -480,6 +485,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   presence: { marginTop: 6 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6, justifyContent: 'center' },
   name: { ...font.heading, color: colors.text, fontSize: 24, marginTop: 12 },
+  // Sits on the name's baseline row, which `marginTop` on the name shifts.
+  verified: { marginTop: 12 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   meta: { color: colors.textMuted, fontSize: 14, marginTop: 8, textAlign: 'center' },
   tierRow: { marginTop: spacing.sm },
@@ -535,14 +542,4 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     lineHeight: 19,
     marginTop: spacing.xl,
   },
-  danger: {
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
-    flexDirection: 'row',
-    gap: 32,
-    justifyContent: 'center',
-    marginTop: spacing.xxl,
-    paddingVertical: spacing.lg,
-  },
-  dangerText: { color: colors.danger, fontSize: 13, fontWeight: '600' },
 }))

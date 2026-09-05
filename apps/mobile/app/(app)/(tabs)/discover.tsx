@@ -5,9 +5,9 @@ import {
   NEARBY_RADIUS_OPTIONS_KM,
   type DiscoverySort,
 } from '@langx/shared'
-import { router, useLocalSearchParams } from 'expo-router'
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
@@ -75,6 +75,13 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
     </View>
   )
 }
+
+/**
+ * A fix younger than this is not retaken on focus. Long enough to cover the
+ * chip's own fix re-running the effect through `setSort`, short enough that
+ * leaving the tab and coming back does mean a new one.
+ */
+const FOCUS_REFRESH_DEBOUNCE_MS = 60_000
 
 export default function DiscoverScreen() {
   useScreenInteractive()
@@ -184,9 +191,40 @@ export default function DiscoverScreen() {
       await reportLocationFailure(fix.reason, t, 'location.needed')
       return false
     }
+    lastFixAt.current = Date.now()
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
     return true
   }
+
+  /**
+   * When this screen last sent a fix, so the focus refresh below does not
+   * repeat one the chip just took: `setSort('nearby')` re-runs the effect.
+   */
+  const lastFixAt = useRef(0)
+
+  /*
+   * The tab remembers "nearby", so most nearby lists are opened without the
+   * chip ever being pressed — and were answered from wherever the person was
+   * when they last pressed it, until the foreground refresh's gap ran out.
+   * Coming back to a list sorted by distance is the same question as pressing
+   * the chip, so it gets the same fresh fix. Silent, and never a prompt: the
+   * chip is where permission is asked for, and a dialog on a tab switch is a
+   * dialog nobody can connect to anything they did.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      if (sort !== 'nearby' || !sharingLocation) return
+      if (Date.now() - lastFixAt.current < FOCUS_REFRESH_DEBOUNCE_MS) return
+      void (async () => {
+        const permission = await locationPermissionState()
+        if (!permission.granted) return
+        const fix = await captureLocation({ fresh: true, promptIfNeeded: false })
+        if (!fix.ok) return
+        lastFixAt.current = Date.now()
+        shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
+      })()
+    }, [sort, sharingLocation, shareLocation]),
+  )
 
   /**
    * A free account never sends a Pro filter, even when one reaches it — a

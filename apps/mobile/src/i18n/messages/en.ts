@@ -826,7 +826,7 @@ export const en = {
     followingEmptyBody: 'Follow someone and their posts appear in your feed.',
     followFailed: 'That did not work. Try again.',
     notFound: 'Profile not found.',
-    verifiedEmail: '✓ Verified email',
+    verifiedEmail: 'Verified email',
     registeredLabel: 'Registered',
     interests: 'Interests',
     registered: '· registered {age}',
