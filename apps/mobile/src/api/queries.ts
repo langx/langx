@@ -1167,14 +1167,20 @@ export interface ViewerPageDto {
   locked: boolean
   viewers: {
     userId: string
+    /** The UTC day this row is about; one row per person per day. */
+    day: string
     /** Absent while `locked` — the server does not send identities behind the paywall. */
     handle?: string
     displayName?: string
     avatarUrl?: string
+    /** Somebody browsing without an account: no name exists, nothing was withheld. */
+    guest?: true
     lastViewedAt: string
-    /** How many times they have been back. At least 1. */
+    /** Visits that day. At least 1. */
     viewCount: number
   }[]
+  /** Visits per day, oldest first, ending today. First page only. */
+  week?: { day: string; visits: number }[]
   nextCursor: string | null
 }
 

@@ -1499,6 +1499,15 @@ export const ru: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Посетителей пока нет',
     emptyBody: 'Заполненный профиль помогает.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Гость',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: {
+      one: '{count} визит',
+      few: '{count} визита',
+      many: '{count} визитов',
+      other: '{count} визита',
+    },
   },
 
   blocked: {

@@ -1333,6 +1333,10 @@ export const ptBR: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Nenhuma visita ainda',
     emptyBody: 'Preencher seu perfil ajuda.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Visitante',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} visita', other: '{count} visitas' },
   },
 
   blocked: {
