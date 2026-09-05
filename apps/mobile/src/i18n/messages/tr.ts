@@ -908,6 +908,8 @@ export const tr: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Planın, yenileme ve yönetimi',
+    shareSection: 'Paylaş ve davet et',
+    shareBody: 'Profil bağlantın, QR kodun ve davet bağlantın',
     privacyBody: 'Seni kim bulabilir, neyi görebilir',
     notificationsBody: 'Sana ne ulaşır — bildirimle ve e-postayla',
     appearanceSection: 'Görünüm',

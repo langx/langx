@@ -1022,6 +1022,8 @@ export const ru: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Ваш план, продление и управление им',
+    shareSection: 'Поделиться и пригласить',
+    shareBody: 'Ссылка на профиль, QR-код и приглашение',
     privacyBody: 'Кто может вас найти и что видит',
     notificationsBody: 'Что до вас доходит — пушем и по почте',
     appearanceSection: 'Оформление',

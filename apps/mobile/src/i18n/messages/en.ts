@@ -948,6 +948,8 @@ export const en = {
   },
   settings: {
     subscriptionBody: 'Your plan, renewal and how to manage it',
+    shareSection: 'Share & invite',
+    shareBody: 'Your profile link, QR code and referral invite',
     privacyBody: 'Who can find you, and what they see',
     notificationsBody: 'What reaches you, by push and by email',
     appearanceSection: 'Appearance',

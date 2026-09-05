@@ -1065,6 +1065,8 @@ export const ar: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'خطتك وتجديدها وإدارتها',
+    shareSection: 'المشاركة والدعوة',
+    shareBody: 'رابط ملفك الشخصي ورمز QR ودعوة الأصدقاء',
     privacyBody: 'من يستطيع العثور عليك وما يراه',
     notificationsBody: 'ما يصلك عبر الإشعارات والبريد',
     appearanceSection: 'المظهر',

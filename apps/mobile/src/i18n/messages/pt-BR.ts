@@ -897,6 +897,8 @@ export const ptBR: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Seu plano, a renovação e como gerenciá-lo',
+    shareSection: 'Compartilhar e convidar',
+    shareBody: 'O link do seu perfil, o QR code e o convite',
     privacyBody: 'Quem pode encontrar você e o que vê',
     notificationsBody: 'O que chega até você, por notificação e por e-mail',
     appearanceSection: 'Aparência',

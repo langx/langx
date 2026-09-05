@@ -910,6 +910,8 @@ export const fr: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Ton forfait, son renouvellement et sa gestion',
+    shareSection: 'Partager et inviter',
+    shareBody: 'Le lien de ton profil, ton QR code et l’invitation',
     privacyBody: 'Qui peut te trouver, et ce qui est visible',
     notificationsBody: 'Ce qui te parvient, par notification et par e-mail',
     appearanceSection: 'Apparence',

@@ -21,7 +21,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
-import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
@@ -37,13 +37,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-import {
-  accountAgeLabel,
-  interestLabel,
-  levelLabel,
-  useDisplayNames,
-  useT,
-} from '../../../src/i18n'
+import { accountAgeLabel, interestLabel, useDisplayNames, useT } from '../../../src/i18n'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 export default function ProfileScreen() {
@@ -112,9 +106,6 @@ export default function ProfileScreen() {
   ]
     .filter(Boolean)
     .join(' · ')
-
-  // `priority` is the order the user picked them in; the API has always sent it.
-  const study = [...user.learning].sort((a, b) => a.priority - b.priority)
 
   async function send(): Promise<void> {
     // The gate at the call site, where the screen knows what was being tried.
@@ -342,36 +333,9 @@ export default function ProfileScreen() {
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
-      {/* v3's two-column language block: teaches on the left, learns on the
-          right, level bars instead of level words. */}
-      {user.nativeLanguages.length > 0 || study.length > 0 ? (
-        <View style={styles.languages}>
-          <View style={styles.languageColumn}>
-            <Text style={styles.kicker}>{t('profile.teaches')}</Text>
-            {user.nativeLanguages.map((language) => (
-              <View key={language.code} style={styles.languageEntry}>
-                <Text style={styles.languageName}>{names.language(language.code)}</Text>
-                {/* `level` is ignored when `native` draws all five bars. */}
-                <LevelBars level="fluent" native size={17} />
-              </View>
-            ))}
-          </View>
-          <View style={styles.languageColumn}>
-            <Text style={styles.kicker}>{t('profile.learns')}</Text>
-            {study.map((language) => (
-              <View key={language.code} style={styles.languageEntry}>
-                <Text
-                  style={[styles.languageName, styles.languageNameAccent]}
-                  accessibilityLabel={`${names.language(language.code)} · ${levelLabel(t, language.level)}`}
-                >
-                  {names.language(language.code)}
-                </Text>
-                <LevelBars level={language.level} />
-              </View>
-            ))}
-          </View>
-        </View>
-      ) : null}
+      {/* v3's two-column language block, shared with the owner's own tab so
+          the two views of one profile cannot drift apart. */}
+      <LanguageColumns nativeLanguages={user.nativeLanguages} learning={user.learning} />
 
       {user.interests.length > 0 ? (
         <>
@@ -397,6 +361,7 @@ export default function ProfileScreen() {
               label={t('me.corrections')}
               value={String(summary.data.corrections ?? 0)}
             />
+            <StatTile label={t('me.badges')} value={String(summary.data.badges ?? 0)} />
             <StatTile label={t('tokens.title')} value={String(summary.data.tokens ?? 0)} />
           </View>
           {summary.data.week ? <WeeklyChart week={summary.data.week} /> : null}
@@ -517,18 +482,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // A top margin as well as a bottom one: with no photos, `PhotoGallery`
   // draws nothing, and the bio used to sit flush against the Follow button.
   bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
-  languages: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    marginTop: spacing.lg,
-    paddingBottom: 18,
-  },
-  languageColumn: { flex: 1 },
-  languageEntry: { marginTop: 3 },
-  kicker: { color: colors.textFaint, fontSize: 12, fontWeight: '600' },
-  languageName: { ...font.heading, color: colors.text, fontSize: 18, marginBottom: 5 },
-  languageNameAccent: { color: colors.accent },
   sectionTitle: {
     color: colors.textFaint,
     fontSize: 13,

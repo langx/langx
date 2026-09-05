@@ -508,6 +508,8 @@ export interface PublicSummaryDto {
   visible: boolean
   streak?: { current: number; longest: number }
   corrections?: number
+  /** Badges earned, out of the shared catalogue's total. */
+  badges?: number
   tokens?: number
   week?: { day: string; messages: number; corrections: number }[]
 }

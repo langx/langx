@@ -3,7 +3,6 @@ import { ActivityMap } from '../../../src/components/ActivityMap'
 import {
   countryFlag,
   getCountry,
-  profileUrl,
   wornCosmetic,
   TIER_BADGES,
   TIER_NAMES,
@@ -13,6 +12,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import {
+  useBadges,
   useEffectiveTier,
   useIsPro,
   useMe,
@@ -27,7 +27,7 @@ import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
-import { LevelBars } from '../../../src/components/ui/LevelBars'
+import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
@@ -54,6 +54,7 @@ export default function MeScreen() {
   const me = useMe()
   const xp = useTokens()
   const wallet = useWallet()
+  const badges = useBadges()
   const quota = useQuota()
   const viewers = useViewers()
   // Above the early return: hooks cannot be called conditionally, and putting
@@ -173,6 +174,20 @@ export default function MeScreen() {
       */}
       {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
 
+      {/*
+        The same two columns everybody else sees, in the same place — under the
+        bio, above the numbers. It used to be one compressed row further down,
+        which described a different-looking profile from the one being shown to
+        other people. Tapping it edits, since this is the owner.
+      */}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('me.languages')}
+        onPress={() => router.push('/(app)/edit-profile')}
+      >
+        <LanguageColumns nativeLanguages={profile.nativeLanguages} learning={profile.learning} />
+      </Pressable>
+
       <View style={styles.tiles}>
         {/* Same affordance as the wallet tile beside it: a number nobody can
             act on reads as decoration. */}
@@ -189,6 +204,13 @@ export default function MeScreen() {
           label={`${t('me.corrections')} ›`}
           value={String(summary?.lifetime.corrections ?? 0)}
           onPress={() => router.push('/(app)/corrections')}
+        />
+        {/* How many of the catalogue's badges are earned — "0" is a real
+            answer, and the tile is the way into the list. */}
+        <StatTile
+          label={`${t('me.badges')} ›`}
+          value={String(badges.data?.earnedCount ?? 0)}
+          onPress={() => router.push('/(app)/badges')}
         />
         {/* The balance is the way into the wallet — a number nobody can act
             on reads as decoration, and the wallet has nowhere else to be
@@ -228,65 +250,17 @@ export default function MeScreen() {
         }
         onPress={() => router.push('/(app)/viewers')}
       />
-      <ListRow
-        title={t('me.badges')}
-        subtitle={t('me.leaderboardSubtitle')}
-        onPress={() => router.push('/(app)/badges')}
-      />
       {/*
-        One row, not the two titled sections this used to be: v3 states the
-        pair the way Discover states everyone else's — "what you teach → what
-        you practise", with the bars carrying the level. It sits with the other
-        rows rather than under the photos, because a language pair is a fact
-        about the profile, not a section of it. Editing happens where every
-        other profile field is edited.
-      */}
-      <ListRow
-        title={t('me.languages')}
-        onPress={() => router.push('/(app)/edit-profile')}
-        accessory={
-          <View style={styles.pair}>
-            <Text style={styles.pairText} numberOfLines={1}>
-              {profile.nativeLanguages.map((l) => names.language(l.code)).join(', ')} →{' '}
-              {profile.learning.map((l) => names.language(l.code)).join(', ')}
-            </Text>
-            {/* The first learning language's level — the one a match is made on. */}
-            {profile.learning[0] ? <LevelBars level={profile.learning[0].level} /> : null}
-          </View>
-        }
-      />
-
-      {/*
-        Two rows, because they are two different things you do with a profile:
-        one looks at it the way a stranger does, the other hands somebody the
-        address. Last of the list, since both are the *result* of everything
-        above them.
+        Last of the rows: looking at the profile the way a stranger does is the
+        *result* of everything above it. Sharing it and inviting people moved
+        to Settings → Share & invite — they are things you do with the account,
+        not facts about it, and the numbers above are now the way into the
+        badges and the wallet.
       */}
       <ListRow
         title={t('me.previewProfile')}
         subtitle={t('me.previewProfileBody')}
         onPress={() => openProfile(profile.handle, '/(app)/(tabs)/me')}
-      />
-      {/*
-        A screen rather than the share sheet directly: sending a link and
-        showing one across a table want opposite things, and a sheet cannot be
-        photographed. The sheet is one tap further in, where it belongs.
-      */}
-      <ListRow
-        title={t('me.shareProfile')}
-        subtitle={profileUrl(profile.handle).replace('https://', '')}
-        onPress={() => router.push('/(app)/share-profile')}
-      />
-
-      {/*
-        Beside sharing a profile, not inside it. They look alike and are not:
-        one is "here is me", the other is "come and try this", and the second
-        one pays.
-      */}
-      <ListRow
-        title={t('me.invite')}
-        subtitle={t('me.inviteBody')}
-        onPress={() => router.push('/(app)/invite')}
       />
 
       {!isPro ? (
@@ -327,10 +301,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   bio: { ...font.body, color: colors.text, marginTop: spacing.sm },
   pressed: { opacity: 0.7 },
-  // `shrink` on the row's own text so a five-language pair truncates instead
-  // of pushing the bars and the chevron off the end of the row.
-  pair: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: 6 },
-  pairText: { color: colors.textFaint, flexShrink: 1, fontSize: 14 },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

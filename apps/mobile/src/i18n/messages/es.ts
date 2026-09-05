@@ -904,6 +904,8 @@ export const es: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Tu plan, la renovación y cómo gestionarlo',
+    shareSection: 'Compartir e invitar',
+    shareBody: 'El enlace a tu perfil, tu código QR y la invitación',
     privacyBody: 'Quién puede encontrarte y qué ve',
     notificationsBody: 'Qué te llega, por notificación y por correo',
     appearanceSection: 'Apariencia',
