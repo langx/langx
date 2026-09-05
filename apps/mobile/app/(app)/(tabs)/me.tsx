@@ -34,7 +34,8 @@ import { StatTile } from '../../../src/components/ui/StatTile'
 import { openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-import { useDisplayNames, useT } from '../../../src/i18n'
+import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
+import { compactCount } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -43,6 +44,7 @@ export default function MeScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
   const names = useDisplayNames()
 
   /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
@@ -217,7 +219,7 @@ export default function MeScreen() {
             reached from. The "›" is the hint that it opens. */}
         <StatTile
           label={`${t('me.wallet')} ›`}
-          value={String(balance)}
+          value={compactCount(balance, locale)}
           onPress={() => router.push('/(app)/wallet')}
         />
       </View>

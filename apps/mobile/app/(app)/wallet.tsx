@@ -30,6 +30,7 @@ import { showToast } from '../../src/lib/toast'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { periodLabel, useLocale, useT } from '../../src/i18n'
+import { compactCount } from '../../src/lib/format'
 import { leaderboardShareText } from '../../src/lib/shareText'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -190,7 +191,7 @@ export default function WalletScreen() {
         style={({ pressed }) => [styles.section, pressed && styles.pressed]}
       >
         <Text style={styles.kicker}>{t('wallet.balance')}</Text>
-        <Text style={styles.balanceValue}>{balance}</Text>
+        <Text style={styles.balanceValue}>{compactCount(balance, locale)}</Text>
         <View style={styles.balanceHint}>
           <Text style={styles.body}>
             {t('wallet.earnedSpent', {

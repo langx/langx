@@ -103,6 +103,8 @@ export interface Profile {
   interests: string[]
   settings: {
     discoverable: boolean
+    /** A native language code, or absent for "the first native language". See `translateTargetFor`. */
+    translateTo?: string
     /**
      * Three shapes at once: today's `{push, email}` per kind, the bare boolean
      * per kind written while the channel axis was gone, and the single boolean
@@ -686,7 +688,11 @@ export async function updateProfile(
    */
   const { privacy, settings, equipped, ...rest } = definedUpdates as {
     privacy?: Record<string, boolean>
-    settings?: { discoverable?: boolean; notifications?: NotificationPrefsInput }
+    settings?: {
+      discoverable?: boolean
+      translateTo?: string | null
+      notifications?: NotificationPrefsInput
+    }
     equipped?: Record<string, string | null>
   }
   const privacyPaths = Object.fromEntries(
@@ -710,8 +716,29 @@ export async function updateProfile(
    * `notificationsAllowed` covering the ones nobody ever does.
    */
   const settingsPaths: Record<string, unknown> = {}
+  const settingsUnset: Record<string, ''> = {}
   if (settings?.discoverable !== undefined)
     settingsPaths['settings.discoverable'] = settings.discoverable
+  /*
+   * The translation target has to be one of the person's *native* languages
+   * — the schema cannot see the profile, so the check is here, against the
+   * list as it will be after this same request. `null` removes the key
+   * rather than storing one, so the default (`translateTargetFor`) applies.
+   */
+  if (settings?.translateTo !== undefined) {
+    if (settings.translateTo === null) {
+      settingsUnset['settings.translateTo'] = ''
+    } else {
+      const natives = (input.nativeLanguages ?? current.nativeLanguages).map((l) => l.code)
+      if (!natives.includes(settings.translateTo)) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          'Translation target must be one of your native languages',
+        )
+      }
+      settingsPaths['settings.translateTo'] = settings.translateTo
+    }
+  }
   if (settings?.notifications) {
     const resolved = resolveNotificationPrefs(current.settings?.notifications)
     for (const [type, channels] of Object.entries(settings.notifications)) {
@@ -768,7 +795,9 @@ export async function updateProfile(
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
         updatedAt: now,
       },
-      ...(Object.keys(equippedUnset).length > 0 ? { $unset: equippedUnset } : {}),
+      ...(Object.keys(equippedUnset).length + Object.keys(settingsUnset).length > 0
+        ? { $unset: { ...equippedUnset, ...settingsUnset } }
+        : {}),
     },
     { returnDocument: 'after' },
   )

@@ -973,6 +973,11 @@ export const es: Localized<EnMessages> = {
     updating: 'Actualizando…',
     languageSection: 'Idioma',
     appLanguage: 'Idioma de la app',
+    translateTo: 'Traducir a',
+    translateToBody: 'En cuál de tus idiomas se muestra un mensaje traducido',
+    translateToScreenBody:
+      'Los mensajes que traduces se muestran en este idioma. Solo se ofrecen tus idiomas nativos.',
+    translateToFirst: 'Tu primer idioma — el predeterminado',
     languageAuto: 'Dispositivo ({name})',
     blockedPeople: 'Personas bloqueadas',
     showIntro: 'Ver la introducción otra vez',

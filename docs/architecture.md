@@ -326,6 +326,13 @@ hard-coded.
 per-request cost to a third party, so it carries a number on every tier rather
 than a promise the free tier subsidises. `PLAN_LIMITS` holds all three.
 
+The target language is the reader's own: `settings.translateTo` on the profile,
+which `updateProfile` only accepts when it is one of the profile's native
+languages, and `translateTargetFor` (shared) resolves at read time — the choice
+if it is still native and translatable, else the first native language that
+is. Settings → Appearance → _Translate into_ offers only the native languages,
+and only opens a picker when there is more than one (5 September 2026).
+
 **Hiding your online status is free on every tier**, and it is not in
 `PlanLimits` at all — a boolean that is `true` everywhere is a privacy setting,
 not a plan limit, and leaving it in the table would have kept `hasFeature`

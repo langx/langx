@@ -239,6 +239,8 @@ export interface MeProfile {
    */
   settings: {
     discoverable: boolean
+    /** A native language code, or absent: see `translateTargetFor` in shared. */
+    translateTo?: string | null
     notifications: StoredNotificationPrefs | NotificationPrefs | boolean
   }
   privacy: {

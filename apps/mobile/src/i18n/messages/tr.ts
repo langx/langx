@@ -977,6 +977,11 @@ export const tr: Localized<EnMessages> = {
     updating: 'Güncelleniyor…',
     languageSection: 'Dil',
     appLanguage: 'Uygulama dili',
+    translateTo: 'Çeviri dili',
+    translateToBody: 'Çevrilen mesajın hangi dilinde gösterileceği',
+    translateToScreenBody:
+      'Çevirdiğin mesajlar bu dilde gösterilir. Yalnızca ana dillerin sunulur.',
+    translateToFirst: 'İlk dilin — varsayılan',
     languageAuto: 'Cihaz ({name})',
     blockedPeople: 'Engellenenler',
     showIntro: 'Tanıtımı tekrar göster',

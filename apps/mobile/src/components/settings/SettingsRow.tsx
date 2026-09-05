@@ -3,13 +3,15 @@ import {
   LOCALE_NAMES,
   NOTIFICATION_CHANNELS,
   profileUrl,
+  translateTargetFor,
+  translateTargetOptions,
 } from '@langx/shared'
 import { router } from 'expo-router'
 import { Image, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
 import defaultIcon from '../../../assets/icons/default.png'
 import type { SettingsModel } from '../../hooks/useSettingsModel'
-import { type MessageKey } from '../../i18n'
+import { type MessageKey, useDisplayNames } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
@@ -53,6 +55,7 @@ interface SettingsRowProps {
  */
 export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
   const styles = useStyles()
+  const names = useDisplayNames()
   const { t, profile, update } = model
 
   switch (id) {
@@ -300,6 +303,26 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => router.push('/(app)/app-language')}
         />
       )
+    case 'appearance.translateTo': {
+      // An account setting, unlike the two device-level rows around it: the
+      // language somebody reads in follows them to every phone. The value is
+      // the resolved target, so the row never reads "not set" — there is
+      // always a first native language — and it only opens a picker when
+      // there is a second one to pick.
+      if (!profile) return null
+      const target = translateTargetFor(profile)
+      if (!target) return null
+      const canChoose = translateTargetOptions(profile).length > 1
+      return (
+        <ListRow
+          title={t('settings.translateTo')}
+          subtitle={t('settings.translateToBody')}
+          value={names.language(target)}
+          last={last}
+          onPress={canChoose ? () => router.push('/(app)/translate-language') : undefined}
+        />
+      )
+    }
     case 'appearance.tips':
       // Device-level, like the theme: a tip you have read is a fact about this
       // phone, and a shared tablet should not inherit somebody else's dismissals.

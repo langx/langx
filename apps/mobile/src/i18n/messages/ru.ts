@@ -1089,6 +1089,11 @@ export const ru: Localized<EnMessages> = {
     updating: 'Обновляем…',
     languageSection: 'Язык',
     appLanguage: 'Язык приложения',
+    translateTo: 'Переводить на',
+    translateToBody: 'На каком из ваших языков показывать переведённое сообщение',
+    translateToScreenBody:
+      'Сообщения, которые вы переводите, показываются на этом языке. Предлагаются только ваши родные языки.',
+    translateToFirst: 'Ваш первый язык — по умолчанию',
     languageAuto: 'Устройство ({name})',
     blockedPeople: 'Заблокированные',
     showIntro: 'Показать вступление снова',

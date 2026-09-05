@@ -1,3 +1,4 @@
+import { translatableLanguageSchema } from './translation'
 import { countryCodeSchema } from './countries'
 import { PLAN_LIMITS } from './limits'
 import { notificationPrefsSchema } from './notifications'
@@ -247,6 +248,13 @@ export const updateProfileSchema = z
     settings: z
       .object({
         discoverable: z.boolean(),
+        /**
+         * Which native language a translated message is shown in. Must be
+         * one of the profile's native languages — checked in `updateProfile`,
+         * which can see the profile — and `null` clears it back to the first
+         * one. See `translateTargetFor`.
+         */
+        translateTo: translatableLanguageSchema.nullable(),
         /**
          * Four kinds, two channels. `.partial()` at both levels, so a screen
          * flipping one switch does not have to restate the other seven — and
