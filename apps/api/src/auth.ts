@@ -17,6 +17,12 @@ import { localeFromHeader } from './i18n'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 
+/**
+ * Where Apple POSTs the credential back from. Fixed by Apple, not by us or by
+ * a deployment — see the `trustedOrigins` note in `createAuth`.
+ */
+const APPLE_ORIGIN = 'https://appleid.apple.com'
+
 export interface CreateAuthOptions {
   env: Env
   db: Db
@@ -82,7 +88,24 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
     secret: env.BETTER_AUTH_SECRET,
     // The Expo client sends its scheme as a request origin during the OAuth
     // redirect-proxy round trip; without it here that redirect is rejected.
-    trustedOrigins: [...env.TRUSTED_ORIGINS, ...APP_SCHEMES.map((scheme) => `${scheme}://`)],
+    //
+    // `APPLE_ORIGIN` is there for a different reason, and it is not optional:
+    // Sign in with Apple asks for `response_mode=form_post`, so Apple returns
+    // the credential by POSTing to `/api/auth/callback/apple` from its own
+    // servers, carrying `Origin: https://appleid.apple.com`. Every other
+    // provider redirects the browser back with a GET and no cross-site origin,
+    // which is why Apple is the only one that needs naming here. Without it
+    // the callback is refused with INVALID_ORIGIN and the sign-in dies at the
+    // last step, after the person has already authenticated with Apple.
+    //
+    // In code rather than TRUSTED_ORIGINS because it is Apple's fixed address,
+    // identical for every deployment including self-hosted ones — the same
+    // reasoning as the app schemes above.
+    trustedOrigins: [
+      ...env.TRUSTED_ORIGINS,
+      ...APP_SCHEMES.map((scheme) => `${scheme}://`),
+      APPLE_ORIGIN,
+    ],
 
     database: mongodbAdapter(db, { client }),
 

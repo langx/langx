@@ -559,16 +559,23 @@ of it runs together.
       `http://localhost:4000/api/auth/callback/google`. There is no third one
       for a phone: Google refuses a private LAN address, so a development build
       on a real device can only sign in against the deployed API
-- [ ] Sign in with Apple: Services ID, key (.p8) and the four `APPLE_*`
-      variables set. **Apple requires this if any other social login ships**,
-      so it gates the iOS release rather than merely improving it. Until both
-      are set the sign-in screen simply does not draw the buttons
-- [ ] `APPLE_DOMAIN_ASSOCIATION` set, **before** the Services ID's return URL
-      can be saved. Apple verifies the domain of the return URL — `api.langx.io`,
-      the API's host, not the web app's — by fetching
-      `/.well-known/apple-developer-domain-association.txt` from it over HTTPS
-      with no redirect. The API serves that path from this variable; unset, it
-      404s and the portal refuses to save
+- [x] Sign in with Apple: Services ID, key (.p8) and the four `APPLE_*`
+      variables set — done 5 September 2026. **Apple requires this if any other
+      social login ships**, so it gates the iOS release rather than merely
+      improving it. Until both are set the sign-in screen simply does not draw
+      the buttons. The Services ID is `service.tech.newchapter.languageXchange`
+      (not the `.web` name this file once guessed at) and the key is
+      `M7MCS4U5P6`; the 2023 key `BL68Y48XG7` was revoked, so any v1/Appwrite
+      Apple sign-in still relying on it is now broken by design
+- [ ] `APPLE_DOMAIN_ASSOCIATION` — **not required in practice, as of
+      5 September 2026.** This entry used to say Apple refuses to save the
+      Services ID's return URL until it can fetch
+      `/.well-known/apple-developer-domain-association.txt` from `api.langx.io`.
+      That did not happen: the return URL saved with the variable unset and the
+      path 404ing, and `appleid.apple.com/auth/authorize` accepts the pair
+      (a deliberately wrong `redirect_uri` is refused with "Invalid web
+      redirect", so the check is real). Left unticked rather than deleted
+      because Apple may enforce it again; the route still exists to serve it
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
 - [x] `EXPO_PUBLIC_API_URL` set on the `production` build profile in
       `eas.json` **and** in the EAS `production` environment, both pointing at
