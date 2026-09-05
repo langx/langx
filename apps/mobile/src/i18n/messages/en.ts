@@ -1019,6 +1019,7 @@ export const en = {
     languageAuto: 'Device ({name})',
     blockedPeople: 'Blocked people',
     showIntro: 'Show intro again',
+    rateApp: 'Rate LangX',
     exportData: 'Export my data',
     deleteAccount: 'Delete account',
     deleteAccountBody: 'Signing back in within {days} days cancels it.',

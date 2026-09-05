@@ -980,6 +980,7 @@ export const tr: Localized<EnMessages> = {
     languageAuto: 'Cihaz ({name})',
     blockedPeople: 'Engellenenler',
     showIntro: 'Tanıtımı tekrar göster',
+    rateApp: 'LangX’i değerlendir',
     exportData: 'Verilerimi dışa aktar',
     deleteAccount: 'Hesabı sil',
     deleteAccountBody: '{days} gün içinde tekrar giriş yaparsan iptal olur.',

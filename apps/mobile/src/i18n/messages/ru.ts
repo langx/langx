@@ -1092,6 +1092,7 @@ export const ru: Localized<EnMessages> = {
     languageAuto: 'Устройство ({name})',
     blockedPeople: 'Заблокированные',
     showIntro: 'Показать вступление снова',
+    rateApp: 'Оценить LangX',
     exportData: 'Выгрузить мои данные',
     deleteAccount: 'Удалить аккаунт',
     deleteAccountBody: 'Если войдёшь снова в течение {days} дней, удаление отменится.',

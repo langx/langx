@@ -981,6 +981,7 @@ export const fr: Localized<EnMessages> = {
     languageAuto: 'Appareil ({name})',
     blockedPeople: 'Personnes bloquées',
     showIntro: 'Revoir l’introduction',
+    rateApp: 'Noter LangX',
     exportData: 'Exporter mes données',
     deleteAccount: 'Supprimer le compte',
     deleteAccountBody: 'Te reconnecter sous {days} jours annule la suppression.',

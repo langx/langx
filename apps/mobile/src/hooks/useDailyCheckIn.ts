@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { AppState } from 'react-native'
 import { useCheckIn } from '../api/queries'
+import { useReviewPrompt } from './useReviewPrompt'
 
 /**
  * Tells the server the app was opened, so today counts towards the streak.
@@ -26,6 +27,9 @@ export function useDailyCheckIn({ enabled }: { enabled: boolean }) {
   // resubscribing to `AppState` on each one.
   const mutate = useRef(checkIn.mutate)
   mutate.current = checkIn.mutate
+  const review = useReviewPrompt()
+  const requestReview = useRef(review.request)
+  requestReview.current = review.request
 
   useEffect(() => {
     if (!enabled) return
@@ -38,6 +42,15 @@ export function useDailyCheckIn({ enabled }: { enabled: boolean }) {
         // A failed check-in must be retryable, or a lost request costs a day.
         onError: () => {
           lastAsked.current = null
+        },
+        // The day a streak reaches a milestone is the best moment the app has
+        // to ask for a review: the reward just landed, and somebody who is
+        // here on day seven has been coming back for a week. Which days count
+        // is read from the shared table, never typed here.
+        onSuccess: (result) => {
+          if (result.advanced) {
+            requestReview.current({ kind: 'streakMilestone', day: result.current })
+          }
         },
       })
     }
