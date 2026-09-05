@@ -72,6 +72,31 @@ export default function GiftScreen() {
     if (!giftState(wallet.data.gift.nextAt).ready) goBackTo('/(app)/wallet')
   }, [phase, wallet.data])
 
+  // The opening shake is an effect too, for the same reason in the other
+  // direction: set from the tap handler it was cancelled a frame later by the
+  // idle wobble's cleanup, and the box froze at whatever tilt it had reached.
+  useEffect(() => {
+    if (phase !== 'opening') return
+    wobble.value = reduceMotion
+      ? 0
+      : withSequence(
+          withTiming(-9, { duration: 70 }),
+          withTiming(9, { duration: 70 }),
+          withTiming(-9, { duration: 70 }),
+          withTiming(9, { duration: 70 }),
+          withTiming(0, { duration: 70 }),
+        )
+  }, [phase, reduceMotion, wobble])
+
+  // The reveal starts from an effect, once the amount is mounted. Started from
+  // the mutation callback, before the `Animated.View` existed, the spring
+  // froze part-way on web — the number sat at forty percent opacity forever.
+  useEffect(() => {
+    if (phase !== 'revealed') return
+    lift.value = reduceMotion ? 0 : withSpring(-28, { damping: 14, stiffness: 180 })
+    pop.value = reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 })
+  }, [phase, reduceMotion, lift, pop])
+
   const boxStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${wobble.value}deg` }, { translateY: lift.value }],
   }))
@@ -84,22 +109,11 @@ export default function GiftScreen() {
     if (phase !== 'waiting' || claim.isPending) return
     setPhase('opening')
     void impact('medium')
-    if (!reduceMotion) {
-      wobble.value = withSequence(
-        withTiming(-9, { duration: 70 }),
-        withTiming(9, { duration: 70 }),
-        withTiming(-9, { duration: 70 }),
-        withTiming(9, { duration: 70 }),
-        withTiming(0, { duration: 70 }),
-      )
-    }
     claim.mutate(undefined, {
       onSuccess: (result) => {
         setAmount(result.amount)
         setPhase('revealed')
         void notification(result.amount > 0 ? 'success' : 'warning')
-        lift.value = reduceMotion ? 0 : withSpring(-28, { damping: 14, stiffness: 180 })
-        pop.value = reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 })
       },
       onError: (error) => {
         setPhase('waiting')
@@ -124,7 +138,9 @@ export default function GiftScreen() {
         : t('gift.nextIn', { minutes: 60 })
 
   return (
-    <Screen>
+    // `flex: 1` on the column, or the stage below has no height to centre in:
+    // a non-scrolling `Screen` sizes its column to its content.
+    <Screen style={styles.screen}>
       <ScreenHeader title={t('gift.title')} onBack={() => goBackTo('/(app)/wallet')} />
       <View style={styles.stage}>
         <Pressable
@@ -168,6 +184,7 @@ export default function GiftScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  screen: { flex: 1 },
   stage: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingBottom: spacing.xxxl },
   box: {
     alignItems: 'center',
