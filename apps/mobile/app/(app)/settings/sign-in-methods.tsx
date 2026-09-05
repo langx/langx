@@ -1,17 +1,16 @@
-import { PASSWORD_MIN_LENGTH, type LinkedProvider } from '@langx/shared'
-import { useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
+import type { LinkedProvider } from '@langx/shared'
+import { router } from 'expo-router'
+import { Text, View } from 'react-native'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
-import { useSetPassword, useSignInMethods } from '../../../src/hooks/useSignInMethods'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
+import { useSignInMethods } from '../../../src/hooks/useSignInMethods'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useT } from '../../../src/i18n'
-import { ApiRequestError } from '../../../src/api/client'
 import { goBackTo } from '../../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../../src/lib/theme'
-import { showToast } from '../../../src/lib/toast'
+import { makeStyles } from '../../../src/lib/theme'
 
 /** Providers keep their own names — neither Google's nor Apple's is translated. */
 const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple: 'Apple' }
@@ -27,6 +26,11 @@ const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple
  * password row is the first thing, and when it is the *only* way in the screen
  * says so in words rather than leaving them to infer it from a list.
  *
+ * The password row opens its own screen rather than unfolding a form here.
+ * It looks like every other settings row, so it gets tapped like one — and for
+ * a while it answered that tap with nothing, which read as broken on both
+ * sides of `hasPassword`.
+ *
  * Linking and unlinking are deliberately not here. Unlinking needs a rule
  * about the last remaining method before it can be offered safely, and a row
  * that can lock somebody out is worse than a row that is missing.
@@ -34,29 +38,9 @@ const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple
 export default function SignInMethodsScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
   const methods = useSignInMethods()
-  const setPassword = useSetPassword()
-
-  const [password, setPassword_] = useState('')
   const data = methods.data
-
-  const onSave = () => {
-    setPassword.mutate(password, {
-      onSuccess: () => {
-        setPassword_('')
-        showToast(t('settings.signInSetPasswordSaved'))
-      },
-      onError: (error) => {
-        showToast(
-          error instanceof ApiRequestError && error.code === 'PASSWORD_ALREADY_SET'
-            ? t('settings.signInPasswordAlready')
-            : t('settings.signInSetPasswordFailed'),
-        )
-      },
-    })
-  }
 
   return (
     <Screen scroll>
@@ -79,35 +63,12 @@ export default function SignInMethodsScreen() {
                 ? t('settings.signInPasswordSet')
                 : t('settings.signInPasswordNotSet')
             }
+            onPress={() => router.push('/(app)/settings/password')}
             last
           />
-
-          {data.hasPassword ? null : (
-            <View style={styles.setPassword}>
-              {data.linked.length > 0 ? (
-                <Text style={styles.warning}>{t('settings.signInOnlyProvider')}</Text>
-              ) : null}
-              <Text style={styles.body}>{t('settings.signInSetPasswordBody')}</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword_}
-                placeholder={t('settings.signInSetPassword')}
-                placeholderTextColor={colors.textMuted}
-                secureTextEntry
-                autoCapitalize="none"
-                autoComplete="new-password"
-                textContentType="newPassword"
-              />
-              <Button
-                label={t('settings.signInSetPassword')}
-                onPress={onSave}
-                // The same floor the server enforces, from the same constant,
-                // so the button cannot offer a request that must fail.
-                disabled={password.length < PASSWORD_MIN_LENGTH || setPassword.isPending}
-              />
-            </View>
-          )}
+          {!data.hasPassword && data.linked.length > 0 ? (
+            <Text style={styles.warning}>{t('settings.signInOnlyProvider')}</Text>
+          ) : null}
 
           <Text style={styles.heading}>{t('settings.signInConnected')}</Text>
           {data.linked.length === 0 ? (
@@ -125,23 +86,34 @@ export default function SignInMethodsScreen() {
             ))
           )}
         </>
-      ) : null}
+      ) : methods.isError ? (
+        /*
+         * Said out loud rather than left blank. This is the screen somebody
+         * opens when they are worried about getting locked out; a header over
+         * empty space tells them nothing and offers nothing to tap.
+         */
+        <View style={styles.retry}>
+          <Text style={styles.intro}>{t('common.retry')}</Text>
+          <Button label={t('common.tryAgain')} onPress={() => void methods.refetch()} />
+        </View>
+      ) : (
+        <View style={styles.loading}>
+          <Skeleton width="55%" />
+          <Skeleton height={52} />
+          <Skeleton height={52} />
+          <Skeleton width="30%" style={styles.loadingGap} />
+          <Skeleton height={52} />
+        </View>
+      )}
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   intro: { ...font.caption, color: colors.textMuted, marginTop: spacing.md },
   heading: { ...font.heading, color: colors.text, marginTop: spacing.lg },
-  body: { ...font.caption, color: colors.textMuted },
-  warning: { ...font.body, color: colors.text },
-  setPassword: { gap: spacing.sm, marginTop: spacing.md },
-  input: {
-    ...font.body,
-    backgroundColor: colors.fill,
-    borderRadius: radius.md,
-    color: colors.text,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-  },
+  warning: { ...font.body, color: colors.text, marginTop: spacing.md },
+  retry: { gap: spacing.md, marginTop: spacing.md },
+  loading: { gap: spacing.sm, marginTop: spacing.md },
+  loadingGap: { marginTop: spacing.lg },
 }))
