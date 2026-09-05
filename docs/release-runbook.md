@@ -634,7 +634,7 @@ of it runs together.
       Stripe (`newchapter.tech`, `acct_1O1p6JFsZedeNj7H`) connected by Behic on
       5 September 2026 and the configuration created the same day:
       `appae15d832dc`, USD default, billing address collected only when
-      required, automatic tax off
+      required
 - [x] Create the web products at the same prices as the App Store and Play
       products they mirror, and add them to the **`default` offering** under
       exactly the package identifiers in `packages/shared/src/billing.ts` →
@@ -668,12 +668,24 @@ of it runs together.
       later, so this is a wait rather than a rebuild. Second, `$rc_lifetime`
       has no web product: it only ever existed on the Test Store, and the
       loyalty gift is a promotional grant rather than a purchase
-- [ ] Decide two checkout settings left at their defaults, both under _Web →
-      LangX (RevenueCat Billing) → Billing_: **automatic tax** (Stripe Tax,
-      which costs per transaction and needs registrations), and **renewal
-      emails** — all three are off, and the "upcoming yearly renewal" one is
-      the notice several jurisdictions expect for an annual subscription. The
-      invoice footer, which names the legal entity, is also empty
+- [x] **Automatic tax is on**, as of 5 September 2026: provider Stripe Tax,
+      tax code `txcd_10103000` (_Software as a service — personal use_), which
+      is what LangX is — individuals subscribing for themselves. Stripe charges
+      its own fee per calculation. The code is a tax classification rather than
+      a technical setting, so it is worth an accountant's eye before the first
+      real sale; the other candidates on the list are `txcd_10000000` (General
+      — Electronically Supplied Services) and `txcd_10103001` (SaaS, business
+      use)
+- [ ] **Stripe Tax has its own setup, on Stripe's side**, and this switch does
+      not do it: an origin address, and a registration per jurisdiction you
+      actually collect in. Until those exist Stripe Tax computes nothing, so
+      the checkout looks the same and no tax is added. Stripe dashboard →
+      _Tax_. Behic's, because it turns on a tax obligation
+- [ ] Decide the settings still left at their defaults, under _Web → LangX
+      (RevenueCat Billing) → Billing_: **renewal emails** — all three are off,
+      and the "upcoming yearly renewal" one is the notice several jurisdictions
+      expect for an annual subscription — and the **invoice footer**, which
+      names the legal entity and is empty
 - [ ] Buy once on `app.langx.io` with a real card, then check `subscriptions`
       for the event (`store: "rc_billing"`), the tier on the profile, and that
       Settings' _Manage subscription_ row opens RevenueCat's portal. The Test
