@@ -233,6 +233,81 @@ describe('sign-in methods', () => {
     expect(signIn.statusCode).toBe(200)
   })
 
+  it('signs in with the handle instead of the address', async () => {
+    const { handle: userHandle } = await newUser('handle-signin@example.com')
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email: userHandle, password: PASSWORD },
+    })
+
+    expect(response.statusCode).toBe(200)
+  })
+
+  /** `@sofia` is what people type when asked for a handle. */
+  it('accepts a handle typed with a leading @ or in capitals', async () => {
+    const { handle: userHandle } = await newUser('handle-signin-at@example.com')
+
+    for (const typed of [`@${userHandle}`, userHandle.toUpperCase(), `  @${userHandle}  `]) {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/email',
+        payload: { email: typed, password: PASSWORD },
+      })
+      expect(response.statusCode, typed).toBe(200)
+    }
+  })
+
+  it('still signs in with the address', async () => {
+    await newUser('handle-signin-email@example.com')
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email: 'handle-signin-email@example.com', password: PASSWORD },
+    })
+
+    expect(response.statusCode).toBe(200)
+  })
+
+  it('refuses the right handle with the wrong password', async () => {
+    const { handle: userHandle } = await newUser('handle-signin-wrong@example.com')
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email: userHandle, password: 'not the password' },
+    })
+
+    expect(response.statusCode).not.toBe(200)
+  })
+
+  /**
+   * The reason a miss falls through rather than answering: an unknown handle
+   * and a known handle with a wrong password must be indistinguishable, or
+   * this becomes a way to ask which handles have accounts.
+   */
+  it('answers an unknown handle exactly as it answers a wrong password', async () => {
+    const { handle: userHandle } = await newUser('handle-signin-oracle@example.com')
+
+    const unknown = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email: 'nobodyhasthishandle', password: 'not the password' },
+    })
+    const wrongPassword = await app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/email',
+      payload: { email: userHandle, password: 'not the password' },
+    })
+
+    expect(unknown.statusCode).toBe(wrongPassword.statusCode)
+    expect(unknown.json<{ code?: string }>().code).toBe(
+      wrongPassword.json<{ code?: string }>().code,
+    )
+  })
+
   it('rejects a password shorter than the shared minimum', async () => {
     const { user } = await newUser('methods-short-password@example.com')
     await dropPassword(user.userId)
