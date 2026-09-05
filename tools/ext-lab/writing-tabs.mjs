@@ -1,0 +1,32 @@
+import { chromium } from 'playwright'
+const [name, value] = process.env.COOKIE.split('=')
+const browser = await chromium.launch({ args: ['--no-sandbox'] })
+const ctx = await browser.newContext({ viewport: { width: 420, height: 900 } })
+await ctx.addCookies([{ name, value, domain: 'localhost', path: '/', httpOnly: true, sameSite: 'Lax' }])
+const page = await ctx.newPage()
+await page.goto('http://localhost:8082/me', { waitUntil: 'domcontentloaded', timeout: 240000 })
+await page.waitForTimeout(25000)
+const meText = await page.evaluate(() => document.body.innerText)
+console.log('PROFILE-HAS-YOUR-POSTS-ROW', meText.includes('Your posts'))
+await page.screenshot({ path: './shots/writing-0-profile.png' })
+
+await page.goto('http://localhost:8082/corrections', { waitUntil: 'domcontentloaded' })
+await page.waitForTimeout(9000)
+console.log('CORRECTIONS-TAB', JSON.stringify((await page.evaluate(() => document.body.innerText)).slice(0, 220)))
+await page.screenshot({ path: './shots/writing-1-corrections.png' })
+
+await page.getByText('Posts', { exact: true }).first().click()
+await page.waitForTimeout(4000)
+console.log('POSTS-TAB', JSON.stringify((await page.evaluate(() => document.body.innerText)).slice(0, 260)))
+await page.screenshot({ path: './shots/writing-2-posts.png' })
+
+// A post opens, and back returns here.
+const before = page.url()
+await page.getByText('I go to the store yesterday').first().click()
+await page.waitForTimeout(5000)
+console.log('OPENED', page.url())
+await page.goBack()
+await page.waitForTimeout(4000)
+console.log('BACK-TO', page.url(), 'same=', page.url().includes('corrections'), 'was', before)
+await page.screenshot({ path: './shots/writing-3-back.png' })
+await browser.close()

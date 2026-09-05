@@ -49,3 +49,6 @@ yarn-error.log*
 # instance-specific and this repo is public — point GOOGLE_SERVICES_JSON at it.
 google-services.json
 GoogleService-Info.plist
+
+# screenshots written by the tools/ext-lab scripts
+tools/ext-lab/shots/

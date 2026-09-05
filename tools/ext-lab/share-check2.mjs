@@ -1,0 +1,20 @@
+import { chromium } from 'playwright'
+const API = 'http://localhost:4100', WEB = 'http://localhost:8091'
+const signIn = await fetch(`${API}/api/auth/sign-in/email`, { method: 'POST', headers: { 'content-type': 'application/json', origin: API }, body: JSON.stringify({ email: 'ada@example.com', password: process.env.SHARE_PASSWORD ?? 'correct horse battery staple' }) })
+const [name, value] = signIn.headers.get('set-cookie').split(';')[0].split('=')
+const browser = await chromium.launch({ args: ['--no-sandbox'] })
+const context = await browser.newContext({ viewport: { width: 420, height: 860 } })
+await context.addCookies([{ name, value: decodeURIComponent(value), domain: 'localhost', path: '/', httpOnly: true, sameSite: 'Lax' }])
+await context.addInitScript(() => { window.__shared = []; Object.defineProperty(navigator, 'share', { configurable: true, value: (d) => { window.__shared.push(d); return Promise.resolve() } }) })
+const page = await context.newPage()
+page.on('pageerror', (e) => console.log('PAGEERROR', e.message.slice(0, 160)))
+await page.goto(`${WEB}/streak`, { waitUntil: 'domcontentloaded', timeout: 120000 })
+const btn = page.getByText('Share my streak'); await btn.waitFor({ timeout: 60000 }); await btn.click(); await page.waitForTimeout(500)
+console.log('STREAK', JSON.stringify(await page.evaluate(() => window.__shared[0])))
+await page.goto(`${WEB}/leaderboard`, { waitUntil: 'domcontentloaded', timeout: 120000 })
+await page.getByText('Leaderboard', { exact: true }).waitFor({ timeout: 60000 })
+await page.getByText('All time').click(); await page.waitForTimeout(1500)
+const rank = page.getByText('Share my rank')
+console.log('RANK BUTTONS', await rank.count())
+if (await rank.count()) { await page.screenshot({ path: '/tmp/share-rank.png' }); await rank.click(); await page.waitForTimeout(500); console.log('RANK', JSON.stringify(await page.evaluate(() => window.__shared[0]))) }
+await browser.close()

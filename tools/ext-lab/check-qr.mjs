@@ -1,0 +1,11 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch()
+const page = await browser.newPage()
+await page.goto('https://app.langx.io/qr', { waitUntil: 'networkidle', timeout: 45000 })
+await page.waitForTimeout(6000)
+const text = (await page.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 260)
+const imgs = await page.locator('img').count()
+console.log('URL :', page.url())
+console.log('BODY:', text || '(empty)')
+console.log('IMGS:', imgs)
+await browser.close()

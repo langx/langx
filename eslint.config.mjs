@@ -16,6 +16,9 @@ export default tseslint.config(
       // gitignored everywhere — a stray copy at the repo root (left by the v1
       // app that used to live here) otherwise fails the whole lint run.
       '**/expo-env.d.ts',
+      // Throwaway Playwright scripts kept as a record of how things were
+      // checked, not as code that ships. Linting them buys nothing.
+      'tools/ext-lab/**',
     ],
   },
   js.configs.recommended,
