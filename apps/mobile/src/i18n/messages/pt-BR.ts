@@ -1042,6 +1042,7 @@ export const ptBR: Localized<EnMessages> = {
     repairDayBody: 'Preenche um dia perdido · restam {left} neste mês',
     bought: '{title} é seu',
     buyFailed: 'Não foi possível comprar',
+    equipFailed: 'Não foi possível alterar',
   },
 
   gift: {
@@ -1066,6 +1067,10 @@ export const ptBR: Localized<EnMessages> = {
     streakFreezes: 'Congelamentos de sequência',
     itemsOwned: 'Itens',
     storeTitle: 'Loja',
+    historyBody: 'O que você ganhou e gastou, dia a dia',
+    leaderboardBody: 'Quem ganhou mais nesta semana, neste mês e neste ano',
+    poolBody: 'Como a parte da noite é calculada',
+    storeBody: 'Congelamentos de sequência, dias perdidos e cosméticos',
     disclaimer:
       'As fichas são pontos dentro do app. Não podem ser compradas, trocadas, sacadas nem usadas para desbloquear um plano pago — apenas congelamentos de sequência, dias perdidos e cosméticos. Não há cadeia, contrato nem mercado.',
   },
@@ -1328,6 +1333,10 @@ export const ptBR: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Nenhuma visita ainda',
     emptyBody: 'Preencher seu perfil ajuda.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Visitante',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} visita', other: '{count} visitas' },
   },
 
   blocked: {

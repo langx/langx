@@ -1052,6 +1052,7 @@ export const tr: Localized<EnMessages> = {
     repairDayBody: 'Kaçırdığın bir günü doldurur · bu ay {left} hakkın var',
     bought: '{title} senin',
     buyFailed: 'Satın alınamadı',
+    equipFailed: 'Değiştirilemedi',
   },
 
   gift: {
@@ -1076,6 +1077,10 @@ export const tr: Localized<EnMessages> = {
     streakFreezes: 'Seri dondurma',
     itemsOwned: 'Sahip olunan',
     storeTitle: 'Mağaza',
+    historyBody: 'Gün gün kazandıkların ve harcadıkların',
+    leaderboardBody: 'Bu hafta, ay ve yıl en çok kazananlar',
+    poolBody: 'Gecelik payın nasıl hesaplandığı',
+    storeBody: 'Seri dondurma, kaçırılan günler ve kozmetikler',
     disclaimer:
       'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma, kaçırılan günler ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
   },
@@ -1332,6 +1337,10 @@ export const tr: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Henüz ziyaretçi yok',
     emptyBody: 'Profilini doldurmak işe yarıyor.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Misafir',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} ziyaret', other: '{count} ziyaret' },
   },
 
   blocked: {

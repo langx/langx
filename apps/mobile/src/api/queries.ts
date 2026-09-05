@@ -1,5 +1,7 @@
 import {
   type ConversationFilter,
+  type CosmeticKind,
+  type Equipped,
   type NotificationPrefs,
   type StoredNotificationPrefs,
   effectivePlanTier,
@@ -1165,14 +1167,20 @@ export interface ViewerPageDto {
   locked: boolean
   viewers: {
     userId: string
+    /** The UTC day this row is about; one row per person per day. Absent from an API older than the split. */
+    day?: string
     /** Absent while `locked` — the server does not send identities behind the paywall. */
     handle?: string
     displayName?: string
     avatarUrl?: string
+    /** Somebody browsing without an account: no name exists, nothing was withheld. */
+    guest?: true
     lastViewedAt: string
-    /** How many times they have been back. At least 1. */
+    /** Visits that day. At least 1. */
     viewCount: number
   }[]
+  /** Visits per day, oldest first, ending today. First page only. */
+  week?: { day: string; visits: number }[]
   nextCursor: string | null
 }
 
@@ -1236,6 +1244,48 @@ export function usePurchase() {
       // The profile too: a purchase can move the streak, and the wallet
       // screen reads that from `me` rather than from the wallet response.
       void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * Wear an owned frame or title, or take it off (`null`).
+ *
+ * A profile write — `equipped` lives on the profile document — but the
+ * screens that draw the choice read it off the *wallet* query, and the plain
+ * `useUpdateProfile` only ever wrote the response into `me`. So the pill you
+ * had just pressed stayed on the old choice until something else refetched
+ * `/me/wallet`, which is why "it changes when I go back and forward" was the
+ * bug report. The wallet cache is patched before the request leaves, the
+ * request confirms it, and a refusal puts the old value back.
+ */
+export function useEquip() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (equipped: Partial<Record<CosmeticKind, string | null>>) =>
+      api.patch<MeProfile>('/profiles/me', { equipped }),
+    onMutate: async (equipped) => {
+      await queryClient.cancelQueries({ queryKey: keys.wallet })
+      const previous = queryClient.getQueryData<Wallet>(keys.wallet)
+      queryClient.setQueryData<Wallet>(keys.wallet, (wallet) => {
+        if (!wallet) return wallet
+        const next: Equipped = { ...wallet.equipped }
+        for (const [kind, id] of Object.entries(equipped) as [CosmeticKind, string | null][]) {
+          if (id === null) delete next[kind]
+          else next[kind] = id
+        }
+        return { ...wallet, equipped: next }
+      })
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) queryClient.setQueryData<Wallet>(keys.wallet, context.previous)
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: keys.wallet })
     },
   })
 }

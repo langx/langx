@@ -1071,6 +1071,7 @@ export const de: Localized<EnMessages> = {
     repairDayBody: 'Füllt einen verpassten Tag · diesen Monat noch {left}',
     bought: '{title} gehört dir',
     buyFailed: 'Kauf nicht möglich',
+    equipFailed: 'Änderung nicht möglich',
   },
 
   gift: {
@@ -1095,6 +1096,10 @@ export const de: Localized<EnMessages> = {
     streakFreezes: 'Serien-Freezes',
     itemsOwned: 'Besitz',
     storeTitle: 'Shop',
+    historyBody: 'Was du Tag für Tag verdient und ausgegeben hast',
+    leaderboardBody: 'Wer diese Woche, diesen Monat und dieses Jahr am meisten verdient hat',
+    poolBody: 'Wie der nächtliche Anteil berechnet wird',
+    storeBody: 'Serien-Schutz, verpasste Tage und Kosmetik',
     disclaimer:
       'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes, verpasste Tage und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },
@@ -1357,6 +1362,10 @@ export const de: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Noch keine Besuche',
     emptyBody: 'Ein ausgefülltes Profil hilft.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Gast',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} Besuch', other: '{count} Besuche' },
   },
 
   blocked: {

@@ -1091,6 +1091,7 @@ export const en = {
     repairDayBody: 'Fills in a day you missed · {left} left this month',
     bought: '{title} is yours',
     buyFailed: 'Could not buy that',
+    equipFailed: 'Could not change that',
   },
 
   gift: {
@@ -1115,6 +1116,10 @@ export const en = {
     streakFreezes: 'Streak freezes',
     itemsOwned: 'Items owned',
     storeTitle: 'Store',
+    historyBody: 'What you earned and spent, day by day',
+    leaderboardBody: 'Who earned the most this week, month and year',
+    poolBody: 'How the nightly share is worked out',
+    storeBody: 'Streak freezes, missed days and cosmetics',
     disclaimer:
       'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes, missed days and cosmetics. There is no chain, no contract and no market.',
   },
@@ -1379,6 +1384,10 @@ export const en = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'No visitors yet',
     emptyBody: 'Filling in your profile helps.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Guest',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} visit', other: '{count} visits' },
   },
 
   blocked: {

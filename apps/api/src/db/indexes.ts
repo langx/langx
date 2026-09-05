@@ -362,7 +362,14 @@ export const INDEXES: Partial<IndexSpec> = {
   ],
 
   [COLLECTIONS.profileViews]: [
-    { key: { viewerId: 1, viewedId: 1 }, name: 'viewer_viewed_unique', unique: true },
+    /*
+     * One row per viewer, per profile, per UTC day — the counter on a row is
+     * that day's visits, not a lifetime total. Replaces `viewer_viewed_unique`
+     * (no `day`), which `ensureIndexes` cannot drop; `scripts/migrate-profile-views.ts`
+     * backfills `day` and drops the old one, and must run before a build with
+     * this index is deployed, or the old unique refuses the second day's row.
+     */
+    { key: { viewerId: 1, viewedId: 1, day: 1 }, name: 'viewer_viewed_day_unique', unique: true },
     { key: { viewedId: 1, lastViewedAt: -1 }, name: 'viewed_recent' },
     { key: { lastViewedAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
   ],

@@ -1166,6 +1166,7 @@ export const ru: Localized<EnMessages> = {
     repairDayBody: 'Закрывает пропущенный день · осталось {left} в этом месяце',
     bought: '{title} — твой',
     buyFailed: 'Не удалось купить',
+    equipFailed: 'Не удалось изменить',
   },
 
   gift: {
@@ -1190,6 +1191,10 @@ export const ru: Localized<EnMessages> = {
     streakFreezes: 'Заморозки серии',
     itemsOwned: 'Предметы',
     storeTitle: 'Магазин',
+    historyBody: 'Что вы заработали и потратили, день за днём',
+    leaderboardBody: 'Кто заработал больше всех за неделю, месяц и год',
+    poolBody: 'Как считается ночная доля',
+    storeBody: 'Заморозки серии, пропущенные дни и косметика',
     disclaimer:
       'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии, пропущенные дни и косметика. Нет ни цепочки, ни контракта, ни рынка.',
   },
@@ -1494,6 +1499,15 @@ export const ru: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Посетителей пока нет',
     emptyBody: 'Заполненный профиль помогает.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Гость',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: {
+      one: '{count} визит',
+      few: '{count} визита',
+      many: '{count} визитов',
+      other: '{count} визита',
+    },
   },
 
   blocked: {

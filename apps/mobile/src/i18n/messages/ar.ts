@@ -1210,6 +1210,7 @@ export const ar: Localized<EnMessages> = {
     repairDayBody: 'يملأ يومًا فاتك · بقي لك {left} هذا الشهر',
     bought: '{title} أصبح لك',
     buyFailed: 'تعذّر الشراء',
+    equipFailed: 'تعذّر التغيير',
   },
 
   gift: {
@@ -1234,6 +1235,10 @@ export const ar: Localized<EnMessages> = {
     streakFreezes: 'تجميدات السلسلة',
     itemsOwned: 'العناصر المملوكة',
     storeTitle: 'المتجر',
+    historyBody: 'ما كسبته وأنفقته يومًا بيوم',
+    leaderboardBody: 'من كسب الأكثر هذا الأسبوع وهذا الشهر وهذا العام',
+    poolBody: 'كيف تُحسب الحصة الليلية',
+    storeBody: 'تجميد السلسلة والأيام الفائتة والمظاهر',
     disclaimer:
       'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح خطة مدفوعة — فقط تجميدات السلسلة والأيام الفائتة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
   },
@@ -1556,6 +1561,17 @@ export const ar: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'لا زوّار بعد',
     emptyBody: 'إكمال ملفك يساعد.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'زائر',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: {
+      zero: 'لا زيارات',
+      one: 'زيارة واحدة',
+      two: 'زيارتان',
+      few: '{count} زيارات',
+      many: '{count} زيارة',
+      other: '{count} زيارة',
+    },
   },
 
   blocked: {

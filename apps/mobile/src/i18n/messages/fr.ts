@@ -1054,6 +1054,7 @@ export const fr: Localized<EnMessages> = {
     repairDayBody: 'Comble un jour manqué · il t’en reste {left} ce mois-ci',
     bought: '{title} est à toi',
     buyFailed: 'Achat impossible',
+    equipFailed: 'Modification impossible',
   },
 
   gift: {
@@ -1078,6 +1079,10 @@ export const fr: Localized<EnMessages> = {
     streakFreezes: 'Gels de série',
     itemsOwned: 'Objets possédés',
     storeTitle: 'Boutique',
+    historyBody: 'Ce que tu as gagné et dépensé, jour par jour',
+    leaderboardBody: 'Qui a gagné le plus cette semaine, ce mois et cette année',
+    poolBody: 'Comment la part de la nuit est calculée',
+    storeBody: 'Gels de série, jours manqués et cosmétiques',
     disclaimer:
       'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer une formule payante — seulement des gels de série, des jours manqués et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
   },
@@ -1342,6 +1347,10 @@ export const fr: Localized<EnMessages> = {
     repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Pas encore de visite',
     emptyBody: 'Remplir ton profil aide.',
+    /** A visitor without an account: no name exists, so the row says what it is. */
+    guest: 'Invité',
+    /** The chart's headline: visits over the last seven days, all people together. */
+    weekVisits: { one: '{count} visite', other: '{count} visites' },
   },
 
   blocked: {
