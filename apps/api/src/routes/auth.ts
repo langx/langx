@@ -11,6 +11,23 @@ import type { Auth } from '../auth'
  * would break every other route in the app.
  */
 export async function registerAuthRoutes(app: FastifyInstance, auth: Auth): Promise<void> {
+  /**
+   * Where a failed magic-link verification is sent, so the client gets an
+   * answer it can act on.
+   *
+   * Better Auth's `/magic-link/verify` never answers a failure in JSON: every
+   * one is a redirect to `errorCallbackURL?error=…`, whose default is this
+   * API's root, i.e. the 404 handler. The app passes this path as
+   * `errorCallbackURL`; fetch follows the redirect and lands here, on a 400
+   * whose `code` the app already maps to "that link is no longer valid".
+   * One code for every failure on purpose — expired, used, unknown address
+   * — because telling them apart would say whether an address has an
+   * account. Outside the sub-plugin below, which replaces the body parsers.
+   */
+  app.get('/auth/magic-link/failed', async (_request, reply) => {
+    return reply.code(400).send({ code: 'INVALID_TOKEN', message: 'That link is no longer valid' })
+  })
+
   // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
   await app.register(async (scope) => {
     // Hand Better Auth the exact bytes it received — including

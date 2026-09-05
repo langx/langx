@@ -58,6 +58,12 @@ export const ru: Localized<ServerMessages> = {
     resetBody: 'Кто-то запросил сброс пароля для этого аккаунта. Если это были вы:',
     resetButton: 'Сбросить пароль',
     resetText: 'Сброс пароля LangX: {url}',
+    magicLinkSubject: 'Ваша ссылка для входа в LangX',
+    magicLinkPreheader: 'Нажмите, чтобы войти в LangX',
+    magicLinkBody:
+      'Нажмите кнопку, чтобы войти. Ссылка работает один раз и истекает через 15 минут.',
+    magicLinkButton: 'Войти в LangX',
+    magicLinkText: 'Войти в LangX (одноразовая ссылка, истекает через 15 минут): {url}',
 
     existingSubject: 'У вас уже есть аккаунт LangX',
     existingPreheader: 'У вас уже есть аккаунт LangX',

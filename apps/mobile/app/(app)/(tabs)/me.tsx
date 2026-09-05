@@ -11,7 +11,7 @@ import {
 } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import {
   useEffectiveTier,
   useIsPro,
@@ -137,6 +137,23 @@ export default function MeScreen() {
           already knew it was there. It is the only way into that screen, so it
           gets the corner instead.
         */}
+        {/*
+          The scanner, beside the gear: a sign-in QR on a laptop screen used
+          to need Settings → Account → Sign in on another device → type the
+          code. Native only — the web build shows that QR, it does not read
+          one.
+        */}
+        {Platform.OS !== 'web' ? (
+          <Pressable
+            onPress={() => router.push('/(app)/scan')}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={t('me.scan')}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <Feather name="maximize" size={22} color={colors.textMuted} />
+          </Pressable>
+        ) : null}
         <Pressable
           onPress={() => router.push('/(app)/settings')}
           hitSlop={12}

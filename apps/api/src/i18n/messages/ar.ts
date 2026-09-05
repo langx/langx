@@ -49,6 +49,12 @@ export const ar: Localized<ServerMessages> = {
     resetBody: 'طلب أحدهم إعادة تعيين كلمة المرور لهذا الحساب. إذا كنت أنت:',
     resetButton: 'إعادة تعيين كلمة المرور',
     resetText: 'إعادة تعيين كلمة مرور LangX: {url}',
+    magicLinkSubject: 'رابط الدخول إلى LangX',
+    magicLinkPreheader: 'انقر للدخول إلى LangX',
+    magicLinkBody:
+      'انقر على الزر لتسجيل الدخول. يعمل الرابط مرة واحدة وتنتهي صلاحيته خلال 15 دقيقة.',
+    magicLinkButton: 'الدخول إلى LangX',
+    magicLinkText: 'الدخول إلى LangX (يعمل مرة واحدة، تنتهي صلاحيته خلال 15 دقيقة): {url}',
 
     existingSubject: 'لديك حساب LangX بالفعل',
     existingPreheader: 'لديك حساب LangX بالفعل',

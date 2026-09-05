@@ -51,6 +51,8 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
   const referrer = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: referral.referrerId }, { projection: { tokenFrozenAt: 1, deletedAt: 1 } })
+  // A deleted referrer ends the referral for both sides: the invitee's welcome
+  // is "somebody brought you here", and that somebody is gone.
   if (!referrer || referrer.deletedAt) return
   /*
    * A referrer under review earns nothing, exactly as they earn nothing from
@@ -69,7 +71,25 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
       refId: inviteeId,
       at,
     })
-    await latch(db, inviteeId, { activatedAt: at, activationAward: award.amount })
+    /*
+     * The invitee's welcome, in the same breath — what takes them from the
+     * sign-up bonus to `inviteeTotal`. Not withheld when the *referrer* is
+     * frozen: the activation was the invitee's own doing, and their standing
+     * is judged by `awardTokens` on their own row. Same `refId` (themselves),
+     * so the ledger's unique index caps it at once.
+     */
+    const welcome = await awardTokens(db, {
+      userId: inviteeId,
+      kind: 'referralWelcome',
+      amount: TOKEN_RULES.referral.inviteeActivation,
+      refId: inviteeId,
+      at,
+    })
+    await latch(db, inviteeId, {
+      activatedAt: at,
+      activationAward: award.amount,
+      inviteeAward: welcome.amount,
+    })
   }
 
   if (referral.subscribedAt && !subscriptionDone) {

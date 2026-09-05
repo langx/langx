@@ -195,7 +195,7 @@ export const ptBR: Localized<EnMessages> = {
     appleSignInFailed: 'Não foi possível entrar com a Apple',
     resetFailed: 'Não foi possível redefinir a senha',
     invalidCredentials:
-      'Isso não corresponde a nenhuma conta. Entre com seu e-mail ou nome de usuário; se você tinha conta no app anterior, redefina a senha ou continue com o Google ou a Apple.',
+      'Isso não corresponde a nenhuma conta. Entre com seu e-mail ou nome de usuário — ou envie a si mesmo um link de acesso, que também funciona se você tinha conta no app anterior. Google e Apple também funcionam.',
     attachmentUnsupported:
       'Esse formato de foto não é compatível. Use uma imagem JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Esse arquivo é grande demais para enviar.',
@@ -208,7 +208,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Você pode anexar até {count} arquivos.',
     },
     userExists:
-      'Já existe uma conta com esse e-mail. Entre, redefina sua senha ou continue com Google ou Apple.',
+      'Já existe uma conta para esse e-mail. Faça login, envie a si mesmo um link de acesso, redefina sua senha ou continue com Google ou Apple.',
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
     passwordTooShort: 'Essa senha é curta demais.',
     invalidEmail: 'Isso não parece um endereço de e-mail.',
@@ -310,6 +310,20 @@ export const ptBR: Localized<EnMessages> = {
     linkExpiredTitle: 'Link expirado',
     linkExpiredBody: 'Este link não é mais válido. Peça um novo na tela de entrada.',
     requestNewLink: 'Pedir um link novo',
+    signInWithLink: 'Me enviar um link de acesso',
+    signInLinkTitle: 'Entrar com um link',
+    signInLinkBody:
+      'Digite seu e-mail ou nome de usuário e enviamos um link que faz seu login — sem senha.',
+    sendSignInLink: 'Enviar link de acesso',
+    signInLinkSentBody:
+      'Se existir uma conta para {email}, um link de acesso está a caminho. Ele funciona uma vez e expira em 15 minutos.',
+    signInLinkExpiredBody:
+      'Esse link de acesso já foi usado ou expirou. Peça um novo e toque nele em até 15 minutos.',
+    openLinkTitle: 'Entrar no LangX',
+    openLinkBody:
+      'Você abriu um link de acesso. Toque no botão para concluir o login neste aparelho.',
+    openLinkButton: 'Entrar',
+    openInApp: 'Abrir no app do LangX',
     setNewPassword: 'Defina uma senha nova',
     newPassword: 'Senha nova',
     updatePassword: 'Atualizar senha',
@@ -785,6 +799,7 @@ export const ptBR: Localized<EnMessages> = {
     newChatsLeft: 'Conversas novas restantes hoje:',
     editProfile: 'Editar perfil',
     settings: 'Configurações',
+    scan: 'Escanear um código',
     corrections: 'Correções',
     wallet: 'Carteira',
     previewProfile: 'Ver meu perfil',
@@ -1058,7 +1073,7 @@ export const ptBR: Localized<EnMessages> = {
 
   invite: {
     title: 'Convidar alguém',
-    body: 'Compartilhe seu link. Quando alguém que você convidou entra e começa a conversar, você ganha tokens.',
+    body: 'Compartilhe seu link. Quando alguém que você convidou se cadastra e começa a conversar com as pessoas, vocês dois ganham tokens.',
     code: 'Seu código de convite',
     qrAccessibility: 'QR code do seu link de convite',
     share: 'Compartilhar o link',
@@ -1071,6 +1086,8 @@ export const ptBR: Localized<EnMessages> = {
       'A pessoa entra e escreve a primeira mensagem ou correção — é aí que você ganha {activation} tokens.',
     step3:
       'Se um dia ela assinar um plano pago, você ganha mais {subscription}. {max} no total, por pessoa.',
+    step4:
+      'Eles também ganham: mais {invitee} no mesmo momento, então com o bônus de cadastro começam com {total}.',
     totalsInvited: {
       one: 'convidado',
       other: 'convidados',
@@ -1106,6 +1123,7 @@ export const ptBR: Localized<EnMessages> = {
     pronunciation: 'Pronúncia',
     referral: 'Bônus de convite',
     referralSubscription: 'Bônus de assinatura do convidado',
+    referralWelcome: 'Bônus de boas-vindas por convite',
   },
 
   cosmetics: {
@@ -1178,7 +1196,8 @@ export const ptBR: Localized<EnMessages> = {
     ctaBody: '{name} pratica idiomas no LangX. Entre para dizer oi.',
     ctaLabel: 'Abrir o LangX',
     inviteTitle: '{name} convidou você para o LangX',
-    inviteBody: 'Pratique com alguém que está aprendendo a sua língua. Entrar é grátis.',
+    inviteBody:
+      '{name} convidou você. Cadastre-se e escreva para alguém: você começa com {total} tokens; {name} ganha {activation} — até {max} se um dia você assinar um plano. Entrar é grátis.',
   },
 
   shareProfile: {
@@ -1227,7 +1246,7 @@ export const ptBR: Localized<EnMessages> = {
   linkDevice: {
     title: 'Entrar em outro dispositivo',
     body: 'Digite o código da outra tela, ou escaneie por lá.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Aprove apenas um código que você mesmo esteja vendo. Quem o inserir ganha acesso total à sua conta.',
     approve: 'Aprovar',
@@ -1244,10 +1263,23 @@ export const ptBR: Localized<EnMessages> = {
     unknownDevice: 'Dispositivo desconhecido',
   },
 
+  scan: {
+    title: 'Escanear um código',
+    body: 'Aponte a câmera para o código de acesso no computador ou para o código de perfil de um amigo.',
+    permissionTitle: 'Acesso à câmera necessário',
+    permissionBody: 'O LangX precisa da câmera para ler um código. Nada é gravado.',
+    allow: 'Permitir a câmera',
+    openSettings: 'Abrir ajustes',
+    unknown: 'Isso não é um código do LangX.',
+    webOnly:
+      'Para escanear é preciso a câmera do celular. Abra o LangX no celular e toque no ícone de escanear no seu perfil.',
+    typeInstead: 'Digitar o código',
+  },
+
   qrSignIn: {
     title: 'Entrar com o celular',
     body: 'Abra o LangX no celular e digite este código, ou escaneie.',
-    hint: 'Configurações → Entrar em outro dispositivo',
+    hint: 'No celular: o ícone de escanear no seu perfil, ou Ajustes → Entrar em outro aparelho',
     qrAccessibility: 'QR code para entrar',
     expired: 'O código expirou.',
     failed: 'Não foi possível iniciar. Tente de novo.',

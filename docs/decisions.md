@@ -1124,6 +1124,9 @@ nothing, and a rule nobody knows about deters nobody.
 
 ## Referrals — the handle is the code, and the award waits for a real message
 
+_Amended 5 September 2026: the invitee is now paid too — see the end of this
+entry._
+
 **There is no generated code.** The handle already is one: a public address at
 `/<handle>`, already unique, already memorable enough to say out loud, already
 the thing people share. A second identifier would be a second thing to keep
@@ -1211,6 +1214,22 @@ nothing can recover.
 alternative — a post-onboarding endpoint — would destroy the property
 everything else rests on: attribution is written exactly once, at account
 creation, and nothing can change it afterwards. No copy promises otherwise.
+
+**Amendment, 5 September 2026 — the invitee gets a welcome.** Behic asked
+whether the person who _took_ an invite gets anything, and the answer was no.
+Now it is `TOKEN_RULES.referral.inviteeActivation` (750 — with the 250
+sign-up bonus, an invited newcomer starts on `inviteeTotal`, 1000, which is
+the figure the invite page quotes), paid once, at the same activation moment
+as the referrer's award and from the same `settleReferral` call, as a
+`referralWelcome` ledger row with the invitee's own id as `refId`. The gate is
+unchanged, so "nothing is paid for signing up" is still literally true; what
+changed is that the moment already worth 1000 to one side is now worth 750 to
+the other. The invited landing page (`app/[username].tsx`, the `?invite=1`
+branch) says all three numbers out loud, from `TOKEN_RULES`, so a newcomer
+knows what taking the link is worth before they sign up. It is a grant kind,
+so it stays off the weekly and monthly tables. A frozen referrer does not
+withhold it (the activation was the invitee's own doing); a deleted referrer
+ends the referral for both sides, as before.
 
 ## Countries are a compile-time table, like languages
 
@@ -2725,6 +2744,57 @@ gender is writable exactly once, from `undisclosed` to a value, and a
 cache-busting parameter would have to carry the very field this keeps off the
 wire.
 
+## Sign in with an emailed link: the link opens the app, and the app spends the token
+
+Added 5 September 2026. Every v1 account exists here as a verified `user` row
+with no password (the entry above), so a returning person had two doors: a
+password reset, or Google/Apple. An emailed one-tap link is the lighter one,
+and for those rows it is exactly the right shape — a verified address and
+nothing else is what a magic link authenticates.
+
+Better Auth's `magicLink` plugin is used, with three decisions layered on it.
+
+**The mail carries a page, not the endpoint.** The plugin's own `url` is a
+GET on this API that spends the token and sets a session cookie on whatever
+made the request. Two things make that GET before a human does: mail
+scanners and previewers (`routes/email.ts` records the same lesson for the
+deletion link), and the mail client's browser — which would be the thing
+signed in, not the app; `verify-email-success.tsx` documents that failure for
+the verification link. So `sendMagicLink` ignores the plugin's URL and mails
+`magicLinkUrl(token)`: `https://app.langx.io/magic-link?token=…`. On a phone
+with LangX that host is a universal link, so the tap opens the app and the
+app calls `/magic-link/verify` itself, the way `reset-password` already
+spends its token — and the session lands in SecureStore. Without the app,
+the web build serves the same route; there the page shows a button, because
+link previewers do run JavaScript, and a tap between them and the token is
+what keeps the link alive. A scheme link (`langx://magic-link?token=…`) is
+offered from that page for the phones where the https link opened a browser
+anyway: an Android build whose app link is not verified, a link pasted into
+Safari.
+
+**`disableSignUp: true` is the load-bearing line.** At its default the
+endpoint creates an account for any address it is handed, around the terms
+tick-box and the age gate that sign-up has. With it on, an unknown address
+gets no mail and the same `{ status: true }` as everyone else — Better Auth's
+own `requestPasswordReset` shape — so the endpoint answers "is this address
+registered" to nobody. The handle rewrite that lets people sign in with
+`@handle` covers this endpoint too.
+
+**Failures are a redirect, so the API gives them somewhere to land.** The
+plugin never answers a failed verify in JSON; every one is a redirect to
+`errorCallbackURL?error=…`, whose default is the API root, i.e. the 404
+handler. The app passes `/auth/magic-link/failed`, a route that answers 400
+`INVALID_TOKEN` — one code for expired, used and unknown alike, on purpose —
+and `errors.ts` already maps that to "no longer valid". One more thing the
+client does by hand: the base client's session listener does not include
+`/magic-link/verify`, so after a successful verify on the web the screen
+notifies the store itself; native's Expo client already did.
+
+Tokens are stored hashed (`storeToken: 'hashed'`) and live fifteen minutes,
+single-use. `magicLink.test.ts` pins the URL shape, the unknown-address
+silence, single use, the failure route, expiry, and the pre-created v1 row
+getting in and being settled on that first session.
+
 ## Device sign-in: claim first, a scheme link in the QR, and a cookie the plugin does not set
 
 Fixed on 3 September 2026, after "that code is no longer valid" turned out to
@@ -2756,8 +2826,18 @@ now (`deviceLinkTarget` in `packages/shared`), which the installed app resolves
 to the approval screen. No native code, ships over the air. Not a universal
 link on the web host: that needs `.well-known` served from a host that still
 answers with v1, which is an infrastructure move rather than a QR change. Some
-Android cameras ignore custom schemes, so the eight-character code stays the
-primary path — eight, not the six three comments and a placeholder claimed.
+Android cameras ignore custom schemes, so the typed code stays the primary
+path. It was eight characters — the plugin's default, not a choice; three
+comments and a placeholder even claimed six — and on 5 September 2026 it
+became **five**: 32⁵ ≈ 33.5 million codes, two minutes of life, five tries
+per window on `/device`, and a code that only ever grants what the approving
+phone already has. Five is what a person reads off one screen and types on
+another without a second look. The same day the app gained its own scanner:
+a scan icon beside the gear on the Me tab opens `(app)/scan.tsx`
+(`expo-camera`, a native module — the build that ships it is the one that
+ships share-as-file), reads the `langx://link-device` QR and lands on the
+approve screen with the code filled in, or a profile/invite QR and lands on
+that profile. Approve or deny stays a human decision on the approve screen.
 
 **`freshAge: 0`.** The same screen lists where the account is signed in, which
 is also the only feedback that an approval landed, since the device it signed

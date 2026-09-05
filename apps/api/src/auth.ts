@@ -1,4 +1,11 @@
-import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST, webUrl } from '@langx/shared'
+import {
+  APP_SCHEMES,
+  IOS_BUNDLE_ID,
+  magicLinkUrl,
+  PASSWORD_MIN_LENGTH,
+  WEB_HOST,
+  webUrl,
+} from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { createAuthMiddleware } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
@@ -6,6 +13,7 @@ import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
 import { anonymous } from 'better-auth/plugins/anonymous'
 import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
+import { magicLink } from 'better-auth/plugins/magic-link'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import {
@@ -17,7 +25,12 @@ import { settlePrecreatedUser } from './modules/handles/legacyPrecreate'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
-import { existingAccountEmail, resetPasswordEmail, verificationEmail } from './email/templates'
+import {
+  existingAccountEmail,
+  magicLinkEmail,
+  resetPasswordEmail,
+  verificationEmail,
+} from './email/templates'
 import { localeFromHeader } from './i18n'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
@@ -215,7 +228,9 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
        * anybody can read off a profile page.
        */
       before: createAuthMiddleware(async (ctx) => {
-        if (ctx.path !== '/sign-in/email') return
+        // The emailed link accepts a handle for the same reason, and the
+        // rewrite runs before the endpoint's own `z.email()` check does.
+        if (ctx.path !== '/sign-in/email' && ctx.path !== '/sign-in/magic-link') return
         // Better Auth types this body as `any` at the hook boundary — it is
         // whatever the matched endpoint declares — so narrow before touching it.
         const body: unknown = ctx.body
@@ -326,18 +341,18 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       /*
        * QR sign-in on the web, which is RFC 8628's device flow with a picture
        * in front of it: the browser asks for a code, shows it as a QR *and* as
-       * eight characters, and polls `/device/token` until a signed-in phone
+       * five characters, and polls `/device/token` until a signed-in phone
        * approves it.
        *
        * The plugin rather than something hand-rolled — this is a protocol with
        * known failure modes (`slow_down`, `authorization_pending`, single-use
        * codes, expiry) and it already implements them.
        *
-       * Scanning is **not** what makes it work. The eight-character user code
-       * is the primary path and the QR is a shortcut, which is deliberate:
-       * `expo-camera` is not in this app, and adding it means a new native
-       * build with a new camera permission — so a scanner cannot ship over the
-       * air. Typing the code works today on every platform.
+       * The typed code is the primary path and the QR is the shortcut. The
+       * app has had a scanner since 5 September 2026 (`app/(app)/scan.tsx`,
+       * `expo-camera`), but the phone's own camera app and a typed code both
+       * still work, and typing is what a phone without the scanner build
+       * falls back to.
        *
        * The QR encodes a `langx://` link rather than a web address: it is
        * scanned by the phone's own camera, and the phone is where the session
@@ -345,7 +360,17 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
        */
       deviceAuthorization({
         /*
-         * Two minutes. Long enough to pick up a phone and read eight
+         * Five characters, not the plugin's eight. Eight was never chosen; it
+         * was the default, and it is a lot to read off one screen and type
+         * on another. The arithmetic for five: a 32-symbol alphabet gives
+         * 32⁵ ≈ 33.5 million codes; a code lives two minutes; and the plugin
+         * limits `/device` to five requests per window — so a guess has about
+         * one chance in 6.7 million per window, against a code that only ever
+         * grants what the approving phone already has.
+         */
+        userCodeLength: 5,
+        /*
+         * Two minutes. Long enough to pick up a phone and read five
          * characters, short enough that a code photographed off somebody's
          * screen is worthless by the time they have walked away.
          */
@@ -354,6 +379,48 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
         interval: '5s',
         /** Where the phone is sent; shown under the code for hand entry. */
         verificationUri: `https://${WEB_HOST}/link-device`,
+      }),
+      /*
+       * Sign in with an emailed link. The lighter door for the thousands of
+       * v1 accounts that exist here as verified rows with no password: one
+       * tap instead of a reset. See `docs/decisions.md` → _Sign in with an
+       * emailed link_.
+       *
+       * The link in the mail is `magicLinkUrl(token)` — a page on the web
+       * host, not the plugin's own `url`. The plugin's URL is a GET on this
+       * API that spends the token, and two things follow a GET before a
+       * human does: mail scanners, and the mail client's browser, which would
+       * be the thing that ended up signed in rather than the app. Our page
+       * does nothing on load; on a phone it is a universal link, so the app
+       * opens and calls `/magic-link/verify` itself, and the session lands in
+       * the app.
+       *
+       * `disableSignUp` is the load-bearing line. Left at its default the
+       * endpoint creates an account for any address it is given, around the
+       * terms tick-box and the age gate that sign-up has. Unknown addresses
+       * get no mail and the same `{ status: true }` as everyone else —
+       * Better Auth's own `requestPasswordReset` shape, so the endpoint
+       * answers "is this address registered" to nobody.
+       */
+      magicLink({
+        disableSignUp: true,
+        /** Stored hashed, like a password: a copy of the database is not a stack of live links. */
+        storeToken: 'hashed',
+        /** A quarter of an hour: mail delay, a scanner or two, and a walk to the phone. Single-use anyway. */
+        expiresIn: 15 * 60,
+        sendMagicLink: async ({ email, token }, ctx) => {
+          const user = await db
+            .collection<{ email: string; isAnonymous?: boolean }>('user')
+            .findOne(
+              { email: email.trim().toLowerCase() },
+              { projection: { email: 1, isAnonymous: 1 } },
+            )
+          // No account, or a guest's synthetic address that cannot receive
+          // mail: send nothing, say nothing. The response is identical.
+          if (!user || user.isAnonymous) return
+          const locale = localeFromHeader(ctx?.request?.headers.get('accept-language') ?? undefined)
+          await emailSender.send({ to: user.email, ...magicLinkEmail(magicLinkUrl(token), locale) })
+        },
       }),
     ],
   })

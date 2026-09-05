@@ -19,9 +19,9 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * short one (and a QR of the link that carries it), and polls until a phone
  * approves. The plugin owns the protocol; this owns the waiting.
  *
- * **The code is the feature and the QR is the shortcut.** Six characters can
- * be typed on any device, which matters because scanning needs `expo-camera`
- * — a native module, so a new binary — and this ships over the air.
+ * **The code is the feature and the QR is the shortcut.** Five characters
+ * can be typed on any device; the QR is read by the phone's own camera or by
+ * the scan icon on the Me tab (`(app)/scan.tsx`).
  */
 export default function QrSignInScreen() {
   useScreenInteractive()

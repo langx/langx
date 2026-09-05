@@ -241,6 +241,11 @@ files.
   camera lands in the app, and an `after` hook writes the session cookie for
   the browser — the token endpoint is OAuth and answers with a bearer token
   nothing in this app sends. See `decisions.md` → _Device sign-in_.
+- **Emailed sign-in link** (5 September 2026). The mail carries a page on
+  `app.langx.io` — a universal link, so the app opens — and the app spends
+  the token itself, so the session lands in the app rather than in a browser.
+  Sign-up through it is disabled; unknown addresses get the same 200 and no
+  mail. See `decisions.md` → _Sign in with an emailed link_.
 - **Age gate:** `birthDate` (`YYYY-MM-DD`) is required at onboarding and
   under-16s cannot complete it. The check is server-side, before `profiles` is
   written — the client's date picker is not trusted. The rule still counts

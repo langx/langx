@@ -240,6 +240,22 @@ const config: ExpoConfig = {
      * above.
      */
     'expo-sharing',
+    /*
+     * The scanner behind the scan icon on the Me tab (`(app)/scan.tsx`).
+     * `NSCameraUsageDescription` was already written by expo-image-picker;
+     * this plugin writes it again with a sentence that names both jobs the
+     * camera has. `recordAudioAndroid: false` because the scanner never
+     * records, and a `RECORD_AUDIO` line here would be a second declaration
+     * of a permission expo-audio already owns.
+     */
+    [
+      'expo-camera',
+      {
+        cameraPermission:
+          'LangX uses your camera to take a photo to send, and to scan a sign-in or profile code.',
+        recordAudioAndroid: false,
+      },
+    ],
     // Microphone access is only ever requested when the user taps record, but
     // the string has to be declared here or iOS terminates the app the first
     // time it is asked for.

@@ -199,7 +199,7 @@ export const es: Localized<EnMessages> = {
     appleSignInFailed: 'No se pudo iniciar sesión con Apple',
     resetFailed: 'No se pudo restablecer la contraseña',
     invalidCredentials:
-      'Eso no coincide con ninguna cuenta. Entra con tu correo o tu nombre de usuario; si tenías cuenta en la app anterior, restablece la contraseña o continúa con Google o Apple.',
+      'Eso no coincide con ninguna cuenta. Entra con tu correo o tu nombre de usuario, o envíate un enlace de acceso, que también funciona si tenías cuenta en la app anterior. Google y Apple también sirven.',
     attachmentUnsupported:
       'Ese formato no es compatible. Usa una imagen JPEG, PNG o WebP, o un vídeo MP4 o MOV.',
     attachmentTooLarge: 'Ese archivo es demasiado grande para enviarlo.',
@@ -212,7 +212,7 @@ export const es: Localized<EnMessages> = {
       other: 'Puedes adjuntar hasta {count} archivos.',
     },
     userExists:
-      'Ya existe una cuenta con ese correo. Inicia sesión, restablece tu contraseña o continúa con Google o Apple.',
+      'Ya existe una cuenta para ese correo. Inicia sesión, envíate un enlace de acceso, restablece tu contraseña o continúa con Google o Apple.',
     emailNotVerified: 'Verifica primero tu correo: mira tu bandeja de entrada.',
     passwordTooShort: 'Esa contraseña es demasiado corta.',
     invalidEmail: 'Eso no parece una dirección de correo.',
@@ -315,6 +315,20 @@ export const es: Localized<EnMessages> = {
     linkExpiredBody:
       'Este enlace ya no es válido. Pide uno nuevo desde la pantalla de inicio de sesión.',
     requestNewLink: 'Pedir un enlace nuevo',
+    signInWithLink: 'Enviarme un enlace de acceso',
+    signInLinkTitle: 'Entrar con un enlace',
+    signInLinkBody:
+      'Escribe tu correo o tu nombre de usuario y te enviaremos un enlace que te inicia sesión, sin contraseña.',
+    sendSignInLink: 'Enviar enlace de acceso',
+    signInLinkSentBody:
+      'Si existe una cuenta para {email}, el enlace de acceso está en camino. Funciona una vez y caduca en 15 minutos.',
+    signInLinkExpiredBody:
+      'Ese enlace de acceso ya se usó o caducó. Pide uno nuevo y tócalo antes de 15 minutos.',
+    openLinkTitle: 'Entrar en LangX',
+    openLinkBody:
+      'Has abierto un enlace de acceso. Toca el botón para terminar de iniciar sesión en este dispositivo.',
+    openLinkButton: 'Entrar',
+    openInApp: 'Abrir en la app de LangX',
     setNewPassword: 'Elige una contraseña nueva',
     newPassword: 'Contraseña nueva',
     updatePassword: 'Actualizar contraseña',
@@ -792,6 +806,7 @@ export const es: Localized<EnMessages> = {
     newChatsLeft: 'Chats nuevos que te quedan hoy:',
     editProfile: 'Editar perfil',
     settings: 'Ajustes',
+    scan: 'Escanear un código',
     corrections: 'Correcciones',
     wallet: 'Cartera',
     previewProfile: 'Ver mi perfil',
@@ -1064,7 +1079,7 @@ export const es: Localized<EnMessages> = {
 
   invite: {
     title: 'Invitar a alguien',
-    body: 'Comparte tu enlace. Cuando alguien que invitaste se registra y empieza a hablar con gente, ganas tokens.',
+    body: 'Comparte tu enlace. Cuando alguien a quien invitaste se registra y empieza a hablar con gente, los dos ganáis tokens.',
     code: 'Tu código de invitación',
     qrAccessibility: 'Código QR de tu enlace de invitación',
     share: 'Compartir el enlace',
@@ -1076,6 +1091,8 @@ export const es: Localized<EnMessages> = {
     step2: 'Se registra y escribe su primer mensaje o corrección — ahí ganas {activation} tokens.',
     step3:
       'Si algún día contrata un plan de pago, ganas {subscription} más. {max} en total, por persona.',
+    step4:
+      'Ellos también ganan: {invitee} más en ese mismo momento, así que con el bono de registro empiezan con {total}.',
     totalsInvited: {
       one: 'invitado',
       other: 'invitados',
@@ -1111,6 +1128,7 @@ export const es: Localized<EnMessages> = {
     pronunciation: 'Pronunciación',
     referral: 'Bono por invitación',
     referralSubscription: 'Bono por suscripción de invitado',
+    referralWelcome: 'Bono de bienvenida por invitación',
   },
 
   cosmetics: {
@@ -1182,7 +1200,8 @@ export const es: Localized<EnMessages> = {
     ctaBody: '{name} practica idiomas en LangX. Únete para saludar.',
     ctaLabel: 'Abrir LangX',
     inviteTitle: '{name} te invitó a LangX',
-    inviteBody: 'Practica con alguien que está aprendiendo tu idioma. Unirse es gratis.',
+    inviteBody:
+      '{name} te invitó. Regístrate y escríbele a alguien: empiezas con {total} tokens; {name} gana {activation}, hasta {max} si algún día pasas a un plan de pago. Unirse es gratis.',
   },
 
   shareProfile: {
@@ -1231,7 +1250,7 @@ export const es: Localized<EnMessages> = {
   linkDevice: {
     title: 'Iniciar sesión en otro dispositivo',
     body: 'Escribe el código de la otra pantalla, o escanéalo allí.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Aprueba solo un código que estés viendo tú. Quien lo introduzca obtiene acceso total a tu cuenta.',
     approve: 'Aprobar',
@@ -1248,10 +1267,23 @@ export const es: Localized<EnMessages> = {
     unknownDevice: 'Dispositivo desconocido',
   },
 
+  scan: {
+    title: 'Escanear un código',
+    body: 'Apunta la cámara al código de acceso de tu ordenador o al código de perfil de un amigo.',
+    permissionTitle: 'Se necesita la cámara',
+    permissionBody: 'LangX necesita la cámara para leer un código. No se graba nada.',
+    allow: 'Permitir la cámara',
+    openSettings: 'Abrir ajustes',
+    unknown: 'Eso no es un código de LangX.',
+    webOnly:
+      'Para escanear hace falta la cámara del teléfono. Abre LangX en el teléfono y toca el icono de escanear en tu perfil.',
+    typeInstead: 'Escribir el código',
+  },
+
   qrSignIn: {
     title: 'Inicia sesión con el móvil',
     body: 'Abre LangX en tu móvil e introduce este código, o escanéalo.',
-    hint: 'Ajustes → Iniciar sesión en otro dispositivo',
+    hint: 'En tu teléfono: el icono de escanear en tu perfil, o Ajustes → Iniciar sesión en otro dispositivo',
     qrAccessibility: 'Código QR para iniciar sesión',
     expired: 'El código ha caducado.',
     failed: 'No se pudo iniciar. Inténtalo otra vez.',

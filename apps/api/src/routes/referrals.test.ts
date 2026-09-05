@@ -225,10 +225,32 @@ describe('referrals', () => {
         TOKEN_RULES.signupBonus + RULES.activation,
       )
       expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
-      expect(await rowOf(b.userId)).toMatchObject({ activationAward: RULES.activation })
+      expect(await rowOf(b.userId)).toMatchObject({
+        activationAward: RULES.activation,
+        inviteeAward: RULES.inviteeActivation,
+      })
 
       for (let i = 0; i < 5; i++) await earn(b.userId)
       expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+      expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
+    })
+
+    /** The invitee's welcome lands with the referrer's award, once, all-time only. */
+    it('welcomes the invitee at the same moment, once', async () => {
+      const a = await newUser()
+      const b = await newUser({ referredByHandle: a.handle })
+      const before = await readAggregates(handle.db, b.userId)
+
+      await earn(b.userId)
+      const rows = await ledgerOf(b.userId, 'referralWelcome')
+      expect(rows).toHaveLength(1)
+      expect(rows[0]).toMatchObject({ amount: RULES.inviteeActivation, refId: b.userId })
+      const after = await readAggregates(handle.db, b.userId)
+      expect(after.all - before.all).toBeGreaterThanOrEqual(RULES.inviteeActivation)
+      expect(after.week - before.week).toBeLessThan(RULES.inviteeActivation)
+
+      await earn(b.userId)
+      expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
     })
 
     it.each(['message', 'correction', 'pronunciation'] as const)(

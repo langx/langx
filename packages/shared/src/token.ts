@@ -55,6 +55,13 @@ export const TOKEN_KINDS = [
    */
   'referralSubscription',
   /**
+   * The invitee's side of the same moment: paid to the *invited* person once,
+   * when they are activated — the same gate as `referral`, so it is still not
+   * a payment for signing up. `refId` is the invitee's own id, which makes
+   * the unique index cap it at one per person.
+   */
+  'referralWelcome',
+  /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
    * leaderboard ranks token *earned*, so buying a frame must never drop someone
@@ -92,6 +99,7 @@ export const TOKEN_GRANT_KINDS = [
   'signupBonus',
   'referral',
   'referralSubscription',
+  'referralWelcome',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {
@@ -261,6 +269,23 @@ export interface TokenRules {
      */
     subscription: number
     /**
+     * Paid to the invitee themselves, once, at the same activation moment —
+     * added on 5 September 2026 so that taking an invite is worth something
+     * to the person who took it, not only to the person who sent it. Sized so
+     * that with `signupBonus` an invited newcomer starts on `inviteeTotal`.
+     * Behind the same gate as `activation`, so "nothing is paid for signing
+     * up" stays true: the sign-up bonus is what signing up pays, this is what
+     * writing to somebody pays.
+     */
+    inviteeActivation: number
+    /**
+     * What an invited person has once they are activated, sign-up bonus
+     * included — the number the invite page quotes. Stored, like
+     * `maxPerInvitee`, so the copy reads one figure and a test keeps the
+     * arithmetic honest.
+     */
+    inviteeTotal: number
+    /**
      * The most one invitee can ever earn their referrer, and the number every
      * piece of public copy quotes. Stored rather than derived so there is one
      * place the promise lives; `rules.test.ts` asserts
@@ -335,6 +360,8 @@ export const TOKEN_RULES: TokenRules = {
   referral: {
     activation: 1000,
     subscription: 4000,
+    inviteeActivation: 750,
+    inviteeTotal: 1000,
     maxPerInvitee: 5000,
   },
 }

@@ -210,7 +210,7 @@ export const tr: Localized<EnMessages> = {
     appleSignInFailed: 'Apple ile giriş yapılamadı',
     resetFailed: 'Parola sıfırlanamadı',
     invalidCredentials:
-      'Bunlar bir hesapla eşleşmiyor. E-postan ya da kullanıcı adınla giriş yap; önceki uygulamada hesabın varsa şifreni sıfırla veya Google ya da Apple ile devam et.',
+      'Bu bir hesapla eşleşmiyor. E-posta ya da kullanıcı adınla gir — ya da kendine bir giriş bağlantısı e-postala; önceki uygulamada hesabın varsa o da çalışır. Google ve Apple da olur.',
     attachmentUnsupported:
       'Bu fotoğraf biçimi desteklenmiyor. JPEG, PNG veya WebP bir görsel kullan.',
     attachmentTooLarge: 'Bu dosya gönderilemeyecek kadar büyük.',
@@ -223,7 +223,7 @@ export const tr: Localized<EnMessages> = {
       other: 'En fazla {count} dosya ekleyebilirsin.',
     },
     userExists:
-      'Bu e-posta ile bir hesap zaten var. Giriş yap, parolanı sıfırla ya da Google veya Apple ile devam et.',
+      'Bu e-posta için zaten bir hesap var. Giriş yap, kendine bir giriş bağlantısı e-postala, şifreni sıfırla ya da Google veya Apple ile devam et.',
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',
@@ -324,6 +324,19 @@ export const tr: Localized<EnMessages> = {
     linkExpiredTitle: 'Bağlantının süresi doldu',
     linkExpiredBody: 'Bu sıfırlama bağlantısı artık geçerli değil. Giriş ekranından yenisini iste.',
     requestNewLink: 'Yeni bağlantı iste',
+    signInWithLink: 'Giriş bağlantısı e-postala',
+    signInLinkTitle: 'Bağlantıyla giriş yap',
+    signInLinkBody:
+      'E-postanı ya da kullanıcı adını gir, sana seni giriş yaptıran bir bağlantı gönderelim — şifre gerekmez.',
+    sendSignInLink: 'Giriş bağlantısı gönder',
+    signInLinkSentBody:
+      '{email} için bir hesap varsa giriş bağlantısı yolda. Bir kez çalışır ve 15 dakika içinde geçersiz olur.',
+    signInLinkExpiredBody:
+      'Bu giriş bağlantısı kullanılmış ya da süresi dolmuş. Yenisini iste ve 15 dakika içinde dokun.',
+    openLinkTitle: 'LangX’e gir',
+    openLinkBody: 'Bir giriş bağlantısı açtın. Bu cihazda girişi bitirmek için düğmeye dokun.',
+    openLinkButton: 'Giriş yap',
+    openInApp: 'LangX uygulamasında aç',
     setNewPassword: 'Yeni bir parola belirle',
     newPassword: 'Yeni parola',
     updatePassword: 'Parolayı güncelle',
@@ -797,6 +810,7 @@ export const tr: Localized<EnMessages> = {
     newChatsLeft: 'Bugün kalan yeni sohbet:',
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
+    scan: 'Kod tara',
     corrections: 'Düzeltme',
     wallet: 'Cüzdan',
     previewProfile: 'Profilimi önizle',
@@ -1069,7 +1083,7 @@ export const tr: Localized<EnMessages> = {
 
   invite: {
     title: 'Arkadaşını davet et',
-    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de kazanırsınız — sen token kazanırsın.',
+    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de token kazanırsınız.',
     code: 'Davet kodun',
     qrAccessibility: 'Davet linkinin QR kodu',
     share: 'Linki paylaş',
@@ -1080,6 +1094,8 @@ export const tr: Localized<EnMessages> = {
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
     step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
     step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
+    step4:
+      'Onlar da kazanır: aynı anda {invitee} token daha, yani kayıt bonusuyla {total} ile başlarlar.',
     totalsInvited: {
       one: 'davet',
       other: 'davet',
@@ -1115,6 +1131,7 @@ export const tr: Localized<EnMessages> = {
     pronunciation: 'Telaffuz',
     referral: 'Davet bonusu',
     referralSubscription: 'Davet abonelik bonusu',
+    referralWelcome: 'Davetle gelme bonusu',
   },
 
   cosmetics: {
@@ -1186,7 +1203,8 @@ export const tr: Localized<EnMessages> = {
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
     inviteTitle: '{name} seni LangX’e davet etti',
-    inviteBody: 'Senin dilini öğrenen biriyle pratik yap. Katılmak ücretsiz.',
+    inviteBody:
+      '{name} seni davet etti. Kaydolup birine yaz, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
   },
 
   shareProfile: {
@@ -1235,7 +1253,7 @@ export const tr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Başka cihazda oturum aç',
     body: 'Diğer ekranda görünen kodu gir, ya da oradan okut.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Sadece kendi gördüğün bir kodu onayla. Bu kodu geçiren herkes hesabına tam erişim kazanır.',
     approve: 'Onayla',
@@ -1252,10 +1270,23 @@ export const tr: Localized<EnMessages> = {
     unknownDevice: 'Bilinmeyen cihaz',
   },
 
+  scan: {
+    title: 'Kod tara',
+    body: 'Kamerayı bilgisayardaki giriş koduna ya da bir arkadaşının profil koduna tut.',
+    permissionTitle: 'Kamera izni gerekiyor',
+    permissionBody: 'LangX’in kodu okumak için kameraya ihtiyacı var. Hiçbir şey kaydedilmez.',
+    allow: 'Kameraya izin ver',
+    openSettings: 'Ayarları aç',
+    unknown: 'Bu bir LangX kodu değil.',
+    webOnly:
+      'Taramak için telefonunun kamerası gerekir. Telefonunda LangX’i aç ve profilindeki tarama simgesine dokun.',
+    typeInstead: 'Kodu elle gir',
+  },
+
   qrSignIn: {
     title: 'Telefonunla giriş yap',
     body: 'Telefonunda LangX’i aç ve bu kodu gir, ya da okut.',
-    hint: 'Ayarlar → Başka cihazda oturum aç',
+    hint: 'Telefonunda: profilindeki tarama simgesi, ya da Ayarlar → Başka cihazda oturum aç',
     qrAccessibility: 'Giriş için QR kodu',
     expired: 'Kodun süresi doldu.',
     failed: 'Başlatılamadı. Tekrar dene.',

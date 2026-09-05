@@ -79,6 +79,22 @@ export function webUrl(path: string): string {
 }
 
 /**
+ * Where an emailed sign-in link points: a page on the web host, carrying the
+ * token, and **not** the API's own verify endpoint.
+ *
+ * Two reasons, both about who follows the link. On a phone with LangX
+ * installed the web host is a universal link, so the tap opens the app and
+ * the app spends the token itself — which is the only way the session lands
+ * in the app rather than in whatever browser the mail client uses. And a
+ * link is followed by mail scanners and previewers before any human sees
+ * it: a GET on this page changes nothing, where a GET on the verify endpoint
+ * would have burned the token on the way to the inbox.
+ */
+export function magicLinkUrl(token: string): string {
+  return webUrl(`/magic-link?token=${encodeURIComponent(token)}`)
+}
+
+/**
  * The link somebody shares for their own profile.
  *
  * Root-level, so it is short enough to say out loud, which is the whole point

@@ -200,7 +200,7 @@ export const de: Localized<EnMessages> = {
     appleSignInFailed: 'Apple-Anmeldung fehlgeschlagen',
     resetFailed: 'Passwort konnte nicht zurückgesetzt werden',
     invalidCredentials:
-      'Das passt zu keinem Konto. Melde dich mit deiner E-Mail oder deinem Benutzernamen an; wenn du in der vorherigen App ein Konto hattest, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
+      'Das passt zu keinem Konto. Melde dich mit E-Mail oder Benutzernamen an — oder lass dir einen Anmeldelink schicken; der funktioniert auch, wenn du in der alten App ein Konto hattest. Google und Apple gehen ebenfalls.',
     attachmentUnsupported:
       'Dieses Fotoformat wird nicht unterstützt. Verwende ein JPEG-, PNG- oder WebP-Bild.',
     attachmentTooLarge: 'Diese Datei ist zu groß zum Senden.',
@@ -213,7 +213,7 @@ export const de: Localized<EnMessages> = {
       other: 'Du kannst bis zu {count} Dateien anhängen.',
     },
     userExists:
-      'Mit dieser E-Mail gibt es bereits ein Konto. Melde dich an, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
+      'Für diese E-Mail gibt es schon ein Konto. Melde dich an, lass dir einen Anmeldelink schicken, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
     emailNotVerified: 'Bestätige zuerst deine E-Mail-Adresse — schau in dein Postfach.',
     passwordTooShort: 'Dieses Passwort ist zu kurz.',
     invalidEmail: 'Das sieht nicht nach einer E-Mail-Adresse aus.',
@@ -318,6 +318,20 @@ export const de: Localized<EnMessages> = {
     linkExpiredBody:
       'Dieser Link ist nicht mehr gültig. Fordere über den Anmeldebildschirm einen neuen an.',
     requestNewLink: 'Neuen Link anfordern',
+    signInWithLink: 'Anmeldelink per E-Mail',
+    signInLinkTitle: 'Mit einem Link anmelden',
+    signInLinkBody:
+      'Gib deine E-Mail oder deinen Benutzernamen ein, und wir schicken dir einen Link, der dich anmeldet — ohne Passwort.',
+    sendSignInLink: 'Anmeldelink senden',
+    signInLinkSentBody:
+      'Falls es ein Konto für {email} gibt, ist ein Anmeldelink unterwegs. Er funktioniert einmal und läuft in 15 Minuten ab.',
+    signInLinkExpiredBody:
+      'Dieser Anmeldelink wurde schon benutzt oder ist abgelaufen. Fordere einen neuen an und tippe innerhalb von 15 Minuten darauf.',
+    openLinkTitle: 'Bei LangX anmelden',
+    openLinkBody:
+      'Du bist einem Anmeldelink gefolgt. Tippe auf den Button, um die Anmeldung auf diesem Gerät abzuschließen.',
+    openLinkButton: 'Anmelden',
+    openInApp: 'In der LangX-App öffnen',
     setNewPassword: 'Neues Passwort festlegen',
     newPassword: 'Neues Passwort',
     updatePassword: 'Passwort aktualisieren',
@@ -813,6 +827,7 @@ export const de: Localized<EnMessages> = {
     newChatsLeft: 'Heute noch neue Chats:',
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
+    scan: 'Code scannen',
     corrections: 'Korrekturen',
     wallet: 'Geldbörse',
     previewProfile: 'Mein Profil ansehen',
@@ -1087,7 +1102,7 @@ export const de: Localized<EnMessages> = {
 
   invite: {
     title: 'Freund einladen',
-    body: 'Teile deinen Link. Wenn jemand über deine Einladung anfängt und wirklich schreibt, verdienst du Token.',
+    body: 'Teile deinen Link. Wenn jemand, den du eingeladen hast, sich anmeldet und anfängt, mit Leuten zu reden, verdient ihr beide Token.',
     code: 'Dein Einladungscode',
     qrAccessibility: 'QR-Code für deinen Einladungslink',
     share: 'Link teilen',
@@ -1100,6 +1115,8 @@ export const de: Localized<EnMessages> = {
       'Sie melden sich an und schreiben ihre erste Nachricht oder Korrektur — dann gibt es {activation} Token.',
     step3:
       'Starten sie irgendwann ein bezahltes Abo, gibt es {subscription} mehr. {max} insgesamt, pro Person.',
+    step4:
+      'Sie verdienen auch: {invitee} mehr im selben Moment, also starten sie mit dem Anmeldebonus bei {total}.',
     totalsInvited: {
       one: 'eingeladen',
       other: 'eingeladen',
@@ -1135,6 +1152,7 @@ export const de: Localized<EnMessages> = {
     pronunciation: 'Aussprache',
     referral: 'Einladungsbonus',
     referralSubscription: 'Einladungs-Abo-Bonus',
+    referralWelcome: 'Einladungs-Willkommensbonus',
   },
 
   cosmetics: {
@@ -1207,7 +1225,8 @@ export const de: Localized<EnMessages> = {
     ctaBody: '{name} übt Sprachen auf LangX. Komm dazu und sag Hallo.',
     ctaLabel: 'LangX öffnen',
     inviteTitle: '{name} hat dich zu LangX eingeladen',
-    inviteBody: 'Übe mit jemandem, der deine Sprache lernt. Kostenlos.',
+    inviteBody:
+      '{name} hat dich eingeladen. Melde dich an und schreib jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
   },
 
   shareProfile: {
@@ -1256,7 +1275,7 @@ export const de: Localized<EnMessages> = {
   linkDevice: {
     title: 'Auf einem anderen Gerät anmelden',
     body: 'Gib den Code vom anderen Bildschirm ein, oder scanne ihn dort.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Bestätige nur einen Code, den du selbst siehst. Wer ihn eingibt, bekommt vollen Zugriff auf dein Konto.',
     approve: 'Bestätigen',
@@ -1273,10 +1292,23 @@ export const de: Localized<EnMessages> = {
     unknownDevice: 'Unbekanntes Gerät',
   },
 
+  scan: {
+    title: 'Code scannen',
+    body: 'Richte die Kamera auf den Anmeldecode am Computer oder auf den Profilcode eines Freundes.',
+    permissionTitle: 'Kamerazugriff nötig',
+    permissionBody: 'LangX braucht die Kamera, um einen Code zu lesen. Es wird nichts aufgenommen.',
+    allow: 'Kamera erlauben',
+    openSettings: 'Einstellungen öffnen',
+    unknown: 'Das ist kein LangX-Code.',
+    webOnly:
+      'Zum Scannen brauchst du die Kamera deines Telefons. Öffne LangX auf dem Telefon und tippe auf das Scan-Symbol in deinem Profil.',
+    typeInstead: 'Code stattdessen eintippen',
+  },
+
   qrSignIn: {
     title: 'Mit dem Handy anmelden',
     body: 'Öffne LangX auf dem Handy und gib diesen Code ein, oder scanne ihn.',
-    hint: 'Einstellungen → Auf einem anderen Gerät anmelden',
+    hint: 'Auf deinem Telefon: das Scan-Symbol in deinem Profil, oder Einstellungen → Auf anderem Gerät anmelden',
     qrAccessibility: 'QR-Code zum Anmelden',
     expired: 'Der Code ist abgelaufen.',
     failed: 'Start fehlgeschlagen. Versuch es nochmal.',

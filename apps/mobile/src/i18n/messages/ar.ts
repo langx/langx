@@ -250,7 +250,7 @@ export const ar: Localized<EnMessages> = {
     appleSignInFailed: 'تعذّر تسجيل الدخول بحساب Apple',
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
     invalidCredentials:
-      'هذا لا يطابق أي حساب. سجّل الدخول ببريدك أو باسم المستخدم، وإن كان لديك حساب في التطبيق السابق فأعد تعيين كلمة السر أو تابع عبر Google أو Apple.',
+      'هذا لا يطابق أي حساب. سجّل الدخول ببريدك أو اسم المستخدم — أو أرسل لنفسك رابط دخول، ويعمل أيضًا إن كان لديك حساب في التطبيق السابق. يعمل Google وApple كذلك.',
     attachmentUnsupported:
       'هذه الصيغة غير مدعومة. استخدم صورة JPEG أو PNG أو WebP، أو فيديو MP4 أو MOV.',
     attachmentTooLarge: 'هذا الملف أكبر من أن يُرسل.',
@@ -263,7 +263,7 @@ export const ar: Localized<EnMessages> = {
       other: 'يمكنك إرفاق ما يصل إلى {count} ملفات.',
     },
     userExists:
-      'يوجد حساب بهذا البريد بالفعل. سجّل الدخول أو أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
+      'يوجد حساب بهذا البريد بالفعل. سجّل الدخول، أو أرسل لنفسك رابط دخول، أو أعد تعيين كلمة السر، أو تابع عبر Google أو Apple.',
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
     passwordTooShort: 'كلمة المرور قصيرة جدًا.',
     invalidEmail: 'هذا لا يبدو عنوان بريد.',
@@ -361,6 +361,18 @@ export const ar: Localized<EnMessages> = {
     linkExpiredTitle: 'انتهت صلاحية الرابط',
     linkExpiredBody: 'هذا الرابط لم يعد صالحًا. اطلب رابطًا جديدًا من شاشة تسجيل الدخول.',
     requestNewLink: 'طلب رابط جديد',
+    signInWithLink: 'أرسل لي رابط دخول',
+    signInLinkTitle: 'الدخول برابط',
+    signInLinkBody: 'أدخل بريدك أو اسم المستخدم وسنرسل لك رابطًا يدخلك مباشرة — بلا كلمة سر.',
+    sendSignInLink: 'إرسال رابط الدخول',
+    signInLinkSentBody:
+      'إن وُجد حساب لـ {email} فرابط الدخول في طريقه إليك. يعمل مرة واحدة وتنتهي صلاحيته خلال 15 دقيقة.',
+    signInLinkExpiredBody:
+      'هذا الرابط استُخدم من قبل أو انتهت صلاحيته. اطلب رابطًا جديدًا وانقره خلال 15 دقيقة.',
+    openLinkTitle: 'الدخول إلى LangX',
+    openLinkBody: 'فتحت رابط دخول. انقر على الزر لإتمام تسجيل الدخول على هذا الجهاز.',
+    openLinkButton: 'تسجيل الدخول',
+    openInApp: 'فتح في تطبيق LangX',
     setNewPassword: 'اختر كلمة مرور جديدة',
     newPassword: 'كلمة المرور الجديدة',
     updatePassword: 'تحديث كلمة المرور',
@@ -951,6 +963,7 @@ export const ar: Localized<EnMessages> = {
     newChatsLeft: 'المحادثات الجديدة المتبقية اليوم:',
     editProfile: 'تعديل الملف',
     settings: 'الإعدادات',
+    scan: 'مسح رمز',
     corrections: 'التصحيحات',
     wallet: 'المحفظة',
     previewProfile: 'معاينة ملفي الشخصي',
@@ -1235,7 +1248,7 @@ export const ar: Localized<EnMessages> = {
 
   invite: {
     title: 'ادعُ صديقًا',
-    body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسب توكنات.',
+    body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسبان الرموز كلاكما.',
     code: 'رمز الدعوة الخاص بك',
     qrAccessibility: 'رمز QR لرابط الدعوة',
     share: 'مشاركة الرابط',
@@ -1246,6 +1259,8 @@ export const ar: Localized<EnMessages> = {
     step1: 'أرسل رابطك إلى شخص يتعلّم لغتك.',
     step2: 'يسجّل ويكتب أول رسالة أو تصحيح — عندها تكسب {activation} توكن.',
     step3: 'وإذا اشترك يومًا في خطة مدفوعة تكسب {subscription} إضافية. {max} إجمالًا لكل شخص.',
+    step4:
+      'هم يكسبون أيضًا: {invitee} إضافية في اللحظة نفسها، فيبدؤون مع مكافأة التسجيل بـ {total}.',
     totalsInvited: {
       one: 'مدعو',
       two: 'مدعوان',
@@ -1290,6 +1305,7 @@ export const ar: Localized<EnMessages> = {
     pronunciation: 'النطق',
     referral: 'مكافأة الدعوة',
     referralSubscription: 'مكافأة اشتراك المدعو',
+    referralWelcome: 'مكافأة ترحيب بالدعوة',
   },
 
   cosmetics: {
@@ -1403,7 +1419,8 @@ export const ar: Localized<EnMessages> = {
     ctaBody: '‏{name} يتدرّب على اللغات في LangX. انضم لتقول مرحبًا.',
     ctaLabel: 'افتح LangX',
     inviteTitle: 'دعاك {name} إلى LangX',
-    inviteBody: 'تدرّب مع شخص يتعلّم لغتك. الانضمام مجاني.',
+    inviteBody:
+      'دعاك {name}. سجّل واكتب لأحدهم لتبدأ بـ {total} رمز؛ ويكسب {name} {activation} — حتى {max} إن اشتركت يومًا في خطة مدفوعة. الانضمام مجاني.',
   },
 
   shareProfile: {
@@ -1456,7 +1473,7 @@ export const ar: Localized<EnMessages> = {
   linkDevice: {
     title: 'تسجيل الدخول على جهاز آخر',
     body: 'أدخل الرمز الظاهر على الشاشة الأخرى، أو امسحه هناك.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning: 'وافق فقط على رمز تراه بنفسك. من يُدخله يحصل على وصول كامل إلى حسابك.',
     approve: 'موافقة',
     deny: 'رفض',
@@ -1472,10 +1489,22 @@ export const ar: Localized<EnMessages> = {
     unknownDevice: 'جهاز غير معروف',
   },
 
+  scan: {
+    title: 'مسح رمز',
+    body: 'وجّه الكاميرا نحو رمز الدخول على حاسوبك أو نحو رمز ملف صديق.',
+    permissionTitle: 'مطلوب الوصول إلى الكاميرا',
+    permissionBody: 'يحتاج LangX إلى الكاميرا لقراءة الرمز. لا يُسجَّل شيء.',
+    allow: 'السماح للكاميرا',
+    openSettings: 'فتح الإعدادات',
+    unknown: 'هذا ليس رمز LangX.',
+    webOnly: 'يحتاج المسح إلى كاميرا هاتفك. افتح LangX على هاتفك وانقر على أيقونة المسح في ملفك.',
+    typeInstead: 'كتابة الرمز بدلًا من ذلك',
+  },
+
   qrSignIn: {
     title: 'سجّل الدخول بهاتفك',
     body: 'افتح LangX على هاتفك وأدخل هذا الرمز، أو امسحه.',
-    hint: 'الإعدادات ← تسجيل الدخول على جهاز آخر',
+    hint: 'على هاتفك: أيقونة المسح في ملفك، أو الإعدادات ← تسجيل الدخول على جهاز آخر',
     qrAccessibility: 'رمز QR لتسجيل الدخول',
     expired: 'انتهت صلاحية الرمز.',
     failed: 'تعذّر البدء. حاول مرة أخرى.',

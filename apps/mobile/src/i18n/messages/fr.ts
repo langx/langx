@@ -201,7 +201,7 @@ export const fr: Localized<EnMessages> = {
     appleSignInFailed: 'Connexion Apple impossible',
     resetFailed: 'Réinitialisation impossible',
     invalidCredentials:
-      'Cela ne correspond à aucun compte. Connectez-vous avec votre e-mail ou votre nom d’utilisateur ; si vous aviez un compte dans l’application précédente, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
+      'Cela ne correspond à aucun compte. Connecte-toi avec ton e-mail ou ton nom d’utilisateur — ou envoie-toi un lien de connexion, qui marche aussi si tu avais un compte dans l’ancienne app. Google et Apple fonctionnent aussi.',
     attachmentUnsupported:
       'Ce format de photo n’est pas pris en charge. Utilise une image JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Ce fichier est trop volumineux pour être envoyé.',
@@ -214,7 +214,7 @@ export const fr: Localized<EnMessages> = {
       other: 'Vous pouvez joindre jusqu’à {count} fichiers.',
     },
     userExists:
-      'Un compte existe déjà avec cet e-mail. Connectez-vous, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
+      'Un compte existe déjà pour cet e-mail. Connecte-toi, envoie-toi un lien de connexion, réinitialise ton mot de passe ou continue avec Google ou Apple.',
     emailNotVerified: 'Vérifie d’abord ton adresse e-mail — regarde ta boîte de réception.',
     passwordTooShort: 'Ce mot de passe est trop court.',
     invalidEmail: 'Cela ne ressemble pas à une adresse e-mail.',
@@ -319,6 +319,20 @@ export const fr: Localized<EnMessages> = {
     linkExpiredBody:
       'Ce lien n’est plus valable. Demandes-en un nouveau depuis l’écran de connexion.',
     requestNewLink: 'Demander un nouveau lien',
+    signInWithLink: 'M’envoyer un lien de connexion',
+    signInLinkTitle: 'Se connecter avec un lien',
+    signInLinkBody:
+      'Saisis ton e-mail ou ton nom d’utilisateur et on t’envoie un lien qui te connecte — sans mot de passe.',
+    sendSignInLink: 'Envoyer le lien de connexion',
+    signInLinkSentBody:
+      'S’il existe un compte pour {email}, un lien de connexion est en route. Il fonctionne une fois et expire dans 15 minutes.',
+    signInLinkExpiredBody:
+      'Ce lien de connexion a déjà servi ou a expiré. Demandes-en un nouveau et touche-le dans les 15 minutes.',
+    openLinkTitle: 'Se connecter à LangX',
+    openLinkBody:
+      'Tu as suivi un lien de connexion. Touche le bouton pour terminer la connexion sur cet appareil.',
+    openLinkButton: 'Se connecter',
+    openInApp: 'Ouvrir dans l’app LangX',
     setNewPassword: 'Choisis un nouveau mot de passe',
     newPassword: 'Nouveau mot de passe',
     updatePassword: 'Mettre à jour',
@@ -798,6 +812,7 @@ export const fr: Localized<EnMessages> = {
     newChatsLeft: 'Nouvelles discussions restantes aujourd’hui :',
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
+    scan: 'Scanner un code',
     corrections: 'Corrections',
     wallet: 'Portefeuille',
     previewProfile: 'Aperçu de mon profil',
@@ -1072,7 +1087,7 @@ export const fr: Localized<EnMessages> = {
 
   invite: {
     title: 'Inviter quelqu’un',
-    body: 'Partage ton lien. Quand une personne que tu as invitée s’inscrit et se met à parler aux gens, tu gagnes des tokens.',
+    body: 'Partage ton lien. Quand quelqu’un que tu as invité s’inscrit et se met à parler avec des gens, vous gagnez des tokens tous les deux.',
     code: 'Ton code d’invitation',
     qrAccessibility: 'QR code de ton lien d’invitation',
     share: 'Partager le lien',
@@ -1085,6 +1100,8 @@ export const fr: Localized<EnMessages> = {
       'La personne s’inscrit et écrit son premier message ou sa première correction — là, tu gagnes {activation} tokens.',
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
+    step4:
+      'Ils gagnent aussi : {invitee} de plus au même moment, donc avec le bonus d’inscription ils démarrent à {total}.',
     totalsInvited: {
       one: 'invité',
       other: 'invités',
@@ -1120,6 +1137,7 @@ export const fr: Localized<EnMessages> = {
     pronunciation: 'Prononciation',
     referral: 'Bonus de parrainage',
     referralSubscription: 'Bonus d’abonnement filleul',
+    referralWelcome: 'Bonus de bienvenue sur invitation',
   },
 
   cosmetics: {
@@ -1192,7 +1210,8 @@ export const fr: Localized<EnMessages> = {
     ctaBody: '{name} pratique des langues sur LangX. Rejoins pour dire bonjour.',
     ctaLabel: 'Ouvrir LangX',
     inviteTitle: '{name} t’a invité sur LangX',
-    inviteBody: 'Pratique avec quelqu’un qui apprend ta langue. L’inscription est gratuite.',
+    inviteBody:
+      '{name} t’a invité. Inscris-toi et écris à quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
   },
 
   shareProfile: {
@@ -1241,7 +1260,7 @@ export const fr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Se connecter sur un autre appareil',
     body: 'Saisis le code affiché sur l’autre écran, ou scanne-le là-bas.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'N’approuve qu’un code que tu vois toi-même. Quiconque le saisit obtient un accès complet à ton compte.',
     approve: 'Approuver',
@@ -1258,10 +1277,23 @@ export const fr: Localized<EnMessages> = {
     unknownDevice: 'Appareil inconnu',
   },
 
+  scan: {
+    title: 'Scanner un code',
+    body: 'Vise le code de connexion sur ton ordinateur, ou le code de profil d’un ami.',
+    permissionTitle: 'Accès à la caméra requis',
+    permissionBody: 'LangX a besoin de la caméra pour lire un code. Rien n’est enregistré.',
+    allow: 'Autoriser la caméra',
+    openSettings: 'Ouvrir les réglages',
+    unknown: 'Ce n’est pas un code LangX.',
+    webOnly:
+      'Scanner demande la caméra de ton téléphone. Ouvre LangX sur le téléphone et touche l’icône de scan sur ton profil.',
+    typeInstead: 'Saisir le code à la place',
+  },
+
   qrSignIn: {
     title: 'Se connecter avec le téléphone',
     body: 'Ouvre LangX sur ton téléphone et saisis ce code, ou scanne-le.',
-    hint: 'Réglages → Se connecter sur un autre appareil',
+    hint: 'Sur ton téléphone : l’icône de scan sur ton profil, ou Réglages → Se connecter sur un autre appareil',
     qrAccessibility: 'QR code de connexion',
     expired: 'Le code a expiré.',
     failed: 'Échec du démarrage. Réessaie.',

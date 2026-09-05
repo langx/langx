@@ -133,7 +133,8 @@ export default function LinkDeviceScreen() {
         placeholderTextColor={colors.textFaint}
         autoCapitalize="characters"
         autoCorrect={false}
-        maxLength={16}
+        // Five characters plus room for a hyphen and a slip of the thumb.
+        maxLength={8}
         style={styles.input}
       />
 
