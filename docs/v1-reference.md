@@ -11,17 +11,16 @@ against the live instance.
 
 ## Store
 
-|                          |                                                                                                          |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| iOS bundle identifier    | `tech.newchapter.languageXchange`                                                                        |
-| Android package          | `tech.newchapter.languageXchange`                                                                        |
-| App Store Connect app id | `6474187141`                                                                                             |
-| Apple Team ID            | `8F63M4JH8P`                                                                                             |
-| App Store listing        | https://apps.apple.com/app/id6474187141                                                                  |
-| Play listing             | https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange                            |
-| Published version        | 0.15.0 · versionCode 119                                                                                 |
-| EAS project              | `c331c0a6-b2fc-4664-a9a3-c04d1fb2c115`                                                                   |
-| Release keystore         | `langx-angular/android/release.keystore` (10 Jan 2024), backup copy in `backup/languageXchange/android/` |
+|                          |                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| iOS bundle identifier    | `tech.newchapter.languageXchange`                                             |
+| Android package          | `tech.newchapter.languageXchange`                                             |
+| App Store Connect app id | `6474187141`                                                                  |
+| Apple Team ID            | `8F63M4JH8P`                                                                  |
+| App Store listing        | https://apps.apple.com/app/id6474187141                                       |
+| Play listing             | https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange |
+| Published version        | 0.15.0 · versionCode 119                                                      |
+| EAS project              | `c331c0a6-b2fc-4664-a9a3-c04d1fb2c115`                                        |
 
 The iOS URL scheme `tech.newchapter.languagexchange` (lowercase x) is
 registered alongside `langx` — dropping it breaks every deep link already in
