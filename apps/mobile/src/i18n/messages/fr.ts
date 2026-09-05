@@ -956,8 +956,9 @@ export const fr: Localized<EnMessages> = {
     appIcon_dark: 'Sombre',
     appIconChanged: 'Icône changée.',
     appIconFailed: 'Impossible de changer l’icône',
-    showStats: 'Afficher mes chiffres',
-    showStatsBody: 'Série, corrections, jetons et le graphique de la semaine sur votre profil.',
+    showWeekChart: 'Afficher le graphique de la semaine',
+    showWeekChartBody:
+      'Les jours où vous avez envoyé des messages et des corrections, sur votre profil.',
     legalSection: 'Mentions légales',
     communitySection: 'Communauté',
     linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',

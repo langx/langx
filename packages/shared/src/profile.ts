@@ -282,12 +282,16 @@ export const updateProfileSchema = z
          */
         activityMapVisible: z.boolean(),
         /**
-         * The numbers above the map — streak, corrections, tokens — and the
-         * week's chart. Default on for the same reason: they are a record of
-         * teaching people, which is the thing this app is for. Off is for
-         * anyone who would rather not be measured in public.
+         * The week's chart on a public profile. Default on, like the map.
+         *
+         * The numbers above it — streak, corrections, badges, tokens — have
+         * no switch: they are a record of teaching people, which is the thing
+         * this app is for, and a profile without them read as a profile with
+         * something to hide. The chart is a different kind of fact, not how
+         * much somebody has done but which days they were around this week,
+         * and that is the detail a person may keep to themselves.
          */
-        statsVisible: z.boolean(),
+        weekChartVisible: z.boolean(),
         /**
          * The city on a public profile.
          *

@@ -117,7 +117,7 @@ export interface Profile {
     incognito: boolean
     hideOnlineStatus?: boolean
     activityMapVisible?: boolean
-    statsVisible?: boolean
+    weekChartVisible?: boolean
     hideCity?: boolean
   }
   entitlement: {
@@ -365,7 +365,7 @@ export async function createProfile(
       incognito: false,
       hideOnlineStatus: false,
       activityMapVisible: true,
-      statsVisible: true,
+      weekChartVisible: true,
     },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
@@ -596,7 +596,7 @@ export async function createGuestProfile(
       incognito: false,
       hideOnlineStatus: false,
       activityMapVisible: false,
-      statsVisible: false,
+      weekChartVisible: false,
     },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },

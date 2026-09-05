@@ -981,14 +981,12 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
 
       expect(response.statusCode, response.body).toBe(200)
       const body = response.json<{
-        visible: boolean
         streak: { current: number }
         corrections: number
         badges: number
         tokens: number
         week: unknown[]
       }>()
-      expect(body.visible).toBe(true)
       expect(body.streak.current).toBe(0)
       expect(body.corrections).toBe(0)
       // Zero is an answer: the tile on the profile says "0", not nothing.
@@ -1001,17 +999,18 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     })
 
     /**
-     * Off means the fields are absent, not blanked: a client that decided to
-     * draw them anyway would have nothing to draw.
+     * Off means `week` is absent, not blanked: a client that decided to draw
+     * it anyway would have nothing to draw. The numbers have no switch and
+     * stay — a profile without them read as a profile with something to hide.
      */
-    it('sends nothing at all when its owner has turned the numbers off', async () => {
+    it('keeps the numbers and leaves out the week when its owner has turned the chart off', async () => {
       const owner = await newUser('stats-private@example.com', { handle: 'statsprivate' })
       const viewer = await newUser('stats-private-viewer@example.com')
       await app.inject({
         method: 'PATCH',
         url: '/profiles/me',
         headers: { cookie: owner.cookie },
-        payload: { privacy: { statsVisible: false } },
+        payload: { privacy: { weekChartVisible: false } },
       })
 
       const response = await app.inject({
@@ -1019,7 +1018,12 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
         url: '/profiles/statsprivate/summary',
         headers: { cookie: viewer.cookie },
       })
-      expect(response.json()).toEqual({ visible: false })
+      const body = response.json<Record<string, unknown>>()
+      expect(body).not.toHaveProperty('week')
+      expect(body.streak).toEqual({ current: 0, longest: 0 })
+      expect(body.corrections).toBe(0)
+      expect(body.badges).toBe(0)
+      expect(body.tokens).toBeGreaterThan(0)
     })
   })
   describe('the token history', () => {

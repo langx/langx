@@ -972,8 +972,9 @@ export const de: Localized<EnMessages> = {
     appIcon_dark: 'Dunkel',
     appIconChanged: 'Symbol geändert.',
     appIconFailed: 'Symbol konnte nicht geändert werden',
-    showStats: 'Meine Zahlen zeigen',
-    showStatsBody: 'Streak, Korrekturen, Tokens und das Wochendiagramm auf deinem Profil.',
+    showWeekChart: 'Wochendiagramm zeigen',
+    showWeekChartBody:
+      'An welchen Tagen du Nachrichten und Korrekturen geschickt hast, auf deinem Profil.',
     legalSection: 'Rechtliches',
     communitySection: 'Community',
     linkDeviceBody: 'Eine Anmeldung bestätigen und sehen, wo du angemeldet bist.',

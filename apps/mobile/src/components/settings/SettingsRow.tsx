@@ -141,20 +141,21 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           }
         />
       )
-    case 'privacy.stats':
-      // The numbers above the map — streak, corrections, tokens, the week's
-      // chart — travel together, because hiding the chart and leaving the
-      // counts would be a setting that does not do what it says.
+    case 'privacy.weekChart':
+      // Was "show my numbers", which also hid the streak, corrections and
+      // tokens. Those always show now; what stays switchable is the chart,
+      // because it says something the totals do not — which days you were
+      // here this week.
       return (
         <ListRow
-          title={t('settings.showStats')}
-          subtitle={t('settings.showStatsBody')}
+          title={t('settings.showWeekChart')}
+          subtitle={t('settings.showWeekChartBody')}
           last={last}
           accessory={
             <Toggle
-              accessibilityLabel={t('settings.showStats')}
-              value={profile?.privacy.statsVisible ?? true}
-              onValueChange={(statsVisible) => update.mutate({ privacy: { statsVisible } })}
+              accessibilityLabel={t('settings.showWeekChart')}
+              value={profile?.privacy.weekChartVisible ?? true}
+              onValueChange={(weekChartVisible) => update.mutate({ privacy: { weekChartVisible } })}
             />
           }
         />
