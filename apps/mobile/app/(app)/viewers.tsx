@@ -25,7 +25,7 @@ import { useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
-type ViewerRow = ViewerPageDto['viewers'][number] & { _id: string }
+type ViewerRow = Omit<ViewerPageDto['viewers'][number], 'day'> & { day: string; _id: string }
 
 /**
  * One section per day, newest first. The rows arrive sorted by last view, so
@@ -68,10 +68,13 @@ export default function ViewersScreen() {
   const week = summary?.week ?? []
   const weekVisits = week.reduce((sum, day) => sum + day.visits, 0)
   const rows = dedupeById(
-    (viewers.data?.pages.flatMap((page) => page.viewers) ?? []).map((v) => ({
-      ...v,
-      _id: `${v.userId}:${v.day}`,
-    })),
+    (viewers.data?.pages.flatMap((page) => page.viewers) ?? []).map((v) => {
+      // An API from before the day split sends no `day`; the timestamp's UTC
+      // day is what it would have said. The update ships over the air ahead
+      // of the API, so this is the week in which both are live at once.
+      const day = v.day ?? v.lastViewedAt.slice(0, 10)
+      return { ...v, day, _id: `${v.userId}:${day}` }
+    }),
   )
   const sections = byDay(rows)
 

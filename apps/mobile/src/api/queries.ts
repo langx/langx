@@ -1167,8 +1167,8 @@ export interface ViewerPageDto {
   locked: boolean
   viewers: {
     userId: string
-    /** The UTC day this row is about; one row per person per day. */
-    day: string
+    /** The UTC day this row is about; one row per person per day. Absent from an API older than the split. */
+    day?: string
     /** Absent while `locked` — the server does not send identities behind the paywall. */
     handle?: string
     displayName?: string
