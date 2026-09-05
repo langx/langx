@@ -10,6 +10,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { relativeTime } from '../../src/lib/format'
 import { goBackTo } from '../../src/lib/navigation'
 import { sessionLabel } from '../../src/lib/sessionLabel'
+import { awaitNewSession, sortSessions } from '../../src/lib/sessions'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useLocale, useT } from '../../src/i18n'
@@ -44,6 +45,10 @@ export default function LinkDeviceScreen() {
 
   const [entered, setEntered] = useState(code ?? '')
   const [busy, setBusy] = useState(false)
+  /** Between an approval and the browser's row appearing in the list. */
+  const [awaiting, setAwaiting] = useState(false)
+  /** The row an approval just produced, drawn once with a highlight. */
+  const [arrived, setArrived] = useState<string | null>(null)
   const { locale } = useLocale()
 
   /*
@@ -113,11 +118,26 @@ export default function LinkDeviceScreen() {
       await showAlert(t('linkDevice.failed'))
       return
     }
-    await showAlert(t(approve ? 'linkDevice.approved' : 'linkDevice.denied'))
-    // Not back to settings on an approval: the device list below is where the
-    // laptop now appears, which is the only proof the approval landed.
-    if (!approve) goBackTo('/(app)/settings')
-    else void sessions.refetch()
+    // Something that worked gets a toast, not an alert to dismiss.
+    showToast(t(approve ? 'linkDevice.approved' : 'linkDevice.denied'))
+    if (!approve) {
+      goBackTo('/(app)/settings')
+      return
+    }
+    /*
+     * Not back to settings on an approval: the device list below is where the
+     * laptop now appears, which is the only proof the approval landed. But the
+     * row is not there yet — approving only marks the code; the browser
+     * creates its session on its next poll, a couple of seconds from now. One
+     * refetch fired here always lost that race and the list sat unchanged
+     * until the next visit. So: ask again on the browser's rhythm until the
+     * new row shows up, and say meanwhile that it is on its way.
+     */
+    const known = new Set((sessions.data ?? []).map((session) => session.token))
+    setAwaiting(true)
+    const fresh = await awaitNewSession(async () => (await sessions.refetch()).data, known)
+    setAwaiting(false)
+    setArrived(fresh?.token ?? null)
   }
 
   return (
@@ -175,11 +195,22 @@ export default function LinkDeviceScreen() {
         <ActivityIndicator style={styles.spinner} />
       ) : (
         <View>
-          {(sessions.data ?? []).map((session) => {
+          {awaiting ? (
+            <View style={styles.deviceRow}>
+              <ActivityIndicator size="small" />
+              <Text style={[styles.deviceMeta, styles.deviceText]}>
+                {t('linkDevice.waitingForDevice')}
+              </Text>
+            </View>
+          ) : null}
+          {sortSessions(sessions.data ?? []).map((session) => {
             const label = sessionLabel(session.userAgent) ?? t('linkDevice.unknownDevice')
             const isThis = session.token === currentToken
             return (
-              <View key={session.token} style={styles.deviceRow}>
+              <View
+                key={session.token}
+                style={[styles.deviceRow, session.token === arrived && styles.deviceRowNew]}
+              >
                 <View style={styles.deviceText}>
                   <Text style={styles.deviceName}>
                     {label}
@@ -247,6 +278,13 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     flexDirection: 'row',
     gap: spacing.sm,
     paddingVertical: spacing.md,
+  },
+  /* The row an approval just added: tinted once so the proof is findable. */
+  deviceRowNew: {
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.md,
+    marginHorizontal: -spacing.sm,
+    paddingHorizontal: spacing.sm,
   },
   deviceText: { flex: 1, gap: 2, minWidth: 0 },
   deviceName: { ...font.body, color: colors.text },

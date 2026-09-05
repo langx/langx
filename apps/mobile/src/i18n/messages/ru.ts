@@ -1420,6 +1420,7 @@ export const ru: Localized<EnMessages> = {
     failed: 'Этот код больше не действителен.',
     hint: 'Не сейчас',
     devices: 'Устройства с активным входом',
+    waitingForDevice: 'Ждём, пока другое устройство завершит вход…',
     thisDevice: 'это устройство',
     signOutDevice: 'Выйти',
     signOutOthers: 'Выйти на всех остальных',

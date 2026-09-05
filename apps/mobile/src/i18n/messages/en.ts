@@ -1305,6 +1305,7 @@ export const en = {
     failed: 'That code is no longer valid.',
     hint: 'Not now',
     devices: 'Signed-in devices',
+    waitingForDevice: 'Waiting for the other device to finish signing in…',
     thisDevice: 'this device',
     signOutDevice: 'Sign out',
     signOutOthers: 'Sign out everywhere else',

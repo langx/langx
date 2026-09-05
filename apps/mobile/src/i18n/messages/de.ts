@@ -1285,6 +1285,7 @@ export const de: Localized<EnMessages> = {
     failed: 'Dieser Code gilt nicht mehr.',
     hint: 'Jetzt nicht',
     devices: 'Angemeldete Geräte',
+    waitingForDevice: 'Warten, bis das andere Gerät die Anmeldung abgeschlossen hat…',
     thisDevice: 'dieses Gerät',
     signOutDevice: 'Abmelden',
     signOutOthers: 'Überall sonst abmelden',

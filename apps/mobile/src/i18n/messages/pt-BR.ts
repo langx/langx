@@ -1256,6 +1256,7 @@ export const ptBR: Localized<EnMessages> = {
     failed: 'Esse código não é mais válido.',
     hint: 'Agora não',
     devices: 'Dispositivos conectados',
+    waitingForDevice: 'Aguardando o outro dispositivo concluir o login…',
     thisDevice: 'este dispositivo',
     signOutDevice: 'Sair',
     signOutOthers: 'Sair de todos os outros',

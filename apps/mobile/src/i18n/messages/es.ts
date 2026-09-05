@@ -1260,6 +1260,7 @@ export const es: Localized<EnMessages> = {
     failed: 'Ese código ya no es válido.',
     hint: 'Ahora no',
     devices: 'Dispositivos con sesión',
+    waitingForDevice: 'Esperando a que el otro dispositivo termine de iniciar sesión…',
     thisDevice: 'este dispositivo',
     signOutDevice: 'Cerrar sesión',
     signOutOthers: 'Cerrar sesión en todos los demás',

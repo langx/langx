@@ -1270,6 +1270,7 @@ export const fr: Localized<EnMessages> = {
     failed: 'Ce code n’est plus valide.',
     hint: 'Pas maintenant',
     devices: 'Appareils connectés',
+    waitingForDevice: 'En attente que l’autre appareil termine sa connexion…',
     thisDevice: 'cet appareil',
     signOutDevice: 'Se déconnecter',
     signOutOthers: 'Se déconnecter partout ailleurs',

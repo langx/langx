@@ -1263,6 +1263,7 @@ export const tr: Localized<EnMessages> = {
     failed: 'Bu kod artık geçerli değil.',
     hint: 'Şimdi değil',
     devices: 'Giriş yapılmış cihazlar',
+    waitingForDevice: 'Diğer cihazın girişi tamamlaması bekleniyor…',
     thisDevice: 'bu cihaz',
     signOutDevice: 'Çıkış yap',
     signOutOthers: 'Diğer her yerden çıkış yap',

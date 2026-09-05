@@ -1482,6 +1482,7 @@ export const ar: Localized<EnMessages> = {
     failed: 'لم يعد هذا الرمز صالحًا.',
     hint: 'ليس الآن',
     devices: 'الأجهزة المسجّلة الدخول',
+    waitingForDevice: 'في انتظار أن يُكمل الجهاز الآخر تسجيل الدخول…',
     thisDevice: 'هذا الجهاز',
     signOutDevice: 'تسجيل الخروج',
     signOutOthers: 'تسجيل الخروج من كل مكان آخر',
