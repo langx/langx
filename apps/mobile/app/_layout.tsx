@@ -178,6 +178,7 @@ function RootShell() {
    * nothing on web or in a build without the native module.
    */
   const userId = session?.user?.id
+  const email = session?.user?.email
   const isGuest = shouldGateGuest(session?.user)
   useEffect(() => {
     /*
@@ -188,7 +189,12 @@ function RootShell() {
      * anything anyway; the paywall's buy button is behind `requireAccount`.
      */
     if (userId && !isGuest) {
-      void identifyForPurchases(userId)
+      // The email is the web checkout's only extra: RevenueCat collects one
+      // there whatever we do — it is how the receipt and the cancellation link
+      // are sent — so handing over the account's saves the buyer a field
+      // rather than disclosing anything the purchase would not have carried.
+      // The native SDKs ignore it; Apple and Google know who is paying.
+      void identifyForPurchases(userId, email)
       // The same rule for the same reason: analytics keyed by our user id is
       // what makes a deleted account's events findable, and a guest's id is
       // thrown away at registration.
@@ -197,7 +203,9 @@ function RootShell() {
       void forgetPurchasesIdentity()
       forgetAnalyticsIdentity()
     }
-  }, [userId])
+    // `email` too, so that changing it re-prefills the web checkout. The call
+    // is a no-op for the id it is already bound to, so this costs nothing.
+  }, [userId, email])
 
   /**
    * Empties the query cache when the person behind it changes.

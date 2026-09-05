@@ -258,6 +258,9 @@ importers:
       '@react-native-community/datetimepicker':
         specifier: 9.1.0
         version: 9.1.0(expo@57.0.20)(react-native@0.86.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.3(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
+      '@revenuecat/purchases-js':
+        specifier: ^1.58.0
+        version: 1.58.0
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.102.6(react@19.2.3)
@@ -2167,6 +2170,9 @@ packages:
 
   '@revenuecat/purchases-js@1.54.0':
     resolution: {integrity: sha512-eYCzHLGeJ4DTMvSKjnOi2CpTTtCBAYfM/g0eYjWr5SU+oTXF8QBqpFvBFT5aEoH9/GiP9svL00gT9L7Ck7B+aQ==}
+
+  '@revenuecat/purchases-js@1.58.0':
+    resolution: {integrity: sha512-IHnicw4RnyK3w2VCxfOiFUiH6oMP9sNAury6cuyoQlUYu/Fx+hSsEXCGEnFwmRpKdpF3kiPWOIQ+qK/EX/6JYw==}
 
   '@revenuecat/purchases-typescript-internal@18.33.1':
     resolution: {integrity: sha512-TobtSjmMQUiPgNqcWZJfCyQgmCzhP77+KuvTZUKBcLlSTtoYTOFy5GnaOd5YPvwNHeFYL09nzgleg67n866pzw==}
@@ -7587,6 +7593,8 @@ snapshots:
       '@revenuecat/purchases-js': 1.54.0
 
   '@revenuecat/purchases-js@1.54.0': {}
+
+  '@revenuecat/purchases-js@1.58.0': {}
 
   '@revenuecat/purchases-typescript-internal@18.33.1': {}
 

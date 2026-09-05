@@ -371,12 +371,18 @@ leaves `gender` and `city`.
 
 ### Entitlement flow
 
-1. The client shows offerings via `react-native-purchases`. **The RevenueCat
-   appUserID must equal the Better Auth user id** — `Purchases.logIn(userId)`
-   after sign-in. Without it a subscription bought on the web is invisible on
-   iOS.
-2. Purchase: StoreKit/Play Billing natively, RevenueCat Web + the connected
-   Stripe Billing account on the web.
+1. The client shows offerings via `react-native-purchases` natively and
+   `@revenuecat/purchases-js` in the browser — one surface, `lib/purchases.ts`,
+   with the web half split into `lib/webBilling.web.ts` so that the browser SDK
+   never reaches a native bundle. **The RevenueCat appUserID must equal the
+   Better Auth user id** on all three, `Purchases.logIn(userId)` after sign-in.
+   Without it a subscription bought on the web is invisible on iOS.
+2. Purchase: StoreKit/Play Billing natively, RevenueCat Web Billing + the
+   connected Stripe Billing account on the web. Three stores, one
+   `app_user_id`, one set of package identifiers (`PACKAGES`) and one set of
+   entitlement ids (`ENTITLEMENT_TIERS`) — everything after this step is
+   store-agnostic, which is why the webhook and `/billing/refresh` needed no
+   change when the web was added.
 3. **Webhook → `POST /webhooks/revenuecat`**: signature verified, processed
    idempotently by `event.id`, written to `subscriptions`, `profiles.
 entitlement` updated.

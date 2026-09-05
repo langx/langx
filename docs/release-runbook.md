@@ -623,13 +623,63 @@ of it runs together.
       Billing note: the first 500 000 characters a month are free, then $20
       per million; the 20/300/1000 daily quotas and the 30-day cache bound
       the spend
-- [ ] **Buying on the web is not built at all**, and no key changes that:
-      `react-native-purchases` is native-only, so `purchases.ts` returns early
-      on `Platform.OS === 'web'` and the paywall says purchasing is
-      unavailable. It needs RevenueCat Web Billing — a Stripe connection on
-      their side, web products and packages, `@revenuecat/purchases-js` as a
-      dependency, and a third branch in `purchases.ts`. A project of its own,
-      not a configuration gap
+- [x] **Buying on the web is built**, as of 5 September 2026:
+      `@revenuecat/purchases-js` is a dependency, `lib/webBilling.web.ts` is
+      the browser store behind `purchases.ts`, and the paywall, the restore
+      control and Settings' _Manage subscription_ row all work in a browser.
+      Nothing on the server changed — the webhook, `subscriptions` and
+      `/billing/refresh` were already store-agnostic. It is switched off for
+      want of a key until the next web deploy; the items below are the rest of it
+- [x] RevenueCat → project LangX (`94ab2b94`) → **Web → RevenueCat Billing**.
+      Stripe (`newchapter.tech`, `acct_1O1p6JFsZedeNj7H`) connected by Behic on
+      5 September 2026 and the configuration created the same day:
+      `appae15d832dc`, USD default, billing address collected only when
+      required, automatic tax off
+- [x] Create the web products at the same prices as the App Store and Play
+      products they mirror, and add them to the **`default` offering** under
+      exactly the package identifiers in `packages/shared/src/billing.ts` →
+      `PACKAGES`: `$rc_monthly`, `$rc_annual`, `$rc_lifetime`,
+      `pro_plus_monthly`, `pro_plus_yearly`. A package the dashboard offers and
+      `PACKAGES` does not know is skipped by `getWebBillingOffers` — visibly,
+      rather than sold at the wrong price under the wrong tier. A package
+      `PACKAGES` knows that the web offering lacks simply does not appear in a
+      browser, which is the honest answer if `$rc_lifetime` turns out to have
+      no Web Billing equivalent
+- [x] Attach the same entitlements the native products grant: `pro`, and
+      **both** `pro_plus` and `pro` for the two Pro+ products. The overlap is
+      deliberate and `ENTITLEMENT_PRECEDENCE` resolves it; a Pro+ web product
+      granting only `pro_plus` is a subscriber every `pro` guard refuses
+- [x] Set the checkout's terms URL to `https://langx.io/terms-conditions`,
+      under _Billing → Terms consent_. It feeds an optional "agree before
+      paying" checkbox that is left **off**; the footer link a customer
+      actually sees is the one the client passes per purchase. There is no
+      privacy-policy field on this screen
+- [x] Copy the Web Billing app's public key — it starts `rcb_` — into
+      `EXPO_PUBLIC_REVENUECAT_WEB_KEY` in `apps/mobile/.env`, the file Expo
+      reads. Done 5 September 2026, **on this machine only**: the value is
+      inlined at build time, so the next `pnpm build:web` and `deploy:web` are
+      what actually turn web purchasing on. Until that deploy, production keeps
+      saying purchasing is unavailable
+- [ ] Two currency gaps, both worth knowing before launch. RevenueCat Billing
+      offers EUR, JPY, GBP, AUD, CAD, BRL, KRW, CNY, MXN, SEK, PLN, MYR, PHP,
+      CHF and SAR — and **no TRY**, so a Turkish customer buying on the web is
+      charged in USD at their card's rate while the same person on the App
+      Store pays the hand-set lira price. A currency can be added to a product
+      later, so this is a wait rather than a rebuild. Second, `$rc_lifetime`
+      has no web product: it only ever existed on the Test Store, and the
+      loyalty gift is a promotional grant rather than a purchase
+- [ ] Decide two checkout settings left at their defaults, both under _Web →
+      LangX (RevenueCat Billing) → Billing_: **automatic tax** (Stripe Tax,
+      which costs per transaction and needs registrations), and **renewal
+      emails** — all three are off, and the "upcoming yearly renewal" one is
+      the notice several jurisdictions expect for an annual subscription. The
+      invoice footer, which names the legal entity, is also empty
+- [ ] Buy once on `app.langx.io` with a real card, then check `subscriptions`
+      for the event (`store: "rc_billing"`), the tier on the profile, and that
+      Settings' _Manage subscription_ row opens RevenueCat's portal. The Test
+      Store has no portal, so that row is the one thing a `test_` key cannot
+      rehearse — `docs/billing-testing.md` → _The web checkout, without Stripe_
+      covers everything it can
 
 ## Migration cutover
 

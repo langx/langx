@@ -80,6 +80,42 @@ Purchases live in memory and are lost when the API restarts. Persisting them
 would mean a collection and an index that exist only for a harness; re-buying
 after a restart is the cheaper trade.
 
+## The web checkout, without Stripe
+
+The harness above is not the only way to buy on a laptop, and since the web
+paywall shipped it is no longer the closest one. `@revenuecat/purchases-js`
+accepts a **Test Store key** — it validates `rcb_`, `test_`, `strp_` and `pdl_`
+prefixes alike — so setting nothing but
+
+```bash
+# apps/mobile/.env, the file Expo reads
+EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY=test_...
+```
+
+and opening the paywall in a browser gets the real SDK, the real `default`
+offering, RevenueCat's own checkout over the page, and a real webhook. The
+key is picked up on web through the same `__DEV__`-only fallback the native
+path uses, so it cannot follow a `pnpm build:web` into production.
+
+Verified on 5 September 2026 against the project's Test Store app: all five
+`PACKAGES` identifiers came back, closing the checkout arrived as
+`ErrorCode.UserCancelledError` (which is what makes the paywall say nothing
+rather than "purchase failed"), and completing one wrote `pro` onto the
+subscriber with `store: "test_store"`.
+
+Two things it still cannot rehearse, both of which need the `rcb_` key:
+
+- **The management link.** The Test Store has no customer portal, so
+  `getCustomerInfo().managementURL` is `null` and Settings correctly shows no
+  _Manage subscription_ row. With Web Billing it is the only cancellation path
+  a web subscriber has — there are no store URLs to fall back on.
+- **Money.** Nothing reaches Stripe, so nothing exercises tax, currency or the
+  card form.
+
+The fake store below is still the right tool when the API is what is under
+test, or when there is no network: it is the only one of the three that runs
+`processRevenueCatWebhook` without leaving the machine.
+
 ## Replaying a webhook
 
 `POST /billing/test-event` skips the HTTP hop, so it never checks the shared

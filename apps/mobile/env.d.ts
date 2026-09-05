@@ -24,6 +24,14 @@ declare global {
        */
       readonly EXPO_PUBLIC_REVENUECAT_IOS_KEY?: string
       readonly EXPO_PUBLIC_REVENUECAT_ANDROID_KEY?: string
+      /**
+       * The Web Billing key — a third store rather than a third platform. It
+       * belongs to its own RevenueCat app, with its own Stripe connection,
+       * products and offering, and starts `rcb_` where the pair above start
+       * `appl_` and `goog_`. Unset, the web paywall says purchasing is
+       * unavailable and the two native builds are untouched.
+       */
+      readonly EXPO_PUBLIC_REVENUECAT_WEB_KEY?: string
       readonly EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY?: string
       /**
        * `'1'` replaces RevenueCat entirely with the local development harness

@@ -1,6 +1,22 @@
 import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
 import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
+import { trialDays } from './trialDays'
+/*
+ * The web store, behind a two-file module Metro resolves per platform: this
+ * import is the real RevenueCat Web Billing SDK in a browser build and an
+ * empty set of "no" answers in the native ones. See `webBilling.ts` for why it
+ * cannot be a `Platform.OS` branch in this file.
+ */
+import {
+  forgetWebBillingIdentity,
+  getWebBillingOffers,
+  identifyForWebBilling,
+  isWebBillingAvailable,
+  purchaseWebBillingOffer,
+  restoreWebBillingPurchases,
+  webBillingManagementUrl,
+} from './webBilling'
 // `import type` is erased at compile time, so naming the module here costs
 // nothing at runtime — the actual native module is still only pulled in by the
 // dynamic import in `loadSdk()`, on the platforms that have it.
@@ -26,16 +42,24 @@ import type * as PurchasesSdk from 'react-native-purchases'
  * `packagesById` — passing an opaque SDK object through React props is how a
  * UI ends up unable to be tested without the native module present.
  *
- * Each function below opens with the same `isFakePurchasesEnabled()` check,
- * which is the local development harness (`./fakePurchases`) taking the whole
- * module over. Branching here rather than at the call sites is what keeps the
- * promise the paragraph above makes: the paywall still has exactly one surface
- * onto billing and cannot tell which store it is talking to, so what the
- * harness exercises is the screen that ships.
+ * Each function below opens with the same two checks, in the same order: the
+ * local development harness (`./fakePurchases`), then the web store
+ * (`./webBilling`), then the native SDK this file wraps directly. Branching
+ * here rather than at the call sites is what keeps the promise the paragraph
+ * above makes: the paywall still has exactly one surface onto billing and
+ * cannot tell which of the three it is talking to, so what the harness
+ * exercises is the screen that ships, and the screen that ships is the same one
+ * in a browser.
  */
 
-/** `react-native-purchases` is native-only; the browser build needs RevenueCat's separate JS SDK, which this app does not ship. */
-const isSupportedPlatform = Platform.OS === 'ios' || Platform.OS === 'android'
+/**
+ * `react-native-purchases` is native-only; the browser sells through
+ * RevenueCat Web Billing and its own SDK, which is what `./webBilling` wraps.
+ * Everything below therefore has three answers, not two, and the fake store
+ * still takes precedence over both real ones.
+ */
+const isNativePlatform = Platform.OS === 'ios' || Platform.OS === 'android'
+const isWebPlatform = Platform.OS === 'web'
 
 /**
  * A released build uses the per-platform key for its real store app. Until
@@ -51,7 +75,7 @@ const isSupportedPlatform = Platform.OS === 'ios' || Platform.OS === 'android'
  * purchasing is unavailable, which is the degradation rule 1 promises.
  */
 function apiKey(): string | null {
-  if (!isSupportedPlatform) return null
+  if (!isNativePlatform) return null
   const platformKey =
     Platform.OS === 'ios'
       ? process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY
@@ -62,6 +86,7 @@ function apiKey(): string | null {
 
 export function isPurchasesAvailable(): boolean {
   if (isFakePurchasesEnabled()) return true
+  if (isWebPlatform) return isWebBillingAvailable()
   return apiKey() !== null
 }
 
@@ -89,15 +114,6 @@ export interface PurchaseOffer {
 }
 
 /**
- * A month counted as 30 days and a year as 365.
- *
- * The screen says "30 days free", which is what every other subscription app
- * says and what people compare against. The alternative is a message per unit
- * in eight languages, for trial lengths we do not sell.
- */
-const DAYS_PER_PERIOD_UNIT: Record<string, number> = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 }
-
-/**
  * The free-trial length of an introductory offer, or `null` when there is none.
  *
  * `introPrice` describes *any* introductory offer — pay-as-you-go and
@@ -105,12 +121,14 @@ const DAYS_PER_PERIOD_UNIT: Record<string, number> = { DAY: 1, WEEK: 7, MONTH: 3
  * discounted first period is a real thing the stores can sell and this app
  * currently does not, and calling one a free trial would be a false claim
  * rather than a missing feature.
+ *
+ * The unit-to-days conversion moved to `./trialDays` when the web store
+ * arrived: the two SDKs do not spell `MONTH` the same way, and the paywall's
+ * "30 days free" has to mean the same thing whichever one answered.
  */
 function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number | null {
   if (intro === null || intro.price !== 0) return null
-  const days = DAYS_PER_PERIOD_UNIT[intro.periodUnit.toUpperCase()]
-  if (days === undefined || intro.periodNumberOfUnits <= 0) return null
-  return days * intro.periodNumberOfUnits
+  return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
 }
 
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'unavailable' | 'failed'
@@ -121,7 +139,10 @@ const packagesById = new Map<string, unknown>()
 type PurchasesModule = typeof PurchasesSdk
 
 async function loadSdk(): Promise<PurchasesModule | null> {
-  if (!isPurchasesAvailable()) return null
+  // `apiKey()`, not `isPurchasesAvailable()`: the latter is now also true on
+  // web, and this module is the native one. Every caller has already handled
+  // the fake store and the web store before it gets here.
+  if (apiKey() === null) return null
   try {
     return await import('react-native-purchases')
   } catch {
@@ -143,12 +164,13 @@ async function loadSdk(): Promise<PurchasesModule | null> {
  *
  * Safe to call repeatedly; it no-ops once the current user is already bound.
  */
-export async function identifyForPurchases(userId: string): Promise<void> {
+export async function identifyForPurchases(userId: string, email?: string): Promise<void> {
   // Nothing to bind under the harness: its purchases are made by an
   // authenticated API call, so the app user id *is* the session's user id and
   // cannot drift from it — which is the failure this function exists to
   // prevent, made structurally impossible rather than handled.
   if (isFakePurchasesEnabled()) return
+  if (isWebPlatform) return identifyForWebBilling(userId, email)
   if (configuredFor === userId) return
   const sdk = await loadSdk()
   if (!sdk) return
@@ -172,6 +194,7 @@ export async function identifyForPurchases(userId: string): Promise<void> {
 /** Clears the binding on sign-out so the next account does not inherit it. */
 export async function forgetPurchasesIdentity(): Promise<void> {
   if (isFakePurchasesEnabled()) return
+  if (isWebPlatform) return forgetWebBillingIdentity()
   if (configuredFor === null) return
   const sdk = await loadSdk()
   configuredFor = null
@@ -191,6 +214,7 @@ export async function forgetPurchasesIdentity(): Promise<void> {
  */
 export async function getOffers(): Promise<PurchaseOffer[]> {
   if (isFakePurchasesEnabled()) return fakeOffers()
+  if (isWebPlatform) return getWebBillingOffers()
   const sdk = await loadSdk()
   if (!sdk) return []
 
@@ -232,6 +256,7 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
  */
 export async function purchaseOffer(offerId: string): Promise<PurchaseOutcome> {
   if (isFakePurchasesEnabled()) return fakePurchase(offerId)
+  if (isWebPlatform) return purchaseWebBillingOffer(offerId)
   const sdk = await loadSdk()
   const pkg = packagesById.get(offerId)
   if (!sdk || !pkg) return 'unavailable'
@@ -256,6 +281,7 @@ export async function restorePurchases(): Promise<boolean> {
   // would be misleading: the caller reconciles with the server straight
   // afterwards, and under the harness the server is the only record there was.
   if (isFakePurchasesEnabled()) return true
+  if (isWebPlatform) return restoreWebBillingPurchases()
   const sdk = await loadSdk()
   if (!sdk) return false
   try {
@@ -264,6 +290,22 @@ export async function restorePurchases(): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+/**
+ * RevenueCat's own link for cancelling or changing a plan, or `null` when it
+ * has none to give.
+ *
+ * Web only, deliberately. A subscription lives in the store that sold it and
+ * both native stores publish one address for all of them, which is what
+ * `manageSubscription.ts` already returns without asking anybody. Stripe has no
+ * such address: the portal is per-customer and RevenueCat hosts it, so this is
+ * the *only* way a web subscriber can cancel from inside the app — and a paid
+ * plan with no way out is not something to ship.
+ */
+export async function storeManagementUrl(): Promise<string | null> {
+  if (!isWebPlatform) return null
+  return webBillingManagementUrl()
 }
 
 function isUserCancelled(error: unknown): boolean {
