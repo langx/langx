@@ -1,12 +1,19 @@
 import { GENDERS, MINIMUM_AGE, birthDateSchema } from '@langx/shared'
 import { router } from 'expo-router'
+import { useEffect, useRef } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { BirthDateField } from '../../src/components/BirthDateField'
 import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
-import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
+import {
+  isDraftHydrated,
+  updateDraft,
+  useOnboardingDraft,
+} from '../../src/hooks/useOnboardingDraft'
+import { authClient } from '../../src/lib/auth-client'
+import { displayNameToSeed } from '../../src/lib/seedDisplayName'
 import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -17,6 +24,35 @@ export default function AboutYouStep() {
   const t = useT()
 
   const draft = useOnboardingDraft()
+  const accountName = authClient.useSession().data?.user.name?.trim() ?? ''
+  const seeded = useRef(false)
+
+  /**
+   * The name the account already has, filled in rather than asked for twice.
+   *
+   * Sign-up takes a name, and Google and Apple hand one over without being
+   * asked — so by the time anyone reaches this screen the answer is on file.
+   * It is seeded rather than removed because an Apple account often carries a
+   * full legal name and this is the field other people see: worth offering,
+   * not worth forcing.
+   *
+   * **After hydration, never before.** `hydrateDraft` merges stored values
+   * under anything this session has touched, so a name written here first
+   * would count as touched and beat the one the person typed on an earlier
+   * launch. The ref then stops it running again, which is what lets someone
+   * clear the field and have it stay clear.
+   */
+  useEffect(() => {
+    const seed = displayNameToSeed({
+      current: draft.displayName,
+      accountName,
+      hydrated: isDraftHydrated(),
+      alreadySeeded: seeded.current,
+    })
+    if (seed === null) return
+    seeded.current = true
+    updateDraft({ displayName: seed })
+  }, [accountName, draft])
 
   /**
    * The same schema the server will run, so the two cannot drift: a date that
