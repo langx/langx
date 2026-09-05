@@ -592,20 +592,31 @@ of it runs together.
       platform. Setting `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough
       to exercise the whole paywall before the store products exist
 - [ ] **Translation has never been configured**, on any environment, as of
-      5 September 2026. The provider (`apps/api/src/translation/`), the per-tier
-      quotas and the cache all shipped in Faz 6, but
+      5 September 2026. The provider (`apps/api/src/translation/`), the
+      per-tier quotas and the cache all shipped in Faz 6, but
       `GOOGLE_TRANSLATE_PROJECT_ID` / `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON`
-      are set nowhere, so every Translate tap in production answers "Could not
-      translate". In the Google Cloud project that already owns the OAuth
-      client above: enable _Cloud Translation API_, attach billing (the first
-      500 000 characters a month are free, then $20 per million; the 20/300/1000
-      daily quotas and the 30-day cache bound the spend), create a service
-      account with **Cloud Translation API User** and a JSON key. The key's
-      *content* goes into the second variable — a container secret store holds
-      strings, not files — with
-      `fly secrets set -a langx-api GOOGLE_TRANSLATE_PROJECT_ID=… GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON="$(cat key.json)"`,
-      which restarts the API by itself. Keep the key file outside every
-      checkout; the repo is public
+      are set nowhere, so every Translate tap in production answers "Could
+      not translate". In the Google Cloud project that already owns the
+      OAuth client above: enable _Cloud Translation API_, attach billing
+      (the first 500 000 characters a month are free, then $20 per million;
+      the 20/300/1000 daily quotas and the 30-day cache bound the spend),
+      create a service account with **Cloud Translation API User** and a
+      JSON key. The key's _content_ goes into the second variable — a
+      container secret store holds strings, not files — with
+      `fly secrets set -a langx-api GOOGLE_TRANSLATE_PROJECT_ID=<id>`
+      `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON="$(cat key.json)"`, which
+      restarts the API by itself. Keep the key file outside every checkout;
+      the repo is public
+- [ ] **Translation is blocked on a billing account that does not exist**, as
+      of 5 September 2026, checked twice from the console. The project is
+      `langx-48eb0`, and the Google account that owns it has no billing
+      account at all — not unlinked, none — and the Translation API refuses
+      to enable without one ("Billing required"). The first step is
+      therefore Behic's alone: `console.cloud.google.com/billing` → _Create
+      account_ (a card is required, even for the free tier) → link it to
+      `langx-48eb0`. Everything after that — enabling the API, the service
+      account, the key, the two secrets — can be done from a browser session
+      by Claude
 - [ ] **Buying on the web is not built at all**, and no key changes that:
       `react-native-purchases` is native-only, so `purchases.ts` returns early
       on `Platform.OS === 'web'` and the paywall says purchasing is
