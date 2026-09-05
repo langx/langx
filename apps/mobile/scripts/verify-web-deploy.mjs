@@ -9,10 +9,13 @@
  * 404 in the console. The deploy command had reported success. This runs
  * after every `deploy:web` and fails loudly instead.
  *
- * Runs against the custom domain by default, because that is what people
- * open; the `*.pages.dev` preview URL was fine that day and proved nothing.
+ * Runs against the custom domain, because that is what people open; the
+ * `*.pages.dev` preview URL was fine that day and proved nothing.
  */
-const host = process.argv[2] ?? 'https://app.langx.io'
+// The custom domain, fixed: it is the address people open, and the one the
+// edge cache sits in front of. Not an argument — a URL from the command line
+// is a request-forgery finding, and there is no second host worth checking.
+const host = 'https://app.langx.io'
 const bust = `?verify=${Date.now()}`
 
 const index = await fetch(`${host}/${bust}`, { headers: { 'cache-control': 'no-cache' } })
