@@ -51,6 +51,21 @@ function glyphImage(kind: CardKind, colour: string): string {
  * timeline before either is read. Taken from `theme/tokens.ts` — a card is the
  * app's own colours leaving the app, and a second palette would drift.
  */
+/**
+ * How big the code is, in units, per shape.
+ *
+ * Not one number and not derived from `dense`: the code is a square, and what
+ * limits it is the clear ground left below the panel, which each shape has a
+ * different amount of. A story is mostly ground and takes a code you can scan
+ * across a room; a square is nearly all panel, and a wide card is 675 tall
+ * with the panel taking most of that, so both take a smaller one.
+ *
+ * The square's code has always sat over the panel's bottom corner and still
+ * does. That overlap is the layout rather than a collision: it reads as a tile
+ * laid on top, which is why making it bigger did not need the panel moved.
+ */
+const QR_UNITS: Record<CardShape, number> = { story: 22, square: 18, wide: 17 }
+
 const GROUND: Record<CardKind, string> = {
   streak: '#f79009',
   badge: '#7a5af8',
@@ -114,6 +129,7 @@ export async function cardElement(
    * its own — three layouts would be three things to keep in step.
    */
   const dense = width / height > 1.3 ? 0.62 : 1
+  const qrUnits = QR_UNITS[shape]
   const badge = await loadBadge()
   const ground = GROUND[kind]
   const onGround = ON_GROUND[kind]
@@ -269,9 +285,29 @@ export async function cardElement(
                     borderRadius: unit * 3,
                     display: 'flex',
                     justifyContent: 'center',
-                    padding: unit * 1.5,
+                    padding: unit * 2,
                   },
-                  children: [el('img', { src: qr, width: unit * 14, height: unit * 14 })],
+                  /*
+                   * Big enough to scan off a screen, which is where most of
+                   * these are read: a story is looked at on someone else's
+                   * phone, held at arm's length, for a few seconds. At the
+                   * original 14 units the code was a seventh of the short side
+                   * and wanted a steady hand and a close lens.
+                   *
+                   * Smaller on the wide card, and not by `dense` — that scales
+                   * the vertical axis, and this is a square. A wide card is
+                   * only 675 tall with the panel taking most of it, so 22
+                   * units of code plus its quiet zone reaches up into the
+                   * panel's bottom corner. 17 clears it and is still half
+                   * again what it was.
+                   */
+                  children: [
+                    el('img', {
+                      src: qr,
+                      width: unit * qrUnits,
+                      height: unit * qrUnits,
+                    }),
+                  ],
                 }),
               ],
             }),
