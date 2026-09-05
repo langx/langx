@@ -78,6 +78,11 @@ export interface Profile {
   timezone?: string
   timezoneUpdatedAt?: Date
   /**
+   * When the hourly gift was last opened. The claim is one conditional update
+   * on this field, so two devices cannot both open the same hour's gift.
+   */
+  lastGiftAt?: Date
+  /**
    * Where the user roughly is, opt-in, and **already coarsened** — every write
    * goes through `toGeoPoint`, which rounds to about a kilometre before this
    * field ever exists. There is no precise copy anywhere; see `location.ts`.

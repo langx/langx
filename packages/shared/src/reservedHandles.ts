@@ -51,6 +51,7 @@ const ROUTE_RESERVED = [
   'settings',
   'starred',
   'streak',
+  'gift',
   'store',
   'tokens',
   'viewers',

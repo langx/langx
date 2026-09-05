@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/requireAuth'
 import { getBadgeSummary } from '../modules/tokens/badges'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 import { getStreakLeaderboard } from '../modules/tokens/streakLeaderboard'
+import { claimGift } from '../modules/tokens/gift'
 import { getWallet, purchase } from '../modules/tokens/wallet'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -51,6 +52,19 @@ export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const result = await purchase(app.mongo.db, request.userId, request.body.sku)
       return reply.send(result)
+    },
+  )
+
+  /*
+   * The hourly gift. No body: there is nothing to choose. The per-route limit
+   * only keeps a stuck client from hammering the database — the real gate is
+   * the cooldown inside `claimGift`, which answers RATE_LIMITED with `retryAt`.
+   */
+  app.post(
+    '/me/wallet/gift',
+    { preHandler: requireAuth, config: { rateLimit: { max: 10, timeWindow: '1 minute' } } },
+    async (request, reply) => {
+      return reply.send(await claimGift(app.mongo.db, request.userId))
     },
   )
 }

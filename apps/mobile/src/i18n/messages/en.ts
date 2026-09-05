@@ -1087,6 +1087,21 @@ export const en = {
     buyFailed: 'Could not buy that',
   },
 
+  gift: {
+    title: 'Hourly gift',
+    body: 'A small gift every hour, for free. Most hold a handful of tokens; a few hold more.',
+    ready: 'Ready to open',
+    nextIn: 'Next one in {minutes} min',
+    shakeHint: 'Shake your phone to open it',
+    tapHint: 'Tap to open it',
+    opening: 'Opening…',
+    revealed: '+{amount} tokens',
+    revealedZero: 'Empty this time. Another one in an hour.',
+    failed: 'Could not open the gift',
+    done: 'Done',
+    openAccessibility: 'Open the hourly gift',
+  },
+
   wallet: {
     title: 'Wallet',
     balance: 'Balance',
@@ -1176,6 +1191,7 @@ export const en = {
     referral: 'Invite bonus',
     referralSubscription: 'Invite subscription bonus',
     referralWelcome: 'Invite welcome bonus',
+    gift: 'Hourly gift',
   },
 
   cosmetics: {

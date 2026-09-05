@@ -1038,6 +1038,21 @@ export const ptBR: Localized<EnMessages> = {
     buyFailed: 'Não foi possível comprar',
   },
 
+  gift: {
+    title: 'Presente de cada hora',
+    body: 'Um pequeno presente a cada hora, de graça. A maioria traz alguns tokens; alguns trazem mais.',
+    ready: 'Pronto para abrir',
+    nextIn: 'O próximo em {minutes} min',
+    shakeHint: 'Balance o celular para abrir',
+    tapHint: 'Toque para abrir',
+    opening: 'Abrindo…',
+    revealed: '+{amount} tokens',
+    revealedZero: 'Vazio desta vez. Outro daqui a uma hora.',
+    failed: 'Não foi possível abrir o presente',
+    done: 'Concluído',
+    openAccessibility: 'Abrir o presente de cada hora',
+  },
+
   wallet: {
     title: 'Carteira',
     balance: 'Saldo',
@@ -1126,6 +1141,7 @@ export const ptBR: Localized<EnMessages> = {
     referral: 'Bônus de convite',
     referralSubscription: 'Bônus de assinatura do convidado',
     referralWelcome: 'Bônus de boas-vindas por convite',
+    gift: 'Presente de cada hora',
   },
 
   cosmetics: {

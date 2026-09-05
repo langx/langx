@@ -1044,6 +1044,21 @@ export const es: Localized<EnMessages> = {
     buyFailed: 'No se pudo comprar',
   },
 
+  gift: {
+    title: 'Regalo de cada hora',
+    body: 'Un pequeño regalo cada hora, gratis. La mayoría trae unos pocos tokens; algunos traen más.',
+    ready: 'Listo para abrir',
+    nextIn: 'El siguiente en {minutes} min',
+    shakeHint: 'Agita el teléfono para abrirlo',
+    tapHint: 'Toca para abrirlo',
+    opening: 'Abriendo…',
+    revealed: '+{amount} tokens',
+    revealedZero: 'Esta vez estaba vacío. Habrá otro en una hora.',
+    failed: 'No se pudo abrir el regalo',
+    done: 'Listo',
+    openAccessibility: 'Abrir el regalo de cada hora',
+  },
+
   wallet: {
     title: 'Cartera',
     balance: 'Saldo',
@@ -1131,6 +1146,7 @@ export const es: Localized<EnMessages> = {
     referral: 'Bono por invitación',
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
+    gift: 'Regalo de cada hora',
   },
 
   cosmetics: {
