@@ -1,0 +1,10 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch({ args: ['--no-sandbox'] })
+const context = await browser.newContext({ viewport: { width: 400, height: 860 }, hasTouch: true, deviceScaleFactor: 2 })
+const page = await context.newPage()
+await page.goto('https://app.langx.io/sign-up', { waitUntil: 'load', timeout: 180000 })
+await page.waitForTimeout(7000)
+await page.screenshot({ path: './shots/13-live-signup.png' })
+console.log('title:', await page.title(), '| url:', page.url())
+console.log('has confirm field:', await page.getByText(/Confirm password/i).count())
+await browser.close()

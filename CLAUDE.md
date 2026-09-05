@@ -29,6 +29,23 @@ pnpm format         # prettier
 
 CI runs typecheck, lint, format:check and tests. All four must pass.
 
+## Sibling repos
+
+This repo is one of several: langx.io, token.langx.io, the GitBook docs and
+v1's still-running API each have their own. [`docs/repo-map.md`](docs/repo-map.md)
+says what they are, where each site is hosted, and — the load-bearing part —
+which values are copied between them by hand. Three rules follow from it:
+
+- This file is the instruction. The sibling repos are assumed to be checked out
+  next to this one; paths such as `website/src/lib/data/plans.ts` in these docs
+  mean that sibling.
+- Every `langx/*` repo is public. Nothing that must stay private goes into any
+  of them; [`docs/workstation-move.md`](docs/workstation-move.md) lists what
+  lives outside git and how it moves between machines.
+- When a plan limit or a token rule changes in `packages/shared`, change the
+  copies on the website and in the GitBook docs too. Nothing checks this, and a
+  pricing page that drifts is a false claim, not a stale one.
+
 ## Local MongoDB must be a replica set
 
 Better Auth wraps writes in transactions and MongoDB only offers those on a

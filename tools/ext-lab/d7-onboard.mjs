@@ -1,0 +1,46 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch({ args: ['--no-sandbox'] })
+const context = await browser.newContext({ viewport: { width: 400, height: 860 }, hasTouch: true, deviceScaleFactor: 2 })
+const r = await context.request.post('http://localhost:4000/api/auth/sign-in/email', {
+  headers: { origin: 'http://localhost:8081' },
+  data: { email: 'd7_new@test.langx.invalid', password: process.env.SEED_PASSWORD ?? 'seedseed1' },
+})
+if (!r.ok()) throw new Error('sign-in ' + r.status())
+const page = await context.newPage()
+await page.goto('http://localhost:8081/languages', { waitUntil: 'load', timeout: 240000 })
+await page.waitForTimeout(6000)
+
+await page.getByPlaceholder(/Search/).last().fill('Turkish')
+await page.waitForTimeout(800)
+await page.getByText('Turkish', { exact: true }).first().click()
+await page.waitForTimeout(500)
+await page.getByText('Continue').last().click()
+await page.waitForTimeout(3000)
+console.log('now at', page.url())
+await page.screenshot({ path: './shots/dbg-after-native.png' })
+
+await page.getByPlaceholder(/Search/).last().fill('English')
+await page.waitForTimeout(800)
+await page.getByText('English', { exact: true }).first().click()
+await page.waitForTimeout(400)
+await page.getByPlaceholder(/Search/).last().fill('German')
+await page.waitForTimeout(800)
+await page.getByText('German', { exact: true }).first().click()
+await page.waitForTimeout(500)
+await page.getByText('Continue').last().click()
+await page.waitForTimeout(2500)
+console.log('now at', page.url())
+await page.screenshot({ path: './shots/08-levels.png' })
+
+// pick a level for each language, then continue
+await page.getByText('3', { exact: true }).first().click()
+await page.waitForTimeout(400)
+await page.screenshot({ path: './shots/08b-levels-picked.png' })
+const fours = page.getByText('4', { exact: true })
+if (await fours.count()) await fours.last().click()
+await page.waitForTimeout(500)
+await page.getByText('Continue').last().click()
+await page.waitForTimeout(2500)
+console.log('now at', page.url())
+await page.screenshot({ path: './shots/09-about-you.png' })
+await browser.close()
