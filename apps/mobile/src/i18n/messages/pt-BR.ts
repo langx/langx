@@ -195,7 +195,7 @@ export const ptBR: Localized<EnMessages> = {
     appleSignInFailed: 'Não foi possível entrar com a Apple',
     resetFailed: 'Não foi possível redefinir a senha',
     invalidCredentials:
-      'Isso não corresponde a nenhuma conta. Entre com seu e-mail ou nome de usuário; se você tinha conta no app anterior, redefina a senha ou continue com o Google ou a Apple.',
+      'Isso não corresponde a nenhuma conta. Entre com seu e-mail ou nome de usuário — ou envie a si mesmo um link de acesso, que também funciona se você tinha conta no app anterior. Google e Apple também funcionam.',
     attachmentUnsupported:
       'Esse formato de foto não é compatível. Use uma imagem JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Esse arquivo é grande demais para enviar.',
@@ -208,7 +208,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Você pode anexar até {count} arquivos.',
     },
     userExists:
-      'Já existe uma conta com esse e-mail. Entre, redefina sua senha ou continue com Google ou Apple.',
+      'Já existe uma conta para esse e-mail. Faça login, envie a si mesmo um link de acesso, redefina sua senha ou continue com Google ou Apple.',
     emailNotVerified: 'Confirme seu e-mail primeiro — olhe sua caixa de entrada.',
     passwordTooShort: 'Essa senha é curta demais.',
     invalidEmail: 'Isso não parece um endereço de e-mail.',
@@ -310,6 +310,20 @@ export const ptBR: Localized<EnMessages> = {
     linkExpiredTitle: 'Link expirado',
     linkExpiredBody: 'Este link não é mais válido. Peça um novo na tela de entrada.',
     requestNewLink: 'Pedir um link novo',
+    signInWithLink: 'Me enviar um link de acesso',
+    signInLinkTitle: 'Entrar com um link',
+    signInLinkBody:
+      'Digite seu e-mail ou nome de usuário e enviamos um link que faz seu login — sem senha.',
+    sendSignInLink: 'Enviar link de acesso',
+    signInLinkSentBody:
+      'Se existir uma conta para {email}, um link de acesso está a caminho. Ele funciona uma vez e expira em 15 minutos.',
+    signInLinkExpiredBody:
+      'Esse link de acesso já foi usado ou expirou. Peça um novo e toque nele em até 15 minutos.',
+    openLinkTitle: 'Entrar no LangX',
+    openLinkBody:
+      'Você abriu um link de acesso. Toque no botão para concluir o login neste aparelho.',
+    openLinkButton: 'Entrar',
+    openInApp: 'Abrir no app do LangX',
     setNewPassword: 'Defina uma senha nova',
     newPassword: 'Senha nova',
     updatePassword: 'Atualizar senha',

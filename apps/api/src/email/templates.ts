@@ -123,6 +123,28 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
 }
 
 /**
+ * The one-tap way in. `url` is `magicLinkUrl(token)` — a page on the web
+ * host, so a phone with the app opens the app and a mail scanner opens
+ * nothing. The token works once and for a quarter of an hour; the body says
+ * so, because a link that has stopped working with no explanation reads as
+ * the app being broken.
+ */
+export function magicLinkEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.magicLinkSubject'),
+    html: wrap(
+      locale,
+      t('email.magicLinkPreheader'),
+      `<p>${t('email.magicLinkBody')}</p>
+       <p>${button(url, t('email.magicLinkButton'))}</p>
+       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.magicLinkText', { url }),
+  }
+}
+
+/**
  * The confirmation for a deletion somebody asked for in the app.
  *
  * The link starts the existing 30-day grace period rather than wiping

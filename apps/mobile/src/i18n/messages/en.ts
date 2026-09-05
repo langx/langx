@@ -238,7 +238,7 @@ export const en = {
     appleSignInFailed: 'Apple sign-in failed',
     resetFailed: 'Could not reset password',
     invalidCredentials:
-      'That does not match an account. Sign in with your email or username, and if you had an account in the previous app, reset your password or continue with Google or Apple.',
+      'That does not match an account. Sign in with your email or username — or email yourself a sign-in link, which also works if you had an account in the previous app. Google and Apple work too.',
     attachmentUnsupported:
       'That format isn’t supported. Use a JPEG, PNG or WebP image, or an MP4 or MOV video.',
     attachmentTooLarge: 'That file is too large to send.',
@@ -251,7 +251,7 @@ export const en = {
       other: 'You can attach up to {count} files.',
     },
     userExists:
-      'An account already exists for that email. Sign in, reset your password, or continue with Google or Apple.',
+      'An account already exists for that email. Sign in, email yourself a sign-in link, reset your password, or continue with Google or Apple.',
     emailNotVerified: 'Verify your email address first — check your inbox.',
     passwordTooShort: 'That password is too short.',
     invalidEmail: 'That does not look like an email address.',
@@ -353,6 +353,20 @@ export const en = {
     linkExpiredBody:
       'This reset link is no longer valid. Request a new one from the sign-in screen.',
     requestNewLink: 'Request a new link',
+    signInWithLink: 'Email me a sign-in link',
+    signInLinkTitle: 'Sign in with a link',
+    signInLinkBody:
+      'Enter your email or username and we will send you a link that signs you in — no password needed.',
+    sendSignInLink: 'Send sign-in link',
+    signInLinkSentBody:
+      'If an account exists for {email}, a sign-in link is on its way. It works once and expires in 15 minutes.',
+    signInLinkExpiredBody:
+      'That sign-in link has already been used or has expired. Ask for a new one and tap it within 15 minutes.',
+    openLinkTitle: 'Sign in to LangX',
+    openLinkBody:
+      'You followed a sign-in link. Tap the button to finish signing in on this device.',
+    openLinkButton: 'Sign in',
+    openInApp: 'Open in the LangX app',
     setNewPassword: 'Set a new password',
     newPassword: 'New password',
     updatePassword: 'Update password',

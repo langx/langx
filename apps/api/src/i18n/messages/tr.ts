@@ -42,6 +42,12 @@ export const tr: Localized<ServerMessages> = {
     resetBody: 'Bu hesap için bir parola sıfırlama isteği geldi. Bu sensen:',
     resetButton: 'Parolayı sıfırla',
     resetText: 'LangX parolanı sıfırla: {url}',
+    magicLinkSubject: 'LangX giriş bağlantın',
+    magicLinkPreheader: 'LangX’e girmek için dokun',
+    magicLinkBody:
+      'Giriş yapmak için düğmeye dokun. Bağlantı bir kez çalışır ve 15 dakika içinde geçersiz olur.',
+    magicLinkButton: 'LangX’e gir',
+    magicLinkText: 'LangX’e gir (bir kez çalışır, 15 dakikada geçersiz olur): {url}',
 
     existingSubject: 'Zaten bir LangX hesabın var',
     existingPreheader: 'Zaten bir LangX hesabın var',

@@ -92,9 +92,19 @@ export default function SignIn() {
         error={error}
       />
 
-      <Link href="/(auth)/forgot-password" style={styles.link}>
-        {t('auth.forgotPassword')}
-      </Link>
+      <View style={styles.links}>
+        <Link href="/(auth)/forgot-password" style={styles.link}>
+          {t('auth.forgotPassword')}
+        </Link>
+        {/*
+          The door with no password behind it — and for a returning v1
+          account, whose row here has none, the shortest one. Carries what
+          was typed so it is not typed twice.
+        */}
+        <Link href={{ pathname: '/(auth)/sign-in-link', params: { email } }} style={styles.link}>
+          {t('auth.signInWithLink')}
+        </Link>
+      </View>
 
       <Button
         label={t('auth.signIn')}
@@ -165,6 +175,12 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     marginTop: spacing.xs,
   },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  links: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.lg,
+    justifyContent: 'space-between',
+  },
   footerText: { color: colors.textMuted, fontSize: 15 },
   footer: {
     alignItems: 'center',

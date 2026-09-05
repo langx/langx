@@ -49,6 +49,12 @@ export const de: Localized<ServerMessages> = {
       'Jemand hat für dieses Konto eine Passwortzurücksetzung angefordert. Wenn du das warst:',
     resetButton: 'Passwort zurücksetzen',
     resetText: 'Setze dein LangX-Passwort zurück: {url}',
+    magicLinkSubject: 'Dein LangX-Anmeldelink',
+    magicLinkPreheader: 'Tippe, um dich bei LangX anzumelden',
+    magicLinkBody:
+      'Tippe auf den Button, um dich anzumelden. Der Link funktioniert einmal und läuft in 15 Minuten ab.',
+    magicLinkButton: 'Bei LangX anmelden',
+    magicLinkText: 'Bei LangX anmelden (einmal gültig, läuft in 15 Minuten ab): {url}',
 
     existingSubject: 'Du hast bereits ein LangX-Konto',
     existingPreheader: 'Du hast bereits ein LangX-Konto',

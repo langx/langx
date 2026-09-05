@@ -199,7 +199,7 @@ export const es: Localized<EnMessages> = {
     appleSignInFailed: 'No se pudo iniciar sesión con Apple',
     resetFailed: 'No se pudo restablecer la contraseña',
     invalidCredentials:
-      'Eso no coincide con ninguna cuenta. Entra con tu correo o tu nombre de usuario; si tenías cuenta en la app anterior, restablece la contraseña o continúa con Google o Apple.',
+      'Eso no coincide con ninguna cuenta. Entra con tu correo o tu nombre de usuario, o envíate un enlace de acceso, que también funciona si tenías cuenta en la app anterior. Google y Apple también sirven.',
     attachmentUnsupported:
       'Ese formato no es compatible. Usa una imagen JPEG, PNG o WebP, o un vídeo MP4 o MOV.',
     attachmentTooLarge: 'Ese archivo es demasiado grande para enviarlo.',
@@ -212,7 +212,7 @@ export const es: Localized<EnMessages> = {
       other: 'Puedes adjuntar hasta {count} archivos.',
     },
     userExists:
-      'Ya existe una cuenta con ese correo. Inicia sesión, restablece tu contraseña o continúa con Google o Apple.',
+      'Ya existe una cuenta para ese correo. Inicia sesión, envíate un enlace de acceso, restablece tu contraseña o continúa con Google o Apple.',
     emailNotVerified: 'Verifica primero tu correo: mira tu bandeja de entrada.',
     passwordTooShort: 'Esa contraseña es demasiado corta.',
     invalidEmail: 'Eso no parece una dirección de correo.',
@@ -315,6 +315,20 @@ export const es: Localized<EnMessages> = {
     linkExpiredBody:
       'Este enlace ya no es válido. Pide uno nuevo desde la pantalla de inicio de sesión.',
     requestNewLink: 'Pedir un enlace nuevo',
+    signInWithLink: 'Enviarme un enlace de acceso',
+    signInLinkTitle: 'Entrar con un enlace',
+    signInLinkBody:
+      'Escribe tu correo o tu nombre de usuario y te enviaremos un enlace que te inicia sesión, sin contraseña.',
+    sendSignInLink: 'Enviar enlace de acceso',
+    signInLinkSentBody:
+      'Si existe una cuenta para {email}, el enlace de acceso está en camino. Funciona una vez y caduca en 15 minutos.',
+    signInLinkExpiredBody:
+      'Ese enlace de acceso ya se usó o caducó. Pide uno nuevo y tócalo antes de 15 minutos.',
+    openLinkTitle: 'Entrar en LangX',
+    openLinkBody:
+      'Has abierto un enlace de acceso. Toca el botón para terminar de iniciar sesión en este dispositivo.',
+    openLinkButton: 'Entrar',
+    openInApp: 'Abrir en la app de LangX',
     setNewPassword: 'Elige una contraseña nueva',
     newPassword: 'Contraseña nueva',
     updatePassword: 'Actualizar contraseña',

@@ -314,6 +314,12 @@ function RootShell() {
                 back onto the sign-in form.
               */}
               <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+              {/*
+                Also outside both guards: the emailed sign-in link lands here
+                whoever taps it, and a signed-in member tapping it must not
+                fall through to `[username]` because `(auth)` is unmounted.
+              */}
+              <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
               <Stack.Protected guard={!!session}>
                 <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
                 <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />

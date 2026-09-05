@@ -2744,6 +2744,57 @@ gender is writable exactly once, from `undisclosed` to a value, and a
 cache-busting parameter would have to carry the very field this keeps off the
 wire.
 
+## Sign in with an emailed link: the link opens the app, and the app spends the token
+
+Added 5 September 2026. Every v1 account exists here as a verified `user` row
+with no password (the entry above), so a returning person had two doors: a
+password reset, or Google/Apple. An emailed one-tap link is the lighter one,
+and for those rows it is exactly the right shape — a verified address and
+nothing else is what a magic link authenticates.
+
+Better Auth's `magicLink` plugin is used, with three decisions layered on it.
+
+**The mail carries a page, not the endpoint.** The plugin's own `url` is a
+GET on this API that spends the token and sets a session cookie on whatever
+made the request. Two things make that GET before a human does: mail
+scanners and previewers (`routes/email.ts` records the same lesson for the
+deletion link), and the mail client's browser — which would be the thing
+signed in, not the app; `verify-email-success.tsx` documents that failure for
+the verification link. So `sendMagicLink` ignores the plugin's URL and mails
+`magicLinkUrl(token)`: `https://app.langx.io/magic-link?token=…`. On a phone
+with LangX that host is a universal link, so the tap opens the app and the
+app calls `/magic-link/verify` itself, the way `reset-password` already
+spends its token — and the session lands in SecureStore. Without the app,
+the web build serves the same route; there the page shows a button, because
+link previewers do run JavaScript, and a tap between them and the token is
+what keeps the link alive. A scheme link (`langx://magic-link?token=…`) is
+offered from that page for the phones where the https link opened a browser
+anyway: an Android build whose app link is not verified, a link pasted into
+Safari.
+
+**`disableSignUp: true` is the load-bearing line.** At its default the
+endpoint creates an account for any address it is handed, around the terms
+tick-box and the age gate that sign-up has. With it on, an unknown address
+gets no mail and the same `{ status: true }` as everyone else — Better Auth's
+own `requestPasswordReset` shape — so the endpoint answers "is this address
+registered" to nobody. The handle rewrite that lets people sign in with
+`@handle` covers this endpoint too.
+
+**Failures are a redirect, so the API gives them somewhere to land.** The
+plugin never answers a failed verify in JSON; every one is a redirect to
+`errorCallbackURL?error=…`, whose default is the API root, i.e. the 404
+handler. The app passes `/auth/magic-link/failed`, a route that answers 400
+`INVALID_TOKEN` — one code for expired, used and unknown alike, on purpose —
+and `errors.ts` already maps that to "no longer valid". One more thing the
+client does by hand: the base client's session listener does not include
+`/magic-link/verify`, so after a successful verify on the web the screen
+notifies the store itself; native's Expo client already did.
+
+Tokens are stored hashed (`storeToken: 'hashed'`) and live fifteen minutes,
+single-use. `magicLink.test.ts` pins the URL shape, the unknown-address
+silence, single use, the failure route, expiry, and the pre-created v1 row
+getting in and being settled on that first session.
+
 ## Device sign-in: claim first, a scheme link in the QR, and a cookie the plugin does not set
 
 Fixed on 3 September 2026, after "that code is no longer valid" turned out to

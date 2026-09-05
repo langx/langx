@@ -200,7 +200,7 @@ export const de: Localized<EnMessages> = {
     appleSignInFailed: 'Apple-Anmeldung fehlgeschlagen',
     resetFailed: 'Passwort konnte nicht zurückgesetzt werden',
     invalidCredentials:
-      'Das passt zu keinem Konto. Melde dich mit deiner E-Mail oder deinem Benutzernamen an; wenn du in der vorherigen App ein Konto hattest, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
+      'Das passt zu keinem Konto. Melde dich mit E-Mail oder Benutzernamen an — oder lass dir einen Anmeldelink schicken; der funktioniert auch, wenn du in der alten App ein Konto hattest. Google und Apple gehen ebenfalls.',
     attachmentUnsupported:
       'Dieses Fotoformat wird nicht unterstützt. Verwende ein JPEG-, PNG- oder WebP-Bild.',
     attachmentTooLarge: 'Diese Datei ist zu groß zum Senden.',
@@ -213,7 +213,7 @@ export const de: Localized<EnMessages> = {
       other: 'Du kannst bis zu {count} Dateien anhängen.',
     },
     userExists:
-      'Mit dieser E-Mail gibt es bereits ein Konto. Melde dich an, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
+      'Für diese E-Mail gibt es schon ein Konto. Melde dich an, lass dir einen Anmeldelink schicken, setze dein Passwort zurück oder fahre mit Google oder Apple fort.',
     emailNotVerified: 'Bestätige zuerst deine E-Mail-Adresse — schau in dein Postfach.',
     passwordTooShort: 'Dieses Passwort ist zu kurz.',
     invalidEmail: 'Das sieht nicht nach einer E-Mail-Adresse aus.',
@@ -318,6 +318,20 @@ export const de: Localized<EnMessages> = {
     linkExpiredBody:
       'Dieser Link ist nicht mehr gültig. Fordere über den Anmeldebildschirm einen neuen an.',
     requestNewLink: 'Neuen Link anfordern',
+    signInWithLink: 'Anmeldelink per E-Mail',
+    signInLinkTitle: 'Mit einem Link anmelden',
+    signInLinkBody:
+      'Gib deine E-Mail oder deinen Benutzernamen ein, und wir schicken dir einen Link, der dich anmeldet — ohne Passwort.',
+    sendSignInLink: 'Anmeldelink senden',
+    signInLinkSentBody:
+      'Falls es ein Konto für {email} gibt, ist ein Anmeldelink unterwegs. Er funktioniert einmal und läuft in 15 Minuten ab.',
+    signInLinkExpiredBody:
+      'Dieser Anmeldelink wurde schon benutzt oder ist abgelaufen. Fordere einen neuen an und tippe innerhalb von 15 Minuten darauf.',
+    openLinkTitle: 'Bei LangX anmelden',
+    openLinkBody:
+      'Du bist einem Anmeldelink gefolgt. Tippe auf den Button, um die Anmeldung auf diesem Gerät abzuschließen.',
+    openLinkButton: 'Anmelden',
+    openInApp: 'In der LangX-App öffnen',
     setNewPassword: 'Neues Passwort festlegen',
     newPassword: 'Neues Passwort',
     updatePassword: 'Passwort aktualisieren',

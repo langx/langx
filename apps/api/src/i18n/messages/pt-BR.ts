@@ -47,6 +47,11 @@ export const ptBR: Localized<ServerMessages> = {
     resetBody: 'Alguém pediu para redefinir a senha desta conta. Se foi você:',
     resetButton: 'Redefinir senha',
     resetText: 'Redefina sua senha do LangX: {url}',
+    magicLinkSubject: 'Seu link de acesso ao LangX',
+    magicLinkPreheader: 'Toque para entrar no LangX',
+    magicLinkBody: 'Toque no botão para entrar. O link funciona uma vez e expira em 15 minutos.',
+    magicLinkButton: 'Entrar no LangX',
+    magicLinkText: 'Entre no LangX (funciona uma vez, expira em 15 minutos): {url}',
 
     existingSubject: 'Você já tem uma conta no LangX',
     existingPreheader: 'Você já tem uma conta no LangX',

@@ -210,7 +210,7 @@ export const tr: Localized<EnMessages> = {
     appleSignInFailed: 'Apple ile giriş yapılamadı',
     resetFailed: 'Parola sıfırlanamadı',
     invalidCredentials:
-      'Bunlar bir hesapla eşleşmiyor. E-postan ya da kullanıcı adınla giriş yap; önceki uygulamada hesabın varsa şifreni sıfırla veya Google ya da Apple ile devam et.',
+      'Bu bir hesapla eşleşmiyor. E-posta ya da kullanıcı adınla gir — ya da kendine bir giriş bağlantısı e-postala; önceki uygulamada hesabın varsa o da çalışır. Google ve Apple da olur.',
     attachmentUnsupported:
       'Bu fotoğraf biçimi desteklenmiyor. JPEG, PNG veya WebP bir görsel kullan.',
     attachmentTooLarge: 'Bu dosya gönderilemeyecek kadar büyük.',
@@ -223,7 +223,7 @@ export const tr: Localized<EnMessages> = {
       other: 'En fazla {count} dosya ekleyebilirsin.',
     },
     userExists:
-      'Bu e-posta ile bir hesap zaten var. Giriş yap, parolanı sıfırla ya da Google veya Apple ile devam et.',
+      'Bu e-posta için zaten bir hesap var. Giriş yap, kendine bir giriş bağlantısı e-postala, şifreni sıfırla ya da Google veya Apple ile devam et.',
     emailNotVerified: 'Önce e-posta adresini doğrula — gelen kutuna bak.',
     passwordTooShort: 'Bu parola çok kısa.',
     invalidEmail: 'Bu bir e-posta adresine benzemiyor.',
@@ -324,6 +324,19 @@ export const tr: Localized<EnMessages> = {
     linkExpiredTitle: 'Bağlantının süresi doldu',
     linkExpiredBody: 'Bu sıfırlama bağlantısı artık geçerli değil. Giriş ekranından yenisini iste.',
     requestNewLink: 'Yeni bağlantı iste',
+    signInWithLink: 'Giriş bağlantısı e-postala',
+    signInLinkTitle: 'Bağlantıyla giriş yap',
+    signInLinkBody:
+      'E-postanı ya da kullanıcı adını gir, sana seni giriş yaptıran bir bağlantı gönderelim — şifre gerekmez.',
+    sendSignInLink: 'Giriş bağlantısı gönder',
+    signInLinkSentBody:
+      '{email} için bir hesap varsa giriş bağlantısı yolda. Bir kez çalışır ve 15 dakika içinde geçersiz olur.',
+    signInLinkExpiredBody:
+      'Bu giriş bağlantısı kullanılmış ya da süresi dolmuş. Yenisini iste ve 15 dakika içinde dokun.',
+    openLinkTitle: 'LangX’e gir',
+    openLinkBody: 'Bir giriş bağlantısı açtın. Bu cihazda girişi bitirmek için düğmeye dokun.',
+    openLinkButton: 'Giriş yap',
+    openInApp: 'LangX uygulamasında aç',
     setNewPassword: 'Yeni bir parola belirle',
     newPassword: 'Yeni parola',
     updatePassword: 'Parolayı güncelle',

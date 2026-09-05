@@ -250,7 +250,7 @@ export const ar: Localized<EnMessages> = {
     appleSignInFailed: 'تعذّر تسجيل الدخول بحساب Apple',
     resetFailed: 'تعذّرت إعادة تعيين كلمة المرور',
     invalidCredentials:
-      'هذا لا يطابق أي حساب. سجّل الدخول ببريدك أو باسم المستخدم، وإن كان لديك حساب في التطبيق السابق فأعد تعيين كلمة السر أو تابع عبر Google أو Apple.',
+      'هذا لا يطابق أي حساب. سجّل الدخول ببريدك أو اسم المستخدم — أو أرسل لنفسك رابط دخول، ويعمل أيضًا إن كان لديك حساب في التطبيق السابق. يعمل Google وApple كذلك.',
     attachmentUnsupported:
       'هذه الصيغة غير مدعومة. استخدم صورة JPEG أو PNG أو WebP، أو فيديو MP4 أو MOV.',
     attachmentTooLarge: 'هذا الملف أكبر من أن يُرسل.',
@@ -263,7 +263,7 @@ export const ar: Localized<EnMessages> = {
       other: 'يمكنك إرفاق ما يصل إلى {count} ملفات.',
     },
     userExists:
-      'يوجد حساب بهذا البريد بالفعل. سجّل الدخول أو أعد تعيين كلمة المرور أو تابع عبر Google أو Apple.',
+      'يوجد حساب بهذا البريد بالفعل. سجّل الدخول، أو أرسل لنفسك رابط دخول، أو أعد تعيين كلمة السر، أو تابع عبر Google أو Apple.',
     emailNotVerified: 'أكّد بريدك أولًا — تحقق من صندوق الوارد.',
     passwordTooShort: 'كلمة المرور قصيرة جدًا.',
     invalidEmail: 'هذا لا يبدو عنوان بريد.',
@@ -361,6 +361,18 @@ export const ar: Localized<EnMessages> = {
     linkExpiredTitle: 'انتهت صلاحية الرابط',
     linkExpiredBody: 'هذا الرابط لم يعد صالحًا. اطلب رابطًا جديدًا من شاشة تسجيل الدخول.',
     requestNewLink: 'طلب رابط جديد',
+    signInWithLink: 'أرسل لي رابط دخول',
+    signInLinkTitle: 'الدخول برابط',
+    signInLinkBody: 'أدخل بريدك أو اسم المستخدم وسنرسل لك رابطًا يدخلك مباشرة — بلا كلمة سر.',
+    sendSignInLink: 'إرسال رابط الدخول',
+    signInLinkSentBody:
+      'إن وُجد حساب لـ {email} فرابط الدخول في طريقه إليك. يعمل مرة واحدة وتنتهي صلاحيته خلال 15 دقيقة.',
+    signInLinkExpiredBody:
+      'هذا الرابط استُخدم من قبل أو انتهت صلاحيته. اطلب رابطًا جديدًا وانقره خلال 15 دقيقة.',
+    openLinkTitle: 'الدخول إلى LangX',
+    openLinkBody: 'فتحت رابط دخول. انقر على الزر لإتمام تسجيل الدخول على هذا الجهاز.',
+    openLinkButton: 'تسجيل الدخول',
+    openInApp: 'فتح في تطبيق LangX',
     setNewPassword: 'اختر كلمة مرور جديدة',
     newPassword: 'كلمة المرور الجديدة',
     updatePassword: 'تحديث كلمة المرور',

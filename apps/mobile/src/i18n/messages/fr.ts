@@ -201,7 +201,7 @@ export const fr: Localized<EnMessages> = {
     appleSignInFailed: 'Connexion Apple impossible',
     resetFailed: 'Réinitialisation impossible',
     invalidCredentials:
-      'Cela ne correspond à aucun compte. Connectez-vous avec votre e-mail ou votre nom d’utilisateur ; si vous aviez un compte dans l’application précédente, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
+      'Cela ne correspond à aucun compte. Connecte-toi avec ton e-mail ou ton nom d’utilisateur — ou envoie-toi un lien de connexion, qui marche aussi si tu avais un compte dans l’ancienne app. Google et Apple fonctionnent aussi.',
     attachmentUnsupported:
       'Ce format de photo n’est pas pris en charge. Utilise une image JPEG, PNG ou WebP.',
     attachmentTooLarge: 'Ce fichier est trop volumineux pour être envoyé.',
@@ -214,7 +214,7 @@ export const fr: Localized<EnMessages> = {
       other: 'Vous pouvez joindre jusqu’à {count} fichiers.',
     },
     userExists:
-      'Un compte existe déjà avec cet e-mail. Connectez-vous, réinitialisez votre mot de passe ou continuez avec Google ou Apple.',
+      'Un compte existe déjà pour cet e-mail. Connecte-toi, envoie-toi un lien de connexion, réinitialise ton mot de passe ou continue avec Google ou Apple.',
     emailNotVerified: 'Vérifie d’abord ton adresse e-mail — regarde ta boîte de réception.',
     passwordTooShort: 'Ce mot de passe est trop court.',
     invalidEmail: 'Cela ne ressemble pas à une adresse e-mail.',
@@ -319,6 +319,20 @@ export const fr: Localized<EnMessages> = {
     linkExpiredBody:
       'Ce lien n’est plus valable. Demandes-en un nouveau depuis l’écran de connexion.',
     requestNewLink: 'Demander un nouveau lien',
+    signInWithLink: 'M’envoyer un lien de connexion',
+    signInLinkTitle: 'Se connecter avec un lien',
+    signInLinkBody:
+      'Saisis ton e-mail ou ton nom d’utilisateur et on t’envoie un lien qui te connecte — sans mot de passe.',
+    sendSignInLink: 'Envoyer le lien de connexion',
+    signInLinkSentBody:
+      'S’il existe un compte pour {email}, un lien de connexion est en route. Il fonctionne une fois et expire dans 15 minutes.',
+    signInLinkExpiredBody:
+      'Ce lien de connexion a déjà servi ou a expiré. Demandes-en un nouveau et touche-le dans les 15 minutes.',
+    openLinkTitle: 'Se connecter à LangX',
+    openLinkBody:
+      'Tu as suivi un lien de connexion. Touche le bouton pour terminer la connexion sur cet appareil.',
+    openLinkButton: 'Se connecter',
+    openInApp: 'Ouvrir dans l’app LangX',
     setNewPassword: 'Choisis un nouveau mot de passe',
     newPassword: 'Nouveau mot de passe',
     updatePassword: 'Mettre à jour',

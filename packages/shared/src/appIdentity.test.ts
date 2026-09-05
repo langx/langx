@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deviceLinkQrUrl, postUrl, profileUrl, WEB_HOST } from './appIdentity'
+import { deviceLinkQrUrl, postUrl, profileUrl, WEB_HOST, magicLinkUrl } from './appIdentity'
 import { deviceLinkTarget } from './appScheme'
 import { RESERVED_HANDLES } from './reservedHandles'
 
@@ -49,5 +49,17 @@ describe('deviceLinkQrUrl', () => {
     expect(deviceLinkQrUrl('https://api.langx.io/', 'ABCD2345')).toBe(
       'https://api.langx.io/public/qr/link/ABCD2345',
     )
+  })
+})
+
+describe('magicLinkUrl', () => {
+  it('is a page on the web host, never the API', () => {
+    const url = magicLinkUrl('abc')
+    expect(url).toBe('https://app.langx.io/magic-link?token=abc')
+    expect(url).not.toContain('/api/')
+  })
+
+  it('escapes a token that is not plain characters', () => {
+    expect(magicLinkUrl('a b&c')).toBe('https://app.langx.io/magic-link?token=a%20b%26c')
   })
 })

@@ -50,6 +50,12 @@ export const fr: Localized<ServerMessages> = {
       'Quelqu’un a demandé la réinitialisation du mot de passe de ce compte. S’il s’agit de vous :',
     resetButton: 'Réinitialiser le mot de passe',
     resetText: 'Réinitialisez votre mot de passe LangX : {url}',
+    magicLinkSubject: 'Votre lien de connexion LangX',
+    magicLinkPreheader: 'Touchez pour vous connecter à LangX',
+    magicLinkBody:
+      'Touchez le bouton pour vous connecter. Le lien fonctionne une fois et expire dans 15 minutes.',
+    magicLinkButton: 'Se connecter à LangX',
+    magicLinkText: 'Connectez-vous à LangX (valable une fois, expire dans 15 minutes) : {url}',
 
     existingSubject: 'Vous avez déjà un compte LangX',
     existingPreheader: 'Vous avez déjà un compte LangX',

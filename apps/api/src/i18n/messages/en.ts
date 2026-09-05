@@ -52,6 +52,11 @@ export const en = {
     resetBody: 'Someone requested a password reset for this account. If that was you:',
     resetButton: 'Reset password',
     resetText: 'Reset your LangX password: {url}',
+    magicLinkSubject: 'Your LangX sign-in link',
+    magicLinkPreheader: 'Tap to sign in to LangX',
+    magicLinkBody: 'Tap the button to sign in. The link works once and expires in 15 minutes.',
+    magicLinkButton: 'Sign in to LangX',
+    magicLinkText: 'Sign in to LangX (works once, expires in 15 minutes): {url}',
 
     existingSubject: 'You already have a LangX account',
     existingPreheader: 'You already have a LangX account',

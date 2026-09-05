@@ -1,7 +1,11 @@
 import { APP_SCHEME } from '@langx/shared'
 import { expoClient } from '@better-auth/expo/client'
 import { createAuthClient } from 'better-auth/react'
-import { anonymousClient, deviceAuthorizationClient } from 'better-auth/client/plugins'
+import {
+  anonymousClient,
+  deviceAuthorizationClient,
+  magicLinkClient,
+} from 'better-auth/client/plugins'
 import * as SecureStore from 'expo-secure-store'
 import { API_URL } from './apiUrl'
 import { currentLocale } from '../i18n/runtime'
@@ -40,6 +44,14 @@ export const authClient = createAuthClient({
      * nothing to carry across. See `auth.ts` on the server.
      */
     anonymousClient(),
+    /*
+     * `signIn.magicLink({ email })` asks for the emailed link, and
+     * `magicLink.verify({ query: { token } })` spends it. The verify response
+     * carries the session cookie — stored by `expoClient` on native and by
+     * the browser on web — which is why the *app* makes that call rather than
+     * the link pointing at the API: see `app/magic-link.tsx`.
+     */
+    magicLinkClient(),
     expoClient({
       scheme: APP_SCHEME,
       storage: SecureStore,

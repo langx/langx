@@ -48,6 +48,12 @@ export const es: Localized<ServerMessages> = {
     resetBody: 'Alguien ha solicitado restablecer la contraseña de esta cuenta. Si has sido tú:',
     resetButton: 'Restablecer contraseña',
     resetText: 'Restablece tu contraseña de LangX: {url}',
+    magicLinkSubject: 'Tu enlace para entrar en LangX',
+    magicLinkPreheader: 'Toca para entrar en LangX',
+    magicLinkBody:
+      'Toca el botón para iniciar sesión. El enlace funciona una vez y caduca en 15 minutos.',
+    magicLinkButton: 'Entrar en LangX',
+    magicLinkText: 'Entra en LangX (funciona una vez, caduca en 15 minutos): {url}',
 
     existingSubject: 'Ya tienes una cuenta de LangX',
     existingPreheader: 'Ya tienes una cuenta de LangX',
