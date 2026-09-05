@@ -6,10 +6,15 @@ import { Avatar } from './ui/Avatar'
 import { EmptyState } from './ui/EmptyState'
 import { SegmentedControl } from './ui/SegmentedControl'
 import { openProfile } from '../lib/navigation'
-import { makeStyles, useTheme } from '../lib/theme'
+import { frameColors, makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 
-const MEDALS = ['🥇', '🥈', '🥉']
+/**
+ * The podium, as one glyph in the cosmetic tier colours — the same gold,
+ * silver and bronze the store sells as frames — rather than three medal emoji
+ * that render differently on every platform.
+ */
+const PODIUM = ['gold', 'silver', 'bronze'] as const
 
 interface Row {
   rank: number
@@ -81,7 +86,7 @@ export function LeaderboardSection<Option extends string>({
   onShare,
 }: LeaderboardSectionProps<Option>) {
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { colors, scheme } = useTheme()
   const t = useT()
 
   return (
@@ -125,7 +130,17 @@ export function LeaderboardSection<Option extends string>({
                 pressed && styles.rowPressed,
               ]}
             >
-              <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>
+              {item.rank >= 1 && item.rank <= PODIUM.length ? (
+                <View style={styles.rank}>
+                  <Feather
+                    name="award"
+                    size={20}
+                    color={frameColors[scheme][PODIUM[item.rank - 1]!]}
+                  />
+                </View>
+              ) : (
+                <Text style={styles.rank}>#{item.rank}</Text>
+              )}
               <Avatar
                 url={item.avatarUrl}
                 name={item.displayName}

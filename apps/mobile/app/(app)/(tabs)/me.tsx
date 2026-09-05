@@ -187,8 +187,9 @@ export default function MeScreen() {
         {/* Same affordance as the wallet tile beside it: a number nobody can
             act on reads as decoration. */}
         <StatTile
+          icon="zap"
           label={`${t('me.dayStreak')} ›`}
-          value={`🔥 ${summary?.streak.current ?? 0}`}
+          value={String(summary?.streak.current ?? 0)}
           onPress={() => router.push('/(app)/streak')}
         />
         {/* The number was already "corrections I wrote, chat and posts, for

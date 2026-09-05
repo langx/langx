@@ -97,7 +97,7 @@ export default function StreakScreen() {
       <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       <View style={styles.tiles}>
-        <StatTile label={t('me.dayStreak')} value={`🔥 ${streak?.current ?? 0}`} />
+        <StatTile icon="zap" label={t('me.dayStreak')} value={String(streak?.current ?? 0)} />
         <StatTile label={t('streak.longest')} value={String(streak?.longest ?? 0)} />
       </View>
 

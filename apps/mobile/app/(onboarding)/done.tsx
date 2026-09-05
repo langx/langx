@@ -1,10 +1,11 @@
+import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { Text, View } from 'react-native'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -24,6 +25,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  */
 export default function DoneStep() {
   useScreenInteractive()
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -33,7 +35,7 @@ export default function DoneStep() {
   return (
     <Screen scroll>
       <View style={styles.hero}>
-        <Text style={styles.emoji}>🎉</Text>
+        <Feather name="check-circle" size={48} color={colors.success} />
         <Text style={styles.title}>{t('onboarding.doneTitle')}</Text>
         <Text style={styles.subtitle}>
           {handle ? t('onboarding.doneHandle', { handle }) : t('onboarding.doneReady')}
@@ -58,7 +60,6 @@ export default function DoneStep() {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   hero: { alignItems: 'center', paddingBottom: spacing.lg, paddingTop: spacing.xxl + 8 },
-  emoji: { fontSize: 48, lineHeight: 54 },
   title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
   subtitle: {
     ...font.body,

@@ -1,12 +1,13 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 import { useT, type MessageKey } from '../i18n'
 
 interface Slide {
-  emoji: string
+  icon: keyof typeof Feather.glyphMap
   title: MessageKey
   body: MessageKey
 }
@@ -16,20 +17,20 @@ interface Slide {
  * product actually does rather than as a feature list. Each slide is one half
  * of the exchange: what you get, what you give, and what keeps you coming back.
  *
- * Emoji-first rather than illustrations, which is the house style already
- * established by `EmptyState` and `AppGate`'s blocked screen — and the only
- * style that stays legible in both themes without art direction.
+ * One Feather glyph rather than an illustration, the same as `AppGate`'s
+ * blocked screen — the only style that stays legible in both themes without
+ * art direction, and the only one that draws the same on every platform.
  */
 /**
- * Emoji and the pair of keys that word each slide. The text is not inlined
+ * Glyph and the pair of keys that word each slide. The text is not inlined
  * because a module-scope constant is fixed at import time — it would still be
  * English after a language change, on the one screen that is somebody's first
  * impression of the app.
  */
 const SLIDES = [
-  { emoji: '🗣️', title: 'intro.slide1Title', body: 'intro.slide1Body' },
-  { emoji: '✍️', title: 'intro.slide2Title', body: 'intro.slide2Body' },
-  { emoji: '🔥', title: 'intro.slide3Title', body: 'intro.slide3Body' },
+  { icon: 'message-circle', title: 'intro.slide1Title', body: 'intro.slide1Body' },
+  { icon: 'edit-3', title: 'intro.slide2Title', body: 'intro.slide2Body' },
+  { icon: 'zap', title: 'intro.slide3Title', body: 'intro.slide3Body' },
 ] as const satisfies readonly Slide[]
 
 interface IntroCarouselProps {
@@ -56,6 +57,7 @@ interface IntroCarouselProps {
  * three slides that reliably say what the app is are the point.
  */
 export function IntroCarousel({ onDone, doneLabel }: IntroCarouselProps) {
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -67,7 +69,9 @@ export function IntroCarousel({ onDone, doneLabel }: IntroCarouselProps) {
     <Screen fluid>
       <View style={styles.root}>
         <View style={styles.slide}>
-          <Text style={styles.emoji}>{slide.emoji}</Text>
+          <View style={styles.icon}>
+            <Feather name={slide.icon} size={64} color={colors.accent} />
+          </View>
           <Text style={styles.title}>{t(slide.title)}</Text>
           <Text style={styles.body}>{t(slide.body)}</Text>
         </View>
@@ -111,7 +115,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
   },
-  emoji: { fontSize: 64, marginBottom: spacing.xl },
+  icon: { marginBottom: spacing.xl },
   title: {
     ...font.title,
     color: colors.text,
