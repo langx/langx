@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "langx-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@langx/api", "dev"],
+      "port": 4000
+    },
+    {
+      "name": "langx-mobile",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["-C", "apps/mobile", "exec", "expo", "start", "--web", "--port", "8081"],
+      "port": 8081
+    },
+    {
+      "name": "website",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../website", "run", "dev"],
+      "port": 5173
+    }
+  ]
+}
