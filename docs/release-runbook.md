@@ -516,8 +516,19 @@ of it runs together.
 
 - [ ] Paid apps agreement accepted (Apple + Google)
 - [ ] Bank and tax details submitted
-- [ ] Subscription group + products created in App Store Connect
-- [ ] Subscription products created in Play Console
+- [ ] Subscription group + products created in App Store Connect. **Both
+      tiers in one group, Polyglot ranked above Fluent.** That ranking is the
+      whole upgrade mechanism on iOS: the paywall calls the same
+      `purchasePackage` for an upgrade as for a first purchase, and StoreKit
+      swaps the subscription and refunds Fluent's unused time only because
+      the group says Polyglot is the higher level. Two groups, or the ranks
+      reversed, and a Fluent subscriber ends up paying for both
+- [ ] Subscription products created in Play Console — Fluent and Polyglot as
+      **two subscription products**, monthly and yearly as base plans of
+      each. The paywall passes Play the product being left and
+      `CHARGE_PRORATED_PRICE`, so the upgrade charges the difference for the
+      rest of the period; that needs the Fluent product id to be what
+      RevenueCat reports in `activeSubscriptions`, which it is by default
 - [ ] RevenueCat project connected to both, API keys issued. The webhook is a
       separate step and needs the API deployed first — see above
 - [x] Google OAuth client created and `GOOGLE_CLIENT_ID` /
