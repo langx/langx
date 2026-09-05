@@ -432,21 +432,27 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(body.viewers[0]?.viewCount).toBe(1)
     })
 
-    it('counts a returning viewer as one row that says how often', async () => {
+    it('counts a returning viewer as one row per day, and a burst of views as one visit', async () => {
       const viewer = await newUser()
       const viewed = await newUser()
-      // Three visits, one pair: `viewer_viewed_unique` makes this one row.
+      // Three views inside a minute, one pair, one day: `viewer_viewed_day_unique`
+      // makes this one row, and the session gap makes it one visit.
       await get(viewer, `/profiles/${viewed.userId}`)
       await get(viewer, `/profiles/${viewed.userId}`)
       await get(viewer, `/profiles/${viewed.userId}`)
 
       const body = (await get(viewed, '/me/viewers')).json<{
         total: number
-        viewers: { viewCount: number }[]
+        viewers: { viewCount: number; day: string }[]
+        week?: { day: string; visits: number }[]
       }>()
       expect(body.total).toBe(1)
       expect(body.viewers).toHaveLength(1)
-      expect(body.viewers[0]?.viewCount).toBe(3)
+      expect(body.viewers[0]?.viewCount).toBe(1)
+      expect(body.viewers[0]?.day).toBe(new Date().toISOString().slice(0, 10))
+      // The week chart on the first page: today has the one visit.
+      expect(body.week).toHaveLength(7)
+      expect(body.week?.at(-1)?.visits).toBe(1)
     })
 
     it('gives free users the count and Pro users the identities', async () => {
