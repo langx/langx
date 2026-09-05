@@ -137,4 +137,30 @@ describe('Faz 1 — OAuth providers activate only when fully configured', () => 
 
     expect(auth.options.socialProviders?.apple).toBeUndefined()
   })
+
+  /**
+   * Regression: this was missing when Apple went live on 5 September 2026, and
+   * nothing caught it until a real sign-in. Apple asks for
+   * `response_mode=form_post`, so the callback arrives as a POST from Apple's
+   * own servers with `Origin: https://appleid.apple.com`; untrusted, Better
+   * Auth answers INVALID_ORIGIN and the sign-in dies after the person has
+   * already authenticated. Asserted unconditionally because the origin is
+   * Apple's fixed address, not something a deployment configures — and because
+   * it must hold even before `APPLE_*` is set, so a self-hosted install does
+   * not hit the same wall the day it turns Apple on.
+   */
+  it('trusts the origin Apple posts the callback from', async () => {
+    const env = loadEnv({
+      MONGODB_URI: mongod.getUri(),
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+    })
+    const auth = await createAuth({
+      env,
+      db: handle.db,
+      client: handle.client,
+      emailSender: noopEmailSender,
+    })
+
+    expect(auth.options.trustedOrigins).toContain('https://appleid.apple.com')
+  })
 })
