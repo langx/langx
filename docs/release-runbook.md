@@ -72,6 +72,17 @@ happened **before** the checklist in **Retiring the v1 API** at the end of
 this runbook was worked through, so its remaining items are now about
 repairing the callers it lists, not about when to move the name.
 
+**Web deploys need a cache purge, for now.** `app.langx.io` is deployed by
+hand (`pnpm deploy:web` from `apps/mobile`), and the zone's "Cache websites"
+rule still covers that host with a one-day edge TTL that overrides the
+origin. After a deploy the edge keeps serving the old `index.html`, which
+points at the previous build's fingerprinted bundle — gone — so the page is
+a blank splash with a 404 in the console (5 September 2026). Purge the host
+after every deploy (Caching → Configuration → Purge → Custom → Hostname
+`app.langx.io`) until the rule's expression is narrowed to `langx.io` alone;
+Pages needs no zone rule, and `public/_headers` already marks the
+fingerprinted assets immutable.
+
 - [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
       set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
       fails on the first sign-up without one
