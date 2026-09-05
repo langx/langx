@@ -42,7 +42,7 @@ Closed later the same evening:
   worker pool. The predicted `transformFile` failure in
   `:app:createBundleReleaseJsAndAssets` is real on this machine; the fix is
   `config.maxWorkers = 2` in `apps/mobile/metro.config.js`, open as
-  langx/langx#1088. The APK is on the Mac at `~/Downloads/langx-preview-2.0.0.apk`
+  langx/langx#1088. The APK was downloaded to the Mac
   (116 MB). Note the cap applies to cloud builders and CI too, not only locally.
 
 iOS went further than planned, and turned up a second defect. Behic asked for a
