@@ -62,6 +62,19 @@ RUN apt-get update \
 # TypeScript source that Node cannot resolve.
 COPY --from=build --chown=node:node /out ./
 
+# The share-card fonts and logo, which `pnpm deploy` does not carry.
+#
+# `/out` is the built bundle plus production `node_modules`, and nothing else:
+# a file that is only ever `readFile`d at runtime is invisible to both esbuild
+# and pnpm, so these three arrived in every local run and in no image. The
+# symptom was a card request failing with "Card asset not found: badge.png"
+# while the same code drew cards perfectly from source.
+#
+# `dist/assets` rather than anywhere else because `modules/cards/render.ts`
+# already looks beside the bundle — that is the root which is the same whether
+# the code runs from `dist/index.js` or from source under tsx.
+COPY --from=build --chown=node:node /app/apps/api/assets ./dist/assets
+
 USER node
 EXPOSE 8080
 CMD ["node", "dist/index.js"]
