@@ -894,6 +894,9 @@ export const tr: Localized<EnMessages> = {
   },
   streak: {
     title: 'Serin',
+    historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
+    leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
+    freezesBody: 'Biriktirdiğin dondurmalar kaçırdığın günü kurtarır',
     longest: 'En uzun',
     missed: 'Kaçırıldı',
     bought: 'Jetonla dolduruldu',
