@@ -498,11 +498,12 @@ months bought one at a time, in every storefront:
       price string and a per-period phrase, in all eight catalogues. Guideline
       3.1.2 wants the trial's own terms beside the offer, not only in the
       footer's renewal sentence
-- [ ] Nobody has seen this on a device yet. It is covered by
-      `src/lib/planSaving.test.ts` and by types, and the fake store
-      (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) now carries a trial and a real
-      ratio so the harness exercises the row — but the screen itself has not
-      been looked at since the change. Check it in the next build
+- [ ] Seen in a browser, not yet on a device. On 5 September 2026 the web
+      build with the fake store (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) drew
+      "7 days free, then TEST $39.99 a year · Save 33%" above the yearly
+      button — `tools/ext-lab/check-glyphs-and-trial.mjs` is the script that
+      looked. `src/lib/planSaving.test.ts` and the types cover the numbers.
+      Check the native paywall in the next build
 
 ## Prerequisites that are business process, not code
 
