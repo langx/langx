@@ -127,6 +127,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     bodyKey: 'settings.accountBody',
     route: '/(app)/settings/account',
     items: [
+      {
+        id: 'account.signIn',
+        titleKey: 'settings.signInMethods',
+        bodyKey: 'settings.signInMethodsBody',
+      },
       { id: 'account.devices', titleKey: 'linkDevice.title', bodyKey: 'settings.linkDeviceBody' },
       { id: 'account.blocked', titleKey: 'settings.blockedPeople' },
       { id: 'account.export', titleKey: 'settings.exportData' },

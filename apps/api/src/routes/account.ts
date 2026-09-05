@@ -4,10 +4,12 @@ import {
   ERROR_CODES,
   handlesMatch,
   registerDeviceSchema,
+  setPasswordSchema,
   updateDeviceSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
+import { getSignInMethods } from '../modules/account/signInMethods'
 import {
   cancelDeletion,
   deletionStatus,
@@ -32,6 +34,63 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const status = await requestDeletion(app.mongo.db, request.userId, request.body.reason)
       return reply.send(status)
+    },
+  )
+
+  /**
+   * Every way this person can get back in.
+   *
+   * `requireAuth` rather than `requireMember`: a guest has no password and no
+   * links, and answering that honestly is more useful than a 403 on a screen
+   * whose entire job is to say what exists.
+   */
+  app.get('/me/sign-in-methods', { preHandler: requireAuth }, async (request, reply) => {
+    const profile = await app.mongo.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: request.userId }, { projection: { handle: 1 } })
+    if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+    return reply.send(await getSignInMethods(app.mongo.db, request.userId, profile.handle))
+  })
+
+  /**
+   * Adds a password to an account that was made with Google or Apple.
+   *
+   * Better Auth's `setPassword` is `serverOnly`, so it cannot be called from
+   * the app and has to be reached through a route of ours — which is the right
+   * shape anyway: it refuses when a hash already exists
+   * (`PASSWORD_ALREADY_SET`), so this can only ever *add* a way in, never
+   * quietly replace one. Changing an existing password stays a different
+   * operation that asks for the current one; a live session is enough to gain
+   * a fallback, not enough to take one over.
+   *
+   * Rate-limited because an authenticated attacker with a stolen session would
+   * use exactly this to make their access outlive the session.
+   */
+  app.post(
+    '/me/password',
+    {
+      preHandler: requireMember,
+      schema: { body: setPasswordSchema },
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      // Asked here as well as inside Better Auth, which throws its own
+      // `PASSWORD_ALREADY_SET`. That error arrives as a bare 400 and the
+      // generic handler would relabel it `FORBIDDEN`, which tells the app
+      // nothing it can act on. Better Auth stays the real guard against the
+      // race; this is the one that produces an answer worth showing.
+      const existing = await getSignInMethods(app.mongo.db, request.userId, '')
+      if (existing.hasPassword) {
+        throw new ApiError(ERROR_CODES.PASSWORD_ALREADY_SET, 'This account already has a password')
+      }
+
+      const headers = new Headers()
+      for (const [key, value] of Object.entries(request.headers)) {
+        if (typeof value === 'string') headers.append(key, value)
+        else if (Array.isArray(value)) for (const v of value) headers.append(key, v)
+      }
+      await app.auth.api.setPassword({ body: { newPassword: request.body.password }, headers })
+      return reply.code(204).send()
     },
   )
 

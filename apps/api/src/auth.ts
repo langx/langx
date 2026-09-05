@@ -8,6 +8,11 @@ import { anonymous } from 'better-auth/plugins/anonymous'
 import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
+import {
+  emailForHandle,
+  looksLikeHandle,
+  UNRESOLVED_HANDLE_EMAIL,
+} from './modules/account/handleSignIn'
 import { settlePrecreatedUser } from './modules/handles/legacyPrecreate'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { recordTermsAcceptance } from './modules/account/terms'
@@ -187,6 +192,41 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
     },
 
     hooks: {
+      /**
+       * Let people sign in with their handle as well as their address.
+       *
+       * The handle is the name the app shows them everywhere — `@sofia` on
+       * their own profile — and it is the one they remember. The address is
+       * often a provider's: somebody who arrived through Google or Apple may
+       * never have typed theirs here at all.
+       *
+       * Done as a rewrite of `/sign-in/email` rather than as a second endpoint
+       * because everything downstream then stays untouched — the same rate
+       * limit, the same cookie, the same Expo client storing the same session.
+       * A parallel route would have had to reproduce all of it, and Better
+       * Auth types this field as a plain `z.string()`, so a handle reaches the
+       * hook instead of being refused by validation first.
+       *
+       * A handle that matches nothing is replaced with an address that cannot
+       * exist rather than left alone — see `UNRESOLVED_HANDLE_EMAIL`. Left
+       * alone it would fail Better Auth's own address check with a 400 while a
+       * real handle with a wrong password fails with a 401, and that
+       * difference answers "does this handle have an account" for a name
+       * anybody can read off a profile page.
+       */
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== '/sign-in/email') return
+        // Better Auth types this body as `any` at the hook boundary — it is
+        // whatever the matched endpoint declares — so narrow before touching it.
+        const body: unknown = ctx.body
+        if (typeof body !== 'object' || body === null) return
+        const typed: unknown = (body as { email?: unknown }).email
+        if (typeof typed !== 'string' || !looksLikeHandle(typed)) return
+
+        const email = (await emailForHandle(db, typed)) ?? UNRESOLVED_HANDLE_EMAIL
+        return { context: { body: { ...body, email } } }
+      }),
+
       /**
        * Give the browser a session cookie when the device grant hands out a
        * session.

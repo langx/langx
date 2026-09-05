@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { passwordSchema } from './password'
 
 /**
  * Grace period between "delete my account" and the data actually going.
@@ -89,3 +90,58 @@ export const dataExportSchema = z.object({
   follows: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
+
+/**
+ * The third-party providers an account can be linked to.
+ *
+ * Deliberately not every provider Better Auth knows — only the two this app
+ * offers, so a provider row the screen has no name or icon for cannot appear.
+ * Better Auth's own name for an email-and-password account is `credential`,
+ * which is not a third party and so is reported as `hasPassword` instead of
+ * appearing here.
+ */
+export const LINKED_PROVIDERS = ['google', 'apple'] as const
+export type LinkedProvider = (typeof LINKED_PROVIDERS)[number]
+
+export const linkedAccountSchema = z.object({
+  provider: z.enum(LINKED_PROVIDERS),
+  /** When the link was made, so the row can say "connected in March". */
+  linkedAt: z.string(),
+})
+export type LinkedAccount = z.infer<typeof linkedAccountSchema>
+
+/**
+ * Every way this person can get back into their account.
+ *
+ * Exists because the answer is assembled from two places that would otherwise
+ * both leak into the client: Better Auth's account rows (which carry
+ * `credential` and provider links) and the profile (which carries the handle).
+ * The screen needs one honest list, and — more importantly — the person needs
+ * to see whether they have *any* way in that does not depend on a third party.
+ * Somebody who only ever tapped "Continue with Apple" has no password, and
+ * nothing in the app tells them so until they try to sign in somewhere else.
+ */
+export const signInMethodsSchema = z.object({
+  /** Whether an email-and-password sign-in exists for this account. */
+  hasPassword: z.boolean(),
+  /** The address a password sign-in would use. */
+  email: z.string(),
+  /** The other thing that address can be swapped for — see `handle.ts`. */
+  handle: z.string(),
+  linked: z.array(linkedAccountSchema),
+})
+export type SignInMethods = z.infer<typeof signInMethodsSchema>
+
+/**
+ * Setting a password for the first time.
+ *
+ * Separate from a *change*: there is no current password to ask for, because
+ * the account was made with Google or Apple and never had one. The route
+ * refuses when a password already exists rather than treating this as a reset
+ * — an authenticated session is enough to add a way in, but not enough to
+ * silently replace one, which is a session-hijack's dream.
+ */
+export const setPasswordSchema = z.object({
+  password: passwordSchema,
+})
+export type SetPasswordInput = z.infer<typeof setPasswordSchema>

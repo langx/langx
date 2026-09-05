@@ -23,6 +23,14 @@ export const ERROR_CODES = {
   UPGRADE_REQUIRED: 'UPGRADE_REQUIRED',
   QUOTA_EXCEEDED: 'QUOTA_EXCEEDED',
 
+  /**
+   * Asked to *set* a first password on an account that already has one.
+   * Its own code rather than a generic 409 because the app's answer is a
+   * specific one: send them to "change password", which asks for the current
+   * one, instead of repeating a form that can never succeed.
+   */
+  PASSWORD_ALREADY_SET: 'PASSWORD_ALREADY_SET',
+
   // handles
   HANDLE_TAKEN: 'HANDLE_TAKEN',
   HANDLE_RESERVED: 'HANDLE_RESERVED',
@@ -122,6 +130,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNSUPPORTED_MEDIA_TYPE: 415,
   MEDIA_TOO_LARGE: 413,
   MEDIA_TOO_LONG: 413,
+  PASSWORD_ALREADY_SET: 409,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
   HANDLE_ALREADY_CLAIMED: 409,

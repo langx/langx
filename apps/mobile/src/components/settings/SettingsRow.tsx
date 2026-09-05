@@ -313,6 +313,18 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       )
 
+    case 'account.signIn':
+      // Sits above devices: "how do I get in" comes before "where am I
+      // already in", and for somebody who only has Google or Apple this is
+      // the row that tells them they have no password.
+      return (
+        <ListRow
+          title={t('settings.signInMethods')}
+          subtitle={t('settings.signInMethodsBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/sign-in-methods')}
+        />
+      )
     case 'account.devices':
       // Approving a sign-in is account plumbing, not something anybody does
       // often, and it sits with the other things that decide who can reach
