@@ -1571,7 +1571,9 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
     async function profileOf(userId: string) {
       return handle.db
-        .collection<{ _id: string; cityId?: string; cityName?: string }>(COLLECTIONS.profiles)
+        .collection<{ _id: string; cityId?: string; cityName?: string; country?: string }>(
+          COLLECTIONS.profiles,
+        )
         .findOne({ _id: userId })
     }
 
@@ -1589,6 +1591,60 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       const stored = await profileOf(user.userId)
       expect(stored?.cityId).toBe('geonames:745044')
       expect(stored?.cityName).toBe('Istanbul')
+    })
+
+    /*
+     * The country follows the fix, over the top of whatever the edge said.
+     * The header describes the connection — a VPN, a border town, a plane —
+     * and this describes the device somebody is holding.
+     */
+    it('settles the country too, outranking the header', async () => {
+      await seedCities()
+      const user = await newUser('city-country@example.com')
+      const onboarded = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        // Onboarded from a German connection...
+        headers: { cookie: user.cookie, 'cf-ipcountry': 'de' },
+        payload: onboardingBody({ handle: 'citycountry' }),
+      })
+      expect(onboarded.statusCode).toBe(201)
+      expect((await profileOf(user.userId))?.country).toBe('DE')
+
+      // ...and then sharing a position in Istanbul settles it.
+      await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: { lat: 41.01, lng: 28.98 },
+      })
+      expect((await profileOf(user.userId))?.country).toBe('TR')
+    })
+
+    /*
+     * "We could not tell" must never erase an answer already on file, which is
+     * why `country` is absent from the branch that clears the city fields.
+     */
+    it('leaves the country alone when the fix matches no city', async () => {
+      await seedCities()
+      const user = await newUser('city-keep-country@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie, 'cf-ipcountry': 'de' },
+        payload: onboardingBody({ handle: 'citykeepcountry' }),
+      })
+
+      await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: { lat: 30, lng: -30 },
+      })
+
+      const stored = await profileOf(user.userId)
+      expect(stored?.cityId).toBeUndefined()
+      expect(stored?.country).toBe('DE')
     })
 
     /** The sea. A city hundreds of kilometres away is not where somebody is. */

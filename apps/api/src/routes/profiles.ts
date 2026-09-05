@@ -60,7 +60,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /**
-   * The one way a country can change after onboarding.
+   * One of the two ways a country can change after onboarding — the explicit
+   * one. `POST /profiles/me/location` is the other, and it now settles the
+   * country as a side effect of sharing a position, so most people never reach
+   * this route at all. It stays because Edit profile offers the button whether
+   * or not the person has ever used Nearby.
    *
    * It is not in `PATCH /profiles/me` on purpose: the country is read off the
    * connection and is not a field to type into, or the age filter and the
@@ -70,8 +74,10 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
    * town, a trip.
    *
    * The server cannot verify it, and does not pretend to. It is a better
-   * answer than the free-text picker it replaces, and worse than the header;
-   * that is the trade, made once, here.
+   * answer than the free-text picker it replaces, and — since 5 September 2026
+   * — a better one than the header too: the header describes the connection,
+   * which a VPN or a border town makes wrong, while this describes the device
+   * somebody is holding.
    */
   app.patch(
     '/profiles/me/country',

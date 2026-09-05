@@ -33,6 +33,9 @@
  *   pnpm --filter @langx/api exec tsx scripts/backfill-country.ts            # dry run
  *   pnpm --filter @langx/api exec tsx scripts/backfill-country.ts --apply
  *
+ * `--fallback US` additionally writes that code where there is no evidence at
+ * all. A guess, and off unless asked for — see `main`.
+ *
  * Against production, per docs/self-host.md:
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env --env-file=../../.env.prod \
  *     scripts/backfill-country.ts
@@ -45,7 +48,7 @@ import { loadEnv } from '../src/env'
 import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
 import type { Profile } from '../src/modules/profiles/profiles'
 
-type Source = 'location' | 'v1'
+type Source = 'location' | 'v1' | 'fallback'
 
 /** A code we would store, or nothing. Same table the picker and the filter use. */
 function usable(code: string | undefined): string | undefined {
@@ -54,7 +57,7 @@ function usable(code: string | undefined): string | undefined {
   return getCountry(upper) ? upper : undefined
 }
 
-async function run(db: Db, apply: boolean): Promise<void> {
+async function run(db: Db, apply: boolean, fallback: string | undefined): Promise<void> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
   const missing = await profiles
@@ -91,18 +94,18 @@ async function run(db: Db, apply: boolean): Promise<void> {
     ).map((record) => [record.restoredBy, record.countryCode]),
   )
 
-  const counts: Record<Source, number> = { location: 0, v1: 0 }
+  const counts: Record<Source, number> = { location: 0, v1: 0, fallback: 0 }
   let unresolved = 0
 
   for (const profile of missing) {
     const fromLocation = usable(profile.cityCountryCode)
     const fromV1 = usable(legacy.get(profile._id))
-    const code = fromLocation ?? fromV1
+    const code = fromLocation ?? fromV1 ?? fallback
     if (!code) {
       unresolved++
       continue
     }
-    counts[fromLocation ? 'location' : 'v1']++
+    counts[fromLocation ? 'location' : fromV1 ? 'v1' : 'fallback']++
     if (apply) {
       // Guarded on the field still being absent, so a sign-up that lands
       // mid-run keeps the country its own request worked out.
@@ -116,15 +119,36 @@ async function run(db: Db, apply: boolean): Promise<void> {
   const verb = apply ? 'Set' : 'Would set'
   console.log(`${verb} ${counts.location} from a shared location`)
   console.log(`${verb} ${counts.v1} from the v1 record`)
+  if (fallback) console.log(`${verb} ${counts.fallback} to ${fallback} — a guess, not evidence`)
   console.log(`${unresolved} left without one — nothing on file says where they are`)
 }
 
 async function main(): Promise<void> {
   const apply = process.argv.includes('--apply')
+
+  /*
+   * A country to write where there is no evidence at all — off by default, and
+   * named on the command line every time rather than defaulted in code, so
+   * nobody runs a guess without meaning to.
+   *
+   * It contradicts the rule above this file, and knowingly: a wrong country is
+   * worse than an absent one *for the filter*, but an absent one hides the
+   * account from every filtered search entirely, which is worse for the
+   * person. It is only defensible because it is now self-correcting — sharing
+   * a position overwrites it (`setLocation`), and Edit profile offers that
+   * button whether or not the country looks right.
+   */
+  const flagIndex = process.argv.indexOf('--fallback')
+  const fallbackRaw = flagIndex === -1 ? undefined : process.argv[flagIndex + 1]
+  const fallback = usable(fallbackRaw)
+  if (fallbackRaw !== undefined && !fallback) {
+    throw new Error(`--fallback needs a country code we know, not "${fallbackRaw}"`)
+  }
+
   const env = loadEnv(process.env)
   const handle = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
   try {
-    await run(handle.db, apply)
+    await run(handle.db, apply, fallback)
     if (!apply) console.log('Dry run. Pass --apply to write.')
   } finally {
     await handle.close()
