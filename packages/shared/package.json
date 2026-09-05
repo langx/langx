@@ -1,6 +1,6 @@
 {
   "name": "@langx/shared",
-  "version": "2.0.0",
+  "version": "2.0",
   "private": true,
   "license": "BSD-3-Clause",
   "description": "Contract shared by @langx/api and @langx/mobile: zod schemas, language and level tables, plan limits, token rules, error codes",

@@ -8,6 +8,11 @@
 import { ANDROID_PACKAGE, APP_LINK_HOST, IOS_BUNDLE_ID } from '@langx/shared/appIdentity'
 import { APP_SCHEMES } from '@langx/shared/appScheme'
 import type { ExpoConfig } from 'expo/config'
+// The one place the version is written is the root package.json; `pnpm
+// release` bumps it and tags the commit, and everything else reads it. The
+// import attribute is what lets Expo's config loader read JSON whichever way
+// it evaluates this file.
+import { version } from '../../package.json' with { type: 'json' }
 
 /**
  * v2 ships as an **update to the existing store listings**, not a new app.
@@ -43,7 +48,7 @@ const config: ExpoConfig = {
   // EXPO_TOKEN in .env, what the CLI uses non-interactively — is refused as
   // "owner does not match the logged in user" even though it is an org owner.
   owner: 'langx',
-  version: '2.0.0',
+  version,
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
   scheme: [...APP_SCHEMES],

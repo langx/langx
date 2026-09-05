@@ -1,20 +1,13 @@
-import { APP_PLATFORM_HEADER, APP_VERSION_HEADER, type AppConfigResponse } from '@langx/shared'
+import { type AppConfigResponse } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
-import * as Application from 'expo-application'
-import { AppState, Platform } from 'react-native'
+import { AppState } from 'react-native'
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 
+export { appPlatform, appVersion, versionHeaders } from '../lib/appVersion'
+
 export const APP_CONFIG_KEY = ['app-config'] as const
-
-export function appVersion(): string {
-  return Application.nativeApplicationVersion ?? '0.0.0'
-}
-
-export function appPlatform(): string {
-  return Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web'
-}
 
 /**
  * The server's word on whether the app should be running at all.
@@ -44,12 +37,4 @@ export function useAppConfig() {
     staleTime: 60_000,
     retry: 1,
   })
-}
-
-/** Headers every request carries, so the server can decide `updateRequired`. */
-export function versionHeaders(): Record<string, string> {
-  return {
-    [APP_VERSION_HEADER]: appVersion(),
-    [APP_PLATFORM_HEADER]: appPlatform(),
-  }
 }

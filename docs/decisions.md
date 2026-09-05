@@ -2582,7 +2582,9 @@ semantics, not this bug.
 Behic's call on 3 September 2026, after a day of weighing the alternative:
 builds, store submissions and over-the-air updates are EAS workflows in
 `apps/mobile/.eas/workflows/`, started from Expo's dashboard or by a push to
-`main`. GitHub Actions keeps `ci.yml` and nothing else. The API and the web
+`main`. GitHub Actions keeps `ci.yml`, and since 5 September 2026 the one
+workflow that turns a version tag into a Release page — see _The version is two
+numbers_ below. The API and the web
 build are unaffected — Fly and Cloudflare Pages are still deployed by hand,
 see the runbook.
 
@@ -2921,6 +2923,49 @@ silently. Metro caches transforms, and the inlined value is part of one. An
 export re-run with the variable corrected returned a byte-identical bundle,
 still holding the old address. `--clear` is required whenever an
 `EXPO_PUBLIC_*` value changes.
+
+## The version is two numbers, in one file, and a tag makes the release
+
+Behic's call on 5 September 2026, after the settings footer on the web read
+`LangX 0.0.0`. The number came from `expo-application`, which reads it off the
+installed binary and returns null where there is none, and the fallback for
+null was the placeholder. Fixing the footer raised the wider question of where
+the version lived, and the answer was five places by hand: `app.config.ts`,
+four `package.json` files, and nothing that would have noticed them drifting.
+
+Now it lives in the root `package.json` and nowhere else is written. The
+workspace packages carry the same number, but only so the repo does not
+disagree with itself; `app.config.ts` imports the root copy, so the store
+binaries, the web build and the request headers all ship it.
+
+**It is `major.minor`, not semver.** `2.0`, then `2.1`. Every merge to `main`
+already reaches installed apps over the air without a number changing, so a
+patch level would be a number that never means anything — the third digit of
+`2.0.4` would say "some merges happened", which the update id in the footer
+already says exactly. A version now changes when someone decides a release is
+worth naming, and the tools do not need semver: pnpm accepts it for a private
+package, and both stores accept it as a version name.
+
+**`pnpm release minor` is the whole ceremony.** It bumps the number, commits
+`Release 2.1` and tags it `v2.1`; pushing the tag makes the GitHub Release
+(`.github/workflows/github-release.yml`), with notes generated from the pull
+requests since the last tag. The script does not push, because `main` is
+protected and the release commit goes through a pull request like everything
+else. The workflow refuses a tag that does not match `package.json`, so a tag
+typed by hand cannot name a version nothing ships as.
+
+This bends _Shipping lives on expo.dev, and only tests live on GitHub_ by one
+workflow, and deliberately not further: the tag makes a Release page and
+nothing else. A store build is metered and stays a decision made on expo.dev.
+A tag could start `release.yml` there, and the day that is wanted it is one
+trigger away; until then a new number on `main` reaches the stores when
+someone builds, and the web when someone deploys.
+
+What was considered and passed over: reading the version off a git tag in
+`app.config.ts` (EAS builds from an archive without tag history, so the number
+would be wrong exactly where it matters), and release-please (a full bump
+automation that needs every commit message in the conventional format, which
+this repo's are not).
 
 ## Six attachments, a field beside the old one, and one unit of quota
 
