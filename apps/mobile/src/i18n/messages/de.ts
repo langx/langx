@@ -1087,7 +1087,7 @@ export const de: Localized<EnMessages> = {
 
   invite: {
     title: 'Freund einladen',
-    body: 'Teile deinen Link. Wenn jemand über deine Einladung anfängt und wirklich schreibt, verdienst du Token.',
+    body: 'Teile deinen Link. Wenn jemand, den du eingeladen hast, sich anmeldet und anfängt, mit Leuten zu reden, verdient ihr beide Token.',
     code: 'Dein Einladungscode',
     qrAccessibility: 'QR-Code für deinen Einladungslink',
     share: 'Link teilen',
@@ -1100,7 +1100,8 @@ export const de: Localized<EnMessages> = {
       'Sie melden sich an und schreiben ihre erste Nachricht oder Korrektur — dann gibt es {activation} Token.',
     step3:
       'Starten sie irgendwann ein bezahltes Abo, gibt es {subscription} mehr. {max} insgesamt, pro Person.',
-    step4: 'Im selben Moment bekommen sie selbst {invitee} Token — ein Willkommen, kein Lohn.',
+    step4:
+      'Sie verdienen auch: {invitee} mehr im selben Moment, also starten sie mit dem Anmeldebonus bei {total}.',
     totalsInvited: {
       one: 'eingeladen',
       other: 'eingeladen',
@@ -1209,7 +1210,8 @@ export const de: Localized<EnMessages> = {
     ctaBody: '{name} übt Sprachen auf LangX. Komm dazu und sag Hallo.',
     ctaLabel: 'LangX öffnen',
     inviteTitle: '{name} hat dich zu LangX eingeladen',
-    inviteBody: 'Übe mit jemandem, der deine Sprache lernt. Kostenlos.',
+    inviteBody:
+      '{name} hat dich eingeladen. Melde dich an und schreib jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
   },
 
   shareProfile: {

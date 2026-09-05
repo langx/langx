@@ -1058,7 +1058,7 @@ export const ptBR: Localized<EnMessages> = {
 
   invite: {
     title: 'Convidar alguém',
-    body: 'Compartilhe seu link. Quando alguém que você convidou entra e começa a conversar, você ganha tokens.',
+    body: 'Compartilhe seu link. Quando alguém que você convidou se cadastra e começa a conversar com as pessoas, vocês dois ganham tokens.',
     code: 'Seu código de convite',
     qrAccessibility: 'QR code do seu link de convite',
     share: 'Compartilhar o link',
@@ -1071,7 +1071,8 @@ export const ptBR: Localized<EnMessages> = {
       'A pessoa entra e escreve a primeira mensagem ou correção — é aí que você ganha {activation} tokens.',
     step3:
       'Se um dia ela assinar um plano pago, você ganha mais {subscription}. {max} no total, por pessoa.',
-    step4: 'Nesse mesmo momento eles ganham {invitee} tokens para si — boas-vindas, não salário.',
+    step4:
+      'Eles também ganham: mais {invitee} no mesmo momento, então com o bônus de cadastro começam com {total}.',
     totalsInvited: {
       one: 'convidado',
       other: 'convidados',
@@ -1180,7 +1181,8 @@ export const ptBR: Localized<EnMessages> = {
     ctaBody: '{name} pratica idiomas no LangX. Entre para dizer oi.',
     ctaLabel: 'Abrir o LangX',
     inviteTitle: '{name} convidou você para o LangX',
-    inviteBody: 'Pratique com alguém que está aprendendo a sua língua. Entrar é grátis.',
+    inviteBody:
+      '{name} convidou você. Cadastre-se e escreva para alguém: você começa com {total} tokens; {name} ganha {activation} — até {max} se um dia você assinar um plano. Entrar é grátis.',
   },
 
   shareProfile: {

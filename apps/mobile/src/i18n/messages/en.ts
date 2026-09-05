@@ -1108,7 +1108,7 @@ export const en = {
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
   invite: {
     title: 'Invite a friend',
-    body: 'Share your link. When someone you invited signs up and starts talking to people, you both get somewhere — and you earn tokens.',
+    body: 'Share your link. When someone you invited signs up and starts talking to people, you both earn tokens.',
     code: 'Your invite code',
     qrAccessibility: 'A QR code for your invite link',
     share: 'Share the link',
@@ -1121,7 +1121,8 @@ export const en = {
       'They sign up and write their first message or correction — that is when you earn {activation} tokens.',
     step3:
       'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
-    step4: 'They get {invitee} tokens of their own at that same moment — a welcome, not a wage.',
+    step4:
+      'They earn too: {invitee} more at that same moment, so with the sign-up bonus they start with {total}.',
     totalsInvited: {
       one: 'invited',
       other: 'invited',
@@ -1229,7 +1230,8 @@ export const en = {
     ctaBody: '{name} practises languages on LangX. Join to say hello.',
     ctaLabel: 'Open LangX',
     inviteTitle: '{name} invited you to LangX',
-    inviteBody: 'Practise with someone who is learning your language. Free to join.',
+    inviteBody:
+      '{name} invited you. Sign up and write to somebody, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
   },
 
   shareProfile: {

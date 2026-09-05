@@ -1217,12 +1217,16 @@ creation, and nothing can change it afterwards. No copy promises otherwise.
 
 **Amendment, 5 September 2026 — the invitee gets a welcome.** Behic asked
 whether the person who _took_ an invite gets anything, and the answer was no.
-Now it is `TOKEN_RULES.referral.inviteeActivation` (250, the size of the
-sign-up bonus), paid once, at the same activation moment as the referrer's
-award and from the same `settleReferral` call, as a `referralWelcome` ledger
-row with the invitee's own id as `refId`. The gate is unchanged, so "nothing is
-paid for signing up" is still literally true; what changed is that the moment
-already worth 1000 to one side is worth 250 to the other. It is a grant kind,
+Now it is `TOKEN_RULES.referral.inviteeActivation` (750 — with the 250
+sign-up bonus, an invited newcomer starts on `inviteeTotal`, 1000, which is
+the figure the invite page quotes), paid once, at the same activation moment
+as the referrer's award and from the same `settleReferral` call, as a
+`referralWelcome` ledger row with the invitee's own id as `refId`. The gate is
+unchanged, so "nothing is paid for signing up" is still literally true; what
+changed is that the moment already worth 1000 to one side is now worth 750 to
+the other. The invited landing page (`app/[username].tsx`, the `?invite=1`
+branch) says all three numbers out loud, from `TOKEN_RULES`, so a newcomer
+knows what taking the link is worth before they sign up. It is a grant kind,
 so it stays off the weekly and monthly tables. A frozen referrer does not
 withhold it (the activation was the invitee's own doing); a deleted referrer
 ends the referral for both sides, as before.

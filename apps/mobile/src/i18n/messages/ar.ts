@@ -1235,7 +1235,7 @@ export const ar: Localized<EnMessages> = {
 
   invite: {
     title: 'ادعُ صديقًا',
-    body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسب توكنات.',
+    body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسبان الرموز كلاكما.',
     code: 'رمز الدعوة الخاص بك',
     qrAccessibility: 'رمز QR لرابط الدعوة',
     share: 'مشاركة الرابط',
@@ -1246,7 +1246,8 @@ export const ar: Localized<EnMessages> = {
     step1: 'أرسل رابطك إلى شخص يتعلّم لغتك.',
     step2: 'يسجّل ويكتب أول رسالة أو تصحيح — عندها تكسب {activation} توكن.',
     step3: 'وإذا اشترك يومًا في خطة مدفوعة تكسب {subscription} إضافية. {max} إجمالًا لكل شخص.',
-    step4: 'في اللحظة نفسها يحصلون هم على {invitee} رمزًا لأنفسهم — ترحيب، لا أجر.',
+    step4:
+      'هم يكسبون أيضًا: {invitee} إضافية في اللحظة نفسها، فيبدؤون مع مكافأة التسجيل بـ {total}.',
     totalsInvited: {
       one: 'مدعو',
       two: 'مدعوان',
@@ -1405,7 +1406,8 @@ export const ar: Localized<EnMessages> = {
     ctaBody: '‏{name} يتدرّب على اللغات في LangX. انضم لتقول مرحبًا.',
     ctaLabel: 'افتح LangX',
     inviteTitle: 'دعاك {name} إلى LangX',
-    inviteBody: 'تدرّب مع شخص يتعلّم لغتك. الانضمام مجاني.',
+    inviteBody:
+      'دعاك {name}. سجّل واكتب لأحدهم لتبدأ بـ {total} رمز؛ ويكسب {name} {activation} — حتى {max} إن اشتركت يومًا في خطة مدفوعة. الانضمام مجاني.',
   },
 
   shareProfile: {

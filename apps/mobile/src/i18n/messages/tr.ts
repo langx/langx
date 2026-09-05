@@ -1069,7 +1069,7 @@ export const tr: Localized<EnMessages> = {
 
   invite: {
     title: 'Arkadaşını davet et',
-    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de kazanırsınız — sen token kazanırsın.',
+    body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de token kazanırsınız.',
     code: 'Davet kodun',
     qrAccessibility: 'Davet linkinin QR kodu',
     share: 'Linki paylaş',
@@ -1080,7 +1080,8 @@ export const tr: Localized<EnMessages> = {
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
     step2: 'Kaydolup ilk mesajını ya da düzeltmesini yazsın — {activation} token o zaman geliyor.',
     step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
-    step4: 'Aynı anda onlar da kendilerine {invitee} token alır — bir hoş geldin, maaş değil.',
+    step4:
+      'Onlar da kazanır: aynı anda {invitee} token daha, yani kayıt bonusuyla {total} ile başlarlar.',
     totalsInvited: {
       one: 'davet',
       other: 'davet',
@@ -1188,7 +1189,8 @@ export const tr: Localized<EnMessages> = {
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
     inviteTitle: '{name} seni LangX’e davet etti',
-    inviteBody: 'Senin dilini öğrenen biriyle pratik yap. Katılmak ücretsiz.',
+    inviteBody:
+      '{name} seni davet etti. Kaydolup birine yaz, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
   },
 
   shareProfile: {

@@ -271,11 +271,20 @@ export interface TokenRules {
     /**
      * Paid to the invitee themselves, once, at the same activation moment —
      * added on 5 September 2026 so that taking an invite is worth something
-     * to the person who took it, not only to the person who sent it. The size
-     * of the sign-up bonus, on purpose: a welcome, not a wage. Behind the same
-     * gate as `activation`, so "nothing is paid for signing up" stays true.
+     * to the person who took it, not only to the person who sent it. Sized so
+     * that with `signupBonus` an invited newcomer starts on `inviteeTotal`.
+     * Behind the same gate as `activation`, so "nothing is paid for signing
+     * up" stays true: the sign-up bonus is what signing up pays, this is what
+     * writing to somebody pays.
      */
     inviteeActivation: number
+    /**
+     * What an invited person has once they are activated, sign-up bonus
+     * included — the number the invite page quotes. Stored, like
+     * `maxPerInvitee`, so the copy reads one figure and a test keeps the
+     * arithmetic honest.
+     */
+    inviteeTotal: number
     /**
      * The most one invitee can ever earn their referrer, and the number every
      * piece of public copy quotes. Stored rather than derived so there is one
@@ -351,7 +360,8 @@ export const TOKEN_RULES: TokenRules = {
   referral: {
     activation: 1000,
     subscription: 4000,
-    inviteeActivation: 250,
+    inviteeActivation: 750,
+    inviteeTotal: 1000,
     maxPerInvitee: 5000,
   },
 }

@@ -5,6 +5,7 @@ import {
   INVITE_QUERY_PARAM,
   profileUrl,
   type SharedProfile,
+  TOKEN_RULES,
 } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { Redirect, useLocalSearchParams } from 'expo-router'
@@ -20,7 +21,7 @@ import { Screen } from '../src/components/ui/Screen'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
-import { useDisplayNames, useT } from '../src/i18n'
+import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 
 /**
@@ -61,6 +62,8 @@ export default function SharedProfileScreen() {
   }, [invited, handle])
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
+  const n = (value: number) => value.toLocaleString(locale)
   const names = useDisplayNames()
   const { data: session, isPending: sessionPending } = authClient.useSession()
 
@@ -147,7 +150,14 @@ export default function SharedProfileScreen() {
 
       <View style={styles.cta}>
         <Text style={styles.ctaBody}>
-          {invited ? t('shared.inviteBody') : t('shared.ctaBody', { name: user.displayName })}
+          {invited
+            ? t('shared.inviteBody', {
+                name: user.displayName,
+                total: n(TOKEN_RULES.referral.inviteeTotal),
+                activation: n(TOKEN_RULES.referral.activation),
+                max: n(TOKEN_RULES.referral.maxPerInvitee),
+              })
+            : t('shared.ctaBody', { name: user.displayName })}
         </Text>
         {/* An external open rather than a route: this branch of the tree is
             the signed-out one, so pushing at `(auth)` from here would cross a

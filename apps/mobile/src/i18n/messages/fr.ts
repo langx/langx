@@ -1072,7 +1072,7 @@ export const fr: Localized<EnMessages> = {
 
   invite: {
     title: 'Inviter quelqu’un',
-    body: 'Partage ton lien. Quand une personne que tu as invitée s’inscrit et se met à parler aux gens, tu gagnes des tokens.',
+    body: 'Partage ton lien. Quand quelqu’un que tu as invité s’inscrit et se met à parler avec des gens, vous gagnez des tokens tous les deux.',
     code: 'Ton code d’invitation',
     qrAccessibility: 'QR code de ton lien d’invitation',
     share: 'Partager le lien',
@@ -1085,7 +1085,8 @@ export const fr: Localized<EnMessages> = {
       'La personne s’inscrit et écrit son premier message ou sa première correction — là, tu gagnes {activation} tokens.',
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
-    step4: 'Au même moment, ils reçoivent {invitee} tokens à eux — une bienvenue, pas un salaire.',
+    step4:
+      'Ils gagnent aussi : {invitee} de plus au même moment, donc avec le bonus d’inscription ils démarrent à {total}.',
     totalsInvited: {
       one: 'invité',
       other: 'invités',
@@ -1194,7 +1195,8 @@ export const fr: Localized<EnMessages> = {
     ctaBody: '{name} pratique des langues sur LangX. Rejoins pour dire bonjour.',
     ctaLabel: 'Ouvrir LangX',
     inviteTitle: '{name} t’a invité sur LangX',
-    inviteBody: 'Pratique avec quelqu’un qui apprend ta langue. L’inscription est gratuite.',
+    inviteBody:
+      '{name} t’a invité. Inscris-toi et écris à quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
   },
 
   shareProfile: {

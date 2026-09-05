@@ -72,10 +72,11 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
       at,
     })
     /*
-     * The invitee's welcome, in the same breath. Not withheld when the
-     * *referrer* is frozen: the activation was the invitee's own doing, and
-     * their standing is judged by `awardTokens` on their own row. Same
-     * `refId` (themselves), so the ledger's unique index caps it at once.
+     * The invitee's welcome, in the same breath — what takes them from the
+     * sign-up bonus to `inviteeTotal`. Not withheld when the *referrer* is
+     * frozen: the activation was the invitee's own doing, and their standing
+     * is judged by `awardTokens` on their own row. Same `refId` (themselves),
+     * so the ledger's unique index caps it at once.
      */
     const welcome = await awardTokens(db, {
       userId: inviteeId,

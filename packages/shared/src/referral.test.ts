@@ -97,10 +97,11 @@ describe('referral rules', () => {
    * start ranking invitations — which is the one thing the leaderboard is not
    * for. Nothing else would fail.
    */
-  /** A welcome, not a wage: the invitee's award is the size of the sign-up bonus. */
-  it('pays the invitee no more than a sign-up bonus', () => {
-    expect(TOKEN_RULES.referral.inviteeActivation).toBeGreaterThan(0)
-    expect(TOKEN_RULES.referral.inviteeActivation).toBeLessThanOrEqual(TOKEN_RULES.signupBonus)
+  /** The invite page quotes one figure for the newcomer; this keeps it true. */
+  it('starts an invited newcomer on the total the invite page quotes', () => {
+    const { inviteeActivation, inviteeTotal } = TOKEN_RULES.referral
+    expect(inviteeActivation).toBeGreaterThan(0)
+    expect(TOKEN_RULES.signupBonus + inviteeActivation).toBe(inviteeTotal)
   })
 
   it('keeps all three kinds out of the weekly leaderboard', () => {
