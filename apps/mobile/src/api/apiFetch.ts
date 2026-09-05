@@ -1,20 +1,7 @@
-import { APP_PLATFORM_HEADER, APP_VERSION_HEADER } from '@langx/shared'
-import * as Application from 'expo-application'
 import { Platform } from 'react-native'
 import { API_URL } from '../lib/apiUrl'
+import { versionHeaders } from '../lib/appVersion'
 import { authClient } from '../lib/auth-client'
-
-/**
- * Sent on every request so the server can answer "is this client too old?"
- * without the client having to ask separately.
- */
-function versionHeaders(): Record<string, string> {
-  return {
-    [APP_VERSION_HEADER]: Application.nativeApplicationVersion ?? '0.0.0',
-    [APP_PLATFORM_HEADER]:
-      Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web',
-  }
-}
 
 /**
  * Fetch wrapper for *our own* API routes (not Better Auth's, which the
