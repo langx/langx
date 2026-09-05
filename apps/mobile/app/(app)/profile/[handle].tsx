@@ -482,7 +482,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   followCount: { color: colors.text, fontSize: 14, fontWeight: '700' },
   followingCount: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   followButton: { marginTop: spacing.lg },
-  bio: { ...font.body, color: colors.text, marginBottom: spacing.md },
+  // A top margin as well as a bottom one: with no photos, `PhotoGallery`
+  // draws nothing, and the bio used to sit flush against the Follow button.
+  bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
   languages: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
