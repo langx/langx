@@ -1,6 +1,6 @@
 import { CARD_SHAPES, type CardKind, type CardShape } from '@langx/shared'
 import { useState } from 'react'
-import { ActivityIndicator, Modal, Pressable, Text } from 'react-native'
+import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
 import { useCreateShareCard } from '../api/queries'
 import { useT, type MessageKey } from '../i18n'
 import { shareLink } from '../lib/share'
@@ -48,6 +48,28 @@ export function ShareCardSheet({
   const t = useT()
   const createCard = useCreateShareCard()
   const [busy, setBusy] = useState<CardShape | null>(null)
+  const [pending, setPending] = useState<ShareContent | null>(null)
+
+  /**
+   * Close this sheet, then hand the sentence to the platform share sheet —
+   * and in that order, with the dismissal actually finished in between.
+   *
+   * iOS refuses to present `UIActivityViewController` while another
+   * presentation is still animating away, and it refuses **silently**: no
+   * throw, the promise resolves, and no sheet ever appears. Closing and
+   * sharing in the same tick therefore looked exactly like a share that had
+   * worked — the card was rendered, stored and returned, and then nothing
+   * happened. `onDismiss` fires after the dismissal completes and is the only
+   * moment that is reliably safe.
+   *
+   * Android has no such rule and never fires `onDismiss`, so there it goes out
+   * straight away rather than waiting for a callback that will not come.
+   */
+  function shareAfterClose(content: ShareContent): void {
+    onClose()
+    if (Platform.OS === 'ios') setPending(content)
+    else void shareLink(content)
+  }
 
   async function pick(shape: CardShape): Promise<void> {
     if (!request || busy) return
@@ -59,15 +81,13 @@ export function ShareCardSheet({
         headline: request.headline,
         caption: request.caption,
       })
-      onClose()
       // The page, not the picture: `app.langx.io/s/<id>` unfurls with a title
       // and gives whoever taps it somewhere to go.
-      await shareLink({ message: request.fallback.message, url: card.shareUrl })
+      shareAfterClose({ message: request.fallback.message, url: card.shareUrl })
     } catch (caught) {
       void caught
-      onClose()
       showToast(t('share.cardFailed'))
-      await shareLink(request.fallback)
+      shareAfterClose(request.fallback)
     } finally {
       setBusy(null)
     }
@@ -79,6 +99,12 @@ export function ShareCardSheet({
       transparent
       animationType="slide"
       onRequestClose={onClose}
+      onDismiss={() => {
+        if (!pending) return
+        const content = pending
+        setPending(null)
+        void shareLink(content)
+      }}
       accessibilityViewIsModal
     >
       <Pressable style={styles.backdrop} accessibilityLabel={t('common.cancel')} onPress={onClose}>
@@ -104,9 +130,8 @@ export function ShareCardSheet({
             accessibilityRole="button"
             disabled={busy !== null}
             onPress={() => {
-              const fallback = request?.fallback
-              onClose()
-              if (fallback) void shareLink(fallback)
+              if (request) shareAfterClose(request.fallback)
+              else onClose()
             }}
             style={({ pressed }) => [styles.row, pressed && styles.pressed]}
           >
