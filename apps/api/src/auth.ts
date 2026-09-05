@@ -375,8 +375,14 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
          * screen is worthless by the time they have walked away.
          */
         expiresIn: '2m',
-        /** What the poller is told to wait between attempts. */
-        interval: '5s',
+        /*
+         * What the poller is told to wait between attempts. Two seconds, not
+         * the five it was: the browser only learns of an approval on its next
+         * poll, so this number is the delay between the phone saying yes and
+         * the laptop signing in. The traffic is one signed-out browser asking
+         * one small question for at most two minutes.
+         */
+        interval: '2s',
         /** Where the phone is sent; shown under the code for hand entry. */
         verificationUri: `https://${WEB_HOST}/link-device`,
       }),

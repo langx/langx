@@ -58,7 +58,10 @@ export default function ShareProfileScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('shareProfile.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
+      <ScreenHeader
+        title={t('shareProfile.title')}
+        onBack={() => goBackTo('/(app)/settings/share')}
+      />
 
       <View style={styles.card}>
         {/*

@@ -969,7 +969,7 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
   })
 
   describe('somebody else’s numbers', () => {
-    it('answers with the streak, the corrections and the tokens', async () => {
+    it('answers with the streak, the corrections, the badge count and the tokens', async () => {
       const owner = await newUser('stats-owner@example.com', { handle: 'statsowner' })
       const viewer = await newUser('stats-viewer@example.com')
 
@@ -984,12 +984,15 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
         visible: boolean
         streak: { current: number }
         corrections: number
+        badges: number
         tokens: number
         week: unknown[]
       }>()
       expect(body.visible).toBe(true)
       expect(body.streak.current).toBe(0)
       expect(body.corrections).toBe(0)
+      // Zero is an answer: the tile on the profile says "0", not nothing.
+      expect(body.badges).toBe(0)
       // The sign-up bonus is already on the ledger, so this is a real number
       // rather than a zero that would pass whatever the query did.
       expect(body.tokens).toBeGreaterThan(0)

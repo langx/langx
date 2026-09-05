@@ -7,6 +7,7 @@ import {
   shiftDayKey,
   utcDayKey,
   type BadgeSummary,
+  type GiftClaim,
   type Leaderboard,
   type StreakLeaderboard,
   type Wallet,
@@ -24,6 +25,7 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import type { DailyActivity } from '../modules/tokens/dailyActivity'
+import { claimGift } from '../modules/tokens/gift'
 import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import {
   DAILY_POOL_JOB,
@@ -997,6 +999,111 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       // Earned by `longest`, but never paid, so there is no row to date it by.
       expect(at180?.earned).toBe(true)
       expect(at180?.earnedAt).toBeNull()
+    })
+  })
+
+  describe('the hourly gift', () => {
+    function open(user: SignedUpUser) {
+      return app.inject({
+        method: 'POST',
+        url: '/me/wallet/gift',
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    it('is ready for a fresh wallet, opens once, then says when the next one is', async () => {
+      const user = await newUser()
+      expect((await wallet(user)).gift.nextAt).toBeNull()
+
+      const before = (await wallet(user)).earned
+      const response = await open(user)
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<GiftClaim>()
+      expect(body.amount).toBeGreaterThanOrEqual(0)
+      expect(body.amount).toBeLessThanOrEqual(250)
+      expect(body.wallet.earned).toBe(before + body.amount)
+      expect(body.wallet.gift.nextAt).toBe(body.nextAt)
+      const nextIn = new Date(body.nextAt).getTime() - Date.now()
+      expect(nextIn).toBeGreaterThan(TOKEN_RULES.gift.cooldownMs - 10_000)
+      expect(nextIn).toBeLessThanOrEqual(TOKEN_RULES.gift.cooldownMs)
+
+      // The wallet agrees, so the store's card shows the countdown.
+      expect((await wallet(user)).gift.nextAt).toBe(body.nextAt)
+    })
+
+    it('refuses a second open inside the hour, and says when to come back', async () => {
+      const user = await newUser()
+      const first = (await open(user)).json<GiftClaim>()
+      const again = await open(user)
+      expect(again.statusCode).toBe(429)
+      expect(again.json()).toMatchObject({ code: 'RATE_LIMITED', retryAt: first.nextAt })
+    })
+
+    it('opens again once the hour has passed', async () => {
+      const user = await newUser()
+      await open(user)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { lastGiftAt: new Date(Date.now() - TOKEN_RULES.gift.cooldownMs - 1000) } },
+        )
+      expect((await wallet(user)).gift.nextAt).toBeNull()
+      expect((await open(user)).statusCode).toBe(200)
+    })
+
+    it('credits the all-time total only — a gift is not practice, so no leaderboard sees it', async () => {
+      const user = await newUser()
+      const at = new Date()
+      // Force the top of the table, so the row is unmistakable.
+      const result = await claimGift(handle.db, user.userId, at, (n) => n - 1)
+      expect(result.amount).toBe(250)
+
+      const rows = await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .find({ userId: user.userId, kind: 'gift' })
+        .toArray()
+      expect(rows).toHaveLength(1)
+      expect(rows[0]).toMatchObject({ amount: 250, refId: `gift:${at.toISOString()}` })
+
+      const aggregates = await handle.db
+        .collection<TokenAggregate>(COLLECTIONS.tokenAggregates)
+        .find({ _id: { $regex: `^${user.userId}:` } })
+        .toArray()
+      const byType = new Map(aggregates.map((a) => [a._id.split(':')[1], a.tokens]))
+      // The sign-up bonus is a grant too, so `all` is bonus + gift and the
+      // period buckets do not exist at all.
+      expect(byType.get('all')).toBe(TOKEN_RULES.signupBonus + 250)
+      expect(byType.get('week')).toBeUndefined()
+      expect(byType.get('month')).toBeUndefined()
+      expect(byType.get('year')).toBeUndefined()
+    })
+
+    it('consumes the hour but pays nothing while token is frozen', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { tokenFrozenAt: new Date() } })
+      const result = await claimGift(handle.db, user.userId, new Date(), (n) => n - 1)
+      expect(result.amount).toBe(0)
+      expect(result.wallet.gift.nextAt).not.toBeNull()
+      const rows = await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .find({ userId: user.userId, kind: 'gift' })
+        .toArray()
+      expect(rows).toHaveLength(0)
+    })
+
+    it('lets exactly one of two simultaneous opens through', async () => {
+      const user = await newUser()
+      const outcomes = await Promise.allSettled([
+        claimGift(handle.db, user.userId),
+        claimGift(handle.db, user.userId),
+      ])
+      const won = outcomes.filter((o) => o.status === 'fulfilled')
+      const lost = outcomes.filter((o) => o.status === 'rejected')
+      expect(won).toHaveLength(1)
+      expect(lost).toHaveLength(1)
     })
   })
 

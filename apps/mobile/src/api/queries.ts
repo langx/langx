@@ -24,6 +24,7 @@ import type {
   PeriodType,
   PublicProfileDto,
   Wallet,
+  GiftClaim,
   BadgeSummary,
   ReferralStatus,
   CreatePostCommentInput,
@@ -58,7 +59,7 @@ import {
   type QueryClient,
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
-import { api } from './client'
+import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
@@ -508,6 +509,8 @@ export interface PublicSummaryDto {
   visible: boolean
   streak?: { current: number; longest: number }
   corrections?: number
+  /** Badges earned, out of the shared catalogue's total. */
+  badges?: number
   tokens?: number
   week?: { day: string; messages: number; corrections: number }[]
 }
@@ -1231,6 +1234,34 @@ export function usePurchase() {
       // The profile too: a purchase can move the streak, and the wallet
       // screen reads that from `me` rather than from the wallet response.
       void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * Open the hourly gift. The response carries the whole wallet, so it is
+ * written straight into the cache rather than refetched — the reveal wants
+ * the new balance now, not after a round trip. `tokens` is invalidated as a
+ * prefix, which takes the history with it.
+ *
+ * A refusal carries `retryAt`: the card was stale (another device opened it,
+ * or the clock drifted), so the cache is corrected from the refusal itself.
+ */
+export function useClaimGift() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post<GiftClaim>('/me/wallet/gift'),
+    onSuccess: (result) => {
+      queryClient.setQueryData<Wallet>(keys.wallet, result.wallet)
+      void queryClient.invalidateQueries({ queryKey: keys.tokens })
+    },
+    onError: (error) => {
+      if (error instanceof ApiRequestError && error.retryAt) {
+        const retryAt = error.retryAt
+        queryClient.setQueryData<Wallet>(keys.wallet, (wallet) =>
+          wallet ? { ...wallet, gift: { nextAt: retryAt } } : wallet,
+        )
+      }
     },
   })
 }

@@ -1065,6 +1065,8 @@ export const ar: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'خطتك وتجديدها وإدارتها',
+    shareSection: 'المشاركة والدعوة',
+    shareBody: 'رابط ملفك الشخصي ورمز QR ودعوة الأصدقاء',
     privacyBody: 'من يستطيع العثور عليك وما يراه',
     notificationsBody: 'ما يصلك عبر الإشعارات والبريد',
     appearanceSection: 'المظهر',
@@ -1205,6 +1207,21 @@ export const ar: Localized<EnMessages> = {
     buyFailed: 'تعذّر الشراء',
   },
 
+  gift: {
+    title: 'هدية كل ساعة',
+    body: 'هدية صغيرة كل ساعة، مجانًا. معظمها يحوي بضعة توكنات؛ وبعضها أكثر.',
+    ready: 'جاهزة للفتح',
+    nextIn: 'التالية بعد {minutes} د',
+    shakeHint: 'هزّ هاتفك لفتحها',
+    tapHint: 'اضغط لفتحها',
+    opening: 'جارٍ الفتح…',
+    revealed: '+{amount} توكن',
+    revealedZero: 'فارغة هذه المرة. هدية أخرى بعد ساعة.',
+    failed: 'تعذّر فتح الهدية',
+    done: 'تم',
+    openAccessibility: 'افتح هدية الساعة',
+  },
+
   wallet: {
     title: 'المحفظة',
     balance: 'الرصيد',
@@ -1306,6 +1323,7 @@ export const ar: Localized<EnMessages> = {
     referral: 'مكافأة الدعوة',
     referralSubscription: 'مكافأة اشتراك المدعو',
     referralWelcome: 'مكافأة ترحيب بالدعوة',
+    gift: 'هدية كل ساعة',
   },
 
   cosmetics: {
@@ -1482,6 +1500,7 @@ export const ar: Localized<EnMessages> = {
     failed: 'لم يعد هذا الرمز صالحًا.',
     hint: 'ليس الآن',
     devices: 'الأجهزة المسجّلة الدخول',
+    waitingForDevice: 'في انتظار أن يُكمل الجهاز الآخر تسجيل الدخول…',
     thisDevice: 'هذا الجهاز',
     signOutDevice: 'تسجيل الخروج',
     signOutOthers: 'تسجيل الخروج من كل مكان آخر',

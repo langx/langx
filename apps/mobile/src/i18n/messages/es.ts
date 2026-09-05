@@ -904,6 +904,8 @@ export const es: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Tu plan, la renovación y cómo gestionarlo',
+    shareSection: 'Compartir e invitar',
+    shareBody: 'El enlace a tu perfil, tu código QR y la invitación',
     privacyBody: 'Quién puede encontrarte y qué ve',
     notificationsBody: 'Qué te llega, por notificación y por correo',
     appearanceSection: 'Apariencia',
@@ -1042,6 +1044,21 @@ export const es: Localized<EnMessages> = {
     buyFailed: 'No se pudo comprar',
   },
 
+  gift: {
+    title: 'Regalo de cada hora',
+    body: 'Un pequeño regalo cada hora, gratis. La mayoría trae unos pocos tokens; algunos traen más.',
+    ready: 'Listo para abrir',
+    nextIn: 'El siguiente en {minutes} min',
+    shakeHint: 'Agita el teléfono para abrirlo',
+    tapHint: 'Toca para abrirlo',
+    opening: 'Abriendo…',
+    revealed: '+{amount} tokens',
+    revealedZero: 'Esta vez estaba vacío. Habrá otro en una hora.',
+    failed: 'No se pudo abrir el regalo',
+    done: 'Listo',
+    openAccessibility: 'Abrir el regalo de cada hora',
+  },
+
   wallet: {
     title: 'Cartera',
     balance: 'Saldo',
@@ -1129,6 +1146,7 @@ export const es: Localized<EnMessages> = {
     referral: 'Bono por invitación',
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
+    gift: 'Regalo de cada hora',
   },
 
   cosmetics: {
@@ -1260,6 +1278,7 @@ export const es: Localized<EnMessages> = {
     failed: 'Ese código ya no es válido.',
     hint: 'Ahora no',
     devices: 'Dispositivos con sesión',
+    waitingForDevice: 'Esperando a que el otro dispositivo termine de iniciar sesión…',
     thisDevice: 'este dispositivo',
     signOutDevice: 'Cerrar sesión',
     signOutOthers: 'Cerrar sesión en todos los demás',

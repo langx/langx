@@ -91,6 +91,15 @@ that damages trust.
   streak _and_ 5,000 corrections written. Say it as an achievement, never as a
   premium tier — the difference is that everybody can see the requirement and
   nobody can pay past it.
+- The store also holds an **hourly gift** (added 5 September 2026): once an
+  hour, for free, a small random number of tokens — 0 to 250, most of them a
+  handful, the top of the range rare. Say it as a gift, and say the shape
+  honestly: "most hold a few tokens; a few hold more". Gift tokens go to the
+  all-time balance only and never move a leaderboard, so it cannot be
+  described as a way to climb one. Never "win", "prize", "lucky", "jackpot",
+  "spin" or "chance" — that is the vocabulary of a game of chance, and this is
+  a free gift with no stake, nothing bought and nothing redeemable. The
+  Feather `gift` icon, never a box that looks like a slot or a wheel.
 
 ## Subscribing: what a paid plan includes, and what it cannot
 
@@ -141,7 +150,8 @@ Two things to keep in the copy, because they are what make it defensible:
 
 Never: "refer and earn", "affiliate", "commission", "payout". They are the
 vocabulary of a scheme that pays money, and this pays a point that buys streak
-freezes and frames.
+freezes and frames. The same rule, for the hourly gift: never "win", "prize",
+"lucky", "jackpot", "spin", "odds".
 
 ## Returning v1 users: what to tell them
 

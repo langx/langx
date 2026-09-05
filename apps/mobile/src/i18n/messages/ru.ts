@@ -1022,6 +1022,8 @@ export const ru: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Ваш план, продление и управление им',
+    shareSection: 'Поделиться и пригласить',
+    shareBody: 'Ссылка на профиль, QR-код и приглашение',
     privacyBody: 'Кто может вас найти и что видит',
     notificationsBody: 'Что до вас доходит — пушем и по почте',
     appearanceSection: 'Оформление',
@@ -1160,6 +1162,21 @@ export const ru: Localized<EnMessages> = {
     buyFailed: 'Не удалось купить',
   },
 
+  gift: {
+    title: 'Подарок каждый час',
+    body: 'Небольшой подарок каждый час, бесплатно. В большинстве — несколько токенов, в некоторых — больше.',
+    ready: 'Можно открыть',
+    nextIn: 'Следующий через {minutes} мин',
+    shakeHint: 'Встряхните телефон, чтобы открыть',
+    tapHint: 'Нажмите, чтобы открыть',
+    opening: 'Открываем…',
+    revealed: '+{amount} токенов',
+    revealedZero: 'В этот раз пусто. Следующий — через час.',
+    failed: 'Не удалось открыть подарок',
+    done: 'Готово',
+    openAccessibility: 'Открыть ежечасный подарок',
+  },
+
   wallet: {
     title: 'Кошелёк',
     balance: 'Баланс',
@@ -1257,6 +1274,7 @@ export const ru: Localized<EnMessages> = {
     referral: 'Бонус за приглашение',
     referralSubscription: 'Бонус за подписку приглашённого',
     referralWelcome: 'Приветственный бонус по приглашению',
+    gift: 'Подарок каждый час',
   },
 
   cosmetics: {
@@ -1420,6 +1438,7 @@ export const ru: Localized<EnMessages> = {
     failed: 'Этот код больше не действителен.',
     hint: 'Не сейчас',
     devices: 'Устройства с активным входом',
+    waitingForDevice: 'Ждём, пока другое устройство завершит вход…',
     thisDevice: 'это устройство',
     signOutDevice: 'Выйти',
     signOutOthers: 'Выйти на всех остальных',

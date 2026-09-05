@@ -1,4 +1,9 @@
-import { ACCOUNT_DELETION_GRACE_DAYS, LOCALE_NAMES, NOTIFICATION_CHANNELS } from '@langx/shared'
+import {
+  ACCOUNT_DELETION_GRACE_DAYS,
+  LOCALE_NAMES,
+  NOTIFICATION_CHANNELS,
+  profileUrl,
+} from '@langx/shared'
 import { router } from 'expo-router'
 import { Image, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
@@ -375,6 +380,34 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           // A screen, not a dialog: `AlertHost` draws buttons and no text
           // field, and the gate in front of this is a typed handle.
           onPress={() => router.push('/(app)/settings/delete-account')}
+        />
+      )
+
+    case 'share.profile':
+      /*
+       * A screen rather than the share sheet directly: sending a link and
+       * showing one across a table want opposite things, and a sheet cannot be
+       * photographed. The sheet is one tap further in, where it belongs.
+       */
+      if (!model.profile) return null
+      return (
+        <ListRow
+          title={t('me.shareProfile')}
+          subtitle={profileUrl(model.profile.handle).replace('https://', '')}
+          last={last}
+          onPress={() => router.push('/(app)/share-profile')}
+        />
+      )
+    case 'share.invite':
+      // Beside sharing a profile, not inside it. They look alike and are not:
+      // one is "here is me", the other is "come and try this", and the second
+      // one pays.
+      return (
+        <ListRow
+          title={t('me.invite')}
+          subtitle={t('me.inviteBody')}
+          last={last}
+          onPress={() => router.push('/(app)/invite')}
         />
       )
 

@@ -3,6 +3,7 @@ import {
   STREAK_FREEZE_SKU,
   TOKEN_RULES,
   findCosmetic,
+  giftReadyAt,
   previousCosmetic,
   meetsRequirement,
   localDayKey,
@@ -36,6 +37,9 @@ export function walletOf(profile: Profile, earned: number): Wallet {
     streakFreezes: profile.streakFreezes ?? 0,
     owned: profile.cosmetics ?? [],
     ...(profile.equipped ? { equipped: profile.equipped } : {}),
+    // On the wallet rather than behind its own request: the store draws the
+    // gift card from the same fetch as the balance beside it.
+    gift: { nextAt: giftReadyAt(profile.lastGiftAt)?.toISOString() ?? null },
   }
 }
 

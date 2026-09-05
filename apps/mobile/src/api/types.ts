@@ -41,6 +41,7 @@ export type {
   PeriodType,
   PlanTier,
   Wallet,
+  GiftClaim,
   TokenHistory,
   TokenHistoryDay,
   TokenSummary,

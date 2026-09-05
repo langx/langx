@@ -38,15 +38,19 @@ describe('device sign-in flow', () => {
   let other: SignedUpUser
 
   /** The browser asking to be signed in: no session, only a client id. */
-  async function requestCode(): Promise<{ userCode: string; deviceCode: string }> {
+  async function requestCode(): Promise<{
+    userCode: string
+    deviceCode: string
+    interval: number
+  }> {
     const response = await app.inject({
       method: 'POST',
       url: '/api/auth/device/code',
       payload: { client_id: 'langx-web', scope: 'openid' },
     })
     expect(response.statusCode).toBe(200)
-    const body = response.json<{ user_code: string; device_code: string }>()
-    return { userCode: body.user_code, deviceCode: body.device_code }
+    const body = response.json<{ user_code: string; device_code: string; interval: number }>()
+    return { userCode: body.user_code, deviceCode: body.device_code, interval: body.interval }
   }
 
   /** What the phone does before it can approve: `GET /device?user_code=`. */
@@ -126,13 +130,17 @@ describe('device sign-in flow', () => {
   })
 
   it('hands the browser a five-character code from the unambiguous charset', async () => {
-    const { userCode, deviceCode } = await requestCode()
+    const { userCode, deviceCode, interval } = await requestCode()
     // Five, chosen on 5 September 2026 — the plugin's eight was only ever its
     // default, and the arithmetic in `auth.ts` says why five is enough. The
     // placeholder on every screen is shaped like this number.
     expect(userCode.replace(/-/g, '')).toHaveLength(5)
     expect(userCode.replace(/-/g, '')).toMatch(USER_CODE_CHARSET)
     expect(deviceCode).toBeTruthy()
+    // Two seconds between polls: this is the delay between the phone saying
+    // yes and the browser signing in, so the client reads it off the response
+    // rather than assuming a number.
+    expect(interval).toBe(2)
   })
 
   it('refuses to approve a code that has not been claimed', async () => {

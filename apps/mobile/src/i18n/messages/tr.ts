@@ -908,6 +908,8 @@ export const tr: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Planın, yenileme ve yönetimi',
+    shareSection: 'Paylaş ve davet et',
+    shareBody: 'Profil bağlantın, QR kodun ve davet bağlantın',
     privacyBody: 'Seni kim bulabilir, neyi görebilir',
     notificationsBody: 'Sana ne ulaşır — bildirimle ve e-postayla',
     appearanceSection: 'Görünüm',
@@ -1046,6 +1048,21 @@ export const tr: Localized<EnMessages> = {
     buyFailed: 'Satın alınamadı',
   },
 
+  gift: {
+    title: 'Saatlik hediye',
+    body: 'Her saat ücretsiz küçük bir hediye. Çoğunda birkaç token var; bazılarında daha fazla.',
+    ready: 'Açılmaya hazır',
+    nextIn: 'Sonraki {minutes} dk sonra',
+    shakeHint: 'Açmak için telefonu salla',
+    tapHint: 'Açmak için dokun',
+    opening: 'Açılıyor…',
+    revealed: '+{amount} token',
+    revealedZero: 'Bu kez boş çıktı. Bir saat sonra yenisi var.',
+    failed: 'Hediye açılamadı',
+    done: 'Tamam',
+    openAccessibility: 'Saatlik hediyeyi aç',
+  },
+
   wallet: {
     title: 'Cüzdan',
     balance: 'Bakiye',
@@ -1132,6 +1149,7 @@ export const tr: Localized<EnMessages> = {
     referral: 'Davet bonusu',
     referralSubscription: 'Davet abonelik bonusu',
     referralWelcome: 'Davetle gelme bonusu',
+    gift: 'Saatlik hediye',
   },
 
   cosmetics: {
@@ -1263,6 +1281,7 @@ export const tr: Localized<EnMessages> = {
     failed: 'Bu kod artık geçerli değil.',
     hint: 'Şimdi değil',
     devices: 'Giriş yapılmış cihazlar',
+    waitingForDevice: 'Diğer cihazın girişi tamamlaması bekleniyor…',
     thisDevice: 'bu cihaz',
     signOutDevice: 'Çıkış yap',
     signOutOthers: 'Diğer her yerden çıkış yap',

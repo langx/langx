@@ -15,6 +15,7 @@ import {
   useWallet,
 } from '../../src/api/queries'
 import { EquipPicker } from '../../src/components/store/EquipPicker'
+import { GiftCard } from '../../src/components/store/GiftCard'
 import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { LeaderboardSection } from '../../src/components/LeaderboardSection'
@@ -249,6 +250,14 @@ export default function WalletScreen() {
       />
 
       <Text style={styles.sectionTitle}>{t('wallet.storeTitle')}</Text>
+      {/*
+        The free thing first. It sits above the priced rows because it is
+        the one thing in the store that does not ask for anything, and the
+        wallet response already says whether it is ready.
+      */}
+      {wallet.data ? (
+        <GiftCard nextAt={wallet.data.gift.nextAt} onOpen={() => router.push('/(app)/gift')} />
+      ) : null}
       <View style={styles.offers}>
         {offers.map((offer, index) => (
           <StoreRow

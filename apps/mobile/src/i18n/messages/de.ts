@@ -926,6 +926,8 @@ export const de: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Dein Plan, Verlängerung und Verwaltung',
+    shareSection: 'Teilen und einladen',
+    shareBody: 'Dein Profillink, dein QR-Code und die Einladung',
     privacyBody: 'Wer dich finden kann und was sichtbar ist',
     notificationsBody: 'Was dich erreicht — per Push und per E-Mail',
     appearanceSection: 'Darstellung',
@@ -1065,6 +1067,21 @@ export const de: Localized<EnMessages> = {
     buyFailed: 'Kauf nicht möglich',
   },
 
+  gift: {
+    title: 'Stündliches Geschenk',
+    body: 'Jede Stunde ein kleines Geschenk, kostenlos. Die meisten enthalten ein paar Tokens, manche mehr.',
+    ready: 'Bereit zum Öffnen',
+    nextIn: 'Das nächste in {minutes} Min.',
+    shakeHint: 'Schüttle dein Handy, um es zu öffnen',
+    tapHint: 'Tippe, um es zu öffnen',
+    opening: 'Wird geöffnet…',
+    revealed: '+{amount} Tokens',
+    revealedZero: 'Diesmal leer. In einer Stunde gibt es das nächste.',
+    failed: 'Geschenk konnte nicht geöffnet werden',
+    done: 'Fertig',
+    openAccessibility: 'Stündliches Geschenk öffnen',
+  },
+
   wallet: {
     title: 'Geldbörse',
     balance: 'Guthaben',
@@ -1153,6 +1170,7 @@ export const de: Localized<EnMessages> = {
     referral: 'Einladungsbonus',
     referralSubscription: 'Einladungs-Abo-Bonus',
     referralWelcome: 'Einladungs-Willkommensbonus',
+    gift: 'Stündliches Geschenk',
   },
 
   cosmetics: {
@@ -1285,6 +1303,7 @@ export const de: Localized<EnMessages> = {
     failed: 'Dieser Code gilt nicht mehr.',
     hint: 'Jetzt nicht',
     devices: 'Angemeldete Geräte',
+    waitingForDevice: 'Warten, bis das andere Gerät die Anmeldung abgeschlossen hat…',
     thisDevice: 'dieses Gerät',
     signOutDevice: 'Abmelden',
     signOutOthers: 'Überall sonst abmelden',

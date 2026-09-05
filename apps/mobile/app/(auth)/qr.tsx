@@ -13,6 +13,13 @@ import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
+ * How long, after the phone has approved, to wait for the session store to
+ * catch up before calling the sign-in failed. Generous: the cookie is already
+ * set by then and one session fetch is all that is left.
+ */
+const SESSION_SETTLE_MS = 15_000
+
+/**
  * Sign in here by approving it on a phone that is already signed in.
  *
  * RFC 8628's device flow: this asks the server for a pair of codes, shows the
@@ -27,11 +34,15 @@ export default function QrSignInScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
-  const [state, setState] = useState<'starting' | 'waiting' | 'expired' | 'error'>('starting')
+  const [state, setState] = useState<'starting' | 'waiting' | 'approved' | 'expired' | 'error'>(
+    'starting',
+  )
   const [userCode, setUserCode] = useState('')
-  // Kept in a ref so the poll loop reads the current code without restarting
+  // Kept in refs so the poll loop reads the current values without restarting
   // itself every render, which would reset the interval and never fire.
   const deviceCode = useRef<string | null>(null)
+  const pollMs = useRef(2000)
+  const { data: session } = authClient.useSession()
 
   const start = useCallback(async () => {
     setState('starting')
@@ -44,6 +55,9 @@ export default function QrSignInScreen() {
       return
     }
     deviceCode.current = data.device_code
+    // The server says how often it will answer; polling faster earns a
+    // `slow_down`, so the number is read here rather than assumed.
+    pollMs.current = Math.max(Number(data.interval) || 2, 1) * 1000
     setUserCode(data.user_code)
     setState('waiting')
   }, [])
@@ -78,20 +92,45 @@ export default function QrSignInScreen() {
             setState('expired')
             return
           }
-          // The session cookie is set by the response; the guard in `_layout`
-          // flips as soon as the session query sees it.
+          /*
+           * The browser has the cookie, but nothing has told the session store.
+           * Better Auth's client refetches `useSession` only after a fixed list
+           * of its own endpoints, and `/device/token` is not on it — so the
+           * store still says signed out, and navigating now lands on the
+           * welcome page (which is exactly what happened). Nudge the store,
+           * show that something is happening, and leave the navigation to the
+           * effect below, which moves only once the session is actually there.
+           */
           clearInterval(timer)
-          router.replace('/')
+          setState('approved')
+          authClient.$store.notify('$sessionSignal')
         })
-    }, 5000)
+    }, pollMs.current)
     return () => clearInterval(timer)
   }, [state])
+
+  useEffect(() => {
+    if (state !== 'approved') return
+    if (session) {
+      router.replace('/')
+      return
+    }
+    const timer = setTimeout(() => setState('error'), SESSION_SETTLE_MS)
+    return () => clearTimeout(timer)
+  }, [state, session])
 
   return (
     <Screen scroll>
       <ScreenHeader title={t('qrSignIn.title')} onBack={() => router.replace('/')} />
 
       {state === 'starting' ? <ActivityIndicator style={styles.loading} /> : null}
+
+      {state === 'approved' ? (
+        <View style={styles.approved}>
+          <ActivityIndicator />
+          <Text style={styles.body}>{t('auth.signingIn')}</Text>
+        </View>
+      ) : null}
 
       {state === 'waiting' ? (
         <>
@@ -127,6 +166,7 @@ export default function QrSignInScreen() {
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { marginTop: spacing.xxl },
+  approved: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.xxl },
   card: {
     alignItems: 'center',
     backgroundColor: colors.surface,

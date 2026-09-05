@@ -910,6 +910,8 @@ export const fr: Localized<EnMessages> = {
   },
   settings: {
     subscriptionBody: 'Ton forfait, son renouvellement et sa gestion',
+    shareSection: 'Partager et inviter',
+    shareBody: 'Le lien de ton profil, ton QR code et l’invitation',
     privacyBody: 'Qui peut te trouver, et ce qui est visible',
     notificationsBody: 'Ce qui te parvient, par notification et par e-mail',
     appearanceSection: 'Apparence',
@@ -1048,6 +1050,21 @@ export const fr: Localized<EnMessages> = {
     buyFailed: 'Achat impossible',
   },
 
+  gift: {
+    title: 'Cadeau de l’heure',
+    body: 'Un petit cadeau chaque heure, gratuit. La plupart contiennent quelques tokens ; certains davantage.',
+    ready: 'Prêt à ouvrir',
+    nextIn: 'Le prochain dans {minutes} min',
+    shakeHint: 'Secoue ton téléphone pour l’ouvrir',
+    tapHint: 'Touche pour l’ouvrir',
+    opening: 'Ouverture…',
+    revealed: '+{amount} tokens',
+    revealedZero: 'Vide cette fois. Un autre dans une heure.',
+    failed: 'Impossible d’ouvrir le cadeau',
+    done: 'Terminé',
+    openAccessibility: 'Ouvrir le cadeau de l’heure',
+  },
+
   wallet: {
     title: 'Portefeuille',
     balance: 'Solde',
@@ -1138,6 +1155,7 @@ export const fr: Localized<EnMessages> = {
     referral: 'Bonus de parrainage',
     referralSubscription: 'Bonus d’abonnement filleul',
     referralWelcome: 'Bonus de bienvenue sur invitation',
+    gift: 'Cadeau de l’heure',
   },
 
   cosmetics: {
@@ -1270,6 +1288,7 @@ export const fr: Localized<EnMessages> = {
     failed: 'Ce code n’est plus valide.',
     hint: 'Pas maintenant',
     devices: 'Appareils connectés',
+    waitingForDevice: 'En attente que l’autre appareil termine sa connexion…',
     thisDevice: 'cet appareil',
     signOutDevice: 'Se déconnecter',
     signOutOthers: 'Se déconnecter partout ailleurs',

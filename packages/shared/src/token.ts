@@ -62,6 +62,14 @@ export const TOKEN_KINDS = [
    */
   'referralWelcome',
   /**
+   * The hourly gift: a small random amount handed out on request, at most
+   * once per `TOKEN_RULES.gift.cooldownMs`. Given, not earned — so it is a
+   * grant kind and stays off the week/month/year tables (see
+   * `TOKEN_GRANT_KINDS`). `refId` is the claim's own timestamp, which the
+   * atomic claim makes unique per user.
+   */
+  'gift',
+  /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
    * leaderboard ranks token *earned*, so buying a frame must never drop someone
@@ -100,6 +108,7 @@ export const TOKEN_GRANT_KINDS = [
   'referral',
   'referralSubscription',
   'referralWelcome',
+  'gift',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {
@@ -293,6 +302,27 @@ export interface TokenRules {
      */
     maxPerInvitee: number
   }
+  /**
+   * The hourly gift in the wallet's store. Free, on request, and random: the
+   * server rolls the amount from `tiers` and refuses a second claim inside
+   * `cooldownMs`. The weights are shaped so that most opens give a handful
+   * and the top of the range is rare — a small, frequent pleasure rather than
+   * a way to earn. Gift token credits the all-time bucket only.
+   */
+  gift: {
+    /** One claim per window, measured from the last successful claim. */
+    cooldownMs: number
+    /**
+     * Weighted, inclusive integer ranges, in ascending order and contiguous.
+     * Weights are relative, not percentages; `gift.test.ts` pins the shape.
+     */
+    tiers: readonly { weight: number; min: number; max: number }[]
+    /**
+     * Reserved: a ceiling on claims per UTC day. `undefined` means none, which
+     * is where it starts — the cooldown alone caps a day at 24 opens.
+     */
+    maxClaimsPerDay?: number
+  }
 }
 
 /**
@@ -363,6 +393,24 @@ export const TOKEN_RULES: TokenRules = {
     inviteeActivation: 750,
     inviteeTotal: 1000,
     maxPerInvitee: 5000,
+  },
+  gift: {
+    cooldownMs: 60 * 60 * 1000,
+    /*
+     * Roughly 11 token per open on average, and nine opens in ten give 30 or
+     * fewer. The ceiling for somebody opening every hour of the day is about
+     * 270 — beside the 200 a day that messages pay at their cap, so the gift
+     * cannot out-earn practising by much even for the most devoted opener.
+     */
+    tiers: [
+      { weight: 350, min: 0, max: 0 }, // 35.0 % — empty
+      { weight: 350, min: 1, max: 10 }, // 35.0 %
+      { weight: 230, min: 11, max: 30 }, // 23.0 %
+      { weight: 50, min: 31, max: 60 }, //  5.0 %
+      { weight: 15, min: 61, max: 120 }, //  1.5 %
+      { weight: 4, min: 121, max: 200 }, //  0.4 %
+      { weight: 1, min: 201, max: 250 }, //  0.1 %
+    ],
   },
 }
 

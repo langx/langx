@@ -292,5 +292,19 @@ export const walletSchema = z.object({
   streakFreezes: z.number().int(),
   owned: z.array(z.string()),
   equipped: equippedSchema.optional(),
+  /**
+   * The hourly gift: when the next one can be opened, or `null` when it can be
+   * opened now. Carried on the wallet so the store needs no second request.
+   */
+  gift: z.object({ nextAt: z.string().datetime().nullable() }),
 })
 export type Wallet = z.infer<typeof walletSchema>
+
+/** `POST /me/wallet/gift` */
+export const giftClaimSchema = z.object({
+  /** What the gift held. Zero is a real outcome, not an error. */
+  amount: z.number().int().nonnegative(),
+  nextAt: z.string().datetime(),
+  wallet: walletSchema,
+})
+export type GiftClaim = z.infer<typeof giftClaimSchema>

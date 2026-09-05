@@ -13,7 +13,7 @@ import type { MessageKey, TranslateFn } from '../i18n'
  * turns an id into the live control.
  */
 export type SettingsSectionId =
-  'plan' | 'privacy' | 'notifications' | 'appearance' | 'account' | 'about'
+  'plan' | 'share' | 'privacy' | 'notifications' | 'appearance' | 'account' | 'about'
 
 export interface SettingsItem {
   id: string
@@ -41,6 +41,22 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       { id: 'plan.renewal', titleKey: 'settings.plan' },
       { id: 'plan.upgrade', titleKey: 'settings.upgrade' },
       { id: 'plan.manage', titleKey: 'settings.manageSubscription' },
+    ],
+  },
+  /*
+   * Sharing and inviting lived on the Me tab as two rows under the numbers.
+   * They are things you do *with* the account rather than facts about it, so
+   * they sit here with the other things you do with the account — and the
+   * search finds them, which no row on the Me tab ever was.
+   */
+  {
+    id: 'share',
+    titleKey: 'settings.shareSection',
+    bodyKey: 'settings.shareBody',
+    route: '/(app)/settings/share',
+    items: [
+      { id: 'share.profile', titleKey: 'me.shareProfile' },
+      { id: 'share.invite', titleKey: 'me.invite', bodyKey: 'me.inviteBody' },
     ],
   },
   {
