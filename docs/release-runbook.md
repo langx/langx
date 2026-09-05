@@ -85,22 +85,11 @@ fails loudly if either is wrong — `pnpm verify:web` runs it on its own. If it
 ever fails again, purge the host (Caching → Configuration → Purge → Custom →
 Hostname `app.langx.io`) and check the cache rules.
 
-- [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
-      set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
-      fails on the first sign-up without one
-- [ ] `fly launch --no-deploy`, then `fly secrets set` for `MONGODB_URI`,
-      `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and whichever optional services
-      are being switched on. Nothing secret goes in `fly.toml` — this repo is
-      public
-- [ ] `fly certs add <host>`, with the Cloudflare record on DNS-only (grey
-      cloud) or the certificate never issues. **Turn the proxy back on once it
-      has**, and set `EDGE_SECRET` with a matching transform rule — see the
-      **Country** bullet in `docs/architecture.md`. `api.langx.io`
-      sat grey for months and the whole country feature was silently dead the
-      entire time
-- [ ] `TRUSTED_ORIGINS` includes the web origin and both app schemes, or the
-      browser drops the session cookie and sign-in appears to succeed and do
-      nothing
+The cluster, the Fly app, its secrets, the certificate, `TRUSTED_ORIGINS` and
+`EDGE_SECRET` are all in place — `api.langx.io` answers through Cloudflare's
+proxy and `/health` reports the database up. The **Country** bullet in
+`docs/architecture.md` says what the edge secret is for and why the proxy has
+to stay on.
 
 **This is ordered before the EAS build on purpose.** `EXPO_PUBLIC_API_URL` is
 compiled into the client bundle, so the host has to exist and be final before
@@ -240,25 +229,12 @@ that has the app installed, which is why they belong in a public repo.
 
 The pipeline is complete in code — a token is registered, a message send fans
 out to the recipient's devices, a nudge goes out at 20:00 local, a tapped
-notification opens the conversation — and none of it reaches a phone until
-Expo can talk to Apple and Google on our behalf. There are three separate
-pieces and missing any one of them looks identical from the app: nothing
-arrives, nothing errors.
-
-- [ ] **APNs key (iOS).** Apple Developer → Keys → a key with the Apple Push
-      Notifications service enabled. `eas credentials` uploads it. One key
-      covers development and production.
-- [ ] **FCM v1 service account (Android).** Firebase console → Project
-      settings → Service accounts → generate a private key, then upload the
-      JSON with `eas credentials`. The legacy server key is gone; FCM v1 is
-      the only option now.
-- [ ] **`google-services.json` in the build.** The same Firebase project's
-      Android app config, which carries the sender id the client registers
-      with. It is gitignored — this repo is public — so point
-      `GOOGLE_SERVICES_JSON` at a local path or an EAS file secret.
-      `app.config.ts` only sets `googleServicesFile` when that variable is
-      present, so a build without it succeeds and simply never receives a
-      remote notification.
+notification opens the conversation — and all three credentials it needs are
+in EAS: the APNs key, the FCM v1 service account, and `GOOGLE_SERVICES_JSON`
+as a file variable on every environment (`app.config.ts` only sets
+`googleServicesFile` when that variable is present, so a build without it
+succeeds and simply never receives a remote notification). Missing or wrong,
+any one of them looks identical from the app: nothing arrives, nothing errors.
 
 The Firebase project must use the same package name,
 `tech.newchapter.languageXchange`. A mismatch registers tokens that Expo
@@ -281,21 +257,19 @@ credentials before running the streak reminder against real users.
 ## Email needs a verified sender and a secret that is never rotated
 
 Push reaches a phone once Apple and Google are configured. Notification email
-reaches an inbox once three things are true, and the first is the one that
-takes days rather than minutes.
+reaches an inbox once three things are true. Two of them are: `langx.io` is a
+verified sending domain in Resend (its DKIM record and the `send.` subdomain's
+MX are live in Cloudflare DNS), and `EMAIL_UNSUBSCRIBE_SECRET` is set on Fly.
+**That secret must never be rotated.** It signs the unsubscribe link in every
+notification email ever sent, and those links live in inboxes for years —
+rotating it breaks all of them at once, which is the legal way out of the
+mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and inherits exactly
+that problem.
 
-- [ ] **A verified sending domain.** Resend → Domains → `langx.io`, then the
-      SPF, DKIM and DMARC records it prints, in Cloudflare DNS. Until this is
-      done `EMAIL_FROM` has to stay on `onboarding@resend.dev`, which works but
-      puts a stranger's domain on every email the app sends.
-- [ ] **`EMAIL_FROM` pointed at it**, e.g. `LangX <hello@langx.io>`. The TODO
-      in `env.ts` comes out with it.
-- [ ] **`EMAIL_UNSUBSCRIBE_SECRET` set**, `openssl rand -base64 32`.
-      **Generate once and never rotate it.** It signs the unsubscribe link in
-      every notification email ever sent, and those links live in inboxes for
-      years — rotating it breaks all of them at once, which is the legal way
-      out of the mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and
-      inherits exactly that problem.
+- [ ] **`EMAIL_FROM` pointed at the verified domain**, e.g.
+      `LangX <hello@langx.io>`. The secret exists on Fly but its value has not
+      been read back; the default in `env.ts` is still `onboarding@resend.dev`,
+      which works but puts a stranger's domain on every email the app sends.
 
 Read one before anybody else does: leave `RESEND_API_KEY` unset locally and the
 sender prints each message to the log instead, headers included.
@@ -426,64 +400,29 @@ use. It belongs before the rollout widens, not in the first patch after it.
 
 ## Design pass — the app does not look like LangX yet
 
-Two things are wrong with how v2 looks, and only one of them is a matter of
-taste.
-
-The first is not. `apps/mobile/app.config.ts` sets no `icon`, no `splash`, no
-`android.adaptiveIcon` and no `web.favicon`, and there is no image file
-anywhere in this repo. Every build so far has shipped Expo's default icon.
-That blocks submission on its own, and it is invisible while developing,
-because a dev client shows its own icon instead.
-
-The second is that the code and the store have drifted apart. What users
-recognise is v1's identity, and it is still consistent everywhere it is
-served: amber `#ffc409` with orange `#ff571a`, the two-arc exchange mark,
-Comfortaa — on langx.io, on token.langx.io, in every store screenshot, in the
-Windows tile colour. `apps/mobile/src/lib/theme.ts` uses none of it: `primary`
-is near-black `#111113`, `accent` is blue, and there is no yellow in the app
-at all. The website still holds the old palette while borrowing `pro`,
-`streak` and `accent` back from `theme.ts`, so the two surfaces have already
-half-merged into a third thing nobody designed. Ship it as-is and the icon,
-the screenshots and the app disagree with each other in the same listing.
+The app side of this is done. `apps/mobile/app.config.ts` wires the icon, the
+splash (light and dark) and the Pro alternate icon; `src/lib/theme/tokens.ts`
+holds the v3 palette in both colour schemes behind `ThemeProvider`; Nunito is
+loaded through `expo-font`; the tab bar draws Feather glyphs; and
+`components/ui/Button.tsx` and `FormField.tsx` carry no stray hex. What is
+left is the site and the store assets. The emoji that remain are data (country
+flags, message reactions) or copy (the ✦ Pro marker and the strings in the
+i18n catalogues), not icons.
 
 This sits before **Release** rather than in it on purpose: the icon and the
 screenshots are part of the submission, not part of the rollout.
 
-Two constraints on whatever gets decided. `docs/token-messaging-brief.md`
-rules out coin, chain and wallet iconography — that is an App Review question
-(3.1.5(b)), not a stylistic one. And `packages/shared/src/cosmetics.ts` sells
-`frame.gold` as a rank, so if the brand colour stays amber, gold has to read
-as something bought rather than as the product.
+Two constraints still apply. `docs/token-messaging-brief.md` rules out coin,
+chain and wallet iconography — that is an App Review question (3.1.5(b)), not
+a stylistic one. And `packages/shared/src/cosmetics.ts` sells `frame.gold` as
+a rank, so gold has to read as something bought rather than as the product.
 
-- [ ] Decide the identity first: keep v1's amber and orange, or make the
-      black-and-blue drift in `theme.ts` official. This ships as an update to
-      the existing listings, so a changed icon on a returning user's home
-      screen is a cost being chosen, not a free redraw
-- [ ] One source per surface — `theme.ts` for the app, `_themes.scss` and
-      `_variables.scss` for the site. The site's `define-color` mixin emits
-      the `-rgb` and `-contrast` variants that components composite against;
-      replacing it with flat hex breaks `Button`, `Tag` and `Waves`. Radius
-      and the first six spacing steps already match across the two, and
-      should stay matched
-- [ ] Dark mode in the app. `userInterfaceStyle: 'automatic'` has been set
-      all along with nothing behind it, while the site has had three-state
-      theming since launch. `colors` is a module constant that 41
-      `StyleSheet.create` calls capture at load, so this is the one item that
-      is not a value swap
-- [ ] A typeface. The app loads no font and renders in the platform default;
-      the site's headings are Comfortaa. `expo-font` is already a dependency
-- [ ] Replace the emoji icons, the tab bar in `app/(app)/_layout.tsx`
-      included, with a real icon set. They became the house style by
-      accident, and they draw differently on every platform
-- [ ] Move `components/ui/Button.tsx` and `FormField.tsx` onto the tokens.
-      Both predate `theme.ts` and hold most of the stray hex left in the app;
-      fixing those two reaches 22 and 7 screens respectively
-- [ ] Give the cosmetic tiers real colours. `cosmetics.ts` names bronze,
-      silver and gold and defines no values, so nothing can render them today
-- [ ] Produce the icon, splash, adaptive icon and favicon and wire them into
-      `app.config.ts`. `branding/` has no vector master — its only SVG is an
-      auto-trace — and its `splash.png` is 3601×3600, so none of it can be
-      reused unaltered
+- [ ] Bring the site onto the same identity, one source per surface:
+      `tokens.ts` for the app, `_themes.scss` and `_variables.scss` for the
+      site. The site's `define-color` mixin emits the `-rgb` and `-contrast`
+      variants that components composite against; replacing it with flat hex
+      breaks `Button`, `Tag` and `Waves`. Radius and the first six spacing
+      steps already match across the two, and should stay matched
 - [x] Profile screens show account age ("Registered 3 months ago", the unit
       widening from days to months to years as the account gets older) and a
       Verified Email badge. The DTO is `PublicProfile` in
@@ -554,17 +493,17 @@ months bought one at a time, in every storefront:
       claim the next time one moved
 - [x] Both strings go through `src/i18n/messages/en.ts`, `freeTrial` as a
       plural, translated into all eight locales
-- [ ] State the terms in full wherever the trial is advertised: how long it
-      runs, **then what it renews at**. The caption says "7 days free" and the
-      button under it says the price, which is close but does not spell out the
-      sequence; the footer carries the general renewal sentence. Guideline
-      3.1.2 wants the trial's own terms beside the offer, not only in the small
-      print — worth one more copy pass before a paid tier goes live
-- [ ] Nobody has seen this on a device yet. It is covered by
-      `src/lib/planSaving.test.ts` and by types, and the fake store
-      (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) now carries a trial and a real
-      ratio so the harness exercises the row — but the screen itself has not
-      been looked at since the change. Check it in the next build
+- [x] The terms are stated in full beside the offer: `paywall.trialTerms`
+      reads "7 days free, then $49.99 a year", built from the store's own
+      price string and a per-period phrase, in all eight catalogues. Guideline
+      3.1.2 wants the trial's own terms beside the offer, not only in the
+      footer's renewal sentence
+- [ ] Seen in a browser, not yet on a device. On 5 September 2026 the web
+      build with the fake store (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) drew
+      "7 days free, then TEST $39.99 a year · Save 33%" above the yearly
+      button — `tools/ext-lab/check-glyphs-and-trial.mjs` is the script that
+      looked. `src/lib/planSaving.test.ts` and the types cover the numbers.
+      Check the native paywall in the next build
 
 ## Prerequisites that are business process, not code
 
@@ -577,13 +516,24 @@ of it runs together.
 
 - [ ] Paid apps agreement accepted (Apple + Google)
 - [ ] Bank and tax details submitted
-- [ ] Subscription group + products created in App Store Connect
-- [ ] Subscription products created in Play Console
+- [ ] Subscription group + products created in App Store Connect. **Both
+      tiers in one group, Polyglot ranked above Fluent.** That ranking is the
+      whole upgrade mechanism on iOS: the paywall calls the same
+      `purchasePackage` for an upgrade as for a first purchase, and StoreKit
+      swaps the subscription and refunds Fluent's unused time only because
+      the group says Polyglot is the higher level. Two groups, or the ranks
+      reversed, and a Fluent subscriber ends up paying for both
+- [ ] Subscription products created in Play Console — Fluent and Polyglot as
+      **two subscription products**, monthly and yearly as base plans of
+      each. The paywall passes Play the product being left and
+      `CHARGE_PRORATED_PRICE`, so the upgrade charges the difference for the
+      rest of the period; that needs the Fluent product id to be what
+      RevenueCat reports in `activeSubscriptions`, which it is by default
 - [ ] RevenueCat project connected to both, API keys issued. The webhook is a
       separate step and needs the API deployed first — see above
-- [ ] Google OAuth client created (Web application type) and
-      `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set. Authorized redirect URIs
-      are the API's callback, one per environment —
+- [x] Google OAuth client created and `GOOGLE_CLIENT_ID` /
+      `GOOGLE_CLIENT_SECRET` set on Fly. Authorized redirect URIs are the
+      API's callback, one per environment —
       `https://api.langx.io/api/auth/callback/google` and
       `http://localhost:4000/api/auth/callback/google`. There is no third one
       for a phone: Google refuses a private LAN address, so a development build
@@ -614,12 +564,13 @@ of it runs together.
       address at runtime; a released build has no dev server and would ship
       pointing at the phone itself, which is what this item existed to
       prevent
-- [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
-      the paywall screen (which today states the offer and says purchase is not
-      yet enabled — deliberately, rather than shipping a button that cannot work).
-      All three are empty, so `isPurchasesAvailable()` is false on every
-      platform. Setting `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough
-      to exercise the whole paywall before the store products exist
+- [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set. `react-native-purchases` is wired
+      into the paywall through `lib/purchases.ts`, but `eas.json` carries no
+      RevenueCat key, so `isPurchasesAvailable()` is false in every store
+      build and the screen says purchase is not yet enabled — deliberately,
+      rather than shipping a button that cannot work. Setting
+      `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough to exercise the
+      whole paywall before the store products exist
 - [x] **Translation is configured on production** as of 5 September 2026.
       The provider (`apps/api/src/translation/`), the per-tier quotas and the
       cache shipped in Faz 6 but ran against no credentials for two days —
@@ -742,18 +693,10 @@ before either runs.
       `langx-media-dev` bucket (same region, localhost-only CORS, its own
       key), which is what `.env` points at — so nothing tested on a laptop
       can land next to migrated user media
-- [ ] Decide the public base URL **before the first real upload and before
-      the ETLs**: `https://f003.backblazeb2.com/file/langx-media` (the shape the dev
-      `.env` uses today, with `-dev`) or `https://media.langx.io/file/langx-media` behind
-      Cloudflare (free egress; needs one proxied CNAME to
-      `f003.backblazeb2.com`). Whatever is stored is permanent — see the
-      self-host doc for why
-- [ ] `fly secrets set STORAGE_*` on `langx-api`, pointing at `langx-media`.
-      Create a fresh bucket-scoped key for it at that moment with
-      `b2 key create --bucket langx-media ...` — B2 shows a secret once, and the one made on
-      2 September was not kept. Not set as of 2 September 2026; the deploy's
-      upload endpoints still answer "Storage is not configured". Setting
-      secrets restarts the machine
+      All six `STORAGE_*` secrets, `STORAGE_PUBLIC_BASE_URL` included, are set on
+      `langx-api`, and the profile ETL has already written media URLs into
+      production's staged records — so the public base URL is decided and
+      permanent. See the self-host doc for why it cannot change now.
 
 1. Run the reservation ETL: `tsx scripts/migrate-appwrite.ts --apply`
    (dry run first — last verified 3479 profiles → 3401 reservation candidates)
@@ -906,8 +849,10 @@ leaves nobody able to push a fix to it. Do these first, in order:
       header is present" and an empty board (checked on token.langx.io the
       same day). After any deploy that touches CORS, verify with the command
       under this list — the header, not the status
-- [ ] Confirm every migrated client takes its version and maintenance flags
-      from v2's `appConfig` route and `middleware/maintenance.ts`
+- [x] Every v2 client takes its version and maintenance flags from
+      `GET /app-config` and `middleware/maintenance.ts`: `AppGate` renders the
+      maintenance and update-required screens from that response, and
+      `routes/appConfig.test.ts` covers both the route and the gate
 - [x] ~~Let the v0.15 install base drain far enough that losing `/api/update`
       strands nobody~~ — overtaken. The repoint on 3 September 2026 took
       `/api/update` down with it, so a v0.15 install can no longer be told to

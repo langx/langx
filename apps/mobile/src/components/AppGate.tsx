@@ -1,34 +1,38 @@
+import Feather from '@expo/vector-icons/Feather'
 import * as Updates from 'expo-updates'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useSignalAppReady } from '../hooks/useAppReady'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 import { STORE_URL } from '../lib/storeListing'
 
 function Blocked({
-  emoji,
+  icon,
   title,
   body,
   actionLabel,
   onAction,
 }: {
-  emoji: string
+  icon: keyof typeof Feather.glyphMap
   title: string
   body: string
   actionLabel?: string
   onAction?: () => void
 }) {
+  const { colors } = useTheme()
   const styles = useStyles()
 
   return (
     <Screen>
       <View style={styles.root}>
-        <Text style={styles.emoji}>{emoji}</Text>
+        <View style={styles.icon}>
+          <Feather name={icon} size={48} color={colors.textMuted} />
+        </View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.body}>{body}</Text>
         {actionLabel && onAction ? (
@@ -95,7 +99,7 @@ export function AppGate({ children }: { children: ReactNode }) {
     const message = data.maintenance.message || t('gate.maintenanceBody')
     return (
       <Blocked
-        emoji="🔧"
+        icon="tool"
         title={t('gate.maintenanceTitle')}
         body={until ? t('gate.maintenanceUntil', { message, until }) : message}
         actionLabel={t('common.tryAgain')}
@@ -107,7 +111,7 @@ export function AppGate({ children }: { children: ReactNode }) {
   if (data?.updateRequired) {
     return (
       <Blocked
-        emoji="⬆️"
+        icon="arrow-up-circle"
         title={t('gate.updateTitle')}
         body={t('gate.updateBody')}
         actionLabel={checkingUpdate ? t('common.checking') : t('common.update')}
@@ -142,7 +146,7 @@ export function AppGate({ children }: { children: ReactNode }) {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   root: { alignItems: 'center', paddingHorizontal: spacing.xl },
-  emoji: { fontSize: 48, marginBottom: spacing.lg },
+  icon: { marginBottom: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.sm, textAlign: 'center' },
   body: { ...font.body, color: colors.textMuted, textAlign: 'center' },
   action: { marginTop: spacing.xl, minWidth: 200 },

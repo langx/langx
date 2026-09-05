@@ -61,16 +61,11 @@ describe('badge catalogue', () => {
   })
 
   /**
-   * The grid draws `icon` directly. `null` is the streak's emoji; anything
-   * else has to be a Feather name, and an empty string would render nothing at
-   * all in a slot sized for a glyph.
+   * The grid draws `icon` directly, so it has to be a Feather name — an empty
+   * string would render nothing at all in a slot sized for a glyph.
    */
-  it('gives every badge an icon or the emoji slot', () => {
+  it('gives every badge an icon', () => {
     for (const badge of BADGES) {
-      if (badge.icon === null) {
-        expect(badge.kind, badge.id).toBe('streak')
-        continue
-      }
       expect(badge.icon.length, badge.id).toBeGreaterThan(0)
     }
   })

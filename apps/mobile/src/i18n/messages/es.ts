@@ -1390,6 +1390,20 @@ export const es: Localized<EnMessages> = {
     quotaNotice:
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
+    lifetimeNotice: 'Tienes {plan} de por vida. Nada se renueva ni se cobra.',
+    lifetimeKept:
+      '{plan} de por vida sigue siendo tuyo. Si {plus} termina algún día, vuelves a él.',
+    includedIn: 'Incluido en {plan}.',
+    upgradeNotice:
+      'Al pasar de {plan}: la tienda cobra solo la diferencia por lo que queda del periodo actual, y {plan} termina.',
+    upgradeWeb:
+      'Tu plan {plan} se compró en la web. Cámbialo en el portal de facturación; el tiempo no usado se reembolsa.',
+    changePlan: 'Cambiar de plan',
+    upgradeElsewhere:
+      'Tu plan {plan} se compró a través de {store}. Cámbialo allí para que no se te cobre dos veces.',
+    storeIos: 'la App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'la web',
     purchaseFailed: 'Esa compra no se completó. No se ha cobrado nada.',
     purchaseUnavailable: 'Las compras no están disponibles en este dispositivo.',
     nothingToRestore: 'No hay nada que restaurar en este dispositivo.',
@@ -1398,7 +1412,13 @@ export const es: Localized<EnMessages> = {
     legal:
       'Las suscripciones se renuevan automáticamente hasta que se cancelan. Puedes cancelar cuando quieras desde tu cuenta de Apple o Google: la cancelación detiene la siguiente renovación y mantiene el acceso hasta el final del periodo en curso.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} día gratis', other: '{count} días gratis' },
+    trialTerms: {
+      one: '{count} día gratis, después {price} {period}',
+      other: '{count} días gratis, después {price} {period}',
+    },
+    perMonth: 'al mes',
+    perYear: 'al año',
+    perLifetime: 'una sola vez',
     saving: 'Ahorra un {percent}%',
     terms: 'Términos',
     privacy: 'Privacidad',

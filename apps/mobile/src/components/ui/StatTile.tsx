@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
 import type { CalloutTone } from './Callout'
@@ -5,6 +6,12 @@ import type { CalloutTone } from './Callout'
 interface StatTileProps {
   value: string
   label: string
+  /**
+   * A Feather glyph drawn before the numeral, in the numeral's colour. The
+   * streak tiles used to glue "🔥" into `value`, which put an emoji — drawn
+   * differently on every platform — inside a string that is also read aloud.
+   */
+  icon?: keyof typeof Feather.glyphMap
   /** Omit for plain ink; a tone colours the *numeral* — v3 has no filled tiles. */
   tone?: CalloutTone
   onPress?: () => void
@@ -16,7 +23,7 @@ interface StatTileProps {
  * survives as the numeral's colour (the corrections count is green), and the
  * row underneath them draws the divider.
  */
-export function StatTile({ value, label, tone, onPress }: StatTileProps) {
+export function StatTile({ value, label, icon, tone, onPress }: StatTileProps) {
   const { colors } = useTheme()
   const styles = useStyles()
   const toneColour =
@@ -32,7 +39,10 @@ export function StatTile({ value, label, tone, onPress }: StatTileProps) {
 
   const body = (
     <>
-      <Text style={[styles.value, toneColour ? { color: toneColour } : null]}>{value}</Text>
+      <View style={styles.valueRow}>
+        {icon ? <Feather name={icon} size={18} color={toneColour ?? colors.text} /> : null}
+        <Text style={[styles.value, toneColour ? { color: toneColour } : null]}>{value}</Text>
+      </View>
       <Text style={styles.label}>{label}</Text>
     </>
   )
@@ -53,6 +63,7 @@ export function StatTile({ value, label, tone, onPress }: StatTileProps) {
 const useStyles = makeStyles(({ colors, font }) => ({
   tile: { flex: 1, gap: 2 },
   pressed: { opacity: 0.6 },
+  valueRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
   value: { ...font.heading, color: colors.text, fontSize: 24 },
   label: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
 }))

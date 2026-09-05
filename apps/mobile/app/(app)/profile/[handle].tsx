@@ -351,7 +351,11 @@ export default function ProfileScreen() {
       */}
       {summary.data ? (
         <View style={styles.stats}>
-          <StatTile label={t('me.dayStreak')} value={`🔥 ${summary.data.streak.current}`} />
+          <StatTile
+            icon="zap"
+            label={t('me.dayStreak')}
+            value={String(summary.data.streak.current)}
+          />
           <StatTile
             tone="success"
             label={t('me.corrections')}

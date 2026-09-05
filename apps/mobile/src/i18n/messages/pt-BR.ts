@@ -1386,6 +1386,19 @@ export const ptBR: Localized<EnMessages> = {
     quotaNotice:
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
+    lifetimeNotice: 'Você tem {plan} para sempre. Nada renova e nada é cobrado.',
+    lifetimeKept: '{plan} para sempre continua seu. Se {plus} acabar um dia, você volta para ele.',
+    includedIn: 'Incluído no {plan}.',
+    upgradeNotice:
+      'Mudando do {plan}: a loja cobra só a diferença pelo resto do período atual, e o {plan} termina.',
+    upgradeWeb:
+      'Seu plano {plan} foi comprado na web. Mude no portal de cobrança; o tempo não usado é reembolsado.',
+    changePlan: 'Mudar de plano',
+    upgradeElsewhere:
+      'Seu plano {plan} foi comprado pela {store}. Mude por lá, para não ser cobrado duas vezes.',
+    storeIos: 'App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'web',
     purchaseFailed: 'Essa compra não foi concluída. Nada foi cobrado.',
     purchaseUnavailable: 'Compras não estão disponíveis neste aparelho.',
     nothingToRestore: 'Não há nada para restaurar neste aparelho.',
@@ -1394,7 +1407,13 @@ export const ptBR: Localized<EnMessages> = {
     legal:
       'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser na sua conta da Apple ou do Google — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} dia grátis', other: '{count} dias grátis' },
+    trialTerms: {
+      one: '{count} dia grátis, depois {price} {period}',
+      other: '{count} dias grátis, depois {price} {period}',
+    },
+    perMonth: 'por mês',
+    perYear: 'por ano',
+    perLifetime: 'uma única vez',
     saving: 'Economize {percent}%',
     terms: 'Termos',
     privacy: 'Privacidade',

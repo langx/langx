@@ -5,9 +5,14 @@ import {
   PLAN_LIMITS,
   PRO_BENEFITS,
   PRO_PLUS_BENEFITS,
+  planChangeFor,
+  platformOfStore,
   tierUnlocking,
   type BillingPeriod,
+  type BillingPlatform,
+  type HeldPlan,
   type PaidPlanTier,
+  type PlanChange,
   type PlanFeature,
   type ProBenefit,
   type ProPlusBenefit,
@@ -15,39 +20,55 @@ import {
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native'
-import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api/queries'
+import { ActivityIndicator, Linking, Platform, Pressable, Text, View } from 'react-native'
+import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
+import { isFakePurchasesEnabled } from '../../src/lib/fakePurchases'
 import { yearlySavingPercent } from '../../src/lib/planSaving'
 import {
   getOffers,
   isPurchasesAvailable,
   purchaseOffer,
   restorePurchases,
+  storeManagementUrl,
   type PurchaseOffer,
 } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
 import { useT, type MessageKey } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
-
-/**
- * Both dated 7 June 2024 and, per `architecture.md:101`, **still missing the
- * subscription clauses** — renewal, cancellation, the token's
- * non-transferability. Linking to them is required on a screen that sells a
- * subscription; the documents themselves have to be updated before this ships
- * to a store, and that is a writing task, not a code one.
- */
-const TERMS_URL = 'https://langx.io/terms-conditions'
-const PRIVACY_URL = 'https://langx.io/privacy-policy'
 
 const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
   monthly: 'paywall.monthly',
   yearly: 'paywall.yearly',
   lifetime: 'paywall.lifetime',
+}
+
+/** Where a plan bought elsewhere has to be changed, as the sentence names it. */
+const STORE_NAME: Record<BillingPlatform, MessageKey> = {
+  ios: 'paywall.storeIos',
+  android: 'paywall.storeAndroid',
+  web: 'paywall.storeWeb',
+}
+
+/** This build's store, in `planChangeFor`'s vocabulary. */
+const PLATFORM: BillingPlatform =
+  Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web'
+
+/**
+ * The period as it reads after a price — "a year", not "Yearly" — for the
+ * trial caption. A separate key rather than the label lower-cased: case is
+ * not a string operation in every locale, and the two are different words in
+ * most of them.
+ */
+const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
+  monthly: 'paywall.perMonth',
+  yearly: 'paywall.perYear',
+  lifetime: 'paywall.perLifetime',
 }
 
 /**
@@ -196,6 +217,10 @@ export default function PaywallScreen() {
   const quota = useQuota()
   const refresh = useRefreshEntitlement()
   const tier = useEffectiveTier()
+  const me = useMe()
+  // The store beside the tier: the same tier is a swap, a second purchase or
+  // a dead end depending on who sold it, and `planChangeFor` decides which.
+  const held: HeldPlan = { tier, store: tier === 'free' ? null : me.data?.entitlement?.store }
   const remaining = quota.data?.initiations.remaining
 
   // `null` while the store is still being asked. Distinguishing that from "the
@@ -223,15 +248,20 @@ export default function PaywallScreen() {
     track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier } })
   }, [])
 
-  async function buy(offerId: string): Promise<void> {
+  async function buy(offerId: string, change: PlanChange): Promise<void> {
     setNotice(null)
     setBusyOfferId(offerId)
     // The client's view of the store sheet, for the funnel. Revenue truth
     // comes from RevenueCat's own integration, not from here.
     const chosen = offers?.find((offer) => offer.id === offerId)
-    const sale = { offer: offerId, tier: chosen?.tier ?? null, period: chosen?.period ?? null }
+    const sale = {
+      offer: offerId,
+      tier: chosen?.tier ?? null,
+      period: chosen?.period ?? null,
+      change,
+    }
     track({ name: 'purchase_started', properties: sale })
-    const outcome = await purchaseOffer(offerId)
+    const outcome = await purchaseOffer(offerId, change)
     track({ name: 'purchase_finished', properties: { ...sale, outcome } })
     setBusyOfferId(null)
 
@@ -247,6 +277,26 @@ export default function PaywallScreen() {
     // someone their own choice failed is how a paywall teaches them it is broken.
     if (outcome === 'failed') setNotice(t('paywall.purchaseFailed'))
     if (outcome === 'unavailable') setNotice(t('paywall.purchaseUnavailable'))
+  }
+
+  /**
+   * A web upgrade happens in RevenueCat's portal, not in a checkout: the
+   * portal swaps the plan and refunds the unused time, which the SDK's
+   * `purchase` cannot do — it would open a second subscription beside the
+   * first. So the button goes there, and the tier follows on the next refresh.
+   */
+  async function changePlanInPortal(): Promise<void> {
+    setNotice(null)
+    const url = await storeManagementUrl()
+    if (!url) {
+      setNotice(t('paywall.purchaseUnavailable'))
+      return
+    }
+    track({
+      name: 'purchase_started',
+      properties: { offer: 'portal', tier: 'pro_plus', period: null, change: 'portal' },
+    })
+    await Linking.openURL(url)
   }
 
   async function restore(): Promise<void> {
@@ -296,7 +346,9 @@ export default function PaywallScreen() {
           ) : null}
           {tier !== 'free' ? (
             <Text style={styles.contextText}>
-              {t('paywall.manageNotice', { plan: TIER_NAMES[tier] })}
+              {held.store === 'promotional'
+                ? t('paywall.lifetimeNotice', { plan: TIER_NAMES[tier] })
+                : t('paywall.manageNotice', { plan: TIER_NAMES[tier] })}
             </Text>
           ) : null}
         </View>
@@ -309,9 +361,10 @@ export default function PaywallScreen() {
           key={paidTier}
           tier={paidTier}
           offers={offers}
-          currentTier={tier}
+          held={held}
           busyOfferId={busyOfferId}
           onBuy={buy}
+          onChangePlan={changePlanInPortal}
         />
       ))}
 
@@ -349,17 +402,32 @@ export default function PaywallScreen() {
 interface TierSectionProps {
   tier: PaidPlanTier
   offers: PurchaseOffer[] | null
-  currentTier: string
+  held: HeldPlan
   busyOfferId: string | null
-  onBuy: (offerId: string) => Promise<void>
+  onBuy: (offerId: string, change: PlanChange) => Promise<void>
+  onChangePlan: () => Promise<void>
 }
 
-function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSectionProps) {
+function TierSection({ tier, offers, held, busyOfferId, onBuy, onChangePlan }: TierSectionProps) {
   const styles = useStyles()
   const t = useT()
 
   const tierOffers = offers?.filter((offer) => offer.tier === tier) ?? []
-  const isCurrent = currentTier === tier
+  /*
+   * Was `currentTier === tier`, which disabled the plan held and nothing
+   * else: a Polyglot subscriber could buy Fluent underneath it, and a Fluent
+   * subscriber tapping Polyglot opened a second subscription beside the first
+   * on Play and on the web. What a tap means depends on the tier *and* the
+   * store that sold it, and `planChangeFor` is the one place that is decided.
+   */
+  const change = planChangeFor(held, tier, PLATFORM)
+  const heldName = held.tier === 'free' ? '' : TIER_NAMES[held.tier]
+  const boughtOn = platformOfStore(held.store)
+  const isCurrent = change === 'covered' || change === 'elsewhere'
+  // The web's upgrade is a portal, not a checkout — see `changePlanInPortal`.
+  // Not under the harness, which has no portal and answers `PRODUCT_CHANGE`
+  // to a second purchase the way a store would.
+  const viaPortal = change === 'upgrade' && PLATFORM === 'web' && !isFakePurchasesEnabled()
 
   // The yearly plan is the screen's one committing (yellow) action; every
   // other offer is an outline. When the store returns no yearly, the first
@@ -403,12 +471,43 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
             })}
       </View>
 
+      {/*
+        What the buttons below will do to the plan already held, said before
+        the tap rather than discovered on the receipt. App Review 3.1.2 wants
+        the terms beside the offer; a second subscription nobody meant to
+        start is the failure the other three sentences prevent.
+      */}
+      {change === 'covered' && held.tier !== tier ? (
+        <Text style={styles.changeNotice}>{t('paywall.includedIn', { plan: heldName })}</Text>
+      ) : change === 'upgrade' && !viaPortal ? (
+        <Text style={styles.changeNotice}>{t('paywall.upgradeNotice', { plan: heldName })}</Text>
+      ) : viaPortal ? (
+        <Text style={styles.changeNotice}>{t('paywall.upgradeWeb', { plan: heldName })}</Text>
+      ) : change === 'elsewhere' && boughtOn ? (
+        <Text style={styles.changeNotice}>
+          {t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })}
+        </Text>
+      ) : change === 'buy' && held.store === 'promotional' ? (
+        <Text style={styles.changeNotice}>
+          {t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[tier] })}
+        </Text>
+      ) : null}
+
       {offers === null ? (
         <ActivityIndicator style={styles.offersLoading} />
       ) : tierOffers.length === 0 ? (
         <Text style={styles.unavailable}>
           {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
         </Text>
+      ) : viaPortal ? (
+        <View style={styles.offerFirst}>
+          <PlusOfferButton
+            label={t('paywall.changePlan')}
+            loading={false}
+            disabled={busyOfferId !== null}
+            onPress={() => void onChangePlan()}
+          />
+        </View>
       ) : tier === 'pro' ? (
         orderedOffers.map((offer, index) => (
           <View key={offer.id} style={index === 0 ? styles.offerFirst : styles.offerNext}>
@@ -418,7 +517,7 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
               variant={offer === featured ? 'primary' : 'secondary'}
               loading={busyOfferId === offer.id}
               disabled={offerDisabled(offer)}
-              onPress={() => onBuy(offer.id)}
+              onPress={() => onBuy(offer.id, change)}
             />
           </View>
         ))
@@ -430,7 +529,7 @@ function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSect
               label={offerLabel(offer)}
               loading={busyOfferId === offer.id}
               disabled={offerDisabled(offer)}
-              onPress={() => void onBuy(offer.id)}
+              onPress={() => void onBuy(offer.id, change)}
             />
           </View>
         ))
@@ -467,9 +566,18 @@ function OfferCaption({
 
   return (
     <View style={styles.caption}>
+      {/*
+        The whole sequence — how long the trial runs and what it renews at —
+        beside the offer, not only in the footer's small print. App Review
+        guideline 3.1.2 asks for the trial's own terms next to the trial.
+      */}
       {offer.freeTrialDays !== null ? (
         <Text style={styles.captionTrial}>
-          {t('paywall.freeTrial', { count: offer.freeTrialDays })}
+          {t('paywall.trialTerms', {
+            count: offer.freeTrialDays,
+            price: offer.priceString,
+            period: t(PERIOD_PHRASE[offer.period]),
+          })}
         </Text>
       ) : null}
       {saving !== null ? (
@@ -599,6 +707,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   captionSaving: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   offersLoading: { marginTop: spacing.lg },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
+  changeNotice: { color: colors.textMuted, fontSize: 13, lineHeight: 20, marginTop: spacing.md },
 
   plusOffer: {
     alignItems: 'center',

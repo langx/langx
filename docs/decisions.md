@@ -3305,3 +3305,51 @@ sheet, because the OS may decline silently and asking again tomorrow would
 spend the same ration twice. Settings → About gets a plain "Rate LangX" row
 that opens the listing itself — a row somebody taps on purpose must always
 lead somewhere, and the sheet cannot promise that.
+
+## Fluent to Polyglot: the store swaps the plan, the paywall says what will happen
+
+Until 5 September 2026 the paywall disabled the tier held and nothing else.
+A Fluent subscriber tapping Polyglot ran the ordinary first-purchase call on
+every store, and a Polyglot subscriber could buy Fluent underneath. On iOS
+that happens to work — both products sit in one subscription group and
+StoreKit swaps them — but Play opens a second subscription beside the first
+unless it is told which one is being replaced, and RevenueCat's web checkout
+has no notion of replacing at all. Nobody had been through the scenario, and
+the screen said nothing about it either way.
+
+What a tap means is now one function, `planChangeFor` in `packages/shared`,
+with four answers. **Covered**: the tier held or a lower one — disabled, with
+"Included in Polyglot" above Fluent, since a downgrade is the store's own flow
+and buying less for more is not a thing to offer. **Upgrade**: a paid plan
+bought on this platform's store. iOS calls `purchasePackage` as before and the
+group does the rest; Android passes `StoreProductChangeInfo` with the product
+being left (from `activeSubscriptions`, `rc_promo_*` grants skipped, base
+plan stripped) and `CHARGE_PRORATED_PRICE`, so the difference is charged for
+the rest of the period — the same outcome Apple produces on its own, which is
+why one sentence describes both. The web goes to RevenueCat's portal, where
+upgrades are immediate with a refund of unused time; the SDK's `purchase`
+would have started a second Stripe subscription. **Elsewhere**: a plan bought
+on another platform's store — disabled, with a sentence naming where to change
+it, because the alternative is two subscriptions and one very reasonable
+refund request. **Buy**: the free tier, or a promotional grant.
+
+The last case is the v1 loyalty gift, and it is the one that needed the
+harness fixed rather than the paywall. Nothing sold the gift, so nothing can
+prorate against it: a gifted Fluent buys Polyglot outright, holds both at
+RevenueCat, resolves to Polyglot while it runs (`ENTITLEMENT_PRECEDENCE`) and
+is back on Fluent — not free — when it lapses, because `EXPIRATION` reconciles
+against the subscriber record and the promotional `pro` is still there. The
+fake store used to keep one record per subscriber and a purchase overwrote the
+grant, so this could pass in production and fail on every laptop; it now holds
+the two separately and answers a second purchase with `PRODUCT_CHANGE`, and
+`billingTestStore.test.ts` walks the whole sequence through the real webhook
+handler. Two smaller things followed. A lifetime holder was offered "Manage or
+cancel" pointing at a store subscriptions page with nothing on it, and now is
+not; and the paywall tells them the gift stays underneath whatever they buy.
+
+`inspect-lifetime-cohort.ts` answered the question the thresholds had been
+carrying as a comment: against production's staged records, exactly ten
+wallets clear the Polyglot line (the tenth holds 37,821, the threshold itself)
+and 88 more clear Fluent's. `packages/shared/src/billing.test.ts` pins both
+numbers, since the API's tests read them back from the constant and would have
+stayed green through any edit.

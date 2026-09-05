@@ -1,4 +1,5 @@
 import { TIER_NAMES, TOKEN_RULES } from '@langx/shared'
+import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient } from '@tanstack/react-query'
 import { Redirect, router } from 'expo-router'
 import { useState } from 'react'
@@ -9,7 +10,7 @@ import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -20,19 +21,22 @@ function Line({
   accent = false,
   first = false,
 }: {
-  icon: string
+  icon: keyof typeof Feather.glyphMap
   title: string
   body: string
-  /** Draws the glyph in the display face and blue — the "@" of the handle row. */
+  /** Draws the glyph in blue — the "@" of the handle row. */
   accent?: boolean
   /** The divider sits *above* each row, so the first row suppresses it. */
   first?: boolean
 }) {
+  const { colors } = useTheme()
   const styles = useStyles()
 
   return (
     <View style={[styles.line, first && styles.lineFirst]}>
-      <Text style={[styles.lineIcon, accent && styles.lineIconAccent]}>{icon}</Text>
+      <View style={styles.lineIcon}>
+        <Feather name={icon} size={20} color={accent ? colors.accent : colors.textMuted} />
+      </View>
       <View style={styles.lineText}>
         <Text style={styles.lineTitle}>{title}</Text>
         <Text style={styles.lineBody}>{body}</Text>
@@ -54,6 +58,7 @@ function Line({
  */
 export default function WelcomeBackScreen() {
   useScreenInteractive()
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -104,14 +109,14 @@ export default function WelcomeBackScreen() {
   return (
     <Screen scroll>
       <View style={styles.hero}>
-        <Text style={styles.emoji}>👋</Text>
+        <Feather name="smile" size={48} color={colors.accent} />
         <Text style={styles.title}>{t('welcomeBack.title')}</Text>
         <Text style={styles.subtitle}>{t('welcomeBack.subtitle')}</Text>
       </View>
 
       <View>
         <Line
-          icon="@"
+          icon="at-sign"
           accent
           first
           title={t('welcomeBack.handleTitle', { handle })}
@@ -120,7 +125,7 @@ export default function WelcomeBackScreen() {
 
         {conversationsImported > 0 ? (
           <Line
-            icon="💬"
+            icon="message-circle"
             title={t('welcomeBack.conversations', { count: conversationsImported })}
             body={t('welcomeBack.conversationsBody')}
           />
@@ -134,7 +139,7 @@ export default function WelcomeBackScreen() {
         */}
         {tokensCredited > 0 ? (
           <Line
-            icon="🪙"
+            icon="award"
             title={t('welcomeBack.tokensCarried', {
               count: tokensCredited + TOKEN_RULES.welcomeBackBonus,
             })}
@@ -145,7 +150,7 @@ export default function WelcomeBackScreen() {
           />
         ) : (
           <Line
-            icon="🪙"
+            icon="award"
             title={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
             body={t('welcomeBack.tokensBonusBody')}
           />
@@ -153,7 +158,7 @@ export default function WelcomeBackScreen() {
 
         {frozenStreak > 0 ? (
           <Line
-            icon="🔥"
+            icon="zap"
             title={t('welcomeBack.streak', { days: t('format.days', { count: frozenStreak }) })}
             body={t('welcomeBack.streakBody')}
           />
@@ -167,7 +172,7 @@ export default function WelcomeBackScreen() {
         */}
         {lifetimeGranted ? (
           <Line
-            icon="✨"
+            icon="star"
             title={t('welcomeBack.tierForLife', { plan: TIER_NAMES[lifetimeGranted] })}
             body={t('welcomeBack.proBody')}
           />
@@ -192,7 +197,6 @@ export default function WelcomeBackScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   hero: { alignItems: 'center', paddingBottom: spacing.md, paddingTop: spacing.xxl },
-  emoji: { fontSize: 48, lineHeight: 54 },
   title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
   subtitle: {
     ...font.body,
@@ -210,8 +214,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     paddingVertical: spacing.lg + 2,
   },
   lineFirst: { borderTopWidth: 0 },
-  lineIcon: { fontSize: 18, width: 28 },
-  lineIconAccent: { ...font.heading, color: colors.accent, fontSize: 18 },
+  lineIcon: { paddingTop: 1, width: 28 },
   lineText: { flex: 1 },
   lineTitle: { color: colors.text, fontSize: 16, fontWeight: '600' },
   lineBody: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 2 },

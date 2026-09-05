@@ -1556,6 +1556,20 @@ export const ru: Localized<EnMessages> = {
     quotaNotice:
       'Ты израсходовал {count} новых чатов на сегодня. Отвечать на всё входящее по-прежнему можно без ограничений.',
     manageNotice: 'У тебя {plan}. Управлять или отменить можно в аккаунте магазина.',
+    lifetimeNotice: 'У тебя {plan} навсегда. Ничего не продлевается и не списывается.',
+    lifetimeKept:
+      '{plan} навсегда остаётся с тобой. Если {plus} когда-нибудь закончится, ты вернёшься к нему.',
+    includedIn: 'Входит в {plan}.',
+    upgradeNotice:
+      'Переход с {plan}: магазин спишет только разницу за остаток текущего периода, и {plan} завершится.',
+    upgradeWeb:
+      'Твой план {plan} куплен на сайте. Измени его в портале оплаты — неиспользованное время вернут.',
+    changePlan: 'Сменить план',
+    upgradeElsewhere:
+      'Твой план {plan} куплен через {store}. Измени его там, чтобы не платить дважды.',
+    storeIos: 'App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'сайт',
     purchaseFailed: 'Покупка не прошла. Деньги не списаны.',
     purchaseUnavailable: 'Покупки на этом устройстве недоступны.',
     nothingToRestore: 'На этом устройстве нечего восстанавливать.',
@@ -1564,12 +1578,15 @@ export const ru: Localized<EnMessages> = {
     legal:
       'Подписки продлеваются автоматически, пока их не отменят. Отменить можно в любой момент в аккаунте Apple или Google — отмена останавливает следующее продление и сохраняет доступ до конца текущего периода.',
     offer: '{period} — {price}',
-    freeTrial: {
-      one: '{count} день бесплатно',
-      few: '{count} дня бесплатно',
-      many: '{count} дней бесплатно',
-      other: '{count} дня бесплатно',
+    trialTerms: {
+      one: '{count} день бесплатно, затем {price} {period}',
+      few: '{count} дня бесплатно, затем {price} {period}',
+      many: '{count} дней бесплатно, затем {price} {period}',
+      other: '{count} дня бесплатно, затем {price} {period}',
     },
+    perMonth: 'в месяц',
+    perYear: 'в год',
+    perLifetime: 'единоразово',
     saving: 'Экономия {percent}%',
     terms: 'Условия',
     privacy: 'Конфиденциальность',

@@ -137,7 +137,10 @@ export function useSettingsModel() {
     }
   }, [isPaid])
   const manageUrl = isPaid
-    ? manageSubscriptionUrl({ managementURL: rcManageUrl }, Platform.OS)
+    ? manageSubscriptionUrl(
+        { managementURL: rcManageUrl, store: entitlement?.store ?? null },
+        Platform.OS,
+      )
     : null
   const tips = useTips()
   const analytics = useAnalyticsPreference()

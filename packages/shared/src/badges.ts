@@ -37,13 +37,15 @@ export interface BadgeDefinition {
   threshold: number
   label: string
   /**
-   * Feather glyph name, or `null` for the one kind drawn with an emoji.
+   * Feather glyph name.
    *
    * On the definition rather than switched on in the grid: the icon is a
    * property of the kind, and a `kind === 'streak' ? … : …` ternary silently
-   * gave every new kind the correction tick.
+   * gave every new kind the correction tick. The streak used to be `null`
+   * here and a "🔥" in the grid — the one emoji left in a column of glyphs,
+   * and drawn differently on every platform.
    */
-  icon: string | null
+  icon: string
 }
 
 /**
@@ -86,7 +88,7 @@ export const BADGES: readonly BadgeDefinition[] = [
       kind: 'streak' as const,
       threshold: days,
       label: `${days} days`,
-      icon: null,
+      icon: 'zap',
     })),
   ...CORRECTION_THRESHOLDS.map((count) => ({
     id: `correction.${count}`,

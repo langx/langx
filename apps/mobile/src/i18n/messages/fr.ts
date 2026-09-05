@@ -1402,6 +1402,19 @@ export const fr: Localized<EnMessages> = {
     quotaNotice:
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
+    lifetimeNotice: 'Tu as {plan} à vie. Rien ne se renouvelle, rien n’est facturé.',
+    lifetimeKept: '{plan} à vie reste à toi. Si {plus} prend fin un jour, tu y reviens.',
+    includedIn: 'Inclus dans {plan}.',
+    upgradeNotice:
+      'Passage depuis {plan} : le store ne facture que la différence pour le reste de la période en cours, et {plan} prend fin.',
+    upgradeWeb:
+      'Ton abonnement {plan} a été acheté sur le web. Change-le dans le portail de facturation ; le temps non utilisé est remboursé.',
+    changePlan: 'Changer de formule',
+    upgradeElsewhere:
+      'Ton abonnement {plan} a été acheté via {store}. Change-le là-bas pour ne pas être facturé deux fois.',
+    storeIos: 'l’App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'le web',
     purchaseFailed: 'Cet achat n’a pas abouti. Rien n’a été débité.',
     purchaseUnavailable: 'Les achats ne sont pas disponibles sur cet appareil.',
     nothingToRestore: 'Rien à restaurer sur cet appareil.',
@@ -1410,7 +1423,13 @@ export const fr: Localized<EnMessages> = {
     legal:
       'Les abonnements se renouvellent automatiquement jusqu’à résiliation. Tu peux résilier à tout moment depuis ton compte Apple ou Google — la résiliation arrête le renouvellement suivant et conserve l’accès jusqu’à la fin de la période en cours.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} jour offert', other: '{count} jours offerts' },
+    trialTerms: {
+      one: '{count} jour offert, puis {price} {period}',
+      other: '{count} jours offerts, puis {price} {period}',
+    },
+    perMonth: 'par mois',
+    perYear: 'par an',
+    perLifetime: 'en une fois',
     saving: '{percent}% d’économie',
     terms: 'Conditions',
     privacy: 'Confidentialité',

@@ -444,9 +444,12 @@ export default function DiscoverScreen() {
                     <Text style={styles.flag}>{countryFlag(item.country)}</Text>
                   ) : null}
                   {item.streak.current > 0 ? (
-                    <Text style={styles.streak} numberOfLines={1}>
-                      🔥 {item.streak.current}
-                    </Text>
+                    <View style={styles.streak}>
+                      <Feather name="zap" size={13} color={colors.textMuted} />
+                      <Text style={styles.streakCount} numberOfLines={1}>
+                        {item.streak.current}
+                      </Text>
+                    </View>
                   ) : null}
                 </View>
                 <LanguageLine item={item} />
@@ -509,19 +512,20 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 17 },
   age: { ...font.label, color: colors.textMuted, fontSize: 14, fontWeight: '400' },
   streak: {
-    ...font.label,
-    color: colors.textMuted,
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 2,
     /**
      * The row is `name (shrinkable) · age · streak`, and without this the
      * streak is shrinkable too — so on a 320px screen it squeezed to a
-     * two-line blob with "🔥" above the digits. The name is the thing that
-     * should give way; the count is four characters and either fits or does
-     * not.
+     * two-line blob with the glyph above the digits. The name is the thing
+     * that should give way; the count is four characters and either fits or
+     * does not.
      */
     flexShrink: 0,
-    fontWeight: '400',
     marginStart: 'auto',
   },
+  streakCount: { ...font.label, color: colors.textMuted, fontWeight: '400' },
   pairLine: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 3 },
   languages: { ...font.label, color: colors.accent, flexShrink: 1, fontSize: 14 },
   distance: { ...font.caption, color: colors.textMuted, marginTop: 3 },

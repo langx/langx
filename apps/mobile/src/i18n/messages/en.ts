@@ -1437,6 +1437,19 @@ export const en = {
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
+    lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
+    lifetimeKept: '{plan} for life stays yours. If {plus} ever ends, you go back to it.',
+    includedIn: 'Included in {plan}.',
+    upgradeNotice:
+      'Upgrading from {plan}: the store charges only the difference for the rest of your current period, and {plan} ends.',
+    upgradeWeb:
+      'Your {plan} plan was bought on the web. Change it in the billing portal — unused time is refunded.',
+    changePlan: 'Change plan',
+    upgradeElsewhere:
+      'Your {plan} plan was bought through {store}. Change it there, so you are not charged twice.',
+    storeIos: 'the App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'the web',
     purchaseFailed: 'That purchase did not go through. Nothing was charged.',
     purchaseUnavailable: 'Purchasing is unavailable on this device.',
     nothingToRestore: 'Nothing to restore on this device.',
@@ -1445,7 +1458,13 @@ export const en = {
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} day free', other: '{count} days free' },
+    trialTerms: {
+      one: '{count} day free, then {price} {period}',
+      other: '{count} days free, then {price} {period}',
+    },
+    perMonth: 'a month',
+    perYear: 'a year',
+    perLifetime: 'once',
     saving: 'Save {percent}%',
     terms: 'Terms',
     privacy: 'Privacy',
