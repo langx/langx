@@ -23,6 +23,7 @@ import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
@@ -74,6 +75,7 @@ export default function ProfileScreen() {
   const report = useReportUser()
 
   const [message, setMessage] = useState('')
+  const [avatarOpen, setAvatarOpen] = useState(false)
   const [error, setError] = useState<string | undefined>()
 
   if (profile.isPending) {
@@ -221,14 +223,37 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.hero}>
-        <Avatar
-          url={user.avatarUrl}
-          name={user.displayName}
-          seed={user._id}
-          size={84}
-          frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
-          online={user.isOnline}
-        />
+        {/*
+          Only a real photo opens: a generated face or a pair of initials is a
+          stand-in, and a full-screen stand-in answers a question nobody asked.
+          Without the URL there is no button, and a screen reader is not told
+          there is one.
+        */}
+        {user.avatarUrl ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('photo.open')}
+            onPress={() => setAvatarOpen(true)}
+          >
+            <Avatar
+              url={user.avatarUrl}
+              name={user.displayName}
+              seed={user._id}
+              size={84}
+              frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+              online={user.isOnline}
+            />
+          </Pressable>
+        ) : (
+          <Avatar
+            url={user.avatarUrl}
+            name={user.displayName}
+            seed={user._id}
+            size={84}
+            frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+            online={user.isOnline}
+          />
+        )}
         <View style={styles.nameRow}>
           <Text style={styles.name}>{user.displayName}</Text>
           <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
@@ -307,6 +332,13 @@ export default function ProfileScreen() {
       </View>
 
       <PhotoGallery photos={user.photos} />
+      {user.avatarUrl ? (
+        <PhotoViewer
+          photos={[{ url: user.avatarUrl }]}
+          index={avatarOpen ? 0 : null}
+          onClose={() => setAvatarOpen(false)}
+        />
+      ) : null}
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
