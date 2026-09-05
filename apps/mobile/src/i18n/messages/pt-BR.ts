@@ -967,6 +967,11 @@ export const ptBR: Localized<EnMessages> = {
     updating: 'Atualizando…',
     languageSection: 'Idioma',
     appLanguage: 'Idioma do app',
+    translateTo: 'Traduzir para',
+    translateToBody: 'Em qual dos seus idiomas uma mensagem traduzida aparece',
+    translateToScreenBody:
+      'As mensagens que você traduz aparecem neste idioma. Só seus idiomas nativos são oferecidos.',
+    translateToFirst: 'Seu primeiro idioma — o padrão',
     languageAuto: 'Aparelho ({name})',
     blockedPeople: 'Pessoas bloqueadas',
     showIntro: 'Ver a introdução de novo',

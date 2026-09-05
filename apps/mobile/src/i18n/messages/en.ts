@@ -1016,6 +1016,11 @@ export const en = {
     updating: 'Updating…',
     languageSection: 'Language',
     appLanguage: 'App language',
+    translateTo: 'Translate into',
+    translateToBody: 'Which of your languages a translated message is shown in',
+    translateToScreenBody:
+      'Messages you translate are shown in this language. Only your native languages are offered.',
+    translateToFirst: 'Your first language — the default',
     languageAuto: 'Device ({name})',
     blockedPeople: 'Blocked people',
     showIntro: 'Show intro again',

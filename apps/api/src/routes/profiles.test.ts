@@ -446,6 +446,50 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
   })
 
   /**
+   * The translation target is one of the person's *native* languages or
+   * nothing: a learning language is refused (translating into it defeats the
+   * purpose), and `null` removes the key so the default — the first native
+   * language — applies again.
+   */
+  it('keeps the translation target among the native languages', async () => {
+    const user = await newUser('translate@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'translateuser' }),
+    })
+
+    const accepted = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { translateTo: 'tr' } },
+    })
+    expect(accepted.statusCode, accepted.body).toBe(200)
+    expect(accepted.json<{ settings: { translateTo?: string } }>().settings.translateTo).toBe('tr')
+
+    const learning = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { translateTo: 'en' } },
+    })
+    expect(learning.statusCode).toBe(400)
+
+    const cleared = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { translateTo: null } },
+    })
+    expect(cleared.statusCode, cleared.body).toBe(200)
+    expect(
+      cleared.json<{ settings: { translateTo?: string } }>().settings.translateTo,
+    ).toBeUndefined()
+  })
+
+  /**
    * Explicit consent is stored as given. Promotions default to off on both
    * channels, so this is the one cell that can only ever become true by
    * somebody saying so.

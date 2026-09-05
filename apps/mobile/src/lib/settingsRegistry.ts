@@ -134,6 +134,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       { id: 'appearance.theme', titleKey: 'theme.section' },
       { id: 'appearance.appIcon', titleKey: 'settings.appIcon', bodyKey: 'settings.appIconBody' },
       { id: 'appearance.language', titleKey: 'settings.appLanguage' },
+      {
+        id: 'appearance.translateTo',
+        titleKey: 'settings.translateTo',
+        bodyKey: 'settings.translateToBody',
+      },
       { id: 'appearance.tips', titleKey: 'tips.show', bodyKey: 'tips.showBody' },
     ],
   },
