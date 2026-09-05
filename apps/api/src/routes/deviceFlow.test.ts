@@ -125,11 +125,12 @@ describe('device sign-in flow', () => {
     await replSet?.stop()
   })
 
-  it('hands the browser an eight-character code from the unambiguous charset', async () => {
+  it('hands the browser a five-character code from the unambiguous charset', async () => {
     const { userCode, deviceCode } = await requestCode()
-    // Eight, not six: the app's copy said six and the plugin's default is
-    // eight, so a placeholder shaped like ABCDEF was wrong on every screen.
-    expect(userCode.replace(/-/g, '')).toHaveLength(8)
+    // Five, chosen on 5 September 2026 — the plugin's eight was only ever its
+    // default, and the arithmetic in `auth.ts` says why five is enough. The
+    // placeholder on every screen is shaped like this number.
+    expect(userCode.replace(/-/g, '')).toHaveLength(5)
     expect(userCode.replace(/-/g, '')).toMatch(USER_CODE_CHARSET)
     expect(deviceCode).toBeTruthy()
   })
@@ -183,7 +184,7 @@ describe('device sign-in flow', () => {
 
   it('accepts the code as it was typed, lowercase and hyphenated', async () => {
     const { userCode } = await requestCode()
-    const typed = `${userCode.slice(0, 4).toLowerCase()}-${userCode.slice(4).toLowerCase()}`
+    const typed = `${userCode.slice(0, 2).toLowerCase()}-${userCode.slice(2).toLowerCase()}`
     expect((await claim(typed, phone.cookie)).statusCode).toBe(200)
     expect((await approve(typed, phone.cookie)).statusCode).toBe(200)
   })

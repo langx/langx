@@ -799,6 +799,7 @@ export const ptBR: Localized<EnMessages> = {
     newChatsLeft: 'Conversas novas restantes hoje:',
     editProfile: 'Editar perfil',
     settings: 'Configurações',
+    scan: 'Escanear um código',
     corrections: 'Correções',
     wallet: 'Carteira',
     previewProfile: 'Ver meu perfil',
@@ -1245,7 +1246,7 @@ export const ptBR: Localized<EnMessages> = {
   linkDevice: {
     title: 'Entrar em outro dispositivo',
     body: 'Digite o código da outra tela, ou escaneie por lá.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Aprove apenas um código que você mesmo esteja vendo. Quem o inserir ganha acesso total à sua conta.',
     approve: 'Aprovar',
@@ -1262,10 +1263,23 @@ export const ptBR: Localized<EnMessages> = {
     unknownDevice: 'Dispositivo desconhecido',
   },
 
+  scan: {
+    title: 'Escanear um código',
+    body: 'Aponte a câmera para o código de acesso no computador ou para o código de perfil de um amigo.',
+    permissionTitle: 'Acesso à câmera necessário',
+    permissionBody: 'O LangX precisa da câmera para ler um código. Nada é gravado.',
+    allow: 'Permitir a câmera',
+    openSettings: 'Abrir ajustes',
+    unknown: 'Isso não é um código do LangX.',
+    webOnly:
+      'Para escanear é preciso a câmera do celular. Abra o LangX no celular e toque no ícone de escanear no seu perfil.',
+    typeInstead: 'Digitar o código',
+  },
+
   qrSignIn: {
     title: 'Entrar com o celular',
     body: 'Abra o LangX no celular e digite este código, ou escaneie.',
-    hint: 'Configurações → Entrar em outro dispositivo',
+    hint: 'No celular: o ícone de escanear no seu perfil, ou Ajustes → Entrar em outro aparelho',
     qrAccessibility: 'QR code para entrar',
     expired: 'O código expirou.',
     failed: 'Não foi possível iniciar. Tente de novo.',

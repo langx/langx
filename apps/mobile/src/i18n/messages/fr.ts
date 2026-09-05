@@ -812,6 +812,7 @@ export const fr: Localized<EnMessages> = {
     newChatsLeft: 'Nouvelles discussions restantes aujourd’hui :',
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
+    scan: 'Scanner un code',
     corrections: 'Corrections',
     wallet: 'Portefeuille',
     previewProfile: 'Aperçu de mon profil',
@@ -1259,7 +1260,7 @@ export const fr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Se connecter sur un autre appareil',
     body: 'Saisis le code affiché sur l’autre écran, ou scanne-le là-bas.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'N’approuve qu’un code que tu vois toi-même. Quiconque le saisit obtient un accès complet à ton compte.',
     approve: 'Approuver',
@@ -1276,10 +1277,23 @@ export const fr: Localized<EnMessages> = {
     unknownDevice: 'Appareil inconnu',
   },
 
+  scan: {
+    title: 'Scanner un code',
+    body: 'Vise le code de connexion sur ton ordinateur, ou le code de profil d’un ami.',
+    permissionTitle: 'Accès à la caméra requis',
+    permissionBody: 'LangX a besoin de la caméra pour lire un code. Rien n’est enregistré.',
+    allow: 'Autoriser la caméra',
+    openSettings: 'Ouvrir les réglages',
+    unknown: 'Ce n’est pas un code LangX.',
+    webOnly:
+      'Scanner demande la caméra de ton téléphone. Ouvre LangX sur le téléphone et touche l’icône de scan sur ton profil.',
+    typeInstead: 'Saisir le code à la place',
+  },
+
   qrSignIn: {
     title: 'Se connecter avec le téléphone',
     body: 'Ouvre LangX sur ton téléphone et saisis ce code, ou scanne-le.',
-    hint: 'Réglages → Se connecter sur un autre appareil',
+    hint: 'Sur ton téléphone : l’icône de scan sur ton profil, ou Réglages → Se connecter sur un autre appareil',
     qrAccessibility: 'QR code de connexion',
     expired: 'Le code a expiré.',
     failed: 'Échec du démarrage. Réessaie.',

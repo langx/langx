@@ -341,18 +341,18 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       /*
        * QR sign-in on the web, which is RFC 8628's device flow with a picture
        * in front of it: the browser asks for a code, shows it as a QR *and* as
-       * eight characters, and polls `/device/token` until a signed-in phone
+       * five characters, and polls `/device/token` until a signed-in phone
        * approves it.
        *
        * The plugin rather than something hand-rolled — this is a protocol with
        * known failure modes (`slow_down`, `authorization_pending`, single-use
        * codes, expiry) and it already implements them.
        *
-       * Scanning is **not** what makes it work. The eight-character user code
-       * is the primary path and the QR is a shortcut, which is deliberate:
-       * `expo-camera` is not in this app, and adding it means a new native
-       * build with a new camera permission — so a scanner cannot ship over the
-       * air. Typing the code works today on every platform.
+       * The typed code is the primary path and the QR is the shortcut. The
+       * app has had a scanner since 5 September 2026 (`app/(app)/scan.tsx`,
+       * `expo-camera`), but the phone's own camera app and a typed code both
+       * still work, and typing is what a phone without the scanner build
+       * falls back to.
        *
        * The QR encodes a `langx://` link rather than a web address: it is
        * scanned by the phone's own camera, and the phone is where the session
@@ -360,7 +360,17 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
        */
       deviceAuthorization({
         /*
-         * Two minutes. Long enough to pick up a phone and read eight
+         * Five characters, not the plugin's eight. Eight was never chosen; it
+         * was the default, and it is a lot to read off one screen and type
+         * on another. The arithmetic for five: a 32-symbol alphabet gives
+         * 32⁵ ≈ 33.5 million codes; a code lives two minutes; and the plugin
+         * limits `/device` to five requests per window — so a guess has about
+         * one chance in 6.7 million per window, against a code that only ever
+         * grants what the approving phone already has.
+         */
+        userCodeLength: 5,
+        /*
+         * Two minutes. Long enough to pick up a phone and read five
          * characters, short enough that a code photographed off somebody's
          * screen is worthless by the time they have walked away.
          */

@@ -850,6 +850,7 @@ export const en = {
     newChatsLeft: 'New chats left today:',
     editProfile: 'Edit profile',
     settings: 'Settings',
+    scan: 'Scan a code',
     corrections: 'Corrections',
     wallet: 'Wallet',
     previewProfile: 'Preview my profile',
@@ -1294,7 +1295,7 @@ export const en = {
   linkDevice: {
     title: 'Sign in on another device',
     body: 'Enter the code shown on the other screen, or scan it there.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Only approve a code you are looking at yourself. Anyone who gets it in gains full access to your account.',
     approve: 'Approve',
@@ -1311,10 +1312,23 @@ export const en = {
     unknownDevice: 'Unknown device',
   },
 
+  scan: {
+    title: 'Scan a code',
+    body: 'Point the camera at the sign-in code on your computer, or at a friend’s profile code.',
+    permissionTitle: 'Camera access needed',
+    permissionBody: 'LangX needs the camera to read a code. Nothing is recorded.',
+    allow: 'Allow the camera',
+    openSettings: 'Open Settings',
+    unknown: 'That is not a LangX code.',
+    webOnly:
+      'Scanning needs your phone’s camera. Open LangX on your phone and tap the scan icon on your profile.',
+    typeInstead: 'Type the code instead',
+  },
+
   qrSignIn: {
     title: 'Sign in with your phone',
     body: 'Open LangX on your phone and enter this code, or scan it.',
-    hint: 'Settings → Sign in on another device',
+    hint: 'On your phone: the scan icon on your profile, or Settings → Sign in on another device',
     qrAccessibility: 'QR code for signing in',
     expired: 'The code expired.',
     failed: 'Could not start. Try again.',

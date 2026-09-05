@@ -963,6 +963,7 @@ export const ar: Localized<EnMessages> = {
     newChatsLeft: 'المحادثات الجديدة المتبقية اليوم:',
     editProfile: 'تعديل الملف',
     settings: 'الإعدادات',
+    scan: 'مسح رمز',
     corrections: 'التصحيحات',
     wallet: 'المحفظة',
     previewProfile: 'معاينة ملفي الشخصي',
@@ -1472,7 +1473,7 @@ export const ar: Localized<EnMessages> = {
   linkDevice: {
     title: 'تسجيل الدخول على جهاز آخر',
     body: 'أدخل الرمز الظاهر على الشاشة الأخرى، أو امسحه هناك.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning: 'وافق فقط على رمز تراه بنفسك. من يُدخله يحصل على وصول كامل إلى حسابك.',
     approve: 'موافقة',
     deny: 'رفض',
@@ -1488,10 +1489,22 @@ export const ar: Localized<EnMessages> = {
     unknownDevice: 'جهاز غير معروف',
   },
 
+  scan: {
+    title: 'مسح رمز',
+    body: 'وجّه الكاميرا نحو رمز الدخول على حاسوبك أو نحو رمز ملف صديق.',
+    permissionTitle: 'مطلوب الوصول إلى الكاميرا',
+    permissionBody: 'يحتاج LangX إلى الكاميرا لقراءة الرمز. لا يُسجَّل شيء.',
+    allow: 'السماح للكاميرا',
+    openSettings: 'فتح الإعدادات',
+    unknown: 'هذا ليس رمز LangX.',
+    webOnly: 'يحتاج المسح إلى كاميرا هاتفك. افتح LangX على هاتفك وانقر على أيقونة المسح في ملفك.',
+    typeInstead: 'كتابة الرمز بدلًا من ذلك',
+  },
+
   qrSignIn: {
     title: 'سجّل الدخول بهاتفك',
     body: 'افتح LangX على هاتفك وأدخل هذا الرمز، أو امسحه.',
-    hint: 'الإعدادات ← تسجيل الدخول على جهاز آخر',
+    hint: 'على هاتفك: أيقونة المسح في ملفك، أو الإعدادات ← تسجيل الدخول على جهاز آخر',
     qrAccessibility: 'رمز QR لتسجيل الدخول',
     expired: 'انتهت صلاحية الرمز.',
     failed: 'تعذّر البدء. حاول مرة أخرى.',

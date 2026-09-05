@@ -2826,8 +2826,18 @@ now (`deviceLinkTarget` in `packages/shared`), which the installed app resolves
 to the approval screen. No native code, ships over the air. Not a universal
 link on the web host: that needs `.well-known` served from a host that still
 answers with v1, which is an infrastructure move rather than a QR change. Some
-Android cameras ignore custom schemes, so the eight-character code stays the
-primary path — eight, not the six three comments and a placeholder claimed.
+Android cameras ignore custom schemes, so the typed code stays the primary
+path. It was eight characters — the plugin's default, not a choice; three
+comments and a placeholder even claimed six — and on 5 September 2026 it
+became **five**: 32⁵ ≈ 33.5 million codes, two minutes of life, five tries
+per window on `/device`, and a code that only ever grants what the approving
+phone already has. Five is what a person reads off one screen and types on
+another without a second look. The same day the app gained its own scanner:
+a scan icon beside the gear on the Me tab opens `(app)/scan.tsx`
+(`expo-camera`, a native module — the build that ships it is the one that
+ships share-as-file), reads the `langx://link-device` QR and lands on the
+approve screen with the code filled in, or a profile/invite QR and lands on
+that profile. Approve or deny stays a human decision on the approve screen.
 
 **`freshAge: 0`.** The same screen lists where the account is signed in, which
 is also the only feedback that an approval landed, since the device it signed

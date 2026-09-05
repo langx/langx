@@ -827,6 +827,7 @@ export const de: Localized<EnMessages> = {
     newChatsLeft: 'Heute noch neue Chats:',
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
+    scan: 'Code scannen',
     corrections: 'Korrekturen',
     wallet: 'Geldbörse',
     previewProfile: 'Mein Profil ansehen',
@@ -1274,7 +1275,7 @@ export const de: Localized<EnMessages> = {
   linkDevice: {
     title: 'Auf einem anderen Gerät anmelden',
     body: 'Gib den Code vom anderen Bildschirm ein, oder scanne ihn dort.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Bestätige nur einen Code, den du selbst siehst. Wer ihn eingibt, bekommt vollen Zugriff auf dein Konto.',
     approve: 'Bestätigen',
@@ -1291,10 +1292,23 @@ export const de: Localized<EnMessages> = {
     unknownDevice: 'Unbekanntes Gerät',
   },
 
+  scan: {
+    title: 'Code scannen',
+    body: 'Richte die Kamera auf den Anmeldecode am Computer oder auf den Profilcode eines Freundes.',
+    permissionTitle: 'Kamerazugriff nötig',
+    permissionBody: 'LangX braucht die Kamera, um einen Code zu lesen. Es wird nichts aufgenommen.',
+    allow: 'Kamera erlauben',
+    openSettings: 'Einstellungen öffnen',
+    unknown: 'Das ist kein LangX-Code.',
+    webOnly:
+      'Zum Scannen brauchst du die Kamera deines Telefons. Öffne LangX auf dem Telefon und tippe auf das Scan-Symbol in deinem Profil.',
+    typeInstead: 'Code stattdessen eintippen',
+  },
+
   qrSignIn: {
     title: 'Mit dem Handy anmelden',
     body: 'Öffne LangX auf dem Handy und gib diesen Code ein, oder scanne ihn.',
-    hint: 'Einstellungen → Auf einem anderen Gerät anmelden',
+    hint: 'Auf deinem Telefon: das Scan-Symbol in deinem Profil, oder Einstellungen → Auf anderem Gerät anmelden',
     qrAccessibility: 'QR-Code zum Anmelden',
     expired: 'Der Code ist abgelaufen.',
     failed: 'Start fehlgeschlagen. Versuch es nochmal.',

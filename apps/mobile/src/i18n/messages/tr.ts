@@ -810,6 +810,7 @@ export const tr: Localized<EnMessages> = {
     newChatsLeft: 'Bugün kalan yeni sohbet:',
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
+    scan: 'Kod tara',
     corrections: 'Düzeltme',
     wallet: 'Cüzdan',
     previewProfile: 'Profilimi önizle',
@@ -1252,7 +1253,7 @@ export const tr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Başka cihazda oturum aç',
     body: 'Diğer ekranda görünen kodu gir, ya da oradan okut.',
-    placeholder: 'ABCD2345',
+    placeholder: 'AB234',
     warning:
       'Sadece kendi gördüğün bir kodu onayla. Bu kodu geçiren herkes hesabına tam erişim kazanır.',
     approve: 'Onayla',
@@ -1269,10 +1270,23 @@ export const tr: Localized<EnMessages> = {
     unknownDevice: 'Bilinmeyen cihaz',
   },
 
+  scan: {
+    title: 'Kod tara',
+    body: 'Kamerayı bilgisayardaki giriş koduna ya da bir arkadaşının profil koduna tut.',
+    permissionTitle: 'Kamera izni gerekiyor',
+    permissionBody: 'LangX’in kodu okumak için kameraya ihtiyacı var. Hiçbir şey kaydedilmez.',
+    allow: 'Kameraya izin ver',
+    openSettings: 'Ayarları aç',
+    unknown: 'Bu bir LangX kodu değil.',
+    webOnly:
+      'Taramak için telefonunun kamerası gerekir. Telefonunda LangX’i aç ve profilindeki tarama simgesine dokun.',
+    typeInstead: 'Kodu elle gir',
+  },
+
   qrSignIn: {
     title: 'Telefonunla giriş yap',
     body: 'Telefonunda LangX’i aç ve bu kodu gir, ya da okut.',
-    hint: 'Ayarlar → Başka cihazda oturum aç',
+    hint: 'Telefonunda: profilindeki tarama simgesi, ya da Ayarlar → Başka cihazda oturum aç',
     qrAccessibility: 'Giriş için QR kodu',
     expired: 'Kodun süresi doldu.',
     failed: 'Başlatılamadı. Tekrar dene.',
