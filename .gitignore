@@ -24,6 +24,9 @@ coverage/
 
 # expo
 .expo/
+# Running `expo` or `eas` from the workspace root instead of apps/mobile writes
+# an empty `{ "expo": {} }` here. The real config is apps/mobile/app.config.ts.
+/app.json
 .expo-shared/
 web-build/
 expo-env.d.ts
