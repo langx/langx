@@ -892,7 +892,9 @@ export const es: Localized<EnMessages> = {
     title: 'Tu racha',
     historyBody: 'Cada día de los últimos dos meses y qué contó',
     leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
-    freezesBody: 'Los protectores guardados cubren un día que te saltes',
+    protectTitle: 'Protege tu racha',
+    protectBody:
+      'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba durante un mes.',
     longest: 'La más larga',
     missed: 'Perdido',
     bought: 'Rellenado con tokens',

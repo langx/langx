@@ -898,7 +898,9 @@ export const fr: Localized<EnMessages> = {
     title: 'Ta série',
     historyBody: 'Chaque jour des deux derniers mois, et ce qui a compté',
     leaderboardBody: 'Qui a la plus longue série en ce moment, et de tous les temps',
-    freezesBody: 'Les gels en réserve couvrent un jour manqué',
+    protectTitle: 'Protège ta série',
+    protectBody:
+      'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus pendant un mois.',
     longest: 'La plus longue',
     missed: 'Manqué',
     bought: 'Rempli avec des jetons',
