@@ -405,7 +405,9 @@ splash (light and dark) and the Pro alternate icon; `src/lib/theme/tokens.ts`
 holds the v3 palette in both colour schemes behind `ThemeProvider`; Nunito is
 loaded through `expo-font`; the tab bar draws Feather glyphs; and
 `components/ui/Button.tsx` and `FormField.tsx` carry no stray hex. What is
-left is the site, the store assets, and two leftovers in the app.
+left is the site and the store assets. The emoji that remain are data (country
+flags, message reactions) or copy (the ✦ Pro marker and the strings in the
+i18n catalogues), not icons.
 
 This sits before **Release** rather than in it on purpose: the icon and the
 screenshots are part of the submission, not part of the rollout.
@@ -415,11 +417,6 @@ chain and wallet iconography — that is an App Review question (3.1.5(b)), not
 a stylistic one. And `packages/shared/src/cosmetics.ts` sells `frame.gold` as
 a rank, so gold has to read as something bought rather than as the product.
 
-- [ ] Replace the emoji still used as icons in ten files — the streak,
-      profile, discover and me screens, the onboarding `done` and
-      `welcome-back` screens, `AppGate`, `IntroCarousel`, `BadgeGrid` and
-      `LeaderboardSection` — with the same Feather set the tab bar uses. They
-      draw differently on every platform
 - [ ] Bring the site onto the same identity, one source per surface:
       `tokens.ts` for the app, `_themes.scss` and `_variables.scss` for the
       site. The site's `define-color` mixin emits the `-rgb` and `-contrast`
@@ -496,12 +493,11 @@ months bought one at a time, in every storefront:
       claim the next time one moved
 - [x] Both strings go through `src/i18n/messages/en.ts`, `freeTrial` as a
       plural, translated into all eight locales
-- [ ] State the terms in full wherever the trial is advertised: how long it
-      runs, **then what it renews at**. The caption says "7 days free" and the
-      button under it says the price, which is close but does not spell out the
-      sequence; the footer carries the general renewal sentence. Guideline
-      3.1.2 wants the trial's own terms beside the offer, not only in the small
-      print — worth one more copy pass before a paid tier goes live
+- [x] The terms are stated in full beside the offer: `paywall.trialTerms`
+      reads "7 days free, then $49.99 a year", built from the store's own
+      price string and a per-period phrase, in all eight catalogues. Guideline
+      3.1.2 wants the trial's own terms beside the offer, not only in the
+      footer's renewal sentence
 - [ ] Nobody has seen this on a device yet. It is covered by
       `src/lib/planSaving.test.ts` and by types, and the fake store
       (`EXPO_PUBLIC_REVENUECAT_FAKE_STORE=1`) now carries a trial and a real
