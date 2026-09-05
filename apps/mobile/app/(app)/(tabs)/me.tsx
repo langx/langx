@@ -1,5 +1,4 @@
 import { LoadFailed } from '../../../src/components/LoadFailed'
-import { ActivityMap } from '../../../src/components/ActivityMap'
 import {
   countryFlag,
   getCountry,
@@ -225,13 +224,6 @@ export default function MeScreen() {
       </View>
 
       {summary ? <WeeklyChart week={summary.week} /> : null}
-
-      {/*
-        Under the week's chart and above the links: the chart says how this
-        week went, the map says how the last six months did, and a square you
-        can still buy back is only interesting while the day is recent.
-      */}
-      <ActivityMap />
 
       {/* First of the rows, because it is the one that answers a question
           somebody actually arrives with: where the thing I asked went. */}

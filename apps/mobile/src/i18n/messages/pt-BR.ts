@@ -885,7 +885,9 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Sua sequência',
     historyBody: 'Cada dia dos últimos dois meses e o que contou',
     leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
-    freezesBody: 'Congelamentos guardados cobrem um dia perdido',
+    protectTitle: 'Proteja sua sequência',
+    protectBody:
+      'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima durante um mês.',
     longest: 'A maior',
     missed: 'Perdido',
     bought: 'Preenchido com fichas',

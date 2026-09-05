@@ -1,16 +1,22 @@
+import { STREAK_FREEZE_SKU } from '@langx/shared'
 import { useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { router, type Href } from 'expo-router'
-import { useMe, useTokens, useWallet } from '../../../src/api/queries'
+import { useMe, usePurchase, useTokens, useWallet } from '../../../src/api/queries'
+import { ActivityMap } from '../../../src/components/ActivityMap'
 import { ShareCardSheet, type ShareCardRequest } from '../../../src/components/ShareCardSheet'
+import { StoreRow } from '../../../src/components/store/StoreRow'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { useT, type MessageKey } from '../../../src/i18n'
+import { showAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { streakShareText } from '../../../src/lib/shareText'
+import { buildStoreOffers, type StoreOffer } from '../../../src/lib/storeOffers'
+import { showToast } from '../../../src/lib/toast'
 import { makeStyles } from '../../../src/lib/theme'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -20,10 +26,16 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  *
  * It was one scroll: two tiles, a share button, sixty days of history and a
  * two-tab leaderboard under it that nobody scrolled to. This is the shape the
- * wallet has now: the numbers at the top, the one action under them, and a
- * row per thing you might want to look at — each its own page. The freezes
- * row is the way to the store, because "how do I protect this" is asked here
- * and answered there.
+ * wallet has now: the numbers at the top, the map under them, the one action,
+ * then a row per thing you might want to look at — each its own page.
+ *
+ * The activity map lives here rather than on the Me tab, where it sat under
+ * the week chart and above four rows: the map *is* the streak, six months of
+ * it, and a square you can still buy back belongs next to the number it
+ * would restore. The freeze is sold here for the same reason. It used to be
+ * a row that opened the store, which answered "how do I protect this" with
+ * a shop header — the question is asked on this page, so it is answered on
+ * this page, with the same row and the same purchase the store uses.
  */
 const SECTIONS: readonly { id: string; titleKey: MessageKey; bodyKey: MessageKey; route: Href }[] =
   [
@@ -39,12 +51,6 @@ const SECTIONS: readonly { id: string; titleKey: MessageKey; bodyKey: MessageKey
       bodyKey: 'streak.leaderboardBody',
       route: '/(app)/streak/leaderboard',
     },
-    {
-      id: 'freezes',
-      titleKey: 'wallet.streakFreezes',
-      bodyKey: 'streak.freezesBody',
-      route: '/(app)/wallet/store',
-    },
   ]
 
 export default function StreakScreen() {
@@ -54,6 +60,7 @@ export default function StreakScreen() {
   const tokens = useTokens()
   const me = useMe()
   const wallet = useWallet()
+  const purchase = usePurchase()
   const [card, setCard] = useState<ShareCardRequest | null>(null)
   const pull = usePullToRefresh(() => Promise.all([tokens.refetch(), wallet.refetch()]))
 
@@ -66,7 +73,24 @@ export default function StreakScreen() {
   }
 
   const streak = tokens.data?.streak
-  const freezes = wallet.data?.streakFreezes
+  const balance = wallet.data?.balance ?? 0
+  // The same offer the store prices, so the two can never disagree about the
+  // cap or the price; only the freeze row is drawn here.
+  const freeze = buildStoreOffers({
+    t,
+    balance,
+    longestStreak: streak?.longest ?? 0,
+    lifetimeCorrections: tokens.data?.lifetime.corrections ?? 0,
+    owned: wallet.data?.owned ?? [],
+    streakFreezes: wallet.data?.streakFreezes ?? 0,
+  }).find((offer) => offer.id === STREAK_FREEZE_SKU)
+
+  function buy(offer: StoreOffer): void {
+    purchase.mutate(offer.id, {
+      onSuccess: () => showToast(t('store.bought', { title: offer.title })),
+      onError: () => void showAlert(t('store.buyFailed'), t('common.retry')),
+    })
+  }
 
   return (
     <Screen scroll {...pull}>
@@ -76,6 +100,8 @@ export default function StreakScreen() {
         <StatTile label={t('me.dayStreak')} value={`🔥 ${streak?.current ?? 0}`} />
         <StatTile label={t('streak.longest')} value={String(streak?.longest ?? 0)} />
       </View>
+
+      <ActivityMap />
 
       {/*
         Only once there is a number worth saying. A zero-day streak shared is
@@ -102,15 +128,20 @@ export default function StreakScreen() {
         </View>
       ) : null}
 
+      {freeze && wallet.data ? (
+        <View style={styles.protect}>
+          <Text style={styles.protectTitle}>{t('streak.protectTitle')}</Text>
+          <Text style={styles.protectBody}>{t('streak.protectBody')}</Text>
+          <StoreRow offer={freeze} pending={purchase.isPending} last onBuy={buy} />
+        </View>
+      ) : null}
+
       <View style={styles.categories}>
         {SECTIONS.map((section, index) => (
           <ListRow
             key={section.id}
             title={t(section.titleKey)}
             subtitle={t(section.bodyKey)}
-            // The freezes row carries its number: it is the one fact this
-            // page can state that the store then acts on.
-            value={section.id === 'freezes' && freezes !== undefined ? String(freezes) : undefined}
             last={index === SECTIONS.length - 1}
             onPress={() => router.push(section.route)}
           />
@@ -122,7 +153,7 @@ export default function StreakScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   share: { marginTop: spacing.md },
   tiles: {
@@ -132,5 +163,14 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
     paddingBottom: 18,
     paddingTop: spacing.sm,
   },
+  protect: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: spacing.xs,
+    paddingBottom: spacing.sm,
+    paddingTop: spacing.lg,
+  },
+  protectTitle: { ...font.heading, color: colors.text, fontSize: 16 },
+  protectBody: { ...font.caption, color: colors.textMuted, lineHeight: 19 },
   categories: { marginTop: spacing.md },
 }))

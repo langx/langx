@@ -896,7 +896,9 @@ export const tr: Localized<EnMessages> = {
     title: 'Serin',
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
     leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
-    freezesBody: 'Biriktirdiğin dondurmalar kaçırdığın günü kurtarır',
+    protectTitle: 'Serini koru',
+    protectBody:
+      'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise yukarıdaki haritadan bir ay boyunca geri alınabilir.',
     longest: 'En uzun',
     missed: 'Kaçırıldı',
     bought: 'Jetonla dolduruldu',

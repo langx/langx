@@ -936,7 +936,9 @@ export const en = {
     title: 'Your streak',
     historyBody: 'Every day of the last two months, and what counted',
     leaderboardBody: 'Who has the longest run right now, and ever',
-    freezesBody: 'Banked freezes cover a day you miss',
+    protectTitle: 'Protect your streak',
+    protectBody:
+      'A freeze covers the next day you miss. A day already missed can be bought back on the map above, for a month.',
     longest: 'Longest',
     missed: 'Missed',
     bought: 'Filled in with tokens',

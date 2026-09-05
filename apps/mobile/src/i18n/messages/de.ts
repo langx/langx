@@ -914,7 +914,9 @@ export const de: Localized<EnMessages> = {
     title: 'Deine Serie',
     historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
     leaderboardBody: 'Wer gerade und überhaupt die längste Serie hat',
-    freezesBody: 'Gesparte Schutze decken einen verpassten Tag ab',
+    protectTitle: 'Schütze deine Serie',
+    protectBody:
+      'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich einen Monat lang oben in der Karte zurückkaufen.',
     longest: 'Am längsten',
     missed: 'Verpasst',
     bought: 'Mit Token aufgefüllt',
