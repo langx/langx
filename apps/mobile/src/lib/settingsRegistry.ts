@@ -132,6 +132,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         titleKey: 'settings.signInMethods',
         bodyKey: 'settings.signInMethodsBody',
       },
+      { id: 'account.password', titleKey: 'settings.password', bodyKey: 'settings.passwordBody' },
       { id: 'account.devices', titleKey: 'linkDevice.title', bodyKey: 'settings.linkDeviceBody' },
       { id: 'account.blocked', titleKey: 'settings.blockedPeople' },
       { id: 'account.export', titleKey: 'settings.exportData' },

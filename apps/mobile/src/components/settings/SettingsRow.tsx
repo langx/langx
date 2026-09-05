@@ -325,6 +325,18 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => router.push('/(app)/settings/sign-in-methods')}
         />
       )
+    case 'account.password':
+      // Its own row as well as a line inside "Sign-in methods": "password" is
+      // what people search for, and a search that lands on a screen where the
+      // word is a status readout under a different heading is a near miss.
+      return (
+        <ListRow
+          title={t('settings.password')}
+          subtitle={t('settings.passwordBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/password')}
+        />
+      )
     case 'account.devices':
       // Approving a sign-in is account plumbing, not something anybody does
       // often, and it sits with the other things that decide who can reach
