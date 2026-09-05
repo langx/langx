@@ -10,12 +10,10 @@ base.
 **This gates the entire Android release and nothing else can proceed without
 it.** Check Play Console → Test and release → App Integrity → Play app signing.
 
-**The original keystore was found.** `langx-angular/android/release.keystore`
-(2708 bytes, dated 10 January 2024) is v1's release key, with a second copy at
-`backup/languageXchange/android/release.keystore`. It is not in any repo — it
-sits in the working copy, gitignored — and signing was done by hand rather than
-in CI, so the password is not in `gradle.properties`, `build.gradle` or any
-workflow. Only the owner has it.
+**The original keystore was found.** v1's release key (dated 10 January 2024) is held by the owner outside every repository, with a second copy in a
+backup. It was never committed — `*.keystore` is gitignored — and signing was
+done by hand rather than in CI, so the password is not in `gradle.properties`,
+`build.gradle` or any workflow. Only the owner has it.
 
 **And the password works.** Confirmed 27 August 2026 by listing the keystore:
 one entry, alias `key0`, a 2048-bit RSA key issued 10 January 2024 to New
@@ -143,7 +141,7 @@ cluster**, and the cluster is the one called `dev`. Checked 28 August 2026:
 
 | Where              | `MONGODB_DB`   | Against                                 |
 | ------------------ | -------------- | --------------------------------------- |
-| Local `.env`       | `langx_dev`    | `dev.3xuhkbz.mongodb.net` (Atlas)       |
+| Local `.env`       | `langx_dev`    | the Atlas cluster named `dev`           |
 | `fly.toml` `[env]` | `langx`        | whatever the `MONGODB_URI` secret holds |
 | Tests              | `langx_*_test` | `mongodb-memory-server`, never Atlas    |
 
@@ -154,8 +152,8 @@ one Atlas user, two names.
 
 Two consequences, neither of which is visible from the app:
 
-- The credentials in `.env` and `atlas-credentials.env` are a **single Atlas
-  user reaching both databases**. Anything that can read the dev database can
+- The credentials in `.env` are a **single Atlas user reaching both
+  databases**. Anything that can read the dev database can
   read and drop the production one, and a script run with the wrong
   `MONGODB_DB` writes to real users. `scripts/seed-test-users.ts` takes a
   `--db` flag for exactly this reason — it is a guard, not a convenience.
@@ -208,10 +206,10 @@ goes out for review, not after.
 
 `ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` holds two:
 
-| Fingerprint     | What it is                                                                                                       |
-| --------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `17:D3:…:9D:A0` | v1's release key — `langx-angular/android/release.keystore`, alias `key0`, issued 10 January 2024, valid to 2049 |
-| `A6:55:…:CD:0E` | Google's app signing key, from Play App Signing                                                                  |
+| Fingerprint     | What it is                                                             |
+| --------------- | ---------------------------------------------------------------------- |
+| `17:D3:…:9D:A0` | v1's release key — alias `key0`, issued 10 January 2024, valid to 2049 |
+| `A6:55:…:CD:0E` | Google's app signing key, from Play App Signing                        |
 
 Both come from what v1 serves at
 `https://app.langx.io/.well-known/assetlinks.json` today, which is the file
@@ -635,7 +633,7 @@ of it runs together.
       `GOOGLE_TRANSLATE_PROJECT_ID` / `GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON`
       set on `langx-api` with `fly secrets set` (the key's _content_, not a
       path; the restart is automatic). The key file lives outside every
-      checkout at `~/Developer/langx/secrets/`; the repo is public. Verified
+      checkout; the repo is public. Verified
       by translating a Turkish sentence through the provider with that key.
       Billing note: the first 500 000 characters a month are free, then $20
       per million; the 20/300/1000 daily quotas and the 30-day cache bound
@@ -868,11 +866,11 @@ for `langx.io` or `token.langx.io` — only `app.langx.io` is in
 v0.15 install base has no replacement for `/api/update`. The list still
 stands — as repair work, not as a schedule for the repoint.
 
-| Caller                                                                     | Endpoint                                      |
-| -------------------------------------------------------------------------- | --------------------------------------------- |
-| v0.15 on the stores (`langx-angular/src/environments/environment.prod.ts`) | `https://api.langx.io/` — all of v1           |
-| `website/src/lib/components/molecules/NewsletterForm.svelte`               | `/api/mail` — the newsletter form on langx.io |
-| `token-website/js/leaderboard-token.js`                                    | `/api/leaderboard/token`                      |
+| Caller                                                                        | Endpoint                                      |
+| ----------------------------------------------------------------------------- | --------------------------------------------- |
+| v0.15 on the stores (`langx-angular`, `src/environments/environment.prod.ts`) | `https://api.langx.io/` — all of v1           |
+| `website/src/lib/components/molecules/NewsletterForm.svelte`                  | `/api/mail` — the newsletter form on langx.io |
+| `token-website/js/leaderboard-token.js`                                       | `/api/leaderboard/token`                      |
 
 It also answered `/api/update`, driven by `ANDROID_VERSION`,
 `ANDROID_MAINTENANCE`, `IOS_*` and `WEB_*` in its `.env` (env only — a version

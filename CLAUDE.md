@@ -40,8 +40,8 @@ which values are copied between them by hand. Three rules follow from it:
   next to this one; paths such as `website/src/lib/data/plans.ts` in these docs
   mean that sibling.
 - Every `langx/*` repo is public. Nothing that must stay private goes into any
-  of them; [`docs/workstation-move.md`](docs/workstation-move.md) lists what
-  lives outside git and how it moves between machines.
+  of them — no credentials, and no map of where they live: no local paths,
+  hostnames, or file names of secret files, in `docs/` included.
 - When a plan limit or a token rule changes in `packages/shared`, change the
   copies on the website and in the GitBook docs too. Nothing checks this, and a
   pricing page that drifts is a false claim, not a stale one.
