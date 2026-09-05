@@ -85,22 +85,14 @@ fails loudly if either is wrong — `pnpm verify:web` runs it on its own. If it
 ever fails again, purge the host (Caching → Configuration → Purge → Custom →
 Hostname `app.langx.io`) and check the cache rules.
 
-- [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
-      set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
-      fails on the first sign-up without one
-- [ ] `fly launch --no-deploy`, then `fly secrets set` for `MONGODB_URI`,
-      `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and whichever optional services
-      are being switched on. Nothing secret goes in `fly.toml` — this repo is
-      public
-- [ ] `fly certs add <host>`, with the Cloudflare record on DNS-only (grey
-      cloud) or the certificate never issues. **Turn the proxy back on once it
-      has**, and set `EDGE_SECRET` with a matching transform rule — see the
-      **Country** bullet in `docs/architecture.md`. `api.langx.io`
-      sat grey for months and the whole country feature was silently dead the
-      entire time
-- [ ] `TRUSTED_ORIGINS` includes the web origin and both app schemes, or the
-      browser drops the session cookie and sign-in appears to succeed and do
-      nothing
+The cluster, the Fly app, its secrets, the certificate and `TRUSTED_ORIGINS`
+are all in place — `api.langx.io` answers through Cloudflare's proxy and
+`/health` reports the database up. One thing is not verifiable from outside:
+
+- [ ] `EDGE_SECRET` set, with the matching Cloudflare transform rule — see the
+      **Country** bullet in `docs/architecture.md`. The proxy is on, but the
+      secret was not in the list of Fly secrets checked on 28 August 2026, and
+      without it the whole country feature is silently dead
 
 **This is ordered before the EAS build on purpose.** `EXPO_PUBLIC_API_URL` is
 compiled into the client bundle, so the host has to exist and be final before
@@ -240,25 +232,12 @@ that has the app installed, which is why they belong in a public repo.
 
 The pipeline is complete in code — a token is registered, a message send fans
 out to the recipient's devices, a nudge goes out at 20:00 local, a tapped
-notification opens the conversation — and none of it reaches a phone until
-Expo can talk to Apple and Google on our behalf. There are three separate
-pieces and missing any one of them looks identical from the app: nothing
-arrives, nothing errors.
-
-- [ ] **APNs key (iOS).** Apple Developer → Keys → a key with the Apple Push
-      Notifications service enabled. `eas credentials` uploads it. One key
-      covers development and production.
-- [ ] **FCM v1 service account (Android).** Firebase console → Project
-      settings → Service accounts → generate a private key, then upload the
-      JSON with `eas credentials`. The legacy server key is gone; FCM v1 is
-      the only option now.
-- [ ] **`google-services.json` in the build.** The same Firebase project's
-      Android app config, which carries the sender id the client registers
-      with. It is gitignored — this repo is public — so point
-      `GOOGLE_SERVICES_JSON` at a local path or an EAS file secret.
-      `app.config.ts` only sets `googleServicesFile` when that variable is
-      present, so a build without it succeeds and simply never receives a
-      remote notification.
+notification opens the conversation — and all three credentials it needs are
+in EAS: the APNs key, the FCM v1 service account, and `GOOGLE_SERVICES_JSON`
+as a file variable on every environment (`app.config.ts` only sets
+`googleServicesFile` when that variable is present, so a build without it
+succeeds and simply never receives a remote notification). Missing or wrong,
+any one of them looks identical from the app: nothing arrives, nothing errors.
 
 The Firebase project must use the same package name,
 `tech.newchapter.languageXchange`. A mismatch registers tokens that Expo
@@ -426,64 +405,34 @@ use. It belongs before the rollout widens, not in the first patch after it.
 
 ## Design pass — the app does not look like LangX yet
 
-Two things are wrong with how v2 looks, and only one of them is a matter of
-taste.
-
-The first is not. `apps/mobile/app.config.ts` sets no `icon`, no `splash`, no
-`android.adaptiveIcon` and no `web.favicon`, and there is no image file
-anywhere in this repo. Every build so far has shipped Expo's default icon.
-That blocks submission on its own, and it is invisible while developing,
-because a dev client shows its own icon instead.
-
-The second is that the code and the store have drifted apart. What users
-recognise is v1's identity, and it is still consistent everywhere it is
-served: amber `#ffc409` with orange `#ff571a`, the two-arc exchange mark,
-Comfortaa — on langx.io, on token.langx.io, in every store screenshot, in the
-Windows tile colour. `apps/mobile/src/lib/theme.ts` uses none of it: `primary`
-is near-black `#111113`, `accent` is blue, and there is no yellow in the app
-at all. The website still holds the old palette while borrowing `pro`,
-`streak` and `accent` back from `theme.ts`, so the two surfaces have already
-half-merged into a third thing nobody designed. Ship it as-is and the icon,
-the screenshots and the app disagree with each other in the same listing.
+The app side of this is done. `apps/mobile/app.config.ts` wires the icon, the
+splash (light and dark) and the Pro alternate icon; `src/lib/theme/tokens.ts`
+holds the v3 palette in both colour schemes behind `ThemeProvider`; Nunito is
+loaded through `expo-font`; the tab bar draws Feather glyphs; and
+`components/ui/Button.tsx` and `FormField.tsx` carry no stray hex. What is
+left is the site, the store assets, and two leftovers in the app.
 
 This sits before **Release** rather than in it on purpose: the icon and the
 screenshots are part of the submission, not part of the rollout.
 
-Two constraints on whatever gets decided. `docs/token-messaging-brief.md`
-rules out coin, chain and wallet iconography — that is an App Review question
-(3.1.5(b)), not a stylistic one. And `packages/shared/src/cosmetics.ts` sells
-`frame.gold` as a rank, so if the brand colour stays amber, gold has to read
-as something bought rather than as the product.
+Two constraints still apply. `docs/token-messaging-brief.md` rules out coin,
+chain and wallet iconography — that is an App Review question (3.1.5(b)), not
+a stylistic one. And `packages/shared/src/cosmetics.ts` sells `frame.gold` as
+a rank, so gold has to read as something bought rather than as the product.
 
-- [ ] Decide the identity first: keep v1's amber and orange, or make the
-      black-and-blue drift in `theme.ts` official. This ships as an update to
-      the existing listings, so a changed icon on a returning user's home
-      screen is a cost being chosen, not a free redraw
-- [ ] One source per surface — `theme.ts` for the app, `_themes.scss` and
-      `_variables.scss` for the site. The site's `define-color` mixin emits
-      the `-rgb` and `-contrast` variants that components composite against;
-      replacing it with flat hex breaks `Button`, `Tag` and `Waves`. Radius
-      and the first six spacing steps already match across the two, and
-      should stay matched
-- [ ] Dark mode in the app. `userInterfaceStyle: 'automatic'` has been set
-      all along with nothing behind it, while the site has had three-state
-      theming since launch. `colors` is a module constant that 41
-      `StyleSheet.create` calls capture at load, so this is the one item that
-      is not a value swap
-- [ ] A typeface. The app loads no font and renders in the platform default;
-      the site's headings are Comfortaa. `expo-font` is already a dependency
-- [ ] Replace the emoji icons, the tab bar in `app/(app)/_layout.tsx`
-      included, with a real icon set. They became the house style by
-      accident, and they draw differently on every platform
-- [ ] Move `components/ui/Button.tsx` and `FormField.tsx` onto the tokens.
-      Both predate `theme.ts` and hold most of the stray hex left in the app;
-      fixing those two reaches 22 and 7 screens respectively
+- [ ] Replace the emoji still used as icons in ten files — the streak,
+      profile, discover and me screens, the onboarding `done` and
+      `welcome-back` screens, `AppGate`, `IntroCarousel`, `BadgeGrid` and
+      `LeaderboardSection` — with the same Feather set the tab bar uses. They
+      draw differently on every platform
 - [ ] Give the cosmetic tiers real colours. `cosmetics.ts` names bronze,
       silver and gold and defines no values, so nothing can render them today
-- [ ] Produce the icon, splash, adaptive icon and favicon and wire them into
-      `app.config.ts`. `branding/` has no vector master — its only SVG is an
-      auto-trace — and its `splash.png` is 3601×3600, so none of it can be
-      reused unaltered
+- [ ] Bring the site onto the same identity, one source per surface:
+      `tokens.ts` for the app, `_themes.scss` and `_variables.scss` for the
+      site. The site's `define-color` mixin emits the `-rgb` and `-contrast`
+      variants that components composite against; replacing it with flat hex
+      breaks `Button`, `Tag` and `Waves`. Radius and the first six spacing
+      steps already match across the two, and should stay matched
 - [x] Profile screens show account age ("Registered 3 months ago", the unit
       widening from days to months to years as the account gets older) and a
       Verified Email badge. The DTO is `PublicProfile` in
@@ -614,12 +563,13 @@ of it runs together.
       address at runtime; a released build has no dev server and would ship
       pointing at the phone itself, which is what this item existed to
       prevent
-- [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
-      the paywall screen (which today states the offer and says purchase is not
-      yet enabled — deliberately, rather than shipping a button that cannot work).
-      All three are empty, so `isPurchasesAvailable()` is false on every
-      platform. Setting `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough
-      to exercise the whole paywall before the store products exist
+- [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set. `react-native-purchases` is wired
+      into the paywall through `lib/purchases.ts`, but `eas.json` carries no
+      RevenueCat key, so `isPurchasesAvailable()` is false in every store
+      build and the screen says purchase is not yet enabled — deliberately,
+      rather than shipping a button that cannot work. Setting
+      `EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY` alone is enough to exercise the
+      whole paywall before the store products exist
 - [x] **Translation is configured on production** as of 5 September 2026.
       The provider (`apps/api/src/translation/`), the per-tier quotas and the
       cache shipped in Faz 6 but ran against no credentials for two days —
