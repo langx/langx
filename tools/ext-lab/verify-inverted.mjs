@@ -7,7 +7,7 @@
  * a page of history shifts what the reader is looking at.
  */
 import { createServer } from 'node:http'
-import { readFile, stat } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { extname, join, normalize } from 'node:path'
 import { chromium } from 'playwright'
 
@@ -21,19 +21,28 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
 /** Every exported route is the same SPA shell, so anything unknown gets it. */
 const server = createServer(async (req, res) => {
   const path = decodeURIComponent((req.url ?? '/').split('?')[0])
-  let file = join(DIST, normalize(path).replace(/^(\.\.[/\\])+/, ''))
-  try {
-    if ((await stat(file)).isDirectory()) file = join(file, 'index.html')
-  } catch {
-    file = join(DIST, 'index.html')
+  const file = join(DIST, normalize(path).replace(/^(\.\.[/\\])+/, ''))
+  // Read first and let the error say what the path is, instead of stat-then-
+  // read: a directory falls back to its index.html, a missing file to the
+  // SPA entry (Expo's dynamic routes resolve client-side).
+  const candidates = [file, join(file, 'index.html'), join(DIST, 'index.html')]
+  let body = null
+  let served = file
+  for (const candidate of candidates) {
+    try {
+      body = await readFile(candidate)
+      served = candidate
+      break
+    } catch {
+      // try the next candidate
+    }
   }
-  try {
-    const body = await readFile(file)
-    res.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' })
-    res.end(body)
-  } catch {
+  if (body === null) {
     res.writeHead(404).end('not found')
+    return
   }
+  res.writeHead(200, { 'content-type': TYPES[extname(served)] ?? 'application/octet-stream' })
+  res.end(body)
 })
 await new Promise((r) => server.listen(PORT, r))
 
