@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 client \u2014 iOS, Android and web from one Expo codebase",
+  "description": "LangX v2 client — iOS, Android and web from one Expo codebase",
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start",
@@ -47,6 +47,7 @@
     "expo-observe": "~57.0.19",
     "expo-router": "~57.0.19",
     "expo-secure-store": "~57.0.3",
+    "expo-sharing": "~57.0.18",
     "expo-splash-screen": "~57.0.8",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.3",

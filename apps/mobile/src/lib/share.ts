@@ -1,4 +1,5 @@
 import * as Clipboard from 'expo-clipboard'
+import * as Sharing from 'expo-sharing'
 import { Share } from 'react-native'
 import { currentTranslate } from '../i18n/runtime'
 import { isShareCancel, type ShareContent } from './shareText'
@@ -32,5 +33,32 @@ export async function shareLink({ message, url }: ShareContent): Promise<void> {
       return
     }
     showToast(currentTranslate()(url ? 'share.copied' : 'share.copiedText'))
+  }
+}
+
+/**
+ * Opens the platform share sheet with a picture — a local file, already on
+ * the device — and nothing else.
+ *
+ * The other call site, and the reason a card is shared as bytes rather than
+ * as its page: handed a URL, Instagram's share extension offers only "send in
+ * a message"; handed an image it asks Story or Post, which is where a streak
+ * card was going all along. `expo-sharing` shares exactly one item, so no
+ * sentence and no link travel with it — the card carries the handle and the
+ * profile QR, and "Just the link" is still on the sheet for anyone who wants
+ * the URL.
+ *
+ * Resolves `false` when the sheet could not be opened at all — no share
+ * target on this platform, or the OS refused — so the caller can fall back to
+ * the link. Closing the sheet is not a failure: `expo-sharing` resolves on
+ * cancel, unlike `navigator.share`, so there is no `isShareCancel` here.
+ */
+export async function shareImage(fileUri: string): Promise<boolean> {
+  try {
+    if (!(await Sharing.isAvailableAsync())) return false
+    await Sharing.shareAsync(fileUri, { mimeType: 'image/png', UTI: 'public.png' })
+    return true
+  } catch {
+    return false
   }
 }

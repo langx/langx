@@ -229,6 +229,17 @@ const config: ExpoConfig = {
     // nothing to configure, but without the entry the module is not linked
     // into a build.
     '@react-native-community/datetimepicker',
+    /*
+     * The system share sheet for a file — a share *card* goes out as its PNG
+     * rather than as a link, because Instagram only offers Story / Post for an
+     * image (`ShareCardSheet.tsx`). Its config plugin exists to add a share
+     * *extension* — receiving things shared into the app — and does nothing
+     * unless `ios.enabled` / `android.enabled` is set, which they are not:
+     * that is a target with its own bundle id and app group, and nothing here
+     * wants it. Listed anyway, for the same fingerprint reason as the three
+     * above.
+     */
+    'expo-sharing',
     // Microphone access is only ever requested when the user taps record, but
     // the string has to be declared here or iOS terminates the app the first
     // time it is asked for.

@@ -2153,13 +2153,28 @@ Three shapes, because there is no ratio that survives all three destinations: a
 9:16 card on a timeline is a stamp and a 16:9 card in a story is a band across
 an empty screen. The app asks where it is going before the picture is drawn.
 
-**What gets shared is a page, not the picture.** `app.langx.io/s/<id>` carries
-the OpenGraph tags, shows the card and offers the download; a raw
+**What the link points at is a page, not the picture.** `app.langx.io/s/<id>`
+carries the OpenGraph tags, shows the card and offers the download; a raw
 `media.langx.io` URL unfurls as a bare image with no title and gives whoever
 taps it nowhere to go. That page is a Cloudflare Pages Function rather than an
 Expo route, because the web build is a static export — every route ships the
 same empty shell and fills it in on the client, so a crawler fetching one sees
 no title and no image. Meta tags have to be in the bytes the crawler is handed.
+
+**What goes into the share sheet is the picture, as a file** — a reversal of
+the paragraph above, on 5 September 2026, after trying to post one. Handed the
+page URL, Instagram's share extension offers exactly one thing: send it in a
+message. Handed an image it asks Story or Post, which is what a 9:16 card was
+drawn for. So on iOS and Android the app downloads the PNG into the cache and
+hands the file to `expo-sharing`; the page is still what "Just the link" sends,
+what the web build shares (a browser cannot hand a file to Instagram), and what
+goes out when the download or the file share fails. The cost is the one the
+first paragraph of this section was proud of avoiding: `expo-sharing` is a
+native module, so this needed a build and a store submission rather than an
+update. It is a small one — no permission, no plugin configuration — and the
+fingerprint runtime version keeps the update away from binaries that lack it.
+A file share carries no sentence and no URL; the card carries the handle and
+the profile QR, so the referral rule below still holds.
 
 The card carries the sharer's profile QR. That is what makes it worth posting
 rather than just nice to look at: a story is watched on one phone and scanned
