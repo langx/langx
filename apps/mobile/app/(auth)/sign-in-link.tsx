@@ -17,6 +17,9 @@ import { makeStyles } from '../../src/lib/theme'
  * "check your email" either way. A handle works here too; the server
  * rewrites it to the address on file.
  */
+/** Long enough for a slow mail provider behind the API; short enough that a stuck request is an answer. */
+const REQUEST_TIMEOUT_MS = 20_000
+
 export default function SignInLink() {
   useScreenInteractive()
   const styles = useStyles()
@@ -31,9 +34,15 @@ export default function SignInLink() {
     setLoading(true)
     setError(undefined)
     // The failure branch is only for a request that did not go out at all —
-    // a malformed address, a rate limit. A known-or-unknown address answers
-    // the same 200, by design.
-    const { error: sendError } = await authClient.signIn.magicLink({ email: email.trim() })
+    // a malformed address, a rate limit, or a request that never came back.
+    // A known-or-unknown address answers the same 200, by design. The
+    // timeout is the part that was missing: a request held open by a proxy
+    // or an extension left this button spinning for good, with no way to
+    // tell it from a slow send and nothing to press.
+    const { error: sendError } = await authClient.signIn.magicLink({
+      email: email.trim(),
+      fetchOptions: { timeout: REQUEST_TIMEOUT_MS },
+    })
     setLoading(false)
     if (sendError) {
       setError(t('errors.signInFailed'))
