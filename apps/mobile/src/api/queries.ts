@@ -249,7 +249,7 @@ export interface MeProfile {
     incognito: boolean
     hideOnlineStatus: boolean
     activityMapVisible?: boolean
-    statsVisible?: boolean
+    weekChartVisible?: boolean
     hideCity?: boolean
   }
   /**
@@ -509,13 +509,16 @@ export interface PublicActivityDto {
   days: { day: string; intensity: number }[]
 }
 
+/**
+ * The numbers are always there; `week` only if its owner shows the chart,
+ * which is checked on the server so there is nothing here to hide.
+ */
 export interface PublicSummaryDto {
-  visible: boolean
-  streak?: { current: number; longest: number }
-  corrections?: number
+  streak: { current: number; longest: number }
+  corrections: number
   /** Badges earned, out of the shared catalogue's total. */
-  badges?: number
-  tokens?: number
+  badges: number
+  tokens: number
   week?: { day: string; messages: number; corrections: number }[]
 }
 

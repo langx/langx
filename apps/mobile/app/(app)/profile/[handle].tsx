@@ -331,6 +331,26 @@ export default function ProfileScreen() {
         />
       ) : null}
 
+      {/*
+        The numbers, above the bio rather than under the interests where they
+        used to be: they are the quickest read of whether this person is here
+        to teach, and a reader deciding whether to write has usually decided
+        by the time they reach the languages. Always sent — there is no switch
+        for them any more; only the chart below has one.
+      */}
+      {summary.data ? (
+        <View style={styles.stats}>
+          <StatTile label={t('me.dayStreak')} value={`🔥 ${summary.data.streak.current}`} />
+          <StatTile
+            tone="success"
+            label={t('me.corrections')}
+            value={String(summary.data.corrections)}
+          />
+          <StatTile label={t('me.badges')} value={String(summary.data.badges)} />
+          <StatTile label={t('tokens.title')} value={String(summary.data.tokens)} />
+        </View>
+      ) : null}
+
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
       {/* v3's two-column language block, shared with the owner's own tab so
@@ -349,24 +369,12 @@ export default function ProfileScreen() {
       ) : null}
 
       {/*
-        The numbers, and only if they are offered: `statsVisible` is checked on
-        the server, so a profile that turned them off sends nothing to hide.
+        The week's chart, only if it is offered: `weekChartVisible` is checked
+        on the server, so a profile that turned it off sends no `week` and
+        there is nothing here to hide. Beside the activity map, which is the
+        same kind of thing at a different zoom.
       */}
-      {summary.data?.visible ? (
-        <>
-          <View style={styles.stats}>
-            <StatTile label={t('me.dayStreak')} value={`🔥 ${summary.data.streak?.current ?? 0}`} />
-            <StatTile
-              tone="success"
-              label={t('me.corrections')}
-              value={String(summary.data.corrections ?? 0)}
-            />
-            <StatTile label={t('me.badges')} value={String(summary.data.badges ?? 0)} />
-            <StatTile label={t('tokens.title')} value={String(summary.data.tokens ?? 0)} />
-          </View>
-          {summary.data.week ? <WeeklyChart week={summary.data.week} /> : null}
-        </>
-      ) : null}
+      {summary.data?.week ? <WeeklyChart week={summary.data.week} /> : null}
 
       {/* Read-only, and drawn from the same component as your own — a second
           implementation of a grid is a second grid to keep in step. */}

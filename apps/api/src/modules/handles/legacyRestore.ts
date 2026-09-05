@@ -321,7 +321,7 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
       incognito: false,
       hideOnlineStatus: false,
       activityMapVisible: true,
-      statsVisible: true,
+      weekChartVisible: true,
     },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },

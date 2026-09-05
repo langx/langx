@@ -183,7 +183,9 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
       throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
     }
 
-    return reply.send(await getPublicSummary(app.mongo.db, target._id))
+    const summary = await getPublicSummary(app.mongo.db, target._id)
+    if (!summary) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+    return reply.send(summary)
   })
 }
 

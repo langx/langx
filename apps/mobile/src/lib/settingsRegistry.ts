@@ -80,7 +80,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         titleKey: 'settings.activityMap',
         bodyKey: 'settings.activityMapBody',
       },
-      { id: 'privacy.stats', titleKey: 'settings.showStats', bodyKey: 'settings.showStatsBody' },
+      {
+        id: 'privacy.weekChart',
+        titleKey: 'settings.showWeekChart',
+        bodyKey: 'settings.showWeekChartBody',
+      },
       {
         id: 'privacy.hideOnline',
         titleKey: 'settings.hideOnline',
