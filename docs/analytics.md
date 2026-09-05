@@ -56,6 +56,7 @@ reached a screen of ours.
 | `paywall_viewed`       | `feature` (what sent them there, or null), `tier`    | The paywall opens                                                   |
 | `purchase_started`     | `offer`, `tier`, `period`                            | A buy button is tapped                                              |
 | `purchase_finished`    | the same, plus `outcome`                             | The store sheet closes: purchased, cancelled, failed or unavailable |
+| `review_prompted`      | `trigger` (streakMilestone or correction)            | The OS review sheet was requested; whether it showed is unknowable  |
 
 Purchases themselves — renewals, refunds, what was actually charged — come
 from RevenueCat's server-side PostHog integration (below), not from the app.

@@ -7,7 +7,7 @@ import {
   translateTargetOptions,
 } from '@langx/shared'
 import { router } from 'expo-router'
-import { Image, Pressable, Text, View } from 'react-native'
+import { Image, Platform, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
 import defaultIcon from '../../../assets/icons/default.png'
 import type { SettingsModel } from '../../hooks/useSettingsModel'
@@ -15,6 +15,7 @@ import { type MessageKey, useDisplayNames } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
+import { openStoreListing } from '../../lib/storeListing'
 import { makeStyles, THEME_PREFERENCES, type ThemePreference } from '../../lib/theme'
 import { ListRow } from '../ui/ListRow'
 import { SegmentedControl } from '../ui/SegmentedControl'
@@ -456,6 +457,18 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     case 'about.intro':
       return <ListRow title={t('settings.showIntro')} last={last} onPress={model.replayIntro} />
+    case 'about.rate':
+      // The listing itself, not the rationed in-app sheet: a row somebody
+      // taps on purpose should always lead somewhere. Nowhere to send a
+      // browser, so no row on web.
+      if (Platform.OS === 'web') return null
+      return (
+        <ListRow
+          title={t('settings.rateApp')}
+          last={last}
+          onPress={() => void openStoreListing()}
+        />
+      )
 
     case 'notifications.thisDevice':
       return (

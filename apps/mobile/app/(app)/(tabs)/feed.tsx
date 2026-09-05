@@ -47,6 +47,7 @@ import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 
 /**
  * The two halves of the feed. A `Record` keyed on `PostKind` rather than a list
@@ -137,6 +138,7 @@ export default function FeedScreen() {
   const feed = useFeed(section)
   const pull = usePullToRefresh(() => feed.refetch())
   const correctPost = useCorrectPost()
+  const review = useReviewPrompt()
   const deletePost = useDeletePost()
   const pronouncing = section === 'pronunciation'
 
@@ -253,6 +255,8 @@ export default function FeedScreen() {
           setCorrection('')
           setCorrectionMedia([])
           showToast(t('feed.correctionSent'))
+          // Somebody just helped somebody: a good moment, if it is the Nth.
+          review.request({ kind: 'correction' })
         },
         onError: (caught) => {
           // The server's own duplicate guard, surfaced as the sentence it

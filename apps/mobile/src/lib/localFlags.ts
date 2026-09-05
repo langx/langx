@@ -116,6 +116,13 @@ export const FLAG_KEYS = {
    * to allow before anything is sent.
    */
   pushOffOnThisDevice: 'pushOffOnThisDevice',
+  /**
+   * JSON: when the store review sheet was last requested, how often, under
+   * which version, and how many corrections this device has written. A blob
+   * rather than a boolean for the reason `tips` is — "never asked" and
+   * "asked, long ago" are different answers.
+   */
+  reviewPrompt: 'reviewPrompt',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

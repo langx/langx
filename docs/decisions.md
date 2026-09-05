@@ -3221,3 +3221,34 @@ not yet carry `expo-sensors` — the store build that adds the sensor and the
 haptics ships behind this, and the hooks it fills in are already there with the
 shape it needs. The copy says "tap" until the hook reports the sensor is real.
 The words are the token brief's: a gift, never a prize, never a spin.
+
+## Three native modules in one build: the shake, the buzz, and the review sheet
+
+**They travel together because a build is the expensive part.** `expo-sensors`
+(shake to open the hourly gift), `expo-haptics` (the tap you feel when it
+opens) and `expo-store-review` (the OS's own "rate this app" sheet) each need
+a binary, and each on its own would have been a store submission for a small
+thing. The gift screen shipped a build earlier with a tap and two stubs shaped
+for these; this batch fills the stubs in. Under the fingerprint runtime policy
+the bundle carrying them reaches only the new binary — the old one keeps
+tapping.
+
+**The shake is still decoration on a button.** `useShake` reports `available`
+only once the accelerometer is actually subscribed, and the copy says "shake"
+only then; the box stays a `Pressable` everywhere, so a screen reader, the web
+build and a simulator all keep the same control. The threshold and the
+debounce are pure functions in `lib/gift.ts` with tests, not numbers inside a
+sensor callback.
+
+**The review sheet is rationed by us before the OS rations it.** iOS shows it
+at most three times a year however often it is asked, and neither platform
+says whether it showed. So the rules in `lib/reviewPrompt.ts` spend those asks
+on purpose: a streak milestone the day it lands (which days, from the shared
+`streakMilestones` table — a milestone is a reward just received, on a day
+somebody came back for), or the 3rd, 25th and 100th correction written on this
+device (helping somebody is the product). Never twice in one version, ninety
+days apart, never a guest, never on web. The ask is recorded _before_ the
+sheet, because the OS may decline silently and asking again tomorrow would
+spend the same ration twice. Settings → About gets a plain "Rate LangX" row
+that opens the listing itself — a row somebody taps on purpose must always
+lead somewhere, and the sheet cannot promise that.

@@ -49,6 +49,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -107,6 +108,7 @@ export default function PostScreen() {
   const commentQuery = usePostComments(id)
 
   const correctPost = useCorrectPost()
+  const review = useReviewPrompt()
   const answerPost = useAnswerPronunciation()
   const addComment = useAddComment()
   const deletePost = useDeletePost()
@@ -210,6 +212,7 @@ export default function PostScreen() {
           // The mutation patches the feed pages; this thread's own pages it
           // does not know about, so the new row arrives by refetch.
           void query.refetch()
+          review.request({ kind: 'correction' })
         },
         onError: () => showToast(t('common.retry')),
       },

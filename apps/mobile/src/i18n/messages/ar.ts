@@ -1139,6 +1139,7 @@ export const ar: Localized<EnMessages> = {
     languageAuto: 'الجهاز ({name})',
     blockedPeople: 'المحظورون',
     showIntro: 'إظهار المقدمة مجددًا',
+    rateApp: 'قيّم LangX',
     exportData: 'تصدير بياناتي',
     deleteAccount: 'حذف الحساب',
     deleteAccountBody: 'تسجيل الدخول خلال {days} يومًا يلغي الحذف.',

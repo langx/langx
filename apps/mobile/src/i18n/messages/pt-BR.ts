@@ -975,6 +975,7 @@ export const ptBR: Localized<EnMessages> = {
     languageAuto: 'Aparelho ({name})',
     blockedPeople: 'Pessoas bloqueadas',
     showIntro: 'Ver a introdução de novo',
+    rateApp: 'Avaliar o LangX',
     exportData: 'Exportar meus dados',
     deleteAccount: 'Excluir conta',
     deleteAccountBody: 'Entrar de novo em até {days} dias cancela.',

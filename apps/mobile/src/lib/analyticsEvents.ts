@@ -49,6 +49,14 @@ export type AnalyticsEvent =
         outcome: PurchaseOutcome
       }
     }
+  | {
+      /**
+       * The store's review sheet was requested. Whether the OS then showed it
+       * is not knowable, so this counts asks, not sheets.
+       */
+      name: 'review_prompted'
+      properties: { trigger: 'streakMilestone' | 'correction' }
+    }
 
 export type AnalyticsEventName = AnalyticsEvent['name']
 
