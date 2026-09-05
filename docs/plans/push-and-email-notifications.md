@@ -18,9 +18,8 @@ Everything below the line is **built, merged and deployed** (PRs #1068–#1086,
   `release.yml` (manual). Builds are started only when Behic asks.
 - Hosts moved from api2/app2 to `api.langx.io` / `app.langx.io`.
 
-Items 1-4 below were finished from the Mac on the evening of 3 September
-2026; `mac-handoff-eas-setup.md` records what each one turned into and how it
-was verified. The Expo project now lives in a new Expo **organisation**
+Items 1-4 below were finished on the evening of 3 September 2026 and
+verified against the Expo and Apple APIs. The Expo project now lives in a new Expo **organisation**
 `langx` (`@langx/langx`) — a personal Expo account cannot be linked to a
 GitHub organisation repo, which is the one thing the plan did not anticipate.
 The project id did not change, so no code changed.
@@ -100,12 +99,11 @@ phone, handle `xue2`, production DB). Sender: throwaway account
   the socket was down while backgrounded, so the cache patch never happened,
   and `useNotificationRouting` does not invalidate the thread it opens.
 
-What is still open (bugs 1 and 2 handed to another agent via
-`handoff-ios-banner-and-stale-thread.md`):
+What is still open (bugs 1 and 2 were handed to another session and fixed
+in #1106 and #1108):
 
-1. Fix bug 1 and bug 2, then repeat the two device tests on iOS.
-2. Install `~/Downloads/langx-preview-2.0.0.apk` on an Android phone and run
-   the same three checks.
+1. Repeat the two device tests on iOS.
+2. Install the preview APK on an Android phone and run the same three checks.
 3. Web banner check (verification item 8) — never run in a browser.
 4. Delete the `pushtest` account and its conversation from production.
 
