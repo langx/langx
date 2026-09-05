@@ -85,14 +85,11 @@ fails loudly if either is wrong — `pnpm verify:web` runs it on its own. If it
 ever fails again, purge the host (Caching → Configuration → Purge → Custom →
 Hostname `app.langx.io`) and check the cache rules.
 
-The cluster, the Fly app, its secrets, the certificate and `TRUSTED_ORIGINS`
-are all in place — `api.langx.io` answers through Cloudflare's proxy and
-`/health` reports the database up. One thing is not verifiable from outside:
-
-- [ ] `EDGE_SECRET` set, with the matching Cloudflare transform rule — see the
-      **Country** bullet in `docs/architecture.md`. The proxy is on, but the
-      secret was not in the list of Fly secrets checked on 28 August 2026, and
-      without it the whole country feature is silently dead
+The cluster, the Fly app, its secrets, the certificate, `TRUSTED_ORIGINS` and
+`EDGE_SECRET` are all in place — `api.langx.io` answers through Cloudflare's
+proxy and `/health` reports the database up. The **Country** bullet in
+`docs/architecture.md` says what the edge secret is for and why the proxy has
+to stay on.
 
 **This is ordered before the EAS build on purpose.** `EXPO_PUBLIC_API_URL` is
 compiled into the client bundle, so the host has to exist and be final before
@@ -260,21 +257,19 @@ credentials before running the streak reminder against real users.
 ## Email needs a verified sender and a secret that is never rotated
 
 Push reaches a phone once Apple and Google are configured. Notification email
-reaches an inbox once three things are true, and the first is the one that
-takes days rather than minutes.
+reaches an inbox once three things are true. Two of them are: `langx.io` is a
+verified sending domain in Resend (its DKIM record and the `send.` subdomain's
+MX are live in Cloudflare DNS), and `EMAIL_UNSUBSCRIBE_SECRET` is set on Fly.
+**That secret must never be rotated.** It signs the unsubscribe link in every
+notification email ever sent, and those links live in inboxes for years —
+rotating it breaks all of them at once, which is the legal way out of the
+mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and inherits exactly
+that problem.
 
-- [ ] **A verified sending domain.** Resend → Domains → `langx.io`, then the
-      SPF, DKIM and DMARC records it prints, in Cloudflare DNS. Until this is
-      done `EMAIL_FROM` has to stay on `onboarding@resend.dev`, which works but
-      puts a stranger's domain on every email the app sends.
-- [ ] **`EMAIL_FROM` pointed at it**, e.g. `LangX <hello@langx.io>`. The TODO
-      in `env.ts` comes out with it.
-- [ ] **`EMAIL_UNSUBSCRIBE_SECRET` set**, `openssl rand -base64 32`.
-      **Generate once and never rotate it.** It signs the unsubscribe link in
-      every notification email ever sent, and those links live in inboxes for
-      years — rotating it breaks all of them at once, which is the legal way
-      out of the mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and
-      inherits exactly that problem.
+- [ ] **`EMAIL_FROM` pointed at the verified domain**, e.g.
+      `LangX <hello@langx.io>`. The secret exists on Fly but its value has not
+      been read back; the default in `env.ts` is still `onboarding@resend.dev`,
+      which works but puts a stranger's domain on every email the app sends.
 
 Read one before anybody else does: leave `RESEND_API_KEY` unset locally and the
 sender prints each message to the log instead, headers included.
@@ -425,8 +420,6 @@ a rank, so gold has to read as something bought rather than as the product.
       `welcome-back` screens, `AppGate`, `IntroCarousel`, `BadgeGrid` and
       `LeaderboardSection` — with the same Feather set the tab bar uses. They
       draw differently on every platform
-- [ ] Give the cosmetic tiers real colours. `cosmetics.ts` names bronze,
-      silver and gold and defines no values, so nothing can render them today
 - [ ] Bring the site onto the same identity, one source per surface:
       `tokens.ts` for the app, `_themes.scss` and `_variables.scss` for the
       site. The site's `define-color` mixin emits the `-rgb` and `-contrast`
@@ -530,9 +523,9 @@ of it runs together.
 - [ ] Subscription products created in Play Console
 - [ ] RevenueCat project connected to both, API keys issued. The webhook is a
       separate step and needs the API deployed first — see above
-- [ ] Google OAuth client created (Web application type) and
-      `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set. Authorized redirect URIs
-      are the API's callback, one per environment —
+- [x] Google OAuth client created and `GOOGLE_CLIENT_ID` /
+      `GOOGLE_CLIENT_SECRET` set on Fly. Authorized redirect URIs are the
+      API's callback, one per environment —
       `https://api.langx.io/api/auth/callback/google` and
       `http://localhost:4000/api/auth/callback/google`. There is no third one
       for a phone: Google refuses a private LAN address, so a development build
@@ -692,18 +685,10 @@ before either runs.
       `langx-media-dev` bucket (same region, localhost-only CORS, its own
       key), which is what `.env` points at — so nothing tested on a laptop
       can land next to migrated user media
-- [ ] Decide the public base URL **before the first real upload and before
-      the ETLs**: `https://f003.backblazeb2.com/file/langx-media` (the shape the dev
-      `.env` uses today, with `-dev`) or `https://media.langx.io/file/langx-media` behind
-      Cloudflare (free egress; needs one proxied CNAME to
-      `f003.backblazeb2.com`). Whatever is stored is permanent — see the
-      self-host doc for why
-- [ ] `fly secrets set STORAGE_*` on `langx-api`, pointing at `langx-media`.
-      Create a fresh bucket-scoped key for it at that moment with
-      `b2 key create --bucket langx-media ...` — B2 shows a secret once, and the one made on
-      2 September was not kept. Not set as of 2 September 2026; the deploy's
-      upload endpoints still answer "Storage is not configured". Setting
-      secrets restarts the machine
+      All six `STORAGE_*` secrets, `STORAGE_PUBLIC_BASE_URL` included, are set on
+      `langx-api`, and the profile ETL has already written media URLs into
+      production's staged records — so the public base URL is decided and
+      permanent. See the self-host doc for why it cannot change now.
 
 1. Run the reservation ETL: `tsx scripts/migrate-appwrite.ts --apply`
    (dry run first — last verified 3479 profiles → 3401 reservation candidates)
@@ -856,8 +841,10 @@ leaves nobody able to push a fix to it. Do these first, in order:
       header is present" and an empty board (checked on token.langx.io the
       same day). After any deploy that touches CORS, verify with the command
       under this list — the header, not the status
-- [ ] Confirm every migrated client takes its version and maintenance flags
-      from v2's `appConfig` route and `middleware/maintenance.ts`
+- [x] Every v2 client takes its version and maintenance flags from
+      `GET /app-config` and `middleware/maintenance.ts`: `AppGate` renders the
+      maintenance and update-required screens from that response, and
+      `routes/appConfig.test.ts` covers both the route and the gate
 - [x] ~~Let the v0.15 install base drain far enough that losing `/api/update`
       strands nobody~~ — overtaken. The repoint on 3 September 2026 took
       `/api/update` down with it, so a v0.15 install can no longer be told to
