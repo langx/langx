@@ -1416,6 +1416,20 @@ export const de: Localized<EnMessages> = {
     quotaNotice:
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
+    lifetimeNotice: 'Du hast {plan} auf Lebenszeit. Nichts verlängert sich, nichts wird berechnet.',
+    lifetimeKept:
+      '{plan} auf Lebenszeit bleibt dir. Sollte {plus} je enden, fällst du darauf zurück.',
+    includedIn: 'In {plan} enthalten.',
+    upgradeNotice:
+      'Wechsel von {plan}: Der Store berechnet für den Rest des laufenden Zeitraums nur die Differenz, und {plan} endet.',
+    upgradeWeb:
+      'Dein {plan}-Abo wurde im Web gekauft. Ändere es im Abrechnungsportal – ungenutzte Zeit wird erstattet.',
+    changePlan: 'Plan ändern',
+    upgradeElsewhere:
+      'Dein {plan}-Abo wurde über {store} gekauft. Ändere es dort, damit du nicht doppelt zahlst.',
+    storeIos: 'den App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'das Web',
     purchaseFailed: 'Dieser Kauf ist nicht durchgegangen. Es wurde nichts abgebucht.',
     purchaseUnavailable: 'Käufe sind auf diesem Gerät nicht verfügbar.',
     nothingToRestore: 'Auf diesem Gerät gibt es nichts wiederherzustellen.',

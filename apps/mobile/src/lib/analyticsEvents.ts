@@ -1,4 +1,4 @@
-import type { BillingPeriod, PaidPlanTier, PlanFeature, PlanTier } from '@langx/shared'
+import type { BillingPeriod, PaidPlanTier, PlanChange, PlanFeature, PlanTier } from '@langx/shared'
 import type { PurchaseOutcome } from './purchases'
 
 /**
@@ -38,7 +38,17 @@ export type AnalyticsEvent =
     }
   | {
       name: 'purchase_started'
-      properties: { offer: string; tier: PaidPlanTier | null; period: BillingPeriod | null }
+      properties: {
+        offer: string
+        tier: PaidPlanTier | null
+        period: BillingPeriod | null
+        /**
+         * What the tap meant for the plan already held — a first purchase or
+         * an upgrade — and `portal` for the web, where an upgrade leaves for
+         * RevenueCat's portal and no `purchase_finished` follows.
+         */
+        change: PlanChange | 'portal'
+      }
     }
   | {
       name: 'purchase_finished'
@@ -46,6 +56,7 @@ export type AnalyticsEvent =
         offer: string
         tier: PaidPlanTier | null
         period: BillingPeriod | null
+        change: PlanChange
         outcome: PurchaseOutcome
       }
     }

@@ -13,6 +13,8 @@
 /** RevenueCat fills this in for every store it knows, including web checkouts. */
 export interface ManageSource {
   managementURL?: string | null
+  /** `profiles.entitlement.store` — `promotional` for the v1 loyalty gift. */
+  store?: string | null
 }
 
 const APP_STORE = 'https://apps.apple.com/account/subscriptions'
@@ -33,6 +35,10 @@ export function manageSubscriptionUrl(
   platform: string,
 ): string | null {
   if (source?.managementURL) return source.managementURL
+  // A lifetime grant was never sold by a store, so the store's subscriptions
+  // page has nothing on it to manage — and a row that leads to an empty list
+  // reads as "your plan is missing".
+  if (source?.store === 'promotional') return null
   if (platform === 'ios') return APP_STORE
   if (platform === 'android') return PLAY_STORE
   return null

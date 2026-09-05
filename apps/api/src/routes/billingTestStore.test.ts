@@ -7,6 +7,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { asFakeRevenueCat, type FakeRevenueCat } from '../modules/billing/fakeRevenueCat'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -40,6 +41,7 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
   let handle: DbHandle
   let app: FastifyInstance
   let emailSender: CapturingEmailSender
+  let fakeStore: FakeRevenueCat
 
   async function newUser(email: string): Promise<SignedUpUser> {
     const user = await signUpAndSignIn(app, emailSender, {
@@ -103,6 +105,8 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
 
     emailSender = new CapturingEmailSender()
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    const revenueCat = createRevenueCatClientFromEnv(env)
+    fakeStore = asFakeRevenueCat(revenueCat)!
     app = await buildApp({
       env,
       client: handle.client,
@@ -110,7 +114,7 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
       auth,
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
-      revenueCat: createRevenueCatClientFromEnv(env),
+      revenueCat,
     })
     await app.ready()
 
@@ -207,6 +211,59 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
     expect(response.statusCode, response.body).toBe(200)
     expect(response.json<TestEventResponse>().entitlement).toMatchObject({ tier: 'free' })
     expect((await refresh(user)).json()).toMatchObject({ tier: 'free' })
+  })
+
+  /**
+   * Fluent → Polyglot through the same route a first purchase takes. The
+   * store sends `PRODUCT_CHANGE` for it, and until 4 September 2026 that event
+   * downgraded every Pro+ who touched it; this is the harness's proof that a
+   * real upgrade lands on the tier that was upgraded *to*.
+   */
+  it('upgrades a running Fluent to Polyglot', async () => {
+    const user = await newUser('upgrades@example.com')
+    await testEvent(user, { action: 'purchase', packageId: '$rc_monthly' })
+
+    const response = await testEvent(user, { action: 'purchase', packageId: 'pro_plus_yearly' })
+    expect(response.statusCode, response.body).toBe(200)
+    expect(response.json<TestEventResponse>().entitlement).toMatchObject({
+      tier: 'pro_plus',
+      willRenew: true,
+    })
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro_plus' })
+
+    const recorded = await handle.db
+      .collection<{ type: string }>('subscriptions')
+      .find({ userId: user.userId }, { projection: { type: 1 } })
+      .sort({ createdAt: 1 })
+      .toArray()
+    expect(recorded.map((row) => row.type)).toEqual(['INITIAL_PURCHASE', 'PRODUCT_CHANGE'])
+  })
+
+  /**
+   * The v1 loyalty gift, then a purchase on top of it, then the purchase
+   * ending. Fluent for life is the promise; a lapsed Polyglot that left the
+   * account on free would break it — and it is the one case the fake store
+   * used to be unable to rehearse, because a purchase overwrote the grant.
+   */
+  it('returns a gifted Fluent to Fluent, not free, when the Polyglot bought on top expires', async () => {
+    const user = await newUser('gifted-upgrader@example.com')
+    await fakeStore.grantLifetimeEntitlement(user.userId, 'pro')
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro', store: 'promotional' })
+
+    const bought = await testEvent(user, { action: 'purchase', packageId: 'pro_plus_monthly' })
+    expect(bought.json<TestEventResponse>().entitlement).toMatchObject({
+      tier: 'pro_plus',
+      store: 'fake_store',
+    })
+
+    const expired = await testEvent(user, { action: 'expire' })
+    expect(expired.statusCode, expired.body).toBe(200)
+    expect(expired.json<TestEventResponse>().entitlement).toMatchObject({
+      tier: 'pro',
+      store: 'promotional',
+      willRenew: false,
+    })
+    expect((await refresh(user)).json()).toMatchObject({ tier: 'pro' })
   })
 
   it('refuses to cancel something that was never bought', async () => {

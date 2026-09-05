@@ -100,7 +100,73 @@ describe('createFakeRevenueCat', () => {
     const store = createFakeRevenueCat()
     await store.grantLifetimeEntitlement(USER, 'pro_plus')
 
-    expect(await store.getEntitlement(USER)).toMatchObject({ tier: 'pro_plus', expiresAt: null })
+    expect(await store.getEntitlement(USER)).toMatchObject({
+      tier: 'pro_plus',
+      expiresAt: null,
+      store: 'promotional',
+      productId: 'rc_promo_pro_plus_lifetime',
+      willRenew: false,
+    })
+  })
+
+  /**
+   * Fluent → Polyglot, the way a store does it: the running subscription is
+   * replaced, and the event says so. The webhook treats `PRODUCT_CHANGE` as a
+   * grant, and the harness is where that is seen to hold with the event type
+   * a store would actually send rather than a second `INITIAL_PURCHASE`.
+   */
+  describe('upgrade', () => {
+    it('replaces a running subscription and reports it as a product change', async () => {
+      const store = createFakeRevenueCat()
+      store.purchase(USER, '$rc_monthly')
+
+      const event = store.purchase(USER, 'pro_plus_monthly')
+      expect(event?.type).toBe('PRODUCT_CHANGE')
+      expect(event?.entitlement_ids).toEqual(['pro_plus', 'pro'])
+      expect(await store.getEntitlement(USER)).toMatchObject({ tier: 'pro_plus' })
+    })
+
+    it('starts fresh once the old subscription has ended', () => {
+      const store = createFakeRevenueCat()
+      store.purchase(USER, '$rc_monthly')
+      store.expire(USER)
+
+      expect(store.purchase(USER, 'pro_plus_monthly')?.type).toBe('INITIAL_PURCHASE')
+    })
+  })
+
+  /**
+   * The v1 loyalty gift under a purchase. Nothing sold the gift, so nothing
+   * replaces it: a gifted Fluent who buys Polyglot holds both, resolves to
+   * Polyglot while it runs, and is back on Fluent — not free — when it ends.
+   */
+  describe('a promotional grant beside a purchase', () => {
+    it('is outranked by a higher purchase and found again when it expires', async () => {
+      const store = createFakeRevenueCat()
+      await store.grantLifetimeEntitlement(USER, 'pro')
+      expect(store.purchase(USER, 'pro_plus_monthly')?.type).toBe('INITIAL_PURCHASE')
+      expect(await store.getEntitlement(USER)).toMatchObject({
+        tier: 'pro_plus',
+        store: FAKE_STORE,
+      })
+
+      store.expire(USER)
+      expect(await store.getEntitlement(USER)).toMatchObject({
+        tier: 'pro',
+        store: 'promotional',
+        expiresAt: null,
+      })
+    })
+
+    it('is not touched by cancelling or expiring the purchase', async () => {
+      const store = createFakeRevenueCat()
+      await store.grantLifetimeEntitlement(USER, 'pro_plus')
+      store.purchase(USER, '$rc_monthly')
+      store.cancel(USER)
+      store.expire(USER)
+
+      expect(await store.getEntitlement(USER)).toMatchObject({ tier: 'pro_plus' })
+    })
   })
 })
 

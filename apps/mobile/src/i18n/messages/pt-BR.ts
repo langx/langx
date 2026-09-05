@@ -1386,6 +1386,19 @@ export const ptBR: Localized<EnMessages> = {
     quotaNotice:
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
+    lifetimeNotice: 'Você tem {plan} para sempre. Nada renova e nada é cobrado.',
+    lifetimeKept: '{plan} para sempre continua seu. Se {plus} acabar um dia, você volta para ele.',
+    includedIn: 'Incluído no {plan}.',
+    upgradeNotice:
+      'Mudando do {plan}: a loja cobra só a diferença pelo resto do período atual, e o {plan} termina.',
+    upgradeWeb:
+      'Seu plano {plan} foi comprado na web. Mude no portal de cobrança; o tempo não usado é reembolsado.',
+    changePlan: 'Mudar de plano',
+    upgradeElsewhere:
+      'Seu plano {plan} foi comprado pela {store}. Mude por lá, para não ser cobrado duas vezes.',
+    storeIos: 'App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'web',
     purchaseFailed: 'Essa compra não foi concluída. Nada foi cobrado.',
     purchaseUnavailable: 'Compras não estão disponíveis neste aparelho.',
     nothingToRestore: 'Não há nada para restaurar neste aparelho.',

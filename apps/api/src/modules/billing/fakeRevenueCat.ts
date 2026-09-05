@@ -1,7 +1,8 @@
 import {
+  ENTITLEMENT_PRECEDENCE,
+  ENTITLEMENT_TIERS,
   TIER_ENTITLEMENTS,
   packageDefinition,
-  tierFromEntitlementIds,
   type BillingPeriod,
   type EntitlementId,
   type PaidPlanTier,
@@ -29,6 +30,12 @@ import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient
  * receipt, the RevenueCat dashboard configuration or the webhook delivery do.
  * Those still need a Test Store purchase on a device.
  *
+ * A subscriber holds two things separately, as they do at RevenueCat: at most
+ * one **store subscription**, and any **promotional grants**. They used to
+ * share one record, which meant buying anything destroyed the v1 loyalty gift
+ * underneath it — the one coexistence `ENTITLEMENT_PRECEDENCE` exists to
+ * resolve, and the one the harness could not rehearse.
+ *
  * Guarded twice over: `loadEnv` refuses `REVENUECAT_FAKE_STORE` under
  * `NODE_ENV=production`, and the routes that drive it are only registered when
  * the flag is on.
@@ -37,15 +44,21 @@ export interface FakeRevenueCat extends RevenueCatClient {
   /** Distinguishes this from the real client at runtime — see `asFakeRevenueCat`. */
   readonly isFake: true
   /**
-   * Records a purchase and returns the `INITIAL_PURCHASE` RevenueCat would
-   * have sent for it. Returns `null` for a package identifier `PACKAGES` does
-   * not sell, so the caller can answer "no such package" rather than invent a
+   * Records a purchase and returns the event RevenueCat would have sent for
+   * it: `INITIAL_PURCHASE` for a first subscription, `PRODUCT_CHANGE` when it
+   * replaces one that is still running — which is what a store does for an
+   * upgrade. Returns `null` for a package identifier `PACKAGES` does not
+   * sell, so the caller can answer "no such package" rather than invent a
    * subscription nobody could have bought.
    */
   purchase(appUserId: string, packageId: string): RevenueCatEvent | null
   /** Stops the renewal, keeping access until it runs out — a `CANCELLATION`. */
   cancel(appUserId: string): RevenueCatEvent | null
-  /** Ends access now — an `EXPIRATION`, the event the webhook reconciles on. */
+  /**
+   * Ends the store subscription now — an `EXPIRATION`, the event the webhook
+   * reconciles on. A promotional grant survives it, exactly as it does at
+   * RevenueCat, so a gifted Fluent whose Polyglot lapses lands on Fluent.
+   */
   expire(appUserId: string): RevenueCatEvent | null
 }
 
@@ -81,12 +94,23 @@ interface FakeSubscription {
   willRenew: boolean
 }
 
+interface FakeSubscriber {
+  subscription: FakeSubscription | null
+  /** Promotional lifetime grants: no product, no expiry, nothing to renew. */
+  promotional: EntitlementId[]
+}
+
 /**
  * A product identifier that could not be mistaken for one in App Store Connect
  * or Play Console, for the same reason `FAKE_STORE` is not `app_store`.
  */
 function fakeProductId(tier: PaidPlanTier, period: BillingPeriod): string {
   return `fake.${tier}.${period}`
+}
+
+/** Named like RevenueCat names its own promotional products, so `isPromotionalLifetime` recognises it. */
+function promoProductId(entitlementId: EntitlementId): string {
+  return `rc_promo_${entitlementId}_lifetime`
 }
 
 function isActive(subscription: FakeSubscription, now: Date): boolean {
@@ -98,7 +122,16 @@ export function createFakeRevenueCat(): FakeRevenueCat {
   // schema, an index and a collection that exist only for a harness; a
   // developer re-buying after `pnpm dev` restarts is the cheaper trade, and
   // `docs/billing-testing.md` says so.
-  const subscribers = new Map<string, FakeSubscription>()
+  const subscribers = new Map<string, FakeSubscriber>()
+
+  function subscriber(appUserId: string): FakeSubscriber {
+    let record = subscribers.get(appUserId)
+    if (!record) {
+      record = { subscription: null, promotional: [] }
+      subscribers.set(appUserId, record)
+    }
+    return record
+  }
 
   function event(type: string, appUserId: string, subscription: FakeSubscription): RevenueCatEvent {
     return {
@@ -139,12 +172,18 @@ export function createFakeRevenueCat(): FakeRevenueCat {
         // A lifetime purchase is not a subscription and has nothing to renew.
         willRenew: definition.period !== 'lifetime',
       }
-      subscribers.set(appUserId, subscription)
-      return event('INITIAL_PURCHASE', appUserId, subscription)
+      const record = subscriber(appUserId)
+      const replaces = record.subscription !== null && isActive(record.subscription, new Date())
+      record.subscription = subscription
+      // What a store sends when a running subscription is swapped for another
+      // product — an upgrade, here — rather than started from nothing. The
+      // webhook treats both as grants; the harness exists so that it is seen
+      // doing so with the event type the store would actually use.
+      return event(replaces ? 'PRODUCT_CHANGE' : 'INITIAL_PURCHASE', appUserId, subscription)
     },
 
     cancel(appUserId: string): RevenueCatEvent | null {
-      const subscription = subscribers.get(appUserId)
+      const subscription = subscribers.get(appUserId)?.subscription
       if (!subscription) return null
       subscription.willRenew = false
       // Access deliberately survives: cancelling stops the next charge, and the
@@ -153,9 +192,10 @@ export function createFakeRevenueCat(): FakeRevenueCat {
     },
 
     expire(appUserId: string): RevenueCatEvent | null {
-      const subscription = subscribers.get(appUserId)
-      if (!subscription) return null
-      subscribers.delete(appUserId)
+      const record = subscribers.get(appUserId)
+      const subscription = record?.subscription
+      if (!record || !subscription) return null
+      record.subscription = null
       // The event is built from the subscription that just ended — an
       // EXPIRATION names what stopped, not what is left, which is exactly the
       // ambiguity the webhook reconciles against `getEntitlement` below.
@@ -163,42 +203,49 @@ export function createFakeRevenueCat(): FakeRevenueCat {
     },
 
     getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null> {
-      const subscription = subscribers.get(appUserId)
-      if (!subscription || !isActive(subscription, new Date())) return Promise.resolve(null)
+      const record = subscribers.get(appUserId)
+      if (!record) return Promise.resolve(null)
+      const now = new Date()
+      const subscription =
+        record.subscription && isActive(record.subscription, now) ? record.subscription : null
 
-      // Resolved through the shared precedence rule rather than from a tier
-      // stored alongside: a Pro+ subscriber holds both ids here exactly as they
-      // do at RevenueCat, so the harness exercises that resolution instead of
-      // trusting a field only it writes.
-      const tier = tierFromEntitlementIds(subscription.entitlementIds)
-      if (tier === null) return Promise.resolve(null)
-
-      return Promise.resolve({
-        tier,
-        expiresAt: subscription.expiresAt,
-        productId: subscription.productId,
-        store: FAKE_STORE,
-        // The harness has tracked this since it was written; it simply was not
-        // reported, because `refreshEntitlement` overwrote it with `true`.
-        willRenew: subscription.willRenew,
-      })
+      // Walked in the shared precedence order across both holdings, as the
+      // real client walks RevenueCat's entitlement map: a Pro+ subscriber
+      // holds both ids here exactly as they do there, and a gifted Fluent
+      // under a bought Polyglot is found again the moment the purchase ends.
+      for (const id of ENTITLEMENT_PRECEDENCE) {
+        if (subscription?.entitlementIds.includes(id)) {
+          return Promise.resolve({
+            tier: ENTITLEMENT_TIERS[id],
+            expiresAt: subscription.expiresAt,
+            productId: subscription.productId,
+            store: FAKE_STORE,
+            // The harness has tracked this since it was written; it simply was
+            // not reported, because `refreshEntitlement` overwrote it with `true`.
+            willRenew: subscription.willRenew,
+          })
+        }
+        if (record.promotional.includes(id)) {
+          return Promise.resolve({
+            tier: ENTITLEMENT_TIERS[id],
+            expiresAt: null,
+            productId: promoProductId(id),
+            store: 'promotional',
+            willRenew: false,
+          })
+        }
+      }
+      return Promise.resolve(null)
     },
 
     grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
-      const existing = subscribers.get(appUserId)
-      const entitlementIds = existing ? [...existing.entitlementIds] : []
-      if (!entitlementIds.includes(entitlementId as EntitlementId)) {
-        entitlementIds.push(entitlementId as EntitlementId)
-      }
+      const record = subscriber(appUserId)
       // A promotional grant has no product and no expiry — which is why the v1
-      // loyalty gift is expressed as one, and why it lands here as a lifetime
-      // subscription with nothing to renew.
-      subscribers.set(appUserId, {
-        entitlementIds,
-        productId: existing?.productId ?? 'fake.promotional',
-        expiresAt: null,
-        willRenew: false,
-      })
+      // loyalty gift is expressed as one, and why it lives beside the store
+      // subscription here rather than inside it.
+      if (!record.promotional.includes(entitlementId as EntitlementId)) {
+        record.promotional.push(entitlementId as EntitlementId)
+      }
       return Promise.resolve()
     },
   }

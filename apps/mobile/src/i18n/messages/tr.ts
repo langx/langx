@@ -1390,6 +1390,19 @@ export const tr: Localized<EnMessages> = {
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
+    lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
+    lifetimeKept: 'Ömür boyu {plan} sende kalır. {plus} bir gün biterse ona geri dönersin.',
+    includedIn: '{plan} planına dahil.',
+    upgradeNotice:
+      '{plan} planından geçiş: mağaza mevcut dönemin kalanı için yalnızca aradaki farkı alır ve {plan} sona erer.',
+    upgradeWeb:
+      '{plan} planın web üzerinden alınmış. Fatura portalından değiştir; kullanılmayan süre iade edilir.',
+    changePlan: 'Planı değiştir',
+    upgradeElsewhere:
+      '{plan} planın {store} üzerinden alınmış. İki kez ücretlendirilmemek için orada değiştir.',
+    storeIos: 'App Store',
+    storeAndroid: 'Google Play',
+    storeWeb: 'web',
     purchaseFailed: 'Bu satın alma tamamlanmadı. Hiçbir ücret alınmadı.',
     purchaseUnavailable: 'Bu cihazda satın alma kullanılamıyor.',
     nothingToRestore: 'Bu cihazda geri yüklenecek bir şey yok.',
