@@ -31,23 +31,26 @@ import {
   type PurchaseOffer,
 } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
 import { useT, type MessageKey } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
-
-/**
- * Both dated 7 June 2024 and, per `architecture.md:101`, **still missing the
- * subscription clauses** — renewal, cancellation, the token's
- * non-transferability. Linking to them is required on a screen that sells a
- * subscription; the documents themselves have to be updated before this ships
- * to a store, and that is a writing task, not a code one.
- */
-const TERMS_URL = 'https://langx.io/terms-conditions'
-const PRIVACY_URL = 'https://langx.io/privacy-policy'
 
 const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
   monthly: 'paywall.monthly',
   yearly: 'paywall.yearly',
   lifetime: 'paywall.lifetime',
+}
+
+/**
+ * The period as it reads after a price — "a year", not "Yearly" — for the
+ * trial caption. A separate key rather than the label lower-cased: case is
+ * not a string operation in every locale, and the two are different words in
+ * most of them.
+ */
+const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
+  monthly: 'paywall.perMonth',
+  yearly: 'paywall.perYear',
+  lifetime: 'paywall.perLifetime',
 }
 
 /**
@@ -467,9 +470,18 @@ function OfferCaption({
 
   return (
     <View style={styles.caption}>
+      {/*
+        The whole sequence — how long the trial runs and what it renews at —
+        beside the offer, not only in the footer's small print. App Review
+        guideline 3.1.2 asks for the trial's own terms next to the trial.
+      */}
       {offer.freeTrialDays !== null ? (
         <Text style={styles.captionTrial}>
-          {t('paywall.freeTrial', { count: offer.freeTrialDays })}
+          {t('paywall.trialTerms', {
+            count: offer.freeTrialDays,
+            price: offer.priceString,
+            period: t(PERIOD_PHRASE[offer.period]),
+          })}
         </Text>
       ) : null}
       {saving !== null ? (

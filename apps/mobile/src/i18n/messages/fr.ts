@@ -1410,7 +1410,13 @@ export const fr: Localized<EnMessages> = {
     legal:
       'Les abonnements se renouvellent automatiquement jusqu’à résiliation. Tu peux résilier à tout moment depuis ton compte Apple ou Google — la résiliation arrête le renouvellement suivant et conserve l’accès jusqu’à la fin de la période en cours.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} jour offert', other: '{count} jours offerts' },
+    trialTerms: {
+      one: '{count} jour offert, puis {price} {period}',
+      other: '{count} jours offerts, puis {price} {period}',
+    },
+    perMonth: 'par mois',
+    perYear: 'par an',
+    perLifetime: 'en une fois',
     saving: '{percent}% d’économie',
     terms: 'Conditions',
     privacy: 'Confidentialité',

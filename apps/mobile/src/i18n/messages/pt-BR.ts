@@ -1394,7 +1394,13 @@ export const ptBR: Localized<EnMessages> = {
     legal:
       'As assinaturas se renovam automaticamente até serem canceladas. Você pode cancelar quando quiser na sua conta da Apple ou do Google — o cancelamento interrompe a próxima renovação e mantém o acesso até o fim do período atual.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} dia grátis', other: '{count} dias grátis' },
+    trialTerms: {
+      one: '{count} dia grátis, depois {price} {period}',
+      other: '{count} dias grátis, depois {price} {period}',
+    },
+    perMonth: 'por mês',
+    perYear: 'por ano',
+    perLifetime: 'uma única vez',
     saving: 'Economize {percent}%',
     terms: 'Termos',
     privacy: 'Privacidade',

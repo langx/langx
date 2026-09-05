@@ -1564,12 +1564,15 @@ export const ru: Localized<EnMessages> = {
     legal:
       'Подписки продлеваются автоматически, пока их не отменят. Отменить можно в любой момент в аккаунте Apple или Google — отмена останавливает следующее продление и сохраняет доступ до конца текущего периода.',
     offer: '{period} — {price}',
-    freeTrial: {
-      one: '{count} день бесплатно',
-      few: '{count} дня бесплатно',
-      many: '{count} дней бесплатно',
-      other: '{count} дня бесплатно',
+    trialTerms: {
+      one: '{count} день бесплатно, затем {price} {period}',
+      few: '{count} дня бесплатно, затем {price} {period}',
+      many: '{count} дней бесплатно, затем {price} {period}',
+      other: '{count} дня бесплатно, затем {price} {period}',
     },
+    perMonth: 'в месяц',
+    perYear: 'в год',
+    perLifetime: 'единоразово',
     saving: 'Экономия {percent}%',
     terms: 'Условия',
     privacy: 'Конфиденциальность',

@@ -1424,7 +1424,13 @@ export const de: Localized<EnMessages> = {
     legal:
       'Abos verlängern sich automatisch, bis sie gekündigt werden. Du kannst jederzeit über dein Apple- oder Google-Konto kündigen — die Kündigung stoppt die nächste Verlängerung, der Zugang bleibt bis zum Ende des laufenden Zeitraums.',
     offer: '{period} — {price}',
-    freeTrial: { one: '{count} Tag gratis', other: '{count} Tage gratis' },
+    trialTerms: {
+      one: '{count} Tag gratis, danach {price} {period}',
+      other: '{count} Tage gratis, danach {price} {period}',
+    },
+    perMonth: 'pro Monat',
+    perYear: 'pro Jahr',
+    perLifetime: 'einmalig',
     saving: '{percent}% sparen',
     terms: 'AGB',
     privacy: 'Datenschutz',
