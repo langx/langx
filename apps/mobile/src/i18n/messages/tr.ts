@@ -1077,6 +1077,10 @@ export const tr: Localized<EnMessages> = {
     streakFreezes: 'Seri dondurma',
     itemsOwned: 'Sahip olunan',
     storeTitle: 'Mağaza',
+    historyBody: 'Gün gün kazandıkların ve harcadıkların',
+    leaderboardBody: 'Bu hafta, ay ve yıl en çok kazananlar',
+    poolBody: 'Gecelik payın nasıl hesaplandığı',
+    storeBody: 'Seri dondurma, kaçırılan günler ve kozmetikler',
     disclaimer:
       'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma, kaçırılan günler ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
   },

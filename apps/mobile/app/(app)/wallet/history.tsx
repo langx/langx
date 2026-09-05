@@ -1,0 +1,153 @@
+import { router } from 'expo-router'
+import { TOKEN_RULES } from '@langx/shared'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { useState } from 'react'
+import { useTokenHistory, useTokens } from '../../../src/api/queries'
+import { Screen } from '../../../src/components/ui/Screen'
+import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
+import { ListRow } from '../../../src/components/ui/ListRow'
+import { StatTile } from '../../../src/components/ui/StatTile'
+import { goBackTo } from '../../../src/lib/navigation'
+import { buildTokenHistory } from '../../../src/lib/tokenHistory'
+import { makeStyles } from '../../../src/lib/theme'
+import { useLocale, useT } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+
+/**
+ * Where the tokens came from: the totals, and the ledger a day at a time.
+ *
+ * One level below the wallet, reached by pressing the balance or the History
+ * row. The pool used to share this screen; it has its own page now, because
+ * "what did I earn" and "how does the pool work" are different questions and
+ * the second one's card pushed the ledger below the fold.
+ */
+export default function HistoryScreen() {
+  useScreenInteractive()
+  const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
+
+  const xp = useTokens()
+  const history = useTokenHistory()
+  const [openDay, setOpenDay] = useState<string | null>(null)
+
+  const historyRows = buildTokenHistory({
+    days: history.data?.pages.flatMap((page) => page.days) ?? [],
+    t,
+    locale,
+  })
+
+  // Above the early return, where hooks have to be.
+  const pull = usePullToRefresh(() => Promise.all([xp.refetch(), history.refetch()]))
+
+  if (xp.isPending) {
+    return (
+      <Screen>
+        <ActivityIndicator style={styles.loading} />
+      </Screen>
+    )
+  }
+
+  return (
+    <Screen scroll {...pull}>
+      <ScreenHeader title={t('tokens.history')} onBack={() => goBackTo('/(app)/wallet')} />
+
+      <View style={styles.tiles}>
+        <StatTile label={t('tokens.thisWeek')} value={String(xp.data?.tokens.week ?? 0)} />
+        <StatTile label={t('tokens.thisMonth')} value={String(xp.data?.tokens.month ?? 0)} />
+        <StatTile label={t('tokens.allTime')} value={String(xp.data?.tokens.all ?? 0)} />
+      </View>
+
+      <Text style={styles.body}>{t('tokens.intro')}</Text>
+
+      {/*
+        This screen's whole job is answering "where do tokens come from". A way
+        to earn a thousand of them that is not listed here is a way nobody
+        finds.
+      */}
+      <ListRow
+        title={t('tokens.inviteRow')}
+        subtitle={t('invite.step2', { activation: String(TOKEN_RULES.referral.activation) })}
+        onPress={() => router.push('/(app)/invite')}
+      />
+
+      <View style={styles.section}>
+        {historyRows.length === 0 ? (
+          <Text style={styles.meta}>{t('tokens.historyEmpty')}</Text>
+        ) : (
+          historyRows.map((row) => {
+            const open = openDay === row.day
+            return (
+              <Pressable
+                key={row.day}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: open }}
+                // The day's total is the summary; the breakdown under it is
+                // what answers "how much of that was the pool".
+                onPress={() => setOpenDay(open ? null : row.day)}
+                style={styles.historyRow}
+              >
+                <View style={styles.historyHead}>
+                  <Text style={styles.historyDay}>{row.label}</Text>
+                  <Text style={styles.historyEarned}>
+                    {t('tokens.shareAmount', { count: row.earned })}
+                  </Text>
+                </View>
+                {row.spent > 0 ? (
+                  <Text style={styles.meta}>{t('tokens.historySpent', { count: row.spent })}</Text>
+                ) : null}
+                {open
+                  ? row.entries.map((entry) => (
+                      <View key={entry.kind} style={styles.historyHead}>
+                        <Text style={styles.meta}>{entry.label}</Text>
+                        <Text style={styles.meta}>{entry.amount}</Text>
+                      </View>
+                    ))
+                  : null}
+              </Pressable>
+            )
+          })
+        )}
+        {history.hasNextPage ? (
+          <Pressable
+            accessibilityRole="button"
+            disabled={history.isFetchingNextPage}
+            onPress={() => void history.fetchNextPage()}
+            style={styles.historyMore}
+          >
+            <Text style={styles.historyMoreText}>{t('tokens.historyMore')}</Text>
+          </Pressable>
+        ) : null}
+      </View>
+    </Screen>
+  )
+}
+
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  loading: { marginTop: spacing.xxl },
+  tiles: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingBottom: spacing.lg,
+    paddingTop: spacing.lg,
+  },
+  body: { ...font.body, color: colors.textMuted, lineHeight: 23, marginTop: spacing.lg },
+  section: {
+    gap: spacing.sm + 2,
+    paddingBottom: spacing.xxl,
+    paddingTop: spacing.md,
+  },
+  meta: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 19 },
+  historyRow: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: spacing.sm + 2,
+  },
+  historyHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  historyDay: { ...font.label, color: colors.text },
+  historyEarned: { ...font.label, color: colors.success },
+  historyMore: { alignItems: 'center', paddingVertical: spacing.md },
+  historyMoreText: { ...font.label, color: colors.accent },
+}))

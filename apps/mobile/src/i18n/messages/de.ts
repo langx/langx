@@ -1096,6 +1096,10 @@ export const de: Localized<EnMessages> = {
     streakFreezes: 'Serien-Freezes',
     itemsOwned: 'Besitz',
     storeTitle: 'Shop',
+    historyBody: 'Was du Tag für Tag verdient und ausgegeben hast',
+    leaderboardBody: 'Wer diese Woche, diesen Monat und dieses Jahr am meisten verdient hat',
+    poolBody: 'Wie der nächtliche Anteil berechnet wird',
+    storeBody: 'Serien-Schutz, verpasste Tage und Kosmetik',
     disclaimer:
       'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes, verpasste Tage und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },

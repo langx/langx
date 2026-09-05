@@ -1073,6 +1073,10 @@ export const es: Localized<EnMessages> = {
     streakFreezes: 'Congelaciones de racha',
     itemsOwned: 'Objetos',
     storeTitle: 'Tienda',
+    historyBody: 'Lo que ganaste y gastaste, día a día',
+    leaderboardBody: 'Quién ganó más esta semana, este mes y este año',
+    poolBody: 'Cómo se calcula el reparto nocturno',
+    storeBody: 'Protectores de racha, días perdidos y cosméticos',
     disclaimer:
       'Las fichas son puntos dentro de la app. No se pueden comprar, intercambiar, retirar ni usar para desbloquear un plan de pago: solo congelaciones de racha, días perdidos y cosméticos. No hay cadena, ni contrato, ni mercado.',
   },
