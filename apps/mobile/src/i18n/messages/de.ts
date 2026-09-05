@@ -999,6 +999,7 @@ export const de: Localized<EnMessages> = {
     updateLocation: 'Meinen Standort aktualisieren',
     locationUpdated: 'Vor {time} aktualisiert',
     updating: 'Wird aktualisiert…',
+    privacyFailed: 'Einstellung konnte nicht gespeichert werden',
     languageSection: 'Sprache',
     appLanguage: 'App-Sprache',
     translateTo: 'Übersetzen in',

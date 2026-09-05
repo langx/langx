@@ -982,6 +982,7 @@ export const fr: Localized<EnMessages> = {
     updateLocation: 'Mettre à jour ma position',
     locationUpdated: 'Mis à jour il y a {time}',
     updating: 'Mise à jour…',
+    privacyFailed: 'Impossible d’enregistrer le réglage',
     languageSection: 'Langue',
     appLanguage: 'Langue de l’app',
     translateTo: 'Traduire en',

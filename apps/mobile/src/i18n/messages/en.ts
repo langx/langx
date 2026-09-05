@@ -1019,6 +1019,7 @@ export const en = {
     updateLocation: 'Update my location',
     locationUpdated: 'Last updated {time} ago',
     updating: 'Updating…',
+    privacyFailed: 'Couldn’t save that setting',
     languageSection: 'Language',
     appLanguage: 'App language',
     translateTo: 'Translate into',

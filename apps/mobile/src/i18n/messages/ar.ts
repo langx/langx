@@ -1135,6 +1135,7 @@ export const ar: Localized<EnMessages> = {
     updateLocation: 'تحديث موقعي',
     locationUpdated: 'حُدّث قبل {time}',
     updating: 'جارٍ التحديث…',
+    privacyFailed: 'تعذّر حفظ الإعداد',
     languageSection: 'اللغة',
     appLanguage: 'لغة التطبيق',
     translateTo: 'الترجمة إلى',

@@ -1092,6 +1092,7 @@ export const ru: Localized<EnMessages> = {
     updateLocation: 'Обновить местоположение',
     locationUpdated: 'Обновлено {time} назад',
     updating: 'Обновляем…',
+    privacyFailed: 'Не удалось сохранить настройку',
     languageSection: 'Язык',
     appLanguage: 'Язык приложения',
     translateTo: 'Переводить на',
