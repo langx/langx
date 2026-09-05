@@ -341,9 +341,9 @@ names `environment: production` and the value lives in the EAS `production`
 environment. Without it the bundle falls back to `http://localhost:4000` and
 every install loses the API on its next launch.
 
-- [ ] **Link the GitHub repo once**, or the push trigger never fires: expo.dev
-      → project `langx` → Project settings → GitHub → connect `langx/langx`,
-      base directory `apps/mobile`. Manual runs work without it:
+- [x] **The GitHub repo is linked**: the merge of #1157 and #1158 on
+      5 September 2026 each started `update.yml` on expo.dev with trigger
+      `refs/heads/main@…` and no hand on it. Manual runs still work:
       `eas workflow:run update.yml` from `apps/mobile`.
 - [ ] **iOS credentials.** EAS holds the APNs key but no distribution
       certificate or provisioning profile, and no App Store Connect API key
