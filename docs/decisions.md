@@ -2933,18 +2933,26 @@ null was the placeholder. Fixing the footer raised the wider question of where
 the version lived, and the answer was five places by hand: `app.config.ts`,
 four `package.json` files, and nothing that would have noticed them drifting.
 
-Now it lives in the root `package.json` and nowhere else is written. The
-workspace packages carry the same number, but only so the repo does not
-disagree with itself; `app.config.ts` imports the root copy, so the store
-binaries, the web build and the request headers all ship it.
+Now it lives in the root `package.json` and nowhere else is written; the
+release script keeps the workspace packages in step, and `app.config.ts`
+imports the root copy, so the store binaries, the web build and the request
+headers all ship it.
 
 **It is `major.minor`, not semver.** `2.0`, then `2.1`. Every merge to `main`
 already reaches installed apps over the air without a number changing, so a
 patch level would be a number that never means anything — the third digit of
 `2.0.4` would say "some merges happened", which the update id in the footer
 already says exactly. A version now changes when someone decides a release is
-worth naming, and the tools do not need semver: pnpm accepts it for a private
-package, and both stores accept it as a version name.
+worth naming, and both stores accept two digits as a version name.
+
+pnpm does not, quite. `pnpm install` takes `2.0` on a private package, but
+`pnpm deploy` — the step that turns `apps/api` into the Fly image — matches
+`@langx/shared@workspace:*` by semver, and `2.0` matched nothing: the first
+deploy after the two digits reached the workspace manifests failed with
+`ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE`. So the three workspace
+`package.json` files carry `2.0.0`, the same number with a `.0` that nothing
+reads, and `pnpm release` writes it there. The root copy is what the version
+is; the trailing zero is what pnpm needs.
 
 **`pnpm release minor` is the whole ceremony.** It bumps the number, commits
 `Release 2.1` and tags it `v2.1`; pushing the tag makes the GitHub Release

@@ -8,9 +8,11 @@
  *     pnpm release --print  prints the current version and exits
  *
  * The version is two numbers, `major.minor`, and lives in the root
- * package.json. The workspace packages carry the same number so nothing in
- * the repo disagrees with it, but only the root copy is read: `app.config.ts`
- * imports it, so the store binaries and the web build ship it too.
+ * package.json; only that copy is read: `app.config.ts` imports it, so the
+ * store binaries and the web build ship it too. The workspace packages carry
+ * the same number with a `.0` on the end, because `pnpm deploy` matches
+ * `@langx/shared@workspace:*` by semver and `2.0` is not one — the API image
+ * stopped building the first time the two digits reached those files.
  *
  * Nothing is pushed. `main` is protected and releases go through the same
  * pull request as everything else; the script prints the two commands that
@@ -23,18 +25,20 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const MANIFESTS = [
-  'package.json',
+const ROOT_MANIFEST = 'package.json'
+/** Workspace packages: semver, `major.minor.0`, because pnpm needs one. */
+const WORKSPACE_MANIFESTS = [
   'apps/api/package.json',
   'apps/mobile/package.json',
   'packages/shared/package.json',
 ]
+const MANIFESTS = [ROOT_MANIFEST, ...WORKSPACE_MANIFESTS]
 
 /** `2.0`, `2.1`, `10.4` — and nothing else, so a typo cannot become a tag. */
 const VERSION = /^(\d+)\.(\d+)$/
 
 function readVersion() {
-  const { version } = JSON.parse(readFileSync(join(root, MANIFESTS[0]), 'utf8'))
+  const { version } = JSON.parse(readFileSync(join(root, ROOT_MANIFEST), 'utf8'))
   if (typeof version !== 'string' || !VERSION.test(version)) {
     throw new Error(`root package.json version must look like 2.0, got ${JSON.stringify(version)}`)
   }
@@ -79,13 +83,14 @@ function release(part) {
 
   for (const manifest of MANIFESTS) {
     const path = join(root, manifest)
+    const value = manifest === ROOT_MANIFEST ? next : `${next}.0`
     // A string replacement, not a parse-and-serialise round trip: the files
     // keep their key order, indentation and trailing newline exactly, so the
     // diff is one line per file and prettier has nothing to say about it.
     const source = readFileSync(path, 'utf8')
     const updated = source.replace(
       /^(\s*"version":\s*)"[^"]*"/m,
-      (_match, prefix) => `${prefix}${JSON.stringify(next)}`,
+      (_match, prefix) => `${prefix}${JSON.stringify(value)}`,
     )
     if (updated === source) throw new Error(`${manifest} has no "version" field to update`)
     writeFileSync(path, updated)
