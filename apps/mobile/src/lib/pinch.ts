@@ -23,6 +23,10 @@ export const DOUBLE_TAP_MS = 280
 export const TAP_SLOP_PX = 12
 /** How far an unzoomed image is dragged before releasing it closes the viewer. */
 export const DISMISS_DRAG_PX = 120
+/** How far a sideways drag at life size has to go to turn the page. */
+export const PAGE_SWIPE_PX = 60
+/** Or how fast, in px/ms: a short flick pages too. */
+export const PAGE_SWIPE_VX = 0.4
 
 export interface Size {
   width: number
@@ -105,4 +109,18 @@ export function isDoubleTap(
   if (travelled > TAP_SLOP_PX) return false
   if (!previous) return false
   return now - previous.at <= DOUBLE_TAP_MS
+}
+
+/**
+ * Does a released drag turn the page, and which way?
+ *
+ * Only a drag that is more sideways than not: the same gesture layer reads a
+ * vertical one as a dismissal, and a diagonal has to belong to exactly one of
+ * them. Distance or speed is enough — an album is flicked through, not hauled.
+ * `-1` is the previous picture (finger moved right), `1` the next, `0` neither.
+ */
+export function swipeStep(dx: number, dy: number, vx: number): -1 | 0 | 1 {
+  if (Math.abs(dx) <= Math.abs(dy)) return 0
+  if (Math.abs(dx) < PAGE_SWIPE_PX && Math.abs(vx) < PAGE_SWIPE_VX) return 0
+  return dx < 0 ? 1 : -1
 }

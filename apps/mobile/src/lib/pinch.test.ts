@@ -3,6 +3,8 @@ import {
   DOUBLE_TAP_MS,
   MAX_SCALE,
   MIN_SCALE,
+  PAGE_SWIPE_PX,
+  PAGE_SWIPE_VX,
   TAP_SLOP_PX,
   clampOffset,
   clampScale,
@@ -11,6 +13,7 @@ import {
   isDoubleTap,
   midpointOf,
   offsetForFocus,
+  swipeStep,
 } from './pinch'
 
 const FRAME = { width: 400, height: 800 }
@@ -134,5 +137,28 @@ describe('isDoubleTap', () => {
   /** A drag that happens to end near where it started is still a drag. */
   it('is not a gesture that travelled', () => {
     expect(isDoubleTap({ at: 1000 }, 1100, TAP_SLOP_PX + 1)).toBe(false)
+  })
+})
+
+describe('swipeStep', () => {
+  it('pages forward on a drag to the left', () => {
+    expect(swipeStep(-PAGE_SWIPE_PX, 0, 0)).toBe(1)
+  })
+
+  it('pages back on a drag to the right', () => {
+    expect(swipeStep(PAGE_SWIPE_PX, 5, 0)).toBe(-1)
+  })
+
+  it('accepts a short flick when it is fast enough', () => {
+    expect(swipeStep(-20, 0, -PAGE_SWIPE_VX)).toBe(1)
+  })
+
+  it('ignores a short, slow nudge', () => {
+    expect(swipeStep(PAGE_SWIPE_PX - 1, 0, PAGE_SWIPE_VX / 2)).toBe(0)
+  })
+
+  /** A diagonal belongs to the dismissal, which reads the vertical axis. */
+  it('ignores a drag that is more vertical than sideways', () => {
+    expect(swipeStep(-80, 90, -1)).toBe(0)
   })
 })

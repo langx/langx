@@ -29,6 +29,7 @@ import {
   isDoubleTap,
   midpointOf,
   offsetForFocus,
+  swipeStep,
 } from '../lib/pinch'
 
 /**
@@ -128,6 +129,21 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const start = useRef({ distance: 0, scale: MIN_SCALE, x: 0, y: 0, focus: { x: 0, y: 0 } })
   const lastTap = useRef<{ at: number } | null>(null)
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  /**
+   * The responder below is created once and keeps the first render's
+   * closures, so anything it needs from props has to be read through a ref
+   * that every render rewrites. `rest` and friends already work this way for
+   * the gesture's own numbers; this is the same for the album.
+   */
+  const latest = useRef({ index, photos, onIndexChange })
+  latest.current = { index, photos, onIndexChange }
+
+  function page(step: number): void {
+    const { index: at, photos: album, onIndexChange: change } = latest.current
+    if (at === null) return
+    change?.((at + album.length + step) % album.length)
+  }
 
   const settle = useCallback(
     (next: { scale: number; x: number; y: number }, animate: boolean) => {
@@ -230,8 +246,15 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
           return
         }
 
-        // Life-size: the drag is a dismissal, and the picture follows it so the
-        // gesture is visible before it is committed to.
+        // Life-size: a sideways drag through an album is a page turn and the
+        // picture follows the finger; anything else is a dismissal, and the
+        // picture follows that too, so the gesture is visible before it is
+        // committed to.
+        if (latest.current.photos.length > 1 && Math.abs(gesture.dx) > Math.abs(gesture.dy)) {
+          translateX.setValue(gesture.dx)
+          translateY.setValue(0)
+          return
+        }
         translateY.setValue(gesture.dy)
         translateX.setValue(gesture.dx / 3)
       },
@@ -266,6 +289,19 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         lastTap.current = null
 
         if (rest.current.scale === MIN_SCALE) {
+          const step =
+            latest.current.photos.length > 1 ? swipeStep(gesture.dx, gesture.dy, gesture.vx) : 0
+          if (step !== 0) {
+            // Off the edge it was dragged towards, then the next picture: the
+            // `[index]` effect resets the transform, so it lands centred
+            // rather than sliding in from wherever this one was let go.
+            Animated.timing(translateX, {
+              toValue: -step * frame.current.width,
+              duration: 160,
+              useNativeDriver: true,
+            }).start(() => page(step))
+            return
+          }
           if (Math.abs(gesture.dy) > DISMISS_DRAG_PX) {
             onClose()
             return
@@ -284,10 +320,6 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   if (index === null) return null
   const photo = photos[index]
   if (!photo) return null
-
-  function page(step: number): void {
-    onIndexChange?.((index! + photos.length + step) % photos.length)
-  }
 
   return (
     <Modal
