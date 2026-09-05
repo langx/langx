@@ -11,7 +11,7 @@ import {
   usePurchase,
   useRepairDay,
   useTokens,
-  useUpdateProfile,
+  useEquip,
   useWallet,
 } from '../../src/api/queries'
 import { EquipPicker } from '../../src/components/store/EquipPicker'
@@ -72,7 +72,7 @@ export default function WalletScreen() {
   const activity = useActivity(shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays), today)
   const repairDay = useRepairDay()
   const purchase = usePurchase()
-  const update = useUpdateProfile()
+  const equip = useEquip()
   // The shop needs both to draw a gate's progress; the wallet itself does not.
   const xp = useTokens()
   // Above the early return, where hooks have to be; all four behind one pull.
@@ -152,6 +152,18 @@ export default function WalletScreen() {
     purchase.mutate(offer.id, {
       onSuccess: () => showToast(t('store.bought', { title: offer.title })),
       onError: () => void showAlert(t('store.buyFailed'), t('common.retry')),
+    })
+  }
+
+  /**
+   * Wearing, and saying so. The pill flips at once (the cache is patched
+   * before the request leaves), the toast is the confirmation that it stuck,
+   * and a refusal both says so and puts the old choice back.
+   */
+  function wear(equipped: Parameters<typeof equip.mutate>[0]): void {
+    equip.mutate(equipped, {
+      onSuccess: () => showToast(t('editProfile.saved')),
+      onError: () => void showAlert(t('store.equipFailed'), t('common.retry')),
     })
   }
 
@@ -240,14 +252,14 @@ export default function WalletScreen() {
         owned={owned}
         equipped={wallet.data?.equipped}
         viewer={viewer}
-        onEquip={(id) => update.mutate({ equipped: { frame: id } })}
+        onEquip={(id) => wear({ frame: id })}
       />
       <EquipPicker
         kind="title"
         owned={owned}
         equipped={wallet.data?.equipped}
         viewer={viewer}
-        onEquip={(id) => update.mutate({ equipped: { title: id } })}
+        onEquip={(id) => wear({ title: id })}
       />
 
       <Text style={styles.sectionTitle}>{t('wallet.storeTitle')}</Text>

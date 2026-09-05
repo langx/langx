@@ -1091,6 +1091,7 @@ export const en = {
     repairDayBody: 'Fills in a day you missed · {left} left this month',
     bought: '{title} is yours',
     buyFailed: 'Could not buy that',
+    equipFailed: 'Could not change that',
   },
 
   gift: {

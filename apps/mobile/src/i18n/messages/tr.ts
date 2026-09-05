@@ -1052,6 +1052,7 @@ export const tr: Localized<EnMessages> = {
     repairDayBody: 'Kaçırdığın bir günü doldurur · bu ay {left} hakkın var',
     bought: '{title} senin',
     buyFailed: 'Satın alınamadı',
+    equipFailed: 'Değiştirilemedi',
   },
 
   gift: {

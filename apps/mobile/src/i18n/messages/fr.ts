@@ -1054,6 +1054,7 @@ export const fr: Localized<EnMessages> = {
     repairDayBody: 'Comble un jour manqué · il t’en reste {left} ce mois-ci',
     bought: '{title} est à toi',
     buyFailed: 'Achat impossible',
+    equipFailed: 'Modification impossible',
   },
 
   gift: {

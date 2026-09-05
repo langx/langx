@@ -1166,6 +1166,7 @@ export const ru: Localized<EnMessages> = {
     repairDayBody: 'Закрывает пропущенный день · осталось {left} в этом месяце',
     bought: '{title} — твой',
     buyFailed: 'Не удалось купить',
+    equipFailed: 'Не удалось изменить',
   },
 
   gift: {

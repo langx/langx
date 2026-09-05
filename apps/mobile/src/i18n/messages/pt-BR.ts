@@ -1042,6 +1042,7 @@ export const ptBR: Localized<EnMessages> = {
     repairDayBody: 'Preenche um dia perdido · restam {left} neste mês',
     bought: '{title} é seu',
     buyFailed: 'Não foi possível comprar',
+    equipFailed: 'Não foi possível alterar',
   },
 
   gift: {

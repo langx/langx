@@ -1210,6 +1210,7 @@ export const ar: Localized<EnMessages> = {
     repairDayBody: 'يملأ يومًا فاتك · بقي لك {left} هذا الشهر',
     bought: '{title} أصبح لك',
     buyFailed: 'تعذّر الشراء',
+    equipFailed: 'تعذّر التغيير',
   },
 
   gift: {
