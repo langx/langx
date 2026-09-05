@@ -77,6 +77,9 @@ Fastify API behind them. BSD-3, open source, same as v1.
 
 ### Other Repos
 
+What each one is, where it is hosted and which values are copied between
+them by hand: [`docs/repo-map.md`](docs/repo-map.md).
+
 - 🟢 [website](https://github.com/langx/website) _Svelte_
 - 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS_
 - 🟢 [api](https://github.com/langx/api) _Express, Node.js — v1's API, still
