@@ -838,8 +838,24 @@ export async function setLocation(db: Db, userId: string, input: LocationInput):
    */
   const city = await nearestCity(db, point.coordinates)
   const always = { location: point, locationUpdatedAt: now, updatedAt: now }
-  // One operator or the other, never both on the same field: Mongo refuses an
-  // update that `$set`s and `$unset`s the same path.
+  /*
+   * A matched city also settles the country, and it outranks whatever was
+   * there — including the edge header.
+   *
+   * The header says where the *connection* came from, which a VPN, a border
+   * town or a plane makes wrong; this is a device fix the user chose to share,
+   * reverse geocoded against our own city table. When the two disagree, this
+   * is the one that is about the person rather than about the route their
+   * packets took.
+   *
+   * Only ever on a match. `null` means the sea or somewhere far from any city
+   * on the list, and "we could not tell" must not be allowed to erase an
+   * answer we already had — which is why `country` is absent from the `$unset`
+   * branch that clears the city fields.
+   *
+   * One operator or the other, never both on the same field: Mongo refuses an
+   * update that `$set`s and `$unset`s the same path.
+   */
   const update: UpdateFilter<Profile> = city
     ? {
         $set: {
@@ -847,6 +863,7 @@ export async function setLocation(db: Db, userId: string, input: LocationInput):
           cityId: city._id,
           cityName: city.name,
           cityCountryCode: city.countryCode,
+          country: city.countryCode,
         },
       }
     : { $set: always, $unset: { cityId: '', cityName: '', cityCountryCode: '' } }
