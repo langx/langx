@@ -266,10 +266,10 @@ rotating it breaks all of them at once, which is the legal way out of the
 mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and inherits exactly
 that problem.
 
-- [ ] **`EMAIL_FROM` pointed at the verified domain**, e.g.
-      `LangX <hello@langx.io>`. The secret exists on Fly but its value has not
-      been read back; the default in `env.ts` is still `onboarding@resend.dev`,
-      which works but puts a stranger's domain on every email the app sends.
+- [x] **`EMAIL_FROM` points at the verified domain**: `LangX <no-reply@langx.io>`,
+      read back from the `langx-api` machine on 6 September 2026. The
+      `onboarding@resend.dev` default in `env.ts` is now only what a bare
+      self-host sends from.
 
 Read one before anybody else does: leave `RESEND_API_KEY` unset locally and the
 sender prints each message to the log instead, headers included.
