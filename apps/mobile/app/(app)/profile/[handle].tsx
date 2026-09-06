@@ -343,11 +343,11 @@ export default function ProfileScreen() {
       ) : null}
 
       {/*
-        The numbers, above the bio rather than under the interests where they
-        used to be: they are the quickest read of whether this person is here
-        to teach, and a reader deciding whether to write has usually decided
-        by the time they reach the languages. Always sent — there is no switch
-        for them any more; only the chart below has one.
+        The numbers, above the languages rather than under the interests where
+        they used to be: they are the quickest read of whether this person is
+        here to teach, and a reader deciding whether to write has usually
+        decided by the time they reach the languages. Always sent — there is no
+        switch for them any more; only the chart below has one.
       */}
       {summary.data ? (
         <View style={styles.stats}>
@@ -365,8 +365,6 @@ export default function ProfileScreen() {
           <StatTile label={t('tokens.title')} value={String(summary.data.tokens)} />
         </View>
       ) : null}
-
-      {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
       {/* v3's two-column language block, shared with the owner's own tab so
           the two views of one profile cannot drift apart. */}
@@ -390,6 +388,15 @@ export default function ProfileScreen() {
         same kind of thing at a different zoom.
       */}
       {summary.data?.week ? <WeeklyChart week={summary.data.week} /> : null}
+
+      {/*
+        The about text, under the chart rather than between the numbers and
+        the languages: the facts a reader scans first stay together at the top,
+        and the prose comes once they have decided to keep reading. Same place
+        as on the owner's own tab. With the chart switched off it simply
+        follows the interests.
+      */}
+      {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
       {/* Read-only, and drawn from the same component as your own — a second
           implementation of a grid is a second grid to keep in step. */}
@@ -498,8 +505,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   followCount: { color: colors.text, fontSize: 14, fontWeight: '700' },
   followingCount: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   followButton: { marginTop: spacing.lg },
-  // A top margin as well as a bottom one: with no photos, `PhotoGallery`
-  // draws nothing, and the bio used to sit flush against the Follow button.
+  // A top margin as well as a bottom one: the chart above ends in a border and
+  // the activity map below starts flush, so without both the bio reads as a
+  // caption of whichever neighbour it happens to touch.
   bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
   sectionTitle: {
     color: colors.textFaint,

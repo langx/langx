@@ -162,18 +162,10 @@ export default function MeScreen() {
       </View>
 
       {/*
-        The about text, on the owner's own screen. It was only ever drawn on
-        the public profile, so someone whose v1 bio had come back concluded
-        from here that it had not — the one screen that must not invite that
-        reading about its own owner. Same shape as the public profile's.
-      */}
-      {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
-
-      {/*
         The same two columns everybody else sees, in the same place — under the
-        bio, above the numbers. It used to be one compressed row further down,
-        which described a different-looking profile from the one being shown to
-        other people. Tapping it edits, since this is the owner.
+        header, above the numbers. It used to be one compressed row further
+        down, which described a different-looking profile from the one being
+        shown to other people. Tapping it edits, since this is the owner.
       */}
       <Pressable
         accessibilityRole="button"
@@ -219,6 +211,15 @@ export default function MeScreen() {
       </View>
 
       {summary ? <WeeklyChart week={summary.week} /> : null}
+
+      {/*
+        The about text, on the owner's own screen. It was only ever drawn on
+        the public profile, so someone whose v1 bio had come back concluded
+        from here that it had not — the one screen that must not invite that
+        reading about its own owner. Under the week's chart, in the same place
+        as on the public profile, so the two views of one profile read alike.
+      */}
+      {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
 
       {/* First of the rows, because it is the one that answers a question
           somebody actually arrives with: where the thing I asked went. */}
@@ -288,7 +289,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   heroText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 24 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
-  bio: { ...font.body, color: colors.text, marginTop: spacing.sm },
+  // The chart above ends in a border and the rows below start with one, so the
+  // bio needs its own room on both sides to read as a paragraph, not a caption.
+  bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
   pressed: { opacity: 0.7 },
   tiles: {
     borderBottomColor: colors.border,
