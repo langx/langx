@@ -48,7 +48,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      # Pinned to the commit `v6` pointed at on 5 September 2026, which CodeQL
+      # asks of any third-party action: a tag can be moved to run other code in
+      # a job that holds the Cloudflare token. `actions/*` are GitHub's own and
+      # exempt. ci.yml still says `v6`; it holds no secrets.
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - uses: actions/setup-node@v7
         with:
