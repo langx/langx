@@ -1,0 +1,73 @@
+# Every merge to main that touches the app becomes the web build on
+# app.langx.io — the same trigger and the same paths as the OTA update in
+# apps/mobile/.eas/workflows/update.yml. That one runs on expo.dev and hands
+# the JS to installed apps; this one runs here and hands it to the browser.
+# Until 5 September 2026 the web half was `pnpm deploy:web` from a laptop, by
+# hand, and app.langx.io routinely sat a few merges behind the phones.
+#
+# `EXPO_PUBLIC_*` values are inlined when the bundle is exported, and this
+# checkout has no `.env`, so they come from repository secrets. They are the
+# values the EAS `production` environment holds for update.yml, plus the
+# RevenueCat web key, which only the web build needs and EAS does not have.
+# The API URL is written here in the open, as eas.json writes it for the
+# production build profile. A missing secret does not fail the export: the
+# bundle simply ships without that integration, exactly as a local build does
+# — so a blank Plans screen or silent analytics after a run means a secret
+# went missing, not that the code broke.
+#
+# `deploy:web` is reused rather than re-spelt so there is one definition of a
+# web deploy, by hand or from here. It uploads to the Pages project and then
+# runs scripts/verify-web-deploy.mjs against app.langx.io, which is what turns
+# an upload that "succeeded" into a stale edge into a red run.
+name: Deploy web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mobile/**
+      - packages/shared/**
+      - pnpm-lock.yaml
+      - .github/workflows/deploy-web.yml
+      - '!**/*.md'
+  workflow_dispatch:
+
+# One deploy at a time, in order. Cancelling a run mid-upload buys nothing; a
+# second merge while one is running waits its turn and ships the newer tree,
+# and GitHub drops any runs queued between the two.
+concurrency:
+  group: deploy-web
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Export the web build
+        working-directory: apps/mobile
+        env:
+          EXPO_PUBLIC_API_URL: https://api.langx.io
+          EXPO_PUBLIC_REVENUECAT_WEB_KEY: ${{ secrets.EXPO_PUBLIC_REVENUECAT_WEB_KEY }}
+          EXPO_PUBLIC_POSTHOG_KEY: ${{ secrets.EXPO_PUBLIC_POSTHOG_KEY }}
+        run: pnpm build:web
+
+      - name: Upload to Cloudflare Pages and check the live host
+        working-directory: apps/mobile
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm deploy:web

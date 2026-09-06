@@ -155,6 +155,9 @@ EXPO_PUBLIC_API_URL=https://<your-api-host> pnpm run build:web
 pnpm run deploy:web
 ```
 
+This repo runs those two commands on every merge to `main`, in
+`.github/workflows/deploy-web.yml`; the file names the secrets it expects.
+
 Two details in that setup are not decoration. `apple-app-site-association` is
 sent as `application/json` by `public/_headers` — it is checked in without a
 file extension, so a host that sniffs the type breaks iOS deep links while

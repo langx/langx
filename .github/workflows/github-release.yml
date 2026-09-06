@@ -2,9 +2,9 @@
 # the pull requests merged since the previous tag.
 #
 # The tag is the trigger and `pnpm release` is what makes one: it bumps the
-# version, commits and tags, and the person pushes. So this is the only
-# workflow here besides CI, and it builds nothing — shipping still lives on
-# expo.dev (`apps/mobile/.eas/workflows/`), and a store build is still a
+# version, commits and tags, and the person pushes. It builds nothing —
+# `deploy-web.yml` ships the web on merge, store builds and OTA updates live
+# on expo.dev (`apps/mobile/.eas/workflows/`), and a store build is still a
 # decision someone makes there.
 #
 # The guard is the tag having to match the version in package.json. A tag
