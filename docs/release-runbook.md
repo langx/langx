@@ -669,6 +669,17 @@ of it runs together.
       Wyoming, USA." The registered name in the Wyoming Articles of
       Organization is _New Chapter Technology Limited Liability Company_; the
       footer uses the everyday short form
+- [ ] **Define the upgrade paths, or the web cannot upgrade at all.** A web
+      subscriber changes plan in RevenueCat's portal — the paywall's "Change
+      plan" button opens it — and the portal only offers a move between two
+      products when a path is defined: RevenueCat → Product Catalog →
+      Products → **Subscription changes → Edit**, per source product. Needed:
+      each Fluent web product may upgrade to both Polyglot web products, and
+      each Polyglot product may downgrade to both Fluent ones. An upgrade
+      takes effect at once, charges the new price in full and refunds the
+      unused part of the old plan; a downgrade waits for the cycle to end and
+      refunds nothing. Checked against RevenueCat's docs on 6 September 2026;
+      whether the paths are set is only visible in the dashboard
 - [ ] Buy once on `app.langx.io` with a real card, then check `subscriptions`
       for the event (`store: "rc_billing"`), the tier on the profile, and that
       Settings' _Manage subscription_ row opens RevenueCat's portal. The Test
