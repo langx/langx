@@ -622,10 +622,10 @@ of it runs together.
       privacy-policy field on this screen
 - [x] Copy the Web Billing app's public key — it starts `rcb_` — into
       `EXPO_PUBLIC_REVENUECAT_WEB_KEY` in `apps/mobile/.env`, the file Expo
-      reads. Done 5 September 2026, **on this machine only**: the value is
-      inlined at build time, so the next `pnpm build:web` and `deploy:web` are
-      what actually turn web purchasing on. Until that deploy, production keeps
-      saying purchasing is unavailable
+      reads. Done 5 September 2026, and **deployed on 6 September 2026**: the
+      value is inlined at build time, and the bundle `app.langx.io` serves now
+      carries it, so web purchasing is live. A rebuild on a machine without
+      that `.env` line would silently switch it off again
 - [ ] Two currency gaps, both worth knowing before launch. RevenueCat Billing
       offers EUR, JPY, GBP, AUD, CAD, BRL, KRW, CNY, MXN, SEK, PLN, MYR, PHP,
       CHF and SAR — and **no TRY**, so a Turkish customer buying on the web is
