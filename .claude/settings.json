@@ -1,14 +1,5 @@
 {
-  "extraKnownMarketplaces": {
-    "karpathy-skills": {
-      "source": {
-        "source": "github",
-        "repo": "multica-ai/andrej-karpathy-skills"
-      }
-    }
-  },
   "enabledPlugins": {
-    "claude-code-setup@claude-plugins-official": true,
-    "andrej-karpathy-skills@karpathy-skills": true
+    "claude-code-setup@claude-plugins-official": true
   }
 }

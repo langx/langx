@@ -121,3 +121,33 @@ without waiting to be asked again — this rule is why it is written down rather
 than repeated. It does not soften the paragraph above: what lands on disk is
 still English, all of it. The two cover different things, the artefact and the
 conversation, and only the artefact is what other people read.
+
+## How to work
+
+Four rules adapted from Andrej Karpathy's notes on how coding agents go wrong
+([source](https://github.com/multica-ai/andrej-karpathy-skills), MIT). They
+bias toward caution over speed; for trivial fixes use judgment.
+
+**Think before coding.** State assumptions explicitly. If several readings of
+the request exist, present them instead of picking one silently. If a simpler
+approach exists, say so and push back. If something is unclear, stop, name
+what is confusing, and ask.
+
+**Simplicity first.** Write the minimum code that solves the problem. No
+features beyond what was asked, no abstractions for single-use code, no
+"flexibility" nobody requested, no error handling for impossible cases. If 200
+lines could be 50, rewrite. The test: would a senior engineer call this
+overcomplicated?
+
+**Surgical changes.** Touch only what you must. Do not "improve" adjacent
+code, comments or formatting; do not refactor what is not broken; match the
+existing style even where you would do it differently. Unrelated dead code
+gets mentioned, not deleted. Remove only the imports, variables and functions
+that _your_ change made unused. Every changed line should trace back to the
+request.
+
+**Goal-driven execution.** Turn tasks into verifiable goals: "add validation"
+becomes "write tests for invalid inputs, then make them pass"; "fix the bug"
+becomes "write a test that reproduces it, then make it pass"; "refactor X"
+becomes "tests pass before and after". For multi-step work, state a short
+plan where each step names its check, then loop until every check holds.
