@@ -45,7 +45,7 @@ the repos themselves.
 
 | Host             | Hosting                                                       | How a change gets there                                                    |
 | ---------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `app.langx.io`   | Cloudflare Pages project `langx-web` (direct upload)          | `pnpm --filter @langx/mobile deploy:web` from this repo, by hand           |
+| `app.langx.io`   | Cloudflare Pages project `langx-web` (direct upload)          | push to `main` of this repo; `deploy-web.yml` exports, uploads and checks  |
 | `api.langx.io`   | Fly.io app `langx-api`, behind Cloudflare                     | `fly deploy -a langx-api` from this repo, by hand                          |
 | `langx.io`       | Cloudflare Pages project `website` (direct upload)            | push to `main` of `langx/website`; its workflow builds, uploads and purges |
 | `token.langx.io` | Cloudflare Pages project `token-website` (**Git-integrated**) | push to `main` of `langx/token-website`; Pages builds it                   |

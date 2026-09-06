@@ -302,13 +302,23 @@ pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
 ## Shipping runs on expo.dev
 
 Builds, store submissions and over-the-air updates are all EAS jobs, defined
-in `apps/mobile/.eas/workflows/`. GitHub Actions tests, and turns a version tag
-into a Release page (see below). The two workflows, and what each costs:
+in `apps/mobile/.eas/workflows/`. GitHub Actions tests, deploys the web and
+turns a version tag into a Release page (see below). The workflows that ship
+something, and what each costs:
 
-| Workflow      | Trigger                  | Cost                              |
-| ------------- | ------------------------ | --------------------------------- |
-| `update.yml`  | every merge to `main`    | nothing — an OTA update, no build |
-| `release.yml` | by hand, pick a platform | one build, then `eas submit`      |
+| Workflow         | Where          | Trigger                  | Cost                               |
+| ---------------- | -------------- | ------------------------ | ---------------------------------- |
+| `update.yml`     | expo.dev       | every merge to `main`    | nothing — an OTA update, no build  |
+| `deploy-web.yml` | GitHub Actions | every merge to `main`    | nothing — a static export to Pages |
+| `release.yml`    | expo.dev       | by hand, pick a platform | one build, then `eas submit`       |
+
+`update.yml` and `deploy-web.yml` watch the same paths on purpose: a merge
+that changes the app reaches installed phones and `app.langx.io` from the
+same commit, and neither waits for the other. Until 5 September 2026 the web
+half was `pnpm deploy:web` from a laptop and lagged the phones by however
+long nobody remembered it. The GitHub workflow reuses that same script, so
+the hand-run path still exists and still ends with the live-host check;
+the secrets it needs are named in the workflow file.
 
 **The version number is `major.minor` and lives in the root `package.json`.**
 `app.config.ts` imports it, so the binaries and the web build carry whatever
@@ -320,11 +330,12 @@ git push -u origin <branch>   # the release commit goes through a PR like any ot
 git push origin v2.1          # once it is on main; the tag creates the GitHub Release
 ```
 
-The tag is the only GitHub-side automation: `github-release.yml` checks it
-against `package.json` and writes a Release with notes from the merged pull
-requests. It builds nothing. A new number reaches the stores with the next
-`release.yml` run on expo.dev and the web with the next `pnpm deploy:web`;
-installed apps keep showing the binary's own number until a store build ships.
+The tag's only effect is on GitHub: `github-release.yml` checks it against
+`package.json` and writes a Release with notes from the merged pull requests.
+It builds nothing. A new number reaches the stores with the next `release.yml`
+run on expo.dev, and the web with the merge of the release commit itself,
+since `deploy-web.yml` runs on it; installed apps keep showing the binary's
+own number until a store build ships.
 
 **There is one channel, `production`, and merging to `main` publishes to it.**
 A JS-only change reaches every installed app on its next launch without a
