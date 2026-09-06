@@ -698,39 +698,32 @@ before either runs.
       production's staged records — so the public base URL is decided and
       permanent. See the self-host doc for why it cannot change now.
 
-1. Run the reservation ETL: `tsx scripts/migrate-appwrite.ts --apply`
-   (dry run first — last verified 3479 profiles → 3401 reservation candidates)
-2. Run the profile ETL: `tsx scripts/migrate-profiles.ts --apply`
-   (dry run: 3479 → 3150 stageable; needs `STORAGE_*` for the media step)
-3. Run the message ETL: `tsx scripts/migrate-messages.ts --apply`
-   (dry run first; needs `STORAGE_*` for the attachments)
+**Steps 1–6 ran against production before the Appwrite shutdown.** Verified
+on 6 September 2026 from what they left behind, with
+`scripts/inspect-migration-state.ts` (read-only): 3,418 handle reservations,
+3,164 staged profiles (272 with copied avatars), 182,016 staged messages,
+3,955 `user` rows against 35 live profiles, and not one `learning.level`
+outside the four-tier scale in either collection. So the reservation,
+profile, message and level ETLs and the precreate step are done, the
+attachments are out of Appwrite Storage, and the powered-off v1 server is
+not needed again for any of them. What each step was, for a re-run:
 
-   **Do not skip this step, and do not run it after the Appwrite shutdown.** It
-   stages v1's chat history _and copies the 4,874 attachments out of Appwrite
-   Storage_, which are encrypted at rest and readable only through Appwrite's
-   own API — once that server is gone they cannot be recovered from the bucket
-   behind it. Nothing later in this runbook will tell you the history is
-   missing: threads simply never appear, because the import waits for both
-   participants to return and silently finds nothing staged.
-
-4. All three are idempotent and can be re-run. The profile ETL skips anything a
-   v2 user has already restored; the message ETL skips attachments it has
-   already copied and rooms already imported into a live conversation.
-5. Run the level conversion: `tsx scripts/migrate-levels.ts --apply`
-   (dry run first). Rewrites `learning[].level` from CEFR to the four-tier
-   scale in both `profiles` and `legacyProfiles`. Skip it and every profile
-   written before the switch fails validation the first time its owner edits
-   it, while the discovery `minLevel` filter matches none of them — silently,
-   in both cases. **Order matters:** run it _after_ the profile ETL, or the ETL
-   writes fresh CEFR values behind it.
-6. Open the v2 accounts:
-   `tsx --env-file=../../.env --env-file=../../.env.prod scripts/precreate-v1-users.ts --apply`
-   (dry run first). Writes a verified, passwordless `user` row for every v1
-   Auth account, so "forgot password" and Google/Apple work for returning
-   users and nobody has to sign up again — see `docs/decisions.md` → _Every
-   v1 account has a v2 `user` row_. **Also needs the live Appwrite**: it is
-   the only source of the plaintext emails. Idempotent; an address that
-   already has a v2 user is left alone.
+1. Reservation ETL: `tsx scripts/migrate-appwrite.ts --apply`.
+2. Profile ETL: `tsx scripts/migrate-profiles.ts --apply` (needs `STORAGE_*`
+   for the media step).
+3. Message ETL: `tsx scripts/migrate-messages.ts --apply`. It stages v1's
+   chat history _and copies the attachments out of Appwrite Storage_, which
+   are encrypted at rest and readable only through Appwrite's own API — the
+   one step that could never have run after the shutdown.
+4. All three are idempotent. The profile ETL skips anything a v2 user has
+   already restored; the message ETL skips attachments it has already copied
+   and rooms already imported into a live conversation.
+5. Level conversion: `tsx scripts/migrate-levels.ts --apply`, after the
+   profile ETL, rewriting `learning[].level` from CEFR to the four-tier scale.
+6. Precreate: `tsx --env-file=../../.env --env-file=../../.env.prod scripts/precreate-v1-users.ts --apply`,
+   a verified, passwordless `user` row for every v1 Auth account — see
+   `docs/decisions.md` → _Every v1 account has a v2 `user` row_. Also needed
+   the live Appwrite, as the only source of the plaintext emails.
 7. Verify a returning user's handle claim end to end before opening the gates.
 8. Verify chat history too: restore two accounts that talked to each other in
    v1 and confirm the thread arrives with its photos and voice notes. A
