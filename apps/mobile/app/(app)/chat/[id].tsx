@@ -16,6 +16,8 @@ import {
   markConversationRead,
   uploadMessageMedia,
   useBlockUser,
+  useConversation,
+  useConversationFlags,
   useMe,
   useMessages,
   useMessageWindow,
@@ -139,6 +141,9 @@ export default function ChatScreen() {
   const keyboardInset = useKeyboardInset()
   const report = useReportUser()
   const block = useBlockUser()
+  // For the header menu's pin — the message window does not carry the flags.
+  const conversation = useConversation(conversationId)
+  const flags = useConversationFlags()
   const recorder = useVoiceRecorder()
   /** Only for the pill's dress: white ground and accent ring while it has focus. */
   const [sendingMedia, setSendingMedia] = useState(false)
@@ -906,15 +911,20 @@ export default function ChatScreen() {
    */
   async function openThreadMenu(): Promise<void> {
     if (!partner) return
+    const pinned = conversation.data?.pinned ?? false
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
       { label: t('chats.starredMessages'), value: 'starred' },
+      // The same toggle the list offers, where the design puts it as well.
+      { label: pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
       { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (choice === 'profile') {
       openProfile(partner.handle, `/(app)/chat/${conversationId}`)
     } else if (choice === 'starred') {
       router.push('/(app)/starred')
+    } else if (choice === 'pin') {
+      flags.mutate({ conversationId, pinned: !pinned })
     } else if (choice === 'block') {
       // The same question the profile asks, so the two places agree.
       const yes = await confirmAlert({

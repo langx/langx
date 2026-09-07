@@ -702,6 +702,7 @@ export const en = {
     messageSent: 'Reported. Thank you — we look at every one.',
     profileSent: 'Report sent. We will look into it.',
     failed: 'Could not report',
+    postQuestion: 'Why are you reporting this post?',
   },
 
   feed: {

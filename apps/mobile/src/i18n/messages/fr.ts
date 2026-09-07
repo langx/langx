@@ -663,6 +663,7 @@ export const fr: Localized<EnMessages> = {
     messageSent: 'Signalé. Merci — nous regardons chaque signalement.',
     profileSent: 'Signalement envoyé. Nous allons regarder.',
     failed: 'Signalement impossible',
+    postQuestion: 'Pourquoi signalez-vous cette publication ?',
   },
 
   feed: {

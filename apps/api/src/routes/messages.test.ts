@@ -530,6 +530,46 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(new Set(seen).size).toBe(3)
   })
 
+  it('returns one conversation with the viewer own flags, and 404s a stranger', async () => {
+    const a = await newUser('one-a@example.com')
+    const b = await newUser('one-b@example.com')
+    const outsider = await newUser('one-outsider@example.com')
+    const conversation = await startConversation(a, b.userId, 'just us')
+
+    await app.inject({
+      method: 'PATCH',
+      url: `/conversations/${conversation._id}/flags`,
+      headers: { cookie: a.cookie },
+      payload: { pinned: true },
+    })
+
+    const mine = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}`,
+      headers: { cookie: a.cookie },
+    })
+    expect(mine.statusCode, mine.body).toBe(200)
+    expect(mine.json<{ _id: string; pinned: boolean }>()).toMatchObject({
+      _id: conversation._id,
+      pinned: true,
+    })
+
+    // The pin is per person: the other side sees the same thread unpinned.
+    const theirs = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}`,
+      headers: { cookie: b.cookie },
+    })
+    expect(theirs.json<{ pinned: boolean }>().pinned).toBe(false)
+
+    const stranger = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}`,
+      headers: { cookie: outsider.cookie },
+    })
+    expect(stranger.statusCode).toBe(404)
+  })
+
   it('404s the message history of a conversation you are not part of', async () => {
     const a = await newUser('history-a@example.com')
     const b = await newUser('history-b@example.com')

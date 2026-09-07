@@ -21,6 +21,7 @@ import {
   usePostAnswers,
   usePostComments,
   usePostCorrections,
+  useReportUser,
 } from '../../../src/api/queries'
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
@@ -186,6 +187,7 @@ export default function PostScreen() {
   })
 
   const mine = post ? post.author._id === me.data?._id : false
+  const report = useReportUser()
 
   function share(): void {
     if (!post) return
@@ -200,8 +202,9 @@ export default function PostScreen() {
   const replyCount = post ? (pronouncing ? post.answerCount : post.correctionCount) : 0
 
   /**
-   * The header's "more" sheet. Share on somebody else's post, delete on your
-   * own — the two things that used to sit as text actions under the sentence.
+   * The header's "more" sheet. Share and Report on somebody else's post,
+   * delete on your own — the things that used to sit as text actions under
+   * the sentence.
    */
   async function openMore(): Promise<void> {
     if (!post) return
@@ -211,9 +214,29 @@ export default function PostScreen() {
         ])
       : await chooseAlert(t('feed.post'), undefined, [
           { label: t('share.action'), value: 'share' as const },
+          { label: t('common.report'), value: 'report' as const, destructive: true },
         ])
     if (choice === 'share') share()
+    if (choice === 'report') void confirmReport()
     if (choice === 'delete') void confirmDeletePost()
+  }
+
+  /** The same three reasons a profile offers, pointed at the post. */
+  async function confirmReport(): Promise<void> {
+    if (!post) return
+    const reason = await chooseAlert(t('common.report'), t('report.postQuestion'), [
+      { label: t('report.spam'), value: 'spam' },
+      { label: t('report.harassment'), value: 'harassment' },
+      { label: t('report.inappropriate'), value: 'inappropriate_content' },
+    ])
+    if (!reason) return
+    report.mutate(
+      { userId: post.author._id, reason, postId: post._id },
+      {
+        onSuccess: () => showToast(t('report.messageSent')),
+        onError: () => showToast(t('report.failed')),
+      },
+    )
   }
 
   function submitCorrection(): void {

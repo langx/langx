@@ -95,6 +95,8 @@ export const keys = {
    * `messages`.
    */
   conversations: (filter: string) => ['conversations', filter] as const,
+  /** Under the `['conversations']` prefix on purpose: every flag write invalidates it. */
+  conversation: (id: string) => ['conversations', 'one', id] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -790,6 +792,31 @@ export function useDeleteConversation() {
   })
 }
 
+/**
+ * One thread's row — for the header menu's pin, which the message window does
+ * not carry. Seeded from whichever list page already holds the thread so the
+ * menu is right on first open, then confirmed by the server.
+ */
+export function useConversation(conversationId: string) {
+  const client = useQueryClient()
+  return useQuery({
+    queryKey: keys.conversation(conversationId),
+    queryFn: () => api.get<ConversationDto>(`/conversations/${conversationId}`),
+    enabled: conversationId.length > 0,
+    placeholderData: () => {
+      for (const [, data] of client.getQueriesData<InfiniteData<ConversationPageDto>>({
+        queryKey: ['conversations'],
+      })) {
+        for (const page of data?.pages ?? []) {
+          const hit = [...page.pinned, ...page.items].find((c) => c._id === conversationId)
+          if (hit) return hit
+        }
+      }
+      return undefined
+    },
+  })
+}
+
 export function useConversationFlags() {
   const client = useQueryClient()
   return useMutation({
@@ -1266,6 +1293,7 @@ export function useReportUser() {
       details?: string
       conversationId?: string
       messageId?: string
+      postId?: string
     }) => api.post('/reports', input),
   })
 }
