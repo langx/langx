@@ -483,6 +483,12 @@ export interface MessageDto {
     note?: string
     status: MeetingStatus
   }
+  quiz?: {
+    question: string
+    options: string[]
+    correctIndex: number
+    answer?: { index: number; at: string }
+  }
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */

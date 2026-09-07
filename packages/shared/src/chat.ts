@@ -101,6 +101,7 @@ export const MESSAGE_TYPES = [
   'video',
   'phrase',
   'meeting',
+  'quiz',
 ] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
@@ -239,6 +240,58 @@ export const respondToMeetingSchema = z.object({
   status: z.enum(['accepted', 'declined', 'cancelled']),
 })
 export type RespondToMeetingInput = z.infer<typeof respondToMeetingSchema>
+
+/**
+ * A question with one right answer.
+ *
+ * A quiz, not a poll. A conversation has two people in it, so a tally is
+ * never interesting — what is interesting is whether the other person got it
+ * right, which means the asker marks the answer and the reveal happens on the
+ * tap. That also makes it the one thing here that is *about* the language
+ * rather than a message that happens to be in a language.
+ *
+ * Deliberately unpaid. Two accounts writing and answering each other's
+ * questions would be the easiest token farm in the app, and `TOKEN_RULES`
+ * already pays 2 for the send — see `awards.ts`, which needs no branch for it.
+ */
+export const QUIZ_QUESTION_MAX_LENGTH = 200
+export const QUIZ_OPTION_MAX_LENGTH = 80
+export const QUIZ_MIN_OPTIONS = 2
+export const QUIZ_MAX_OPTIONS = 4
+
+export const sendQuizSchema = z
+  .object({
+    conversationId: z.string().trim().min(1),
+    question: z.string().trim().min(1).max(QUIZ_QUESTION_MAX_LENGTH),
+    options: z
+      .array(z.string().trim().min(1).max(QUIZ_OPTION_MAX_LENGTH))
+      .min(QUIZ_MIN_OPTIONS)
+      .max(QUIZ_MAX_OPTIONS),
+    correctIndex: z
+      .number()
+      .int()
+      .min(0)
+      .max(QUIZ_MAX_OPTIONS - 1),
+    clientId: clientMessageIdSchema.optional(),
+  })
+  // Checked against the list rather than a constant: three options and a
+  // `correctIndex` of 3 passes both bounds above and points at nothing.
+  .refine((input) => input.correctIndex < input.options.length, {
+    message: 'The correct answer has to be one of the options',
+    path: ['correctIndex'],
+  })
+export type SendQuizInput = z.infer<typeof sendQuizSchema>
+
+export const answerQuizSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  index: z
+    .number()
+    .int()
+    .min(0)
+    .max(QUIZ_MAX_OPTIONS - 1),
+})
+export type AnswerQuizInput = z.infer<typeof answerQuizSchema>
 
 export const CORRECTION_NOTE_MAX_LENGTH = 500
 

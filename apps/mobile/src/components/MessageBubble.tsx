@@ -75,6 +75,8 @@ export interface MessageBubbleProps {
   onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
   /** Accepts, declines or withdraws a proposed time. */
   onRespondMeeting: (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => void
+  /** Answers a quiz. Once, and never your own. */
+  onAnswerQuiz: (message: MessageDto, index: number) => void
   /**
    * The proposal in the reader's own zone, formatted by the thread — only it
    * has the profile the zone comes from. Empty for anything but a meeting.
@@ -116,6 +118,7 @@ export const MessageBubble = memo(function MessageBubble({
   onReply,
   onAnswerAsk,
   onRespondMeeting,
+  onAnswerQuiz,
   meetingWhen = '',
   meetingLength = '',
   onJumpTo,
@@ -403,6 +406,54 @@ export const MessageBubble = memo(function MessageBubble({
     )
   }
 
+  if (message.type === 'quiz' && message.quiz) {
+    const quiz = message.quiz
+    const answered = quiz.answer !== undefined
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.card, flash]}>
+          <Text style={styles.cardKicker}>{t('chat.quizCard')}</Text>
+          <Text style={styles.phraseMeaning}>{quiz.question}</Text>
+          {quiz.options.map((option, index) => {
+            const isRight = index === quiz.correctIndex
+            const chosen = quiz.answer?.index === index
+            return (
+              <Pressable
+                key={option}
+                accessibilityRole="button"
+                /*
+                 * The asker never answers their own question, and an answered
+                 * quiz is read-only — a second go would find the right option
+                 * by elimination, which is not an answer to anything. Both
+                 * rules are the server's; this only avoids offering a tap that
+                 * would come back refused.
+                 */
+                disabled={mine || answered}
+                onPress={() => onAnswerQuiz(message, index)}
+                style={({ pressed }) => [
+                  styles.quizOption,
+                  answered && isRight && styles.quizRight,
+                  answered && chosen && !isRight && styles.quizWrong,
+                  pressed && !mine && !answered && styles.quizPressed,
+                ]}
+              >
+                <Text style={styles.quizOptionText}>{option}</Text>
+                {answered && isRight ? (
+                  <Feather name="check" size={15} color={colors.success} />
+                ) : null}
+                {answered && chosen && !isRight ? (
+                  <Feather name="x" size={15} color={colors.danger} />
+                ) : null}
+              </Pressable>
+            )
+          })}
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
   /*
    * A type this build has never heard of.
    *
@@ -413,7 +464,7 @@ export const MessageBubble = memo(function MessageBubble({
    * types carry no `body` — and an empty bubble reads as a bug in the app
    * rather than a gap in it.
    */
-  if (message.type === 'phrase' || message.type === 'meeting' || !isDrawableType(message.type)) {
+  if (!isDrawableType(message.type)) {
     return shell(
       <Pressable onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
@@ -705,6 +756,20 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   phraseMeaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
   phraseExample: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
   meetingWhen: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  quizOption: {
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  quizOptionText: { color: colors.text, flex: 1, fontSize: 15 },
+  quizRight: { borderColor: colors.success, borderWidth: 1 },
+  quizWrong: { borderColor: colors.danger, borderWidth: 1 },
+  quizPressed: { opacity: 0.6 },
   meetingTheirs: { color: colors.textMuted, fontSize: 13 },
   meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
   meetingAccept: { color: colors.success, fontSize: 14, fontWeight: '700' },

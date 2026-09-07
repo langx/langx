@@ -425,6 +425,17 @@ export default function ChatScreen() {
     return t('format.minutes', { count: message.meeting.durationMinutes })
   }
 
+  /** Answers a quiz. Once, and never your own — both are the server's rules. */
+  async function answerQuiz(message: MessageDto, index: number): Promise<void> {
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'quiz:answer', { conversationId, messageId: message._id, index })
+    } catch (caught) {
+      void caught
+      void showAlert(t('chat.couldNotSend'))
+    }
+  }
+
   /** Accepts, declines or withdraws. The server decides who may do which. */
   async function respondMeeting(
     message: MessageDto,
@@ -506,6 +517,7 @@ export default function ChatScreen() {
       { label: t('chat.askPronunciation'), value: 'askPronunciation' as const, icon: 'volume-2' },
       { label: t('chat.sendPhrase'), value: 'phrase' as const, icon: 'bookmark' },
       { label: t('chat.sendMeeting'), value: 'meeting' as const, icon: 'calendar' },
+      { label: t('chat.sendQuiz'), value: 'quiz' as const, icon: 'help-circle' },
       // Only when there is a language to send it in. A row that would answer
       // "there is nothing to translate into" is a row not worth drawing.
       ...(translateInto
@@ -530,6 +542,10 @@ export default function ChatScreen() {
     }
     if (choice === 'meeting') {
       router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } })
+      return
+    }
+    if (choice === 'quiz') {
+      router.push({ pathname: '/(app)/quiz', params: { id: conversationId } })
       return
     }
     if (choice === 'translate') {
@@ -1509,6 +1525,7 @@ export default function ChatScreen() {
                     askAnswered={answeredAsks.has(row.message._id)}
                     onAnswerAsk={answerAsk}
                     onRespondMeeting={(message, status) => void respondMeeting(message, status)}
+                    onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
                     meetingWhen={meetingWhenFor(row.message)}
                     meetingLength={meetingLengthFor(row.message)}
                     pending={isOutgoingId(row.message._id)}

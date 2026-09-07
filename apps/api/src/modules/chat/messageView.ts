@@ -51,6 +51,22 @@ export interface MessageView {
     note?: string
     status: MeetingStatus
   }
+  /**
+   * `correctIndex` travels from the start, to both of them.
+   *
+   * Withholding it until the tap was the first shape and it was wrong: the
+   * reveal has to be instant to feel like a quiz, a round-trip to learn you
+   * were right is a pause in the wrong place, and anybody minded to read it
+   * out of the payload could have read the answer out of a second message
+   * instead. It is a language exercise between two people who chose each
+   * other, not an exam.
+   */
+  quiz?: {
+    question: string
+    options: string[]
+    correctIndex: number
+    answer?: { index: number; at: string }
+  }
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -104,6 +120,16 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (!deleted && message.ask) view.ask = message.ask
   if (!deleted && message.translation) view.translation = message.translation
   if (!deleted && message.phrase) view.phrase = message.phrase
+  if (!deleted && message.quiz) {
+    view.quiz = {
+      question: message.quiz.question,
+      options: message.quiz.options,
+      correctIndex: message.quiz.correctIndex,
+      ...(message.quiz.answer
+        ? { answer: { index: message.quiz.answer.index, at: message.quiz.answer.at.toISOString() } }
+        : {}),
+    }
+  }
   if (!deleted && message.meeting) {
     view.meeting = {
       startsAt: message.meeting.startsAt.toISOString(),

@@ -49,6 +49,7 @@ const ROUTE_RESERVED = [
   'phrases',
   'post',
   'profile',
+  'quiz',
   'settings',
   'starred',
   'streak',
