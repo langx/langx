@@ -30,3 +30,32 @@ export function useProfileCache(userIds: string[]): Record<string, PublicProfile
   })
   return map
 }
+
+export type ProfileCacheStatus = 'pending' | 'ready' | 'missing'
+
+/**
+ * Whether each id's profile is still on its way, here, or not coming.
+ *
+ * A screen that draws a placeholder while a name loads needs to tell "not yet"
+ * from "never": the chat header used to show the same "?" for both, which read
+ * as a real header with the wrong content. Same queries, same keys as
+ * `useProfileCache`, so TanStack answers both hooks from one request.
+ */
+export function useProfileCacheStatus(userIds: string[]): Record<string, ProfileCacheStatus> {
+  const unique = [...new Set(userIds.filter(Boolean))]
+
+  const results = useQueries({
+    queries: unique.map((id) => ({
+      queryKey: keys.profile(id),
+      queryFn: () => api.get<PublicProfileDto>(`/profiles/${id}`),
+      staleTime: 5 * 60_000,
+    })),
+  })
+
+  const map: Record<string, ProfileCacheStatus> = {}
+  unique.forEach((id, index) => {
+    const result = results[index]
+    map[id] = result?.data ? 'ready' : result?.isError ? 'missing' : 'pending'
+  })
+  return map
+}

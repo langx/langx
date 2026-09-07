@@ -49,8 +49,9 @@ import {
 } from '../../../src/components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { Screen } from '../../../src/components/ui/Screen'
-import { useProfileCache } from '../../../src/hooks/useProfileCache'
+import { useProfileCache, useProfileCacheStatus } from '../../../src/hooks/useProfileCache'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
@@ -238,6 +239,10 @@ export default function ChatScreen() {
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  // "Not yet" and "never" draw differently: a placeholder while the profile
+  // loads, the generic title only for an account that is really gone.
+  const partnerLoading =
+    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
 
   /**
    * Opening the thread is the read receipt — and *focusing* it, not mounting
@@ -908,24 +913,35 @@ export default function ChatScreen() {
             style={styles.headerUser}
             onPress={() => partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)}
           >
-            <Avatar
-              url={partner?.avatarUrl}
-              name={partner?.displayName ?? '?'}
-              seed={partner?._id}
-              size={40}
-              online={partner?.isOnline ?? false}
-            />
+            {partnerLoading ? (
+              <Skeleton width={40} height={40} radius={20} />
+            ) : (
+              <Avatar
+                url={partner?.avatarUrl}
+                name={partner?.displayName ?? '?'}
+                seed={partner?._id}
+                size={40}
+                online={partner?.isOnline ?? false}
+              />
+            )}
             <View style={styles.headerText}>
-              <Text style={styles.headerName} numberOfLines={1}>
-                {partner?.displayName ?? t('chat.title')}
-              </Text>
+              {partnerLoading ? (
+                <>
+                  <Skeleton width={120} height={14} />
+                  <Skeleton width={80} height={12} style={styles.headerSkeletonGap} />
+                </>
+              ) : (
+                <Text style={styles.headerName} numberOfLines={1}>
+                  {partner?.displayName ?? t('chat.title')}
+                </Text>
+              )}
               {/*
               One line that is either presence or typing, never both stacked —
               the header is 40px tall and a third line pushes the avatar out of
               alignment with the name. `PresenceLine` keeps that true: online
               and last-seen are mutually exclusive states of one line, not two.
             */}
-              {partnerTyping ? (
+              {partnerLoading ? null : partnerTyping ? (
                 <Text style={styles.typing}>{t('chat.typing')}</Text>
               ) : (
                 <PresenceLine lastActiveAt={partner?.lastActiveAt} />
@@ -1371,6 +1387,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   headerText: { flex: 1, minWidth: 0 },
   headerName: { ...font.heading, color: colors.text, fontSize: 17 },
+  headerSkeletonGap: { marginTop: 6 },
   // The accent, like Online: somebody typing is as live as the status line gets.
   typing: { ...font.caption, color: colors.accent, fontSize: 13 },
   more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
