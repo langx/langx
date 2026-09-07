@@ -356,18 +356,20 @@ every install loses the API on its next launch.
       5 September 2026 each started `update.yml` on expo.dev with trigger
       `refs/heads/main@…` and no hand on it. Manual runs still work:
       `eas workflow:run update.yml` from `apps/mobile`.
-- [ ] **iOS credentials.** EAS holds the APNs key but no distribution
-      certificate or provisioning profile, and no App Store Connect API key
-      for submission. One interactive `eas credentials -p ios` on a Mac with
-      the Apple ID signed in creates the first two; the API key is made in
-      App Store Connect → Users and Access → Integrations and uploaded on the
-      same screen. Until then `release.yml` only works for Android.
+- [x] **iOS credentials.** Proven on 7 September 2026: `release.yml` with
+      `platform=ios` built 2.0 (137) and its submit step delivered it to App
+      Store Connect (app 6474187141) with no hand on it, so the distribution
+      certificate, the provisioning profile and the App Store Connect API key
+      are all in EAS. Review itself still happens in App Store Connect.
 - [ ] **Play submit permissions.** The service account
       `eas-submit@langx-48eb0.iam.gserviceaccount.com` is uploaded to EAS but
       Play does not know it yet: Play Console → Users and permissions → invite
       that address with release permissions, and enable the Google Play
-      Android Developer API on the `langx-48eb0` project. Until then
-      `release.yml` builds Android and fails at the submit step.
+      Android Developer API on the `langx-48eb0` project. Still true on
+      7 September 2026: `release.yml` with `platform=android` built 2.0 (136)
+      and failed at the submit step the same way the 5 September attempts did
+      ("Fastlane supply failed"). The bundle is on expo.dev under that build
+      and can be uploaded by hand until the account is invited.
 
 What is already in EAS: the Android application identifier with the real
 upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
