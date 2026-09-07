@@ -135,6 +135,12 @@ export type PickMediaResult =
 export interface PickMediaOptions {
   /** How many more files the composer has room for. */
   remaining: number
+  /**
+   * `images` narrows the picker to photographs. The profile gallery holds
+   * nothing else, and offering videos there would let somebody pick one only
+   * to be told afterwards that it cannot go on a profile.
+   */
+  kinds?: 'images' | 'all'
 }
 
 /**
@@ -162,7 +168,7 @@ export async function pickMediaAssets(options: PickMediaOptions): Promise<PickMe
   if (!permission.granted) return { status: 'denied', source }
 
   const launchOptions: ImagePicker.ImagePickerOptions = {
-    mediaTypes: ['images', 'videos'],
+    mediaTypes: options.kinds === 'images' ? ['images'] : ['images', 'videos'],
     quality: 0.8,
     // Also what makes an iPhone hand back H.264 rather than HEVC, which
     // Android and every browser but Safari would otherwise show as a black

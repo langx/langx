@@ -1,9 +1,9 @@
-import { Ionicons } from '@expo/vector-icons'
 import Feather from '@expo/vector-icons/Feather'
 import { LINKED_PROVIDERS, type LinkedProvider } from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import { ProviderMark } from '../../../src/components/ProviderMark'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -208,28 +208,7 @@ export default function SignInMethodsScreen() {
   )
 }
 
-/**
- * The provider's own mark, 20px. Apple's is a glyph; Google's is its
- * four-colour disc, drawn as quadrants in a clipped circle. The four are
- * Google's brand colours, not palette tokens — the mark is theirs and does not
- * change with the scheme, which is also why the quadrants are placed with
- * `left`/`right` and never mirror.
- */
-function ProviderMark({ provider }: { provider: LinkedProvider }) {
-  const styles = useStyles()
-  const { colors } = useTheme()
-  if (provider === 'apple') return <Ionicons name="logo-apple" size={20} color={colors.text} />
-  return (
-    <View style={styles.googleMark} accessibilityElementsHidden>
-      <View style={[styles.quadrant, styles.quadrantBlue]} />
-      <View style={[styles.quadrant, styles.quadrantRed]} />
-      <View style={[styles.quadrant, styles.quadrantGreen]} />
-      <View style={[styles.quadrant, styles.quadrantYellow]} />
-    </View>
-  )
-}
-
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   intro: {
     color: colors.textMuted,
     fontSize: 15,
@@ -259,12 +238,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   connect: { color: colors.accent, fontSize: 14, fontWeight: '600' },
   disconnect: { color: colors.danger, fontSize: 14, fontWeight: '600' },
   pressed: { opacity: 0.6 },
-  googleMark: { borderRadius: radius.pill, height: 20, overflow: 'hidden', width: 20 },
-  quadrant: { height: 10, position: 'absolute', width: 10 },
-  quadrantBlue: { backgroundColor: '#4285f4', left: 0, top: 0 },
-  quadrantRed: { backgroundColor: '#ea4335', right: 0, top: 0 },
-  quadrantGreen: { backgroundColor: '#34a853', bottom: 0, left: 0 },
-  quadrantYellow: { backgroundColor: '#fbbc05', bottom: 0, right: 0 },
   retry: { gap: spacing.md, marginTop: spacing.md },
   loading: { gap: spacing.sm, marginTop: spacing.md },
   loadingGap: { marginTop: spacing.lg },

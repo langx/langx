@@ -12,7 +12,6 @@ import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
-  useAddPhoto,
   useEffectiveTier,
   useMe,
   useRemovePhoto,
@@ -25,6 +24,7 @@ import { LoadFailed } from '../../src/components/LoadFailed'
 import { ApiRequestError } from '../../src/api/client'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
 import { useDebounced } from '../../src/hooks/useDebounced'
+import { useProfilePhotoUploads } from '../../src/hooks/useProfilePhotoUploads'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -35,7 +35,8 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { chooseAlert, confirmAlert, showAlert } from '../../src/lib/alert'
-import { pickImageAsset } from '../../src/lib/pickMediaAsset'
+import { PendingPhotoTile } from '../../src/components/PendingPhotoTile'
+import { pickImageAsset, pickMediaAssets } from '../../src/lib/pickMediaAsset'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import {
@@ -63,6 +64,9 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * it is the state being left, and the server has no way back to it.
  */
 const DISCLOSABLE_GENDERS = ['female', 'male', 'other'] as const
+
+/** One number for the stored tiles and the pending ones, so they cannot drift. */
+const PHOTO_TILE = 58
 
 export default function EditProfileScreen() {
   useScreenInteractive()
@@ -100,8 +104,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const update = useUpdateProfile()
   const disclose = useDiscloseGender()
   const uploadAvatar = useUploadAvatar()
-  const addPhoto = useAddPhoto()
   const removePhoto = useRemovePhoto()
+  const uploads = useProfilePhotoUploads(onUploadError)
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
@@ -171,6 +175,43 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     // render this effect can itself cause, and depending on them would make a
     // save schedule the next one.
   }, [settledLanguages, languageSignature, native, learning, learningCodes])
+
+  /**
+   * The gallery takes several at once; the avatar still takes one, cropped.
+   *
+   * Room is counted against the pending tiles as well as the stored photos —
+   * two pickers in a row must not between them exceed the six the server will
+   * accept, or the last upload comes back refused after its bytes are already
+   * up.
+   */
+  async function addPhotos(): Promise<void> {
+    const room = PLAN_LIMITS.free.maxPhotos - photos.length - uploads.pending.length
+    if (room <= 0) return
+    const picked = await pickMediaAssets({ kinds: 'images', remaining: room })
+    if (picked.status === 'denied') {
+      void showAlert(
+        picked.source === 'camera' ? t('media.cameraTitle') : t('chat.photosTitle'),
+        picked.source === 'camera' ? t('media.cameraPermission') : t('chat.photosPermission'),
+      )
+      return
+    }
+    if (picked.status === 'cancelled') return
+    // Said once, for the first file that was dropped, the way the chat picker
+    // says it: naming each of six would be a stack of alerts nobody dismisses.
+    // Every reason is answered — a photo that vanishes with no word is the
+    // complaint this screen is being rewritten for.
+    if (picked.refused) {
+      void showAlert(
+        t('errors.uploadFailed'),
+        picked.refused.reason === 'tooLarge'
+          ? t('errors.attachmentTooLarge')
+          : picked.refused.reason === 'tooMany'
+            ? t('editProfile.photosTrimmed', { max: PLAN_LIMITS.free.maxPhotos })
+            : t('errors.attachmentUnsupported'),
+      )
+    }
+    uploads.add(picked.media)
+  }
 
   async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
     const picked = await pickImageAsset({ allowsEditing: true })
@@ -332,26 +373,40 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
               <Image source={{ uri: photo.url }} style={styles.photo} />
             </Pressable>
           ))}
-          {photos.length < PLAN_LIMITS.free.maxPhotos ? (
+          {uploads.pending.map((photo) => (
+            <PendingPhotoTile
+              key={photo.id}
+              photo={photo}
+              size={PHOTO_TILE}
+              onRetry={() => uploads.retry(photo.id)}
+              onDiscard={() => uploads.discard(photo.id)}
+            />
+          ))}
+          {/*
+            No longer disabled while an upload runs — the queue takes more, and
+            a "+" that goes dead for the length of an upload was the reason a
+            second photo could not be picked at all. The only thing that hides
+            it is having no room left.
+          */}
+          {photos.length + uploads.pending.length < PLAN_LIMITS.free.maxPhotos ? (
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('onboarding.addPhoto')}
               style={[styles.photo, styles.photoAdd]}
-              disabled={addPhoto.isPending}
-              onPress={() =>
-                void pick((uri, contentType) =>
-                  addPhoto.mutate(
-                    { uri, contentType },
-                    {
-                      onError: onUploadError,
-                      onSuccess: () => showToast(t('editProfile.photoAdded')),
-                    },
-                  ),
-                )
-              }
+              onPress={() => void addPhotos()}
             >
-              <Text style={styles.photoAddLabel}>{addPhoto.isPending ? '…' : '+'}</Text>
+              <Text style={styles.photoAddLabel}>+</Text>
             </Pressable>
           ) : null}
         </View>
+        {/*
+          Said always, not only once the gallery is full: the "+" simply stops
+          being drawn at six, and a control that vanishes without a word reads
+          as a bug rather than a limit.
+        */}
+        <Text style={styles.hint}>
+          {t('editProfile.photoLimit', { max: PLAN_LIMITS.free.maxPhotos })}
+        </Text>
 
         <FormField
           label={t('editProfile.displayName')}
@@ -597,7 +652,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   levelRow: { marginBottom: spacing.sm },
   levelLang: { ...font.caption, color: colors.textMuted, marginBottom: spacing.xs },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm + 1 },
-  photo: { backgroundColor: colors.fill, borderRadius: 14, height: 58, width: 58 },
+  photo: { backgroundColor: colors.fill, borderRadius: 14, height: PHOTO_TILE, width: PHOTO_TILE },
   photoAdd: {
     alignItems: 'center',
     backgroundColor: 'transparent',
