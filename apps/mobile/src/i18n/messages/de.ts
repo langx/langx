@@ -767,6 +767,7 @@ export const de: Localized<EnMessages> = {
     composeHint:
       'Jemand mit Muttersprache korrigiert es – meist innerhalb einer Stunde. Korrekturen sind in jedem Tarif unbegrenzt.',
     voiceNote: 'Sprachnotiz',
+    top: 'Top',
   },
 
   profile: {

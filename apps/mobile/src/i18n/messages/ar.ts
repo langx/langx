@@ -885,6 +885,7 @@ export const ar: Localized<EnMessages> = {
     },
     composeHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
     voiceNote: 'مقطع صوتي',
+    top: 'الأبرز',
   },
 
   profile: {

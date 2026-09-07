@@ -739,6 +739,7 @@ export const ptBR: Localized<EnMessages> = {
     composeHint:
       'Alguém nativo vai corrigir, geralmente em menos de uma hora. As correções são ilimitadas em todos os planos.',
     voiceNote: 'Áudio',
+    top: 'Destaque',
   },
 
   profile: {

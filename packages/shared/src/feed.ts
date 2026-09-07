@@ -29,6 +29,15 @@ function withLegacyMedia(value: unknown): unknown {
 export const MAX_POST_LENGTH = 300
 export const MAX_POST_NOTE_LENGTH = 500
 
+/**
+ * How many corrections make a post "Top" in the feed and on its own screen.
+ *
+ * There is no ranking to derive the badge from — nothing may sort by likes or
+ * comments — so it is a threshold on the one count the card already shows.
+ * Here rather than in the app so the card and the post screen read one number.
+ */
+export const FEED_TOP_CORRECTIONS = 5
+
 export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
 
 /**

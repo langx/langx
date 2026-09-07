@@ -846,6 +846,7 @@ export const ru: Localized<EnMessages> = {
     composeHint:
       'Носитель языка исправит — обычно в течение часа. Исправления без ограничений на любом тарифе.',
     voiceNote: 'Голосовая заметка',
+    top: 'Топ',
   },
 
   profile: {

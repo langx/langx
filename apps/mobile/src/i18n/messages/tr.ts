@@ -750,6 +750,7 @@ export const tr: Localized<EnMessages> = {
     composeHint:
       'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
     voiceNote: 'Ses kaydı',
+    top: 'Öne çıkan',
   },
 
   profile: {

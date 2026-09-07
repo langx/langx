@@ -747,6 +747,7 @@ export const es: Localized<EnMessages> = {
     composeHint:
       'Alguien nativo la corregirá, normalmente en menos de una hora. Las correcciones son ilimitadas en todos los planes.',
     voiceNote: 'Nota de voz',
+    top: 'Destacado',
   },
 
   profile: {

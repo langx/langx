@@ -789,6 +789,7 @@ export const en = {
     composeHint:
       'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
     voiceNote: 'Voice note',
+    top: 'Top',
   },
 
   profile: {

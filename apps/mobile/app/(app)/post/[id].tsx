@@ -2,7 +2,12 @@ import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { MAX_COMMENT_LENGTH, MAX_POST_LENGTH, TOKEN_RULES } from '@langx/shared'
+import {
+  FEED_TOP_CORRECTIONS,
+  MAX_COMMENT_LENGTH,
+  MAX_POST_LENGTH,
+  TOKEN_RULES,
+} from '@langx/shared'
 import {
   uploadPostMedia,
   useAddComment,
@@ -383,6 +388,10 @@ export default function PostScreen() {
                     {names.language(post.language)} · {relativeTime(post.createdAt, { t, locale })}
                   </Text>
                 </View>
+                {/* The prototype's ink pill on the post itself; the threshold is shared with the feed. */}
+                {post.correctionCount >= FEED_TOP_CORRECTIONS ? (
+                  <Text style={styles.topPost}>{t('feed.top')}</Text>
+                ) : null}
               </Pressable>
               <Text style={styles.body}>{post.body}</Text>
               {attachmentsOf(post).length > 0 ? (
@@ -745,6 +754,16 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   whoText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 15 },
+  // The post's own Top badge; `topPill` below is the TOP tag on a correction row.
+  topPost: {
+    backgroundColor: colors.ink,
+    borderRadius: radius.pill,
+    color: colors.bg,
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
   meta: { color: colors.textFaint, fontSize: 13, fontWeight: '400' },
   body: { color: colors.text, fontSize: 22, lineHeight: 32, paddingBottom: 18 },
   media: { paddingBottom: 18 },
