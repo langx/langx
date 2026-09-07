@@ -1423,6 +1423,7 @@ export const de: Localized<EnMessages> = {
     yearlySaving: 'Jährlich · {percent}% sparen',
     billingPeriod: 'Abrechnungszeitraum',
     start: 'Mit {plan} starten',
+    perMonthBilledYearly: 'pro Monat · jährlich abgerechnet',
   },
 
   pickers: {

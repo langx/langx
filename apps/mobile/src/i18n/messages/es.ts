@@ -1396,6 +1396,7 @@ export const es: Localized<EnMessages> = {
     yearlySaving: 'Anual · ahorra un {percent}%',
     billingPeriod: 'Periodo de facturación',
     start: 'Empieza con {plan}',
+    perMonthBilledYearly: 'al mes · facturado anualmente',
   },
 
   pickers: {

@@ -76,6 +76,11 @@ export function fakeOffers(): PurchaseOffer[] {
     id,
     tier: PACKAGES[id].tier,
     priceString: `TEST $${TEST_AMOUNTS[id].toFixed(2)}`,
+    // The harness stands in for the store, so the division the app itself
+    // never does is done here — labelled TEST like everything else it says.
+    ...(PACKAGES[id].period === 'yearly'
+      ? { perMonthPriceString: `TEST $${(TEST_AMOUNTS[id] / 12).toFixed(2)}` }
+      : {}),
     period: PACKAGES[id].period,
     price: TEST_AMOUNTS[id],
     freeTrialDays: PACKAGES[id].period === 'yearly' ? TEST_FREE_TRIAL_DAYS : null,

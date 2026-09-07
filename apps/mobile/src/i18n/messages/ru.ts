@@ -1578,6 +1578,7 @@ export const ru: Localized<EnMessages> = {
     yearlySaving: 'Ежегодно · экономия {percent}%',
     billingPeriod: 'Период оплаты',
     start: 'Начать с {plan}',
+    perMonthBilledYearly: 'в месяц · оплата раз в год',
   },
 
   pickers: {

@@ -1659,6 +1659,7 @@ export const ar: Localized<EnMessages> = {
     yearlySaving: 'سنوي · وفّر {percent}%',
     billingPeriod: 'فترة الفوترة',
     start: 'ابدأ مع {plan}',
+    perMonthBilledYearly: 'شهريًا · تُحصَّل سنويًا',
   },
 
   pickers: {

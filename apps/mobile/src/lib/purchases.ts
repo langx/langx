@@ -103,6 +103,13 @@ export interface PurchaseOffer {
   tier: PaidPlanTier
   /** Localised and currency-correct, straight from the store. Never formatted here: store compliance requires the real price, not one we compute. */
   priceString: string
+  /**
+   * The same price as the store states it per month — "€4.99" on a yearly
+   * plan billed at €59.88. The store's own text again, not a division done
+   * here, for the same compliance reason; absent when the store does not
+   * provide one (a monthly plan, a lifetime purchase, an older SDK).
+   */
+  perMonthPriceString?: string
   period: BillingPeriod
   /**
    * The same amount as a number, in the storefront's currency.
@@ -237,10 +244,12 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
       const definition = packageDefinition(pkg.identifier)
       if (definition === null || definition.tier === 'free') continue
       packagesById.set(pkg.identifier, pkg)
+      const perMonth = pkg.product.pricePerMonthString
       offers.push({
         id: pkg.identifier,
         tier: definition.tier,
         priceString: pkg.product.priceString,
+        ...(perMonth ? { perMonthPriceString: perMonth } : {}),
         period: definition.period,
         price: pkg.product.price,
         freeTrialDays: freeTrialDays(pkg.product.introPrice),

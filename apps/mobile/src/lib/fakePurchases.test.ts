@@ -33,6 +33,16 @@ describe('fakeOffers', () => {
   it('labels every price as a test price', () => {
     for (const offer of fakeOffers()) {
       expect(offer.priceString).toMatch(/^TEST /)
+      if (offer.perMonthPriceString !== undefined) {
+        expect(offer.perMonthPriceString).toMatch(/^TEST /)
+      }
+    }
+  })
+
+  /** The yearly row leads with the store's monthly figure, so the harness has to supply one. */
+  it('gives every yearly offer a per-month price, and no other', () => {
+    for (const offer of fakeOffers()) {
+      expect(offer.perMonthPriceString !== undefined).toBe(offer.period === 'yearly')
     }
   })
 })

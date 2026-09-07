@@ -1439,6 +1439,7 @@ export const en = {
     yearlySaving: 'Yearly · save {percent}%',
     billingPeriod: 'Billing period',
     start: 'Start {plan}',
+    perMonthBilledYearly: 'a month · billed yearly',
   },
 
   pickers: {
