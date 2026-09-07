@@ -30,12 +30,25 @@ updates:
         patterns:
           - '*'
         exclude-patterns:
+          # Unscoped names first. `react-native*` catches reanimated,
+          # safe-area-context, purchases, screens, worklets and the rest.
           - 'expo'
           - 'expo-*'
           - 'react-native*'
           - 'react'
           - 'react-dom'
           - '@types/react'
+          # And the scoped ones, which `react-native*` does NOT match — the
+          # leading `@` is part of the name. Leaving these out is what let
+          # `@react-native/metro-config` and
+          # `@react-native-community/datetimepicker` into the first grouped
+          # pull request (#1189), the former to 0.87.1, which is the exact
+          # version `pnpm-workspace.yaml`'s override exists to keep out.
+          - '@react-native/*'
+          - '@react-native-community/*'
+          - '@expo/*'
+          - '@expo-google-fonts/*'
+          - 'babel-preset-expo'
         update-types:
           - 'minor'
           - 'patch'

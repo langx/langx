@@ -125,7 +125,7 @@ importers:
         specifier: 'catalog:'
         version: 10.0.1(eslint@10.9.1)
       '@types/node':
-        specifier: ^24.3.0
+        specifier: 'catalog:'
         version: 24.13.3
       eslint:
         specifier: 'catalog:'
