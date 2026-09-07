@@ -213,12 +213,16 @@ export async function getWebBillingOffers(): Promise<PurchaseOffer[]> {
       if (definition === null || definition.tier === 'free') continue
       packagesById.set(pkg.identifier, pkg)
       const product = pkg.webBillingProduct
+      // RevenueCat's own monthly conversion of the base phase, formatted by
+      // it — the one number this file may show that is not the charge itself.
+      const perMonth = product.defaultSubscriptionOption?.base.pricePerMonth?.formattedPrice
       offers.push({
         id: pkg.identifier,
         tier: definition.tier,
         // The store's own text, in the buyer's currency. Never formatted here:
         // the price a person reads has to be the one the checkout charges.
         priceString: product.price.formattedPrice,
+        ...(perMonth ? { perMonthPriceString: perMonth } : {}),
         period: definition.period,
         price: product.price.amountMicros / MICROS_PER_UNIT,
         freeTrialDays: freeTrialDays(product.freeTrialPhase),

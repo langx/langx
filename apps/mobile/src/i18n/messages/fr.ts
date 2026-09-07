@@ -1404,6 +1404,7 @@ export const fr: Localized<EnMessages> = {
     yearlySaving: 'Annuel · {percent}% d’économie',
     billingPeriod: 'Période de facturation',
     start: 'Commencer avec {plan}',
+    perMonthBilledYearly: 'par mois · facturé à l’année',
   },
 
   pickers: {

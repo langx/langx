@@ -1391,6 +1391,7 @@ export const ptBR: Localized<EnMessages> = {
     yearlySaving: 'Anual · economize {percent}%',
     billingPeriod: 'Período de cobrança',
     start: 'Começar com {plan}',
+    perMonthBilledYearly: 'por mês · cobrado anualmente',
   },
 
   pickers: {

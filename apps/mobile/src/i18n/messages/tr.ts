@@ -1395,6 +1395,7 @@ export const tr: Localized<EnMessages> = {
     yearlySaving: 'Yıllık · %{percent} indirim',
     billingPeriod: 'Ödeme dönemi',
     start: '{plan} ile başla',
+    perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
   },
 
   pickers: {

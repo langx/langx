@@ -481,9 +481,25 @@ export default function PaywallScreen() {
           <ActivityIndicator style={styles.priceLoading} />
         ) : offer ? (
           <View style={styles.priceBlock}>
+            {/*
+              A yearly plan leads with what it costs a month, as the design
+              does — the store's own per-month string, never a division done
+              here — and says how it is billed. Without one from the store the
+              row falls back to the charge and its period. The trial terms
+              below always quote the charge itself.
+            */}
             <View style={styles.priceRow}>
-              <Text style={styles.price}>{offer.priceString}</Text>
-              <Text style={styles.per}>{t(PERIOD_PHRASE[offer.period])}</Text>
+              {offer.period === 'yearly' && offer.perMonthPriceString ? (
+                <>
+                  <Text style={styles.price}>{offer.perMonthPriceString}</Text>
+                  <Text style={styles.per}>{t('paywall.perMonthBilledYearly')}</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.price}>{offer.priceString}</Text>
+                  <Text style={styles.per}>{t(PERIOD_PHRASE[offer.period])}</Text>
+                </>
+              )}
             </View>
             {/*
               The whole sequence — how long the trial runs and what it renews
