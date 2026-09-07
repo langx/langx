@@ -42,13 +42,19 @@ export function isFakePurchasesEnabled(): boolean {
  * than both being typed out: the paywall now computes the yearly saving from
  * these numbers, so a string and a number that could disagree would let the
  * harness advertise a discount its own prices do not contain.
+ *
+ * The yearly amounts end in `.90` for the reason the real ones do: divided by
+ * twelve they have to read as a price somebody chose rather than as a
+ * remainder, and `.90` is the ending that survives the division — see
+ * `planSaving.test.ts`. A harness that rendered `TEST $3.33` would be exercising
+ * a shape the paywall no longer has.
  */
 const TEST_AMOUNTS: Record<keyof typeof PACKAGES, number> = {
   $rc_monthly: 4.99,
-  $rc_annual: 39.99,
+  $rc_annual: 47.9,
   $rc_lifetime: 99.99,
   pro_plus_monthly: 9.99,
-  pro_plus_yearly: 79.99,
+  pro_plus_yearly: 83.9,
 }
 
 /**

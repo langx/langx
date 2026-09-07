@@ -3362,3 +3362,36 @@ wallets clear the Polyglot line (the tenth holds 37,821, the threshold itself)
 and 88 more clear Fluent's. `packages/shared/src/billing.test.ts` pins both
 numbers, since the API's tests read them back from the constant and would have
 stayed green through any edit.
+
+## The yearly price is chosen backwards from the monthly one
+
+The paywall leads a yearly plan with what it costs a month, and the app never
+computes that number — it prints the store's own `pricePerMonthString`, because
+a price shown to a customer has to be the store's, formatted and converted by
+the store. At $49.99 a year that string was **$4.16**. Nothing was wrong with
+it; it was simply the remainder of a division nobody had designed for, sitting
+in the largest type on the screen.
+
+So the price moved instead of the code. Pick the monthly figure the design wants
+and work back: $4.99 a month is $59.88 a year, which Apple does not sell — the
+price-point endings are `.99`, `.00`, `.90` and `.95`. The `.90` at the same
+dollar is the one that survives: `59.90 ÷ 12 = 4.99167`, printed as **$4.99**
+whether the store rounds or truncates. `$59.99`would print`$5.00`, which is
+the near miss worth writing down, because it is the number a dashboard offers
+first.
+
+The cost is that the fine print carries the odd ending — "7 days free, then
+$59.90 a year" under a $4.99 headline — and that is the right way round: the
+clean number belongs on the figure people compare between plans. Fluent's
+advertised saving also fell from 40% to 29% when the yearly price rose to
+$59.90, and nothing was edited to say so. `yearlySavingPercent` recomputed it
+from the store's two numbers, which is the entire reason it does not read a
+constant.
+
+Each storefront needs the same treatment separately, since no single conversion
+lands on a round monthly figure in every currency; the hand-tuned Turkish prices
+were removed on 7 September 2026 so that monthly follows the stores' own
+conversion everywhere and the yearly price is the only one edited per territory.
+`planSaving.test.ts` asserts the division for the US pair, so a dashboard edit
+that breaks the rule fails a test instead of shipping — the only place in the
+repo where a real price is written down, and it is written down as an assertion.

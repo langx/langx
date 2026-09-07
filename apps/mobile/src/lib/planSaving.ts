@@ -18,13 +18,14 @@ const MIN_WORTH_SAYING = 5
  * How much less a year costs than twelve months bought one at a time, as a
  * whole percent — or `null` when there is nothing honest to claim.
  *
- * **The percentage is never written down anywhere.** Per-country prices are
- * edited by hand in App Store Connect — Türkiye already diverges from Apple's
- * own conversion — so a literal in the bundle would be a price claim that stops
- * being true the next time somebody edits one storefront, silently, in a build
- * nobody rebuilt. Both prices here come from the same offering, which means the
- * same storefront and the same currency, so the ratio needs neither an exchange
- * rate nor a currency formatter.
+ * **The percentage is never written down anywhere.** Yearly prices are set one
+ * storefront at a time — each has to divide into a round monthly figure in its
+ * own currency, and no single conversion does that everywhere — so a literal in
+ * the bundle would be a price claim that stops being true the next time
+ * somebody edits one storefront, silently, in a build nobody rebuilt. Both
+ * prices here come from the same offering, which means the same storefront and
+ * the same currency, so the ratio needs neither an exchange rate nor a currency
+ * formatter.
  *
  * Pure, and kept apart from `purchases.ts` for the mechanical reason
  * `manageSubscription` and `guestGate` are: `vitest.config.ts` reaches

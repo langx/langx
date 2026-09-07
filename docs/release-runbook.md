@@ -361,7 +361,7 @@ every install loses the API on its next launch.
       Store Connect (app 6474187141) with no hand on it, so the distribution
       certificate, the provisioning profile and the App Store Connect API key
       are all in EAS. Review itself still happens in App Store Connect.
-- [ ] **Play submit — `ACTIVITY_RECOGNITION` in the bundle.** The service
+- [x] **Play submit — `ACTIVITY_RECOGNITION` in the bundle.** The service
       account `eas-submit@langx-48eb0.iam.gserviceaccount.com` is _not_ the
       problem: on 7 September 2026 it was already a Play Console user with
       "Release to production" on the app. Every failed submit — 5 September and
@@ -377,9 +377,13 @@ every install loses the API on its next launch.
       declaration cannot win an argument with the manifest, so the manifest
       changed: the permission is in `blockedPermissions` in `app.config.ts`,
       verified gone from `processReleaseMainManifest`'s merged output. That is a
-      native change — bundle 136 still contains the permission, so it needs a
-      new Android build with a new version code, not an OTA. Roll that one out
-      and the submit step should pass from then on.
+      native change — bundle 136 still contained the permission, so it needed a
+      new Android build with a new version code, not an OTA. **Done on
+      7 September 2026:** `release.yml` with `platform=android` built 2.0 (137)
+      off the merge of #1184 and its submit step reported SUCCESS, the first one
+      that has. Nothing about the credentials or the declaration changed between
+      the failing run and this one; the only difference was the missing
+      permission. iOS 2.0 (138) went out in the same round.
 
 What is already in EAS: the Android application identifier with the real
 upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
@@ -487,19 +491,17 @@ RevenueCat hands the introductory offer over on the same object and it was
 dropped on the floor, so the screen could not have rendered a trial even if the
 words had existed.
 
-The second omission was the saving. A year costs about 40% less than twelve
-months bought one at a time, in every storefront:
+The second omission was the saving. A year costs meaningfully less than twelve
+months bought one at a time, and the paywall says by how much:
 
-|                | Monthly ×12 | Yearly    | Saving |
-| -------------- | ----------- | --------- | ------ |
-| Fluent (USD)   | $83.88      | $49.99    | 40%    |
-| Polyglot (USD) | $155.88     | $94.99    | 39%    |
-| Fluent (TRY)   | ₺1.799,88   | ₺1.099,99 | 39%    |
-| Polyglot (TRY) | ₺2.999,88   | ₺1.799,99 | 40%    |
+|                | Monthly ×12 | Yearly | Saving |
+| -------------- | ----------- | ------ | ------ |
+| Fluent (USD)   | $83.88      | $59.90 | 29%    |
+| Polyglot (USD) | $155.88     | $95.90 | 38%    |
 
-- [x] **The trial leads.** `OfferCaption` in `app/(app)/paywall.tsx` draws it
-      above the button and before the price, because someone weighing a year of
-      anything wants to know they can leave first
+- [x] **The trial leads.** `app/(app)/paywall.tsx` draws it below the price and
+      above the button, because someone weighing a year of anything wants to
+      know they can leave first
 - [x] The introductory offer travels on `PurchaseOffer` as `freeTrialDays`.
       `introPrice` describes any introductory offer, so the **zero price** is
       what separates a free trial from a discounted first period we do not
@@ -511,13 +513,13 @@ months bought one at a time, in every storefront:
       `src/lib/planSaving.ts` divides the yearly price by twelve monthly ones,
       both from the same offering and therefore the same currency, and refuses
       anything under 5% — below that it is a rounding artefact of two price
-      points, not a discount anyone chose. Per-country prices are edited by
-      hand (Türkiye already is), and a literal would have become a false price
-      claim the next time one moved
+      points, not a discount anyone chose. Yearly prices are set one storefront
+      at a time (see below), and a literal would have become a false price claim
+      the next time one moved
 - [x] Both strings go through `src/i18n/messages/en.ts`, `freeTrial` as a
       plural, translated into all eight locales
 - [x] The terms are stated in full beside the offer: `paywall.trialTerms`
-      reads "7 days free, then $49.99 a year", built from the store's own
+      reads "7 days free, then $59.90 a year", built from the store's own
       price string and a per-period phrase, in all eight catalogues. Guideline
       3.1.2 wants the trial's own terms beside the offer, not only in the
       footer's renewal sentence
@@ -527,6 +529,41 @@ months bought one at a time, in every storefront:
       button — `tools/ext-lab/check-glyphs-and-trial.mjs` is the script that
       looked. `src/lib/planSaving.test.ts` and the types cover the numbers.
       Check the native paywall in the next build
+
+### The yearly price is chosen backwards from the monthly one
+
+The paywall leads a yearly plan with what it costs a month, so that division is
+the number people read. At $49.99 a year the store printed **$4.16**, which
+looks like a remainder rather than a price, and the fix is not in the app — it
+never divides, it prints `pricePerMonthString` — but in what the yearly price
+is. Pick the monthly figure first, then work back:
+
+    $4.99 a month  →  $4.99 × 12 = $59.88  →  round up to $59.90
+
+`$59.88` is not for sale. Apple's price points end in `.99`, `.00`, `.90` and
+`.95`, and the `.90` at the same dollar is the one that survives the division:
+`59.90 ÷ 12 = 4.99167`, which formats as **$4.99** whether the store rounds or
+truncates. `$59.99`would print`$5.00` and throw the whole point away.
+
+Two things follow, and both are deliberate:
+
+- The trial line quotes the yearly total, so it reads "7 days free, then
+  **$59.90** a year" under a **$4.99** headline. The clean number is on the
+  figure people compare.
+- Fluent's saving fell from 40% to 29% when the yearly price rose from $49.99
+  to $59.90. Nothing was edited to say so — `yearlySavingPercent` recomputed it.
+
+**Per country.** Each storefront needs its own yearly price point, worked back
+from that storefront's own monthly price the same way; no single conversion
+lands on a round monthly figure in every currency. Monthly prices follow the
+stores' automatic conversion — the hand-tuned TRY prices were removed on
+7 September 2026 — so the yearly price is the only one edited per territory.
+Where a currency has no price point inside the window that formats to the
+target (`[target × 12 − 0.06, target × 12 + 0.06)`), take the nearest and accept
+that storefront's rounding; the app reports whatever the store holds either way.
+
+`src/lib/planSaving.test.ts` asserts the division for the US prices, so a
+dashboard edit that breaks the rule fails a test rather than shipping.
 
 ## Prerequisites that are business process, not code
 
