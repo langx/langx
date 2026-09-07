@@ -3,12 +3,15 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { Resend } from 'resend'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
+import { readContributors } from '../modules/kitchen/contributors'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 
 /** token.langx.io shows ten rows and nothing else. */
 const PUBLIC_BOARD_SIZE = 10
 /** A public table that changes at most once a day; a minute of caching is plenty. */
 const BOARD_CACHE_SECONDS = 60
+/** The contributor list moves by a name a week; an hour at the edge is nothing lost. */
+const CONTRIBUTORS_CACHE_SECONDS = 60 * 60
 
 /**
  * The two things v1's Express API served to callers outside the app, moved
@@ -88,6 +91,23 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
           tokens,
         })),
       })
+    },
+  )
+
+  /**
+   * Who built this, for the strip on Our Kitchen. Public because the
+   * repository is; served from a cache because GitHub is the only source and
+   * is rate-limited. `{ total: 0, top: [] }` when nothing was ever fetched, and
+   * the app draws nothing for that.
+   */
+  app.get(
+    '/public/contributors',
+    { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } },
+    async (_request, reply) => {
+      const view = await readContributors(app.mongo.db, { token: app.env.GITHUB_TOKEN })
+      return reply
+        .header('cache-control', `public, max-age=${CONTRIBUTORS_CACHE_SECONDS}`)
+        .send(view)
     },
   )
 }

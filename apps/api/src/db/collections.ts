@@ -115,6 +115,12 @@ export const COLLECTIONS = {
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
   /**
+   * A single document (`_id: 'langx/langx'`): the last contributor list GitHub
+   * returned and when. Served stale when GitHub refuses — see
+   * `modules/kitchen/contributors.ts`.
+   */
+  githubContributors: 'githubContributors',
+  /**
    * One row per share card ever rendered. The `_id` is the whole of the public
    * `app.langx.io/s/<id>` address, so it is a random 22 characters rather than
    * anything derived — a guessable id would let a stranger walk the list.

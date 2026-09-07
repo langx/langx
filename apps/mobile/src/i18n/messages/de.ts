@@ -897,6 +897,7 @@ export const de: Localized<EnMessages> = {
     blog: 'Blog',
     licenses: 'Lizenzen',
     codeOfConduct: 'Verhaltenskodex',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Deine Serie',

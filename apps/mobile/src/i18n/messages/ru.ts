@@ -996,6 +996,7 @@ export const ru: Localized<EnMessages> = {
     blog: 'Блог',
     licenses: 'Лицензии',
     codeOfConduct: 'Кодекс поведения',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Твоя серия',

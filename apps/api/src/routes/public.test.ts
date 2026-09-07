@@ -1,7 +1,7 @@
 import { aggregateId } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -9,6 +9,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { CONTRIBUTORS_TOP, resetContributorsCache } from '../modules/kitchen/contributors'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender } from '../testSupport/authFlow'
@@ -196,6 +197,74 @@ describe('the public routes v1 used to serve', () => {
       })
       expect(trusted.headers['access-control-allow-origin']).toBe(TRUSTED_ORIGIN)
       expect(trusted.headers['access-control-allow-credentials']).toBe('true')
+    })
+  })
+
+  describe('the contributor strip on Our Kitchen', () => {
+    const gitHubRow = (login: string, type = 'User') => ({
+      login,
+      avatar_url: `https://avatars.example/${login}`,
+      html_url: `https://github.com/${login}`,
+      type,
+    })
+
+    beforeEach(async () => {
+      resetContributorsCache()
+      await handle.db.collection(COLLECTIONS.githubContributors).deleteMany({})
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('lists the most active first, drops bots, and caches the answer', async () => {
+      const rows = [
+        ...Array.from({ length: 8 }, (_, i) => gitHubRow(`dev${i}`)),
+        gitHubRow('dependabot[bot]', 'Bot'),
+      ]
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify(rows), { status: 200 }))
+      vi.stubGlobal('fetch', fetchMock)
+
+      const first = await app.inject({ method: 'GET', url: '/public/contributors' })
+      expect(first.statusCode, first.body).toBe(200)
+      expect(first.headers['cache-control']).toContain('max-age=')
+      const body = first.json<{
+        total: number
+        top: { login: string; avatarUrl: string; url: string }[]
+      }>()
+      // Eight people; the bot is not one of them.
+      expect(body.total).toBe(8)
+      expect(body.top).toHaveLength(CONTRIBUTORS_TOP)
+      expect(body.top[0]).toEqual({
+        login: 'dev0',
+        avatarUrl: 'https://avatars.example/dev0',
+        url: 'https://github.com/dev0',
+      })
+
+      // The second read is served from the cache: GitHub is not asked again.
+      await app.inject({ method: 'GET', url: '/public/contributors' })
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('serves the last good list when GitHub refuses, and nothing when it never answered', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue(new Response('rate limited', { status: 403 })),
+      )
+      const cold = await app.inject({ method: 'GET', url: '/public/contributors' })
+      expect(cold.statusCode).toBe(200)
+      expect(cold.json()).toEqual({ total: 0, top: [] })
+
+      // An old answer in Mongo, older than the TTL, from another process.
+      await handle.db.collection(COLLECTIONS.githubContributors).insertOne({
+        _id: 'langx/langx' as never,
+        fetchedAt: new Date(0),
+        view: { total: 3, top: [{ login: 'old', avatarUrl: 'a', url: 'u' }] },
+      })
+      const stale = await app.inject({ method: 'GET', url: '/public/contributors' })
+      expect(stale.json<{ total: number }>().total).toBe(3)
     })
   })
 })
