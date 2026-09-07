@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
   type MessageMedia,
@@ -114,6 +115,19 @@ export interface Message {
    * pair and it survives a reload.
    */
   translation?: MessageTranslation
+  /** A word worth keeping. Mirrored into `phraseCards`, which the deck reads. */
+  phrase?: { term: string; meaning: string; example?: string; lang: string }
+  /**
+   * A time to talk. `status` is the only field that changes after the send —
+   * `meeting:respond` moves it, and nothing else in a message is mutable.
+   */
+  meeting?: {
+    startsAt: Date
+    durationMinutes: number
+    note?: string
+    status: MeetingStatus
+    respondedAt?: Date
+  }
   /**
    * Everything attached to this message, in the order it was picked.
    *

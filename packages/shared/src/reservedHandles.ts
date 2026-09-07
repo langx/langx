@@ -46,6 +46,7 @@ const ROUTE_RESERVED = [
   'me',
   'paywall',
   'photo',
+  'phrases',
   'post',
   'profile',
   'settings',

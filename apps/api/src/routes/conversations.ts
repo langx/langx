@@ -3,6 +3,8 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { getQuotaStatus } from '../lib/quota'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { assertConversationAccess } from '../modules/chat/access'
+import { listPhraseCards } from '../modules/chat/phraseCards'
 import { startConversation } from '../modules/chat/conversations'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
@@ -45,5 +47,21 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
       getQuotaStatus(app.mongo.db, request.userId, tier, 'media'),
     ])
     return reply.send({ initiations, translations, media })
+  })
+
+  /**
+   * The phrases this conversation has saved.
+   *
+   * Its own route rather than a field on the message window: the deck is read
+   * on its own screen, and folding it into the thread would send every card
+   * again on every page of history.
+   */
+  app.get('/conversations/:id/phrases', { preHandler: requireAuth }, async (request, reply) => {
+    const { id } = request.params as { id: string }
+    // `assertConversationAccess` is the guard, exactly as the sends use it: a
+    // deck belongs to a conversation, and reading one you are not in must read
+    // as "no such conversation".
+    const conversation = await assertConversationAccess(app.mongo.db, id, request.userId)
+    return reply.send({ items: await listPhraseCards(app.mongo.db, conversation._id) })
   })
 }

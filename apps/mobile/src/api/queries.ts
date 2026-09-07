@@ -14,8 +14,10 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
+  type MessageType,
   type CreateShareCardInput,
   type ShareCardResult,
 } from '@langx/shared'
@@ -99,6 +101,11 @@ export const keys = {
   conversations: (filter: string) => ['conversations', filter] as const,
   /** Under the `['conversations']` prefix on purpose: every flag write invalidates it. */
   conversation: (id: string) => ['conversations', 'one', id] as const,
+  /**
+   * Deliberately *not* under `['conversations']`: that prefix is patched by
+   * the socket's incoming-message writer, which expects a paged list.
+   */
+  phraseCards: (id: string) => ['phraseCards', id] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -456,7 +463,7 @@ export interface MessageDto {
   _id: string
   conversationId: string
   senderId: string
-  type: 'text' | 'correction' | 'image' | 'audio' | 'video'
+  type: MessageType
   body: string
   /** Everything attached, in the order it was sent. Read with `attachmentsOf`. */
   attachments?: MessageMediaDto[]
@@ -469,6 +476,13 @@ export interface MessageDto {
   ask?: MessageAsk
   /** The sender's own words in the reader's language, sent with the message. */
   translation?: MessageTranslation
+  phrase?: { term: string; meaning: string; example?: string; lang: string }
+  meeting?: {
+    startsAt: string
+    durationMinutes: number
+    note?: string
+    status: MeetingStatus
+  }
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */
@@ -1623,6 +1637,32 @@ export interface TranslationDto {
   translatedText: string
   sourceLang: string
   cached: boolean
+}
+
+export interface PhraseCardDto {
+  _id: string
+  messageId: string
+  authorId: string
+  term: string
+  meaning: string
+  example?: string
+  lang: string
+  createdAt: string
+}
+
+/**
+ * A conversation's saved phrases.
+ *
+ * Its own query rather than a field on the message window: the deck is read on
+ * its own screen, and folding it in would resend every card with every page of
+ * history.
+ */
+export function usePhraseCards(conversationId: string) {
+  return useQuery({
+    queryKey: keys.phraseCards(conversationId),
+    queryFn: () => api.get<{ items: PhraseCardDto[] }>(`/conversations/${conversationId}/phrases`),
+    enabled: conversationId.length > 0,
+  })
 }
 
 export function useTranslate() {

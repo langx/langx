@@ -4,11 +4,14 @@ import {
   REPLY_PREVIEW_MAX_LENGTH,
   attachmentsOf,
   type ConversationFilter,
+  type RespondToMeetingInput,
   type SendCorrectionInput,
   type SendMediaMessageInput,
+  type SendMeetingInput,
+  type SendPhraseInput,
   type SendTextMessageInput,
 } from '@langx/shared'
-import { ObjectId, type Db, type Document } from 'mongodb'
+import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
@@ -48,6 +51,11 @@ export function previewFor(type: Message['type'], count = 1): string {
   if (type === 'image') return count > 1 ? `📷 ${count} photos` : '📷 Photo'
   if (type === 'video') return count > 1 ? `🎬 ${count} videos` : '🎬 Video'
   if (type === 'audio') return '🎤 Voice message'
+  // Every type that carries no `body` needs a line here. Forget one and the
+  // chat list row and the push notification are both blank — the message
+  // arrives and says nothing.
+  if (type === 'phrase') return '🗂️ Phrase'
+  if (type === 'meeting') return '📅 Meeting'
   return ''
 }
 
@@ -184,6 +192,164 @@ export async function sendTextMessage(
 
   const updatedConversation = await recordMessage(db, conversation, message)
   return { message, conversation: updatedConversation }
+}
+
+/**
+ * A phrase card: the message, and the deck row it is readable from.
+ *
+ * The message is written first and the card second. If the card write loses
+ * the unique index — the same term already saved in this conversation — the
+ * message still stands: the card was sent, and saying so twice in the thread
+ * is honest, while a message that vanished because a word was already in the
+ * deck would look like a failed send.
+ */
+export async function sendPhrase(
+  db: Db,
+  senderId: string,
+  input: SendPhraseInput,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
+  const phrase = {
+    term: input.term,
+    meaning: input.meaning,
+    lang: input.lang,
+    ...(input.example ? { example: input.example } : {}),
+  }
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: 'phrase',
+    // The card is the message, so there is no sentence beside it.
+    body: '',
+    phrase,
+    ...(input.clientId ? { clientId: input.clientId } : {}),
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+
+  try {
+    await db.collection(COLLECTIONS.phraseCards).insertOne({
+      conversationId: conversation._id,
+      messageId: message._id,
+      authorId: senderId,
+      ...phrase,
+      createdAt: message.createdAt,
+    })
+  } catch (caught) {
+    // `conversation_term_unique` refusing a repeat is the expected outcome, not
+    // a failure. Anything else is.
+    if (!(caught instanceof MongoServerError) || caught.code !== 11000) throw caught
+  }
+
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * A proposed time to talk.
+ *
+ * It arranges and nothing else — there is no calling in this app, and the card
+ * must not look like it could start one.
+ */
+export async function sendMeeting(
+  db: Db,
+  senderId: string,
+  input: SendMeetingInput,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  const startsAt = new Date(input.startsAt)
+  // A time already gone is not a proposal, and the client's clock is not the
+  // one that decides.
+  if (startsAt.getTime() <= Date.now()) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A meeting has to be in the future')
+  }
+
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: 'meeting',
+    body: '',
+    meeting: {
+      startsAt,
+      durationMinutes: input.durationMinutes,
+      status: 'proposed',
+      ...(input.note ? { note: input.note } : {}),
+    },
+    ...(input.clientId ? { clientId: input.clientId } : {}),
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * Accepts, declines or cancels a proposal.
+ *
+ * Who may do what is decided here rather than in the schema, which cannot see
+ * who is asking: the proposer can only withdraw, and only the other person can
+ * answer. A proposal that has already been answered stays answered — changing
+ * your mind is a new proposal, not an edit of somebody's record of the old one.
+ */
+export async function respondToMeeting(
+  db: Db,
+  userId: string,
+  input: RespondToMeetingInput,
+): Promise<{ message: Message; conversation: Conversation }> {
+  const conversation = await assertConversationAccess(db, input.conversationId, userId)
+
+  let messageId: ObjectId
+  try {
+    messageId = new ObjectId(input.messageId)
+  } catch {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
+  }
+
+  const message = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOne({ _id: messageId, conversationId: conversation._id, type: 'meeting' })
+  if (!message?.meeting) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such meeting')
+
+  const mine = message.senderId === userId
+  if (input.status === 'cancelled' ? !mine : mine) {
+    throw new ApiError(
+      ERROR_CODES.FORBIDDEN,
+      mine ? 'Only the other person can answer this' : 'Only the proposer can cancel this',
+    )
+  }
+  if (message.meeting.status !== 'proposed') {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This meeting has already been answered')
+  }
+
+  const updated = await db.collection<Message>(COLLECTIONS.messages).findOneAndUpdate(
+    // `status` in the filter, not just the read above: two taps racing must
+    // not both win, and only the write can decide that.
+    { _id: messageId, 'meeting.status': 'proposed' },
+    { $set: { 'meeting.status': input.status, 'meeting.respondedAt': new Date() } },
+    { returnDocument: 'after' },
+  )
+  if (!updated) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This meeting has already been answered')
+  }
+  return { message: updated, conversation }
 }
 
 /**

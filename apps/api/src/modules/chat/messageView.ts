@@ -1,5 +1,6 @@
 import {
   attachmentsOf,
+  type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
   type MessageType,
@@ -43,6 +44,13 @@ export interface MessageView {
   ask?: MessageAsk
   /** Sent with the message by its author. See `Message.translation`. */
   translation?: MessageTranslation
+  phrase?: { term: string; meaning: string; example?: string; lang: string }
+  meeting?: {
+    startsAt: string
+    durationMinutes: number
+    note?: string
+    status: MeetingStatus
+  }
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -95,6 +103,15 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   // A tombstone asks for nothing: the sentence it was about is gone.
   if (!deleted && message.ask) view.ask = message.ask
   if (!deleted && message.translation) view.translation = message.translation
+  if (!deleted && message.phrase) view.phrase = message.phrase
+  if (!deleted && message.meeting) {
+    view.meeting = {
+      startsAt: message.meeting.startsAt.toISOString(),
+      durationMinutes: message.meeting.durationMinutes,
+      status: message.meeting.status,
+      ...(message.meeting.note ? { note: message.meeting.note } : {}),
+    }
+  }
   if (!deleted) {
     const attachments = attachmentsOf(message)
     if (attachments.length > 0) {

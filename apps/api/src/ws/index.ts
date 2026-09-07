@@ -4,7 +4,10 @@ import {
   pinMessageSchema,
   reactToMessageSchema,
   starMessageSchema,
+  respondToMeetingSchema,
   sendCorrectionSchema,
+  sendMeetingSchema,
+  sendPhraseSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
 } from '@langx/shared'
@@ -28,7 +31,10 @@ import {
 import {
   markConversationRead,
   markPendingDelivered,
+  respondToMeeting,
   sendCorrection,
+  sendMeeting,
+  sendPhrase,
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
@@ -231,6 +237,54 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           // Ticks, but no push: a correction is help arriving in a thread the
           // recipient chose to be in, not something to wake a phone for.
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: false })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * A phrase card and a meeting are their own sends rather than a flag on a
+     * text message: each carries fields a sentence does not have, and each
+     * gets its own `previewFor` line. Neither carries bytes, so neither takes
+     * the media quota or waits on the media gate — what that gate protects
+     * against is an unsolicited picture, and these are neither.
+     */
+    socket.on('message:phrase', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
+      sendPhraseSchema
+        .parseAsync(payload)
+        .then((input) => sendPhrase(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:meeting', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
+      sendMeetingSchema
+        .parseAsync(payload)
+        .then((input) => sendMeeting(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * Answering one. Both people see it, because a meeting is an agreement and
+     * an agreement nobody was told about is not one — unlike a hide, which is
+     * the actor's own business.
+     */
+    socket.on('meeting:respond', (payload: unknown, ack: Ack) => {
+      if (!limited('message:correct', ack)) return
+      respondToMeetingSchema
+        .parseAsync(payload)
+        .then((input) => respondToMeeting(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          fanOutMessageUpdate(io, conversation, message, 'both', userId)
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))

@@ -93,7 +93,15 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
  */
 export const MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES = 5
 
-export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio', 'video'] as const
+export const MESSAGE_TYPES = [
+  'text',
+  'correction',
+  'image',
+  'audio',
+  'video',
+  'phrase',
+  'meeting',
+] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
 /**
@@ -171,6 +179,66 @@ export const sendTextMessageSchema = z.object({
   translation: messageTranslationSchema.optional(),
 })
 export type SendTextMessageInput = z.infer<typeof sendTextMessageSchema>
+
+/**
+ * A word or phrase worth keeping, sent as a card.
+ *
+ * Starring a message already exists and is a different thing: it is a bookmark
+ * with no structure, and what makes a phrase useful later is the parts — what
+ * it means, and one sentence using it. So this is a message *and* a row in
+ * `phraseCards`, which is what the deck screen reads.
+ */
+export const PHRASE_TERM_MAX_LENGTH = 80
+export const PHRASE_MEANING_MAX_LENGTH = 200
+export const PHRASE_EXAMPLE_MAX_LENGTH = 200
+
+export const sendPhraseSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  term: z.string().trim().min(1).max(PHRASE_TERM_MAX_LENGTH),
+  meaning: z.string().trim().min(1).max(PHRASE_MEANING_MAX_LENGTH),
+  example: z.string().trim().max(PHRASE_EXAMPLE_MAX_LENGTH).optional(),
+  /** The language the term is in — usually what one of the two is learning. */
+  lang: languageCodeSchema,
+  clientId: clientMessageIdSchema.optional(),
+})
+export type SendPhraseInput = z.infer<typeof sendPhraseSchema>
+
+/**
+ * A time the two of them agreed to talk.
+ *
+ * It arranges; it does not dial. There is no calling in this app, and a card
+ * that looked like it could start one would be a promise the app cannot keep.
+ *
+ * Both people are in different time zones by definition — that is the whole
+ * premise of the product — so the card is drawn in each reader's own, from the
+ * `timezone` on their profile rather than the device clock, which lies the
+ * moment somebody travels.
+ */
+export const MEETING_NOTE_MAX_LENGTH = 200
+export const MEETING_DURATIONS = [15, 30, 45, 60] as const
+export const MEETING_STATUSES = ['proposed', 'accepted', 'declined', 'cancelled'] as const
+export type MeetingStatus = (typeof MEETING_STATUSES)[number]
+
+export const sendMeetingSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  /** ISO 8601, and in the future — a meeting already past is not a proposal. */
+  startsAt: z.iso.datetime(),
+  durationMinutes: z.union([z.literal(15), z.literal(30), z.literal(45), z.literal(60)]),
+  note: z.string().trim().max(MEETING_NOTE_MAX_LENGTH).optional(),
+  clientId: clientMessageIdSchema.optional(),
+})
+export type SendMeetingInput = z.infer<typeof sendMeetingSchema>
+
+export const respondToMeetingSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  /**
+   * `cancelled` is the proposer's; the other two are the invitee's. Enforced
+   * on the server, not here — a schema cannot see who is asking.
+   */
+  status: z.enum(['accepted', 'declined', 'cancelled']),
+})
+export type RespondToMeetingInput = z.infer<typeof respondToMeetingSchema>
 
 export const CORRECTION_NOTE_MAX_LENGTH = 500
 
