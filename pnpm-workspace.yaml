@@ -66,5 +66,12 @@ onlyBuiltDependencies:
 # peer resolved to whatever the registry offered, which was 0.87.1 from the next
 # minor. It is listed as a devDependency of apps/mobile as well, which is what
 # actually puts a 0.86 copy in the tree for the override to hold at.
+#
+# Dependabot pushes on this. It offered 0.87.1 — the same next-minor that
+# leaked in before — inside the first grouped pull request (#1189, closed),
+# where the version would have moved under a title naming thirteen other
+# packages. `.github/dependabot.yml` now excludes `@react-native/*` from the
+# group for that reason. The devDependency and this override have to move
+# together, and only when Expo's SDK does.
 overrides:
   '@react-native/metro-config': 0.86.3
