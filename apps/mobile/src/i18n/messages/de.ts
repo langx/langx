@@ -596,6 +596,12 @@ export const de: Localized<EnMessages> = {
     askBadgePronunciation: 'Möchte es hören',
     askAnswerCorrect: 'Korrigieren',
     askAnswerSay: 'Vorsprechen',
+    sendTranslatedOn: 'Auch auf {language} senden',
+    sendTranslatedOff: 'Keine Übersetzung mehr senden',
+    sendTranslatedBanner: 'Geht auch auf {language}',
+    sendTranslatedHint: 'Schreib in deiner Sprache; beides geht raus.',
+    sendTranslatedFailed:
+      'Konnte nicht übersetzt werden — die Nachricht ging so, wie du sie geschrieben hast.',
     translating: 'Wird übersetzt…',
     writeMessage: 'Schreib eine Nachricht…',
     writeCorrection: 'Schreib die Korrektur…',

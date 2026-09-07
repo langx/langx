@@ -7,7 +7,9 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  messageTranslationSchema,
   type MessageAsk,
+  type MessageTranslation,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
@@ -97,7 +99,7 @@ import { shareLink } from '../../../src/lib/share'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
-import { useLocale, useT, type MessageKey } from '../../../src/i18n'
+import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -108,6 +110,7 @@ export default function ChatScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const names = useDisplayNames()
   const { locale } = useLocale()
 
   // `at` is the single entry point for "open this thread at that message": a
@@ -132,6 +135,14 @@ export default function ChatScreen() {
    * edit, correct and reply.
    */
   const [asking, setAsking] = useState<MessageAsk | null>(null)
+  /**
+   * Send this one in their language too.
+   *
+   * A mode rather than a one-shot, because the person who needs it needs it
+   * for the whole conversation, not for one sentence — and it turns itself
+   * off the moment there is nothing to translate into.
+   */
+  const [sendTranslated, setSendTranslated] = useState(false)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
   // original so the learner can compare the two.
@@ -291,6 +302,16 @@ export default function ChatScreen() {
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  /**
+   * Which language to send a translation in: the reader's, not the writer's.
+   *
+   * `translateTargetFor` is the same rule the Translate action uses, pointed
+   * the other way — their first native language with a written form.
+   * `undefined` means there is none, and the row is not offered.
+   */
+  const translateInto = partner
+    ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
+    : undefined
   // "Not yet" and "never" draw differently: a placeholder while the profile
   // loads, the generic title only for an account that is really gone.
   const partnerLoading =
@@ -438,8 +459,25 @@ export default function ChatScreen() {
       // is protecting anyone from.
       { label: t('chat.askCorrection'), value: 'askCorrection' as const, icon: 'edit-3' },
       { label: t('chat.askPronunciation'), value: 'askPronunciation' as const, icon: 'volume-2' },
+      // Only when there is a language to send it in. A row that would answer
+      // "there is nothing to translate into" is a row not worth drawing.
+      ...(translateInto
+        ? [
+            {
+              label: sendTranslated
+                ? t('chat.sendTranslatedOff')
+                : t('chat.sendTranslatedOn', { language: names.language(translateInto) }),
+              value: 'translate' as const,
+              icon: 'globe',
+            },
+          ]
+        : []),
     ])
     if (!choice) return
+    if (choice === 'translate') {
+      setSendTranslated((on) => !on)
+      return
+    }
     if (choice === 'askCorrection' || choice === 'askPronunciation') {
       // Exclusive with a reply: see `asking`.
       setReplyingTo(null)
@@ -626,6 +664,7 @@ export default function ChatScreen() {
     clientId: string,
     replyToMessageId?: string,
     ask?: MessageAsk,
+    translation?: MessageTranslation,
   ): Promise<void> {
     try {
       const socket = await getSocket()
@@ -635,6 +674,7 @@ export default function ChatScreen() {
         clientId,
         ...(replyToMessageId ? { replyToMessageId } : {}),
         ...(ask ? { ask } : {}),
+        ...(translation ? { translation } : {}),
       })
       setUnsent((list) => removeUnsent(list, clientId))
       track({
@@ -666,6 +706,48 @@ export default function ChatScreen() {
 
   async function retry(message: UnsentMessage): Promise<void> {
     await deliver(message.body, message.clientId, message.replyToMessageId)
+  }
+
+  /**
+   * Sends, adding the reader's language when the composer is in that mode.
+   *
+   * The translation is fetched before the send rather than by the server
+   * during it: `POST /translate` is where the quota is spent and the cache is
+   * read, and putting a provider round-trip inside `message:send` would make
+   * every message wait on it.
+   *
+   * **A translation that fails does not stop the message.** The sentence the
+   * person wrote is the message; the translation is help. Losing the help is a
+   * worse outcome than losing nothing, but losing what they typed is worse
+   * than both.
+   */
+  async function deliverTranslated(
+    body: string,
+    clientId: string,
+    replyToMessageId?: string,
+    ask?: MessageAsk,
+  ): Promise<void> {
+    if (!sendTranslated || !translateInto) {
+      await deliver(body, clientId, replyToMessageId, ask)
+      return
+    }
+    let translation: MessageTranslation | undefined
+    try {
+      const result = await translateApi.mutateAsync({ text: body, targetLang: translateInto })
+      // Parsed rather than cast: `translateTargetFor` answers with a plain
+      // string, and this is the schema the server will check it against
+      // anyway. A translation that would be refused is simply not attached.
+      const parsed = messageTranslationSchema.safeParse({
+        text: result.translatedText,
+        lang: translateInto,
+        ...(result.sourceLang ? { sourceLang: result.sourceLang } : {}),
+      })
+      if (parsed.success) translation = parsed.data
+    } catch (caught) {
+      void caught
+      void showAlert(t('chat.couldNotSend'), t('chat.sendTranslatedFailed'))
+    }
+    await deliver(body, clientId, replyToMessageId, ask, translation)
   }
 
   async function send(): Promise<void> {
@@ -720,7 +802,7 @@ export default function ChatScreen() {
         }),
       )
       // `deliver` never rejects — a failure becomes an unsent row.
-      void deliver(body, clientId, reply?._id, ask ?? undefined)
+      void deliverTranslated(body, clientId, reply?._id, ask ?? undefined)
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.
@@ -1097,15 +1179,21 @@ export default function ChatScreen() {
                 : t('chat.askingPronunciationHint'),
             clear: () => setAsking(null),
           }
-        : replyingTo
+        : sendTranslated && translateInto
           ? {
-              label: isMine(replyingTo)
-                ? t('chat.replyingToYourself')
-                : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-              preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
-              clear: () => setReplyingTo(null),
+              label: t('chat.sendTranslatedBanner', { language: names.language(translateInto) }),
+              preview: t('chat.sendTranslatedHint'),
+              clear: () => setSendTranslated(false),
             }
-          : null
+          : replyingTo
+            ? {
+                label: isMine(replyingTo)
+                  ? t('chat.replyingToYourself')
+                  : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
+                preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+                clear: () => setReplyingTo(null),
+              }
+            : null
 
   return (
     <Screen fluid style={styles.screen}>

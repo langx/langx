@@ -45,6 +45,20 @@ describe('toMessageView', () => {
     expect(toMessageView(withdrawn, ME).ask).toBeUndefined()
   })
 
+  it('carries a translation the sender sent, to both of them', () => {
+    const doc = message({
+      senderId: THEM,
+      translation: { text: 'hello', lang: 'en', sourceLang: 'tr' },
+    })
+    // Published by its author, so it is not one reader's private view: both
+    // sides get the same pair.
+    expect(toMessageView(doc, ME).translation?.text).toBe('hello')
+    expect(toMessageView(doc, THEM).translation?.text).toBe('hello')
+    expect(toMessageView(message(), ME).translation).toBeUndefined()
+    const withdrawn = message({ translation: { text: 'hello', lang: 'en' }, deletedAt: new Date() })
+    expect(toMessageView(withdrawn, ME).translation).toBeUndefined()
+  })
+
   it('reports the viewer their own reaction, and everyone the whole tally', () => {
     const doc = message({ reactions: { '👍': [THEM], '🔥': [ME] } })
     expect(toMessageView(doc, ME).myReaction).toBe('🔥')

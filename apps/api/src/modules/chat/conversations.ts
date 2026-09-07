@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   type MessageAsk,
+  type MessageTranslation,
   type MessageMedia,
   type MessageType,
   type StartConversationInput,
@@ -103,6 +104,16 @@ export interface Message {
    * does not draw the badge.
    */
   ask?: MessageAsk
+  /**
+   * The sender's own words, rendered into the reader's language, sent with the
+   * message rather than asked for afterwards.
+   *
+   * Stored, unlike the translations the menu produces — those are one reader's
+   * private view of somebody else's sentence and live only in that client's
+   * state. This one the sender chose to publish, so both people see the same
+   * pair and it survives a reload.
+   */
+  translation?: MessageTranslation
   /**
    * Everything attached to this message, in the order it was picked.
    *

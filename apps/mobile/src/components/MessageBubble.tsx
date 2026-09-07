@@ -418,6 +418,19 @@ export const MessageBubble = memo(function MessageBubble({
         </View>
       ) : null}
       {badge}
+      {/*
+        The translation the sender chose to send, not one this reader asked
+        for: it is part of the message, so it is drawn under the bubble for
+        both of them and survives a reload. The menu's own translation is the
+        row below, and looks different on purpose — one is published, the
+        other is private.
+      */}
+      {message.translation ? (
+        <View style={styles.sentTranslationRow}>
+          <Feather name="globe" size={13} color={colors.textFaint} />
+          <Text style={styles.sentTranslation}>{message.translation.text}</Text>
+        </View>
+      ) : null}
       {translation ? (
         <View style={styles.translationRow}>
           <Ionicons
@@ -557,6 +570,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: 6,
   },
   // Sits on the first line of the translation rather than centred on the block.
+  sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },
+  sentTranslation: { color: colors.textMuted, flexShrink: 1, fontSize: 13, lineHeight: 18 },
   askRow: { alignItems: 'center', flexDirection: 'row', gap: 5, marginTop: 4 },
   askLabel: { color: colors.textFaint, fontSize: 12 },
   askAction: { color: colors.accent, fontSize: 12, fontWeight: '700' },
