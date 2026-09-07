@@ -68,6 +68,7 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `packages/shared/src/token.ts`, `cosmetics.ts` | the numbers on token.langx.io and the token pages in `docs/` |
 | `apps/mobile/assets/`                          | `branding/app-resources/v2/` — the same bytes, copied        |
 | `apps/mobile/src/lib/theme/tokens.ts`          | `branding/BRAND.md` — the palette, the type and the scales   |
+| `apps/mobile/src/lib/theme/tokens.ts`          | `website/DESIGN.md` and `website/src/lib/scss/_themes.scss`  |
 
 One more runs the other way: the app's link table
 `apps/mobile/src/lib/externalLinks.ts` (Settings → Legal, and the "Our Kitchen"
