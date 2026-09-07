@@ -680,6 +680,7 @@ export const de: Localized<EnMessages> = {
     messageSent: 'Gemeldet. Danke — wir sehen uns jede Meldung an.',
     profileSent: 'Meldung gesendet. Wir sehen es uns an.',
     failed: 'Melden fehlgeschlagen',
+    postQuestion: 'Warum meldest du diesen Beitrag?',
   },
 
   feed: {

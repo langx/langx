@@ -35,6 +35,12 @@ export const reportSchema = z.object({
    * profile has neither, and one raised from a thread has both.
    */
   messageId: z.string().trim().min(1).optional(),
+  /**
+   * Optional pointer to the post the report is about. A post is public and
+   * has no conversation, so it is a third place a report can be raised from,
+   * alongside a profile and a message.
+   */
+  postId: z.string().trim().min(1).optional(),
 })
 export type ReportInput = z.infer<typeof reportSchema>
 

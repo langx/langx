@@ -771,6 +771,7 @@ export const ar: Localized<EnMessages> = {
     messageSent: 'تم الإبلاغ. شكرًا — نطّلع على كل بلاغ.',
     profileSent: 'أُرسل البلاغ. سننظر في الأمر.',
     failed: 'تعذّر الإبلاغ',
+    postQuestion: 'لماذا تبلّغ عن هذه المشاركة؟',
   },
 
   feed: {

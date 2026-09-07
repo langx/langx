@@ -652,6 +652,7 @@ export const ptBR: Localized<EnMessages> = {
     messageSent: 'Denunciado. Obrigado — olhamos todas.',
     profileSent: 'Denúncia enviada. Vamos analisar.',
     failed: 'Não deu para denunciar',
+    postQuestion: 'Por que você está denunciando esta publicação?',
   },
 
   feed: {

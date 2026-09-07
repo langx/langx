@@ -740,6 +740,7 @@ export const ru: Localized<EnMessages> = {
     messageSent: 'Жалоба отправлена. Спасибо — мы смотрим каждую.',
     profileSent: 'Жалоба отправлена. Мы разберёмся.',
     failed: 'Не удалось отправить жалобу',
+    postQuestion: 'Почему вы жалуетесь на эту публикацию?',
   },
 
   feed: {

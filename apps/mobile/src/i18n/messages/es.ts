@@ -660,6 +660,7 @@ export const es: Localized<EnMessages> = {
     messageSent: 'Denunciado. Gracias: revisamos todas.',
     profileSent: 'Denuncia enviada. Lo revisaremos.',
     failed: 'No se pudo denunciar',
+    postQuestion: '¿Por qué denuncias esta publicación?',
   },
 
   feed: {

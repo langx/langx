@@ -17,6 +17,8 @@ import {
   listMessagesAround,
   markConversationRead,
 } from '../modules/chat/messages'
+import { assertConversationAccess } from '../modules/chat/access'
+import { toConversationView } from '../modules/chat/conversationView'
 import { toMessageView } from '../modules/chat/messageView'
 import { listCorrectionsWritten } from '../modules/chat/corrections'
 import {
@@ -82,6 +84,30 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       await deleteConversationForUser(app.mongo.db, request.params.id, request.userId)
       return reply.code(204).send()
+    },
+  )
+
+  /*
+   * One thread as the list would draw it — the viewer's own pin and archive
+   * state above all. The thread screen needs it for the header's menu and
+   * used to have no way to ask short of paging the whole list; the message
+   * window carries `participants` and the media lock but not the flags.
+   * `assertConversationAccess` is the same gate the messages take: a stranger
+   * gets the 404 that says nothing.
+   */
+  app.get(
+    '/conversations/:id',
+    {
+      preHandler: requireAuth,
+      schema: { params: z.object({ id: z.string().trim().min(1) }) },
+    },
+    async (request, reply) => {
+      const conversation = await assertConversationAccess(
+        app.mongo.db,
+        request.params.id,
+        request.userId,
+      )
+      return reply.send(toConversationView(conversation, request.userId))
     },
   )
 

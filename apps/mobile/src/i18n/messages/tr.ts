@@ -663,6 +663,7 @@ export const tr: Localized<EnMessages> = {
     messageSent: 'Bildirildi. Teşekkürler — hepsine bakıyoruz.',
     profileSent: 'Bildirim gönderildi. İnceleyeceğiz.',
     failed: 'Bildirilemedi',
+    postQuestion: 'Bu gönderiyi neden şikâyet ediyorsun?',
   },
 
   feed: {

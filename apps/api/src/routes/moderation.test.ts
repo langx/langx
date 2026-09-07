@@ -338,6 +338,27 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(stored?.conversationId?.toString()).toBe(conversationId)
     })
 
+    it('keeps the post a report was raised from', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      // Existence is not checked, as it is not for a message: a post deleted
+      // between reading and reporting is still worth the reviewer's look.
+      const postId = new ObjectId().toString()
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'inappropriate_content',
+        postId,
+      })
+      expect(response.statusCode, response.body).toBe(201)
+
+      const stored = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored?.postId?.toString()).toBe(postId)
+      expect(stored?.conversationId).toBeUndefined()
+    })
+
     it('still accepts a report raised from a profile, with neither pointer', async () => {
       const reporter = await newUser()
       const target = await newUser()
