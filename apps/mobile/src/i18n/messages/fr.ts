@@ -285,7 +285,6 @@ export const fr: Localized<EnMessages> = {
     welcomeBack: 'Content de te revoir',
     email: 'E-mail',
     password: 'Mot de passe',
-    name: 'Nom',
     forgotPassword: 'Mot de passe oublié ?',
     signIn: 'Se connecter',
     signingIn: 'Connexion en cours…',
@@ -752,6 +751,7 @@ export const fr: Localized<EnMessages> = {
     composeHint:
       'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
     voiceNote: 'Note vocale',
+    top: 'Top',
   },
 
   profile: {

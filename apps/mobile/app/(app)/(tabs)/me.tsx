@@ -2,6 +2,7 @@ import { LoadFailed } from '../../../src/components/LoadFailed'
 import { wornCosmetic, TIER_BADGES, TIER_NAMES, tierUnlocking } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
+import { useState } from 'react'
 import { placeLabel } from '../../../src/lib/placeLabel'
 import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import {
@@ -17,6 +18,7 @@ import {
 } from '../../../src/api/queries'
 import { DebugQuotaPanel } from '../../../src/components/DebugQuotaPanel'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
@@ -36,6 +38,8 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 export default function MeScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
+  // Above the early return, where hooks have to be.
+  const [avatarOpen, setAvatarOpen] = useState(false)
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -124,13 +128,41 @@ export default function MeScreen() {
   return (
     <Screen scroll {...pull}>
       <View style={styles.hero}>
-        <Avatar
-          url={profile.avatarUrl}
-          name={profile.displayName}
-          seed={profile._id}
-          size={80}
-          frame={wornFrame?.tone}
-        />
+        {/*
+          A photo opens full screen, as on the public profile; a generated face
+          or initials is a stand-in and stays a plain avatar — no button, and a
+          screen reader is not told there is one.
+        */}
+        {profile.avatarUrl ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('photo.open')}
+            onPress={() => setAvatarOpen(true)}
+          >
+            <Avatar
+              url={profile.avatarUrl}
+              name={profile.displayName}
+              seed={profile._id}
+              size={80}
+              frame={wornFrame?.tone}
+            />
+          </Pressable>
+        ) : (
+          <Avatar
+            url={profile.avatarUrl}
+            name={profile.displayName}
+            seed={profile._id}
+            size={80}
+            frame={wornFrame?.tone}
+          />
+        )}
+        {profile.avatarUrl ? (
+          <PhotoViewer
+            photos={[{ url: profile.avatarUrl }]}
+            index={avatarOpen ? 0 : null}
+            onClose={() => setAvatarOpen(false)}
+          />
+        ) : null}
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name} numberOfLines={1}>

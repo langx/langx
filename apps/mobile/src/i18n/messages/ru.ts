@@ -318,7 +318,6 @@ export const ru: Localized<EnMessages> = {
     welcomeBack: 'С возвращением',
     email: 'Почта',
     password: 'Пароль',
-    name: 'Имя',
     forgotPassword: 'Забыл пароль?',
     signIn: 'Войти',
     signingIn: 'Выполняется вход…',
@@ -847,6 +846,7 @@ export const ru: Localized<EnMessages> = {
     composeHint:
       'Носитель языка исправит — обычно в течение часа. Исправления без ограничений на любом тарифе.',
     voiceNote: 'Голосовая заметка',
+    top: 'Топ',
   },
 
   profile: {

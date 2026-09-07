@@ -329,7 +329,6 @@ export const ar: Localized<EnMessages> = {
     welcomeBack: 'أهلًا بعودتك',
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',
-    name: 'الاسم',
     forgotPassword: 'نسيت كلمة المرور؟',
     signIn: 'تسجيل الدخول',
     signingIn: 'جارٍ تسجيل الدخول…',
@@ -886,6 +885,7 @@ export const ar: Localized<EnMessages> = {
     },
     composeHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
     voiceNote: 'مقطع صوتي',
+    top: 'الأبرز',
   },
 
   profile: {

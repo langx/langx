@@ -318,7 +318,6 @@ export const en = {
     welcomeBack: 'Welcome back',
     email: 'Email',
     password: 'Password',
-    name: 'Name',
     forgotPassword: 'Forgot password?',
     signIn: 'Sign in',
     signingIn: 'Signing you in…',
@@ -790,6 +789,7 @@ export const en = {
     composeHint:
       'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
     voiceNote: 'Voice note',
+    top: 'Top',
   },
 
   profile: {

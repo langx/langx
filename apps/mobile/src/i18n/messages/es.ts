@@ -281,7 +281,6 @@ export const es: Localized<EnMessages> = {
     welcomeBack: 'Bienvenido de nuevo',
     email: 'Correo',
     password: 'Contraseña',
-    name: 'Nombre',
     forgotPassword: '¿Olvidaste tu contraseña?',
     signIn: 'Iniciar sesión',
     signingIn: 'Iniciando sesión…',
@@ -748,6 +747,7 @@ export const es: Localized<EnMessages> = {
     composeHint:
       'Alguien nativo la corregirá, normalmente en menos de una hora. Las correcciones son ilimitadas en todos los planes.',
     voiceNote: 'Nota de voz',
+    top: 'Destacado',
   },
 
   profile: {

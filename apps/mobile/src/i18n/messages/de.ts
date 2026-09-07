@@ -284,7 +284,6 @@ export const de: Localized<EnMessages> = {
     welcomeBack: 'Willkommen zurück',
     email: 'E-Mail',
     password: 'Passwort',
-    name: 'Name',
     forgotPassword: 'Passwort vergessen?',
     signIn: 'Anmelden',
     signingIn: 'Anmeldung läuft…',
@@ -768,6 +767,7 @@ export const de: Localized<EnMessages> = {
     composeHint:
       'Jemand mit Muttersprache korrigiert es – meist innerhalb einer Stunde. Korrekturen sind in jedem Tarif unbegrenzt.',
     voiceNote: 'Sprachnotiz',
+    top: 'Top',
   },
 
   profile: {

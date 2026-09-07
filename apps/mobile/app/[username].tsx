@@ -9,14 +9,15 @@ import {
 } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { Redirect, useLocalSearchParams } from 'expo-router'
-import { useEffect } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { api } from '../src/api/client'
 import { authClient } from '../src/lib/auth-client'
 import { Avatar } from '../src/components/ui/Avatar'
 import { Button } from '../src/components/ui/Button'
 import { EmptyState } from '../src/components/ui/EmptyState'
 import { LanguageColumns } from '../src/components/LanguageColumns'
+import { PhotoViewer } from '../src/components/PhotoViewer'
 import { Screen } from '../src/components/ui/Screen'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
@@ -44,6 +45,8 @@ import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
  */
 export default function SharedProfileScreen() {
   useScreenInteractive()
+  // Above the early returns, where hooks have to be.
+  const [avatarOpen, setAvatarOpen] = useState(false)
   const params = useLocalSearchParams<{ username: string; invite?: string }>()
   const handle = (params.username ?? '').toLowerCase()
   /*
@@ -120,7 +123,24 @@ export default function SharedProfileScreen() {
           takes an id and nothing else, so this page keeps the initials rather
           than reopening a decision made for the open internet.
         */}
-        <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
+        {user.avatarUrl ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('photo.open')}
+            onPress={() => setAvatarOpen(true)}
+          >
+            <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
+          </Pressable>
+        ) : (
+          <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
+        )}
+        {user.avatarUrl ? (
+          <PhotoViewer
+            photos={[{ url: user.avatarUrl }]}
+            index={avatarOpen ? 0 : null}
+            onClose={() => setAvatarOpen(false)}
+          />
+        ) : null}
         <View style={styles.heroText}>
           <Text style={styles.name}>{user.displayName}</Text>
           <Text style={styles.handle} numberOfLines={1}>

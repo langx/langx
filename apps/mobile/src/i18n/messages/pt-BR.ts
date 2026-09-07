@@ -277,7 +277,6 @@ export const ptBR: Localized<EnMessages> = {
     welcomeBack: 'Que bom te ver de novo',
     email: 'E-mail',
     password: 'Senha',
-    name: 'Nome',
     forgotPassword: 'Esqueceu a senha?',
     signIn: 'Entrar',
     signingIn: 'Entrando…',
@@ -740,6 +739,7 @@ export const ptBR: Localized<EnMessages> = {
     composeHint:
       'Alguém nativo vai corrigir, geralmente em menos de uma hora. As correções são ilimitadas em todos os planos.',
     voiceNote: 'Áudio',
+    top: 'Destaque',
   },
 
   profile: {

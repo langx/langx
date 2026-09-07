@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
+import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
@@ -346,6 +346,10 @@ export default function FeedScreen() {
                       {relativeTime(item.createdAt, { t, locale })}
                     </Text>
                   </View>
+                  {/* The prototype's ink pill; the threshold is shared with the post screen. */}
+                  {item.correctionCount >= FEED_TOP_CORRECTIONS ? (
+                    <Text style={styles.topPill}>{t('feed.top')}</Text>
+                  ) : null}
                 </Pressable>
 
                 {/* The sentence opens its thread; it is the one affordance every row has. */}
@@ -537,6 +541,15 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   who: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   whoText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 15 },
+  topPill: {
+    backgroundColor: colors.ink,
+    borderRadius: radius.pill,
+    color: colors.bg,
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
   meta: { color: colors.textFaint, fontSize: 13, fontWeight: '400' },
   body: { color: colors.text, fontSize: 18, fontWeight: '400', lineHeight: 27 },
   // The word somebody wants to hear said, set like a heading.
