@@ -312,9 +312,16 @@ something, and what each costs:
 | `deploy-web.yml` | GitHub Actions | every merge to `main`    | nothing — a static export to Pages |
 | `release.yml`    | expo.dev       | by hand, pick a platform | one build, then `eas submit`       |
 
-`update.yml` and `deploy-web.yml` watch the same paths on purpose: a merge
-that changes the app reaches installed phones and `app.langx.io` from the
-same commit, and neither waits for the other. Until 5 September 2026 the web
+`update.yml` and `deploy-web.yml` watch nearly the same paths on purpose: a
+merge that changes the app reaches installed phones and `app.langx.io` from
+the same commit, and neither waits for the other. **Nearly**, and the gap has
+a direction: `deploy-web.yml` also fires on `pnpm-lock.yaml`, which
+`update.yml` does not watch. A dependency bump that touches only the lockfile
+— every Dependabot catalog bump — therefore reaches the browser and not the
+phones, and the two run different versions of that package until the next
+merge that does touch `apps/mobile/**`. Harmless for a patch release, but it
+means the web is where such a bump is first observable, and the only place to
+check it. Until 5 September 2026 the web
 half was `pnpm deploy:web` from a laptop and lagged the phones by however
 long nobody remembered it. The GitHub workflow reuses that same script, so
 the hand-run path still exists and still ends with the live-host check;
@@ -344,6 +351,17 @@ change, so what merges is what ships: there is no staging channel left to
 catch a mistake, and `release.yml` is the only thing that still needs a
 decision. Only a native change — a new module, a permission, an SDK bump, an
 icon — needs a build.
+
+Which is why a native-module version bump is never only a dependency bump.
+`runtimeVersion` is a fingerprint and `@expo/fingerprint` hashes the source
+directory of every autolinked module, so changing one changes the runtime
+version, and every later JS-only merge then publishes to a runtime version no
+released binary has: `update.yml` keeps going green while reaching nobody.
+**Deferred on 7 September 2026 for exactly this reason:**
+`react-native-safe-area-context` `~5.7.0 → ~5.9.1` (langx/langx#1043), left
+open rather than merged. Expo SDK 57 bundles `~5.7.0` and
+`bundledNativeModules.json` is the authority; revisit after this store round,
+with a build, and only if `npx expo install --check` asks for it.
 
 An update job builds the bundle on EAS from a fresh checkout, and
 `EXPO_PUBLIC_*` values are inlined at that moment. `eas.json`'s `env` blocks
