@@ -7,23 +7,11 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
-  TOKEN_RULES,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  ActivityIndicator,
-  Animated,
-  FlatList,
-  Platform,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  type NativeSyntheticEvent,
-  type TextInputKeyPressEventData,
-} from 'react-native'
+import { ActivityIndicator, Animated, FlatList, Pressable, Text, View } from 'react-native'
 import {
   markConversationRead,
   uploadMessageMedia,
@@ -40,6 +28,7 @@ import { track } from '../../../src/lib/analytics'
 import { setActiveConversation } from '../../../src/lib/activeConversation'
 import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { PresenceLine } from '../../../src/components/PresenceLine'
+import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
@@ -72,7 +61,6 @@ import {
 } from '../../../src/lib/outgoingMessages'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
-import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
 import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
@@ -153,7 +141,6 @@ export default function ChatScreen() {
   const block = useBlockUser()
   const recorder = useVoiceRecorder()
   /** Only for the pill's dress: white ground and accent ring while it has focus. */
-  const [focused, setFocused] = useState(false)
   const [sendingMedia, setSendingMedia] = useState(false)
   /**
    * Picked, and waiting for the send button.
@@ -1271,44 +1258,65 @@ export default function ChatScreen() {
         </View>
 
         {/*
-          One block under a hairline: the mode banner when there is one, the
-          picked attachments, the row itself, and the hint under it.
+          The block under the hairline is `ChatComposer`, shared with the
+          screen that starts a conversation. What needs a conversation — the
+          attach control, the recorder, the microphone — is passed in from
+          here, and the mode banner and picked attachments ride above the row.
         */}
-        <View style={styles.composer}>
-          {/*
-            One shape for all three modes — reply, edit, correct. The label says
-            which; the line under it is the message it is about, cut to one line
-            because the composer below already holds the text being written.
-          */}
-          {mode ? (
-            <View style={styles.modeBanner}>
-              <View style={styles.modeText}>
-                <Text style={styles.modeLabel} numberOfLines={1}>
-                  {mode.label}
-                </Text>
-                <Text style={styles.modePreview} numberOfLines={1}>
-                  {mode.preview}
-                </Text>
-              </View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('common.cancel')}
-                hitSlop={8}
-                onPress={mode.clear}
-              >
-                <Feather name="x" size={18} color={colors.textMuted} />
-              </Pressable>
-            </View>
-          ) : null}
-          {/* Above the row rather than inside it: the row holds the send
-            button, and anything that grows in there competes for width with
-            the only control that sends the message. */}
-          <AttachmentPreviewRow
-            pending={pendingMedia}
-            onRemove={(index) => setPendingMedia((items) => items.filter((_, at) => at !== index))}
-          />
-          <View style={styles.composerRow}>
-            {recorder.isRecording ? (
+        <ChatComposer
+          value={draft}
+          onChangeText={onChangeDraft}
+          placeholder={
+            correcting
+              ? t('chat.writeCorrection')
+              : items.length === 0 && partner
+                ? t('chat.sayHello', { name: partner.displayName })
+                : t('chat.writeMessage')
+          }
+          onSend={() => void send()}
+          hasAttachment={pendingMedia.length > 0}
+          busy={sendingMedia}
+          above={
+            <>
+              {/*
+                One shape for all three modes — reply, edit, correct. The label
+                says which; the line under it is the message it is about, cut
+                to one line because the field below already holds the text
+                being written.
+              */}
+              {mode ? (
+                <View style={styles.modeBanner}>
+                  <View style={styles.modeText}>
+                    <Text style={styles.modeLabel} numberOfLines={1}>
+                      {mode.label}
+                    </Text>
+                    <Text style={styles.modePreview} numberOfLines={1}>
+                      {mode.preview}
+                    </Text>
+                  </View>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.cancel')}
+                    hitSlop={8}
+                    onPress={mode.clear}
+                  >
+                    <Feather name="x" size={18} color={colors.textMuted} />
+                  </Pressable>
+                </View>
+              ) : null}
+              {/* Above the row rather than inside it: the row holds the send
+                button, and anything that grows in there competes for width with
+                the only control that sends the message. */}
+              <AttachmentPreviewRow
+                pending={pendingMedia}
+                onRemove={(index) =>
+                  setPendingMedia((items) => items.filter((_, at) => at !== index))
+                }
+              />
+            </>
+          }
+          leading={
+            recorder.isRecording ? (
               <View style={styles.recording}>
                 <Text style={styles.recordingDot}>●</Text>
                 <Text style={styles.recordingTime}>
@@ -1345,98 +1353,30 @@ export default function ChatScreen() {
                   color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
                 />
               </Pressable>
-            )}
-            <TextInput
-              value={draft}
-              onChangeText={onChangeDraft}
-              placeholder={
-                correcting
-                  ? t('chat.writeCorrection')
-                  : items.length === 0 && partner
-                    ? t('chat.sayHello', { name: partner.displayName })
-                    : t('chat.writeMessage')
-              }
-              placeholderTextColor={colors.textFaint}
-              style={[styles.input, focused && styles.inputFocused]}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              multiline
-              /**
-               * Web only, and it has to be a key handler: `multiline` is a
-               * `<textarea>` in the browser, where `onSubmitEditing` never
-               * fires — the handler that used to be here had never run. On
-               * native the return key inserts a newline and the send button is
-               * the way to send, which is what people expect there.
-               */
-              {...(Platform.OS === 'web'
-                ? {
-                    onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-                      const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
-                        shiftKey?: boolean
-                      }
-                      if (!shouldSubmitOnEnter(key, shiftKey === true)) return
-                      // Otherwise the newline lands in the box behind the send.
-                      event.preventDefault()
-                      void send()
-                    },
-                  }
-                : {})}
-            />
-            {/* The button becomes a microphone when there is nothing to send,
-              which is the gesture people already expect from a chat app. An
-              attachment with no caption is something to send, so a picked
-              photo turns it back into the send button. */}
-            {draft.trim() || pendingMedia.length > 0 ? (
-              <View style={[styles.sendShell, sendingMedia && styles.sendDisabled]}>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t('common.send')}
-                  onPress={() => void send()}
-                  disabled={sendingMedia}
-                  style={({ pressed }) => [
-                    styles.send,
-                    pressed && !sendingMedia && styles.sendPressed,
-                  ]}
-                >
-                  <Feather
-                    name={sendingMedia ? 'more-horizontal' : 'send'}
-                    size={20}
-                    color={colors.primaryText}
-                  />
-                </Pressable>
-              </View>
-            ) : (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('chat.voiceMessage')}
-                onPress={() => void toggleRecording()}
-                disabled={sendingMedia}
-                style={[
-                  styles.mic,
-                  recorder.isRecording && styles.recordButtonActive,
-                  sendingMedia && styles.sendDisabled,
-                ]}
-              >
-                <Feather
-                  name={recorder.isRecording ? 'square' : 'mic'}
-                  size={20}
-                  color={recorder.isRecording ? colors.textInverse : colors.text}
-                />
-              </Pressable>
-            )}
-          </View>
-          {/*
-          The two facts a first-time user cannot discover: that a long press
-          corrects, and that a message pays. Both come from `TOKEN_RULES`
-          rather than being written into the copy.
-        */}
-          <View style={styles.composerHint}>
-            <ComposerHint style={styles.hintLeft} />
-            <Text style={styles.hintRight}>
-              {t('chat.tokensPerMessage', { count: TOKEN_RULES.award.message })}
-            </Text>
-          </View>
-        </View>
+            )
+          }
+          idleAction={
+            /* A microphone when there is nothing to send, which is the gesture
+              people already expect from a chat app. */
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('chat.voiceMessage')}
+              onPress={() => void toggleRecording()}
+              disabled={sendingMedia}
+              style={[
+                styles.mic,
+                recorder.isRecording && styles.recordButtonActive,
+                sendingMedia && styles.micDisabled,
+              ]}
+            >
+              <Feather
+                name={recorder.isRecording ? 'square' : 'mic'}
+                size={20}
+                color={recorder.isRecording ? colors.textInverse : colors.text}
+              />
+            </Pressable>
+          }
+        />
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
@@ -1611,68 +1551,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   pinText: { ...font.caption, color: colors.text, flex: 1 },
   older: { paddingVertical: spacing.md },
-  /**
-   * Everything under the hairline: banner, attachments, the row, the hint.
-   * The bottom is `spacing.md` on top of the safe-area inset `Screen` already
-   * adds — the prototype's 28 is that inset, drawn in a frame that has none.
-   */
-  composer: {
-    backgroundColor: colors.surface,
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
-    gap: 10,
-    paddingBottom: spacing.md,
-    paddingHorizontal: spacing.lg,
-    paddingTop: 10,
-  },
-  composerRow: { alignItems: 'flex-end', flexDirection: 'row', gap: spacing.sm },
-  composerHint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  hintLeft: { ...font.caption, color: colors.textFaint },
-  // The green pair marks earning, same as "Earned" rows elsewhere.
-  hintRight: { ...font.caption, color: colors.success, fontWeight: '600' },
-  /**
-   * A fill pill — v3's one grey allowed to be a shape. The border is there
-   * only to say something: transparent at rest, accent while focused, so the
-   * box does not grow by a pixel when it takes focus.
-   */
-  input: {
-    ...font.body,
-    backgroundColor: colors.fill,
-    borderColor: 'transparent',
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    color: colors.text,
-    flex: 1,
-    fontSize: 16,
-    lineHeight: 22,
-    maxHeight: 120,
-    minHeight: 48,
-    paddingHorizontal: 18,
-    paddingVertical: 13,
-  },
-  inputFocused: { backgroundColor: colors.bg, borderColor: colors.accent },
-  /**
-   * The one yellow on the screen, standing on the same hard shadow `ui/Button`
-   * does: a shell in the shade, a face on it that drops on press. The negative
-   * margin lets the shade hang below the row the way `box-shadow` does, so it
-   * is the face — not the shade — that lines up with the input's bottom.
-   */
-  sendShell: {
-    backgroundColor: colors.primaryShade,
-    borderRadius: 14,
-    marginBottom: -3,
-    paddingBottom: 3,
-  },
-  send: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: 14,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
-  },
-  sendPressed: { transform: [{ translateY: 3 }] },
-  sendDisabled: { opacity: 0.35 },
   // A fill circle: the microphone is the resting state, not the committing one.
   mic: {
     alignItems: 'center',
@@ -1683,6 +1561,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     width: 48,
   },
   recordButtonActive: { backgroundColor: colors.danger },
+  micDisabled: { opacity: 0.35 },
   // A bare muted glyph, sized to line up with the pill beside it.
   attach: {
     alignItems: 'center',

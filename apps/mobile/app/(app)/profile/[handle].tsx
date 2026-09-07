@@ -5,23 +5,19 @@ import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { authClient } from '../../../src/lib/auth-client'
 import { requireAccount } from '../../../src/lib/requireAccount'
-import { ApiRequestError } from '../../../src/api/client'
 import {
   useBlockUser,
   useMe,
   useProfile,
   usePublicSummary,
-  useQuota,
   useReportUser,
   useSetFollow,
-  useStartConversation,
 } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { placeLabel } from '../../../src/lib/placeLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
-import { FormField } from '../../../src/components/ui/FormField'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
@@ -32,7 +28,6 @@ import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo, openFollows } from '../../../src/lib/navigation'
 import { shareLink } from '../../../src/lib/share'
 import { profileShareText } from '../../../src/lib/shareText'
-import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { accountAgeLabel, interestLabel, useDisplayNames, useT } from '../../../src/i18n'
@@ -53,23 +48,12 @@ export default function ProfileScreen() {
   const me = useMe()
   const setFollow = useSetFollow(handle ?? '')
   const here = `/(app)/profile/${handle}`
-  const startConversation = useStartConversation()
   const { data: session } = authClient.useSession()
   const summary = usePublicSummary(handle ?? '')
-  const quota = useQuota()
   const block = useBlockUser()
   const report = useReportUser()
 
-  const [message, setMessage] = useState('')
-  /*
-   * The composer is behind the button, not beside it. A conversation here has
-   * to open with a first message, but a text field at the foot of every
-   * profile read as a form to fill in; "Send a message" is the decision, and
-   * the field appears once it has been made.
-   */
-  const [composing, setComposing] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
-  const [error, setError] = useState<string | undefined>()
 
   if (profile.isPending) {
     return (
@@ -93,7 +77,6 @@ export default function ProfileScreen() {
 
   const user = profile.data
   const isSelf = user?._id === me.data?._id
-  const canSend = message.trim().length > 0
   const following = user.follow.viewerFollows
   const age = accountAgeLabel(t, new Date(user.createdAt))
 
@@ -103,41 +86,6 @@ export default function ProfileScreen() {
   const handleLine = [`@${user.handle}`, placeLabel(user, names.country) ?? null]
     .filter(Boolean)
     .join(' · ')
-
-  async function send(): Promise<void> {
-    // The gate at the call site, where the screen knows what was being tried.
-    // The transport catches a forgotten one, but only as a duller version of
-    // this — see `requireAccount`.
-    if (!requireAccount(session?.user)) return
-    setError(undefined)
-    try {
-      const conversation = await startConversation.mutateAsync({
-        toUserId: user._id,
-        body: message.trim(),
-      })
-      setMessage('')
-      router.replace(`/(app)/chat/${conversation._id}`)
-    } catch (caught) {
-      if (caught instanceof ApiRequestError) {
-        // The free tier's 5-a-day cap is the single most important thing this
-        // screen has to explain well — a generic failure here reads as a bug.
-        if (caught.code === 'QUOTA_EXCEEDED') {
-          // `openPaywall` rather than the raw route: it is the one place that
-          // knows how the paywall is reached, and pushing the path directly
-          // meant this call site quietly missed whatever it does.
-          openPaywall(undefined, `/(app)/profile/${handle}`)
-          return
-        }
-        if (caught.code === 'CONVERSATION_EXISTS') {
-          router.replace('/(app)/(tabs)/chats')
-          return
-        }
-        setError(caught.message)
-      } else {
-        setError(t('profile.sendFailed'))
-      }
-    }
-  }
 
   async function confirmBlock(): Promise<void> {
     const yes = await confirmAlert({
@@ -367,44 +315,29 @@ export default function ProfileScreen() {
       ) : (
         <View style={styles.actions}>
           {/*
-            A conversation that already exists is a link, not a form. The
-            composer below cannot start a second one — `startConversation`
-            refuses, which used to surface as "a conversation with this user
-            already exists" after typing a message out.
+            A conversation that already exists is a link to it; one that does
+            not is a link to the screen that starts it — v3 opens the thread's
+            own composer rather than unfolding a form here, so the first
+            sentence is written where the reply will arrive. `chat/new` cannot
+            start a second conversation — `startConversation` refuses — which
+            is why the existing one is offered first.
           */}
           {user.conversationId ? (
             <Button
               label={t('profile.openChat')}
               onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
             />
-          ) : composing ? (
-            <>
-              <FormField
-                value={message}
-                onChangeText={setMessage}
-                placeholder={t('chat.sayHello', { name: user.displayName })}
-                autoCapitalize="sentences"
-                autoCorrect
-                autoFocus
-              />
-              <Button
-                label={t('common.send')}
-                disabled={!canSend}
-                loading={startConversation.isPending}
-                onPress={() => void send()}
-              />
-              {/* The cap the free plan is about to hit, said before it is hit. */}
-              {quota.data ? (
-                <Text style={styles.quotaHint}>
-                  {t('me.newChatsLeft')} {quota.data.initiations.remaining ?? '—'} /{' '}
-                  {quota.data.initiations.limit ?? '∞'}
-                </Text>
-              ) : null}
-            </>
           ) : (
-            <Button label={t('profile.sendMessage')} onPress={() => setComposing(true)} />
+            <Button
+              label={t('profile.sendMessage')}
+              // Gated here as well as at the send: a guest should hear about
+              // the account before typing a message out, not after.
+              onPress={() => {
+                if (!requireAccount(session?.user)) return
+                router.push(`/(app)/chat/new?to=${user._id}&from=${encodeURIComponent(here)}`)
+              }}
+            />
           )}
-          {error ? <Text style={styles.error}>{error}</Text> : null}
           <Button
             label={following ? t('profile.following') : t('profile.follow')}
             variant="secondary"
@@ -495,6 +428,4 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   tagLabel: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   actions: { gap: spacing.md, paddingTop: spacing.xl },
   editProfile: { marginTop: spacing.xl },
-  quotaHint: { color: colors.textFaint, fontSize: 13 },
-  error: { ...font.caption, color: colors.danger },
 }))
