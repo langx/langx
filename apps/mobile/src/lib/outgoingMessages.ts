@@ -1,3 +1,4 @@
+import type { MessageAsk } from '@langx/shared'
 /**
  * Messages the composer has handed off and the server has not yet echoed.
  *
@@ -20,6 +21,8 @@ export interface OutgoingMessage {
   body: string
   /** The quote the row draws, in the shape the server would snapshot it. */
   replyTo?: { messageId: string; senderId: string; preview: string }
+  /** What the sender asked for back, so the badge is drawn before the ack. */
+  ask?: MessageAsk
   /** When Send was pressed — the row's clock until the server's own arrives. */
   sentAt: string
 }

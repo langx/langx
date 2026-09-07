@@ -7,11 +7,22 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  messageTranslationSchema,
+  type MessageAsk,
+  type MessageTranslation,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, Animated, FlatList, Pressable, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native'
 import {
   markConversationRead,
   uploadMessageMedia,
@@ -67,7 +78,7 @@ import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
-import { pickMediaAssets } from '../../../src/lib/pickMediaAsset'
+import { pickMediaAssets, type PickSource } from '../../../src/lib/pickMediaAsset'
 import { PendingMediaBubble } from '../../../src/components/PendingMediaBubble'
 import {
   addPending,
@@ -88,7 +99,7 @@ import { shareLink } from '../../../src/lib/share'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
-import { useLocale, useT, type MessageKey } from '../../../src/i18n'
+import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -99,6 +110,7 @@ export default function ChatScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const names = useDisplayNames()
   const { locale } = useLocale()
 
   // `at` is the single entry point for "open this thread at that message": a
@@ -114,6 +126,23 @@ export default function ChatScreen() {
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
+  /**
+   * What this message asks the other person for, once it is sent.
+   *
+   * Exclusive with a reply rather than combined: both answer "what is this
+   * message", and a banner that names one while the send applies the other
+   * is the kind of quiet disagreement this composer already avoids for
+   * edit, correct and reply.
+   */
+  const [asking, setAsking] = useState<MessageAsk | null>(null)
+  /**
+   * Send this one in their language too.
+   *
+   * A mode rather than a one-shot, because the person who needs it needs it
+   * for the whole conversation, not for one sentence — and it turns itself
+   * off the moment there is nothing to translate into.
+   */
+  const [sendTranslated, setSendTranslated] = useState(false)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
   // original so the learner can compare the two.
@@ -214,6 +243,7 @@ export default function ChatScreen() {
       clientId: message.clientId,
       createdAt: message.sentAt,
       ...(message.replyTo ? { replyTo: message.replyTo } : {}),
+      ...(message.ask ? { ask: message.ask } : {}),
     }))
     return [...standIns, ...items]
   }, [items, outgoing, viewerId, conversationId])
@@ -272,6 +302,16 @@ export default function ChatScreen() {
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  /**
+   * Which language to send a translation in: the reader's, not the writer's.
+   *
+   * `translateTargetFor` is the same rule the Translate action uses, pointed
+   * the other way — their first native language with a written form.
+   * `undefined` means there is none, and the row is not offered.
+   */
+  const translateInto = partner
+    ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
+    : undefined
   // "Not yet" and "never" draw differently: a placeholder while the profile
   // loads, the generic title only for an account that is really gone.
   const partnerLoading =
@@ -345,7 +385,117 @@ export default function ChatScreen() {
     return list.find((row) => row.clientId === clientId)?.progress ?? UPLOAD_START
   }
 
-  async function pickMedia(): Promise<void> {
+  /**
+   * What the "+" opens.
+   *
+   * It used to open the picker straight, and the only thing resembling a menu
+   * was the picker's own "camera or library?" alert — so the one other thing
+   * the composer can attach, a voice note, lived on a microphone at the far
+   * end of the row, which is a fine place for it once you know and no place at
+   * all before.
+   *
+   * Rows that carry bytes are drawn locked rather than hidden while the media
+   * gate is closed: a row that says "after five more messages" teaches the
+   * rule, and one that is missing teaches nothing.
+   */
+  /**
+   * Which requests have already been answered.
+   *
+   * A correction stamps `corrected` on the message it fixes, so that half is a
+   * server fact. A spoken answer is only a voice note quoting the message —
+   * there is no flag for it, and nothing but the list itself can see it. Both
+   * are worked out here and handed to the bubble, which stays dumb.
+   */
+  const answeredAsks = useMemo(() => {
+    const answered = new Set<string>()
+    for (const message of items) {
+      if (message.corrected) answered.add(message._id)
+      if (message.type === 'audio' && message.replyTo) answered.add(message.replyTo.messageId)
+    }
+    return answered
+  }, [items])
+
+  /**
+   * Answers the request on somebody else's message.
+   *
+   * Neither branch is new machinery: a correction opens the composer's own
+   * correcting mode, and a spoken answer starts the recorder with the message
+   * quoted, which sends an ordinary voice note. That is the whole reason
+   * `ask` is a field and not a message type.
+   */
+  function answerAsk(message: MessageDto, ask: MessageAsk): void {
+    if (ask === 'correction') {
+      setAsking(null)
+      setReplyingTo(null)
+      setCorrecting(message)
+      setDraft(message.body)
+      return
+    }
+    // The gate is checked before the quote is set, not after: `toggleRecording`
+    // would refuse and return, leaving a reply banner pointing at a recording
+    // that never started.
+    if (mediaLockedFor > 0) {
+      void showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    setReplyingTo(message)
+    void toggleRecording()
+  }
+
+  async function openAttachMenu(): Promise<void> {
+    const locked = mediaLockedFor > 0
+    const choice = await chooseAlert(t('composer.attachMenu'), undefined, [
+      { label: t('composer.attachLibrary'), value: 'library' as const, icon: 'image', locked },
+      // No camera on the web: `launchCameraAsync` there is an `<input capture>`,
+      // which a phone browser honours and a desktop one ignores — so on a
+      // laptop the row would open a file dialog, which is worse than no row.
+      ...(Platform.OS === 'web'
+        ? []
+        : [
+            { label: t('composer.attachCamera'), value: 'camera' as const, icon: 'camera', locked },
+          ]),
+      { label: t('composer.attachVoice'), value: 'voice' as const, icon: 'mic', locked },
+      // Never locked: neither carries bytes, so neither is what the media gate
+      // is protecting anyone from.
+      { label: t('chat.askCorrection'), value: 'askCorrection' as const, icon: 'edit-3' },
+      { label: t('chat.askPronunciation'), value: 'askPronunciation' as const, icon: 'volume-2' },
+      // Only when there is a language to send it in. A row that would answer
+      // "there is nothing to translate into" is a row not worth drawing.
+      ...(translateInto
+        ? [
+            {
+              label: sendTranslated
+                ? t('chat.sendTranslatedOff')
+                : t('chat.sendTranslatedOn', { language: names.language(translateInto) }),
+              value: 'translate' as const,
+              icon: 'globe',
+            },
+          ]
+        : []),
+    ])
+    if (!choice) return
+    if (choice === 'translate') {
+      setSendTranslated((on) => !on)
+      return
+    }
+    if (choice === 'askCorrection' || choice === 'askPronunciation') {
+      // Exclusive with a reply: see `asking`.
+      setReplyingTo(null)
+      setAsking(choice === 'askCorrection' ? 'correction' : 'pronunciation')
+      return
+    }
+    if (locked) {
+      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    if (choice === 'voice') {
+      await toggleRecording()
+      return
+    }
+    await pickMedia(choice)
+  }
+
+  async function pickMedia(source: PickSource): Promise<void> {
     const remaining = MAX_ATTACHMENTS - pendingMedia.length
     if (remaining <= 0) {
       void showAlert(
@@ -354,7 +504,7 @@ export default function ChatScreen() {
       )
       return
     }
-    const picked = await pickMediaAssets({ remaining })
+    const picked = await pickMediaAssets({ remaining, source })
     if (picked.status === 'denied') {
       // Which permission was refused, not "photos" for both: being told to
       // allow the photo library after declining the camera is advice that
@@ -509,7 +659,13 @@ export default function ChatScreen() {
    * `clientId` is passed in on a retry so the row updates itself instead of
    * stacking a second copy of the same sentence.
    */
-  async function deliver(body: string, clientId: string, replyToMessageId?: string): Promise<void> {
+  async function deliver(
+    body: string,
+    clientId: string,
+    replyToMessageId?: string,
+    ask?: MessageAsk,
+    translation?: MessageTranslation,
+  ): Promise<void> {
     try {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:send', {
@@ -517,6 +673,8 @@ export default function ChatScreen() {
         body,
         clientId,
         ...(replyToMessageId ? { replyToMessageId } : {}),
+        ...(ask ? { ask } : {}),
+        ...(translation ? { translation } : {}),
       })
       setUnsent((list) => removeUnsent(list, clientId))
       track({
@@ -548,6 +706,48 @@ export default function ChatScreen() {
 
   async function retry(message: UnsentMessage): Promise<void> {
     await deliver(message.body, message.clientId, message.replyToMessageId)
+  }
+
+  /**
+   * Sends, adding the reader's language when the composer is in that mode.
+   *
+   * The translation is fetched before the send rather than by the server
+   * during it: `POST /translate` is where the quota is spent and the cache is
+   * read, and putting a provider round-trip inside `message:send` would make
+   * every message wait on it.
+   *
+   * **A translation that fails does not stop the message.** The sentence the
+   * person wrote is the message; the translation is help. Losing the help is a
+   * worse outcome than losing nothing, but losing what they typed is worse
+   * than both.
+   */
+  async function deliverTranslated(
+    body: string,
+    clientId: string,
+    replyToMessageId?: string,
+    ask?: MessageAsk,
+  ): Promise<void> {
+    if (!sendTranslated || !translateInto) {
+      await deliver(body, clientId, replyToMessageId, ask)
+      return
+    }
+    let translation: MessageTranslation | undefined
+    try {
+      const result = await translateApi.mutateAsync({ text: body, targetLang: translateInto })
+      // Parsed rather than cast: `translateTargetFor` answers with a plain
+      // string, and this is the schema the server will check it against
+      // anyway. A translation that would be refused is simply not attached.
+      const parsed = messageTranslationSchema.safeParse({
+        text: result.translatedText,
+        lang: translateInto,
+        ...(result.sourceLang ? { sourceLang: result.sourceLang } : {}),
+      })
+      if (parsed.success) translation = parsed.data
+    } catch (caught) {
+      void caught
+      void showAlert(t('chat.couldNotSend'), t('chat.sendTranslatedFailed'))
+    }
+    await deliver(body, clientId, replyToMessageId, ask, translation)
   }
 
   async function send(): Promise<void> {
@@ -586,7 +786,9 @@ export default function ChatScreen() {
       void commitCorrection(target, body)
     } else {
       const reply = replyingTo
+      const ask = asking
       setReplyingTo(null)
+      setAsking(null)
       const clientId = newClientId(Date.now(), Math.random())
       setOutgoing((list) =>
         addOutgoing(list, {
@@ -596,10 +798,11 @@ export default function ChatScreen() {
           ...(reply
             ? { replyTo: { messageId: reply._id, senderId: reply.senderId, preview: reply.body } }
             : {}),
+          ...(ask ? { ask } : {}),
         }),
       )
       // `deliver` never rejects — a failure becomes an unsent row.
-      void deliver(body, clientId, reply?._id)
+      void deliverTranslated(body, clientId, reply?._id, ask ?? undefined)
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.
@@ -966,15 +1169,31 @@ export default function ChatScreen() {
             setDraft('')
           },
         }
-      : replyingTo
+      : asking
         ? {
-            label: isMine(replyingTo)
-              ? t('chat.replyingToYourself')
-              : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-            preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
-            clear: () => setReplyingTo(null),
+            label:
+              asking === 'correction' ? t('chat.askingCorrection') : t('chat.askingPronunciation'),
+            preview:
+              asking === 'correction'
+                ? t('chat.askingCorrectionHint')
+                : t('chat.askingPronunciationHint'),
+            clear: () => setAsking(null),
           }
-        : null
+        : sendTranslated && translateInto
+          ? {
+              label: t('chat.sendTranslatedBanner', { language: names.language(translateInto) }),
+              preview: t('chat.sendTranslatedHint'),
+              clear: () => setSendTranslated(false),
+            }
+          : replyingTo
+            ? {
+                label: isMine(replyingTo)
+                  ? t('chat.replyingToYourself')
+                  : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
+                preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+                clear: () => setReplyingTo(null),
+              }
+            : null
 
   return (
     <Screen fluid style={styles.screen}>
@@ -1223,6 +1442,8 @@ export default function ChatScreen() {
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
                     highlighted={highlighted === row.message._id}
+                    askAnswered={answeredAsks.has(row.message._id)}
+                    onAnswerAsk={answerAsk}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
@@ -1338,30 +1559,21 @@ export default function ChatScreen() {
                 </Pressable>
               </View>
             ) : (
+              /*
+                Neither greyed nor disabled by the media lock any more: it
+                opens a menu, and the lock belongs to the rows inside that
+                carry bytes — which is where the sheet draws it, with the
+                number of messages still to come.
+              */
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={
-                  mediaLockedFor > 0
-                    ? t('chat.mediaLocked', { count: mediaLockedFor })
-                    : t('composer.attachMedia')
-                }
-                onPress={() =>
-                  mediaLockedFor > 0
-                    ? void showAlert(
-                        t('chat.mediaLockedTitle'),
-                        t('chat.mediaLocked', { count: mediaLockedFor }),
-                      )
-                    : void pickMedia()
-                }
+                accessibilityLabel={t('composer.attachMenu')}
+                onPress={() => void openAttachMenu()}
                 disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
                 hitSlop={8}
                 style={styles.attach}
               >
-                <Feather
-                  name="plus"
-                  size={22}
-                  color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
-                />
+                <Feather name="plus" size={22} color={colors.textMuted} />
               </Pressable>
             )
           }

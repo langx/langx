@@ -11,7 +11,7 @@ import Reanimated, {
   withSpring,
 } from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
-import { attachmentsOf, type Media } from '@langx/shared'
+import { attachmentsOf, type Media, type MessageAsk } from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
@@ -47,8 +47,18 @@ export interface MessageBubbleProps {
   highlighted: boolean
   /** An optimistic stand-in for a send in flight; the meta says "Sending". */
   pending?: boolean
+  /**
+   * Whether the request this message carries has been answered.
+   *
+   * Worked out by the thread, not here: a correction stamps `corrected` on its
+   * target, but a spoken answer is just a voice note quoting the message, and
+   * only something holding the whole list can see it. The bubble stays dumb.
+   */
+  askAnswered?: boolean
   onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
   onReply: (message: MessageDto) => void
+  /** Answers the request on somebody else's message — correct it, or say it. */
+  onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
   onJumpTo: (messageId: string) => void
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
@@ -74,8 +84,10 @@ export const MessageBubble = memo(function MessageBubble({
   translating,
   highlighted,
   pending = false,
+  askAnswered = false,
   onLongPress,
   onReply,
+  onAnswerAsk,
   onJumpTo,
   onOpenMedia,
 }: MessageBubbleProps) {
@@ -373,7 +385,52 @@ export const MessageBubble = memo(function MessageBubble({
       <View ref={box} style={bubble}>
         <Text style={styles.bubbleText}>{message.body}</Text>
       </View>
+      {/*
+        The request the sender attached, under their sentence rather than
+        inside it: the sentence is what they wrote, and this is a note about
+        it. Only the other person is offered the button — you cannot correct
+        your own attempt, and being shown a control that does nothing is worse
+        than being shown none.
+      */}
+      {message.ask ? (
+        <View style={styles.askRow}>
+          <Feather
+            name={message.ask === 'correction' ? 'edit-3' : 'volume-2'}
+            size={13}
+            color={colors.textFaint}
+          />
+          <Text style={styles.askLabel}>
+            {message.ask === 'correction'
+              ? t('chat.askBadgeCorrection')
+              : t('chat.askBadgePronunciation')}
+          </Text>
+          {!mine && !askAnswered ? (
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={() => onAnswerAsk(message, message.ask as MessageAsk)}
+            >
+              <Text style={styles.askAction}>
+                {message.ask === 'correction' ? t('chat.askAnswerCorrect') : t('chat.askAnswerSay')}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
       {badge}
+      {/*
+        The translation the sender chose to send, not one this reader asked
+        for: it is part of the message, so it is drawn under the bubble for
+        both of them and survives a reload. The menu's own translation is the
+        row below, and looks different on purpose — one is published, the
+        other is private.
+      */}
+      {message.translation ? (
+        <View style={styles.sentTranslationRow}>
+          <Feather name="globe" size={13} color={colors.textFaint} />
+          <Text style={styles.sentTranslation}>{message.translation.text}</Text>
+        </View>
+      ) : null}
       {translation ? (
         <View style={styles.translationRow}>
           <Ionicons
@@ -513,6 +570,11 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: 6,
   },
   // Sits on the first line of the translation rather than centred on the block.
+  sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },
+  sentTranslation: { color: colors.textMuted, flexShrink: 1, fontSize: 13, lineHeight: 18 },
+  askRow: { alignItems: 'center', flexDirection: 'row', gap: 5, marginTop: 4 },
+  askLabel: { color: colors.textFaint, fontSize: 12 },
+  askAction: { color: colors.accent, fontSize: 12, fontWeight: '700' },
   translationIcon: { marginTop: 3 },
   translation: { ...font.body, color: colors.accent, flexShrink: 1, fontSize: 14, lineHeight: 20 },
   translateLink: { ...font.caption, color: colors.accent },

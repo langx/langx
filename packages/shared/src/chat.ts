@@ -28,6 +28,7 @@ export {
   type MessageMedia,
 } from './media'
 import { attachmentsSchema, mediaKindSchema } from './media'
+import { isTranslatableLanguage, languageCodeSchema } from './languages'
 
 export const MAX_MESSAGE_LENGTH = 2000
 
@@ -114,11 +115,60 @@ export const REPLY_PREVIEW_MAX_LENGTH = 140
  */
 export const clientMessageIdSchema = z.string().trim().min(1).max(64)
 
+/**
+ * A request attached to your own sentence: correct it, or say it out loud.
+ *
+ * A field on a text message rather than two message types, because that is
+ * what they are — the sentence is the message, and the ask is a note on it.
+ * Both are already answerable with machinery that exists: `message:correct`
+ * writes the correction, and a voice note quoting the message answers the
+ * other. Neither carries bytes, so neither spends the media quota or waits on
+ * the media gate.
+ *
+ * The feed's pronunciation posts get their own collection because the answers
+ * are listed away from the question. In a conversation the thread *is* that
+ * list, so there is nothing to collect.
+ */
+export const MESSAGE_ASKS = ['correction', 'pronunciation'] as const
+export type MessageAsk = (typeof MESSAGE_ASKS)[number]
+
+/**
+ * A translation the sender chose to send along with their own words.
+ *
+ * Both halves travel, and both are kept. The point of the feature is that a
+ * beginner can write in the language they think in without the other person
+ * having to guess — so the original is the message and this is the help, not
+ * the other way round.
+ *
+ * Produced by `POST /translate`, which is where the quota is spent and the
+ * cache is read. It is stored as given: this is the sender's own message, and
+ * somebody determined to send different words could simply type them.
+ */
+export const messageTranslationSchema = z.object({
+  text: messageBodySchema,
+  /*
+   * Built from `languages` rather than reusing `translatableLanguageSchema`,
+   * which lives in `translation.ts` — and `translation.ts` already imports
+   * `MAX_MESSAGE_LENGTH` from this file. Importing it back would close the
+   * cycle, and a cycle here is not a lint warning: the bundle evaluates
+   * `MAX_MESSAGE_LENGTH` before it is initialised and the app fails to boot.
+   * The rule is the same one, spelled out rather than borrowed.
+   */
+  lang: languageCodeSchema.refine(isTranslatableLanguage, {
+    message: 'This language has no written form to translate to',
+  }),
+  /** What the provider detected the original to be. Absent if it did not say. */
+  sourceLang: z.string().trim().min(1).max(16).optional(),
+})
+export type MessageTranslation = z.infer<typeof messageTranslationSchema>
+
 export const sendTextMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   body: messageBodySchema,
   replyToMessageId: z.string().trim().min(1).optional(),
   clientId: clientMessageIdSchema.optional(),
+  ask: z.enum(MESSAGE_ASKS).optional(),
+  translation: messageTranslationSchema.optional(),
 })
 export type SendTextMessageInput = z.infer<typeof sendTextMessageSchema>
 

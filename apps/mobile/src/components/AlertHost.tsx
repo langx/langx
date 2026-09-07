@@ -1,8 +1,9 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
 import { Modal, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { dismissValue, resolveAlert, subscribeToAlerts, type AlertRequest } from '../lib/alert'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 
 /**
@@ -25,6 +26,7 @@ import { Button } from './ui/Button'
  */
 export function AlertHost() {
   const styles = useStyles()
+  const { colors } = useTheme()
   const insets = useSafeAreaInsets()
 
   const [request, setRequest] = useState<AlertRequest<unknown> | null>(null)
@@ -76,9 +78,18 @@ export function AlertHost() {
                 pressed && styles.rowPressed,
               ]}
             >
+              {/*
+                A glyph turns the same row into a menu item — see `AlertButton`.
+                Muted whatever the label says, the way the message menu's sheet
+                draws its icons.
+              */}
+              {button.icon ? (
+                <Feather name={button.icon as never} size={20} color={colors.textMuted} />
+              ) : null}
               <Text style={[styles.rowLabel, button.style === 'destructive' && styles.destructive]}>
                 {button.label}
               </Text>
+              {button.locked ? <Feather name="lock" size={16} color={colors.textFaint} /> : null}
             </Pressable>
           ))}
           {foot ? (
@@ -135,10 +146,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // A column of rows, not a row of buttons: these labels are sentences
   // ("Inappropriate content"), and three of them side by side wrap into
   // unreadable stacks on a phone.
-  row: { paddingVertical: 17 },
+  // A flex row whether or not it carries a glyph, so a plain question and a
+  // menu keep the same rhythm — and so a lock can sit at the far end.
+  row: { alignItems: 'center', flexDirection: 'row', gap: 14, paddingVertical: 17 },
   rowDivided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
   rowPressed: { opacity: 0.6 },
-  rowLabel: { color: colors.text, fontSize: 17, fontWeight: '600' },
+  rowLabel: { color: colors.text, flex: 1, fontSize: 17, fontWeight: '600' },
   destructive: { color: colors.danger },
   foot: { marginTop: 18 },
 }))

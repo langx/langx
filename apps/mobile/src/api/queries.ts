@@ -14,6 +14,8 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type MessageAsk,
+  type MessageTranslation,
   type CreateShareCardInput,
   type ShareCardResult,
 } from '@langx/shared'
@@ -463,6 +465,10 @@ export interface MessageDto {
   correction?: { original: string; corrected: string; note?: string }
   /** A snapshot taken when the reply was sent, so it survives the target. */
   replyTo?: { messageId: string; senderId: string; preview: string }
+  /** What the sender asked for back — a correction, or to hear it said. */
+  ask?: MessageAsk
+  /** The sender's own words in the reader's language, sent with the message. */
+  translation?: MessageTranslation
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */

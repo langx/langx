@@ -1,5 +1,7 @@
 import {
   ERROR_CODES,
+  type MessageAsk,
+  type MessageTranslation,
   type MessageMedia,
   type MessageType,
   type StartConversationInput,
@@ -93,6 +95,25 @@ export interface Message {
     preview: string
   }
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
+  /**
+   * The sender asked for something back — a correction, or to hear it said.
+   *
+   * Only ever set on the sender's own text. It is a note on the sentence, not
+   * a kind of message: `type` stays `text`, so `previewFor`, the chat list row
+   * and the push body are unchanged, and a build that predates this simply
+   * does not draw the badge.
+   */
+  ask?: MessageAsk
+  /**
+   * The sender's own words, rendered into the reader's language, sent with the
+   * message rather than asked for afterwards.
+   *
+   * Stored, unlike the translations the menu produces — those are one reader's
+   * private view of somebody else's sentence and live only in that client's
+   * state. This one the sender chose to publish, so both people see the same
+   * pair and it survives a reload.
+   */
+  translation?: MessageTranslation
   /**
    * Everything attached to this message, in the order it was picked.
    *

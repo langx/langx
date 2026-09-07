@@ -141,6 +141,14 @@ export interface PickMediaOptions {
    * to be told afterwards that it cannot go on a profile.
    */
   kinds?: 'images' | 'all'
+  /**
+   * Where the file comes from, when the caller has already asked.
+   *
+   * The chat composer's sheet draws camera and library as two of its own rows,
+   * so asking again in an alert would be the same question twice. Callers that
+   * do not say still get `chooseSource`.
+   */
+  source?: PickSource
 }
 
 /**
@@ -158,7 +166,7 @@ export interface PickMediaOptions {
  * `validatePickedAssets`, which holds the rules and is where they are tested.
  */
 export async function pickMediaAssets(options: PickMediaOptions): Promise<PickMediaResult> {
-  const source = await chooseSource()
+  const source = options.source ?? (await chooseSource())
   if (!source) return { status: 'cancelled' }
 
   const permission =
