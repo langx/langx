@@ -4,6 +4,7 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import { useCallback, useEffect, useRef } from 'react'
 import {
   Animated,
+  I18nManager,
   Modal,
   PanResponder,
   Platform,
@@ -139,6 +140,31 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const latest = useRef({ index, photos, onIndexChange })
   latest.current = { index, photos, onIndexChange }
 
+  /**
+   * Where the close disc sits, in the same window coordinates the gesture
+   * reads. Kept in a ref for the reason `latest` is: the responder is built
+   * once and would otherwise hold the first render's inset. The gesture
+   * layer refuses a touch that starts here, so the disc gets it even on a
+   * platform that paints the transformed picture over an absolutely
+   * positioned sibling — which is what made the ✕ unreachable once a photo
+   * filled the screen.
+   */
+  const closeZone = useRef({ top: 0, bottom: 0, start: 0, end: 0 })
+  closeZone.current = {
+    top: insets.top + spacing.sm - CLOSE_HIT_SLOP,
+    bottom: insets.top + spacing.sm + CLOSE_SIZE + CLOSE_HIT_SLOP,
+    start: spacing.lg - CLOSE_HIT_SLOP,
+    end: spacing.lg + CLOSE_SIZE + CLOSE_HIT_SLOP,
+  }
+  function overClose(x: number, y: number): boolean {
+    const zone = closeZone.current
+    if (y < zone.top || y > zone.bottom) return false
+    const width = frame.current.width
+    // `end` is the right edge in a left-to-right layout and the left in Arabic.
+    const fromEdge = I18nManager.isRTL ? x : width - x
+    return fromEdge >= zone.start && fromEdge <= zone.end
+  }
+
   function page(step: number): void {
     const { index: at, photos: album, onIndexChange: change } = latest.current
     if (at === null) return
@@ -197,8 +223,10 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     PanResponder.create({
       // Claimed on touch-down, unlike the list rows: this view is the whole
       // modal, so there is no tap of anyone else's to swallow.
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: (event) =>
+        !overClose(event.nativeEvent.pageX, event.nativeEvent.pageY),
+      onMoveShouldSetPanResponder: (event) =>
+        !overClose(event.nativeEvent.pageX, event.nativeEvent.pageY),
       onPanResponderGrant: (event) => {
         const touches = event.nativeEvent.touches
         start.current = {
@@ -368,54 +396,75 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
           </Animated.View>
         )}
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('photo.close')}
-          style={({ pressed }) => [
-            styles.close,
-            { top: insets.top + spacing.sm },
-            pressed && styles.closePressed,
-          ]}
-          onPress={onClose}
-          hitSlop={12}
-        >
-          <Text style={styles.closeText}>✕</Text>
-        </Pressable>
+        {/*
+          The chrome sits on a layer of its own above the stage. `zIndex` on
+          the disc alone was not enough everywhere: react-native-web paints a
+          transformed sibling over it, and Android wants `elevation` before it
+          reorders touch targets. `box-none` keeps the layer itself out of the
+          way, so a tap between the controls still reaches the picture.
+        */}
+        <View style={styles.chrome} pointerEvents="box-none">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('photo.close')}
+            style={({ pressed }) => [
+              styles.close,
+              { top: insets.top + spacing.sm },
+              pressed && styles.closePressed,
+            ]}
+            onPress={onClose}
+            hitSlop={CLOSE_HIT_SLOP}
+          >
+            <Text style={styles.closeText}>✕</Text>
+          </Pressable>
 
-        {photos.length > 1 ? (
-          <View style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('photo.previous')}
-              onPress={() => page(-1)}
-              hitSlop={12}
-            >
-              <Text style={styles.pagerArrow}>‹</Text>
-            </Pressable>
-            <Text style={styles.pagerCount}>
-              {t('photo.counter', { index: index + 1, total: photos.length })}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('photo.next')}
-              onPress={() => page(1)}
-              hitSlop={12}
-            >
-              <Text style={styles.pagerArrow}>›</Text>
-            </Pressable>
-          </View>
-        ) : null}
+          {photos.length > 1 ? (
+            <View style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('photo.previous')}
+                onPress={() => page(-1)}
+                hitSlop={12}
+              >
+                <Text style={styles.pagerArrow}>‹</Text>
+              </Pressable>
+              <Text style={styles.pagerCount}>
+                {t('photo.counter', { index: index + 1, total: photos.length })}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('photo.next')}
+                onPress={() => page(1)}
+                hitSlop={12}
+              >
+                <Text style={styles.pagerArrow}>›</Text>
+              </Pressable>
+            </View>
+          ) : null}
+        </View>
       </View>
     </Modal>
   )
 }
+
+/** The disc's diameter and the slop around it; 36 + 12 + 12 is the platform's 44pt target and then some. */
+const CLOSE_SIZE = 36
+const CLOSE_HIT_SLOP = 12
 
 function pointOf(touch: { pageX: number; pageY: number } | undefined): Point {
   return { x: touch?.pageX ?? 0, y: touch?.pageY ?? 0 }
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backdrop: { backgroundColor: colors.scrimStrong, flex: 1, justifyContent: 'center' },
+  // `relative`, so the chrome's z-order is decided against this and not
+  // against whatever stacking context the transformed stage creates on web.
+  backdrop: {
+    backgroundColor: colors.scrimStrong,
+    flex: 1,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  chrome: { bottom: 0, elevation: 2, left: 0, position: 'absolute', right: 0, top: 0, zIndex: 2 },
   stage: { flex: 1, width: '100%' },
   full: { flex: 1, width: '100%' },
   /*
@@ -427,11 +476,10 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     backgroundColor: colors.scrim,
     borderRadius: 18,
     end: spacing.lg,
-    height: 36,
+    height: CLOSE_SIZE,
     justifyContent: 'center',
     position: 'absolute',
-    width: 36,
-    zIndex: 1,
+    width: CLOSE_SIZE,
   },
   closePressed: { opacity: 0.7 },
   closeText: { color: colors.onScrim, fontSize: 18, fontWeight: '600' },
