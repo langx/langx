@@ -4,11 +4,13 @@ import {
   REPLY_PREVIEW_MAX_LENGTH,
   attachmentsOf,
   type ConversationFilter,
+  type AnswerQuizInput,
   type RespondToMeetingInput,
   type SendCorrectionInput,
   type SendMediaMessageInput,
   type SendMeetingInput,
   type SendPhraseInput,
+  type SendQuizInput,
   type SendTextMessageInput,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
@@ -56,6 +58,7 @@ export function previewFor(type: Message['type'], count = 1): string {
   // arrives and says nothing.
   if (type === 'phrase') return '🗂️ Phrase'
   if (type === 'meeting') return '📅 Meeting'
+  if (type === 'quiz') return '❓ Quiz'
   return ''
 }
 
@@ -349,6 +352,87 @@ export async function respondToMeeting(
   if (!updated) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'This meeting has already been answered')
   }
+  return { message: updated, conversation }
+}
+
+export async function sendQuiz(
+  db: Db,
+  senderId: string,
+  input: SendQuizInput,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: 'quiz',
+    body: '',
+    quiz: {
+      question: input.question,
+      options: input.options,
+      correctIndex: input.correctIndex,
+    },
+    ...(input.clientId ? { clientId: input.clientId } : {}),
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * Answering one, once.
+ *
+ * The asker cannot answer their own question — they already know — and an
+ * answered quiz stays answered: a second go would find the right option by
+ * elimination, which is not an answer to anything. `quiz.answer` is in the
+ * update filter as well as the read, so two taps racing cannot both win.
+ *
+ * No token is paid. Two accounts asking and answering each other would be the
+ * easiest farm in the app; `awardForSend` already pays the ordinary 2 for the
+ * send, and that is the whole of it.
+ */
+export async function answerQuiz(
+  db: Db,
+  userId: string,
+  input: AnswerQuizInput,
+): Promise<{ message: Message; conversation: Conversation }> {
+  const conversation = await assertConversationAccess(db, input.conversationId, userId)
+
+  let messageId: ObjectId
+  try {
+    messageId = new ObjectId(input.messageId)
+  } catch {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
+  }
+
+  const message = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOne({ _id: messageId, conversationId: conversation._id, type: 'quiz' })
+  if (!message?.quiz) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such quiz')
+  if (message.senderId === userId) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'You wrote this one')
+  }
+  if (input.index >= message.quiz.options.length) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'No such option')
+  }
+
+  const updated = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOneAndUpdate(
+      { _id: messageId, 'quiz.answer': { $exists: false } },
+      { $set: { 'quiz.answer': { index: input.index, at: new Date() } } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Already answered')
   return { message: updated, conversation }
 }
 

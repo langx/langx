@@ -129,6 +129,17 @@ export interface Message {
     respondedAt?: Date
   }
   /**
+   * `answer` is the only mutable part, and only once: a quiz answered twice
+   * would let somebody find the right option by elimination, which is not an
+   * answer to anything.
+   */
+  quiz?: {
+    question: string
+    options: string[]
+    correctIndex: number
+    answer?: { index: number; at: Date }
+  }
+  /**
    * Everything attached to this message, in the order it was picked.
    *
    * Read through `attachmentsOf`, never directly: a v1-imported message and

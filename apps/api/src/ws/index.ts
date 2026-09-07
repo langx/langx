@@ -4,10 +4,12 @@ import {
   pinMessageSchema,
   reactToMessageSchema,
   starMessageSchema,
+  answerQuizSchema,
   respondToMeetingSchema,
   sendCorrectionSchema,
   sendMeetingSchema,
   sendPhraseSchema,
+  sendQuizSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
 } from '@langx/shared'
@@ -31,10 +33,12 @@ import {
 import {
   markConversationRead,
   markPendingDelivered,
+  answerQuiz,
   respondToMeeting,
   sendCorrection,
   sendMeeting,
   sendPhrase,
+  sendQuiz,
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
@@ -268,6 +272,31 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then((input) => sendMeeting(app.mongo.db, userId, input))
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:quiz', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
+      sendQuizSchema
+        .parseAsync(payload)
+        .then((input) => sendQuiz(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /** Both people see the answer: the asker's whole reason for asking is it. */
+    socket.on('quiz:answer', (payload: unknown, ack: Ack) => {
+      if (!limited('message:correct', ack)) return
+      answerQuizSchema
+        .parseAsync(payload)
+        .then((input) => answerQuiz(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          fanOutMessageUpdate(io, conversation, message, 'both', userId)
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
