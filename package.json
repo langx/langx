@@ -33,5 +33,12 @@
     "prettier": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:"
+  },
+  "pnpm": {
+    "overrides": {
+      "fflate": "0.7.5",
+      "decode-uri-component": "^0.5.0",
+      "uuid": "^11.1.1"
+    }
   }
 }
