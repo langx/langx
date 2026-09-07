@@ -361,15 +361,20 @@ every install loses the API on its next launch.
       Store Connect (app 6474187141) with no hand on it, so the distribution
       certificate, the provisioning profile and the App Store Connect API key
       are all in EAS. Review itself still happens in App Store Connect.
-- [ ] **Play submit permissions.** The service account
-      `eas-submit@langx-48eb0.iam.gserviceaccount.com` is uploaded to EAS but
-      Play does not know it yet: Play Console → Users and permissions → invite
-      that address with release permissions, and enable the Google Play
-      Android Developer API on the `langx-48eb0` project. Still true on
-      7 September 2026: `release.yml` with `platform=android` built 2.0 (136)
-      and failed at the submit step the same way the 5 September attempts did
-      ("Fastlane supply failed"). The bundle is on expo.dev under that build
-      and can be uploaded by hand until the account is invited.
+- [ ] **Play submit — the health declaration.** The service account
+      `eas-submit@langx-48eb0.iam.gserviceaccount.com` is _not_ the problem: on
+      7 September 2026 it was already a Play Console user with "Release to
+      production" on the app. Every failed submit — 5 September and the
+      `release.yml` run of 7 September — died in `fastlane supply` on
+      `You must let us know whether your app includes any health features`,
+      and uploading the same bundle (2.0, version code 136) by hand showed the
+      same error on the release page. App content → Health apps read "no
+      health features" since 5 September but had never been _sent for review_;
+      re-saving it put it into Publishing overview → Changes in review. Once
+      that publishes, roll out the saved Production draft (release "2.0",
+      bundle 136) from the console, and `release.yml` for Android should pass
+      its submit step from then on. If it fails again with the same message,
+      the declaration is the place to look, not credentials.
 
 What is already in EAS: the Android application identifier with the real
 upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
