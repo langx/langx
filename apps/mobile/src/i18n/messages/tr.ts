@@ -457,6 +457,7 @@ export const tr: Localized<EnMessages> = {
     combinedTitle: 'Yazdıkların',
     tabCorrections: 'Düzeltmeler',
     tabPosts: 'Gönderiler',
+    forName: '{name} için',
   },
   myPosts: {
     emptyTitle: 'Henüz bir şey sormadın',
@@ -1096,6 +1097,7 @@ export const tr: Localized<EnMessages> = {
     todaySoFar: 'Bugün şu ana kadar',
     activityScore: { one: '{count} aktivite', other: '{count} aktivite' },
     todayBreakdown: '{messages} mesaj, {corrections} düzeltme, {partners} kişi.',
+    poolParticipants: { one: 'O gün {n} kişi aktifti', other: 'O gün {n} kişi aktifti' },
   },
 
   invite: {
@@ -1314,6 +1316,7 @@ export const tr: Localized<EnMessages> = {
     },
     seeWhoWith: '{plan} ile kim olduğunu gör',
     unlockBody: 'İsimler ve profiller, ayrıca senin için gizli gezinme.',
+    weekPeople: { one: 'Son bir haftada {count} kişi.', other: 'Son bir haftada {count} kişi.' },
   },
 
   blocked: {

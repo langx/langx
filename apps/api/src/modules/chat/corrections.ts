@@ -1,10 +1,20 @@
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
-import type { Message } from './conversations'
+import type { Conversation, Message } from './conversations'
+
+export interface CorrectionWritten {
+  message: Message
+  /**
+   * The other side of the conversation — who the correction was for. Absent
+   * only if the conversation is gone, which the row tolerates by showing the
+   * date alone.
+   */
+  recipientId?: string
+}
 
 export interface CorrectionsPage {
-  items: Message[]
+  items: CorrectionWritten[]
   nextCursor: string | null
 }
 
@@ -25,6 +35,12 @@ export interface CorrectionsPage {
  *
  * Rides `sender_type_created`. `sender_type` gives the same filter with no
  * `createdAt`, which sorts every correction the user ever wrote in memory.
+ *
+ * Each row names who it was for. A message carries only a `conversationId`,
+ * so the page's conversations are read once (`_id` lookup, `participants`
+ * only) and the other participant is attached — the design leads every row
+ * with "For {name}", and the client has no endpoint that resolves a
+ * conversation to its partner without fetching the thread.
  */
 export async function listCorrectionsWritten(
   db: Db,
@@ -54,11 +70,25 @@ export async function listCorrectionsWritten(
     .toArray()
 
   const hasMore = rows.length > limit
-  const items = hasMore ? rows.slice(0, limit) : rows
-  const last = items.at(-1)
+  const messages = hasMore ? rows.slice(0, limit) : rows
+  const last = messages.at(-1)
+
+  const conversations = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .find(
+      { _id: { $in: [...new Set(messages.map((m) => m.conversationId))] } },
+      { projection: { participants: 1 } },
+    )
+    .toArray()
+  const partnerByConversation = new Map(
+    conversations.map((c) => [String(c._id), c.participants.find((p) => p !== userId)]),
+  )
 
   return {
-    items,
+    items: messages.map((message) => {
+      const recipientId = partnerByConversation.get(String(message.conversationId))
+      return recipientId ? { message, recipientId } : { message }
+    }),
     nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
 }

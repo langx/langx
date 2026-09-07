@@ -84,12 +84,17 @@ export async function unblockUser(db: Db, blockerId: string, blockedId: string):
 
 export interface BlockedPage {
   items: Block[]
+  /** Everyone blocked, not the page: the number the settings row shows. */
+  total: number
   nextCursor: string | null
 }
 
 /**
  * Paged. This used to have no limit at all — one query and one response body
  * sized by however many people someone had blocked.
+ *
+ * `total` rides along on every page rather than only the first, because it is
+ * one indexed count and the row that shows it reads whichever page is cached.
  */
 export async function listBlocked(
   db: Db,
@@ -102,19 +107,23 @@ export async function listBlocked(
     filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
   }
 
+  const blocks = db.collection<Block>(COLLECTIONS.blocks)
   // One extra to know whether a next page exists without a second round trip.
-  const page = await db
-    .collection<Block>(COLLECTIONS.blocks)
-    .find(filter)
-    .sort({ createdAt: -1, _id: -1 })
-    .limit(query.limit + 1)
-    .toArray()
+  const [page, total] = await Promise.all([
+    blocks
+      .find(filter)
+      .sort({ createdAt: -1, _id: -1 })
+      .limit(query.limit + 1)
+      .toArray(),
+    blocks.countDocuments({ blockerId }),
+  ])
 
   const hasMore = page.length > query.limit
   const items = hasMore ? page.slice(0, query.limit) : page
   const last = items.at(-1)
   return {
     items,
+    total,
     nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
 }

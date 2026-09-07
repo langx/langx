@@ -492,6 +492,7 @@ export const en = {
     combinedTitle: 'Your writing',
     tabCorrections: 'Corrections',
     tabPosts: 'Posts',
+    forName: 'For {name}',
   },
   myPosts: {
     emptyTitle: 'Nothing asked yet',
@@ -1134,6 +1135,7 @@ export const en = {
     todaySoFar: 'Today so far',
     activityScore: { one: '{count} activity', other: '{count} activity' },
     todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
+    poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -1356,6 +1358,10 @@ export const en = {
     },
     seeWhoWith: 'See who with {plan}',
     unlockBody: 'Names and profiles, plus incognito browsing for you.',
+    weekPeople: {
+      one: '{count} person in the last week.',
+      other: '{count} people in the last week.',
+    },
   },
 
   blocked: {

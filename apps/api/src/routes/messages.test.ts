@@ -152,19 +152,26 @@ describe('Faz 5 — conversation/message history REST', () => {
       }
 
       const seen: string[] = []
+      const recipients = new Set<string | undefined>()
       let cursor: string | null | undefined
       for (let guard = 0; guard < 5; guard++) {
         const url = `/me/corrections?limit=2${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`
         const response = await app.inject({ method: 'GET', url, headers: { cookie: a.cookie } })
         expect(response.statusCode, response.body).toBe(200)
-        const body = response.json<{ items: { _id: string }[]; nextCursor: string | null }>()
+        const body = response.json<{
+          items: { _id: string; recipientId?: string }[]
+          nextCursor: string | null
+        }>()
         seen.push(...body.items.map((m) => m._id))
+        for (const m of body.items) recipients.add(m.recipientId)
         cursor = body.nextCursor
         if (!cursor) break
       }
 
       expect(seen).toHaveLength(5)
       expect(new Set(seen).size).toBe(5)
+      // Every row says who it was for: the other side of its conversation.
+      expect([...recipients]).toEqual([b.userId])
     })
 
     /** The other side's corrections are theirs, not yours. */

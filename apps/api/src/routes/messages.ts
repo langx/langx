@@ -168,7 +168,10 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
         request.query.cursor,
       )
       return reply.send({
-        items: page.items.map((m) => toMessageView(m, request.userId)),
+        items: page.items.map(({ message, recipientId }) => ({
+          ...toMessageView(message, request.userId),
+          ...(recipientId ? { recipientId } : {}),
+        })),
         nextCursor: page.nextCursor,
       })
     },

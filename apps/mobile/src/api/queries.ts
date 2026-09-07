@@ -477,6 +477,11 @@ export interface MessageDto {
    * have arrived.
    */
   clientId?: string
+  /**
+   * Who a correction was for — the other side of its conversation. Only on
+   * `/me/corrections`, and only from an API that attaches it.
+   */
+  recipientId?: string
   /** Somebody corrected this sentence, so it can no longer be edited. */
   corrected?: boolean
   deliveredAt?: string
@@ -1210,6 +1215,8 @@ export interface ViewerPageDto {
   }[]
   /** Visits per day, oldest first, ending today. First page only. */
   week?: { day: string; visits: number }[]
+  /** Distinct people over the same week. First page only; absent from an older API. */
+  weekPeople?: number
   nextCursor: string | null
 }
 
@@ -1564,6 +1571,8 @@ export interface BlockDto {
 
 export interface BlockPageDto {
   items: BlockDto[]
+  /** Everyone blocked, not the page. Absent from an older API. */
+  total?: number
   nextCursor: string | null
 }
 

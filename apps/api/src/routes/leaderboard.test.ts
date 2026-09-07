@@ -272,6 +272,10 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
         .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
         .findOne({ userId: user.userId, kind: 'dailyPool', refId: day })
       expect(summary.pool.lastPayout?.amount).toBe(row?.amount)
+      // How many that run paid, read off the run record — the "N active that
+      // day" line under the share.
+      if (outcome.ran) expect(summary.pool.lastPayout?.participants).toBe(outcome.result.paid)
+      expect(summary.pool.lastPayout?.participants).toBeGreaterThanOrEqual(1)
     })
 
     it('splits the pool in proportion to activity, and pays nothing twice on a re-run', async () => {

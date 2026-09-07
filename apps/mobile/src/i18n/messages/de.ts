@@ -462,6 +462,7 @@ export const de: Localized<EnMessages> = {
     combinedTitle: 'Was du geschrieben hast',
     tabCorrections: 'Korrekturen',
     tabPosts: 'Beiträge',
+    forName: 'Für {name}',
   },
   myPosts: {
     emptyTitle: 'Noch nichts gefragt',
@@ -1116,6 +1117,7 @@ export const de: Localized<EnMessages> = {
     todaySoFar: 'Heute bisher',
     activityScore: { one: '{count} Aktivität', other: '{count} Aktivität' },
     todayBreakdown: '{messages} Nachrichten, {corrections} Korrekturen, {partners} Personen.',
+    poolParticipants: { one: '{n} aktiv an dem Tag', other: '{n} aktiv an dem Tag' },
   },
 
   invite: {
@@ -1338,6 +1340,10 @@ export const de: Localized<EnMessages> = {
     },
     seeWhoWith: 'Mit {plan} siehst du, wer',
     unlockBody: 'Namen und Profile, dazu Inkognito-Surfen für dich.',
+    weekPeople: {
+      one: '{count} Person in der letzten Woche.',
+      other: '{count} Personen in der letzten Woche.',
+    },
   },
 
   blocked: {

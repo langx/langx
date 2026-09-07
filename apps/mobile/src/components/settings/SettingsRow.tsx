@@ -15,8 +15,9 @@ import { router } from 'expo-router'
 import { Image, Platform, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
 import defaultIcon from '../../../assets/icons/default.png'
+import { useBlocks } from '../../api/queries'
 import type { SettingsModel } from '../../hooks/useSettingsModel'
-import { type MessageKey, useDisplayNames } from '../../i18n'
+import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
@@ -486,13 +487,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       )
     case 'account.blocked':
-      return (
-        <ListRow
-          title={t('settings.blockedPeople')}
-          last={last}
-          onPress={() => router.push('/(app)/blocked')}
-        />
-      )
+      return <BlockedPeopleRow last={last} />
     case 'account.export':
       return (
         <ListRow
@@ -667,6 +662,26 @@ function ExternalRow({
       <Text style={[styles.rowTitle, styles.rowGrow]}>{title}</Text>
       <Feather name="share" size={18} color={colors.textFaint} />
     </Pressable>
+  )
+}
+
+/**
+ * Its own component because the count is a query, and a hook cannot live in
+ * one arm of the switch above. The number is the whole list's `total` off
+ * whichever page is cached — none while it loads, or against an older API,
+ * and the row is then the title alone.
+ */
+function BlockedPeopleRow({ last }: { last: boolean }) {
+  const t = useT()
+  const { locale } = useLocale()
+  const total = useBlocks().data?.pages[0]?.total
+  return (
+    <ListRow
+      title={t('settings.blockedPeople')}
+      value={total === undefined ? undefined : total.toLocaleString(locale)}
+      last={last}
+      onPress={() => router.push('/(app)/blocked')}
+    />
   )
 }
 

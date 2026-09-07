@@ -15,6 +15,7 @@ import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
+import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
@@ -55,6 +56,10 @@ export default function WritingScreen() {
   const myPosts = useMemo(
     () => dedupeById(posts.data?.pages.flatMap((p) => p.items) ?? []),
     [posts.data],
+  )
+  // The rows carry who each correction was for as an id; these are the names.
+  const recipients = useProfileCache(
+    corrections.flatMap((c) => (c.recipientId ? [c.recipientId] : [])),
   )
 
   const active = tab === 'corrections' ? page : posts
@@ -101,7 +106,15 @@ export default function WritingScreen() {
           ListFooterComponent={
             page.isFetchingNextPage ? <ActivityIndicator style={styles.loading} /> : null
           }
-          renderItem={({ item }) => <Row message={item} t={t} locale={locale} styles={styles} />}
+          renderItem={({ item }) => (
+            <Row
+              message={item}
+              recipient={item.recipientId ? recipients[item.recipientId]?.displayName : undefined}
+              t={t}
+              locale={locale}
+              styles={styles}
+            />
+          )}
         />
       ) : (
         <FlatList
@@ -167,23 +180,26 @@ function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof u
  * height for both, and reading the whole original is what tells you which
  * correction this was.
  *
- * The top line is the date alone. The design leads with who the correction
- * was for, but the row carries only a `conversationId` and there is no
- * endpoint that resolves one conversation to its partner without fetching the
- * thread, so the name waits on the API.
+ * The top line leads with who the correction was for, as the design does,
+ * with the date at the far end. The name comes from the profile cache off
+ * the `recipientId` the API attaches; while it loads — or against an API that
+ * does not send it — the line is the date alone.
  */
 function Row({
   message,
+  recipient,
   t,
   locale,
   styles,
 }: {
   message: MessageDto
+  recipient: string | undefined
   t: ReturnType<typeof useT>
   locale: Locale
   styles: ReturnType<typeof useStyles>
 }) {
   const correction = message.correction
+  const when = dayLabel(message.createdAt.slice(0, 10), { t, locale })
 
   return (
     <Pressable
@@ -195,9 +211,16 @@ function Row({
       }
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
-      <Text style={[styles.when, styles.whenAlone]}>
-        {dayLabel(message.createdAt.slice(0, 10), { t, locale })}
-      </Text>
+      {recipient ? (
+        <View style={styles.top}>
+          <Text style={styles.forName} numberOfLines={1}>
+            {t('corrections.forName', { name: recipient })}
+          </Text>
+          <Text style={styles.when}>{when}</Text>
+        </View>
+      ) : (
+        <Text style={[styles.when, styles.whenAlone]}>{when}</Text>
+      )}
       {correction ? <Text style={styles.original}>{correction.original}</Text> : null}
       <Text style={styles.corrected}>{message.body}</Text>
     </Pressable>
@@ -213,6 +236,8 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
     gap: spacing.sm,
     paddingVertical: 18,
   },
+  // Green, like the corrections count: a correction is something given.
+  forName: { color: colors.success, flex: 1, fontSize: 13, fontWeight: '700' },
   pressed: { opacity: 0.6 },
   top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   when: { color: colors.textFaint, fontSize: 13 },

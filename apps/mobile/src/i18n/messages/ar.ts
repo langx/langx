@@ -520,6 +520,7 @@ export const ar: Localized<EnMessages> = {
     combinedTitle: 'ما كتبته',
     tabCorrections: 'التصحيحات',
     tabPosts: 'المنشورات',
+    forName: 'لـ {name}',
   },
   myPosts: {
     emptyTitle: 'لم تسأل عن شيء بعد',
@@ -1291,6 +1292,14 @@ export const ar: Localized<EnMessages> = {
       other: '{count} نشاط',
     },
     todayBreakdown: '{messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
+    poolParticipants: {
+      zero: 'لا أحد كان نشطًا ذلك اليوم',
+      one: 'شخص واحد كان نشطًا ذلك اليوم',
+      two: 'شخصان كانا نشطين ذلك اليوم',
+      few: '{n} أشخاص كانوا نشطين ذلك اليوم',
+      many: '{n} شخصًا كانوا نشطين ذلك اليوم',
+      other: '{n} شخص كانوا نشطين ذلك اليوم',
+    },
   },
 
   invite: {
@@ -1566,6 +1575,14 @@ export const ar: Localized<EnMessages> = {
     },
     seeWhoWith: 'اعرف من هم مع {plan}',
     unlockBody: 'الأسماء والملفات الشخصية، بالإضافة إلى التصفح المتخفي لك.',
+    weekPeople: {
+      zero: 'لا أحد في الأسبوع الأخير.',
+      one: 'شخص واحد في الأسبوع الأخير.',
+      two: 'شخصان في الأسبوع الأخير.',
+      few: '{count} أشخاص في الأسبوع الأخير.',
+      many: '{count} شخصًا في الأسبوع الأخير.',
+      other: '{count} شخص في الأسبوع الأخير.',
+    },
   },
 
   blocked: {
