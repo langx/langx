@@ -105,7 +105,27 @@ const config: ExpoConfig = {
      * and below cannot save its capture without it, and the policy does not
      * cover it.
      */
-    blockedPermissions: ['android.permission.READ_EXTERNAL_STORAGE'],
+    /*
+     * `ACTIVITY_RECOGNITION` comes from expo-sensors' own manifest, which
+     * declares it once for the whole module because `Pedometer` — the step
+     * counter — cannot read its sensor without it. The only sensor this app
+     * touches is the accelerometer, in `useShake`, and that one is unrestricted
+     * on every Android version. So the permission was never requested at
+     * runtime and was never needed; it arrived at manifest-merge time and sat
+     * in the bundle.
+     *
+     * Play reads it as a health signal. Bundle 136 was refused with "Your app
+     * uses the android.permission.ACTIVITY_RECOGNITION permission and must meet
+     * Health apps policy requirements", which is also what made every submit
+     * die in `fastlane supply` on the health declaration: the declaration said
+     * "no health features" while the manifest said otherwise, and Play believes
+     * the manifest. Removing it is the fix Google's own message asks for; the
+     * alternative is claiming a health feature the app does not have.
+     */
+    blockedPermissions: [
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.ACTIVITY_RECOGNITION',
+    ],
     intentFilters: [
       {
         action: 'VIEW',

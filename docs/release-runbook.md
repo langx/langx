@@ -361,20 +361,25 @@ every install loses the API on its next launch.
       Store Connect (app 6474187141) with no hand on it, so the distribution
       certificate, the provisioning profile and the App Store Connect API key
       are all in EAS. Review itself still happens in App Store Connect.
-- [ ] **Play submit — the health declaration.** The service account
-      `eas-submit@langx-48eb0.iam.gserviceaccount.com` is _not_ the problem: on
-      7 September 2026 it was already a Play Console user with "Release to
-      production" on the app. Every failed submit — 5 September and the
-      `release.yml` run of 7 September — died in `fastlane supply` on
-      `You must let us know whether your app includes any health features`,
-      and uploading the same bundle (2.0, version code 136) by hand showed the
-      same error on the release page. App content → Health apps read "no
-      health features" since 5 September but had never been _sent for review_;
-      re-saving it put it into Publishing overview → Changes in review. Once
-      that publishes, roll out the saved Production draft (release "2.0",
-      bundle 136) from the console, and `release.yml` for Android should pass
-      its submit step from then on. If it fails again with the same message,
-      the declaration is the place to look, not credentials.
+- [ ] **Play submit — `ACTIVITY_RECOGNITION` in the bundle.** The service
+      account `eas-submit@langx-48eb0.iam.gserviceaccount.com` is _not_ the
+      problem: on 7 September 2026 it was already a Play Console user with
+      "Release to production" on the app. Every failed submit — 5 September and
+      the `release.yml` run of 7 September — died in `fastlane supply` on
+      `You must let us know whether your app includes any health features`, and
+      uploading the same bundle (2.0, version code 136) by hand showed the same
+      error on the release page. Re-saving App content → Health apps did not
+      clear it, and the release page then said why: "Your app uses the
+      android.permission.ACTIVITY_RECOGNITION permission and must meet Health
+      apps policy requirements." The permission is expo-sensors', declared for
+      `Pedometer`, and it reached the bundle at manifest-merge time — `useShake`
+      only ever reads the accelerometer, which needs no permission. A
+      declaration cannot win an argument with the manifest, so the manifest
+      changed: the permission is in `blockedPermissions` in `app.config.ts`,
+      verified gone from `processReleaseMainManifest`'s merged output. That is a
+      native change — bundle 136 still contains the permission, so it needs a
+      new Android build with a new version code, not an OTA. Roll that one out
+      and the submit step should pass from then on.
 
 What is already in EAS: the Android application identifier with the real
 upload keystore (alias `key0`, the v1 key Play trusts), the FCM V1 service
