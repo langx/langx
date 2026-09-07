@@ -14,6 +14,7 @@ The working assumption in these docs is that the sibling repos are checked out
   website/        langx.io
   token-website/  token.langx.io
   docs/           docs.langx.io (GitBook source)
+  branding/       logos, app icons, store screenshots
 ```
 
 Paths such as `website/src/lib/data/plans.ts` in this repo's docs mean that
@@ -29,6 +30,7 @@ mean this folder.
 | [`langx/website`](https://github.com/langx/website)             | langx.io — SvelteKit, deployed by its own GitHub Actions workflow |
 | [`langx/token-website`](https://github.com/langx/token-website) | token.langx.io — plain HTML/CSS/JS, no build step                 |
 | [`langx/docs`](https://github.com/langx/docs)                   | GitBook source for docs.langx.io; `SUMMARY.md` is the entry point |
+| [`langx/branding`](https://github.com/langx/branding)           | Logos, app icons, store screenshots, press kit. No code           |
 
 ### `langx/api` — retired
 
@@ -64,6 +66,8 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `packages/shared/src/cosmetics.ts`             | `website/src/lib/data/token.ts`                              |
 | `docs/store/listing.md`                        | `website/src/lib/data/meta.ts`                               |
 | `packages/shared/src/token.ts`, `cosmetics.ts` | the numbers on token.langx.io and the token pages in `docs/` |
+| `apps/mobile/assets/`                          | `branding/app-resources/v2/` — the same bytes, copied        |
+| `apps/mobile/src/lib/theme/tokens.ts`          | `branding/BRAND.md` — the palette, the type and the scales   |
 
 One more runs the other way: the app's link table
 `apps/mobile/src/lib/externalLinks.ts` (Settings → Legal, and the "Our Kitchen"
@@ -94,10 +98,9 @@ was built from it), `langx-flutter`, `db-bulk-update`,
 `rss-to-medium-autopublish`, `insight`, `insight-counterscale`,
 `capacitor-voice-recorder`, `db`, `sdk`, `cepix`.
 
-Live on GitHub but out of scope: `copilot` (OpenAI-backed Discord assistant),
-`branding` (logos, store screenshots, press kit — no code), `.github` (the
-organisation profile). `langx-react-native`, the first RN sketch of v2, moved
-into this repo; its remote no longer resolves.
+Live on GitHub but out of scope: `copilot` (OpenAI-backed Discord assistant)
+and `.github` (the organisation profile). `langx-react-native`, the first RN
+sketch of v2, moved into this repo; its remote no longer resolves.
 
 To understand how v1 worked, read `langx-angular`, `api`, and
 [`v1-reference.md`](v1-reference.md).

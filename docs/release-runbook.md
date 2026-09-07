@@ -490,8 +490,12 @@ a rank, so gold has to read as something bought rather than as the product.
       in `Logo.svelte`, and the feature screenshots under
       `website/static/images/features/`, which still show v1's UI
 - [ ] Re-shoot the store screenshots in the new identity. They live in
-      `branding/`, which is out of scope for work — the shots are needed, the
-      repo is still not one to work in
+      `branding/`, which is now a repo to work in: `branding/BRAND.md` is the
+      v3 identity written down, `branding/app-resources/v2/` carries the icons
+      and splash badges the app ships, and `branding/2.0.x/` holds the
+      composition — the shot list, the numbers, and the template rendered empty
+      at each store size. What is missing is the captures themselves, which
+      need the app signed in against a local replica set
 
 ## The paywall sells the trial and the saving
 
