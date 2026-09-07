@@ -13,7 +13,10 @@ import { authClient } from '../lib/auth-client'
  * handles this without help.
  */
 export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  const url = path.startsWith('http') ? path : `${API_URL}${path}`
+  // Always our own host. Paths carry request-derived pieces (a handle, an id,
+  // a cursor), and a path that could also be a whole URL would let one of
+  // those pick the host — which is the shape CodeQL flags as request forgery.
+  const url = `${API_URL}${path}`
 
   if (Platform.OS === 'web') {
     /*

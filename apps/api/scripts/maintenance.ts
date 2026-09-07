@@ -11,6 +11,7 @@
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts min-version ios 2.1.0
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts flag translationEnabled false
  */
+import { appConfigSchema, minVersionSchema } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv } from '../src/env'
 import { getAppConfig, setMaintenance, updateAppConfig } from '../src/modules/appConfig/appConfig'
@@ -42,9 +43,14 @@ async function main(): Promise<void> {
       }
       case 'min-version': {
         const [platform, version] = args
-        if (!platform || !version) throw new Error('usage: min-version <ios|android|web> <x.y.z>')
+        // The argument becomes a property name, so it is checked against the
+        // schema's own keys first: a typo gets a usage line, not a new field.
+        const platformKey = minVersionSchema.keyof().safeParse(platform)
+        if (!platformKey.success || !version) {
+          throw new Error('usage: min-version <ios|android|web> <x.y.z>')
+        }
         const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
-        const next = { ...current.minVersion, [platform]: version }
+        const next = { ...current.minVersion, [platformKey.data]: version }
         await updateAppConfig(db, { minVersion: next })
         console.log(`Minimum ${platform} version is now ${version}`)
         console.log('Clients below it get 426 UPDATE_REQUIRED and a forced-update screen.')
@@ -52,12 +58,14 @@ async function main(): Promise<void> {
       }
       case 'flag': {
         const [name, value] = args
-        if (!name || (value !== 'true' && value !== 'false')) {
+        // Same rule as `min-version`: only a flag the schema knows can be set.
+        const flagKey = appConfigSchema.shape.flags.keyof().safeParse(name)
+        if (!flagKey.success || (value !== 'true' && value !== 'false')) {
           throw new Error('usage: flag <name> <true|false>')
         }
         const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
         await updateAppConfig(db, {
-          flags: { ...current.flags, [name]: value === 'true' },
+          flags: { ...current.flags, [flagKey.data]: value === 'true' },
         })
         console.log(`Flag ${name} is now ${value}`)
         break
