@@ -498,9 +498,15 @@ a rank, so gold has to read as something bought rather than as the product.
       `website/src/app.html`, `website/static/favicons/*`, the inline fills
       in `Logo.svelte`, and the feature screenshots under
       `website/static/images/features/`, which still show v1's UI
-- [ ] Re-shoot the store screenshots in the new identity. They live in
-      `branding/`, which is out of scope for work — the shots are needed, the
-      repo is still not one to work in
+- [ ] Re-shoot the store screenshots in the new identity. `branding/` is now a
+      repo to work in and most of this is done there: `BRAND.md` is the v3
+      identity written down, `app-resources/v2/` carries the icons and splash
+      badges this app ships, and `2.0.x/` holds a full uploadable set — six
+      shots at every App Store and Play slot, in all eight languages, plus the
+      feature graphics. What is still open is that the screen inside each shot
+      is rendered from the site's phone components rather than captured from a
+      build. Replacing them shot for shot needs the app signed in against a
+      local replica set; the composition does not change when they are
 
 ## The paywall sells the trial and the saving
 
