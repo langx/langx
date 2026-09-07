@@ -45,4 +45,17 @@ describe('fakeOffers', () => {
       expect(offer.perMonthPriceString !== undefined).toBe(offer.period === 'yearly')
     }
   })
+
+  /**
+   * Real yearly prices are picked so that dividing them by twelve reads as a
+   * price rather than a remainder — `planSaving.test.ts` says why, and the
+   * paywall's largest number is the one it produces. The harness has to render
+   * the same shape or it is exercising a screen that no longer exists.
+   */
+  it('divides every yearly price into a clean monthly one', () => {
+    for (const offer of fakeOffers()) {
+      if (offer.period !== 'yearly') continue
+      expect(offer.perMonthPriceString).toMatch(/\.99$/)
+    }
+  })
 })
