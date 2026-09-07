@@ -22,7 +22,6 @@ import { placeLabel } from '../../../src/lib/placeLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { FormField } from '../../../src/components/ui/FormField'
-import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
@@ -258,13 +257,6 @@ export default function ProfileScreen() {
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
-            {/*
-              Kept although the prototype's sample profiles wear none: a title
-              is bought to be seen by other people, and this is the one screen
-              where other people look. The frame on the avatar is the same
-              purchase shown the same way.
-            */}
-            <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
             <Text style={styles.age}>{user.age}</Text>
           </View>
           <Text style={styles.handle} numberOfLines={1}>
