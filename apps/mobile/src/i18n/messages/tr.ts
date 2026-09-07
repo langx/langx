@@ -1013,6 +1013,15 @@ export const tr: Localized<EnMessages> = {
       other: 'Bugün {count} ücretsiz çeviri hakkın kaldı',
     },
     whatYouHave: 'Sende olanlar',
+    signInConnect: 'Bağla',
+    signInDisconnect: 'Bağlantıyı kes',
+    signInDisconnectConfirm:
+      '{provider} bağlantısı kesilsin mi? Artık onunla giriş yapamayacaksın.',
+    signInLastMethod: 'Tek giriş yolun — kesmeden önce bir şifre belirle.',
+    signInLinked: 'Bağlandı.',
+    signInUnlinked: 'Bağlantı kesildi.',
+    signInLinkFailed: 'Bağlanamadı. Tekrar dene.',
+    signInUnlinkFailed: 'Bağlantı kesilemedi. Tekrar dene.',
   },
 
   deletion: {

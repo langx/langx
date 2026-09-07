@@ -105,6 +105,11 @@ export type LinkedProvider = (typeof LINKED_PROVIDERS)[number]
 
 export const linkedAccountSchema = z.object({
   provider: z.enum(LINKED_PROVIDERS),
+  /**
+   * Better Auth's own id for the link row — what its `unlink-account` takes.
+   * Not the provider's id for the person; that one never leaves the server.
+   */
+  id: z.string(),
   /** When the link was made, so the row can say "connected in March". */
   linkedAt: z.string(),
 })

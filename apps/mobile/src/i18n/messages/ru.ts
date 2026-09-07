@@ -1132,6 +1132,14 @@ export const ru: Localized<EnMessages> = {
       other: 'Сегодня осталось {count} бесплатного перевода',
     },
     whatYouHave: 'Что у тебя есть',
+    signInConnect: 'Подключить',
+    signInDisconnect: 'Отключить',
+    signInDisconnectConfirm: 'Отключить {provider}? Вы больше не сможете входить с его помощью.',
+    signInLastMethod: 'Единственный способ входа — сначала задайте пароль.',
+    signInLinked: 'Подключено.',
+    signInUnlinked: 'Отключено.',
+    signInLinkFailed: 'Не удалось подключить. Попробуйте ещё раз.',
+    signInUnlinkFailed: 'Не удалось отключить. Попробуйте ещё раз.',
   },
 
   deletion: {

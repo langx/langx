@@ -148,6 +148,49 @@ describe('sign-in methods', () => {
 
     expect(body.linked.map((row) => row.provider)).toEqual(['google', 'apple'])
     expect(body.linked[0]?.linkedAt).toBe('2026-01-05T00:00:00.000Z')
+    // Each row carries the id `unlink-account` takes.
+    for (const row of body.linked) expect(row.id).toMatch(/^[0-9a-f]{24}$/)
+  })
+
+  describe('disconnecting a provider', () => {
+    function unlink(user: SignedUpUser, accountId: string) {
+      return app.inject({
+        method: 'POST',
+        url: '/api/auth/unlink-account',
+        headers: { cookie: user.cookie },
+        payload: { accountId },
+      })
+    }
+
+    it('removes a provider while a password remains', async () => {
+      const { user } = await newUser('unlink-ok@example.com')
+      await linkProvider(user.userId, 'google', new Date('2026-04-01T00:00:00.000Z'))
+      const before = (await methods(user)).json<SignInMethods>()
+      const google = before.linked.find((row) => row.provider === 'google')
+      expect(google).toBeDefined()
+
+      const response = await unlink(user, google!.id)
+      expect(response.statusCode, response.body).toBe(200)
+
+      const after = (await methods(user)).json<SignInMethods>()
+      expect(after.linked).toEqual([])
+      expect(after.hasPassword).toBe(true)
+    })
+
+    /** The rule that made offering Disconnect safe: the last way in stays. */
+    it('refuses to remove the only way in', async () => {
+      const { user } = await newUser('unlink-last@example.com')
+      await linkProvider(user.userId, 'apple', new Date('2026-04-01T00:00:00.000Z'))
+      await dropPassword(user.userId)
+      const only = (await methods(user)).json<SignInMethods>().linked[0]
+      expect(only).toBeDefined()
+
+      const response = await unlink(user, only!.id)
+      expect(response.statusCode, response.body).toBe(400)
+
+      const after = (await methods(user)).json<SignInMethods>()
+      expect(after.linked.map((row) => row.provider)).toEqual(['apple'])
+    })
   })
 
   /**

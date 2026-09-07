@@ -1184,6 +1184,14 @@ export const ar: Localized<EnMessages> = {
       other: 'بقيت لديك {count} ترجمة مجانية اليوم',
     },
     whatYouHave: 'ما لديك',
+    signInConnect: 'ربط',
+    signInDisconnect: 'إلغاء الربط',
+    signInDisconnectConfirm: 'إلغاء ربط {provider}؟ لن تتمكن من تسجيل الدخول به بعد الآن.',
+    signInLastMethod: 'طريقتك الوحيدة للدخول — عيّن كلمة مرور قبل إلغاء الربط.',
+    signInLinked: 'تم الربط.',
+    signInUnlinked: 'تم إلغاء الربط.',
+    signInLinkFailed: 'تعذّر الربط. حاول مرة أخرى.',
+    signInUnlinkFailed: 'تعذّر إلغاء الربط. حاول مرة أخرى.',
   },
 
   deletion: {

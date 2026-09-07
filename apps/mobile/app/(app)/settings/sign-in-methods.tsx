@@ -1,18 +1,26 @@
 import { Ionicons } from '@expo/vector-icons'
 import Feather from '@expo/vector-icons/Feather'
-import type { LinkedProvider } from '@langx/shared'
-import { router } from 'expo-router'
-import { Text, View } from 'react-native'
+import { LINKED_PROVIDERS, type LinkedProvider } from '@langx/shared'
+import { router, useFocusEffect } from 'expo-router'
+import { useCallback } from 'react'
+import { Pressable, Text, View } from 'react-native'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
-import { useSignInMethods } from '../../../src/hooks/useSignInMethods'
+import { useAppConfig } from '../../../src/hooks/useAppConfig'
+import {
+  useLinkProvider,
+  useSignInMethods,
+  useUnlinkProvider,
+} from '../../../src/hooks/useSignInMethods'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useT } from '../../../src/i18n'
+import { confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { showToast } from '../../../src/lib/toast'
 
 /** Providers keep their own names — neither Google's nor Apple's is translated. */
 const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple: 'Apple' }
@@ -33,9 +41,10 @@ const PROVIDER_NAMES: Record<LinkedProvider, string> = { google: 'Google', apple
  * a while it answered that tap with nothing, which read as broken on both
  * sides of `hasPassword`.
  *
- * Linking and unlinking are deliberately not here. Unlinking needs a rule
- * about the last remaining method before it can be offered safely, and a row
- * that can lock somebody out is worse than a row that is missing.
+ * Connect and Disconnect sit on each provider's row, as the design draws
+ * them. Disconnect is withheld — not merely refused — when the link is the only
+ * way in: the server would say no (`allowUnlinkingAll` is off), but a button
+ * that can only fail is worse than a line that says why it is not there.
  */
 export default function SignInMethodsScreen() {
   useScreenInteractive()
@@ -44,6 +53,44 @@ export default function SignInMethodsScreen() {
   const t = useT()
   const methods = useSignInMethods()
   const data = methods.data
+  const offered = useAppConfig().data?.authProviders
+  const link = useLinkProvider()
+  const unlink = useUnlinkProvider()
+
+  // A browser-based link comes back to this screen; the list is stale then.
+  // `refetch` is the stable reference, not the query object, which is new on
+  // every render and would refetch in a loop.
+  const refetch = methods.refetch
+  useFocusEffect(
+    useCallback(() => {
+      void refetch()
+    }, [refetch]),
+  )
+
+  async function connect(provider: LinkedProvider): Promise<void> {
+    try {
+      const outcome = await link.mutateAsync(provider)
+      if (outcome === 'linked') showToast(t('settings.signInLinked'))
+    } catch {
+      showToast(t('settings.signInLinkFailed'))
+    }
+  }
+
+  async function disconnect(provider: LinkedProvider, accountId: string): Promise<void> {
+    const yes = await confirmAlert({
+      title: t('settings.signInDisconnect'),
+      message: t('settings.signInDisconnectConfirm', { provider: PROVIDER_NAMES[provider] }),
+      confirmLabel: t('settings.signInDisconnect'),
+      destructive: true,
+    })
+    if (!yes) return
+    try {
+      await unlink.mutateAsync(accountId)
+      showToast(t('settings.signInUnlinked'))
+    } catch {
+      showToast(t('settings.signInUnlinkFailed'))
+    }
+  }
 
   return (
     <Screen scroll>
@@ -75,30 +122,68 @@ export default function SignInMethodsScreen() {
           ) : null}
 
           <Text style={styles.kicker}>{t('settings.signInConnected')}</Text>
-          {data.linked.length === 0 ? (
-            <ListRow title={t('settings.signInNoneConnected')} last />
-          ) : (
-            data.linked.map((account, index) => (
+          {/*
+            One row per provider this build offers, connected or not, so the
+            way to connect is where the connection will be shown. A provider
+            linked before the build stopped offering it still gets its row:
+            it can be disconnected, and hiding it would hide a way in.
+          */}
+          {LINKED_PROVIDERS.filter(
+            (provider) =>
+              offered?.[provider] || data.linked.some((account) => account.provider === provider),
+          ).map((provider, index, rows) => {
+            const account = data.linked.find((row) => row.provider === provider)
+            // The only way in: no password and nothing else linked.
+            const lastWayIn = account !== undefined && !data.hasPassword && data.linked.length === 1
+            const busy = link.isPending || unlink.isPending
+            return (
               /*
                * Local rather than a `ListRow`: the provider's mark leads the
                * row, and `ListRow` has no slot before the title. Same metrics.
                */
               <View
-                key={account.provider}
-                style={[styles.provider, index < data.linked.length - 1 && styles.divided]}
+                key={provider}
+                style={[styles.provider, index < rows.length - 1 && styles.divided]}
               >
-                <ProviderMark provider={account.provider} />
+                <ProviderMark provider={provider} />
                 <View style={styles.providerText}>
-                  <Text style={styles.providerName}>{PROVIDER_NAMES[account.provider]}</Text>
+                  <Text style={styles.providerName}>{PROVIDER_NAMES[provider]}</Text>
                   <Text style={styles.providerMeta}>
-                    {t('settings.signInConnectedSince', {
-                      date: new Date(account.linkedAt).toLocaleDateString(),
-                    })}
+                    {account
+                      ? lastWayIn
+                        ? t('settings.signInLastMethod')
+                        : t('settings.signInConnectedSince', {
+                            date: new Date(account.linkedAt).toLocaleDateString(),
+                          })
+                      : t('settings.signInNoneConnected')}
                   </Text>
                 </View>
+                {account ? (
+                  lastWayIn ? null : (
+                    <Pressable
+                      accessibilityRole="button"
+                      disabled={busy}
+                      hitSlop={8}
+                      onPress={() => void disconnect(provider, account.id)}
+                      style={({ pressed }) => pressed && styles.pressed}
+                    >
+                      <Text style={styles.disconnect}>{t('settings.signInDisconnect')}</Text>
+                    </Pressable>
+                  )
+                ) : (
+                  <Pressable
+                    accessibilityRole="button"
+                    disabled={busy}
+                    hitSlop={8}
+                    onPress={() => void connect(provider)}
+                    style={({ pressed }) => pressed && styles.pressed}
+                  >
+                    <Text style={styles.connect}>{t('settings.signInConnect')}</Text>
+                  </Pressable>
+                )}
               </View>
-            ))
-          )}
+            )
+          })}
         </>
       ) : methods.isError ? (
         /*
@@ -170,6 +255,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   providerText: { flex: 1, gap: 2 },
   providerName: { color: colors.text, fontSize: 17, fontWeight: '600' },
   providerMeta: { color: colors.textMuted, fontSize: 14 },
+  // Text actions, as the design draws them: the accent to add, the danger to remove.
+  connect: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  disconnect: { color: colors.danger, fontSize: 14, fontWeight: '600' },
+  pressed: { opacity: 0.6 },
   googleMark: { borderRadius: radius.pill, height: 20, overflow: 'hidden', width: 20 },
   quadrant: { height: 10, position: 'absolute', width: 10 },
   quadrantBlue: { backgroundColor: '#4285f4', left: 0, top: 0 },
