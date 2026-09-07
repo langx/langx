@@ -1416,14 +1416,36 @@ async function uploadImage(
   kind: 'avatar' | 'photo',
   uri: string,
   contentType: string,
+  onProgress?: (loaded: number, total: number) => void,
 ): Promise<string> {
   const path = kind === 'avatar' ? '/me/avatar/upload-url' : '/me/photos/upload-url'
   const target = await api.post<UploadUrlDto>(path, { contentType })
 
   const blob = await (await fetch(uri)).blob()
-  await putWithProgress({ url: target.uploadUrl, body: blob, contentType })
+  await putWithProgress({
+    url: target.uploadUrl,
+    body: blob,
+    contentType,
+    ...(onProgress ? { onProgress } : {}),
+  })
 
   return target.publicUrl
+}
+
+/**
+ * One profile photo, uploaded and attached, reporting its own bytes.
+ *
+ * Not a `useMutation`: the gallery uploads several of these in a row and needs
+ * the progress of each, which a mutation's single `isPending` cannot carry.
+ * `useProfilePhotoUploads` owns the queue; this is the one file's worth of it.
+ */
+export async function addPhotoWithProgress(input: {
+  uri: string
+  contentType: string
+  onProgress?: (loaded: number, total: number) => void
+}): Promise<MeProfile> {
+  const url = await uploadImage('photo', input.uri, input.contentType, input.onProgress)
+  return api.post<MeProfile>('/me/photos', { url })
 }
 
 /**
