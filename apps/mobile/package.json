@@ -22,7 +22,7 @@
     "@expo/metro-runtime": "~57.0.15",
     "@expo/vector-icons": "^15.1.1",
     "@langx/shared": "workspace:*",
-    "@react-native-community/datetimepicker": "9.1.0",
+    "@react-native-community/datetimepicker": "9.2.0",
     "@revenuecat/purchases-js": "^1.58.0",
     "@tanstack/react-query": "catalog:",
     "better-auth": "catalog:",
@@ -75,9 +75,9 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260904.1",
-    "@react-native/metro-config": "0.86.3",
+    "@react-native/metro-config": "0.87.1",
     "@types/react": "catalog:",
-    "babel-preset-expo": "~57.0.8",
+    "babel-preset-expo": "~57.0.10",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
