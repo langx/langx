@@ -357,11 +357,20 @@ Which is why a native-module version bump is never only a dependency bump.
 directory of every autolinked module, so changing one changes the runtime
 version, and every later JS-only merge then publishes to a runtime version no
 released binary has: `update.yml` keeps going green while reaching nobody.
-**Deferred on 7 September 2026 for exactly this reason:**
-`react-native-safe-area-context` `~5.7.0 → ~5.9.1` (langx/langx#1043), left
-open rather than merged. Expo SDK 57 bundles `~5.7.0` and
-`bundledNativeModules.json` is the authority; revisit after this store round,
-with a build, and only if `npx expo install --check` asks for it.
+**Every open Dependabot pull request against a `react-native*` package is
+deferred for this reason**, and they are deliberately left open rather than
+closed so the versions stay visible. There were five by the evening of
+7 September 2026 — safe-area-context, reanimated, worklets, screens and
+purchases — and the weekly run adds more. Do not merge them one at a time.
+`.github/dependabot.yml` keeps the whole Expo/RN family out of the grouped pull
+request precisely so each one lands where it can be seen.
+
+They come off the list together, and not by reading the list:
+`bundledNativeModules.json` is the authority for what SDK 57 wants, so after
+this store round run `npx expo install --check` and take what it asks for, with
+a build behind it. A bump nobody asked for is one nobody has to take —
+`react-native-purchases` is the exception worth naming, since Expo does not
+bundle it and only the fingerprint argument applies.
 
 An update job builds the bundle on EAS from a fresh checkout, and
 `EXPO_PUBLIC_*` values are inlined at that moment. `eas.json`'s `env` blocks
