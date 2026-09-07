@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  type MessageAsk,
   type MessageMedia,
   type MessageType,
   type StartConversationInput,
@@ -93,6 +94,15 @@ export interface Message {
     preview: string
   }
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
+  /**
+   * The sender asked for something back — a correction, or to hear it said.
+   *
+   * Only ever set on the sender's own text. It is a note on the sentence, not
+   * a kind of message: `type` stays `text`, so `previewFor`, the chat list row
+   * and the push body are unchanged, and a build that predates this simply
+   * does not draw the badge.
+   */
+  ask?: MessageAsk
   /**
    * Everything attached to this message, in the order it was picked.
    *

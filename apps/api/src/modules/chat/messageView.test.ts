@@ -36,6 +36,15 @@ describe('toMessageView', () => {
     expect(JSON.stringify(toMessageView(doc, ME))).not.toContain('hiddenFor')
   })
 
+  it('carries the request the sender attached, and drops it with the message', () => {
+    expect(toMessageView(message({ ask: 'correction' }), ME).ask).toBe('correction')
+    expect(toMessageView(message({ ask: 'pronunciation' }), ME).ask).toBe('pronunciation')
+    expect(toMessageView(message(), ME).ask).toBeUndefined()
+    // A tombstone asks for nothing: the sentence it was about is gone.
+    const withdrawn = message({ ask: 'correction', deletedAt: new Date() })
+    expect(toMessageView(withdrawn, ME).ask).toBeUndefined()
+  })
+
   it('reports the viewer their own reaction, and everyone the whole tally', () => {
     const doc = message({ reactions: { '👍': [THEM], '🔥': [ME] } })
     expect(toMessageView(doc, ME).myReaction).toBe('🔥')

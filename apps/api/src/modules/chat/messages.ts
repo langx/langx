@@ -177,6 +177,7 @@ export async function sendTextMessage(
     body: input.body,
     ...(input.clientId ? { clientId: input.clientId } : {}),
     ...(replyTo ? { replyTo } : {}),
+    ...(input.ask ? { ask: input.ask } : {}),
     createdAt: new Date(),
   }
 

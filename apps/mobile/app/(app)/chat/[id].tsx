@@ -7,6 +7,7 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  type MessageAsk,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
@@ -122,6 +123,15 @@ export default function ChatScreen() {
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
+  /**
+   * What this message asks the other person for, once it is sent.
+   *
+   * Exclusive with a reply rather than combined: both answer "what is this
+   * message", and a banner that names one while the send applies the other
+   * is the kind of quiet disagreement this composer already avoids for
+   * edit, correct and reply.
+   */
+  const [asking, setAsking] = useState<MessageAsk | null>(null)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
   // original so the learner can compare the two.
@@ -222,6 +232,7 @@ export default function ChatScreen() {
       clientId: message.clientId,
       createdAt: message.sentAt,
       ...(message.replyTo ? { replyTo: message.replyTo } : {}),
+      ...(message.ask ? { ask: message.ask } : {}),
     }))
     return [...standIns, ...items]
   }, [items, outgoing, viewerId, conversationId])
@@ -366,6 +377,50 @@ export default function ChatScreen() {
    * gate is closed: a row that says "after five more messages" teaches the
    * rule, and one that is missing teaches nothing.
    */
+  /**
+   * Which requests have already been answered.
+   *
+   * A correction stamps `corrected` on the message it fixes, so that half is a
+   * server fact. A spoken answer is only a voice note quoting the message —
+   * there is no flag for it, and nothing but the list itself can see it. Both
+   * are worked out here and handed to the bubble, which stays dumb.
+   */
+  const answeredAsks = useMemo(() => {
+    const answered = new Set<string>()
+    for (const message of items) {
+      if (message.corrected) answered.add(message._id)
+      if (message.type === 'audio' && message.replyTo) answered.add(message.replyTo.messageId)
+    }
+    return answered
+  }, [items])
+
+  /**
+   * Answers the request on somebody else's message.
+   *
+   * Neither branch is new machinery: a correction opens the composer's own
+   * correcting mode, and a spoken answer starts the recorder with the message
+   * quoted, which sends an ordinary voice note. That is the whole reason
+   * `ask` is a field and not a message type.
+   */
+  function answerAsk(message: MessageDto, ask: MessageAsk): void {
+    if (ask === 'correction') {
+      setAsking(null)
+      setReplyingTo(null)
+      setCorrecting(message)
+      setDraft(message.body)
+      return
+    }
+    // The gate is checked before the quote is set, not after: `toggleRecording`
+    // would refuse and return, leaving a reply banner pointing at a recording
+    // that never started.
+    if (mediaLockedFor > 0) {
+      void showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    setReplyingTo(message)
+    void toggleRecording()
+  }
+
   async function openAttachMenu(): Promise<void> {
     const locked = mediaLockedFor > 0
     const choice = await chooseAlert(t('composer.attachMenu'), undefined, [
@@ -379,8 +434,18 @@ export default function ChatScreen() {
             { label: t('composer.attachCamera'), value: 'camera' as const, icon: 'camera', locked },
           ]),
       { label: t('composer.attachVoice'), value: 'voice' as const, icon: 'mic', locked },
+      // Never locked: neither carries bytes, so neither is what the media gate
+      // is protecting anyone from.
+      { label: t('chat.askCorrection'), value: 'askCorrection' as const, icon: 'edit-3' },
+      { label: t('chat.askPronunciation'), value: 'askPronunciation' as const, icon: 'volume-2' },
     ])
     if (!choice) return
+    if (choice === 'askCorrection' || choice === 'askPronunciation') {
+      // Exclusive with a reply: see `asking`.
+      setReplyingTo(null)
+      setAsking(choice === 'askCorrection' ? 'correction' : 'pronunciation')
+      return
+    }
     if (locked) {
       await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
       return
@@ -556,7 +621,12 @@ export default function ChatScreen() {
    * `clientId` is passed in on a retry so the row updates itself instead of
    * stacking a second copy of the same sentence.
    */
-  async function deliver(body: string, clientId: string, replyToMessageId?: string): Promise<void> {
+  async function deliver(
+    body: string,
+    clientId: string,
+    replyToMessageId?: string,
+    ask?: MessageAsk,
+  ): Promise<void> {
     try {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:send', {
@@ -564,6 +634,7 @@ export default function ChatScreen() {
         body,
         clientId,
         ...(replyToMessageId ? { replyToMessageId } : {}),
+        ...(ask ? { ask } : {}),
       })
       setUnsent((list) => removeUnsent(list, clientId))
       track({
@@ -633,7 +704,9 @@ export default function ChatScreen() {
       void commitCorrection(target, body)
     } else {
       const reply = replyingTo
+      const ask = asking
       setReplyingTo(null)
+      setAsking(null)
       const clientId = newClientId(Date.now(), Math.random())
       setOutgoing((list) =>
         addOutgoing(list, {
@@ -643,10 +716,11 @@ export default function ChatScreen() {
           ...(reply
             ? { replyTo: { messageId: reply._id, senderId: reply.senderId, preview: reply.body } }
             : {}),
+          ...(ask ? { ask } : {}),
         }),
       )
       // `deliver` never rejects — a failure becomes an unsent row.
-      void deliver(body, clientId, reply?._id)
+      void deliver(body, clientId, reply?._id, ask ?? undefined)
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.
@@ -1013,15 +1087,25 @@ export default function ChatScreen() {
             setDraft('')
           },
         }
-      : replyingTo
+      : asking
         ? {
-            label: isMine(replyingTo)
-              ? t('chat.replyingToYourself')
-              : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-            preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
-            clear: () => setReplyingTo(null),
+            label:
+              asking === 'correction' ? t('chat.askingCorrection') : t('chat.askingPronunciation'),
+            preview:
+              asking === 'correction'
+                ? t('chat.askingCorrectionHint')
+                : t('chat.askingPronunciationHint'),
+            clear: () => setAsking(null),
           }
-        : null
+        : replyingTo
+          ? {
+              label: isMine(replyingTo)
+                ? t('chat.replyingToYourself')
+                : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
+              preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+              clear: () => setReplyingTo(null),
+            }
+          : null
 
   return (
     <Screen fluid style={styles.screen}>
@@ -1270,6 +1354,8 @@ export default function ChatScreen() {
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
                     highlighted={highlighted === row.message._id}
+                    askAnswered={answeredAsks.has(row.message._id)}
+                    onAnswerAsk={answerAsk}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}

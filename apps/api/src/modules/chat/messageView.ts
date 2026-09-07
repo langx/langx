@@ -1,4 +1,4 @@
-import { attachmentsOf, type MessageType } from '@langx/shared'
+import { attachmentsOf, type MessageAsk, type MessageType } from '@langx/shared'
 import type { Message } from './conversations'
 
 /**
@@ -34,6 +34,8 @@ export interface MessageView {
     note?: string
   }
   replyTo?: { messageId: string; senderId: string; preview: string }
+  /** What the sender asked for back. See `Message.ask`. */
+  ask?: MessageAsk
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -83,6 +85,8 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (message.clientId && message.senderId === viewerId) view.clientId = message.clientId
   if (!deleted && message.editedAt) view.editedAt = message.editedAt.toISOString()
   if (!deleted && message.correctedAt) view.corrected = true
+  // A tombstone asks for nothing: the sentence it was about is gone.
+  if (!deleted && message.ask) view.ask = message.ask
   if (!deleted) {
     const attachments = attachmentsOf(message)
     if (attachments.length > 0) {
