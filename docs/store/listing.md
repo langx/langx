@@ -12,6 +12,15 @@ The listing may advertise them.
 
 The listings must also declare in-app purchases. v1 had none.
 
+**The App Store description must end with a working Terms of Use link.**
+App Review rejected 2.0.0 on 6 September 2026 under Guideline 3.1.2
+(Business: Payments – Subscriptions): an app that sells auto-renewable
+subscriptions has to link the Terms of Use (EULA) from the metadata on its
+product page, and the app description is the only place Apple reads it from
+when the standard Apple EULA is used. The footer below is that link, plus the
+privacy policy so both documents are one tap away. Keep it when the description
+is next rewritten.
+
 ---
 
 ## English
@@ -50,6 +59,10 @@ The listings must also declare in-app purchases. v1 had none.
 > browsing.
 >
 > LangX is open source (BSD-3) and can be self-hosted.
+>
+> Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Terms & Conditions: https://langx.io/terms-conditions
+> Privacy Policy: https://langx.io/privacy-policy
 
 **Keywords (iOS, 100 chars)**
 `language,exchange,learn,practice,speaking,tandem,partner,english,spanish,chat`
@@ -89,6 +102,10 @@ The listings must also declare in-app purchases. v1 had none.
 > sınırsız çeviri, profilini kimin görüntülediği ve gizli gezinme ekler.
 >
 > LangX açık kaynaktır (BSD-3) ve kendi sunucunda barındırılabilir.
+>
+> Kullanım Koşulları (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Şartlar ve Koşullar: https://langx.io/terms-conditions
+> Gizlilik Politikası: https://langx.io/privacy-policy
 
 ---
 
