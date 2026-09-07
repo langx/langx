@@ -11,9 +11,27 @@
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts min-version ios 2.1.0
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts flag translationEnabled false
  */
+import { appConfigSchema, minVersionSchema } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv } from '../src/env'
 import { getAppConfig, setMaintenance, updateAppConfig } from '../src/modules/appConfig/appConfig'
+
+/**
+ * The only property names this script may write, read off the schema so a new
+ * flag or platform is one edit. An operator's typo used to become a stray key
+ * in the config document — `minVersion.andriod` — that nothing read and that
+ * the schema then rejected on the next load.
+ */
+const MIN_VERSION_PLATFORMS = Object.keys(minVersionSchema.shape)
+const FLAG_NAMES = Object.keys(appConfigSchema.shape.flags.shape)
+
+function knownKey(candidate: string, allowed: string[], what: string): string {
+  const match = allowed.find((key) => key === candidate)
+  if (match === undefined) {
+    throw new Error(`unknown ${what} "${candidate}" — one of: ${allowed.join(', ')}`)
+  }
+  return match
+}
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2)
@@ -41,8 +59,9 @@ async function main(): Promise<void> {
         break
       }
       case 'min-version': {
-        const [platform, version] = args
-        if (!platform || !version) throw new Error('usage: min-version <ios|android|web> <x.y.z>')
+        const [candidate, version] = args
+        if (!candidate || !version) throw new Error('usage: min-version <ios|android|web> <x.y.z>')
+        const platform = knownKey(candidate, MIN_VERSION_PLATFORMS, 'platform')
         const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
         const next = { ...current.minVersion, [platform]: version }
         await updateAppConfig(db, { minVersion: next })
@@ -51,10 +70,11 @@ async function main(): Promise<void> {
         break
       }
       case 'flag': {
-        const [name, value] = args
-        if (!name || (value !== 'true' && value !== 'false')) {
+        const [candidate, value] = args
+        if (!candidate || (value !== 'true' && value !== 'false')) {
           throw new Error('usage: flag <name> <true|false>')
         }
+        const name = knownKey(candidate, FLAG_NAMES, 'flag')
         const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
         await updateAppConfig(db, {
           flags: { ...current.flags, [name]: value === 'true' },

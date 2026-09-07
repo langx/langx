@@ -9,13 +9,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# The job only reads the repository; the token it is handed should be able to
+# do nothing else, whatever a dependency's postinstall script tries.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      # Pinned to the commit behind v6: a tag can be moved, a hash cannot, and
+      # this action runs before anything in the repository has been checked.
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
 
       - uses: actions/setup-node@v7
         with:

@@ -13,7 +13,15 @@ import { authClient } from '../lib/auth-client'
  * handles this without help.
  */
 export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  const url = path.startsWith('http') ? path : `${API_URL}${path}`
+  /*
+   * Only a path, never a URL: every request this app makes goes to its own
+   * API, and there is no caller that needs otherwise. The old branch that let
+   * an absolute URL through was a way for a value read off a screen — a
+   * handle, a route param — to pick the host, which is what CodeQL's
+   * request-forgery query points at (alerts 9 and 30).
+   */
+  if (!path.startsWith('/')) throw new Error(`apiFetch expects a path, got "${path}"`)
+  const url = `${API_URL}${path}`
 
   if (Platform.OS === 'web') {
     /*
