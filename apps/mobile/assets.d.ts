@@ -9,3 +9,13 @@ declare module '*.png' {
   const asset: number
   export default asset
 }
+
+/**
+ * The same, for SVG. `expo-image` renders these on all three platforms and
+ * Metro's default `assetExts` already carries `svg`, so a vector asset needs
+ * no extra dependency — see `ProviderMark`.
+ */
+declare module '*.svg' {
+  const asset: number
+  export default asset
+}

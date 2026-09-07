@@ -1,6 +1,5 @@
 import * as Linking from 'expo-linking'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
@@ -9,7 +8,8 @@ import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../lib/apple
 import { authClient } from '../lib/auth-client'
 import { authErrorKey, oauthReturnErrorKey } from '../lib/errors'
 import { withSignInProgress } from '../lib/signInProgress'
-import { makeStyles, useTheme } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
+import { ProviderMark } from './ProviderMark'
 import { Button } from './ui/Button'
 
 /**
@@ -29,7 +29,6 @@ import { Button } from './ui/Button'
  */
 export function SocialAuthButtons() {
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
 
   /**
@@ -131,7 +130,7 @@ export function SocialAuthButtons() {
           label={t('auth.continueWithGoogle')}
           onPress={() => void onGoogle()}
           variant="neutral"
-          icon={<GoogleMark />}
+          icon={<ProviderMark provider="google" />}
         />
       ) : null}
       {providers.apple ? (
@@ -139,36 +138,14 @@ export function SocialAuthButtons() {
           label={t('auth.continueWithApple')}
           onPress={() => void onApple()}
           variant="neutral"
-          icon={<Ionicons name="logo-apple" size={20} color={colors.text} />}
+          icon={<ProviderMark provider="apple" />}
         />
       ) : null}
     </>
   )
 }
 
-/**
- * Google's four-colour mark as a 20px disc of quadrants — red, yellow, green,
- * blue clockwise from the top right, which is how the prototype's conic
- * gradient lays them out. Brand colours, so they are deliberately not in the
- * palette: they are Google's, in both schemes, and must not follow the theme.
- * Four views because there is no gradient primitive in the bundle and a glyph
- * font's mark would be one colour.
- */
-function GoogleMark() {
-  const styles = useStyles()
-  return (
-    <View style={styles.googleMark}>
-      <View style={[styles.quadrant, { backgroundColor: '#4285f4', left: 0, top: 0 }]} />
-      <View style={[styles.quadrant, { backgroundColor: '#ea4335', right: 0, top: 0 }]} />
-      <View style={[styles.quadrant, { backgroundColor: '#34a853', bottom: 0, left: 0 }]} />
-      <View style={[styles.quadrant, { backgroundColor: '#fbbc05', bottom: 0, right: 0 }]} />
-    </View>
-  )
-}
-
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  googleMark: { borderRadius: radius.pill, height: 20, overflow: 'hidden', width: 20 },
-  quadrant: { height: 10, position: 'absolute', width: 10 },
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   divider: {
     alignItems: 'center',
     flexDirection: 'row',
