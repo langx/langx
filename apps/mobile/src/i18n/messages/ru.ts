@@ -51,6 +51,10 @@ export const ru: Localized<EnMessages> = {
     percentOnly: '{percent}%',
     percentPending: '…',
     attachMedia: 'Прикрепить фото или видео',
+    attachMenu: 'Прикрепить',
+    attachLibrary: 'Фото или видео',
+    attachCamera: 'Сделать фото',
+    attachVoice: 'Голосовое',
   },
 
   media: {

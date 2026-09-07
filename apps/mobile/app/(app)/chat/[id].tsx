@@ -11,7 +11,15 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, Animated, FlatList, Pressable, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native'
 import {
   markConversationRead,
   uploadMessageMedia,
@@ -67,7 +75,7 @@ import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
-import { pickMediaAssets } from '../../../src/lib/pickMediaAsset'
+import { pickMediaAssets, type PickSource } from '../../../src/lib/pickMediaAsset'
 import { PendingMediaBubble } from '../../../src/components/PendingMediaBubble'
 import {
   addPending,
@@ -345,7 +353,46 @@ export default function ChatScreen() {
     return list.find((row) => row.clientId === clientId)?.progress ?? UPLOAD_START
   }
 
-  async function pickMedia(): Promise<void> {
+  /**
+   * What the "+" opens.
+   *
+   * It used to open the picker straight, and the only thing resembling a menu
+   * was the picker's own "camera or library?" alert — so the one other thing
+   * the composer can attach, a voice note, lived on a microphone at the far
+   * end of the row, which is a fine place for it once you know and no place at
+   * all before.
+   *
+   * Rows that carry bytes are drawn locked rather than hidden while the media
+   * gate is closed: a row that says "after five more messages" teaches the
+   * rule, and one that is missing teaches nothing.
+   */
+  async function openAttachMenu(): Promise<void> {
+    const locked = mediaLockedFor > 0
+    const choice = await chooseAlert(t('composer.attachMenu'), undefined, [
+      { label: t('composer.attachLibrary'), value: 'library' as const, icon: 'image', locked },
+      // No camera on the web: `launchCameraAsync` there is an `<input capture>`,
+      // which a phone browser honours and a desktop one ignores — so on a
+      // laptop the row would open a file dialog, which is worse than no row.
+      ...(Platform.OS === 'web'
+        ? []
+        : [
+            { label: t('composer.attachCamera'), value: 'camera' as const, icon: 'camera', locked },
+          ]),
+      { label: t('composer.attachVoice'), value: 'voice' as const, icon: 'mic', locked },
+    ])
+    if (!choice) return
+    if (locked) {
+      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
+    if (choice === 'voice') {
+      await toggleRecording()
+      return
+    }
+    await pickMedia(choice)
+  }
+
+  async function pickMedia(source: PickSource): Promise<void> {
     const remaining = MAX_ATTACHMENTS - pendingMedia.length
     if (remaining <= 0) {
       void showAlert(
@@ -354,7 +401,7 @@ export default function ChatScreen() {
       )
       return
     }
-    const picked = await pickMediaAssets({ remaining })
+    const picked = await pickMediaAssets({ remaining, source })
     if (picked.status === 'denied') {
       // Which permission was refused, not "photos" for both: being told to
       // allow the photo library after declining the camera is advice that
@@ -1338,30 +1385,21 @@ export default function ChatScreen() {
                 </Pressable>
               </View>
             ) : (
+              /*
+                Neither greyed nor disabled by the media lock any more: it
+                opens a menu, and the lock belongs to the rows inside that
+                carry bytes — which is where the sheet draws it, with the
+                number of messages still to come.
+              */
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={
-                  mediaLockedFor > 0
-                    ? t('chat.mediaLocked', { count: mediaLockedFor })
-                    : t('composer.attachMedia')
-                }
-                onPress={() =>
-                  mediaLockedFor > 0
-                    ? void showAlert(
-                        t('chat.mediaLockedTitle'),
-                        t('chat.mediaLocked', { count: mediaLockedFor }),
-                      )
-                    : void pickMedia()
-                }
+                accessibilityLabel={t('composer.attachMenu')}
+                onPress={() => void openAttachMenu()}
                 disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
                 hitSlop={8}
                 style={styles.attach}
               >
-                <Feather
-                  name="plus"
-                  size={22}
-                  color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
-                />
+                <Feather name="plus" size={22} color={colors.textMuted} />
               </Pressable>
             )
           }

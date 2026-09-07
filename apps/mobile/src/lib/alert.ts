@@ -25,6 +25,20 @@ export interface AlertButton<T = void> {
   value: T
   /** `cancel` is also what dismissing resolves to. `destructive` reads red. */
   style?: 'default' | 'cancel' | 'destructive'
+  /**
+   * A Feather glyph before the label, for a sheet that is a menu rather than a
+   * question — the composer's "+". Plain data, like `messageActions`' icons:
+   * this module does not import the icon set.
+   */
+  icon?: string
+  /**
+   * Drawn with a padlock, and still pressable.
+   *
+   * A row that answers with the rule teaches it; a row that is missing teaches
+   * nothing, and one that is greyed out cannot say why. The caller decides what
+   * pressing a locked row does.
+   */
+  locked?: boolean
 }
 
 export interface AlertRequest<T = unknown> {
@@ -124,13 +138,15 @@ export function confirmAlert(options: {
 export function chooseAlert<T extends string>(
   title: string,
   message: string | undefined,
-  choices: { label: string; value: T; destructive?: boolean }[],
+  choices: { label: string; value: T; destructive?: boolean; icon?: string; locked?: boolean }[],
 ): Promise<T | null> {
   return askAlert<T | null>(title, message, [
     ...choices.map((c) => ({
       label: c.label,
       value: c.value,
       style: c.destructive ? ('destructive' as const) : ('default' as const),
+      ...(c.icon ? { icon: c.icon } : {}),
+      ...(c.locked ? { locked: true } : {}),
     })),
     { label: currentTranslate()('common.cancel'), value: null, style: 'cancel' as const },
   ])

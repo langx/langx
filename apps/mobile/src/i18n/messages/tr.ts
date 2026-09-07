@@ -55,6 +55,10 @@ export const tr: Localized<EnMessages> = {
     percentOnly: '%{percent}',
     percentPending: '…',
     attachMedia: 'Fotoğraf veya video ekle',
+    attachMenu: 'Ekle',
+    attachLibrary: 'Fotoğraf veya video',
+    attachCamera: 'Fotoğraf çek',
+    attachVoice: 'Sesli not',
   },
 
   media: {

@@ -41,6 +41,10 @@ export const ptBR: Localized<EnMessages> = {
     percentOnly: '{percent}%',
     percentPending: '…',
     attachMedia: 'Anexar fotos ou vídeos',
+    attachMenu: 'Anexar',
+    attachLibrary: 'Foto ou vídeo',
+    attachCamera: 'Tirar uma foto',
+    attachVoice: 'Nota de voz',
   },
 
   media: {

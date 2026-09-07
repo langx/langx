@@ -71,6 +71,10 @@ export const en = {
     percentOnly: '{percent}%',
     percentPending: '…',
     attachMedia: 'Attach photos or videos',
+    attachMenu: 'Attach',
+    attachLibrary: 'Photo or video',
+    attachCamera: 'Take a photo',
+    attachVoice: 'Voice note',
   },
 
   media: {

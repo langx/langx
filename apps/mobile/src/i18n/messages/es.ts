@@ -44,6 +44,10 @@ export const es: Localized<EnMessages> = {
     percentOnly: '{percent}%',
     percentPending: '…',
     attachMedia: 'Adjuntar fotos o vídeos',
+    attachMenu: 'Adjuntar',
+    attachLibrary: 'Foto o vídeo',
+    attachCamera: 'Hacer una foto',
+    attachVoice: 'Nota de voz',
   },
 
   media: {
