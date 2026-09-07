@@ -879,6 +879,7 @@ export const tr: Localized<EnMessages> = {
     blog: 'Blog',
     licenses: 'Lisanslar',
     codeOfConduct: 'Davranış kuralları',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Serin',

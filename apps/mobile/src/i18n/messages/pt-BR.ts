@@ -868,6 +868,7 @@ export const ptBR: Localized<EnMessages> = {
     blog: 'Blog',
     licenses: 'Licenças',
     codeOfConduct: 'Código de conduta',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Sua sequência',

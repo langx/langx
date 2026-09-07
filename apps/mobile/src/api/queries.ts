@@ -140,6 +140,7 @@ export const keys = {
   unread: ['unread'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
+  contributors: ['contributors'] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   blocks: ['blocks'] as const,
 }
@@ -1256,6 +1257,24 @@ export function useViewers() {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+export interface ContributorsDto {
+  /** Everyone who has contributed to the repository; `top` is the first few. */
+  total: number
+  top: { login: string; avatarUrl: string; url: string }[]
+}
+
+/**
+ * The strip on Our Kitchen. Public, cached for hours on the server and for an
+ * hour here: the list moves by a name a week.
+ */
+export function useContributors() {
+  return useQuery({
+    queryKey: keys.contributors,
+    queryFn: () => api.get<ContributorsDto>('/public/contributors'),
+    staleTime: 60 * 60 * 1000,
   })
 }
 

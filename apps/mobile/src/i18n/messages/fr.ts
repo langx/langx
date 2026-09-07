@@ -881,6 +881,7 @@ export const fr: Localized<EnMessages> = {
     blog: 'Blog',
     licenses: 'Licences',
     codeOfConduct: 'Code de conduite',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Ta série',

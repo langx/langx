@@ -918,6 +918,7 @@ export const en = {
     blog: 'Blog',
     licenses: 'Licenses',
     codeOfConduct: 'Code of conduct',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Your streak',

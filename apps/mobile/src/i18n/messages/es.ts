@@ -875,6 +875,7 @@ export const es: Localized<EnMessages> = {
     blog: 'Blog',
     licenses: 'Licencias',
     codeOfConduct: 'Código de conducta',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'Tu racha',

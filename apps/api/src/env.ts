@@ -47,6 +47,9 @@ const envSchema = z.object({
   // link instead of sending it — the app still boots and is testable, but
   // nothing is delivered until a real key is set.
   RESEND_API_KEY: emptyToUndefined(z.string().optional()),
+  // Raises GitHub's rate limit for the contributor strip on Our Kitchen.
+  // Never required: without it the list is simply refreshed less often.
+  GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
   // resend.dev requires no domain verification, so this works immediately;
   // point it at a verified langx.io sender before Faz 13's launch.
   EMAIL_FROM: z.string().min(1).default('LangX <onboarding@resend.dev>'),

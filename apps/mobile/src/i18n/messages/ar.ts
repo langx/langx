@@ -1045,6 +1045,7 @@ export const ar: Localized<EnMessages> = {
     blog: 'المدونة',
     licenses: 'التراخيص',
     codeOfConduct: 'مدونة السلوك',
+    moreContributors: '+{count}',
   },
   streak: {
     title: 'سلسلتك',
