@@ -41,7 +41,7 @@ catalog:
   'socket.io-client': ^4.8.3
 
   # mobile client
-  '@tanstack/react-query': ^5.90.2
+  '@tanstack/react-query': ^5.102.8
 
   # observability
   '@sentry/node': ^10.19.0
