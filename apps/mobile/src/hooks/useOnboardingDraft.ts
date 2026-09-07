@@ -15,8 +15,6 @@ export interface OnboardingDraft {
   displayName: string
   birthDate: string
   gender: Gender
-  bio: string
-  interests: string[]
   /**
    * Whoever's invite link brought them here, or what they typed in. Kept on
    * the draft so it survives a relaunch mid-onboarding, exactly like the
@@ -31,8 +29,6 @@ export interface OnboardingDraft {
    */
   referredBySource: ReferralSource
   country: string
-  /** Uploaded during the wizard; written by `POST /profiles`, not by `confirm`. */
-  avatarUrl: string
 }
 
 const EMPTY: OnboardingDraft = {
@@ -42,12 +38,9 @@ const EMPTY: OnboardingDraft = {
   displayName: '',
   birthDate: '',
   gender: 'undisclosed',
-  bio: '',
-  interests: [],
   referredByHandle: '',
   referredBySource: 'manual',
   country: '',
-  avatarUrl: '',
 }
 
 /**

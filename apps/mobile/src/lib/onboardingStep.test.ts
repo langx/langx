@@ -9,12 +9,9 @@ const EMPTY: OnboardingDraft = {
   displayName: '',
   birthDate: '',
   gender: 'undisclosed',
-  bio: '',
-  interests: [],
   referredByHandle: '',
   referredBySource: 'manual' as const,
   country: '',
-  avatarUrl: '',
 }
 
 const draft = (patch: Partial<OnboardingDraft>): OnboardingDraft => ({ ...EMPTY, ...patch })
@@ -75,24 +72,25 @@ describe('furthestOnboardingStep', () => {
     )
   })
 
-  it('reaches the photo step with the required fields in place', () => {
+  it('reaches the handle step with the required fields in place', () => {
     expect(
       furthestOnboardingStep(
         draft({ ...withLanguages, displayName: 'Ada', birthDate: '1994-03-07' }),
       ),
-    ).toBe('photo')
+    ).toBe('handle')
   })
 
   /**
-   * `handle` is the submit step. Landing there directly would skip the avatar
-   * and interests without the user ever seeing that they were offered.
+   * `photo` comes after the profile exists, and a profile is what keeps the
+   * gate from sending anyone back into the wizard — so a draft can never earn
+   * it, however far it got.
    */
-  it('never resumes on the handle step, even with a handle already typed', () => {
+  it('never resumes on the photo step, even with a handle already typed', () => {
     expect(
       furthestOnboardingStep(
         draft({ ...withLanguages, displayName: 'Ada', birthDate: '1994-03-07', handle: 'ada' }),
       ),
-    ).toBe('photo')
+    ).toBe('handle')
   })
 
   it('treats whitespace as unfilled', () => {
