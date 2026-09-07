@@ -130,6 +130,7 @@ export const tr: Localized<EnMessages> = {
     attachment: 'Ek',
     photo: 'Fotoğraf',
     message: 'Mesaj',
+    sending: 'Gönderiliyor',
   },
 
   interests: {

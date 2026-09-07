@@ -62,6 +62,14 @@ import {
   retireDelivered,
   type UnsentMessage,
 } from '../../../src/lib/unsentMessages'
+import {
+  addOutgoing,
+  isOutgoingId,
+  outgoingId,
+  removeOutgoing,
+  retireArrived,
+  type OutgoingMessage,
+} from '../../../src/lib/outgoingMessages'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
@@ -112,7 +120,8 @@ export default function ChatScreen() {
   const messages = useMessages(conversationId)
 
   const [draft, setDraft] = useState('')
-  const [sending, setSending] = useState(false)
+  /** Sends in flight, drawn in the thread before the server has answered. */
+  const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   const [partnerTyping, setPartnerTyping] = useState(false)
@@ -194,7 +203,29 @@ export default function ChatScreen() {
   const thread = jumpAnchor ? windowed : messages
 
   const items = useMemo(() => messagesNewestFirst(thread.data), [thread.data])
-  const rows = useMemo(() => messageRows(items), [items])
+  /*
+   * Your own sends, drawn before the server has answered. Newest first like
+   * `items`, and ahead of them: the inverted list puts index 0 nearest the
+   * composer, which is where a sentence just typed belongs. `senderId` is the
+   * viewer, so `isMine` and the tail rule treat the row as one of theirs, and
+   * the id carries a prefix so the row's actions know to wait for the echo.
+   */
+  const viewerId = me.data?._id
+  const threadItems = useMemo<MessageDto[]>(() => {
+    if (!viewerId || outgoing.length === 0) return items
+    const standIns: MessageDto[] = outgoing.map((message) => ({
+      _id: outgoingId(message.clientId),
+      conversationId,
+      senderId: viewerId,
+      type: 'text',
+      body: message.body,
+      clientId: message.clientId,
+      createdAt: message.sentAt,
+      ...(message.replyTo ? { replyTo: message.replyTo } : {}),
+    }))
+    return [...standIns, ...items]
+  }, [items, outgoing, viewerId, conversationId])
+  const rows = useMemo(() => messageRows(threadItems), [threadItems])
 
   /**
    * A send whose ack was lost still left an unsent row, and the message may
@@ -204,6 +235,16 @@ export default function ChatScreen() {
   useEffect(() => {
     setUnsent((list) =>
       retireDelivered(
+        list,
+        items.map((message) => message.clientId),
+      ),
+    )
+  }, [items])
+  // The same retirement for the stand-ins: the echo carries the `clientId`,
+  // and whichever of ack and echo arrives first removes the row.
+  useEffect(() => {
+    setOutgoing((list) =>
+      retireArrived(
         list,
         items.map((message) => message.clientId),
       ),
@@ -476,18 +517,20 @@ export default function ChatScreen() {
    * `clientId` is passed in on a retry so the row updates itself instead of
    * stacking a second copy of the same sentence.
    */
-  async function deliver(body: string, clientId: string): Promise<void> {
+  async function deliver(body: string, clientId: string, replyToMessageId?: string): Promise<void> {
     try {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:send', {
         conversationId,
         body,
         clientId,
-        ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+        ...(replyToMessageId ? { replyToMessageId } : {}),
       })
       setUnsent((list) => removeUnsent(list, clientId))
-      track({ name: 'message_sent', properties: { kind: 'text', reply: replyingTo !== null } })
-      setReplyingTo(null)
+      track({
+        name: 'message_sent',
+        properties: { kind: 'text', reply: replyToMessageId !== undefined },
+      })
     } catch {
       /*
        * Swallowed on purpose, and this is the whole change: it used to be
@@ -500,15 +543,19 @@ export default function ChatScreen() {
         addUnsent(list, {
           clientId,
           body,
-          ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+          ...(replyToMessageId ? { replyToMessageId } : {}),
           failedAt: new Date().toISOString(),
         }),
       )
+    } finally {
+      // Landed or failed, the stand-in has somewhere better to be: the echo
+      // has usually retired it already, the unsent row takes over otherwise.
+      setOutgoing((list) => removeOutgoing(list, clientId))
     }
   }
 
   async function retry(message: UnsentMessage): Promise<void> {
-    await deliver(message.body, message.clientId)
+    await deliver(message.body, message.clientId, message.replyToMessageId)
   }
 
   async function send(): Promise<void> {
@@ -516,7 +563,7 @@ export default function ChatScreen() {
     // The attachments are the message when there are any; the draft becomes
     // their caption, which is why this runs before the empty-body guard.
     if (pendingMedia.length > 0) {
-      if (sending || sendingMedia) return
+      if (sendingMedia) return
       const items = pendingMedia
       setPendingMedia([])
       setDraft('')
@@ -525,44 +572,85 @@ export default function ChatScreen() {
       listRef.current?.scrollToOffset({ offset: 0, animated: true })
       return
     }
-    if (!body || sending) return
-    setSending(true)
+    if (!body) return
+    /*
+     * The field clears on the press and never locks. What was typed is already
+     * on its way into the thread as its own row, so the composer has nothing
+     * to hold on to — and the next sentence can be typed while the first is
+     * still travelling. Two or three "Sending" rows at once is the normal case
+     * for somebody who types the way people talk.
+     */
+    setDraft('')
+    notifyTyping(false)
+    if (editing) {
+      const target = editing
+      setEditing(null)
+      void commitEdit(target, body)
+      return
+    }
+    if (correcting) {
+      const target = correcting
+      setCorrecting(null)
+      void commitCorrection(target, body)
+    } else {
+      const reply = replyingTo
+      setReplyingTo(null)
+      const clientId = newClientId(Date.now(), Math.random())
+      setOutgoing((list) =>
+        addOutgoing(list, {
+          clientId,
+          body,
+          sentAt: new Date().toISOString(),
+          ...(reply
+            ? { replyTo: { messageId: reply._id, senderId: reply.senderId, preview: reply.body } }
+            : {}),
+        }),
+      )
+      // `deliver` never rejects — a failure becomes an unsent row.
+      void deliver(body, clientId, reply?._id)
+    }
+    // Sending is a statement about the live conversation, so it ends a
+    // detour into the history rather than posting into the middle of it.
+    setJumpAnchor(null)
+    // Inverted, so the newest message is offset 0.
+    listRef.current?.scrollToOffset({ offset: 0, animated: true })
+    setAwayFrom(null)
+  }
+
+  /**
+   * An edit changes a row that exists, so it has nothing to draw ahead of the
+   * ack; it waits quietly, and a refusal puts the text back where it was typed
+   * so nothing is lost.
+   */
+  async function commitEdit(target: MessageDto, body: string): Promise<void> {
     try {
       const socket = await getSocket()
-      if (editing) {
-        await emitWithAck(socket, 'message:edit', {
-          conversationId,
-          messageId: editing._id,
-          body,
-        })
-        setEditing(null)
-        setDraft('')
-        return
-      }
-      if (correcting) {
-        await emitWithAck(socket, 'message:correct', {
-          conversationId,
-          targetMessageId: correcting._id,
-          corrected: body,
-        })
-        setCorrecting(null)
-        track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
-      } else {
-        // `deliver` never rejects — a failure becomes an unsent row — so the
-        // composer clears either way. The text is not lost, it has moved into
-        // the thread where the reader can see it did not go.
-        await deliver(body, newClientId(Date.now(), Math.random()))
-      }
-      setDraft('')
-      notifyTyping(false)
-      // Sending is a statement about the live conversation, so it ends a
-      // detour into the history rather than posting into the middle of it.
-      setJumpAnchor(null)
-      // Inverted, so the newest message is offset 0.
-      listRef.current?.scrollToOffset({ offset: 0, animated: true })
-      setAwayFrom(null)
-    } finally {
-      setSending(false)
+      await emitWithAck(socket, 'message:edit', {
+        conversationId,
+        messageId: target._id,
+        body,
+      })
+    } catch {
+      setEditing(target)
+      setDraft(body)
+      void showAlert(t('chat.actionFailed'), t('common.retry'))
+    }
+  }
+
+  /** The same rule for a correction: the card appears when the server echoes it. */
+  async function commitCorrection(target: MessageDto, corrected: string): Promise<void> {
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'message:correct', {
+        conversationId,
+        targetMessageId: target._id,
+        corrected,
+      })
+      track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
+    } catch {
+      setCorrecting(target)
+      setDraft(corrected)
+      void showAlert(t('chat.actionFailed'), t('common.retry'))
     }
   }
 
@@ -1128,6 +1216,8 @@ export default function ChatScreen() {
                     <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
                   </View>
                 ) : (
+                  // A stand-in has no server id yet, so a menu or a reply on it
+                  // would have nothing to act on until the echo lands.
                   <MessageBubble
                     message={row.message}
                     mine={isMine(row.message)}
@@ -1136,8 +1226,9 @@ export default function ChatScreen() {
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
                     highlighted={highlighted === row.message._id}
-                    onLongPress={onLongPress}
-                    onReply={onReply}
+                    pending={isOutgoingId(row.message._id)}
+                    onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                    onReply={isOutgoingId(row.message._id) ? ignore : onReply}
                     onJumpTo={onJumpTo}
                     onOpenMedia={onOpenMedia}
                   />
@@ -1296,19 +1387,19 @@ export default function ChatScreen() {
               attachment with no caption is something to send, so a picked
               photo turns it back into the send button. */}
             {draft.trim() || pendingMedia.length > 0 ? (
-              <View style={[styles.sendShell, (sending || sendingMedia) && styles.sendDisabled]}>
+              <View style={[styles.sendShell, sendingMedia && styles.sendDisabled]}>
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('common.send')}
                   onPress={() => void send()}
-                  disabled={sending || sendingMedia}
+                  disabled={sendingMedia}
                   style={({ pressed }) => [
                     styles.send,
-                    pressed && !(sending || sendingMedia) && styles.sendPressed,
+                    pressed && !sendingMedia && styles.sendPressed,
                   ]}
                 >
                   <Feather
-                    name={sending || sendingMedia ? 'more-horizontal' : 'send'}
+                    name={sendingMedia ? 'more-horizontal' : 'send'}
                     size={20}
                     color={colors.primaryText}
                   />
@@ -1612,6 +1703,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
 
 /** A thread's worth; the composer sits below them either way. */
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
+
+/** For a stand-in row: the server has not named it yet, so its actions wait. */
+const ignore = () => undefined
 
 /**
  * Below this many messages the thread still shows its opening tip. Three is

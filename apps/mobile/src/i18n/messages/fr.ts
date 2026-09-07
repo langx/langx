@@ -121,6 +121,7 @@ export const fr: Localized<EnMessages> = {
     attachment: 'Pièce jointe',
     photo: 'Photo',
     message: 'Message',
+    sending: 'Envoi en cours',
   },
 
   interests: {

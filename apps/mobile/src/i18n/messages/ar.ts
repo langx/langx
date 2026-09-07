@@ -128,6 +128,7 @@ export const ar: Localized<EnMessages> = {
     attachment: 'مرفق',
     photo: 'صورة',
     message: 'رسالة',
+    sending: 'جارٍ الإرسال',
   },
 
   interests: {

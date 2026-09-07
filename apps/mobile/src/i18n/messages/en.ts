@@ -147,6 +147,7 @@ export const en = {
     attachment: 'Attachment',
     photo: 'Photo',
     message: 'Message',
+    sending: 'Sending',
   },
 
   /**

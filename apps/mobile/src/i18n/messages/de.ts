@@ -120,6 +120,7 @@ export const de: Localized<EnMessages> = {
     attachment: 'Anhang',
     photo: 'Foto',
     message: 'Nachricht',
+    sending: 'Wird gesendet',
   },
 
   interests: {
