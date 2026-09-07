@@ -115,6 +115,7 @@ export const ptBR: Localized<EnMessages> = {
     attachment: 'Anexo',
     photo: 'Foto',
     message: 'Mensagem',
+    sending: 'Enviando',
   },
 
   interests: {

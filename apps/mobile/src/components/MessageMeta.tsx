@@ -16,7 +16,10 @@ function clockTime(iso: string, locale: Locale): string {
 }
 
 /** The word for each state, drawn beside the clock. */
-const LABEL_KEYS: Record<DeliveryState, MessageKey> = {
+const LABEL_KEYS: Record<DeliveryState | 'sending', MessageKey> = {
+  // Not a server state: the row is the sender's own stand-in, drawn before
+  // the ack, and it says so until the echo replaces it.
+  sending: 'messageMeta.sending',
   sent: 'messageMeta.sent',
   delivered: 'messageMeta.delivered',
   read: 'messageMeta.read',
@@ -31,12 +34,21 @@ const LABEL_KEYS: Record<DeliveryState, MessageKey> = {
  * out over a socket the recipient is holding, or when they next connect;
  * `readAt` when they open the thread. Neither is inferred from the other.
  */
-export function MessageMeta({ message, mine }: { message: MessageDto; mine: boolean }) {
+export function MessageMeta({
+  message,
+  mine,
+  pending = false,
+}: {
+  message: MessageDto
+  mine: boolean
+  /** The row is an optimistic stand-in; see `lib/outgoingMessages`. */
+  pending?: boolean
+}) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
-  const state = deliveryStateOf(message)
+  const state = pending ? 'sending' : deliveryStateOf(message)
 
   return (
     <View style={styles.row}>

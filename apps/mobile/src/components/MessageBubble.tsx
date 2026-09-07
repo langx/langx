@@ -45,6 +45,8 @@ export interface MessageBubbleProps {
   translating: boolean
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
+  /** An optimistic stand-in for a send in flight; the meta says "Sending". */
+  pending?: boolean
   onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
   onReply: (message: MessageDto) => void
   onJumpTo: (messageId: string) => void
@@ -71,6 +73,7 @@ export const MessageBubble = memo(function MessageBubble({
   translation,
   translating,
   highlighted,
+  pending = false,
   onLongPress,
   onReply,
   onJumpTo,
@@ -246,7 +249,7 @@ export const MessageBubble = memo(function MessageBubble({
    * rounded shape, and the side is the only thing that says whose it is.
    */
   const column = [styles.column, mine ? styles.columnMine : styles.columnTheirs]
-  const meta = <MessageMeta message={message} mine={mine} />
+  const meta = <MessageMeta message={message} mine={mine} pending={pending} />
 
   /**
    * A withdrawal keeps its place in the thread rather than closing the gap.

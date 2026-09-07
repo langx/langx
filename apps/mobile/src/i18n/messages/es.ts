@@ -119,6 +119,7 @@ export const es: Localized<EnMessages> = {
     attachment: 'Adjunto',
     photo: 'Foto',
     message: 'Mensaje',
+    sending: 'Enviando',
   },
 
   interests: {
