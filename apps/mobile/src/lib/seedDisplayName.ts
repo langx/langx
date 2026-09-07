@@ -30,3 +30,25 @@ export function displayNameToSeed(input: {
   if (input.current.trim().length > 0) return null
   return account
 }
+
+/**
+ * A first guess at a display name from an email address, for a sign-up form
+ * that no longer asks for one — v3 signs up with an email and a password only,
+ * but Better Auth's `signUp.email` still requires a `name`, and about-you
+ * offers whatever is sent here back to the person to change.
+ *
+ * The local part, with the separators people put between words turned into
+ * spaces, digits dropped and each word capitalised: "alex.m94@…" → "Alex M".
+ * Falls back to the bare local part when that leaves nothing, so the account
+ * never gets an empty name.
+ */
+export function nameFromEmail(email: string): string {
+  const local = email.trim().split('@')[0] ?? ''
+  const words = local
+    .replace(/\d+/g, ' ')
+    .split(/[._+\-\s]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+  const guess = words.join(' ')
+  return guess.length > 0 ? guess : local
+}

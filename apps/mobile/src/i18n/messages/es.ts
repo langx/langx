@@ -281,7 +281,6 @@ export const es: Localized<EnMessages> = {
     welcomeBack: 'Bienvenido de nuevo',
     email: 'Correo',
     password: 'Contraseña',
-    name: 'Nombre',
     forgotPassword: '¿Olvidaste tu contraseña?',
     signIn: 'Iniciar sesión',
     signingIn: 'Iniciando sesión…',

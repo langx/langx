@@ -329,7 +329,6 @@ export const ar: Localized<EnMessages> = {
     welcomeBack: 'أهلًا بعودتك',
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',
-    name: 'الاسم',
     forgotPassword: 'نسيت كلمة المرور؟',
     signIn: 'تسجيل الدخول',
     signingIn: 'جارٍ تسجيل الدخول…',

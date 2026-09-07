@@ -318,7 +318,6 @@ export const ru: Localized<EnMessages> = {
     welcomeBack: 'С возвращением',
     email: 'Почта',
     password: 'Пароль',
-    name: 'Имя',
     forgotPassword: 'Забыл пароль?',
     signIn: 'Войти',
     signingIn: 'Выполняется вход…',

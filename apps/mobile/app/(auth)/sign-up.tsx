@@ -18,6 +18,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { PASSWORD_MIN_LENGTH, passwordIssueKey } from '../../src/lib/passwordForm'
+import { nameFromEmail } from '../../src/lib/seedDisplayName'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -34,7 +35,6 @@ export default function SignUp() {
   const styles = useStyles()
   const t = useT()
   const { start: browse } = useGuestBrowse()
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -57,7 +57,9 @@ export default function SignUp() {
      */
     if (shouldGateGuest(session?.user)) await authClient.signOut()
     const { error: signUpError } = await authClient.signUp.email({
-      name,
+      // v3 asks for no name at sign-up; Better Auth still wants one, so it is
+      // guessed from the address and offered back on the about-you step.
+      name: nameFromEmail(email),
       email,
       password,
       // Resolves to langx://verify-email-success on native and the
@@ -84,7 +86,7 @@ export default function SignUp() {
 
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!name && !!email && !passwordTooShort(password) && accepted
+  const canSubmit = !loading && !!email && !passwordTooShort(password) && accepted
 
   return (
     <Screen scroll style={styles.form}>
@@ -97,14 +99,6 @@ export default function SignUp() {
       </View>
 
       <View style={styles.fields}>
-        <FormField
-          placeholder={t('auth.name')}
-          value={name}
-          onChangeText={setName}
-          autoComplete="name"
-          returnKeyType="go"
-          onSubmitEditing={() => canSubmit && void onSubmit()}
-        />
         <FormField
           returnKeyType="go"
           onSubmitEditing={() => canSubmit && void onSubmit()}

@@ -291,7 +291,6 @@ export const tr: Localized<EnMessages> = {
     welcomeBack: 'Tekrar hoş geldin',
     email: 'E-posta',
     password: 'Parola',
-    name: 'Ad',
     forgotPassword: 'Parolanı mı unuttun?',
     signIn: 'Giriş yap',
     signingIn: 'Giriş yapılıyor…',

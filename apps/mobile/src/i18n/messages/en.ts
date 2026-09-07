@@ -318,7 +318,6 @@ export const en = {
     welcomeBack: 'Welcome back',
     email: 'Email',
     password: 'Password',
-    name: 'Name',
     forgotPassword: 'Forgot password?',
     signIn: 'Sign in',
     signingIn: 'Signing you in…',

@@ -285,7 +285,6 @@ export const fr: Localized<EnMessages> = {
     welcomeBack: 'Content de te revoir',
     email: 'E-mail',
     password: 'Mot de passe',
-    name: 'Nom',
     forgotPassword: 'Mot de passe oublié ?',
     signIn: 'Se connecter',
     signingIn: 'Connexion en cours…',

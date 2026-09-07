@@ -277,7 +277,6 @@ export const ptBR: Localized<EnMessages> = {
     welcomeBack: 'Que bom te ver de novo',
     email: 'E-mail',
     password: 'Senha',
-    name: 'Nome',
     forgotPassword: 'Esqueceu a senha?',
     signIn: 'Entrar',
     signingIn: 'Entrando…',
