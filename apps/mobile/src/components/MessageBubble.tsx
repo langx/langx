@@ -1,7 +1,15 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
 import { memo, useCallback, useEffect, useRef, type ReactNode } from 'react'
-import { Animated, Platform, Pressable, Text, View, type ViewStyle } from 'react-native'
+import {
+  Animated,
+  Platform,
+  Pressable,
+  Text,
+  View,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Reanimated, {
   interpolate,
@@ -11,7 +19,13 @@ import Reanimated, {
   withSpring,
 } from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
-import { attachmentsOf, type Media, type MessageAsk } from '@langx/shared'
+import {
+  attachmentsOf,
+  type Media,
+  type MeetingStatus,
+  type MessageAsk,
+  type MessageType,
+} from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
@@ -24,7 +38,7 @@ import {
 import { makeStyles, useTheme } from '../lib/theme'
 import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
-import { useT } from '../i18n'
+import { useT, type MessageKey } from '../i18n'
 
 /**
  * Whether this device has a finger. Read once, at module scope: it cannot
@@ -59,6 +73,19 @@ export interface MessageBubbleProps {
   onReply: (message: MessageDto) => void
   /** Answers the request on somebody else's message — correct it, or say it. */
   onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
+  /** Accepts, declines or withdraws a proposed time. */
+  onRespondMeeting: (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => void
+  /**
+   * The proposal in the reader's own zone, formatted by the thread — only it
+   * has the profile the zone comes from. Empty for anything but a meeting.
+   *
+   * The other person's clock is deliberately *not* drawn. It would need
+   * `timezone` on the public profile, and a timezone is about as coarse a
+   * location as a city — which this app puts behind its own switch. Showing
+   * the reader their own time is the arithmetic that was worth doing anyway.
+   */
+  meetingWhen?: string
+  meetingLength?: string
   onJumpTo: (messageId: string) => void
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
@@ -88,6 +115,9 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   onReply,
   onAnswerAsk,
+  onRespondMeeting,
+  meetingWhen = '',
+  meetingLength = '',
   onJumpTo,
   onOpenMedia,
 }: MessageBubbleProps) {
@@ -304,6 +334,92 @@ export const MessageBubble = memo(function MessageBubble({
         {correction?.note ? <Text style={styles.correctionNote}>{correction.note}</Text> : null}
         {badge}
         <View style={styles.correctionMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
+  if (message.type === 'phrase' && message.phrase) {
+    const { term, meaning, example } = message.phrase
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.card, flash]}>
+          <Text style={styles.cardKicker}>{t('chat.phraseCard')}</Text>
+          <Text style={styles.phraseTerm}>{term}</Text>
+          <Text style={styles.phraseMeaning}>{meaning}</Text>
+          {example ? <Text style={styles.phraseExample}>{example}</Text> : null}
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
+  if (message.type === 'meeting' && message.meeting) {
+    const meeting = message.meeting
+    const answered = meeting.status !== 'proposed'
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.card, flash]}>
+          <Text style={styles.cardKicker}>{t('chat.meetingCard')}</Text>
+          {/*
+          In the reader's own zone, always. The two of them are in different
+          ones by definition — it is what the app is for — so a raw time is a
+          question rather than an answer.
+        */}
+          <Text style={styles.meetingWhen}>{meetingWhen}</Text>
+          <Text style={styles.meetingTheirs}>{meetingLength}</Text>
+          {meeting.note ? <Text style={styles.phraseExample}>{meeting.note}</Text> : null}
+          {answered ? (
+            <Text style={[styles.meetingStatus, statusStyle(meeting.status, styles)]}>
+              {t(meetingStatusKey(meeting.status))}
+            </Text>
+          ) : (
+            /*
+            The proposer can only withdraw and the invitee can only answer —
+            the same split the server enforces, drawn so neither is offered a
+            button that would come back refused.
+          */
+            <View style={styles.meetingActions}>
+              {mine ? (
+                <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'cancelled')}>
+                  <Text style={styles.meetingDecline}>{t('chat.meetingCancel')}</Text>
+                </Pressable>
+              ) : (
+                <>
+                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'accepted')}>
+                    <Text style={styles.meetingAccept}>{t('chat.meetingAccept')}</Text>
+                  </Pressable>
+                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'declined')}>
+                    <Text style={styles.meetingDecline}>{t('chat.meetingDecline')}</Text>
+                  </Pressable>
+                </>
+              )}
+            </View>
+          )}
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
+  /*
+   * A type this build has never heard of.
+   *
+   * It happens by construction, not by accident: a new message type ships to
+   * the server first and reaches phones over an OTA update afterwards, so for
+   * a while somebody's copy of the app is older than the messages arriving in
+   * it. Falling through to the text bubble would draw an empty one — these
+   * types carry no `body` — and an empty bubble reads as a bug in the app
+   * rather than a gap in it.
+   */
+  if (message.type === 'phrase' || message.type === 'meeting' || !isDrawableType(message.type)) {
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.card, flash]}>
+          <Text style={styles.phraseMeaning}>{t('chat.unsupportedMessage')}</Text>
+        </View>
+        <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
   }
@@ -570,6 +686,32 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: 6,
   },
   // Sits on the first line of the translation rather than centred on the block.
+  card: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.lg,
+    gap: 3,
+    maxWidth: 300,
+    padding: 12,
+  },
+  cardKicker: {
+    color: colors.textFaint,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  cardMeta: { marginTop: 4 },
+  phraseTerm: { color: colors.text, fontSize: 17, fontWeight: '700' },
+  phraseMeaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
+  phraseExample: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
+  meetingWhen: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  meetingTheirs: { color: colors.textMuted, fontSize: 13 },
+  meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
+  meetingAccept: { color: colors.success, fontSize: 14, fontWeight: '700' },
+  meetingDecline: { color: colors.danger, fontSize: 14, fontWeight: '700' },
+  meetingStatus: { fontSize: 14, fontWeight: '700', marginTop: 6 },
+  meetingAccepted: { color: colors.success },
+  meetingRefused: { color: colors.textMuted },
   sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },
   sentTranslation: { color: colors.textMuted, flexShrink: 1, fontSize: 13, lineHeight: 18 },
   askRow: { alignItems: 'center', flexDirection: 'row', gap: 5, marginTop: 4 },
@@ -627,3 +769,28 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // The clock on the card sits at its end, whichever side wrote it.
   correctionMeta: { alignSelf: 'flex-end' },
 }))
+
+/** Every type this build knows how to draw. Anything else gets the fallback. */
+function isDrawableType(type: MessageType): boolean {
+  return (
+    type === 'text' ||
+    type === 'correction' ||
+    type === 'image' ||
+    type === 'audio' ||
+    type === 'video'
+  )
+}
+
+function meetingStatusKey(status: MeetingStatus): MessageKey {
+  if (status === 'accepted') return 'chat.meetingAccepted'
+  if (status === 'declined') return 'chat.meetingDeclined'
+  return 'chat.meetingCancelled'
+}
+
+/** Accepted is the one that reads as good news; the other two are just facts. */
+function statusStyle(
+  status: MeetingStatus,
+  styles: { meetingAccepted: TextStyle; meetingRefused: TextStyle },
+): TextStyle {
+  return status === 'accepted' ? styles.meetingAccepted : styles.meetingRefused
+}

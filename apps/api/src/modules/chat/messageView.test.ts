@@ -59,6 +59,31 @@ describe('toMessageView', () => {
     expect(toMessageView(withdrawn, ME).translation).toBeUndefined()
   })
 
+  it('carries a phrase card, and a meeting with its dates as strings', () => {
+    const card = message({
+      type: 'phrase',
+      body: '',
+      phrase: { term: 'kolay gelsin', meaning: 'may it come easily', lang: 'tr' },
+    })
+    expect(toMessageView(card, ME).phrase?.term).toBe('kolay gelsin')
+
+    const meeting = message({
+      type: 'meeting',
+      body: '',
+      meeting: {
+        startsAt: new Date('2026-09-10T18:00:00.000Z'),
+        durationMinutes: 30,
+        status: 'proposed',
+      },
+    })
+    const view = toMessageView(meeting, ME)
+    expect(view.meeting?.startsAt).toBe('2026-09-10T18:00:00.000Z')
+    expect(view.meeting?.status).toBe('proposed')
+    // `respondedAt` is the server's bookkeeping and says nothing the card
+    // draws, so it does not travel.
+    expect(JSON.stringify(view)).not.toContain('respondedAt')
+  })
+
   it('reports the viewer their own reaction, and everyone the whole tally', () => {
     const doc = message({ reactions: { '👍': [THEM], '🔥': [ME] } })
     expect(toMessageView(doc, ME).myReaction).toBe('🔥')

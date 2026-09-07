@@ -399,6 +399,51 @@ export default function ChatScreen() {
    * rule, and one that is missing teaches nothing.
    */
   /**
+   * A proposal's time, in the reader's own zone.
+   *
+   * Read off the profile's `timezone`, not the device's: the device clock
+   * follows wherever the phone is, and somebody reading this on a trip would
+   * be shown a time that is right for the airport and wrong for the call they
+   * are agreeing to. `undefined` falls back to the device, which is the best
+   * guess left.
+   */
+  function meetingWhenFor(message: MessageDto): string {
+    if (!message.meeting) return ''
+    const zone = me.data?.timezone
+    return new Intl.DateTimeFormat(locale, {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+      ...(zone ? { timeZone: zone } : {}),
+    }).format(new Date(message.meeting.startsAt))
+  }
+
+  function meetingLengthFor(message: MessageDto): string {
+    if (!message.meeting) return ''
+    return t('format.minutes', { count: message.meeting.durationMinutes })
+  }
+
+  /** Accepts, declines or withdraws. The server decides who may do which. */
+  async function respondMeeting(
+    message: MessageDto,
+    status: 'accepted' | 'declined' | 'cancelled',
+  ): Promise<void> {
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'meeting:respond', {
+        conversationId,
+        messageId: message._id,
+        status,
+      })
+    } catch (caught) {
+      void caught
+      void showAlert(t('chat.couldNotSend'), t('chat.meetingFailed'))
+    }
+  }
+
+  /**
    * Which requests have already been answered.
    *
    * A correction stamps `corrected` on the message it fixes, so that half is a
@@ -459,6 +504,8 @@ export default function ChatScreen() {
       // is protecting anyone from.
       { label: t('chat.askCorrection'), value: 'askCorrection' as const, icon: 'edit-3' },
       { label: t('chat.askPronunciation'), value: 'askPronunciation' as const, icon: 'volume-2' },
+      { label: t('chat.sendPhrase'), value: 'phrase' as const, icon: 'bookmark' },
+      { label: t('chat.sendMeeting'), value: 'meeting' as const, icon: 'calendar' },
       // Only when there is a language to send it in. A row that would answer
       // "there is nothing to translate into" is a row not worth drawing.
       ...(translateInto
@@ -474,6 +521,17 @@ export default function ChatScreen() {
         : []),
     ])
     if (!choice) return
+    if (choice === 'phrase') {
+      router.push({
+        pathname: '/(app)/phrase-card',
+        params: { id: conversationId, ...(translateInto ? { lang: translateInto } : {}) },
+      })
+      return
+    }
+    if (choice === 'meeting') {
+      router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } })
+      return
+    }
     if (choice === 'translate') {
       setSendTranslated((on) => !on)
       return
@@ -1118,6 +1176,10 @@ export default function ChatScreen() {
     const choice = await chooseAlert(partner.displayName, undefined, [
       { label: t('chat.viewProfile'), value: 'profile' },
       { label: t('chats.starredMessages'), value: 'starred' },
+      // Beside Starred, because the two answer the same question — where did
+      // the thing I wanted to keep go — and differ only in how much shape it
+      // had when it was kept.
+      { label: t('chat.phraseDeck'), value: 'phrases' },
       // The same toggle the list offers, where the design puts it as well.
       { label: pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
       { label: t('common.block'), value: 'block', destructive: true },
@@ -1126,6 +1188,8 @@ export default function ChatScreen() {
       openProfile(partner.handle, `/(app)/chat/${conversationId}`)
     } else if (choice === 'starred') {
       router.push('/(app)/starred')
+    } else if (choice === 'phrases') {
+      router.push({ pathname: '/(app)/phrases', params: { id: conversationId } })
     } else if (choice === 'pin') {
       flags.mutate({ conversationId, pinned: !pinned })
     } else if (choice === 'block') {
@@ -1444,6 +1508,9 @@ export default function ChatScreen() {
                     highlighted={highlighted === row.message._id}
                     askAnswered={answeredAsks.has(row.message._id)}
                     onAnswerAsk={answerAsk}
+                    onRespondMeeting={(message, status) => void respondMeeting(message, status)}
+                    meetingWhen={meetingWhenFor(row.message)}
+                    meetingLength={meetingLengthFor(row.message)}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}

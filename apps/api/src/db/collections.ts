@@ -76,6 +76,16 @@ export const COLLECTIONS = {
    */
   pronunciationAnswers: 'pronunciationAnswers',
   /**
+   * The words a conversation decided were worth keeping.
+   *
+   * A collection rather than a flag on `messages`, for the reason
+   * `pronunciationAnswers` is one: the deck screen lists these away from the
+   * thread they were sent in, and something that is listed separately needs
+   * its own index and its own uniqueness. The message stays — the card is the
+   * message — and this is the readable copy.
+   */
+  phraseCards: 'phraseCards',
+  /**
    * Text remarks on a post. Unlimited, unpaid, unlikeable — the one thing in
    * the feed that costs nothing to leave and earns nothing for leaving it,
    * which is what makes it safe to be unlimited.

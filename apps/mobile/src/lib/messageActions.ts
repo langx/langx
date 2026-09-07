@@ -1,3 +1,4 @@
+import type { MessageType } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 
 export const MESSAGE_ACTION_IDS = [
@@ -41,7 +42,7 @@ export interface MessageActionContext {
   canTranslate?: boolean
   /** Whether the signed-in user sent it. */
   mine: boolean
-  type: 'text' | 'correction' | 'image' | 'audio' | 'video'
+  type: MessageType
   /** A voice note without a caption has nothing to copy, quote or translate. */
   hasBody: boolean
   alreadyTranslated: boolean

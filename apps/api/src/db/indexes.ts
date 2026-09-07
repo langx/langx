@@ -480,6 +480,21 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
   ],
 
+  [COLLECTIONS.phraseCards]: [
+    /**
+     * One card per term per conversation. The deck is a vocabulary list, and a
+     * list that can hold the same word twice stops being one — the second copy
+     * has no new information and pushes a different word off the screen.
+     *
+     * An invariant, not an optimisation, exactly like the uniques above: two
+     * people saving the same phrase at the same moment is the ordinary case,
+     * and only the index makes the second one lose.
+     */
+    { key: { conversationId: 1, term: 1 }, name: 'conversation_term_unique', unique: true },
+    // The deck screen, newest first.
+    { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_recent' },
+  ],
+
   [COLLECTIONS.postComments]: [
     /**
      * **No unique index here, deliberately.** Every other child-of-post
