@@ -11,7 +11,40 @@ updates:
       interval: 'weekly'
     open-pull-requests-limit: 5
 
+    # One pull request a week instead of one per package, for two reasons
+    # beyond tidiness. `deploy-web.yml` triggers on `pnpm-lock.yaml`, so every
+    # separate bump used to push its own bundle to app.langx.io; and five open
+    # PRs is the limit above, so a full queue meant Dependabot could not raise
+    # a *security* update until somebody drained it by hand.
+    #
+    # Expo owns the excluded names. `pnpm-workspace.yaml` and CONTRIBUTING.md
+    # both say they move only via `npx expo install --check`, and grouping them
+    # would hide such a bump inside a pull request titled after something else
+    # — which matters because these are the packages that are autolinked native
+    # code, so their version is part of the `fingerprint` runtime version. A
+    # bump that silently shifts it publishes OTA updates under a runtime
+    # version no released binary has. They stay ungrouped and individually
+    # reviewable.
+    groups:
+      npm:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - 'expo'
+          - 'expo-*'
+          - 'react-native*'
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+        update-types:
+          - 'minor'
+          - 'patch'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
