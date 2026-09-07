@@ -2,16 +2,30 @@ import { webUrl, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
+ * The langx.io mark: two interlocking hooks, one in the brand yellow and one
+ * in ink, next to the wordmark set in the same weight the site uses for it —
+ * `website/src/lib/components/atoms/Logo.svelte`, so mail doesn't teach a
+ * different logo than the site does. `currentColor` becomes a hard-coded ink
+ * here — an email has no CSS custom property support to inherit it from.
+ */
+function logo(dir: 'ltr' | 'rtl'): string {
+  const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
+  return `<span style="font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
+    <svg width="15" height="22" viewBox="0 0 14.6 21.544" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle; ${gap}:8px;">
+      <path fill="#ffc409" d="m0 14.076 1.715-1.188s2.307 3.177 5.641 1.188a4.088 4.088 0 0 0 1.656-1.875 4.757 4.757 0 0 0-.311-3.842l1.817-1.115s2.745 4.625-1.305 8.207a6.717 6.717 0 0 1-5.509 1.239A6.3 6.3 0 0 1 0 14.076Z" />
+      <path fill="#111827" d="m14.539 4.475-1.712 1.2s-2.252-3.189-5.588-1.2A4.123 4.123 0 0 0 5.618 6.41a4.751 4.751 0 0 0 .221 3.783l-1.654 1.145S1.319 6.776 5.369 3.193a6.685 6.685 0 0 1 5.47-1.316 6.3 6.3 0 0 1 3.7 2.598Z" />
+    </svg>LangX</span>`
+}
+
+/**
  * Plain HTML, no @react-email dependency — Resend's `react` option is only
  * needed if you hand it a component, and one extra rendering dependency buys
  * nothing for a handful of short transactional emails.
  *
  * Table-based rather than `<div>`s: Outlook's desktop renderer is Word, not a
  * browser, and a `<table>` is the one layout primitive it doesn't mangle. The
- * two brand colours are the same ones the app uses for the same jobs —
- * `primary` (#ffc409) is the one committing button, `accent` (#3b6cf6) is
- * everything else interactive — so mail doesn't teach a different palette
- * than the product does.
+ * button colour is the same the app uses for its one committing action
+ * (`primary`, #ffc409).
  */
 function shell(locale: Locale, preheader: string, contentHtml: string, footerHtml: string): string {
   // `dir` matters more here than anywhere in the app: an email client has no
@@ -26,7 +40,7 @@ function shell(locale: Locale, preheader: string, contentHtml: string, footerHtm
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px; margin:0 auto;">
       <tr>
         <td style="padding:0 4px 20px; text-align:${align};">
-          <span style="font-size:20px; font-weight:800; color:#111827;">Lang<span style="color:#3b6cf6;">X</span></span>
+          ${logo(dir)}
         </td>
       </tr>
       <tr>
