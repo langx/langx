@@ -2,19 +2,18 @@ import { webUrl, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
- * The langx.io mark: two interlocking hooks, one in the brand yellow and one
- * in ink, next to the wordmark set in the same weight the site uses for it —
- * `website/src/lib/components/atoms/Logo.svelte`, so mail doesn't teach a
- * different logo than the site does. `currentColor` becomes a hard-coded ink
- * here — an email has no CSS custom property support to inherit it from.
+ * The langx.io mark, next to the wordmark set in the same weight the site
+ * uses for it. An `<img>` pointing at the site's own favicon rather than the
+ * inline SVG the header uses on `website/src/lib/components/atoms/Logo.svelte`
+ * — Gmail strips `<svg>` from mail bodies outright, and drops `data:` image
+ * sources too, so a hosted file is the only version that survives. The
+ * favicon is square where the site's mark is tall, but it is the same two
+ * hooks and it is already live, with no new asset to host.
  */
 function logo(dir: 'ltr' | 'rtl'): string {
   const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
   return `<span style="font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
-    <svg width="15" height="22" viewBox="0 0 14.6 21.544" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle; ${gap}:8px;">
-      <path fill="#ffc409" d="m0 14.076 1.715-1.188s2.307 3.177 5.641 1.188a4.088 4.088 0 0 0 1.656-1.875 4.757 4.757 0 0 0-.311-3.842l1.817-1.115s2.745 4.625-1.305 8.207a6.717 6.717 0 0 1-5.509 1.239A6.3 6.3 0 0 1 0 14.076Z" />
-      <path fill="#111827" d="m14.539 4.475-1.712 1.2s-2.252-3.189-5.588-1.2A4.123 4.123 0 0 0 5.618 6.41a4.751 4.751 0 0 0 .221 3.783l-1.654 1.145S1.319 6.776 5.369 3.193a6.685 6.685 0 0 1 5.47-1.316 6.3 6.3 0 0 1 3.7 2.598Z" />
-    </svg>LangX</span>`
+    <img src="https://langx.io/favicons/favicon-32x32.png" width="20" height="20" alt="" style="vertical-align:middle; ${gap}:8px;" />LangX</span>`
 }
 
 /**
