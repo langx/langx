@@ -10,12 +10,37 @@ design.** This plan says how.
 
 ## Status on 7 September 2026
 
-Not started. The screen pass itself is on the branch above, uncommitted, with
-typecheck, lint, tests and prettier green. Part A below is mobile-only and can
-land on the same branch; Part B changes `packages/shared` and `apps/api` and
-needs an API deploy before the app can read the new fields — every new field is
-therefore optional on the wire, and the app draws nothing for it until the API
-answers.
+**Done.** Every item below has landed on `main`, in this order:
+
+| PR    | Items                                                                                         |
+| ----- | --------------------------------------------------------------------------------------------- |
+| #1168 | the screen pass itself (64 routes) and Part C                                                 |
+| #1169 | D1, D3, A4, A3, B10, D2                                                                       |
+| #1170 | D4 — optimistic send, "Sending → Sent"                                                        |
+| #1171 | A1 — username before photo                                                                    |
+| #1172 | Wallet and Daily pool hero numbers no longer climb into their labels (reported while testing) |
+| #1173 | A5 — `chat/new` and `ChatComposer`                                                            |
+| #1174 | B4, B1, B6, B7                                                                                |
+| #1175 | B3 (pin from the header; the prototype's menu has no archive), B2                             |
+| #1176 | B9                                                                                            |
+| #1177 | B8                                                                                            |
+| #1178 | B5                                                                                            |
+
+The API was deployed after #1174 and #1175, and again after #1177 and #1178;
+the web app and the OTA update go out on every merge. Two things the text below
+still says in the future tense turned out differently once the code was read:
+
+- **B3** adds only Pin/Unpin to the chat header, because that is what the
+  prototype's menu holds — archive stays a list gesture.
+- **B5**: Better Auth 1.7.1's `unlink-account` takes the link row's own `id`
+  (it compares against `account.id`), not the provider's `accountId`, so the
+  shared schema carries `id`. `allowDifferentEmails` is on for the explicit
+  link, because Apple's private relay is a different address by design.
+  Implicit linking at sign-in keeps Better Auth's own same-address rule.
+
+Part A was mobile-only; Part B changed `packages/shared` and `apps/api` and
+every new field is optional on the wire, so the app drew nothing for it until
+the API answered.
 
 ## Part A — the five judgement calls, resolved towards the prototype
 

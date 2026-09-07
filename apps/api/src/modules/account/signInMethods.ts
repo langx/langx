@@ -1,5 +1,5 @@
 import { LINKED_PROVIDERS, type LinkedProvider, type SignInMethods } from '@langx/shared'
-import type { Db } from 'mongodb'
+import type { Db, ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { authId } from '../../lib/authId'
 import { emailFor } from '../profiles/emailFor'
@@ -17,6 +17,7 @@ function isLinkedProvider(providerId: string): providerId is LinkedProvider {
 }
 
 interface AccountRow {
+  _id: ObjectId | string
   providerId?: string
   password?: string | null
   createdAt?: Date
@@ -46,13 +47,19 @@ export async function getSignInMethods(
 ): Promise<SignInMethods> {
   const rows = await db
     .collection<AccountRow>(COLLECTIONS.account)
-    .find({ userId: authId(userId) }, { projection: { providerId: 1, password: 1, createdAt: 1 } })
+    .find(
+      { userId: authId(userId) },
+      { projection: { _id: 1, providerId: 1, password: 1, createdAt: 1 } },
+    )
     .toArray()
 
   const linked = rows
     .filter((row) => typeof row.providerId === 'string' && isLinkedProvider(row.providerId))
     .map((row) => ({
       provider: row.providerId as LinkedProvider,
+      // The row's id, as Better Auth reads it back: `unlink-account` compares
+      // against `account.id`, which the Mongo adapter maps from `_id`.
+      id: String(row._id),
       linkedAt: (row.createdAt ?? new Date(0)).toISOString(),
     }))
     // Oldest first, so the list does not reshuffle when a second provider is

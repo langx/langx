@@ -1003,6 +1003,14 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Você ainda tem {count} traduções grátis hoje',
     },
     whatYouHave: 'O que você tem',
+    signInConnect: 'Conectar',
+    signInDisconnect: 'Desconectar',
+    signInDisconnectConfirm: 'Desconectar {provider}? Você não poderá mais entrar com essa conta.',
+    signInLastMethod: 'Sua única forma de entrar — defina uma senha antes de desconectar.',
+    signInLinked: 'Conectado.',
+    signInUnlinked: 'Desconectado.',
+    signInLinkFailed: 'Não foi possível conectar. Tente de novo.',
+    signInUnlinkFailed: 'Não foi possível desconectar. Tente de novo.',
   },
 
   deletion: {

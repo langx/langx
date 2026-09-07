@@ -1051,6 +1051,15 @@ export const en = {
       other: '{count} free translations left today',
     },
     whatYouHave: 'What you have',
+    signInConnect: 'Connect',
+    signInDisconnect: 'Disconnect',
+    signInDisconnectConfirm:
+      'Disconnect {provider}? You will no longer be able to sign in with it.',
+    signInLastMethod: 'Your only way in — set a password before disconnecting it.',
+    signInLinked: 'Connected.',
+    signInUnlinked: 'Disconnected.',
+    signInLinkFailed: 'Could not connect. Try again.',
+    signInUnlinkFailed: 'Could not disconnect. Try again.',
   },
 
   deletion: {

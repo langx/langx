@@ -318,6 +318,35 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
 
     socialProviders,
 
+    /**
+     * Connecting and disconnecting Google and Apple from Settings → Sign-in
+     * methods. Both providers are trusted — they verify the address they hand
+     * over — and a different address is allowed on an *explicit* link, because
+     * Apple's private relay is a different address by design and "connect
+     * Apple" would otherwise fail for exactly the people it is for. Implicit
+     * linking at sign-in keeps Better Auth's own same-address rule.
+     *
+     * `allowUnlinkingAll` stays off: the last way into an account cannot be
+     * removed, which is the rule that made offering Disconnect safe at all.
+     */
+    account: {
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ['google', 'apple'],
+        allowDifferentEmails: true,
+        allowUnlinkingAll: false,
+      },
+    },
+
+    // The two account-linking calls are the only Better Auth routes a signed-in
+    // person can hit in a loop from a settings screen; ten a minute is plenty.
+    rateLimit: {
+      customRules: {
+        '/link-social': { window: 60, max: 10 },
+        '/unlink-account': { window: 60, max: 10 },
+      },
+    },
+
     plugins: [
       expo(),
       /*

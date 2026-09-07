@@ -1033,6 +1033,14 @@ export const de: Localized<EnMessages> = {
       other: 'Heute hast du noch {count} kostenlose Übersetzungen',
     },
     whatYouHave: 'Was du hast',
+    signInConnect: 'Verbinden',
+    signInDisconnect: 'Trennen',
+    signInDisconnectConfirm: '{provider} trennen? Du kannst dich damit dann nicht mehr anmelden.',
+    signInLastMethod: 'Dein einziger Weg hinein – lege erst ein Passwort fest.',
+    signInLinked: 'Verbunden.',
+    signInUnlinked: 'Getrennt.',
+    signInLinkFailed: 'Verbinden fehlgeschlagen. Versuch es noch einmal.',
+    signInUnlinkFailed: 'Trennen fehlgeschlagen. Versuch es noch einmal.',
   },
 
   deletion: {
