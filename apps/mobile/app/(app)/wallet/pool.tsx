@@ -1,12 +1,11 @@
 import { TOKEN_RULES, firstPayoutAt } from '@langx/shared'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { useMe, useTokens } from '../../../src/api/queries'
-import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../../src/lib/navigation'
 import { dayLabel } from '../../../src/lib/messageGroups'
-import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { makeStyles } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -21,12 +20,14 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * and the payout applies an eligibility the projection cannot see — an
  * account inside `accountAgeRampUpHours` would watch a share climb until
  * midnight and be paid nothing. So the big number is one that already
- * happened, and the only forward-looking thing on the card is how busy today
- * is, which is a fact rather than a promise.
+ * happened, and the only forward-looking thing on the page is how busy today
+ * is, which is a fact rather than a promise. For the same reason there is no
+ * bar under today's score: the score is an uncapped weighted sum and the cap
+ * is on the token share, so a fraction of one over the other would draw a
+ * progress that does not exist.
  */
 export default function PoolScreen() {
   useScreenInteractive()
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -66,29 +67,16 @@ export default function PoolScreen() {
     <Screen scroll {...pull}>
       <ScreenHeader title={t('tokens.poolTitle')} onBack={() => goBackTo('/(app)/wallet')} />
 
-      <Text style={styles.body}>{t('tokens.intro')}</Text>
-
       {pool ? (
-        <View style={styles.section}>
-          <View style={styles.poolHead}>
-            <Text style={styles.poolTitle}>{t('tokens.poolTitle')}</Text>
-            <Text style={styles.meta}>{t('tokens.activeToday', { count: pool.activeToday })}</Text>
-          </View>
+        <View style={styles.share}>
           {lastPayout ? (
             <>
-              <View style={styles.shareRow}>
-                <Text style={styles.shareValue}>
-                  {t('tokens.shareAmount', { count: lastPayout.amount })}
-                </Text>
-                <Text style={styles.meta}>
-                  {t('tokens.shareFor', { day: dayLabel(lastPayout.day, { t, locale }) })}
-                </Text>
-              </View>
-              <ProgressBar
-                accessibilityLabel={t('tokens.poolTitle')}
-                color={colors.success}
-                value={shareCap > 0 ? lastPayout.amount / shareCap : 0}
-              />
+              <Text style={styles.kicker}>
+                {t('tokens.shareForDay', { day: dayLabel(lastPayout.day, { t, locale }) })}
+              </Text>
+              <Text style={styles.shareValue}>
+                {t('tokens.shareAmount', { count: lastPayout.amount })}
+              </Text>
             </>
           ) : (
             <Text style={styles.meta}>
@@ -102,43 +90,69 @@ export default function PoolScreen() {
                 : t('tokens.noShareYet')}
             </Text>
           )}
-          {/*
-            Today's own numbers, so the card says something true about the
-            day you are in rather than only about a day that has closed. This
-            is what makes "no share yet" legible: the counters move while you
-            talk, which is the evidence the pool is reading you at all.
-          */}
-          {today ? (
+        </View>
+      ) : null}
+
+      {/*
+        Today's own numbers, so the page says something true about the day you
+        are in rather than only about a day that has closed. This is what makes
+        "no share yet" legible: the counters move while you talk, which is the
+        evidence the pool is reading you at all.
+      */}
+      {today ? (
+        <View style={styles.today}>
+          <View style={styles.todayHead}>
+            <Text style={styles.todayTitle}>{t('tokens.todaySoFar')}</Text>
             <Text style={styles.meta}>
-              {t('tokens.todayActivity', {
-                score: Math.round(today.activityScore),
-                messages: today.messages,
-                corrections: today.corrections,
-                partners: today.distinctPartners,
-              })}
+              {t('tokens.activityScore', { count: Math.round(today.activityScore) })}
             </Text>
-          ) : null}
-          <Text style={styles.meta}>{t('tokens.poolCap', { cap: shareCap })}</Text>
-          <Text style={styles.meta}>
-            {t('tokens.poolPaidAt', { hour: TOKEN_RULES.pool.payoutHourUtc })}
+          </View>
+          <Text style={styles.body}>
+            {t('tokens.todayBreakdown', {
+              messages: today.messages,
+              corrections: today.corrections,
+              partners: today.distinctPartners,
+            })}{' '}
+            {t('tokens.poolCap', { cap: shareCap })}
           </Text>
         </View>
       ) : null}
+
+      <View style={styles.how}>
+        <Text style={styles.howTitle}>{t('invite.howTitle')}</Text>
+        <Text style={styles.paragraph}>
+          {t('tokens.poolPaidAt', { hour: TOKEN_RULES.pool.payoutHourUtc })}
+        </Text>
+        <Text style={styles.paragraph}>{t('tokens.intro')}</Text>
+      </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23, marginTop: spacing.lg },
-  section: {
-    gap: spacing.sm + 2,
-    paddingBottom: spacing.xxl,
+  share: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: 6,
+    paddingBottom: 20,
     paddingTop: spacing.lg,
   },
-  poolHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
-  poolTitle: { ...font.heading, color: colors.text, fontSize: 16 },
-  shareRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm + 1 },
-  shareValue: { ...font.heading, color: colors.success, fontSize: 24 },
-  meta: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 19 },
+  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
+  // Set solid, like the wallet's balance: a signed integer has no descenders.
+  shareValue: { ...font.heading, color: colors.success, fontSize: 48, lineHeight: 48 },
+  meta: { color: colors.textMuted, fontSize: 14 },
+  today: { gap: 10, marginTop: 18 },
+  todayHead: { flexDirection: 'row', justifyContent: 'space-between' },
+  todayTitle: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  body: { color: colors.textMuted, fontSize: 14, lineHeight: 21 },
+  how: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    gap: 10,
+    marginTop: 18,
+    paddingTop: 18,
+  },
+  howTitle: { ...font.heading, color: colors.text, fontSize: 17 },
+  paragraph: { color: colors.textMuted, fontSize: 15, lineHeight: 23 },
 }))

@@ -115,14 +115,23 @@ export function confirmAlert(options: {
   ])
 }
 
-/** One of several choices, or `null` when cancelled. */
+/**
+ * One of several choices, or `null` when cancelled.
+ *
+ * `destructive` reads red in the sheet — Block, Delete, Report — so the one
+ * row that cannot be taken back looks different from the ones that can.
+ */
 export function chooseAlert<T extends string>(
   title: string,
   message: string | undefined,
-  choices: { label: string; value: T }[],
+  choices: { label: string; value: T; destructive?: boolean }[],
 ): Promise<T | null> {
   return askAlert<T | null>(title, message, [
-    ...choices.map((c) => ({ label: c.label, value: c.value })),
+    ...choices.map((c) => ({
+      label: c.label,
+      value: c.value,
+      style: c.destructive ? ('destructive' as const) : ('default' as const),
+    })),
     { label: currentTranslate()('common.cancel'), value: null, style: 'cancel' as const },
   ])
 }

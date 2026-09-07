@@ -1,6 +1,7 @@
+import Feather from '@expo/vector-icons/Feather'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Platform, Pressable, Text, TextInput, View } from 'react-native'
 import { useRevokeOtherSessions, useRevokeSession, useSessions } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -9,7 +10,7 @@ import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { authClient } from '../../src/lib/auth-client'
 import { relativeTime } from '../../src/lib/format'
 import { goBackTo } from '../../src/lib/navigation'
-import { sessionLabel } from '../../src/lib/sessionLabel'
+import { sessionIsApp, sessionLabel } from '../../src/lib/sessionLabel'
 import { awaitNewSession, sortSessions } from '../../src/lib/sessions'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
@@ -142,47 +143,63 @@ export default function LinkDeviceScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={t('linkDevice.title')} onBack={() => goBackTo('/(app)/settings')} />
-
-      <Text style={styles.body}>{t('linkDevice.body')}</Text>
-
-      <TextInput
-        value={entered}
-        onChangeText={setEntered}
-        placeholder={t('linkDevice.placeholder')}
-        placeholderTextColor={colors.textFaint}
-        autoCapitalize="characters"
-        autoCorrect={false}
-        // Five characters plus room for a hyphen and a slip of the thumb.
-        maxLength={8}
-        style={styles.input}
+      <ScreenHeader
+        title={t('linkDevice.devicesTitle')}
+        onBack={() => goBackTo('/(app)/settings')}
       />
 
-      {/*
-        Named, not implied. "Approve" on its own asks somebody to confirm a
-        thing they have not been told the shape of — and the one attack this
-        flow has is a code somebody else is holding.
-      */}
-      <Text style={styles.warning}>{t('linkDevice.warning')}</Text>
+      <Text style={styles.body}>{t('settings.linkDeviceBody')}</Text>
 
-      <View style={styles.actions}>
-        <Button
-          label={t('linkDevice.approve')}
-          loading={busy}
-          disabled={busy || entered.trim().length === 0}
-          onPress={() => void decide(true)}
-        />
-        <Button
-          label={t('linkDevice.deny')}
-          variant="secondary"
-          disabled={busy || entered.trim().length === 0}
-          onPress={() => void decide(false)}
-        />
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>{t('linkDevice.approveTitle')}</Text>
+        <Text style={styles.cardBody}>{t('linkDevice.body')}</Text>
+        <View style={styles.codeRow}>
+          {/* The web build has no camera to scan with; there the field is the whole row. */}
+          {Platform.OS !== 'web' ? (
+            <Button
+              label={t('linkDevice.scan')}
+              variant="ink"
+              size="small"
+              icon={<Feather name="maximize" size={18} color={colors.bg} />}
+              onPress={() => router.push('/(app)/scan')}
+              style={styles.scan}
+            />
+          ) : null}
+          <TextInput
+            value={entered}
+            onChangeText={setEntered}
+            placeholder={t('linkDevice.typeCodePlaceholder')}
+            placeholderTextColor={colors.textFaint}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            // Five characters plus room for a hyphen and a slip of the thumb.
+            maxLength={8}
+            style={styles.input}
+          />
+        </View>
+
+        {/*
+          Named, not implied. "Approve" on its own asks somebody to confirm a
+          thing they have not been told the shape of — and the one attack this
+          flow has is a code somebody else is holding.
+        */}
+        <Text style={styles.warning}>{t('linkDevice.warning')}</Text>
+
+        <View style={styles.actions}>
+          <Button
+            label={t('linkDevice.approve')}
+            loading={busy}
+            disabled={busy || entered.trim().length === 0}
+            onPress={() => void decide(true)}
+          />
+          <Button
+            label={t('linkDevice.deny')}
+            variant="secondary"
+            disabled={busy || entered.trim().length === 0}
+            onPress={() => void decide(false)}
+          />
+        </View>
       </View>
-
-      <Text style={styles.hint} onPress={() => router.back()}>
-        {t('linkDevice.hint')}
-      </Text>
 
       {/*
         The other half of the same question. Approving a sign-in and seeing
@@ -190,14 +207,16 @@ export default function LinkDeviceScreen() {
         account" — and the list is also the only feedback that an approval
         worked, since the device it signed in is somewhere else.
       */}
-      <Text style={styles.sectionTitle}>{t('linkDevice.devices')}</Text>
+      <Text style={styles.sectionTitle}>{t('linkDevice.whereSignedIn')}</Text>
       {sessions.isPending ? (
         <ActivityIndicator style={styles.spinner} />
       ) : (
         <View>
           {awaiting ? (
             <View style={styles.deviceRow}>
-              <ActivityIndicator size="small" />
+              <View style={styles.deviceIcon}>
+                <ActivityIndicator size="small" />
+              </View>
               <Text style={[styles.deviceMeta, styles.deviceText]}>
                 {t('linkDevice.waitingForDevice')}
               </Text>
@@ -211,6 +230,13 @@ export default function LinkDeviceScreen() {
                 key={session.token}
                 style={[styles.deviceRow, session.token === arrived && styles.deviceRowNew]}
               >
+                <View style={styles.deviceIcon}>
+                  <Feather
+                    name={sessionIsApp(session.userAgent) ? 'smartphone' : 'globe'}
+                    size={20}
+                    color={colors.text}
+                  />
+                </View>
                 <View style={styles.deviceText}>
                   <Text style={styles.deviceName}>
                     {label}
@@ -230,6 +256,7 @@ export default function LinkDeviceScreen() {
                     onPress={() => void signOutOne(session.token, label)}
                     hitSlop={8}
                     accessibilityRole="button"
+                    style={styles.signOutButton}
                   >
                     <Text style={styles.signOut}>{t('linkDevice.signOutDevice')}</Text>
                   </Pressable>
@@ -253,31 +280,48 @@ export default function LinkDeviceScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23, marginTop: spacing.xl },
-  input: {
-    ...font.title,
+  body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
+  // 20 is the prototype's card radius; the scale has 16 and 24 either side of it.
+  card: {
     backgroundColor: colors.fill,
-    borderRadius: radius.md,
-    color: colors.text,
-    fontSize: 28,
-    letterSpacing: 6,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    textAlign: 'center',
+    borderRadius: 20,
+    gap: spacing.md,
+    marginTop: 20,
+    padding: 20,
   },
-  warning: { ...font.caption, color: colors.warning, lineHeight: 19, marginTop: spacing.md },
-  actions: { gap: spacing.sm, marginTop: spacing.xl },
-  hint: { ...font.caption, color: colors.textFaint, marginTop: spacing.lg, textAlign: 'center' },
-  sectionTitle: { ...font.label, color: colors.text, marginTop: spacing.xl },
+  cardTitle: { ...font.heading, color: colors.text, fontSize: 17 },
+  cardBody: { color: colors.textMuted, fontSize: 14, lineHeight: 21 },
+  codeRow: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+  scan: { flex: 1, width: 'auto' },
+  input: {
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    color: colors.text,
+    flex: 1,
+    fontSize: 15,
+    height: 48,
+    paddingHorizontal: spacing.lg,
+  },
+  warning: { ...font.caption, color: colors.warning, lineHeight: 19 },
+  actions: { gap: spacing.sm },
+  sectionTitle: {
+    ...font.heading,
+    color: colors.text,
+    fontSize: 18,
+    marginTop: 20,
+    paddingBottom: spacing.xs,
+    paddingTop: spacing.sm,
+  },
   spinner: { marginTop: spacing.lg },
   deviceRow: {
     alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
+    gap: spacing.lg,
+    paddingVertical: spacing.lg,
   },
   /* The row an approval just added: tinted once so the proof is findable. */
   deviceRowNew: {
@@ -286,9 +330,18 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     marginHorizontal: -spacing.sm,
     paddingHorizontal: spacing.sm,
   },
+  deviceIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
   deviceText: { flex: 1, gap: 2, minWidth: 0 },
-  deviceName: { ...font.body, color: colors.text },
-  deviceMeta: { ...font.caption, color: colors.textMuted },
-  signOut: { ...font.caption, color: colors.danger },
+  deviceName: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  deviceMeta: { color: colors.textMuted, fontSize: 13 },
+  signOutButton: { height: 40, justifyContent: 'center' },
+  signOut: { color: colors.danger, fontSize: 14, fontWeight: '600' },
   signOutAll: { marginTop: spacing.lg },
 }))

@@ -1,17 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useState } from 'react'
-import { Text, View } from 'react-native'
-import { Button } from '../../src/components/ui/Button'
-import { Chip } from '../../src/components/ui/Chip'
-import { LevelBars, LEVEL_SCALE } from '../../src/components/ui/LevelBars'
-import { ListRow } from '../../src/components/ui/ListRow'
-import { RangeSlider } from '../../src/components/ui/RangeSlider'
+import { Pressable, Text, View } from 'react-native'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { StatTile } from '../../src/components/ui/StatTile'
-import { Toggle } from '../../src/components/ui/Toggle'
-import { isDebugPanelEnabled } from '../../src/lib/debugPanel'
 import { KITCHEN_SECTIONS } from '../../src/lib/externalLinks'
 import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
@@ -35,150 +25,61 @@ export default function KitchenScreen() {
   const t = useT()
 
   return (
-    <Screen scroll fluid>
+    <Screen scroll>
       <ScreenHeader title={t('kitchen.title')} onBack={() => goBackTo('/(app)/settings')} />
       <Text style={styles.intro}>{t('kitchen.intro')}</Text>
 
       {KITCHEN_SECTIONS.map((section) => (
-        <View key={section.titleKey}>
-          <Text style={styles.section}>{t(section.titleKey)}</Text>
-          {section.rows.map((row, index) => (
-            <ListRow
+        <View key={section.titleKey} style={styles.group}>
+          <Text style={styles.kicker}>{t(section.titleKey)}</Text>
+          {section.rows.map((row) => (
+            <Pressable
               key={`${section.titleKey}-${row.label ?? row.labelKey}`}
-              title={row.label ?? t(row.labelKey as never)}
+              accessibilityRole="link"
               onPress={() => void openExternal(row.url)}
-              last={index === section.rows.length - 1}
-              accessory={
-                <Feather
-                  // The icon set types its own names; the link table is plain
-                  // data and does not import them.
-                  name={row.icon as never}
-                  size={17}
-                  color={colors.textMuted}
-                />
-              }
-            />
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+            >
+              <Text style={styles.rowTitle}>{row.label ?? t(row.labelKey as never)}</Text>
+              {/* One glyph for every row — they all leave the app — rather than the table's own. */}
+              <Feather name="share" size={16} color={colors.textFaint} />
+            </Pressable>
           ))}
         </View>
       ))}
-
-      {isDebugPanelEnabled() ? <ComponentGallery /> : null}
 
       {/*
         A licence condition, not a courtesy: the city list is CC BY 4.0 and the
         attribution has to be somewhere a person can find it. `docs/data-sources.md`
         records the other two places it appears.
       */}
-      <Text style={styles.footer}>{t('kitchen.dataCredit')}</Text>
-
-      <Text style={styles.footer}>{t('kitchen.footer')}</Text>
+      <Text style={styles.footer}>
+        {t('kitchen.footer')} {t('kitchen.dataCredit')}
+      </Text>
     </Screen>
   )
 }
 
-type GallerySegment = 'one' | 'two' | 'three'
-
-/**
- * A live sample of the v3 kit — every restyled control with real state, for
- * checking them against the design in one place. Debug builds only, so the
- * labels are raw strings on `DebugQuotaPanel`'s bargain: `isDebugPanelEnabled`
- * keeps this out of every shipped bundle, and nothing here needs product copy.
- */
-function ComponentGallery() {
-  const styles = useStyles()
-
-  const [segment, setSegment] = useState<GallerySegment>('one')
-  const [chipOn, setChipOn] = useState(true)
-  const [toggleOn, setToggleOn] = useState(true)
-  const [ages, setAges] = useState<[number, number]>([24, 41])
-
-  return (
-    <View>
-      <Text style={styles.section}>DEBUG · component gallery</Text>
-
-      <View style={styles.galleryBlock}>
-        <Button label="Primary" onPress={() => {}} />
-        <Button label="Secondary" variant="secondary" onPress={() => {}} />
-      </View>
-
-      <View style={styles.galleryRow}>
-        <Chip label="Toggles" selected={chipOn} onPress={() => setChipOn((on) => !on)} />
-        <Chip label="Plain" />
-        <Chip label="Accent" tone="accent" selected />
-        <Chip label="Streak" tone="streak" selected />
-      </View>
-
-      <View style={styles.galleryBlock}>
-        <SegmentedControl<GallerySegment>
-          accessibilityLabel="Gallery segments"
-          options={[
-            { value: 'one', label: 'One' },
-            { value: 'two', label: 'Two' },
-            { value: 'three', label: 'Three' },
-          ]}
-          selected={[segment]}
-          onToggle={setSegment}
-        />
-      </View>
-
-      <View style={styles.galleryRow}>
-        <StatTile value="128" label="Days" />
-        <StatTile value="26" label="Corrections" tone="success" />
-        <StatTile value="940" label="Tokens" />
-      </View>
-
-      <ListRow
-        title="List row"
-        subtitle="Edge to edge, hairline divider"
-        accessory={
-          <Toggle
-            accessibilityLabel="Gallery toggle"
-            value={toggleOn}
-            onValueChange={setToggleOn}
-          />
-        }
-      />
-      <ListRow title="Tappable row" value="Value" onPress={() => {}} last />
-
-      <View style={styles.galleryRow}>
-        {LEVEL_SCALE.map((level) => (
-          <LevelBars key={level} level={level} />
-        ))}
-        <LevelBars level="fluent" native />
-      </View>
-
-      <RangeSlider
-        min={18}
-        max={70}
-        values={ages}
-        onChange={setAges}
-        accessibilityLabel="Gallery range"
-      />
-    </View>
-  )
-}
-
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  intro: { ...font.body, color: colors.textMuted, marginTop: spacing.xs },
-  /** v3's section kicker: 13/600, faint, flush with the rows it introduces. */
-  section: {
-    ...font.label,
+const useStyles = makeStyles(({ colors, spacing }) => ({
+  intro: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
+  group: { marginTop: spacing.xl },
+  kicker: {
     color: colors.textFaint,
-    marginTop: spacing.xl,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    paddingBottom: spacing.xs,
+    textTransform: 'uppercase',
   },
-  footer: {
-    ...font.caption,
-    color: colors.textFaint,
-    marginBottom: spacing.xxl,
-    marginTop: spacing.xl,
-    textAlign: 'center',
-  },
-  galleryBlock: { gap: spacing.sm, marginTop: spacing.lg },
-  galleryRow: {
-    alignItems: 'flex-end',
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: spacing.lg,
+    gap: spacing.lg,
+    justifyContent: 'space-between',
+    paddingVertical: 13,
   },
+  pressed: { opacity: 0.6 },
+  rowTitle: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  footer: { color: colors.textFaint, fontSize: 13, lineHeight: 20, marginTop: spacing.xl },
 }))

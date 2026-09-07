@@ -1,14 +1,13 @@
-import Feather from '@expo/vector-icons/Feather'
 import { translateTargetFor, translateTargetOptions } from '@langx/shared'
-import { Text, View } from 'react-native'
-import { useMe, useUpdateProfile } from '../../src/api/queries'
-import { ListRow } from '../../src/components/ui/ListRow'
+import { Pressable, Text, View } from 'react-native'
+import { useMe, useQuota, useUpdateProfile } from '../../src/api/queries'
+import { Radio } from '../../src/components/ui/Radio'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useDisplayNames, useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 
 /**
@@ -25,13 +24,15 @@ export default function TranslateLanguageScreen() {
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
-  const { colors } = useTheme()
   const me = useMe()
   const update = useUpdateProfile()
+  const quota = useQuota()
 
   const profile = me.data
   const options = profile ? translateTargetOptions(profile) : []
   const current = profile ? translateTargetFor(profile) : undefined
+  // `null` is a plan with no limit, which has nothing to count down.
+  const translationsLeft = quota.data?.translations.remaining ?? null
 
   return (
     <Screen scroll>
@@ -41,35 +42,60 @@ export default function TranslateLanguageScreen() {
       />
       <Text style={styles.body}>{t('settings.translateToScreenBody')}</Text>
       <View>
-        {options.map((code, index) => (
-          <ListRow
-            key={code}
-            title={names.language(code)}
-            subtitle={index === 0 ? t('settings.translateToFirst') : undefined}
-            last={index === options.length - 1}
-            onPress={() =>
-              update.mutate(
-                { settings: { translateTo: code } },
-                { onError: () => showToast(t('editProfile.saveFailed')) },
-              )
-            }
-            accessory={
-              current === code ? (
-                <Feather name="check" size={18} color={colors.accent} />
-              ) : undefined
-            }
-          />
-        ))}
+        {options.map((code, index) => {
+          const selected = current === code
+          return (
+            <Pressable
+              key={code}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              onPress={() =>
+                update.mutate(
+                  { settings: { translateTo: code } },
+                  { onError: () => showToast(t('editProfile.saveFailed')) },
+                )
+              }
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+            >
+              <View style={styles.rowText}>
+                <Text style={styles.rowTitle}>{names.language(code)}</Text>
+                {index === 0 ? (
+                  <Text style={styles.rowSub}>{t('settings.translateToFirst')}</Text>
+                ) : null}
+              </View>
+              <Radio selected={selected} />
+            </Pressable>
+          )
+        })}
       </View>
+      {translationsLeft !== null ? (
+        <Text style={styles.footer}>
+          {t('settings.translationsLeft', { count: translationsLeft })}
+        </Text>
+      ) : null}
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   body: {
-    ...font.caption,
     color: colors.textMuted,
-    marginBottom: spacing.sm,
-    marginTop: spacing.md,
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: spacing.md,
+    marginTop: spacing.xs,
   },
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingVertical: 18,
+  },
+  pressed: { opacity: 0.6 },
+  rowText: { flex: 1, gap: 2 },
+  rowTitle: { color: colors.text, fontSize: 17, fontWeight: '600' },
+  rowSub: { color: colors.textMuted, fontSize: 13 },
+  footer: { color: colors.textFaint, fontSize: 14, lineHeight: 21, marginTop: 20 },
 }))

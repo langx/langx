@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 import type { TokenSummary } from '@langx/shared'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { WeekBars } from './WeekBars'
 
@@ -9,14 +9,15 @@ interface WeeklyChartProps {
 }
 
 /**
- * This week's messages and corrections, one bar per day.
+ * This week's messages and corrections, one column per day.
  *
- * v3 merges the two v2 series into one bar per day — messages and corrections
- * summed — and lets the header line report the two counts separately, so the
- * legend went with the second series. The bars themselves are `WeekBars`,
- * shared with the visitors page.
+ * Two series stacked — corrections in green over messages in blue — with a
+ * legend underneath rather than a header above: the counts are already on the
+ * tiles, so all the chart has to say is which colour is which. The bars
+ * themselves are `WeekBars`, shared with the visitors page.
  */
 export function WeeklyChart({ week }: WeeklyChartProps) {
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -25,34 +26,38 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('weekly.thisWeek')}</Text>
-        <Text style={styles.summary}>
-          {t('store.todayCounts', {
-            messages: t('format.messages', { count: messages }),
-            corrections: t('format.corrections', { count: corrections }),
-          })}
-        </Text>
-      </View>
-
       <WeekBars
-        days={week.map((day) => ({ day: day.day, total: day.messages + day.corrections }))}
+        days={week.map((day) => ({ day: day.day, total: day.messages, stacked: day.corrections }))}
         accessibilityLabel={t('weekly.summary', {
           messages: t('format.messages', { count: messages }),
           corrections: t('format.corrections', { count: corrections }),
         })}
       />
+
+      <View style={styles.legend}>
+        <View style={styles.legendItem}>
+          <View style={[styles.swatch, { backgroundColor: colors.accent }]} />
+          <Text style={styles.legendLabel}>{t('weekly.messages')}</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.swatch, { backgroundColor: colors.success }]} />
+          <Text style={styles.legendLabel}>{t('me.corrections')}</Text>
+        </View>
+      </View>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   section: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    paddingVertical: 18,
+    paddingBottom: spacing.sm,
+    paddingTop: spacing.md,
   },
-  header: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.heading, color: colors.text, fontSize: 16 },
-  summary: { color: colors.textMuted, fontSize: 13 },
+  legend: { flexDirection: 'row', gap: spacing.lg, paddingBottom: spacing.sm },
+  legendItem: { alignItems: 'center', flexDirection: 'row', gap: 6 },
+  // 3, not a radius token: a 10px square on `sm` would already be a dot.
+  swatch: { borderRadius: 3, height: 10, width: 10 },
+  legendLabel: { color: colors.textMuted, fontSize: 12 },
 }))

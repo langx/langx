@@ -102,28 +102,40 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
    * to add; the server refuses a recording sent beside a picture anyway.
    */
   const hasVoice = pending.some((item) => item.kind === 'audio')
+  const photoDisabled = disabled || hasVoice || remaining <= 0
+  const voiceDisabled = disabled || pending.length > 0
 
   return (
     <View style={styles.row}>
       <Pressable
         onPress={() => void pick()}
-        disabled={disabled || hasVoice || remaining <= 0}
-        hitSlop={8}
+        disabled={photoDisabled}
         accessibilityRole="button"
         accessibilityLabel={t('composer.attachMedia')}
-        style={styles.button}
+        accessibilityState={{ disabled: photoDisabled }}
+        style={({ pressed }) => [
+          styles.chip,
+          photoDisabled && styles.chipDisabled,
+          pressed && styles.pressed,
+        ]}
       >
-        <Feather name="camera" size={18} color={colors.textMuted} />
+        <Feather name="image" size={18} color={colors.text} />
+        <Text style={styles.chipLabel}>{t('messageMeta.photo')}</Text>
       </Pressable>
       <Pressable
         onPress={() => void toggleRecording()}
-        disabled={disabled || pending.length > 0}
-        hitSlop={8}
+        disabled={voiceDisabled}
         accessibilityRole="button"
         accessibilityLabel={t('feed.recordVoice')}
-        style={styles.button}
+        accessibilityState={{ disabled: voiceDisabled }}
+        style={({ pressed }) => [
+          styles.chip,
+          voiceDisabled && styles.chipDisabled,
+          pressed && styles.pressed,
+        ]}
       >
-        <Feather name="mic" size={18} color={colors.textMuted} />
+        <Feather name="mic" size={18} color={colors.text} />
+        <Text style={styles.chipLabel}>{t('feed.voiceNote')}</Text>
       </Pressable>
     </View>
   )
@@ -133,7 +145,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // `flexShrink` so this can never starve the submit button beside it: a row
   // whose child asks for `flex: 1` measures at the full width offered to it,
   // and React Native does not shrink a flex item unless it is told to.
-  row: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: 10 },
+  row: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: spacing.sm },
   previewRow: { alignItems: 'center', flexDirection: 'row', gap: 10, marginBottom: spacing.sm },
   thumb: { borderRadius: radius.md, height: 64, width: 64 },
   removeBadge: {
@@ -147,14 +159,28 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     top: -6,
     width: 20,
   },
-  // v3 draws attachment controls as bare muted glyphs; the 36 box keeps the
-  // touch target the outlined circle used to give them.
+  // The stop control while recording: a bare glyph in a 36 box, the touch
+  // target the outlined circle used to give it.
   button: {
     alignItems: 'center',
     height: 36,
     justifyContent: 'center',
     width: 36,
   },
+  // v3's attach controls are `fill` pills with the word beside the glyph —
+  // "Photo", "Voice note" — rather than two unlabelled icons.
+  chip: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    height: 44,
+    paddingHorizontal: spacing.lg,
+  },
+  chipLabel: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  chipDisabled: { opacity: 0.45 },
+  pressed: { opacity: 0.7 },
   attached: { ...font.caption, color: colors.textMuted, flex: 1, minWidth: 0 },
   recording: { ...font.label, color: colors.text, flex: 1, fontVariant: ['tabular-nums'] },
   recordingDot: { backgroundColor: colors.danger, borderRadius: 5, height: 10, width: 10 },

@@ -4,14 +4,13 @@ import { Pressable, Text, View } from 'react-native'
 import { useTips } from '../hooks/useTips'
 import { useT } from '../i18n'
 import type { MessageKey } from '../i18n/runtime'
-import { calloutColours } from './ui/Callout'
 import { makeStyles, useTheme } from '../lib/theme'
 import type { TipId, TipSlot } from '../lib/tips'
 
 interface TipProps {
   slot: TipSlot
   /**
-   * Whether the tip owns the gap below itself. True everywhere it sits in a
+   * Whether the tip owns the gaps around itself. True everywhere it sits in a
    * plain column, which is every screen but one.
    *
    * False in `chat/[id].tsx`, where it is part of an **inverted** list's
@@ -25,11 +24,12 @@ interface TipProps {
 /**
  * A one-line hint that can be sent away and does not come back.
  *
- * `warning` rather than `info` or `success`, and that is not a colour choice:
- * `Callout`'s doc comment reserves `info` for Copilot and `success` for
+ * The accent wash with plain ink text, and deliberately **not** a `Callout`:
+ * that component's doc comment reserves `info` for Copilot and `success` for
  * corrections, because those two are the voices of the core loop and a reader
- * has to tell them apart at a glance. A tip is neither, so it takes the
- * unclaimed tone.
+ * has to tell them apart at a glance. A tip is neither — no icon, no coloured
+ * title, and its sentence set in `text` rather than in a tone's colour — which
+ * is what keeps it from reading as either of them.
  *
  * Renders nothing once dismissed, and nothing at all when tips are switched
  * off. Both are the same check, so a screen never has to ask twice.
@@ -39,7 +39,6 @@ export function Tip({ slot, spaced = true }: TipProps) {
   const tips = useTips()
   const styles = useStyles()
   const { colors } = useTheme()
-  const { bg, fg } = calloutColours(colors, 'warning')
   const [sentAway, setSentAway] = useState(false)
   /*
    * Held for the life of this mount, and that is load-bearing rather than an
@@ -71,9 +70,8 @@ export function Tip({ slot, spaced = true }: TipProps) {
   const body = `tips.${id}` as MessageKey
 
   return (
-    <View style={[styles.root, spaced && styles.spaced, { backgroundColor: bg }]}>
-      <Feather name="info" size={16} color={fg} style={styles.icon} />
-      <Text style={[styles.body, { color: fg }]}>{t(body)}</Text>
+    <View style={[styles.root, spaced && styles.spaced]}>
+      <Text style={styles.body}>{t(body)}</Text>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('tips.dismiss')}
@@ -84,38 +82,38 @@ export function Tip({ slot, spaced = true }: TipProps) {
         hitSlop={12}
         style={({ pressed }) => [styles.close, pressed && styles.pressed]}
       >
-        <Feather name="x" size={16} color={fg} />
+        <Feather name="x" size={16} color={colors.accent} />
       </Pressable>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ font, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   root: {
-    alignItems: 'flex-start',
-    borderRadius: radius.md,
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.lg,
     flexDirection: 'row',
-    gap: spacing.sm,
-    padding: spacing.md,
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
   /**
-   * The gap below a tip belongs to the tip, not to the list under it.
+   * The gaps around a tip belong to the tip, not to the list under it.
    *
-   * It used to belong to whatever happened to sit above: chats spelled it as
+   * They used to belong to whatever happened to sit above: chats spelled it as
    * `filters.paddingBottom` *and* `list.paddingTop`, feed had neither, and
    * discover got 14 by accident from an empty chip row's `marginTop`. Three
    * screens spaced three different ways, and the feed's tip ended up flush
    * against the segmented control above it.
    *
-   * Below rather than above, because a dismissed tip renders `null` and a
-   * component that renders nothing cannot leave a margin behind — so the space
-   * *above* has to stay with the header, which keeps the gap correct once the
-   * tip is gone.
+   * The design wants 16 above a tip and 8 below it, but only 8 between the
+   * header and the list when there is no tip — and a dismissed tip renders
+   * `null`, so it cannot leave a margin behind. The header keeps its 8, and
+   * the tip brings the other 8 with it.
    */
-  spaced: { marginBottom: spacing.sm },
-  // Nudged to sit on the first line of a wrapping sentence.
-  icon: { marginTop: 1 },
-  body: { ...font.caption, flex: 1, fontSize: 13, lineHeight: 19 },
+  spaced: { marginBottom: spacing.sm, marginTop: spacing.sm },
+  body: { color: colors.text, flex: 1, fontSize: 14, lineHeight: 20 },
   close: { alignItems: 'center', height: 22, justifyContent: 'center', width: 22 },
   pressed: { opacity: 0.6 },
 }))

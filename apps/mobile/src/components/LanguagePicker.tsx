@@ -1,16 +1,17 @@
 import { LANGUAGES, SUPPORTED_LOCALES } from '@langx/shared'
 import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
-import { FlatList, Pressable, Text, TextInput, View } from 'react-native'
+import { Pressable, ScrollView, TextInput, View } from 'react-native'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useDisplayNames, useT } from '../i18n'
+import { Chip } from './ui/Chip'
 
 interface LanguagePickerProps {
   selected: string[]
   onToggle: (code: string) => void
   /** Codes that cannot be picked here because they are already used elsewhere. */
   disabledCodes?: string[]
-  /** What a disabled row says instead of a tick — "Learning" on the native tab. */
+  /** What a disabled chip says after its name — "Learning" on the native tab. */
   disabledLabel?: string
   max?: number
 }
@@ -111,53 +112,48 @@ export function LanguagePicker({
           </Pressable>
         ) : null}
       </View>
-      <FlatList
-        data={results}
-        keyExtractor={(item) => item.code}
+      <ScrollView
+        contentContainerStyle={styles.chips}
         keyboardShouldPersistTaps="handled"
         style={styles.list}
-        renderItem={({ item }) => {
+      >
+        {results.map((item) => {
           const isSelected = selected.includes(item.code)
           const isTaken = disabledCodes.includes(item.code)
           const isDisabled = isTaken || (atLimit && !isSelected)
-          return (
-            <Pressable
-              disabled={isDisabled}
-              onPress={() => toggle(item.code)}
-              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-            >
-              <View style={styles.rowText}>
-                <Text
-                  style={[
-                    styles.name,
-                    isSelected && styles.nameSelected,
-                    isDisabled && styles.nameDisabled,
-                  ]}
-                >
-                  {names.language(item.code)}
-                </Text>
-                <Text style={styles.native}>{item.nativeName}</Text>
+          const label = names.language(item.code)
+          /*
+           * `Chip` has no disabled state, so a chip that cannot be picked is
+           * drawn without an `onPress` — which makes it a plain view — and
+           * dimmed by its wrapper. The suffix says why: the other tab has it.
+           */
+          if (isDisabled) {
+            return (
+              <View
+                key={item.code}
+                accessible
+                accessibilityState={{ disabled: true }}
+                style={styles.disabled}
+              >
+                <Chip label={isTaken && disabledLabel ? `${label} · ${disabledLabel}` : label} />
               </View>
-              {/*
-                The right edge says the row's state in one glyph or word: a blue
-                tick for chosen, the other tab's name for taken. v3 drops the
-                tick circles — the column of blue ticks is what says how many
-                are chosen.
-              */}
-              {isSelected ? (
-                <Feather name="check" size={20} color={colors.accent} />
-              ) : isTaken && disabledLabel ? (
-                <Text style={styles.taken}>{disabledLabel}</Text>
-              ) : null}
-            </Pressable>
+            )
+          }
+          return (
+            <Chip
+              key={item.code}
+              label={label}
+              selected={isSelected}
+              onPress={() => toggle(item.code)}
+            />
           )
-        }}
-      />
+        })}
+      </ScrollView>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, spacing, radius }) => ({
   root: { flex: 1 },
   searchRow: {
     alignItems: 'center',
@@ -170,19 +166,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   search: { color: colors.text, flex: 1, fontSize: 15, paddingVertical: 13 },
   list: { flex: 1 },
-  row: {
-    alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    gap: spacing.md + 2,
-    paddingVertical: 15,
-  },
-  rowPressed: { opacity: 0.6 },
-  rowText: { flex: 1 },
-  name: { color: colors.text, fontSize: 17 },
-  nameSelected: { fontWeight: '700' },
-  nameDisabled: { color: colors.textFaint },
-  native: { ...font.caption, color: colors.textFaint, marginTop: 1 },
-  taken: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingVertical: spacing.xs },
+  disabled: { opacity: 0.45 },
 }))

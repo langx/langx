@@ -67,18 +67,20 @@ export function ListRow({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
+  // 17 over 17: v3 sets the row a point taller and a point larger than v2's
+  // 16, which is what lets a 14px explanation sit under it without crowding.
   row: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.lg,
-    paddingVertical: 16,
+    paddingVertical: 17,
   },
   divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
   pressed: { opacity: 0.6 },
   text: { flex: 1, gap: 2 },
-  title: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  title: { color: colors.text, fontSize: 17, fontWeight: '600' },
   destructive: { color: colors.danger },
-  subtitle: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  subtitle: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
   value: { color: colors.textFaint, fontSize: 15 },
 }))

@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { authClient } from '../../../src/lib/auth-client'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { ApiRequestError } from '../../../src/api/client'
@@ -18,16 +18,15 @@ import {
 } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
-import { PresenceLine } from '../../../src/components/PresenceLine'
 import { placeLabel } from '../../../src/lib/placeLabel'
-import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
+import { Callout } from '../../../src/components/ui/Callout'
+import { FormField } from '../../../src/components/ui/FormField'
+import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
-import { TierBadge } from '../../../src/components/TierBadge'
-import { Chip } from '../../../src/components/ui/Chip'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
@@ -63,6 +62,13 @@ export default function ProfileScreen() {
   const report = useReportUser()
 
   const [message, setMessage] = useState('')
+  /*
+   * The composer is behind the button, not beside it. A conversation here has
+   * to open with a first message, but a text field at the foot of every
+   * profile read as a form to fill in; "Send a message" is the decision, and
+   * the field appears once it has been made.
+   */
+  const [composing, setComposing] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [error, setError] = useState<string | undefined>()
 
@@ -88,15 +94,14 @@ export default function ProfileScreen() {
 
   const user = profile.data
   const isSelf = user?._id === me.data?._id
-  const canSend = message.trim().length > 0 && !startConversation.isPending
+  const canSend = message.trim().length > 0
+  const following = user.follow.viewerFollows
+  const age = accountAgeLabel(t, new Date(user.createdAt))
 
-  /*
-   * v3's identity block folds the badge chips into one muted line — and it
-   * has to stay one line. It used to carry the streak and "Verified email"
-   * too, wrapped on every phone, and said the streak twice: the tile below
-   * already has it. The verified mark is now beside the name.
-   */
-  const metaLine = [String(user.age), placeLabel(user, names.country) ?? null]
+  // One line under the name — the handle, then where they are. The city and
+  // the country used to be separate entries and wrapped on most phones; see
+  // `placeLabel` for why they are one item now.
+  const handleLine = [`@${user.handle}`, placeLabel(user, names.country) ?? null]
     .filter(Boolean)
     .join(' · ')
 
@@ -172,8 +177,8 @@ export default function ProfileScreen() {
   async function openActions(): Promise<void> {
     const action = await chooseAlert(user.displayName, undefined, [
       { label: t('share.profile'), value: 'share' },
-      { label: t('common.report'), value: 'report' },
-      { label: t('common.block'), value: 'block' },
+      { label: t('common.report'), value: 'report', destructive: true },
+      { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (action === 'share')
       void shareLink(profileShareText(t, { name: user.displayName, handle: user.handle }))
@@ -183,28 +188,40 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll>
+      {/* No title: the name below is the title. */}
       <View style={styles.topBar}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('common.backPlain')}
           onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
           hitSlop={12}
-          style={({ pressed }) => [styles.iconButton, pressed && styles.iconPressed]}
+          style={({ pressed }) => [styles.back, pressed && styles.iconPressed]}
         >
           <Feather name="arrow-left" size={22} color={colors.text} />
         </Pressable>
+        <View style={styles.spacer} />
         {isSelf ? null : (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`${t('share.profile')} · ${t('common.report')} · ${t('common.block')}`}
             onPress={() => void openActions()}
-            hitSlop={12}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.iconPressed]}
+            hitSlop={8}
+            style={({ pressed }) => [styles.more, pressed && styles.iconPressed]}
           >
-            <Feather name="more-vertical" size={20} color={colors.textMuted} />
+            <Feather name="more-horizontal" size={22} color={colors.text} />
           </Pressable>
         )}
       </View>
+
+      {/*
+        Said before the profile rather than after it, so nobody reads their own
+        page for a moment wondering why they cannot message themselves.
+      */}
+      {isSelf ? (
+        <Callout tone="info" style={styles.previewNote}>
+          <Text style={styles.previewNoteText}>{t('profile.previewNote')}</Text>
+        </Callout>
+      ) : null}
 
       <View style={styles.hero}>
         {/*
@@ -223,7 +240,7 @@ export default function ProfileScreen() {
               url={user.avatarUrl}
               name={user.displayName}
               seed={user._id}
-              size={84}
+              size={96}
               frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
               online={user.isOnline}
             />
@@ -233,104 +250,49 @@ export default function ProfileScreen() {
             url={user.avatarUrl}
             name={user.displayName}
             seed={user._id}
-            size={84}
+            size={96}
             frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
             online={user.isOnline}
           />
         )}
-        <View style={styles.nameRow}>
-          <Text style={styles.name}>{user.displayName}</Text>
-          {/* A mark rather than the words: the words cost a third of the meta
-              line, and a check by the name is what every other app taught
-              people it means. The label is for the screen reader. */}
-          {user.emailVerified ? (
-            <Feather
-              name="check-circle"
-              size={16}
-              color={colors.success}
-              accessibilityLabel={t('profile.verifiedEmail')}
-              style={styles.verified}
-            />
-          ) : null}
-          <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
-        </View>
-        {/*
-          Directly under the name, which is where a reader is already looking
-          when they are deciding whether this person will answer.
-        */}
-        <View style={styles.presence}>
-          <PresenceLine lastActiveAt={user.lastActiveAt} />
-        </View>
-        {/*
-          How long the account has existed, next to who it says it is: the two
-          questions someone asks about a stranger who just messaged them are
-          the same question, so they share a line.
-        */}
-        <Text style={styles.handle}>
-          @{user.handle} · {t('profile.registeredLabel')}{' '}
-          {accountAgeLabel(t, new Date(user.createdAt))}
-        </Text>
-        {/* One line, whatever the city is called — the tail is the country
-            name's job to lose, and the flag before it survives. */}
-        {metaLine ? (
-          <Text style={styles.meta} numberOfLines={1}>
-            {metaLine}
-          </Text>
-        ) : null}
-        {user.tier !== 'free' ? (
-          <View style={styles.tierRow}>
-            <TierBadge tier={user.tier} />
+        <View style={styles.heroText}>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{user.displayName}</Text>
+            {/*
+              Kept although the prototype's sample profiles wear none: a title
+              is bought to be seen by other people, and this is the one screen
+              where other people look. The frame on the avatar is the same
+              purchase shown the same way.
+            */}
+            <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
+            <Text style={styles.age}>{user.age}</Text>
           </View>
-        ) : null}
-
-        <View style={styles.followRow}>
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => openFollows(user._id, 'followers', here)}
-          >
-            <Text style={styles.followCount}>
-              {t('profile.followers', { count: user.follow.followers })}
+          <Text style={styles.handle} numberOfLines={1}>
+            {handleLine}
+          </Text>
+          {/*
+            How long the account has existed, next to how often it shows up:
+            the two questions someone asks about a stranger who just messaged
+            them are the same question, so they share a line. The streak waits
+            for the summary; "registered" does not, so it takes the standalone
+            wording until the dot has something to follow.
+          */}
+          <View style={styles.facts}>
+            {summary.data ? (
+              <View style={styles.streak}>
+                <Feather name="zap" size={13} color={colors.streak} />
+                <Text style={styles.fact}>
+                  {t('profile.dayStreak', { count: summary.data.streak.current })}
+                </Text>
+              </View>
+            ) : null}
+            <Text style={styles.fact}>
+              {summary.data
+                ? t('profile.registered', { age })
+                : `${t('profile.registeredLabel')} ${age}`}
             </Text>
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => openFollows(user._id, 'following', here)}
-          >
-            <Text style={styles.followingCount}>
-              {t('profile.followingCount', { count: user.follow.following })}
-            </Text>
-          </Pressable>
+          </View>
         </View>
-
-        {/*
-          Nothing at all on your own profile. This screen is reachable for
-          yourself through a handle deep link, and a Follow button pointing at
-          the person pressing it is the bug that ships.
-        */}
-        {isSelf ? null : (
-          <Button
-            label={user.follow.viewerFollows ? t('profile.following') : t('profile.follow')}
-            variant={user.follow.viewerFollows ? 'secondary' : 'primary'}
-            loading={setFollow.isPending}
-            // No confirmation on unfollow. It is trivially reversible, and
-            // `confirmAlert` is what blocking is for.
-            // Gated like `send()` above, and for the same reason: this is the
-            // primary button on the screen, so it is the write a guest reaches
-            // first. Without the guard the transport still catches it, but a
-            // round trip later and only after `onError` has already shown a
-            // toast that says nothing about needing an account.
-            onPress={() => {
-              if (!requireAccount(session?.user)) return
-              setFollow.mutate(
-                { userId: user._id, following: !user.follow.viewerFollows },
-                { onError: () => showToast(t('profile.followFailed')) },
-              )
-            }}
-            style={styles.followButton}
-          />
-        )}
       </View>
 
       <PhotoGallery photos={user.photos} />
@@ -342,44 +304,51 @@ export default function ProfileScreen() {
         />
       ) : null}
 
+      {/* v3's two-column language block, shared with the owner's own tab so
+          the two views of one profile cannot drift apart. */}
+      <LanguageColumns nativeLanguages={user.nativeLanguages} learning={user.learning} />
+
       {/*
-        The numbers, above the languages rather than under the interests where
-        they used to be: they are the quickest read of whether this person is
-        here to teach, and a reader deciding whether to write has usually
-        decided by the time they reach the languages. Always sent — there is no
-        switch for them any more; only the chart below has one.
+        The numbers: the quickest read of whether this person is here to
+        teach. The streak has moved up beside the name, and the follower count
+        is the way into the list — the "›" is the hint that it opens.
       */}
       {summary.data ? (
         <View style={styles.stats}>
-          <StatTile
-            icon="zap"
-            label={t('me.dayStreak')}
-            value={String(summary.data.streak.current)}
-          />
           <StatTile
             tone="success"
             label={t('me.corrections')}
             value={String(summary.data.corrections)}
           />
           <StatTile label={t('me.badges')} value={String(summary.data.badges)} />
-          <StatTile label={t('tokens.title')} value={String(summary.data.tokens)} />
+          <StatTile
+            label={`${t('profile.followersTitle')} ›`}
+            value={String(user.follow.followers)}
+            onPress={() => openFollows(user._id, 'followers', here)}
+          />
         </View>
       ) : null}
 
-      {/* v3's two-column language block, shared with the owner's own tab so
-          the two views of one profile cannot drift apart. */}
-      <LanguageColumns nativeLanguages={user.nativeLanguages} learning={user.learning} />
+      {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
+      {/* Read-only tags, not `Chip`s: a chip is a control, and nothing here is
+          pressable. */}
       {user.interests.length > 0 ? (
-        <>
-          <Text style={styles.sectionTitle}>{t('profile.interests')}</Text>
-          <View style={styles.chips}>
+        <View style={styles.interests}>
+          <Text style={styles.kicker}>{t('profile.interests')}</Text>
+          <View style={styles.tags}>
             {user.interests.map((interest) => (
-              <Chip key={interest} label={interestLabel(t, interest)} />
+              <View key={interest} style={styles.tag}>
+                <Text style={styles.tagLabel}>{interestLabel(t, interest)}</Text>
+              </View>
             ))}
           </View>
-        </>
+        </View>
       ) : null}
+
+      {/* Read-only, and drawn from the same component as your own — a second
+          implementation of a grid is a second grid to keep in step. */}
+      <ActivityMap handle={user.handle} />
 
       {/*
         The week's chart, only if it is offered: `weekChartVisible` is checked
@@ -390,21 +359,6 @@ export default function ProfileScreen() {
       {summary.data?.week ? <WeeklyChart week={summary.data.week} /> : null}
 
       {/*
-        The about text, under the chart rather than between the numbers and
-        the languages: the facts a reader scans first stay together at the top,
-        and the prose comes once they have decided to keep reading. Same place
-        as on the owner's own tab. With the chart switched off it simply
-        follows the interests.
-      */}
-      {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
-
-      {/* Read-only, and drawn from the same component as your own — a second
-          implementation of a grid is a second grid to keep in step. */}
-      <View style={styles.activity}>
-        <ActivityMap handle={user.handle} />
-      </View>
-
-      {/*
         Everything below is addressed to somebody else, so none of it belongs
         on your own profile. `isSelf` used to gate only the kebab menu and the
         Follow button, which left a composer that messaged you and a Block
@@ -412,9 +366,14 @@ export default function ProfileScreen() {
         link, and now the whole point of "Preview my profile".
       */}
       {isSelf ? (
-        <Text style={styles.previewNote}>{t('profile.previewNote')}</Text>
+        <Button
+          label={t('me.editProfile')}
+          variant="secondary"
+          onPress={() => router.push('/(app)/edit-profile')}
+          style={styles.editProfile}
+        />
       ) : (
-        <>
+        <View style={styles.actions}>
           {/*
             A conversation that already exists is a link, not a form. The
             composer below cannot start a second one — `startConversation`
@@ -424,53 +383,60 @@ export default function ProfileScreen() {
           {user.conversationId ? (
             <Button
               label={t('profile.openChat')}
-              variant="secondary"
               onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
-              style={styles.send}
             />
-          ) : (
+          ) : composing ? (
             <>
-              <Text style={styles.sendLabel}>{t('profile.sendMessage')}</Text>
-              <View style={styles.composerRow}>
-                <TextInput
-                  value={message}
-                  onChangeText={setMessage}
-                  placeholder={t('chat.sayHello', { name: user.displayName })}
-                  placeholderTextColor={colors.textFaint}
-                  style={styles.input}
-                />
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t('common.send')}
-                  accessibilityState={{ disabled: !canSend }}
-                  disabled={!canSend}
-                  onPress={() => void send()}
-                  style={({ pressed }) => [
-                    styles.sendCircle,
-                    !canSend && styles.sendCircleDisabled,
-                    pressed && canSend && styles.iconPressed,
-                  ]}
-                >
-                  {startConversation.isPending ? (
-                    <ActivityIndicator color={colors.bg} />
-                  ) : (
-                    <Feather name="send" size={17} color={colors.bg} />
-                  )}
-                </Pressable>
-              </View>
+              <FormField
+                value={message}
+                onChangeText={setMessage}
+                placeholder={t('chat.sayHello', { name: user.displayName })}
+                autoCapitalize="sentences"
+                autoCorrect
+                autoFocus
+              />
+              <Button
+                label={t('common.send')}
+                disabled={!canSend}
+                loading={startConversation.isPending}
+                onPress={() => void send()}
+              />
+              {/* The cap the free plan is about to hit, said before it is hit. */}
               {quota.data ? (
                 <Text style={styles.quotaHint}>
                   {t('me.newChatsLeft')} {quota.data.initiations.remaining ?? '—'} /{' '}
                   {quota.data.initiations.limit ?? '∞'}
                 </Text>
               ) : null}
-              {error ? <Text style={styles.error}>{error}</Text> : null}
             </>
+          ) : (
+            <Button label={t('profile.sendMessage')} onPress={() => setComposing(true)} />
           )}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <Button
+            label={following ? t('profile.following') : t('profile.follow')}
+            variant="secondary"
+            icon={following ? <Feather name="check" size={16} color={colors.accent} /> : undefined}
+            loading={setFollow.isPending}
+            // No confirmation on unfollow. It is trivially reversible, and
+            // `confirmAlert` is what blocking is for.
+            // Gated like `send()` above, and for the same reason: this is a
+            // write a guest reaches in one tap. Without the guard the
+            // transport still catches it, but a round trip later and only
+            // after `onError` has already shown a toast that says nothing
+            // about needing an account.
+            onPress={() => {
+              if (!requireAccount(session?.user)) return
+              setFollow.mutate(
+                { userId: user._id, following: !following },
+                { onError: () => showToast(t('profile.followFailed')) },
+              )
+            }}
+          />
           {/* Report and Block live in the top-right menu only. They used to be
               repeated as a row down here, which made the bottom of every
               profile read as a warning. */}
-        </>
+        </View>
       )}
     </Screen>
   )
@@ -487,71 +453,56 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
+    gap: spacing.md + 2,
+    paddingBottom: spacing.sm,
   },
-  iconButton: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
+  // 34 square like `ScreenHeader`'s arrow; the kebab gets the design's 36.
+  back: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
+  more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  spacer: { flex: 1 },
   iconPressed: { opacity: 0.6 },
-  hero: { alignItems: 'center', paddingTop: spacing.sm },
-  presence: { marginTop: 6 },
-  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6, justifyContent: 'center' },
-  name: { ...font.heading, color: colors.text, fontSize: 24, marginTop: 12 },
-  // Sits on the name's baseline row, which `marginTop` on the name shifts.
-  verified: { marginTop: 12 },
-  handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
-  meta: { color: colors.textMuted, fontSize: 14, marginTop: 8, textAlign: 'center' },
-  tierRow: { marginTop: spacing.sm },
-  followRow: { flexDirection: 'row', gap: 20, marginTop: 12 },
-  followCount: { color: colors.text, fontSize: 14, fontWeight: '700' },
-  followingCount: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
-  followButton: { marginTop: spacing.lg },
-  // A top margin as well as a bottom one: the chart above ends in a border and
-  // the activity map below starts flush, so without both the bio reads as a
-  // caption of whichever neighbour it happens to touch.
-  bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
-  sectionTitle: {
-    color: colors.textFaint,
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  previewNote: { marginBottom: spacing.lg },
+  previewNoteText: { color: colors.text, fontSize: 14, lineHeight: 20 },
+  hero: { alignItems: 'center', flexDirection: 'row', gap: 20 },
+  heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  name: { ...font.heading, color: colors.text, fontSize: 26 },
+  age: { color: colors.textMuted, fontSize: 18 },
+  handle: { color: colors.textMuted, fontSize: 14 },
+  facts: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
+  streak: { alignItems: 'center', flexDirection: 'row', gap: 3 },
+  fact: { color: colors.textMuted, fontSize: 13 },
   stats: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    paddingVertical: 18,
+    gap: 10,
+    paddingVertical: 20,
   },
-  activity: { marginTop: spacing.md },
-  sendLabel: { color: colors.textMuted, fontSize: 14, fontWeight: '600', marginTop: 18 },
-  composerRow: { alignItems: 'center', flexDirection: 'row', gap: 10, marginTop: spacing.sm },
-  input: {
-    backgroundColor: colors.fill,
-    borderRadius: radius.pill,
-    color: colors.text,
-    flex: 1,
-    fontSize: 15,
-    minHeight: 46,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+  bio: { color: colors.text, fontSize: 16, lineHeight: 25, paddingBottom: 18, paddingTop: 22 },
+  interests: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: 10,
+    paddingBottom: 22,
   },
-  sendCircle: {
-    alignItems: 'center',
-    backgroundColor: colors.ink,
-    borderRadius: radius.pill,
-    height: 46,
-    justifyContent: 'center',
-    width: 46,
-  },
-  sendCircleDisabled: { opacity: 0.5 },
-  quotaHint: { color: colors.textFaint, fontSize: 13, marginTop: 10 },
-  error: { ...font.caption, color: colors.danger, marginTop: spacing.sm },
-  send: { marginTop: spacing.lg },
-  previewNote: {
-    ...font.caption,
+  kicker: {
     color: colors.textFaint,
-    lineHeight: 19,
-    marginTop: spacing.xl,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  tag: {
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: spacing.sm,
+  },
+  tagLabel: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  actions: { gap: spacing.md, paddingTop: spacing.xl },
+  editProfile: { marginTop: spacing.xl },
+  quotaHint: { color: colors.textFaint, fontSize: 13 },
+  error: { ...font.caption, color: colors.danger },
 }))

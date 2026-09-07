@@ -1,5 +1,5 @@
 import { isOnlineAt } from '@langx/shared'
-import { Text, View } from 'react-native'
+import { Text } from 'react-native'
 import { useT } from '../i18n'
 import { lastSeenLabel } from '../i18n/labels'
 import { makeStyles } from '../lib/theme'
@@ -15,8 +15,8 @@ interface PresenceLineProps {
 }
 
 /**
- * One line under a display name: a green dot and "Online", or when they are
- * not, how long ago they were.
+ * One line under a display name: "Online" in the accent, or when they are
+ * not, how long ago they were, in faint.
  *
  * One component for two screens on purpose. The profile hero and the chat
  * header each drew their own presence and had already drifted — the header said
@@ -39,12 +39,9 @@ export function PresenceLine({ lastActiveAt }: PresenceLineProps) {
 
   if (isOnlineAt(at)) {
     return (
-      <View style={styles.row}>
-        <View style={styles.dot} />
-        <Text style={styles.online} numberOfLines={1}>
-          {t('presence.online')}
-        </Text>
-      </View>
+      <Text style={styles.online} numberOfLines={1}>
+        {t('presence.online')}
+      </Text>
     )
   }
   return (
@@ -54,10 +51,9 @@ export function PresenceLine({ lastActiveAt }: PresenceLineProps) {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  row: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
-  dot: { backgroundColor: colors.success, borderRadius: 4, height: 8, width: 8 },
-  online: { ...font.caption, color: colors.success, fontSize: 13, fontWeight: '600' },
-  // Muted, unlike the green: being away is not a state worth colouring.
-  lastSeen: { ...font.caption, color: colors.textMuted, fontSize: 13 },
+const useStyles = makeStyles(({ colors, font }) => ({
+  // v3 drops the green dot: the colour of the word is the whole signal —
+  // accent while they are here, faint once they are not.
+  online: { ...font.caption, color: colors.accent, fontSize: 13 },
+  lastSeen: { ...font.caption, color: colors.textFaint, fontSize: 13 },
 }))

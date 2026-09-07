@@ -63,7 +63,8 @@ const useStyles = makeStyles(({ colors, radius, cardShadow }) => ({
     borderRadius: radius.pill,
     flex: 1,
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 11,
   },
   on: {
     backgroundColor: colors.surface,

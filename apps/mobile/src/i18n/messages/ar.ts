@@ -19,7 +19,8 @@ export const ar: Localized<EnMessages> = {
   common: {
     showPassword: 'إظهار كلمة المرور',
     hidePassword: 'إخفاء كلمة المرور',
-    back: '‹ رجوع',
+    show: 'إظهار',
+    hide: 'إخفاء',
     backPlain: 'رجوع',
     clear: 'مسح',
     cancel: 'إلغاء',
@@ -30,17 +31,13 @@ export const ar: Localized<EnMessages> = {
     checking: 'جارٍ التحقق…',
     oneMoment: 'لحظة…',
     skip: 'ليس الآن',
-    you: '(أنت)',
     comingSoon: 'قريبًا',
     continue: 'متابعة',
-    next: 'التالي',
     done: 'تم',
     reset: 'إعادة ضبط',
     any: 'الكل',
-    post: 'نشر',
     send: 'إرسال',
     remove: 'إزالة',
-    delete: 'حذف',
     block: 'حظر',
     report: 'إبلاغ',
     edit: 'تعديل',
@@ -60,8 +57,6 @@ export const ar: Localized<EnMessages> = {
   },
 
   media: {
-    sourceMediaTitle: 'إضافة صورة أو فيديو',
-    sourceMediaCamera: 'التقاط صورة أو فيديو',
     playVideo: 'تشغيل الفيديو',
     sourceTitle: 'إضافة صورة',
     sourceCamera: 'التقاط صورة',
@@ -103,9 +98,9 @@ export const ar: Localized<EnMessages> = {
   theme: {
     section: 'المظهر',
     label: 'السمة',
-    auto: 'تلقائي',
     light: 'فاتح',
     dark: 'داكن',
+    autoSystem: 'تلقائي (حسب النظام)',
   },
 
   messageActions: {
@@ -125,7 +120,6 @@ export const ar: Localized<EnMessages> = {
   },
 
   messageMeta: {
-    video: 'فيديو',
     sent: 'أُرسلت',
     delivered: 'وصلت',
     read: 'قُرئت',
@@ -310,6 +304,9 @@ export const ar: Localized<EnMessages> = {
     skip: 'تخطٍّ',
     next: 'التالي',
     done: 'تم',
+    correctionFrom: 'تصحيح من شريك',
+    correctionBefore: 'أنا أتفق مع أنت.',
+    correctionAfter: 'أنا أتفق معك.',
   },
 
   welcome: {
@@ -381,6 +378,9 @@ export const ar: Localized<EnMessages> = {
     verificationFailedTitle: 'فشل التأكيد',
     verificationFailedBody:
       'هذا الرابط غير صالح أو انتهت صلاحيته. سجّل الدخول واطلب رابطًا جديدًا.',
+    signInWithCode: 'سجّل الدخول برمز من جهاز آخر',
+    signInLinkNote:
+      'يعمل الرابط مرة واحدة وتنتهي صلاحيته بعد 15 دقيقة. ويعمل أيضًا إذا كان لديك حساب في التطبيق السابق.',
   },
 
   onboarding: {
@@ -399,7 +399,6 @@ export const ar: Localized<EnMessages> = {
     languagesBody: 'لغتك الأم هي ما يمكنك تعليمه؛ وما تتعلّمه يحدّد مع من ستتوافق.',
     native: 'الأم',
     learning: 'أتعلّمها',
-    yourLevel: 'مستواك',
     upToCount: {
       zero: 'حتى {count}',
       one: 'حتى {count}',
@@ -411,10 +410,7 @@ export const ar: Localized<EnMessages> = {
     cannotBeBoth: 'لا يمكن أن تكون اللغة الاثنتين معًا',
     aboutYouTitle: 'عنك',
     displayName: 'الاسم المعروض',
-    yearOfBirth: 'سنة الميلاد',
-    undisclosedNote: 'اختيار هذا يُبقيك خارج عمليات البحث المفلترة حسب الجنس.',
     aboutYouOptional: 'عنك (اختياري)',
-    aboutYouPlaceholder: 'ما الذي تحب الحديث عنه؟',
     tooYoung: 'LangX مخصص لمن أعمارهم {age} عامًا فأكثر.',
     photoTitle: 'ضع صورة لك',
     photoBody: 'كلاهما اختياري، وكلاهما يزيد كثيرًا من احتمال أن يبادرك أحدهم بالتحية.',
@@ -425,12 +421,9 @@ export const ar: Localized<EnMessages> = {
     changePhoto: 'تغيير الصورة',
     uploading: 'جارٍ الرفع…',
     bioPrompt: 'شيء يمكن لشخص غريب أن يبدأ به الحديث.',
-    whereAreYou: 'أين أنت؟',
     username: 'اسم المستخدم',
     namePlaceholder: 'Alex',
-    yearPlaceholder: '1996',
     gender: 'الجنس',
-    interests: 'الاهتمامات',
     handleTitle: 'اختر اسم مستخدم',
     handlePlaceholder: 'alex',
     handleReserved: '@{handle} محجوز لك',
@@ -451,6 +444,9 @@ export const ar: Localized<EnMessages> = {
     inviteCodePlaceholder: 'اسم المستخدم',
     inviteCodeFound: 'دعاك {name}.',
     inviteCodeUnknown: 'لم نجد هذا الرمز — يمكنك المتابعة على أي حال.',
+    genderNotSaying: 'لا أقول',
+    genderNote:
+      'إذا اخترت ”{option}“ فلن تظهر في عمليات البحث المصفّاة حسب الجنس. يمكنك تحديد هذا مرة واحدة فقط.',
   },
 
   welcomeBack: {
@@ -519,7 +515,6 @@ export const ar: Localized<EnMessages> = {
   },
 
   corrections: {
-    title: 'تصحيحاتك',
     emptyTitle: 'لا تصحيحات بعد',
     emptyBody: 'اضغط مطولًا على رسالة واختر «صحّح» — أنفع ما يمكنك فعله هنا.',
     combinedTitle: 'ما كتبته',
@@ -531,11 +526,6 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
-    languagesTitle: 'اللغات في هذا البحث',
-    languagesBody:
-      'كل من يظهر هنا يتحدث لغة تتعلمها ويتعلم لغة تتحدثها. أزل التحديد عن لغة لاستبعادها من البحث.',
-    iSpeak: 'أتحدث',
-    imLearning: 'أتعلم',
     languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
@@ -565,8 +555,6 @@ export const ar: Localized<EnMessages> = {
     title: 'عوامل التصفية',
     speaks: 'يتكلم',
     city: 'المدينة',
-    cityBody:
-      'اعثر على أشخاص في مدينة واحدة. اخترها من القائمة — نفس القائمة التي تُقرأ منها مدينة الملف الشخصي.',
     cityNeedsLocation: 'المدينة تظهر فقط لمن يشارك موقعه، لذا يقتصر البحث عليهم.',
     cityPlaceholder: 'إسطنبول',
     gender: 'الجنس',
@@ -602,7 +590,6 @@ export const ar: Localized<EnMessages> = {
     unpin: 'إلغاء التثبيت',
     archive: 'أرشفة',
     unarchive: 'إلغاء الأرشفة',
-    pinnedSection: 'مثبّتة',
     unrepliedEmptyTitle: 'لا شيء بانتظارك',
     unrepliedEmptyBody: 'لقد رددت على كل محادثة.',
     archivedEmptyTitle: 'لا محادثات مؤرشفة',
@@ -666,7 +653,6 @@ export const ar: Localized<EnMessages> = {
     notSentRetry: 'لم يُرسل — اضغط للمحاولة مرة أخرى',
     editing: 'تعديل',
     correcting: 'تصحيح',
-    activity: 'النشاط',
     translating: 'جارٍ الترجمة…',
     writeMessage: 'اكتب رسالة…',
     writeCorrection: 'اكتب التصحيح…',
@@ -674,7 +660,6 @@ export const ar: Localized<EnMessages> = {
     correctionFrom: 'تصحيح من {name}',
     them: 'الطرف الآخر',
     tokensPerMessage: '+{count} رموز لكل رسالة',
-    unlimitedEveryPlan: 'بلا حدود في كل الخطط',
     voiceMessage: 'رسالة صوتية',
     speedSlow: '0.5x',
     speedNormal: '1x',
@@ -722,6 +707,7 @@ export const ar: Localized<EnMessages> = {
     deleteForEveryone: 'حذف عند الجميع',
     deleteForMe: 'حذف عندي',
     actionFailed: 'لم تتم العملية',
+    viewProfile: 'عرض الملف الشخصي',
   },
 
   messageMenu: {
@@ -757,14 +743,6 @@ export const ar: Localized<EnMessages> = {
     },
     noStreakChange: 'يملأ المربع لكنه لا يغيّر سلسلتك.',
     balanceChange: '{streakLine}\nسينتقل رصيدك من {before} إلى {after}.',
-    repairsLeft: {
-      zero: 'بقيت {count} من {total} عمليات استرجاع · {price} رمزًا',
-      one: 'بقيت عملية استرجاع واحدة من {total} · {price} رمزًا',
-      two: 'بقيت عمليتا استرجاع من {total} · {price} رمزًا',
-      few: 'بقيت {count} من {total} عمليات استرجاع · {price} رمزًا',
-      many: 'بقيت {count} من {total} عملية استرجاع · {price} رمزًا',
-      other: 'بقيت {count} من {total} عملية استرجاع · {price} رمزًا',
-    },
     perMonth: {
       zero: 'يمكنك استرجاع {count} يوم في الشهر.',
       one: 'يمكنك استرجاع يوم واحد في الشهر.',
@@ -773,7 +751,14 @@ export const ar: Localized<EnMessages> = {
       many: 'يمكنك استرجاع {count} يومًا في الشهر.',
       other: 'يمكنك استرجاع {count} يوم في الشهر.',
     },
-    noRepairsThisMonth: 'لم تبقَ عمليات استرجاع هذا الشهر',
+    weeksAgo: {
+      zero: 'قبل {count} أسبوع',
+      one: 'قبل أسبوع',
+      two: 'قبل أسبوعين',
+      few: 'قبل {count} أسابيع',
+      many: 'قبل {count} أسبوعًا',
+      other: 'قبل {count} أسبوع',
+    },
   },
 
   report: {
@@ -812,9 +797,7 @@ export const ar: Localized<EnMessages> = {
     sending: 'جارٍ الإرسال…',
     sendCorrection: 'إرسال التصحيح',
     youCorrected: 'صحّحت هذه',
-    addYours: 'أضف تصحيحك',
     correctThis: 'صحّح هذه',
-    seeAll: { one: 'عرض الـ {count} كلها', other: 'عرض الـ {count} كلها' },
     likes: {
       zero: '{count} إعجاب',
       one: 'إعجاب واحد',
@@ -835,7 +818,6 @@ export const ar: Localized<EnMessages> = {
     photosPermission: 'يحتاج LangX إلى الوصول إلى صورك ومقاطع الفيديو لديك لإرفاق واحد.',
     attachmentFailed: 'لم يُرفع المرفق. حاول مرة أخرى.',
     mediaQuota: 'بلغت حد المرفقات لهذا اليوم.',
-    allCorrections: 'كل التصحيحات',
     correctionsEmptyTitle: 'لا توجد تصحيحات بعد',
     correctionsEmptyBody: 'كن أول من يصحح هذه الجملة.',
     title: 'الأخبار',
@@ -855,7 +837,6 @@ export const ar: Localized<EnMessages> = {
     commentPlaceholder: 'قل شيئًا…',
     allComments: 'التعليقات',
     showMoreComments: 'عرض المزيد من التعليقات',
-    commentsEmptyTitle: 'لا توجد تعليقات بعد',
     commentsEmptyBody: 'كن أول من يعلّق.',
     pronounceAsk: '+ كيف تُنطق؟',
     pronounceTitle: 'الكلمة بالـ{language}',
@@ -880,12 +861,10 @@ export const ar: Localized<EnMessages> = {
     sendAnswer: 'أرسل التسجيل',
     answerSent: 'تم إرسال التسجيل. شكرًا لك.',
     youAnswered: 'أنت سجّلت هذه',
-    allAnswers: 'كل التسجيلات',
     answersEmptyTitle: 'لا تسجيلات بعد',
     answersEmptyBody: 'كن أول من ينطقها.',
     needRecording: 'سجّلها مرة قبل الإرسال.',
     alreadyCorrected: 'لقد صحّحت هذه بالفعل.',
-    alreadyAnswered: 'لقد سجّلت هذه بالفعل.',
     wrongPostKind: 'هذا المنشور يطلب شيئًا آخر.',
     deletePost: 'حذف المنشور',
     deleteComment: 'حذف التعليق',
@@ -895,6 +874,18 @@ export const ar: Localized<EnMessages> = {
     deletePostConfirmBody:
       'ستُحذف تصحيحاته وتسجيلاته وتعليقاته أيضًا. تبقى الرموز المكتسبة لأصحابها.',
     deleted: 'تم الحذف.',
+    correctionPlaceholder: 'أعد كتابة الجملة كما تقولها أنت…',
+    startFromOriginal: 'ابدأ من الجملة الأصلية',
+    correctionReward: {
+      zero: '+{count} رموز · بلا حدود في كل الخطط',
+      one: '+{count} رمز · بلا حدود في كل الخطط',
+      two: '+{count} رمزان · بلا حدود في كل الخطط',
+      few: '+{count} رموز · بلا حدود في كل الخطط',
+      many: '+{count} رمزًا · بلا حدود في كل الخطط',
+      other: '+{count} رمز · بلا حدود في كل الخطط',
+    },
+    composeHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
+    voiceNote: 'مقطع صوتي',
   },
 
   profile: {
@@ -928,7 +919,6 @@ export const ar: Localized<EnMessages> = {
     followingEmptyBody: 'تابع أحدهم لتظهر منشوراته في تدفقك.',
     followFailed: 'لم ينجح ذلك. حاول مرة أخرى.',
     notFound: 'الملف غير موجود.',
-    verifiedEmail: 'بريد مؤكَّد',
     registeredLabel: 'مسجّل',
     interests: 'الاهتمامات',
     registered: '· مسجّل {age}',
@@ -936,6 +926,15 @@ export const ar: Localized<EnMessages> = {
     sendFailed: 'تعذّر إرسال الرسالة.',
     blockConfirm: 'حظر {name}؟ لن يظهر أي منكما في قوائم الآخر.',
     blocked: 'تم حظر {name}.',
+    people: 'الأشخاص',
+    dayStreak: {
+      zero: 'سلسلة {count} يوم',
+      one: 'سلسلة يوم واحد',
+      two: 'سلسلة يومين',
+      few: 'سلسلة {count} أيام',
+      many: 'سلسلة {count} يومًا',
+      other: 'سلسلة {count} يوم',
+    },
   },
 
   me: {
@@ -957,7 +956,6 @@ export const ar: Localized<EnMessages> = {
       many: '{count} شخصًا',
       other: '{count} شخص',
     },
-    leaderboardSubtitle: 'السلاسل والتصحيحات وكل ما حققته',
     proTitle: '✦ اذهب أبعد',
     proBody: 'محادثات جديدة بلا حدود، عوامل تصفية متقدمة، ترجمة وتصفح خفي.',
     newChatsLeft: 'المحادثات الجديدة المتبقية اليوم:',
@@ -974,18 +972,18 @@ export const ar: Localized<EnMessages> = {
     invite: 'ادعُ صديقًا',
     inviteBody: 'اكسب توكنات عندما يبدأ باستخدام LangX',
     dayStreak: 'سلسلة الأيام',
+    followsTitle: 'المتابعون ومن تتابعهم',
   },
 
   editProfile: {
     countryUnknown: 'غير محدد',
-    countryHint: 'مأخوذ من اتصالك. شارك موقعك لتصحيحه.',
+    countryHint: 'من اتصالك',
     title: 'تعديل الملف',
     displayName: 'الاسم المعروض',
     aboutYou: 'عنك',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'ما الذي تحب الحديث عنه؟',
     country: 'البلد',
-    interests: 'الاهتمامات',
     gender: 'الجنس',
     genderOnce: 'يمكنك تحديد هذا مرة واحدة. لا يمكن تغييره بعد ذلك.',
     genderLocked: 'حُدِّد عند انضمامك. لا يمكن تغيير هذا.',
@@ -994,7 +992,6 @@ export const ar: Localized<EnMessages> = {
     languages: 'اللغات',
     editNative: 'تعديل اللغات الأم',
     editLearning: 'تعديل لغات التعلّم',
-    photos: 'الصور',
     longPressToRemove: 'اضغط مطوّلًا على صورة لإزالتها.',
     removePhotoTitle: 'إزالة الصورة',
     removePhotoBody: 'إزالة هذه الصورة من ملفك؟',
@@ -1007,6 +1004,7 @@ export const ar: Localized<EnMessages> = {
     uploadRetry: 'تعذّر رفع تلك الصورة. حاول مرة أخرى.',
     bothNativeAndLearning: 'لا يمكن أن تكون اللغة أمًا وشيئًا تتعلّمه في الوقت نفسه.',
     pickOneOfEach: 'اختر لغة أم واحدة على الأقل ولغة تتعلّمها.',
+    interestsUpTo: 'الاهتمامات · حتى {max}',
   },
 
   legal: {
@@ -1067,6 +1065,7 @@ export const ar: Localized<EnMessages> = {
     },
     emptyTitle: 'لا شيء هنا بعد',
     emptyBody: 'أرسل رسالة أو اكتب تصحيحًا، ويصبح اليوم أول أيامك.',
+    legendMissed: 'فائت · اضغط لتعويضه',
   },
   settings: {
     subscriptionBody: 'خطتك وتجديدها وإدارتها',
@@ -1114,7 +1113,6 @@ export const ar: Localized<EnMessages> = {
     showWeekChart: 'إظهار رسم هذا الأسبوع',
     showWeekChartBody: 'الأيام التي أرسلت فيها رسائل وتصحيحات، على ملفك.',
     legalSection: 'القانونية',
-    communitySection: 'المجتمع',
     linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
     showInDiscover: 'أظهرني في الاستكشاف',
     showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
@@ -1136,7 +1134,6 @@ export const ar: Localized<EnMessages> = {
     locationUpdated: 'حُدّث قبل {time}',
     updating: 'جارٍ التحديث…',
     privacyFailed: 'تعذّر حفظ الإعداد',
-    languageSection: 'اللغة',
     appLanguage: 'لغة التطبيق',
     translateTo: 'الترجمة إلى',
     translateToBody: 'بأي لغة من لغاتك تُعرض الرسالة المترجمة',
@@ -1155,13 +1152,10 @@ export const ar: Localized<EnMessages> = {
     deleteTypeHandle: 'اكتب اسم المستخدم الخاص بك، {handle}، للمتابعة.',
     deleteCheckEmail: 'تحقّق من {email}. الرابط في تلك الرسالة هو ما يبدأ الحذف.',
     deleteNothingYet: 'لم يحدث شيء لحسابك بعد.',
-    deleteConfirmBody:
-      'يختفي حسابك فورًا. تُحفظ بياناتك {days} يومًا — وتسجيل الدخول خلال تلك المدة يلغي الحذف.',
     deleted: 'حُذف الحساب. تسجيل الدخول خلال {days} يومًا يلغي الحذف.',
     deleteFailed: 'تعذّر الحذف',
     signOut: 'تسجيل الخروج',
     signOutConfirm: 'ستحتاج إلى تسجيل الدخول مجددًا على هذا الجهاز.',
-    signedOut: 'تم تسجيل الخروج — انتهت جلستك.',
     licence: '· BSD-3 · مفتوح المصدر',
     title: 'الإعدادات',
     privacySection: 'الخصوصية',
@@ -1177,6 +1171,15 @@ export const ar: Localized<EnMessages> = {
     pushThisDevice: 'الإشعارات على هذا الجهاز',
     pushThisDeviceBody: 'أوقفها هنا وستستمر أجهزتك الأخرى في استقبالها.',
     accountSection: 'الحساب',
+    translationsLeft: {
+      zero: 'لم يتبقَّ لديك ترجمات مجانية اليوم',
+      one: 'بقيت لديك ترجمة مجانية واحدة اليوم',
+      two: 'بقيت لديك ترجمتان مجانيتان اليوم',
+      few: 'بقيت لديك {count} ترجمات مجانية اليوم',
+      many: 'بقيت لديك {count} ترجمة مجانية اليوم',
+      other: 'بقيت لديك {count} ترجمة مجانية اليوم',
+    },
+    whatYouHave: 'ما لديك',
   },
 
   deletion: {
@@ -1199,24 +1202,31 @@ export const ar: Localized<EnMessages> = {
     streakFreeze: 'تجميد السلسلة',
     streakFreezeBody: 'يغطّي أول يوم تفوته · {banked}/{max} في الرصيد',
     ownedAccessibility: '{title}، مملوك',
-    buy: 'شراء {title} مقابل {price} رمزًا',
-    yourFrames: 'إطاراتك',
-    yourTitles: 'ألقابك',
-    wearNone: 'بلا',
     locked: 'مقفل',
     lockedAccessibility: '‏{title}، مقفل',
     lockedStreak: '‏{current} من {threshold} يوم',
     lockedNeeds: 'اشترِ {title} أولًا',
     lockedCorrections: '‏{current} من {threshold} تصحيح',
-    owned: 'مملوك',
     frameKind: 'إطار الملف',
     titleKind: 'لقب',
-    todayCounts: '{messages} · {corrections}',
     repairDay: 'استرجع يومًا',
     repairDayBody: 'يملأ يومًا فاتك · بقي لك {left} هذا الشهر',
     bought: '{title} أصبح لك',
     buyFailed: 'تعذّر الشراء',
     equipFailed: 'تعذّر التغيير',
+    frames: 'إطارات الملف',
+    titles: 'الألقاب',
+    wear: 'ارتداء',
+    wearing: 'مُرتدى',
+    price: {
+      zero: '{count} رمز',
+      one: 'رمز واحد',
+      two: 'رمزان',
+      few: '{count} رموز',
+      many: '{count} رمزًا',
+      other: '{count} رمز',
+    },
+    buyAccessibility: 'اشترِ {title} بـ {price}',
   },
 
   gift: {
@@ -1227,11 +1237,19 @@ export const ar: Localized<EnMessages> = {
     shakeHint: 'هزّ هاتفك لفتحها',
     tapHint: 'اضغط لفتحها',
     opening: 'جارٍ الفتح…',
-    revealed: '+{amount} توكن',
     revealedZero: 'فارغة هذه المرة. هدية أخرى بعد ساعة.',
     failed: 'تعذّر فتح الهدية',
     done: 'تم',
     openAccessibility: 'افتح هدية الساعة',
+    tokensUnit: {
+      zero: 'توكن',
+      one: 'توكن',
+      two: 'توكن',
+      few: 'توكنات',
+      many: 'توكنًا',
+      other: 'توكن',
+    },
+    anotherInAnHour: 'واحد آخر بعد ساعة.',
   },
 
   wallet: {
@@ -1250,40 +1268,34 @@ export const ar: Localized<EnMessages> = {
   },
 
   tokens: {
-    title: 'الرموز',
     intro: 'تُكتسب بالمراسلة وبتصحيح جمل الآخرين. التعليم يزن أكثر من الحديث.',
-    thisWeek: 'هذا الأسبوع',
-    thisMonth: 'هذا الشهر',
-    allTime: 'كل الأوقات',
     poolTitle: 'التجمّع اليومي',
-    activeToday: {
-      zero: 'لا أحد نشط اليوم',
-      one: 'شخص واحد نشط اليوم',
-      two: 'شخصان نشطان اليوم',
-      few: '{count} أشخاص نشطون اليوم',
-      many: '{count} شخصًا نشطون اليوم',
-      other: '{count} شخص نشطون اليوم',
-    },
     shareAmount: '+{count}',
-    shareFor: 'نصيبك عن {day}',
     noShareYet: 'لا نصيب بعد — يوزّع الوعاء بعد أول يوم كامل لك.',
     firstShareAt: 'ستصل حصتك الأولى في {when}.',
-    todayActivity:
-      'اليوم حتى الآن: {score} نشاط · {messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
     poolCap: 'الحد الأقصى {cap} في اليوم. يتغير نصيبك مع نشاط الآخرين.',
     poolPaidAt: 'يُدفع كل ليلة في {hour}:00 بتوقيت UTC.',
     history: 'السجل',
     historyEmpty: 'لا شيء بعد. أرسل رسالة أو صحّح لأحدهم.',
-    historySpent: '−{count} أُنفقت',
     historyMore: 'عرض المزيد',
-    inviteRow: 'ادعُ صديقًا',
+    ledgerSpent: '−{count}',
+    shareForDay: 'نصيبك عن {day}',
+    todaySoFar: 'اليوم حتى الآن',
+    activityScore: {
+      zero: '{count} نشاط',
+      one: '{count} نشاط',
+      two: '{count} نشاط',
+      few: '{count} نشاط',
+      many: '{count} نشاط',
+      other: '{count} نشاط',
+    },
+    todayBreakdown: '{messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
   },
 
   invite: {
     title: 'ادعُ صديقًا',
     body: 'شارك رابطك. عندما يسجّل من دعوته ويبدأ بالتحدث مع الناس، تكسبان الرموز كلاكما.',
     code: 'رمز الدعوة الخاص بك',
-    qrAccessibility: 'رمز QR لرابط الدعوة',
     share: 'مشاركة الرابط',
     copy: 'نسخ الرابط',
     copied: 'تم نسخ الرابط',
@@ -1320,7 +1332,6 @@ export const ar: Localized<EnMessages> = {
     statusSubscribed: 'مشترك',
     emptyTitle: 'لا أحد بعد',
     emptyBody: 'شارك رابطك وسيظهر هنا كل من ينضم.',
-    referredBy: 'دعاك {name}',
     disclaimer:
       'التوكنات نقاط داخل التطبيق. التسجيل وحده لا يدفع شيئًا — الدعوة تكسب فقط عندما يكتب المدعو فعلًا إلى شخص ما.',
   },
@@ -1368,11 +1379,6 @@ export const ar: Localized<EnMessages> = {
   leaderboard: {
     title: 'لوحة الصدارة',
     periodPicker: 'فترة لوحة الصدارة',
-    nextMilestone: 'المحطة التالية',
-    towards: '{current} من {threshold} نحو {label}',
-    toGo: 'بقي {amount}',
-    doneToday: 'انتهى يومك. إلى الغد.',
-    keepGoing: 'أرسل رسالة اليوم لتستمر.',
     emptyTitle: 'لا شيء هنا بعد',
     emptyBody: 'أرسل رسائل واكتب تصحيحات — كن أول من يكسب رموزًا في هذه الفترة.',
     week: 'أسبوع',
@@ -1387,8 +1393,6 @@ export const ar: Localized<EnMessages> = {
       many: 'تمنح {amount} رمزًا',
       other: 'تمنح {amount} رمز',
     },
-    corrections: 'تصحيحات',
-    toGoPlain: 'بقي {count}',
     you: 'أنت',
     streakTitle: 'جدول السلاسل',
     metricCurrent: 'الآن',
@@ -1443,34 +1447,29 @@ export const ar: Localized<EnMessages> = {
       many: '{formatted} تصحيحًا',
       other: '{formatted} تصحيح',
     },
+    earnedOf: 'حصلت على {earned} من {total}',
   },
 
   shared: {
     missingTitle: 'لا شيء هنا',
     missingBody: 'لا يوجد ملف شخصي في LangX باسم ‏@{handle}.',
-    speaks: 'يتحدث',
-    learning: 'يتعلّم',
     ctaBody: '‏{name} يتدرّب على اللغات في LangX. انضم لتقول مرحبًا.',
     ctaLabel: 'افتح LangX',
-    inviteTitle: 'دعاك {name} إلى LangX',
     inviteBody:
       'دعاك {name}. سجّل واكتب لأحدهم لتبدأ بـ {total} رمز؛ ويكسب {name} {activation} — حتى {max} إن اشتركت يومًا في خطة مدفوعة. الانضمام مجاني.',
   },
 
   shareProfile: {
     title: 'مشاركة ملفي',
-    body: 'وجّه الكاميرا إلى هذا، أو أرسل الرابط.',
     qrAccessibility: 'رمز QR لـ ‏@{handle}',
-    share: 'مشاركة',
-    copy: 'نسخ الرابط',
     copied: 'تم نسخ الرابط',
+    scanBody: 'كل من يمسح هذا الرمز يصل إلى ملفك الشخصي — في التطبيق إن كان لديه، وإلا في المتصفح.',
   },
 
   share: {
     cardTitle: 'مشاركة كصورة',
     cardStreakCaption: 'يوم متتالٍ في LangX',
     cardBadgeCaption: 'شارة في LangX',
-    cardRankCaption: 'في لوحة رموز LangX',
     cardBody: 'اختر الوجهة — تُرسم البطاقة لتناسبها.',
     shapeStory: 'قصة إنستغرام / تيك توك',
     shapeSquare: 'منشور إنستغرام',
@@ -1482,7 +1481,6 @@ export const ar: Localized<EnMessages> = {
     copiedText: 'تم نسخ النص',
     profile: 'مشاركة الملف',
     profileMessage: 'تعرّف على {name} في LangX: {url}',
-    post: 'مشاركة المنشور',
     postMessage: '«{excerpt}» — تدريب على {language} في LangX: {url}',
     streak: 'مشاركة سلسلتي',
     streakMessage: {
@@ -1493,7 +1491,6 @@ export const ar: Localized<EnMessages> = {
       many: '🔥 سلسلة {count} يومًا في LangX. تدرّب معي: {url}',
       other: '🔥 سلسلة {count} يوم في LangX. تدرّب معي: {url}',
     },
-    rank: 'مشاركة ترتيبي',
     leaderboardMessage: {
       week: 'أنا في المركز {rank} في LangX هذا الأسبوع. تدرّب معي: {url}',
       month: 'أنا في المركز {rank} في LangX هذا الشهر. تدرّب معي: {url}',
@@ -1507,21 +1504,23 @@ export const ar: Localized<EnMessages> = {
   linkDevice: {
     title: 'تسجيل الدخول على جهاز آخر',
     body: 'أدخل الرمز الظاهر على الشاشة الأخرى، أو امسحه هناك.',
-    placeholder: 'AB234',
     warning: 'وافق فقط على رمز تراه بنفسك. من يُدخله يحصل على وصول كامل إلى حسابك.',
     approve: 'موافقة',
     deny: 'رفض',
     approved: 'تم تسجيل الدخول',
     denied: 'تم الرفض',
     failed: 'لم يعد هذا الرمز صالحًا.',
-    hint: 'ليس الآن',
-    devices: 'الأجهزة المسجّلة الدخول',
     waitingForDevice: 'في انتظار أن يُكمل الجهاز الآخر تسجيل الدخول…',
     thisDevice: 'هذا الجهاز',
     signOutDevice: 'تسجيل الخروج',
     signOutOthers: 'تسجيل الخروج من كل مكان آخر',
     signedOutDevice: 'تم تسجيل الخروج.',
     unknownDevice: 'جهاز غير معروف',
+    devicesTitle: 'الأجهزة',
+    approveTitle: 'الموافقة على تسجيل دخول',
+    scan: 'مسح',
+    typeCodePlaceholder: 'اكتب الرمز',
+    whereSignedIn: 'أين أنت مسجّل الدخول',
   },
 
   scan: {
@@ -1537,65 +1536,49 @@ export const ar: Localized<EnMessages> = {
   },
 
   qrSignIn: {
-    title: 'سجّل الدخول بهاتفك',
-    body: 'افتح LangX على هاتفك وأدخل هذا الرمز، أو امسحه.',
-    hint: 'على هاتفك: أيقونة المسح في ملفك، أو الإعدادات ← تسجيل الدخول على جهاز آخر',
     qrAccessibility: 'رمز QR لتسجيل الدخول',
     expired: 'انتهت صلاحية الرمز.',
     failed: 'تعذّر البدء. حاول مرة أخرى.',
-    again: 'حاول مجددًا',
     webOnly: 'هذا لتسجيل الدخول على حاسوب. أنت بالفعل على هاتفك.',
+    bodyScan:
+      'على هاتف سجّلت الدخول فيه بالفعل، افتح {path} ووجّه الكاميرا إلى هنا. أو اكتب الرمز.',
+    scanPath: 'أنا ← مسح رمز',
+    orEnterCode: 'أو أدخل هذا الرمز',
+    expiresIn: 'تنتهي الصلاحية خلال {time}',
+    newCode: 'احصل على رمز جديد',
   },
 
   viewers: {
     title: 'من زار ملفك',
-    empty: 'لم يزر أحد ملفك بعد.',
-    countLabel: {
-      zero: 'شخص زار ملفك',
-      one: 'شخص زار ملفك',
-      two: 'شخصان زارا ملفك',
-      few: 'أشخاص زاروا ملفك',
-      many: 'شخصًا زاروا ملفك',
-      other: 'شخص زار ملفك',
-    },
     seeWho: 'اعرف من هم',
-    /**
-     * How many times one person has been back, beside their name. A numeral
-     * and a sign rather than a word, so it stays a badge at any width — and a
-     * plural entry regardless, because a count is never a bare string here.
-     */
-    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'لا زوّار بعد',
     emptyBody: 'إكمال ملفك يساعد.',
     /** A visitor without an account: no name exists, so the row says what it is. */
     guest: 'زائر',
-    /** The chart's headline: visits over the last seven days, all people together. */
-    weekVisits: {
-      zero: 'لا زيارات',
-      one: 'زيارة واحدة',
-      two: 'زيارتان',
-      few: '{count} زيارات',
-      many: '{count} زيارة',
-      other: '{count} زيارة',
+    weekSummary: {
+      zero: 'لا زيارات في الأسبوع الأخير.',
+      one: 'زيارة واحدة في الأسبوع الأخير.',
+      two: 'زيارتان في الأسبوع الأخير.',
+      few: '{count} زيارات في الأسبوع الأخير.',
+      many: '{count} زيارة في الأسبوع الأخير.',
+      other: '{count} زيارة في الأسبوع الأخير.',
     },
+    seeWhoWith: 'اعرف من هم مع {plan}',
+    unlockBody: 'الأسماء والملفات الشخصية، بالإضافة إلى التصفح المتخفي لك.',
   },
 
   blocked: {
     title: 'المحظورون',
-    emptyTitle: 'لا أحد محظور',
-    emptyBody: 'من تحظرهم يختفون من كل مكان لكليكما، ولا يستطيع أي منكما مراسلة الآخر.',
     unblock: 'إلغاء الحظر',
     unblockConfirm: 'إلغاء حظر {name}؟ ستعودان لرؤية بعضكما.',
     unblocked: 'أُلغي حظر {name}.',
-    since: 'حُظر في {date}',
+    emptyText: 'لا أحد محظور. أثناء الحظر لا يظهر أي منكما في قوائم الآخر.',
   },
 
   paywall: {
     screenTitle: 'الخطط',
     everythingInPro: 'كل ما في {plan}',
     restorePurchases: 'استعادة المشتريات',
-    title: 'تحدّث أكثر، تعلّم أسرع',
-    proTagline: 'كل ما يجعل الخطة المجانية تبدو ضيقة.',
     partOf: 'جزء من',
     unlimitedChats: 'محادثات جديدة بلا حدود',
     unlimitedChatsBody: '{count} يوميًا في الخطة المجانية.',
@@ -1636,7 +1619,6 @@ export const ar: Localized<EnMessages> = {
     notSetUp: 'لم يُضبط الشراء على هذه المنصة بعد.',
     legal:
       'تتجدد الاشتراكات تلقائيًا حتى إلغائها. يمكنك الإلغاء في أي وقت من حساب Apple أو Google — يوقف الإلغاء التجديد التالي ويُبقي الوصول حتى نهاية الفترة الحالية.',
-    offer: '{period} — {price}',
     trialTerms: {
       zero: '{count} يوم مجانًا، ثم {price} {period}',
       one: 'يوم واحد مجانًا، ثم {price} {period}',
@@ -1648,12 +1630,16 @@ export const ar: Localized<EnMessages> = {
     perMonth: 'شهريًا',
     perYear: 'سنويًا',
     perLifetime: 'مرة واحدة',
-    saving: 'وفّر {percent}%',
     terms: 'الشروط',
     privacy: 'الخصوصية',
     monthly: 'شهري',
     yearly: 'سنوي',
     lifetime: 'دفعة واحدة',
+    headline: 'تقدّم أكثر',
+    headlineBody: 'تبقى التصحيحات والردود غير محدودة في كل الخطط. الدفع يزيل القيود الأخرى.',
+    yearlySaving: 'سنوي · وفّر {percent}%',
+    billingPeriod: 'فترة الفوترة',
+    start: 'ابدأ مع {plan}',
   },
 
   pickers: {
@@ -1663,8 +1649,6 @@ export const ar: Localized<EnMessages> = {
   },
 
   weekly: {
-    thisWeek: 'هذا الأسبوع',
-    correctionsGiven: 'التصحيحات المقدَّمة',
     messages: 'الرسائل',
     summary: 'هذا الأسبوع: {messages} و{corrections}.',
   },

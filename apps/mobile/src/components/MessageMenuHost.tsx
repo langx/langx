@@ -20,6 +20,7 @@ import {
 } from '../lib/messageMenu'
 import { messageMenuLayout } from '../lib/messageMenuLayout'
 import { makeStyles, useTheme } from '../lib/theme'
+import { Button } from './ui/Button'
 import { useLocale, useT } from '../i18n'
 
 /**
@@ -72,6 +73,16 @@ export function MessageMenuHost() {
   const rowCount = actions.length + (hasMore ? 1 : 0) + (page === 'more' ? 1 : 0)
   const rowOffset = page === 'more' ? 1 : 0
 
+  /**
+   * The rows are shared between the two shapes but not their dress. The
+   * anchored menu keeps its compact rows — `ROW_HEIGHT` is derived from them —
+   * and the sheet takes v3's taller ones: every row under its own rule, the
+   * icon muted whatever the label says.
+   */
+  const anchored = request.anchor !== undefined
+  const rowStyle = anchored ? styles.action : styles.sheetRow
+  const labelStyle = anchored ? styles.label : styles.sheetLabel
+
   const rows = (
     <>
       {page === 'more' ? (
@@ -80,13 +91,13 @@ export function MessageMenuHost() {
           accessibilityLabel={t('messageMenu.backToFirstPage')}
           onPress={() => setPage('primary')}
           style={({ pressed }) => [
-            styles.action,
-            rowCount > 1 && styles.rowDivider,
+            rowStyle,
+            anchored && rowCount > 1 && styles.rowDivider,
             pressed && styles.actionPressed,
           ]}
         >
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
-          <Text style={[styles.label, styles.muted]}>{t('common.backPlain')}</Text>
+          <Text style={[labelStyle, styles.muted]}>{t('common.backPlain')}</Text>
         </Pressable>
       ) : null}
 
@@ -97,8 +108,8 @@ export function MessageMenuHost() {
           disabled={action.disabled === true}
           onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
           style={({ pressed }) => [
-            styles.action,
-            rowOffset + index < rowCount - 1 && styles.rowDivider,
+            rowStyle,
+            anchored && rowOffset + index < rowCount - 1 && styles.rowDivider,
             pressed && !action.disabled && styles.actionPressed,
             action.disabled === true && styles.actionDisabled,
           ]}
@@ -108,11 +119,9 @@ export function MessageMenuHost() {
             // and does not import them.
             name={action.icon as never}
             size={20}
-            color={action.destructive ? colors.danger : colors.text}
+            color={anchored ? (action.destructive ? colors.danger : colors.text) : colors.textMuted}
           />
-          <Text style={[styles.label, action.destructive && styles.destructive]}>
-            {action.label}
-          </Text>
+          <Text style={[labelStyle, action.destructive && styles.destructive]}>{action.label}</Text>
         </Pressable>
       ))}
 
@@ -120,10 +129,10 @@ export function MessageMenuHost() {
         <Pressable
           accessibilityRole="button"
           onPress={() => setPage('more')}
-          style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+          style={({ pressed }) => [rowStyle, pressed && styles.actionPressed]}
         >
           <Ionicons name="ellipsis-horizontal" size={20} color={colors.textMuted} />
-          <Text style={[styles.label, styles.muted]}>{t('messageMenu.more')}</Text>
+          <Text style={[labelStyle, styles.muted]}>{t('messageMenu.more')}</Text>
         </Pressable>
       ) : null}
     </>
@@ -239,15 +248,24 @@ export function MessageMenuHost() {
         <Pressable
           style={[
             styles.sheet,
-            wide ? styles.sheetCard : { paddingBottom: insets.bottom + spacing.md },
+            wide ? styles.sheetCard : { paddingBottom: insets.bottom + spacing.xl },
           ]}
           onPress={() => {}}
         >
+          {/* The handle says "drag me"; on a centred card there is nothing to drag. */}
+          {wide ? null : <View style={styles.handle} />}
           {strip}
-          <Text style={styles.preview} numberOfLines={2}>
+          {/* The message stands where the prototype's sheet puts its title. */}
+          <Text style={styles.title} numberOfLines={2}>
             {request.preview}
           </Text>
           {rows}
+          <Button
+            label={t('common.cancel')}
+            variant="neutral"
+            onPress={dismiss}
+            style={styles.foot}
+          />
         </Pressable>
       </Pressable>
     </Modal>
@@ -283,29 +301,43 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   destructive: { color: colors.danger },
   label: { ...font.body, color: colors.text },
   copyHero: { fontSize: 48, lineHeight: 58 },
-  preview: {
-    ...font.caption,
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    color: colors.textMuted,
-    marginBottom: spacing.xs,
-    paddingBottom: spacing.sm,
-    paddingHorizontal: spacing.md,
-  },
+  title: { ...font.heading, color: colors.text, marginBottom: 6 },
+  // v3's sheet, as `AlertHost` draws it: the roundest corners in the app,
+  // 24 at the sides, 10 above the handle.
   sheet: {
     ...cardShadow,
     backgroundColor: colors.bg,
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg,
-    paddingTop: spacing.md,
+    borderTopLeftRadius: radius.xxl,
+    borderTopRightRadius: radius.xxl,
+    paddingHorizontal: spacing.xl,
+    paddingTop: 10,
   },
   sheetCard: {
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
+    borderBottomLeftRadius: radius.xxl,
+    borderBottomRightRadius: radius.xxl,
     maxWidth: 360,
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.xl,
     width: '100%',
   },
+  handle: {
+    alignSelf: 'center',
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
+    height: 4,
+    marginBottom: 18,
+    width: 38,
+  },
+  /** v3's sheet row: 17 above and below, a rule under every one. */
+  sheetRow: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 14,
+    paddingVertical: 17,
+  },
+  sheetLabel: { color: colors.text, flex: 1, fontSize: 17, fontWeight: '600' },
+  foot: { marginTop: 18 },
   stripHolder: { position: 'absolute' },
   strip: {
     ...cardShadow,

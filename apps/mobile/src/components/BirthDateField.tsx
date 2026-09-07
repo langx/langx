@@ -94,16 +94,18 @@ function formatShown(value: string): string {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  container: { gap: 6, width: '100%' },
-  label: { ...font.label, color: colors.textMuted },
-  // Filled like FormField's inputs; the border only exists to say "error".
+  container: { gap: spacing.sm, width: '100%' },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  // FormField's pill, so the two fields above and below it read as one form:
+  // the `fill` grey is the box and the border only appears to say "error".
   input: {
     backgroundColor: colors.fill,
-    borderColor: colors.fill,
+    borderColor: 'transparent',
     borderRadius: radius.pill,
-    borderWidth: 1.5,
-    paddingHorizontal: spacing.lg + 2,
-    paddingVertical: spacing.md + 1,
+    borderWidth: 1,
+    height: 54,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   inputError: { borderColor: colors.danger },
   value: { color: colors.text, fontSize: 16 },
@@ -111,5 +113,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   picker: { alignItems: 'center' },
   done: { paddingVertical: spacing.sm },
   doneText: { ...font.label, color: colors.accent },
-  error: { ...font.caption, color: colors.danger },
+  error: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
 }))

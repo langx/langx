@@ -11,9 +11,10 @@ import { makeStyles } from '../lib/theme'
  * would put an interactive affordance on something nobody can press, on a
  * screen where every other chip does something.
  *
- * Deliberately quiet. A title is worn by whoever paid the most, not earned by
- * whoever taught the most, so it should not out-shout the name it sits next to
- * or the badges that do mean something.
+ * Deliberately quiet — an outlined tag in small capitals, no fill. A title is
+ * worn by whoever paid the most, not earned by whoever taught the most, so it
+ * should not out-shout the name it sits next to or the badges that do mean
+ * something.
  */
 export function CosmeticTitle({ cosmetic }: { cosmetic: Cosmetic | undefined }) {
   const styles = useStyles()
@@ -28,12 +29,19 @@ export function CosmeticTitle({ cosmetic }: { cosmetic: Cosmetic | undefined }) 
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   chip: {
-    backgroundColor: colors.fill,
+    borderColor: colors.border,
     borderRadius: radius.pill,
+    borderWidth: 1,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
+    paddingVertical: 3,
   },
-  label: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  label: {
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
 }))

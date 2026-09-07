@@ -1,19 +1,18 @@
+import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Text, View } from 'react-native'
+import { useEffect, useMemo, useState } from 'react'
+import { Pressable, Text, View } from 'react-native'
 import { useCreatePost, useMe } from '../../src/api/queries'
 import {
   AttachmentBar,
   AttachmentPreviewRow,
   type PendingAttachment,
 } from '../../src/components/AttachmentBar'
-import { ComposerLabel, LABEL_MARKER } from '../../src/components/ComposerLabel'
 import { Button } from '../../src/components/ui/Button'
-import { Dropdown, type AnchorRect } from '../../src/components/ui/Dropdown'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
-import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { usePostAttachments } from '../../src/hooks/usePostAttachments'
 import { useDisplayNames, useT } from '../../src/i18n'
 import { authClient } from '../../src/lib/auth-client'
@@ -22,7 +21,7 @@ import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { postLanguages, resolvePostLanguage } from '../../src/lib/postLanguage'
 import { reportWriteError } from '../../src/lib/reportWriteError'
 import { requireAccount } from '../../src/lib/requireAccount'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 
 function isPostKind(value: string | undefined): value is PostKind {
@@ -42,11 +41,11 @@ function isPostKind(value: string | undefined): value is PostKind {
  * about four lines to happen in above a list that kept scrolling underneath.
  *
  * A pushed route rather than a modal because that is what this app does —
- * `Screen` + `ScreenHeader` + `goBackTo`, with no `presentation: 'modal'`
- * anywhere in it.
+ * `Screen` + `goBackTo`, with no `presentation: 'modal'` anywhere in it.
  */
 export default function ComposeScreen() {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
   const { data: session } = authClient.useSession()
@@ -89,21 +88,8 @@ export default function ComposeScreen() {
     }
   }, [])
 
-  const languageRef = useRef<View | null>(null)
-  const [languageAnchor, setLanguageAnchor] = useState<AnchorRect | null>(null)
-
-  function openLanguages(): void {
-    // Measured on press rather than on layout: the field moves as the draft
-    // grows, and a rect captured at mount would place the menu where the word
-    // used to be.
-    languageRef.current?.measureInWindow((x, y, width, height) =>
-      setLanguageAnchor({ x, y, width, height }),
-    )
-  }
-
   function chooseLanguage(code: string): void {
     setChosenLanguage(code)
-    setLanguageAnchor(null)
     void writeFlag(FLAG_KEYS.postLanguage, code)
   }
 
@@ -144,84 +130,88 @@ export default function ComposeScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader
-        title={t(pronouncing ? 'feed.pronounceAsk' : 'feed.ask')}
-        onBack={() => goBackTo('/(app)/(tabs)/feed')}
-      />
+      <View style={styles.column}>
+        {/*
+          Not `ScreenHeader`: this one closes with a cross rather than going
+          back with an arrow — you are leaving a sentence, not a place.
+        */}
+        <View style={styles.header}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.cancel')}
+            hitSlop={12}
+            onPress={() => goBackTo('/(app)/(tabs)/feed')}
+            style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+          >
+            <Feather name="x" size={22} color={colors.text} />
+          </Pressable>
+          <Text style={styles.title} numberOfLines={2}>
+            {language
+              ? t(pronouncing ? 'feed.pronounceTitle' : 'feed.askTitle', {
+                  language: names.language(language),
+                })
+              : t(pronouncing ? 'feed.pronounceAsk' : 'feed.ask')}
+          </Text>
+        </View>
 
-      {language ? (
-        <View style={styles.body}>
-          <FormField
-            label={
-              <ComposerLabel
-                text={t(pronouncing ? 'feed.pronounceTitle' : 'feed.askTitle', {
-                  language: languages.length > 1 ? LABEL_MARKER : names.language(language),
-                })}
-                language={names.language(language)}
-                onPress={openLanguages}
-                anchorRef={languageRef}
-                styles={styles}
+        {language ? (
+          <>
+            <View style={styles.languageBlock}>
+              <Text style={styles.label}>{t('feed.postLanguage')}</Text>
+              <SegmentedControl
+                options={languages.map((code) => ({ value: code, label: names.language(code) }))}
+                selected={[language]}
+                onToggle={chooseLanguage}
+                accessibilityLabel={t('feed.postLanguage')}
               />
-            }
-            value={draft}
-            onChangeText={setDraft}
-            placeholder={t(pronouncing ? 'feed.pronouncePlaceholder' : 'feed.askPlaceholder')}
-            multiline
-            autoCapitalize="sentences"
-            maxLength={MAX_POST_LENGTH}
-            /* The whole point of the move: room to write. */
-            style={styles.field}
-            autoFocus
-          />
-          <Text style={styles.counter}>{`${draft.length}/${MAX_POST_LENGTH}`}</Text>
+            </View>
 
-          <AttachmentPreviewRow
-            pending={media}
-            onRemove={(index) => setMedia((items) => items.filter((_, at) => at !== index))}
-            progress={progress}
-          />
+            <FormField
+              value={draft}
+              onChangeText={setDraft}
+              placeholder={t(pronouncing ? 'feed.pronouncePlaceholder' : 'feed.askPlaceholder')}
+              multiline
+              autoCapitalize="sentences"
+              maxLength={MAX_POST_LENGTH}
+              /* The whole point of the move: room to write. */
+              style={styles.field}
+              autoFocus
+            />
 
-          <View style={styles.actions}>
+            <AttachmentPreviewRow
+              pending={media}
+              onRemove={(index) => setMedia((items) => items.filter((_, at) => at !== index))}
+              progress={progress}
+            />
             <AttachmentBar
               pending={media}
               onPick={(picked) => setMedia((items) => [...items, ...picked])}
               disabled={busy}
             />
+
+            <Text style={styles.hint}>{t('feed.composeHint')}</Text>
             <Button
               label={busy ? t('feed.posting') : t('feed.post')}
               disabled={!draft.trim() || busy}
               onPress={() => void submit()}
-              style={styles.grow}
             />
-          </View>
-        </View>
-      ) : null}
-
-      {languageAnchor && language ? (
-        <Dropdown
-          anchor={languageAnchor}
-          options={languages.map((code) => ({ value: code, label: names.language(code) }))}
-          selected={language}
-          onSelect={chooseLanguage}
-          onDismiss={() => setLanguageAnchor(null)}
-          accessibilityLabel={t('feed.postLanguage')}
-        />
-      ) : null}
+          </>
+        ) : null}
+      </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  body: { gap: spacing.md, paddingTop: spacing.md },
-  /** Tall enough that a paragraph does not scroll inside four lines. */
-  field: { minHeight: 180, textAlignVertical: 'top' },
-  counter: { ...font.label, color: colors.textFaint, fontWeight: '400', textAlign: 'right' },
-  actions: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
-  grow: { flex: 1 },
-  label: { ...font.label, color: colors.textMuted },
-  labelLine: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' },
-  languageButton: { alignItems: 'center', flexDirection: 'row', gap: 2 },
-  languageText: { ...font.label, color: colors.accent, fontWeight: '700' },
-  chevron: { color: colors.accent },
-  pressed: { opacity: 0.6 },
+  column: { gap: 20 },
+  header: { alignItems: 'center', flexDirection: 'row', gap: 14 },
+  // 34 square: the cross's own hit box, before `hitSlop` widens it.
+  close: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
+  title: { ...font.heading, color: colors.text, flex: 1, fontSize: 24 },
+  languageBlock: { gap: spacing.sm },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  // Five lines of 18/1.5, plus the field's own 16 above and below.
+  field: { fontSize: 18, lineHeight: 27, minHeight: 167 },
+  hint: { color: colors.textMuted, fontSize: 14, lineHeight: 21 },
+  pressed: { opacity: 0.5 },
 }))

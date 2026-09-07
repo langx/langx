@@ -75,24 +75,25 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  container: { gap: 6, width: '100%' },
-  label: { ...font.label, color: colors.textMuted },
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
+  container: { gap: spacing.sm, width: '100%' },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   row: { flexDirection: 'row', gap: spacing.sm },
-  // Filled like FormField's inputs; the border only exists to say "error".
+  // FormField's pill, so the boxes read as part of the same form: the `fill`
+  // grey is the box and the border only appears to say "error".
   input: {
     backgroundColor: colors.fill,
-    borderColor: colors.fill,
+    borderColor: 'transparent',
     borderRadius: radius.pill,
-    borderWidth: 1.5,
+    borderWidth: 1,
     color: colors.text,
-    fontSize: 15,
+    fontSize: 16,
+    height: 54,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
     textAlign: 'center',
   },
   small: { width: 78 },
   year: { width: 104 },
   inputError: { borderColor: colors.danger },
-  error: { ...font.caption, color: colors.danger },
+  error: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
 }))

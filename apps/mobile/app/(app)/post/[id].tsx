@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { MAX_COMMENT_LENGTH, MAX_POST_LENGTH } from '@langx/shared'
+import { MAX_COMMENT_LENGTH, MAX_POST_LENGTH, TOKEN_RULES } from '@langx/shared'
 import {
   uploadPostMedia,
   useAddComment,
@@ -23,19 +23,17 @@ import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
-import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { LikeButton } from '../../../src/components/LikeButton'
 import { attachmentsOf } from '@langx/shared'
-import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
 import { listState } from '../../../src/lib/listState'
-import { goBackTo, openProfile } from '../../../src/lib/navigation'
+import { goBackTo, openLikers, openProfile } from '../../../src/lib/navigation'
 import { relativeTime } from '../../../src/lib/format'
-import { confirmAlert } from '../../../src/lib/alert'
+import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
 import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
@@ -116,6 +114,7 @@ export default function PostScreen() {
   const deleteAnswer = useDeleteAnswer()
   const deleteComment = useDeleteComment()
 
+  /** The recorder's open/closed state. The correction box is always open. */
   const [composing, setComposing] = useState(false)
   const [correction, setCorrection] = useState('')
   const [commentDraft, setCommentDraft] = useState('')
@@ -194,11 +193,23 @@ export default function PostScreen() {
     )
   }
   const replyCount = post ? (pronouncing ? post.answerCount : post.correctionCount) : 0
-  const answeredByViewer = post
-    ? pronouncing
-      ? post.answeredByViewer
-      : post.correctedByViewer
-    : false
+
+  /**
+   * The header's "more" sheet. Share on somebody else's post, delete on your
+   * own — the two things that used to sit as text actions under the sentence.
+   */
+  async function openMore(): Promise<void> {
+    if (!post) return
+    const choice = mine
+      ? await chooseAlert(t('feed.post'), undefined, [
+          { label: t('feed.deletePost'), value: 'delete' as const, destructive: true },
+        ])
+      : await chooseAlert(t('feed.post'), undefined, [
+          { label: t('share.action'), value: 'share' as const },
+        ])
+    if (choice === 'share') share()
+    if (choice === 'delete') void confirmDeletePost()
+  }
 
   function submitCorrection(): void {
     if (!post || !correction.trim() || correctPost.isPending) return
@@ -206,11 +217,12 @@ export default function PostScreen() {
       { postId: post._id, corrected: correction.trim() },
       {
         onSuccess: () => {
-          setComposing(false)
           setCorrection('')
           showToast(t('feed.correctionSent'))
           // The mutation patches the feed pages; this thread's own pages it
-          // does not know about, so the new row arrives by refetch.
+          // does not know about, so the new row — and the post's
+          // `correctedByViewer`, which swaps the box for "You corrected this" —
+          // arrive by refetch.
           void query.refetch()
           review.request({ kind: 'correction' })
         },
@@ -327,12 +339,12 @@ export default function PostScreen() {
           post ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={t('share.post')}
+              accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
               hitSlop={12}
-              onPress={share}
-              style={({ pressed }) => (pressed ? styles.pressed : null)}
+              onPress={() => void openMore()}
+              style={({ pressed }) => [styles.more, pressed && styles.pressed]}
             >
-              <Feather name="share" size={20} color={colors.textMuted} />
+              <Feather name="more-horizontal" size={22} color={colors.text} />
             </Pressable>
           ) : null
         }
@@ -352,114 +364,80 @@ export default function PostScreen() {
           }}
           ListHeaderComponent={
             <View>
-              <View style={styles.post}>
-                <View style={styles.postTop}>
-                  <Pressable
-                    style={styles.who}
-                    onPress={() => openProfile(post.author.handle, here)}
-                    accessibilityRole="button"
-                  >
-                    <Avatar
-                      url={post.author.avatarUrl}
-                      name={post.author.displayName}
-                      seed={post.author._id}
-                      size={40}
-                    />
-                    <View style={styles.whoText}>
-                      <Text style={styles.name} numberOfLines={1}>
-                        {post.author.displayName}
-                      </Text>
-                      <View style={styles.metaRow}>
-                        <Text style={styles.meta} numberOfLines={1}>
-                          {names.language(post.language)}
-                        </Text>
-                        {post.level ? <LevelBars level={post.level} /> : null}
-                        <Text style={styles.meta} numberOfLines={1}>
-                          · {relativeTime(post.createdAt, { t, locale })}
-                        </Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                  <Text
-                    style={[styles.count, replyCount === 0 ? styles.countNone : styles.countSome]}
-                  >
-                    {replyCount === 0
-                      ? t(pronouncing ? 'feed.noAnswers' : 'feed.noCorrections')
-                      : t(pronouncing ? 'feed.answers' : 'feed.corrections', { count: replyCount })}
+              <Pressable
+                style={styles.who}
+                onPress={() => openProfile(post.author.handle, here)}
+                accessibilityRole="button"
+              >
+                <Avatar
+                  url={post.author.avatarUrl}
+                  name={post.author.displayName}
+                  seed={post.author._id}
+                  size={40}
+                />
+                <View style={styles.whoText}>
+                  <Text style={styles.name} numberOfLines={1}>
+                    {post.author.displayName}
+                  </Text>
+                  <Text style={styles.meta} numberOfLines={1}>
+                    {names.language(post.language)} · {relativeTime(post.createdAt, { t, locale })}
                   </Text>
                 </View>
-                <Text style={styles.body}>{post.body}</Text>
-                {attachmentsOf(post).length > 0 ? (
-                  <View style={styles.media}>
-                    <MediaGallery
-                      items={attachmentsOf(post)}
-                      onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
-                      /*
-                       * The same preview the feed draws, so a video does not
-                       * change character between the list and the post it was
-                       * tapped from. The replies below keep the thread's
-                       * controls: several clips starting at once in a list of
-                       * answers is the case autoplay is wrong for.
-                       */
-                      videoMode="preview"
-                      videoPlaying={focused}
-                    />
-                  </View>
-                ) : null}
-                <View style={styles.likeRow}>
-                  <LikeButton
-                    targetType="post"
-                    targetId={post._id}
-                    likeCount={post.likeCount}
-                    likedByViewer={post.likedByViewer}
-                    disabled={mine}
-                    from={here}
+              </Pressable>
+              <Text style={styles.body}>{post.body}</Text>
+              {attachmentsOf(post).length > 0 ? (
+                <View style={styles.media}>
+                  <MediaGallery
+                    items={attachmentsOf(post)}
+                    onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
+                    /*
+                     * The same preview the feed draws, so a video does not
+                     * change character between the list and the post it was
+                     * tapped from. The replies below keep the thread's
+                     * controls: several clips starting at once in a list of
+                     * answers is the case autoplay is wrong for.
+                     */
+                    videoMode="preview"
+                    videoPlaying={focused}
                   />
-                  <Text style={styles.commentCount}>
-                    {post.commentCount === 0
-                      ? t('feed.comment')
-                      : t('feed.comments', { count: post.commentCount })}
-                  </Text>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('share.post')}
-                    hitSlop={8}
-                    onPress={share}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
-                  >
-                    <Text style={styles.commentCount}>{t('share.action')}</Text>
-                  </Pressable>
-                  {mine ? (
-                    <Pressable
-                      accessibilityRole="button"
-                      hitSlop={8}
-                      disabled={deletePost.isPending}
-                      onPress={() => void confirmDeletePost()}
-                      style={({ pressed }) => (pressed ? styles.pressed : null)}
-                    >
-                      <Text style={styles.deleteAction}>{t('feed.deletePost')}</Text>
-                    </Pressable>
-                  ) : null}
                 </View>
+              ) : null}
+              <View style={styles.actions}>
+                <LikeButton
+                  targetType="post"
+                  targetId={post._id}
+                  likeCount={post.likeCount}
+                  likedByViewer={post.likedByViewer}
+                  disabled={mine}
+                  from={here}
+                />
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => openLikers('post', post._id, here)}
+                  style={({ pressed }) => (pressed ? styles.pressed : null)}
+                >
+                  <Text style={styles.actionMuted}>{t('feed.likedBy')}</Text>
+                </Pressable>
+                <Text style={[styles.actionMuted, styles.actionEnd]}>
+                  {t(pronouncing ? 'feed.answers' : 'feed.corrections', { count: replyCount })}
+                </Text>
               </View>
               <Text style={styles.sectionTitle}>
-                {t(pronouncing ? 'feed.allAnswers' : 'feed.allCorrections')}
+                {t(pronouncing ? 'feed.pronunciationSection' : 'feed.correctionSection')}
               </Text>
             </View>
           }
           ListEmptyComponent={
-            <EmptyState
-              icon={pronouncing ? 'mic' : 'edit-3'}
-              title={t(pronouncing ? 'feed.answersEmptyTitle' : 'feed.correctionsEmptyTitle')}
-              body={t(pronouncing ? 'feed.answersEmptyBody' : 'feed.correctionsEmptyBody')}
-            />
+            <Text style={styles.empty}>
+              {t(pronouncing ? 'feed.answersEmptyTitle' : 'feed.correctionsEmptyTitle')}.{' '}
+              {t(pronouncing ? 'feed.answersEmptyBody' : 'feed.correctionsEmptyBody')}
+            </Text>
           }
-          renderItem={({ item, index }) => (
-            <View
-              style={[styles.correction, index === replies.length - 1 && styles.correctionLast]}
-            >
+          renderItem={({ item }) => (
+            <View style={styles.reply}>
               <Pressable
-                style={styles.who}
+                style={styles.replyWho}
                 onPress={() => openProfile(item.author.handle, here)}
                 accessibilityRole="button"
               >
@@ -467,49 +445,49 @@ export default function PostScreen() {
                   url={item.author.avatarUrl}
                   name={item.author.displayName}
                   seed={item.author._id}
-                  size={28}
+                  size={36}
                 />
-                <Text style={styles.correctionName} numberOfLines={1}>
+                <Text style={styles.replyName} numberOfLines={1}>
                   {item.author.displayName}
                 </Text>
-                {item._id === topId ? <Text style={styles.topTag}>{t('feed.topTag')}</Text> : null}
-                <Text style={styles.time}>{relativeTime(item.createdAt, { t, locale })}</Text>
+                {item._id === topId ? (
+                  <View style={styles.topPill}>
+                    <Text style={styles.topPillLabel}>{t('feed.topTag')}</Text>
+                  </View>
+                ) : null}
               </Pressable>
 
               {'corrected' in item ? (
-                <CorrectedLine original={post.body} corrected={item.corrected} />
+                <View style={styles.card}>
+                  <CorrectedLine original={post.body} corrected={item.corrected} />
+                  {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+                </View>
               ) : (
-                <>
+                <View style={styles.takes}>
                   <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
-                  <View style={styles.media}>
-                    <AudioBubble media={item.media} />
-                  </View>
+                  <AudioBubble media={item.media} />
                   {item.slowMedia ? (
                     <>
                       <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
-                      <View style={styles.media}>
-                        <AudioBubble media={item.slowMedia} />
-                      </View>
+                      <AudioBubble media={item.slowMedia} />
                     </>
                   ) : null}
-                </>
-              )}
-              {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-              {'corrected' in item && attachmentsOf(item).length > 0 ? (
-                <View style={styles.media}>
-                  <MediaGallery
-                    items={attachmentsOf(item)}
-                    onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
-                    /*
-                     * As the post's own attachment above, and for the same
-                     * reason: in `controls` mode `onOpen` is ignored, so a
-                     * correction's video was the one thing on this screen that
-                     * would not open.
-                     */
-                    videoMode="preview"
-                    videoPlaying={focused}
-                  />
+                  {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
                 </View>
+              )}
+              {'corrected' in item && attachmentsOf(item).length > 0 ? (
+                <MediaGallery
+                  items={attachmentsOf(item)}
+                  onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                  /*
+                   * As the post's own attachment above, and for the same
+                   * reason: in `controls` mode `onOpen` is ignored, so a
+                   * correction's video was the one thing on this screen that
+                   * would not open.
+                   */
+                  videoMode="preview"
+                  videoPlaying={focused}
+                />
               ) : null}
               <View style={styles.likeRow}>
                 <LikeButton
@@ -519,6 +497,7 @@ export default function PostScreen() {
                   likedByViewer={item.likedByViewer}
                   disabled={item.author._id === me.data?._id}
                   from={here}
+                  size="small"
                 />
                 {item.author._id === me.data?._id ? (
                   <Pressable
@@ -544,14 +523,66 @@ export default function PostScreen() {
           ListFooterComponent={
             <View>
               {list.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
+
+              {/*
+                The correction box, always open under the thread. Absent on
+                your own post, and once you have answered — the thread above
+                already carries your row. The screen's one yellow is its
+                send button.
+              */}
+              {!pronouncing && !mine ? (
+                post.correctedByViewer ? (
+                  <View style={styles.done}>
+                    <Feather name="check" size={16} color={colors.success} />
+                    <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
+                  </View>
+                ) : (
+                  <View style={styles.compose}>
+                    <View style={styles.composeHead}>
+                      <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
+                      {/*
+                        Seeded on request rather than by default: a correction
+                        is usually an edit of the original, but a rewrite from
+                        scratch should not have to delete it first.
+                      */}
+                      <Pressable
+                        accessibilityRole="button"
+                        hitSlop={8}
+                        onPress={() => setCorrection(post.body)}
+                        style={({ pressed }) => (pressed ? styles.pressed : null)}
+                      >
+                        <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
+                      </Pressable>
+                    </View>
+                    <FormField
+                      value={correction}
+                      onChangeText={setCorrection}
+                      placeholder={t('feed.correctionPlaceholder')}
+                      multiline
+                      autoCapitalize="sentences"
+                      maxLength={MAX_POST_LENGTH}
+                    />
+                    <Button
+                      label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
+                      disabled={!correction.trim() || correctPost.isPending}
+                      onPress={submitCorrection}
+                    />
+                    {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
+                    <Text style={styles.reward}>
+                      {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
+                    </Text>
+                  </View>
+                )
+              ) : null}
+
               <Text style={styles.sectionTitle}>{t('feed.allComments')}</Text>
               {comments.length === 0 ? (
-                <Text style={styles.commentsEmpty}>{t('feed.commentsEmptyBody')}</Text>
+                <Text style={styles.empty}>{t('feed.commentsEmptyBody')}</Text>
               ) : null}
               {comments.map((item) => (
                 <View key={item._id} style={styles.comment}>
                   <Pressable
-                    style={styles.who}
+                    style={styles.replyWho}
                     onPress={() => openProfile(item.author.handle, here)}
                     accessibilityRole="button"
                   >
@@ -559,9 +590,9 @@ export default function PostScreen() {
                       url={item.author.avatarUrl}
                       name={item.author.displayName}
                       seed={item.author._id}
-                      size={24}
+                      size={28}
                     />
-                    <Text style={styles.correctionName} numberOfLines={1}>
+                    <Text style={styles.replyName} numberOfLines={1}>
                       {item.author.displayName}
                     </Text>
                     <Text style={styles.time}>{relativeTime(item.createdAt, { t, locale })}</Text>
@@ -604,8 +635,10 @@ export default function PostScreen() {
                   autoCapitalize="sentences"
                   maxLength={MAX_COMMENT_LENGTH}
                 />
+                {/* Outlined, not yellow: the correction's send button is this screen's one commit. */}
                 <Button
                   label={addComment.isPending ? t('feed.sending') : t('feed.comment')}
+                  variant="secondary"
                   disabled={!commentDraft.trim() || addComment.isPending}
                   onPress={submitComment}
                 />
@@ -615,120 +648,75 @@ export default function PostScreen() {
         />
       )}
 
-      {/* The screen's one yellow. Absent on your own post, and once you have
-          answered — the thread above already carries your row. */}
-      {post && !mine && !answeredByViewer ? (
+      {/* The recorder, on a pronunciation request. Absent on your own, and once
+          you have recorded — the thread above already carries your row. */}
+      {post && pronouncing && !mine && !post.answeredByViewer ? (
         composing ? (
-          <View style={styles.compose}>
-            {pronouncing ? (
+          <View style={styles.takes}>
+            <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
+            {takes.fast ? <AudioBubble media={takes.fast} /> : null}
+            <Button
+              label={
+                recorder.isRecording && slot === 'fast'
+                  ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
+                  : takes.fast
+                    ? t('feed.recordAgain')
+                    : t('feed.answerThis')
+              }
+              variant={takes.fast ? 'secondary' : 'primary'}
+              disabled={uploading || (recorder.isRecording && slot !== 'fast')}
+              onPress={() => void toggleRecording('fast')}
+            />
+
+            {/* Offered only once there is something to be slower than. */}
+            {takes.fast ? (
               <>
-                <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
-                {takes.fast ? (
-                  <View style={styles.media}>
-                    <AudioBubble media={takes.fast} />
-                  </View>
-                ) : null}
+                <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
+                {takes.slow ? <AudioBubble media={takes.slow} /> : null}
                 <Button
                   label={
-                    recorder.isRecording && slot === 'fast'
+                    recorder.isRecording && slot === 'slow'
                       ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
-                      : takes.fast
+                      : takes.slow
                         ? t('feed.recordAgain')
-                        : t('feed.answerThis')
+                        : t('feed.addSlowTake')
                   }
-                  variant={takes.fast ? 'secondary' : 'primary'}
-                  disabled={uploading || (recorder.isRecording && slot !== 'fast')}
-                  onPress={() => void toggleRecording('fast')}
+                  variant="secondary"
+                  disabled={uploading || (recorder.isRecording && slot !== 'slow')}
+                  onPress={() => void toggleRecording('slow')}
                 />
-
-                {/* Offered only once there is something to be slower than. */}
-                {takes.fast ? (
-                  <>
-                    <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
-                    {takes.slow ? (
-                      <View style={styles.media}>
-                        <AudioBubble media={takes.slow} />
-                      </View>
-                    ) : null}
-                    <Button
-                      label={
-                        recorder.isRecording && slot === 'slow'
-                          ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
-                          : takes.slow
-                            ? t('feed.recordAgain')
-                            : t('feed.addSlowTake')
-                      }
-                      variant="secondary"
-                      disabled={uploading || (recorder.isRecording && slot !== 'slow')}
-                      onPress={() => void toggleRecording('slow')}
-                    />
-                  </>
-                ) : null}
-
-                <View style={styles.composeActions}>
-                  <Button
-                    label={
-                      takeProgress && takeProgress.phase !== 'reading'
-                        ? t('composer.uploadingPercent', { percent: percentOf(takeProgress) })
-                        : answerPost.isPending || uploading
-                          ? t('feed.sending')
-                          : t('feed.sendAnswer')
-                    }
-                    disabled={!takes.fast || answerPost.isPending || uploading}
-                    onPress={submitAnswer}
-                    style={styles.grow}
-                  />
-                  <Button
-                    label={t('common.cancel')}
-                    variant="secondary"
-                    onPress={() => {
-                      void recorder.cancel()
-                      setSlot(null)
-                      setTakes({})
-                      setComposing(false)
-                    }}
-                    style={styles.grow}
-                  />
-                </View>
               </>
-            ) : (
-              <>
-                <FormField
-                  label={t('feed.yourCorrection')}
-                  value={correction}
-                  onChangeText={setCorrection}
-                  multiline
-                  autoCapitalize="sentences"
-                  maxLength={MAX_POST_LENGTH}
-                />
-                <View style={styles.composeActions}>
-                  <Button
-                    label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
-                    disabled={!correction.trim() || correctPost.isPending}
-                    onPress={submitCorrection}
-                    style={styles.grow}
-                  />
-                  <Button
-                    label={t('common.cancel')}
-                    variant="secondary"
-                    onPress={() => setComposing(false)}
-                    style={styles.grow}
-                  />
-                </View>
-              </>
-            )}
+            ) : null}
+
+            <View style={styles.composeActions}>
+              <Button
+                label={
+                  takeProgress && takeProgress.phase !== 'reading'
+                    ? t('composer.uploadingPercent', { percent: percentOf(takeProgress) })
+                    : answerPost.isPending || uploading
+                      ? t('feed.sending')
+                      : t('feed.sendAnswer')
+                }
+                disabled={!takes.fast || answerPost.isPending || uploading}
+                onPress={submitAnswer}
+                style={styles.grow}
+              />
+              <Button
+                label={t('common.cancel')}
+                variant="neutral"
+                onPress={() => {
+                  void recorder.cancel()
+                  setSlot(null)
+                  setTakes({})
+                  setComposing(false)
+                }}
+                style={styles.grow}
+              />
+            </View>
           </View>
         ) : (
           <View style={styles.footerBar}>
-            <Button
-              label={t(pronouncing ? 'feed.answerThis' : 'feed.addYours')}
-              onPress={() => {
-                // Seeded with the original, the same reason the feed gives:
-                // a correction is an edit of it. A recording has nothing to seed.
-                if (!pronouncing) setCorrection(post.body)
-                setComposing(true)
-              }}
-            />
+            <Button label={t('feed.answerThis')} onPress={() => setComposing(true)} />
           </View>
         )
       ) : null}
@@ -742,59 +730,90 @@ export default function PostScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  list: { paddingBottom: spacing.xxl },
+  list: { paddingBottom: spacing.xl },
   footer: { paddingVertical: spacing.lg },
-  post: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    paddingBottom: 18,
+  // 36 square: the glyph's own hit box, before `hitSlop` widens it.
+  more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  who: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingBottom: spacing.lg,
     paddingTop: spacing.sm,
   },
-  postTop: { alignItems: 'center', flexDirection: 'row', gap: 11 },
-  who: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 10, minWidth: 0 },
   whoText: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 16 },
-  metaRow: { alignItems: 'center', flexDirection: 'row', gap: 6, marginTop: 1 },
-  meta: { color: colors.textMuted, flexShrink: 1, fontSize: 13, fontWeight: '400' },
-  count: { fontSize: 13, fontWeight: '600' },
-  countNone: { color: colors.danger },
-  countSome: { color: colors.success },
-  body: { ...font.body, color: colors.text, fontSize: 17, lineHeight: 26, marginTop: spacing.md },
-  sectionTitle: { color: colors.textFaint, fontSize: 13, fontWeight: '600', paddingTop: 16 },
-  correction: {
+  name: { ...font.heading, color: colors.text, fontSize: 15 },
+  meta: { color: colors.textFaint, fontSize: 13, fontWeight: '400' },
+  body: { color: colors.text, fontSize: 22, lineHeight: 32, paddingBottom: 18 },
+  media: { paddingBottom: 18 },
+  actions: {
+    alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    paddingVertical: 16,
+    flexDirection: 'row',
+    gap: 20,
+    paddingBottom: 20,
   },
-  correctionLast: { borderBottomWidth: 0 },
-  correctionName: { color: colors.text, flexShrink: 1, fontSize: 14, fontWeight: '700' },
-  topTag: { color: colors.success, fontSize: 12, fontWeight: '700' },
-  time: { color: colors.textFaint, fontSize: 12, fontWeight: '400', marginStart: 'auto' },
-  corrected: { color: colors.text, fontSize: 15, fontWeight: '600', lineHeight: 23, marginTop: 10 },
+  actionMuted: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  actionEnd: { marginStart: 'auto' },
+  sectionTitle: {
+    ...font.heading,
+    color: colors.text,
+    fontSize: 18,
+    paddingBottom: 6,
+    paddingTop: 22,
+  },
+  empty: { color: colors.textMuted, fontSize: 15, lineHeight: 23, paddingVertical: 20 },
+  reply: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: 10,
+    paddingVertical: spacing.lg,
+  },
+  replyWho: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+  replyName: { ...font.heading, color: colors.text, flex: 1, fontSize: 14 },
+  topPill: {
+    backgroundColor: colors.successBg,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
+  },
+  topPillLabel: { color: colors.success, fontSize: 11, fontWeight: '700' },
+  // The correction's card: the same green box the feed's top correction sits in.
+  card: {
+    backgroundColor: colors.successBg,
+    borderRadius: radius.lg,
+    gap: 6,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 14,
+  },
+  corrected: { color: colors.text, fontSize: 16, fontWeight: '600', lineHeight: 23 },
   removed: { color: colors.textMuted, fontWeight: '400', textDecorationLine: 'line-through' },
   added: { color: colors.success, fontWeight: '800' },
-  note: { color: colors.textMuted, fontSize: 13, fontWeight: '400', lineHeight: 20, marginTop: 6 },
-  takeLabel: { color: colors.textFaint, fontSize: 12, fontWeight: '600', marginTop: 10 },
-  // `gap` and `alignItems` arrived with the comment count and the delete
-  // action: this held one child until then.
-  likeRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, marginTop: 10 },
-  commentCount: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
-  deleteAction: { ...font.caption, color: colors.danger, fontWeight: '600' },
-  comment: { borderBottomColor: colors.border, borderBottomWidth: 1, paddingVertical: 12 },
-  commentBody: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: '400',
-    lineHeight: 22,
-    marginTop: 6,
+  note: { color: colors.textMuted, fontSize: 14, fontWeight: '400', lineHeight: 20 },
+  takes: { gap: 10, paddingVertical: spacing.sm },
+  takeLabel: { color: colors.textFaint, fontSize: 12, fontWeight: '600' },
+  likeRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  deleteAction: { color: colors.danger, fontSize: 13, fontWeight: '600' },
+  done: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 20 },
+  doneLabel: { color: colors.success, fontSize: 14, fontWeight: '600' },
+  compose: { gap: spacing.md, paddingTop: 22 },
+  composeHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  composeTitle: { ...font.heading, color: colors.text, fontSize: 18 },
+  accentAction: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  reward: { color: colors.textFaint, fontSize: 13, textAlign: 'center' },
+  comment: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: 6,
+    paddingVertical: spacing.md,
   },
-  commentsEmpty: { color: colors.textFaint, fontSize: 13, fontWeight: '400', paddingTop: 10 },
-  commentCompose: { gap: spacing.sm, paddingTop: spacing.md },
-  showMore: { color: colors.primary, fontSize: 13, fontWeight: '600', paddingVertical: 12 },
-  media: { marginTop: 10 },
-  compose: { gap: spacing.md, paddingVertical: spacing.md },
+  time: { color: colors.textFaint, fontSize: 12, fontWeight: '400', marginStart: 'auto' },
+  commentBody: { color: colors.text, fontSize: 15, fontWeight: '400', lineHeight: 22 },
+  showMore: { color: colors.accent, fontSize: 14, fontWeight: '600', paddingVertical: spacing.md },
+  commentCompose: { gap: spacing.md, paddingTop: spacing.lg },
   composeActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   grow: { flex: 1, width: 'auto' },
   footerBar: { paddingBottom: spacing.sm, paddingTop: spacing.sm },

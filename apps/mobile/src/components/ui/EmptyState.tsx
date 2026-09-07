@@ -19,7 +19,7 @@ export function EmptyState({ icon, title, body, actionLabel, onAction }: EmptySt
   return (
     <View style={styles.root}>
       <View style={styles.badge}>
-        <Feather name={icon} size={26} color={colors.textFaint} />
+        <Feather name={icon} size={24} color={colors.textFaint} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
@@ -31,17 +31,18 @@ export function EmptyState({ icon, title, body, actionLabel, onAction }: EmptySt
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  root: { alignItems: 'center', paddingHorizontal: spacing.xl, paddingVertical: spacing.xxl },
+  // Tall margins on purpose: an empty list is the one screen with nothing to
+  // push against, and a message hugging the header reads as an error.
+  root: { alignItems: 'center', gap: 10, paddingHorizontal: spacing.xl, paddingVertical: 64 },
   badge: {
     alignItems: 'center',
     backgroundColor: colors.fill,
     borderRadius: radius.pill,
-    height: 64,
+    height: 56,
     justifyContent: 'center',
-    marginBottom: spacing.md,
-    width: 64,
+    width: 56,
   },
-  title: { ...font.heading, color: colors.text, marginBottom: spacing.xs, textAlign: 'center' },
-  body: { ...font.body, color: colors.textMuted, textAlign: 'center' },
-  action: { marginTop: spacing.lg, minWidth: 200 },
+  title: { ...font.heading, color: colors.text, textAlign: 'center' },
+  body: { ...font.body, color: colors.textMuted, lineHeight: 22, textAlign: 'center' },
+  action: { marginTop: spacing.sm, minWidth: 200, width: 'auto' },
 }))

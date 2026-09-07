@@ -3,7 +3,7 @@ import { Animated, Pressable, Text } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { dismissToast, subscribeToToasts, type Toast } from '../lib/toast'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
-import { makeStyles, useTheme } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 
 /**
  * Draws whatever `src/lib/toast.ts` has queued.
@@ -17,39 +17,49 @@ import { makeStyles, useTheme } from '../lib/theme'
  * `AlertHost` uses: a `Modal` takes the touches of the whole screen, and a
  * message with nothing to decide must not stop anyone from carrying on while
  * it is up. `pointerEvents="box-none"` keeps that true of the full-width layer
- * — only the banner itself is tappable, and tapping it dismisses early.
+ * — only the pill itself is tappable, and tapping it dismisses early.
  */
 export function ToastHost() {
-  const { spacing } = useTheme()
   const styles = useStyles()
 
   const [toast, setToast] = useState<Toast | null>(null)
-  const opacity = useRef(new Animated.Value(0)).current
+  const enter = useRef(new Animated.Value(0)).current
   const insets = useSafeAreaInsets()
 
   useEffect(() => subscribeToToasts(setToast), [])
 
   useEffect(() => {
     if (!toast) return
-    opacity.setValue(0)
-    Animated.timing(opacity, { toValue: 1, duration: 160, useNativeDriver: true }).start()
+    enter.setValue(0)
+    Animated.timing(enter, { toValue: 1, duration: 300, useNativeDriver: true }).start()
     // Keyed on the id, so a second toast arriving restarts the clock for
     // itself rather than inheriting what was left of the first one's.
     const timer = setTimeout(() => dismissToast(toast.id), toast.durationMs)
     return () => clearTimeout(timer)
-  }, [toast, opacity])
+  }, [toast, enter])
 
   if (!toast) return null
 
   return (
     <Animated.View
       pointerEvents="box-none"
-      style={[styles.layer, { opacity, paddingTop: insets.top + spacing.md }]}
+      style={[
+        styles.layer,
+        // Above the tab bar with room to spare, and above the committing
+        // button on a screen that has one — the band v3 leaves for it.
+        { bottom: insets.bottom + 86 },
+        {
+          opacity: enter,
+          transform: [
+            { translateY: enter.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) },
+          ],
+        },
+      ]}
     >
       <Pressable
         accessibilityRole="alert"
         onPress={() => dismissToast(toast.id)}
-        style={styles.banner}
+        style={styles.pill}
       >
         <Text style={styles.text}>{toast.message}</Text>
       </Pressable>
@@ -57,34 +67,34 @@ export function ToastHost() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  // Top, not bottom, which is where a toast usually goes. The bottom of this
-  // app is where its buttons are — the tab bar on every signed-in screen, and
-  // the intro's Next — and the banner is tappable, so four seconds of it
-  // sitting there is four seconds of a dead button. At the top it covers a
-  // heading, which nobody was going to press.
+const useStyles = makeStyles(({ colors, spacing, radius, cardShadow }) => ({
+  /**
+   * Bottom, where v3 puts it: the confirmation appears near the thumb that
+   * caused it. It used to sit at the top so as not to cover a button, and the
+   * pill is narrow enough now — hugging its sentence rather than spanning the
+   * screen — that what it covers is a sliver of whatever is under it, for four
+   * seconds, and a tap on the pill ends that early.
+   */
   layer: {
     alignItems: 'center',
     // The same reason the message banner carries one; see `overlayLayers.ts`.
-    // Nobody had reported a missing toast, but it is the same absolute layer
-    // over the same navigator, so it was the same latent bug.
     elevation: OVERLAY_LAYER.toast,
     left: 0,
     paddingHorizontal: spacing.lg,
     position: 'absolute',
     right: 0,
-    top: 0,
     zIndex: OVERLAY_LAYER.toast,
   },
-  // Neutral dark rather than `colors.success`: these sentences report what
-  // happened, and green would dress "Signed out" up as a celebration.
-  banner: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
+  // Ink on the ground's colour, not yellow: these sentences report what
+  // happened, and the one yellow on a screen is reserved for the thing that
+  // makes something happen.
+  pill: {
+    backgroundColor: colors.ink,
+    borderRadius: radius.pill,
     maxWidth: 420,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.lg + 4,
     paddingVertical: spacing.md,
-    width: '100%',
+    ...cardShadow,
   },
-  text: { ...font.body, color: colors.primaryText, textAlign: 'center' },
+  text: { color: colors.bg, fontSize: 14, fontWeight: '600', textAlign: 'center' },
 }))

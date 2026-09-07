@@ -1,9 +1,11 @@
+import Feather from '@expo/vector-icons/Feather'
 import {
   GENDERS,
   LANGUAGE_LEVELS,
   levelRank,
   TIER_BADGES,
   tierUnlocking,
+  type Gender,
   type LanguageLevel,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -14,10 +16,9 @@ import { useCitySearch, useHasFeature, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
-import { LevelBars } from '../../src/components/ui/LevelBars'
 import { RangeSlider } from '../../src/components/ui/RangeSlider'
 import { Screen } from '../../src/components/ui/Screen'
-import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { Toggle } from '../../src/components/ui/Toggle'
 import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
@@ -30,17 +31,20 @@ import {
   toParams,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { genderLabel, levelShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
+import { genderLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
 
+/** One segment per level, plus the one that means no band at all. */
+type LevelChoice = 'any' | LanguageLevel
+type GenderChoice = 'any' | Gender
+
 /**
- * A section header in v3's quiet voice, with the neutral PRO tag on the gated
- * ones — shown rather than hidden, because someone has to see what Pro is
- * for, and hiding it makes the paywall feel like a surprise rather than an
- * offer.
+ * A section header in v3's quiet voice, with the plan tag on the gated ones —
+ * shown rather than hidden, because someone has to see what the plan is for,
+ * and hiding it makes the paywall feel like a surprise rather than an offer.
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
   const styles = useStyles()
@@ -117,6 +121,7 @@ export default function FiltersScreen() {
    * therefore refetch Discover — once a letter.
    */
   const [cityDraft, setCityDraft] = useState(filters.cityName ?? '')
+  const [cityFocused, setCityFocused] = useState(false)
   // The query follows the settled value, so typing stays responsive and
   // "istanbul" is one request rather than eight.
   const cityResults = useCitySearch(useDebounced(cityDraft))
@@ -136,6 +141,12 @@ export default function FiltersScreen() {
     })
   }
 
+  function reset(): void {
+    setFilters({})
+    // The box would otherwise keep showing a city over a filter that is gone.
+    setCityDraft('')
+  }
+
   function apply(): void {
     // `replace`, not `push`: the filter screen has done its job and should not
     // sit in the history behind the results it produced.
@@ -143,10 +154,10 @@ export default function FiltersScreen() {
   }
 
   /**
-   * The level band, as pill indices. Tapping outside the band extends it to
+   * The level band, as segment indices. Tapping outside the band extends it to
    * the tap; tapping an edge shrinks past it; tapping inside collapses to that
    * one level — so any band is reachable in at most two taps and a selected
-   * band can always be dismantled the way it was built.
+   * band can always be dismantled the way it was built. "Any" clears it.
    */
   const bandMin = filters.minLevel ? levelRank(filters.minLevel) - 1 : null
   const bandMax = filters.maxLevel
@@ -176,6 +187,23 @@ export default function FiltersScreen() {
     }
   }
 
+  const levelOptions: { value: LevelChoice; label: string }[] = [
+    { value: 'any', label: t('common.any') },
+    // Digits, as the prototype draws them: four level names do not fit five
+    // segments, and the rank is the number the bars already count to.
+    ...LANGUAGE_LEVELS.map((level) => ({ value: level, label: String(levelRank(level)) })),
+  ]
+  const levelSelected: LevelChoice[] =
+    bandMin === null || bandMax === null ? ['any'] : LANGUAGE_LEVELS.slice(bandMin, bandMax + 1)
+
+  const genderOptions: { value: GenderChoice; label: string }[] = [
+    { value: 'any', label: t('common.any') },
+    ...GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => ({
+      value: gender,
+      label: genderLabel(t, gender),
+    })),
+  ]
+
   /**
    * The slider always holds a concrete pair; "no filter" is the full span.
    * The right handle at the top is an open end — it reads `55+` and sends no
@@ -183,7 +211,6 @@ export default function FiltersScreen() {
    */
   const ageLow = filters.ageMin ?? AGE_SLIDER.min
   const ageHigh = filters.ageMax ?? AGE_SLIDER.max
-  const ageIsAny = filters.ageMin === undefined && filters.ageMax === undefined
 
   function setAges([low, high]: [number, number]): void {
     set({
@@ -192,28 +219,49 @@ export default function FiltersScreen() {
     })
   }
 
-  const ageText = ageIsAny
-    ? t('common.any')
-    : ageHigh === AGE_SLIDER.max
+  // Always the range, never "Any": the handles are the range, and the label
+  // is what they are pointing at.
+  const ageText =
+    ageHigh === AGE_SLIDER.max
       ? t('filters.ageRangeOpen', { min: ageLow, max: AGE_SLIDER.max })
       : t('filters.ageRange', { min: ageLow, max: ageHigh })
 
   const count = activeCount(filters)
 
   return (
-    <Screen fluid>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <ScreenHeader
-          title={t('filters.title')}
-          onBack={() => goBackTo('/(app)/(tabs)/discover')}
-          trailing={
-            <Pressable onPress={() => setFilters({})} hitSlop={8}>
-              <Text style={styles.reset}>{t('common.reset')}</Text>
-            </Pressable>
-          }
-        />
+    <Screen fluid style={styles.screen}>
+      <View style={styles.header}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('common.backPlain')}
+          hitSlop={12}
+          onPress={() => goBackTo('/(app)/(tabs)/discover')}
+          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+        >
+          <Feather name="x" size={22} color={colors.text} />
+        </Pressable>
+        <Text style={styles.title} numberOfLines={1}>
+          {t('filters.title')}
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          onPress={reset}
+          hitSlop={8}
+          style={styles.resetButton}
+        >
+          <Text style={styles.reset}>{t('common.reset')}</Text>
+        </Pressable>
+      </View>
 
-        <View style={styles.section}>
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        // The city field is the last thing on the screen; without this iOS
+        // covers it with the keyboard as you type. See `Screen` for the split.
+        automaticallyAdjustKeyboardInsets
+      >
+        <View style={[styles.section, styles.first]}>
           <SectionTitle title={t('filters.speaks')} />
           <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
           <View style={styles.row}>
@@ -243,39 +291,22 @@ export default function FiltersScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section, styles.gapMd]}>
           <SectionTitle title={t('filters.theirLevel')} />
           <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
-          <View style={styles.levelRow}>
-            {LANGUAGE_LEVELS.map((level, index) => {
-              const on =
-                bandMin !== null && bandMax !== null && index >= bandMin && index <= bandMax
-              return (
-                <Pressable
-                  key={level}
-                  accessibilityRole="checkbox"
-                  accessibilityState={{ checked: on }}
-                  accessibilityLabel={levelShortLabel(t, level)}
-                  onPress={() => tapLevel(index)}
-                  style={({ pressed }) => [
-                    styles.levelPill,
-                    on ? styles.levelOn : styles.levelOff,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <LevelBars
-                    level={level}
-                    color={on ? colors.bg : colors.textFaint}
-                    restColor={on ? colors.onInkMuted : colors.border}
-                  />
-                </Pressable>
-              )
-            })}
-          </View>
+          <SegmentedControl
+            options={levelOptions}
+            selected={levelSelected}
+            onToggle={(value) => {
+              if (value === 'any') set({ minLevel: undefined, maxLevel: undefined })
+              else tapLevel(LANGUAGE_LEVELS.indexOf(value))
+            }}
+            accessibilityLabel={t('filters.theirLevel')}
+          />
         </View>
 
-        <View style={styles.section}>
-          <View style={styles.ageHead}>
+        <View style={[styles.section, styles.gapLg]}>
+          <View style={styles.spread}>
             <SectionTitle title={t('filters.age')} />
             <Text style={styles.ageValue}>{ageText}</Text>
           </View>
@@ -288,42 +319,39 @@ export default function FiltersScreen() {
           />
         </View>
 
+        <View style={[styles.section, styles.gapMd]}>
+          <SectionTitle title={t('filters.country')} />
+          <CountryPicker
+            value={filters.country ?? ''}
+            onChange={(country) => set({ country: country || undefined })}
+          />
+        </View>
+
         {/*
-          Two sections where there used to be one, because the paywall no
-          longer runs through the middle of the pair. Naming a gender is a way
-          of searching for other people and stays paid; matching your own is a
-          comfort setting and is free — see `DISCOVERY_PRO_FILTER_KEYS`. They
-          are still mutually exclusive, so each one clears the other, and
-          clearing is never a paid action even when the thing being cleared is.
+          One section, two rules. Naming a gender is a way of searching for
+          other people and stays paid; matching your own is a comfort setting
+          and is free — see `DISCOVERY_PRO_FILTER_KEYS`. They are still
+          mutually exclusive, so each one clears the other, and clearing is
+          never a paid action even when the thing being cleared is.
         */}
-        <View style={styles.section}>
+        <View style={[styles.section, styles.gapMd]}>
           <SectionTitle title={t('filters.gender')} locked={!isPro} />
-          <View style={styles.row}>
-            <Chip
-              label={t('common.any')}
-              selected={!filters.gender}
-              onPress={() => set({ gender: undefined }, true)}
-            />
-            {GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => (
-              <Chip
-                key={gender}
-                label={genderLabel(t, gender)}
-                selected={filters.gender === gender}
-                onPress={() =>
-                  set(
+          <SegmentedControl
+            options={genderOptions}
+            selected={[filters.gender ?? 'any']}
+            onToggle={(value) =>
+              value === 'any'
+                ? set({ gender: undefined }, true)
+                : set(
                     {
-                      gender: filters.gender === gender ? undefined : gender,
+                      gender: filters.gender === value ? undefined : value,
                       onlyMyGender: undefined,
                     },
                     true,
                   )
-                }
-              />
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
+            }
+            accessibilityLabel={t('filters.gender')}
+          />
           <View style={styles.switchRow}>
             <View style={styles.switchText}>
               <Text style={styles.switchLabel}>{t('filters.onlyMyGender')}</Text>
@@ -346,14 +374,6 @@ export default function FiltersScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <SectionTitle title={t('filters.country')} />
-          <CountryPicker
-            value={filters.country ?? ''}
-            onChange={(country) => set({ country: country || undefined })}
-          />
-        </View>
-
         {/*
           A picker, not a text box. Both ends of this filter used to be free
           text — somebody typed their city, somebody else typed the one they
@@ -363,11 +383,16 @@ export default function FiltersScreen() {
 
           Locked as a whole rather than per keystroke: a paywall that fires on
           the first letter typed is a worse way to learn the rule than one tap
-          on a field that says PRO.
+          on a field that says which plan.
         */}
         <View style={[styles.section, styles.last]}>
           <SectionTitle title={t('filters.city')} locked={!isPro} />
-          <Text style={styles.hint}>{t('filters.cityBody')}</Text>
+          {/*
+            Said plainly rather than left to be discovered: a city is worked out
+            from a shared location, so this filter can only ever answer for
+            people who share one.
+          */}
+          <Text style={styles.hint}>{t('filters.cityNeedsLocation')}</Text>
           <Pressable
             disabled={isPro}
             onPress={() => openPaywall('advancedFilters', '/(app)/filters')}
@@ -382,12 +407,14 @@ export default function FiltersScreen() {
                 if (!text.trim() && filters.cityId)
                   set({ cityId: undefined, cityName: undefined }, true)
               }}
+              onFocus={() => setCityFocused(true)}
+              onBlur={() => setCityFocused(false)}
               placeholder={t('filters.cityPlaceholder')}
               placeholderTextColor={colors.textFaint}
               autoCapitalize="words"
               autoCorrect={false}
               maxLength={64}
-              style={styles.cityInput}
+              style={[styles.cityInput, cityFocused && styles.cityInputFocused]}
               // A disabled input still has to announce why it is disabled.
               pointerEvents={isPro ? 'auto' : 'none'}
             />
@@ -412,98 +439,104 @@ export default function FiltersScreen() {
               ))}
             </View>
           ) : null}
-          {/*
-            Said plainly rather than left to be discovered: a city is worked out
-            from a shared location, so this filter can only ever answer for
-            people who share one.
-          */}
-          <Text style={styles.hint}>{t('filters.cityNeedsLocation')}</Text>
-        </View>
-
-        <View style={styles.actions}>
-          <Button
-            label={
-              count > 0 ? t('filters.showResultsWithCount', { count }) : t('filters.showResults')
-            }
-            onPress={apply}
-          />
         </View>
       </ScrollView>
+
+      <View style={styles.footer}>
+        <Button
+          label={
+            count > 0 ? t('filters.showResultsWithCount', { count }) : t('filters.showResults')
+          }
+          onPress={apply}
+        />
+      </View>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  content: { paddingBottom: spacing.xxl },
+  // The header and footer hairlines run edge to edge, so the screen's gutter
+  // moves onto the three blocks themselves — the same shape as the chat screen.
+  screen: { paddingHorizontal: 0 },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 14,
+    paddingBottom: spacing.md,
+    paddingHorizontal: 20,
+    paddingTop: 6,
+  },
+  // 34 square: the glyph's own hit box, before `hitSlop` widens it.
+  close: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
+  title: { ...font.heading, color: colors.text, flex: 1, fontSize: 24 },
+  resetButton: { height: 40, justifyContent: 'center', paddingHorizontal: 10 },
   reset: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  body: { flex: 1 },
+  content: { paddingHorizontal: 20 },
   section: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    paddingVertical: spacing.lg + 2,
+    gap: 10,
+    paddingVertical: 22,
   },
-  last: { borderBottomWidth: 0 },
+  first: { paddingTop: spacing.lg },
+  last: { borderBottomWidth: 0, paddingBottom: spacing.xxl },
+  gapMd: { gap: spacing.md },
+  gapLg: { gap: 14 },
   sectionHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  sectionTitle: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  sectionTitle: { ...font.heading, color: colors.text, fontSize: 17 },
+  // Ringed in `pro` at 35%, as the prototype has it. `pro` is a six-digit hex
+  // in both schemes, so the alpha byte can be appended rather than parsed in.
   proTag: {
-    borderColor: colors.border,
+    borderColor: `${colors.pro}59`,
     borderRadius: radius.pill,
     borderWidth: 1,
-    color: colors.textMuted,
+    color: colors.pro,
     fontSize: 11,
     fontWeight: '700',
     overflow: 'hidden',
     paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
+    paddingVertical: 3,
   },
-  hint: { ...font.caption, color: colors.textFaint, marginTop: 2 },
+  hint: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  spread: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  ageValue: { ...font.heading, color: colors.accent, fontSize: 16 },
+  switchRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.lg, paddingTop: 6 },
+  switchText: { flex: 1, gap: 2 },
+  switchLabel: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  switchHint: { color: colors.textMuted, fontSize: 13 },
+  // Radius 14, not the pill: the prototype's one square-ish field. The border
+  // is there from the start so focusing does not shift the text by a pixel.
   cityInput: {
-    ...font.body,
     backgroundColor: colors.fill,
-    borderRadius: radius.md,
+    borderColor: 'transparent',
+    borderRadius: 14,
+    borderWidth: 1,
     color: colors.text,
-    marginTop: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
+    fontSize: 16,
+    height: 52,
+    paddingHorizontal: 18,
   },
+  cityInputFocused: { backgroundColor: colors.bg, borderColor: colors.accent },
   /** Under the field, like the search results on Discover's own row. */
-  cityList: { borderRadius: radius.md, marginTop: spacing.sm, overflow: 'hidden' },
+  cityList: { borderRadius: 14, overflow: 'hidden' },
   cityOption: {
     backgroundColor: colors.fill,
     borderBottomColor: colors.border,
     borderBottomWidth: StyleSheet.hairlineWidth,
     gap: 2,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 18,
+    paddingVertical: spacing.sm + 2,
   },
-  cityOptionName: { ...font.body, color: colors.text },
-  cityOptionWhere: { ...font.caption, color: colors.textMuted },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
-  levelRow: { flexDirection: 'row', gap: 7, marginTop: spacing.md },
-  levelPill: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
-    paddingTop: 11,
-  },
-  levelOn: { backgroundColor: colors.ink },
-  levelOff: { borderColor: colors.border, borderWidth: 1 },
+  cityOptionName: { color: colors.text, fontSize: 16 },
+  cityOptionWhere: { color: colors.textMuted, fontSize: 13 },
   pressed: { opacity: 0.7 },
-  ageHead: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  footer: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    paddingBottom: 28,
+    paddingHorizontal: 20,
+    paddingTop: spacing.md,
   },
-  ageValue: { ...font.heading, fontSize: 17, color: colors.text },
-  switchRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.lg,
-  },
-  switchText: { flex: 1 },
-  switchLabel: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  switchHint: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  actions: { marginTop: spacing.xl },
 }))

@@ -1,13 +1,16 @@
+import Feather from '@expo/vector-icons/Feather'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
-import { makeStyles } from '../../src/lib/theme'
+import { Platform, Pressable, Text, View } from 'react-native'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
+import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
-import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
+import { goBackTo } from '../../src/lib/navigation'
 import { withSignInProgress } from '../../src/lib/signInProgress'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -15,8 +18,8 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function SignIn() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
-  const { start: browse } = useGuestBrowse()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -57,52 +60,50 @@ export default function SignIn() {
   const canSubmit = !loading && !!email && !!password
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <Text style={styles.title}>{t('auth.welcomeBack')}</Text>
-      <Text style={styles.subtitle}>{t('auth.welcomeBackSubtitle')}</Text>
+    <Screen scroll style={styles.form}>
+      {/*
+        Back only: the 30px title below is the screen's title, and the row is
+        also the way out for somebody who did not mean to be asked for a
+        password — a bookmark or a shared link lands here with no history, so
+        the fallback is the welcome screen and its "look around first".
+      */}
+      <ScreenHeader onBack={() => goBackTo('/(auth)/welcome')} />
 
-      <FormField
-        returnKeyType="go"
-        onSubmitEditing={() => canSubmit && void onSubmit()}
-        label={t('auth.emailOrHandle')}
-        value={email}
-        onChangeText={setEmail}
-        // Still the email keyboard: it puts `@` and `.` on the first layer,
-        // which an address needs and a handle never minds. `username` rather
-        // than `emailAddress` for the autofill hints, so a password manager
-        // offers the saved credential for this site whichever of the two was
-        // stored — `emailAddress` offers addresses from the contact card, most
-        // of which have never been used here.
-        keyboardType="email-address"
-        textContentType="username"
-        autoComplete="username"
-      />
-      <FormField
-        returnKeyType="go"
-        onSubmitEditing={() => canSubmit && void onSubmit()}
-        label={t('auth.password')}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        textContentType="password"
-        autoComplete="password"
-        error={error}
-      />
+      <View>
+        <Text style={styles.title}>{t('auth.welcomeBack')}</Text>
+        <Text style={styles.subtitle}>{t('auth.welcomeBackSubtitle')}</Text>
+      </View>
 
-      <View style={styles.links}>
-        <Link href="/(auth)/forgot-password" style={styles.link}>
+      <View style={styles.fields}>
+        <FormField
+          returnKeyType="go"
+          onSubmitEditing={() => canSubmit && void onSubmit()}
+          placeholder={t('auth.emailOrHandle')}
+          value={email}
+          onChangeText={setEmail}
+          // Still the email keyboard: it puts `@` and `.` on the first layer,
+          // which an address needs and a handle never minds. `username` rather
+          // than `emailAddress` for the autofill hints, so a password manager
+          // offers the saved credential for this site whichever of the two was
+          // stored — `emailAddress` offers addresses from the contact card, most
+          // of which have never been used here.
+          keyboardType="email-address"
+          textContentType="username"
+          autoComplete="username"
+        />
+        <FormField
+          returnKeyType="go"
+          onSubmitEditing={() => canSubmit && void onSubmit()}
+          placeholder={t('auth.password')}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          textContentType="password"
+          autoComplete="password"
+          error={error}
+        />
+        <Link href="/(auth)/forgot-password" style={styles.forgot}>
           {t('auth.forgotPassword')}
-        </Link>
-        {/*
-          The door with no password behind it — and for a returning v1
-          account, whose row here has none, the shortest one. Carries what
-          was typed so it is not typed twice.
-        */}
-        <Link href={{ pathname: '/(auth)/sign-in-link', params: { email } }} style={styles.link}>
-          {t('auth.signInWithLink')}
         </Link>
       </View>
 
@@ -113,6 +114,15 @@ export default function SignIn() {
         disabled={!email || !password}
       />
 
+      {/*
+        The door with no password behind it — and for a returning v1
+        account, whose row here has none, the shortest one. Carries what
+        was typed so it is not typed twice.
+      */}
+      <Link href={{ pathname: '/(auth)/sign-in-link', params: { email } }} style={styles.textLink}>
+        {t('auth.signInWithLink')}
+      </Link>
+
       <SocialAuthButtons />
 
       {/*
@@ -121,11 +131,14 @@ export default function SignIn() {
         flow needs a *second* signed-in device to approve it.
       */}
       {Platform.OS === 'web' ? (
-        <Button
-          label={t('qrSignIn.title')}
-          variant="secondary"
+        <Pressable
+          accessibilityRole="button"
           onPress={() => router.push('/(auth)/qr')}
-        />
+          style={({ pressed }) => [styles.qrLink, pressed && styles.pressed]}
+        >
+          <Feather name="maximize" size={18} color={colors.accent} />
+          <Text style={styles.link}>{t('auth.signInWithCode')}</Text>
+        </Pressable>
       ) : null}
 
       <View style={styles.footer}>
@@ -134,58 +147,48 @@ export default function SignIn() {
           {t('auth.signUp')}
         </Link>
       </View>
-
-      {/*
-        The way out, for somebody who did not mean to be asked for a password.
-        The welcome screen offers this and leads with it, but this screen is
-        reachable without passing through it — a bookmark, a shared link, or
-        tapping "I already have an account" and thinking better of it — and it
-        draws no back control of its own, so on web that was a dead end.
-      */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>{t('auth.justLooking')}</Text>
-        <Text style={styles.link} onPress={() => void browse()}>
-          {t('welcome.browse')}
-        </Text>
-      </View>
-    </KeyboardAvoidingView>
+    </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  container: {
-    backgroundColor: colors.bg,
-    flex: 1,
-    gap: spacing.lg,
-    justifyContent: 'center',
-    padding: spacing.xl,
-  },
-  title: {
-    ...font.title,
-    color: colors.text,
-    fontSize: 28,
-    lineHeight: 36,
-  },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 15,
-    lineHeight: 23,
-    marginBottom: spacing.sm,
-    marginTop: spacing.xs,
-  },
+  // 22 between blocks, as the prototype stacks the auth screens.
+  form: { gap: 22 },
+  title: { ...font.title, color: colors.text, lineHeight: 36 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.sm },
+  fields: { gap: 14 },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
-  links: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.lg,
-    justifyContent: 'space-between',
+  // Hugs its words so the tap target is the link, not the whole row.
+  forgot: {
+    alignSelf: 'flex-start',
+    color: colors.accent,
+    fontSize: 15,
+    fontWeight: '600',
+    paddingVertical: 10,
   },
+  // Pulled up towards the button it is the alternative to.
+  textLink: {
+    color: colors.accent,
+    fontSize: 15,
+    fontWeight: '600',
+    marginTop: -spacing.sm,
+    paddingVertical: spacing.md,
+    textAlign: 'center',
+  },
+  qrLink: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    paddingVertical: spacing.md,
+  },
+  pressed: { opacity: 0.7 },
   footerText: { color: colors.textMuted, fontSize: 15 },
   footer: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-    marginTop: spacing.md,
+    marginTop: spacing.sm,
   },
 }))

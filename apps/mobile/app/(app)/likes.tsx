@@ -16,12 +16,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 /**
  * Who liked one post or one correction.
  *
- * The count in the header is this screen's own row count, not the number on the
- * card that led here. The card's count is not block-filtered — filtering a
- * page-wide aggregate would make it viewer-dependent to hide a number nobody
- * can attribute — while this list is, because a name in a list is exactly what
- * a block must hide. Echoing the card's number here would put a visible
- * contradiction on screen; counting the rows removes it.
+ * No count in the header, and deliberately not the number on the card that
+ * led here. The card's count is not block-filtered — filtering a page-wide
+ * aggregate would make it viewer-dependent to hide a number nobody can
+ * attribute — while this list is, because a name in a list is exactly what a
+ * block must hide. Echoing the card's number here would put a visible
+ * contradiction on screen; the rows speak for themselves.
  */
 export default function LikesScreen() {
   useScreenInteractive()
@@ -40,15 +40,7 @@ export default function LikesScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader
-        title={t('feed.likedBy')}
-        onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
-        trailing={
-          items.length > 0 ? (
-            <Text style={styles.countText}>{t('feed.likes', { count: items.length })}</Text>
-          ) : null
-        }
-      />
+      <ScreenHeader title={t('feed.likedBy')} onBack={() => goBackTo('/(app)/(tabs)/feed', from)} />
 
       {likers.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -72,17 +64,13 @@ export default function LikesScreen() {
               body={t('feed.likersEmptyBody')}
             />
           }
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <Pressable
               accessibilityRole="button"
-              style={({ pressed }) => [
-                styles.row,
-                index === items.length - 1 && styles.rowLast,
-                pressed && styles.pressed,
-              ]}
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
               onPress={() => openProfile(item.handle, here)}
             >
-              <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} size={40} />
+              <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} />
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}
@@ -98,7 +86,6 @@ export default function LikesScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  countText: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
@@ -107,12 +94,11 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 12,
-    paddingVertical: 15,
+    gap: spacing.lg,
+    paddingVertical: 14,
   },
-  rowLast: { borderBottomWidth: 0 },
   pressed: { opacity: 0.7 },
   body: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 16 },
-  handle: { color: colors.textMuted, fontSize: 13, fontWeight: '400', marginTop: 1 },
+  handle: { color: colors.textMuted, fontSize: 14 },
 }))

@@ -1,13 +1,14 @@
-import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useStarred, type MessageDto } from '../../src/api/queries'
+import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
+import { useMe, useStarred, type MessageDto } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { useLocale, useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
@@ -20,23 +21,25 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  */
 export default function StarredScreen() {
   useScreenInteractive()
-  const { colors } = useTheme()
   const styles = useStyles()
   const starred = useStarred()
+  const me = useMe()
   const t = useT()
 
   const items = starred.data?.items ?? []
+  // A message carries its sender's id and nothing else about them, so the
+  // names come from the cache the chat list already fills — except my own,
+  // which the profile lookup has no business fetching.
+  const senders = useProfileCache(items.map((m) => m.senderId).filter((id) => id !== me.data?._id))
+
+  function senderName(message: MessageDto): string {
+    if (message.senderId === me.data?._id) return t('messageMeta.you')
+    return senders[message.senderId]?.displayName ?? ''
+  }
 
   return (
     <Screen fluid>
-      <Pressable
-        onPress={() => goBackTo('/(app)/(tabs)/chats')}
-        hitSlop={12}
-        style={styles.backRow}
-      >
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>{t('starred.title')}</Text>
+      <ScreenHeader title={t('starred.title')} onBack={() => goBackTo('/(app)/(tabs)/chats')} />
 
       {starred.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -47,7 +50,7 @@ export default function StarredScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => <Row message={item} colors={colors} styles={styles} />}
+          renderItem={({ item }) => <Row message={item} from={senderName(item)} styles={styles} />}
         />
       )}
     </Screen>
@@ -56,11 +59,11 @@ export default function StarredScreen() {
 
 function Row({
   message,
-  colors,
+  from,
   styles,
 }: {
   message: MessageDto
-  colors: { textMuted: string }
+  from: string
   styles: ReturnType<typeof useStyles>
 }) {
   const t = useT()
@@ -74,34 +77,35 @@ function Row({
       }
       style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
     >
-      <View style={styles.rowText}>
-        <Text style={styles.body} numberOfLines={2}>
-          {message.body || t('messageMeta.attachment')}
+      <View style={styles.top}>
+        <Text style={styles.from} numberOfLines={1}>
+          {from}
         </Text>
         <Text style={styles.when}>{dayLabel(message.createdAt.slice(0, 10), { t, locale })}</Text>
       </View>
-      <Feather name="chevron-right" size={18} color={colors.textMuted} />
+      <Text style={styles.body}>{message.body || t('messageMeta.attachment')}</Text>
     </Pressable>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backRow: { paddingBottom: spacing.sm, paddingTop: spacing.sm },
-  back: { ...font.body, color: colors.accent, fontWeight: '600' },
-  title: { ...font.title, color: colors.text, paddingBottom: spacing.sm },
   loading: { paddingVertical: spacing.xl },
   list: { paddingBottom: spacing.xl },
   // v3 list language: flat rows on the ground, hairline dividers, no boxes.
   row: {
-    alignItems: 'center',
     borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.lg,
+    borderBottomWidth: 1,
+    gap: 6,
+    paddingVertical: 18,
   },
   rowPressed: { opacity: 0.65 },
-  rowText: { flex: 1, gap: 3, minWidth: 0 },
-  body: { ...font.body, color: colors.text },
-  when: { ...font.caption, color: colors.textFaint },
+  top: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+    justifyContent: 'space-between',
+  },
+  from: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 14 },
+  when: { color: colors.textFaint, fontSize: 13 },
+  body: { color: colors.text, fontSize: 16, lineHeight: 23 },
 }))

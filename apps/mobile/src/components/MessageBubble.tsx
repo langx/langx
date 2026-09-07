@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
-import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { Animated, Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { memo, useCallback, useEffect, useRef, type ReactNode } from 'react'
+import { Animated, Platform, Pressable, Text, View, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Reanimated, {
   interpolate,
@@ -10,7 +11,6 @@ import Reanimated, {
   withSpring,
 } from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
-import { diffCorrection } from '../lib/correctionDiff'
 import { attachmentsOf, type Media } from '@langx/shared'
 import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
@@ -43,8 +43,6 @@ export interface MessageBubbleProps {
   partnerName: string
   translation?: string | undefined
   translating: boolean
-  /** Whether the *quoted* message is the reader's own, for the quote's byline. */
-  replyToMine: boolean
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
   onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
@@ -72,7 +70,6 @@ export const MessageBubble = memo(function MessageBubble({
   partnerName,
   translation,
   translating,
-  replyToMine,
   highlighted,
   onLongPress,
   onReply,
@@ -88,6 +85,10 @@ export const MessageBubble = memo(function MessageBubble({
    * react-native-web's View too — it is `getBoundingClientRect` underneath — so
    * this is genuinely cross-platform despite being the app's first use of it.
    * If it never calls back, the menu falls back to the sheet.
+   *
+   * On the bubble itself, not on the column it slides in: the quote above and
+   * the clock below are part of the row but not of the bubble, and the menu's
+   * lifted copy has to land on the bubble.
    */
   const box = useRef<View>(null)
   const press = () => {
@@ -138,11 +139,6 @@ export const MessageBubble = memo(function MessageBubble({
   const flash = highlighted ? styles.highlighted : null
 
   /**
-   * What the correction actually changed, worked out once per message rather
-   * than per render — the memo is the reason this bubble can stay `memo`'d at
-   * all while the screen re-renders on every keystroke in the composer.
-   */
-  /**
    * A bounce on arrival that a tap can replay.
    *
    * RN's `Animated`, still, even though Reanimated is now imported a few lines
@@ -173,10 +169,6 @@ export const MessageBubble = memo(function MessageBubble({
   }, [message.body, replay])
 
   const correction = message.correction
-  const diff = useMemo(
-    () => (correction ? diffCorrection(correction.original, message.body) : null),
-    [correction, message.body],
-  )
 
   /**
    * The arrow WhatsApp shows under the bubble as it slides. Driven by the same
@@ -208,7 +200,7 @@ export const MessageBubble = memo(function MessageBubble({
         <Feather name="corner-up-left" size={15} color={colors.textMuted} />
       </Reanimated.View>
       <GestureDetector gesture={pan}>
-        <Animated.View ref={box} style={styles.slider}>
+        <Animated.View style={styles.slider}>
           <Reanimated.View style={sliderStyle}>{children}</Reanimated.View>
         </Animated.View>
       </GestureDetector>
@@ -223,7 +215,7 @@ export const MessageBubble = memo(function MessageBubble({
   const reactions = Object.entries(message.reactions ?? {}).filter(([, users]) => users.length > 0)
   const badge =
     reactions.length > 0 ? (
-      <View style={[styles.reactions, mine ? styles.reactionsMine : styles.reactionsTheirs]}>
+      <View style={styles.reactions}>
         {reactions.map(([emoji, users]) => (
           <View key={emoji} style={styles.reaction}>
             <Text style={styles.reactionGlyph}>{emoji}</Text>
@@ -239,16 +231,22 @@ export const MessageBubble = memo(function MessageBubble({
       accessibilityRole="button"
       accessibilityLabel={t('chat.goToQuoted')}
       onPress={() => onJumpTo(replyTo.messageId)}
-      style={[styles.quote, mine ? styles.quoteMine : styles.quoteTheirs]}
+      style={styles.quote}
     >
-      <Text style={[styles.quoteAuthor, mine && styles.quoteAuthorMine]} numberOfLines={1}>
-        {replyToMine ? t('messageMeta.you') : partnerName}
-      </Text>
-      <Text style={[styles.quoteText, mine && styles.quoteTextMine]} numberOfLines={2}>
+      <Text style={styles.quoteText} numberOfLines={1}>
         {replyTo.preview || t('messageMeta.attachment')}
       </Text>
     </Pressable>
   ) : null
+
+  /**
+   * Every message is a short column on its side: the quote above, the bubble,
+   * then what hangs under it — the translation, the clock. v3 moves the meta
+   * out of the bubble so both sides carry the same faint line under the same
+   * rounded shape, and the side is the only thing that says whose it is.
+   */
+  const column = [styles.column, mine ? styles.columnMine : styles.columnTheirs]
+  const meta = <MessageMeta message={message} mine={mine} />
 
   /**
    * A withdrawal keeps its place in the thread rather than closing the gap.
@@ -257,72 +255,46 @@ export const MessageBubble = memo(function MessageBubble({
    */
   if (message.deleted) {
     return shell(
-      <Pressable
-        onLongPress={press}
-        style={[styles.bubble, mine ? styles.mine : styles.theirs, styles.tombstone, flash]}
-      >
-        <View style={styles.tombstoneRow}>
-          <Feather name="slash" size={13} color={colors.textMuted} />
-          <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
+      <Pressable onLongPress={press} style={column}>
+        <View ref={box} style={[styles.bubble, styles.tombstone, flash]}>
+          <View style={styles.tombstoneRow}>
+            <Feather name="slash" size={13} color={colors.textMuted} />
+            <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
+          </View>
         </View>
-        <MessageMeta message={message} mine={mine} />
+        {meta}
       </Pressable>,
     )
   }
 
   if (message.type === 'correction') {
     return shell(
-      <Pressable
-        onLongPress={press}
-        style={[styles.correction, mine ? styles.correctionMine : null, flash]}
-      >
+      <Pressable ref={box} onLongPress={press} style={[styles.correction, flash]}>
         {/*
           The success pair, and only ever the success pair. A correction is
           another person changing your sentence; the info pair belongs to
           Copilot, which proposes one you have not sent. The two must never be
           confusable — see `Callout`.
         */}
-        <View style={styles.correctionHead}>
-          <Feather name="edit-3" size={14} color={colors.success} />
-          <Text style={styles.correctionLabel}>
-            {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
-          </Text>
-        </View>
-        <View style={styles.correctionBody}>
-          {/*
-              Only the part that changed carries a colour. Striking the whole
-              sentence says "this was wrong" about one that was mostly right,
-              and buries the one thing the reader opened it for.
-            */}
-          {diff ? (
-            <Text style={styles.correctionOriginal}>
-              {diff.original.map((segment, index) => (
-                <Text key={index} style={segment.changed ? styles.removed : null}>
-                  {segment.text}
-                </Text>
-              ))}
-            </Text>
-          ) : null}
-          <Text style={styles.correctionText}>
-            {diff
-              ? diff.corrected.map((segment, index) => (
-                  <Text key={index} style={segment.changed ? styles.added : null}>
-                    {segment.text}
-                  </Text>
-                ))
-              : message.body}
-          </Text>
-          {message.correction?.note ? (
-            <Text style={styles.correctionNote}>{message.correction.note}</Text>
-          ) : null}
-          <MessageMeta message={message} mine={mine} />
-        </View>
+        <Text style={styles.correctionLabel}>
+          {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
+        </Text>
+        {/*
+          The whole original struck through, the whole rewrite in weight: two
+          cues that survive colour-blindness, and no colour on the words
+          themselves — the green is the card's, not the sentence's.
+        */}
+        {correction ? <Text style={styles.correctionOriginal}>{correction.original}</Text> : null}
+        <Text style={styles.correctionText}>{message.body}</Text>
+        {correction?.note ? <Text style={styles.correctionNote}>{correction.note}</Text> : null}
         {badge}
+        <View style={styles.correctionMeta}>{meta}</View>
       </Pressable>,
     )
   }
 
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
+  const bubble = [styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]
 
   if (message.type === 'image' || message.type === 'audio' || message.type === 'video') {
     const attachments = attachmentsOf(message)
@@ -344,25 +316,25 @@ export const MessageBubble = memo(function MessageBubble({
         onPress={
           openable && attachments.length === 1 ? () => onOpenMedia(attachments, 0) : undefined
         }
-        style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
+        style={column}
       >
         {quote}
-        {attachments.length > 0 ? (
-          <MediaGallery
-            items={attachments}
-            mine={mine}
-            {...(attachments.length > 1
-              ? { onOpen: (index: number) => onOpenMedia(attachments, index) }
-              : {})}
-          />
-        ) : null}
-        {message.body ? (
-          <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
-            {message.body}
-          </Text>
-        ) : null}
-        <MessageMeta message={message} mine={mine} />
+        <View ref={box} style={bubble}>
+          {attachments.length > 0 ? (
+            <MediaGallery
+              items={attachments}
+              mine={mine}
+              {...(attachments.length > 1
+                ? { onOpen: (index: number) => onOpenMedia(attachments, index) }
+                : {})}
+            />
+          ) : null}
+          {message.body ? (
+            <Text style={[styles.bubbleText, styles.caption]}>{message.body}</Text>
+          ) : null}
+        </View>
         {badge}
+        {meta}
       </Pressable>,
     )
   }
@@ -378,42 +350,45 @@ export const MessageBubble = memo(function MessageBubble({
    */
   if (isBigEmoji(message.body) && !message.deleted) {
     return shell(
-      <Pressable
-        onPress={replay}
-        onLongPress={press}
-        style={[styles.hero, mine ? styles.heroMine : styles.heroTheirs]}
-      >
+      <Pressable onPress={replay} onLongPress={press} style={column}>
         {quote}
-        <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
-          {message.body}
-        </Animated.Text>
+        <View ref={box}>
+          <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
+            {message.body}
+          </Animated.Text>
+        </View>
         {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
-        <MessageMeta message={message} mine={mine} />
         {badge}
+        {meta}
       </Pressable>,
     )
   }
 
   return shell(
-    <Pressable
-      onLongPress={press}
-      style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
-    >
+    <Pressable onLongPress={press} style={column}>
       {quote}
-      <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{message.body}</Text>
+      <View ref={box} style={bubble}>
+        <Text style={styles.bubbleText}>{message.body}</Text>
+      </View>
+      {badge}
       {translation ? (
-        <Text style={[styles.translation, mine && styles.translationMine]}>{translation}</Text>
+        <View style={styles.translationRow}>
+          <Ionicons
+            name="language-outline"
+            size={14}
+            color={colors.accent}
+            style={styles.translationIcon}
+          />
+          <Text style={styles.translation}>{translation}</Text>
+        </View>
       ) : null}
       {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
       {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
       {/* Beside the clock, not in place of it: "when" and "changed since" are
             two different facts and the reader wants both. */}
-      {message.editedAt ? (
-        <Text style={[styles.edited, mine && styles.editedMine]}>{t('messageMeta.edited')}</Text>
-      ) : null}
-      <MessageMeta message={message} mine={mine} />
-      {badge}
+      {message.editedAt ? <Text style={styles.edited}>{t('messageMeta.edited')}</Text> : null}
+      {meta}
     </Pressable>,
   )
 })
@@ -446,9 +421,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     top: 0,
     width: 24,
   },
+  /**
+   * The quote, the bubble and the meta stacked on one side. 78% is the
+   * prototype's cap; the gap is what used to be the meta's own top margin.
+   */
+  column: { gap: 6, maxWidth: '78%' },
+  columnMine: { alignItems: 'flex-end', alignSelf: 'flex-end' },
+  columnTheirs: { alignItems: 'flex-start', alignSelf: 'flex-start' },
   bubble: {
     borderRadius: 20,
-    maxWidth: '82%',
     paddingHorizontal: 16,
     paddingVertical: 13,
   },
@@ -456,10 +437,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * v3 retires the yellow bubble: yellow is the committing action, once per
    * screen, and that is the send button. Your side is the soft blue tint,
    * theirs the fill grey — both carry ordinary `text`, which is also what
-   * lets the meta and ticks share one palette across the two sides.
+   * lets the meta share one palette across the two sides.
    */
-  mine: { alignSelf: 'flex-end', backgroundColor: colors.accentBg },
-  theirs: { alignSelf: 'flex-start', backgroundColor: colors.fill },
+  mine: { backgroundColor: colors.accentBg },
+  theirs: { backgroundColor: colors.fill },
   /**
    * One square corner on the side the bubble comes from. It is the whole of
    * what makes a stack of bubbles read as a conversation rather than as a list
@@ -469,27 +450,21 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   tailMine: { borderBottomEndRadius: 6 },
   tailTheirs: { borderBottomStartRadius: 6 },
   /**
-   * The quote reads as a layer under the reply rather than as a message of its
-   * own: one accent edge, a tint of whatever bubble it sits in, two lines at
-   * most. Any longer and a reply to a long message looks like a reply *from* it.
+   * The quote is one muted line behind an accent edge, above the bubble rather
+   * than inside it — a layer under the reply, not a message of its own.
+   *
+   * `start`, not `left`: the accent edge marks where the quote begins, which
+   * is the right-hand side in Arabic. `left` would put it at the end of the
+   * line, where it reads as a stray rule rather than as a quote bar.
    */
   quote: {
-    // `start`, not `left`: the accent edge marks where the quote begins, which
-    // is the right-hand side in Arabic. `left` would put it at the end of the
-    // line, where it reads as a stray rule rather than as a quote bar.
-    borderStartWidth: 3,
-    borderRadius: radius.sm,
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 6,
+    borderStartColor: colors.accent,
+    borderStartWidth: 2,
+    maxWidth: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
-  quoteTheirs: { backgroundColor: colors.bg, borderStartColor: colors.accent },
-  // Both bubbles are light tints now, so the same white layer works in each.
-  quoteMine: { backgroundColor: colors.bg, borderStartColor: colors.accent },
-  quoteAuthor: { ...font.caption, color: colors.accent, fontWeight: '700' },
-  quoteAuthorMine: { color: colors.accent },
-  quoteText: { ...font.caption, color: colors.textMuted },
-  quoteTextMine: { color: colors.textMuted },
+  quoteText: { ...font.caption, color: colors.textMuted, fontSize: 13 },
   /**
    * A ring rather than a fill: the bubble already carries meaning in its
    * colour — whose it is, and whether it is a correction — and a wash over
@@ -498,103 +473,92 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
   tombstone: { backgroundColor: colors.fill },
   edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
-  editedMine: { color: colors.textMuted },
   tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
   /**
-   * Inside the bubble, not overhanging it — one shape for all four message
-   * kinds beats a special case that only looks right in three of them.
+   * Under the bubble, hugging it: the column's gap places it and the column's
+   * side aligns it, one shape for all four message kinds.
    */
   reactions: {
     ...cardShadow,
-    alignSelf: 'flex-start',
     backgroundColor: colors.bg,
     borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
     flexDirection: 'row',
     gap: 2,
-    marginTop: 6,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
-  reactionsMine: { alignSelf: 'flex-end' },
-  reactionsTheirs: { alignSelf: 'flex-start' },
   reaction: { alignItems: 'center', flexDirection: 'row', gap: 2 },
   reactionGlyph: { fontSize: 13, lineHeight: 18 },
   reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
-  /**
-   * No background and no padding: the glyph is the message. `alignSelf` still
-   * picks a side, because who sent it is the one thing the shape no longer says.
-   */
-  hero: { gap: spacing.xs, paddingVertical: 2 },
-  heroMine: { alignSelf: 'flex-end', alignItems: 'flex-end' },
-  heroTheirs: { alignSelf: 'flex-start', alignItems: 'flex-start' },
   // 48 is the house size for a hero glyph — `AppGate` uses it, `IntroCarousel`
   // 64. Bubble text is 16, so this reads as deliberate rather than as a font bug.
   heroText: { fontSize: 48, lineHeight: 58 },
-  bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
-  bubbleTextMine: { color: colors.text },
+  // 16 on 23: the prototype's 16px/1.45.
+  bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
   caption: { marginTop: spacing.xs },
-  translation: {
-    ...font.caption,
-    borderTopColor: colors.border,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-    paddingTop: spacing.xs,
-  },
-  translationMine: { borderTopColor: colors.border, color: colors.textMuted },
-  translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
   /**
-   * v3 draws the card as a quiet green panel — no outline, no header rule.
-   * The kicker and the diff carry the structure themselves.
+   * Under the bubble in the accent, the translate glyph leading it: the
+   * machine's voice, kept apart from what the person actually wrote.
+   */
+  translationRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: 6,
+  },
+  // Sits on the first line of the translation rather than centred on the block.
+  translationIcon: { marginTop: 3 },
+  translation: { ...font.body, color: colors.accent, flexShrink: 1, fontSize: 14, lineHeight: 20 },
+  translateLink: { ...font.caption, color: colors.accent },
+  /**
+   * v3 draws the card as a quiet green panel — no outline, no header rule —
+   * spanning the thread: a correction is about a sentence, not about who is
+   * winning, so it takes no side.
    */
   correction: {
+    alignSelf: 'stretch',
     backgroundColor: colors.successBg,
     borderRadius: radius.lg,
-  },
-  // A correction is about a sentence, not about who is winning, so it spans the
-  // thread rather than taking a side. Only the alignment marks the author.
-  correctionMine: { alignSelf: 'stretch' },
-  correctionHead: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 7,
+    gap: 6,
     paddingHorizontal: 16,
-    paddingTop: 15,
+    paddingVertical: 14,
   },
-  correctionLabel: { ...font.heading, color: colors.success, fontSize: 13 },
-  correctionBody: { paddingBottom: 13, paddingHorizontal: 16, paddingTop: 9 },
+  correctionLabel: {
+    color: colors.success,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
   correctionOriginal: {
-    ...font.label,
+    ...font.body,
     color: colors.textMuted,
-    fontWeight: '400',
-    lineHeight: 21,
+    lineHeight: 22,
+    textDecorationLine: 'line-through',
   },
-  /**
-   * The pair that carries the whole meaning of the card. Both are marked by a
-   * cue that survives colour-blindness — the strike and the weight — because
-   * a correction that only differs by hue says nothing to a reader who cannot
-   * separate the shades. v3 keeps the removal neutral: what went is history,
-   * what came is the point, so only the addition takes the green.
-   */
-  removed: { color: colors.textMuted, textDecorationLine: 'line-through' },
-  added: { color: colors.success, fontWeight: '700' },
   correctionText: {
     ...font.body,
     color: colors.text,
     fontSize: 16,
     fontWeight: '600',
-    lineHeight: 25,
-    marginTop: 6,
+    lineHeight: 23,
   },
   correctionNote: {
-    ...font.label,
+    ...font.body,
+    // A fifth of the success green, as the prototype rules it: the line has
+    // to read as part of the card, and the palette has no token between the
+    // tint and the full colour. Tokens are six-digit hex, so `33` is 20%.
+    borderTopColor: `${colors.success}33`,
+    borderTopWidth: 1,
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 21,
-    marginTop: 9,
+    lineHeight: 20,
+    marginTop: 2,
+    paddingTop: spacing.sm,
   },
+  // The clock on the card sits at its end, whichever side wrote it.
+  correctionMeta: { alignSelf: 'flex-end' },
 }))

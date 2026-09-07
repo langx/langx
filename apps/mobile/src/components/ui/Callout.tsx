@@ -51,7 +51,14 @@ export function Callout({ tone, title, icon, children, style }: CalloutProps) {
 }
 
 const useStyles = makeStyles(({ font, radius, spacing }) => ({
-  root: { borderRadius: radius.md, gap: spacing.sm, padding: spacing.md },
+  // The tip's shape: 16 round, 12 over 16 inside — the same box the chat's
+  // correction card and the feed's top correction use.
+  root: {
+    borderRadius: radius.lg,
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
   header: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   title: { ...font.label, fontWeight: '700' },
 }))

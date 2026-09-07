@@ -10,7 +10,6 @@ import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { useDisplayNames, useLocale, useT } from '../../src/i18n'
 import type { Locale } from '@langx/shared'
 import { dedupeById } from '../../src/lib/dedupeById'
-import { foldCorrection } from '../../src/lib/feedCache'
 import { relativeTime } from '../../src/lib/format'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo, openPost } from '../../src/lib/navigation'
@@ -94,6 +93,7 @@ export default function WritingScreen() {
         <FlatList
           data={corrections}
           keyExtractor={(item) => String(item._id)}
+          contentContainerStyle={styles.list}
           onEndReached={() => {
             if (page.hasNextPage && !page.isFetchingNextPage) void page.fetchNextPage()
           }}
@@ -107,6 +107,7 @@ export default function WritingScreen() {
         <FlatList
           data={myPosts}
           keyExtractor={(item) => String(item._id)}
+          contentContainerStyle={styles.list}
           onEndReached={() => {
             if (posts.hasNextPage && !posts.isFetchingNextPage) void posts.fetchNextPage()
           }}
@@ -146,26 +147,31 @@ function PostRow({ post, styles }: { post: FeedPost; styles: ReturnType<typeof u
       onPress={() => openPost(post._id, '/(app)/corrections')}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
-      <Text style={styles.postBody} numberOfLines={2}>
-        {post.body}
-      </Text>
-      <View style={styles.meta}>
-        <Text style={styles.kind}>
-          {t(pronunciation ? 'feed.pronunciationSection' : 'feed.correctionSection')}
-        </Text>
-        <Text style={styles.when}>· {names.language(post.language)}</Text>
-        <Text style={styles.when}>
-          ·{' '}
-          {replies > 0
-            ? t(pronunciation ? 'feed.answers' : 'feed.corrections', { count: replies })
-            : t(pronunciation ? 'feed.noAnswers' : 'feed.noCorrections')}
-        </Text>
-        <Text style={styles.when}>· {relativeTime(post.createdAt, { t, locale })}</Text>
+      <View style={styles.top}>
+        <Text style={styles.language}>{names.language(post.language)}</Text>
+        <Text style={styles.when}>{relativeTime(post.createdAt, { t, locale })}</Text>
       </View>
+      <Text style={styles.postBody}>{post.body}</Text>
+      <Text style={styles.count}>
+        {replies > 0
+          ? t(pronunciation ? 'feed.answers' : 'feed.corrections', { count: replies })
+          : t(pronunciation ? 'feed.noAnswers' : 'feed.noCorrections')}
+      </Text>
     </Pressable>
   )
 }
 
+/**
+ * The mistake and the fix as two sentences, the way the chat bubble draws
+ * them, rather than the folded diff the feed's panel uses: a row here has the
+ * height for both, and reading the whole original is what tells you which
+ * correction this was.
+ *
+ * The top line is the date alone. The design leads with who the correction
+ * was for, but the row carries only a `conversationId` and there is no
+ * endpoint that resolves one conversation to its partner without fetching the
+ * thread, so the name waits on the API.
+ */
 function Row({
   message,
   t,
@@ -178,13 +184,6 @@ function Row({
   styles: ReturnType<typeof useStyles>
 }) {
   const correction = message.correction
-  /**
-   * The folded diff — the corrected sentence with the removals struck through
-   * in place — not the two-line before/after the chat bubble draws. A row does
-   * not have space for two lines, which is exactly why `foldCorrection` exists
-   * and why the feed's correction panel already uses it.
-   */
-  const runs = correction ? foldCorrection(correction.original, message.body) : null
 
   return (
     <Pressable
@@ -196,54 +195,38 @@ function Row({
       }
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
-      <Text style={styles.fold} numberOfLines={3}>
-        {runs
-          ? runs.map((run, index) => (
-              <Text
-                key={index}
-                style={
-                  run.kind === 'removed'
-                    ? styles.removed
-                    : run.kind === 'added'
-                      ? styles.added
-                      : undefined
-                }
-              >
-                {run.text}
-              </Text>
-            ))
-          : message.body}
+      <Text style={[styles.when, styles.whenAlone]}>
+        {dayLabel(message.createdAt.slice(0, 10), { t, locale })}
       </Text>
-      {correction?.note ? (
-        <Text style={styles.note} numberOfLines={2}>
-          {correction.note}
-        </Text>
-      ) : null}
-      <Text style={styles.when}>{dayLabel(message.createdAt.slice(0, 10), { t, locale })}</Text>
+      {correction ? <Text style={styles.original}>{correction.original}</Text> : null}
+      <Text style={styles.corrected}>{message.body}</Text>
     </Pressable>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
+  list: { paddingTop: spacing.sm },
   row: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    gap: 4,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: 14,
+    gap: spacing.sm,
+    paddingVertical: 18,
   },
   pressed: { opacity: 0.6 },
-  fold: { ...font.body, color: colors.text, fontSize: 15, lineHeight: 22 },
+  top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  when: { color: colors.textFaint, fontSize: 13 },
+  whenAlone: { alignSelf: 'flex-end' },
   // Not colour alone: the strike-through is what carries the meaning for a
   // reader who cannot tell the two hues apart.
-  removed: { color: colors.textMuted, textDecorationLine: 'line-through' },
-  added: { color: colors.success, fontWeight: '600' },
-  note: { ...font.caption, color: colors.textMuted },
-  when: { ...font.caption, color: colors.textFaint },
-  postBody: { ...font.body, color: colors.text, fontSize: 15, lineHeight: 22 },
-  // Wraps, because four facts and a long language name do not fit one line on
-  // a narrow phone — and truncating the middle of them tells the reader least.
-  meta: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
-  kind: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  original: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 22,
+    textDecorationLine: 'line-through',
+  },
+  corrected: { color: colors.text, fontSize: 16, fontWeight: '600', lineHeight: 23 },
+  language: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  postBody: { color: colors.text, fontSize: 17, lineHeight: 25 },
+  count: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
 }))

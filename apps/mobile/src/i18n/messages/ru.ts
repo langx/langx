@@ -16,7 +16,8 @@ export const ru: Localized<EnMessages> = {
   common: {
     showPassword: 'Показать пароль',
     hidePassword: 'Скрыть пароль',
-    back: '‹ Назад',
+    show: 'Показать',
+    hide: 'Скрыть',
     backPlain: 'Назад',
     clear: 'Очистить',
     cancel: 'Отмена',
@@ -27,17 +28,13 @@ export const ru: Localized<EnMessages> = {
     checking: 'Проверяем…',
     oneMoment: 'Минуту…',
     skip: 'Пока пропустить',
-    you: '(ты)',
     comingSoon: 'СКОРО',
     continue: 'Далее',
-    next: 'Далее',
     done: 'Готово',
     reset: 'Сбросить',
     any: 'Любой',
-    post: 'Опубликовать',
     send: 'Отправить',
     remove: 'Убрать',
-    delete: 'Удалить',
     block: 'Заблокировать',
     report: 'Пожаловаться',
     edit: 'Изменить',
@@ -57,8 +54,6 @@ export const ru: Localized<EnMessages> = {
   },
 
   media: {
-    sourceMediaTitle: 'Добавить фото или видео',
-    sourceMediaCamera: 'Снять фото или видео',
     playVideo: 'Воспроизвести видео',
     sourceTitle: 'Добавить фото',
     sourceCamera: 'Сделать фото',
@@ -102,9 +97,9 @@ export const ru: Localized<EnMessages> = {
   theme: {
     section: 'Оформление',
     label: 'Тема',
-    auto: 'Авто',
     light: 'Светлая',
     dark: 'Тёмная',
+    autoSystem: 'Авто (как в системе)',
   },
 
   messageActions: {
@@ -124,7 +119,6 @@ export const ru: Localized<EnMessages> = {
   },
 
   messageMeta: {
-    video: 'Видео',
     sent: 'Отправлено',
     delivered: 'Доставлено',
     read: 'Прочитано',
@@ -299,6 +293,9 @@ export const ru: Localized<EnMessages> = {
     skip: 'Пропустить',
     next: 'Далее',
     done: 'Готово',
+    correctionFrom: 'Исправление от партнёра',
+    correctionBefore: 'Я согласен с тебя.',
+    correctionAfter: 'Я согласен с тобой.',
   },
 
   welcome: {
@@ -372,6 +369,9 @@ export const ru: Localized<EnMessages> = {
     verifiedBody: 'Теперь можно войти.',
     verificationFailedTitle: 'Не удалось подтвердить',
     verificationFailedBody: 'Эта ссылка недействительна или устарела. Войди и запроси новую.',
+    signInWithCode: 'Войти по коду с другого устройства',
+    signInLinkNote:
+      'Ссылка работает один раз и действует 15 минут. Она подойдёт и для аккаунта из старого приложения.',
   },
 
   onboarding: {
@@ -391,15 +391,11 @@ export const ru: Localized<EnMessages> = {
       'Родной язык — это то, чему ты можешь научить; то, что ты учишь, определяет, с кем тебя сведут.',
     native: 'Родной',
     learning: 'Учу',
-    yourLevel: 'Твой уровень',
     upToCount: { one: 'До {count}', few: 'До {count}', many: 'До {count}', other: 'До {count}' },
     cannotBeBoth: 'Язык не может быть и тем и другим',
     aboutYouTitle: 'О тебе',
     displayName: 'Отображаемое имя',
-    yearOfBirth: 'Год рождения',
-    undisclosedNote: 'С этим выбором ты не попадёшь в поиск с фильтром по полу.',
     aboutYouOptional: 'О тебе (необязательно)',
-    aboutYouPlaceholder: 'О чём тебе нравится говорить?',
     tooYoung: 'LangX — для людей от {age} лет.',
     photoTitle: 'Добавь лицо',
     photoBody: 'И то и другое необязательно, и с обоими тебе гораздо чаще будут писать.',
@@ -410,12 +406,9 @@ export const ru: Localized<EnMessages> = {
     changePhoto: 'Сменить фото',
     uploading: 'Загружаем…',
     bioPrompt: 'То, с чего незнакомый человек сможет начать.',
-    whereAreYou: 'Где ты?',
     username: 'Имя пользователя',
     namePlaceholder: 'Алекс',
-    yearPlaceholder: '1996',
     gender: 'Пол',
-    interests: 'Интересы',
     handleTitle: 'Выбери имя пользователя',
     handlePlaceholder: 'alex',
     handleReserved: '@{handle} зарезервировано за тобой',
@@ -436,6 +429,9 @@ export const ru: Localized<EnMessages> = {
     inviteCodePlaceholder: 'имя пользователя',
     inviteCodeFound: 'Вас пригласил(а) {name}.',
     inviteCodeUnknown: 'Такого не нашли — можно продолжить и так.',
+    genderNotSaying: 'Не скажу',
+    genderNote:
+      'Если выбрать «{option}», ты не будешь появляться в поиске с фильтром по полу. Это можно указать только один раз.',
   },
 
   welcomeBack: {
@@ -501,7 +497,6 @@ export const ru: Localized<EnMessages> = {
   },
 
   corrections: {
-    title: 'Твои исправления',
     emptyTitle: 'Исправлений пока нет',
     emptyBody:
       'Задержи палец на сообщении и выбери «Исправить» — это самое полезное, что тут можно сделать.',
@@ -515,11 +510,6 @@ export const ru: Localized<EnMessages> = {
       'Спроси про предложение, в котором не уверен, или про слово, которое не можешь произнести — оно появится здесь.',
   },
   discover: {
-    languagesTitle: 'Языки в этом поиске',
-    languagesBody:
-      'Все здесь говорят на языке, который вы учите, и учат язык, на котором говорите вы. Снимите галочку, чтобы исключить язык из поиска.',
-    iSpeak: 'Я говорю',
-    imLearning: 'Я учу',
     languagesA11y: 'Выберите, с какими из ваших языков искать',
     searchHandles: 'Поиск по имени пользователя',
     searchPlaceholder: 'Имя пользователя',
@@ -551,8 +541,6 @@ export const ru: Localized<EnMessages> = {
     title: 'Фильтры',
     speaks: 'Говорит',
     city: 'Город',
-    cityBody:
-      'Найдите людей в одном городе. Выберите его из списка — из того же, откуда берётся город в профиле.',
     cityNeedsLocation:
       'Город есть только у тех, кто делится геопозицией, так что поиск сузится до них.',
     cityPlaceholder: 'Стамбул',
@@ -590,7 +578,6 @@ export const ru: Localized<EnMessages> = {
     unpin: 'Открепить',
     archive: 'В архив',
     unarchive: 'Из архива',
-    pinnedSection: 'Закреплённые',
     unrepliedEmptyTitle: 'Никто не ждёт ответа',
     unrepliedEmptyBody: 'Вы ответили в каждом чате.',
     archivedEmptyTitle: 'В архиве пусто',
@@ -644,7 +631,6 @@ export const ru: Localized<EnMessages> = {
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',
     editing: 'Редактирование',
     correcting: 'Исправление',
-    activity: 'Активность',
     translating: 'Переводим…',
     writeMessage: 'Напиши сообщение…',
     writeCorrection: 'Напиши исправление…',
@@ -652,7 +638,6 @@ export const ru: Localized<EnMessages> = {
     correctionFrom: 'Исправление от {name}',
     them: 'собеседнику',
     tokensPerMessage: '+{count} жетонов за сообщение',
-    unlimitedEveryPlan: 'Без ограничений на любом тарифе',
     voiceMessage: 'Голосовое сообщение',
     speedSlow: '0,5x',
     speedNormal: '1x',
@@ -697,6 +682,7 @@ export const ru: Localized<EnMessages> = {
     deleteForEveryone: 'Удалить у всех',
     deleteForMe: 'Удалить у себя',
     actionFailed: 'Не получилось',
+    viewProfile: 'Открыть профиль',
   },
 
   messageMenu: {
@@ -730,19 +716,18 @@ export const ru: Localized<EnMessages> = {
     },
     noStreakChange: 'Клетка закроется, но серия не изменится.',
     balanceChange: '{streakLine}\nБаланс изменится с {before} на {after}.',
-    repairsLeft: {
-      one: 'Осталось {count} из {total} восстановлений · {price} жетонов',
-      few: 'Осталось {count} из {total} восстановлений · {price} жетонов',
-      many: 'Осталось {count} из {total} восстановлений · {price} жетонов',
-      other: 'Осталось {count} из {total} восстановлений · {price} жетонов',
-    },
     perMonth: {
       one: 'В месяц можно закрыть {count} день.',
       few: 'В месяц можно закрыть {count} дня.',
       many: 'В месяц можно закрыть {count} дней.',
       other: 'В месяц можно закрыть {count} дня.',
     },
-    noRepairsThisMonth: 'В этом месяце восстановлений не осталось',
+    weeksAgo: {
+      one: '{count} неделю назад',
+      few: '{count} недели назад',
+      many: '{count} недель назад',
+      other: '{count} недели назад',
+    },
   },
 
   report: {
@@ -780,14 +765,7 @@ export const ru: Localized<EnMessages> = {
     sending: 'Отправляем…',
     sendCorrection: 'Отправить исправление',
     youCorrected: 'Ты это исправил',
-    addYours: 'Добавь своё',
     correctThis: 'Исправить',
-    seeAll: {
-      one: 'Показать {count}',
-      few: 'Показать все {count}',
-      many: 'Показать все {count}',
-      other: 'Показать все {count}',
-    },
     likes: {
       one: '{count} отметка «Нравится»',
       few: '{count} отметки «Нравится»',
@@ -806,7 +784,6 @@ export const ru: Localized<EnMessages> = {
     photosPermission: 'LangX нужен доступ к вашим фото и видео, чтобы прикрепить их.',
     attachmentFailed: 'Вложение не загрузилось. Попробуйте ещё раз.',
     mediaQuota: 'Вы достигли сегодняшнего лимита вложений.',
-    allCorrections: 'Все исправления',
     correctionsEmptyTitle: 'Исправлений пока нет',
     correctionsEmptyBody: 'Исправьте это предложение первым.',
     title: 'Лента',
@@ -824,7 +801,6 @@ export const ru: Localized<EnMessages> = {
     commentPlaceholder: 'Напишите что-нибудь…',
     allComments: 'Комментарии',
     showMoreComments: 'Показать ещё',
-    commentsEmptyTitle: 'Пока нет комментариев',
     commentsEmptyBody: 'Скажите первым.',
     pronounceAsk: '+ Как это звучит?',
     pronounceTitle: 'Слово на языке {language}',
@@ -847,12 +823,10 @@ export const ru: Localized<EnMessages> = {
     sendAnswer: 'Отправить запись',
     answerSent: 'Запись отправлена. Спасибо.',
     youAnswered: 'Вы это записали',
-    allAnswers: 'Все записи',
     answersEmptyTitle: 'Пока нет записей',
     answersEmptyBody: 'Скажите первым вслух.',
     needRecording: 'Запишите один раз перед отправкой.',
     alreadyCorrected: 'Вы это уже исправили.',
-    alreadyAnswered: 'Вы это уже записали.',
     wrongPostKind: 'Этот пост просит о другом.',
     deletePost: 'Удалить пост',
     deleteComment: 'Удалить комментарий',
@@ -862,6 +836,17 @@ export const ru: Localized<EnMessages> = {
     deletePostConfirmBody:
       'Его исправления, записи и комментарии тоже исчезнут. Заработанные токены остаются.',
     deleted: 'Удалено.',
+    correctionPlaceholder: 'Перепиши предложение своими словами…',
+    startFromOriginal: 'Начать с оригинала',
+    correctionReward: {
+      one: '+{count} жетон · Без ограничений на любом тарифе',
+      few: '+{count} жетона · Без ограничений на любом тарифе',
+      many: '+{count} жетонов · Без ограничений на любом тарифе',
+      other: '+{count} жетона · Без ограничений на любом тарифе',
+    },
+    composeHint:
+      'Носитель языка исправит — обычно в течение часа. Исправления без ограничений на любом тарифе.',
+    voiceNote: 'Голосовая заметка',
   },
 
   profile: {
@@ -891,7 +876,6 @@ export const ru: Localized<EnMessages> = {
     followingEmptyBody: 'Подпишитесь, и посты появятся в вашей ленте.',
     followFailed: 'Не получилось. Попробуйте ещё раз.',
     notFound: 'Профиль не найден.',
-    verifiedEmail: 'Почта подтверждена',
     registeredLabel: 'Зарегистрирован',
     interests: 'Интересы',
     registered: '· зарегистрирован {age}',
@@ -899,6 +883,13 @@ export const ru: Localized<EnMessages> = {
     sendFailed: 'Не удалось отправить сообщение.',
     blockConfirm: 'Заблокировать {name}? Вы перестанете появляться в списках друг друга.',
     blocked: '{name} заблокирован.',
+    people: 'Люди',
+    dayStreak: {
+      one: 'серия из {count} дня',
+      few: 'серия из {count} дней',
+      many: 'серия из {count} дней',
+      other: 'серия из {count} дня',
+    },
   },
 
   me: {
@@ -916,7 +907,6 @@ export const ru: Localized<EnMessages> = {
       many: '{count} человек',
       other: '{count} человека',
     },
-    leaderboardSubtitle: 'Серии, исправления и всё остальное, что вы заработали',
     proTitle: '✦ Больше возможностей',
     proBody: 'Безлимитные новые чаты, расширенные фильтры, перевод и невидимый просмотр.',
     newChatsLeft: 'Новых чатов осталось сегодня:',
@@ -933,18 +923,18 @@ export const ru: Localized<EnMessages> = {
     invite: 'Пригласить друга',
     inviteBody: 'Получайте токены, когда он начнёт пользоваться LangX',
     dayStreak: 'Серия дней',
+    followsTitle: 'Подписчики и подписки',
   },
 
   editProfile: {
     countryUnknown: 'Не указана',
-    countryHint: 'Определена по подключению. Поделитесь геопозицией, чтобы исправить.',
+    countryHint: 'По вашему подключению',
     title: 'Изменить профиль',
     displayName: 'Отображаемое имя',
     aboutYou: 'О тебе',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'О чём тебе нравится говорить?',
     country: 'Страна',
-    interests: 'Интересы',
     gender: 'Пол',
     genderOnce: 'Это можно указать один раз. Потом изменить нельзя.',
     genderLocked: 'Указано при регистрации. Это изменить нельзя.',
@@ -953,7 +943,6 @@ export const ru: Localized<EnMessages> = {
     languages: 'Языки',
     editNative: 'Изменить родные',
     editLearning: 'Изменить изучаемые',
-    photos: 'Фото',
     longPressToRemove: 'Удерживай фото, чтобы убрать его.',
     removePhotoTitle: 'Убрать фото',
     removePhotoBody: 'Убрать это фото из профиля?',
@@ -966,6 +955,7 @@ export const ru: Localized<EnMessages> = {
     uploadRetry: 'Не удалось загрузить это изображение. Попробуй ещё раз.',
     bothNativeAndLearning: 'Язык не может быть одновременно родным и изучаемым.',
     pickOneOfEach: 'Выбери хотя бы один родной язык и один изучаемый.',
+    interestsUpTo: 'Интересы · до {max}',
   },
 
   legal: {
@@ -1024,6 +1014,7 @@ export const ru: Localized<EnMessages> = {
     },
     emptyTitle: 'Здесь пока пусто',
     emptyBody: 'Отправь сообщение или напиши исправление — и сегодня станет первым днём.',
+    legendMissed: 'Пропущен · нажмите, чтобы восполнить',
   },
   settings: {
     subscriptionBody: 'Ваш план, продление и управление им',
@@ -1070,7 +1061,6 @@ export const ru: Localized<EnMessages> = {
     showWeekChart: 'Показывать график недели',
     showWeekChartBody: 'В какие дни ты отправлял сообщения и исправления, в профиле.',
     legalSection: 'Правовые документы',
-    communitySection: 'Сообщество',
     linkDeviceBody: 'Подтвердить вход и посмотреть, где вы вошли.',
     showInDiscover: 'Показывать меня в Поиске',
     showInDiscoverBody: 'Выключи — и тебя не найдут: ни в «Обзоре», ни по имени пользователя.',
@@ -1093,7 +1083,6 @@ export const ru: Localized<EnMessages> = {
     locationUpdated: 'Обновлено {time} назад',
     updating: 'Обновляем…',
     privacyFailed: 'Не удалось сохранить настройку',
-    languageSection: 'Язык',
     appLanguage: 'Язык приложения',
     translateTo: 'Переводить на',
     translateToBody: 'На каком из ваших языков показывать переведённое сообщение',
@@ -1113,13 +1102,10 @@ export const ru: Localized<EnMessages> = {
     deleteTypeHandle: 'Введите своё имя пользователя, {handle}, чтобы продолжить.',
     deleteCheckEmail: 'Проверьте {email}. Удаление запускает именно ссылка из этого письма.',
     deleteNothingYet: 'С вашим аккаунтом пока ничего не произошло.',
-    deleteConfirmBody:
-      'Аккаунт исчезнет сразу. Данные хранятся {days} дней — если войдёшь снова за это время, удаление отменится.',
     deleted: 'Аккаунт удалён. Если войдёшь снова в течение {days} дней, удаление отменится.',
     deleteFailed: 'Не удалось удалить',
     signOut: 'Выйти',
     signOutConfirm: 'На этом устройстве придётся войти заново.',
-    signedOut: 'Ты вышел — сессия завершена.',
     licence: '· BSD-3 · открытый код',
     title: 'Настройки',
     privacySection: 'Приватность',
@@ -1135,6 +1121,13 @@ export const ru: Localized<EnMessages> = {
     pushThisDevice: 'Уведомления на этом устройстве',
     pushThisDeviceBody: 'Выключите здесь — на других устройствах они продолжат приходить.',
     accountSection: 'Аккаунт',
+    translationsLeft: {
+      one: 'Сегодня осталось {count} бесплатный перевод',
+      few: 'Сегодня осталось {count} бесплатных перевода',
+      many: 'Сегодня осталось {count} бесплатных переводов',
+      other: 'Сегодня осталось {count} бесплатного перевода',
+    },
+    whatYouHave: 'Что у тебя есть',
   },
 
   deletion: {
@@ -1155,24 +1148,29 @@ export const ru: Localized<EnMessages> = {
     streakFreeze: 'Заморозка серии',
     streakFreezeBody: 'Покроет следующий пропущенный день · {banked}/{max} в запасе',
     ownedAccessibility: '{title}, уже есть',
-    buy: 'Купить {title} за {price} жетонов',
-    yourFrames: 'Ваши рамки',
-    yourTitles: 'Ваши титулы',
-    wearNone: 'Нет',
     locked: 'Закрыто',
     lockedAccessibility: '{title}, закрыто',
     lockedStreak: '{current} из {threshold} дней',
     lockedNeeds: 'Сначала купи {title}',
     lockedCorrections: '{current} из {threshold} исправлений',
-    owned: 'Есть',
     frameKind: 'Рамка профиля',
     titleKind: 'Титул',
-    todayCounts: '{messages} · {corrections}',
     repairDay: 'Вернуть день',
     repairDayBody: 'Закрывает пропущенный день · осталось {left} в этом месяце',
     bought: '{title} — твой',
     buyFailed: 'Не удалось купить',
     equipFailed: 'Не удалось изменить',
+    frames: 'Рамки профиля',
+    titles: 'Титулы',
+    wear: 'Надеть',
+    wearing: 'Надето',
+    price: {
+      one: '{count} жетон',
+      few: '{count} жетона',
+      many: '{count} жетонов',
+      other: '{count} жетона',
+    },
+    buyAccessibility: 'Купить {title} за {price}',
   },
 
   gift: {
@@ -1183,11 +1181,12 @@ export const ru: Localized<EnMessages> = {
     shakeHint: 'Встряхните телефон, чтобы открыть',
     tapHint: 'Нажмите, чтобы открыть',
     opening: 'Открываем…',
-    revealed: '+{amount} токенов',
     revealedZero: 'В этот раз пусто. Следующий — через час.',
     failed: 'Не удалось открыть подарок',
     done: 'Готово',
     openAccessibility: 'Открыть ежечасный подарок',
+    tokensUnit: { one: 'токен', few: 'токена', many: 'токенов', other: 'токенов' },
+    anotherInAnHour: 'Следующий — через час.',
   },
 
   wallet: {
@@ -1206,38 +1205,32 @@ export const ru: Localized<EnMessages> = {
   },
 
   tokens: {
-    title: 'Жетоны',
     intro: 'Начисляются за сообщения и за исправления чужих фраз. Учить важнее, чем говорить.',
-    thisWeek: 'На этой неделе',
-    thisMonth: 'В этом месяце',
-    allTime: 'За всё время',
     poolTitle: 'Ежедневный пул',
-    activeToday: {
-      one: 'сегодня активен {count} человек',
-      few: 'сегодня активны {count} человека',
-      many: 'сегодня активны {count} человек',
-      other: 'сегодня активны {count} человека',
-    },
     shareAmount: '+{count}',
-    shareFor: 'ваша доля за {day}',
     noShareYet: 'Доли пока нет — пул выплачивает после первого полного дня.',
     firstShareAt: 'Первая доля придёт {when}.',
-    todayActivity:
-      'Сегодня: {score} активности · {messages} сообщений, {corrections} исправлений, {partners} собеседников.',
     poolCap: 'Не более {cap} в день. Ваша доля зависит от активности остальных.',
     poolPaidAt: 'Начисляется каждую ночь в {hour}:00 UTC.',
     history: 'История',
     historyEmpty: 'Пока пусто. Отправьте сообщение или исправьте кого-нибудь.',
-    historySpent: '−{count} потрачено',
     historyMore: 'Показать ещё',
-    inviteRow: 'Пригласить друга',
+    ledgerSpent: '−{count}',
+    shareForDay: 'Ваша доля за {day}',
+    todaySoFar: 'Сегодня',
+    activityScore: {
+      one: '{count} активности',
+      few: '{count} активности',
+      many: '{count} активности',
+      other: '{count} активности',
+    },
+    todayBreakdown: '{messages} сообщений, {corrections} исправлений, {partners} собеседников.',
   },
 
   invite: {
     title: 'Пригласить друга',
     body: 'Поделитесь ссылкой. Когда приглашённый вами человек зарегистрируется и начнёт общаться, токены получите вы оба.',
     code: 'Ваш код приглашения',
-    qrAccessibility: 'QR-код вашей ссылки-приглашения',
     share: 'Поделиться ссылкой',
     copy: 'Скопировать ссылку',
     copied: 'Ссылка скопирована',
@@ -1272,7 +1265,6 @@ export const ru: Localized<EnMessages> = {
     statusSubscribed: 'Подписан',
     emptyTitle: 'Пока никого',
     emptyBody: 'Поделитесь ссылкой — те, кто присоединится, появятся здесь.',
-    referredBy: '{name} пригласил вас',
     disclaimer:
       'Токены — это внутренние очки. За саму регистрацию ничего не платят: приглашение приносит токены только когда приглашённый действительно кому-то напишет.',
   },
@@ -1320,11 +1312,6 @@ export const ru: Localized<EnMessages> = {
   leaderboard: {
     title: 'Таблица лидеров',
     periodPicker: 'Период таблицы лидеров',
-    nextMilestone: 'Следующая веха',
-    towards: '{current} из {threshold} к «{label}»',
-    toGo: 'осталось {amount}',
-    doneToday: 'На сегодня всё. До завтра.',
-    keepGoing: 'Отправь сегодня сообщение, чтобы серия продолжилась.',
     emptyTitle: 'Здесь пока пусто',
     emptyBody: 'Пиши сообщения и исправления — стань первым, кто заработает жетоны в этом периоде.',
     week: 'Неделя',
@@ -1337,8 +1324,6 @@ export const ru: Localized<EnMessages> = {
       many: 'Даёт {amount} жетонов',
       other: 'Даёт {amount} жетона',
     },
-    corrections: 'исправлений',
-    toGoPlain: 'осталось {count}',
     you: 'Ты',
     streakTitle: 'Таблица серий',
     metricCurrent: 'Сейчас',
@@ -1383,34 +1368,30 @@ export const ru: Localized<EnMessages> = {
       many: '{formatted} исправлений',
       other: '{formatted} исправления',
     },
+    earnedOf: 'Получено {earned} из {total}',
   },
 
   shared: {
     missingTitle: 'Здесь ничего нет',
     missingBody: 'Профиля @{handle} в LangX нет.',
-    speaks: 'Говорит',
-    learning: 'Учит',
     ctaBody: '{name} практикует языки в LangX. Присоединяйтесь, чтобы поздороваться.',
     ctaLabel: 'Открыть LangX',
-    inviteTitle: '{name} приглашает вас в LangX',
     inviteBody:
       '{name} пригласил(а) вас. Зарегистрируйтесь и напишите кому-нибудь — вы начнёте с {total} токенов; {name} получит {activation}, до {max}, если вы когда-нибудь оформите подписку. Присоединиться бесплатно.',
   },
 
   shareProfile: {
     title: 'Поделиться профилем',
-    body: 'Наведите камеру или отправьте ссылку.',
     qrAccessibility: 'QR-код для @{handle}',
-    share: 'Поделиться',
-    copy: 'Скопировать ссылку',
     copied: 'Ссылка скопирована',
+    scanBody:
+      'Кто отсканирует этот код, попадёт на твой профиль — в приложении, если оно есть, иначе в браузере.',
   },
 
   share: {
     cardTitle: 'Поделиться картинкой',
     cardStreakCaption: 'дней подряд в LangX',
     cardBadgeCaption: 'значок получен в LangX',
-    cardRankCaption: 'в таблице токенов LangX',
     cardBody: 'Выберите, куда — карточка нарисуется под неё.',
     shapeStory: 'История Instagram / TikTok',
     shapeSquare: 'Пост в Instagram',
@@ -1422,7 +1403,6 @@ export const ru: Localized<EnMessages> = {
     copiedText: 'Текст скопирован',
     profile: 'Поделиться профилем',
     profileMessage: 'Познакомьтесь с {name} в LangX: {url}',
-    post: 'Поделиться постом',
     postMessage: '«{excerpt}» — {language}, практика в LangX: {url}',
     streak: 'Поделиться серией',
     streakMessage: {
@@ -1431,7 +1411,6 @@ export const ru: Localized<EnMessages> = {
       many: '🔥 Серия {count} дней в LangX. Занимайтесь со мной: {url}',
       other: '🔥 Серия {count} дня в LangX. Занимайтесь со мной: {url}',
     },
-    rank: 'Поделиться местом',
     leaderboardMessage: {
       week: 'Я на {rank}-м месте в LangX на этой неделе. Занимайтесь со мной: {url}',
       month: 'Я на {rank}-м месте в LangX в этом месяце. Занимайтесь со мной: {url}',
@@ -1445,7 +1424,6 @@ export const ru: Localized<EnMessages> = {
   linkDevice: {
     title: 'Вход на другом устройстве',
     body: 'Введите код с другого экрана или отсканируйте его там.',
-    placeholder: 'AB234',
     warning:
       'Подтверждайте только код, который видите сами. Тот, кто его введёт, получит полный доступ к аккаунту.',
     approve: 'Подтвердить',
@@ -1453,14 +1431,17 @@ export const ru: Localized<EnMessages> = {
     approved: 'Вход выполнен',
     denied: 'Отклонено',
     failed: 'Этот код больше не действителен.',
-    hint: 'Не сейчас',
-    devices: 'Устройства с активным входом',
     waitingForDevice: 'Ждём, пока другое устройство завершит вход…',
     thisDevice: 'это устройство',
     signOutDevice: 'Выйти',
     signOutOthers: 'Выйти на всех остальных',
     signedOutDevice: 'Выход выполнен.',
     unknownDevice: 'Неизвестное устройство',
+    devicesTitle: 'Устройства',
+    approveTitle: 'Подтвердить вход',
+    scan: 'Сканировать',
+    typeCodePlaceholder: 'Введи код',
+    whereSignedIn: 'Где ты вошёл в аккаунт',
   },
 
   scan: {
@@ -1477,62 +1458,47 @@ export const ru: Localized<EnMessages> = {
   },
 
   qrSignIn: {
-    title: 'Войти с телефона',
-    body: 'Откройте LangX на телефоне и введите этот код или отсканируйте его.',
-    hint: 'На телефоне: значок сканирования в профиле или Настройки → Войти на другом устройстве',
     qrAccessibility: 'QR-код для входа',
     expired: 'Срок действия кода истёк.',
     failed: 'Не удалось начать. Попробуйте снова.',
-    again: 'Ещё раз',
     webOnly: 'Это для входа на компьютере. Вы уже на телефоне.',
+    bodyScan: 'На телефоне, где ты уже вошёл, открой {path} и наведи камеру сюда. Или введи код.',
+    scanPath: 'Я → Сканировать код',
+    orEnterCode: 'Или введи этот код',
+    expiresIn: 'Истекает через {time}',
+    newCode: 'Получить новый код',
   },
 
   viewers: {
     title: 'Кто смотрел твой профиль',
-    empty: 'Твой профиль пока никто не смотрел.',
-    countLabel: {
-      one: 'человек смотрел твой профиль',
-      few: 'человека смотрели твой профиль',
-      many: 'человек смотрели твой профиль',
-      other: 'человека смотрели твой профиль',
-    },
     seeWho: 'Узнать, кто это',
-    /**
-     * How many times one person has been back, beside their name. A numeral
-     * and a sign rather than a word, so it stays a badge at any width — and a
-     * plural entry regardless, because a count is never a bare string here.
-     */
-    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Посетителей пока нет',
     emptyBody: 'Заполненный профиль помогает.',
     /** A visitor without an account: no name exists, so the row says what it is. */
     guest: 'Гость',
-    /** The chart's headline: visits over the last seven days, all people together. */
-    weekVisits: {
-      one: '{count} визит',
-      few: '{count} визита',
-      many: '{count} визитов',
-      other: '{count} визита',
+    weekSummary: {
+      one: '{count} просмотр за последнюю неделю.',
+      few: '{count} просмотра за последнюю неделю.',
+      many: '{count} просмотров за последнюю неделю.',
+      other: '{count} просмотра за последнюю неделю.',
     },
+    seeWhoWith: 'Узнай, кто — с {plan}',
+    unlockBody: 'Имена и профили, а ещё режим инкогнито для тебя.',
   },
 
   blocked: {
     title: 'Заблокированные',
-    emptyTitle: 'Никто не заблокирован',
-    emptyBody:
-      'Заблокированные перестают появляться где-либо для вас обоих, и написать друг другу вы не сможете.',
     unblock: 'Разблокировать',
     unblockConfirm: 'Разблокировать {name}? Вы снова станете видны друг другу.',
     unblocked: '{name} разблокирован.',
-    since: 'Заблокирован {date}',
+    emptyText:
+      'Никто не заблокирован. Пока блокировка действует, вы не видите друг друга в списках.',
   },
 
   paywall: {
     screenTitle: 'Тарифы',
     everythingInPro: 'Всё из {plan}',
     restorePurchases: 'Восстановить покупки',
-    title: 'Больше общения — быстрее прогресс',
-    proTagline: 'Всё, из-за чего бесплатный тариф кажется тесным.',
     partOf: '— часть',
     unlimitedChats: 'Безлимитные новые чаты',
     unlimitedChatsBody: '{count} в день на бесплатном тарифе.',
@@ -1577,7 +1543,6 @@ export const ru: Localized<EnMessages> = {
     notSetUp: 'Покупки на этой платформе ещё не настроены.',
     legal:
       'Подписки продлеваются автоматически, пока их не отменят. Отменить можно в любой момент в аккаунте Apple или Google — отмена останавливает следующее продление и сохраняет доступ до конца текущего периода.',
-    offer: '{period} — {price}',
     trialTerms: {
       one: '{count} день бесплатно, затем {price} {period}',
       few: '{count} дня бесплатно, затем {price} {period}',
@@ -1587,12 +1552,17 @@ export const ru: Localized<EnMessages> = {
     perMonth: 'в месяц',
     perYear: 'в год',
     perLifetime: 'единоразово',
-    saving: 'Экономия {percent}%',
     terms: 'Условия',
     privacy: 'Конфиденциальность',
     monthly: 'Ежемесячно',
     yearly: 'Ежегодно',
     lifetime: 'Разовый платёж',
+    headline: 'Иди дальше',
+    headlineBody:
+      'Исправления и ответы остаются безлимитными на любом плане. Оплата снимает остальные ограничения.',
+    yearlySaving: 'Ежегодно · экономия {percent}%',
+    billingPeriod: 'Период оплаты',
+    start: 'Начать с {plan}',
   },
 
   pickers: {
@@ -1602,8 +1572,6 @@ export const ru: Localized<EnMessages> = {
   },
 
   weekly: {
-    thisWeek: 'На этой неделе',
-    correctionsGiven: 'Сделано исправлений',
     messages: 'Сообщения',
     summary: 'На этой неделе: {messages} и {corrections}.',
   },

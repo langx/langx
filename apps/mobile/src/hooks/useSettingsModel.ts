@@ -147,12 +147,9 @@ export function useSettingsModel() {
   // No row without a key: a switch that changes nothing is worse than none,
   // and a self-hosted build with no PostHog project has nothing to switch.
   const analyticsRow = isAnalyticsAvailable()
-  // Each tag names the plan that unlocks *that* row. Incognito reads the real
+  // The tag names the plan that unlocks the incognito row. It reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
-  // The app icon is not in `PLAN_LIMITS` at all — it is a local cosmetic gated
-  // on "any paid plan" — so it takes the cheapest paid badge instead.
   const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
-  const paidBadge = TIER_BADGES.pro
   const shareLocation = useShareLocation()
   const stopSharingLocation = useStopSharingLocation()
 
@@ -292,7 +289,6 @@ export function useSettingsModel() {
     analytics,
     analyticsRow,
     incognitoBadge,
-    paidBadge,
     shareLocation,
     sharingLocation,
     locationBusy,

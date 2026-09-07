@@ -1,8 +1,8 @@
+import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import * as Updates from 'expo-updates'
 import { useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
-import { SettingsRow } from '../../../src/components/settings/SettingsRow'
+import { Pressable, Text, TextInput, View } from 'react-native'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -22,10 +22,10 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * page — the shape `me.tsx` has — instead of the one scroll that used to hold
  * thirty-four rows under nine kickers. Above them, a search over every row's
  * localized title and body: while there is a query, the categories give way
- * to the matching rows themselves, drawn live, so "incognito" finds the
- * incognito toggle and it can be flipped right here. Sign out stays at the
- * foot, outside any category: it is the one thing somebody comes here to do
- * in a hurry.
+ * to the matching rows, each captioned with the category it lives in and
+ * opening that page — so "incognito" lands on Privacy with the toggle in
+ * view. Sign out stays at the foot, outside any category: it is the one thing
+ * somebody comes here to do in a hurry.
  */
 export default function SettingsScreen() {
   useScreenInteractive()
@@ -42,37 +42,50 @@ export default function SettingsScreen() {
     <Screen scroll>
       <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
-      <TextInput
-        value={query}
-        onChangeText={setQuery}
-        placeholder={t('settings.search')}
-        placeholderTextColor={colors.textFaint}
-        autoCapitalize="none"
-        autoCorrect={false}
-        clearButtonMode="while-editing"
-        accessibilityLabel={t('settings.search')}
-        style={styles.search}
-      />
+      <View style={styles.search}>
+        <Feather name="search" size={18} color={colors.textFaint} />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder={t('settings.search')}
+          placeholderTextColor={colors.textFaint}
+          autoCapitalize="none"
+          autoCorrect={false}
+          clearButtonMode="while-editing"
+          accessibilityLabel={t('settings.search')}
+          style={styles.searchInput}
+        />
+      </View>
 
       {searching ? (
-        matches.length === 0 ? (
-          <Text style={styles.none}>{t('settings.searchNone')}</Text>
-        ) : (
-          matches.map(({ section, item }, index) => (
-            <View key={item.id} style={styles.match}>
-              <Text style={styles.matchSection}>{t(section.titleKey)}</Text>
-              <SettingsRow id={item.id} model={model} last={index === matches.length - 1} />
-            </View>
-          ))
-        )
+        <View style={styles.list}>
+          {matches.length === 0 ? (
+            <Text style={styles.none}>{t('settings.searchNone')}</Text>
+          ) : (
+            matches.map(({ section, item }) => (
+              <Pressable
+                key={item.id}
+                accessibilityRole="button"
+                onPress={() => router.push(section.route)}
+                style={({ pressed }) => [styles.match, pressed && styles.pressed]}
+              >
+                <View style={styles.matchText}>
+                  {/* Which category a found row lives in — the caption a search result needs. */}
+                  <Text style={styles.matchSection}>{t(section.titleKey)}</Text>
+                  <Text style={styles.matchTitle}>{t(item.titleKey)}</Text>
+                </View>
+                <Feather name="chevron-right" size={18} color={colors.textFaint} />
+              </Pressable>
+            ))
+          )}
+        </View>
       ) : (
-        <View style={styles.categories}>
-          {SETTINGS_SECTIONS.map((section, index) => (
+        <View style={styles.list}>
+          {SETTINGS_SECTIONS.map((section) => (
             <ListRow
               key={section.id}
               title={t(section.titleKey)}
               subtitle={t(section.bodyKey)}
-              last={index === SETTINGS_SECTIONS.length - 1}
               onPress={() => router.push(section.route)}
             />
           ))}
@@ -106,28 +119,46 @@ export default function SettingsScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  /** The city field's idiom from `filters.tsx`: a square field, results under it. */
+const useStyles = makeStyles(({ colors, spacing }) => ({
+  /**
+   * A 50px `fill` box with the glyph inside it, not a bare field: it is the
+   * one thing on the page that is not a row, and the box is what says so.
+   * 14 round — between the 12 and 16 of the scale, so a literal. The 2 on top
+   * makes 12 with the header's own 10 below.
+   */
   search: {
-    ...font.body,
+    alignItems: 'center',
     backgroundColor: colors.fill,
-    borderRadius: radius.md,
-    color: colors.text,
-    marginTop: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
+    borderRadius: 14,
+    flexDirection: 'row',
+    gap: 10,
+    height: 50,
+    marginTop: 2,
+    paddingHorizontal: spacing.lg,
   },
-  categories: { marginTop: spacing.md },
-  match: { marginTop: spacing.md },
-  /** Which category a found row lives in — the caption a search result needs. */
-  matchSection: { ...font.label, color: colors.textFaint },
-  none: { ...font.caption, color: colors.textFaint, marginTop: spacing.xl, textAlign: 'center' },
-  signOut: { marginTop: spacing.xl },
+  searchInput: { color: colors.text, flex: 1, fontSize: 16, height: '100%' },
+  list: { marginTop: spacing.sm },
+  // A point shorter than a category row: a result has a caption in place of
+  // a body, and the caption is smaller.
+  match: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingVertical: spacing.lg,
+  },
+  pressed: { opacity: 0.6 },
+  matchText: { flex: 1, gap: 2 },
+  matchSection: { color: colors.textFaint, fontSize: 12, fontWeight: '600' },
+  matchTitle: { color: colors.text, fontSize: 17, fontWeight: '600' },
+  none: { color: colors.textFaint, fontSize: 14, paddingVertical: 40, textAlign: 'center' },
+  signOut: { marginTop: 28 },
   build: {
-    ...font.caption,
     color: colors.textFaint,
-    marginBottom: spacing.xxl,
-    marginTop: spacing.lg,
+    fontSize: 12,
+    lineHeight: 19,
+    paddingTop: spacing.xl,
     textAlign: 'center',
   },
 }))

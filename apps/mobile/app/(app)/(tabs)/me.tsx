@@ -9,6 +9,7 @@ import {
   useEffectiveTier,
   useIsPro,
   useMe,
+  useProfile,
   useQuota,
   useViewers,
   useWallet,
@@ -24,7 +25,7 @@ import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
-import { openProfile } from '../../../src/lib/navigation'
+import { openFollows, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
@@ -46,17 +47,30 @@ export default function MeScreen() {
   const badges = useBadges()
   const quota = useQuota()
   const viewers = useViewers()
+  /*
+   * Your own public profile, for the follower and following counts:
+   * `/profiles/me` does not carry them, and this is the one screen that shows
+   * both. Looking yourself up records no view — `recordProfileView` answers
+   * `self` — and the preview screen reads the same cache entry.
+   */
+  const ownProfile = useProfile(me.data?.handle ?? '')
   // Above the early return: hooks cannot be called conditionally, and putting
   // this below it renders nothing at all.
   const isPro = useIsPro()
   const tier = useEffectiveTier()
   /**
    * Everything on this screen comes from a different query, so the pull is not
-   * done until all four are — and it is above the early return, because a hook
-   * cannot be called conditionally.
+   * done until all of them are — and it is above the early return, because a
+   * hook cannot be called conditionally.
    */
   const pull = usePullToRefresh(() =>
-    Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), quota.refetch()]),
+    Promise.all([
+      me.refetch(),
+      xp.refetch(),
+      wallet.refetch(),
+      quota.refetch(),
+      ownProfile.refetch(),
+    ]),
   )
 
   /*
@@ -85,6 +99,7 @@ export default function MeScreen() {
   const wornTitle = wornCosmetic(wallet.data?.equipped, owned, 'title')
   const summary = xp.data
   const viewerPage = viewers.data?.pages[0]
+  const follows = ownProfile.data?.follow
 
   // The same mark TierBadge draws in its chip, folded into the meta line the
   // way v3 writes it — read from the shared table rather than re-typed, which
@@ -113,7 +128,7 @@ export default function MeScreen() {
           url={profile.avatarUrl}
           name={profile.displayName}
           seed={profile._id}
-          size={72}
+          size={80}
           frame={wornFrame?.tone}
         />
         <View style={styles.heroText}>
@@ -123,7 +138,7 @@ export default function MeScreen() {
             </Text>
             <CosmeticTitle cosmetic={wornTitle} />
           </View>
-          <Text style={styles.handle} numberOfLines={1}>
+          <Text style={styles.meta} numberOfLines={1}>
             {meta}
           </Text>
         </View>
@@ -142,20 +157,20 @@ export default function MeScreen() {
         {Platform.OS !== 'web' ? (
           <Pressable
             onPress={() => router.push('/(app)/scan')}
-            hitSlop={12}
+            hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel={t('me.scan')}
-            style={({ pressed }) => pressed && styles.pressed}
+            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
           >
             <Feather name="maximize" size={22} color={colors.textMuted} />
           </Pressable>
         ) : null}
         <Pressable
           onPress={() => router.push('/(app)/settings')}
-          hitSlop={12}
+          hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={t('me.settings')}
-          style={({ pressed }) => pressed && styles.pressed}
+          style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
         >
           <Feather name="settings" size={22} color={colors.textMuted} />
         </Pressable>
@@ -172,7 +187,11 @@ export default function MeScreen() {
         accessibilityLabel={t('me.languages')}
         onPress={() => router.push('/(app)/edit-profile')}
       >
-        <LanguageColumns nativeLanguages={profile.nativeLanguages} learning={profile.learning} />
+        <LanguageColumns
+          nativeLanguages={profile.nativeLanguages}
+          learning={profile.learning}
+          style={styles.languages}
+        />
       </Pressable>
 
       <View style={styles.tiles}>
@@ -182,6 +201,7 @@ export default function MeScreen() {
           icon="zap"
           label={`${t('me.dayStreak')} ›`}
           value={String(summary?.streak.current ?? 0)}
+          valueSize={26}
           onPress={() => router.push('/(app)/streak')}
         />
         {/* The number was already "corrections I wrote, chat and posts, for
@@ -191,6 +211,7 @@ export default function MeScreen() {
           tone="success"
           label={`${t('me.corrections')} ›`}
           value={String(summary?.lifetime.corrections ?? 0)}
+          valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />
         {/* How many of the catalogue's badges are earned — "0" is a real
@@ -198,6 +219,7 @@ export default function MeScreen() {
         <StatTile
           label={`${t('me.badges')} ›`}
           value={String(badges.data?.earnedCount ?? 0)}
+          valueSize={26}
           onPress={() => router.push('/(app)/badges')}
         />
         {/* The balance is the way into the wallet — a number nobody can act
@@ -206,6 +228,7 @@ export default function MeScreen() {
         <StatTile
           label={`${t('me.wallet')} ›`}
           value={compactCount(balance, locale)}
+          valueSize={26}
           onPress={() => router.push('/(app)/wallet')}
         />
       </View>
@@ -219,7 +242,11 @@ export default function MeScreen() {
         reading about its own owner. Under the week's chart, in the same place
         as on the public profile, so the two views of one profile read alike.
       */}
-      {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
+      {profile.bio ? (
+        <View style={styles.bio}>
+          <Text style={styles.bioText}>{profile.bio}</Text>
+        </View>
+      ) : null}
 
       {/* First of the rows, because it is the one that answers a question
           somebody actually arrives with: where the thing I asked went. */}
@@ -240,6 +267,18 @@ export default function MeScreen() {
         }
         onPress={() => router.push('/(app)/viewers')}
       />
+      <ListRow
+        title={t('me.followsTitle')}
+        subtitle={
+          follows
+            ? [
+                t('profile.followers', { count: follows.followers }),
+                t('profile.followingCount', { count: follows.following }),
+              ].join(' · ')
+            : undefined
+        }
+        onPress={() => openFollows(profile._id, 'followers', '/(app)/(tabs)/me')}
+      />
       {/*
         Last of the rows: looking at the profile the way a stranger does is the
         *result* of everything above it. Sharing it and inviting people moved
@@ -254,7 +293,11 @@ export default function MeScreen() {
       />
 
       {!isPro ? (
-        <Pressable style={styles.proCard} onPress={() => openPaywall()}>
+        <Pressable
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.proCard, pressed && styles.pressed]}
+          onPress={() => openPaywall()}
+        >
           <Text style={styles.proTitle}>{t('me.proTitle')}</Text>
           <Text style={styles.proBody}>{t('me.proBody')}</Text>
           <Text style={styles.quota}>
@@ -277,39 +320,49 @@ export default function MeScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
+  // 20 below the status bar in the design; `Screen` already gives 6 of it.
   hero: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing.lg,
-    paddingVertical: spacing.sm,
+    gap: 20,
+    paddingBottom: spacing.sm,
+    paddingTop: 14,
   },
-  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
-  heroText: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 24 },
-  handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
-  // The chart above ends in a border and the rows below start with one, so the
-  // bio needs its own room on both sides to read as a paragraph, not a caption.
-  bio: { ...font.body, color: colors.text, marginBottom: spacing.md, marginTop: spacing.md },
-  pressed: { opacity: 0.7 },
+  heroText: { flex: 1, gap: 2, minWidth: 0 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 24 },
+  meta: { color: colors.textMuted, fontSize: 14 },
+  iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  pressed: { opacity: 0.6 },
+  languages: { paddingVertical: 20 },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
     gap: 10,
-    marginTop: spacing.xl,
     paddingBottom: 20,
+    paddingTop: spacing.xl,
   },
+  // The bio draws the hairline the first row below it sits on. Without a bio
+  // the chart's own hairline is that line, which is why the rows draw none.
+  bio: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: 22,
+  },
+  bioText: { color: colors.text, fontSize: 16, lineHeight: 25 },
+  // 20, not `radius.lg`: the one card on this screen is rounder than its controls.
   proCard: {
     backgroundColor: colors.accentBg,
-    borderRadius: radius.lg,
-    gap: 2,
-    marginTop: spacing.lg,
-    padding: spacing.lg,
+    borderRadius: 20,
+    gap: spacing.xs,
+    marginTop: spacing.xl,
+    padding: 20,
   },
-  proTitle: { ...font.body, color: colors.pro, fontWeight: '700' },
-  proBody: { ...font.caption, color: colors.textMuted },
-  quota: { ...font.caption, color: colors.text, marginTop: spacing.sm },
-  edit: { marginBottom: spacing.xxl, marginTop: spacing.xl },
+  proTitle: { color: colors.pro, fontSize: 16, fontWeight: '700' },
+  proBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  quota: { color: colors.text, fontSize: 13, marginTop: 10 },
+  edit: { marginVertical: spacing.xxl },
 }))

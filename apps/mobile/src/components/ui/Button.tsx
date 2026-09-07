@@ -1,26 +1,51 @@
-import { useRef } from 'react'
-import { ActivityIndicator, Animated, Pressable, Text, type ViewStyle } from 'react-native'
-import { makeStyles, useTheme } from '../../lib/theme'
+import type { ReactNode } from 'react'
+import { ActivityIndicator, Pressable, Text, View, type ViewStyle } from 'react-native'
+import { makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
+
+type Variant = 'primary' | 'secondary' | 'neutral' | 'danger' | 'ink'
+type Size = 'default' | 'small'
 
 interface ButtonProps {
   label: string
   onPress: () => void | Promise<void>
   loading?: boolean
   disabled?: boolean
-  variant?: 'primary' | 'secondary'
+  /**
+   * `primary` is the one yellow per screen. `secondary` is the outlined second
+   * action with a blue label — Create an account, Follow, Share my streak.
+   * `neutral` is the same outline with the plain ink label, for a button that
+   * neither commits nor competes: Cancel, Unblock, Continue with Google.
+   * `danger` is the one red button in the app, on delete-account. `ink` is
+   * the small dark tile that buys or copies — Copy, Scan, "150 tokens".
+   */
+  variant?: Variant
+  /** `small` is the 40px in-row size: the ink tiles and the row-end outlines. */
+  size?: Size
+  /** Drawn before the label in the label's colour — the share glyph, the Google mark. */
+  icon?: ReactNode
+  /**
+   * What a screen reader says instead of the label, when the label alone is
+   * not a sentence — a store row's "200 tokens" needs the item's name too.
+   */
+  accessibilityLabel?: string
   style?: ViewStyle
 }
 
 /**
- * The primary is the app's committing action, and it is `primary` yellow with
- * black on it in **both** schemes — see the palette note in `theme/tokens.ts`.
- * v3 tightens the rule: yellow appears exactly once per screen, on this.
+ * The v3 button, as langx.io draws it: a flat face on a hard 4px shadow that
+ * the press collapses. It is the one piece of chrome in the app that is
+ * allowed to look physical — everything else is rows on a white ground — and
+ * that is what makes the yellow one read as *the* thing to press.
  *
- * The press animates scale as well as colour. RN's `Animated` rather than
- * Reanimated, following `Skeleton`: a transform on the native driver is all a
- * press needs. Reanimated *is* in the bundle now — `SwipeableRow` pulled it in
- * for a gesture that tracks a finger — but that is a reason to leave this
- * alone rather than to rewrite it.
+ * The shadow is a second layer, not `shadowOffset`: Android blurs its shadows
+ * whatever the radius says, and the web build does the same through
+ * react-native-web, so a "hard" native shadow is only hard on iOS. Two views
+ * are hard on all three. The face translates down by the shadow's height on
+ * press and the shell shows through nowhere, which is the whole animation —
+ * the prototype has no easing here either.
+ *
+ * The primary is yellow with black on it in **both** schemes — see the palette
+ * note in `theme/tokens.ts`. Yellow appears exactly once per screen, on this.
  */
 export function Button({
   label,
@@ -28,88 +53,143 @@ export function Button({
   loading = false,
   disabled = false,
   variant = 'primary',
+  size = 'default',
+  icon,
+  accessibilityLabel,
   style,
 }: ButtonProps) {
   const { colors } = useTheme()
   const styles = useStyles()
   const isDisabled = disabled || loading
-
-  const scale = useRef(new Animated.Value(1)).current
-  const press = (to: number) =>
-    Animated.spring(scale, {
-      toValue: to,
-      useNativeDriver: true,
-      speed: 40,
-      bounciness: 5,
-    }).start()
+  const look = lookFor(colors, variant)
+  const small = size === 'small'
+  // The shadow's height, and how far the face drops to cover it.
+  const drop = small ? 3 : 4
 
   return (
-    <Animated.View style={[{ transform: [{ scale }] }, styles.wrap, style]}>
+    <View style={[styles.wrap, isDisabled && styles.disabled, style]}>
       <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled, busy: loading }}
+        {...(accessibilityLabel ? { accessibilityLabel } : {})}
         onPress={() => void onPress()}
-        onPressIn={() => !isDisabled && press(0.97)}
-        onPressOut={() => press(1)}
         disabled={isDisabled}
-        style={({ pressed }) => [
-          styles.base,
-          variant === 'primary' ? styles.primary : styles.secondary,
-          isDisabled && styles.disabled,
-          pressed &&
-            !isDisabled &&
-            (variant === 'primary' ? styles.pressedPrimary : styles.pressed),
+        style={[
+          small ? styles.shellSmall : styles.shell,
+          { backgroundColor: look.shadow, paddingBottom: drop },
         ]}
       >
-        {loading ? (
-          <ActivityIndicator color={variant === 'primary' ? colors.primaryText : colors.text} />
-        ) : (
-          <Text style={variant === 'primary' ? styles.primaryLabel : styles.secondaryLabel}>
-            {label}
-          </Text>
+        {({ pressed }) => (
+          <View
+            style={[
+              small ? styles.faceSmall : styles.face,
+              {
+                backgroundColor: look.face,
+                borderColor: look.border ?? look.face,
+              },
+              pressed && !isDisabled && { transform: [{ translateY: drop }] },
+            ]}
+          >
+            {loading ? (
+              <ActivityIndicator color={look.label} />
+            ) : (
+              <>
+                {icon}
+                <Text
+                  style={[
+                    small ? styles.labelSmall : styles.label,
+                    { color: look.label },
+                    // The primary's word is a point larger than the outline's —
+                    // the one that commits gets the louder label.
+                    variant === 'primary' || variant === 'danger' ? styles.labelLoud : null,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {label}
+                </Text>
+              </>
+            )}
+          </View>
         )}
       </Pressable>
-    </Animated.View>
+    </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, radius, spacing, font }) => ({
+/**
+ * Face, label, shadow and (for the outlines) border, per variant, from the
+ * palette — a function so dark mode gets its own values rather than light
+ * mode's frozen into a module constant.
+ */
+function lookFor(colors: ThemeColors, variant: Variant) {
+  switch (variant) {
+    case 'primary':
+      return { face: colors.primary, label: colors.primaryText, shadow: colors.primaryShade }
+    case 'secondary':
+      return { face: colors.bg, label: colors.accent, shadow: colors.border, border: colors.border }
+    case 'neutral':
+      return { face: colors.bg, label: colors.text, shadow: colors.border, border: colors.border }
+    case 'danger':
+      return { face: colors.danger, label: colors.textInverse, shadow: colors.dangerShade }
+    case 'ink':
+      /*
+       * Ink has no shade token, and does not want one: its shadow is a
+       * translucent black in both schemes, the same way the scrims are — a
+       * dark tile on a dark ground still needs to look like it is standing on
+       * something, and a lighter-than-ink colour there reads as a border.
+       */
+      return { face: colors.ink, label: colors.bg, shadow: 'rgba(0, 0, 0, 0.35)' }
+  }
+}
+
+const useStyles = makeStyles(({ radius, font }) => ({
   /**
-   * The scale transform lives on a wrapper so `style` overrides (width,
-   * margins) apply to the box the layout sees, not the animated copy.
    * A default for the common case — a button at the bottom of a form column,
    * which should span it. It is **wrong inside a row**: pass
    * `style={{ width: 'auto' }}` there; `style` is merged last, so it wins.
    */
   wrap: { width: '100%' },
-  base: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    justifyContent: 'center',
-    minHeight: 54,
-    paddingHorizontal: spacing.xl,
-    width: '100%',
-  },
-  primary: { backgroundColor: colors.primary },
-  secondary: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
   disabled: { opacity: 0.5 },
-  // The primary has a pressed *colour* rather than the opacity the outline
-  // variant uses: fading yellow toward the page reads as "disabled", which is
-  // the one thing a press must not look like.
-  pressedPrimary: { backgroundColor: colors.primaryShade },
-  pressed: { backgroundColor: colors.fill },
-  primaryLabel: {
-    color: colors.primaryText,
-    fontFamily: font.heading.fontFamily,
-    fontSize: 16,
-    fontWeight: '800',
+  shell: { borderRadius: radius.lg },
+  shellSmall: { borderRadius: radius.md },
+  face: {
+    alignItems: 'center',
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    flexDirection: 'row',
+    gap: 10,
+    height: 56,
+    justifyContent: 'center',
+    paddingHorizontal: 28,
   },
-  secondaryLabel: {
-    color: colors.text,
+  faceSmall: {
+    alignItems: 'center',
+    borderRadius: radius.md,
+    borderWidth: 2,
+    flexDirection: 'row',
+    gap: 8,
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  /**
+   * Upper-case and tracked, in the display face. The tracking is what keeps
+   * capitals from setting solid at 800; it is the one place in the app where
+   * text is letter-spaced at all.
+   */
+  label: {
     fontFamily: font.heading.fontFamily,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '800',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  labelLoud: { fontSize: 15 },
+  labelSmall: {
+    fontFamily: font.heading.fontFamily,
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
 }))

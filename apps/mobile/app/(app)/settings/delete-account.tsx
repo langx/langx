@@ -1,10 +1,11 @@
 import { ACCOUNT_DELETION_GRACE_DAYS, handlesMatch } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native'
 import { api } from '../../../src/api/client'
 import { useMe } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
+import { FormField } from '../../../src/components/ui/FormField'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useT } from '../../../src/i18n'
@@ -14,7 +15,7 @@ import { authLandingHref } from '../../../src/lib/authLanding'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
 import { FLAG_KEYS, readBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -39,7 +40,6 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 export default function DeleteAccountScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
   const me = useMe()
   const session = authClient.useSession().data
@@ -49,6 +49,7 @@ export default function DeleteAccountScreen() {
   const [busy, setBusy] = useState(false)
   const [sentTo, setSentTo] = useState<string | null>(null)
   const matches = handlesMatch(typed, handle)
+  const back = () => goBackTo('/(app)/settings')
 
   /**
    * The direct path, for a deployment that cannot send mail at all.
@@ -90,68 +91,91 @@ export default function DeleteAccountScreen() {
   }
 
   return (
-    <Screen scroll>
-      <ScreenHeader
-        title={t('settings.deleteAccount')}
-        onBack={() => goBackTo('/(app)/settings')}
-      />
+    // Not a scroll: the red button and the way out sit at the foot, and the
+    // keyboard pushes them up rather than covering them.
+    <Screen style={styles.screen}>
+      <KeyboardAvoidingView
+        style={styles.screen}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScreenHeader title={t('settings.deleteConfirmTitle')} onBack={back} />
 
-      {sentTo === null ? (
-        <>
-          <Text style={styles.body}>
-            {t('settings.deleteExplain', { days: ACCOUNT_DELETION_GRACE_DAYS })}
-          </Text>
-          <Text style={styles.warning}>{t('settings.deleteTypeHandle', { handle })}</Text>
+        <View style={styles.column}>
+          {sentTo === null ? (
+            <>
+              <Text style={styles.body}>
+                {t('settings.deleteExplain', { days: ACCOUNT_DELETION_GRACE_DAYS })}
+              </Text>
+              {/*
+                Said before anything is typed, in the danger tint: the page is
+                about deletion, and the box is what says none has happened.
+              */}
+              <View style={styles.notice}>
+                <Text style={styles.noticeText}>{t('settings.deleteNothingYet')}</Text>
+              </View>
 
-          <TextInput
-            value={typed}
-            onChangeText={setTyped}
-            placeholder={handle}
-            placeholderTextColor={colors.textFaint}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="off"
-            maxLength={64}
-            style={styles.input}
-            accessibilityLabel={t('settings.deleteTypeHandle', { handle })}
-          />
+              <FormField
+                label={t('settings.deleteTypeHandle', { handle })}
+                value={typed}
+                onChangeText={setTyped}
+                placeholder={handle}
+                autoComplete="off"
+                maxLength={64}
+                accessibilityLabel={t('settings.deleteTypeHandle', { handle })}
+              />
 
-          <View style={styles.actions}>
-            <Button
-              label={t('settings.deleteAccount')}
-              loading={busy}
-              disabled={busy || !matches}
-              onPress={() => void submit()}
-            />
-          </View>
-        </>
-      ) : (
-        /*
-         * Nothing has happened to the account yet, and the copy says so: the
-         * link in the mail is what schedules it, and a page that implied
-         * otherwise would have people believe they had deleted an account they
-         * had not.
-         */
-        <>
-          <Text style={styles.body}>{t('settings.deleteCheckEmail', { email: sentTo })}</Text>
-          <Text style={styles.warning}>{t('settings.deleteNothingYet')}</Text>
-        </>
-      )}
+              <View style={styles.spacer} />
+              <Button
+                label={t('settings.deleteAccount')}
+                variant="danger"
+                loading={busy}
+                disabled={busy || !matches}
+                onPress={() => void submit()}
+              />
+              <Pressable
+                accessibilityRole="button"
+                onPress={back}
+                style={({ pressed }) => [styles.keep, pressed && styles.pressed]}
+              >
+                <Text style={styles.keepText}>{t('deletion.keepIt')}</Text>
+              </Pressable>
+            </>
+          ) : (
+            /*
+             * Nothing has happened to the account yet, and the copy says so: the
+             * link in the mail is what schedules it, and a page that implied
+             * otherwise would have people believe they had deleted an account they
+             * had not.
+             */
+            <>
+              <Text style={styles.body}>{t('settings.deleteCheckEmail', { email: sentTo })}</Text>
+              <View style={styles.notice}>
+                <Text style={styles.noticeText}>{t('settings.deleteNothingYet')}</Text>
+              </View>
+            </>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  body: { ...font.body, color: colors.text, marginTop: spacing.lg },
-  warning: { ...font.caption, color: colors.textMuted, marginTop: spacing.md },
-  input: {
-    ...font.body,
-    backgroundColor: colors.fill,
-    borderRadius: radius.md,
-    color: colors.text,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
+  screen: { flex: 1 },
+  // 18 between blocks; the header keeps its own 10 below, so 8 on top makes
+  // the same 18 to the first one.
+  column: { flex: 1, gap: 18, marginTop: spacing.sm },
+  body: { color: colors.textMuted, fontSize: 16, lineHeight: 25 },
+  notice: {
+    backgroundColor: colors.dangerBg,
+    borderRadius: radius.lg,
+    paddingHorizontal: 18,
+    paddingVertical: spacing.lg,
   },
-  actions: { gap: spacing.sm, marginTop: spacing.lg },
+  noticeText: { color: colors.text, fontSize: 14, lineHeight: 21 },
+  spacer: { flex: 1 },
+  /** The plain text button under the red one: the way out, drawn quietly. */
+  keep: { alignItems: 'center', height: 44, justifyContent: 'center' },
+  pressed: { opacity: 0.6 },
+  keepText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))

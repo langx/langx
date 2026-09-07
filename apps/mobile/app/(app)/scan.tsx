@@ -1,19 +1,30 @@
 import Feather from '@expo/vector-icons/Feather'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { router } from 'expo-router'
-import { useRef, useState } from 'react'
-import { Linking, Platform, Pressable, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Animated, Linking, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
 import { scanTarget } from '../../src/lib/scanTarget'
 import { makeStyles, spacing } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+
+/*
+ * Literal colours, on purpose. A camera view is dark whichever scheme the app
+ * is in, so the palette's `bg` and `text` — which flip with the scheme — would
+ * be wrong in one of them. These are the prototype's own values for the one
+ * screen that never flips.
+ */
+const STAGE_BG = '#0b0c0e'
+const ON_STAGE = '#ffffff'
+const ON_STAGE_MUTED = 'rgba(255, 255, 255, 0.7)'
+const ON_STAGE_BORDER = 'rgba(255, 255, 255, 0.25)'
 
 /**
  * The camera, pointed at one of the two codes this app draws.
@@ -32,10 +43,27 @@ export default function ScanScreen() {
   const styles = useStyles()
   const t = useT()
   const insets = useSafeAreaInsets()
+  const reduceMotion = useReduceMotion()
   const [permission, requestPermission] = useCameraPermissions()
   const [warned, setWarned] = useState<string | null>(null)
   // One scan per visit: the camera reports the same code many times a second.
   const handled = useRef(false)
+  const scanning = Platform.OS !== 'web' && permission?.granted === true
+
+  // The scan line's blink — `Animated`, as `welcome.tsx` does its few frames.
+  const blink = useRef(new Animated.Value(0.3)).current
+  useEffect(() => {
+    if (!scanning || reduceMotion) return
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(blink, { toValue: 1, duration: 640, useNativeDriver: true }),
+        Animated.timing(blink, { toValue: 0.3, duration: 640, useNativeDriver: true }),
+        Animated.delay(320),
+      ]),
+    )
+    loop.start()
+    return () => loop.stop()
+  }, [blink, reduceMotion, scanning])
 
   function onScanned(data: string): void {
     if (handled.current) return
@@ -83,14 +111,13 @@ export default function ScanScreen() {
   }
 
   return (
-    <View style={styles.stage}>
-      <CameraView
-        style={styles.camera}
-        facing="back"
-        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-        onBarcodeScanned={(result) => onScanned(result.data)}
-      />
-      <View style={[styles.overlay, { paddingTop: insets.top + spacing.sm }]}>
+    <View
+      style={[
+        styles.stage,
+        { paddingBottom: insets.bottom + spacing.xxl, paddingTop: insets.top + 6 },
+      ]}
+    >
+      <View style={styles.header}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('common.cancel')}
@@ -98,57 +125,103 @@ export default function ScanScreen() {
           hitSlop={12}
           style={({ pressed }) => [styles.close, pressed && styles.pressed]}
         >
-          <Feather name="x" size={22} color="#ffffff" />
+          <Feather name="x" size={22} color={ON_STAGE} />
         </Pressable>
-        <View style={styles.frame} />
-        <Text style={styles.hint}>{t('scan.body')}</Text>
-        <Button
-          label={t('scan.typeInstead')}
-          variant="secondary"
-          onPress={() => router.replace('/(app)/link-device')}
-          style={styles.typeInstead}
-        />
+        <Text style={styles.title} numberOfLines={1}>
+          {t('scan.title')}
+        </Text>
       </View>
+
+      <View style={styles.centre}>
+        {/* The brackets are decoration: the whole picture is scanned, not just the square. */}
+        <View style={styles.viewfinder}>
+          <CameraView
+            style={styles.camera}
+            facing="back"
+            barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+            onBarcodeScanned={(result) => onScanned(result.data)}
+          />
+          <View style={[styles.bracket, styles.bracketTopStart]} />
+          <View style={[styles.bracket, styles.bracketTopEnd]} />
+          <View style={[styles.bracket, styles.bracketBottomStart]} />
+          <View style={[styles.bracket, styles.bracketBottomEnd]} />
+          <Animated.View style={[styles.scanLine, { opacity: blink }]} />
+        </View>
+        <Text style={styles.hint}>{t('scan.body')}</Text>
+      </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.replace('/(app)/link-device')}
+        style={({ pressed }) => [styles.typeInstead, pressed && styles.pressed]}
+      >
+        <Text style={styles.typeInsteadLabel}>{t('scan.typeInstead')}</Text>
+      </Pressable>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ radius, spacing }) => ({
-  stage: { backgroundColor: '#000000', flex: 1 },
-  camera: { ...{ position: 'absolute' as const }, bottom: 0, left: 0, right: 0, top: 0 },
-  overlay: {
+const useStyles = makeStyles(({ colors, font, radius }) => ({
+  stage: { backgroundColor: STAGE_BG, flex: 1 },
+  header: {
     alignItems: 'center',
-    flex: 1,
-    justifyContent: 'space-between',
-    paddingBottom: spacing.xxl,
-    paddingHorizontal: spacing.lg,
+    flexDirection: 'row',
+    gap: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
   },
-  close: {
+  close: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
+  pressed: { opacity: 0.6 },
+  title: { ...font.heading, color: ON_STAGE, flex: 1 },
+  centre: { alignItems: 'center', flex: 1, gap: 28, justifyContent: 'center', padding: 24 },
+  viewfinder: { height: 260, overflow: 'hidden', width: 260 },
+  camera: { bottom: 0, end: 0, position: 'absolute', start: 0, top: 0 },
+  bracket: { borderColor: colors.primary, height: 40, position: 'absolute', width: 40 },
+  bracketTopStart: {
+    borderStartWidth: 4,
+    borderTopStartRadius: radius.md,
+    borderTopWidth: 4,
+    start: 0,
+    top: 0,
+  },
+  bracketTopEnd: {
+    borderEndWidth: 4,
+    borderTopEndRadius: radius.md,
+    borderTopWidth: 4,
+    end: 0,
+    top: 0,
+  },
+  bracketBottomStart: {
+    borderBottomStartRadius: radius.md,
+    borderBottomWidth: 4,
+    borderStartWidth: 4,
+    bottom: 0,
+    start: 0,
+  },
+  bracketBottomEnd: {
+    borderBottomEndRadius: radius.md,
+    borderBottomWidth: 4,
+    borderEndWidth: 4,
+    bottom: 0,
+    end: 0,
+  },
+  scanLine: {
+    backgroundColor: colors.primary,
+    end: 20,
+    height: 2,
+    position: 'absolute',
+    start: 20,
+    top: 129,
+  },
+  hint: { color: ON_STAGE_MUTED, fontSize: 15, lineHeight: 22, maxWidth: 280, textAlign: 'center' },
+  typeInstead: {
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    borderRadius: 18,
-    height: 36,
+    borderColor: ON_STAGE_BORDER,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    height: 54,
     justifyContent: 'center',
-    width: 36,
+    marginHorizontal: 24,
   },
-  pressed: { opacity: 0.7 },
-  /* The viewfinder: a square a code is comfortably framed in. Decorative
-     only — the whole picture is scanned, not just the square. */
-  frame: {
-    borderColor: 'rgba(255,255,255,0.9)',
-    borderRadius: radius.xl,
-    borderWidth: 3,
-    height: 240,
-    width: 240,
-  },
-  hint: {
-    color: '#ffffff',
-    fontSize: 15,
-    lineHeight: 22,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowRadius: 4,
-  },
-  typeInstead: { alignSelf: 'stretch' },
+  typeInsteadLabel: { ...font.heading, color: ON_STAGE, fontSize: 15 },
 }))

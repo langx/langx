@@ -115,6 +115,8 @@ const lightColors = {
   /** Empty states, unread counts, delete, negative ledger rows. */
   dangerBg: '#fdecec',
   danger: '#e5484d',
+  /** Under the one red button, the way `primaryShade` sits under the yellow one. */
+  dangerShade: '#b83236',
 
   /**
    * The toggle knob, which stays white in **both** schemes. A knob painted
@@ -177,6 +179,9 @@ const darkColors: ThemeColors = {
   warning: '#ffca39',
   dangerBg: '#3a2023',
   danger: '#ef6b6f',
+  // The same in both schemes: a shadow is under the button, and dark mode's
+  // lifted red would read as a second, lighter face rather than as depth.
+  dangerShade: '#b83236',
 
   knob: '#ffffff',
 
@@ -213,7 +218,8 @@ export const palettes: Record<ColorScheme, { colors: ThemeColors; cardShadow: Vi
  * no output. Only `xxxl` (the palette's `xl`) is new.
  */
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48 } as const
-export const radius = { sm: 8, md: 12, lg: 16, xl: 24, pill: 999 } as const
+/** `xxl` is the sheet's top corners; nothing smaller than a sheet is that round. */
+export const radius = { sm: 8, md: 12, lg: 16, xl: 24, xxl: 28, pill: 999 } as const
 
 /**
  * Nunito replaced Comfortaa in v3. Same rule, friendlier face: the display

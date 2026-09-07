@@ -66,10 +66,20 @@ export function Screen({
   return <View style={[styles.root, padding, styles.centre]}>{inner}</View>
 }
 
-const useStyles = makeStyles(({ colors, spacing, layout }) => ({
+/**
+ * v3's gutter is 20, not the 16 of the spacing scale: the rows run edge to
+ * edge inside it, and at 16 a hairline divider sits too close to the bezel to
+ * read as part of the content.
+ */
+const GUTTER = 20
+
+const useStyles = makeStyles(({ colors, layout }) => ({
   root: { backgroundColor: colors.bg, flex: 1 },
   centre: { alignItems: 'center' },
-  scrollContent: { alignItems: 'center', paddingVertical: spacing.lg },
-  column: { maxWidth: layout.maxWidth, paddingHorizontal: spacing.lg, width: '100%' },
+  // Nearly flush to the status bar at the top — the header row brings its own
+  // air — and 28 at the bottom so the last row is not sitting on the home
+  // indicator.
+  scrollContent: { alignItems: 'center', paddingBottom: 28, paddingTop: 6 },
+  column: { maxWidth: layout.maxWidth, paddingHorizontal: GUTTER, width: '100%' },
   fluid: { flex: 1, maxWidth: Platform.OS === 'web' ? layout.maxWidth : undefined },
 }))

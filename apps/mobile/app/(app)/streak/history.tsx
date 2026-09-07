@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { shiftDayKey } from '@langx/shared'
 import { useMemo } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
@@ -11,7 +10,7 @@ import type { TranslateFn } from '../../../src/i18n/runtime'
 import { dayLabel } from '../../../src/lib/messageGroups'
 import { goBackTo } from '../../../src/lib/navigation'
 import { streakHistory, type StreakHistoryRow } from '../../../src/lib/streakHistory'
-import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { makeStyles } from '../../../src/lib/theme'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -31,7 +30,6 @@ export default function StreakHistoryScreen() {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
-  const { colors } = useTheme()
 
   const to = new Date().toISOString().slice(0, 10)
   const from = shiftDayKey(to, -DAYS)
@@ -66,35 +64,32 @@ export default function StreakHistoryScreen() {
         <View>
           {rows.map((row) => (
             <View key={row.day} style={styles.row}>
-              <Feather
-                name={
+              {/* The square is the map's own, so a row and its cell read as
+                  the same day: work in blue, a miss in the dashed square's
+                  tint, a bought day in the shade a repair paints. */}
+              <View
+                style={[
+                  styles.dot,
                   row.kind === 'missed'
-                    ? 'circle'
+                    ? styles.dotMissed
                     : row.kind === 'bought'
-                      ? 'shopping-bag'
-                      : row.kind === 'openedOnly'
-                        ? // Held, not earned: an outline where a worked day is
-                          // solid, so a run of them is visible at a glance.
-                          'circle'
-                        : 'check-circle'
-                }
-                size={18}
-                color={
-                  row.kind === 'missed'
-                    ? colors.textFaint
-                    : row.kind === 'bought'
-                      ? colors.streak
-                      : row.kind === 'openedOnly'
-                        ? colors.textMuted
-                        : colors.success
-                }
+                      ? styles.dotBought
+                      : styles.dotActive,
+                ]}
               />
-              <View style={styles.text}>
-                <Text style={row.kind === 'missed' ? styles.dayMissed : styles.day}>
-                  {dayLabel(row.day, { t, locale, now })}
-                </Text>
-                <Text style={styles.detail}>{detail(t, locale, row)}</Text>
-              </View>
+              <Text style={styles.day}>{dayLabel(row.day, { t, locale, now })}</Text>
+              <Text
+                style={[
+                  styles.what,
+                  row.kind === 'missed'
+                    ? styles.whatMissed
+                    : row.kind === 'bought'
+                      ? styles.whatBought
+                      : null,
+                ]}
+              >
+                {detail(t, locale, row)}
+              </Text>
             </View>
           ))}
         </View>
@@ -104,7 +99,7 @@ export default function StreakHistoryScreen() {
 }
 
 /**
- * The one line under each date.
+ * The one line beside each date.
  *
  * A bought day says so and shows no time, because it has none — stamping one
  * would be the screen inventing a check-in that never happened. A day recorded
@@ -123,19 +118,22 @@ function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
   })
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: spacing.lg,
     paddingVertical: 14,
   },
-  text: { flex: 1, gap: 2 },
-  day: { ...font.label, color: colors.text, fontSize: 15 },
-  // A missed day is still a row, but it is not news.
-  dayMissed: { ...font.label, color: colors.textMuted, fontSize: 15 },
-  detail: { ...font.caption, color: colors.textMuted },
+  dot: { borderRadius: 3, height: 12, width: 12 },
+  dotActive: { backgroundColor: colors.accent },
+  dotMissed: { backgroundColor: colors.dangerBg },
+  dotBought: { backgroundColor: colors.accentBg },
+  day: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  what: { color: colors.textMuted, fontSize: 14 },
+  whatMissed: { color: colors.danger },
+  whatBought: { color: colors.accent },
 }))

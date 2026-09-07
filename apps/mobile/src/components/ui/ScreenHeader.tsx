@@ -5,7 +5,8 @@ import { makeStyles, useTheme } from '../../lib/theme'
 import { useT } from '../../i18n'
 
 interface ScreenHeaderProps {
-  title: string
+  /** Omit for the bare arrow row the auth screens open with — a title in the display face follows below. */
+  title?: string
   /** Omit on a tab root, which has nowhere to go back to. */
   onBack?: () => void
   /** A count, a chip, an action — drawn hard right. */
@@ -39,9 +40,13 @@ export function ScreenHeader({ title, onBack, trailing }: ScreenHeaderProps) {
           <Feather name="arrow-left" size={22} color={colors.text} />
         </Pressable>
       ) : null}
-      <Text style={styles.title} numberOfLines={1}>
-        {title}
-      </Text>
+      {title ? (
+        <Text style={styles.title} numberOfLines={1}>
+          {title}
+        </Text>
+      ) : (
+        <View style={styles.spacer} />
+      )}
       {trailing ? <View style={styles.trailing}>{trailing}</View> : null}
     </View>
   )
@@ -52,10 +57,14 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md + 2,
-    paddingVertical: spacing.md,
+    paddingBottom: spacing.sm + 2,
+    paddingTop: spacing.xs,
   },
-  back: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
+  // 34 square: the arrow's own hit box, before `hitSlop` widens it.
+  back: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
   pressed: { opacity: 0.5 },
   title: { ...font.heading, color: colors.text, flex: 1, fontSize: 24 },
+  // Keeps `trailing` hard right when there is no title to push it there.
+  spacer: { flex: 1 },
   trailing: { alignItems: 'flex-end' },
 }))

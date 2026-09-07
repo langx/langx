@@ -1,11 +1,10 @@
 import { countryFlag, getCountry } from '@langx/shared'
 import * as Location from 'expo-location'
-import { Platform, Text, View } from 'react-native'
+import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import { useSetCountryFromLocation } from '../api/queries'
-import { Button } from './ui/Button'
 import { showAlert } from '../lib/alert'
 import { captureLocation, reportLocationFailure } from '../lib/location'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
 import { useDisplayNames, useT } from '../i18n'
 
@@ -20,11 +19,17 @@ import { useDisplayNames, useT } from '../i18n'
  * are sent; the reverse geocoding happens on the phone and only the two-letter
  * code leaves it.
  *
- * On the web there is no `reverseGeocodeAsync` at all, so the button is not
+ * On the web there is no `reverseGeocodeAsync` at all, so the link is not
  * drawn and the value stays as the connection read it.
+ *
+ * Drawn as v3's read-only field: the value in a `fill` pill with where it came
+ * from beside it, and the correction as a plain blue link underneath rather
+ * than a button — it is the second action on a screen whose one yellow is
+ * Save, and most people never need it.
  */
 export function CountryFromLocation({ country }: { country: string | undefined }) {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
   const setCountry = useSetCountryFromLocation()
@@ -57,35 +62,53 @@ export function CountryFromLocation({ country }: { country: string | undefined }
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{t('editProfile.country')}</Text>
-      <View style={styles.row}>
-        <Text style={styles.value}>
+      <View style={styles.pill}>
+        <Text style={styles.value} numberOfLines={1}>
           {named
             ? `${countryFlag(named.code)} ${names.country(named.code)}`
             : t('editProfile.countryUnknown')}
         </Text>
-        {Platform.OS !== 'web' ? (
-          <Button
-            label={t('location.useMyLocation')}
-            variant="secondary"
-            loading={setCountry.isPending}
-            onPress={() => void useMyLocation()}
-          />
-        ) : null}
+        <Text style={styles.source}>{t('editProfile.countryHint')}</Text>
       </View>
-      <Text style={styles.hint}>{t('editProfile.countryHint')}</Text>
+      {Platform.OS !== 'web' ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ busy: setCountry.isPending }}
+          disabled={setCountry.isPending}
+          onPress={() => void useMyLocation()}
+          style={({ pressed }) => [styles.link, pressed && styles.pressed]}
+        >
+          {setCountry.isPending ? <ActivityIndicator size="small" color={colors.accent} /> : null}
+          <Text style={styles.linkText}>{t('location.useMyLocation')}</Text>
+        </Pressable>
+      ) : null}
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   container: { gap: 6, width: '100%' },
-  label: { ...font.label, color: colors.textMuted },
-  row: {
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  // The same 54px pill as a text field, without the field: nothing here is typed.
+  pill: {
     alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
     flexDirection: 'row',
     gap: spacing.md,
+    height: 54,
     justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
-  value: { ...font.body, color: colors.text },
-  hint: { ...font.caption, color: colors.textFaint },
+  value: { color: colors.text, flexShrink: 1, fontSize: 16 },
+  source: { color: colors.textFaint, fontSize: 13 },
+  link: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    height: 40,
+  },
+  pressed: { opacity: 0.6 },
+  linkText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))

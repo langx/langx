@@ -17,69 +17,81 @@ function dayInitial(day: string, locale: Locale): string {
   return new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: 'UTC' }).format(at)
 }
 
-/** v3's bar height; the ratio of a day against the week's peak scales into it. */
-const BAR_AREA = 64
-/** Days with nothing keep a visible stub, so the week still reads as seven days. */
-const EMPTY_BAR = 8
+/** v3's chart is 110 tall; this is what is left once the padding and the day letters are taken out. */
+const BAR_AREA = 74
+/** A day that counted something never shrinks below this, however tall the peak. */
+const MIN_BAR = 4
+/** Days with nothing keep a faint trace, so the week still reads as seven days. */
+const EMPTY_BAR = 2
 
 interface WeekBarsProps {
-  /** Seven days, oldest first. */
-  days: { day: string; total: number }[]
+  /**
+   * Seven days, oldest first. `total` is the blue bar; `stacked`, for a caller
+   * with a second series, sits on top of it in green — the Me tab's
+   * corrections over its messages. The visitors page has only the one.
+   */
+  days: { day: string; total: number; stacked?: number }[]
   /** What the picture says, for a screen reader. */
   accessibilityLabel: string
 }
 
 /**
- * Seven days as seven rectangles, drawn with Views.
+ * Seven days as seven columns, drawn with Views.
  *
- * No chart library: this is seven rectangles whose heights are a ratio, and
+ * No chart library: this is a few rectangles whose heights are a ratio, and
  * every library that draws it would either pull in `react-native-svg` or ship a
- * canvas shim to the web build. The header above it belongs to the caller —
- * the Me tab says "messages and corrections", the visitors page says
- * "visits" — which is why this is only the bars.
+ * canvas shim to the web build. Whatever sits above or below it belongs to the
+ * caller — the Me tab adds a legend, the visitors page a "visits" header —
+ * which is why this is only the bars.
  */
 export function WeekBars({ days, accessibilityLabel }: WeekBarsProps) {
   const { colors } = useTheme()
   const styles = useStyles()
   const { locale } = useLocale()
 
-  // `|| 1` rather than a guard: an empty week divides by one and draws seven
-  // empty stubs, which is the correct picture of a week with nothing in it.
-  const peak = Math.max(...days.map((day) => day.total), 0) || 1
+  // Both series share one scale, so a stacked column can never outgrow the
+  // area. `|| 1` rather than a guard: an empty week divides by one and draws
+  // seven traces, which is the correct picture of a week with nothing in it.
+  const peak = Math.max(...days.map((day) => day.total + (day.stacked ?? 0)), 0) || 1
+  const barHeight = (value: number) => Math.max(MIN_BAR, (value / peak) * BAR_AREA)
 
   return (
-    <>
-      <View style={styles.bars} accessibilityRole="image" accessibilityLabel={accessibilityLabel}>
-        {days.map((day) => (
-          <View
-            key={day.day}
-            style={[
-              styles.bar,
-              day.total > 0
-                ? {
-                    backgroundColor: colors.accent,
-                    height: Math.max(EMPTY_BAR, (day.total / peak) * BAR_AREA),
-                  }
-                : { backgroundColor: colors.fill, height: EMPTY_BAR },
-            ]}
-          />
-        ))}
-      </View>
-
-      <View style={styles.labels}>
-        {days.map((day) => (
-          <Text key={day.day} style={styles.label}>
+    <View style={styles.chart} accessibilityRole="image" accessibilityLabel={accessibilityLabel}>
+      {days.map((day, index) => (
+        <View key={day.day} style={styles.column}>
+          <View style={styles.bars}>
+            {day.stacked ? (
+              <View
+                style={[
+                  styles.bar,
+                  { backgroundColor: colors.success, height: barHeight(day.stacked) },
+                ]}
+              />
+            ) : null}
+            <View
+              style={[
+                styles.bar,
+                { backgroundColor: colors.accent },
+                day.total > 0 ? { height: barHeight(day.total) } : styles.barEmpty,
+              ]}
+            />
+          </View>
+          {/* The week ends today, so the last letter is today's — the one drawn in ink. */}
+          <Text style={[styles.label, index === days.length - 1 && styles.labelToday]}>
             {dayInitial(day.day, locale)}
           </Text>
-        ))}
-      </View>
-    </>
+        </View>
+      ))}
+    </View>
   )
 }
 
 const useStyles = makeStyles(({ colors }) => ({
-  bars: { alignItems: 'flex-end', flexDirection: 'row', gap: 8, height: BAR_AREA, marginTop: 14 },
-  bar: { borderRadius: 6, flex: 1 },
-  labels: { flexDirection: 'row', gap: 8, marginTop: 8 },
-  label: { color: colors.textFaint, flex: 1, fontSize: 11, fontWeight: '600', textAlign: 'center' },
+  chart: { alignItems: 'flex-end', flexDirection: 'row', gap: 10, paddingVertical: 8 },
+  column: { alignItems: 'center', flex: 1, gap: 6 },
+  bars: { alignSelf: 'stretch', gap: 2, height: BAR_AREA, justifyContent: 'flex-end' },
+  bar: { borderRadius: 4 },
+  barEmpty: { height: EMPTY_BAR, opacity: 0.3 },
+  label: { color: colors.textFaint, fontSize: 11, fontWeight: '600' },
+  labelToday: { color: colors.text },
 }))

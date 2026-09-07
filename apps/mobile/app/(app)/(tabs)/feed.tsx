@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useMemo, useRef, useState } from 'react'
@@ -13,17 +14,16 @@ import {
   type ActiveUpload,
 } from '../../../src/lib/uploadProgress'
 import { playableIds, shouldPlay } from '../../../src/lib/videoVisibility'
-import { useCorrectPost, useDeletePost, useFeed, useMe } from '../../../src/api/queries'
+import { useCorrectPost, useFeed, useMe } from '../../../src/api/queries'
 import type { FeedPost } from '../../../src/api/types'
 import {
   AttachmentBar,
   AttachmentPreviewRow,
   type PendingAttachment,
 } from '../../../src/components/AttachmentBar'
-import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
+import { MediaGallery } from '../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
-import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { authClient } from '../../../src/lib/auth-client'
 import { reportWriteError } from '../../../src/lib/reportWriteError'
 import { requireAccount } from '../../../src/lib/requireAccount'
@@ -36,13 +36,10 @@ import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
 import { openPost, openProfile } from '../../../src/lib/navigation'
 import { listState } from '../../../src/lib/listState'
-import { makeStyles } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { attachmentsOf, type Media } from '@langx/shared'
 import { ApiRequestError } from '../../../src/api/client'
-import { shareLink } from '../../../src/lib/share'
-import { postShareText } from '../../../src/lib/shareText'
-import { confirmAlert } from '../../../src/lib/alert'
 import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -89,28 +86,22 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
 export default function FeedScreen() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
 
   const [section, setSection] = useState<PostKind>('correction')
   /**
-   * Composing happens inline rather than in a modal. Both things being written
-   * here are *about* something on screen — a sentence you are unsure of, or
-   * somebody else's sentence — and a sheet that covers the thing it refers to
-   * makes the writer work from memory.
+   * Correcting happens inline rather than in a modal. What is being written is
+   * *about* something on screen — somebody else's sentence — and a sheet that
+   * covers the thing it refers to makes the writer work from memory.
    */
   const [correctingId, setCorrectingId] = useState<string | null>(null)
   const [correction, setCorrection] = useState('')
   const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment[]>([])
   const [uploading, setUploading] = useState(false)
-  /**
-   * Which attachment is in flight and how far along, or `null`.
-   *
-   * One piece of state for both composers on this screen because only one can
-   * be submitting at a time — the ask box and the correction box are never
-   * both sending.
-   */
+  /** Which attachment is in flight and how far along, or `null`. */
   const [uploadProgress, setUploadProgress] = useState<ActiveUpload | null>(null)
 
   /**
@@ -139,7 +130,6 @@ export default function FeedScreen() {
   const pull = usePullToRefresh(() => feed.refetch())
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
-  const deletePost = useDeletePost()
   const pronouncing = section === 'pronunciation'
 
   const items = dedupeById(feed.data?.pages.flatMap((page) => page.items) ?? [])
@@ -205,26 +195,6 @@ export default function FeedScreen() {
     return uploaded
   }
 
-  /**
-   * Every failure used to read "the attachment did not upload", including the
-   * ones that had nothing to do with an attachment — most visibly "you have
-   * already corrected this", which is not an error the writer can act on by
-   * retrying and is exactly what the retry it invited would hit again.
-   */
-  async function confirmDelete(postId: string): Promise<void> {
-    const yes = await confirmAlert({
-      title: t('feed.deleteConfirmTitle'),
-      message: t('feed.deletePostConfirmBody'),
-      confirmLabel: t('feed.deletePost'),
-      destructive: true,
-    })
-    if (!yes) return
-    deletePost.mutate(postId, {
-      onSuccess: () => showToast(t('feed.deleted')),
-      onError: () => showToast(t('common.retry')),
-    })
-  }
-
   function startCorrecting(post: FeedPost): void {
     setCorrectingId(post._id)
     // Seeded with the original, because a correction is an edit of it — making
@@ -233,6 +203,12 @@ export default function FeedScreen() {
     setCorrection(post.body)
   }
 
+  /**
+   * Every failure used to read "the attachment did not upload", including the
+   * ones that had nothing to do with an attachment — most visibly "you have
+   * already corrected this", which is not an error the writer can act on by
+   * retrying and is exactly what the retry it invited would hit again.
+   */
   async function submitCorrection(postId: string): Promise<void> {
     if (!requireAccount(session?.user)) return
     if (!correction.trim() || uploading) return
@@ -282,9 +258,8 @@ export default function FeedScreen() {
           <Text style={styles.title}>{t('feed.title')}</Text>
           <Pressable
             accessibilityRole="button"
-            hitSlop={8}
             onPress={() => router.push(`/(app)/compose?kind=${section}`)}
-            style={({ pressed }) => (pressed ? styles.pressed : null)}
+            style={({ pressed }) => [styles.askButton, pressed && styles.askPressed]}
           >
             <Text style={styles.ask}>{pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}</Text>
           </Pressable>
@@ -346,269 +321,139 @@ export default function FeedScreen() {
           ListFooterComponent={
             feed.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          renderItem={({ item, index }) => {
+          renderItem={({ item }) => {
             const mine = item.author._id === me.data?._id
-            const replyCount = pronouncing ? item.answerCount : item.correctionCount
+            const open = () => openPost(item._id, '/(app)/(tabs)/feed')
             return (
-              <View style={[styles.row, index === items.length - 1 && styles.rowLast]}>
-                <View style={styles.rowTop}>
-                  <Pressable
-                    style={styles.whoRow}
-                    accessibilityRole="button"
-                    onPress={() => openProfile(item.author.handle, '/(app)/(tabs)/feed')}
-                  >
-                    <Avatar
-                      url={item.author.avatarUrl}
-                      name={item.author.displayName}
-                      seed={item.author._id}
-                      size={40}
-                    />
-                    <View style={styles.who}>
-                      <Text style={styles.name} numberOfLines={1}>
-                        {item.author.displayName}
-                      </Text>
-                      <View style={styles.metaRow}>
-                        <Text style={styles.meta} numberOfLines={1}>
-                          {names.language(item.language)}
-                        </Text>
-                        {item.level ? <LevelBars level={item.level} /> : null}
-                        <Text style={styles.meta} numberOfLines={1}>
-                          · {relativeTime(item.createdAt, { t, locale })}
-                        </Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                  {/*
-                    The danger colour for "nobody has answered", success once
-                    somebody has. It is the same distinction the feed is
-                    sorted by, so it should be the same colour the sort implies.
-
-                    Pressable whether or not there are corrections: the thread
-                    behind it is worth opening either way, and this is the one
-                    affordance every row has.
-                  */}
-                  <Pressable
-                    accessibilityRole="button"
-                    onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
-                    hitSlop={8}
-                  >
-                    <Text
-                      style={[styles.count, replyCount === 0 ? styles.countNone : styles.countSome]}
-                    >
-                      {replyCount === 0
-                        ? t(pronouncing ? 'feed.noAnswers' : 'feed.noCorrections')
-                        : t(pronouncing ? 'feed.answers' : 'feed.corrections', {
-                            count: replyCount,
-                          })}
+              <View style={styles.row}>
+                <Pressable
+                  style={styles.who}
+                  accessibilityRole="button"
+                  onPress={() => openProfile(item.author.handle, '/(app)/(tabs)/feed')}
+                >
+                  <Avatar
+                    url={item.author.avatarUrl}
+                    name={item.author.displayName}
+                    seed={item.author._id}
+                    size={40}
+                  />
+                  <View style={styles.whoText}>
+                    <Text style={styles.name} numberOfLines={1}>
+                      {item.author.displayName}
                     </Text>
-                  </Pressable>
-                </View>
+                    <Text style={styles.meta} numberOfLines={1}>
+                      {names.language(item.language)} ·{' '}
+                      {relativeTime(item.createdAt, { t, locale })}
+                    </Text>
+                  </View>
+                </Pressable>
 
-                <Text style={styles.body}>{item.body}</Text>
+                {/* The sentence opens its thread; it is the one affordance every row has. */}
+                <Pressable accessibilityRole="button" onPress={open}>
+                  <Text style={pronouncing ? styles.word : styles.body}>{item.body}</Text>
+                </Pressable>
 
                 {attachmentsOf(item).length > 0 ? (
-                  <View style={styles.media}>
-                    <MediaGallery
-                      items={attachmentsOf(item)}
-                      onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
-                      videoMode="preview"
-                      videoPlaying={shouldPlay(item._id, playingPosts)}
-                    />
-                  </View>
-                ) : null}
-
-                <View style={styles.likeRow}>
-                  <LikeButton
-                    targetType="post"
-                    targetId={item._id}
-                    likeCount={item.likeCount}
-                    likedByViewer={item.likedByViewer}
-                    disabled={mine}
-                    from="/(app)/(tabs)/feed"
+                  <MediaGallery
+                    items={attachmentsOf(item)}
+                    onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                    videoMode="preview"
+                    videoPlaying={shouldPlay(item._id, playingPosts)}
                   />
-                  {/*
-                    Beside the like, and shown at zero as an invitation rather
-                    than hidden like the like count is. A like at zero says
-                    nothing worth a tap; "Comment" is the affordance itself.
-                  */}
+                ) : null}
+
+                {!pronouncing && item.topCorrection ? (
                   <Pressable
                     accessibilityRole="button"
-                    hitSlop={8}
-                    onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                    onPress={open}
+                    style={({ pressed }) => [styles.top, pressed && styles.pressed]}
                   >
-                    <Text style={styles.commentCount}>
-                      {item.commentCount === 0
-                        ? t('feed.comment')
-                        : t('feed.comments', { count: item.commentCount })}
+                    <Text style={styles.topLabel}>
+                      {t('feed.topCorrection')} {item.topCorrection.author.displayName}
                     </Text>
-                  </Pressable>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('share.post')}
-                    hitSlop={8}
-                    onPress={() =>
-                      void shareLink(
-                        postShareText(t, {
-                          id: item._id,
-                          body: item.body,
-                          languageName: names.language(item.language),
-                        }),
-                      )
-                    }
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
-                  >
-                    <Text style={styles.commentCount}>{t('share.action')}</Text>
-                  </Pressable>
-                  {mine ? (
-                    <Pressable
-                      accessibilityRole="button"
-                      hitSlop={8}
-                      disabled={deletePost.isPending}
-                      onPress={() => void confirmDelete(item._id)}
-                      style={({ pressed }) => (pressed ? styles.pressed : null)}
-                    >
-                      <Text style={styles.deleteAction}>{t('feed.deletePost')}</Text>
-                    </Pressable>
-                  ) : null}
-                </View>
-
-                {item.topAnswer ? (
-                  <View style={styles.top}>
-                    <Pressable
-                      accessibilityRole="button"
-                      onPress={() =>
-                        openProfile(item.topAnswer!.author.handle, '/(app)/(tabs)/feed')
-                      }
-                      hitSlop={6}
-                    >
-                      <Text style={styles.topLabel}>
-                        {t('feed.normalTake')} · {item.topAnswer.author.displayName}
-                      </Text>
-                    </Pressable>
-                    {/*
-                      `AudioBubble` unchanged, half-speed toggle and all. The
-                      two do not conflict: the toggle stretches this recording,
-                      a slow take is the same person re-articulating, and a
-                      learner may want either.
-                    */}
-                    <View style={styles.media}>
-                      <AudioBubble media={item.topAnswer.media} />
-                    </View>
-                    {item.topAnswer.slowMedia ? (
-                      <>
-                        <Text style={styles.topLabel}>{t('feed.slowTake')}</Text>
-                        <View style={styles.media}>
-                          <AudioBubble media={item.topAnswer.slowMedia} />
-                        </View>
-                      </>
-                    ) : null}
-                    {item.topAnswer.note ? (
-                      <Text style={styles.topNote}>{item.topAnswer.note}</Text>
-                    ) : null}
-                    <View style={styles.likeRow}>
-                      <LikeButton
-                        targetType="answer"
-                        targetId={item.topAnswer._id}
-                        likeCount={item.topAnswer.likeCount}
-                        likedByViewer={item.topAnswer.likedByViewer}
-                        disabled={item.topAnswer.author._id === me.data?._id}
-                        from="/(app)/(tabs)/feed"
-                      />
-                    </View>
-                  </View>
-                ) : null}
-
-                {item.topCorrection ? (
-                  <View style={styles.top}>
-                    <Pressable
-                      accessibilityRole="button"
-                      onPress={() =>
-                        openProfile(item.topCorrection!.author.handle, '/(app)/(tabs)/feed')
-                      }
-                      hitSlop={6}
-                    >
-                      <Text style={styles.topLabel}>
-                        {t('feed.topCorrection')} {item.topCorrection.author.displayName}
-                      </Text>
-                    </Pressable>
                     <CorrectedLine original={item.body} corrected={item.topCorrection.corrected} />
-                    {item.topCorrection.note ? (
-                      <Text style={styles.topNote}>{item.topCorrection.note}</Text>
-                    ) : null}
-                    {attachmentsOf(item.topCorrection).length > 0 ? (
-                      <View style={styles.media}>
-                        <MediaGallery
-                          items={attachmentsOf(item.topCorrection)}
-                          onOpen={(index) =>
-                            setViewing({ items: attachmentsOf(item.topCorrection!), index })
-                          }
-                          /*
-                           * The same preview the post above it draws. Without
-                           * this a correction's video came out in `controls`
-                           * mode, where `onOpen` is deliberately ignored — so
-                           * it was the one video on the screen that could not
-                           * be opened, for no reason a reader could see.
-                           */
-                          videoMode="preview"
-                          videoPlaying={shouldPlay(item._id, playingPosts)}
-                        />
-                      </View>
-                    ) : null}
-                    <View style={styles.likeRow}>
-                      <LikeButton
-                        targetType="correction"
-                        targetId={item.topCorrection._id}
-                        likeCount={item.topCorrection.likeCount}
-                        likedByViewer={item.topCorrection.likedByViewer}
-                        disabled={item.topCorrection.author._id === me.data?._id}
-                        from="/(app)/(tabs)/feed"
-                      />
-                    </View>
-                  </View>
+                  </Pressable>
                 ) : null}
 
-                {/*
-                  Recording happens on the post screen, not here. A recorder
-                  inside a virtualised list is where audio-session bugs live —
-                  a row can unmount mid-take — and the optional second take
-                  needs room the card does not have.
-                */}
-                {pronouncing && !mine ? (
-                  <View style={styles.actions}>
-                    {item.answeredByViewer ? (
-                      <Text style={styles.actionDone}>{t('feed.youAnswered')}</Text>
+                {pronouncing ? (
+                  <View style={[styles.actions, styles.actionsPron]}>
+                    {/*
+                      Recording and listening happen on the post screen, not
+                      here. A recorder inside a virtualised list is where
+                      audio-session bugs live — a row can unmount mid-take — and
+                      the optional second take needs room the card does not have.
+                    */}
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={open}
+                      style={({ pressed }) => [styles.playPill, pressed && styles.pressed]}
+                    >
+                      <Feather name="play" size={14} color={colors.text} />
+                      <Text style={styles.playLabel}>
+                        {t('feed.answers', { count: item.answerCount })}
+                      </Text>
+                    </Pressable>
+                    {mine ? null : item.answeredByViewer ? (
+                      <Text style={[styles.actionEnd, styles.actionDone]}>
+                        {t('feed.youAnswered')}
+                      </Text>
                     ) : (
                       <Pressable
                         accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
-                        style={({ pressed }) => [styles.correctPill, pressed && styles.pressed]}
+                        onPress={open}
+                        hitSlop={8}
+                        style={({ pressed }) => [styles.recordAction, pressed && styles.pressed]}
                       >
-                        <Text style={styles.correctPillLabel}>{t('feed.answerThis')}</Text>
+                        <Feather name="mic" size={18} color={colors.accent} />
+                        <Text style={styles.accentAction}>{t('feed.answerThis')}</Text>
                       </Pressable>
                     )}
-                    {item.answerCount > 0 ? (
+                  </View>
+                ) : (
+                  <View style={styles.actions}>
+                    <LikeButton
+                      targetType="post"
+                      targetId={item._id}
+                      likeCount={item.likeCount}
+                      likedByViewer={item.likedByViewer}
+                      disabled={mine}
+                      from="/(app)/(tabs)/feed"
+                    />
+                    <Pressable
+                      accessibilityRole="button"
+                      hitSlop={8}
+                      onPress={open}
+                      style={({ pressed }) => (pressed ? styles.pressed : null)}
+                    >
+                      <Text style={styles.count}>
+                        {t('feed.corrections', { count: item.correctionCount })}
+                      </Text>
+                    </Pressable>
+                    {/* Your own post has nothing to act on: you cannot correct it. */}
+                    {mine ? null : item.correctedByViewer ? (
+                      <Text style={[styles.actionEnd, styles.actionDone]}>
+                        {t('feed.youCorrected')}
+                      </Text>
+                    ) : (
                       <Pressable
                         accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
-                        style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
+                        hitSlop={8}
+                        disabled={correctPost.isPending}
+                        onPress={() => startCorrecting(item)}
+                        style={({ pressed }) => [styles.actionEnd, pressed && styles.pressed]}
                       >
-                        <Text style={styles.seeAll}>
-                          {t('feed.seeAll', { count: item.answerCount })}
-                        </Text>
+                        <Text style={styles.accentAction}>{t('feed.correctThis')}</Text>
                       </Pressable>
-                    ) : null}
+                    )}
                   </View>
-                ) : null}
+                )}
 
-                {/* Your own post has nothing to act on: you cannot correct it,
-                    and the count above already says whether anyone has. */}
                 {!pronouncing && !mine && correctingId === item._id ? (
                   <View style={styles.compose}>
                     <FormField
-                      label={t('feed.yourCorrection')}
                       value={correction}
                       onChangeText={setCorrection}
+                      placeholder={t('feed.correctionPlaceholder')}
                       multiline
                       autoCapitalize="sentences"
                       maxLength={MAX_POST_LENGTH}
@@ -625,7 +470,7 @@ export default function FeedScreen() {
                       onPick={(picked) => setCorrectionMedia((items) => [...items, ...picked])}
                       disabled={correctPost.isPending || uploading}
                     />
-                    <View style={styles.actions}>
+                    <View style={styles.composeActions}>
                       <Button
                         label={
                           correctPost.isPending || uploading
@@ -638,7 +483,7 @@ export default function FeedScreen() {
                       />
                       <Button
                         label={t('common.cancel')}
-                        variant="secondary"
+                        variant="neutral"
                         onPress={() => {
                           setCorrectingId(null)
                           setCorrectionMedia([])
@@ -646,47 +491,6 @@ export default function FeedScreen() {
                         style={styles.grow}
                       />
                     </View>
-                  </View>
-                ) : !pronouncing && !mine ? (
-                  <View style={styles.actions}>
-                    {/*
-                      A yellow pill on every uncorrected post, deliberately:
-                      each one is a separate ask, and v3 repeats the commit per
-                      ask. Once a post has answers the invitation relaxes to a
-                      blue text action.
-                    */}
-                    {item.correctedByViewer ? (
-                      <Text style={styles.actionDone}>{t('feed.youCorrected')}</Text>
-                    ) : item.correctionCount === 0 ? (
-                      <Pressable
-                        accessibilityRole="button"
-                        disabled={correctPost.isPending}
-                        onPress={() => startCorrecting(item)}
-                        style={({ pressed }) => [styles.correctPill, pressed && styles.pressed]}
-                      >
-                        <Text style={styles.correctPillLabel}>{t('feed.correctThis')}</Text>
-                      </Pressable>
-                    ) : (
-                      <Pressable
-                        accessibilityRole="button"
-                        disabled={correctPost.isPending}
-                        onPress={() => startCorrecting(item)}
-                        style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
-                      >
-                        <Text style={styles.addYours}>{t('feed.addYours')}</Text>
-                      </Pressable>
-                    )}
-                    {item.correctionCount > 0 ? (
-                      <Pressable
-                        accessibilityRole="button"
-                        onPress={() => openPost(item._id, '/(app)/(tabs)/feed')}
-                        style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
-                      >
-                        <Text style={styles.seeAll}>
-                          {t('feed.seeAll', { count: item.correctionCount })}
-                        </Text>
-                      </Pressable>
-                    ) : null}
                   </View>
                 ) : null}
               </View>
@@ -707,80 +511,66 @@ export default function FeedScreen() {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
-  titleRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.title, color: colors.text, fontSize: 34 },
-  ask: { color: colors.accent, fontSize: 16, fontWeight: '700' },
-  sections: { marginTop: 18 },
-  compose: { gap: spacing.md, marginTop: spacing.md },
-  labelLine: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' },
-  label: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
-  // Underlined, not just tinted: colour alone does not say "press me" to a
-  // reader who cannot separate it from the label beside it.
-  languageButton: { alignItems: 'center', flexDirection: 'row', gap: 2 },
-  languageText: {
-    ...font.caption,
-    color: colors.text,
-    fontWeight: '700',
-    textDecorationLine: 'underline',
+  // 48 tall whether or not the ask label is there, so the segments do not move.
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: 14, minHeight: 48 },
+  title: { ...font.title, color: colors.text, flex: 1, fontSize: 34 },
+  // A text button that only shows its pill while pressed.
+  askButton: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
   },
-  chevron: { color: colors.textMuted },
-  grow: { flex: 1, width: 'auto' },
+  askPressed: { backgroundColor: colors.accentBg },
+  ask: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  sections: { marginTop: 18 },
   loading: { marginTop: spacing.xxl },
-  list: { paddingBottom: spacing.xxl },
+  list: { paddingBottom: spacing.xl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
   row: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    paddingVertical: 20,
+    gap: 14,
+    paddingVertical: 22,
   },
-  rowLast: { borderBottomWidth: 0 },
-  rowTop: { alignItems: 'center', flexDirection: 'row', gap: 11 },
-  whoRow: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 11, minWidth: 0 },
-  who: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 16 },
-  metaRow: { alignItems: 'center', flexDirection: 'row', gap: 6, marginTop: 1 },
-  meta: { color: colors.textMuted, flexShrink: 1, fontSize: 13, fontWeight: '400' },
-  count: { fontSize: 13, fontWeight: '600' },
-  countNone: { color: colors.danger },
-  countSome: { color: colors.success },
-  body: { ...font.body, color: colors.text, fontSize: 17, lineHeight: 26, marginTop: spacing.md },
+  who: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  whoText: { flex: 1, minWidth: 0 },
+  name: { ...font.heading, color: colors.text, fontSize: 15 },
+  meta: { color: colors.textFaint, fontSize: 13, fontWeight: '400' },
+  body: { color: colors.text, fontSize: 18, fontWeight: '400', lineHeight: 27 },
+  // The word somebody wants to hear said, set like a heading.
+  word: { ...font.heading, color: colors.text, fontSize: 26 },
   top: {
     backgroundColor: colors.successBg,
-    borderRadius: radius.md,
-    marginTop: spacing.md,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.lg,
+    gap: spacing.xs,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 14,
   },
   topLabel: { color: colors.success, fontSize: 12, fontWeight: '700' },
-  corrected: { color: colors.text, fontSize: 15, fontWeight: '600', lineHeight: 23, marginTop: 5 },
-  removed: { color: colors.textMuted, fontWeight: '400', textDecorationLine: 'line-through' },
+  corrected: { color: colors.text, fontSize: 16, fontWeight: '400', lineHeight: 23 },
+  removed: { color: colors.textMuted, textDecorationLine: 'line-through' },
   added: { color: colors.success, fontWeight: '800' },
-  topNote: { ...font.caption, color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 4 },
-  actions: { alignItems: 'center', flexDirection: 'row', gap: 20, marginTop: 14 },
-  // `gap` and `alignItems` arrived with the comment count: this held one child
-  // until then, so neither had anything to do.
-  likeRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, marginTop: 10 },
-  commentCount: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
-  deleteAction: { ...font.caption, color: colors.danger, fontWeight: '600' },
-  media: { marginTop: 10 },
-  composeActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  correctPill: {
+  actions: { alignItems: 'center', flexDirection: 'row', gap: 20 },
+  actionsPron: { gap: spacing.md },
+  count: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  actionEnd: { marginStart: 'auto' },
+  accentAction: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  actionDone: { color: colors.success, fontSize: 14, fontWeight: '600' },
+  playPill: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.fill,
     borderRadius: radius.pill,
-    justifyContent: 'center',
-    minHeight: 44,
-    paddingHorizontal: 20,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    height: 40,
+    paddingHorizontal: spacing.lg,
   },
-  correctPillLabel: {
-    color: colors.primaryText,
-    fontFamily: font.heading.fontFamily,
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  textAction: { justifyContent: 'center', minHeight: 44 },
-  addYours: { color: colors.accent, fontSize: 14, fontWeight: '700' },
-  seeAll: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
-  actionDone: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
-  pressed: { opacity: 0.7 },
+  playLabel: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  recordAction: { alignItems: 'center', flexDirection: 'row', gap: 6, marginStart: 'auto' },
+  compose: { gap: spacing.md },
+  composeActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  grow: { flex: 1, width: 'auto' },
+  pressed: { opacity: 0.6 },
 }))
