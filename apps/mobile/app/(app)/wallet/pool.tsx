@@ -77,6 +77,15 @@ export default function PoolScreen() {
               <Text style={styles.shareValue}>
                 {t('tokens.shareAmount', { count: lastPayout.amount })}
               </Text>
+              {/* Who the share was split with; absent from an API that does not say. */}
+              {lastPayout.participants !== undefined ? (
+                <Text style={styles.meta}>
+                  {t('tokens.poolParticipants', {
+                    count: lastPayout.participants,
+                    n: lastPayout.participants.toLocaleString(locale),
+                  })}
+                </Text>
+              ) : null}
             </>
           ) : (
             <Text style={styles.meta}>

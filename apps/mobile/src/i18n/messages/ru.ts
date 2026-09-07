@@ -503,6 +503,7 @@ export const ru: Localized<EnMessages> = {
     combinedTitle: 'Написанное тобой',
     tabCorrections: 'Исправления',
     tabPosts: 'Публикации',
+    forName: 'Для {name}',
   },
   myPosts: {
     emptyTitle: 'Ты ещё ничего не спросил',
@@ -1226,6 +1227,12 @@ export const ru: Localized<EnMessages> = {
       other: '{count} активности',
     },
     todayBreakdown: '{messages} сообщений, {corrections} исправлений, {partners} собеседников.',
+    poolParticipants: {
+      one: '{n} активный в тот день',
+      few: '{n} активных в тот день',
+      many: '{n} активных в тот день',
+      other: '{n} активных в тот день',
+    },
   },
 
   invite: {
@@ -1485,6 +1492,12 @@ export const ru: Localized<EnMessages> = {
     },
     seeWhoWith: 'Узнай, кто — с {plan}',
     unlockBody: 'Имена и профили, а ещё режим инкогнито для тебя.',
+    weekPeople: {
+      one: '{count} человек за последнюю неделю.',
+      few: '{count} человека за последнюю неделю.',
+      many: '{count} человек за последнюю неделю.',
+      other: '{count} человека за последнюю неделю.',
+    },
   },
 
   blocked: {

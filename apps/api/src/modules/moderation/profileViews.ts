@@ -86,6 +86,11 @@ export interface ViewerSummary {
    * paid part.
    */
   week?: { day: string; visits: number }[]
+  /**
+   * Distinct people over the same seven days — the sentence above the chart.
+   * First page only, like `week`; a count, so free like `week`.
+   */
+  weekPeople?: number
   /** `null` on the last page. */
   nextCursor: string | null
 }
@@ -217,11 +222,7 @@ async function visitsByDay(
   hidden: string[],
   now: Date,
 ): Promise<{ day: string; visits: number }[]> {
-  const days: string[] = []
-  for (let back = VIEWS_WEEK_DAYS - 1; back >= 0; back--) {
-    days.push(utcDayKey(new Date(now.getTime() - back * 24 * 60 * 60 * 1000)))
-  }
-  const from = new Date(`${days[0]}T00:00:00Z`)
+  const { days, from } = weekWindow(now)
 
   const rows = await db
     .collection<ProfileView>(COLLECTIONS.profileViews)
@@ -243,6 +244,33 @@ async function visitsByDay(
     .toArray()
   const byDay = new Map(rows.map((row) => [row._id, row.visits]))
   return days.map((day) => ({ day, visits: byDay.get(day) ?? 0 }))
+}
+
+/** The seven day keys the chart draws, oldest first, and the instant the first one starts. */
+function weekWindow(now: Date): { days: string[]; from: Date } {
+  const days: string[] = []
+  for (let back = VIEWS_WEEK_DAYS - 1; back >= 0; back--) {
+    days.push(utcDayKey(new Date(now.getTime() - back * 24 * 60 * 60 * 1000)))
+  }
+  return { days, from: new Date(`${days[0]}T00:00:00Z`) }
+}
+
+/**
+ * Distinct visitors over the chart's window — people, not visits, because
+ * "6 people in the last week" is the sentence the design puts over the chart
+ * and one person over three days is one person.
+ */
+async function peopleInWeek(
+  db: Db,
+  viewedId: string,
+  hidden: string[],
+  now: Date,
+): Promise<number> {
+  const { from } = weekWindow(now)
+  const people = await db
+    .collection<ProfileView>(COLLECTIONS.profileViews)
+    .distinct('viewerId', { viewedId, viewerId: { $nin: hidden }, lastViewedAt: { $gte: from } })
+  return people.length
 }
 
 /**
@@ -366,6 +394,13 @@ export async function getViewers(
     nextCursor:
       hasMore && lastView ? encodeDateIdCursor(lastView.lastViewedAt, lastView._id) : null,
   }
-  if (!query.cursor) summary.week = await visitsByDay(db, userId, hidden, now)
+  if (!query.cursor) {
+    const [week, weekPeople] = await Promise.all([
+      visitsByDay(db, userId, hidden, now),
+      peopleInWeek(db, userId, hidden, now),
+    ])
+    summary.week = week
+    summary.weekPeople = weekPeople
+  }
   return summary
 }

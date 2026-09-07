@@ -197,7 +197,10 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       const b = await newUser()
       expect((await post(a, '/blocks', { userId: b.userId })).statusCode).toBe(201)
       expect((await post(a, '/blocks', { userId: b.userId })).statusCode).toBe(201) // no duplicate-key 500
-      expect((await get(a, '/blocks')).json<{ items: unknown[] }>().items).toHaveLength(1)
+      const listed = (await get(a, '/blocks')).json<{ items: unknown[]; total: number }>()
+      expect(listed.items).toHaveLength(1)
+      // The whole list's count, for the settings row — not the page's.
+      expect(listed.total).toBe(1)
 
       const removed = await app.inject({
         method: 'DELETE',
@@ -205,7 +208,9 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         headers: { cookie: a.cookie },
       })
       expect(removed.statusCode).toBe(204)
-      expect((await get(a, '/blocks')).json<{ items: unknown[] }>().items).toHaveLength(0)
+      const after = (await get(a, '/blocks')).json<{ items: unknown[]; total: number }>()
+      expect(after.items).toHaveLength(0)
+      expect(after.total).toBe(0)
     })
 
     /** Had no limit at all: one query and one response body sized by the list. */

@@ -104,7 +104,13 @@ export default function ViewersScreen() {
           }}
           ListHeaderComponent={
             <>
-              {week.length > 0 ? (
+              {/* People when the API says how many, as the design words it;
+                visits from an API that only counts those. */}
+              {summary?.weekPeople !== undefined ? (
+                <Text style={styles.summary}>
+                  {t('viewers.weekPeople', { count: summary.weekPeople })}
+                </Text>
+              ) : week.length > 0 ? (
                 <Text style={styles.summary}>
                   {t('viewers.weekSummary', { count: weekVisits })}
                 </Text>

@@ -572,7 +572,14 @@ export const tokenSummarySchema = z.object({
      * earned for — not the day it was paid. Null until the first payout lands,
      * which for a new account is the morning after their first active day.
      */
-    lastPayout: z.object({ day: z.string(), amount: z.number().int() }).nullable(),
+    lastPayout: z
+      .object({
+        day: z.string(),
+        amount: z.number().int(),
+        /** How many people that day's run paid. Absent when the run record is gone. */
+        participants: z.number().int().optional(),
+      })
+      .nullable(),
   }),
   /**
    * All-time counts that are not token totals.

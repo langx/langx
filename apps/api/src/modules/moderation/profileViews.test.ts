@@ -131,6 +131,8 @@ describe('profile views, a row per day', () => {
     const first = await getViewers(handle.db, 'me', { limit: 2 }, at(10 * MIN))
     expect(first.week?.map((day) => day.visits)).toEqual([0, 0, 0, 1, 0, 4, 2])
     expect(first.week?.at(-1)?.day).toBe('2026-09-05')
+    // People over the window, not visits: xue twice is one person.
+    expect(first.weekPeople).toBe(3)
     expect(first.nextCursor).not.toBeNull()
 
     const second = await getViewers(
@@ -140,6 +142,7 @@ describe('profile views, a row per day', () => {
       at(10 * MIN),
     )
     expect(second.week).toBeUndefined()
+    expect(second.weekPeople).toBeUndefined()
   })
 
   it('reports people, not rows, to the digest — and never names a guest', async () => {

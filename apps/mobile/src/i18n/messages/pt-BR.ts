@@ -450,6 +450,7 @@ export const ptBR: Localized<EnMessages> = {
     combinedTitle: 'O que você escreveu',
     tabCorrections: 'Correções',
     tabPosts: 'Publicações',
+    forName: 'Para {name}',
   },
   myPosts: {
     emptyTitle: 'Você ainda não perguntou nada',
@@ -1086,6 +1087,7 @@ export const ptBR: Localized<EnMessages> = {
     todaySoFar: 'Hoje até agora',
     activityScore: { one: '{count} de atividade', other: '{count} de atividade' },
     todayBreakdown: '{messages} mensagens, {corrections} correções, {partners} pessoas.',
+    poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
   },
 
   invite: {
@@ -1307,6 +1309,10 @@ export const ptBR: Localized<EnMessages> = {
     },
     seeWhoWith: 'Veja quem com {plan}',
     unlockBody: 'Nomes e perfis, e ainda navegação anônima para você.',
+    weekPeople: {
+      one: '{count} pessoa na última semana.',
+      other: '{count} pessoas na última semana.',
+    },
   },
 
   blocked: {

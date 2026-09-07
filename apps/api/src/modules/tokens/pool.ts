@@ -227,16 +227,29 @@ export async function runDailyPool(
  * that guards double payment, so sorting on its third key makes this a walk of
  * one index rather than a scan and a sort. Day keys are `YYYY-MM-DD`, so
  * lexicographic descending is chronological descending.
+ *
+ * `participants` is how many people that day's run paid — the run record
+ * already keeps it as `result.paid`, so "1,284 active that day" under the
+ * share costs one keyed read and no new write. Absent if the run record is
+ * gone (it is operational, not ledger), which the screen tolerates.
  */
 export async function readLastPoolPayout(
   db: Db,
   userId: string,
-): Promise<{ day: string; amount: number } | null> {
+): Promise<{ day: string; amount: number; participants?: number } | null> {
   const row = await db
     .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
     .findOne({ userId, kind: 'dailyPool' }, { sort: { refId: -1 } })
 
   // `refId` is always written for a pool award, but the type allows its
   // absence and a row without one has no day to be shown against.
-  return row?.refId ? { day: row.refId, amount: row.amount } : null
+  if (!row?.refId) return null
+
+  const run = await db
+    .collection<JobRun>(COLLECTIONS.jobRuns)
+    .findOne({ job: DAILY_POOL_JOB, periodKey: row.refId }, { projection: { 'result.paid': 1 } })
+  const participants = run?.result?.paid
+  return participants === undefined
+    ? { day: row.refId, amount: row.amount }
+    : { day: row.refId, amount: row.amount, participants }
 }
