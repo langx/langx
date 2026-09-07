@@ -4,33 +4,31 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { Image } from 'expo-image'
-import { uploadAvatarBytes } from '../../src/api/queries'
+import { useMe, useUpdateProfile, useUploadAvatar } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
-import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
-import { goBackTo } from '../../src/lib/navigation'
 import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
- * Step 4 of 5, and both halves of it are skippable.
+ * The last step, and both halves of it are skippable.
  *
- * `docs/architecture.md` has described the wizard as "languages + levels →
- * gender/bio/avatar/interests → username claim" from the beginning; the avatar
- * and the bio are the two that make a first impression. Without them a new
- * account arrives in discovery as a letter on a grey circle with nothing to
- * open with, which is the worst possible first impression in a product whose
- * whole mechanic is strangers choosing each other. Interests wait for the
- * profile editor — v3 keeps this step to the two.
+ * The avatar and the bio are the two things that make a first impression.
+ * Without them a new account arrives in discovery as a letter on a grey circle
+ * with nothing to open with, which is the worst possible first impression in a
+ * product whose whole mechanic is strangers choosing each other. Interests
+ * wait for the profile editor — v3 keeps this step to the two.
  *
- * The picture is uploaded here but **not** confirmed: `confirm` writes onto a
- * profile and there is no profile until the last step. The URL rides in the
- * draft and `POST /profiles` writes it, running the same bucket check.
+ * v3 claims the username *before* this screen, so the profile already exists
+ * when it opens. The picture therefore goes through the same upload-and-confirm
+ * the profile editor uses, and the bio is a plain `PATCH /profiles/me` — nothing
+ * rides in the draft any more, which is also why there is no way back: the
+ * claim behind this screen cannot be undone.
  */
 export default function PhotoStep() {
   useScreenInteractive()
@@ -38,8 +36,12 @@ export default function PhotoStep() {
   const { colors } = useTheme()
   const t = useT()
 
-  const draft = useOnboardingDraft()
-  const [uploading, setUploading] = useState(false)
+  const me = useMe()
+  const uploadAvatar = useUploadAvatar()
+  const updateProfile = useUpdateProfile()
+  const [bio, setBio] = useState('')
+  const [saving, setSaving] = useState(false)
+  const uploading = uploadAvatar.isPending
 
   async function pickPhoto(): Promise<void> {
     const picked = await pickImageAsset({ allowsEditing: true, aspect: [1, 1] })
@@ -56,22 +58,40 @@ export default function PhotoStep() {
     }
     if (picked.status === 'cancelled') return
 
-    setUploading(true)
     try {
-      const url = await uploadAvatarBytes(picked.image.uri, picked.image.contentType)
-      updateDraft({ avatarUrl: url })
+      await uploadAvatar.mutateAsync(picked.image)
     } catch {
       void showAlert(t('errors.uploadFailed'), t('onboarding.photoUploadFailed'))
-    } finally {
-      setUploading(false)
     }
   }
 
-  // The name is required two steps back, so there is always a letter to show.
-  const initial = draft.displayName.trim().charAt(0).toUpperCase()
+  /**
+   * Saves the bio if there is one, then on to the finish screen. Skipping is
+   * the same navigation without the save; the picture, if any, is already on
+   * the profile.
+   */
+  async function finish(save: boolean): Promise<void> {
+    const text = bio.trim()
+    if (save && text.length > 0) {
+      setSaving(true)
+      try {
+        await updateProfile.mutateAsync({ bio: text })
+      } catch {
+        setSaving(false)
+        void showAlert(t('editProfile.saveFailed'), t('common.retry'))
+        return
+      }
+      setSaving(false)
+    }
+    router.replace('/(onboarding)/done')
+  }
+
+  const avatarUrl = me.data?.avatarUrl
+  // The name was required two steps back, so there is always a letter to show.
+  const initial = (me.data?.displayName ?? '').trim().charAt(0).toUpperCase()
   const photoLabel = uploading
     ? t('onboarding.uploading')
-    : draft.avatarUrl
+    : avatarUrl
       ? t('onboarding.changePhoto')
       : t('onboarding.addPhoto')
 
@@ -89,7 +109,8 @@ export default function PhotoStep() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
       >
-        <StepProgress step="photo" onBack={() => goBackTo('/(onboarding)/about-you')} />
+        {/* No back arrow: the username behind this screen is claimed and the profile exists. */}
+        <StepProgress step="photo" />
         <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
         <Text style={styles.subtitle}>{t('onboarding.photoBody')}</Text>
 
@@ -102,8 +123,8 @@ export default function PhotoStep() {
             onPress={() => void pickPhoto()}
             style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}
           >
-            {draft.avatarUrl ? (
-              <Image source={{ uri: draft.avatarUrl }} style={styles.photo} contentFit="cover" />
+            {avatarUrl ? (
+              <Image source={{ uri: avatarUrl }} style={styles.photo} contentFit="cover" />
             ) : (
               <Text style={styles.initial}>{initial}</Text>
             )}
@@ -126,8 +147,8 @@ export default function PhotoStep() {
         <View style={styles.bio}>
           <FormField
             label={t('onboarding.aboutYouOptional')}
-            value={draft.bio}
-            onChangeText={(bio) => updateDraft({ bio })}
+            value={bio}
+            onChangeText={setBio}
             placeholder={t('onboarding.bioPrompt')}
             multiline
             maxLength={BIO_MAX_LENGTH}
@@ -141,11 +162,16 @@ export default function PhotoStep() {
           wants to correct it grants location permission in Settings.
         */}
 
-        <Button label={t('common.continue')} onPress={() => router.push('/(onboarding)/handle')} />
+        <Button
+          label={t('onboarding.startUsing')}
+          loading={saving}
+          disabled={uploading}
+          onPress={() => finish(true)}
+        />
         <Pressable
           accessibilityRole="button"
           hitSlop={8}
-          onPress={() => router.push('/(onboarding)/handle')}
+          onPress={() => void finish(false)}
           style={({ pressed }) => [styles.skip, pressed && styles.pressed]}
         >
           <Text style={styles.skipText}>{t('common.skip')}</Text>

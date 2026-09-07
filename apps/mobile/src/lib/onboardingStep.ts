@@ -5,7 +5,7 @@ import type { OnboardingDraft } from '../hooks/useOnboardingDraft'
  * `languages` screen, behind two tabs — v3 merged them back, with Continue
  * driving the tab change so the sequence survives the merge.
  */
-export const ONBOARDING_STEPS = ['languages', 'levels', 'about-you', 'photo', 'handle'] as const
+export const ONBOARDING_STEPS = ['languages', 'levels', 'about-you', 'handle', 'photo'] as const
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
 
 /**
@@ -17,9 +17,9 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
  *
  * It reads what a step *requires*, not what the user last looked at — a draft
  * with languages but no name belongs on `about-you` whichever screen was open
- * when the app died. `handle` is never returned: it is the submit step, and
- * dropping someone straight onto "claim your username" skips the two optional
- * fields before it without them ever seeing that they existed.
+ * when the app died. `photo` is never returned: it is the step after the
+ * profile exists (v3 claims the username first, then asks for a picture), and
+ * a profile is exactly what stops the gate from sending anyone here at all.
  */
 /**
  * What a guest fills in: the two language questions and nothing else.
@@ -42,7 +42,7 @@ export function furthestOnboardingStep(draft: OnboardingDraft): OnboardingStep {
   // fit between what you speak and how well you speak it.
   if (draft.learning.some((entry) => entry.level === null)) return 'levels'
   if (!draft.displayName.trim() || !draft.birthDate.trim()) return 'about-you'
-  return 'photo'
+  return 'handle'
 }
 
 export function onboardingHref(step: OnboardingStep): `/(onboarding)/${OnboardingStep}` {

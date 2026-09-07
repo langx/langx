@@ -606,6 +606,15 @@ would be lost on "back", and serialising a growing draft through route params
 turns the URL into a form encoding. A small store outside React matches the
 real lifetime: the draft outlives any one screen and is thrown away on submit.
 
+**7 September 2026 — the username moved ahead of the photo.** The v3 design
+claims the handle right after the about-you step, and the picture and bio come
+last. That changes what the draft carries: the profile exists by the time the
+photo screen opens, so the avatar goes through the same upload-and-confirm the
+profile editor uses and the bio is a plain `PATCH /profiles/me`. Neither rides
+in the draft any more, and `furthestOnboardingStep` can now land on `handle`
+(the step that submits) but never on `photo` — a profile is exactly what keeps
+the gate from sending anyone back into the wizard.
+
 ## Client — `expo-notifications` must be imported lazily
 
 Expo Go dropped remote push on Android in SDK 53, and `expo-notifications`

@@ -24,6 +24,8 @@ export default function OnboardingLayout() {
         reached by `replace` and are not a place to go back from.
       */}
       <Stack.Screen name="languages" options={{ gestureEnabled: false }} />
+      {/* The claim behind it cannot be undone, so the photo step has no back. */}
+      <Stack.Screen name="photo" options={{ gestureEnabled: false }} />
       <Stack.Screen name="welcome-back" options={{ gestureEnabled: false }} />
       <Stack.Screen name="done" options={{ gestureEnabled: false }} />
     </Stack>

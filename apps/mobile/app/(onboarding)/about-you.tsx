@@ -139,7 +139,7 @@ export default function AboutYouStep() {
         <Button
           label={t('common.continue')}
           disabled={!canContinue}
-          onPress={() => router.push('/(onboarding)/photo')}
+          onPress={() => router.push('/(onboarding)/handle')}
         />
       </ScrollView>
     </Screen>

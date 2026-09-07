@@ -1076,8 +1076,9 @@ only thing that matters is preserving store identity.
 
 1. Sign-up/sign-in (email + Google + Apple), verification, password reset,
    **16+ age gate** (18+ at launch)
-2. Onboarding: languages + levels → gender/bio/avatar/interests → **username
-   claim**
+2. Onboarding: languages + levels → gender/birth date → **username claim** →
+   avatar/bio (v3, 7 September 2026: the username moved ahead of the photo, so
+   the picture and the bio are written onto a profile that already exists)
 3. Profile view/edit, presigned avatar upload + **multi-photo gallery**
 4. Discovery: ranked list + free filters + **two sort presets**, infinite
    scroll, **direct message start** from a profile or the list

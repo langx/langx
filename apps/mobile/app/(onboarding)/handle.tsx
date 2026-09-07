@@ -33,7 +33,9 @@ function useDebounced<T>(value: T, delay = 400): T {
 }
 
 /**
- * The last step: pick a handle, then create the profile.
+ * The step that creates the profile: pick a handle, claim it, and the photo
+ * follows. v3 puts the username before the picture — the account exists once
+ * this screen is done, and what comes after is written onto it.
  *
  * v1 ran on Appwrite and its users had handles; a returning user's handle is
  * reserved for them and this is where they claim it. The reservation lookup is
@@ -114,9 +116,8 @@ export default function HandleStep() {
         // Every level is set by the time this screen is reachable — the
         // wizard's third step will not continue without them.
         learning: current.learning.map((l, index) => ({ ...l, priority: index + 1 })),
-        ...(current.bio.trim() ? { bio: current.bio.trim() } : {}),
-        ...(current.interests.length > 0 ? { interests: current.interests } : {}),
-        ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
+        // No photo and no bio here: both are asked on the step after this one
+        // and written onto the profile this request creates.
         // Silently ignored by the server if it resolves to nobody — see
         // `attachReferral`. Nothing here should be able to fail a sign-up.
         ...(current.referredByHandle
@@ -142,10 +143,10 @@ export default function HandleStep() {
         },
       })
       await queryClient.invalidateQueries({ queryKey: keys.me })
-      // To the finish screen, not straight into discovery: a list of strangers
-      // with no instruction is a poor first thing to hand someone who has just
-      // finished four forms.
-      router.replace('/(onboarding)/done')
+      // On to the photo, which writes onto the profile that now exists; the
+      // finish screen comes after it. `replace`, because the claim cannot be
+      // undone by going back.
+      router.replace('/(onboarding)/photo')
     } catch (error) {
       // The API's own message is English and written for a developer; the
       // person filling in this form gets ours instead.
@@ -201,7 +202,7 @@ export default function HandleStep() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
       >
-        <StepProgress step="handle" onBack={() => goBackTo('/(onboarding)/photo')} />
+        <StepProgress step="handle" onBack={() => goBackTo('/(onboarding)/about-you')} />
         <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
 
         {reserved ? (
@@ -284,7 +285,7 @@ export default function HandleStep() {
         )}
 
         <Button
-          label={t('onboarding.startUsing')}
+          label={t('common.continue')}
           disabled={!canSubmit}
           loading={submitting}
           onPress={submit}
