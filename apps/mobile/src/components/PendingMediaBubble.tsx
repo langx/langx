@@ -105,7 +105,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     borderRadius: 20,
     borderWidth: 1,
     gap: spacing.xs,
-    maxWidth: '82%',
+    maxWidth: '78%',
     padding: spacing.sm,
   },
   // Your own side, drained: the message does not exist yet, so it does not get

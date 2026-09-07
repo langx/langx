@@ -1,4 +1,5 @@
-import { shiftDayKey, TOKEN_RULES } from '@langx/shared'
+import Feather from '@expo/vector-icons/Feather'
+import { shiftDayKey, TOKEN_RULES, wornCosmetic } from '@langx/shared'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import {
@@ -10,7 +11,6 @@ import {
   useTokens,
   useWallet,
 } from '../../../src/api/queries'
-import { EquipPicker } from '../../../src/components/store/EquipPicker'
 import { StoreRow } from '../../../src/components/store/StoreRow'
 import type { StoreOffer } from '../../../src/lib/storeOffers'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -20,7 +20,7 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { confirmAndRepair } from '../../../src/lib/repairFlow'
 import { showToast } from '../../../src/lib/toast'
 import { buildStoreOffers } from '../../../src/lib/storeOffers'
-import { makeStyles } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -28,14 +28,17 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 /**
  * The store: what the balance buys, and what you already own.
  *
- * The pickers sit above the prices because what you already have is the
- * answer to "why buy another", and it has to be visible before the prices
- * are. The hourly gift is not here — it is not for sale, so it stays on the
- * wallet's landing page.
+ * One catalogue in three lists — the consumables, then every frame, then
+ * every title — with what you own kept in place and marked as worn or
+ * wearable. The pickers that used to sit above the prices are gone: a row
+ * that says "Wearing" *is* the picker, and it sits next to the price of the
+ * rung above, which is the answer to "why buy another". The hourly gift is
+ * not here — it is not for sale, so it stays on the wallet's landing page.
  */
 export default function StoreScreen() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const { locale } = useLocale()
 
@@ -43,8 +46,8 @@ export default function StoreScreen() {
   const wallet = useWallet()
   /*
    * The window a repair can still reach, so the store can offer the newest day
-   * inside it. Same query the heatmap on `/me` already runs, so it is usually
-   * in cache by the time somebody walks over here.
+   * inside it. Same query the heatmap on the streak page already runs, so it is
+   * usually in cache by the time somebody walks over here.
    */
   const today = new Date().toISOString().slice(0, 10)
   const activity = useActivity(shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays), today)
@@ -91,6 +94,13 @@ export default function StoreScreen() {
         }
       : {}),
   })
+  const items = offers.filter((offer) => !offer.kind)
+  const frames = offers.filter((offer) => offer.kind === 'frame')
+  const titles = offers.filter((offer) => offer.kind === 'title')
+  // What is *drawn*, which is the explicit choice or the fallback — so the row
+  // marked as worn matches the profile even before anybody has chosen.
+  const wornFrame = wornCosmetic(wallet.data?.equipped, owned, 'frame')?.id
+  const wornTitle = wornCosmetic(wallet.data?.equipped, owned, 'title')?.id
 
   /**
    * Buying, and saying so.
@@ -127,7 +137,7 @@ export default function StoreScreen() {
   }
 
   /**
-   * Wearing, and saying so. The pill flips at once (the cache is patched
+   * Wearing, and saying so. The row flips at once (the cache is patched
    * before the request leaves), the toast is the confirmation that it stuck,
    * and a refusal both says so and puts the old choice back.
    */
@@ -140,55 +150,64 @@ export default function StoreScreen() {
 
   return (
     <Screen scroll {...pull}>
-      <ScreenHeader title={t('wallet.storeTitle')} onBack={() => goBackTo('/(app)/wallet')} />
-
-      <Text style={styles.balance}>
-        {t('wallet.balance')} · {balance}
-      </Text>
-
-      <EquipPicker
-        kind="frame"
-        owned={owned}
-        equipped={wallet.data?.equipped}
-        viewer={viewer}
-        onEquip={(id) => wear({ frame: id })}
-      />
-      <EquipPicker
-        kind="title"
-        owned={owned}
-        equipped={wallet.data?.equipped}
-        viewer={viewer}
-        onEquip={(id) => wear({ title: id })}
+      <ScreenHeader
+        title={t('wallet.storeTitle')}
+        onBack={() => goBackTo('/(app)/wallet')}
+        trailing={
+          <View
+            style={styles.balance}
+            accessibilityRole="text"
+            accessibilityLabel={`${t('wallet.balance')}: ${balance}`}
+          >
+            <Feather name="credit-card" size={16} color={colors.textMuted} />
+            <Text style={styles.balanceValue}>{balance.toLocaleString(locale)}</Text>
+          </View>
+        }
       />
 
-      <View style={styles.offers}>
-        {offers.map((offer, index) => (
-          <StoreRow
-            key={offer.id}
-            offer={offer}
-            pending={purchase.isPending}
-            last={index === offers.length - 1}
-            onBuy={buy}
-            viewer={viewer}
-          />
-        ))}
-      </View>
+      {items.map((offer) => (
+        <StoreRow key={offer.id} offer={offer} pending={purchase.isPending} onBuy={buy} />
+      ))}
 
-      <Text style={styles.hint}>{t('wallet.disclaimer')}</Text>
+      <Text style={styles.kicker}>{t('store.frames')}</Text>
+      {frames.map((offer) => (
+        <StoreRow
+          key={offer.id}
+          offer={offer}
+          pending={purchase.isPending}
+          onBuy={buy}
+          viewer={viewer}
+          equipped={offer.id === wornFrame}
+          onWear={(chosen) => wear({ frame: chosen.id })}
+        />
+      ))}
+
+      <Text style={styles.kicker}>{t('store.titles')}</Text>
+      {titles.map((offer) => (
+        <StoreRow
+          key={offer.id}
+          offer={offer}
+          pending={purchase.isPending}
+          onBuy={buy}
+          equipped={offer.id === wornTitle}
+          onWear={(chosen) => wear({ title: chosen.id })}
+        />
+      ))}
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  balance: { ...font.label, color: colors.textMuted, marginTop: spacing.md },
-  offers: { marginTop: spacing.lg },
-  hint: {
-    ...font.caption,
+  balance: { alignItems: 'center', flexDirection: 'row', gap: 6 },
+  balanceValue: { ...font.heading, color: colors.text, fontSize: 16 },
+  kicker: {
     color: colors.textFaint,
-    fontSize: 13,
-    lineHeight: 21,
-    marginBottom: spacing.xxl,
-    marginTop: spacing.lg,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    paddingBottom: spacing.xs,
+    paddingTop: spacing.xl,
+    textTransform: 'uppercase',
   },
 }))

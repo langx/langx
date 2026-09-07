@@ -7,11 +7,10 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
-  PLAN_LIMITS,
   TOKEN_RULES,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
-import { useFocusEffect, useLocalSearchParams } from 'expo-router'
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -28,6 +27,7 @@ import {
 import {
   markConversationRead,
   uploadMessageMedia,
+  useBlockUser,
   useMe,
   useMessages,
   useMessageWindow,
@@ -41,7 +41,6 @@ import { setActiveConversation } from '../../../src/lib/activeConversation'
 import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ComposerHint } from '../../../src/components/ComposerHint'
-import { Tip } from '../../../src/components/Tip'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import {
@@ -53,7 +52,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
-import { chooseAlert, showAlert } from '../../../src/lib/alert'
+import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import {
   addUnsent,
@@ -94,6 +93,7 @@ import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
 
 export default function ChatScreen() {
   useScreenInteractive()
@@ -140,7 +140,10 @@ export default function ChatScreen() {
   const translateApi = useTranslate()
   const keyboardInset = useKeyboardInset()
   const report = useReportUser()
+  const block = useBlockUser()
   const recorder = useVoiceRecorder()
+  /** Only for the pill's dress: white ground and accent ring while it has focus. */
+  const [focused, setFocused] = useState(false)
   const [sendingMedia, setSendingMedia] = useState(false)
   /**
    * Picked, and waiting for the send button.
@@ -707,7 +710,7 @@ export default function ChatScreen() {
     const canWithdraw = canDeleteForEveryone(message, me.data?._id ?? '', new Date())
     const scope = canWithdraw
       ? await chooseAlert(t('chat.deleteTitle'), t('chat.deleteBothSides'), [
-          { label: t('chat.deleteForEveryone'), value: 'everyone' },
+          { label: t('chat.deleteForEveryone'), value: 'everyone', destructive: true },
           { label: t('chat.deleteForMe'), value: 'me' },
         ])
       : await chooseAlert(t('chat.deleteTitle'), t('chat.deleteOwnSide'), [
@@ -815,6 +818,74 @@ export default function ChatScreen() {
     )
   }
 
+  /**
+   * The header's overflow: what the prototype's chat sheet offers that the app
+   * already has. Pinning the *chat* is left out — this screen's page carries
+   * the pinned message, not the conversation's own flags, so the row could not
+   * say whether it would pin or unpin.
+   */
+  async function openThreadMenu(): Promise<void> {
+    if (!partner) return
+    const choice = await chooseAlert(partner.displayName, undefined, [
+      { label: t('chat.viewProfile'), value: 'profile' },
+      { label: t('chats.starredMessages'), value: 'starred' },
+      { label: t('common.block'), value: 'block', destructive: true },
+    ])
+    if (choice === 'profile') {
+      openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+    } else if (choice === 'starred') {
+      router.push('/(app)/starred')
+    } else if (choice === 'block') {
+      // The same question the profile asks, so the two places agree.
+      const yes = await confirmAlert({
+        title: t('common.block'),
+        message: t('profile.blockConfirm', { name: partner.displayName }),
+        confirmLabel: t('common.block'),
+        destructive: true,
+      })
+      if (!yes) return
+      block.mutate(partnerId, {
+        onSuccess: () => {
+          goBackTo('/(app)/(tabs)/chats')
+          showToast(t('profile.blocked', { name: partner.displayName }))
+        },
+      })
+    }
+  }
+
+  /**
+   * The composer's mode, as the banner shows it: what it says and what its
+   * cross undoes. Edit wins over correct wins over reply — the order `send`
+   * checks them in, so the banner never names a mode the send would not take.
+   */
+  const mode = editing
+    ? {
+        label: t('chat.editing'),
+        preview: editing.body,
+        clear: () => {
+          setEditing(null)
+          setDraft('')
+        },
+      }
+    : correcting
+      ? {
+          label: t('chat.correcting'),
+          preview: correcting.body,
+          clear: () => {
+            setCorrecting(null)
+            setDraft('')
+          },
+        }
+      : replyingTo
+        ? {
+            label: isMine(replyingTo)
+              ? t('chat.replyingToYourself')
+              : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
+            preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+            clear: () => setReplyingTo(null),
+          }
+        : null
+
   return (
     <Screen fluid style={styles.screen}>
       {/*
@@ -831,7 +902,7 @@ export default function ChatScreen() {
             hitSlop={12}
             style={styles.back}
           >
-            <Feather name="arrow-left" size={19} color={colors.text} />
+            <Feather name="arrow-left" size={22} color={colors.text} />
           </Pressable>
           <Pressable
             style={styles.headerUser}
@@ -860,6 +931,15 @@ export default function ChatScreen() {
                 <PresenceLine lastActiveAt={partner?.lastActiveAt} />
               )}
             </View>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('messageMenu.more')}
+            hitSlop={8}
+            onPress={() => void openThreadMenu()}
+            style={styles.more}
+          >
+            <Feather name="more-horizontal" size={22} color={colors.text} />
           </Pressable>
         </View>
 
@@ -942,9 +1022,6 @@ export default function ChatScreen() {
                */
               ListHeaderComponent={
                 <>
-                  {/* Above the composer, where a hint is read rather than
-                    scrolled past. */}
-                  <Tip slot="chat" spaced={false} />
                   {pending.length > 0 ? (
                     <View style={styles.unsentBlock}>
                       {pending.map((row) => (
@@ -977,11 +1054,26 @@ export default function ChatScreen() {
                       ))}
                     </View>
                   ) : null}
+                  {/*
+                    Last, so it sits nearest the composer: inverted, this header
+                    is the bottom of the thread, and the other person typing is
+                    the newest thing in it.
+                  */}
+                  {partnerTyping ? <TypingIndicator /> : null}
                 </>
               }
-              /** Footer, not header: inverted, the footer is what sits on top. */
+              /**
+               * Footer, not header: inverted, the footer is what sits on top —
+               * the spinner for older pages and, on a thread too short to have
+               * any, the opening tip.
+               */
               ListFooterComponent={
-                thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
+                <>
+                  {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
+                  {items.length < SHORT_THREAD_MESSAGES ? (
+                    <ComposerHint slot="chat" style={styles.threadTip} />
+                  ) : null}
+                </>
               }
               /**
                * Mandatory, not defensive: bubbles are variable height and there
@@ -1027,7 +1119,6 @@ export default function ChatScreen() {
                     partnerName={partner?.displayName ?? t('chat.them')}
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
-                    replyToMine={row.message.replyTo?.senderId === me.data?._id}
                     highlighted={highlighted === row.message._id}
                     onLongPress={onLongPress}
                     onReply={onReply}
@@ -1073,86 +1164,35 @@ export default function ChatScreen() {
         </View>
 
         {/*
-        The correction composer, and the success pair again — the same colour
-        the sent correction will be, so the writer can already see what they are
-        making. It shows the sentence being corrected in full rather than
-        truncated to a line: a correction is an edit, and an edit made from a
-        half-remembered original is how a wrong one gets sent.
-      */}
-        {/*
-        Sibling of the correcting banner below, and deliberately quieter: a
-        reply is the ordinary case and a correction is the teaching one, so the
-        correction keeps the success colour and this gets the accent edge.
-      */}
-        {replyingTo && !correcting && !editing ? (
-          <View style={styles.replyingBanner}>
-            <View style={styles.replyingBar} />
-            <View style={styles.replyingText}>
-              <Text style={styles.replyingTitle} numberOfLines={1}>
-                {isMine(replyingTo)
-                  ? t('chat.replyingToYourself')
-                  : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') })}
-              </Text>
-              <Text style={styles.replyingPreview} numberOfLines={1}>
-                {replyingTo.body || t(messageTypeKey(replyingTo.type))}
-              </Text>
-            </View>
-            <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
-              <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
-
-        {editing ? (
-          <View style={styles.replyingBanner}>
-            <View style={[styles.replyingBar, styles.editingBar]} />
-            <View style={styles.replyingText}>
-              <Text style={[styles.replyingTitle, styles.editingTitle]}>{t('chat.editing')}</Text>
-              <Text style={styles.replyingPreview} numberOfLines={1}>
-                {editing.body}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => {
-                setEditing(null)
-                setDraft('')
-              }}
-              hitSlop={8}
-            >
-              <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
-
-        {correcting ? (
-          <View style={styles.correctingBanner}>
-            <View style={styles.correctingHead}>
-              <Feather name="edit-3" size={14} color={colors.success} />
-              <Text style={styles.correctingTitle}>{t('chat.correcting')}</Text>
+          One block under a hairline: the mode banner when there is one, the
+          picked attachments, the row itself, and the hint under it.
+        */}
+        <View style={styles.composer}>
+          {/*
+            One shape for all three modes — reply, edit, correct. The label says
+            which; the line under it is the message it is about, cut to one line
+            because the composer below already holds the text being written.
+          */}
+          {mode ? (
+            <View style={styles.modeBanner}>
+              <View style={styles.modeText}>
+                <Text style={styles.modeLabel} numberOfLines={1}>
+                  {mode.label}
+                </Text>
+                <Text style={styles.modePreview} numberOfLines={1}>
+                  {mode.preview}
+                </Text>
+              </View>
               <Pressable
-                onPress={() => {
-                  setCorrecting(null)
-                  setDraft('')
-                }}
+                accessibilityRole="button"
+                accessibilityLabel={t('common.cancel')}
                 hitSlop={8}
+                onPress={mode.clear}
               >
-                <Text style={styles.correctingCancel}>{t('common.cancel')}</Text>
+                <Feather name="x" size={18} color={colors.textMuted} />
               </Pressable>
             </View>
-            <Text style={styles.correctingOriginal}>{correcting.body}</Text>
-            {/*
-            The one reassurance worth spending a line on. Corrections are the
-            behaviour the whole product exists for, and a user who suspects
-            they are rationed writes fewer of them — so the limit is stated
-            from `PLAN_LIMITS` rather than left to be guessed.
-          */}
-            {PLAN_LIMITS.free.correctionsPer24h === null ? (
-              <Text style={styles.correctingFree}>{t('chat.unlimitedEveryPlan')}</Text>
-            ) : null}
-          </View>
-        ) : null}
-
-        <View>
+          ) : null}
           {/* Above the row rather than inside it: the row holds the send
             button, and anything that grows in there competes for width with
             the only control that sends the message. */}
@@ -1160,7 +1200,7 @@ export default function ChatScreen() {
             pending={pendingMedia}
             onRemove={(index) => setPendingMedia((items) => items.filter((_, at) => at !== index))}
           />
-          <View style={styles.composer}>
+          <View style={styles.composerRow}>
             {recorder.isRecording ? (
               <View style={styles.recording}>
                 <Text style={styles.recordingDot}>●</Text>
@@ -1174,6 +1214,7 @@ export default function ChatScreen() {
               </View>
             ) : (
               <Pressable
+                accessibilityRole="button"
                 accessibilityLabel={
                   mediaLockedFor > 0
                     ? t('chat.mediaLocked', { count: mediaLockedFor })
@@ -1192,8 +1233,8 @@ export default function ChatScreen() {
                 style={styles.attach}
               >
                 <Feather
-                  name="camera"
-                  size={20}
+                  name="plus"
+                  size={22}
                   color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
                 />
               </Pressable>
@@ -1201,9 +1242,17 @@ export default function ChatScreen() {
             <TextInput
               value={draft}
               onChangeText={onChangeDraft}
-              placeholder={correcting ? t('chat.writeCorrection') : t('chat.writeMessage')}
+              placeholder={
+                correcting
+                  ? t('chat.writeCorrection')
+                  : items.length === 0 && partner
+                    ? t('chat.sayHello', { name: partner.displayName })
+                    : t('chat.writeMessage')
+              }
               placeholderTextColor={colors.textFaint}
-              style={styles.input}
+              style={[styles.input, focused && styles.inputFocused]}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               multiline
               /**
                * Web only, and it has to be a key handler: `multiline` is a
@@ -1229,25 +1278,34 @@ export default function ChatScreen() {
             {/* The button becomes a microphone when there is nothing to send,
               which is the gesture people already expect from a chat app. An
               attachment with no caption is something to send, so a picked
-              photo turns it back into an arrow. */}
+              photo turns it back into the send button. */}
             {draft.trim() || pendingMedia.length > 0 ? (
-              <Pressable
-                onPress={() => void send()}
-                disabled={sending || sendingMedia}
-                style={[styles.sendButton, (sending || sendingMedia) && styles.sendDisabled]}
-              >
-                <Feather
-                  name={sending || sendingMedia ? 'more-horizontal' : 'arrow-up'}
-                  size={20}
-                  color={colors.primaryText}
-                />
-              </Pressable>
+              <View style={[styles.sendShell, (sending || sendingMedia) && styles.sendDisabled]}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('common.send')}
+                  onPress={() => void send()}
+                  disabled={sending || sendingMedia}
+                  style={({ pressed }) => [
+                    styles.send,
+                    pressed && !(sending || sendingMedia) && styles.sendPressed,
+                  ]}
+                >
+                  <Feather
+                    name={sending || sendingMedia ? 'more-horizontal' : 'send'}
+                    size={20}
+                    color={colors.primaryText}
+                  />
+                </Pressable>
+              </View>
             ) : (
               <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('chat.voiceMessage')}
                 onPress={() => void toggleRecording()}
                 disabled={sendingMedia}
                 style={[
-                  styles.sendButton,
+                  styles.mic,
                   recorder.isRecording && styles.recordButtonActive,
                   sendingMedia && styles.sendDisabled,
                 ]}
@@ -1255,7 +1313,7 @@ export default function ChatScreen() {
                 <Feather
                   name={recorder.isRecording ? 'square' : 'mic'}
                   size={20}
-                  color={recorder.isRecording ? colors.textInverse : colors.primaryText}
+                  color={recorder.isRecording ? colors.textInverse : colors.text}
                 />
               </Pressable>
             )}
@@ -1292,22 +1350,30 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     borderBottomWidth: 1,
     flexDirection: 'row',
     gap: spacing.md,
-    paddingBottom: 14,
+    paddingBottom: spacing.md,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
+    paddingTop: 6,
   },
-  // v3 draws the back control as a bare arrow — the hairline under the header
-  // is all the chrome this row carries.
+  // v3 draws the back control as a bare arrow in the 34 box `ScreenHeader`
+  // gives it — the hairline under the header is all the chrome this row carries.
   back: {
     alignItems: 'center',
-    height: 38,
+    height: 34,
     justifyContent: 'center',
-    width: 32,
+    width: 34,
   },
-  headerUser: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: spacing.md },
+  headerUser: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    minWidth: 0,
+  },
   headerText: { flex: 1, minWidth: 0 },
-  headerName: { ...font.heading, color: colors.text, fontSize: 16 },
-  typing: { ...font.caption, color: colors.accent, fontSize: 13, fontWeight: '600' },
+  headerName: { ...font.heading, color: colors.text, fontSize: 17 },
+  // The accent, like Online: somebody typing is as live as the status line gets.
+  typing: { ...font.caption, color: colors.accent, fontSize: 13 },
+  more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
   presence: { ...font.caption, color: colors.success, fontSize: 13, fontWeight: '600' },
   /** Under the newest message, above the composer. */
   unsentBlock: { gap: spacing.xs, paddingTop: spacing.xs },
@@ -1331,11 +1397,51 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   unsentBody: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   unsentNote: { ...font.caption, color: colors.danger, fontSize: 12 },
   listWrap: { flex: 1 },
-  list: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
+  /**
+   * Inverted, so the two vertical paddings swap: the prototype's 16 at the top
+   * of the thread is this container's *bottom*, and its 8 above the composer
+   * is the top.
+   */
+  list: {
+    gap: 10,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+  },
   skeletonFill: { flex: 1 },
-  dayRow: { alignItems: 'center', paddingVertical: spacing.xs },
+  // The cell is flipped back upright, so this reads as written: 4 above, 10 below.
+  dayRow: { alignItems: 'center', paddingBottom: 10, paddingTop: spacing.xs },
   // Bare faint text, no pill: on a white ground the whitespace is the divider.
   dayLabel: { ...font.caption, color: colors.textFaint, fontWeight: '600' },
+  /**
+   * The opening tip, centred in the thread: a tinted line rather than a card,
+   * because it is the thread speaking and not a control to be sent away.
+   */
+  threadTip: {
+    ...font.caption,
+    alignSelf: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.lg,
+    color: colors.text,
+    fontSize: 13,
+    lineHeight: 18,
+    maxWidth: 300,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 10,
+    textAlign: 'center',
+  },
+  // Their bubble with nothing in it yet but the three dots.
+  typingBubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.fill,
+    borderBottomStartRadius: 6,
+    borderRadius: 20,
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+  },
+  typingDot: { backgroundColor: colors.textMuted, borderRadius: radius.pill, height: 7, width: 7 },
   /**
    * Accent, not primary: v3 spends yellow exactly once per screen, on the
    * send button, so every other floating control here is ordinary blue.
@@ -1370,28 +1476,21 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     top: spacing.md,
   },
   backToLatestText: { ...font.caption, color: colors.textInverse, fontWeight: '700' },
-  replyingBanner: {
+  /** The reply / edit / correct banner: a fill panel behind an accent edge. */
+  modeBanner: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
+    backgroundColor: colors.fill,
+    borderRadius: radius.lg,
+    borderStartColor: colors.accent,
+    borderStartWidth: 3,
     flexDirection: 'row',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    gap: spacing.md,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
-  replyingBar: {
-    alignSelf: 'stretch',
-    backgroundColor: colors.accent,
-    borderRadius: radius.pill,
-    width: 3,
-  },
-  replyingText: { flex: 1, gap: 1, minWidth: 0 },
-  replyingTitle: { ...font.caption, color: colors.accent, fontWeight: '700' },
-  replyingPreview: { ...font.caption, color: colors.textMuted },
-  replyingCancel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
-  editingBar: { backgroundColor: colors.warning },
-  editingTitle: { color: colors.warning },
+  modeText: { flex: 1, minWidth: 0 },
+  modeLabel: { ...font.caption, color: colors.accent, fontWeight: '700' },
+  modePreview: { ...font.body, color: colors.textMuted, fontSize: 14 },
   pinBanner: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -1404,75 +1503,84 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   pinText: { ...font.caption, color: colors.text, flex: 1 },
   older: { paddingVertical: spacing.md },
-  correctingBanner: {
-    backgroundColor: colors.successBg,
-    borderTopColor: colors.success,
-    borderTopWidth: 1,
-    gap: 6,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-  correctingHead: { alignItems: 'center', flexDirection: 'row', gap: 7 },
-  correctingTitle: { ...font.heading, color: colors.success, flex: 1, fontSize: 13 },
-  correctingOriginal: {
-    ...font.label,
-    color: colors.textMuted,
-    fontWeight: '400',
-    lineHeight: 20,
-    textDecorationLine: 'line-through',
-  },
-  correctingFree: { ...font.caption, color: colors.success, fontWeight: '600' },
-  correctingCancel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  /**
+   * Everything under the hairline: banner, attachments, the row, the hint.
+   * The bottom is `spacing.md` on top of the safe-area inset `Screen` already
+   * adds — the prototype's 28 is that inset, drawn in a frame that has none.
+   */
   composer: {
-    alignItems: 'flex-end',
     backgroundColor: colors.surface,
     borderTopColor: colors.border,
     borderTopWidth: 1,
-    flexDirection: 'row',
-    gap: 9,
-    paddingHorizontal: 14,
-    paddingTop: spacing.md,
-  },
-  composerHint: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: 18,
-    paddingHorizontal: 14,
+    gap: 10,
+    paddingBottom: spacing.md,
+    paddingHorizontal: spacing.lg,
     paddingTop: 10,
   },
+  composerRow: { alignItems: 'flex-end', flexDirection: 'row', gap: spacing.sm },
+  composerHint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   hintLeft: { ...font.caption, color: colors.textFaint },
   // The green pair marks earning, same as "Earned" rows elsewhere.
   hintRight: { ...font.caption, color: colors.success, fontWeight: '600' },
-  // A fill pill, not an outlined box — v3's one grey allowed to be a shape.
+  /**
+   * A fill pill — v3's one grey allowed to be a shape. The border is there
+   * only to say something: transparent at rest, accent while focused, so the
+   * box does not grow by a pixel when it takes focus.
+   */
   input: {
+    ...font.body,
     backgroundColor: colors.fill,
-    borderRadius: radius.pill,
+    borderColor: 'transparent',
+    borderRadius: radius.xl,
+    borderWidth: 1,
     color: colors.text,
     flex: 1,
+    fontSize: 16,
+    lineHeight: 22,
     maxHeight: 120,
-    minHeight: 46,
+    minHeight: 48,
     paddingHorizontal: 18,
     paddingVertical: 13,
-    ...font.body,
   },
-  sendButton: {
+  inputFocused: { backgroundColor: colors.bg, borderColor: colors.accent },
+  /**
+   * The one yellow on the screen, standing on the same hard shadow `ui/Button`
+   * does: a shell in the shade, a face on it that drops on press. The negative
+   * margin lets the shade hang below the row the way `box-shadow` does, so it
+   * is the face — not the shade — that lines up with the input's bottom.
+   */
+  sendShell: {
+    backgroundColor: colors.primaryShade,
+    borderRadius: 14,
+    marginBottom: -3,
+    paddingBottom: 3,
+  },
+  send: {
     alignItems: 'center',
     backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    height: 46,
+    borderRadius: 14,
+    height: 48,
     justifyContent: 'center',
-    width: 46,
+    width: 48,
   },
+  sendPressed: { transform: [{ translateY: 3 }] },
   sendDisabled: { opacity: 0.35 },
+  // A fill circle: the microphone is the resting state, not the committing one.
+  mic: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 48,
+    justifyContent: 'center',
+    width: 48,
+  },
   recordButtonActive: { backgroundColor: colors.danger },
   // A bare muted glyph, sized to line up with the pill beside it.
   attach: {
     alignItems: 'center',
-    height: 46,
+    height: 48,
     justifyContent: 'center',
-    width: 32,
+    width: 44,
   },
   recording: {
     alignItems: 'center',
@@ -1487,6 +1595,59 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
 
 /** A thread's worth; the composer sits below them either way. */
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
+
+/**
+ * Below this many messages the thread still shows its opening tip. Three is
+ * the prototype's cut-off: after a couple of exchanges the reader has found
+ * the composer and does not need telling how a thread works.
+ */
+const SHORT_THREAD_MESSAGES = 3
+
+/** The dots' resting opacity; the prototype's `blink` swings between this and 1. */
+const TYPING_DIM = 0.3
+
+/**
+ * Three dots in their bubble, blinking in turn.
+ *
+ * The stagger sits *outside* each loop: a delay inside it would lengthen a
+ * dot's cycle by its own offset and the three would drift out of step within a
+ * few seconds. Still when the reader has asked for less motion — three dots
+ * already say what they mean.
+ */
+function TypingIndicator() {
+  const styles = useStyles()
+  const t = useT()
+  const reduceMotion = useReduceMotion()
+  const dots = useRef([0, 1, 2].map(() => new Animated.Value(TYPING_DIM))).current
+
+  useEffect(() => {
+    if (reduceMotion) return
+    const animation = Animated.parallel(
+      dots.map((dot, index) =>
+        Animated.sequence([
+          Animated.delay(index * 200),
+          Animated.loop(
+            Animated.sequence([
+              Animated.timing(dot, { toValue: 1, duration: 480, useNativeDriver: true }),
+              Animated.timing(dot, { toValue: TYPING_DIM, duration: 480, useNativeDriver: true }),
+              Animated.delay(240),
+            ]),
+          ),
+        ]),
+      ),
+    )
+    animation.start()
+    return () => animation.stop()
+  }, [dots, reduceMotion])
+
+  return (
+    <View style={styles.typingBubble} accessibilityLabel={t('chat.typing')}>
+      {dots.map((dot, index) => (
+        <Animated.View key={index} style={[styles.typingDot, { opacity: dot }]} />
+      ))}
+    </View>
+  )
+}
 
 /** What the sheet shows above the actions when a message has no text. */
 function messageTypeKey(type: MessageDto['type']): MessageKey {

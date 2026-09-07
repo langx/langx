@@ -44,3 +44,13 @@ export function sessionLabel(userAgent: string | null | undefined): string | nul
 
   return platform ? `${browser} · ${platform}` : browser
 }
+
+/**
+ * Whether a session was made by the app itself rather than a browser — the
+ * same three networking-layer names `sessionLabel` starts with. The devices
+ * list draws a phone beside one and a globe beside the other.
+ */
+export function sessionIsApp(userAgent: string | null | undefined): boolean {
+  const ua = userAgent?.toLowerCase() ?? ''
+  return ua.includes('cfnetwork') || ua.includes('darwin') || ua.includes('okhttp')
+}

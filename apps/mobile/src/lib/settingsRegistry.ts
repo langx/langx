@@ -39,6 +39,9 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     items: [
       { id: 'plan.current', titleKey: 'settings.currentPlan' },
       { id: 'plan.renewal', titleKey: 'settings.plan' },
+      // What the current tier includes, read off the shared benefit lists —
+      // the same source the paywall sells from, so the two cannot disagree.
+      { id: 'plan.features', titleKey: 'settings.whatYouHave' },
       { id: 'plan.upgrade', titleKey: 'settings.upgrade' },
       { id: 'plan.manage', titleKey: 'settings.manageSubscription' },
     ],

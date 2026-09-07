@@ -1,18 +1,20 @@
-import { INTEREST_SUGGESTIONS, MAX_INTERESTS } from '@langx/shared'
+import { BIO_MAX_LENGTH } from '@langx/shared'
+import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { uploadAvatarBytes } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
-import { Chip } from '../../src/components/ui/Chip'
+import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
+import { goBackTo } from '../../src/lib/navigation'
 import { pickImageAsset } from '../../src/lib/pickMediaAsset'
-import { makeStyles } from '../../src/lib/theme'
-import { interestLabel, useT } from '../../src/i18n'
+import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
@@ -20,10 +22,11 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  *
  * `docs/architecture.md` has described the wizard as "languages + levels →
  * gender/bio/avatar/interests → username claim" from the beginning; the avatar
- * and the interests were the part nobody wrote. Without them a new account
- * arrives in discovery as a letter on a grey circle with nothing to talk
- * about, which is the worst possible first impression in a product whose whole
- * mechanic is strangers choosing each other.
+ * and the bio are the two that make a first impression. Without them a new
+ * account arrives in discovery as a letter on a grey circle with nothing to
+ * open with, which is the worst possible first impression in a product whose
+ * whole mechanic is strangers choosing each other. Interests wait for the
+ * profile editor — v3 keeps this step to the two.
  *
  * The picture is uploaded here but **not** confirmed: `confirm` writes onto a
  * profile and there is no profile until the last step. The URL rides in the
@@ -32,6 +35,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function PhotoStep() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
 
   const draft = useOnboardingDraft()
@@ -63,120 +67,131 @@ export default function PhotoStep() {
     }
   }
 
-  function toggleInterest(interest: string): void {
-    const chosen = draft.interests.includes(interest)
-    if (chosen) {
-      updateDraft({ interests: draft.interests.filter((each) => each !== interest) })
-      return
-    }
-    // Silently ignoring the tap past the cap would read as a broken chip, so
-    // the counter above says what the limit is before anyone reaches it.
-    if (draft.interests.length >= MAX_INTERESTS) return
-    updateDraft({ interests: [...draft.interests, interest] })
-  }
+  // The name is required two steps back, so there is always a letter to show.
+  const initial = draft.displayName.trim().charAt(0).toUpperCase()
+  const photoLabel = uploading
+    ? t('onboarding.uploading')
+    : draft.avatarUrl
+      ? t('onboarding.changePhoto')
+      : t('onboarding.addPhoto')
 
   return (
-    <Screen scroll>
-      <StepProgress step="photo" />
-      <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
-      <Text style={styles.subtitle}>{t('onboarding.photoBody')}</Text>
+    <Screen fluid>
+      {/*
+        Own scroll view rather than `Screen scroll`: the content grows to the
+        height, which is what pins the two buttons to the bottom while the
+        form is shorter than the screen, and the keyboard inset is the same
+        one `Screen` documents.
+      */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
+        <StepProgress step="photo" onBack={() => goBackTo('/(onboarding)/about-you')} />
+        <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
+        <Text style={styles.subtitle}>{t('onboarding.photoBody')}</Text>
 
-      <View style={styles.avatarRow}>
-        {draft.avatarUrl ? (
-          <Image source={{ uri: draft.avatarUrl }} style={styles.avatar} contentFit="cover" />
-        ) : (
-          <View style={[styles.avatar, styles.avatarEmpty]}>
-            <Text style={styles.avatarEmptyText}>+</Text>
-          </View>
-        )}
+        <View style={styles.avatarBlock}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={photoLabel}
+            accessibilityState={{ disabled: uploading, busy: uploading }}
+            disabled={uploading}
+            onPress={() => void pickPhoto()}
+            style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}
+          >
+            {draft.avatarUrl ? (
+              <Image source={{ uri: draft.avatarUrl }} style={styles.photo} contentFit="cover" />
+            ) : (
+              <Text style={styles.initial}>{initial}</Text>
+            )}
+            <View style={styles.badge}>
+              <Feather name="camera" size={20} color={colors.text} />
+            </View>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ disabled: uploading, busy: uploading }}
+            disabled={uploading}
+            hitSlop={8}
+            onPress={() => void pickPhoto()}
+            style={({ pressed }) => [styles.avatarAction, pressed && styles.pressed]}
+          >
+            <Text style={styles.avatarActionText}>{photoLabel}</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.bio}>
+          <FormField
+            label={t('onboarding.aboutYouOptional')}
+            value={draft.bio}
+            onChangeText={(bio) => updateDraft({ bio })}
+            placeholder={t('onboarding.bioPrompt')}
+            multiline
+            maxLength={BIO_MAX_LENGTH}
+          />
+        </View>
+
+        {/*
+          No country question any more. It used to be a picker here; it is read
+          off the connection at `POST /profiles` now, because a self-declared
+          country makes discovery's country filter mean nothing. Somebody who
+          wants to correct it grants location permission in Settings.
+        */}
+
+        <Button label={t('common.continue')} onPress={() => router.push('/(onboarding)/handle')} />
         <Pressable
           accessibilityRole="button"
-          accessibilityState={{ disabled: uploading, busy: uploading }}
-          disabled={uploading}
           hitSlop={8}
-          onPress={() => void pickPhoto()}
-          style={({ pressed }) => pressed && styles.pressed}
+          onPress={() => router.push('/(onboarding)/handle')}
+          style={({ pressed }) => [styles.skip, pressed && styles.pressed]}
         >
-          <Text style={styles.avatarAction}>
-            {uploading
-              ? t('onboarding.uploading')
-              : draft.avatarUrl
-                ? t('onboarding.changePhoto')
-                : t('onboarding.addPhoto')}
-          </Text>
+          <Text style={styles.skipText}>{t('common.skip')}</Text>
         </Pressable>
-      </View>
-
-      <Text style={styles.label}>
-        {t('onboarding.interests')}{' '}
-        {draft.interests.length > 0 ? `(${draft.interests.length}/${MAX_INTERESTS})` : ''}
-      </Text>
-      <Text style={styles.hint}>{t('onboarding.bioPrompt')}</Text>
-      <View style={styles.chips}>
-        {INTEREST_SUGGESTIONS.map((interest) => (
-          <Chip
-            key={interest}
-            label={interestLabel(t, interest)}
-            selected={draft.interests.includes(interest)}
-            onPress={() => toggleInterest(interest)}
-          />
-        ))}
-      </View>
-
-      {/*
-        No country question any more. It used to be a picker here; it is read
-        off the connection at `POST /profiles` now, because a self-declared
-        country makes discovery's country filter mean nothing. Somebody who
-        wants to correct it grants location permission in Settings.
-      */}
-
-      <Button
-        label={t('common.continue')}
-        onPress={() => router.push('/(onboarding)/handle')}
-        style={styles.cta}
-      />
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.push('/(onboarding)/handle')}
-        hitSlop={8}
-      >
-        <Text style={styles.skip}>{t('common.skip')}</Text>
-      </Pressable>
+      </ScrollView>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: spacing.sm + 2,
-  },
-  avatarRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.lg, marginTop: spacing.xl },
-  avatar: { borderRadius: radius.pill, height: 88, width: 88 },
-  // The `fill` grey, not a dashed outline: v3 draws placeholders as soft
-  // fills, and structure never comes from boxes.
-  avatarEmpty: {
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
+  scroll: { flex: 1 },
+  // v3's wizard column: 8 above the progress block, 18 between blocks, 28
+  // under the button so it is not sitting on the home indicator.
+  content: { flexGrow: 1, gap: 18, paddingBottom: 28, paddingTop: spacing.sm },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: 10 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  avatarBlock: { alignItems: 'center', gap: 14, paddingVertical: spacing.lg },
+  avatar: {
     alignItems: 'center',
-    backgroundColor: colors.fill,
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    height: 120,
     justifyContent: 'center',
+    width: 120,
   },
-  avatarEmptyText: { color: colors.textFaint, fontSize: 30 },
-  avatarAction: { color: colors.accent, fontSize: 15, fontWeight: '700' },
-  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600', marginTop: spacing.xl },
-  hint: { ...font.caption, color: colors.textFaint, fontSize: 13, marginTop: 2 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
+  photo: { borderRadius: radius.pill, height: 120, width: 120 },
+  initial: { ...font.heading, color: colors.textInverse, fontSize: 44 },
+  // A disc of the ground colour on the circle's edge, lifted by the card
+  // shadow so it reads as a button rather than a hole in the avatar.
+  badge: {
+    ...cardShadow,
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderRadius: radius.pill,
+    bottom: -2,
+    end: -2,
+    height: 40,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: 40,
+  },
+  avatarAction: { height: 40, justifyContent: 'center' },
+  avatarActionText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  bio: { flex: 1 },
+  // Tucked under the button: the prototype pulls it up by 8 of the 18 gap.
+  skip: { alignItems: 'center', height: 44, justifyContent: 'center', marginTop: -8 },
+  skipText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
   pressed: { opacity: 0.7 },
-  cta: { marginTop: spacing.xl },
-  skip: {
-    alignSelf: 'center',
-    color: colors.accent,
-    fontSize: 15,
-    fontWeight: '600',
-    marginTop: spacing.md,
-    paddingVertical: spacing.sm,
-  },
 }))

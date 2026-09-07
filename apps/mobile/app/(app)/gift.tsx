@@ -1,26 +1,18 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
-import Animated, {
-  cancelAnimation,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { ApiRequestError } from '../../src/api/client'
 import { useClaimGift, useWallet } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { showAlert } from '../../src/lib/alert'
-import { giftState } from '../../src/lib/gift'
+import { giftState, giftTickDelay } from '../../src/lib/gift'
 import { impact, notification } from '../../src/lib/haptics'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
+import { useLocale, useT } from '../../src/i18n'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useShake } from '../../src/hooks/useShake'
@@ -38,10 +30,16 @@ type Phase = 'waiting' | 'opening' | 'revealed'
  * The server decides what is inside; this screen only asks and then shows.
  * "Empty" is drawn as an outcome rather than an error, because it is one —
  * a third of gifts are, by design, and the honest thing is to say so.
+ *
+ * Three pictures: the yellow tile while a gift is ready, a grey circle and a
+ * countdown while it is not, and the amount once one has been opened. The
+ * countdown ticks on the minute, as the wallet's card does — a second hand on
+ * a box that will not open for forty minutes is a nag.
  */
 export default function GiftScreen() {
   useScreenInteractive()
   const t = useT()
+  const { locale } = useLocale()
   const styles = useStyles()
   const { colors } = useTheme()
   const reduceMotion = useReduceMotion()
@@ -50,63 +48,35 @@ export default function GiftScreen() {
 
   const [phase, setPhase] = useState<Phase>('waiting')
   const [amount, setAmount] = useState(0)
+  const [now, setNow] = useState(() => new Date())
 
-  const wobble = useSharedValue(0)
-  const lift = useSharedValue(0)
+  const nextAt = wallet.data?.gift.nextAt
+  const state = wallet.data ? giftState(nextAt, now) : null
+  const ready = state?.ready === true
+
+  useEffect(() => {
+    if (!state || state.ready) return
+    const timer = setTimeout(() => setNow(new Date()), giftTickDelay(state.remainingMs))
+    return () => clearTimeout(timer)
+  }, [state, nextAt])
+
   const pop = useSharedValue(0)
-
-  // A gentle idle wobble while it waits — the box is asking to be opened.
-  useEffect(() => {
-    if (phase !== 'waiting' || reduceMotion) return
-    wobble.value = withRepeat(
-      withSequence(withTiming(-4, { duration: 700 }), withTiming(4, { duration: 700 })),
-      -1,
-      true,
-    )
-    return () => cancelAnimation(wobble)
-  }, [phase, reduceMotion, wobble])
-
-  // Reached with nothing to open — a stale card, a back-forward, a deep link.
-  useEffect(() => {
-    if (phase !== 'waiting' || !wallet.data) return
-    if (!giftState(wallet.data.gift.nextAt).ready) goBackTo('/(app)/wallet')
-  }, [phase, wallet.data])
-
-  // The opening shake is an effect too, for the same reason in the other
-  // direction: set from the tap handler it was cancelled a frame later by the
-  // idle wobble's cleanup, and the box froze at whatever tilt it had reached.
-  useEffect(() => {
-    if (phase !== 'opening') return
-    wobble.value = reduceMotion
-      ? 0
-      : withSequence(
-          withTiming(-9, { duration: 70 }),
-          withTiming(9, { duration: 70 }),
-          withTiming(-9, { duration: 70 }),
-          withTiming(9, { duration: 70 }),
-          withTiming(0, { duration: 70 }),
-        )
-  }, [phase, reduceMotion, wobble])
 
   // The reveal starts from an effect, once the amount is mounted. Started from
   // the mutation callback, before the `Animated.View` existed, the spring
   // froze part-way on web — the number sat at forty percent opacity forever.
   useEffect(() => {
     if (phase !== 'revealed') return
-    lift.value = reduceMotion ? 0 : withSpring(-28, { damping: 14, stiffness: 180 })
     pop.value = reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 })
-  }, [phase, reduceMotion, lift, pop])
+  }, [phase, reduceMotion, pop])
 
-  const boxStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${wobble.value}deg` }, { translateY: lift.value }],
-  }))
   const amountStyle = useAnimatedStyle(() => ({
     opacity: pop.value,
     transform: [{ scale: 0.6 + 0.4 * pop.value }],
   }))
 
   function open(): void {
-    if (phase !== 'waiting' || claim.isPending) return
+    if (phase !== 'waiting' || !ready || claim.isPending) return
     setPhase('opening')
     void impact('medium')
     claim.mutate(undefined, {
@@ -128,88 +98,117 @@ export default function GiftScreen() {
     })
   }
 
-  const shake = useShake(open, phase === 'waiting')
-
-  const hint =
-    phase === 'waiting'
-      ? t(shake.available ? 'gift.shakeHint' : 'gift.tapHint')
-      : phase === 'opening'
-        ? t('gift.opening')
-        : t('gift.nextIn', { minutes: 60 })
+  const shake = useShake(open, phase === 'waiting' && ready)
 
   return (
     // `flex: 1` on the column, or the stage below has no height to centre in:
     // a non-scrolling `Screen` sizes its column to its content.
     <Screen style={styles.screen}>
       <ScreenHeader title={t('gift.title')} onBack={() => goBackTo('/(app)/wallet')} />
-      <View style={styles.stage}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('gift.openAccessibility')}
-          accessibilityState={{ disabled: phase !== 'waiting' }}
-          disabled={phase !== 'waiting'}
-          onPress={open}
-          hitSlop={24}
-        >
-          <Animated.View style={[styles.box, boxStyle]}>
-            <Feather
-              name="gift"
-              size={96}
-              color={phase === 'revealed' ? colors.textFaint : colors.accent}
-            />
-          </Animated.View>
-        </Pressable>
+      <Text style={styles.body}>{t('gift.body')}</Text>
 
+      <View style={styles.stage}>
         {phase === 'revealed' ? (
           <Animated.View style={[styles.reveal, amountStyle]}>
-            <Text style={amount > 0 ? styles.amount : styles.empty}>
-              {amount > 0 ? t('gift.revealed', { amount }) : t('gift.revealedZero')}
-            </Text>
+            {amount > 0 ? (
+              <>
+                <Text style={styles.amount}>+{amount.toLocaleString(locale)}</Text>
+                <Text style={styles.amountUnit}>{t('gift.tokensUnit', { count: amount })}</Text>
+              </>
+            ) : (
+              <Text style={styles.empty}>{t('gift.revealedZero')}</Text>
+            )}
           </Animated.View>
-        ) : null}
-
-        <Text style={styles.hint}>{hint}</Text>
-        {phase === 'waiting' ? <Text style={styles.body}>{t('gift.body')}</Text> : null}
-
-        {phase === 'revealed' ? (
-          <Button
-            label={t('gift.done')}
-            onPress={() => goBackTo('/(app)/wallet')}
-            style={styles.done}
-          />
-        ) : null}
+        ) : state === null ? (
+          <ActivityIndicator />
+        ) : state.ready ? (
+          <>
+            {/* Two views for the hard shadow, as `Button` draws it: the face drops onto the shade on press. */}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('gift.openAccessibility')}
+              accessibilityState={{ disabled: phase !== 'waiting' }}
+              disabled={phase !== 'waiting'}
+              onPress={open}
+              style={styles.tileShade}
+            >
+              {({ pressed }) => (
+                <View
+                  style={[styles.tileFace, pressed && phase === 'waiting' && styles.tilePressed]}
+                >
+                  <Feather name="gift" size={64} color={colors.primaryText} />
+                </View>
+              )}
+            </Pressable>
+            <View style={styles.caption}>
+              <Text style={styles.captionTitle}>{t('gift.ready')}</Text>
+              <Text style={styles.captionSub}>
+                {phase === 'opening'
+                  ? t('gift.opening')
+                  : t(shake.available ? 'gift.shakeHint' : 'gift.tapHint')}
+              </Text>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.waitingCircle}>
+              <Feather name="gift" size={64} color={colors.textFaint} />
+            </View>
+            <View style={styles.caption}>
+              <Text style={styles.captionTitle}>
+                {t('gift.nextIn', { minutes: state.minutes })}
+              </Text>
+              <Text style={styles.captionSub}>{t('gift.anotherInAnHour')}</Text>
+            </View>
+          </>
+        )}
       </View>
+
+      <Button
+        label={t('gift.done')}
+        variant="secondary"
+        onPress={() => goBackTo('/(app)/wallet')}
+        style={styles.done}
+      />
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   screen: { flex: 1 },
-  stage: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingBottom: spacing.xxxl },
-  box: {
+  body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
+  stage: { alignItems: 'center', flex: 1, gap: spacing.xl, justifyContent: 'center' },
+  // 40 is the prototype's tile radius: rounder than any card, squarer than a circle.
+  tileShade: { backgroundColor: colors.primaryShade, borderRadius: 40, paddingBottom: 8 },
+  tileFace: {
     alignItems: 'center',
-    backgroundColor: colors.accentBg,
-    borderRadius: radius.xl,
-    height: 180,
+    backgroundColor: colors.primary,
+    borderRadius: 40,
+    height: 160,
     justifyContent: 'center',
-    width: 180,
+    width: 160,
   },
-  reveal: { marginTop: spacing.xl },
-  amount: { ...font.heading, color: colors.text, fontSize: 40, textAlign: 'center' },
-  empty: { ...font.body, color: colors.textMuted, fontSize: 18, textAlign: 'center' },
-  hint: {
-    ...font.body,
-    color: colors.textMuted,
-    marginTop: spacing.xl,
+  tilePressed: { transform: [{ translateY: 8 }] },
+  waitingCircle: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 160,
+    justifyContent: 'center',
+    width: 160,
+  },
+  caption: { alignItems: 'center', gap: spacing.xs },
+  captionTitle: { ...font.heading, color: colors.text, textAlign: 'center' },
+  captionSub: { color: colors.textMuted, fontSize: 15, textAlign: 'center' },
+  reveal: { alignItems: 'center', gap: spacing.xs },
+  amount: {
+    ...font.heading,
+    color: colors.text,
+    fontSize: 64,
+    lineHeight: 72,
     textAlign: 'center',
   },
-  body: {
-    ...font.caption,
-    color: colors.textFaint,
-    lineHeight: 19,
-    marginTop: spacing.sm,
-    maxWidth: 320,
-    textAlign: 'center',
-  },
-  done: { alignSelf: 'stretch', marginTop: spacing.xl },
+  amountUnit: { color: colors.textMuted, fontSize: 18, fontWeight: '600', textAlign: 'center' },
+  empty: { color: colors.textMuted, fontSize: 18, fontWeight: '600', textAlign: 'center' },
+  done: { marginTop: 20 },
 }))

@@ -1,7 +1,10 @@
+import { Image } from 'expo-image'
+import logo from '../assets/brand/logo-rounded.png'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Linking, Platform, Text, View } from 'react-native'
+import { ActivityIndicator, Linking, Platform, Pressable, Text, View } from 'react-native'
 import { Button } from '../src/components/ui/Button'
+import { Screen } from '../src/components/ui/Screen'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 import { useT } from '../src/i18n'
 import { authClient } from '../src/lib/auth-client'
@@ -85,53 +88,82 @@ export default function MagicLinkScreen() {
 
   if (!token || error) {
     return (
-      <View style={styles.container}>
+      <Screen fluid style={styles.root}>
+        <Brand />
         <Text style={styles.title}>{t('auth.linkExpiredTitle')}</Text>
         <Text style={styles.body}>{error ?? t('auth.signInLinkExpiredBody')}</Text>
         <Button
           label={t('auth.requestNewLink')}
           onPress={() => router.replace('/(auth)/sign-in-link')}
+          style={styles.action}
         />
-      </View>
+      </Screen>
     )
   }
 
   if (Platform.OS === 'web') {
     return (
-      <View style={styles.container}>
+      <Screen fluid style={styles.root}>
+        <Brand />
         <Text style={styles.title}>{t('auth.openLinkTitle')}</Text>
         <Text style={styles.body}>{t('auth.openLinkBody')}</Text>
-        <Button label={t('auth.openLinkButton')} onPress={verify} loading={busy} />
+        <Button
+          label={t('auth.openLinkButton')}
+          onPress={verify}
+          loading={busy}
+          style={styles.action}
+        />
         {/*
           For a phone where the https link opened a browser instead of the
           app — an Android app link that is not verified, or a link pasted
           into Safari. The scheme link cannot be intercepted by anyone else.
         */}
-        <Button
-          label={t('auth.openInApp')}
-          variant="secondary"
+        <Pressable
+          accessibilityRole="button"
           onPress={() => void Linking.openURL(appLinkForToken(token))}
-        />
-      </View>
+          style={({ pressed }) => [styles.textLink, pressed && styles.pressed]}
+        >
+          <Text style={styles.link}>{t('auth.openInApp')}</Text>
+        </Pressable>
+      </Screen>
     )
   }
 
   return (
-    <View style={styles.container}>
+    <Screen fluid style={styles.root}>
       <ActivityIndicator />
       <Text style={styles.body}>{t('auth.signingIn')}</Text>
+    </Screen>
+  )
+}
+
+/** The rounded icon and the wordmark, as the welcome screen opens with them. */
+function Brand() {
+  const styles = useStyles()
+  return (
+    <View style={styles.brand}>
+      <Image
+        source={logo}
+        style={styles.logo}
+        contentFit="contain"
+        accessibilityIgnoresInvertColors
+      />
+      {/* The wordmark is the brand, not copy: it reads "LangX" in all eight locales. */}
+      <Text style={styles.wordmark}>LangX</Text>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  container: {
-    backgroundColor: colors.bg,
-    flex: 1,
-    gap: spacing.lg,
-    justifyContent: 'center',
-    padding: spacing.xl,
-  },
-  title: { ...font.title, color: colors.text, fontSize: 28, lineHeight: 36, textAlign: 'center' },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23, textAlign: 'center' },
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  // The prototype's 20 between the brand, the title and the words.
+  root: { alignItems: 'center', gap: 20, justifyContent: 'center', paddingBottom: 28 },
+  brand: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  logo: { borderRadius: radius.md, height: 48, width: 48 },
+  wordmark: { ...font.heading, color: colors.text, fontSize: 26, letterSpacing: -0.3 },
+  title: { ...font.title, color: colors.text, lineHeight: 36, textAlign: 'center' },
+  body: { color: colors.textMuted, fontSize: 16, lineHeight: 25, textAlign: 'center' },
+  action: { marginTop: 20 },
+  textLink: { alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.md },
+  pressed: { opacity: 0.7 },
+  link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))

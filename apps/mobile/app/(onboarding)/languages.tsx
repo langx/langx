@@ -134,16 +134,12 @@ export default function LanguagesStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  screen: { paddingBottom: spacing.lg },
-  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: spacing.sm + 2,
-  },
-  tabs: { marginBottom: spacing.sm, marginTop: spacing.xl },
-  footer: { gap: spacing.md, paddingTop: spacing.lg },
-  hint: { ...font.label, color: colors.textFaint, fontWeight: '400' },
+  // v3's wizard column: 8 above the progress block, 18 between blocks, 28
+  // under the button so it is not sitting on the home indicator.
+  screen: { gap: 18, paddingBottom: 28, paddingTop: spacing.sm },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: 10 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  tabs: { marginTop: 6 },
+  footer: { gap: 14, paddingTop: spacing.sm },
+  hint: { color: colors.textFaint, fontSize: 14 },
 }))

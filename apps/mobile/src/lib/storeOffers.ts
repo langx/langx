@@ -2,6 +2,7 @@ import {
   COSMETICS,
   meetsRequirement,
   previousCosmetic,
+  type CosmeticKind,
   type CosmeticTone,
   STREAK_FREEZE_SKU,
   TOKEN_RULES,
@@ -17,6 +18,12 @@ export interface StoreOffer {
   subtitle: string
   price: number
   owned: boolean
+  /**
+   * Which catalogue this came from, or nothing for a consumable (the freeze,
+   * a repair). The store draws the three as three different rows — a badge
+   * and a price, a framed face, a title tag — so the row has to be told.
+   */
+  kind?: CosmeticKind
   /** A frame's colour role, for the row's preview. Titles have none. */
   tone?: CosmeticTone
   /**
@@ -186,6 +193,7 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
       item.price,
       input.owned.includes(item.id),
     )
+    offer.kind = item.kind
     if (item.tone) offer.tone = item.tone
 
     /*

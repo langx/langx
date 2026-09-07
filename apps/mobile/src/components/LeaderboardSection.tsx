@@ -1,20 +1,12 @@
-import { findCosmetic, type CosmeticTone } from '@langx/shared'
+import type { CosmeticTone } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
-import { CosmeticTitle } from './CosmeticTitle'
 import { Avatar } from './ui/Avatar'
 import { EmptyState } from './ui/EmptyState'
 import { SegmentedControl } from './ui/SegmentedControl'
 import { openProfile } from '../lib/navigation'
-import { frameColors, makeStyles, useTheme } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
-
-/**
- * The podium, as one glyph in the cosmetic tier colours — the same gold,
- * silver and bronze the store sells as frames — rather than three medal emoji
- * that render differently on every platform.
- */
-const PODIUM = ['gold', 'silver', 'bronze'] as const
 
 interface Row {
   rank: number
@@ -28,7 +20,6 @@ interface Row {
 }
 
 interface LeaderboardSectionProps<Option extends string> {
-  title: string
   options: { value: Option; label: string }[]
   selected: Option
   onSelect: (value: Option) => void
@@ -39,20 +30,15 @@ interface LeaderboardSectionProps<Option extends string> {
   valueOf: (row: Row) => string
   /** The viewer's own number, for the pinned row when they are off the page. */
   viewerValue: string
+  /** The viewer's own face, for the same pinned row. */
+  viewerAvatar?: { url?: string | undefined; name: string; seed: string } | undefined
+  /** The streak board draws its bolt before every number; the token board draws none. */
+  bolt?: boolean
   loading: boolean
   emptyTitle: string
   emptyBody: string
   /** Where a tapped row should come back to. */
   backTo: string
-  /**
-   * What to do when the rank is shared, or nothing — the button exists only
-   * when it does.
-   *
-   * A handler rather than a ready sentence, since sharing a rank now opens a
-   * sheet that asks where the picture is going. The section still decides
-   * *whether* there is a rank to share; it no longer decides how.
-   */
-  onShare?: (() => void) | undefined
 }
 
 /**
@@ -70,7 +56,6 @@ interface LeaderboardSectionProps<Option extends string> {
  * pinned row, not by scrolling to find it.
  */
 export function LeaderboardSection<Option extends string>({
-  title,
   options,
   selected,
   onSelect,
@@ -79,39 +64,32 @@ export function LeaderboardSection<Option extends string>({
   viewer,
   valueOf,
   viewerValue,
+  viewerAvatar,
+  bolt = false,
   loading,
   emptyTitle,
   emptyBody,
   backTo,
-  onShare,
 }: LeaderboardSectionProps<Option>) {
   const styles = useStyles()
-  const { colors, scheme } = useTheme()
+  const { colors } = useTheme()
   const t = useT()
+
+  const value = (text: string) => (
+    <View style={styles.valueRow}>
+      {bolt ? <Feather name="zap" size={14} color={colors.streak} /> : null}
+      <Text style={styles.value}>{text}</Text>
+    </View>
+  )
 
   return (
     <View>
-      <Text style={styles.kicker}>{title}</Text>
-      <View style={styles.tabs}>
-        <SegmentedControl
-          options={options}
-          selected={[selected]}
-          onToggle={onSelect}
-          accessibilityLabel={pickerLabel}
-        />
-      </View>
-
-      {onShare ? (
-        <Pressable
-          accessibilityRole="button"
-          onPress={onShare}
-          hitSlop={8}
-          style={({ pressed }) => [styles.shareRank, pressed && styles.rowPressed]}
-        >
-          <Feather name="share" size={16} color={colors.textMuted} />
-          <Text style={styles.shareRankLabel}>{t('share.rank')}</Text>
-        </Pressable>
-      ) : null}
+      <SegmentedControl
+        options={options}
+        selected={[selected]}
+        onToggle={onSelect}
+        accessibilityLabel={pickerLabel}
+      />
 
       {loading ? (
         <ActivityIndicator style={styles.loading} />
@@ -119,45 +97,30 @@ export function LeaderboardSection<Option extends string>({
         <EmptyState icon="award" title={emptyTitle} body={emptyBody} />
       ) : (
         <View style={styles.list}>
-          {entries.map((item, index) => (
+          {entries.map((item) => (
             <Pressable
               key={item.userId}
               onPress={() => openProfile(item.handle, backTo)}
               style={({ pressed }) => [
                 styles.row,
-                index === entries.length - 1 && styles.rowLast,
                 item.isViewer && styles.rowViewer,
                 pressed && styles.rowPressed,
               ]}
             >
-              {item.rank >= 1 && item.rank <= PODIUM.length ? (
-                <View style={styles.rank}>
-                  <Feather
-                    name="award"
-                    size={20}
-                    color={frameColors[scheme][PODIUM[item.rank - 1]!]}
-                  />
-                </View>
-              ) : (
-                <Text style={styles.rank}>#{item.rank}</Text>
-              )}
+              <Text style={styles.rank}>{item.rank}</Text>
               <Avatar
                 url={item.avatarUrl}
                 name={item.displayName}
                 seed={item.userId}
-                size={36}
+                size={40}
                 frame={item.frame as CosmeticTone | undefined}
               />
-              <View style={styles.body}>
-                <View style={styles.nameRow}>
-                  <Text style={styles.name} numberOfLines={1}>
-                    {item.displayName}
-                    {item.isViewer ? ` ${t('common.you')}` : ''}
-                  </Text>
-                  <CosmeticTitle cosmetic={item.title ? findCosmetic(item.title) : undefined} />
-                </View>
-              </View>
-              <Text style={styles.value}>{valueOf(item)}</Text>
+              {/* Your own row says "You" where the others say a name: the
+                  tint marks it, the word is what a screen reader gets. */}
+              <Text style={styles.name} numberOfLines={1}>
+                {item.isViewer ? t('leaderboard.you') : item.displayName}
+              </Text>
+              {value(valueOf(item))}
             </Pressable>
           ))}
 
@@ -165,9 +128,17 @@ export function LeaderboardSection<Option extends string>({
               of `viewer.rank` is that it works from outside it. */}
           {viewer && !viewer.inPage && viewer.rank ? (
             <View style={styles.viewerRow}>
-              <Text style={styles.rank}>#{viewer.rank}</Text>
-              <Text style={styles.viewerLabel}>{t('leaderboard.you')}</Text>
-              <Text style={styles.value}>{viewerValue}</Text>
+              <Text style={[styles.rank, styles.viewerRank]}>{viewer.rank}</Text>
+              {viewerAvatar ? (
+                <Avatar
+                  url={viewerAvatar.url}
+                  name={viewerAvatar.name}
+                  seed={viewerAvatar.seed}
+                  size={40}
+                />
+              ) : null}
+              <Text style={styles.name}>{t('leaderboard.you')}</Text>
+              {value(viewerValue)}
             </View>
           ) : null}
         </View>
@@ -177,27 +148,16 @@ export function LeaderboardSection<Option extends string>({
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  kicker: { ...font.label, color: colors.textFaint },
-  tabs: { marginTop: spacing.lg },
-  shareRank: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    gap: spacing.xs,
-    marginTop: spacing.sm,
-  },
-  shareRankLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   loading: { marginTop: spacing.xxl },
-  list: { paddingBottom: spacing.lg, paddingTop: spacing.sm },
+  list: { marginTop: spacing.sm },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: 15,
+    gap: 14,
+    paddingVertical: 14,
   },
-  rowLast: { borderBottomWidth: 0 },
   rowPressed: { opacity: 0.7 },
   // The blue tint marks "you" the way it marks your own bubble; the row keeps
   // the shared edges, so only a small inset separates it from the hairlines.
@@ -206,19 +166,26 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     borderRadius: radius.md,
     paddingHorizontal: spacing.sm,
   },
-  rank: { ...font.heading, color: colors.text, fontSize: 16, minWidth: 36 },
-  body: { flex: 1 },
-  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
-  name: { ...font.body, color: colors.text, fontSize: 16, fontWeight: '600' },
-  value: { ...font.heading, color: colors.text, fontSize: 16 },
+  rank: {
+    ...font.heading,
+    color: colors.textFaint,
+    fontSize: 15,
+    textAlign: 'center',
+    width: 24,
+  },
+  name: { ...font.heading, color: colors.text, flex: 1, fontSize: 16 },
+  valueRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
+  value: { ...font.heading, color: colors.text, fontSize: 17, fontVariant: ['tabular-nums'] },
+  // A heavier rule than the hairlines above it: this row is not the next
+  // entry, it is you, from wherever on the table you actually are.
   viewerRow: {
     alignItems: 'center',
     borderTopColor: colors.border,
-    borderTopWidth: 1,
+    borderTopWidth: 2,
     flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
+    gap: 14,
+    marginTop: spacing.sm,
+    paddingVertical: spacing.lg,
   },
-  viewerLabel: { ...font.body, color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  viewerRank: { color: colors.accent },
 }))

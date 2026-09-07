@@ -1,10 +1,15 @@
+import Feather from '@expo/vector-icons/Feather'
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
   LOCALE_NAMES,
   NOTIFICATION_CHANNELS,
+  PRO_BENEFITS,
+  PRO_PLUS_BENEFITS,
   profileUrl,
   translateTargetFor,
   translateTargetOptions,
+  type ProBenefit,
+  type ProPlusBenefit,
 } from '@langx/shared'
 import { router } from 'expo-router'
 import { Image, Platform, Pressable, Text, View } from 'react-native'
@@ -16,17 +21,44 @@ import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
 import { openStoreListing } from '../../lib/storeListing'
-import { makeStyles, THEME_PREFERENCES, type ThemePreference } from '../../lib/theme'
+import { makeStyles, THEME_PREFERENCES, type ThemePreference, useTheme } from '../../lib/theme'
 import { ListRow } from '../ui/ListRow'
-import { SegmentedControl } from '../ui/SegmentedControl'
+import { Radio } from '../ui/Radio'
 import { Toggle } from '../ui/Toggle'
 
 /** Keys, not words: a module constant is fixed at import time. */
 const THEME_LABELS: Record<ThemePreference, MessageKey> = {
-  auto: 'theme.auto',
+  auto: 'theme.autoSystem',
   light: 'theme.light',
   dark: 'theme.dark',
 }
+
+/**
+ * The name of each benefit, keyed off the shared lists so a benefit added to
+ * either list without a name here stops this file compiling — the same
+ * enforcement the paywall uses. The keys are the paywall's own, so the plan
+ * page cannot call a benefit one thing and the paywall another.
+ */
+const BENEFIT_TITLE: Record<ProBenefit | ProPlusBenefit, MessageKey> = {
+  unlimitedInitiations: 'paywall.unlimitedChats',
+  advancedFilters: 'paywall.advancedFilters',
+  translationQuota: 'paywall.translationQuota',
+  learningLanguages: 'paywall.learningLanguages',
+  welcomePack: 'paywall.welcomePack',
+  profileViewerIdentities: 'paywall.whoViewed',
+  incognito: 'paywall.incognito',
+  nearby: 'paywall.nearby',
+  copilot: 'paywall.copilot',
+}
+
+/**
+ * Sold, not yet built. Mirrors the `shipped: false` entries of the paywall's
+ * copy table, which is local to that screen — a "what you have" line that
+ * names a feature in the present tense while it does nothing would be the
+ * mis-sell that flag exists to prevent. One table for both screens is the
+ * fix; until then the two must be changed together.
+ */
+const PENDING_BENEFITS: ReadonlySet<ProBenefit | ProPlusBenefit> = new Set(['copilot'])
 
 /**
  * Imported statically, because Metro resolves an image at build time: a path
@@ -45,17 +77,18 @@ interface SettingsRowProps {
 /**
  * One setting, drawn from its id.
  *
- * The rows are rendered on their category's page and again in the landing
- * page's search results, so "incognito" finds the incognito *toggle* and it
- * can be flipped right there. That is why this is a function of the id and
- * the shared model rather than JSX that lives on a screen: two renderings,
- * one definition. Returns `null` for a row that does not apply right now — a
- * plan with nothing to manage, a device with no home screen — which is the
- * rule the old screen had too: no row where there is nowhere to send them,
- * rather than a disabled one.
+ * The rows are rendered on their category's page, and the landing page's
+ * search matches the same ids and leads to that page — so a row that exists
+ * here is findable there. That is why this is a function of the id and the
+ * shared model rather than JSX that lives on a screen: one definition.
+ * Returns `null` for a row that does not apply right now — a plan with
+ * nothing to manage, a device with no home screen — which is the rule the old
+ * screen had too: no row where there is nowhere to send them, rather than a
+ * disabled one.
  */
 export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
   const styles = useStyles()
+  const { colors } = useTheme()
   const names = useDisplayNames()
   const { t, profile, update, setPrivacy, pendingPrivacy } = model
   /**
@@ -70,11 +103,49 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
 
   switch (id) {
     case 'plan.current':
-      return <ListRow title={t('settings.currentPlan')} value={model.tierName} last={last} />
+      // The plan as a tag rather than a value: it is a brand mark, and the
+      // page sells the next one two rows down.
+      return (
+        <ListRow
+          title={t('settings.currentPlan')}
+          last={last}
+          accessory={<Text style={styles.planPill}>{model.tierName}</Text>}
+        />
+      )
     case 'plan.renewal':
       return model.renewal ? (
         <ListRow title={model.renewal.label} value={model.renewal.value} last={last} />
       ) : null
+    case 'plan.features': {
+      // The same lists the paywall sells from. Free has no list in `shared`
+      // — nothing was bought, so there is nothing to itemise.
+      const benefits: readonly (ProBenefit | ProPlusBenefit)[] | null =
+        model.tier === 'pro' ? PRO_BENEFITS : model.tier === 'pro_plus' ? PRO_PLUS_BENEFITS : null
+      if (!benefits) return null
+      return (
+        <View style={[styles.features, !last && styles.divided]}>
+          <Text style={styles.featuresKicker}>{t('settings.whatYouHave')}</Text>
+          {benefits.map((benefit) => {
+            const pending = PENDING_BENEFITS.has(benefit)
+            return (
+              <View key={benefit} style={styles.feature}>
+                <Feather
+                  name="check"
+                  size={16}
+                  color={pending ? colors.textFaint : colors.accent}
+                />
+                <Text style={styles.featureText}>
+                  {t(BENEFIT_TITLE[benefit])}
+                  {pending ? (
+                    <Text style={styles.featurePending}> · {t('common.comingSoon')}</Text>
+                  ) : null}
+                </Text>
+              </View>
+            )
+          })}
+        </View>
+      )
+    }
     case 'plan.upgrade':
       return model.tier === 'pro_plus' ? null : (
         <ListRow
@@ -85,7 +156,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     case 'plan.manage':
       return model.manageUrl ? (
-        <ListRow
+        <ExternalRow
           title={t('settings.manageSubscription')}
           last={last}
           onPress={() => void openExternal(model.manageUrl!)}
@@ -110,25 +181,39 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       )
     case 'privacy.incognito':
+      /*
+       * Local rather than a `ListRow`: the plan tag sits *in the title line*,
+       * which `ListRow` has no slot for. Same metrics as its rows. When the
+       * plan lacks the feature the switch is drawn dimmed and a press opens the
+       * paywall — the row still says what it is for, and where to get it.
+       */
       return (
-        <ListRow
-          title={t('settings.incognito')}
-          subtitle={t('settings.incognitoBody')}
-          last={last}
-          accessory={
-            <View style={styles.gated}>
+        <View style={[styles.row, !last && styles.divided]}>
+          <View style={styles.rowText}>
+            <View style={styles.titleWithTag}>
+              <Text style={styles.rowTitle}>{t('settings.incognito')}</Text>
               {model.canIncognito ? null : (
                 <Text style={styles.proTag}>{model.incognitoBadge}</Text>
               )}
+            </View>
+            <Text style={styles.rowSubtitle}>{t('settings.incognitoBody')}</Text>
+          </View>
+          {model.canIncognito ? (
+            <Toggle
+              accessibilityLabel={t('settings.incognito')}
+              {...privacyToggle('incognito', profile?.privacy.incognito ?? false)}
+              onValueChange={(incognito) => setPrivacy({ incognito })}
+            />
+          ) : (
+            <View style={styles.locked}>
               <Toggle
                 accessibilityLabel={t('settings.incognito')}
-                disabled={!model.canIncognito}
-                {...privacyToggle('incognito', profile?.privacy.incognito ?? false)}
-                onValueChange={(incognito) => setPrivacy({ incognito })}
+                value={false}
+                onValueChange={() => openPaywall('incognito', '/(app)/settings/privacy')}
               />
             </View>
-          }
-        />
+          )}
+        </View>
       )
     case 'privacy.activityMap':
       // Free, unlike incognito: the streak this is drawn from is already on
@@ -257,44 +342,58 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
 
     case 'appearance.theme':
       // A device preference rather than an account one, so it is deliberately
-      // not in `profile.settings` — see `lib/theme/ThemeProvider`.
+      // not in `profile.settings` — see `lib/theme/ThemeProvider`. One radio
+      // row per option: the row is the pressable, the glyph only shows state.
       return (
-        <View style={styles.theme}>
-          <Text style={styles.kindTitle}>{t('theme.section')}</Text>
-          <SegmentedControl<ThemePreference>
-            accessibilityLabel={t('theme.label')}
-            options={THEME_PREFERENCES.map((value) => ({ value, label: t(THEME_LABELS[value]) }))}
-            selected={[model.theme.preference]}
-            onToggle={model.theme.setPreference}
-          />
+        <View>
+          <Text style={[styles.kicker, styles.kickerFirst]}>{t('theme.label')}</Text>
+          {THEME_PREFERENCES.map((value) => {
+            const selected = model.theme.preference === value
+            return (
+              <Pressable
+                key={value}
+                accessibilityRole="radio"
+                accessibilityState={{ selected }}
+                onPress={() => model.theme.setPreference(value)}
+                style={({ pressed }) => [styles.radioRow, pressed && styles.pressed]}
+              >
+                <Text style={styles.rowTitle}>{t(THEME_LABELS[value])}</Text>
+                <Radio selected={selected} />
+              </Pressable>
+            )
+          })}
         </View>
       )
     case 'appearance.appIcon':
       // Only where there is a home screen to put it on: the web build and
       // Expo Go have neither the module nor anywhere for the icon to go.
+      // Tiles, not a row with thumbnails: an icon is chosen by looking at it.
       return model.iconSupported ? (
-        <ListRow
-          title={t('settings.appIcon')}
-          subtitle={t('settings.appIconBody')}
-          last={last}
-          accessory={
-            <View style={styles.gated}>
-              {model.isPro ? null : <Text style={styles.proTag}>{model.paidBadge}</Text>}
-              {model.appIcons.map((name) => (
+        <View>
+          <Text style={styles.kicker}>{t('settings.appIconSection')}</Text>
+          <View style={[styles.iconTiles, !last && styles.divided]}>
+            {model.appIcons.map((name) => {
+              const chosen = model.appIcon === name
+              return (
                 <Pressable
                   key={name}
                   accessibilityRole="button"
                   accessibilityLabel={t(`settings.appIcon_${name}` as MessageKey)}
-                  accessibilityState={{ selected: model.appIcon === name }}
+                  accessibilityState={{ selected: chosen }}
                   onPress={() => void model.chooseIcon(name)}
-                  style={[styles.iconTile, model.appIcon === name && styles.iconTileChosen]}
+                  style={({ pressed }) => [styles.iconTile, pressed && styles.pressed]}
                 >
-                  <Image source={ICON_PREVIEWS[name]} style={styles.iconImage} />
+                  <View style={[styles.iconRing, chosen && styles.iconRingChosen]}>
+                    <Image source={ICON_PREVIEWS[name]} style={styles.iconImage} />
+                  </View>
+                  <Text style={styles.iconLabel}>
+                    {t(`settings.appIcon_${name}` as MessageKey)}
+                  </Text>
                 </Pressable>
-              ))}
-            </View>
-          }
-        />
+              )
+            })}
+          </View>
+        </View>
       ) : null
     case 'appearance.language':
       // Device-level, like the theme, and for the same reason: the phone is
@@ -471,7 +570,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       // browser, so no row on web.
       if (Platform.OS === 'web') return null
       return (
-        <ListRow
+        <ExternalRow
           title={t('settings.rateApp')}
           last={last}
           onPress={() => void openStoreListing()}
@@ -543,31 +642,129 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
   }
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  /** A gated row's right side: the neutral PRO tag, then the control it gates. */
-  gated: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  /** filters.tsx's neutral PRO pill — v3 stopped colouring the tag purple. */
-  proTag: {
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    color: colors.textMuted,
-    fontSize: 11,
-    fontWeight: '700',
-    overflow: 'hidden',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-  },
-  iconTile: {
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 2,
-    overflow: 'hidden',
-  },
-  iconTileChosen: { borderColor: colors.accent },
-  iconImage: { height: 44, width: 44 },
-  /** The kind a pair of channel rows belongs to, above them rather than beside. */
-  kindTitle: { ...font.body, color: colors.text, fontWeight: '600', marginTop: spacing.lg },
-  kindBody: { ...font.caption, color: colors.textMuted, marginBottom: spacing.xs },
-  theme: { gap: spacing.sm, paddingBottom: spacing.md },
-}))
+/**
+ * A row that leaves the app — the store's subscription page, the store
+ * listing — and says so with the share glyph where `ListRow` draws a chevron.
+ * `ListRow` cannot swap that glyph, so the row is local, on the same metrics.
+ */
+function ExternalRow({
+  title,
+  onPress,
+  last,
+}: {
+  title: string
+  onPress: () => void
+  last: boolean
+}) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  return (
+    <Pressable
+      accessibilityRole="link"
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, !last && styles.divided, pressed && styles.pressed]}
+    >
+      <Text style={[styles.rowTitle, styles.rowGrow]}>{title}</Text>
+      <Feather name="share" size={18} color={colors.textFaint} />
+    </Pressable>
+  )
+}
+
+const useStyles = makeStyles(({ colors, spacing, radius }) => {
+  /**
+   * The plan tags ring themselves in `pro` at 35%. The palette has no tint
+   * token for it, and both schemes' `pro` are six-digit hexes, so the alpha
+   * byte is appended rather than a second purple invented.
+   */
+  const proTint = `${colors.pro}59`
+  return {
+    // `ListRow`'s own metrics — 17 over 17, a hairline under — for the two
+    // rows this file has to draw itself.
+    row: { alignItems: 'center', flexDirection: 'row', gap: spacing.lg, paddingVertical: 17 },
+    divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+    pressed: { opacity: 0.6 },
+    rowText: { flex: 1, gap: 2 },
+    rowGrow: { flex: 1 },
+    rowTitle: { color: colors.text, fontSize: 17, fontWeight: '600' },
+    rowSubtitle: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+    titleWithTag: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+    /** The plan that unlocks a gated row, beside its title. */
+    proTag: {
+      borderColor: proTint,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      color: colors.pro,
+      fontSize: 10,
+      fontWeight: '700',
+      overflow: 'hidden',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+    },
+    /** A switch the plan does not include: still there, visibly not live. */
+    locked: { opacity: 0.6 },
+    planPill: {
+      borderColor: proTint,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      color: colors.pro,
+      fontSize: 12,
+      fontWeight: '700',
+      letterSpacing: 0.5,
+      overflow: 'hidden',
+      paddingHorizontal: spacing.md,
+      paddingVertical: 5,
+      textTransform: 'uppercase',
+    },
+    features: { gap: spacing.sm, paddingVertical: 18 },
+    featuresKicker: {
+      color: colors.textFaint,
+      fontSize: 12,
+      fontWeight: '600',
+      letterSpacing: 0.5,
+      textTransform: 'uppercase',
+    },
+    feature: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+    featureText: { color: colors.text, fontSize: 15 },
+    featurePending: {
+      color: colors.textMuted,
+      fontSize: 11,
+      fontWeight: '700',
+      letterSpacing: 0.4,
+    },
+    kicker: {
+      color: colors.textFaint,
+      fontSize: 12,
+      fontWeight: '700',
+      letterSpacing: 0.5,
+      paddingBottom: spacing.xs,
+      paddingTop: 22,
+      textTransform: 'uppercase',
+    },
+    /** The first kicker on a page sits closer to the header. */
+    kickerFirst: { paddingTop: 14 },
+    radioRow: {
+      alignItems: 'center',
+      borderBottomColor: colors.border,
+      borderBottomWidth: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: spacing.lg,
+    },
+    iconTiles: { flexDirection: 'row', gap: spacing.lg, paddingBottom: 18, paddingTop: 14 },
+    iconTile: { alignItems: 'center', gap: spacing.sm },
+    // The chosen tile is ringed in `accent` with a 3px gap of ground between:
+    // a transparent ring on every tile keeps the unchosen ones the same size.
+    iconRing: {
+      borderColor: 'transparent',
+      borderRadius: radius.lg + 5,
+      borderWidth: 2,
+      padding: 3,
+    },
+    iconRingChosen: { borderColor: colors.accent },
+    iconImage: { borderRadius: radius.lg, height: 60, width: 60 },
+    iconLabel: { color: colors.text, fontSize: 13, fontWeight: '600' },
+    /** The kind a pair of channel rows belongs to, above them rather than beside. */
+    kindTitle: { color: colors.text, fontSize: 17, fontWeight: '600', marginTop: spacing.lg },
+    kindBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20, marginBottom: spacing.xs },
+  }
+})

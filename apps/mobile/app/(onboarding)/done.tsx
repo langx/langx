@@ -1,10 +1,12 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { Text, View } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { Animated, ScrollView, Text, View } from 'react-native'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -32,50 +34,82 @@ export default function DoneStep() {
   const me = useMe()
   const handle = me.data?.handle
 
+  // v3's `pop`: the check grows from .6 as it fades in. Skipped outright for
+  // anyone who asked for less motion, as the welcome screen's pairs are.
+  const reduceMotion = useReduceMotion()
+  const pop = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    if (reduceMotion) {
+      pop.setValue(1)
+      return
+    }
+    const animation = Animated.timing(pop, { toValue: 1, duration: 400, useNativeDriver: true })
+    animation.start()
+    return () => animation.stop()
+  }, [pop, reduceMotion])
+
   return (
-    <Screen scroll>
-      <View style={styles.hero}>
-        <Feather name="check-circle" size={48} color={colors.success} />
+    <Screen fluid>
+      {/* Centred in the height when it fits; scrolls when the notification panel makes it not. */}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <Animated.View
+          style={[
+            styles.check,
+            {
+              opacity: pop,
+              transform: [
+                { scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) },
+              ],
+            },
+          ]}
+        >
+          <Feather name="check" size={32} color={colors.success} />
+        </Animated.View>
         <Text style={styles.title}>{t('onboarding.doneTitle')}</Text>
         <Text style={styles.subtitle}>
-          {handle ? t('onboarding.doneHandle', { handle }) : t('onboarding.doneReady')}
+          {handle
+            ? `${t('onboarding.doneHandle', { handle })} ${t('onboarding.doneReady')}`
+            : t('onboarding.doneReady')}
         </Text>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.kicker}>{t('onboarding.whatNext')}</Text>
-        <Text style={styles.sectionBody}>{t('onboarding.whatNextBody')}</Text>
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('onboarding.whatNext')}</Text>
+          <Text style={styles.sectionBody}>{t('onboarding.whatNextBody')}</Text>
+        </View>
 
-      <NotificationPriming />
+        <NotificationPriming />
 
-      <Button
-        label={t('onboarding.findSomeone')}
-        onPress={() => router.replace('/(app)/(tabs)/discover')}
-        style={styles.cta}
-      />
+        <Button
+          label={t('onboarding.findSomeone')}
+          onPress={() => router.replace('/(app)/(tabs)/discover')}
+          style={styles.cta}
+        />
+      </ScrollView>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  hero: { alignItems: 'center', paddingBottom: spacing.lg, paddingTop: spacing.xxl + 8 },
-  title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    lineHeight: 23,
-    marginTop: 6,
-    maxWidth: 260,
-    textAlign: 'center',
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  scroll: { flex: 1 },
+  content: { flexGrow: 1, gap: 20, justifyContent: 'center', paddingVertical: spacing.xl },
+  check: {
+    alignItems: 'center',
+    backgroundColor: colors.successBg,
+    borderRadius: radius.pill,
+    height: 72,
+    justifyContent: 'center',
+    width: 72,
   },
+  title: { ...font.title, color: colors.text, fontSize: 34, lineHeight: 39 },
+  subtitle: { color: colors.textMuted, fontSize: 17, lineHeight: 26 },
   section: {
     borderTopColor: colors.border,
     borderTopWidth: 1,
     gap: spacing.sm,
-    paddingTop: spacing.lg + 2,
+    marginTop: spacing.sm,
+    paddingTop: 20,
   },
-  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  sectionBody: { ...font.body, color: colors.textMuted, lineHeight: 23 },
-  cta: { marginTop: spacing.xl },
+  sectionTitle: { ...font.heading, color: colors.text, fontSize: 18 },
+  sectionBody: { color: colors.textMuted, fontSize: 16, lineHeight: 25 },
+  cta: { marginTop: spacing.lg },
 }))

@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { makeStyles } from '../../lib/theme'
 import { Skeleton } from '../ui/Skeleton'
 
@@ -7,8 +7,8 @@ import { Skeleton } from '../ui/Skeleton'
  * placeholder of a different height makes the real rows jump into place when
  * they arrive, which reads worse than the spinner it replaced.
  */
-/** The 52px avatar `chats.tsx` draws — v3's chat-row size, not `layout.avatar`. */
-const AVATAR_SIZE = 52
+/** The 56px avatar `chats.tsx` draws — the design's list size, not `layout.avatar`. */
+const AVATAR_SIZE = 56
 
 export function ConversationRowSkeleton() {
   const styles = useStyles()
@@ -18,11 +18,11 @@ export function ConversationRowSkeleton() {
       <Skeleton width={AVATAR_SIZE} height={AVATAR_SIZE} radius={AVATAR_SIZE / 2} />
       <View style={styles.body}>
         <View style={styles.top}>
-          <Skeleton width={132} height={16} />
-          <Skeleton width={34} height={12} />
+          <Skeleton width={132} height={17} />
+          <Skeleton width={34} height={13} />
         </View>
         <View style={styles.bottom}>
-          <Skeleton width="70%" height={14} />
+          <Skeleton width="70%" height={15} />
         </View>
       </View>
     </View>
@@ -30,15 +30,15 @@ export function ConversationRowSkeleton() {
 }
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
-  body: { flex: 1 },
-  bottom: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 3 },
+  body: { flex: 1, gap: spacing.xs },
+  bottom: { alignItems: 'center', flexDirection: 'row', gap: 10 },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 14,
-    paddingVertical: spacing.lg,
+    gap: spacing.lg,
+    paddingVertical: 18,
   },
   top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
 }))

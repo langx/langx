@@ -20,11 +20,19 @@ import {
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Linking, Platform, Pressable, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Linking,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
-import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
 import { isFakePurchasesEnabled } from '../../src/lib/fakePurchases'
@@ -48,6 +56,13 @@ const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
   lifetime: 'paywall.lifetime',
 }
 
+/**
+ * The order the period segment offers them in. Yearly leads, as the featured
+ * slot used to: it is the one the saving is measured on. Lifetime last, if a
+ * store ever returns one.
+ */
+const PERIOD_ORDER: readonly BillingPeriod[] = ['yearly', 'monthly', 'lifetime']
+
 /** Where a plan bought elsewhere has to be changed, as the sentence names it. */
 const STORE_NAME: Record<BillingPlatform, MessageKey> = {
   ios: 'paywall.storeIos',
@@ -61,9 +76,9 @@ const PLATFORM: BillingPlatform =
 
 /**
  * The period as it reads after a price — "a year", not "Yearly" — for the
- * trial caption. A separate key rather than the label lower-cased: case is
- * not a string operation in every locale, and the two are different words in
- * most of them.
+ * price row and the trial caption. A separate key rather than the label
+ * lower-cased: case is not a string operation in every locale, and the two are
+ * different words in most of them.
  */
 const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
   monthly: 'paywall.perMonth',
@@ -201,6 +216,7 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
 
 export default function PaywallScreen() {
   useScreenInteractive()
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -230,6 +246,11 @@ export default function PaywallScreen() {
   const [busyOfferId, setBusyOfferId] = useState<string | null>(null)
   const [restoring, setRestoring] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
+  // One plan and one period at a time, where the screen used to list every
+  // offer of both tiers. It opens on the tier that unlocks what the caller was
+  // just refused, so the context line and the price agree.
+  const [plan, setPlan] = useState<PaidPlanTier>(highlightTier ?? 'pro')
+  const [pickedPeriod, setPickedPeriod] = useState<BillingPeriod | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -310,109 +331,20 @@ export default function PaywallScreen() {
     if (!ok) setNotice(t('paywall.nothingToRestore'))
   }
 
-  const hasTopLines =
-    (feature !== null && highlightTier !== null) || remaining === 0 || tier !== 'free'
-
-  return (
-    <Screen scroll>
-      {/*
-        Translated, unlike the plan names below it. "LangX Pro" named one of the
-        two things this screen sells and would have read wrong above a Fluent
-        and a Polyglot column. A screen heading is copy, not a brand mark.
-      */}
-      <ScreenHeader
-        title={t('paywall.screenTitle')}
-        onBack={() => goBackTo('/(app)/(tabs)/me', from)}
-      />
-
-      {/*
-        Says why this screen opened, when the caller knew. Someone who just
-        tapped a locked filter is answering a different question from someone
-        who opened the paywall from their profile, and a generic pitch answers
-        neither of them well.
-      */}
-      {hasTopLines ? (
-        <View style={styles.topBlock}>
-          {feature && highlightTier ? (
-            <Text style={styles.contextText}>
-              <Text style={styles.contextFeature}>{t(FEATURE_TITLE[feature])}</Text>{' '}
-              {t('paywall.partOf')} {TIER_NAMES[highlightTier]}.
-            </Text>
-          ) : null}
-          {remaining === 0 ? (
-            <Text style={styles.contextText}>
-              {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
-            </Text>
-          ) : null}
-          {tier !== 'free' ? (
-            <Text style={styles.contextText}>
-              {held.store === 'promotional'
-                ? t('paywall.lifetimeNotice', { plan: TIER_NAMES[tier] })
-                : t('paywall.manageNotice', { plan: TIER_NAMES[tier] })}
-            </Text>
-          ) : null}
-        </View>
-      ) : null}
-
-      {notice ? <Text style={styles.notice}>{notice}</Text> : null}
-
-      {PAID_PLAN_TIERS.map((paidTier) => (
-        <TierSection
-          key={paidTier}
-          tier={paidTier}
-          offers={offers}
-          held={held}
-          busyOfferId={busyOfferId}
-          onBuy={buy}
-          onChangePlan={changePlanInPortal}
-        />
-      ))}
-
-      {/*
-        Required by Apple on any screen that sells a subscription, and it has to
-        work for someone reinstalling on a new device — so it runs a real SDK
-        restore, not only the server-side reconcile.
-      */}
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => void restore()}
-        disabled={restoring}
-        hitSlop={8}
-        style={styles.restore}
-      >
-        <Text style={styles.restoreText}>
-          {restoring || refresh.isPending ? t('common.checking') : t('paywall.restorePurchases')}
-        </Text>
-      </Pressable>
-
-      <Text style={styles.legal}>{t('paywall.legal')}</Text>
-      <View style={styles.legalLinks}>
-        <Pressable onPress={() => void Linking.openURL(TERMS_URL)} hitSlop={8}>
-          <Text style={styles.legalLink}>{t('paywall.terms')}</Text>
-        </Pressable>
-        <Text style={styles.legalDot}>·</Text>
-        <Pressable onPress={() => void Linking.openURL(PRIVACY_URL)} hitSlop={8}>
-          <Text style={styles.legalLink}>{t('paywall.privacy')}</Text>
-        </Pressable>
-      </View>
-    </Screen>
+  const tierOffers = offers?.filter((offer) => offer.tier === plan) ?? []
+  const periods = PERIOD_ORDER.filter((candidate) =>
+    tierOffers.some((offer) => offer.period === candidate),
   )
-}
+  // Falls back to the first period this tier is sold in when the picked one is
+  // not — a Polyglot without a monthly must not leave the price row empty.
+  const period = pickedPeriod !== null && periods.includes(pickedPeriod) ? pickedPeriod : periods[0]
+  const offer = tierOffers.find((candidate) => candidate.period === period)
+  // What the yearly saving is measured against. Taken from the offers the store
+  // just returned rather than from a constant — `planSaving.ts` says why.
+  const yearly = tierOffers.find((candidate) => candidate.period === 'yearly')
+  const monthly = tierOffers.find((candidate) => candidate.period === 'monthly')
+  const saving = yearly ? yearlySavingPercent(yearly, monthly) : null
 
-interface TierSectionProps {
-  tier: PaidPlanTier
-  offers: PurchaseOffer[] | null
-  held: HeldPlan
-  busyOfferId: string | null
-  onBuy: (offerId: string, change: PlanChange) => Promise<void>
-  onChangePlan: () => Promise<void>
-}
-
-function TierSection({ tier, offers, held, busyOfferId, onBuy, onChangePlan }: TierSectionProps) {
-  const styles = useStyles()
-  const t = useT()
-
-  const tierOffers = offers?.filter((offer) => offer.tier === tier) ?? []
   /*
    * Was `currentTier === tier`, which disabled the plan held and nothing
    * else: a Polyglot subscriber could buy Fluent underneath it, and a Fluent
@@ -420,7 +352,7 @@ function TierSection({ tier, offers, held, busyOfferId, onBuy, onChangePlan }: T
    * on Play and on the web. What a tap means depends on the tier *and* the
    * store that sold it, and `planChangeFor` is the one place that is decided.
    */
-  const change = planChangeFor(held, tier, PLATFORM)
+  const change = planChangeFor(held, plan, PLATFORM)
   const heldName = held.tier === 'free' ? '' : TIER_NAMES[held.tier]
   const boughtOn = platformOfStore(held.store)
   const isCurrent = change === 'covered' || change === 'elsewhere'
@@ -428,322 +360,307 @@ function TierSection({ tier, offers, held, busyOfferId, onBuy, onChangePlan }: T
   // Not under the harness, which has no portal and answers `PRODUCT_CHANGE`
   // to a second purchase the way a store would.
   const viaPortal = change === 'upgrade' && PLATFORM === 'web' && !isFakePurchasesEnabled()
+  // The higher tier's ticks take the brand purple; the first tier's stay blue.
+  const tint = plan === 'pro_plus' ? colors.pro : colors.accent
 
-  // The yearly plan is the screen's one committing (yellow) action; every
-  // other offer is an outline. When the store returns no yearly, the first
-  // offer inherits the slot so the screen never sells without a commit.
-  const featured =
-    tier === 'pro'
-      ? (tierOffers.find((offer) => offer.period === 'yearly') ?? tierOffers[0])
-      : undefined
-  const orderedOffers = featured
-    ? [featured, ...tierOffers.filter((offer) => offer !== featured)]
-    : tierOffers
+  /*
+   * What the button below will do to the plan already held, said before the
+   * tap rather than discovered on the receipt. App Review 3.1.2 wants the
+   * terms beside the offer; a second subscription nobody meant to start is
+   * the failure the other sentences prevent.
+   */
+  const changeNotice =
+    change === 'covered' && held.tier !== plan
+      ? t('paywall.includedIn', { plan: heldName })
+      : change === 'upgrade' && !viaPortal
+        ? t('paywall.upgradeNotice', { plan: heldName })
+        : viaPortal
+          ? t('paywall.upgradeWeb', { plan: heldName })
+          : change === 'elsewhere' && boughtOn
+            ? t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })
+            : change === 'buy' && held.store === 'promotional'
+              ? t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[plan] })
+              : null
 
-  const offerLabel = (offer: PurchaseOffer) =>
-    t('paywall.offer', { period: t(PERIOD_LABEL[offer.period]), price: offer.priceString })
-  const offerDisabled = (offer: PurchaseOffer) =>
-    isCurrent || (busyOfferId !== null && busyOfferId !== offer.id)
-
-  // What the yearly saving is measured against. Taken from the offers the store
-  // just returned rather than from a constant — `planSaving.ts` says why.
-  const monthly = tierOffers.find((offer) => offer.period === 'monthly')
+  const hasTopLines =
+    (feature !== null && highlightTier !== null) || remaining === 0 || tier !== 'free'
 
   return (
-    <View style={[styles.section, tier === 'pro_plus' && styles.sectionLast]}>
-      {tier === 'pro' ? (
-        <Text style={styles.tierName}>{TIER_NAMES.pro}</Text>
-      ) : (
-        <View style={styles.plusHead}>
-          <Text style={styles.tierName}>{TIER_NAMES.pro_plus}</Text>
-          <Text style={styles.plusTagline}>
-            {t('paywall.everythingInPro', { plan: TIER_NAMES.pro })}
+    <Screen fluid style={styles.screen}>
+      <View style={styles.header}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('common.backPlain')}
+          hitSlop={12}
+          onPress={() => goBackTo('/(app)/(tabs)/me', from)}
+          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+        >
+          <Feather name="x" size={22} color={colors.text} />
+        </Pressable>
+        <View style={styles.spacer} />
+        {/*
+          Required by Apple on any screen that sells a subscription, and it has
+          to work for someone reinstalling on a new device — so it runs a real
+          SDK restore, not only the server-side reconcile.
+        */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void restore()}
+          disabled={restoring}
+          hitSlop={8}
+          style={styles.restore}
+        >
+          <Text style={styles.restoreText}>
+            {restoring || refresh.isPending ? t('common.checking') : t('paywall.restorePurchases')}
           </Text>
-        </View>
-      )}
-
-      <View style={styles.benefits}>
-        {tier === 'pro'
-          ? PRO_BENEFITS.map((benefit) => <BenefitRow key={benefit} copy={BENEFIT_COPY[benefit]} />)
-          : PRO_PLUS_BENEFITS.map((benefit) => {
-              const copy = PRO_PLUS_BENEFIT_COPY[benefit]
-              return <BenefitRow key={benefit} copy={copy} pending={!copy.shipped} />
-            })}
+        </Pressable>
       </View>
 
-      {/*
-        What the buttons below will do to the plan already held, said before
-        the tap rather than discovered on the receipt. App Review 3.1.2 wants
-        the terms beside the offer; a second subscription nobody meant to
-        start is the failure the other three sentences prevent.
-      */}
-      {change === 'covered' && held.tier !== tier ? (
-        <Text style={styles.changeNotice}>{t('paywall.includedIn', { plan: heldName })}</Text>
-      ) : change === 'upgrade' && !viaPortal ? (
-        <Text style={styles.changeNotice}>{t('paywall.upgradeNotice', { plan: heldName })}</Text>
-      ) : viaPortal ? (
-        <Text style={styles.changeNotice}>{t('paywall.upgradeWeb', { plan: heldName })}</Text>
-      ) : change === 'elsewhere' && boughtOn ? (
-        <Text style={styles.changeNotice}>
-          {t('paywall.upgradeElsewhere', { plan: heldName, store: t(STORE_NAME[boughtOn]) })}
-        </Text>
-      ) : change === 'buy' && held.store === 'promotional' ? (
-        <Text style={styles.changeNotice}>
-          {t('paywall.lifetimeKept', { plan: heldName, plus: TIER_NAMES[tier] })}
-        </Text>
-      ) : null}
+      <ScrollView style={styles.body} contentContainerStyle={styles.content}>
+        <Text style={styles.headline}>{t('paywall.headline')}</Text>
+        <Text style={styles.lead}>{t('paywall.headlineBody')}</Text>
 
-      {offers === null ? (
-        <ActivityIndicator style={styles.offersLoading} />
-      ) : tierOffers.length === 0 ? (
-        <Text style={styles.unavailable}>
-          {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
-        </Text>
-      ) : viaPortal ? (
-        <View style={styles.offerFirst}>
-          <PlusOfferButton
-            label={t('paywall.changePlan')}
-            loading={false}
-            disabled={busyOfferId !== null}
-            onPress={() => void onChangePlan()}
+        {/*
+          Says why this screen opened, when the caller knew. Someone who just
+          tapped a locked filter is answering a different question from someone
+          who opened the paywall from their profile, and a generic pitch answers
+          neither of them well.
+        */}
+        {hasTopLines ? (
+          <View style={styles.context}>
+            {feature && highlightTier ? (
+              <Text style={styles.contextText}>
+                <Text style={styles.contextFeature}>{t(FEATURE_TITLE[feature])}</Text>{' '}
+                {t('paywall.partOf')} {TIER_NAMES[highlightTier]}.
+              </Text>
+            ) : null}
+            {remaining === 0 ? (
+              <Text style={styles.contextText}>
+                {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
+              </Text>
+            ) : null}
+            {tier !== 'free' ? (
+              <Text style={styles.contextText}>
+                {held.store === 'promotional'
+                  ? t('paywall.lifetimeNotice', { plan: TIER_NAMES[tier] })
+                  : t('paywall.manageNotice', { plan: TIER_NAMES[tier] })}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+
+        {notice ? <Text style={styles.notice}>{notice}</Text> : null}
+
+        <SegmentedControl
+          options={PAID_PLAN_TIERS.map((paidTier) => ({
+            value: paidTier,
+            label: TIER_NAMES[paidTier],
+          }))}
+          selected={[plan]}
+          onToggle={setPlan}
+          accessibilityLabel={t('paywall.screenTitle')}
+        />
+
+        {/* One period is no choice, so the control only appears with two. */}
+        {periods.length > 1 ? (
+          <SegmentedControl
+            options={periods.map((candidate) => ({
+              value: candidate,
+              label:
+                candidate === 'yearly' && saving !== null
+                  ? t('paywall.yearlySaving', { percent: saving })
+                  : t(PERIOD_LABEL[candidate]),
+            }))}
+            selected={period ? [period] : []}
+            onToggle={setPickedPeriod}
+            accessibilityLabel={t('paywall.billingPeriod')}
           />
+        ) : null}
+
+        {offers === null ? (
+          <ActivityIndicator style={styles.priceLoading} />
+        ) : offer ? (
+          <View style={styles.priceBlock}>
+            <View style={styles.priceRow}>
+              <Text style={styles.price}>{offer.priceString}</Text>
+              <Text style={styles.per}>{t(PERIOD_PHRASE[offer.period])}</Text>
+            </View>
+            {/*
+              The whole sequence — how long the trial runs and what it renews
+              at — beside the price, not only in the footer's small print. App
+              Review guideline 3.1.2 asks for the trial's own terms next to the
+              trial. Not written unless the store actually returned one.
+            */}
+            {offer.freeTrialDays !== null ? (
+              <Text style={styles.trial}>
+                {t('paywall.trialTerms', {
+                  count: offer.freeTrialDays,
+                  price: offer.priceString,
+                  period: t(PERIOD_PHRASE[offer.period]),
+                })}
+              </Text>
+            ) : null}
+            {changeNotice ? <Text style={styles.changeNotice}>{changeNotice}</Text> : null}
+          </View>
+        ) : (
+          <Text style={styles.unavailable}>
+            {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
+          </Text>
+        )}
+
+        <View style={styles.features}>
+          {plan === 'pro'
+            ? PRO_BENEFITS.map((benefit) => (
+                <FeatureRow key={benefit} copy={BENEFIT_COPY[benefit]} tint={tint} />
+              ))
+            : PRO_PLUS_BENEFITS.map((benefit) => {
+                const copy = PRO_PLUS_BENEFIT_COPY[benefit]
+                return <FeatureRow key={benefit} copy={copy} tint={tint} soon={!copy.shipped} />
+              })}
+          {/* The superset relationship, as the last row rather than a tagline. */}
+          {plan === 'pro_plus' ? (
+            <View style={styles.feature}>
+              <Feather name="check" size={18} color={tint} />
+              <View style={styles.featureText}>
+                <Text style={styles.featureTitle}>
+                  {t('paywall.everythingInPro', { plan: TIER_NAMES.pro })}
+                </Text>
+              </View>
+            </View>
+          ) : null}
         </View>
-      ) : tier === 'pro' ? (
-        orderedOffers.map((offer, index) => (
-          <View key={offer.id} style={index === 0 ? styles.offerFirst : styles.offerNext}>
-            <OfferCaption offer={offer} monthly={monthly} />
-            <Button
-              label={offerLabel(offer)}
-              variant={offer === featured ? 'primary' : 'secondary'}
-              loading={busyOfferId === offer.id}
-              disabled={offerDisabled(offer)}
-              onPress={() => onBuy(offer.id, change)}
-            />
+
+        <View style={styles.footnote}>
+          <Text style={styles.legal}>{t('paywall.legal')}</Text>
+          <View style={styles.legalLinks}>
+            <Pressable onPress={() => void Linking.openURL(TERMS_URL)} hitSlop={8}>
+              <Text style={styles.legalLink}>{t('paywall.terms')}</Text>
+            </Pressable>
+            <Text style={styles.legalDot}>·</Text>
+            <Pressable onPress={() => void Linking.openURL(PRIVACY_URL)} hitSlop={8}>
+              <Text style={styles.legalLink}>{t('paywall.privacy')}</Text>
+            </Pressable>
           </View>
-        ))
-      ) : (
-        orderedOffers.map((offer, index) => (
-          <View key={offer.id} style={index === 0 ? styles.offerFirst : styles.offerNext}>
-            <OfferCaption offer={offer} monthly={monthly} />
-            <PlusOfferButton
-              label={offerLabel(offer)}
-              loading={busyOfferId === offer.id}
-              disabled={offerDisabled(offer)}
-              onPress={() => void onBuy(offer.id, change)}
-            />
-          </View>
-        ))
-      )}
-    </View>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <Button
+          label={
+            viaPortal ? t('paywall.changePlan') : t('paywall.start', { plan: TIER_NAMES[plan] })
+          }
+          loading={offers === null || busyOfferId !== null}
+          disabled={isCurrent || offer === undefined}
+          onPress={() =>
+            viaPortal ? changePlanInPortal() : offer ? buy(offer.id, change) : undefined
+          }
+        />
+      </View>
+    </Screen>
   )
 }
 
 /**
- * What the store is giving away, above the price rather than beside it.
- *
- * The trial comes first because it is the decision on offer: someone weighing a
- * year of anything wants to know they can leave before they want to know what
- * it costs. Neither line is written unless the store actually returned it — a
- * storefront with no trial, or a tier whose monthly price is missing, renders
- * the button on its own rather than a claim nobody can check.
- *
- * The two sit apart by `gap` rather than by a separator character, because a
- * punctuation mark between two sentences is a user-facing string, and those
- * live in `messages/en.ts` with the other seven locales typed against them.
+ * One benefit: a tick in the plan's colour, the name, and the number it comes
+ * with underneath — the limit is the part of the promise worth keeping visible.
+ * A not-yet-shipped feature keeps its name and body but wears the tag.
  */
-function OfferCaption({
-  offer,
-  monthly,
+function FeatureRow({
+  copy,
+  tint,
+  soon = false,
 }: {
-  offer: PurchaseOffer
-  monthly: PurchaseOffer | undefined
+  copy: BenefitCopy
+  tint: string
+  soon?: boolean
 }) {
   const styles = useStyles()
   const t = useT()
 
-  const saving = yearlySavingPercent(offer, monthly)
-  if (offer.freeTrialDays === null && saving === null) return null
-
   return (
-    <View style={styles.caption}>
-      {/*
-        The whole sequence — how long the trial runs and what it renews at —
-        beside the offer, not only in the footer's small print. App Review
-        guideline 3.1.2 asks for the trial's own terms next to the trial.
-      */}
-      {offer.freeTrialDays !== null ? (
-        <Text style={styles.captionTrial}>
-          {t('paywall.trialTerms', {
-            count: offer.freeTrialDays,
-            price: offer.priceString,
-            period: t(PERIOD_PHRASE[offer.period]),
-          })}
-        </Text>
-      ) : null}
-      {saving !== null ? (
-        <Text style={styles.captionSaving}>{t('paywall.saving', { percent: saving })}</Text>
-      ) : null}
-    </View>
-  )
-}
-
-/**
- * The Pro+ offer is an outline like the secondary `Button`, but ringed in
- * `text` rather than `border` — the design's way of saying "also real, not the
- * default" without spending a second yellow. `Button` cannot draw that ring
- * (its `style` lands on the animation wrapper, outside the bordered box), so
- * the pressable is local.
- */
-function PlusOfferButton({
-  label,
-  loading,
-  disabled,
-  onPress,
-}: {
-  label: string
-  loading: boolean
-  disabled: boolean
-  onPress: () => void
-}) {
-  const { colors } = useTheme()
-  const styles = useStyles()
-  const isDisabled = disabled || loading
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled }}
-      onPress={onPress}
-      disabled={isDisabled}
-      style={({ pressed }) => [
-        styles.plusOffer,
-        isDisabled && styles.plusOfferDisabled,
-        pressed && !isDisabled && styles.plusOfferPressed,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={colors.text} />
-      ) : (
-        <Text style={styles.plusOfferLabel}>{label}</Text>
-      )}
-    </Pressable>
-  )
-}
-
-function BenefitRow({ copy, pending = false }: { copy: BenefitCopy; pending?: boolean }) {
-  const { colors } = useTheme()
-  const styles = useStyles()
-  const t = useT()
-
-  return (
-    <View style={styles.benefit}>
-      <Feather
-        name="check"
-        size={15}
-        color={pending ? colors.textFaint : colors.accent}
-        style={styles.check}
-      />
-      <Text style={[styles.benefitText, pending && styles.benefitTextPending]}>
-        <Text style={[styles.benefitLead, pending && styles.benefitLeadPending]}>
-          {t(copy.title)}
-        </Text>
-        <Text style={styles.benefitBody}>
-          {' — '}
-          {t(copy.body, copy.vars)}
-        </Text>
-        {pending ? <Text style={styles.pendingTag}> · {t('common.comingSoon')}</Text> : null}
-      </Text>
+    <View style={styles.feature}>
+      <Feather name="check" size={18} color={tint} />
+      <View style={styles.featureText}>
+        <Text style={styles.featureTitle}>{t(copy.title)}</Text>
+        <Text style={styles.featureBody}>{t(copy.body, copy.vars)}</Text>
+      </View>
+      {soon ? <Text style={styles.soonTag}>{t('common.comingSoon')}</Text> : null}
     </View>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  topBlock: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    gap: spacing.sm,
-    paddingBottom: spacing.lg,
-    paddingTop: spacing.sm,
+  // The header and footer hairlines run edge to edge, so the screen's gutter
+  // moves onto the three blocks themselves — the same shape as the chat screen.
+  screen: { paddingHorizontal: 0 },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 14,
+    paddingBottom: spacing.sm,
+    paddingHorizontal: 20,
+    paddingTop: 6,
   },
+  // 34 square: the glyph's own hit box, before `hitSlop` widens it.
+  close: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
+  spacer: { flex: 1 },
+  restore: { height: 40, justifyContent: 'center' },
+  restoreText: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  pressed: { opacity: 0.5 },
+  body: { flex: 1 },
+  content: { gap: 20, paddingHorizontal: 20 },
+  headline: { ...font.title, color: colors.text, lineHeight: 36 },
+  lead: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  context: { gap: spacing.sm },
   contextText: { color: colors.textMuted, fontSize: 14, lineHeight: 22 },
   contextFeature: { color: colors.accent, fontWeight: '700' },
-  notice: { color: colors.danger, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
+  notice: { color: colors.danger, fontSize: 14, lineHeight: 22 },
 
-  section: {
+  priceLoading: { paddingTop: 6 },
+  priceBlock: { gap: spacing.sm, paddingTop: 6 },
+  priceRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm },
+  price: { ...font.heading, color: colors.text, fontSize: 44 },
+  per: { color: colors.textMuted, fontSize: 15 },
+  trial: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  changeNotice: { color: colors.textMuted, fontSize: 13, lineHeight: 20 },
+  unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, paddingTop: 6 },
+
+  features: { borderTopColor: colors.border, borderTopWidth: 1 },
+  feature: {
+    alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    paddingBottom: spacing.lg + 4,
-    paddingTop: spacing.lg + 2,
-  },
-  sectionLast: { borderBottomWidth: 0, paddingBottom: 0 },
-  tierName: { ...font.heading, color: colors.text, fontSize: 22 },
-  plusHead: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm + 2 },
-  plusTagline: { color: colors.textMuted, flex: 1, fontSize: 13, fontWeight: '600' },
-
-  benefits: { gap: 9, marginTop: spacing.md },
-  benefit: { flexDirection: 'row', gap: spacing.sm + 2 },
-  check: { flexShrink: 0, marginTop: 3 },
-  benefitText: { color: colors.text, flex: 1, fontSize: 15, lineHeight: 22 },
-  benefitTextPending: { color: colors.textMuted },
-  benefitLead: { fontWeight: '700' },
-  // A not-yet-shipped feature keeps its name legible while the row around it
-  // steps back — the name is the promise, the mute is the schedule.
-  benefitLeadPending: { color: colors.text },
-  benefitBody: { color: colors.textMuted, fontWeight: '400' },
-  pendingTag: { color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 0.4 },
-
-  offerFirst: { marginTop: spacing.lg },
-  offerNext: { marginTop: spacing.sm },
-  // Inset to the pill's own curve, so the line reads as belonging to the button
-  // under it rather than to the benefit list above.
-  caption: {
-    alignItems: 'baseline',
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: 6,
-    paddingHorizontal: spacing.md,
+    gap: 14,
+    paddingVertical: 13,
   },
-  captionTrial: { color: colors.accent, fontSize: 13, fontWeight: '700' },
-  captionSaving: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  offersLoading: { marginTop: spacing.lg },
-  unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
-  changeNotice: { color: colors.textMuted, fontSize: 13, lineHeight: 20, marginTop: spacing.md },
-
-  plusOffer: {
-    alignItems: 'center',
-    borderColor: colors.text,
+  featureText: { flex: 1, gap: 2 },
+  featureTitle: { color: colors.text, fontSize: 16 },
+  featureBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  soonTag: {
+    borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
-    justifyContent: 'center',
-    minHeight: 50,
-    paddingHorizontal: spacing.xl,
-    width: '100%',
-  },
-  plusOfferDisabled: { opacity: 0.5 },
-  plusOfferPressed: { backgroundColor: colors.fill },
-  plusOfferLabel: {
-    color: colors.text,
-    fontFamily: font.heading.fontFamily,
-    fontSize: 15,
-    fontWeight: '800',
+    color: colors.textMuted,
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
   },
 
-  restore: { marginTop: spacing.xl },
-  restoreText: { color: colors.accent, fontSize: 14, fontWeight: '700', textAlign: 'center' },
-  legal: {
-    color: colors.textFaint,
-    fontSize: 12,
-    lineHeight: 18,
-    marginTop: spacing.md,
-    textAlign: 'center',
-  },
-  legalDot: { ...font.caption, color: colors.textFaint },
-  legalLink: { ...font.caption, color: colors.accent, fontWeight: '600' },
-  legalLinks: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'center',
-    marginBottom: spacing.xl,
-    marginTop: spacing.sm,
+  footnote: { gap: spacing.sm, paddingBottom: spacing.md },
+  legal: { color: colors.textFaint, fontSize: 13, lineHeight: 20 },
+  legalLinks: { flexDirection: 'row', gap: spacing.sm },
+  legalLink: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  legalDot: { color: colors.textFaint, fontSize: 13 },
+
+  footer: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    paddingBottom: 28,
+    paddingHorizontal: 20,
+    paddingTop: spacing.md,
   },
 }))

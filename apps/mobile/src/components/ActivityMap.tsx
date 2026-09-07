@@ -9,11 +9,14 @@ import {
   type ActivityCell,
 } from '../lib/activityMap'
 import { confirmAndRepair } from '../lib/repairFlow'
-import { makeStyles, useTheme } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
 
-/** Half a year, which is as much as fits without the squares becoming dots. */
-const WEEKS = 26
+/**
+ * Twenty weeks: what fits across a phone at the 3px gutter without the map
+ * having to scroll, and the number the legend's "weeks ago" reads from.
+ */
+const WEEKS = 20
 
 /**
  * Every day this person showed up, and the ones they can still buy back.
@@ -33,7 +36,6 @@ export interface ActivityMapProps {
 }
 
 export function ActivityMap({ handle }: ActivityMapProps = {}) {
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -61,28 +63,12 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
     const days = handle
       ? new Map((theirs.data?.days ?? []).map((d) => [d.day, INTENSITY_ACTIONS[d.intensity] ?? 1]))
       : new Map((own.data?.days ?? []).map((d) => [d.day, d.actions]))
-    /*
-     * A day that opened as a check-in and later saw a real message is not one
-     * of these: `source` says how the day began, `actions` says whether work
-     * happened, and the faint square is for the days where none did.
-     *
-     * Only ever computed for your own map. `PublicActivityDto` carries no
-     * source, deliberately — the same privacy line that hides bought squares.
-     */
-    const checkIns = handle
-      ? undefined
-      : new Set(
-          (own.data?.days ?? [])
-            .filter((d) => d.source === 'checkIn' && d.actions === 0)
-            .map((d) => d.day),
-        )
     return activityGrid({
       today:
         (handle ? theirs.data?.today : own.data?.today) ?? new Date().toISOString().slice(0, 10),
       weeks: WEEKS,
       days,
       maxAgeDays: own.data?.repair.maxAgeDays ?? 0,
-      ...(checkIns ? { checkIns } : {}),
       streak: (handle ? theirs.data?.streak : own.data?.streak) ?? undefined,
     })
   }, [handle, own.data, theirs.data])
@@ -90,7 +76,7 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
   if (source.isPending) return <ActivityIndicator style={styles.loading} />
   if (!source.data) return null
   // A profile that turned the map off says nothing at all, rather than showing
-  // six months of empty squares that look like an inactive person.
+  // months of empty squares that look like an inactive person.
   if (handle && theirs.data?.visible === false) return null
 
   const rules = own.data?.repair ?? { price: 0, maxAgeDays: 0, perMonth: 0, usedThisMonth: 0 }
@@ -117,29 +103,11 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.head}>
-        <Text style={styles.title}>{t('chat.activity')}</Text>
-        {/* Only the owner can buy a day back, so only the owner is told how
-            many are left — and the line wraps rather than running off the
-            card, which is where it went before. */}
-        {handle ? null : (
-          <Text style={styles.hint}>
-            {left > 0
-              ? t('activity.repairsLeft', {
-                  count: left,
-                  total: rules.perMonth,
-                  price: rules.price,
-                })
-              : t('activity.noRepairsThisMonth')}
-          </Text>
-        )}
-      </View>
-
       {/*
         Opened at the far end, because the grid runs oldest-first and the newest
-        week is the one worth seeing. Left alone it opens on six months ago,
-        which is a calendar of nothing. `onContentSizeChange` rather than an
-        effect: the offset only means anything once the columns have a width.
+        week is the one worth seeing. Left alone it opens on months ago, which
+        is a calendar of nothing. `onContentSizeChange` rather than an effect:
+        the offset only means anything once the columns have a width.
       */}
       <ScrollView
         ref={scroller}
@@ -167,20 +135,28 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
                   { height: cell, width: cell },
                   square.state === 'future' && styles.future,
                   square.state === 'repairable' && styles.repairable,
-                  // Fainter than the lightest worked day (0.4375), and still
-                  // clearly filled — the streak did not break.
-                  square.checkedIn && { backgroundColor: colors.streak, opacity: 0.18 },
-                  square.intensity > 0 &&
-                    !square.checkedIn && {
-                      backgroundColor: colors.streak,
-                      opacity: 0.25 + square.intensity * 0.1875,
-                    },
+                  square.intensity === 1 && styles.low,
+                  square.intensity === 2 && styles.mid,
+                  square.intensity >= 3 && styles.high,
                 ]}
               />
             ))}
           </View>
         ))}
       </ScrollView>
+
+      <View style={styles.legend}>
+        <Text style={styles.legendText}>{t('activity.weeksAgo', { count: WEEKS })}</Text>
+        {/* Only the owner can fill a day in, so only the owner is told a
+            square can be tapped. */}
+        {handle ? null : (
+          <View style={styles.legendItem}>
+            <View style={[styles.repairable, styles.legendSwatch]} />
+            <Text style={styles.legendText}>{t('streak.legendMissed')}</Text>
+          </View>
+        )}
+        <Text style={styles.legendText}>{t('day.today')}</Text>
+      </View>
     </View>
   )
 }
@@ -192,48 +168,54 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
  */
 const INTENSITY_ACTIONS: Record<number, number> = { 1: 1, 2: 3, 3: 10, 4: 30 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
-  /**
-   * A v3 section, not a card: the screen's own padding is the edge, and the
-   * hairline below is what separates the map from the rows after it.
-   */
-  wrap: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    gap: spacing.sm,
-    paddingVertical: 18,
-  },
-  head: {
-    alignItems: 'baseline',
-    columnGap: spacing.sm,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  title: { ...font.heading, color: colors.text, fontSize: 16 },
-  hint: { ...font.caption, color: colors.textMuted },
+  // A v3 section, not a card: the screen's own padding is the edge.
+  wrap: { paddingBottom: spacing.sm, paddingTop: spacing.lg },
   /**
    * `flexGrow` so the container fills the viewport when the grid is narrower
    * than it, which is what lets `justifyContent` centre the leftover. A grid
-   * wider than the viewport is not shrunk by either, so a phone still scrolls.
+   * wider than the viewport is not shrunk by either, so a narrow phone still
+   * scrolls.
    */
   grid: {
     flexDirection: 'row',
     flexGrow: 1,
     gap: ACTIVITY_CELL_GAP,
     justifyContent: 'center',
-    paddingVertical: spacing.xs,
+    paddingVertical: 6,
   },
   column: { gap: ACTIVITY_CELL_GAP },
   /**
-   * `fill`, the one grey v3 lets be a box: an empty day must still be a
-   * visible square on the white ground — a calendar whose empty days are
-   * invisible is not a calendar, it is a scatter of dots.
+   * `fill` is the square nothing is known about: a day before the repair
+   * window, or before the account. An empty day must still be a visible square
+   * on the white ground — a calendar whose empty days are invisible is not a
+   * calendar, it is a scatter of dots.
    */
   cell: { backgroundColor: colors.fill, borderRadius: 3 },
   // Drawn as a gap rather than a square: a day that has not happened is not an
   // empty day.
   future: { backgroundColor: 'transparent' },
-  repairable: { borderColor: colors.border, borderStyle: 'dashed', borderWidth: 1 },
+  // Red and dashed only while the day can still be bought back — the legend
+  // ties this look to the tap, so a day past the window must not wear it.
+  repairable: {
+    backgroundColor: colors.dangerBg,
+    borderColor: colors.danger,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+  },
+  // Three shades of work, the busiest in ink rather than a fourth blue: at
+  // this size two more steps of the same hue stop being tellable apart.
+  low: { backgroundColor: colors.accentBg },
+  mid: { backgroundColor: colors.accent },
+  high: { backgroundColor: colors.ink, opacity: 0.85 },
+  legend: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 6,
+  },
+  legendItem: { alignItems: 'center', flexDirection: 'row', gap: 6 },
+  legendSwatch: { borderRadius: 3, height: 10, width: 10 },
+  legendText: { color: colors.textFaint, fontSize: 12 },
 }))

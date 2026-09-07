@@ -16,7 +16,7 @@ import { authClient } from '../src/lib/auth-client'
 import { Avatar } from '../src/components/ui/Avatar'
 import { Button } from '../src/components/ui/Button'
 import { EmptyState } from '../src/components/ui/EmptyState'
-import { LevelBars } from '../src/components/ui/LevelBars'
+import { LanguageColumns } from '../src/components/LanguageColumns'
 import { Screen } from '../src/components/ui/Screen'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
@@ -111,6 +111,8 @@ export default function SharedProfileScreen() {
 
   return (
     <Screen scroll>
+      {/* The same hero as a member sees, minus what the public DTO does not
+          carry: no age, no streak, no account age, no online dot. */}
       <View style={styles.hero}>
         {/*
           No generated face here, and deliberately. The public profile DTO does
@@ -119,34 +121,23 @@ export default function SharedProfileScreen() {
           than reopening a decision made for the open internet.
         */}
         <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
-        <Text style={styles.name}>{user.displayName}</Text>
-        <Text style={styles.handle}>
-          @{user.handle}
-          {country ? ` · ${countryFlag(country.code)} ${names.country(country.code)}` : ''}
-        </Text>
-        {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
-      </View>
-
-      {user.nativeLanguages.length > 0 ? (
-        <View style={styles.section}>
-          <Text style={styles.kicker}>{t('shared.speaks')}</Text>
-          <Text style={styles.languages}>
-            {user.nativeLanguages.map((l) => names.language(l.code)).join(', ')}
+        <View style={styles.heroText}>
+          <Text style={styles.name}>{user.displayName}</Text>
+          <Text style={styles.handle} numberOfLines={1}>
+            @{user.handle}
+            {country ? ` · ${countryFlag(country.code)} ${names.country(country.code)}` : ''}
           </Text>
         </View>
-      ) : null}
+      </View>
 
-      {user.learning.length > 0 ? (
-        <View style={styles.section}>
-          <Text style={styles.kicker}>{t('shared.learning')}</Text>
-          {user.learning.map((l) => (
-            <View key={l.code} style={styles.learningRow}>
-              <Text style={styles.languages}>{names.language(l.code)}</Text>
-              <LevelBars level={l.level} />
-            </View>
-          ))}
-        </View>
-      ) : null}
+      <LanguageColumns
+        nativeLanguages={user.nativeLanguages}
+        // The public DTO has no `priority`; the server already sends them in
+        // the owner's order, so the index is that order.
+        learning={user.learning.map((language, index) => ({ ...language, priority: index + 1 }))}
+      />
+
+      {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
       <View style={styles.cta}>
         <Text style={styles.ctaBody}>
@@ -173,30 +164,11 @@ export default function SharedProfileScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  hero: { alignItems: 'center', gap: spacing.sm, paddingTop: spacing.xxl },
-  name: { ...font.title, color: colors.text, fontSize: 26, textAlign: 'center' },
-  handle: { ...font.body, color: colors.textMuted, textAlign: 'center' },
-  bio: {
-    ...font.body,
-    color: colors.textMuted,
-    lineHeight: 23,
-    marginTop: spacing.sm,
-    textAlign: 'center',
-  },
-  section: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    gap: spacing.xs,
-    paddingVertical: spacing.lg,
-  },
-  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  languages: { ...font.body, color: colors.text },
-  learningRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'space-between',
-  },
+  hero: { alignItems: 'center', flexDirection: 'row', gap: 20, paddingTop: spacing.lg },
+  heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
+  name: { ...font.heading, color: colors.text, fontSize: 26 },
+  handle: { color: colors.textMuted, fontSize: 14 },
+  bio: { color: colors.text, fontSize: 16, lineHeight: 25, paddingVertical: 22 },
   cta: { gap: spacing.md, marginTop: spacing.xxl },
   ctaBody: { ...font.body, color: colors.textMuted, lineHeight: 23, textAlign: 'center' },
 }))

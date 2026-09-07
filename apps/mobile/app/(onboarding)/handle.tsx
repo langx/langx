@@ -1,8 +1,8 @@
-import { newHandleSchema } from '@langx/shared'
+import { HANDLE_MIN_LENGTH, newHandleSchema } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { api } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
@@ -18,7 +18,8 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { track } from '../../src/lib/analytics'
 import { normalizeInviteCode } from '../../src/lib/inviteLink'
-import { makeStyles } from '../../src/lib/theme'
+import { goBackTo } from '../../src/lib/navigation'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -42,6 +43,7 @@ function useDebounced<T>(value: T, delay = 400): T {
 export default function HandleStep() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
 
   const draft = useOnboardingDraft()
@@ -156,13 +158,52 @@ export default function HandleStep() {
 
   const canSubmit = parsed.success && available === true && !submitting
 
-  return (
-    <Screen scroll>
-      <StepProgress step="handle" />
-      <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
-      <Text style={styles.subtitle}>{t('onboarding.handleBody')}</Text>
+  /*
+   * One line under the field carries every state, coloured by what it says.
+   * Under the floor it is the plain rule rather than a complaint — nobody has
+   * finished typing yet. The schema's own wording is the odd one out: it is
+   * the developer's English, but it is what the field showed before and the
+   * reserved list has no wording of its own.
+   */
+  const status =
+    draft.handle.length < HANDLE_MIN_LENGTH
+      ? { text: t('onboarding.handleBody'), color: colors.textMuted }
+      : !parsed.success
+        ? {
+            text: parsed.error.issues[0]?.message ?? t('onboarding.handleBody'),
+            color: colors.danger,
+          }
+        : checking
+          ? { text: t('common.checking'), color: colors.textMuted }
+          : available === true
+            ? {
+                text: t('onboarding.handleAvailable', { handle: draft.handle }),
+                color: colors.success,
+              }
+            : available === false
+              ? {
+                  text: t('onboarding.handleTaken', { handle: draft.handle }),
+                  color: colors.danger,
+                }
+              : { text: t('onboarding.handleBody'), color: colors.textMuted }
 
-      <View style={styles.form}>
+  return (
+    <Screen fluid>
+      {/*
+        Own scroll view rather than `Screen scroll`: the content grows to the
+        height, which is what pins the invite link and the button to the
+        bottom while the form is shorter than the screen, and the keyboard
+        inset is the same one `Screen` documents.
+      */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
+        <StepProgress step="handle" onBack={() => goBackTo('/(onboarding)/photo')} />
+        <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
+
         {reserved ? (
           <View style={styles.reserved}>
             <Text style={styles.reservedTitle}>
@@ -172,35 +213,31 @@ export default function HandleStep() {
           </View>
         ) : null}
 
-        <FormField
-          label={t('onboarding.username')}
-          value={draft.handle}
-          onChangeText={(handle) =>
-            updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
-          }
-          placeholder={t('onboarding.handlePlaceholder')}
-          autoCapitalize="none"
-          autoCorrect={false}
-          {...(!parsed.success && draft.handle.length > 0
-            ? { error: parsed.error.issues[0]?.message }
-            : {})}
-        />
-
-        <View style={styles.status}>
-          {checking ? <ActivityIndicator size="small" /> : null}
-          {!checking && available === true ? (
-            <Text style={styles.ok}>
-              {t('onboarding.handleAvailable', { handle: draft.handle })}
-            </Text>
-          ) : null}
-          {!checking && available === false ? (
-            <Text style={styles.taken}>
-              {t('onboarding.handleTaken', { handle: draft.handle })}
-            </Text>
-          ) : null}
+        {/*
+          Not a FormField: v3 draws the handle in the display face with a fixed
+          "@" ahead of it, so the pill is assembled here. No focus ring — the
+          prototype gives this field none.
+        */}
+        <View style={styles.pill}>
+          <Text style={styles.at}>@</Text>
+          <TextInput
+            accessibilityLabel={t('onboarding.username')}
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChangeText={(handle) =>
+              updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
+            }
+            placeholder={t('onboarding.handlePlaceholder')}
+            placeholderTextColor={colors.textFaint}
+            style={styles.input}
+            value={draft.handle}
+          />
         </View>
+        <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>
 
         {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
+
+        <View style={styles.spacer} />
 
         {/*
           Not a wizard step of its own. Lengthening the flow for everybody to
@@ -215,7 +252,6 @@ export default function HandleStep() {
         {inviteOpen ? (
           <>
             <FormField
-              label={t('onboarding.inviteCodeLabel')}
               value={draft.referredByHandle}
               onChangeText={(value) =>
                 updateDraft({
@@ -225,6 +261,7 @@ export default function HandleStep() {
                 })
               }
               placeholder={t('onboarding.inviteCodePlaceholder')}
+              accessibilityLabel={t('onboarding.inviteCodeLabel')}
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -237,48 +274,68 @@ export default function HandleStep() {
             ) : null}
           </>
         ) : (
-          <Text style={styles.inviteToggle} onPress={() => setInviteOpenedByHand(true)}>
-            {t('onboarding.inviteCodeToggle')}
-          </Text>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setInviteOpenedByHand(true)}
+            style={({ pressed }) => [styles.inviteToggle, pressed && styles.pressed]}
+          >
+            <Text style={styles.inviteToggleText}>{t('onboarding.inviteCodeToggle')}</Text>
+          </Pressable>
         )}
-      </View>
 
-      <Button
-        label={t('onboarding.startUsing')}
-        disabled={!canSubmit}
-        loading={submitting}
-        onPress={submit}
-        style={styles.cta}
-      />
+        <Button
+          label={t('onboarding.startUsing')}
+          disabled={!canSubmit}
+          loading={submitting}
+          onPress={submit}
+        />
+      </ScrollView>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  inviteToggle: { ...font.label, color: colors.accent },
-  hint: { ...font.label, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: spacing.sm + 2,
-  },
-  form: { gap: spacing.md, marginTop: spacing.xl },
+  scroll: { flex: 1 },
+  // v3's wizard column: 8 above the progress block, 18 between blocks, 28
+  // under the button so it is not sitting on the home indicator.
+  content: { flexGrow: 1, gap: 18, paddingBottom: 28, paddingTop: spacing.sm },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: 10 },
   // The blue tint carries information from the app's side — same voice as
   // Copilot and the info callouts, never a grey box.
   reserved: {
     backgroundColor: colors.accentBg,
     borderRadius: radius.lg,
-    marginBottom: spacing.sm,
     padding: spacing.lg,
   },
   reservedTitle: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   reservedBody: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 2 },
-  status: { flexDirection: 'row', minHeight: 22 },
-  ok: { ...font.caption, color: colors.success, fontSize: 13 },
-  taken: { ...font.caption, color: colors.danger, fontSize: 13 },
-  error: { ...font.caption, color: colors.danger },
-  cta: { marginTop: spacing.xl },
+  pill: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 2,
+    height: 56,
+    marginTop: 6,
+    paddingHorizontal: 20,
+  },
+  at: { ...font.heading, color: colors.textFaint, fontSize: 18 },
+  // `paddingVertical: 0`: Android gives a TextInput its own padding, which
+  // would push the text off the "@" beside it.
+  input: {
+    ...font.heading,
+    color: colors.text,
+    flex: 1,
+    fontSize: 18,
+    height: '100%',
+    paddingVertical: 0,
+  },
+  status: { fontSize: 15, fontWeight: '600', paddingHorizontal: 20 },
+  error: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
+  spacer: { flex: 1 },
+  inviteToggle: { alignSelf: 'flex-start', height: 40, justifyContent: 'center' },
+  inviteToggleText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  pressed: { opacity: 0.6 },
+  hint: { color: colors.textMuted, fontSize: 14, paddingHorizontal: 20 },
+  ok: { color: colors.success, fontSize: 14, paddingHorizontal: 20 },
 }))

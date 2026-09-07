@@ -26,17 +26,9 @@ import {
   activeCount,
   hasProFilters,
   parseFilters,
-  scopeOf,
-  toParams,
   toQuery,
   withoutProFilters,
-  type DiscoveryFilters,
 } from '../../../src/lib/discoveryFilters'
-import {
-  LanguageScopeSheet,
-  scopeLabel,
-  type LanguageScope,
-} from '../../../src/components/LanguageScopeSheet'
 import {
   captureLocation,
   locationPermissionState,
@@ -88,6 +80,7 @@ export default function DiscoverScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const names = useDisplayNames()
 
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<DiscoverySort>('recommended')
@@ -112,31 +105,18 @@ export default function DiscoverScreen() {
    * them unless the params narrowed a side. The header used to print the
    * *first* of each and call it the match direction, while the server matched
    * on every language on both sides; now the label says what the search is
-   * made with, and tapping it opens the sheet that changes it.
+   * made with, and tapping it opens the filters, where the scope chips live.
    */
   const nativeCodes = useMemo(() => me.data?.nativeLanguages.map((l) => l.code) ?? [], [me.data])
   const learningCodes = useMemo(() => me.data?.learning.map((l) => l.code) ?? [], [me.data])
-  const scope = useMemo<LanguageScope>(
-    () => ({
-      native: filters.nativeLanguages ?? nativeCodes,
-      learning: filters.learningLanguages ?? learningCodes,
-    }),
-    [filters, nativeCodes, learningCodes],
-  )
-  const pair = scopeLabel(scope)
-  const [scopeOpen, setScopeOpen] = useState(false)
-
-  /** Written to the route, like every other filter, so the URL stays the search. */
-  function changeScope(next: LanguageScope): void {
-    const nextFilters: DiscoveryFilters = { ...filters }
-    delete nextFilters.nativeLanguages
-    delete nextFilters.learningLanguages
-    const native = scopeOf(next.native, nativeCodes)
-    const learning = scopeOf(next.learning, learningCodes)
-    if (native) nextFilters.nativeLanguages = native
-    if (learning) nextFilters.learningLanguages = learning
-    router.replace({ pathname: '/(app)/(tabs)/discover', params: toParams(nextFilters) })
-  }
+  const speaks = (filters.nativeLanguages ?? nativeCodes).map((code) => names.language(code))
+  const learns = (filters.learningLanguages ?? learningCodes).map((code) => names.language(code))
+  // `↔` where the rows say `→`: a row is one person's direction, this is the
+  // exchange both sides of the list are matched on.
+  const pair =
+    speaks.length > 0 && learns.length > 0
+      ? `${speaks.join(', ')} ↔\uFE0E ${learns.join(', ')}`
+      : null
 
   /**
    * Nearby has two preconditions and they fail differently, so the chip
@@ -263,25 +243,10 @@ export default function DiscoverScreen() {
           While search is open the row belongs to the field. Everything else
           here competed with it for the same 420px and lost — the title slid
           off the leading edge and the language pair broke onto three lines.
-          The arrow inside the field puts them all back.
+          The `x` inside the field puts them all back.
         */}
         <View style={styles.titleRow}>
           {searching ? null : <Text style={styles.title}>{t('discover.title')}</Text>}
-          {/* Which direction this list is matched in. Every row below is
-              someone native in what you are learning and learning what you
-              speak, and without this the list looks unsorted rather than
-              matched. */}
-          {pair && !searching ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('discover.languagesA11y')}
-              onPress={() => setScopeOpen(true)}
-              hitSlop={8}
-              style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
-            >
-              <Text style={styles.pair}>{pair}</Text>
-            </Pressable>
-          ) : null}
           {/* Advanced filters are the Pro hook, so the control is shown to
               everyone and the *screen* handles the upsell — hiding it makes
               the paywall a surprise instead of an offer. Free filters still
@@ -310,14 +275,21 @@ export default function DiscoverScreen() {
             </Pressable>
           )}
         </View>
-        <LanguageScopeSheet
-          visible={scopeOpen}
-          onClose={() => setScopeOpen(false)}
-          nativeCodes={nativeCodes}
-          learningCodes={learningCodes}
-          scope={scope}
-          onChange={changeScope}
-        />
+        {/* Which direction this list is matched in. Every row below is
+            someone native in what you are learning and learning what you
+            speak, and without this the list looks unsorted rather than
+            matched. */}
+        {pair && !searching ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('discover.languagesA11y')}
+            onPress={() => router.push({ pathname: '/(app)/filters', params })}
+            hitSlop={8}
+            style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.pair}>{pair}</Text>
+          </Pressable>
+        ) : null}
         {/* Search takes the screen, not a strip of it: a sort control above a
             list that has been blanked is answering a question nobody asked. */}
         {searching ? null : (
@@ -347,7 +319,6 @@ export default function DiscoverScreen() {
               <Chip
                 key={km}
                 label={t('discover.distanceKm', { km })}
-                tone="accent"
                 selected={radiusKm === km}
                 onPress={() => setRadiusKm(km)}
               />
@@ -476,25 +447,27 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
-  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
-  title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
-  pairButton: { marginStart: 'auto' },
-  pair: { ...font.label, color: colors.accent, fontSize: 14, fontWeight: '700' },
-  filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
+  // `minHeight` rather than a height: the search pill is 48 and the title is
+  // not, and the row must not jump when one replaces the other.
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: 14, minHeight: 48 },
+  title: { ...font.title, color: colors.text, flex: 1, fontSize: 34 },
+  pairButton: { alignSelf: 'flex-start', marginTop: 2 },
+  pair: { color: colors.accent, fontSize: 14, fontWeight: '700' },
+  filterButton: { alignItems: 'center', flexDirection: 'row', gap: 6, height: 40 },
   filterCount: {
     backgroundColor: colors.accent,
     borderRadius: radius.pill,
     color: colors.textInverse,
     fontSize: 11,
     fontWeight: '700',
+    lineHeight: 18,
     minWidth: 18,
     overflow: 'hidden',
     paddingHorizontal: 5,
-    paddingVertical: 2,
     textAlign: 'center',
   },
   segmented: { marginTop: 18 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: 14 },
   list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   row: {
@@ -502,19 +475,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 14,
+    gap: spacing.lg,
     paddingVertical: 20,
   },
   rowLast: { borderBottomWidth: 0 },
   pressed: { opacity: 0.7 },
-  rowBody: { flex: 1, minWidth: 0 },
-  rowTop: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  rowBody: { flex: 1, gap: spacing.xs, minWidth: 0 },
+  rowTop: { alignItems: 'center', flexDirection: 'row', gap: 10 },
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 17 },
-  age: { ...font.label, color: colors.textMuted, fontSize: 14, fontWeight: '400' },
+  age: { color: colors.textMuted, fontSize: 14 },
   streak: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 2,
+    gap: 3,
     /**
      * The row is `name (shrinkable) · age · streak`, and without this the
      * streak is shrinkable too — so on a 320px screen it squeezed to a
@@ -525,16 +498,11 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     flexShrink: 0,
     marginStart: 'auto',
   },
-  streakCount: { ...font.label, color: colors.textMuted, fontWeight: '400' },
-  pairLine: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 3 },
-  languages: { ...font.label, color: colors.accent, flexShrink: 1, fontSize: 14 },
-  distance: { ...font.caption, color: colors.textMuted, marginTop: 3 },
-  bio: {
-    ...font.body,
-    color: colors.textMuted,
-    lineHeight: 22,
-    marginTop: 5,
-  },
+  streakCount: { color: colors.textMuted, fontSize: 13 },
+  pairLine: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  languages: { color: colors.accent, flexShrink: 1, fontSize: 14, fontWeight: '600' },
+  distance: { color: colors.textMuted, fontSize: 13 },
+  bio: { ...font.body, color: colors.textMuted, lineHeight: 22 },
 }))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */

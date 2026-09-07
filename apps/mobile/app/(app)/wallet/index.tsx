@@ -12,7 +12,6 @@ import { StatTile } from '../../../src/components/ui/StatTile'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT, type MessageKey } from '../../../src/i18n'
-import { compactCount } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -108,12 +107,12 @@ export default function WalletScreen() {
         style={({ pressed }) => [styles.section, pressed && styles.pressed]}
       >
         <Text style={styles.kicker}>{t('wallet.balance')}</Text>
-        <Text style={styles.balanceValue}>{compactCount(balance, locale)}</Text>
+        <Text style={styles.balanceValue}>{balance.toLocaleString(locale)}</Text>
         <View style={styles.balanceHint}>
           <Text style={styles.body}>
             {t('wallet.earnedSpent', {
-              earned: wallet.data?.earned ?? 0,
-              spent: wallet.data?.spent ?? 0,
+              earned: (wallet.data?.earned ?? 0).toLocaleString(locale),
+              spent: (wallet.data?.spent ?? 0).toLocaleString(locale),
             })}
           </Text>
           <Feather name="chevron-right" size={18} color={colors.textFaint} />
@@ -130,11 +129,16 @@ export default function WalletScreen() {
         <StatTile
           label={t('wallet.streakFreezes')}
           value={String(wallet.data?.streakFreezes ?? 0)}
+          valueSize={26}
         />
-        <StatTile label={t('wallet.itemsOwned')} value={`${owned.length}/${COSMETICS.length}`} />
+        <StatTile
+          label={t('wallet.itemsOwned')}
+          value={`${owned.length}/${COSMETICS.length}`}
+          valueSize={26}
+        />
       </View>
 
-      <View style={styles.categories}>
+      <View>
         {SECTIONS.map((section, index) => (
           <ListRow
             key={section.id}
@@ -156,30 +160,29 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   section: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    gap: spacing.sm + 2,
-    paddingBottom: spacing.lg + 6,
-    paddingTop: spacing.lg,
+    gap: 14,
+    paddingBottom: 26,
+    paddingTop: 22,
   },
   pressed: { opacity: 0.7 },
   kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  balanceValue: { ...font.title, color: colors.text, fontSize: 56, lineHeight: 60 },
+  // Set solid: digits have no descenders, and the number is the whole block.
+  balanceValue: {
+    ...font.heading,
+    color: colors.text,
+    fontSize: 56,
+    fontVariant: ['tabular-nums'],
+    lineHeight: 56,
+  },
   balanceHint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23 },
-  gift: { paddingTop: spacing.lg },
+  body: { color: colors.textMuted, fontSize: 15 },
+  gift: { marginTop: 22 },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    paddingBottom: spacing.lg,
-    paddingTop: spacing.lg,
+    paddingBottom: 20,
+    paddingTop: spacing.xl,
   },
-  categories: { marginTop: spacing.sm },
-  hint: {
-    ...font.caption,
-    color: colors.textFaint,
-    fontSize: 13,
-    lineHeight: 21,
-    marginBottom: spacing.xxl,
-    marginTop: spacing.lg,
-  },
+  hint: { color: colors.textFaint, fontSize: 13, lineHeight: 21, marginTop: spacing.xl },
 }))

@@ -1,6 +1,6 @@
 import { STREAK_METRICS, type StreakMetric } from '@langx/shared'
 import { useState } from 'react'
-import { useStreakLeaderboard } from '../../../src/api/queries'
+import { useMe, useStreakLeaderboard } from '../../../src/api/queries'
 import { LeaderboardSection } from '../../../src/components/LeaderboardSection'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -21,6 +21,7 @@ const STREAK_TABS: readonly StreakMetric[] = STREAK_METRICS
 export default function StreakLeaderboardScreen() {
   useScreenInteractive()
   const t = useT()
+  const me = useMe()
   const [metric, setMetric] = useState<StreakMetric>('current')
   const board = useStreakLeaderboard(metric)
   const pull = usePullToRefresh(() => board.refetch())
@@ -29,7 +30,6 @@ export default function StreakLeaderboardScreen() {
     <Screen scroll {...pull}>
       <ScreenHeader title={t('leaderboard.streakTitle')} onBack={() => goBackTo('/(app)/streak')} />
       <LeaderboardSection
-        title={t('streak.title')}
         options={STREAK_TABS.map((tab) => ({
           value: tab,
           label: t(tab === 'current' ? 'leaderboard.metricCurrent' : 'leaderboard.metricLongest'),
@@ -41,6 +41,12 @@ export default function StreakLeaderboardScreen() {
         viewer={board.data?.viewer}
         valueOf={(row) => String((row as { streak?: number }).streak ?? 0)}
         viewerValue={String(board.data?.viewer.streak ?? 0)}
+        viewerAvatar={
+          me.data
+            ? { url: me.data.avatarUrl, name: me.data.displayName, seed: me.data._id }
+            : undefined
+        }
+        bolt
         loading={board.isPending}
         emptyTitle={t('leaderboard.streakEmptyTitle')}
         emptyBody={t('leaderboard.streakEmptyBody')}

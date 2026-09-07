@@ -11,26 +11,25 @@ export function DiscoveryCardSkeleton() {
       <Skeleton width={56} height={56} radius={28} />
       <View style={styles.body}>
         <View style={styles.top}>
-          <Skeleton width={118} height={15} />
-          <Skeleton width={22} height={12} />
+          <Skeleton width={118} height={17} />
+          <Skeleton width={22} height={14} />
         </View>
-        <Skeleton width={160} height={12} style={styles.line} />
-        <Skeleton width="88%" height={12} style={styles.line} />
+        <Skeleton width={160} height={14} />
+        <Skeleton width="88%" height={15} />
       </View>
     </View>
   )
 }
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
-  body: { flex: 1 },
+  body: { flex: 1, gap: spacing.xs },
   row: {
     alignItems: 'flex-start',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 14,
+    gap: spacing.lg,
     paddingVertical: 20,
   },
-  line: { marginTop: 6 },
-  top: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  top: { alignItems: 'center', flexDirection: 'row', gap: 10 },
 }))

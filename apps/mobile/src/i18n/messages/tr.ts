@@ -15,7 +15,8 @@ export const tr: Localized<EnMessages> = {
   common: {
     showPassword: 'Parolayı göster',
     hidePassword: 'Parolayı gizle',
-    back: '‹ Geri',
+    show: 'Göster',
+    hide: 'Gizle',
     backPlain: 'Geri',
     clear: 'Temizle',
     cancel: 'Vazgeç',
@@ -26,17 +27,13 @@ export const tr: Localized<EnMessages> = {
     checking: 'Kontrol ediliyor…',
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
-    you: '(sen)',
     comingSoon: 'YAKINDA',
     continue: 'Devam',
-    next: 'İleri',
     done: 'Bitti',
     reset: 'Sıfırla',
     any: 'Fark etmez',
-    post: 'Paylaş',
     send: 'Gönder',
     remove: 'Kaldır',
-    delete: 'Sil',
     block: 'Engelle',
     report: 'Bildir',
     edit: 'Düzenle',
@@ -61,8 +58,6 @@ export const tr: Localized<EnMessages> = {
   },
 
   media: {
-    sourceMediaTitle: 'Fotoğraf veya video ekle',
-    sourceMediaCamera: 'Fotoğraf veya video çek',
     playVideo: 'Videoyu oynat',
     sourceTitle: 'Fotoğraf ekle',
     sourceCamera: 'Fotoğraf çek',
@@ -105,9 +100,9 @@ export const tr: Localized<EnMessages> = {
   theme: {
     section: 'Görünüm',
     label: 'Tema',
-    auto: 'Otomatik',
     light: 'Açık',
     dark: 'Koyu',
+    autoSystem: 'Otomatik (sistem)',
   },
 
   messageActions: {
@@ -127,7 +122,6 @@ export const tr: Localized<EnMessages> = {
   },
 
   messageMeta: {
-    video: 'Video',
     sent: 'Gönderildi',
     delivered: 'İletildi',
     read: 'Okundu',
@@ -271,6 +265,9 @@ export const tr: Localized<EnMessages> = {
     skip: 'Geç',
     next: 'İleri',
     done: 'Bitti',
+    correctionFrom: 'Bir partnerden düzeltme',
+    correctionBefore: 'Seninle katılıyorum.',
+    correctionAfter: 'Sana katılıyorum.',
   },
 
   welcome: {
@@ -344,6 +341,9 @@ export const tr: Localized<EnMessages> = {
     verifiedBody: 'Artık giriş yapabilirsin.',
     verificationFailedTitle: 'Doğrulanamadı',
     verificationFailedBody: 'Bu bağlantı geçersiz ya da süresi dolmuş. Giriş yapıp yenisini iste.',
+    signInWithCode: 'Başka bir cihazdaki kodla giriş yap',
+    signInLinkNote:
+      'Bir kez çalışır ve 15 dakika içinde geçerliliğini yitirir. Önceki uygulamada hesabın varsa onunla da çalışır.',
   },
 
   onboarding: {
@@ -363,15 +363,11 @@ export const tr: Localized<EnMessages> = {
       'Ana dilin öğretebildiğin şey; öğrendiğin dil de kiminle eşleşeceğini belirliyor.',
     native: 'Ana dil',
     learning: 'Öğrendiğim',
-    yourLevel: 'Seviyen',
     upToCount: { one: 'En fazla {count}', other: 'En fazla {count}' },
     cannotBeBoth: 'Bir dil ikisi birden olamaz',
     aboutYouTitle: 'Senin hakkında',
     displayName: 'Görünen ad',
-    yearOfBirth: 'Doğum yılı',
-    undisclosedNote: 'Bunu seçersen cinsiyete göre filtrelenen aramalarda çıkmazsın.',
     aboutYouOptional: 'Senin hakkında (isteğe bağlı)',
-    aboutYouPlaceholder: 'Ne konuşmayı seversin?',
     tooYoung: 'LangX {age} yaş ve üzeri içindir.',
     photoTitle: 'Bir de yüzünü koy',
     photoBody: 'İkisi de isteğe bağlı ve ikisi de merhaba deme ihtimalini çok artırıyor.',
@@ -382,12 +378,9 @@ export const tr: Localized<EnMessages> = {
     changePhoto: 'Fotoğrafı değiştir',
     uploading: 'Yükleniyor…',
     bioPrompt: 'Bir yabancının söze başlayabileceği bir şey.',
-    whereAreYou: 'Neredesin?',
     username: 'Kullanıcı adı',
     namePlaceholder: 'Alex',
-    yearPlaceholder: '1996',
     gender: 'Cinsiyet',
-    interests: 'İlgi alanları',
     handleTitle: 'Bir kullanıcı adı seç',
     handlePlaceholder: 'alex',
     handleReserved: '@{handle} senin için ayrıldı',
@@ -408,6 +401,9 @@ export const tr: Localized<EnMessages> = {
     inviteCodePlaceholder: 'kullanıcı adı',
     inviteCodeFound: 'Seni {name} davet etmiş.',
     inviteCodeUnknown: 'Bunu bulamadık — yine de devam edebilirsin.',
+    genderNotSaying: 'Söylemem',
+    genderNote:
+      '“{option}” seçersen cinsiyete göre filtrelenen aramalarda görünmezsin. Bunu yalnızca bir kez ayarlayabilirsin.',
   },
 
   welcomeBack: {
@@ -455,7 +451,6 @@ export const tr: Localized<EnMessages> = {
   },
 
   corrections: {
-    title: 'Yazdığın düzeltmeler',
     emptyTitle: 'Henüz düzeltme yok',
     emptyBody:
       'Bir sohbette mesaja basılı tut ve Düzelt’i seç — burada yapabileceğin en faydalı şey bu.',
@@ -468,11 +463,6 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
-    languagesTitle: 'Bu aramadaki diller',
-    languagesBody:
-      'Gösterilen herkes öğrendiğin dillerden birini konuşuyor ve konuştuğun dillerden birini öğreniyor. Bir dili aramanın dışında bırakmak için işaretini kaldır.',
-    iSpeak: 'Konuştuğum',
-    imLearning: 'Öğrendiğim',
     languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'Kullanıcı adıyla ara',
     searchPlaceholder: 'Kullanıcı adı',
@@ -504,8 +494,6 @@ export const tr: Localized<EnMessages> = {
     title: 'Filtreler',
     speaks: 'Konuşuyor',
     city: 'Şehir',
-    cityBody:
-      'Tek bir şehirdekileri bul. Listeden seç — profillerdeki şehir de aynı listeden geliyor.',
     cityNeedsLocation: 'Şehir yalnızca konumunu paylaşanlarda var, yani bu filtre onlara daraltır.',
     cityPlaceholder: 'İstanbul',
     gender: 'Cinsiyet',
@@ -542,7 +530,6 @@ export const tr: Localized<EnMessages> = {
     unpin: 'Sabitlemeyi kaldır',
     archive: 'Arşivle',
     unarchive: 'Arşivden çıkar',
-    pinnedSection: 'Sabitlenmiş',
     unrepliedEmptyTitle: 'Sıra sende olan yok',
     unrepliedEmptyBody: 'Her sohbete cevap vermişsin.',
     archivedEmptyTitle: 'Arşivde sohbet yok',
@@ -574,7 +561,6 @@ export const tr: Localized<EnMessages> = {
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',
     editing: 'Düzenleniyor',
     correcting: 'Düzeltiliyor',
-    activity: 'Etkinlik',
     translating: 'Çevriliyor…',
     writeMessage: 'Bir mesaj yaz…',
     writeCorrection: 'Düzeltmeyi yaz…',
@@ -582,7 +568,6 @@ export const tr: Localized<EnMessages> = {
     correctionFrom: '{name} adlı kişiden düzeltme',
     them: 'karşı taraf',
     tokensPerMessage: 'mesaj başına +{count} jeton',
-    unlimitedEveryPlan: 'Her planda sınırsız',
     voiceMessage: 'Sesli mesaj',
     speedSlow: '0.5x',
     speedNormal: '1x',
@@ -626,6 +611,7 @@ export const tr: Localized<EnMessages> = {
     deleteForEveryone: 'Herkesten sil',
     deleteForMe: 'Benden sil',
     actionFailed: 'Bu işlem gerçekleşmedi',
+    viewProfile: 'Profili gör',
   },
 
   messageMenu: {
@@ -660,15 +646,11 @@ export const tr: Localized<EnMessages> = {
     },
     noStreakChange: 'Kareyi doldurur ama serini değiştirmez.',
     balanceChange: '{streakLine}\nBakiyen {before} → {after} olacak.',
-    repairsLeft: {
-      one: '{total} onarımdan {count} tanesi kaldı · {price} jeton',
-      other: '{total} onarımdan {count} tanesi kaldı · {price} jeton',
-    },
     perMonth: {
       one: 'Ayda {count} gün doldurabilirsin.',
       other: 'Ayda {count} gün doldurabilirsin.',
     },
-    noRepairsThisMonth: 'Bu ay onarım hakkın kalmadı',
+    weeksAgo: { one: '{count} hafta önce', other: '{count} hafta önce' },
   },
 
   report: {
@@ -701,9 +683,7 @@ export const tr: Localized<EnMessages> = {
     sending: 'Gönderiliyor…',
     sendCorrection: 'Düzeltmeyi gönder',
     youCorrected: 'Bunu sen düzelttin',
-    addYours: 'Sen de ekle',
     correctThis: 'Bunu düzelt',
-    seeAll: { one: '{count} tanesini gör', other: '{count} tanesini gör' },
     likes: { one: '{count} beğeni', other: '{count} beğeni' },
     like: 'Beğen',
     unlike: 'Beğenmekten vazgeç',
@@ -717,7 +697,6 @@ export const tr: Localized<EnMessages> = {
     photosPermission: 'LangX’in ekleyebilmek için fotoğraf ve videolarına erişmesi gerekiyor.',
     attachmentFailed: 'Ek yüklenemedi. Tekrar dene.',
     mediaQuota: 'Bugünkü ek sınırına ulaştın.',
-    allCorrections: 'Tüm düzeltmeler',
     correctionsEmptyTitle: 'Henüz düzeltme yok',
     correctionsEmptyBody: 'Bu cümleyi ilk düzelten sen ol.',
     title: 'Akış',
@@ -730,7 +709,6 @@ export const tr: Localized<EnMessages> = {
     commentPlaceholder: 'Bir şeyler yaz…',
     allComments: 'Yorumlar',
     showMoreComments: 'Daha fazla yorum',
-    commentsEmptyTitle: 'Henüz yorum yok',
     commentsEmptyBody: 'İlk sözü sen söyle.',
     pronounceAsk: '+ Nasıl okunur?',
     pronounceTitle: '{language} dilindeki kelime',
@@ -751,12 +729,10 @@ export const tr: Localized<EnMessages> = {
     sendAnswer: 'Kaydı gönder',
     answerSent: 'Kayıt gönderildi. Teşekkürler.',
     youAnswered: 'Bunu sen kaydettin',
-    allAnswers: 'Tüm kayıtlar',
     answersEmptyTitle: 'Henüz kayıt yok',
     answersEmptyBody: 'Sesli söyleyen ilk kişi ol.',
     needRecording: 'Göndermeden önce bir kez kaydet.',
     alreadyCorrected: 'Bunu zaten düzelttin.',
-    alreadyAnswered: 'Bunu zaten kaydettin.',
     wrongPostKind: 'O gönderi başka bir şey soruyor.',
     deletePost: 'Gönderiyi sil',
     deleteComment: 'Yorumu sil',
@@ -766,6 +742,15 @@ export const tr: Localized<EnMessages> = {
     deletePostConfirmBody:
       'Düzeltmeleri, kayıtları ve yorumları da gider. Kazanılan tokenlar sahiplerinde kalır.',
     deleted: 'Silindi.',
+    correctionPlaceholder: 'Cümleyi sen nasıl söylerdin, öyle yaz…',
+    startFromOriginal: 'Orijinalden başla',
+    correctionReward: {
+      one: '+{count} jeton · Her planda sınırsız',
+      other: '+{count} jeton · Her planda sınırsız',
+    },
+    composeHint:
+      'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
+    voiceNote: 'Ses kaydı',
   },
 
   profile: {
@@ -786,7 +771,6 @@ export const tr: Localized<EnMessages> = {
     followingEmptyBody: 'Birini takip et, gönderileri akışında görünsün.',
     followFailed: 'Olmadı. Tekrar dene.',
     notFound: 'Profil bulunamadı.',
-    verifiedEmail: 'E-posta doğrulanmış',
     registeredLabel: 'Kayıt',
     interests: 'İlgi alanları',
     registered: '· kayıt {age}',
@@ -794,6 +778,8 @@ export const tr: Localized<EnMessages> = {
     sendFailed: 'Mesaj gönderilemedi.',
     blockConfirm: '{name} engellensin mi? İkiniz de birbirinizin listelerinde çıkmayacaksınız.',
     blocked: '{name} engellendi.',
+    people: 'Kişiler',
+    dayStreak: { one: '{count} günlük seri', other: '{count} günlük seri' },
   },
 
   me: {
@@ -804,7 +790,6 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kişi baktı — kimler olduğunu {plan} ile gör',
     },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
-    leaderboardSubtitle: 'Seriler, düzeltmeler ve kazandığın her şey',
     proTitle: '✦ Daha ileri git',
     proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve gizli gezinme.',
     newChatsLeft: 'Bugün kalan yeni sohbet:',
@@ -821,18 +806,18 @@ export const tr: Localized<EnMessages> = {
     invite: 'Arkadaşını davet et',
     inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
     dayStreak: 'Günlük seri',
+    followsTitle: 'Takipçiler ve takip edilenler',
   },
 
   editProfile: {
     countryUnknown: 'Belirsiz',
-    countryHint: 'Bağlantından alındı. Düzeltmek için konumunu paylaş.',
+    countryHint: 'Bağlantınızdan alındı',
     title: 'Profili düzenle',
     displayName: 'Görünen ad',
     aboutYou: 'Senin hakkında',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'Ne konuşmayı seversin?',
     country: 'Ülke',
-    interests: 'İlgi alanları',
     gender: 'Cinsiyet',
     genderOnce: 'Bunu bir kez belirleyebilirsin. Sonradan değiştirilemez.',
     genderLocked: 'Kaydolurken belirlendi. Bu alan değiştirilemiyor.',
@@ -841,7 +826,6 @@ export const tr: Localized<EnMessages> = {
     languages: 'Diller',
     editNative: 'Ana dilleri düzenle',
     editLearning: 'Öğrendiklerini düzenle',
-    photos: 'Fotoğraflar',
     longPressToRemove: 'Kaldırmak için fotoğrafa basılı tut.',
     removePhotoTitle: 'Fotoğrafı kaldır',
     removePhotoBody: 'Bu fotoğraf profilinden kaldırılsın mı?',
@@ -854,6 +838,7 @@ export const tr: Localized<EnMessages> = {
     uploadRetry: 'Bu görsel yüklenemedi. Tekrar dene.',
     bothNativeAndLearning: 'Bir dil hem ana dilin hem öğrendiğin dil olamaz.',
     pickOneOfEach: 'En az bir ana dil ve bir öğrendiğin dil seç.',
+    interestsUpTo: 'İlgi alanları · en fazla {max}',
   },
 
   legal: {
@@ -910,6 +895,7 @@ export const tr: Localized<EnMessages> = {
     },
     emptyTitle: 'Burada henüz bir şey yok',
     emptyBody: 'Bir mesaj gönder ya da bir düzeltme yaz; bugün ilk günün olsun.',
+    legendMissed: 'Kaçırıldı · doldurmak için dokun',
   },
   settings: {
     subscriptionBody: 'Planın, yenileme ve yönetimi',
@@ -957,7 +943,6 @@ export const tr: Localized<EnMessages> = {
     showWeekChart: 'Bu haftanın grafiğini göster',
     showWeekChartBody: 'Hangi günler mesaj ve düzeltme gönderdiğin, profilinde.',
     legalSection: 'Hukuki',
-    communitySection: 'Topluluk',
     linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody:
@@ -981,7 +966,6 @@ export const tr: Localized<EnMessages> = {
     locationUpdated: '{time} önce güncellendi',
     updating: 'Güncelleniyor…',
     privacyFailed: 'Ayar kaydedilemedi',
-    languageSection: 'Dil',
     appLanguage: 'Uygulama dili',
     translateTo: 'Çeviri dili',
     translateToBody: 'Çevrilen mesajın hangi dilinde gösterileceği',
@@ -1001,13 +985,10 @@ export const tr: Localized<EnMessages> = {
     deleteTypeHandle: 'Devam etmek için kullanıcı adını yaz: {handle}',
     deleteCheckEmail: '{email} adresine bak. Silmeyi başlatan şey o mesajdaki bağlantı.',
     deleteNothingYet: 'Hesabına henüz bir şey olmadı.',
-    deleteConfirmBody:
-      'Hesabın anında kaybolur. Verilerin {days} gün saklanır — bu süre içinde tekrar giriş yaparsan silme iptal olur.',
     deleted: 'Hesap silindi. {days} gün içinde tekrar giriş yaparsan iptal olur.',
     deleteFailed: 'Silinemedi',
     signOut: 'Çıkış yap',
     signOutConfirm: 'Bu cihazda tekrar giriş yapman gerekecek.',
-    signedOut: 'Çıkış yapıldı — oturumun sona erdi.',
     licence: '· BSD-3 · açık kaynak',
     title: 'Ayarlar',
     privacySection: 'Gizlilik',
@@ -1023,6 +1004,11 @@ export const tr: Localized<EnMessages> = {
     pushThisDevice: 'Bu cihazda bildirimler',
     pushThisDeviceBody: 'Burada kapatırsan diğer cihazlarına gelmeye devam eder.',
     accountSection: 'Hesap',
+    translationsLeft: {
+      one: 'Bugün {count} ücretsiz çeviri hakkın kaldı',
+      other: 'Bugün {count} ücretsiz çeviri hakkın kaldı',
+    },
+    whatYouHave: 'Sende olanlar',
   },
 
   deletion: {
@@ -1041,24 +1027,24 @@ export const tr: Localized<EnMessages> = {
     streakFreeze: 'Seri dondurma',
     streakFreezeBody: 'Kaçıracağın ilk günü karşılar · {banked}/{max} bankada',
     ownedAccessibility: '{title}, sende var',
-    buy: '{title} için {price} jeton öde',
-    yourFrames: 'Çerçevelerin',
-    yourTitles: 'Unvanların',
-    wearNone: 'Yok',
     locked: 'Kilitli',
     lockedAccessibility: '{title}, kilitli',
     lockedStreak: '{threshold} günün {current} günü',
     lockedNeeds: 'Önce {title} al',
     lockedCorrections: '{threshold} düzeltmenin {current} tanesi',
-    owned: 'Sende',
     frameKind: 'Profil çerçevesi',
     titleKind: 'Unvan',
-    todayCounts: '{messages} · {corrections}',
     repairDay: 'Bir günü geri al',
     repairDayBody: 'Kaçırdığın bir günü doldurur · bu ay {left} hakkın var',
     bought: '{title} senin',
     buyFailed: 'Satın alınamadı',
     equipFailed: 'Değiştirilemedi',
+    frames: 'Profil çerçeveleri',
+    titles: 'Unvanlar',
+    wear: 'Tak',
+    wearing: 'Takılı',
+    price: { one: '{count} jeton', other: '{count} jeton' },
+    buyAccessibility: '{title} satın al, {price}',
   },
 
   gift: {
@@ -1069,11 +1055,12 @@ export const tr: Localized<EnMessages> = {
     shakeHint: 'Açmak için telefonu salla',
     tapHint: 'Açmak için dokun',
     opening: 'Açılıyor…',
-    revealed: '+{amount} token',
     revealedZero: 'Bu kez boş çıktı. Bir saat sonra yenisi var.',
     failed: 'Hediye açılamadı',
     done: 'Tamam',
     openAccessibility: 'Saatlik hediyeyi aç',
+    tokensUnit: { one: 'token', other: 'token' },
+    anotherInAnHour: 'Bir saat sonra bir tane daha.',
   },
 
   wallet: {
@@ -1092,34 +1079,28 @@ export const tr: Localized<EnMessages> = {
   },
 
   tokens: {
-    title: 'Jetonlar',
     intro:
       'Mesajlaşarak ve başkalarının cümlelerini düzelterek kazanılır. Öğretmek, konuşmaktan daha ağır basar.',
-    thisWeek: 'Bu hafta',
-    thisMonth: 'Bu ay',
-    allTime: 'Tüm zamanlar',
     poolTitle: 'Günlük havuz',
-    activeToday: { one: 'bugün {count} kişi aktif', other: 'bugün {count} kişi aktif' },
     shareAmount: '+{count}',
-    shareFor: '{day} için payın',
     noShareYet: 'Henüz pay yok — havuz, ilk tam gününden sonra dağıtım yapar.',
     firstShareAt: 'İlk payın {when} tarihinde düşecek.',
-    todayActivity:
-      'Bugün şu ana kadar: {score} aktivite · {messages} mesaj, {corrections} düzeltme, {partners} kişi.',
     poolCap: 'Günlük tavan {cap}. Payın herkesin gününe göre değişir.',
     poolPaidAt: 'Her gece {hour}:00 UTC’de yatar.',
     history: 'Geçmiş',
     historyEmpty: 'Henüz bir şey yok. Bir mesaj gönder ya da birini düzelt.',
-    historySpent: '−{count} harcandı',
     historyMore: 'Daha fazla göster',
-    inviteRow: 'Arkadaşını davet et',
+    ledgerSpent: '−{count}',
+    shareForDay: '{day} için payın',
+    todaySoFar: 'Bugün şu ana kadar',
+    activityScore: { one: '{count} aktivite', other: '{count} aktivite' },
+    todayBreakdown: '{messages} mesaj, {corrections} düzeltme, {partners} kişi.',
   },
 
   invite: {
     title: 'Arkadaşını davet et',
     body: 'Linkini paylaş. Davet ettiğin biri kaydolup insanlarla konuşmaya başladığında ikiniz de token kazanırsınız.',
     code: 'Davet kodun',
-    qrAccessibility: 'Davet linkinin QR kodu',
     share: 'Linki paylaş',
     copy: 'Linki kopyala',
     copied: 'Link kopyalandı',
@@ -1147,7 +1128,6 @@ export const tr: Localized<EnMessages> = {
     statusSubscribed: 'Abone',
     emptyTitle: 'Henüz kimse yok',
     emptyBody: 'Linkini paylaş, katılanlar burada görünsün.',
-    referredBy: 'Seni {name} davet etti',
     disclaimer:
       'Tokenlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi gerçekten birine yazdığında kazandırır.',
   },
@@ -1195,11 +1175,6 @@ export const tr: Localized<EnMessages> = {
   leaderboard: {
     title: 'Liderlik tablosu',
     periodPicker: 'Liderlik tablosu dönemi',
-    nextMilestone: 'Sıradaki eşik',
-    towards: '{threshold} hedefinde {current} — {label}',
-    toGo: '{amount} kaldı',
-    doneToday: 'Bugünlük tamam. Yarın görüşürüz.',
-    keepGoing: 'Sürdürmek için bugün bir mesaj gönder.',
     emptyTitle: 'Burada henüz bir şey yok',
     emptyBody: 'Mesaj gönder ve düzeltme yaz — bu dönemde jeton kazanan ilk kişi sen ol.',
     week: 'Hafta',
@@ -1207,8 +1182,6 @@ export const tr: Localized<EnMessages> = {
     year: 'Yıl',
     badges: 'Rozetler',
     pays: { one: '{amount} jeton kazandırır', other: '{amount} jeton kazandırır' },
-    corrections: 'düzeltme',
-    toGoPlain: '{count} kaldı',
     you: 'Sen',
     streakTitle: 'Seri tablosu',
     metricCurrent: 'Şu an',
@@ -1228,34 +1201,29 @@ export const tr: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
     memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
+    earnedOf: '{total} rozetten {earned} tanesi kazanıldı',
   },
 
   shared: {
     missingTitle: 'Burada bir şey yok',
     missingBody: '@{handle} adında bir LangX profili yok.',
-    speaks: 'Konuşuyor',
-    learning: 'Öğreniyor',
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
-    inviteTitle: '{name} seni LangX’e davet etti',
     inviteBody:
       '{name} seni davet etti. Kaydolup birine yaz, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
   },
 
   shareProfile: {
     title: 'Profilimi paylaş',
-    body: 'Buna kamerayı tut, ya da linki gönder.',
     qrAccessibility: '@{handle} için QR kodu',
-    share: 'Paylaş',
-    copy: 'Linki kopyala',
     copied: 'Link kopyalandı',
+    scanBody: 'Bunu tarayan herkes profiline ulaşır — uygulama varsa uygulamada, yoksa tarayıcıda.',
   },
 
   share: {
     cardTitle: 'Görsel olarak paylaş',
     cardStreakCaption: 'gün LangX serisi',
     cardBadgeCaption: 'LangX’te kazanılan rozet',
-    cardRankCaption: 'LangX token sıralamasında',
     cardBody: 'Nereye gideceğini seç — kart ona göre çizilir.',
     shapeStory: 'Instagram / TikTok hikâye',
     shapeSquare: 'Instagram gönderisi',
@@ -1267,14 +1235,12 @@ export const tr: Localized<EnMessages> = {
     copiedText: 'Metin kopyalandı',
     profile: 'Profili paylaş',
     profileMessage: 'LangX’te {name} ile tanış: {url}',
-    post: 'Gönderiyi paylaş',
     postMessage: '“{excerpt}” — LangX’te {language} pratiği: {url}',
     streak: 'Serimi paylaş',
     streakMessage: {
       one: 'LangX’te 🔥 {count} günlük seri. Benimle pratik yap: {url}',
       other: 'LangX’te 🔥 {count} günlük seri. Benimle pratik yap: {url}',
     },
-    rank: 'Sıramı paylaş',
     leaderboardMessage: {
       week: 'Bu hafta LangX’te {rank}. sıradayım. Benimle pratik yap: {url}',
       month: 'Bu ay LangX’te {rank}. sıradayım. Benimle pratik yap: {url}',
@@ -1288,7 +1254,6 @@ export const tr: Localized<EnMessages> = {
   linkDevice: {
     title: 'Başka cihazda oturum aç',
     body: 'Diğer ekranda görünen kodu gir, ya da oradan okut.',
-    placeholder: 'AB234',
     warning:
       'Sadece kendi gördüğün bir kodu onayla. Bu kodu geçiren herkes hesabına tam erişim kazanır.',
     approve: 'Onayla',
@@ -1296,14 +1261,17 @@ export const tr: Localized<EnMessages> = {
     approved: 'Oturum açıldı',
     denied: 'Reddedildi',
     failed: 'Bu kod artık geçerli değil.',
-    hint: 'Şimdi değil',
-    devices: 'Giriş yapılmış cihazlar',
     waitingForDevice: 'Diğer cihazın girişi tamamlaması bekleniyor…',
     thisDevice: 'bu cihaz',
     signOutDevice: 'Çıkış yap',
     signOutOthers: 'Diğer her yerden çıkış yap',
     signedOutDevice: 'Çıkış yapıldı.',
     unknownDevice: 'Bilinmeyen cihaz',
+    devicesTitle: 'Cihazlar',
+    approveTitle: 'Bir girişi onayla',
+    scan: 'Tara',
+    typeCodePlaceholder: 'Kodu yaz',
+    whereSignedIn: 'Nerelerde oturum açtın',
   },
 
   scan: {
@@ -1320,52 +1288,46 @@ export const tr: Localized<EnMessages> = {
   },
 
   qrSignIn: {
-    title: 'Telefonunla giriş yap',
-    body: 'Telefonunda LangX’i aç ve bu kodu gir, ya da okut.',
-    hint: 'Telefonunda: profilindeki tarama simgesi, ya da Ayarlar → Başka cihazda oturum aç',
     qrAccessibility: 'Giriş için QR kodu',
     expired: 'Kodun süresi doldu.',
     failed: 'Başlatılamadı. Tekrar dene.',
-    again: 'Tekrar dene',
     webOnly: 'Bu, bilgisayarda giriş yapmak içindir. Zaten telefonundasın.',
+    bodyScan:
+      'Zaten giriş yaptığın bir telefonda {path} bölümünü aç ve kamerayı buraya tut. Ya da kodu yaz.',
+    scanPath: 'Ben → Kod tara',
+    orEnterCode: 'Ya da bu kodu gir',
+    expiresIn: 'Süresi {time} içinde doluyor',
+    newCode: 'Yeni kod al',
   },
 
   viewers: {
     title: 'Profiline kim baktı',
-    empty: 'Profiline henüz kimse bakmadı.',
-    countLabel: { one: 'kişi profiline baktı', other: 'kişi profiline baktı' },
     seeWho: 'Kim olduklarını gör',
-    /**
-     * How many times one person has been back, beside their name. A numeral
-     * and a sign rather than a word, so it stays a badge at any width — and a
-     * plural entry regardless, because a count is never a bare string here.
-     */
-    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'Henüz ziyaretçi yok',
     emptyBody: 'Profilini doldurmak işe yarıyor.',
     /** A visitor without an account: no name exists, so the row says what it is. */
     guest: 'Misafir',
-    /** The chart's headline: visits over the last seven days, all people together. */
-    weekVisits: { one: '{count} ziyaret', other: '{count} ziyaret' },
+    weekSummary: {
+      one: 'Son bir haftada {count} ziyaret.',
+      other: 'Son bir haftada {count} ziyaret.',
+    },
+    seeWhoWith: '{plan} ile kim olduğunu gör',
+    unlockBody: 'İsimler ve profiller, ayrıca senin için gizli gezinme.',
   },
 
   blocked: {
     title: 'Engellenenler',
-    emptyTitle: 'Engellenen kimse yok',
-    emptyBody:
-      'Engellediğin kişiler ikiniz için de hiçbir yerde görünmez olur ve birbirinize mesaj atamazsınız.',
     unblock: 'Engeli kaldır',
     unblockConfirm: '{name} kişisinin engeli kaldırılsın mı? İkiniz de yine görünür olacaksınız.',
     unblocked: '{name} kişisinin engeli kaldırıldı.',
-    since: 'Engellendi: {date}',
+    emptyText:
+      'Engellenen kimse yok. Engel açıkken ikiniz de birbirinizin listelerinde görünmezsiniz.',
   },
 
   paywall: {
     screenTitle: 'Planlar',
     everythingInPro: '{plan} planındaki her şey',
     restorePurchases: 'Satın alımları geri yükle',
-    title: 'Daha çok konuş, daha hızlı öğren',
-    proTagline: 'Ücretsiz planı küçük gösteren her şey.',
     partOf: 'şunun parçası:',
     unlimitedChats: 'Sınırsız yeni sohbet',
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
@@ -1410,7 +1372,6 @@ export const tr: Localized<EnMessages> = {
     notSetUp: 'Bu platformda satın alma henüz ayarlanmadı.',
     legal:
       'Abonelikler iptal edilene kadar otomatik yenilenir. Apple ya da Google hesabından istediğin zaman iptal edebilirsin — iptal sonraki yenilemeyi durdurur, mevcut dönem sonuna kadar erişimin sürer.',
-    offer: '{period} — {price}',
     trialTerms: {
       one: '{count} gün ücretsiz, sonra {period} {price}',
       other: '{count} gün ücretsiz, sonra {period} {price}',
@@ -1418,12 +1379,17 @@ export const tr: Localized<EnMessages> = {
     perMonth: 'ayda',
     perYear: 'yılda',
     perLifetime: 'tek seferlik',
-    saving: '%{percent} indirim',
     terms: 'Koşullar',
     privacy: 'Gizlilik',
     monthly: 'Aylık',
     yearly: 'Yıllık',
     lifetime: 'Tek seferlik',
+    headline: 'Daha ileri git',
+    headlineBody:
+      'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
+    yearlySaving: 'Yıllık · %{percent} indirim',
+    billingPeriod: 'Ödeme dönemi',
+    start: '{plan} ile başla',
   },
 
   pickers: {
@@ -1433,8 +1399,6 @@ export const tr: Localized<EnMessages> = {
   },
 
   weekly: {
-    thisWeek: 'Bu hafta',
-    correctionsGiven: 'Yapılan düzeltmeler',
     messages: 'Mesajlar',
     summary: 'Bu hafta: {messages} ve {corrections}.',
   },

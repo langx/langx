@@ -91,20 +91,7 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
 
   return (
     <View style={styles.field}>
-      {/*
-        Leaving search is local state, never navigation. Both hosts are tab
-        roots, so `router.back()` would drop the reader on the first tab —
-        see `backHref` for why `canGoBack()` does not save you there.
-      */}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('common.backPlain')}
-        onPress={() => open(false)}
-        hitSlop={12}
-        style={({ pressed }) => [styles.leave, pressed && styles.pressed]}
-      >
-        <Feather name="arrow-left" size={22} color={colors.text} />
-      </Pressable>
+      <Feather name="search" size={18} color={colors.textFaint} />
       <TextInput
         value={current}
         onChangeText={setTerm}
@@ -117,21 +104,23 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
         style={styles.input}
       />
       {/*
-        Clears the text without leaving search — a different intent from the
-        arrow, which is why it is a different control rather than one button
-        meaning two things.
+        One control, and it leaves: the design draws a single `x` on the pill,
+        so clearing the term and closing the field are the same tap — a reader
+        who wanted to retype is one tap from an empty field either way.
+
+        Leaving search is local state, never navigation. Both hosts are tab
+        roots, so `router.back()` would drop the reader on the first tab —
+        see `backHref` for why `canGoBack()` does not save you there.
       */}
-      {current.length > 0 ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('common.clear')}
-          onPress={() => setTerm('')}
-          hitSlop={10}
-          style={({ pressed }) => pressed && styles.pressed}
-        >
-          <Feather name="x" size={18} color={colors.textMuted} />
-        </Pressable>
-      ) : null}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('common.cancel')}
+        onPress={() => open(false)}
+        hitSlop={8}
+        style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+      >
+        <Feather name="x" size={18} color={colors.textMuted} />
+      </Pressable>
     </View>
   )
 }
@@ -187,7 +176,7 @@ export function PeopleSearchResults({ from }: { from: SearchHost }) {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  toggle: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
+  toggle: { alignItems: 'center', height: 40, justifyContent: 'center', width: 40 },
   pressed: { opacity: 0.7 },
   /*
    * `flex: 1` so the open field takes the row it was dropped into. Without it
@@ -201,14 +190,19 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     borderRadius: radius.pill,
     flex: 1,
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: spacing.md,
-    paddingEnd: spacing.md,
-    paddingStart: spacing.sm,
-    paddingVertical: spacing.sm,
+    gap: 10,
+    height: 48,
+    paddingEnd: spacing.sm,
+    paddingStart: 18,
   },
-  leave: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
-  input: { ...font.body, color: colors.text, flex: 1, padding: 0 },
+  close: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  input: { color: colors.text, flex: 1, fontSize: 16, padding: 0 },
   results: { gap: spacing.xs, paddingBottom: spacing.md, paddingTop: spacing.xs },
   spinner: { marginTop: spacing.md },
   row: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: spacing.sm },

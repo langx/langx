@@ -96,6 +96,8 @@ export default function TabsLayout() {
                 tabBarBadgeStyle: {
                   backgroundColor: colors.danger,
                   color: colors.textInverse,
+                  fontSize: 11,
+                  fontWeight: '700',
                 },
               }
             : {}),

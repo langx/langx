@@ -1,12 +1,16 @@
-import { Link, useLocalSearchParams } from 'expo-router'
+import Feather from '@expo/vector-icons/Feather'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Text } from 'react-native'
+import { Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
+import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { authClient } from '../../src/lib/auth-client'
-import { makeStyles } from '../../src/lib/theme'
+import { goBackTo } from '../../src/lib/navigation'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 
 /**
  * Ask for a sign-in link by email — the door with no password behind it.
@@ -23,6 +27,7 @@ const REQUEST_TIMEOUT_MS = 20_000
 export default function SignInLink() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const params = useLocalSearchParams<{ email?: string }>()
   const [email, setEmail] = useState(params.email ?? '')
@@ -52,30 +57,35 @@ export default function SignInLink() {
   }
 
   if (sent) {
+    // Laid out like `check-email`, which is the screen this state stands in for.
     return (
-      <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.title}>{t('auth.checkEmailTitle')}</Text>
-        <Text style={styles.body}>{t('auth.signInLinkSentBody', { email })}</Text>
-        <Link href="/(auth)/sign-in" style={styles.link}>
-          {t('auth.backToSignIn')}
-        </Link>
-      </KeyboardAvoidingView>
+      <Screen fluid style={styles.centred}>
+        <View style={styles.badge}>
+          <Feather name="mail" size={30} color={colors.accent} />
+        </View>
+        <Text style={styles.centredTitle}>{t('auth.checkEmailTitle')}</Text>
+        <Text style={styles.centredBody}>{t('auth.signInLinkSentBody', { email })}</Text>
+        <View style={styles.centredActions}>
+          <Button label={t('auth.goToSignIn')} onPress={() => router.push('/(auth)/sign-in')} />
+        </View>
+      </Screen>
     )
   }
 
   const canSubmit = !loading && !!email.trim()
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <Text style={styles.title}>{t('auth.signInLinkTitle')}</Text>
-      <Text style={styles.body}>{t('auth.signInLinkBody')}</Text>
+    <Screen scroll style={styles.form}>
+      {/* Back only: the 30px title below is the screen's title. */}
+      <ScreenHeader onBack={() => goBackTo('/(auth)/sign-in')} />
+      <View>
+        <Text style={styles.title}>{t('auth.signInLinkTitle')}</Text>
+        <Text style={styles.body}>{t('auth.signInLinkBody')}</Text>
+      </View>
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label={t('auth.emailOrHandle')}
+        placeholder={t('auth.emailOrHandle')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -89,22 +99,28 @@ export default function SignInLink() {
         loading={loading}
         disabled={!canSubmit}
       />
-      <Link href="/(auth)/sign-in" style={styles.link}>
-        {t('auth.backToSignIn')}
-      </Link>
-    </KeyboardAvoidingView>
+      <Text style={styles.note}>{t('auth.signInLinkNote')}</Text>
+    </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  container: {
-    backgroundColor: colors.bg,
-    flex: 1,
-    gap: spacing.lg,
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  // 22 between blocks, as the prototype stacks the auth screens.
+  form: { gap: 22 },
+  title: { ...font.title, color: colors.text, lineHeight: 36 },
+  body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.sm },
+  note: { color: colors.textFaint, fontSize: 14, lineHeight: 21 },
+  // The prototype's 20 between the icon, the title and the words.
+  centred: { alignItems: 'center', gap: 20, justifyContent: 'center', paddingBottom: 28 },
+  badge: {
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    height: 72,
     justifyContent: 'center',
-    padding: spacing.xl,
+    width: 72,
   },
-  title: { ...font.title, color: colors.text, fontSize: 28, lineHeight: 36 },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23 },
-  link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  centredTitle: { ...font.title, color: colors.text, lineHeight: 36, textAlign: 'center' },
+  centredBody: { color: colors.textMuted, fontSize: 16, lineHeight: 25, textAlign: 'center' },
+  centredActions: { gap: spacing.md, marginTop: 20, width: '100%' },
 }))

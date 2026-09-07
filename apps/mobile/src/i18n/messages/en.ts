@@ -23,8 +23,8 @@ export const en = {
   common: {
     showPassword: 'Show password',
     hidePassword: 'Hide password',
-    /** With the chevron, for the back rows that draw no icon of their own. */
-    back: '‹ Back',
+    show: 'Show',
+    hide: 'Hide',
     /** Without it, for anywhere an icon is already beside the word. */
     backPlain: 'Back',
     clear: 'Clear',
@@ -36,17 +36,13 @@ export const en = {
     checking: 'Checking…',
     oneMoment: 'One moment…',
     skip: 'Skip for now',
-    you: '(you)',
     comingSoon: 'COMING SOON',
     continue: 'Continue',
-    next: 'Next',
     done: 'Done',
     reset: 'Reset',
     any: 'Any',
-    post: 'Post',
     send: 'Send',
     remove: 'Remove',
-    delete: 'Delete',
     block: 'Block',
     report: 'Report',
     edit: 'Edit',
@@ -78,8 +74,6 @@ export const en = {
   },
 
   media: {
-    sourceMediaTitle: 'Add a photo or video',
-    sourceMediaCamera: 'Take a photo or video',
     playVideo: 'Play video',
     sourceTitle: 'Add a photo',
     sourceCamera: 'Take a photo',
@@ -123,9 +117,9 @@ export const en = {
   theme: {
     section: 'Appearance',
     label: 'Theme',
-    auto: 'Auto',
     light: 'Light',
     dark: 'Dark',
+    autoSystem: 'Auto (system)',
   },
 
   messageActions: {
@@ -145,7 +139,6 @@ export const en = {
   },
 
   messageMeta: {
-    video: 'Video',
     sent: 'Sent',
     delivered: 'Delivered',
     read: 'Read',
@@ -299,6 +292,9 @@ export const en = {
     skip: 'Skip',
     next: 'Next',
     done: 'Done',
+    correctionFrom: 'Correction from a partner',
+    correctionBefore: 'I am agree with you.',
+    correctionAfter: 'I agree with you.',
   },
 
   welcome: {
@@ -374,6 +370,9 @@ export const en = {
     verifiedBody: 'You can sign in now.',
     verificationFailedTitle: 'Verification failed',
     verificationFailedBody: 'That link is invalid or has expired. Sign in and request a new one.',
+    signInWithCode: 'Sign in with a code from another device',
+    signInLinkNote:
+      'It works once and expires in 15 minutes. It also works if you had an account in the previous app.',
   },
 
   onboarding: {
@@ -391,16 +390,12 @@ export const en = {
       'Your native language is what you can teach; what you’re learning is who you’ll match with.',
     native: 'Native',
     learning: 'Learning',
-    yourLevel: 'Your level',
     upToCount: { one: 'Up to {count}', other: 'Up to {count}' },
     cannotBeBoth: 'A language can’t be both',
     aboutYouBody: 'Just the basics — you can change all of this later.',
     aboutYouTitle: 'About you',
     displayName: 'Display name',
-    yearOfBirth: 'Year of birth',
-    undisclosedNote: 'Choosing this keeps you out of gender-filtered searches.',
     aboutYouOptional: 'About you (optional)',
-    aboutYouPlaceholder: 'What do you like talking about?',
     tooYoung: 'LangX is for people aged {age} and over.',
     photoTitle: 'Put a face to it',
     photoBody: 'Both of these are optional, and both make people far more likely to say hello.',
@@ -411,12 +406,9 @@ export const en = {
     changePhoto: 'Change photo',
     uploading: 'Uploading…',
     bioPrompt: 'Something for a stranger to open with.',
-    whereAreYou: 'Where are you?',
     username: 'Username',
     namePlaceholder: 'Alex',
-    yearPlaceholder: '1996',
     gender: 'Gender',
-    interests: 'Interests',
     handleBody: 'Letters, numbers and underscores. This is how people find you.',
     handleTitle: 'Choose a username',
     handlePlaceholder: 'alex',
@@ -438,6 +430,9 @@ export const en = {
     inviteCodePlaceholder: 'their username',
     inviteCodeFound: 'You were invited by {name}.',
     inviteCodeUnknown: 'We could not find that one — you can continue anyway.',
+    genderNotSaying: 'Not saying',
+    genderNote:
+      'Choosing “{option}” keeps you out of gender-filtered searches. You can set this once.',
   },
 
   welcomeBack: {
@@ -491,7 +486,6 @@ export const en = {
   },
 
   corrections: {
-    title: 'Corrections you wrote',
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct — it is the most useful thing you can do here.',
@@ -505,11 +499,6 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
-    languagesTitle: 'Languages in this search',
-    languagesBody:
-      'Everyone shown speaks one of the languages you are learning and is learning one you speak. Untick a language to leave it out of the search.',
-    iSpeak: 'I speak',
-    imLearning: "I'm learning",
     languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
@@ -541,8 +530,6 @@ export const en = {
     title: 'Filters',
     speaks: 'Speaks',
     city: 'City',
-    cityBody:
-      "Find people in one city. Choose it from the list — the same list a profile's city is read from.",
     cityNeedsLocation: 'Only people who share their location have a city, so this narrows to them.',
     cityPlaceholder: 'Istanbul',
     gender: 'Gender',
@@ -579,7 +566,6 @@ export const en = {
     unpin: 'Unpin',
     archive: 'Archive',
     unarchive: 'Unarchive',
-    pinnedSection: 'Pinned',
     unrepliedEmptyTitle: 'Nothing waiting on you',
     unrepliedEmptyBody: 'Every chat has had your reply.',
     archivedEmptyTitle: 'No archived chats',
@@ -611,7 +597,6 @@ export const en = {
     notSentRetry: 'Not sent — tap to try again',
     editing: 'Editing',
     correcting: 'Correcting',
-    activity: 'Activity',
     translating: 'Translating…',
     writeMessage: 'Write a message…',
     writeCorrection: 'Write the correction…',
@@ -619,7 +604,6 @@ export const en = {
     correctionFrom: 'Correction from {name}',
     them: 'them',
     tokensPerMessage: '+{count} tokens / message',
-    unlimitedEveryPlan: 'Unlimited on every plan',
     voiceMessage: 'Voice message',
     speedSlow: '0.5x',
     speedNormal: '1x',
@@ -662,6 +646,7 @@ export const en = {
     deleteForEveryone: 'Delete for everyone',
     deleteForMe: 'Delete for me',
     actionFailed: 'That did not go through',
+    viewProfile: 'View profile',
   },
 
   messageMenu: {
@@ -700,15 +685,11 @@ export const en = {
     },
     noStreakChange: 'It fills the square, but does not change your streak.',
     balanceChange: '{streakLine}\nYour balance goes {before} → {after}.',
-    repairsLeft: {
-      one: '{count} of {total} repairs left · {price} tokens',
-      other: '{count} of {total} repairs left · {price} tokens',
-    },
     perMonth: {
       one: 'You can fill in {count} day a month.',
       other: 'You can fill in {count} days a month.',
     },
-    noRepairsThisMonth: 'No repairs left this month',
+    weeksAgo: { one: '{count} week ago', other: '{count} weeks ago' },
   },
 
   report: {
@@ -741,9 +722,7 @@ export const en = {
     sending: 'Sending…',
     sendCorrection: 'Send correction',
     youCorrected: 'You corrected this',
-    addYours: 'Add yours',
     correctThis: 'Correct this',
-    seeAll: { one: 'See all {count}', other: 'See all {count}' },
     likes: { one: '{count} like', other: '{count} likes' },
     like: 'Like',
     unlike: 'Unlike',
@@ -757,7 +736,6 @@ export const en = {
     photosPermission: 'LangX needs access to your photos and videos to attach one.',
     attachmentFailed: 'The attachment did not upload. Try again.',
     mediaQuota: 'You have reached today’s attachment limit.',
-    allCorrections: 'All corrections',
     correctionsEmptyTitle: 'No corrections yet',
     correctionsEmptyBody: 'Be the first to correct this sentence.',
     title: 'Feed',
@@ -770,7 +748,6 @@ export const en = {
     commentPlaceholder: 'Say something…',
     allComments: 'Comments',
     showMoreComments: 'Show more comments',
-    commentsEmptyTitle: 'No comments yet',
     commentsEmptyBody: 'Be the first to say something.',
     pronounceAsk: '+ How is it said?',
     pronounceTitle: 'The word in {language}',
@@ -791,12 +768,10 @@ export const en = {
     sendAnswer: 'Send recording',
     answerSent: 'Recording sent. Thank you.',
     youAnswered: 'You recorded this',
-    allAnswers: 'All recordings',
     answersEmptyTitle: 'No recordings yet',
     answersEmptyBody: 'Be the first to say it out loud.',
     needRecording: 'Record it once before sending.',
     alreadyCorrected: 'You have already corrected this one.',
-    alreadyAnswered: 'You have already recorded this one.',
     wrongPostKind: 'That post is asking for something else.',
     deletePost: 'Delete post',
     deleteComment: 'Delete comment',
@@ -806,6 +781,15 @@ export const en = {
     deletePostConfirmBody:
       'Its corrections, recordings and comments go too. Tokens people earned stay theirs.',
     deleted: 'Deleted.',
+    correctionPlaceholder: 'Rewrite the sentence the way you would say it…',
+    startFromOriginal: 'Start from the original',
+    correctionReward: {
+      one: '+{count} token · Unlimited on every plan',
+      other: '+{count} tokens · Unlimited on every plan',
+    },
+    composeHint:
+      'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
+    voiceNote: 'Voice note',
   },
 
   profile: {
@@ -826,7 +810,6 @@ export const en = {
     followingEmptyBody: 'Follow someone and their posts appear in your feed.',
     followFailed: 'That did not work. Try again.',
     notFound: 'Profile not found.',
-    verifiedEmail: 'Verified email',
     registeredLabel: 'Registered',
     interests: 'Interests',
     registered: '· registered {age}',
@@ -834,6 +817,8 @@ export const en = {
     sendFailed: 'Could not send the message.',
     blockConfirm: 'Block {name}? Neither of you will appear in the other’s lists.',
     blocked: '{name} is blocked.',
+    people: 'People',
+    dayStreak: { one: '{count} day streak', other: '{count} day streak' },
   },
 
   me: {
@@ -844,7 +829,6 @@ export const en = {
       other: '{count} people looked — see who with {plan}',
     },
     viewersCount: { one: '{count} person', other: '{count} people' },
-    leaderboardSubtitle: 'Streaks, corrections and everything else you have earned',
     proTitle: '✦ Go further',
     proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
     newChatsLeft: 'New chats left today:',
@@ -861,18 +845,18 @@ export const en = {
     invite: 'Invite a friend',
     inviteBody: 'Earn tokens when they start using LangX',
     dayStreak: 'Day streak',
+    followsTitle: 'Followers and following',
   },
 
   editProfile: {
     countryUnknown: 'Not set',
-    countryHint: 'Taken from your connection. Share your location to correct it.',
+    countryHint: 'From your connection',
     title: 'Edit profile',
     displayName: 'Display name',
     aboutYou: 'About you',
     languageWithLevel: '{language} · {level}',
     aboutYouPlaceholder: 'What do you like talking about?',
     country: 'Country',
-    interests: 'Interests',
     gender: 'Gender',
     genderOnce: 'You can set this once. It cannot be changed afterwards.',
     genderLocked: 'Set when you joined. This one cannot be changed.',
@@ -881,7 +865,6 @@ export const en = {
     languages: 'Languages',
     editNative: 'Edit native',
     editLearning: 'Edit learning',
-    photos: 'Photos',
     longPressToRemove: 'Long-press a photo to remove it.',
     removePhotoTitle: 'Remove photo',
     removePhotoBody: 'Remove this photo from your profile?',
@@ -894,6 +877,7 @@ export const en = {
     uploadRetry: 'Could not upload that image. Try again.',
     bothNativeAndLearning: 'A language cannot be both native and something you are learning.',
     pickOneOfEach: 'Pick at least one native language and one you are learning.',
+    interestsUpTo: 'Interests · up to {max}',
   },
 
   legal: {
@@ -950,6 +934,7 @@ export const en = {
     },
     emptyTitle: 'Nothing here yet',
     emptyBody: 'Send a message or write a correction, and today becomes your first day.',
+    legendMissed: 'Missed · tap to fill in',
   },
   settings: {
     subscriptionBody: 'Your plan, renewal and how to manage it',
@@ -997,7 +982,6 @@ export const en = {
     showWeekChart: 'Show this week’s chart',
     showWeekChartBody: 'Which days you sent messages and corrections, on your profile.',
     legalSection: 'Legal',
-    communitySection: 'Community',
     linkDeviceBody: 'Approve a sign-in, and see where you are signed in.',
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
@@ -1020,7 +1004,6 @@ export const en = {
     locationUpdated: 'Last updated {time} ago',
     updating: 'Updating…',
     privacyFailed: 'Couldn’t save that setting',
-    languageSection: 'Language',
     appLanguage: 'App language',
     translateTo: 'Translate into',
     translateToBody: 'Which of your languages a translated message is shown in',
@@ -1040,13 +1023,10 @@ export const en = {
     deleteTypeHandle: 'Type your handle, {handle}, to continue.',
     deleteCheckEmail: 'Check {email}. The link in that message is what schedules the deletion.',
     deleteNothingYet: 'Nothing has happened to your account yet.',
-    deleteConfirmBody:
-      'Your account disappears immediately. Your data is kept for {days} days — signing back in during that window cancels the deletion.',
     deleted: 'Account deleted. Signing back in within {days} days cancels it.',
     deleteFailed: 'Could not delete',
     signOut: 'Sign out',
     signOutConfirm: 'You will need to sign in again on this device.',
-    signedOut: 'Signed out — your session has ended.',
     licence: '· BSD-3 · open source',
     title: 'Settings',
     privacySection: 'Privacy',
@@ -1062,6 +1042,11 @@ export const en = {
     pushThisDevice: 'Notifications on this device',
     pushThisDeviceBody: 'Turn these off here and your other devices keep receiving them.',
     accountSection: 'Account',
+    translationsLeft: {
+      one: '{count} free translation left today',
+      other: '{count} free translations left today',
+    },
+    whatYouHave: 'What you have',
   },
 
   deletion: {
@@ -1080,24 +1065,24 @@ export const en = {
     streakFreeze: 'Streak freeze',
     streakFreezeBody: 'Covers the next day you miss · {banked}/{max} banked',
     ownedAccessibility: '{title}, owned',
-    buy: 'Buy {title} for {price} tokens',
-    yourFrames: 'Your frames',
-    yourTitles: 'Your titles',
-    wearNone: 'None',
     locked: 'Locked',
     lockedAccessibility: '{title}, locked',
     lockedStreak: '{current} of {threshold} days',
     lockedNeeds: 'Buy {title} first',
     lockedCorrections: '{current} of {threshold} corrections',
-    owned: 'Owned',
     frameKind: 'Profile frame',
     titleKind: 'Title',
-    todayCounts: '{messages} · {corrections}',
     repairDay: 'Buy a day back',
     repairDayBody: 'Fills in a day you missed · {left} left this month',
     bought: '{title} is yours',
     buyFailed: 'Could not buy that',
     equipFailed: 'Could not change that',
+    frames: 'Profile frames',
+    titles: 'Titles',
+    wear: 'Wear',
+    wearing: 'Wearing',
+    price: { one: '{count} token', other: '{count} tokens' },
+    buyAccessibility: 'Buy {title} for {price}',
   },
 
   gift: {
@@ -1108,11 +1093,12 @@ export const en = {
     shakeHint: 'Shake your phone to open it',
     tapHint: 'Tap to open it',
     opening: 'Opening…',
-    revealed: '+{amount} tokens',
     revealedZero: 'Empty this time. Another one in an hour.',
     failed: 'Could not open the gift',
     done: 'Done',
     openAccessibility: 'Open the hourly gift',
+    tokensUnit: { one: 'token', other: 'tokens' },
+    anotherInAnHour: 'Another one in an hour.',
   },
 
   wallet: {
@@ -1131,27 +1117,22 @@ export const en = {
   },
 
   tokens: {
-    title: 'Tokens',
     intro:
       'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
-    thisWeek: 'This week',
-    thisMonth: 'This month',
-    allTime: 'All time',
     poolTitle: 'Daily pool',
-    activeToday: { one: '{count} active today', other: '{count} active today' },
     shareAmount: '+{count}',
-    shareFor: 'your share for {day}',
     noShareYet: 'No share yet — the pool pays out after your first full day.',
     firstShareAt: 'Your first share lands {when}.',
-    todayActivity:
-      'Today so far: {score} activity · {messages} messages, {corrections} corrections, {partners} people.',
     poolCap: "Cap {cap} a day. Your share moves with everyone else's.",
     poolPaidAt: 'Paid every night at {hour}:00 UTC.',
     history: 'History',
     historyEmpty: 'Nothing yet. Send a message, or correct someone.',
-    historySpent: '−{count} spent',
     historyMore: 'Show more',
-    inviteRow: 'Invite a friend',
+    ledgerSpent: '−{count}',
+    shareForDay: 'Your share for {day}',
+    todaySoFar: 'Today so far',
+    activityScore: { one: '{count} activity', other: '{count} activity' },
+    todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -1159,7 +1140,6 @@ export const en = {
     title: 'Invite a friend',
     body: 'Share your link. When someone you invited signs up and starts talking to people, you both earn tokens.',
     code: 'Your invite code',
-    qrAccessibility: 'A QR code for your invite link',
     share: 'Share the link',
     copy: 'Copy the link',
     copied: 'Link copied',
@@ -1189,7 +1169,6 @@ export const en = {
     statusSubscribed: 'Subscribed',
     emptyTitle: 'Nobody yet',
     emptyBody: 'Share your link and whoever joins will show up here.',
-    referredBy: '{name} invited you',
     disclaimer:
       'Tokens are in-app points. Nothing is paid for signing up — an invite earns only once the person you invited actually writes to somebody.',
   },
@@ -1237,11 +1216,6 @@ export const en = {
   leaderboard: {
     title: 'Leaderboard',
     periodPicker: 'Leaderboard period',
-    nextMilestone: 'Next milestone',
-    towards: '{current} of {threshold} toward {label}',
-    toGo: '{amount} to go',
-    doneToday: 'Today is done. See you tomorrow.',
-    keepGoing: 'Send one message today to keep it going.',
     emptyTitle: 'Nothing here yet',
     emptyBody: 'Send messages and write corrections — be the first to earn tokens this period.',
     week: 'Week',
@@ -1249,8 +1223,6 @@ export const en = {
     year: 'Year',
     badges: 'Badges',
     pays: { one: 'Pays {amount} token', other: 'Pays {amount} tokens' },
-    corrections: 'corrections',
-    toGoPlain: '{count} to go',
     you: 'You',
     streakTitle: 'Streak table',
     metricCurrent: 'Now',
@@ -1270,34 +1242,30 @@ export const en = {
     tokensEarned: { one: '{formatted} token earned', other: '{formatted} tokens earned' },
     memberDays: { one: '{formatted} day a member', other: '{formatted} days a member' },
     corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+    earnedOf: '{earned} of {total} earned',
   },
 
   shared: {
     missingTitle: 'Nothing here',
     missingBody: 'No LangX profile answers to @{handle}.',
-    speaks: 'Speaks',
-    learning: 'Learning',
     ctaBody: '{name} practises languages on LangX. Join to say hello.',
     ctaLabel: 'Open LangX',
-    inviteTitle: '{name} invited you to LangX',
     inviteBody:
       '{name} invited you. Sign up and write to somebody, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
   },
 
   shareProfile: {
     title: 'Share my profile',
-    body: 'Point a camera at this, or send the link.',
     qrAccessibility: 'QR code for @{handle}',
-    share: 'Share',
-    copy: 'Copy link',
     copied: 'Link copied',
+    scanBody:
+      'Anyone who scans this lands on your profile — in the app if they have it, in the browser if not.',
   },
 
   share: {
     cardTitle: 'Share as a picture',
     cardStreakCaption: 'day streak on LangX',
     cardBadgeCaption: 'badge earned on LangX',
-    cardRankCaption: 'on the LangX token board',
     cardBody: 'Pick where it is going — the card is drawn to fit.',
     shapeStory: 'Instagram / TikTok story',
     shapeSquare: 'Instagram post',
@@ -1309,14 +1277,12 @@ export const en = {
     copiedText: 'Text copied',
     profile: 'Share profile',
     profileMessage: 'Meet {name} on LangX: {url}',
-    post: 'Share post',
     postMessage: '“{excerpt}” — {language} practice on LangX: {url}',
     streak: 'Share my streak',
     streakMessage: {
       one: '🔥 {count}-day streak on LangX. Practise with me: {url}',
       other: '🔥 {count}-day streak on LangX. Practise with me: {url}',
     },
-    rank: 'Share my rank',
     leaderboardMessage: {
       week: 'I’m #{rank} on LangX this week. Practise with me: {url}',
       month: 'I’m #{rank} on LangX this month. Practise with me: {url}',
@@ -1330,7 +1296,6 @@ export const en = {
   linkDevice: {
     title: 'Sign in on another device',
     body: 'Enter the code shown on the other screen, or scan it there.',
-    placeholder: 'AB234',
     warning:
       'Only approve a code you are looking at yourself. Anyone who gets it in gains full access to your account.',
     approve: 'Approve',
@@ -1338,14 +1303,17 @@ export const en = {
     approved: 'Signed in',
     denied: 'Denied',
     failed: 'That code is no longer valid.',
-    hint: 'Not now',
-    devices: 'Signed-in devices',
     waitingForDevice: 'Waiting for the other device to finish signing in…',
     thisDevice: 'this device',
     signOutDevice: 'Sign out',
     signOutOthers: 'Sign out everywhere else',
     signedOutDevice: 'Signed out.',
     unknownDevice: 'Unknown device',
+    devicesTitle: 'Devices',
+    approveTitle: 'Approve a sign-in',
+    scan: 'Scan',
+    typeCodePlaceholder: 'Type the code',
+    whereSignedIn: 'Where you are signed in',
   },
 
   scan: {
@@ -1362,55 +1330,43 @@ export const en = {
   },
 
   qrSignIn: {
-    title: 'Sign in with your phone',
-    body: 'Open LangX on your phone and enter this code, or scan it.',
-    hint: 'On your phone: the scan icon on your profile, or Settings → Sign in on another device',
     qrAccessibility: 'QR code for signing in',
     expired: 'The code expired.',
     failed: 'Could not start. Try again.',
-    again: 'Try again',
     webOnly: 'This is for signing in on a computer. You are already on your phone.',
+    bodyScan:
+      'On a phone where you are already signed in, open {path} and point it here. Or type the code.',
+    scanPath: 'Me → Scan a code',
+    orEnterCode: 'Or enter this code',
+    expiresIn: 'Expires in {time}',
+    newCode: 'Get a new code',
   },
 
   viewers: {
     title: 'Who viewed your profile',
-    empty: 'Nobody has viewed your profile yet.',
-    /**
-     * The number is drawn separately, in its own large type, so this is the
-     * phrase beside it and not a sentence containing it. It still needs the
-     * count: the phrase itself inflects.
-     */
-    countLabel: { one: 'person viewed your profile', other: 'people viewed your profile' },
     seeWho: 'See who they are',
-    /**
-     * How many times one person has been back, beside their name. A numeral
-     * and a sign rather than a word, so it stays a badge at any width — and a
-     * plural entry regardless, because a count is never a bare string here.
-     */
-    repeatCount: { one: '{count}\u00d7', other: '{count}\u00d7' },
     emptyTitle: 'No visitors yet',
     emptyBody: 'Filling in your profile helps.',
     /** A visitor without an account: no name exists, so the row says what it is. */
     guest: 'Guest',
-    /** The chart's headline: visits over the last seven days, all people together. */
-    weekVisits: { one: '{count} visit', other: '{count} visits' },
+    weekSummary: {
+      one: '{count} visit in the last week.',
+      other: '{count} visits in the last week.',
+    },
+    seeWhoWith: 'See who with {plan}',
+    unlockBody: 'Names and profiles, plus incognito browsing for you.',
   },
 
   blocked: {
     title: 'Blocked people',
-    emptyTitle: 'Nobody blocked',
-    emptyBody:
-      'People you block stop appearing anywhere for either of you, and neither of you can message the other.',
     unblock: 'Unblock',
     unblockConfirm: 'Unblock {name}? You will both be visible again.',
     unblocked: '{name} is unblocked.',
-    since: 'Blocked {date}',
+    emptyText: 'Nobody is blocked. Neither of you appear in the other’s lists while a block is on.',
   },
 
   paywall: {
     screenTitle: 'Plans',
-    title: 'Talk more, learn faster',
-    proTagline: 'Everything that makes the free plan feel small.',
     everythingInPro: 'Everything in {plan}',
     restorePurchases: 'Restore purchases',
     partOf: 'is part of',
@@ -1457,7 +1413,6 @@ export const en = {
     notSetUp: 'Purchasing is not set up on this platform yet.',
     legal:
       'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
-    offer: '{period} — {price}',
     trialTerms: {
       one: '{count} day free, then {price} {period}',
       other: '{count} days free, then {price} {period}',
@@ -1465,12 +1420,17 @@ export const en = {
     perMonth: 'a month',
     perYear: 'a year',
     perLifetime: 'once',
-    saving: 'Save {percent}%',
     terms: 'Terms',
     privacy: 'Privacy',
     monthly: 'Monthly',
     yearly: 'Yearly',
     lifetime: 'One-off',
+    headline: 'Go further',
+    headlineBody:
+      'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
+    yearlySaving: 'Yearly · save {percent}%',
+    billingPeriod: 'Billing period',
+    start: 'Start {plan}',
   },
 
   pickers: {
@@ -1480,8 +1440,6 @@ export const en = {
   },
 
   weekly: {
-    thisWeek: 'This week',
-    correctionsGiven: 'Corrections given',
     messages: 'Messages',
     summary: 'This week: {messages} and {corrections}.',
   },

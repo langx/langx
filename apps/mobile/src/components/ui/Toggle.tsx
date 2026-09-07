@@ -52,12 +52,14 @@ export function Toggle({
 }
 
 const useStyles = makeStyles(({ colors, radius }) => ({
+  // v3's switch is 50 by 30 — a touch larger than the platform's, so the knob
+  // reads at a glance in a row whose title is 17px.
   track: {
     borderRadius: radius.pill,
     flexDirection: 'row',
-    height: 27,
+    height: 30,
     padding: 3,
-    width: 46,
+    width: 50,
   },
   /**
    * `accent`, not `primary`: v3 reserves yellow for the one committing action
@@ -71,15 +73,15 @@ const useStyles = makeStyles(({ colors, radius }) => ({
     alignItems: 'center',
     backgroundColor: colors.knob,
     borderRadius: radius.pill,
-    height: 21,
+    height: 24,
     justifyContent: 'center',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    width: 21,
+    width: 24,
   },
   // RN's "small" indicator is 20px; scaled so it sits inside the knob with a
   // hairline of white around it rather than touching the edge.
-  spinner: { transform: [{ scale: 0.7 }] },
+  spinner: { transform: [{ scale: 0.8 }] },
 }))

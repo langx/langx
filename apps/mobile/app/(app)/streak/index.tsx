@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { STREAK_FREEZE_SKU } from '@langx/shared'
 import { useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
@@ -17,7 +18,7 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { streakShareText } from '../../../src/lib/shareText'
 import { buildStoreOffers, type StoreOffer } from '../../../src/lib/storeOffers'
 import { showToast } from '../../../src/lib/toast'
-import { makeStyles } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
@@ -57,6 +58,7 @@ export default function StreakScreen() {
   useScreenInteractive()
   const t = useT()
   const styles = useStyles()
+  const { colors } = useTheme()
   const tokens = useTokens()
   const me = useMe()
   const wallet = useWallet()
@@ -97,8 +99,14 @@ export default function StreakScreen() {
       <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       <View style={styles.tiles}>
-        <StatTile icon="zap" label={t('me.dayStreak')} value={String(streak?.current ?? 0)} />
-        <StatTile label={t('streak.longest')} value={String(streak?.longest ?? 0)} />
+        <StatTile
+          icon="zap"
+          iconColor={colors.streak}
+          label={t('me.dayStreak')}
+          value={String(streak?.current ?? 0)}
+          valueSize={34}
+        />
+        <StatTile label={t('streak.longest')} value={String(streak?.longest ?? 0)} valueSize={34} />
       </View>
 
       <ActivityMap />
@@ -113,6 +121,7 @@ export default function StreakScreen() {
           <Button
             label={t('share.streak')}
             variant="secondary"
+            icon={<Feather name="share" size={18} color={colors.accent} />}
             onPress={() =>
               setCard({
                 kind: 'streak',
@@ -132,11 +141,17 @@ export default function StreakScreen() {
         <View style={styles.protect}>
           <Text style={styles.protectTitle}>{t('streak.protectTitle')}</Text>
           <Text style={styles.protectBody}>{t('streak.protectBody')}</Text>
-          <StoreRow offer={freeze} pending={purchase.isPending} last onBuy={buy} />
+          <StoreRow
+            offer={freeze}
+            pending={purchase.isPending}
+            last
+            onBuy={buy}
+            style={styles.freezeRow}
+          />
         </View>
       ) : null}
 
-      <View style={styles.categories}>
+      <View>
         {SECTIONS.map((section, index) => (
           <ListRow
             key={section.id}
@@ -155,22 +170,26 @@ export default function StreakScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  share: { marginTop: spacing.md },
+  share: { marginBottom: spacing.sm, marginTop: 14 },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    paddingBottom: 18,
-    paddingTop: spacing.sm,
+    paddingBottom: 20,
+    paddingTop: spacing.md,
   },
   protect: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    gap: spacing.xs,
-    paddingBottom: spacing.sm,
-    paddingTop: spacing.lg,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    gap: 6,
+    paddingBottom: spacing.lg,
+    paddingTop: 20,
   },
-  protectTitle: { ...font.heading, color: colors.text, fontSize: 16 },
-  protectBody: { ...font.caption, color: colors.textMuted, lineHeight: 19 },
-  categories: { marginTop: spacing.md },
+  protectTitle: { ...font.heading, color: colors.text, fontSize: 17 },
+  protectBody: { color: colors.textMuted, fontSize: 14, lineHeight: 21 },
+  // The block's own bottom padding is the row's; the row only brings the gap
+  // between the copy and itself.
+  freezeRow: { paddingBottom: 0, paddingTop: spacing.md },
 }))

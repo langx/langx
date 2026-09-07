@@ -1,6 +1,6 @@
 import { PASSWORD_MIN_LENGTH } from '@langx/shared'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
 import { ApiRequestError } from '../../../src/api/client'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
@@ -16,6 +16,7 @@ import {
 } from '../../../src/hooks/useSignInMethods'
 import { useT } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
+import { passwordPairReady } from '../../../src/lib/passwordForm'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 
@@ -48,30 +49,53 @@ export default function PasswordScreen() {
   const back = () => goBackTo(BACK_TO)
 
   return (
-    <Screen scroll>
-      <ScreenHeader
-        title={data?.hasPassword ? t('settings.changePassword') : t('settings.signInSetPassword')}
-        onBack={back}
-      />
-      {data ? (
-        data.hasPassword ? (
-          <ChangeForm onDone={back} />
+    // Not a scroll: the one button sits at the foot of the screen, and the
+    // keyboard pushes it up rather than covering it.
+    <Screen style={styles.screen}>
+      <KeyboardAvoidingView
+        style={styles.screen}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScreenHeader
+          title={data?.hasPassword ? t('settings.changePassword') : t('settings.signInSetPassword')}
+          onBack={back}
+        />
+        {data ? (
+          data.hasPassword ? (
+            <ChangeForm onDone={back} />
+          ) : (
+            <SetForm onlyProvider={data.linked.length > 0} onDone={back} />
+          )
+        ) : methods.isError ? (
+          <View style={styles.form}>
+            <Text style={styles.body}>{t('common.retry')}</Text>
+            <Button label={t('common.tryAgain')} onPress={() => void methods.refetch()} />
+          </View>
         ) : (
-          <SetForm onlyProvider={data.linked.length > 0} onDone={back} />
-        )
-      ) : methods.isError ? (
-        <View style={styles.form}>
-          <Text style={styles.body}>{t('common.retry')}</Text>
-          <Button label={t('common.tryAgain')} onPress={() => void methods.refetch()} />
-        </View>
-      ) : (
-        <View style={styles.form}>
-          <Skeleton width="60%" />
-          <Skeleton height={48} />
-          <Skeleton height={48} />
-        </View>
-      )}
+          <View style={styles.form}>
+            <Skeleton width="60%" />
+            <Skeleton height={54} />
+            <Skeleton height={54} />
+          </View>
+        )}
+      </KeyboardAvoidingView>
     </Screen>
+  )
+}
+
+/**
+ * What sits under the fields: the mismatch, only once there is a
+ * confirmation to mismatch, and the length rule always — it is the one thing
+ * a person needs to know before they start typing.
+ */
+function PasswordHints({ mismatch }: { mismatch: boolean }) {
+  const styles = useStyles()
+  const t = useT()
+  return (
+    <>
+      {mismatch ? <Text style={styles.mismatch}>{t('auth.passwordsDoNotMatch')}</Text> : null}
+      <Text style={styles.rule}>{t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}</Text>
+    </>
   )
 }
 
@@ -80,10 +104,11 @@ function SetForm({ onlyProvider, onDone }: { onlyProvider: boolean; onDone: () =
   const t = useT()
   const setPassword = useSetPassword()
   const [password, setPassword_] = useState('')
+  const [confirmation, setConfirmation] = useState('')
 
   // The same floor the server enforces, from the same constant, so the button
   // cannot offer a request that must fail.
-  const canSubmit = password.length >= PASSWORD_MIN_LENGTH && !setPassword.isPending
+  const canSubmit = passwordPairReady(password, confirmation) && !setPassword.isPending
 
   const submit = () => {
     if (!canSubmit) return
@@ -107,10 +132,19 @@ function SetForm({ onlyProvider, onDone }: { onlyProvider: boolean; onDone: () =
       {onlyProvider ? <Text style={styles.warning}>{t('settings.signInOnlyProvider')}</Text> : null}
       <Text style={styles.body}>{t('settings.signInSetPasswordBody')}</Text>
       <FormField
-        label={t('auth.newPassword')}
+        placeholder={t('auth.newPassword')}
         value={password}
         onChangeText={setPassword_}
-        placeholder={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+        secureTextEntry
+        autoCapitalize="none"
+        autoComplete="new-password"
+        textContentType="newPassword"
+        returnKeyType="next"
+      />
+      <FormField
+        placeholder={t('auth.confirmPassword')}
+        value={confirmation}
+        onChangeText={setConfirmation}
         secureTextEntry
         autoCapitalize="none"
         autoComplete="new-password"
@@ -118,6 +152,8 @@ function SetForm({ onlyProvider, onDone }: { onlyProvider: boolean; onDone: () =
         returnKeyType="go"
         onSubmitEditing={submit}
       />
+      <PasswordHints mismatch={confirmation.length > 0 && confirmation !== password} />
+      <View style={styles.spacer} />
       <Button
         label={t('settings.signInSetPassword')}
         onPress={submit}
@@ -134,9 +170,10 @@ function ChangeForm({ onDone }: { onDone: () => void }) {
   const changePassword = useChangePassword()
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
+  const [confirmation, setConfirmation] = useState('')
 
   const canSubmit =
-    current.length > 0 && next.length >= PASSWORD_MIN_LENGTH && !changePassword.isPending
+    current.length > 0 && passwordPairReady(next, confirmation) && !changePassword.isPending
 
   const submit = () => {
     if (!canSubmit) return
@@ -161,7 +198,7 @@ function ChangeForm({ onDone }: { onDone: () => void }) {
   return (
     <View style={styles.form}>
       <FormField
-        label={t('settings.currentPassword')}
+        placeholder={t('settings.currentPassword')}
         value={current}
         onChangeText={setCurrent}
         secureTextEntry
@@ -171,10 +208,19 @@ function ChangeForm({ onDone }: { onDone: () => void }) {
         returnKeyType="next"
       />
       <FormField
-        label={t('auth.newPassword')}
+        placeholder={t('auth.newPassword')}
         value={next}
         onChangeText={setNext}
-        placeholder={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+        secureTextEntry
+        autoCapitalize="none"
+        autoComplete="new-password"
+        textContentType="newPassword"
+        returnKeyType="next"
+      />
+      <FormField
+        placeholder={t('auth.confirmPassword')}
+        value={confirmation}
+        onChangeText={setConfirmation}
         secureTextEntry
         autoCapitalize="none"
         autoComplete="new-password"
@@ -182,8 +228,10 @@ function ChangeForm({ onDone }: { onDone: () => void }) {
         returnKeyType="go"
         onSubmitEditing={submit}
       />
+      <PasswordHints mismatch={confirmation.length > 0 && confirmation !== next} />
+      <View style={styles.spacer} />
       <Button
-        label={t('settings.changePassword')}
+        label={t('auth.updatePassword')}
         onPress={submit}
         loading={changePassword.isPending}
         disabled={!canSubmit}
@@ -193,7 +241,15 @@ function ChangeForm({ onDone }: { onDone: () => void }) {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  form: { gap: spacing.md, marginTop: spacing.lg },
-  body: { ...font.caption, color: colors.textMuted },
+  screen: { flex: 1 },
+  // 24 from the header to the first field: the header keeps its own 10
+  // below, the form adds the rest. `flex: 1` so the spacer can push the
+  // button to the foot.
+  form: { flex: 1, gap: spacing.lg, marginTop: 14 },
+  body: { color: colors.textMuted, fontSize: 15, lineHeight: 23 },
   warning: { ...font.body, color: colors.text },
+  // Both lines are inset to the text of the pills above them.
+  mismatch: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
+  rule: { color: colors.textFaint, fontSize: 13, paddingHorizontal: 20 },
+  spacer: { flex: 1 },
 }))

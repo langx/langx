@@ -3,7 +3,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient } from '@tanstack/react-query'
 import { Redirect, router } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
@@ -18,24 +18,18 @@ function Line({
   icon,
   title,
   body,
-  accent = false,
-  first = false,
 }: {
   icon: keyof typeof Feather.glyphMap
   title: string
   body: string
-  /** Draws the glyph in blue — the "@" of the handle row. */
-  accent?: boolean
-  /** The divider sits *above* each row, so the first row suppresses it. */
-  first?: boolean
 }) {
   const { colors } = useTheme()
   const styles = useStyles()
 
   return (
-    <View style={[styles.line, first && styles.lineFirst]}>
+    <View style={styles.line}>
       <View style={styles.lineIcon}>
-        <Feather name={icon} size={20} color={accent ? colors.accent : colors.textMuted} />
+        <Feather name={icon} size={22} color={colors.accent} />
       </View>
       <View style={styles.lineText}>
         <Text style={styles.lineTitle}>{title}</Text>
@@ -58,7 +52,6 @@ function Line({
  */
 export default function WelcomeBackScreen() {
   useScreenInteractive()
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
@@ -107,116 +100,113 @@ export default function WelcomeBackScreen() {
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
 
   return (
-    <Screen scroll>
-      <View style={styles.hero}>
-        <Feather name="smile" size={48} color={colors.accent} />
+    <Screen fluid>
+      {/* The rows fill the height so the button sits at the bottom; a long restore scrolls. */}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{t('welcomeBack.title')}</Text>
         <Text style={styles.subtitle}>{t('welcomeBack.subtitle')}</Text>
-      </View>
 
-      <View>
-        <Line
-          icon="at-sign"
-          accent
-          first
-          title={t('welcomeBack.handleTitle', { handle })}
-          body={t('welcomeBack.handleBody')}
+        <View style={styles.lines}>
+          <Line
+            icon="user"
+            title={t('welcomeBack.handleTitle', { handle })}
+            body={t('welcomeBack.handleBody')}
+          />
+
+          {conversationsImported > 0 ? (
+            <Line
+              icon="message-square"
+              title={t('welcomeBack.conversations', { count: conversationsImported })}
+              body={t('welcomeBack.conversationsBody')}
+            />
+          ) : null}
+
+          {/*
+            More than half of all v1 balances convert to zero — the median was 20
+            tokens and the divisor is 100 — so "your tokens are back" would be a
+            lie told to most of the people reading this. The bonus leads instead,
+            and the conversion is only mentioned when there is one.
+          */}
+          {tokensCredited > 0 ? (
+            <Line
+              icon="credit-card"
+              title={t('welcomeBack.tokensCarried', {
+                count: tokensCredited + TOKEN_RULES.welcomeBackBonus,
+              })}
+              body={t('welcomeBack.tokensCarriedBody', {
+                carried: tokensCredited,
+                bonus: TOKEN_RULES.welcomeBackBonus,
+              })}
+            />
+          ) : (
+            <Line
+              icon="credit-card"
+              title={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
+              body={t('welcomeBack.tokensBonusBody')}
+            />
+          )}
+
+          {frozenStreak > 0 ? (
+            <Line
+              icon="zap"
+              title={t('welcomeBack.streak', { days: t('format.days', { count: frozenStreak }) })}
+              body={t('welcomeBack.streakBody')}
+            />
+          ) : null}
+
+          {/*
+            Roughly the top one percent of v1 balances, so most people never see
+            this line — which is the point of putting it last and of saying it
+            plainly. A gift nobody is told about is indistinguishable from no
+            gift, and this screen is the only place the recipient learns of it.
+          */}
+          {lifetimeGranted ? (
+            <Line
+              icon="award"
+              title={t('welcomeBack.tierForLife', { plan: TIER_NAMES[lifetimeGranted] })}
+              body={t('welcomeBack.proBody')}
+            />
+          ) : null}
+        </View>
+
+        {/*
+          A returning user never sees `done.tsx`, so the notification prompt has
+          to have a second home — this is the only screen they pass through.
+        */}
+        <NotificationPriming />
+
+        <Button
+          label={busy ? t('common.oneMoment') : t('welcomeBack.startExploring')}
+          onPress={() => void acknowledge()}
+          loading={busy}
         />
-
-        {conversationsImported > 0 ? (
-          <Line
-            icon="message-circle"
-            title={t('welcomeBack.conversations', { count: conversationsImported })}
-            body={t('welcomeBack.conversationsBody')}
-          />
-        ) : null}
-
-        {/*
-          More than half of all v1 balances convert to zero — the median was 20
-          tokens and the divisor is 100 — so "your tokens are back" would be a
-          lie told to most of the people reading this. The bonus leads instead,
-          and the conversion is only mentioned when there is one.
-        */}
-        {tokensCredited > 0 ? (
-          <Line
-            icon="award"
-            title={t('welcomeBack.tokensCarried', {
-              count: tokensCredited + TOKEN_RULES.welcomeBackBonus,
-            })}
-            body={t('welcomeBack.tokensCarriedBody', {
-              carried: tokensCredited,
-              bonus: TOKEN_RULES.welcomeBackBonus,
-            })}
-          />
-        ) : (
-          <Line
-            icon="award"
-            title={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
-            body={t('welcomeBack.tokensBonusBody')}
-          />
-        )}
-
-        {frozenStreak > 0 ? (
-          <Line
-            icon="zap"
-            title={t('welcomeBack.streak', { days: t('format.days', { count: frozenStreak }) })}
-            body={t('welcomeBack.streakBody')}
-          />
-        ) : null}
-
-        {/*
-          Roughly the top one percent of v1 balances, so most people never see
-          this line — which is the point of putting it last and of saying it
-          plainly. A gift nobody is told about is indistinguishable from no
-          gift, and this screen is the only place the recipient learns of it.
-        */}
-        {lifetimeGranted ? (
-          <Line
-            icon="star"
-            title={t('welcomeBack.tierForLife', { plan: TIER_NAMES[lifetimeGranted] })}
-            body={t('welcomeBack.proBody')}
-          />
-        ) : null}
-      </View>
-
-      {/*
-        A returning user never sees `done.tsx`, so the notification prompt has
-        to have a second home — this is the only screen they pass through.
-      */}
-      <NotificationPriming />
-
-      <Button
-        label={busy ? t('common.oneMoment') : t('welcomeBack.startExploring')}
-        onPress={() => void acknowledge()}
-        loading={busy}
-        style={styles.action}
-      />
+      </ScrollView>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  hero: { alignItems: 'center', paddingBottom: spacing.md, paddingTop: spacing.xxl },
-  title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    lineHeight: 23,
-    marginTop: 6,
-    maxWidth: 260,
-    textAlign: 'center',
-  },
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  scroll: { flex: 1 },
+  content: { flexGrow: 1, gap: 18, paddingBottom: 28, paddingTop: spacing.xl },
+  title: { ...font.title, color: colors.text, fontSize: 34, lineHeight: 39, marginTop: spacing.md },
+  subtitle: { color: colors.textMuted, fontSize: 17, lineHeight: 26 },
+  lines: { borderTopColor: colors.border, borderTopWidth: 1, flex: 1, marginTop: spacing.sm },
   line: {
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.md + 2,
-    paddingVertical: spacing.lg + 2,
+    gap: spacing.lg,
+    paddingVertical: 18,
   },
-  lineFirst: { borderTopWidth: 0 },
-  lineIcon: { paddingTop: 1, width: 28 },
-  lineText: { flex: 1 },
-  lineTitle: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  lineBody: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 2 },
-  action: { marginTop: spacing.xl },
+  lineIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  lineText: { flex: 1, gap: 3 },
+  lineTitle: { ...font.heading, color: colors.text, fontSize: 17 },
+  lineBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
 }))

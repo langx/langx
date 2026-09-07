@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
@@ -7,9 +8,10 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -26,6 +28,7 @@ type Tab = 'followers' | 'following'
 export default function FollowsScreen() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const { userId, tab, from } = useLocalSearchParams<{ userId: string; tab?: Tab; from?: string }>()
   const [which, setWhich] = useState<Tab>(tab === 'following' ? 'following' : 'followers')
@@ -35,15 +38,24 @@ export default function FollowsScreen() {
   const pull = usePullToRefresh(() => follows.refetch())
   const items = dedupeById(follows.data?.pages.flatMap((page) => page.items) ?? [])
 
-  const followersLabel = t('profile.followersTitle')
-  const followingLabel = t('profile.followingTitle')
+  /*
+   * The segments carry the two totals. A page knows its cursor, not its
+   * count, so the numbers come off the profile these lists belong to — the
+   * same cache entry the profile screen that led here already filled. Until
+   * it is there the segments say what they are without a number rather than
+   * showing a zero that is not one.
+   */
+  const follow = useProfileCache([userId])[userId]?.follow
+  const followersLabel = follow
+    ? t('profile.followers', { count: follow.followers })
+    : t('profile.followersTitle')
+  const followingLabel = follow
+    ? t('profile.followingCount', { count: follow.following })
+    : t('profile.followingTitle')
 
   return (
     <Screen fluid>
-      <ScreenHeader
-        title={which === 'followers' ? followersLabel : followingLabel}
-        onBack={() => goBackTo('/(app)/(tabs)/me', from)}
-      />
+      <ScreenHeader title={t('profile.people')} onBack={() => goBackTo('/(app)/(tabs)/me', from)} />
 
       <SegmentedControl
         options={[
@@ -85,14 +97,10 @@ export default function FollowsScreen() {
               }
             />
           }
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <Pressable
-              style={({ pressed }) => [
-                styles.row,
-                // The last row leaves the list edge undrawn, v3-style.
-                index < items.length - 1 && styles.divided,
-                pressed && styles.pressed,
-              ]}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
               onPress={() => openProfile(item.handle, here)}
             >
               <Avatar url={item.avatarUrl} name={item.displayName} seed={item._id} />
@@ -102,6 +110,7 @@ export default function FollowsScreen() {
                 </Text>
                 <Text style={styles.handle}>@{item.handle}</Text>
               </View>
+              <Feather name="chevron-right" size={18} color={colors.textFaint} />
             </Pressable>
           )}
         />
@@ -114,10 +123,16 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
-  row: { alignItems: 'center', flexDirection: 'row', gap: 12, paddingVertical: 15 },
-  divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingVertical: 14,
+  },
   pressed: { opacity: 0.7 },
   body: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 16 },
-  handle: { ...font.caption, color: colors.textMuted },
+  handle: { color: colors.textMuted, fontSize: 14 },
 }))

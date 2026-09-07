@@ -1,18 +1,20 @@
-import { GENDERS, MINIMUM_AGE, birthDateSchema } from '@langx/shared'
+import { GENDERS, MINIMUM_AGE, birthDateSchema, type Gender } from '@langx/shared'
 import { router } from 'expo-router'
 import { useEffect, useRef } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { ScrollView, Text, View } from 'react-native'
 import { BirthDateField } from '../../src/components/BirthDateField'
 import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import {
   isDraftHydrated,
   updateDraft,
   useOnboardingDraft,
 } from '../../src/hooks/useOnboardingDraft'
 import { authClient } from '../../src/lib/auth-client'
+import { goBackTo } from '../../src/lib/navigation'
 import { displayNameToSeed } from '../../src/lib/seedDisplayName'
 import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, useT } from '../../src/i18n'
@@ -69,107 +71,91 @@ export default function AboutYouStep() {
       ? t('onboarding.tooYoung', { age: MINIMUM_AGE })
       : undefined
 
+  /*
+   * The segment has room for four short words, and "Prefer not to say" is not
+   * one — so the undisclosed option gets its own short label here, and the
+   * note under the control names it the same way.
+   */
+  const notSaying = t('onboarding.genderNotSaying')
+  const genderOptions = GENDERS.map((gender) => ({
+    value: gender,
+    label: gender === 'undisclosed' ? notSaying : genderLabel(t, gender),
+  }))
+
   return (
-    <Screen scroll>
-      <StepProgress step="about-you" />
-      <Text style={styles.title}>{t('onboarding.aboutYouTitle')}</Text>
-      <Text style={styles.subtitle}>{t('onboarding.aboutYouBody')}</Text>
+    <Screen fluid>
+      {/*
+        Own scroll view rather than `Screen scroll`, for the same reason
+        `Screen` inset the keyboard: the fields are low on the screen. Here the
+        content also grows to the height, which is what keeps Continue at the
+        bottom while the form is shorter than the screen.
+      */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
+        <StepProgress step="about-you" onBack={() => goBackTo('/(onboarding)/levels')} />
+        <Text style={styles.title}>{t('onboarding.aboutYouTitle')}</Text>
+        <Text style={styles.subtitle}>{t('onboarding.aboutYouBody')}</Text>
 
-      <View style={styles.form}>
-        <FormField
-          label={t('onboarding.displayName')}
-          value={draft.displayName}
-          onChangeText={(displayName) => updateDraft({ displayName })}
-          placeholder={t('onboarding.namePlaceholder')}
-          autoCapitalize="words"
-        />
+        <View style={styles.form}>
+          <FormField
+            label={t('onboarding.displayName')}
+            value={draft.displayName}
+            onChangeText={(displayName) => updateDraft({ displayName })}
+            placeholder={t('onboarding.namePlaceholder')}
+            autoCapitalize="words"
+          />
 
-        <BirthDateField
-          label={t('onboarding.birthDate')}
-          value={draft.birthDate}
-          onChange={(birthDate) => updateDraft({ birthDate })}
-          error={ageError}
-        />
+          <BirthDateField
+            label={t('onboarding.birthDate')}
+            value={draft.birthDate}
+            onChange={(birthDate) => updateDraft({ birthDate })}
+            error={ageError}
+          />
 
-        <View>
-          <Text style={styles.label}>{t('onboarding.gender')}</Text>
-          <View style={styles.genders}>
-            {GENDERS.map((gender) => {
-              const on = draft.gender === gender
-              return (
-                <Pressable
-                  key={gender}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  onPress={() => updateDraft({ gender })}
-                  style={({ pressed }) => [
-                    styles.gender,
-                    on && styles.genderActive,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <Text style={[styles.genderText, on && styles.genderTextActive]}>
-                    {genderLabel(t, gender)}
-                  </Text>
-                </Pressable>
-              )
-            })}
+          <View style={styles.field}>
+            <Text style={styles.label}>{t('onboarding.gender')}</Text>
+            <SegmentedControl<Gender>
+              accessibilityLabel={t('onboarding.gender')}
+              options={genderOptions}
+              selected={[draft.gender]}
+              onToggle={(gender) => updateDraft({ gender })}
+            />
+            {/*
+              Required by `architecture.md`: choosing this has a consequence
+              people cannot see, and finding out later that you were invisible
+              to half the searches on the app is a bad way to learn it. Always
+              shown, because the choice is also the one that cannot be undone.
+            */}
+            <Text style={styles.genderNote}>
+              {t('onboarding.genderNote', { option: notSaying })}
+            </Text>
           </View>
-
-          {/*
-            Required by `architecture.md`: choosing this has a consequence people
-            cannot see, and finding out later that you were invisible to half the
-            searches on the app is a bad way to learn it.
-          */}
-          {draft.gender === 'undisclosed' ? (
-            <Text style={styles.genderNote}>{t('onboarding.undisclosedNote')}</Text>
-          ) : null}
         </View>
 
-        <FormField
-          label={t('onboarding.aboutYouOptional')}
-          value={draft.bio}
-          onChangeText={(bio) => updateDraft({ bio })}
-          placeholder={t('onboarding.aboutYouPlaceholder')}
-          multiline
+        <Button
+          label={t('common.continue')}
+          disabled={!canContinue}
+          onPress={() => router.push('/(onboarding)/photo')}
         />
-      </View>
-
-      <Button
-        label={t('common.continue')}
-        disabled={!canContinue}
-        onPress={() => router.push('/(onboarding)/photo')}
-        style={styles.cta}
-      />
+      </ScrollView>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: spacing.sm + 2,
-  },
-  form: { gap: spacing.lg + 2, marginTop: spacing.xl },
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  scroll: { flex: 1 },
+  // v3's wizard column: 8 above the progress block, 18 between blocks, 28
+  // under the button so it is not sitting on the home indicator.
+  content: { flexGrow: 1, gap: 18, paddingBottom: 28, paddingTop: spacing.sm },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: 10 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  form: { flex: 1, gap: 18, marginTop: 6 },
+  field: { gap: spacing.sm },
   // Matches FormField's label so the gender group reads as one more field.
-  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600', marginBottom: spacing.sm },
-  genders: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  gender: {
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 2,
-  },
-  // Ink, not yellow: yellow is reserved for the one committing action below.
-  genderActive: { backgroundColor: colors.ink, borderColor: colors.ink },
-  genderText: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
-  genderTextActive: { color: colors.bg, fontWeight: '700' },
-  genderNote: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
-  pressed: { opacity: 0.7 },
-  cta: { marginTop: spacing.xl },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  genderNote: { color: colors.textFaint, fontSize: 13, paddingHorizontal: spacing.xs },
 }))

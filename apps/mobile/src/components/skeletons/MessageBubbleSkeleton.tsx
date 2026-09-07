@@ -22,14 +22,14 @@ export function MessageBubbleSkeleton({ index }: { index: number }) {
 
 const WIDTHS: readonly [number, ...number[]] = [168, 96, 210, 132, 76, 190]
 
-const useStyles = makeStyles(({ colors, spacing }) => ({
-  // The same tints and radius as the real bubbles, so the swap is seamless.
+const useStyles = makeStyles(({ colors }) => ({
+  // The same tints, radius, padding and cap as the real bubbles, so the swap
+  // is seamless; the list's own gap spaces them, as it does the real ones.
   bubble: {
     borderRadius: 20,
-    marginTop: spacing.sm,
-    maxWidth: '80%',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    maxWidth: '78%',
+    paddingHorizontal: 16,
+    paddingVertical: 13,
   },
   mine: { alignSelf: 'flex-end', backgroundColor: colors.accentBg },
   theirs: { alignSelf: 'flex-start', backgroundColor: colors.fill },

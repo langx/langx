@@ -1,4 +1,4 @@
-import { LANGUAGE_LEVELS, type LanguageLevel } from '@langx/shared'
+import { LANGUAGE_LEVELS, levelRank, type LanguageLevel } from '@langx/shared'
 import { router } from 'expo-router'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useState } from 'react'
@@ -9,13 +9,14 @@ import { StepProgress } from '../../src/components/StepProgress'
 import { showAlert } from '../../src/lib/alert'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
+import { goBackTo } from '../../src/lib/navigation'
 import { GUEST_ONBOARDING_STEPS } from '../../src/lib/onboardingStep'
 import { Button } from '../../src/components/ui/Button'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
+import { levelLabel, useDisplayNames, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
@@ -23,7 +24,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  *
  * The choices draw v3's ascending bars rather than the raw enum
  * (`absoluteBeginner`) the chips used to show — a scale is what people
- * actually compare against, and the name sits underneath in the reader's
+ * actually compare against, and the name sits beside it in the reader's
  * language. Nothing is preselected: a level nobody chose is the one field
  * that quietly decides who finds them.
  */
@@ -82,17 +83,27 @@ export default function LevelsStep() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <StepProgress step="levels" steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined} />
+      <StepProgress
+        step="levels"
+        steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined}
+        onBack={() => goBackTo('/(onboarding)/languages')}
+      />
       <Text style={styles.title}>{t('onboarding.levelsTitle')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.levelsBody')}</Text>
 
-      <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
-        {draft.learning.map((entry, index) => (
-          <View
-            key={entry.code}
-            style={[styles.row, index < draft.learning.length - 1 && styles.rowDivider]}
-          >
-            <Text style={styles.language}>{names.language(entry.code)}</Text>
+      <ScrollView
+        style={styles.list}
+        contentContainerStyle={styles.rows}
+        keyboardShouldPersistTaps="handled"
+      >
+        {draft.learning.map((entry) => (
+          <View key={entry.code} style={styles.row}>
+            <View style={styles.rowHead}>
+              <Text style={styles.language}>{names.language(entry.code)}</Text>
+              <Text style={styles.chosen}>
+                {entry.level ? levelLabel(t, entry.level) : t('onboarding.pickALevel')}
+              </Text>
+            </View>
             <View style={styles.levelRow}>
               {LANGUAGE_LEVELS.map((level) => {
                 const on = entry.level === level
@@ -100,7 +111,7 @@ export default function LevelsStep() {
                   <Pressable
                     key={level}
                     accessibilityRole="button"
-                    accessibilityLabel={`${names.language(entry.code)} — ${levelShortLabel(t, level)}`}
+                    accessibilityLabel={`${names.language(entry.code)} — ${levelLabel(t, level)}`}
                     accessibilityState={{ selected: on }}
                     onPress={() => setLevel(entry.code, level)}
                     style={({ pressed }) => [
@@ -109,18 +120,18 @@ export default function LevelsStep() {
                       pressed && styles.pressed,
                     ]}
                   >
+                    <Text style={[styles.levelNumber, on && styles.levelNumberOn]}>
+                      {levelRank(level)}
+                    </Text>
+                    {/* On the ink fill the bars swap to the ground colour; off it they keep the defaults. */}
                     <LevelBars
                       level={level}
-                      color={on ? colors.bg : colors.textFaint}
-                      restColor={on ? colors.onInkMuted : colors.border}
+                      {...(on ? { color: colors.bg, restColor: colors.onInkMuted } : {})}
                     />
                   </Pressable>
                 )
               })}
             </View>
-            <Text style={styles.hint}>
-              {entry.level ? levelShortLabel(t, entry.level) : t('onboarding.pickALevel')}
-            </Text>
           </View>
         ))}
       </ScrollView>
@@ -130,38 +141,37 @@ export default function LevelsStep() {
         disabled={!complete || submitting}
         loading={submitting}
         onPress={() => void onContinue()}
-        style={styles.cta}
       />
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  screen: { paddingBottom: spacing.lg },
-  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
-  subtitle: {
-    ...font.body,
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: spacing.sm + 2,
-  },
-  list: { flex: 1, marginTop: spacing.md },
-  row: { paddingVertical: spacing.lg },
-  rowDivider: { borderBottomColor: colors.border, borderBottomWidth: 1 },
-  language: { ...font.heading, color: colors.text, fontSize: 17 },
-  levelRow: { flexDirection: 'row', gap: 7, marginTop: spacing.md },
+  // v3's wizard column: 8 above the progress block, 18 between blocks, 28
+  // under the button so it is not sitting on the home indicator.
+  screen: { gap: 18, paddingBottom: 28, paddingTop: spacing.sm },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: 10 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  list: { flex: 1, marginTop: 10 },
+  rows: { gap: 28 },
+  row: { gap: spacing.md },
+  rowHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  language: { ...font.heading, color: colors.text },
+  chosen: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  levelRow: { flexDirection: 'row', gap: spacing.sm },
   levelPill: {
     alignItems: 'center',
     borderRadius: radius.pill,
+    borderWidth: 1,
     flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
-    paddingTop: 11,
+    flexDirection: 'row',
+    gap: 6,
+    height: 52,
+    justifyContent: 'center',
   },
-  levelOn: { backgroundColor: colors.ink },
-  levelOff: { borderColor: colors.border, borderWidth: 1 },
+  levelOn: { backgroundColor: colors.ink, borderColor: colors.ink },
+  levelOff: { backgroundColor: colors.bg, borderColor: colors.border },
+  levelNumber: { ...font.heading, color: colors.text, fontSize: 16 },
+  levelNumberOn: { color: colors.bg },
   pressed: { opacity: 0.7 },
-  hint: { ...font.label, color: colors.textMuted, fontWeight: '400', marginTop: spacing.sm },
-  cta: { marginTop: spacing.md },
 }))

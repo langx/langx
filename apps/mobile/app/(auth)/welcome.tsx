@@ -1,6 +1,5 @@
 import { Image } from 'expo-image'
-import darkBadge from '../../assets/splash/badge-dark.png'
-import defaultBadge from '../../assets/splash/badge.png'
+import logo from '../../assets/brand/logo-rounded.png'
 import { router } from 'expo-router'
 import { useEffect, useMemo, useRef } from 'react'
 import { Animated, Text, View } from 'react-native'
@@ -11,7 +10,7 @@ import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useLocale, useT } from '../../src/i18n'
 import { welcomePairs, type LanguagePair } from '../../src/lib/welcomePairs'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /** Between one row settling and the next starting. Enough to read as a list
  *  being dealt out, short enough that nobody waits for the last one. */
@@ -31,14 +30,14 @@ const STAGGER_MS = 90
  * rows below open with the reader's own language, so the first line on the
  * screen is in a script they read.
  *
- * The badge carries over from `AppSplash`, so arriving here is a screen
- * growing out of the splash rather than replacing it.
+ * The rounded icon and the wordmark open the screen — the same mark the splash
+ * showed a moment earlier, so arriving here is a screen growing out of the
+ * splash rather than replacing it.
  */
 export default function WelcomeScreen() {
   useScreenInteractive()
   const t = useT()
   const styles = useStyles()
-  const { scheme } = useTheme()
   const { locale } = useLocale()
   const { start: browse, starting } = useGuestBrowse()
 
@@ -47,12 +46,16 @@ export default function WelcomeScreen() {
   return (
     <Screen style={styles.screen}>
       <View style={styles.body}>
-        <Image
-          source={scheme === 'dark' ? darkBadge : defaultBadge}
-          style={styles.badge}
-          contentFit="contain"
-          accessibilityIgnoresInvertColors
-        />
+        <View style={styles.brand}>
+          <Image
+            source={logo}
+            style={styles.logo}
+            contentFit="contain"
+            accessibilityIgnoresInvertColors
+          />
+          {/* The wordmark is the brand, not copy: it reads "LangX" in all eight locales. */}
+          <Text style={styles.wordmark}>LangX</Text>
+        </View>
 
         <Text style={styles.title}>{t('welcome.title')}</Text>
         <Text style={styles.subtitle}>{t('welcome.subtitle')}</Text>
@@ -130,8 +133,12 @@ function PairRow({ pair, index }: { pair: LanguagePair; index: number }) {
       <Text style={styles.pairText} numberOfLines={1}>
         {pair.left}
       </Text>
-      {/* Two-headed on purpose: this is an exchange, not a translation. */}
-      <Text style={styles.pairArrow}>↔</Text>
+      {/*
+        Two-headed on purpose: this is an exchange, not a translation. The
+        variation selector pins the text glyph — iOS otherwise draws U+2194 as
+        the boxed emoji, in its own colour rather than the accent.
+      */}
+      <Text style={styles.pairArrow}>{'↔\uFE0E'}</Text>
       <Text style={styles.pairText} numberOfLines={1}>
         {pair.right}
       </Text>
@@ -140,31 +147,34 @@ function PairRow({ pair, index }: { pair: LanguagePair; index: number }) {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  screen: { flex: 1 },
-  body: { flex: 1, gap: spacing.sm, justifyContent: 'center' },
-  badge: { height: 56, marginBottom: spacing.lg, width: 56 },
-  title: { ...font.title, color: colors.text, fontSize: 30, lineHeight: 38 },
-  subtitle: { ...font.body, color: colors.textMuted, fontSize: 16, lineHeight: 24 },
-  pairs: { gap: spacing.sm, marginTop: spacing.xl },
+  screen: { flex: 1, paddingBottom: 28, paddingTop: spacing.xl },
+  body: { flex: 1, gap: spacing.lg, justifyContent: 'center' },
+  brand: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+  logo: { borderRadius: radius.md, height: 48, width: 48 },
+  wordmark: { ...font.heading, color: colors.text, fontSize: 26, letterSpacing: -0.3 },
+  title: { ...font.title, color: colors.text, lineHeight: 38 },
+  subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
+  // 20 on top of the column's gap, as the prototype spaces the rows off the text.
+  pairs: { gap: spacing.md, marginTop: 20 },
   pair: {
     alignItems: 'center',
     alignSelf: 'flex-start',
     backgroundColor: colors.fill,
     borderRadius: radius.pill,
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: 14,
     maxWidth: '100%',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 22,
+    paddingVertical: 13,
   },
-  pairText: { ...font.label, color: colors.text, flexShrink: 1, fontSize: 14 },
-  pairArrow: { ...font.label, color: colors.accent, fontSize: 14 },
-  actions: { gap: spacing.md, paddingBottom: spacing.xl },
+  pairText: { color: colors.text, flexShrink: 1, fontSize: 15, fontWeight: '600' },
+  pairArrow: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  actions: { gap: spacing.md },
   signIn: {
-    ...font.label,
     color: colors.accent,
     fontSize: 15,
-    paddingVertical: spacing.sm,
+    fontWeight: '600',
+    paddingVertical: spacing.md,
     textAlign: 'center',
   },
 }))

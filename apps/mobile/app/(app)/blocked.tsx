@@ -1,7 +1,7 @@
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import Feather from '@expo/vector-icons/Feather'
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from 'react-native'
 import { useBlocks, useUnblockUser } from '../../src/api/queries'
-import { Avatar } from '../../src/components/ui/Avatar'
-import { EmptyState } from '../../src/components/ui/EmptyState'
+import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
@@ -9,8 +9,8 @@ import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { showToast } from '../../src/lib/toast'
-import { makeStyles } from '../../src/lib/theme'
-import { useLocale, useT } from '../../src/i18n'
+import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -22,15 +22,15 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function BlockedScreen() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
 
   const blocks = useBlocks()
   const pull = usePullToRefresh(() => blocks.refetch())
   const unblock = useUnblockUser()
   const t = useT()
-  const { locale } = useLocale()
 
   const items = dedupeById(blocks.data?.pages.flatMap((page) => page.items) ?? [])
-  // The block row stores ids only; these are the names to show against them.
+  // The block row stores ids only; these are the handles to show against them.
   const profiles = useProfileCache(items.map((b) => b.blockedId))
 
   return (
@@ -43,7 +43,6 @@ export default function BlockedScreen() {
         <FlatList
           data={items}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.list}
           refreshControl={<RefreshControl {...pull} />}
           onEndReachedThreshold={0.6}
           onEndReached={() => {
@@ -52,35 +51,30 @@ export default function BlockedScreen() {
           ListFooterComponent={
             blocks.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          ListEmptyComponent={
-            <EmptyState
-              icon="slash"
-              title={t('blocked.emptyTitle')}
-              body={t('blocked.emptyBody')}
-            />
-          }
+          ListEmptyComponent={<Text style={styles.empty}>{t('blocked.emptyText')}</Text>}
           renderItem={({ item }) => {
             // A blocked profile is invisible to us by design, so the lookup
-            // returns nothing — show the id rather than a broken row.
+            // returns nothing — show the id's tail rather than a broken row.
             const profile = profiles[item.blockedId]
-            const name = profile?.displayName ?? `@${item.blockedId.slice(-6)}`
+            const handle = profile?.handle ?? item.blockedId.slice(-6)
+            const name = profile?.displayName ?? `@${handle}`
             return (
               <View style={styles.row}>
-                <Avatar url={profile?.avatarUrl} name={name} seed={item.blockedId} />
-                <View style={styles.body}>
-                  <Text style={styles.name}>{name}</Text>
-                  <Text style={styles.since}>
-                    {t('blocked.since', {
-                      date: new Date(item.createdAt).toLocaleDateString(locale),
-                    })}
-                  </Text>
+                {/* No face on purpose: a blocked person's picture is the last thing this list should fetch. */}
+                <View style={styles.mark}>
+                  <Feather name="user" size={20} color={colors.textFaint} />
                 </View>
-                <Pressable
-                  accessibilityRole="button"
-                  hitSlop={8}
+                <Text style={styles.handle} numberOfLines={1}>
+                  @{handle}
+                </Text>
+                <Button
+                  label={t('blocked.unblock')}
+                  variant="neutral"
+                  size="small"
+                  style={{ width: 'auto' }}
                   disabled={unblock.isPending}
                   onPress={() =>
-                    void confirmAlert({
+                    confirmAlert({
                       title: t('blocked.unblock'),
                       message: t('blocked.unblockConfirm', { name }),
                       confirmLabel: t('blocked.unblock'),
@@ -91,9 +85,7 @@ export default function BlockedScreen() {
                         })
                     })
                   }
-                >
-                  <Text style={styles.unblock}>{t('blocked.unblock')}</Text>
-                </Pressable>
+                />
               </View>
             )
           }}
@@ -103,21 +95,31 @@ export default function BlockedScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  list: { paddingTop: spacing.xs },
+  empty: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 22,
+    paddingVertical: spacing.xxxl,
+    textAlign: 'center',
+  },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: spacing.lg,
     paddingVertical: spacing.lg,
   },
-  body: { flex: 1 },
-  /** Names take the display face, like every v3 row lead. */
-  name: { ...font.heading, color: colors.text, fontSize: 16 },
-  since: { ...font.label, color: colors.textMuted, fontWeight: '400' },
-  unblock: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  mark: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 48,
+    justifyContent: 'center',
+    width: 48,
+  },
+  handle: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
 }))

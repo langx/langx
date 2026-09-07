@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
@@ -8,10 +9,10 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { API_URL } from '../../src/lib/apiUrl'
-import { showAlert } from '../../src/lib/alert'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
+import { showToast } from '../../src/lib/toast'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
@@ -31,6 +32,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function ShareProfileScreen() {
   useScreenInteractive()
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const me = useMe()
 
@@ -57,83 +59,87 @@ export default function ShareProfileScreen() {
   const url = profileUrl(handle)
 
   return (
-    <Screen scroll>
+    // Not `scroll`: the buttons sit on the bottom edge, pushed there by the
+    // spacer, and a scroll view has no bottom to push against.
+    <Screen fluid style={styles.column}>
       <ScreenHeader
         title={t('shareProfile.title')}
         onBack={() => goBackTo('/(app)/settings/share')}
       />
 
-      <View style={styles.card}>
-        {/*
-          `contentFit: contain` and a square box: a QR that has been stretched
-          on one axis is one no reader will lock onto, and a parent deciding
-          the aspect ratio is how that happens.
-        */}
-        <Image
-          source={{ uri: profileQrUrl(API_URL, handle) }}
-          style={styles.qr}
-          contentFit="contain"
-          accessibilityLabel={t('shareProfile.qrAccessibility', { handle })}
-        />
-        <Text style={styles.handle}>@{handle}</Text>
-        <Text style={styles.url}>{url.replace('https://', '')}</Text>
+      <View style={styles.code}>
+        <View style={styles.card}>
+          {/*
+            `contentFit: contain` and a square box: a QR that has been stretched
+            on one axis is one no reader will lock onto, and a parent deciding
+            the aspect ratio is how that happens.
+          */}
+          <Image
+            source={{ uri: profileQrUrl(API_URL, handle) }}
+            style={styles.qr}
+            contentFit="contain"
+            accessibilityLabel={t('shareProfile.qrAccessibility', { handle })}
+          />
+        </View>
+        <View style={styles.who}>
+          <Text style={styles.name}>{me.data.displayName}</Text>
+          <Text style={styles.url}>{url.replace('https://', '')}</Text>
+        </View>
       </View>
 
-      <Text style={styles.body}>{t('shareProfile.body')}</Text>
+      <Text style={styles.body}>{t('shareProfile.scanBody')}</Text>
 
-      <View style={styles.actions}>
-        <Button
-          label={t('shareProfile.share')}
-          onPress={() => void shareLink({ message: t('me.shareMessage', { url }), url })}
-        />
-        <Button
-          label={t('shareProfile.copy')}
-          variant="secondary"
-          onPress={async () => {
-            await Clipboard.setStringAsync(url)
-            await showAlert(t('shareProfile.copied'))
-          }}
-        />
-      </View>
+      <View style={styles.spacer} />
+
+      <Button
+        label={t('invite.share')}
+        icon={<Feather name="share" size={20} color={colors.primaryText} />}
+        onPress={() => void shareLink({ message: t('me.shareMessage', { url }), url })}
+      />
+      <Button
+        label={t('invite.copy')}
+        variant="secondary"
+        icon={<Feather name="copy" size={18} color={colors.accent} />}
+        onPress={async () => {
+          await Clipboard.setStringAsync(url)
+          showToast(t('shareProfile.copied'))
+        }}
+      />
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { marginTop: spacing.xxl },
+  // The design's rhythm for this column: 22 between every block, buttons included.
+  column: { gap: 22 },
+  code: { alignItems: 'center', gap: spacing.lg, paddingVertical: spacing.lg },
+  /*
+   * White in both schemes, and a fixed size.
+   *
+   * A QR on a dark card is one no camera locks onto, so this is the one
+   * surface that does not follow the theme. And the block centres its
+   * children, so on the cross axis "100%" has nothing to be a percentage
+   * *of* — the image used to resolve to zero width, paint nothing, and never
+   * even fetch. A QR wants a known size anyway: too small and a camera cannot
+   * resolve the modules, and it does not benefit from being bigger than a
+   * phone screen held at arm's length.
+   */
   card: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: '#ffffff',
     borderColor: colors.border,
     borderRadius: radius.lg,
     borderWidth: 1,
-    gap: spacing.xs,
-    marginTop: spacing.xl,
-    padding: spacing.xl,
+    height: 180,
+    justifyContent: 'center',
+    padding: 10,
+    width: 180,
   },
-  /*
-   * A fixed size, not `width: '100%'`.
-   *
-   * The card centres its children, so on the cross axis "100%" has nothing to
-   * be a percentage *of* — the image resolved to zero width, painted nothing,
-   * and never even fetched. A QR wants a known size anyway: too small and a
-   * camera cannot resolve the modules, and it does not benefit from being
-   * bigger than a phone screen held at arm's length.
-   */
-  qr: {
-    backgroundColor: '#ffffff',
-    borderRadius: radius.sm,
-    height: 220,
-    width: 220,
-  },
-  handle: { ...font.heading, color: colors.text, fontSize: 20, marginTop: spacing.md },
-  url: { ...font.caption, color: colors.textMuted },
-  body: {
-    ...font.body,
-    color: colors.textMuted,
-    lineHeight: 23,
-    marginTop: spacing.lg,
-    textAlign: 'center',
-  },
-  actions: { gap: spacing.sm, marginTop: spacing.xl },
+  qr: { height: 160, width: 160 },
+  who: { alignItems: 'center' },
+  name: { ...font.heading, color: colors.text },
+  url: { color: colors.textMuted, fontSize: 15 },
+  body: { color: colors.textMuted, fontSize: 15, lineHeight: 22, textAlign: 'center' },
+  spacer: { flex: 1 },
 }))
