@@ -139,8 +139,9 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     paddingTop: spacing.lg,
   },
   kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  // Set solid, like the wallet's balance: a signed integer has no descenders.
-  shareValue: { ...font.heading, color: colors.success, fontSize: 48, lineHeight: 48 },
+  // Not set solid, like the wallet's balance: Nunito's ascender is taller than
+  // the em box, so a line height equal to the size overlapped the kicker.
+  shareValue: { ...font.heading, color: colors.success, fontSize: 48, lineHeight: 56 },
   meta: { color: colors.textMuted, fontSize: 14 },
   today: { gap: 10, marginTop: 18 },
   todayHead: { flexDirection: 'row', justifyContent: 'space-between' },

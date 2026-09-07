@@ -166,13 +166,14 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   },
   pressed: { opacity: 0.7 },
   kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  // Set solid: digits have no descenders, and the number is the whole block.
+  // Not set solid: Nunito's ascender is taller than the em box, so a line
+  // height equal to the size let the digits climb into the kicker above.
   balanceValue: {
     ...font.heading,
     color: colors.text,
     fontSize: 56,
     fontVariant: ['tabular-nums'],
-    lineHeight: 56,
+    lineHeight: 64,
   },
   balanceHint: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   body: { color: colors.textMuted, fontSize: 15 },
