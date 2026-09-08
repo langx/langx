@@ -654,7 +654,10 @@ export const en = {
     yourCorrection: 'Your correction',
     correctionFrom: 'Correction from {name}',
     them: 'them',
-    tokensPerMessage: '+{count} tokens / message',
+    tokensPerMessage: {
+      one: '+{count} token / message',
+      other: '+{count} tokens / message',
+    },
     voiceMessage: 'Voice message',
     speedSlow: '0.5x',
     speedNormal: '1x',

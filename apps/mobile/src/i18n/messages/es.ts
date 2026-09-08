@@ -617,7 +617,10 @@ export const es: Localized<EnMessages> = {
     yourCorrection: 'Tu corrección',
     correctionFrom: 'Corrección de {name}',
     them: 'la otra persona',
-    tokensPerMessage: '+{count} fichas / mensaje',
+    tokensPerMessage: {
+      one: '+{count} token / mensaje',
+      other: '+{count} tokens / mensaje',
+    },
     voiceMessage: 'Mensaje de voz',
     speedSlow: '0,5x',
     speedNormal: '1x',

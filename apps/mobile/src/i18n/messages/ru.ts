@@ -688,7 +688,12 @@ export const ru: Localized<EnMessages> = {
     yourCorrection: 'Твоё исправление',
     correctionFrom: 'Исправление от {name}',
     them: 'собеседнику',
-    tokensPerMessage: '+{count} жетонов за сообщение',
+    tokensPerMessage: {
+      one: '+{count} токен / сообщение',
+      few: '+{count} токена / сообщение',
+      many: '+{count} токенов / сообщение',
+      other: '+{count} токена / сообщение',
+    },
     voiceMessage: 'Голосовое сообщение',
     speedSlow: '0,5x',
     speedNormal: '1x',

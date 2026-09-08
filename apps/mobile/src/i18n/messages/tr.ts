@@ -618,7 +618,9 @@ export const tr: Localized<EnMessages> = {
     yourCorrection: 'Senin düzeltmen',
     correctionFrom: '{name} adlı kişiden düzeltme',
     them: 'karşı taraf',
-    tokensPerMessage: 'mesaj başına +{count} jeton',
+    tokensPerMessage: {
+      other: '+{count} token / mesaj',
+    },
     voiceMessage: 'Sesli mesaj',
     speedSlow: '0.5x',
     speedNormal: '1x',
