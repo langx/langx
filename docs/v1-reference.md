@@ -118,7 +118,7 @@ that migrating balances would put money-bought currency into a system where
 | zero                          | 266       | zero                   | 0     |
 
 For scale: a very active day in v2 is about **700 tokens** (a 500 tokens ceiling on the
-daily pool share, plus the 100-message cap at 2 tokens each).
+daily pool share, plus the 200-message cap at 1 token each).
 
 ### Decided — a token converts to earned tokens, divided by 100
 
