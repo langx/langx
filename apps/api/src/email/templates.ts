@@ -337,3 +337,52 @@ export function badgeEarnedEmail(
     text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
   }
 }
+
+/** User-typed text goes into an HTML body, so it is escaped before it does. */
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
+}
+
+/**
+ * A bug report, on its way to `SUPPORT_EMAIL`.
+ *
+ * The one email in this file with no locale. Every other one is read by the
+ * person it is about; this one is read by us, and the repo is English.
+ *
+ * It is also the whole feature on the server side: nothing is stored, so this
+ * mail is the report, and the reply to it is the confirmation and the reward.
+ * `Reply-To` is set to the reporter by the route, which is what makes that
+ * reply a single tap rather than a lookup.
+ */
+export function bugReportEmail(input: {
+  body: string
+  /** Public URLs of whatever was attached as proof, already in our own bucket. */
+  attachmentUrls: readonly string[]
+  reporter: { userId: string; handle: string | null; email: string | null }
+}): Email {
+  const who = input.reporter.handle ? `@${input.reporter.handle}` : input.reporter.userId
+  const subject = `Bug report from ${who}`
+  const from = [
+    `Reporter: ${who}`,
+    `User id: ${input.reporter.userId}`,
+    ...(input.reporter.email ? [`Email: ${input.reporter.email}`] : []),
+  ]
+
+  const links = input.attachmentUrls.map(
+    (url) => `<li><a href="${encodeURI(url)}">${escapeHtml(url)}</a></li>`,
+  )
+
+  return {
+    subject,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111;">
+    <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
+    <p style="white-space: pre-wrap;">${escapeHtml(input.body)}</p>
+    ${links.length ? `<p><strong>Proof</strong></p><ul>${links.join('')}</ul>` : ''}
+    <p style="color: #888; font-size: 12px;">${from.map(escapeHtml).join('<br />')}</p>
+  </body>
+</html>`,
+    text: [input.body, '', ...input.attachmentUrls, '', ...from].join('\n'),
+  }
+}

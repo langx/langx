@@ -916,6 +916,20 @@ export const ptBR: Localized<EnMessages> = {
     dataDeletion: 'Excluir meus dados',
     security: 'Segurança',
   },
+  bugReport: {
+    title: 'Relatar um erro',
+    rowBody: 'Algo quebrado? Conte pra gente e ganhe fichas por isso.',
+    intro:
+      'Conte o que aconteceu, o que você esperava no lugar disso e como fazer acontecer de novo. Quanto mais exato, mais rápido a gente corrige.',
+    reward:
+      'Se conseguirmos reproduzir e confirmar que é um erro, você ganha fichas por ter encontrado — quantas depende de quão grave ele for.',
+    placeholder: 'O que aconteceu e o que você esperava…',
+    hint: 'Uma captura ou gravação de tela ajuda mais do que qualquer outra coisa. Respondemos por e-mail, no endereço da sua conta.',
+    send: 'Enviar relato',
+    sending: 'Enviando…',
+    sent: 'Obrigado. Lemos todos os relatos e respondemos por e-mail.',
+    failed: 'Não deu para enviar. Tente de novo daqui a pouco.',
+  },
   kitchen: {
     title: 'Nossa cozinha',
     intro: 'Onde o LangX é feito, e quem o faz.',

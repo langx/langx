@@ -1,5 +1,6 @@
+import type { Media } from '@langx/shared'
 import { useState } from 'react'
-import { uploadPostMedia } from '../api/queries'
+import { uploadPostMedia, type PresignedUpload } from '../api/queries'
 import type { PendingAttachment } from '../components/AttachmentBar'
 import { advanceUpload, UPLOAD_START, uploadSent, type ActiveUpload } from '../lib/uploadProgress'
 
@@ -18,7 +19,14 @@ import { advanceUpload, UPLOAD_START, uploadSent, type ActiveUpload } from '../l
  * `compose` route. They cannot both be sending, but they are no longer on the
  * same screen, so they can no longer share one piece of state.
  */
-export function usePostAttachments() {
+export function usePostAttachments(
+  /**
+   * Which route signs the URL. The default is the feed's; the bug-report
+   * screen passes its own, because the prefix a file is signed into is what
+   * the account purge later finds it by.
+   */
+  upload: (input: PresignedUpload) => Promise<Media> = uploadPostMedia,
+) {
   const [progress, setProgress] = useState<ActiveUpload | null>(null)
 
   async function attach(pending: readonly PendingAttachment[]) {
@@ -28,7 +36,7 @@ export function usePostAttachments() {
       for (const [index, item] of pending.entries()) {
         setProgress({ index, progress: UPLOAD_START })
         uploaded.push(
-          await uploadPostMedia({
+          await upload({
             ...item,
             onProgress: (loaded, total) =>
               setProgress((current) =>

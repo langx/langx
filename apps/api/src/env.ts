@@ -54,6 +54,14 @@ const envSchema = z.object({
   // point it at a verified langx.io sender before Faz 13's launch.
   EMAIL_FROM: z.string().min(1).default('LangX <onboarding@resend.dev>'),
   /**
+   * Where a bug report from the app is sent, and the only place one is kept:
+   * `POST /bug-reports` writes nothing to the database, so this mailbox is the
+   * record, the confirmation and the reward decision. A self-hosted instance
+   * must point it at its own address — the default is ours, and mailing us
+   * about somebody else's fork helps neither of us.
+   */
+  SUPPORT_EMAIL: z.string().min(1).default('hi@langx.io'),
+  /**
    * Signs the unsubscribe link in the footer of every notification email.
    *
    * Its own secret rather than `BETTER_AUTH_SECRET`, and the difference is

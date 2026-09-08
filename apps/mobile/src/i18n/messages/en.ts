@@ -965,6 +965,20 @@ export const en = {
     dataDeletion: 'Delete my data',
     security: 'Security',
   },
+  bugReport: {
+    title: 'Report a bug',
+    rowBody: 'Something broken? Tell us, and earn tokens for it.',
+    intro:
+      'Tell us what happened, what you expected instead, and how to make it happen again. The more exactly you describe it, the sooner it is fixed.',
+    reward:
+      'If we can reproduce it and confirm it is a bug, you earn tokens for finding it — how many depends on how serious it turns out to be.',
+    placeholder: 'What happened, and what you expected…',
+    hint: 'A screenshot or a screen recording helps more than anything else. We answer by email, to the address on your account.',
+    send: 'Send report',
+    sending: 'Sending…',
+    sent: 'Thank you. We read every report and answer by email.',
+    failed: 'That did not send. Try again in a moment.',
+  },
   kitchen: {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',

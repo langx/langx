@@ -921,6 +921,20 @@ export const es: Localized<EnMessages> = {
     dataDeletion: 'Eliminar mis datos',
     security: 'Seguridad',
   },
+  bugReport: {
+    title: 'Informar de un error',
+    rowBody: '¿Algo no funciona? Cuéntanoslo y gana fichas por ello.',
+    intro:
+      'Cuéntanos qué pasó, qué esperabas que pasara y cómo volver a provocarlo. Cuanto más exacto seas, antes se arregla.',
+    reward:
+      'Si conseguimos reproducirlo y confirmamos que es un error, ganas fichas por haberlo encontrado: cuántas depende de lo grave que resulte.',
+    placeholder: 'Qué pasó y qué esperabas…',
+    hint: 'Una captura o una grabación de pantalla ayuda más que ninguna otra cosa. Respondemos por correo, a la dirección de tu cuenta.',
+    send: 'Enviar informe',
+    sending: 'Enviando…',
+    sent: 'Gracias. Leemos todos los informes y respondemos por correo.',
+    failed: 'No se ha enviado. Inténtalo de nuevo en un momento.',
+  },
   kitchen: {
     title: 'Nuestra cocina',
     intro: 'Donde se hace LangX, y quienes lo hacen.',

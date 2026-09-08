@@ -925,6 +925,20 @@ export const tr: Localized<EnMessages> = {
     dataDeletion: 'Verilerimi sil',
     security: 'Güvenlik',
   },
+  bugReport: {
+    title: 'Hata bildir',
+    rowBody: 'Bozuk bir şey mi var? Bize bildir, karşılığında jeton kazan.',
+    intro:
+      'Ne olduğunu, bunun yerine ne beklediğini ve tekrar nasıl yaşandığını yaz. Ne kadar net anlatırsan o kadar çabuk düzelir.',
+    reward:
+      'Sorunu yeniden üretip hata olduğunu doğrularsak, bulduğun için jeton kazanırsın — ne kadar olduğu hatanın ne kadar ciddi olduğuna bağlı.',
+    placeholder: 'Ne oldu, ne bekliyordun…',
+    hint: 'Ekran görüntüsü ya da ekran kaydı her şeyden çok işe yarar. Yanıtı hesabındaki e-posta adresine yazıyoruz.',
+    send: 'Bildirimi gönder',
+    sending: 'Gönderiliyor…',
+    sent: 'Teşekkürler. Her bildirimi okuyor ve e-postayla yanıtlıyoruz.',
+    failed: 'Gönderilemedi. Birazdan tekrar dene.',
+  },
   kitchen: {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',

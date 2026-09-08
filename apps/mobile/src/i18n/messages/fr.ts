@@ -928,6 +928,20 @@ export const fr: Localized<EnMessages> = {
     dataDeletion: 'Supprimer mes données',
     security: 'Sécurité',
   },
+  bugReport: {
+    title: 'Signaler un bug',
+    rowBody: 'Quelque chose ne marche pas ? Dites-le-nous et gagnez des jetons.',
+    intro:
+      'Racontez ce qui s’est passé, ce que vous attendiez à la place et comment le reproduire. Plus c’est précis, plus vite c’est corrigé.',
+    reward:
+      'Si nous parvenons à le reproduire et confirmons que c’est un bug, vous gagnez des jetons pour l’avoir trouvé — leur nombre dépend de sa gravité.',
+    placeholder: 'Ce qui s’est passé et ce que vous attendiez…',
+    hint: 'Une capture ou un enregistrement d’écran aide plus que tout le reste. Nous répondons par e-mail, à l’adresse de votre compte.',
+    send: 'Envoyer le signalement',
+    sending: 'Envoi…',
+    sent: 'Merci. Nous lisons chaque signalement et répondons par e-mail.',
+    failed: 'L’envoi a échoué. Réessayez dans un instant.',
+  },
   kitchen: {
     title: 'Notre cuisine',
     intro: 'Là où LangX se fabrique, et ceux qui le font.',

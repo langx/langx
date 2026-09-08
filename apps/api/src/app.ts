@@ -14,6 +14,7 @@ import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
+import { bugReportRoutes } from './routes/bugReports'
 import { emailRoutes } from './routes/email'
 import { appConfigRoutes } from './routes/appConfig'
 import { registerAuthRoutes } from './routes/auth'
@@ -301,6 +302,7 @@ export async function buildApp({
   await app.register(moderationRoutes)
   await app.register(accountRoutes)
   await app.register(emailRoutes)
+  await app.register(bugReportRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

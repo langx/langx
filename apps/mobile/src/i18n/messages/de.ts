@@ -946,6 +946,20 @@ export const de: Localized<EnMessages> = {
     dataDeletion: 'Meine Daten löschen',
     security: 'Sicherheit',
   },
+  bugReport: {
+    title: 'Fehler melden',
+    rowBody: 'Etwas kaputt? Sag uns Bescheid und verdien Token dafür.',
+    intro:
+      'Beschreibe, was passiert ist, was du stattdessen erwartet hast und wie man es wieder auslöst. Je genauer die Beschreibung, desto schneller ist es behoben.',
+    reward:
+      'Wenn wir den Fehler nachstellen und bestätigen können, bekommst du Token dafür, dass du ihn gefunden hast — wie viele, hängt davon ab, wie schwer er wiegt.',
+    placeholder: 'Was passiert ist und was du erwartet hast…',
+    hint: 'Ein Screenshot oder eine Bildschirmaufnahme hilft am meisten. Wir antworten per E-Mail an die Adresse deines Kontos.',
+    send: 'Meldung senden',
+    sending: 'Wird gesendet…',
+    sent: 'Danke. Wir lesen jede Meldung und antworten per E-Mail.',
+    failed: 'Das ging nicht raus. Versuch es gleich noch einmal.',
+  },
   kitchen: {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
