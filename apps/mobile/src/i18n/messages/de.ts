@@ -66,12 +66,12 @@ export const de: Localized<EnMessages> = {
     composerCorrect: 'Gedrückt halten zum Korrigieren',
     composerReply: 'Wischen, um zu antworten',
     composerStar: 'Gedrückt halten zum Markieren oder Übersetzen',
-    composerVoice: 'Mikrofon halten für eine Sprachnachricht',
+    composerVoice: 'Mikrofon antippen, anhören, senden',
     chatStar: 'Halte eine Nachricht gedrückt und wähle Markieren, um sie wiederzufinden.',
     chatTranslate:
       'Halte eine Nachricht gedrückt, um sie zu übersetzen, ohne das Gespräch zu verlassen.',
     chatVoice:
-      'Halte das Mikrofon gedrückt für eine Sprachnachricht — ein Wort zu hören ist die halbe Miete.',
+      'Tippe aufs Mikrofon für eine Sprachnachricht — du kannst sie vor dem Senden anhören, und ein Wort zu hören ist die halbe Miete.',
     chatsSwipe: 'Wische einen Chat zur Seite, um ihn anzuheften oder zu archivieren.',
     chatsPin: 'Hefte die Chats an, zu denen du zurückkommst — sie bleiben oben.',
     chatsUnreplied: 'Der Tab Unbeantwortet sind alle, die noch auf dich warten.',

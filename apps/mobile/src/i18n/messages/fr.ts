@@ -66,12 +66,12 @@ export const fr: Localized<EnMessages> = {
     composerCorrect: 'Appui long pour corriger',
     composerReply: 'Glissez un message pour répondre',
     composerStar: 'Appui long pour épingler ou traduire',
-    composerVoice: 'Maintenez le micro pour un vocal',
+    composerVoice: 'Touchez le micro, écoutez, envoyez',
     chatStar: 'Appuyez longuement sur un message et choisissez Épingler pour le retrouver.',
     chatTranslate:
       'Appuyez longuement sur un message pour le traduire sans quitter la conversation.',
     chatVoice:
-      'Maintenez le micro pour envoyer un vocal — entendre un mot, c’est la moitié du travail.',
+      'Touchez le micro pour un vocal — vous pouvez l’écouter avant de l’envoyer, et entendre un mot, c’est la moitié du chemin.',
     chatsSwipe: 'Faites glisser une conversation sur le côté pour l’épingler ou l’archiver.',
     chatsPin: 'Épinglez les conversations où vous revenez : elles restent en haut.',
     chatsUnreplied: 'L’onglet Sans réponse, ce sont tous ceux qui vous attendent encore.',
