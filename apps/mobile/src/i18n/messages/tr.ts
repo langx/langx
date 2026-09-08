@@ -442,6 +442,8 @@ export const tr: Localized<EnMessages> = {
     badgesBody: 'Bir rozet kazandığında. Her seferinde değil, akşam toplu olarak.',
     profileVisits: 'Profil ziyaretleri',
     profileVisitsBody: 'Günde bir kez, profiline kaç kişinin baktığı. Haftada bir e-postayla özet.',
+    meetings: 'Randevular',
+    meetingsBody: 'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Sadece bildirim.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. İstemedikçe kapalı.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1023,7 +1025,7 @@ export const tr: Localized<EnMessages> = {
       'Yeşil noktanı ve en son ne zaman burada olduğunu gizler. Sen onlarınkini görmeye devam edersin.',
     hideCity: 'Şehrimi gizle',
     hideCityBody:
-      'Şehrin konumundan çıkarılıyor. Bu, onu profilinden kaldırır; mesafe ve ülke etkilenmez.',
+      'Şehrin ve saat dilimin konumundan bulunuyor. Bu ikisini profilinden gizler; mesafe ve ülke etkilenmez.',
     shareLocation: 'Yaklaşık konumu paylaş',
     shareLocationBody: 'Başkaları bir nokta değil, bir mesafe aralığı görür.',
     shareUsage: 'Kullanım verisi paylaş',

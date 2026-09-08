@@ -68,6 +68,8 @@ export interface PublicProfileDto {
    * for anyone who turned it off in Settings.
    */
   city?: string
+  /** Present unless they hide their city. Used for a meeting's second clock. */
+  timezone?: string
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]

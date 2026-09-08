@@ -960,6 +960,8 @@ export interface PublicProfile {
   gender: Profile['gender']
   country?: string
   city?: string
+  /** For a proposed meeting's second clock. Withheld with the city. */
+  timezone?: string
   nativeLanguages: { code: string }[]
   learning: { code: string; level: string; priority: number }[]
   interests: string[]
@@ -1058,6 +1060,23 @@ export function toPublicProfile(
   // half-declared anyway; the city is neither, and nobody typed it.
   if (profile.cityName !== undefined && profile.privacy?.hideCity !== true) {
     result.city = profile.cityName
+  }
+  /*
+   * Behind the same switch as the city, and for the same reason.
+   *
+   * A timezone is roughly a longitude: coarser than a city, finer than a
+   * country for anywhere that spans several. "Hide my city" already means
+   * "do not place me more precisely than my country", so this belongs under
+   * it rather than under a second switch nobody would find — and the switch's
+   * own copy says so, because widening what an existing setting covers
+   * without telling anyone is not a thing to do quietly.
+   *
+   * It is here so a proposed meeting can be drawn in both clocks. Without it
+   * the card can only show the reader their own, which is the arithmetic but
+   * not the courtesy.
+   */
+  if (profile.timezone !== undefined && profile.privacy?.hideCity !== true) {
+    result.timezone = profile.timezone
   }
   if (conversationId !== undefined) result.conversationId = conversationId
   return result

@@ -71,11 +71,15 @@ export default function ProposeTimeScreen() {
   /**
    * Days and half-hours as chips, not a `DateTimePicker`.
    *
-   * The picker is a native module with no web implementation: on
-   * app.langx.io it renders nothing at all, and a control that silently
-   * draws nothing is worse than a plainer one that works everywhere. Chips
-   * are also closer to how this is actually decided — "tomorrow evening",
-   * not a calendar.
+   * The picker has no web implementation, which `BirthDateField` solves with
+   * a `.web.tsx` sibling — the house convention, and the right one there,
+   * because a birth date is any day in a century and only a calendar can
+   * offer that.
+   *
+   * A meeting is not. It is inside the next week, on a half hour, and it is
+   * decided as "tomorrow evening" rather than by scrolling to a date. Chips
+   * say that in one file instead of two, and the row of days doubles as the
+   * range: there is no way to propose something a year out by accident.
    */
   const days = useMemo(() => {
     const today = new Date()

@@ -25,6 +25,16 @@ export const NOTIFICATION_TYPES = [
   'streak',
   'badges',
   'profileVisits',
+  /**
+   * An hour before a meeting both people accepted.
+   *
+   * Its own kind rather than folded into `messages`: somebody who mutes a
+   * conversation's chatter still wants the thing they agreed to turn up for,
+   * and the two are opposite in kind — one is other people talking, the other
+   * is a commitment you made. It fires once, only on `accepted`, and never
+   * for a meeting somebody withdrew.
+   */
+  'meetings',
   'promotions',
 ] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
@@ -70,6 +80,13 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    */
   badges: { push: true, email: false },
   profileVisits: { push: true, email: true },
+  /*
+   * Push on, email off, for the badge's reason turned around: a reminder an
+   * hour out is only useful on the thing that buzzes, and an email arriving
+   * an hour before a call is either too late to read or a duplicate of the
+   * push that already worked.
+   */
+  meetings: { push: true, email: false },
   promotions: { push: false, email: false },
 }
 

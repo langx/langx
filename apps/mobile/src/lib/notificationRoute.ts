@@ -34,6 +34,13 @@ export function notificationRoute(data: unknown): Href | null {
     case 'badgeEarned':
       // The badges live on your own profile, which is what `me` is.
       return '/me'
+    case 'meetingReminder':
+      // Straight into the thread it was agreed in — the card is there, and so
+      // is the person. Without an id the list is the honest fallback, the same
+      // as a message with none.
+      return typeof conversationId === 'string' && conversationId.length > 0
+        ? `/chat/${conversationId}`
+        : '/chats'
     case 'profileVisits':
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.

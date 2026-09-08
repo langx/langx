@@ -10,6 +10,8 @@ export const tr: Localized<ServerMessages> = {
     badgeOneTitle: 'Yeni rozet: {label} 🏅',
     badgeManyTitle: { one: '1 yeni rozet kazandın 🏅', other: '{count} yeni rozet kazandın 🏅' },
     badgeBody: 'Güzel iş. Böyle devam.',
+    meetingTitle: 'Dil değişiminize bir saat kaldı',
+    meetingBody: 'Sohbeti açmak için dokun.',
   },
 
   email: {

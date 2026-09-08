@@ -18,6 +18,8 @@ export const ar: Localized<ServerMessages> = {
     badgeOneTitle: 'شارة جديدة: {label} 🏅',
     badgeManyTitle: { one: 'حصلت على شارة جديدة 🏅', other: 'حصلت على {count} شارات جديدة 🏅' },
     badgeBody: 'عمل رائع. واصل.',
+    meetingTitle: 'تبادلك اللغوي بعد ساعة',
+    meetingBody: 'اضغط لفتح المحادثة.',
   },
 
   email: {

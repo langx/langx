@@ -40,7 +40,13 @@ export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>
 export const updateDeviceSchema = z.object({ pushEnabled: z.boolean() })
 export type UpdateDeviceInput = z.infer<typeof updateDeviceSchema>
 
-export const PUSH_KINDS = ['message', 'streakReminder', 'badgeEarned', 'profileVisits'] as const
+export const PUSH_KINDS = [
+  'message',
+  'streakReminder',
+  'badgeEarned',
+  'profileVisits',
+  'meetingReminder',
+] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 
 /**

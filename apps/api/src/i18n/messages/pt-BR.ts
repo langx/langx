@@ -16,6 +16,8 @@ export const ptBR: Localized<ServerMessages> = {
       other: 'Você ganhou {count} medalhas novas 🏅',
     },
     badgeBody: 'Mandou bem. Continue assim.',
+    meetingTitle: 'Seu intercâmbio de idiomas é daqui a uma hora',
+    meetingBody: 'Toque para abrir a conversa.',
   },
 
   email: {

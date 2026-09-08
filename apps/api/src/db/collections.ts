@@ -147,6 +147,14 @@ export const COLLECTIONS = {
    */
   notificationLedger: 'notificationLedger',
   /**
+   * One row per meeting reminder sent. `_id` is the message id, so the insert
+   * failing on a duplicate key *is* the check — the same trick
+   * `streakReminders` uses, and for the same reason: two ticks can land inside
+   * one reminder window, and being buzzed twice about one call is how a
+   * notification permission gets revoked.
+   */
+  meetingReminders: 'meetingReminders',
+  /**
    * One row per person per campaign, written *before* the send. The unique
    * index on `{campaignId, userId}` is the only thing that makes re-running a
    * half-finished campaign safe.
