@@ -11,6 +11,8 @@ import {
   type SendMeetingInput,
   type SendPhraseInput,
   type SendQuizInput,
+  type SendStickerInput,
+  findCosmetic,
   type SendTextMessageInput,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
@@ -24,6 +26,7 @@ import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
+import type { Profile } from '../profiles/profiles'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
 
 export interface SendResult {
@@ -59,6 +62,7 @@ export function previewFor(type: Message['type'], count = 1): string {
   if (type === 'phrase') return '🗂️ Phrase'
   if (type === 'meeting') return '📅 Meeting'
   if (type === 'quiz') return '❓ Quiz'
+  if (type === 'sticker') return '🩷 Sticker'
   return ''
 }
 
@@ -434,6 +438,56 @@ export async function answerQuiz(
     )
   if (!updated) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Already answered')
   return { message: updated, conversation }
+}
+
+/**
+ * A sticker from a pack the sender owns.
+ *
+ * Ownership is checked here, not trusted from the client: the pack is the
+ * thing token buys, and a send that skipped the check would make buying one
+ * optional. `assertOwnsCosmetic` is the same guard equipping a frame uses.
+ *
+ * No media quota and no media gate. Nothing is uploaded and nothing is
+ * stored — only an id travels — so neither has anything to weigh or protect.
+ */
+export async function sendSticker(
+  db: Db,
+  senderId: string,
+  input: SendStickerInput,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  const pack = findCosmetic(input.packId)
+  if (!pack || pack.kind !== 'stickers' || !pack.stickers?.includes(input.stickerId)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'No such sticker')
+  }
+  const profile = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: senderId }, { projection: { cosmetics: 1 } })
+  if (!profile?.cosmetics?.includes(input.packId)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, `You do not own ${input.packId}`)
+  }
+
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: 'sticker',
+    body: '',
+    sticker: { packId: input.packId, stickerId: input.stickerId },
+    ...(input.clientId ? { clientId: input.clientId } : {}),
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
 }
 
 /**

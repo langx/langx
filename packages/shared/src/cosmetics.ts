@@ -9,7 +9,7 @@ import type { PaidPlanTier } from './limits'
  * subscription is the thing that funds the app. Prices live here, in public,
  * because the enforcement is a server-side atomic balance check — not secrecy.
  */
-export const COSMETIC_KINDS = ['frame', 'title'] as const
+export const COSMETIC_KINDS = ['frame', 'title', 'stickers'] as const
 export type CosmeticKind = (typeof COSMETIC_KINDS)[number]
 
 /**
@@ -55,6 +55,15 @@ export interface Cosmetic {
   /** Frames only. */
   tone?: CosmeticTone
   requires?: CosmeticRequirement
+  /**
+   * Sticker packs only: the ids in the pack, matching the file names under
+   * `apps/mobile/assets/stickers/<pack>/`.
+   *
+   * A test asserts the two agree. Nothing else can: an id with no file draws
+   * an empty bubble, and a file with no id is art nobody can send, and the
+   * compiler sees neither.
+   */
+  stickers?: readonly string[]
 }
 
 /**
@@ -118,6 +127,37 @@ export const COSMETICS: readonly Cosmetic[] = [
   { id: 'title.scholar', kind: 'title', label: 'Scholar', price: 20_000 },
   { id: 'title.master', kind: 'title', label: 'Master', price: 50_000 },
   { id: 'title.legend', kind: 'title', label: 'Legend', price: 100_000 },
+  /**
+   * The starter pack, and for now the only one.
+   *
+   * Priced at the bottom of the frame ladder rather than beside it: a pack is
+   * something you use in every conversation, and pricing the first one out of
+   * a new account's reach would mean nobody ever finds out stickers exist.
+   *
+   * Six of these are drawn for this app; six are Microsoft's Fluent Emoji,
+   * MIT, unmodified — see `docs/data-sources.md`, which is a licence condition
+   * and not a courtesy.
+   */
+  {
+    id: 'stickers.starter',
+    kind: 'stickers',
+    label: 'Starter stickers',
+    price: 1000,
+    stickers: [
+      'wave',
+      'listen',
+      'thinking',
+      'correct',
+      'pronounce',
+      'confused',
+      'book',
+      'bulb',
+      'clock',
+      'heart',
+      'party',
+      'sparkles',
+    ],
+  },
 ]
 
 /** Progress against a gate: what the client draws and the server checks. */
@@ -158,7 +198,34 @@ export function findCosmetic(id: string): Cosmetic | undefined {
  * silently reorder what has to be earned first. The order is the rule; the
  * prices are how it is explained.
  */
+/**
+ * Whether a kind is climbed or merely shopped.
+ *
+ * Frames and titles are ranks: the order is the rule, the prices explain it,
+ * and each one is earned by owning the one below. A sticker pack is content —
+ * making somebody buy the cats before the flowers would be an order with
+ * nothing behind it — so packs are bought in any order and at any time.
+ *
+ * Named rather than inlined because three things have to agree about it: the
+ * purchase gate, the shop's layout, and the test that keeps prices climbing.
+ */
+export function isLadderKind(kind: CosmeticKind): boolean {
+  return kind !== 'stickers'
+}
+
+/**
+ * The kinds you can be wearing.
+ *
+ * A frame and a title are worn one at a time, so owning a second changes
+ * nothing until it is chosen — that choice is `equipped`. A sticker pack is
+ * not worn: owning it opens its keyboard, and owning two opens both. There is
+ * nothing to select, which is why `equippedSchema` does not list it.
+ */
+export const EQUIPPABLE_KINDS = ['frame', 'title'] as const
+export type EquippableKind = (typeof EQUIPPABLE_KINDS)[number]
+
 export function previousCosmetic(cosmetic: Cosmetic): Cosmetic | undefined {
+  if (!isLadderKind(cosmetic.kind)) return undefined
   const ladder = COSMETICS.filter((c) => c.kind === cosmetic.kind)
   const index = ladder.findIndex((c) => c.id === cosmetic.id)
   return index > 0 ? ladder[index - 1] : undefined

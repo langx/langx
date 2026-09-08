@@ -139,6 +139,8 @@ export interface Message {
     correctIndex: number
     answer?: { index: number; at: Date }
   }
+  /** Which picture, out of which pack. The art itself is in the app bundle. */
+  sticker?: { packId: string; stickerId: string }
   /**
    * Everything attached to this message, in the order it was picked.
    *

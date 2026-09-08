@@ -102,6 +102,7 @@ export const MESSAGE_TYPES = [
   'phrase',
   'meeting',
   'quiz',
+  'sticker',
 ] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
@@ -292,6 +293,30 @@ export const answerQuizSchema = z.object({
     .max(QUIZ_MAX_OPTIONS - 1),
 })
 export type AnswerQuizInput = z.infer<typeof answerQuizSchema>
+
+/**
+ * One sticker from a pack the sender owns.
+ *
+ * Only the id travels; the picture is in the bundle. That is also why a
+ * sticker is not media: nothing is uploaded, nothing is stored, and the media
+ * gate — which exists to stop a first message being a photograph nobody
+ * consented to — has nothing to protect anyone from here. They are still
+ * reportable, because a curated picture can still be used unkindly.
+ */
+export const stickerIdSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z0-9.-]+$/, 'Not a sticker id')
+
+export const sendStickerSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  packId: stickerIdSchema,
+  stickerId: stickerIdSchema,
+  clientId: clientMessageIdSchema.optional(),
+})
+export type SendStickerInput = z.infer<typeof sendStickerSchema>
 
 export const CORRECTION_NOTE_MAX_LENGTH = 500
 

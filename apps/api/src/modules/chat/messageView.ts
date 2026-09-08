@@ -67,6 +67,7 @@ export interface MessageView {
     correctIndex: number
     answer?: { index: number; at: string }
   }
+  sticker?: { packId: string; stickerId: string }
   /** Mutual by design: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which one is the viewer's own, so the strip can show it selected. */
@@ -120,6 +121,7 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (!deleted && message.ask) view.ask = message.ask
   if (!deleted && message.translation) view.translation = message.translation
   if (!deleted && message.phrase) view.phrase = message.phrase
+  if (!deleted && message.sticker) view.sticker = message.sticker
   if (!deleted && message.quiz) {
     view.quiz = {
       question: message.quiz.question,

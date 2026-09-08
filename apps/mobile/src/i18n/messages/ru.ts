@@ -654,6 +654,8 @@ export const ru: Localized<EnMessages> = {
     phraseCard: 'Выражение',
     meetingCard: 'Предложенное время',
     quizCard: 'Викторина',
+    stickers: 'Стикеры',
+    stickerBuy: 'Открыть за {price} токенов',
     quizAddOption: 'Добавить вариант',
     sendQuiz: 'Задать вопрос',
     quizQuestion: 'Вопрос',
@@ -1027,6 +1029,7 @@ export const ru: Localized<EnMessages> = {
     title: 'Наша кухня',
     intro: 'Где делают LangX — и все, кто его делает.',
     dataCredit: 'Названия мест — GeoNames, лицензия CC BY 4.0.',
+    stickerCredit: 'Часть стикеров — из Microsoft Fluent Emoji, лицензия MIT.',
     footer: 'Делается открыто, теми, кто им пользуется.',
     contributors: 'Участники',
     fundamentals: 'Все, кто внёс вклад',
@@ -1360,6 +1363,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersStarter: 'Стартовые стикеры',
     frameSlate: 'Сланцевая рамка',
     frameBronze: 'Бронзовая рамка',
     frameSky: 'Небесная рамка',

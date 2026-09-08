@@ -52,6 +52,7 @@ const ROUTE_RESERVED = [
   'quiz',
   'settings',
   'starred',
+  'stickers',
   'streak',
   'gift',
   'store',

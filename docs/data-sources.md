@@ -35,3 +35,38 @@ list it came from.
 
 **Attribution is a licence condition, not a courtesy.** Removing it from any of
 the three places above is a licence breach, and the repo is public.
+
+## Stickers — half Microsoft, half ours
+
+The starter sticker pack is twelve flat SVGs. Six are drawn for this app and
+carry no licence but ours; six are lifted unmodified from Microsoft's Fluent
+Emoji, whose flat variant is the closest match to what v3 draws.
+
+|             |                                                                                                |
+| ----------- | ---------------------------------------------------------------------------------------------- |
+| Source      | <https://github.com/microsoft/fluentui-emoji>                                                  |
+| Licence     | MIT                                                                                            |
+| Files       | `apps/mobile/assets/stickers/starter/` — `book`, `bulb`, `clock`, `heart`, `party`, `sparkles` |
+| Notice      | `apps/mobile/assets/stickers/LICENSE-fluentui-emoji`                                           |
+| Credited in | this file, `README.md`, and the app's "Our Kitchen" screen                                     |
+
+MIT asks for one thing: the copyright notice travels with the files. It is in
+the directory beside them, which is why that file is there and must not be
+tidied away.
+
+Two rules the pack follows, both of which outlive this particular art:
+
+**No lettering.** A sticker saying "Nice!" reads as English to somebody who is
+not obliged to read English, and this app speaks eight languages. It is the
+same rule as `t('some.key')`, applied to a picture. It also sidesteps SVG
+`<text>`, whose font is not ours to rely on.
+
+**No filters and no gradients.** `expo-image` decodes SVG through `androidsvg`
+on Android, which supports neither. Anything richer draws on iOS and the web
+and silently flattens or vanishes on a phone.
+
+**A skin tone is a choice we are not making.** Fluent's thumbs-up ships in six
+tones and no neutral one; picking a default for a global language exchange is
+a decision with no right answer, so the pack uses `sparkles` instead. The hands
+we drew are white with an ink outline, which reads as a glyph rather than as
+anybody's skin.
