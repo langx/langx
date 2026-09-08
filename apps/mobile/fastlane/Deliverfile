@@ -1,7 +1,12 @@
-# Screenshots only. The binary goes up through EAS and the metadata is still
-# edited in App Store Connect, so this run touches neither.
+# The binary goes up through EAS, never from here.
 skip_binary_upload(true)
-skip_metadata(true)
+
+# Metadata does go up, and it has to: App Store Connect will not take a
+# screenshot for a locale that does not exist yet, and a locale is created by
+# giving it a description and keywords. Only the locales with a folder under
+# fastlane/metadata are touched — English has none, so the copy already on the
+# version is left exactly as it is.
+skip_metadata(false)
 
 # Replace the whole set rather than adding to it. Without this, deliver leaves
 # whatever is already in a slot alone, and a slot that is already full silently
@@ -11,5 +16,6 @@ skip_metadata(true)
 # collect-store-screenshots.mjs numbers them 6.9-01 … 6.9-08.
 overwrite_screenshots(true)
 
-# Written by `node apps/mobile/scripts/collect-store-screenshots.mjs`.
+# Written by the two collect-store-* scripts in ../scripts.
 screenshots_path('./fastlane/screenshots')
+metadata_path('./fastlane/metadata')

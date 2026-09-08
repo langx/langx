@@ -12,7 +12,7 @@
  * order, because deliver sorts by filename.
  *
  *   node apps/mobile/scripts/collect-store-screenshots.mjs
- *   cd apps/mobile && fastlane deliver --skip_binary_upload --skip_metadata
+ *   cd apps/mobile && fastlane deliver
  *
  * Authentication is an App Store Connect API key (.p8), not an Apple ID: no
  * password and no 2FA prompt. The same key EAS already holds works here —
@@ -90,4 +90,4 @@ for (const [ours, apple] of Object.entries(LOCALES)) {
   console.log(`${apple}: ${SLOTS.length * 8} screenshots`)
 }
 console.log(`\n${copied} files in ${OUT}`)
-console.log('Next: cd apps/mobile && fastlane deliver --skip_binary_upload --skip_metadata')
+console.log('Next: cd apps/mobile && fastlane deliver')
