@@ -22,18 +22,21 @@
  *
  *   POSTHOG_PERSONAL_API_KEY   PostHog → Settings → Personal API keys
  *   POSTHOG_PROJECT_ID         the number in the project's own URL
- *   POSTHOG_HOST               optional; the app host, not the ingestion one
+ *   POSTHOG_REGION             optional; `eu` (the default) or `us`
  *
- * `POSTHOG_HOST` defaults to `https://eu.posthog.com`. It is deliberately not
- * `eu.i.posthog.com`: that is where the app *sends* events, and it does not
- * serve this API. Getting the two the wrong way round answers 404 on a URL
- * that looks right, which is the one failure here worth naming in advance.
+ * A region rather than a host, and neither is a free-form URL. There are two
+ * places this API exists, `docs/decisions.md` rejected self-hosting PostHog
+ * outright, and a settable host would only ever be a way to send a personal
+ * API key somewhere it was not meant to go — CodeQL called that request
+ * forgery on the first push and was right. Note that neither is
+ * `eu.i.posthog.com`: that is where the app *sends* events and it does not
+ * serve this API.
  */
-import { writeFileSync } from 'node:fs'
+import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-const HOST = (process.env.POSTHOG_HOST ?? 'https://eu.posthog.com').replace(/\/$/, '')
+const REGION = process.env.POSTHOG_REGION ?? 'eu'
 const KEY = process.env.POSTHOG_PERSONAL_API_KEY
 const PROJECT = process.env.POSTHOG_PROJECT_ID
 const DAYS = Number(process.argv[2] ?? 30)
@@ -74,7 +77,20 @@ if (!KEY || !PROJECT) {
       'goes in the repository.',
   )
 }
+if (!/^\d+$/.test(PROJECT))
+  fail(`POSTHOG_PROJECT_ID is the number in the project's URL, got ${PROJECT}`)
 if (!Number.isInteger(DAYS) || DAYS < 1) fail(`Days must be a whole number, got ${process.argv[2]}`)
+
+/**
+ * Written out rather than looked up in a table, so what reaches `fetch` is a
+ * literal in this file and not a string that arrived from outside it.
+ */
+const HOST =
+  REGION === 'eu'
+    ? 'https://eu.posthog.com'
+    : REGION === 'us'
+      ? 'https://us.posthog.com'
+      : fail(`POSTHOG_REGION is 'eu' or 'us', got ${REGION}`)
 
 async function query(body) {
   let response
@@ -93,7 +109,7 @@ async function query(body) {
       response.status === 401
         ? '\nA 401 is the key: it must be a *personal* API key, not the project write key.'
         : response.status === 404
-          ? `\nA 404 is usually the host or the project id. The host must be the app one\n(${HOST} — not eu.i.posthog.com), and the project id is the number in its URL.`
+          ? `\nA 404 is the project id: ${PROJECT} is not a project on ${HOST}. It is the\nnumber in the project's own URL, and the region may be the other one.`
           : ''
     return fail(`PostHog answered ${response.status}.${hint}\n\n${detail}`)
   }
@@ -308,7 +324,15 @@ const html = `<!doctype html>
 </html>
 `
 
-const out = join(tmpdir(), `langx-funnel-${DAYS}d.html`)
-writeFileSync(out, html)
+/**
+ * A fresh directory per run, and a file only its owner can read.
+ *
+ * `mkdtemp` because a predictable name in a shared temp directory is a file
+ * anybody on the machine can read — and this one holds conversion, which is
+ * the whole reason the page says it must not be published. The 0600 is the
+ * same sentence said twice, which is the right number of times for it.
+ */
+const out = join(mkdtempSync(join(tmpdir(), 'langx-insight-')), `funnel-${DAYS}d.html`)
+writeFileSync(out, html, { mode: 0o600 })
 console.log(`\n  ${steps.map((s) => `${s.label}: ${NUM.format(s.count)}`).join('\n  ')}\n`)
 console.log(`  Written to file://${out}\n`)
