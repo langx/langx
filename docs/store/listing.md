@@ -41,30 +41,19 @@ included. Both are written out below, per language.
 
 **Description**
 
-> LangX matches you with people who speak the language you're learning and are
-> learning the language you speak. No lessons, no homework — just real
-> conversations with someone who needs exactly what you can offer.
+> LangX matches you with people who speak the language you're learning and are learning the language you speak. No lessons, no homework — just real conversations with someone who needs exactly what you can offer.
 >
-> **Matched both ways.** You only see people whose languages fit yours in both
-> directions, so every conversation has something in it for both of you.
+> **Matched both ways.** You only see people whose languages fit yours in both directions, so every conversation has something in it for both of you.
 >
-> **Correct each other.** Tap any message to suggest a better way to say it.
-> Corrections are unlimited for everyone, on every plan — teaching is the whole
-> point.
+> **Correct each other.** Tap any message to suggest a better way to say it. Corrections are unlimited for everyone, on every plan — teaching is the whole point.
 >
 > **Translation when you're stuck.** Built in, so you don't leave the chat.
 >
-> **A reason to come back.** Keep a daily streak, earn tokens for talking and
-> teaching, and see where you land on the weekly, monthly, yearly and all-time
-> boards.
+> **A reason to come back.** Keep a daily streak, earn tokens for talking and teaching, and see where you land on the weekly, monthly, yearly and all-time boards.
 >
-> **Free to use, always.** Reply to every message you receive with no limits,
-> and correct as many as you like. On the free plan you can start 5 new
-> conversations a day.
+> **Free to use, always.** Reply to every message you receive with no limits, and correct as many as you like. On the free plan you can start 5 new conversations a day.
 >
-> **LangX Pro** adds unlimited new conversations, filters by gender, country,
-> age and level, unlimited translation, who viewed your profile, and incognito
-> browsing.
+> **LangX Pro** adds unlimited new conversations, filters by gender, country, age and level, unlimited translation, who viewed your profile, and incognito browsing.
 >
 > LangX is open source (BSD-3) and can be self-hosted.
 >
@@ -90,27 +79,19 @@ included. Both are written out below, per language.
 
 **Açıklama**
 
-> LangX seni, öğrendiğin dili konuşan ve senin dilini öğrenen insanlarla
-> eşleştirir. Ders yok, ödev yok — tam olarak senin verebileceğin şeye ihtiyacı
-> olan biriyle gerçek sohbetler var.
+> LangX seni, öğrendiğin dili konuşan ve senin dilini öğrenen insanlarla eşleştirir. Ders yok, ödev yok — tam olarak senin verebileceğin şeye ihtiyacı olan biriyle gerçek sohbetler var.
 >
-> **Karşılıklı eşleşme.** Yalnızca dilleri seninkiyle iki yönde de uyuşan
-> kişileri görürsün, böylece her sohbet iki taraf için de anlamlı olur.
+> **Karşılıklı eşleşme.** Yalnızca dilleri seninkiyle iki yönde de uyuşan kişileri görürsün, böylece her sohbet iki taraf için de anlamlı olur.
 >
-> **Birbirinizi düzeltin.** Herhangi bir mesaja dokunup daha doğru söylenişini
-> öner. Düzeltmeler her planda sınırsız — asıl mesele öğretmek.
+> **Birbirinizi düzeltin.** Herhangi bir mesaja dokunup daha doğru söylenişini öner. Düzeltmeler her planda sınırsız — asıl mesele öğretmek.
 >
 > **Takıldığında çeviri.** Uygulamanın içinde, sohbetten çıkmadan.
 >
-> **Geri dönmek için bir sebep.** Günlük serini koru, konuşarak ve öğreterek token
-> kazan, haftalık/aylık/yıllık ve tüm zamanlar tablolarında yerini gör.
+> **Geri dönmek için bir sebep.** Günlük serini koru, konuşarak ve öğreterek token kazan, haftalık/aylık/yıllık ve tüm zamanlar tablolarında yerini gör.
 >
-> **Kullanımı her zaman ücretsiz.** Sana gelen tüm mesajlara sınırsız cevap
-> verebilir, istediğin kadar düzeltme yapabilirsin. Ücretsiz planda günde 5 yeni
-> sohbet başlatabilirsin.
+> **Kullanımı her zaman ücretsiz.** Sana gelen tüm mesajlara sınırsız cevap verebilir, istediğin kadar düzeltme yapabilirsin. Ücretsiz planda günde 5 yeni sohbet başlatabilirsin.
 >
-> **LangX Pro** sınırsız yeni sohbet, cinsiyet/ülke/yaş/seviye filtreleri,
-> sınırsız çeviri, profilini kimin görüntülediği ve gizli gezinme ekler.
+> **LangX Pro** sınırsız yeni sohbet, cinsiyet/ülke/yaş/seviye filtreleri, sınırsız çeviri, profilini kimin görüntülediği ve gizli gezinme ekler.
 >
 > LangX açık kaynaktır (BSD-3) ve kendi sunucunda barındırılabilir.
 >
@@ -136,31 +117,19 @@ included. Both are written out below, per language.
 
 **Descripción**
 
-> LangX te empareja con personas que hablan el idioma que aprendes y están
-> aprendiendo el tuyo. Sin clases, sin deberes: solo conversaciones reales con
-> alguien que necesita exactamente lo que tú puedes ofrecer.
+> LangX te empareja con personas que hablan el idioma que aprendes y están aprendiendo el tuyo. Sin clases, sin deberes: solo conversaciones reales con alguien que necesita exactamente lo que tú puedes ofrecer.
 >
-> **Emparejamiento en ambos sentidos.** Solo ves a personas cuyos idiomas
-> encajan con los tuyos en las dos direcciones, así que cada conversación
-> aporta algo a los dos.
+> **Emparejamiento en ambos sentidos.** Solo ves a personas cuyos idiomas encajan con los tuyos en las dos direcciones, así que cada conversación aporta algo a los dos.
 >
-> **Corrección mutua.** Toca cualquier mensaje para sugerir una forma mejor de
-> decirlo. Las correcciones son ilimitadas para todo el mundo y en todos los
-> planes: enseñar es lo esencial.
+> **Corrección mutua.** Toca cualquier mensaje para sugerir una forma mejor de decirlo. Las correcciones son ilimitadas para todo el mundo y en todos los planes: enseñar es lo esencial.
 >
 > **Traducción cuando te atascas.** Integrada, sin salir del chat.
 >
-> **Un motivo para volver.** Mantén tu racha diaria, gana tokens por hablar y
-> enseñar, y mira dónde quedas en las clasificaciones semanal, mensual, anual y
-> de siempre.
+> **Un motivo para volver.** Mantén tu racha diaria, gana tokens por hablar y enseñar, y mira dónde quedas en las clasificaciones semanal, mensual, anual y de siempre.
 >
-> **Gratis siempre.** Responde sin límite a todos los mensajes que recibas y
-> corrige tantos como quieras. En el plan gratuito puedes iniciar 5
-> conversaciones nuevas al día.
+> **Gratis siempre.** Responde sin límite a todos los mensajes que recibas y corrige tantos como quieras. En el plan gratuito puedes iniciar 5 conversaciones nuevas al día.
 >
-> **LangX Pro** añade conversaciones nuevas ilimitadas, filtros por género,
-> país, edad y nivel, traducción ilimitada, quién ha visto tu perfil y
-> navegación de incógnito.
+> **LangX Pro** añade conversaciones nuevas ilimitadas, filtros por género, país, edad y nivel, traducción ilimitada, quién ha visto tu perfil y navegación de incógnito.
 >
 > LangX es de código abierto (BSD-3) y se puede autoalojar.
 >
@@ -186,30 +155,19 @@ included. Both are written out below, per language.
 
 **Описание**
 
-> LangX подбирает тебе собеседников, которые говорят на языке, который ты
-> учишь, и учат твой язык. Никаких уроков и домашних заданий — просто живые
-> разговоры с человеком, которому нужно именно то, что ты можешь дать.
+> LangX подбирает тебе собеседников, которые говорят на языке, который ты учишь, и учат твой язык. Никаких уроков и домашних заданий — просто живые разговоры с человеком, которому нужно именно то, что ты можешь дать.
 >
-> **Совпадение в обе стороны.** Ты видишь только тех, чьи языки подходят твоим
-> в обоих направлениях, поэтому каждый разговор что-то даёт обоим.
+> **Совпадение в обе стороны.** Ты видишь только тех, чьи языки подходят твоим в обоих направлениях, поэтому каждый разговор что-то даёт обоим.
 >
-> **Исправляйте друг друга.** Нажми на любое сообщение, чтобы предложить, как
-> сказать лучше. Исправления безлимитны для всех и на любом тарифе — учить друг
-> друга и есть смысл приложения.
+> **Исправляйте друг друга.** Нажми на любое сообщение, чтобы предложить, как сказать лучше. Исправления безлимитны для всех и на любом тарифе — учить друг друга и есть смысл приложения.
 >
 > **Перевод, когда застрял.** Встроенный, не выходя из чата.
 >
-> **Повод возвращаться.** Держи ежедневную серию, зарабатывай токены за
-> общение и помощь другим и смотри своё место в таблицах за неделю, месяц, год
-> и всё время.
+> **Повод возвращаться.** Держи ежедневную серию, зарабатывай токены за общение и помощь другим и смотри своё место в таблицах за неделю, месяц, год и всё время.
 >
-> **Всегда бесплатно.** Отвечай без ограничений на все полученные сообщения и
-> исправляй сколько хочешь. На бесплатном тарифе можно начинать 5 новых
-> разговоров в день.
+> **Всегда бесплатно.** Отвечай без ограничений на все полученные сообщения и исправляй сколько хочешь. На бесплатном тарифе можно начинать 5 новых разговоров в день.
 >
-> **LangX Pro** добавляет безлимитные новые разговоры, фильтры по полу, стране,
-> возрасту и уровню, безлимитный перевод, просмотр тех, кто заходил в твой
-> профиль, и невидимый режим.
+> **LangX Pro** добавляет безлимитные новые разговоры, фильтры по полу, стране, возрасту и уровню, безлимитный перевод, просмотр тех, кто заходил в твой профиль, и невидимый режим.
 >
 > LangX — открытый исходный код (BSD-3), можно развернуть на своём сервере.
 >
@@ -235,25 +193,19 @@ included. Both are written out below, per language.
 
 **الوصف**
 
-> يجمعك LangX مع أشخاص يتحدثون اللغة التي تتعلّمها ويتعلّمون لغتك. لا دروس ولا
-> واجبات — فقط محادثات حقيقية مع شخص يحتاج تمامًا إلى ما تستطيع تقديمه.
+> يجمعك LangX مع أشخاص يتحدثون اللغة التي تتعلّمها ويتعلّمون لغتك. لا دروس ولا واجبات — فقط محادثات حقيقية مع شخص يحتاج تمامًا إلى ما تستطيع تقديمه.
 >
-> **تطابق في الاتجاهين.** لا ترى إلا من تتوافق لغاتهم مع لغاتك في الاتجاهين،
-> فيكون في كل محادثة ما يفيد الطرفين.
+> **تطابق في الاتجاهين.** لا ترى إلا من تتوافق لغاتهم مع لغاتك في الاتجاهين، فيكون في كل محادثة ما يفيد الطرفين.
 >
-> **صحّحوا لبعضكم.** اضغط على أي رسالة لتقترح صياغة أفضل. التصحيحات غير محدودة
-> للجميع وفي كل الخطط — فالتعليم هو جوهر التطبيق.
+> **صحّحوا لبعضكم.** اضغط على أي رسالة لتقترح صياغة أفضل. التصحيحات غير محدودة للجميع وفي كل الخطط — فالتعليم هو جوهر التطبيق.
 >
 > **ترجمة عند التوقف.** مدمجة، دون مغادرة المحادثة.
 >
-> **سبب للعودة.** حافظ على سلسلتك اليومية، واكسب الرموز مقابل الحديث والتعليم،
-> وشاهد ترتيبك في لوحات الأسبوع والشهر والسنة وكل الأوقات.
+> **سبب للعودة.** حافظ على سلسلتك اليومية، واكسب الرموز مقابل الحديث والتعليم، وشاهد ترتيبك في لوحات الأسبوع والشهر والسنة وكل الأوقات.
 >
-> **مجاني دائمًا.** ردّ بلا حدود على كل رسالة تصلك، وصحّح ما شئت. في الخطة
-> المجانية يمكنك بدء 5 محادثات جديدة يوميًا.
+> **مجاني دائمًا.** ردّ بلا حدود على كل رسالة تصلك، وصحّح ما شئت. في الخطة المجانية يمكنك بدء 5 محادثات جديدة يوميًا.
 >
-> **LangX Pro** يضيف محادثات جديدة بلا حدود، وفلاتر حسب الجنس والبلد والعمر
-> والمستوى، وترجمة بلا حدود، ومعرفة من زار ملفك، والتصفّح المخفي.
+> **LangX Pro** يضيف محادثات جديدة بلا حدود، وفلاتر حسب الجنس والبلد والعمر والمستوى، وترجمة بلا حدود، ومعرفة من زار ملفك، والتصفّح المخفي.
 >
 > LangX مفتوح المصدر (BSD-3) ويمكن استضافته ذاتيًا.
 >
@@ -279,32 +231,19 @@ included. Both are written out below, per language.
 
 **Description**
 
-> LangX vous met en relation avec des personnes qui parlent la langue que vous
-> apprenez et qui apprennent la vôtre. Pas de cours, pas de devoirs — juste de
-> vraies conversations avec quelqu'un à qui vous apportez exactement ce dont il
-> a besoin.
+> LangX vous met en relation avec des personnes qui parlent la langue que vous apprenez et qui apprennent la vôtre. Pas de cours, pas de devoirs — juste de vraies conversations avec quelqu'un à qui vous apportez exactement ce dont il a besoin.
 >
-> **Une correspondance dans les deux sens.** Vous ne voyez que des personnes
-> dont les langues complètent les vôtres dans les deux sens : chaque
-> conversation a donc un intérêt pour les deux.
+> **Une correspondance dans les deux sens.** Vous ne voyez que des personnes dont les langues complètent les vôtres dans les deux sens : chaque conversation a donc un intérêt pour les deux.
 >
-> **Corrigez-vous mutuellement.** Touchez un message pour proposer une
-> meilleure formulation. Les corrections sont illimitées pour tout le monde et
-> sur toutes les formules — s'apprendre les uns aux autres, c'est tout l'objet.
+> **Corrigez-vous mutuellement.** Touchez un message pour proposer une meilleure formulation. Les corrections sont illimitées pour tout le monde et sur toutes les formules — s'apprendre les uns aux autres, c'est tout l'objet.
 >
 > **La traduction quand vous bloquez.** Intégrée, sans quitter la conversation.
 >
-> **Une raison de revenir.** Tenez une série quotidienne, gagnez des jetons en
-> parlant et en aidant, et voyez votre place aux classements de la semaine, du
-> mois, de l'année et de tous les temps.
+> **Une raison de revenir.** Tenez une série quotidienne, gagnez des jetons en parlant et en aidant, et voyez votre place aux classements de la semaine, du mois, de l'année et de tous les temps.
 >
-> **Gratuit, toujours.** Répondez sans limite à tous les messages que vous
-> recevez et corrigez-en autant que vous voulez. La formule gratuite permet de
-> démarrer 5 nouvelles conversations par jour.
+> **Gratuit, toujours.** Répondez sans limite à tous les messages que vous recevez et corrigez-en autant que vous voulez. La formule gratuite permet de démarrer 5 nouvelles conversations par jour.
 >
-> **LangX Pro** ajoute les nouvelles conversations illimitées, les filtres par
-> genre, pays, âge et niveau, la traduction illimitée, les visiteurs de votre
-> profil et la navigation en incognito.
+> **LangX Pro** ajoute les nouvelles conversations illimitées, les filtres par genre, pays, âge et niveau, la traduction illimitée, les visiteurs de votre profil et la navigation en incognito.
 >
 > LangX est open source (BSD-3) et peut être auto-hébergé.
 >
@@ -330,31 +269,19 @@ included. Both are written out below, per language.
 
 **Beschreibung**
 
-> LangX bringt dich mit Menschen zusammen, die die Sprache sprechen, die du
-> lernst, und die deine Sprache lernen. Kein Unterricht, keine Hausaufgaben —
-> nur echte Gespräche mit jemandem, der genau das braucht, was du geben kannst.
+> LangX bringt dich mit Menschen zusammen, die die Sprache sprechen, die du lernst, und die deine Sprache lernen. Kein Unterricht, keine Hausaufgaben — nur echte Gespräche mit jemandem, der genau das braucht, was du geben kannst.
 >
-> **Passend in beide Richtungen.** Du siehst nur Menschen, deren Sprachen in
-> beide Richtungen zu deinen passen. So hat jedes Gespräch für beide Seiten
-> etwas.
+> **Passend in beide Richtungen.** Du siehst nur Menschen, deren Sprachen in beide Richtungen zu deinen passen. So hat jedes Gespräch für beide Seiten etwas.
 >
-> **Korrigiert euch gegenseitig.** Tippe auf eine Nachricht und schlage vor,
-> wie man es besser sagt. Korrekturen sind für alle und in jedem Tarif
-> unbegrenzt — ums Beibringen geht es hier.
+> **Korrigiert euch gegenseitig.** Tippe auf eine Nachricht und schlage vor, wie man es besser sagt. Korrekturen sind für alle und in jedem Tarif unbegrenzt — ums Beibringen geht es hier.
 >
 > **Übersetzung, wenn du hängst.** Eingebaut, ohne den Chat zu verlassen.
 >
-> **Ein Grund wiederzukommen.** Halte deine tägliche Serie, verdiene Tokens
-> fürs Reden und Helfen und sieh, wo du in den Ranglisten für Woche, Monat,
-> Jahr und alle Zeiten stehst.
+> **Ein Grund wiederzukommen.** Halte deine tägliche Serie, verdiene Tokens fürs Reden und Helfen und sieh, wo du in den Ranglisten für Woche, Monat, Jahr und alle Zeiten stehst.
 >
-> **Immer kostenlos.** Antworte unbegrenzt auf jede Nachricht, die du bekommst,
-> und korrigiere so viel du willst. Im kostenlosen Tarif kannst du 5 neue
-> Gespräche pro Tag beginnen.
+> **Immer kostenlos.** Antworte unbegrenzt auf jede Nachricht, die du bekommst, und korrigiere so viel du willst. Im kostenlosen Tarif kannst du 5 neue Gespräche pro Tag beginnen.
 >
-> **LangX Pro** ergänzt unbegrenzte neue Gespräche, Filter nach Geschlecht,
-> Land, Alter und Niveau, unbegrenzte Übersetzung, wer dein Profil besucht hat,
-> und das Surfen im Inkognito-Modus.
+> **LangX Pro** ergänzt unbegrenzte neue Gespräche, Filter nach Geschlecht, Land, Alter und Niveau, unbegrenzte Übersetzung, wer dein Profil besucht hat, und das Surfen im Inkognito-Modus.
 >
 > LangX ist Open Source (BSD-3) und lässt sich selbst hosten.
 >
@@ -380,30 +307,19 @@ included. Both are written out below, per language.
 
 **Descrição**
 
-> O LangX conecta você a pessoas que falam o idioma que você aprende e que
-> estão aprendendo o seu. Sem aulas, sem lição de casa — só conversas de
-> verdade com alguém que precisa exatamente do que você tem a oferecer.
+> O LangX conecta você a pessoas que falam o idioma que você aprende e que estão aprendendo o seu. Sem aulas, sem lição de casa — só conversas de verdade com alguém que precisa exatamente do que você tem a oferecer.
 >
-> **Combinação nos dois sentidos.** Você só vê pessoas cujos idiomas encaixam
-> com os seus nas duas direções, então toda conversa tem algo para os dois.
+> **Combinação nos dois sentidos.** Você só vê pessoas cujos idiomas encaixam com os seus nas duas direções, então toda conversa tem algo para os dois.
 >
-> **Corrijam um ao outro.** Toque em qualquer mensagem para sugerir um jeito
-> melhor de dizer. As correções são ilimitadas para todo mundo, em todos os
-> planos — ensinar é o ponto principal.
+> **Corrijam um ao outro.** Toque em qualquer mensagem para sugerir um jeito melhor de dizer. As correções são ilimitadas para todo mundo, em todos os planos — ensinar é o ponto principal.
 >
 > **Tradução quando você trava.** Integrada, sem sair da conversa.
 >
-> **Um motivo para voltar.** Mantenha sua sequência diária, ganhe tokens por
-> conversar e ensinar e veja sua posição nos rankings da semana, do mês, do ano
-> e de todos os tempos.
+> **Um motivo para voltar.** Mantenha sua sequência diária, ganhe tokens por conversar e ensinar e veja sua posição nos rankings da semana, do mês, do ano e de todos os tempos.
 >
-> **Grátis, sempre.** Responda sem limite a todas as mensagens que receber e
-> corrija quantas quiser. No plano gratuito, você pode iniciar 5 conversas
-> novas por dia.
+> **Grátis, sempre.** Responda sem limite a todas as mensagens que receber e corrija quantas quiser. No plano gratuito, você pode iniciar 5 conversas novas por dia.
 >
-> **O LangX Pro** acrescenta conversas novas ilimitadas, filtros por gênero,
-> país, idade e nível, tradução ilimitada, quem visitou seu perfil e navegação
-> anônima.
+> **O LangX Pro** acrescenta conversas novas ilimitadas, filtros por gênero, país, idade e nível, tradução ilimitada, quem visitou seu perfil e navegação anônima.
 >
 > O LangX é de código aberto (BSD-3) e pode ser hospedado por você mesmo.
 >
@@ -437,11 +353,7 @@ does in the description.
 
 > Chat got most of the work in this one.
 >
-> Stickers, in two packs, for any conversation.
-> Save a phrase from a message and keep it as a card.
-> Ask your partner a quiz - your question, your options, one right answer.
-> Propose a meeting and see it in both clocks, yours and theirs, with a reminder an hour before.
-> A faster sheet for sending photos, video and voice notes.
+> Stickers, in two packs, for any conversation. Save a phrase from a message and keep it as a card. Ask your partner a quiz - your question, your options, one right answer. Propose a meeting and see it in both clocks, yours and theirs, with a reminder an hour before. A faster sheet for sending photos, video and voice notes.
 >
 > Polyglot adds writing in your own language and sending in theirs, and exporting a conversation's saved phrases as a file that opens in Anki.
 >
@@ -453,11 +365,7 @@ does in the description.
 
 > Bu sürümde en çok sohbet üzerinde çalışıldı.
 >
-> İki pakette çıkartmalar, her sohbet için.
-> Bir mesajdaki ifadeyi kaydet, kart olarak sakla.
-> Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap.
-> Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla.
-> Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
+> İki pakette çıkartmalar, her sohbet için. Bir mesajdaki ifadeyi kaydet, kart olarak sakla. Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap. Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla. Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
 >
 > Polyglot, kendi dilinde yazıp onun dilinde göndermeyi ve bir sohbette kaydettiğin ifadeleri Anki'de açılan bir dosya olarak dışa aktarmayı ekler.
 >
@@ -469,11 +377,7 @@ does in the description.
 
 > En esta versión el trabajo se centró en el chat.
 >
-> Stickers, en dos paquetes, para cualquier conversación.
-> Guarda una frase de un mensaje y consérvala como tarjeta.
-> Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta.
-> Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes.
-> Un panel más rápido para enviar fotos, vídeo y notas de voz.
+> Stickers, en dos paquetes, para cualquier conversación. Guarda una frase de un mensaje y consérvala como tarjeta. Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta. Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes. Un panel más rápido para enviar fotos, vídeo y notas de voz.
 >
 > Polyglot añade escribir en tu idioma y enviar en el suyo, y exportar las frases guardadas de una conversación como archivo que se abre en Anki.
 >
@@ -485,11 +389,7 @@ does in the description.
 
 > В этом обновлении больше всего работы досталось чату.
 >
-> Стикеры, в двух наборах, для любого разговора.
-> Сохрани фразу из сообщения и оставь её карточкой.
-> Задай собеседнику вопрос с вариантами - твой вопрос, твои варианты, один правильный ответ.
-> Предложи встречу и увидь её на обоих часах, твоих и его, с напоминанием за час.
-> Более быстрое окно для отправки фото, видео и голосовых.
+> Стикеры, в двух наборах, для любого разговора. Сохрани фразу из сообщения и оставь её карточкой. Задай собеседнику вопрос с вариантами - твой вопрос, твои варианты, один правильный ответ. Предложи встречу и увидь её на обоих часах, твоих и его, с напоминанием за час. Более быстрое окно для отправки фото, видео и голосовых.
 >
 > Polyglot добавляет письмо на своём языке с отправкой на его языке и экспорт сохранённых фраз разговора файлом, который открывается в Anki.
 >
@@ -501,11 +401,7 @@ does in the description.
 
 > نال الدردشة النصيب الأكبر من العمل في هذا الإصدار.
 >
-> ملصقات، في حزمتين، لأي محادثة.
-> احفظ عبارة من رسالة واحتفظ بها كبطاقة.
-> اطرح على شريكك سؤالًا - سؤالك، وخياراتك، وإجابة صحيحة واحدة.
-> اقترح موعدًا وشاهده بالتوقيتين، توقيتك وتوقيته، مع تذكير قبل ساعة.
-> واجهة أسرع لإرسال الصور والفيديو والرسائل الصوتية.
+> ملصقات، في حزمتين، لأي محادثة. احفظ عبارة من رسالة واحتفظ بها كبطاقة. اطرح على شريكك سؤالًا - سؤالك، وخياراتك، وإجابة صحيحة واحدة. اقترح موعدًا وشاهده بالتوقيتين، توقيتك وتوقيته، مع تذكير قبل ساعة. واجهة أسرع لإرسال الصور والفيديو والرسائل الصوتية.
 >
 > يضيف Polyglot الكتابة بلغتك والإرسال بلغته، وتصدير العبارات المحفوظة من محادثة كملف يُفتح في Anki.
 >
@@ -517,11 +413,7 @@ does in the description.
 
 > Cette version a surtout fait avancer la conversation.
 >
-> Des stickers, en deux packs, pour n'importe quelle conversation.
-> Enregistrez une expression d'un message et gardez-la sous forme de carte.
-> Posez un quiz à votre partenaire : votre question, vos options, une seule bonne réponse.
-> Proposez un rendez-vous et voyez-le sur les deux horloges, la vôtre et la sienne, avec un rappel une heure avant.
-> Un panneau plus rapide pour envoyer photos, vidéos et notes vocales.
+> Des stickers, en deux packs, pour n'importe quelle conversation. Enregistrez une expression d'un message et gardez-la sous forme de carte. Posez un quiz à votre partenaire : votre question, vos options, une seule bonne réponse. Proposez un rendez-vous et voyez-le sur les deux horloges, la vôtre et la sienne, avec un rappel une heure avant. Un panneau plus rapide pour envoyer photos, vidéos et notes vocales.
 >
 > Polyglot ajoute l'écriture dans votre langue et l'envoi dans la sienne, ainsi que l'export des expressions enregistrées d'une conversation dans un fichier qui s'ouvre dans Anki.
 >
@@ -533,11 +425,7 @@ does in the description.
 
 > In dieser Version ging die meiste Arbeit in den Chat.
 >
-> Sticker, in zwei Paketen, für jede Unterhaltung.
-> Speichere eine Wendung aus einer Nachricht und behalte sie als Karte.
-> Stell deinem Partner eine Quizfrage - deine Frage, deine Optionen, eine richtige Antwort.
-> Schlage ein Treffen vor und sieh es in beiden Uhrzeiten, deiner und seiner, mit einer Erinnerung eine Stunde vorher.
-> Ein schnelleres Fenster zum Senden von Fotos, Videos und Sprachnachrichten.
+> Sticker, in zwei Paketen, für jede Unterhaltung. Speichere eine Wendung aus einer Nachricht und behalte sie als Karte. Stell deinem Partner eine Quizfrage - deine Frage, deine Optionen, eine richtige Antwort. Schlage ein Treffen vor und sieh es in beiden Uhrzeiten, deiner und seiner, mit einer Erinnerung eine Stunde vorher. Ein schnelleres Fenster zum Senden von Fotos, Videos und Sprachnachrichten.
 >
 > Polyglot ergänzt das Schreiben in deiner Sprache und das Senden in seiner sowie den Export der gespeicherten Wendungen einer Unterhaltung als Datei, die sich in Anki öffnet.
 >
@@ -549,11 +437,7 @@ does in the description.
 
 > Nesta versão o trabalho ficou quase todo no chat.
 >
-> Figurinhas, em dois pacotes, para qualquer conversa.
-> Salve uma expressão de uma mensagem e guarde como cartão.
-> Faça um quiz para seu parceiro: sua pergunta, suas opções, uma resposta certa.
-> Proponha um encontro e veja nos dois relógios, o seu e o dele, com um lembrete uma hora antes.
-> Uma tela mais rápida para enviar fotos, vídeos e áudios.
+> Figurinhas, em dois pacotes, para qualquer conversa. Salve uma expressão de uma mensagem e guarde como cartão. Faça um quiz para seu parceiro: sua pergunta, suas opções, uma resposta certa. Proponha um encontro e veja nos dois relógios, o seu e o dele, com um lembrete uma hora antes. Uma tela mais rápida para enviar fotos, vídeos e áudios.
 >
 > O Polyglot acrescenta escrever no seu idioma e enviar no dele, e exportar as expressões salvas de uma conversa como arquivo que abre no Anki.
 >
