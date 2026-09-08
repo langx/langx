@@ -143,6 +143,15 @@ export const MessageBubble = memo(function MessageBubble({
    * On the bubble itself, not on the column it slides in: the quote above and
    * the clock below are part of the row but not of the bubble, and the menu's
    * lifted copy has to land on the bubble.
+   *
+   * **Every Pressable inside a card carries this too**, not just the outer one.
+   * The innermost Pressable wins the touch, so a card with its own buttons —
+   * a meeting's Accept, a quiz's options — swallowed the long press and the
+   * menu never opened on the part of the card people actually aim at. Worse,
+   * a child with `onPress` and no `onLongPress` fires it on release, so
+   * holding a proposed meeting to star it answered the meeting instead.
+   * Defining `onLongPress` is what suppresses that `onPress`, which is why the
+   * one addition fixes both halves.
    */
   const box = useRef<View>(null)
   const press = () => {
@@ -399,6 +408,7 @@ export const MessageBubble = memo(function MessageBubble({
                 <Pressable
                   accessibilityRole="button"
                   hitSlop={8}
+                  onLongPress={press}
                   onPress={() => onAddToCalendar(message)}
                 >
                   <Text style={styles.meetingCalendar}>{t('chat.meetingAddToCalendar')}</Text>
@@ -416,6 +426,7 @@ export const MessageBubble = memo(function MessageBubble({
                 <Pressable
                   accessibilityRole="button"
                   hitSlop={8}
+                  onLongPress={press}
                   onPress={() => onRespondMeeting(message, 'cancelled')}
                 >
                   <Text style={styles.meetingDecline}>{t('chat.meetingCancel')}</Text>
@@ -425,6 +436,7 @@ export const MessageBubble = memo(function MessageBubble({
                   <Pressable
                     accessibilityRole="button"
                     hitSlop={8}
+                    onLongPress={press}
                     onPress={() => onRespondMeeting(message, 'accepted')}
                   >
                     <Text style={styles.meetingAccept}>{t('chat.meetingAccept')}</Text>
@@ -432,6 +444,7 @@ export const MessageBubble = memo(function MessageBubble({
                   <Pressable
                     accessibilityRole="button"
                     hitSlop={8}
+                    onLongPress={press}
                     onPress={() => onRespondMeeting(message, 'declined')}
                   >
                     <Text style={styles.meetingDecline}>{t('chat.meetingDecline')}</Text>
@@ -494,6 +507,7 @@ export const MessageBubble = memo(function MessageBubble({
                  * would come back refused.
                  */
                 disabled={mine || answered}
+                onLongPress={press}
                 onPress={() => onAnswerQuiz(message, index)}
                 style={({ pressed }) => [
                   styles.quizOption,

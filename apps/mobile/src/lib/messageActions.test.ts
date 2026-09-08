@@ -1,3 +1,4 @@
+import { MESSAGE_TYPES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
 import { messageActionsFor, paginateActions, type MessageActionContext } from './messageActions'
@@ -72,6 +73,22 @@ describe('messageActionsFor', () => {
     for (const mine of [true, false]) {
       expect(ids({ mine })).toContain('delete')
       expect(ids({ mine })).toContain('star')
+    }
+  })
+
+  /**
+   * Every *type*, not just every author.
+   *
+   * The case above varies `mine` and leaves `type: 'text'`, so "star works on
+   * anything" was an untested claim for eight of the nine types — which is
+   * how a meeting card could stop being starrable without a red test. A
+   * bodyless type is passed as bodyless, because that is the shape a meeting
+   * and a sticker actually arrive in.
+   */
+  it('offers star on every message type', () => {
+    for (const type of MESSAGE_TYPES) {
+      const hasBody = type === 'text' || type === 'correction'
+      expect(ids({ type, hasBody })).toContain('star')
     }
   })
 
