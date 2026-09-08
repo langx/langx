@@ -707,6 +707,23 @@ export default function ChatScreen() {
     setPendingMedia((items) => [...items, ...picked.media.slice(0, remaining)])
   }
 
+  /*
+   * The ceiling stops the recording, rather than letting it run past what the
+   * server will accept. `MAX_AUDIO_SECONDS` was a number the recorder computed
+   * and nobody read: a note could run to any length, and the refusal arrived
+   * after the bytes had been spoken and uploaded.
+   *
+   * It lands in the composer like any other, so the last thing that happens at
+   * the limit is a draft you can still listen to — not a message sent out from
+   * under you.
+   */
+  useEffect(() => {
+    if (!recorder.atLimit) return
+    void finishRecording()
+    // The flag alone, deliberately: `finishRecording` is re-made every render
+    // and listing it here would end a recording on every one of them.
+  }, [recorder.atLimit])
+
   async function toggleRecording(): Promise<void> {
     // Guarded at the microphone rather than at the send, because starting a
     // recording somebody is not allowed to send is a worse answer than not
@@ -726,6 +743,17 @@ export default function ChatScreen() {
       if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
       return
     }
+    await finishRecording()
+  }
+
+  /**
+   * Stops and keeps what was said.
+   *
+   * Its own function because the ceiling reaches it too: the effect below ends
+   * a recording that has run to `MAX_AUDIO_SECONDS`, and what happens to those
+   * bytes must not depend on whether a person or the clock stopped it.
+   */
+  async function finishRecording(): Promise<void> {
     const recording = await recorder.stop()
     if (!recording) return
     /*
