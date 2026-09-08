@@ -477,6 +477,8 @@ export const en = {
     profileVisits: 'Profile visits',
     profileVisitsBody:
       'Once a day, how many people looked at your profile. A summary by email each week.',
+    meetings: 'Meetings',
+    meetingsBody: 'An hour before a call you both agreed to. Push only.',
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. Off unless you ask.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1062,7 +1064,7 @@ export const en = {
     hideOnlineBody: 'Hides your green dot and when you were last here. You can still see theirs.',
     hideCity: 'Hide my city',
     hideCityBody:
-      'Your city is worked out from your location. This keeps it off your profile; distance and country are unaffected.',
+      'Your city and time zone are worked out from your location. This keeps both off your profile; distance and country are unaffected.',
     shareLocation: 'Share rough location',
     shareLocationBody: 'Others see a distance bucket, never a point.',
     shareUsage: 'Share usage data',

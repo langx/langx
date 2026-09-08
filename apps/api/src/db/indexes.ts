@@ -586,6 +586,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { sentOn: 1 }, name: 'ttl_7d', expireAfterSeconds: 7 * 24 * 60 * 60 },
   ],
 
+  [COLLECTIONS.meetingReminders]: [
+    // `_id` is the meeting's message id and carries the uniqueness; this TTL
+    // only stops the collection growing forever. Seven days, because a
+    // reminder for a call that has already happened proves nothing.
+    { key: { sentOn: 1 }, name: 'ttl_7d', expireAfterSeconds: 7 * 24 * 60 * 60 },
+  ],
+
   [COLLECTIONS.notificationLedger]: [
     // `_id` is `<job>:<userId>:<periodKey>` and carries the uniqueness — the
     // insert failing *is* the check that nobody is told twice. This only stops

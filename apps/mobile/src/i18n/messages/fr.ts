@@ -446,6 +446,8 @@ export const fr: Localized<EnMessages> = {
     profileVisits: 'Visites de profil',
     profileVisitsBody:
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
+    meetings: 'Rendez-vous',
+    meetingsBody: 'Une heure avant un appel que vous avez accepté tous les deux. Push uniquement.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Désactivé sauf demande.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1027,7 +1029,7 @@ export const fr: Localized<EnMessages> = {
     hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
     hideCity: 'Masquer ma ville',
     hideCityBody:
-      'Votre ville est déduite de votre position. Ceci la retire de votre profil ; la distance et le pays ne changent pas.',
+      'Ta ville et ton fuseau horaire sont déduits de ta position. Ceci les retire de ton profil ; la distance et le pays ne changent pas.',
     shareLocation: 'Partager ma position approximative',
     shareLocationBody: 'Les autres voient une plage de distance, jamais un point.',
     shareUsage: 'Partager les données d’utilisation',

@@ -506,6 +506,8 @@ export const ar: Localized<EnMessages> = {
     badgesBody: 'حين تحصل على واحدة. ملخّص مساءً، لا تنبيه في كل مرة.',
     profileVisits: 'زيارات الملف',
     profileVisitsBody: 'مرة كل يوم، كم شخصًا اطّلع على ملفك. وملخّص بالبريد كل أسبوع.',
+    meetings: 'المواعيد',
+    meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. إشعار فقط.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. مغلق ما لم تطلبه.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1196,7 +1198,7 @@ export const ar: Localized<EnMessages> = {
     hideOnlineBody: 'يخفي النقطة الخضراء وآخر مرة كنت فيها هنا. ستظل ترى حالتهم.',
     hideCity: 'إخفاء مدينتي',
     hideCityBody:
-      'تُستنتج مدينتك من موقعك. هذا يزيلها من ملفك الشخصي، ولا يؤثر على المسافة أو البلد.',
+      'تُستنتج مدينتك ومنطقتك الزمنية من موقعك. هذا يبقيهما خارج ملفك؛ المسافة والبلد لا يتأثران.',
     shareLocation: 'مشاركة الموقع التقريبي',
     shareLocationBody: 'يرى الآخرون نطاق مسافة، لا نقطة.',
     shareUsage: 'مشاركة بيانات الاستخدام',

@@ -16,6 +16,8 @@ export const de: Localized<ServerMessages> = {
       other: 'Du hast {count} neue Abzeichen 🏅',
     },
     badgeBody: 'Stark. Weiter so.',
+    meetingTitle: 'Dein Sprachaustausch ist in einer Stunde',
+    meetingBody: 'Tippe, um das Gespräch zu öffnen.',
   },
 
   email: {

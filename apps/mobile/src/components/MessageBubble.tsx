@@ -83,15 +83,15 @@ export interface MessageBubbleProps {
   onAddToCalendar: (message: MessageDto) => void
   /**
    * The proposal in the reader's own zone, formatted by the thread — only it
-   * has the profile the zone comes from. Empty for anything but a meeting.
+   * has the profiles the zones come from. Empty for anything but a meeting.
    *
-   * The other person's clock is deliberately *not* drawn. It would need
-   * `timezone` on the public profile, and a timezone is about as coarse a
-   * location as a city — which this app puts behind its own switch. Showing
-   * the reader their own time is the arithmetic that was worth doing anyway.
+   * `meetingTheirWhen` is the same instant in the other person's, and is
+   * empty when they hide their city: the timezone travels with it, so the
+   * card falls back to one clock rather than guessing.
    */
   meetingWhen?: string
   meetingLength?: string
+  meetingTheirWhen?: string
   onJumpTo: (messageId: string) => void
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
@@ -126,6 +126,7 @@ export const MessageBubble = memo(function MessageBubble({
   onAddToCalendar,
   meetingWhen = '',
   meetingLength = '',
+  meetingTheirWhen = '',
   onJumpTo,
   onOpenMedia,
 }: MessageBubbleProps) {
@@ -375,6 +376,13 @@ export const MessageBubble = memo(function MessageBubble({
           question rather than an answer.
         */}
           <Text style={styles.meetingWhen}>{meetingWhen}</Text>
+          {/*
+            Their clock under yours, when they have not hidden it. Two people
+            in one conversation are in different zones by definition — it is
+            what the app is for — so agreeing on a time means each of them
+            knowing what it is where the other one is.
+          */}
+          {meetingTheirWhen ? <Text style={styles.meetingTheirs}>{meetingTheirWhen}</Text> : null}
           <Text style={styles.meetingTheirs}>{meetingLength}</Text>
           {meeting.note ? <Text style={styles.phraseExample}>{meeting.note}</Text> : null}
           {answered ? (

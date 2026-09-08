@@ -404,18 +404,33 @@ export default function ChatScreen() {
    * gate is closed: a row that says "after five more messages" teaches the
    * rule, and one that is missing teaches nothing.
    */
-  /**
-   * A proposal's time, in the reader's own zone.
-   *
-   * Read off the profile's `timezone`, not the device's: the device clock
-   * follows wherever the phone is, and somebody reading this on a trip would
-   * be shown a time that is right for the airport and wrong for the call they
-   * are agreeing to. `undefined` falls back to the device, which is the best
-   * guess left.
-   */
+  /** A proposal's time, in the reader's own zone. */
   function meetingWhenFor(message: MessageDto): string {
     if (!message.meeting) return ''
-    const zone = me.data?.timezone
+    return clockFor(new Date(message.meeting.startsAt), me.data?.timezone)
+  }
+
+  /**
+   * The same instant where the other person is.
+   *
+   * Empty when they hide their city — the timezone is withheld with it — and
+   * empty when it matches the reader's, because "9 PM, and 9 PM for them" is a
+   * line that says nothing twice.
+   */
+  function meetingTheirWhenFor(message: MessageDto): string {
+    if (!message.meeting || !partner?.timezone) return ''
+    if (partner.timezone === me.data?.timezone) return ''
+    const at = clockFor(new Date(message.meeting.startsAt), partner.timezone)
+    return t('chat.meetingTheirTime', { time: at })
+  }
+
+  /**
+   * Read off a profile's `timezone`, not the device's: the device clock
+   * follows wherever the phone is, and somebody reading this on a trip would
+   * be shown a time that is right for the airport and wrong for the call.
+   * `undefined` falls back to the device, which is the best guess left.
+   */
+  function clockFor(at: Date, zone: string | undefined): string {
     return new Intl.DateTimeFormat(locale, {
       weekday: 'short',
       day: 'numeric',
@@ -423,7 +438,7 @@ export default function ChatScreen() {
       hour: 'numeric',
       minute: '2-digit',
       ...(zone ? { timeZone: zone } : {}),
-    }).format(new Date(message.meeting.startsAt))
+    }).format(at)
   }
 
   function meetingLengthFor(message: MessageDto): string {
@@ -1567,6 +1582,7 @@ export default function ChatScreen() {
                     onAddToCalendar={(message) => void addToCalendar(message)}
                     meetingWhen={meetingWhenFor(row.message)}
                     meetingLength={meetingLengthFor(row.message)}
+                    meetingTheirWhen={meetingTheirWhenFor(row.message)}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}

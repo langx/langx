@@ -435,6 +435,8 @@ export const ptBR: Localized<EnMessages> = {
     profileVisits: 'Visitas ao perfil',
     profileVisitsBody:
       'Uma vez por dia, quantas pessoas olharam seu perfil. Um resumo por e-mail toda semana.',
+    meetings: 'Encontros',
+    meetingsBody: 'Uma hora antes de uma chamada que vocês dois aceitaram. Só push.',
     promotions: 'Novidades e ofertas',
     promotionsBody: 'De vez em quando, o que há de novo. Desligado a não ser que você peça.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1013,7 +1015,7 @@ export const ptBR: Localized<EnMessages> = {
       'Oculta seu ponto verde e quando você esteve aqui pela última vez. Você continua vendo o dos outros.',
     hideCity: 'Ocultar minha cidade',
     hideCityBody:
-      'Sua cidade é deduzida da sua localização. Isto a tira do seu perfil; distância e país não mudam.',
+      'Sua cidade e seu fuso horário são deduzidos da sua localização. Isso mantém os dois fora do seu perfil; distância e país não mudam.',
     shareLocation: 'Compartilhar localização aproximada',
     shareLocationBody: 'Os outros veem uma faixa de distância, nunca um ponto.',
     shareUsage: 'Compartilhar dados de uso',

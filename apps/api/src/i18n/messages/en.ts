@@ -20,6 +20,8 @@ export const en = {
     badgeOneTitle: 'New badge: {label} 🏅',
     badgeManyTitle: { one: 'You earned 1 new badge 🏅', other: 'You earned {count} new badges 🏅' },
     badgeBody: 'Nice work. Keep it going.',
+    meetingTitle: 'Your language exchange is in an hour',
+    meetingBody: 'Tap to open the conversation.',
   },
 
   email: {

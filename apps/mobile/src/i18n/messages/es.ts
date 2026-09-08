@@ -440,6 +440,8 @@ export const es: Localized<EnMessages> = {
     profileVisits: 'Visitas a tu perfil',
     profileVisitsBody:
       'Una vez al día, cuánta gente miró tu perfil. Un resumen por correo cada semana.',
+    meetings: 'Citas',
+    meetingsBody: 'Una hora antes de una llamada que ambos aceptasteis. Solo push.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Apagado salvo que lo pidas.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -1020,7 +1022,7 @@ export const es: Localized<EnMessages> = {
       'Oculta tu punto verde y cuándo estuviste aquí por última vez. Tú seguirás viendo el suyo.',
     hideCity: 'Ocultar mi ciudad',
     hideCityBody:
-      'Tu ciudad se deduce de tu ubicación. Esto la quita de tu perfil; la distancia y el país no cambian.',
+      'Tu ciudad y tu zona horaria se deducen de tu ubicación. Esto las quita de tu perfil; la distancia y el país no cambian.',
     shareLocation: 'Compartir ubicación aproximada',
     shareLocationBody: 'Los demás ven un rango de distancia, nunca un punto.',
     shareUsage: 'Compartir datos de uso',
