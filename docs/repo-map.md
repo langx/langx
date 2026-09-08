@@ -73,11 +73,11 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `packages/shared/src/cosmetics.ts`             | `website/src/lib/data/token.ts`                              |
 | `docs/store/listing.md`                        | `website/src/lib/data/meta.ts`                               |
 | `packages/shared/src/token.ts`, `cosmetics.ts` | the numbers on token.langx.io and the token pages in `docs/` |
-| `apps/mobile/assets/`                          | `branding/app-resources/v2/` — the same bytes, copied        |
+| `apps/mobile/assets/`                          | `branding/brand/` — the same bytes, copied                   |
 | `apps/mobile/src/lib/theme/tokens.ts`          | `branding/BRAND.md` — the palette, the type and the scales   |
 | `apps/mobile/src/lib/theme/tokens.ts`          | `website/DESIGN.md` and `website/src/lib/scss/_themes.scss`  |
 
-Two run the other way. `branding/app-resources/v2/brand/` is the source of the
+Two run the other way. `branding/brand/logo/` is the source of the
 lockup and the favicon that the public stats page draws, downscaled into
 `apps/api/assets/` (see [`insight.md`](insight.md)); a redrawn lockup leaves
 those copies stale with nothing to say so.

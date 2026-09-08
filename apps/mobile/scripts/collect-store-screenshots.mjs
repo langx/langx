@@ -35,9 +35,9 @@ const MOBILE = path.resolve(HERE, '..')
  */
 function brandingRoot() {
   const root = path.resolve(HERE, '..', process.env.BRANDING_DIR ?? '../../../branding')
-  if (!fs.existsSync(path.join(root, '2.0.x'))) {
+  if (!fs.existsSync(path.join(root, '2.x'))) {
     console.error(
-      `No 2.0.x in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
+      `No 2.x in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
     )
     process.exit(1)
   }
@@ -83,7 +83,7 @@ for (const [ours, apple] of Object.entries(LOCALES)) {
   const dir = path.join(OUT, apple)
   fs.mkdirSync(dir, { recursive: true })
   for (const slot of SLOTS) {
-    const from = path.join(BRANDING, '2.0.x', ours, 'ios', slot)
+    const from = path.join(BRANDING, '2.x', ours, 'ios', slot)
     if (!fs.existsSync(from)) {
       console.error(`Missing ${from}`)
       process.exit(1)

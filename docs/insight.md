@@ -48,7 +48,7 @@ behind it, and would inflate all of them.
 | Routes  | `apps/api/src/routes/public.ts`, beside the newsletter form and the token board |
 
 The three images are **downscales of `langx/branding`**, not new artwork:
-`app-resources/v2/brand/lockup-horizontal.png` and its dark twin at 128px tall,
+`brand/logo/lockup-horizontal.png` and its dark twin at 128px tall,
 and `logo-rounded.png` at 64² for the favicon. The masters are 1024px tall and
 about 145KB each, which is the right size for a store listing and the wrong one
 for a logo drawn thirty pixels high. They are copies kept by hand like every

@@ -183,7 +183,7 @@ const config: ExpoConfig = {
   runtimeVersion: { policy: 'fingerprint' },
 
   /**
-   * The brand mark, from `branding/app-resources`. There was no `icon` at all
+   * The brand mark, from `branding/brand/icon/`. There was no `icon` at all
    * before this, which is to say every build shipped Expo's default.
    */
   icon: './assets/icons/default.png',
