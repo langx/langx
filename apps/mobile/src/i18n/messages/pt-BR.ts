@@ -121,6 +121,12 @@ export const ptBR: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Mensagem',
     sending: 'Enviando',
+    video: 'Vídeo',
+    sticker: 'Sticker',
+    phrase: 'Expressão',
+    meeting: 'Reunião',
+    quiz: 'Quiz',
+    correction: 'Correção',
   },
 
   interests: {

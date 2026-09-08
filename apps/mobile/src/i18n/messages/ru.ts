@@ -132,6 +132,12 @@ export const ru: Localized<EnMessages> = {
     photo: 'Фото',
     message: 'Сообщение',
     sending: 'Отправляется',
+    video: 'Видео',
+    sticker: 'Стикер',
+    phrase: 'Выражение',
+    meeting: 'Встреча',
+    quiz: 'Викторина',
+    correction: 'Исправление',
   },
 
   interests: {

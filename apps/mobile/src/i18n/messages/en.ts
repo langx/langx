@@ -153,6 +153,12 @@ export const en = {
     photo: 'Photo',
     message: 'Message',
     sending: 'Sending',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'Phrase',
+    meeting: 'Meeting',
+    quiz: 'Quiz',
+    correction: 'Correction',
   },
 
   /**

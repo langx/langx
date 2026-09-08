@@ -134,6 +134,12 @@ export const ar: Localized<EnMessages> = {
     photo: 'صورة',
     message: 'رسالة',
     sending: 'جارٍ الإرسال',
+    video: 'فيديو',
+    sticker: 'ملصق',
+    phrase: 'عبارة',
+    meeting: 'اجتماع',
+    quiz: 'سؤال',
+    correction: 'تصحيح',
   },
 
   interests: {

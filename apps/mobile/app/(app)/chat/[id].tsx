@@ -79,6 +79,8 @@ import {
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
+import { meetingClock } from '../../../src/lib/meetingClock'
+import { messagePreviewKey } from '../../../src/lib/messagePreview'
 import {
   openMessageMenu,
   type AnchorRect,
@@ -108,7 +110,7 @@ import { addMeetingToCalendar } from '../../../src/lib/addToCalendar'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
-import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
+import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -429,7 +431,7 @@ export default function ChatScreen() {
   /** A proposal's time, in the reader's own zone. */
   function meetingWhenFor(message: MessageDto): string {
     if (!message.meeting) return ''
-    return clockFor(new Date(message.meeting.startsAt), me.data?.timezone)
+    return meetingClock(new Date(message.meeting.startsAt), me.data?.timezone, locale)
   }
 
   /**
@@ -442,7 +444,7 @@ export default function ChatScreen() {
   function meetingTheirWhenFor(message: MessageDto): string {
     if (!message.meeting || !partner?.timezone) return ''
     const at = new Date(message.meeting.startsAt)
-    const theirs = clockFor(at, partner.timezone)
+    const theirs = meetingClock(at, partner.timezone, locale)
     /*
      * Compared as drawn, not as named.
      *
@@ -454,26 +456,9 @@ export default function ChatScreen() {
      * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
      * useless line.
      */
-    return theirs === clockFor(at, me.data?.timezone)
+    return theirs === meetingClock(at, me.data?.timezone, locale)
       ? ''
       : t('chat.meetingTheirTime', { time: theirs })
-  }
-
-  /**
-   * Read off a profile's `timezone`, not the device's: the device clock
-   * follows wherever the phone is, and somebody reading this on a trip would
-   * be shown a time that is right for the airport and wrong for the call.
-   * `undefined` falls back to the device, which is the best guess left.
-   */
-  function clockFor(at: Date, zone: string | undefined): string {
-    return new Intl.DateTimeFormat(locale, {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-      ...(zone ? { timeZone: zone } : {}),
-    }).format(at)
   }
 
   function meetingLengthFor(message: MessageDto): string {
@@ -1125,7 +1110,7 @@ export default function ChatScreen() {
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || t(messageTypeKey(message.type)),
+      preview: message.body || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -1417,7 +1402,7 @@ export default function ChatScreen() {
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+                preview: replyingTo.body || t(messagePreviewKey(replyingTo.type)),
                 clear: () => setReplyingTo(null),
               }
             : null
@@ -2114,13 +2099,6 @@ function pictureOf(message: MessageDto): MessageMenuRequest['picture'] {
   if (message.type !== 'image' && message.type !== 'video') return undefined
   const items = attachmentsOf(message)
   return items.length > 0 ? { kind: 'media', items } : undefined
-}
-
-/** What the sheet shows above the actions when a message has no text. */
-function messageTypeKey(type: MessageDto['type']): MessageKey {
-  if (type === 'image') return 'messageMeta.photo'
-  if (type === 'audio') return 'chat.voiceMessage'
-  return 'messageMeta.message'
 }
 
 /**

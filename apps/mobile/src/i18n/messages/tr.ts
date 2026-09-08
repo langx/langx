@@ -136,6 +136,12 @@ export const tr: Localized<EnMessages> = {
     photo: 'Fotoğraf',
     message: 'Mesaj',
     sending: 'Gönderiliyor',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'İfade',
+    meeting: 'Toplantı',
+    quiz: 'Soru',
+    correction: 'Düzeltme',
   },
 
   interests: {

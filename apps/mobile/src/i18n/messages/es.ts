@@ -124,6 +124,12 @@ export const es: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Mensaje',
     sending: 'Enviando',
+    video: 'Vídeo',
+    sticker: 'Sticker',
+    phrase: 'Expresión',
+    meeting: 'Reunión',
+    quiz: 'Pregunta',
+    correction: 'Corrección',
   },
 
   interests: {
