@@ -455,8 +455,8 @@ does in the description.
 >
 > İki pakette çıkartmalar, her sohbet için.
 > Bir mesajdaki ifadeyi kaydet, kart olarak sakla.
-> Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap.
-> Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla.
+> Partnerine soru sor - sorusu senin, şıkları senin, tek doğru cevap.
+> Buluşma öner; hem senin saatinde hem onunkinde görünsün, bir saat önce hatırlatmayla.
 > Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
 >
 > Polyglot, kendi dilinde yazıp onun dilinde göndermeyi ve bir sohbette kaydettiğin ifadeleri Anki'de açılan bir dosya olarak dışa aktarmayı ekler.
@@ -471,8 +471,8 @@ does in the description.
 >
 > Stickers, en dos paquetes, para cualquier conversación.
 > Guarda una frase de un mensaje y consérvala como tarjeta.
-> Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta.
-> Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes.
+> Plantea un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta.
+> Propón un encuentro y lo verás en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes.
 > Un panel más rápido para enviar fotos, vídeo y notas de voz.
 >
 > Polyglot añade escribir en tu idioma y enviar en el suyo, y exportar las frases guardadas de una conversación como archivo que se abre en Anki.
