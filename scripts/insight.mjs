@@ -79,6 +79,8 @@ if (!KEY || !PROJECT) {
 }
 if (!/^\d+$/.test(PROJECT))
   fail(`POSTHOG_PROJECT_ID is the number in the project's URL, got ${PROJECT}`)
+/** A number, so nothing from the environment reaches the request URL as text. */
+const PROJECT_ID = Number(PROJECT)
 if (!Number.isInteger(DAYS) || DAYS < 1) fail(`Days must be a whole number, got ${process.argv[2]}`)
 
 /**
@@ -95,7 +97,7 @@ const HOST =
 async function query(body) {
   let response
   try {
-    response = await fetch(`${HOST}/api/projects/${PROJECT}/query/`, {
+    response = await fetch(`${HOST}/api/projects/${PROJECT_ID}/query/`, {
       method: 'POST',
       headers: { authorization: `Bearer ${KEY}`, 'content-type': 'application/json' },
       body: JSON.stringify({ query: body }),
@@ -109,7 +111,7 @@ async function query(body) {
       response.status === 401
         ? '\nA 401 is the key: it must be a *personal* API key, not the project write key.'
         : response.status === 404
-          ? `\nA 404 is the project id: ${PROJECT} is not a project on ${HOST}. It is the\nnumber in the project's own URL, and the region may be the other one.`
+          ? `\nA 404 is the project id: ${PROJECT_ID} is not a project on ${HOST}. It is the\nnumber in the project's own URL, and the region may be the other one.`
           : ''
     return fail(`PostHog answered ${response.status}.${hint}\n\n${detail}`)
   }
@@ -144,6 +146,21 @@ const escapeHtml = (value) =>
     /[&<>"]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
   )
+
+/**
+ * A label as it came back from PostHog, cut down to what a label can be.
+ *
+ * Every string drawn from a query is whatever some event once carried, and
+ * this file is opened in a browser. Escaping it would be enough; allowing only
+ * the characters a route file, a surface or a date is made of is enough
+ * without having to be right about escaping, and it bounds the length too.
+ * Anything outside the set is dropped rather than drawn — a label that loses a
+ * character is a question somebody asks, which is the failure worth having.
+ */
+const label = (value) =>
+  String(value ?? '')
+    .replace(/[^A-Za-z0-9 ()[\]/._:@+-]/g, '')
+    .slice(0, 80)
 const NUM = new Intl.NumberFormat('en')
 const percent = (part, whole) => (whole > 0 ? `${Math.round((part / whole) * 1000) / 10}%` : '—')
 
@@ -170,7 +187,7 @@ function listRows(entries) {
   return entries
     .map(
       ([name, value]) =>
-        `<li style="--w:${(Number(value) / top) * 100}%"><span>${escapeHtml(name)}</span><span class="n">${NUM.format(Number(value))}</span></li>`,
+        `<li style="--w:${(Number(value) / top) * 100}%"><span>${escapeHtml(label(name))}</span><span class="n">${NUM.format(Number(value))}</span></li>`,
     )
     .join('')
 }
@@ -181,11 +198,11 @@ function chart(days) {
   const bars = days
     .map(
       ([day, n]) =>
-        `<div class="bar" title="${escapeHtml(day)}: ${NUM.format(Number(n))}"><i style="height:${(Number(n) / top) * 100}%"></i></div>`,
+        `<div class="bar" title="${escapeHtml(label(day))}: ${NUM.format(Number(n))}"><i style="height:${(Number(n) / top) * 100}%"></i></div>`,
     )
     .join('')
   return `<div class="plot">${bars}</div>
-    <p class="axis"><span>${escapeHtml(days[0][0])}</span><span>${NUM.format(top)} at the peak</span><span>${escapeHtml(days.at(-1)[0])}</span></p>`
+    <p class="axis"><span>${escapeHtml(label(days[0][0]))}</span><span>${NUM.format(top)} at the peak</span><span>${escapeHtml(label(days.at(-1)[0]))}</span></p>`
 }
 
 const since = `now() - INTERVAL ${DAYS} DAY`
@@ -280,7 +297,7 @@ const html = `<!doctype html>
   <body>
     <div class="wrap">
       <h1>Funnel — last ${DAYS} days</h1>
-      <p class="sub">PostHog project ${escapeHtml(PROJECT)} · generated ${escapeHtml(new Date().toLocaleString())}</p>
+      <p class="sub">PostHog project ${PROJECT_ID} · generated ${escapeHtml(new Date().toLocaleString())}</p>
 
       <p class="banner">
         <strong>Private.</strong> This page carries conversion, which
