@@ -633,6 +633,8 @@ export const de: Localized<EnMessages> = {
     phraseSaved: 'Wendung gespeichert.',
     phraseDeck: 'Gespeicherte Wendungen',
     phraseDeckEmpty: 'Hier ist noch nichts.',
+    deckExport: 'Exportieren',
+    deckExportFailed: 'Die Datei ließ sich von hier aus nicht speichern.',
     meetingNote: 'Notiz (optional)',
     meetingWhenLabel: 'Wann',
     meetingLength: 'Wie lange',
@@ -1444,6 +1446,11 @@ export const de: Localized<EnMessages> = {
     welcomePackBody:
       'Ein Profilrahmen und zwei Serien-Freezes zum Start. {plan} bringt das ganze Set.',
     advancedFilters: 'Erweiterte Filter',
+    sendTranslation: 'In ihrer Sprache senden',
+    sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
+    deckExport: 'Nimm deine Wendungen mit',
+    deckExportBody:
+      'Exportiere die gespeicherten Wendungen eines Chats als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
     translationQuota: 'Übersetze so viel du brauchst',
     translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',

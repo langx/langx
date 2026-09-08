@@ -13,6 +13,7 @@ import {
   type SendQuizInput,
   type SendStickerInput,
   findCosmetic,
+  hasFeature,
   type SendTextMessageInput,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Document } from 'mongodb'
@@ -27,6 +28,7 @@ import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
 import type { Profile } from '../profiles/profiles'
+import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
 
 export interface SendResult {
@@ -169,6 +171,27 @@ export async function sendTextMessage(
   input: SendTextMessageInput,
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  /*
+   * Sending a translation is paid; reading one is not.
+   *
+   * Checked here rather than only in the composer because the client asks
+   * `POST /translate` first and then sends the result — a build that skipped
+   * the row would still be able to attach one. Refused before the message is
+   * written, so a message is never half-sent: the caller is told to upgrade
+   * and can send the same sentence without the translation.
+   */
+  if (input.translation) {
+    const sender = await db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: senderId }, { projection: { entitlement: 1 } })
+    if (!sender || !hasFeature(effectiveTier(sender), 'sendTranslation')) {
+      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Sending a translation requires Pro', {
+        feature: 'sendTranslation',
+      })
+    }
+  }
+
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
 
   /**

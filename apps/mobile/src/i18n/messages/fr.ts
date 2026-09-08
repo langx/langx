@@ -614,6 +614,8 @@ export const fr: Localized<EnMessages> = {
     phraseSaved: 'Expression enregistrée.',
     phraseDeck: 'Expressions enregistrées',
     phraseDeckEmpty: 'Rien d’enregistré ici pour l’instant.',
+    deckExport: 'Exporter',
+    deckExportFailed: 'Impossible d’enregistrer ce fichier d’ici.',
     meetingNote: 'Note (facultatif)',
     meetingWhenLabel: 'Quand',
     meetingLength: 'Combien de temps',
@@ -1424,6 +1426,11 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
+    sendTranslation: 'Envoyer dans leur langue',
+    sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
+    deckExport: 'Emporte tes expressions',
+    deckExportBody:
+      'Exporte les expressions enregistrées d’une conversation. Le fichier s’ouvre dans Anki.',
     advancedFiltersBody: 'Cherche un genre précis, et par ville.',
     translationQuota: 'Traduis autant que nécessaire',
     translationQuotaBody:
