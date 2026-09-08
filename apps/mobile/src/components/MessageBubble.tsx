@@ -396,8 +396,12 @@ export const MessageBubble = memo(function MessageBubble({
                 said yes to, which is worse than making them tap twice.
               */}
               {meeting.status === 'accepted' ? (
-                <Pressable hitSlop={8} onPress={() => onAddToCalendar(message)}>
-                  <Text style={styles.meetingAccept}>{t('chat.meetingAddToCalendar')}</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => onAddToCalendar(message)}
+                >
+                  <Text style={styles.meetingCalendar}>{t('chat.meetingAddToCalendar')}</Text>
                 </Pressable>
               ) : null}
             </View>
@@ -409,15 +413,27 @@ export const MessageBubble = memo(function MessageBubble({
           */
             <View style={styles.meetingActions}>
               {mine ? (
-                <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'cancelled')}>
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => onRespondMeeting(message, 'cancelled')}
+                >
                   <Text style={styles.meetingDecline}>{t('chat.meetingCancel')}</Text>
                 </Pressable>
               ) : (
                 <>
-                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'accepted')}>
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() => onRespondMeeting(message, 'accepted')}
+                  >
                     <Text style={styles.meetingAccept}>{t('chat.meetingAccept')}</Text>
                   </Pressable>
-                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'declined')}>
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() => onRespondMeeting(message, 'declined')}
+                  >
                     <Text style={styles.meetingDecline}>{t('chat.meetingDecline')}</Text>
                   </Pressable>
                 </>
@@ -822,10 +838,23 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   quizPressed: { opacity: 0.6 },
   meetingTheirs: { color: colors.textMuted, fontSize: 13 },
   meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
-  meetingAnswered: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
+  meetingAnswered: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+    marginTop: 8,
+    rowGap: 4,
+  },
   meetingAccept: { color: colors.success, fontSize: 14, fontWeight: '700' },
   meetingDecline: { color: colors.danger, fontSize: 14, fontWeight: '700' },
-  meetingStatus: { fontSize: 14, fontWeight: '700', marginTop: 6 },
+  // A label, not a second action: same line as the button beside it, one step
+  // quieter, and no `marginTop` of its own — that was what broke the baseline
+  // in a row the container already centres.
+  meetingStatus: { fontSize: 13, fontWeight: '600' },
+  // Blue, because it is the thing you can press. Green next to green read as
+  // one broken sentence rather than as a state and an action.
+  meetingCalendar: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   meetingAccepted: { color: colors.success },
   meetingRefused: { color: colors.textMuted },
   sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },

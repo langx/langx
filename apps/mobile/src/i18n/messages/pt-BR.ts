@@ -379,7 +379,8 @@ export const ptBR: Localized<EnMessages> = {
     handleReservedBody: 'Seu nome de usuário do LangX antigo. Você pode retomá-lo, uma vez.',
     handleAvailable: '@{handle} está livre ✓',
     handleTaken: '@{handle} já está em uso',
-    handleCheckFailed: 'Não foi possível verificar esse nome de usuário. Toque para tentar de novo.',
+    handleCheckFailed:
+      'Não foi possível verificar esse nome de usuário. Toque para tentar de novo.',
     startUsing: 'Começar a usar o LangX',
     profileFailed: 'Não deu para criar seu perfil. Tente de novo.',
     doneTitle: 'Você está dentro',
