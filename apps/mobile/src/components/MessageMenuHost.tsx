@@ -6,7 +6,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -68,20 +67,24 @@ export function MessageMenuHost() {
   const { actions, hasMore } = paginateActions(request.actions, page)
 
   // The rows on *this* page, plus whichever navigation row it carries. The
-  // anchored layout derives its height from this, and the hairline dividers
-  // need to know which row is last — the last one goes undivided, v3's rule.
+  // anchored layout derives its height from this, and the dividers need to
+  // know which row is last — the last one goes undivided, v3's rule.
   const rowCount = actions.length + (hasMore ? 1 : 0) + (page === 'more' ? 1 : 0)
   const rowOffset = page === 'more' ? 1 : 0
 
   /**
-   * The rows are shared between the two shapes but not their dress. The
-   * anchored menu keeps its compact rows — `ROW_HEIGHT` is derived from them —
-   * and the sheet takes v3's taller ones: every row under its own rule, the
-   * icon muted whatever the label says.
+   * The rows are one v3 row at two scales: the anchored menu's compact one —
+   * `ROW_HEIGHT` is derived from it — and the sheet's taller one, every row
+   * under its own rule. Everything else they share, including the rule the
+   * rest of the app follows: the icon is muted whatever the label says, and
+   * only the label carries the danger.
    */
   const anchored = request.anchor !== undefined
   const rowStyle = anchored ? styles.action : styles.sheetRow
   const labelStyle = anchored ? styles.label : styles.sheetLabel
+  // A fill under the popover's rounded row, the sheet's own fade under a row
+  // that spans the sheet — the way `AlertHost` presses its rows.
+  const pressedStyle = anchored ? styles.actionPressed : styles.sheetPressed
 
   const rows = (
     <>
@@ -93,7 +96,7 @@ export function MessageMenuHost() {
           style={({ pressed }) => [
             rowStyle,
             anchored && rowCount > 1 && styles.rowDivider,
-            pressed && styles.actionPressed,
+            pressed && pressedStyle,
           ]}
         >
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
@@ -110,7 +113,7 @@ export function MessageMenuHost() {
           style={({ pressed }) => [
             rowStyle,
             anchored && rowOffset + index < rowCount - 1 && styles.rowDivider,
-            pressed && !action.disabled && styles.actionPressed,
+            pressed && !action.disabled && pressedStyle,
             action.disabled === true && styles.actionDisabled,
           ]}
         >
@@ -119,9 +122,20 @@ export function MessageMenuHost() {
             // and does not import them.
             name={action.icon as never}
             size={20}
-            color={anchored ? (action.destructive ? colors.danger : colors.text) : colors.textMuted}
+            color={colors.textMuted}
           />
-          <Text style={[labelStyle, action.destructive && styles.destructive]}>{action.label}</Text>
+          {/*
+            One line in the popover: `ROW_HEIGHT` is derived rather than
+            measured, so a label that wrapped — "Corrected — can't be edited",
+            and its longer translations — would put every row below it in the
+            wrong place. The sheet has the width to let it wrap.
+          */}
+          <Text
+            numberOfLines={anchored ? 1 : undefined}
+            style={[labelStyle, action.destructive && styles.destructive]}
+          >
+            {action.label}
+          </Text>
         </Pressable>
       ))}
 
@@ -129,7 +143,7 @@ export function MessageMenuHost() {
         <Pressable
           accessibilityRole="button"
           onPress={() => setPage('more')}
-          style={({ pressed }) => [rowStyle, pressed && styles.actionPressed]}
+          style={({ pressed }) => [rowStyle, pressed && pressedStyle]}
         >
           <Ionicons name="ellipsis-horizontal" size={20} color={colors.textMuted} />
           <Text style={[labelStyle, styles.muted]}>{t('messageMenu.more')}</Text>
@@ -272,12 +286,13 @@ export function MessageMenuHost() {
   )
 }
 
-/** Matches `action`'s padding and icon size below; the layout needs it up front. */
+/** `action`'s padding plus its tallest content — the label's pinned 22. The layout needs it up front. */
 const ROW_HEIGHT = 46
-/** The menu's own padding, top and bottom. */
-const MENU_CHROME = 16
-const MENU_WIDTH = 232
-const STRIP_HEIGHT = 54
+/** The menu's own padding, top and bottom, plus the outline on each. */
+const MENU_CHROME = 18
+/** Fits the longest label at 15 — Russian's "remove from starred", German's. */
+const MENU_WIDTH = 264
+const STRIP_HEIGHT = 56
 const STRIP_MAX_WIDTH = 336
 
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
@@ -290,16 +305,21 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingVertical: spacing.md,
   },
   actionPressed: { backgroundColor: colors.fill },
+  sheetPressed: { opacity: 0.6 },
   actionDisabled: { opacity: 0.45 },
   /** Between rows only — the last row of a page goes undivided. */
-  rowDivider: { borderBottomColor: colors.border, borderBottomWidth: StyleSheet.hairlineWidth },
+  rowDivider: { borderBottomColor: colors.border, borderBottomWidth: 1 },
   muted: { color: colors.textMuted },
   backdrop: { backgroundColor: colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },
   anchoredBackdrop: { backgroundColor: colors.scrim, flex: 1 },
   destructive: { color: colors.danger },
-  label: { ...font.body, color: colors.text },
+  /**
+   * v3's row type at the popover's scale: the sheet's 17 leaves no air in a
+   * 46px row. `lineHeight` is pinned because `ROW_HEIGHT` is derived from it.
+   */
+  label: { color: colors.text, flex: 1, fontSize: 15, fontWeight: '600', lineHeight: 22 },
   copyHero: { fontSize: 48, lineHeight: 58 },
   title: { ...font.heading, color: colors.text, marginBottom: 6 },
   // v3's sheet, as `AlertHost` draws it: the roundest corners in the app,
@@ -339,10 +359,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   sheetLabel: { color: colors.text, flex: 1, fontSize: 17, fontWeight: '600' },
   foot: { marginTop: 18 },
   stripHolder: { position: 'absolute' },
+  // The pill the thread already draws reactions in: hairline outline over the
+  // quiet shadow, because in v3 a floating surface is bounded rather than lifted.
   strip: {
     ...cardShadow,
     backgroundColor: colors.bg,
+    borderColor: colors.border,
     borderRadius: radius.pill,
+    borderWidth: 1,
     flexGrow: 0,
   },
   stripInner: { alignItems: 'center', gap: 2, paddingHorizontal: 6, paddingVertical: 6 },
@@ -353,7 +377,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     justifyContent: 'center',
     width: 42,
   },
-  emojiChosen: { backgroundColor: colors.fill },
+  // Blue carries everything chosen in v3; a grey fill would read as disabled.
+  emojiChosen: { backgroundColor: colors.accentBg },
   emojiGlyph: { fontSize: 24, lineHeight: 30 },
   copy: {
     borderRadius: 20,
@@ -364,12 +389,17 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // The lifted copy matches the v3 bubbles it stands in for.
   copyMine: { backgroundColor: colors.accentBg },
   copyTheirs: { backgroundColor: colors.fill },
-  copyText: { ...font.body, color: colors.text, lineHeight: 22 },
+  // 16 on 23, exactly `MessageBubble`'s: a copy that shrinks the text is a
+  // second bubble, not the one that was pressed.
+  copyText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
   copyTextMine: { color: colors.text },
+  // Outlined at the app's card radius, the way `AlertHost`'s card is drawn.
   menu: {
     ...cardShadow,
     backgroundColor: colors.bg,
-    borderRadius: radius.lg,
+    borderColor: colors.border,
+    borderRadius: radius.xl,
+    borderWidth: 1,
     paddingVertical: spacing.sm,
     position: 'absolute',
   },
