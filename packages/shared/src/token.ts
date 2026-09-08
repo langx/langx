@@ -132,7 +132,8 @@ export interface TokenRules {
   caps: {
     /**
      * Max messages that pay per **UTC** day. This counts messages, not
-     * tokens — the 101st message of the day awards nothing.
+     * tokens — at the current rate they happen to be the same number, but the
+     * cap is on rows: the 201st message of the day awards nothing.
      *
      * Deliberately UTC, unlike the streak. A cap is a ceiling on ledger rows,
      * and ledger rows are bucketed by UTC day/week/month; if the cap reset on
