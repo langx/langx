@@ -115,6 +115,27 @@ not call PostHog's person-deletion API. Until it does, a deletion request that
 asks for analytics as well is handled by hand in the PostHog UI (Persons → the
 id → Delete), and the privacy policy must not promise more than that.
 
+## Reading it without the dashboard
+
+```bash
+pnpm insight        # the last 30 days
+pnpm insight 90     # a longer window
+```
+
+`scripts/insight.mjs` asks the query API the one question this tool was chosen
+for — where in install → onboarding → first conversation → paywall people stop
+— and writes a single HTML file: the funnel, active people per day, the most
+seen screens, and the split by `langx_surface`. It exists because the answer
+was a dashboard that had to be assembled before it could be read, and because
+the page anyone can read ([`insight.md`](insight.md)) deliberately carries
+none of this.
+
+It writes to a temporary directory, never into the repository, and the page
+says on its face that it must not be published — every number on it is in the
+right-hand column of that document's table. The two variables it needs are in
+`.env.example`; the key is a **personal** API key, which reads everything the
+account can and therefore stays on one machine.
+
 ## Checking it works
 
 ```bash
