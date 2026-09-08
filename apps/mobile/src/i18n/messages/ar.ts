@@ -729,6 +729,7 @@ export const ar: Localized<EnMessages> = {
       other: '+{count} توكن / رسالة',
     },
     voiceMessage: 'رسالة صوتية',
+    voiceNeedsEmptyComposer: 'أرسل المرفق أولًا — الرسالة الصوتية تُرسل وحدها.',
     speedSlow: '0.5x',
     speedNormal: '1x',
     playSlowly: 'تشغيل بطيء',

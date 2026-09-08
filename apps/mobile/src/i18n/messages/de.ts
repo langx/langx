@@ -654,6 +654,7 @@ export const de: Localized<EnMessages> = {
       other: '+{count} Token / Nachricht',
     },
     voiceMessage: 'Sprachnachricht',
+    voiceNeedsEmptyComposer: 'Sende zuerst den Anhang – eine Sprachnachricht geht allein.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Langsam abspielen',

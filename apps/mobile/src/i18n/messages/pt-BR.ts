@@ -626,6 +626,7 @@ export const ptBR: Localized<EnMessages> = {
       other: '+{count} tokens / mensagem',
     },
     voiceMessage: 'Mensagem de voz',
+    voiceNeedsEmptyComposer: 'Envie o anexo primeiro — um áudio vai sozinho.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Tocar devagar',

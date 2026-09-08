@@ -669,6 +669,7 @@ export const en = {
       other: '+{count} tokens / message',
     },
     voiceMessage: 'Voice message',
+    voiceNeedsEmptyComposer: 'Send the attachment first — a voice note goes on its own.',
     speedSlow: '0.5x',
     speedNormal: '1x',
     playSlowly: 'Play slowly',

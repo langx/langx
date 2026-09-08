@@ -632,6 +632,7 @@ export const tr: Localized<EnMessages> = {
       other: '+{count} token / mesaj',
     },
     voiceMessage: 'Sesli mesaj',
+    voiceNeedsEmptyComposer: 'Önce eki gönder — sesli not tek başına gider.',
     speedSlow: '0.5x',
     speedNormal: '1x',
     playSlowly: 'Yavaş çal',

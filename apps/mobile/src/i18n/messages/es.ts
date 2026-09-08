@@ -632,6 +632,7 @@ export const es: Localized<EnMessages> = {
       other: '+{count} tokens / mensaje',
     },
     voiceMessage: 'Mensaje de voz',
+    voiceNeedsEmptyComposer: 'Envía primero el adjunto: una nota de voz va sola.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Reproducir despacio',

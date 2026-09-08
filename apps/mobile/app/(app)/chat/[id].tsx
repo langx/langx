@@ -705,16 +705,26 @@ export default function ChatScreen() {
       return
     }
     if (!recorder.isRecording) {
+      // A note does not travel with pictures — one message carries one kind —
+      // so the two cannot both be waiting for the same send button.
+      if (pendingMedia.length > 0) {
+        showToast(t('chat.voiceNeedsEmptyComposer'))
+        return
+      }
       const started = await recorder.start()
       if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
       return
     }
     const recording = await recorder.stop()
     if (!recording) return
-    // A recording still goes on stop. Holding it for the send button would
-    // make somebody press two things to do what one gesture already finished,
-    // and it cannot be sent beside a picture anyway.
-    await sendAttachments([{ kind: 'audio', ...recording }], undefined)
+    /*
+     * Held for the send button rather than sent on stop, which is what this
+     * did until now. One gesture was fewer taps, but it also meant a voice
+     * note was gone the instant you stopped speaking: no way to hear what you
+     * had actually said, and no way to change your mind. A note cannot be
+     * un-sent, so it is worth the extra tap.
+     */
+    setPendingMedia([{ kind: 'audio', ...recording }])
   }
 
   async function sendAttachments(
@@ -1753,7 +1763,13 @@ export default function ChatScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('composer.attachMenu')}
                 onPress={() => void openAttachMenu()}
-                disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
+                disabled={
+                  sendingMedia ||
+                  pendingMedia.length >= MAX_ATTACHMENTS ||
+                  // A voice draft is waiting for the send button, and a note
+                  // travels alone. Send it or throw it away first.
+                  pendingMedia.some((item) => item.kind === 'audio')
+                }
                 hitSlop={8}
                 style={styles.attach}
               >

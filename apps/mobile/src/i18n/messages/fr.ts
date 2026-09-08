@@ -635,6 +635,7 @@ export const fr: Localized<EnMessages> = {
       other: '+{count} jetons / message',
     },
     voiceMessage: 'Message vocal',
+    voiceNeedsEmptyComposer: 'Envoyez d’abord la pièce jointe — un message vocal part seul.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Lire lentement',

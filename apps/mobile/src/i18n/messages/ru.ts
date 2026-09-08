@@ -705,6 +705,7 @@ export const ru: Localized<EnMessages> = {
       other: '+{count} токена / сообщение',
     },
     voiceMessage: 'Голосовое сообщение',
+    voiceNeedsEmptyComposer: 'Сначала отправьте вложение — голосовое идёт отдельно.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Медленное воспроизведение',

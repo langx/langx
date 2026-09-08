@@ -1,8 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useT } from '../i18n'
+import { audioProgress } from '../lib/audioProgress'
+import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import {
   percentOf,
@@ -69,6 +72,72 @@ function VideoThumb({ uri, uploading }: { uri: string; uploading: boolean }) {
   )
 }
 
+/**
+ * A recording that has not been sent yet, playable.
+ *
+ * It used to be the same 64pt square as a photo with a microphone drawn in it,
+ * which answered "there is a recording" and nothing else. A voice note cannot
+ * be un-sent, and the question somebody has after speaking is whether what
+ * they said is any good — so the draft plays here, and the cross beside it is
+ * the second answer.
+ *
+ * Deliberately not `AudioBubble`: that one is a bubble, with a scrubber, a
+ * half-speed control and a whole loading vocabulary for a file that came over
+ * the network. This file is on the device and a few seconds long.
+ */
+function VoiceDraft({ attachment }: { attachment: PendingAttachment }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+
+  const player = useAudioPlayer(attachment.uri)
+  const status = useAudioPlayerStatus(player)
+  // `Platform.OS` passed in rather than read there, so `audioProgress` stays
+  // free of `react-native`. Same call the sent bubble makes.
+  const { total, elapsed, canReplay } = audioProgress(attachment, status, Platform.OS)
+
+  async function toggle(): Promise<void> {
+    if (status.playing) {
+      player.pause()
+      return
+    }
+    // `useVoiceRecorder.stop` already puts the session back into playback
+    // mode, but this pill also plays a file picked from the library — and
+    // `audioSession` memoises, so in the common case this is a no-op.
+    await ensurePlaybackAudioMode()
+    if (canReplay) void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <View style={styles.voice}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t(status.playing ? 'chat.pauseVoiceMessage' : 'chat.playVoiceMessage')}
+        hitSlop={8}
+        onPress={() => void toggle()}
+        style={styles.voicePlay}
+      >
+        <Feather name={status.playing ? 'pause' : 'play'} size={14} color={colors.textInverse} />
+      </Pressable>
+      {/*
+        Tabular figures: the clock ticks every second and a proportional font
+        makes it shuffle sideways as the digits change.
+      */}
+      <Text style={styles.voiceTime}>
+        {clock(elapsed)}
+        {total > 0 ? ` / ${clock(total)}` : ''}
+      </Text>
+    </View>
+  )
+}
+
+/** `m:ss`, the same shape the recording readout in the composer uses. */
+function clock(seconds: number): string {
+  const whole = Math.max(0, Math.floor(seconds))
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`
+}
+
 function AttachmentThumb({
   attachment,
   onRemove,
@@ -97,11 +166,7 @@ function AttachmentThumb({
       ) : attachment.kind === 'video' ? (
         <VideoThumb uri={attachment.uri} uploading={progress !== null} />
       ) : (
-        // A recording has no picture, so the square says what it is instead of
-        // showing a grey box that looks like a photo that failed to load.
-        <View style={[styles.thumb, styles.audioThumb]}>
-          <Feather name="mic" size={18} color={colors.textMuted} />
-        </View>
+        <VoiceDraft attachment={attachment} />
       )}
       {progress === null ? (
         <Pressable
@@ -240,7 +305,32 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
     width: 64,
   },
   thumbFill: { height: '100%', width: '100%' },
-  audioThumb: { alignItems: 'center', justifyContent: 'center' },
+  // A pill rather than a square: a transport control and a clock do not fit
+  // in 64pt, and the row is a horizontal scroller so a wider child costs
+  // nothing. `height` matches the thumbnails beside it.
+  voice: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: 10,
+    height: 64,
+    paddingHorizontal: 14,
+  },
+  voicePlay: {
+    alignItems: 'center',
+    backgroundColor: colors.text,
+    borderRadius: radius.pill,
+    height: 28,
+    justifyContent: 'center',
+    width: 28,
+  },
+  voiceTime: {
+    color: colors.text,
+    fontSize: 14,
+    fontVariant: ['tabular-nums'],
+    fontWeight: '600',
+  },
   playBadge: {
     alignItems: 'center',
     backgroundColor: colors.text,
