@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* global console, process */
+/* global console */
 /**
  * Reads a `fastlane deliver` log back and says whether the upload actually
  * landed. deliver exits 0 while dropping screenshots, so the exit code is not
