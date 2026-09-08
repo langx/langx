@@ -124,6 +124,7 @@ export const tr: Localized<EnMessages> = {
     report: 'Bildir',
     correctedCannotEdit: 'Düzeltilmiş — değiştirilemez',
     share: 'Paylaş',
+    savePhrase: 'İfade olarak kaydet',
   },
 
   messageMeta: {

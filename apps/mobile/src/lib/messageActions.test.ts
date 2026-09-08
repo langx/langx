@@ -31,6 +31,7 @@ describe('messageActionsFor', () => {
       'delete',
       'star',
       'pin',
+      'phrase',
       'share',
       'report',
     ])
@@ -107,6 +108,33 @@ describe('messageActionsFor', () => {
     expect(edit?.label).toMatch(/Corrected/)
   })
 
+  describe('save as a phrase', () => {
+    it('is offered on the other person text', () => {
+      expect(ids()).toContain('phrase')
+    })
+
+    /** A deck is for what you met, not for what you already wrote. */
+    it('is not offered on my own message', () => {
+      expect(ids({ mine: true })).not.toContain('phrase')
+    })
+
+    /** A card is what it would produce; there is nothing to turn. */
+    it('is not offered on a phrase card', () => {
+      expect(ids({ type: 'phrase', hasBody: false })).not.toContain('phrase')
+      expect(ids({ type: 'phrase', hasBody: true })).not.toContain('phrase')
+    })
+
+    /**
+     * Nothing to put in the example. This is also what keeps it off a
+     * tombstone, whose `body` the server empties — hence no `deleted` flag on
+     * the context and no check for one here.
+     */
+    it('is not offered on a voice note with no caption', () => {
+      expect(ids({ type: 'audio', hasBody: false })).not.toContain('phrase')
+      expect(ids({ type: 'audio', hasBody: true })).toContain('phrase')
+    })
+  })
+
   it('names star and pin for what pressing them will do', () => {
     expect(find({ starred: true }, 'star')?.label).toBe('Unstar')
     expect(find({ starred: false }, 'star')?.label).toBe('Star')
@@ -125,7 +153,7 @@ describe('paginateActions', () => {
 
   it('puts the rest behind More', () => {
     const { actions, hasMore } = paginateActions(all, 'more')
-    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'share', 'report'])
+    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'phrase', 'share', 'report'])
     expect(hasMore).toBe(false)
   })
 

@@ -141,6 +141,7 @@ export const en = {
     report: 'Report',
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
+    savePhrase: 'Save as a phrase',
   },
 
   messageMeta: {

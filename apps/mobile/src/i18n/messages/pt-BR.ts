@@ -109,6 +109,7 @@ export const ptBR: Localized<EnMessages> = {
     report: 'Denunciar',
     correctedCannotEdit: 'Corrigida — não dá para editar',
     share: 'Compartilhar',
+    savePhrase: 'Salvar como expressão',
   },
 
   messageMeta: {

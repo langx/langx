@@ -122,6 +122,7 @@ export const ar: Localized<EnMessages> = {
     report: 'إبلاغ',
     correctedCannotEdit: 'مُصحَّحة — لا يمكن تعديلها',
     share: 'مشاركة',
+    savePhrase: 'حفظ كعبارة',
   },
 
   messageMeta: {

@@ -113,6 +113,7 @@ export const de: Localized<EnMessages> = {
     report: 'Melden',
     correctedCannotEdit: 'Korrigiert — nicht mehr änderbar',
     share: 'Teilen',
+    savePhrase: 'Als Wendung speichern',
   },
 
   messageMeta: {

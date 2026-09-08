@@ -112,6 +112,7 @@ export const es: Localized<EnMessages> = {
     report: 'Denunciar',
     correctedCannotEdit: 'Corregido: no se puede editar',
     share: 'Compartir',
+    savePhrase: 'Guardar como expresión',
   },
 
   messageMeta: {

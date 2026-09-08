@@ -8,6 +8,7 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  PHRASE_EXAMPLE_MAX_LENGTH,
   hasFeature,
   webUrl,
   messageTranslationSchema,
@@ -1162,6 +1163,29 @@ export default function ChatScreen() {
       await emit('conversation:pin', {
         conversationId,
         messageId: pinned?.messageId === message._id ? null : message._id,
+      })
+    } else if (picked.id === 'phrase') {
+      /*
+       * Their sentence, already in the example field, with the term left for
+       * the reader to write — the word they want is a judgement the app cannot
+       * make from a sentence.
+       *
+       * Sliced to `PHRASE_EXAMPLE_MAX_LENGTH`, because `FormField`'s
+       * `maxLength` bounds *typing* and not a value handed to it: an unsliced
+       * 2000-character body would look accepted in the form and then be
+       * refused by `sendPhraseSchema` on save.
+       *
+       * `params`, never a query string built by hand: `routeLiterals.test.ts`
+       * treats an interpolated literal as a wildcard, so a typo in one is
+       * exactly what it cannot catch.
+       */
+      router.push({
+        pathname: '/(app)/phrase-card',
+        params: {
+          id: conversationId,
+          ...(translateInto ? { lang: translateInto } : {}),
+          example: message.body.slice(0, PHRASE_EXAMPLE_MAX_LENGTH),
+        },
       })
     } else if (picked.id === 'report') {
       await reportMessage(message)

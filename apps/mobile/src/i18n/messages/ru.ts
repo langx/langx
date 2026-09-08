@@ -120,6 +120,7 @@ export const ru: Localized<EnMessages> = {
     report: 'Пожаловаться',
     correctedCannotEdit: 'Исправлено — изменить нельзя',
     share: 'Поделиться',
+    savePhrase: 'Сохранить как выражение',
   },
 
   messageMeta: {

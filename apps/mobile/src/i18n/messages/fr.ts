@@ -114,6 +114,7 @@ export const fr: Localized<EnMessages> = {
     report: 'Signaler',
     correctedCannotEdit: 'Corrigé — non modifiable',
     share: 'Partager',
+    savePhrase: 'Enregistrer comme expression',
   },
 
   messageMeta: {
