@@ -500,8 +500,8 @@ a rank, so gold has to read as something bought rather than as the product.
       `website/static/images/features/`, which still show v1's UI
 - [ ] Re-shoot the store screenshots in the new identity. `branding/` is now a
       repo to work in and most of this is done there: `BRAND.md` is the v3
-      identity written down, `app-resources/v2/` carries the icons and splash
-      badges this app ships, and `2.0.x/` holds a full uploadable set — eight
+      identity written down, `brand/` carries the icons and splash
+      badges this app ships, and `2.x/` holds a full uploadable set — eight
       shots at each of the four slots App Store Connect takes an upload for, in
       all eight languages, plus the feature graphics. What is still open is
       that the screen inside each shot is rendered from the site's phone
@@ -521,7 +521,7 @@ node apps/mobile/scripts/collect-store-screenshots.mjs
 cd apps/mobile && fastlane deliver --skip_binary_upload --skip_metadata
 ```
 
-The first command lays `branding/2.0.x/<locale>/ios/<slot>/` out the way
+The first command lays `branding/2.x/<locale>/ios/<slot>/` out the way
 `deliver` expects — one flat folder per App Store locale, device inferred from
 each image's own dimensions, order taken from the filename. Its output is
 generated and gitignored; the images live in `branding`.
