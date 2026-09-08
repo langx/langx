@@ -2,6 +2,17 @@ import { webUrl, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
+ * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
+ * Nunito 800 for the logo and headings, 700 for buttons. The site self-hosts
+ * it via `@fontsource`; mail pulls the same family from Google Fonts instead,
+ * since there is no built asset to link to here. Gmail ignores web fonts
+ * entirely and falls back to the stack that follows, so this only shows up
+ * in Apple Mail, Outlook.com and the like — never a downgrade, just an
+ * upgrade some clients don't take.
+ */
+const TITLE_FONT = "'Nunito', -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif"
+
+/**
  * The langx.io mark, next to the wordmark set in the same weight the site
  * uses for it. An `<img>` pointing at the site's own favicon rather than the
  * inline SVG the header uses on `website/src/lib/components/atoms/Logo.svelte`
@@ -12,7 +23,7 @@ import { translator } from '../i18n'
  */
 function logo(dir: 'ltr' | 'rtl'): string {
   const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
-  return `<span style="font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
+  return `<span style="font-family:${TITLE_FONT}; font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
     <img src="https://langx.io/favicons/favicon-32x32.png" width="20" height="20" alt="" style="vertical-align:middle; ${gap}:8px;" />LangX</span>`
 }
 
@@ -34,6 +45,10 @@ function shell(locale: Locale, preheader: string, contentHtml: string, footerHtm
   const align = dir === 'rtl' ? 'right' : 'left'
   return `<!doctype html>
 <html lang="${locale}" dir="${dir}">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" />
+  </head>
   <body style="margin:0; padding:32px 16px; background:#f4f5f7; font-family:-apple-system,'Segoe UI',Roboto,system-ui,sans-serif;">
     <span style="display:none; overflow:hidden; line-height:0; max-height:0; opacity:0;">${preheader}</span>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px; margin:0 auto;">
@@ -58,7 +73,7 @@ function shell(locale: Locale, preheader: string, contentHtml: string, footerHtm
 }
 
 function button(url: string, label: string): string {
-  return `<a href="${url}" style="display:inline-block; background:#ffc409; color:#201900; text-decoration:none; padding:13px 22px; border-radius:10px; font-weight:700; font-size:15px;">${label}</a>`
+  return `<a href="${url}" style="display:inline-block; background:#ffc409; color:#201900; text-decoration:none; padding:13px 22px; border-radius:10px; font-family:${TITLE_FONT}; font-weight:700; font-size:15px;">${label}</a>`
 }
 
 /** The shell for mail answering something somebody just did — sign up, reset, delete. */
