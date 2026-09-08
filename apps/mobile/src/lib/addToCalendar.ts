@@ -1,8 +1,9 @@
-import * as Calendar from 'expo-calendar'
 import { Platform } from 'react-native'
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from './localFlags'
 import { saveMeetingIcs } from './saveFile'
 import type { MeetingEvent } from './icsFile'
+// Types only — erased at compile time, so this does not resolve the module.
+import type { ExpoCalendar } from 'expo-calendar'
 
 /**
  * What happened, rather than a boolean.
@@ -31,6 +32,15 @@ export async function addMeetingToCalendar(event: MeetingEvent): Promise<Calenda
   }
 
   try {
+    /*
+     * Imported here, not at the top of the file. A native module resolved at
+     * module scope is evaluated wherever this file is — on the web, where it
+     * has nothing to bind to, and in any build made before it was added, where
+     * it throws `Cannot find native module` on *import* and takes the whole
+     * chat screen down with it. Same reason `localFlags` reaches for
+     * `expo-secure-store` inside each call; see docs/decisions.md.
+     */
+    const Calendar = await import('expo-calendar')
     // Write-only: this adds one event and never reads what else is in
     // somebody's day. iOS 17 has a narrower prompt for exactly that, and it is
     // the one the config plugin writes the string for.
@@ -88,7 +98,8 @@ export async function addMeetingToCalendar(event: MeetingEvent): Promise<Calenda
  * thing — `getDefaultCalendarSync` is iOS-only — so the first writable one is
  * the best guess, preferring an account's primary.
  */
-async function writableCalendar(): Promise<Calendar.ExpoCalendar | null> {
+async function writableCalendar(): Promise<ExpoCalendar | null> {
+  const Calendar = await import('expo-calendar')
   if (Platform.OS === 'ios') {
     try {
       return Calendar.getDefaultCalendarSync()
