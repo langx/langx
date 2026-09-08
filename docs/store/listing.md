@@ -353,7 +353,11 @@ does in the description.
 
 > Chat got most of the work in this one.
 >
-> Stickers, in two packs, for any conversation. Save a phrase from a message and keep it as a card. Ask your partner a quiz - your question, your options, one right answer. Propose a meeting and see it in both clocks, yours and theirs, with a reminder an hour before. A faster sheet for sending photos, video and voice notes.
+> Stickers, in two packs, for any conversation.
+> Save a phrase from a message and keep it as a card.
+> Ask your partner a quiz - your question, your options, one right answer.
+> Propose a meeting and see it in both clocks, yours and theirs, with a reminder an hour before.
+> A faster sheet for sending photos, video and voice notes.
 >
 > Polyglot adds writing in your own language and sending in theirs, and exporting a conversation's saved phrases as a file that opens in Anki.
 >
@@ -365,7 +369,11 @@ does in the description.
 
 > Bu sürümde en çok sohbet üzerinde çalışıldı.
 >
-> İki pakette çıkartmalar, her sohbet için. Bir mesajdaki ifadeyi kaydet, kart olarak sakla. Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap. Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla. Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
+> İki pakette çıkartmalar, her sohbet için.
+> Bir mesajdaki ifadeyi kaydet, kart olarak sakla.
+> Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap.
+> Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla.
+> Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
 >
 > Polyglot, kendi dilinde yazıp onun dilinde göndermeyi ve bir sohbette kaydettiğin ifadeleri Anki'de açılan bir dosya olarak dışa aktarmayı ekler.
 >
@@ -377,7 +385,11 @@ does in the description.
 
 > En esta versión el trabajo se centró en el chat.
 >
-> Stickers, en dos paquetes, para cualquier conversación. Guarda una frase de un mensaje y consérvala como tarjeta. Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta. Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes. Un panel más rápido para enviar fotos, vídeo y notas de voz.
+> Stickers, en dos paquetes, para cualquier conversación.
+> Guarda una frase de un mensaje y consérvala como tarjeta.
+> Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta.
+> Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes.
+> Un panel más rápido para enviar fotos, vídeo y notas de voz.
 >
 > Polyglot añade escribir en tu idioma y enviar en el suyo, y exportar las frases guardadas de una conversación como archivo que se abre en Anki.
 >
@@ -389,7 +401,11 @@ does in the description.
 
 > В этом обновлении больше всего работы досталось чату.
 >
-> Стикеры, в двух наборах, для любого разговора. Сохрани фразу из сообщения и оставь её карточкой. Задай собеседнику вопрос с вариантами - твой вопрос, твои варианты, один правильный ответ. Предложи встречу и увидь её на обоих часах, твоих и его, с напоминанием за час. Более быстрое окно для отправки фото, видео и голосовых.
+> Стикеры, в двух наборах, для любого разговора.
+> Сохрани фразу из сообщения и оставь её карточкой.
+> Задай собеседнику вопрос с вариантами - твой вопрос, твои варианты, один правильный ответ.
+> Предложи встречу и увидь её на обоих часах, твоих и его, с напоминанием за час.
+> Более быстрое окно для отправки фото, видео и голосовых.
 >
 > Polyglot добавляет письмо на своём языке с отправкой на его языке и экспорт сохранённых фраз разговора файлом, который открывается в Anki.
 >
@@ -401,7 +417,11 @@ does in the description.
 
 > نال الدردشة النصيب الأكبر من العمل في هذا الإصدار.
 >
-> ملصقات، في حزمتين، لأي محادثة. احفظ عبارة من رسالة واحتفظ بها كبطاقة. اطرح على شريكك سؤالًا - سؤالك، وخياراتك، وإجابة صحيحة واحدة. اقترح موعدًا وشاهده بالتوقيتين، توقيتك وتوقيته، مع تذكير قبل ساعة. واجهة أسرع لإرسال الصور والفيديو والرسائل الصوتية.
+> ملصقات، في حزمتين، لأي محادثة.
+> احفظ عبارة من رسالة واحتفظ بها كبطاقة.
+> اطرح على شريكك سؤالًا - سؤالك، وخياراتك، وإجابة صحيحة واحدة.
+> اقترح موعدًا وشاهده بالتوقيتين، توقيتك وتوقيته، مع تذكير قبل ساعة.
+> واجهة أسرع لإرسال الصور والفيديو والرسائل الصوتية.
 >
 > يضيف Polyglot الكتابة بلغتك والإرسال بلغته، وتصدير العبارات المحفوظة من محادثة كملف يُفتح في Anki.
 >
@@ -413,7 +433,11 @@ does in the description.
 
 > Cette version a surtout fait avancer la conversation.
 >
-> Des stickers, en deux packs, pour n'importe quelle conversation. Enregistrez une expression d'un message et gardez-la sous forme de carte. Posez un quiz à votre partenaire : votre question, vos options, une seule bonne réponse. Proposez un rendez-vous et voyez-le sur les deux horloges, la vôtre et la sienne, avec un rappel une heure avant. Un panneau plus rapide pour envoyer photos, vidéos et notes vocales.
+> Des stickers, en deux packs, pour n'importe quelle conversation.
+> Enregistrez une expression d'un message et gardez-la sous forme de carte.
+> Posez un quiz à votre partenaire : votre question, vos options, une seule bonne réponse.
+> Proposez un rendez-vous et voyez-le sur les deux horloges, la vôtre et la sienne, avec un rappel une heure avant.
+> Un panneau plus rapide pour envoyer photos, vidéos et notes vocales.
 >
 > Polyglot ajoute l'écriture dans votre langue et l'envoi dans la sienne, ainsi que l'export des expressions enregistrées d'une conversation dans un fichier qui s'ouvre dans Anki.
 >
@@ -425,7 +449,11 @@ does in the description.
 
 > In dieser Version ging die meiste Arbeit in den Chat.
 >
-> Sticker, in zwei Paketen, für jede Unterhaltung. Speichere eine Wendung aus einer Nachricht und behalte sie als Karte. Stell deinem Partner eine Quizfrage - deine Frage, deine Optionen, eine richtige Antwort. Schlage ein Treffen vor und sieh es in beiden Uhrzeiten, deiner und seiner, mit einer Erinnerung eine Stunde vorher. Ein schnelleres Fenster zum Senden von Fotos, Videos und Sprachnachrichten.
+> Sticker, in zwei Paketen, für jede Unterhaltung.
+> Speichere eine Wendung aus einer Nachricht und behalte sie als Karte.
+> Stell deinem Partner eine Quizfrage - deine Frage, deine Optionen, eine richtige Antwort.
+> Schlage ein Treffen vor und sieh es in beiden Uhrzeiten, deiner und seiner, mit einer Erinnerung eine Stunde vorher.
+> Ein schnelleres Fenster zum Senden von Fotos, Videos und Sprachnachrichten.
 >
 > Polyglot ergänzt das Schreiben in deiner Sprache und das Senden in seiner sowie den Export der gespeicherten Wendungen einer Unterhaltung als Datei, die sich in Anki öffnet.
 >
@@ -437,7 +465,11 @@ does in the description.
 
 > Nesta versão o trabalho ficou quase todo no chat.
 >
-> Figurinhas, em dois pacotes, para qualquer conversa. Salve uma expressão de uma mensagem e guarde como cartão. Faça um quiz para seu parceiro: sua pergunta, suas opções, uma resposta certa. Proponha um encontro e veja nos dois relógios, o seu e o dele, com um lembrete uma hora antes. Uma tela mais rápida para enviar fotos, vídeos e áudios.
+> Figurinhas, em dois pacotes, para qualquer conversa.
+> Salve uma expressão de uma mensagem e guarde como cartão.
+> Faça um quiz para seu parceiro: sua pergunta, suas opções, uma resposta certa.
+> Proponha um encontro e veja nos dois relógios, o seu e o dele, com um lembrete uma hora antes.
+> Uma tela mais rápida para enviar fotos, vídeos e áudios.
 >
 > O Polyglot acrescenta escrever no seu idioma e enviar no dele, e exportar as expressões salvas de uma conversa como arquivo que abre no Anki.
 >
