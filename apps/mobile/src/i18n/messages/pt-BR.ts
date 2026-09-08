@@ -66,10 +66,11 @@ export const ptBR: Localized<EnMessages> = {
     composerCorrect: 'Segure para corrigir',
     composerReply: 'Arraste para responder',
     composerStar: 'Segure para destacar ou traduzir',
-    composerVoice: 'Segure o microfone para um áudio',
+    composerVoice: 'Toque no microfone, ouça e envie',
     chatStar: 'Segure uma mensagem e escolha Destacar para achá-la depois.',
     chatTranslate: 'Segure uma mensagem para traduzi-la sem sair da conversa.',
-    chatVoice: 'Segure o microfone para mandar um áudio — ouvir a palavra é metade do aprendizado.',
+    chatVoice:
+      'Toque no microfone para um áudio — dá para ouvir antes de enviar, e ouvir a palavra é metade do aprendizado.',
     chatsSwipe: 'Arraste uma conversa para o lado para fixá-la ou arquivá-la.',
     chatsPin: 'Fixe as conversas às quais você volta e elas ficam no topo.',
     chatsUnreplied: 'A aba Sem resposta são todos que ainda esperam por você.',

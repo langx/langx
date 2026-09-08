@@ -80,10 +80,11 @@ export const tr: Localized<EnMessages> = {
     composerCorrect: 'Düzeltmek için mesaja basılı tut',
     composerReply: 'Yanıtlamak için mesajı kaydır',
     composerStar: 'Yıldızlamak veya çevirmek için basılı tut',
-    composerVoice: 'Sesli not için mikrofona basılı tut',
+    composerVoice: 'Mikrofona dokun, dinle, sonra gönder',
     chatStar: 'Bir mesaja basılı tut ve Yıldızla — sonra kolayca bulursun.',
     chatTranslate: 'Bir mesaja basılı tutup sohbetten çıkmadan çevirebilirsin.',
-    chatVoice: 'Mikrofona basılı tutup sesli not gönder — bir kelimeyi duymak, öğrenmenin yarısı.',
+    chatVoice:
+      'Sesli not için mikrofona dokun — göndermeden önce dinleyebilirsin, bir kelimeyi duymak öğrenmenin yarısı.',
     chatsSwipe: 'Bir sohbeti yana kaydırıp sabitleyebilir veya arşivleyebilirsin.',
     chatsPin: 'Sık döndüğün sohbetleri sabitle, en üstte kalsınlar.',
     chatsUnreplied: 'Yanıtlanmayan sekmesi, hâlâ senden cevap bekleyenler.',

@@ -96,10 +96,11 @@ export const en = {
     composerCorrect: 'Hold a message to correct it',
     composerReply: 'Swipe a message to reply',
     composerStar: 'Hold to star or translate',
-    composerVoice: 'Hold the mic for a voice note',
+    composerVoice: 'Tap the mic, hear it back, then send',
     chatStar: 'Hold a message and choose Star to keep it somewhere you can find it again.',
     chatTranslate: 'Hold a message to translate it, without leaving the conversation.',
-    chatVoice: 'Hold the microphone to send a voice note — hearing a word is half of learning it.',
+    chatVoice:
+      'Tap the microphone for a voice note — you can play it back before you send it, and hearing a word is half of learning it.',
     chatsSwipe: 'Swipe a chat sideways to pin or archive it.',
     chatsPin: 'Pin the chats you come back to and they stay at the top.',
     chatsUnreplied: 'The Unreplied tab is everyone still waiting on you.',

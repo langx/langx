@@ -69,11 +69,11 @@ export const es: Localized<EnMessages> = {
     composerCorrect: 'Mantén pulsado para corregir',
     composerReply: 'Desliza un mensaje para responder',
     composerStar: 'Mantén pulsado para destacar o traducir',
-    composerVoice: 'Mantén el micro para un audio',
+    composerVoice: 'Toca el micro, escúchalo y envía',
     chatStar: 'Mantén pulsado un mensaje y elige Destacar para volver a encontrarlo.',
     chatTranslate: 'Mantén pulsado un mensaje para traducirlo sin salir de la conversación.',
     chatVoice:
-      'Mantén pulsado el micrófono para enviar una nota de voz: oír una palabra es la mitad de aprenderla.',
+      'Toca el micrófono para un audio — puedes escucharlo antes de enviarlo, y oír una palabra es la mitad de aprenderla.',
     chatsSwipe: 'Desliza un chat hacia un lado para fijarlo o archivarlo.',
     chatsPin: 'Fija los chats a los que vuelves y se quedarán arriba.',
     chatsUnreplied: 'La pestaña Sin responder es todo el que sigue esperándote.',
