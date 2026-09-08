@@ -59,3 +59,4 @@ tools/ext-lab/shots/
 # Assembled from the branding checkout by collect-store-screenshots.mjs; the
 # images themselves live in langx/branding, not here.
 apps/mobile/fastlane/screenshots/
+apps/mobile/fastlane/metadata/
