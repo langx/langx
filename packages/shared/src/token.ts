@@ -188,11 +188,10 @@ export interface TokenRules {
      * retrospective one lower would make the freeze pointless.
      *
      * Read it against what a day is worth rather than against the freeze alone.
-     * `messagesPerDay` caps a day's earning at 100, so this is roughly six days
-     * of committed use to buy one day back, and a freeze is two — which keeps
-     * the foresight discount worth having. Both doubled in real terms when
-     * `award.message` went from 2 to 1; the prices did not move with it, and
-     * whether they should is a product decision, not an arithmetic one.
+     * `messagesPerDay` caps a day's earning at 200, so this is roughly three
+     * days of committed use to buy one day back — which is the ratio that keeps
+     * the foresight discount worth having. At 300 it was a day and a half, and
+     * a freeze at 200 was barely cheaper than simply not bothering.
      */
     dayRepair: number
     /** How far back a day can still be repaired. */
@@ -346,7 +345,18 @@ export const TOKEN_RULES: TokenRules = {
     mutualConversation: 15,
   },
   caps: {
-    messagesPerDay: 100,
+    /*
+     * Two hundred, not a hundred: it moved with `award.message` going from 2
+     * to 1, so a day at the cap is still worth 200 token and every price
+     * quoted in days means what it always did — a freeze is a day, a repair
+     * three. The cap is on *token earned*, and halving the rate without
+     * doubling the count would have silently repriced the whole shop.
+     *
+     * `messagesPerPartnerPerDay` stays at 30, so reaching this now takes
+     * seven partners rather than four. That is the anti-farming shape working
+     * as intended: the ceiling is for people talking to several people.
+     */
+    messagesPerDay: 200,
     messagesPerPartnerPerDay: 30,
   },
   /*
@@ -400,16 +410,13 @@ export const TOKEN_RULES: TokenRules = {
     /*
      * Roughly 11 token per open on average, and nine opens in ten give 30 or
      * fewer. The ceiling for somebody opening every hour of the day is about
-     * 270.
+     * 270 — beside the 200 a day that messages pay at their cap, so the gift
+     * cannot out-earn practising by much even for the most devoted opener.
      *
-     * **That is now more than practising pays.** It used to sit beside the 200
-     * a day messages earned at their cap, and the point of the number was that
-     * a devoted opener could not out-earn a devoted writer. `award.message`
-     * going from 2 to 1 halved the writing side to 100 and left this one
-     * alone, so the box now pays about 2.7× a full day of messages. The
-     * economy still works — nothing here buys anything but decoration — but
-     * the incentive it was shaped around is inverted, and the fix is a product
-     * decision: lower the tiers, lengthen the cooldown, or accept it.
+     * That comparison is the reason `messagesPerDay` doubled when
+     * `award.message` halved: leaving it at 100 would have left this box
+     * paying 2.7× a full day of writing, which inverts the one incentive the
+     * economy is shaped around.
      */
     tiers: [
       { weight: 350, min: 0, max: 0 }, // 35.0 % — empty
