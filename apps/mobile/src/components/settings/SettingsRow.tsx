@@ -15,6 +15,9 @@ import { router } from 'expo-router'
 import { Image, Platform, Pressable, Text, View } from 'react-native'
 import darkIcon from '../../../assets/icons/dark.png'
 import defaultIcon from '../../../assets/icons/default.png'
+import newYearIcon from '../../../assets/icons/new-year.png'
+import proIcon from '../../../assets/icons/pro.png'
+import splitIcon from '../../../assets/icons/split.png'
 import { useBlocks } from '../../api/queries'
 import type { SettingsModel } from '../../hooks/useSettingsModel'
 import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
@@ -67,7 +70,13 @@ const PENDING_BENEFITS: ReadonlySet<ProBenefit | ProPlusBenefit> = new Set(['cop
  * Imported statically, because Metro resolves an image at build time: a path
  * assembled at runtime resolves to nothing.
  */
-const ICON_PREVIEWS = { default: defaultIcon, dark: darkIcon }
+const ICON_PREVIEWS = {
+  default: defaultIcon,
+  dark: darkIcon,
+  split: splitIcon,
+  pro: proIcon,
+  newYear: newYearIcon,
+}
 
 interface SettingsRowProps {
   /** An id from `SETTINGS_SECTIONS`. */
@@ -767,7 +776,16 @@ const useStyles = makeStyles(({ colors, spacing, radius }) => {
       justifyContent: 'space-between',
       paddingVertical: spacing.lg,
     },
-    iconTiles: { flexDirection: 'row', gap: spacing.lg, paddingBottom: 18, paddingTop: 14 },
+    // Wraps, because five 60px tiles and their gaps are wider than the column
+    // on a phone. Wrapping rather than scrolling sideways: an icon nobody
+    // scrolled to is an icon nobody knows they have.
+    iconTiles: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.lg,
+      paddingBottom: 18,
+      paddingTop: 14,
+    },
     iconTile: { alignItems: 'center', gap: spacing.sm },
     // The chosen tile is ringed in `accent` with a 3px gap of ground between:
     // a transparent ring on every tile keeps the unchosen ones the same size.
