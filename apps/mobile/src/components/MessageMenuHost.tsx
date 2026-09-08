@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
+import { Image } from 'expo-image'
 import { isBigEmoji } from '../lib/singleEmoji'
 import { useEffect, useState } from 'react'
 import {
@@ -18,7 +19,9 @@ import {
   type MessageMenuRequest,
 } from '../lib/messageMenu'
 import { messageMenuLayout } from '../lib/messageMenuLayout'
+import { stickerAsset } from '../lib/stickerAssets'
 import { makeStyles, useTheme } from '../lib/theme'
+import { MediaGallery } from './MediaBubble'
 import { Button } from './ui/Button'
 import { useLocale, useT } from '../i18n'
 
@@ -173,6 +176,57 @@ export function MessageMenuHost() {
     </ScrollView>
   ) : null
 
+  /**
+   * What the lifted copy draws.
+   *
+   * A picture when the bubble drew one, and the same components the thread
+   * drew it with — a photo copied as a grey box with the word "Photo" in it is
+   * a caption standing where the message was. `videoMode="preview"` is the
+   * feed's still, muted frame: a copy is something to look at, not a second
+   * set of transport controls under the first.
+   */
+  const bare = request.picture?.kind === 'sticker'
+  const sticker =
+    request.picture?.kind === 'sticker'
+      ? stickerAsset(request.picture.packId, request.picture.stickerId)
+      : undefined
+
+  const copyText = (
+    /*
+      A message the thread shows as a hero has to look like one here too —
+      otherwise holding an emoji shrinks it, which reads as the menu having
+      replaced the message rather than lifted it.
+    */
+    <Text
+      style={[
+        styles.copyText,
+        request.mine && styles.copyTextMine,
+        isBigEmoji(request.preview) && styles.copyHero,
+      ]}
+      numberOfLines={6}
+    >
+      {request.preview}
+    </Text>
+  )
+
+  const copy =
+    request.picture?.kind === 'media' ? (
+      <>
+        <MediaGallery items={request.picture.items} mine={request.mine} videoMode="preview" />
+        {request.caption ? (
+          <Text style={[styles.copyText, styles.copyCaption]} numberOfLines={4}>
+            {request.caption}
+          </Text>
+        ) : null}
+      </>
+    ) : sticker ? (
+      <Image source={sticker} style={styles.copySticker} contentFit="contain" />
+    ) : (
+      // A pack this build does not carry falls back to the label, which is the
+      // same answer `MessageBubble` gives it.
+      copyText
+    )
+
   if (request.anchor) {
     /**
      * Heights are derived, not measured. Measuring after mounting means one
@@ -217,12 +271,18 @@ export function MessageMenuHost() {
             A copy of the bubble rather than the bubble itself: the real one is
             still in the list under the scrim, and lifting it out would mean
             re-mounting a row that owns a pan responder and a measurement.
+
+            A sticker takes no bubble around it, exactly as the thread draws
+            one: chrome around a sticker is what makes it look like a picture
+            somebody attached rather than a thing they said.
           */}
           <View
             style={[
-              styles.copy,
-              request.mine ? styles.copyMine : styles.copyTheirs,
-              request.tail === true && (request.mine ? styles.copyTailMine : styles.copyTailTheirs),
+              bare ? styles.copyBare : styles.copy,
+              bare ? null : request.mine ? styles.copyMine : styles.copyTheirs,
+              !bare &&
+                request.tail === true &&
+                (request.mine ? styles.copyTailMine : styles.copyTailTheirs),
               {
                 top: layout.bubble.top,
                 left: layout.bubble.left,
@@ -230,22 +290,7 @@ export function MessageMenuHost() {
               },
             ]}
           >
-            {/*
-              The menu draws its own copy of the bubble, so a message the thread
-              shows as a hero has to look like one here too — otherwise holding
-              an emoji shrinks it, which reads as the menu having replaced the
-              message rather than lifted it.
-            */}
-            <Text
-              style={[
-                styles.copyText,
-                request.mine && styles.copyTextMine,
-                isBigEmoji(request.preview) && styles.copyHero,
-              ]}
-              numberOfLines={6}
-            >
-              {request.preview}
-            </Text>
+            {copy}
           </View>
 
           <View
@@ -413,6 +458,11 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // second bubble, not the one that was pressed.
   copyText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
   copyTextMine: { color: colors.text },
+  /** Under the picture, at the thread's own distance from it. */
+  copyCaption: { marginTop: spacing.xs },
+  /** `MessageBubble`'s sticker, and its lack of a bubble. */
+  copyBare: { position: 'absolute' },
+  copySticker: { height: 112, width: 112 },
   // Outlined at the app's card radius, the way `AlertHost`'s card is drawn.
   menu: {
     ...cardShadow,
