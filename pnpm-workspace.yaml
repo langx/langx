@@ -2,17 +2,28 @@ packages:
   - apps/*
   - packages/*
 
-# Single source of truth for versions shared across workspaces.
+# Single source of truth for versions shared across workspaces — and only
+# those. `eslint`, `@eslint/js`, `prettier` and `typescript-eslint` are declared
+# in the root manifest and nowhere else, so a catalog entry for them shared
+# nothing; it only added a second place to write the version down. It also
+# broke them. Dependabot rewrites the *root* importer's `specifier: 'catalog:'`
+# to a concrete version when it bumps a catalog entry, and `--frozen-lockfile`
+# then rejects the pair — which is how #1189 and #1197 both died on
+# `typescript-eslint`, before a single test ran. The same bump against
+# `apps/*` passes, so it is the root importer specifically. Those four now
+# carry literal versions in the root `package.json`; do not move them back.
+#
+# What is left here is genuinely shared: `typescript` by the root and all three
+# workspaces, `@types/node` by the root and `apps/api`, `vitest` by the three
+# workspaces. `tsx` has one consumer and stays anyway — it is not declared at
+# the root, so it never hits the bug above.
+#
 # Expo-owned versions (expo-*, react-native*, react*) are pinned per the SDK 57
 # template and must only be changed via `npx expo install --check`.
 catalog:
   # language + tooling
   '@types/node': ^24.3.0
   typescript: ~6.0.3
-  eslint: ^10.9.1
-  '@eslint/js': ^10.0.1
-  typescript-eslint: ^8.68.0
-  prettier: ^3.6.2
   vitest: ^4.1.11
   tsx: ^4.23.12
 

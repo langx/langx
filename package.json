@@ -27,12 +27,12 @@
     "release": "node scripts/release.mjs"
   },
   "devDependencies": {
-    "@eslint/js": "catalog:",
+    "@eslint/js": "^10.0.1",
     "@types/node": "catalog:",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
+    "eslint": "^10.9.1",
+    "prettier": "^3.6.2",
     "typescript": "catalog:",
-    "typescript-eslint": "catalog:"
+    "typescript-eslint": "^8.68.0"
   },
   "pnpm": {
     "overrides": {
