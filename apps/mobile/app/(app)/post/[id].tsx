@@ -26,6 +26,7 @@ import {
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
+import { PostThreadSkeleton } from '../../../src/components/skeletons/PostThreadSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
@@ -379,7 +380,7 @@ export default function PostScreen() {
       />
 
       {state === 'skeleton' || !post ? (
-        <ActivityIndicator style={styles.loading} />
+        <PostThreadSkeleton />
       ) : (
         <FlatList
           data={replies}
@@ -763,7 +764,6 @@ export default function PostScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xl },
   footer: { paddingVertical: spacing.lg },
   // 36 square: the glyph's own hit box, before `hitSlop` widens it.

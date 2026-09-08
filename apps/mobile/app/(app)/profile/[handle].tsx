@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { authClient } from '../../../src/lib/auth-client'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import {
@@ -23,6 +23,7 @@ import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { StatTile } from '../../../src/components/ui/StatTile'
+import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo, openFollows } from '../../../src/lib/navigation'
@@ -57,8 +58,8 @@ export default function ProfileScreen() {
 
   if (profile.isPending) {
     return (
-      <Screen>
-        <ActivityIndicator style={styles.loading} />
+      <Screen scroll>
+        <ProfileSkeleton avatarSize={96} />
       </Screen>
     )
   }
@@ -368,7 +369,6 @@ export default function ProfileScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  loading: { marginTop: spacing.xxl },
   missing: {
     ...font.body,
     color: colors.textMuted,
