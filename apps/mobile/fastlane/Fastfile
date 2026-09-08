@@ -17,7 +17,9 @@ default_platform(:ios)
 
 platform :ios do
   desc 'Put the store listing up: the localizations and their copy, then the screenshots'
-  lane :store do
+  # `fastlane store skip_metadata:true` re-runs just the screenshots, for when
+  # the copy is already up and only the images changed.
+  lane :store do |options|
     app_store_connect_api_key(
       key_id: ENV.fetch('APP_STORE_CONNECT_API_KEY_KEY_ID'),
       issuer_id: ENV.fetch('APP_STORE_CONNECT_API_KEY_ISSUER_ID'),
@@ -29,6 +31,7 @@ platform :ios do
     # Everything else is in the Deliverfile. Nothing is submitted for review:
     # this fills the draft version in, and a person presses the button.
     deliver(
+      skip_metadata: options[:skip_metadata] || false,
       force: true,
       submit_for_review: false,
       run_precheck_before_submit: false,

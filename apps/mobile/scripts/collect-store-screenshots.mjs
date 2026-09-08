@@ -64,8 +64,18 @@ const LOCALES = {
   'pt-BR': 'pt-BR',
 }
 
-// Only the four slots Apple takes an upload for; it derives the other seven.
-const SLOTS = ['6.9', '5.5', '13', '12.9']
+/**
+ * Three slots, not the four the folder holds. App Store Connect's "iPad 13\""
+ * slot is APP_IPAD_PRO_3GEN_129, and it accepts 2064 × 2752 *and* 2048 × 2732
+ * — so 13/ and 12.9/ both resolve to it, deliver posts sixteen images at a
+ * ten-image slot, and six of each set are dropped. Sending 13/ alone fills it
+ * correctly and App Store Connect derives 12.9", 10.5" and 9.7" from it, the
+ * same way it derives 6.5" and the rest from 6.9".
+ *
+ * 12.9/ stays in the branding repo: Play has no such derivation, and a future
+ * App Store Connect may split the slots again.
+ */
+const SLOTS = ['6.9', '5.5', '13']
 
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0
