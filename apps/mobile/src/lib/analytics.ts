@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import { createAnalyticsCore, type AnalyticsClient } from './analyticsCore'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from './localFlags'
+import { stampSurface, surfaceName } from './analyticsEvents'
 
 /**
  * The app's whole surface onto PostHog.
@@ -27,6 +28,9 @@ import { FLAG_KEYS, readBoolFlag, setBoolFlag } from './localFlags'
  */
 
 const DEFAULT_HOST = 'https://eu.i.posthog.com'
+
+/** Which LangX this build is, stamped on every event. See `analyticsEvents.ts`. */
+const SURFACE = surfaceName(Platform.OS)
 
 function apiKey(): string | null {
   return process.env.EXPO_PUBLIC_POSTHOG_KEY || null
@@ -78,6 +82,9 @@ async function loadClient(): Promise<AnalyticsClient | null> {
       // only way to count an install that never reached a screen of ours.
       captureAppLifecycleEvents: true,
       persistence: 'file',
+      // Set here rather than through `register()` so the lifecycle events
+      // captured during construction carry it too.
+      before_send: (event) => stampSurface(event, SURFACE),
       ...(Platform.OS === 'web' ? { customStorage: webStorage } : {}),
       // Nothing here uses flags, surveys or remote config yet; each is a
       // request on boot, on a phone, for an answer nothing reads.
