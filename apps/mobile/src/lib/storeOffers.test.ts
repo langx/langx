@@ -131,6 +131,23 @@ describe('buildStoreOffers', () => {
     it('keeps the catalogue price and the kind as its subtitle', () => {
       expect(byId({}, gold.id)).toMatchObject({ price: gold.price, subtitle: 'Profile frame' })
       expect(byId({}, 'title.tutor')?.subtitle).toBe('Title')
+      // A ternary said "frame, otherwise title", so every pack in the store
+      // was labelled `Title` — and the store's three lists dropped it anyway.
+      expect(byId({}, 'stickers.starter')?.subtitle).toBe('Sticker pack')
+    })
+
+    it("carries a pack's contents, so the row can show what is in it", () => {
+      const starter = COSMETICS.find((c) => c.id === 'stickers.starter')!
+      expect(byId({}, starter.id)?.stickers).toEqual(starter.stickers)
+      expect(byId({}, gold.id)?.stickers).toBeUndefined()
+    })
+
+    it('sells a pack at any balance that covers it, with no rung below it', () => {
+      // Packs are content rather than a ladder: nothing has to be owned first,
+      // which is what makes buying one from the chat keyboard possible.
+      const starter = byId({ balance: 1000 }, 'stickers.starter')
+      expect(starter?.affordable).toBe(true)
+      expect(starter?.locked).toBeUndefined()
     })
 
     it("names the cosmetic in the reader's language", () => {
