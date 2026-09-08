@@ -1,0 +1,37 @@
+# The upload is one lane because the authentication has to happen in Ruby:
+# `deliver`'s --api_key_path wants the private key pasted into a JSON file,
+# while app_store_connect_api_key takes the path to the .p8 and reads it
+# itself. The key stays where it was downloaded and never gets copied.
+#
+#   export APP_STORE_CONNECT_API_KEY_KEY_ID=...        # the 10 characters in the filename
+#   export APP_STORE_CONNECT_API_KEY_ISSUER_ID=...     # Users and Access › Integrations
+#   export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=~/.appstoreconnect/private_keys/AuthKey_....p8
+#   fastlane store
+#
+# The listing is in eight languages, so the shell has to be UTF-8 or deliver
+# dies on the first Turkish description with "invalid byte sequence in
+# US-ASCII". If your terminal is not already:
+#
+#   LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 fastlane store
+default_platform(:ios)
+
+platform :ios do
+  desc 'Put the store listing up: the localizations and their copy, then the screenshots'
+  lane :store do
+    app_store_connect_api_key(
+      key_id: ENV.fetch('APP_STORE_CONNECT_API_KEY_KEY_ID'),
+      issuer_id: ENV.fetch('APP_STORE_CONNECT_API_KEY_ISSUER_ID'),
+      key_filepath: File.expand_path(ENV.fetch('APP_STORE_CONNECT_API_KEY_KEY_FILEPATH')),
+      # Cannot be worked out from the key, and this is not an enterprise team.
+      in_house: false,
+    )
+
+    # Everything else is in the Deliverfile. Nothing is submitted for review:
+    # this fills the draft version in, and a person presses the button.
+    deliver(
+      force: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false,
+    )
+  end
+end
