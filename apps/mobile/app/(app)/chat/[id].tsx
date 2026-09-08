@@ -7,6 +7,7 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  hasFeature,
   webUrl,
   messageTranslationSchema,
   type MessageAsk,
@@ -29,6 +30,7 @@ import {
   uploadMessageMedia,
   useBlockUser,
   useConversation,
+  useEffectiveTier,
   useConversationFlags,
   useMe,
   useMessages,
@@ -97,7 +99,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
-import { saveMeetingIcs } from '../../../src/lib/saveMeetingIcs'
+import { saveMeetingIcs } from '../../../src/lib/saveFile'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -311,6 +313,8 @@ export default function ChatScreen() {
    * the other way — their first native language with a written form.
    * `undefined` means there is none, and the row is not offered.
    */
+  /** Reading a translation is free; sending one is Fluent. See `PLAN_LIMITS`. */
+  const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
     : undefined
@@ -542,8 +546,9 @@ export default function ChatScreen() {
       { label: t('chat.sendMeeting'), value: 'meeting' as const, icon: 'calendar' },
       { label: t('chat.sendQuiz'), value: 'quiz' as const, icon: 'help-circle' },
       { label: t('chat.stickers'), value: 'sticker' as const, icon: 'smile' },
-      // Only when there is a language to send it in. A row that would answer
-      // "there is nothing to translate into" is a row not worth drawing.
+      // Drawn whether or not the tier includes it, and locked when it does
+      // not: a row that opens the paywall sells the thing, and a row that is
+      // missing sells nothing. Reading a translation stays free either way.
       ...(translateInto
         ? [
             {
@@ -552,6 +557,7 @@ export default function ChatScreen() {
                 : t('chat.sendTranslatedOn', { language: names.language(translateInto) }),
               value: 'translate' as const,
               icon: 'globe',
+              ...(canSendTranslation ? {} : { locked: true }),
             },
           ]
         : []),
@@ -577,6 +583,10 @@ export default function ChatScreen() {
       return
     }
     if (choice === 'translate') {
+      if (!canSendTranslation) {
+        openPaywall('sendTranslation', `/(app)/chat/${conversationId}`)
+        return
+      }
       setSendTranslated((on) => !on)
       return
     }

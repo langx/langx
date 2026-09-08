@@ -17,12 +17,28 @@ import { meetingIcs, type MeetingEvent } from './icsFile'
  * has no cancel branch.
  */
 export async function saveMeetingIcs(event: MeetingEvent): Promise<boolean> {
-  const ics = meetingIcs(event)
-  const name = `langx-${event.uid}.ics`
+  return saveTextFile(meetingIcs(event), `langx-${event.uid}.ics`, {
+    mimeType: 'text/calendar',
+    uti: 'com.apple.ical.ics',
+  })
+}
 
+/**
+ * Writes a text file and hands it to whatever wants it.
+ *
+ * Shared by the calendar file and the phrase deck, which want the same two
+ * gestures and differ only in what the bytes are called.
+ */
+export async function saveTextFile(
+  contents: string,
+  name: string,
+  type: { mimeType: string; uti: string },
+): Promise<boolean> {
   if (Platform.OS === 'web') {
     try {
-      const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }))
+      const url = URL.createObjectURL(
+        new Blob([contents], { type: `${type.mimeType};charset=utf-8` }),
+      )
       const link = document.createElement('a')
       link.href = url
       link.download = name
@@ -43,11 +59,8 @@ export async function saveMeetingIcs(event: MeetingEvent): Promise<boolean> {
     // must not land on a file with two events in it.
     if (file.exists) file.delete()
     file.create()
-    file.write(ics)
-    await Sharing.shareAsync(file.uri, {
-      mimeType: 'text/calendar',
-      UTI: 'com.apple.ical.ics',
-    })
+    file.write(contents)
+    await Sharing.shareAsync(file.uri, { mimeType: type.mimeType, UTI: type.uti })
     return true
   } catch {
     return false

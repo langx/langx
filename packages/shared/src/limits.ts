@@ -73,6 +73,35 @@ export interface PlanLimits {
    */
   advancedFilters: boolean
   /**
+   * Sending your own message with a translation under it, rather than tapping
+   * one you received to read it.
+   *
+   * Paid for the one reason this file accepts: a real per-request cost.
+   * Reading is occasional and metered at `translationsPer24h`; *sending*
+   * translated is per message, so somebody writing a hundred messages a day
+   * bills roughly a hundred translations a day. At Google's per-character
+   * price that is more per month than a subscription costs, which makes a
+   * generous free allowance a promise made against somebody else's meter —
+   * the same sentence `translationsPer24h` is here for.
+   *
+   * **Reading stays free.** The free tier loses nothing it had: tap-to-
+   * translate is untouched at 20 a day. This gates the composer mode only,
+   * which is why it is a capability and not a smaller number.
+   */
+  sendTranslation: boolean
+  /**
+   * Exporting a conversation's saved phrases as a file — CSV, and the same
+   * file imports into Anki.
+   *
+   * Polyglot, and the rare paid feature that takes nothing from anyone: the
+   * deck itself, and saving to it, are free on every tier. This sells getting
+   * it *out*, which is what somebody studying seriously wants and nobody else
+   * misses. Costs nothing per request, so it is not here for the reason
+   * `sendTranslation` is — it is here because it is worth money to the person
+   * it is worth anything to.
+   */
+  deckExport: boolean
+  /**
    * See *who* viewed the profile, not just how many.
    *
    * Polyglot, not Fluent. Fluent sells what makes the app work better for you
@@ -166,6 +195,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: 50,
     advancedFilters: false,
+    sendTranslation: false,
+    deckExport: false,
     profileViewerIdentities: false,
     incognito: false,
     nearby: false,
@@ -180,6 +211,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    sendTranslation: true,
+    deckExport: false,
     profileViewerIdentities: false,
     incognito: false,
     nearby: false,
@@ -200,6 +233,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    sendTranslation: true,
+    deckExport: true,
     profileViewerIdentities: true,
     incognito: true,
     nearby: true,
@@ -261,7 +296,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters'] as const
+export const PRO_FEATURES = ['advancedFilters', 'sendTranslation'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -276,6 +311,7 @@ export const PRO_PLUS_FEATURES = [
   'incognito',
   'nearby',
   'copilot',
+  'deckExport',
 ] as const
 export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
 
@@ -299,6 +335,7 @@ export type PlanFeature = ProFeature | ProPlusFeature
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
+  'sendTranslation',
   'translationQuota',
   'learningLanguages',
   /**
@@ -334,6 +371,7 @@ export const PRO_PLUS_BENEFITS = [
   'incognito',
   'nearby',
   'copilot',
+  'deckExport',
   'translationQuota',
   'learningLanguages',
 ] as const

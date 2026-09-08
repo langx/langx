@@ -1,12 +1,17 @@
+import { hasFeature } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
-import { FlatList, Text, View } from 'react-native'
-import { usePhraseCards } from '../../src/api/queries'
+import { FlatList, Pressable, Text, View } from 'react-native'
+import { useEffectiveTier, usePhraseCards } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useT } from '../../src/i18n'
+import { showAlert } from '../../src/lib/alert'
+import { deckCsv } from '../../src/lib/deckCsv'
 import { goBackTo } from '../../src/lib/navigation'
+import { openPaywall } from '../../src/lib/paywall'
+import { saveTextFile } from '../../src/lib/saveFile'
 import { makeStyles } from '../../src/lib/theme'
 
 /**
@@ -21,12 +26,34 @@ export default function PhrasesScreen() {
   const t = useT()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const deck = usePhraseCards(conversationId)
+  /** Saving to the deck is free on every tier; taking it out is Polyglot. */
+  const canExport = hasFeature(useEffectiveTier(), 'deckExport')
+  const cards = deck.data?.items ?? []
+
+  async function exportDeck(): Promise<void> {
+    if (!canExport) {
+      openPaywall('deckExport', `/(app)/phrases?id=${conversationId}`)
+      return
+    }
+    const ok = await saveTextFile(deckCsv(cards), `langx-phrases-${conversationId}.csv`, {
+      mimeType: 'text/csv',
+      uti: 'public.comma-separated-values-text',
+    })
+    if (!ok) void showAlert(t('chat.deckExportFailed'))
+  }
 
   return (
     <Screen fluid>
       <ScreenHeader
         title={t('chat.phraseDeck')}
         onBack={() => goBackTo(`/(app)/chat/${conversationId}`)}
+        trailing={
+          cards.length > 0 ? (
+            <Pressable accessibilityRole="button" hitSlop={8} onPress={() => void exportDeck()}>
+              <Text style={styles.export}>{t('chat.deckExport')}</Text>
+            </Pressable>
+          ) : null
+        }
       />
       {deck.isPending ? (
         <View style={styles.loading}>
@@ -36,7 +63,7 @@ export default function PhrasesScreen() {
         </View>
       ) : (
         <FlatList
-          data={deck.data?.items ?? []}
+          data={cards}
           keyExtractor={(card) => card._id}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
@@ -60,6 +87,7 @@ export default function PhrasesScreen() {
 }
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
+  export: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   loading: { gap: spacing.sm, padding: spacing.lg },
   list: { padding: spacing.lg, gap: spacing.sm },
   card: { borderBottomColor: colors.border, borderBottomWidth: 1, gap: 3, paddingVertical: 14 },

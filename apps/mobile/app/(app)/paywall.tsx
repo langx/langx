@@ -120,6 +120,10 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     title: 'paywall.advancedFilters',
     body: 'paywall.advancedFiltersBody',
   },
+  sendTranslation: {
+    title: 'paywall.sendTranslation',
+    body: 'paywall.sendTranslationBody',
+  },
   /*
    * Both of these are the *paid tier's* number, not the free one — unlike the
    * chat allowance above, which sells by naming the limit you are hitting.
@@ -157,6 +161,11 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
   profileViewerIdentities: {
     title: 'paywall.whoViewed',
     body: 'paywall.whoViewedBody',
+    shipped: true,
+  },
+  deckExport: {
+    title: 'paywall.deckExport',
+    body: 'paywall.deckExportBody',
     shipped: true,
   },
   incognito: {
@@ -202,6 +211,8 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
+  sendTranslation: BENEFIT_COPY.sendTranslation.title,
+  deckExport: PRO_PLUS_BENEFIT_COPY.deckExport.title,
   profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,
   incognito: PRO_PLUS_BENEFIT_COPY.incognito.title,
   nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,

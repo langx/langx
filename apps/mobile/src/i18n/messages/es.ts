@@ -611,6 +611,8 @@ export const es: Localized<EnMessages> = {
     phraseSaved: 'Expresión guardada.',
     phraseDeck: 'Expresiones guardadas',
     phraseDeckEmpty: 'Aquí todavía no hay nada.',
+    deckExport: 'Exportar',
+    deckExportFailed: 'No se pudo guardar ese archivo desde aquí.',
     meetingNote: 'Nota (opcional)',
     meetingWhenLabel: 'Cuándo',
     meetingLength: 'Cuánto dura',
@@ -1414,6 +1416,11 @@ export const es: Localized<EnMessages> = {
     welcomePackBody:
       'Un marco de perfil y dos congelaciones de racha para empezar. {plan} trae el set completo.',
     advancedFilters: 'Filtros avanzados',
+    sendTranslation: 'Envía en su idioma',
+    sendTranslationBody: 'Escribe en el tuyo; van los dos, así te leen sin adivinar.',
+    deckExport: 'Llévate tus expresiones',
+    deckExportBody:
+      'Exporta las expresiones guardadas de una conversación. El archivo se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
     translationQuota: 'Traduce lo que necesites',
     translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',
