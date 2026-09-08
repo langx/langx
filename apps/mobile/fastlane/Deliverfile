@@ -1,0 +1,15 @@
+# Screenshots only. The binary goes up through EAS and the metadata is still
+# edited in App Store Connect, so this run touches neither.
+skip_binary_upload(true)
+skip_metadata(true)
+
+# Replace the whole set rather than adding to it. Without this, deliver leaves
+# whatever is already in a slot alone, and a slot that is already full silently
+# keeps the old shots. Replacing is also what fixes the order: App Store
+# Connect keeps a bulk upload in whatever sequence it finished processing,
+# while deliver uploads one at a time in filename order — which is why
+# collect-store-screenshots.mjs numbers them 6.9-01 … 6.9-08.
+overwrite_screenshots(true)
+
+# Written by `node apps/mobile/scripts/collect-store-screenshots.mjs`.
+screenshots_path('./fastlane/screenshots')

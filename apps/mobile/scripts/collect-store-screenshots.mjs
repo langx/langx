@@ -26,7 +26,25 @@ import { fileURLToPath } from 'node:url'
 // matter where the script is run from.
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const MOBILE = path.resolve(HERE, '..')
-const BRANDING = process.env.BRANDING_DIR ?? path.resolve(MOBILE, '../../../branding')
+
+/**
+ * Where the branding checkout is. BRANDING_DIR overrides the sibling default
+ * for a checkout kept somewhere else; either way the directory has to actually
+ * look like the branding repo before anything is read out of it, so a typo
+ * fails here rather than half way through a copy.
+ */
+function brandingRoot() {
+  const root = path.resolve(HERE, '..', process.env.BRANDING_DIR ?? '../../../branding')
+  if (!fs.existsSync(path.join(root, '2.0.x'))) {
+    console.error(
+      `No 2.0.x in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
+    )
+    process.exit(1)
+  }
+  return root
+}
+
+const BRANDING = brandingRoot()
 const OUT = path.join(MOBILE, 'fastlane/screenshots')
 
 /**
@@ -48,13 +66,6 @@ const LOCALES = {
 
 // Only the four slots Apple takes an upload for; it derives the other seven.
 const SLOTS = ['6.9', '5.5', '13', '12.9']
-
-if (!fs.existsSync(path.join(BRANDING, '2.0.x'))) {
-  console.error(
-    `No 2.0.x in ${BRANDING}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
-  )
-  process.exit(1)
-}
 
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0

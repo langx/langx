@@ -1,0 +1,5 @@
+# Identifiers only, no credentials: the same values eas.json already carries.
+# Authentication is an App Store Connect API key (.p8) read from the
+# APP_STORE_CONNECT_API_KEY_* environment, so nothing here is a secret.
+app_identifier('tech.newchapter.languageXchange')
+team_id('8F63M4JH8P')
