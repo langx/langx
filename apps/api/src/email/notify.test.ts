@@ -46,11 +46,13 @@ describe('sendNotificationEmail', () => {
       verified?: boolean
       deleted?: boolean
       deviceLocale?: string
+      nativeLanguages?: string[]
     } = {},
   ): Promise<void> {
     await handle.db.collection(COLLECTIONS.profiles).insertOne({
       _id: userId,
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
+      nativeLanguages: (opts.nativeLanguages ?? []).map((code) => ({ code })),
       ...(opts.deleted ? { deletedAt: new Date() } : {}),
     } as never)
     if (opts.email !== null) {
@@ -118,14 +120,32 @@ describe('sendNotificationEmail', () => {
     expect(message?.html).toContain(header)
   })
 
-  it('words it in the language of the newest device', async () => {
-    await seed(u1, { deviceLocale: 'tr' })
+  it("words it in the reader's native language", async () => {
+    await seed(u1, { nativeLanguages: ['tr'] })
     await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'messages', build })
     expect(sender.messages[0]?.subject).toBe('subject in tr')
   })
 
-  it('falls back to English when there is no phone signed in', async () => {
-    await seed(u1)
+  /**
+   * The case the device locale gets wrong, and the reason mail no longer reads
+   * it: someone practising German puts the interface into German, and the
+   * nudge that is meant to bring them back should not itself be homework.
+   */
+  it('takes the native language over the language the phone is set to', async () => {
+    await seed(u1, { nativeLanguages: ['tr'], deviceLocale: 'de' })
+    await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'messages', build })
+    expect(sender.messages[0]?.subject).toBe('subject in tr')
+  })
+
+  /** `ja` ships no catalogue, so the second native language gets its turn. */
+  it('reaches past a native language the app is not translated into', async () => {
+    await seed(u1, { nativeLanguages: ['ja', 'tr'] })
+    await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'messages', build })
+    expect(sender.messages[0]?.subject).toBe('subject in tr')
+  })
+
+  it('falls back to English when the app speaks none of their languages', async () => {
+    await seed(u1, { nativeLanguages: ['ja'] })
     await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'messages', build })
     expect(sender.messages[0]?.subject).toBe('subject in en')
   })

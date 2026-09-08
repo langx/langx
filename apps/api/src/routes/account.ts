@@ -24,7 +24,7 @@ import { publicApiUrl } from '../env'
 import { deleteAccountEmail } from '../email/templates'
 import { emailFor } from '../modules/profiles/emailFor'
 import { deletionConfirmUrl, mintDeletionToken } from '../modules/account/deletionTokens'
-import { localeFor } from '../modules/push/devices'
+import { localeFor } from '../modules/profiles/localeFor'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const accountRoutes: FastifyPluginAsyncZod = async (app) => {

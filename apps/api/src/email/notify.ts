@@ -1,7 +1,7 @@
 import { notificationsAllowed, webUrl, type Locale, type NotificationType } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../db/collections'
-import { localeFor } from '../modules/push/devices'
+import { localeFor } from '../modules/profiles/localeFor'
 import { emailFor } from '../modules/profiles/emailFor'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Email } from './templates'
