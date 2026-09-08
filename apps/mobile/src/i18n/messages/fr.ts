@@ -389,6 +389,7 @@ export const fr: Localized<EnMessages> = {
     handleReservedBody: 'Ton nom d’utilisateur de l’ancien LangX. Tu peux le récupérer, une fois.',
     handleAvailable: '@{handle} est disponible ✓',
     handleTaken: '@{handle} est déjà pris',
+    handleCheckFailed: 'Impossible de vérifier ce nom d’utilisateur. Touchez pour réessayer.',
     startUsing: 'Commencer à utiliser LangX',
     profileFailed: 'Impossible de créer ton profil. Réessaie.',
     doneTitle: 'Tu y es',

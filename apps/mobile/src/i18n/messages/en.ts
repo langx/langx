@@ -420,6 +420,7 @@ export const en = {
     handleReservedBody: 'Your username from the old LangX. You can claim it back, once.',
     handleAvailable: '@{handle} is available ✓',
     handleTaken: '@{handle} is taken',
+    handleCheckFailed: 'Could not check that username. Tap to try again.',
     startUsing: 'Start using LangX',
     profileFailed: 'Could not create your profile. Try again.',
     doneTitle: 'You’re in',

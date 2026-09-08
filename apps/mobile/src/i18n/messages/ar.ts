@@ -434,6 +434,7 @@ export const ar: Localized<EnMessages> = {
     handleReservedBody: 'اسم المستخدم من LangX القديم. يمكنك استعادته مرة واحدة.',
     handleAvailable: '@{handle} متاح ✓',
     handleTaken: '@{handle} مأخوذ',
+    handleCheckFailed: 'تعذّر التحقق من اسم المستخدم هذا. اضغط للمحاولة مرة أخرى.',
     startUsing: 'ابدأ استخدام LangX',
     profileFailed: 'تعذّر إنشاء ملفك. حاول مرة أخرى.',
     doneTitle: 'أنت معنا الآن',

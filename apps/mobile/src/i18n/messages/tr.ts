@@ -391,6 +391,7 @@ export const tr: Localized<EnMessages> = {
     handleReservedBody: 'Eski LangX’teki kullanıcı adın. Bir kereliğine geri alabilirsin.',
     handleAvailable: '@{handle} müsait ✓',
     handleTaken: '@{handle} alınmış',
+    handleCheckFailed: 'Bu kullanıcı adı kontrol edilemedi. Tekrar denemek için dokun.',
     startUsing: 'LangX’i kullanmaya başla',
     profileFailed: 'Profilin oluşturulamadı. Tekrar dene.',
     doneTitle: 'Aramıza hoş geldin',

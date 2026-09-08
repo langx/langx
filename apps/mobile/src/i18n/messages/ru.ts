@@ -419,6 +419,7 @@ export const ru: Localized<EnMessages> = {
     handleReservedBody: 'Твоё имя из старого LangX. Вернуть его можно один раз.',
     handleAvailable: '@{handle} свободно ✓',
     handleTaken: '@{handle} уже занято',
+    handleCheckFailed: 'Не удалось проверить это имя. Нажмите, чтобы повторить.',
     startUsing: 'Начать пользоваться LangX',
     profileFailed: 'Не удалось создать профиль. Попробуй ещё раз.',
     doneTitle: 'Ты в деле',

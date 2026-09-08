@@ -384,6 +384,7 @@ export const es: Localized<EnMessages> = {
     handleReservedBody: 'Tu nombre de usuario del antiguo LangX. Puedes reclamarlo una vez.',
     handleAvailable: '@{handle} está libre ✓',
     handleTaken: '@{handle} ya está cogido',
+    handleCheckFailed: 'No se pudo comprobar ese nombre de usuario. Toca para reintentar.',
     startUsing: 'Empezar a usar LangX',
     profileFailed: 'No se pudo crear tu perfil. Inténtalo de nuevo.',
     doneTitle: 'Ya estás dentro',
