@@ -352,12 +352,20 @@ export const TOKEN_RULES: TokenRules = {
      * three. The cap is on *token earned*, and halving the rate without
      * doubling the count would have silently repriced the whole shop.
      *
-     * `messagesPerPartnerPerDay` stays at 30, so reaching this now takes
-     * seven partners rather than four. That is the anti-farming shape working
-     * as intended: the ceiling is for people talking to several people.
+     * `messagesPerPartnerPerDay` doubled with it, so the ceiling still takes
+     * four partners to reach. The two caps are a ratio, not two numbers:
+     * moving one alone changes how many people you have to be talking to
+     * before the day's ceiling is even reachable, which is a different rule
+     * from how much a day is worth.
      */
     messagesPerDay: 200,
-    messagesPerPartnerPerDay: 30,
+    /*
+     * Sixty, holding the 200/60 ratio that 100/30 had: four partners to reach
+     * a full day. It is the anti-farming number — a pair typing at each other
+     * all day still stops earning at the same fraction of the ceiling they
+     * always did.
+     */
+    messagesPerPartnerPerDay: 60,
   },
   /*
    * Every payout here must be **distinct**. `streakMilestoneDates` dates a
