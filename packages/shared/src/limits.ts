@@ -155,23 +155,19 @@ export interface PlanLimits {
   /**
    * Photos on a profile, avatar excluded.
    *
-   * The same on every tier on purpose. A gallery is how someone shows they are
-   * a real person, and gating it would make free profiles look like the
-   * throwaway accounts the product is trying to keep out.
+   * A ladder, and it was not always one: every tier had six until the gallery
+   * became something a subscription buys. Free still gets five, which is a
+   * real gallery — enough to show you are a person rather than a throwaway
+   * account, which is the thing the product cannot afford to gate.
    *
-   * Because it is identical everywhere, two call sites read `PLAN_LIMITS.free`
-   * directly rather than the viewer's tier (`profiles.ts` addPhoto,
-   * `edit-profile.tsx`). That is safe **only while this stays uniform** — give
-   * one tier a different allowance and those two places go quietly wrong.
+   * Read it off the **viewer's** tier, always. While it was uniform two call
+   * sites read `PLAN_LIMITS.free` directly and were correct by accident; both
+   * take the tier now, and nothing may go back to the free row except the v1
+   * restore in `legacyProfiles.ts`, where a claiming account really is free.
    */
   maxPhotos: number
   /**
    * Languages a profile may list, learning and native.
-   *
-   * **Not uniform across tiers**, which is the opposite of `maxPhotos` above —
-   * so nothing may read `PLAN_LIMITS.free.max*Languages` for another tier the
-   * way the photo allowance is deliberately read. The two sit next to each
-   * other precisely so the difference is visible.
    *
    * Enforced at write time only. Zod cannot express a tier-dependent maximum:
    * a route schema is registered at boot, before any request exists, so it has
@@ -202,7 +198,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: false,
     nearby: false,
     copilot: false,
-    maxPhotos: 6,
+    maxPhotos: 5,
     maxLearningLanguages: 1,
     maxNativeLanguages: 1,
   },
@@ -218,7 +214,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: false,
     nearby: false,
     copilot: false,
-    maxPhotos: 6,
+    maxPhotos: 10,
     maxLearningLanguages: 2,
     maxNativeLanguages: 2,
   },
@@ -240,7 +236,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: true,
     nearby: true,
     copilot: true,
-    maxPhotos: 6,
+    maxPhotos: 10,
     maxLearningLanguages: 5,
     maxNativeLanguages: 5,
   },

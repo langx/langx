@@ -144,14 +144,17 @@ describe('plan limits', () => {
   })
 
   /**
-   * Two call sites read `PLAN_LIMITS.free.maxPhotos` regardless of the viewer's
-   * tier. That is only correct while the allowance is uniform, so the
-   * assumption is pinned here rather than left as a comment.
+   * The photo allowance was uniform once, and two call sites read the free row
+   * for every tier on the strength of it. It is a ladder now, so what is
+   * pinned here is the shape of the ladder — including that free keeps a real
+   * gallery, which is the part a pricing decision could quietly take away.
    */
-  it('keeps the photo allowance identical on every tier', () => {
-    for (const tier of PLAN_TIERS) {
-      expect(PLAN_LIMITS[tier].maxPhotos).toBe(PLAN_LIMITS.free.maxPhotos)
-    }
+  it('sells a bigger gallery without taking the free one away', () => {
+    expect(PLAN_LIMITS.free.maxPhotos).toBeGreaterThanOrEqual(3)
+    expect(PLAN_LIMITS.pro.maxPhotos).toBeGreaterThan(PLAN_LIMITS.free.maxPhotos)
+    // Polyglot is a strict superset of Fluent, and a gallery is not where the
+    // two are meant to differ.
+    expect(PLAN_LIMITS.pro_plus.maxPhotos).toBe(PLAN_LIMITS.pro.maxPhotos)
   })
 
   it('counts every tier but free as paid', () => {
@@ -438,16 +441,11 @@ describe('language allowances', () => {
     }
   })
 
-  /**
-   * The counter-example to `maxPhotos`, which is uniform on purpose and is read
-   * off the free row for every tier. These are not, so nothing may do that —
-   * the two sit next to each other in the table so the difference is visible.
-   */
-  it('is not uniform, unlike the photo allowance', () => {
+  /** Nothing may read one tier's language allowance off another's row. */
+  it('is not uniform across tiers', () => {
     for (const key of KEYS) {
       expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro_plus[key])
     }
-    expect(PLAN_LIMITS.free.maxPhotos).toBe(PLAN_LIMITS.pro_plus.maxPhotos)
   })
 })
 

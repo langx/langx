@@ -1091,14 +1091,25 @@ export async function findProfileByHandleOrId(db: Db, handleOrId: string): Promi
 }
 
 /**
- * Adds a photo to the gallery, capped at `PLAN_LIMITS.maxPhotos`.
+ * Adds a photo to the gallery, capped at this account's `maxPhotos`.
  *
  * The cap is enforced in the update's own filter rather than by reading the
  * array first: two uploads finishing at once would otherwise both see room and
  * both append. Same reasoning as the quota decrement — let the write decide.
+ *
+ * The *number* does take a read, because the allowance is a plan ladder and
+ * the tier lives on the document. That read is only for the ceiling, not for
+ * the count — the count is still the filter's, which is what keeps the two
+ * concurrent uploads honest.
  */
 export async function addPhoto(db: Db, userId: string, url: string): Promise<Profile> {
-  const max = PLAN_LIMITS.free.maxPhotos
+  const owner = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { entitlement: 1 } })
+  if (!owner) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  // `effectiveTier`, like every other guard: a lapsed subscription whose
+  // expiry webhook was late must not still buy the larger gallery.
+  const max = PLAN_LIMITS[effectiveTier(owner)].maxPhotos
   const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
     {
       _id: userId,
@@ -1108,9 +1119,9 @@ export async function addPhoto(db: Db, userId: string, url: string): Promise<Pro
     { returnDocument: 'after' },
   )
 
+  // The profile exists — it was read a moment ago — so the only way the write
+  // matched nothing is the cap.
   if (!result) {
-    const existing = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
-    if (!existing) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `You can have at most ${max} photos`)
   }
   return result
