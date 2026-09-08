@@ -31,7 +31,7 @@ export function applyIncomingMessage(
     forUserId: string
   },
 ): Pages {
-  if (!data) return data
+  if (!isPagedList(data)) return data
   const found = findConversation(data, input.conversationId)
   if (!found) return undefined
 
@@ -58,6 +58,28 @@ export function applyIncomingMessage(
   }
 
   return moveToHead(data, input.conversationId, patched, found.pinned)
+}
+
+/**
+ * Whether this cache entry is the paged list, and not something else living
+ * under the same key prefix.
+ *
+ * `useSocket` writes an arriving message with `setQueriesData` on the
+ * `['conversations']` **prefix**, because the list is tabbed and several
+ * caches hold the same thread. Two different shapes live under that prefix on
+ * purpose: `keys.conversations(filter)` holds this paged list, and
+ * `keys.conversation(id)` holds one plain `ConversationDto` — deliberately
+ * there so every flag write invalidates it, see `queries.ts`.
+ *
+ * A `!data` guard passed the plain one straight through to a `for…of
+ * data.pages`, which threw `data.pages is not iterable` on every message that
+ * arrived while a chat screen was open — that screen is what puts the plain
+ * entry in the cache. `useConversation`'s own `placeholderData` already
+ * defends itself with `data?.pages ?? []`; this is the same defence, at the
+ * one place that did not have it.
+ */
+function isPagedList(data: unknown): data is InfiniteData<ConversationPageDto> {
+  return Array.isArray((data as { pages?: unknown } | undefined)?.pages)
 }
 
 function findConversation(

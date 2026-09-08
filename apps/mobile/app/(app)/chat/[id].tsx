@@ -7,6 +7,7 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  webUrl,
   messageTranslationSchema,
   type MessageAsk,
   type MessageTranslation,
@@ -96,6 +97,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
+import { saveMeetingIcs } from '../../../src/lib/saveMeetingIcs'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -423,6 +425,27 @@ export default function ChatScreen() {
   function meetingLengthFor(message: MessageDto): string {
     if (!message.meeting) return ''
     return t('format.minutes', { count: message.meeting.durationMinutes })
+  }
+
+  /**
+   * Hands an agreed meeting to whatever keeps this person's calendar.
+   *
+   * The file carries the instant in UTC, so the same one is right for both of
+   * them: each calendar app renders it in the zone its owner is in, which is
+   * the same rule the card itself follows and the reason the two cannot
+   * disagree.
+   */
+  async function addToCalendar(message: MessageDto): Promise<void> {
+    if (!message.meeting) return
+    const ok = await saveMeetingIcs({
+      uid: message._id,
+      startsAt: new Date(message.meeting.startsAt),
+      durationMinutes: message.meeting.durationMinutes,
+      summary: t('chat.meetingSummary', { name: partner?.displayName ?? t('chat.them') }),
+      note: message.meeting.note,
+      url: webUrl(`/chat/${conversationId}`),
+    })
+    if (!ok) void showAlert(t('chat.meetingCalendarFailed'))
   }
 
   /** Answers a quiz. Once, and never your own — both are the server's rules. */
@@ -1531,6 +1554,7 @@ export default function ChatScreen() {
                     onAnswerAsk={answerAsk}
                     onRespondMeeting={(message, status) => void respondMeeting(message, status)}
                     onAnswerQuiz={(message, index) => void answerQuiz(message, index)}
+                    onAddToCalendar={(message) => void addToCalendar(message)}
                     meetingWhen={meetingWhenFor(row.message)}
                     meetingLength={meetingLengthFor(row.message)}
                     pending={isOutgoingId(row.message._id)}

@@ -139,3 +139,49 @@ describe('pinned threads', () => {
     expect(mine?.pages[0]?.items[0]?.unread).toBe(0)
   })
 })
+
+describe('cache entries that are not the paged list', () => {
+  /**
+   * The crash this guard exists for.
+   *
+   * `useSocket` patches on the `['conversations']` prefix, and two shapes live
+   * under it on purpose — the paged list, and the single `ConversationDto`
+   * that `keys.conversation(id)` holds so flag writes invalidate it. A chat
+   * screen open is what puts the second one in the cache, so before the guard
+   * every message arriving during a conversation threw
+   * `data.pages is not iterable`.
+   */
+  it('hands back a single conversation untouched instead of iterating it', () => {
+    const single = conversation('c1') as unknown as Parameters<typeof applyIncomingMessage>[0]
+    expect(() =>
+      applyIncomingMessage(single, {
+        conversationId: 'c1',
+        body: 'hi',
+        senderId: THEM,
+        createdAt: '2026-08-02T00:00:00.000Z',
+        forUserId: ME,
+      }),
+    ).not.toThrow()
+    expect(
+      applyIncomingMessage(single, {
+        conversationId: 'c1',
+        body: 'hi',
+        senderId: THEM,
+        createdAt: '2026-08-02T00:00:00.000Z',
+        forUserId: ME,
+      }),
+    ).toBe(single)
+  })
+
+  it('still hands back undefined untouched', () => {
+    expect(
+      applyIncomingMessage(undefined, {
+        conversationId: 'c1',
+        body: 'hi',
+        senderId: THEM,
+        createdAt: '2026-08-02T00:00:00.000Z',
+        forUserId: ME,
+      }),
+    ).toBeUndefined()
+  })
+})

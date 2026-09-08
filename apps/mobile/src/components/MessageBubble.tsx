@@ -79,6 +79,8 @@ export interface MessageBubbleProps {
   onRespondMeeting: (message: MessageDto, status: 'accepted' | 'declined' | 'cancelled') => void
   /** Answers a quiz. Once, and never your own. */
   onAnswerQuiz: (message: MessageDto, index: number) => void
+  /** Hands an agreed meeting to the reader's calendar, as an `.ics`. */
+  onAddToCalendar: (message: MessageDto) => void
   /**
    * The proposal in the reader's own zone, formatted by the thread — only it
    * has the profile the zone comes from. Empty for anything but a meeting.
@@ -121,6 +123,7 @@ export const MessageBubble = memo(function MessageBubble({
   onAnswerAsk,
   onRespondMeeting,
   onAnswerQuiz,
+  onAddToCalendar,
   meetingWhen = '',
   meetingLength = '',
   onJumpTo,
@@ -375,9 +378,21 @@ export const MessageBubble = memo(function MessageBubble({
           <Text style={styles.meetingTheirs}>{meetingLength}</Text>
           {meeting.note ? <Text style={styles.phraseExample}>{meeting.note}</Text> : null}
           {answered ? (
-            <Text style={[styles.meetingStatus, statusStyle(meeting.status, styles)]}>
-              {t(meetingStatusKey(meeting.status))}
-            </Text>
+            <View style={styles.meetingAnswered}>
+              <Text style={[styles.meetingStatus, statusStyle(meeting.status, styles)]}>
+                {t(meetingStatusKey(meeting.status))}
+              </Text>
+              {/*
+                Only once it is agreed. Offering this on a proposal would put
+                something in somebody's calendar that the other person has not
+                said yes to, which is worse than making them tap twice.
+              */}
+              {meeting.status === 'accepted' ? (
+                <Pressable hitSlop={8} onPress={() => onAddToCalendar(message)}>
+                  <Text style={styles.meetingAccept}>{t('chat.meetingAddToCalendar')}</Text>
+                </Pressable>
+              ) : null}
+            </View>
           ) : (
             /*
             The proposer can only withdraw and the invitee can only answer —
@@ -799,6 +814,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   quizPressed: { opacity: 0.6 },
   meetingTheirs: { color: colors.textMuted, fontSize: 13 },
   meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
+  meetingAnswered: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
   meetingAccept: { color: colors.success, fontSize: 14, fontWeight: '700' },
   meetingDecline: { color: colors.danger, fontSize: 14, fontWeight: '700' },
   meetingStatus: { fontSize: 14, fontWeight: '700', marginTop: 6 },
