@@ -1017,6 +1017,12 @@ export default function ChatScreen() {
     const picked = await openMessageMenu({
       preview: message.body || t(messageTypeKey(message.type)),
       mine: isMine(message),
+      // Looked up rather than passed down: `endsGroup` belongs to the row, and
+      // a fourth positional argument on `onLongPress` is how the anchor and
+      // the flag start arriving in the wrong order.
+      tail: rows.some(
+        (row) => row.kind === 'message' && row.message._id === message._id && row.endsGroup,
+      ),
       actions,
       ...(anchor ? { anchor } : {}),
       // A withdrawn message cannot carry a reaction, so it gets no strip.

@@ -214,6 +214,7 @@ export function MessageMenuHost() {
             style={[
               styles.copy,
               request.mine ? styles.copyMine : styles.copyTheirs,
+              request.tail === true && (request.mine ? styles.copyTailMine : styles.copyTailTheirs),
               {
                 top: layout.bubble.top,
                 left: layout.bubble.left,
@@ -389,6 +390,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // The lifted copy matches the v3 bubbles it stands in for.
   copyMine: { backgroundColor: colors.accentBg },
   copyTheirs: { backgroundColor: colors.fill },
+  // And its squared corner, when the bubble that was pressed had one.
+  copyTailMine: { borderBottomEndRadius: 6 },
+  copyTailTheirs: { borderBottomStartRadius: 6 },
   // 16 on 23, exactly `MessageBubble`'s: a copy that shrinks the text is a
   // second bubble, not the one that was pressed.
   copyText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
