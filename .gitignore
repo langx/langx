@@ -60,3 +60,5 @@ tools/ext-lab/shots/
 # images themselves live in langx/branding, not here.
 apps/mobile/fastlane/screenshots/
 apps/mobile/fastlane/metadata/
+apps/mobile/fastlane/README.md
+apps/mobile/fastlane/report.xml
