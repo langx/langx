@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS } from '@langx/shared'
+import { useEffect } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
@@ -69,12 +70,29 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
     if (picked.media.length > 0) onPick(picked.media.slice(0, remaining))
   }
 
+  /*
+   * The ceiling stops the recording rather than letting it run past what the
+   * server will accept — same rule as the chat composer, and for the same
+   * reason: the refusal used to arrive after the bytes had been spoken.
+   */
+  useEffect(() => {
+    if (!recorder.atLimit) return
+    void finishRecording()
+    // The flag alone, deliberately: `finishRecording` is re-made every render
+    // and listing it here would end a recording on every one of them.
+  }, [recorder.atLimit])
+
   async function toggleRecording(): Promise<void> {
     if (!recorder.isRecording) {
       const started = await recorder.start()
       if (!started && recorder.error) showToast(recorder.error)
       return
     }
+    await finishRecording()
+  }
+
+  /** Stops and keeps what was said, whether a person or the clock ended it. */
+  async function finishRecording(): Promise<void> {
     const recording = await recorder.stop()
     if (!recording) return
     onPick([{ kind: 'audio', ...recording }])

@@ -100,7 +100,13 @@ export function useVoiceRecorder() {
   return {
     isRecording: state.isRecording,
     seconds,
-    atLimit: seconds >= MAX_AUDIO_SECONDS,
+    /*
+     * The recording in progress has reached the ceiling — not "the last one
+     * did". `isRecording` is part of the answer because the duration survives
+     * the stop, and a caller that stops on this flag would otherwise be told
+     * to stop again the moment it had.
+     */
+    atLimit: state.isRecording && seconds >= MAX_AUDIO_SECONDS,
     error,
     start,
     stop,
