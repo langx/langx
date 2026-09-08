@@ -299,7 +299,16 @@ export default function ChatScreen() {
   // those leaves the header with no name and no avatar.
   // Optional on `participants` too: the response is a bare cast, so an API
   // older than this field would throw here rather than fall back.
-  const partnerId = messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ?? ''
+  //
+  // Two sources, because the messages arrive last. `useConversation` seeds
+  // itself from the chat list's cache, so somebody arriving from that list
+  // knows the partner on the first render and never sees a placeholder;
+  // the two answers are the same participant list, so whichever is in first
+  // wins.
+  const partnerId =
+    messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ??
+    conversation.data?.participants.find((p) => p !== me.data?._id) ??
+    ''
   /*
    * How many more messages before an attachment is allowed here. Read off the
    * live page, which `appendIncomingMessage` counts down, so the camera comes
@@ -325,8 +334,16 @@ export default function ChatScreen() {
     : undefined
   // "Not yet" and "never" draw differently: a placeholder while the profile
   // loads, the generic title only for an account that is really gone.
+  //
+  // Including the window before anybody knows who the partner *is*. The
+  // profile query cannot report "pending" for an id nobody has yet, so while
+  // both sources are still loading this used to fall through to the "never"
+  // branch — a `?` avatar and the word "Chat", which reads as a real header
+  // with the wrong content. An error leaves `isPending` false, so the generic
+  // title still stands for a thread whose partner really cannot be resolved.
   const partnerLoading =
-    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
+    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending' ||
+    (!partnerId && (messages.isPending || conversation.isPending))
 
   /**
    * Opening the thread is the read receipt — and *focusing* it, not mounting
