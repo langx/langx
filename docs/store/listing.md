@@ -21,6 +21,11 @@ when the standard Apple EULA is used. The footer below is that link, plus the
 privacy policy so both documents are one tap away. Keep it when the description
 is next rewritten.
 
+Apple's subtitle is **30 characters**; the 80-character line is Google Play's
+short description. They were the same field here until now, which made every
+subtitle in this file too long for the App Store — the English and the Turkish
+included. Both are written out below, per language.
+
 ---
 
 ## English
@@ -28,7 +33,10 @@ is next rewritten.
 **Title (30)**
 `LangX: Language Exchange`
 
-**Subtitle / short description (80)**
+**Apple subtitle (30)**
+`Practice with real people`
+
+**Play short description (80)**
 `Practice a language by talking with people learning yours.`
 
 **Description**
@@ -74,7 +82,10 @@ is next rewritten.
 **Başlık (30)**
 `LangX: Dil Değişimi`
 
-**Kısa açıklama (80)**
+**Apple altbaşlığı (30)**
+`Gerçek insanlarla pratik`
+
+**Play kısa açıklaması (80)**
 `Senin dilini öğrenen biriyle konuşarak dil öğren.`
 
 **Açıklama**
@@ -117,7 +128,10 @@ is next rewritten.
 **Título (30)**
 `LangX: Intercambio de idiomas`
 
-**Subtítulo (80)**
+**Subtítulo de Apple (30)**
+`Practica con gente real`
+
+**Descripción corta de Play (80)**
 `Practica un idioma hablando con quien aprende el tuyo.`
 
 **Descripción**
@@ -164,7 +178,10 @@ is next rewritten.
 **Название (30)**
 `LangX: языковой обмен`
 
-**Подзаголовок (80)**
+**Подзаголовок Apple (30)**
+`Практика с живыми людьми`
+
+**Краткое описание Play (80)**
 `Практикуй язык с теми, кто учит твой.`
 
 **Описание**
@@ -210,7 +227,10 @@ is next rewritten.
 **الاسم (30)**
 `LangX: تبادل اللغات`
 
-**العنوان الفرعي (80)**
+**العنوان الفرعي في Apple (30)**
+`تدرّب مع أشخاص حقيقيين`
+
+**الوصف المختصر في Play (80)**
 `تدرّب على لغة بالحديث مع من يتعلّم لغتك.`
 
 **الوصف**
@@ -251,7 +271,10 @@ is next rewritten.
 **Nom (30)**
 `LangX : échange linguistique`
 
-**Sous-titre (80)**
+**Sous-titre Apple (30)**
+`Pratiquez avec de vrais gens`
+
+**Description courte Play (80)**
 `Pratiquez une langue avec ceux qui apprennent la vôtre.`
 
 **Description**
@@ -299,7 +322,10 @@ is next rewritten.
 **Name (30)**
 `LangX: Sprachaustausch`
 
-**Untertitel (80)**
+**Apple-Untertitel (30)**
+`Üben mit echten Menschen`
+
+**Play-Kurzbeschreibung (80)**
 `Übe eine Sprache mit Menschen, die deine lernen.`
 
 **Beschreibung**
@@ -346,7 +372,10 @@ is next rewritten.
 **Nome (30)**
 `LangX: Intercâmbio de Idiomas`
 
-**Subtítulo (80)**
+**Subtítulo da Apple (30)**
+`Pratique com gente real`
+
+**Descrição curta da Play (80)**
 `Pratique um idioma conversando com quem aprende o seu.`
 
 **Descrição**
@@ -389,95 +418,145 @@ is next rewritten.
 
 ## What's new (release notes)
 
+These are **2.1's** notes, read back from App Store Connect on 8 September 2026
+— not 2.0's. The rebuild notes that used to sit here described the wrong
+release; 2.1 is a chat release.
+
 A version update needs release notes in **every** localization, not just the
 primary one — App Store Connect will not let the version be submitted with one
 missing.
 
-The third line is not optional in any language. Every v1 user has to sign up
+The last line is not optional in any language. Every v1 user has to sign up
 again — the old password hashes could not be migrated — and without that
 sentence the first thing a returning user meets is a login that rejects them.
 
-**English**
+"Polyglot" is a plan name and stays in English everywhere, the way "LangX Pro"
+does in the description.
 
-> LangX v2 is a rebuild. Faster matching, realtime chat, message corrections,
-> built-in translation, daily streaks and token leaderboards.
+**English** — the copy already live on the version, left as it is
+
+> Chat got most of the work in this one.
 >
-> Your username is waiting for you — sign up with the email you used before and
-> claim it.
+> Stickers, in two packs, for any conversation.
+> Save a phrase from a message and keep it as a card.
+> Ask your partner a quiz - your question, your options, one right answer.
+> Propose a meeting and see it in both clocks, yours and theirs, with a reminder an hour before.
+> A faster sheet for sending photos, video and voice notes.
 >
-> Badges are coming back in the next release.
+> Polyglot adds writing in your own language and sending in theirs, and exporting a conversation's saved phrases as a file that opens in Anki.
+>
+> Tokens are simpler to follow: one token a message, up to a daily cap.
+>
+> Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
 **Türkçe**
 
-> LangX v2 baştan yazıldı. Daha hızlı eşleşme, anlık sohbet, mesaj
-> düzeltmeleri, yerleşik çeviri, günlük seriler ve token sıralamaları.
+> Bu sürümde en çok sohbet üzerinde çalışıldı.
 >
-> Kullanıcı adın seni bekliyor — daha önce kullandığın e-postayla kaydol ve
-> geri al.
+> İki pakette çıkartmalar, her sohbet için.
+> Bir mesajdaki ifadeyi kaydet, kart olarak sakla.
+> Partnerine soru sor - kendi sorun, kendi şıkların, tek doğru cevap.
+> Buluşma öner, iki saatte birden gör, seninkinde ve onunkinde, bir saat önce hatırlatmayla.
+> Fotoğraf, video ve sesli not göndermek için daha hızlı bir ekran.
 >
-> Rozetler bir sonraki sürümde geri geliyor.
+> Polyglot, kendi dilinde yazıp onun dilinde göndermeyi ve bir sohbette kaydettiğin ifadeleri Anki'de açılan bir dosya olarak dışa aktarmayı ekler.
+>
+> Token'ları takip etmek artık daha basit: mesaj başına bir token, günlük sınıra kadar.
+>
+> Eski uygulamadan mı dönüyorsun? Daha önce kullandığın e-postayla kaydol - kullanıcı adın seni bekliyor.
 
 **Español**
 
-> LangX v2 está reconstruido desde cero. Emparejamiento más rápido, chat en
-> tiempo real, correcciones de mensajes, traducción integrada, rachas diarias y
-> clasificaciones por tokens.
+> En esta versión el trabajo se centró en el chat.
 >
-> Tu nombre de usuario te está esperando: regístrate con el correo que usabas
-> antes y recupéralo.
+> Stickers, en dos paquetes, para cualquier conversación.
+> Guarda una frase de un mensaje y consérvala como tarjeta.
+> Propón un cuestionario a tu compañero: tu pregunta, tus opciones, una respuesta correcta.
+> Propón una quedada y velá en los dos relojes, el tuyo y el suyo, con un recordatorio una hora antes.
+> Un panel más rápido para enviar fotos, vídeo y notas de voz.
 >
-> Las insignias vuelven en la próxima versión.
+> Polyglot añade escribir en tu idioma y enviar en el suyo, y exportar las frases guardadas de una conversación como archivo que se abre en Anki.
+>
+> Los tokens son más fáciles de seguir: un token por mensaje, hasta un límite diario.
+>
+> ¿Vuelves de la app anterior? Regístrate con el correo que usabas antes: tu nombre de usuario te está esperando.
 
 **Русский**
 
-> LangX v2 переписан заново. Более быстрый подбор, чат в реальном времени,
-> исправления сообщений, встроенный перевод, ежедневные серии и таблицы по
-> токенам.
+> В этом обновлении больше всего работы досталось чату.
 >
-> Твоё имя пользователя ждёт тебя — зарегистрируйся с той же почтой, что и
-> раньше, и забери его.
+> Стикеры, в двух наборах, для любого разговора.
+> Сохрани фразу из сообщения и оставь её карточкой.
+> Задай собеседнику вопрос с вариантами - твой вопрос, твои варианты, один правильный ответ.
+> Предложи встречу и увидь её на обоих часах, твоих и его, с напоминанием за час.
+> Более быстрое окно для отправки фото, видео и голосовых.
 >
-> Значки вернутся в следующем обновлении.
+> Polyglot добавляет письмо на своём языке с отправкой на его языке и экспорт сохранённых фраз разговора файлом, который открывается в Anki.
+>
+> За токенами стало проще следить: один токен за сообщение, до дневного предела.
+>
+> Возвращаешься из старого приложения? Зарегистрируйся с той же почтой - твоё имя пользователя ждёт тебя.
 
 **العربية**
 
-> أُعيد بناء LangX v2 من الأساس. مطابقة أسرع، ومحادثة فورية، وتصحيح الرسائل،
-> وترجمة مدمجة، وسلاسل يومية، ولوحات ترتيب بالرموز.
+> نال الدردشة النصيب الأكبر من العمل في هذا الإصدار.
 >
-> اسم المستخدم الخاص بك في انتظارك — سجّل بالبريد الإلكتروني الذي كنت تستخدمه
-> واسترجعه.
+> ملصقات، في حزمتين، لأي محادثة.
+> احفظ عبارة من رسالة واحتفظ بها كبطاقة.
+> اطرح على شريكك سؤالًا - سؤالك، وخياراتك، وإجابة صحيحة واحدة.
+> اقترح موعدًا وشاهده بالتوقيتين، توقيتك وتوقيته، مع تذكير قبل ساعة.
+> واجهة أسرع لإرسال الصور والفيديو والرسائل الصوتية.
 >
-> الشارات تعود في الإصدار القادم.
+> يضيف Polyglot الكتابة بلغتك والإرسال بلغته، وتصدير العبارات المحفوظة من محادثة كملف يُفتح في Anki.
+>
+> صار تتبّع الرموز أبسط: رمز واحد لكل رسالة، حتى حد يومي.
+>
+> عائد من التطبيق القديم؟ سجّل بالبريد الإلكتروني الذي كنت تستخدمه - اسم المستخدم بانتظارك.
 
 **Français**
 
-> LangX v2 a été reconstruit. Mise en relation plus rapide, chat en temps réel,
-> correction des messages, traduction intégrée, séries quotidiennes et
-> classements de jetons.
+> Cette version a surtout fait avancer la conversation.
 >
-> Votre nom d'utilisateur vous attend : inscrivez-vous avec l'adresse e-mail
-> que vous utilisiez avant pour le récupérer.
+> Des stickers, en deux packs, pour n'importe quelle conversation.
+> Enregistrez une expression d'un message et gardez-la sous forme de carte.
+> Posez un quiz à votre partenaire : votre question, vos options, une seule bonne réponse.
+> Proposez un rendez-vous et voyez-le sur les deux horloges, la vôtre et la sienne, avec un rappel une heure avant.
+> Un panneau plus rapide pour envoyer photos, vidéos et notes vocales.
 >
-> Les badges reviennent dans la prochaine version.
+> Polyglot ajoute l'écriture dans votre langue et l'envoi dans la sienne, ainsi que l'export des expressions enregistrées d'une conversation dans un fichier qui s'ouvre dans Anki.
+>
+> Les jetons sont plus simples à suivre : un jeton par message, jusqu'à un plafond quotidien.
+>
+> Vous revenez de l'ancienne app ? Inscrivez-vous avec l'adresse e-mail que vous utilisiez avant - votre nom d'utilisateur vous attend.
 
 **Deutsch**
 
-> LangX v2 ist neu gebaut. Schnelleres Matching, Chat in Echtzeit,
-> Nachrichtenkorrekturen, eingebaute Übersetzung, tägliche Serien und
-> Token-Ranglisten.
+> In dieser Version ging die meiste Arbeit in den Chat.
 >
-> Dein Benutzername wartet auf dich — melde dich mit der E-Mail-Adresse an, die
-> du vorher benutzt hast, und hol ihn dir zurück.
+> Sticker, in zwei Paketen, für jede Unterhaltung.
+> Speichere eine Wendung aus einer Nachricht und behalte sie als Karte.
+> Stell deinem Partner eine Quizfrage - deine Frage, deine Optionen, eine richtige Antwort.
+> Schlage ein Treffen vor und sieh es in beiden Uhrzeiten, deiner und seiner, mit einer Erinnerung eine Stunde vorher.
+> Ein schnelleres Fenster zum Senden von Fotos, Videos und Sprachnachrichten.
 >
-> Abzeichen kommen im nächsten Release zurück.
+> Polyglot ergänzt das Schreiben in deiner Sprache und das Senden in seiner sowie den Export der gespeicherten Wendungen einer Unterhaltung als Datei, die sich in Anki öffnet.
+>
+> Tokens lassen sich einfacher verfolgen: ein Token pro Nachricht, bis zu einem Tageslimit.
+>
+> Kommst du aus der alten App zurück? Melde dich mit der E-Mail-Adresse an, die du vorher benutzt hast - dein Benutzername wartet auf dich.
 
 **Português do Brasil**
 
-> O LangX v2 foi reconstruído. Combinação mais rápida, chat em tempo real,
-> correção de mensagens, tradução integrada, sequências diárias e rankings de
-> tokens.
+> Nesta versão o trabalho ficou quase todo no chat.
 >
-> Seu nome de usuário está esperando por você — cadastre-se com o e-mail que
-> você usava antes e recupere-o.
+> Figurinhas, em dois pacotes, para qualquer conversa.
+> Salve uma expressão de uma mensagem e guarde como cartão.
+> Faça um quiz para seu parceiro: sua pergunta, suas opções, uma resposta certa.
+> Proponha um encontro e veja nos dois relógios, o seu e o dele, com um lembrete uma hora antes.
+> Uma tela mais rápida para enviar fotos, vídeos e áudios.
 >
-> As medalhas voltam na próxima versão.
+> O Polyglot acrescenta escrever no seu idioma e enviar no dele, e exportar as expressões salvas de uma conversa como arquivo que abre no Anki.
+>
+> Os tokens ficaram mais fáceis de acompanhar: um token por mensagem, até um limite diário.
+>
+> Voltando do app antigo? Cadastre-se com o e-mail que você usava antes - seu nome de usuário está esperando por você.
