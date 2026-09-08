@@ -1,4 +1,4 @@
-import { resolveLocale, type Locale } from '@langx/shared'
+import { DEFAULT_LOCALE, matchLocale, type Locale } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from './profiles'
@@ -22,10 +22,20 @@ import type { Profile } from './profiles'
  *
  * Push is deliberately not this: `tokensByLocale` words a notification in the
  * locale of the device it is going to, which is a fact about that screen.
+ *
+ * `null` when there is no profile yet — an account is seconds old at sign-up
+ * and onboarding is where the languages are picked — or when we ship no
+ * catalogue for any language they speak. Auth mail has an `Accept-Language`
+ * header to fall back to; `localeFor` has nothing, and answers English.
  */
-export async function localeFor(db: Db, userId: string): Promise<Locale> {
+export async function nativeLocaleFor(db: Db, userId: string): Promise<Locale | null> {
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: userId }, { projection: { nativeLanguages: 1 } })
-  return resolveLocale((profile?.nativeLanguages ?? []).map((language) => language.code))
+  return matchLocale((profile?.nativeLanguages ?? []).map((language) => language.code))
+}
+
+/** The same answer for a send with no request behind it, where English is all there is. */
+export async function localeFor(db: Db, userId: string): Promise<Locale> {
+  return (await nativeLocaleFor(db, userId)) ?? DEFAULT_LOCALE
 }

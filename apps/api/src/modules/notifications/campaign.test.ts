@@ -5,7 +5,6 @@ import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import { authId } from '../../lib/authId'
-import type { Device } from '../push/devices'
 import {
   campaignRecipients,
   claimCampaignRecipients,
@@ -32,12 +31,7 @@ describe('who a campaign may be sent to', () => {
   })
 
   beforeEach(async () => {
-    for (const name of [
-      COLLECTIONS.profiles,
-      COLLECTIONS.user,
-      COLLECTIONS.devices,
-      COLLECTIONS.emailCampaigns,
-    ]) {
+    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user, COLLECTIONS.emailCampaigns]) {
       await handle.db.collection(name).deleteMany({})
     }
   })
@@ -56,6 +50,9 @@ describe('who a campaign may be sent to', () => {
       _id: userId,
       handle: `h${userId.slice(-12)}`,
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
+      // The language a campaign targets is the one it would be written in,
+      // and that is now read off the reader's native languages.
+      nativeLanguages: opts.locale ? [{ code: opts.locale }] : [],
       ...(opts.deleted ? { deletedAt: new Date() } : {}),
     } as never)
     if (opts.email !== false) {
@@ -64,16 +61,6 @@ describe('who a campaign may be sent to', () => {
         email: `${userId}@example.com`,
         emailVerified: opts.verified ?? true,
       })
-    }
-    if (opts.locale) {
-      await handle.db.collection<Device>(COLLECTIONS.devices).insertOne({
-        userId,
-        pushToken: `t-${userId}`,
-        platform: 'ios',
-        locale: opts.locale as never,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as never)
     }
     return userId
   }
