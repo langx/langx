@@ -186,7 +186,7 @@ export async function sendTextMessage(
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: senderId }, { projection: { entitlement: 1 } })
     if (!sender || !hasFeature(effectiveTier(sender), 'sendTranslation')) {
-      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Sending a translation requires Pro', {
+      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Sending a translation requires Pro+', {
         feature: 'sendTranslation',
       })
     }
