@@ -4,6 +4,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
+import { warmUpAuthCollections } from '../auth/warmUp'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
@@ -71,6 +72,15 @@ describe('feedback', () => {
       revenueCat: createRevenueCatClientFromEnv(env),
     })
     await app.ready()
+
+    /*
+     * A fresh database's first write to Better Auth's collections races its own
+     * index creation and comes back a 500 — see `warmUpAuthCollections`. Every
+     * suite that signs somebody up pays it; paying it here, deliberately, is
+     * what stops it landing on the sign-up below.
+     */
+    await warmUpAuthCollections(auth, handle.db, { warn: () => {} })
+    emailSender.messages.length = 0
 
     const user = await signUpAndSignIn(app, emailSender, {
       email: 'finder@example.com',
