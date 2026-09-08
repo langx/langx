@@ -1,3 +1,4 @@
+import type { Media } from '@langx/shared'
 import type { MessageAction, MessageActionId } from './messageActions'
 
 /**
@@ -37,6 +38,21 @@ export interface MessageMenuRequest {
    * or a platform where the measurement failed — still gets.
    */
   anchor?: AnchorRect
+  /**
+   * What the pressed bubble drew, when it drew a picture rather than a
+   * sentence. Without it a photo is lifted out of the thread as a grey box
+   * with the word "Photo" in it — a description of the message standing where
+   * the message was.
+   *
+   * A voice note is deliberately not here. Its bubble is a player, and a copy
+   * of a player is a second player: a second `useAudioPlayer` on the same
+   * file, with its own play button, inside a menu. It keeps the label.
+   */
+  picture?:
+    | { kind: 'media'; items: readonly Media[] }
+    | { kind: 'sticker'; packId: string; stickerId: string }
+  /** The sentence under a picture, when the message carried one. */
+  caption?: string
   /** The emoji strip, when the message can carry a reaction. */
   reactions?: readonly string[]
   /** Which of them is already the viewer's, drawn selected. */

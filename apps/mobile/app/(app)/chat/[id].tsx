@@ -3,6 +3,7 @@ import {
   canDeleteForEveryone,
   canEditMessage,
   translateTargetFor,
+  attachmentsOf,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
@@ -78,7 +79,11 @@ import {
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
-import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
+import {
+  openMessageMenu,
+  type AnchorRect,
+  type MessageMenuRequest,
+} from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { pickMediaAssets, type PickSource } from '../../../src/lib/pickMediaAsset'
@@ -1021,6 +1026,7 @@ export default function ChatScreen() {
     alreadyTranslated: boolean,
     anchor?: AnchorRect,
   ): Promise<void> {
+    const picture = pictureOf(message)
     // Nothing left to act on: a withdrawn message is a placeholder, and the
     // one thing anyone might want — hiding it — is offered through the same
     // row, so it is still worth opening.
@@ -1042,6 +1048,9 @@ export default function ChatScreen() {
     const picked = await openMessageMenu({
       preview: message.body || t(messageTypeKey(message.type)),
       mine: isMine(message),
+      // So the menu lifts the picture out of the thread rather than the word
+      // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
+      ...(picture ? { picture, caption: message.body } : {}),
       // Looked up rather than passed down: `endsGroup` belongs to the row, and
       // a fourth positional argument on `onLongPress` is how the anchor and
       // the flag start arriving in the wrong order.
@@ -2004,6 +2013,22 @@ function TypingIndicator() {
       ))}
     </View>
   )
+}
+
+/**
+ * What the menu's copy of the bubble should draw, for the messages that draw a
+ * picture rather than a sentence.
+ *
+ * Audio is not one of them even though it carries an attachment: its bubble is
+ * a player, and the copy would mount a second one.
+ */
+function pictureOf(message: MessageDto): MessageMenuRequest['picture'] {
+  if (message.type === 'sticker') {
+    return message.sticker ? { kind: 'sticker', ...message.sticker } : undefined
+  }
+  if (message.type !== 'image' && message.type !== 'video') return undefined
+  const items = attachmentsOf(message)
+  return items.length > 0 ? { kind: 'media', items } : undefined
 }
 
 /** What the sheet shows above the actions when a message has no text. */
