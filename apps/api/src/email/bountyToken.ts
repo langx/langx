@@ -1,18 +1,18 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
 /**
- * The credential in the bug-report email that lets whoever reads it pay the
+ * The credential in the email a bug report or feature request becomes that lets whoever reads it pay the
  * finder.
  *
  * Signed rather than stored, unlike `deletionTokens.ts`, because there is
- * nothing to store: a bug report leaves no row, and the thing that must not
+ * nothing to store: a report leaves no row, and the thing that must not
  * happen twice — the payout — is already made impossible twice over by the
  * ledger's unique `{userId, kind, refId}` index. `reportId` is that `refId`,
  * so opening the link again pays nothing and says so, and a forwarded mail
  * cannot pay a second time either.
  *
  * **It is a capability: whoever holds the link can pay this one reporter, once,
- * within the range in `BUG_BOUNTY_MIN`/`MAX`.** That is the same trade the
+ * within the range in `BOUNTY_MIN`/`MAX`.** That is the same trade the
  * account-deletion link makes — the mailbox is the authorisation — and it is
  * bounded here by the amount, by the single reporter it names, and by an
  * expiry, none of which that link has.
@@ -27,15 +27,15 @@ const VERSION = 'v1'
  * decision takes and short enough that a mailbox archived for years is not a
  * standing payment instrument.
  */
-export const BUG_BOUNTY_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000
+export const BOUNTY_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000
 
 function signature(secret: string, userId: string, reportId: string, expiresAt: number): string {
   return createHmac('sha256', secret)
-    .update(`${VERSION}:bugBounty:${userId}:${reportId}:${expiresAt}`)
+    .update(`${VERSION}:bounty:${userId}:${reportId}:${expiresAt}`)
     .digest('base64url')
 }
 
-export function signBugBountyToken(
+export function signBountyToken(
   secret: string,
   input: { userId: string; reportId: string; expiresAt: number },
 ): string {
@@ -49,7 +49,7 @@ export function signBugBountyToken(
   ].join('.')
 }
 
-export function verifyBugBountyToken(
+export function verifyBountyToken(
   secret: string,
   token: string | undefined,
   now: Date = new Date(),
@@ -80,6 +80,6 @@ export function verifyBugBountyToken(
   return { userId, reportId }
 }
 
-export function bugBountyAwardUrl(apiBaseUrl: string, token: string): string {
-  return `${apiBaseUrl.replace(/\/$/, '')}/bug-reports/award?token=${encodeURIComponent(token)}`
+export function bountyAwardUrl(apiBaseUrl: string, token: string): string {
+  return `${apiBaseUrl.replace(/\/$/, '')}/feedback/award?token=${encodeURIComponent(token)}`
 }

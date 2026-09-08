@@ -1,24 +1,25 @@
 import {
-  BUG_BOUNTY_MAX,
-  BUG_BOUNTY_MIN,
+  BOUNTY_MAX,
+  BOUNTY_MIN,
   ERROR_CODES,
-  bugBountyAwardSchema,
-  bugReportSchema,
-  bugReportUploadUrlSchema,
+  bountyAwardSchema,
+  feedbackSchema,
+  feedbackUploadUrlSchema,
   mediaKindOfContentType,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import {
-  BUG_BOUNTY_TOKEN_TTL_MS,
-  bugBountyAwardUrl,
-  signBugBountyToken,
-  verifyBugBountyToken,
-} from '../email/bugBountyToken'
-import { bugReportEmail } from '../email/templates'
+  BOUNTY_TOKEN_TTL_MS,
+  bountyAwardUrl,
+  signBountyToken,
+  verifyBountyToken,
+} from '../email/bountyToken'
+import { feedbackEmail } from '../email/templates'
 import { publicApiUrl } from '../env'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
+import { openFeedbackIssue } from '../modules/feedback/githubIssue'
 import { assertAttachmentsAllowed } from '../modules/media/assertMedia'
 import { objectExtension } from '../modules/media/objectExtension'
 import { emailFor } from '../modules/profiles/emailFor'
@@ -26,26 +27,28 @@ import { getProfile } from '../modules/profiles/profiles'
 import { awardTokens } from '../modules/tokens/ledger'
 
 /**
- * Reporting a bug from inside the app, with a screenshot or a screen recording
- * as proof — and, in the email that report becomes, paying for it.
+ * Bug reports and feature requests from inside the app — and, in the email
+ * each one becomes, paying for it.
  *
- * The report is emailed to `SUPPORT_EMAIL` and stored nowhere. That is the
- * design, not a shortcut: a confirmed bug is paid for, and both halves of that
- * — whether it is real and what it is worth — are one person's judgement made
- * while reading the mail. A collection here would hold a copy of a decision
- * taken in an inbox, with no screen in the app able to close a row and nobody
- * looking at the ones left open.
+ * A report goes two places and into no table of ours: an email to
+ * `SUPPORT_EMAIL`, and a public issue on the repository. That is the design,
+ * not a shortcut. A confirmed report is paid for, and both halves of that —
+ * whether it is real and what it is worth — are one person's judgement made
+ * while reading the mail; the tracker is where the work then lives. A
+ * collection here would hold a copy of a decision taken in an inbox, with no
+ * screen in the app able to close a row and nobody looking at the ones left
+ * open.
  *
  * `requireVerifiedEmail` on both of the routes the app calls. A signed URL is a
  * capability, so the upload route needs the same guard the feed's does — and
- * the report route needs a reporter who can be written back to, since the
- * reward is agreed in that reply.
+ * the report route needs a sender who can be written back to, since the reward
+ * is agreed in that reply.
  *
  * The two award routes below are the other half, and they carry no session at
- * all: see `bugBountyToken.ts` for what authorises them and what bounds it.
+ * all: see `bountyToken.ts` for what authorises them and what bounds it.
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
-export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
+export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
   /*
    * The award page posts a form, and Fastify parses JSON and nothing else
    * until it is told to. Registered inside this plugin, so it is these routes
@@ -60,8 +63,8 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   app.post(
-    '/bug-reports/upload-url',
-    { preHandler: requireVerifiedEmail, schema: { body: bugReportUploadUrlSchema } },
+    '/feedback/upload-url',
+    { preHandler: requireVerifiedEmail, schema: { body: feedbackUploadUrlSchema } },
     async (request, reply) => {
       const { kind, contentType } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {
@@ -75,34 +78,47 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
       // account-deletion purge finds a person's objects by prefix, and proof
       // of a bug is still their file.
       const extension = objectExtension(contentType)
-      const key = `bug-reports/${request.userId}/${randomUUID()}.${extension}`
+      const key = `feedback/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
   )
 
   app.post(
-    '/bug-reports',
+    '/feedback',
     {
       preHandler: requireVerifiedEmail,
-      schema: { body: bugReportSchema },
+      schema: { body: feedbackSchema },
       /*
        * Tighter than anything else that writes, because the cost of abuse is
-       * not a row we can delete: it is a mailbox a person has to empty by
-       * hand. Six an hour is more than anyone reporting in good faith needs.
+       * not a row we can delete: it is a mailbox a person has to empty by hand
+       * and a public tracker they have to close issues on. Six an hour is more
+       * than anyone reporting in good faith needs.
        */
       config: { rateLimit: { max: 6, timeWindow: '1 hour' } },
     },
     async (request, reply) => {
       const attachments = request.body.attachments ?? []
-      // Before anything is mailed: the same ceilings and the same bucket check
-      // every other attachment goes through. A URL outside our own storage
-      // would turn this mail into a link to wherever the sender liked.
+      // Before anything leaves this process: the same ceilings and the same
+      // bucket check every other attachment goes through. A URL outside our own
+      // storage would put a link to wherever the sender liked in a public issue.
       if (attachments.length > 0) {
         assertAttachmentsAllowed(attachments, app.env.STORAGE_PUBLIC_BASE_URL)
       }
 
       const profile = await getProfile(app.mongo.db, request.userId)
       const address = await emailFor(app.mongo.db, request.userId)
+      const attachmentUrls = attachments.map((item) => item.url)
+
+      /*
+       * The issue first, so the mail can carry its link. It answers `null`
+       * rather than throwing on every failure there is — a tracker being down
+       * must not tell somebody their report failed, when the mail below is
+       * what actually delivers it.
+       */
+      const issueUrl = await openFeedbackIssue(
+        { token: app.env.GITHUB_ISSUE_TOKEN, repo: app.env.GITHUB_ISSUE_REPO },
+        { kind: request.body.kind, body: request.body.body, attachmentCount: attachments.length },
+      )
 
       /*
        * The report's own id, and the only place it is ever written down is the
@@ -110,37 +126,39 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
        * the ledger's `refId`, and the ledger is what remembers it after that.
        */
       const reportId = randomUUID()
-      const awardUrl = bugBountyAwardUrl(
+      const awardUrl = bountyAwardUrl(
         publicApiUrl(app.env),
-        signBugBountyToken(app.env.BETTER_AUTH_SECRET, {
+        signBountyToken(app.env.BETTER_AUTH_SECRET, {
           userId: request.userId,
           reportId,
-          expiresAt: Date.now() + BUG_BOUNTY_TOKEN_TTL_MS,
+          expiresAt: Date.now() + BOUNTY_TOKEN_TTL_MS,
         }),
       )
 
-      const mail = bugReportEmail({
+      const mail = feedbackEmail({
+        kind: request.body.kind,
         body: request.body.body,
-        attachmentUrls: attachments.map((item) => item.url),
-        reporter: {
+        attachmentUrls,
+        sender: {
           userId: request.userId,
           handle: profile?.handle ?? null,
           email: address?.email ?? null,
         },
         awardUrl,
+        issueUrl,
       })
 
       await app.email.send({
         to: app.env.SUPPORT_EMAIL,
         ...mail,
-        // So that confirming a bug — or asking for the step that is missing —
-        // is a reply rather than a lookup.
+        // So that confirming a report — or asking for the step that is missing
+        // — is a reply rather than a lookup.
         ...(address ? { headers: { 'Reply-To': address.email } } : {}),
       })
 
-      // Accepted, not created: there is nothing to fetch afterwards, and the
-      // client has nothing to do with the answer but say thank you.
-      return reply.code(202).send({ ok: true })
+      // Accepted, not created: there is nothing of ours to fetch afterwards,
+      // and the client has nothing to do with the answer but say thank you.
+      return reply.code(202).send({ ok: true, issueUrl })
     },
   )
 
@@ -153,11 +171,11 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
    * that pays — that is the POST below, behind a button a person pressed.
    */
   app.get(
-    '/bug-reports/award',
+    '/feedback/award',
     { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } },
     async (request, reply) => {
       const token = (request.query as { token?: string }).token
-      const claim = verifyBugBountyToken(app.env.BETTER_AUTH_SECRET, token)
+      const claim = verifyBountyToken(app.env.BETTER_AUTH_SECRET, token)
       if (!claim) return html(reply.code(400), page('That link is no longer valid.'))
 
       const profile = await getProfile(app.mongo.db, claim.userId)
@@ -168,12 +186,12 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
       return html(
         reply,
         page(
-          `<p>Reward <strong>${escapeHtml(who(profile.handle, claim.userId))}</strong> for the bug they reported.</p>
-           <form method="post" action="/bug-reports/award?token=${encodeURIComponent(token ?? '')}">
+          `<p>Reward <strong>${escapeHtml(who(profile.handle, claim.userId))}</strong> for what they sent.</p>
+           <form method="post" action="/feedback/award?token=${encodeURIComponent(token ?? '')}">
              <label style="display:block;margin-bottom:8px;color:#555;font-size:14px;">
-               Tokens (${BUG_BOUNTY_MIN}–${BUG_BOUNTY_MAX}), by how serious the bug was
+               Tokens (${BOUNTY_MIN}–${BOUNTY_MAX}), by how much it turned out to be worth
              </label>
-             <input type="number" name="amount" value="${BUG_BOUNTY_MIN}" min="${BUG_BOUNTY_MIN}" max="${BUG_BOUNTY_MAX}" step="100" required
+             <input type="number" name="amount" value="${BOUNTY_MIN}" min="${BOUNTY_MIN}" max="${BOUNTY_MAX}" step="100" required
                     style="font-size:18px;padding:10px;width:140px;border:1px solid #ccc;border-radius:8px;" />
              <p style="color:#888;font-size:13px;">Paid once. Opening this link again pays nothing.</p>
              <button type="submit" style="background:#111;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;cursor:pointer;">
@@ -193,19 +211,19 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
    * forwarded mail worth nothing.
    */
   app.post(
-    '/bug-reports/award',
+    '/feedback/award',
     { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } },
     async (request, reply) => {
       const body = (request.body ?? {}) as { token?: string; amount?: unknown }
       const token = (request.query as { token?: string }).token ?? body.token
-      const claim = verifyBugBountyToken(app.env.BETTER_AUTH_SECRET, token)
+      const claim = verifyBountyToken(app.env.BETTER_AUTH_SECRET, token)
       if (!claim) return html(reply.code(400), page('That link is no longer valid.'))
 
-      const parsed = bugBountyAwardSchema.safeParse({ amount: body.amount })
+      const parsed = bountyAwardSchema.safeParse({ amount: body.amount })
       if (!parsed.success) {
         return html(
           reply.code(400),
-          page(`A reward is between ${BUG_BOUNTY_MIN} and ${BUG_BOUNTY_MAX} tokens.`),
+          page(`A reward is between ${BOUNTY_MIN} and ${BOUNTY_MAX} tokens.`),
         )
       }
 
@@ -216,7 +234,7 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const result = await awardTokens(app.mongo.db, {
         userId: claim.userId,
-        kind: 'bugBounty',
+        kind: 'bounty',
         amount: parsed.data.amount,
         refId: claim.reportId,
       })
@@ -233,7 +251,7 @@ export const bugReportRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 }
 
-/** The reporter, as the person deciding would recognise them. */
+/** The sender, as the person deciding would recognise them. */
 function who(handle: string | null | undefined, userId: string): string {
   return handle ? `@${handle}` : userId
 }
@@ -250,10 +268,10 @@ function page(bodyHtml: string): string {
   return `<!doctype html>
 <html lang="en">
   <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bug bounty</title></head>
+  <title>Bounty</title></head>
   <body style="font-family: -apple-system, system-ui, sans-serif; color:#111; background:#f7f7f7; padding:24px;">
     <div style="max-width:480px; margin:0 auto; background:#fff; border-radius:12px; padding:32px;">
-      <h1 style="font-size:18px;margin:0 0 16px;">Bug bounty</h1>
+      <h1 style="font-size:18px;margin:0 0 16px;">Bounty</h1>
       ${bodyHtml.trimStart().startsWith('<') ? bodyHtml : `<p>${bodyHtml}</p>`}
     </div>
   </body>

@@ -925,18 +925,23 @@ export const tr: Localized<EnMessages> = {
     dataDeletion: 'Verilerimi sil',
     security: 'Güvenlik',
   },
-  bugReport: {
-    title: 'Hata bildir',
-    rowBody: 'Bozuk bir şey mi var? Bize bildir, karşılığında jeton kazan.',
-    intro:
+  feedback: {
+    bugTitle: 'Hata bildir',
+    featureTitle: 'Özellik iste',
+    bugRowBody: 'Bozuk bir şey mi var? Bize bildir, karşılığında jeton kazan.',
+    featureRowBody: 'Eksik bir şey mi var? Neyi kullanmak istediğini yaz.',
+    bugIntro:
       'Ne olduğunu, bunun yerine ne beklediğini ve tekrar nasıl yaşandığını yaz. Ne kadar net anlatırsan o kadar çabuk düzelir.',
+    featureIntro:
+      'Neyi yapabilmek istediğini ve bunu ne için kullanacağını yaz. Neyin yapılacağına karar veren kısım, bunun sana neden gerektiği.',
     reward:
-      'Sorunu yeniden üretip hata olduğunu doğrularsak, bulduğun için jeton kazanırsın — ne kadar olduğu hatanın ne kadar ciddi olduğuna bağlı.',
-    placeholder: 'Ne oldu, ne bekliyordun…',
-    hint: 'Ekran görüntüsü ya da ekran kaydı her şeyden çok işe yarar. Yanıtı hesabındaki e-posta adresine yazıyoruz.',
-    send: 'Bildirimi gönder',
+      'Doğrularsak karşılığında jeton kazanırsın — ne kadar olduğu, sonunda ne kadar değerli çıktığına bağlı.',
+    bugPlaceholder: 'Ne oldu, ne bekliyordun…',
+    featurePlaceholder: 'Ne isterdin, ne için kullanırdın…',
+    hint: 'Ekran görüntüsü ya da ekran kaydı her şeyden çok işe yarar. Yanıtı hesabındaki e-posta adresine yazıyoruz; yazdıkların GitHub’da herkese açık bir konu olarak açılabilir — adın olmadan.',
+    send: 'Gönder',
     sending: 'Gönderiliyor…',
-    sent: 'Teşekkürler. Her bildirimi okuyor ve e-postayla yanıtlıyoruz.',
+    sent: 'Teşekkürler. Hepsini okuyor ve e-postayla yanıtlıyoruz.',
     failed: 'Gönderilemedi. Birazdan tekrar dene.',
   },
   kitchen: {
@@ -1258,7 +1263,7 @@ export const tr: Localized<EnMessages> = {
     referralSubscription: 'Davet abonelik bonusu',
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
-    bugBounty: 'Hata ödülü',
+    bounty: 'Hata ödülü',
   },
 
   cosmetics: {

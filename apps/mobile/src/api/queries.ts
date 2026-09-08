@@ -1,5 +1,5 @@
 import {
-  type BugReportInput,
+  type FeedbackInput,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -1601,11 +1601,11 @@ export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
 }
 
 /**
- * Proof for a bug report — a screenshot or a screen recording — into the
- * `bug-reports/` prefix its own signing route keys by user.
+ * Proof for a bug report or a feature request — a screenshot or a screen
+ * recording — into the `feedback/` prefix its own signing route keys by user.
  */
-export function uploadBugReportMedia(input: PresignedUpload): Promise<Media> {
-  return uploadToSigningRoute('/bug-reports/upload-url', input)
+export function uploadFeedbackMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/feedback/upload-url', input)
 }
 
 export interface PresignedUpload {
@@ -1656,15 +1656,16 @@ async function uploadToSigningRoute(path: string, input: PresignedUpload): Promi
 }
 
 /**
- * Send a bug report.
+ * Send a bug report or a feature request.
  *
- * Nothing is invalidated because nothing is stored: the server turns the
- * report into an email to the team, so there is no list for this to land in
- * and nothing to read back.
+ * Nothing is invalidated because nothing of ours is stored: the server turns
+ * it into an email and an issue on the repository, so there is no list for
+ * this to land in and nothing to read back.
  */
-export function useReportBug() {
+export function useSendFeedback() {
   return useMutation({
-    mutationFn: (input: BugReportInput) => api.post<{ ok: boolean }>('/bug-reports', input),
+    mutationFn: (input: FeedbackInput) =>
+      api.post<{ ok: boolean; issueUrl: string | null }>('/feedback', input),
   })
 }
 

@@ -928,18 +928,23 @@ export const fr: Localized<EnMessages> = {
     dataDeletion: 'Supprimer mes données',
     security: 'Sécurité',
   },
-  bugReport: {
-    title: 'Signaler un bug',
-    rowBody: 'Quelque chose ne marche pas ? Dites-le-nous et gagnez des jetons.',
-    intro:
+  feedback: {
+    bugTitle: 'Signaler un bug',
+    featureTitle: 'Proposer une fonctionnalité',
+    bugRowBody: 'Quelque chose ne marche pas ? Dites-le-nous et gagnez des jetons.',
+    featureRowBody: 'Il manque quelque chose ? Dites-nous ce que vous utiliseriez.',
+    bugIntro:
       'Racontez ce qui s’est passé, ce que vous attendiez à la place et comment le reproduire. Plus c’est précis, plus vite c’est corrigé.',
+    featureIntro:
+      'Dites-nous ce que vous aimeriez pouvoir faire et à quoi cela vous servirait. C’est le « pourquoi » qui décide de ce qui sera construit.',
     reward:
-      'Si nous parvenons à le reproduire et confirmons que c’est un bug, vous gagnez des jetons pour l’avoir trouvé — leur nombre dépend de sa gravité.',
-    placeholder: 'Ce qui s’est passé et ce que vous attendiez…',
-    hint: 'Une capture ou un enregistrement d’écran aide plus que tout le reste. Nous répondons par e-mail, à l’adresse de votre compte.',
-    send: 'Envoyer le signalement',
+      'Si nous le confirmons, vous gagnez des jetons — leur nombre dépend de ce que cela vaut au bout du compte.',
+    bugPlaceholder: 'Ce qui s’est passé et ce que vous attendiez…',
+    featurePlaceholder: 'Ce que vous aimeriez et à quoi cela servirait…',
+    hint: 'Une capture ou un enregistrement d’écran aide plus que tout le reste. Nous répondons par e-mail, et ce que vous écrivez peut être publié comme ticket public sur GitHub, sans votre nom.',
+    send: 'Envoyer',
     sending: 'Envoi…',
-    sent: 'Merci. Nous lisons chaque signalement et répondons par e-mail.',
+    sent: 'Merci. Nous lisons tout et répondons par e-mail.',
     failed: 'L’envoi a échoué. Réessayez dans un instant.',
   },
   kitchen: {
@@ -1263,7 +1268,7 @@ export const fr: Localized<EnMessages> = {
     referralSubscription: 'Bonus d’abonnement filleul',
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
-    bugBounty: 'Prime de bug',
+    bounty: 'Prime de bug',
   },
 
   cosmetics: {

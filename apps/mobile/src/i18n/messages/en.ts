@@ -965,18 +965,23 @@ export const en = {
     dataDeletion: 'Delete my data',
     security: 'Security',
   },
-  bugReport: {
-    title: 'Report a bug',
-    rowBody: 'Something broken? Tell us, and earn tokens for it.',
-    intro:
+  feedback: {
+    bugTitle: 'Report a bug',
+    featureTitle: 'Request a feature',
+    bugRowBody: 'Something broken? Tell us, and earn tokens for it.',
+    featureRowBody: 'Something missing? Tell us what you would use.',
+    bugIntro:
       'Tell us what happened, what you expected instead, and how to make it happen again. The more exactly you describe it, the sooner it is fixed.',
+    featureIntro:
+      'Tell us what you would like to be able to do, and what you would use it for. Why it matters to you is the part that decides what gets built.',
     reward:
-      'If we can reproduce it and confirm it is a bug, you earn tokens for finding it — how many depends on how serious it turns out to be.',
-    placeholder: 'What happened, and what you expected…',
-    hint: 'A screenshot or a screen recording helps more than anything else. We answer by email, to the address on your account.',
-    send: 'Send report',
+      'If we confirm it, you earn tokens for it — how many depends on how much it turns out to be worth.',
+    bugPlaceholder: 'What happened, and what you expected…',
+    featurePlaceholder: 'What you would like, and what you would use it for…',
+    hint: 'A screenshot or a screen recording helps more than anything else. We answer by email, and what you write may be opened as a public issue on GitHub — without your name on it.',
+    send: 'Send',
     sending: 'Sending…',
-    sent: 'Thank you. We read every report and answer by email.',
+    sent: 'Thank you. We read every one of these and answer by email.',
     failed: 'That did not send. Try again in a moment.',
   },
   kitchen: {
@@ -1300,7 +1305,7 @@ export const en = {
     referralSubscription: 'Invite subscription bonus',
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
-    bugBounty: 'Bug bounty',
+    bounty: 'Bug bounty',
   },
 
   cosmetics: {

@@ -1,59 +1,57 @@
 import { describe, expect, it } from 'vitest'
-import { bugReportEmail } from './templates'
+import { feedbackEmail } from './templates'
 
-describe('bugReportEmail', () => {
-  const reporter = { userId: 'user-1', handle: 'bugfinder', email: 'finder@example.com' }
-  const awardUrl = 'https://api.langx.io/bug-reports/award?token=v1.user-1.report-1.1.sig'
+describe('feedbackEmail', () => {
+  const sender = { userId: 'user-1', handle: 'bugfinder', email: 'finder@example.com' }
+  const awardUrl = 'https://api.langx.io/feedback/award?token=v1.user-1.report-1.1.sig'
+  const issueUrl = 'https://github.com/langx/langx/issues/42'
 
-  it('names the finder in the subject and carries the proof as links', () => {
-    const mail = bugReportEmail({
-      body: 'The wallet shows a negative balance after a refused gift.',
-      attachmentUrls: ['https://media.example.test/bug-reports/user-1/proof.jpg'],
-      reporter,
-      awardUrl,
-    })
-
-    expect(mail.subject).toBe('Bug report from @bugfinder')
-    expect(mail.html).toContain('https://media.example.test/bug-reports/user-1/proof.jpg')
-    expect(mail.text).toContain('negative balance')
-    expect(mail.text).toContain('finder@example.com')
-  })
-
-  it('carries the link that pays the finder, in both bodies', () => {
-    const mail = bugReportEmail({
+  const mail = (overrides: Partial<Parameters<typeof feedbackEmail>[0]> = {}) =>
+    feedbackEmail({
+      kind: 'bug',
       body: 'The wallet shows a negative balance after a refused gift.',
       attachmentUrls: [],
-      reporter,
+      sender,
       awardUrl,
+      issueUrl,
+      ...overrides,
     })
 
-    expect(mail.html).toContain(awardUrl)
-    expect(mail.text).toContain(awardUrl)
+  it('says which kind it is, and who sent it', () => {
+    expect(mail().subject).toBe('Bug report from @bugfinder')
+    expect(mail({ kind: 'feature' }).subject).toBe('Feature request from @bugfinder')
   })
 
   it('falls back to the user id when the account has no handle yet', () => {
-    const mail = bugReportEmail({
-      body: 'Onboarding will not finish.',
-      attachmentUrls: [],
-      reporter: { userId: 'user-2', handle: null, email: null },
-      awardUrl,
-    })
-
-    expect(mail.subject).toBe('Bug report from user-2')
-    expect(mail.html).not.toContain('Proof')
+    const built = mail({ sender: { userId: 'user-2', handle: null, email: null } })
+    expect(built.subject).toBe('Bug report from user-2')
+    expect(built.html).not.toContain('Proof')
   })
 
-  it('escapes what the reporter typed', () => {
-    // A report is user-typed text landing in an HTML body, and the one that
-    // closes the tag it is inside is the one worth a test.
-    const mail = bugReportEmail({
-      body: '<img src=x onerror="alert(1)"> breaks the profile screen.',
-      attachmentUrls: [],
-      reporter,
-      awardUrl,
+  it('carries the proof, the issue and the link that pays, in both bodies', () => {
+    const built = mail({
+      attachmentUrls: ['https://media.example.test/feedback/user-1/proof.jpg'],
     })
 
-    expect(mail.html).not.toContain('<img')
-    expect(mail.html).toContain('&#60;img')
+    for (const body of [built.html, built.text]) {
+      expect(body).toContain('https://media.example.test/feedback/user-1/proof.jpg')
+      expect(body).toContain(issueUrl)
+      expect(body).toContain(awardUrl)
+    }
+  })
+
+  it('says so when no issue was opened', () => {
+    const built = mail({ issueUrl: null })
+    expect(built.text).toContain('No issue was opened.')
+    expect(built.html).toContain('GITHUB_ISSUE_TOKEN')
+  })
+
+  it('escapes what the sender typed', () => {
+    // A report is user-typed text landing in an HTML body, and the one that
+    // closes the tag it is inside is the one worth a test.
+    const built = mail({ body: '<img src=x onerror="alert(1)"> breaks the profile screen.' })
+
+    expect(built.html).not.toContain('<img')
+    expect(built.html).toContain('&#60;img')
   })
 })

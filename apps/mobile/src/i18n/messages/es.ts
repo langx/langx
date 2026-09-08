@@ -921,18 +921,22 @@ export const es: Localized<EnMessages> = {
     dataDeletion: 'Eliminar mis datos',
     security: 'Seguridad',
   },
-  bugReport: {
-    title: 'Informar de un error',
-    rowBody: '¿Algo no funciona? Cuéntanoslo y gana fichas por ello.',
-    intro:
+  feedback: {
+    bugTitle: 'Informar de un error',
+    featureTitle: 'Pedir una función',
+    bugRowBody: '¿Algo no funciona? Cuéntanoslo y gana fichas por ello.',
+    featureRowBody: '¿Falta algo? Cuéntanos qué usarías.',
+    bugIntro:
       'Cuéntanos qué pasó, qué esperabas que pasara y cómo volver a provocarlo. Cuanto más exacto seas, antes se arregla.',
-    reward:
-      'Si conseguimos reproducirlo y confirmamos que es un error, ganas fichas por haberlo encontrado: cuántas depende de lo grave que resulte.',
-    placeholder: 'Qué pasó y qué esperabas…',
-    hint: 'Una captura o una grabación de pantalla ayuda más que ninguna otra cosa. Respondemos por correo, a la dirección de tu cuenta.',
-    send: 'Enviar informe',
+    featureIntro:
+      'Cuéntanos qué te gustaría poder hacer y para qué lo usarías. Por qué te importa es lo que decide qué se construye.',
+    reward: 'Si lo confirmamos, ganas fichas por ello: cuántas depende de lo que acabe valiendo.',
+    bugPlaceholder: 'Qué pasó y qué esperabas…',
+    featurePlaceholder: 'Qué te gustaría y para qué lo usarías…',
+    hint: 'Una captura o una grabación de pantalla ayuda más que ninguna otra cosa. Respondemos por correo, y lo que escribas puede abrirse como una incidencia pública en GitHub, sin tu nombre.',
+    send: 'Enviar',
     sending: 'Enviando…',
-    sent: 'Gracias. Leemos todos los informes y respondemos por correo.',
+    sent: 'Gracias. Leemos todos y respondemos por correo.',
     failed: 'No se ha enviado. Inténtalo de nuevo en un momento.',
   },
   kitchen: {
@@ -1254,7 +1258,7 @@ export const es: Localized<EnMessages> = {
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
-    bugBounty: 'Recompensa por error',
+    bounty: 'Recompensa por error',
   },
 
   cosmetics: {

@@ -14,7 +14,6 @@ import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
-import { bugReportRoutes } from './routes/bugReports'
 import { emailRoutes } from './routes/email'
 import { appConfigRoutes } from './routes/appConfig'
 import { registerAuthRoutes } from './routes/auth'
@@ -23,6 +22,7 @@ import { cityRoutes } from './routes/cities'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
 import { feedRoutes } from './routes/feed'
+import { feedbackRoutes } from './routes/feedback'
 import { followRoutes } from './routes/follows'
 import { likeRoutes } from './routes/likes'
 import { handleRoutes } from './routes/handles'
@@ -302,7 +302,7 @@ export async function buildApp({
   await app.register(moderationRoutes)
   await app.register(accountRoutes)
   await app.register(emailRoutes)
-  await app.register(bugReportRoutes)
+  await app.register(feedbackRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

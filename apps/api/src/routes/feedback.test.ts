@@ -32,7 +32,7 @@ class KeyRecordingStorage implements StorageProvider {
   }
 }
 
-describe('bug reports', () => {
+describe('feedback', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
@@ -43,13 +43,13 @@ describe('bug reports', () => {
 
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
-    handle = await connectToDatabase(replSet.getUri(), 'langx_bug_reports_test')
+    handle = await connectToDatabase(replSet.getUri(), 'langx_feedback_test')
     await ensureIndexes(handle.db)
 
     const env = loadEnv({
       NODE_ENV: 'test',
       MONGODB_URI: replSet.getUri(),
-      MONGODB_DB: 'langx_bug_reports_test',
+      MONGODB_DB: 'langx_feedback_test',
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
@@ -107,10 +107,15 @@ describe('bug reports', () => {
   })
 
   function report(payload: Record<string, unknown>) {
-    return app.inject({ method: 'POST', url: '/bug-reports', headers: { cookie }, payload })
+    return app.inject({
+      method: 'POST',
+      url: '/feedback',
+      headers: { cookie },
+      payload: { kind: 'bug', ...payload },
+    })
   }
 
-  it('mails the report to the support address, replying to the finder', async () => {
+  it('mails the report to the support address, replying to the sender', async () => {
     const response = await report({
       body: 'The wallet screen shows a negative balance after a gift is refused.',
     })
@@ -129,7 +134,7 @@ describe('bug reports', () => {
       body: 'Here is what the wallet screen looks like when it happens.',
       attachments: [
         {
-          url: `${PUBLIC_BASE}/bug-reports/${userId}/proof.jpg`,
+          url: `${PUBLIC_BASE}/feedback/${userId}/proof.jpg`,
           contentType: 'image/jpeg',
           sizeBytes: 1024,
         },
@@ -137,7 +142,7 @@ describe('bug reports', () => {
     })
 
     expect(response.statusCode, response.body).toBe(202)
-    expect(emailSender.messages.at(-1)?.text).toContain(`${PUBLIC_BASE}/bug-reports/`)
+    expect(emailSender.messages.at(-1)?.text).toContain(`${PUBLIC_BASE}/feedback/`)
   })
 
   it('refuses proof that is not in our own bucket', async () => {
@@ -157,7 +162,7 @@ describe('bug reports', () => {
       body: 'The wallet screen shows a negative balance after a refused gift.',
       attachments: [
         {
-          url: `${PUBLIC_BASE}/bug-reports/${userId}/proof.jpg`,
+          url: `${PUBLIC_BASE}/feedback/${userId}/proof.jpg`,
           contentType: 'image/jpeg',
           sizeBytes: MAX_IMAGE_BYTES + 1,
         },
@@ -168,6 +173,27 @@ describe('bug reports', () => {
     expect(emailSender.messages).toHaveLength(0)
   })
 
+  it('mails a feature request as one, and opens no issue without a token', async () => {
+    const response = await report({
+      kind: 'feature',
+      body: 'A dark theme for the web app would help at night.',
+    })
+
+    expect(response.statusCode, response.body).toBe(202)
+    expect(response.json()).toMatchObject({ issueUrl: null })
+    expect(emailSender.messages.at(-1)?.subject).toBe('Feature request from @bugfinder')
+  })
+
+  it('refuses a kind it does not have', async () => {
+    const response = await report({
+      kind: 'complaint',
+      body: 'The wallet screen shows a negative balance after a refused gift.',
+    })
+
+    expect(response.statusCode).toBe(400)
+    expect(emailSender.messages).toHaveLength(0)
+  })
+
   it('refuses a report too short to act on', async () => {
     const response = await report({ body: 'broken' })
 
@@ -175,22 +201,22 @@ describe('bug reports', () => {
     expect(emailSender.messages).toHaveLength(0)
   })
 
-  it('signs an upload URL into the bug-report prefix', async () => {
+  it('signs an upload URL into the feedback prefix', async () => {
     const response = await app.inject({
       method: 'POST',
-      url: '/bug-reports/upload-url',
+      url: '/feedback/upload-url',
       headers: { cookie },
       payload: { kind: 'image', contentType: 'image/jpeg' },
     })
 
     expect(response.statusCode, response.body).toBe(200)
-    expect(storage.keys.at(-1)).toMatch(new RegExp(`^bug-reports/${userId}/[\\w-]+\\.jpg$`))
+    expect(storage.keys.at(-1)).toMatch(new RegExp(`^feedback/${userId}/[\\w-]+\\.jpg$`))
   })
 
   it('will not sign an upload URL for a type it does not serve', async () => {
     const response = await app.inject({
       method: 'POST',
-      url: '/bug-reports/upload-url',
+      url: '/feedback/upload-url',
       headers: { cookie },
       payload: { kind: 'image', contentType: 'application/zip' },
     })
@@ -202,7 +228,7 @@ describe('bug reports', () => {
   async function awardPath(body: string): Promise<string> {
     const response = await report({ body })
     expect(response.statusCode, response.body).toBe(202)
-    const match = /https?:\/\/\S*\/bug-reports\/award\?token=\S+/.exec(
+    const match = /https?:\/\/\S*\/feedback\/award\?token=\S+/.exec(
       emailSender.messages.at(-1)?.text ?? '',
     )
     if (!match) throw new Error('no award link in the report email')
@@ -221,7 +247,7 @@ describe('bug reports', () => {
   async function balance(): Promise<number> {
     const rows = await handle.db
       .collection<{ amount: number }>(COLLECTIONS.tokenLedger)
-      .find({ userId, kind: 'bugBounty' })
+      .find({ userId, kind: 'bounty' })
       .toArray()
     return rows.reduce((total, row) => total + row.amount, 0)
   }
@@ -293,7 +319,7 @@ describe('bug reports', () => {
   it('needs a session', async () => {
     const response = await app.inject({
       method: 'POST',
-      url: '/bug-reports',
+      url: '/feedback',
       payload: { body: 'The wallet screen shows a negative balance after a refused gift.' },
     })
 

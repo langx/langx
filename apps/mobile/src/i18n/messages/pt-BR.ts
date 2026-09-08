@@ -916,18 +916,23 @@ export const ptBR: Localized<EnMessages> = {
     dataDeletion: 'Excluir meus dados',
     security: 'Segurança',
   },
-  bugReport: {
-    title: 'Relatar um erro',
-    rowBody: 'Algo quebrado? Conte pra gente e ganhe fichas por isso.',
-    intro:
+  feedback: {
+    bugTitle: 'Relatar um erro',
+    featureTitle: 'Pedir um recurso',
+    bugRowBody: 'Algo quebrado? Conte pra gente e ganhe fichas por isso.',
+    featureRowBody: 'Está faltando algo? Conte o que você usaria.',
+    bugIntro:
       'Conte o que aconteceu, o que você esperava no lugar disso e como fazer acontecer de novo. Quanto mais exato, mais rápido a gente corrige.',
+    featureIntro:
+      'Conte o que você gostaria de conseguir fazer e para que usaria. O porquê é o que decide o que vai ser construído.',
     reward:
-      'Se conseguirmos reproduzir e confirmar que é um erro, você ganha fichas por ter encontrado — quantas depende de quão grave ele for.',
-    placeholder: 'O que aconteceu e o que você esperava…',
-    hint: 'Uma captura ou gravação de tela ajuda mais do que qualquer outra coisa. Respondemos por e-mail, no endereço da sua conta.',
-    send: 'Enviar relato',
+      'Se confirmarmos, você ganha fichas por isso — quantas depende do quanto acabou valendo.',
+    bugPlaceholder: 'O que aconteceu e o que você esperava…',
+    featurePlaceholder: 'O que você gostaria e para que usaria…',
+    hint: 'Uma captura ou gravação de tela ajuda mais do que qualquer outra coisa. Respondemos por e-mail, e o que você escrever pode virar uma issue pública no GitHub — sem o seu nome.',
+    send: 'Enviar',
     sending: 'Enviando…',
-    sent: 'Obrigado. Lemos todos os relatos e respondemos por e-mail.',
+    sent: 'Obrigado. Lemos tudo e respondemos por e-mail.',
     failed: 'Não deu para enviar. Tente de novo daqui a pouco.',
   },
   kitchen: {
@@ -1251,7 +1256,7 @@ export const ptBR: Localized<EnMessages> = {
     referralSubscription: 'Bônus de assinatura do convidado',
     referralWelcome: 'Bônus de boas-vindas por convite',
     gift: 'Presente de cada hora',
-    bugBounty: 'Recompensa por erro',
+    bounty: 'Recompensa por erro',
   },
 
   cosmetics: {

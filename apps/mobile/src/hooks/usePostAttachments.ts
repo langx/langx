@@ -21,9 +21,9 @@ import { advanceUpload, UPLOAD_START, uploadSent, type ActiveUpload } from '../l
  */
 export function usePostAttachments(
   /**
-   * Which route signs the URL. The default is the feed's; the bug-report
-   * screen passes its own, because the prefix a file is signed into is what
-   * the account purge later finds it by.
+   * Which route signs the URL. The default is the feed's; the feedback screen
+   * passes its own, because the prefix a file is signed into is what the
+   * account purge later finds it by.
    */
   upload: (input: PresignedUpload) => Promise<Media> = uploadPostMedia,
 ) {

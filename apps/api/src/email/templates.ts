@@ -1,4 +1,4 @@
-import { webUrl, type Locale } from '@langx/shared'
+import { webUrl, type FeedbackKind, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
@@ -344,35 +344,40 @@ function escapeHtml(value: string): string {
 }
 
 /**
- * A bug report, on its way to `SUPPORT_EMAIL`.
+ * A bug report or a feature request, on its way to `SUPPORT_EMAIL`.
  *
  * The one email in this file with no locale. Every other one is read by the
  * person it is about; this one is read by us, and the repo is English.
  *
- * It is also the whole feature on the server side: nothing is stored, so this
- * mail is the report, and the reply to it is the confirmation and the reward.
- * `Reply-To` is set to the reporter by the route, which is what makes that
- * reply a single tap rather than a lookup.
+ * It is also where the whole thing is decided: nothing is stored, so this mail
+ * is the report. `Reply-To` is set to the sender by the route, the issue link
+ * is where the work is tracked, and the award link is where they are paid.
  */
-export function bugReportEmail(input: {
+export function feedbackEmail(input: {
+  kind: FeedbackKind
   body: string
   /** Public URLs of whatever was attached as proof, already in our own bucket. */
   attachmentUrls: readonly string[]
-  reporter: { userId: string; handle: string | null; email: string | null }
-  /** Where the reward is decided and sent — see `bugBountyToken.ts`. */
+  sender: { userId: string; handle: string | null; email: string | null }
+  /** Where the reward is decided and sent — see `bountyToken.ts`. */
   awardUrl: string
+  /** The issue this opened, or `null` where no token is configured. */
+  issueUrl: string | null
 }): Email {
-  const who = input.reporter.handle ? `@${input.reporter.handle}` : input.reporter.userId
-  const subject = `Bug report from ${who}`
+  const who = input.sender.handle ? `@${input.sender.handle}` : input.sender.userId
+  const subject = `${input.kind === 'bug' ? 'Bug report' : 'Feature request'} from ${who}`
   const from = [
-    `Reporter: ${who}`,
-    `User id: ${input.reporter.userId}`,
-    ...(input.reporter.email ? [`Email: ${input.reporter.email}`] : []),
+    `From: ${who}`,
+    `User id: ${input.sender.userId}`,
+    ...(input.sender.email ? [`Email: ${input.sender.email}`] : []),
   ]
 
   const links = input.attachmentUrls.map(
     (url) => `<li><a href="${encodeURI(url)}">${escapeHtml(url)}</a></li>`,
   )
+  const issueLine = input.issueUrl
+    ? `<p>Tracked at <a href="${encodeURI(input.issueUrl)}">${escapeHtml(input.issueUrl)}</a></p>`
+    : '<p style="color: #888; font-size: 12px;">No issue was opened — GITHUB_ISSUE_TOKEN is unset or GitHub refused.</p>'
 
   return {
     subject,
@@ -382,8 +387,9 @@ export function bugReportEmail(input: {
     <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
     <p style="white-space: pre-wrap;">${escapeHtml(input.body)}</p>
     ${links.length ? `<p><strong>Proof</strong></p><ul>${links.join('')}</ul>` : ''}
+    ${issueLine}
     <p>${button(encodeURI(input.awardUrl), 'Confirm and set the reward')}</p>
-    <p style="color: #888; font-size: 12px;">Opens a page where you set the amount and pay the finder. One payment per report.</p>
+    <p style="color: #888; font-size: 12px;">Opens a page where you set the amount and pay the sender. One payment per report.</p>
     <p style="color: #888; font-size: 12px;">${from.map(escapeHtml).join('<br />')}</p>
   </body>
 </html>`,
@@ -392,6 +398,7 @@ export function bugReportEmail(input: {
       '',
       ...input.attachmentUrls,
       '',
+      input.issueUrl ? `Tracked at: ${input.issueUrl}` : 'No issue was opened.',
       `Confirm and set the reward: ${input.awardUrl}`,
       '',
       ...from,

@@ -70,18 +70,19 @@ export const TOKEN_KINDS = [
    */
   'gift',
   /**
-   * Paid to whoever reported a bug we could reproduce and confirm.
+   * Paid to whoever sent a bug report we could reproduce, or a feature request
+   * we took.
    *
    * Not earned in the app at all: the amount is decided by a person reading
-   * the report, in the link the report's email carries, and `refId` is that
-   * report's id — so the ledger's unique index is what stops one report being
-   * paid twice, however many times the link is opened.
+   * the report, in the link its email carries, and `refId` is that report's id
+   * — so the ledger's unique index is what stops one report being paid twice,
+   * however many times the link is opened.
    *
    * A grant kind for the same reason `referral` is: the week, month and year
    * tables rank practising a language, and finding a bug is not that. It stays
    * spendable, because grants credit the all-time total.
    */
-  'bugBounty',
+  'bounty',
   /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
@@ -122,7 +123,7 @@ export const TOKEN_GRANT_KINDS = [
   'referralSubscription',
   'referralWelcome',
   'gift',
-  'bugBounty',
+  'bounty',
 ] as const satisfies readonly TokenKind[]
 
 export function isGrantKind(kind: TokenKind): boolean {
