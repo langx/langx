@@ -53,6 +53,13 @@ the repos themselves.
 | `token.langx.io` | Cloudflare Pages project `token-website` (**Git-integrated**) | push to `main` of `langx/token-website`; Pages builds it                   |
 | `docs.langx.io`  | GitBook, Git Sync on `langx/docs`                             | push to `main` of `langx/docs`                                             |
 
+`insights.langx.io` is the sixth, and the only one with no hosting of its own:
+the public stats page is served by `langx-api` alongside the API, so it ships
+with `fly deploy` and nothing else. The hostname answers only once the Fly
+certificate, the CNAME and the one redirect rule in
+[`insights.md`](insights.md) are in place; until then the page is at
+`api.langx.io/public/insights`.
+
 `token-website` is the only one Cloudflare builds from Git; moving or renaming
 that repo means reconnecting the Pages project in the dashboard first.
 

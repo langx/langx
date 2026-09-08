@@ -9,6 +9,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { resetPublicStatsCache } from '../modules/insights/publicStats'
 import { CONTRIBUTORS_TOP, resetContributorsCache } from '../modules/kitchen/contributors'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -18,11 +19,12 @@ import { CapturingEmailSender } from '../testSupport/authFlow'
 const TRUSTED_ORIGIN = 'https://app.example.test'
 
 /**
- * The two routes that let api.langx.io move off v1's Express without the
- * newsletter form or token.langx.io going dark. Neither has a session, so the
- * harness signs nobody in.
+ * Everything under `/public/`: the two routes that let api.langx.io move off
+ * v1's Express without the newsletter form or token.langx.io going dark, and
+ * the stats page that joined them. None of it has a session, so the harness
+ * signs nobody in.
  */
-describe('the public routes v1 used to serve', () => {
+describe('the routes anybody can call', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
@@ -146,6 +148,50 @@ describe('the public routes v1 used to serve', () => {
         expect(entry).not.toHaveProperty('userId')
       }
       expect(body).not.toHaveProperty('viewer')
+    })
+  })
+
+  describe('the public stats page', () => {
+    beforeEach(() => {
+      resetPublicStatsCache()
+    })
+
+    it('counts members, and says nothing about any of them', async () => {
+      for (const [id, guest] of [
+        ['ada', false],
+        ['bo', false],
+        ['visitor', true],
+      ] as const) {
+        await handle.db.collection(COLLECTIONS.profiles).insertOne({
+          _id: id,
+          handle: id,
+          displayName: id.toUpperCase(),
+          nativeLanguages: [{ code: 'tr' }],
+          learning: [{ code: 'en', level: 'a2', priority: 0 }],
+          streak: { current: 1, longest: 2, lastQualifiedDay: '2026-09-01' },
+          createdAt: new Date(),
+          ...(guest ? { guest: true } : {}),
+        } as never)
+      }
+
+      const response = await app.inject({ method: 'GET', url: '/public/stats' })
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['cache-control']).toContain('max-age')
+
+      const body = response.json<Record<string, unknown>>()
+      expect(body.totals).toMatchObject({ members: 2 })
+      // Nothing on this page may be narrowed to a person, so the body must
+      // carry no id, handle or name at all — not even one that would be true.
+      // Quoted, because `ada` is a substring of a language name (Kannada) and
+      // a bare match would fail on a body that leaked nothing.
+      expect(JSON.stringify(body)).not.toMatch(/"ada"|handle|displayName/)
+    })
+
+    it('serves the page that draws them', async () => {
+      const response = await app.inject({ method: 'GET', url: '/public/insights' })
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['content-type']).toContain('text/html')
+      expect(response.body).toContain('/public/stats')
     })
   })
 
