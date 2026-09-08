@@ -136,6 +136,26 @@ right-hand column of that document's table. The two variables it needs are in
 `.env.example`; the key is a **personal** API key, which reads everything the
 account can and therefore stays on one machine.
 
+### Two things about the funnel that look like bugs
+
+**It disagrees with `insight.langx.io`, and both are right.** The public page
+counts rows in our own database, all of them, since the beginning. The funnel
+is _ordered_ and _windowed_: a person is on step three only if they did steps
+one and two first, and all of it inside the window. Somebody who joined last
+year and wrote today is a message on the public page and nothing at all in the
+funnel. The two answer different questions and will never match — a message
+total far above the funnel's message step is the normal shape, not a fault.
+
+**It counts measured installs, not installs.** Only a build with
+`EXPO_PUBLIC_POSTHOG_KEY` sends anything, and anyone who turned the Settings
+switch off sends nothing after that. Development builds are invisible by
+design. So the top of the funnel is the population the SDK could see, and
+every rate below it is a rate within that population.
+
+Neither is worth writing a number down for: run the command, the numbers are
+current. What is worth writing down is that both of these look like broken
+instrumentation the first time, and neither is.
+
 ## Checking it works
 
 ```bash

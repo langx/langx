@@ -108,8 +108,8 @@ async function query(body) {
   if (!response.ok) {
     const detail = (await response.text()).slice(0, 400)
     const hint =
-      response.status === 401
-        ? '\nA 401 is the key: it must be a *personal* API key, not the project write key.'
+      response.status === 401 || response.status === 403
+        ? '\nThat is the key. PostHog answers 403, not 401, for one it does not accept,\nwhich is why this line exists. It must be a *personal* API key rather than\nthe project write key, it must still be live, and PostHog scopes them — this\none needs read access to the project it is asking about.'
         : response.status === 404
           ? `\nA 404 is the project id: ${PROJECT_ID} is not a project on ${HOST}. It is the\nnumber in the project's own URL, and the region may be the other one.`
           : ''
