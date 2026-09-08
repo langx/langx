@@ -3,7 +3,7 @@ import type { Db, Document, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
 /**
- * The numbers behind the public page at `insights.langx.io`.
+ * The numbers behind the public page at `insight.langx.io`.
  *
  * What may be on this page is decided in `docs/decisions.md` → _The analytics
  * dashboard is private_: users, languages, messages, corrections and streaks,

@@ -3,8 +3,8 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { Resend } from 'resend'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { INSIGHTS_IMAGES, readInsightsImage, readInsightsPage } from '../modules/insights/page'
-import { PUBLIC_STATS_TTL_MS, readPublicStats } from '../modules/insights/publicStats'
+import { INSIGHT_IMAGES, readInsightImage, readInsightPage } from '../modules/insight/page'
+import { PUBLIC_STATS_TTL_MS, readPublicStats } from '../modules/insight/publicStats'
 import { readContributors } from '../modules/kitchen/contributors'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 
@@ -102,9 +102,9 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /**
-   * The numbers behind `insights.langx.io`: how much language exchange is
+   * The numbers behind `insight.langx.io`: how much language exchange is
    * happening, and in which languages. Aggregates only — see
-   * `modules/insights/publicStats.ts` for what may be on this page and what
+   * `modules/insight/publicStats.ts` for what may be on this page and what
    * may never be.
    */
   app.get(
@@ -119,14 +119,14 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
   /**
    * The page that draws them. Served from here rather than from a static host
    * so that it deploys with the endpoint it reads and can never be a version
-   * behind it; `insights.langx.io` points at this app and redirects `/` here
-   * (docs/insights.md).
+   * behind it; `insight.langx.io` points at this app and redirects `/` here
+   * (docs/insight.md).
    */
   app.get(
-    '/public/insights',
+    '/public/insight',
     { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } },
     async (_request, reply) => {
-      const page = await readInsightsPage()
+      const page = await readInsightPage()
       return reply
         .type('text/html; charset=utf-8')
         .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)
@@ -142,13 +142,13 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
    * be traversed out of.
    */
   app.get(
-    '/public/insights/:asset',
+    '/public/insight/:asset',
     {
-      schema: { params: z.object({ asset: z.enum(INSIGHTS_IMAGES) }) },
+      schema: { params: z.object({ asset: z.enum(INSIGHT_IMAGES) }) },
       config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
     },
     async (request, reply) => {
-      const image = await readInsightsImage(request.params.asset)
+      const image = await readInsightImage(request.params.asset)
       return reply
         .type('image/png')
         .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)

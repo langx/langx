@@ -1,4 +1,4 @@
-# insights.langx.io — the public stats page
+# insight.langx.io — the public stats page
 
 One page, no login, built entirely from our own database: how many people are
 here, how much they write, how much they correct, and in which languages.
@@ -11,6 +11,14 @@ the transparency v1's `insight.langx.io` was carrying still can be. This is
 that transparency as a separate artefact: **a different page, a different
 audience, and a different source of data** — not the private dashboard with a
 lock removed.
+
+The hostname is singular, and not a choice: `insight.langx.io` is where v1's
+Plausible was, and two things that already shipped still point at it — the
+"Insights" row on Our Kitchen (`apps/mobile/src/lib/externalLinks.ts`) and the
+badge in the repository's own README. Both have been dead since that instance
+went away. This page is what makes them work again, which is also why the
+route, the module and this file are named for it in the singular. Do not
+"correct" any of them to `insights`; that spelling has nothing pointing at it.
 
 ## The line
 
@@ -34,9 +42,9 @@ behind it, and would inflate all of them.
 
 | Part    | Where                                                                           |
 | ------- | ------------------------------------------------------------------------------- |
-| Numbers | `apps/api/src/modules/insights/publicStats.ts`, served as `GET /public/stats`   |
-| Page    | `apps/api/assets/insights.html`, served as `GET /public/insights`               |
-| Logo    | `apps/api/assets/lockup*.png` and `icon.png`, as `GET /public/insights/<name>`  |
+| Numbers | `apps/api/src/modules/insight/publicStats.ts`, served as `GET /public/stats`    |
+| Page    | `apps/api/assets/insight.html`, served as `GET /public/insight`                 |
+| Logo    | `apps/api/assets/lockup*.png` and `icon.png`, as `GET /public/insight/<name>`   |
 | Routes  | `apps/api/src/routes/public.ts`, beside the newsletter form and the token board |
 
 The three images are **downscales of `langx/branding`**, not new artwork:
@@ -64,19 +72,21 @@ nothing on a public page is worth a database pass per visitor.
 Not in this repo, and not automated — the same kind of by-hand step as
 everything in [`repo-map.md`](repo-map.md):
 
-1. **Fly**: `fly certs add insights.langx.io -a langx-api`, then add the
+1. **Fly**: `fly certs add insight.langx.io -a langx-api`, then add the
    `_acme-challenge` record it prints.
-2. **Cloudflare DNS**: `insights` as a CNAME to `langx-api.fly.dev`, proxied.
-3. **Cloudflare redirect rule** (301): `insights.langx.io/` →
-   `/public/insights`. Without it the bare hostname answers with the API's 404
+2. **Cloudflare DNS**: `insight` as a CNAME to `langx-api.fly.dev`, proxied —
+   copy whatever `api` has, since that hostname is already this Fly app behind
+   Cloudflare and is known to work.
+3. **Cloudflare redirect rule** (301): `insight.langx.io/` →
+   `/public/insight`. Without it the bare hostname answers with the API's 404
    body, because `/` is not a route.
 
-`api.langx.io/public/insights` keeps working either way; the domain is a nicer
+`api.langx.io/public/insight` keeps working either way; the domain is a nicer
 address for the same page, not a second deployment of it.
 
 ## Changing what is on it
 
-The numbers are typed in `publicStats.ts` and drawn in `insights.html`, and the
+The numbers are typed in `publicStats.ts` and drawn in `insight.html`, and the
 two are the whole of it — there is no dashboard to configure and nothing to
 click. Adding a field means adding it to the table at the top of this file
 first, because that table is the promise; if a proposed field belongs in the

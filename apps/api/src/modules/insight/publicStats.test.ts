@@ -2,7 +2,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
-import { INSIGHTS_IMAGES, readInsightsImage, readInsightsPage } from './page'
+import { INSIGHT_IMAGES, readInsightImage, readInsightPage } from './page'
 import { readPublicStats, resetPublicStatsCache, WINDOW_DAYS } from './publicStats'
 
 /** Fixed, so "in the window" and "before it" are the same days on every run. */
@@ -31,7 +31,7 @@ describe('public stats', () => {
 
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
-    handle = await connectToDatabase(replSet.getUri(), 'langx_insights_test')
+    handle = await connectToDatabase(replSet.getUri(), 'langx_insight_test')
     await handle.db.collection(COLLECTIONS.profiles).insertMany([
       profile('ada', {
         nativeLanguages: [{ code: 'tr' }],
@@ -135,22 +135,22 @@ describe('public stats', () => {
   })
 })
 
-describe('the insights page', () => {
+describe('the insight page', () => {
   /**
    * The asset exists and is found from source. Whether it reaches the image is
    * the Dockerfile's `dist/assets` copy, which is the same line the share-card
    * fonts arrive by.
    */
   it('is readable, and asks for the numbers it draws', async () => {
-    const page = await readInsightsPage()
+    const page = await readInsightPage()
     expect(page).toContain('/public/stats')
   })
 
   it('carries every image it names, and names every image it draws', async () => {
-    const page = await readInsightsPage()
-    for (const name of INSIGHTS_IMAGES) {
-      expect((await readInsightsImage(name)).byteLength).toBeGreaterThan(0)
-      expect(page).toContain(`/public/insights/${name}`)
+    const page = await readInsightPage()
+    for (const name of INSIGHT_IMAGES) {
+      expect((await readInsightImage(name)).byteLength).toBeGreaterThan(0)
+      expect(page).toContain(`/public/insight/${name}`)
     }
   })
 })

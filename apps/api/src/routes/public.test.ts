@@ -9,8 +9,8 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
-import { INSIGHTS_IMAGES } from '../modules/insights/page'
-import { resetPublicStatsCache } from '../modules/insights/publicStats'
+import { INSIGHT_IMAGES } from '../modules/insight/page'
+import { resetPublicStatsCache } from '../modules/insight/publicStats'
 import { CONTRIBUTORS_TOP, resetContributorsCache } from '../modules/kitchen/contributors'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -189,22 +189,22 @@ describe('the routes anybody can call', () => {
     })
 
     it('serves the page that draws them', async () => {
-      const response = await app.inject({ method: 'GET', url: '/public/insights' })
+      const response = await app.inject({ method: 'GET', url: '/public/insight' })
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toContain('text/html')
       expect(response.body).toContain('/public/stats')
     })
 
     it('serves the brand images it names, and only those', async () => {
-      for (const asset of INSIGHTS_IMAGES) {
-        const response = await app.inject({ method: 'GET', url: `/public/insights/${asset}` })
+      for (const asset of INSIGHT_IMAGES) {
+        const response = await app.inject({ method: 'GET', url: `/public/insight/${asset}` })
         expect(response.statusCode).toBe(200)
         expect(response.headers['content-type']).toContain('image/png')
         expect(response.rawPayload.byteLength).toBeGreaterThan(0)
       }
       // The list is closed, so the route cannot be walked out of the assets
       // directory — the parameter never reaches the filesystem as typed.
-      const stranger = await app.inject({ method: 'GET', url: '/public/insights/..%2f..%2fenv.ts' })
+      const stranger = await app.inject({ method: 'GET', url: '/public/insight/..%2f..%2fenv.ts' })
       expect(stranger.statusCode).toBe(400)
     })
   })

@@ -5,9 +5,9 @@ it to work. The _why_ — a private dashboard, PostHog over a self-hosted
 Plausible, EU Cloud — is in [`decisions.md`](decisions.md) → _The analytics
 dashboard is private_. The store-form consequences are in
 [`store/privacy-data-safety.md`](store/privacy-data-safety.md). Nothing here is
-public: the page anyone can read is `insights.langx.io`, which is counted from
+public: the page anyone can read is `insight.langx.io`, which is counted from
 our own database and shares no field with this — see
-[`insights.md`](insights.md).
+[`insight.md`](insight.md).
 
 ## Where it lives
 
