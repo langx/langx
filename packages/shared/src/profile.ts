@@ -13,6 +13,27 @@ export const GENDERS = ['female', 'male', 'other', 'undisclosed'] as const
 export type Gender = (typeof GENDERS)[number]
 export const genderSchema = z.enum(GENDERS)
 
+/**
+ * How long a profile must wait between one gender change and the next.
+ *
+ * The field used to be write-once, on the grounds that it is an input to
+ * somebody else's discovery filter and a filter whose subjects can move
+ * between its buckets on a whim is not a filter. The concern was real; the
+ * remedy was too blunt. Somebody who transitions after signing up had exactly
+ * one way to correct their profile, which was to delete the account — a price
+ * paid entirely by the people least able to afford it, to close a hole nobody
+ * was climbing through.
+ *
+ * A cooldown answers the filter argument as well as a lock does: at half a
+ * year per move, nothing anybody could do with this is worth doing. The first
+ * change is free — see `setGender`, whose filter matches a profile that has
+ * never changed — which keeps the old "answer the question you skipped at
+ * onboarding" path working exactly as it did.
+ */
+export const GENDER_CHANGE_COOLDOWN_DAYS = 180
+/** Derived, so the number people read and the number the filter uses cannot drift. */
+export const GENDER_CHANGE_COOLDOWN_MS = GENDER_CHANGE_COOLDOWN_DAYS * 24 * 60 * 60 * 1000
+
 const nativeLanguageSchema = z.object({ code: languageCodeSchema })
 
 const learningLanguageSchema = z.object({
@@ -78,9 +99,24 @@ export const INTEREST_SUGGESTIONS = [
 ] as const
 export const BIO_MAX_LENGTH = 500
 export const DISPLAY_NAME_MAX_LENGTH = 50
+/**
+ * Short, because it holds a pronoun set and not a sentence — "she/her",
+ * "they/them", "o" — and a public field with room for a paragraph is a public
+ * field somebody will put a paragraph in.
+ */
+export const PRONOUNS_MAX_LENGTH = 24
 
 const displayNameSchema = z.string().trim().min(1).max(DISPLAY_NAME_MAX_LENGTH)
 const bioSchema = z.string().trim().max(BIO_MAX_LENGTH)
+/**
+ * Free text rather than a set of options, which is the unusual choice here and
+ * the deliberate one. Pronouns are a fact about a language, not about a person:
+ * Turkish has one third-person pronoun for everybody, Russian and Arabic inflect
+ * the verb, and an English list of three options serves none of the eight
+ * locales properly. What somebody writes here is for the people reading their
+ * profile, in whatever language they share.
+ */
+const pronounsSchema = z.string().trim().max(PRONOUNS_MAX_LENGTH)
 const interestsSchema = z.array(z.string().trim().min(1).max(30)).max(MAX_INTERESTS)
 const nativeLanguagesSchema = z.array(nativeLanguageSchema).min(1).max(MAX_NATIVE_LANGUAGES)
 const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_LEARNING_LANGUAGES)
@@ -193,24 +229,24 @@ export const countryFromLocationSchema = z.object({
 export type CountryFromLocationInput = z.infer<typeof countryFromLocationSchema>
 
 /**
- * Body of `POST /profiles/me/gender` — disclosing a gender that onboarding
- * left as `undisclosed`.
+ * Body of `POST /profiles/me/gender` — setting or changing a gender, at most
+ * once every `GENDER_CHANGE_COOLDOWN_DAYS`.
  *
- * `undisclosed` is not in the enum, because this route is a one-way door and
- * there is nothing to go back to: the repository's filter only matches a
- * profile that is still `undisclosed`, so the value it writes is the last one
- * that field will ever hold. Offering `undisclosed` here would be offering a
- * no-op that reads like an undo.
+ * The whole enum, `undisclosed` included. The route used to refuse it, because
+ * it was a one-way door and there was nothing to go back to; now that the door
+ * opens both ways there is no reason to keep somebody from withdrawing an
+ * answer they gave. Going quiet costs a move like any other, which is what
+ * stops `female → undisclosed → male` from being a way around the cooldown.
  *
  * Its own route rather than a key on `updateProfileSchema` for the same reason
- * `countryFromLocationSchema` has one: "written once, under a condition" is
- * not a thing a general-purpose PATCH body can say, and a caller reading that
- * schema should not have to know that one of its fields is secretly special.
+ * `countryFromLocationSchema` has one: "written under a condition" is not a
+ * thing a general-purpose PATCH body can say, and a caller reading that schema
+ * should not have to know that one of its fields is secretly special.
  */
-export const discloseGenderSchema = z.object({
-  gender: z.enum(['female', 'male', 'other']),
+export const setGenderSchema = z.object({
+  gender: genderSchema,
 })
-export type DiscloseGenderInput = z.infer<typeof discloseGenderSchema>
+export type SetGenderInput = z.infer<typeof setGenderSchema>
 
 /**
  * Body of `PATCH /profiles/me`. Deliberately excludes `handle` (no rename —
@@ -221,19 +257,25 @@ export type DiscloseGenderInput = z.infer<typeof discloseGenderSchema>
  * `gender` and `birthDate` are excluded too, and for a reason the list above
  * does not cover: both are inputs to somebody *else's* discovery filter
  * (`discoverProfiles` matches on `gender` and on a `birthDate` band). A field
- * that decides whose results you appear in cannot also be a field you can
- * retype — that is not editing a profile, it is stepping in and out of other
- * people's searches at will. `birthDate` has always been absent from here;
- * `gender` joining it closes the half that was left open.
+ * that decides whose results you appear in is not a field you can retype
+ * between two searches.
  *
- * The one move that is still allowed is `undisclosed` → a real value, once,
- * through `discloseGenderSchema` above. It cannot be used to cycle, because
- * there is no way back.
+ * `birthDate` has no way out of that at all. `gender` does — `setGenderSchema`
+ * above, rate-limited to one move per `GENDER_CHANGE_COOLDOWN_DAYS` — because
+ * a person's gender, unlike the day they were born, can genuinely change. The
+ * cooldown is what keeps that from being a way to step in and out of other
+ * people's searches at will.
+ *
+ * `pronouns` is here rather than there, and the difference is the whole rule:
+ * nothing filters on it. It is how somebody is addressed, not a bucket they
+ * are sorted into, so it edits like `bio` does.
  */
 export const updateProfileSchema = z
   .object({
     displayName: displayNameSchema,
     bio: bioSchema,
+    /** Empty clears it — there is no separate "remove my pronouns" call. */
+    pronouns: pronounsSchema,
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
     interests: interestsSchema,
@@ -346,6 +388,14 @@ export const sharedProfileSchema = z.object({
   displayName: z.string(),
   avatarUrl: z.string().optional(),
   bio: z.string().optional(),
+  /**
+   * Here even though `gender` is not, which looks inconsistent and is not. The
+   * two answer different questions: `gender` is a bucket other people's
+   * searches sort you into, and this is how to address you. Leaving it out
+   * would mean the one page we hand to strangers is the one page that gets
+   * somebody's pronouns wrong.
+   */
+  pronouns: z.string().optional(),
   country: z.string().optional(),
   nativeLanguages: z.array(z.object({ code: z.string() })),
   learning: z.array(z.object({ code: z.string(), level: languageLevelSchema })),

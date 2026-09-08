@@ -1,4 +1,10 @@
-import { CURRENT_TERMS_VERSION, deviceLinkTarget, PLAN_LIMITS, WEB_HOST } from '@langx/shared'
+import {
+  CURRENT_TERMS_VERSION,
+  deviceLinkTarget,
+  GENDER_CHANGE_COOLDOWN_MS,
+  PLAN_LIMITS,
+  WEB_HOST,
+} from '@langx/shared'
 import QRCode from 'qrcode'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
@@ -256,11 +262,12 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
   /**
    * `gender` decides whose discovery results you appear in, so it is not a
-   * field to retype — the same reasoning that has always kept `birthDate` out
-   * of `PATCH /profiles/me`. The one move still allowed is answering the
-   * question if onboarding left it blank, and that is a one-way door.
+   * field to retype between two searches — the same reasoning that keeps
+   * `birthDate` out of `PATCH /profiles/me`. It is not frozen either, though:
+   * unlike a birth date, a gender can genuinely change, so the rule is a
+   * cooldown rather than a lock. See `setGender`.
    */
-  describe('gender is set once', () => {
+  describe('gender changes on a cooldown', () => {
     async function onboard(email: string, handleName: string, gender: string) {
       const user = await newUser(email)
       const created = await app.inject({
@@ -271,6 +278,15 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
       expect(created.statusCode, created.body).toBe(201)
       return user
+    }
+
+    function setGender(user: { cookie: string }, gender: string) {
+      return app.inject({
+        method: 'POST',
+        url: '/profiles/me/gender',
+        headers: { cookie: user.cookie },
+        payload: { gender },
+      })
     }
 
     it('drops gender from the update body instead of writing it', async () => {
@@ -290,26 +306,29 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.json<Profile>().bio).toBe('Still me')
     })
 
-    it('lets somebody who skipped the question answer it, once', async () => {
+    /**
+     * Onboarding does not write `genderChangedAt`, so every account arrives
+     * with one move in hand. That is what keeps the old "answer the question
+     * you skipped" path working, and why there was no migration to write.
+     */
+    it('lets somebody who skipped the question answer it', async () => {
       const user = await onboard('gender-disclose@example.com', 'genderdisclose', 'undisclosed')
 
-      const first = await app.inject({
-        method: 'POST',
-        url: '/profiles/me/gender',
-        headers: { cookie: user.cookie },
-        payload: { gender: 'male' },
-      })
+      const first = await setGender(user, 'male')
       expect(first.statusCode, first.body).toBe(200)
       expect(first.json<Profile>().gender).toBe('male')
+    })
 
-      const second = await app.inject({
-        method: 'POST',
-        url: '/profiles/me/gender',
-        headers: { cookie: user.cookie },
-        payload: { gender: 'female' },
-      })
-      expect(second.statusCode).toBe(400)
-      expect(second.json()).toMatchObject({ code: 'VALIDATION_FAILED' })
+    it('refuses a second change inside the cooldown, and says when', async () => {
+      const user = await onboard('gender-soon@example.com', 'gendersoon', 'undisclosed')
+      expect((await setGender(user, 'male')).statusCode).toBe(200)
+
+      const second = await setGender(user, 'female')
+      expect(second.statusCode).toBe(409)
+      expect(second.json()).toMatchObject({ code: 'GENDER_CHANGE_TOO_SOON' })
+      // The date the client draws its locked row from — without it the screen
+      // would have to recompute the rule the server just enforced.
+      expect(typeof second.json<{ retryAt: string }>().retryAt).toBe('string')
 
       const after = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
@@ -317,42 +336,57 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(after?.gender).toBe('male')
     })
 
-    it('refuses to reopen the question — there is no way back to undisclosed', async () => {
+    it('allows the next change once the cooldown has passed', async () => {
+      const user = await onboard('gender-again@example.com', 'genderagain', 'female')
+      expect((await setGender(user, 'male')).statusCode).toBe(200)
+
+      // Age the profile past the window rather than waiting half a year for it.
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            genderChangedAt: new Date(Date.now() - GENDER_CHANGE_COOLDOWN_MS - 1000),
+          },
+        },
+      )
+
+      const again = await setGender(user, 'other')
+      expect(again.statusCode, again.body).toBe(200)
+      expect(again.json<Profile>().gender).toBe('other')
+    })
+
+    /**
+     * The route used to refuse this: it was a one-way door, so there was
+     * nothing to go back to. Now that the door opens both ways, withdrawing an
+     * answer is a move like any other — and it costs one, which is what stops
+     * `female → undisclosed → male` from being a way around the cooldown.
+     */
+    it('lets somebody withdraw an answer, at the usual price', async () => {
       const user = await onboard('gender-reopen@example.com', 'genderreopen', 'female')
 
-      const response = await app.inject({
-        method: 'POST',
-        url: '/profiles/me/gender',
-        headers: { cookie: user.cookie },
-        payload: { gender: 'undisclosed' },
-      })
-      // Refused by the schema, not by the repository: `undisclosed` is not a
-      // member of `discloseGenderSchema`, so it never reaches the filter.
-      expect(response.statusCode).toBe(400)
+      const response = await setGender(user, 'undisclosed')
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<Profile>().gender).toBe('undisclosed')
+
+      // The move is spent: undisclosed is not a free square to pivot from.
+      expect((await setGender(user, 'male')).statusCode).toBe(409)
     })
 
     /**
      * The condition is in the update's filter rather than in a read before it,
      * so two taps that race cannot both win. Without that, the second would
-     * overwrite the first and the field would be editable after all — by
+     * overwrite the first and the cooldown would be advisory — beatable by
      * anyone willing to tap twice quickly.
      */
-    it('settles concurrent disclosures on one answer', async () => {
+    it('settles concurrent changes on one answer', async () => {
       const user = await onboard('gender-race@example.com', 'genderrace', 'undisclosed')
 
       const responses = await Promise.all(
-        (['female', 'male', 'other'] as const).map((gender) =>
-          app.inject({
-            method: 'POST',
-            url: '/profiles/me/gender',
-            headers: { cookie: user.cookie },
-            payload: { gender },
-          }),
-        ),
+        (['female', 'male', 'other'] as const).map((gender) => setGender(user, gender)),
       )
 
       expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(1)
-      expect(responses.filter((r) => r.statusCode === 400)).toHaveLength(2)
+      expect(responses.filter((r) => r.statusCode === 409)).toHaveLength(2)
     })
   })
 

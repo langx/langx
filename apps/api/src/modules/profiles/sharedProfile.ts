@@ -42,6 +42,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
         displayName: 1,
         avatarUrl: 1,
         bio: 1,
+        pronouns: 1,
         birthDate: 1,
         country: 1,
         nativeLanguages: 1,
@@ -62,6 +63,9 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
     displayName: profile.displayName ?? profile.handle,
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
     ...(profile.bio ? { bio: profile.bio } : {}),
+    // Here although `gender` is not — see `sharedProfileSchema`. This page
+    // goes to strangers, which makes it the worst one to get wrong.
+    ...(profile.pronouns ? { pronouns: profile.pronouns } : {}),
     ...(profile.country ? { country: profile.country } : {}),
     nativeLanguages: (profile.nativeLanguages ?? []).map((l) => ({ code: l.code })),
     learning: (profile.learning ?? []).map((l) => ({

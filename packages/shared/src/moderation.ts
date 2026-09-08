@@ -11,9 +11,19 @@ export const blockSchema = z.object({
 })
 export type BlockInput = z.infer<typeof blockSchema>
 
+/**
+ * The order is the order the report screen lists them in, so it is a product
+ * decision rather than an alphabetisation.
+ *
+ * `hate_speech` sits next to `harassment` because it is a kind of it, and
+ * separating them out is the point: somebody reporting an attack on who they
+ * are should not have to file it under a word that describes the volume rather
+ * than the reason. What we can count, we can eventually act on.
+ */
 export const REPORT_REASONS = [
   'spam',
   'harassment',
+  'hate_speech',
   'inappropriate_content',
   'fake_profile',
   'underage',
