@@ -10,7 +10,7 @@
  *
  *   node apps/mobile/scripts/collect-store-metadata.mjs
  *   node apps/mobile/scripts/collect-store-screenshots.mjs
- *   cd apps/mobile && fastlane deliver --skip_binary_upload
+ *   cd apps/mobile && fastlane deliver
  *
  * English is deliberately not written. It is already correct on the version in
  * App Store Connect, and its release notes are edited there per release —
