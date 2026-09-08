@@ -62,6 +62,17 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  /**
+   * A per-route ceiling, and none of it under `NODE_ENV=test` — the same
+   * exemption `app.ts` makes for the global limiter, for the same reason. A
+   * suite drives its requests through one synthetic connection in seconds, so
+   * the limiter measures the harness rather than a person: six reports an hour
+   * is spent on fixtures before the first assertion about anything else, and
+   * the symptom is whichever test ran last failing on a 429.
+   */
+  const limit = (max: number, timeWindow: string) =>
+    app.env.NODE_ENV === 'test' ? false : { max, timeWindow }
+
   app.post(
     '/feedback/upload-url',
     { preHandler: requireVerifiedEmail, schema: { body: feedbackUploadUrlSchema } },
@@ -94,7 +105,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
        * and a public tracker they have to close issues on. Six an hour is more
        * than anyone reporting in good faith needs.
        */
-      config: { rateLimit: { max: 6, timeWindow: '1 hour' } },
+      config: { rateLimit: limit(6, '1 hour') },
     },
     async (request, reply) => {
       const attachments = request.body.attachments ?? []
@@ -172,7 +183,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.get(
     '/feedback/award',
-    { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } },
+    { config: { rateLimit: limit(30, '1 minute') } },
     async (request, reply) => {
       const token = (request.query as { token?: string }).token
       const claim = verifyBountyToken(app.env.BETTER_AUTH_SECRET, token)
@@ -212,7 +223,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.post(
     '/feedback/award',
-    { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } },
+    { config: { rateLimit: limit(30, '1 minute') } },
     async (request, reply) => {
       const body = (request.body ?? {}) as { token?: string; amount?: unknown }
       const token = (request.query as { token?: string }).token ?? body.token

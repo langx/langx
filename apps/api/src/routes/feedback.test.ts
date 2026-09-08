@@ -327,10 +327,16 @@ describe('feedback', () => {
   })
 
   it('needs a session', async () => {
+    // A complete payload, because validation runs before the preHandler: an
+    // incomplete one would be refused as malformed and prove nothing about
+    // who is allowed to post.
     const response = await app.inject({
       method: 'POST',
       url: '/feedback',
-      payload: { body: 'The wallet screen shows a negative balance after a refused gift.' },
+      payload: {
+        kind: 'bug',
+        body: 'The wallet screen shows a negative balance after a refused gift.',
+      },
     })
 
     expect(response.statusCode).toBe(401)
