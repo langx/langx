@@ -102,6 +102,26 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /**
+   * The bare hostname of the stats site.
+   *
+   * `insight.langx.io` is this same process, so without this its root answers
+   * with the API's 404 body — the page is at `/public/insight` and nothing
+   * sends anyone there. Cloudflare can redirect it too, and that is one more
+   * setting kept by hand in a dashboard nobody can read from here; doing it in
+   * the route means the behaviour ships with the page and a test holds it.
+   *
+   * Matched on the first label rather than the whole name, so a self-hosted
+   * instance gets the same behaviour without this file naming a domain. Every
+   * other host keeps the root it had: `api.langx.io/` is not a page.
+   */
+  app.get('/', async (request, reply) => {
+    if (request.hostname.split('.')[0] !== 'insight') {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Route not found')
+    }
+    return reply.redirect('/public/insight', 301)
+  })
+
+  /**
    * The numbers behind `insight.langx.io`: how much language exchange is
    * happening, and in which languages. Aggregates only — see
    * `modules/insight/publicStats.ts` for what may be on this page and what
