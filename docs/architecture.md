@@ -146,7 +146,7 @@ This is communication work, and it is part of the delivery:
 | **Minimum age**     | **16+** (was 18+ until September 2026; the Terms moved with it); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                          |
 | **Licence**         | **BSD 3-Clause, public repo** — same as v1                                                                                                                                                                                                                                                                                                                                                              |
 | **Codebase**        | Written from scratch in langx2; the abandoned Expo rewrite used only as a screen/route reference                                                                                                                                                                                                                                                                                                        |
-| Release model       | Brownfield update — same bundle ID and package name; full release on Play, phased on iOS                                                                                                                                                                                                                                                                                                                |
+| Release model       | Brownfield update — same bundle ID and package name; full release to everyone on both stores                                                                                                                                                                                                                                                                                                            |
 
 ## Open-source constraints
 
@@ -1055,10 +1055,10 @@ only thing that matters is preserving store identity.
 
 ### Releasing
 
-- **Play releases to everyone at once**, phased release on iOS. There is no
-  staged rollout to widen — see the release runbook for what a stage would
-  have bought and what therefore has to be checked before the submission
-  rather than after it.
+- **Both stores release to everyone at once.** No staged rollout on Play, no
+  phased release on iOS — see the release runbook for what a stage would have
+  bought and what therefore has to be checked before the submission rather
+  than after it.
 - The existing keystore is imported into EAS; `versionCode`/`buildNumber` start
   **above 119**.
 - **App Privacy / Data Safety forms updated** — see

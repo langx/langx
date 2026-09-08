@@ -836,12 +836,21 @@ not needed again for any of them. What each step was, for a re-run:
 
 ## Release
 
-- **Play:** full release, every time. `eas.json` sets
-  `releaseStatus: completed` and names no rollout, so a submission goes to
-  100% of users; there is no stage to widen afterwards and no Console step
-  after `eas submit`. What a stage would have bought is written below, and is
-  bought instead by watching after the fact.
-- **iOS:** phased release.
+**Both stores release to 100% of users, every time.** There is no stage to
+widen, on either platform, and no post-submission step to remember.
+
+- **Play:** `eas.json` sets `releaseStatus: completed` and names no rollout, so
+  a submission goes straight to everyone. Nothing to do in the Console after
+  `eas submit`.
+- **iOS:** the version page's **Phased Release for App Store Automatic
+  Updates** must read _Release update to all users immediately_. This is the
+  one that needs an eye: it is a per-version radio in App Store Connect, not a
+  repo setting, so it is checked when the version is prepared rather than
+  configured once.
+
+What a stage would have bought is written below, and is bought instead by
+watching after the fact.
+
 - Watch crash-free sessions. The `minSdk` bump means some v1 devices will stop
   receiving updates — check the install base's OS distribution first so that is
   a decision, not a surprise.
