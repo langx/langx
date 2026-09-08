@@ -1273,6 +1273,7 @@ export const en = {
   },
 
   cosmetics: {
+    stickersPractice: 'Practice stickers',
     stickersStarter: 'Starter stickers',
     frameSlate: 'Slate frame',
     frameBronze: 'Bronze frame',

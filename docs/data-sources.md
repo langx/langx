@@ -38,17 +38,18 @@ the three places above is a licence breach, and the repo is public.
 
 ## Stickers — half Microsoft, half ours
 
-The starter sticker pack is twelve flat SVGs. Six are drawn for this app and
-carry no licence but ours; six are lifted unmodified from Microsoft's Fluent
-Emoji, whose flat variant is the closest match to what v3 draws.
+Each sticker pack is twelve flat SVGs, split down the middle: six are drawn for
+this app and carry no licence but ours, and six are lifted unmodified from
+Microsoft's Fluent Emoji, whose flat variant is the closest match to what v3
+draws. Two packs so far, `starter` and `practice`.
 
-|             |                                                                                                |
-| ----------- | ---------------------------------------------------------------------------------------------- |
-| Source      | <https://github.com/microsoft/fluentui-emoji>                                                  |
-| Licence     | MIT                                                                                            |
-| Files       | `apps/mobile/assets/stickers/starter/` — `book`, `bulb`, `clock`, `heart`, `party`, `sparkles` |
-| Notice      | `apps/mobile/assets/stickers/LICENSE-fluentui-emoji`                                           |
-| Credited in | this file, `README.md`, and the app's "Our Kitchen" screen                                     |
+|             |                                                                                                                                                                                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source      | <https://github.com/microsoft/fluentui-emoji>                                                                                                                                                             |
+| Licence     | MIT                                                                                                                                                                                                       |
+| Files       | `apps/mobile/assets/stickers/starter/` — `book`, `bulb`, `clock`, `heart`, `party`, `sparkles`; `apps/mobile/assets/stickers/practice/` — `rocket`, `trophy`, `star`, `thinking`, `hourglass`, `bullseye` |
+| Notice      | `apps/mobile/assets/stickers/LICENSE-fluentui-emoji`                                                                                                                                                      |
+| Credited in | this file, `README.md`, and the app's "Our Kitchen" screen                                                                                                                                                |
 
 MIT asks for one thing: the copyright notice travels with the files. It is in
 the directory beside them, which is why that file is there and must not be

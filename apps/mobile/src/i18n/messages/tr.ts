@@ -1231,6 +1231,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Pratik stickerları',
     stickersStarter: 'Başlangıç stickerları',
     frameSlate: 'Arduvaz çerçeve',
     frameBronze: 'Bronz çerçeve',

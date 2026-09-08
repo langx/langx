@@ -1223,6 +1223,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Stickers de prática',
     stickersStarter: 'Stickers iniciais',
     frameSlate: 'Moldura ardósia',
     frameBronze: 'Moldura de bronze',

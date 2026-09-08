@@ -1256,6 +1256,7 @@ export const de: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Übungs-Sticker',
     stickersStarter: 'Starter-Sticker',
     frameSlate: 'Schieferrahmen',
     frameBronze: 'Bronzerahmen',
