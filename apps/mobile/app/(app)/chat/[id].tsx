@@ -424,9 +424,22 @@ export default function ChatScreen() {
    */
   function meetingTheirWhenFor(message: MessageDto): string {
     if (!message.meeting || !partner?.timezone) return ''
-    if (partner.timezone === me.data?.timezone) return ''
-    const at = clockFor(new Date(message.meeting.startsAt), partner.timezone)
-    return t('chat.meetingTheirTime', { time: at })
+    const at = new Date(message.meeting.startsAt)
+    const theirs = clockFor(at, partner.timezone)
+    /*
+     * Compared as drawn, not as named.
+     *
+     * Comparing the zone *identifiers* looked equivalent and is not: a reader
+     * whose own profile has no `timezone` falls back to the device, so the
+     * check ran against `undefined` and never matched — and the card drew
+     * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
+     * exists to avoid. Two zones can also differ by name and agree right now
+     * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
+     * useless line.
+     */
+    return theirs === clockFor(at, me.data?.timezone)
+      ? ''
+      : t('chat.meetingTheirTime', { time: theirs })
   }
 
   /**
