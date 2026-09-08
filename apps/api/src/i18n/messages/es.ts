@@ -16,6 +16,8 @@ export const es: Localized<ServerMessages> = {
       other: 'Ganaste {count} insignias nuevas 🏅',
     },
     badgeBody: 'Bien hecho. Sigue así.',
+    meetingTitle: 'Tu intercambio de idiomas es en una hora',
+    meetingBody: 'Toca para abrir la conversación.',
   },
 
   email: {

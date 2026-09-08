@@ -138,6 +138,36 @@ export const COSMETICS: readonly Cosmetic[] = [
    * MIT, unmodified — see `docs/data-sources.md`, which is a licence condition
    * and not a courtesy.
    */
+  /**
+   * The second pack, and the one that proves packs are not a ladder: it is
+   * priced the same as the first because neither is a rung above the other,
+   * and somebody who wants this one should not have to buy that one first.
+   *
+   * Where `starter` is what you say *in* a conversation, these are about the
+   * practice itself — slow down, again, let us switch languages, we got there.
+   * Six drawn here and six from Fluent Emoji, the same split and the same
+   * rules: no lettering, no filters, no skin tones.
+   */
+  {
+    id: 'stickers.practice',
+    kind: 'stickers',
+    label: 'Practice stickers',
+    price: 1000,
+    stickers: [
+      'slower',
+      'again',
+      'swap',
+      'sprout',
+      'steps',
+      'summit',
+      'rocket',
+      'trophy',
+      'star',
+      'thinking',
+      'hourglass',
+      'bullseye',
+    ],
+  },
   {
     id: 'stickers.starter',
     kind: 'stickers',

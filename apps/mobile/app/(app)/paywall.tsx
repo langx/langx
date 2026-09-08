@@ -159,6 +159,16 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
     body: 'paywall.whoViewedBody',
     shipped: true,
   },
+  sendTranslation: {
+    title: 'paywall.sendTranslation',
+    body: 'paywall.sendTranslationBody',
+    shipped: true,
+  },
+  deckExport: {
+    title: 'paywall.deckExport',
+    body: 'paywall.deckExportBody',
+    shipped: true,
+  },
   incognito: {
     title: 'paywall.incognito',
     body: 'paywall.incognitoBody',
@@ -202,6 +212,8 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
+  sendTranslation: PRO_PLUS_BENEFIT_COPY.sendTranslation.title,
+  deckExport: PRO_PLUS_BENEFIT_COPY.deckExport.title,
   profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,
   incognito: PRO_PLUS_BENEFIT_COPY.incognito.title,
   nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,

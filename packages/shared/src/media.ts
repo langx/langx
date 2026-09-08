@@ -64,11 +64,11 @@ export const MAX_VIDEO_SECONDS = 60
 /**
  * How many files one message or one post may carry.
  *
- * Six, matching `PLAN_LIMITS.maxPhotos` on a profile, so there is one number
- * to remember rather than two that differ for no reason. The count is not a
- * cost control — the per-file ceilings above are — it is what keeps a gallery
- * a gallery instead of an album, and it bounds the number of video players a
- * single row can allocate.
+ * Six. It used to be six *because* a profile gallery held six, which stopped
+ * being a reason the moment that allowance became a plan ladder. It stands on
+ * its own: the count is not a cost control — the per-file ceilings above are —
+ * it is what keeps a message a message instead of an album, and it bounds the
+ * number of video players a single row can allocate.
  */
 export const MAX_ATTACHMENTS = 6
 

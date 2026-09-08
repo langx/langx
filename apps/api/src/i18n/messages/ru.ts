@@ -26,6 +26,8 @@ export const ru: Localized<ServerMessages> = {
       other: 'Вы получили новых значков: {count} 🏅',
     },
     badgeBody: 'Отличная работа. Так держать.',
+    meetingTitle: 'Языковой обмен через час',
+    meetingBody: 'Нажми, чтобы открыть беседу.',
   },
 
   email: {

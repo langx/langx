@@ -1140,6 +1140,37 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect((profile as { photos?: unknown[] })?.photos).toHaveLength(max)
     })
 
+    it('gives a subscriber the larger gallery, and takes it back when it lapses', async () => {
+      const user = await onboarded('photos-tier@example.com', 'photostier')
+      const profiles = handle.db.collection(COLLECTIONS.profiles)
+      const { addPhoto: addPhotoDirect } = await import('../modules/profiles/profiles')
+
+      // The whole point of the ladder: the free row is not the answer for
+      // everybody any more, and reading it would refuse this account at 5.
+      await profiles.updateOne(
+        { _id: user.userId as never },
+        { $set: { photos: [], 'entitlement.tier': 'pro' } },
+      )
+      const proMax = PLAN_LIMITS.pro.maxPhotos
+      for (let i = 0; i < proMax; i += 1) {
+        await addPhotoDirect(handle.db, user.userId, `${BUCKET}/pro${i}.jpg`)
+      }
+      await expect(
+        addPhotoDirect(handle.db, user.userId, `${BUCKET}/one-too-many.jpg`),
+      ).rejects.toThrow()
+
+      // An expired subscription is free, however late its webhook was — so the
+      // gallery it bought stops accepting new photos. The ones already there
+      // are never deleted.
+      await profiles.updateOne(
+        { _id: user.userId as never },
+        { $set: { 'entitlement.expiresAt': new Date(Date.now() - 1000) } },
+      )
+      await expect(addPhotoDirect(handle.db, user.userId, `${BUCKET}/lapsed.jpg`)).rejects.toThrow()
+      const after = await profiles.findOne({ _id: user.userId as never })
+      expect((after as { photos?: unknown[] })?.photos).toHaveLength(proMax)
+    })
+
     it('removes a photo by url', async () => {
       const user = await onboarded('photos-remove@example.com', 'photosremove')
       const { addPhoto: addPhotoDirect, removePhoto } = await import('../modules/profiles/profiles')

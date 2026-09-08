@@ -1,8 +1,9 @@
 # A store release: production builds for both platforms, then submission.
 #
 # Started by hand, on purpose. `production` auto-increments the build number
-# and `eas.json`'s submit profile opens Android at a 10% staged rollout; iOS
-# goes to App Store Connect for review. The iOS half needs a distribution
+# and `eas.json`'s submit profile releases Android to everyone at once
+# (`releaseStatus: completed`, no rollout key); iOS goes to App Store Connect
+# for review. The iOS half needs a distribution
 # certificate and an App Store Connect API key in EAS before it can run.
 name: Release
 on:

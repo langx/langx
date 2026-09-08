@@ -1,9 +1,9 @@
-import { HANDLE_MIN_LENGTH, newHandleSchema } from '@langx/shared'
+import { ERROR_CODES, HANDLE_MIN_LENGTH, newHandleSchema } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { api } from '../../src/api/client'
+import { api, ApiRequestError } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
@@ -72,10 +72,15 @@ export default function HandleStep() {
     queryKey: ['handle-availability', debouncedHandle],
     queryFn: () => api.get<{ available: boolean }>(`/handles/${debouncedHandle}/availability`),
     enabled: debouncedHandle.length > 0,
+    // One retry, not the default three with backoff. A check that cannot run
+    // has to say so while the person is still looking at the field; several
+    // silent seconds of a disabled button is the bug this replaces.
+    retry: 1,
   })
 
   const available = availability.data?.available
   const checking = debouncedHandle.length > 0 && availability.isFetching
+  const checkFailed = debouncedHandle.length > 0 && availability.isError && !availability.isFetching
 
   /*
    * Derived, not seeded. `useState`'s initialiser runs once, on the first
@@ -150,14 +155,28 @@ export default function HandleStep() {
     } catch (error) {
       // The API's own message is English and written for a developer; the
       // person filling in this form gets ours instead.
-      void error
-      setSubmitError(t('onboarding.profileFailed'))
+      //
+      // `HANDLE_TAKEN` is worth its own words now that Continue no longer
+      // requires a successful pre-check: this is the path somebody lands on
+      // when the check could not run and the name really was gone.
+      setSubmitError(
+        error instanceof ApiRequestError && error.code === ERROR_CODES.HANDLE_TAKEN
+          ? t('onboarding.handleTaken', { handle: current.handle })
+          : t('onboarding.profileFailed'),
+      )
     } finally {
       setSubmitting(false)
     }
   }
 
-  const canSubmit = parsed.success && available === true && !submitting
+  /*
+   * Only a definite "taken" blocks. The pre-check is a courtesy — the claim
+   * itself is the decision, and `POST /profiles` answers `HANDLE_TAKEN` for a
+   * name somebody else holds. Requiring `available === true` meant that any
+   * failure of the check (offline, a 5xx, a rejected session) left a valid
+   * username with a dead Continue button and no way out of step 4.
+   */
+  const canSubmit = parsed.success && available !== false && !checking && !submitting
 
   /*
    * One line under the field carries every state, coloured by what it says.
@@ -186,7 +205,9 @@ export default function HandleStep() {
                   text: t('onboarding.handleTaken', { handle: draft.handle }),
                   color: colors.danger,
                 }
-              : { text: t('onboarding.handleBody'), color: colors.textMuted }
+              : checkFailed
+                ? { text: t('onboarding.handleCheckFailed'), color: colors.danger, retry: true }
+                : { text: t('onboarding.handleBody'), color: colors.textMuted }
 
   return (
     <Screen fluid>
@@ -234,7 +255,17 @@ export default function HandleStep() {
             value={draft.handle}
           />
         </View>
-        <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>
+        {'retry' in status ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => void availability.refetch()}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>
+          </Pressable>
+        ) : (
+          <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>
+        )}
 
         {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
 

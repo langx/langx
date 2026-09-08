@@ -38,7 +38,12 @@ export interface MenuLayout {
 }
 
 const GUTTER = 12
-const GAP = 8
+/**
+ * Between the strip, the bubble and the menu. The bubble is being *lifted* out
+ * of the thread, and at 8 the menu read as glued to its underside rather than
+ * as a second surface — the same 12 the screen keeps at its edges.
+ */
+const GAP = 12
 
 /**
  * Where the strip, the bubble and the menu go once a bubble has been pressed.

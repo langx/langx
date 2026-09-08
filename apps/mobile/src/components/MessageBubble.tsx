@@ -83,15 +83,15 @@ export interface MessageBubbleProps {
   onAddToCalendar: (message: MessageDto) => void
   /**
    * The proposal in the reader's own zone, formatted by the thread — only it
-   * has the profile the zone comes from. Empty for anything but a meeting.
+   * has the profiles the zones come from. Empty for anything but a meeting.
    *
-   * The other person's clock is deliberately *not* drawn. It would need
-   * `timezone` on the public profile, and a timezone is about as coarse a
-   * location as a city — which this app puts behind its own switch. Showing
-   * the reader their own time is the arithmetic that was worth doing anyway.
+   * `meetingTheirWhen` is the same instant in the other person's, and is
+   * empty when they hide their city: the timezone travels with it, so the
+   * card falls back to one clock rather than guessing.
    */
   meetingWhen?: string
   meetingLength?: string
+  meetingTheirWhen?: string
   onJumpTo: (messageId: string) => void
   /** Opens the full-screen viewer. The thread owns it, so paging can leave this bubble. */
   /** Opens the viewer on this message's attachments, at the one that was tapped. */
@@ -126,6 +126,7 @@ export const MessageBubble = memo(function MessageBubble({
   onAddToCalendar,
   meetingWhen = '',
   meetingLength = '',
+  meetingTheirWhen = '',
   onJumpTo,
   onOpenMedia,
 }: MessageBubbleProps) {
@@ -375,6 +376,13 @@ export const MessageBubble = memo(function MessageBubble({
           question rather than an answer.
         */}
           <Text style={styles.meetingWhen}>{meetingWhen}</Text>
+          {/*
+            Their clock under yours, when they have not hidden it. Two people
+            in one conversation are in different zones by definition — it is
+            what the app is for — so agreeing on a time means each of them
+            knowing what it is where the other one is.
+          */}
+          {meetingTheirWhen ? <Text style={styles.meetingTheirs}>{meetingTheirWhen}</Text> : null}
           <Text style={styles.meetingTheirs}>{meetingLength}</Text>
           {meeting.note ? <Text style={styles.phraseExample}>{meeting.note}</Text> : null}
           {answered ? (
@@ -388,8 +396,12 @@ export const MessageBubble = memo(function MessageBubble({
                 said yes to, which is worse than making them tap twice.
               */}
               {meeting.status === 'accepted' ? (
-                <Pressable hitSlop={8} onPress={() => onAddToCalendar(message)}>
-                  <Text style={styles.meetingAccept}>{t('chat.meetingAddToCalendar')}</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => onAddToCalendar(message)}
+                >
+                  <Text style={styles.meetingCalendar}>{t('chat.meetingAddToCalendar')}</Text>
                 </Pressable>
               ) : null}
             </View>
@@ -401,15 +413,27 @@ export const MessageBubble = memo(function MessageBubble({
           */
             <View style={styles.meetingActions}>
               {mine ? (
-                <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'cancelled')}>
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => onRespondMeeting(message, 'cancelled')}
+                >
                   <Text style={styles.meetingDecline}>{t('chat.meetingCancel')}</Text>
                 </Pressable>
               ) : (
                 <>
-                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'accepted')}>
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() => onRespondMeeting(message, 'accepted')}
+                  >
                     <Text style={styles.meetingAccept}>{t('chat.meetingAccept')}</Text>
                   </Pressable>
-                  <Pressable hitSlop={8} onPress={() => onRespondMeeting(message, 'declined')}>
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() => onRespondMeeting(message, 'declined')}
+                  >
                     <Text style={styles.meetingDecline}>{t('chat.meetingDecline')}</Text>
                   </Pressable>
                 </>
@@ -814,10 +838,23 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   quizPressed: { opacity: 0.6 },
   meetingTheirs: { color: colors.textMuted, fontSize: 13 },
   meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
-  meetingAnswered: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
+  meetingAnswered: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+    marginTop: 8,
+    rowGap: 4,
+  },
   meetingAccept: { color: colors.success, fontSize: 14, fontWeight: '700' },
   meetingDecline: { color: colors.danger, fontSize: 14, fontWeight: '700' },
-  meetingStatus: { fontSize: 14, fontWeight: '700', marginTop: 6 },
+  // A label, not a second action: same line as the button beside it, one step
+  // quieter, and no `marginTop` of its own — that was what broke the baseline
+  // in a row the container already centres.
+  meetingStatus: { fontSize: 13, fontWeight: '600' },
+  // Blue, because it is the thing you can press. Green next to green read as
+  // one broken sentence rather than as a state and an action.
+  meetingCalendar: { color: colors.accent, fontSize: 13, fontWeight: '700' },
   meetingAccepted: { color: colors.success },
   meetingRefused: { color: colors.textMuted },
   sentTranslationRow: { alignItems: 'flex-start', flexDirection: 'row', gap: 5, marginTop: 4 },

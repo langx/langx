@@ -73,6 +73,36 @@ export interface PlanLimits {
    */
   advancedFilters: boolean
   /**
+   * Sending your own message with a translation under it, rather than tapping
+   * one you received to read it.
+   *
+   * Polyglot, beside the copilot, because the two are the same kind of thing:
+   * the only capabilities in this file with a real per-request cost. Reading
+   * is occasional and metered at `translationsPer24h`; *sending* translated is
+   * per message, so somebody writing a hundred messages a day bills roughly a
+   * hundred translations a day. At Google's per-character price that is more
+   * per month than a subscription costs, which makes a generous free
+   * allowance a promise made against somebody else's meter — the same
+   * sentence `translationsPer24h` is here for.
+   *
+   * **Reading stays free.** The free tier loses nothing it had: tap-to-
+   * translate is untouched at 20 a day. This gates the composer mode only,
+   * which is why it is a capability and not a smaller number.
+   */
+  sendTranslation: boolean
+  /**
+   * Exporting a conversation's saved phrases as a file — CSV, and the same
+   * file imports into Anki.
+   *
+   * Polyglot, and the rare paid feature that takes nothing from anyone: the
+   * deck itself, and saving to it, are free on every tier. This sells getting
+   * it *out*, which is what somebody studying seriously wants and nobody else
+   * misses. Costs nothing per request, so it is not here for the reason
+   * `sendTranslation` is — it is here because it is worth money to the person
+   * it is worth anything to.
+   */
+  deckExport: boolean
+  /**
    * See *who* viewed the profile, not just how many.
    *
    * Polyglot, not Fluent. Fluent sells what makes the app work better for you
@@ -125,23 +155,19 @@ export interface PlanLimits {
   /**
    * Photos on a profile, avatar excluded.
    *
-   * The same on every tier on purpose. A gallery is how someone shows they are
-   * a real person, and gating it would make free profiles look like the
-   * throwaway accounts the product is trying to keep out.
+   * A ladder, and it was not always one: every tier had six until the gallery
+   * became something a subscription buys. Free still gets five, which is a
+   * real gallery — enough to show you are a person rather than a throwaway
+   * account, which is the thing the product cannot afford to gate.
    *
-   * Because it is identical everywhere, two call sites read `PLAN_LIMITS.free`
-   * directly rather than the viewer's tier (`profiles.ts` addPhoto,
-   * `edit-profile.tsx`). That is safe **only while this stays uniform** — give
-   * one tier a different allowance and those two places go quietly wrong.
+   * Read it off the **viewer's** tier, always. While it was uniform two call
+   * sites read `PLAN_LIMITS.free` directly and were correct by accident; both
+   * take the tier now, and nothing may go back to the free row except the v1
+   * restore in `legacyProfiles.ts`, where a claiming account really is free.
    */
   maxPhotos: number
   /**
    * Languages a profile may list, learning and native.
-   *
-   * **Not uniform across tiers**, which is the opposite of `maxPhotos` above —
-   * so nothing may read `PLAN_LIMITS.free.max*Languages` for another tier the
-   * way the photo allowance is deliberately read. The two sit next to each
-   * other precisely so the difference is visible.
    *
    * Enforced at write time only. Zod cannot express a tier-dependent maximum:
    * a route schema is registered at boot, before any request exists, so it has
@@ -166,11 +192,13 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: 50,
     advancedFilters: false,
+    sendTranslation: false,
+    deckExport: false,
     profileViewerIdentities: false,
     incognito: false,
     nearby: false,
     copilot: false,
-    maxPhotos: 6,
+    maxPhotos: 5,
     maxLearningLanguages: 1,
     maxNativeLanguages: 1,
   },
@@ -180,11 +208,13 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    sendTranslation: false,
+    deckExport: false,
     profileViewerIdentities: false,
     incognito: false,
     nearby: false,
     copilot: false,
-    maxPhotos: 6,
+    maxPhotos: 10,
     maxLearningLanguages: 2,
     maxNativeLanguages: 2,
   },
@@ -200,11 +230,13 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    sendTranslation: true,
+    deckExport: true,
     profileViewerIdentities: true,
     incognito: true,
     nearby: true,
     copilot: true,
-    maxPhotos: 6,
+    maxPhotos: 10,
     maxLearningLanguages: 5,
     maxNativeLanguages: 5,
   },
@@ -276,6 +308,8 @@ export const PRO_PLUS_FEATURES = [
   'incognito',
   'nearby',
   'copilot',
+  'sendTranslation',
+  'deckExport',
 ] as const
 export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
 
@@ -334,6 +368,8 @@ export const PRO_PLUS_BENEFITS = [
   'incognito',
   'nearby',
   'copilot',
+  'sendTranslation',
+  'deckExport',
   'translationQuota',
   'learningLanguages',
 ] as const

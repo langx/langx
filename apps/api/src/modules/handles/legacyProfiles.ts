@@ -79,7 +79,12 @@ export async function markRestored(db: Db, legacyId: string, userId: string): Pr
  * somebody chose themselves. So it lives here, is tested, and both callers use
  * it.
  *
- * The gallery is capped at `PLAN_LIMITS.free.maxPhotos`. The restore path used
+ * The gallery is capped at `PLAN_LIMITS.free.maxPhotos` — the **free** row on
+ * purpose, not by inheritance from when every tier held the same number. An
+ * account claiming its v1 profile is free at that moment, and restoring ten
+ * photos into a free gallery would put it over its own cap on day one.
+ *
+ * The restore path used
  * to write the array wholesale and could seat a returning user above the limit
  * the rest of the app enforces — a number that is config everywhere else has
  * no business being unbounded on one path.

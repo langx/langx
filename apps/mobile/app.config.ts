@@ -327,6 +327,26 @@ const config: ExpoConfig = {
         cameraPermission: 'LangX uses your camera so you can take a photo to send.',
       },
     ],
+    /*
+     * Write-only, deliberately. iOS 17 split calendar access in two, and this
+     * app only ever *adds* an agreed meeting — it never reads what else is in
+     * somebody's day. Asking for full access would be asking for a schedule
+     * to do a job that needs a single write, and Apple reviews the sentence.
+     */
+    [
+      'expo-calendar',
+      {
+        // `writeOnlyAccess` is what picks iOS 17's narrower prompt
+        // (`NSCalendarsWriteOnlyAccessUsageDescription`) over full access.
+        // The other string is the pre-17 key, which is still read on older
+        // devices, so both say the same thing.
+        writeOnlyAccess: true,
+        writeOnlyCalendarPermission:
+          'LangX adds a language exchange session to your calendar once you and your partner have both agreed on a time.',
+        calendarPermission:
+          'LangX adds a language exchange session to your calendar once you and your partner have both agreed on a time.',
+      },
+    ],
     // Only ever requested when someone turns on location sharing in Settings,
     // and only ever "when in use" — there is no background permission here and
     // adding one would change what both stores' privacy forms have to say.

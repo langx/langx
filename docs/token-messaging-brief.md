@@ -3,10 +3,12 @@
 For anyone writing public copy about the token: the marketing site, the
 litepaper at docs.langx.io, langx.io itself, and the store listings.
 
-The app and the website have to describe the same thing. Today they do not:
-the app calls it a non-transferable in-app point, and the website advertises
-**"Staking and Trading"** and a **"Future Marketplace"**. That gap is the whole
-reason this document exists.
+The app and the website have to describe the same thing. When this was written
+they did not: the app called it a non-transferable in-app point while the token
+website advertised **"Staking and Trading"** and a **"Future Marketplace"**.
+That gap is closed — what came off, and from where, is recorded below. The
+document stays because the rules that closed it are the rules for anything
+written next.
 
 ## What the token is
 
@@ -43,20 +45,28 @@ Call it **"LangX Token"**. Drop "Test Token" — v1 used that because the token
 was framed as a preview of something real, and there is nothing to preview any
 more. Keeping "test" would now be misleading in the opposite direction.
 
-## What must come off the site
+## What came off the site
 
-These are not stale phrasing, they are claims the product does not meet:
+These were not stale phrasing, they were claims the product does not meet. All
+of them are gone; the row stays so that nobody puts one back.
 
-| Currently on the site                | Status                                                                                       |
+| Claim                                | Status                                                                                       |
 | ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| "Staking and Trading"                | **Remove.** Neither exists nor is planned.                                                   |
-| "Future Marketplace"                 | **Remove.** No marketplace is planned.                                                       |
-| crypto / exchange / withdraw framing | **Remove.** None of it applies.                                                              |
+| "Staking and Trading"                | **Removed.** Neither exists nor is planned.                                                  |
+| "Future Marketplace"                 | **Removed.** No marketplace is planned.                                                      |
+| crypto / exchange / withdraw framing | **Removed.** None of it applies.                                                             |
 | "Learn to Earn"                      | Keep only if it clearly means "earn points by learning". If it reads as earn-money, rewrite. |
 
-The litepaper needs an explicit note saying the on-chain design described in it
-**is not being built**. Leaving it up unqualified is worse than deleting it —
-it reads as a roadmap.
+token.langx.io now leads with "In-app points · No wallet · No trading · No
+cash". The litepaper carries the note this section asked for: `token/token.md`
+says the older version described wallets, staking, trading and an on-chain
+distribution layer and that none of it is being built, and `token/langx-nft.md`
+opens with the same. Leaving either up unqualified would have been worse than
+deleting it — it reads as a roadmap.
+
+One thing is not done: `SUMMARY.md` in the docs still lists a **Staking** page
+in its navigation, and `learn-2-earn/connect-wallet.md` is still there. A
+reviewer follows the nav, not the prose.
 
 ## Why this matters more than wording
 
@@ -82,7 +92,7 @@ that damages trust.
 - Keep a daily streak; hitting 7, 30, 100 and 365 days pays a bonus.
 - Weekly, monthly, yearly and all-time leaderboards.
 - Spend tokens on a **streak freeze** (rescues one missed day), on **filling in
-  a missed day** on your activity map (300 tokens, last 14 days, two a month),
+  a missed day** on your activity map (600 tokens, last 14 days, two a month),
   and on **cosmetic frames and titles** — ten of each, worn one at a time. That
   is the complete list of things to spend on, and it is complete on purpose: if
   tokens could buy a paid feature, farming tokens would become a substitute for

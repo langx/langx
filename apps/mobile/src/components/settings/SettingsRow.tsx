@@ -43,6 +43,8 @@ const THEME_LABELS: Record<ThemePreference, MessageKey> = {
 const BENEFIT_TITLE: Record<ProBenefit | ProPlusBenefit, MessageKey> = {
   unlimitedInitiations: 'paywall.unlimitedChats',
   advancedFilters: 'paywall.advancedFilters',
+  sendTranslation: 'paywall.sendTranslation',
+  deckExport: 'paywall.deckExport',
   translationQuota: 'paywall.translationQuota',
   learningLanguages: 'paywall.learningLanguages',
   welcomePack: 'paywall.welcomePack',

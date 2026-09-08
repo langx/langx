@@ -3,10 +3,12 @@ import {
   canDeleteForEveryone,
   canEditMessage,
   translateTargetFor,
+  attachmentsOf,
   MAX_ATTACHMENTS,
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  hasFeature,
   webUrl,
   messageTranslationSchema,
   type MessageAsk,
@@ -29,6 +31,7 @@ import {
   uploadMessageMedia,
   useBlockUser,
   useConversation,
+  useEffectiveTier,
   useConversationFlags,
   useMe,
   useMessages,
@@ -76,7 +79,11 @@ import {
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
-import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
+import {
+  openMessageMenu,
+  type AnchorRect,
+  type MessageMenuRequest,
+} from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { pickMediaAssets, type PickSource } from '../../../src/lib/pickMediaAsset'
@@ -97,7 +104,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
-import { saveMeetingIcs } from '../../../src/lib/saveMeetingIcs'
+import { addMeetingToCalendar } from '../../../src/lib/addToCalendar'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -292,7 +299,16 @@ export default function ChatScreen() {
   // those leaves the header with no name and no avatar.
   // Optional on `participants` too: the response is a bare cast, so an API
   // older than this field would throw here rather than fall back.
-  const partnerId = messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ?? ''
+  //
+  // Two sources, because the messages arrive last. `useConversation` seeds
+  // itself from the chat list's cache, so somebody arriving from that list
+  // knows the partner on the first render and never sees a placeholder;
+  // the two answers are the same participant list, so whichever is in first
+  // wins.
+  const partnerId =
+    messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ??
+    conversation.data?.participants.find((p) => p !== me.data?._id) ??
+    ''
   /*
    * How many more messages before an attachment is allowed here. Read off the
    * live page, which `appendIncomingMessage` counts down, so the camera comes
@@ -311,13 +327,23 @@ export default function ChatScreen() {
    * the other way — their first native language with a written form.
    * `undefined` means there is none, and the row is not offered.
    */
+  /** Reading a translation is free; sending one is Polyglot. See `PLAN_LIMITS`. */
+  const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
     : undefined
   // "Not yet" and "never" draw differently: a placeholder while the profile
   // loads, the generic title only for an account that is really gone.
+  //
+  // Including the window before anybody knows who the partner *is*. The
+  // profile query cannot report "pending" for an id nobody has yet, so while
+  // both sources are still loading this used to fall through to the "never"
+  // branch — a `?` avatar and the word "Chat", which reads as a real header
+  // with the wrong content. An error leaves `isPending` false, so the generic
+  // title still stands for a thread whose partner really cannot be resolved.
   const partnerLoading =
-    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
+    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending' ||
+    (!partnerId && (messages.isPending || conversation.isPending))
 
   /**
    * Opening the thread is the read receipt — and *focusing* it, not mounting
@@ -400,18 +426,46 @@ export default function ChatScreen() {
    * gate is closed: a row that says "after five more messages" teaches the
    * rule, and one that is missing teaches nothing.
    */
-  /**
-   * A proposal's time, in the reader's own zone.
-   *
-   * Read off the profile's `timezone`, not the device's: the device clock
-   * follows wherever the phone is, and somebody reading this on a trip would
-   * be shown a time that is right for the airport and wrong for the call they
-   * are agreeing to. `undefined` falls back to the device, which is the best
-   * guess left.
-   */
+  /** A proposal's time, in the reader's own zone. */
   function meetingWhenFor(message: MessageDto): string {
     if (!message.meeting) return ''
-    const zone = me.data?.timezone
+    return clockFor(new Date(message.meeting.startsAt), me.data?.timezone)
+  }
+
+  /**
+   * The same instant where the other person is.
+   *
+   * Empty when they hide their city — the timezone is withheld with it — and
+   * empty when it matches the reader's, because "9 PM, and 9 PM for them" is a
+   * line that says nothing twice.
+   */
+  function meetingTheirWhenFor(message: MessageDto): string {
+    if (!message.meeting || !partner?.timezone) return ''
+    const at = new Date(message.meeting.startsAt)
+    const theirs = clockFor(at, partner.timezone)
+    /*
+     * Compared as drawn, not as named.
+     *
+     * Comparing the zone *identifiers* looked equivalent and is not: a reader
+     * whose own profile has no `timezone` falls back to the device, so the
+     * check ran against `undefined` and never matched — and the card drew
+     * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
+     * exists to avoid. Two zones can also differ by name and agree right now
+     * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
+     * useless line.
+     */
+    return theirs === clockFor(at, me.data?.timezone)
+      ? ''
+      : t('chat.meetingTheirTime', { time: theirs })
+  }
+
+  /**
+   * Read off a profile's `timezone`, not the device's: the device clock
+   * follows wherever the phone is, and somebody reading this on a trip would
+   * be shown a time that is right for the airport and wrong for the call.
+   * `undefined` falls back to the device, which is the best guess left.
+   */
+  function clockFor(at: Date, zone: string | undefined): string {
     return new Intl.DateTimeFormat(locale, {
       weekday: 'short',
       day: 'numeric',
@@ -419,7 +473,7 @@ export default function ChatScreen() {
       hour: 'numeric',
       minute: '2-digit',
       ...(zone ? { timeZone: zone } : {}),
-    }).format(new Date(message.meeting.startsAt))
+    }).format(at)
   }
 
   function meetingLengthFor(message: MessageDto): string {
@@ -428,16 +482,15 @@ export default function ChatScreen() {
   }
 
   /**
-   * Hands an agreed meeting to whatever keeps this person's calendar.
+   * Writes an agreed meeting into this person's calendar.
    *
-   * The file carries the instant in UTC, so the same one is right for both of
-   * them: each calendar app renders it in the zone its owner is in, which is
-   * the same rule the card itself follows and the reason the two cannot
-   * disagree.
+   * The instant is UTC, so the same one is right for both of them: every
+   * calendar renders it in the zone its owner is in, which is the same rule
+   * the card itself follows and the reason the two cannot disagree.
    */
   async function addToCalendar(message: MessageDto): Promise<void> {
     if (!message.meeting) return
-    const ok = await saveMeetingIcs({
+    const result = await addMeetingToCalendar({
       uid: message._id,
       startsAt: new Date(message.meeting.startsAt),
       durationMinutes: message.meeting.durationMinutes,
@@ -445,7 +498,19 @@ export default function ChatScreen() {
       note: message.meeting.note,
       url: webUrl(`/chat/${conversationId}`),
     })
-    if (!ok) void showAlert(t('chat.meetingCalendarFailed'))
+    if (result === 'added' || result === 'updated') {
+      showToast(t('chat.meetingCalendarAdded'))
+      return
+    }
+    // `saved` is the web, and the file it downloaded says enough by arriving.
+    if (result === 'saved') return
+    if (result === 'denied') {
+      void showAlert(t('chat.meetingCalendarPermissionTitle'), t('chat.meetingCalendarPermission'))
+      return
+    }
+    void showAlert(
+      result === 'noCalendar' ? t('chat.meetingCalendarNone') : t('chat.meetingCalendarFailed'),
+    )
   }
 
   /** Answers a quiz. Once, and never your own — both are the server's rules. */
@@ -542,8 +607,9 @@ export default function ChatScreen() {
       { label: t('chat.sendMeeting'), value: 'meeting' as const, icon: 'calendar' },
       { label: t('chat.sendQuiz'), value: 'quiz' as const, icon: 'help-circle' },
       { label: t('chat.stickers'), value: 'sticker' as const, icon: 'smile' },
-      // Only when there is a language to send it in. A row that would answer
-      // "there is nothing to translate into" is a row not worth drawing.
+      // Drawn whether or not the tier includes it, and locked when it does
+      // not: a row that opens the paywall sells the thing, and a row that is
+      // missing sells nothing. Reading a translation stays free either way.
       ...(translateInto
         ? [
             {
@@ -552,6 +618,7 @@ export default function ChatScreen() {
                 : t('chat.sendTranslatedOn', { language: names.language(translateInto) }),
               value: 'translate' as const,
               icon: 'globe',
+              ...(canSendTranslation ? {} : { locked: true }),
             },
           ]
         : []),
@@ -577,6 +644,10 @@ export default function ChatScreen() {
       return
     }
     if (choice === 'translate') {
+      if (!canSendTranslation) {
+        openPaywall('sendTranslation', `/(app)/chat/${conversationId}`)
+        return
+      }
       setSendTranslated((on) => !on)
       return
     }
@@ -645,16 +716,26 @@ export default function ChatScreen() {
       return
     }
     if (!recorder.isRecording) {
+      // A note does not travel with pictures — one message carries one kind —
+      // so the two cannot both be waiting for the same send button.
+      if (pendingMedia.length > 0) {
+        showToast(t('chat.voiceNeedsEmptyComposer'))
+        return
+      }
       const started = await recorder.start()
       if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
       return
     }
     const recording = await recorder.stop()
     if (!recording) return
-    // A recording still goes on stop. Holding it for the send button would
-    // make somebody press two things to do what one gesture already finished,
-    // and it cannot be sent beside a picture anyway.
-    await sendAttachments([{ kind: 'audio', ...recording }], undefined)
+    /*
+     * Held for the send button rather than sent on stop, which is what this
+     * did until now. One gesture was fewer taps, but it also meant a voice
+     * note was gone the instant you stopped speaking: no way to hear what you
+     * had actually said, and no way to change your mind. A note cannot be
+     * un-sent, so it is worth the extra tap.
+     */
+    setPendingMedia([{ kind: 'audio', ...recording }])
   }
 
   async function sendAttachments(
@@ -996,6 +1077,7 @@ export default function ChatScreen() {
     alreadyTranslated: boolean,
     anchor?: AnchorRect,
   ): Promise<void> {
+    const picture = pictureOf(message)
     // Nothing left to act on: a withdrawn message is a placeholder, and the
     // one thing anyone might want — hiding it — is offered through the same
     // row, so it is still worth opening.
@@ -1017,6 +1099,15 @@ export default function ChatScreen() {
     const picked = await openMessageMenu({
       preview: message.body || t(messageTypeKey(message.type)),
       mine: isMine(message),
+      // So the menu lifts the picture out of the thread rather than the word
+      // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
+      ...(picture ? { picture, caption: message.body } : {}),
+      // Looked up rather than passed down: `endsGroup` belongs to the row, and
+      // a fourth positional argument on `onLongPress` is how the anchor and
+      // the flag start arriving in the wrong order.
+      tail: rows.some(
+        (row) => row.kind === 'message' && row.message._id === message._id && row.endsGroup,
+      ),
       actions,
       ...(anchor ? { anchor } : {}),
       // A withdrawn message cannot carry a reaction, so it gets no strip.
@@ -1557,6 +1648,7 @@ export default function ChatScreen() {
                     onAddToCalendar={(message) => void addToCalendar(message)}
                     meetingWhen={meetingWhenFor(row.message)}
                     meetingLength={meetingLengthFor(row.message)}
+                    meetingTheirWhen={meetingTheirWhenFor(row.message)}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
@@ -1682,7 +1774,13 @@ export default function ChatScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('composer.attachMenu')}
                 onPress={() => void openAttachMenu()}
-                disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
+                disabled={
+                  sendingMedia ||
+                  pendingMedia.length >= MAX_ATTACHMENTS ||
+                  // A voice draft is waiting for the send button, and a note
+                  // travels alone. Send it or throw it away first.
+                  pendingMedia.some((item) => item.kind === 'audio')
+                }
                 hitSlop={8}
                 style={styles.attach}
               >
@@ -1972,6 +2070,22 @@ function TypingIndicator() {
       ))}
     </View>
   )
+}
+
+/**
+ * What the menu's copy of the bubble should draw, for the messages that draw a
+ * picture rather than a sentence.
+ *
+ * Audio is not one of them even though it carries an attachment: its bubble is
+ * a player, and the copy would mount a second one.
+ */
+function pictureOf(message: MessageDto): MessageMenuRequest['picture'] {
+  if (message.type === 'sticker') {
+    return message.sticker ? { kind: 'sticker', ...message.sticker } : undefined
+  }
+  if (message.type !== 'image' && message.type !== 'video') return undefined
+  const items = attachmentsOf(message)
+  return items.length > 0 ? { kind: 'media', items } : undefined
 }
 
 /** What the sheet shows above the actions when a message has no text. */

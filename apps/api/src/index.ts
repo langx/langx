@@ -13,6 +13,7 @@ import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
 import type { NotificationEmailContext } from './email/notify'
 import { startLegacyImportScheduler } from './modules/handles/legacyImportScheduler'
+import { startMeetingReminderScheduler } from './modules/push/meetingReminders'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startNotificationScheduler } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
@@ -77,6 +78,7 @@ async function main(): Promise<void> {
     startDailyPoolScheduler(db, app.log),
     startPurgeScheduler(db, app.log, { storage }),
     startStreakReminderScheduler(db, push, notificationEmail, app.log),
+    startMeetingReminderScheduler(db, push, app.log),
     startLegacyImportScheduler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log),
   ]

@@ -66,12 +66,12 @@ export const fr: Localized<EnMessages> = {
     composerCorrect: 'Appui long pour corriger',
     composerReply: 'Glissez un message pour répondre',
     composerStar: 'Appui long pour épingler ou traduire',
-    composerVoice: 'Maintenez le micro pour un vocal',
+    composerVoice: 'Touchez le micro, écoutez, envoyez',
     chatStar: 'Appuyez longuement sur un message et choisissez Épingler pour le retrouver.',
     chatTranslate:
       'Appuyez longuement sur un message pour le traduire sans quitter la conversation.',
     chatVoice:
-      'Maintenez le micro pour envoyer un vocal — entendre un mot, c’est la moitié du travail.',
+      'Touchez le micro pour un vocal — vous pouvez l’écouter avant de l’envoyer, et entendre un mot, c’est la moitié du chemin.',
     chatsSwipe: 'Faites glisser une conversation sur le côté pour l’épingler ou l’archiver.',
     chatsPin: 'Épinglez les conversations où vous revenez : elles restent en haut.',
     chatsUnreplied: 'L’onglet Sans réponse, ce sont tous ceux qui vous attendent encore.',
@@ -389,6 +389,7 @@ export const fr: Localized<EnMessages> = {
     handleReservedBody: 'Ton nom d’utilisateur de l’ancien LangX. Tu peux le récupérer, une fois.',
     handleAvailable: '@{handle} est disponible ✓',
     handleTaken: '@{handle} est déjà pris',
+    handleCheckFailed: 'Impossible de vérifier ce nom d’utilisateur. Touchez pour réessayer.',
     startUsing: 'Commencer à utiliser LangX',
     profileFailed: 'Impossible de créer ton profil. Réessaie.',
     doneTitle: 'Tu y es',
@@ -446,6 +447,8 @@ export const fr: Localized<EnMessages> = {
     profileVisits: 'Visites de profil',
     profileVisitsBody:
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
+    meetings: 'Rendez-vous',
+    meetingsBody: 'Une heure avant un appel que vous avez accepté tous les deux. Push uniquement.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Désactivé sauf demande.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -602,7 +605,12 @@ export const fr: Localized<EnMessages> = {
     meetingCancelled: 'Retiré',
     meetingAddToCalendar: 'Ajouter au calendrier',
     meetingSummary: 'LangX avec {name}',
-    meetingCalendarFailed: 'Impossible d’ouvrir un calendrier d’ici.',
+    meetingCalendarFailed: 'Impossible d’ajouter ceci à un agenda depuis ici.',
+    meetingCalendarAdded: 'Ajouté à votre agenda',
+    meetingCalendarPermissionTitle: 'Accès à l’agenda',
+    meetingCalendarPermission:
+      'LangX a besoin de l’autorisation d’ajouter la session. Vous pouvez l’activer dans Réglages.',
+    meetingCalendarNone: 'Aucun agenda sur cet appareil pour l’ajouter.',
     meetingYourTime: '{time} chez toi',
     meetingTheirTime: '{time} chez elleux',
     unsupportedMessage: 'Mets l’app à jour pour voir ce message.',
@@ -614,6 +622,8 @@ export const fr: Localized<EnMessages> = {
     phraseSaved: 'Expression enregistrée.',
     phraseDeck: 'Expressions enregistrées',
     phraseDeckEmpty: 'Rien d’enregistré ici pour l’instant.',
+    deckExport: 'Exporter',
+    deckExportFailed: 'Impossible d’enregistrer ce fichier d’ici.',
     meetingNote: 'Note (facultatif)',
     meetingWhenLabel: 'Quand',
     meetingLength: 'Combien de temps',
@@ -630,6 +640,7 @@ export const fr: Localized<EnMessages> = {
       other: '+{count} jetons / message',
     },
     voiceMessage: 'Message vocal',
+    voiceNeedsEmptyComposer: 'Envoyez d’abord la pièce jointe — un message vocal part seul.',
     speedSlow: '0,5x',
     speedNormal: '1x',
     playSlowly: 'Lire lentement',
@@ -1025,7 +1036,7 @@ export const fr: Localized<EnMessages> = {
     hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
     hideCity: 'Masquer ma ville',
     hideCityBody:
-      'Votre ville est déduite de votre position. Ceci la retire de votre profil ; la distance et le pays ne changent pas.',
+      'Ta ville et ton fuseau horaire sont déduits de ta position. Ceci les retire de ton profil ; la distance et le pays ne changent pas.',
     shareLocation: 'Partager ma position approximative',
     shareLocationBody: 'Les autres voient une plage de distance, jamais un point.',
     shareUsage: 'Partager les données d’utilisation',
@@ -1233,6 +1244,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Stickers d’entraînement',
     stickersStarter: 'Stickers de départ',
     frameSlate: 'Cadre ardoise',
     frameBronze: 'Cadre bronze',
@@ -1424,6 +1436,11 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
+    sendTranslation: 'Envoyer dans leur langue',
+    sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
+    deckExport: 'Emporte tes expressions',
+    deckExportBody:
+      'Exporte les expressions enregistrées d’une conversation. Le fichier s’ouvre dans Anki.',
     advancedFiltersBody: 'Cherche un genre précis, et par ville.',
     translationQuota: 'Traduis autant que nécessaire',
     translationQuotaBody:
