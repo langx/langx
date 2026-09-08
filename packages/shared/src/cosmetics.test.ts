@@ -7,6 +7,7 @@ import {
   COSMETIC_TONES,
   PRO_WELCOME_PACKS,
   findCosmetic,
+  isLadderKind,
   meetsRequirement,
   previousCosmetic,
   welcomePackDelta,
@@ -68,7 +69,7 @@ describe('the catalogue', () => {
    * other test here passes on a shuffled catalogue.
    */
   it('prices each ladder strictly upwards, so order and price tell one story', () => {
-    for (const kind of COSMETIC_KINDS) {
+    for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
       const ladder = COSMETICS.filter((c) => c.kind === kind)
       expect(ladder.length, kind).toBeGreaterThan(1)
       for (let i = 1; i < ladder.length; i++) {
@@ -81,8 +82,19 @@ describe('the catalogue', () => {
 })
 
 describe('previousCosmetic', () => {
+  /**
+   * Sticker packs are shopped, not climbed — so every pack has nothing below
+   * it, not just the first. Without this a second pack would silently become
+   * unbuyable until the first was owned.
+   */
+  it('puts no pack behind another pack', () => {
+    for (const pack of COSMETICS.filter((c) => c.kind === 'stickers')) {
+      expect(previousCosmetic(pack), pack.id).toBeUndefined()
+    }
+  })
+
   it('has nothing below the first rung of either ladder', () => {
-    for (const kind of COSMETIC_KINDS) {
+    for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
       const first = COSMETICS.find((c) => c.kind === kind)!
       expect(previousCosmetic(first), first.id).toBeUndefined()
     }

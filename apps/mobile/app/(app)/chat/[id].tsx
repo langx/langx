@@ -518,6 +518,7 @@ export default function ChatScreen() {
       { label: t('chat.sendPhrase'), value: 'phrase' as const, icon: 'bookmark' },
       { label: t('chat.sendMeeting'), value: 'meeting' as const, icon: 'calendar' },
       { label: t('chat.sendQuiz'), value: 'quiz' as const, icon: 'help-circle' },
+      { label: t('chat.stickers'), value: 'sticker' as const, icon: 'smile' },
       // Only when there is a language to send it in. A row that would answer
       // "there is nothing to translate into" is a row not worth drawing.
       ...(translateInto
@@ -546,6 +547,10 @@ export default function ChatScreen() {
     }
     if (choice === 'quiz') {
       router.push({ pathname: '/(app)/quiz', params: { id: conversationId } })
+      return
+    }
+    if (choice === 'sticker') {
+      router.push({ pathname: '/(app)/stickers', params: { id: conversationId } })
       return
     }
     if (choice === 'translate') {

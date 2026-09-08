@@ -584,6 +584,8 @@ export const tr: Localized<EnMessages> = {
     phraseCard: 'İfade',
     meetingCard: 'Önerilen saat',
     quizCard: 'Soru',
+    stickers: 'Stickerlar',
+    stickerBuy: '{price} token ile aç',
     quizAddOption: 'Seçenek ekle',
     sendQuiz: 'Soru sor',
     quizQuestion: 'Soru',
@@ -910,6 +912,7 @@ export const tr: Localized<EnMessages> = {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',
     dataCredit: 'Yer adları GeoNames’ten, CC BY 4.0 lisansıyla.',
+    stickerCredit: 'Bazı sticker’lar Microsoft Fluent Emoji’den, MIT lisansıyla.',
     footer: 'Açık kaynak; kullananlar yapıyor.',
     contributors: 'Katkıda bulunanlar',
     fundamentals: 'Katkıda bulunan herkes',
@@ -1219,6 +1222,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersStarter: 'Başlangıç stickerları',
     frameSlate: 'Arduvaz çerçeve',
     frameBronze: 'Bronz çerçeve',
     frameSky: 'Gökyüzü çerçeve',

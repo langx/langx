@@ -1,6 +1,6 @@
 import {
   type ConversationFilter,
-  type CosmeticKind,
+  type EquippableKind,
   type Equipped,
   type NotificationPrefs,
   type StoredNotificationPrefs,
@@ -489,6 +489,7 @@ export interface MessageDto {
     correctIndex: number
     answer?: { index: number; at: string }
   }
+  sticker?: { packId: string; stickerId: string }
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */
@@ -1371,7 +1372,7 @@ export function usePurchase() {
 export function useEquip() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (equipped: Partial<Record<CosmeticKind, string | null>>) =>
+    mutationFn: (equipped: Partial<Record<EquippableKind, string | null>>) =>
       api.patch<MeProfile>('/profiles/me', { equipped }),
     onMutate: async (equipped) => {
       await queryClient.cancelQueries({ queryKey: keys.wallet })
@@ -1379,7 +1380,7 @@ export function useEquip() {
       queryClient.setQueryData<Wallet>(keys.wallet, (wallet) => {
         if (!wallet) return wallet
         const next: Equipped = { ...wallet.equipped }
-        for (const [kind, id] of Object.entries(equipped) as [CosmeticKind, string | null][]) {
+        for (const [kind, id] of Object.entries(equipped) as [EquippableKind, string | null][]) {
           if (id === null) delete next[kind]
           else next[kind] = id
         }

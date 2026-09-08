@@ -676,6 +676,8 @@ export const ar: Localized<EnMessages> = {
     phraseCard: 'عبارة',
     meetingCard: 'وقت مقترح',
     quizCard: 'سؤال',
+    stickers: 'ملصقات',
+    stickerBuy: 'افتحها بـ{price} توكن',
     quizAddOption: 'أضف خيارًا',
     sendQuiz: 'اطرح سؤالًا',
     quizQuestion: 'السؤال',
@@ -1076,6 +1078,7 @@ export const ar: Localized<EnMessages> = {
     title: 'مطبخنا',
     intro: 'حيث يُصنع LangX، وكل من يصنعه.',
     dataCredit: 'أسماء الأماكن من GeoNames، بترخيص CC BY 4.0.',
+    stickerCredit: 'بعض الملصقات من Microsoft Fluent Emoji بترخيص MIT.',
     footer: 'مبني في العلن، ممن يستخدمونه.',
     contributors: 'المساهمون',
     fundamentals: 'كل من ساهم',
@@ -1429,6 +1432,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersStarter: 'ملصقات البداية',
     frameSlate: 'إطار أردوازي',
     frameBronze: 'إطار برونزي',
     frameSky: 'إطار سماوي',

@@ -620,6 +620,8 @@ export const en = {
     phraseCard: 'Phrase',
     meetingCard: 'Proposed time',
     quizCard: 'Quiz',
+    stickers: 'Stickers',
+    stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
     quizQuestion: 'Question',
@@ -949,6 +951,7 @@ export const en = {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
     dataCredit: 'Place names from GeoNames, licensed under CC BY 4.0.',
+    stickerCredit: 'Some stickers from Microsoft Fluent Emoji, licensed under MIT.',
     footer: 'Built in the open, by the people who use it.',
     contributors: 'Contributors',
     fundamentals: 'Everyone who has contributed',
@@ -1260,6 +1263,7 @@ export const en = {
   },
 
   cosmetics: {
+    stickersStarter: 'Starter stickers',
     frameSlate: 'Slate frame',
     frameBronze: 'Bronze frame',
     frameSky: 'Sky frame',

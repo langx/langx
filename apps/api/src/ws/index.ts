@@ -10,6 +10,7 @@ import {
   sendMeetingSchema,
   sendPhraseSchema,
   sendQuizSchema,
+  sendStickerSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
 } from '@langx/shared'
@@ -39,6 +40,7 @@ import {
   sendMeeting,
   sendPhrase,
   sendQuiz,
+  sendSticker,
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
@@ -270,6 +272,18 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendMeetingSchema
         .parseAsync(payload)
         .then((input) => sendMeeting(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:sticker', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
+      sendStickerSchema
+        .parseAsync(payload)
+        .then((input) => sendSticker(app.mongo.db, userId, input))
         .then(({ message, conversation }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           ack?.({ ok: true, data: message })

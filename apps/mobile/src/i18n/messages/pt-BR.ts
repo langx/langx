@@ -576,6 +576,8 @@ export const ptBR: Localized<EnMessages> = {
     phraseCard: 'Expressão',
     meetingCard: 'Horário proposto',
     quizCard: 'Quiz',
+    stickers: 'Stickers',
+    stickerBuy: 'Desbloquear por {price} tokens',
     quizAddOption: 'Adicionar uma opção',
     sendQuiz: 'Fazer uma pergunta',
     quizQuestion: 'Pergunta',
@@ -899,6 +901,7 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Nossa cozinha',
     intro: 'Onde o LangX é feito, e quem o faz.',
     dataCredit: 'Nomes de lugares do GeoNames, sob licença CC BY 4.0.',
+    stickerCredit: 'Alguns stickers são do Microsoft Fluent Emoji, com licença MIT.',
     footer: 'Feito às claras, por quem usa.',
     contributors: 'Colaboradores',
     fundamentals: 'Todo mundo que já contribuiu',
@@ -1210,6 +1213,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersStarter: 'Stickers iniciais',
     frameSlate: 'Moldura ardósia',
     frameBronze: 'Moldura de bronze',
     frameSky: 'Moldura céu',

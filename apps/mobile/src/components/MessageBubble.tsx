@@ -38,6 +38,8 @@ import {
 import { makeStyles, useTheme } from '../lib/theme'
 import { MediaGallery } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
+import { Image } from 'expo-image'
+import { stickerAsset } from '../lib/stickerAssets'
 import { useT, type MessageKey } from '../i18n'
 
 /**
@@ -406,6 +408,30 @@ export const MessageBubble = memo(function MessageBubble({
     )
   }
 
+  if (message.type === 'sticker' && message.sticker) {
+    const picture = stickerAsset(message.sticker.packId, message.sticker.stickerId)
+    return shell(
+      <Pressable onLongPress={press} style={column}>
+        {/*
+          No bubble behind it. A sticker is the whole message, and a chrome
+          rectangle around one is what makes it look like a picture somebody
+          attached rather than a thing they said.
+        */}
+        <View ref={box} style={flash}>
+          {picture ? (
+            <Image source={picture} style={styles.sticker} contentFit="contain" />
+          ) : (
+            // A pack this build does not carry — the same case as an unknown
+            // message type, and answered the same way rather than with a gap.
+            <Text style={styles.phraseMeaning}>{t('chat.unsupportedMessage')}</Text>
+          )}
+        </View>
+        {badge}
+        <View style={styles.cardMeta}>{meta}</View>
+      </Pressable>,
+    )
+  }
+
   if (message.type === 'quiz' && message.quiz) {
     const quiz = message.quiz
     const answered = quiz.answer !== undefined
@@ -756,6 +782,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   phraseMeaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
   phraseExample: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
   meetingWhen: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  sticker: { height: 112, width: 112 },
   quizOption: {
     alignItems: 'center',
     backgroundColor: colors.bg,
