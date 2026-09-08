@@ -49,6 +49,12 @@ export interface StoreOffer {
    *  item is never buyable however much the balance is. */
   affordable: boolean
   /**
+   * A sticker pack's contents, so the row can show what is in it. Frames and
+   * titles are their own preview — a pack is twelve pictures with a name, and
+   * the name alone is not what somebody is being asked to buy.
+   */
+  stickers?: readonly string[]
+  /**
    * The day this offer would fill in, when it is a repair.
    *
    * Carried explicitly rather than parsed back out of `id`. The id is
@@ -92,9 +98,22 @@ export interface StoreInput {
  * `frame.gold` → `cosmetics.frameGold`. The catalogue keys cannot be the SKUs
  * themselves: a dot in a key is how `translate` walks into a group.
  */
-function cosmeticKey(id: string): MessageKey {
+export function cosmeticKey(id: string): MessageKey {
   const [kind, tier] = id.split('.')
   return `cosmetics.${kind}${(tier ?? '').charAt(0).toUpperCase()}${(tier ?? '').slice(1)}` as MessageKey
+}
+
+/**
+ * What a row says under its name, per catalogue.
+ *
+ * A map rather than a ternary: a third kind arrived and the ternary read
+ * "frame, otherwise title", so every sticker pack in the store was labelled
+ * `Title`.
+ */
+const KIND_SUBTITLE: Record<CosmeticKind, MessageKey> = {
+  frame: 'store.frameKind',
+  title: 'store.titleKind',
+  stickers: 'store.stickerKind',
 }
 
 /**
@@ -189,12 +208,13 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     const offer = priced(
       item.id,
       t(cosmeticKey(item.id)),
-      item.kind === 'frame' ? t('store.frameKind') : t('store.titleKind'),
+      t(KIND_SUBTITLE[item.kind]),
       item.price,
       input.owned.includes(item.id),
     )
     offer.kind = item.kind
     if (item.tone) offer.tone = item.tone
+    if (item.stickers) offer.stickers = item.stickers
 
     /*
      * The ladder is checked before the earned gate, and shown instead of it

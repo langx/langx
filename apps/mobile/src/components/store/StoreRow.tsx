@@ -1,9 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { Pressable, Text, View, type ViewStyle } from 'react-native'
 import type { StoreOffer } from '../../lib/storeOffers'
 import { useLocale, useT } from '../../i18n'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
+import { stickerAsset } from '../../lib/stickerAssets'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 interface StoreRowProps {
@@ -24,11 +26,12 @@ interface StoreRowProps {
  * One thing the balance buys. Owned items keep their row rather than
  * disappearing, so the catalogue stays the same shape whoever is looking at it.
  *
- * Three shapes from one offer. A consumable (the freeze, a repair) is a badge,
+ * Four shapes from one offer. A consumable (the freeze, a repair) is a badge,
  * a sentence and a price. A frame is your own face wearing it — "Gold frame"
  * tells somebody the name of a thing they are being asked to spend eighteen
  * thousand token on; the swatch tells them what they are buying. A title is
- * the tag itself, since the tag *is* the product.
+ * the tag itself, since the tag *is* the product. A sticker pack is a few of
+ * the stickers in it, for the same reason the frame is a swatch.
  *
  * The price *is* the button. A separate "Buy" beside a number would be two
  * controls for one decision, and the row has room for one.
@@ -99,6 +102,44 @@ export function StoreRow({
           <Text style={styles.meta}>{offer.subtitle}</Text>
         </View>
         {buy}
+      </View>
+    )
+  }
+
+  /*
+   * A pack, drawn as three of the pictures in it.
+   *
+   * Same argument as the frame's swatch: "Starter stickers" is the name of a
+   * thing, and the pictures are the thing. Owning one is a state rather than a
+   * choice — a pack is not worn, owning it opens its keyboard — so the row
+   * ends in a flat "Owned" instead of the frame row's Wear.
+   */
+  if (offer.kind === 'stickers') {
+    return (
+      <View style={[styles.row, styles.rowCosmetic, !last && styles.divided, style]}>
+        <View style={styles.stickers}>
+          {(offer.stickers ?? []).slice(0, 3).map((sticker) => {
+            const picture = stickerAsset(offer.id, sticker)
+            return picture ? (
+              <Image key={sticker} source={picture} style={styles.sticker} contentFit="contain" />
+            ) : null
+          })}
+        </View>
+        <View style={styles.text}>
+          <Text style={styles.name}>{offer.title}</Text>
+          <Text style={styles.meta}>{offer.subtitle}</Text>
+        </View>
+        {offer.owned ? (
+          <View
+            style={[styles.cta, styles.ctaLocked]}
+            accessibilityRole="text"
+            accessibilityLabel={t('store.ownedAccessibility', { title: offer.title })}
+          >
+            <Text style={[styles.ctaLabel, { color: colors.textMuted }]}>{t('store.owned')}</Text>
+          </View>
+        ) : (
+          buy
+        )}
       </View>
     )
   }
@@ -190,6 +231,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     justifyContent: 'center',
     width: 44,
   },
+  stickers: { flexDirection: 'row', gap: 2 },
+  sticker: { height: 30, width: 30 },
   text: { flex: 1, gap: 2 },
   name: { color: colors.text, fontSize: 16, fontWeight: '600' },
   meta: { color: colors.textMuted, fontSize: 13 },

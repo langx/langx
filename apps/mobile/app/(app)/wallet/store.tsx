@@ -28,11 +28,11 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 /**
  * The store: what the balance buys, and what you already own.
  *
- * One catalogue in three lists — the consumables, then every frame, then
- * every title — with what you own kept in place and marked as worn or
- * wearable. The pickers that used to sit above the prices are gone: a row
- * that says "Wearing" *is* the picker, and it sits next to the price of the
- * rung above, which is the answer to "why buy another". The hourly gift is
+ * One catalogue in four lists — the consumables, then every sticker pack,
+ * then every frame, then every title — with what you own kept in place and
+ * marked as worn or wearable. The pickers that used to sit above the prices
+ * are gone: a row that says "Wearing" *is* the picker, and it sits next to the
+ * price of the rung above, which is the answer to "why buy another". The hourly gift is
  * not here — it is not for sale, so it stays on the wallet's landing page.
  */
 export default function StoreScreen() {
@@ -97,6 +97,13 @@ export default function StoreScreen() {
   const items = offers.filter((offer) => !offer.kind)
   const frames = offers.filter((offer) => offer.kind === 'frame')
   const titles = offers.filter((offer) => offer.kind === 'title')
+  /*
+   * Packs were bought nowhere. This screen listed the three groups it knew
+   * about, the catalogue grew a fourth kind, and every sticker pack fell
+   * between the filters — so the only thing pointing at a pack was the chat
+   * keyboard's button, and it pointed here.
+   */
+  const stickers = offers.filter((offer) => offer.kind === 'stickers')
   // What is *drawn*, which is the explicit choice or the fallback — so the row
   // marked as worn matches the profile even before anybody has chosen.
   const wornFrame = wornCosmetic(wallet.data?.equipped, owned, 'frame')?.id
@@ -166,6 +173,11 @@ export default function StoreScreen() {
       />
 
       {items.map((offer) => (
+        <StoreRow key={offer.id} offer={offer} pending={purchase.isPending} onBuy={buy} />
+      ))}
+
+      <Text style={styles.kicker}>{t('store.stickers')}</Text>
+      {stickers.map((offer) => (
         <StoreRow key={offer.id} offer={offer} pending={purchase.isPending} onBuy={buy} />
       ))}
 
