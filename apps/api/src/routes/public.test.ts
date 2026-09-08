@@ -152,6 +152,27 @@ describe('the routes anybody can call', () => {
     })
   })
 
+  describe('the bare hostname of the stats site', () => {
+    it('sends the root of insight.* to the page', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/',
+        headers: { host: 'insight.langx.io' },
+      })
+      expect(response.statusCode).toBe(301)
+      expect(response.headers.location).toBe('/public/insight')
+    })
+
+    it('leaves every other host the root it had', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/',
+        headers: { host: 'api.langx.io' },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+  })
+
   describe('the public stats page', () => {
     beforeEach(() => {
       resetPublicStatsCache()

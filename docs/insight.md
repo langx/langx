@@ -69,19 +69,30 @@ nothing on a public page is worth a database pass per visitor.
 
 ## Pointing the domain at it
 
-Not in this repo, and not automated — the same kind of by-hand step as
-everything in [`repo-map.md`](repo-map.md):
+Two by-hand steps in two dashboards, the same kind as everything in
+[`repo-map.md`](repo-map.md). The root of the hostname is **not** one of them:
+`GET /` redirects to the page from `routes/public.ts` when the host's first
+label is `insight`, so a Cloudflare redirect rule is not needed and one less
+setting lives somewhere nobody can read from a checkout.
 
-1. **Fly**: `fly certs add insight.langx.io -a langx-api`, then add the
-   `_acme-challenge` record it prints.
-2. **Cloudflare DNS**: `insight` as a CNAME to `langx-api.fly.dev`, proxied —
-   copy whatever `api` has, since that hostname is already this Fly app behind
-   Cloudflare and is known to work.
-3. **Cloudflare redirect rule** (301): `insight.langx.io/` →
-   `/public/insight`. Without it the bare hostname answers with the API's 404
-   body, because `/` is not a route.
+1. **Cloudflare DNS**: `insight` as `A` and `AAAA` to the same Fly addresses
+   `api` already uses, proxied. Copying `api` rather than inventing a record is
+   the whole trick — that hostname is this Fly app behind Cloudflare and is
+   known to work, and the zone's SSL mode already suits it.
+2. **Fly**: `fly certs add insight.langx.io -a langx-api`, then
+   `fly certs show insight.langx.io -a langx-api` until it reads `Issued`.
 
-`api.langx.io/public/insight` keeps working either way; the domain is a nicer
+**The order of those two is a trap, and it cost an afternoon.** Behind
+Cloudflare's proxy, Fly cannot do HTTP validation — Cloudflare terminates the
+TLS the challenge would arrive over. Fly says so and asks for a
+`_fly-ownership` TXT record instead; `fly certs setup insight.langx.io` prints
+it, and a TXT record has no proxy setting to get wrong. Until the certificate
+is issued, Cloudflare has nothing to connect to on the origin leg and the
+hostname answers **525** — which reads like a mistake in the DNS and is not
+one. The alternatives are to add that TXT record, or to leave the record
+unproxied until the certificate is issued and turn the proxy on afterwards.
+
+`api.langx.io/public/insight` keeps working throughout; the domain is a nicer
 address for the same page, not a second deployment of it.
 
 ## Changing what is on it
