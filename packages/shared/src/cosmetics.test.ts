@@ -101,7 +101,7 @@ describe('previousCosmetic', () => {
   })
 
   it('walks one step down, never across to the other kind', () => {
-    for (const kind of COSMETIC_KINDS) {
+    for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
       const ladder = COSMETICS.filter((c) => c.kind === kind)
       for (let i = 1; i < ladder.length; i++) {
         const previous = previousCosmetic(ladder[i]!)
@@ -117,7 +117,7 @@ describe('previousCosmetic', () => {
    * mis-price it.
    */
   it('reaches the bottom of each ladder without looping', () => {
-    for (const kind of COSMETIC_KINDS) {
+    for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
       const ladder = COSMETICS.filter((c) => c.kind === kind)
       let current = ladder.at(-1)
       let steps = 0

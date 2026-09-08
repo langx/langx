@@ -1375,6 +1375,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Стикеры для практики',
     stickersStarter: 'Стартовые стикеры',
     frameSlate: 'Сланцевая рамка',
     frameBronze: 'Бронзовая рамка',

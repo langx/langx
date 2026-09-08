@@ -1237,6 +1237,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Stickers d’entraînement',
     stickersStarter: 'Stickers de départ',
     frameSlate: 'Cadre ardoise',
     frameBronze: 'Cadre bronze',

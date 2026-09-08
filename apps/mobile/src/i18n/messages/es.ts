@@ -1228,6 +1228,7 @@ export const es: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPractice: 'Stickers de práctica',
     stickersStarter: 'Stickers iniciales',
     frameSlate: 'Marco pizarra',
     frameBronze: 'Marco de bronce',
