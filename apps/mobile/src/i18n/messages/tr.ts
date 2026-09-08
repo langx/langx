@@ -1258,6 +1258,7 @@ export const tr: Localized<EnMessages> = {
     referralSubscription: 'Davet abonelik bonusu',
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
+    bugBounty: 'Hata ödülü',
   },
 
   cosmetics: {

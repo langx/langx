@@ -1254,6 +1254,7 @@ export const es: Localized<EnMessages> = {
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
+    bugBounty: 'Recompensa por error',
   },
 
   cosmetics: {

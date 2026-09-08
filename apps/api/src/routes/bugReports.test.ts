@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
+import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
@@ -195,6 +196,98 @@ describe('bug reports', () => {
     })
 
     expect(response.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
+  })
+
+  /** The link the report's email carries, as a path this app can be injected with. */
+  async function awardPath(body: string): Promise<string> {
+    const response = await report({ body })
+    expect(response.statusCode, response.body).toBe(202)
+    const match = /https?:\/\/\S*\/bug-reports\/award\?token=\S+/.exec(
+      emailSender.messages.at(-1)?.text ?? '',
+    )
+    if (!match) throw new Error('no award link in the report email')
+    return match[0].replace(/^https?:\/\/[^/]+/, '')
+  }
+
+  function payWith(path: string, amount: string) {
+    return app.inject({
+      method: 'POST',
+      url: path,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      payload: `amount=${encodeURIComponent(amount)}`,
+    })
+  }
+
+  async function balance(): Promise<number> {
+    const rows = await handle.db
+      .collection<{ amount: number }>(COLLECTIONS.tokenLedger)
+      .find({ userId, kind: 'bugBounty' })
+      .toArray()
+    return rows.reduce((total, row) => total + row.amount, 0)
+  }
+
+  describe('the award link in the email', () => {
+    it('opens a page that names the finder and pays nothing by itself', async () => {
+      const path = await awardPath('The wallet screen shows a negative balance again.')
+      const before = await balance()
+
+      const page = await app.inject({ method: 'GET', url: path })
+
+      expect(page.statusCode, page.body).toBe(200)
+      expect(page.body).toContain('@bugfinder')
+      expect(page.body).toContain('name="amount"')
+      expect(await balance()).toBe(before)
+    })
+
+    it('pays the amount the reader chose, once', async () => {
+      const path = await awardPath('Corrections are counted twice on the profile screen.')
+      const before = await balance()
+
+      const paid = await payWith(path, '1500')
+      expect(paid.statusCode, paid.body).toBe(200)
+      expect(paid.body).toContain('1500')
+      expect(await balance()).toBe(before + 1500)
+
+      // The same link again — a refresh, or a forwarded mail.
+      const again = await payWith(path, '1500')
+      expect(again.statusCode).toBe(200)
+      expect(again.body).toContain('already been paid')
+      expect(await balance()).toBe(before + 1500)
+    })
+
+    it('keeps the award off the week, month and year tables', async () => {
+      const path = await awardPath('The streak freeze is spent even when the streak is safe.')
+      const week = await handle.db
+        .collection<{ tokens: number }>(COLLECTIONS.tokenAggregates)
+        .findOne({ userId, periodType: 'week' })
+      const before = week?.tokens ?? 0
+
+      expect((await payWith(path, '500')).statusCode).toBe(200)
+
+      const after = await handle.db
+        .collection<{ tokens: number }>(COLLECTIONS.tokenAggregates)
+        .findOne({ userId, periodType: 'week' })
+      expect(after?.tokens ?? 0).toBe(before)
+    })
+
+    it('refuses an amount outside the range, and pays nothing', async () => {
+      const path = await awardPath('Photos in chat load rotated on Android.')
+      const before = await balance()
+
+      for (const amount of ['0', '50', '500000', 'lots']) {
+        const response = await payWith(path, amount)
+        expect(response.statusCode, amount).toBe(400)
+      }
+      expect(await balance()).toBe(before)
+    })
+
+    it('refuses a token somebody edited', async () => {
+      const path = await awardPath('The gift cooldown shows a negative timer.')
+      const tampered = path.replace(/token=v1\.[^.]+/, 'token=v1.someone-else')
+
+      expect((await app.inject({ method: 'GET', url: tampered })).statusCode).toBe(400)
+      expect((await payWith(tampered, '500')).statusCode).toBe(400)
+    })
   })
 
   it('needs a session', async () => {

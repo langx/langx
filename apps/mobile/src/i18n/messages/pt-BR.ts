@@ -1251,6 +1251,7 @@ export const ptBR: Localized<EnMessages> = {
     referralSubscription: 'Bônus de assinatura do convidado',
     referralWelcome: 'Bônus de boas-vindas por convite',
     gift: 'Presente de cada hora',
+    bugBounty: 'Recompensa por erro',
   },
 
   cosmetics: {

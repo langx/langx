@@ -1401,6 +1401,7 @@ export const ru: Localized<EnMessages> = {
     referralSubscription: 'Бонус за подписку приглашённого',
     referralWelcome: 'Приветственный бонус по приглашению',
     gift: 'Подарок каждый час',
+    bugBounty: 'Награда за ошибку',
   },
 
   cosmetics: {

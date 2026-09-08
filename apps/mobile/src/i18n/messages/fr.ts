@@ -1263,6 +1263,7 @@ export const fr: Localized<EnMessages> = {
     referralSubscription: 'Bonus d’abonnement filleul',
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
+    bugBounty: 'Prime de bug',
   },
 
   cosmetics: {

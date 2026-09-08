@@ -359,6 +359,8 @@ export function bugReportEmail(input: {
   /** Public URLs of whatever was attached as proof, already in our own bucket. */
   attachmentUrls: readonly string[]
   reporter: { userId: string; handle: string | null; email: string | null }
+  /** Where the reward is decided and sent — see `bugBountyToken.ts`. */
+  awardUrl: string
 }): Email {
   const who = input.reporter.handle ? `@${input.reporter.handle}` : input.reporter.userId
   const subject = `Bug report from ${who}`
@@ -380,9 +382,19 @@ export function bugReportEmail(input: {
     <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
     <p style="white-space: pre-wrap;">${escapeHtml(input.body)}</p>
     ${links.length ? `<p><strong>Proof</strong></p><ul>${links.join('')}</ul>` : ''}
+    <p>${button(encodeURI(input.awardUrl), 'Confirm and set the reward')}</p>
+    <p style="color: #888; font-size: 12px;">Opens a page where you set the amount and pay the finder. One payment per report.</p>
     <p style="color: #888; font-size: 12px;">${from.map(escapeHtml).join('<br />')}</p>
   </body>
 </html>`,
-    text: [input.body, '', ...input.attachmentUrls, '', ...from].join('\n'),
+    text: [
+      input.body,
+      '',
+      ...input.attachmentUrls,
+      '',
+      `Confirm and set the reward: ${input.awardUrl}`,
+      '',
+      ...from,
+    ].join('\n'),
   }
 }

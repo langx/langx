@@ -1282,6 +1282,7 @@ export const de: Localized<EnMessages> = {
     referralSubscription: 'Einladungs-Abo-Bonus',
     referralWelcome: 'Einladungs-Willkommensbonus',
     gift: 'Stündliches Geschenk',
+    bugBounty: 'Fehlerprämie',
   },
 
   cosmetics: {

@@ -1300,6 +1300,7 @@ export const en = {
     referralSubscription: 'Invite subscription bonus',
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
+    bugBounty: 'Bug bounty',
   },
 
   cosmetics: {

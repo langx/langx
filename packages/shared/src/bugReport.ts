@@ -10,10 +10,29 @@ import { z } from 'zod'
  * paid, so a row here would be a second copy of a decision made somewhere
  * else — and one nobody would ever go back and close.
  *
- * That is also why no amount appears anywhere in this file or on the screen
- * that posts to it. What a confirmed bug is worth is a judgement about how bad
- * the bug was, made per report, in the reply.
+ * That is also why no amount appears on the screen that posts to it. What a
+ * confirmed bug is worth is a judgement about how bad the bug was, made per
+ * report — the bounds below are the range that judgement is made *within*, and
+ * they are read by the award page the report's email links to, never by the
+ * app.
  */
+
+/**
+ * What a confirmed bug can pay.
+ *
+ * A floor because a report worth answering is worth more than a day's
+ * messaging, and a ceiling because the award page is reached with a link from
+ * an inbox: a mistyped amount there is a payout nothing else in the system
+ * would stop. Neither number is shown in the app.
+ */
+export const BUG_BOUNTY_MIN = 500
+export const BUG_BOUNTY_MAX = 5000
+
+/** What the award page posts back: how much, for the report the link names. */
+export const bugBountyAwardSchema = z.object({
+  amount: z.coerce.number().int().min(BUG_BOUNTY_MIN).max(BUG_BOUNTY_MAX),
+})
+export type BugBountyAwardInput = z.infer<typeof bugBountyAwardSchema>
 
 /**
  * Long enough to name what happened, what was expected and where. "It crashes"
