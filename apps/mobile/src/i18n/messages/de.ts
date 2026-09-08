@@ -641,7 +641,10 @@ export const de: Localized<EnMessages> = {
     yourCorrection: 'Deine Korrektur',
     correctionFrom: 'Korrektur von {name}',
     them: 'der anderen Person',
-    tokensPerMessage: '+{count} Token / Nachricht',
+    tokensPerMessage: {
+      one: '+{count} Token / Nachricht',
+      other: '+{count} Token / Nachricht',
+    },
     voiceMessage: 'Sprachnachricht',
     speedSlow: '0,5x',
     speedNormal: '1x',

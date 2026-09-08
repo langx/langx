@@ -612,7 +612,10 @@ export const ptBR: Localized<EnMessages> = {
     yourCorrection: 'Sua correção',
     correctionFrom: 'Correção de {name}',
     them: 'a outra pessoa',
-    tokensPerMessage: '+{count} fichas / mensagem',
+    tokensPerMessage: {
+      one: '+{count} token / mensagem',
+      other: '+{count} tokens / mensagem',
+    },
     voiceMessage: 'Mensagem de voz',
     speedSlow: '0,5x',
     speedNormal: '1x',
