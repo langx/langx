@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LangX — public stats</title>
+    <meta
+      name="description"
+      content="How much language exchange is actually happening on LangX: members, messages, corrections and the languages they are in."
+    />
+    <link rel="icon" href="/public/insight/icon.png" />
+    <style>
+      /*
+       * The palette is the app's (`apps/mobile/src/lib/theme/tokens.ts`): the
+       * same blue for everything that carries data, the same ink and greys.
+       * Dark mode is its own set of steps rather than an inversion — a blue
+       * that reads on white is too dark to read on near-black.
+       */
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fill: #f4f5f7;
+        --border: #e8eaec;
+        --text: #17191c;
+        --muted: #62676d;
+        --faint: #9aa1a7;
+        --accent: #3b6cf6;
+        --accent-soft: #e9f0fe;
+        --streak: #f79009;
+        --radius: 14px;
+        --page: 980px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101215;
+          --fill: #191c20;
+          --border: #262a2f;
+          --text: #f1f3f5;
+          --muted: #a0a7ae;
+          --faint: #6d757d;
+          --accent: #7d9bff;
+          --accent-soft: #1c2740;
+          --streak: #f9a63a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.5 -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+      }
+      .wrap {
+        max-width: var(--page);
+        margin: 0 auto;
+        padding: 28px 20px 64px;
+      }
+
+      header.top {
+        display: flex;
+        flex-wrap: wrap;
+        /* Centred, not baseline-aligned: an image's baseline is its bottom
+           edge, which drops the label below the wordmark it sits beside. */
+        align-items: center;
+        gap: 6px 12px;
+        margin-bottom: 10px;
+      }
+      .brand {
+        display: block;
+        line-height: 0;
+      }
+      /*
+       * The lockup from `langx/branding`, in its two grounds — the mark keeps
+       * its yellow in both, only the wordmark changes. Drawn at 30px from a
+       * 128px-tall file, so it stays sharp on a retina screen; `width` and
+       * `height` are declared so the header does not jump while it loads.
+       */
+      .brand img {
+        display: block;
+        height: 30px;
+        width: auto;
+      }
+      .kicker {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .sub {
+        color: var(--faint);
+        font-size: 13px;
+        margin: 0 0 24px;
+      }
+
+      /* Stat tiles. One number each; no chart, because the number is the chart. */
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 720px) {
+        .tiles {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .tile {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        background: var(--bg);
+      }
+      .tile dt {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      .tile dd {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        /* Proportional figures: tabular ones read loose at this size. */
+      }
+
+      .card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        margin-bottom: 20px;
+      }
+      .card > h2 {
+        font-size: 15px;
+        margin: 0 0 2px;
+      }
+      .card > .hint {
+        font-size: 13px;
+        color: var(--faint);
+        margin: 0 0 16px;
+      }
+
+      /* The metric switch sits above the plot and scopes it — never inside. */
+      .switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 18px;
+      }
+      .switch button {
+        font: inherit;
+        font-size: 13px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .switch button[aria-pressed='true'] {
+        background: var(--accent-soft);
+        border-color: transparent;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .chart {
+        position: relative;
+      }
+      .plot {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        gap: 2px; /* the surface gap between adjacent bars */
+        height: 180px;
+        padding-left: 38px;
+      }
+      .grid {
+        position: absolute;
+        left: 38px;
+        right: 0;
+        border-top: 1px solid var(--border); /* solid hairlines; dashes read as thresholds */
+      }
+      .grid span {
+        position: absolute;
+        left: -38px;
+        top: -0.7em;
+        width: 32px;
+        text-align: right;
+        font-size: 11px;
+        color: var(--faint);
+        font-variant-numeric: tabular-nums;
+      }
+      .bar {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        cursor: default;
+      }
+      .bar i {
+        display: block;
+        width: 100%;
+        background: var(--accent);
+        border-radius: 4px 4px 0 0; /* rounded data-end, anchored to the baseline */
+        min-height: 0;
+        transition: height 120ms ease-out;
+      }
+      .bar:hover i {
+        background: var(--text);
+      }
+      .xaxis {
+        display: flex;
+        gap: 2px;
+        padding-left: 38px;
+        margin-top: 8px;
+        height: 15px;
+      }
+      .xaxis span {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+      }
+      /*
+       * The label is wider than the bar it belongs to, so it is taken out of
+       * the flow and centred on it. `text-align` cannot do this: a line longer
+       * than its box has no free space to align inside, so it simply spills to
+       * the right — which is how the last day's label ended up past the card's
+       * edge. The two extremes are anchored to their own edge instead.
+       */
+      .xaxis b {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--faint);
+        white-space: nowrap;
+      }
+      .xaxis span:first-child b {
+        left: 0;
+        transform: none;
+      }
+      .xaxis span:last-child b {
+        left: auto;
+        right: 0;
+        transform: none;
+      }
+      .tip {
+        position: absolute;
+        z-index: 2;
+        pointer-events: none;
+        transform: translate(-50%, -100%);
+        background: var(--text);
+        color: var(--bg);
+        border-radius: 8px;
+        padding: 6px 9px;
+        font-size: 12px;
+        line-height: 1.35;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 100ms;
+      }
+      .tip.on {
+        opacity: 1;
+      }
+
+      /* Top lists: the bar is the row's background, so the label always fits. */
+      .lists {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      @media (max-width: 720px) {
+        .lists {
+          grid-template-columns: 1fr;
+        }
+      }
+      .rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .rows li {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      .rows li::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--w, 0%);
+        background: var(--accent-soft);
+        border-radius: 6px;
+      }
+      .rows li > * {
+        position: relative;
+      }
+      .rows .n {
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .strip b {
+        color: var(--text);
+      }
+      .dot {
+        color: var(--streak);
+      }
+
+      details {
+        margin-top: 16px;
+        font-size: 13px;
+      }
+      details summary {
+        cursor: pointer;
+        color: var(--muted);
+      }
+      table {
+        border-collapse: collapse;
+        margin-top: 10px;
+        width: 100%;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        text-align: right;
+        padding: 4px 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      footer {
+        margin-top: 36px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+        color: var(--faint);
+        font-size: 13px;
+      }
+      footer p {
+        margin: 0 0 8px;
+      }
+      .state {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <a class="brand" href="https://langx.io">
+          <picture>
+            <source srcset="/public/insight/lockup-dark.png" media="(prefers-color-scheme: dark)" />
+            <img src="/public/insight/lockup.png" width="399" height="128" alt="LangX" />
+          </picture>
+        </a>
+        <span class="kicker">Public stats</span>
+      </header>
+      <p class="sub">
+        Everything below is counted from our own database. Nothing here is per-person, and this page
+        carries no analytics of its own.
+      </p>
+
+      <p class="state" id="state">Loading…</p>
+
+      <div id="content" hidden>
+        <dl class="tiles">
+          <div class="tile">
+            <dt>Members</dt>
+            <dd id="t-members">—</dd>
+          </div>
+          <div class="tile">
+            <dt>Messages</dt>
+            <dd id="t-messages">—</dd>
+          </div>
+          <div class="tile">
+            <dt>Corrections</dt>
+            <dd id="t-corrections">—</dd>
+          </div>
+          <div class="tile">
+            <dt>Languages</dt>
+            <dd id="t-languages">—</dd>
+          </div>
+        </dl>
+
+        <section class="card">
+          <h2 id="chart-title">New members</h2>
+          <p class="hint" id="chart-hint">Per day, last 30 days</p>
+          <div class="switch" role="group" aria-label="Metric">
+            <button type="button" data-metric="members" aria-pressed="true">New members</button>
+            <button type="button" data-metric="messages" aria-pressed="false">Messages</button>
+            <button type="button" data-metric="corrections" aria-pressed="false">
+              Corrections
+            </button>
+          </div>
+          <div class="chart">
+            <div class="plot" id="plot"></div>
+            <div class="xaxis" id="xaxis"></div>
+            <div class="tip" id="tip"></div>
+          </div>
+          <details>
+            <summary>Show the numbers</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>New members</th>
+                  <th>Messages</th>
+                  <th>Corrections</th>
+                </tr>
+              </thead>
+              <tbody id="table"></tbody>
+            </table>
+          </details>
+        </section>
+
+        <div class="lists">
+          <section class="card">
+            <h2>Languages being learned</h2>
+            <p class="hint">Members studying each</p>
+            <ul class="rows" id="learning"></ul>
+          </section>
+          <section class="card">
+            <h2>Languages spoken</h2>
+            <p class="hint">Members who speak each natively</p>
+            <ul class="rows" id="native"></ul>
+          </section>
+        </div>
+
+        <section class="card">
+          <h2>Streaks</h2>
+          <p class="hint">A streak is a day somebody showed up and did something</p>
+          <p class="strip">
+            <span><span class="dot">●</span> Longest ever: <b id="s-longest">—</b> days</span>
+            <span
+              ><span class="dot">●</span> On a streak today: <b id="s-active">—</b> members</span
+            >
+          </p>
+        </section>
+      </div>
+
+      <footer>
+        <p>
+          What is not here, and will not be: revenue, subscriptions, conversion, or anything that
+          could be traced to one person. Those numbers exist, they are simply not ours to publish —
+          see
+          <a href="https://github.com/langx/langx/blob/main/docs/decisions.md"
+            >the decision that says so</a
+          >.
+        </p>
+        <p>
+          Recomputed every ten minutes · last updated <span id="updated">—</span> ·
+          <a href="/public/stats">the raw JSON</a> ·
+          <a href="https://github.com/langx/langx">source</a>
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const NUM = new Intl.NumberFormat('en')
+      const DAY = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+      const METRICS = {
+        members: { title: 'New members', word: 'new members' },
+        messages: { title: 'Messages', word: 'messages' },
+        corrections: { title: 'Corrections', word: 'corrections' },
+      }
+
+      const el = (id) => document.getElementById(id)
+      let stats = null
+      let metric = 'members'
+
+      function text(id, value) {
+        el(id).textContent = value
+      }
+
+      /**
+       * A round, even ceiling for the y-axis: round so the top gridline is a
+       * readable number, even so the middle one is exact — a midpoint label
+       * that says 3 on a line drawn at 2.5 is a lie about every bar near it.
+       */
+      function ceiling(max) {
+        if (max <= 4) return 4
+        const step = Math.pow(10, Math.floor(Math.log10(max)))
+        const top = Math.ceil(max / step) * step
+        return top % 2 === 0 ? top : top + step
+      }
+
+      function drawChart() {
+        const days = stats.daily
+        const top = ceiling(Math.max(...days.map((d) => d[metric])))
+        const plot = el('plot')
+        const axis = el('xaxis')
+        plot.textContent = ''
+        axis.textContent = ''
+
+        for (const at of [0, 0.5, 1]) {
+          const line = document.createElement('div')
+          line.className = 'grid'
+          line.style.bottom = at * 100 + '%'
+          const label = document.createElement('span')
+          label.textContent = NUM.format(Math.round(top * at))
+          line.append(label)
+          plot.append(line)
+        }
+
+        days.forEach((point, i) => {
+          const bar = document.createElement('div')
+          bar.className = 'bar'
+          const fill = document.createElement('i')
+          const value = point[metric]
+          // A zero stays a zero: no minimum stub, or an empty day would read
+          // as a small one.
+          fill.style.height = (value / top) * 100 + '%'
+          bar.append(fill)
+          bar.addEventListener('pointerenter', () => showTip(bar, point, value))
+          bar.addEventListener('pointerleave', hideTip)
+          plot.append(bar)
+
+          const tick = document.createElement('span')
+          // Every seventh day, counted back from the last one — thirty labels
+          // would overlap into a grey smear, and counting forward leaves the
+          // final label sitting on top of its neighbour.
+          if ((days.length - 1 - i) % 7 === 0) {
+            const label = document.createElement('b')
+            label.textContent = DAY.format(new Date(point.day))
+            tick.append(label)
+          }
+          axis.append(tick)
+        })
+
+        el('chart-title').textContent = METRICS[metric].title
+        el('chart-hint').textContent = 'Per day, last ' + stats.days + ' days'
+      }
+
+      function showTip(bar, point, value) {
+        const tip = el('tip')
+        tip.textContent =
+          DAY.format(new Date(point.day)) + ' · ' + NUM.format(value) + ' ' + METRICS[metric].word
+        const box = bar.getBoundingClientRect()
+        const frame = tip.parentElement.getBoundingClientRect()
+        tip.style.left = box.left - frame.left + box.width / 2 + 'px'
+        tip.style.top = box.bottom - frame.top - box.height - 8 + 'px'
+        tip.classList.add('on')
+      }
+
+      function hideTip() {
+        el('tip').classList.remove('on')
+      }
+
+      function drawList(id, rows) {
+        const list = el(id)
+        list.textContent = ''
+        if (rows.length === 0) {
+          const empty = document.createElement('li')
+          empty.textContent = 'Nothing yet'
+          list.append(empty)
+          return
+        }
+        const top = rows[0].count
+        for (const row of rows) {
+          const item = document.createElement('li')
+          item.style.setProperty('--w', (row.count / top) * 100 + '%')
+          const name = document.createElement('span')
+          name.textContent = row.name
+          const count = document.createElement('span')
+          count.className = 'n'
+          count.textContent = NUM.format(row.count)
+          item.append(name, count)
+          list.append(item)
+        }
+      }
+
+      function drawTable() {
+        const body = el('table')
+        body.textContent = ''
+        for (const point of stats.daily) {
+          const tr = document.createElement('tr')
+          for (const value of [
+            DAY.format(new Date(point.day)),
+            NUM.format(point.members),
+            NUM.format(point.messages),
+            NUM.format(point.corrections),
+          ]) {
+            const td = document.createElement('td')
+            td.textContent = value
+            tr.append(td)
+          }
+          body.append(tr)
+        }
+      }
+
+      function draw() {
+        text('t-members', NUM.format(stats.totals.members))
+        text('t-messages', NUM.format(stats.totals.messages))
+        text('t-corrections', NUM.format(stats.totals.corrections))
+        text('t-languages', NUM.format(stats.totals.languages))
+        text('s-longest', NUM.format(stats.streaks.longest))
+        text('s-active', NUM.format(stats.streaks.active))
+        text('updated', new Date(stats.generatedAt).toLocaleString())
+        drawList('learning', stats.learning)
+        drawList('native', stats.native)
+        drawTable()
+        drawChart()
+        el('state').hidden = true
+        el('content').hidden = false
+      }
+
+      for (const button of document.querySelectorAll('.switch button')) {
+        button.addEventListener('click', () => {
+          metric = button.dataset.metric
+          for (const other of document.querySelectorAll('.switch button')) {
+            other.setAttribute('aria-pressed', String(other === button))
+          }
+          drawChart()
+        })
+      }
+
+      fetch('/public/stats')
+        .then((response) => {
+          if (!response.ok) throw new Error('HTTP ' + response.status)
+          return response.json()
+        })
+        .then((body) => {
+          stats = body
+          draw()
+        })
+        .catch(() => {
+          el('state').textContent = 'The numbers are not available right now. Try again shortly.'
+        })
+    </script>
+  </body>
+</html>

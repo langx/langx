@@ -865,7 +865,9 @@ So v2's analytics dashboard is internal. The transparency that `insight` was
 carrying moves, if it moves anywhere, to a curated public stats page built from
 our own data — users, languages, messages, corrections, streaks — with no
 revenue, conversion or funnel on it. That is a different artefact with a
-different audience, not the same dashboard with a lock removed.
+different audience, not the same dashboard with a lock removed. It moved: that
+page is `insight.langx.io`, and the line between what may be on it and what
+may not is [`insight.md`](insight.md).
 
 **The consequence is the tool choice.** Open source stopped being a
 requirement the moment the dashboard stopped being public: self-hosting was

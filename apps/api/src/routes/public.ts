@@ -3,6 +3,8 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { Resend } from 'resend'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
+import { INSIGHT_IMAGES, readInsightImage, readInsightPage } from '../modules/insight/page'
+import { PUBLIC_STATS_TTL_MS, readPublicStats } from '../modules/insight/publicStats'
 import { readContributors } from '../modules/kitchen/contributors'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 
@@ -12,15 +14,20 @@ const PUBLIC_BOARD_SIZE = 10
 const BOARD_CACHE_SECONDS = 60
 /** The contributor list moves by a name a week; an hour at the edge is nothing lost. */
 const CONTRIBUTORS_CACHE_SECONDS = 60 * 60
+/** Matched to how often the numbers are recomputed; asking sooner cannot see anything new. */
+const STATS_CACHE_SECONDS = PUBLIC_STATS_TTL_MS / 1000
+/** The page itself only changes on a deploy. */
+const PAGE_CACHE_SECONDS = 60 * 60
 
 /**
- * The two things v1's Express API served to callers outside the app, moved
- * here so `api.langx.io` can point at this process without either going dark.
+ * What this API serves to callers outside the app: the two things v1's Express
+ * API served — moved here so `api.langx.io` could point at this process
+ * without either going dark — and the public stats page that joined them.
  *
- * Both are unauthenticated by nature: a marketing site cannot hold a session,
- * and a public leaderboard is public. Each is rate-limited on its own, because
- * the global limiter is sized for a signed-in client, not for a form on a
- * page anybody can load.
+ * All of it is unauthenticated by nature: a marketing site cannot hold a
+ * session, and a public leaderboard is public. Each is rate-limited on its
+ * own, because the global limiter is sized for a signed-in client, not for a
+ * form on a page anybody can load.
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -91,6 +98,61 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
           tokens,
         })),
       })
+    },
+  )
+
+  /**
+   * The numbers behind `insight.langx.io`: how much language exchange is
+   * happening, and in which languages. Aggregates only — see
+   * `modules/insight/publicStats.ts` for what may be on this page and what
+   * may never be.
+   */
+  app.get(
+    '/public/stats',
+    { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } },
+    async (_request, reply) => {
+      const stats = await readPublicStats(app.mongo.db)
+      return reply.header('cache-control', `public, max-age=${STATS_CACHE_SECONDS}`).send(stats)
+    },
+  )
+
+  /**
+   * The page that draws them. Served from here rather than from a static host
+   * so that it deploys with the endpoint it reads and can never be a version
+   * behind it; `insight.langx.io` points at this app and redirects `/` here
+   * (docs/insight.md).
+   */
+  app.get(
+    '/public/insight',
+    { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } },
+    async (_request, reply) => {
+      const page = await readInsightPage()
+      return reply
+        .type('text/html; charset=utf-8')
+        .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)
+        .send(page)
+    },
+  )
+
+  /**
+   * The logo and the favicon the page draws, from `langx/branding`.
+   *
+   * One route with the file names as an enum rather than a static directory:
+   * three files is not a file server, and a closed list is a path that cannot
+   * be traversed out of.
+   */
+  app.get(
+    '/public/insight/:asset',
+    {
+      schema: { params: z.object({ asset: z.enum(INSIGHT_IMAGES) }) },
+      config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const image = await readInsightImage(request.params.asset)
+      return reply
+        .type('image/png')
+        .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)
+        .send(image)
     },
   )
 

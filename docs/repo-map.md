@@ -53,6 +53,13 @@ the repos themselves.
 | `token.langx.io` | Cloudflare Pages project `token-website` (**Git-integrated**) | push to `main` of `langx/token-website`; Pages builds it                   |
 | `docs.langx.io`  | GitBook, Git Sync on `langx/docs`                             | push to `main` of `langx/docs`                                             |
 
+`insight.langx.io` is the sixth, and the only one with no hosting of its own:
+the public stats page is served by `langx-api` alongside the API, so it ships
+with `fly deploy` and nothing else. The hostname answers only once the Fly
+certificate, the CNAME and the one redirect rule in
+[`insight.md`](insight.md) are in place; until then the page is at
+`api.langx.io/public/insight`.
+
 `token-website` is the only one Cloudflare builds from Git; moving or renaming
 that repo means reconnecting the Pages project in the dashboard first.
 
@@ -70,7 +77,12 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `apps/mobile/src/lib/theme/tokens.ts`          | `branding/BRAND.md` — the palette, the type and the scales   |
 | `apps/mobile/src/lib/theme/tokens.ts`          | `website/DESIGN.md` and `website/src/lib/scss/_themes.scss`  |
 
-One more runs the other way: the app's link table
+Two run the other way. `branding/app-resources/v2/brand/` is the source of the
+lockup and the favicon that the public stats page draws, downscaled into
+`apps/api/assets/` (see [`insight.md`](insight.md)); a redrawn lockup leaves
+those copies stale with nothing to say so.
+
+And the app's link table
 `apps/mobile/src/lib/externalLinks.ts` (Settings → Legal, and the "Our Kitchen"
 screen) holds the same social and legal addresses as
 `website/src/lib/components/molecules/Socials.svelte`. A handle that changes on
