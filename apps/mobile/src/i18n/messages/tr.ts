@@ -603,7 +603,12 @@ export const tr: Localized<EnMessages> = {
     meetingCancelled: 'Geri çekildi',
     meetingAddToCalendar: 'Takvime ekle',
     meetingSummary: '{name} ile LangX',
-    meetingCalendarFailed: 'Buradan takvim açılamadı.',
+    meetingCalendarFailed: 'Bu, buradan takvime eklenemedi.',
+    meetingCalendarAdded: 'Takvimine eklendi',
+    meetingCalendarPermissionTitle: 'Takvim erişimi',
+    meetingCalendarPermission:
+      'LangX’in görüşmeyi ekleyebilmesi için izin gerekiyor. Ayarlar’dan açabilirsin.',
+    meetingCalendarNone: 'Bu cihazda ekleyebileceğim bir takvim yok.',
     meetingYourTime: 'Senin saatinle {time}',
     meetingTheirTime: 'Onun saatiyle {time}',
     unsupportedMessage: 'Bu mesajı görmek için uygulamayı güncelle.',

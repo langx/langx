@@ -104,7 +104,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
-import { saveMeetingIcs } from '../../../src/lib/saveFile'
+import { addMeetingToCalendar } from '../../../src/lib/addToCalendar'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -482,16 +482,15 @@ export default function ChatScreen() {
   }
 
   /**
-   * Hands an agreed meeting to whatever keeps this person's calendar.
+   * Writes an agreed meeting into this person's calendar.
    *
-   * The file carries the instant in UTC, so the same one is right for both of
-   * them: each calendar app renders it in the zone its owner is in, which is
-   * the same rule the card itself follows and the reason the two cannot
-   * disagree.
+   * The instant is UTC, so the same one is right for both of them: every
+   * calendar renders it in the zone its owner is in, which is the same rule
+   * the card itself follows and the reason the two cannot disagree.
    */
   async function addToCalendar(message: MessageDto): Promise<void> {
     if (!message.meeting) return
-    const ok = await saveMeetingIcs({
+    const result = await addMeetingToCalendar({
       uid: message._id,
       startsAt: new Date(message.meeting.startsAt),
       durationMinutes: message.meeting.durationMinutes,
@@ -499,7 +498,19 @@ export default function ChatScreen() {
       note: message.meeting.note,
       url: webUrl(`/chat/${conversationId}`),
     })
-    if (!ok) void showAlert(t('chat.meetingCalendarFailed'))
+    if (result === 'added' || result === 'updated') {
+      showToast(t('chat.meetingCalendarAdded'))
+      return
+    }
+    // `saved` is the web, and the file it downloaded says enough by arriving.
+    if (result === 'saved') return
+    if (result === 'denied') {
+      void showAlert(t('chat.meetingCalendarPermissionTitle'), t('chat.meetingCalendarPermission'))
+      return
+    }
+    void showAlert(
+      result === 'noCalendar' ? t('chat.meetingCalendarNone') : t('chat.meetingCalendarFailed'),
+    )
   }
 
   /** Answers a quiz. Once, and never your own — both are the server's rules. */

@@ -596,7 +596,12 @@ export const ptBR: Localized<EnMessages> = {
     meetingCancelled: 'Retirado',
     meetingAddToCalendar: 'Adicionar ao calendário',
     meetingSummary: 'LangX com {name}',
-    meetingCalendarFailed: 'Não foi possível abrir um calendário daqui.',
+    meetingCalendarFailed: 'Não deu para adicionar isto a um calendário daqui.',
+    meetingCalendarAdded: 'Adicionado ao seu calendário',
+    meetingCalendarPermissionTitle: 'Acesso ao calendário',
+    meetingCalendarPermission:
+      'O LangX precisa de permissão para adicionar a sessão. Você pode liberar nos Ajustes.',
+    meetingCalendarNone: 'Não há calendário neste aparelho para adicionar.',
     meetingYourTime: '{time} no seu horário',
     meetingTheirTime: '{time} no dela',
     unsupportedMessage: 'Atualize o app para ver esta mensagem.',

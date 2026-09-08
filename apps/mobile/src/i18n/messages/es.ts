@@ -602,7 +602,12 @@ export const es: Localized<EnMessages> = {
     meetingCancelled: 'Retirada',
     meetingAddToCalendar: 'Añadir al calendario',
     meetingSummary: 'LangX con {name}',
-    meetingCalendarFailed: 'No se pudo abrir un calendario desde aquí.',
+    meetingCalendarFailed: 'No se pudo añadir esto a un calendario desde aquí.',
+    meetingCalendarAdded: 'Añadido a tu calendario',
+    meetingCalendarPermissionTitle: 'Acceso al calendario',
+    meetingCalendarPermission:
+      'LangX necesita permiso para añadir la sesión. Puedes activarlo en Ajustes.',
+    meetingCalendarNone: 'No hay ningún calendario en este dispositivo donde añadirlo.',
     meetingYourTime: '{time} en tu hora',
     meetingTheirTime: '{time} en la suya',
     unsupportedMessage: 'Actualiza la app para ver este mensaje.',

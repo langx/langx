@@ -123,6 +123,19 @@ export const FLAG_KEYS = {
    * "asked, long ago" are different answers.
    */
   reviewPrompt: 'reviewPrompt',
+  /**
+   * JSON: `meetingId -> calendar event id`, for meetings added to the phone's
+   * calendar.
+   *
+   * The `.ics` file this replaced got idempotency for free — a calendar
+   * importing a `UID` it already holds updates that entry — but writing an
+   * event through the OS gives back a new id every time. Without this,
+   * tapping "Add to calendar" twice leaves two identical entries.
+   *
+   * Device-level, and unavoidably so: the id belongs to a calendar database
+   * on this phone and means nothing anywhere else.
+   */
+  calendarEvents: 'calendarEvents',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

@@ -673,7 +673,12 @@ export const ru: Localized<EnMessages> = {
     meetingCancelled: 'Отозвано',
     meetingAddToCalendar: 'Добавить в календарь',
     meetingSummary: 'LangX с {name}',
-    meetingCalendarFailed: 'Отсюда не удалось открыть календарь.',
+    meetingCalendarFailed: 'Отсюда не удалось добавить это в календарь.',
+    meetingCalendarAdded: 'Добавлено в ваш календарь',
+    meetingCalendarPermissionTitle: 'Доступ к календарю',
+    meetingCalendarPermission:
+      'LangX нужно разрешение, чтобы добавить встречу. Включить можно в настройках.',
+    meetingCalendarNone: 'На этом устройстве нет календаря, куда это добавить.',
     meetingYourTime: '{time} по твоему времени',
     meetingTheirTime: '{time} по их времени',
     unsupportedMessage: 'Обнови приложение, чтобы увидеть это сообщение.',

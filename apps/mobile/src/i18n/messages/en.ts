@@ -639,7 +639,12 @@ export const en = {
     meetingCancelled: 'Withdrawn',
     meetingAddToCalendar: 'Add to calendar',
     meetingSummary: 'LangX with {name}',
-    meetingCalendarFailed: 'Could not open a calendar from here.',
+    meetingCalendarFailed: 'Could not add this to a calendar from here.',
+    meetingCalendarAdded: 'Added to your calendar',
+    meetingCalendarPermissionTitle: 'Calendar access',
+    meetingCalendarPermission:
+      'LangX needs permission to add the session. You can turn it on in Settings.',
+    meetingCalendarNone: 'There is no calendar on this device to add it to.',
     meetingYourTime: '{time} your time',
     meetingTheirTime: '{time} theirs',
     unsupportedMessage: 'Update the app to see this message.',

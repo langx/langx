@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { meetingIcs } from './icsFile'
+import { icsFileName, meetingIcs } from './icsFile'
 
 const NOW = new Date('2026-09-07T10:00:00.000Z')
 const START = new Date('2026-09-10T18:00:00.000Z')
@@ -47,9 +47,16 @@ describe('meetingIcs', () => {
   })
 
   it('omits the description when there is no note, rather than writing an empty one', () => {
-    expect(
-      meetingIcs({ uid: 'm1', startsAt: START, durationMinutes: 30, summary: 'x' }, NOW),
-    ).not.toContain('DESCRIPTION')
+    const ics = meetingIcs({ uid: 'm1', startsAt: START, durationMinutes: 30, summary: 'x' }, NOW)
+    // Not `toContain('DESCRIPTION')`: the alarm carries one of its own, which
+    // the spec requires on a `DISPLAY` action. The event's is what must be
+    // absent.
+    expect(ics.split('BEGIN:VALARM')[0]).not.toContain('DESCRIPTION')
+  })
+
+  it('sets an alarm an hour before, which is what the card promises', () => {
+    const ics = meetingIcs({ uid: 'm1', startsAt: START, durationMinutes: 30, summary: 'x' }, NOW)
+    expect(ics).toContain('BEGIN:VALARM\r\nACTION:DISPLAY\r\nTRIGGER:-PT1H')
   })
 
   it('separates lines with CRLF, which is the one Outlook enforces', () => {
@@ -91,5 +98,37 @@ describe('meetingIcs', () => {
       NOW,
     )
     expect(ics).toContain(String.raw`DESCRIPTION:Past tense\nhttps://app.langx.io/chat/abc`)
+  })
+})
+
+describe('the file is named after the meeting', () => {
+  const START = new Date('2026-09-08T19:00:00.000Z')
+
+  it('uses the summary and the day, not the message id', () => {
+    expect(
+      icsFileName({
+        uid: '6a9fa26a3523894f',
+        startsAt: START,
+        durationMinutes: 30,
+        summary: 'LangX with Emily',
+      }),
+    ).toBe('langx-with-emily-2026-09-08.ics')
+  })
+
+  it('falls back to the date when nothing in the summary survives', () => {
+    expect(
+      icsFileName({ uid: 'm1', startsAt: START, durationMinutes: 30, summary: 'LangX с Дмитрий' }),
+    ).toBe('langx-2026-09-08.ics')
+  })
+
+  it('never ends the slug on a separator, however it was cut', () => {
+    const name = icsFileName({
+      uid: 'm1',
+      startsAt: START,
+      durationMinutes: 30,
+      summary: 'A very long conversation title that runs past the clamp x',
+    })
+    expect(name.endsWith('-2026-09-08.ics')).toBe(true)
+    expect(name).not.toContain('--')
   })
 })
