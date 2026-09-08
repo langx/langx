@@ -2,7 +2,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
-import { readInsightsPage } from './page'
+import { INSIGHTS_IMAGES, readInsightsImage, readInsightsPage } from './page'
 import { readPublicStats, resetPublicStatsCache, WINDOW_DAYS } from './publicStats'
 
 /** Fixed, so "in the window" and "before it" are the same days on every run. */
@@ -144,5 +144,13 @@ describe('the insights page', () => {
   it('is readable, and asks for the numbers it draws', async () => {
     const page = await readInsightsPage()
     expect(page).toContain('/public/stats')
+  })
+
+  it('carries every image it names, and names every image it draws', async () => {
+    const page = await readInsightsPage()
+    for (const name of INSIGHTS_IMAGES) {
+      expect((await readInsightsImage(name)).byteLength).toBeGreaterThan(0)
+      expect(page).toContain(`/public/insights/${name}`)
+    }
   })
 })
