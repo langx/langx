@@ -1,15 +1,15 @@
 import { File, Paths } from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import { Platform } from 'react-native'
-import { meetingIcs, type MeetingEvent } from './icsFile'
+import { icsFileName, meetingIcs, type MeetingEvent } from './icsFile'
 
 /**
- * Hands an accepted meeting to whatever keeps this person's calendar.
+ * An accepted meeting as a downloadable file.
  *
- * Two platforms, two gestures, one file. On a phone the share sheet is the
- * route into a calendar — iOS and Android both offer "Add to Calendar" for an
- * `text/calendar` item — and on the web it is an ordinary download, which is
- * what every calendar app has imported for twenty years.
+ * The web's whole answer — a browser has no calendar to write to, and an
+ * `.ics` is what every calendar app has imported for twenty years — and the
+ * fallback on a phone whose calendar could not be reached. `addToCalendar.ts`
+ * is the ordinary path there now.
  *
  * Returns `false` when nothing could be opened, so the caller can say so
  * rather than leaving a button that appears to do nothing. Cancelling is not a
@@ -17,7 +17,7 @@ import { meetingIcs, type MeetingEvent } from './icsFile'
  * has no cancel branch.
  */
 export async function saveMeetingIcs(event: MeetingEvent): Promise<boolean> {
-  return saveTextFile(meetingIcs(event), `langx-${event.uid}.ics`, {
+  return saveTextFile(meetingIcs(event), icsFileName(event), {
     mimeType: 'text/calendar',
     uti: 'com.apple.ical.ics',
   })

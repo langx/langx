@@ -18,6 +18,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "../website", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "langx-api-4100",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@langx/api", "dev"],
+      "port": 4100
+    },
+    {
+      "name": "langx-mobile-native",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["-C", "apps/mobile", "exec", "expo", "start", "--port", "8082"],
+      "port": 8082
     }
   ]
 }

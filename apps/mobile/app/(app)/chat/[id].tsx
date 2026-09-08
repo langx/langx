@@ -104,7 +104,7 @@ import {
   type UploadProgress,
 } from '../../../src/lib/uploadProgress'
 import { shareLink } from '../../../src/lib/share'
-import { saveMeetingIcs } from '../../../src/lib/saveFile'
+import { addMeetingToCalendar } from '../../../src/lib/addToCalendar'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -299,7 +299,16 @@ export default function ChatScreen() {
   // those leaves the header with no name and no avatar.
   // Optional on `participants` too: the response is a bare cast, so an API
   // older than this field would throw here rather than fall back.
-  const partnerId = messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ?? ''
+  //
+  // Two sources, because the messages arrive last. `useConversation` seeds
+  // itself from the chat list's cache, so somebody arriving from that list
+  // knows the partner on the first render and never sees a placeholder;
+  // the two answers are the same participant list, so whichever is in first
+  // wins.
+  const partnerId =
+    messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ??
+    conversation.data?.participants.find((p) => p !== me.data?._id) ??
+    ''
   /*
    * How many more messages before an attachment is allowed here. Read off the
    * live page, which `appendIncomingMessage` counts down, so the camera comes
@@ -325,8 +334,16 @@ export default function ChatScreen() {
     : undefined
   // "Not yet" and "never" draw differently: a placeholder while the profile
   // loads, the generic title only for an account that is really gone.
+  //
+  // Including the window before anybody knows who the partner *is*. The
+  // profile query cannot report "pending" for an id nobody has yet, so while
+  // both sources are still loading this used to fall through to the "never"
+  // branch — a `?` avatar and the word "Chat", which reads as a real header
+  // with the wrong content. An error leaves `isPending` false, so the generic
+  // title still stands for a thread whose partner really cannot be resolved.
   const partnerLoading =
-    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
+    useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending' ||
+    (!partnerId && (messages.isPending || conversation.isPending))
 
   /**
    * Opening the thread is the read receipt — and *focusing* it, not mounting
@@ -465,16 +482,15 @@ export default function ChatScreen() {
   }
 
   /**
-   * Hands an agreed meeting to whatever keeps this person's calendar.
+   * Writes an agreed meeting into this person's calendar.
    *
-   * The file carries the instant in UTC, so the same one is right for both of
-   * them: each calendar app renders it in the zone its owner is in, which is
-   * the same rule the card itself follows and the reason the two cannot
-   * disagree.
+   * The instant is UTC, so the same one is right for both of them: every
+   * calendar renders it in the zone its owner is in, which is the same rule
+   * the card itself follows and the reason the two cannot disagree.
    */
   async function addToCalendar(message: MessageDto): Promise<void> {
     if (!message.meeting) return
-    const ok = await saveMeetingIcs({
+    const result = await addMeetingToCalendar({
       uid: message._id,
       startsAt: new Date(message.meeting.startsAt),
       durationMinutes: message.meeting.durationMinutes,
@@ -482,7 +498,19 @@ export default function ChatScreen() {
       note: message.meeting.note,
       url: webUrl(`/chat/${conversationId}`),
     })
-    if (!ok) void showAlert(t('chat.meetingCalendarFailed'))
+    if (result === 'added' || result === 'updated') {
+      showToast(t('chat.meetingCalendarAdded'))
+      return
+    }
+    // `saved` is the web, and the file it downloaded says enough by arriving.
+    if (result === 'saved') return
+    if (result === 'denied') {
+      void showAlert(t('chat.meetingCalendarPermissionTitle'), t('chat.meetingCalendarPermission'))
+      return
+    }
+    void showAlert(
+      result === 'noCalendar' ? t('chat.meetingCalendarNone') : t('chat.meetingCalendarFailed'),
+    )
   }
 
   /** Answers a quiz. Once, and never your own — both are the server's rules. */
@@ -688,16 +716,26 @@ export default function ChatScreen() {
       return
     }
     if (!recorder.isRecording) {
+      // A note does not travel with pictures — one message carries one kind —
+      // so the two cannot both be waiting for the same send button.
+      if (pendingMedia.length > 0) {
+        showToast(t('chat.voiceNeedsEmptyComposer'))
+        return
+      }
       const started = await recorder.start()
       if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
       return
     }
     const recording = await recorder.stop()
     if (!recording) return
-    // A recording still goes on stop. Holding it for the send button would
-    // make somebody press two things to do what one gesture already finished,
-    // and it cannot be sent beside a picture anyway.
-    await sendAttachments([{ kind: 'audio', ...recording }], undefined)
+    /*
+     * Held for the send button rather than sent on stop, which is what this
+     * did until now. One gesture was fewer taps, but it also meant a voice
+     * note was gone the instant you stopped speaking: no way to hear what you
+     * had actually said, and no way to change your mind. A note cannot be
+     * un-sent, so it is worth the extra tap.
+     */
+    setPendingMedia([{ kind: 'audio', ...recording }])
   }
 
   async function sendAttachments(
@@ -1736,7 +1774,13 @@ export default function ChatScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('composer.attachMenu')}
                 onPress={() => void openAttachMenu()}
-                disabled={sendingMedia || pendingMedia.length >= MAX_ATTACHMENTS}
+                disabled={
+                  sendingMedia ||
+                  pendingMedia.length >= MAX_ATTACHMENTS ||
+                  // A voice draft is waiting for the send button, and a note
+                  // travels alone. Send it or throw it away first.
+                  pendingMedia.some((item) => item.kind === 'audio')
+                }
                 hitSlop={8}
                 style={styles.attach}
               >

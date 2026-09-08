@@ -76,9 +76,43 @@ export function meetingIcs(event: MeetingEvent, now = new Date()): string {
      */
     ...(description ? [`DESCRIPTION:${escapeText(description)}`] : []),
     ...(event.url ? [`URL:${event.url}`] : []),
+    /*
+     * An hour before, matching the alarm the in-app path sets and the
+     * reminder `url` above is documented against. `DISPLAY` rather than
+     * `AUDIO`: it is the only action every client implements, and `DESCRIPTION`
+     * is required on it by the spec.
+     */
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    'TRIGGER:-PT1H',
+    `DESCRIPTION:${escapeText(event.summary)}`,
+    'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR',
   ]
   // CRLF, not LF. RFC 5545 says so, and Outlook is the one that enforces it.
   return `${lines.join('\r\n')}\r\n`
+}
+
+/**
+ * What the file is called in the share sheet, in Files, and as an attachment.
+ *
+ * It used to be the message id — `langx-6a9fa26a3523894fb05ba493.ics` — which
+ * is a name only a database recognises. The uid still identifies the event,
+ * inside the file, where it is what stops a re-import duplicating the entry.
+ *
+ * The summary is a display name and can be written in any script, so anything
+ * outside `[a-z0-9]` goes: a file name is not the place to discover what a
+ * given platform will accept. When nothing survives, the date alone is still
+ * a better name than an id.
+ */
+export function icsFileName(event: MeetingEvent): string {
+  const slug = event.summary
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+    .replace(/-+$/, '')
+  const day = event.startsAt.toISOString().slice(0, 10)
+  return slug ? `${slug}-${day}.ics` : `langx-${day}.ics`
 }

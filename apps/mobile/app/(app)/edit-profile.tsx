@@ -180,12 +180,14 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
    * The gallery takes several at once; the avatar still takes one, cropped.
    *
    * Room is counted against the pending tiles as well as the stored photos —
-   * two pickers in a row must not between them exceed the six the server will
+   * two pickers in a row must not between them exceed what the server will
    * accept, or the last upload comes back refused after its bytes are already
-   * up.
+   * up. The ceiling is this account's, not the free one: the gallery is a
+   * plan ladder, and reading the wrong row either refuses a subscriber or
+   * lets a free account upload something the server will not take.
    */
   async function addPhotos(): Promise<void> {
-    const room = PLAN_LIMITS.free.maxPhotos - photos.length - uploads.pending.length
+    const room = PLAN_LIMITS[tier].maxPhotos - photos.length - uploads.pending.length
     if (room <= 0) return
     const picked = await pickMediaAssets({ kinds: 'images', remaining: room })
     if (picked.status === 'denied') {
@@ -197,7 +199,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     }
     if (picked.status === 'cancelled') return
     // Said once, for the first file that was dropped, the way the chat picker
-    // says it: naming each of six would be a stack of alerts nobody dismisses.
+    // says it: naming every file would be a stack of alerts nobody dismisses.
     // Every reason is answered — a photo that vanishes with no word is the
     // complaint this screen is being rewritten for.
     if (picked.refused) {
@@ -206,7 +208,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         picked.refused.reason === 'tooLarge'
           ? t('errors.attachmentTooLarge')
           : picked.refused.reason === 'tooMany'
-            ? t('editProfile.photosTrimmed', { max: PLAN_LIMITS.free.maxPhotos })
+            ? t('editProfile.photosTrimmed', { max: PLAN_LIMITS[tier].maxPhotos })
             : t('errors.attachmentUnsupported'),
       )
     }
@@ -388,7 +390,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             second photo could not be picked at all. The only thing that hides
             it is having no room left.
           */}
-          {photos.length + uploads.pending.length < PLAN_LIMITS.free.maxPhotos ? (
+          {photos.length + uploads.pending.length < PLAN_LIMITS[tier].maxPhotos ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('onboarding.addPhoto')}
@@ -401,11 +403,11 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         </View>
         {/*
           Said always, not only once the gallery is full: the "+" simply stops
-          being drawn at six, and a control that vanishes without a word reads
-          as a bug rather than a limit.
+          being drawn at the limit, and a control that vanishes without a word
+          reads as a bug rather than a limit.
         */}
         <Text style={styles.hint}>
-          {t('editProfile.photoLimit', { max: PLAN_LIMITS.free.maxPhotos })}
+          {t('editProfile.photoLimit', { max: PLAN_LIMITS[tier].maxPhotos })}
         </Text>
 
         <FormField
