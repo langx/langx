@@ -232,10 +232,21 @@ const config: ExpoConfig = {
       },
     ],
     /**
-     * A second home-screen icon, for Pro. Native only and **native only in the
-     * strong sense**: switching icons is an OS call, it cannot travel in an
-     * over-the-air update, and neither the web build nor Expo Go has anywhere
-     * to put it. The settings row hides itself where `isSupported` is false.
+     * The alternate home-screen icons, for Pro. Native only and **native only
+     * in the strong sense**: switching icons is an OS call, it cannot travel in
+     * an over-the-air update, and neither the web build nor Expo Go has
+     * anywhere to put it. The settings row hides itself where `isSupported` is
+     * false. Adding one here is a native change: an existing install only sees
+     * it after a store build, so `APP_ICONS` in `src/lib/appIcon.ts` has to be
+     * kept in step with this list by hand.
+     *
+     * Each `backgroundColor` is the artwork's own ground, because on Android
+     * the whole square becomes the *foreground* layer of an adaptive icon and
+     * this colour is what shows in the mask bleed. `split` is two grounds, so
+     * it takes the ink one — its yellow half is the corner a round mask cuts
+     * anyway. Only `dark` is declared against a value its artwork does not use
+     * (`#141519` against a `#121318` ground); that seam predates this list and
+     * BRAND.md records it.
      */
     [
       'expo-alternate-app-icons',
@@ -246,6 +257,30 @@ const config: ExpoConfig = {
           android: {
             foregroundImage: './assets/icons/dark.png',
             backgroundColor: '#141519',
+          },
+        },
+        {
+          name: 'split',
+          ios: './assets/icons/split.png',
+          android: {
+            foregroundImage: './assets/icons/split.png',
+            backgroundColor: '#121318',
+          },
+        },
+        {
+          name: 'pro',
+          ios: './assets/icons/pro.png',
+          android: {
+            foregroundImage: './assets/icons/pro.png',
+            backgroundColor: '#7a5af8',
+          },
+        },
+        {
+          name: 'newYear',
+          ios: './assets/icons/new-year.png',
+          android: {
+            foregroundImage: './assets/icons/new-year.png',
+            backgroundColor: '#ffc409',
           },
         },
       ],

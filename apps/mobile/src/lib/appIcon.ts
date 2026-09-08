@@ -14,7 +14,7 @@ import { Platform } from 'react-native'
  * docs/decisions.md): a native module resolved at module scope is evaluated on
  * web too, where it has nothing to bind to.
  */
-export const APP_ICONS = ['default', 'dark'] as const
+export const APP_ICONS = ['default', 'dark', 'split', 'pro', 'newYear'] as const
 export type AppIcon = (typeof APP_ICONS)[number]
 
 /**
@@ -25,6 +25,11 @@ export type AppIcon = (typeof APP_ICONS)[number]
  * differ by one letter, and only at this boundary. Translate here, once, or
  * `setAlternateAppIcon('dark')` rejects on every device with "icon not found"
  * while the code above it looks correct.
+ *
+ * Capitalising the first letter is the whole translation only while every name
+ * above is one lower-camel word: the plugin splits on capitals, so `newYear`
+ * survives as `NewYear` but a name with an underscore or a digit run would not
+ * round-trip through `fromNativeName`. Keep them lower-camel.
  */
 function toNativeName(icon: AppIcon): string {
   return icon.charAt(0).toUpperCase() + icon.slice(1)
