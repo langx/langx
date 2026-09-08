@@ -1,8 +1,9 @@
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
+import { FlatList, Pressable, Text, View } from 'react-native'
 import { useMe, useStarred, type MessageDto } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { dayLabel } from '../../src/lib/messageGroups'
@@ -42,7 +43,18 @@ export default function StarredScreen() {
       <ScreenHeader title={t('starred.title')} onBack={() => goBackTo('/(app)/(tabs)/chats')} />
 
       {starred.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <View style={styles.top}>
+                <Skeleton width={116} height={14} />
+                <Skeleton width={56} height={13} />
+              </View>
+              <Skeleton width="100%" height={16} />
+              <Skeleton width="48%" height={16} />
+            </View>
+          ))}
+        </View>
       ) : items.length === 0 ? (
         <EmptyState icon="star" title={t('starred.emptyTitle')} body={t('starred.emptyBody')} />
       ) : (
@@ -87,6 +99,8 @@ function Row({
     </Pressable>
   )
 }
+
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { paddingVertical: spacing.xl },

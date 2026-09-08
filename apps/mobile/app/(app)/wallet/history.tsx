@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { useTokenHistory } from '../../../src/api/queries'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../../src/lib/navigation'
 import { buildTokenHistory } from '../../../src/lib/tokenHistory'
@@ -48,7 +49,17 @@ export default function HistoryScreen() {
   if (history.isPending) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <View style={styles.text}>
+                <Skeleton width={152} height={16} />
+                <Skeleton width={78} height={13} />
+              </View>
+              <Skeleton width={48} height={17} />
+            </View>
+          ))}
+        </View>
       </Screen>
     )
   }
@@ -90,6 +101,8 @@ export default function HistoryScreen() {
     </Screen>
   )
 }
+
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },

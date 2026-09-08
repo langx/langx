@@ -1,9 +1,10 @@
 import { shiftDayKey } from '@langx/shared'
 import { useMemo } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useActivity } from '../../../src/api/queries'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useLocale, useT } from '../../../src/i18n'
 import type { TranslateFn } from '../../../src/i18n/runtime'
@@ -47,7 +48,15 @@ export default function StreakHistoryScreen() {
   if (activity.isPending) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <Skeleton width={12} height={12} radius={3} />
+              <Skeleton height={16} style={styles.daySkeleton} />
+              <Skeleton width={68} height={14} />
+            </View>
+          ))}
+        </View>
       </Screen>
     )
   }
@@ -118,6 +127,8 @@ function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
   })
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
+
 const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   row: {
@@ -133,6 +144,7 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   dotMissed: { backgroundColor: colors.dangerBg },
   dotBought: { backgroundColor: colors.accentBg },
   day: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  daySkeleton: { flex: 1 },
   what: { color: colors.textMuted, fontSize: 14 },
   whatMissed: { color: colors.danger },
   whatBought: { color: colors.accent },

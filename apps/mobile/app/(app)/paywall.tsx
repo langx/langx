@@ -20,18 +20,11 @@ import {
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import {
-  ActivityIndicator,
-  Linking,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native'
+import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
@@ -490,7 +483,12 @@ export default function PaywallScreen() {
         ) : null}
 
         {offers === null ? (
-          <ActivityIndicator style={styles.priceLoading} />
+          // The price's own line height, so the sheet does not jump when the
+          // store answers — the number below is 44pt.
+          <View style={styles.priceLoading}>
+            <Skeleton width={148} height={44} />
+            <Skeleton width={196} height={13} />
+          </View>
         ) : offer ? (
           <View style={styles.priceBlock}>
             {/*
@@ -644,7 +642,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   contextFeature: { color: colors.accent, fontWeight: '700' },
   notice: { color: colors.danger, fontSize: 14, lineHeight: 22 },
 
-  priceLoading: { paddingTop: 6 },
+  priceLoading: { gap: spacing.sm, paddingTop: 6 },
   priceBlock: { gap: spacing.sm, paddingTop: 6 },
   priceRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm },
   price: { ...font.heading, color: colors.text, fontSize: 44 },

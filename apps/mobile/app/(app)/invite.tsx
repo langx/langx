@@ -1,10 +1,11 @@
 import { inviteUrl, TOKEN_RULES } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useMe, useReferrals } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { useLocale, useT } from '../../src/i18n'
@@ -40,7 +41,13 @@ export default function InviteScreen() {
   if (me.isPending || !me.data) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          <Skeleton width="86%" height={16} />
+          <Skeleton height={72} />
+          <Skeleton height={64} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+        </View>
       </Screen>
     )
   }
@@ -161,7 +168,7 @@ export default function InviteScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.lg, marginTop: spacing.xxl },
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
   codePill: {
     alignItems: 'center',

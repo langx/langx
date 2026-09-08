@@ -1,7 +1,8 @@
 import { TOKEN_RULES, firstPayoutAt } from '@langx/shared'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useMe, useTokens } from '../../../src/api/queries'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../../src/lib/navigation'
 import { dayLabel } from '../../../src/lib/messageGroups'
@@ -58,7 +59,13 @@ export default function PoolScreen() {
   if (xp.isPending) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          <Skeleton width={132} height={12} />
+          <Skeleton width={176} height={40} />
+          <Skeleton width="62%" height={14} />
+          <Skeleton height={88} />
+          <Skeleton height={88} />
+        </View>
       </Screen>
     )
   }
@@ -139,7 +146,7 @@ export default function PoolScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.lg, marginTop: spacing.xxl },
   share: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

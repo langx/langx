@@ -1,6 +1,6 @@
 import { shiftDayKey } from '@langx/shared'
 import { useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { usePublicActivity, useActivity, useRepairDay, useWallet } from '../api/queries'
 import {
   ACTIVITY_CELL_GAP,
@@ -8,6 +8,7 @@ import {
   activityGrid,
   type ActivityCell,
 } from '../lib/activityMap'
+import { Skeleton } from './ui/Skeleton'
 import { confirmAndRepair } from '../lib/repairFlow'
 import { makeStyles } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
@@ -73,7 +74,14 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
     })
   }, [handle, own.data, theirs.data])
 
-  if (source.isPending) return <ActivityIndicator style={styles.loading} />
+  if (source.isPending)
+    return (
+      <View style={styles.loading}>
+        {/* The grid's own height — seven rows and the gaps between them — so
+            the screens around it do not shift when the squares arrive. */}
+        <Skeleton height={cell * 7 + ACTIVITY_CELL_GAP * 6} />
+      </View>
+    )
   if (!source.data) return null
   // A profile that turned the map off says nothing at all, rather than showing
   // months of empty squares that look like an inactive person.
