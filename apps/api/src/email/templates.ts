@@ -2,33 +2,84 @@ import { webUrl, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
+ * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
+ * Nunito 800 for the logo and headings, 700 for buttons. The site self-hosts
+ * it via `@fontsource`; mail pulls the same family from Google Fonts instead,
+ * since there is no built asset to link to here. Gmail ignores web fonts
+ * entirely and falls back to the stack that follows, so this only shows up
+ * in Apple Mail, Outlook.com and the like — never a downgrade, just an
+ * upgrade some clients don't take.
+ */
+const TITLE_FONT = "'Nunito', -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif"
+
+/**
+ * The langx.io mark, next to the wordmark set in the same weight the site
+ * uses for it. An `<img>` pointing at the site's own favicon rather than the
+ * inline SVG the header uses on `website/src/lib/components/atoms/Logo.svelte`
+ * — Gmail strips `<svg>` from mail bodies outright, and drops `data:` image
+ * sources too, so a hosted file is the only version that survives. The
+ * favicon is square where the site's mark is tall, but it is the same two
+ * hooks and it is already live, with no new asset to host.
+ */
+function logo(dir: 'ltr' | 'rtl'): string {
+  const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
+  return `<span style="font-family:${TITLE_FONT}; font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
+    <img src="https://langx.io/favicons/favicon-32x32.png" width="20" height="20" alt="" style="vertical-align:middle; ${gap}:8px;" />LangX</span>`
+}
+
+/**
  * Plain HTML, no @react-email dependency — Resend's `react` option is only
  * needed if you hand it a component, and one extra rendering dependency buys
- * nothing for two short transactional emails.
+ * nothing for a handful of short transactional emails.
+ *
+ * Table-based rather than `<div>`s: Outlook's desktop renderer is Word, not a
+ * browser, and a `<table>` is the one layout primitive it doesn't mangle. The
+ * button colour is the same the app uses for its one committing action
+ * (`primary`, #ffc409).
  */
-function wrap(locale: Locale, preheader: string, bodyHtml: string): string {
-  const t = translator(locale)
+function shell(locale: Locale, preheader: string, contentHtml: string, footerHtml: string): string {
   // `dir` matters more here than anywhere in the app: an email client has no
   // layout engine of ours to fall back on, and an Arabic paragraph laid out
   // left to right is unreadable rather than merely wrong.
   const dir = locale === 'ar' ? 'rtl' : 'ltr'
+  const align = dir === 'rtl' ? 'right' : 'left'
   return `<!doctype html>
 <html lang="${locale}" dir="${dir}">
-  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111; background: #f7f7f7; padding: 24px;">
-    <span style="display:none">${preheader}</span>
-    <div style="max-width: 480px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 32px;">
-      <h1 style="font-size: 20px; margin: 0 0 16px;">LangX</h1>
-      ${bodyHtml}
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">
-        ${t('email.ignore')}
-      </p>
-    </div>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" />
+  </head>
+  <body style="margin:0; padding:32px 16px; background:#f4f5f7; font-family:-apple-system,'Segoe UI',Roboto,system-ui,sans-serif;">
+    <span style="display:none; overflow:hidden; line-height:0; max-height:0; opacity:0;">${preheader}</span>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px; margin:0 auto;">
+      <tr>
+        <td style="padding:0 4px 20px; text-align:${align};">
+          ${logo(dir)}
+        </td>
+      </tr>
+      <tr>
+        <td style="background:#ffffff; border:1px solid #e7e9ec; border-radius:16px; padding:32px; text-align:${align}; font-size:15px; line-height:1.6; color:#111827;">
+          ${contentHtml}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:20px 4px 0; text-align:${align}; font-size:12px; line-height:1.6; color:#9aa1a9;">
+          ${footerHtml}
+        </td>
+      </tr>
+    </table>
   </body>
 </html>`
 }
 
 function button(url: string, label: string): string {
-  return `<a href="${url}" style="display:inline-block; background:#111; color:#fff; text-decoration:none; padding:12px 20px; border-radius:8px; font-weight:600;">${label}</a>`
+  return `<a href="${url}" style="display:inline-block; background:#ffc409; color:#201900; text-decoration:none; padding:13px 22px; border-radius:10px; font-family:${TITLE_FONT}; font-weight:700; font-size:15px;">${label}</a>`
+}
+
+/** The shell for mail answering something somebody just did — sign up, reset, delete. */
+function wrap(locale: Locale, preheader: string, bodyHtml: string): string {
+  const t = translator(locale)
+  return shell(locale, preheader, bodyHtml, t('email.ignore'))
 }
 
 export interface Email {
@@ -58,26 +109,15 @@ export function notificationEmail(
   },
 ): { html: string } {
   const t = translator(locale)
-  const dir = locale === 'ar' ? 'rtl' : 'ltr'
-  const cta = options.cta ? `<p>${button(options.cta.url, options.cta.label)}</p>` : ''
-  return {
-    html: `<!doctype html>
-<html lang="${locale}" dir="${dir}">
-  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111; background: #f7f7f7; padding: 24px;">
-    <span style="display:none">${options.preheader}</span>
-    <div style="max-width: 480px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 32px;">
-      <h1 style="font-size: 20px; margin: 0 0 16px;">LangX</h1>
-      ${options.bodyHtml}
-      ${cta}
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">
-        ${t('email.whyThisMail')}<br />
-        <a href="${options.unsubscribeUrl}" style="color:#888;">${t('email.unsubscribeLink')}</a>
+  const cta = options.cta
+    ? `<p style="margin:20px 0 0;">${button(options.cta.url, options.cta.label)}</p>`
+    : ''
+  const footer = `${t('email.whyThisMail')}<br />
+        <a href="${options.unsubscribeUrl}" style="color:#9aa1a9;">${t('email.unsubscribeLink')}</a>
         &middot;
-        <a href="${options.manageUrl}" style="color:#888;">${t('email.managePrefs')}</a>
-      </p>
-    </div>
-  </body>
-</html>`,
+        <a href="${options.manageUrl}" style="color:#9aa1a9;">${t('email.managePrefs')}</a>`
+  return {
+    html: shell(locale, options.preheader, `${options.bodyHtml}${cta}`, footer),
   }
 }
 
@@ -101,7 +141,7 @@ export function verificationEmail(url: string, locale: Locale): Email {
       t('email.verifyPreheader'),
       `<p>${t('email.verifyBody')}</p>
        <p>${button(url, t('email.verifyButton'))}</p>
-       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.verifyText', { url }),
   }
@@ -116,7 +156,7 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
       t('email.resetPreheader'),
       `<p>${t('email.resetBody')}</p>
        <p>${button(url, t('email.resetButton'))}</p>
-       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.resetText', { url }),
   }
@@ -138,7 +178,7 @@ export function magicLinkEmail(url: string, locale: Locale): Email {
       t('email.magicLinkPreheader'),
       `<p>${t('email.magicLinkBody')}</p>
        <p>${button(url, t('email.magicLinkButton'))}</p>
-       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.magicLinkText', { url }),
   }
@@ -163,7 +203,7 @@ export function deleteAccountEmail(url: string, locale: Locale): Email {
       t('email.deletePreheader'),
       `<p>${t('email.deleteBody')}</p>
        <p>${button(url, t('email.deleteButton'))}</p>
-       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.deleteText', { url }),
   }
@@ -187,7 +227,7 @@ export function existingAccountEmail(url: string, locale: Locale): Email {
       t('email.existingPreheader'),
       `<p>${t('email.existingBody')}</p>
        <p>${button(url, t('email.existingButton'))}</p>
-       <p style="font-size: 12px; color: #888;">${t('email.orPaste', { url })}</p>`,
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.existingText', { url }),
   }
@@ -254,7 +294,7 @@ export function unreadDigestEmail(
     subject,
     html: notificationEmail(locale, {
       preheader: t('email.digestPreheader'),
-      bodyHtml: `<p>${body}</p>${more ? `<p style="color:#888;">${more}</p>` : ''}`,
+      bodyHtml: `<p>${body}</p>${more ? `<p style="color:#9aa1a9;">${more}</p>` : ''}`,
       cta,
       unsubscribeUrl: unsubscribe,
       manageUrl: webUrl('/settings'),
@@ -297,7 +337,7 @@ export function profileVisitsEmail(
     subject,
     html: notificationEmail(locale, {
       preheader: t('email.visitsPreheader'),
-      bodyHtml: `<p>${body}</p><p style="color:#888;">${detail}</p>`,
+      bodyHtml: `<p>${body}</p><p style="color:#9aa1a9;">${detail}</p>`,
       cta,
       unsubscribeUrl: unsubscribe,
       manageUrl: webUrl('/settings'),
