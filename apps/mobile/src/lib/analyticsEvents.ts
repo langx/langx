@@ -127,3 +127,42 @@ export function sanitizeEventProperties(
   }
   return clean
 }
+
+/**
+ * Which LangX an event came from, stamped on every event the SDK sends.
+ *
+ * PostHog's free plan allows one project, so langx.io and token.langx.io write
+ * into this one too — their own `analytics` modules stamp `'website'` and
+ * `'token-website'` the same way. Without this the app's insights silently
+ * include marketing page views.
+ *
+ * `$os_name` already separates iOS from Android, but not the Expo web build:
+ * there it reports the browser's operating system, so app.langx.io would read
+ * as macOS or Windows rather than as us. Naming the three ourselves is one
+ * property to filter on instead of two to reason about.
+ *
+ * It does not remove the need for an `is not set` filter on the dashboards that
+ * already exist: every event captured before this shipped, and every event from
+ * a build already on a phone, carries no `langx_surface` at all.
+ *
+ * Lives here rather than in `analytics.ts` for the reason `analyticsCore.ts`
+ * does — that file imports React Native, and a test cannot.
+ */
+export function surfaceName(platformOS: string): string {
+  return `app-${platformOS}`
+}
+
+/**
+ * Stamps one outgoing event with its surface, for the SDK's `before_send`.
+ *
+ * The trap it exists for: `properties` is optional on the SDK's `CaptureEvent`,
+ * so a lifecycle event can arrive without one and assigning into it would
+ * throw. `null` passes through because `before_send` may be handed one.
+ */
+export function stampSurface<T extends { properties?: Record<string, unknown> } | null>(
+  event: T,
+  surface: string,
+): T {
+  if (event) event.properties = { ...event.properties, langx_surface: surface }
+  return event
+}
