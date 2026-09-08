@@ -55,3 +55,7 @@ GoogleService-Info.plist
 
 # screenshots written by the tools/ext-lab scripts
 tools/ext-lab/shots/
+
+# Assembled from the branding checkout by collect-store-screenshots.mjs; the
+# images themselves live in langx/branding, not here.
+apps/mobile/fastlane/screenshots/
