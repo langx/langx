@@ -160,7 +160,8 @@ export const ru: Localized<EnMessages> = {
   gender: {
     female: 'Женский',
     male: 'Мужской',
-    other: 'Другой',
+    other: 'Небинарный / другое',
+    shortOther: 'Небинарный',
     undisclosed: 'Предпочитаю не указывать',
   },
 
@@ -803,15 +804,24 @@ export const ru: Localized<EnMessages> = {
   },
 
   report: {
-    messageQuestion: 'Почему ты жалуешься на это сообщение?',
-    profileQuestion: 'Почему ты жалуешься на этот профиль?',
+    messageQuestion: 'Почему вы жалуетесь на это сообщение?',
+    profileQuestion: 'Почему вы жалуетесь на этот профиль?',
+    postQuestion: 'Почему вы жалуетесь на эту запись?',
     spam: 'Спам',
     harassment: 'Домогательства',
-    inappropriate: 'Неприемлемое содержание',
-    messageSent: 'Жалоба отправлена. Спасибо — мы смотрим каждую.',
+    hateSpeech: 'Язык вражды',
+    hateSpeechHint:
+      'Нападки на человека за то, кто он есть, включая сексуальную ориентацию и гендерную идентичность',
+    inappropriateContent: 'Неприемлемый контент',
+    fakeProfile: 'Фальшивый профиль',
+    underage: 'Младше 16 лет',
+    other: 'Другое',
+    details: 'Что произошло?',
+    detailsPlaceholder: 'Необязательно. Всё, что поможет нам разобраться.',
+    submit: 'Отправить жалобу',
+    messageSent: 'Жалоба отправлена. Спасибо — мы читаем каждую.',
     profileSent: 'Жалоба отправлена. Мы разберёмся.',
     failed: 'Не удалось отправить жалобу',
-    postQuestion: 'Почему вы жалуетесь на эту публикацию?',
   },
 
   feed: {
@@ -1010,10 +1020,14 @@ export const ru: Localized<EnMessages> = {
     aboutYouPlaceholder: 'О чём тебе нравится говорить?',
     country: 'Страна',
     gender: 'Пол',
-    genderOnce: 'Это можно указать один раз. Потом изменить нельзя.',
-    genderLocked: 'Указано при регистрации. Это изменить нельзя.',
-    genderConfirmTitle: 'Указать пол?',
-    genderConfirmBody: 'В профиле будет указано: {gender}. Потом это изменить нельзя.',
+    genderOnce: 'Это можно менять раз в {days} дней.',
+    genderCooldown: 'Изменить снова можно будет {date}.',
+    pronouns: 'Местоимения',
+    pronounsPlaceholder: 'она/её, они/их, он/его…',
+    pronounsHint: 'Необязательно, отображается в профиле. Напишите так, как принято в вашем языке.',
+    genderConfirmTitle: 'Указать ваш пол?',
+    genderConfirmBody:
+      'В профиле будет указано: {gender}. Изменить снова можно будет через {days} дней.',
     languages: 'Языки',
     editNative: 'Изменить родные',
     editLearning: 'Изменить изучаемые',
@@ -1038,6 +1052,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   legal: {
+    community: 'Правила сообщества',
     privacy: 'Политика конфиденциальности',
     terms: 'Условия использования',
     cookies: 'Политика cookie',

@@ -164,7 +164,8 @@ export const tr: Localized<EnMessages> = {
   gender: {
     female: 'Kadın',
     male: 'Erkek',
-    other: 'Diğer',
+    other: 'İkili olmayan / diğer',
+    shortOther: 'İkili olmayan',
     undisclosed: 'Belirtmek istemiyorum',
   },
 
@@ -726,13 +727,22 @@ export const tr: Localized<EnMessages> = {
   report: {
     messageQuestion: 'Bu mesajı neden bildiriyorsun?',
     profileQuestion: 'Bu profili neden bildiriyorsun?',
+    postQuestion: 'Bu gönderiyi neden bildiriyorsun?',
     spam: 'Spam',
     harassment: 'Taciz',
-    inappropriate: 'Uygunsuz içerik',
+    hateSpeech: 'Nefret söylemi',
+    hateSpeechHint:
+      'Cinsel yönelim ve cinsiyet kimliği dahil, kişinin kimliğine yönelik saldırılar',
+    inappropriateContent: 'Uygunsuz içerik',
+    fakeProfile: 'Sahte profil',
+    underage: '16 yaşından küçük',
+    other: 'Başka bir şey',
+    details: 'Ne oldu?',
+    detailsPlaceholder: 'İsteğe bağlı. Anlamamıza yardımcı olacak her şey.',
+    submit: 'Bildirimi gönder',
     messageSent: 'Bildirildi. Teşekkürler — hepsine bakıyoruz.',
     profileSent: 'Bildirim gönderildi. İnceleyeceğiz.',
     failed: 'Bildirilemedi',
-    postQuestion: 'Bu gönderiyi neden şikâyet ediyorsun?',
   },
 
   feed: {
@@ -891,10 +901,13 @@ export const tr: Localized<EnMessages> = {
     aboutYouPlaceholder: 'Ne konuşmayı seversin?',
     country: 'Ülke',
     gender: 'Cinsiyet',
-    genderOnce: 'Bunu bir kez belirleyebilirsin. Sonradan değiştirilemez.',
-    genderLocked: 'Kaydolurken belirlendi. Bu alan değiştirilemiyor.',
+    genderOnce: 'Bunu {days} günde bir değiştirebilirsin.',
+    genderCooldown: 'Yeniden değiştirebileceğin tarih: {date}.',
+    pronouns: 'Zamirler',
+    pronounsPlaceholder: 'o, she/her, they/them…',
+    pronounsHint: 'İsteğe bağlı, profilinde görünür. Kendi dilinde nasıl yazılıyorsa öyle yaz.',
     genderConfirmTitle: 'Cinsiyetin belirlensin mi?',
-    genderConfirmBody: 'Profilinde {gender} yazacak. Bu sonradan değiştirilemez.',
+    genderConfirmBody: 'Profilinde {gender} yazacak. {days} gün sonra tekrar değiştirebilirsin.',
     languages: 'Diller',
     editNative: 'Ana dilleri düzenle',
     editLearning: 'Öğrendiklerini düzenle',
@@ -919,6 +932,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   legal: {
+    community: 'Topluluk kuralları',
     privacy: 'Gizlilik politikası',
     terms: 'Kullanım koşulları',
     cookies: 'Çerez politikası',

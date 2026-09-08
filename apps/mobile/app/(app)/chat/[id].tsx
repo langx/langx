@@ -36,7 +36,6 @@ import {
   useMe,
   useMessages,
   useMessageWindow,
-  useReportUser,
   useTranslate,
   type MessageDto,
 } from '../../../src/api/queries'
@@ -177,7 +176,6 @@ export default function ChatScreen() {
   const [highlighted, setHighlighted] = useState<string | null>(null)
   const translateApi = useTranslate()
   const keyboardInset = useKeyboardInset()
-  const report = useReportUser()
   const block = useBlockUser()
   // For the header menu's pin — the message window does not carry the flags.
   const conversation = useConversation(conversationId)
@@ -1179,7 +1177,7 @@ export default function ChatScreen() {
         messageId: pinned?.messageId === message._id ? null : message._id,
       })
     } else if (picked.id === 'report') {
-      await reportMessage(message)
+      reportMessage(message)
     }
   }
 
@@ -1311,20 +1309,12 @@ export default function ChatScreen() {
     [],
   )
 
-  async function reportMessage(message: MessageDto): Promise<void> {
-    const reason = await chooseAlert(t('common.report'), t('report.messageQuestion'), [
-      { label: t('report.spam'), value: 'spam' },
-      { label: t('report.harassment'), value: 'harassment' },
-      { label: t('report.inappropriate'), value: 'inappropriate_content' },
-    ])
-    if (!reason || !partnerId) return
-    report.mutate(
-      { userId: partnerId, reason, conversationId, messageId: message._id },
-      {
-        onSuccess: () => showToast(t('report.messageSent')),
-        onError: () => void showAlert(t('report.failed'), t('common.retry')),
-      },
-    )
+  function reportMessage(message: MessageDto): void {
+    if (!partnerId) return
+    router.push({
+      pathname: '/(app)/report',
+      params: { userId: partnerId, conversationId, messageId: message._id },
+    })
   }
 
   /**

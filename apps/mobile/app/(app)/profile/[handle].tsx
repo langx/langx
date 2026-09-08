@@ -10,7 +10,6 @@ import {
   useMe,
   useProfile,
   usePublicSummary,
-  useReportUser,
   useSetFollow,
 } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
@@ -51,7 +50,6 @@ export default function ProfileScreen() {
   const { data: session } = authClient.useSession()
   const summary = usePublicSummary(handle ?? '')
   const block = useBlockUser()
-  const report = useReportUser()
 
   const [avatarOpen, setAvatarOpen] = useState(false)
 
@@ -103,19 +101,6 @@ export default function ProfileScreen() {
       })
   }
 
-  async function confirmReport(): Promise<void> {
-    const reason = await chooseAlert(t('common.report'), t('report.profileQuestion'), [
-      { label: t('report.spam'), value: 'spam' },
-      { label: t('report.harassment'), value: 'harassment' },
-      { label: t('report.inappropriate'), value: 'inappropriate_content' },
-    ])
-    if (reason)
-      report.mutate(
-        { userId: user._id, reason },
-        { onSuccess: () => showToast(t('report.profileSent')) },
-      )
-  }
-
   /**
    * The kebab: share first, then the two actions the footer also offers.
    * Share sits on somebody else's profile only — your own has a screen for it
@@ -129,7 +114,8 @@ export default function ProfileScreen() {
     ])
     if (action === 'share')
       void shareLink(profileShareText(t, { name: user.displayName, handle: user.handle }))
-    if (action === 'report') void confirmReport()
+    if (action === 'report')
+      router.push({ pathname: '/(app)/report', params: { userId: user._id } })
     if (action === 'block') void confirmBlock()
   }
 
@@ -210,6 +196,16 @@ export default function ProfileScreen() {
           <Text style={styles.handle} numberOfLines={1}>
             {handleLine}
           </Text>
+          {/*
+            On the handle's line rather than among the facts below: pronouns are
+            part of somebody's name, not a statistic about them, and reading
+            them a moment before you write is the whole reason they are here.
+          */}
+          {user.pronouns ? (
+            <Text style={styles.pronouns} numberOfLines={1}>
+              {user.pronouns}
+            </Text>
+          ) : null}
           {/*
             How long the account has existed, next to how often it shows up:
             the two questions someone asks about a stranger who just messaged
@@ -394,6 +390,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   name: { ...font.heading, color: colors.text, fontSize: 26 },
   age: { color: colors.textMuted, fontSize: 18 },
   handle: { color: colors.textMuted, fontSize: 14 },
+  pronouns: { color: colors.textFaint, fontSize: 13 },
   facts: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
   streak: { alignItems: 'center', flexDirection: 'row', gap: 3 },
   fact: { color: colors.textMuted, fontSize: 13 },

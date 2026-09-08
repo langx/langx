@@ -1,11 +1,16 @@
 import {
   BIO_MAX_LENGTH,
+  GENDER_CHANGE_COOLDOWN_DAYS,
+  GENDER_CHANGE_COOLDOWN_MS,
+  GENDERS,
   LANGUAGE_LEVELS,
   DISPLAY_NAME_MAX_LENGTH,
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
+  PRONOUNS_MAX_LENGTH,
   getLanguage,
+  type Gender,
   type LanguageLevel,
 } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
@@ -15,7 +20,7 @@ import {
   useEffectiveTier,
   useMe,
   useRemovePhoto,
-  useDiscloseGender,
+  useSetGender,
   useUpdateProfile,
   useUploadAvatar,
   type MeProfile,
@@ -41,10 +46,12 @@ import { showToast } from '../../src/lib/toast'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import {
   genderLabel,
+  genderShortLabel,
   interestLabel,
   levelLabel,
   levelShortLabel,
   useDisplayNames,
+  useLocale,
   useT,
 } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -59,12 +66,6 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * once the profile exists means its initialisers see the real values, which is
  * what a `key`-based remount would buy without the indirection.
  */
-/**
- * What can be disclosed after onboarding. `undisclosed` is missing on purpose:
- * it is the state being left, and the server has no way back to it.
- */
-const DISCLOSABLE_GENDERS = ['female', 'male', 'other'] as const
-
 /** One number for the stored tiles and the pending ones, so they cannot drift. */
 const PHOTO_TILE = 58
 
@@ -99,16 +100,18 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
   const names = useDisplayNames()
 
   const update = useUpdateProfile()
-  const disclose = useDiscloseGender()
+  const setGender = useSetGender()
   const uploadAvatar = useUploadAvatar()
   const removePhoto = useRemovePhoto()
   const uploads = useProfilePhotoUploads(onUploadError)
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
+  const [pronouns, setPronouns] = useState(profile?.pronouns ?? '')
   const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
   const [learning, setLearning] = useState<{ code: string; level: LanguageLevel }[]>(
@@ -265,19 +268,34 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   }
 
   /**
-   * Confirmed rather than applied straight from the tap. It is the only
-   * irreversible control on this screen — every other field here can be typed
-   * over — and a chip is a very small thing to make a permanent choice with.
+   * When the field frees up again, or `undefined` if it is free now. Derived
+   * from the profile rather than from a failed request, so the row can say it
+   * before anybody taps — the server's `GENDER_CHANGE_TOO_SOON` is the backstop
+   * for a stale screen, not the way this is normally learned.
    */
-  async function discloseAs(gender: (typeof DISCLOSABLE_GENDERS)[number]) {
+  const genderFreeAt = profile.genderChangedAt
+    ? new Date(new Date(profile.genderChangedAt).getTime() + GENDER_CHANGE_COOLDOWN_MS)
+    : undefined
+  const genderLocked = genderFreeAt !== undefined && genderFreeAt.getTime() > Date.now()
+
+  /**
+   * Confirmed rather than applied straight from the tap. It is the one control
+   * on this screen that spends something — every other field here can be typed
+   * over as often as you like — so the dialog names the price.
+   */
+  async function changeGenderTo(gender: Gender) {
+    if (gender === profile.gender) return
     const ok = await confirmAlert({
       title: t('editProfile.genderConfirmTitle'),
-      message: t('editProfile.genderConfirmBody', { gender: genderLabel(t, gender) }),
+      message: t('editProfile.genderConfirmBody', {
+        gender: genderLabel(t, gender),
+        days: GENDER_CHANGE_COOLDOWN_DAYS,
+      }),
       confirmLabel: t('common.continue'),
     })
     if (!ok) return
     try {
-      await disclose.mutateAsync(gender)
+      await setGender.mutateAsync(gender)
       showToast(t('editProfile.saved'))
     } catch (caught) {
       void caught
@@ -299,6 +317,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       await update.mutateAsync({
         displayName: displayName.trim(),
         bio: bio.trim(),
+        pronouns: pronouns.trim(),
         interests,
         nativeLanguages: native.map((code) => ({ code })),
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
@@ -416,6 +435,21 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           onChangeText={setDisplayName}
           maxLength={DISPLAY_NAME_MAX_LENGTH}
         />
+        {/*
+          Free text, and next to the name rather than beside the gender picker:
+          it is part of how somebody is addressed, not a second answer to the
+          same question. Emptying it clears it — `updateProfileSchema` takes the
+          empty string, so there is no separate "remove" to find.
+        */}
+        <FormField
+          label={t('editProfile.pronouns')}
+          value={pronouns}
+          onChangeText={setPronouns}
+          placeholder={t('editProfile.pronounsPlaceholder')}
+          maxLength={PRONOUNS_MAX_LENGTH}
+          autoCapitalize="none"
+        />
+        <Text style={styles.hint}>{t('editProfile.pronounsHint')}</Text>
         <FormField
           label={t('editProfile.aboutYou')}
           value={bio}
@@ -571,37 +605,41 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         <CountryFromLocation country={profile?.country} />
 
         {/*
-          Gender is set once — see `updateProfileSchema`, which excludes it for
-          the same reason it excludes `birthDate`. So this is two screens in one:
-          the question, for anybody who skipped it at onboarding, and a plain
-          statement of the answer for everybody else. It is never a picker with
-          the current value pre-selected, because that shape promises an edit
-          the server will refuse.
+          A real picker now, with the current value selected — gender changes on
+          a cooldown rather than being written once, so the shape can finally
+          promise what the server will do. While the cooldown runs it goes back
+          to the dimmed row, which is the honest drawing of a control that is
+          not available yet rather than one that never will be.
         */}
         <View style={styles.gender}>
           <Text style={styles.label}>{t('editProfile.gender')}</Text>
-          {profile.gender === 'undisclosed' ? (
+          {genderLocked ? (
             <>
-              <View style={styles.row}>
-                {DISCLOSABLE_GENDERS.map((option) => (
-                  <Chip
-                    key={option}
-                    label={genderLabel(t, option)}
-                    onPress={() => void discloseAs(option)}
-                  />
-                ))}
-              </View>
-              <Text style={styles.note}>{t('editProfile.genderOnce')}</Text>
-            </>
-          ) : (
-            <>
-              {/* Drawn like a field, dimmed and locked, so it reads as the
-                  answer to a question that is no longer being asked. */}
               <View style={styles.lockedField}>
                 <Text style={styles.lockedValue}>{genderLabel(t, profile.gender)}</Text>
                 <Feather name="lock" size={16} color={colors.textFaint} />
               </View>
-              <Text style={styles.note}>{t('editProfile.genderLocked')}</Text>
+              <Text style={styles.note}>
+                {t('editProfile.genderCooldown', {
+                  date: genderFreeAt.toLocaleDateString(locale),
+                })}
+              </Text>
+            </>
+          ) : (
+            <>
+              <View style={styles.row}>
+                {GENDERS.map((option) => (
+                  <Chip
+                    key={option}
+                    label={genderShortLabel(t, option)}
+                    selected={option === profile.gender}
+                    onPress={() => void changeGenderTo(option)}
+                  />
+                ))}
+              </View>
+              <Text style={styles.note}>
+                {t('editProfile.genderOnce', { days: GENDER_CHANGE_COOLDOWN_DAYS })}
+              </Text>
             </>
           )}
         </View>

@@ -975,32 +975,78 @@ one names only your own.** `gender` and `city` take a value and aim it at
 other people. `onlyMyGender` is resolved from the caller's own profile and is
 inert for anybody who has not disclosed one — there is no third party in it.
 
-## Gender is set once, like a birth date
+## Gender changes twice a year, not never
 
-`birthDate` has never been in `updateProfileSchema`. `gender` was, and that was
-the half of the rule that got left open.
+This reverses an earlier decision, which said gender was set once and gave a
+good reason: `gender` is an input to somebody _else's_ discovery filter, and a
+filter whose subjects can move between its buckets on a whim is not a filter,
+it is a suggestion. That much still holds, and it is why `gender` is still
+absent from `updateProfileSchema`.
 
-Both are inputs to somebody _else's_ discovery filter: `discoverProfiles`
-matches on `gender` directly and on a `birthDate` band. A field that decides
-whose results you appear in is not a field you can retype. Editing it is not
-editing your profile, it is stepping in and out of other people's searches at
-will — and a filter whose subjects can move between its buckets on a whim is
-not a filter, it is a suggestion.
+What the first decision did not price is who paid for it. Somebody whose gender
+actually changed after they signed up — which is a thing that happens to real
+people, unlike a birth date changing — had exactly one way to correct their
+profile, and it was to delete the account and start again, losing their
+conversations, their streak and their handle. That is a heavy toll to collect
+from a small group in order to close a hole nobody was climbing through. Nobody
+was cycling genders to game discovery. There was no evidence of the abuse, and
+the defence against it was absolute.
 
-There is one move left, and it needs its own route. `undisclosed` → a real
-value, once, through `POST /profiles/me/gender`. Without it the lock would be
-a trap: `onlyMyGender` is deliberately inert for an undisclosed viewer, and it
-is free now, so everybody who skipped the question at onboarding would be
-permanently unable to use it — while the filter screen went on telling them, in
-eight languages, to add their gender to their profile.
+A cooldown answers the filter argument as well as a lock does. At
+`GENDER_CHANGE_COOLDOWN_DAYS` — 180 — there is nothing worth doing with this
+field that a bad actor could do: half a year per move makes bucket-hopping
+useless while leaving a real correction easy. The rule that stayed is the one
+that mattered; only its severity changed.
 
-It is one-way in both directions that matter. `discloseGenderSchema` has no
-`undisclosed` member, so there is nothing to go back to; and the repository's
-filter matches only a profile that is _still_ `undisclosed`, so the value it
-writes is the last one that field will hold. Nobody can cycle. The condition
-lives in the update's filter rather than in a read before it, for the reason
-every other guard here does — two taps that race would both pass a
-check-then-write, and the second would win.
+`birthDate` stays out of every write path, and the distinction is now the
+honest one rather than an accident of symmetry: a birth date cannot change, so
+there is no legitimate case to serve. A gender can.
+
+Three details make it hold:
+
+- **The condition is in the update's filter**, not in a read before it, for the
+  reason every other guard here is: two taps that race would both pass a
+  check-then-write and the second would win, which would make the cooldown
+  advisory — beatable by anyone willing to tap twice quickly.
+- **The first change is free**, because onboarding never writes
+  `genderChangedAt`. That preserves the old "answer the question you skipped"
+  path exactly, and it is also why there was no migration to write: a profile
+  from before the field reads as one that has never been changed, which is what
+  it is.
+- **`undisclosed` is now an accepted value.** The route used to refuse it
+  because it was a one-way door with nothing behind it. Now that the door opens
+  both ways, refusing it would only strand people who came out and changed
+  their mind. It costs a move like any other, which is what stops
+  `female → undisclosed → male` from buying two changes for the price of one —
+  and why there is no `gender: 'undisclosed'` branch in the update's `$or`.
+
+The client learns about the cooldown from `genderChangedAt` on its own profile
+rather than from a refusal, so the field is drawn as locked before anybody taps
+it. `GENDER_CHANGE_TOO_SOON` carries a `retryAt` the way the timezone cooldown
+does, and exists for the stale client and the racing tap.
+
+## Pronouns are free text, and gender is not
+
+`pronouns` sits in `updateProfileSchema` beside `bio`, editable as often as
+anybody likes, while `gender` two paragraphs up is rate-limited. The line
+between them is the same one that decides which discovery filters are free:
+**nothing searches on pronouns.** They are how a person is addressed, not a
+bucket they are sorted into, so none of the filter-integrity argument applies
+and there is nothing to protect.
+
+Free text rather than a set of options, which is the choice that looks lazy and
+is not. Pronouns are a fact about a language before they are a fact about a
+person: Turkish has one third-person pronoun for everybody, Russian and Arabic
+inflect the verb instead, and English's three-option list is an English answer
+to an English problem. An enum would have to be either English everywhere or
+eight incompatible enums, and the field would still be wrong for the ninth
+language somebody speaks. Twenty-four characters and let people write it
+themselves.
+
+It is on `sharedProfileSchema` even though `gender` is not, which looks
+inconsistent from the outside. It is the same rule again: that schema is a
+deliberately narrow subset for a page handed to strangers, and the one thing
+you least want a stranger's page to get wrong is how to address you.
 
 ## The shop is two ladders, and its order is the rule
 
@@ -2753,9 +2799,10 @@ Two consequences follow, both deliberate. An id nobody holds gets a face and a
 200 rather than a 404, because with a lookup behind it a 404 would answer
 "does this account exist" one id at a time. And the cache is a week rather
 than `immutable`, because the picture is no longer a pure function of its URL —
-gender is writable exactly once, from `undisclosed` to a value, and a
+gender is writable, at most once every `GENDER_CHANGE_COOLDOWN_DAYS`, and a
 cache-busting parameter would have to carry the very field this keeps off the
-wire.
+wire. A week is well inside the cooldown, so a changed gender is reflected long
+before it can change again.
 
 ## Sign in with an emailed link: the link opens the app, and the app spends the token
 

@@ -42,8 +42,21 @@ const REPO = 'https://github.com/langx/langx'
 export const PRIVACY_URL = `${SITE}/privacy-policy`
 export const TERMS_URL = `${SITE}/terms-conditions`
 
-/** The five the stores and the law expect to be reachable from inside the app. */
+/**
+ * The five the stores and the law expect to be reachable from inside the app,
+ * plus the one nobody requires: the community guidelines. They go first
+ * because they are the only row here somebody might read by choice.
+ *
+ * On GitHub rather than langx.io, the way `legal.security` already points at
+ * `SECURITY.md`. Linking a page the site does not have yet would be the worse
+ * kind of promise, and the document is public either way.
+ */
 export const LEGAL_LINKS: readonly ExternalLink[] = [
+  {
+    icon: 'users',
+    labelKey: 'legal.community',
+    url: `${REPO}/blob/main/docs/community-guidelines.md`,
+  },
   { icon: 'shield', labelKey: 'legal.privacy', url: PRIVACY_URL },
   { icon: 'file-text', labelKey: 'legal.terms', url: TERMS_URL },
   { icon: 'coffee', labelKey: 'legal.cookies', url: `${SITE}/cookie-policy` },

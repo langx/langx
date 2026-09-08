@@ -6,6 +6,7 @@ import {
   NOTIFICATION_CHANNELS,
   NOTIFICATION_TYPES,
   PERIOD_TYPES,
+  REPORT_REASONS,
   SUPPORTED_LOCALES,
   type Catalog,
   type Locale,
@@ -16,10 +17,12 @@ import { catalogs } from './catalogs'
 import {
   accountAgeLabel,
   genderLabel,
+  genderShortLabel,
   interestLabel,
   levelLabel,
   levelShortLabel,
   periodLabel,
+  reportReasonLabel,
 } from './labels'
 import { en } from './messages/en'
 import { createTranslate } from './runtime'
@@ -134,8 +137,22 @@ describe.each(SUPPORTED_LOCALES.filter((l) => l !== 'en'))('%s', (locale: Locale
 describe('dynamically built keys', () => {
   const t = createTranslate('en')
 
-  it('resolves one for every gender', () => {
-    for (const gender of GENDERS) expect(genderLabel(t, gender)).not.toBe(`gender.${gender}`)
+  it('resolves one for every gender, long and short', () => {
+    for (const gender of GENDERS) {
+      expect(genderLabel(t, gender)).not.toBe(`gender.${gender}`)
+      expect(genderShortLabel(t, gender)).not.toContain('gender.short')
+    }
+  })
+
+  /**
+   * Every reason the report screen lists. Adding one to `REPORT_REASONS`
+   * without wording it would otherwise ship a button labelled with its own
+   * key — the same failure this file exists to catch for the enums above.
+   */
+  it('resolves one for every report reason', () => {
+    for (const reason of REPORT_REASONS) {
+      expect(reportReasonLabel(t, reason)).not.toBe(`report.${reason}`)
+    }
   })
 
   it('resolves one for every language level, long and short', () => {

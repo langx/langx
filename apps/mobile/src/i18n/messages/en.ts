@@ -187,7 +187,8 @@ export const en = {
   gender: {
     female: 'Female',
     male: 'Male',
-    other: 'Other',
+    other: 'Non-binary / other',
+    shortOther: 'Non-binary',
     undisclosed: 'Prefer not to say',
   },
 
@@ -766,13 +767,22 @@ export const en = {
   report: {
     messageQuestion: 'Why are you reporting this message?',
     profileQuestion: 'Why are you reporting this profile?',
+    postQuestion: 'Why are you reporting this post?',
     spam: 'Spam',
     harassment: 'Harassment',
-    inappropriate: 'Inappropriate content',
+    hateSpeech: 'Hate speech',
+    hateSpeechHint:
+      'Attacks based on who someone is, including sexual orientation and gender identity',
+    inappropriateContent: 'Inappropriate content',
+    fakeProfile: 'Fake profile',
+    underage: 'Under 16',
+    other: 'Something else',
+    details: 'What happened?',
+    detailsPlaceholder: 'Optional. Anything that helps us understand.',
+    submit: 'Send report',
     messageSent: 'Reported. Thank you — we look at every one.',
     profileSent: 'Report sent. We will look into it.',
     failed: 'Could not report',
-    postQuestion: 'Why are you reporting this post?',
   },
 
   feed: {
@@ -931,10 +941,13 @@ export const en = {
     aboutYouPlaceholder: 'What do you like talking about?',
     country: 'Country',
     gender: 'Gender',
-    genderOnce: 'You can set this once. It cannot be changed afterwards.',
-    genderLocked: 'Set when you joined. This one cannot be changed.',
+    genderOnce: 'You can change this once every {days} days.',
+    genderCooldown: 'You can change this again on {date}.',
+    pronouns: 'Pronouns',
+    pronounsPlaceholder: 'she/her, they/them, o…',
+    pronounsHint: 'Optional, and shown on your profile. Write them however your language does.',
     genderConfirmTitle: 'Set your gender?',
-    genderConfirmBody: 'Your profile will say {gender}. This cannot be changed later.',
+    genderConfirmBody: 'Your profile will say {gender}. You can change it again in {days} days.',
     languages: 'Languages',
     editNative: 'Edit native',
     editLearning: 'Edit learning',
@@ -959,6 +972,7 @@ export const en = {
   },
 
   legal: {
+    community: 'Community guidelines',
     privacy: 'Privacy policy',
     terms: 'Terms & conditions',
     cookies: 'Cookie policy',

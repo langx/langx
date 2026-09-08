@@ -60,6 +60,7 @@ export interface PublicProfileDto {
   avatarUrl?: string
   photos: { url: string }[]
   bio?: string
+  pronouns?: string
   age: number
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
