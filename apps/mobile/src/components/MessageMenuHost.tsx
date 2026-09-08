@@ -180,13 +180,21 @@ export function MessageMenuHost() {
      * that has to feel immediate, so the flip is decided before first paint.
      */
     const menuHeight = rowCount * ROW_HEIGHT + MENU_CHROME
-    const stripWidth = Math.min(STRIP_MAX_WIDTH, screen.width - 24)
+    /**
+     * The strip is as wide as the emoji it holds and no wider — a fixed width
+     * left a tail of empty pill after the last one. The screen still caps it,
+     * and past that the strip scrolls. A message that carries no strip — a
+     * withdrawn one — reserves nothing, rather than a band of empty air.
+     */
+    const stripWidth = request.reactions
+      ? Math.min(stripWidthFor(request.reactions.length), screen.width - 24)
+      : 0
     const layout = messageMenuLayout({
       anchor: request.anchor,
       screen: { width: screen.width, height: screen.height },
       insets: { top: insets.top, bottom: insets.bottom },
       menu: { width: MENU_WIDTH, height: menuHeight },
-      strip: { width: stripWidth, height: STRIP_HEIGHT },
+      strip: { width: stripWidth, height: request.reactions ? STRIP_HEIGHT : 0 },
       mine: request.mine,
       rtl: isRtl,
     })
@@ -293,8 +301,14 @@ const ROW_HEIGHT = 46
 const MENU_CHROME = 18
 /** Fits the longest label at 15 — Russian's "remove from starred", German's. */
 const MENU_WIDTH = 264
-const STRIP_HEIGHT = 56
-const STRIP_MAX_WIDTH = 336
+/** `emoji` and `stripInner`'s own numbers: a 42 cell, 2 between, 6 of padding and an outline each side. */
+const EMOJI_CELL = 42
+const EMOJI_GAP = 2
+const STRIP_CHROME = 14
+const STRIP_HEIGHT = EMOJI_CELL + STRIP_CHROME
+
+const stripWidthFor = (count: number): number =>
+  count * EMOJI_CELL + (count - 1) * EMOJI_GAP + STRIP_CHROME
 
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   action: {
@@ -370,13 +384,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     borderWidth: 1,
     flexGrow: 0,
   },
-  stripInner: { alignItems: 'center', gap: 2, paddingHorizontal: 6, paddingVertical: 6 },
+  // The three numbers `stripWidthFor` counts with, so the pill it sizes and the
+  // cells it holds cannot drift apart.
+  stripInner: { alignItems: 'center', gap: EMOJI_GAP, paddingHorizontal: 6, paddingVertical: 6 },
   emoji: {
     alignItems: 'center',
     borderRadius: radius.pill,
-    height: 42,
+    height: EMOJI_CELL,
     justifyContent: 'center',
-    width: 42,
+    width: EMOJI_CELL,
   },
   // Blue carries everything chosen in v3; a grey fill would read as disabled.
   emojiChosen: { backgroundColor: colors.accentBg },
