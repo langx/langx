@@ -313,7 +313,7 @@ export default function ChatScreen() {
    * the other way — their first native language with a written form.
    * `undefined` means there is none, and the row is not offered.
    */
-  /** Reading a translation is free; sending one is Fluent. See `PLAN_LIMITS`. */
+  /** Reading a translation is free; sending one is Polyglot. See `PLAN_LIMITS`. */
   const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })

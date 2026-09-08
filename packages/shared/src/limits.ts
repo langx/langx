@@ -76,13 +76,14 @@ export interface PlanLimits {
    * Sending your own message with a translation under it, rather than tapping
    * one you received to read it.
    *
-   * Paid for the one reason this file accepts: a real per-request cost.
-   * Reading is occasional and metered at `translationsPer24h`; *sending*
-   * translated is per message, so somebody writing a hundred messages a day
-   * bills roughly a hundred translations a day. At Google's per-character
-   * price that is more per month than a subscription costs, which makes a
-   * generous free allowance a promise made against somebody else's meter —
-   * the same sentence `translationsPer24h` is here for.
+   * Polyglot, beside the copilot, because the two are the same kind of thing:
+   * the only capabilities in this file with a real per-request cost. Reading
+   * is occasional and metered at `translationsPer24h`; *sending* translated is
+   * per message, so somebody writing a hundred messages a day bills roughly a
+   * hundred translations a day. At Google's per-character price that is more
+   * per month than a subscription costs, which makes a generous free
+   * allowance a promise made against somebody else's meter — the same
+   * sentence `translationsPer24h` is here for.
    *
    * **Reading stays free.** The free tier loses nothing it had: tap-to-
    * translate is untouched at 20 a day. This gates the composer mode only,
@@ -211,7 +212,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
-    sendTranslation: true,
+    sendTranslation: false,
     deckExport: false,
     profileViewerIdentities: false,
     incognito: false,
@@ -296,7 +297,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters', 'sendTranslation'] as const
+export const PRO_FEATURES = ['advancedFilters'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -311,6 +312,7 @@ export const PRO_PLUS_FEATURES = [
   'incognito',
   'nearby',
   'copilot',
+  'sendTranslation',
   'deckExport',
 ] as const
 export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
@@ -335,7 +337,6 @@ export type PlanFeature = ProFeature | ProPlusFeature
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
-  'sendTranslation',
   'translationQuota',
   'learningLanguages',
   /**
@@ -371,6 +372,7 @@ export const PRO_PLUS_BENEFITS = [
   'incognito',
   'nearby',
   'copilot',
+  'sendTranslation',
   'deckExport',
   'translationQuota',
   'learningLanguages',
