@@ -24,7 +24,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "release": "node scripts/release.mjs"
+    "release": "node scripts/release.mjs",
+    "insight": "node --env-file-if-exists=.env scripts/insight.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
