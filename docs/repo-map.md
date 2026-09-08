@@ -77,7 +77,12 @@ that repo means reconnecting the Pages project in the dashboard first.
 | `apps/mobile/src/lib/theme/tokens.ts`          | `branding/BRAND.md` — the palette, the type and the scales   |
 | `apps/mobile/src/lib/theme/tokens.ts`          | `website/DESIGN.md` and `website/src/lib/scss/_themes.scss`  |
 
-One more runs the other way: the app's link table
+Two run the other way. `branding/app-resources/v2/brand/` is the source of the
+lockup and the favicon that the public stats page draws, downscaled into
+`apps/api/assets/` (see [`insights.md`](insights.md)); a redrawn lockup leaves
+those copies stale with nothing to say so.
+
+And the app's link table
 `apps/mobile/src/lib/externalLinks.ts` (Settings → Legal, and the "Our Kitchen"
 screen) holds the same social and legal addresses as
 `website/src/lib/components/molecules/Socials.svelte`. A handle that changes on

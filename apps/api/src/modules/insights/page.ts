@@ -17,22 +17,49 @@ const ASSET_ROOTS = [
   join(HERE, 'assets'),
 ]
 
-let page: string | null = null
-
 /**
- * The public stats page, read once. It is a static document that fetches
- * `/public/stats` for its numbers, so the file never has to be rendered and a
- * deploy is the only thing that changes it.
+ * The images the page draws, and the only names its route will serve.
+ *
+ * All three are downscales of `langx/branding`'s masters, which are 1024px
+ * tall and about 145KB each — the right size for a store listing and the wrong
+ * one for a logo drawn 30 pixels high. `docs/insights.md` records where they
+ * came from, because a resized copy is the kind of file somebody later mistakes
+ * for the original.
  */
-export async function readInsightsPage(): Promise<string> {
-  if (page !== null) return page
+export const INSIGHTS_IMAGES = ['lockup.png', 'lockup-dark.png', 'icon.png'] as const
+export type InsightsImage = (typeof INSIGHTS_IMAGES)[number]
+
+async function loadAsset(relative: string): Promise<Buffer> {
   for (const root of ASSET_ROOTS) {
     try {
-      page = await readFile(join(root, 'insights.html'), 'utf8')
-      return page
+      return await readFile(join(root, relative))
     } catch {
       continue
     }
   }
-  throw new Error('Insights page not found: insights.html')
+  throw new Error(`Insights asset not found: ${relative}`)
+}
+
+const kept = new Map<string, Buffer>()
+
+/** Read once and held: none of these changes between deploys. */
+async function readOnce(relative: string): Promise<Buffer> {
+  const already = kept.get(relative)
+  if (already) return already
+  const file = await loadAsset(relative)
+  kept.set(relative, file)
+  return file
+}
+
+/**
+ * The public stats page. It is a static document that fetches `/public/stats`
+ * for its numbers, so the file never has to be rendered and a deploy is the
+ * only thing that changes it.
+ */
+export async function readInsightsPage(): Promise<string> {
+  return (await readOnce('insights.html')).toString('utf8')
+}
+
+export async function readInsightsImage(name: InsightsImage): Promise<Buffer> {
+  return readOnce(name)
 }

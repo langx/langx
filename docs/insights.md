@@ -36,7 +36,18 @@ behind it, and would inflate all of them.
 | ------- | ------------------------------------------------------------------------------- |
 | Numbers | `apps/api/src/modules/insights/publicStats.ts`, served as `GET /public/stats`   |
 | Page    | `apps/api/assets/insights.html`, served as `GET /public/insights`               |
+| Logo    | `apps/api/assets/lockup*.png` and `icon.png`, as `GET /public/insights/<name>`  |
 | Routes  | `apps/api/src/routes/public.ts`, beside the newsletter form and the token board |
+
+The three images are **downscales of `langx/branding`**, not new artwork:
+`app-resources/v2/brand/lockup-horizontal.png` and its dark twin at 128px tall,
+and `logo-rounded.png` at 64² for the favicon. The masters are 1024px tall and
+about 145KB each, which is the right size for a store listing and the wrong one
+for a logo drawn thirty pixels high. They are copies kept by hand like every
+other one in [`repo-map.md`](repo-map.md): if the lockup is redrawn there, these
+go stale and nothing will say so. The dark file is swapped in by
+`prefers-color-scheme` — the mark keeps its yellow in both grounds and only the
+wordmark changes, which is why there are two of them and not one.
 
 The page is a static document that fetches `/public/stats` for its numbers, so
 it ships with the endpoint it reads and can never be a version behind it. It is
@@ -56,8 +67,9 @@ everything in [`repo-map.md`](repo-map.md):
 1. **Fly**: `fly certs add insights.langx.io -a langx-api`, then add the
    `_acme-challenge` record it prints.
 2. **Cloudflare DNS**: `insights` as a CNAME to `langx-api.fly.dev`, proxied.
-3. **Cloudflare redirect rule**: `insights.langx.io/` → `/public/insights`, 301. Without it the bare hostname answers with the API's 404 body, because
-   `/` is not a route.
+3. **Cloudflare redirect rule** (301): `insights.langx.io/` →
+   `/public/insights`. Without it the bare hostname answers with the API's 404
+   body, because `/` is not a route.
 
 `api.langx.io/public/insights` keeps working either way; the domain is a nicer
 address for the same page, not a second deployment of it.

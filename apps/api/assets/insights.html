@@ -8,7 +8,7 @@
       name="description"
       content="How much language exchange is actually happening on LangX: members, messages, corrections and the languages they are in."
     />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="/public/insights/icon.png" />
     <style>
       /*
        * The palette is the app's (`apps/mobile/src/lib/theme/tokens.ts`): the
@@ -72,19 +72,26 @@
       header.top {
         display: flex;
         flex-wrap: wrap;
-        align-items: baseline;
+        /* Centred, not baseline-aligned: an image's baseline is its bottom
+           edge, which drops the label below the wordmark it sits beside. */
+        align-items: center;
         gap: 6px 12px;
-        margin-bottom: 4px;
+        margin-bottom: 10px;
       }
       .brand {
-        font-size: 19px;
-        font-weight: 800;
-        letter-spacing: -0.01em;
-        text-decoration: none;
-        color: var(--text);
+        display: block;
+        line-height: 0;
       }
-      .brand span {
-        color: var(--accent);
+      /*
+       * The lockup from `langx/branding`, in its two grounds — the mark keeps
+       * its yellow in both, only the wordmark changes. Drawn at 30px from a
+       * 128px-tall file, so it stays sharp on a retina screen; `width` and
+       * `height` are declared so the header does not jump while it loads.
+       */
+      .brand img {
+        display: block;
+        height: 30px;
+        width: auto;
       }
       .kicker {
         color: var(--muted);
@@ -377,7 +384,15 @@
   <body>
     <div class="wrap">
       <header class="top">
-        <a class="brand" href="https://langx.io">Lang<span>X</span></a>
+        <a class="brand" href="https://langx.io">
+          <picture>
+            <source
+              srcset="/public/insights/lockup-dark.png"
+              media="(prefers-color-scheme: dark)"
+            />
+            <img src="/public/insights/lockup.png" width="399" height="128" alt="LangX" />
+          </picture>
+        </a>
         <span class="kicker">Public stats</span>
       </header>
       <p class="sub">

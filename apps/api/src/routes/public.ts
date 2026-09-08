@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { Resend } from 'resend'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { readInsightsPage } from '../modules/insights/page'
+import { INSIGHTS_IMAGES, readInsightsImage, readInsightsPage } from '../modules/insights/page'
 import { PUBLIC_STATS_TTL_MS, readPublicStats } from '../modules/insights/publicStats'
 import { readContributors } from '../modules/kitchen/contributors'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
@@ -131,6 +131,28 @@ export const publicRoutes: FastifyPluginAsyncZod = async (app) => {
         .type('text/html; charset=utf-8')
         .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)
         .send(page)
+    },
+  )
+
+  /**
+   * The logo and the favicon the page draws, from `langx/branding`.
+   *
+   * One route with the file names as an enum rather than a static directory:
+   * three files is not a file server, and a closed list is a path that cannot
+   * be traversed out of.
+   */
+  app.get(
+    '/public/insights/:asset',
+    {
+      schema: { params: z.object({ asset: z.enum(INSIGHTS_IMAGES) }) },
+      config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const image = await readInsightsImage(request.params.asset)
+      return reply
+        .type('image/png')
+        .header('cache-control', `public, max-age=${PAGE_CACHE_SECONDS}`)
+        .send(image)
     },
   )
 
