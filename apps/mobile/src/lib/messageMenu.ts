@@ -24,6 +24,12 @@ export interface MessageMenuRequest {
   preview: string
   /** Tints the copy of the bubble the anchored layout draws. */
   mine: boolean
+  /**
+   * Whether the pressed bubble carried the tail corner — the squared one a
+   * run of messages gets on its last bubble. The lifted copy keeps it, or it
+   * is a different bubble from the one under the finger.
+   */
+  tail?: boolean
   actions: MessageAction[]
   /**
    * The measured bubble. Present means the menu is drawn against it; absent

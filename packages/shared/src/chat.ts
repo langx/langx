@@ -334,14 +334,6 @@ export const sendCorrectionSchema = z.object({
 export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
 
 /**
- * The reaction strip.
- *
- * Seven, because the row has to fit beside a `+` on the narrowest phone we
- * support, and because a longer strip stops being a glance and starts being a
- * decision. Plain 🔥 rather than WhatsApp's ❤️‍🔥: the flame is already the
- * streak's symbol in this app and reusing it here keeps one meaning per glyph.
- */
-/**
  * How long to wait for a socket ack before treating a send as failed.
  *
  * Without one, socket.io registers the ack with **no timer at all** and only
@@ -356,7 +348,21 @@ export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
  */
 export const SOCKET_ACK_TIMEOUT_MS = 12_000
 
-export const MESSAGE_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥'] as const
+/**
+ * The reaction strip.
+ *
+ * Eight, which is what fills the pill edge to edge on a 390pt screen — the
+ * menu sizes the strip to this list, so any shorter one leaves empty pill
+ * after the last emoji. It is still short enough to be a glance rather than a
+ * decision, and on a narrower phone the strip scrolls rather than shrinking
+ * cells that are already only just tappable.
+ *
+ * Plain 🔥 rather than WhatsApp's ❤️‍🔥: the flame is already the streak's
+ * symbol in this app and reusing it here keeps one meaning per glyph. 👏 is
+ * the eighth because half of what is worth reacting to here is somebody
+ * getting a sentence right.
+ */
+export const MESSAGE_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥', '👏'] as const
 export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
 
 /**
