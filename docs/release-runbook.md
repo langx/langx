@@ -501,12 +501,42 @@ a rank, so gold has to read as something bought rather than as the product.
 - [ ] Re-shoot the store screenshots in the new identity. `branding/` is now a
       repo to work in and most of this is done there: `BRAND.md` is the v3
       identity written down, `app-resources/v2/` carries the icons and splash
-      badges this app ships, and `2.0.x/` holds a full uploadable set — six
-      shots at every App Store and Play slot, in all eight languages, plus the
-      feature graphics. What is still open is that the screen inside each shot
-      is rendered from the site's phone components rather than captured from a
-      build. Replacing them shot for shot needs the app signed in against a
-      local replica set; the composition does not change when they are
+      badges this app ships, and `2.0.x/` holds a full uploadable set — eight
+      shots at each of the four slots App Store Connect takes an upload for, in
+      all eight languages, plus the feature graphics. What is still open is
+      that the screen inside each shot is rendered from the site's phone
+      components rather than captured from a build. Replacing them shot for
+      shot needs the app signed in against a local replica set; the
+      composition does not change when they are
+
+### Getting the screenshots into App Store Connect
+
+Media Manager takes uploads for **four slots** — iPhone 6.9" and 5.5", iPad 13"
+and 12.9" — and derives the other seven; the rest read "Using 6.9" Display" and
+so on. Eight languages across four slots is 32 drags through the browser, so
+there is a script instead:
+
+```bash
+node apps/mobile/scripts/collect-store-screenshots.mjs
+cd apps/mobile && fastlane deliver --skip_binary_upload --skip_metadata
+```
+
+The first command lays `branding/2.0.x/<locale>/ios/<slot>/` out the way
+`deliver` expects — one flat folder per App Store locale, device inferred from
+each image's own dimensions, order taken from the filename. Its output is
+generated and gitignored; the images live in `branding`.
+
+`deliver` authenticates with an **App Store Connect API key** (`.p8`), not an
+Apple ID, so there is no password and no 2FA prompt:
+`APP_STORE_CONNECT_API_KEY_KEY_ID`, `_ISSUER_ID` and `_KEY_FILEPATH`. EAS
+already holds a key for this app; either export the same one or make a second
+in App Store Connect → Users and Access → Integrations.
+
+Two things the script cannot do. **A localization has to exist before its
+screenshots can go up** — App Store Connect requires a description and keywords
+per language, and `docs/store/listing.md` only carries English. And screenshots
+are keyed off **language, not country**: a listing is shown to whoever reads
+the store in that language, wherever they are.
 
 ## The paywall sells the trial and the saving
 
