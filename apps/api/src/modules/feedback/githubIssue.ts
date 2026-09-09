@@ -1,7 +1,19 @@
 import type { FeedbackKind } from '@langx/shared'
 
 /**
- * Opening an issue on the repository for a report that came from the app.
+ * The link that turns a report from the app into an issue on the repository.
+ *
+ * **Nothing here talks to GitHub.** The email carries a prefilled
+ * `/issues/new` link and a person presses Submit on GitHub's own form, signed
+ * in as themselves. That is the point: this service holds no credential that
+ * can write to the tracker, so there is none to leak, to rotate, or to quietly
+ * expire — which is the failure this replaces. A token that had reached its
+ * organisation's maximum lifetime turned every report into a silent `null`,
+ * and because opening an issue must never fail a person's report, nothing
+ * logged it either. A link cannot go stale that way.
+ *
+ * It also puts a person between a stranger's words and a public issue: the
+ * form opens with the text in it and can be edited, or closed.
  *
  * **The issue is public, and what goes in it is chosen with that in mind.** It
  * carries the words somebody typed, because without those it is not a report —
@@ -14,67 +26,37 @@ import type { FeedbackKind } from '@langx/shared'
  *
  * Somebody reporting a crash did not ask to have their name on a public
  * tracker. The screen that posts here says so before they send.
- *
- * Optional, like every other outside service here: with no token the report is
- * still mailed and this simply does not happen. It never throws — a tracker
- * that is down, a revoked token or a rate limit must not turn into a person
- * being told their report failed, when it did not.
  */
-export interface GitHubIssueConfig {
-  token: string | undefined
-  /** `owner/name`. */
-  repo: string
-}
 
 /** Which label the two kinds carry; both exist on `langx/langx`. */
 const LABELS: Record<FeedbackKind, string> = { bug: 'bug', feature: 'feature' }
 
-/** Long enough for a slow API, short enough that nobody waits on it. */
-const TIMEOUT_MS = 10_000
+/**
+ * GitHub answers 414 to a long enough URL, and a 2000-character report plus
+ * percent-encoding gets within sight of whatever the real ceiling is. Past
+ * this the body is dropped from the link: the title and the label still land,
+ * and the words are in the email the link arrived in, to paste.
+ */
+const MAX_URL_LENGTH = 6000
 
-export async function openFeedbackIssue(
-  config: GitHubIssueConfig,
-  input: { kind: FeedbackKind; body: string; attachmentCount: number },
-  fetchImpl: typeof fetch = fetch,
-): Promise<string | null> {
-  if (!config.token) return null
+export interface FeedbackIssue {
+  kind: FeedbackKind
+  body: string
+  attachmentCount: number
+}
 
+/** What the issue would say, and the only place the wording lives. */
+export function issueBody(input: FeedbackIssue): string {
   const proof =
     input.attachmentCount > 0
       ? `${input.attachmentCount} file(s) attached — in the email this came with.`
       : 'No files attached.'
-  const body = [
+  return [
     input.body,
     '',
     '---',
     `_Sent from the app. ${proof} The sender is named in the email, not here._`,
   ].join('\n')
-
-  try {
-    const response = await fetchImpl(`https://api.github.com/repos/${config.repo}/issues`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/vnd.github+json',
-        authorization: `Bearer ${config.token}`,
-        'content-type': 'application/json',
-        'user-agent': 'langx-api',
-        'x-github-api-version': '2022-11-28',
-      },
-      body: JSON.stringify({
-        title: issueTitle(input.kind, input.body),
-        body,
-        labels: [LABELS[input.kind]],
-      }),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    })
-    if (!response.ok) return null
-
-    const created: unknown = await response.json()
-    const url = (created as { html_url?: unknown }).html_url
-    return typeof url === 'string' ? url : null
-  } catch {
-    return null
-  }
 }
 
 /**
@@ -87,4 +69,14 @@ export function issueTitle(kind: FeedbackKind, body: string): string {
   const short = firstLine.length > 80 ? `${firstLine.slice(0, 79).trimEnd()}…` : firstLine
   const prefix = kind === 'bug' ? 'Bug' : 'Feature'
   return `${prefix}: ${short || 'from the app'}`
+}
+
+/** `repo` is `owner/name`. */
+export function newIssueUrl(repo: string, input: FeedbackIssue): string {
+  const base = `https://github.com/${repo}/issues/new`
+  const fields = { title: issueTitle(input.kind, input.body), labels: LABELS[input.kind] }
+
+  const withBody = `${base}?${new URLSearchParams({ ...fields, body: issueBody(input) }).toString()}`
+  if (withBody.length <= MAX_URL_LENGTH) return withBody
+  return `${base}?${new URLSearchParams(fields).toString()}`
 }

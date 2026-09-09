@@ -19,7 +19,8 @@ import {
 import { feedbackEmail } from '../email/templates'
 import { publicApiUrl } from '../env'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
-import { openFeedbackIssue } from '../modules/feedback/githubIssue'
+import { notifyBountyPaid } from '../modules/feedback/bountyNotice'
+import { newIssueUrl } from '../modules/feedback/githubIssue'
 import { assertAttachmentsAllowed } from '../modules/media/assertMedia'
 import { objectExtension } from '../modules/media/objectExtension'
 import { emailFor } from '../modules/profiles/emailFor'
@@ -121,15 +122,16 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
       const attachmentUrls = attachments.map((item) => item.url)
 
       /*
-       * The issue first, so the mail can carry its link. It answers `null`
-       * rather than throwing on every failure there is — a tracker being down
-       * must not tell somebody their report failed, when the mail below is
-       * what actually delivers it.
+       * A link to GitHub's own new-issue form, prefilled — not an issue. This
+       * service holds no credential that can write to the tracker, so nothing
+       * here can be revoked, leaked or silently expire, and a person decides
+       * what becomes public. See `githubIssue.ts`.
        */
-      const issueUrl = await openFeedbackIssue(
-        { token: app.env.GITHUB_ISSUE_TOKEN, repo: app.env.GITHUB_ISSUE_REPO },
-        { kind: request.body.kind, body: request.body.body, attachmentCount: attachments.length },
-      )
+      const issueUrl = newIssueUrl(app.env.GITHUB_ISSUE_REPO, {
+        kind: request.body.kind,
+        body: request.body.body,
+        attachmentCount: attachments.length,
+      })
 
       /*
        * The report's own id, and the only place it is ever written down is the
@@ -156,7 +158,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
           email: address?.email ?? null,
         },
         awardUrl,
-        issueUrl,
+        newIssueUrl: issueUrl,
       })
 
       await app.email.send({
@@ -169,7 +171,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
 
       // Accepted, not created: there is nothing of ours to fetch afterwards,
       // and the client has nothing to do with the answer but say thank you.
-      return reply.code(202).send({ ok: true, issueUrl })
+      return reply.code(202).send({ ok: true })
     },
   )
 
@@ -249,6 +251,21 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
         amount: parsed.data.amount,
         refId: claim.reportId,
       })
+
+      /*
+       * Only on the award that actually happened. The ledger's unique index on
+       * `{userId, kind, refId}` makes that exactly once per report, so a
+       * second press of the same link pays nothing and says nothing either —
+       * no second notification, and no need for a claim row to prevent one.
+       */
+      if (result.awarded) {
+        await notifyBountyPaid(
+          app.mongo.db,
+          { push: app.push, email: app.email },
+          { userId: claim.userId, amount: result.amount },
+          (err, message) => request.log.warn({ err, userId: claim.userId }, message),
+        )
+      }
 
       return html(
         reply,

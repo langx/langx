@@ -51,15 +51,11 @@ const envSchema = z.object({
   // Never required: without it the list is simply refreshed less often.
   GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
   /**
-   * Opens an issue for every bug report and feature request sent from the app.
-   *
-   * Its own variable rather than `GITHUB_TOKEN`, which only ever reads a public
-   * list: this one writes, so it is a token with `issues: write` on the
-   * repository below and it is the one worth keeping narrow. Unset, reports
-   * are only emailed — see `openFeedbackIssue`.
+   * Where a bug report or feature request offers to become an issue, as
+   * `owner/name`. The support email carries a prefilled link to this
+   * repository's new-issue form; nothing here writes to GitHub, so there is no
+   * token beside it. See `githubIssue.ts` for why it stopped being one.
    */
-  GITHUB_ISSUE_TOKEN: emptyToUndefined(z.string().optional()),
-  /** Where those issues are opened, as `owner/name`. */
   GITHUB_ISSUE_REPO: z.string().min(1).default('langx/langx'),
   // resend.dev requires no domain verification, so this works immediately;
   // point it at a verified langx.io sender before Faz 13's launch.
