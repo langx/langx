@@ -46,6 +46,7 @@ export const PUSH_KINDS = [
   'badgeEarned',
   'profileVisits',
   'meetingReminder',
+  'bountyPaid',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 

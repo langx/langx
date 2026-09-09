@@ -18,6 +18,11 @@ export const fr: Localized<ServerMessages> = {
     badgeBody: 'Beau travail. Continuez.',
     meetingTitle: 'Ton échange linguistique est dans une heure',
     meetingBody: 'Touche pour ouvrir la conversation.',
+    bountyTitle: {
+      one: '{count} jeton pour ton signalement 🎉',
+      other: '{count} jetons pour ton signalement 🎉',
+    },
+    bountyBody: 'On a lu ce que tu nous as envoyé, et ça valait le coup.',
   },
 
   email: {
@@ -129,6 +134,21 @@ export const fr: Localized<ServerMessages> = {
       promotions: 'les actualités et offres',
       all: 'les e-mails de LangX',
       v1contact: 'le message unique sur le nouveau LangX',
+    },
+    bountySubject: {
+      one: 'Tu as gagné {count} jeton pour ton signalement',
+      other: 'Tu as gagné {count} jetons pour ton signalement',
+    },
+    bountyPreheader: 'Merci de nous avoir prévenus.',
+    bountyBody: {
+      one: 'Nous avons lu ton message et ajouté {count} jeton à ton portefeuille. C’est comme ça que l’app s’améliore — merci.',
+      other:
+        'Nous avons lu ton message et ajouté {count} jetons à ton portefeuille. C’est comme ça que l’app s’améliore — merci.',
+    },
+    bountyButton: 'Ouvrir mon portefeuille',
+    bountyText: {
+      one: '{count} jeton a été ajouté à ton portefeuille pour ton signalement : {url}',
+      other: '{count} jetons ont été ajoutés à ton portefeuille pour ton signalement : {url}',
     },
   },
 }

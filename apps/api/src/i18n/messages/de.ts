@@ -18,6 +18,11 @@ export const de: Localized<ServerMessages> = {
     badgeBody: 'Stark. Weiter so.',
     meetingTitle: 'Dein Sprachaustausch ist in einer Stunde',
     meetingBody: 'Tippe, um das Gespräch zu öffnen.',
+    bountyTitle: {
+      one: '{count} Token für deinen Hinweis 🎉',
+      other: '{count} Token für deinen Hinweis 🎉',
+    },
+    bountyBody: 'Wir haben gelesen, was du geschickt hast – es hat sich gelohnt.',
   },
 
   email: {
@@ -128,6 +133,21 @@ export const de: Localized<ServerMessages> = {
       promotions: 'Neues und Angebote',
       all: 'E-Mails von LangX',
       v1contact: 'die eine Nachricht über das neue LangX',
+    },
+    bountySubject: {
+      one: 'Du hast {count} Token für deinen Hinweis bekommen',
+      other: 'Du hast {count} Token für deinen Hinweis bekommen',
+    },
+    bountyPreheader: 'Danke, dass du es uns gesagt hast.',
+    bountyBody: {
+      one: 'Wir haben deinen Hinweis gelesen und dir {count} Token gutgeschrieben. So wird diese App besser – danke.',
+      other:
+        'Wir haben deinen Hinweis gelesen und dir {count} Token gutgeschrieben. So wird diese App besser – danke.',
+    },
+    bountyButton: 'Geldbörse öffnen',
+    bountyText: {
+      one: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
+      other: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
     },
   },
 }

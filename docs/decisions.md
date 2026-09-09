@@ -3494,3 +3494,69 @@ conversion everywhere and the yearly price is the only one edited per territory.
 `planSaving.test.ts` asserts the division for the US pair, so a dashboard edit
 that breaks the rule fails a test instead of shipping — the only place in the
 repo where a real price is written down, and it is written down as an assertion.
+
+## A report now reaches a person, and the mail is never the thing that fails
+
+`reports` had no reader. The row was written, three distinct reporters could
+freeze somebody's earning, and nobody was told any of it — a report of
+harassment sat in a collection until someone thought to look. The moderation
+console is still P2, so `POST /reports` now mails `SUPPORT_EMAIL` with both
+parties, the reason, the whole `details` text and the ids it was raised from.
+
+**It cannot fail the request.** `POST /feedback` lets a failed send become a
+500, and that is right there: nothing is stored, so the mail _is_ the report
+and a silent 202 would be a lie. Here the row and the freeze are already
+written before the mail is built. Turning a mail provider's bad minute into a
+500 would tell somebody their report failed when it did not, and invite a retry
+that files it twice. So the send is awaited, its failure is logged, and the
+answer is still 201.
+
+The mail says whether this report crossed `REPORTS_TO_FREEZE_XP`; the response
+still does not. Those are different audiences — see _a blocked user's profile
+is 404_ for why the reporter is not one of them.
+
+## The tracker gets a link, not a token
+
+`POST /feedback` used to open the GitHub issue itself, with a
+`GITHUB_ISSUE_TOKEN`. Two things were wrong with that, and the second is why it
+is gone.
+
+A fine-grained personal access token that reaches an organisation's repository
+is subject to that organisation's maximum-lifetime policy, so it cannot be made
+to live for ever. And `openFeedbackIssue` answered `null` on every failure —
+correctly, since a tracker being down must not tell somebody their report
+failed — while logging nothing at all. Put together: the token expires one
+morning, issues quietly stop being opened, and the only trace is a line in the
+support mail that reads like a configuration note. That is exactly how it was
+found, by hand, a day after it had stopped working.
+
+The support mail now carries a prefilled link to GitHub's own `/issues/new`
+form — title, body and label already in it — and a person presses Submit. No
+credential lives in this service, nothing expires, and the words that become
+public are reviewed by someone before they do. A GitHub App would have solved
+the expiry alone; it would not have solved anyone being able to file straight
+into a public tracker from a form in the app.
+
+The link drops its `body` parameter past 6000 characters, since GitHub answers
+414 to a long enough URL and a 2000-character report in Cyrillic or Arabic gets
+there. The title and label still land, and the text is in the mail the link
+arrived in.
+
+## A paid report says so, on both channels, whatever the settings say
+
+`awardTokens` notified nobody. Confirming a bounty wrote a ledger row, and the
+person who had written up the bug found out by opening their wallet and
+noticing a bigger number.
+
+The award now sends a push and an email, and **neither asks a preference**.
+Every other push in the codebase checks `notificationsAllowed` first and every
+other email goes through `sendNotificationEmail`; this is a receipt for tokens
+already in the ledger, the same class of thing as the account-deletion
+confirmation. Turning it into a seventh notification kind would have meant a
+switch in Settings whose honest label is "do not tell me when I am paid".
+
+Both are sent, rather than the email being a fallback for a missing device the
+way the streak reminder's is: a phone that is off should not cost somebody the
+record of the payment. The trigger is `result.awarded`, so the ledger's unique
+index on `{userId, kind, refId}` is what makes it exactly once — a second press
+of the same link pays nothing and says nothing.

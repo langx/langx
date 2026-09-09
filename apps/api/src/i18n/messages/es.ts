@@ -18,6 +18,11 @@ export const es: Localized<ServerMessages> = {
     badgeBody: 'Bien hecho. Sigue así.',
     meetingTitle: 'Tu intercambio de idiomas es en una hora',
     meetingBody: 'Toca para abrir la conversación.',
+    bountyTitle: {
+      one: '{count} ficha por tu aviso 🎉',
+      other: '{count} fichas por tu aviso 🎉',
+    },
+    bountyBody: 'Leímos lo que nos enviaste y valió la pena.',
   },
 
   email: {
@@ -127,6 +132,21 @@ export const es: Localized<ServerMessages> = {
       promotions: 'las novedades y ofertas',
       all: 'el correo de LangX',
       v1contact: 'el único mensaje sobre el nuevo LangX',
+    },
+    bountySubject: {
+      one: 'Ganaste {count} ficha por tu aviso',
+      other: 'Ganaste {count} fichas por tu aviso',
+    },
+    bountyPreheader: 'Gracias por avisarnos.',
+    bountyBody: {
+      one: 'Leímos lo que nos enviaste y añadimos {count} ficha a tu cartera. Así es como mejora la app: gracias.',
+      other:
+        'Leímos lo que nos enviaste y añadimos {count} fichas a tu cartera. Así es como mejora la app: gracias.',
+    },
+    bountyButton: 'Abrir mi cartera',
+    bountyText: {
+      one: 'Se añadió {count} ficha a tu cartera por el aviso que enviaste: {url}',
+      other: 'Se añadieron {count} fichas a tu cartera por el aviso que enviaste: {url}',
     },
   },
 }
