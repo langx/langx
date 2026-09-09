@@ -414,6 +414,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { lastViewedAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
   ],
 
+  [COLLECTIONS.analyticsDeletions]: [
+    // Oldest first, which is the order the drain sends them in. No unique
+    // index: the distinct id *is* `_id`, so a second purge of the same account
+    // cannot open a second row — the same trick `profiles` uses.
+    { key: { createdAt: 1 }, name: 'created_at' },
+  ],
+
   [COLLECTIONS.deletionTokens]: [
     // The lookup, and the "one live link per user" rule in one index: minting
     // a second replaces the first rather than leaving both spendable.

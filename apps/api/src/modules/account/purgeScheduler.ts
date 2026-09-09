@@ -1,6 +1,8 @@
 import type { Db } from 'mongodb'
 import type { StorageProvider } from '../../storage/StorageProvider'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
+import type { PersonDeleter } from '../analytics/personDeleter'
+import { drainAnalyticsDeletions } from './analyticsDeletions'
 import { purgeExpiredAccounts } from './deletion'
 import { purgeStaleGuests } from '../profiles/purgeGuests'
 
@@ -18,7 +20,7 @@ export const PURGE_INTERVAL_MS = 60 * 60 * 1000
 export function startPurgeScheduler(
   db: Db,
   logger: SchedulerLogger,
-  options: { intervalMs?: number; storage?: StorageProvider } = {},
+  options: { intervalMs?: number; storage?: StorageProvider; analytics?: PersonDeleter } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? PURGE_INTERVAL_MS
   let running = false
@@ -43,6 +45,22 @@ export function startPurgeScheduler(
       const guests = await purgeStaleGuests(db)
       if (guests.purged > 0) {
         logger.info({ purged: guests.purged }, 'stale guest sessions purged')
+      }
+
+      /*
+       * The deletions the purge above recorded, plus anything an earlier tick
+       * could not send. Last in the tick and after the accounts, so a PostHog
+       * outage delays the analytics half and never the account half — the
+       * queue exists precisely so those two can fail apart.
+       *
+       * Unconfigured means leave it alone, not "nothing to do": an instance
+       * that gains a key later still owes what it recorded without one.
+       */
+      if (options.analytics) {
+        const analytics = await drainAnalyticsDeletions(db, options.analytics)
+        if (analytics.deleted > 0 || analytics.failed > 0) {
+          logger.info(analytics, 'analytics person deletions drained')
+        }
       }
     } catch (error) {
       logger.error({ err: error }, 'account purge failed')

@@ -144,10 +144,13 @@ Purchase events reach PostHog through RevenueCat's server-side integration, not
 through a second SDK in the app; what RevenueCat sends is its own subscription
 events, under the same user id.
 
-**Deletion is not automatic yet.** `/me/delete` does not call PostHog's
-person-deletion API; until it does, analytics data for a deleted account is
-removed by hand ([`analytics.md`](../analytics.md) → _Deletion_). The privacy
-policy must not say otherwise.
+**Deletion is automatic since 9 September 2026.** When the 30-day grace period
+expires, the purge asks PostHog to delete the person, their events and their
+recordings, keyed by the same user id. It goes through a queue that survives a
+failed call, because by then the account itself is gone
+([`analytics.md`](../analytics.md) → _Deletion_). PostHog processes the request
+asynchronously, so the privacy policy should say the data is _requested for
+deletion_ at that point rather than erased the same second.
 
 ## Sharing with third parties
 
