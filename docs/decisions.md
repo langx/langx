@@ -2854,6 +2854,12 @@ cache-busting parameter would have to carry the very field this keeps off the
 wire. A week is well inside the cooldown, so a changed gender is reflected long
 before it can change again.
 
+The onboarding photo step shows that face too, where it used to draw a single
+letter on a flat circle — the one screen whose whole question is "a photo, or
+the face we made you" was the one screen answering it with something nobody
+would ever see again. Skipping is now a visible choice of avatar rather than an
+empty slot left behind.
+
 ## Sign in with an emailed link: the link opens the app, and the app spends the token
 
 Added 5 September 2026. Every v1 account exists here as a verified `user` row

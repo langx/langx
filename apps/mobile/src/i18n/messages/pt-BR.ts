@@ -379,7 +379,8 @@ export const ptBR: Localized<EnMessages> = {
     tooYoung: 'O LangX é para pessoas de {age} anos ou mais.',
     photoTitle: 'Coloque um rosto nisso',
     photoBody:
-      'As duas coisas são opcionais, e as duas aumentam muito a chance de alguém te dar um oi.',
+      'Desenhamos um rosto para você. Uma foto de verdade aumenta muito a chance de alguém te dar um oi — e a bio também é opcional.',
+    drawnFace: 'Desenhado para você. Fica até uma foto tomar o lugar dele.',
     photoUnavailable: 'Fotos indisponíveis',
     photoPermission: 'O LangX precisa acessar suas fotos para definir uma imagem.',
     photoUploadFailed: 'Essa imagem não subiu. Você pode tentar de novo ou pular.',
