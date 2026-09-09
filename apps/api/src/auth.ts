@@ -5,6 +5,7 @@ import {
   PASSWORD_MIN_LENGTH,
   WEB_HOST,
   webUrl,
+  type Locale,
 } from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { createAuthMiddleware } from 'better-auth/api'
@@ -14,7 +15,7 @@ import { expo } from '@better-auth/expo'
 import { anonymous } from 'better-auth/plugins/anonymous'
 import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import { magicLink } from 'better-auth/plugins/magic-link'
-import type { Db, MongoClient } from 'mongodb'
+import type { Db, MongoClient, ObjectId } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import {
   emailForHandle,
@@ -33,6 +34,7 @@ import {
   verificationEmail,
 } from './email/templates'
 import { localeFromHeader } from './i18n'
+import { nativeLocaleFor } from './modules/profiles/localeFor'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 
@@ -109,6 +111,25 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
   }
 
   /**
+   * What language to write mail in: the languages they told us they speak,
+   * and only failing that the one they are reading the site in.
+   *
+   * Same rule as notification mail, one source further along. At sign-up
+   * there is no profile yet — onboarding is where the languages are picked —
+   * and a password reset can come from an account that never finished it, so
+   * `Accept-Language` stays behind this rather than being replaced by it. The
+   * app sets that header from whatever the reader chose, which is the best
+   * answer available when the account cannot give one.
+   *
+   * Takes headers rather than a request because one caller has no request:
+   * the magic link `onExistingUserSignUp` asks for arrives with `ctx.headers`
+   * only, and its locale must follow the same rule as every other mail.
+   */
+  const mailLocale = async (userId: string, headers?: Headers | null): Promise<Locale> =>
+    (await nativeLocaleFor(db, userId)) ??
+    localeFromHeader(headers?.get('accept-language') ?? undefined)
+
+  /**
    * Sends the magic-link mail for somebody who is not asking for one — the v1
    * returner who tried to sign up. Assigned below, once `betterAuth()` has
    * returned, because the only correct way to mint that token is the plugin's
@@ -165,15 +186,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       // rule anybody is meant to read.
       minPasswordLength: PASSWORD_MIN_LENGTH,
       sendResetPassword: async ({ user, url }, request) => {
-        // The language the *request* was made in. There is no stored
-        // preference to read: a password reset is asked for from a signed-out
-        // screen, and at sign-up the account is seconds old. The app sets this
-        // header from whatever the reader picked, so it is a better answer
-        // than anything on the account would be.
-        const email = resetPasswordEmail(
-          url,
-          localeFromHeader(request?.headers.get('accept-language') ?? undefined),
-        )
+        const email = resetPasswordEmail(url, await mailLocale(user.id, request?.headers))
         await emailSender.send({ to: user.email, ...email })
       },
       /**
@@ -209,7 +222,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
         }
         const email = existingAccountEmail(
           webUrl('/forgot-password'),
-          localeFromHeader(acceptLanguage),
+          await mailLocale(user.id, request?.headers),
         )
         await emailSender.send({ to: user.email, ...email })
       },
@@ -219,10 +232,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }, request) => {
-        const email = verificationEmail(
-          url,
-          localeFromHeader(request?.headers.get('accept-language') ?? undefined),
-        )
+        const email = verificationEmail(url, await mailLocale(user.id, request?.headers))
         await emailSender.send({ to: user.email, ...email })
       },
       // Clicking the link is proof of the address, so a matching v1 profile
@@ -491,7 +501,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
         expiresIn: 15 * 60,
         sendMagicLink: async ({ email, token, metadata }, ctx) => {
           const user = await db
-            .collection<{ email: string; isAnonymous?: boolean }>('user')
+            .collection<{ _id: ObjectId; email: string; isAnonymous?: boolean }>('user')
             .findOne(
               { email: email.trim().toLowerCase() },
               { projection: { email: 1, isAnonymous: 1 } },
@@ -502,10 +512,9 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
           // `ctx.request` for a call that came over the network, `ctx.headers`
           // for the server-side one from `onExistingUserSignUp`, which passes
           // headers and no request on purpose.
-          const locale = localeFromHeader(
-            ctx?.request?.headers.get('accept-language') ??
-              ctx?.headers?.get('accept-language') ??
-              undefined,
+          const locale = await mailLocale(
+            user._id.toHexString(),
+            ctx?.request?.headers ?? ctx?.headers,
           )
           const url = magicLinkUrl(token)
           /*

@@ -151,6 +151,27 @@ describe('magic link sign-in', () => {
       expect(emailSender.messages.at(-1)?.subject).toBe(translator('tr')('email.magicLinkSubject'))
       emailSender.messages.length = 0
     })
+
+    /**
+     * The header is the fallback, not the answer. Once somebody has told us
+     * what they speak, that wins over the language the browser asking for the
+     * link happens to be set to — the same rule notification mail follows.
+     */
+    it('prefers the languages on the profile over the request', async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .insertOne({ _id: member.userId, nativeLanguages: [{ code: 'de' }] } as never)
+      try {
+        const response = await request(member.email, { 'accept-language': 'tr' })
+        expect(response.statusCode).toBe(200)
+        expect(emailSender.messages.at(-1)?.subject).toBe(
+          translator('de')('email.magicLinkSubject'),
+        )
+      } finally {
+        await handle.db.collection(COLLECTIONS.profiles).deleteOne({ _id: member.userId as never })
+        emailSender.messages.length = 0
+      }
+    })
   })
 
   describe('spending the link', () => {
