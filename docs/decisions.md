@@ -641,6 +641,23 @@ and EAS Update is already wired to the channels in `eas.json`), and
 store-updates-only (an urgent fix would take days and could never reach people
 who stop updating).
 
+## Updates — two notices, because there are two ways to get one
+
+An over-the-air update is already downloaded and one restart away; a store
+release is a trip out of the app. Wording those as one message would have to
+lie about one of them, so they are two: a toast that offers the restart, and a
+dismissible banner that offers the store.
+
+They also cannot be derived from each other. An installed binary reports the
+version it was installed at whatever OTA bundle it is running, so `latestVersion`
+cannot see that someone has taken an OTA fix, and the OTA check cannot see that
+a new binary exists. Each notice is raised by the only mechanism that knows.
+
+The banner exists at all because of what the gate feels like without it. A
+forced-update screen is correct and it is also the worst possible first
+mention of the subject; `latestVersion` moves the first mention weeks earlier,
+to a point where the app still works and the answer can be "not now".
+
 ## Maintenance — two switches on purpose
 
 The database-backed flag is the everyday one: a single write, no redeploy. The

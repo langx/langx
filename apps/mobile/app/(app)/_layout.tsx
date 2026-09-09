@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router'
 import { View } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
+import { UpdateBanner } from '../../src/components/UpdateBanner'
 import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
@@ -63,6 +64,8 @@ export default function AppLayout() {
     <View style={{ backgroundColor: colors.bg, flex: 1 }}>
       {/* Above the navigator so a pending deletion is visible on every screen. */}
       <DeletionBanner />
+      {/* After it, and silent while it is up — only one bar takes the top. */}
+      <UpdateBanner />
       <Stack
         screenOptions={{
           headerShown: false,

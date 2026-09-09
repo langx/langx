@@ -243,6 +243,14 @@ export const ptBR: Localized<EnMessages> = {
       'Esta versão do LangX não é mais compatível. Atualize para a mais recente para continuar usando.',
   },
 
+  update: {
+    downloaded: 'Uma nova versão está pronta.',
+    restart: 'Reiniciar agora',
+    bannerTitle: 'Nova versão disponível',
+    bannerBody: 'Atualize para ter o LangX mais recente.',
+    dismiss: 'Dispensar',
+  },
+
   intro: {
     slide1Title: 'Fale a sua, pratique a deles',
     slide1Body:

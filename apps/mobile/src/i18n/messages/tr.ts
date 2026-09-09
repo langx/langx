@@ -257,6 +257,14 @@ export const tr: Localized<EnMessages> = {
       'LangX’in bu sürümü artık desteklenmiyor. Kullanmaya devam etmek için en yenisine geç.',
   },
 
+  update: {
+    downloaded: 'Yeni sürüm hazır.',
+    restart: 'Şimdi yeniden başlat',
+    bannerTitle: 'Yeni sürüm çıktı',
+    bannerBody: 'LangX’in en yenisi için güncelle.',
+    dismiss: 'Kapat',
+  },
+
   intro: {
     slide1Title: 'Seninkini konuş, onlarınkini çalış',
     slide1Body:
