@@ -4,7 +4,7 @@ import { feedbackEmail } from './templates'
 describe('feedbackEmail', () => {
   const sender = { userId: 'user-1', handle: 'bugfinder', email: 'finder@example.com' }
   const awardUrl = 'https://api.langx.io/feedback/award?token=v1.user-1.report-1.1.sig'
-  const issueUrl = 'https://github.com/langx/langx/issues/42'
+  const newIssueUrl = 'https://github.com/langx/langx/issues/new?title=Bug%3A+the+wallet&labels=bug'
 
   const mail = (overrides: Partial<Parameters<typeof feedbackEmail>[0]> = {}) =>
     feedbackEmail({
@@ -13,7 +13,7 @@ describe('feedbackEmail', () => {
       attachmentUrls: [],
       sender,
       awardUrl,
-      issueUrl,
+      newIssueUrl,
       ...overrides,
     })
 
@@ -28,22 +28,25 @@ describe('feedbackEmail', () => {
     expect(built.html).not.toContain('Proof')
   })
 
-  it('carries the proof, the issue and the link that pays, in both bodies', () => {
+  it('carries the proof, the issue link and the link that pays, in both bodies', () => {
     const built = mail({
       attachmentUrls: ['https://media.example.test/feedback/user-1/proof.jpg'],
     })
 
     for (const body of [built.html, built.text]) {
       expect(body).toContain('https://media.example.test/feedback/user-1/proof.jpg')
-      expect(body).toContain(issueUrl)
+      expect(body).toContain('issues/new')
       expect(body).toContain(awardUrl)
     }
+    // The `&` between the query fields is escaped in the href, so only the
+    // plain-text body carries the URL character for character.
+    expect(built.text).toContain(newIssueUrl)
   })
 
-  it('says so when no issue was opened', () => {
-    const built = mail({ issueUrl: null })
-    expect(built.text).toContain('No issue was opened.')
-    expect(built.html).toContain('GITHUB_ISSUE_TOKEN')
+  it('offers to open the issue rather than opening one', () => {
+    const built = mail()
+    expect(built.html).toContain('Open this as a GitHub issue')
+    expect(built.html).toContain('Nothing is posted until you press Submit')
   })
 
   it('escapes what the sender typed', () => {

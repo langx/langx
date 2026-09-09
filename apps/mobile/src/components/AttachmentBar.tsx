@@ -145,7 +145,7 @@ export function AttachmentBar({ pending, onPick, disabled, voiceNote = true }: A
         ]}
       >
         <Feather name="image" size={18} color={colors.text} />
-        <Text style={styles.chipLabel}>{t('messageMeta.photo')}</Text>
+        <Text style={styles.chipLabel}>{t('composer.attachLibrary')}</Text>
       </Pressable>
       {voiceNote ? (
         <Pressable

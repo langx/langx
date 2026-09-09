@@ -12,6 +12,11 @@ export const tr: Localized<ServerMessages> = {
     badgeBody: 'Güzel iş. Böyle devam.',
     meetingTitle: 'Dil değişiminize bir saat kaldı',
     meetingBody: 'Sohbeti açmak için dokun.',
+    bountyTitle: {
+      one: 'Bildirimin için {count} jeton 🎉',
+      other: 'Bildirimin için {count} jeton 🎉',
+    },
+    bountyBody: 'Yazdıklarını okuduk, değdi.',
   },
 
   email: {
@@ -113,6 +118,21 @@ export const tr: Localized<ServerMessages> = {
       promotions: 'haberler ve kampanyalar',
       all: 'LangX’ten gelen e-postalar',
       v1contact: 'yeni LangX hakkındaki tek mesaj',
+    },
+    bountySubject: {
+      one: 'Bildirimin için {count} jeton kazandın',
+      other: 'Bildirimin için {count} jeton kazandın',
+    },
+    bountyPreheader: 'Haber verdiğin için teşekkürler.',
+    bountyBody: {
+      one: 'Gönderdiğini okuduk ve cüzdanına {count} jeton ekledik. Bu uygulama böyle düzeliyor — teşekkürler.',
+      other:
+        'Gönderdiğini okuduk ve cüzdanına {count} jeton ekledik. Bu uygulama böyle düzeliyor — teşekkürler.',
+    },
+    bountyButton: 'Cüzdanımı aç',
+    bountyText: {
+      one: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
+      other: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
     },
   },
 }

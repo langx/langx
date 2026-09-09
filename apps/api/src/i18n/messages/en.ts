@@ -22,6 +22,11 @@ export const en = {
     badgeBody: 'Nice work. Keep it going.',
     meetingTitle: 'Your language exchange is in an hour',
     meetingBody: 'Tap to open the conversation.',
+    bountyTitle: {
+      one: '{count} token for your report 🎉',
+      other: '{count} tokens for your report 🎉',
+    },
+    bountyBody: 'We read what you sent, and it was worth it.',
   },
 
   email: {
@@ -134,6 +139,21 @@ export const en = {
       promotions: 'news and offers',
       all: 'email from LangX',
       v1contact: 'the one message about the new LangX',
+    },
+    bountySubject: {
+      one: 'You earned {count} token for your report',
+      other: 'You earned {count} tokens for your report',
+    },
+    bountyPreheader: 'Thank you for telling us.',
+    bountyBody: {
+      one: 'We read what you sent and added {count} token to your wallet. Reports like yours are how this app gets fixed — thank you.',
+      other:
+        'We read what you sent and added {count} tokens to your wallet. Reports like yours are how this app gets fixed — thank you.',
+    },
+    bountyButton: 'Open my wallet',
+    bountyText: {
+      one: '{count} token has been added to your wallet for the report you sent: {url}',
+      other: '{count} tokens have been added to your wallet for the report you sent: {url}',
     },
   },
 } as const

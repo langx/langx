@@ -1693,8 +1693,7 @@ async function uploadToSigningRoute(path: string, input: PresignedUpload): Promi
  */
 export function useSendFeedback() {
   return useMutation({
-    mutationFn: (input: FeedbackInput) =>
-      api.post<{ ok: boolean; issueUrl: string | null }>('/feedback', input),
+    mutationFn: (input: FeedbackInput) => api.post<{ ok: boolean }>('/feedback', input),
   })
 }
 

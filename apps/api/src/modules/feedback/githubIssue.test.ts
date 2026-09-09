@@ -1,76 +1,53 @@
-import { describe, expect, it, vi } from 'vitest'
-import { issueTitle, openFeedbackIssue } from './githubIssue'
+import { FEEDBACK_MAX_LENGTH } from '@langx/shared'
+import { describe, expect, it } from 'vitest'
+import { issueTitle, newIssueUrl } from './githubIssue'
 
-const config = { token: 'ghp_test', repo: 'langx/langx' }
 const report = {
   kind: 'bug' as const,
   body: 'The wallet shows a negative balance.\nSteps: refuse a gift, open the wallet.',
   attachmentCount: 1,
 }
 
-/** A `fetch` that always answers this, and remembers what it was asked to send. */
-type Recording = typeof fetch & { mock: { calls: [string, { body: string }][] } }
+const fields = (url: string) => new URL(url).searchParams
 
-function respond(status: number, body: unknown): Recording {
-  return vi.fn(() =>
-    Promise.resolve(new Response(JSON.stringify(body), { status })),
-  ) as unknown as Recording
-}
+describe('newIssueUrl', () => {
+  it("points at the repository's own form, prefilled and labelled by kind", () => {
+    const url = new URL(newIssueUrl('langx/langx', report))
 
-/** The JSON body of the one call that was made. */
-function sent(fetchImpl: Recording): { title: string; body: string; labels: string[] } {
-  const call = fetchImpl.mock.calls[0]
-  if (!call) throw new Error('GitHub was never asked')
-  return JSON.parse(call[1].body) as { title: string; body: string; labels: string[] }
-}
-
-describe('openFeedbackIssue', () => {
-  it('labels the issue by kind and answers with its URL', async () => {
-    const fetchImpl = respond(201, { html_url: 'https://github.com/langx/langx/issues/42' })
-
-    const url = await openFeedbackIssue(config, report, fetchImpl)
-
-    expect(url).toBe('https://github.com/langx/langx/issues/42')
-    expect(fetchImpl.mock.calls[0]?.[0]).toBe('https://api.github.com/repos/langx/langx/issues')
-    expect(sent(fetchImpl).labels).toEqual(['bug'])
-    expect(sent(fetchImpl).title).toBe('Bug: The wallet shows a negative balance.')
-    expect(sent(fetchImpl).body).toContain('1 file(s) attached')
+    expect(`${url.origin}${url.pathname}`).toBe('https://github.com/langx/langx/issues/new')
+    expect(url.searchParams.get('labels')).toBe('bug')
+    expect(url.searchParams.get('title')).toBe('Bug: The wallet shows a negative balance.')
+    expect(url.searchParams.get('body')).toContain('1 file(s) attached')
   })
 
-  it('labels a feature request as a feature', async () => {
-    const fetchImpl = respond(201, { html_url: 'https://github.com/langx/langx/issues/43' })
-
-    await openFeedbackIssue(config, { ...report, kind: 'feature' }, fetchImpl)
-
-    expect(sent(fetchImpl).labels).toEqual(['feature'])
+  it('labels a feature request as a feature', () => {
+    expect(fields(newIssueUrl('langx/langx', { ...report, kind: 'feature' })).get('labels')).toBe(
+      'feature',
+    )
   })
 
-  it('never names the person who sent it, nor links their files — the issue is public', async () => {
-    const fetchImpl = respond(201, { html_url: 'https://github.com/langx/langx/issues/44' })
+  it('never names the person who sent it, nor links their files — the issue is public', () => {
+    const body = fields(newIssueUrl('langx/langx', report)).get('body') ?? ''
 
-    await openFeedbackIssue(config, report, fetchImpl)
-
-    const issue = sent(fetchImpl)
-    expect(issue.body).not.toContain('@')
+    expect(body).not.toContain('@')
     // The proof lives under `feedback/<userId>/`, and an account id resolves to
     // a handle through the public profile route.
-    expect(issue.body).not.toContain('user-1')
-    expect(issue.body).not.toContain('media.example.test')
+    expect(body).not.toContain('user-1')
+    expect(body).not.toContain('media.example.test')
   })
 
-  it('opens nothing without a token, and asks GitHub nothing either', async () => {
-    const fetchImpl = respond(201, { html_url: 'https://github.com/langx/langx/issues/45' })
+  /**
+   * A report at the ceiling, written in a script whose every character costs
+   * six once percent-encoded — the case that would otherwise hand GitHub a URL
+   * it answers 414 to. The words are in the email the link arrived in.
+   */
+  it('drops the body rather than building a link GitHub would refuse', () => {
+    const url = newIssueUrl('langx/langx', { ...report, body: 'ё'.repeat(FEEDBACK_MAX_LENGTH) })
 
-    expect(await openFeedbackIssue({ ...config, token: undefined }, report, fetchImpl)).toBeNull()
-    expect(fetchImpl).not.toHaveBeenCalled()
-  })
-
-  it('answers null rather than throwing when GitHub refuses or breaks', async () => {
-    expect(await openFeedbackIssue(config, report, respond(403, { message: 'no' }))).toBeNull()
-    expect(await openFeedbackIssue(config, report, respond(201, { nope: true }))).toBeNull()
-
-    const broken = vi.fn(() => Promise.reject(new Error('network'))) as unknown as typeof fetch
-    expect(await openFeedbackIssue(config, report, broken)).toBeNull()
+    expect(url.length).toBeLessThan(6100)
+    expect(fields(url).get('body')).toBeNull()
+    expect(fields(url).get('title')).toContain('Bug: ')
+    expect(fields(url).get('labels')).toBe('bug')
   })
 })
 

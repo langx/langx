@@ -1,4 +1,12 @@
-import { webUrl, type FeedbackKind, type Locale } from '@langx/shared'
+import {
+  postUrl,
+  profileUrl,
+  REPORTS_TO_FREEZE_XP,
+  webUrl,
+  type FeedbackKind,
+  type Locale,
+  type ReportReason,
+} from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
@@ -411,6 +419,36 @@ export function badgeEarnedEmail(
   }
 }
 
+/**
+ * The receipt for a report that turned out to be worth paying for.
+ *
+ * Sent whether or not the person has notification email switched on, and this
+ * is the one place in the file that says so: it is a receipt for tokens that
+ * have already landed in their wallet, the same kind of mail as the
+ * account-deletion confirmation, not a nudge they can be tired of. So it goes
+ * out through `app.email.send` rather than `sendNotificationEmail`, and
+ * carries no unsubscribe footer — there is nothing here to unsubscribe from.
+ *
+ * `shell` directly rather than `wrap`, because `wrap`'s footer says to ignore
+ * the mail if you did not ask for it, which is the wrong sentence under a
+ * payment somebody earned.
+ */
+export function bountyPaidEmail(locale: Locale, input: { amount: number; url: string }): Email {
+  const t = translator(locale)
+  const count = input.amount
+  return {
+    subject: t('email.bountySubject', { count }),
+    html: shell(
+      locale,
+      t('email.bountyPreheader'),
+      `<p>${t('email.bountyBody', { count })}</p>
+       <p>${button(encodeURI(input.url), t('email.bountyButton'))}</p>`,
+      '',
+    ),
+    text: t('email.bountyText', { count, url: input.url }),
+  }
+}
+
 /** User-typed text goes into an HTML body, so it is escaped before it does. */
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
@@ -434,8 +472,8 @@ export function feedbackEmail(input: {
   sender: { userId: string; handle: string | null; email: string | null }
   /** Where the reward is decided and sent — see `bountyToken.ts`. */
   awardUrl: string
-  /** The issue this opened, or `null` where no token is configured. */
-  issueUrl: string | null
+  /** GitHub's own new-issue form, prefilled — see `githubIssue.ts`. */
+  newIssueUrl: string
 }): Email {
   const who = input.sender.handle ? `@${input.sender.handle}` : input.sender.userId
   const subject = `${input.kind === 'bug' ? 'Bug report' : 'Feature request'} from ${who}`
@@ -448,9 +486,10 @@ export function feedbackEmail(input: {
   const links = input.attachmentUrls.map(
     (url) => `<li><a href="${encodeURI(url)}">${escapeHtml(url)}</a></li>`,
   )
-  const issueLine = input.issueUrl
-    ? `<p>Tracked at <a href="${encodeURI(input.issueUrl)}">${escapeHtml(input.issueUrl)}</a></p>`
-    : '<p style="color: #888; font-size: 12px;">No issue was opened — GITHUB_ISSUE_TOKEN is unset or GitHub refused.</p>'
+  // Already percent-encoded, so `encodeURI` would double-encode it; the
+  // ampersands between the query fields are what needs escaping in an href.
+  const issueLine = `<p>${button(escapeHtml(input.newIssueUrl), 'Open this as a GitHub issue')}</p>
+    <p style="color: #888; font-size: 12px;">Opens GitHub's own form with the title, body and label already in it. Nothing is posted until you press Submit, and you can edit it first.</p>`
 
   return {
     subject,
@@ -471,10 +510,143 @@ export function feedbackEmail(input: {
       '',
       ...input.attachmentUrls,
       '',
-      input.issueUrl ? `Tracked at: ${input.issueUrl}` : 'No issue was opened.',
+      `Open this as a GitHub issue: ${input.newIssueUrl}`,
       `Confirm and set the reward: ${input.awardUrl}`,
       '',
       ...from,
+    ].join('\n'),
+  }
+}
+/** Either party to a report, as much of them as the profile row has. */
+interface ReportedParty {
+  userId: string
+  handle: string | null
+  displayName: string | null
+}
+
+function partyName(party: ReportedParty): string {
+  return party.handle ? `@${party.handle}` : party.userId
+}
+
+function partyHtml(role: string, party: ReportedParty): string {
+  const lines = [
+    ...(party.displayName ? [escapeHtml(party.displayName)] : []),
+    party.handle
+      ? `<a href="${encodeURI(profileUrl(party.handle))}">@${escapeHtml(party.handle)}</a>`
+      : '<em>no handle — never finished onboarding, or the profile is gone</em>',
+    `<code>${escapeHtml(party.userId)}</code>`,
+  ]
+  return `<p><strong>${role}</strong><br />${lines.join('<br />')}</p>`
+}
+
+function partyText(role: string, party: ReportedParty): string[] {
+  return [
+    `${role}: ${partyName(party)}${party.displayName ? ` (${party.displayName})` : ''}`,
+    `  user id: ${party.userId}`,
+    ...(party.handle ? [`  profile: ${profileUrl(party.handle)}`] : []),
+  ]
+}
+
+/**
+ * A report about somebody, on its way to `SUPPORT_EMAIL`.
+ *
+ * The second email here with no locale, for `feedbackEmail`'s reason: we are
+ * the ones who read it.
+ *
+ * It exists because `reports` had no reader. The row was written, three
+ * distinct reporters could freeze somebody's earning, and nobody was told any
+ * of it — a report of harassment sat in a collection until someone thought to
+ * look. The moderation console is still ahead of us; this is what stands in
+ * for it, and it carries enough to judge a report without opening the
+ * database.
+ *
+ * **The freeze is named here and nowhere else.** `POST /reports` deliberately
+ * does not echo it to the reporter, because whether someone else's earning is
+ * suspended is not their business and telling them turns the threshold into a
+ * game to probe. Telling *us* is the entire point.
+ */
+export function reportEmail(input: {
+  reportId: string
+  reason: ReportReason
+  details: string | null
+  reporter: ReportedParty
+  reported: ReportedParty
+  /** True only when this report is the one that crossed the threshold. */
+  xpFrozen: boolean
+  context: { conversationId: string | null; messageId: string | null; postId: string | null }
+}): Email {
+  // The enum values are already English words; a lookup table beside them
+  // would be one more thing to forget when a reason is added.
+  const reason = input.reason.replace(/_/g, ' ')
+  const subject = `${input.xpFrozen ? '[XP FROZEN] ' : ''}Report: ${reason} — ${partyName(
+    input.reporter,
+  )} on ${partyName(input.reported)}`
+
+  const frozenLine = input.xpFrozen
+    ? `<p style="background:#fff3cd; padding:12px; border-radius:8px;"><strong>Token earning is now frozen on the reported account.</strong> ${REPORTS_TO_FREEZE_XP} distinct reporters have an open report against them. Messages still send and their activity is still counted, so clearing this can be reconciled.</p>`
+    : ''
+
+  /*
+   * A conversation and a message are ids, not links: `/chat/<id>` opens only
+   * for the two people in it, so a link would send whoever reads this to a
+   * 404. A post is public, so that one is a link.
+   */
+  const pointers = [
+    input.context.conversationId
+      ? `<li>Conversation <code>${escapeHtml(input.context.conversationId)}</code></li>`
+      : '',
+    input.context.messageId
+      ? `<li>Message <code>${escapeHtml(input.context.messageId)}</code></li>`
+      : '',
+    input.context.postId
+      ? `<li>Post <a href="${encodeURI(postUrl(input.context.postId))}">${escapeHtml(
+          input.context.postId,
+        )}</a></li>`
+      : '',
+  ].filter(Boolean)
+
+  const details = input.details
+    ? `<p style="white-space: pre-wrap;">${escapeHtml(input.details)}</p>`
+    : '<p style="color: #888;">No details were given.</p>'
+
+  return {
+    subject,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111;">
+    <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
+    ${frozenLine}
+    <p><strong>Reason</strong> ${escapeHtml(reason)}</p>
+    ${details}
+    ${partyHtml('Reported', input.reported)}
+    ${partyHtml('Reporter', input.reporter)}
+    ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
+    <p style="color: #888; font-size: 12px;">Report ${escapeHtml(
+      input.reportId,
+    )}, stored in <code>reports</code> with status <code>open</code>. Nothing changes it yet.</p>
+  </body>
+</html>`,
+    text: [
+      subject,
+      '',
+      ...(input.xpFrozen
+        ? [
+            `Token earning is now frozen on the reported account (${REPORTS_TO_FREEZE_XP} distinct reporters).`,
+            '',
+          ]
+        : []),
+      `Reason: ${reason}`,
+      '',
+      input.details ?? 'No details were given.',
+      '',
+      ...partyText('Reported', input.reported),
+      ...partyText('Reporter', input.reporter),
+      '',
+      ...(input.context.conversationId ? [`Conversation: ${input.context.conversationId}`] : []),
+      ...(input.context.messageId ? [`Message: ${input.context.messageId}`] : []),
+      ...(input.context.postId ? [`Post: ${postUrl(input.context.postId)}`] : []),
+      '',
+      `Report ${input.reportId} — reports collection, status open.`,
     ].join('\n'),
   }
 }

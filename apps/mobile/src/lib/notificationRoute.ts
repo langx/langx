@@ -41,6 +41,10 @@ export function notificationRoute(data: unknown): Href | null {
       return typeof conversationId === 'string' && conversationId.length > 0
         ? `/chat/${conversationId}`
         : '/chats'
+    case 'bountyPaid':
+      // Tokens landed, so the screen that shows them is the answer — the
+      // wallet, not the report they were paid for, which nothing here can open.
+      return '/wallet'
     case 'profileVisits':
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.
