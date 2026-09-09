@@ -8,7 +8,6 @@ import { Platform, Pressable, Text, View } from 'react-native'
 import {
   useBadges,
   useEffectiveTier,
-  useIsPro,
   useMe,
   useProfile,
   useQuota,
@@ -61,7 +60,6 @@ export default function MeScreen() {
   const ownProfile = useProfile(me.data?.handle ?? '')
   // Above the early return: hooks cannot be called conditionally, and putting
   // this below it renders nothing at all.
-  const isPro = useIsPro()
   const tier = useEffectiveTier()
   /**
    * Everything on this screen comes from a different query, so the pull is not
@@ -331,18 +329,33 @@ export default function MeScreen() {
         onPress={() => openProfile(profile.handle, '/(app)/(tabs)/me')}
       />
 
-      {!isPro ? (
+      {tier !== 'pro_plus' ? (
         <Pressable
           accessibilityRole="button"
           style={({ pressed }) => [styles.proCard, pressed && styles.pressed]}
           onPress={() => openPaywall()}
         >
-          <Text style={styles.proTitle}>{t('me.proTitle')}</Text>
-          <Text style={styles.proBody}>{t('me.proBody')}</Text>
-          <Text style={styles.quota}>
-            {t('me.newChatsLeft')} {quota.data?.initiations.remaining ?? '—'} /{' '}
-            {quota.data?.initiations.limit ?? '∞'}
+          {/*
+            Two cards in one shape. A free account is being sold the first
+            plan and the quota line is the argument — it is the limit they are
+            living inside. A Fluent subscriber has no such limit, so the line
+            would read as reassurance on a card asking for money; what is left
+            to sell them is the one tier above.
+          */}
+          <Text style={styles.proTitle}>
+            {tier === 'free'
+              ? t('me.proTitle')
+              : t('me.polyglotTitle', { plan: TIER_NAMES.pro_plus })}
           </Text>
+          <Text style={styles.proBody}>
+            {tier === 'free' ? t('me.proBody') : t('me.polyglotBody')}
+          </Text>
+          {tier === 'free' ? (
+            <Text style={styles.quota}>
+              {t('me.newChatsLeft')} {quota.data?.initiations.remaining ?? '—'} /{' '}
+              {quota.data?.initiations.limit ?? '∞'}
+            </Text>
+          ) : null}
         </Pressable>
       ) : null}
 
