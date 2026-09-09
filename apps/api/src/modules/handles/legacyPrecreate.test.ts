@@ -47,6 +47,27 @@ describe('pre-created v1 users: reset password → sign in → restored', () => 
   const signIn = (email: string, password: string) =>
     app.inject({ method: 'POST', url: '/api/auth/sign-in/email', payload: { email, password } })
 
+  const signUp = (email: string, name: string) =>
+    app.inject({
+      method: 'POST',
+      url: '/api/auth/sign-up/email',
+      payload: { email, password: NEW_PASSWORD, name },
+    })
+
+  /** Pulls the token out of the last captured mail, the way an inbox would. */
+  function latestToken(): string {
+    const token = new URL(emailSender.latestUrl()).searchParams.get('token')
+    if (!token) throw new Error(`no token in ${emailSender.latestUrl()}`)
+    return token
+  }
+
+  /** What the app does with the token once the link has opened it. */
+  const verifyMagicLink = (token: string) =>
+    app.inject({
+      method: 'GET',
+      url: `/api/auth/magic-link/verify?token=${encodeURIComponent(token)}`,
+    })
+
   async function resetPassword(email: string, newPassword: string): Promise<void> {
     const forgot = await app.inject({
       method: 'POST',
@@ -136,7 +157,7 @@ describe('pre-created v1 users: reset password → sign in → restored', () => 
     expect(accounts).toBe(0)
   })
 
-  it('cannot be signed into before the reset; signing up over it sends the "already have an account" mail', async () => {
+  it('cannot be signed into before the reset; signing up over it mails a sign-in link and creates nothing', async () => {
     const email = 'locked@example.com'
     await insertPrecreatedUser(handle.db, {
       email,
@@ -147,20 +168,16 @@ describe('pre-created v1 users: reset password → sign in → restored', () => 
     const guess = await signIn(email, 'whatever they used in v1')
     expect(guess.statusCode).toBe(401)
 
-    const again = await app.inject({
-      method: 'POST',
-      url: '/api/auth/sign-up/email',
-      payload: { email, password: NEW_PASSWORD, name: 'Impostor' },
-    })
+    const again = await signUp(email, 'Impostor')
     // Better Auth answers exactly as it would a fresh sign-up so the form
     // cannot enumerate addresses — but it must create nothing, and the mail
-    // that goes out must be the one that says what to do instead.
+    // that goes out must be the one that gets the real owner in.
     expect(again.statusCode).toBe(200)
     expect(emailSender.messages.at(-1)).toMatchObject({
       to: email,
       subject: expect.stringMatching(/already/i) as string,
     })
-    expect(emailSender.latestUrl()).toContain('/forgot-password')
+    expect(emailSender.latestUrl()).toContain('/magic-link?token=')
     const impostor = await signIn(email, NEW_PASSWORD)
     expect(impostor.statusCode).toBe(401)
     const user = await handle.db.collection(COLLECTIONS.user).findOne({ email })
@@ -169,6 +186,47 @@ describe('pre-created v1 users: reset password → sign in → restored', () => 
       .collection(COLLECTIONS.account)
       .countDocuments({ userId: { $in: [authId(String(user?._id)), String(user?._id)] } })
     expect(accounts).toBe(0)
+  })
+
+  it('the link in that mail signs them in and restores the v1 profile', async () => {
+    const email = 'triedtosignup@example.com'
+    await stageLegacy(email, { handle: 'triedtosignup', displayName: 'Tried To Sign Up' })
+    await insertPrecreatedUser(handle.db, {
+      email,
+      name: 'Tried To Sign Up',
+      legacyUserId: `appwrite-${email}`,
+    })
+
+    // The whole point of the change: the sign-up screen is where a returning
+    // v1 user starts, and it now finishes the journey rather than redirecting
+    // it to a password they never had.
+    expect((await signUp(email, 'Tried To Sign Up')).statusCode).toBe(200)
+
+    const verified = await verifyMagicLink(latestToken())
+    expect(verified.statusCode, verified.body).toBe(200)
+
+    const me = await app.inject({
+      method: 'GET',
+      url: '/profiles/me',
+      headers: { cookie: setCookieValue(verified) },
+    })
+    expect(me.statusCode, me.body).toBe(200)
+    expect(me.json()).toMatchObject({ handle: 'triedtosignup', displayName: 'Tried To Sign Up' })
+  })
+
+  it('once the row has a password, a sign-up over it goes back to the reset mail', async () => {
+    const email = 'claimed@example.com'
+    await insertPrecreatedUser(handle.db, {
+      email,
+      name: 'Claimed',
+      legacyUserId: 'appwrite-claimed',
+    })
+    await resetPassword(email, NEW_PASSWORD)
+
+    // A password somebody chose is a credential, and an unrequested link that
+    // walks around it is not a courtesy — whatever the row used to be.
+    expect((await signUp(email, 'Impostor')).statusCode).toBe(200)
+    expect(emailSender.latestUrl()).toContain('/forgot-password')
   })
 
   it('reset → sign-in restores the v1 profile and stamps the terms, exactly once', async () => {

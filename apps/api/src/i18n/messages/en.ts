@@ -68,6 +68,16 @@ export const en = {
     existingText: 'You already have a LangX account. Reset your password here: {url}',
 
     /*
+     * The same news for an account with no password behind it — a v1 row
+     * `legacyPrecreate.ts` opened. Carries a sign-in link, because "reset your
+     * password" is strange advice for a password that was never set.
+     */
+    existingLinkBody:
+      'Someone tried to sign up with this email, but you already have an account here, with your profile on it. Tap to sign in — there is no password to remember. The link works once and expires in 15 minutes.',
+    existingLinkText:
+      'You already have a LangX account. Sign in here (works once, expires in 15 minutes): {url}',
+
+    /*
      * The footer every notification email carries, and the page its link
      * leads to. Not the same as `ignore` above: this mail was asked for, so it
      * says why it came and how to stop it rather than how to disregard it.

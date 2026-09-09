@@ -215,8 +215,10 @@ export function deleteAccountEmail(url: string, locale: Locale): Email {
  * — so the form cannot be used to learn which addresses are registered — and
  * this mail is the only channel left that can say "you already have an
  * account" to the one person entitled to hear it. The link is the app's own
- * forgot-password screen, not a token: nothing here was asked for by proof
- * of ownership, so nothing here may grant any.
+ * forgot-password screen, not a token: this mail goes to an account that has a
+ * password, and pointing at the screen that resets it asks for no more trust
+ * than the person already gave. `existingAccountLinkEmail` is the version for
+ * an account that has no password to reset.
  */
 export function existingAccountEmail(url: string, locale: Locale): Email {
   const t = translator(locale)
@@ -230,6 +232,37 @@ export function existingAccountEmail(url: string, locale: Locale): Email {
        <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.existingText', { url }),
+  }
+}
+
+/**
+ * The same news, for an account with no password behind it: a v1 row that
+ * `legacyPrecreate.ts` opened. Its owner is being told to reset a password
+ * that was never set, which is both odd to read and a longer walk than the
+ * account needs — so this one carries a magic link and the sign-up ends where
+ * it was trying to go.
+ *
+ * It grants something the mail above does not, and the difference is worth
+ * being exact about: the grant goes to an *address*, not to whoever typed it
+ * into the form. The link is single-use, expires in a quarter of an hour, and
+ * lands only in the inbox entitled to it — the same bargain
+ * `requestPasswordReset` already makes with anyone who types an address into
+ * the forgot-password screen. What it must never become is a link in the mail
+ * to an account that has a password: there, an unasked-for sign-in link is a
+ * way past a credential somebody chose, and the reset screen is the answer.
+ */
+export function existingAccountLinkEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.existingSubject'),
+    html: wrap(
+      locale,
+      t('email.existingPreheader'),
+      `<p>${t('email.existingLinkBody')}</p>
+       <p>${button(url, t('email.magicLinkButton'))}</p>
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.existingLinkText', { url }),
   }
 }
 

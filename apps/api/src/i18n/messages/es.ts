@@ -64,6 +64,11 @@ export const es: Localized<ServerMessages> = {
     existingButton: 'Restablecer contraseña',
     existingText: 'Ya tienes una cuenta de LangX. Restablece tu contraseña aquí: {url}',
 
+    existingLinkBody:
+      'Alguien ha intentado registrarse con este correo, pero ya tienes una cuenta aquí, con tu perfil en ella. Toca para entrar: no hay contraseña que recordar. El enlace funciona una vez y caduca en 15 minutos.',
+    existingLinkText:
+      'Ya tienes una cuenta de LangX. Entra aquí (funciona una vez, caduca en 15 minutos): {url}',
+
     whyThisMail: 'Recibes esto por tus ajustes de notificaciones de LangX.',
     unsubscribeLink: 'Desactivar estos correos',
     unsubscribeText: 'Desactivar estos correos: {url}',

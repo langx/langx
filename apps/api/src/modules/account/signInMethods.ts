@@ -10,7 +10,7 @@ import { emailFor } from '../profiles/emailFor'
  * provider id, which is why "do they have a password" is a query rather than a
  * field on the user.
  */
-const CREDENTIAL_PROVIDER = 'credential'
+export const CREDENTIAL_PROVIDER = 'credential'
 
 function isLinkedProvider(providerId: string): providerId is LinkedProvider {
   return (LINKED_PROVIDERS as readonly string[]).includes(providerId)
