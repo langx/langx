@@ -690,6 +690,12 @@ export const tr: Localized<EnMessages> = {
     actionFailed: 'Bu işlem gerçekleşmedi',
     viewProfile: 'Profili gör',
     media: 'Fotoğraflar ve sesli notlar',
+    allPhrases: 'Tüm kaydedilen ifadeler',
+    phraseScopeMine: 'Benim',
+    phraseScopeAll: 'Hepsi',
+    allPhrasesEmpty: 'Herhangi bir sohbette bir ifade kaydet, burada görünür.',
+    phraseScopePicker: 'Benim kartlarım ya da sohbetlerimdeki her kart',
+    phraseFrom: '{name} ile',
   },
 
   chatMedia: {
@@ -1117,6 +1123,8 @@ export const tr: Localized<EnMessages> = {
     signInUnlinked: 'Bağlantı kesildi.',
     signInLinkFailed: 'Bağlanamadı. Tekrar dene.',
     signInUnlinkFailed: 'Bağlantı kesilemedi. Tekrar dene.',
+    exportPhrases: 'Tüm ifadeleri dışa aktar',
+    exportPhrasesBody: 'Her sohbetten kaydettiğin bütün kartlar, tek dosyada.',
   },
 
   deletion: {
@@ -1455,7 +1463,8 @@ export const tr: Localized<EnMessages> = {
     sendTranslation: 'Onun dilinde gönder',
     sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
     deckExport: 'İfadelerini yanında götür',
-    deckExportBody: 'Bir sohbetin kaydedilmiş ifadelerini dosya olarak dışa aktar. Anki’de açılır.',
+    deckExportBody:
+      'Bir sohbetin kaydedilmiş ifadelerini ya da kaydettiğin bütün kartları dosya olarak dışa aktar. Anki’de açılır.',
     advancedFiltersBody: 'Belirli bir cinsiyete ve şehre göre ara.',
     translationQuota: 'İhtiyacın kadar çeviri',
     translationQuotaBody: 'Günde {count} çeviri — bir sohbetin kullandığından çok daha fazla.',

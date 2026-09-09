@@ -385,4 +385,135 @@ describe('Faz 4 — starting a conversation', () => {
       expect(response.json<{ initiations: { remaining: number } }>().initiations.remaining).toBe(2)
     })
   })
+
+  describe('GET /me/phrases', () => {
+    /** Two people, a thread, and a card saved by each of them. */
+    async function deck(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversationId = (await startConversation(a, b.userId)).json<{ _id: string }>()._id
+      const { sendPhrase } = await import('../modules/chat/messages')
+      await sendPhrase(handle.db, a.userId, {
+        conversationId,
+        term: 'mine',
+        meaning: 'what I saved',
+        lang: 'en',
+      })
+      await sendPhrase(handle.db, b.userId, {
+        conversationId,
+        term: 'theirs',
+        meaning: 'what they saved',
+        lang: 'en',
+      })
+      return { a, b, conversationId }
+    }
+
+    /** The route is Polyglot-only, so every content test needs the tier. */
+    async function makePolyglot(userId: string) {
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: userId }, { $set: { 'entitlement.tier': 'pro_plus' } })
+    }
+
+    interface PhrasesBody {
+      items: { term: string; authorId: string; conversationId: string; partnerId?: string }[]
+    }
+
+    async function phrases(user: { cookie: string }, query = 'scope=mine') {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/me/phrases?${query}`,
+        headers: { cookie: user.cookie },
+      })
+      return { statusCode: response.statusCode, body: response.json<PhrasesBody>() }
+    }
+
+    it('returns only my own cards under scope=mine', async () => {
+      const { a } = await deck('phrases-mine')
+      await makePolyglot(a.userId)
+
+      const { statusCode, body } = await phrases(a)
+      expect(statusCode).toBe(200)
+      expect(body.items.map((card) => card.term)).toEqual(['mine'])
+      expect(body.items[0]?.authorId).toBe(a.userId)
+    })
+
+    it('includes the other person’s cards under scope=all', async () => {
+      const { a } = await deck('phrases-all')
+      await makePolyglot(a.userId)
+
+      const { body } = await phrases(a, 'scope=all')
+      expect([...body.items.map((card) => card.term)].sort()).toEqual(['mine', 'theirs'])
+    })
+
+    it('says which thread each card came from, and who the other side is', async () => {
+      const { a, b, conversationId } = await deck('phrases-partner')
+      await makePolyglot(a.userId)
+
+      const { body } = await phrases(a, 'scope=all')
+      for (const card of body.items) {
+        expect(card.conversationId).toBe(conversationId)
+        expect(card.partnerId).toBe(b.userId)
+      }
+    })
+
+    it('never shows a card from a thread I am not in, under either scope', async () => {
+      const mine = await deck('phrases-outsider-mine')
+      const theirs = await deck('phrases-outsider-theirs')
+      await makePolyglot(mine.a.userId)
+
+      for (const scope of ['scope=mine', 'scope=all']) {
+        const { body } = await phrases(mine.a, scope)
+        expect(body.items.every((card) => card.conversationId !== theirs.conversationId)).toBe(true)
+      }
+    })
+
+    /**
+     * The test this section exists for. A block placed after the thread was
+     * started has to cut the cards off immediately — which is why the ids come
+     * through `blockedUserIds` rather than a raw `find` on `participants`.
+     */
+    it('drops a blocked person’s cards from scope=all', async () => {
+      const { a, b } = await deck('phrases-blocked-all')
+      await makePolyglot(a.userId)
+      const { blockUser } = await import('../modules/moderation/blocks')
+      await blockUser(handle.db, b.userId, a.userId)
+
+      const { body } = await phrases(a, 'scope=all')
+      expect(body.items.map((card) => card.term)).not.toContain('theirs')
+    })
+
+    /**
+     * And from `mine` as well, which is the design decision rather than a
+     * consequence: a card I wrote is very often a quotation of their sentence
+     * in its example, so "my own rows" is not the same as "rows I may still
+     * read".
+     */
+    it('drops my own cards from that thread too', async () => {
+      const { a, b } = await deck('phrases-blocked-mine')
+      await makePolyglot(a.userId)
+      const { blockUser } = await import('../modules/moderation/blocks')
+      await blockUser(handle.db, b.userId, a.userId)
+
+      const { body } = await phrases(a, 'scope=mine')
+      expect(body.items).toEqual([])
+    })
+
+    it('refuses a free account with UPGRADE_REQUIRED, naming the feature', async () => {
+      const { a } = await deck('phrases-free')
+
+      for (const scope of ['scope=mine', 'scope=all']) {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/me/phrases?${scope}`,
+          headers: { cookie: a.cookie },
+        })
+        expect(response.statusCode).toBe(403)
+        expect(response.json<{ code: string; feature: string }>()).toMatchObject({
+          code: 'UPGRADE_REQUIRED',
+          feature: 'deckExport',
+        })
+      }
+    })
+  })
 })

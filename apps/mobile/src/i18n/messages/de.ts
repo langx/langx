@@ -712,6 +712,12 @@ export const de: Localized<EnMessages> = {
     actionFailed: 'Das hat nicht geklappt',
     viewProfile: 'Profil ansehen',
     media: 'Fotos und Sprachnachrichten',
+    allPhrases: 'Alle gespeicherten Wendungen',
+    phraseScopeMine: 'Meine',
+    phraseScopeAll: 'Alle',
+    allPhrasesEmpty: 'Speichere in einem Chat eine Wendung, dann steht sie hier.',
+    phraseScopePicker: 'Meine Karten oder alle Karten aus meinen Chats',
+    phraseFrom: 'Von {name}',
   },
 
   chatMedia: {
@@ -1139,6 +1145,8 @@ export const de: Localized<EnMessages> = {
     signInUnlinked: 'Getrennt.',
     signInLinkFailed: 'Verbinden fehlgeschlagen. Versuch es noch einmal.',
     signInUnlinkFailed: 'Trennen fehlgeschlagen. Versuch es noch einmal.',
+    exportPhrases: 'Alle Wendungen exportieren',
+    exportPhrasesBody: 'Alle gespeicherten Karten aus allen Chats, in einer Datei.',
   },
 
   deletion: {
@@ -1485,7 +1493,7 @@ export const de: Localized<EnMessages> = {
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',
     deckExportBody:
-      'Exportiere die gespeicherten Wendungen eines Chats als Datei. Sie öffnet sich in Anki.',
+      'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
     translationQuota: 'Übersetze so viel du brauchst',
     translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',

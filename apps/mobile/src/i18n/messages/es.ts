@@ -690,6 +690,12 @@ export const es: Localized<EnMessages> = {
     actionFailed: 'Eso no salió bien',
     viewProfile: 'Ver perfil',
     media: 'Fotos y notas de voz',
+    allPhrases: 'Todas las expresiones guardadas',
+    phraseScopeMine: 'Mías',
+    phraseScopeAll: 'Todas',
+    allPhrasesEmpty: 'Guarda una expresión en cualquier chat y aparecerá aquí.',
+    phraseScopePicker: 'Mías, o todas las tarjetas de mis chats',
+    phraseFrom: 'De {name}',
   },
 
   chatMedia: {
@@ -1112,6 +1118,8 @@ export const es: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'No se pudo conectar. Inténtalo de nuevo.',
     signInUnlinkFailed: 'No se pudo desconectar. Inténtalo de nuevo.',
+    exportPhrases: 'Exportar todas las expresiones',
+    exportPhrasesBody: 'Todas las tarjetas que has guardado, de todos los chats, en un archivo.',
   },
 
   deletion: {
@@ -1455,7 +1463,7 @@ export const es: Localized<EnMessages> = {
     sendTranslationBody: 'Escribe en el tuyo; van los dos, así te leen sin adivinar.',
     deckExport: 'Llévate tus expresiones',
     deckExportBody:
-      'Exporta las expresiones guardadas de una conversación. El archivo se abre en Anki.',
+      'Exporta las expresiones guardadas de una conversación, o todas las que has guardado, como archivo. Se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
     translationQuota: 'Traduce lo que necesites',
     translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',

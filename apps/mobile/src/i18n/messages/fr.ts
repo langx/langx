@@ -693,6 +693,12 @@ export const fr: Localized<EnMessages> = {
     actionFailed: 'Ça n’est pas passé',
     viewProfile: 'Voir le profil',
     media: 'Photos et messages vocaux',
+    allPhrases: 'Toutes les expressions enregistrées',
+    phraseScopeMine: 'Les miennes',
+    phraseScopeAll: 'Toutes',
+    allPhrasesEmpty: 'Enregistre une expression dans une conversation et elle apparaîtra ici.',
+    phraseScopePicker: 'Les miennes, ou toutes les cartes de mes conversations',
+    phraseFrom: 'Avec {name}',
   },
 
   chatMedia: {
@@ -1121,6 +1127,9 @@ export const fr: Localized<EnMessages> = {
     signInUnlinked: 'Déconnecté.',
     signInLinkFailed: 'Connexion impossible. Réessayez.',
     signInUnlinkFailed: 'Déconnexion impossible. Réessayez.',
+    exportPhrases: 'Exporter toutes les expressions',
+    exportPhrasesBody:
+      'Toutes les cartes enregistrées, de toutes les conversations, dans un fichier.',
   },
 
   deletion: {
@@ -1465,7 +1474,7 @@ export const fr: Localized<EnMessages> = {
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',
     deckExportBody:
-      'Exporte les expressions enregistrées d’une conversation. Le fichier s’ouvre dans Anki.',
+      'Exporte les expressions enregistrées d’une conversation, ou toutes celles que tu as gardées, dans un fichier. Il s’ouvre dans Anki.',
     advancedFiltersBody: 'Cherche un genre précis, et par ville.',
     translationQuota: 'Traduis autant que nécessaire',
     translationQuotaBody:

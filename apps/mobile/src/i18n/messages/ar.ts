@@ -790,6 +790,12 @@ export const ar: Localized<EnMessages> = {
     actionFailed: 'لم تتم العملية',
     viewProfile: 'عرض الملف الشخصي',
     media: 'الصور والرسائل الصوتية',
+    allPhrases: 'كل العبارات المحفوظة',
+    phraseScopeMine: 'عباراتي',
+    phraseScopeAll: 'الكل',
+    allPhrasesEmpty: 'احفظ عبارة في أي محادثة وستظهر هنا.',
+    phraseScopePicker: 'عباراتي أو كل بطاقة في محادثاتي',
+    phraseFrom: 'من {name}',
   },
 
   chatMedia: {
@@ -1291,6 +1297,8 @@ export const ar: Localized<EnMessages> = {
     signInUnlinked: 'تم إلغاء الربط.',
     signInLinkFailed: 'تعذّر الربط. حاول مرة أخرى.',
     signInUnlinkFailed: 'تعذّر إلغاء الربط. حاول مرة أخرى.',
+    exportPhrases: 'تصدير كل العبارات',
+    exportPhrasesBody: 'كل البطاقات التي حفظتها، من كل المحادثات، في ملف واحد.',
   },
 
   deletion: {
@@ -1722,7 +1730,8 @@ export const ar: Localized<EnMessages> = {
     sendTranslation: 'أرسل بلغته',
     sendTranslationBody: 'اكتب بلغتك؛ يُرسل الاثنان، فيقرأك دون تخمين.',
     deckExport: 'خذ عباراتك معك',
-    deckExportBody: 'صدّر العبارات المحفوظة في محادثة كملف. يفتح في Anki.',
+    deckExportBody:
+      'صدّر العبارات المحفوظة في محادثة، أو كل البطاقات التي حفظتها، كملف. يفتح في Anki.',
     advancedFiltersBody: 'ابحث عن جنس محدد، وحسب المدينة.',
     translationQuota: 'ترجم بقدر ما تحتاج',
     translationQuotaBody: '{count} ترجمة في اليوم — أكثر بكثير مما تستهلكه محادثة.',

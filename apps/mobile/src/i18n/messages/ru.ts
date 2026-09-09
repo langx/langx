@@ -763,6 +763,12 @@ export const ru: Localized<EnMessages> = {
     actionFailed: 'Не получилось',
     viewProfile: 'Открыть профиль',
     media: 'Фото и голосовые',
+    allPhrases: 'Все сохранённые выражения',
+    phraseScopeMine: 'Мои',
+    phraseScopeAll: 'Все',
+    allPhrasesEmpty: 'Сохрани выражение в любом чате — и оно появится здесь.',
+    phraseScopePicker: 'Мои или все карточки из моих чатов',
+    phraseFrom: 'С {name}',
   },
 
   chatMedia: {
@@ -1237,6 +1243,8 @@ export const ru: Localized<EnMessages> = {
     signInUnlinked: 'Отключено.',
     signInLinkFailed: 'Не удалось подключить. Попробуйте ещё раз.',
     signInUnlinkFailed: 'Не удалось отключить. Попробуйте ещё раз.',
+    exportPhrases: 'Экспорт всех выражений',
+    exportPhrasesBody: 'Все сохранённые карточки из всех чатов — одним файлом.',
   },
 
   deletion: {
@@ -1636,7 +1644,8 @@ export const ru: Localized<EnMessages> = {
     sendTranslation: 'Отправляй на их языке',
     sendTranslationBody: 'Пиши на своём — уйдут оба, и тебя прочтут без догадок.',
     deckExport: 'Забери свои выражения',
-    deckExportBody: 'Выгрузи сохранённые выражения беседы в файл. Он открывается в Anki.',
+    deckExportBody:
+      'Выгрузи сохранённые выражения одной беседы или все свои карточки в файл. Он открывается в Anki.',
     advancedFiltersBody: 'Поиск по конкретному полу и по городу.',
     translationQuota: 'Переводи сколько нужно',
     translationQuotaBody: '{count} переводов в день — намного больше, чем нужно для разговора.',

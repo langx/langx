@@ -1,10 +1,15 @@
-import { ERROR_CODES, startConversationSchema } from '@langx/shared'
+import {
+  ERROR_CODES,
+  hasFeature,
+  listAllPhrasesQuerySchema,
+  startConversationSchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { getQuotaStatus } from '../lib/quota'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { assertConversationAccess } from '../modules/chat/access'
-import { listPhraseCards } from '../modules/chat/phraseCards'
+import { listAllPhraseCards, listPhraseCards } from '../modules/chat/phraseCards'
 import { startConversation } from '../modules/chat/conversations'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
@@ -64,4 +69,46 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
     const conversation = await assertConversationAccess(app.mongo.db, id, request.userId)
     return reply.send({ items: await listPhraseCards(app.mongo.db, conversation._id) })
   })
+
+  /**
+   * Every phrase, across every thread.
+   *
+   * Under `/me/` for the reason `/me/starred` and `/me/corrections` are: it
+   * belongs to a person, not to one conversation.
+   *
+   * **The paywall is on the server here**, unlike the route above. That one
+   * hands back data a free reader is already looking at on the deck screen —
+   * its gate is on the *file*, so a client-side check is the honest place for
+   * it. This route exists only to be exported, and a client-only gate would
+   * hand the whole cross-conversation deck to `curl /me/phrases?scope=all`.
+   *
+   * The tier check is in the route while the *block* check has to live inside
+   * `listAllPhraseCards`: a block is a rule about which rows exist, and this
+   * is a rule about who may call the endpoint at all — which keeps the module
+   * usable by anything else that wants the same rows.
+   */
+  app.get(
+    '/me/phrases',
+    { preHandler: requireAuth, schema: { querystring: listAllPhrasesQuerySchema } },
+    async (request, reply) => {
+      const profile = await getProfile(app.mongo.db, request.userId)
+      if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+      if (!hasFeature(effectiveTier(profile), 'deckExport')) {
+        throw new ApiError(
+          ERROR_CODES.UPGRADE_REQUIRED,
+          'Exporting every deck is a Polyglot feature',
+          {
+            feature: 'deckExport',
+          },
+        )
+      }
+      const items = await listAllPhraseCards(
+        app.mongo.db,
+        request.userId,
+        request.query.scope,
+        request.query.limit,
+      )
+      return reply.send({ items })
+    },
+  )
 }

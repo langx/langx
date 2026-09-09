@@ -163,6 +163,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       { id: 'account.password', titleKey: 'settings.password', bodyKey: 'settings.passwordBody' },
       { id: 'account.devices', titleKey: 'linkDevice.title', bodyKey: 'settings.linkDeviceBody' },
       { id: 'account.blocked', titleKey: 'settings.blockedPeople' },
+      {
+        id: 'account.allPhrases',
+        titleKey: 'settings.exportPhrases',
+        bodyKey: 'settings.exportPhrasesBody',
+      },
       { id: 'account.export', titleKey: 'settings.exportData' },
       { id: 'account.delete', titleKey: 'settings.deleteAccount' },
     ],

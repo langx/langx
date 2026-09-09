@@ -533,6 +533,28 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { conversationId: 1, term: 1 }, name: 'conversation_term_unique', unique: true },
     // The deck screen, newest first.
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_recent' },
+    /**
+     * `GET /me/phrases?scope=mine` — one person's cards across every thread.
+     * Both indexes above lead with `conversationId`, so neither can answer a
+     * question that names only the author.
+     *
+     * `_id` is in the key, unlike the `author_recent` on `postComments` and
+     * `pronunciationAnswers`: those sort on `createdAt` alone, and this read
+     * sorts `{ createdAt: -1, _id: -1 }` — the order `conversation_recent`
+     * above already serves — so two cards saved in the same millisecond come
+     * back stably instead of in whichever order the storage engine offers.
+     * Without `_id` here that tiebreak is an in-memory sort.
+     *
+     * `scope=all` is **not** served by this index and does not claim to be: it
+     * names conversations rather than an author and rides `conversation_recent`
+     * with an `$in`. Whether that `$in` keeps the index's ordering depends on
+     * how many threads it carries, which is why
+     * `PHRASE_SOURCE_CONVERSATION_LIMIT` is 200 — and why even the sorted case
+     * is affordable, since `conversation_term_unique` caps each thread's deck
+     * and bounds the candidate set a second time. One index does not close
+     * both scopes.
+     */
+    { key: { authorId: 1, createdAt: -1, _id: -1 }, name: 'author_recent' },
   ],
 
   [COLLECTIONS.postComments]: [

@@ -15,6 +15,7 @@ import {
   type CheckInResult,
   type MediaKind,
   type MediaTab,
+  type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
@@ -121,6 +122,12 @@ export const keys = {
    * tabs cannot show the other tab's rows for a frame.
    */
   conversationMedia: (id: string, tab: string) => ['conversationMedia', id, tab] as const,
+  /**
+   * Under the same `['phraseCards']` prefix as the per-conversation deck: both
+   * are read on mount and neither is patched by the socket, so sharing the
+   * prefix costs nothing and makes "any deck" one invalidation.
+   */
+  allPhraseCards: (scope: string) => ['phraseCards', 'all', scope] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -1703,6 +1710,31 @@ export function useConversationMedia(conversationId: string, tab: MediaTab) {
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
+  })
+}
+
+export interface CrossPhraseCardDto extends PhraseCardDto {
+  conversationId: string
+  /** The other side of the thread it came from; resolve the name separately. */
+  partnerId?: string
+}
+
+/**
+ * Every saved phrase, across every conversation.
+ *
+ * `enabled` rather than an unconditional fetch: `/me/phrases` is Polyglot on
+ * the *server*, so for a free reader the request is a 403 asked for on
+ * purpose. The caller passes what it already knows about the tier, and the
+ * screen shows the paywall instead of an error state.
+ *
+ * Unpaged, because the route is: this read is the export, and a cursor would
+ * mean paging the whole deck before a file could be written.
+ */
+export function useAllPhraseCards(scope: PhraseScope, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.allPhraseCards(scope),
+    queryFn: () => api.get<{ items: CrossPhraseCardDto[] }>(`/me/phrases?scope=${scope}`),
+    enabled,
   })
 }
 
