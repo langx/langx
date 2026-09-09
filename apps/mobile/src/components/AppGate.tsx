@@ -6,6 +6,8 @@ import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useSignalAppReady } from '../hooks/useAppReady'
 import { makeStyles, useTheme } from '../lib/theme'
+import { showToast, TOAST_DURATION_MS } from '../lib/toast'
+import { currentTranslate } from '../i18n/runtime'
 import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
@@ -68,10 +70,22 @@ export function AppGate({ children }: { children: ReactNode }) {
       try {
         const check = await Updates.checkForUpdateAsync()
         if (!check.isAvailable) return
-        await Updates.fetchUpdateAsync()
+        const fetched = await Updates.fetchUpdateAsync()
+        if (!fetched.isNew) return
         // Applied on the next launch rather than immediately: reloading under
         // someone mid-conversation is a worse experience than shipping the fix
-        // a few minutes later.
+        // a few minutes later. The toast is what stops that from being a
+        // silent decision — it says the update is here, and offers to bring
+        // the restart forward for anyone who would rather have it now.
+        //
+        // `currentTranslate()` rather than the `t` from this component: this
+        // effect runs once, and taking `t` as a dependency would re-run the
+        // whole check every time the locale changes.
+        const translate = currentTranslate()
+        showToast(translate('update.downloaded'), TOAST_DURATION_MS, {
+          label: translate('update.restart'),
+          onPress: () => void Updates.reloadAsync(),
+        })
       } catch {
         // An update check failing is not a reason to interrupt anyone.
       }

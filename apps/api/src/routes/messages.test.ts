@@ -1278,6 +1278,205 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(profile?.quota.media).toHaveLength(1)
       expect(profile?.quota.initiations).toHaveLength(1) // just the conversation they opened
     })
+
+    describe('GET /conversations/:id/media', () => {
+      const audio = {
+        url: `${BUCKET}/messages/x/a.m4a`,
+        contentType: 'audio/m4a',
+        sizeBytes: 64 * 1024,
+        durationSeconds: 12,
+      }
+
+      /** One thread with a photo, then a video, then a voice note. */
+      async function withMedia(prefix: string) {
+        const fixture = await pair(prefix)
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+        const send = async (attachment: typeof image | typeof video | typeof audio) => {
+          const { message } = await sendMediaMessage(
+            handle.db,
+            fixture.a.userId,
+            { conversationId: fixture.conversationId, attachments: [attachment] },
+            BUCKET,
+          )
+          return message._id.toHexString()
+        }
+        const imageId = await send(image)
+        const videoId = await send(video)
+        const audioId = await send(audio)
+        return { ...fixture, imageId, videoId, audioId }
+      }
+
+      /** Annotated rather than inferred: `inject().json()` is `any`. */
+      interface MediaBody {
+        items: { _id: string; type: string }[]
+        nextCursor: string | null
+      }
+
+      async function media(
+        user: { cookie: string },
+        conversationId: string,
+        query = 'tab=visual',
+      ): Promise<{ statusCode: number; body: MediaBody }> {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/conversations/${conversationId}/media?${query}`,
+          headers: { cookie: user.cookie },
+        })
+        const body: MediaBody = response.json()
+        return { statusCode: response.statusCode, body }
+      }
+
+      it('puts photos and videos in one tab and leaves the voice note out', async () => {
+        const { a, conversationId, imageId, videoId } = await withMedia('media-tab-visual')
+
+        const { statusCode, body } = await media(a, conversationId)
+        expect(statusCode).toBe(200)
+        // Newest first: the video was sent after the photo.
+        expect(body.items.map((m) => m._id)).toEqual([videoId, imageId])
+        expect(body.nextCursor).toBeNull()
+      })
+
+      it('puts the voice note in its own tab and nothing else', async () => {
+        const { a, conversationId, audioId } = await withMedia('media-tab-audio')
+
+        const { body } = await media(a, conversationId, 'tab=audio')
+        expect(body.items.map((m) => m._id)).toEqual([audioId])
+      })
+
+      /**
+       * A tombstone holds its place in the thread and must not hold one in the
+       * grid, where it would be a blank square. Asserted on the `_id` rather
+       * than on the attachments: withdrawing unsets those anyway, so an
+       * emptied row would pass a check that only looked at what it carries.
+       */
+      it('leaves a withdrawn message out of both tabs', async () => {
+        const { a, conversationId, imageId, videoId } = await withMedia('media-withdrawn')
+        const { deleteMessage } = await import('../modules/chat/mutations')
+        await deleteMessage(handle.db, a.userId, {
+          conversationId,
+          messageId: imageId,
+          scope: 'everyone',
+        })
+
+        const { body } = await media(a, conversationId)
+        expect(body.items.map((m) => m._id)).toEqual([videoId])
+      })
+
+      /** "Delete for me" is one-sided, so the grid has to be one-sided too. */
+      it('hides a message from the reader who hid it and from nobody else', async () => {
+        const { a, b, conversationId, imageId, videoId } = await withMedia('media-hidden')
+        const { deleteMessage } = await import('../modules/chat/mutations')
+        await deleteMessage(handle.db, b.userId, {
+          conversationId,
+          messageId: imageId,
+          scope: 'me',
+        })
+
+        const hidden = await media(b, conversationId)
+        expect(hidden.body.items.map((m) => m._id)).toEqual([videoId])
+
+        const untouched = await media(a, conversationId)
+        expect(untouched.body.items.map((m) => m._id)).toEqual([videoId, imageId])
+      })
+
+      it('tells a stranger nothing, with the same 404 as a missing thread', async () => {
+        const { conversationId } = await withMedia('media-stranger')
+        const outsider = await newUser('media-outsider@example.com')
+
+        const { statusCode, body } = await media(outsider, conversationId)
+        expect(statusCode).toBe(404)
+        expect(JSON.stringify(body)).not.toContain(conversationId)
+      })
+
+      /**
+       * The gate is `assertConversationAccess`, which re-checks blocks on
+       * every call — not a participancy test that would keep serving a thread
+       * after one of them blocked the other.
+       */
+      it('refuses a thread with someone who has blocked the reader', async () => {
+        const { a, b, conversationId } = await withMedia('media-blocked')
+        const { blockUser } = await import('../modules/moderation/blocks')
+        await blockUser(handle.db, b.userId, a.userId)
+
+        const { statusCode } = await media(a, conversationId)
+        expect(statusCode).toBe(403)
+      })
+
+      it('pages with a cursor without repeating or dropping a tile', async () => {
+        const fixture = await pair('media-paging')
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+        const wanted: string[] = []
+        for (let n = 0; n < 5; n++) {
+          const { message } = await sendMediaMessage(
+            handle.db,
+            fixture.a.userId,
+            {
+              conversationId: fixture.conversationId,
+              attachments: [{ ...image, url: `${BUCKET}/messages/x/page-${n}.jpg` }],
+            },
+            BUCKET,
+          )
+          wanted.push(message._id.toHexString())
+        }
+
+        const seen: string[] = []
+        let cursor: string | null = null
+        for (let guard = 0; guard < 10; guard++) {
+          const query = `tab=visual&limit=2${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`
+          const { body } = await media(fixture.a, fixture.conversationId, query)
+          seen.push(...body.items.map((m) => m._id))
+          cursor = body.nextCursor
+          if (!cursor) break
+        }
+
+        expect(seen).toHaveLength(wanted.length)
+        // A set, so a cursor that overlapped would fail here rather than pass
+        // on the count alone.
+        expect(new Set(seen).size).toBe(wanted.length)
+        expect([...seen].sort()).toEqual([...wanted].sort())
+      })
+
+      it('answers a cursor it did not mint with a 400, not a 500', async () => {
+        const { a, conversationId } = await withMedia('media-bad-cursor')
+
+        const { statusCode } = await media(a, conversationId, 'tab=visual&cursor=nonsense')
+        expect(statusCode).toBe(400)
+      })
+
+      /**
+       * Keeps the reasoning on `conversation_type_created` honest: the comment
+       * there claims the placement of `type` buys a bounded scan and that
+       * neither tab sorts in memory. Precedent for asserting a plan in a test
+       * is `discovery.test.ts`.
+       */
+      it('serves both tabs from the media index, without a blocking sort', async () => {
+        const { conversationId, a } = await withMedia('media-explain')
+
+        for (const type of [{ $in: ['image', 'video'] }, 'audio']) {
+          const plan = await handle.db
+            .collection(COLLECTIONS.messages)
+            .find({
+              conversationId: new ObjectId(conversationId),
+              type,
+              deletedAt: { $exists: false },
+              hiddenFor: { $ne: a.userId },
+            })
+            .sort({ createdAt: -1, _id: -1 })
+            .explain('queryPlanner')
+          /*
+           * The *winning* plan only. `queryPlanner` also carries
+           * `rejectedPlans`, and one of those legitimately is a collection
+           * scan — asserting over the whole object passes when run alone and
+           * fails the moment the planner has a second candidate to reject.
+           */
+          const { queryPlanner } = plan as { queryPlanner: { winningPlan: unknown } }
+          const shape = JSON.stringify(queryPlanner.winningPlan)
+          expect(shape).toContain('conversation_type_created')
+          expect(shape).not.toContain('COLLSCAN')
+          expect(shape).not.toContain('"stage":"SORT"')
+        }
+      })
+    })
   })
 
   describe('replies and the around window', () => {

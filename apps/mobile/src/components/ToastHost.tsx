@@ -62,6 +62,22 @@ export function ToastHost() {
         style={styles.pill}
       >
         <Text style={styles.text}>{toast.message}</Text>
+        {toast.action ? (
+          // Its own `Pressable` inside the pill's, so the two taps mean
+          // different things: the action runs, and anywhere else dismisses.
+          // Running it also dismisses — leaving the pill up after the tap
+          // would invite a second one.
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => {
+              toast.action?.onPress()
+              dismissToast(toast.id)
+            }}
+          >
+            <Text style={styles.action}>{toast.action.label}</Text>
+          </Pressable>
+        ) : null}
       </Pressable>
     </Animated.View>
   )
@@ -89,12 +105,30 @@ const useStyles = makeStyles(({ colors, spacing, radius, cardShadow }) => ({
   // happened, and the one yellow on a screen is reserved for the thing that
   // makes something happen.
   pill: {
+    alignItems: 'center',
     backgroundColor: colors.ink,
     borderRadius: radius.pill,
+    // A row only ever holds a sentence and one word, so it stays a row: the
+    // pill still hugs its content when there is no action.
+    flexDirection: 'row',
+    gap: spacing.md,
     maxWidth: 420,
     paddingHorizontal: spacing.lg + 4,
     paddingVertical: spacing.md,
     ...cardShadow,
   },
-  text: { color: colors.bg, fontSize: 14, fontWeight: '600', textAlign: 'center' },
+  // `flexShrink` rather than `flex: 1`, so a message with no action beside it
+  // is still centred on its own width instead of stretching to the maximum.
+  text: { color: colors.bg, flexShrink: 1, fontSize: 14, fontWeight: '600', textAlign: 'center' },
+  // Underlined in the message's own colour, the way `DeletionBanner` marks the
+  // action on its bar. A palette colour would be the obvious alternative and is
+  // the wrong one here: `ink` inverts with the scheme, so any single hue that
+  // reads on the near-black pill in light mode is washed out on the near-white
+  // one in dark.
+  action: {
+    color: colors.bg,
+    fontSize: 14,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
 }))

@@ -499,6 +499,31 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     case 'account.blocked':
       return <BlockedPeopleRow last={last} />
+    /*
+     * Drawn on every tier and gated on press, the same way the incognito row
+     * is: a row that says which plan opens it teaches the feature, and a row
+     * that is missing teaches nothing.
+     *
+     * The gate is here rather than on the screen's export button because
+     * `/me/phrases` is Polyglot on the server — a free reader who reached the
+     * screen would find an empty list and no way to learn why.
+     */
+    case 'account.allPhrases':
+      return (
+        <ListRow
+          title={t('settings.exportPhrases')}
+          subtitle={t('settings.exportPhrasesBody')}
+          last={last}
+          {...(model.canDeckExport
+            ? {}
+            : { accessory: <Text style={styles.proTag}>{model.deckExportBadge}</Text> })}
+          onPress={() =>
+            model.canDeckExport
+              ? router.push('/(app)/all-phrases')
+              : openPaywall('deckExport', '/(app)/settings/account')
+          }
+        />
+      )
     case 'account.export':
       return (
         <ListRow
@@ -557,6 +582,24 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           title={t('settings.legalSection')}
           last={last}
           onPress={() => router.push('/(app)/legal')}
+        />
+      )
+    case 'about.reportBug':
+      return (
+        <ListRow
+          title={t('feedback.bugTitle')}
+          subtitle={t('feedback.bugRowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/feedback?kind=bug')}
+        />
+      )
+    case 'about.requestFeature':
+      return (
+        <ListRow
+          title={t('feedback.featureTitle')}
+          subtitle={t('feedback.featureRowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/feedback?kind=feature')}
         />
       )
     case 'about.community':

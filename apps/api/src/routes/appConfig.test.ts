@@ -162,6 +162,33 @@ describe('app config, maintenance and the version gate', () => {
       })
       invalidateAppConfigCache()
     })
+
+    it('computes updateAvailable per platform without blocking anyone', async () => {
+      await updateAppConfig(handle.db, {
+        latestVersion: { ios: '2.2.0', android: '1.0.0', web: '1.0.0' },
+      })
+      invalidateAppConfigCache()
+
+      const oldIos = await get('/app-config', { 'x-app-platform': 'ios', 'x-app-version': '2.0.0' })
+      expect(oldIos.json<{ updateAvailable: boolean; updateRequired: boolean }>()).toMatchObject({
+        updateAvailable: true,
+        // The whole point of the second field: something newer exists and the
+        // client is still allowed to run.
+        updateRequired: false,
+      })
+
+      // Same version, different platform, nothing newer published there.
+      const android = await get('/app-config', {
+        'x-app-platform': 'android',
+        'x-app-version': '2.0.0',
+      })
+      expect(android.json<{ updateAvailable: boolean }>().updateAvailable).toBe(false)
+
+      await updateAppConfig(handle.db, {
+        latestVersion: { ios: '0.0.0', android: '0.0.0', web: '0.0.0' },
+      })
+      invalidateAppConfigCache()
+    })
   })
 
   describe('maintenance gate', () => {

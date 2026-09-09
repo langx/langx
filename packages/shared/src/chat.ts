@@ -499,6 +499,43 @@ export const listStarredQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(STARRED_PAGE_SIZE_MAX).default(50),
 })
 
+/** `GET /me/phrases` — the deck across every thread, not one of them. */
+export const PHRASE_SCOPES = ['mine', 'all'] as const
+export type PhraseScope = (typeof PHRASE_SCOPES)[number]
+
+/**
+ * How many of somebody's threads the cross-conversation deck reads from.
+ *
+ * The result becomes an `$in`, and an `$in` is a list the planner carries —
+ * the same reason `FEED_FOLLOWING_SOURCE_LIMIT` exists, and its own constant
+ * rather than that one because a feed's audience ceiling and a deck's source
+ * ceiling have no reason to move together.
+ *
+ * 200 rather than 500: past a couple of hundred the planner stops being able
+ * to bound and order the scan per conversation and sorts the candidate set
+ * instead, and 200 threads is already far more than any account that has
+ * saved phrases in more than a handful.
+ */
+export const PHRASE_SOURCE_CONVERSATION_LIMIT = 200
+
+/**
+ * Unpaged and capped, like `/me/starred` and unlike `/me/corrections`.
+ *
+ * This read *is* the export: a cursor would mean the export button has to page
+ * the whole deck before it can write a file, and a file that silently holds
+ * the first page is worse than one that holds a documented ceiling. The
+ * ceiling is generous because `conversation_term_unique` already caps each
+ * thread at one row per phrase. The default equals the maximum on purpose —
+ * the screen and the file must show the same rows.
+ */
+export const ALL_PHRASES_MAX = 1000
+
+export const listAllPhrasesQuerySchema = z.object({
+  scope: z.enum(PHRASE_SCOPES).default('mine'),
+  limit: z.coerce.number().int().min(1).max(ALL_PHRASES_MAX).default(ALL_PHRASES_MAX),
+})
+export type ListAllPhrasesQuery = z.infer<typeof listAllPhrasesQuerySchema>
+
 export const MESSAGE_PAGE_SIZE_DEFAULT = 30
 export const MESSAGE_PAGE_SIZE_MAX = 100
 
@@ -527,6 +564,44 @@ export const listMessagesQuerySchema = z.object({
     .default(MESSAGE_PAGE_SIZE_DEFAULT),
 })
 export type ListMessagesQuery = z.infer<typeof listMessagesQuerySchema>
+
+/**
+ * One tab, not one kind.
+ *
+ * `MEDIA_KINDS` cannot say this: the grid shows photos and videos together
+ * because they are looked at the same way, and a voice note is not looked at
+ * at all — it is a different screen's worth of behaviour in the same list.
+ */
+export const MEDIA_TABS = ['visual', 'audio'] as const
+export type MediaTab = (typeof MEDIA_TABS)[number]
+
+/**
+ * `GET /conversations/:id/media`.
+ *
+ * A page counts *messages*, and one message carries up to `MAX_ATTACHMENTS`
+ * files, so thirty messages is thirty to a hundred and eighty tiles. The
+ * ceiling belongs on the side that bounds the query; the grid flattens what
+ * arrives and does not care which.
+ *
+ * `cursor` is `.trim().min(1)`, following the corrections list rather than the
+ * message window above: the window's bare `z.string().optional()` accepts
+ * `?cursor=` and hands `''` to `decodeDateIdCursor`, which then reports a
+ * malformed cursor where none was sent.
+ */
+export const CONVERSATION_MEDIA_PAGE_SIZE_DEFAULT = 30
+export const CONVERSATION_MEDIA_PAGE_SIZE_MAX = 60
+
+export const listConversationMediaQuerySchema = z.object({
+  tab: z.enum(MEDIA_TABS).default('visual'),
+  cursor: z.string().trim().min(1).optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(CONVERSATION_MEDIA_PAGE_SIZE_MAX)
+    .default(CONVERSATION_MEDIA_PAGE_SIZE_DEFAULT),
+})
+export type ListConversationMediaQuery = z.infer<typeof listConversationMediaQuerySchema>
 
 export const CONVERSATION_PAGE_SIZE_DEFAULT = 20
 export const CONVERSATION_PAGE_SIZE_MAX = 50

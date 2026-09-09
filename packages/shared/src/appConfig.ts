@@ -31,11 +31,26 @@ export const minVersionSchema = z.object({
   android: z.string(),
   web: z.string(),
 })
+/** Named for its first use; `latestVersion` is the same shape and shares it. */
 export type MinVersion = z.infer<typeof minVersionSchema>
 
 export const appConfigSchema = z.object({
   maintenance: maintenanceSchema,
   minVersion: minVersionSchema,
+  /**
+   * The newest build published to each platform's store.
+   *
+   * Deliberately not `minVersion`. That one stops an old client dead; this one
+   * only offers — raising it puts a dismissible banner in front of everyone
+   * still on something older, and does nothing else.
+   *
+   * Store versions, not over-the-air ones. An OTA update does not change the
+   * version an installed binary reports, so a client that has taken one still
+   * compares as the version it was installed at; the app tells people about a
+   * downloaded OTA update itself, and this field is only ever about the trip
+   * to the store.
+   */
+  latestVersion: minVersionSchema,
   /**
    * Kill switches for individual features. A provider outage should be one
    * database write, not a deploy.
@@ -54,6 +69,10 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
   // Deliberately permissive by default: a fresh or self-hosted instance must
   // never lock out its own clients because nobody set this yet.
   minVersion: { ios: '0.0.0', android: '0.0.0', web: '0.0.0' },
+  // Quiet for the same reason `minVersion` is permissive: nobody is behind a
+  // version nobody has published, so a deployment that never sets this never
+  // nags anyone.
+  latestVersion: { ios: '0.0.0', android: '0.0.0', web: '0.0.0' },
   flags: { translationEnabled: true, discoveryEnabled: true, signupsEnabled: true },
 }
 
@@ -81,6 +100,14 @@ export type AuthProviders = z.infer<typeof authProvidersSchema>
 export const appConfigResponseSchema = appConfigSchema.extend({
   /** True when the calling client is older than its platform's minimum. */
   updateRequired: z.boolean(),
+  /**
+   * True when a newer build than the caller's exists for its platform.
+   *
+   * Advisory only — `updateRequired` is the one that blocks. Both are true at
+   * once whenever the minimum has been raised, and the gate wins: the client
+   * never gets far enough to draw a banner behind a screen it cannot leave.
+   */
+  updateAvailable: z.boolean(),
   authProviders: authProvidersSchema,
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
@@ -118,16 +145,45 @@ export function compareVersions(a: string, b: string): number {
 }
 
 /**
- * Whether this client is too old to be served.
- *
- * A missing **or unparseable** version is never forced to update. Parsing junk
- * as `0.0.0` would compare below every minimum and lock the user out — which
- * is exactly backwards, since a header we cannot read is our problem, not
- * theirs. Being wrong permissively is the only safe direction here, and a test
- * caught this doing the opposite.
+ * A missing **or unparseable** version is never behind anything. Parsing junk
+ * as `0.0.0` would compare below every target and lock the user out — which is
+ * exactly backwards, since a header we cannot read is our problem, not theirs.
+ * Being wrong permissively is the only safe direction here, and a test caught
+ * this doing the opposite.
  */
-export function isUpdateRequired(clientVersion: string | undefined, minimum: string): boolean {
+function isOlderThan(clientVersion: string | undefined, target: string): boolean {
   if (!clientVersion || !isVersion(clientVersion)) return false
-  if (!isVersion(minimum)) return false
-  return compareVersions(clientVersion, minimum) < 0
+  if (!isVersion(target)) return false
+  return compareVersions(clientVersion, target) < 0
+}
+
+/** Whether this client is too old to be served. */
+export function isUpdateRequired(clientVersion: string | undefined, minimum: string): boolean {
+  return isOlderThan(clientVersion, minimum)
+}
+
+/**
+ * Whether something newer than this client has been published.
+ *
+ * The same comparison `isUpdateRequired` makes, against a different number and
+ * with a different consequence — kept apart because the two are set
+ * independently and read at opposite ends of the same response.
+ */
+export function isUpdateAvailable(clientVersion: string | undefined, latest: string): boolean {
+  return isOlderThan(clientVersion, latest)
+}
+
+/**
+ * The entry a client on `platform` should be compared against.
+ *
+ * Anything that is not `ios` or `android` falls to `web`, which is what an
+ * absent or unrecognised platform header should mean: the web build is the
+ * one you can be running without having installed anything.
+ */
+export function versionForPlatform(versions: MinVersion, platform: string | undefined): string {
+  return platform === 'ios'
+    ? versions.ios
+    : platform === 'android'
+      ? versions.android
+      : versions.web
 }

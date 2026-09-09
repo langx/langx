@@ -1,3 +1,4 @@
+import { MESSAGE_TYPES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
 import { messageActionsFor, paginateActions, type MessageActionContext } from './messageActions'
@@ -30,6 +31,7 @@ describe('messageActionsFor', () => {
       'delete',
       'star',
       'pin',
+      'phrase',
       'share',
       'report',
     ])
@@ -75,6 +77,22 @@ describe('messageActionsFor', () => {
     }
   })
 
+  /**
+   * Every *type*, not just every author.
+   *
+   * The case above varies `mine` and leaves `type: 'text'`, so "star works on
+   * anything" was an untested claim for eight of the nine types — which is
+   * how a meeting card could stop being starrable without a red test. A
+   * bodyless type is passed as bodyless, because that is the shape a meeting
+   * and a sticker actually arrive in.
+   */
+  it('offers star on every message type', () => {
+    for (const type of MESSAGE_TYPES) {
+      const hasBody = type === 'text' || type === 'correction'
+      expect(ids({ type, hasBody })).toContain('star')
+    }
+  })
+
   it('offers edit only when the caller says the rules allow it', () => {
     expect(ids({ mine: true, canEdit: true })).toContain('edit')
     expect(ids({ mine: true, canEdit: false })).not.toContain('edit')
@@ -88,6 +106,33 @@ describe('messageActionsFor', () => {
     const edit = find({ mine: true, canEdit: false, corrected: true }, 'edit')
     expect(edit?.disabled).toBe(true)
     expect(edit?.label).toMatch(/Corrected/)
+  })
+
+  describe('save as a phrase', () => {
+    it('is offered on the other person text', () => {
+      expect(ids()).toContain('phrase')
+    })
+
+    /** A deck is for what you met, not for what you already wrote. */
+    it('is not offered on my own message', () => {
+      expect(ids({ mine: true })).not.toContain('phrase')
+    })
+
+    /** A card is what it would produce; there is nothing to turn. */
+    it('is not offered on a phrase card', () => {
+      expect(ids({ type: 'phrase', hasBody: false })).not.toContain('phrase')
+      expect(ids({ type: 'phrase', hasBody: true })).not.toContain('phrase')
+    })
+
+    /**
+     * Nothing to put in the example. This is also what keeps it off a
+     * tombstone, whose `body` the server empties — hence no `deleted` flag on
+     * the context and no check for one here.
+     */
+    it('is not offered on a voice note with no caption', () => {
+      expect(ids({ type: 'audio', hasBody: false })).not.toContain('phrase')
+      expect(ids({ type: 'audio', hasBody: true })).toContain('phrase')
+    })
   })
 
   it('names star and pin for what pressing them will do', () => {
@@ -108,7 +153,7 @@ describe('paginateActions', () => {
 
   it('puts the rest behind More', () => {
     const { actions, hasMore } = paginateActions(all, 'more')
-    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'share', 'report'])
+    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'phrase', 'share', 'report'])
     expect(hasMore).toBe(false)
   })
 

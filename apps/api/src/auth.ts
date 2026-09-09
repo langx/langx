@@ -22,12 +22,13 @@ import {
   looksLikeHandle,
   UNRESOLVED_HANDLE_EMAIL,
 } from './modules/account/handleSignIn'
-import { settlePrecreatedUser } from './modules/handles/legacyPrecreate'
+import { isUnclaimedV1Row, settlePrecreatedUser } from './modules/handles/legacyPrecreate'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
 import {
   existingAccountEmail,
+  existingAccountLinkEmail,
   magicLinkEmail,
   resetPasswordEmail,
   verificationEmail,
@@ -42,6 +43,12 @@ import type { RevenueCatClient } from './modules/billing/revenueCatClient'
  * a deployment — see the `trustedOrigins` note in `createAuth`.
  */
 const APPLE_ORIGIN = 'https://appleid.apple.com'
+
+/**
+ * Marks the magic link that `onExistingUserSignUp` asks for, so `sendMagicLink`
+ * can write the letter that explains why it arrived unrequested.
+ */
+const EXISTING_SIGN_UP = 'existingSignUp'
 
 export interface CreateAuthOptions {
   env: Env
@@ -113,12 +120,35 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
    * `Accept-Language` stays behind this rather than being replaced by it. The
    * app sets that header from whatever the reader chose, which is the best
    * answer available when the account cannot give one.
+   *
+   * Takes headers rather than a request because one caller has no request:
+   * the magic link `onExistingUserSignUp` asks for arrives with `ctx.headers`
+   * only, and its locale must follow the same rule as every other mail.
    */
-  const mailLocale = async (userId: string, request?: Request | null): Promise<Locale> =>
+  const mailLocale = async (userId: string, headers?: Headers | null): Promise<Locale> =>
     (await nativeLocaleFor(db, userId)) ??
-    localeFromHeader(request?.headers.get('accept-language') ?? undefined)
+    localeFromHeader(headers?.get('accept-language') ?? undefined)
 
-  return betterAuth({
+  /**
+   * Sends the magic-link mail for somebody who is not asking for one — the v1
+   * returner who tried to sign up. Assigned below, once `betterAuth()` has
+   * returned, because the only correct way to mint that token is the plugin's
+   * own endpoint and the hook that needs it is part of the config being built.
+   *
+   * Declared with a type rather than inferred: reading `auth.api` out of the
+   * object that is still initialising is what makes its type circular, and an
+   * annotated variable breaks the cycle.
+   *
+   * `headers` and no `request`: the endpoint requires headers, and the
+   * form-CSRF middleware in front of it is a no-op without a request — which
+   * is right, since this call did not cross the network. The header carried
+   * over is the sign-up's `accept-language`, so the mail is written in the
+   * language the form was in.
+   */
+  let sendExistingAccountLink: ((email: string, headers: Headers) => Promise<void>) | undefined =
+    undefined
+
+  const auth = betterAuth({
     baseURL,
     secret: env.BETTER_AUTH_SECRET,
     // The Expo client sends its scheme as a request origin during the OAuth
@@ -156,7 +186,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       // rule anybody is meant to read.
       minPasswordLength: PASSWORD_MIN_LENGTH,
       sendResetPassword: async ({ user, url }, request) => {
-        const email = resetPasswordEmail(url, await mailLocale(user.id, request))
+        const email = resetPasswordEmail(url, await mailLocale(user.id, request?.headers))
         await emailSender.send({ to: user.email, ...email })
       },
       /**
@@ -168,11 +198,31 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
        * account exists and how to get into it. Written for the v1 rows
        * `legacyPrecreate.ts` opens, whose owners will mostly try signing up
        * first; right for anyone else who forgot they had an account, too.
+       *
+       * For those v1 rows it does more than tell. `langx.io/welcome-back` has
+       * always said "sign up again with your old email", the app's own sign-up
+       * screen is where somebody who has been away a year starts, and both led
+       * to a mail that said: you were close, now go to a different screen and
+       * reset a password you never had. So an unclaimed v1 row gets a sign-in
+       * link instead and the sign-up ends where it was trying to go. See
+       * `existingAccountLinkEmail` for why that grant is a safe one here and
+       * would not be for an account with a password.
+       *
+       * The mail is chosen by what the account *is*, never by what the sign-up
+       * body said: whoever typed the address does not get to pick which of
+       * these two mails its owner receives.
        */
       onExistingUserSignUp: async ({ user }, request) => {
+        const acceptLanguage = request?.headers.get('accept-language') ?? undefined
+        if (sendExistingAccountLink && (await isUnclaimedV1Row(db, user.id))) {
+          const headers = new Headers()
+          if (acceptLanguage) headers.set('accept-language', acceptLanguage)
+          await sendExistingAccountLink(user.email, headers)
+          return
+        }
         const email = existingAccountEmail(
           webUrl('/forgot-password'),
-          await mailLocale(user.id, request),
+          await mailLocale(user.id, request?.headers),
         )
         await emailSender.send({ to: user.email, ...email })
       },
@@ -182,7 +232,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }, request) => {
-        const email = verificationEmail(url, await mailLocale(user.id, request))
+        const email = verificationEmail(url, await mailLocale(user.id, request?.headers))
         await emailSender.send({ to: user.email, ...email })
       },
       // Clicking the link is proof of the address, so a matching v1 profile
@@ -449,7 +499,7 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
         storeToken: 'hashed',
         /** A quarter of an hour: mail delay, a scanner or two, and a walk to the phone. Single-use anyway. */
         expiresIn: 15 * 60,
-        sendMagicLink: async ({ email, token }, ctx) => {
+        sendMagicLink: async ({ email, token, metadata }, ctx) => {
           const user = await db
             .collection<{ _id: ObjectId; email: string; isAnonymous?: boolean }>('user')
             .findOne(
@@ -459,12 +509,40 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
           // No account, or a guest's synthetic address that cannot receive
           // mail: send nothing, say nothing. The response is identical.
           if (!user || user.isAnonymous) return
-          const locale = await mailLocale(user._id.toHexString(), ctx?.request)
-          await emailSender.send({ to: user.email, ...magicLinkEmail(magicLinkUrl(token), locale) })
+          // `ctx.request` for a call that came over the network, `ctx.headers`
+          // for the server-side one from `onExistingUserSignUp`, which passes
+          // headers and no request on purpose.
+          const locale = await mailLocale(
+            user._id.toHexString(),
+            ctx?.request?.headers ?? ctx?.headers,
+          )
+          const url = magicLinkUrl(token)
+          /*
+           * The same link, two different letters. `metadata` is a body field
+           * the client could set as well, and that is harmless: with
+           * `disableSignUp` this mail only ever reaches an address that has an
+           * account, so the "you already have an account" wording is true
+           * however the link was asked for. It changes what the mail says,
+           * never who it goes to or what the link does.
+           */
+          const mail =
+            metadata?.reason === EXISTING_SIGN_UP
+              ? existingAccountLinkEmail(url, locale)
+              : magicLinkEmail(url, locale)
+          await emailSender.send({ to: user.email, ...mail })
         },
       }),
     ],
   })
+
+  sendExistingAccountLink = async (email, headers) => {
+    await auth.api.signInMagicLink({
+      body: { email, metadata: { reason: EXISTING_SIGN_UP } },
+      headers,
+    })
+  }
+
+  return auth
 }
 
 export type Auth = Awaited<ReturnType<typeof createAuth>>

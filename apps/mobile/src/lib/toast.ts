@@ -14,16 +14,30 @@
  * you looked away for four seconds is exactly the outcome `alert.ts` exists to
  * prevent.
  *
+ * A toast may carry one `action`, and that does not make it a question. The
+ * distinction that keeps it out of `alert.ts` is what happens when the four
+ * seconds run out with nobody looking: an alert's answer decides what happens
+ * next, so it has to wait; an action here is a shortcut to something that is
+ * going to happen anyway, so letting it expire is a complete answer. The one
+ * caller is the downloaded-update notice — the update applies on the next
+ * launch either way, and the action only offers to bring that forward.
+ *
  * Same shape as `alert.ts` otherwise and for the same reason: the state lives
  * here, apart from the component that draws it, because `src/lib` is the only
  * directory the test setup can reach. The timer belongs to `ToastHost` so that
  * everything decided in this module stays a pure function of a queue.
  */
 
+export interface ToastAction {
+  label: string
+  onPress: () => void
+}
+
 export interface Toast {
   id: number
   message: string
   durationMs: number
+  action?: ToastAction
 }
 
 /** Long enough to read a short sentence without having to stop and read it. */
@@ -54,8 +68,14 @@ export function subscribeToToasts(next: Listener): () => void {
  * Queues rather than replaces, for the same reason alerts do: two things
  * finishing at once must not leave the user having seen only one of them.
  */
-export function showToast(message: string, durationMs: number = TOAST_DURATION_MS): void {
-  queue = [...queue, { id: nextId++, message, durationMs }]
+export function showToast(
+  message: string,
+  durationMs: number = TOAST_DURATION_MS,
+  action?: ToastAction,
+): void {
+  // Spread rather than assigned: `exactOptionalPropertyTypes` distinguishes an
+  // absent key from one holding `undefined`, and `Toast.action` is absent.
+  queue = [...queue, { id: nextId++, message, durationMs, ...(action ? { action } : {}) }]
   publish()
 }
 
