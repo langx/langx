@@ -1,5 +1,5 @@
 import { REPORT_DETAILS_MAX_LENGTH, REPORT_REASONS, type ReportReason } from '@langx/shared'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useLocalSearchParams, type Href } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useReportUser } from '../../src/api/queries'
@@ -10,6 +10,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useT } from '../../src/i18n'
 import { reportReasonLabel } from '../../src/i18n/labels'
+import { goBackTo } from '../../src/lib/navigation'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -33,7 +34,6 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function ReportScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const router = useRouter()
   const t = useT()
   const report = useReportUser()
 
@@ -47,6 +47,13 @@ export default function ReportScreen() {
   const [reason, setReason] = useState<ReportReason | undefined>(undefined)
   const [details, setDetails] = useState('')
 
+  // Where "back" lands when there is no screen behind this one — opened from
+  // a link, or after a cold start: the thing that was reported.
+  const backTo: Href = postId
+    ? `/(app)/post/${postId}`
+    : conversationId
+      ? `/(app)/chat/${conversationId}`
+      : '/(app)/(tabs)/discover'
   const question = postId
     ? t('report.postQuestion')
     : messageId
@@ -69,7 +76,10 @@ export default function ReportScreen() {
         onSuccess: () => {
           // Back first: the toast belongs to the screen they came from, and
           // showing it here would leave them looking at a form they finished.
-          router.back()
+          // `goBackTo` rather than `router.back()`: opened from a link or a
+          // cold start there is no screen behind this one, and `back()` then
+          // does nothing — so the fallback is the thing that was reported.
+          goBackTo(backTo)
           showToast(t((postId ?? messageId) ? 'report.messageSent' : 'report.profileSent'))
         },
         onError: () => showToast(t('report.failed')),
@@ -79,7 +89,7 @@ export default function ReportScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('common.report')} onBack={() => router.back()} />
+      <ScreenHeader title={t('common.report')} onBack={() => goBackTo(backTo)} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.question}>{question}</Text>
 
