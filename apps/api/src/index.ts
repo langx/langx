@@ -6,6 +6,7 @@ import { ensureIndexes } from './db/indexes'
 import { createEmailSender } from './email/sender'
 import { attachSentryErrorHandler, initSentry } from './observability/sentry'
 import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
+import { createPersonDeleterFromEnv } from './modules/analytics/personDeleter'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
@@ -34,6 +35,9 @@ async function main(): Promise<void> {
 
   const auth = await createAuth({ env, db, client, emailSender, revenueCat })
   const storage = createStorageProvider(env)
+  // `null` without a key: the purge still records what it owes, the drain
+  // simply does not run. See `modules/account/analyticsDeletions.ts`.
+  const analytics = createPersonDeleterFromEnv(env)
 
   const translation = createTranslationProvider(env)
 
@@ -76,7 +80,7 @@ async function main(): Promise<void> {
   // running behind them — they drive `runDailyPool` directly instead.
   const schedulers = [
     startDailyPoolScheduler(db, app.log),
-    startPurgeScheduler(db, app.log, { storage }),
+    startPurgeScheduler(db, app.log, { storage, ...(analytics ? { analytics } : {}) }),
     startStreakReminderScheduler(db, push, notificationEmail, app.log),
     startMeetingReminderScheduler(db, push, app.log),
     startLegacyImportScheduler(db, app.log),

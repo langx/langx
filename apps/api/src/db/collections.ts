@@ -180,6 +180,18 @@ export const COLLECTIONS = {
    * a hash is kept, so the row is useless to anyone who reads the database.
    */
   deletionTokens: 'deletionTokens',
+  /**
+   * What a purged account is still owed at PostHog: one row per deleted
+   * account, holding the distinct id and nothing else.
+   *
+   * It exists because the purge deletes the row it is driven by. Everywhere
+   * else in `deletion.ts` a failed third-party call leaves an orphan we can
+   * live with — a file in a bucket nobody points at. A failed PostHog call
+   * would leave a *person*, with the profile gone and no `deletedAt` left to
+   * find it from, so the obligation has to outlive the account it came from.
+   * Written unconditionally, drained only when a key is configured.
+   */
+  analyticsDeletions: 'analyticsDeletions',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

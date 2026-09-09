@@ -189,6 +189,23 @@ const envSchema = z.object({
    */
   REVENUECAT_FAKE_STORE: z.preprocess((v) => v === 'true' || v === '1', z.boolean()).default(false),
 
+  /**
+   * Deleting a person from PostHog when their account is purged. Separate from
+   * the key `pnpm insight` uses and deliberately narrower: that one is a
+   * read key that lives on a laptop, this one needs `person:write` and lives
+   * on the server, which is exactly the pair of properties you do not want in
+   * one credential.
+   *
+   * Unset, the purge still records what it owes (`analyticsDeletions`) and the
+   * drain does nothing, so an instance with no analytics keeps no queue it
+   * cannot empty and one that gains a key later still honours what it recorded
+   * while unconfigured. The region is `eu` or `us` for the reason
+   * `.env.example` gives — the host is a literal, not a setting.
+   */
+  POSTHOG_PERSONAL_API_KEY: emptyToUndefined(z.string().optional()),
+  POSTHOG_PROJECT_ID: emptyToUndefined(z.string().optional()),
+  POSTHOG_REGION: z.enum(['eu', 'us']).default('eu'),
+
   // Faz 2: username claim. Must match what the ETL used to hash legacy
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),

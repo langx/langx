@@ -718,6 +718,18 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         .findOne({ senderId: userId })
       expect(message?.body).toBe('')
       expect(message?.deletedWithAccount).toBe(true)
+
+      /*
+       * The one thing the purge leaves behind on purpose: what it still owes
+       * PostHog. Every row above is gone, so this is now the only record that
+       * the account existed at all — and it holds the *string* id, which is
+       * the distinct id the app identified with. The ObjectId form would match
+       * nothing at PostHog and report success doing it.
+       */
+      const owed = await handle.db
+        .collection(COLLECTIONS.analyticsDeletions)
+        .findOne({ _id: userId as never })
+      expect(owed, 'the purge recorded no analytics deletion').not.toBeNull()
     })
 
     /**

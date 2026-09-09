@@ -9,6 +9,7 @@ import {
 import { randomUUID } from 'node:crypto'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { recordAnalyticsDeletion } from './analyticsDeletions'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
 import type { StorageProvider } from '../../storage/StorageProvider'
@@ -317,6 +318,11 @@ export async function purgeExpiredAccounts(
       db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) }),
       db.collection(COLLECTIONS.account).deleteMany({ userId: authId(userId) }),
       db.collection(COLLECTIONS.user).deleteOne({ _id: authId(userId) as unknown as never }),
+      // In the same breath as the rows, because after this there is no
+      // `deletedAt` left to find the account from and no second chance to
+      // notice we still owe PostHog a deletion. `analyticsDeletions` says why
+      // it is written whether or not a key is configured.
+      recordAnalyticsDeletion(db, userId, now),
     ])
 
     userIds.push(userId)

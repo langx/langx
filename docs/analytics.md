@@ -109,11 +109,32 @@ Set up once, in dashboards, not in code:
 
 ## Deletion
 
-Events are keyed by our user id, which is what makes them findable. What is not
-built yet is the removal: account deletion (`/me/delete`, 30-day grace) does
-not call PostHog's person-deletion API. Until it does, a deletion request that
-asks for analytics as well is handled by hand in the PostHog UI (Persons → the
-id → Delete), and the privacy policy must not promise more than that.
+Events are keyed by our user id, which is what makes them findable — and, since
+9 September 2026, deletable. When the 30-day grace period expires and
+`purgeExpiredAccounts` runs, the same tick asks PostHog to delete the person,
+their events and their recordings, keyed by that id.
+
+It goes through a queue rather than a direct call, and the reason is the shape
+of the purge. Everywhere else in `deletion.ts` a failed third-party call leaves
+an orphan we can live with: a file in a bucket nobody points at. PostHog is not
+like that. The purge is driven by `deletedAt <= cutoff` on a row it then
+deletes, so a failed call would leave a _person_ with the profile already gone
+and nothing left to find it from — the obligation has to outlive the account.
+So the purge writes one row into `analyticsDeletions`, keyed by the distinct id,
+in the same `Promise.all` as the deletions themselves; `drainAnalyticsDeletions`
+empties it hourly, one `bulk_delete` batch at a time, and leaves every row in
+place with `attempts` incremented when PostHog says no.
+
+Two consequences worth knowing. The row is written whether or not a key is
+configured — an instance that gains one later still honours what it recorded
+without one — so an unconfigured deployment accumulates rows it never sends,
+which costs a string and a date per deleted account. And the key the API needs
+is **not** the one `pnpm insight` uses: that is a read key on a laptop, this
+one needs `person:write` and lives on the server.
+
+PostHog's own deletion is asynchronous — `bulk_delete` answers `202` and the
+event data is cleared out of hours — so "accepted" is the strongest answer the
+call can get, and it is what clears the queue row.
 
 ## Reading it without the dashboard
 
