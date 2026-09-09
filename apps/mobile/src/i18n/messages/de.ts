@@ -924,6 +924,9 @@ export const de: Localized<EnMessages> = {
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
     proTitle: '✦ Mehr erreichen',
     proBody: 'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und Inkognito-Modus.',
+    polyglotTitle: '✦ Auf {plan} wechseln',
+    polyglotBody:
+      'Sieh, wer dich angesehen hat, surf inkognito, sortier nach Entfernung und schreib in der Sprache des anderen.',
     newChatsLeft: 'Heute noch neue Chats:',
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
@@ -1176,6 +1179,7 @@ export const de: Localized<EnMessages> = {
     plan: 'Tarif',
     manageSubscription: 'Verwalten oder kündigen',
     upgrade: 'Tarife ansehen',
+    upgradeTo: 'Auf {plan} wechseln',
     notificationsSection: 'Mitteilungen',
     pushThisDevice: 'Mitteilungen auf diesem Gerät',
     pushThisDeviceBody: 'Hier ausschalten — deine anderen Geräte bekommen sie weiterhin.',
@@ -1569,6 +1573,7 @@ export const de: Localized<EnMessages> = {
     upgradeWeb:
       'Dein {plan}-Abo wurde im Web gekauft. Ändere es im Abrechnungsportal – ungenutzte Zeit wird erstattet.',
     changePlan: 'Plan ändern',
+    currentPlan: 'Dein aktueller Tarif',
     upgradeElsewhere:
       'Dein {plan}-Abo wurde über {store} gekauft. Ändere es dort, damit du nicht doppelt zahlst.',
     storeIos: 'den App Store',

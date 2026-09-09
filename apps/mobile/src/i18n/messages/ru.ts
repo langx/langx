@@ -1024,6 +1024,9 @@ export const ru: Localized<EnMessages> = {
     },
     proTitle: '✦ Больше возможностей',
     proBody: 'Безлимитные новые чаты, расширенные фильтры, перевод и невидимый просмотр.',
+    polyglotTitle: '✦ Перейди на {plan}',
+    polyglotBody:
+      'Смотри, кто тебя смотрел, гуляй невидимкой, сортируй по расстоянию и пиши на языке собеседника.',
     newChatsLeft: 'Новых чатов осталось сегодня:',
     editProfile: 'Изменить профиль',
     settings: 'Настройки',
@@ -1271,6 +1274,7 @@ export const ru: Localized<EnMessages> = {
     plan: 'Тариф',
     manageSubscription: 'Управлять или отменить',
     upgrade: 'Посмотреть тарифы',
+    upgradeTo: 'Перейти на {plan}',
     notificationsSection: 'Уведомления',
     pushThisDevice: 'Уведомления на этом устройстве',
     pushThisDeviceBody: 'Выключите здесь — на других устройствах они продолжат приходить.',
@@ -1720,6 +1724,7 @@ export const ru: Localized<EnMessages> = {
     upgradeWeb:
       'Твой план {plan} куплен на сайте. Измени его в портале оплаты — неиспользованное время вернут.',
     changePlan: 'Сменить план',
+    currentPlan: 'Твой текущий план',
     upgradeElsewhere:
       'Твой план {plan} куплен через {store}. Измени его там, чтобы не платить дважды.',
     storeIos: 'App Store',

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { planChangeFor, platformOfStore, replaceableProductId } from './planChange'
+import {
+  firstOfferableTier,
+  planChangeFor,
+  platformOfStore,
+  replaceableProductId,
+} from './planChange'
 
 describe('planChangeFor', () => {
   it('is a plain purchase from the free tier, whatever the platform', () => {
@@ -57,6 +62,35 @@ describe('planChangeFor', () => {
         'upgrade',
       )
     }
+  })
+})
+
+describe('firstOfferableTier', () => {
+  it('opens on the first tier for an account with no plan', () => {
+    for (const platform of ['ios', 'android', 'web'] as const) {
+      expect(firstOfferableTier({ tier: 'free' }, platform)).toBe('pro')
+    }
+  })
+
+  it('opens on the tier above for a subscriber, on the store that sold it', () => {
+    expect(firstOfferableTier({ tier: 'pro', store: 'app_store' }, 'ios')).toBe('pro_plus')
+    expect(firstOfferableTier({ tier: 'pro', store: 'play_store' }, 'android')).toBe('pro_plus')
+    expect(firstOfferableTier({ tier: 'pro', store: 'rc_billing' }, 'web')).toBe('pro_plus')
+  })
+
+  /**
+   * A plan bought on another platform is still the column to show: the tier
+   * is not held, and the sentence under the price is the whole point of
+   * landing there — it says where to go and change it.
+   */
+  it('still opens on the tier above when the plan was bought elsewhere', () => {
+    expect(firstOfferableTier({ tier: 'pro', store: 'app_store' }, 'android')).toBe('pro_plus')
+    expect(firstOfferableTier({ tier: 'pro', store: 'play_store' }, 'web')).toBe('pro_plus')
+  })
+
+  it('stays on the top tier when there is nothing above it', () => {
+    expect(firstOfferableTier({ tier: 'pro_plus', store: 'app_store' }, 'ios')).toBe('pro_plus')
+    expect(firstOfferableTier({ tier: 'pro_plus', store: 'promotional' }, 'web')).toBe('pro_plus')
   })
 })
 

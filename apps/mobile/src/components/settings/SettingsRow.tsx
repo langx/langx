@@ -6,6 +6,7 @@ import {
   PRO_BENEFITS,
   PRO_PLUS_BENEFITS,
   profileUrl,
+  TIER_NAMES,
   translateTargetFor,
   translateTargetOptions,
   type ProBenefit,
@@ -159,9 +160,16 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     }
     case 'plan.upgrade':
+      // "See the plans" is the free tier's row. A Fluent subscriber is not
+      // shopping — there is exactly one plan above them, and naming it is the
+      // whole offer.
       return model.tier === 'pro_plus' ? null : (
         <ListRow
-          title={t('settings.upgrade')}
+          title={
+            model.tier === 'pro'
+              ? t('settings.upgradeTo', { plan: TIER_NAMES.pro_plus })
+              : t('settings.upgrade')
+          }
           last={last}
           onPress={() => openPaywall(undefined, '/(app)/settings')}
         />

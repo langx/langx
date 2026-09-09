@@ -950,6 +950,9 @@ export const en = {
     viewersCount: { one: '{count} person', other: '{count} people' },
     proTitle: '✦ Go further',
     proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
+    polyglotTitle: '✦ Upgrade to {plan}',
+    polyglotBody:
+      'See who viewed you, browse incognito, sort by distance, and send messages in their language.',
     newChatsLeft: 'New chats left today:',
     editProfile: 'Edit profile',
     settings: 'Settings',
@@ -1195,6 +1198,7 @@ export const en = {
     plan: 'Plan',
     manageSubscription: 'Manage or cancel',
     upgrade: 'See the plans',
+    upgradeTo: 'Upgrade to {plan}',
     notificationsSection: 'Notifications',
     pushThisDevice: 'Notifications on this device',
     pushThisDeviceBody: 'Turn these off here and your other devices keep receiving them.',
@@ -1587,6 +1591,7 @@ export const en = {
     upgradeWeb:
       'Your {plan} plan was bought on the web. Change it in the billing portal — unused time is refunded.',
     changePlan: 'Change plan',
+    currentPlan: 'Your current plan',
     upgradeElsewhere:
       'Your {plan} plan was bought through {store}. Change it there, so you are not charged twice.',
     storeIos: 'the App Store',

@@ -5,6 +5,7 @@ import {
   PLAN_LIMITS,
   PRO_BENEFITS,
   PRO_PLUS_BENEFITS,
+  firstOfferableTier,
   planChangeFor,
   platformOfStore,
   tierUnlocking,
@@ -19,8 +20,8 @@ import {
   TIER_NAMES,
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
-import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { AppState, Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -252,10 +253,15 @@ export default function PaywallScreen() {
   const [restoring, setRestoring] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
   // One plan and one period at a time, where the screen used to list every
-  // offer of both tiers. It opens on the tier that unlocks what the caller was
-  // just refused, so the context line and the price agree.
-  const [plan, setPlan] = useState<PaidPlanTier>(highlightTier ?? 'pro')
+  // offer of both tiers. Both are picked rather than seeded: what to open on
+  // depends on the entitlement, and `useEffectiveTier` answers `free` while
+  // the `me` query is still in flight. A seeded initial state would freeze a
+  // Fluent subscriber onto Fluent on any cold load of this route — a reload,
+  // a shared link — which is the very thing the tier below fixes.
+  const [pickedPlan, setPickedPlan] = useState<PaidPlanTier | null>(null)
   const [pickedPeriod, setPickedPeriod] = useState<BillingPeriod | null>(null)
+  // Armed when someone leaves for the web portal, spent when they come back.
+  const portalOpened = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -266,6 +272,28 @@ export default function PaywallScreen() {
       cancelled = true
     }
   }, [])
+
+  /*
+   * Coming back is the only signal that anything happened in the portal.
+   * `Linking.openURL` is `window.open(url, '_blank')` on the web, so it
+   * resolves the moment the tab opens and knows nothing about what was done
+   * there; the plan change reaches us as a webhook, on the server. So the
+   * return to this tab is what asks the server to re-read the entitlement —
+   * the same reconcile a purchase and a restore already run.
+   *
+   * Only for someone who actually left, and only once. If the browser blocked
+   * the popup nobody left, the ref stays armed, and the next hide-and-return
+   * spends it on a request that is idempotent. `refresh.mutate` rather than
+   * `refresh`: the callback is stable, the result object is not.
+   */
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active' || !portalOpened.current) return
+      portalOpened.current = false
+      refresh.mutate()
+    })
+    return () => subscription.remove()
+  }, [refresh.mutate])
 
   // Once per opening, with what sent them here. The paywall is the end of the
   // funnel, and which capability people hit it from is the question. Mount
@@ -320,9 +348,11 @@ export default function PaywallScreen() {
     }
     track({
       name: 'purchase_started',
-      properties: { offer: 'portal', tier: 'pro_plus', period: null, change: 'portal' },
+      properties: { offer: 'portal', tier: plan, period: null, change: 'portal' },
     })
     await Linking.openURL(url)
+    // After the open, not before: a rejected `openURL` never left the page.
+    portalOpened.current = true
   }
 
   async function restore(): Promise<void> {
@@ -336,6 +366,13 @@ export default function PaywallScreen() {
     if (!ok) setNotice(t('paywall.nothingToRestore'))
   }
 
+  /*
+   * The tier the screen is on: what the caller was refused, else the first
+   * tier there is anything to sell. Opening on Fluent for everybody left a
+   * Fluent subscriber reading "Included in Fluent" over a disabled button,
+   * with no hint that a higher plan existed. A tap wins from then on.
+   */
+  const plan = pickedPlan ?? highlightTier ?? firstOfferableTier(held, PLATFORM)
   const tierOffers = offers?.filter((offer) => offer.tier === plan) ?? []
   const periods = PERIOD_ORDER.filter((candidate) =>
     tierOffers.some((offer) => offer.period === candidate),
@@ -462,7 +499,7 @@ export default function PaywallScreen() {
             label: TIER_NAMES[paidTier],
           }))}
           selected={[plan]}
-          onToggle={setPlan}
+          onToggle={setPickedPlan}
           accessibilityLabel={t('paywall.screenTitle')}
         />
 
@@ -573,7 +610,15 @@ export default function PaywallScreen() {
       <View style={styles.footer}>
         <Button
           label={
-            viaPortal ? t('paywall.changePlan') : t('paywall.start', { plan: TIER_NAMES[plan] })
+            // The tier held, said plainly, where the disabled button used to
+            // read "Start Fluent" at a Fluent subscriber. Only for the tier
+            // *held*: a lower one is covered too, and `paywall.includedIn`
+            // above the button is what explains that one.
+            change === 'covered' && held.tier === plan
+              ? t('paywall.currentPlan')
+              : viaPortal
+                ? t('paywall.changePlan')
+                : t('paywall.start', { plan: TIER_NAMES[plan] })
           }
           loading={offers === null || busyOfferId !== null}
           disabled={isCurrent || offer === undefined}
