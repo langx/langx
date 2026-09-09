@@ -10,7 +10,7 @@ import {
 import type { FastifyInstance } from 'fastify'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -27,6 +27,7 @@ import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../tes
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 
 const PASSWORD = 'correct horse battery staple'
+const SUPPORT = 'moderation@example.test'
 
 describe('Faz 10 — blocking, reports, profile views, deletion and export', () => {
   let replSet: MongoMemoryReplSet
@@ -62,6 +63,10 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     return user
   }
 
+  /** Only the moderation mail: every `newUser()` above sends a verification one. */
+  const reportMails = () =>
+    emailSender.messages.filter((message) => message.subject.includes('Report: '))
+
   const get = (user: SignedUpUser, url: string) =>
     app.inject({ method: 'GET', url, headers: { cookie: user.cookie } })
   const post = (user: SignedUpUser, url: string, payload?: unknown) =>
@@ -86,6 +91,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      SUPPORT_EMAIL: SUPPORT,
     })
     await ensureIndexes(handle.db)
     emailSender = new CapturingEmailSender()
@@ -95,6 +101,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       client: handle.client,
       db: handle.db,
       auth,
+      email: emailSender,
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
@@ -327,6 +334,66 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         .collection(COLLECTIONS.reports)
         .findOne({ reporterId: reporter.userId, reportedId: target.userId })
       expect(stored).toMatchObject({ reason: 'hate_speech', details, status: 'open' })
+    })
+
+    /**
+     * Nothing reads `reports`, so until this the only sign a report existed
+     * was the row itself. These check the one thing that now tells a person.
+     */
+    it('mails the support inbox with both parties, the reason and the details', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      const details = 'Sent the same link four times after I asked them to stop.'
+      emailSender.messages.length = 0
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'spam',
+        details,
+      })
+      expect(response.statusCode, response.body).toBe(201)
+
+      const mail = reportMails().at(-1)
+      expect(reportMails()).toHaveLength(1)
+      expect(mail?.to).toBe(SUPPORT)
+      expect(mail?.subject).toContain('Report: spam')
+      expect(mail?.subject).not.toContain('XP FROZEN')
+      expect(mail?.text).toContain(details)
+      expect(mail?.text).toContain(reporter.userId)
+      expect(mail?.text).toContain(target.userId)
+    })
+
+    it('says in the subject when this is the report that froze them', async () => {
+      const target = await newUser()
+      emailSender.messages.length = 0
+
+      for (let i = 0; i < REPORTS_TO_FREEZE_XP; i++) {
+        const reporter = await newUser()
+        await post(reporter, '/reports', { userId: target.userId, reason: 'harassment' })
+      }
+
+      const subjects = reportMails().map((mail) => mail.subject)
+      expect(subjects).toHaveLength(REPORTS_TO_FREEZE_XP)
+      expect(subjects.slice(0, -1).some((subject) => subject.includes('XP FROZEN'))).toBe(false)
+      expect(subjects.at(-1)?.startsWith('[XP FROZEN] ')).toBe(true)
+    })
+
+    it('still files the report when the mail fails', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      vi.spyOn(emailSender, 'send').mockRejectedValueOnce(new Error('the mail provider is down'))
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'fake_profile',
+      })
+
+      expect(response.statusCode, response.body).toBe(201)
+      const stored = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored?.status).toBe('open')
+      vi.restoreAllMocks()
     })
 
     it('refuses a self-report', async () => {
