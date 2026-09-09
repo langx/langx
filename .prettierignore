@@ -9,3 +9,5 @@ apps/mobile/android/
 apps/mobile/expo-env.d.ts
 docs/plans/session-store/
 tools/ext-lab/
+# A worktree of another branch, checked out inside this one.
+.claude/worktrees/
