@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useFocusEffect, useLocalSearchParams } from 'expo-router'
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
@@ -21,7 +21,6 @@ import {
   usePostAnswers,
   usePostComments,
   usePostCorrections,
-  useReportUser,
 } from '../../../src/api/queries'
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
@@ -188,7 +187,7 @@ export default function PostScreen() {
   })
 
   const mine = post ? post.author._id === me.data?._id : false
-  const report = useReportUser()
+  const router = useRouter()
 
   function share(): void {
     if (!post) return
@@ -222,22 +221,13 @@ export default function PostScreen() {
     if (choice === 'delete') void confirmDeletePost()
   }
 
-  /** The same three reasons a profile offers, pointed at the post. */
-  async function confirmReport(): Promise<void> {
+  /** The report screen, pointed at the post. */
+  function confirmReport(): void {
     if (!post) return
-    const reason = await chooseAlert(t('common.report'), t('report.postQuestion'), [
-      { label: t('report.spam'), value: 'spam' },
-      { label: t('report.harassment'), value: 'harassment' },
-      { label: t('report.inappropriate'), value: 'inappropriate_content' },
-    ])
-    if (!reason) return
-    report.mutate(
-      { userId: post.author._id, reason, postId: post._id },
-      {
-        onSuccess: () => showToast(t('report.messageSent')),
-        onError: () => showToast(t('report.failed')),
-      },
-    )
+    router.push({
+      pathname: '/(app)/report',
+      params: { userId: post.author._id, postId: post._id },
+    })
   }
 
   function submitCorrection(): void {

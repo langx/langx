@@ -161,7 +161,8 @@ export const fr: Localized<EnMessages> = {
   gender: {
     female: 'Femme',
     male: 'Homme',
-    other: 'Autre',
+    other: 'Non-binaire / autre',
+    shortOther: 'Non-binaire',
     undisclosed: 'Je préfère ne pas dire',
   },
 
@@ -755,15 +756,24 @@ export const fr: Localized<EnMessages> = {
   },
 
   report: {
-    messageQuestion: 'Pourquoi signales-tu ce message ?',
-    profileQuestion: 'Pourquoi signales-tu ce profil ?',
+    messageQuestion: 'Pourquoi signalez-vous ce message ?',
+    profileQuestion: 'Pourquoi signalez-vous ce profil ?',
+    postQuestion: 'Pourquoi signalez-vous cette publication ?',
     spam: 'Spam',
     harassment: 'Harcèlement',
-    inappropriate: 'Contenu inapproprié',
-    messageSent: 'Signalé. Merci — nous regardons chaque signalement.',
+    hateSpeech: 'Discours haineux',
+    hateSpeechHint:
+      'Attaques visant ce qu’une personne est, y compris son orientation sexuelle et son identité de genre',
+    inappropriateContent: 'Contenu inapproprié',
+    fakeProfile: 'Faux profil',
+    underage: 'Moins de 16 ans',
+    other: 'Autre chose',
+    details: 'Que s’est-il passé ?',
+    detailsPlaceholder: 'Facultatif. Tout ce qui peut nous aider à comprendre.',
+    submit: 'Envoyer le signalement',
+    messageSent: 'Signalé. Merci — nous les examinons tous.',
     profileSent: 'Signalement envoyé. Nous allons regarder.',
     failed: 'Signalement impossible',
-    postQuestion: 'Pourquoi signalez-vous cette publication ?',
   },
 
   feed: {
@@ -924,10 +934,14 @@ export const fr: Localized<EnMessages> = {
     aboutYouPlaceholder: 'De quoi aimes-tu parler ?',
     country: 'Pays',
     gender: 'Genre',
-    genderOnce: 'Tu peux le définir une fois. Ensuite, impossible de le changer.',
-    genderLocked: 'Défini à ton inscription. Celui-ci ne peut pas être changé.',
-    genderConfirmTitle: 'Définir ton genre ?',
-    genderConfirmBody: 'Ton profil indiquera {gender}. Impossible de le changer ensuite.',
+    genderOnce: 'Vous pouvez le changer une fois tous les {days} jours.',
+    genderCooldown: 'Vous pourrez le changer à nouveau le {date}.',
+    pronouns: 'Pronoms',
+    pronounsPlaceholder: 'elle, il, iel…',
+    pronounsHint: 'Facultatif, affiché sur votre profil. Écrivez-les comme votre langue le fait.',
+    genderConfirmTitle: 'Définir votre genre ?',
+    genderConfirmBody:
+      'Votre profil indiquera {gender}. Vous pourrez le changer à nouveau dans {days} jours.',
     languages: 'Langues',
     editNative: 'Modifier les langues maternelles',
     editLearning: 'Modifier les langues apprises',
@@ -953,6 +967,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   legal: {
+    community: 'Règles de la communauté',
     privacy: 'Politique de confidentialité',
     terms: 'Conditions d’utilisation',
     cookies: 'Politique de cookies',

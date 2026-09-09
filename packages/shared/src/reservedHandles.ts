@@ -34,6 +34,7 @@ const ROUTE_RESERVED = [
   'handle',
   'index',
   'invite',
+  'report',
   'scan',
   'link',
   'intro',

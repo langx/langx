@@ -617,7 +617,8 @@ write to them directly and never change their shape.
   _id: userId, handle (unique), displayName, avatarUrl,
   photos: [{ url, createdAt }],
   bio, birthDate,
-  gender: 'female' | 'male' | 'other' | 'undisclosed',   ← set once, like birthDate
+  gender: 'female' | 'male' | 'other' | 'undisclosed',   ← changeable, once per 180 days
+  genderChangedAt,                    ← absent until the first change; the cooldown reads it
   referredBy,                         ← who invited them; written once, never in a public view
   country, cityId, cityName, cityCountryCode, timezone, timezoneUpdatedAt,
   location: { type: 'Point', coordinates: [lng, lat] },
@@ -653,11 +654,16 @@ no location out of Nearby without a filter of its own), unique `handle`, and a
 text index on `displayName + bio`.
 
 A user who picks `gender: 'undisclosed'` does not appear in gender-filtered
-results, and onboarding says so. Neither `gender` nor `birthDate` is editable
-afterwards — both decide whose results you appear in, so neither belongs in a
-free-form PATCH. `POST /profiles/me/gender` is the one exception: it answers
-the question if onboarding left it blank, once, and cannot write over an
-answer that is already there.
+results, and onboarding says so. Neither `gender` nor `birthDate` belongs in a
+free-form PATCH — both decide whose results you appear in, and a field like
+that is not one you retype between two searches. `POST /profiles/me/gender` is
+the one way to write it: any value including back to `undisclosed`, at most
+once every `GENDER_CHANGE_COOLDOWN_DAYS`. `birthDate` has no such route,
+because a birth date does not change. See _Gender changes twice a year, not
+never_ in `decisions.md`.
+
+`pronouns` is free text and freely editable, precisely because nothing filters
+on it.
 
 **`conversations`** — no match gate, a conversation starts directly. Unique
 `pairKey: '<minId>_<maxId>'` is the one thing `matches` used to provide: two

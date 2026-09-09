@@ -74,6 +74,22 @@ export const ERROR_CODES = {
    */
   MEDIA_TOO_LONG: 'MEDIA_TOO_LONG',
 
+  // profiles
+  /**
+   * A gender change inside `GENDER_CHANGE_COOLDOWN_DAYS` of the last one.
+   *
+   * Its own code rather than `VALIDATION_FAILED` because the body was fine and
+   * the answer is a date: the client has to say *when* they can change it
+   * again, and it can only know to do that if this is its own code. 409 for
+   * the same reason `LOCATION_REQUIRED` is — the conflict is with the state of
+   * the account, not with anything in the request.
+   *
+   * The client normally never sees it: `genderChangedAt` is on the profile, so
+   * the screen knows the field is on cooldown before anybody taps. This is for
+   * the stale client and for two taps that race.
+   */
+  GENDER_CHANGE_TOO_SOON: 'GENDER_CHANGE_TOO_SOON',
+
   // discovery
   /**
    * `sort=nearby` from someone who has not shared a location. Distinct from
@@ -136,6 +152,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   HANDLE_ALREADY_CLAIMED: 409,
   BLOCKED: 403,
   CONVERSATION_EXISTS: 409,
+  GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,

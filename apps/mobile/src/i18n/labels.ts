@@ -7,6 +7,7 @@ import {
   type LanguageLevel,
   type Locale,
   type PeriodType,
+  type ReportReason,
 } from '@langx/shared'
 import type { MessageKey, TranslateFn } from './runtime'
 
@@ -24,6 +25,19 @@ export function genderLabel(t: TranslateFn, gender: Gender): string {
   return t(`gender.${gender}` as MessageKey)
 }
 
+/**
+ * The same values, worded to fit a four-way `SegmentedControl`.
+ *
+ * Only `other` has a short form: it is the one whose full wording names two
+ * things ("Non-binary / other") because one word cannot cover everybody it is
+ * for. `undisclosed` has the same problem and solves it in
+ * `onboarding.genderNotSaying`, which predates this and is left where it is.
+ */
+export function genderShortLabel(t: TranslateFn, gender: Gender): string {
+  if (gender === 'other') return t('gender.shortOther')
+  return genderLabel(t, gender)
+}
+
 export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
   return t(`level.${level}` as MessageKey)
 }
@@ -31,6 +45,16 @@ export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
 export function levelShortLabel(t: TranslateFn, level: LanguageLevel): string {
   const key = `level.short${level.charAt(0).toUpperCase()}${level.slice(1)}`
   return t(key as MessageKey)
+}
+
+/**
+ * A report reason's wording. The keys are camel-cased because the message
+ * catalogue is, while `REPORT_REASONS` is snake_case — it is an API value, and
+ * the wire format is not something the catalogue should have to spell.
+ */
+export function reportReasonLabel(t: TranslateFn, reason: ReportReason): string {
+  const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
+  return t(`report.${key}` as MessageKey)
 }
 
 export function periodLabel(t: TranslateFn, period: PeriodType): string {

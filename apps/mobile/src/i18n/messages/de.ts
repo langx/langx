@@ -160,7 +160,8 @@ export const de: Localized<EnMessages> = {
   gender: {
     female: 'Weiblich',
     male: 'Männlich',
-    other: 'Divers',
+    other: 'Nicht-binär / divers',
+    shortOther: 'Nicht-binär',
     undisclosed: 'Keine Angabe',
   },
 
@@ -776,13 +777,22 @@ export const de: Localized<EnMessages> = {
   report: {
     messageQuestion: 'Warum meldest du diese Nachricht?',
     profileQuestion: 'Warum meldest du dieses Profil?',
+    postQuestion: 'Warum meldest du diesen Beitrag?',
     spam: 'Spam',
     harassment: 'Belästigung',
-    inappropriate: 'Unangemessene Inhalte',
-    messageSent: 'Gemeldet. Danke — wir sehen uns jede Meldung an.',
-    profileSent: 'Meldung gesendet. Wir sehen es uns an.',
+    hateSpeech: 'Hassrede',
+    hateSpeechHint:
+      'Angriffe darauf, wer jemand ist — auch auf sexuelle Orientierung und Geschlechtsidentität',
+    inappropriateContent: 'Unangemessener Inhalt',
+    fakeProfile: 'Fake-Profil',
+    underage: 'Unter 16',
+    other: 'Etwas anderes',
+    details: 'Was ist passiert?',
+    detailsPlaceholder: 'Optional. Alles, was uns beim Verstehen hilft.',
+    submit: 'Meldung senden',
+    messageSent: 'Gemeldet. Danke — wir sehen uns jede an.',
+    profileSent: 'Meldung gesendet. Wir schauen uns das an.',
     failed: 'Melden fehlgeschlagen',
-    postQuestion: 'Warum meldest du diesen Beitrag?',
   },
 
   feed: {
@@ -941,10 +951,15 @@ export const de: Localized<EnMessages> = {
     aboutYouPlaceholder: 'Worüber redest du gern?',
     country: 'Land',
     gender: 'Geschlecht',
-    genderOnce: 'Das kannst du einmal festlegen. Danach lässt es sich nicht mehr ändern.',
-    genderLocked: 'Bei der Anmeldung festgelegt. Das lässt sich nicht ändern.',
+    genderOnce: 'Du kannst das alle {days} Tage einmal ändern.',
+    genderCooldown: 'Du kannst es am {date} wieder ändern.',
+    pronouns: 'Pronomen',
+    pronounsPlaceholder: 'sie/ihr, er/ihm, dey/demm…',
+    pronounsHint:
+      'Optional, wird in deinem Profil angezeigt. Schreib sie so, wie deine Sprache es tut.',
     genderConfirmTitle: 'Geschlecht festlegen?',
-    genderConfirmBody: 'In deinem Profil steht dann {gender}. Das lässt sich später nicht ändern.',
+    genderConfirmBody:
+      'In deinem Profil steht dann {gender}. In {days} Tagen kannst du es wieder ändern.',
     languages: 'Sprachen',
     editNative: 'Muttersprachen bearbeiten',
     editLearning: 'Lernsprachen bearbeiten',
@@ -971,6 +986,7 @@ export const de: Localized<EnMessages> = {
   },
 
   legal: {
+    community: 'Community-Richtlinien',
     privacy: 'Datenschutzerklärung',
     terms: 'Nutzungsbedingungen',
     cookies: 'Cookie-Richtlinie',

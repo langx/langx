@@ -17,7 +17,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { goBackTo } from '../../src/lib/navigation'
 import { displayNameToSeed } from '../../src/lib/seedDisplayName'
 import { makeStyles } from '../../src/lib/theme'
-import { genderLabel, useT } from '../../src/i18n'
+import { genderShortLabel, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 export default function AboutYouStep() {
@@ -79,7 +79,7 @@ export default function AboutYouStep() {
   const notSaying = t('onboarding.genderNotSaying')
   const genderOptions = GENDERS.map((gender) => ({
     value: gender,
-    label: gender === 'undisclosed' ? notSaying : genderLabel(t, gender),
+    label: gender === 'undisclosed' ? notSaying : genderShortLabel(t, gender),
   }))
 
   return (

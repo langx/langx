@@ -280,8 +280,15 @@ export interface MeProfile {
   displayName: string
   avatarUrl?: string
   bio?: string
+  pronouns?: string
   birthDate: string
   gender: Gender
+  /**
+   * When the gender was last changed, absent if it never has been. The screen
+   * needs it to know the field is on cooldown *before* anybody taps — see
+   * `GENDER_CHANGE_COOLDOWN_MS`.
+   */
+  genderChangedAt?: string
   country?: string
   /**
    * Read off the location, not typed, and named as the server stores it — the
@@ -1912,16 +1919,15 @@ export function useUpdateProfile() {
 }
 
 /**
- * Discloses a gender onboarding left blank. Separate from `useUpdateProfile`
- * because the server route is separate, and for the same reason: it writes a
- * field that cannot be written twice, so it must not ride along in a body that
- * a screen resends every time somebody edits their bio.
+ * Sets the gender. Separate from `useUpdateProfile` because the server route is
+ * separate, and for the same reason: it writes a rate-limited field, so it must
+ * not ride along in a body that a screen resends every time somebody edits
+ * their bio.
  */
-export function useDiscloseGender() {
+export function useSetGender() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (gender: 'female' | 'male' | 'other') =>
-      api.post<MeProfile>('/profiles/me/gender', { gender }),
+    mutationFn: (gender: Gender) => api.post<MeProfile>('/profiles/me/gender', { gender }),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
       invalidateOwnPublicViews(queryClient, profile)

@@ -305,6 +305,30 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(summary.json<{ today: { messages: number } }>().today.messages).toBe(1)
     })
 
+    /**
+     * `hate_speech` is its own reason rather than a shade of `harassment`, and
+     * `details` was in the schema long before any screen sent it. Somebody
+     * reporting an attack on who they are needs to be able to say so and to
+     * say what happened; this is the round trip that proves both arrive.
+     */
+    it('stores a hate speech report with its details', async () => {
+      const target = await newUser()
+      const reporter = await newUser()
+      const details = 'Called me a slur in the chat and repeated it after I asked them to stop.'
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'hate_speech',
+        details,
+      })
+      expect(response.statusCode, response.body).toBe(201)
+
+      const stored = await handle.db
+        .collection(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored).toMatchObject({ reason: 'hate_speech', details, status: 'open' })
+    })
+
     it('refuses a self-report', async () => {
       const a = await newUser()
       expect((await post(a, '/reports', { userId: a.userId, reason: 'spam' })).statusCode).toBe(400)

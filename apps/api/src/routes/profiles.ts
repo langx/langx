@@ -1,6 +1,6 @@
 import {
   countryFromLocationSchema,
-  discloseGenderSchema,
+  setGenderSchema,
   handleSchema,
   locationInputSchema,
   onboardingProfileSchema,
@@ -21,7 +21,7 @@ import {
   clearLocation,
   createGuestProfile,
   createProfile,
-  discloseGender,
+  setGender,
   setCountryFromLocation,
   findProfileByHandleOrId,
   getProfile,
@@ -93,20 +93,20 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /**
-   * The one way a gender can change after onboarding: `undisclosed` to a real
-   * value, once.
+   * The one way a gender can change after onboarding, and only once every
+   * `GENDER_CHANGE_COOLDOWN_DAYS`.
    *
    * It is not in `PATCH /profiles/me` for the reason `updateProfileSchema`
    * gives — `gender` decides whose discovery results you appear in, and a
    * field like that cannot be free-form. `POST` rather than `PATCH` because
-   * this is not editing a value, it is answering a question that was left
-   * blank; the repository refuses a second answer.
+   * the write carries a condition the body cannot express; the repository
+   * refuses one that comes too soon.
    */
   app.post(
     '/profiles/me/gender',
-    { preHandler: requireMember, schema: { body: discloseGenderSchema } },
+    { preHandler: requireMember, schema: { body: setGenderSchema } },
     async (request, reply) => {
-      const profile = await discloseGender(app.mongo.db, request.userId, request.body.gender)
+      const profile = await setGender(app.mongo.db, request.userId, request.body.gender)
       return reply.send(profile)
     },
   )

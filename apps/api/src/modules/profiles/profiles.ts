@@ -3,7 +3,9 @@ import {
   ERROR_CODES,
   ageFromBirthDate,
   PLAN_LIMITS,
-  type DiscloseGenderInput,
+  GENDER_CHANGE_COOLDOWN_DAYS,
+  GENDER_CHANGE_COOLDOWN_MS,
+  type SetGenderInput,
   type GuestProfileInput,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
@@ -60,8 +62,17 @@ export interface Profile {
   displayName: string
   avatarUrl?: string
   bio?: string
+  /** Free text, `PRONOUNS_MAX_LENGTH` at most. Absent until somebody fills it in. */
+  pronouns?: string
   birthDate: string
   gender: 'female' | 'male' | 'other' | 'undisclosed'
+  /**
+   * When `gender` was last changed, which is what `setGender`'s cooldown is
+   * measured from. Absent on every profile that has never changed it —
+   * onboarding does not write it — and that absence is what makes the first
+   * change free without a migration.
+   */
+  genderChangedAt?: Date
   country?: string
   /**
    * Worked out from `location`, never sent by a client — there is no longer
@@ -490,34 +501,40 @@ export async function setCountryFromLocation(
 }
 
 /**
- * Discloses a gender that onboarding left as `undisclosed`. Once.
+ * Sets `gender`, at most once every `GENDER_CHANGE_COOLDOWN_DAYS`.
  *
- * `gender` is not editable — see `updateProfileSchema`, which excludes it
- * alongside `birthDate` because both decide whose discovery results you turn
- * up in. This is the single exception, and it is one-way: `undisclosed` is the
- * only value it will write over, so nobody can cycle through genders and step
- * in and out of other people's searches. Going the other way is not offered
- * either — `discloseGenderSchema` has no `undisclosed` member.
+ * `gender` is not in `updateProfileSchema` and will not be: it decides whose
+ * discovery results you turn up in, and a field like that is not one you retype
+ * between two searches. This is the one way to write it, and the cooldown —
+ * not a lock — is what keeps that true. Half a year per move makes filter
+ * hopping pointless while still letting somebody whose gender actually changed
+ * say so, which the old write-once rule did not: their only remedy was to
+ * delete the account.
  *
- * It exists because the alternative is a trap. `onlyMyGender` is inert for an
- * undisclosed viewer by design, and that filter is free now, so locking the
- * field outright would leave everybody who skipped the question at onboarding
- * permanently unable to use it — while the app kept telling them, in eight
- * languages, to add their gender to their profile.
+ * The first change is free, because onboarding never writes `genderChangedAt`.
+ * That is also why there is no migration: every profile that predates this
+ * field reads as one that has never been changed, which is exactly what it is.
  *
  * The condition lives in the filter rather than in a preceding read, for the
  * reason every other guard in this codebase does: two taps that race would
  * both pass a check-then-write, and the second would overwrite the first.
+ * Note there is no `gender: 'undisclosed'` branch in the `$or` — with one,
+ * `female → undisclosed → male` would spend a single move instead of two.
  */
-export async function discloseGender(
+export async function setGender(
   db: Db,
   userId: string,
-  gender: DiscloseGenderInput['gender'],
+  gender: SetGenderInput['gender'],
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const now = new Date()
+  const cutoff = new Date(now.getTime() - GENDER_CHANGE_COOLDOWN_MS)
   const updated = await profiles.findOneAndUpdate(
-    { _id: userId, gender: 'undisclosed' },
-    { $set: { gender, updatedAt: new Date() } },
+    {
+      _id: userId,
+      $or: [{ genderChangedAt: { $exists: false } }, { genderChangedAt: { $lte: cutoff } }],
+    },
+    { $set: { gender, genderChangedAt: now, updatedAt: now } },
     { returnDocument: 'after' },
   )
   if (updated) return updated
@@ -525,10 +542,23 @@ export async function discloseGender(
   // The filter matched nothing, which is two different situations. Separating
   // them costs one read on a path that only runs when the write already
   // failed, and the difference matters: one is a client bug, the other is a
-  // second tap on a button that should no longer be on screen.
+  // screen that should have known the field was on cooldown before it asked.
   const existing = await profiles.findOne({ _id: userId })
   if (!existing) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
-  throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Gender has already been set')
+  throw new ApiError(
+    ERROR_CODES.GENDER_CHANGE_TOO_SOON,
+    `Gender can only be changed once every ${String(GENDER_CHANGE_COOLDOWN_DAYS)} days`,
+    // `retryAt` the same way the timezone cooldown reports it — the client
+    // draws a date, and a date it had to compute from a duration would be a
+    // second copy of this rule.
+    existing.genderChangedAt
+      ? {
+          retryAt: new Date(
+            new Date(existing.genderChangedAt).getTime() + GENDER_CHANGE_COOLDOWN_MS,
+          ).toISOString(),
+        }
+      : undefined,
+  )
 }
 
 /**
@@ -956,6 +986,7 @@ export interface PublicProfile {
   avatarUrl?: string
   photos: { url: string }[]
   bio?: string
+  pronouns?: string
   age: number
   gender: Profile['gender']
   country?: string
@@ -1055,6 +1086,7 @@ export function toPublicProfile(
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio
+  if (profile.pronouns) result.pronouns = profile.pronouns
   if (profile.country !== undefined) result.country = profile.country
   // Behind its own switch, unlike `country`. The country is coarse and was
   // half-declared anyway; the city is neither, and nobody typed it.

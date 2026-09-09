@@ -31,7 +31,7 @@ import {
   toParams,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { genderLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
+import { genderLabel, genderShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
@@ -200,7 +200,7 @@ export default function FiltersScreen() {
     { value: 'any', label: t('common.any') },
     ...GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => ({
       value: gender,
-      label: genderLabel(t, gender),
+      label: genderShortLabel(t, gender),
     })),
   ]
 
