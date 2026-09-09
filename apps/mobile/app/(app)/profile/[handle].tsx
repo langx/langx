@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { authClient } from '../../../src/lib/auth-client'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import {
@@ -23,6 +23,7 @@ import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { StatTile } from '../../../src/components/ui/StatTile'
+import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo, openFollows } from '../../../src/lib/navigation'
@@ -56,9 +57,25 @@ export default function ProfileScreen() {
   const [avatarOpen, setAvatarOpen] = useState(false)
 
   if (profile.isPending) {
+    // The bar with the back arrow is drawn now, not with the profile: it needs
+    // nothing from the request, and without it the whole page dropped by its
+    // height when the data came. The kebab waits — whether it exists depends
+    // on whose profile this turns out to be.
     return (
-      <Screen>
-        <ActivityIndicator style={styles.loading} />
+      <Screen scroll>
+        <View style={styles.topBar}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.backPlain')}
+            onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
+            hitSlop={12}
+            style={({ pressed }) => [styles.back, pressed && styles.iconPressed]}
+          >
+            <Feather name="arrow-left" size={22} color={colors.text} />
+          </Pressable>
+          <View style={styles.spacer} />
+        </View>
+        <ProfileSkeleton avatarSize={96} />
       </Screen>
     )
   }
@@ -368,7 +385,6 @@ export default function ProfileScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  loading: { marginTop: spacing.xxl },
   missing: {
     ...font.body,
     color: colors.textMuted,

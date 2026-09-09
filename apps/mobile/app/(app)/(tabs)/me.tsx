@@ -4,7 +4,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { placeLabel } from '../../../src/lib/placeLabel'
-import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
+import { Platform, Pressable, Text, View } from 'react-native'
 import {
   useBadges,
   useEffectiveTier,
@@ -25,6 +25,7 @@ import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
+import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { openFollows, openProfile } from '../../../src/lib/navigation'
@@ -90,7 +91,7 @@ export default function MeScreen() {
         {me.isError ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ActivityIndicator style={styles.loading} />
+          <ProfileSkeleton avatarSize={80} />
         )}
       </Screen>
     )
@@ -265,7 +266,7 @@ export default function MeScreen() {
         />
       </View>
 
-      {summary ? <WeeklyChart week={summary.week} /> : null}
+      <WeeklyChart week={summary?.week} />
 
       {/*
         The about text, on the owner's own screen. It was only ever drawn on
@@ -353,7 +354,6 @@ export default function MeScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   // 20 below the status bar in the design; `Screen` already gives 6 of it.
   hero: {
     alignItems: 'center',

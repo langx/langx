@@ -5,6 +5,7 @@ import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/ap
 import type { FeedPost } from '../../src/api/types'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { useDisplayNames, useLocale, useT } from '../../src/i18n'
@@ -87,7 +88,15 @@ export default function WritingScreen() {
       />
 
       {state === 'skeleton' ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <Skeleton width={104} height={13} />
+              <Skeleton width="100%" height={16} />
+              <Skeleton width="58%" height={16} />
+            </View>
+          ))}
+        </View>
       ) : state === 'empty' ? (
         <EmptyState
           icon={tab === 'corrections' ? 'edit-3' : 'message-square'}
@@ -226,6 +235,8 @@ function Row({
     </Pressable>
   )
 }
+
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { paddingVertical: spacing.lg },

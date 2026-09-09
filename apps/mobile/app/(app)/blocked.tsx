@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, RefreshControl, Text, View } from 'react-n
 import { useBlocks, useUnblockUser } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
@@ -38,7 +39,15 @@ export default function BlockedScreen() {
       <ScreenHeader title={t('blocked.title')} onBack={() => goBackTo('/(app)/settings')} />
 
       {blocks.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+        <View>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <Skeleton width={48} height={48} radius={24} />
+              <Skeleton height={16} style={styles.handleSkeleton} />
+              <Skeleton width={84} height={36} radius={18} />
+            </View>
+          ))}
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -95,8 +104,9 @@ export default function BlockedScreen() {
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
+
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   empty: {
     color: colors.textMuted,
@@ -122,4 +132,5 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
     width: 48,
   },
   handle: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  handleSkeleton: { flex: 1 },
 }))

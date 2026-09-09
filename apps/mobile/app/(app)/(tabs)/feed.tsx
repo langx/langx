@@ -22,6 +22,7 @@ import {
   type PendingAttachment,
 } from '../../../src/components/AttachmentBar'
 import { MediaGallery } from '../../../src/components/MediaBubble'
+import { FeedPostSkeleton } from '../../../src/components/skeletons/FeedPostSkeleton'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { authClient } from '../../../src/lib/auth-client'
@@ -282,7 +283,11 @@ export default function FeedScreen() {
       <Tip slot="feed" />
 
       {state === 'skeleton' ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key, index) => (
+            <FeedPostSkeleton key={key} index={index} />
+          ))}
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -512,6 +517,8 @@ export default function FeedScreen() {
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
+
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The bottom half is the gap above the tip; `Tip` owns the one below it.
   header: { paddingBottom: spacing.sm, paddingTop: spacing.md },
@@ -529,7 +536,6 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   askPressed: { backgroundColor: colors.accentBg },
   ask: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   sections: { marginTop: 18 },
-  loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
   row: {

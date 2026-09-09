@@ -2,10 +2,11 @@ import { Text, View } from 'react-native'
 import type { TokenSummary } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
-import { WeekBars } from './WeekBars'
+import { WeekBars, WeekBarsSkeleton } from './WeekBars'
 
 interface WeeklyChartProps {
-  week: TokenSummary['week']
+  /** Undefined while the summary loads: the slot is kept, the bars pulse. */
+  week?: TokenSummary['week'] | undefined
 }
 
 /**
@@ -21,18 +22,26 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
   const styles = useStyles()
   const t = useT()
 
-  const messages = week.reduce((sum, day) => sum + day.messages, 0)
-  const corrections = week.reduce((sum, day) => sum + day.corrections, 0)
+  const messages = (week ?? []).reduce((sum, day) => sum + day.messages, 0)
+  const corrections = (week ?? []).reduce((sum, day) => sum + day.corrections, 0)
 
   return (
     <View style={styles.section}>
-      <WeekBars
-        days={week.map((day) => ({ day: day.day, total: day.messages, stacked: day.corrections }))}
-        accessibilityLabel={t('weekly.summary', {
-          messages: t('format.messages', { count: messages }),
-          corrections: t('format.corrections', { count: corrections }),
-        })}
-      />
+      {week ? (
+        <WeekBars
+          days={week.map((day) => ({
+            day: day.day,
+            total: day.messages,
+            stacked: day.corrections,
+          }))}
+          accessibilityLabel={t('weekly.summary', {
+            messages: t('format.messages', { count: messages }),
+            corrections: t('format.corrections', { count: corrections }),
+          })}
+        />
+      ) : (
+        <WeekBarsSkeleton />
+      )}
 
       <View style={styles.legend}>
         <View style={styles.legendItem}>

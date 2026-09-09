@@ -1,9 +1,10 @@
 import type { CosmeticTone } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Avatar } from './ui/Avatar'
 import { EmptyState } from './ui/EmptyState'
 import { SegmentedControl } from './ui/SegmentedControl'
+import { Skeleton } from './ui/Skeleton'
 import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
@@ -92,7 +93,16 @@ export function LeaderboardSection<Option extends string>({
       />
 
       {loading ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <Skeleton width={16} height={15} />
+              <Skeleton width={40} height={40} radius={20} />
+              <Skeleton height={16} style={styles.nameSkeleton} />
+              <Skeleton width={36} height={17} />
+            </View>
+          ))}
+        </View>
       ) : entries.length === 0 ? (
         <EmptyState icon="award" title={emptyTitle} body={emptyBody} />
       ) : (
@@ -147,8 +157,9 @@ export function LeaderboardSection<Option extends string>({
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
+
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  loading: { marginTop: spacing.xxl },
   list: { marginTop: spacing.sm },
   row: {
     alignItems: 'center',
@@ -174,6 +185,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     width: 24,
   },
   name: { ...font.heading, color: colors.text, flex: 1, fontSize: 16 },
+  nameSkeleton: { flex: 1 },
   valueRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   value: { ...font.heading, color: colors.text, fontSize: 17, fontVariant: ['tabular-nums'] },
   // A heavier rule than the hairlines above it: this row is not the next

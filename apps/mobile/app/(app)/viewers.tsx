@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { useViewers, type ViewerPageDto } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
+import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -86,7 +87,11 @@ export default function ViewersScreen() {
       <ScreenHeader title={t('viewers.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
 
       {viewers.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <PersonRowSkeleton key={key} />
+          ))}
+        </View>
       ) : locked && summary?.total === 0 ? (
         // Nothing to blur, and nothing to sell.
         <EmptyState icon="eye" title={t('viewers.emptyTitle')} body={t('viewers.emptyBody')} />
@@ -202,8 +207,9 @@ export default function ViewersScreen() {
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
 const useStyles = makeStyles(({ colors, font, layout, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   list: { paddingBottom: spacing.xxl },
   summary: { color: colors.textMuted, fontSize: 15, lineHeight: 22, paddingBottom: spacing.sm },

@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { useTokenHistory } from '../../../src/api/queries'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../../src/lib/navigation'
 import { buildTokenHistory } from '../../../src/lib/tokenHistory'
@@ -46,9 +47,21 @@ export default function HistoryScreen() {
   )
 
   if (history.isPending) {
+    // The header and the intro need no data, so they are drawn now and stay
+    // put: the rows land exactly where their placeholders were.
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <ScreenHeader title={t('tokens.history')} onBack={() => goBackTo('/(app)/wallet')} />
+        <Text style={styles.intro}>{t('tokens.intro')}</Text>
+        {SKELETON_ROWS.map((key) => (
+          <View key={key} style={styles.row}>
+            <View style={styles.text}>
+              <Skeleton width={152} height={16} />
+              <Skeleton width={78} height={13} />
+            </View>
+            <Skeleton width={48} height={17} />
+          </View>
+        ))}
       </Screen>
     )
   }
@@ -91,8 +104,9 @@ export default function HistoryScreen() {
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
+
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   intro: {
     color: colors.textMuted,
     fontSize: 15,

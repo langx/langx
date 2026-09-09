@@ -1,6 +1,7 @@
+import { useEvent } from 'expo'
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
-import { useVideoPlayer, VideoView } from 'expo-video'
+import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video'
 import { useEffect, useState } from 'react'
 import { Platform, Pressable, Text, View } from 'react-native'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
@@ -8,6 +9,7 @@ import { audioProgress } from '../lib/audioProgress'
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
+import { Skeleton } from './ui/Skeleton'
 import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
 
 export function formatSeconds(total: number): string {
@@ -205,20 +207,31 @@ export function ImageBubble({ media, onPress }: { media: Media; onPress?: () => 
 
   const { width, height, url } = media
   const [measured, setMeasured] = useState<number | null>(null)
+  const [loaded, setLoaded] = useState(false)
   const ratio = width && height ? width / height : measured
   if (!url) return null
 
+  /*
+   * The box is sized here and the picture fills it, so the slot a message
+   * reserves is the same before and after the bytes arrive. Until then a
+   * skeleton pulses under it — a flat block does not read as loading next to
+   * every other placeholder in the app, which now does.
+   */
   const picture = (
-    <Image
-      source={{ uri: url }}
-      style={[styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]}
-      contentFit="cover"
-      transition={150}
-      onLoad={({ source }) => {
-        if (ratio || !source.width || !source.height) return
-        setMeasured(source.width / source.height)
-      }}
-    />
+    <View style={[styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]}>
+      {loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      <Image
+        source={{ uri: url }}
+        style={styles.imageFill}
+        contentFit="cover"
+        transition={150}
+        onLoad={({ source }) => {
+          setLoaded(true)
+          if (ratio || !source.width || !source.height) return
+          setMeasured(source.width / source.height)
+        }}
+      />
+    </View>
   )
 
   /*
@@ -251,9 +264,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // Same size and tabular figures as the duration beside it, so "0:07" and
   // "0.5x" sit on one line without the row shifting when either changes.
   rate: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'], fontWeight: '600' },
-  image: { backgroundColor: colors.fill, borderRadius: radius.md, width: 220 },
+  image: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.md,
+    // Clips the skeleton to the corner; the picture used to clip itself.
+    overflow: 'hidden',
+    width: 220,
+  },
+  imageFill: { height: '100%', width: '100%' },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },
+  // `height: 'auto'` undoes the skeleton's own default height, so the four
+  // edges are what size it and it covers whatever box it is put in.
+  placeholder: { bottom: 0, height: 'auto', left: 0, position: 'absolute', right: 0, top: 0 },
   video: {
     backgroundColor: colors.fill,
     borderRadius: radius.md,
@@ -289,6 +312,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     textShadowRadius: 4,
   },
 }))
+
+/**
+ * Whether a player has a first frame to draw. Until it does, the box it will
+ * fill shows a skeleton rather than the fill colour, the same as a picture.
+ */
+function useVideoReady(player: VideoPlayer): boolean {
+  const { status } = useEvent(player, 'statusChange', { status: player.status })
+  return status === 'readyToPlay'
+}
 
 /**
  * A video, in one of two modes.
@@ -332,6 +364,7 @@ export function VideoBubble({
     instance.loop = preview
     instance.muted = preview
   })
+  const ready = useVideoReady(player)
 
   /*
    * Driven from the outside rather than from a viewability check in here: one
@@ -370,6 +403,7 @@ export function VideoBubble({
 
   return (
     <View style={[styles.video, { aspectRatio: ratio }]}>
+      {ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
       {preview && onPress ? (
         // Only in preview mode. With native controls on, a `Pressable` around
         // them competes with the scrub bar for the same touch.
@@ -407,9 +441,36 @@ export function VideoTile({ url }: { url: string }) {
   const player = useVideoPlayer(url, (instance) => {
     instance.muted = true
   })
+  const ready = useVideoReady(player)
 
   return (
-    <VideoView player={player} style={styles.tileFill} contentFit="cover" nativeControls={false} />
+    <>
+      {ready ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      <VideoView
+        player={player}
+        style={styles.tileFill}
+        contentFit="cover"
+        nativeControls={false}
+      />
+    </>
+  )
+}
+
+/** A gallery tile's picture, with a skeleton under it until it has decoded. */
+function ImageTile({ url }: { url: string }) {
+  const styles = useStyles()
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <>
+      {loaded ? null : <Skeleton radius={0} style={styles.placeholder} />}
+      <Image
+        source={{ uri: url }}
+        style={styles.tileFill}
+        contentFit="cover"
+        onLoad={() => setLoaded(true)}
+      />
+    </>
   )
 }
 
@@ -498,7 +559,7 @@ export function MediaGallery({
                 </View>
               </>
             ) : (
-              <Image source={{ uri: item.url }} style={styles.tileFill} contentFit="cover" />
+              <ImageTile url={item.url} />
             )}
           </Pressable>
         )
