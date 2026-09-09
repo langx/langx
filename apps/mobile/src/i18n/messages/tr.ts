@@ -391,7 +391,9 @@ export const tr: Localized<EnMessages> = {
     aboutYouOptional: 'Senin hakkında (isteğe bağlı)',
     tooYoung: 'LangX {age} yaş ve üzeri içindir.',
     photoTitle: 'Bir de yüzünü koy',
-    photoBody: 'İkisi de isteğe bağlı ve ikisi de merhaba deme ihtimalini çok artırıyor.',
+    photoBody:
+      'Sana bir yüz çizdik. Gerçek bir fotoğraf, merhaba deme ihtimalini çok artırıyor — biyografi de isteğe bağlı.',
+    drawnFace: 'Senin için çizildi. Bir fotoğraf gelene kadar kalır.',
     photoUnavailable: 'Fotoğraflara erişilemiyor',
     photoPermission: 'Resim koyabilmek için LangX’in fotoğraflarına erişmesi gerekiyor.',
     photoUploadFailed: 'Bu resim yüklenemedi. Tekrar deneyebilir ya da geçebilirsin.',

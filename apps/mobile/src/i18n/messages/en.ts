@@ -424,7 +424,9 @@ export const en = {
     aboutYouOptional: 'About you (optional)',
     tooYoung: 'LangX is for people aged {age} and over.',
     photoTitle: 'Put a face to it',
-    photoBody: 'Both of these are optional, and both make people far more likely to say hello.',
+    photoBody:
+      'We drew you a face. A real photo makes people far more likely to say hello — and the bio is optional too.',
+    drawnFace: 'Drawn for you. It stays until a photo replaces it.',
     photoUnavailable: 'Photos unavailable',
     photoPermission: 'LangX needs access to your photos to set a picture.',
     photoUploadFailed: 'That picture did not upload. You can try again or skip.',

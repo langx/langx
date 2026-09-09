@@ -383,7 +383,8 @@ export const es: Localized<EnMessages> = {
     tooYoung: 'LangX es para personas de {age} años o más.',
     photoTitle: 'Ponle cara',
     photoBody:
-      'Las dos cosas son opcionales, y las dos hacen mucho más probable que alguien te salude.',
+      'Te hemos dibujado una cara. Una foto real hace mucho más probable que alguien te salude, y la bio también es opcional.',
+    drawnFace: 'Dibujada para ti. Se queda hasta que una foto la sustituya.',
     photoUnavailable: 'Fotos no disponibles',
     photoPermission: 'LangX necesita acceso a tus fotos para poner una imagen.',
     photoUploadFailed: 'Esa imagen no se subió. Puedes reintentarlo o saltarlo.',
