@@ -725,6 +725,16 @@ export const en = {
     deleteForMe: 'Delete for me',
     actionFailed: 'That did not go through',
     viewProfile: 'View profile',
+    media: 'Photos and voice notes',
+  },
+
+  chatMedia: {
+    title: 'Media',
+    tabVisual: 'Photos & video',
+    tabAudio: 'Voice notes',
+    emptyVisual: 'Photos and video you send each other will collect here.',
+    emptyAudio: 'Voice notes from this chat will collect here.',
+    tabPicker: 'Photos and video, or voice notes',
   },
 
   messageMenu: {

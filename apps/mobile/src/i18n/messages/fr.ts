@@ -692,6 +692,16 @@ export const fr: Localized<EnMessages> = {
     deleteForMe: 'Supprimer pour moi',
     actionFailed: 'Ça n’est pas passé',
     viewProfile: 'Voir le profil',
+    media: 'Photos et messages vocaux',
+  },
+
+  chatMedia: {
+    title: 'Médias',
+    tabVisual: 'Photos et vidéo',
+    tabAudio: 'Messages vocaux',
+    emptyVisual: 'Les photos et vidéos que vous vous envoyez s’accumuleront ici.',
+    emptyAudio: 'Les messages vocaux de cette conversation s’accumuleront ici.',
+    tabPicker: 'Photos et vidéo, ou messages vocaux',
   },
 
   messageMenu: {

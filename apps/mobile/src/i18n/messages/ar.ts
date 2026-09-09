@@ -789,6 +789,16 @@ export const ar: Localized<EnMessages> = {
     deleteForMe: 'حذف عندي',
     actionFailed: 'لم تتم العملية',
     viewProfile: 'عرض الملف الشخصي',
+    media: 'الصور والرسائل الصوتية',
+  },
+
+  chatMedia: {
+    title: 'الوسائط',
+    tabVisual: 'صور وفيديو',
+    tabAudio: 'رسائل صوتية',
+    emptyVisual: 'ستُجمع هنا الصور ومقاطع الفيديو التي تتبادلانها.',
+    emptyAudio: 'ستُجمع هنا الرسائل الصوتية من هذه المحادثة.',
+    tabPicker: 'صور وفيديو أو رسائل صوتية',
   },
 
   messageMenu: {

@@ -528,6 +528,44 @@ export const listMessagesQuerySchema = z.object({
 })
 export type ListMessagesQuery = z.infer<typeof listMessagesQuerySchema>
 
+/**
+ * One tab, not one kind.
+ *
+ * `MEDIA_KINDS` cannot say this: the grid shows photos and videos together
+ * because they are looked at the same way, and a voice note is not looked at
+ * at all — it is a different screen's worth of behaviour in the same list.
+ */
+export const MEDIA_TABS = ['visual', 'audio'] as const
+export type MediaTab = (typeof MEDIA_TABS)[number]
+
+/**
+ * `GET /conversations/:id/media`.
+ *
+ * A page counts *messages*, and one message carries up to `MAX_ATTACHMENTS`
+ * files, so thirty messages is thirty to a hundred and eighty tiles. The
+ * ceiling belongs on the side that bounds the query; the grid flattens what
+ * arrives and does not care which.
+ *
+ * `cursor` is `.trim().min(1)`, following the corrections list rather than the
+ * message window above: the window's bare `z.string().optional()` accepts
+ * `?cursor=` and hands `''` to `decodeDateIdCursor`, which then reports a
+ * malformed cursor where none was sent.
+ */
+export const CONVERSATION_MEDIA_PAGE_SIZE_DEFAULT = 30
+export const CONVERSATION_MEDIA_PAGE_SIZE_MAX = 60
+
+export const listConversationMediaQuerySchema = z.object({
+  tab: z.enum(MEDIA_TABS).default('visual'),
+  cursor: z.string().trim().min(1).optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(CONVERSATION_MEDIA_PAGE_SIZE_MAX)
+    .default(CONVERSATION_MEDIA_PAGE_SIZE_DEFAULT),
+})
+export type ListConversationMediaQuery = z.infer<typeof listConversationMediaQuerySchema>
+
 export const CONVERSATION_PAGE_SIZE_DEFAULT = 20
 export const CONVERSATION_PAGE_SIZE_MAX = 50
 

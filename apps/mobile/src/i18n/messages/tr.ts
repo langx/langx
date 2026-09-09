@@ -689,6 +689,16 @@ export const tr: Localized<EnMessages> = {
     deleteForMe: 'Benden sil',
     actionFailed: 'Bu işlem gerçekleşmedi',
     viewProfile: 'Profili gör',
+    media: 'Fotoğraflar ve sesli notlar',
+  },
+
+  chatMedia: {
+    title: 'Medya',
+    tabVisual: 'Fotoğraf ve video',
+    tabAudio: 'Sesli notlar',
+    emptyVisual: 'Birbirinize gönderdiğiniz fotoğraf ve videolar burada birikir.',
+    emptyAudio: 'Bu sohbetteki sesli notlar burada birikir.',
+    tabPicker: 'Fotoğraf ve video ya da sesli notlar',
   },
 
   messageMenu: {

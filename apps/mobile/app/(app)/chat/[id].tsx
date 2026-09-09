@@ -1352,6 +1352,9 @@ export default function ChatScreen() {
       // the thing I wanted to keep go — and differ only in how much shape it
       // had when it was kept.
       { label: t('chat.phraseDeck'), value: 'phrases' },
+      // The third answer to the same question, and the only one that needs
+      // nothing kept first: a photo is already saved by having been sent.
+      { label: t('chat.media'), value: 'media' },
       // The same toggle the list offers, where the design puts it as well.
       { label: pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
       { label: t('common.block'), value: 'block', destructive: true },
@@ -1362,6 +1365,8 @@ export default function ChatScreen() {
       router.push('/(app)/starred')
     } else if (choice === 'phrases') {
       router.push({ pathname: '/(app)/phrases', params: { id: conversationId } })
+    } else if (choice === 'media') {
+      router.push({ pathname: '/(app)/chat-media', params: { id: conversationId } })
     } else if (choice === 'pin') {
       flags.mutate({ conversationId, pinned: !pinned })
     } else if (choice === 'block') {

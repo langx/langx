@@ -762,6 +762,16 @@ export const ru: Localized<EnMessages> = {
     deleteForMe: 'Удалить у себя',
     actionFailed: 'Не получилось',
     viewProfile: 'Открыть профиль',
+    media: 'Фото и голосовые',
+  },
+
+  chatMedia: {
+    title: 'Медиа',
+    tabVisual: 'Фото и видео',
+    tabAudio: 'Голосовые',
+    emptyVisual: 'Здесь соберутся фото и видео, которыми вы обменяетесь.',
+    emptyAudio: 'Здесь соберутся голосовые из этого чата.',
+    tabPicker: 'Фото и видео или голосовые',
   },
 
   messageMenu: {

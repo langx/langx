@@ -220,6 +220,46 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
     /**
+     * The conversation-media screen: one thread's attachments, split into a
+     * visual tab (`type: { $in: ['image', 'video'] }`) and an audio one
+     * (`type: 'audio'`), each newest-first and paged.
+     *
+     * `type` sits *second*, ahead of the sort keys, and that placement is the
+     * whole index. Through `conversation_created_id` above, both tabs are
+     * bounded to the thread and then filter `type` over every message in it —
+     * which for the audio tab means walking a two-year conversation to find
+     * eleven voice notes, on every page of the list. Leading with
+     * `(conversationId, type)` makes each tab's scan cover only its own keys.
+     *
+     * What that placement costs, and why it is affordable:
+     *
+     * - `tab: 'audio'` is a plain equality, so the scan is one interval and
+     *   the trailing `(createdAt, _id)` supply the sort outright. This is the
+     *   tab the index exists for — a voice note is the rarest thing in a
+     *   thread.
+     * - `tab: 'visual'` is a two-point `$in`. A non-equality ahead of the sort
+     *   keys normally forfeits the index's ordering; the planner's
+     *   `explodeForSort` is what rescues this shape, turning it into two
+     *   point-bounded scans merged by `SORT_MERGE`. A two-way merge of sorted
+     *   streams is not a blocking in-memory sort, and two scans is far under
+     *   the explode ceiling. That merge is the *price* of the placement, not
+     *   its benefit.
+     *
+     * `_id` last for the reason `conversation_created_id` has it: the keyset
+     * cursor tiebreaks on it, and without it the sort falls back to memory
+     * whatever else is true. A new name rather than widening the index above,
+     * for the reason written there — and a genuinely different key shape
+     * besides, so that one stays the thread's own index.
+     *
+     * `deletedAt` and `hiddenFor` are deliberately absent. `hiddenFor` is read
+     * with `$ne`, which cannot be bounded at all; both stay residual filters
+     * over a scan already narrowed to one thread and one tab.
+     */
+    {
+      key: { conversationId: 1, type: 1, createdAt: -1, _id: -1 },
+      name: 'conversation_type_created',
+    },
+    /**
      * "How many did *they* send in this thread" — the media gate's fallback
      * for conversations written before `messageCountBy` existed. A count-only
      * scan of this index, instead of filtering `senderId` over every message

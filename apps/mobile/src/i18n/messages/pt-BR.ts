@@ -683,6 +683,16 @@ export const ptBR: Localized<EnMessages> = {
     deleteForMe: 'Excluir para mim',
     actionFailed: 'Isso não foi',
     viewProfile: 'Ver perfil',
+    media: 'Fotos e mensagens de voz',
+  },
+
+  chatMedia: {
+    title: 'Mídia',
+    tabVisual: 'Fotos e vídeo',
+    tabAudio: 'Mensagens de voz',
+    emptyVisual: 'As fotos e os vídeos que vocês enviarem ficam aqui.',
+    emptyAudio: 'As mensagens de voz desta conversa ficam aqui.',
+    tabPicker: 'Fotos e vídeo, ou mensagens de voz',
   },
 
   messageMenu: {
