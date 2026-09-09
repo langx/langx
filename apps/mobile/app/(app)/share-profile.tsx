@@ -2,16 +2,17 @@ import Feather from '@expo/vector-icons/Feather'
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { useMe } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { API_URL } from '../../src/lib/apiUrl'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles, radius, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -49,7 +50,13 @@ export default function ShareProfileScreen() {
         {me.isError ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ActivityIndicator style={styles.loading} />
+          <View style={styles.loading}>
+            {/* The card's own 180 square, so the QR does not resize the column
+                when it arrives. */}
+            <Skeleton width={180} height={180} radius={radius.lg} />
+            <Skeleton width={148} height={18} />
+            <Skeleton width={196} height={15} />
+          </View>
         )}
       </Screen>
     )
@@ -110,7 +117,7 @@ export default function ShareProfileScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { alignItems: 'center', gap: spacing.lg, marginTop: spacing.xxl },
   // The design's rhythm for this column: 22 between every block, buttons included.
   column: { gap: 22 },
   code: { alignItems: 'center', gap: spacing.lg, paddingVertical: spacing.lg },

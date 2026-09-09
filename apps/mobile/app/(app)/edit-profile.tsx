@@ -15,7 +15,7 @@ import {
 } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
   useEffectiveTier,
   useMe,
@@ -37,6 +37,7 @@ import { FormField } from '../../src/components/ui/FormField'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { CountryFromLocation } from '../../src/components/CountryFromLocation'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { chooseAlert, confirmAlert, showAlert } from '../../src/lib/alert'
@@ -88,7 +89,15 @@ export default function EditProfileScreen() {
         {me.isError ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ActivityIndicator style={styles.loading} />
+          <View style={styles.loading}>
+            <Skeleton width={88} height={88} radius={44} />
+            <Skeleton width="42%" height={14} />
+            <Skeleton height={52} />
+            <Skeleton width="34%" height={14} />
+            <Skeleton height={52} />
+            <Skeleton width="38%" height={14} />
+            <Skeleton height={96} />
+          </View>
         )}
       </Screen>
     )
@@ -655,7 +664,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.md, marginTop: spacing.xxl },
   body: { flex: 1 },
   content: { gap: 22, paddingBottom: spacing.xl },
   avatarRow: { alignItems: 'center', flexDirection: 'row', gap: 20, paddingTop: spacing.sm },

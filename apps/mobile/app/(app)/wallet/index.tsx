@@ -1,5 +1,5 @@
 import { COSMETICS } from '@langx/shared'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { router, type Href } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
 import { LoadFailed } from '../../../src/components/LoadFailed'
@@ -7,6 +7,7 @@ import { useMe, useWallet } from '../../../src/api/queries'
 import { GiftCard } from '../../../src/components/store/GiftCard'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { goBackTo } from '../../../src/lib/navigation'
@@ -82,7 +83,13 @@ export default function WalletScreen() {
         {me.isError ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ActivityIndicator style={styles.loading} />
+          <View style={styles.loading}>
+            <Skeleton width={104} height={12} />
+            <Skeleton width={168} height={44} />
+            <Skeleton height={96} radius={20} />
+            <Skeleton height={64} />
+            <Skeleton height={64} />
+          </View>
         )}
       </Screen>
     )
@@ -156,7 +163,7 @@ export default function WalletScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.lg, marginTop: spacing.xxl },
   section: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

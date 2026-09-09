@@ -1,10 +1,11 @@
 import { inviteUrl, TOKEN_RULES } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useMe, useReferrals } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { useLocale, useT } from '../../src/i18n'
@@ -40,7 +41,14 @@ export default function InviteScreen() {
   if (me.isPending || !me.data) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <ScreenHeader title={t('invite.title')} onBack={() => goBackTo('/(app)/settings/share')} />
+        <Text style={styles.body}>{t('invite.body')}</Text>
+        <View style={styles.loading}>
+          <Skeleton height={72} />
+          <Skeleton height={64} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+        </View>
       </Screen>
     )
   }
@@ -161,7 +169,8 @@ export default function InviteScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  // The pill's own top margin, so the first block sits where the pill will.
+  loading: { gap: spacing.lg, marginTop: 20 },
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
   codePill: {
     alignItems: 'center',

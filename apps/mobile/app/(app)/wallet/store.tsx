@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { shiftDayKey, TOKEN_RULES, wornCosmetic } from '@langx/shared'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import {
   useActivity,
@@ -14,6 +14,7 @@ import {
 import { StoreRow } from '../../../src/components/store/StoreRow'
 import type { StoreOffer } from '../../../src/lib/storeOffers'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { showAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
@@ -67,7 +68,13 @@ export default function StoreScreen() {
         {me.isError ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
-          <ActivityIndicator style={styles.loading} />
+          <View style={styles.loading}>
+            <Skeleton width={140} height={14} />
+            <Skeleton height={76} />
+            <Skeleton height={76} />
+            <Skeleton height={76} />
+            <Skeleton height={76} />
+          </View>
         )}
       </Screen>
     )
@@ -210,7 +217,7 @@ export default function StoreScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.lg, marginTop: spacing.xxl },
   balance: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   balanceValue: { ...font.heading, color: colors.text, fontSize: 16 },
   kicker: {

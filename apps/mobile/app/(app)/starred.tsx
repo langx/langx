@@ -2,11 +2,12 @@ import { attachmentsOf, isVideoContentType } from '@langx/shared'
 import { Feather } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMe, useStarred, type MessageDto } from '../../src/api/queries'
 import { formatSeconds, VideoTile } from '../../src/components/MediaBubble'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
@@ -57,7 +58,18 @@ export default function StarredScreen() {
       <ScreenHeader title={t('starred.title')} onBack={() => goBackTo('/(app)/(tabs)/chats')} />
 
       {starred.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.loading}>
+          {SKELETON_ROWS.map((key) => (
+            <View key={key} style={styles.row}>
+              <View style={styles.top}>
+                <Skeleton width={116} height={14} />
+                <Skeleton width={56} height={13} />
+              </View>
+              <Skeleton width="100%" height={16} />
+              <Skeleton width="48%" height={16} />
+            </View>
+          ))}
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -113,6 +125,8 @@ function Row({
     </Pressable>
   )
 }
+
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
 
 /**
  * The one line — or thumbnail and line — that says what was starred.
@@ -233,7 +247,7 @@ function Preview({
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { paddingVertical: spacing.xl },
+  loading: { paddingBottom: spacing.xl },
   list: { flexGrow: 1, paddingBottom: spacing.xl },
   // v3 list language: flat rows on the ground, hairline dividers, no boxes.
   row: {

@@ -19,6 +19,7 @@ import { EmptyState } from '../src/components/ui/EmptyState'
 import { LanguageColumns } from '../src/components/LanguageColumns'
 import { PhotoViewer } from '../src/components/PhotoViewer'
 import { Screen } from '../src/components/ui/Screen'
+import { Skeleton } from '../src/components/ui/Skeleton'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
@@ -91,8 +92,19 @@ export default function SharedProfileScreen() {
 
   if (profile.isPending) {
     return (
-      <Screen>
-        <ActivityIndicator style={styles.loading} />
+      <Screen scroll>
+        <View style={styles.hero}>
+          <Skeleton width={96} height={96} radius={48} />
+          <View style={styles.heroText}>
+            <Skeleton width={168} height={26} />
+            <Skeleton width={132} height={14} />
+          </View>
+        </View>
+        <View style={styles.bioSkeleton}>
+          <Skeleton width="100%" height={16} />
+          <Skeleton width="88%" height={16} />
+          <Skeleton width="44%" height={16} />
+        </View>
       </Screen>
     )
   }
@@ -197,6 +209,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   handle: { color: colors.textMuted, fontSize: 14 },
   pronouns: { color: colors.textFaint, fontSize: 13 },
   bio: { color: colors.text, fontSize: 16, lineHeight: 25, paddingVertical: 22 },
+  bioSkeleton: { gap: 10, paddingVertical: 22 },
   cta: { gap: spacing.md, marginTop: spacing.xxl },
   ctaBody: { ...font.body, color: colors.textMuted, lineHeight: 23, textAlign: 'center' },
 }))

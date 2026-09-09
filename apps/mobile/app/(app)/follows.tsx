@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useFollows } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
+import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -68,7 +69,11 @@ export default function FollowsScreen() {
       />
 
       {follows.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <PersonRowSkeleton key={key} />
+          ))}
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -119,8 +124,9 @@ export default function FollowsScreen() {
   )
 }
 
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
   row: {

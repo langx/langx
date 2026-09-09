@@ -2,6 +2,7 @@ import { Text, View } from 'react-native'
 import type { Locale } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useLocale } from '../i18n'
+import { Skeleton } from './ui/Skeleton'
 
 /**
  * Monday-first initials. The API returns seven days ending today, so the
@@ -85,6 +86,29 @@ export function WeekBars({ days, accessibilityLabel }: WeekBarsProps) {
     </View>
   )
 }
+
+/**
+ * The chart before its week: same columns, same bar area, same label row, so
+ * the real one drops into the slot without moving anything under it. The
+ * heights are a fixed shape rather than random, so it does not flicker.
+ */
+export function WeekBarsSkeleton() {
+  const styles = useStyles()
+  return (
+    <View style={styles.chart}>
+      {SKELETON_BARS.map((height, index) => (
+        <View key={index} style={styles.column}>
+          <View style={styles.bars}>
+            <Skeleton height={height} radius={4} />
+          </View>
+          <Skeleton width={9} height={13} />
+        </View>
+      ))}
+    </View>
+  )
+}
+
+const SKELETON_BARS = [28, 46, 20, 60, 36, 52, 24]
 
 const useStyles = makeStyles(({ colors }) => ({
   chart: { alignItems: 'flex-end', flexDirection: 'row', gap: 10, paddingVertical: 8 },

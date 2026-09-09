@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { STREAK_FREEZE_SKU } from '@langx/shared'
 import { useState } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { router, type Href } from 'expo-router'
 import { useMe, usePurchase, useTokens, useWallet } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
@@ -10,6 +10,7 @@ import { StoreRow } from '../../../src/components/store/StoreRow'
 import { Button } from '../../../src/components/ui/Button'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { useT, type MessageKey } from '../../../src/i18n'
@@ -69,7 +70,12 @@ export default function StreakScreen() {
   if (tokens.isPending) {
     return (
       <Screen>
-        <ActivityIndicator style={styles.loading} />
+        <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
+        <View style={styles.loading}>
+          <Skeleton width={176} height={44} />
+          <Skeleton height={168} radius={16} />
+          <Skeleton height={92} />
+        </View>
       </Screen>
     )
   }
@@ -169,7 +175,7 @@ export default function StreakScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
+  loading: { gap: spacing.lg },
   share: { marginBottom: spacing.sm, marginTop: 14 },
   tiles: {
     borderBottomColor: colors.border,
