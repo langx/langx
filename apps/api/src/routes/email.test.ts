@@ -7,6 +7,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { translator } from '../i18n'
 import { signUnsubscribeToken } from '../email/unsubscribeToken'
 import { mintDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
@@ -36,6 +37,8 @@ describe('unsubscribing from a link in an email', () => {
   let app: FastifyInstance
   let emailSender: CapturingEmailSender
   let userId: string
+  let cookie: string
+  let profileHandle: string
 
   async function notificationsOf(id: string): Promise<Record<string, unknown>> {
     const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
@@ -95,14 +98,18 @@ describe('unsubscribing from a link in an email', () => {
       password: PASSWORD,
       name: 'Test',
     })
+    const body = onboardingBody()
     const created = await app.inject({
       method: 'POST',
       url: '/profiles',
       headers: { cookie: user.cookie },
-      payload: onboardingBody(),
+      payload: body,
     })
     expect(created.statusCode, created.body).toBe(201)
     userId = user.userId
+    cookie = user.cookie
+    profileHandle = body.handle
+    emailSender.messages.length = 0
   })
 
   /**
@@ -289,6 +296,50 @@ describe('unsubscribing from a link in an email', () => {
       })
       expect(response.statusCode).toBe(400)
       expect(await deletedAt(userId)).toBeUndefined()
+    })
+  })
+
+  /**
+   * The one mail sent while signed in. It follows the order every auth mail
+   * does — the languages on the profile, then the language the app is being
+   * read in, then English — because here, unlike a notification, there is a
+   * request to read the second answer off.
+   */
+  describe('asking for the delete-account link', () => {
+    async function request(acceptLanguage?: string) {
+      return app.inject({
+        method: 'POST',
+        url: '/me/delete/request',
+        headers: { cookie, ...(acceptLanguage ? { 'accept-language': acceptLanguage } : {}) },
+        payload: { handle: profileHandle },
+      })
+    }
+
+    async function speaks(codes: string[]): Promise<void> {
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: userId }, { $set: { nativeLanguages: codes.map((code) => ({ code })) } })
+    }
+
+    it('writes the mail in a native language before the language the app is in', async () => {
+      const response = await request('de')
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toEqual({ sent: true, deliverable: true })
+      expect(emailSender.messages.at(-1)?.subject).toBe(translator('tr')('email.deleteSubject'))
+    })
+
+    it('falls back to the language the app is in when no native language has a catalogue', async () => {
+      await speaks(['ja'])
+      const response = await request('de')
+      expect(response.statusCode, response.body).toBe(200)
+      expect(emailSender.messages.at(-1)?.subject).toBe(translator('de')('email.deleteSubject'))
+    })
+
+    it('and to English when neither answers', async () => {
+      await speaks(['ja'])
+      const response = await request()
+      expect(response.statusCode, response.body).toBe(200)
+      expect(emailSender.messages.at(-1)?.subject).toBe(translator('en')('email.deleteSubject'))
     })
   })
 })

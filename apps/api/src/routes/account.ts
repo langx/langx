@@ -22,9 +22,10 @@ import { COLLECTIONS } from '../db/collections'
 import { ApiError } from '../lib/ApiError'
 import { publicApiUrl } from '../env'
 import { deleteAccountEmail } from '../email/templates'
+import { localeFromHeader } from '../i18n'
 import { emailFor } from '../modules/profiles/emailFor'
 import { deletionConfirmUrl, mintDeletionToken } from '../modules/account/deletionTokens'
-import { localeFor } from '../modules/profiles/localeFor'
+import { nativeLocaleFor } from '../modules/profiles/localeFor'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -193,7 +194,13 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
       }
 
       const token = await mintDeletionToken(app.mongo.db, request.userId)
-      const locale = await localeFor(app.mongo.db, request.userId)
+      // The one mail sent while signed in, so the request can say what the
+      // account cannot: native language first, then the language the app is
+      // being read in, and English only when neither answers — the same
+      // order every auth mail follows.
+      const locale =
+        (await nativeLocaleFor(app.mongo.db, request.userId)) ??
+        localeFromHeader(request.headers['accept-language'])
       await app.email.send({
         to: address.email,
         ...deleteAccountEmail(deletionConfirmUrl(publicApiUrl(app.env), token), locale),
