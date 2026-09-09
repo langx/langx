@@ -978,6 +978,11 @@ export const ptBR: Localized<EnMessages> = {
     sending: 'Enviando…',
     sent: 'Obrigado. Lemos tudo e respondemos por e-mail.',
     failed: 'Não deu para enviar. Tente de novo daqui a pouco.',
+    tooMany: 'Você já enviou vários. Tente de novo em uma hora.',
+    tooShort: {
+      one: 'Um pouco mais: pelo menos um caractere.',
+      other: 'Um pouco mais: pelo menos {count} caracteres.',
+    },
   },
   kitchen: {
     title: 'Nossa cozinha',

@@ -1011,6 +1011,11 @@ export const de: Localized<EnMessages> = {
     sending: 'Wird gesendet…',
     sent: 'Danke. Wir lesen alles und antworten per E-Mail.',
     failed: 'Das ging nicht raus. Versuch es gleich noch einmal.',
+    tooMany: 'Du hast davon schon einige geschickt. Versuch es in einer Stunde noch einmal.',
+    tooShort: {
+      one: 'Etwas mehr — mindestens ein Zeichen.',
+      other: 'Etwas mehr — mindestens {count} Zeichen.',
+    },
   },
   kitchen: {
     title: 'Unsere Küche',

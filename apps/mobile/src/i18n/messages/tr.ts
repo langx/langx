@@ -988,6 +988,11 @@ export const tr: Localized<EnMessages> = {
     sending: 'Gönderiliyor…',
     sent: 'Teşekkürler. Hepsini okuyor ve e-postayla yanıtlıyoruz.',
     failed: 'Gönderilemedi. Birazdan tekrar dene.',
+    tooMany: 'Bunlardan birkaçını zaten gönderdin. Bir saat sonra tekrar dene.',
+    tooShort: {
+      one: 'Biraz daha — en az bir karakter.',
+      other: 'Biraz daha — en az {count} karakter.',
+    },
   },
   kitchen: {
     title: 'Mutfağımız',

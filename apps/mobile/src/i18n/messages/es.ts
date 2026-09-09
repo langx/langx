@@ -983,6 +983,11 @@ export const es: Localized<EnMessages> = {
     sending: 'Enviando…',
     sent: 'Gracias. Leemos todos y respondemos por correo.',
     failed: 'No se ha enviado. Inténtalo de nuevo en un momento.',
+    tooMany: 'Ya has enviado varios. Inténtalo de nuevo en una hora.',
+    tooShort: {
+      one: 'Un poco más: al menos un carácter.',
+      other: 'Un poco más: al menos {count} caracteres.',
+    },
   },
   kitchen: {
     title: 'Nuestra cocina',

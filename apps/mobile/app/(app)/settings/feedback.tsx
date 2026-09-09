@@ -3,6 +3,7 @@ import type { FeedbackKind } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
+import { ApiRequestError } from '../../../src/api/client'
 import { uploadFeedbackMedia, useSendFeedback } from '../../../src/api/queries'
 import {
   AttachmentBar,
@@ -90,7 +91,19 @@ export default function FeedbackScreen() {
           goBackTo(BACK_TO)
           showToast(t('feedback.sent'))
         },
-        onError: () => showToast(t('feedback.failed')),
+        onError: (caught: unknown) => {
+          // Two refusals a person can act on, told apart from the rest: the
+          // route allows a handful an hour, and it needs a verified address —
+          // "try again in a moment" is wrong advice for both.
+          const code = caught instanceof ApiRequestError ? caught.code : undefined
+          showToast(
+            code === 'RATE_LIMITED'
+              ? t('feedback.tooMany')
+              : code === 'EMAIL_NOT_VERIFIED'
+                ? t('errors.emailNotVerified')
+                : t('feedback.failed'),
+          )
+        },
       },
     )
   }
@@ -116,6 +129,13 @@ export default function FeedbackScreen() {
             multiline
             autoCapitalize="sentences"
             maxLength={FEEDBACK_MAX_LENGTH}
+            // Says why the button is off. Only once they have started: an empty
+            // field with a warning under it is a form that scolds first.
+            error={
+              draft.trim().length > 0 && !ready
+                ? t('feedback.tooShort', { count: FEEDBACK_MIN_LENGTH })
+                : undefined
+            }
             style={styles.field}
           />
 

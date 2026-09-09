@@ -1033,6 +1033,11 @@ export const en = {
     sending: 'Sending…',
     sent: 'Thank you. We read every one of these and answer by email.',
     failed: 'That did not send. Try again in a moment.',
+    tooMany: 'You have sent a few of these already. Try again in an hour.',
+    tooShort: {
+      one: 'A little more — at least one character.',
+      other: 'A little more — at least {count} characters.',
+    },
   },
   kitchen: {
     title: 'Our Kitchen',
