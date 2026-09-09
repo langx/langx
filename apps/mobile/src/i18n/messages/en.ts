@@ -965,6 +965,25 @@ export const en = {
     dataDeletion: 'Delete my data',
     security: 'Security',
   },
+  feedback: {
+    bugTitle: 'Report a bug',
+    featureTitle: 'Request a feature',
+    bugRowBody: 'Something broken? Tell us, and earn tokens for it.',
+    featureRowBody: 'Something missing? Tell us what you would use.',
+    bugIntro:
+      'Tell us what happened, what you expected instead, and how to make it happen again. The more exactly you describe it, the sooner it is fixed.',
+    featureIntro:
+      'Tell us what you would like to be able to do, and what you would use it for. Why it matters to you is the part that decides what gets built.',
+    reward:
+      'If we confirm it, you earn tokens for it — how many depends on how much it turns out to be worth.',
+    bugPlaceholder: 'What happened, and what you expected…',
+    featurePlaceholder: 'What you would like, and what you would use it for…',
+    hint: 'A screenshot or a screen recording helps more than anything else. We answer by email, and what you write may be opened as a public issue on GitHub — without your name on it.',
+    send: 'Send',
+    sending: 'Sending…',
+    sent: 'Thank you. We read every one of these and answer by email.',
+    failed: 'That did not send. Try again in a moment.',
+  },
   kitchen: {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
@@ -1286,6 +1305,7 @@ export const en = {
     referralSubscription: 'Invite subscription bonus',
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
+    bounty: 'Bug bounty',
   },
 
   cosmetics: {

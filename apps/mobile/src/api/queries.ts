@@ -1,4 +1,5 @@
 import {
+  type FeedbackInput,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -1594,18 +1595,20 @@ export async function uploadMessageMedia(input: {
   }
 }
 
+/** Upload an attachment for a post or a correction. */
+export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/posts/upload-url', input)
+}
+
 /**
- * Upload an attachment for a post or a correction.
- *
- * Same three steps as `uploadMessageMedia` against a different signing route,
- * `onProgress` included — the feed could report no percentage at all until
- * this took one, which is the only thing that ever differed between them
- * besides the route. Not folded into one function: the message version has to
- * name a conversation so the server can check access before signing, and this
- * one has nothing to name yet — the post does not exist until the upload has
- * already succeeded.
+ * Proof for a bug report or a feature request — a screenshot or a screen
+ * recording — into the `feedback/` prefix its own signing route keys by user.
  */
-export async function uploadPostMedia(input: {
+export function uploadFeedbackMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/feedback/upload-url', input)
+}
+
+export interface PresignedUpload {
   kind: MediaKind
   uri: string
   contentType: string
@@ -1614,11 +1617,23 @@ export async function uploadPostMedia(input: {
   height?: number
   /** Bytes sent so far, and the whole; `0` for a total nobody could measure. */
   onProgress?: (loaded: number, total: number) => void
-}): Promise<Media> {
+}
+
+/**
+ * Sign, PUT, describe — against whichever route signs the prefix the file
+ * belongs in.
+ *
+ * The same three steps as `uploadMessageMedia`, `onProgress` included, and
+ * still not folded into it: the message version has to name a conversation so
+ * the server can check access before signing, where everything here has
+ * nothing to name yet — the post, or the report, does not exist until the
+ * upload has already succeeded.
+ */
+async function uploadToSigningRoute(path: string, input: PresignedUpload): Promise<Media> {
   // Blob first, then sign — see `uploadMessageMedia` for why the order matters.
   const blob = await (await fetch(input.uri)).blob()
   const contentType = resolveUploadType(input.kind, input.contentType, blob.type)
-  const target = await api.post<UploadUrlDto>('/posts/upload-url', {
+  const target = await api.post<UploadUrlDto>(path, {
     kind: input.kind,
     contentType,
   })
@@ -1638,6 +1653,20 @@ export async function uploadPostMedia(input: {
     ...(input.width !== undefined ? { width: input.width } : {}),
     ...(input.height !== undefined ? { height: input.height } : {}),
   }
+}
+
+/**
+ * Send a bug report or a feature request.
+ *
+ * Nothing is invalidated because nothing of ours is stored: the server turns
+ * it into an email and an issue on the repository, so there is no list for
+ * this to land in and nothing to read back.
+ */
+export function useSendFeedback() {
+  return useMutation({
+    mutationFn: (input: FeedbackInput) =>
+      api.post<{ ok: boolean; issueUrl: string | null }>('/feedback', input),
+  })
 }
 
 export interface TranslationDto {

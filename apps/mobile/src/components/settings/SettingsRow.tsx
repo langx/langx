@@ -559,6 +559,24 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => router.push('/(app)/legal')}
         />
       )
+    case 'about.reportBug':
+      return (
+        <ListRow
+          title={t('feedback.bugTitle')}
+          subtitle={t('feedback.bugRowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/feedback?kind=bug')}
+        />
+      )
+    case 'about.requestFeature':
+      return (
+        <ListRow
+          title={t('feedback.featureTitle')}
+          subtitle={t('feedback.featureRowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/feedback?kind=feature')}
+        />
+      )
     case 'about.community':
       return (
         <ListRow

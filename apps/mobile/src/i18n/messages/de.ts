@@ -946,6 +946,25 @@ export const de: Localized<EnMessages> = {
     dataDeletion: 'Meine Daten löschen',
     security: 'Sicherheit',
   },
+  feedback: {
+    bugTitle: 'Fehler melden',
+    featureTitle: 'Funktion vorschlagen',
+    bugRowBody: 'Etwas kaputt? Sag uns Bescheid und verdien Token dafür.',
+    featureRowBody: 'Fehlt etwas? Sag uns, was du nutzen würdest.',
+    bugIntro:
+      'Beschreibe, was passiert ist, was du stattdessen erwartet hast und wie man es wieder auslöst. Je genauer die Beschreibung, desto schneller ist es behoben.',
+    featureIntro:
+      'Beschreibe, was du gern können möchtest und wofür du es nutzen würdest. Das Wofür entscheidet, was gebaut wird.',
+    reward:
+      'Wenn wir es bestätigen, bekommst du Token dafür — wie viele, hängt davon ab, wie viel es am Ende wert war.',
+    bugPlaceholder: 'Was passiert ist und was du erwartet hast…',
+    featurePlaceholder: 'Was du dir wünschst und wofür…',
+    hint: 'Ein Screenshot oder eine Bildschirmaufnahme hilft am meisten. Wir antworten per E-Mail an die Adresse deines Kontos, und was du schreibst, kann als öffentliches Issue auf GitHub landen — ohne deinen Namen.',
+    send: 'Senden',
+    sending: 'Wird gesendet…',
+    sent: 'Danke. Wir lesen alles und antworten per E-Mail.',
+    failed: 'Das ging nicht raus. Versuch es gleich noch einmal.',
+  },
   kitchen: {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
@@ -1268,6 +1287,7 @@ export const de: Localized<EnMessages> = {
     referralSubscription: 'Einladungs-Abo-Bonus',
     referralWelcome: 'Einladungs-Willkommensbonus',
     gift: 'Stündliches Geschenk',
+    bounty: 'Fehlerprämie',
   },
 
   cosmetics: {

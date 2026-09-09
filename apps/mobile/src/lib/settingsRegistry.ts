@@ -174,6 +174,12 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     route: '/(app)/settings/about',
     items: [
       { id: 'about.legal', titleKey: 'settings.legalSection' },
+      { id: 'about.reportBug', titleKey: 'feedback.bugTitle', bodyKey: 'feedback.bugRowBody' },
+      {
+        id: 'about.requestFeature',
+        titleKey: 'feedback.featureTitle',
+        bodyKey: 'feedback.featureRowBody',
+      },
       { id: 'about.community', titleKey: 'kitchen.title', bodyKey: 'kitchen.intro' },
       { id: 'about.intro', titleKey: 'settings.showIntro' },
       { id: 'about.rate', titleKey: 'settings.rateApp' },

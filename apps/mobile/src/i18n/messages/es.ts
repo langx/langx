@@ -921,6 +921,24 @@ export const es: Localized<EnMessages> = {
     dataDeletion: 'Eliminar mis datos',
     security: 'Seguridad',
   },
+  feedback: {
+    bugTitle: 'Informar de un error',
+    featureTitle: 'Pedir una función',
+    bugRowBody: '¿Algo no funciona? Cuéntanoslo y gana fichas por ello.',
+    featureRowBody: '¿Falta algo? Cuéntanos qué usarías.',
+    bugIntro:
+      'Cuéntanos qué pasó, qué esperabas que pasara y cómo volver a provocarlo. Cuanto más exacto seas, antes se arregla.',
+    featureIntro:
+      'Cuéntanos qué te gustaría poder hacer y para qué lo usarías. Por qué te importa es lo que decide qué se construye.',
+    reward: 'Si lo confirmamos, ganas fichas por ello: cuántas depende de lo que acabe valiendo.',
+    bugPlaceholder: 'Qué pasó y qué esperabas…',
+    featurePlaceholder: 'Qué te gustaría y para qué lo usarías…',
+    hint: 'Una captura o una grabación de pantalla ayuda más que ninguna otra cosa. Respondemos por correo, y lo que escribas puede abrirse como una incidencia pública en GitHub, sin tu nombre.',
+    send: 'Enviar',
+    sending: 'Enviando…',
+    sent: 'Gracias. Leemos todos y respondemos por correo.',
+    failed: 'No se ha enviado. Inténtalo de nuevo en un momento.',
+  },
   kitchen: {
     title: 'Nuestra cocina',
     intro: 'Donde se hace LangX, y quienes lo hacen.',
@@ -1240,6 +1258,7 @@ export const es: Localized<EnMessages> = {
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
+    bounty: 'Recompensa por error',
   },
 
   cosmetics: {
