@@ -1,4 +1,10 @@
-import { TIER_BADGES, TIER_NAMES, resolveNotificationPrefs, tierUnlocking } from '@langx/shared'
+import {
+  hasFeature,
+  TIER_BADGES,
+  TIER_NAMES,
+  resolveNotificationPrefs,
+  tierUnlocking,
+} from '@langx/shared'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -150,6 +156,10 @@ export function useSettingsModel() {
   // The tag names the plan that unlocks the incognito row. It reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
+  // Same idiom for the cross-conversation deck: the row is drawn either way
+  // and says which plan opens it.
+  const canDeckExport = hasFeature(tier, 'deckExport')
+  const deckExportBadge = TIER_BADGES[tierUnlocking('deckExport') ?? 'free']
   const shareLocation = useShareLocation()
   const stopSharingLocation = useStopSharingLocation()
 
@@ -289,6 +299,8 @@ export function useSettingsModel() {
     analytics,
     analyticsRow,
     incognitoBadge,
+    canDeckExport,
+    deckExportBadge,
     shareLocation,
     sharingLocation,
     locationBusy,

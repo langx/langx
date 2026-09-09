@@ -1,6 +1,7 @@
 import {
   conversationFlagsSchema,
   ERROR_CODES,
+  listConversationMediaQuerySchema,
   listConversationsQuerySchema,
   listMessagesQuerySchema,
   listStarredQuerySchema,
@@ -18,6 +19,7 @@ import {
   markConversationRead,
 } from '../modules/chat/messages'
 import { assertConversationAccess } from '../modules/chat/access'
+import { listConversationMedia } from '../modules/chat/conversationMedia'
 import { toConversationView } from '../modules/chat/conversationView'
 import { toMessageView } from '../modules/chat/messageView'
 import { listCorrectionsWritten } from '../modules/chat/corrections'
@@ -155,6 +157,40 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
         return reply.send(window)
       }
       const page = await listMessages(app.mongo.db, request.userId, id, rest)
+      return reply.send(page)
+    },
+  )
+
+  /**
+   * Everything this thread has attached, as its own screen.
+   *
+   * Its own route rather than a filter on the message window above: the grid
+   * pages over attachments alone, and asking the thread for them would mean
+   * walking every text message in between to find them — which is what the
+   * `conversation_type_created` index exists to avoid.
+   *
+   * Both halves of the request are declared, unlike the route above — as
+   * `feed.ts` and `follows.ts` do on every parameterised list. Without
+   * `params` in the schema `request.params` needs the cast that route still
+   * carries, and a cast is the thing that stops being checked the day the id
+   * gains a shape.
+   */
+  app.get(
+    '/conversations/:id/media',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({ id: z.string().trim().min(1) }),
+        querystring: listConversationMediaQuerySchema,
+      },
+    },
+    async (request, reply) => {
+      const page = await listConversationMedia(
+        app.mongo.db,
+        request.userId,
+        request.params.id,
+        request.query,
+      )
       return reply.send(page)
     },
   )

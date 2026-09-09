@@ -31,11 +31,21 @@ import { showToast } from '../../src/lib/toast'
 export default function PhraseCardScreen() {
   const styles = useStyles()
   const t = useT()
-  const { id: conversationId, lang } = useLocalSearchParams<{ id: string; lang?: string }>()
+  const {
+    id: conversationId,
+    lang,
+    example: quoted,
+  } = useLocalSearchParams<{ id: string; lang?: string; example?: string }>()
 
   const [term, setTerm] = useState('')
   const [meaning, setMeaning] = useState('')
-  const [example, setExample] = useState('')
+  /*
+   * Arrives filled when the card was started from a message — the sentence it
+   * was met in, already the example. `term` and `meaning` stay empty on
+   * purpose: the reader picks the word out of the sentence and says what it
+   * means, which is the part that makes it worth keeping.
+   */
+  const [example, setExample] = useState(quoted ?? '')
   const [saving, setSaving] = useState(false)
 
   const back = (): void => goBackTo(`/(app)/chat/${conversationId}`)

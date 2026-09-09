@@ -113,6 +113,7 @@ export const de: Localized<EnMessages> = {
     report: 'Melden',
     correctedCannotEdit: 'Korrigiert — nicht mehr änderbar',
     share: 'Teilen',
+    savePhrase: 'Als Wendung speichern',
   },
 
   messageMeta: {
@@ -125,6 +126,12 @@ export const de: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Nachricht',
     sending: 'Wird gesendet',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'Wendung',
+    meeting: 'Termin',
+    quiz: 'Quiz',
+    correction: 'Korrektur',
   },
 
   interests: {
@@ -712,6 +719,22 @@ export const de: Localized<EnMessages> = {
     deleteForMe: 'Für mich löschen',
     actionFailed: 'Das hat nicht geklappt',
     viewProfile: 'Profil ansehen',
+    media: 'Fotos und Sprachnachrichten',
+    allPhrases: 'Alle gespeicherten Wendungen',
+    phraseScopeMine: 'Meine',
+    phraseScopeAll: 'Alle',
+    allPhrasesEmpty: 'Speichere in einem Chat eine Wendung, dann steht sie hier.',
+    phraseScopePicker: 'Meine Karten oder alle Karten aus meinen Chats',
+    phraseFrom: 'Von {name}',
+  },
+
+  chatMedia: {
+    title: 'Medien',
+    tabVisual: 'Fotos & Video',
+    tabAudio: 'Sprachnachrichten',
+    emptyVisual: 'Fotos und Videos, die ihr euch schickt, sammeln sich hier.',
+    emptyAudio: 'Sprachnachrichten aus diesem Chat sammeln sich hier.',
+    tabPicker: 'Fotos und Video oder Sprachnachrichten',
   },
 
   messageMenu: {
@@ -1149,6 +1172,8 @@ export const de: Localized<EnMessages> = {
     signInUnlinked: 'Getrennt.',
     signInLinkFailed: 'Verbinden fehlgeschlagen. Versuch es noch einmal.',
     signInUnlinkFailed: 'Trennen fehlgeschlagen. Versuch es noch einmal.',
+    exportPhrases: 'Alle Wendungen exportieren',
+    exportPhrasesBody: 'Alle gespeicherten Karten aus allen Chats, in einer Datei.',
   },
 
   deletion: {
@@ -1496,7 +1521,7 @@ export const de: Localized<EnMessages> = {
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',
     deckExportBody:
-      'Exportiere die gespeicherten Wendungen eines Chats als Datei. Sie öffnet sich in Anki.',
+      'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
     translationQuota: 'Übersetze so viel du brauchst',
     translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',

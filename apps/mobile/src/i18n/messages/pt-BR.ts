@@ -109,6 +109,7 @@ export const ptBR: Localized<EnMessages> = {
     report: 'Denunciar',
     correctedCannotEdit: 'Corrigida — não dá para editar',
     share: 'Compartilhar',
+    savePhrase: 'Salvar como expressão',
   },
 
   messageMeta: {
@@ -121,6 +122,12 @@ export const ptBR: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Mensagem',
     sending: 'Enviando',
+    video: 'Vídeo',
+    sticker: 'Sticker',
+    phrase: 'Expressão',
+    meeting: 'Reunião',
+    quiz: 'Quiz',
+    correction: 'Correção',
   },
 
   interests: {
@@ -684,6 +691,22 @@ export const ptBR: Localized<EnMessages> = {
     deleteForMe: 'Excluir para mim',
     actionFailed: 'Isso não foi',
     viewProfile: 'Ver perfil',
+    media: 'Fotos e mensagens de voz',
+    allPhrases: 'Todas as expressões salvas',
+    phraseScopeMine: 'Minhas',
+    phraseScopeAll: 'Todas',
+    allPhrasesEmpty: 'Salve uma expressão em qualquer conversa e ela aparece aqui.',
+    phraseScopePicker: 'Minhas, ou todos os cartões das minhas conversas',
+    phraseFrom: 'Com {name}',
+  },
+
+  chatMedia: {
+    title: 'Mídia',
+    tabVisual: 'Fotos e vídeo',
+    tabAudio: 'Mensagens de voz',
+    emptyVisual: 'As fotos e os vídeos que vocês enviarem ficam aqui.',
+    emptyAudio: 'As mensagens de voz desta conversa ficam aqui.',
+    tabPicker: 'Fotos e vídeo, ou mensagens de voz',
   },
 
   messageMenu: {
@@ -1118,6 +1141,8 @@ export const ptBR: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'Não foi possível conectar. Tente de novo.',
     signInUnlinkFailed: 'Não foi possível desconectar. Tente de novo.',
+    exportPhrases: 'Exportar todas as expressões',
+    exportPhrasesBody: 'Todos os cartões que você salvou, de todas as conversas, em um arquivo.',
   },
 
   deletion: {
@@ -1463,7 +1488,8 @@ export const ptBR: Localized<EnMessages> = {
     sendTranslation: 'Envie no idioma dela',
     sendTranslationBody: 'Escreva no seu; os dois vão, então te leem sem adivinhar.',
     deckExport: 'Leve suas expressões',
-    deckExportBody: 'Exporte as expressões salvas de uma conversa. O arquivo abre no Anki.',
+    deckExportBody:
+      'Exporte as expressões salvas de uma conversa, ou todos os cartões que você salvou, como arquivo. Abre no Anki.',
     advancedFiltersBody: 'Busque por um gênero específico e por cidade.',
     translationQuota: 'Traduza o quanto precisar',
     translationQuotaBody: '{count} traduções por dia — muito mais do que uma conversa usa.',

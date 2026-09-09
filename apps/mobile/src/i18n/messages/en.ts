@@ -141,6 +141,7 @@ export const en = {
     report: 'Report',
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
+    savePhrase: 'Save as a phrase',
   },
 
   messageMeta: {
@@ -153,6 +154,12 @@ export const en = {
     photo: 'Photo',
     message: 'Message',
     sending: 'Sending',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'Phrase',
+    meeting: 'Meeting',
+    quiz: 'Quiz',
+    correction: 'Correction',
   },
 
   /**
@@ -731,6 +738,22 @@ export const en = {
     deleteForMe: 'Delete for me',
     actionFailed: 'That did not go through',
     viewProfile: 'View profile',
+    media: 'Photos and voice notes',
+    allPhrases: 'All saved phrases',
+    phraseScopeMine: 'Mine',
+    phraseScopeAll: 'Everything',
+    allPhrasesEmpty: 'Save a phrase in any conversation and it will show up here.',
+    phraseScopePicker: 'Mine, or every card in my conversations',
+    phraseFrom: 'From {name}',
+  },
+
+  chatMedia: {
+    title: 'Media',
+    tabVisual: 'Photos & video',
+    tabAudio: 'Voice notes',
+    emptyVisual: 'Photos and video you send each other will collect here.',
+    emptyAudio: 'Voice notes from this chat will collect here.',
+    tabPicker: 'Photos and video, or voice notes',
   },
 
   messageMenu: {
@@ -1171,6 +1194,8 @@ export const en = {
     signInUnlinked: 'Disconnected.',
     signInLinkFailed: 'Could not connect. Try again.',
     signInUnlinkFailed: 'Could not disconnect. Try again.',
+    exportPhrases: 'Export every phrase',
+    exportPhrasesBody: 'Every card you have saved, from every conversation, as one file.',
   },
 
   deletion: {
@@ -1516,7 +1541,8 @@ export const en = {
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',
-    deckExportBody: 'Export a conversation’s saved phrases as a file. It opens in Anki.',
+    deckExportBody:
+      'Export one conversation’s saved phrases, or every card you have saved, as a file. It opens in Anki.',
     advancedFiltersBody: 'Search for a specific gender, and by city.',
     translationQuota: 'Translate as much as you need',
     translationQuotaBody: '{count} translations a day — far more than a conversation uses.',

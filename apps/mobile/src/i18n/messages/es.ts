@@ -112,6 +112,7 @@ export const es: Localized<EnMessages> = {
     report: 'Denunciar',
     correctedCannotEdit: 'Corregido: no se puede editar',
     share: 'Compartir',
+    savePhrase: 'Guardar como expresión',
   },
 
   messageMeta: {
@@ -124,6 +125,12 @@ export const es: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Mensaje',
     sending: 'Enviando',
+    video: 'Vídeo',
+    sticker: 'Sticker',
+    phrase: 'Expresión',
+    meeting: 'Reunión',
+    quiz: 'Pregunta',
+    correction: 'Corrección',
   },
 
   interests: {
@@ -690,6 +697,22 @@ export const es: Localized<EnMessages> = {
     deleteForMe: 'Eliminar para mí',
     actionFailed: 'Eso no salió bien',
     viewProfile: 'Ver perfil',
+    media: 'Fotos y notas de voz',
+    allPhrases: 'Todas las expresiones guardadas',
+    phraseScopeMine: 'Mías',
+    phraseScopeAll: 'Todas',
+    allPhrasesEmpty: 'Guarda una expresión en cualquier chat y aparecerá aquí.',
+    phraseScopePicker: 'Mías, o todas las tarjetas de mis chats',
+    phraseFrom: 'De {name}',
+  },
+
+  chatMedia: {
+    title: 'Multimedia',
+    tabVisual: 'Fotos y vídeo',
+    tabAudio: 'Notas de voz',
+    emptyVisual: 'Las fotos y los vídeos que os enviéis se juntarán aquí.',
+    emptyAudio: 'Las notas de voz de este chat se juntarán aquí.',
+    tabPicker: 'Fotos y vídeo, o notas de voz',
   },
 
   messageMenu: {
@@ -1121,6 +1144,8 @@ export const es: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'No se pudo conectar. Inténtalo de nuevo.',
     signInUnlinkFailed: 'No se pudo desconectar. Inténtalo de nuevo.',
+    exportPhrases: 'Exportar todas las expresiones',
+    exportPhrasesBody: 'Todas las tarjetas que has guardado, de todos los chats, en un archivo.',
   },
 
   deletion: {
@@ -1465,7 +1490,7 @@ export const es: Localized<EnMessages> = {
     sendTranslationBody: 'Escribe en el tuyo; van los dos, así te leen sin adivinar.',
     deckExport: 'Llévate tus expresiones',
     deckExportBody:
-      'Exporta las expresiones guardadas de una conversación. El archivo se abre en Anki.',
+      'Exporta las expresiones guardadas de una conversación, o todas las que has guardado, como archivo. Se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
     translationQuota: 'Traduce lo que necesites',
     translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',

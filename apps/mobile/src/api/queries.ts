@@ -15,6 +15,8 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type MediaTab,
+  type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
@@ -107,6 +109,26 @@ export const keys = {
    * the socket's incoming-message writer, which expects a paged list.
    */
   phraseCards: (id: string) => ['phraseCards', id] as const,
+  /**
+   * Its own prefix, and specifically **not** under `messages(id)`.
+   *
+   * That prefix is patched by the socket's incoming-message writer, whose only
+   * defence against a cache it does not belong in is a `prevCursor` a media
+   * page has never carried — so an arriving text message would be appended to
+   * the grid, and the page's absent `mediaLockedFor` would go to `NaN`. Being
+   * paged is what makes this dangerous rather than safe: the shape check
+   * passes. Same lesson as `phraseCards` above, from the other side.
+   *
+   * `tab` is in the key rather than filtered out of one cache, so switching
+   * tabs cannot show the other tab's rows for a frame.
+   */
+  conversationMedia: (id: string, tab: string) => ['conversationMedia', id, tab] as const,
+  /**
+   * Under the same `['phraseCards']` prefix as the per-conversation deck: both
+   * are read on mount and neither is patched by the socket, so sharing the
+   * prefix costs nothing and makes "any deck" one invalidation.
+   */
+  allPhraseCards: (scope: string) => ['phraseCards', 'all', scope] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -1684,6 +1706,65 @@ export interface PhraseCardDto {
   example?: string
   lang: string
   createdAt: string
+}
+
+export interface ConversationMediaPageDto {
+  items: MessageDto[]
+  nextCursor: string | null
+}
+
+/**
+ * One thread's attachments, a tab at a time.
+ *
+ * One parameterised hook rather than both tabs mounted at once, unlike
+ * `corrections.tsx` — there both tabs are lists of comparable value, so paying
+ * for the second request buys an instant switch. Here the grid is what the
+ * screen is for and the audio tab is the secondary one; a second request on
+ * open, for the tab most people never touch, is not worth it. What is lost is
+ * one skeleton on the first switch.
+ *
+ * No `placeholderData` either: the two tabs are different components reading
+ * differently shaped rows, so the "previous data" it would hand over is the
+ * wrong tab's.
+ */
+export function useConversationMedia(conversationId: string, tab: MediaTab) {
+  return useInfiniteQuery({
+    queryKey: keys.conversationMedia(conversationId, tab),
+    queryFn: ({ pageParam }) =>
+      api.get<ConversationMediaPageDto>(
+        `/conversations/${conversationId}/media?tab=${tab}${
+          pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''
+        }`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: conversationId.length > 0,
+  })
+}
+
+export interface CrossPhraseCardDto extends PhraseCardDto {
+  conversationId: string
+  /** The other side of the thread it came from; resolve the name separately. */
+  partnerId?: string
+}
+
+/**
+ * Every saved phrase, across every conversation.
+ *
+ * `enabled` rather than an unconditional fetch: `/me/phrases` is Polyglot on
+ * the *server*, so for a free reader the request is a 403 asked for on
+ * purpose. The caller passes what it already knows about the tier, and the
+ * screen shows the paywall instead of an error state.
+ *
+ * Unpaged, because the route is: this read is the export, and a cursor would
+ * mean paging the whole deck before a file could be written.
+ */
+export function useAllPhraseCards(scope: PhraseScope, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.allPhraseCards(scope),
+    queryFn: () => api.get<{ items: CrossPhraseCardDto[] }>(`/me/phrases?scope=${scope}`),
+    enabled,
+  })
 }
 
 /**
