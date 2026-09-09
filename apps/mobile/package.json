@@ -33,6 +33,7 @@
     "expo-asset": "~57.0.16",
     "expo-audio": "~57.0.4",
     "expo-blur": "~57.0.2",
+    "expo-build-properties": "~57.0.16",
     "expo-calendar": "~57.0.2",
     "expo-camera": "~57.0.4",
     "expo-clipboard": "~57.0.1",
