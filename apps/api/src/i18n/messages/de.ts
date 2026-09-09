@@ -65,6 +65,11 @@ export const de: Localized<ServerMessages> = {
     existingButton: 'Passwort zurücksetzen',
     existingText: 'Du hast bereits ein LangX-Konto. Setze dein Passwort hier zurück: {url}',
 
+    existingLinkBody:
+      'Jemand hat versucht, sich mit dieser E-Mail zu registrieren, aber du hast hier bereits ein Konto, mit deinem Profil darauf. Tippe, um dich anzumelden — es gibt kein Passwort zu merken. Der Link funktioniert einmal und läuft in 15 Minuten ab.',
+    existingLinkText:
+      'Du hast bereits ein LangX-Konto. Melde dich hier an (einmal gültig, läuft in 15 Minuten ab): {url}',
+
     whyThisMail: 'Du bekommst das wegen deiner LangX-Benachrichtigungseinstellungen.',
     unsubscribeLink: 'Diese E-Mails abstellen',
     unsubscribeText: 'Diese E-Mails abstellen: {url}',

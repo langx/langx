@@ -10,6 +10,7 @@ export const MESSAGE_ACTION_IDS = [
   'edit',
   'star',
   'pin',
+  'phrase',
   'share',
   'report',
 ] as const
@@ -165,6 +166,29 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     icon: 'pin-outline',
     page: 'more',
   })
+
+  /**
+   * Turn what they said into a card in the deck, with their sentence already
+   * in the example field.
+   *
+   * Their message, because the point is to keep a phrase *encountered* rather
+   * than one you already know how to write; something to put in the example,
+   * because a card whose example is blank is the empty form the attachment
+   * menu already opens; and not on a phrase card, because a card is what this
+   * would produce.
+   *
+   * `hasBody` also removes the tombstone without a `deleted` check: a
+   * withdrawn message has an empty `body`, and a card quoting "This message
+   * was deleted" is the one thing this must not offer.
+   */
+  if (!context.mine && context.hasBody && context.type !== 'phrase') {
+    actions.push({
+      id: 'phrase',
+      label: t('messageActions.savePhrase'),
+      icon: 'bookmark-outline',
+      page: 'more',
+    })
+  }
 
   // Out through the platform sheet, as text: a message has no address of its
   // own, and a link into a private thread would resolve for nobody but the

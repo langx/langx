@@ -220,6 +220,46 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
     /**
+     * The conversation-media screen: one thread's attachments, split into a
+     * visual tab (`type: { $in: ['image', 'video'] }`) and an audio one
+     * (`type: 'audio'`), each newest-first and paged.
+     *
+     * `type` sits *second*, ahead of the sort keys, and that placement is the
+     * whole index. Through `conversation_created_id` above, both tabs are
+     * bounded to the thread and then filter `type` over every message in it —
+     * which for the audio tab means walking a two-year conversation to find
+     * eleven voice notes, on every page of the list. Leading with
+     * `(conversationId, type)` makes each tab's scan cover only its own keys.
+     *
+     * What that placement costs, and why it is affordable:
+     *
+     * - `tab: 'audio'` is a plain equality, so the scan is one interval and
+     *   the trailing `(createdAt, _id)` supply the sort outright. This is the
+     *   tab the index exists for — a voice note is the rarest thing in a
+     *   thread.
+     * - `tab: 'visual'` is a two-point `$in`. A non-equality ahead of the sort
+     *   keys normally forfeits the index's ordering; the planner's
+     *   `explodeForSort` is what rescues this shape, turning it into two
+     *   point-bounded scans merged by `SORT_MERGE`. A two-way merge of sorted
+     *   streams is not a blocking in-memory sort, and two scans is far under
+     *   the explode ceiling. That merge is the *price* of the placement, not
+     *   its benefit.
+     *
+     * `_id` last for the reason `conversation_created_id` has it: the keyset
+     * cursor tiebreaks on it, and without it the sort falls back to memory
+     * whatever else is true. A new name rather than widening the index above,
+     * for the reason written there — and a genuinely different key shape
+     * besides, so that one stays the thread's own index.
+     *
+     * `deletedAt` and `hiddenFor` are deliberately absent. `hiddenFor` is read
+     * with `$ne`, which cannot be bounded at all; both stay residual filters
+     * over a scan already narrowed to one thread and one tab.
+     */
+    {
+      key: { conversationId: 1, type: 1, createdAt: -1, _id: -1 },
+      name: 'conversation_type_created',
+    },
+    /**
      * "How many did *they* send in this thread" — the media gate's fallback
      * for conversations written before `messageCountBy` existed. A count-only
      * scan of this index, instead of filtering `senderId` over every message
@@ -493,6 +533,28 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { conversationId: 1, term: 1 }, name: 'conversation_term_unique', unique: true },
     // The deck screen, newest first.
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_recent' },
+    /**
+     * `GET /me/phrases?scope=mine` — one person's cards across every thread.
+     * Both indexes above lead with `conversationId`, so neither can answer a
+     * question that names only the author.
+     *
+     * `_id` is in the key, unlike the `author_recent` on `postComments` and
+     * `pronunciationAnswers`: those sort on `createdAt` alone, and this read
+     * sorts `{ createdAt: -1, _id: -1 }` — the order `conversation_recent`
+     * above already serves — so two cards saved in the same millisecond come
+     * back stably instead of in whichever order the storage engine offers.
+     * Without `_id` here that tiebreak is an in-memory sort.
+     *
+     * `scope=all` is **not** served by this index and does not claim to be: it
+     * names conversations rather than an author and rides `conversation_recent`
+     * with an `$in`. Whether that `$in` keeps the index's ordering depends on
+     * how many threads it carries, which is why
+     * `PHRASE_SOURCE_CONVERSATION_LIMIT` is 200 — and why even the sorted case
+     * is affordable, since `conversation_term_unique` caps each thread's deck
+     * and bounds the candidate set a second time. One index does not close
+     * both scopes.
+     */
+    { key: { authorId: 1, createdAt: -1, _id: -1 }, name: 'author_recent' },
   ],
 
   [COLLECTIONS.postComments]: [

@@ -1,6 +1,7 @@
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { authId } from '../../lib/authId'
+import { CREDENTIAL_PROVIDER } from '../account/signInMethods'
 import { recordTermsAcceptance } from '../account/terms'
 
 /**
@@ -136,6 +137,31 @@ export async function cameFromV1(db: Db, userId: string): Promise<boolean> {
     .collection<{ _id: ObjectId; precreatedFromV1?: unknown }>(COLLECTIONS.user)
     .findOne({ _id: authId(userId) }, { projection: { precreatedFromV1: 1 } })
   return Boolean(user?.precreatedFromV1)
+}
+
+/**
+ * A pre-created v1 row whose owner has not set a password on it yet.
+ *
+ * The question `onExistingUserSignUp` asks before deciding which mail a
+ * sign-up over an existing address gets. Both halves are load-bearing. The row
+ * has to be one the script opened: an ordinary account's owner chose their
+ * password, and mailing them a link that walks around it — unasked, at a
+ * stranger's keystroke — is not a courtesy. And it has to still be
+ * passwordless, because the same row after a reset *is* an ordinary account
+ * and the answer changes back.
+ */
+export async function isUnclaimedV1Row(db: Db, userId: string): Promise<boolean> {
+  if (!(await cameFromV1(db, userId))) return false
+  const credential = await db
+    .collection<{ password?: string }>(COLLECTIONS.account)
+    .findOne(
+      { userId: authId(userId), providerId: CREDENTIAL_PROVIDER },
+      { projection: { password: 1 } },
+    )
+  // Better Auth writes the row before the hash in some flows, and a row
+  // without one cannot be signed in with — the same reading `signInMethods.ts`
+  // makes when it answers "do they have a password".
+  return typeof credential?.password !== 'string'
 }
 
 export async function settlePrecreatedUser(

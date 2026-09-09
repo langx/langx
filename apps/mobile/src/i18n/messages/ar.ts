@@ -122,6 +122,7 @@ export const ar: Localized<EnMessages> = {
     report: 'إبلاغ',
     correctedCannotEdit: 'مُصحَّحة — لا يمكن تعديلها',
     share: 'مشاركة',
+    savePhrase: 'حفظ كعبارة',
   },
 
   messageMeta: {
@@ -134,6 +135,12 @@ export const ar: Localized<EnMessages> = {
     photo: 'صورة',
     message: 'رسالة',
     sending: 'جارٍ الإرسال',
+    video: 'فيديو',
+    sticker: 'ملصق',
+    phrase: 'عبارة',
+    meeting: 'اجتماع',
+    quiz: 'سؤال',
+    correction: 'تصحيح',
   },
 
   interests: {
@@ -294,6 +301,14 @@ export const ar: Localized<EnMessages> = {
     maintenanceUntil: '{message}\n\nالعودة المتوقعة: {until}',
     updateTitle: 'حدّث للمتابعة',
     updateBody: 'هذه النسخة من LangX لم تعد مدعومة. حدّث إلى أحدث نسخة للمتابعة.',
+  },
+
+  update: {
+    downloaded: 'هناك نسخة جديدة جاهزة.',
+    restart: 'أعد التشغيل الآن',
+    bannerTitle: 'صدرت نسخة جديدة',
+    bannerBody: 'حدّث للحصول على أحدث نسخة من LangX.',
+    dismiss: 'إغلاق',
   },
 
   intro: {
@@ -782,6 +797,22 @@ export const ar: Localized<EnMessages> = {
     deleteForMe: 'حذف عندي',
     actionFailed: 'لم تتم العملية',
     viewProfile: 'عرض الملف الشخصي',
+    media: 'الصور والرسائل الصوتية',
+    allPhrases: 'كل العبارات المحفوظة',
+    phraseScopeMine: 'عباراتي',
+    phraseScopeAll: 'الكل',
+    allPhrasesEmpty: 'احفظ عبارة في أي محادثة وستظهر هنا.',
+    phraseScopePicker: 'عباراتي أو كل بطاقة في محادثاتي',
+    phraseFrom: 'من {name}',
+  },
+
+  chatMedia: {
+    title: 'الوسائط',
+    tabVisual: 'صور وفيديو',
+    tabAudio: 'رسائل صوتية',
+    emptyVisual: 'ستُجمع هنا الصور ومقاطع الفيديو التي تتبادلانها.',
+    emptyAudio: 'ستُجمع هنا الرسائل الصوتية من هذه المحادثة.',
+    tabPicker: 'صور وفيديو أو رسائل صوتية',
   },
 
   messageMenu: {
@@ -1095,6 +1126,24 @@ export const ar: Localized<EnMessages> = {
     dataDeletion: 'حذف بياناتي',
     security: 'الأمان',
   },
+  feedback: {
+    bugTitle: 'الإبلاغ عن خلل',
+    featureTitle: 'اقتراح ميزة',
+    bugRowBody: 'هل هناك شيء معطّل؟ أخبرنا واكسب رموزًا مقابل ذلك.',
+    featureRowBody: 'هل ينقصك شيء؟ أخبرنا بما ستستخدمه.',
+    bugIntro:
+      'اكتب ما حدث، وما كنت تتوقعه بدلًا منه، وكيف يتكرر الأمر. كلما كان وصفك أدق، أسرعنا في إصلاحه.',
+    featureIntro:
+      'اكتب ما تودّ أن تستطيع فعله، وفيمَ ستستخدمه. سبب حاجتك إليه هو ما يحدّد ما الذي سنبنيه.',
+    reward: 'إذا أكّدنا ذلك، تكسب رموزًا مقابله — وعددها يعتمد على قيمته في النهاية.',
+    bugPlaceholder: 'ما الذي حدث وما الذي كنت تتوقعه…',
+    featurePlaceholder: 'ما الذي تودّه وفيمَ ستستخدمه…',
+    hint: 'لقطة شاشة أو تسجيل للشاشة يساعدان أكثر من أي شيء آخر. نردّ بالبريد على العنوان المسجَّل في حسابك، وقد يُفتح ما تكتبه بلاغًا علنيًا على GitHub — من دون اسمك.',
+    send: 'إرسال',
+    sending: 'جارٍ الإرسال…',
+    sent: 'شكرًا لك. نقرأ كل ما يصلنا ونردّ بالبريد.',
+    failed: 'لم يُرسَل. حاول مرة أخرى بعد قليل.',
+  },
   kitchen: {
     title: 'مطبخنا',
     intro: 'حيث يُصنع LangX، وكل من يصنعه.',
@@ -1274,6 +1323,8 @@ export const ar: Localized<EnMessages> = {
     signInUnlinked: 'تم إلغاء الربط.',
     signInLinkFailed: 'تعذّر الربط. حاول مرة أخرى.',
     signInUnlinkFailed: 'تعذّر إلغاء الربط. حاول مرة أخرى.',
+    exportPhrases: 'تصدير كل العبارات',
+    exportPhrasesBody: 'كل البطاقات التي حفظتها، من كل المحادثات، في ملف واحد.',
   },
 
   deletion: {
@@ -1458,6 +1509,7 @@ export const ar: Localized<EnMessages> = {
     referralSubscription: 'مكافأة اشتراك المدعو',
     referralWelcome: 'مكافأة ترحيب بالدعوة',
     gift: 'هدية كل ساعة',
+    bounty: 'مكافأة اكتشاف خلل',
   },
 
   cosmetics: {
@@ -1705,7 +1757,8 @@ export const ar: Localized<EnMessages> = {
     sendTranslation: 'أرسل بلغته',
     sendTranslationBody: 'اكتب بلغتك؛ يُرسل الاثنان، فيقرأك دون تخمين.',
     deckExport: 'خذ عباراتك معك',
-    deckExportBody: 'صدّر العبارات المحفوظة في محادثة كملف. يفتح في Anki.',
+    deckExportBody:
+      'صدّر العبارات المحفوظة في محادثة، أو كل البطاقات التي حفظتها، كملف. يفتح في Anki.',
     advancedFiltersBody: 'ابحث عن جنس محدد، وحسب المدينة.',
     translationQuota: 'ترجم بقدر ما تحتاج',
     translationQuotaBody: '{count} ترجمة في اليوم — أكثر بكثير مما تستهلكه محادثة.',

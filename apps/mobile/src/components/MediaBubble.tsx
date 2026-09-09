@@ -10,7 +10,7 @@ import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
 
-function formatSeconds(total: number): string {
+export function formatSeconds(total: number): string {
   const minutes = Math.floor(total / 60)
   const seconds = Math.floor(total % 60)
   return `${minutes}:${String(seconds).padStart(2, '0')}`
@@ -402,7 +402,7 @@ export function VideoBubble({
 }
 
 /** A gallery tile's picture: the video, paused on its first frame. */
-function VideoTile({ url }: { url: string }) {
+export function VideoTile({ url }: { url: string }) {
   const styles = useStyles()
   const player = useVideoPlayer(url, (instance) => {
     instance.muted = true

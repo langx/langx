@@ -1,5 +1,5 @@
 /**
- * Turn maintenance on and off, and set the minimum client version.
+ * Turn maintenance on and off, and set the client versions.
  *
  * A script rather than an admin endpoint: this is the control you reach for
  * when something is wrong, and it should not depend on the API being healthy
@@ -9,6 +9,7 @@
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts on "Back at 14:00 UTC" 2026-08-27T14:00:00Z
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts off
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts min-version ios 2.1.0
+ *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts latest-version ios 2.2.0
  *   pnpm --filter @langx/api exec tsx scripts/maintenance.ts flag translationEnabled false
  */
 import { appConfigSchema, minVersionSchema } from '@langx/shared'
@@ -56,6 +57,20 @@ async function main(): Promise<void> {
         console.log('Clients below it get 426 UPDATE_REQUIRED and a forced-update screen.')
         break
       }
+      case 'latest-version': {
+        const [platform, version] = args
+        // Same key check as `min-version`, and the same reason for it.
+        const platformKey = minVersionSchema.keyof().safeParse(platform)
+        if (!platformKey.success || !version) {
+          throw new Error('usage: latest-version <ios|android|web> <x.y.z>')
+        }
+        const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
+        const next = { ...current.latestVersion, [platformKey.data]: version }
+        await updateAppConfig(db, { latestVersion: next })
+        console.log(`Latest ${platform} version is now ${version}`)
+        console.log('Clients below it get a dismissible banner. Nothing is blocked.')
+        break
+      }
       case 'flag': {
         const [name, value] = args
         // Same rule as `min-version`: only a flag the schema knows can be set.
@@ -72,7 +87,8 @@ async function main(): Promise<void> {
       }
       default:
         console.log(
-          'Commands: status | on [message] [untilIso] | off | min-version <p> <v> | flag <n> <bool>',
+          'Commands: status | on [message] [untilIso] | off | min-version <p> <v> | ' +
+            'latest-version <p> <v> | flag <n> <bool>',
         )
         process.exitCode = 1
     }

@@ -1,4 +1,4 @@
-import { webUrl, type Locale } from '@langx/shared'
+import { webUrl, type FeedbackKind, type Locale } from '@langx/shared'
 import { translator } from '../i18n'
 
 /**
@@ -215,8 +215,10 @@ export function deleteAccountEmail(url: string, locale: Locale): Email {
  * — so the form cannot be used to learn which addresses are registered — and
  * this mail is the only channel left that can say "you already have an
  * account" to the one person entitled to hear it. The link is the app's own
- * forgot-password screen, not a token: nothing here was asked for by proof
- * of ownership, so nothing here may grant any.
+ * forgot-password screen, not a token: this mail goes to an account that has a
+ * password, and pointing at the screen that resets it asks for no more trust
+ * than the person already gave. `existingAccountLinkEmail` is the version for
+ * an account that has no password to reset.
  */
 export function existingAccountEmail(url: string, locale: Locale): Email {
   const t = translator(locale)
@@ -230,6 +232,37 @@ export function existingAccountEmail(url: string, locale: Locale): Email {
        <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
     text: t('email.existingText', { url }),
+  }
+}
+
+/**
+ * The same news, for an account with no password behind it: a v1 row that
+ * `legacyPrecreate.ts` opened. Its owner is being told to reset a password
+ * that was never set, which is both odd to read and a longer walk than the
+ * account needs — so this one carries a magic link and the sign-up ends where
+ * it was trying to go.
+ *
+ * It grants something the mail above does not, and the difference is worth
+ * being exact about: the grant goes to an *address*, not to whoever typed it
+ * into the form. The link is single-use, expires in a quarter of an hour, and
+ * lands only in the inbox entitled to it — the same bargain
+ * `requestPasswordReset` already makes with anyone who types an address into
+ * the forgot-password screen. What it must never become is a link in the mail
+ * to an account that has a password: there, an unasked-for sign-in link is a
+ * way past a credential somebody chose, and the reset screen is the answer.
+ */
+export function existingAccountLinkEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.existingSubject'),
+    html: wrap(
+      locale,
+      t('email.existingPreheader'),
+      `<p>${t('email.existingLinkBody')}</p>
+       <p>${button(url, t('email.magicLinkButton'))}</p>
+       <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.existingLinkText', { url }),
   }
 }
 
@@ -375,5 +408,73 @@ export function badgeEarnedEmail(
       manageUrl: webUrl('/settings'),
     }).html,
     text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
+  }
+}
+
+/** User-typed text goes into an HTML body, so it is escaped before it does. */
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
+}
+
+/**
+ * A bug report or a feature request, on its way to `SUPPORT_EMAIL`.
+ *
+ * The one email in this file with no locale. Every other one is read by the
+ * person it is about; this one is read by us, and the repo is English.
+ *
+ * It is also where the whole thing is decided: nothing is stored, so this mail
+ * is the report. `Reply-To` is set to the sender by the route, the issue link
+ * is where the work is tracked, and the award link is where they are paid.
+ */
+export function feedbackEmail(input: {
+  kind: FeedbackKind
+  body: string
+  /** Public URLs of whatever was attached as proof, already in our own bucket. */
+  attachmentUrls: readonly string[]
+  sender: { userId: string; handle: string | null; email: string | null }
+  /** Where the reward is decided and sent — see `bountyToken.ts`. */
+  awardUrl: string
+  /** The issue this opened, or `null` where no token is configured. */
+  issueUrl: string | null
+}): Email {
+  const who = input.sender.handle ? `@${input.sender.handle}` : input.sender.userId
+  const subject = `${input.kind === 'bug' ? 'Bug report' : 'Feature request'} from ${who}`
+  const from = [
+    `From: ${who}`,
+    `User id: ${input.sender.userId}`,
+    ...(input.sender.email ? [`Email: ${input.sender.email}`] : []),
+  ]
+
+  const links = input.attachmentUrls.map(
+    (url) => `<li><a href="${encodeURI(url)}">${escapeHtml(url)}</a></li>`,
+  )
+  const issueLine = input.issueUrl
+    ? `<p>Tracked at <a href="${encodeURI(input.issueUrl)}">${escapeHtml(input.issueUrl)}</a></p>`
+    : '<p style="color: #888; font-size: 12px;">No issue was opened — GITHUB_ISSUE_TOKEN is unset or GitHub refused.</p>'
+
+  return {
+    subject,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111;">
+    <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
+    <p style="white-space: pre-wrap;">${escapeHtml(input.body)}</p>
+    ${links.length ? `<p><strong>Proof</strong></p><ul>${links.join('')}</ul>` : ''}
+    ${issueLine}
+    <p>${button(encodeURI(input.awardUrl), 'Confirm and set the reward')}</p>
+    <p style="color: #888; font-size: 12px;">Opens a page where you set the amount and pay the sender. One payment per report.</p>
+    <p style="color: #888; font-size: 12px;">${from.map(escapeHtml).join('<br />')}</p>
+  </body>
+</html>`,
+    text: [
+      input.body,
+      '',
+      ...input.attachmentUrls,
+      '',
+      input.issueUrl ? `Tracked at: ${input.issueUrl}` : 'No issue was opened.',
+      `Confirm and set the reward: ${input.awardUrl}`,
+      '',
+      ...from,
+    ].join('\n'),
   }
 }

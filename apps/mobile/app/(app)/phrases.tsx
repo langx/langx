@@ -1,5 +1,5 @@
 import { hasFeature } from '@langx/shared'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { useEffectiveTier, usePhraseCards } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -80,6 +80,21 @@ export default function PhrasesScreen() {
               {item.example ? <Text style={styles.example}>{item.example}</Text> : null}
             </View>
           )}
+          /*
+           * A footer rather than a header row: this deck is what the reader
+           * came for, and the way out to every deck belongs after it. A footer
+           * also renders on an empty list, where the link is most useful.
+           */
+          ListFooterComponent={
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={12}
+              onPress={() => router.push('/(app)/all-phrases')}
+              style={styles.allLink}
+            >
+              <Text style={styles.allLinkText}>{t('chat.allPhrases')}</Text>
+            </Pressable>
+          }
         />
       )}
     </Screen>
@@ -94,4 +109,6 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   term: { color: colors.text, fontSize: 17, fontWeight: '700' },
   meaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
   example: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
+  allLink: { paddingBottom: spacing.md, paddingTop: spacing.lg },
+  allLinkText: { color: colors.accent, fontSize: 15, fontWeight: '700' },
 }))

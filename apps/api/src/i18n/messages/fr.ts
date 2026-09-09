@@ -66,6 +66,11 @@ export const fr: Localized<ServerMessages> = {
     existingButton: 'Réinitialiser le mot de passe',
     existingText: 'Vous avez déjà un compte LangX. Réinitialisez votre mot de passe ici : {url}',
 
+    existingLinkBody:
+      'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais vous avez déjà un compte ici, avec votre profil dessus. Touchez pour vous connecter — aucun mot de passe à retenir. Le lien fonctionne une fois et expire dans 15 minutes.',
+    existingLinkText:
+      'Vous avez déjà un compte LangX. Connectez-vous ici (valable une fois, expire dans 15 minutes) : {url}',
+
     whyThisMail: 'Vous recevez ceci en raison de vos réglages de notifications LangX.',
     unsubscribeLink: 'Désactiver ces e-mails',
     unsubscribeText: 'Désactiver ces e-mails : {url}',
