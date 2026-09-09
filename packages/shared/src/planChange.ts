@@ -1,4 +1,4 @@
-import type { PaidPlanTier, PlanTier } from './limits'
+import { PAID_PLAN_TIERS, type PaidPlanTier, type PlanTier } from './limits'
 
 /**
  * What tapping an offer would actually do for the person tapping it.
@@ -60,6 +60,27 @@ export function planChangeFor(
   // `promotional`, `unknown`, or nothing recorded: there is no subscription
   // to change, only a tier to buy on top of.
   return 'buy'
+}
+
+/**
+ * The tier the paywall should open on: the first one there is anything to
+ * sell. `PAID_PLAN_TIERS` is in price order, so a free account lands on
+ * Fluent and a Fluent subscriber lands on Polyglot. The screen used to open
+ * on Fluent for everybody, which showed a paying subscriber a disabled button
+ * over the plan they already had and no hint that a higher one existed.
+ *
+ * `covered` is the only answer meaning "nothing to sell here". `elsewhere` is
+ * still the right column to show — the tier is not held, and the sentence
+ * under the price is what explains where to change it.
+ */
+export function firstOfferableTier(held: HeldPlan, platform: BillingPlatform): PaidPlanTier {
+  for (const tier of PAID_PLAN_TIERS) {
+    if (planChangeFor(held, tier, platform) !== 'covered') return tier
+  }
+  // Everything covered means the top tier is held, since `covered` is decided
+  // by rank alone. `free` covers nothing, so it never reaches here; naming it
+  // is what makes the held tier a `PaidPlanTier` without an assertion.
+  return held.tier === 'free' ? 'pro' : held.tier
 }
 
 /**
