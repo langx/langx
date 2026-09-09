@@ -2,7 +2,7 @@ import { FEEDBACK_KINDS, FEEDBACK_MAX_LENGTH, FEEDBACK_MIN_LENGTH } from '@langx
 import type { FeedbackKind } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
+import { ScrollView, Text } from 'react-native'
 import { ApiRequestError } from '../../../src/api/client'
 import { uploadFeedbackMedia, useSendFeedback } from '../../../src/api/queries'
 import {
@@ -109,64 +109,72 @@ export default function FeedbackScreen() {
   }
 
   return (
-    <Screen style={styles.screen}>
-      <KeyboardAvoidingView
-        style={styles.screen}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <Screen fluid>
+      <ScreenHeader
+        title={t(bug ? 'feedback.bugTitle' : 'feedback.featureTitle')}
+        onBack={() => goBackTo(BACK_TO)}
+      />
+      {/*
+       * Scrolls, because the send button is the last thing on a screen that
+       * also holds two paragraphs, a five-line field, a preview row and the
+       * attachment bar. Without this the button sits under the keyboard with
+       * no way to reach it: a multiline field takes Return as a newline, so
+       * the keyboard never closes on its own. `on-drag` is the second way out.
+       */}
+      <ScrollView
+        contentContainerStyle={styles.form}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        // iOS only; Android resizes the window for the keyboard already. Same
+        // split as `Screen`'s scrolling variant documents.
+        automaticallyAdjustKeyboardInsets
       >
-        <ScreenHeader
-          title={t(bug ? 'feedback.bugTitle' : 'feedback.featureTitle')}
-          onBack={() => goBackTo(BACK_TO)}
+        <Text style={styles.body}>{t(bug ? 'feedback.bugIntro' : 'feedback.featureIntro')}</Text>
+        <Text style={styles.body}>{t('feedback.reward')}</Text>
+
+        <FormField
+          value={draft}
+          onChangeText={setDraft}
+          placeholder={t(bug ? 'feedback.bugPlaceholder' : 'feedback.featurePlaceholder')}
+          multiline
+          autoCapitalize="sentences"
+          maxLength={FEEDBACK_MAX_LENGTH}
+          // Says why the button is off. Only once they have started: an empty
+          // field with a warning under it is a form that scolds first.
+          error={
+            draft.trim().length > 0 && !ready
+              ? t('feedback.tooShort', { count: FEEDBACK_MIN_LENGTH })
+              : undefined
+          }
+          style={styles.field}
         />
-        <View style={styles.form}>
-          <Text style={styles.body}>{t(bug ? 'feedback.bugIntro' : 'feedback.featureIntro')}</Text>
-          <Text style={styles.body}>{t('feedback.reward')}</Text>
 
-          <FormField
-            value={draft}
-            onChangeText={setDraft}
-            placeholder={t(bug ? 'feedback.bugPlaceholder' : 'feedback.featurePlaceholder')}
-            multiline
-            autoCapitalize="sentences"
-            maxLength={FEEDBACK_MAX_LENGTH}
-            // Says why the button is off. Only once they have started: an empty
-            // field with a warning under it is a form that scolds first.
-            error={
-              draft.trim().length > 0 && !ready
-                ? t('feedback.tooShort', { count: FEEDBACK_MIN_LENGTH })
-                : undefined
-            }
-            style={styles.field}
-          />
+        <AttachmentPreviewRow
+          pending={proof}
+          onRemove={(index) => setProof((items) => items.filter((_, at) => at !== index))}
+          progress={progress}
+        />
+        {/* No microphone: a recording is not proof of anything here. */}
+        <AttachmentBar
+          pending={proof}
+          onPick={(picked) => setProof((items) => [...items, ...picked])}
+          disabled={busy}
+          voiceNote={false}
+        />
 
-          <AttachmentPreviewRow
-            pending={proof}
-            onRemove={(index) => setProof((items) => items.filter((_, at) => at !== index))}
-            progress={progress}
-          />
-          {/* No microphone: a recording is not proof of anything here. */}
-          <AttachmentBar
-            pending={proof}
-            onPick={(picked) => setProof((items) => [...items, ...picked])}
-            disabled={busy}
-            voiceNote={false}
-          />
-
-          <Text style={styles.hint}>{t('feedback.hint')}</Text>
-          <Button
-            label={busy ? t('feedback.sending') : t('feedback.send')}
-            disabled={!ready || busy}
-            onPress={() => void submit()}
-          />
-        </View>
-      </KeyboardAvoidingView>
+        <Text style={styles.hint}>{t('feedback.hint')}</Text>
+        <Button
+          label={busy ? t('feedback.sending') : t('feedback.send')}
+          disabled={!ready || busy}
+          onPress={() => void submit()}
+        />
+      </ScrollView>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
-  screen: { flex: 1 },
-  form: { gap: spacing.md, paddingTop: spacing.sm },
+  form: { gap: spacing.md, paddingBottom: spacing.xl, paddingTop: spacing.sm },
   body: { color: colors.text, fontSize: 15, lineHeight: 23 },
   // Room for the steps to reproduce, the same five lines the composer gives.
   field: { fontSize: 16, lineHeight: 24, minHeight: 150 },
