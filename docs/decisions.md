@@ -3462,6 +3462,40 @@ and 88 more clear Fluent's. `packages/shared/src/billing.test.ts` pins both
 numbers, since the API's tests read them back from the constant and would have
 stayed green through any edit.
 
+**The screen that knew all four answers still opened on the wrong one.**
+`planChangeFor` decided what a tap means, and nothing decided what the paywall
+should be showing when it opens: the tier segment was seeded `'pro'`, so every
+Fluent subscriber arrived on Fluent, read "Included in Fluent" over a disabled
+button, and had to find the second segment to learn that a higher plan existed
+at all. `firstOfferableTier`, in the same file, is the answer — the first entry
+of `PAID_PLAN_TIERS` whose change is not `covered`, which is Fluent for a free
+account and Polyglot for a Fluent one. It is _derived_ on the paywall rather
+than seeded into `useState`, beside the period it already sits next to, and
+that is not a style preference: `useEffectiveTier` reads the `me` query and
+answers `free` while it is in flight, so a seeded initial state freezes a
+subscriber onto the wrong tier on any cold load of `/paywall` — a reload, a
+shared link — and never moves off it. The same reasoning renames the row in
+Settings, which now says "Upgrade to Polyglot" to somebody who has already
+bought the plans, and gives the Me tab's card a second face: the free version
+keeps the quota line, because the limit is the argument, and the Fluent one
+drops it, because there is no limit left to quote. `planChange.test.ts` pins
+the four cases; the button reads "Your current plan" over the tier held, and
+only over that one, since a lower tier is covered too and has its own sentence.
+
+**Coming back from the web portal is a signal, and it was being thrown away.**
+A web upgrade happens in RevenueCat's portal, which `Linking.openURL` opens in
+another tab; the promise resolves the moment that tab exists and knows nothing
+about what was done in it, and the plan change arrives at the server as a
+webhook. So the screen sat on a stale tier until something else refreshed it —
+in practice until the subscriber found "Restore purchases", which is the wrong
+control for a change they just made. The paywall now arms a ref when it sends
+someone to the portal and spends it on the next `AppState` `'active'`, which
+react-native-web raises from `visibilitychange` when the original tab is looked
+at again, calling the same `/billing/refresh` reconcile a purchase and a
+restore already call. Once, and only for someone who actually left: a blocked
+popup means nobody went anywhere, the ref stays armed, and the cost is at worst
+one idempotent request the next time the tab is hidden and shown.
+
 ## The yearly price is chosen backwards from the monthly one
 
 The paywall leads a yearly plan with what it costs a month, and the app never
