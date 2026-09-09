@@ -895,7 +895,8 @@ export const ptBR: Localized<EnMessages> = {
     },
     viewersCount: { one: '{count} pessoa', other: '{count} pessoas' },
     proTitle: '✦ Vá além',
-    proBody: 'Conversas novas ilimitadas, filtros avançados, tradução e navegação anônima.',
+    proBody:
+      'Conversas novas ilimitadas, filtros avançados, tradução e dois idiomas ao mesmo tempo.',
     polyglotTitle: '✦ Mude para {plan}',
     polyglotBody:
       'Veja quem viu você, navegue anonimamente, ordene por distância e mande mensagens no idioma da pessoa.',

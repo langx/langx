@@ -924,7 +924,8 @@ export const de: Localized<EnMessages> = {
     },
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
     proTitle: '✦ Mehr erreichen',
-    proBody: 'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und Inkognito-Modus.',
+    proBody:
+      'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und zwei Sprachen gleichzeitig.',
     polyglotTitle: '✦ Auf {plan} wechseln',
     polyglotBody:
       'Sieh, wer dich angesehen hat, surf inkognito, sortier nach Entfernung und schreib in der Sprache des anderen.',
