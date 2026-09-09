@@ -62,6 +62,11 @@ export const ptBR: Localized<ServerMessages> = {
     existingButton: 'Redefinir senha',
     existingText: 'Você já tem uma conta no LangX. Redefina sua senha aqui: {url}',
 
+    existingLinkBody:
+      'Alguém tentou se cadastrar com este e-mail, mas você já tem uma conta aqui, com o seu perfil nela. Toque para entrar — não há senha para lembrar. O link funciona uma vez e expira em 15 minutos.',
+    existingLinkText:
+      'Você já tem uma conta no LangX. Entre aqui (funciona uma vez, expira em 15 minutos): {url}',
+
     whyThisMail: 'Você recebe isto por causa das suas configurações de notificações do LangX.',
     unsubscribeLink: 'Desativar estes e-mails',
     unsubscribeText: 'Desativar estes e-mails: {url}',
