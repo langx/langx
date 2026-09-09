@@ -992,6 +992,11 @@ export const fr: Localized<EnMessages> = {
     sending: 'Envoi…',
     sent: 'Merci. Nous lisons tout et répondons par e-mail.',
     failed: 'L’envoi a échoué. Réessayez dans un instant.',
+    tooMany: 'Tu en as déjà envoyé plusieurs. Réessaie dans une heure.',
+    tooShort: {
+      one: 'Un peu plus : au moins un caractère.',
+      other: 'Un peu plus : au moins {count} caractères.',
+    },
   },
   kitchen: {
     title: 'Notre cuisine',

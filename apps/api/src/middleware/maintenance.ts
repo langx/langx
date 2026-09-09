@@ -14,7 +14,10 @@ import { getAppConfig } from '../modules/appConfig/appConfig'
  * ownership fetched by Apple or Google on their own schedule, and a 503 there
  * does not delay a request — it invalidates a configuration.
  */
-const ALWAYS_OPEN = ['/health', '/app-config', '/api/auth/', '/.well-known/']
+// `/feedback/award` stays open too: it is the link in a bug report's email,
+// read by whoever runs the service — and maintenance is exactly when bug
+// reports get read. Nothing a user reaches goes through it.
+const ALWAYS_OPEN = ['/health', '/app-config', '/api/auth/', '/.well-known/', '/feedback/award']
 
 function isAlwaysOpen(url: string): boolean {
   const path = url.split('?')[0] ?? ''
