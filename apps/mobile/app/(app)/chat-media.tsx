@@ -80,7 +80,13 @@ function tilesOf(messages: MessageDto[]): Tile[] {
  * Two tabs because photos and videos are looked at and a voice note is
  * listened to; one grid and one list is the whole difference, and it is enough
  * of one that they are separate `FlatList`s rather than one with a swapped
- * `renderItem`. Toggling `numColumns` on a live list forces a re-key and warns.
+ * `renderItem`.
+ *
+ * Both carry a `key`, which is the part that is easy to get wrong: two
+ * `FlatList` elements in the two arms of one ternary sit in the same slot of
+ * the tree, so React reuses the instance and only changes the props — and
+ * `numColumns` going from 3 to 1 on a live list is a hard render error, not a
+ * warning. The `key` is what makes them two components instead of one.
  */
 export default function ChatMediaScreen() {
   useScreenInteractive()
@@ -167,6 +173,7 @@ export default function ChatMediaScreen() {
         <ActivityIndicator style={styles.loading} />
       ) : tab === 'visual' ? (
         <FlatList
+          key="visual"
           data={tiles}
           keyExtractor={(tile) => tile._id}
           numColumns={COLUMNS}
@@ -204,6 +211,7 @@ export default function ChatMediaScreen() {
         />
       ) : (
         <FlatList
+          key="audio"
           data={messages}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
