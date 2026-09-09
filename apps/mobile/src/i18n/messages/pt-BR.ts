@@ -895,6 +895,9 @@ export const ptBR: Localized<EnMessages> = {
     viewersCount: { one: '{count} pessoa', other: '{count} pessoas' },
     proTitle: '✦ Vá além',
     proBody: 'Conversas novas ilimitadas, filtros avançados, tradução e navegação anônima.',
+    polyglotTitle: '✦ Mude para {plan}',
+    polyglotBody:
+      'Veja quem viu você, navegue anonimamente, ordene por distância e mande mensagens no idioma da pessoa.',
     newChatsLeft: 'Conversas novas restantes hoje:',
     editProfile: 'Editar perfil',
     settings: 'Configurações',
@@ -1142,6 +1145,7 @@ export const ptBR: Localized<EnMessages> = {
     plan: 'Plano',
     manageSubscription: 'Gerenciar ou cancelar',
     upgrade: 'Ver os planos',
+    upgradeTo: 'Mudar para {plan}',
     notificationsSection: 'Notificações',
     pushThisDevice: 'Notificações neste dispositivo',
     pushThisDeviceBody: 'Desative aqui e seus outros dispositivos continuam recebendo.',
@@ -1533,6 +1537,7 @@ export const ptBR: Localized<EnMessages> = {
     upgradeWeb:
       'Seu plano {plan} foi comprado na web. Mude no portal de cobrança; o tempo não usado é reembolsado.',
     changePlan: 'Mudar de plano',
+    currentPlan: 'Seu plano atual',
     upgradeElsewhere:
       'Seu plano {plan} foi comprado pela {store}. Mude por lá, para não ser cobrado duas vezes.',
     storeIos: 'App Store',

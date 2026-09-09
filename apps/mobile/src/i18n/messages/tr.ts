@@ -905,6 +905,9 @@ export const tr: Localized<EnMessages> = {
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
     proTitle: '✦ Daha ileri git',
     proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve gizli gezinme.',
+    polyglotTitle: '✦ {plan} planına geç',
+    polyglotBody:
+      'Sana kim baktı gör, gizli gezin, mesafeye göre sırala ve mesajlarını karşındakinin dilinde gönder.',
     newChatsLeft: 'Bugün kalan yeni sohbet:',
     editProfile: 'Profili düzenle',
     settings: 'Ayarlar',
@@ -1151,6 +1154,7 @@ export const tr: Localized<EnMessages> = {
     plan: 'Plan',
     manageSubscription: 'Yönet veya iptal et',
     upgrade: 'Planlara bak',
+    upgradeTo: '{plan} planına geç',
     notificationsSection: 'Bildirimler',
     pushThisDevice: 'Bu cihazda bildirimler',
     pushThisDeviceBody: 'Burada kapatırsan diğer cihazlarına gelmeye devam eder.',
@@ -1537,6 +1541,7 @@ export const tr: Localized<EnMessages> = {
     upgradeWeb:
       '{plan} planın web üzerinden alınmış. Fatura portalından değiştir; kullanılmayan süre iade edilir.',
     changePlan: 'Planı değiştir',
+    currentPlan: 'Mevcut planın',
     upgradeElsewhere:
       '{plan} planın {store} üzerinden alınmış. İki kez ücretlendirilmemek için orada değiştir.',
     storeIos: 'App Store',

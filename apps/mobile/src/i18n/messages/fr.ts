@@ -907,6 +907,9 @@ export const fr: Localized<EnMessages> = {
     proTitle: '✦ Aller plus loin',
     proBody:
       'Discussions nouvelles illimitées, filtres avancés, traduction et navigation incognito.',
+    polyglotTitle: '✦ Passe à {plan}',
+    polyglotBody:
+      'Vois qui t’a vu, navigue en incognito, trie par distance et écris dans la langue de l’autre.',
     newChatsLeft: 'Nouvelles discussions restantes aujourd’hui :',
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
@@ -1156,6 +1159,7 @@ export const fr: Localized<EnMessages> = {
     plan: 'Formule',
     manageSubscription: 'Gérer ou résilier',
     upgrade: 'Voir les formules',
+    upgradeTo: 'Passer à {plan}',
     notificationsSection: 'Notifications',
     pushThisDevice: 'Notifications sur cet appareil',
     pushThisDeviceBody: 'Désactivez-les ici et vos autres appareils continueront de les recevoir.',
@@ -1549,6 +1553,7 @@ export const fr: Localized<EnMessages> = {
     upgradeWeb:
       'Ton abonnement {plan} a été acheté sur le web. Change-le dans le portail de facturation ; le temps non utilisé est remboursé.',
     changePlan: 'Changer de formule',
+    currentPlan: 'Ta formule actuelle',
     upgradeElsewhere:
       'Ton abonnement {plan} a été acheté via {store}. Change-le là-bas pour ne pas être facturé deux fois.',
     storeIos: 'l’App Store',
