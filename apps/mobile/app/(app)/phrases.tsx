@@ -88,6 +88,7 @@ export default function PhrasesScreen() {
           ListFooterComponent={
             <Pressable
               accessibilityRole="button"
+              hitSlop={12}
               onPress={() => router.push('/(app)/all-phrases')}
               style={styles.allLink}
             >
@@ -108,6 +109,6 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   term: { color: colors.text, fontSize: 17, fontWeight: '700' },
   meaning: { color: colors.text, fontSize: 15, lineHeight: 21 },
   example: { color: colors.textMuted, fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
-  allLink: { paddingTop: spacing.lg },
+  allLink: { paddingBottom: spacing.md, paddingTop: spacing.lg },
   allLinkText: { color: colors.accent, fontSize: 15, fontWeight: '700' },
 }))
