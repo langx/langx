@@ -51,14 +51,30 @@ export function UpdateBanner() {
   }, [])
 
   const data = config.data
-  const latest = data ? versionForPlatform(data.latestVersion, appPlatform()) : ''
+  /*
+   * Both fields are read defensively, because `AppConfigResponse` is a cast
+   * and not a guarantee: `api.get` parses the body and trusts the type. An API
+   * older than this build answers without either of them — which is not a
+   * hypothetical but the normal state for as long as it takes to deploy the
+   * API after the web build and the OTA update have gone out on merge.
+   *
+   * Reading `.web` off an absent `latestVersion` would throw, and this renders
+   * above the navigator: the throw would take `(app)/_layout.tsx` down with it
+   * and every signed-in screen with that, which is the same failure
+   * `docs/decisions.md` records for the `expo-notifications` import. A banner
+   * nobody sees is the correct behaviour against a server that has not heard
+   * of it yet.
+   */
+  const latest = data?.latestVersion ? versionForPlatform(data.latestVersion, appPlatform()) : ''
 
   if (!data || dismissed === undefined) return null
   // One bar at the top at a time, and a pending deletion is the more urgent of
   // the two by a distance. `DeletionBanner` takes the status-bar inset when it
   // renders, so this one can take it unconditionally.
   if (me.data?.deletedAt) return null
-  if (!shouldShowUpdateNotice({ updateAvailable: data.updateAvailable, latest, dismissed })) {
+  if (
+    !shouldShowUpdateNotice({ updateAvailable: Boolean(data.updateAvailable), latest, dismissed })
+  ) {
     return null
   }
 
