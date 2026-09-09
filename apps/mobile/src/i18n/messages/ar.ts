@@ -296,6 +296,14 @@ export const ar: Localized<EnMessages> = {
     updateBody: 'هذه النسخة من LangX لم تعد مدعومة. حدّث إلى أحدث نسخة للمتابعة.',
   },
 
+  update: {
+    downloaded: 'هناك نسخة جديدة جاهزة.',
+    restart: 'أعد التشغيل الآن',
+    bannerTitle: 'صدرت نسخة جديدة',
+    bannerBody: 'حدّث للحصول على أحدث نسخة من LangX.',
+    dismiss: 'إغلاق',
+  },
+
   intro: {
     slide1Title: 'تكلّم لغتك ومارس لغتهم',
     slide1Body:

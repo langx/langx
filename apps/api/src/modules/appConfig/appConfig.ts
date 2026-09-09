@@ -2,8 +2,10 @@ import { DEFAULT_APP_CONFIG, type AppConfig } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
-export interface AppConfigDoc extends Omit<AppConfig, 'updatedAt'> {
+export interface AppConfigDoc extends Omit<AppConfig, 'updatedAt' | 'latestVersion'> {
   _id: 'current'
+  /** Absent on documents written before `latestVersion` existed; see `toDto`. */
+  latestVersion?: AppConfig['latestVersion']
   updatedAt: Date
 }
 
@@ -26,6 +28,11 @@ function toDto(doc: AppConfigDoc | null): AppConfig {
   return {
     maintenance: doc.maintenance,
     minVersion: doc.minVersion,
+    // Defaulted rather than read straight through: the document predates this
+    // field on every deployment that already exists, and a config read is the
+    // one thing that must never fail — an undefined here would reach the
+    // client as a missing key and fail its schema.
+    latestVersion: doc.latestVersion ?? DEFAULT_APP_CONFIG.latestVersion,
     flags: doc.flags,
     updatedAt: doc.updatedAt.toISOString(),
   }
@@ -65,6 +72,7 @@ export async function updateAppConfig(
       $setOnInsert: {
         ...(patch.maintenance ? {} : { maintenance: DEFAULT_APP_CONFIG.maintenance }),
         ...(patch.minVersion ? {} : { minVersion: DEFAULT_APP_CONFIG.minVersion }),
+        ...(patch.latestVersion ? {} : { latestVersion: DEFAULT_APP_CONFIG.latestVersion }),
         ...(patch.flags ? {} : { flags: DEFAULT_APP_CONFIG.flags }),
       },
     },

@@ -246,6 +246,14 @@ export const es: Localized<EnMessages> = {
       'Esta versión de LangX ya no es compatible. Actualiza a la última para seguir usándola.',
   },
 
+  update: {
+    downloaded: 'Hay una nueva versión lista.',
+    restart: 'Reiniciar ahora',
+    bannerTitle: 'Nueva versión disponible',
+    bannerBody: 'Actualiza para tener lo último de LangX.',
+    dismiss: 'Descartar',
+  },
+
   intro: {
     slide1Title: 'Habla el tuyo, practica el suyo',
     slide1Body:

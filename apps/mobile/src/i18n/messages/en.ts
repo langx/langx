@@ -284,6 +284,19 @@ export const en = {
       'This version of LangX is no longer supported. Update to the latest one to keep using it.',
   },
 
+  /**
+   * The soft side of the version story: an over-the-air update that has landed
+   * in the background, and a store release newer than this build. `gate.*` is
+   * the hard side — the screen that stops a build too old to run at all.
+   */
+  update: {
+    downloaded: 'A new version is ready.',
+    restart: 'Restart now',
+    bannerTitle: 'A new version is out',
+    bannerBody: 'Update to get the latest LangX.',
+    dismiss: 'Dismiss',
+  },
+
   intro: {
     slide1Title: 'Speak yours, practise theirs',
     slide1Body:

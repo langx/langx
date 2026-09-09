@@ -248,6 +248,14 @@ export const de: Localized<EnMessages> = {
       'Diese Version von LangX wird nicht mehr unterstützt. Aktualisiere auf die neueste, um sie weiter zu nutzen.',
   },
 
+  update: {
+    downloaded: 'Eine neue Version ist bereit.',
+    restart: 'Jetzt neu starten',
+    bannerTitle: 'Neue Version verfügbar',
+    bannerBody: 'Aktualisiere für das neueste LangX.',
+    dismiss: 'Schließen',
+  },
+
   intro: {
     slide1Title: 'Sprich deine, üb ihre',
     slide1Body:

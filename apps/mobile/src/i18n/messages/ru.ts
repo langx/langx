@@ -284,6 +284,14 @@ export const ru: Localized<EnMessages> = {
       'Эта версия LangX больше не поддерживается. Обнови до последней, чтобы продолжить пользоваться.',
   },
 
+  update: {
+    downloaded: 'Новая версия готова.',
+    restart: 'Перезапустить',
+    bannerTitle: 'Вышла новая версия',
+    bannerBody: 'Обнови, чтобы получить последнюю версию LangX.',
+    dismiss: 'Закрыть',
+  },
+
   intro: {
     slide1Title: 'Говори на своём, практикуй их',
     slide1Body:
