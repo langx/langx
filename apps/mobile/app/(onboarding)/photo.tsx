@@ -145,6 +145,8 @@ export default function PhotoStep() {
               <Feather name="camera" size={20} color={colors.text} />
             </View>
           </Pressable>
+          {/* Only while it is the face on screen; a photo speaks for itself. */}
+          {avatarUrl ? null : <Text style={styles.drawnFace}>{t('onboarding.drawnFace')}</Text>}
           <Pressable
             accessibilityRole="button"
             accessibilityState={{ disabled: uploading, busy: uploading }}
@@ -155,8 +157,6 @@ export default function PhotoStep() {
           >
             <Text style={styles.avatarActionText}>{photoLabel}</Text>
           </Pressable>
-          {/* Only while it is the face on screen; a photo speaks for itself. */}
-          {avatarUrl ? null : <Text style={styles.drawnFace}>{t('onboarding.drawnFace')}</Text>}
         </View>
 
         <View style={styles.bio}>
