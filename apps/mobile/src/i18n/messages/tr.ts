@@ -906,7 +906,7 @@ export const tr: Localized<EnMessages> = {
     },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
     proTitle: '✦ Daha ileri git',
-    proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve gizli gezinme.',
+    proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve aynı anda iki dil.',
     polyglotTitle: '✦ {plan} planına geç',
     polyglotBody:
       'Sana kim baktı gör, gizli gezin, mesafeye göre sırala ve mesajlarını karşındakinin dilinde gönder.',

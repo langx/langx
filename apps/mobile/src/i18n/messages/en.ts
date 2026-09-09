@@ -951,7 +951,7 @@ export const en = {
     },
     viewersCount: { one: '{count} person', other: '{count} people' },
     proTitle: '✦ Go further',
-    proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
+    proBody: 'Unlimited new chats, advanced filters, translation, and two languages at once.',
     polyglotTitle: '✦ Upgrade to {plan}',
     polyglotBody:
       'See who viewed you, browse incognito, sort by distance, and send messages in their language.',

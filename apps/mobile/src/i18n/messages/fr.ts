@@ -907,7 +907,7 @@ export const fr: Localized<EnMessages> = {
     viewersCount: { one: '{count} personne', other: '{count} personnes' },
     proTitle: '✦ Aller plus loin',
     proBody:
-      'Discussions nouvelles illimitées, filtres avancés, traduction et navigation incognito.',
+      'Discussions nouvelles illimitées, filtres avancés, traduction et deux langues à la fois.',
     polyglotTitle: '✦ Passe à {plan}',
     polyglotBody:
       'Vois qui t’a vu, navigue en incognito, trie par distance et écris dans la langue de l’autre.',
