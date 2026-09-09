@@ -266,7 +266,7 @@ export default function MeScreen() {
         />
       </View>
 
-      {summary ? <WeeklyChart week={summary.week} /> : null}
+      <WeeklyChart week={summary?.week} />
 
       {/*
         The about text, on the owner's own screen. It was only ever drawn on

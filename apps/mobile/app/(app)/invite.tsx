@@ -41,8 +41,9 @@ export default function InviteScreen() {
   if (me.isPending || !me.data) {
     return (
       <Screen>
+        <ScreenHeader title={t('invite.title')} onBack={() => goBackTo('/(app)/settings/share')} />
+        <Text style={styles.body}>{t('invite.body')}</Text>
         <View style={styles.loading}>
-          <Skeleton width="86%" height={16} />
           <Skeleton height={72} />
           <Skeleton height={64} />
           <Skeleton height={56} />
@@ -168,7 +169,8 @@ export default function InviteScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { gap: spacing.lg, marginTop: spacing.xxl },
+  // The pill's own top margin, so the first block sits where the pill will.
+  loading: { gap: spacing.lg, marginTop: 20 },
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.xs },
   codePill: {
     alignItems: 'center',

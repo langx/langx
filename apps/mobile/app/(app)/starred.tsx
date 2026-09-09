@@ -247,7 +247,7 @@ function Preview({
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  loading: { paddingVertical: spacing.xl },
+  loading: { paddingBottom: spacing.xl },
   list: { flexGrow: 1, paddingBottom: spacing.xl },
   // v3 list language: flat rows on the ground, hairline dividers, no boxes.
   row: {

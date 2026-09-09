@@ -70,6 +70,7 @@ export default function StreakScreen() {
   if (tokens.isPending) {
     return (
       <Screen>
+        <ScreenHeader title={t('streak.title')} onBack={() => goBackTo('/(app)/(tabs)/me')} />
         <View style={styles.loading}>
           <Skeleton width={176} height={44} />
           <Skeleton height={168} radius={16} />
@@ -174,7 +175,7 @@ export default function StreakScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { gap: spacing.lg, marginTop: spacing.xxl },
+  loading: { gap: spacing.lg },
   share: { marginBottom: spacing.sm, marginTop: 14 },
   tiles: {
     borderBottomColor: colors.border,

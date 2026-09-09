@@ -47,19 +47,21 @@ export default function HistoryScreen() {
   )
 
   if (history.isPending) {
+    // The header and the intro need no data, so they are drawn now and stay
+    // put: the rows land exactly where their placeholders were.
     return (
       <Screen>
-        <View style={styles.loading}>
-          {SKELETON_ROWS.map((key) => (
-            <View key={key} style={styles.row}>
-              <View style={styles.text}>
-                <Skeleton width={152} height={16} />
-                <Skeleton width={78} height={13} />
-              </View>
-              <Skeleton width={48} height={17} />
+        <ScreenHeader title={t('tokens.history')} onBack={() => goBackTo('/(app)/wallet')} />
+        <Text style={styles.intro}>{t('tokens.intro')}</Text>
+        {SKELETON_ROWS.map((key) => (
+          <View key={key} style={styles.row}>
+            <View style={styles.text}>
+              <Skeleton width={152} height={16} />
+              <Skeleton width={78} height={13} />
             </View>
-          ))}
-        </View>
+            <Skeleton width={48} height={17} />
+          </View>
+        ))}
       </Screen>
     )
   }
@@ -105,7 +107,6 @@ export default function HistoryScreen() {
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   intro: {
     color: colors.textMuted,
     fontSize: 15,

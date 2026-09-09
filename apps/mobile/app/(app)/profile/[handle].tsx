@@ -57,8 +57,24 @@ export default function ProfileScreen() {
   const [avatarOpen, setAvatarOpen] = useState(false)
 
   if (profile.isPending) {
+    // The bar with the back arrow is drawn now, not with the profile: it needs
+    // nothing from the request, and without it the whole page dropped by its
+    // height when the data came. The kebab waits — whether it exists depends
+    // on whose profile this turns out to be.
     return (
       <Screen scroll>
+        <View style={styles.topBar}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.backPlain')}
+            onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
+            hitSlop={12}
+            style={({ pressed }) => [styles.back, pressed && styles.iconPressed]}
+          >
+            <Feather name="arrow-left" size={22} color={colors.text} />
+          </Pressable>
+          <View style={styles.spacer} />
+        </View>
         <ProfileSkeleton avatarSize={96} />
       </Screen>
     )

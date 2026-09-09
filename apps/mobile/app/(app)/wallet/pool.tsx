@@ -59,6 +59,7 @@ export default function PoolScreen() {
   if (xp.isPending) {
     return (
       <Screen>
+        <ScreenHeader title={t('tokens.poolTitle')} onBack={() => goBackTo('/(app)/wallet')} />
         <View style={styles.loading}>
           <Skeleton width={132} height={12} />
           <Skeleton width={176} height={40} />
@@ -146,7 +147,7 @@ export default function PoolScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  loading: { gap: spacing.lg, marginTop: spacing.xxl },
+  loading: { gap: spacing.lg },
   share: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

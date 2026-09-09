@@ -48,7 +48,8 @@ export default function StreakHistoryScreen() {
   if (activity.isPending) {
     return (
       <Screen>
-        <View style={styles.loading}>
+        <ScreenHeader title={t('tokens.history')} onBack={() => goBackTo('/(app)/streak')} />
+        <View>
           {SKELETON_ROWS.map((key) => (
             <View key={key} style={styles.row}>
               <Skeleton width={12} height={12} radius={3} />
@@ -130,7 +131,6 @@ function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
-  loading: { marginTop: spacing.xxl },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
