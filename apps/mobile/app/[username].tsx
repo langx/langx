@@ -147,6 +147,13 @@ export default function SharedProfileScreen() {
             @{user.handle}
             {country ? ` · ${countryFlag(country.code)} ${names.country(country.code)}` : ''}
           </Text>
+          {/* The signed-in profile draws these in the same place, and this page
+              is the one strangers reach — see `sharedProfileSchema`. */}
+          {user.pronouns ? (
+            <Text style={styles.pronouns} numberOfLines={1}>
+              {user.pronouns}
+            </Text>
+          ) : null}
         </View>
       </View>
 
@@ -188,6 +195,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 26 },
   handle: { color: colors.textMuted, fontSize: 14 },
+  pronouns: { color: colors.textFaint, fontSize: 13 },
   bio: { color: colors.text, fontSize: 16, lineHeight: 25, paddingVertical: 22 },
   cta: { gap: spacing.md, marginTop: spacing.xxl },
   ctaBody: { ...font.body, color: colors.textMuted, lineHeight: 23, textAlign: 'center' },
