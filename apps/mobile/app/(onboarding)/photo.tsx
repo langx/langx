@@ -3,9 +3,10 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
-import { Image } from 'expo-image'
+import { ApiRequestError } from '../../src/api/client'
 import { useMe, useUpdateProfile, useUploadAvatar } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
+import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
@@ -60,8 +61,15 @@ export default function PhotoStep() {
 
     try {
       await uploadAvatar.mutateAsync(picked.image)
-    } catch {
-      void showAlert(t('errors.uploadFailed'), t('onboarding.photoUploadFailed'))
+    } catch (caught) {
+      // The same split the profile editor makes: storage may simply not be
+      // configured on this instance, which is not something to try again.
+      void showAlert(
+        t('errors.uploadFailed'),
+        caught instanceof ApiRequestError && caught.code === 'INTERNAL'
+          ? t('editProfile.storageUnconfigured')
+          : t('onboarding.photoUploadFailed'),
+      )
     }
   }
 
@@ -87,8 +95,6 @@ export default function PhotoStep() {
   }
 
   const avatarUrl = me.data?.avatarUrl
-  // The name was required two steps back, so there is always a letter to show.
-  const initial = (me.data?.displayName ?? '').trim().charAt(0).toUpperCase()
   const photoLabel = uploading
     ? t('onboarding.uploading')
     : avatarUrl
@@ -123,11 +129,18 @@ export default function PhotoStep() {
             onPress={() => void pickPhoto()}
             style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}
           >
-            {avatarUrl ? (
-              <Image source={{ uri: avatarUrl }} style={styles.photo} contentFit="cover" />
-            ) : (
-              <Text style={styles.initial}>{initial}</Text>
-            )}
+            {/*
+              The drawn face, not an initial: this is the one screen whose
+              question is "a photo, or the face we made you", and it used to
+              answer it with a letter nothing else in the app ever shows.
+              `Avatar` already walks photo → drawn face → initials.
+            */}
+            <Avatar
+              url={avatarUrl}
+              name={me.data?.displayName ?? ''}
+              seed={me.data?._id}
+              size={120}
+            />
             <View style={styles.badge}>
               <Feather name="camera" size={20} color={colors.text} />
             </View>
@@ -142,6 +155,8 @@ export default function PhotoStep() {
           >
             <Text style={styles.avatarActionText}>{photoLabel}</Text>
           </Pressable>
+          {/* Only while it is the face on screen; a photo speaks for itself. */}
+          {avatarUrl ? null : <Text style={styles.drawnFace}>{t('onboarding.drawnFace')}</Text>}
         </View>
 
         <View style={styles.bio}>
@@ -197,8 +212,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     justifyContent: 'center',
     width: 120,
   },
-  photo: { borderRadius: radius.pill, height: 120, width: 120 },
-  initial: { ...font.heading, color: colors.textInverse, fontSize: 44 },
+  drawnFace: { color: colors.textFaint, fontSize: 13, lineHeight: 18, textAlign: 'center' },
   // A disc of the ground colour on the circle's edge, lifted by the card
   // shadow so it reads as a button rather than a hole in the avatar.
   badge: {
