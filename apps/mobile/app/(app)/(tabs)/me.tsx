@@ -173,6 +173,12 @@ export default function MeScreen() {
           <Text style={styles.meta} numberOfLines={1}>
             {meta}
           </Text>
+          {/* Where the other profile screens put them: on the name's lines, not among the facts. */}
+          {profile.pronouns ? (
+            <Text style={styles.pronouns} numberOfLines={1}>
+              {profile.pronouns}
+            </Text>
+          ) : null}
         </View>
         {/*
           Settings used to be a button below the token store, at the bottom of a
@@ -364,6 +370,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   },
   heroText: { flex: 1, gap: 2, minWidth: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  pronouns: { color: colors.textFaint, fontSize: 13 },
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 24 },
   meta: { color: colors.textMuted, fontSize: 14 },
   iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
