@@ -120,6 +120,7 @@ export const ru: Localized<EnMessages> = {
     report: 'Пожаловаться',
     correctedCannotEdit: 'Исправлено — изменить нельзя',
     share: 'Поделиться',
+    savePhrase: 'Сохранить как выражение',
   },
 
   messageMeta: {
@@ -132,6 +133,12 @@ export const ru: Localized<EnMessages> = {
     photo: 'Фото',
     message: 'Сообщение',
     sending: 'Отправляется',
+    video: 'Видео',
+    sticker: 'Стикер',
+    phrase: 'Выражение',
+    meeting: 'Встреча',
+    quiz: 'Викторина',
+    correction: 'Исправление',
   },
 
   interests: {
@@ -283,6 +290,14 @@ export const ru: Localized<EnMessages> = {
     updateTitle: 'Обнови, чтобы продолжить',
     updateBody:
       'Эта версия LangX больше не поддерживается. Обнови до последней, чтобы продолжить пользоваться.',
+  },
+
+  update: {
+    downloaded: 'Новая версия готова.',
+    restart: 'Перезапустить',
+    bannerTitle: 'Вышла новая версия',
+    bannerBody: 'Обнови, чтобы получить последнюю версию LangX.',
+    dismiss: 'Закрыть',
   },
 
   intro: {
@@ -756,6 +771,22 @@ export const ru: Localized<EnMessages> = {
     deleteForMe: 'Удалить у себя',
     actionFailed: 'Не получилось',
     viewProfile: 'Открыть профиль',
+    media: 'Фото и голосовые',
+    allPhrases: 'Все сохранённые выражения',
+    phraseScopeMine: 'Мои',
+    phraseScopeAll: 'Все',
+    allPhrasesEmpty: 'Сохрани выражение в любом чате — и оно появится здесь.',
+    phraseScopePicker: 'Мои или все карточки из моих чатов',
+    phraseFrom: 'С {name}',
+  },
+
+  chatMedia: {
+    title: 'Медиа',
+    tabVisual: 'Фото и видео',
+    tabAudio: 'Голосовые',
+    emptyVisual: 'Здесь соберутся фото и видео, которыми вы обменяетесь.',
+    emptyAudio: 'Здесь соберутся голосовые из этого чата.',
+    tabPicker: 'Фото и видео или голосовые',
   },
 
   messageMenu: {
@@ -1059,6 +1090,25 @@ export const ru: Localized<EnMessages> = {
     dataDeletion: 'Удалить мои данные',
     security: 'Безопасность',
   },
+  feedback: {
+    bugTitle: 'Сообщить об ошибке',
+    featureTitle: 'Предложить функцию',
+    bugRowBody: 'Что-то сломалось? Расскажите нам и получите за это жетоны.',
+    featureRowBody: 'Чего-то не хватает? Расскажите, чем бы вы пользовались.',
+    bugIntro:
+      'Расскажите, что произошло, чего вы ожидали вместо этого и как это повторить. Чем точнее описание, тем быстрее мы всё исправим.',
+    featureIntro:
+      'Расскажите, что вы хотели бы делать в приложении и для чего вам это нужно. Именно «зачем» решает, что мы возьмём в работу.',
+    reward:
+      'Если мы подтвердим это, вы получите за него жетоны — сколько именно, зависит от того, насколько ценным оно окажется.',
+    bugPlaceholder: 'Что произошло и чего вы ждали…',
+    featurePlaceholder: 'Чего бы вам хотелось и для чего…',
+    hint: 'Скриншот или запись экрана помогают больше всего. Мы отвечаем письмом на адрес вашего аккаунта, а написанное может стать публичной задачей на GitHub — без вашего имени.',
+    send: 'Отправить',
+    sending: 'Отправляем…',
+    sent: 'Спасибо. Мы читаем всё это и отвечаем по почте.',
+    failed: 'Отправить не удалось. Попробуйте ещё раз через минуту.',
+  },
   kitchen: {
     title: 'Наша кухня',
     intro: 'Где делают LangX — и все, кто его делает.',
@@ -1235,6 +1285,8 @@ export const ru: Localized<EnMessages> = {
     signInUnlinked: 'Отключено.',
     signInLinkFailed: 'Не удалось подключить. Попробуйте ещё раз.',
     signInUnlinkFailed: 'Не удалось отключить. Попробуйте ещё раз.',
+    exportPhrases: 'Экспорт всех выражений',
+    exportPhrasesBody: 'Все сохранённые карточки из всех чатов — одним файлом.',
   },
 
   deletion: {
@@ -1402,6 +1454,7 @@ export const ru: Localized<EnMessages> = {
     referralSubscription: 'Бонус за подписку приглашённого',
     referralWelcome: 'Приветственный бонус по приглашению',
     gift: 'Подарок каждый час',
+    bounty: 'Награда за ошибку',
   },
 
   cosmetics: {
@@ -1634,7 +1687,8 @@ export const ru: Localized<EnMessages> = {
     sendTranslation: 'Отправляй на их языке',
     sendTranslationBody: 'Пиши на своём — уйдут оба, и тебя прочтут без догадок.',
     deckExport: 'Забери свои выражения',
-    deckExportBody: 'Выгрузи сохранённые выражения беседы в файл. Он открывается в Anki.',
+    deckExportBody:
+      'Выгрузи сохранённые выражения одной беседы или все свои карточки в файл. Он открывается в Anki.',
     advancedFiltersBody: 'Поиск по конкретному полу и по городу.',
     translationQuota: 'Переводи сколько нужно',
     translationQuotaBody: '{count} переводов в день — намного больше, чем нужно для разговора.',

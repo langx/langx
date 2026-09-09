@@ -923,8 +923,9 @@ nobody until the matching build ships.
 Launch never blocks on the network (`fallbackToCacheTimeout: 0`): the app
 starts on the bundle it has and picks up a new one in the background, applied
 on the **next** launch. Reloading under someone mid-conversation is worse than
-shipping the fix a few minutes later. A bad update is undone with
-`eas update:rollback`.
+shipping the fix a few minutes later — so a toast says the update has landed
+and offers to restart, and doing nothing is a complete answer. A bad update is
+undone with `eas update:rollback`.
 
 ### Runtime config
 
@@ -934,9 +935,10 @@ needs to tell the client something now":
 
 ```ts
 {
-  maintenance: { enabled, message, until },
-  minVersion:  { ios, android, web },
-  flags:       { translationEnabled, discoveryEnabled, signupsEnabled }
+  maintenance:   { enabled, message, until },
+  minVersion:    { ios, android, web },
+  latestVersion: { ios, android, web },
+  flags:         { translationEnabled, discoveryEnabled, signupsEnabled }
 }
 ```
 
@@ -974,6 +976,7 @@ API being healthy enough to authenticate you:
 tsx scripts/maintenance.ts on "Back at 14:00 UTC" 2026-08-27T14:00:00Z
 tsx scripts/maintenance.ts off
 tsx scripts/maintenance.ts min-version ios 2.1.0
+tsx scripts/maintenance.ts latest-version ios 2.2.0
 tsx scripts/maintenance.ts flag translationEnabled false
 ```
 
@@ -993,6 +996,24 @@ The client gate fails **open**. If `/app-config` is unreachable the app runs
 normally — a config endpoint being down must never be the reason a working app
 refuses to start. The server's own 503s remain the real enforcement; the screen
 only makes them legible.
+
+### Saying so before the gate does
+
+`latestVersion` is the same shape as `minVersion` and does none of the same
+things. Raising it sets `updateAvailable` on the response and nothing else: the
+client draws a dismissible banner above the navigator and carries on working.
+The point is that nobody's first news of a version problem should be a screen
+they cannot leave — by the time `minVersion` passes a build, its user has been
+offered the update for weeks and chosen to wait.
+
+Dismissal is stored per version on the device, so saying no to 2.2.0 says
+nothing about 2.3.0. Both defaults are `0.0.0`, which means a fresh or
+self-hosted deployment blocks nobody and nags nobody.
+
+Store versions, not OTA ones: an over-the-air update does not change the
+version an installed binary reports, so it can neither raise this banner nor
+clear it. That is why the two notices are separate — the OTA one is a toast
+with a restart, this one is a banner with a trip to the store.
 
 ## Account deletion and data rights
 

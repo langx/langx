@@ -16,6 +16,13 @@ interface AttachmentBarProps {
   pending: readonly PendingAttachment[]
   onPick: (attachments: PendingAttachment[]) => void
   disabled?: boolean
+  /**
+   * The microphone. On where a spoken message is a message — both composers —
+   * and off where the files are evidence of something: nobody proves a bug by
+   * describing it out loud, and the button would only be a way to attach
+   * something the report cannot use.
+   */
+  voiceNote?: boolean
 }
 
 /**
@@ -33,7 +40,7 @@ interface AttachmentBarProps {
  * while recording, which is chat's arrangement. A component with enough props
  * to serve both would not be a component.
  */
-export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps) {
+export function AttachmentBar({ pending, onPick, disabled, voiceNote = true }: AttachmentBarProps) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -140,21 +147,23 @@ export function AttachmentBar({ pending, onPick, disabled }: AttachmentBarProps)
         <Feather name="image" size={18} color={colors.text} />
         <Text style={styles.chipLabel}>{t('messageMeta.photo')}</Text>
       </Pressable>
-      <Pressable
-        onPress={() => void toggleRecording()}
-        disabled={voiceDisabled}
-        accessibilityRole="button"
-        accessibilityLabel={t('feed.recordVoice')}
-        accessibilityState={{ disabled: voiceDisabled }}
-        style={({ pressed }) => [
-          styles.chip,
-          voiceDisabled && styles.chipDisabled,
-          pressed && styles.pressed,
-        ]}
-      >
-        <Feather name="mic" size={18} color={colors.text} />
-        <Text style={styles.chipLabel}>{t('feed.voiceNote')}</Text>
-      </Pressable>
+      {voiceNote ? (
+        <Pressable
+          onPress={() => void toggleRecording()}
+          disabled={voiceDisabled}
+          accessibilityRole="button"
+          accessibilityLabel={t('feed.recordVoice')}
+          accessibilityState={{ disabled: voiceDisabled }}
+          style={({ pressed }) => [
+            styles.chip,
+            voiceDisabled && styles.chipDisabled,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Feather name="mic" size={18} color={colors.text} />
+          <Text style={styles.chipLabel}>{t('feed.voiceNote')}</Text>
+        </Pressable>
+      ) : null}
     </View>
   )
 }

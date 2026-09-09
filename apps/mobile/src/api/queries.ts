@@ -1,4 +1,5 @@
 import {
+  type FeedbackInput,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -14,6 +15,8 @@ import {
   type PlanTier,
   type CheckInResult,
   type MediaKind,
+  type MediaTab,
+  type PhraseScope,
   type MeetingStatus,
   type MessageAsk,
   type MessageTranslation,
@@ -106,6 +109,26 @@ export const keys = {
    * the socket's incoming-message writer, which expects a paged list.
    */
   phraseCards: (id: string) => ['phraseCards', id] as const,
+  /**
+   * Its own prefix, and specifically **not** under `messages(id)`.
+   *
+   * That prefix is patched by the socket's incoming-message writer, whose only
+   * defence against a cache it does not belong in is a `prevCursor` a media
+   * page has never carried — so an arriving text message would be appended to
+   * the grid, and the page's absent `mediaLockedFor` would go to `NaN`. Being
+   * paged is what makes this dangerous rather than safe: the shape check
+   * passes. Same lesson as `phraseCards` above, from the other side.
+   *
+   * `tab` is in the key rather than filtered out of one cache, so switching
+   * tabs cannot show the other tab's rows for a frame.
+   */
+  conversationMedia: (id: string, tab: string) => ['conversationMedia', id, tab] as const,
+  /**
+   * Under the same `['phraseCards']` prefix as the per-conversation deck: both
+   * are read on mount and neither is patched by the socket, so sharing the
+   * prefix costs nothing and makes "any deck" one invalidation.
+   */
+  allPhraseCards: (scope: string) => ['phraseCards', 'all', scope] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -1601,18 +1624,20 @@ export async function uploadMessageMedia(input: {
   }
 }
 
+/** Upload an attachment for a post or a correction. */
+export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/posts/upload-url', input)
+}
+
 /**
- * Upload an attachment for a post or a correction.
- *
- * Same three steps as `uploadMessageMedia` against a different signing route,
- * `onProgress` included — the feed could report no percentage at all until
- * this took one, which is the only thing that ever differed between them
- * besides the route. Not folded into one function: the message version has to
- * name a conversation so the server can check access before signing, and this
- * one has nothing to name yet — the post does not exist until the upload has
- * already succeeded.
+ * Proof for a bug report or a feature request — a screenshot or a screen
+ * recording — into the `feedback/` prefix its own signing route keys by user.
  */
-export async function uploadPostMedia(input: {
+export function uploadFeedbackMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/feedback/upload-url', input)
+}
+
+export interface PresignedUpload {
   kind: MediaKind
   uri: string
   contentType: string
@@ -1621,11 +1646,23 @@ export async function uploadPostMedia(input: {
   height?: number
   /** Bytes sent so far, and the whole; `0` for a total nobody could measure. */
   onProgress?: (loaded: number, total: number) => void
-}): Promise<Media> {
+}
+
+/**
+ * Sign, PUT, describe — against whichever route signs the prefix the file
+ * belongs in.
+ *
+ * The same three steps as `uploadMessageMedia`, `onProgress` included, and
+ * still not folded into it: the message version has to name a conversation so
+ * the server can check access before signing, where everything here has
+ * nothing to name yet — the post, or the report, does not exist until the
+ * upload has already succeeded.
+ */
+async function uploadToSigningRoute(path: string, input: PresignedUpload): Promise<Media> {
   // Blob first, then sign — see `uploadMessageMedia` for why the order matters.
   const blob = await (await fetch(input.uri)).blob()
   const contentType = resolveUploadType(input.kind, input.contentType, blob.type)
-  const target = await api.post<UploadUrlDto>('/posts/upload-url', {
+  const target = await api.post<UploadUrlDto>(path, {
     kind: input.kind,
     contentType,
   })
@@ -1647,6 +1684,20 @@ export async function uploadPostMedia(input: {
   }
 }
 
+/**
+ * Send a bug report or a feature request.
+ *
+ * Nothing is invalidated because nothing of ours is stored: the server turns
+ * it into an email and an issue on the repository, so there is no list for
+ * this to land in and nothing to read back.
+ */
+export function useSendFeedback() {
+  return useMutation({
+    mutationFn: (input: FeedbackInput) =>
+      api.post<{ ok: boolean; issueUrl: string | null }>('/feedback', input),
+  })
+}
+
 export interface TranslationDto {
   translatedText: string
   sourceLang: string
@@ -1662,6 +1713,65 @@ export interface PhraseCardDto {
   example?: string
   lang: string
   createdAt: string
+}
+
+export interface ConversationMediaPageDto {
+  items: MessageDto[]
+  nextCursor: string | null
+}
+
+/**
+ * One thread's attachments, a tab at a time.
+ *
+ * One parameterised hook rather than both tabs mounted at once, unlike
+ * `corrections.tsx` — there both tabs are lists of comparable value, so paying
+ * for the second request buys an instant switch. Here the grid is what the
+ * screen is for and the audio tab is the secondary one; a second request on
+ * open, for the tab most people never touch, is not worth it. What is lost is
+ * one skeleton on the first switch.
+ *
+ * No `placeholderData` either: the two tabs are different components reading
+ * differently shaped rows, so the "previous data" it would hand over is the
+ * wrong tab's.
+ */
+export function useConversationMedia(conversationId: string, tab: MediaTab) {
+  return useInfiniteQuery({
+    queryKey: keys.conversationMedia(conversationId, tab),
+    queryFn: ({ pageParam }) =>
+      api.get<ConversationMediaPageDto>(
+        `/conversations/${conversationId}/media?tab=${tab}${
+          pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''
+        }`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled: conversationId.length > 0,
+  })
+}
+
+export interface CrossPhraseCardDto extends PhraseCardDto {
+  conversationId: string
+  /** The other side of the thread it came from; resolve the name separately. */
+  partnerId?: string
+}
+
+/**
+ * Every saved phrase, across every conversation.
+ *
+ * `enabled` rather than an unconditional fetch: `/me/phrases` is Polyglot on
+ * the *server*, so for a free reader the request is a 403 asked for on
+ * purpose. The caller passes what it already knows about the tier, and the
+ * screen shows the paywall instead of an error state.
+ *
+ * Unpaged, because the route is: this read is the export, and a cursor would
+ * mean paging the whole deck before a file could be written.
+ */
+export function useAllPhraseCards(scope: PhraseScope, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.allPhraseCards(scope),
+    queryFn: () => api.get<{ items: CrossPhraseCardDto[] }>(`/me/phrases?scope=${scope}`),
+    enabled,
+  })
 }
 
 /**

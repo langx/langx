@@ -114,6 +114,7 @@ export const fr: Localized<EnMessages> = {
     report: 'Signaler',
     correctedCannotEdit: 'Corrigé — non modifiable',
     share: 'Partager',
+    savePhrase: 'Enregistrer comme expression',
   },
 
   messageMeta: {
@@ -126,6 +127,12 @@ export const fr: Localized<EnMessages> = {
     photo: 'Photo',
     message: 'Message',
     sending: 'Envoi en cours',
+    video: 'Vidéo',
+    sticker: 'Sticker',
+    phrase: 'Expression',
+    meeting: 'Rendez-vous',
+    quiz: 'Quiz',
+    correction: 'Correction',
   },
 
   interests: {
@@ -248,6 +255,14 @@ export const fr: Localized<EnMessages> = {
     updateTitle: 'Mets à jour pour continuer',
     updateBody:
       'Cette version de LangX n’est plus prise en charge. Passe à la dernière pour continuer.',
+  },
+
+  update: {
+    downloaded: 'Une nouvelle version est prête.',
+    restart: 'Redémarrer',
+    bannerTitle: 'Une nouvelle version est sortie',
+    bannerBody: 'Mets à jour pour profiter du dernier LangX.',
+    dismiss: 'Ignorer',
   },
 
   intro: {
@@ -686,6 +701,22 @@ export const fr: Localized<EnMessages> = {
     deleteForMe: 'Supprimer pour moi',
     actionFailed: 'Ça n’est pas passé',
     viewProfile: 'Voir le profil',
+    media: 'Photos et messages vocaux',
+    allPhrases: 'Toutes les expressions enregistrées',
+    phraseScopeMine: 'Les miennes',
+    phraseScopeAll: 'Toutes',
+    allPhrasesEmpty: 'Enregistre une expression dans une conversation et elle apparaîtra ici.',
+    phraseScopePicker: 'Les miennes, ou toutes les cartes de mes conversations',
+    phraseFrom: 'Avec {name}',
+  },
+
+  chatMedia: {
+    title: 'Médias',
+    tabVisual: 'Photos et vidéo',
+    tabAudio: 'Messages vocaux',
+    emptyVisual: 'Les photos et vidéos que vous vous envoyez s’accumuleront ici.',
+    emptyAudio: 'Les messages vocaux de cette conversation s’accumuleront ici.',
+    tabPicker: 'Photos et vidéo, ou messages vocaux',
   },
 
   messageMenu: {
@@ -943,6 +974,25 @@ export const fr: Localized<EnMessages> = {
     dataDeletion: 'Supprimer mes données',
     security: 'Sécurité',
   },
+  feedback: {
+    bugTitle: 'Signaler un bug',
+    featureTitle: 'Proposer une fonctionnalité',
+    bugRowBody: 'Quelque chose ne marche pas ? Dites-le-nous et gagnez des jetons.',
+    featureRowBody: 'Il manque quelque chose ? Dites-nous ce que vous utiliseriez.',
+    bugIntro:
+      'Racontez ce qui s’est passé, ce que vous attendiez à la place et comment le reproduire. Plus c’est précis, plus vite c’est corrigé.',
+    featureIntro:
+      'Dites-nous ce que vous aimeriez pouvoir faire et à quoi cela vous servirait. C’est le « pourquoi » qui décide de ce qui sera construit.',
+    reward:
+      'Si nous le confirmons, vous gagnez des jetons — leur nombre dépend de ce que cela vaut au bout du compte.',
+    bugPlaceholder: 'Ce qui s’est passé et ce que vous attendiez…',
+    featurePlaceholder: 'Ce que vous aimeriez et à quoi cela servirait…',
+    hint: 'Une capture ou un enregistrement d’écran aide plus que tout le reste. Nous répondons par e-mail, et ce que vous écrivez peut être publié comme ticket public sur GitHub, sans votre nom.',
+    send: 'Envoyer',
+    sending: 'Envoi…',
+    sent: 'Merci. Nous lisons tout et répondons par e-mail.',
+    failed: 'L’envoi a échoué. Réessayez dans un instant.',
+  },
   kitchen: {
     title: 'Notre cuisine',
     intro: 'Là où LangX se fabrique, et ceux qui le font.',
@@ -1119,6 +1169,9 @@ export const fr: Localized<EnMessages> = {
     signInUnlinked: 'Déconnecté.',
     signInLinkFailed: 'Connexion impossible. Réessayez.',
     signInUnlinkFailed: 'Déconnexion impossible. Réessayez.',
+    exportPhrases: 'Exporter toutes les expressions',
+    exportPhrasesBody:
+      'Toutes les cartes enregistrées, de toutes les conversations, dans un fichier.',
   },
 
   deletion: {
@@ -1264,6 +1317,7 @@ export const fr: Localized<EnMessages> = {
     referralSubscription: 'Bonus d’abonnement filleul',
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
+    bounty: 'Prime de bug',
   },
 
   cosmetics: {
@@ -1463,7 +1517,7 @@ export const fr: Localized<EnMessages> = {
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',
     deckExportBody:
-      'Exporte les expressions enregistrées d’une conversation. Le fichier s’ouvre dans Anki.',
+      'Exporte les expressions enregistrées d’une conversation, ou toutes celles que tu as gardées, dans un fichier. Il s’ouvre dans Anki.',
     advancedFiltersBody: 'Cherche un genre précis, et par ville.',
     translationQuota: 'Traduis autant que nécessaire',
     translationQuotaBody:

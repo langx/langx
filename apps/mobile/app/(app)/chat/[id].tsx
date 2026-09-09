@@ -8,6 +8,7 @@ import {
   MAX_VIDEO_SECONDS,
   type Media,
   MESSAGE_REACTIONS,
+  PHRASE_EXAMPLE_MAX_LENGTH,
   hasFeature,
   webUrl,
   messageTranslationSchema,
@@ -78,6 +79,8 @@ import {
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
+import { meetingClock } from '../../../src/lib/meetingClock'
+import { messagePreviewKey } from '../../../src/lib/messagePreview'
 import {
   openMessageMenu,
   type AnchorRect,
@@ -107,7 +110,7 @@ import { addMeetingToCalendar } from '../../../src/lib/addToCalendar'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
-import { useDisplayNames, useLocale, useT, type MessageKey } from '../../../src/i18n'
+import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -427,7 +430,7 @@ export default function ChatScreen() {
   /** A proposal's time, in the reader's own zone. */
   function meetingWhenFor(message: MessageDto): string {
     if (!message.meeting) return ''
-    return clockFor(new Date(message.meeting.startsAt), me.data?.timezone)
+    return meetingClock(new Date(message.meeting.startsAt), me.data?.timezone, locale)
   }
 
   /**
@@ -440,7 +443,7 @@ export default function ChatScreen() {
   function meetingTheirWhenFor(message: MessageDto): string {
     if (!message.meeting || !partner?.timezone) return ''
     const at = new Date(message.meeting.startsAt)
-    const theirs = clockFor(at, partner.timezone)
+    const theirs = meetingClock(at, partner.timezone, locale)
     /*
      * Compared as drawn, not as named.
      *
@@ -452,26 +455,9 @@ export default function ChatScreen() {
      * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
      * useless line.
      */
-    return theirs === clockFor(at, me.data?.timezone)
+    return theirs === meetingClock(at, me.data?.timezone, locale)
       ? ''
       : t('chat.meetingTheirTime', { time: theirs })
-  }
-
-  /**
-   * Read off a profile's `timezone`, not the device's: the device clock
-   * follows wherever the phone is, and somebody reading this on a trip would
-   * be shown a time that is right for the airport and wrong for the call.
-   * `undefined` falls back to the device, which is the best guess left.
-   */
-  function clockFor(at: Date, zone: string | undefined): string {
-    return new Intl.DateTimeFormat(locale, {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-      ...(zone ? { timeZone: zone } : {}),
-    }).format(at)
   }
 
   function meetingLengthFor(message: MessageDto): string {
@@ -1123,7 +1109,7 @@ export default function ChatScreen() {
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || t(messageTypeKey(message.type)),
+      preview: message.body || t(messagePreviewKey(message.type)),
       mine: isMine(message),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
@@ -1175,6 +1161,29 @@ export default function ChatScreen() {
       await emit('conversation:pin', {
         conversationId,
         messageId: pinned?.messageId === message._id ? null : message._id,
+      })
+    } else if (picked.id === 'phrase') {
+      /*
+       * Their sentence, already in the example field, with the term left for
+       * the reader to write — the word they want is a judgement the app cannot
+       * make from a sentence.
+       *
+       * Sliced to `PHRASE_EXAMPLE_MAX_LENGTH`, because `FormField`'s
+       * `maxLength` bounds *typing* and not a value handed to it: an unsliced
+       * 2000-character body would look accepted in the form and then be
+       * refused by `sendPhraseSchema` on save.
+       *
+       * `params`, never a query string built by hand: `routeLiterals.test.ts`
+       * treats an interpolated literal as a wildcard, so a typo in one is
+       * exactly what it cannot catch.
+       */
+      router.push({
+        pathname: '/(app)/phrase-card',
+        params: {
+          id: conversationId,
+          ...(translateInto ? { lang: translateInto } : {}),
+          example: message.body.slice(0, PHRASE_EXAMPLE_MAX_LENGTH),
+        },
       })
     } else if (picked.id === 'report') {
       reportMessage(message)
@@ -1333,6 +1342,9 @@ export default function ChatScreen() {
       // the thing I wanted to keep go — and differ only in how much shape it
       // had when it was kept.
       { label: t('chat.phraseDeck'), value: 'phrases' },
+      // The third answer to the same question, and the only one that needs
+      // nothing kept first: a photo is already saved by having been sent.
+      { label: t('chat.media'), value: 'media' },
       // The same toggle the list offers, where the design puts it as well.
       { label: pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
       { label: t('common.block'), value: 'block', destructive: true },
@@ -1343,6 +1355,8 @@ export default function ChatScreen() {
       router.push('/(app)/starred')
     } else if (choice === 'phrases') {
       router.push({ pathname: '/(app)/phrases', params: { id: conversationId } })
+    } else if (choice === 'media') {
+      router.push({ pathname: '/(app)/chat-media', params: { id: conversationId } })
     } else if (choice === 'pin') {
       flags.mutate({ conversationId, pinned: !pinned })
     } else if (choice === 'block') {
@@ -1407,7 +1421,7 @@ export default function ChatScreen() {
                 label: isMine(replyingTo)
                   ? t('chat.replyingToYourself')
                   : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') }),
-                preview: replyingTo.body || t(messageTypeKey(replyingTo.type)),
+                preview: replyingTo.body || t(messagePreviewKey(replyingTo.type)),
                 clear: () => setReplyingTo(null),
               }
             : null
@@ -2104,13 +2118,6 @@ function pictureOf(message: MessageDto): MessageMenuRequest['picture'] {
   if (message.type !== 'image' && message.type !== 'video') return undefined
   const items = attachmentsOf(message)
   return items.length > 0 ? { kind: 'media', items } : undefined
-}
-
-/** What the sheet shows above the actions when a message has no text. */
-function messageTypeKey(type: MessageDto['type']): MessageKey {
-  if (type === 'image') return 'messageMeta.photo'
-  if (type === 'audio') return 'chat.voiceMessage'
-  return 'messageMeta.message'
 }
 
 /**

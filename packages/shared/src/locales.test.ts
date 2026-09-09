@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_LOCALE,
+  matchLocale,
   LOCALE_NAMES,
   SUPPORTED_LOCALES,
   isRtlLocale,
@@ -46,6 +47,24 @@ describe('resolveLocale', () => {
   it('defaults to English when nothing matches', () => {
     expect(resolveLocale(['ja', 'ko'])).toBe(DEFAULT_LOCALE)
     expect(resolveLocale([])).toBe(DEFAULT_LOCALE)
+  })
+})
+
+/**
+ * The distinction mail needs: an English speaker has been answered, a speaker
+ * of a language we ship no catalogue for has not, and both come back as `en`
+ * from `resolveLocale`.
+ */
+describe('matchLocale', () => {
+  it('tells a real English match from no match at all', () => {
+    expect(matchLocale(['en-GB'])).toBe('en')
+    expect(matchLocale(['ja', 'ko'])).toBeNull()
+    expect(matchLocale([])).toBeNull()
+  })
+
+  it('searches exactly as resolveLocale does', () => {
+    expect(matchLocale(['pt-PT', 'en-US'])).toBe('pt-BR')
+    expect(matchLocale([null, undefined, '', 'ru-RU'])).toBe('ru')
   })
 })
 

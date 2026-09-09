@@ -2,7 +2,7 @@ import { notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { emailFor } from '../profiles/emailFor'
-import { localeFor } from '../push/devices'
+import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
 
 /** The token both campaign bodies must carry, replaced per recipient. */

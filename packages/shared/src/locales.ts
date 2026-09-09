@@ -86,6 +86,20 @@ function baseLanguage(tag: string): string {
  * cost the user the good entry behind it.
  */
 export function resolveLocale(candidates: readonly (string | null | undefined)[]): Locale {
+  return matchLocale(candidates) ?? DEFAULT_LOCALE
+}
+
+/**
+ * The same search, but saying so when nothing matched instead of answering
+ * English.
+ *
+ * The distinction only matters where English is also a real answer and a
+ * second source is waiting behind this one — mail, which asks what somebody
+ * speaks and falls back to the language they are reading the site in. `null`
+ * and `'en'` have to be told apart there: a native English speaker has been
+ * answered, and a speaker of a language we do not ship has not.
+ */
+export function matchLocale(candidates: readonly (string | null | undefined)[]): Locale | null {
   for (const candidate of candidates) {
     if (!candidate) continue
     const tag = candidate.trim()
@@ -103,5 +117,5 @@ export function resolveLocale(candidates: readonly (string | null | undefined)[]
     const regional = SUPPORTED_LOCALES.find((l) => baseLanguage(l) === base)
     if (regional) return regional
   }
-  return DEFAULT_LOCALE
+  return null
 }

@@ -136,6 +136,17 @@ export const FLAG_KEYS = {
    * on this phone and means nothing anywhere else.
    */
   calendarEvents: 'calendarEvents',
+  /**
+   * The version whose "a new version is out" banner was dismissed here.
+   *
+   * The version rather than a boolean, so dismissing one release says nothing
+   * about the next; `lib/updateNotice.ts` holds the comparison.
+   *
+   * Device-level because the banner is: it asks you to update *this*
+   * installation, and the same account on a phone that is already current has
+   * nothing to dismiss.
+   */
+  updateNoticeDismissed: 'updateNoticeDismissed',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

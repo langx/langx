@@ -141,6 +141,7 @@ export const en = {
     report: 'Report',
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
+    savePhrase: 'Save as a phrase',
   },
 
   messageMeta: {
@@ -153,6 +154,12 @@ export const en = {
     photo: 'Photo',
     message: 'Message',
     sending: 'Sending',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'Phrase',
+    meeting: 'Meeting',
+    quiz: 'Quiz',
+    correction: 'Correction',
   },
 
   /**
@@ -283,6 +290,19 @@ export const en = {
     updateTitle: 'Update to continue',
     updateBody:
       'This version of LangX is no longer supported. Update to the latest one to keep using it.',
+  },
+
+  /**
+   * The soft side of the version story: an over-the-air update that has landed
+   * in the background, and a store release newer than this build. `gate.*` is
+   * the hard side — the screen that stops a build too old to run at all.
+   */
+  update: {
+    downloaded: 'A new version is ready.',
+    restart: 'Restart now',
+    bannerTitle: 'A new version is out',
+    bannerBody: 'Update to get the latest LangX.',
+    dismiss: 'Dismiss',
   },
 
   intro: {
@@ -719,6 +739,22 @@ export const en = {
     deleteForMe: 'Delete for me',
     actionFailed: 'That did not go through',
     viewProfile: 'View profile',
+    media: 'Photos and voice notes',
+    allPhrases: 'All saved phrases',
+    phraseScopeMine: 'Mine',
+    phraseScopeAll: 'Everything',
+    allPhrasesEmpty: 'Save a phrase in any conversation and it will show up here.',
+    phraseScopePicker: 'Mine, or every card in my conversations',
+    phraseFrom: 'From {name}',
+  },
+
+  chatMedia: {
+    title: 'Media',
+    tabVisual: 'Photos & video',
+    tabAudio: 'Voice notes',
+    emptyVisual: 'Photos and video you send each other will collect here.',
+    emptyAudio: 'Voice notes from this chat will collect here.',
+    tabPicker: 'Photos and video, or voice notes',
   },
 
   messageMenu: {
@@ -979,6 +1015,25 @@ export const en = {
     dataDeletion: 'Delete my data',
     security: 'Security',
   },
+  feedback: {
+    bugTitle: 'Report a bug',
+    featureTitle: 'Request a feature',
+    bugRowBody: 'Something broken? Tell us, and earn tokens for it.',
+    featureRowBody: 'Something missing? Tell us what you would use.',
+    bugIntro:
+      'Tell us what happened, what you expected instead, and how to make it happen again. The more exactly you describe it, the sooner it is fixed.',
+    featureIntro:
+      'Tell us what you would like to be able to do, and what you would use it for. Why it matters to you is the part that decides what gets built.',
+    reward:
+      'If we confirm it, you earn tokens for it — how many depends on how much it turns out to be worth.',
+    bugPlaceholder: 'What happened, and what you expected…',
+    featurePlaceholder: 'What you would like, and what you would use it for…',
+    hint: 'A screenshot or a screen recording helps more than anything else. We answer by email, and what you write may be opened as a public issue on GitHub — without your name on it.',
+    send: 'Send',
+    sending: 'Sending…',
+    sent: 'Thank you. We read every one of these and answer by email.',
+    failed: 'That did not send. Try again in a moment.',
+  },
   kitchen: {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
@@ -1153,6 +1208,8 @@ export const en = {
     signInUnlinked: 'Disconnected.',
     signInLinkFailed: 'Could not connect. Try again.',
     signInUnlinkFailed: 'Could not disconnect. Try again.',
+    exportPhrases: 'Export every phrase',
+    exportPhrasesBody: 'Every card you have saved, from every conversation, as one file.',
   },
 
   deletion: {
@@ -1300,6 +1357,7 @@ export const en = {
     referralSubscription: 'Invite subscription bonus',
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
+    bounty: 'Bug bounty',
   },
 
   cosmetics: {
@@ -1497,7 +1555,8 @@ export const en = {
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',
-    deckExportBody: 'Export a conversation’s saved phrases as a file. It opens in Anki.',
+    deckExportBody:
+      'Export one conversation’s saved phrases, or every card you have saved, as a file. It opens in Anki.',
     advancedFiltersBody: 'Search for a specific gender, and by city.',
     translationQuota: 'Translate as much as you need',
     translationQuotaBody: '{count} translations a day — far more than a conversation uses.',

@@ -113,6 +113,7 @@ export const de: Localized<EnMessages> = {
     report: 'Melden',
     correctedCannotEdit: 'Korrigiert — nicht mehr änderbar',
     share: 'Teilen',
+    savePhrase: 'Als Wendung speichern',
   },
 
   messageMeta: {
@@ -125,6 +126,12 @@ export const de: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Nachricht',
     sending: 'Wird gesendet',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'Wendung',
+    meeting: 'Termin',
+    quiz: 'Quiz',
+    correction: 'Korrektur',
   },
 
   interests: {
@@ -247,6 +254,14 @@ export const de: Localized<EnMessages> = {
     updateTitle: 'Zum Weitermachen aktualisieren',
     updateBody:
       'Diese Version von LangX wird nicht mehr unterstützt. Aktualisiere auf die neueste, um sie weiter zu nutzen.',
+  },
+
+  update: {
+    downloaded: 'Eine neue Version ist bereit.',
+    restart: 'Jetzt neu starten',
+    bannerTitle: 'Neue Version verfügbar',
+    bannerBody: 'Aktualisiere für das neueste LangX.',
+    dismiss: 'Schließen',
   },
 
   intro: {
@@ -705,6 +720,22 @@ export const de: Localized<EnMessages> = {
     deleteForMe: 'Für mich löschen',
     actionFailed: 'Das hat nicht geklappt',
     viewProfile: 'Profil ansehen',
+    media: 'Fotos und Sprachnachrichten',
+    allPhrases: 'Alle gespeicherten Wendungen',
+    phraseScopeMine: 'Meine',
+    phraseScopeAll: 'Alle',
+    allPhrasesEmpty: 'Speichere in einem Chat eine Wendung, dann steht sie hier.',
+    phraseScopePicker: 'Meine Karten oder alle Karten aus meinen Chats',
+    phraseFrom: 'Von {name}',
+  },
+
+  chatMedia: {
+    title: 'Medien',
+    tabVisual: 'Fotos & Video',
+    tabAudio: 'Sprachnachrichten',
+    emptyVisual: 'Fotos und Videos, die ihr euch schickt, sammeln sich hier.',
+    emptyAudio: 'Sprachnachrichten aus diesem Chat sammeln sich hier.',
+    tabPicker: 'Fotos und Video oder Sprachnachrichten',
   },
 
   messageMenu: {
@@ -962,6 +993,25 @@ export const de: Localized<EnMessages> = {
     dataDeletion: 'Meine Daten löschen',
     security: 'Sicherheit',
   },
+  feedback: {
+    bugTitle: 'Fehler melden',
+    featureTitle: 'Funktion vorschlagen',
+    bugRowBody: 'Etwas kaputt? Sag uns Bescheid und verdien Token dafür.',
+    featureRowBody: 'Fehlt etwas? Sag uns, was du nutzen würdest.',
+    bugIntro:
+      'Beschreibe, was passiert ist, was du stattdessen erwartet hast und wie man es wieder auslöst. Je genauer die Beschreibung, desto schneller ist es behoben.',
+    featureIntro:
+      'Beschreibe, was du gern können möchtest und wofür du es nutzen würdest. Das Wofür entscheidet, was gebaut wird.',
+    reward:
+      'Wenn wir es bestätigen, bekommst du Token dafür — wie viele, hängt davon ab, wie viel es am Ende wert war.',
+    bugPlaceholder: 'Was passiert ist und was du erwartet hast…',
+    featurePlaceholder: 'Was du dir wünschst und wofür…',
+    hint: 'Ein Screenshot oder eine Bildschirmaufnahme hilft am meisten. Wir antworten per E-Mail an die Adresse deines Kontos, und was du schreibst, kann als öffentliches Issue auf GitHub landen — ohne deinen Namen.',
+    send: 'Senden',
+    sending: 'Wird gesendet…',
+    sent: 'Danke. Wir lesen alles und antworten per E-Mail.',
+    failed: 'Das ging nicht raus. Versuch es gleich noch einmal.',
+  },
   kitchen: {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
@@ -1138,6 +1188,8 @@ export const de: Localized<EnMessages> = {
     signInUnlinked: 'Getrennt.',
     signInLinkFailed: 'Verbinden fehlgeschlagen. Versuch es noch einmal.',
     signInUnlinkFailed: 'Trennen fehlgeschlagen. Versuch es noch einmal.',
+    exportPhrases: 'Alle Wendungen exportieren',
+    exportPhrasesBody: 'Alle gespeicherten Karten aus allen Chats, in einer Datei.',
   },
 
   deletion: {
@@ -1284,6 +1336,7 @@ export const de: Localized<EnMessages> = {
     referralSubscription: 'Einladungs-Abo-Bonus',
     referralWelcome: 'Einladungs-Willkommensbonus',
     gift: 'Stündliches Geschenk',
+    bounty: 'Fehlerprämie',
   },
 
   cosmetics: {
@@ -1484,7 +1537,7 @@ export const de: Localized<EnMessages> = {
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',
     deckExportBody:
-      'Exportiere die gespeicherten Wendungen eines Chats als Datei. Sie öffnet sich in Anki.',
+      'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
     translationQuota: 'Übersetze so viel du brauchst',
     translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',

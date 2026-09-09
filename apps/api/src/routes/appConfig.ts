@@ -1,7 +1,9 @@
 import {
   APP_PLATFORM_HEADER,
   APP_VERSION_HEADER,
+  isUpdateAvailable,
   isUpdateRequired,
+  versionForPlatform,
   type AppConfigResponse,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -19,13 +21,9 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
     const config = await getAppConfig(app.mongo.db)
 
     const version = request.headers[APP_VERSION_HEADER] as string | undefined
-    const platform = (request.headers[APP_PLATFORM_HEADER] as string | undefined) ?? 'web'
-    const minimum =
-      platform === 'ios'
-        ? config.minVersion.ios
-        : platform === 'android'
-          ? config.minVersion.android
-          : config.minVersion.web
+    const platform = request.headers[APP_PLATFORM_HEADER] as string | undefined
+    const minimum = versionForPlatform(config.minVersion, platform)
+    const latest = versionForPlatform(config.latestVersion, platform)
 
     /**
      * Read off Better Auth rather than off `env`, because the two can
@@ -39,6 +37,7 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
     const body: AppConfigResponse = {
       ...config,
       updateRequired: isUpdateRequired(version, minimum),
+      updateAvailable: isUpdateAvailable(version, latest),
       authProviders: {
         google: Boolean(registered.google),
         apple: Boolean(registered.apple),

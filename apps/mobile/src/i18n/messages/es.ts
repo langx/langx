@@ -112,6 +112,7 @@ export const es: Localized<EnMessages> = {
     report: 'Denunciar',
     correctedCannotEdit: 'Corregido: no se puede editar',
     share: 'Compartir',
+    savePhrase: 'Guardar como expresión',
   },
 
   messageMeta: {
@@ -124,6 +125,12 @@ export const es: Localized<EnMessages> = {
     photo: 'Foto',
     message: 'Mensaje',
     sending: 'Enviando',
+    video: 'Vídeo',
+    sticker: 'Sticker',
+    phrase: 'Expresión',
+    meeting: 'Reunión',
+    quiz: 'Pregunta',
+    correction: 'Corrección',
   },
 
   interests: {
@@ -245,6 +252,14 @@ export const es: Localized<EnMessages> = {
     updateTitle: 'Actualiza para continuar',
     updateBody:
       'Esta versión de LangX ya no es compatible. Actualiza a la última para seguir usándola.',
+  },
+
+  update: {
+    downloaded: 'Hay una nueva versión lista.',
+    restart: 'Reiniciar ahora',
+    bannerTitle: 'Nueva versión disponible',
+    bannerBody: 'Actualiza para tener lo último de LangX.',
+    dismiss: 'Descartar',
   },
 
   intro: {
@@ -683,6 +698,22 @@ export const es: Localized<EnMessages> = {
     deleteForMe: 'Eliminar para mí',
     actionFailed: 'Eso no salió bien',
     viewProfile: 'Ver perfil',
+    media: 'Fotos y notas de voz',
+    allPhrases: 'Todas las expresiones guardadas',
+    phraseScopeMine: 'Mías',
+    phraseScopeAll: 'Todas',
+    allPhrasesEmpty: 'Guarda una expresión en cualquier chat y aparecerá aquí.',
+    phraseScopePicker: 'Mías, o todas las tarjetas de mis chats',
+    phraseFrom: 'De {name}',
+  },
+
+  chatMedia: {
+    title: 'Multimedia',
+    tabVisual: 'Fotos y vídeo',
+    tabAudio: 'Notas de voz',
+    emptyVisual: 'Las fotos y los vídeos que os enviéis se juntarán aquí.',
+    emptyAudio: 'Las notas de voz de este chat se juntarán aquí.',
+    tabPicker: 'Fotos y vídeo, o notas de voz',
   },
 
   messageMenu: {
@@ -935,6 +966,24 @@ export const es: Localized<EnMessages> = {
     dataDeletion: 'Eliminar mis datos',
     security: 'Seguridad',
   },
+  feedback: {
+    bugTitle: 'Informar de un error',
+    featureTitle: 'Pedir una función',
+    bugRowBody: '¿Algo no funciona? Cuéntanoslo y gana fichas por ello.',
+    featureRowBody: '¿Falta algo? Cuéntanos qué usarías.',
+    bugIntro:
+      'Cuéntanos qué pasó, qué esperabas que pasara y cómo volver a provocarlo. Cuanto más exacto seas, antes se arregla.',
+    featureIntro:
+      'Cuéntanos qué te gustaría poder hacer y para qué lo usarías. Por qué te importa es lo que decide qué se construye.',
+    reward: 'Si lo confirmamos, ganas fichas por ello: cuántas depende de lo que acabe valiendo.',
+    bugPlaceholder: 'Qué pasó y qué esperabas…',
+    featurePlaceholder: 'Qué te gustaría y para qué lo usarías…',
+    hint: 'Una captura o una grabación de pantalla ayuda más que ninguna otra cosa. Respondemos por correo, y lo que escribas puede abrirse como una incidencia pública en GitHub, sin tu nombre.',
+    send: 'Enviar',
+    sending: 'Enviando…',
+    sent: 'Gracias. Leemos todos y respondemos por correo.',
+    failed: 'No se ha enviado. Inténtalo de nuevo en un momento.',
+  },
   kitchen: {
     title: 'Nuestra cocina',
     intro: 'Donde se hace LangX, y quienes lo hacen.',
@@ -1109,6 +1158,8 @@ export const es: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'No se pudo conectar. Inténtalo de nuevo.',
     signInUnlinkFailed: 'No se pudo desconectar. Inténtalo de nuevo.',
+    exportPhrases: 'Exportar todas las expresiones',
+    exportPhrasesBody: 'Todas las tarjetas que has guardado, de todos los chats, en un archivo.',
   },
 
   deletion: {
@@ -1254,6 +1305,7 @@ export const es: Localized<EnMessages> = {
     referralSubscription: 'Bono por suscripción de invitado',
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
+    bounty: 'Recompensa por error',
   },
 
   cosmetics: {
@@ -1452,7 +1504,7 @@ export const es: Localized<EnMessages> = {
     sendTranslationBody: 'Escribe en el tuyo; van los dos, así te leen sin adivinar.',
     deckExport: 'Llévate tus expresiones',
     deckExportBody:
-      'Exporta las expresiones guardadas de una conversación. El archivo se abre en Anki.',
+      'Exporta las expresiones guardadas de una conversación, o todas las que has guardado, como archivo. Se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
     translationQuota: 'Traduce lo que necesites',
     translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',

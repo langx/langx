@@ -124,6 +124,7 @@ export const tr: Localized<EnMessages> = {
     report: 'Bildir',
     correctedCannotEdit: 'Düzeltilmiş — değiştirilemez',
     share: 'Paylaş',
+    savePhrase: 'İfade olarak kaydet',
   },
 
   messageMeta: {
@@ -136,6 +137,12 @@ export const tr: Localized<EnMessages> = {
     photo: 'Fotoğraf',
     message: 'Mesaj',
     sending: 'Gönderiliyor',
+    video: 'Video',
+    sticker: 'Sticker',
+    phrase: 'İfade',
+    meeting: 'Toplantı',
+    quiz: 'Soru',
+    correction: 'Düzeltme',
   },
 
   interests: {
@@ -256,6 +263,14 @@ export const tr: Localized<EnMessages> = {
     updateTitle: 'Devam etmek için güncelle',
     updateBody:
       'LangX’in bu sürümü artık desteklenmiyor. Kullanmaya devam etmek için en yenisine geç.',
+  },
+
+  update: {
+    downloaded: 'Yeni sürüm hazır.',
+    restart: 'Şimdi yeniden başlat',
+    bannerTitle: 'Yeni sürüm çıktı',
+    bannerBody: 'LangX’in en yenisi için güncelle.',
+    dismiss: 'Kapat',
   },
 
   intro: {
@@ -683,6 +698,22 @@ export const tr: Localized<EnMessages> = {
     deleteForMe: 'Benden sil',
     actionFailed: 'Bu işlem gerçekleşmedi',
     viewProfile: 'Profili gör',
+    media: 'Fotoğraflar ve sesli notlar',
+    allPhrases: 'Tüm kaydedilen ifadeler',
+    phraseScopeMine: 'Benim',
+    phraseScopeAll: 'Hepsi',
+    allPhrasesEmpty: 'Herhangi bir sohbette bir ifade kaydet, burada görünür.',
+    phraseScopePicker: 'Benim kartlarım ya da sohbetlerimdeki her kart',
+    phraseFrom: '{name} ile',
+  },
+
+  chatMedia: {
+    title: 'Medya',
+    tabVisual: 'Fotoğraf ve video',
+    tabAudio: 'Sesli notlar',
+    emptyVisual: 'Birbirinize gönderdiğiniz fotoğraf ve videolar burada birikir.',
+    emptyAudio: 'Bu sohbetteki sesli notlar burada birikir.',
+    tabPicker: 'Fotoğraf ve video ya da sesli notlar',
   },
 
   messageMenu: {
@@ -939,6 +970,25 @@ export const tr: Localized<EnMessages> = {
     dataDeletion: 'Verilerimi sil',
     security: 'Güvenlik',
   },
+  feedback: {
+    bugTitle: 'Hata bildir',
+    featureTitle: 'Özellik iste',
+    bugRowBody: 'Bozuk bir şey mi var? Bize bildir, karşılığında jeton kazan.',
+    featureRowBody: 'Eksik bir şey mi var? Neyi kullanmak istediğini yaz.',
+    bugIntro:
+      'Ne olduğunu, bunun yerine ne beklediğini ve tekrar nasıl yaşandığını yaz. Ne kadar net anlatırsan o kadar çabuk düzelir.',
+    featureIntro:
+      'Neyi yapabilmek istediğini ve bunu ne için kullanacağını yaz. Neyin yapılacağına karar veren kısım, bunun sana neden gerektiği.',
+    reward:
+      'Doğrularsak karşılığında jeton kazanırsın — ne kadar olduğu, sonunda ne kadar değerli çıktığına bağlı.',
+    bugPlaceholder: 'Ne oldu, ne bekliyordun…',
+    featurePlaceholder: 'Ne isterdin, ne için kullanırdın…',
+    hint: 'Ekran görüntüsü ya da ekran kaydı her şeyden çok işe yarar. Yanıtı hesabındaki e-posta adresine yazıyoruz; yazdıkların GitHub’da herkese açık bir konu olarak açılabilir — adın olmadan.',
+    send: 'Gönder',
+    sending: 'Gönderiliyor…',
+    sent: 'Teşekkürler. Hepsini okuyor ve e-postayla yanıtlıyoruz.',
+    failed: 'Gönderilemedi. Birazdan tekrar dene.',
+  },
   kitchen: {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',
@@ -1114,6 +1164,8 @@ export const tr: Localized<EnMessages> = {
     signInUnlinked: 'Bağlantı kesildi.',
     signInLinkFailed: 'Bağlanamadı. Tekrar dene.',
     signInUnlinkFailed: 'Bağlantı kesilemedi. Tekrar dene.',
+    exportPhrases: 'Tüm ifadeleri dışa aktar',
+    exportPhrasesBody: 'Her sohbetten kaydettiğin bütün kartlar, tek dosyada.',
   },
 
   deletion: {
@@ -1258,6 +1310,7 @@ export const tr: Localized<EnMessages> = {
     referralSubscription: 'Davet abonelik bonusu',
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
+    bounty: 'Hata ödülü',
   },
 
   cosmetics: {
@@ -1452,7 +1505,8 @@ export const tr: Localized<EnMessages> = {
     sendTranslation: 'Onun dilinde gönder',
     sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
     deckExport: 'İfadelerini yanında götür',
-    deckExportBody: 'Bir sohbetin kaydedilmiş ifadelerini dosya olarak dışa aktar. Anki’de açılır.',
+    deckExportBody:
+      'Bir sohbetin kaydedilmiş ifadelerini ya da kaydettiğin bütün kartları dosya olarak dışa aktar. Anki’de açılır.',
     advancedFiltersBody: 'Belirli bir cinsiyete ve şehre göre ara.',
     translationQuota: 'İhtiyacın kadar çeviri',
     translationQuotaBody: 'Günde {count} çeviri — bir sohbetin kullandığından çok daha fazla.',

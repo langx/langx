@@ -641,6 +641,23 @@ and EAS Update is already wired to the channels in `eas.json`), and
 store-updates-only (an urgent fix would take days and could never reach people
 who stop updating).
 
+## Updates — two notices, because there are two ways to get one
+
+An over-the-air update is already downloaded and one restart away; a store
+release is a trip out of the app. Wording those as one message would have to
+lie about one of them, so they are two: a toast that offers the restart, and a
+dismissible banner that offers the store.
+
+They also cannot be derived from each other. An installed binary reports the
+version it was installed at whatever OTA bundle it is running, so `latestVersion`
+cannot see that someone has taken an OTA fix, and the OTA check cannot see that
+a new binary exists. Each notice is raised by the only mechanism that knows.
+
+The banner exists at all because of what the gate feels like without it. A
+forced-update screen is correct and it is also the worst possible first
+mention of the subject; `latestVersion` moves the first mention weeks earlier,
+to a point where the app still works and the answer can be "not now".
+
 ## Maintenance — two switches on purpose
 
 The database-backed flag is the everyday one: a single write, no redeploy. The
@@ -2719,6 +2736,39 @@ behind it. Three consequences, all intended:
 - Signing up fresh with the address is refused as "already exists", which is
   what we want — the old profile belongs to this row and a second account
   would strand it. The sign-up and sign-in errors now say what to do instead.
+
+**Amended 8 September 2026: the sign-up that gets refused now finishes the
+journey anyway.** Behic's point, and it is the obvious one once said aloud:
+`langx.io/welcome-back` opens with "You have to sign up again", the app's
+sign-up screen is where somebody who has been away a year starts, and both led
+to a mail whose advice was "go to a different screen and reset a password you
+never had". Three screens to get back into an account that was waiting.
+
+So `onExistingUserSignUp` asks what the account _is_ before it writes: a row
+the script opened that still has no password gets `existingAccountLinkEmail`,
+carrying a magic link, and the sign-up ends where it was trying to go. Every
+other account keeps the reset mail.
+
+The predicate is both halves — pre-created **and** still passwordless — and the
+second half is the one that matters. An unrequested sign-in link mailed to an
+account whose owner chose a password is a way around that password, at a
+stranger's keystroke; the reset screen is the answer there. For a row with no
+credential there is nothing to go around, and the link is the same bargain
+`requestPasswordReset` already makes with anyone who types an address into the
+forgot-password form: single-use, a quarter of an hour, delivered only to the
+inbox entitled to it.
+
+What was **not** done, and why: letting the sign-up actually attach a password
+to the row. It is the literal reading of "let them in through sign-up", and it
+hands the account to whoever knows the address. The row is `emailVerified` from
+the start — it has to be, for Google and Apple — so a credential written onto
+it would be usable before the verification mail was opened. Keeping the row
+unverified until then trades one takeover for another: anyone could then
+un-verify any v1 row on demand and break its owner's Google sign-in. The link
+proves the address without minting anything.
+
+The mail is chosen from the account, never from the sign-up body, so whoever
+types an address does not get to pick which letter its owner receives.
 
 Whether v1 had verified the address is reported, not filtered on: an
 unverified v1 address still cannot do anything with the row until a reset

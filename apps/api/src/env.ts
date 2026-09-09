@@ -50,9 +50,28 @@ const envSchema = z.object({
   // Raises GitHub's rate limit for the contributor strip on Our Kitchen.
   // Never required: without it the list is simply refreshed less often.
   GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
+  /**
+   * Opens an issue for every bug report and feature request sent from the app.
+   *
+   * Its own variable rather than `GITHUB_TOKEN`, which only ever reads a public
+   * list: this one writes, so it is a token with `issues: write` on the
+   * repository below and it is the one worth keeping narrow. Unset, reports
+   * are only emailed — see `openFeedbackIssue`.
+   */
+  GITHUB_ISSUE_TOKEN: emptyToUndefined(z.string().optional()),
+  /** Where those issues are opened, as `owner/name`. */
+  GITHUB_ISSUE_REPO: z.string().min(1).default('langx/langx'),
   // resend.dev requires no domain verification, so this works immediately;
   // point it at a verified langx.io sender before Faz 13's launch.
   EMAIL_FROM: z.string().min(1).default('LangX <onboarding@resend.dev>'),
+  /**
+   * Where a bug report or feature request from the app is sent, and the only
+   * place one is kept: `POST /feedback` writes nothing to the database, so this
+   * mailbox is the record, the confirmation and the reward decision. A
+   * self-hosted instance must point it at its own address — the default is
+   * ours, and mailing us about somebody else's fork helps neither of us.
+   */
+  SUPPORT_EMAIL: z.string().min(1).default('hi@langx.io'),
   /**
    * Signs the unsubscribe link in the footer of every notification email.
    *
