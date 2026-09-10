@@ -57,6 +57,9 @@ whole collection.
 
 ## Background work
 
+[`notifications.md`](notifications.md) catalogues every message these send —
+what triggers it, which switch gates it, and what stops it arriving twice.
+
 Four schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
