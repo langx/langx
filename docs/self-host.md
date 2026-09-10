@@ -61,16 +61,24 @@ Four schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
 
-| Scheduler        | Interval | What it does                                                                                                                      |
-| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days. |
-| Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                             |
-| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.      |
-| Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.   |
+| Scheduler        | Interval | What it does                                                                                                                         |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days.    |
+| Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                |
+| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.         |
+| Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.      |
+| Campaign queue   | 30 min   | Drips a queued broadcast out on a warm-up ramp (`CAMPAIGN_WARMUP_PER_DAY`), 08–20 UTC only. `send-campaign.ts` enqueues, this sends. |
 
 Running several API instances is safe. The pool's `jobRuns` unique index means
-only one instance can own a given day, and every notification pass claims a row
-in `notificationLedger` before it sends, so nobody is told the same thing twice.
+only one instance can own a given day, every notification pass claims a row
+in `notificationLedger` before it sends, and a campaign claims each recipient
+in `emailCampaigns` — so nobody is told the same thing twice.
+
+Nothing is sent to an address on `emailSuppressions`, service mail included:
+a permanent bounce or a spam complaint reported by Resend's webhook
+(`POST /webhooks/resend`, signed with `RESEND_WEBHOOK_SECRET`) puts an address
+there, and so does an unsubscribe pressed by somebody who has no profile to
+hold the preference.
 
 Without `RESEND_API_KEY` the notification email is printed to the log rather
 than sent, exactly like the verification link. Without `EMAIL_UNSUBSCRIBE_SECRET`

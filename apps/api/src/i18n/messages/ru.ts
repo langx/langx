@@ -90,6 +90,10 @@ export const ru: Localized<ServerMessages> = {
     unsubscribeLink: 'Отключить эти письма',
     unsubscribeText: 'Отключить эти письма: {url}',
     managePrefs: 'Все настройки уведомлений',
+    /** The dark panel under every mail: the QR to get.langx.io. */
+    getApp: 'Скачайте приложение',
+    getAppScan: 'Отсканируйте телефоном или откройте',
+    getAppPlatforms: 'iPhone · Android · Браузер',
     /** The one button a streak email has. */
     openChats: 'Отправить сообщение',
 

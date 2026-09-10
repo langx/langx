@@ -1,60 +1,64 @@
 /**
- * Sends one promotional email to everybody who asked for them.
+ * Queues one promotional email for everybody it may go to. The API sends it.
  *
- * A script rather than a scheduled sender, because a campaign is a decision
- * somebody makes on a particular day about a particular message — there is
- * nothing to compute. And a script rather than Resend's own Audiences,
- * because that would keep a second copy of the addresses and their consent
- * outside this database: every deletion and every toggle would have to be
- * synchronised into it, and the day the two disagree is a complaint rather
- * than a bug.
+ * This used to send from the laptop in one sitting. It now hands the campaign
+ * to `campaignQueue`, and the API's notification scheduler drips it out on a
+ * warm-up ramp (`CAMPAIGN_WARMUP_PER_DAY`, inside `CAMPAIGN_SEND_WINDOW_UTC`)
+ * — a few hundred the first day, a few thousand by the fifth. Not for any
+ * quota: a domain that goes from twenty mails a day to four thousand in an
+ * hour gets throttled by the mailbox providers, and the penalty lands on the
+ * verification links too. See `modules/notifications/campaignQueue.ts`.
  *
- * **Consent is read at send time**, from `settings.notifications.promotions`,
- * and it must be exactly true. Nothing here infers it.
+ * **Consent is decided by the source**, read at send time — never here:
  *
- * **A re-run cannot mail anybody twice.** Recipients are claimed into
- * `emailCampaigns` before the batch goes out, and the unique index on
- * `{campaignId, userId}` is what enforces it; a batch that fails releases its
- * own claim so the next run retries exactly those people.
+ *   consented  `promotions.email` true on the profile (the default)
+ *   v1         plus every pre-created v1 row that has not said no
+ *   all        plus everybody else with a verified address
+ *   v1deleted  the addresses v1's deleted accounts left in `v1DeletedContacts`
  *
- * The HTML must contain `{{unsubscribeUrl}}`, and so must a `--text-file` if
- * one is given. The script refuses to send otherwise — a promotional email
- * with no way out is the one mistake here with a regulator attached. A text
- * part derived from the HTML gets the link appended instead, because
- * stripping tags takes away the `href` it was written in.
+ * **Nobody is mailed twice.** Recipients are claimed into `emailCampaigns`
+ * before each batch, and the unique index on `{campaignId, userId}` enforces
+ * it across ticks, machines and restarts.
+ *
+ * Both bodies must contain `{{unsubscribeUrl}}`; the script refuses otherwise.
+ * They may also carry `{{firstName}}` ("there" when unknown) and `{{email}}`
+ * (URL-encoded, for `sign-in-link?email=`). A text part derived from the
+ * HTML gets the unsubscribe link appended, since stripping tags takes away
+ * the `href` it was written in.
  *
  * Usage:
- *   pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
+ *   pnpm --filter @langx/api exec tsx --env-file=../../.env --env-file=../../.env.prod \
+ *     scripts/send-campaign.ts \
  *     --campaign 2026-09-launch --subject "LangX v2 is here" \
- *     --html-file ./campaigns/launch.html [--text-file ./campaigns/launch.txt] \
- *     [--locale tr] [--limit 500] [--confirm]
+ *     --html-file campaigns/v1-launch.html [--text-file campaigns/v1-launch.txt] \
+ *     [--source consented|v1|all|v1deleted] [--exclude-returned] [--locale tr] \
+ *     [--ignore-cap] [--confirm]
  *
- * Without `--confirm` it counts and prints and sends nothing. Without
- * RESEND_API_KEY it prints each message instead of sending it, which is the
- * way to read one before it goes anywhere.
+ *   scripts/send-campaign.ts --status
+ *   scripts/send-campaign.ts --pause  --campaign 2026-09-launch
+ *   scripts/send-campaign.ts --resume --campaign 2026-09-launch
+ *
+ * Without `--confirm` it counts and prints and queues nothing.
  */
 import { readFileSync } from 'node:fs'
-import { createEmailSender, EMAIL_BATCH_SIZE, type EmailMessage } from '../src/email/sender'
-import { unsubscribeHeaders } from '../src/email/notify'
-import { signUnsubscribeToken, unsubscribeUrl } from '../src/email/unsubscribeToken'
+import { CAMPAIGN_SOURCES, type CampaignSource } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
-import { loadEnv, publicApiUrl, unsubscribeSecret } from '../src/env'
+import { loadEnv } from '../src/env'
+import { deriveTextBody, UNSUBSCRIBE_PLACEHOLDER } from '../src/modules/notifications/campaign'
 import {
-  campaignRecipients,
-  claimCampaignRecipients,
-  deriveTextBody,
-  releaseCampaignRecipients,
-  UNSUBSCRIBE_PLACEHOLDER,
-} from '../src/modules/notifications/campaign'
-
-/** Resend's default is two requests a second; this stays comfortably under. */
-const BATCH_DELAY_MS = 700
-
-const PLACEHOLDER = UNSUBSCRIBE_PLACEHOLDER
+  enqueueCampaign,
+  listCampaigns,
+  resolveCampaignAudience,
+  setCampaignStatus,
+} from '../src/modules/notifications/campaignQueue'
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
   return index === -1 ? undefined : process.argv[index + 1]
+}
+
+function has(name: string): boolean {
+  return process.argv.includes(`--${name}`)
 }
 
 function mask(email: string): string {
@@ -63,116 +67,99 @@ function mask(email: string): string {
 }
 
 async function main(): Promise<void> {
-  const campaignId = flag('campaign')
-  const subject = flag('subject')
-  const htmlFile = flag('html-file')
-  const textFile = flag('text-file')
-  const locale = flag('locale')
-  const limit = flag('limit') ? Number(flag('limit')) : undefined
-  const confirm = process.argv.includes('--confirm')
-
-  if (!campaignId || !subject || !htmlFile) {
-    throw new Error('--campaign, --subject and --html-file are all required')
-  }
-
-  const html = readFileSync(htmlFile, 'utf8')
-  if (!html.includes(PLACEHOLDER)) {
-    throw new Error(`the html body must contain ${PLACEHOLDER} — refusing to send without one`)
-  }
-
-  /**
-   * A plain-text part, because every deliverability guide asks for one and a
-   * missing part is a worse default than a plain one.
-   *
-   * Deriving it by stripping tags loses the placeholder every time it is
-   * written the way anybody actually writes it — inside
-   * `<a href="{{unsubscribeUrl}}">` — so the strip takes the attribute with
-   * it, and the check then refuses a campaign that was perfectly correct.
-   * Appending it to a derived body fixes that. A hand-written `--text-file` is
-   * still held to the same standard as the html, because there the omission is
-   * a real one.
-   */
-  let text: string
-  if (textFile) {
-    text = readFileSync(textFile, 'utf8')
-    if (!text.includes(PLACEHOLDER)) {
-      throw new Error(`the text body must contain ${PLACEHOLDER} — refusing to send without one`)
-    }
-  } else {
-    text = deriveTextBody(html)
-  }
-
   const env = loadEnv()
   const { db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
-  const sender = createEmailSender(env, console)
-  const secret = unsubscribeSecret(env)
-  const apiBaseUrl = publicApiUrl(env)
 
   try {
-    const audience = await campaignRecipients(db, campaignId, {
-      ...(locale ? { locale } : {}),
-      ...(limit ? { limit } : {}),
-    })
-    console.log(`campaign ${campaignId} on ${env.MONGODB_DB}`)
-    console.log(`  recipients: ${audience.recipients.length}`)
-    console.log(`  skipped: ${JSON.stringify(audience.skipped)}`)
-    for (const recipient of audience.recipients.slice(0, 5)) {
-      console.log(`    ${mask(recipient.email)} (${recipient.locale})`)
-    }
-    if (audience.recipients.length > 5)
-      console.log(`    …and ${audience.recipients.length - 5} more`)
-
-    if (!confirm) {
-      console.log('\n(dry run — re-run with --confirm to send)')
+    if (has('status')) {
+      const campaigns = await listCampaigns(db)
+      if (campaigns.length === 0) console.log('no campaigns queued')
+      for (const campaign of campaigns) {
+        console.log(
+          `${campaign._id}  ${campaign.status.padEnd(7)}  ${campaign.sent}/${campaign.total} sent` +
+            `${campaign.failed ? `, ${campaign.failed} failed` : ''}` +
+            `  (${campaign.source}${campaign.excludeReturned ? ', exclude-returned' : ''}` +
+            `${campaign.startedAt ? `, started ${campaign.startedAt.toISOString()}` : ''})`,
+        )
+      }
       return
     }
-    if (!env.RESEND_API_KEY) {
-      console.log('\nRESEND_API_KEY is not set — every message will be printed, not sent')
-    }
 
-    let sent = 0
-    for (let index = 0; index < audience.recipients.length; index += EMAIL_BATCH_SIZE) {
-      const batch = audience.recipients.slice(index, index + EMAIL_BATCH_SIZE)
-      const claimed = await claimCampaignRecipients(
-        db,
-        campaignId,
-        batch.map((recipient) => recipient.userId),
+    const campaignId = flag('campaign')
+    if (has('pause') || has('resume')) {
+      if (!campaignId) throw new Error('--campaign is required')
+      const status = has('pause') ? 'paused' : 'queued'
+      const changed = await setCampaignStatus(db, campaignId, status)
+      console.log(
+        changed ? `${campaignId} → ${status}` : `${campaignId}: not found, or already done`,
       )
-      const claimedSet = new Set(claimed)
-      const messages: EmailMessage[] = batch
-        .filter((recipient) => claimedSet.has(recipient.userId))
-        .map((recipient) => {
-          const url = unsubscribeUrl(
-            apiBaseUrl,
-            signUnsubscribeToken(secret, recipient.userId, 'promotions'),
-          )
-          return {
-            to: recipient.email,
-            subject,
-            html: html.replaceAll(PLACEHOLDER, url),
-            text: text.replaceAll(PLACEHOLDER, url),
-            headers: unsubscribeHeaders(url),
-          }
-        })
-      if (messages.length === 0) continue
-
-      try {
-        if (sender.sendBatch) await sender.sendBatch(messages)
-        else for (const message of messages) await sender.send(message)
-        sent += messages.length
-      } catch (error) {
-        // Release, so a re-run picks up exactly these people rather than
-        // recording a send that never happened.
-        await releaseCampaignRecipients(db, campaignId, claimed)
-        throw error
-      }
-
-      if (index + EMAIL_BATCH_SIZE < audience.recipients.length) {
-        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
-      }
+      return
     }
 
-    console.log(`\nsent ${sent}`)
+    const subject = flag('subject')
+    const htmlFile = flag('html-file')
+    const textFile = flag('text-file')
+    const source = (flag('source') ?? 'consented') as CampaignSource
+    const locale = flag('locale')
+    const confirm = has('confirm')
+
+    if (!campaignId || !subject || !htmlFile) {
+      throw new Error('--campaign, --subject and --html-file are all required')
+    }
+    if (!CAMPAIGN_SOURCES.includes(source)) {
+      throw new Error(`--source must be one of ${CAMPAIGN_SOURCES.join(', ')}`)
+    }
+
+    const html = readFileSync(htmlFile, 'utf8')
+    if (!html.includes(UNSUBSCRIBE_PLACEHOLDER)) {
+      throw new Error(
+        `the html body must contain ${UNSUBSCRIBE_PLACEHOLDER} — refusing without one`,
+      )
+    }
+    let text: string
+    if (textFile) {
+      text = readFileSync(textFile, 'utf8')
+      if (!text.includes(UNSUBSCRIBE_PLACEHOLDER)) {
+        throw new Error(
+          `the text body must contain ${UNSUBSCRIBE_PLACEHOLDER} — refusing without one`,
+        )
+      }
+    } else {
+      text = deriveTextBody(html)
+    }
+
+    const campaign = {
+      _id: campaignId,
+      subject,
+      html,
+      text,
+      source,
+      excludeReturned: has('exclude-returned'),
+      ...(locale ? { locale } : {}),
+      ignoreCap: has('ignore-cap'),
+    }
+
+    const audience = await resolveCampaignAudience(db, campaign)
+    console.log(`campaign ${campaignId} on ${env.MONGODB_DB} (source: ${source})`)
+    console.log(`  recipients: ${audience.targets.length}`)
+    console.log(`  skipped: ${JSON.stringify(audience.skipped)}`)
+    for (const target of audience.targets.slice(0, 5)) {
+      console.log(
+        `    ${mask(target.email)} (${target.locale}${target.firstName ? `, ${target.firstName}` : ''})`,
+      )
+    }
+    if (audience.targets.length > 5) console.log(`    …and ${audience.targets.length - 5} more`)
+
+    if (!confirm) {
+      console.log('\n(dry run — re-run with --confirm to queue it)')
+      return
+    }
+
+    await enqueueCampaign(db, { ...campaign, total: audience.targets.length })
+    console.log(
+      `\nqueued. The API sends it from the next tick inside the UTC window; ` +
+        `watch with --status, stop with --pause --campaign ${campaignId}.`,
+    )
   } finally {
     await close()
   }

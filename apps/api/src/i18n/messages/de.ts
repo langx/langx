@@ -79,6 +79,10 @@ export const de: Localized<ServerMessages> = {
     unsubscribeLink: 'Diese E-Mails abstellen',
     unsubscribeText: 'Diese E-Mails abstellen: {url}',
     managePrefs: 'Alle Benachrichtigungseinstellungen',
+    /** The dark panel under every mail: the QR to get.langx.io. */
+    getApp: 'Hol dir die App',
+    getAppScan: 'Scanne mit deinem Handy oder öffne',
+    getAppPlatforms: 'iPhone · Android · Browser',
     /** The one button a streak email has. */
     openChats: 'Nachricht senden',
 

@@ -1,5 +1,7 @@
 import { Resend } from 'resend'
 import type { Env } from '../env'
+import type { InlineAsset } from './inlineAssets'
+import { inlineAssetsFor } from './logo'
 
 /**
  * Just enough of pino's `warn` to log structurally — kept narrow so this
@@ -22,6 +24,14 @@ export interface EmailMessage {
    * footer satisfies the law, the header is what keeps the mail arriving.
    */
   headers?: Record<string, string>
+  /**
+   * Where a reply goes when the sender is `no-reply@`. Only campaigns set
+   * it: they are the mail that says "reply to this, it reaches a human", and
+   * from the app's transactional address that would be a lie.
+   */
+  replyTo?: string
+  /** Images for this one message, beside the shared ones. See `Email`. */
+  attachments?: InlineAsset[]
 }
 
 export interface EmailSender {
@@ -48,6 +58,30 @@ export interface EmailSender {
 /** Resend rejects a batch larger than this. */
 export const EMAIL_BATCH_SIZE = 100
 
+/**
+ * Between two single sends inside a batch that could not go as one: Resend's
+ * default is two requests a second, and this stays under it.
+ */
+const SINGLE_SEND_SPACING_MS = 600
+
+/**
+ * The images a message shows, attached inline. See `inlineAssets.ts` for why
+ * they are bytes in the mail rather than links to the site.
+ */
+function inlineAttachments(html: string, extra: InlineAsset[] = []) {
+  const assets = [...inlineAssetsFor(html), ...extra.filter((asset) => html.includes(asset.cid))]
+  return assets.length === 0
+    ? {}
+    : {
+        attachments: assets.map((asset) => ({
+          filename: asset.filename,
+          content: Buffer.from(asset.base64, 'base64'),
+          contentId: asset.cid,
+          contentType: asset.contentType,
+        })),
+      }
+}
+
 export class ResendEmailSender implements EmailSender {
   readonly deliverable = true
   readonly #client: Resend
@@ -58,7 +92,15 @@ export class ResendEmailSender implements EmailSender {
     this.#from = from
   }
 
-  async send({ to, subject, html, text, headers }: EmailMessage): Promise<void> {
+  async send({
+    to,
+    subject,
+    html,
+    text,
+    headers,
+    replyTo,
+    attachments,
+  }: EmailMessage): Promise<void> {
     const { error } = await this.#client.emails.send({
       from: this.#from,
       to,
@@ -66,6 +108,8 @@ export class ResendEmailSender implements EmailSender {
       html,
       text,
       ...(headers ? { headers } : {}),
+      ...(replyTo ? { replyTo } : {}),
+      ...inlineAttachments(html, attachments),
     })
     if (error) {
       throw new Error(`Resend failed to send "${subject}" to ${to}: ${error.message}`)
@@ -73,16 +117,36 @@ export class ResendEmailSender implements EmailSender {
   }
 
   async sendBatch(messages: EmailMessage[]): Promise<void> {
+    /*
+     * The batch endpoint takes no attachments, so a message that carries an
+     * inline image goes on its own. Slower — one request per person rather than per
+     * hundred — and the only caller is the campaign drip, which sends a few
+     * dozen a tick and has the whole half hour to do it in. A thrown error
+     * still means "release everything not yet sent": the claim was for the
+     * whole batch, and the caller cannot tell which of these went.
+     */
+    if (
+      messages.some(
+        (message) => Object.keys(inlineAttachments(message.html, message.attachments)).length > 0,
+      )
+    ) {
+      for (const [index, message] of messages.entries()) {
+        if (index > 0) await new Promise((resolve) => setTimeout(resolve, SINGLE_SEND_SPACING_MS))
+        await this.send(message)
+      }
+      return
+    }
     for (let index = 0; index < messages.length; index += EMAIL_BATCH_SIZE) {
       const batch = messages.slice(index, index + EMAIL_BATCH_SIZE)
       const { error } = await this.#client.batch.send(
-        batch.map(({ to, subject, html, text, headers }) => ({
+        batch.map(({ to, subject, html, text, headers, replyTo }) => ({
           from: this.#from,
           to,
           subject,
           html,
           text,
           ...(headers ? { headers } : {}),
+          ...(replyTo ? { replyTo } : {}),
         })),
       )
       // Thrown rather than logged: the caller claimed these recipients in the

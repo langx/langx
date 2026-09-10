@@ -2,6 +2,7 @@ import { notificationsAllowed, notificationsUntouched, promotionsRefused } from 
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import { suppressedAmong } from './suppressions'
 
 /**
  * Which addresses belong on a Resend audience, decided here rather than there.
@@ -40,8 +41,13 @@ export type ContactAction =
 export interface AudienceContact {
   userId: string
   email: string
-  /** Resend's `firstName`, for a broadcast that greets somebody. Display name, whole. */
+  /**
+   * For a broadcast that greets somebody: the display name, whole, or the
+   * name the v1 pre-creation wrote on the `user` row when there is no profile.
+   */
   name?: string
+  /** Whether the account has onboarded — what a "still waiting" follow-up excludes. */
+  hasProfile: boolean
   action: ContactAction
 }
 
@@ -56,6 +62,7 @@ const GUEST_DOMAIN = '@guest.langx.invalid'
 interface UserRow {
   _id: unknown
   email?: string
+  name?: string
   emailVerified?: boolean
   isAnonymous?: boolean
   precreatedFromV1?: unknown
@@ -112,7 +119,7 @@ export async function audiencePlan(
     .collection<UserRow>(COLLECTIONS.user)
     .find(
       { email: { $exists: true } },
-      { projection: { email: 1, emailVerified: 1, isAnonymous: 1, precreatedFromV1: 1 } },
+      { projection: { email: 1, name: 1, emailVerified: 1, isAnonymous: 1, precreatedFromV1: 1 } },
     )
     .toArray()
 
@@ -124,6 +131,14 @@ export async function audiencePlan(
         .find({ _id: { $in: ids } }, { projection: { settings: 1, deletedAt: 1, displayName: 1 } })
         .toArray()
     ).map((profile) => [profile._id, profile]),
+  )
+
+  // One query for the whole list. A suppressed address goes up as
+  // `unsubscribe`, never as `remove`: Resend keeps the suppression, and a
+  // bounce or complaint is exactly the thing a later sync must not undo.
+  const suppressed = await suppressedAmong(
+    db,
+    users.flatMap((user) => (user.email ? [user.email] : [])),
   )
 
   const contacts: AudienceContact[] = []
@@ -145,18 +160,26 @@ export async function audiencePlan(
 
     const userId = String(user._id)
     const profile = profiles.get(userId)
-    const action = audienceAction(source, {
+    const decided = audienceAction(source, {
       deleted: profile?.deletedAt !== undefined,
       fromV1: user.precreatedFromV1 !== undefined && user.precreatedFromV1 !== null,
       prefs: profile?.settings?.notifications,
     })
+    const action =
+      decided === 'subscribe' && suppressed.has(email.toLowerCase()) ? 'unsubscribe' : decided
     if (action === null) {
       skipped.noConsent++
       continue
     }
 
-    const name = profile?.displayName
-    contacts.push({ userId, email, ...(name ? { name } : {}), action })
+    const name = profile?.displayName || user.name
+    contacts.push({
+      userId,
+      email,
+      ...(name ? { name } : {}),
+      hasProfile: profile !== undefined,
+      action,
+    })
     if (options.limit && contacts.length >= options.limit) break
   }
 

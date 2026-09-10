@@ -1,7 +1,7 @@
 import { UNREAD_DIGEST_MAX_SENDERS } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { NotificationEmailContext } from '../../email/notify'
@@ -9,6 +9,7 @@ import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
 import { runUnreadDigestPass } from './unreadDigest'
 
+const STORAGE_BASE = 'https://media.langx.test'
 const SECRET = 'd'.repeat(40)
 const HOUR = 60 * 60 * 1000
 
@@ -52,13 +53,20 @@ describe('the unread-message digest', () => {
   })
 
   async function newProfile(
-    opts: { awayHours?: number; notifications?: unknown; timezone?: string; name?: string } = {},
+    opts: {
+      awayHours?: number
+      notifications?: unknown
+      timezone?: string
+      name?: string
+      avatarUrl?: string
+    } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
     await handle.db.collection(COLLECTIONS.profiles).insertOne({
       _id: userId,
       handle: `h${userId.slice(0, 8)}`,
       displayName: opts.name ?? `User ${userId.slice(0, 4)}`,
+      ...(opts.avatarUrl ? { avatarUrl: opts.avatarUrl } : {}),
       timezone: opts.timezone ?? zone,
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
       stats: {
@@ -104,6 +112,49 @@ describe('the unread-message digest', () => {
     // The one thing a digest must never carry.
     expect(message?.text).not.toContain('a secret nobody should see')
     expect(message?.html).not.toContain('a secret nobody should see')
+  })
+
+  /**
+   * Faces, and the two ways of drawing one: the photo travels with the mail
+   * as an attachment, and somebody without one gets initials drawn in HTML,
+   * which needs no image and so cannot fail to load.
+   */
+  it('shows who wrote, with their photo when there is one', async () => {
+    const reader = await newProfile()
+    const withPhoto = await newProfile({
+      name: 'Ada Lovelace',
+      avatarUrl: `${STORAGE_BASE}/avatars/ada.png`,
+    })
+    const without = await newProfile({ name: 'Kenji' })
+    await thread(reader, withPhoto)
+    await thread(reader, without, { minutesAgo: 90 })
+
+    const png = new Uint8Array([137, 80, 78, 71, 9])
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(png, { headers: { 'content-type': 'image/png' } })),
+    )
+    expect(await runUnreadDigestPass(handle.db, ctx, now, STORAGE_BASE)).toEqual({ sent: 1 })
+    vi.unstubAllGlobals()
+
+    const message = sender.messages[0]
+    expect(message?.html).toContain(`src="cid:avatar-${withPhoto}"`)
+    expect(message?.attachments?.map((asset) => asset.cid)).toEqual([`avatar-${withPhoto}`])
+    // Kenji has no photo, so his disc is initials rather than a broken image.
+    expect(message?.html).not.toContain(`cid:avatar-${without}`)
+    expect(message?.html).toContain('>K<')
+  })
+
+  /** A bucket that is slow or gone costs the digest a photo, never the mail. */
+  it('still sends when the photo cannot be fetched', async () => {
+    const reader = await newProfile()
+    const writer = await newProfile({ name: 'Ada', avatarUrl: `${STORAGE_BASE}/avatars/a.png` })
+    await thread(reader, writer)
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('gone')))
+    expect(await runUnreadDigestPass(handle.db, ctx, now, STORAGE_BASE)).toEqual({ sent: 1 })
+    vi.unstubAllGlobals()
+    expect(sender.messages[0]?.attachments ?? []).toEqual([])
+    expect(sender.messages[0]?.html).toContain('>A<')
   })
 
   /**

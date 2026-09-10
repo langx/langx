@@ -161,6 +161,20 @@ export const COLLECTIONS = {
    */
   emailCampaigns: 'emailCampaigns',
   /**
+   * Broadcasts waiting to go out, one document per campaign. The script
+   * enqueues; the API's scheduler drips the campaign out on a warm-up ramp.
+   * Recipients are still claimed in `emailCampaigns`, so the queue only
+   * decides *when*, never *whether twice*. See `notifications/campaignQueue.ts`.
+   */
+  campaignQueue: 'campaignQueue',
+  /**
+   * Addresses that get nothing, ever again. `_id` is the address itself: the
+   * unsubscribe route writes here when there is no profile to hold the
+   * preference, and Resend's bounce and complaint webhooks know nothing but
+   * the address. Read before every send. See `notifications/suppressions.ts`.
+   */
+  emailSuppressions: 'emailSuppressions',
+  /**
    * The v1 accounts whose owners deleted them, kept as plaintext addresses for
    * **one** announcement and nothing else. Written by
    * `scripts/precreate-v1-users.ts`, which opens no `user` row for them —

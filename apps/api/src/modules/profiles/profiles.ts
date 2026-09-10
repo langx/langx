@@ -40,6 +40,7 @@ import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
+import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
 import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
@@ -355,6 +356,13 @@ export async function createProfile(
    * Push stays off. v1 had no promotional push and nobody agreed to one.
    */
   const fromV1 = await cameFromV1(db, userId)
+  /*
+   * Unless they already said no. A v1 owner who pressed the unsubscribe link
+   * in a campaign before ever onboarding had no profile to record it on, so
+   * the refusal lives on the suppression list — and seeding the consent here
+   * would quietly undo it the day they came back.
+   */
+  const consentsFromV1 = fromV1 && !(await isUserSuppressed(db, userId))
 
   const now = new Date()
   const profile: Profile = {
@@ -368,7 +376,7 @@ export async function createProfile(
     interests: input.interests ?? [],
     settings: {
       discoverable: true,
-      notifications: fromV1
+      notifications: consentsFromV1
         ? { ...DEFAULT_NOTIFICATION_PREFS, promotions: { push: false, email: true } }
         : DEFAULT_NOTIFICATION_PREFS,
     },
@@ -385,7 +393,7 @@ export async function createProfile(
     createdAt: now,
     updatedAt: now,
   }
-  if (fromV1) profile.promotionsConsent = { source: 'v1', at: now }
+  if (consentsFromV1) profile.promotionsConsent = { source: 'v1', at: now }
   if (input.bio !== undefined) profile.bio = input.bio
   // The connection wins. Somebody's own answer is the fallback, for the cases
   // the edge cannot resolve — Tor, an unrouted range, a request that did not

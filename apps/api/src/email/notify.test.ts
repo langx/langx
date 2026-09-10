@@ -6,6 +6,7 @@ import { COLLECTIONS } from '../db/collections'
 import { authId } from '../lib/authId'
 import type { Device } from '../modules/push/devices'
 import { CapturingEmailSender } from '../testSupport/authFlow'
+import { suppressEmail } from '../modules/notifications/suppressions'
 import { sendNotificationEmail, type NotificationEmailContext } from './notify'
 import { verifyUnsubscribeToken } from './unsubscribeToken'
 
@@ -30,7 +31,12 @@ describe('sendNotificationEmail', () => {
   })
 
   beforeEach(async () => {
-    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user, COLLECTIONS.devices]) {
+    for (const name of [
+      COLLECTIONS.profiles,
+      COLLECTIONS.user,
+      COLLECTIONS.devices,
+      COLLECTIONS.emailSuppressions,
+    ]) {
       await handle.db.collection(name).deleteMany({})
     }
     u1 = new ObjectId().toHexString()
@@ -161,6 +167,18 @@ describe('sendNotificationEmail', () => {
   })
 
   /** Never inferred: nobody is marketed at without having said yes. */
+  it('sends nothing, service mail included, to a suppressed address', async () => {
+    await seed(u1)
+    await suppressEmail(handle.db, { email: `${u1}@example.com`, reason: 'complained' })
+    const outcome = await sendNotificationEmail(handle.db, ctx, {
+      userId: u1,
+      type: 'messages',
+      build,
+    })
+    expect(outcome).toBe('suppressed')
+    expect(sender.messages).toHaveLength(0)
+  })
+
   it('never sends promotions to somebody who did not ask', async () => {
     await seed(u1)
     expect(

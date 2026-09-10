@@ -8,6 +8,9 @@ import {
   type ReportReason,
 } from '@langx/shared'
 import { translator } from '../i18n'
+import { facesRow, type AvatarFace } from './avatars'
+import type { InlineAsset } from './inlineAssets'
+import { inlineSrc, LOGO_SRC } from './logo'
 
 /**
  * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
@@ -22,17 +25,26 @@ const TITLE_FONT = "'Nunito', -apple-system, 'Segoe UI', Roboto, system-ui, sans
 
 /**
  * The langx.io mark, next to the wordmark set in the same weight the site
- * uses for it. An `<img>` pointing at the site's own favicon rather than the
- * inline SVG the header uses on `website/src/lib/components/atoms/Logo.svelte`
- * — Gmail strips `<svg>` from mail bodies outright, and drops `data:` image
- * sources too, so a hosted file is the only version that survives. The
- * favicon is square where the site's mark is tall, but it is the same two
- * hooks and it is already live, with no new asset to host.
+ * uses for it. An `<img>` rather than the inline SVG the header uses on
+ * `website/src/lib/components/atoms/Logo.svelte` — Gmail strips `<svg>` from
+ * mail bodies outright, and drops `data:` image sources too. It pointed at a
+ * hosted file for a while, and a hosted file is what Outlook and a
+ * remote-content-off Apple Mail refuse to load; the bytes travel with the
+ * mail now, see `inlineAssets.ts`.
+ *
+ * The same header row the campaign bodies in `apps/api/campaigns/` open
+ * with, so a verification link and a broadcast read as one sender.
  */
 function logo(dir: 'ltr' | 'rtl'): string {
-  const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
-  return `<span style="font-family:${TITLE_FONT}; font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
-    <img src="https://langx.io/favicons/favicon-32x32.png" width="20" height="20" alt="" style="vertical-align:middle; ${gap}:8px;" />LangX</span>`
+  const gap = dir === 'rtl' ? 'padding-left' : 'padding-right'
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" dir="${dir}">
+            <tr>
+              <td style="${gap}:12px;">
+                <img src="${LOGO_SRC}" width="40" height="40" alt="LangX" border="0" style="display:block; width:40px; height:40px; border-radius:10px;" />
+              </td>
+              <td style="font-family:${TITLE_FONT}; font-size:22px; line-height:40px; font-weight:800; color:#17191c; letter-spacing:-0.02em;">LangX</td>
+            </tr>
+          </table>`
 }
 
 /**
@@ -55,24 +67,39 @@ function shell(locale: Locale, preheader: string, contentHtml: string, footerHtm
 <html lang="${locale}" dir="${dir}">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" />
   </head>
-  <body style="margin:0; padding:32px 16px; background:#f4f5f7; font-family:-apple-system,'Segoe UI',Roboto,system-ui,sans-serif;">
+  <body style="margin:0; padding:0; background-color:#f4f5f7;">
     <span style="display:none; overflow:hidden; line-height:0; max-height:0; opacity:0;">${preheader}</span>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px; margin:0 auto;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f5f7" style="background-color:#f4f5f7;">
       <tr>
-        <td style="padding:0 4px 20px; text-align:${align};">
-          ${logo(dir)}
-        </td>
-      </tr>
-      <tr>
-        <td style="background:#ffffff; border:1px solid #e7e9ec; border-radius:16px; padding:32px; text-align:${align}; font-size:15px; line-height:1.6; color:#111827;">
-          ${contentHtml}
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:20px 4px 0; text-align:${align}; font-size:12px; line-height:1.6; color:#9aa1a9;">
-          ${footerHtml}
+        <td align="center" style="padding:32px 16px;">
+          <!--[if mso]><table width="600" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:600px; background-color:#ffffff; border-radius:16px;">
+            <tr>
+              <td style="padding:28px 32px 8px; text-align:${align};">
+                ${logo(dir)}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 36px; text-align:${align}; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:25px; color:#17191c;">
+                ${contentHtml}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px 36px;">
+                ${getApp(locale, dir)}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 32px 28px; border-top:1px solid #e8eaec; text-align:${align}; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:19px; color:#9aa1a7;">
+                ${footerHtml}<br />
+                LangX &middot; New Chapter Technology LLC &middot; Open source, no ads
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]></td></tr></table><![endif]-->
         </td>
       </tr>
     </table>
@@ -80,8 +107,44 @@ function shell(locale: Locale, preheader: string, contentHtml: string, footerHtm
 </html>`
 }
 
+/**
+ * The "get the app" panel every mail ends with — the campaign bodies' dark
+ * one, with the QR travelling inline like the logo. On transactional mail
+ * too, by request: a verification link is read on whichever device signed
+ * up, which for the web is not the phone.
+ */
+function getApp(locale: Locale, dir: 'ltr' | 'rtl'): string {
+  const t = translator(locale)
+  const align = dir === 'rtl' ? 'right' : 'left'
+  const textPad = dir === 'rtl' ? 'padding:24px 24px 24px 16px;' : 'padding:24px 16px 24px 24px;'
+  const qrPad = dir === 'rtl' ? 'padding:24px 0 24px 24px;' : 'padding:24px 24px 24px 0;'
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#17191c" dir="${dir}" style="background-color:#17191c; border-radius:16px;">
+            <tr>
+              <td valign="middle" style="${textPad} text-align:${align}; font-family:${TITLE_FONT}; font-size:20px; line-height:26px; font-weight:800; color:#f2f3f5;">
+                ${t('email.getApp')}<br /><span style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; font-weight:400; color:#9aa1a9;">${t('email.getAppScan')} <a href="https://get.langx.io" target="_blank" style="color:#ffc409; text-decoration:none;">get.langx.io</a><br />${t('email.getAppPlatforms')}</span>
+              </td>
+              <td width="132" align="${dir === 'rtl' ? 'left' : 'right'}" valign="middle" style="${qrPad}">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td bgcolor="#ffffff" style="background-color:#ffffff; border-radius:12px; padding:8px;">
+                      <img src="${inlineSrc('langx-qr-get-langx-io')}" width="108" height="108" alt="QR code to get.langx.io" border="0" style="display:block; width:108px; height:108px;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>`
+}
+
+/** The one button a mail has — the campaign bodies' yellow one, exactly. */
 function button(url: string, label: string): string {
-  return `<a href="${url}" style="display:inline-block; background:#ffc409; color:#201900; text-decoration:none; padding:13px 22px; border-radius:10px; font-family:${TITLE_FONT}; font-weight:700; font-size:15px;">${label}</a>`
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
+            <tr>
+              <td bgcolor="#ffc409" style="background-color:#ffc409; border-radius:12px; border-bottom:3px solid #e0ac08;">
+                <a href="${url}" target="_blank" style="display:inline-block; padding:15px 28px; font-family:${TITLE_FONT}; font-size:16px; line-height:20px; font-weight:800; color:#201900; text-decoration:none;">${label}</a>
+              </td>
+            </tr>
+          </table>`
 }
 
 /** The shell for mail answering something somebody just did — sign up, reset, delete. */
@@ -94,6 +157,12 @@ export interface Email {
   subject: string
   html: string
   text: string
+  /**
+   * Images this one mail carries that are not in `INLINE_ASSETS` — today only
+   * the faces in the unread digest, which are per recipient and so cannot be
+   * a build-time constant. Merged with the shared ones by the sender.
+   */
+  attachments?: InlineAsset[]
 }
 
 /**
@@ -111,6 +180,8 @@ export function notificationEmail(
   options: {
     preheader: string
     bodyHtml: string
+    /** Between the body and the button — the digest's row of faces. */
+    extraHtml?: string
     cta?: { url: string; label: string }
     unsubscribeUrl: string
     manageUrl: string
@@ -121,11 +192,16 @@ export function notificationEmail(
     ? `<p style="margin:20px 0 0;">${button(options.cta.url, options.cta.label)}</p>`
     : ''
   const footer = `${t('email.whyThisMail')}<br />
-        <a href="${options.unsubscribeUrl}" style="color:#9aa1a9;">${t('email.unsubscribeLink')}</a>
-        &middot;
-        <a href="${options.manageUrl}" style="color:#9aa1a9;">${t('email.managePrefs')}</a>`
+        <a href="${options.unsubscribeUrl}" style="color:#62676d; text-decoration:underline;">${t('email.unsubscribeLink')}</a>
+        &nbsp;&middot;&nbsp;
+        <a href="${options.manageUrl}" style="color:#62676d; text-decoration:underline;">${t('email.managePrefs')}</a>`
   return {
-    html: shell(locale, options.preheader, `${options.bodyHtml}${cta}`, footer),
+    html: shell(
+      locale,
+      options.preheader,
+      `${options.bodyHtml}${options.extraHtml ?? ''}${cta}`,
+      footer,
+    ),
   }
 }
 
@@ -316,16 +392,24 @@ export function unreadDigestEmail(
   locale: Locale,
   {
     count,
-    names,
+    faces,
     moreThreads,
     url,
     unsubscribe,
-  }: { count: number; names: string[]; moreThreads: number; url: string; unsubscribe: string },
+  }: {
+    count: number
+    /** Who wrote, in the order the threads came back. */
+    faces: AvatarFace[]
+    moreThreads: number
+    url: string
+    unsubscribe: string
+  },
 ): Email {
   const t = translator(locale)
   const subject = t('email.digestSubject', { count })
   // `Intl.ListFormat` because "Ada, Bo and Cy" is not "Ada, Bo, Cy" in most of
   // the eight languages, and joining with a comma is wrong in all of them.
+  const names = faces.map((face) => face.name)
   const joined = formatList(locale, names)
   const body = t('email.digestBody', { count, names: joined })
   const more = moreThreads > 0 ? t('email.digestMore', { count: moreThreads }) : ''
@@ -335,12 +419,16 @@ export function unreadDigestEmail(
     subject,
     html: notificationEmail(locale, {
       preheader: t('email.digestPreheader'),
-      bodyHtml: `<p>${body}</p>${more ? `<p style="color:#9aa1a9;">${more}</p>` : ''}`,
+      bodyHtml: `<p>${body}</p>`,
+      // The faces stand in for the "and N more" sentence rather than
+      // repeating it: a grey +N disc says the same thing in less room.
+      extraHtml: facesRow(faces, moreThreads, locale === 'ar' ? 'rtl' : 'ltr'),
       cta,
       unsubscribeUrl: unsubscribe,
       manageUrl: webUrl('/settings'),
     }).html,
     text: notificationText(locale, [body, ...(more ? [more] : []), '', cta.url], unsubscribe),
+    attachments: faces.flatMap((face) => (face.asset ? [face.asset] : [])),
   }
 }
 
@@ -378,7 +466,7 @@ export function profileVisitsEmail(
     subject,
     html: notificationEmail(locale, {
       preheader: t('email.visitsPreheader'),
-      bodyHtml: `<p>${body}</p><p style="color:#9aa1a9;">${detail}</p>`,
+      bodyHtml: `<p>${body}</p><p style="color:#62676d;">${detail}</p>`,
       cta,
       unsubscribeUrl: unsubscribe,
       manageUrl: webUrl('/settings'),

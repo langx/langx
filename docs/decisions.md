@@ -3600,3 +3600,43 @@ way the streak reminder's is: a phone that is off should not cost somebody the
 record of the payment. The trigger is `result.awarded`, so the ledger's unique
 index on `{userId, kind, refId}` is what makes it exactly once — a second press
 of the same link pays nothing and says nothing.
+
+## A campaign is queued, and the API drips it out
+
+`send-campaign.ts` used to send from the laptop in one sitting: read the
+audience, claim a batch, hand it to Resend, sleep 700 ms, repeat. Correct,
+and wrong for the first real send — 3,901 v1 accounts plus 837 deleted ones
+from a domain that had been sending twenty mails a day. Mailbox providers
+rate a sender on what it did yesterday; that burst would have been throttled,
+and the throttle does not know a verification link from a broadcast.
+
+So the script now writes the campaign into `campaignQueue` and the
+notification scheduler sends it: a day's budget from
+`CAMPAIGN_WARMUP_PER_DAY` (250, 500, 1000, 2000, 4000), spread over the
+half-hour ticks left in `CAMPAIGN_SEND_WINDOW_UTC`, so a process restarted at
+noon carries on at the right pace rather than starting the day over. Two
+instances are serialised through `jobRuns` on the tick's half-hour — that is
+about pace; `emailCampaigns`' unique claim is what still makes double mail
+impossible. `--pause` stops the next tick and `--resume` continues from the
+claims. A campaign finishes when a tick finds nobody left who is not merely
+deferred.
+
+Deferred, because there is now a **marketing frequency cap**:
+`MARKETING_MIN_GAP_DAYS` between two pieces of promotional mail or push to
+the same person, on any channel, from any sender. Campaigns record
+themselves in `emailCampaigns` and promotional passes claim under
+`promo.<job>` in the ledger, so `recentlyMarketed` is two indexed reads.
+Somebody inside the gap is not claimed and not skipped; the next tick after
+the gap sees them again.
+
+And an **`emailSuppressions`** list, keyed by address, which every sender
+reads before every send — service mail included. It exists because two
+writers have nothing but an address: the unsubscribe route, acting for a
+pre-created v1 row whose owner pressed the link before ever onboarding
+(there was no profile to switch anything off on, so the route answered
+success and did nothing, and the profile they created later was seeded with
+v1's consent as if they had never said no), and Resend's webhook, which
+reports a permanent bounce or a spam complaint about a mailbox we should not
+write to again. `createProfile` checks it before seeding the v1 consent. A
+transient bounce is deliberately not on it: a full mailbox is a bad day, not
+a dead address.

@@ -83,6 +83,10 @@ export const ar: Localized<ServerMessages> = {
     unsubscribeLink: 'أوقف هذه الرسائل',
     unsubscribeText: 'أوقف هذه الرسائل: {url}',
     managePrefs: 'كل إعدادات الإشعارات',
+    /** The dark panel under every mail: the QR to get.langx.io. */
+    getApp: 'حمّل التطبيق',
+    getAppScan: 'امسح الرمز بهاتفك أو افتح',
+    getAppPlatforms: 'iPhone · Android · المتصفح',
     /** The one button a streak email has. */
     openChats: 'أرسل رسالة',
 

@@ -5,6 +5,7 @@ import {
   UNREAD_DIGEST_MAX_SENDERS,
   localHour,
   notificationsAllowed,
+  profileUrl,
   webUrl,
 } from '@langx/shared'
 import type { Db, Filter } from 'mongodb'
@@ -13,6 +14,7 @@ import { sendNotificationEmail, type NotificationEmailContext } from '../../emai
 import { unreadDigestEmail } from '../../email/templates'
 import type { Conversation } from '../chat/conversations'
 import { blockedUserIds } from '../moderation/blocks'
+import { fetchAvatarAsset, type AvatarFace } from '../../email/avatars'
 import { alreadyClaimed, claimOnce } from './ledger'
 import type { Profile } from '../profiles/profiles'
 
@@ -38,6 +40,7 @@ export async function runUnreadDigestPass(
   db: Db,
   ctx: NotificationEmailContext,
   now: Date = new Date(),
+  storagePublicBaseUrl?: string,
 ): Promise<{ sent: number }> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
@@ -105,17 +108,35 @@ export async function runUnreadDigestPass(
     const partners = await profiles
       .find(
         { _id: { $in: partnerIds }, deletedAt: { $exists: false } },
-        { projection: { displayName: 1, handle: 1 } },
+        { projection: { displayName: 1, handle: 1, avatarUrl: 1 } },
       )
       .toArray()
-    const nameOf = new Map(partners.map((p) => [p._id, p.displayName ?? p.handle]))
-    const names = partnerIds
-      .map((id) => nameOf.get(id))
-      .filter((name): name is string => Boolean(name))
-    if (names.length === 0) continue
+    const byId = new Map(partners.map((partner) => [partner._id, partner]))
+    /*
+     * Faces, not just names. The photo is fetched here rather than linked,
+     * for the reason every image in this app's mail is — see
+     * `email/avatars.ts` — and a fetch that fails leaves initials on a
+     * coloured disc, which is what somebody with no photo gets anyway.
+     */
+    const faces: AvatarFace[] = []
+    for (const id of partnerIds) {
+      const partner = byId.get(id)
+      const name = partner?.displayName ?? partner?.handle
+      if (!partner || !name) continue
+      const asset = partner.avatarUrl
+        ? await fetchAvatarAsset(partner.avatarUrl, `avatar-${id}`, storagePublicBaseUrl)
+        : null
+      faces.push({
+        name,
+        seed: id,
+        ...(asset ? { asset } : {}),
+        ...(partner.handle ? { url: profileUrl(partner.handle) } : {}),
+      })
+    }
+    if (faces.length === 0) continue
 
     const count = visible.reduce((total, thread) => total + (thread.unread[profile._id] ?? 0), 0)
-    const moreThreads = Math.max(0, visible.length - named.length)
+    const moreThreads = Math.max(0, visible.length - faces.length)
     // One thread has somewhere specific to land; several do not, and a link to
     // the wrong conversation is worse than a link to the list.
     const url =
@@ -129,7 +150,7 @@ export async function runUnreadDigestPass(
       userId: profile._id,
       type: 'messages',
       build: (locale, unsubscribe) =>
-        unreadDigestEmail(locale, { count, names, moreThreads, url, unsubscribe }),
+        unreadDigestEmail(locale, { count, faces, moreThreads, url, unsubscribe }),
     })
     if (outcome === 'sent') sent++
   }

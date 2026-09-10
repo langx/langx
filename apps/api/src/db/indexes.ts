@@ -676,6 +676,11 @@ export const INDEXES: Partial<IndexSpec> = {
     // care. No TTL: "we already sent them the launch email" has to be true
     // next year, or a second campaign with a reused id would go out again.
     { key: { campaignId: 1, userId: 1 }, name: 'campaign_user_unique', unique: true },
+    // "When was this person last marketed to" — the frequency cap's question,
+    // asked once per candidate by every promotional pass.
+    { key: { userId: 1, sentAt: -1 }, name: 'user_recent' },
+    // The queue's daily budget is what a campaign sent since midnight UTC.
+    { key: { campaignId: 1, sentAt: -1 }, name: 'campaign_recent' },
   ],
 
   [COLLECTIONS.jobRuns]: [

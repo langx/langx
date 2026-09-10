@@ -3,6 +3,7 @@ import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
+import { runCampaignQueuePass } from './campaignQueue'
 import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
 import { runUnreadDigestPass } from './unreadDigest'
 
@@ -14,7 +15,9 @@ import { runUnreadDigestPass } from './unreadDigest'
 export const NOTIFICATION_INTERVAL_MS = 30 * 60 * 1000
 
 /**
- * One timer for the scheduled notification passes rather than one each.
+ * One timer for the scheduled notification passes rather than one each —
+ * and for the campaign drip, which is a pass like the others with a queue
+ * for its condition.
  *
  * They share an interval, a `running` guard and a shutdown, and three separate
  * schedulers would be three chances for one of them to be left out of
@@ -26,7 +29,7 @@ export function startNotificationScheduler(
   db: Db,
   senders: { push: PushSender; email: NotificationEmailContext },
   logger: SchedulerLogger,
-  options: { intervalMs?: number } = {},
+  options: { intervalMs?: number; storagePublicBaseUrl?: string } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? NOTIFICATION_INTERVAL_MS
   let running = false
@@ -37,10 +40,18 @@ export function startNotificationScheduler(
     const now = new Date()
     try {
       await Promise.allSettled([
-        run('unread digest', () => runUnreadDigestPass(db, senders.email, now)),
+        run('unread digest', () =>
+          runUnreadDigestPass(db, senders.email, now, options.storagePublicBaseUrl),
+        ),
         run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
         run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
         run('badge round-up', () => runBadgeRoundUpPass(db, senders, now, logger)),
+        run('campaign queue', () =>
+          runCampaignQueuePass(db, senders.email, now, {
+            tickMinutes: intervalMs / 60_000,
+            logger,
+          }),
+        ),
       ])
     } finally {
       running = false

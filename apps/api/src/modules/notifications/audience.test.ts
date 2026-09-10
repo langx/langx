@@ -7,6 +7,7 @@ import { ensureIndexes } from '../../db/indexes'
 import { authId } from '../../lib/authId'
 import { DEFAULT_NOTIFICATION_PREFS } from '@langx/shared'
 import { audienceAction, audiencePlan } from './audience'
+import { suppressEmail } from './suppressions'
 
 describe('what a Resend audience should contain', () => {
   let mongo: MongoMemoryServer
@@ -24,7 +25,7 @@ describe('what a Resend audience should contain', () => {
   })
 
   beforeEach(async () => {
-    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user]) {
+    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user, COLLECTIONS.emailSuppressions]) {
       await handle.db.collection(name).deleteMany({})
     }
   })
@@ -138,6 +139,14 @@ describe('what a Resend audience should contain', () => {
     const plan = await audiencePlan(handle.db, 'v1')
     expect(plan.contacts.map((contact) => contact.userId)).toEqual([precreated])
     expect(plan.contacts[0]?.name).toBeUndefined()
+  })
+
+  it('sends a suppressed address up as unsubscribed, never as a subscriber', async () => {
+    const bounced = await newAccount({ notifications: optedIn, email: 'Bounced@Example.com' })
+    await suppressEmail(handle.db, { email: 'bounced@example.com', reason: 'bounced' })
+
+    const plan = await audiencePlan(handle.db, 'all')
+    expect(plan.contacts.find((c) => c.userId === bounced)?.action).toBe('unsubscribe')
   })
 
   it('takes a deleted account off the list rather than silencing it', async () => {
