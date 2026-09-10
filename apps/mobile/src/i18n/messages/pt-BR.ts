@@ -458,7 +458,7 @@ export const ptBR: Localized<EnMessages> = {
     meetings: 'Encontros',
     meetingsBody: 'Uma hora antes de uma chamada que vocês dois aceitaram. Só push.',
     promotions: 'Novidades e ofertas',
-    promotionsBody: 'De vez em quando, o que há de novo. Desligado a não ser que você peça.',
+    promotionsBody: 'De vez em quando, o que há de novo. Um toque para parar.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'E-mail' },
     emailUnverified: 'Verifique seu endereço de e-mail para ativar isto.',

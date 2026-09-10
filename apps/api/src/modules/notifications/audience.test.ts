@@ -63,23 +63,38 @@ describe('what a Resend audience should contain', () => {
 
   const optedIn = { promotions: { push: false, email: true } }
 
-  it('takes only a recorded yes when that is all that is claimed', async () => {
+  /**
+   * Since the reversal, "consented" is everybody the default put on the list
+   * as well as everybody who chose it — the `notificationsAllowed` answer,
+   * which is the only definition a sender uses.
+   */
+  it('takes everybody the reader says may be mailed', async () => {
     const yes = await newAccount({ notifications: optedIn })
-    await newAccount()
-    await newAccount({ fromV1: true })
+    const unanswered = await newAccount()
+    const fromV1 = await newAccount({ fromV1: true })
 
     const plan = await audiencePlan(handle.db, 'consented')
-    expect(plan.contacts.map((contact) => contact.userId)).toEqual([yes])
-    expect(plan.skipped.noConsent).toBe(2)
+    expect(new Set(plan.contacts.map((contact) => contact.userId))).toEqual(
+      new Set([yes, unanswered, fromV1]),
+    )
+    expect(plan.skipped.noConsent).toBe(0)
   })
 
-  it('adds the v1 accounts that never answered, under the v1 source', async () => {
+  /**
+   * The sources have converged since the reversal: an unanswered account is
+   * on the list under all three, because the default put it there. What
+   * `--source v1` still buys is the pre-created rows that have no profile at
+   * all — see the case further down.
+   */
+  it('takes an unanswered account under every source', async () => {
     const yes = await newAccount({ notifications: optedIn })
     const v1 = await newAccount({ fromV1: true })
-    await newAccount()
+    const neither = await newAccount()
 
     const plan = await audiencePlan(handle.db, 'v1')
-    expect(new Set(plan.contacts.map((contact) => contact.userId))).toEqual(new Set([yes, v1]))
+    expect(new Set(plan.contacts.map((contact) => contact.userId))).toEqual(
+      new Set([yes, v1, neither]),
+    )
   })
 
   /**
@@ -124,6 +139,10 @@ describe('what a Resend audience should contain', () => {
       notifications: {
         ...DEFAULT_NOTIFICATION_PREFS,
         messages: { push: false, email: false },
+        // The refusal itself. Since the default opts in, this cell has to be
+        // off explicitly to mean no — which is exactly what the settings
+        // screen writes when somebody turns the row off.
+        promotions: { push: false, email: false },
       },
     })
 
@@ -169,10 +188,17 @@ describe('what a Resend audience should contain', () => {
 describe('audienceAction', () => {
   const account = { deleted: false, fromV1: false, prefs: undefined }
 
-  it('reads a bare boolean per kind as silence, not as consent to mail', () => {
-    expect(audienceAction('consented', { ...account, prefs: { promotions: true } })).toBeNull()
-    expect(audienceAction('v1', { ...account, fromV1: true, prefs: { promotions: true } })).toBe(
+  /**
+   * The bare boolean says nothing about mail — but the default it falls
+   * through to now says yes, so the answer is `subscribe` for a reason that
+   * has nothing to do with what v1 wrote.
+   */
+  it('lets the default answer for a shape that could not', () => {
+    expect(audienceAction('consented', { ...account, prefs: { promotions: true } })).toBe(
       'subscribe',
+    )
+    expect(audienceAction('consented', { ...account, prefs: { promotions: false } })).toBe(
+      'unsubscribe',
     )
   })
 

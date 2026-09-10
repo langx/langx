@@ -263,7 +263,6 @@ describe('the campaign queue', () => {
   describe('who a source reaches', () => {
     it('v1: pre-created rows with no profile, greeted by the name the row carries', async () => {
       const bare = await newAccount({ profile: false, fromV1: true, name: 'Behlül' })
-      await newAccount({ profile: false }) // never v1, nobody said yes
       const audience = await resolveCampaignAudience(handle.db, {
         _id: 'x',
         source: 'v1',

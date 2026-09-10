@@ -131,8 +131,13 @@ describe('the nudges that need permission', () => {
     expect(subjects()[0]).toContain('photo')
   })
 
-  it('says nothing to somebody who never asked for promotions', async () => {
-    await newProfile({ createdDaysAgo: 3, notifications: {} })
+  /**
+   * Since the default opts people in, "no" has to be said — and when it is,
+   * it is final. The bare `false` is the oldest shape and still means
+   * silence everywhere.
+   */
+  it('says nothing to somebody who turned promotions off', async () => {
+    await newProfile({ createdDaysAgo: 3, notifications: { promotions: { email: false } } })
     await newProfile({ createdDaysAgo: 3, notifications: false })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
   })

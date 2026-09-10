@@ -529,7 +529,7 @@ export const ar: Localized<EnMessages> = {
     meetings: 'المواعيد',
     meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. إشعار فقط.',
     promotions: 'الأخبار والعروض',
-    promotionsBody: 'بين حين وآخر عن الجديد. مغلق ما لم تطلبه.',
+    promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'إشعار فوري', email: 'البريد' },
     emailUnverified: 'وثّق عنوان بريدك لتفعيل هذا.',

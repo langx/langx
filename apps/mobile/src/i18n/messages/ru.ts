@@ -510,7 +510,7 @@ export const ru: Localized<EnMessages> = {
     meetings: 'Встречи',
     meetingsBody: 'За час до звонка, на который вы оба согласились. Только пуш.',
     promotions: 'Новости и предложения',
-    promotionsBody: 'Изредка о новом. Выключено, пока не включите.',
+    promotionsBody: 'Изредка о новом. Одно касание — и всё прекратится.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Пуш', email: 'Почта' },
     emailUnverified: 'Подтвердите адрес почты, чтобы включить это.',

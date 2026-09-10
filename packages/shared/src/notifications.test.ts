@@ -13,12 +13,12 @@ import {
 
 describe('notification defaults', () => {
   /**
-   * Not a taste: consent to be marketed at has to be given rather than
-   * withdrawn, so a new account is opted out of promotions — and out of both
-   * channels, because an unsolicited email is the half with a regulator.
+   * Reversed on 10 September 2026, by the owner: everybody is on the mailing
+   * list and the unsubscribe is the way out. Push did not move — nobody asked
+   * to be buzzed at by marketing.
    */
-  it('opts nobody into promotions, on either channel', () => {
-    expect(DEFAULT_NOTIFICATION_PREFS.promotions).toEqual({ push: false, email: false })
+  it('puts everybody on the mailing list and nobody on promotional push', () => {
+    expect(DEFAULT_NOTIFICATION_PREFS.promotions).toEqual({ push: false, email: true })
   })
 
   it('is on for what the app already does', () => {
@@ -47,7 +47,8 @@ describe('notificationsAllowed', () => {
     expect(notificationsAllowed({}, 'messages', 'push')).toBe(true)
     expect(notificationsAllowed(undefined, 'streak', 'email')).toBe(true)
     expect(notificationsAllowed({}, 'promotions', 'push')).toBe(false)
-    expect(notificationsAllowed({}, 'promotions', 'email')).toBe(false)
+    // The one that reversed: unsaid is now yes on mail, no on push.
+    expect(notificationsAllowed({}, 'promotions', 'email')).toBe(true)
   })
 
   /**
@@ -64,7 +65,7 @@ describe('notificationsAllowed', () => {
     expect(notificationsAllowed(true, 'messages', 'push')).toBe(true)
     expect(notificationsAllowed(true, 'messages', 'email')).toBe(true)
     expect(notificationsAllowed(true, 'promotions', 'push')).toBe(false)
-    expect(notificationsAllowed(true, 'promotions', 'email')).toBe(false)
+    expect(notificationsAllowed(true, 'promotions', 'email')).toBe(true)
   })
 
   describe('the bare boolean per kind, written while there was no channel axis', () => {
@@ -85,7 +86,11 @@ describe('notificationsAllowed', () => {
      */
     it('never lets it consent to email that was never offered', () => {
       expect(notificationsAllowed({ messages: true }, 'messages', 'email')).toBe(true)
-      expect(notificationsAllowed({ promotions: true }, 'promotions', 'email')).toBe(false)
+      // A bare `true` from v1 says nothing about mail — but the default it
+      // falls through to now says yes, which is the same answer for a
+      // different reason.
+      expect(notificationsAllowed({ promotions: true }, 'promotions', 'email')).toBe(true)
+      expect(notificationsAllowed({ promotions: false }, 'promotions', 'email')).toBe(false)
     })
   })
 
@@ -102,14 +107,13 @@ describe('notificationsAllowed', () => {
     it('fills a half nobody named with the default', () => {
       expect(notificationsAllowed({ messages: { email: false } }, 'messages', 'push')).toBe(true)
       expect(notificationsAllowed({ streak: { push: false } }, 'streak', 'email')).toBe(true)
-      expect(notificationsAllowed({ promotions: { push: true } }, 'promotions', 'email')).toBe(
-        false,
-      )
+      expect(notificationsAllowed({ promotions: { push: true } }, 'promotions', 'email')).toBe(true)
     })
 
     it('falls back to the default for an empty object', () => {
       expect(notificationsAllowed({ streak: {} }, 'streak', 'push')).toBe(true)
-      expect(notificationsAllowed({ promotions: {} }, 'promotions', 'email')).toBe(false)
+      expect(notificationsAllowed({ promotions: {} }, 'promotions', 'email')).toBe(true)
+      expect(notificationsAllowed({ promotions: {} }, 'promotions', 'push')).toBe(false)
     })
   })
 })
@@ -136,7 +140,7 @@ describe('resolveNotificationPrefs', () => {
     const stored = { messages: { push: false }, promotions: true }
     const resolved = resolveNotificationPrefs(stored)
     expect(resolved.messages).toEqual({ push: false, email: true })
-    expect(resolved.promotions).toEqual({ push: true, email: false })
+    expect(resolved.promotions).toEqual({ push: true, email: true })
   })
 })
 

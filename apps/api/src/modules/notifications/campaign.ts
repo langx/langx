@@ -63,9 +63,12 @@ export interface CampaignAudience {
  * every account deletion and every toggle synchronised into it, and the day
  * the two disagree is a complaint rather than a bug.
  *
- * `promotions.email` must be exactly true. Every other kind falls back to a
- * default when nobody has said; this one never does — consent to be marketed
- * at has to have been given.
+ * `notificationsAllowed` decides, as everywhere else. Since 10 September 2026
+ * its default for promotional **email** is yes and for promotional **push**
+ * is no, so "nobody has said" now means the mail may go — see
+ * `DEFAULT_NOTIFICATION_PREFS` for whose decision that was and what it does
+ * not change. A refusal is still a refusal, and a suppressed address is
+ * skipped whatever the profile says.
  */
 export async function campaignRecipients(
   db: Db,

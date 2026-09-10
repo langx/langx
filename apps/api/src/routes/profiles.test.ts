@@ -186,7 +186,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(mail?.headers).toBeUndefined()
   })
 
-  it('leaves promotional email off for somebody who signed up here', async () => {
+  it('puts somebody who signed up here on the mailing list, and not on push', async () => {
     const user = await newUser('fresh-consent@example.com')
     await app.inject({
       method: 'POST',
@@ -198,8 +198,11 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     const profile = await handle.db
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: user.userId })
+    // Reversed on 10 September 2026 — see `DEFAULT_NOTIFICATION_PREFS`. The
+    // consent record stays for the v1 case alone: this one is the default,
+    // not a decision anybody made.
     expect(profile?.settings.notifications).toMatchObject({
-      promotions: { push: false, email: false },
+      promotions: { push: false, email: true },
     })
     expect(profile?.promotionsConsent).toBeUndefined()
   })
@@ -502,7 +505,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     // The other half of the kind that moved is written back, not dropped.
     expect(settings.notifications.streak).toEqual({ push: true, email: false })
     expect(settings.notifications.messages).toEqual({ push: true, email: true })
-    expect(settings.notifications.promotions).toEqual({ push: false, email: false })
+    expect(settings.notifications.promotions).toEqual({ push: false, email: true })
     expect(settings.discoverable).toBe(true)
   })
 

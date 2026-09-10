@@ -3741,3 +3741,40 @@ app sends outside review, outside git, and outside the eight-language
 catalogue that every other string lives in. A month with no merged note still
 gets its recap; the numbers are the part that is always true. See
 `src/email/newsletters/README.md`.
+
+## Promotional email is opt-out now, and the published copy moved with it
+
+This reverses a decision recorded above. Promotions used to be off on both
+channels, with the argument that consent to be marketed at has to be given
+rather than withdrawn. On 10 September 2026 the owner decided otherwise:
+everybody is on the mailing list, and the unsubscribe in every message is the
+way out. Three profiles had promotional email on at the time, so the
+alternative was building a remarketing programme and a newsletter for three
+people.
+
+I raised the objection and it is worth keeping written down: a pre-ticked box
+is not consent under GDPR, CASL asks for consent too, and the practical risk
+is not a regulator but deliverability — spam complaints land on the domain
+that also carries the verification links. Behic reaffirmed it. What the
+decision bought in exchange is that the list is real; what it cost is that
+the app now has to be _very_ good at the unsubscribe, which is the rest of
+this entry.
+
+Three things did not move:
+
+- **Push stays off.** Nobody asked to be buzzed at by marketing, and it is
+  the intrusive channel.
+- **An explicit refusal wins over everything.** `opt-in-everyone.ts` changes
+  only profiles that `notificationsUntouched` recognises — every set of
+  preferences this codebase has ever written on somebody's behalf, which now
+  includes the pre-flip default. Somebody who opened Settings and left
+  promotions off had already answered; re-adding them is the one thing worse
+  than never having asked.
+- **A suppressed address gets nothing**, whatever its profile says. That is
+  what makes an unsubscribe pressed before onboarding survive the account
+  being created afterwards.
+
+And the published copy had to change **before** the script could run, because
+a default-on list under text that says "off unless you ask" is a false claim
+rather than a stale one: the Settings row in eight locales, and
+`docs/legal/promise-change.md`, which describes the default out loud.

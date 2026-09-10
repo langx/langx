@@ -40,7 +40,17 @@ describe('recording a consent given at v1 sign-up', () => {
         handle: `h${userId.slice(-12)}`,
         settings: {
           discoverable: true,
-          notifications: opts.notifications ?? DEFAULT_NOTIFICATION_PREFS,
+          /*
+           * The pre-flip default, written out. Since 10 September 2026 the
+           * shipped default already opts people in — see
+           * `DEFAULT_NOTIFICATION_PREFS` — so a fixture using it would be
+           * testing nothing. This script exists for accounts written before
+           * that, and this is what they carry.
+           */
+          notifications: opts.notifications ?? {
+            ...DEFAULT_NOTIFICATION_PREFS,
+            promotions: { push: false, email: false },
+          },
         },
       } as never)
     }
@@ -88,7 +98,11 @@ describe('recording a consent given at v1 sign-up', () => {
   it('never overwrites a refusal', async () => {
     const said = await newAccount({
       fromV1: true,
-      notifications: { ...DEFAULT_NOTIFICATION_PREFS, messages: { push: false, email: false } },
+      notifications: {
+        ...DEFAULT_NOTIFICATION_PREFS,
+        messages: { push: false, email: false },
+        promotions: { push: false, email: false },
+      },
     })
 
     const outcome = await adoptPromotionsConsent(handle.db, 'v1', { apply: true })

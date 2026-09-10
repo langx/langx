@@ -282,10 +282,14 @@ describe('unsubscribing from a link in an email', () => {
     const profile = await handle.db
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: stranger.userId })
-    expect(profile?.settings.notifications).toMatchObject({
-      promotions: { push: false, email: false },
-    })
+    /*
+     * The default opts people in, so this is the case that has to keep
+     * working: somebody who pressed unsubscribe before they had a profile is
+     * on `emailSuppressions`, and every sender reads it — the cell below says
+     * yes and nothing goes to them anyway.
+     */
     expect(profile?.promotionsConsent).toBeUndefined()
+    expect(await isEmailSuppressed(handle.db, stranger.email)).toBe(true)
   })
 
   /**
