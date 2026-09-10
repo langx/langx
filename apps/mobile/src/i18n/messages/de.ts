@@ -288,6 +288,8 @@ export const de: Localized<EnMessages> = {
     subtitle:
       'Sieh dich erst um — du kannst deine Sprachen wählen und sehen, wer hier ist, bevor du dich anmeldest.',
     browse: 'Erst umsehen',
+    line2: 'Korrigieren und korrigiert werden',
+    line3: 'Jeden Tag da sein zahlt sich aus',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Sprachtandems',
     createAccount: 'Konto erstellen',
@@ -325,7 +327,7 @@ export const de: Localized<EnMessages> = {
     goToSignIn: 'Zur Anmeldung',
     checkEmailTitle: 'Sieh in deine E-Mails',
     checkEmailBody:
-      'Wir haben einen Bestätigungslink an\n{email}\ngeschickt.\n\nTipp ihn an, komm zurück und melde dich an.',
+      'Wir haben einen Bestätigungslink an\n{email}\ngeschickt.\n\nTipp ihn an — die App öffnet sich, schon angemeldet.',
     resendEmail: 'E-Mail erneut senden',
     resent: 'Gesendet — noch einmal senden',
     resetTitle: 'Passwort zurücksetzen',
@@ -349,6 +351,11 @@ export const de: Localized<EnMessages> = {
       'Du bist einem Anmeldelink gefolgt. Tippe auf den Button, um die Anmeldung auf diesem Gerät abzuschließen.',
     openLinkButton: 'Anmelden',
     openInApp: 'In der LangX-App öffnen',
+    verifyLinkTitle: 'E-Mail bestätigen',
+    verifyLinkBody:
+      'Du hast einen Bestätigungslink geöffnet. Tipp auf den Button, um dein Konto auf diesem Gerät fertig einzurichten.',
+    verifyLinkButton: 'E-Mail bestätigen',
+    verifying: 'E-Mail wird bestätigt…',
     setNewPassword: 'Neues Passwort festlegen',
     newPassword: 'Neues Passwort',
     updatePassword: 'Passwort aktualisieren',
@@ -414,8 +421,9 @@ export const de: Localized<EnMessages> = {
     doneReady: 'Dein Profil ist fertig.',
     whatNext: 'Wie es weitergeht',
     whatNextBody:
-      'Entdecken zeigt dir Leute, die sprechen, was du lernst, und lernen, was du sprichst. Sag einem von ihnen Hallo — die erste Nachricht bringt Token und ist das Einzige zwischen dir und einem Gespräch.',
+      'Entdecken zeigt dir Leute, die sprechen, was du lernst. Sag einem von ihnen Hallo.',
     findSomeone: 'Jemanden zum Reden finden',
+    sayHelloTo: 'Sag {name} Hallo',
     inviteCodeToggle: 'Hast du einen Einladungscode?',
     inviteCodeLabel: 'Einladungscode',
     inviteCodePlaceholder: 'Benutzername',
@@ -1612,6 +1620,7 @@ export const de: Localized<EnMessages> = {
     yearlySaving: 'Jährlich · {percent}% sparen',
     billingPeriod: 'Abrechnungszeitraum',
     start: 'Mit {plan} starten',
+    continueFree: 'Kostenlos weitermachen',
     perMonthBilledYearly: 'pro Monat · jährlich abgerechnet',
   },
 

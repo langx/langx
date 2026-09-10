@@ -323,6 +323,8 @@ export const ru: Localized<EnMessages> = {
     title: 'Практикуйся с тем, кто учит твой язык',
     subtitle: 'Сначала осмотрись — можно выбрать языки и увидеть, кто здесь, ещё до регистрации.',
     browse: 'Сначала осмотреться',
+    line2: 'Исправляй и получай исправления',
+    line3: 'Заходи каждый день — это копится',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Языковые обмены',
     createAccount: 'Создать аккаунт',
@@ -359,7 +361,7 @@ export const ru: Localized<EnMessages> = {
     goToSignIn: 'Перейти ко входу',
     checkEmailTitle: 'Проверь почту',
     checkEmailBody:
-      'Мы отправили ссылку для подтверждения на\n{email}\n\nНажми её, потом вернись и войди.',
+      'Мы отправили ссылку для подтверждения на\n{email}\n\nНажми её — приложение откроется, вход уже выполнен.',
     resendEmail: 'Отправить письмо ещё раз',
     resent: 'Отправлено — отправить снова',
     resetTitle: 'Сброс пароля',
@@ -382,6 +384,11 @@ export const ru: Localized<EnMessages> = {
       'Вы перешли по ссылке для входа. Нажмите кнопку, чтобы завершить вход на этом устройстве.',
     openLinkButton: 'Войти',
     openInApp: 'Открыть в приложении LangX',
+    verifyLinkTitle: 'Подтверди почту',
+    verifyLinkBody:
+      'Ты открыл ссылку для подтверждения. Нажми кнопку, чтобы завершить настройку аккаунта на этом устройстве.',
+    verifyLinkButton: 'Подтвердить почту',
+    verifying: 'Подтверждаем твою почту…',
     setNewPassword: 'Задай новый пароль',
     newPassword: 'Новый пароль',
     updatePassword: 'Обновить пароль',
@@ -445,8 +452,9 @@ export const ru: Localized<EnMessages> = {
     doneReady: 'Твой профиль готов.',
     whatNext: 'Что дальше',
     whatNextBody:
-      'В Поиске появляются люди, которые говорят на том, что ты учишь, и учат то, на чём говоришь ты. Поздоровайся с кем-нибудь — первое сообщение приносит жетоны и это единственное, что отделяет тебя от разговора.',
+      'В Поиске появляются люди, которые говорят на том, что ты учишь. Поздоровайся с кем-нибудь.',
     findSomeone: 'Найти собеседника',
+    sayHelloTo: 'Поздоровайся с {name}',
     inviteCodeToggle: 'Есть код приглашения?',
     inviteCodeLabel: 'Код приглашения',
     inviteCodePlaceholder: 'имя пользователя',
@@ -1770,6 +1778,7 @@ export const ru: Localized<EnMessages> = {
     yearlySaving: 'Ежегодно · экономия {percent}%',
     billingPeriod: 'Период оплаты',
     start: 'Начать с {plan}',
+    continueFree: 'Продолжить бесплатно',
     perMonthBilledYearly: 'в месяц · оплата раз в год',
   },
 

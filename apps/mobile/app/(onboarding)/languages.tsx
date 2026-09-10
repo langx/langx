@@ -10,7 +10,8 @@ import { GUEST_ONBOARDING_STEPS } from '../../src/lib/onboardingStep'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
-import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
+import { updateDraft, useOnboardingDraft, useStepResumed } from '../../src/hooks/useOnboardingDraft'
+import { track } from '../../src/lib/analytics'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -68,9 +69,21 @@ export default function LanguagesStep() {
 
   const max = onNative ? PLAN_LIMITS.free.maxNativeLanguages : PLAN_LIMITS.free.maxLearningLanguages
 
+  const resumed = useStepResumed('languages')
+
   function onContinue(): void {
-    if (onNative) setTab('learning')
-    else router.push('/(onboarding)/levels')
+    // The native tab's Continue is the tab change, not the step: both
+    // questions live on this screen and the step is done when the second one
+    // is answered.
+    if (onNative) {
+      setTab('learning')
+      return
+    }
+    track({
+      name: 'onboarding_step_completed',
+      properties: { step: 'languages', guest: isGuest, resumed },
+    })
+    router.push('/(onboarding)/levels')
   }
 
   return (

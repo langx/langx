@@ -46,6 +46,12 @@ const DAYS = Number(process.argv[2] ?? 30)
  * than a query. It is the one in `apps/mobile/src/lib/analyticsEvents.ts`:
  * the steps the app was instrumented for, in the order somebody walks them.
  *
+ * The wizard's own steps are in it because everything between the install and
+ * the finished profile used to be one black box: five screens of questions
+ * reported as a single number that only said how many people came out.
+ * `photo` is deliberately not a step — it comes after the profile exists, so
+ * `onboarding_completed` has already counted that account.
+ *
  * `Application Installed` is the SDK's own and the only event that can count
  * an install that never reached a screen of ours. The last step is filtered to
  * a purchase that actually completed — the event also fires for a cancelled or
@@ -54,6 +60,13 @@ const DAYS = Number(process.argv[2] ?? 30)
  */
 const FUNNEL = [
   { event: 'Application Installed', label: 'Installed the app' },
+  { event: 'welcome_chosen', label: 'Chose on the welcome screen' },
+  { event: 'signup_submitted', label: 'Submitted a sign-up' },
+  ...['languages', 'levels', 'about-you', 'handle'].map((step) => ({
+    event: 'onboarding_step_completed',
+    label: `Finished ${step}`,
+    properties: [{ key: 'step', value: [step], operator: 'exact', type: 'event' }],
+  })),
   { event: 'onboarding_completed', label: 'Finished onboarding' },
   { event: 'message_sent', label: 'Sent a message' },
   { event: 'paywall_viewed', label: 'Saw the paywall' },
@@ -63,6 +76,24 @@ const FUNNEL = [
     properties: [{ key: 'outcome', value: ['purchased'], operator: 'exact', type: 'event' }],
   },
 ]
+
+/**
+ * The one breakdown, asked as its own query rather than as a `breakdownFilter`
+ * on the funnel above: with a breakdown PostHog answers with one array per
+ * group, and a reader that takes the first would quietly report a single
+ * method's numbers as everybody's.
+ *
+ * `method` is the property worth splitting on, because it is two different
+ * journeys — an email sign-up walks through an inbox and back, Google and
+ * Apple never leave. It is the first thing to look at when the steps between
+ * sign-up and the wizard lose people.
+ */
+const METHOD_SPLIT = `
+  SELECT coalesce(nullIf(toString(properties.method), ''), 'not recorded') AS method,
+         countIf(event = 'signup_submitted') AS submitted,
+         countIf(event = 'onboarding_completed') AS finished
+  FROM events
+  WHERE event IN ('signup_submitted', 'onboarding_completed')`
 
 function fail(message) {
   console.error(message)
@@ -207,7 +238,7 @@ function chart(days) {
 
 const since = `now() - INTERVAL ${DAYS} DAY`
 
-const [steps, active, screens, surfaces, totals] = await Promise.all([
+const [steps, active, screens, surfaces, methods, totals] = await Promise.all([
   funnel(),
   rows(
     `SELECT toString(toDate(timestamp)) AS day, count(DISTINCT person_id) AS people
@@ -226,10 +257,18 @@ const [steps, active, screens, surfaces, totals] = await Promise.all([
             count(DISTINCT person_id) AS people
      FROM events WHERE timestamp >= ${since} GROUP BY surface ORDER BY people DESC`,
   ),
+  rows(`${METHOD_SPLIT} AND timestamp >= ${since} GROUP BY method ORDER BY submitted DESC`),
   rows(
     `SELECT count() AS events, count(DISTINCT person_id) AS people
      FROM events WHERE timestamp >= ${since}`,
   ),
+])
+
+// The number the split is for: of the people who started with this door, how
+// many came out of the wizard with a profile.
+const methodRows = methods.map(([method, submitted, finished]) => [
+  `${method} (${NUM.format(Number(submitted))} started)`,
+  Number(finished),
 ])
 
 const [events = 0, people = 0] = totals[0] ?? []
@@ -329,6 +368,11 @@ const html = `<!doctype html>
           <h2>Most seen screens</h2>
           <p class="hint">Route files, never an identifier</p>
           <ul>${listRows(screens)}</ul>
+        </section>
+        <section class="card">
+          <h2>Finished onboarding, by sign-up method</h2>
+          <p class="hint">Email walks through an inbox; Google and Apple do not</p>
+          <ul>${listRows(methodRows)}</ul>
         </section>
         <section class="card">
           <h2>Where they are</h2>

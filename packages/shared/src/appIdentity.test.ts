@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { deviceLinkQrUrl, postUrl, profileUrl, WEB_HOST, magicLinkUrl } from './appIdentity'
+import {
+  deviceLinkQrUrl,
+  postUrl,
+  profileUrl,
+  WEB_HOST,
+  magicLinkUrl,
+  verifyEmailUrl,
+} from './appIdentity'
 import { deviceLinkTarget } from './appScheme'
 import { RESERVED_HANDLES } from './reservedHandles'
 
@@ -61,5 +68,17 @@ describe('magicLinkUrl', () => {
 
   it('escapes a token that is not plain characters', () => {
     expect(magicLinkUrl('a b&c')).toBe('https://app.langx.io/magic-link?token=a%20b%26c')
+  })
+})
+
+describe('verifyEmailUrl', () => {
+  it('is a page on the web host, never the API endpoint that spends the token', () => {
+    const url = verifyEmailUrl('abc')
+    expect(url).toBe('https://app.langx.io/verify-email?token=abc')
+    expect(url).not.toContain('/api/')
+  })
+
+  it('escapes a token that is not plain characters', () => {
+    expect(verifyEmailUrl('a b&c')).toBe('https://app.langx.io/verify-email?token=a%20b%26c')
   })
 })

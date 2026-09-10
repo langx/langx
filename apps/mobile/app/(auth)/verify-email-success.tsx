@@ -8,15 +8,18 @@ import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
- * Landing screen after tapping the emailed verification link.
+ * Where the *old* verification link lands — kept for the mails that were
+ * already in inboxes when `app/verify-email.tsx` took over.
  *
- * Verification itself already happened server-side (the link points at the
- * API's own `/verify-email`, not here) before redirecting to this deep link
- * — with `autoSignInAfterVerification: true`, that request also set a
- * session cookie, but in the *system browser* that opened the link, not in
- * this app's SecureStore. So the person still signs in here, same as any
- * password flow; this screen exists to confirm the link worked and point
- * them at sign-in rather than leaving them on a bare browser tab.
+ * Those links point at the API's own `/verify-email`, which verifies the
+ * address and then redirects here. With `autoSignInAfterVerification: true`
+ * that request also set a session cookie — in the *system browser* that
+ * opened the link, not in this app's SecureStore — so the person still has to
+ * sign in, which is what this screen says. New mails never reach it: the app
+ * spends the token itself and lands signed in.
+ *
+ * Deletable once no mailed token can still be alive: they expire an hour
+ * after they are sent.
  */
 export default function VerifyEmailSuccess() {
   useScreenInteractive()
