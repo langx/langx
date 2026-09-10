@@ -8,6 +8,7 @@ import {
   type ReportReason,
 } from '@langx/shared'
 import { translator } from '../i18n'
+import { LOGO_SRC } from './logo'
 
 /**
  * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
@@ -22,17 +23,17 @@ const TITLE_FONT = "'Nunito', -apple-system, 'Segoe UI', Roboto, system-ui, sans
 
 /**
  * The langx.io mark, next to the wordmark set in the same weight the site
- * uses for it. An `<img>` pointing at the site's own favicon rather than the
- * inline SVG the header uses on `website/src/lib/components/atoms/Logo.svelte`
- * — Gmail strips `<svg>` from mail bodies outright, and drops `data:` image
- * sources too, so a hosted file is the only version that survives. The
- * favicon is square where the site's mark is tall, but it is the same two
- * hooks and it is already live, with no new asset to host.
+ * uses for it. An `<img>` rather than the inline SVG the header uses on
+ * `website/src/lib/components/atoms/Logo.svelte` — Gmail strips `<svg>` from
+ * mail bodies outright, and drops `data:` image sources too. It pointed at a
+ * hosted file for a while, and a hosted file is what Outlook and a
+ * remote-content-off Apple Mail refuse to load; the bytes travel with the
+ * mail now, see `logo.ts`.
  */
 function logo(dir: 'ltr' | 'rtl'): string {
   const gap = dir === 'rtl' ? 'margin-left' : 'margin-right'
   return `<span style="font-family:${TITLE_FONT}; font-size:20px; font-weight:800; letter-spacing:-0.02em; color:#111827;">
-    <img src="https://langx.io/favicons/favicon-32x32.png" width="20" height="20" alt="" style="vertical-align:middle; ${gap}:8px;" />LangX</span>`
+    <img src="${LOGO_SRC}" width="24" height="24" alt="" style="vertical-align:middle; border-radius:6px; ${gap}:8px;" />LangX</span>`
 }
 
 /**

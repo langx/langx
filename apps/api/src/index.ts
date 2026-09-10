@@ -53,6 +53,7 @@ async function main(): Promise<void> {
     sender: emailSender,
     unsubscribeSecret: unsubscribeSecret(env),
     apiBaseUrl: publicApiUrl(env),
+    ...(env.EMAIL_REPLY_TO ? { replyTo: env.EMAIL_REPLY_TO } : {}),
   }
 
   const app = await buildApp({

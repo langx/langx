@@ -17,7 +17,7 @@
     "
   >
     <span style="display: none; overflow: hidden; line-height: 0; max-height: 0; opacity: 0"
-      >One tap to sign in. No password needed.</span
+      >We rebuilt the whole app. Everything you earned came with you.</span
     >
     <table
       width="100%"
@@ -55,7 +55,7 @@
                   <tr>
                     <td style="padding-right: 12px">
                       <img
-                        src="https://langx.io/email/logo.png"
+                        src="cid:langx-logo"
                         width="40"
                         height="40"
                         alt="LangX"
@@ -79,6 +79,7 @@
                 </table>
               </td>
             </tr>
+
             <!-- Eyebrow + title -->
             <tr>
               <td
@@ -132,6 +133,8 @@
                 Your username is<br />still reserved.
               </td>
             </tr>
+
+            <!-- Intro -->
             <tr>
               <td
                 style="
@@ -206,7 +209,7 @@
                       "
                     >
                       <a
-                        href="https://app.langx.io/sign-in-link?email={{email}}"
+                        href="https://langx.io"
                         target="_blank"
                         style="
                           display: inline-block;
@@ -221,41 +224,19 @@
                           color: #201900;
                           text-decoration: none;
                         "
-                        >Send me a sign-in link &rarr;</a
+                        >Open LangX v2 &rarr;</a
                       >
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
+
+            <!-- What is waiting for you -->
             <tr>
               <td
                 style="
-                  padding-top: 12px;
-                  padding-bottom: 0;
-                  padding-left: 32px;
-                  padding-right: 32px;
-                  font-family: Arial, Helvetica, sans-serif;
-                  font-size: 13px;
-                  line-height: 20px;
-                  color: #62676d;
-                "
-              >
-                One tap, no password. Or open
-                <a
-                  href="https://app.langx.io"
-                  target="_blank"
-                  style="color: #3b6cf6; text-decoration: underline"
-                  >app.langx.io</a
-                >
-                and continue with Google or Apple.
-              </td>
-            </tr>
-            <!-- What is waiting -->
-            <tr>
-              <td
-                style="
-                  padding-top: 36px;
+                  padding-top: 40px;
                   padding-bottom: 0;
                   padding-left: 32px;
                   padding-right: 32px;
@@ -311,9 +292,9 @@
                         color: #17191c;
                       "
                     >
-                      <strong style="color: #17191c">Your username.</strong><br /><span
+                      <strong style="color: #17191c">Your username is reserved.</strong><br /><span
                         style="color: #62676d"
-                        >Reserved for you, and for nobody else.</span
+                        >Nobody could take it while you were away.</span
                       >
                     </td>
                   </tr>
@@ -349,9 +330,9 @@
                         color: #17191c;
                       "
                     >
-                      <strong style="color: #17191c">Your tokens.</strong><br /><span
+                      <strong style="color: #17191c">Your tokens carry over.</strong><br /><span
                         style="color: #62676d"
-                        >Carried over, plus a 250-token welcome-back bonus.</span
+                        >Converted to v2's scale, plus a 250-token welcome-back bonus.</span
                       >
                     </td>
                   </tr>
@@ -381,33 +362,135 @@
                         color: #17191c;
                       "
                     >
-                      <strong style="color: #17191c">Your streak.</strong><br /><span
-                        style="color: #62676d"
-                        >Restored, not reset. You built those days.</span
+                      <strong style="color: #17191c"
+                        >Your streak is restored — alive and counting.</strong
+                      ><br /><span style="color: #62676d"
+                        >Not reset to zero. You built those days here.</span
                       >
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
+
+            <!-- Sign-in box -->
             <tr>
               <td
                 style="
-                  padding-top: 16px;
+                  padding-top: 12px;
                   padding-bottom: 0;
                   padding-left: 32px;
                   padding-right: 32px;
-                  font-family: Arial, Helvetica, sans-serif;
-                  font-size: 14px;
-                  line-height: 22px;
-                  color: #62676d;
                 "
               >
-                Your old password will not work &mdash; v2 is a full rebuild. The link above signs
-                you in without one, and everything you earned is offered back to you during
-                onboarding.
+                <table
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  bgcolor="#f4f5f7"
+                  style="background-color: #f4f5f7; border-radius: 12px"
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding-top: 18px;
+                        padding-bottom: 6px;
+                        padding-left: 18px;
+                        padding-right: 18px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 15px;
+                        line-height: 23px;
+                        color: #17191c;
+                      "
+                    >
+                      <strong style="color: #17191c">Your old password won't work.</strong> v2 is a
+                      full rebuild, so sign in one of these ways instead:
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding-top: 0;
+                        padding-bottom: 6px;
+                        padding-left: 18px;
+                        padding-right: 18px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #62676d;
+                      "
+                    >
+                      &bull;&nbsp;
+                      <strong style="color: #17191c">Continue with Google or Apple</strong><br />
+                      &bull;&nbsp; <strong style="color: #17191c">Get a sign-in link</strong> by
+                      email — one tap, no password<br />
+                      &bull;&nbsp; <strong style="color: #17191c">Forgot password</strong>, or
+                      simply
+                      <strong style="color: #17191c">sign up again with the same email</strong> —
+                      that address already has an account, so we email you a sign-in link for it
+                      instead of making a second one
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding-top: 8px;
+                        padding-bottom: 18px;
+                        padding-left: 18px;
+                        padding-right: 18px;
+                      "
+                    >
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td
+                            bgcolor="#17191c"
+                            style="background-color: #17191c; border-radius: 10px"
+                          >
+                            <a
+                              href="https://app.langx.io/sign-in-link?email={{email}}"
+                              target="_blank"
+                              style="
+                                display: inline-block;
+                                padding-top: 12px;
+                                padding-bottom: 12px;
+                                padding-left: 20px;
+                                padding-right: 20px;
+                                font-family: Nunito, Arial, Helvetica, sans-serif;
+                                font-size: 14px;
+                                line-height: 18px;
+                                font-weight: 800;
+                                color: #fefefe;
+                                text-decoration: none;
+                              "
+                              >Send me a sign-in link</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding-top: 0;
+                        padding-bottom: 16px;
+                        padding-left: 18px;
+                        padding-right: 18px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 13px;
+                        line-height: 20px;
+                        color: #62676d;
+                      "
+                    >
+                      Whichever you choose, your username, tokens and streak are offered back to you
+                      during onboarding.
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
+
             <!-- Sign-off -->
             <tr>
               <td
@@ -428,6 +511,92 @@
                 >
               </td>
             </tr>
+            <!-- QR block -->
+            <tr>
+              <td
+                style="
+                  padding-top: 40px;
+                  padding-bottom: 0;
+                  padding-left: 32px;
+                  padding-right: 32px;
+                "
+              >
+                <table
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  bgcolor="#17191c"
+                  style="background-color: #17191c; border-radius: 16px"
+                >
+                  <tr>
+                    <td
+                      valign="middle"
+                      style="
+                        padding-top: 24px;
+                        padding-bottom: 24px;
+                        padding-left: 24px;
+                        padding-right: 16px;
+                        font-family: Nunito, Arial, Helvetica, sans-serif;
+                        font-size: 20px;
+                        line-height: 26px;
+                        font-weight: 800;
+                        color: #f2f3f5;
+                      "
+                    >
+                      Get the app<br /><span
+                        style="
+                          font-family: Arial, Helvetica, sans-serif;
+                          font-size: 14px;
+                          line-height: 22px;
+                          font-weight: 400;
+                          color: #9aa1a9;
+                        "
+                        >Scan with your phone, or open
+                        <a
+                          href="https://get.langx.io"
+                          target="_blank"
+                          style="color: #ffc409; text-decoration: none"
+                          >get.langx.io</a
+                        ><br />iPhone &middot; Android &middot; Browser</span
+                      >
+                    </td>
+                    <td
+                      width="132"
+                      align="right"
+                      valign="middle"
+                      style="padding-top: 24px; padding-bottom: 24px; padding-right: 24px"
+                    >
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td
+                            bgcolor="#ffffff"
+                            style="
+                              background-color: #ffffff;
+                              border-radius: 12px;
+                              padding-top: 8px;
+                              padding-bottom: 8px;
+                              padding-left: 8px;
+                              padding-right: 8px;
+                            "
+                          >
+                            <img
+                              src="https://langx.io/email/qr-get-langx-io.png"
+                              width="108"
+                              height="108"
+                              alt="QR code to get.langx.io"
+                              border="0"
+                              style="display: block; width: 108px; height: 108px"
+                            />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
             <!-- Footer -->
             <tr>
               <td

@@ -14,6 +14,8 @@ export interface NotificationEmailContext {
   sender: EmailSender
   unsubscribeSecret: string
   apiBaseUrl: string
+  /** Reply-To for campaign mail only; see `EmailMessage.replyTo`. */
+  replyTo?: string
 }
 
 /**

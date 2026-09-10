@@ -95,6 +95,13 @@ const envSchema = z.object({
    * suppression list simply learns nothing from Resend.
    */
   RESEND_WEBHOOK_SECRET: emptyToUndefined(z.string().optional()),
+  /**
+   * The Reply-To on campaign mail. Campaigns say "reply to this email, it
+   * reaches a human"; from a `no-reply@` sender that needs somewhere to go.
+   * Optional: unset, campaigns carry no Reply-To and that line should not be
+   * in them.
+   */
+  EMAIL_REPLY_TO: emptyToUndefined(z.string().optional()),
 
   // OAuth. Each provider activates only once both of its variables are set —
   // see socialProviders() in auth.ts — so leaving these blank still boots a

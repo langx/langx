@@ -380,6 +380,7 @@ export async function runCampaignQueuePass(
           html: personalise(campaign.html, target, url),
           text: personalise(campaign.text, target, url),
           headers: unsubscribeHeaders(url),
+          ...(ctx.replyTo ? { replyTo: ctx.replyTo } : {}),
         }
       })
     if (messages.length === 0) continue

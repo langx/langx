@@ -157,6 +157,14 @@ describe('the campaign queue', () => {
     expect(row).toMatchObject({ status: 'sending', sent: 1, startedAt: MORNING })
   })
 
+  /** "Reply to this email — it reaches a human" has to be true from a no-reply@ sender. */
+  it('carries the Reply-To the context names', async () => {
+    await newAccount()
+    await queued()
+    await runCampaignQueuePass(handle.db, { ...ctx, replyTo: 'hi@langx.io' }, MORNING)
+    expect(sender.messages[0]?.replyTo).toBe('hi@langx.io')
+  })
+
   it('never mails the same person twice, and finishes when nobody is left', async () => {
     await newAccount()
     const id = await queued()
