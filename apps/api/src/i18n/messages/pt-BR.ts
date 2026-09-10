@@ -354,4 +354,17 @@ export const ptBR: Localized<ServerMessages> = {
       other: '{count} fichas foram adicionadas à sua carteira pelo aviso que você enviou: {url}',
     },
   },
+  official: {
+    welcome:
+      'Boas-vindas ao LangX! 👋 Sou o assistente do LangX. Encontre alguém em Descobrir, mande uma mensagem e ganhe tokens enquanto pratica.\n\nVocê pode me escrever quando quiser: pergunte como algo funciona, denuncie alguém ou me conte sobre um erro ou uma ideia.',
+    copilotSoon:
+      'O Copilot ainda não chegou — é o parceiro de prática dentro da conversa que estamos criando. Esta conta existe para você encontrá-lo no dia em que ele chegar.\n\nAté lá, escreva para @langx que eu ajudo.',
+    assistantOffline:
+      'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
+    assistantLimit:
+      'É tudo o que consigo responder hoje. Amanhã estou aqui, e {email} chega a uma pessoa a qualquer hora.',
+    assistantError: 'Algo deu errado do meu lado. Tente enviar de novo daqui a pouco.',
+    assistantRefusal:
+      'Nisso eu não consigo ajudar. Se eu entendi errado, {email} chega a uma pessoa.',
+  },
 }

@@ -365,6 +365,28 @@ export const en = {
       other: '{count} tokens have been added to your wallet for the report you sent: {url}',
     },
   },
+  /**
+   * What the official accounts say for themselves.
+   *
+   * Here rather than in the app's catalogue because these are messages: they
+   * are written into a conversation by the server and read back like anything
+   * else somebody sent, so the app has no idea they were ever translated.
+   * Chosen with `localeFor` — the reader's native language, the rule all
+   * server-worded text follows.
+   */
+  official: {
+    welcome:
+      'Welcome to LangX! 👋 I’m the LangX assistant. Find a partner in Discover, send a message, and earn tokens as you practise.\n\nYou can write to me any time: ask how something works, report someone, or tell me about a bug or an idea.',
+    copilotSoon:
+      'Copilot isn’t here yet — it’s the in-chat practice partner we’re building. This account exists so you’ll find it the day it lands.\n\nUntil then, write to @langx and I’ll help.',
+    assistantOffline:
+      'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
+    assistantLimit:
+      'That’s as much as I can answer today. I’ll be here tomorrow, and {email} reaches a person any time.',
+    assistantError: 'Something went wrong on my side. Try sending that again in a moment.',
+    assistantRefusal:
+      'I can’t help with that one. If I have got it wrong, {email} reaches a person.',
+  },
 } as const
 
 export type ServerMessages = typeof en

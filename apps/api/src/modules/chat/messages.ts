@@ -107,7 +107,17 @@ async function resolveReplyTo(
   }
 }
 
-async function recordMessage(
+/**
+ * The single write every message goes through: the insert, the conversation's
+ * counters and last-message line, and the award.
+ *
+ * Exported for `modules/official/deliver.ts`, which is the one caller outside
+ * this file. It writes on behalf of an account nobody is signed in to, and
+ * doing that by hand would mean a second copy of the counter arithmetic that
+ * could drift from this one — the chat list quietly showing the wrong preview
+ * or an unread badge that never clears.
+ */
+export async function recordMessage(
   db: Db,
   conversation: Conversation,
   message: Message,

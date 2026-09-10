@@ -110,9 +110,19 @@ async function ensureOne(
     return { handle, outcome: 'updated', userId: existing._id }
   }
 
-  const user: OfficialUserDoc = {
+  const users = db.collection<OfficialUserDoc>(COLLECTIONS.user)
+  const email = `${handle}@official.langx.invalid`
+
+  /*
+   * Read before insert, the way `insertPrecreatedUser` does, because the two
+   * rows can come apart: a profile removed by hand leaves its `user` behind,
+   * and `user_email_uidx` would then turn every subsequent boot into a crash
+   * loop. Reusing the row is also what makes the profile keep its id.
+   */
+  const existingUser = await users.findOne({ email })
+  const user: OfficialUserDoc = existingUser ?? {
     _id: new ObjectId(),
-    email: `${handle}@official.langx.invalid`,
+    email,
     name: displayName,
     emailVerified: true,
     official: true,
@@ -165,7 +175,7 @@ async function ensureOne(
     updatedAt: now,
   }
 
-  await db.collection<OfficialUserDoc>(COLLECTIONS.user).insertOne(user)
+  if (!existingUser) await users.insertOne(user)
   try {
     await profiles.insertOne(profile)
   } catch (error) {
@@ -173,7 +183,9 @@ async function ensureOne(
     // case cheap. Losing it here means two boots raced, or a claim landed in
     // between — either way somebody else's row stands.
     if (isDuplicateKey(error)) {
-      await db.collection<OfficialUserDoc>(COLLECTIONS.user).deleteOne({ _id: user._id })
+      // Only a row this call wrote. One that was already there belongs to an
+      // earlier run and may yet get its profile back.
+      if (!existingUser) await users.deleteOne({ _id: user._id })
       const raced = await profiles.findOne({ handle })
       if (raced?.official) return { handle, outcome: 'updated', userId: raced._id }
       return { handle, outcome: 'conflict' }

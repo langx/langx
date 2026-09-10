@@ -364,4 +364,17 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} jetons ont été ajoutés à ton portefeuille pour ton signalement : {url}',
     },
   },
+  official: {
+    welcome:
+      'Bienvenue sur LangX ! 👋 Je suis l’assistant LangX. Trouve quelqu’un dans Découvrir, envoie un message et gagne des jetons en pratiquant.\n\nTu peux m’écrire quand tu veux : demande comment marche quelque chose, signale quelqu’un, ou parle-moi d’un bug ou d’une idée.',
+    copilotSoon:
+      'Copilot n’est pas encore là — c’est le partenaire d’entraînement dans la conversation que nous construisons. Ce compte existe pour que tu le trouves dès le premier jour.\n\nEn attendant, écris à @langx et je t’aide.',
+    assistantOffline:
+      'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
+    assistantLimit:
+      'C’est tout ce que je peux répondre aujourd’hui. Je serai là demain, et {email} joint une personne à tout moment.',
+    assistantError: 'Quelque chose a échoué de mon côté. Réessaie dans un instant.',
+    assistantRefusal:
+      'Je ne peux pas t’aider là-dessus. Si je me trompe, {email} joint une personne.',
+  },
 }

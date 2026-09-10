@@ -342,4 +342,17 @@ export const tr: Localized<ServerMessages> = {
       other: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
     },
   },
+  official: {
+    welcome:
+      'LangX’e hoş geldin! 👋 Ben LangX asistanıyım. Keşfet’te bir partner bul, mesaj gönder, pratik yaptıkça jeton kazan.\n\nİstediğin zaman bana yazabilirsin: bir şeyin nasıl çalıştığını sor, birini bildir ya da bir hata veya fikrini anlat.',
+    copilotSoon:
+      'Copilot henüz burada değil — sohbet içinde pratik yapacağın partneri geliştiriyoruz. Bu hesap, geldiği gün onu bulabilesin diye açıldı.\n\nO zamana kadar @langx’e yaz, yardım edeyim.',
+    assistantOffline:
+      'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
+    assistantLimit:
+      'Bugünlük bu kadar yanıt verebiliyorum. Yarın buradayım; {email} adresinden her zaman bir insana ulaşırsın.',
+    assistantError: 'Bende bir şeyler ters gitti. Birazdan tekrar göndermeyi dene.',
+    assistantRefusal:
+      'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',
+  },
 }
