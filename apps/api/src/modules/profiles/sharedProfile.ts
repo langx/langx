@@ -56,6 +56,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
         country: 1,
         nativeLanguages: 1,
         learning: 1,
+        official: 1,
       },
     },
   )

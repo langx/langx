@@ -6,6 +6,7 @@ import { ensureIndexes } from '../../db/indexes'
 import { startConversation } from '../chat/conversations'
 import { searchHandles } from '../discovery/handleSearch'
 import { toPublicProfile, type Profile } from '../profiles/profiles'
+import { getSharedProfile } from '../profiles/sharedProfile'
 import { ensureOfficialAccounts, isOfficialId, officialIds } from './accounts'
 
 const API_URL = 'https://api.langx.test'
@@ -122,6 +123,18 @@ describe('the official accounts', () => {
       toPublicProfile(person('ada'), true, { followers: 0, following: 0, viewerFollows: false })
         .age,
     ).toBeGreaterThan(0)
+  })
+
+  /**
+   * A projected read, so the flag has to be asked for by name. It was not, and
+   * nothing failed: the page strangers reach simply never drew the tick.
+   */
+  it('marks an official account on the public web profile too', async () => {
+    await ensureOfficialAccounts(handle.db, API_URL)
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne(person('ada'))
+
+    expect((await getSharedProfile(handle.db, 'langx')).official).toBe(true)
+    expect((await getSharedProfile(handle.db, 'ada')).official).toBeUndefined()
   })
 
   it('is findable by name although it is not discoverable', async () => {

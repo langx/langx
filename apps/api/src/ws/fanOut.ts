@@ -45,6 +45,46 @@ export async function fanOutMessage(
   message: FannedMessage,
   { pushWhenAway }: { pushWhenAway: boolean },
 ): Promise<void> {
+  await deliver(app, io, conversation, message, pushWhenAway)
+
+  /*
+   * And if it was sent to an account that answers, the answer.
+   *
+   * Here rather than in the two send paths because `fanOutMessage` is the one
+   * funnel both REST and the socket already pass through — a new message path
+   * cannot ship without realtime, so it cannot ship without this either, and
+   * there is no second door to keep a guard in step with.
+   *
+   * Outside `deliver` because that function returns early half a dozen times —
+   * no recipient to push to, no registered device, notifications off — and
+   * every one of those is an ordinary message that still deserves a reply. It
+   * lived inside once, after the `try`, and the assistant simply never
+   * answered: @langx has no devices, so the push path returned before reaching
+   * it.
+   *
+   * Unawaited: the sender's ack must not wait on a model, and a reply that
+   * fails must not look like a send that failed. `respondAsOfficial` decides
+   * whether the message was addressed to it at all.
+   */
+  void respondAsOfficial(app, conversation, message).catch((error: unknown) => {
+    app.log.error({ err: error }, 'official reply failed')
+  })
+}
+
+/**
+ * The three effects themselves: both participants see it arrive, the sender's
+ * ticks advance, and the recipient's phone buzzes if they were not there.
+ *
+ * Best-effort throughout, and it returns early wherever there is nothing left
+ * to do — which is why it is its own function.
+ */
+async function deliver(
+  app: FastifyInstance,
+  io: AppServer,
+  conversation: FannedConversation,
+  message: FannedMessage,
+  pushWhenAway: boolean,
+): Promise<void> {
   try {
     // Projected per participant: two people are sent two different objects
     // from the same row, because what each is allowed to see differs.
@@ -127,22 +167,6 @@ export async function fanOutMessage(
   } catch (error) {
     app.log.warn({ err: error }, 'post-send fan-out failed')
   }
-
-  /*
-   * And if it was sent to an account that answers, the answer.
-   *
-   * Here rather than in the two send paths because this function is the one
-   * funnel both REST and the socket already pass through — a new message path
-   * cannot ship without realtime, so it cannot ship without this either, and
-   * there is no second door to keep a guard in step with.
-   *
-   * Outside the try above and unawaited: the sender's ack must not wait on a
-   * model, and a reply that fails must not look like a send that failed.
-   * `respondAsOfficial` decides whether it is addressed at all.
-   */
-  void respondAsOfficial(app, conversation, message).catch((error: unknown) => {
-    app.log.error({ err: error }, 'official reply failed')
-  })
 }
 
 /**
