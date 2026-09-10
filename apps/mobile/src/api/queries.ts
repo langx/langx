@@ -26,6 +26,7 @@ import {
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
+  SuspensionStatus,
   HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
@@ -102,6 +103,9 @@ export const keys = {
    */
   discoveryBoosted: (filters: string) => ['discovery', 'boosted', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
+  /** Deliberately outside every other prefix: it is the one query that still
+   *  answers while the rest of the app is refused. */
+  suspension: ['suspension'] as const,
   /**
    * Parameterised now that the list has tabs. Every writer has to patch with
    * `setQueriesData` on the `['conversations']` prefix rather than
@@ -476,6 +480,34 @@ export function useBoostedProfiles(params: Record<string, string>) {
     // Same reason as `useDiscovery`: a filter tap must not blank the strip
     // while the next answer is in flight.
     placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The suspension screen's own source of truth.
+ *
+ * `retry: false` because the answer is a 200 either way — a suspended account
+ * may read this one route — so a failure here is a network problem, and
+ * retrying it behind a screen that has nothing else to show only delays the
+ * error the person needs to see.
+ */
+export function useSuspension() {
+  return useQuery({
+    queryKey: keys.suspension,
+    queryFn: () => api.get<SuspensionStatus>('/me/suspension'),
+    retry: false,
+  })
+}
+
+/** One appeal per suspension. The server refuses the second; this is the first. */
+export function useSubmitAppeal() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (text: string) =>
+      api.post<{ appealedAt: string }>('/me/suspension/appeal', { text }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: keys.suspension })
+    },
   })
 }
 

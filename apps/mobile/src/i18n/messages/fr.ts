@@ -248,6 +248,33 @@ export const fr: Localized<EnMessages> = {
     needed: 'Position requise',
   },
 
+  suspended: {
+    title: 'Ton compte est suspendu',
+    untilBody:
+      'Une personne a examiné un signalement concernant ton compte. Tu ne peux pas utiliser LangX jusqu’au {until}, et ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    permanentBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu définitivement. Ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    reasonLabel: 'Motif',
+    appealTitle: 'Appel',
+    appealBody:
+      'Tu peux faire appel une fois. Une personne lit chaque appel, et il n’y a aucune file à surveiller : la réponse arrive par e-mail.',
+    appealPlaceholder: 'Dis-nous ce que nous avons mal compris.',
+    appealTooShort: {
+      one: 'Au moins {count} caractère.',
+      other: 'Au moins {count} caractères.',
+    },
+    send: 'Envoyer l’appel',
+    sending: 'Envoi…',
+    sent: 'Appel envoyé',
+    sentBody:
+      'Ton appel est parti. Il y en a un par suspension, donc c’était celui-là — nous te répondrons.',
+    failed: 'L’envoi a échoué. Réessaie dans un instant.',
+    alreadyAppealed: 'Tu as déjà fait appel de cette suspension.',
+    checkAgain: 'Vérifier à nouveau',
+    signOut: 'Se déconnecter',
+    contact: 'Pour tout le reste : {email}',
+  },
+
   gate: {
     maintenanceTitle: 'De retour bientôt',
     maintenanceBody: 'LangX est indisponible le temps de terminer quelques travaux.',

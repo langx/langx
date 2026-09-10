@@ -242,6 +242,32 @@ export const ptBR: Localized<EnMessages> = {
     needed: 'Localização necessária',
   },
 
+  suspended: {
+    title: 'Sua conta está suspensa',
+    untilBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta. Você não pode usar o LangX até {until}, e seu perfil fica fora do Descobrir e da busca.',
+    permanentBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela foi suspensa permanentemente. Seu perfil fica fora do Descobrir e da busca.',
+    reasonLabel: 'Motivo',
+    appealTitle: 'Recurso',
+    appealBody:
+      'Você pode recorrer uma vez. Uma pessoa lê cada recurso, e não há fila para acompanhar — a resposta chega por e-mail.',
+    appealPlaceholder: 'Conte o que entendemos errado.',
+    appealTooShort: {
+      one: 'Pelo menos {count} caractere.',
+      other: 'Pelo menos {count} caracteres.',
+    },
+    send: 'Enviar recurso',
+    sending: 'Enviando…',
+    sent: 'Recurso enviado',
+    sentBody: 'Seu recurso foi enviado. É um por suspensão, então era esse — vamos responder.',
+    failed: 'Não foi possível enviar. Tente de novo em instantes.',
+    alreadyAppealed: 'Você já recorreu desta suspensão.',
+    checkAgain: 'Verificar de novo',
+    signOut: 'Sair',
+    contact: 'Qualquer outra coisa: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Já voltamos',
     maintenanceBody: 'O LangX está fora do ar enquanto terminamos um ajuste.',

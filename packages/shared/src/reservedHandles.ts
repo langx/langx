@@ -55,6 +55,7 @@ const ROUTE_RESERVED = [
   'starred',
   'stickers',
   'streak',
+  'suspended',
   'gift',
   'store',
   'tokens',

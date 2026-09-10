@@ -245,6 +245,33 @@ export const es: Localized<EnMessages> = {
     needed: 'Se necesita la ubicación',
   },
 
+  suspended: {
+    title: 'Tu cuenta está suspendida',
+    untilBody:
+      'Una persona revisó un reporte sobre tu cuenta. No puedes usar LangX hasta el {until}, y tu perfil no aparece en Descubrir ni en la búsqueda.',
+    permanentBody:
+      'Una persona revisó un reporte sobre tu cuenta, y queda suspendida de forma permanente. Tu perfil no aparece en Descubrir ni en la búsqueda.',
+    reasonLabel: 'Motivo',
+    appealTitle: 'Apelación',
+    appealBody:
+      'Puedes apelar una vez. Una persona lee cada apelación y no hay ninguna cola que vigilar: la respuesta llega por correo.',
+    appealPlaceholder: 'Cuéntanos en qué nos equivocamos.',
+    appealTooShort: {
+      one: 'Al menos {count} carácter.',
+      other: 'Al menos {count} caracteres.',
+    },
+    send: 'Enviar apelación',
+    sending: 'Enviando…',
+    sent: 'Apelación enviada',
+    sentBody:
+      'Tu apelación se ha enviado. Hay una por suspensión, así que esta era: te responderemos.',
+    failed: 'No se pudo enviar. Inténtalo de nuevo en un momento.',
+    alreadyAppealed: 'Ya has apelado esta suspensión.',
+    checkAgain: 'Volver a comprobar',
+    signOut: 'Cerrar sesión',
+    contact: 'Cualquier otra cosa: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Volvemos enseguida',
     maintenanceBody: 'LangX no está disponible mientras terminamos unos ajustes.',

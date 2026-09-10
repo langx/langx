@@ -247,6 +247,33 @@ export const de: Localized<EnMessages> = {
     needed: 'Standort nötig',
   },
 
+  suspended: {
+    title: 'Dein Konto ist gesperrt',
+    untilBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft. Bis zum {until} kannst du LangX nicht nutzen, und dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    permanentBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und es ist dauerhaft gesperrt. Dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    reasonLabel: 'Grund',
+    appealTitle: 'Einspruch',
+    appealBody:
+      'Du kannst einmal Einspruch erheben. Eine Person liest jeden Einspruch, und es gibt keine Warteschlange zu beobachten — die Antwort kommt per Mail.',
+    appealPlaceholder: 'Schreib uns, was wir falsch verstanden haben.',
+    appealTooShort: {
+      one: 'Mindestens {count} Zeichen.',
+      other: 'Mindestens {count} Zeichen.',
+    },
+    send: 'Einspruch senden',
+    sending: 'Wird gesendet…',
+    sent: 'Einspruch gesendet',
+    sentBody:
+      'Dein Einspruch ist raus. Es gibt einen pro Sperre, das war also dieser — wir melden uns.',
+    failed: 'Das konnte nicht gesendet werden. Versuch es gleich noch einmal.',
+    alreadyAppealed: 'Du hast gegen diese Sperre bereits Einspruch erhoben.',
+    checkAgain: 'Nochmal prüfen',
+    signOut: 'Abmelden',
+    contact: 'Alles andere: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Gleich zurück',
     maintenanceBody: 'LangX ist kurz nicht erreichbar, während wir etwas fertig machen.',

@@ -10,10 +10,24 @@ export class ApiRequestError extends Error {
   readonly feature?: string
   /** Present on QUOTA_EXCEEDED — ISO timestamp the next slot frees up. */
   readonly retryAt?: string
+  /**
+   * Present on ACCOUNT_SUSPENDED. Carried on the refusal itself so the screen
+   * can say when it ends without a second request the same guard would have
+   * to let through.
+   */
+  readonly until?: string | null
+  readonly permanent?: boolean
 
   constructor(
     status: number,
-    body: { code?: string; message?: string; feature?: string; retryAt?: string },
+    body: {
+      code?: string
+      message?: string
+      feature?: string
+      retryAt?: string
+      until?: string | null
+      permanent?: boolean
+    },
   ) {
     // English on purpose: this is what lands in a log or a crash report, and
     // a screen that shows it to a user is a screen with a bug — every caller
@@ -24,6 +38,8 @@ export class ApiRequestError extends Error {
     this.code = body.code ?? 'INTERNAL'
     if (body.feature) this.feature = body.feature
     if (body.retryAt) this.retryAt = body.retryAt
+    if (body.until !== undefined) this.until = body.until
+    if (body.permanent !== undefined) this.permanent = body.permanent
   }
 }
 
@@ -63,6 +79,13 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
      * uses — one place decides, the transport catches the leak.
      */
     if (error.code === ERROR_CODES.GUEST_ACCOUNT) router.push('/(auth)/sign-up')
+    /*
+     * `replace`, not `push`: a suspended account has nothing to go back to,
+     * and every screen behind this one is now a screen whose data will not
+     * load. This is what catches somebody suspended mid-session, and a deep
+     * link that lands straight inside `(app)`.
+     */
+    if (error.code === ERROR_CODES.ACCOUNT_SUSPENDED) router.replace('/suspended')
     throw error
   }
   return body as T

@@ -256,6 +256,33 @@ export const tr: Localized<EnMessages> = {
     needed: 'Konum gerekli',
   },
 
+  suspended: {
+    title: 'Hesabın askıya alındı',
+    untilBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi. {until} tarihine kadar LangX’i kullanamazsın; profilin Keşfet’te ve aramada görünmez.',
+    permanentBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın kalıcı olarak askıya alındı. Profilin Keşfet’te ve aramada görünmez.',
+    reasonLabel: 'Gerekçe',
+    appealTitle: 'İtiraz',
+    appealBody:
+      'Bir kez itiraz edebilirsin. Her itirazı bir kişi okur; beklenecek bir sıra yok — cevap e-postayla gelir.',
+    appealPlaceholder: 'Neyi yanlış anladığımızı yaz.',
+    appealTooShort: {
+      one: 'En az {count} karakter.',
+      other: 'En az {count} karakter.',
+    },
+    send: 'İtirazı gönder',
+    sending: 'Gönderiliyor…',
+    sent: 'İtiraz gönderildi',
+    sentBody:
+      'İtirazın gönderildi. Her askıya alma için bir tane var, o da buydu — sana geri yazacağız.',
+    failed: 'Gönderilemedi. Birazdan tekrar dene.',
+    alreadyAppealed: 'Bu askıya alma için zaten itiraz ettin.',
+    checkAgain: 'Yeniden bak',
+    signOut: 'Çıkış yap',
+    contact: 'Başka bir şey için: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Birazdan döneriz',
     maintenanceBody: 'Bir işi bitirene kadar LangX kısa süreliğine kapalı.',

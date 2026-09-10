@@ -40,6 +40,7 @@ export type {
   StreakMetric,
   PeriodType,
   PlanTier,
+  SuspensionStatus,
   Wallet,
   GiftClaim,
   TokenHistory,

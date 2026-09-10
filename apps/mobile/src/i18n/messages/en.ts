@@ -283,6 +283,39 @@ export const en = {
     needed: 'Location needed',
   },
 
+  /**
+   * The screen a suspended account gets instead of the app.
+   *
+   * Never names who reported them — nothing in the product does, and this is
+   * the screen where the temptation would be greatest.
+   */
+  suspended: {
+    title: 'Your account is suspended',
+    untilBody:
+      'A report about your account was reviewed by a person. You cannot use LangX until {until}, and your profile is hidden from Discover and search.',
+    permanentBody:
+      'A report about your account was reviewed by a person, and your account is suspended permanently. Your profile is hidden from Discover and search.',
+    reasonLabel: 'Reason',
+    appealTitle: 'Appeal',
+    appealBody:
+      'You can appeal once. A person reads every appeal, and there is no queue to watch — the answer arrives by email.',
+    appealPlaceholder: 'Tell us what we got wrong.',
+    appealTooShort: {
+      one: 'At least {count} character.',
+      other: 'At least {count} characters.',
+    },
+    send: 'Send appeal',
+    sending: 'Sending…',
+    sent: 'Appeal sent',
+    sentBody:
+      'Your appeal has been sent. There is one per suspension, so this was it — we will write back.',
+    failed: 'That could not be sent. Try again in a moment.',
+    alreadyAppealed: 'You have already appealed this suspension.',
+    checkAgain: 'Check again',
+    signOut: 'Sign out',
+    contact: 'Anything else: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Back shortly',
     maintenanceBody: 'LangX is briefly unavailable while we finish some work.',
