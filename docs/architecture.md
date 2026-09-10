@@ -604,6 +604,30 @@ correction ("I have a apple" → "I have an apple", with a short reason). v2
 rebuilds the same function under the name **Copilot**, as part of the chat
 module. Quota: free 5 uses a day, Polyglot unlimited within fair use.
 
+The **account** exists already, and the feature does not. `@copilot` is created
+at boot alongside `@langx` so the handle cannot be claimed by somebody else in
+the meantime and the identity is there to point at; until the feature lands, a
+message to it gets an immediate canned reply. See _Official accounts_ below.
+
+### Official accounts
+
+`@langx` and `@copilot` are ordinary profile rows carrying `official: true`,
+created by `ensureOfficialAccounts` at boot — so every environment has them
+without anybody seeding anything. Nobody can sign in to either: the Better Auth
+row behind them holds an address under `.invalid`, which resolves nowhere, so no
+reset link, magic link or verification mail can reach a mailbox.
+
+`@langx` greets every new account, carries announcements
+(`scripts/send-announcement.ts`) and answers when somebody writes to it. The
+assistant behind it is an **optional service** in the same sense as email and
+storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
+and everything else about the account still works.
+
+Conversations with an official account are **outside the token economy** —
+`awardForSend` returns early for either side, and `startConversation` charges no
+initiation quota — so nobody can farm a streak by talking to a program, and
+asking for support is free on every tier.
+
 ## MongoDB schema
 
 Principle: what is read together is embedded, what grows without bound is
@@ -617,6 +641,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  official?: true,                    ← @langx or @copilot; created at boot, never by a form
   photos: [{ url, createdAt }],
   bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',   ← changeable, once per 180 days
