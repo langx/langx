@@ -1,5 +1,6 @@
 import type { PlanFeature } from '@langx/shared'
 import { router } from 'expo-router'
+import type { PaywallSource } from './analyticsEvents'
 
 /**
  * Opens the paywall, optionally saying which capability sent the user there.
@@ -15,8 +16,19 @@ import { router } from 'expo-router'
  * paywall is a route: it has to survive a deep link and a back-navigation,
  * and a store would not.
  */
-export function openPaywall(feature?: PlanFeature, from?: string): void {
-  const params = { ...(feature ? { feature } : {}), ...(from ? { from } : {}) }
+export function openPaywall(
+  feature?: PlanFeature,
+  from?: string,
+  /**
+   * Which exposure this is, for `paywall_viewed`. `gate` is the default
+   * because it is what almost every call site is — a quota or a locked
+   * capability — so a new one that says nothing lands in the bucket it
+   * belongs to rather than inventing a category. The two that are not a gate
+   * say so.
+   */
+  source: PaywallSource = 'gate',
+): void {
+  const params = { ...(feature ? { feature } : {}), ...(from ? { from } : {}), source }
   router.push({
     pathname: '/(app)/paywall',
     ...(Object.keys(params).length > 0 ? { params } : {}),

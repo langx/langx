@@ -57,7 +57,7 @@ export default function NewChatScreen() {
     if (!body || !partnerId || startConversation.isPending) return
     // The gate at the call site, where the screen knows what was being tried;
     // the transport catches a forgotten one only as a duller version of this.
-    if (!requireAccount(session?.user)) return
+    if (!requireAccount(session?.user, { action: 'message', toUserId: partnerId })) return
     // Cleared at once, like a send in a thread. Put back if the send fails,
     // so nothing typed is lost to a cap or a dropped connection.
     setDraft('')

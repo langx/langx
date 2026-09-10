@@ -171,7 +171,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
               : t('settings.upgrade')
           }
           last={last}
-          onPress={() => openPaywall(undefined, '/(app)/settings')}
+          onPress={() => openPaywall(undefined, '/(app)/settings', 'me')}
         />
       )
     case 'plan.manage':
