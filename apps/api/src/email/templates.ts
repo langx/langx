@@ -11,6 +11,8 @@ import { translator } from '../i18n'
 import { facesRow, type AvatarFace } from './avatars'
 import type { InlineAsset } from './inlineAssets'
 import { inlineSrc, LOGO_SRC } from './logo'
+import type { NewsletterNote } from './newsletters'
+import type { MonthlyRecap } from '../modules/notifications/newsletter'
 
 /**
  * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
@@ -439,6 +441,126 @@ export function billingEmail(
        <p style="margin:24px 0 0;">${button(url, t(`email.billing.${event}Button` as never))}</p>`,
     ),
     text: [title, '', t(`email.billing.${event}Body` as never), '', url].join('\n'),
+  }
+}
+
+/**
+ * "Your month on LangX": four numbers that are yours, three that are
+ * everybody's, and whatever shipped.
+ *
+ * The two halves are deliberate. A personal recap alone is thin in a quiet
+ * month and reads as an accusation; the community numbers say the place is
+ * alive whether or not the reader was there, which is the argument for coming
+ * back. A **quiet month** swaps the personal half for one sentence rather
+ * than printing three zeroes at somebody.
+ *
+ * The editorial block is optional and comes from `email/newsletters/` —
+ * written by a routine, reviewed as a pull request, merged. No note, no
+ * block; the numbers are the part that is always true.
+ */
+export function newsletterEmail(
+  locale: Locale,
+  recap: MonthlyRecap,
+  note: NewsletterNote | null,
+  unsubscribe: string,
+): Email {
+  const t = translator(locale)
+  const monthName = monthLabel(locale, recap.month)
+  const subject = t('email.newsletterSubject', { month: monthName })
+
+  const stat = (label: string, value: number): string =>
+    `<tr><td style="padding:6px 16px 6px 0; font-size:15px; line-height:23px; color:#62676d;">${label}</td><td style="padding:6px 0; font-size:15px; line-height:23px; color:#17191c;"><strong>${value.toLocaleString(locale)}</strong></td></tr>`
+
+  const yours = recap.quiet
+    ? `<p style="color:#62676d;">${t('email.newsletterQuiet')}</p>`
+    : `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 0;">
+        ${[
+          stat(t('email.newsletterMessages'), recap.personal.messages),
+          stat(t('email.newsletterCorrections'), recap.personal.corrections),
+          stat(t('email.newsletterTokens'), recap.personal.tokens),
+          stat(t('email.newsletterStreak'), recap.personal.streak),
+        ].join('\n        ')}
+      </table>`
+
+  const everybody = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 0;">
+        ${[
+          stat(t('email.newsletterNewMembers'), recap.community.members),
+          stat(t('email.newsletterMessagesSent'), recap.community.messages),
+          stat(t('email.newsletterCorrectionsMade'), recap.community.corrections),
+        ].join('\n        ')}
+      </table>`
+
+  const editorial = note
+    ? `<h2 style="font-family:${TITLE_FONT}; font-size:18px; line-height:24px; font-weight:800; color:#17191c; margin:32px 0 0;">${escapeHtml(note.headline)}</h2>
+       ${note.items
+         .map(
+           (item) =>
+             `<p style="margin:12px 0 0;"><strong>${escapeHtml(item.title)}</strong><br /><span style="color:#62676d;">${escapeHtml(item.body)}</span></p>`,
+         )
+         .join('\n       ')}
+       ${note.note ? `<p style="margin:16px 0 0; color:#62676d;">${escapeHtml(note.note)}</p>` : ''}`
+    : ''
+
+  const cta = { url: webUrl('/discover'), label: t('email.newsletterButton') }
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: t('email.newsletterPreheader'),
+      bodyHtml: `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${subject}</strong></p>
+       <h2 style="font-family:${TITLE_FONT}; font-size:18px; line-height:24px; font-weight:800; color:#17191c; margin:24px 0 0;">${t('email.newsletterYours')}</h2>
+       ${yours}
+       <h2 style="font-family:${TITLE_FONT}; font-size:18px; line-height:24px; font-weight:800; color:#17191c; margin:32px 0 0;">${t('email.newsletterEverybody')}</h2>
+       ${everybody}
+       ${editorial}`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(
+      locale,
+      [
+        subject,
+        '',
+        t('email.newsletterYours'),
+        ...(recap.quiet
+          ? [t('email.newsletterQuiet')]
+          : [
+              `${t('email.newsletterMessages')}: ${recap.personal.messages}`,
+              `${t('email.newsletterCorrections')}: ${recap.personal.corrections}`,
+              `${t('email.newsletterTokens')}: ${recap.personal.tokens}`,
+              `${t('email.newsletterStreak')}: ${recap.personal.streak}`,
+            ]),
+        '',
+        t('email.newsletterEverybody'),
+        `${t('email.newsletterNewMembers')}: ${recap.community.members}`,
+        `${t('email.newsletterMessagesSent')}: ${recap.community.messages}`,
+        `${t('email.newsletterCorrectionsMade')}: ${recap.community.corrections}`,
+        ...(note
+          ? [
+              '',
+              note.headline,
+              ...note.items.map((item) => `- ${item.title}: ${item.body}`),
+              ...(note.note ? [note.note] : []),
+            ]
+          : []),
+        '',
+        cta.url,
+      ],
+      unsubscribe,
+    ),
+  }
+}
+
+/** "September 2026", in the reader's language, falling back to the key. */
+function monthLabel(locale: Locale, month: string): string {
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(`${month}-01T00:00:00Z`))
+  } catch {
+    return month
   }
 }
 

@@ -162,6 +162,35 @@ export const de: Localized<ServerMessages> = {
     unsubscribeInvalid:
       'Dieser Link ist ungültig. Öffne LangX und ändere es unter Einstellungen → Mitteilungen.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: 'Dein {month} bei LangX',
+
+    newsletterPreheader: 'Der Monat in Zahlen — deine und die aller',
+
+    newsletterYours: 'Dein Monat',
+
+    newsletterEverybody: 'Der Monat aller',
+
+    newsletterQuiet:
+      'Du warst diesen Monat still — keine Nachrichten, keine Korrekturen. Die Leute unten waren es nicht, und sie sind noch da.',
+
+    newsletterMessages: 'Gesendete Nachrichten',
+
+    newsletterCorrections: 'Gegebene Korrekturen',
+
+    newsletterTokens: 'Verdiente Token',
+
+    newsletterStreak: 'Serie heute',
+
+    newsletterNewMembers: 'Neue Mitglieder',
+
+    newsletterMessagesSent: 'Gesendete Nachrichten',
+
+    newsletterCorrectionsMade: 'Gemachte Korrekturen',
+
+    newsletterButton: 'LangX öffnen',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

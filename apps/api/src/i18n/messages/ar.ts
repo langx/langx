@@ -160,6 +160,35 @@ export const ar: Localized<ServerMessages> = {
     unsubscribedBody: 'يمكنك تشغيلها متى شئت من LangX في الإعدادات ← الإشعارات.',
     unsubscribeInvalid: 'هذا الرابط غير صالح. افتح LangX وغيّره من الإعدادات ← الإشعارات.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: '{month} في LangX',
+
+    newsletterPreheader: 'الشهر بالأرقام: أرقامك وأرقام الجميع',
+
+    newsletterYours: 'شهرك',
+
+    newsletterEverybody: 'شهر الجميع',
+
+    newsletterQuiet:
+      'كنت هادئاً هذا الشهر — لا رسائل ولا تصحيحات. من في الأسفل لم يكونوا كذلك، وما زالوا هنا.',
+
+    newsletterMessages: 'الرسائل المُرسَلة',
+
+    newsletterCorrections: 'التصحيحات المُقدَّمة',
+
+    newsletterTokens: 'الرموز المكتسبة',
+
+    newsletterStreak: 'السلسلة اليوم',
+
+    newsletterNewMembers: 'أعضاء جدد',
+
+    newsletterMessagesSent: 'الرسائل المُرسَلة',
+
+    newsletterCorrectionsMade: 'التصحيحات المُنجَزة',
+
+    newsletterButton: 'افتح LangX',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

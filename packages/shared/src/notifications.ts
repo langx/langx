@@ -321,3 +321,18 @@ export const UNREAD_DIGEST_MAX_SENDERS = 3
  * fired the moment the condition is met.
  */
 export const NOTIFICATION_EMAIL_LOCAL_HOURS = { earliest: 9, latest: 21 } as const
+
+/**
+ * When the monthly recap goes out, on the reader's own clock.
+ *
+ * Ten in the morning: late enough not to be the first thing on a phone,
+ * early enough to be read the day it arrives. It is sent on the first of the
+ * month or any of the six days after — see `runNewsletterPass` for why the
+ * window is wider than the day.
+ *
+ * **Monthly rather than weekly**, and the numbers are the reason: a week of a
+ * language exchange is three conversations and a correction, which reads as
+ * an accusation rather than a summary. A weekly cadence is this constant plus
+ * a different period key, not a rewrite.
+ */
+export const NEWSLETTER_LOCAL_HOUR = 10

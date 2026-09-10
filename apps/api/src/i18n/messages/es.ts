@@ -161,6 +161,35 @@ export const es: Localized<ServerMessages> = {
     unsubscribeInvalid:
       'Este enlace no es válido. Abre LangX y cámbialo en Ajustes → Notificaciones.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: 'Tu {month} en LangX',
+
+    newsletterPreheader: 'El mes en números, el tuyo y el de todos',
+
+    newsletterYours: 'Tu mes',
+
+    newsletterEverybody: 'El mes de todos',
+
+    newsletterQuiet:
+      'Este mes estuviste en silencio: ni mensajes ni correcciones. La gente de abajo no lo estuvo, y sigue aquí.',
+
+    newsletterMessages: 'Mensajes enviados',
+
+    newsletterCorrections: 'Correcciones hechas',
+
+    newsletterTokens: 'Tokens ganados',
+
+    newsletterStreak: 'Racha hoy',
+
+    newsletterNewMembers: 'Nuevos miembros',
+
+    newsletterMessagesSent: 'Mensajes enviados',
+
+    newsletterCorrectionsMade: 'Correcciones hechas',
+
+    newsletterButton: 'Abrir LangX',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

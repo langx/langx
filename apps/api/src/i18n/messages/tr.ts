@@ -147,6 +147,35 @@ export const tr: Localized<ServerMessages> = {
     unsubscribeInvalid:
       'Bu bağlantı geçerli değil. LangX’i açıp Ayarlar → Bildirimler’den değiştir.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: 'LangX’te {month} ayın',
+
+    newsletterPreheader: 'Ay, rakamlarla: senin ve herkesin',
+
+    newsletterYours: 'Senin ayın',
+
+    newsletterEverybody: 'Herkesin ayı',
+
+    newsletterQuiet:
+      'Bu ay sessizdin — mesaj yok, düzeltme yok. Aşağıdakiler sessiz değildi ve hâlâ buradalar.',
+
+    newsletterMessages: 'Gönderilen mesaj',
+
+    newsletterCorrections: 'Yapılan düzeltme',
+
+    newsletterTokens: 'Kazanılan token',
+
+    newsletterStreak: 'Bugünkü seri',
+
+    newsletterNewMembers: 'Yeni üye',
+
+    newsletterMessagesSent: 'Gönderilen mesaj',
+
+    newsletterCorrectionsMade: 'Yapılan düzeltme',
+
+    newsletterButton: 'LangX’i aç',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
