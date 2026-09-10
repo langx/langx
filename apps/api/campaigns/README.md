@@ -2,8 +2,10 @@
 
 The broadcasts `scripts/send-campaign.ts` queues, as the HTML and plain-text
 pairs it takes. Table-based, inline-styled, 600px — mail clients, not
-browsers. Images are served from `https://langx.io/email/` (the website
-repo, `static/email/`).
+browsers. Images are `cid:` references to `src/email/assets/`, attached
+inline by the sender so they show in every client without a remote fetch;
+`scripts/inline-email-assets.ts` regenerates the module after an image
+changes.
 
 Every body carries three tokens, filled per person when the API sends:
 

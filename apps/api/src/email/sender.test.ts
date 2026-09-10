@@ -11,7 +11,7 @@ vi.mock('resend', () => ({
 }))
 
 const { ResendEmailSender } = await import('./sender')
-const { LOGO_CID, LOGO_SRC } = await import('./logo')
+const { LOGO_SRC, inlineSrc } = await import('./logo')
 
 const withLogo = (to: string) => ({
   to,
@@ -29,7 +29,9 @@ describe('the Resend sender and the logo', () => {
     expect(send).toHaveBeenLastCalledWith(
       expect.objectContaining({
         to: 'a@example.com',
-        attachments: [expect.objectContaining({ contentId: LOGO_CID, contentType: 'image/png' })],
+        attachments: [
+          expect.objectContaining({ contentId: 'langx-logo', contentType: 'image/png' }),
+        ],
       }),
     )
     const [payload] = send.mock.lastCall as [{ attachments: { content: Buffer }[] }]
@@ -39,6 +41,20 @@ describe('the Resend sender and the logo', () => {
 
     await sender.send(plain('b@example.com'))
     expect(send.mock.lastCall?.[0]).not.toHaveProperty('attachments')
+  })
+
+  it('attaches every inline image the body shows, and only those', async () => {
+    await sender.send({
+      to: 'c@example.com',
+      subject: 's',
+      html: `<img src="${LOGO_SRC}" /><img src="${inlineSrc('langx-qr-get-langx-io')}" />`,
+      text: 'hi',
+    })
+    const [payload] = send.mock.lastCall as [{ attachments: { contentId: string }[] }]
+    expect(payload.attachments.map((a) => a.contentId).sort()).toEqual([
+      'langx-logo',
+      'langx-qr-get-langx-io',
+    ])
   })
 
   /** The batch endpoint takes no attachments, so a logo forces one request per person. */

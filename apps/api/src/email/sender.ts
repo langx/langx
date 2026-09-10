@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import type { Env } from '../env'
-import { LOGO_CID, LOGO_FILENAME, LOGO_SRC, logoPng } from './logo'
+import { inlineAssetsFor } from './logo'
 
 /**
  * Just enough of pino's `warn` to log structurally — kept narrow so this
@@ -62,22 +62,21 @@ export const EMAIL_BATCH_SIZE = 100
 const SINGLE_SEND_SPACING_MS = 600
 
 /**
- * The logo, attached inline to any message whose HTML shows it. See
- * `logo.ts` for why it is bytes in the mail rather than a link to the site.
+ * The images a message shows, attached inline. See `inlineAssets.ts` for why
+ * they are bytes in the mail rather than links to the site.
  */
-function inlineLogo(html: string) {
-  return html.includes(LOGO_SRC)
-    ? {
-        attachments: [
-          {
-            filename: LOGO_FILENAME,
-            content: logoPng(),
-            contentId: LOGO_CID,
-            contentType: 'image/png',
-          },
-        ],
+function inlineAttachments(html: string) {
+  const assets = inlineAssetsFor(html)
+  return assets.length === 0
+    ? {}
+    : {
+        attachments: assets.map((asset) => ({
+          filename: asset.filename,
+          content: Buffer.from(asset.base64, 'base64'),
+          contentId: asset.cid,
+          contentType: asset.contentType,
+        })),
       }
-    : {}
 }
 
 export class ResendEmailSender implements EmailSender {
@@ -99,7 +98,7 @@ export class ResendEmailSender implements EmailSender {
       text,
       ...(headers ? { headers } : {}),
       ...(replyTo ? { replyTo } : {}),
-      ...inlineLogo(html),
+      ...inlineAttachments(html),
     })
     if (error) {
       throw new Error(`Resend failed to send "${subject}" to ${to}: ${error.message}`)
@@ -108,14 +107,14 @@ export class ResendEmailSender implements EmailSender {
 
   async sendBatch(messages: EmailMessage[]): Promise<void> {
     /*
-     * The batch endpoint takes no attachments, so a message that carries the
-     * logo goes on its own. Slower — one request per person rather than per
+     * The batch endpoint takes no attachments, so a message that carries an
+     * inline image goes on its own. Slower — one request per person rather than per
      * hundred — and the only caller is the campaign drip, which sends a few
      * dozen a tick and has the whole half hour to do it in. A thrown error
      * still means "release everything not yet sent": the claim was for the
      * whole batch, and the caller cannot tell which of these went.
      */
-    if (messages.some((message) => message.html.includes(LOGO_SRC))) {
+    if (messages.some((message) => inlineAssetsFor(message.html).length > 0)) {
       for (const [index, message] of messages.entries()) {
         if (index > 0) await new Promise((resolve) => setTimeout(resolve, SINGLE_SEND_SPACING_MS))
         await this.send(message)
