@@ -104,6 +104,7 @@ export const notificationPrefsSchema = z
     streak: channelPrefsSchema,
     badges: channelPrefsSchema,
     profileVisits: channelPrefsSchema,
+    meetings: channelPrefsSchema,
     promotions: channelPrefsSchema,
   })
   .partial()
