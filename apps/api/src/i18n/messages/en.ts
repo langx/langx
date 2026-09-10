@@ -91,6 +91,10 @@ export const en = {
     unsubscribeLink: 'Turn these emails off',
     unsubscribeText: 'Turn these emails off: {url}',
     managePrefs: 'All notification settings',
+    /** The dark panel under every mail: the QR to get.langx.io. */
+    getApp: 'Get the app',
+    getAppScan: 'Scan with your phone, or open',
+    getAppPlatforms: 'iPhone · Android · Browser',
     /** The one button a streak email has. */
     openChats: 'Send a message',
 
