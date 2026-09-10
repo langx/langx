@@ -263,3 +263,29 @@ export type HandleSearchResult = z.infer<typeof handleSearchResultSchema>
 
 export const handleSearchPageSchema = z.object({ items: z.array(handleSearchResultSchema) })
 export type HandleSearchPage = z.infer<typeof handleSearchPageSchema>
+
+/**
+ * The strip above the discovery list, most expensive plan first.
+ *
+ * A presentation order like `tierUnlocking`, not a guard — see the note on
+ * `PLAN_TIERS` for why no guard may compare tiers. Which tiers belong here is
+ * decided by `PLAN_LIMITS[tier].boostedProfile`, and `rules.test.ts` pins the
+ * two together so a capability moved between tiers cannot leave this list
+ * behind.
+ */
+export const DISCOVERY_BOOSTED_TIERS = ['pro_plus', 'pro'] as const
+
+/**
+ * How many cards the strip holds. It is a horizontal row somebody flicks
+ * through, not a list they page — there is no cursor, so this is the whole of
+ * it.
+ */
+export const DISCOVERY_BOOSTED_LIMIT = 12
+
+export const boostedProfileSchema = discoveryItemSchema.extend({
+  tier: z.enum(DISCOVERY_BOOSTED_TIERS),
+})
+export type BoostedProfile = z.infer<typeof boostedProfileSchema>
+
+export const boostedProfilesPageSchema = z.object({ items: z.array(boostedProfileSchema) })
+export type BoostedProfilesPage = z.infer<typeof boostedProfilesPageSchema>

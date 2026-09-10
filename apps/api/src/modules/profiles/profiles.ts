@@ -115,6 +115,21 @@ export interface Profile {
   interests: string[]
   settings: {
     discoverable: boolean
+    /**
+     * Whether this profile appears in the Boosted strip on Discover.
+     *
+     * **Absent means on**, which is the whole reason it is optional. The flag
+     * is written only when somebody flips the toggle, so a first-time
+     * subscriber is boosted the moment the entitlement lands and nothing on
+     * the billing side has to write a default — and an explicit `false`
+     * survives a lapse and a re-subscribe, because a billing event never
+     * silently changes a setting a person chose.
+     *
+     * Read against the tier on every request (`boostedProfiles`), so it is
+     * stored without a write-time guard: `true` here on a free account buys
+     * nothing.
+     */
+    boosted?: boolean
     /** A native language code, or absent for "the first native language". See `translateTargetFor`. */
     translateTo?: string
     /**
