@@ -3,8 +3,9 @@
  * Cuts a release: bumps the version, commits it and tags the commit. One
  * command instead of four files edited by hand and a tag typed from memory.
  *
- *     pnpm release minor    2.0 -> 2.1
- *     pnpm release major    2.1 -> 3.0
+ *     pnpm release minor    2.0 -> 2.1, build 148 -> 149
+ *     pnpm release major    2.1 -> 3.0, build 149 -> 150
+ *     pnpm release build    build 150 -> 151, the version untouched
  *     pnpm release --print  prints the current version and exits
  *
  * The version is two numbers, `major.minor`, and lives in the root
@@ -13,6 +14,12 @@
  * the same number with a `.0` on the end, because `pnpm deploy` matches
  * `@langx/shared@workspace:*` by semver and `2.0` is not one — the API image
  * stopped building the first time the two digits reached those files.
+ *
+ * The build number lives next to the version, as `buildNumber`, and is both
+ * `ios.buildNumber` and `android.versionCode`, so the stores cannot drift
+ * apart. A release bumps it because a new version is a new binary; `build`
+ * bumps it alone, for a rebuild inside a round (a store refuses a second
+ * upload on the same number). Neither store lets it go down.
  *
  * Nothing is pushed. `main` is protected and releases go through the same
  * pull request as everything else; the script prints the two commands that
@@ -45,6 +52,31 @@ function readVersion() {
   return version
 }
 
+function readBuildNumber() {
+  const { buildNumber } = JSON.parse(readFileSync(join(root, ROOT_MANIFEST), 'utf8'))
+  if (!Number.isInteger(buildNumber) || buildNumber < 1) {
+    throw new Error(`root package.json buildNumber must be a positive integer, got ${buildNumber}`)
+  }
+  return buildNumber
+}
+
+/**
+ * A string replacement, not a parse-and-serialise round trip: the file keeps
+ * its key order, indentation and trailing newline exactly, so the diff is one
+ * line and prettier has nothing to say about it.
+ */
+function replaceField(manifest, pattern, value) {
+  const path = join(root, manifest)
+  const source = readFileSync(path, 'utf8')
+  const updated = source.replace(pattern, (_match, prefix) => `${prefix}${value}`)
+  if (updated === source) throw new Error(`${manifest} has nothing matching ${pattern} to update`)
+  writeFileSync(path, updated)
+}
+
+function writeBuildNumber(next) {
+  replaceField(ROOT_MANIFEST, /^(\s*"buildNumber":\s*)\d+/m, next)
+}
+
 function bumped(version, part) {
   const [, major, minor] = VERSION.exec(version)
   return part === 'major' ? `${Number(major) + 1}.0` : `${major}.${Number(minor) + 1}`
@@ -64,7 +96,7 @@ function printVersion() {
 }
 
 function usage() {
-  console.error('usage: pnpm release <major|minor>  |  pnpm release --print')
+  console.error('usage: pnpm release <major|minor|build>  |  pnpm release --print')
   process.exit(2)
 }
 
@@ -82,32 +114,36 @@ function release(part) {
   if (git('tag', '--list', tag) !== '') fail(`${tag} already exists`)
 
   for (const manifest of MANIFESTS) {
-    const path = join(root, manifest)
     const value = manifest === ROOT_MANIFEST ? next : `${next}.0`
-    // A string replacement, not a parse-and-serialise round trip: the files
-    // keep their key order, indentation and trailing newline exactly, so the
-    // diff is one line per file and prettier has nothing to say about it.
-    const source = readFileSync(path, 'utf8')
-    const updated = source.replace(
-      /^(\s*"version":\s*)"[^"]*"/m,
-      (_match, prefix) => `${prefix}${JSON.stringify(value)}`,
-    )
-    if (updated === source) throw new Error(`${manifest} has no "version" field to update`)
-    writeFileSync(path, updated)
+    replaceField(manifest, /^(\s*"version":\s*)"[^"]*"/m, JSON.stringify(value))
   }
+  const build = readBuildNumber() + 1
+  writeBuildNumber(build)
 
   git('add', ...MANIFESTS)
   git('commit', '--quiet', '--message', `Release ${next}`)
   git('tag', '--annotate', '--message', `LangX ${next}`, tag)
 
   const branch = git('rev-parse', '--abbrev-ref', 'HEAD')
-  console.log(`${current} -> ${next}, committed and tagged ${tag}. To finish:`)
+  console.log(`${current} -> ${next} (build ${build}), committed and tagged ${tag}. To finish:`)
   console.log('')
   console.log(`    git push -u origin ${branch}`)
   console.log(`    git push origin ${tag}`)
   console.log('')
   console.log('Push the tag once the release commit is on main; the tag is what creates the')
   console.log('GitHub Release. A store build is still release.yml on expo.dev.')
+}
+
+function releaseBuild() {
+  if (git('status', '--porcelain') !== '') {
+    fail('the working tree has uncommitted changes; commit or stash them first')
+  }
+  const current = readBuildNumber()
+  const next = current + 1
+  writeBuildNumber(next)
+  git('add', ROOT_MANIFEST)
+  git('commit', '--quiet', '--message', `Build ${next}`)
+  console.log(`build ${current} -> ${next}, committed. Push the branch; build once it is on main.`)
 }
 
 // A switch that dispatches to functions taking no input, rather than an
@@ -125,6 +161,9 @@ switch (process.argv[2]) {
     break
   case 'minor':
     release('minor')
+    break
+  case 'build':
+    releaseBuild()
     break
   default:
     usage()

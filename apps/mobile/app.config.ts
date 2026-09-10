@@ -8,11 +8,11 @@
 import { ANDROID_PACKAGE, APP_LINK_HOST, IOS_BUNDLE_ID } from '@langx/shared/appIdentity'
 import { APP_SCHEMES } from '@langx/shared/appScheme'
 import type { ExpoConfig } from 'expo/config'
-// The one place the version is written is the root package.json; `pnpm
-// release` bumps it and tags the commit, and everything else reads it. The
+// The one place the version and the build number are written is the root
+// package.json; `pnpm release` bumps them and everything else reads them. The
 // import attribute is what lets Expo's config loader read JSON whichever way
 // it evaluates this file.
-import { version } from '../../package.json' with { type: 'json' }
+import { buildNumber, version } from '../../package.json' with { type: 'json' }
 
 /**
  * v2 ships as an **update to the existing store listings**, not a new app.
@@ -31,12 +31,20 @@ import { version } from '../../package.json' with { type: 'json' }
  *     against a file on the domain, so these entries do nothing until
  *     `apps/mobile/public/.well-known/` is actually served from that host.
  *
- * The build number and Android versionCode are deliberately absent: `eas.json`
- * sets `appVersionSource: "remote"`, so EAS owns them and hands one out per
- * build. They were declared here until 3 September 2026, which silently broke
- * every `production` build — `autoIncrement` cannot write back into a dynamic
- * config, so the build failed before it started. The remote counter has to
- * stay above the published 119.
+ * `ios.buildNumber` and `android.versionCode` are one number, `buildNumber`
+ * in the root package.json, so the two stores cannot drift apart. They had:
+ * EAS's remote counters (`appVersionSource: "remote"`) increment per platform,
+ * and by 10 September 2026 iOS stood at 148 against Android's 146. `pnpm
+ * release minor` bumps the number with the version; `pnpm release build`
+ * bumps it alone, for a rebuild inside a round. Nothing auto-increments —
+ * `autoIncrement` cannot write back into a dynamic config, which is what
+ * silently broke every `production` build until 3 September 2026. The number
+ * has to stay above the published 119.
+ *
+ * A number in the config is a number in the fingerprint, and a fingerprint
+ * that changed on every build would leave no installed binary matching the
+ * update `main` publishes. `fingerprint.config.js` keeps the version fields
+ * out of it.
  */
 // Existing EAS project, carried over from the abandoned rewrite.
 const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
@@ -55,6 +63,7 @@ const config: ExpoConfig = {
 
   ios: {
     bundleIdentifier: IOS_BUNDLE_ID,
+    buildNumber: String(buildNumber),
     supportsTablet: true,
     // The app encrypts nothing of its own; it only speaks HTTPS through the
     // system stack, which Apple's export rules exempt. Answering that here
@@ -74,6 +83,7 @@ const config: ExpoConfig = {
 
   android: {
     package: ANDROID_PACKAGE,
+    versionCode: buildNumber,
     /**
      * Android 13+'s predictive back: the system previews where back leads
      * before the gesture commits. `react-native-screens` drives the stack's

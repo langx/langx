@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 12.5.1",
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -14,7 +14,6 @@
     "production": {
       "channel": "production",
       "environment": "production",
-      "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.langx.io"
       },

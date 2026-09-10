@@ -51,9 +51,13 @@ leftovers. They are not.
 | `scheme`                 | **Both** schemes. v1 registered `tech.newchapter.languagexchange` (lowercase x). Ship only `langx` and every deep link already in the wild breaks. |
 | App links                | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest. Declaring them is half the job; see the next section                     |
 
-`versionCode` and `buildNumber` must both start **above 119**, the published
-v1 version. EAS owns them (`appVersionSource: "remote"`) and hands one out per
-build; the version name is a separate thing, see _Shipping runs on expo.dev_ below.
+`versionCode` and `buildNumber` are one number, `buildNumber` in the root
+`package.json`, so the two stores cannot drift apart; `pnpm release minor`
+bumps it with the version and `pnpm release build` bumps it alone, for a
+rebuild inside a round. It must stay **above 119**, the published v1 version.
+`apps/mobile/fingerprint.config.js` keeps it out of the runtime fingerprint,
+which is what lets a rebuild keep receiving the updates its predecessors do.
+The version name is a separate thing, see _Shipping runs on expo.dev_ below.
 
 ## The API has to be deployed, and it has to be deployed early
 

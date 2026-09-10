@@ -1,9 +1,10 @@
 # A store release: production builds for both platforms, then submission.
 #
-# Started by hand, on purpose. `production` auto-increments the build number
-# and `eas.json`'s submit profile releases Android to everyone at once
-# (`releaseStatus: completed`, no rollout key); iOS goes to App Store Connect
-# for review. The iOS half needs a distribution
+# Started by hand, on purpose. The build number is `buildNumber` in the root
+# package.json — `pnpm release build` bumps it, and both stores refuse a
+# second upload on the same number. `eas.json`'s submit profile releases
+# Android to everyone at once (`releaseStatus: completed`, no rollout key);
+# iOS goes to App Store Connect for review. The iOS half needs a distribution
 # certificate and an App Store Connect API key in EAS before it can run.
 name: Release
 on:
