@@ -89,6 +89,12 @@ const lightColors = {
   /** The soft blue tint: your own bubble, the Copilot panel, info callouts. */
   accentBg: '#e9f0fe',
   streak: '#f79009',
+  /**
+   * The tick beside an official account's name. A warmer yellow than `streak`
+   * so the two do not read as the same badge on a profile that shows both —
+   * and not `accent`, because a blue tick is another product's mark.
+   */
+  official: '#f5b400',
   pro: '#7a5af8',
   /**
    * Deliberately the same hue family as `pro`, only deeper. Pro+ is a superset
@@ -163,6 +169,7 @@ const darkColors: ThemeColors = {
   accent: '#7c9cf9',
   accentBg: '#202b45',
   streak: '#ffa93d',
+  official: '#ffc933',
   pro: '#9b83ff',
   /**
    * Lighter than `pro` here, where light mode's is darker. The rule is not

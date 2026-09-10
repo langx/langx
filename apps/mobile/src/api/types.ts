@@ -61,7 +61,8 @@ export interface PublicProfileDto {
   photos: { url: string }[]
   bio?: string
   pronouns?: string
-  age: number
+  /** Absent on an official account, which has no birth date anybody gave. */
+  age?: number
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
   /**
@@ -86,6 +87,8 @@ export interface PublicProfileDto {
   createdAt: string
   emailVerified: boolean
   follow: FollowState
+  /** @langx or @copilot: draws the tick, and hides everything a program has no answer for. */
+  official?: true
 }
 
 export interface DiscoveryItem {
@@ -121,6 +124,12 @@ export interface HandleSearchResult {
   handle: string
   displayName: string
   avatarUrl?: string
+  /**
+   * Search is the one list an official account appears in — it is
+   * undiscoverable everywhere else — so the row that lets somebody find
+   * @langx is the row that has to say it is @langx.
+   */
+  official?: true
 }
 
 export interface HandleSearchPage {

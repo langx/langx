@@ -258,6 +258,12 @@ export const handleSearchResultSchema = z.object({
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),
+  /**
+   * Draws the tick. Search is the one list an official account appears in —
+   * it is undiscoverable everywhere else — so without this the row that lets
+   * somebody find @langx is the row that cannot say it is @langx.
+   */
+  official: z.literal(true).optional(),
 })
 export type HandleSearchResult = z.infer<typeof handleSearchResultSchema>
 

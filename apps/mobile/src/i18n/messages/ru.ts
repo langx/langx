@@ -967,6 +967,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Официальный аккаунт',
     previewNote: 'Так ваш профиль видят другие — настройки приватности уже применены.',
     teaches: 'Преподаёт',
     learns: 'Учит',

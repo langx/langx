@@ -858,6 +858,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Conta oficial',
     previewNote:
       'Este é o seu perfil como as outras pessoas o veem — suas configurações de privacidade já estão aplicadas.',
     teaches: 'Ensina',

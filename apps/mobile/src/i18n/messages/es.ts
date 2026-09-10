@@ -865,6 +865,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Cuenta oficial',
     previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',
     teaches: 'Enseña',
     learns: 'Aprende',

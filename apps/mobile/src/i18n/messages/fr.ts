@@ -869,6 +869,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Compte officiel',
     previewNote:
       'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',

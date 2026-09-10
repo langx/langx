@@ -25,6 +25,7 @@ import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
+import { OfficialMark } from '../src/components/OfficialMark'
 
 /**
  * `/<handle>` — the address somebody shares for their own profile.
@@ -153,7 +154,10 @@ export default function SharedProfileScreen() {
           />
         ) : null}
         <View style={styles.heroText}>
-          <Text style={styles.name}>{user.displayName}</Text>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{user.displayName}</Text>
+            {user.official ? <OfficialMark size={18} /> : null}
+          </View>
           <Text style={styles.handle} numberOfLines={1}>
             @{user.handle}
             {country ? ` · ${countryFlag(country.code)} ${names.country(country.code)}` : ''}
@@ -168,12 +172,16 @@ export default function SharedProfileScreen() {
         </View>
       </View>
 
-      <LanguageColumns
-        nativeLanguages={user.nativeLanguages}
-        // The public DTO has no `priority`; the server already sends them in
-        // the owner's order, so the index is that order.
-        learning={user.learning.map((language, index) => ({ ...language, priority: index + 1 }))}
-      />
+      {/* An official account has no language pair — the same rule the
+          signed-in profile follows, on the page strangers reach. */}
+      {user.official ? null : (
+        <LanguageColumns
+          nativeLanguages={user.nativeLanguages}
+          // The public DTO has no `priority`; the server already sends them in
+          // the owner's order, so the index is that order.
+          learning={user.learning.map((language, index) => ({ ...language, priority: index + 1 }))}
+        />
+      )}
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
@@ -204,6 +212,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
   hero: { alignItems: 'center', flexDirection: 'row', gap: 20, paddingTop: spacing.lg },
   heroText: { flex: 1, gap: spacing.xs, minWidth: 0 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   name: { ...font.heading, color: colors.text, fontSize: 26 },
   handle: { color: colors.textMuted, fontSize: 14 },
   pronouns: { color: colors.textFaint, fontSize: 13 },

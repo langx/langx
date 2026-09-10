@@ -914,6 +914,8 @@ export const en = {
   },
 
   profile: {
+    /** Screen-reader label for the tick beside @langx and @copilot. */
+    official: 'Official account',
     previewNote:
       'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',

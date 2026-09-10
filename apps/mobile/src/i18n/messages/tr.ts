@@ -869,6 +869,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Resmî hesap',
     previewNote:
       'Bu, başkalarının gördüğü haliyle profilin — gizlilik ayarların zaten uygulanmış durumda.',
     teaches: 'Öğretiyor',

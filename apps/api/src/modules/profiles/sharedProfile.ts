@@ -77,6 +77,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
     // goes to strangers, which makes it the worst one to get wrong.
     ...(profile.pronouns ? { pronouns: profile.pronouns } : {}),
     ...(profile.country ? { country: profile.country } : {}),
+    ...(profile.official ? { official: true as const } : {}),
     nativeLanguages: (profile.nativeLanguages ?? []).map((l) => ({ code: l.code })),
     learning: (profile.learning ?? []).map((l) => ({
       code: l.code,

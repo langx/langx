@@ -1007,6 +1007,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'حساب رسمي',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
     teaches: 'يُعلّم',
     learns: 'يتعلّم',

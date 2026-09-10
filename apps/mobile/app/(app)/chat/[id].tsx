@@ -115,6 +115,7 @@ import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
+import { OfficialMark } from '../../../src/components/OfficialMark'
 
 export default function ChatScreen() {
   useScreenInteractive()
@@ -1466,9 +1467,12 @@ export default function ChatScreen() {
                   <Skeleton width={80} height={12} style={styles.headerSkeletonGap} />
                 </>
               ) : (
-                <Text style={styles.headerName} numberOfLines={1}>
-                  {partner?.displayName ?? t('chat.title')}
-                </Text>
+                <View style={styles.headerNameRow}>
+                  <Text style={styles.headerName} numberOfLines={1}>
+                    {partner?.displayName ?? t('chat.title')}
+                  </Text>
+                  {partner?.official ? <OfficialMark size={14} /> : null}
+                </View>
               )}
               {/*
               One line that is either presence or typing, never both stacked —
@@ -1882,6 +1886,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     minWidth: 0,
   },
   headerText: { flex: 1, minWidth: 0 },
+  headerNameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   headerName: { ...font.heading, color: colors.text, fontSize: 17 },
   headerSkeletonGap: { marginTop: 6 },
   // The accent, like Online: somebody typing is as live as the status line gets.

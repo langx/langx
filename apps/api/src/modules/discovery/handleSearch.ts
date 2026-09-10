@@ -69,7 +69,7 @@ export async function searchHandles(
         deletedAt: { $exists: false },
       },
       {
-        projection: { handle: 1, displayName: 1, avatarUrl: 1 },
+        projection: { handle: 1, displayName: 1, avatarUrl: 1, official: 1 },
         // Alphabetical, so the shortest match — the one most likely to be the
         // handle actually being typed — leads.
         sort: { handle: 1 },
@@ -84,6 +84,7 @@ export async function searchHandles(
       handle: row.handle,
       displayName: row.displayName,
       ...(row.avatarUrl ? { avatarUrl: row.avatarUrl } : {}),
+      ...(row.official ? { official: true as const } : {}),
     })),
   }
 }
