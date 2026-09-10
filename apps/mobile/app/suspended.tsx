@@ -13,7 +13,6 @@ import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 import { reportReasonLabel, useLocale, useT } from '../src/i18n'
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
-import { FLAG_KEYS, readBoolFlag } from '../src/lib/localFlags'
 import { makeStyles } from '../src/lib/theme'
 import { showToast } from '../src/lib/toast'
 
@@ -56,7 +55,7 @@ export default function SuspendedScreen() {
      * nothing — a suspended account is sent no notifications.
      */
     await authClient.signOut()
-    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    router.replace(authLandingHref())
   }
 
   function send(): void {
