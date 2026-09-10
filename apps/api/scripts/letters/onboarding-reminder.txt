@@ -1,0 +1,18 @@
+Finish setting up your profile
+
+You opened a LangX account but never finished setting up your profile — so
+there is nothing on it yet, and nobody learning your language can find you.
+
+It takes about a minute: the languages you speak, the one you are learning
+and roughly how far along you are, and a username.
+
+Finish setting up: https://app.langx.io
+
+Sign in the way you signed up and you will land back where you left off.
+If that does not get you in, ask for a sign-in link instead:
+https://app.langx.io/sign-in-link
+
+--
+You are getting this once, because you started an account and did not finish
+it. If you have changed your mind, ignore it — there is no second one.
+Unsubscribe: {{unsubscribeUrl}}
