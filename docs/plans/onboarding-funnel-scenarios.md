@@ -1,7 +1,8 @@
 # Onboarding — where the funnel leaks, and four scenarios to close it
 
-Written on 10 September 2026. **Analysis and proposals only; nothing here is
-built.** Behic's brief: analytics show people being lost in onboarding; make
+Written on 10 September 2026; §4.A1, §7, §8 and §9 revised the same
+afternoon after reading the API's guards. **Analysis and proposals only;
+nothing here is built.** Behic's brief: analytics show people being lost in onboarding; make
 the first minute friendlier, use motion, think like a funnel, and end with the
 paywall — this is where a potential customer is hooked.
 
@@ -159,20 +160,36 @@ the sense `design-handoff-follow-ups.md` used.
 The hypothesis: most of the loss is friction, not persuasion. Fix the four
 mechanical leaks and measure before drawing anything.
 
-**A1. Sign-up signs you in.** `autoSignIn: true`. Verification stays required
-and `sendOnSignUp` stays on, but the profile can be created and discovery
-browsed unverified; the first _send_ is what verification gates, with a banner
-in the thread ("Verify your email to send — we sent the link to …"). The
-referral award, the token grant and campaigns already key on verification and
-need no change. What changes for review: none — Apple and Google do not require
-email verification before use.
+**A1′. The verification link lands in the app, signed in.** The mail carries
+the app's own page — `app.langx.io/verify-email?token=…`, a universal link,
+with the scheme link as the escape hatch — exactly the shape `magic-link.tsx`
+already has for sign-in links. The app calls Better Auth's `verifyEmail` with
+the token itself, so the session cookie `autoSignInAfterVerification` sets
+lands in the app's store rather than the mail client's browser. Then
+`verify-email-success` opens signed in and redirects to `/`, which sends them
+to the languages step. Screens 3c and 3d disappear; 3b stays. No policy
+changes, no guard changes, no review consequence.
 
-If Behic wants verification to stay a hard gate, the fallback is **A1′**: the
-verification mail carries the app's own page, the way `magic-link.tsx` already
-does for sign-in links, so the app spends the token and the session lands in
-the app's store rather than the browser's. Then `verify-email-success` opens
-_signed in_ and goes straight to the languages step. This removes 3c and 3d
-without changing the policy.
+**A1, the bigger version — browse unverified, verify to send — is deferred**,
+and the reason is what the API says on reading it, not caution:
+
+- `POST /profiles`, `/handle-reservation` and the handle availability check
+  are behind `requireVerifiedEmail`, with a written rule: "an unverified
+  account has no business claiming a handle or existing in discovery". A1
+  means moving those three to `requireMember`, and deciding that an unverified
+  account is visible in discovery. Likes, follows, posts, media, feedback and
+  starting a conversation are behind the same guard and would stay there.
+- Better Auth's `requireEmailVerification: true` is also what makes sign-up
+  answer an existing address with the same "check your email" as a new one —
+  `onExistingUserSignUp` and the v1 welcome-back mail hang off that. With
+  `autoSignIn: true` and verification still required, Better Auth creates no
+  session at sign-up, so A1 needs `requireEmailVerification: false` too, and
+  that reintroduces account enumeration on the sign-up form.
+- The intended reading has to be taken, not assumed: whether an unverified
+  account should appear in discovery is a product decision (§8).
+
+So A1 is a second step, taken only if the instrumentation still shows the
+inbox as the wall after A1′ — and then with those three costs named.
 
 **A2. Social first.** On sign-up, Google/Apple above the email form, not below
 it — they are the only path with zero context switches. Keep email, keep the
@@ -389,9 +406,10 @@ Either way the variant goes on every event as a property
 1. **§3 instrumentation now**, alone, one PR. Read it for a week. If the email
    path leaks as badly as L1 predicts, the rest of the order is confirmed; if
    it does not, B moves up.
-2. **Scenario A**, all five items. It removes screens and adds none, and every
-   item traces to a leak in §2. Ship it to everyone — there is no variant of
-   "fewer walls" worth holding back as a control.
+2. **Scenario A with A1′**, all five items. It removes screens and adds none,
+   changes no policy, and every item traces to a leak in §2. Ship it to
+   everyone — there is no variant of "fewer walls" worth holding back as a
+   control. A1 waits for the numbers.
 3. **Scenario B** as the first variant against A. It is the one genuinely
    different hypothesis (show before asking) and the one with a new endpoint.
 4. **Scenario C's `done`** — cards and counter — as the second variant, with
@@ -405,9 +423,10 @@ a grant being counted, a face being drawn). The launch path stays on
 
 ## 8. Questions for Behic
 
-1. **Verification policy.** A1 (browse unverified, verify to send) or A1′
-   (keep the gate, land the link in the app)? A1 is the bigger win and the
-   bigger policy change.
+1. **Verification policy.** A1′ first is the recommendation (§4.A). The
+   question that stays open is A1's: may an account that has not verified its
+   email appear in discovery at all? If the answer is no, A1 is off the table
+   for good and the inbox stays one screen in the flow.
 2. **Showing people before sign-up (B).** Today's guest already sees them
    after two taps; B moves it to zero taps. Fine, or is the guest step the
    line?
@@ -416,5 +435,51 @@ a grant being counted, a face being drawn). The launch path stays on
    against it, or must every variant show the paywall at `done`?
 4. **The "3× replies" line** in C — only with a measured number. Worth the
    query, or drop the claim?
-5. **Trial length** — is a 30-day trial configured on both stores and the
-   web? The whole of §5 assumes the store returns one.
+5. **Trial length** — is a trial configured on both stores and the web at
+   all? The whole of §5 assumes the store returns one. The recommendation is
+   **7 days, not 30**: a week is long enough to see a reply and a streak
+   milestone (`TOKEN_RULES.streakMilestones` pays first at 7), and short
+   enough that the trial's end is still inside the habit it was meant to
+   start.
+
+## 9. Implementation plan for steps 1 and 2
+
+What the first two PRs touch, so their size can be judged before either is
+written. Every user-facing string is a key in `en.ts` and seven translations;
+every event is a member of the closed union; nothing here queries a
+collection outside a repository function.
+
+### PR 1 — instrumentation (§3)
+
+| File                                          | Change                                                                                                                                                                                                                                                                                    |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/mobile/src/lib/analyticsEvents.ts`      | Seven new members and three widened ones, as the §3 table. `source` on `paywall_viewed` is a string union, not free text. `EVENTS_CARRY_NO_FORBIDDEN_KEYS` keeps compiling because none of the new properties is on the forbidden list                                                    |
+| `apps/mobile/src/lib/analyticsEvents.test.ts` | One case per new event asserting `sanitizeEventProperties` passes its properties through unchanged — the test that would catch a property named `handle` or `email`                                                                                                                       |
+| `(auth)/intro.tsx`, `IntroCarousel.tsx`       | `onDone` gains `{ slide, skipped }`; the screen tracks `intro_finished`. `(app)/intro` (Settings replay) passes the same and is filtered out by `$screen` context, or tracks nothing — decide on reading                                                                                  |
+| `(auth)/welcome.tsx`                          | `welcome_chosen` on each of the three actions                                                                                                                                                                                                                                             |
+| `(auth)/sign-up.tsx`, `SocialAuthButtons.tsx` | `signup_submitted{method, from_guest}` before the request; the social buttons need the method threaded in                                                                                                                                                                                 |
+| `app/_layout.tsx`                             | `signup_verified{method}` once, on the first identified session whose account is younger than the device's `signup_submitted` — a device flag written at submit, cleared here. Simpler alternative: fire it from `verify-email-success` and accept that the browser path never reaches it |
+| `src/lib/requireAccount.ts`                   | `guest_gate_hit{action}`; the six call sites pass their action                                                                                                                                                                                                                            |
+| The four wizard steps                         | `onboarding_step_completed{step, guest, resumed}` on each Continue; `resumed` is whether the draft was hydrated with that step's data already present                                                                                                                                     |
+| `(onboarding)/handle.tsx`                     | `onboarding_completed` gains `method` (from the session's account provider, or the device flag above), `from_guest`, `seconds_since_install` (from `Application Installed`'s timestamp kept as a device flag by `analytics.ts`)                                                           |
+| `src/lib/paywall.ts`, `(app)/paywall.tsx`     | `openPaywall` takes `source`; the screen sends it and tracks `paywall_dismissed{source, seconds_open}` on close                                                                                                                                                                           |
+| `scripts/insight.mjs`                         | `FUNNEL` grows to the §3 sequence; one breakdown by `method`                                                                                                                                                                                                                              |
+| `docs/analytics.md`                           | The event table                                                                                                                                                                                                                                                                           |
+
+Size: **M**, one PR, no API change. Ship as an OTA update: the events are the
+only change and the sooner a week of them exists, the sooner step 2 is judged.
+
+### PR 2 — Scenario A with A1′
+
+| Item                          | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A1′** — the link in the app | API `auth.ts` → `sendVerificationEmail` builds `webUrl('/verify-email?token=…')` from the `token` it is handed, the way `sendMagicLink` does, instead of forwarding Better Auth's own `url`. Mobile: a root `app/verify-email.tsx` modelled on `magic-link.tsx` — spends the token with `authClient.verifyEmail`, notifies the session store, replaces to `/`. Web build renders the tap-to-confirm page for link previewers, native verifies on mount. `verify-email-success.tsx` becomes the failure branch only. **To confirm first**: that Better Auth 1.7's verify-email handler sets the session cookie on the caller's response under `autoSignInAfterVerification` — the magic-link plugin does, and the email-verification docs say the same, but it is the one assumption this item stands on |
+| **A2** — social first         | `sign-up.tsx`: `SocialAuthButtons` above the form, "or" divider kept. Sign-in unchanged                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **A3** — one welcome          | `authLanding.ts` returns `/(auth)/welcome` regardless of `introSeen`; `welcome.tsx` gains two one-line rows under the pairs (`welcome.line2`, `welcome.line3`); `(auth)/intro.tsx` is deleted, `(app)/intro.tsx` and Settings' "Show intro again" stay; `authLanding.test.ts` updated. The `introSeen` flag is left in place, read by nothing, so a downgrade is harmless                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| **A4** — guest intent         | `localFlags.ts`: `pendingIntent` key holding `{ kind: 'message', toUserId }`; `requireAccount` writes it, taking the intent from the caller; `done.tsx` reads it, resolves the profile through the cache the profile screen already uses, and swaps the primary CTA for "Say hello to {name}" → `/(app)/chat/new?to=`; `resetDraft` clears it. Only `chat/new` and the profile's message button write an intent — likes and follows do not, a "you wanted to like Yuki" is not a first action worth resuming                                                                                                                                                                                                                                                                                            |
+| **A5** — the paywall          | `done.tsx`: after the CTA, if a real account and `getOffers()` returned a trial and `onboardingPaywallShown` is unset, `openPaywall(undefined, '/(onboarding)/done', 'onboarding')`; the paywall's secondary "Continue free" (`paywall.continueFree`) replaces the CTA to `discover` for that source. The flag is written when the screen opens, not when it closes                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Copy                          | `whatNextBody` shortened to one sentence; new keys in eight locales                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+Size: **M**. A1′ is the only API change and is one function. Risk sits in two
+places: the Better Auth assumption above, and A3 removing a screen that
+`docs/decisions.md` documents — the entry needs a dated addendum, not an edit.
