@@ -4,6 +4,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
+import { isEmailSuppressed } from './suppressions'
 
 /** The token both campaign bodies must carry, replaced per recipient. */
 export const UNSUBSCRIBE_PLACEHOLDER = '{{unsubscribeUrl}}'
@@ -42,7 +43,14 @@ export interface CampaignRecipient {
 
 export interface CampaignAudience {
   recipients: CampaignRecipient[]
-  skipped: { optedOut: number; unverified: number; noEmail: number; alreadySent: number }
+  skipped: {
+    optedOut: number
+    unverified: number
+    noEmail: number
+    alreadySent: number
+    /** On the suppression list: bounced, complained, or unsubscribed without a profile. */
+    suppressed: number
+  }
 }
 
 /**
@@ -80,7 +88,7 @@ export async function campaignRecipients(
   )
 
   const recipients: CampaignRecipient[] = []
-  const skipped = { optedOut: 0, unverified: 0, noEmail: 0, alreadySent: 0 }
+  const skipped = { optedOut: 0, unverified: 0, noEmail: 0, alreadySent: 0, suppressed: 0 }
 
   for (const profile of profiles) {
     if (!notificationsAllowed(profile.settings?.notifications, 'promotions', 'email')) {
@@ -98,6 +106,10 @@ export async function campaignRecipients(
     }
     if (!address.verified) {
       skipped.unverified++
+      continue
+    }
+    if (await isEmailSuppressed(db, address.email)) {
+      skipped.suppressed++
       continue
     }
     const locale = await localeFor(db, profile._id)

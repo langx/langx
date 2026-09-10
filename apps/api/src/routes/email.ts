@@ -2,7 +2,9 @@ import { ACCOUNT_DELETION_GRACE_DAYS, webUrl } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { publicApiUrl, unsubscribeSecret } from '../env'
 import { localeFromHeader, translator } from '../i18n'
+import { suppressEmail } from '../modules/notifications/suppressions'
 import { removeDeletedContact } from '../modules/notifications/v1DeletedContacts'
+import { emailFor } from '../modules/profiles/emailFor'
 import { setEmailNotifications } from '../modules/profiles/profiles'
 import { requestDeletion } from '../modules/account/deletion'
 import { burnDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
@@ -127,7 +129,27 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
         // what goes. See `v1DeletedContacts.ts`.
         await removeDeletedContact(app.mongo.db, claim.userId)
       } else {
-        await setEmailNotifications(app.mongo.db, claim.userId, claim.scope, false)
+        const switched = await setEmailNotifications(app.mongo.db, claim.userId, claim.scope, false)
+        /*
+         * No profile, so no switch — a pre-created v1 row whose owner has
+         * never onboarded, pressing the link in a campaign. This used to end
+         * here as a silent success, and the next campaign mailed them again;
+         * worse, the profile they eventually created was seeded with the v1
+         * consent as if they had never said no. The address goes on the
+         * suppression list instead, which every sender and `createProfile`
+         * read. Only for the two scopes a profile-less person can be mailed
+         * under: service kinds need a profile to exist at all.
+         */
+        if (!switched && (claim.scope === 'promotions' || claim.scope === 'all')) {
+          const address = await emailFor(app.mongo.db, claim.userId)
+          if (address) {
+            await suppressEmail(app.mongo.db, {
+              email: address.email,
+              reason: 'unsubscribed',
+              userId: claim.userId,
+            })
+          }
+        }
       }
       request.log.info({ scope: claim.scope }, 'unsubscribed from notification email')
 

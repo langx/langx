@@ -6,10 +6,12 @@ import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
+import { authId } from '../lib/authId'
 import { loadEnv } from '../env'
 import { translator } from '../i18n'
 import { signUnsubscribeToken } from '../email/unsubscribeToken'
 import { mintDeletionToken, verifyDeletionToken } from '../modules/account/deletionTokens'
+import { isEmailSuppressed } from '../modules/notifications/suppressions'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -241,6 +243,49 @@ describe('unsubscribing from a link in an email', () => {
       url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
     })
     expect(again.statusCode).toBe(200)
+  })
+
+  /**
+   * A pre-created v1 row, mailed from a campaign, pressing the link before ever
+   * onboarding. There is no profile to switch anything off on — which used to
+   * make this a silent success — and the profile they create later must not
+   * be seeded with the consent they just withdrew.
+   */
+  it('records a refusal from somebody with no profile, and onboarding honours it', async () => {
+    const stranger = await signUpAndSignIn(app, emailSender, {
+      email: `v1-${Math.random().toString(36).slice(2, 10)}@example.com`,
+      password: PASSWORD,
+      name: 'Returning',
+    })
+    await handle.db
+      .collection(COLLECTIONS.user)
+      .updateOne(
+        { _id: authId(stranger.userId) },
+        { $set: { precreatedFromV1: { at: new Date(), legacyUserId: 'v1-x' } } },
+      )
+    const token = signUnsubscribeToken(SECRET, stranger.userId, 'promotions')
+
+    const done = await app.inject({
+      method: 'POST',
+      url: `/email/unsubscribe?token=${encodeURIComponent(token)}`,
+    })
+    expect(done.statusCode).toBe(200)
+    expect(await isEmailSuppressed(handle.db, stranger.email)).toBe(true)
+
+    const created = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: stranger.cookie },
+      payload: onboardingBody(),
+    })
+    expect(created.statusCode, created.body).toBe(201)
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: stranger.userId })
+    expect(profile?.settings.notifications).toMatchObject({
+      promotions: { push: false, email: false },
+    })
+    expect(profile?.promotionsConsent).toBeUndefined()
   })
 
   /**

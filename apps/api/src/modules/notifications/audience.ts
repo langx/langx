@@ -2,6 +2,7 @@ import { notificationsAllowed, notificationsUntouched, promotionsRefused } from 
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import { suppressedAmong } from './suppressions'
 
 /**
  * Which addresses belong on a Resend audience, decided here rather than there.
@@ -126,6 +127,14 @@ export async function audiencePlan(
     ).map((profile) => [profile._id, profile]),
   )
 
+  // One query for the whole list. A suppressed address goes up as
+  // `unsubscribe`, never as `remove`: Resend keeps the suppression, and a
+  // bounce or complaint is exactly the thing a later sync must not undo.
+  const suppressed = await suppressedAmong(
+    db,
+    users.flatMap((user) => (user.email ? [user.email] : [])),
+  )
+
   const contacts: AudienceContact[] = []
   const skipped = { unverified: 0, guest: 0, noConsent: 0 }
 
@@ -145,11 +154,13 @@ export async function audiencePlan(
 
     const userId = String(user._id)
     const profile = profiles.get(userId)
-    const action = audienceAction(source, {
+    const decided = audienceAction(source, {
       deleted: profile?.deletedAt !== undefined,
       fromV1: user.precreatedFromV1 !== undefined && user.precreatedFromV1 !== null,
       prefs: profile?.settings?.notifications,
     })
+    const action =
+      decided === 'subscribe' && suppressed.has(email.toLowerCase()) ? 'unsubscribe' : decided
     if (action === null) {
       skipped.noConsent++
       continue

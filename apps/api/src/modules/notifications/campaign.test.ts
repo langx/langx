@@ -12,6 +12,7 @@ import {
   releaseCampaignRecipients,
   UNSUBSCRIBE_PLACEHOLDER,
 } from './campaign'
+import { suppressEmail } from './suppressions'
 
 const CAMPAIGN = '2026-09-launch'
 
@@ -31,7 +32,12 @@ describe('who a campaign may be sent to', () => {
   })
 
   beforeEach(async () => {
-    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user, COLLECTIONS.emailCampaigns]) {
+    for (const name of [
+      COLLECTIONS.profiles,
+      COLLECTIONS.user,
+      COLLECTIONS.emailCampaigns,
+      COLLECTIONS.emailSuppressions,
+    ]) {
       await handle.db.collection(name).deleteMany({})
     }
   })
@@ -96,6 +102,20 @@ describe('who a campaign may be sent to', () => {
     const audience = await campaignRecipients(handle.db, CAMPAIGN)
     expect(audience.recipients).toHaveLength(0)
     expect(audience.skipped).toMatchObject({ unverified: 1, noEmail: 1 })
+  })
+
+  /**
+   * The preference says what they want; the suppression list says what can
+   * arrive. A bounced address is a dead one, and an unsubscribe pressed by
+   * somebody with no profile has nowhere else to live.
+   */
+  it('excludes an address on the suppression list', async () => {
+    const userId = await newProfile({ notifications: optedIn })
+    await suppressEmail(handle.db, { email: `${userId}@example.com`, reason: 'bounced' })
+
+    const audience = await campaignRecipients(handle.db, CAMPAIGN)
+    expect(audience.recipients).toHaveLength(0)
+    expect(audience.skipped.suppressed).toBe(1)
   })
 
   it('excludes somebody on their way out', async () => {

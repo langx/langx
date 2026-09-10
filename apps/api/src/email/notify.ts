@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../db/collections'
 import { localeFor } from '../modules/profiles/localeFor'
 import { emailFor } from '../modules/profiles/emailFor'
+import { isEmailSuppressed } from '../modules/notifications/suppressions'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Email } from './templates'
 import type { EmailSender } from './sender'
@@ -21,7 +22,14 @@ export interface NotificationEmailContext {
  * "they said no" and "we have no address for them".
  */
 export type NotificationEmailOutcome =
-  'sent' | 'no-profile' | 'deleted' | 'opted-out' | 'no-email' | 'unverified'
+  | 'sent'
+  | 'no-profile'
+  | 'deleted'
+  | 'opted-out'
+  | 'no-email'
+  | 'unverified'
+  /** Bounced, complained, or unsubscribed from outside a profile — see `suppressions.ts`. */
+  | 'suppressed'
 
 /**
  * The only way a notification email leaves this app.
@@ -60,6 +68,9 @@ export async function sendNotificationEmail(
   // sign-up and never clicked the link has not agreed to anything, and the
   // stranger certainly has not.
   if (!address.verified) return 'unverified'
+  // A dead or complaining mailbox gets nothing, service mail included: the
+  // preference says what they want, the suppression says what can arrive.
+  if (await isEmailSuppressed(db, address.email)) return 'suppressed'
 
   const locale = await localeFor(db, input.userId)
   const url = unsubscribeUrl(
