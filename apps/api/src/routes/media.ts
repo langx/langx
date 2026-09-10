@@ -50,7 +50,9 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   // Gallery photos take the same presigned path as the avatar, into their own
-  // key prefix so the account-deletion purge can find them by prefix later.
+  // key prefix. The account-deletion purge finds them through `photos` on the
+  // profile, as it does the avatar — the prefix keeps a bucket listing
+  // readable, nothing more.
   app.post(
     '/me/photos/upload-url',
     {
@@ -103,8 +105,10 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         )
       }
 
-      // Keyed by conversation so the account purge can find a user's
-      // attachments, and so a leaked key reveals nothing about who is talking.
+      // Keyed by conversation so a leaked key reveals nothing about who is
+      // talking. The account purge finds these through the message rows the
+      // sender left behind; it could not do it from this prefix, which says
+      // nothing about who uploaded.
       const extension = objectExtension(contentType)
       const key = `messages/${conversation._id.toHexString()}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
@@ -121,8 +125,8 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
    * nothing.
    *
    * Keyed by *user*, not by post, because the post does not exist yet when the
-   * URL is signed — unlike a conversation. That also keeps the deletion purge
-   * able to find a person's uploads by prefix.
+   * URL is signed — unlike a conversation. The deletion purge finds these
+   * through the post and correction rows, not through the prefix.
    */
   app.post(
     '/posts/upload-url',

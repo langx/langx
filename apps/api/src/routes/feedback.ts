@@ -86,9 +86,10 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
         )
       }
 
-      // Its own prefix, keyed by user, for the same reason `posts/` is: the
-      // account-deletion purge finds a person's objects by prefix, and proof
-      // of a bug is still their file.
+      // Its own prefix, keyed by user, and load-bearing rather than tidy: a
+      // report is written to no table of ours, so this prefix is the only
+      // thing that can find the file again. The account purge sweeps it with
+      // `deleteByPrefix` — proof of a bug is still their file.
       const extension = objectExtension(contentType)
       const key = `feedback/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))

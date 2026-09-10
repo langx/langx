@@ -203,10 +203,12 @@ presigned uploads — B2 and R2 run the same code, the target is an env variable
 Keys are prefixed `avatars/{userId}/`, `photos/{userId}/`,
 `messages/{conversationId}/` and `posts/{userId}/`. The feed's prefix is keyed
 by user rather than by post because the post does not exist when the URL is
-signed; every prefix is one the account purge can sweep. Attachments on posts
-and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with chat —
-one shape, one ceiling table, one abuse budget. The ceilings are per kind, in
-`MEDIA_LIMITS`: 8MB for an image, 16MB and two minutes for a voice note, 64MB
+signed. The account purge deletes these through the rows that reference them;
+`feedback/{userId}/` is the exception it sweeps by prefix, because a bug report
+is written to no collection and no row points at its attachments. Attachments
+on posts and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with
+chat — one shape, one ceiling table, one abuse budget. The ceilings are per
+kind, in `MEDIA_LIMITS`: 8MB for an image, 16MB and two minutes for a voice note, 64MB
 and sixty seconds for a video. A message or a post carries up to
 `MAX_ATTACHMENTS` of them and spends one unit of the budget however many that
 is — the per-file byte ceiling is what bounds storage, not the count.

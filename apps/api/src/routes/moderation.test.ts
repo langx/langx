@@ -938,6 +938,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         getUploadUrl: () => Promise.reject(new Error('unused')),
         putObject: () => Promise.resolve(''),
         deleteObject: () => Promise.reject(new Error('bucket unreachable')),
+        deleteByPrefix: () => Promise.reject(new Error('bucket unreachable')),
         keyFromPublicUrl: () => 'avatars/x.jpg',
       }
       await handle.db
@@ -962,6 +963,121 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
           .collection(COLLECTIONS.profiles)
           .countDocuments({ _id: user.userId as never }),
       ).toBe(0)
+    })
+
+    /**
+     * The one kind of file no row points at. A bug report is written to no
+     * collection of ours, so the URL-by-URL sweep the rest of this describe
+     * exercises cannot reach its attachments — the prefix the upload chose is
+     * the only handle left, and until now nothing used it.
+     */
+    it("sweeps the bug reports nothing else can find, and only the purged account's", async () => {
+      const user = await newUser()
+      const objects = new Set([
+        `feedback/${user.userId}/report.jpg`,
+        `feedback/${user.userId}/second.png`,
+        'feedback/somebody-else/theirs.jpg',
+      ])
+      const prefixes: string[] = []
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: () => Promise.resolve(),
+        deleteByPrefix: (prefix: string) => {
+          prefixes.push(prefix)
+          let deleted = 0
+          for (const key of objects) {
+            if (!key.startsWith(prefix)) continue
+            objects.delete(key)
+            deleted++
+          }
+          return Promise.resolve(deleted)
+        },
+        keyFromPublicUrl: () => null,
+      }
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      const result = await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      // `toContain`, not `toEqual`: another account expiring in the same run
+      // is a legitimate second prefix. What must be exact is which objects
+      // survive.
+      expect(prefixes).toContain(`feedback/${user.userId}/`)
+      expect(result.objectsDeleted).toBe(2)
+      // Somebody else's report is not swept by a prefix that ends in a slash.
+      expect([...objects]).toEqual(['feedback/somebody-else/theirs.jpg'])
+    })
+
+    /**
+     * A share card is a public `/s/<id>` page about a person. The image was
+     * always reachable by URL and the row always answered for it, so leaving
+     * either behind keeps a profile fragment up after the profile is gone.
+     */
+    it('deletes the share cards, both the image and the row', async () => {
+      const user = await newUser()
+      await handle.db.collection(COLLECTIONS.shareCards).insertOne({
+        _id: 'cardid' as never,
+        userId: user.userId,
+        kind: 'streak',
+        shape: 'story',
+        imageUrl: `https://cdn.example.com/cards/${user.userId}/cardid.png`,
+        headline: 'a hundred days',
+        caption: 'on LangX',
+        handle: 'someone',
+        createdAt: new Date(),
+      })
+
+      const deleted: string[] = []
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: (key: string) => {
+          deleted.push(key)
+          return Promise.resolve()
+        },
+        keyFromPublicUrl: (url: string) =>
+          url.startsWith('https://cdn.example.com/')
+            ? url.slice('https://cdn.example.com/'.length)
+            : null,
+      }
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      expect(deleted).toContain(`cards/${user.userId}/cardid.png`)
+      expect(
+        await handle.db.collection(COLLECTIONS.shareCards).countDocuments({ userId: user.userId }),
+      ).toBe(0)
+    })
+
+    /**
+     * Listing objects is a capability a provider may not have — the
+     * unconfigured one has none at all. The purge asks before it calls, and
+     * an account whose reports outlive it is still better than one that
+     * cannot be deleted.
+     */
+    it('purges with a provider that cannot list objects', async () => {
+      const user = await newUser()
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: () => Promise.resolve(),
+        keyFromPublicUrl: () => null,
+      }
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      const result = await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      expect(result.userIds).toContain(user.userId)
     })
 
     it('keeps the token ledger as an anonymous audit trail but drops the aggregates', async () => {

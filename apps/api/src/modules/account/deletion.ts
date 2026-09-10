@@ -19,7 +19,7 @@ interface AttachmentRow {
   attachments?: Media[]
   media?: Media
 }
-import { supportsPut } from '../../storage/StorageProvider'
+import { supportsPrefixDelete, supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
 
@@ -109,8 +109,8 @@ export interface PurgeResult {
  *   nowhere else. That keeps an audit trail of the economy (totals still
  *   reconcile) while making the rows genuinely anonymous. The *aggregates* are
  *   deleted, which is what removes the account from every leaderboard.
- * - Everything else — profile, devices, views, blocks, subscriptions, auth
- *   rows, and the images in the bucket — goes completely.
+ * - Everything else — profile, devices, views, blocks, subscriptions, share
+ *   cards, auth rows, and the images in the bucket — goes completely.
  */
 export async function purgeExpiredAccounts(
   db: Db,
@@ -196,6 +196,17 @@ export async function purgeExpiredAccounts(
           .toArray(),
       ])
 
+      /*
+       * Share cards. The row carries the URL, so these need no more than
+       * being read — which is the whole bug: nothing read them, and a card is
+       * reachable at a public `/s/<id>` that outlives the account it is
+       * about. `card_owner` in `db/indexes.ts` was already there for this.
+       */
+      const cards = await db
+        .collection<{ imageUrl: string }>(COLLECTIONS.shareCards)
+        .find({ userId }, { projection: { imageUrl: 1 } })
+        .toArray()
+
       const urls = [
         profile.avatarUrl,
         ...(profile.photos ?? []).map((p) => p.url),
@@ -209,6 +220,7 @@ export async function purgeExpiredAccounts(
             ...attachmentsOf(row).map((item) => item.url),
             (row as { slowMedia?: Media }).slowMedia?.url,
           ]),
+        ...cards.map((card) => card.imageUrl),
       ]
       for (const url of urls) {
         if (!url) continue
@@ -226,6 +238,26 @@ export async function purgeExpiredAccounts(
           // failure mode is an orphaned file rather than an account that never
           // gets purged.
         }
+      }
+    }
+
+    /*
+     * The one kind of file no row points at. A bug report goes to an email
+     * and into no table of ours — see `routes/feedback.ts` for why — so the
+     * sweep above cannot reach its attachments however carefully it reads.
+     * The prefix is the only handle the upload kept, which is why it chose
+     * one — and until this, nothing had ever used it.
+     *
+     * Its own capability check, outside the block above: listing objects and
+     * writing them are separate things a provider may or may not do.
+     */
+    if (options.storage && supportsPrefixDelete(options.storage)) {
+      try {
+        objectsDeleted += await options.storage.deleteByPrefix(`feedback/${userId}/`)
+      } catch {
+        // Swallowed for the reason the per-object failure above is: an
+        // orphaned file is a better outcome than an account that never gets
+        // purged.
       }
     }
 
@@ -313,6 +345,10 @@ export async function purgeExpiredAccounts(
       db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
+      // The rows behind the images deleted above. A card's `_id` is a public
+      // `/s/<id>` page about a person, so leaving it is leaving a profile
+      // fragment up after the profile is gone.
+      db.collection(COLLECTIONS.shareCards).deleteMany({ userId }),
       // Better Auth's own rows. Deleting the `user` document is what makes the
       // email reusable and the account genuinely gone rather than orphaned.
       db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) }),

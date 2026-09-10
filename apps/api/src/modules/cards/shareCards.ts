@@ -67,8 +67,9 @@ export async function createShareCard(
   )
 
   const id = randomUUID().replaceAll('-', '').slice(0, 22)
-  // Under the owner's own prefix, like every other object they own, so the
-  // account purge sweeps these out with the rest of their media.
+  // Under the owner's own prefix, like every other object they own. What the
+  // account purge actually finds it by is `imageUrl` on the row below — the
+  // prefix is for reading a bucket listing, not for deleting.
   const imageUrl = await storage.putObject(`cards/${input.userId}/${id}.png`, png, 'image/png')
 
   const card: ShareCard = {
