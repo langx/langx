@@ -25,7 +25,10 @@ import { suppressedAmong } from './suppressions'
 export type AudienceSource =
   /** `promotions.email` is true in this database. The only self-evident case. */
   | 'consented'
-  /** Consent given at v1's sign-up: every `precreatedFromV1` row, unless v2 refused. */
+  /**
+   * The pre-created v1 rows and nobody else — a population rather than a
+   * consent, which is what the win-back letters are addressed to.
+   */
   | 'v1'
   /** Both, plus everybody else with a verified address. Widest, and the least defensible. */
   | 'all'
@@ -159,10 +162,25 @@ export async function audiencePlan(
     }
 
     const userId = String(user._id)
+    const fromV1 = user.precreatedFromV1 !== undefined && user.precreatedFromV1 !== null
+    /*
+     * `--source v1` names *who*, not what they consented to, and that
+     * distinction stopped being free when promotional email became opt-out:
+     * `audienceAction` now answers `subscribe` for anybody whose switch
+     * allows it, which is everybody untouched — so without this line a
+     * campaign asking for v1 accounts was handed every verified address in
+     * the database. Caught by a dry run of the launch mail, which offered to
+     * tell twenty-five people who signed up last week that their streak was
+     * waiting for them.
+     */
+    if (source === 'v1' && !fromV1) {
+      skipped.noConsent++
+      continue
+    }
     const profile = profiles.get(userId)
     const decided = audienceAction(source, {
       deleted: profile?.deletedAt !== undefined,
-      fromV1: user.precreatedFromV1 !== undefined && user.precreatedFromV1 !== null,
+      fromV1,
       prefs: profile?.settings?.notifications,
     })
     const action =

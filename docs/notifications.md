@@ -166,12 +166,12 @@ month.
 `apps/api/campaigns/README.md` for the commands and
 [`release-runbook.md`](release-runbook.md) for the rules.
 
-| Source      | Who                                                             |
-| ----------- | --------------------------------------------------------------- |
-| `consented` | `promotions.email` allows it                                    |
-| `v1`        | plus every pre-created v1 row that has not said no              |
-| `all`       | plus every verified address                                     |
-| `v1deleted` | the addresses v1's deleted accounts left in `v1DeletedContacts` |
+| Source      | Who                                                                       |
+| ----------- | ------------------------------------------------------------------------- |
+| `consented` | `promotions.email` allows it                                              |
+| `v1`        | the pre-created v1 rows **and nobody else** — a population, not a consent |
+| `all`       | plus every verified address                                               |
+| `v1deleted` | the addresses v1's deleted accounts left in `v1DeletedContacts`           |
 
 `--exclude-returned` drops anybody who has since onboarded. Warm-up ramp:
 250 / 500 / 1000 / 2000 / 4000 a day, 08–20 UTC. `--pause` stops the next
