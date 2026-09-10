@@ -101,11 +101,20 @@ async function ensureOne(
      */
     if (!existing.official) return { handle, outcome: 'conflict' }
 
-    // Re-point the picture: the URL carries the API's public address, so an
-    // environment that moved would otherwise keep serving the old one.
+    /*
+     * The three fields an official account wears are written from code on
+     * every boot, not just when the row is created.
+     *
+     * `avatarUrl` because it carries the API's public address, so an
+     * environment that moved would keep serving the old one. The name and the
+     * bio because **nobody can sign in to these accounts** — there is no
+     * screen anywhere that can edit them, so code is the only editor they
+     * have. An account adopted from a real one arrives with whatever bio it
+     * was carrying; this is what turns it into the assistant's.
+     */
     await profiles.updateOne(
       { _id: existing._id },
-      { $set: { avatarUrl, displayName, updatedAt: now } },
+      { $set: { avatarUrl, displayName, bio: OFFICIAL_BIOS[handle], updatedAt: now } },
     )
     return { handle, outcome: 'updated', userId: existing._id }
   }

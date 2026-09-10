@@ -3819,6 +3819,22 @@ nothing, moves no streak and reaches no leaderboard. `startConversation` charges
 no initiation quota, because spending one of five daily slots to ask a question
 — or to report somebody — would price support out of the free tier.
 
+**An account already answering as LangX is adopted, not replaced.** Production
+had a real account on `@langx` — the support address, a bio of links, five
+conversations, two dozen messages — which is precisely the thing this feature
+automates. Renaming it would have broken every link anybody had been given, and
+`ensureOfficialAccounts` will not take a handle from a profile it did not
+create, by design. So adoption is its own script, run once by a person: it
+keeps the history and takes away the sign-in, because "nobody can sign in to an
+official account" is a property of the design rather than a rule with an
+exception in it. The side effect is that the support address goes back to being
+only a mailbox, which is what it should have been.
+
+That is also why the display name, the avatar and the bio are rewritten from
+code on every boot rather than only at creation: an adopted account arrives
+wearing whatever it was wearing, and after adoption there is no screen left
+that could change it.
+
 The one thing the accounts are _not_ is a second authorisation story. The
 assistant's two tools are the flows that already existed: `report_user` is the
 call the profile menu makes, and `submit_feedback` is the call `POST /feedback`

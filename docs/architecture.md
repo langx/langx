@@ -623,6 +623,18 @@ assistant behind it is an **optional service** in the same sense as email and
 storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
 and everything else about the account still works.
 
+An account that has been run by hand can be **adopted** rather than replaced:
+`scripts/adopt-official-account.ts` flips the flag, revokes every session and
+credential, and rewrites the address to the undeliverable one — keeping the
+conversations, messages and photos. That is a deliberate one-off, which is why
+it is a script and not something the boot decides. It is how `@langx` became
+official on production, where the handle was already held by the account
+answering as LangX by hand.
+
+The display name, the avatar **and the bio** are written from code on every
+boot. Not tidiness: nobody can sign in to these accounts, so there is no screen
+anywhere that can edit them, and code is the only editor they have.
+
 Conversations with an official account are **outside the token economy** —
 `awardForSend` returns early for either side, and `startConversation` charges no
 initiation quota — so nobody can farm a streak by talking to a program, and
