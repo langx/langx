@@ -15,6 +15,9 @@ const AGENTS = {
     'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36',
   edge: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0',
   expoIos: 'LangX/2.2 CFNetwork/1568.100.1 Darwin/24.0.0',
+  /** What React Native actually sends, taken off `session` in production. */
+  bareIos: 'CFNetwork/1568.100.1 Darwin/24.0.0',
+  bareAndroid: 'okhttp/4.12.0',
   curl: 'curl/8.5.0',
 }
 
@@ -55,6 +58,26 @@ describe('naming the device somebody signed in from', () => {
     const now = deviceIdentity(AGENTS.windowsChrome).fingerprint
     const later = deviceIdentity(AGENTS.windowsChrome.replace('152.0.0.0', '191.0.3.7')).fingerprint
     expect(later).toBe(now)
+  })
+
+  /**
+   * React Native sends no browser user agent at all. Fifty-three production
+   * sessions carried `okhttp/4.12.0`, and reading those literally told people
+   * they had signed in from "okhttp".
+   */
+  it('knows the app by the library it speaks through', () => {
+    expect(deviceIdentity(AGENTS.bareAndroid)).toEqual({
+      fingerprint: 'android-app',
+      label: 'the LangX app on Android',
+    })
+    expect(deviceIdentity(AGENTS.bareIos)).toEqual({
+      fingerprint: 'ios-app',
+      label: 'the LangX app on iPhone',
+    })
+    // And the two ways in from one phone are one device, not two.
+    expect(deviceIdentity(AGENTS.expoIos).fingerprint).toBe(
+      deviceIdentity(AGENTS.bareIos).fingerprint,
+    )
   })
 
   it('names a script by what it called itself, and an absent agent not at all', () => {
