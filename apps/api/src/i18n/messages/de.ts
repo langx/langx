@@ -358,5 +358,34 @@ export const de: Localized<ServerMessages> = {
       one: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
       other: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
     },
+
+    suspendedSubject: 'Dein LangX-Konto wurde gesperrt',
+    suspendedPreheader: 'Eine Meldung zu deinem Konto wurde geprüft',
+    suspendedUntilBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und dein Konto ist bis zum {until} gesperrt. Bis dahin kannst du LangX nicht nutzen, und dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    suspendedPermanentBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und dein Konto wurde dauerhaft gesperrt. Dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    suspendedReason: 'Grund: {reason}',
+    suspendedAppeal:
+      'Wenn das aus deiner Sicht falsch ist, kannst du einmal Einspruch erheben — in der App oder als Antwort auf diese Mail.',
+    suspendedText:
+      'Dein LangX-Konto ist gesperrt. {detail} {reason} Du kannst einmal Einspruch erheben, in der App.',
+    suspensionUpdatedSubject: 'Deine LangX-Sperre wurde aktualisiert',
+    suspensionUpdatedPreheader: 'Wir haben deinen Einspruch angesehen',
+    suspensionUpdatedShortened:
+      'Wir haben deinen Einspruch gelesen. Deine Sperre endet jetzt am {until}.',
+    suspensionUpdatedLifted:
+      'Wir haben deinen Einspruch gelesen. Die Sperre ist aufgehoben — du kannst LangX wieder nutzen.',
+    suspensionUpdatedText: 'Deine LangX-Sperre wurde aktualisiert. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Belästigung',
+    hateSpeech: 'Hassrede',
+    inappropriateContent: 'Unangemessener Inhalt',
+    fakeProfile: 'Fake-Profil',
+    underage: 'Unter 16',
+    other: 'Etwas anderes',
   },
 }

@@ -364,5 +364,31 @@ export const ar: Localized<ServerMessages> = {
       many: 'أُضيف {count} رمزًا إلى محفظتك مقابل البلاغ الذي أرسلته: {url}',
       other: 'أُضيف {count} رمز إلى محفظتك مقابل البلاغ الذي أرسلته: {url}',
     },
+
+    suspendedSubject: 'تم تعليق حسابك في LangX',
+    suspendedPreheader: 'تمت مراجعة بلاغ بخصوص حسابك',
+    suspendedUntilBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليق حسابك حتى {until}. حتى ذلك الحين لا يمكنك استخدام LangX، وملفك مخفي من الاستكشاف والبحث.',
+    suspendedPermanentBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليق حسابك نهائيًا. ملفك مخفي من الاستكشاف والبحث.',
+    suspendedReason: 'السبب: {reason}',
+    suspendedAppeal:
+      'إن كنت ترى أن هذا خطأ، يمكنك تقديم اعتراض واحد من التطبيق أو بالرد على هذا البريد.',
+    suspendedText: 'حسابك في LangX معلّق. {detail} {reason} يمكنك تقديم اعتراض واحد من التطبيق.',
+    suspensionUpdatedSubject: 'تم تحديث تعليق حسابك في LangX',
+    suspensionUpdatedPreheader: 'اطّلعنا على اعتراضك',
+    suspensionUpdatedShortened: 'قرأنا اعتراضك. ينتهي التعليق الآن في {until}.',
+    suspensionUpdatedLifted: 'قرأنا اعتراضك. تم رفع التعليق — يمكنك استخدام LangX من جديد.',
+    suspensionUpdatedText: 'تم تحديث تعليق حسابك في LangX. {detail}',
+  },
+
+  reportReason: {
+    spam: 'رسائل مزعجة',
+    harassment: 'مضايقة',
+    hateSpeech: 'خطاب كراهية',
+    inappropriateContent: 'محتوى غير لائق',
+    fakeProfile: 'ملف شخصي مزيّف',
+    underage: 'أقل من 16 عامًا',
+    other: 'شيء آخر',
   },
 }

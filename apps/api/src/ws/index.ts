@@ -21,7 +21,9 @@ import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
-import { getProfile } from '../modules/profiles/profiles'
+import { getProfile, type Profile } from '../modules/profiles/profiles'
+import { isSuspended } from '../modules/moderation/suspension'
+import { COLLECTIONS } from '../db/collections'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { toMessageView } from '../modules/chat/messageView'
 import {
@@ -85,6 +87,17 @@ async function authenticateSocket(app: FastifyInstance, socket: AppSocket): Prom
   // rejects an unverified account that has no profile (and thus nothing to
   // chat about) trying to open a socket anyway.
   if (!session.user.emailVerified) throw new Error('EMAIL_NOT_VERIFIED')
+
+  /*
+   * The same read `requireAuth` makes, for the same reason: the socket must
+   * never become a back door around a refusal REST already makes. A suspended
+   * account keeps its session, so nothing else here would have stopped it.
+   */
+  const profile = await app.mongo.db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: session.user.id }, { projection: { suspension: 1 } })
+  if (isSuspended(profile)) throw new Error('ACCOUNT_SUSPENDED')
+
   return session.user.id
 }
 

@@ -364,6 +364,49 @@ export const en = {
       one: '{count} token has been added to your wallet for the report you sent: {url}',
       other: '{count} tokens have been added to your wallet for the report you sent: {url}',
     },
+
+    /*
+     * A suspension notice is a receipt, not a preference — it is sent
+     * directly rather than through `notify.ts`, so it carries no
+     * unsubscribe footer and nobody can switch it off. The reporter is
+     * never named: see `docs/community-guidelines.md`.
+     */
+    suspendedSubject: 'Your LangX account has been suspended',
+    suspendedPreheader: 'A report about your account was reviewed',
+    suspendedUntilBody:
+      'A report about your account was reviewed by a person, and your account is suspended until {until}. Until then you cannot use LangX, and your profile is hidden from discovery and search.',
+    suspendedPermanentBody:
+      'A report about your account was reviewed by a person, and your account has been suspended permanently. Your profile is hidden from discovery and search.',
+    suspendedReason: 'Reason: {reason}',
+    suspendedAppeal:
+      'If you think this is wrong, you can appeal once from the app, or by replying to this email.',
+    suspendedText:
+      'Your LangX account is suspended. {detail} {reason} You can appeal once from the app.',
+    suspensionUpdatedSubject: 'Your LangX suspension has been updated',
+    suspensionUpdatedPreheader: 'We looked at your appeal',
+    suspensionUpdatedShortened: 'We read your appeal. Your suspension now ends on {until}.',
+    suspensionUpdatedLifted:
+      'We read your appeal. Your suspension has been lifted — you can use LangX again.',
+    suspensionUpdatedText: 'Your LangX suspension has been updated. {detail}',
+  },
+
+  /**
+   * Why an account was suspended, in the reader's language.
+   *
+   * The app has these words too, in its own catalogue. They are here
+   * rather than shared because the two catalogues are deliberately
+   * separate — see the note at the top of this file — and a suspension
+   * email that named the reason in English would be the one sentence of
+   * the mail that the reader most needs to understand.
+   */
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Harassment',
+    hateSpeech: 'Hate speech',
+    inappropriateContent: 'Inappropriate content',
+    fakeProfile: 'Fake profile',
+    underage: 'Under 16',
+    other: 'Something else',
   },
 } as const
 

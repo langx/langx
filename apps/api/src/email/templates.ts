@@ -998,6 +998,8 @@ export function reportEmail(input: {
   /** True only when this report is the one that crossed the threshold. */
   xpFrozen: boolean
   context: { conversationId: string | null; messageId: string | null; postId: string | null }
+  /** The signed link that decides this report — see `reviewToken.ts`. */
+  reviewUrl: string
 }): Email {
   // The enum values are already English words; a lookup table beside them
   // would be one more thing to forget when a reason is added.
@@ -1045,9 +1047,10 @@ export function reportEmail(input: {
     ${partyHtml('Reported', input.reported)}
     ${partyHtml('Reporter', input.reporter)}
     ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
+    <p style="margin:24px 0 8px;"><a href="${encodeURI(input.reviewUrl)}" style="display:inline-block;background:#111;color:#fff;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;">Review this report</a></p>
     <p style="color: #888; font-size: 12px;">Report ${escapeHtml(
       input.reportId,
-    )}, stored in <code>reports</code> with status <code>open</code>. Nothing changes it yet.</p>
+    )}, stored in <code>reports</code> with status <code>open</code>. Nothing changes until somebody decides on that page.</p>
   </body>
 </html>`,
     text: [
@@ -1070,7 +1073,108 @@ export function reportEmail(input: {
       ...(input.context.messageId ? [`Message: ${input.context.messageId}`] : []),
       ...(input.context.postId ? [`Post: ${postUrl(input.context.postId)}`] : []),
       '',
+      `Review: ${input.reviewUrl}`,
+      '',
       `Report ${input.reportId} — reports collection, status open.`,
+    ].join('\n'),
+  }
+}
+
+/**
+ * `hate_speech` → `hateSpeech`, which is how the catalogue keys them.
+ *
+ * The enum values are snake_case because they are stored; a lookup table
+ * beside `REPORT_REASONS` would be one more thing to forget when a reason is
+ * added, and this cannot fall out of step because the key is derived.
+ */
+function reasonLabel(t: ReturnType<typeof translator>, reason: string): string {
+  const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
+  return t(`reportReason.${key}` as Parameters<typeof t>[0])
+}
+
+/**
+ * What the suspended person is told, in their own language.
+ *
+ * A receipt, not a notification: sent directly rather than through
+ * `notify.ts`, with no unsubscribe footer, because there is no preference
+ * under which somebody could decline to be told their account is closed.
+ *
+ * It never says who reported them — `docs/community-guidelines.md` — and the
+ * reporter is never told the outcome either. Those are the same rule read
+ * from both ends.
+ */
+export function suspendedEmail(
+  locale: Locale,
+  input: { until: Date | null; reason: string },
+): Email {
+  const t = translator(locale)
+  const until = input.until ? input.until.toLocaleDateString(locale) : null
+  const detail = until
+    ? t('email.suspendedUntilBody', { until })
+    : t('email.suspendedPermanentBody')
+  const reason = t('email.suspendedReason', { reason: reasonLabel(t, input.reason) })
+  return {
+    subject: t('email.suspendedSubject'),
+    html: wrap(
+      locale,
+      t('email.suspendedPreheader'),
+      `<p>${escapeHtml(detail)}</p>
+       <p>${escapeHtml(reason)}</p>
+       <p style="color:#62676d;">${escapeHtml(t('email.suspendedAppeal'))}</p>`,
+    ),
+    text: t('email.suspendedText', { detail, reason }),
+  }
+}
+
+/** Sent after an appeal is decided — shortened, or lifted. Never after "keep". */
+export function suspensionUpdatedEmail(locale: Locale, input: { until: Date | null }): Email {
+  const t = translator(locale)
+  const detail = input.until
+    ? t('email.suspensionUpdatedShortened', { until: input.until.toLocaleDateString(locale) })
+    : t('email.suspensionUpdatedLifted')
+  return {
+    subject: t('email.suspensionUpdatedSubject'),
+    html: wrap(locale, t('email.suspensionUpdatedPreheader'), `<p>${escapeHtml(detail)}</p>`),
+    text: t('email.suspensionUpdatedText', { detail }),
+  }
+}
+
+/**
+ * The operator's copy of an appeal — English, like every other mail in this
+ * file that is read by us rather than about us.
+ */
+export function appealEmail(input: {
+  text: string
+  user: ReportedParty
+  until: Date | null
+  reason: string
+  reviewUrl: string
+}): Email {
+  const subject = `Appeal from ${partyName(input.user)}`
+  const ends = input.until ? input.until.toISOString() : 'permanent'
+  return {
+    subject,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111;">
+    <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
+    ${partyHtml('Suspended', input.user)}
+    <p><strong>Suspended for</strong> ${escapeHtml(input.reason)} &middot; <strong>ends</strong> ${escapeHtml(ends)}</p>
+    <p style="white-space: pre-wrap;">${escapeHtml(input.text)}</p>
+    <p style="margin:24px 0 8px;"><a href="${encodeURI(input.reviewUrl)}" style="display:inline-block;background:#111;color:#fff;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;">Decide this appeal</a></p>
+    <p style="color: #888; font-size: 12px;">One appeal per suspension; there will not be another.</p>
+  </body>
+</html>`,
+    text: [
+      subject,
+      '',
+      ...partyText('Suspended', input.user),
+      `Suspended for: ${input.reason}`,
+      `Ends: ${ends}`,
+      '',
+      input.text,
+      '',
+      `Decide: ${input.reviewUrl}`,
     ].join('\n'),
   }
 }

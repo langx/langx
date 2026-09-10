@@ -30,7 +30,7 @@ import {
   type PlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
-import { MongoServerError, type Db, type UpdateFilter } from 'mongodb'
+import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
@@ -262,6 +262,30 @@ export interface Profile {
     /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
     lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: Date
+  }
+  /**
+   * Set when a report was reviewed by a person and the account was suspended.
+   *
+   * `until` is the whole of the state: "suspended" is `until > now`, computed
+   * on every check, so an expiry needs no cron and no sweep. A permanent
+   * suspension stores `SUSPENSION_FOREVER`, which is why one comparison and
+   * one Mongo filter serve both — `permanent` is kept beside it only so the
+   * app can say the word instead of printing the year 9999.
+   *
+   * A second decision overwrites the first rather than appending: what is in
+   * force is one thing, and the review page shows what that is before asking.
+   *
+   * Never leaves the server. `toPublicProfile` names its fields, so there is
+   * nothing to remove there; other people learn only `accountStatus`.
+   */
+  suspension?: {
+    at: Date
+    until: Date
+    permanent: boolean
+    reason: string
+    reportId?: ObjectId
+    /** The one appeal. Its presence is what refuses a second. */
+    appeal?: { at: Date; text: string }
   }
   deletedAt?: Date
   createdAt: Date

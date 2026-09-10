@@ -22,6 +22,7 @@ import {
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import { hidesOnlineStatus } from '../profiles/presenceVisibility'
 import { ApiError } from '../../lib/ApiError'
 import { effectiveTier } from '../profiles/entitlement'
@@ -206,6 +207,10 @@ async function resolveDiscoveryScope(
     // all that stands between here and there.
     guest: { $exists: false },
     deletedAt: { $exists: false },
+    // A suspended account is out of both the list and the strip. Their
+    // profile still opens for somebody who has the link — see
+    // `accountStatus` on `toPublicProfile` — but nothing proposes them.
+    ...notSuspended(),
     // Mutual fit, both directions — the reason for the two split indexes.
     'nativeLanguages.code': { $in: wantTheirNative },
     'learning.code': { $in: myNativeCodes },

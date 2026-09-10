@@ -353,5 +353,33 @@ export const ptBR: Localized<ServerMessages> = {
       one: '{count} ficha foi adicionada à sua carteira pelo aviso que você enviou: {url}',
       other: '{count} fichas foram adicionadas à sua carteira pelo aviso que você enviou: {url}',
     },
+
+    suspendedSubject: 'Sua conta LangX foi suspensa',
+    suspendedPreheader: 'Uma denúncia sobre sua conta foi analisada',
+    suspendedUntilBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela está suspensa até {until}. Até lá você não pode usar o LangX, e seu perfil fica fora do Descobrir e da busca.',
+    suspendedPermanentBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela foi suspensa permanentemente. Seu perfil fica fora do Descobrir e da busca.',
+    suspendedReason: 'Motivo: {reason}',
+    suspendedAppeal:
+      'Se você acha que é um engano, pode recorrer uma vez pelo app ou respondendo a este e-mail.',
+    suspendedText:
+      'Sua conta LangX está suspensa. {detail} {reason} Você pode recorrer uma vez pelo app.',
+    suspensionUpdatedSubject: 'Sua suspensão no LangX foi atualizada',
+    suspensionUpdatedPreheader: 'Analisamos seu recurso',
+    suspensionUpdatedShortened: 'Lemos seu recurso. Sua suspensão agora termina em {until}.',
+    suspensionUpdatedLifted:
+      'Lemos seu recurso. A suspensão foi retirada — você pode usar o LangX de novo.',
+    suspensionUpdatedText: 'Sua suspensão no LangX foi atualizada. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Assédio',
+    hateSpeech: 'Discurso de ódio',
+    inappropriateContent: 'Conteúdo inadequado',
+    fakeProfile: 'Perfil falso',
+    underage: 'Menor de 16 anos',
+    other: 'Outra coisa',
   },
 }

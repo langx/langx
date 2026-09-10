@@ -363,5 +363,33 @@ export const fr: Localized<ServerMessages> = {
       one: '{count} jeton a été ajouté à ton portefeuille pour ton signalement : {url}',
       other: '{count} jetons ont été ajoutés à ton portefeuille pour ton signalement : {url}',
     },
+
+    suspendedSubject: 'Ton compte LangX a été suspendu',
+    suspendedPreheader: 'Un signalement sur ton compte a été examiné',
+    suspendedUntilBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu jusqu’au {until}. D’ici là tu ne peux pas utiliser LangX, et ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    suspendedPermanentBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu définitivement. Ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    suspendedReason: 'Motif : {reason}',
+    suspendedAppeal:
+      'Si tu penses que c’est une erreur, tu peux faire appel une fois depuis l’app, ou en répondant à cet e-mail.',
+    suspendedText:
+      'Ton compte LangX est suspendu. {detail} {reason} Tu peux faire appel une fois depuis l’app.',
+    suspensionUpdatedSubject: 'Ta suspension LangX a été mise à jour',
+    suspensionUpdatedPreheader: 'Nous avons examiné ton appel',
+    suspensionUpdatedShortened: 'Nous avons lu ton appel. Ta suspension prend fin le {until}.',
+    suspensionUpdatedLifted:
+      'Nous avons lu ton appel. Ta suspension est levée — tu peux réutiliser LangX.',
+    suspensionUpdatedText: 'Ta suspension LangX a été mise à jour. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Harcèlement',
+    hateSpeech: 'Discours haineux',
+    inappropriateContent: 'Contenu inapproprié',
+    fakeProfile: 'Faux profil',
+    underage: 'Moins de 16 ans',
+    other: 'Autre chose',
   },
 }
