@@ -54,6 +54,32 @@ export interface StorageProviderWithPut extends StorageProvider {
   keyFromPublicUrl(url: string): string | null
 }
 
+/**
+ * Deleting by prefix rather than by key, for the objects no row points at.
+ *
+ * The purge finds a person's files through the documents that reference them,
+ * which works for everything the app stores a URL for. A bug report's
+ * attachment is the exception: it goes to an email and into no table of ours,
+ * so the only handle we kept on it is the prefix the upload chose. Without
+ * this it stays in the bucket forever, publicly fetchable, after the account
+ * that sent it is gone.
+ *
+ * Its own interface rather than another method on `StorageProviderWithPut`,
+ * for the reason that one is separate from `StorageProvider`: a provider that
+ * cannot list objects is still a usable provider, and the purge asks before
+ * it calls.
+ */
+export interface StorageProviderWithPrefixDelete extends StorageProvider {
+  /** How many objects went — the purge counts them, so it must be the truth. */
+  deleteByPrefix(prefix: string): Promise<number>
+}
+
 export function supportsPut(provider: StorageProvider): provider is StorageProviderWithPut {
   return typeof (provider as StorageProviderWithPut).putObject === 'function'
+}
+
+export function supportsPrefixDelete(
+  provider: StorageProvider,
+): provider is StorageProviderWithPrefixDelete {
+  return typeof (provider as StorageProviderWithPrefixDelete).deleteByPrefix === 'function'
 }
