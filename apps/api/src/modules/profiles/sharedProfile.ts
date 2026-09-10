@@ -17,7 +17,8 @@ import type { Profile } from './profiles'
  *   - **Age, city, photos.** Individually mild; together they are the set that
  *     makes a link somebody did not expect to be public feel like one. The
  *     card exists to say "this is a real person on LangX, open the app" — none
- *     of these help it do that.
+ *     of these help it do that. The gallery stays out; the *avatar* is the one
+ *     picture somebody picked to be their face, and it is here.
  *   - **Online status and last-active.** A presence beacon addressable by
  *     guessing a handle, with no account needed to watch it.
  *   - **Streak, tokens, tier, follower counts.** Numbers about someone,
@@ -25,6 +26,14 @@ import type { Profile } from './profiles'
  *
  * What is here is what a link has to carry to be worth following: who they
  * are, and what they are here to practise.
+ *
+ * The account id is here, and used to not be. It is what `/public/avatar/:seed`
+ * draws a face from, and without it the one page strangers reach was the only
+ * place an account with no avatar fell all the way through to its initials
+ * while every screen inside the app drew it a face. The id buys nothing on its
+ * own — every route that takes one asks for a session first, and the avatar
+ * route answers for ids nobody holds precisely so it cannot be asked whether
+ * an account exists.
  */
 export async function getSharedProfile(db: Db, handle: string): Promise<SharedProfile> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne(
@@ -59,6 +68,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
   if (!profile) throw new ApiError('NOT_FOUND', 'Profile not found')
 
   return {
+    _id: profile._id,
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),

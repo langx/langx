@@ -807,11 +807,26 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       >()
 
       expect(Object.keys(body).sort()).toEqual(
-        ['bio', 'displayName', 'handle', 'learning', 'nativeLanguages'].sort(),
+        ['_id', 'bio', 'displayName', 'handle', 'learning', 'nativeLanguages'].sort(),
       )
-      for (const absent of ['age', 'photos', 'streak', 'isOnline', 'tier', 'city', '_id']) {
+      for (const absent of ['age', 'photos', 'streak', 'isOnline', 'tier', 'city']) {
         expect(body[absent], absent).toBeUndefined()
       }
+    })
+
+    /**
+     * The id is the seed `/public/avatar/:seed` draws from, and the only
+     * reason it is on this DTO: without it the page strangers reach was the
+     * one place a photoless account fell through to its initials.
+     */
+    it('carries the account id, so a photoless profile still gets its drawn face', async () => {
+      const user = await seed('public-avatar-seed@example.com', 'publicthree')
+      const body = (await app.inject({ method: 'GET', url: '/public/profiles/publicthree' })).json<
+        Record<string, unknown>
+      >()
+
+      expect(body._id).toBe(user.userId)
+      expect(body.avatarUrl).toBeUndefined()
     })
 
     it('is a 404 for a handle nobody holds', async () => {
