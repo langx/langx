@@ -3,7 +3,12 @@ import { COLLECTIONS } from '../../db/collections'
 
 /** Which scheduled pass a row belongs to; first component of the `_id`. */
 export type NotificationJob =
-  'unreadDigest' | 'profileVisitsPush' | 'profileVisitsEmail' | 'badgeEarned'
+  | 'unreadDigest'
+  | 'profileVisitsPush'
+  | 'profileVisitsEmail'
+  | 'badgeEarned'
+  /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
+  | `promo.${string}`
 
 export interface NotificationLedgerEntry {
   _id: string

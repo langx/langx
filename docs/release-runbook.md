@@ -277,27 +277,46 @@ sender prints each message to the log instead, headers included.
 ### Sending a campaign
 
 The only notification that is not automatic, and the only one that can annoy
-several thousand people at once.
+several thousand people at once. The script **queues** it; the API sends it,
+a few hundred the first day and a few thousand by the fifth
+(`CAMPAIGN_WARMUP_PER_DAY`, inside `CAMPAIGN_SEND_WINDOW_UTC`). Not for any
+quota: a domain that goes from twenty mails a day to four thousand in an hour
+is throttled by the mailbox providers, and the verification links pay for it
+too. The bodies live in `apps/api/campaigns/`, with a README of the commands.
 
 ```bash
-# Counts and prints; sends nothing.
-pnpm --filter @langx/api exec tsx scripts/send-campaign.ts \
+# Counts and prints; queues nothing.
+pnpm --filter @langx/api exec tsx --env-file=../../.env --env-file=../../.env.prod \
+  scripts/send-campaign.ts \
   --campaign 2026-09-launch --subject "LangX v2 is here" \
-  --html-file ./campaigns/launch.html
+  --html-file campaigns/v1-launch.html --text-file campaigns/v1-launch.txt \
+  --source v1
 
-# Same command, plus --confirm.
+# Same command, plus --confirm. Then:
+scripts/send-campaign.ts --status
+scripts/send-campaign.ts --pause  --campaign 2026-09-launch   # stops the next tick
+scripts/send-campaign.ts --resume --campaign 2026-09-launch
 ```
 
-- The dry run is not optional in practice: it prints the recipient count and
-  five masked addresses, and a count that surprises you is the cheapest bug
-  report available.
+- The dry run is not optional in practice: it prints the recipient count,
+  every reason somebody was left out, and five masked addresses — a count
+  that surprises you is the cheapest bug report available.
+- `--source` is the consent decision: `consented` (the profile says yes),
+  `v1` (plus pre-created v1 rows that never said no), `all` (plus every
+  verified address), `v1deleted` (the addresses v1's deleted accounts left in
+  `v1DeletedContacts`). `--exclude-returned` leaves out anybody who has since
+  onboarded — for the "still waiting for you" follow-ups.
 - Both bodies must contain `{{unsubscribeUrl}}`; the script refuses otherwise.
-- A re-run after a crash cannot mail anybody twice — recipients are claimed in
-  `emailCampaigns` before the batch, and the unique index enforces it.
-- Watch Resend's dashboard afterwards. A complaint rate above 0.1% means stop
-  and work out why before the next one.
-- One campaign is one language. For a bilingual send, run it twice with
-  different ids and `--locale`.
+  `{{firstName}}` and `{{email}}` are optional and filled per person.
+- Nobody inside `MARKETING_MIN_GAP_DAYS` of their last piece of marketing is
+  sent to today; the tick asks again tomorrow. `--ignore-cap` overrides.
+- A crash, a redeploy or a second machine cannot mail anybody twice —
+  recipients are claimed in `emailCampaigns` before each batch, and the
+  unique index enforces it.
+- Send one to yourself first: `--source consented` with a throwaway campaign
+  id against a database where only your own profile has promotions on.
+- Watch Resend's dashboard afterwards. A complaint rate above 0.1% means
+  `--pause` and work out why before resuming.
 
 ## Shipping runs on expo.dev
 

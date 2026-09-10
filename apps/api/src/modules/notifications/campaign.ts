@@ -39,6 +39,8 @@ export interface CampaignRecipient {
   userId: string
   email: string
   locale: string
+  /** The display name, for a body that greets somebody. */
+  firstName?: string
 }
 
 export interface CampaignAudience {
@@ -74,7 +76,7 @@ export async function campaignRecipients(
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
       { deletedAt: { $exists: false }, 'settings.notifications': { $ne: false } },
-      { projection: { settings: 1 } },
+      { projection: { settings: 1, displayName: 1 } },
     )
     .toArray()
 
@@ -115,7 +117,12 @@ export async function campaignRecipients(
     const locale = await localeFor(db, profile._id)
     if (options.locale && locale !== options.locale) continue
 
-    recipients.push({ userId: profile._id, email: address.email, locale })
+    recipients.push({
+      userId: profile._id,
+      email: address.email,
+      locale,
+      ...(profile.displayName ? { firstName: profile.displayName } : {}),
+    })
     if (options.limit && recipients.length >= options.limit) break
   }
 

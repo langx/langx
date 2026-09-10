@@ -41,8 +41,13 @@ export type ContactAction =
 export interface AudienceContact {
   userId: string
   email: string
-  /** Resend's `firstName`, for a broadcast that greets somebody. Display name, whole. */
+  /**
+   * For a broadcast that greets somebody: the display name, whole, or the
+   * name the v1 pre-creation wrote on the `user` row when there is no profile.
+   */
   name?: string
+  /** Whether the account has onboarded — what a "still waiting" follow-up excludes. */
+  hasProfile: boolean
   action: ContactAction
 }
 
@@ -57,6 +62,7 @@ const GUEST_DOMAIN = '@guest.langx.invalid'
 interface UserRow {
   _id: unknown
   email?: string
+  name?: string
   emailVerified?: boolean
   isAnonymous?: boolean
   precreatedFromV1?: unknown
@@ -113,7 +119,7 @@ export async function audiencePlan(
     .collection<UserRow>(COLLECTIONS.user)
     .find(
       { email: { $exists: true } },
-      { projection: { email: 1, emailVerified: 1, isAnonymous: 1, precreatedFromV1: 1 } },
+      { projection: { email: 1, name: 1, emailVerified: 1, isAnonymous: 1, precreatedFromV1: 1 } },
     )
     .toArray()
 
@@ -166,8 +172,14 @@ export async function audiencePlan(
       continue
     }
 
-    const name = profile?.displayName
-    contacts.push({ userId, email, ...(name ? { name } : {}), action })
+    const name = profile?.displayName || user.name
+    contacts.push({
+      userId,
+      email,
+      ...(name ? { name } : {}),
+      hasProfile: profile !== undefined,
+      action,
+    })
     if (options.limit && contacts.length >= options.limit) break
   }
 
