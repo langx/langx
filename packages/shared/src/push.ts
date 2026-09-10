@@ -59,6 +59,12 @@ export const PUSH_KINDS = [
    * to hearing it is finding out when the plan stops.
    */
   'billing',
+  /**
+   * A nudge from `modules/notifications/promotions.ts` — add a photo, come
+   * back, spend your tokens. The only kind here gated on `promotions`, which
+   * is off until somebody turns it on.
+   */
+  'promotion',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 

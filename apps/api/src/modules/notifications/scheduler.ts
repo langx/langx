@@ -5,6 +5,7 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
 import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
+import { runPromotionsPass } from './promotions'
 import { runUnreadDigestPass } from './unreadDigest'
 import { runVerifyReminderPass } from './verifyReminder'
 
@@ -67,6 +68,7 @@ export function startNotificationScheduler(
               ),
             ]
           : []),
+        run('promotions', () => runPromotionsPass(db, senders, now)),
         run('campaign queue', () =>
           runCampaignQueuePass(db, senders.email, now, {
             tickMinutes: intervalMs / 60_000,

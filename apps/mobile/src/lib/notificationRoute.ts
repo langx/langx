@@ -49,6 +49,11 @@ export function notificationRoute(data: unknown): Href | null {
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.
       return '/viewers'
+    case 'promotion':
+      // Every nudge that is not about the streak points at the same place:
+      // people to talk to. The mail carries the specific destination; a push
+      // that lands days later should not.
+      return '/discover'
     case 'billing':
       // A failed payment and an ended plan are both fixed in one place.
       return '/settings/plan'

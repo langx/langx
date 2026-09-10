@@ -29,6 +29,25 @@ export const ar: Localized<ServerMessages> = {
       other: '{count} رمز مقابل بلاغك 🎉',
     },
     bountyBody: 'قرأنا ما أرسلته، وقد كان يستحق.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'أضف صورة',
+      addPhotoBody: 'الملفات التي تحمل وجهاً تتلقى ردوداً أكثر.',
+      streakBrokeTitle: {
+        one: 'انقطعت سلسلتك البالغة {count} يوم',
+        other: 'انقطعت سلسلتك البالغة {count} يوماً',
+      },
+      streakBrokeBody: 'الإصلاح يعيد يوم أمس.',
+      awayTitle: 'الناس ما زالوا هنا',
+      awayBody: 'أشخاص جدد للتدرب معهم.',
+      awayLongTitle: 'نحن هنا متى أردت',
+      awayLongBody: 'سلسلتك ورموزك في الانتظار.',
+      tokensWaitingTitle: { one: '{count} رمز في الانتظار', other: '{count} رمزاً في الانتظار' },
+      tokensWaitingBody: 'افتح محفظتك.',
+      inviteFriendTitle: 'ادعُ صديقاً',
+      inviteFriendBody: 'ستحصلان كلاكما على رموز.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'لم تتم عملية الدفع',
@@ -140,6 +159,62 @@ export const ar: Localized<ServerMessages> = {
     unsubscribedTitle: 'تم — لن تصلك بعد الآن.',
     unsubscribedBody: 'يمكنك تشغيلها متى شئت من LangX في الإعدادات ← الإشعارات.',
     unsubscribeInvalid: 'هذا الرابط غير صالح. افتح LangX وغيّره من الإعدادات ← الإشعارات.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'أضف صورة ليعثر عليك الآخرون',
+
+      addPhotoBody:
+        'الملفات التي تحمل وجهاً تتلقى ردوداً أكثر بكثير. يستغرق الأمر عشر ثوانٍ ويمكنك تغييرها متى شئت.',
+
+      addPhotoButton: 'أضف صورتي',
+
+      streakBrokeSubject: {
+        one: 'انقطعت سلسلتك البالغة {count} يوم',
+        other: 'انقطعت سلسلتك البالغة {count} يوماً',
+      },
+
+      streakBrokeBody: 'فاتك يوم أمس. إصلاح من المتجر يعيد اليوم وتستمر السلسلة.',
+
+      streakBrokeButton: 'أصلح يوم أمس',
+
+      awaySubject: 'الناس ما زالوا يتدربون من دونك',
+
+      awayBody: 'مضى أسبوع. هناك أشخاص جدد للحديث معهم، ولغاتك لم تتغير.',
+
+      awayButton: 'انظر من هنا',
+
+      awayLongSubject: 'لن نراسلك بعد هذه',
+
+      awayLongBody:
+        'الشهر مدة طويلة. حسابك وسلسلتك ورموزك ما زالت هنا إن أردتها — وهذه آخر رسالة عن الأمر.',
+
+      awayLongButton: 'افتح LangX',
+
+      tokensWaitingSubject: {
+        one: 'لديك {count} رمز في الانتظار',
+        other: 'لديك {count} رمزاً في الانتظار',
+      },
+
+      tokensWaitingBody:
+        'الرموز تشتري تجميد السلسلة وإصلاح الأيام والإطارات والألقاب. رموزك لم تُستخدم منذ أسبوعين.',
+
+      tokensWaitingButton: 'افتح محفظتي',
+
+      inviteFriendSubject: 'التدرب مع شخص تعرفه أفضل',
+
+      inviteFriendBody:
+        'ادعُ صديقاً وستحصلان كلاكما على رموز عند انضمامه. رابط الدعوة في الإعدادات.',
+
+      inviteFriendButton: 'احصل على رابط الدعوة',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 

@@ -23,6 +23,28 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} jetons pour ton signalement 🎉',
     },
     bountyBody: 'On a lu ce que tu nous as envoyé, et ça valait le coup.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'Ajoutez une photo',
+      addPhotoBody: 'Les profils avec un visage reçoivent plus de réponses.',
+      streakBrokeTitle: {
+        one: 'Votre série de {count} jour est rompue',
+        other: 'Votre série de {count} jours est rompue',
+      },
+      streakBrokeBody: 'Une réparation remet hier.',
+      awayTitle: 'Les gens sont toujours là',
+      awayBody: 'De nouvelles personnes pour pratiquer.',
+      awayLongTitle: 'Nous serons là quand vous voudrez',
+      awayLongBody: 'Votre série et vos jetons attendent.',
+      tokensWaitingTitle: {
+        one: '{count} jeton vous attend',
+        other: '{count} jetons vous attendent',
+      },
+      tokensWaitingBody: 'Ouvrez votre portefeuille.',
+      inviteFriendTitle: 'Invitez quelqu’un',
+      inviteFriendBody: 'Vous gagnez tous les deux des jetons.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Votre paiement n’a pas abouti',
@@ -143,6 +165,64 @@ export const fr: Localized<ServerMessages> = {
       'Vous pouvez les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
     unsubscribeInvalid:
       'Ce lien n’est pas valide. Ouvrez LangX et modifiez-le dans Réglages → Notifications.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'Ajoutez une photo, on vous trouvera',
+
+      addPhotoBody:
+        'Les profils avec un visage reçoivent bien plus de réponses. Dix secondes, et vous pouvez la changer quand vous voulez.',
+
+      addPhotoButton: 'Ajouter ma photo',
+
+      streakBrokeSubject: {
+        one: 'Votre série de {count} jour est rompue',
+        other: 'Votre série de {count} jours est rompue',
+      },
+
+      streakBrokeBody:
+        'Hier a manqué. Une réparation depuis la boutique remet la journée et la série continue.',
+
+      streakBrokeButton: 'Réparer hier',
+
+      awaySubject: 'On continue à pratiquer sans vous',
+
+      awayBody:
+        'Une semaine a passé. Il y a de nouvelles personnes à qui parler, et vos langues n’ont pas changé.',
+
+      awayButton: 'Voir qui est là',
+
+      awayLongSubject: 'Après cela, nous n’écrirons plus',
+
+      awayLongBody:
+        'Un mois, c’est long. Votre compte, votre série et vos jetons sont toujours là si vous les voulez — et c’est la dernière fois que nous en parlons.',
+
+      awayLongButton: 'Ouvrir LangX',
+
+      tokensWaitingSubject: {
+        one: '{count} jeton vous attend',
+        other: '{count} jetons vous attendent',
+      },
+
+      tokensWaitingBody:
+        'Les jetons achètent des gels de série, des réparations, des cadres et des titres. Les vôtres dorment depuis quinze jours.',
+
+      tokensWaitingButton: 'Ouvrir mon portefeuille',
+
+      inviteFriendSubject: 'On pratique mieux à deux',
+
+      inviteFriendBody:
+        'Invitez quelqu’un : vous gagnez tous les deux des jetons quand il arrive. Votre lien est dans les Réglages.',
+
+      inviteFriendButton: 'Voir mon lien',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 

@@ -442,6 +442,61 @@ export function billingEmail(
   }
 }
 
+/** The six nudges `modules/notifications/promotions.ts` offers, in its order. */
+export type PromotionScenario =
+  'addPhoto' | 'streakBroke' | 'away' | 'awayLong' | 'tokensWaiting' | 'inviteFriend'
+
+/**
+ * One nudge, worded from the catalogue rather than assembled here.
+ *
+ * `notificationEmail`, so it carries the footer that says why it arrived and
+ * how to stop — which for this class of mail is not a nicety but the thing
+ * that keeps a mailbox provider delivering the verification links.
+ *
+ * The scenario decides the strings *and* the destination; a nudge whose
+ * button goes somewhere unrelated to its sentence is the kind that gets
+ * marked as spam by somebody who meant to act on it.
+ */
+export function promotionEmail(
+  locale: Locale,
+  scenario: PromotionScenario,
+  input: { count?: number; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const params = input.count === undefined ? {} : { count: input.count }
+  const subject = t(`email.promo.${scenario}Subject` as never, params)
+  const body = t(`email.promo.${scenario}Body` as never, params)
+  const cta = {
+    url: PROMOTION_DESTINATIONS[scenario],
+    label: t(`email.promo.${scenario}Button` as never),
+  }
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: body,
+      bodyHtml: `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${subject}</strong></p><p>${body}</p>`,
+      cta,
+      unsubscribeUrl: input.unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(locale, [subject, '', body, '', cta.url], input.unsubscribe),
+  }
+}
+
+/**
+ * Where each nudge lands. Beside the copy rather than beside the trigger,
+ * because the sentence and the button have to agree and they are written
+ * together.
+ */
+const PROMOTION_DESTINATIONS: Record<PromotionScenario, string> = {
+  addPhoto: webUrl('/me/edit'),
+  streakBroke: webUrl('/wallet'),
+  away: webUrl('/discover'),
+  awayLong: webUrl('/discover'),
+  tokensWaiting: webUrl('/wallet'),
+  inviteFriend: webUrl('/settings/share'),
+}
+
 /** The four things this app tells somebody about their own account. */
 export type SecurityEvent = 'newSignIn' | 'passwordChanged' | 'methodLinked' | 'methodUnlinked'
 

@@ -17,6 +17,25 @@ export const tr: Localized<ServerMessages> = {
       other: 'Bildirimin için {count} jeton 🎉',
     },
     bountyBody: 'Yazdıklarını okuduk, değdi.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'Bir fotoğraf ekle',
+      addPhotoBody: 'Yüzü olan profiller çok daha fazla cevap alıyor.',
+      streakBrokeTitle: {
+        one: '{count} günlük serin bozuldu',
+        other: '{count} günlük serin bozuldu',
+      },
+      streakBrokeBody: 'Onarım dünü geri koyar.',
+      awayTitle: 'İnsanlar hâlâ burada',
+      awayBody: 'Pratik yapacak yeni insanlar var.',
+      awayLongTitle: 'Sen gelene kadar buradayız',
+      awayLongBody: 'Serin ve token’ların bekliyor.',
+      tokensWaitingTitle: { one: '{count} token bekliyor', other: '{count} token bekliyor' },
+      tokensWaitingBody: 'Cüzdanını aç.',
+      inviteFriendTitle: 'Bir arkadaşını davet et',
+      inviteFriendBody: 'O katılınca ikiniz de token kazanırsınız.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Ödemen alınamadı',
@@ -127,6 +146,62 @@ export const tr: Localized<ServerMessages> = {
     unsubscribedBody: 'İstediğin zaman LangX’te Ayarlar → Bildirimler’den geri açabilirsin.',
     unsubscribeInvalid:
       'Bu bağlantı geçerli değil. LangX’i açıp Ayarlar → Bildirimler’den değiştir.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'Bir fotoğraf ekle, seni bulsunlar',
+
+      addPhotoBody:
+        'Yüzü olan profiller çok daha fazla cevap alıyor. On saniye sürer, istediğin zaman değiştirebilirsin.',
+
+      addPhotoButton: 'Fotoğrafımı ekle',
+
+      streakBrokeSubject: {
+        one: '{count} günlük serin bozuldu',
+        other: '{count} günlük serin bozuldu',
+      },
+
+      streakBrokeBody: 'Dünü kaçırdın. Mağazadan bir onarım günü geri koyar ve seri devam eder.',
+
+      streakBrokeButton: 'Dünü onar',
+
+      awaySubject: 'İnsanlar sensiz de pratik yapıyor',
+
+      awayBody: 'Bir hafta oldu. Konuşacak yeni insanlar var ve dillerin değişmedi.',
+
+      awayButton: 'Kimler var, bak',
+
+      awayLongSubject: 'Bundan sonra yazmayacağız',
+
+      awayLongBody:
+        'Bir ay uzun bir süre. Hesabın, serin ve token’ların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
+
+      awayLongButton: 'LangX’i aç',
+
+      tokensWaitingSubject: {
+        one: '{count} token’ın bekliyor',
+        other: '{count} token’ın bekliyor',
+      },
+
+      tokensWaitingBody:
+        'Token’lar seri dondurma, gün onarımı, çerçeve ve unvan alır. Seninkiler iki haftadır duruyor.',
+
+      tokensWaitingButton: 'Cüzdanımı aç',
+
+      inviteFriendSubject: 'Tanıdığınla pratik daha iyi',
+
+      inviteFriendBody:
+        'Bir arkadaşını davet et, o katılınca ikiniz de token kazanın. Davet bağlantın Ayarlar’da.',
+
+      inviteFriendButton: 'Davet bağlantımı al',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 
