@@ -88,6 +88,13 @@ const envSchema = z.object({
    * is not configured rather than pretending to subscribe anybody.
    */
   RESEND_AUDIENCE_ID: emptyToUndefined(z.string().optional()),
+  /**
+   * The signing secret of the Resend webhook that reports bounces and
+   * complaints (`POST /webhooks/resend`), `whsec_…` from the dashboard.
+   * Optional: unset, the route answers that it is not configured, and the
+   * suppression list simply learns nothing from Resend.
+   */
+  RESEND_WEBHOOK_SECRET: emptyToUndefined(z.string().optional()),
 
   // OAuth. Each provider activates only once both of its variables are set —
   // see socialProviders() in auth.ts — so leaving these blank still boots a

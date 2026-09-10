@@ -18,6 +18,7 @@ import { emailRoutes } from './routes/email'
 import { appConfigRoutes } from './routes/appConfig'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
+import { resendWebhookRoutes } from './routes/resendWebhook'
 import { cityRoutes } from './routes/cities'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
@@ -295,6 +296,7 @@ export async function buildApp({
   await app.register(messageRoutes)
   await app.register(translationRoutes)
   await app.register(billingRoutes)
+  await app.register(resendWebhookRoutes)
   await app.register(xpRoutes)
   await app.register(referralRoutes)
   await app.register(activityRoutes)
