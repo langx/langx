@@ -28,7 +28,6 @@ import { API_URL } from '../lib/apiUrl'
 import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from '../lib/appIcon'
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
-import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
@@ -180,7 +179,7 @@ export function useSettingsModel() {
    */
   async function chooseIcon(next: AppIcon): Promise<void> {
     if (!isPro) {
-      openPaywall()
+      openPaywall(undefined, undefined, 'me')
       return
     }
     if (next === appIcon) return
@@ -255,7 +254,7 @@ export function useSettingsModel() {
     // A count that belonged to this account must not outlive it on the icon.
     await syncIconBadge(0)
     await authClient.signOut()
-    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    router.replace(authLandingHref())
   }
 
   /**

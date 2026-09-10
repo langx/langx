@@ -599,6 +599,37 @@ Signed out, signed in **without** a profile, and ready. The middle state is real
 and common: Better Auth creates the account, but `profiles` is ours and
 onboarding writes it. A 404 from `/profiles/me` is that state, not an error.
 
+**10 September 2026 — the mailed verification link now arrives here signed
+in.** The link used to point at Better Auth's own `/verify-email`, which spends
+the token and, with `autoSignInAfterVerification`, sets the session cookie on
+whatever made that request — from an inbox, the mail client's browser. The app
+never saw it, so a brand-new account was sent back to type its password a
+second time. The mail now carries `app/verify-email.tsx`, which spends the
+token itself and replaces to `/`; this gate then routes it to the first
+onboarding step like any other session. Same shape as `magic-link.tsx`, and
+the same reasoning.
+
+## Client — the first screen is the welcome screen, not an intro
+
+**10 September 2026.** A signed-out launch used to open on `(auth)/intro`:
+three slides of copy, played once per device, in front of a welcome screen
+whose first line said what the first slide said. Two screens describing an
+exchange before one was offered — on the launch that decides whether there is
+a second one.
+
+The carousel is not deleted, it is moved: Settings → "Show intro again" plays
+it on demand, `(app)/intro`, exactly as before. What the other two slides said
+is now two lines under the language pairs on the welcome screen, next to the
+thing they describe rather than three taps in front of it. `authLandingHref`
+therefore takes no argument and always answers `/(auth)/welcome`.
+
+`FLAG_KEYS.introSeen` stays in place, written by nothing and read by nothing.
+An OTA update can be rolled back, and a build that reads that flag has to find
+whatever it left there rather than a flag this version cleaned up.
+
+Measured before/after rather than as an experiment: at this volume two arms
+would report a coin toss. See `docs/plans/onboarding-first-minute.md`.
+
 ## Client — the onboarding draft lives outside React
 
 expo-router remounts a screen when it is navigated back to, so component state

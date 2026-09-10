@@ -13,7 +13,6 @@ import { showAlert } from '../../../src/lib/alert'
 import { authClient } from '../../../src/lib/auth-client'
 import { authLandingHref } from '../../../src/lib/authLanding'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
-import { FLAG_KEYS, readBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
@@ -63,7 +62,7 @@ export default function DeleteAccountScreen() {
     await api.post('/me/delete', { confirm: 'DELETE' })
     await syncIconBadge(0)
     await authClient.signOut()
-    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    router.replace(authLandingHref())
     showToast(t('settings.deleted', { days: ACCOUNT_DELETION_GRACE_DAYS }))
   }
 
