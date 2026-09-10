@@ -794,12 +794,16 @@ Three consequences for handles:
   _user_, whose link quietly resolves to a page instead of to them.
   `RESERVED_HANDLES` holds them, and `routeLiterals.test.ts` walks `app/` and
   fails if a route name is missing from it.
-- **New handles are at least `HANDLE_MIN_LENGTH`.** Short names are where route
-  collisions live, and a floor is what stops squatting on a public address.
-- **Two schemas, not one.** `handleSchema` reads; `newHandleSchema` claims. v1
-  handles came across under the old rule, so tightening the reading schema
-  would 400 an existing account's own profile — including the link they have
-  already shared. The claim rules are applied in `createProfile` rather than in
+- **New handles are at least `HANDLE_MIN_LENGTH`, which is three** — the
+  pattern's own minimum. It was four, on the argument that short names are
+  where route collisions live; the reserved list is what actually answers
+  that, so the length was a proxy for a check that exists, and the cost of it
+  was paid by everybody whose name is three letters.
+- **Two schemas, not one.** `handleSchema` reads; `newHandleSchema` claims, and
+  what separates them now is the reserved list rather than a length. v1
+  handles came across under a three-character rule, so tightening the reading
+  schema would 400 an existing account's own profile — including the link they
+  have already shared. The claim rules are applied in `createProfile` rather than in
   the schema, because only there is it visible whether the handle is reserved
   _for this person_: a returning v1 user taking `ada` back is not a new claim.
 
