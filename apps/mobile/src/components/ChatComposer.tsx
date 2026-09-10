@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { TOKEN_RULES } from '@langx/shared'
+import * as Device from 'expo-device'
 import { useState, type ReactNode } from 'react'
 import {
   Platform,
@@ -11,9 +12,17 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import { useT } from '../i18n'
-import { shouldSubmitOnEnter } from '../lib/submitOnEnter'
+import { enterSendsOnNative, shouldSubmitOnEnter } from '../lib/submitOnEnter'
 import { makeStyles, useTheme } from '../lib/theme'
 import { ComposerHint } from './ComposerHint'
+
+/**
+ * A Mac, either as a Catalyst app or as the iPad binary running on Apple
+ * Silicon — `expo-device` reports both as `DESKTOP`, which is the only signal
+ * that tells one of those apart from a real iPad. Read once: it cannot change
+ * while the app is running.
+ */
+const IS_DESKTOP = Device.deviceType === Device.DeviceType.DESKTOP
 
 interface ChatComposerProps {
   value: string
@@ -83,10 +92,19 @@ export function ChatComposer({
           autoFocus={autoFocus}
           multiline
           /**
-           * Web only, and it has to be a key handler: `multiline` is a
+           * Two ways to send with the return key, because the two platforms
+           * offer different handles on it.
+           *
+           * On the web it has to be a key handler: `multiline` is a
            * `<textarea>` in the browser, where `onSubmitEditing` never fires.
-           * On native the return key inserts a newline and the send button is
-           * the way to send, which is what people expect there.
+           *
+           * On a native desktop it has to be `submitBehavior`, because that is
+           * the only thing that stops the newline — a key handler cannot, there
+           * being nothing to `preventDefault` on. `'submit'` rather than
+           * `'blurAndSubmit'` keeps the field focused for the next sentence.
+           *
+           * On a phone or a tablet neither is set and the return key inserts a
+           * newline, which is what people expect with a keyboard on the glass.
            */
           {...(Platform.OS === 'web'
             ? {
@@ -100,7 +118,9 @@ export function ChatComposer({
                   onSend()
                 },
               }
-            : {})}
+            : enterSendsOnNative(Platform.OS, IS_DESKTOP)
+              ? { submitBehavior: 'submit' as const, onSubmitEditing: onSend }
+              : {})}
         />
         {/* The send button appears only when there is something to send; the
           resting state to its right (a microphone, in a thread) is the
