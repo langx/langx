@@ -291,6 +291,15 @@ export const updateProfileSchema = z
       .object({
         discoverable: z.boolean(),
         /**
+         * Whether this profile appears in the Boosted strip on Discover.
+         *
+         * Absent from the stored document means on, so this is only ever
+         * written when somebody flips the switch — see `Profile.settings` in
+         * the API. Without the key here the PATCH would be stripped in
+         * silence, which is the failure mode a toggle cannot recover from.
+         */
+        boosted: z.boolean(),
+        /**
          * Which native language a translated message is shown in. Must be
          * one of the profile's native languages — checked in `updateProfile`,
          * which can see the profile — and `null` clears it back to the first

@@ -17,6 +17,7 @@ import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
+import { isSuspended } from '../modules/moderation/suspension'
 import {
   clearLocation,
   createGuestProfile,
@@ -160,7 +161,15 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       const { handleOrId } = request.params as { handleOrId: string }
 
       const [target, viewer, hidden] = await Promise.all([
-        findProfileByHandleOrId(app.mongo.db, handleOrId),
+        /*
+         * The one read that answers for a deleting account, and the reason is
+         * the person looking rather than the person deleted: somebody
+         * arriving from a conversation they already have deserves "account
+         * deleted" over "profile not found", which reads as a bug. Discovery,
+         * search and the signed-out link stay closed to both this and
+         * suspension.
+         */
+        findProfileByHandleOrId(app.mongo.db, handleOrId, { includeDeleted: true }),
         getProfile(app.mongo.db, request.userId),
         blockedUserIds(app.mongo.db, request.userId),
       ])
@@ -170,7 +179,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         throw new ApiError('NOT_FOUND', 'Profile not found')
       }
 
-      if (viewer) await recordProfileView(app.mongo.db, viewer, target._id)
+      // Not recorded for an account that is suspended or on its way out: they
+      // cannot read their viewers, and a deleted account's views are purged
+      // with it anyway.
+      const active = !target.deletedAt && !isSuspended(target)
+      if (viewer && active) await recordProfileView(app.mongo.db, viewer, target._id)
       // Read after the block check, not with it: an unverified-email lookup
       // for a profile this viewer is not allowed to see is a query we should
       // never run.

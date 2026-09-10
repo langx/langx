@@ -248,6 +248,33 @@ export const fr: Localized<EnMessages> = {
     needed: 'Position requise',
   },
 
+  suspended: {
+    title: 'Ton compte est suspendu',
+    untilBody:
+      'Une personne a examiné un signalement concernant ton compte. Tu ne peux pas utiliser LangX jusqu’au {until}, et ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    permanentBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu définitivement. Ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    reasonLabel: 'Motif',
+    appealTitle: 'Appel',
+    appealBody:
+      'Tu peux faire appel une fois. Une personne lit chaque appel, et il n’y a aucune file à surveiller : la réponse arrive par e-mail.',
+    appealPlaceholder: 'Dis-nous ce que nous avons mal compris.',
+    appealTooShort: {
+      one: 'Au moins {count} caractère.',
+      other: 'Au moins {count} caractères.',
+    },
+    send: 'Envoyer l’appel',
+    sending: 'Envoi…',
+    sent: 'Appel envoyé',
+    sentBody:
+      'Ton appel est parti. Il y en a un par suspension, donc c’était celui-là — nous te répondrons.',
+    failed: 'L’envoi a échoué. Réessaie dans un instant.',
+    alreadyAppealed: 'Tu as déjà fait appel de cette suspension.',
+    checkAgain: 'Vérifier à nouveau',
+    signOut: 'Se déconnecter',
+    contact: 'Pour tout le reste : {email}',
+  },
+
   gate: {
     maintenanceTitle: 'De retour bientôt',
     maintenanceBody: 'LangX est indisponible le temps de terminer quelques travaux.',
@@ -496,6 +523,12 @@ export const fr: Localized<EnMessages> = {
       'Pose une question sur une phrase dont tu n’es pas sûr, ou un mot que tu n’arrives pas à dire — elle apparaîtra ici.',
   },
   discover: {
+    boosted: 'En avant',
+    boostedWhat: 'Qu’est-ce que c’est ?',
+    boostedExplainTitle: 'Profils mis en avant',
+    boostedExplainBody:
+      'Les membres Fluent et Polyglot apparaissent ici, Polyglot en premier. Ils sont associés à tes langues exactement comme la liste ci-dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les réglages.',
+    boostedSeePlans: 'Voir les formules',
     languagesA11y: 'Choisir avec quelles langues chercher',
     searchHandles: 'Rechercher par nom d’utilisateur',
     searchPlaceholder: 'Nom d’utilisateur',
@@ -873,6 +906,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Suspendu',
+    deletedTag: 'Compte supprimé',
     previewNote:
       'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',
@@ -1111,6 +1146,9 @@ export const fr: Localized<EnMessages> = {
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody:
       'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
+    boost: 'Mettre mon profil en avant',
+    boostBody:
+      'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Fluent et Polyglot.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
@@ -1529,6 +1567,11 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
+    boostedProfile: 'Profil mis en avant',
+    boostedProfileBody:
+      'Tu apparais dans le bandeau au-dessus de la liste Découvrir, pour toutes les personnes dont les langues correspondent aux tiennes. Actif par défaut ; désactivable dans les réglages.',
+    boostedProfileFirst: 'En tête du bandeau',
+    boostedProfileFirstBody: 'Les profils Polyglot ouvrent le bandeau, devant Fluent.',
     sendTranslation: 'Envoyer dans leur langue',
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',

@@ -382,5 +382,34 @@ export const tr: Localized<ServerMessages> = {
       one: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
       other: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
     },
+
+    suspendedSubject: 'LangX hesabın askıya alındı',
+    suspendedPreheader: 'Hesabınla ilgili bir bildirim incelendi',
+    suspendedUntilBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın {until} tarihine kadar askıya alındı. O zamana kadar LangX’i kullanamazsın; profilin keşfette ve aramada görünmez.',
+    suspendedPermanentBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın kalıcı olarak askıya alındı. Profilin keşfette ve aramada görünmez.',
+    suspendedReason: 'Gerekçe: {reason}',
+    suspendedAppeal:
+      'Bunun yanlış olduğunu düşünüyorsan uygulamadan bir kez itiraz edebilir ya da bu e-postayı yanıtlayabilirsin.',
+    suspendedText:
+      'LangX hesabın askıya alındı. {detail} {reason} Uygulamadan bir kez itiraz edebilirsin.',
+    suspensionUpdatedSubject: 'LangX askıya alma durumun güncellendi',
+    suspensionUpdatedPreheader: 'İtirazına baktık',
+    suspensionUpdatedShortened:
+      'İtirazını okuduk. Askıya alma artık {until} tarihinde sona eriyor.',
+    suspensionUpdatedLifted:
+      'İtirazını okuduk. Askıya alma kaldırıldı — LangX’i yeniden kullanabilirsin.',
+    suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Taciz',
+    hateSpeech: 'Nefret söylemi',
+    inappropriateContent: 'Uygunsuz içerik',
+    fakeProfile: 'Sahte profil',
+    underage: '16 yaşından küçük',
+    other: 'Başka bir şey',
   },
 }

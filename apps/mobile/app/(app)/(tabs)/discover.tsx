@@ -13,6 +13,7 @@ import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } fr
 import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
 import { ApiRequestError } from '../../../src/api/client'
 import type { DiscoveryItem } from '../../../src/api/types'
+import { BoostedProfiles } from '../../../src/components/BoostedProfiles'
 import { DiscoveryCardSkeleton } from '../../../src/components/skeletons/DiscoveryCardSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
@@ -213,9 +214,16 @@ export default function DiscoverScreen() {
    * "here is a link to some people" than an unfiltered list.
    */
   const effective = isPro || !hasProFilters(filters) ? filters : withoutProFilters(filters)
+  /*
+   * Built once and handed to both surfaces, so the strip is filtered by
+   * exactly what the list is filtered by. The sort and the radius stay out of
+   * it: the strip has neither, and putting them in its cache key would
+   * refetch a response that cannot change.
+   */
+  const filterParams = toQuery(effective)
   const query = useDiscovery({
     sort,
-    ...toQuery(effective),
+    ...filterParams,
     // Only sent where it means something. On any other sort the server ignores
     // it, but sending it anyway would put it in the query string the cache is
     // keyed on and refetch every list each time the radius changed.
@@ -361,6 +369,19 @@ export default function DiscoverScreen() {
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl {...pull} />}
+          /*
+           * In the list's header so it scrolls away with the list rather than
+           * holding the top of a screen somebody is scrolling past. It draws
+           * nothing when nobody qualifies — see `BoostedProfiles`.
+           *
+           * "For you" only. The other two sorts are a question the reader
+           * asked — who is active, who is near me — and a strip ordered by
+           * somebody's subscription is not an answer to either. The search
+           * branch replaces the whole list, so it needs no gate here.
+           */
+          ListHeaderComponent={
+            sort === 'recommended' ? <BoostedProfiles params={filterParams} /> : null
+          }
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()

@@ -12,13 +12,20 @@ export const HANDLE_PATTERN = /^[a-z][a-z0-9_]{2,19}$/
 /**
  * The **shortest** handle a new account may claim.
  *
- * Four rather than three, now that a profile lives at `/<handle>`: the shorter
- * a name is the more likely it is to be a word somebody else will want as a
- * route, and three-letter paths are where those collisions live (`api`, `www`,
- * `app` are all reserved below). It also puts a floor under squatting, which
- * is a real cost once a handle is a public address rather than an @-mention.
+ * Three, which is `HANDLE_PATTERN`'s own minimum — so claiming and reading now
+ * agree on length, and the only thing that still separates them is the
+ * reserved list.
+ *
+ * It was four. The argument was that short names collide with routes, and that
+ * a floor discourages squatting. The first half was real and is answered
+ * properly by `RESERVED_HANDLES` rather than by a length: `api`, `www` and
+ * `app` were reserved anyway, a four-letter route (`chat`, `feed`, `post`) is
+ * just as much a collision, and `routeLiterals.test.ts` fails CI on a screen
+ * added without reserving its name. A length was a proxy for a check that
+ * exists. The second half was a guess, and the cost of it was paid by every
+ * person whose actual name is three letters.
  */
-export const HANDLE_MIN_LENGTH = 4
+export const HANDLE_MIN_LENGTH = 3
 
 /**
  * Reading a handle: what may be *resolved*.

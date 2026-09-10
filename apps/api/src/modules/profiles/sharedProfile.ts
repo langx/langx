@@ -2,6 +2,7 @@ import { type LanguageLevel, type SharedProfile } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { notSuspended } from '../moderation/suspension'
 import type { Profile } from './profiles'
 
 /**
@@ -44,6 +45,14 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
       // and no route can pass — but this read is the app's only unauthenticated
       // one, so it says so rather than relying on that.
       guest: { $exists: false },
+      /*
+       * A suspended account is closed to the open internet, and this is the
+       * one read that is. Signed-in members who already know them still reach
+       * the profile — marked suspended — because they have a conversation to
+       * make sense of; a stranger following a link has nothing to make sense
+       * of and is told nothing.
+       */
+      ...notSuspended(),
     },
     {
       projection: {

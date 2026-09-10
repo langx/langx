@@ -410,5 +410,34 @@ export const ru: Localized<ServerMessages> = {
       many: 'За твоё сообщение в кошелёк добавлено {count} жетонов: {url}',
       other: 'За твоё сообщение в кошелёк добавлено {count} жетона: {url}',
     },
+
+    suspendedSubject: 'Ваш аккаунт LangX заблокирован',
+    suspendedPreheader: 'Жалобу на ваш аккаунт рассмотрели',
+    suspendedUntilBody:
+      'Жалобу на ваш аккаунт рассмотрел человек, и аккаунт заблокирован до {until}. До этого времени вы не можете пользоваться LangX, а ваш профиль скрыт из поиска и подбора.',
+    suspendedPermanentBody:
+      'Жалобу на ваш аккаунт рассмотрел человек, и аккаунт заблокирован навсегда. Ваш профиль скрыт из поиска и подбора.',
+    suspendedReason: 'Причина: {reason}',
+    suspendedAppeal:
+      'Если это ошибка, вы можете один раз подать апелляцию из приложения или ответить на это письмо.',
+    suspendedText:
+      'Ваш аккаунт LangX заблокирован. {detail} {reason} Вы можете один раз подать апелляцию из приложения.',
+    suspensionUpdatedSubject: 'Блокировка вашего аккаунта LangX изменена',
+    suspensionUpdatedPreheader: 'Мы рассмотрели вашу апелляцию',
+    suspensionUpdatedShortened:
+      'Мы прочитали вашу апелляцию. Блокировка теперь заканчивается {until}.',
+    suspensionUpdatedLifted:
+      'Мы прочитали вашу апелляцию. Блокировка снята — вы снова можете пользоваться LangX.',
+    suspensionUpdatedText: 'Блокировка вашего аккаунта LangX изменена. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Спам',
+    harassment: 'Домогательства',
+    hateSpeech: 'Язык вражды',
+    inappropriateContent: 'Неприемлемый контент',
+    fakeProfile: 'Фальшивый профиль',
+    underage: 'Младше 16 лет',
+    other: 'Другое',
   },
 }

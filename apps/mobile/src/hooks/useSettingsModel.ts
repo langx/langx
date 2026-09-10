@@ -103,6 +103,13 @@ export function useSettingsModel() {
    * refuses — a switch that flips and does nothing.
    */
   const canIncognito = useHasFeature('incognito')
+  /*
+   * Asks about the strip itself rather than "any paid plan", the same way the
+   * incognito row does — the two rows sit next to each other and are unlocked
+   * by different tiers, which is exactly the mistake `useHasFeature` exists
+   * to stop.
+   */
+  const canBoost = useHasFeature('boostedProfile')
   const tier = useEffectiveTier()
   const entitlement = profile?.entitlement
   /**
@@ -156,6 +163,8 @@ export function useSettingsModel() {
   // The tag names the plan that unlocks the incognito row. It reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
+  // Reads FLUENT today, and would follow the capability if it ever moved.
+  const boostBadge = TIER_BADGES[tierUnlocking('boostedProfile') ?? 'free']
   // Same idiom for the cross-conversation deck: the row is drawn either way
   // and says which plan opens it.
   const canDeckExport = hasFeature(tier, 'deckExport')
@@ -291,6 +300,7 @@ export function useSettingsModel() {
     togglePushOnThisDevice,
     emailVerified,
     canIncognito,
+    canBoost,
     tier,
     tierName: TIER_NAMES[tier],
     renewal,
@@ -299,6 +309,7 @@ export function useSettingsModel() {
     analytics,
     analyticsRow,
     incognitoBadge,
+    boostBadge,
     canDeckExport,
     deckExportBadge,
     shareLocation,

@@ -4,14 +4,15 @@ import { RESERVED_HANDLES, couldBeHandle, isReservedHandle } from './reservedHan
 
 describe('the two handle schemas', () => {
   /**
-   * The distinction the whole change rests on. v1 handles came across under a
-   * three-character rule, so tightening the *reading* schema would make an
-   * existing account's own profile answer 400 on every lookup — including the
-   * link they have already shared.
+   * Length no longer separates the two schemas — the floor is the pattern's
+   * own three — so what is left between them is the reserved list, and that
+   * is now the whole of the distinction. A route name still resolves for
+   * whoever already holds one (see below) and still cannot be claimed.
    */
-  it('still resolves a three-character handle that already exists', () => {
+  it('claims and resolves a three-letter name — the floor is the pattern now', () => {
     expect(handleSchema.safeParse('ada').success).toBe(true)
-    expect(newHandleSchema.safeParse('ada').success).toBe(false)
+    expect(newHandleSchema.safeParse('ada').success).toBe(true)
+    expect(newHandleSchema.safeParse('ali').success).toBe(true)
   })
 
   it('claims at the new floor and above', () => {
@@ -61,6 +62,18 @@ describe('RESERVED_HANDLES', () => {
   it('contains only strings a handle could be made of', () => {
     for (const word of RESERVED_HANDLES) {
       expect(word, word).toMatch(/^[a-z][a-z0-9_]*$/)
+    }
+  })
+
+  /**
+   * The three-letter words that became claimable when the floor dropped. `pro`
+   * is the one `routeLiterals.test.ts` cannot catch: it is a page on the
+   * website, not a screen in this tree.
+   */
+  it('reserves the three-letter names the floor used to hide', () => {
+    for (const word of ['pro', 'dev', 'ftp', 'git', 'api', 'app', 'cdn', 'www']) {
+      expect(couldBeHandle(word), word).toBe(true)
+      expect(isReservedHandle(word), word).toBe(true)
     }
   })
 

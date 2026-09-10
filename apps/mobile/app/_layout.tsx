@@ -328,6 +328,14 @@ function RootShell() {
                 fall through to `[username]` because `(auth)` is unmounted.
               */}
               <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
+              {/*
+                Outside both guards for the same reason, from the other end: a
+                suspended account still holds a perfectly good session — that
+                is what a suspension is — so the guard has nothing to say about
+                this screen, and the transport `replace`s here from wherever
+                the 403 was met.
+              */}
+              <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
               <Stack.Protected guard={!!session}>
                 <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
                 <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />

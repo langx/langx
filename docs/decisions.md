@@ -3812,3 +3812,34 @@ The pool push is read from `tokenLedger` by a pass rather than sent by
 `runDailyPool` itself, and that is deliberate: the pool pays at a fixed UTC
 hour, and being buzzed about tokens at four in the morning is worse than not
 being told. The pass picks each person up when it is nine where they are.
+
+## Three-letter usernames, and what the floor was actually protecting
+
+`HANDLE_MIN_LENGTH` was four; on 10 September 2026 it became three, which is
+`HANDLE_PATTERN`'s own minimum. Claiming and reading now agree on length, and
+the only thing left between the two schemas is the reserved list.
+
+Two arguments had held the floor up, and neither survived being looked at.
+
+The first was route collisions: a profile lives at `/<handle>`, short names
+are the ones a future page will want, and `api`, `www` and `app` are all three
+letters. True, and answered by the wrong mechanism. `RESERVED_HANDLES` is what
+stops a collision, `routeLiterals.test.ts` fails CI when a screen is added
+without reserving its name, and a four-letter route — `chat`, `feed`, `post` —
+is exactly as much of a collision as a three-letter one. The length was a
+proxy for a check that already exists and is stricter.
+
+The second was squatting, and it was a guess. Nobody has squatted anything
+here; what the floor did instead was refuse the handle to every person whose
+name is three letters, which is a great many people in Turkish, Chinese and
+Korean.
+
+Dropping it made four words claimable that had never been reachable before, so
+they are reserved now: `pro`, which is a page on langx.io rather than a screen
+in this tree and so is invisible to the route test, and `dev`, `ftp` and `git`
+beside the hostnames already there. Numbers-first names like `404` were never
+possible — `HANDLE_PATTERN` requires a letter first.
+
+The reading schema does not move, because it never could: v1 handles came
+across under a three-character rule, so a three-letter account has existed all
+along. What changed is that somebody can now be given one on purpose.

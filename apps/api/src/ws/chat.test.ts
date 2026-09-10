@@ -167,6 +167,30 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     await expect(connectSocket('session_token=not-a-real-session')).rejects.toThrow()
   })
 
+  /**
+   * The socket must never become a back door around a refusal REST already
+   * makes. A suspended account keeps its session, so nothing else in the
+   * handshake would have stopped it.
+   */
+  it('rejects a suspended account, which still has a perfectly good session', async () => {
+    const user = await newUser('ws-suspended@example.com')
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: user.userId },
+      {
+        $set: {
+          suspension: {
+            at: new Date(),
+            until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            permanent: false,
+            reason: 'harassment',
+          },
+        },
+      },
+    )
+
+    await expect(connectSocket(user.cookie)).rejects.toThrow()
+  })
+
   it('delivers a message to the other participant in under 1 second', async () => {
     const alice = await newUser('ws-alice@example.com')
     const bob = await newUser('ws-bob@example.com')

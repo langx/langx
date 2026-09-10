@@ -242,6 +242,32 @@ export const ptBR: Localized<EnMessages> = {
     needed: 'Localização necessária',
   },
 
+  suspended: {
+    title: 'Sua conta está suspensa',
+    untilBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta. Você não pode usar o LangX até {until}, e seu perfil fica fora do Descobrir e da busca.',
+    permanentBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela foi suspensa permanentemente. Seu perfil fica fora do Descobrir e da busca.',
+    reasonLabel: 'Motivo',
+    appealTitle: 'Recurso',
+    appealBody:
+      'Você pode recorrer uma vez. Uma pessoa lê cada recurso, e não há fila para acompanhar — a resposta chega por e-mail.',
+    appealPlaceholder: 'Conte o que entendemos errado.',
+    appealTooShort: {
+      one: 'Pelo menos {count} caractere.',
+      other: 'Pelo menos {count} caracteres.',
+    },
+    send: 'Enviar recurso',
+    sending: 'Enviando…',
+    sent: 'Recurso enviado',
+    sentBody: 'Seu recurso foi enviado. É um por suspensão, então era esse — vamos responder.',
+    failed: 'Não foi possível enviar. Tente de novo em instantes.',
+    alreadyAppealed: 'Você já recorreu desta suspensão.',
+    checkAgain: 'Verificar de novo',
+    signOut: 'Sair',
+    contact: 'Qualquer outra coisa: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Já voltamos',
     maintenanceBody: 'O LangX está fora do ar enquanto terminamos um ajuste.',
@@ -488,6 +514,12 @@ export const ptBR: Localized<EnMessages> = {
       'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
   },
   discover: {
+    boosted: 'Em destaque',
+    boostedWhat: 'O que é isso?',
+    boostedExplainTitle: 'Perfis em destaque',
+    boostedExplainBody:
+      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
+    boostedSeePlans: 'Ver os planos',
     languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome de usuário',
     searchPlaceholder: 'Nome de usuário',
@@ -862,6 +894,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Suspensa',
+    deletedTag: 'Conta excluída',
     previewNote:
       'Este é o seu perfil como as outras pessoas o veem — suas configurações de privacidade já estão aplicadas.',
     teaches: 'Ensina',
@@ -1097,6 +1131,9 @@ export const ptBR: Localized<EnMessages> = {
     showInDiscover: 'Mostrar em Descobrir',
     showInDiscoverBody:
       'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
+    boost: 'Destacar meu perfil',
+    boostBody:
+      'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Fluent e Polyglot.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
@@ -1515,6 +1552,11 @@ export const ptBR: Localized<EnMessages> = {
     welcomePackBody:
       'Uma moldura de perfil e dois congelamentos de sequência para começar. O {plan} traz o conjunto completo.',
     advancedFilters: 'Filtros avançados',
+    boostedProfile: 'Perfil em destaque',
+    boostedProfileBody:
+      'Você aparece na faixa acima da lista de Descobrir, para todo mundo com idiomas compatíveis com os seus. Ativo por padrão; dá para desligar nos Ajustes.',
+    boostedProfileFirst: 'Destaque na frente',
+    boostedProfileFirstBody: 'Perfis Polyglot abrem a faixa, à frente dos Fluent.',
     sendTranslation: 'Envie no idioma dela',
     sendTranslationBody: 'Escreva no seu; os dois vão, então te leem sem adivinhar.',
     deckExport: 'Leve suas expressões',
