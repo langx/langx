@@ -42,6 +42,48 @@ export const es: Localized<ServerMessages> = {
       inviteFriendBody: 'Los dos ganáis tokens.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} te sigue',
+
+      followBody: 'Toca para ver su perfil.',
+
+      correctionTitle: '{name} corrigió tu frase',
+
+      correctionBody: 'Toca para leer la corrección.',
+
+      answerTitle: '{name} grabó tu frase',
+
+      answerBody: 'Toca para escuchar.',
+
+      commentTitle: '{name} comentó tu publicación',
+
+      commentBody: 'Toca para leerlo.',
+
+      likesTitle: {
+        one: 'Tu publicación tiene 1 me gusta',
+        other: 'Tu publicación tiene {count} me gusta',
+      },
+
+      likesBody: 'A alguien le gustó lo que escribiste.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'El reparto de ayer te dio 1 token',
+        other: 'El reparto de ayer te dio {count} tokens',
+      },
+
+      poolBody: 'Toca para abrir tu cartera.',
+
+      giftTitle: 'Tu regalo por hora está listo',
+
+      giftBody: 'Abre la cartera y recógelo.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Tu pago no se pudo procesar',
@@ -339,6 +381,8 @@ export const es: Localized<ServerMessages> = {
       messages: 'los resúmenes de mensajes',
       streak: 'los recordatorios de racha',
       profileVisits: 'los resúmenes de visitas a tu perfil',
+      social: 'actividad del feed',
+      wallet: 'novedades de tokens',
       promotions: 'las novedades y ofertas',
       all: 'el correo de LangX',
       v1contact: 'el único mensaje sobre el nuevo LangX',

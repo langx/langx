@@ -8,6 +8,13 @@ export type NotificationJob =
   | 'profileVisitsEmail'
   | 'badgeEarned'
   | 'verifyReminder'
+  /** The feed's own pushes: one per follower ever, one per post per hour. */
+  | 'social.follow'
+  | 'social.postReply'
+  | 'social.likes'
+  /** Tokens arriving: the pool once a day, the gift once a day. */
+  | 'wallet.pool'
+  | 'wallet.gift'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 

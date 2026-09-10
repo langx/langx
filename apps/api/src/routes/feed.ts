@@ -9,11 +9,16 @@ import {
   listPostCorrectionsQuerySchema,
   listPronunciationAnswersQuerySchema,
 } from '@langx/shared'
+import type { FastifyInstance } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { ObjectId } from 'mongodb'
 import { z } from 'zod'
+import { COLLECTIONS } from '../db/collections'
 import { requireAuth } from '../middleware/requireAuth'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { addComment, deleteComment, listPostComments } from '../modules/feed/comments'
+import type { Post } from '../modules/feed/documents'
+import { notifyPostReply, type FeedReply } from '../modules/notifications/social'
 import {
   correctPost,
   createPost,
@@ -31,6 +36,35 @@ import {
 
 const postParamsSchema = z.object({ id: z.string() })
 const childParamsSchema = z.object({ postId: z.string(), id: z.string() })
+
+/**
+ * Tells a post's author that somebody answered them.
+ *
+ * Never awaited into the response and never allowed to throw: the correction
+ * is already written by the time this runs, and a push service having a bad
+ * minute must not turn a successful write into a 500. `notifyPostReply`
+ * swallows its own failures too; this catch is the belt to that's braces.
+ */
+function tellTheAuthor(
+  app: FastifyInstance,
+  postId: string,
+  responderId: string,
+  kind: FeedReply,
+): void {
+  void (async () => {
+    const post = await app.mongo.db
+      .collection<Post>(COLLECTIONS.posts)
+      .findOne({ _id: new ObjectId(postId) }, { projection: { authorId: 1 } })
+    if (!post) return
+    await notifyPostReply(
+      app.mongo.db,
+      { push: app.push, logger: app.log },
+      { postId: post._id, authorId: post.authorId, responderId, kind },
+    )
+  })().catch((error: unknown) => {
+    app.log.error({ err: error, postId }, 'feed reply push failed')
+  })
+}
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -107,6 +141,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         app.env.STORAGE_PUBLIC_BASE_URL,
         app.normalizeAttachments,
       )
+      tellTheAuthor(app, request.params.id, request.userId, 'correction')
       return reply.code(201).send(correction)
     },
   )
@@ -151,6 +186,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.id,
         request.body,
       )
+      tellTheAuthor(app, request.params.id, request.userId, 'comment')
       return reply.code(201).send(comment)
     },
   )
@@ -212,6 +248,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         app.env.STORAGE_PUBLIC_BASE_URL,
         app.normalizeAttachments,
       )
+      tellTheAuthor(app, request.params.id, request.userId, 'answer')
       return reply.code(201).send(answer)
     },
   )

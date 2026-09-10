@@ -36,6 +36,45 @@ export const tr: Localized<ServerMessages> = {
       inviteFriendBody: 'O katılınca ikiniz de token kazanırsınız.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} seni takip etmeye başladı',
+
+      followBody: 'Profiline bakmak için dokun.',
+
+      correctionTitle: '{name} cümleni düzeltti',
+
+      correctionBody: 'Düzeltmeyi okumak için dokun.',
+
+      answerTitle: '{name} cümleni seslendirdi',
+
+      answerBody: 'Dinlemek için dokun.',
+
+      commentTitle: '{name} gönderine yorum yaptı',
+
+      commentBody: 'Okumak için dokun.',
+
+      likesTitle: { one: 'Gönderin 1 beğeni aldı', other: 'Gönderin {count} beğeni aldı' },
+
+      likesBody: 'Yazdığın şeyi beğendiler.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Dünkü havuz sana 1 token ödedi',
+        other: 'Dünkü havuz sana {count} token ödedi',
+      },
+
+      poolBody: 'Cüzdanını açmak için dokun.',
+
+      giftTitle: 'Saatlik hediyen hazır',
+
+      giftBody: 'Cüzdanı aç ve al.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Ödemen alınamadı',
@@ -322,6 +361,8 @@ export const tr: Localized<ServerMessages> = {
       messages: 'mesaj özetleri',
       streak: 'streak hatırlatmaları',
       profileVisits: 'profil ziyareti özetleri',
+      social: 'akış bildirimleri',
+      wallet: 'token haberleri',
       promotions: 'haberler ve kampanyalar',
       all: 'LangX’ten gelen e-postalar',
       v1contact: 'yeni LangX hakkındaki tek mesaj',

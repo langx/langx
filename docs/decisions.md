@@ -3778,3 +3778,37 @@ And the published copy had to change **before** the script could run, because
 a default-on list under text that says "off unless you ask" is a false claim
 rather than a stale one: the Settings row in eight locales, and
 `docs/legal/promise-change.md`, which describes the default out loud.
+
+## The feed and the wallet get switches of their own
+
+Two kinds joined the six: `social` — a follow, a correction or a recorded
+answer on a post, a batch of likes — and `wallet`, for the daily pool paying
+out and the hourly gift coming back. Both default to push on, email off, and
+neither has an email sender.
+
+They are not folded into the kinds that already existed, and the reason is
+what a person means when they turn one off. A message is somebody addressing
+you directly and waiting; the feed is the room reacting to something you left
+in it. Somebody who mutes one very often wants the other, and a shared switch
+makes that choice unavailable. `wallet` is separated from both for a simpler
+reason: it is the only kind that is about a number rather than a person.
+
+**The feed sent nothing at all before this**, which was the largest hole on
+the channel and the most expensive one: a correction is the whole product,
+and it arrives while its author is somewhere else.
+
+Three throttles carry the design, and each is the answer to a specific way
+these become the notifications people mute:
+
+- **One push per post per hour.** Three people correcting the same sentence
+  within a minute is the good case, not the rare one.
+- **Likes are a daily batch, never an event.** A like is the cheapest thing
+  anybody can do here, so a post that does well would otherwise be twenty
+  buzzes about twenty taps.
+- **One follow notice per follower, ever.** Unfollowing and following again
+  is not news.
+
+The pool push is read from `tokenLedger` by a pass rather than sent by
+`runDailyPool` itself, and that is deliberate: the pool pays at a fixed UTC
+hour, and being buzzed about tokens at four in the morning is worse than not
+being told. The pass picks each person up when it is nine where they are.

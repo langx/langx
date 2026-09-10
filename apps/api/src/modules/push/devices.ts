@@ -143,7 +143,15 @@ export interface PushMessage {
    * in-app banner that replaces the OS one while the app is open. `senderId`
    * is there for the avatar; the notification's own title is only a name.
    */
-  data: { kind: PushKind; conversationId?: string; senderId?: string }
+  data: {
+    kind: PushKind
+    conversationId?: string
+    senderId?: string
+    /** A feed post, for the correction and answer pushes. */
+    postId?: string
+    /** Whose profile to open — the follow push, which has no post. */
+    handle?: string
+  }
   /**
    * The number to put on the app icon — the recipient's unread total, from
    * the same `countUnread` that `/me/unread` answers with, so the icon, the
