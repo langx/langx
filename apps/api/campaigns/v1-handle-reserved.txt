@@ -1,0 +1,28 @@
+LangX
+
+STILL YOURS
+
+Your username is still reserved.
+
+Hi {{firstName}},
+
+Ten days ago we wrote to say LangX v2 was live. In case that mail got buried: your username, your tokens and your streak are still set aside for you. Nobody else can take them.
+
+Coming back takes one tap.
+
+Send me a sign-in link: https://app.langx.io/sign-in-link?email={{email}}
+One tap, no password. Or open https://app.langx.io and continue with Google or Apple.
+
+What is waiting for you
+
+@ Your username. Reserved for you, and for nobody else.
+★ Your tokens. Carried over, plus a 250-token welcome-back bonus.
+🔥 Your streak. Restored, not reset. You built those days.
+
+Your old password will not work — v2 is a full rebuild. The link above signs you in without one, and everything you earned is offered back to you during onboarding.
+
+Reply to this email if anything is unclear — it reaches a human.
+— The LangX Team
+
+LangX · New Chapter Technology LLC · Open source, no ads
+langx.io https://langx.io  ·  Discord https://discord.langx.io  ·  GitHub https://github.com/langx/langx  ·  Unsubscribe {{unsubscribeUrl}}
