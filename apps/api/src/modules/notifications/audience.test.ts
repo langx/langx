@@ -86,15 +86,32 @@ describe('what a Resend audience should contain', () => {
    * `--source v1` still buys is the pre-created rows that have no profile at
    * all — see the case further down.
    */
-  it('takes an unanswered account under every source', async () => {
+  it('takes an unanswered account under consented and all', async () => {
     const yes = await newAccount({ notifications: optedIn })
     const v1 = await newAccount({ fromV1: true })
     const neither = await newAccount()
 
-    const plan = await audiencePlan(handle.db, 'v1')
+    const plan = await audiencePlan(handle.db, 'all')
     expect(new Set(plan.contacts.map((contact) => contact.userId))).toEqual(
       new Set([yes, v1, neither]),
     )
+  })
+
+  /**
+   * `--source v1` names a population, not a consent, and the difference
+   * stopped being free when promotional email became opt-out: without it, a
+   * campaign asking for v1 accounts is handed every verified address there
+   * is — which for the launch letter means telling somebody who signed up
+   * last week that their streak is waiting.
+   */
+  it('takes only accounts that actually came from v1 under the v1 source', async () => {
+    const v1 = await newAccount({ fromV1: true })
+    await newAccount({ notifications: optedIn })
+    await newAccount()
+
+    const plan = await audiencePlan(handle.db, 'v1')
+    expect(plan.contacts.map((contact) => contact.userId)).toEqual([v1])
+    expect(plan.skipped.noConsent).toBe(2)
   })
 
   /**
