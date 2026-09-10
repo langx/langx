@@ -1683,6 +1683,35 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(later?.privacy).toMatchObject({ incognito: false, hideOnlineStatus: true })
     })
 
+    /**
+     * The Boosted toggle writes one key. It must not disturb its siblings —
+     * `discoverable` in particular, which is the switch that hides a whole
+     * account — and a free account may write it without a refusal, since the
+     * strip decides by tier at read time (see `boostedProfiles`).
+     */
+    it('stores settings.boosted on its own and leaves the other settings alone', async () => {
+      const user = await onboarded('boost-off@example.com', 'boostoff')
+      const patch = (settings: Record<string, boolean>) =>
+        app.inject({
+          method: 'PATCH',
+          url: '/profiles/me',
+          headers: { cookie: user.cookie },
+          payload: { settings },
+        })
+
+      expect((await patch({ boosted: false })).statusCode).toBe(200)
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.settings).toMatchObject({ discoverable: true, boosted: false })
+
+      expect((await patch({ boosted: true })).statusCode).toBe(200)
+      const later = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(later?.settings).toMatchObject({ discoverable: true, boosted: true })
+    })
+
     /** The two flags are independent; incognito never touched presence. */
     it('leaves online status alone when only incognito is on', async () => {
       const hider = await onboarded('incog-only@example.com', 'incogonly')

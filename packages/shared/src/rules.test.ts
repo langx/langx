@@ -8,6 +8,7 @@ import {
   LANGUAGES,
   languageCodeSchema,
 } from './languages'
+import { DISCOVERY_BOOSTED_TIERS } from './discovery'
 import { translateRequestSchema } from './translation'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
 import {
@@ -480,5 +481,15 @@ describe('the two feature lists', () => {
       expect(PRO_PLUS_FEATURES as readonly string[]).not.toContain(feature)
     }
     expect([...PLAN_FEATURES].sort()).toEqual([...PRO_FEATURES, ...PRO_PLUS_FEATURES].sort())
+  })
+
+  /**
+   * The strip's order is a presentation list, the capability is a table row.
+   * A tier that buys `boostedProfile` and is missing from the strip would be
+   * a benefit sold and never delivered, so the two are pinned together.
+   */
+  it('boosts exactly the tiers that buy boostedProfile', () => {
+    const buying = PLAN_TIERS.filter((tier) => PLAN_LIMITS[tier].boostedProfile)
+    expect([...DISCOVERY_BOOSTED_TIERS].sort()).toEqual([...buying].sort())
   })
 })

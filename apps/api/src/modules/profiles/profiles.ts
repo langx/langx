@@ -115,6 +115,11 @@ export interface Profile {
   interests: string[]
   settings: {
     discoverable: boolean
+    /**
+     * The strip above Discover, for paid tiers only. Absent means on — see
+     * `boostedProfiles`; only the toggle ever writes it.
+     */
+    boosted?: boolean
     /** A native language code, or absent for "the first native language". See `translateTargetFor`. */
     translateTo?: string
     /**
@@ -728,6 +733,7 @@ export async function updateProfile(
     privacy?: Record<string, boolean>
     settings?: {
       discoverable?: boolean
+      boosted?: boolean
       translateTo?: string | null
       notifications?: NotificationPrefsInput
     }
@@ -757,6 +763,7 @@ export async function updateProfile(
   const settingsUnset: Record<string, ''> = {}
   if (settings?.discoverable !== undefined)
     settingsPaths['settings.discoverable'] = settings.discoverable
+  if (settings?.boosted !== undefined) settingsPaths['settings.boosted'] = settings.boosted
   /*
    * The translation target has to be one of the person's *native* languages
    * — the schema cannot see the profile, so the check is here, against the

@@ -1,7 +1,7 @@
 import { discoveryQuerySchema, handleSearchQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
-import { discoverProfiles } from '../modules/discovery/discovery'
+import { boostedProfiles, discoverProfiles } from '../modules/discovery/discovery'
 import { searchHandles } from '../modules/discovery/handleSearch'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -12,6 +12,21 @@ export const discoveryRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const page = await discoverProfiles(app.mongo.db, request.userId, request.query)
       return reply.send(page)
+    },
+  )
+
+  /*
+   * The strip above the list. Takes the same querystring as `/discovery` so
+   * the client can send the filters it already has; `sort`, `cursor`, `limit`
+   * and `radiusKm` are accepted and ignored — the strip has one order and no
+   * pages, and a second schema for three ignored fields is not worth the
+   * drift (the base schema is refined, so it cannot be extended anyway).
+   */
+  app.get(
+    '/discovery/boosted',
+    { preHandler: requireAuth, schema: { querystring: discoveryQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await boostedProfiles(app.mongo.db, request.userId, request.query))
     },
   )
 

@@ -1,6 +1,7 @@
 import {
   DISCOVERY_CURSOR_MAX_AGE_MS,
   DISTANCE_BUCKETS_KM,
+  type BoostedProfilesPage,
   type DiscoveryPage,
   type HandleSearchPage,
 } from '@langx/shared'
@@ -70,6 +71,27 @@ describe('Faz 3 — discovery aggregation', () => {
       url: `/discovery${qs ? `?${qs}` : ''}`,
       headers: { cookie: user.cookie },
     })
+  }
+
+  async function boosted(user: SignedUpUser, qs = '') {
+    return app.inject({
+      method: 'GET',
+      url: `/discovery/boosted${qs ? `?${qs}` : ''}`,
+      headers: { cookie: user.cookie },
+    })
+  }
+
+  /** Straight onto the document — a subscription in these tests is a fact, not a purchase. */
+  async function setTier(userId: string, tier: Profile['entitlement']['tier'], expiresAt?: Date) {
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: {
+          'entitlement.tier': tier,
+          ...(expiresAt ? { 'entitlement.expiresAt': expiresAt } : {}),
+        },
+      },
+    )
   }
 
   beforeAll(async () => {
@@ -955,12 +977,6 @@ describe('Faz 3 — discovery aggregation', () => {
     const ANOTHER_CITY = { lat: 40.19, lng: 29.06 } //  ~91 km  (Bursa)
     const FAR_AWAY = { lat: 39.93, lng: 32.86 } //     ~350 km  (Ankara)
 
-    async function setTier(userId: string, tier: Profile['entitlement']['tier']) {
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: userId }, { $set: { 'entitlement.tier': tier } })
-    }
-
     // Generic so it hands back exactly what it was given — `newUser` returns a
     // `SignedUpUser` *plus* the handle, and every assertion below needs it.
     async function share<T extends SignedUpUser>(
@@ -1250,5 +1266,124 @@ describe('Faz 3 — discovery aggregation', () => {
      * of someone offline in the next street, which is a recommended list with
      * a radius rather than a nearby list.
      */
+  })
+
+  /**
+   * The strip above the list. One rule worth stating up front: it is the
+   * list's own candidates with a plan attached, so everything that keeps
+   * somebody out of `/discovery` keeps them out of here too.
+   */
+  describe('GET /discovery/boosted', () => {
+    const fits = {
+      nativeLanguages: [{ code: 'en' }],
+      learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+    }
+    const boostedHandles = async (user: SignedUpUser, qs = '') => {
+      const response = await boosted(user, qs)
+      expect(response.statusCode).toBe(200)
+      return response.json<BoostedProfilesPage>().items
+    }
+
+    it('lists paying members only, Polyglot first, then Fluent, each by last active', async () => {
+      const viewer = await newUser('boost-viewer@example.com')
+      const proPlusOld = await newUser('boost-pp-old@example.com', fits)
+      const proPlusNew = await newUser('boost-pp-new@example.com', fits)
+      const proOld = await newUser('boost-pro-old@example.com', fits)
+      const proNew = await newUser('boost-pro-new@example.com', fits)
+      const free = await newUser('boost-free@example.com', fits)
+
+      await setTier(proPlusOld.userId, 'pro_plus')
+      await setTier(proPlusNew.userId, 'pro_plus')
+      await setTier(proOld.userId, 'pro')
+      await setTier(proNew.userId, 'pro')
+      await setLastActiveAt(proPlusOld.userId, new Date('2026-01-01T00:00:00Z'))
+      await setLastActiveAt(proPlusNew.userId, new Date('2026-06-01T00:00:00Z'))
+      await setLastActiveAt(proOld.userId, new Date('2026-01-01T00:00:00Z'))
+      await setLastActiveAt(proNew.userId, new Date('2026-06-01T00:00:00Z'))
+
+      const items = await boostedHandles(viewer)
+      expect(items.map((i) => i.handle)).toEqual([
+        proPlusNew.handle,
+        proPlusOld.handle,
+        proNew.handle,
+        proOld.handle,
+      ])
+      expect(items.map((i) => i.tier)).toEqual(['pro_plus', 'pro_plus', 'pro', 'pro'])
+      expect(items.map((i) => i.handle)).not.toContain(free.handle)
+    })
+
+    it('drops a lapsed subscription and keeps a live one', async () => {
+      const viewer = await newUser('boost-exp-viewer@example.com')
+      const lapsed = await newUser('boost-lapsed@example.com', fits)
+      const live = await newUser('boost-live@example.com', fits)
+      await setTier(lapsed.userId, 'pro', new Date(Date.now() - 60_000))
+      await setTier(live.userId, 'pro', new Date(Date.now() + 60_000))
+
+      const handles = (await boostedHandles(viewer)).map((i) => i.handle)
+      expect(handles).toContain(live.handle)
+      expect(handles).not.toContain(lapsed.handle)
+    })
+
+    it("keeps the list's own exclusions: no language fit, blocked", async () => {
+      const viewer = await newUser('boost-excl-viewer@example.com')
+      const noFit = await newUser('boost-nofit@example.com', {
+        nativeLanguages: [{ code: 'de' }],
+        learning: [{ code: 'fr', level: 'beginner', priority: 1 }],
+      })
+      const blocked = await newUser('boost-blocked@example.com', fits)
+      await setTier(noFit.userId, 'pro_plus')
+      await setTier(blocked.userId, 'pro_plus')
+      const block = await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: viewer.cookie },
+        payload: { userId: blocked.userId },
+      })
+      expect(block.statusCode).toBe(201)
+
+      const handles = (await boostedHandles(viewer)).map((i) => i.handle)
+      expect(handles).not.toContain(noFit.handle)
+      expect(handles).not.toContain(blocked.handle)
+    })
+
+    it('is empty, not an error, when nobody around is paying', async () => {
+      const viewer = await newUser('boost-empty-viewer@example.com')
+      await newUser('boost-empty-free@example.com', fits)
+      expect(await boostedHandles(viewer)).toEqual([])
+    })
+
+    it('honours the filters and ignores the sort', async () => {
+      const viewer = await newUser('boost-filter-viewer@example.com')
+      const here = await newUser('boost-filter-here@example.com', { ...fits, country: 'TR' })
+      const there = await newUser('boost-filter-there@example.com', { ...fits, country: 'DE' })
+      await setTier(here.userId, 'pro')
+      await setTier(there.userId, 'pro')
+
+      const filtered = (await boostedHandles(viewer, 'country=TR')).map((i) => i.handle)
+      expect(filtered).toContain(here.handle)
+      expect(filtered).not.toContain(there.handle)
+
+      // A free viewer asking the list for `nearby` is refused; the strip has
+      // no sort, so the same querystring must not be.
+      const sorted = await boosted(viewer, 'sort=nearby')
+      expect(sorted.statusCode).toBe(200)
+    })
+
+    it('respects the toggle: off is out, absent is in, and a free flag buys nothing', async () => {
+      const viewer = await newUser('boost-toggle-viewer@example.com')
+      const optedOut = await newUser('boost-optout@example.com', fits)
+      const untouched = await newUser('boost-untouched@example.com', fits)
+      const freeFlag = await newUser('boost-freeflag@example.com', fits)
+      await setTier(optedOut.userId, 'pro')
+      await setTier(untouched.userId, 'pro')
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+      await profiles.updateOne({ _id: optedOut.userId }, { $set: { 'settings.boosted': false } })
+      await profiles.updateOne({ _id: freeFlag.userId }, { $set: { 'settings.boosted': true } })
+
+      const handles = (await boostedHandles(viewer)).map((i) => i.handle)
+      expect(handles).toContain(untouched.handle)
+      expect(handles).not.toContain(optedOut.handle)
+      expect(handles).not.toContain(freeFlag.handle)
+    })
   })
 })

@@ -9,10 +9,16 @@ import {
   DISCOVERY_CURSOR_MAX_AGE_MS,
   ONLINE_WINDOW_MS,
   isOnlineAt,
+  DISCOVERY_BOOSTED_LIMIT,
+  DISCOVERY_BOOSTED_TIERS,
+  type BoostedProfile,
+  type BoostedProfilesPage,
+  type BoostedTier,
   type LanguageLevel,
   type DiscoveryItem,
   type DiscoveryPage,
   type DiscoveryQuery,
+  type PlanTier,
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -135,11 +141,31 @@ function scopedTo(
   return [...requested]
 }
 
-export async function discoverProfiles(
+interface DiscoveryScope {
+  viewer: Profile
+  tier: PlanTier
+  /** Everyone this viewer may be shown, before any sort. */
+  match: Document
+  myNativeCodes: string[]
+  myLearningCodes: string[]
+}
+
+/**
+ * Who the viewer is allowed to see: the viewer's own languages narrowed to the
+ * request, the mutual-fit `$match`, blocks, the exclusions that keep guests
+ * and deleted accounts out, and every filter the request carries.
+ *
+ * Shared by the list and the boosted strip so that the two can never
+ * disagree about who is discoverable — the strip is the list's own candidates
+ * with a plan attached, not a second definition of "visible". Sort-specific
+ * checks (`nearby`'s entitlement and location) stay with the list, since the
+ * strip has no sort.
+ */
+async function resolveDiscoveryScope(
   db: Db,
   viewerId: string,
   query: DiscoveryQuery,
-): Promise<DiscoveryPage> {
+): Promise<DiscoveryScope> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const viewer = await profiles.findOne({ _id: viewerId })
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
@@ -151,23 +177,6 @@ export async function discoverProfiles(
     throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Advanced filters require Pro', {
       feature: 'advancedFilters',
     })
-  }
-
-  if (query.sort === 'nearby') {
-    if (!hasFeature(tier, 'nearby')) {
-      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Nearby requires Pro+', {
-        feature: 'nearby',
-      })
-    }
-    // Checked before the query rather than left to return nothing: an empty
-    // list would be indistinguishable from "nobody is near you", and the user
-    // would go looking for people instead of for the setting.
-    if (!viewer.location) {
-      throw new ApiError(
-        ERROR_CODES.LOCATION_REQUIRED,
-        'Share your own location to sort by distance',
-      )
-    }
   }
 
   // Which of the viewer's own languages this search is made with: all of them
@@ -248,6 +257,73 @@ export async function discoverProfiles(
     if (query.ageMin !== undefined) birthDate.$lt = `${currentYear - query.ageMin + 1}-01-01`
     if (query.ageMax !== undefined) birthDate.$gte = `${currentYear - query.ageMax}-01-01`
     match.birthDate = birthDate
+  }
+
+  return { viewer, tier, match, myNativeCodes, myLearningCodes }
+}
+
+/**
+ * What one candidate becomes on the wire. Shared by the list and the strip:
+ * the strip adds a tier on top, and nothing else about a person may differ
+ * between the two places they appear.
+ */
+function toDiscoveryItem(
+  doc: Profile & { score?: number; distanceMeters?: number },
+  now: Date,
+): DiscoveryItem {
+  const item: DiscoveryItem = {
+    _id: doc._id,
+    handle: doc.handle,
+    displayName: doc.displayName,
+    gender: doc.gender,
+    age: ageFromBirthDate(doc.birthDate, now),
+    // Stored values were already validated against languageCodeSchema/cefrLevelSchema
+    // at write time (createProfile/updateProfile) — Profile's own DB-facing
+    // interface just doesn't carry those branded types.
+    nativeLanguages: doc.nativeLanguages as DiscoveryItem['nativeLanguages'],
+    learning: doc.learning as DiscoveryItem['learning'],
+    // Same rule as `toPublicProfile`, and it was missing here: a hidden
+    // profile still drew a green dot in the discovery list, which is the
+    // one place most people would have seen it.
+    isOnline: hidesOnlineStatus(doc) ? false : isOnlineAt(doc.stats.lastActiveAt, now),
+    streak: { current: doc.streak.current },
+  }
+  if (doc.avatarUrl !== undefined) item.avatarUrl = doc.avatarUrl
+  if (doc.bio !== undefined) item.bio = doc.bio
+  if (doc.country !== undefined) item.country = doc.country
+  // Bucketed, never the measured value — `bucketDistanceKm` explains what
+  // reporting the real one would give away.
+  if (doc.distanceMeters !== undefined) item.distanceKm = bucketDistanceKm(doc.distanceMeters)
+  return item
+}
+
+export async function discoverProfiles(
+  db: Db,
+  viewerId: string,
+  query: DiscoveryQuery,
+): Promise<DiscoveryPage> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const { viewer, tier, match, myNativeCodes, myLearningCodes } = await resolveDiscoveryScope(
+    db,
+    viewerId,
+    query,
+  )
+
+  if (query.sort === 'nearby') {
+    if (!hasFeature(tier, 'nearby')) {
+      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Nearby requires Pro+', {
+        feature: 'nearby',
+      })
+    }
+    // Checked before the query rather than left to return nothing: an empty
+    // list would be indistinguishable from "nobody is near you", and the user
+    // would go looking for people instead of for the setting.
+    if (!viewer.location) {
+      throw new ApiError(
+        ERROR_CODES.LOCATION_REQUIRED,
+        'Share your own location to sort by distance',
+      )
+    }
   }
 
   /**
@@ -421,32 +497,7 @@ export async function discoverProfiles(
   const hasMore = docs.length > query.limit
   const page = hasMore ? docs.slice(0, query.limit) : docs
 
-  const items: DiscoveryItem[] = page.map((doc) => {
-    const item: DiscoveryItem = {
-      _id: doc._id,
-      handle: doc.handle,
-      displayName: doc.displayName,
-      gender: doc.gender,
-      age: ageFromBirthDate(doc.birthDate, now),
-      // Stored values were already validated against languageCodeSchema/cefrLevelSchema
-      // at write time (createProfile/updateProfile) — Profile's own DB-facing
-      // interface just doesn't carry those branded types.
-      nativeLanguages: doc.nativeLanguages as DiscoveryItem['nativeLanguages'],
-      learning: doc.learning as DiscoveryItem['learning'],
-      // Same rule as `toPublicProfile`, and it was missing here: a hidden
-      // profile still drew a green dot in the discovery list, which is the
-      // one place most people would have seen it.
-      isOnline: hidesOnlineStatus(doc) ? false : isOnlineAt(doc.stats.lastActiveAt, now),
-      streak: { current: doc.streak.current },
-    }
-    if (doc.avatarUrl !== undefined) item.avatarUrl = doc.avatarUrl
-    if (doc.bio !== undefined) item.bio = doc.bio
-    if (doc.country !== undefined) item.country = doc.country
-    // Bucketed, never the measured value — `bucketDistanceKm` explains what
-    // reporting the real one would give away.
-    if (doc.distanceMeters !== undefined) item.distanceKm = bucketDistanceKm(doc.distanceMeters)
-    return item
-  })
+  const items: DiscoveryItem[] = page.map((doc) => toDiscoveryItem(doc, now))
 
   let nextCursor: string | null = null
   if (hasMore) {
@@ -465,4 +516,62 @@ export async function discoverProfiles(
   }
 
   return { items, nextCursor }
+}
+
+/**
+ * The strip above the list: the same candidates the list would show, kept to
+ * those on a paid plan, most expensive plan first and most recently active
+ * within it.
+ *
+ * `settings.boosted` is read as *absent means on*. The flag is only ever
+ * written when somebody turns the toggle off (or back on), so a new
+ * subscriber is in the strip the moment the entitlement lands, with no
+ * billing-side hook, and an explicit "off" survives a lapse and a
+ * re-subscribe the way every other setting a person chose does.
+ *
+ * The tier is checked here in the query rather than through `hasFeature`
+ * because the question is "who", over many documents, not "may this viewer".
+ * The expiry clause mirrors `effectivePlanTier`: a lapsed subscription whose
+ * webhook is late stops being boosted on its own. `null` matches both a
+ * missing and a null `expiresAt`, and the "unparseable date" branch there
+ * cannot happen on a BSON Date.
+ *
+ * `boostedRank` is computed, so the sort is in memory — over the paying
+ * members inside one language fit, which is a handful. The `$match` is still
+ * served by the two discovery indexes.
+ */
+export async function boostedProfiles(
+  db: Db,
+  viewerId: string,
+  query: DiscoveryQuery,
+): Promise<BoostedProfilesPage> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const { match } = await resolveDiscoveryScope(db, viewerId, query)
+  const now = new Date()
+
+  const pipeline: Document[] = [
+    {
+      $match: {
+        ...match,
+        'entitlement.tier': { $in: [...DISCOVERY_BOOSTED_TIERS] },
+        'settings.boosted': { $ne: false },
+        $or: [{ 'entitlement.expiresAt': null }, { 'entitlement.expiresAt': { $gt: now } }],
+      },
+    },
+    {
+      $addFields: {
+        boostedRank: { $indexOfArray: [[...DISCOVERY_BOOSTED_TIERS], '$entitlement.tier'] },
+      },
+    },
+    { $sort: { boostedRank: 1, 'stats.lastActiveAt': -1, _id: 1 } },
+    { $limit: DISCOVERY_BOOSTED_LIMIT },
+  ]
+
+  const docs = await profiles.aggregate<Profile>(pipeline).toArray()
+  const items: BoostedProfile[] = docs.map((doc) => ({
+    ...toDiscoveryItem(doc, now),
+    // Narrowed by the `$match` above; the cast only tells TypeScript so.
+    tier: doc.entitlement.tier as BoostedTier,
+  }))
+  return { items }
 }

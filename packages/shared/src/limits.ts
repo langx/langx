@@ -153,6 +153,17 @@ export interface PlanLimits {
    */
   copilot: boolean
   /**
+   * The strip above Discover — "Boosted profiles" — that shows paying members
+   * ahead of the list, most expensive plan first.
+   *
+   * On for both paid tiers. The flag on the profile is `settings.boosted`,
+   * read as absent-means-on, so a new subscriber is in the strip the moment
+   * the entitlement lands and only somebody who turned it off is out. Which
+   * tiers lead the strip is `DISCOVERY_BOOSTED_TIERS`; the rules test keeps it
+   * equal to the tiers that are `true` here.
+   */
+  boostedProfile: boolean
+  /**
    * Photos on a profile, avatar excluded.
    *
    * A ladder, and it was not always one: every tier had six until the gallery
@@ -198,6 +209,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: false,
     nearby: false,
     copilot: false,
+    boostedProfile: false,
     maxPhotos: 5,
     maxLearningLanguages: 1,
     maxNativeLanguages: 1,
@@ -214,6 +226,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: false,
     nearby: false,
     copilot: false,
+    boostedProfile: true,
     maxPhotos: 10,
     maxLearningLanguages: 2,
     maxNativeLanguages: 2,
@@ -236,6 +249,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     incognito: true,
     nearby: true,
     copilot: true,
+    boostedProfile: true,
     maxPhotos: 10,
     maxLearningLanguages: 5,
     maxNativeLanguages: 5,
@@ -293,7 +307,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters'] as const
+export const PRO_FEATURES = ['advancedFilters', 'boostedProfile'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**

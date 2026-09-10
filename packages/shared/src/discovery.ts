@@ -39,6 +39,20 @@ export const ONLINE_WINDOW_MS = 5 * 60 * 1000
  */
 export const DISCOVERY_CURSOR_MAX_AGE_MS = 60 * 60 * 1000
 
+/**
+ * The strip above the discovery list, most expensive plan first.
+ *
+ * A presentation order like `tierUnlocking`, not a guard — see the note on
+ * `PLAN_TIERS` for why no guard may compare tiers. Which tiers belong here at
+ * all is decided by `PLAN_LIMITS[tier].boostedProfile`; `rules.test.ts` pins
+ * the two together so a tier cannot buy the benefit and miss the strip.
+ */
+export const DISCOVERY_BOOSTED_TIERS = ['pro_plus', 'pro'] as const
+export type BoostedTier = (typeof DISCOVERY_BOOSTED_TIERS)[number]
+
+/** How many profiles the strip shows. It is a shelf, not a second list. */
+export const DISCOVERY_BOOSTED_LIMIT = 12
+
 /** How often a connected client tells the server it is still there. */
 export const PRESENCE_HEARTBEAT_MS = 60_000
 
@@ -238,6 +252,19 @@ export const discoveryPageSchema = z.object({
   nextCursor: z.string().nullable(),
 })
 export type DiscoveryPage = z.infer<typeof discoveryPageSchema>
+
+/**
+ * A discovery item plus the plan that put it in the strip, which the card
+ * draws as a chip. Only ever a paid tier: a free profile is never boosted.
+ */
+export const boostedProfileSchema = discoveryItemSchema.extend({
+  tier: z.enum(DISCOVERY_BOOSTED_TIERS),
+})
+export type BoostedProfile = z.infer<typeof boostedProfileSchema>
+
+/** No cursor: the strip is capped at `DISCOVERY_BOOSTED_LIMIT` and never pages. */
+export const boostedProfilesPageSchema = z.object({ items: z.array(boostedProfileSchema) })
+export type BoostedProfilesPage = z.infer<typeof boostedProfilesPageSchema>
 
 /** How many results a handle search returns. Small on purpose: it is a
  *  jump-to, not a browse — the list below is what browsing is for. */

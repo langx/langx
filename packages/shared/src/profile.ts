@@ -291,6 +291,13 @@ export const updateProfileSchema = z
       .object({
         discoverable: z.boolean(),
         /**
+         * The Boosted strip on Discover. Absent means on; only the toggle
+         * writes it. Not tier-checked here, and not in `updateProfile` either:
+         * the strip re-reads the tier on every request, so a free account
+         * writing `true` gains nothing (see `boostedProfiles`).
+         */
+        boosted: z.boolean(),
+        /**
          * Which native language a translated message is shown in. Must be
          * one of the profile's native languages — checked in `updateProfile`,
          * which can see the profile — and `null` clears it back to the first
