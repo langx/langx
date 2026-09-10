@@ -21,17 +21,29 @@ export interface DeviceIdentity {
 
 const UNKNOWN: DeviceIdentity = { fingerprint: 'unknown', label: 'an unrecognised device' }
 
-/** Ours first: the app's own requests should not read as "Safari on iPhone". */
+/**
+ * Ours first: the app's own requests should not read as "Safari on iPhone",
+ * and they must not read as the HTTP library either.
+ *
+ * React Native does not send a browser user agent. On Android it sends
+ * `okhttp/4.x` and nothing else, and on iOS `CFNetwork/… Darwin/…` — which
+ * a run against production turned into fifty-three people being told they had
+ * signed in from "okhttp". Nothing else in this app's traffic uses either
+ * library, so both are read as the app.
+ */
 function appIdentity(userAgent: string): DeviceIdentity | null {
-  if (/\bExpo\b|LangX/i.test(userAgent)) {
-    if (/\bAndroid\b/i.test(userAgent))
-      return { fingerprint: 'android-app', label: 'the LangX app on Android' }
-    if (/\biPhone|iPad|iOS|CFNetwork\b/i.test(userAgent)) {
-      return { fingerprint: 'ios-app', label: 'the LangX app on iPhone' }
-    }
-    return { fingerprint: 'app', label: 'the LangX app' }
+  const named = /\bExpo\b|LangX/i.test(userAgent)
+  if (named ? /\bAndroid\b/i.test(userAgent) : /^okhttp\//i.test(userAgent)) {
+    return { fingerprint: 'android-app', label: 'the LangX app on Android' }
   }
-  return null
+  if (
+    named
+      ? /\biPhone|iPad|iOS|CFNetwork\b/i.test(userAgent)
+      : /\bCFNetwork\b/i.test(userAgent) && /\bDarwin\b/i.test(userAgent)
+  ) {
+    return { fingerprint: 'ios-app', label: 'the LangX app on iPhone' }
+  }
+  return named ? { fingerprint: 'app', label: 'the LangX app' } : null
 }
 
 function platformOf(userAgent: string): { key: string; name: string } {

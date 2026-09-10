@@ -82,7 +82,10 @@ a changed password, and a sign-in method connected or disconnected. They go
 by mail _and_ push, carry no unsubscribe, and reach an account whose owner
 switched every other notification off — a switch whose honest label is "do
 not tell me when somebody signs in as me" is not one to offer. `knownDevices`
-is what makes "a device we have not seen" answerable; it has no TTL.
+is what makes "a device we have not seen" answerable; it has no TTL — and it
+starts empty, so `scripts/backfill-known-devices.ts` has to run before the
+first deploy that carries this, or everybody's next sign-in is a "new device"
+letter about the phone they are holding.
 
 Nothing is sent to an address on `emailSuppressions`, service mail included:
 a permanent bounce or a spam complaint reported by Resend's webhook
