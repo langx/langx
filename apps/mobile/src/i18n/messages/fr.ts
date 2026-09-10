@@ -466,6 +466,10 @@ export const fr: Localized<EnMessages> = {
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
     meetings: 'Rendez-vous',
     meetingsBody: 'Une heure avant un appel que vous avez accepté tous les deux. Push uniquement.',
+    social: 'Le fil et les gens qui y sont',
+    socialBody: 'Abonnements, corrections de vos publications et j’aime.',
+    wallet: 'Jetons',
+    walletBody: 'La distribution quotidienne et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
     /** The two halves of every kind above; the row title, so no kind name in it. */

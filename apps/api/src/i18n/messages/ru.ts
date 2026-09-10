@@ -54,6 +54,45 @@ export const ru: Localized<ServerMessages> = {
       inviteFriendBody: 'Токены получите оба.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} подписался на вас',
+
+      followBody: 'Нажмите, чтобы открыть профиль.',
+
+      correctionTitle: '{name} исправил вашу фразу',
+
+      correctionBody: 'Нажмите, чтобы прочитать исправление.',
+
+      answerTitle: '{name} озвучил вашу фразу',
+
+      answerBody: 'Нажмите, чтобы послушать.',
+
+      commentTitle: '{name} прокомментировал ваш пост',
+
+      commentBody: 'Нажмите, чтобы прочитать.',
+
+      likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
+
+      likesBody: 'Кому-то понравилось написанное вами.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Вчерашний пул принёс вам 1 токен',
+        other: 'Вчерашний пул принёс вам {count} токенов',
+      },
+
+      poolBody: 'Нажмите, чтобы открыть кошелёк.',
+
+      giftTitle: 'Почасовой подарок готов',
+
+      giftBody: 'Откройте кошелёк и заберите.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Платёж не прошёл',
@@ -344,6 +383,8 @@ export const ru: Localized<ServerMessages> = {
       messages: 'сводки сообщений',
       streak: 'напоминания о стрике',
       profileVisits: 'сводки визитов в профиль',
+      social: 'события ленты',
+      wallet: 'новости о токенах',
       promotions: 'новости и предложения',
       all: 'письма от LangX',
       v1contact: 'единственное сообщение о новом LangX',

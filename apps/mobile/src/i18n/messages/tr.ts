@@ -464,6 +464,10 @@ export const tr: Localized<EnMessages> = {
     profileVisitsBody: 'Günde bir kez, profiline kaç kişinin baktığı. Haftada bir e-postayla özet.',
     meetings: 'Randevular',
     meetingsBody: 'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Sadece bildirim.',
+    social: 'Akış ve oradaki insanlar',
+    socialBody: 'Takipler, gönderilerine gelen düzeltmeler ve beğeniler.',
+    wallet: 'Token’lar',
+    walletBody: 'Günlük havuzun ödemesi ve saatlik hediyen.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. Tek dokunuşla durur.',
     /** The two halves of every kind above; the row title, so no kind name in it. */

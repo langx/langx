@@ -35,6 +35,24 @@ export const NOTIFICATION_TYPES = [
    * for a meeting somebody withdrew.
    */
   'meetings',
+  /**
+   * The feed, and the people on it: somebody followed you, somebody
+   * corrected or answered a post of yours, a post of yours was liked.
+   *
+   * Its own kind rather than folded into `messages` because the two are
+   * opposite in shape — a message is one person addressing you directly and
+   * waiting, and this is the room reacting to something you left out in it.
+   * Somebody who mutes one very often wants the other.
+   */
+  'social',
+  /**
+   * Tokens arriving: yesterday's pool paid out, the hourly gift is ready.
+   *
+   * Push only by default. A number going up is worth a glance at the phone
+   * and is never worth an email — the wallet is two taps away, and mail about
+   * a currency somebody did not ask for is the definition of noise.
+   */
+  'wallet',
   'promotions',
 ] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
@@ -101,6 +119,14 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    * push that already worked.
    */
   meetings: { push: true, email: false },
+  /**
+   * Push on, email off. A follow is a small good thing; a daily letter about
+   * it is not. The corrections on a post are the half that would justify
+   * mail, and they are worth their own digest before they are worth turning
+   * this column on.
+   */
+  social: { push: true, email: false },
+  wallet: { push: true, email: false },
   promotions: { push: false, email: true },
 }
 
@@ -119,6 +145,8 @@ export const notificationPrefsSchema = z
     badges: channelPrefsSchema,
     profileVisits: channelPrefsSchema,
     meetings: channelPrefsSchema,
+    social: channelPrefsSchema,
+    wallet: channelPrefsSchema,
     promotions: channelPrefsSchema,
   })
   .partial()

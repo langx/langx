@@ -509,6 +509,10 @@ export const ru: Localized<EnMessages> = {
       'Раз в день, сколько человек посмотрели ваш профиль. Раз в неделю сводка на почту.',
     meetings: 'Встречи',
     meetingsBody: 'За час до звонка, на который вы оба согласились. Только пуш.',
+    social: 'Лента и люди в ней',
+    socialBody: 'Подписки, исправления ваших постов и лайки.',
+    wallet: 'Токены',
+    walletBody: 'Ежедневный пул и почасовой подарок.',
     promotions: 'Новости и предложения',
     promotionsBody: 'Изредка о новом. Одно касание — и всё прекратится.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
