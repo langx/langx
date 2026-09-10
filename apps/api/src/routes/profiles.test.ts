@@ -682,61 +682,80 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.statusCode, response.body).toBe(400)
     })
 
-    it('refuses a handle shorter than the new floor', async () => {
-      const user = await newUser('short-handle@example.com')
-      const response = await app.inject({
-        method: 'POST',
-        url: '/profiles',
-        headers: { cookie: user.cookie },
-        payload: onboardingBody({ handle: 'ada' }),
-      })
-      expect(response.statusCode, response.body).toBe(400)
-    })
-
-    it('reports both as unavailable rather than as a malformed request', async () => {
-      const user = await newUser('availability-rules@example.com')
-      for (const handle of ['settings', 'ada']) {
-        const response = await app.inject({
-          method: 'GET',
-          url: `/handles/${handle}/availability`,
-          headers: { cookie: user.cookie },
-        })
-        expect(response.statusCode, handle).toBe(200)
-        expect(response.json<{ available: boolean }>().available, handle).toBe(false)
-      }
-    })
-
-    /**
-     * The grandfather case, and the reason `handleSchema` was not simply
-     * tightened: a v1 account can hold three characters, and its own profile
-     * — and the link it has already shared — has to keep resolving.
-     */
-    it('still resolves a three-character handle written before the floor', async () => {
-      const owner = await newUser('legacy-short@example.com')
-      await app.inject({
+    /** The floor is `HANDLE_PATTERN`'s own three now — see `handle.ts`. */
+    it('claims a three-letter handle, and resolves it', async () => {
+      const owner = await newUser('short-handle@example.com')
+      const claimed = await app.inject({
         method: 'POST',
         url: '/profiles',
         headers: { cookie: owner.cookie },
-        payload: onboardingBody({ handle: 'adalove' }),
+        payload: onboardingBody({ handle: 'ada' }),
       })
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: owner.userId }, { $set: { handle: 'ada' } })
+      expect(claimed.statusCode, claimed.body).toBe(201)
 
-      const viewer = await newUser('legacy-short-viewer@example.com')
+      const viewer = await newUser('short-handle-viewer@example.com')
       await app.inject({
         method: 'POST',
         url: '/profiles',
         headers: { cookie: viewer.cookie },
         payload: onboardingBody({ handle: 'shortviewer' }),
       })
-
-      const response = await app.inject({
+      const opened = await app.inject({
         method: 'GET',
         url: '/profiles/ada',
         headers: { cookie: viewer.cookie },
       })
-      expect(response.statusCode, response.body).toBe(200)
+      expect(opened.statusCode, opened.body).toBe(200)
+    })
+
+    /** Two characters is refused by the pattern itself, not by a floor. */
+    it('refuses a handle the pattern cannot make', async () => {
+      const user = await newUser('too-short-handle@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: 'ab' }),
+      })
+      expect(response.statusCode, response.body).toBe(400)
+    })
+
+    /**
+     * A reserved word answers 200 with `available: false` rather than 400 —
+     * the availability check is a question, and "no" is an answer to it. Only
+     * a string no handle could ever be is a malformed request, and since the
+     * floor is the pattern's own three, that is now purely a charset and
+     * length question the param schema settles first.
+     */
+    it('reports a reserved word as unavailable, and a free three-letter name as free', async () => {
+      const user = await newUser('availability-rules@example.com')
+      for (const candidate of ['settings', 'pro']) {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/handles/${candidate}/availability`,
+          headers: { cookie: user.cookie },
+        })
+        expect(response.statusCode, candidate).toBe(200)
+        expect(response.json<{ available: boolean }>().available, candidate).toBe(false)
+      }
+
+      // Two characters cannot be a handle at all, so it is a 400 rather than
+      // an answer.
+      const malformed = await app.inject({
+        method: 'GET',
+        url: '/handles/ab/availability',
+        headers: { cookie: user.cookie },
+      })
+      expect(malformed.statusCode).toBe(400)
+
+      // And an ordinary three-letter name is simply free.
+      const free = await app.inject({
+        method: 'GET',
+        url: '/handles/zed/availability',
+        headers: { cookie: user.cookie },
+      })
+      expect(free.statusCode, free.body).toBe(200)
+      expect(free.json<{ available: boolean }>().available).toBe(true)
     })
   })
 
