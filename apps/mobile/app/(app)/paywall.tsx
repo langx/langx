@@ -131,6 +131,10 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     body: 'paywall.learningLanguagesBody',
     vars: { count: PLAN_LIMITS.pro.maxLearningLanguages },
   },
+  boostedProfile: {
+    title: 'paywall.boostedProfile',
+    body: 'paywall.boostedProfileBody',
+  },
   welcomePack: {
     title: 'paywall.welcomePack',
     body: 'paywall.welcomePackBody',
@@ -183,6 +187,16 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
     vars: { count: PLAN_LIMITS.pro_plus.maxLearningLanguages },
     shipped: true,
   },
+  /*
+   * Not the Fluent line repeated: Fluent buys a place in the strip and
+   * Polyglot buys the front of it, so this column says the thing that is
+   * actually different.
+   */
+  boostedProfile: {
+    title: 'paywall.boostedProfileFirst',
+    body: 'paywall.boostedProfileFirstBody',
+    shipped: true,
+  },
   nearby: {
     // The body says what it does *and* what it costs the reader, because the
     // second half is the part they would otherwise find out after paying.
@@ -207,6 +221,7 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
+  boostedProfile: BENEFIT_COPY.boostedProfile.title,
   sendTranslation: PRO_PLUS_BENEFIT_COPY.sendTranslation.title,
   deckExport: PRO_PLUS_BENEFIT_COPY.deckExport.title,
   profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,

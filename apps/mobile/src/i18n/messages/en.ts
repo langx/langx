@@ -270,8 +270,6 @@ export const en = {
   location: {
     useMyLocation: 'Use my location',
     deniedTitle: 'Location is off for LangX',
-    deniedBodyIos: 'Open Settings → LangX → Location and choose “While Using the App”.',
-    deniedBodyAndroid: 'Open Settings → Apps → LangX → Permissions → Location and allow it.',
     openSettings: 'Open settings',
     failedTitle: 'Could not read your location',
     noCountry: 'We could not tell which country that is.',
@@ -280,7 +278,77 @@ export const en = {
     disabled: 'Location services are turned off on this device.',
     unavailable: 'Could not get a location right now. Try again in a moment.',
     unavailableTitle: 'Location unavailable',
-    needed: 'Location needed',
+    /**
+     * The guide screen, which is the one place the instructions live. Discover
+     * and the alerts name the reason and link here rather than repeating the
+     * steps: an iOS path, an Android path, a device-wide switch and a browser
+     * that has none of them is four sets of words, and four copied into three
+     * screens drift apart on the first change.
+     */
+    guide: {
+      title: 'Location permission',
+      rowTitle: 'Location permission',
+      rowBody: 'Where to turn it on, and what to do if your phone stopped asking.',
+      grantedTitle: 'Location is on',
+      grantedBody:
+        'LangX can read a rough position while you are using it. You can take that back in your device settings whenever you like.',
+      askableTitle: 'LangX needs your location',
+      askableBody:
+        'Nearby sorts people by roughly how far away they are. Nothing precise is stored, and nobody sees more than a rough distance.',
+      allow: 'Allow location',
+      blockedTitle: 'Your device will not ask again',
+      blockedBody:
+        'Location was declined for LangX, so the app can no longer bring up the permission dialog. You can still grant it in your device settings.',
+      iosStep1: 'Open Settings',
+      iosStep2: 'Find LangX in the list',
+      iosStep3: 'Tap Location and choose “While Using the App”',
+      androidStep1: 'Open Settings',
+      androidStep2: 'Go to Apps → LangX',
+      androidStep3: 'Tap Permissions → Location',
+      androidStep4: 'Choose “Allow only while using the app”',
+      servicesOffTitle: 'Location is off on this device',
+      servicesOffBodyIos:
+        'LangX has permission, but Location Services is switched off for the whole phone. Turn it back on in Settings → Privacy & Security → Location Services.',
+      servicesOffBodyAndroid:
+        'LangX has permission, but location is switched off for the whole device. Turn it back on in Settings → Location.',
+      webTitle: 'Your browser decides this one',
+      webBody:
+        'Location permission belongs to the browser here, not to LangX. Look for the location icon in the address bar, or allow location in this site’s settings.',
+      howTo: 'How to turn it on',
+    },
+  },
+
+  /**
+   * The screen a suspended account gets instead of the app.
+   *
+   * Never names who reported them — nothing in the product does, and this is
+   * the screen where the temptation would be greatest.
+   */
+  suspended: {
+    title: 'Your account is suspended',
+    untilBody:
+      'A report about your account was reviewed by a person. You cannot use LangX until {until}, and your profile is hidden from Discover and search.',
+    permanentBody:
+      'A report about your account was reviewed by a person, and your account is suspended permanently. Your profile is hidden from Discover and search.',
+    reasonLabel: 'Reason',
+    appealTitle: 'Appeal',
+    appealBody:
+      'You can appeal once. A person reads every appeal, and there is no queue to watch — the answer arrives by email.',
+    appealPlaceholder: 'Tell us what we got wrong.',
+    appealTooShort: {
+      one: 'At least {count} character.',
+      other: 'At least {count} characters.',
+    },
+    send: 'Send appeal',
+    sending: 'Sending…',
+    sent: 'Appeal sent',
+    sentBody:
+      'Your appeal has been sent. There is one per suspension, so this was it — we will write back.',
+    failed: 'That could not be sent. Try again in a moment.',
+    alreadyAppealed: 'You have already appealed this suspension.',
+    checkAgain: 'Check again',
+    signOut: 'Sign out',
+    contact: 'Anything else: {email}',
   },
 
   gate: {
@@ -543,6 +611,12 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
+    boosted: 'Boosted',
+    boostedWhat: 'What is this?',
+    boostedExplainTitle: 'Boosted profiles',
+    boostedExplainBody:
+      'People on Fluent and Polyglot are shown here, Polyglot first. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
+    boostedSeePlans: 'See the plans',
     languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
@@ -563,6 +637,13 @@ export const en = {
     nobodyNearbyTitle: 'Nobody within {radius} km',
     nobodyNearbyBody:
       'Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs.',
+    nearbyNeedsPermissionTitle: 'Nearby needs your location',
+    nearbyNeedsPermissionBody:
+      'Location permission has not been granted, so there is nothing to sort by distance.',
+    nearbyServicesOffTitle: 'Location is off on this device',
+    nearbyServicesOffBody: 'Nearby cannot work until location is switched back on.',
+    nearbyUnavailableTitle: 'Could not find you',
+    nearbyUnavailableBody: 'No position came back just now. Try again in a moment.',
     emptyTitle: 'Nobody here yet',
     emptyBody:
       'People whose languages match yours in both directions show up here. Try loosening the filters.',
@@ -926,6 +1007,8 @@ export const en = {
   },
 
   profile: {
+    suspendedTag: 'Suspended',
+    deletedTag: 'Account deleted',
     previewNote:
       'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',
@@ -1160,6 +1243,9 @@ export const en = {
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
       'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
+    boost: 'Boost my profile',
+    boostBody:
+      'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Fluent and Polyglot.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
@@ -1577,6 +1663,11 @@ export const en = {
     welcomePackBody:
       'A profile frame and two streak freezes to start with. {plan} brings the full set.',
     advancedFilters: 'Advanced filters',
+    boostedProfile: 'Boosted profile',
+    boostedProfileBody:
+      'Shown in the Boosted strip above the Discover list, to everyone whose languages match yours. On by default; switch it off in Settings.',
+    boostedProfileFirst: 'Boosted to the front',
+    boostedProfileFirstBody: 'Polyglot profiles lead the Boosted strip, ahead of Fluent.',
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',

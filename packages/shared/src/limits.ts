@@ -73,6 +73,20 @@ export interface PlanLimits {
    */
   advancedFilters: boolean
   /**
+   * Appearing in the Boosted strip above the discovery list.
+   *
+   * Fluent and Polyglot, with Polyglot ahead of Fluent inside the strip —
+   * `DISCOVERY_BOOSTED_TIERS` holds that order and `rules.test.ts` pins it to
+   * this flag. The switch on the profile is `settings.boosted`, and an absent
+   * one means on: a first-time subscriber is boosted the moment the
+   * entitlement lands, with no billing-side hook to write a default.
+   *
+   * The tier is re-read on every request, so an explicit `true` on a free
+   * profile buys nothing — same shape as `incognito`, which is also stored
+   * without a write-time tier guard.
+   */
+  boostedProfile: boolean
+  /**
    * Sending your own message with a translation under it, rather than tapping
    * one you received to read it.
    *
@@ -192,6 +206,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: 50,
     advancedFilters: false,
+    boostedProfile: false,
     sendTranslation: false,
     deckExport: false,
     profileViewerIdentities: false,
@@ -208,6 +223,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    boostedProfile: true,
     sendTranslation: false,
     deckExport: false,
     profileViewerIdentities: false,
@@ -230,6 +246,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
+    boostedProfile: true,
     sendTranslation: true,
     deckExport: true,
     profileViewerIdentities: true,
@@ -293,7 +310,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters'] as const
+export const PRO_FEATURES = ['advancedFilters', 'boostedProfile'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -333,6 +350,12 @@ export type PlanFeature = ProFeature | ProPlusFeature
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
+  /**
+   * In *both* benefit lists, for the same reason `translationQuota` is: both
+   * paid plans get it, and Polyglot gets more of it — a place at the front of
+   * the strip — which "everything in Fluent" would otherwise hide.
+   */
+  'boostedProfile',
   'translationQuota',
   'learningLanguages',
   /**
@@ -365,6 +388,7 @@ export type ProBenefit = (typeof PRO_BENEFITS)[number]
  */
 export const PRO_PLUS_BENEFITS = [
   'profileViewerIdentities',
+  'boostedProfile',
   'incognito',
   'nearby',
   'copilot',

@@ -47,6 +47,7 @@ const THEME_LABELS: Record<ThemePreference, MessageKey> = {
 const BENEFIT_TITLE: Record<ProBenefit | ProPlusBenefit, MessageKey> = {
   unlimitedInitiations: 'paywall.unlimitedChats',
   advancedFilters: 'paywall.advancedFilters',
+  boostedProfile: 'paywall.boostedProfile',
   sendTranslation: 'paywall.sendTranslation',
   deckExport: 'paywall.deckExport',
   translationQuota: 'paywall.translationQuota',
@@ -200,6 +201,43 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           }
         />
       )
+    case 'privacy.boost':
+      /*
+       * Same shape as the incognito row below, and for the same reason: the
+       * plan tag belongs in the title line, which `ListRow` has no slot for.
+       *
+       * The paid branch defaults to **on** with nothing written, which is what
+       * `settings.boosted` being absent means — so a first-time subscriber
+       * sees the switch already on without anything having had to write it.
+       */
+      return (
+        <View style={[styles.row, !last && styles.divided]}>
+          <View style={styles.rowText}>
+            <View style={styles.titleWithTag}>
+              <Text style={styles.rowTitle}>{t('settings.boost')}</Text>
+              {model.canBoost ? null : <Text style={styles.proTag}>{model.boostBadge}</Text>}
+            </View>
+            <Text style={styles.rowSubtitle}>{t('settings.boostBody')}</Text>
+          </View>
+          {model.canBoost ? (
+            <Toggle
+              accessibilityLabel={t('settings.boost')}
+              value={profile?.settings.boosted ?? true}
+              onValueChange={(boosted) =>
+                update.mutate({ settings: { ...profile?.settings, boosted } })
+              }
+            />
+          ) : (
+            <View style={styles.locked}>
+              <Toggle
+                accessibilityLabel={t('settings.boost')}
+                value={false}
+                onValueChange={() => openPaywall('boostedProfile', '/(app)/settings/privacy')}
+              />
+            </View>
+          )}
+        </View>
+      )
     case 'privacy.incognito':
       /*
        * Local rather than a `ListRow`: the plan tag sits *in the title line*,
@@ -340,6 +378,18 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => void model.toggleLocation(true)}
         />
       ) : null
+    case 'privacy.locationPermission':
+      // A plain link, with no live state on it. What the permission currently
+      // is takes an OS read and an `AppState` listener to stay true, and a row
+      // that goes stale in a list of switches reads as a switch that is wrong.
+      return (
+        <ListRow
+          title={t('location.guide.rowTitle')}
+          subtitle={t('location.guide.rowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/location')}
+        />
+      )
     case 'privacy.analytics':
       // The one privacy row about what leaves the device for *us* rather than
       // for other users. Device-level, like the theme: the refusal belongs to

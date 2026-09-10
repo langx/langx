@@ -64,6 +64,15 @@ export default function Index() {
 
   if (isPending || !draftReady) return <SplashFill />
 
+  /*
+   * Before the onboarding branch, because a suspended account has no profile
+   * as far as `/profiles/me` is concerned — the guard refuses it — and being
+   * sent to the wizard is the one answer that would make no sense at all.
+   */
+  if (error instanceof ApiRequestError && error.code === 'ACCOUNT_SUSPENDED') {
+    return <Redirect href="/suspended" />
+  }
+
   const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
   // Back to the step the draft has actually earned, not always the first one.
   if (needsOnboarding) return <Redirect href={onboardingHref(furthestOnboardingStep(getDraft()))} />

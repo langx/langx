@@ -93,6 +93,12 @@ export default function ProfileScreen() {
   const user = profile.data
   const isSelf = user?._id === me.data?._id
   const following = user.follow.viewerFollows
+  /*
+   * Old clients and old caches send no `accountStatus`, and the honest
+   * default for "I do not know" is the state every profile was in before this
+   * field existed.
+   */
+  const active = (user.accountStatus ?? 'active') === 'active'
   const age = accountAgeLabel(t, new Date(user.createdAt))
 
   // One line under the name — the handle, then where they are. The city and
@@ -224,6 +230,35 @@ export default function ProfileScreen() {
             </Text>
           ) : null}
           {/*
+            A read-only tag, like the interests below and for the same reason:
+            nothing here is pressable. It is the **whole** of what anybody else
+            is told — when a suspension ends, why, and whether it was appealed
+            belong to the person it is about.
+          */}
+          {active ? null : (
+            <View
+              style={[
+                styles.statusTag,
+                user.accountStatus === 'suspended' ? styles.statusSuspended : styles.statusDeleted,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.statusLabel,
+                  {
+                    color: user.accountStatus === 'suspended' ? colors.danger : colors.textMuted,
+                  },
+                ]}
+              >
+                {t(
+                  user.accountStatus === 'suspended'
+                    ? 'profile.suspendedTag'
+                    : 'profile.deletedTag',
+                )}
+              </Text>
+            </View>
+          )}
+          {/*
             How long the account has existed, next to how often it shows up:
             the two questions someone asks about a stranger who just messaged
             them are the same question, so they share a line. The streak waits
@@ -325,6 +360,23 @@ export default function ProfileScreen() {
           onPress={() => router.push('/(app)/edit-profile')}
           style={styles.editProfile}
         />
+      ) : !active ? (
+        /*
+         * Nothing to do with an account that is not one any more, except read
+         * back what was already said. The thread stays reachable when there is
+         * one — that is usually how somebody arrived here — and every action
+         * that would write to them is gone rather than disabled: a button that
+         * refuses is worse than a button that is not there.
+         */
+        user.conversationId ? (
+          <View style={styles.actions}>
+            <Button
+              label={t('profile.openChat')}
+              variant="secondary"
+              onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
+            />
+          </View>
+        ) : null
       ) : (
         <View style={styles.actions}>
           {/*
@@ -440,6 +492,17 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: spacing.sm,
   },
   tagLabel: { color: colors.accent, fontSize: 13, fontWeight: '700' },
+  statusTag: {
+    alignSelf: 'flex-start',
+    borderRadius: radius.pill,
+    marginTop: spacing.xs,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+  },
+  statusSuspended: { backgroundColor: colors.dangerBg },
+  // Muted rather than red: a deleted account is a fact, not a warning.
+  statusDeleted: { backgroundColor: colors.fill },
+  statusLabel: { fontSize: 12, fontWeight: '700' },
   actions: { gap: spacing.md, paddingTop: spacing.xl },
   editProfile: { marginTop: spacing.xl },
 }))

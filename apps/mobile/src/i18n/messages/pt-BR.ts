@@ -228,8 +228,6 @@ export const ptBR: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Usar minha localização',
     deniedTitle: 'A localização está desligada para o LangX',
-    deniedBodyIos: 'Abra Ajustes → LangX → Localização e escolha “Ao usar o app”.',
-    deniedBodyAndroid: 'Abra Configurações → Apps → LangX → Permissões → Local e permita.',
     openSettings: 'Abrir configurações',
     failedTitle: 'Não foi possível ler sua localização',
     noCountry: 'Não deu para saber que país é esse.',
@@ -239,7 +237,63 @@ export const ptBR: Localized<EnMessages> = {
     disabled: 'Os serviços de localização estão desligados neste aparelho.',
     unavailable: 'Não deu para obter a localização agora. Tente de novo em um instante.',
     unavailableTitle: 'Localização indisponível',
-    needed: 'Localização necessária',
+    guide: {
+      title: 'Permissão de localização',
+      rowTitle: 'Permissão de localização',
+      rowBody: 'Onde ativar e o que fazer se o seu telefone parou de perguntar.',
+      grantedTitle: 'A localização está ligada',
+      grantedBody:
+        'O LangX consegue ler sua posição aproximada enquanto você usa o app. Você pode desfazer isso a qualquer momento nos ajustes do aparelho.',
+      askableTitle: 'O LangX precisa da sua localização',
+      askableBody:
+        'Por perto ordena as pessoas por quão longe estão, mais ou menos. Nada preciso é guardado, e ninguém vê mais do que uma distância aproximada.',
+      allow: 'Permitir localização',
+      blockedTitle: 'Seu aparelho não vai perguntar de novo',
+      blockedBody:
+        'A localização foi negada ao LangX, então o app não consegue mais abrir a janela de permissão. Você ainda pode concedê-la nos ajustes do aparelho.',
+      iosStep1: 'Abra os Ajustes',
+      iosStep2: 'Encontre o LangX na lista',
+      iosStep3: 'Toque em Localização e escolha “Ao Usar o App”',
+      androidStep1: 'Abra as Configurações',
+      androidStep2: 'Vá em Apps → LangX',
+      androidStep3: 'Toque em Permissões → Local',
+      androidStep4: 'Escolha “Permitir apenas ao usar o app”',
+      servicesOffTitle: 'A localização está desligada neste aparelho',
+      servicesOffBodyIos:
+        'O LangX tem permissão, mas os Serviços de Localização estão desligados no telefone inteiro. Ligue de novo em Ajustes → Privacidade e Segurança → Serviços de Localização.',
+      servicesOffBodyAndroid:
+        'O LangX tem permissão, mas a localização está desligada no aparelho inteiro. Ligue de novo em Configurações → Local.',
+      webTitle: 'Aqui quem decide é o navegador',
+      webBody:
+        'A permissão de localização é do navegador, não do LangX. Procure o ícone de localização na barra de endereço ou permita a localização nas configurações deste site.',
+      howTo: 'Como ligar',
+    },
+  },
+
+  suspended: {
+    title: 'Sua conta está suspensa',
+    untilBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta. Você não pode usar o LangX até {until}, e seu perfil fica fora do Descobrir e da busca.',
+    permanentBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela foi suspensa permanentemente. Seu perfil fica fora do Descobrir e da busca.',
+    reasonLabel: 'Motivo',
+    appealTitle: 'Recurso',
+    appealBody:
+      'Você pode recorrer uma vez. Uma pessoa lê cada recurso, e não há fila para acompanhar — a resposta chega por e-mail.',
+    appealPlaceholder: 'Conte o que entendemos errado.',
+    appealTooShort: {
+      one: 'Pelo menos {count} caractere.',
+      other: 'Pelo menos {count} caracteres.',
+    },
+    send: 'Enviar recurso',
+    sending: 'Enviando…',
+    sent: 'Recurso enviado',
+    sentBody: 'Seu recurso foi enviado. É um por suspensão, então era esse — vamos responder.',
+    failed: 'Não foi possível enviar. Tente de novo em instantes.',
+    alreadyAppealed: 'Você já recorreu desta suspensão.',
+    checkAgain: 'Verificar de novo',
+    signOut: 'Sair',
+    contact: 'Qualquer outra coisa: {email}',
   },
 
   gate: {
@@ -495,6 +549,12 @@ export const ptBR: Localized<EnMessages> = {
       'Pergunte sobre uma frase da qual não tem certeza, ou uma palavra que não consegue dizer — ela aparece aqui.',
   },
   discover: {
+    boosted: 'Em destaque',
+    boostedWhat: 'O que é isso?',
+    boostedExplainTitle: 'Perfis em destaque',
+    boostedExplainBody:
+      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
+    boostedSeePlans: 'Ver os planos',
     languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome de usuário',
     searchPlaceholder: 'Nome de usuário',
@@ -515,6 +575,14 @@ export const ptBR: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Ninguém a menos de {radius} km',
     nobodyNearbyBody:
       'Aqui só aparece quem ligou o compartilhamento de localização. Tente um raio maior ou outra aba.',
+    nearbyNeedsPermissionTitle: 'Por perto precisa da sua localização',
+    nearbyNeedsPermissionBody:
+      'A permissão de localização não foi concedida, então não há nada para ordenar por distância.',
+    nearbyServicesOffTitle: 'A localização está desligada neste aparelho',
+    nearbyServicesOffBody:
+      'Por perto só volta a funcionar quando a localização for ligada de novo.',
+    nearbyUnavailableTitle: 'Não conseguimos te encontrar',
+    nearbyUnavailableBody: 'Nenhuma posição voltou agora. Tente de novo daqui a pouco.',
     emptyTitle: 'Ainda não tem ninguém',
     emptyBody:
       'Aqui aparecem pessoas cujos idiomas combinam com os seus nos dois sentidos. Tente afrouxar os filtros.',
@@ -869,6 +937,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Suspensa',
+    deletedTag: 'Conta excluída',
     previewNote:
       'Este é o seu perfil como as outras pessoas o veem — suas configurações de privacidade já estão aplicadas.',
     teaches: 'Ensina',
@@ -1104,6 +1174,9 @@ export const ptBR: Localized<EnMessages> = {
     showInDiscover: 'Mostrar em Descobrir',
     showInDiscoverBody:
       'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
+    boost: 'Destacar meu perfil',
+    boostBody:
+      'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Fluent e Polyglot.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
@@ -1522,6 +1595,11 @@ export const ptBR: Localized<EnMessages> = {
     welcomePackBody:
       'Uma moldura de perfil e dois congelamentos de sequência para começar. O {plan} traz o conjunto completo.',
     advancedFilters: 'Filtros avançados',
+    boostedProfile: 'Perfil em destaque',
+    boostedProfileBody:
+      'Você aparece na faixa acima da lista de Descobrir, para todo mundo com idiomas compatíveis com os seus. Ativo por padrão; dá para desligar nos Ajustes.',
+    boostedProfileFirst: 'Destaque na frente',
+    boostedProfileFirstBody: 'Perfis Polyglot abrem a faixa, à frente dos Fluent.',
     sendTranslation: 'Envie no idioma dela',
     sendTranslationBody: 'Escreva no seu; os dois vão, então te leem sem adivinhar.',
     deckExport: 'Leve suas expressões',

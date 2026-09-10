@@ -243,8 +243,6 @@ export const tr: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Konumumu kullan',
     deniedTitle: 'LangX için konum kapalı',
-    deniedBodyIos: 'Ayarlar → LangX → Konum yolunu açıp “Uygulamayı Kullanırken”i seç.',
-    deniedBodyAndroid: 'Ayarlar → Uygulamalar → LangX → İzinler → Konum yolundan izin ver.',
     openSettings: 'Ayarları aç',
     failedTitle: 'Konum okunamadı',
     noCountry: 'Bunun hangi ülke olduğunu anlayamadık.',
@@ -253,7 +251,64 @@ export const tr: Localized<EnMessages> = {
     disabled: 'Bu cihazda konum servisleri kapalı.',
     unavailable: 'Şu anda konum alınamadı. Birazdan tekrar dene.',
     unavailableTitle: 'Konum alınamadı',
-    needed: 'Konum gerekli',
+    guide: {
+      title: 'Konum izni',
+      rowTitle: 'Konum izni',
+      rowBody: 'Nasıl açılır ve telefonun artık sormuyorsa ne yapmalı.',
+      grantedTitle: 'Konum açık',
+      grantedBody:
+        'LangX, sen kullanırken kabaca nerede olduğunu okuyabiliyor. Bunu istediğin an cihaz ayarlarından geri alabilirsin.',
+      askableTitle: 'LangX’in konumuna ihtiyacı var',
+      askableBody:
+        'Yakındakiler, insanları kabaca ne kadar uzakta olduklarına göre sıralıyor. Kesin konum saklanmıyor ve kimse yaklaşık bir mesafeden fazlasını görmüyor.',
+      allow: 'Konuma izin ver',
+      blockedTitle: 'Cihazın bir daha sormayacak',
+      blockedBody:
+        'LangX için konum reddedilmiş, bu yüzden uygulama artık izin penceresini açamıyor. İzni cihaz ayarlarından yine de verebilirsin.',
+      iosStep1: 'Ayarlar’ı aç',
+      iosStep2: 'Listede LangX’i bul',
+      iosStep3: 'Konum’a dokun ve “Uygulamayı Kullanırken”i seç',
+      androidStep1: 'Ayarlar’ı aç',
+      androidStep2: 'Uygulamalar → LangX yolunu izle',
+      androidStep3: 'İzinler → Konum’a dokun',
+      androidStep4: '“Yalnızca uygulamayı kullanırken izin ver”i seç',
+      servicesOffTitle: 'Bu cihazda konum kapalı',
+      servicesOffBodyIos:
+        'LangX’in izni var ama telefonun tamamında Konum Servisleri kapalı. Ayarlar → Gizlilik ve Güvenlik → Konum Servisleri yolundan aç.',
+      servicesOffBodyAndroid:
+        'LangX’in izni var ama cihazın tamamında konum kapalı. Ayarlar → Konum yolundan aç.',
+      webTitle: 'Buna tarayıcın karar veriyor',
+      webBody:
+        'Burada konum izni LangX’e değil tarayıcıya ait. Adres çubuğundaki konum simgesine bak ya da bu sitenin ayarlarından konuma izin ver.',
+      howTo: 'Nasıl açılır',
+    },
+  },
+
+  suspended: {
+    title: 'Hesabın askıya alındı',
+    untilBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi. {until} tarihine kadar LangX’i kullanamazsın; profilin Keşfet’te ve aramada görünmez.',
+    permanentBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın kalıcı olarak askıya alındı. Profilin Keşfet’te ve aramada görünmez.',
+    reasonLabel: 'Gerekçe',
+    appealTitle: 'İtiraz',
+    appealBody:
+      'Bir kez itiraz edebilirsin. Her itirazı bir kişi okur; beklenecek bir sıra yok — cevap e-postayla gelir.',
+    appealPlaceholder: 'Neyi yanlış anladığımızı yaz.',
+    appealTooShort: {
+      one: 'En az {count} karakter.',
+      other: 'En az {count} karakter.',
+    },
+    send: 'İtirazı gönder',
+    sending: 'Gönderiliyor…',
+    sent: 'İtiraz gönderildi',
+    sentBody:
+      'İtirazın gönderildi. Her askıya alma için bir tane var, o da buydu — sana geri yazacağız.',
+    failed: 'Gönderilemedi. Birazdan tekrar dene.',
+    alreadyAppealed: 'Bu askıya alma için zaten itiraz ettin.',
+    checkAgain: 'Yeniden bak',
+    signOut: 'Çıkış yap',
+    contact: 'Başka bir şey için: {email}',
   },
 
   gate: {
@@ -501,6 +556,12 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Emin olmadığın bir cümleyi ya da söyleyemediğin bir kelimeyi sor — burada görünür.',
   },
   discover: {
+    boosted: 'Öne çıkanlar',
+    boostedWhat: 'Bu ne?',
+    boostedExplainTitle: 'Öne çıkan profiller',
+    boostedExplainBody:
+      'Fluent ve Polyglot kullanıcıları burada gösterilir, önce Polyglot. Aşağıdaki listeyle tamamen aynı şekilde dillerine göre eşleştirilirler — eşleşmede hiçbir şey değişmez, ve isteyen Ayarlar’dan kapatabilir.',
+    boostedSeePlans: 'Planlara bak',
     languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'Kullanıcı adıyla ara',
     searchPlaceholder: 'Kullanıcı adı',
@@ -521,6 +582,13 @@ export const tr: Localized<EnMessages> = {
     nobodyNearbyTitle: '{radius} km içinde kimse yok',
     nobodyNearbyBody:
       'Burada sadece konum paylaşımını açmış kişiler görünür. Yarıçapı genişletmeyi ya da diğer sekmeleri dene.',
+    nearbyNeedsPermissionTitle: 'Yakındakiler için konum gerekiyor',
+    nearbyNeedsPermissionBody:
+      'Konum izni verilmemiş, dolayısıyla mesafeye göre sıralanacak bir şey yok.',
+    nearbyServicesOffTitle: 'Bu cihazda konum kapalı',
+    nearbyServicesOffBody: 'Konum yeniden açılmadan Yakındakiler çalışamaz.',
+    nearbyUnavailableTitle: 'Seni bulamadık',
+    nearbyUnavailableBody: 'Şu an konum gelmedi. Birazdan tekrar dene.',
     emptyTitle: 'Henüz kimse yok',
     emptyBody:
       'Dilleri seninkiyle çift yönlü eşleşen kişiler burada çıkar. Filtreleri gevşetmeyi dene.',
@@ -880,6 +948,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Askıya alındı',
+    deletedTag: 'Hesap silindi',
     previewNote:
       'Bu, başkalarının gördüğü haliyle profilin — gizlilik ayarların zaten uygulanmış durumda.',
     teaches: 'Öğretiyor',
@@ -1114,6 +1184,9 @@ export const tr: Localized<EnMessages> = {
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody:
       'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
+    boost: 'Profilimi öne çıkar',
+    boostBody:
+      'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Fluent ve Polyglot ile açık.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',
@@ -1526,6 +1599,11 @@ export const tr: Localized<EnMessages> = {
     welcomePackBody:
       'Başlangıç için bir profil çerçevesi ve iki seri dondurma. {plan} setin tamamını getirir.',
     advancedFilters: 'Gelişmiş filtreler',
+    boostedProfile: 'Öne çıkan profil',
+    boostedProfileBody:
+      'Keşfet listesinin üstündeki öne çıkanlar şeridinde, dilleri seninkilerle eşleşen herkese görünürsün. Varsayılan olarak açık; Ayarlar’dan kapatabilirsin.',
+    boostedProfileFirst: 'Şeridin en başında',
+    boostedProfileFirstBody: 'Polyglot profilleri, Fluent’in önünde şeridin başında yer alır.',
     sendTranslation: 'Onun dilinde gönder',
     sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
     deckExport: 'İfadelerini yanında götür',

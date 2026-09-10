@@ -40,6 +40,7 @@ export type {
   StreakMetric,
   PeriodType,
   PlanTier,
+  SuspensionStatus,
   Wallet,
   GiftClaim,
   TokenHistory,
@@ -86,6 +87,13 @@ export interface PublicProfileDto {
   createdAt: string
   emailVerified: boolean
   follow: FollowState
+  /**
+   * Whether this account is still one. `suspended` and `deleted` open as a
+   * profile with a tag rather than a 404, so somebody arriving from an old
+   * conversation is told what happened — see `toPublicProfile`. Optional
+   * because a cached response from before this shipped has no such field.
+   */
+  accountStatus?: 'active' | 'suspended' | 'deleted'
 }
 
 export interface DiscoveryItem {
@@ -113,6 +121,21 @@ export interface DiscoveryItem {
 export interface DiscoveryResult {
   items: DiscoveryItem[]
   nextCursor: string | null
+}
+
+/**
+ * `GET /discovery/boosted` — a card in the strip above the list.
+ *
+ * The same shape as a discovery row plus the plan that put it there, which
+ * the chip on the card reads. No cursor: the strip is a row somebody flicks
+ * through, capped server-side at `DISCOVERY_BOOSTED_LIMIT`.
+ */
+export interface BoostedProfile extends DiscoveryItem {
+  tier: Extract<PlanTier, 'pro' | 'pro_plus'>
+}
+
+export interface BoostedProfilesPage {
+  items: BoostedProfile[]
 }
 
 /** `GET /discovery/handles` — a jump-to, so no cursor and no counts. */
