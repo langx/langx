@@ -3683,3 +3683,32 @@ sign-up is excluded: being told you signed in seconds after creating the
 account is noise. Nothing thrown inside is allowed to reach the caller —
 these fire on the response to a correct password, and a mail provider having
 a bad minute must not turn that into an error page.
+
+## Six nudges, one pass, one at a time
+
+The remarketing scenarios could each have been a pass, the way the digest and
+the visit round-up are. They are not, and the reason is arithmetic: the
+candidates are the same people every time — everybody with `promotions.email`
+on — and what separates the scenarios is two or three fields on a profile
+that has already been read. Six passes would have been six collection scans
+every half hour in order to send, on most ticks, nothing.
+
+So `promotions.ts` is a **table**, walked in order for each candidate, and
+the order is the priority: photo, streak repair, 7 days away, 30 days away,
+idle tokens, invite. The first one that matches is sent and the loop breaks.
+`MARKETING_MIN_GAP_DAYS` then keeps the next one a week off, so somebody who
+qualifies for three hears one, and hears the second only if it is still true
+next week. The list is a queue of things worth saying, not a list of things
+to say at once.
+
+Two choices inside it are worth naming. The **streak repair sits under the
+`streak` switch, not `promotions`** — it is about the streak, the repair is
+one sentence, and somebody who asked for streak reminders asked for exactly
+this; putting it behind the marketing switch would have hidden it from the
+people it is for. And the **away nudges key on `stats.lastActiveAt`**, which
+does not move while somebody is away — the same trick the unread digest uses,
+and what makes "we miss you" one letter rather than a daily one.
+
+The push half is not a fallback for the mail and not gated on it. Somebody
+with the app installed and promotions on asked for both, and the mail is
+often the one that is never opened.

@@ -61,14 +61,15 @@ Four schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
 
-| Scheduler        | Interval | What it does                                                                                                                         |
-| ---------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days.    |
-| Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                |
-| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.         |
-| Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.      |
-| Verify reminder  | 30 min   | One more verification link, a day after an unverified sign-up. Exactly once per account, and never after a week.                     |
-| Campaign queue   | 30 min   | Drips a queued broadcast out on a warm-up ramp (`CAMPAIGN_WARMUP_PER_DAY`), 08–20 UTC only. `send-campaign.ts` enqueues, this sends. |
+| Scheduler        | Interval | What it does                                                                                                                                                                       |
+| ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days.                                                  |
+| Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                                                              |
+| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.                                                       |
+| Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.                                                    |
+| Promotions       | 30 min   | Six nudges — add a photo, repair a broken streak, come back at 7 and 30 days, spend idle tokens, invite a friend. One per person per tick, then `MARKETING_MIN_GAP_DAYS` of quiet. |
+| Verify reminder  | 30 min   | One more verification link, a day after an unverified sign-up. Exactly once per account, and never after a week.                                                                   |
+| Campaign queue   | 30 min   | Drips a queued broadcast out on a warm-up ramp (`CAMPAIGN_WARMUP_PER_DAY`), 08–20 UTC only. `send-campaign.ts` enqueues, this sends.                                               |
 
 Running several API instances is safe. The pool's `jobRuns` unique index means
 only one instance can own a given day, every notification pass claims a row

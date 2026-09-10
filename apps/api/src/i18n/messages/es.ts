@@ -23,6 +23,25 @@ export const es: Localized<ServerMessages> = {
       other: '{count} fichas por tu aviso 🎉',
     },
     bountyBody: 'Leímos lo que nos enviaste y valió la pena.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'Añade una foto',
+      addPhotoBody: 'Los perfiles con cara reciben más respuestas.',
+      streakBrokeTitle: {
+        one: 'Tu racha de {count} día se ha roto',
+        other: 'Tu racha de {count} días se ha roto',
+      },
+      streakBrokeBody: 'Una reparación devuelve el día.',
+      awayTitle: 'La gente sigue aquí',
+      awayBody: 'Gente nueva con quien practicar.',
+      awayLongTitle: 'Aquí cuando quieras',
+      awayLongBody: 'Tu racha y tus tokens te esperan.',
+      tokensWaitingTitle: { one: '{count} token esperando', other: '{count} tokens esperando' },
+      tokensWaitingBody: 'Abre tu cartera.',
+      inviteFriendTitle: 'Invita a alguien',
+      inviteFriendBody: 'Los dos ganáis tokens.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Tu pago no se pudo procesar',
@@ -141,6 +160,64 @@ export const es: Localized<ServerMessages> = {
       'Puedes volver a activarlos cuando quieras en LangX, en Ajustes → Notificaciones.',
     unsubscribeInvalid:
       'Este enlace no es válido. Abre LangX y cámbialo en Ajustes → Notificaciones.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'Añade una foto y te encontrarán',
+
+      addPhotoBody:
+        'Los perfiles con cara reciben muchas más respuestas. Tarda diez segundos y puedes cambiarla cuando quieras.',
+
+      addPhotoButton: 'Añadir mi foto',
+
+      streakBrokeSubject: {
+        one: 'Tu racha de {count} día se ha roto',
+        other: 'Tu racha de {count} días se ha roto',
+      },
+
+      streakBrokeBody:
+        'Te faltó ayer. Una reparación de la tienda devuelve el día y la racha continúa.',
+
+      streakBrokeButton: 'Reparar ayer',
+
+      awaySubject: 'La gente sigue practicando sin ti',
+
+      awayBody:
+        'Ha pasado una semana. Hay gente nueva con quien hablar, y tus idiomas no han cambiado.',
+
+      awayButton: 'Ver quién está',
+
+      awayLongSubject: 'Después de esto dejaremos de escribir',
+
+      awayLongBody:
+        'Un mes es mucho tiempo. Tu cuenta, tu racha y tus tokens siguen aquí si los quieres, y esto es lo último que diremos.',
+
+      awayLongButton: 'Abrir LangX',
+
+      tokensWaitingSubject: {
+        one: 'Tienes {count} token esperando',
+        other: 'Tienes {count} tokens esperando',
+      },
+
+      tokensWaitingBody:
+        'Los tokens compran congelaciones de racha, reparaciones, marcos y títulos. Los tuyos llevan quince días ahí.',
+
+      tokensWaitingButton: 'Abrir mi cartera',
+
+      inviteFriendSubject: 'Practicar es mejor con alguien conocido',
+
+      inviteFriendBody:
+        'Invita a alguien y los dos ganáis tokens cuando entre. Tu enlace está en Ajustes.',
+
+      inviteFriendButton: 'Ver mi enlace',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 

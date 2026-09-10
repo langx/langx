@@ -35,6 +35,25 @@ export const ru: Localized<ServerMessages> = {
       other: '{count} жетона за твоё сообщение 🎉',
     },
     bountyBody: 'Мы прочитали то, что ты прислал, — это того стоило.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'Добавьте фото',
+      addPhotoBody: 'Профили с лицом получают больше ответов.',
+      streakBrokeTitle: {
+        one: 'Серия из {count} дня прервалась',
+        other: 'Серия из {count} дней прервалась',
+      },
+      streakBrokeBody: 'Починка вернёт вчерашний день.',
+      awayTitle: 'Люди всё ещё здесь',
+      awayBody: 'Новые собеседники.',
+      awayLongTitle: 'Мы здесь, когда захотите',
+      awayLongBody: 'Серия и токены ждут.',
+      tokensWaitingTitle: { one: 'Ждёт {count} токен', other: 'Ждут {count} токенов' },
+      tokensWaitingBody: 'Откройте кошелёк.',
+      inviteFriendTitle: 'Пригласите знакомого',
+      inviteFriendBody: 'Токены получите оба.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Платёж не прошёл',
@@ -152,6 +171,59 @@ export const ru: Localized<ServerMessages> = {
     unsubscribedBody: 'Включить обратно можно в любой момент в LangX: Настройки → Уведомления.',
     unsubscribeInvalid:
       'Ссылка недействительна. Откройте LangX и измените это в Настройках → Уведомления.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'Добавьте фото — и вас найдут',
+
+      addPhotoBody:
+        'Профили с лицом получают заметно больше ответов. Это десять секунд, и фото можно поменять когда угодно.',
+
+      addPhotoButton: 'Добавить фото',
+
+      streakBrokeSubject: {
+        one: 'Серия из {count} дня прервалась',
+        other: 'Серия из {count} дней прервалась',
+      },
+
+      streakBrokeBody: 'Вчера пропущено. Починка из магазина вернёт день, и серия продолжится.',
+
+      streakBrokeButton: 'Починить вчера',
+
+      awaySubject: 'Здесь продолжают заниматься и без вас',
+
+      awayBody: 'Прошла неделя. Появились новые собеседники, а ваши языки те же.',
+
+      awayButton: 'Посмотреть, кто здесь',
+
+      awayLongSubject: 'После этого письма мы замолчим',
+
+      awayLongBody:
+        'Месяц — долгий срок. Ваш аккаунт, серия и токены на месте, если они вам нужны, и это последнее, что мы об этом скажем.',
+
+      awayLongButton: 'Открыть LangX',
+
+      tokensWaitingSubject: { one: 'Вас ждёт {count} токен', other: 'Вас ждут {count} токенов' },
+
+      tokensWaitingBody:
+        'За токены покупают заморозки серии, починку дней, рамки и титулы. Ваши лежат уже две недели.',
+
+      tokensWaitingButton: 'Открыть кошелёк',
+
+      inviteFriendSubject: 'Вдвоём заниматься лучше',
+
+      inviteFriendBody:
+        'Пригласите знакомого — токены получите оба, когда он придёт. Ссылка в настройках.',
+
+      inviteFriendButton: 'Взять ссылку',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 

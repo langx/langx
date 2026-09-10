@@ -27,6 +27,25 @@ export const en = {
       other: '{count} tokens for your report 🎉',
     },
     bountyBody: 'We read what you sent, and it was worth it.',
+    /** The same nudges on the phone, under the same switches. */
+    promo: {
+      addPhotoTitle: 'Add a photo',
+      addPhotoBody: 'Profiles with a face get far more replies.',
+      streakBrokeTitle: {
+        one: 'Your {count}-day streak broke',
+        other: 'Your {count}-day streak broke',
+      },
+      streakBrokeBody: 'A repair puts yesterday back.',
+      awayTitle: 'People are still here',
+      awayBody: 'New people to practise with.',
+      awayLongTitle: 'Still here when you are',
+      awayLongBody: 'Your streak and tokens are waiting.',
+      tokensWaitingTitle: { one: '{count} token waiting', other: '{count} tokens waiting' },
+      tokensWaitingBody: 'Open your wallet.',
+      inviteFriendTitle: 'Invite a friend',
+      inviteFriendBody: 'You both get tokens when they join.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Your payment did not go through',
@@ -147,6 +166,64 @@ export const en = {
     unsubscribedBody: 'You can turn them back on any time in LangX under Settings → Notifications.',
     unsubscribeInvalid:
       'This link is not valid. Open LangX and change it under Settings → Notifications.',
+
+    /**
+
+     * The nudges in `modules/notifications/promotions.ts`, in its order.
+
+     * Every one of them is behind a switch and carries a way out.
+
+     */
+
+    promo: {
+      addPhotoSubject: 'Add a photo, and people will find you',
+
+      addPhotoBody:
+        'Profiles with a face get far more replies. It takes ten seconds and you can change it whenever you like.',
+
+      addPhotoButton: 'Add my photo',
+
+      streakBrokeSubject: {
+        one: 'Your {count}-day streak broke',
+        other: 'Your {count}-day streak broke',
+      },
+
+      streakBrokeBody:
+        'You missed yesterday. A repair from the store puts the day back and the streak carries on.',
+
+      streakBrokeButton: 'Repair yesterday',
+
+      awaySubject: 'People are still practising without you',
+
+      awayBody:
+        'It has been a week. There are new people to talk to, and your languages have not changed.',
+
+      awayButton: 'See who is here',
+
+      awayLongSubject: 'We will stop writing after this',
+
+      awayLongBody:
+        'A month is a long time. Your account, your streak and your tokens are all still here if you want them — and this is the last we will say about it.',
+
+      awayLongButton: 'Open LangX',
+
+      tokensWaitingSubject: {
+        one: 'You have {count} token waiting',
+        other: 'You have {count} tokens waiting',
+      },
+
+      tokensWaitingBody:
+        'Tokens buy streak freezes, day repairs, frames and titles. Yours have been sitting there a fortnight.',
+
+      tokensWaitingButton: 'Open my wallet',
+
+      inviteFriendSubject: 'Practising is better with someone you know',
+
+      inviteFriendBody:
+        'Invite a friend and you both get tokens when they join. Your invite link is in Settings.',
+
+      inviteFriendButton: 'Get my invite link',
+    },
 
     /** Onboarding finished: one mail, once in an account's life. */
 
