@@ -86,6 +86,7 @@ async function main(): Promise<void> {
       `  kept:           ${String(conversations)} conversation(s), ${String(messages)} message(s), ${String(profile.photos?.length ?? 0)} photo(s)`,
     )
     console.log(`  overwritten:    display name and bio, from code, on the next boot`)
+    console.log(`  cleared:        the language lists, so it matches a created official account`)
 
     // Dry run by default, on every database and not just a live one: this
     // revokes somebody's sign-in, which is not a thing to do by forgetting a

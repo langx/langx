@@ -105,6 +105,14 @@ export async function adoptOfficialAccount(
         'settings.notifications': false,
         'privacy.hideOnlineStatus': true,
         tokenFrozenAt: now,
+        /*
+         * Emptied so an adopted account and a created one are the same shape.
+         * They are hidden on every screen either way — but two official
+         * accounts that differ in the document is the kind of drift that only
+         * shows up in whatever reads them next.
+         */
+        nativeLanguages: [],
+        learning: [],
         updatedAt: now,
       },
     },

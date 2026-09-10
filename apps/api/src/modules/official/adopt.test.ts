@@ -122,6 +122,9 @@ describe('adopting an account that was run by hand', () => {
     expect(profile?.settings.notifications).toBe(false)
     expect(profile?.privacy.hideOnlineStatus).toBe(true)
     expect(profile?.tokenFrozenAt).toBeInstanceOf(Date)
+    // Same shape as one this boot created, rather than nearly the same.
+    expect(profile?.nativeLanguages).toEqual([])
+    expect(profile?.learning).toEqual([])
   })
 
   /**
