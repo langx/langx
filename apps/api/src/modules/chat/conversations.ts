@@ -283,13 +283,24 @@ export async function startConversation(
     )
   }
 
-  const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
-  if (!quota.consumed) {
-    throw new ApiError(
-      ERROR_CODES.QUOTA_EXCEEDED,
-      'Daily new-conversation limit reached',
-      quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
-    )
+  /*
+   * Writing to LangX costs nothing. The initiation quota exists to pace how
+   * many strangers one person opens a thread with; the assistant is not one
+   * of them, and spending a slot to ask a question — or to report somebody —
+   * would price support out of the free tier.
+   *
+   * Everything above still applies: a blocked pair is still refused, and a
+   * second conversation is still impossible.
+   */
+  if (!recipient.official) {
+    const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
+    if (!quota.consumed) {
+      throw new ApiError(
+        ERROR_CODES.QUOTA_EXCEEDED,
+        'Daily new-conversation limit reached',
+        quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
+      )
+    }
   }
 
   const now = new Date()

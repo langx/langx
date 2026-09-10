@@ -3,6 +3,7 @@ import { createAuth } from './auth'
 import { warmUpAuthCollections } from './auth/warmUp'
 import { connectToDatabase } from './db/client'
 import { ensureIndexes } from './db/indexes'
+import { ensureOfficialAccounts } from './modules/official/accounts'
 import { createEmailSender } from './email/sender'
 import { attachSentryErrorHandler, initSentry } from './observability/sentry'
 import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
@@ -76,6 +77,16 @@ async function main(): Promise<void> {
 
   const indexResults = await ensureIndexes(db)
   app.log.info({ collections: indexResults.length, sentry: sentryEnabled }, 'indexes ensured')
+
+  // After the indexes, because `handle_unique` is what makes this idempotent.
+  const officialAccounts = await ensureOfficialAccounts(db, publicApiUrl(env))
+  app.log.info({ accounts: officialAccounts }, 'official accounts ensured')
+  const heldByAPerson = officialAccounts.filter((a) => a.outcome === 'conflict')
+  if (heldByAPerson.length > 0) {
+    // Loud, and not fatal: a real account holds the handle, so the assistant
+    // goes without rather than somebody losing their profile.
+    app.log.error({ accounts: heldByAPerson }, 'official handle is held by a real account')
+  }
 
   await warmUpAuthCollections(auth, db, app.log)
 

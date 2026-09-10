@@ -34,6 +34,8 @@ function escapeRegex(value: string): string {
  *     who has opted out of being found is still reachable by their exact link;
  *     that is `GET /profiles/:handleOrId`, deliberately, and it is a different
  *     question from this one.
+ *     The one exception is an official account, which is undiscoverable and
+ *     searchable at once — see the filter.
  *   - Mutual language fit does **not** apply. Discovery requires it because it
  *     is proposing partners; finding somebody whose name you already know
  *     cannot depend on whether you happen to be learnable to each other.
@@ -51,7 +53,14 @@ export async function searchHandles(
       {
         _id: { $nin: excludedIds },
         handle: { $regex: `^${escapeRegex(term)}` },
-        'settings.discoverable': true,
+        /*
+         * An official account is not discoverable — it must never be proposed
+         * as a partner — but it must be findable, because typing the name is
+         * how somebody reaches the assistant at all. Searching for a name you
+         * already know is the one case where "do not browse me" and "do not
+         * exist" come apart.
+         */
+        $or: [{ 'settings.discoverable': true }, { official: true }],
         // Belt and braces. `discoverable: false` already excludes them, but a
         // guest surfacing in somebody's results is the single worst failure of
         // this feature, and one flag flipped by a future default should not be

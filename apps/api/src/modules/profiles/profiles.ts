@@ -59,6 +59,15 @@ export interface Profile {
    * job when it lands.
    */
   guest?: true
+  /**
+   * One of the accounts LangX speaks from — see `OFFICIAL_HANDLES`. Created at
+   * boot by `ensureOfficialAccounts`, never by a form.
+   *
+   * The flag is what every guard reads, not the handle: comparing handles
+   * would put the string 'langx' in a dozen call sites, and an account that
+   * was renamed would silently stop being official.
+   */
+  official?: true
   handle: string
   displayName: string
   avatarUrl?: string
@@ -995,7 +1004,12 @@ export interface PublicProfile {
   photos: { url: string }[]
   bio?: string
   pronouns?: string
-  age: number
+  /**
+   * Absent on an official account, which has a placeholder birth date rather
+   * than one somebody gave. Publishing an age derived from it would be a
+   * number the app made up.
+   */
+  age?: number
   gender: Profile['gender']
   country?: string
   city?: string
@@ -1035,6 +1049,8 @@ export interface PublicProfile {
    * than deleting them" stays legible one line at a time.
    */
   follow: FollowState
+  /** Draws the tick beside the display name. See `Profile.official`. */
+  official?: true
 }
 
 /**
@@ -1074,7 +1090,6 @@ export function toPublicProfile(
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
     photos: (profile.photos ?? []).map((p) => ({ url: p.url })),
-    age: ageFromBirthDate(profile.birthDate, now),
     gender: profile.gender,
     nativeLanguages: profile.nativeLanguages ?? [],
     learning: profile.learning ?? [],
@@ -1091,6 +1106,8 @@ export function toPublicProfile(
     emailVerified,
     follow,
   }
+  if (profile.official) result.official = true
+  else result.age = ageFromBirthDate(profile.birthDate, now)
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio

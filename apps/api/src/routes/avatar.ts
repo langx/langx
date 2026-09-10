@@ -1,9 +1,17 @@
-import { avatarOptionsFor, GENERATED_AVATAR_BACKGROUNDS } from '@langx/shared'
+import { avatarOptionsFor, GENERATED_AVATAR_BACKGROUNDS, OFFICIAL_HANDLES } from '@langx/shared'
 import { createAvatar } from '@dicebear/core'
 import { notionists } from '@dicebear/collection'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
+import { loadAsset } from '../lib/assets'
 import { getProfileGender } from '../modules/profiles/profiles'
+
+/**
+ * Copilot's face, in code rather than in `assets/`, because it is twenty lines
+ * of SVG and a binary in the repository is a file nobody can review in a diff.
+ * The app icon is a real picture and lives on disk; this is a glyph.
+ */
+const COPILOT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Copilot"><rect width="128" height="128" rx="28" fill="#3b6cf6"/><path d="M64 26l8.4 22.6a12 12 0 0 0 7 7L102 64l-22.6 8.4a12 12 0 0 0-7 7L64 102l-8.4-22.6a12 12 0 0 0-7-7L26 64l22.6-8.4a12 12 0 0 0 7-7z" fill="#ffffff"/></svg>`
 
 /**
  * A week. The picture is no longer a pure function of the URL — it also reads
@@ -79,6 +87,39 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
         .header('cache-control', `public, max-age=${CACHE_SECONDS}`)
         .headers(EMBEDDABLE)
         .send(svg)
+    },
+  )
+
+  /**
+   * The face of an account LangX speaks from.
+   *
+   * Served rather than uploaded, so a fresh database — a self-host, a test, a
+   * developer's laptop — has the right picture without anybody seeding one,
+   * and so the account is never left holding a link into storage that this
+   * deployment does not have.
+   *
+   * A static segment ahead of `:seed`, whose 24-hex bound would refuse the
+   * word anyway. Unauthenticated and unbounded by rate limit for the same
+   * reason as the generated faces: it is a picture, and both files are
+   * constants — nothing here reads the database at all.
+   */
+  app.get(
+    '/public/avatar/official/:handle',
+    { schema: { params: z.object({ handle: z.enum(OFFICIAL_HANDLES) }) } },
+    async (request, reply) => {
+      const { handle } = request.params
+      const cached = reply
+        .header('cache-control', `public, max-age=${CACHE_SECONDS}`)
+        .headers(EMBEDDABLE)
+
+      if (handle === 'copilot') {
+        return cached.header('content-type', 'image/svg+xml').send(COPILOT_SVG)
+      }
+      // @langx wears the app icon: the assistant is the product speaking, and
+      // a second mark for it would be a second brand to keep in step.
+      return cached
+        .header('content-type', 'image/png')
+        .send(await loadAsset('icon.png', 'Official avatar'))
     },
   )
 
