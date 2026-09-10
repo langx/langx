@@ -57,6 +57,9 @@ whole collection.
 
 ## Background work
 
+[`notifications.md`](notifications.md) catalogues every message these send —
+what triggers it, which switch gates it, and what stops it arriving twice.
+
 Four schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
@@ -67,6 +70,9 @@ during the window catches up on its next tick instead of skipping silently.
 | Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                                                              |
 | Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.                                                       |
 | Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.                                                    |
+| Pool payout      | 30 min   | "Yesterday's pool paid you N tokens", at 09:00 on each reader's own clock. Push only.                                                                                              |
+| Gift ready       | 30 min   | "Your hourly gift is ready", at most once a day, and only for somebody who has taken one before.                                                                                   |
+| Likes round-up   | 30 min   | A day of likes on somebody's posts as one push, once a day.                                                                                                                        |
 | Newsletter       | 30 min   | "Your month on LangX" on the first of the month at 10:00 local, or any of the six days after. Once per reader per month.                                                           |
 | Promotions       | 30 min   | Six nudges — add a photo, repair a broken streak, come back at 7 and 30 days, spend idle tokens, invite a friend. One per person per tick, then `MARKETING_MIN_GAP_DAYS` of quiet. |
 | Verify reminder  | 30 min   | One more verification link, a day after an unverified sign-up. Exactly once per account, and never after a week.                                                                   |

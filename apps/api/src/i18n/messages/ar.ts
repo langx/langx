@@ -48,6 +48,42 @@ export const ar: Localized<ServerMessages> = {
       inviteFriendBody: 'ستحصلان كلاكما على رموز.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} يتابعك الآن',
+
+      followBody: 'انقر لرؤية ملفه الشخصي.',
+
+      correctionTitle: '{name} صحّح جملتك',
+
+      correctionBody: 'انقر لقراءة التصحيح.',
+
+      answerTitle: '{name} سجّل جملتك صوتياً',
+
+      answerBody: 'انقر للاستماع.',
+
+      commentTitle: '{name} علّق على منشورك',
+
+      commentBody: 'انقر لقراءته.',
+
+      likesTitle: { one: 'حصل منشورك على إعجاب واحد', other: 'حصل منشورك على {count} إعجاباً' },
+
+      likesBody: 'أعجب أحدهم بما كتبت.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: { one: 'منحك توزيع الأمس رمزاً واحداً', other: 'منحك توزيع الأمس {count} رمزاً' },
+
+      poolBody: 'انقر لفتح محفظتك.',
+
+      giftTitle: 'هديتك كل ساعة جاهزة',
+
+      giftBody: 'افتح المحفظة واحصل عليها.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'لم تتم عملية الدفع',
@@ -334,6 +370,8 @@ export const ar: Localized<ServerMessages> = {
       messages: 'ملخّصات الرسائل',
       streak: 'تذكيرات السلسلة',
       profileVisits: 'ملخّصات زيارات الملف',
+      social: 'نشاط الموجز',
+      wallet: 'أخبار الرموز',
       promotions: 'الأخبار والعروض',
       all: 'رسائل LangX',
       v1contact: 'الرسالة الوحيدة عن LangX الجديد',

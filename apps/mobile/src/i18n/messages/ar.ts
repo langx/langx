@@ -554,6 +554,10 @@ export const ar: Localized<EnMessages> = {
     profileVisitsBody: 'مرة كل يوم، كم شخصًا اطّلع على ملفك. وملخّص بالبريد كل أسبوع.',
     meetings: 'المواعيد',
     meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. إشعار فقط.',
+    social: 'الموجز ومن فيه',
+    socialBody: 'المتابعات والتصحيحات على منشوراتك والإعجابات.',
+    wallet: 'الرموز',
+    walletBody: 'التوزيع اليومي وهديتك كل ساعة.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
     /** The two halves of every kind above; the row title, so no kind name in it. */

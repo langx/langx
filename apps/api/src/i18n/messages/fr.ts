@@ -45,6 +45,48 @@ export const fr: Localized<ServerMessages> = {
       inviteFriendBody: 'Vous gagnez tous les deux des jetons.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} vous suit',
+
+      followBody: 'Touchez pour voir son profil.',
+
+      correctionTitle: '{name} a corrigé votre phrase',
+
+      correctionBody: 'Touchez pour lire la correction.',
+
+      answerTitle: '{name} a enregistré votre phrase',
+
+      answerBody: 'Touchez pour écouter.',
+
+      commentTitle: '{name} a commenté votre publication',
+
+      commentBody: 'Touchez pour la lire.',
+
+      likesTitle: {
+        one: 'Votre publication a 1 j’aime',
+        other: 'Votre publication a {count} j’aime',
+      },
+
+      likesBody: 'Quelqu’un a aimé ce que vous avez écrit.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'La distribution d’hier vous a versé 1 jeton',
+        other: 'La distribution d’hier vous a versé {count} jetons',
+      },
+
+      poolBody: 'Touchez pour ouvrir votre portefeuille.',
+
+      giftTitle: 'Votre cadeau horaire est prêt',
+
+      giftBody: 'Ouvrez le portefeuille et récupérez-le.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Votre paiement n’a pas abouti',
@@ -344,6 +386,8 @@ export const fr: Localized<ServerMessages> = {
       messages: 'les résumés de messages',
       streak: 'les rappels de série',
       profileVisits: 'les résumés de visites de profil',
+      social: 'l’activité du fil',
+      wallet: 'les nouvelles de jetons',
       promotions: 'les actualités et offres',
       all: 'les e-mails de LangX',
       v1contact: 'le message unique sur le nouveau LangX',

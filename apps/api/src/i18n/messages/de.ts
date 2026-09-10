@@ -42,6 +42,45 @@ export const de: Localized<ServerMessages> = {
       inviteFriendBody: 'Ihr bekommt beide Token.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} folgt dir jetzt',
+
+      followBody: 'Tippe, um das Profil zu sehen.',
+
+      correctionTitle: '{name} hat deinen Satz korrigiert',
+
+      correctionBody: 'Tippe, um die Korrektur zu lesen.',
+
+      answerTitle: '{name} hat deinen Satz aufgenommen',
+
+      answerBody: 'Tippe zum Anhören.',
+
+      commentTitle: '{name} hat deinen Beitrag kommentiert',
+
+      commentBody: 'Tippe, um ihn zu lesen.',
+
+      likesTitle: { one: 'Dein Beitrag hat 1 Like', other: 'Dein Beitrag hat {count} Likes' },
+
+      likesBody: 'Jemandem gefällt, was du geschrieben hast.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Die gestrige Ausschüttung brachte dir 1 Token',
+        other: 'Die gestrige Ausschüttung brachte dir {count} Token',
+      },
+
+      poolBody: 'Tippe, um dein Wallet zu öffnen.',
+
+      giftTitle: 'Dein stündliches Geschenk ist bereit',
+
+      giftBody: 'Öffne das Wallet und hol es dir.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Deine Zahlung ist fehlgeschlagen',
@@ -339,6 +378,8 @@ export const de: Localized<ServerMessages> = {
       messages: 'Nachrichtenübersichten',
       streak: 'Streak-Erinnerungen',
       profileVisits: 'Übersichten zu Profilbesuchen',
+      social: 'Feed-Aktivität',
+      wallet: 'Token-Neuigkeiten',
       promotions: 'Neues und Angebote',
       all: 'E-Mails von LangX',
       v1contact: 'die eine Nachricht über das neue LangX',

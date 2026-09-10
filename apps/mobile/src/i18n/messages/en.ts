@@ -537,6 +537,10 @@ export const en = {
       'Once a day, how many people looked at your profile. A summary by email each week.',
     meetings: 'Meetings',
     meetingsBody: 'An hour before a call you both agreed to. Push only.',
+    social: 'The feed and the people on it',
+    socialBody: 'Follows, corrections on your posts, and likes.',
+    wallet: 'Tokens',
+    walletBody: 'The daily pool paying out, and your hourly gift.',
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. One tap to stop.',
     /** The two halves of every kind above; the row title, so no kind name in it. */

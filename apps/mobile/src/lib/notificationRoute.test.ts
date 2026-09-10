@@ -36,4 +36,14 @@ describe('notificationRoute', () => {
   it('sends a security notice to the screen that changes the password', () => {
     expect(notificationRoute({ kind: 'security' })).toBe('/settings/password')
   })
+
+  it('sends feed news to the post, the person, or the room', () => {
+    expect(notificationRoute({ kind: 'social', postId: 'p1' })).toBe('/post/p1')
+    expect(notificationRoute({ kind: 'social', handle: 'sofia' })).toBe('/sofia')
+    expect(notificationRoute({ kind: 'social' })).toBe('/feed')
+  })
+
+  it('sends token news to the wallet', () => {
+    expect(notificationRoute({ kind: 'wallet' })).toBe('/wallet')
+  })
 })

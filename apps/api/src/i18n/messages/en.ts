@@ -46,6 +46,45 @@ export const en = {
       inviteFriendBody: 'You both get tokens when they join.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} followed you',
+
+      followBody: 'Tap to see their profile.',
+
+      correctionTitle: '{name} corrected your sentence',
+
+      correctionBody: 'Tap to read the correction.',
+
+      answerTitle: '{name} recorded your sentence',
+
+      answerBody: 'Tap to listen.',
+
+      commentTitle: '{name} commented on your post',
+
+      commentBody: 'Tap to read it.',
+
+      likesTitle: { one: 'Your post got 1 like', other: 'Your post got {count} likes' },
+
+      likesBody: 'Somebody liked what you wrote.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: "Yesterday's pool paid you 1 token",
+        other: "Yesterday's pool paid you {count} tokens",
+      },
+
+      poolBody: 'Tap to open your wallet.',
+
+      giftTitle: 'Your hourly gift is ready',
+
+      giftBody: 'Open the wallet and collect it.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Your payment did not go through',
@@ -345,6 +384,8 @@ export const en = {
       messages: 'message summaries',
       streak: 'streak reminders',
       profileVisits: 'profile-visit summaries',
+      social: 'feed activity',
+      wallet: 'token news',
       promotions: 'news and offers',
       all: 'email from LangX',
       v1contact: 'the one message about the new LangX',

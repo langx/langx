@@ -42,6 +42,48 @@ export const ptBR: Localized<ServerMessages> = {
       inviteFriendBody: 'Vocês dois ganham tokens.',
     },
 
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} começou a seguir você',
+
+      followBody: 'Toque para ver o perfil.',
+
+      correctionTitle: '{name} corrigiu sua frase',
+
+      correctionBody: 'Toque para ler a correção.',
+
+      answerTitle: '{name} gravou sua frase',
+
+      answerBody: 'Toque para ouvir.',
+
+      commentTitle: '{name} comentou na sua publicação',
+
+      commentBody: 'Toque para ler.',
+
+      likesTitle: {
+        one: 'Sua publicação recebeu 1 curtida',
+        other: 'Sua publicação recebeu {count} curtidas',
+      },
+
+      likesBody: 'Alguém curtiu o que você escreveu.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'O rateio de ontem te pagou 1 token',
+        other: 'O rateio de ontem te pagou {count} tokens',
+      },
+
+      poolBody: 'Toque para abrir sua carteira.',
+
+      giftTitle: 'Seu presente por hora está pronto',
+
+      giftBody: 'Abra a carteira e pegue.',
+    },
+
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
     billingFailedTitle: 'Seu pagamento não foi concluído',
@@ -334,6 +376,8 @@ export const ptBR: Localized<ServerMessages> = {
       messages: 'os resumos de mensagens',
       streak: 'os lembretes de sequência',
       profileVisits: 'os resumos de visitas ao perfil',
+      social: 'atividade do feed',
+      wallet: 'novidades de tokens',
       promotions: 'as novidades e ofertas',
       all: 'os e-mails do LangX',
       v1contact: 'a única mensagem sobre o novo LangX',
