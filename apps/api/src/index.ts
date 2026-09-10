@@ -85,7 +85,9 @@ async function main(): Promise<void> {
     startStreakReminderScheduler(db, push, notificationEmail, app.log),
     startMeetingReminderScheduler(db, push, app.log),
     startLegacyImportScheduler(db, app.log),
-    startNotificationScheduler(db, { push, email: notificationEmail }, app.log),
+    startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {
+      ...(env.STORAGE_PUBLIC_BASE_URL ? { storagePublicBaseUrl: env.STORAGE_PUBLIC_BASE_URL } : {}),
+    }),
   ]
 
   const shutdown = async (signal: string): Promise<void> => {

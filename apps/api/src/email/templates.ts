@@ -8,6 +8,8 @@ import {
   type ReportReason,
 } from '@langx/shared'
 import { translator } from '../i18n'
+import { facesRow, type AvatarFace } from './avatars'
+import type { InlineAsset } from './inlineAssets'
 import { inlineSrc, LOGO_SRC } from './logo'
 
 /**
@@ -155,6 +157,12 @@ export interface Email {
   subject: string
   html: string
   text: string
+  /**
+   * Images this one mail carries that are not in `INLINE_ASSETS` — today only
+   * the faces in the unread digest, which are per recipient and so cannot be
+   * a build-time constant. Merged with the shared ones by the sender.
+   */
+  attachments?: InlineAsset[]
 }
 
 /**
@@ -172,6 +180,8 @@ export function notificationEmail(
   options: {
     preheader: string
     bodyHtml: string
+    /** Between the body and the button — the digest's row of faces. */
+    extraHtml?: string
     cta?: { url: string; label: string }
     unsubscribeUrl: string
     manageUrl: string
@@ -186,7 +196,12 @@ export function notificationEmail(
         &nbsp;&middot;&nbsp;
         <a href="${options.manageUrl}" style="color:#62676d; text-decoration:underline;">${t('email.managePrefs')}</a>`
   return {
-    html: shell(locale, options.preheader, `${options.bodyHtml}${cta}`, footer),
+    html: shell(
+      locale,
+      options.preheader,
+      `${options.bodyHtml}${options.extraHtml ?? ''}${cta}`,
+      footer,
+    ),
   }
 }
 
@@ -377,16 +392,24 @@ export function unreadDigestEmail(
   locale: Locale,
   {
     count,
-    names,
+    faces,
     moreThreads,
     url,
     unsubscribe,
-  }: { count: number; names: string[]; moreThreads: number; url: string; unsubscribe: string },
+  }: {
+    count: number
+    /** Who wrote, in the order the threads came back. */
+    faces: AvatarFace[]
+    moreThreads: number
+    url: string
+    unsubscribe: string
+  },
 ): Email {
   const t = translator(locale)
   const subject = t('email.digestSubject', { count })
   // `Intl.ListFormat` because "Ada, Bo and Cy" is not "Ada, Bo, Cy" in most of
   // the eight languages, and joining with a comma is wrong in all of them.
+  const names = faces.map((face) => face.name)
   const joined = formatList(locale, names)
   const body = t('email.digestBody', { count, names: joined })
   const more = moreThreads > 0 ? t('email.digestMore', { count: moreThreads }) : ''
@@ -396,12 +419,16 @@ export function unreadDigestEmail(
     subject,
     html: notificationEmail(locale, {
       preheader: t('email.digestPreheader'),
-      bodyHtml: `<p>${body}</p>${more ? `<p style="color:#62676d;">${more}</p>` : ''}`,
+      bodyHtml: `<p>${body}</p>`,
+      // The faces stand in for the "and N more" sentence rather than
+      // repeating it: a grey +N disc says the same thing in less room.
+      extraHtml: facesRow(faces, moreThreads, locale === 'ar' ? 'rtl' : 'ltr'),
       cta,
       unsubscribeUrl: unsubscribe,
       manageUrl: webUrl('/settings'),
     }).html,
     text: notificationText(locale, [body, ...(more ? [more] : []), '', cta.url], unsubscribe),
+    attachments: faces.flatMap((face) => (face.asset ? [face.asset] : [])),
   }
 }
 

@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import type { Env } from '../env'
+import type { InlineAsset } from './inlineAssets'
 import { inlineAssetsFor } from './logo'
 
 /**
@@ -29,6 +30,8 @@ export interface EmailMessage {
    * from the app's transactional address that would be a lie.
    */
   replyTo?: string
+  /** Images for this one message, beside the shared ones. See `Email`. */
+  attachments?: InlineAsset[]
 }
 
 export interface EmailSender {
@@ -65,8 +68,8 @@ const SINGLE_SEND_SPACING_MS = 600
  * The images a message shows, attached inline. See `inlineAssets.ts` for why
  * they are bytes in the mail rather than links to the site.
  */
-function inlineAttachments(html: string) {
-  const assets = inlineAssetsFor(html)
+function inlineAttachments(html: string, extra: InlineAsset[] = []) {
+  const assets = [...inlineAssetsFor(html), ...extra.filter((asset) => html.includes(asset.cid))]
   return assets.length === 0
     ? {}
     : {
@@ -89,7 +92,15 @@ export class ResendEmailSender implements EmailSender {
     this.#from = from
   }
 
-  async send({ to, subject, html, text, headers, replyTo }: EmailMessage): Promise<void> {
+  async send({
+    to,
+    subject,
+    html,
+    text,
+    headers,
+    replyTo,
+    attachments,
+  }: EmailMessage): Promise<void> {
     const { error } = await this.#client.emails.send({
       from: this.#from,
       to,
@@ -98,7 +109,7 @@ export class ResendEmailSender implements EmailSender {
       text,
       ...(headers ? { headers } : {}),
       ...(replyTo ? { replyTo } : {}),
-      ...inlineAttachments(html),
+      ...inlineAttachments(html, attachments),
     })
     if (error) {
       throw new Error(`Resend failed to send "${subject}" to ${to}: ${error.message}`)
@@ -114,7 +125,11 @@ export class ResendEmailSender implements EmailSender {
      * still means "release everything not yet sent": the claim was for the
      * whole batch, and the caller cannot tell which of these went.
      */
-    if (messages.some((message) => inlineAssetsFor(message.html).length > 0)) {
+    if (
+      messages.some(
+        (message) => Object.keys(inlineAttachments(message.html, message.attachments)).length > 0,
+      )
+    ) {
       for (const [index, message] of messages.entries()) {
         if (index > 0) await new Promise((resolve) => setTimeout(resolve, SINGLE_SEND_SPACING_MS))
         await this.send(message)

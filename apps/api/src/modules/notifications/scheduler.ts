@@ -29,7 +29,7 @@ export function startNotificationScheduler(
   db: Db,
   senders: { push: PushSender; email: NotificationEmailContext },
   logger: SchedulerLogger,
-  options: { intervalMs?: number } = {},
+  options: { intervalMs?: number; storagePublicBaseUrl?: string } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? NOTIFICATION_INTERVAL_MS
   let running = false
@@ -40,7 +40,9 @@ export function startNotificationScheduler(
     const now = new Date()
     try {
       await Promise.allSettled([
-        run('unread digest', () => runUnreadDigestPass(db, senders.email, now)),
+        run('unread digest', () =>
+          runUnreadDigestPass(db, senders.email, now, options.storagePublicBaseUrl),
+        ),
         run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
         run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
         run('badge round-up', () => runBadgeRoundUpPass(db, senders, now, logger)),
