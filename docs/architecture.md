@@ -592,6 +592,31 @@ has been reported or blocked, and reversal via an `adjustment` row. **Every
 threshold is visible in the public repo** — the defence is server-side
 enforcement and idempotency, not secrecy.
 
+**Suspension** is the step past a freeze, and it is a person's decision every
+time. The report email carries a signed review link (`email/reviewToken.ts`,
+the same capability-token trade the bug bounty makes) that opens a small HTML
+page: suspend for N days, suspend permanently, or dismiss. There is no admin
+route, no session and no console — the review happens in the mailbox the
+report already arrives in.
+
+The state is one field. `suspension.until > now` is the whole of "suspended",
+computed on every check, so expiry needs no cron and nothing to sweep;
+permanent stores a far-future sentinel so the same comparison covers it.
+Enforcement lives in `requireAuth` rather than route by route, because "every
+route except two" is a rule that cannot survive being repeated — the next
+route added would be the one that forgot. It costs one projected `_id` read
+per authenticated request; the alternative, a flag on Better Auth's `user`
+document, would put our moderation state in their collection. `authenticateSocket`
+makes the same read, so the WebSocket cannot become a back door around it.
+
+`notSuspended()` joins the three reads that must not surface a suspended
+account — discovery and the boosted strip, handle search, and the signed-out
+shared link. The profile itself still opens for a signed-in member, carrying
+`accountStatus: 'suspended'` and nothing else: when it ends, why, and whether
+it was appealed belong to the person it is about. One appeal per suspension,
+enforced by the update's own filter, emailed to support with its own signed
+link that can shorten or lift.
+
 ### Copilot
 
 The only paid feature ever promised publicly. The plan keeps it as a **P1 Polyglot

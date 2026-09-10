@@ -1154,7 +1154,11 @@ export function toPublicProfile(
     follow,
     // Derived, never copied: `suspension` and `deletedAt` themselves are not
     // named here, so neither leaves.
-    accountStatus: profile.deletedAt ? 'deleted' : isSuspended(profile, now) ? 'suspended' : 'active',
+    accountStatus: profile.deletedAt
+      ? 'deleted'
+      : isSuspended(profile, now)
+        ? 'suspended'
+        : 'active',
   }
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
