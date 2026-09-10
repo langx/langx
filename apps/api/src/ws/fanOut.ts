@@ -4,6 +4,7 @@ import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { countUnread, markDelivered, previewFor } from '../modules/chat/messages'
 import { attachmentsOf, notificationsAllowed } from '@langx/shared'
+import { respondAsOfficial } from '../modules/official/assistant'
 import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
 
@@ -126,6 +127,22 @@ export async function fanOutMessage(
   } catch (error) {
     app.log.warn({ err: error }, 'post-send fan-out failed')
   }
+
+  /*
+   * And if it was sent to an account that answers, the answer.
+   *
+   * Here rather than in the two send paths because this function is the one
+   * funnel both REST and the socket already pass through — a new message path
+   * cannot ship without realtime, so it cannot ship without this either, and
+   * there is no second door to keep a guard in step with.
+   *
+   * Outside the try above and unawaited: the sender's ack must not wait on a
+   * model, and a reply that fails must not look like a send that failed.
+   * `respondAsOfficial` decides whether it is addressed at all.
+   */
+  void respondAsOfficial(app, conversation, message).catch((error: unknown) => {
+    app.log.error({ err: error }, 'official reply failed')
+  })
 }
 
 /**

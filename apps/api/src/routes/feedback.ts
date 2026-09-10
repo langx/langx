@@ -10,20 +10,11 @@ import {
 import { randomUUID } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
-import {
-  BOUNTY_TOKEN_TTL_MS,
-  bountyAwardUrl,
-  signBountyToken,
-  verifyBountyToken,
-} from '../email/bountyToken'
-import { feedbackEmail } from '../email/templates'
-import { publicApiUrl } from '../env'
+import { verifyBountyToken } from '../email/bountyToken'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { notifyBountyPaid } from '../modules/feedback/bountyNotice'
-import { newIssueUrl } from '../modules/feedback/githubIssue'
-import { assertAttachmentsAllowed } from '../modules/media/assertMedia'
+import { submitFeedback } from '../modules/feedback/submit'
 import { objectExtension } from '../modules/media/objectExtension'
-import { emailFor } from '../modules/profiles/emailFor'
 import { getProfile } from '../modules/profiles/profiles'
 import { awardTokens } from '../modules/tokens/ledger'
 
@@ -110,66 +101,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
       config: { rateLimit: limit(6, '1 hour') },
     },
     async (request, reply) => {
-      const attachments = request.body.attachments ?? []
-      // Before anything leaves this process: the same ceilings and the same
-      // bucket check every other attachment goes through. A URL outside our own
-      // storage would put a link to wherever the sender liked in a public issue.
-      if (attachments.length > 0) {
-        assertAttachmentsAllowed(attachments, app.env.STORAGE_PUBLIC_BASE_URL)
-      }
-
-      const profile = await getProfile(app.mongo.db, request.userId)
-      const address = await emailFor(app.mongo.db, request.userId)
-      const attachmentUrls = attachments.map((item) => item.url)
-
-      /*
-       * A link to GitHub's own new-issue form, prefilled — not an issue. This
-       * service holds no credential that can write to the tracker, so nothing
-       * here can be revoked, leaked or silently expire, and a person decides
-       * what becomes public. See `githubIssue.ts`.
-       */
-      const issueUrl = newIssueUrl(app.env.GITHUB_ISSUE_REPO, {
-        kind: request.body.kind,
-        body: request.body.body,
-        attachmentCount: attachments.length,
-      })
-
-      /*
-       * The report's own id, and the only place it is ever written down is the
-       * link below — which is enough, because the one thing it has to be is
-       * the ledger's `refId`, and the ledger is what remembers it after that.
-       */
-      const reportId = randomUUID()
-      const awardUrl = bountyAwardUrl(
-        publicApiUrl(app.env),
-        signBountyToken(app.env.BETTER_AUTH_SECRET, {
-          userId: request.userId,
-          reportId,
-          expiresAt: Date.now() + BOUNTY_TOKEN_TTL_MS,
-        }),
-      )
-
-      const mail = feedbackEmail({
-        kind: request.body.kind,
-        body: request.body.body,
-        attachmentUrls,
-        sender: {
-          userId: request.userId,
-          handle: profile?.handle ?? null,
-          email: address?.email ?? null,
-        },
-        awardUrl,
-        newIssueUrl: issueUrl,
-      })
-
-      await app.email.send({
-        to: app.env.SUPPORT_EMAIL,
-        ...mail,
-        // So that confirming a report — or asking for the step that is missing
-        // — is a reply rather than a lookup.
-        ...(address ? { headers: { 'Reply-To': address.email } } : {}),
-      })
-
+      await submitFeedback(app, request.userId, request.body)
       // Accepted, not created: there is nothing of ours to fetch afterwards,
       // and the client has nothing to do with the answer but say thank you.
       return reply.code(202).send({ ok: true })

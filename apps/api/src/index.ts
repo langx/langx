@@ -10,6 +10,7 @@ import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
 import { createPersonDeleterFromEnv } from './modules/analytics/personDeleter'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
@@ -46,6 +47,10 @@ async function main(): Promise<void> {
 
   const translation = createTranslationProvider(env)
 
+  // `null` without a key. @langx still greets and announces — those are ours,
+  // not the model's — and a message to it is answered with the offline line.
+  const assistant = createAnthropicProvider(env)
+
   /**
    * What every notification sender needs: an outbox, the secret its
    * unsubscribe links are signed with, and the address those links point back
@@ -69,6 +74,7 @@ async function main(): Promise<void> {
     revenueCat,
     push,
     email: emailSender,
+    assistant,
   })
 
   // Declarative indexes are applied before the first request is served, so a

@@ -50,6 +50,15 @@ const envSchema = z.object({
   // Raises GitHub's rate limit for the contributor strip on Our Kitchen.
   // Never required: without it the list is simply refreshed less often.
   GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
+
+  /**
+   * The assistant behind @langx. Optional, like every other outside service
+   * here: without a key `app.assistant` is `null`, a message to @langx is
+   * answered with `official.assistantOffline`, and the welcome message and
+   * announcements — which are ours, not the model's — carry on untouched.
+   */
+  ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-opus-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this
