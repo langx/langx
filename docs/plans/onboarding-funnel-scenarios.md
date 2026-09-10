@@ -384,72 +384,88 @@ completed**, per variant, at 30 days — and its shadow, `message_sent` within
 the first session, which P1 can hurt by putting a screen between `done` and
 the first hello.
 
-## 6. How to compare them without PostHog flags
+## 6. How to compare variants, when there are enough people to compare
 
-`analytics.ts` turns off feature flags and remote config on purpose (a request
-on boot for an answer nothing reads). Two ways to bucket that do not turn them
-on:
+**Not yet.** Two arms need a difference larger than chance: at a 20%
+onboarding-completion rate, seeing a five-point lift with the usual
+confidence takes about 1,100 people per arm, and paywall conversion at a
+few percent takes tens of thousands. Below roughly 500 installs a week an A/B
+test announces a winner that was a coin toss. Until then the comparison is
+**before and after**: one flow, shipped to everyone, read against the weeks
+before it in PostHog's funnel view over a date range.
 
-- **Server-side**: `GET /app-config` (already fetched at boot for the auth
-  providers) gains `onboardingVariant: 'a' | 'b' | 'c'`, decided per anonymous
-  device id hash. One switch to change the split, nothing shipped to change
-  it.
-- **Client-side**: a stable hash of the analytics anonymous id, modulo the
-  variant count, stored on the device the first time it is drawn.
+That comparison is only clean if the flow changes _before_ the audience does.
+The print campaign (stickers, cards, flyers) brings a different population
+from today's organic installs, so the new onboarding and its events go live
+before the campaign starts, and the whole campaign cohort is measured on the
+new flow.
 
-Either way the variant goes on every event as a property
-(`onboarding_variant`) — a property, not a person field, so the breakdown in
-`insight.mjs` is one line.
+**When the volume arrives, the A/B infrastructure is already in the SDK.**
+PostHog Feature Flags and Experiments are on the free plan; `analytics.ts`
+turns them off (`preloadFeatureFlags: false`, `disableRemoteConfig: true`)
+for the reason `decisions.md` gives — a request on boot for an answer nothing
+reads. Turning them on is one option, plus `getFeatureFlag('onboarding-variant')`
+read before the first screen and stamped on every event as a property. Two
+things to get right then: the flag must resolve before the splash ends or the
+person sees one flow and gets the other, and a first launch offline gets the
+default arm. The experiment itself — significance, required sample, "not
+enough data yet" — is computed by PostHog, not by us. Flags read the existing
+anonymous id and collect nothing new, so the store forms are untouched. Size
+S, one day, and not before the campaign has been running for a month.
 
-## 7. Recommendation and order
+## 7. Decision and order (agreed 10 September 2026)
 
-1. **§3 instrumentation now**, alone, one PR. Read it for a week. If the email
-   path leaks as badly as L1 predicts, the rest of the order is confirmed; if
-   it does not, B moves up.
-2. **Scenario A with A1′**, all five items. It removes screens and adds none,
-   changes no policy, and every item traces to a leak in §2. Ship it to
-   everyone — there is no variant of "fewer walls" worth holding back as a
-   control. A1 waits for the numbers.
-3. **Scenario B** as the first variant against A. It is the one genuinely
-   different hypothesis (show before asking) and the one with a new endpoint.
-4. **Scenario C's `done`** — cards and counter — as the second variant, with
-   **P3** as its paywall against A's **P1**.
-5. **Scenario D** on top of whichever wins, because it is mostly copy,
-   templates and one welcome-screen branch.
+Behic's decisions, taken on the recommendations above: no A/B test now, no
+separate instrumentation PR, one thing built and read before/after, and the
+plan stays a plan until he says otherwise.
+
+1. **One PR: Scenario A with A1′, the P1 paywall, and the §3 events
+   together.** Everything in §9 PR 1 and PR 2, as one change. The events are
+   not a study of their own; they are what makes the change readable. Ships to
+   everyone, as an OTA update plus one API deploy (the verification mail's
+   URL).
+2. **Live before the print campaign starts** (next month), so the campaign's
+   cohort is measured on the new flow from its first install.
+3. **Read it in PostHog** after four weeks of campaign traffic: the §3 funnel
+   over two date ranges, and `paywall_viewed{source:'onboarding'}` →
+   `purchase_finished{outcome:'purchased'}`.
+4. **Then, and only with the volume §6 names**, turn PostHog flags on and put
+   Scenario B or Scenario C against the shipped flow as the first real
+   experiment. B if the leak is still before sign-up; C if it is between
+   `onboarding_completed` and the first message.
+5. **Scenario D** on top of whichever holds, because it is mostly copy,
+   templates and one welcome-screen branch — and the campaign's invite links
+   are the natural moment for it.
+
+Settled with it: A1′ rather than A1 (§4.A); the onboarding paywall shows only
+when the store returns a trial, once, dismissible with "Continue free" (§5);
+the trial to configure is **7 days**; the "3× replies" line is not written
+until a query has measured it.
 
 Motion, throughout: only where it carries meaning (a choice becoming a search,
 a grant being counted, a face being drawn). The launch path stays on
 `Animated`, per `AppSplash`'s reasoning; Reanimated is fine after `done`.
 
-## 8. Questions for Behic
+## 8. What is still open
 
-1. **Verification policy.** A1′ first is the recommendation (§4.A). The
-   question that stays open is A1's: may an account that has not verified its
-   email appear in discovery at all? If the answer is no, A1 is off the table
-   for good and the inbox stays one screen in the flow.
-2. **Showing people before sign-up (B).** Today's guest already sees them
-   after two taps; B moves it to zero taps. Fine, or is the guest step the
-   line?
-3. **The onboarding paywall.** P1 (full screen at `done`) is what the brief
-   asks for. Is P3 (after the first reply) acceptable as the variant to test
-   against it, or must every variant show the paywall at `done`?
-4. **The "3× replies" line** in C — only with a measured number. Worth the
-   query, or drop the claim?
-5. **Trial length** — is a trial configured on both stores and the web at
-   all? The whole of §5 assumes the store returns one. The recommendation is
-   **7 days, not 30**: a week is long enough to see a reply and a streak
-   milestone (`TOKEN_RULES.streakMilestones` pays first at 7), and short
-   enough that the trial's end is still inside the habit it was meant to
-   start.
+The five questions this section used to hold were answered on 10 September
+by taking the recommendations (§7). Two things remain open and block nothing
+in the first PR:
 
-## 9. Implementation plan for steps 1 and 2
+1. **A1's question** — may an account that has not verified its email appear
+   in discovery? Only matters if A1′ leaves the inbox as the wall. Default if
+   unanswered: no, and A1 stays off the table.
+2. **The trial** — 7 days has to be configured on App Store Connect, Play and
+   RevenueCat's web offering before the paywall has anything to show. The
+   code reads whatever the store returns; nothing ships a number.
 
-What the first two PRs touch, so their size can be judged before either is
-written. Every user-facing string is a key in `en.ts` and seven translations;
+## 9. Implementation plan — the one PR
+
+Written as two halves so their size can be judged; they ship together (§7). Every user-facing string is a key in `en.ts` and seven translations;
 every event is a member of the closed union; nothing here queries a
 collection outside a repository function.
 
-### PR 1 — instrumentation (§3)
+### Half 1 — instrumentation (§3)
 
 | File                                          | Change                                                                                                                                                                                                                                                                                    |
 | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -466,10 +482,9 @@ collection outside a repository function.
 | `scripts/insight.mjs`                         | `FUNNEL` grows to the §3 sequence; one breakdown by `method`                                                                                                                                                                                                                              |
 | `docs/analytics.md`                           | The event table                                                                                                                                                                                                                                                                           |
 
-Size: **M**, one PR, no API change. Ship as an OTA update: the events are the
-only change and the sooner a week of them exists, the sooner step 2 is judged.
+Size: **M**, no API change.
 
-### PR 2 — Scenario A with A1′
+### Half 2 — Scenario A with A1′, and the P1 paywall
 
 | Item                          | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -483,3 +498,10 @@ only change and the sooner a week of them exists, the sooner step 2 is judged.
 Size: **M**. A1′ is the only API change and is one function. Risk sits in two
 places: the Better Auth assumption above, and A3 removing a screen that
 `docs/decisions.md` documents — the entry needs a dated addendum, not an edit.
+
+Together: **L**, one PR, one OTA update, one API deploy. Order of work inside
+it: A1′ first (the assumption to confirm), then the events (so every later
+screen is written with its event), then A3, A4, A2, A5, then copy in eight
+locales. Verification before pushing: `pnpm -r typecheck`, `pnpm lint`,
+`pnpm format:check`, `pnpm test`, and a real sign-up on a device through the
+mailed link.
