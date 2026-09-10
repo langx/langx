@@ -36,6 +36,10 @@ export const ru: Localized<ServerMessages> = {
     },
     bountyBody: 'Мы прочитали то, что ты прислал, — это того стоило.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Платёж не прошёл',
+    billingEndedTitle: 'Ваш тариф закончился',
+    billingBody: 'Нажмите, чтобы проверить тариф.',
     securityBody: 'Откройте LangX, если это были не вы.',
     securityBodyDevice: 'С устройства {device}. Откройте LangX, если это были не вы.',
     security: {
@@ -148,6 +152,55 @@ export const ru: Localized<ServerMessages> = {
     unsubscribedBody: 'Включить обратно можно в любой момент в LangX: Настройки → Уведомления.',
     unsubscribeInvalid:
       'Ссылка недействительна. Откройте LangX и измените это в Настройках → Уведомления.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'Добро пожаловать в LangX',
+
+    welcomePreheader: 'До первого разговора — одно касание',
+
+    welcomeTitle: 'Добро пожаловать, {name}',
+
+    welcomeBody: 'Ваш профиль доступен по адресу @{handle}. Вот с чего обычно начинают:',
+
+    welcomeStep1: 'Найдите того, кто говорит на языке, который вы учите, и поздоровайтесь.',
+
+    welcomeStep2: 'Опубликуйте фразу в Ленте и дайте её исправить.',
+
+    welcomeStep3: 'Возвращайтесь завтра — два дня подряд начинают серию.',
+
+    welcomeButton: 'Найти собеседника',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'Подтвердите адрес электронной почты',
+
+    verifyReminderPreheader: 'Одно касание — и аккаунт готов',
+
+    verifyReminderBody:
+      'Вашему аккаунту LangX не хватает одного: подтверждения, что этот адрес ваш. Ссылка ниже это сделает.',
+
+    verifyReminderText: 'Подтвердите адрес электронной почты: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Тариф: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'Платёж LangX не прошёл',
+
+      paymentFailedBody:
+        'Магазин не смог списать оплату подписки. Он попробует снова, а ваш тариф пока остаётся активным.',
+
+      paymentFailedButton: 'Проверить тариф',
+
+      planEndedTitle: 'Ваш тариф LangX закончился',
+
+      planEndedBody:
+        'Подписка закончилась, и аккаунт вернулся на бесплатный тариф. Всё, что вы создали, на месте.',
+
+      planEndedButton: 'Посмотреть тарифы',
+    },
 
     /**
 

@@ -32,11 +32,13 @@ import {
   magicLinkEmail,
   resetPasswordEmail,
   verificationEmail,
+  verifyReminderEmail,
 } from './email/templates'
 import { localeFromHeader } from './i18n'
 import { nativeLocaleFor } from './modules/profiles/localeFor'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
+import { alreadyClaimed } from './modules/notifications/ledger'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import { countryFromHeaders, deviceIdentity } from './modules/security/deviceLabel'
 import { claimNewDevice } from './modules/security/knownDevices'
@@ -327,7 +329,16 @@ export async function createAuth({
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }, request) => {
-        const email = verificationEmail(url, await mailLocale(user.id, request?.headers))
+        const locale = await mailLocale(user.id, request?.headers)
+        /*
+         * The same link, worded twice. `runVerifyReminderPass` claims the
+         * ledger row before it asks for this send, so the row's presence is
+         * what says "this is the second letter" — and a reminder that
+         * repeated the first one verbatim is the one a mail client stacks
+         * under "similar messages" and nobody opens.
+         */
+        const isReminder = await alreadyClaimed(db, 'verifyReminder', user.id, 'once')
+        const email = isReminder ? verifyReminderEmail(url, locale) : verificationEmail(url, locale)
         await emailSender.send({ to: user.email, ...email })
       },
       // Clicking the link is proof of the address, so a matching v1 profile

@@ -18,6 +18,10 @@ export const tr: Localized<ServerMessages> = {
     },
     bountyBody: 'Yazdıklarını okuduk, değdi.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Ödemen alınamadı',
+    billingEndedTitle: 'Planın sona erdi',
+    billingBody: 'Planını kontrol etmek için dokun.',
     securityBody: 'Bu sen değilsen LangX’i aç.',
     securityBodyDevice: '{device} üzerinden. Bu sen değilsen LangX’i aç.',
     security: {
@@ -123,6 +127,55 @@ export const tr: Localized<ServerMessages> = {
     unsubscribedBody: 'İstediğin zaman LangX’te Ayarlar → Bildirimler’den geri açabilirsin.',
     unsubscribeInvalid:
       'Bu bağlantı geçerli değil. LangX’i açıp Ayarlar → Bildirimler’den değiştir.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'LangX’e hoş geldin',
+
+    welcomePreheader: 'İlk sohbetin bir dokunuş uzağında',
+
+    welcomeTitle: 'Hoş geldin, {name}',
+
+    welcomeBody: 'Profilin @{handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
+
+    welcomeStep1: 'Öğrendiğin dili konuşan birini bul ve selam ver.',
+
+    welcomeStep2: 'Akış’a bir cümle yaz, insanlar düzeltsin.',
+
+    welcomeStep3: 'Yarın da gel — üst üste iki gün seriyi başlatır.',
+
+    welcomeButton: 'Pratik yapacak birini bul',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'E-posta adresini doğrula',
+
+    verifyReminderPreheader: 'Tek dokunuş, hesabın hazır',
+
+    verifyReminderBody:
+      'LangX hesabın tek bir şeyi bekliyor: bu adresin sana ait olduğunun kanıtı. Aşağıdaki bağlantı bunu yapar.',
+
+    verifyReminderText: 'E-posta adresini doğrula: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Plan: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'LangX ödemen alınamadı',
+
+      paymentFailedBody:
+        'Mağaza aboneliğinin ödemesini alamadı. Tekrar deneyecek; bu sırada planın etkin kalır.',
+
+      paymentFailedButton: 'Planımı kontrol et',
+
+      planEndedTitle: 'LangX planın sona erdi',
+
+      planEndedBody:
+        'Aboneliğin sona erdi ve hesabın ücretsiz plana döndü. Oluşturduğun her şey duruyor.',
+
+      planEndedButton: 'Planlara bak',
+    },
 
     /**
 

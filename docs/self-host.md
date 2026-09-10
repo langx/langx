@@ -67,6 +67,7 @@ during the window catches up on its next tick instead of skipping silently.
 | Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                |
 | Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.         |
 | Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.      |
+| Verify reminder  | 30 min   | One more verification link, a day after an unverified sign-up. Exactly once per account, and never after a week.                     |
 | Campaign queue   | 30 min   | Drips a queued broadcast out on a warm-up ramp (`CAMPAIGN_WARMUP_PER_DAY`), 08–20 UTC only. `send-campaign.ts` enqueues, this sends. |
 
 Running several API instances is safe. The pool's `jobRuns` unique index means

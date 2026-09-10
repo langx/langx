@@ -24,6 +24,10 @@ export const ptBR: Localized<ServerMessages> = {
     },
     bountyBody: 'Lemos o que você enviou, e valeu a pena.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Seu pagamento não foi concluído',
+    billingEndedTitle: 'Seu plano terminou',
+    billingBody: 'Toque para ver seu plano.',
     securityBody: 'Abra o LangX se não foi você.',
     securityBodyDevice: 'De {device}. Abra o LangX se não foi você.',
     security: {
@@ -134,6 +138,55 @@ export const ptBR: Localized<ServerMessages> = {
     unsubscribedBody: 'Você pode reativar quando quiser no LangX, em Configurações → Notificações.',
     unsubscribeInvalid:
       'Este link não é válido. Abra o LangX e altere em Configurações → Notificações.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'Boas-vindas ao LangX',
+
+    welcomePreheader: 'Sua primeira conversa está a um toque',
+
+    welcomeTitle: 'Boas-vindas, {name}',
+
+    welcomeBody: 'Seu perfil está no ar em @{handle}. É isto que as pessoas fazem primeiro:',
+
+    welcomeStep1: 'Encontre alguém que fale o que você está aprendendo e diga oi.',
+
+    welcomeStep2: 'Publique uma frase no Feed e deixe que corrijam.',
+
+    welcomeStep3: 'Volte amanhã — dois dias seguidos começam uma sequência.',
+
+    welcomeButton: 'Encontrar alguém para praticar',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'Confirme seu e-mail',
+
+    verifyReminderPreheader: 'Um toque e sua conta está pronta',
+
+    verifyReminderBody:
+      'Falta só uma coisa para sua conta do LangX: a prova de que este e-mail é seu. O link abaixo resolve.',
+
+    verifyReminderText: 'Confirme seu e-mail: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Plano: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'Seu pagamento do LangX não foi concluído',
+
+      paymentFailedBody:
+        'A loja não conseguiu cobrar sua assinatura. Ela tentará de novo, e seu plano continua ativo enquanto isso.',
+
+      paymentFailedButton: 'Ver meu plano',
+
+      planEndedTitle: 'Seu plano do LangX terminou',
+
+      planEndedBody:
+        'Sua assinatura terminou e sua conta voltou ao plano gratuito. Tudo o que você criou continua lá.',
+
+      planEndedButton: 'Ver os planos',
+    },
 
     /**
 

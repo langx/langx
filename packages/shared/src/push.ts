@@ -53,6 +53,12 @@ export const PUSH_KINDS = [
    * one kind with no row on the settings screen.
    */
   'security',
+  /**
+   * A payment that failed or a plan that ended. No preference gates it for
+   * the same reason `security` has none: this is money, and the alternative
+   * to hearing it is finding out when the plan stops.
+   */
+  'billing',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 

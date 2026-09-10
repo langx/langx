@@ -11,6 +11,7 @@ import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
 import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
 import type { RevenueCatClient } from './revenueCatClient'
+import { notifyBilling, type BillingNotifier } from './notify'
 
 export interface SubscriptionRecord {
   eventId: string
@@ -50,6 +51,7 @@ export async function processRevenueCatWebhook(
   db: Db,
   event: RevenueCatEvent,
   client?: RevenueCatClient,
+  notify?: BillingNotifier,
 ): Promise<WebhookResult> {
   // TRANSFER events have no `app_user_id` at all — the recipient arrives in
   // `transferred_to`. Only the first id matters: RevenueCat lists the target
@@ -81,6 +83,13 @@ export async function processRevenueCatWebhook(
 
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const now = new Date()
+
+  // Read before anything is written: the mail says which plan this was about,
+  // and by the time an EXPIRATION has been applied the answer is "free".
+  const previousTier = notify
+    ? ((await profiles.findOne({ _id: userId }, { projection: { entitlement: 1 } }))?.entitlement
+        ?.tier ?? 'free')
+    : 'free'
 
   if (GRANT_SET.has(event.type)) {
     /*
@@ -149,23 +158,43 @@ export async function processRevenueCatWebhook(
     // `pro`, and no field on this event can tell us that. So ask RevenueCat
     // what they hold *now*; only if that is impossible (no secret key, or the
     // API is down) do we fall back to the event's own pessimistic reading.
-    if (client && (await reconciled(db, client, userId))) return { processed: true }
-
-    const entitlement: Profile['entitlement'] = {
-      tier: 'free',
-      willRenew: false,
-      store: record.store,
-      updatedAt: now,
+    if (!client || !(await reconciled(db, client, userId))) {
+      const entitlement: Profile['entitlement'] = {
+        tier: 'free',
+        willRenew: false,
+        store: record.store,
+        updatedAt: now,
+      }
+      await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
     }
-    await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
+    /*
+     * Said only when something was actually lost, which is why it is asked
+     * after the write rather than derived from the event. An EXPIRATION on a
+     * Pro+ subscription whose plain Pro runs on ends nothing from the
+     * subscriber's point of view, and `reconciled` is what knows that.
+     */
+    if (notify && previousTier !== 'free') {
+      const left = await profiles.findOne({ _id: userId }, { projection: { entitlement: 1 } })
+      if ((left?.entitlement?.tier ?? 'free') === 'free') {
+        await notifyBilling(db, notify, userId, 'planEnded', previousTier)
+      }
+    }
   } else if (CANCEL_SET.has(event.type)) {
     // Access continues until expiresAt — only the renewal intent changes.
     await profiles.updateOne(
       { _id: userId },
       { $set: { 'entitlement.willRenew': false, updatedAt: now } },
     )
+  } else if (event.type === 'BILLING_ISSUE' && notify) {
+    /*
+     * The one event that changes no entitlement and still has to be said out
+     * loud. The store will retry, and the subscription stays active while it
+     * does — but the card that failed is a thing only its owner can fix, and
+     * the first they would otherwise hear of it is the plan ending.
+     */
+    await notifyBilling(db, notify, userId, 'paymentFailed', previousTier)
   }
-  // BILLING_ISSUE and anything unrecognized: recorded above for audit, no entitlement change.
+  // Anything else unrecognized: recorded above for audit, no entitlement change.
 
   return { processed: true }
 }

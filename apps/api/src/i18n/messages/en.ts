@@ -28,6 +28,10 @@ export const en = {
     },
     bountyBody: 'We read what you sent, and it was worth it.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Your payment did not go through',
+    billingEndedTitle: 'Your plan has ended',
+    billingBody: 'Tap to check your plan.',
     securityBody: 'Open LangX if this was not you.',
     securityBodyDevice: 'From {device}. Open LangX if this was not you.',
     security: {
@@ -143,6 +147,55 @@ export const en = {
     unsubscribedBody: 'You can turn them back on any time in LangX under Settings → Notifications.',
     unsubscribeInvalid:
       'This link is not valid. Open LangX and change it under Settings → Notifications.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'Welcome to LangX',
+
+    welcomePreheader: 'Your first conversation is a tap away',
+
+    welcomeTitle: 'Welcome, {name}',
+
+    welcomeBody: 'Your profile is live at @{handle}. Here is what people do first:',
+
+    welcomeStep1: 'Find someone who speaks what you are learning, and say hello.',
+
+    welcomeStep2: 'Post a sentence to the Feed and let people correct it.',
+
+    welcomeStep3: 'Come back tomorrow — two days in a row starts a streak.',
+
+    welcomeButton: 'Find someone to practise with',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'Confirm your email address',
+
+    verifyReminderPreheader: 'One tap and your account is ready',
+
+    verifyReminderBody:
+      'Your LangX account is waiting for one thing: proof that this address is yours. The link below does it.',
+
+    verifyReminderText: 'Confirm your email address: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Plan: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'Your LangX payment did not go through',
+
+      paymentFailedBody:
+        'The store could not take the payment for your subscription. It will try again, and your plan stays active in the meantime.',
+
+      paymentFailedButton: 'Check my plan',
+
+      planEndedTitle: 'Your LangX plan has ended',
+
+      planEndedBody:
+        'Your subscription has ended and your account is back on the free plan. Everything you made is still there.',
+
+      planEndedButton: 'See the plans',
+    },
 
     /**
 

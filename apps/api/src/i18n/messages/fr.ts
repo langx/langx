@@ -24,6 +24,10 @@ export const fr: Localized<ServerMessages> = {
     },
     bountyBody: 'On a lu ce que tu nous as envoyé, et ça valait le coup.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Votre paiement n’a pas abouti',
+    billingEndedTitle: 'Votre formule a pris fin',
+    billingBody: 'Touchez pour vérifier votre formule.',
     securityBody: 'Ouvrez LangX si ce n’était pas vous.',
     securityBodyDevice: 'Depuis {device}. Ouvrez LangX si ce n’était pas vous.',
     security: {
@@ -139,6 +143,55 @@ export const fr: Localized<ServerMessages> = {
       'Vous pouvez les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
     unsubscribeInvalid:
       'Ce lien n’est pas valide. Ouvrez LangX et modifiez-le dans Réglages → Notifications.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'Bienvenue sur LangX',
+
+    welcomePreheader: 'Votre première conversation est à un geste',
+
+    welcomeTitle: 'Bienvenue, {name}',
+
+    welcomeBody: 'Votre profil est en ligne sur @{handle}. Voici ce que les gens font en premier :',
+
+    welcomeStep1: 'Trouvez quelqu’un qui parle la langue que vous apprenez et dites bonjour.',
+
+    welcomeStep2: 'Publiez une phrase dans le Fil et laissez-la corriger.',
+
+    welcomeStep3: 'Revenez demain — deux jours d’affilée lancent une série.',
+
+    welcomeButton: 'Trouver quelqu’un pour pratiquer',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'Confirmez votre adresse e-mail',
+
+    verifyReminderPreheader: 'Un geste et votre compte est prêt',
+
+    verifyReminderBody:
+      'Il ne manque qu’une chose à votre compte LangX : la preuve que cette adresse est la vôtre. Le lien ci-dessous s’en charge.',
+
+    verifyReminderText: 'Confirmez votre adresse e-mail : {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Formule : {tier}',
+
+    billing: {
+      paymentFailedTitle: 'Votre paiement LangX n’a pas abouti',
+
+      paymentFailedBody:
+        'La boutique n’a pas pu prélever votre abonnement. Elle réessaiera, et votre formule reste active entre-temps.',
+
+      paymentFailedButton: 'Vérifier ma formule',
+
+      planEndedTitle: 'Votre formule LangX a pris fin',
+
+      planEndedBody:
+        'Votre abonnement a pris fin et votre compte est revenu à la formule gratuite. Tout ce que vous avez créé est toujours là.',
+
+      planEndedButton: 'Voir les formules',
+    },
 
     /**
 
