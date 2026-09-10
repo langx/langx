@@ -720,10 +720,62 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         ACCOUNT_DELETION_GRACE_DAYS * 86_400_000,
       )
 
-      // Gone from the product at once...
-      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
+      /*
+       * Gone from everywhere anybody *browses* — but the profile itself still
+       * opens for somebody who already knows them, tagged as deleted. "Profile
+       * not found" for an account you have a conversation with reads as a bug
+       * rather than as what happened.
+       */
+      const list = await get(observer, '/discovery')
+      expect(list.json<{ items: { _id: string }[] }>().items.map((i) => i._id)).not.toContain(
+        leaving.userId,
+      )
+      const opened = await get(observer, `/profiles/${leaving.userId}`)
+      expect(opened.statusCode, opened.body).toBe(200)
+      const body = opened.json<{ accountStatus: string }>()
+      expect(body.accountStatus).toBe('deleted')
+      // The tag is the whole disclosure: the date itself never leaves.
+      expect(body).not.toHaveProperty('deletedAt')
       // ...and the session no longer works.
       expect((await get(leaving, '/profiles/me')).statusCode).toBe(401)
+    })
+
+    /**
+     * The tag is for members who already know them. A blocked viewer is told
+     * nothing, exactly as before — a 200 with a tag would confirm the account
+     * exists, which is what blocking is for.
+     */
+    it('still answers 404 to a blocked viewer, and to the open internet', async () => {
+      const leaving = await newUser()
+      const blocker = await newUser()
+      const leavingHandle = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: leaving.userId })
+      expect((await post(blocker, '/blocks', { userId: leaving.userId })).statusCode).toBe(201)
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+
+      expect((await get(blocker, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
+      expect(
+        (
+          await app.inject({
+            method: 'GET',
+            url: `/public/profiles/${leavingHandle?.handle ?? ''}`,
+          })
+        ).statusCode,
+      ).toBe(404)
+    })
+
+    /** A purged account has no document at all, so there is nothing to tag. */
+    it('answers 404 once the account is actually purged', async () => {
+      const leaving = await newUser()
+      const observer = await newUser()
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(200)
+
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
     })
 
     it('keeps the data through the grace period and removes it after', async () => {
@@ -1278,6 +1330,17 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(
         (await app.inject({ method: 'GET', url: `/public/profiles/${targetHandle}` })).statusCode,
       ).toBe(404)
+
+      /*
+       * The profile still opens for a signed-in member, carrying the tag and
+       * nothing else. When it ends, why, and whether they appealed are theirs
+       * to know; the tag is the whole of what anybody else is told.
+       */
+      const opened = await get(viewer, `/profiles/${targetHandle}`)
+      expect(opened.statusCode, opened.body).toBe(200)
+      const opinion = opened.json<{ accountStatus: string }>()
+      expect(opinion.accountStatus).toBe('suspended')
+      expect(opinion).not.toHaveProperty('suspension')
     })
 
     it('suspends permanently, and says so rather than printing the sentinel', async () => {

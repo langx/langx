@@ -1034,6 +1034,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'معلّق',
+    deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
     teaches: 'يُعلّم',
     learns: 'يتعلّم',

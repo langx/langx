@@ -893,6 +893,8 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Suspendida',
+    deletedTag: 'Cuenta eliminada',
     previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',
     teaches: 'Enseña',
     learns: 'Aprende',

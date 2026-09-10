@@ -915,6 +915,8 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Gesperrt',
+    deletedTag: 'Konto gelöscht',
     previewNote:
       'So sehen andere dein Profil — deine Privatsphäre-Einstellungen sind bereits angewendet.',
     teaches: 'Lehrt',

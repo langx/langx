@@ -897,6 +897,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Askıya alındı',
+    deletedTag: 'Hesap silindi',
     previewNote:
       'Bu, başkalarının gördüğü haliyle profilin — gizlilik ayarların zaten uygulanmış durumda.',
     teaches: 'Öğretiyor',

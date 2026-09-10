@@ -948,6 +948,8 @@ export const en = {
   },
 
   profile: {
+    suspendedTag: 'Suspended',
+    deletedTag: 'Account deleted',
     previewNote:
       'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',

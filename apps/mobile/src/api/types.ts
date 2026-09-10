@@ -87,6 +87,13 @@ export interface PublicProfileDto {
   createdAt: string
   emailVerified: boolean
   follow: FollowState
+  /**
+   * Whether this account is still one. `suspended` and `deleted` open as a
+   * profile with a tag rather than a 404, so somebody arriving from an old
+   * conversation is told what happened — see `toPublicProfile`. Optional
+   * because a cached response from before this shipped has no such field.
+   */
+  accountStatus?: 'active' | 'suspended' | 'deleted'
 }
 
 export interface DiscoveryItem {

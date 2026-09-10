@@ -897,6 +897,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Suspendu',
+    deletedTag: 'Compte supprimé',
     previewNote:
       'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',

@@ -995,6 +995,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Заблокирован',
+    deletedTag: 'Аккаунт удалён',
     previewNote: 'Так ваш профиль видят другие — настройки приватности уже применены.',
     teaches: 'Преподаёт',
     learns: 'Учит',

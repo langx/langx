@@ -42,6 +42,7 @@ import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
+import { isSuspended } from '../moderation/suspension'
 import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
 
@@ -1082,6 +1083,20 @@ export interface PublicProfile {
    * than deleting them" stays legible one line at a time.
    */
   follow: FollowState
+  /**
+   * Whether this account is still an account.
+   *
+   * `suspended` and `deleted` are states somebody arriving from an old
+   * conversation or a link has to be told about — "Profile not found" is a
+   * lie that reads as a bug. This is the **whole** of that disclosure: not
+   * when a suspension ends, not why, not that an appeal exists. Those belong
+   * to the person it is about, and `GET /me/suspension` is where they get
+   * them.
+   *
+   * `deleted` wins over `suspended`: a deleted account is on its way out
+   * whatever else was true of it, and only one word fits on a tag.
+   */
+  accountStatus: 'active' | 'suspended' | 'deleted'
 }
 
 /**
@@ -1137,6 +1152,9 @@ export function toPublicProfile(
     createdAt: profile.createdAt,
     emailVerified,
     follow,
+    // Derived, never copied: `suspension` and `deletedAt` themselves are not
+    // named here, so neither leaves.
+    accountStatus: profile.deletedAt ? 'deleted' : isSuspended(profile, now) ? 'suspended' : 'active',
   }
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
@@ -1169,12 +1187,26 @@ export function toPublicProfile(
   return result
 }
 
-/** Looks up by `@handle` or by user id — the two things a deep link can carry. */
-export async function findProfileByHandleOrId(db: Db, handleOrId: string): Promise<Profile | null> {
+/**
+ * Looks up by `@handle` or by user id — the two things a deep link can carry.
+ *
+ * `includeDeleted` is for the one caller that has to answer for an account in
+ * its thirty-day grace: the profile route, which shows it tagged as deleted so
+ * that somebody arriving from an old conversation is told what happened
+ * instead of getting "Profile not found". Every other caller keeps the filter.
+ * A purged account has no document at all, so "deleted" here always means
+ * "inside the grace period".
+ */
+export async function findProfileByHandleOrId(
+  db: Db,
+  handleOrId: string,
+  options: { includeDeleted?: boolean } = {},
+): Promise<Profile | null> {
   const key = handleOrId.startsWith('@') ? handleOrId.slice(1) : handleOrId
-  return db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ $or: [{ _id: key }, { handle: key }], deletedAt: { $exists: false } })
+  return db.collection<Profile>(COLLECTIONS.profiles).findOne({
+    $or: [{ _id: key }, { handle: key }],
+    ...(options.includeDeleted ? {} : { deletedAt: { $exists: false } }),
+  })
 }
 
 /**
