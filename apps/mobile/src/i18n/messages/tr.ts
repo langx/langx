@@ -243,8 +243,6 @@ export const tr: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Konumumu kullan',
     deniedTitle: 'LangX için konum kapalı',
-    deniedBodyIos: 'Ayarlar → LangX → Konum yolunu açıp “Uygulamayı Kullanırken”i seç.',
-    deniedBodyAndroid: 'Ayarlar → Uygulamalar → LangX → İzinler → Konum yolundan izin ver.',
     openSettings: 'Ayarları aç',
     failedTitle: 'Konum okunamadı',
     noCountry: 'Bunun hangi ülke olduğunu anlayamadık.',
@@ -253,7 +251,37 @@ export const tr: Localized<EnMessages> = {
     disabled: 'Bu cihazda konum servisleri kapalı.',
     unavailable: 'Şu anda konum alınamadı. Birazdan tekrar dene.',
     unavailableTitle: 'Konum alınamadı',
-    needed: 'Konum gerekli',
+    guide: {
+      title: 'Konum izni',
+      rowTitle: 'Konum izni',
+      rowBody: 'Nasıl açılır ve telefonun artık sormuyorsa ne yapmalı.',
+      grantedTitle: 'Konum açık',
+      grantedBody:
+        'LangX, sen kullanırken kabaca nerede olduğunu okuyabiliyor. Bunu istediğin an cihaz ayarlarından geri alabilirsin.',
+      askableTitle: 'LangX’in konumuna ihtiyacı var',
+      askableBody:
+        'Yakındakiler, insanları kabaca ne kadar uzakta olduklarına göre sıralıyor. Kesin konum saklanmıyor ve kimse yaklaşık bir mesafeden fazlasını görmüyor.',
+      allow: 'Konuma izin ver',
+      blockedTitle: 'Cihazın bir daha sormayacak',
+      blockedBody:
+        'LangX için konum reddedilmiş, bu yüzden uygulama artık izin penceresini açamıyor. İzni cihaz ayarlarından yine de verebilirsin.',
+      iosStep1: 'Ayarlar’ı aç',
+      iosStep2: 'Listede LangX’i bul',
+      iosStep3: 'Konum’a dokun ve “Uygulamayı Kullanırken”i seç',
+      androidStep1: 'Ayarlar’ı aç',
+      androidStep2: 'Uygulamalar → LangX yolunu izle',
+      androidStep3: 'İzinler → Konum’a dokun',
+      androidStep4: '“Yalnızca uygulamayı kullanırken izin ver”i seç',
+      servicesOffTitle: 'Bu cihazda konum kapalı',
+      servicesOffBodyIos:
+        'LangX’in izni var ama telefonun tamamında Konum Servisleri kapalı. Ayarlar → Gizlilik ve Güvenlik → Konum Servisleri yolundan aç.',
+      servicesOffBodyAndroid:
+        'LangX’in izni var ama cihazın tamamında konum kapalı. Ayarlar → Konum yolundan aç.',
+      webTitle: 'Buna tarayıcın karar veriyor',
+      webBody:
+        'Burada konum izni LangX’e değil tarayıcıya ait. Adres çubuğundaki konum simgesine bak ya da bu sitenin ayarlarından konuma izin ver.',
+      howTo: 'Nasıl açılır',
+    },
   },
 
   gate: {
@@ -514,6 +542,13 @@ export const tr: Localized<EnMessages> = {
     nobodyNearbyTitle: '{radius} km içinde kimse yok',
     nobodyNearbyBody:
       'Burada sadece konum paylaşımını açmış kişiler görünür. Yarıçapı genişletmeyi ya da diğer sekmeleri dene.',
+    nearbyNeedsPermissionTitle: 'Yakındakiler için konum gerekiyor',
+    nearbyNeedsPermissionBody:
+      'Konum izni verilmemiş, dolayısıyla mesafeye göre sıralanacak bir şey yok.',
+    nearbyServicesOffTitle: 'Bu cihazda konum kapalı',
+    nearbyServicesOffBody: 'Konum yeniden açılmadan Yakındakiler çalışamaz.',
+    nearbyUnavailableTitle: 'Seni bulamadık',
+    nearbyUnavailableBody: 'Şu an konum gelmedi. Birazdan tekrar dene.',
     emptyTitle: 'Henüz kimse yok',
     emptyBody:
       'Dilleri seninkiyle çift yönlü eşleşen kişiler burada çıkar. Filtreleri gevşetmeyi dene.',

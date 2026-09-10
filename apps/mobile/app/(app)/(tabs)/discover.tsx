@@ -32,7 +32,7 @@ import {
 import {
   captureLocation,
   locationPermissionState,
-  reportLocationFailure,
+  type LocationFailure,
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
 import { dedupeById } from '../../../src/lib/dedupeById'
@@ -47,6 +47,20 @@ const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'active', label: 'discover.active' },
   { key: 'nearby', label: 'discover.nearby' },
 ]
+
+/**
+ * What the empty list says for each device-side reason. Kept apart from the
+ * server's `LOCATION_REQUIRED` state, which is about the sharing setting on the
+ * profile and is a different sentence with a different fix.
+ */
+const NEARBY_BLOCKED_COPY: Record<LocationFailure, { title: MessageKey; body: MessageKey }> = {
+  denied: {
+    title: 'discover.nearbyNeedsPermissionTitle',
+    body: 'discover.nearbyNeedsPermissionBody',
+  },
+  disabled: { title: 'discover.nearbyServicesOffTitle', body: 'discover.nearbyServicesOffBody' },
+  unavailable: { title: 'discover.nearbyUnavailableTitle', body: 'discover.nearbyUnavailableBody' },
+}
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
   const styles = useStyles()
@@ -86,6 +100,11 @@ export default function DiscoverScreen() {
   const [sort, setSort] = useState<DiscoverySort>('recommended')
   const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
   const [searching, setSearching] = useState(false)
+  /**
+   * Why Nearby has nothing to show, when the reason is on this device rather
+   * than on the server. `null` while there is no such reason.
+   */
+  const [nearbyBlocked, setNearbyBlocked] = useState<LocationFailure | null>(null)
 
   /*
    * `advancedFilters`, not "any paid plan". Correct by accident while every
@@ -142,7 +161,15 @@ export default function DiscoverScreen() {
      */
     const permission = await locationPermissionState()
     if (!permission.granted || !sharingLocation) {
-      if (!(await enableSharing())) return
+      /*
+       * Not a guard any more, and that is the fix. A failure used to return
+       * here before `setSort`, so the chip sprang back to the previous sort
+       * the moment the alert was dismissed and the screen kept no trace of
+       * what had happened — "I pressed it and nothing happened", with the
+       * reason available only by pressing it again. Nearby is selected either
+       * way now, and its empty state carries the reason.
+       */
+      await enableSharing()
     } else {
       /*
        * Unconditionally, and **not** behind `shouldRefreshLocation`.
@@ -166,11 +193,13 @@ export default function DiscoverScreen() {
   async function enableSharing({ fresh = false } = {}): Promise<boolean> {
     const fix = await captureLocation({ fresh })
     if (!fix.ok) {
-      // `location.needed` says what it was for; the helper adds the route to
-      // the switch, which this screen used to be the only one not to offer.
-      await reportLocationFailure(fix.reason, t, 'location.needed')
+      // Recorded, not raised. A dialog says it once and takes the reason away
+      // with it; the empty state below says it for as long as it is true, and
+      // is the thing that can carry a button to the guide.
+      setNearbyBlocked(fix.reason)
       return false
     }
+    setNearbyBlocked(null)
     lastFixAt.current = Date.now()
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
     return true
@@ -193,17 +222,31 @@ export default function DiscoverScreen() {
    */
   useFocusEffect(
     useCallback(() => {
-      if (sort !== 'nearby' || !sharingLocation) return
-      if (Date.now() - lastFixAt.current < FOCUS_REFRESH_DEBOUNCE_MS) return
+      if (sort !== 'nearby') return
+      /*
+       * The same read serves a second purpose once the screen is blocked:
+       * coming back from the guide having granted the permission has to clear
+       * the block, or Discover goes on offering to explain something the
+       * person has just fixed. Neither the debounce nor `sharingLocation`
+       * applies then — there is no fix to be too soon after, and somebody who
+       * has never shared is exactly who this path is for.
+       */
+      if (nearbyBlocked === null) {
+        if (!sharingLocation) return
+        if (Date.now() - lastFixAt.current < FOCUS_REFRESH_DEBOUNCE_MS) return
+      }
       void (async () => {
         const permission = await locationPermissionState()
         if (!permission.granted) return
         const fix = await captureLocation({ fresh: true, promptIfNeeded: false })
+        // Left as it was rather than re-reported: a transient failure on a tab
+        // switch must not replace a working list with "could not find you".
         if (!fix.ok) return
+        setNearbyBlocked(null)
         lastFixAt.current = Date.now()
         shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
       })()
-    }, [sort, sharingLocation, shareLocation]),
+    }, [sort, sharingLocation, nearbyBlocked, shareLocation]),
   )
 
   /**
@@ -213,14 +256,20 @@ export default function DiscoverScreen() {
    * "here is a link to some people" than an unfiltered list.
    */
   const effective = isPro || !hasProFilters(filters) ? filters : withoutProFilters(filters)
-  const query = useDiscovery({
-    sort,
-    ...toQuery(effective),
-    // Only sent where it means something. On any other sort the server ignores
-    // it, but sending it anyway would put it in the query string the cache is
-    // keyed on and refetch every list each time the radius changed.
-    ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
-  })
+  // Nearby, with a reason on this device why it cannot work. The list is not
+  // merely empty here — there is nothing to ask for.
+  const nearbyStuck = sort === 'nearby' && nearbyBlocked !== null
+  const query = useDiscovery(
+    {
+      sort,
+      ...toQuery(effective),
+      // Only sent where it means something. On any other sort the server
+      // ignores it, but sending it anyway would put it in the query string the
+      // cache is keyed on and refetch every list each time the radius changed.
+      ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
+    },
+    { enabled: !nearbyStuck },
+  )
   const pull = usePullToRefresh(() => query.refetch())
 
   // Deduped for the reason `dedupeById` gives: presence moves
@@ -331,7 +380,30 @@ export default function DiscoverScreen() {
           one nobody reads. */}
       {searching ? null : <Tip slot="discover" />}
 
-      {state === 'skeleton' ? (
+      {nearbyStuck && !searching ? (
+        /**
+         * Permanent, where the alert was momentary. The chip stays on Nearby,
+         * so the reason has somewhere to live and a button to carry — and the
+         * button goes to the guide rather than repeating its instructions,
+         * which differ by platform and by whether the OS will ask again.
+         */
+        <EmptyState
+          icon="map-pin"
+          title={t(NEARBY_BLOCKED_COPY[nearbyBlocked].title)}
+          body={t(NEARBY_BLOCKED_COPY[nearbyBlocked].body)}
+          actionLabel={
+            nearbyBlocked === 'unavailable' ? t('common.tryAgain') : t('location.guide.howTo')
+          }
+          onAction={() =>
+            nearbyBlocked === 'unavailable'
+              ? void enableSharing({ fresh: true })
+              : router.push({
+                  pathname: '/(app)/settings/location',
+                  params: { from: '/(app)/(tabs)/discover' },
+                })
+          }
+        />
+      ) : state === 'skeleton' ? (
         <View style={styles.list}>
           {SKELETON_ROWS.map((key) => (
             <DiscoveryCardSkeleton key={key} />

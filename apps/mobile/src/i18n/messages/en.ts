@@ -270,8 +270,6 @@ export const en = {
   location: {
     useMyLocation: 'Use my location',
     deniedTitle: 'Location is off for LangX',
-    deniedBodyIos: 'Open Settings → LangX → Location and choose “While Using the App”.',
-    deniedBodyAndroid: 'Open Settings → Apps → LangX → Permissions → Location and allow it.',
     openSettings: 'Open settings',
     failedTitle: 'Could not read your location',
     noCountry: 'We could not tell which country that is.',
@@ -280,7 +278,44 @@ export const en = {
     disabled: 'Location services are turned off on this device.',
     unavailable: 'Could not get a location right now. Try again in a moment.',
     unavailableTitle: 'Location unavailable',
-    needed: 'Location needed',
+    /**
+     * The guide screen, which is the one place the instructions live. Discover
+     * and the alerts name the reason and link here rather than repeating the
+     * steps: an iOS path, an Android path, a device-wide switch and a browser
+     * that has none of them is four sets of words, and four copied into three
+     * screens drift apart on the first change.
+     */
+    guide: {
+      title: 'Location permission',
+      rowTitle: 'Location permission',
+      rowBody: 'Where to turn it on, and what to do if your phone stopped asking.',
+      grantedTitle: 'Location is on',
+      grantedBody:
+        'LangX can read a rough position while you are using it. You can take that back in your device settings whenever you like.',
+      askableTitle: 'LangX needs your location',
+      askableBody:
+        'Nearby sorts people by roughly how far away they are. Nothing precise is stored, and nobody sees more than a rough distance.',
+      allow: 'Allow location',
+      blockedTitle: 'Your device will not ask again',
+      blockedBody:
+        'Location was declined for LangX, so the app can no longer bring up the permission dialog. You can still grant it in your device settings.',
+      iosStep1: 'Open Settings',
+      iosStep2: 'Find LangX in the list',
+      iosStep3: 'Tap Location and choose “While Using the App”',
+      androidStep1: 'Open Settings',
+      androidStep2: 'Go to Apps → LangX',
+      androidStep3: 'Tap Permissions → Location',
+      androidStep4: 'Choose “Allow only while using the app”',
+      servicesOffTitle: 'Location is off on this device',
+      servicesOffBodyIos:
+        'LangX has permission, but Location Services is switched off for the whole phone. Turn it back on in Settings → Privacy & Security → Location Services.',
+      servicesOffBodyAndroid:
+        'LangX has permission, but location is switched off for the whole device. Turn it back on in Settings → Location.',
+      webTitle: 'Your browser decides this one',
+      webBody:
+        'Location permission belongs to the browser here, not to LangX. Look for the location icon in the address bar, or allow location in this site’s settings.',
+      howTo: 'How to turn it on',
+    },
   },
 
   gate: {
@@ -555,6 +590,13 @@ export const en = {
     nobodyNearbyTitle: 'Nobody within {radius} km',
     nobodyNearbyBody:
       'Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs.',
+    nearbyNeedsPermissionTitle: 'Nearby needs your location',
+    nearbyNeedsPermissionBody:
+      'Location permission has not been granted, so there is nothing to sort by distance.',
+    nearbyServicesOffTitle: 'Location is off on this device',
+    nearbyServicesOffBody: 'Nearby cannot work until location is switched back on.',
+    nearbyUnavailableTitle: 'Could not find you',
+    nearbyUnavailableBody: 'No position came back just now. Try again in a moment.',
     emptyTitle: 'Nobody here yet',
     emptyBody:
       'People whose languages match yours in both directions show up here. Try loosening the filters.',

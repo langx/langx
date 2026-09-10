@@ -432,7 +432,17 @@ export function useProfile(handleOrId: string) {
   })
 }
 
-export function useDiscovery(params: Record<string, string>) {
+export function useDiscovery(
+  params: Record<string, string>,
+  /**
+   * `false` while Discover knows the request cannot succeed — Nearby with no
+   * location permission. Without it the screen either spends a 409 to be told
+   * what it already knows, or, for somebody whose stored point is still on the
+   * server, gets a perfectly ordinary list of people around wherever they last
+   * were.
+   */
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   const search = new URLSearchParams(params).toString()
   return useInfiniteQuery({
     queryKey: keys.discovery(search),
@@ -442,6 +452,7 @@ export function useDiscovery(params: Record<string, string>) {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    enabled,
     /**
      * The query key is the whole serialised query string, so every filter
      * chip creates a fresh cache entry and flips `isPending`. Without this,

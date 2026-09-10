@@ -340,6 +340,18 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => void model.toggleLocation(true)}
         />
       ) : null
+    case 'privacy.locationPermission':
+      // A plain link, with no live state on it. What the permission currently
+      // is takes an OS read and an `AppState` listener to stay true, and a row
+      // that goes stale in a list of switches reads as a switch that is wrong.
+      return (
+        <ListRow
+          title={t('location.guide.rowTitle')}
+          subtitle={t('location.guide.rowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/location')}
+        />
+      )
     case 'privacy.analytics':
       // The one privacy row about what leaves the device for *us* rather than
       // for other users. Device-level, like the theme: the refusal belongs to

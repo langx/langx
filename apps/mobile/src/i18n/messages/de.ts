@@ -232,9 +232,6 @@ export const de: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Meinen Standort verwenden',
     deniedTitle: 'Standort für LangX ist aus',
-    deniedBodyIos: 'Öffne Einstellungen → LangX → Standort und wähle „Beim Verwenden der App“.',
-    deniedBodyAndroid:
-      'Öffne Einstellungen → Apps → LangX → Berechtigungen → Standort und erlaube es.',
     openSettings: 'Einstellungen öffnen',
     failedTitle: 'Standort konnte nicht gelesen werden',
     noCountry: 'Wir konnten das Land nicht bestimmen.',
@@ -244,7 +241,37 @@ export const de: Localized<EnMessages> = {
     disabled: 'Die Ortungsdienste sind auf diesem Gerät ausgeschaltet.',
     unavailable: 'Der Standort ließ sich gerade nicht ermitteln. Versuch es gleich noch einmal.',
     unavailableTitle: 'Standort nicht verfügbar',
-    needed: 'Standort nötig',
+    guide: {
+      title: 'Standortberechtigung',
+      rowTitle: 'Standortberechtigung',
+      rowBody: 'Wo du sie einschaltest — und was zu tun ist, wenn dein Telefon nicht mehr fragt.',
+      grantedTitle: 'Standort ist an',
+      grantedBody:
+        'LangX kann deine ungefähre Position lesen, während du die App benutzt. Du kannst das jederzeit in den Geräteeinstellungen zurücknehmen.',
+      askableTitle: 'LangX braucht deinen Standort',
+      askableBody:
+        'In der Nähe sortiert Leute danach, wie weit sie ungefähr entfernt sind. Nichts Genaues wird gespeichert, und niemand sieht mehr als eine grobe Entfernung.',
+      allow: 'Standort erlauben',
+      blockedTitle: 'Dein Gerät fragt nicht noch einmal',
+      blockedBody:
+        'Der Standort wurde für LangX abgelehnt, deshalb kann die App den Berechtigungsdialog nicht mehr öffnen. In den Geräteeinstellungen kannst du ihn trotzdem erteilen.',
+      iosStep1: 'Einstellungen öffnen',
+      iosStep2: 'LangX in der Liste suchen',
+      iosStep3: 'Auf „Standort“ tippen und „Beim Verwenden der App“ wählen',
+      androidStep1: 'Einstellungen öffnen',
+      androidStep2: 'Zu Apps → LangX gehen',
+      androidStep3: 'Auf Berechtigungen → Standort tippen',
+      androidStep4: '„Nur während der Nutzung der App zulassen“ wählen',
+      servicesOffTitle: 'Standort ist auf diesem Gerät aus',
+      servicesOffBodyIos:
+        'LangX hat die Berechtigung, aber die Ortungsdienste sind für das ganze Telefon abgeschaltet. Schalte sie unter Einstellungen → Datenschutz & Sicherheit → Ortungsdienste wieder ein.',
+      servicesOffBodyAndroid:
+        'LangX hat die Berechtigung, aber der Standort ist für das ganze Gerät abgeschaltet. Schalte ihn unter Einstellungen → Standort wieder ein.',
+      webTitle: 'Das entscheidet dein Browser',
+      webBody:
+        'Die Standortberechtigung gehört hier dem Browser, nicht LangX. Achte auf das Standortsymbol in der Adressleiste oder erlaube den Standort in den Einstellungen dieser Website.',
+      howTo: 'So schaltest du ihn ein',
+    },
   },
 
   gate: {
@@ -518,6 +545,14 @@ export const de: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Niemand innerhalb von {radius} km',
     nobodyNearbyBody:
       'Hier erscheinen nur Leute, die die Standortfreigabe eingeschaltet haben. Versuch einen größeren Radius oder einen anderen Tab.',
+    nearbyNeedsPermissionTitle: 'In der Nähe braucht deinen Standort',
+    nearbyNeedsPermissionBody:
+      'Die Standortberechtigung wurde nicht erteilt, also gibt es nichts, was sich nach Entfernung sortieren ließe.',
+    nearbyServicesOffTitle: 'Standort ist auf diesem Gerät aus',
+    nearbyServicesOffBody:
+      'In der Nähe funktioniert erst wieder, wenn der Standort eingeschaltet ist.',
+    nearbyUnavailableTitle: 'Wir konnten dich nicht finden',
+    nearbyUnavailableBody: 'Gerade kam keine Position zurück. Versuch es gleich noch einmal.',
     emptyTitle: 'Hier ist noch niemand',
     emptyBody:
       'Hier tauchen Leute auf, deren Sprachen in beide Richtungen zu deinen passen. Versuch die Filter zu lockern.',
