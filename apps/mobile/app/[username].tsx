@@ -130,10 +130,9 @@ export default function SharedProfileScreen() {
           carry: no age, no streak, no account age, no online dot. */}
       <View style={styles.hero}>
         {/*
-          No generated face here, and deliberately. The public profile DTO does
-          not carry the account id — a test asserts it — and the avatar route
-          takes an id and nothing else, so this page keeps the initials rather
-          than reopening a decision made for the open internet.
+          The same three-step fallback as everywhere inside the app — photo,
+          then the face drawn from the account id, then initials. Only the
+          photo opens: a generated face has no full-size version to show.
         */}
         {user.avatarUrl ? (
           <Pressable
@@ -144,7 +143,7 @@ export default function SharedProfileScreen() {
             <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
           </Pressable>
         ) : (
-          <Avatar url={user.avatarUrl} name={user.displayName} size={96} />
+          <Avatar name={user.displayName} seed={user._id} size={96} />
         )}
         {user.avatarUrl ? (
           <PhotoViewer

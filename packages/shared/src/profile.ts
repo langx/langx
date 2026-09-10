@@ -384,6 +384,12 @@ export type PhotoRemoveInput = z.infer<typeof photoRemoveSchema>
  * and why.
  */
 export const sharedProfileSchema = z.object({
+  /**
+   * Only so the page can ask `/public/avatar/:seed` for the drawn face an
+   * account without a photo already has everywhere else — see
+   * `getSharedProfile`. Nothing else on this DTO is keyed by it.
+   */
+  _id: z.string(),
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),
