@@ -47,6 +47,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
         app.mongo.db,
         request.body.event,
         app.revenueCat,
+        { email: app.email, push: app.push, logger: request.log },
       )
       return reply.send(result)
     },

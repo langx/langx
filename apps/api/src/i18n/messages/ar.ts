@@ -30,6 +30,10 @@ export const ar: Localized<ServerMessages> = {
     },
     bountyBody: 'قرأنا ما أرسلته، وقد كان يستحق.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'لم تتم عملية الدفع',
+    billingEndedTitle: 'انتهت خطتك',
+    billingBody: 'انقر للاطلاع على خطتك.',
     securityBody: 'افتح LangX إن لم تكن أنت.',
     securityBodyDevice: 'من {device}. افتح LangX إن لم تكن أنت.',
     security: {
@@ -136,6 +140,54 @@ export const ar: Localized<ServerMessages> = {
     unsubscribedTitle: 'تم — لن تصلك بعد الآن.',
     unsubscribedBody: 'يمكنك تشغيلها متى شئت من LangX في الإعدادات ← الإشعارات.',
     unsubscribeInvalid: 'هذا الرابط غير صالح. افتح LangX وغيّره من الإعدادات ← الإشعارات.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'أهلاً بك في LangX',
+
+    welcomePreheader: 'محادثتك الأولى على بُعد نقرة',
+
+    welcomeTitle: 'أهلاً، {name}',
+
+    welcomeBody: 'ملفك الشخصي متاح على ‎@{handle}‎. هذا ما يبدأ به معظم الناس:',
+
+    welcomeStep1: 'ابحث عن شخص يتحدث اللغة التي تتعلمها وألقِ التحية.',
+
+    welcomeStep2: 'انشر جملة في الموجز ودع الآخرين يصححونها.',
+
+    welcomeStep3: 'عُد غداً — يومان متتاليان يبدآن سلسلة.',
+
+    welcomeButton: 'ابحث عن شخص للتدرب معه',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'أكّد عنوان بريدك الإلكتروني',
+
+    verifyReminderPreheader: 'نقرة واحدة ويصبح حسابك جاهزاً',
+
+    verifyReminderBody:
+      'ينقص حسابك في LangX شيء واحد: إثبات أن هذا العنوان لك. الرابط أدناه يقوم بذلك.',
+
+    verifyReminderText: 'أكّد عنوان بريدك الإلكتروني: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'الخطة: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'لم تتم عملية الدفع في LangX',
+
+      paymentFailedBody:
+        'لم يتمكن المتجر من تحصيل قيمة اشتراكك. سيحاول مرة أخرى، وتبقى خطتك فعّالة في هذه الأثناء.',
+
+      paymentFailedButton: 'تحقق من خطتي',
+
+      planEndedTitle: 'انتهت خطتك في LangX',
+
+      planEndedBody: 'انتهى اشتراكك وعاد حسابك إلى الخطة المجانية. كل ما أنشأته ما زال موجوداً.',
+
+      planEndedButton: 'اطّلع على الخطط',
+    },
 
     /**
 

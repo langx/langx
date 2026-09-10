@@ -30,6 +30,7 @@ import {
   updateProfile,
 } from '../modules/profiles/profiles'
 import { deleteGuest } from '../modules/profiles/purgeGuests'
+import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { readFollowState } from '../modules/social/follows'
@@ -54,6 +55,18 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         // Where the connection says they are. Beats whatever the form sent,
         // and is the reason the form no longer asks.
         countryFromHeaders(request.headers, app.env.EDGE_SECRET),
+      )
+      /*
+       * One mail, once in an account's life, and never awaited into the
+       * response: onboarding has already succeeded by the time this runs, and
+       * a mail provider having a bad minute must not turn a created profile
+       * into a 500. `createProfile` throws on a second attempt, so this
+       * cannot fire twice.
+       */
+      void sendWelcome(app, request.userId, profile.displayName, profile.handle).catch(
+        (error: unknown) => {
+          request.log.error({ err: error }, 'welcome email failed')
+        },
       )
       return reply.code(201).send(profile)
     },

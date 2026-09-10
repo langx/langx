@@ -49,6 +49,9 @@ export function notificationRoute(data: unknown): Href | null {
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.
       return '/viewers'
+    case 'billing':
+      // A failed payment and an ended plan are both fixed in one place.
+      return '/settings/plan'
     case 'security':
       // "Somebody signed in as you" has one useful next step, and it is the
       // screen that changes the password — which signs every other device out.

@@ -350,6 +350,98 @@ export function existingAccountLinkEmail(url: string, locale: Locale): Email {
   }
 }
 
+/**
+ * "Welcome to LangX", the moment onboarding finishes.
+ *
+ * Transactional, not a notification: it answers something somebody just did,
+ * the way the verification mail does, and it goes once in an account's life.
+ * `wrap`, therefore, and no unsubscribe — the mail carries no preference to
+ * withdraw.
+ *
+ * Three lines of what to do next rather than a tour. The app is open on the
+ * other screen; this is the copy somebody reads on the bus tomorrow.
+ */
+export function welcomeEmail(locale: Locale, input: { name: string; handle: string }): Email {
+  const t = translator(locale)
+  const url = webUrl('/discover')
+  const steps = [t('email.welcomeStep1'), t('email.welcomeStep2'), t('email.welcomeStep3')]
+  return {
+    subject: t('email.welcomeSubject'),
+    html: wrap(
+      locale,
+      t('email.welcomePreheader'),
+      `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${t('email.welcomeTitle', { name: escapeHtml(input.name) })}</strong></p>
+       <p>${t('email.welcomeBody', { handle: escapeHtml(input.handle) })}</p>
+       <ul style="margin:20px 0 0; padding-left:20px; color:#17191c;">
+         ${steps.map((step) => `<li style="margin-bottom:8px;">${step}</li>`).join('\n         ')}
+       </ul>
+       <p style="margin:24px 0 0;">${button(url, t('email.welcomeButton'))}</p>`,
+    ),
+    text: [
+      t('email.welcomeTitle', { name: input.name }),
+      '',
+      t('email.welcomeBody', { handle: input.handle }),
+      '',
+      ...steps.map((step) => `- ${step}`),
+      '',
+      url,
+    ].join('\n'),
+  }
+}
+
+/**
+ * "You still need to confirm your address", a day after signing up.
+ *
+ * The same link as the first mail, because it is the same job — and the
+ * first one is the mail most likely to have landed in a spam folder, since
+ * it arrives before this domain has ever written to that address before.
+ */
+export function verifyReminderEmail(url: string, locale: Locale): Email {
+  const t = translator(locale)
+  return {
+    subject: t('email.verifyReminderSubject'),
+    html: wrap(
+      locale,
+      t('email.verifyReminderPreheader'),
+      `<p>${t('email.verifyReminderBody')}</p>
+       <p>${button(url, t('email.verifyButton'))}</p>
+       <p style="font-size: 12px; color: #62676d;">${t('email.orPaste', { url })}</p>`,
+    ),
+    text: t('email.verifyReminderText', { url }),
+  }
+}
+
+/**
+ * The two things billing says out loud: a payment that failed, and a plan
+ * that has ended.
+ *
+ * Transactional for the same reason the bounty receipt is — this is money,
+ * and "do not tell me my payment failed" is not a preference worth offering.
+ * A renewal that succeeds says nothing: the store already mails a receipt,
+ * and a second one from us is the noise that gets a sender filtered.
+ */
+export function billingEmail(
+  locale: Locale,
+  event: 'paymentFailed' | 'planEnded',
+  input: { tier: string },
+): Email {
+  const t = translator(locale)
+  const url = webUrl('/settings/plan')
+  const title = t(`email.billing.${event}Title` as never)
+  return {
+    subject: title,
+    html: wrap(
+      locale,
+      t(`email.billing.${event}Body` as never),
+      `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${title}</strong></p>
+       <p>${t(`email.billing.${event}Body` as never)}</p>
+       <p style="color:#62676d;">${t('email.billingPlan', { tier: escapeHtml(input.tier) })}</p>
+       <p style="margin:24px 0 0;">${button(url, t(`email.billing.${event}Button` as never))}</p>`,
+    ),
+    text: [title, '', t(`email.billing.${event}Body` as never), '', url].join('\n'),
+  }
+}
+
 /** The four things this app tells somebody about their own account. */
 export type SecurityEvent = 'newSignIn' | 'passwordChanged' | 'methodLinked' | 'methodUnlinked'
 

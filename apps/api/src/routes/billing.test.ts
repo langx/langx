@@ -106,6 +106,9 @@ describe('Faz 7 — billing', () => {
       storage,
       translation,
       revenueCat: fakeRevenueCat,
+      // The webhook writes to people now: a failed payment and an ended plan
+      // both send mail, and the console sender would swallow them.
+      email: emailSender,
     })
     await app.ready()
 
@@ -145,6 +148,91 @@ describe('Faz 7 — billing', () => {
         payload: { event: { id: 'e2', type: 'INITIAL_PURCHASE', app_user_id: 'someone' } },
       })
       expect(response.statusCode).toBe(401)
+    })
+
+    /**
+     * The two events billing says out loud. Neither asks a preference: this
+     * is money, and the alternative to hearing about a failed card is finding
+     * out when the plan stops.
+     */
+    it('writes to somebody whose payment failed, without changing anything', async () => {
+      const user = await newUser('billing-issue@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-grant-issue',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            store: 'app_store',
+            expiration_at_ms: Date.now() + 1_000_000,
+          },
+        },
+      })
+      emailSender.messages.length = 0
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: { id: 'evt-issue-1', type: 'BILLING_ISSUE', app_user_id: user.userId },
+        },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+
+      // Turkish, because that is the native language the fixture onboards
+      // with — `localeFor` reads it, not the request's headers.
+      const mail = emailSender.messages.at(-1)
+      expect(mail?.subject).toContain('ödemen alınamadı')
+      expect(mail?.html).toContain('/settings/plan')
+      // Access is untouched — the store will retry.
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+    })
+
+    it('writes when the plan actually ends, naming the plan that ended', async () => {
+      const user = await newUser('billing-expired@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-grant-exp',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            store: 'app_store',
+            expiration_at_ms: Date.now() + 1_000_000,
+          },
+        },
+      })
+      emailSender.messages.length = 0
+
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-exp-1',
+            type: 'EXPIRATION',
+            app_user_id: user.userId,
+            store: 'app_store',
+          },
+        },
+      })
+
+      const mail = emailSender.messages.at(-1)
+      expect(mail?.subject).toContain('sona erdi')
+      // Read before the write, so it names what was lost rather than "free".
+      expect(mail?.html).toContain('pro')
     })
 
     it('grants Pro to the matching profile with the correct secret', async () => {

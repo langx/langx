@@ -24,6 +24,10 @@ export const de: Localized<ServerMessages> = {
     },
     bountyBody: 'Wir haben gelesen, was du geschickt hast – es hat sich gelohnt.',
     /** Security, which no preference can switch off. */
+    /** Billing, which no preference gates either. */
+    billingFailedTitle: 'Deine Zahlung ist fehlgeschlagen',
+    billingEndedTitle: 'Dein Tarif ist beendet',
+    billingBody: 'Tippe, um deinen Tarif zu prüfen.',
     securityBody: 'Öffne LangX, falls du das nicht warst.',
     securityBodyDevice: 'Von {device}. Öffne LangX, falls du das nicht warst.',
     security: {
@@ -138,6 +142,55 @@ export const de: Localized<ServerMessages> = {
       'Du kannst sie jederzeit in LangX unter Einstellungen → Mitteilungen wieder einschalten.',
     unsubscribeInvalid:
       'Dieser Link ist ungültig. Öffne LangX und ändere es unter Einstellungen → Mitteilungen.',
+
+    /** Onboarding finished: one mail, once in an account's life. */
+
+    welcomeSubject: 'Willkommen bei LangX',
+
+    welcomePreheader: 'Dein erstes Gespräch ist einen Tipp entfernt',
+
+    welcomeTitle: 'Willkommen, {name}',
+
+    welcomeBody: 'Dein Profil ist unter @{handle} online. Das machen die meisten zuerst:',
+
+    welcomeStep1: 'Finde jemanden, der deine Lernsprache spricht, und sag Hallo.',
+
+    welcomeStep2: 'Poste einen Satz im Feed und lass ihn korrigieren.',
+
+    welcomeStep3: 'Komm morgen wieder — zwei Tage hintereinander starten eine Serie.',
+
+    welcomeButton: 'Jemanden zum Üben finden',
+
+    /** A day later, for an address nobody confirmed. */
+
+    verifyReminderSubject: 'Bestätige deine E-Mail-Adresse',
+
+    verifyReminderPreheader: 'Ein Tipp und dein Konto ist bereit',
+
+    verifyReminderBody:
+      'Deinem LangX-Konto fehlt nur eines: der Nachweis, dass diese Adresse dir gehört. Der Link unten erledigt das.',
+
+    verifyReminderText: 'Bestätige deine E-Mail-Adresse: {url}',
+
+    /** Money, so no switch — see `billingEmail`. */
+
+    billingPlan: 'Tarif: {tier}',
+
+    billing: {
+      paymentFailedTitle: 'Deine LangX-Zahlung ist fehlgeschlagen',
+
+      paymentFailedBody:
+        'Der Store konnte die Zahlung für dein Abo nicht einziehen. Er versucht es erneut; dein Tarif bleibt vorerst aktiv.',
+
+      paymentFailedButton: 'Meinen Tarif prüfen',
+
+      planEndedTitle: 'Dein LangX-Tarif ist beendet',
+
+      planEndedBody:
+        'Dein Abo ist beendet und dein Konto ist zurück im kostenlosen Tarif. Alles, was du erstellt hast, ist noch da.',
+
+      planEndedButton: 'Tarife ansehen',
+    },
 
     /**
 

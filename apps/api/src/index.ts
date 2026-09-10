@@ -89,6 +89,11 @@ async function main(): Promise<void> {
     startLegacyImportScheduler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {
       ...(env.STORAGE_PUBLIC_BASE_URL ? { storagePublicBaseUrl: env.STORAGE_PUBLIC_BASE_URL } : {}),
+      // Better Auth mints the link and sends it through the same hook the
+      // first one used; `verifyReminder.ts` only decides who and when.
+      resendVerification: async (email) => {
+        await auth.api.sendVerificationEmail({ body: { email } })
+      },
     }),
   ]
 

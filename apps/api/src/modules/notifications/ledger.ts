@@ -7,6 +7,7 @@ export type NotificationJob =
   | 'profileVisitsPush'
   | 'profileVisitsEmail'
   | 'badgeEarned'
+  | 'verifyReminder'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 

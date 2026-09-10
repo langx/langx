@@ -9,7 +9,7 @@ import QRCode from 'qrcode'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -81,6 +81,9 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       storage,
       translation,
       revenueCat,
+      // Onboarding sends a welcome mail now, and the console sender would
+      // swallow it.
+      email: emailSender,
     })
     await app.ready()
 
@@ -157,6 +160,30 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       promotions: { push: false, email: true },
     })
     expect(profile?.promotionsConsent?.source).toBe('v1')
+  })
+
+  /** One mail, once in an account's life, the moment onboarding finishes. */
+  it('welcomes somebody the moment their profile exists', async () => {
+    const user = await newUser('welcome-mail@example.com')
+    emailSender.messages.length = 0
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'welcomed', displayName: 'Sofia R.' }),
+    })
+    expect(response.statusCode, response.body).toBe(201)
+
+    // Not awaited by the route, so give the send a tick to happen.
+    await vi.waitFor(() => {
+      expect(emailSender.messages.length).toBeGreaterThan(0)
+    })
+    const mail = emailSender.messages.at(-1)
+    expect(mail?.html).toContain('Sofia R.')
+    expect(mail?.html).toContain('welcomed')
+    // Transactional: it answers something they just did, so no unsubscribe.
+    expect(mail?.headers).toBeUndefined()
   })
 
   it('leaves promotional email off for somebody who signed up here', async () => {
