@@ -5,6 +5,7 @@ import {
   UNREAD_DIGEST_MAX_SENDERS,
   localHour,
   notificationsAllowed,
+  profileUrl,
   webUrl,
 } from '@langx/shared'
 import type { Db, Filter } from 'mongodb'
@@ -125,7 +126,12 @@ export async function runUnreadDigestPass(
       const asset = partner.avatarUrl
         ? await fetchAvatarAsset(partner.avatarUrl, `avatar-${id}`, storagePublicBaseUrl)
         : null
-      faces.push({ name, seed: id, ...(asset ? { asset } : {}) })
+      faces.push({
+        name,
+        seed: id,
+        ...(asset ? { asset } : {}),
+        ...(partner.handle ? { url: profileUrl(partner.handle) } : {}),
+      })
     }
     if (faces.length === 0) continue
 

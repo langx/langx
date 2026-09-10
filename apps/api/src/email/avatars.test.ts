@@ -66,6 +66,7 @@ describe('faces in an email', () => {
         {
           name: 'Sofia R.',
           seed: 'u1',
+          url: 'https://app.langx.io/sofia',
           asset: { cid: 'avatar-u1', filename: 'a.png', contentType: 'image/png', base64: 'AA' },
         },
         { name: 'Kenji', seed: 'u2' },
@@ -74,6 +75,7 @@ describe('faces in an email', () => {
       'ltr',
     )
     expect(html).toContain('src="cid:avatar-u1"')
+    expect(html).toContain('href="https://app.langx.io/sofia"')
     expect(html).toContain('Sofia R.')
     // No photo: initials on a disc, drawn in HTML so it cannot fail to render.
     expect(html).toContain('>K<')

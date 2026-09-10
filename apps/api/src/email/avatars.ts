@@ -40,6 +40,8 @@ export interface AvatarFace {
   asset?: InlineAsset
   /** The account id, which is what picks the fallback colour. */
   seed: string
+  /** Their profile. Absent for somebody whose handle we did not read. */
+  url?: string
 }
 
 /**
@@ -107,9 +109,14 @@ export function facesRow(faces: AvatarFace[], more: number, dir: 'ltr' | 'rtl'):
                       <td align="center" valign="middle" height="56" bgcolor="${colourFor(face.seed)}" style="width:56px; height:56px; border-radius:28px; background-color:${colourFor(face.seed)}; font-family:Nunito, Arial, Helvetica, sans-serif; font-size:20px; font-weight:800; color:#ffffff;">${initials}</td>
                     </tr>
                   </table>`
+    const label = `<div style="padding-top:8px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:18px; color:#62676d; word-break:break-word;">${face.name}</div>`
+    // The whole cell is the link, picture and name together — a 56px disc is
+    // a small target on a phone and the name doubles it.
+    const inner = face.url
+      ? `<a href="${encodeURI(face.url)}" target="_blank" style="text-decoration:none; color:#62676d;">${picture}${label}</a>`
+      : `${picture}${label}`
     return `<td width="72" valign="top" align="center" style="${gap}:16px;">
-                  ${picture}
-                  <div style="padding-top:8px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:18px; color:#62676d; word-break:break-word;">${face.name}</div>
+                  ${inner}
                 </td>`
   })
   if (more > 0) {
