@@ -382,9 +382,11 @@ const config: ExpoConfig = {
           'LangX adds a language exchange session to your calendar once you and your partner have both agreed on a time.',
       },
     ],
-    // Only ever requested when someone turns on location sharing in Settings,
-    // and only ever "when in use" — there is no background permission here and
-    // adding one would change what both stores' privacy forms have to say.
+    // Requested from the four places a person can ask for it — the Settings
+    // switch, the location guide's own button, Discover's Nearby chip and the
+    // profile's country picker — and never on a timer. Only ever "when in
+    // use": there is no background permission here, and adding one would
+    // change what both stores' privacy forms have to say.
     // The string is what iOS shows in the prompt, so it names the feature
     // rather than the permission.
     [

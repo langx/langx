@@ -283,8 +283,6 @@ export const ar: Localized<EnMessages> = {
   location: {
     useMyLocation: 'استخدم موقعي',
     deniedTitle: 'الموقع مغلق لتطبيق LangX',
-    deniedBodyIos: 'افتح الإعدادات ← LangX ← الموقع واختر «أثناء استخدام التطبيق».',
-    deniedBodyAndroid: 'افتح الإعدادات ← التطبيقات ← LangX ← الأذونات ← الموقع واسمح به.',
     openSettings: 'فتح الإعدادات',
     failedTitle: 'تعذّرت قراءة موقعك',
     noCountry: 'لم نتمكن من تحديد الدولة.',
@@ -293,7 +291,37 @@ export const ar: Localized<EnMessages> = {
     disabled: 'خدمات الموقع مغلقة على هذا الجهاز.',
     unavailable: 'تعذّر تحديد الموقع الآن. حاول بعد قليل.',
     unavailableTitle: 'الموقع غير متاح',
-    needed: 'الموقع مطلوب',
+    guide: {
+      title: 'إذن الموقع',
+      rowTitle: 'إذن الموقع',
+      rowBody: 'أين تفعّله، وماذا تفعل إذا توقّف هاتفك عن السؤال.',
+      grantedTitle: 'الموقع مفعّل',
+      grantedBody:
+        'يستطيع LangX قراءة موقعك التقريبي أثناء استخدامك للتطبيق. يمكنك سحب ذلك متى شئت من إعدادات الجهاز.',
+      askableTitle: 'يحتاج LangX إلى موقعك',
+      askableBody:
+        'يرتّب «القريبون» الأشخاص حسب بعدهم التقريبي. لا يُحفظ أي موقع دقيق، ولا يرى أحد أكثر من مسافة تقريبية.',
+      allow: 'السماح بالموقع',
+      blockedTitle: 'لن يسأل جهازك مرة أخرى',
+      blockedBody:
+        'رُفض الموقع لـ LangX، لذا لم يعد بإمكان التطبيق إظهار نافذة الإذن. ما زال بإمكانك منحه من إعدادات الجهاز.',
+      iosStep1: 'افتح الإعدادات',
+      iosStep2: 'ابحث عن LangX في القائمة',
+      iosStep3: 'اضغط على «الموقع» واختر «أثناء استخدام التطبيق»',
+      androidStep1: 'افتح الإعدادات',
+      androidStep2: 'اذهب إلى التطبيقات ← LangX',
+      androidStep3: 'اضغط على الأذونات ← الموقع',
+      androidStep4: 'اختر «السماح أثناء استخدام التطبيق فقط»',
+      servicesOffTitle: 'الموقع مُعطَّل على هذا الجهاز',
+      servicesOffBodyIos:
+        'لدى LangX الإذن، لكن خدمات الموقع مُعطَّلة في الهاتف كله. فعّلها من الإعدادات ← الخصوصية والأمان ← خدمات الموقع.',
+      servicesOffBodyAndroid:
+        'لدى LangX الإذن، لكن الموقع مُعطَّل في الجهاز كله. فعّله من الإعدادات ← الموقع.',
+      webTitle: 'المتصفح هو من يقرّر هنا',
+      webBody:
+        'إذن الموقع هنا يخصّ المتصفح لا LangX. ابحث عن أيقونة الموقع في شريط العنوان، أو اسمح بالموقع من إعدادات هذا الموقع الإلكتروني.',
+      howTo: 'كيف تفعّله',
+    },
   },
 
   suspended: {
@@ -608,6 +636,12 @@ export const ar: Localized<EnMessages> = {
     turningOn: 'جارٍ التفعيل…',
     nobodyNearbyTitle: 'لا أحد ضمن {radius} كم',
     nobodyNearbyBody: 'يظهر هنا فقط من فعّلوا مشاركة الموقع. جرّب نطاقًا أوسع أو تبويبًا آخر.',
+    nearbyNeedsPermissionTitle: 'يحتاج «القريبون» إلى موقعك',
+    nearbyNeedsPermissionBody: 'لم يُمنح إذن الموقع، فليس هناك ما يمكن ترتيبه حسب المسافة.',
+    nearbyServicesOffTitle: 'الموقع مُعطَّل على هذا الجهاز',
+    nearbyServicesOffBody: 'لن يعمل «القريبون» حتى تعيد تفعيل الموقع.',
+    nearbyUnavailableTitle: 'تعذّر تحديد مكانك',
+    nearbyUnavailableBody: 'لم يصل أي موقع الآن. حاول بعد قليل.',
     emptyTitle: 'لا أحد هنا بعد',
     emptyBody: 'يظهر هنا من تتطابق لغاتهم مع لغاتك في الاتجاهين. جرّب تخفيف عوامل التصفية.',
   },

@@ -228,8 +228,6 @@ export const ptBR: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Usar minha localização',
     deniedTitle: 'A localização está desligada para o LangX',
-    deniedBodyIos: 'Abra Ajustes → LangX → Localização e escolha “Ao usar o app”.',
-    deniedBodyAndroid: 'Abra Configurações → Apps → LangX → Permissões → Local e permita.',
     openSettings: 'Abrir configurações',
     failedTitle: 'Não foi possível ler sua localização',
     noCountry: 'Não deu para saber que país é esse.',
@@ -239,7 +237,37 @@ export const ptBR: Localized<EnMessages> = {
     disabled: 'Os serviços de localização estão desligados neste aparelho.',
     unavailable: 'Não deu para obter a localização agora. Tente de novo em um instante.',
     unavailableTitle: 'Localização indisponível',
-    needed: 'Localização necessária',
+    guide: {
+      title: 'Permissão de localização',
+      rowTitle: 'Permissão de localização',
+      rowBody: 'Onde ativar e o que fazer se o seu telefone parou de perguntar.',
+      grantedTitle: 'A localização está ligada',
+      grantedBody:
+        'O LangX consegue ler sua posição aproximada enquanto você usa o app. Você pode desfazer isso a qualquer momento nos ajustes do aparelho.',
+      askableTitle: 'O LangX precisa da sua localização',
+      askableBody:
+        'Por perto ordena as pessoas por quão longe estão, mais ou menos. Nada preciso é guardado, e ninguém vê mais do que uma distância aproximada.',
+      allow: 'Permitir localização',
+      blockedTitle: 'Seu aparelho não vai perguntar de novo',
+      blockedBody:
+        'A localização foi negada ao LangX, então o app não consegue mais abrir a janela de permissão. Você ainda pode concedê-la nos ajustes do aparelho.',
+      iosStep1: 'Abra os Ajustes',
+      iosStep2: 'Encontre o LangX na lista',
+      iosStep3: 'Toque em Localização e escolha “Ao Usar o App”',
+      androidStep1: 'Abra as Configurações',
+      androidStep2: 'Vá em Apps → LangX',
+      androidStep3: 'Toque em Permissões → Local',
+      androidStep4: 'Escolha “Permitir apenas ao usar o app”',
+      servicesOffTitle: 'A localização está desligada neste aparelho',
+      servicesOffBodyIos:
+        'O LangX tem permissão, mas os Serviços de Localização estão desligados no telefone inteiro. Ligue de novo em Ajustes → Privacidade e Segurança → Serviços de Localização.',
+      servicesOffBodyAndroid:
+        'O LangX tem permissão, mas a localização está desligada no aparelho inteiro. Ligue de novo em Configurações → Local.',
+      webTitle: 'Aqui quem decide é o navegador',
+      webBody:
+        'A permissão de localização é do navegador, não do LangX. Procure o ícone de localização na barra de endereço ou permita a localização nas configurações deste site.',
+      howTo: 'Como ligar',
+    },
   },
 
   suspended: {
@@ -540,6 +568,14 @@ export const ptBR: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Ninguém a menos de {radius} km',
     nobodyNearbyBody:
       'Aqui só aparece quem ligou o compartilhamento de localização. Tente um raio maior ou outra aba.',
+    nearbyNeedsPermissionTitle: 'Por perto precisa da sua localização',
+    nearbyNeedsPermissionBody:
+      'A permissão de localização não foi concedida, então não há nada para ordenar por distância.',
+    nearbyServicesOffTitle: 'A localização está desligada neste aparelho',
+    nearbyServicesOffBody:
+      'Por perto só volta a funcionar quando a localização for ligada de novo.',
+    nearbyUnavailableTitle: 'Não conseguimos te encontrar',
+    nearbyUnavailableBody: 'Nenhuma posição voltou agora. Tente de novo daqui a pouco.',
     emptyTitle: 'Ainda não tem ninguém',
     emptyBody:
       'Aqui aparecem pessoas cujos idiomas combinam com os seus nos dois sentidos. Tente afrouxar os filtros.',

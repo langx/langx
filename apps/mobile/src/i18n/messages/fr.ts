@@ -233,9 +233,6 @@ export const fr: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Utiliser ma position',
     deniedTitle: 'La localisation est désactivée pour LangX',
-    deniedBodyIos: 'Ouvrez Réglages → LangX → Position et choisissez « Lorsque l’app est active ».',
-    deniedBodyAndroid:
-      'Ouvrez Paramètres → Applications → LangX → Autorisations → Position et autorisez-la.',
     openSettings: 'Ouvrir les réglages',
     failedTitle: 'Impossible de lire votre position',
     noCountry: 'Nous n’avons pas pu déterminer le pays.',
@@ -245,7 +242,37 @@ export const fr: Localized<EnMessages> = {
     disabled: 'Les services de localisation sont désactivés sur cet appareil.',
     unavailable: 'Impossible d’obtenir une position pour le moment. Réessaie dans un instant.',
     unavailableTitle: 'Position indisponible',
-    needed: 'Position requise',
+    guide: {
+      title: 'Autorisation de localisation',
+      rowTitle: 'Autorisation de localisation',
+      rowBody: 'Où l’activer, et quoi faire si votre téléphone ne demande plus.',
+      grantedTitle: 'La localisation est activée',
+      grantedBody:
+        'LangX peut lire votre position approximative pendant que vous l’utilisez. Vous pouvez revenir dessus à tout moment dans les réglages de l’appareil.',
+      askableTitle: 'LangX a besoin de votre position',
+      askableBody:
+        'À proximité classe les gens selon la distance approximative. Rien de précis n’est conservé, et personne ne voit plus qu’une distance grossière.',
+      allow: 'Autoriser la localisation',
+      blockedTitle: 'Votre appareil ne redemandera pas',
+      blockedBody:
+        'La localisation a été refusée à LangX : l’app ne peut donc plus afficher la demande d’autorisation. Vous pouvez toujours l’accorder dans les réglages de l’appareil.',
+      iosStep1: 'Ouvrez Réglages',
+      iosStep2: 'Trouvez LangX dans la liste',
+      iosStep3: 'Touchez Position et choisissez « Lorsque l’app est active »',
+      androidStep1: 'Ouvrez Paramètres',
+      androidStep2: 'Allez dans Applications → LangX',
+      androidStep3: 'Touchez Autorisations → Localisation',
+      androidStep4: 'Choisissez « Autoriser uniquement si l’app est en cours d’utilisation »',
+      servicesOffTitle: 'La localisation est désactivée sur cet appareil',
+      servicesOffBodyIos:
+        'LangX a l’autorisation, mais le service de localisation est coupé pour tout le téléphone. Réactivez-le dans Réglages → Confidentialité et sécurité → Service de localisation.',
+      servicesOffBodyAndroid:
+        'LangX a l’autorisation, mais la localisation est coupée pour tout l’appareil. Réactivez-la dans Paramètres → Localisation.',
+      webTitle: 'Ici, c’est votre navigateur qui décide',
+      webBody:
+        'L’autorisation de localisation appartient au navigateur, pas à LangX. Cherchez l’icône de localisation dans la barre d’adresse, ou autorisez la localisation dans les réglages de ce site.',
+      howTo: 'Comment l’activer',
+    },
   },
 
   suspended: {
@@ -549,6 +576,14 @@ export const fr: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Personne à moins de {radius} km',
     nobodyNearbyBody:
       'Seules les personnes ayant activé le partage de position apparaissent ici. Essaie un rayon plus large, ou un autre onglet.',
+    nearbyNeedsPermissionTitle: 'À proximité a besoin de votre position',
+    nearbyNeedsPermissionBody:
+      'L’autorisation de localisation n’a pas été accordée : il n’y a donc rien à trier par distance.',
+    nearbyServicesOffTitle: 'La localisation est désactivée sur cet appareil',
+    nearbyServicesOffBody:
+      'À proximité ne peut pas fonctionner tant que la localisation n’est pas réactivée.',
+    nearbyUnavailableTitle: 'Nous n’avons pas pu vous situer',
+    nearbyUnavailableBody: 'Aucune position n’est revenue à l’instant. Réessayez dans un moment.',
     emptyTitle: 'Personne pour l’instant',
     emptyBody:
       'On affiche ici les gens dont les langues correspondent aux tiennes dans les deux sens. Essaie d’assouplir les filtres.',

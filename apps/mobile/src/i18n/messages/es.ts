@@ -231,8 +231,6 @@ export const es: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Usar mi ubicación',
     deniedTitle: 'La ubicación está desactivada para LangX',
-    deniedBodyIos: 'Abre Ajustes → LangX → Ubicación y elige «Al usar la app».',
-    deniedBodyAndroid: 'Abre Ajustes → Apps → LangX → Permisos → Ubicación y permítelo.',
     openSettings: 'Abrir ajustes',
     failedTitle: 'No pudimos leer tu ubicación',
     noCountry: 'No pudimos saber de qué país se trata.',
@@ -242,7 +240,37 @@ export const es: Localized<EnMessages> = {
     disabled: 'Los servicios de ubicación están desactivados en este dispositivo.',
     unavailable: 'No se pudo obtener la ubicación ahora mismo. Inténtalo en un momento.',
     unavailableTitle: 'Ubicación no disponible',
-    needed: 'Se necesita la ubicación',
+    guide: {
+      title: 'Permiso de ubicación',
+      rowTitle: 'Permiso de ubicación',
+      rowBody: 'Dónde activarlo y qué hacer si tu teléfono dejó de preguntar.',
+      grantedTitle: 'La ubicación está activada',
+      grantedBody:
+        'LangX puede leer tu posición aproximada mientras la usas. Puedes retirarlo cuando quieras desde los ajustes del dispositivo.',
+      askableTitle: 'LangX necesita tu ubicación',
+      askableBody:
+        'Cerca ordena a la gente por lo lejos que está, más o menos. No se guarda nada preciso y nadie ve más que una distancia aproximada.',
+      allow: 'Permitir ubicación',
+      blockedTitle: 'Tu dispositivo no volverá a preguntar',
+      blockedBody:
+        'Se denegó la ubicación a LangX, así que la app ya no puede mostrar el diálogo de permiso. Aun así puedes concederlo en los ajustes del dispositivo.',
+      iosStep1: 'Abre Ajustes',
+      iosStep2: 'Busca LangX en la lista',
+      iosStep3: 'Toca Ubicación y elige “Al usar la app”',
+      androidStep1: 'Abre Ajustes',
+      androidStep2: 'Ve a Aplicaciones → LangX',
+      androidStep3: 'Toca Permisos → Ubicación',
+      androidStep4: 'Elige “Permitir solo mientras se usa la app”',
+      servicesOffTitle: 'La ubicación está desactivada en este dispositivo',
+      servicesOffBodyIos:
+        'LangX tiene permiso, pero la Localización está apagada para todo el teléfono. Vuelve a activarla en Ajustes → Privacidad y seguridad → Localización.',
+      servicesOffBodyAndroid:
+        'LangX tiene permiso, pero la ubicación está apagada para todo el dispositivo. Vuelve a activarla en Ajustes → Ubicación.',
+      webTitle: 'Esto lo decide tu navegador',
+      webBody:
+        'Aquí el permiso de ubicación es del navegador, no de LangX. Busca el icono de ubicación en la barra de direcciones o permite la ubicación en los ajustes de este sitio.',
+      howTo: 'Cómo activarla',
+    },
   },
 
   suspended: {
@@ -543,6 +571,13 @@ export const es: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Nadie a menos de {radius} km',
     nobodyNearbyBody:
       'Aquí solo aparece quien ha activado la ubicación. Prueba con un radio mayor o con otra pestaña.',
+    nearbyNeedsPermissionTitle: 'Cerca necesita tu ubicación',
+    nearbyNeedsPermissionBody:
+      'No se ha concedido el permiso de ubicación, así que no hay nada que ordenar por distancia.',
+    nearbyServicesOffTitle: 'La ubicación está desactivada en este dispositivo',
+    nearbyServicesOffBody: 'Cerca no puede funcionar hasta que vuelvas a activar la ubicación.',
+    nearbyUnavailableTitle: 'No pudimos encontrarte',
+    nearbyUnavailableBody: 'No llegó ninguna posición ahora mismo. Inténtalo en un momento.',
     emptyTitle: 'Aún no hay nadie',
     emptyBody:
       'Aquí aparece gente cuyos idiomas encajan con los tuyos en ambos sentidos. Prueba a relajar los filtros.',
