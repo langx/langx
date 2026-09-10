@@ -172,6 +172,35 @@ export const ru: Localized<ServerMessages> = {
     unsubscribeInvalid:
       'Ссылка недействительна. Откройте LangX и измените это в Настройках → Уведомления.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: 'Ваш {month} в LangX',
+
+    newsletterPreheader: 'Месяц в цифрах — ваших и общих',
+
+    newsletterYours: 'Ваш месяц',
+
+    newsletterEverybody: 'Месяц всех',
+
+    newsletterQuiet:
+      'В этом месяце вы молчали — ни сообщений, ни исправлений. Те, кто ниже, — нет, и они всё ещё здесь.',
+
+    newsletterMessages: 'Отправлено сообщений',
+
+    newsletterCorrections: 'Сделано исправлений',
+
+    newsletterTokens: 'Заработано токенов',
+
+    newsletterStreak: 'Серия сегодня',
+
+    newsletterNewMembers: 'Новых участников',
+
+    newsletterMessagesSent: 'Отправлено сообщений',
+
+    newsletterCorrectionsMade: 'Сделано исправлений',
+
+    newsletterButton: 'Открыть LangX',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

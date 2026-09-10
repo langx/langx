@@ -167,6 +167,35 @@ export const en = {
     unsubscribeInvalid:
       'This link is not valid. Open LangX and change it under Settings → Notifications.',
 
+    /** The monthly recap. Two halves: the reader's numbers and everybody's. */
+
+    newsletterSubject: 'Your {month} on LangX',
+
+    newsletterPreheader: 'The month in numbers, yours and everybody’s',
+
+    newsletterYours: 'Your month',
+
+    newsletterEverybody: 'Everybody’s month',
+
+    newsletterQuiet:
+      'You were quiet this month — no messages, no corrections. The people below were not, and they are still here.',
+
+    newsletterMessages: 'Messages sent',
+
+    newsletterCorrections: 'Corrections given',
+
+    newsletterTokens: 'Tokens earned',
+
+    newsletterStreak: 'Streak today',
+
+    newsletterNewMembers: 'New members',
+
+    newsletterMessagesSent: 'Messages sent',
+
+    newsletterCorrectionsMade: 'Corrections made',
+
+    newsletterButton: 'Open LangX',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

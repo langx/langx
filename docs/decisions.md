@@ -3712,3 +3712,32 @@ and what makes "we miss you" one letter rather than a daily one.
 The push half is not a fallback for the mail and not gated on it. Somebody
 with the app installed and promotions on asked for both, and the mail is
 often the one that is never opened.
+
+## The newsletter is monthly, and its editorial half is a pull request
+
+A weekly recap was the obvious cadence and the numbers rule it out: a week of
+a language exchange is three conversations and a correction, which reads as
+an accusation rather than a summary. Monthly, at ten in the morning on the
+reader's own clock — and on **any of the first seven days**, not only the
+first, because a deploy that slipped would otherwise skip a month silently
+and the ledger claim already makes a second send impossible.
+
+Two halves, and both are load-bearing. The personal numbers are the reason to
+open it; the community numbers are the reason to come back, because they are
+true whether or not the reader was there. A month somebody sat out swaps the
+personal half for a single sentence rather than printing three zeroes at
+them.
+
+Nothing new is stored to compute any of it. `dailyActivity` already holds a
+row per person per day with the two numbers a recap wants — it exists to cap
+the daily pool — and `tokenAggregates` already has the month's tokens.
+Summing thirty small rows is cheaper than a second running total that could
+disagree with the first.
+
+**The editorial half is written by a scheduled routine and approved by
+merging its pull request.** The alternative — an admin screen, or a note
+typed into a database — would have put the one piece of user-facing copy this
+app sends outside review, outside git, and outside the eight-language
+catalogue that every other string lives in. A month with no merged note still
+gets its recap; the numbers are the part that is always true. See
+`src/email/newsletters/README.md`.
