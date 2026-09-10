@@ -129,8 +129,8 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                                      |
-| Polyglot bundle     | Everything in Fluent · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                             |
+| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                        |
+| Polyglot bundle     | Everything in Fluent · first in the boosted strip · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                       |
@@ -306,20 +306,21 @@ The tiers are `free | pro | pro_plus` in code and **Free**, **Fluent** and
 entitlement identifier cannot be renamed after creation, so the display names
 live in `TIER_NAMES` and the identifiers never move.
 
-|                            | Free                                         | Fluent         | Polyglot       |
-| -------------------------- | -------------------------------------------- | -------------- | -------------- |
-| Starting new conversations | **5** per rolling 24h                        | Unlimited      | Unlimited      |
-| Replying                   | **Unlimited**                                | Unlimited      | Unlimited      |
-| Filters                    | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
-| Sort by distance (Nearby)  | —                                            | —              | **Yes**        |
-| Translation                | **20** per rolling 24h                       | **300**        | **1000**       |
-| Languages you are learning | **1**                                        | **2**          | **5**          |
-| Languages you speak        | **1**                                        | **2**          | **5**          |
-| **Message correction**     | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
-| Who viewed me              | Count only                                   | Count only     | **Identities** |
-| Incognito                  | —                                            | —              | **Yes**        |
-| Hiding that you are online | **Yes**                                      | **Yes**        | **Yes**        |
-| AI copilot                 | —                                            | —              | **Not built**  |
+|                             | Free                                         | Fluent         | Polyglot       |
+| --------------------------- | -------------------------------------------- | -------------- | -------------- |
+| Starting new conversations  | **5** per rolling 24h                        | Unlimited      | Unlimited      |
+| Replying                    | **Unlimited**                                | Unlimited      | Unlimited      |
+| Filters                     | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
+| Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
+| Boosted profile on Discover | —                                            | **Yes**        | **First**      |
+| Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
+| Languages you are learning  | **1**                                        | **2**          | **5**          |
+| Languages you speak         | **1**                                        | **2**          | **5**          |
+| **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
+| Who viewed me               | Count only                                   | Count only     | **Identities** |
+| Incognito                   | —                                            | —              | **Yes**        |
+| Hiding that you are online  | **Yes**                                      | **Yes**        | **Yes**        |
+| AI copilot                  | —                                            | —              | **Not built**  |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
@@ -749,6 +750,18 @@ match on `handle`, riding `handle_unique`, capped at ten. It applies the same
 blocks and `discoverable` rule as the feed and deliberately **not** the mutual
 language fit — finding somebody whose name you already know cannot depend on
 whether you are learnable to each other.
+
+**`GET /discovery/boosted`** is the strip above the list: the paying members
+inside exactly the same scope, in `DISCOVERY_BOOSTED_TIERS` order — Polyglot
+first, then Fluent — capped at `DISCOVERY_BOOSTED_LIMIT` with no cursor. It
+shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
+filter are one definition; the sort, the cursor and the radius are accepted
+and ignored, because the strip has an order of its own. Entitlement is
+re-checked per request (stored tier **and** `entitlement.expiresAt`, the Mongo
+half of `effectivePlanTier`), and `settings.boosted: false` opts out — an
+absent flag means on, so a first subscription boosts without a billing-side
+hook. Boosted people stay in the vertical list too: it is a second chance to
+be seen, not a promotion out of the feed.
 
 **`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot

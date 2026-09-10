@@ -1094,6 +1094,9 @@ export const ptBR: Localized<EnMessages> = {
     showInDiscover: 'Mostrar em Descobrir',
     showInDiscoverBody:
       'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
+    boost: 'Destacar meu perfil',
+    boostBody:
+      'Mostre-me na faixa de perfis em destaque no topo de Descobrir, para quem tem idiomas compatíveis com os meus. Ativo com Fluent e Polyglot.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
@@ -1512,6 +1515,11 @@ export const ptBR: Localized<EnMessages> = {
     welcomePackBody:
       'Uma moldura de perfil e dois congelamentos de sequência para começar. O {plan} traz o conjunto completo.',
     advancedFilters: 'Filtros avançados',
+    boostedProfile: 'Perfil em destaque',
+    boostedProfileBody:
+      'Você aparece na faixa acima da lista de Descobrir, para todo mundo com idiomas compatíveis com os seus. Ativo por padrão; dá para desligar nos Ajustes.',
+    boostedProfileFirst: 'Destaque na frente',
+    boostedProfileFirstBody: 'Perfis Polyglot abrem a faixa, à frente dos Fluent.',
     sendTranslation: 'Envie no idioma dela',
     sendTranslationBody: 'Escreva no seu; os dois vão, então te leem sem adivinhar.',
     deckExport: 'Leve suas expressões',

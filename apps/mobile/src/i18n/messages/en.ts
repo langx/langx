@@ -1149,6 +1149,9 @@ export const en = {
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
       'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
+    boost: 'Boost my profile',
+    boostBody:
+      'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Fluent and Polyglot.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
@@ -1566,6 +1569,11 @@ export const en = {
     welcomePackBody:
       'A profile frame and two streak freezes to start with. {plan} brings the full set.',
     advancedFilters: 'Advanced filters',
+    boostedProfile: 'Boosted profile',
+    boostedProfileBody:
+      'Shown in the Boosted strip above the Discover list, to everyone whose languages match yours. On by default; switch it off in Settings.',
+    boostedProfileFirst: 'Boosted to the front',
+    boostedProfileFirstBody: 'Polyglot profiles lead the Boosted strip, ahead of Fluent.',
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',

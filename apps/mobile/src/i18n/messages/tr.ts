@@ -1104,6 +1104,9 @@ export const tr: Localized<EnMessages> = {
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody:
       'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
+    boost: 'Profilimi öne çıkar',
+    boostBody:
+      'Keşfet’in üstündeki öne çıkanlar şeridinde, dilleri benimkilerle eşleşen kişilere görün. Fluent ve Polyglot ile açık.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',
@@ -1516,6 +1519,11 @@ export const tr: Localized<EnMessages> = {
     welcomePackBody:
       'Başlangıç için bir profil çerçevesi ve iki seri dondurma. {plan} setin tamamını getirir.',
     advancedFilters: 'Gelişmiş filtreler',
+    boostedProfile: 'Öne çıkan profil',
+    boostedProfileBody:
+      'Keşfet listesinin üstündeki öne çıkanlar şeridinde, dilleri seninkilerle eşleşen herkese görünürsün. Varsayılan olarak açık; Ayarlar’dan kapatabilirsin.',
+    boostedProfileFirst: 'Şeridin en başında',
+    boostedProfileFirstBody: 'Polyglot profilleri, Fluent’in önünde şeridin başında yer alır.',
     sendTranslation: 'Onun dilinde gönder',
     sendTranslationBody: 'Sen kendi dilinde yaz; ikisi birden gitsin, o tahmin etmeden okusun.',
     deckExport: 'İfadelerini yanında götür',

@@ -743,6 +743,7 @@ export async function updateProfile(
     privacy?: Record<string, boolean>
     settings?: {
       discoverable?: boolean
+      boosted?: boolean
       translateTo?: string | null
       notifications?: NotificationPrefsInput
     }
@@ -772,6 +773,13 @@ export async function updateProfile(
   const settingsUnset: Record<string, ''> = {}
   if (settings?.discoverable !== undefined)
     settingsPaths['settings.discoverable'] = settings.discoverable
+  /*
+   * No tier guard on the way in, deliberately — `incognito` has none either.
+   * The strip re-reads the entitlement on every request, so `true` written by
+   * a free account buys nothing, and refusing the write would instead mean a
+   * subscriber who lapsed and came back could not change a setting they own.
+   */
+  if (settings?.boosted !== undefined) settingsPaths['settings.boosted'] = settings.boosted
   /*
    * The translation target has to be one of the person's *native* languages
    * — the schema cannot see the profile, so the check is here, against the

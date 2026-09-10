@@ -1108,6 +1108,9 @@ export const fr: Localized<EnMessages> = {
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody:
       'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
+    boost: 'Mettre mon profil en avant',
+    boostBody:
+      'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Fluent et Polyglot.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
@@ -1526,6 +1529,11 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
+    boostedProfile: 'Profil mis en avant',
+    boostedProfileBody:
+      'Tu apparais dans le bandeau au-dessus de la liste Découvrir, pour toutes les personnes dont les langues correspondent aux tiennes. Actif par défaut ; désactivable dans les réglages.',
+    boostedProfileFirst: 'En tête du bandeau',
+    boostedProfileFirstBody: 'Les profils Polyglot ouvrent le bandeau, devant Fluent.',
     sendTranslation: 'Envoyer dans leur langue',
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',

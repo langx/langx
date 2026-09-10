@@ -1224,6 +1224,9 @@ export const ru: Localized<EnMessages> = {
     linkDeviceBody: 'Подтвердить вход и посмотреть, где вы вошли.',
     showInDiscover: 'Показывать меня в Поиске',
     showInDiscoverBody: 'Выключи — и тебя не найдут: ни в «Обзоре», ни по имени пользователя.',
+    boost: 'Продвигать мой профиль',
+    boostBody:
+      'Показывать меня в ленте продвигаемых профилей вверху «Поиска» — людям, чьи языки совпадают с моими. Включено с Fluent и Polyglot.',
     incognito: 'Невидимый просмотр',
     incognitoBody: 'Ты не появишься в списке их посетителей.',
     hideOnline: 'Скрывать, когда я в сети',
@@ -1703,6 +1706,11 @@ export const ru: Localized<EnMessages> = {
     welcomePack: 'Приветственный набор',
     welcomePackBody: 'Рамка профиля и две заморозки серии для начала. {plan} даёт полный набор.',
     advancedFilters: 'Расширенные фильтры',
+    boostedProfile: 'Продвигаемый профиль',
+    boostedProfileBody:
+      'Вы появляетесь в ленте над списком, для всех, чьи языки совпадают с вашими. Включено по умолчанию; отключается в настройках.',
+    boostedProfileFirst: 'В начале ленты',
+    boostedProfileFirstBody: 'Профили Polyglot идут в начале ленты, впереди Fluent.',
     sendTranslation: 'Отправляй на их языке',
     sendTranslationBody: 'Пиши на своём — уйдут оба, и тебя прочтут без догадок.',
     deckExport: 'Забери свои выражения',

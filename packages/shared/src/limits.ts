@@ -310,7 +310,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters'] as const
+export const PRO_FEATURES = ['advancedFilters', 'boostedProfile'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -350,6 +350,12 @@ export type PlanFeature = ProFeature | ProPlusFeature
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
+  /**
+   * In *both* benefit lists, for the same reason `translationQuota` is: both
+   * paid plans get it, and Polyglot gets more of it — a place at the front of
+   * the strip — which "everything in Fluent" would otherwise hide.
+   */
+  'boostedProfile',
   'translationQuota',
   'learningLanguages',
   /**
@@ -382,6 +388,7 @@ export type ProBenefit = (typeof PRO_BENEFITS)[number]
  */
 export const PRO_PLUS_BENEFITS = [
   'profileViewerIdentities',
+  'boostedProfile',
   'incognito',
   'nearby',
   'copilot',

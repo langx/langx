@@ -316,6 +316,8 @@ export interface MeProfile {
    */
   settings: {
     discoverable: boolean
+    /** Absent means on — see `Profile.settings` in the API for why. */
+    boosted?: boolean
     /** A native language code, or absent: see `translateTargetFor` in shared. */
     translateTo?: string | null
     notifications: StoredNotificationPrefs | NotificationPrefs | boolean

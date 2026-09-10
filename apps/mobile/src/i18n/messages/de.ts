@@ -1128,6 +1128,9 @@ export const de: Localized<EnMessages> = {
     showInDiscover: 'In Entdecken zeigen',
     showInDiscoverBody:
       'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
+    boost: 'Mein Profil hervorheben',
+    boostBody:
+      'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Fluent und Polyglot aktiv.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',
@@ -1547,6 +1550,11 @@ export const de: Localized<EnMessages> = {
     welcomePackBody:
       'Ein Profilrahmen und zwei Serien-Freezes zum Start. {plan} bringt das ganze Set.',
     advancedFilters: 'Erweiterte Filter',
+    boostedProfile: 'Hervorgehobenes Profil',
+    boostedProfileBody:
+      'Du erscheinst in der Leiste über der Entdecken-Liste, für alle, deren Sprachen zu deinen passen. Standardmäßig an; in den Einstellungen abschaltbar.',
+    boostedProfileFirst: 'Ganz nach vorn',
+    boostedProfileFirstBody: 'Polyglot-Profile stehen in der Leiste vor Fluent.',
     sendTranslation: 'In ihrer Sprache senden',
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',

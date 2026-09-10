@@ -1727,6 +1727,37 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
       expect(response.json<{ lastActiveAt?: string }>().lastActiveAt).toBeDefined()
     })
+
+    /**
+     * `settings` is written as dotted paths for the same reason `privacy` is.
+     * Absent means boosted, so this switch only ever writes when somebody
+     * turns it off — and it must not take the rest of `settings` with it.
+     */
+    it('stores settings.boosted without disturbing the rest of settings', async () => {
+      const user = await onboarded('boost-setting@example.com', 'boostsetting')
+
+      const before = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      // Nothing is written at onboarding: absence is the default, and it is
+      // what makes a first-time subscriber boosted with no billing-side hook.
+      expect(before?.settings.boosted).toBeUndefined()
+
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { settings: { boosted: false } },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.settings.boosted).toBe(false)
+      expect(after?.settings.discoverable).toBe(before?.settings.discoverable)
+      expect(after?.settings.notifications).toEqual(before?.settings.notifications)
+    })
   })
 
   describe('the city, which nobody types', () => {

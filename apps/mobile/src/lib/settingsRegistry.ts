@@ -74,6 +74,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         bodyKey: 'settings.showInDiscoverBody',
       },
       {
+        id: 'privacy.boost',
+        titleKey: 'settings.boost',
+        bodyKey: 'settings.boostBody',
+      },
+      {
         id: 'privacy.incognito',
         titleKey: 'settings.incognito',
         bodyKey: 'settings.incognitoBody',
