@@ -23,6 +23,15 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} jetons pour ton signalement 🎉',
     },
     bountyBody: 'On a lu ce que tu nous as envoyé, et ça valait le coup.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Ouvrez LangX si ce n’était pas vous.',
+    securityBodyDevice: 'Depuis {device}. Ouvrez LangX si ce n’était pas vous.',
+    security: {
+      newSignInTitle: 'Nouvelle connexion à votre compte',
+      passwordChangedTitle: 'Votre mot de passe a été modifié',
+      methodLinkedTitle: 'Méthode de connexion ajoutée',
+      methodUnlinkedTitle: 'Méthode de connexion retirée',
+    },
   },
 
   email: {
@@ -130,6 +139,44 @@ export const fr: Localized<ServerMessages> = {
       'Vous pouvez les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
     unsubscribeInvalid:
       'Ce lien n’est pas valide. Ouvrez LangX et modifiez-le dans Réglages → Notifications.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Appareil',
+
+    securityPlace: 'Lieu',
+
+    securityWhen: 'Quand',
+
+    securityNotYou:
+      'Si ce n’était pas vous, changez votre mot de passe maintenant : cela déconnecte tous les autres appareils.',
+
+    securityButton: 'Changer mon mot de passe',
+
+    security: {
+      newSignInTitle: 'Nouvelle connexion à votre compte LangX',
+
+      newSignInBody:
+        'Quelqu’un s’est connecté à votre compte depuis un appareil que nous n’avions jamais vu.',
+
+      passwordChangedTitle: 'Votre mot de passe LangX a été modifié',
+
+      passwordChangedBody: 'Le mot de passe de votre compte vient d’être modifié.',
+
+      methodLinkedTitle: 'Une méthode de connexion a été ajoutée à votre compte LangX',
+
+      methodLinkedBody: 'La connexion avec Google ou Apple a été associée à votre compte.',
+
+      methodUnlinkedTitle: 'Une méthode de connexion a été retirée de votre compte LangX',
+
+      methodUnlinkedBody: 'Une façon de vous connecter a été déconnectée.',
+    },
 
     kind: {
       messages: 'les résumés de messages',

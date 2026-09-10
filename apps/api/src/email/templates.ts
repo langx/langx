@@ -350,6 +350,73 @@ export function existingAccountLinkEmail(url: string, locale: Locale): Email {
   }
 }
 
+/** The four things this app tells somebody about their own account. */
+export type SecurityEvent = 'newSignIn' | 'passwordChanged' | 'methodLinked' | 'methodUnlinked'
+
+/**
+ * A security notice: a new device, a changed password, a sign-in method
+ * connected or disconnected.
+ *
+ * `wrap`, not `notificationEmail`, and the difference is the whole point. A
+ * notification mail's footer says how to stop it arriving; this one has no
+ * way to stop, because there is no switch behind it — see
+ * `modules/security/notify.ts`. What it carries instead is the detail
+ * somebody needs to recognise their own action, and one button for when they
+ * do not.
+ *
+ * The time is written in UTC and says so. Guessing a timezone from an IP is
+ * how a mail tells somebody in Toronto that they signed in at 09:00 when
+ * their clock said 04:00, and the reader is checking this line against their
+ * memory of the last ten minutes.
+ */
+export function securityEmail(
+  locale: Locale,
+  event: SecurityEvent,
+  detail: { device?: string; place?: string; at: Date },
+): Email {
+  const t = translator(locale)
+  const when = `${detail.at.toISOString().slice(0, 16).replace('T', ' ')} UTC`
+  const rows: [string, string][] = [
+    ...(detail.device ? ([[t('email.securityDevice'), detail.device]] as [string, string][]) : []),
+    ...(detail.place ? ([[t('email.securityPlace'), detail.place]] as [string, string][]) : []),
+    [t('email.securityWhen'), when],
+  ]
+  const table = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0 0;">
+        ${rows
+          .map(
+            ([label, value]) =>
+              `<tr><td style="padding:4px 16px 4px 0; font-size:14px; line-height:22px; color:#62676d;">${label}</td><td style="padding:4px 0; font-size:14px; line-height:22px; color:#17191c;"><strong>${escapeHtml(value)}</strong></td></tr>`,
+          )
+          .join('\n        ')}
+      </table>`
+
+  const title = t(`email.security.${event}Title` as never)
+  const body = t(`email.security.${event}Body` as never)
+  const url = webUrl('/settings/password')
+  return {
+    subject: title,
+    html: wrap(
+      locale,
+      body,
+      `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${title}</strong></p>
+       <p>${body}</p>
+       ${table}
+       <p style="margin:24px 0 0;">${t('email.securityNotYou')}</p>
+       <p>${button(url, t('email.securityButton'))}</p>`,
+    ),
+    text: [
+      title,
+      '',
+      body,
+      '',
+      ...rows.map(([label, value]) => `${label}: ${value}`),
+      '',
+      t('email.securityNotYou'),
+      url,
+    ].join('\n'),
+  }
+}
+
 /**
  * The streak nudge, for somebody with no phone signed in.
  *

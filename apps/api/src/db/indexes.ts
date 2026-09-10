@@ -683,6 +683,11 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { campaignId: 1, sentAt: -1 }, name: 'campaign_recent' },
   ],
 
+  [COLLECTIONS.knownDevices]: [
+    // What the purge deletes by. The `_id` already carries the uniqueness.
+    { key: { userId: 1 }, name: 'device_owner' },
+  ],
+
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },

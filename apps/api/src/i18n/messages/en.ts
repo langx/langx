@@ -27,6 +27,15 @@ export const en = {
       other: '{count} tokens for your report 🎉',
     },
     bountyBody: 'We read what you sent, and it was worth it.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Open LangX if this was not you.',
+    securityBodyDevice: 'From {device}. Open LangX if this was not you.',
+    security: {
+      newSignInTitle: 'New sign-in to your account',
+      passwordChangedTitle: 'Your password was changed',
+      methodLinkedTitle: 'A sign-in method was added',
+      methodUnlinkedTitle: 'A sign-in method was removed',
+    },
   },
 
   email: {
@@ -134,6 +143,43 @@ export const en = {
     unsubscribedBody: 'You can turn them back on any time in LangX under Settings → Notifications.',
     unsubscribeInvalid:
       'This link is not valid. Open LangX and change it under Settings → Notifications.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Device',
+
+    securityPlace: 'Place',
+
+    securityWhen: 'When',
+
+    securityNotYou:
+      "If this wasn't you, change your password now — it signs out every other device.",
+
+    securityButton: 'Change my password',
+
+    security: {
+      newSignInTitle: 'New sign-in to your LangX account',
+
+      newSignInBody: 'Somebody signed in to your account from a device we have not seen before.',
+
+      passwordChangedTitle: 'Your LangX password was changed',
+
+      passwordChangedBody: 'The password on your account was just changed.',
+
+      methodLinkedTitle: 'A sign-in method was added to your LangX account',
+
+      methodLinkedBody: 'Google or Apple sign-in was connected to your account.',
+
+      methodUnlinkedTitle: 'A sign-in method was removed from your LangX account',
+
+      methodUnlinkedBody: 'A way of signing in to your account was disconnected.',
+    },
 
     /** Named in the sentence above, so they read as objects, not headings. */
     kind: {

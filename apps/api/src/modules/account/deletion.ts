@@ -349,6 +349,7 @@ export async function purgeExpiredAccounts(
       // `/s/<id>` page about a person, so leaving it is leaving a profile
       // fragment up after the profile is gone.
       db.collection(COLLECTIONS.shareCards).deleteMany({ userId }),
+      db.collection(COLLECTIONS.knownDevices).deleteMany({ userId }),
       // Better Auth's own rows. Deleting the `user` document is what makes the
       // email reusable and the account genuinely gone rather than orphaned.
       db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) }),

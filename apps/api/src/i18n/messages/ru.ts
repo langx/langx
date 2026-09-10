@@ -35,6 +35,15 @@ export const ru: Localized<ServerMessages> = {
       other: '{count} жетона за твоё сообщение 🎉',
     },
     bountyBody: 'Мы прочитали то, что ты прислал, — это того стоило.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Откройте LangX, если это были не вы.',
+    securityBodyDevice: 'С устройства {device}. Откройте LangX, если это были не вы.',
+    security: {
+      newSignInTitle: 'Новый вход в аккаунт',
+      passwordChangedTitle: 'Пароль изменён',
+      methodLinkedTitle: 'Добавлен способ входа',
+      methodUnlinkedTitle: 'Удалён способ входа',
+    },
   },
 
   email: {
@@ -139,6 +148,43 @@ export const ru: Localized<ServerMessages> = {
     unsubscribedBody: 'Включить обратно можно в любой момент в LangX: Настройки → Уведомления.',
     unsubscribeInvalid:
       'Ссылка недействительна. Откройте LangX и измените это в Настройках → Уведомления.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Устройство',
+
+    securityPlace: 'Место',
+
+    securityWhen: 'Когда',
+
+    securityNotYou:
+      'Если это были не вы, сразу смените пароль — это завершит сеансы на всех остальных устройствах.',
+
+    securityButton: 'Сменить пароль',
+
+    security: {
+      newSignInTitle: 'Новый вход в ваш аккаунт LangX',
+
+      newSignInBody: 'Кто-то вошёл в ваш аккаунт с устройства, которого мы раньше не видели.',
+
+      passwordChangedTitle: 'Пароль LangX изменён',
+
+      passwordChangedBody: 'Пароль вашего аккаунта только что изменили.',
+
+      methodLinkedTitle: 'К вашему аккаунту LangX добавлен способ входа',
+
+      methodLinkedBody: 'К аккаунту подключён вход через Google или Apple.',
+
+      methodUnlinkedTitle: 'Из вашего аккаунта LangX удалён способ входа',
+
+      methodUnlinkedBody: 'Один из способов входа в аккаунт отключён.',
+    },
 
     kind: {
       messages: 'сводки сообщений',

@@ -155,6 +155,12 @@ export const COLLECTIONS = {
    */
   meetingReminders: 'meetingReminders',
   /**
+   * The devices an account has signed in from, keyed `<userId>:<fingerprint>`
+   * so the insert failing is what says "we have seen this one". No TTL: a
+   * device does not stop having been seen. See `security/knownDevices.ts`.
+   */
+  knownDevices: 'knownDevices',
+  /**
    * One row per person per campaign, written *before* the send. The unique
    * index on `{campaignId, userId}` is the only thing that makes re-running a
    * half-finished campaign safe.

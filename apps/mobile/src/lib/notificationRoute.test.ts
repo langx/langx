@@ -32,4 +32,8 @@ describe('notificationRoute', () => {
     // difference between the free count and the Pro list is drawn.
     expect(notificationRoute({ kind: 'profileVisits' })).toBe('/viewers')
   })
+
+  it('sends a security notice to the screen that changes the password', () => {
+    expect(notificationRoute({ kind: 'security' })).toBe('/settings/password')
+  })
 })

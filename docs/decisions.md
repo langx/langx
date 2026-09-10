@@ -3640,3 +3640,46 @@ reports a permanent bounce or a spam complaint about a mailbox we should not
 write to again. `createProfile` checks it before seeding the v1 consent. A
 transient bounce is deliberately not on it: a full mailbox is a bad day, not
 a dead address.
+
+## A security notice has no switch, and no unsubscribe
+
+Somebody could sign in to this app from a stranger's laptop and nothing
+would say so. Four events now do: a sign-in from a device the account has
+not been seen on, a password change (including a reset — an attacker with a
+stolen inbox is exactly who the mail is about), and a sign-in method
+connected or disconnected.
+
+**None of them asks a preference**, and both channels fire rather than one
+falling back to the other. The reasoning is the bounty receipt's: a setting
+whose honest label is "do not tell me when somebody signs in as me" is not
+one to offer, and an attacker who has the phone must not be able to keep the
+mail from arriving. So no `notificationsAllowed` check, no
+`sendNotificationEmail`, no `List-Unsubscribe` header — it is not a list.
+The mail carries the device, the country the edge reported and the time in
+UTC (labelled as such: guessing a timezone from an IP is how a notice tells
+somebody in Toronto they signed in at an hour they were asleep), and one
+button, to the screen that changes the password and signs every other device
+out.
+
+**"A device we have not seen" is its own collection.** The obvious source
+was `session`, and it is wrong: those rows expire in a week, so a person who
+signs in every fortnight would be told every fortnight that their own phone
+was new — which is how a security mail becomes the one people filter away.
+`knownDevices` is keyed `<userId>:<fingerprint>` with no TTL, so the insert
+failing is what says "seen before", and two sign-ins racing each other
+produce one letter.
+
+The fingerprint is deliberately coarse — `ios-safari`, `android-chrome`,
+`ios-app` — because a browser version bump is not a new device. It comes
+from about forty lines of regex rather than a user-agent library: those
+carry a pattern database the size of this app's whole i18n catalogue in
+order to tell Chrome 118 from Chrome 119, which is the one distinction being
+thrown away here.
+
+All of it hangs off a single Better Auth `after` hook keyed on
+`ctx.context.newSession` rather than on a list of sign-in paths, because
+that list is exactly the thing a future plugin would silently add to. A
+sign-up is excluded: being told you signed in seconds after creating the
+account is noise. Nothing thrown inside is allowed to reach the caller —
+these fire on the response to a correct password, and a mail provider having
+a bad minute must not turn that into an error page.

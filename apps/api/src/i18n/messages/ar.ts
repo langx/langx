@@ -29,6 +29,15 @@ export const ar: Localized<ServerMessages> = {
       other: '{count} رمز مقابل بلاغك 🎉',
     },
     bountyBody: 'قرأنا ما أرسلته، وقد كان يستحق.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'افتح LangX إن لم تكن أنت.',
+    securityBodyDevice: 'من {device}. افتح LangX إن لم تكن أنت.',
+    security: {
+      newSignInTitle: 'تسجيل دخول جديد إلى حسابك',
+      passwordChangedTitle: 'تم تغيير كلمة المرور',
+      methodLinkedTitle: 'تمت إضافة طريقة تسجيل دخول',
+      methodUnlinkedTitle: 'تمت إزالة طريقة تسجيل دخول',
+    },
   },
 
   email: {
@@ -127,6 +136,43 @@ export const ar: Localized<ServerMessages> = {
     unsubscribedTitle: 'تم — لن تصلك بعد الآن.',
     unsubscribedBody: 'يمكنك تشغيلها متى شئت من LangX في الإعدادات ← الإشعارات.',
     unsubscribeInvalid: 'هذا الرابط غير صالح. افتح LangX وغيّره من الإعدادات ← الإشعارات.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'الجهاز',
+
+    securityPlace: 'المكان',
+
+    securityWhen: 'الوقت',
+
+    securityNotYou:
+      'إن لم تكن أنت، غيّر كلمة المرور الآن — سيؤدي ذلك إلى تسجيل الخروج من كل الأجهزة الأخرى.',
+
+    securityButton: 'تغيير كلمة المرور',
+
+    security: {
+      newSignInTitle: 'تسجيل دخول جديد إلى حسابك في LangX',
+
+      newSignInBody: 'سجّل أحدهم الدخول إلى حسابك من جهاز لم نره من قبل.',
+
+      passwordChangedTitle: 'تم تغيير كلمة مرور LangX',
+
+      passwordChangedBody: 'تم تغيير كلمة مرور حسابك للتو.',
+
+      methodLinkedTitle: 'تمت إضافة طريقة تسجيل دخول إلى حسابك في LangX',
+
+      methodLinkedBody: 'تم ربط تسجيل الدخول بحساب Google أو Apple بحسابك.',
+
+      methodUnlinkedTitle: 'تمت إزالة طريقة تسجيل دخول من حسابك في LangX',
+
+      methodUnlinkedBody: 'تم فصل إحدى طرق تسجيل الدخول إلى حسابك.',
+    },
 
     kind: {
       messages: 'ملخّصات الرسائل',

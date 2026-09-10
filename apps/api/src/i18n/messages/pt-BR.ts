@@ -23,6 +23,15 @@ export const ptBR: Localized<ServerMessages> = {
       other: '{count} fichas pelo seu aviso 🎉',
     },
     bountyBody: 'Lemos o que você enviou, e valeu a pena.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Abra o LangX se não foi você.',
+    securityBodyDevice: 'De {device}. Abra o LangX se não foi você.',
+    security: {
+      newSignInTitle: 'Novo acesso à sua conta',
+      passwordChangedTitle: 'Sua senha foi alterada',
+      methodLinkedTitle: 'Método de login adicionado',
+      methodUnlinkedTitle: 'Método de login removido',
+    },
   },
 
   email: {
@@ -125,6 +134,43 @@ export const ptBR: Localized<ServerMessages> = {
     unsubscribedBody: 'Você pode reativar quando quiser no LangX, em Configurações → Notificações.',
     unsubscribeInvalid:
       'Este link não é válido. Abra o LangX e altere em Configurações → Notificações.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Dispositivo',
+
+    securityPlace: 'Local',
+
+    securityWhen: 'Quando',
+
+    securityNotYou:
+      'Se não foi você, mude sua senha agora — isso desconecta todos os outros dispositivos.',
+
+    securityButton: 'Mudar minha senha',
+
+    security: {
+      newSignInTitle: 'Novo acesso à sua conta LangX',
+
+      newSignInBody: 'Alguém entrou na sua conta a partir de um dispositivo que nunca vimos antes.',
+
+      passwordChangedTitle: 'Sua senha do LangX foi alterada',
+
+      passwordChangedBody: 'A senha da sua conta acabou de ser alterada.',
+
+      methodLinkedTitle: 'Um método de login foi adicionado à sua conta LangX',
+
+      methodLinkedBody: 'O login com Google ou Apple foi conectado à sua conta.',
+
+      methodUnlinkedTitle: 'Um método de login foi removido da sua conta LangX',
+
+      methodUnlinkedBody: 'Uma forma de entrar na sua conta foi desconectada.',
+    },
 
     kind: {
       messages: 'os resumos de mensagens',

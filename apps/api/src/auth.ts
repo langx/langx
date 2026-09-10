@@ -37,6 +37,16 @@ import { localeFromHeader } from './i18n'
 import { nativeLocaleFor } from './modules/profiles/localeFor'
 import { publicApiUrl, type Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
+import { LoggingPushSender, type PushSender } from './modules/push/devices'
+import { countryFromHeaders, deviceIdentity } from './modules/security/deviceLabel'
+import { claimNewDevice } from './modules/security/knownDevices'
+import {
+  notifyNewSignIn,
+  notifyPasswordChanged,
+  notifySignInMethodChanged,
+  type SecurityContext,
+  type SecurityNotifier,
+} from './modules/security/notify'
 
 /**
  * Where Apple POSTs the credential back from. Fixed by Apple, not by us or by
@@ -62,13 +72,32 @@ export interface CreateAuthOptions {
    * simply means no gift is attempted.
    */
   revenueCat?: RevenueCatClient
+  /**
+   * For the security notices, which go to a phone as well as an inbox. Left
+   * out — as most tests do — the mail still goes and nothing buzzes.
+   */
+  push?: PushSender
 }
 
 /**
  * `betterAuth()` itself is synchronous, but wiring Apple requires signing a
  * JWT first (see auth/appleClientSecret.ts), so construction is async.
  */
-export async function createAuth({ env, db, client, emailSender, revenueCat }: CreateAuthOptions) {
+/**
+ * Every route that ends with a different password on the account. Reset and
+ * set are here beside change: an attacker who used a stolen inbox to reset
+ * the password is exactly who this mail is about.
+ */
+const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password', '/reset-password'])
+
+export async function createAuth({
+  env,
+  db,
+  client,
+  emailSender,
+  revenueCat,
+  push,
+}: CreateAuthOptions) {
   const baseURL = publicApiUrl(env)
 
   const socialProviders: NonNullable<Parameters<typeof betterAuth>[0]['socialProviders']> = {}
@@ -147,6 +176,72 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
    */
   let sendExistingAccountLink: ((email: string, headers: Headers) => Promise<void>) | undefined =
     undefined
+
+  const security: SecurityNotifier = {
+    email: emailSender,
+    push: push ?? new LoggingPushSender(),
+    logger: console,
+  }
+
+  /**
+   * The security notices, hung off one `after` hook rather than four.
+   *
+   * Keyed on what the endpoint *did* — `ctx.context.newSession` means a
+   * session was created, whatever route made it — rather than on a list of
+   * paths, because that list is exactly the thing a future Better Auth plugin
+   * would silently add to. A sign-up is excluded on purpose: being told you
+   * signed in seconds after creating the account is noise, and the
+   * verification mail is already on its way.
+   *
+   * Nothing is awaited into the response beyond the notice itself, and
+   * `notifySecurityEvent` swallows its own failures — a mail provider having
+   * a bad minute must not turn a correct password into an error page.
+   */
+  async function tellThemAboutIt(ctx: {
+    path: string
+    headers?: Headers | undefined
+    context: {
+      newSession?: { user: { id: string } } | null | undefined
+      session?: { user: { id: string } } | undefined
+    }
+  }): Promise<void> {
+    const headers = ctx.headers
+    const identity = deviceIdentity(headers?.get('user-agent'))
+    const country = countryFromHeaders(headers)
+    const at = new Date()
+    const detail: SecurityContext = { device: identity.label, ...(country ? { country } : {}), at }
+
+    if (PASSWORD_CHANGE_PATHS.has(ctx.path)) {
+      const userId = ctx.context.newSession?.user.id ?? ctx.context.session?.user.id
+      if (userId) await notifyPasswordChanged(db, security, userId, detail)
+      return
+    }
+    if (ctx.path === '/unlink-account' || ctx.path === '/link-social') {
+      const userId = ctx.context.session?.user.id
+      if (userId) {
+        await notifySignInMethodChanged(
+          db,
+          security,
+          userId,
+          ctx.path === '/link-social' ? 'linked' : 'unlinked',
+          detail,
+        )
+      }
+      return
+    }
+
+    if (ctx.path.startsWith('/sign-up')) return
+    const created = ctx.context.newSession
+    if (!created) return
+    // The row is written whether or not anybody is told, so the *next* sign-in
+    // from this device is an ordinary one. Only a device we had not seen
+    // earns a letter.
+    const isNew = await claimNewDevice(db, created.user.id, identity.fingerprint, {
+      ...(country ? { country } : {}),
+      at,
+    })
+    if (isNew) await notifyNewSignIn(db, security, created.user.id, detail)
+  }
 
   const auth = betterAuth({
     baseURL,
@@ -313,9 +408,11 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
        * creates a session sets its own.
        */
       after: createAuthMiddleware(async (ctx) => {
-        if (ctx.path !== '/device/token') return
-        const created = ctx.context.newSession
-        if (created) await setSessionCookie(ctx, created)
+        if (ctx.path === '/device/token') {
+          const created = ctx.context.newSession
+          if (created) await setSessionCookie(ctx, created)
+        }
+        await tellThemAboutIt(ctx)
       }),
     },
 

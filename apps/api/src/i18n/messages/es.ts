@@ -23,6 +23,15 @@ export const es: Localized<ServerMessages> = {
       other: '{count} fichas por tu aviso 🎉',
     },
     bountyBody: 'Leímos lo que nos enviaste y valió la pena.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Abre LangX si no fuiste tú.',
+    securityBodyDevice: 'Desde {device}. Abre LangX si no fuiste tú.',
+    security: {
+      newSignInTitle: 'Nuevo inicio de sesión en tu cuenta',
+      passwordChangedTitle: 'Tu contraseña ha cambiado',
+      methodLinkedTitle: 'Método de inicio de sesión añadido',
+      methodUnlinkedTitle: 'Método de inicio de sesión eliminado',
+    },
   },
 
   email: {
@@ -128,6 +137,44 @@ export const es: Localized<ServerMessages> = {
       'Puedes volver a activarlos cuando quieras en LangX, en Ajustes → Notificaciones.',
     unsubscribeInvalid:
       'Este enlace no es válido. Abre LangX y cámbialo en Ajustes → Notificaciones.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Dispositivo',
+
+    securityPlace: 'Lugar',
+
+    securityWhen: 'Cuándo',
+
+    securityNotYou:
+      'Si no fuiste tú, cambia tu contraseña ahora: cierra la sesión en todos los demás dispositivos.',
+
+    securityButton: 'Cambiar mi contraseña',
+
+    security: {
+      newSignInTitle: 'Nuevo inicio de sesión en tu cuenta de LangX',
+
+      newSignInBody:
+        'Alguien inició sesión en tu cuenta desde un dispositivo que no habíamos visto antes.',
+
+      passwordChangedTitle: 'Tu contraseña de LangX ha cambiado',
+
+      passwordChangedBody: 'La contraseña de tu cuenta acaba de cambiarse.',
+
+      methodLinkedTitle: 'Se añadió un método de inicio de sesión a tu cuenta de LangX',
+
+      methodLinkedBody: 'Se conectó el inicio de sesión con Google o Apple a tu cuenta.',
+
+      methodUnlinkedTitle: 'Se eliminó un método de inicio de sesión de tu cuenta de LangX',
+
+      methodUnlinkedBody: 'Se desconectó una forma de iniciar sesión en tu cuenta.',
+    },
 
     kind: {
       messages: 'los resúmenes de mensajes',

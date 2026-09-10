@@ -23,6 +23,15 @@ export const de: Localized<ServerMessages> = {
       other: '{count} Token für deinen Hinweis 🎉',
     },
     bountyBody: 'Wir haben gelesen, was du geschickt hast – es hat sich gelohnt.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Öffne LangX, falls du das nicht warst.',
+    securityBodyDevice: 'Von {device}. Öffne LangX, falls du das nicht warst.',
+    security: {
+      newSignInTitle: 'Neue Anmeldung bei deinem Konto',
+      passwordChangedTitle: 'Dein Passwort wurde geändert',
+      methodLinkedTitle: 'Anmeldemethode hinzugefügt',
+      methodUnlinkedTitle: 'Anmeldemethode entfernt',
+    },
   },
 
   email: {
@@ -129,6 +138,43 @@ export const de: Localized<ServerMessages> = {
       'Du kannst sie jederzeit in LangX unter Einstellungen → Mitteilungen wieder einschalten.',
     unsubscribeInvalid:
       'Dieser Link ist ungültig. Öffne LangX und ändere es unter Einstellungen → Mitteilungen.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Gerät',
+
+    securityPlace: 'Ort',
+
+    securityWhen: 'Zeitpunkt',
+
+    securityNotYou:
+      'Warst du das nicht, ändere sofort dein Passwort — das meldet alle anderen Geräte ab.',
+
+    securityButton: 'Passwort ändern',
+
+    security: {
+      newSignInTitle: 'Neue Anmeldung bei deinem LangX-Konto',
+
+      newSignInBody: 'Jemand hat sich von einem uns unbekannten Gerät bei deinem Konto angemeldet.',
+
+      passwordChangedTitle: 'Dein LangX-Passwort wurde geändert',
+
+      passwordChangedBody: 'Das Passwort deines Kontos wurde soeben geändert.',
+
+      methodLinkedTitle: 'Deinem LangX-Konto wurde eine Anmeldemethode hinzugefügt',
+
+      methodLinkedBody: 'Die Anmeldung mit Google oder Apple wurde mit deinem Konto verbunden.',
+
+      methodUnlinkedTitle: 'Aus deinem LangX-Konto wurde eine Anmeldemethode entfernt',
+
+      methodUnlinkedBody: 'Eine Möglichkeit, dich anzumelden, wurde entfernt.',
+    },
 
     kind: {
       messages: 'Nachrichtenübersichten',

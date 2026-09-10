@@ -47,6 +47,12 @@ export const PUSH_KINDS = [
   'profileVisits',
   'meetingReminder',
   'bountyPaid',
+  /**
+   * A new device, a changed password, a sign-in method connected or removed.
+   * No preference gates it — see `modules/security/notify.ts` — so it is the
+   * one kind with no row on the settings screen.
+   */
+  'security',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 
