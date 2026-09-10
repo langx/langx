@@ -505,7 +505,7 @@ export const en = {
     meetings: 'Meetings',
     meetingsBody: 'An hour before a call you both agreed to. Push only.',
     promotions: 'News and offers',
-    promotionsBody: 'Occasional word about what is new. Off unless you ask.',
+    promotionsBody: 'Occasional word about what is new. One tap to stop.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Email' },
     emailUnverified: 'Verify your email address to turn this on.',

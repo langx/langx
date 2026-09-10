@@ -179,20 +179,24 @@ describe('sendNotificationEmail', () => {
     expect(sender.messages).toHaveLength(0)
   })
 
-  it('never sends promotions to somebody who did not ask', async () => {
+  /**
+   * Reversed on 10 September 2026: silence is now yes on this channel, and a
+   * refusal is what stops it. Push did not move.
+   */
+  it('sends promotions to somebody who has not said no, and never after they do', async () => {
     await seed(u1)
     expect(
       await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'promotions', build }),
-    ).toBe('opted-out')
+    ).toBe('sent')
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne(
         { _id: u1 as never },
-        { $set: { 'settings.notifications.promotions': { push: false, email: true } } },
+        { $set: { 'settings.notifications.promotions': { push: false, email: false } } },
       )
     expect(
       await sendNotificationEmail(handle.db, ctx, { userId: u1, type: 'promotions', build }),
-    ).toBe('sent')
+    ).toBe('opted-out')
   })
 
   it('refuses an address nobody has proved', async () => {

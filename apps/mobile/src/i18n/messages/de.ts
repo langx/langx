@@ -468,7 +468,7 @@ export const de: Localized<EnMessages> = {
     meetings: 'Termine',
     meetingsBody: 'Eine Stunde vor einem Gespräch, dem ihr beide zugestimmt habt. Nur Push.',
     promotions: 'Neues und Angebote',
-    promotionsBody: 'Gelegentlich, was es Neues gibt. Aus, sofern du es nicht willst.',
+    promotionsBody: 'Gelegentlich, was es Neues gibt. Ein Tipp beendet es.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'E-Mail' },
     emailUnverified: 'Bestätige deine E-Mail-Adresse, um das einzuschalten.',

@@ -61,12 +61,26 @@ export type StoredNotificationPrefs = Partial<
 >
 
 /**
- * On for everything the app already does; **promotions off on both channels**.
+ * On for everything the app already does, and — since 10 September 2026 —
+ * **promotional email on, promotional push off**.
  *
- * The last one is not a taste. Consent to be marketed at has to be given, not
- * withdrawn — GDPR calls a pre-ticked box no consent at all, and CAN-SPAM's
- * unsubscribe is the floor rather than the rule. So a new account is opted out
- * of promotions and opted in to the things it asked for by installing the app.
+ * This is a reversal, and it is the owner's decision rather than a technical
+ * one. It used to read: consent to be marketed at has to be given, not
+ * withdrawn. What replaces it is the ordinary newsletter bargain — everybody
+ * is on the list, the unsubscribe is one tap and is in every message, and a
+ * refusal is permanent (`emailSuppressions`, and a profile that has been
+ * touched is never re-opted-in by the backfill).
+ *
+ * Two things did not change with it. **Push stays off**: nobody asked to be
+ * buzzed at by marketing, and it is the intrusive channel. And **an explicit
+ * refusal wins over everything** — the day this flipped, `opt-in-everyone.ts`
+ * skipped every profile whose owner had opened Settings and left promotions
+ * off, because re-adding somebody who already said no is the one thing worse
+ * than never having asked.
+ *
+ * If this is ever reverted, the published copy has to move with it: the
+ * Settings row in eight locales and `docs/legal/promise-change.md` both
+ * describe the default out loud.
  */
 export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
   messages: { push: true, email: true },
@@ -87,7 +101,7 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    * push that already worked.
    */
   meetings: { push: true, email: false },
-  promotions: { push: false, email: false },
+  promotions: { push: false, email: true },
 }
 
 /**
@@ -208,6 +222,14 @@ export function notificationsAllowed(
  */
 const SYSTEM_WRITTEN_DEFAULTS: StoredNotificationPrefs[] = [
   DEFAULT_NOTIFICATION_PREFS,
+  /*
+   * Today's shape with yesterday's promotions cell. Every profile written
+   * before 10 September 2026 carries this, and leaving it out would have made
+   * all of them read as "touched" — so `opt-in-everyone.ts` would have found
+   * nobody to opt in, and `audience.ts` would have read a default nobody
+   * chose as a refusal.
+   */
+  { ...DEFAULT_NOTIFICATION_PREFS, promotions: { push: false, email: false } },
   // The bare boolean per kind — no `badges`, which did not exist yet.
   { messages: true, streak: true, profileVisits: true, promotions: false },
   // The retired matrix, in the shape it was written in.

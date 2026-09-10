@@ -58,7 +58,10 @@ describe('the monthly recap', () => {
       timezone: opts.timezone ?? 'UTC',
       settings: {
         discoverable: true,
-        notifications: opts.optedIn === false ? {} : { promotions: { push: false, email: true } },
+        notifications:
+          opts.optedIn === false
+            ? { promotions: { push: false, email: false } }
+            : { promotions: { push: false, email: true } },
       },
       nativeLanguages: [{ code: 'en' }],
       streak: { current: opts.streak ?? 0, longest: 0, lastQualifiedDay: null },
@@ -174,7 +177,7 @@ describe('the monthly recap', () => {
     })
   })
 
-  it('goes only to somebody who asked for promotional mail', async () => {
+  it('goes to everybody except the people who turned promotional mail off', async () => {
     await newProfile({ optedIn: false })
     expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 0 })
   })

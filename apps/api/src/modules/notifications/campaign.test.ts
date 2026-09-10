@@ -73,26 +73,28 @@ describe('who a campaign may be sent to', () => {
 
   const optedIn = { promotions: { push: false, email: true } }
 
-  it('includes only people who said yes', async () => {
+  it('includes everybody who has not said no', async () => {
     const yes = await newProfile({ notifications: optedIn })
-    await newProfile()
+    const unanswered = await newProfile()
     await newProfile({ notifications: { promotions: { email: false } } })
 
     const audience = await campaignRecipients(handle.db, CAMPAIGN)
-    expect(audience.recipients.map((r) => r.userId)).toEqual([yes])
-    expect(audience.skipped.optedOut).toBe(2)
+    expect(audience.recipients.map((r) => r.userId).sort()).toEqual([yes, unanswered].sort())
+    expect(audience.skipped.optedOut).toBe(1)
   })
 
   /**
-   * The one cell that is never inferred. Every other kind falls back to a
-   * default when nobody has said; consent to be marketed at has to be given.
+   * Since the reversal, an unanswered account is on the list — that is the
+   * whole of it. A refusal is what still takes somebody off.
    */
-  it('never infers consent from an older stored shape', async () => {
+  it('reads silence as yes and a refusal as no', async () => {
     await newProfile({ notifications: true })
     await newProfile({ notifications: { promotions: true } })
+    await newProfile({ notifications: { promotions: { email: false } } })
 
     const audience = await campaignRecipients(handle.db, CAMPAIGN)
-    expect(audience.recipients).toHaveLength(0)
+    expect(audience.recipients).toHaveLength(2)
+    expect(audience.skipped.optedOut).toBe(1)
   })
 
   it('excludes an unverified address and one that does not exist', async () => {

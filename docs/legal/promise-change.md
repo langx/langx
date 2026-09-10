@@ -128,10 +128,13 @@ the store forms and the GitBook copy still need them.
   only thing that can change it afterwards is a location fix from the device.
   This has to be said out loud: "we do not build a profile from your IP" stays
   true, and would be misleading next to a stored country if it stood alone.
-- **Notification preferences are four kinds by two channels**, and promotions
-  are **off** until somebody turns them on. Consent to be marketed at has to be
-  given rather than withdrawn; the email column exists and nothing sends to it
-  yet.
+- **Notification preferences are six kinds by two channels.** Promotional
+  **email is on by default** and promotional **push is off** — reversed on
+  10 September 2026, and worth stating plainly because the earlier text here
+  said the opposite. Every promotional message carries a one-click
+  unsubscribe, a refusal is permanent, and nothing else moved: the service
+  kinds are on because the app was installed, and marketing never reaches a
+  phone unless somebody switches it on.
 
 One more that is a promise rather than a disclosure: **passwords are 6 to 64
 characters, with no composition rule**. Anything published that describes the
