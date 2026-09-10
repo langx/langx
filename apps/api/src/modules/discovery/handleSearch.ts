@@ -2,6 +2,7 @@ import { HANDLE_SEARCH_LIMIT, type HandleSearchPage } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { blockedUserIds } from '../moderation/blocks'
+import { notSuspended } from '../moderation/suspension'
 import type { Profile } from '../profiles/profiles'
 
 /**
@@ -58,6 +59,8 @@ export async function searchHandles(
         // all that stands between here and there.
         guest: { $exists: false },
         deletedAt: { $exists: false },
+        // Searching is browsing, and a suspended account is not browsable.
+        ...notSuspended(),
       },
       {
         projection: { handle: 1, displayName: 1, avatarUrl: 1 },

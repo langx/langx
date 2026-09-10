@@ -318,6 +318,39 @@ export const en = {
     },
   },
 
+  /**
+   * The screen a suspended account gets instead of the app.
+   *
+   * Never names who reported them — nothing in the product does, and this is
+   * the screen where the temptation would be greatest.
+   */
+  suspended: {
+    title: 'Your account is suspended',
+    untilBody:
+      'A report about your account was reviewed by a person. You cannot use LangX until {until}, and your profile is hidden from Discover and search.',
+    permanentBody:
+      'A report about your account was reviewed by a person, and your account is suspended permanently. Your profile is hidden from Discover and search.',
+    reasonLabel: 'Reason',
+    appealTitle: 'Appeal',
+    appealBody:
+      'You can appeal once. A person reads every appeal, and there is no queue to watch — the answer arrives by email.',
+    appealPlaceholder: 'Tell us what we got wrong.',
+    appealTooShort: {
+      one: 'At least {count} character.',
+      other: 'At least {count} characters.',
+    },
+    send: 'Send appeal',
+    sending: 'Sending…',
+    sent: 'Appeal sent',
+    sentBody:
+      'Your appeal has been sent. There is one per suspension, so this was it — we will write back.',
+    failed: 'That could not be sent. Try again in a moment.',
+    alreadyAppealed: 'You have already appealed this suspension.',
+    checkAgain: 'Check again',
+    signOut: 'Sign out',
+    contact: 'Anything else: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Back shortly',
     maintenanceBody: 'LangX is briefly unavailable while we finish some work.',
@@ -570,6 +603,12 @@ export const en = {
       'Ask about a sentence you are unsure of, or a word you cannot say — it appears here.',
   },
   discover: {
+    boosted: 'Boosted',
+    boostedWhat: 'What is this?',
+    boostedExplainTitle: 'Boosted profiles',
+    boostedExplainBody:
+      'People on Fluent and Polyglot are shown here, Polyglot first. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
+    boostedSeePlans: 'See the plans',
     languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',
@@ -960,6 +999,8 @@ export const en = {
   },
 
   profile: {
+    suspendedTag: 'Suspended',
+    deletedTag: 'Account deleted',
     previewNote:
       'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',
@@ -1194,6 +1235,9 @@ export const en = {
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody:
       'Turn this off and nobody will find you — not in Discover, and not by searching your username.',
+    boost: 'Boost my profile',
+    boostBody:
+      'Show me in the Boosted strip at the top of Discover, to people whose languages match mine. On with Fluent and Polyglot.',
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
@@ -1611,6 +1655,11 @@ export const en = {
     welcomePackBody:
       'A profile frame and two streak freezes to start with. {plan} brings the full set.',
     advancedFilters: 'Advanced filters',
+    boostedProfile: 'Boosted profile',
+    boostedProfileBody:
+      'Shown in the Boosted strip above the Discover list, to everyone whose languages match yours. On by default; switch it off in Settings.',
+    boostedProfileFirst: 'Boosted to the front',
+    boostedProfileFirstBody: 'Polyglot profiles lead the Boosted strip, ahead of Fluent.',
     sendTranslation: 'Send in their language',
     sendTranslationBody: 'Write in yours; both go, so they read you without guessing.',
     deckExport: 'Take your phrases with you',

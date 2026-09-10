@@ -324,6 +324,32 @@ export const ar: Localized<EnMessages> = {
     },
   },
 
+  suspended: {
+    title: 'حسابك معلّق',
+    untilBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك. لا يمكنك استخدام LangX حتى {until}، وملفك مخفي من الاستكشاف والبحث.',
+    permanentBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليقه نهائيًا. ملفك مخفي من الاستكشاف والبحث.',
+    reasonLabel: 'السبب',
+    appealTitle: 'اعتراض',
+    appealBody:
+      'يمكنك الاعتراض مرة واحدة. يقرأ كل اعتراض شخصٌ، ولا يوجد طابور تنتظره — يصل الرد بالبريد.',
+    appealPlaceholder: 'اكتب لنا ما الذي أخطأنا فيه.',
+    appealTooShort: {
+      one: '{count} حرف على الأقل.',
+      other: '{count} حرفًا على الأقل.',
+    },
+    send: 'إرسال الاعتراض',
+    sending: 'جارٍ الإرسال…',
+    sent: 'تم إرسال الاعتراض',
+    sentBody: 'تم إرسال اعتراضك. هناك اعتراض واحد لكل تعليق، وهذا هو — سنرد عليك.',
+    failed: 'تعذّر الإرسال. حاول بعد قليل.',
+    alreadyAppealed: 'سبق أن اعترضت على هذا التعليق.',
+    checkAgain: 'تحقق مرة أخرى',
+    signOut: 'تسجيل الخروج',
+    contact: 'لأي شيء آخر: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'نعود قريبًا',
     maintenanceBody: 'LangX غير متاح لفترة قصيرة ريثما ننهي بعض العمل.',
@@ -585,6 +611,12 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
+    boosted: 'مُبرَزون',
+    boostedWhat: 'ما هذا؟',
+    boostedExplainTitle: 'الملفات المُبرَزة',
+    boostedExplainBody:
+      'يظهر هنا مشتركو Fluent وPolyglot، وPolyglot أولًا. تتم مطابقتهم بلغاتك تمامًا مثل القائمة أدناه — لا يتغير شيء في المطابقة، ويمكن لأي شخص إيقافها من الإعدادات.',
+    boostedSeePlans: 'اطّلع على الخطط',
     languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
@@ -1045,6 +1077,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'معلّق',
+    deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
     teaches: 'يُعلّم',
     learns: 'يتعلّم',
@@ -1311,6 +1345,9 @@ export const ar: Localized<EnMessages> = {
     linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
     showInDiscover: 'أظهرني في الاستكشاف',
     showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
+    boost: 'إبراز ملفي',
+    boostBody:
+      'أظهِرني في شريط الملفات المُبرَزة أعلى «استكشاف»، لمن تتطابق لغاتهم مع لغاتي. مُفعّل مع Fluent وPolyglot.',
     incognito: 'تصفّح خفي',
     incognitoBody: 'لن تظهر ضمن زوّارهم.',
     hideOnline: 'أخفني عندما أكون متصلًا',
@@ -1824,6 +1861,11 @@ export const ar: Localized<EnMessages> = {
     welcomePack: 'حزمة ترحيب',
     welcomePackBody: 'إطار للملف الشخصي وتجميدتان للسلسلة للبداية. و‏{plan} يمنح المجموعة كاملة.',
     advancedFilters: 'عوامل تصفية متقدمة',
+    boostedProfile: 'ملف مُبرَز',
+    boostedProfileBody:
+      'تظهر في شريط الملفات المُبرَزة فوق قائمة الاستكشاف، لكل من تتطابق لغاتهم مع لغاتك. مُفعّل افتراضيًا، ويمكن إيقافه من الإعدادات.',
+    boostedProfileFirst: 'في مقدمة الشريط',
+    boostedProfileFirstBody: 'ملفات Polyglot تتصدّر الشريط قبل Fluent.',
     sendTranslation: 'أرسل بلغته',
     sendTranslationBody: 'اكتب بلغتك؛ يُرسل الاثنان، فيقرأك دون تخمين.',
     deckExport: 'خذ عباراتك معك',

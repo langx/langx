@@ -274,6 +274,33 @@ export const de: Localized<EnMessages> = {
     },
   },
 
+  suspended: {
+    title: 'Dein Konto ist gesperrt',
+    untilBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft. Bis zum {until} kannst du LangX nicht nutzen, und dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    permanentBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und es ist dauerhaft gesperrt. Dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    reasonLabel: 'Grund',
+    appealTitle: 'Einspruch',
+    appealBody:
+      'Du kannst einmal Einspruch erheben. Eine Person liest jeden Einspruch, und es gibt keine Warteschlange zu beobachten — die Antwort kommt per Mail.',
+    appealPlaceholder: 'Schreib uns, was wir falsch verstanden haben.',
+    appealTooShort: {
+      one: 'Mindestens {count} Zeichen.',
+      other: 'Mindestens {count} Zeichen.',
+    },
+    send: 'Einspruch senden',
+    sending: 'Wird gesendet…',
+    sent: 'Einspruch gesendet',
+    sentBody:
+      'Dein Einspruch ist raus. Es gibt einen pro Sperre, das war also dieser — wir melden uns.',
+    failed: 'Das konnte nicht gesendet werden. Versuch es gleich noch einmal.',
+    alreadyAppealed: 'Du hast gegen diese Sperre bereits Einspruch erhoben.',
+    checkAgain: 'Nochmal prüfen',
+    signOut: 'Abmelden',
+    contact: 'Alles andere: {email}',
+  },
+
   gate: {
     maintenanceTitle: 'Gleich zurück',
     maintenanceBody: 'LangX ist kurz nicht erreichbar, während wir etwas fertig machen.',
@@ -525,6 +552,12 @@ export const de: Localized<EnMessages> = {
       'Frag nach einem Satz, bei dem du unsicher bist, oder einem Wort, das du nicht aussprechen kannst — er erscheint hier.',
   },
   discover: {
+    boosted: 'Hervorgehoben',
+    boostedWhat: 'Was ist das?',
+    boostedExplainTitle: 'Hervorgehobene Profile',
+    boostedExplainBody:
+      'Hier erscheinen Fluent- und Polyglot-Mitglieder, Polyglot zuerst. Sie werden genauso nach Sprachen zugeordnet wie die Liste darunter — an der Zuordnung ändert sich nichts, und abschalten lässt es sich in den Einstellungen.',
+    boostedSeePlans: 'Zu den Plänen',
     languagesA11y: 'Wähle, mit welchen deiner Sprachen gesucht wird',
     searchHandles: 'Nach Benutzername suchen',
     searchPlaceholder: 'Benutzername',
@@ -926,6 +959,8 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    suspendedTag: 'Gesperrt',
+    deletedTag: 'Konto gelöscht',
     previewNote:
       'So sehen andere dein Profil — deine Privatsphäre-Einstellungen sind bereits angewendet.',
     teaches: 'Lehrt',
@@ -1166,6 +1201,9 @@ export const de: Localized<EnMessages> = {
     showInDiscover: 'In Entdecken zeigen',
     showInDiscoverBody:
       'Schalte das aus und niemand findet dich — weder in Entdecken noch über deinen Benutzernamen.',
+    boost: 'Mein Profil hervorheben',
+    boostBody:
+      'Zeig mich in der Leiste mit hervorgehobenen Profilen oben in Entdecken — Leuten, deren Sprachen zu meinen passen. Mit Fluent und Polyglot aktiv.',
     incognito: 'Inkognito surfen',
     incognitoBody: 'Du erscheinst nicht in ihren Besuchern.',
     hideOnline: 'Verbergen, wenn ich online bin',
@@ -1585,6 +1623,11 @@ export const de: Localized<EnMessages> = {
     welcomePackBody:
       'Ein Profilrahmen und zwei Serien-Freezes zum Start. {plan} bringt das ganze Set.',
     advancedFilters: 'Erweiterte Filter',
+    boostedProfile: 'Hervorgehobenes Profil',
+    boostedProfileBody:
+      'Du erscheinst in der Leiste über der Entdecken-Liste, für alle, deren Sprachen zu deinen passen. Standardmäßig an; in den Einstellungen abschaltbar.',
+    boostedProfileFirst: 'Ganz nach vorn',
+    boostedProfileFirstBody: 'Polyglot-Profile stehen in der Leiste vor Fluent.',
     sendTranslation: 'In ihrer Sprache senden',
     sendTranslationBody: 'Schreib in deiner; beides geht raus, also lesen sie dich ohne zu raten.',
     deckExport: 'Nimm deine Wendungen mit',

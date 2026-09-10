@@ -12,4 +12,10 @@
  * somebody accepted against what is current, which is the only way to ask for
  * consent again without asking everybody.
  */
-export const CURRENT_TERMS_VERSION = '2026-08-31'
+/*
+ * 10 September 2026: §8 gained a concrete suspension clause and the deletion
+ * sentence in §8 and §11 changed — a deleted account is no longer invisible
+ * immediately, it opens for people who already knew you, marked as deleted.
+ * Both are things somebody agreed to a version of, so the stamp moves.
+ */
+export const CURRENT_TERMS_VERSION = '2026-09-10'

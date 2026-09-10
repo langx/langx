@@ -9,6 +9,7 @@ import {
   languageCodeSchema,
 } from './languages'
 import { translateRequestSchema } from './translation'
+import { DISCOVERY_BOOSTED_TIERS } from './discovery'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
 import {
   PLAN_FEATURES,
@@ -480,5 +481,23 @@ describe('the two feature lists', () => {
       expect(PRO_PLUS_FEATURES as readonly string[]).not.toContain(feature)
     }
     expect([...PLAN_FEATURES].sort()).toEqual([...PRO_FEATURES, ...PRO_PLUS_FEATURES].sort())
+  })
+})
+
+describe('the boosted strip', () => {
+  /**
+   * The strip's order is presentation and its membership is entitlement, and
+   * they live in two files. This is what stops them disagreeing: move
+   * `boostedProfile` between tiers and the list has to move with it, so a
+   * plan that no longer buys the strip cannot keep a place in it.
+   */
+  it('lists exactly the tiers whose plan includes it', () => {
+    const entitled = PLAN_TIERS.filter((tier) => PLAN_LIMITS[tier].boostedProfile)
+    expect([...DISCOVERY_BOOSTED_TIERS].sort()).toEqual([...entitled].sort())
+  })
+
+  /** Most expensive first — the whole reason it is an array and not a set. */
+  it('leads with Polyglot', () => {
+    expect(DISCOVERY_BOOSTED_TIERS[0]).toBe('pro_plus')
   })
 })

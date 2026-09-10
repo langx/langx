@@ -18,6 +18,17 @@ export const ERROR_CODES = {
    */
   GUEST_ACCOUNT: 'GUEST_ACCOUNT',
   UNDERAGE: 'UNDERAGE',
+  /**
+   * This account is suspended. Every route refuses it except the two that let
+   * the person read the suspension and appeal it once.
+   *
+   * The third code the client turns into a whole screen rather than a toast,
+   * beside `MAINTENANCE` and `UPDATE_REQUIRED` — and the only one of the three
+   * that is about the reader rather than about the service. The body carries
+   * `until` and `permanent` so the screen can say when it ends without a
+   * second request, the way `retryAt` rides on `RATE_LIMITED`.
+   */
+  ACCOUNT_SUSPENDED: 'ACCOUNT_SUSPENDED',
 
   // entitlement + quota
   UPGRADE_REQUIRED: 'UPGRADE_REQUIRED',
@@ -128,6 +139,13 @@ export interface ApiErrorBody {
   limit?: string
   /** The allowance that was exceeded, so the client can say it without guessing. */
   max?: number
+  /**
+   * Present on `ACCOUNT_SUSPENDED`: when it ends, ISO, or `null` when it does
+   * not. `permanent` is not derivable from the sentinel date without teaching
+   * the client what the sentinel is, so it is sent.
+   */
+  until?: string | null
+  permanent?: boolean
   /** Present on QUOTA_EXCEEDED: ISO timestamp when the next slot frees up. */
   retryAt?: string
   details?: unknown
@@ -140,6 +158,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   EMAIL_NOT_VERIFIED: 403,
   GUEST_ACCOUNT: 403,
   UNDERAGE: 403,
+  ACCOUNT_SUSPENDED: 403,
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,
   MEDIA_LOCKED: 409,

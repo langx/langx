@@ -720,10 +720,62 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         ACCOUNT_DELETION_GRACE_DAYS * 86_400_000,
       )
 
-      // Gone from the product at once...
-      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
+      /*
+       * Gone from everywhere anybody *browses* — but the profile itself still
+       * opens for somebody who already knows them, tagged as deleted. "Profile
+       * not found" for an account you have a conversation with reads as a bug
+       * rather than as what happened.
+       */
+      const list = await get(observer, '/discovery')
+      expect(list.json<{ items: { _id: string }[] }>().items.map((i) => i._id)).not.toContain(
+        leaving.userId,
+      )
+      const opened = await get(observer, `/profiles/${leaving.userId}`)
+      expect(opened.statusCode, opened.body).toBe(200)
+      const body = opened.json<{ accountStatus: string }>()
+      expect(body.accountStatus).toBe('deleted')
+      // The tag is the whole disclosure: the date itself never leaves.
+      expect(body).not.toHaveProperty('deletedAt')
       // ...and the session no longer works.
       expect((await get(leaving, '/profiles/me')).statusCode).toBe(401)
+    })
+
+    /**
+     * The tag is for members who already know them. A blocked viewer is told
+     * nothing, exactly as before — a 200 with a tag would confirm the account
+     * exists, which is what blocking is for.
+     */
+    it('still answers 404 to a blocked viewer, and to the open internet', async () => {
+      const leaving = await newUser()
+      const blocker = await newUser()
+      const leavingHandle = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: leaving.userId })
+      expect((await post(blocker, '/blocks', { userId: leaving.userId })).statusCode).toBe(201)
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+
+      expect((await get(blocker, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
+      expect(
+        (
+          await app.inject({
+            method: 'GET',
+            url: `/public/profiles/${leavingHandle?.handle ?? ''}`,
+          })
+        ).statusCode,
+      ).toBe(404)
+    })
+
+    /** A purged account has no document at all, so there is nothing to tag. */
+    it('answers 404 once the account is actually purged', async () => {
+      const leaving = await newUser()
+      const observer = await newUser()
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(200)
+
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+      expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(404)
     })
 
     it('keeps the data through the grace period and removes it after', async () => {
@@ -1158,6 +1210,275 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(bodies).not.toContain('theirs')
       expect(data.conversations).toHaveLength(1)
       expect(data.profile).toBeTruthy()
+    })
+  })
+
+  /**
+   * Suspension, end to end from the link in the report email.
+   *
+   * There is no admin route to drive here, which is the design: the decision
+   * happens in the mailbox the report already arrives in.
+   */
+  describe('suspension', () => {
+    /** The `Review:` line the report mail carries, as a path this app can be injected with. */
+    function reviewPathFrom(text: string): string {
+      const match = /Review: (\S+)/.exec(text)
+      if (!match?.[1]) throw new Error(`no review link in mail:\n${text}`)
+      const url = new URL(match[1])
+      return `${url.pathname}${url.search}`
+    }
+
+    function appealPathFrom(text: string): string {
+      const match = /Decide: (\S+)/.exec(text)
+      if (!match?.[1]) throw new Error(`no appeal link in mail:\n${text}`)
+      const url = new URL(match[1])
+      return `${url.pathname}${url.search}`
+    }
+
+    /** The review page's own form post — no session, only the token in the URL. */
+    function decide(path: string, fields: Record<string, string>) {
+      return app.inject({
+        method: 'POST',
+        url: path,
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: new URLSearchParams(fields).toString(),
+      })
+    }
+
+    /** Reports `target`, and hands back the link the mail carries. */
+    async function reportAndReviewPath(target: SignedUpUser, reason = 'harassment') {
+      const reporter = await newUser()
+      emailSender.messages.length = 0
+      const response = await post(reporter, '/reports', { userId: target.userId, reason })
+      expect(response.statusCode, response.body).toBe(201)
+      const mail = reportMails().at(-1)
+      if (!mail) throw new Error('no report mail')
+      return { path: reviewPathFrom(mail.text), reporter }
+    }
+
+    /** Someone a `tr`-native viewer learning `en` is a mutual fit for. */
+    const mirrored = () => ({
+      nativeLanguages: [{ code: 'en' }],
+      learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
+    })
+
+    async function handleOf(userId: string): Promise<string> {
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+      if (!profile) throw new Error('no profile')
+      return profile.handle
+    }
+
+    it('suspends for a number of days, and closes every door but two', async () => {
+      const viewer = await newUser()
+      const target = await newUser(mirrored())
+      // Paid, so the boosted strip would otherwise carry them.
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: target.userId }, { $set: { 'entitlement.tier': 'pro_plus' } })
+      const targetHandle = await handleOf(target.userId)
+
+      const before = await get(viewer, `/discovery/handles?q=${targetHandle}`)
+      expect(before.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)).toContain(
+        targetHandle,
+      )
+
+      const { path } = await reportAndReviewPath(target)
+      expect((await app.inject({ method: 'GET', url: path })).statusCode).toBe(200)
+      const decided = await decide(path, { action: 'suspend', days: '3' })
+      expect(decided.statusCode, decided.body).toBe(200)
+
+      const report = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reportedId: target.userId })
+      expect(report?.status).toBe('actioned')
+
+      // Every ordinary route, refused with the end date on the body.
+      const me = await get(target, '/profiles/me')
+      expect(me.statusCode).toBe(403)
+      const body = me.json<{ code: string; until: string; permanent: boolean }>()
+      expect(body.code).toBe('ACCOUNT_SUSPENDED')
+      expect(body.permanent).toBe(false)
+      expect(new Date(body.until).getTime()).toBeGreaterThan(Date.now())
+
+      // The two that stay open.
+      const status = await get(target, '/me/suspension')
+      expect(status.statusCode, status.body).toBe(200)
+      expect(status.json()).toMatchObject({
+        suspended: true,
+        permanent: false,
+        reason: 'harassment',
+        appealedAt: null,
+        until: body.until,
+      })
+
+      // And they are gone from everywhere anybody browses.
+      const search = await get(viewer, `/discovery/handles?q=${targetHandle}`)
+      expect(
+        search.json<{ items: { handle: string }[] }>().items.map((i) => i.handle),
+      ).not.toContain(targetHandle)
+      const list = await get(viewer, '/discovery')
+      expect(list.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)).not.toContain(
+        targetHandle,
+      )
+      const strip = await get(viewer, '/discovery/boosted')
+      expect(
+        strip.json<{ items: { handle: string }[] }>().items.map((i) => i.handle),
+      ).not.toContain(targetHandle)
+      // The signed-out link is closed too.
+      expect(
+        (await app.inject({ method: 'GET', url: `/public/profiles/${targetHandle}` })).statusCode,
+      ).toBe(404)
+
+      /*
+       * The profile still opens for a signed-in member, carrying the tag and
+       * nothing else. When it ends, why, and whether they appealed are theirs
+       * to know; the tag is the whole of what anybody else is told.
+       */
+      const opened = await get(viewer, `/profiles/${targetHandle}`)
+      expect(opened.statusCode, opened.body).toBe(200)
+      const opinion = opened.json<{ accountStatus: string }>()
+      expect(opinion.accountStatus).toBe('suspended')
+      expect(opinion).not.toHaveProperty('suspension')
+    })
+
+    it('suspends permanently, and says so rather than printing the sentinel', async () => {
+      const target = await newUser()
+      const { path } = await reportAndReviewPath(target, 'hate_speech')
+      expect((await decide(path, { action: 'permanent' })).statusCode).toBe(200)
+
+      const status = await get(target, '/me/suspension')
+      expect(status.json()).toMatchObject({ suspended: true, permanent: true, until: null })
+
+      const refused = await get(target, '/profiles/me')
+      expect(refused.json<{ permanent: boolean; until: string | null }>()).toMatchObject({
+        code: 'ACCOUNT_SUSPENDED',
+        permanent: true,
+        until: null,
+      })
+
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: target.userId })
+      expect(stored?.suspension?.until.getUTCFullYear()).toBe(9999)
+    })
+
+    /**
+     * The whole reason expiry needs no cron: nothing runs, nothing is unset,
+     * and the account simply works again the moment the date passes.
+     */
+    it('lets an expired suspension lapse with nothing unset', async () => {
+      const viewer = await newUser()
+      const target = await newUser(mirrored())
+      const targetHandle = await handleOf(target.userId)
+      const { path } = await reportAndReviewPath(target)
+      expect((await decide(path, { action: 'suspend', days: '3' })).statusCode).toBe(200)
+      expect((await get(target, '/profiles/me')).statusCode).toBe(403)
+
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: target.userId },
+          { $set: { 'suspension.until': new Date(Date.now() - 1000) } },
+        )
+
+      expect((await get(target, '/profiles/me')).statusCode).toBe(200)
+      expect((await get(target, '/me/suspension')).json()).toMatchObject({ suspended: false })
+      const search = await get(viewer, `/discovery/handles?q=${targetHandle}`)
+      expect(search.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)).toContain(
+        targetHandle,
+      )
+      // Still on the document — nothing swept it, and nothing had to.
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: target.userId })
+      expect(stored?.suspension).toBeDefined()
+    })
+
+    it('dismisses a report without touching the account', async () => {
+      const target = await newUser()
+      const { path } = await reportAndReviewPath(target)
+      expect((await decide(path, { action: 'dismiss' })).statusCode).toBe(200)
+
+      const report = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reportedId: target.userId })
+      expect(report?.status).toBe('dismissed')
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: target.userId })
+      expect(stored?.suspension).toBeUndefined()
+      expect((await get(target, '/profiles/me')).statusCode).toBe(200)
+    })
+
+    it('takes one appeal, refuses the second, and lets the answer lift it', async () => {
+      const target = await newUser()
+      const { path } = await reportAndReviewPath(target)
+      expect((await decide(path, { action: 'suspend', days: '30' })).statusCode).toBe(200)
+
+      emailSender.messages.length = 0
+      const text = 'I was reported for a screenshot that is not mine. Please look again.'
+      const first = await post(target, '/me/suspension/appeal', { text })
+      expect(first.statusCode, first.body).toBe(202)
+
+      const appealMail = emailSender.messages.find((m) => m.subject.startsWith('Appeal from'))
+      expect(appealMail?.to).toBe(SUPPORT)
+      expect(appealMail?.text).toContain(text)
+
+      const second = await post(target, '/me/suspension/appeal', { text })
+      expect(second.statusCode).toBe(400)
+      expect(second.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+      expect(
+        (await get(target, '/me/suspension')).json<{ appealedAt: string | null }>().appealedAt,
+      ).not.toBeNull()
+
+      const appealPath = appealPathFrom(appealMail?.text ?? '')
+      expect((await app.inject({ method: 'GET', url: appealPath })).statusCode).toBe(200)
+
+      // Shorten first, then lift, so both halves of the appeal link are exercised.
+      expect((await decide(appealPath, { action: 'shorten', days: '1' })).statusCode).toBe(200)
+      const shortened = await get(target, '/me/suspension')
+      const until = shortened.json<{ until: string }>().until
+      expect(new Date(until).getTime()).toBeLessThan(Date.now() + 2 * 24 * 60 * 60 * 1000)
+
+      expect((await decide(appealPath, { action: 'lift' })).statusCode).toBe(200)
+      expect((await get(target, '/profiles/me')).statusCode).toBe(200)
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: target.userId })
+      expect(stored?.suspension).toBeUndefined()
+    })
+
+    it('refuses a bad token, and a report link that reaches for an appeal action', async () => {
+      const target = await newUser()
+      const { path } = await reportAndReviewPath(target)
+
+      expect(
+        (await app.inject({ method: 'GET', url: '/moderation/review?token=nonsense' })).statusCode,
+      ).toBe(400)
+      expect(
+        (await decide('/moderation/review?token=nonsense', { action: 'dismiss' })).statusCode,
+      ).toBe(400)
+
+      /*
+       * The token names the report; the kind names what may be done with it.
+       * Both are checked, so the link in a report mail cannot lift a
+       * suspension it was never shown.
+       */
+      const crossed = await decide(path, { action: 'lift' })
+      expect(crossed.statusCode).toBe(400)
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: target.userId })
+      expect(stored?.suspension).toBeUndefined()
+    })
+
+    it('requires a number of days for a suspension that is not permanent', async () => {
+      const target = await newUser()
+      const { path } = await reportAndReviewPath(target)
+      expect((await decide(path, { action: 'suspend' })).statusCode).toBe(400)
+      expect((await decide(path, { action: 'suspend', days: '400' })).statusCode).toBe(400)
     })
   })
 

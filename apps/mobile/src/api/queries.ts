@@ -25,6 +25,8 @@ import {
   type ShareCardResult,
 } from '@langx/shared'
 import type {
+  BoostedProfilesPage,
+  SuspensionStatus,
   HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
@@ -94,7 +96,16 @@ export const keys = {
   me: ['me'] as const,
   profile: (id: string) => ['profile', id] as const,
   discovery: (filters: string) => ['discovery', filters] as const,
+  /**
+   * Under the same `['discovery']` prefix as the list, so the four places
+   * that invalidate that prefix — a block, an unblock, a profile edit, a
+   * location change — refresh the strip with it.
+   */
+  discoveryBoosted: (filters: string) => ['discovery', 'boosted', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
+  /** Deliberately outside every other prefix: it is the one query that still
+   *  answers while the rest of the app is refused. */
+  suspension: ['suspension'] as const,
   /**
    * Parameterised now that the list has tabs. Every writer has to patch with
    * `setQueriesData` on the `['conversations']` prefix rather than
@@ -309,6 +320,8 @@ export interface MeProfile {
    */
   settings: {
     discoverable: boolean
+    /** Absent means on — see `Profile.settings` in the API for why. */
+    boosted?: boolean
     /** A native language code, or absent: see `translateTargetFor` in shared. */
     translateTo?: string | null
     notifications: StoredNotificationPrefs | NotificationPrefs | boolean
@@ -460,6 +473,52 @@ export function useDiscovery(
      * answer than the spinner the placeholders were meant to improve on.
      */
     placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The paying members above the discovery list.
+ *
+ * Takes the filters only — no sort, no radius. The strip has one order of
+ * its own, and passing them would give it a second cache entry per sort for
+ * a response that never changes.
+ */
+export function useBoostedProfiles(params: Record<string, string>) {
+  const search = new URLSearchParams(params).toString()
+  return useQuery({
+    queryKey: keys.discoveryBoosted(search),
+    queryFn: () => api.get<BoostedProfilesPage>(`/discovery/boosted?${search}`),
+    // Same reason as `useDiscovery`: a filter tap must not blank the strip
+    // while the next answer is in flight.
+    placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The suspension screen's own source of truth.
+ *
+ * `retry: false` because the answer is a 200 either way — a suspended account
+ * may read this one route — so a failure here is a network problem, and
+ * retrying it behind a screen that has nothing else to show only delays the
+ * error the person needs to see.
+ */
+export function useSuspension() {
+  return useQuery({
+    queryKey: keys.suspension,
+    queryFn: () => api.get<SuspensionStatus>('/me/suspension'),
+    retry: false,
+  })
+}
+
+/** One appeal per suspension. The server refuses the second; this is the first. */
+export function useSubmitAppeal() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (text: string) =>
+      api.post<{ appealedAt: string }>('/me/suspension/appeal', { text }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: keys.suspension })
+    },
   })
 }
 
