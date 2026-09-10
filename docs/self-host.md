@@ -74,6 +74,17 @@ only one instance can own a given day, every notification pass claims a row
 in `notificationLedger` before it sends, and a campaign claims each recipient
 in `emailCampaigns` — so nobody is told the same thing twice.
 
+Four things are told to a person about their own account and ask no
+preference at all: a sign-in from a device the account has not been seen on,
+a changed password, and a sign-in method connected or disconnected. They go
+by mail _and_ push, carry no unsubscribe, and reach an account whose owner
+switched every other notification off — a switch whose honest label is "do
+not tell me when somebody signs in as me" is not one to offer. `knownDevices`
+is what makes "a device we have not seen" answerable; it has no TTL — and it
+starts empty, so `scripts/backfill-known-devices.ts` has to run before the
+first deploy that carries this, or everybody's next sign-in is a "new device"
+letter about the phone they are holding.
+
 Nothing is sent to an address on `emailSuppressions`, service mail included:
 a permanent bounce or a spam complaint reported by Resend's webhook
 (`POST /webhooks/resend`, signed with `RESEND_WEBHOOK_SECRET`) puts an address

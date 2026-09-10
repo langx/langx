@@ -17,6 +17,15 @@ export const tr: Localized<ServerMessages> = {
       other: 'Bildirimin için {count} jeton 🎉',
     },
     bountyBody: 'Yazdıklarını okuduk, değdi.',
+    /** Security, which no preference can switch off. */
+    securityBody: 'Bu sen değilsen LangX’i aç.',
+    securityBodyDevice: '{device} üzerinden. Bu sen değilsen LangX’i aç.',
+    security: {
+      newSignInTitle: 'Hesabına yeni giriş',
+      passwordChangedTitle: 'Şifren değiştirildi',
+      methodLinkedTitle: 'Yeni giriş yöntemi eklendi',
+      methodUnlinkedTitle: 'Bir giriş yöntemi kaldırıldı',
+    },
   },
 
   email: {
@@ -114,6 +123,43 @@ export const tr: Localized<ServerMessages> = {
     unsubscribedBody: 'İstediğin zaman LangX’te Ayarlar → Bildirimler’den geri açabilirsin.',
     unsubscribeInvalid:
       'Bu bağlantı geçerli değil. LangX’i açıp Ayarlar → Bildirimler’den değiştir.',
+
+    /**
+
+     * The security notices. No switch behind them and no unsubscribe —
+
+     * see `modules/security/notify.ts`.
+
+     */
+
+    securityDevice: 'Cihaz',
+
+    securityPlace: 'Konum',
+
+    securityWhen: 'Zaman',
+
+    securityNotYou:
+      'Bu sen değilsen şifreni hemen değiştir — bu, diğer tüm cihazlardaki oturumları kapatır.',
+
+    securityButton: 'Şifremi değiştir',
+
+    security: {
+      newSignInTitle: 'LangX hesabına yeni giriş',
+
+      newSignInBody: 'Hesabına daha önce görmediğimiz bir cihazdan giriş yapıldı.',
+
+      passwordChangedTitle: 'LangX şifren değiştirildi',
+
+      passwordChangedBody: 'Hesabının şifresi az önce değiştirildi.',
+
+      methodLinkedTitle: 'LangX hesabına yeni bir giriş yöntemi eklendi',
+
+      methodLinkedBody: 'Hesabına Google veya Apple ile giriş bağlandı.',
+
+      methodUnlinkedTitle: 'LangX hesabından bir giriş yöntemi kaldırıldı',
+
+      methodUnlinkedBody: 'Hesabına giriş yollarından biri kaldırıldı.',
+    },
 
     kind: {
       messages: 'mesaj özetleri',

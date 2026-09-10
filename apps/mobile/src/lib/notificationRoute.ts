@@ -49,5 +49,9 @@ export function notificationRoute(data: unknown): Href | null {
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.
       return '/viewers'
+    case 'security':
+      // "Somebody signed in as you" has one useful next step, and it is the
+      // screen that changes the password — which signs every other device out.
+      return '/settings/password'
   }
 }

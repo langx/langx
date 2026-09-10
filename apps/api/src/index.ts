@@ -33,15 +33,17 @@ async function main(): Promise<void> {
   // verification hands the v1 loyalty gift out through it.
   const revenueCat = createRevenueCatClientFromEnv(env)
 
-  const auth = await createAuth({ env, db, client, emailSender, revenueCat })
+  // Before `createAuth`: the security notices it sends go to a phone as well
+  // as an inbox.
+  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
+
+  const auth = await createAuth({ env, db, client, emailSender, revenueCat, push })
   const storage = createStorageProvider(env)
   // `null` without a key: the purge still records what it owes, the drain
   // simply does not run. See `modules/account/analyticsDeletions.ts`.
   const analytics = createPersonDeleterFromEnv(env)
 
   const translation = createTranslationProvider(env)
-
-  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
 
   /**
    * What every notification sender needs: an outbox, the secret its
