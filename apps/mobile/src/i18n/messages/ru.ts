@@ -1406,6 +1406,13 @@ export const ru: Localized<EnMessages> = {
       many: '{n} активных в тот день',
       other: '{n} активных в тот день',
     },
+    poolShareOfPool: '{percent} ежедневного пула',
+    poolActiveToday: {
+      one: '{n} активный сегодня',
+      few: '{n} активных сегодня',
+      many: '{n} активных сегодня',
+      other: '{n} активных сегодня',
+    },
   },
 
   invite: {

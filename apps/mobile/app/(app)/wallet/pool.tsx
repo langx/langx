@@ -43,6 +43,19 @@ export default function PoolScreen() {
   const today = xp.data?.today
 
   /*
+   * The share against the pool it came out of. A backward-looking fact like
+   * the amount itself, and the one that gives the amount a size: +500 says
+   * nothing on its own, "5% of the daily pool" says how big a night that was.
+   * A fraction digit because a share of a ten-thousand pool is often under 1%.
+   */
+  const shareOfPool =
+    lastPayout &&
+    (lastPayout.amount / TOKEN_RULES.pool.total).toLocaleString(locale, {
+      style: 'percent',
+      maximumFractionDigits: 1,
+    })
+
+  /*
    * When the next share can land, for somebody who has never had one.
    *
    * Not a projected amount — the note on `tokenSummarySchema.pool` explains
@@ -85,6 +98,12 @@ export default function PoolScreen() {
               <Text style={styles.shareValue}>
                 {t('tokens.shareAmount', { count: lastPayout.amount })}
               </Text>
+              {/* How big a night that was, against the pool it came out of. */}
+              {shareOfPool ? (
+                <Text style={styles.meta}>
+                  {t('tokens.poolShareOfPool', { percent: shareOfPool })}
+                </Text>
+              ) : null}
               {/* Who the share was split with; absent from an API that does not say. */}
               {lastPayout.participants !== undefined ? (
                 <Text style={styles.meta}>
@@ -132,6 +151,20 @@ export default function PoolScreen() {
             })}{' '}
             {t('tokens.poolCap', { cap: shareCap })}
           </Text>
+          {/*
+            Who you are splitting tonight's pool with. The count the API has
+            always sent and the screen has never drawn — and the other half of
+            what makes today legible: your own score means nothing without the
+            number of people it will be divided among.
+          */}
+          {pool ? (
+            <Text style={styles.meta}>
+              {t('tokens.poolActiveToday', {
+                count: pool.activeToday,
+                n: pool.activeToday.toLocaleString(locale),
+              })}
+            </Text>
+          ) : null}
         </View>
       ) : null}
 

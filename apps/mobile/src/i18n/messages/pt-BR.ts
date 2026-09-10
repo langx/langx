@@ -1259,6 +1259,8 @@ export const ptBR: Localized<EnMessages> = {
     activityScore: { one: '{count} de atividade', other: '{count} de atividade' },
     todayBreakdown: '{messages} mensagens, {corrections} correções, {partners} pessoas.',
     poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
+    poolShareOfPool: '{percent} do bolo diário',
+    poolActiveToday: { one: '{n} ativo hoje', other: '{n} ativos hoje' },
   },
 
   invite: {

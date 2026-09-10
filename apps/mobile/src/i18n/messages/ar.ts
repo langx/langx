@@ -1471,6 +1471,15 @@ export const ar: Localized<EnMessages> = {
       many: '{n} شخصًا كانوا نشطين ذلك اليوم',
       other: '{n} شخص كانوا نشطين ذلك اليوم',
     },
+    poolShareOfPool: '{percent} من التجمّع اليومي',
+    poolActiveToday: {
+      zero: 'لا أحد نشط اليوم',
+      one: 'شخص واحد نشط اليوم',
+      two: 'شخصان نشطان اليوم',
+      few: '{n} أشخاص نشطون اليوم',
+      many: '{n} شخصًا نشطون اليوم',
+      other: '{n} شخص نشطون اليوم',
+    },
   },
 
   invite: {
