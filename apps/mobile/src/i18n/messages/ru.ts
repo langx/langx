@@ -542,6 +542,7 @@ export const ru: Localized<EnMessages> = {
     searchNone: 'Аккаунта с таким именем пользователя нет.',
     sortLabel: 'Сортировка',
     forYou: 'Для тебя',
+    boosted: 'Продвигаемые профили',
     title: 'Поиск',
     active: 'Активные',
     nearby: 'Рядом',

@@ -25,6 +25,7 @@ import {
   type ShareCardResult,
 } from '@langx/shared'
 import type {
+  BoostedProfilesPage,
   HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
@@ -94,6 +95,12 @@ export const keys = {
   me: ['me'] as const,
   profile: (id: string) => ['profile', id] as const,
   discovery: (filters: string) => ['discovery', filters] as const,
+  /**
+   * Under the same `['discovery']` prefix as the list, so the four places
+   * that invalidate that prefix — a block, an unblock, a profile edit, a
+   * location change — refresh the strip with it.
+   */
+  discoveryBoosted: (filters: string) => ['discovery', 'boosted', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
   /**
    * Parameterised now that the list has tabs. Every writer has to patch with
@@ -448,6 +455,24 @@ export function useDiscovery(params: Record<string, string>) {
      * one tap replaces the entire list with placeholders — which is a worse
      * answer than the spinner the placeholders were meant to improve on.
      */
+    placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The paying members above the discovery list.
+ *
+ * Takes the filters only — no sort, no radius. The strip has one order of
+ * its own, and passing them would give it a second cache entry per sort for
+ * a response that never changes.
+ */
+export function useBoostedProfiles(params: Record<string, string>) {
+  const search = new URLSearchParams(params).toString()
+  return useQuery({
+    queryKey: keys.discoveryBoosted(search),
+    queryFn: () => api.get<BoostedProfilesPage>(`/discovery/boosted?${search}`),
+    // Same reason as `useDiscovery`: a filter tap must not blank the strip
+    // while the next answer is in flight.
     placeholderData: keepPreviousData,
   })
 }

@@ -537,6 +537,7 @@ export const en = {
     searchNone: 'No account with that username.',
     sortLabel: 'Sort',
     forYou: 'For you',
+    boosted: 'Boosted profiles',
     title: 'Discover',
     active: 'Active',
     nearby: 'Nearby',

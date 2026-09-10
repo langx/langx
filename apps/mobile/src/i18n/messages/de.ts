@@ -500,6 +500,7 @@ export const de: Localized<EnMessages> = {
     searchNone: 'Kein Konto mit diesem Benutzernamen.',
     sortLabel: 'Sortierung',
     forYou: 'Für dich',
+    boosted: 'Hervorgehobene Profile',
     title: 'Entdecken',
     active: 'Aktiv',
     nearby: 'In der Nähe',

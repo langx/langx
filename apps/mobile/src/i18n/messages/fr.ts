@@ -498,6 +498,7 @@ export const fr: Localized<EnMessages> = {
     searchNone: 'Aucun compte avec ce nom d’utilisateur.',
     sortLabel: 'Tri',
     forYou: 'Pour toi',
+    boosted: 'Profils mis en avant',
     title: 'Découvrir',
     active: 'Actifs',
     nearby: 'À proximité',

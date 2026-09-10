@@ -115,6 +115,21 @@ export interface DiscoveryResult {
   nextCursor: string | null
 }
 
+/**
+ * `GET /discovery/boosted` — a card in the strip above the list.
+ *
+ * The same shape as a discovery row plus the plan that put it there, which
+ * the chip on the card reads. No cursor: the strip is a row somebody flicks
+ * through, capped server-side at `DISCOVERY_BOOSTED_LIMIT`.
+ */
+export interface BoostedProfile extends DiscoveryItem {
+  tier: Extract<PlanTier, 'pro' | 'pro_plus'>
+}
+
+export interface BoostedProfilesPage {
+  items: BoostedProfile[]
+}
+
 /** `GET /discovery/handles` — a jump-to, so no cursor and no counts. */
 export interface HandleSearchResult {
   _id: string

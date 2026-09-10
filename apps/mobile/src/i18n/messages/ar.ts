@@ -559,6 +559,7 @@ export const ar: Localized<EnMessages> = {
     searchNone: 'لا يوجد حساب بهذا الاسم.',
     sortLabel: 'الترتيب',
     forYou: 'لك',
+    boosted: 'ملفات مُبرَزة',
     title: 'استكشاف',
     active: 'نشطون',
     nearby: 'قريبون',

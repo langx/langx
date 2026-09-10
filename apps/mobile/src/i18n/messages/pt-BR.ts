@@ -490,6 +490,7 @@ export const ptBR: Localized<EnMessages> = {
     searchNone: 'Nenhuma conta com esse nome de usuário.',
     sortLabel: 'Ordenar',
     forYou: 'Para você',
+    boosted: 'Perfis em destaque',
     title: 'Descobrir',
     active: 'Ativos',
     nearby: 'Por perto',

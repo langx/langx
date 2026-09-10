@@ -496,6 +496,7 @@ export const tr: Localized<EnMessages> = {
     searchNone: 'Bu kullanıcı adında bir hesap yok.',
     sortLabel: 'Sıralama',
     forYou: 'Sana özel',
+    boosted: 'Öne çıkan profiller',
     title: 'Keşfet',
     active: 'Aktif',
     nearby: 'Yakında',
