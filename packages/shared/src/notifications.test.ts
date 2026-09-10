@@ -157,6 +157,20 @@ describe('notificationPrefsSchema', () => {
   it('refuses the channel-less shape it replaces', () => {
     expect(notificationPrefsSchema.safeParse({ messages: false }).success).toBe(false)
   })
+
+  /**
+   * A kind the schema forgets is worse than one it rejects: zod strips an
+   * unknown key and reports success, so the request writes nothing and the
+   * switch springs back on the next fetch with no error anywhere. `meetings`
+   * spent its whole life like that. Nothing links the two lists at compile
+   * time, so this is what has to notice the next one.
+   */
+  it('keeps every kind the app can send', () => {
+    for (const type of NOTIFICATION_TYPES) {
+      const parsed = notificationPrefsSchema.parse({ [type]: { push: false, email: false } })
+      expect(parsed).toEqual({ [type]: { push: false, email: false } })
+    }
+  })
 })
 
 describe('promotionsRefused', () => {

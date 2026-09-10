@@ -480,6 +480,45 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
   })
 
   /**
+   * The kind the request schema forgot. An unknown key is stripped rather
+   * than refused, so the write went missing behind a 200 and the switch came
+   * back on at the next fetch — invisible from the screen and from the
+   * sender's own tests, which write the preference straight to Mongo.
+   */
+  it('writes the meetings switch it used to drop', async () => {
+    const user = await newUser('meetings@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'meetingsuser' }),
+    })
+
+    const updated = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { notifications: { meetings: { push: false } } } },
+    })
+
+    expect(updated.statusCode, updated.body).toBe(200)
+    expect(
+      updated.json<{ settings: { notifications: Record<string, unknown> } }>().settings
+        .notifications.meetings,
+    ).toEqual({ push: false, email: false })
+
+    const reread = await app.inject({
+      method: 'GET',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+    })
+    expect(
+      reread.json<{ settings: { notifications: Record<string, unknown> } }>().settings.notifications
+        .meetings,
+    ).toEqual({ push: false, email: false })
+  })
+
+  /**
    * The translation target is one of the person's *native* languages or
    * nothing: a learning language is refused (translating into it defeats the
    * purpose), and `null` removes the key so the default — the first native
