@@ -1269,6 +1269,8 @@ export const tr: Localized<EnMessages> = {
     activityScore: { one: '{count} aktivite', other: '{count} aktivite' },
     todayBreakdown: '{messages} mesaj, {corrections} düzeltme, {partners} kişi.',
     poolParticipants: { one: 'O gün {n} kişi aktifti', other: 'O gün {n} kişi aktifti' },
+    poolShareOfPool: 'Günlük havuzun {percent} kadarı',
+    poolActiveToday: { one: 'Bugün {n} kişi aktif', other: 'Bugün {n} kişi aktif' },
   },
 
   invite: {

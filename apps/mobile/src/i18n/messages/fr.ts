@@ -1273,6 +1273,8 @@ export const fr: Localized<EnMessages> = {
     activityScore: { one: '{count} d’activité', other: '{count} d’activité' },
     todayBreakdown: '{messages} messages, {corrections} corrections, {partners} personnes.',
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
+    poolShareOfPool: '{percent} de la cagnotte du jour',
+    poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
   },
 
   invite: {

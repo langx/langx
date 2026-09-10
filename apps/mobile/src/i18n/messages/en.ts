@@ -1313,6 +1313,8 @@ export const en = {
     activityScore: { one: '{count} activity', other: '{count} activity' },
     todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
+    poolShareOfPool: '{percent} of the daily pool',
+    poolActiveToday: { one: '{n} active today', other: '{n} active today' },
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
