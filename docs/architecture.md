@@ -778,7 +778,10 @@ whether you are learnable to each other.
 
 **`GET /discovery/boosted`** is the strip above the list: the paying members
 inside exactly the same scope, in `DISCOVERY_BOOSTED_TIERS` order — Polyglot
-first, then Fluent — capped at `DISCOVERY_BOOSTED_LIMIT` with no cursor. It
+first, then Fluent — capped at `DISCOVERY_BOOSTED_LIMIT` with no cursor. The
+client draws it on the **`recommended` sort only**: the other two are a
+question the reader asked — who is active, who is near me — and a strip
+ordered by somebody's subscription is not an answer to either. It
 shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
 filter are one definition; the sort, the cursor and the radius are accepted
 and ignored, because the strip has an order of its own. Entitlement is

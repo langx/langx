@@ -369,10 +369,19 @@ export default function DiscoverScreen() {
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl {...pull} />}
-          /* In the list's header so it scrolls away with the list rather than
-             holding the top of a screen somebody is scrolling past. It draws
-             nothing when nobody qualifies — see `BoostedProfiles`. */
-          ListHeaderComponent={<BoostedProfiles params={filterParams} />}
+          /*
+           * In the list's header so it scrolls away with the list rather than
+           * holding the top of a screen somebody is scrolling past. It draws
+           * nothing when nobody qualifies — see `BoostedProfiles`.
+           *
+           * "For you" only. The other two sorts are a question the reader
+           * asked — who is active, who is near me — and a strip ordered by
+           * somebody's subscription is not an answer to either. The search
+           * branch replaces the whole list, so it needs no gate here.
+           */
+          ListHeaderComponent={
+            sort === 'recommended' ? <BoostedProfiles params={filterParams} /> : null
+          }
           onEndReachedThreshold={0.6}
           onEndReached={() => {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
