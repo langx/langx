@@ -340,6 +340,8 @@ export const es: Localized<EnMessages> = {
     title: 'Practica con alguien que está aprendiendo el tuyo',
     subtitle: 'Mira primero: puedes elegir tus idiomas y ver quién está aquí antes de registrarte.',
     browse: 'Echar un vistazo',
+    line2: 'Corrige y deja que te corrijan',
+    line3: 'Ven cada día y se acumula',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Intercambios de idiomas',
     createAccount: 'Crear una cuenta',
@@ -377,7 +379,7 @@ export const es: Localized<EnMessages> = {
     goToSignIn: 'Ir al inicio de sesión',
     checkEmailTitle: 'Revisa tu correo',
     checkEmailBody:
-      'Hemos enviado un enlace de verificación a\n{email}\n\nTócalo y luego vuelve e inicia sesión.',
+      'Hemos enviado un enlace de verificación a\n{email}\n\nTócalo y la app se abre con la sesión iniciada.',
     resendEmail: 'Reenviar correo',
     resent: 'Enviado: reenviar otra vez',
     resetTitle: 'Restablece tu contraseña',
@@ -401,6 +403,11 @@ export const es: Localized<EnMessages> = {
       'Has abierto un enlace de acceso. Toca el botón para terminar de iniciar sesión en este dispositivo.',
     openLinkButton: 'Entrar',
     openInApp: 'Abrir en la app de LangX',
+    verifyLinkTitle: 'Confirma tu correo',
+    verifyLinkBody:
+      'Has abierto un enlace de verificación. Toca el botón para terminar de configurar tu cuenta en este dispositivo.',
+    verifyLinkButton: 'Confirmar correo',
+    verifying: 'Verificando tu correo…',
     setNewPassword: 'Elige una contraseña nueva',
     newPassword: 'Contraseña nueva',
     updatePassword: 'Actualizar contraseña',
@@ -463,9 +470,9 @@ export const es: Localized<EnMessages> = {
     doneHandle: '@{handle} es tuyo.',
     doneReady: 'Tu perfil está listo.',
     whatNext: 'Qué pasa ahora',
-    whatNextBody:
-      'Descubrir te muestra a gente que habla lo que aprendes y aprende lo que hablas. Saluda a alguien: el primer mensaje da fichas y es lo único que te separa de una conversación.',
+    whatNextBody: 'Descubrir te muestra a gente que habla lo que aprendes. Saluda a alguien.',
     findSomeone: 'Buscar con quién hablar',
+    sayHelloTo: 'Saluda a {name}',
     inviteCodeToggle: '¿Tienes un código de invitación?',
     inviteCodeLabel: 'Código de invitación',
     inviteCodePlaceholder: 'su nombre de usuario',
@@ -1656,6 +1663,7 @@ export const es: Localized<EnMessages> = {
     yearlySaving: 'Anual · ahorra un {percent}%',
     billingPeriod: 'Periodo de facturación',
     start: 'Empieza con {plan}',
+    continueFree: 'Seguir gratis',
     perMonthBilledYearly: 'al mes · facturado anualmente',
   },
 

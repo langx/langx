@@ -94,7 +94,7 @@ export default function ComposeScreen() {
   }
 
   async function submit(): Promise<void> {
-    if (!requireAccount(session?.user)) return
+    if (!requireAccount(session?.user, { action: 'post' })) return
     if (!language || !draft.trim() || uploading) return
     setUploading(true)
     let attachments

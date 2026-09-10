@@ -343,6 +343,8 @@ export const fr: Localized<EnMessages> = {
     subtitle:
       'Regarde d’abord : tu peux choisir tes langues et voir qui est là avant de t’inscrire.',
     browse: 'Jeter un œil',
+    line2: 'Corrige et fais-toi corriger',
+    line3: 'Viens chaque jour, ça s’accumule',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Échanges linguistiques',
     createAccount: 'Créer un compte',
@@ -380,7 +382,7 @@ export const fr: Localized<EnMessages> = {
     goToSignIn: 'Aller à la connexion',
     checkEmailTitle: 'Regarde tes e-mails',
     checkEmailBody:
-      'Nous avons envoyé un lien de vérification à\n{email}\n\nClique dessus, puis reviens te connecter.',
+      'Nous avons envoyé un lien de vérification à\n{email}\n\nClique dessus : l’app s’ouvre, déjà connectée.',
     resendEmail: 'Renvoyer l’e-mail',
     resent: 'Envoyé — renvoyer encore',
     resetTitle: 'Réinitialise ton mot de passe',
@@ -404,6 +406,11 @@ export const fr: Localized<EnMessages> = {
       'Tu as suivi un lien de connexion. Touche le bouton pour terminer la connexion sur cet appareil.',
     openLinkButton: 'Se connecter',
     openInApp: 'Ouvrir dans l’app LangX',
+    verifyLinkTitle: 'Confirme ton e-mail',
+    verifyLinkBody:
+      'Tu as ouvert un lien de vérification. Appuie sur le bouton pour finir de configurer ton compte sur cet appareil.',
+    verifyLinkButton: 'Confirmer l’e-mail',
+    verifying: 'Vérification de ton e-mail…',
     setNewPassword: 'Choisis un nouveau mot de passe',
     newPassword: 'Nouveau mot de passe',
     updatePassword: 'Mettre à jour',
@@ -468,8 +475,9 @@ export const fr: Localized<EnMessages> = {
     doneReady: 'Ton profil est prêt.',
     whatNext: 'La suite',
     whatNextBody:
-      'Découvrir te montre des gens qui parlent ce que tu apprends et apprennent ce que tu parles. Dis bonjour à l’un d’eux — un premier message rapporte des jetons, et c’est la seule chose entre toi et une conversation.',
+      'Découvrir te montre des gens qui parlent ce que tu apprends. Dis bonjour à l’un d’eux.',
     findSomeone: 'Trouver quelqu’un à qui parler',
+    sayHelloTo: 'Dis bonjour à {name}',
     inviteCodeToggle: 'Tu as un code d’invitation ?',
     inviteCodeLabel: 'Code d’invitation',
     inviteCodePlaceholder: 'son nom d’utilisateur',
@@ -1669,6 +1677,7 @@ export const fr: Localized<EnMessages> = {
     yearlySaving: 'Annuel · {percent}% d’économie',
     billingPeriod: 'Période de facturation',
     start: 'Commencer avec {plan}',
+    continueFree: 'Continuer gratuitement',
     perMonthBilledYearly: 'par mois · facturé à l’année',
   },
 

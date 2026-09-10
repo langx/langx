@@ -333,7 +333,7 @@ export default function MeScreen() {
         <Pressable
           accessibilityRole="button"
           style={({ pressed }) => [styles.proCard, pressed && styles.pressed]}
-          onPress={() => openPaywall()}
+          onPress={() => openPaywall(undefined, undefined, 'me')}
         >
           {/*
             Two cards in one shape. A free account is being sold the first

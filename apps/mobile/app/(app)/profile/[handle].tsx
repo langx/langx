@@ -398,7 +398,8 @@ export default function ProfileScreen() {
               // Gated here as well as at the send: a guest should hear about
               // the account before typing a message out, not after.
               onPress={() => {
-                if (!requireAccount(session?.user)) return
+                if (!requireAccount(session?.user, { action: 'message', toUserId: user._id }))
+                  return
                 router.push(`/(app)/chat/new?to=${user._id}&from=${encodeURIComponent(here)}`)
               }}
             />
@@ -416,7 +417,7 @@ export default function ProfileScreen() {
             // after `onError` has already shown a toast that says nothing
             // about needing an account.
             onPress={() => {
-              if (!requireAccount(session?.user)) return
+              if (!requireAccount(session?.user, { action: 'follow' })) return
               setFollow.mutate(
                 { userId: user._id, following: !following },
                 { onError: () => showToast(t('profile.followFailed')) },

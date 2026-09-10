@@ -3,6 +3,7 @@ import {
   IOS_BUNDLE_ID,
   magicLinkUrl,
   PASSWORD_MIN_LENGTH,
+  verifyEmailUrl,
   WEB_HOST,
   webUrl,
   type Locale,
@@ -328,7 +329,17 @@ export async function createAuth({
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, url }, request) => {
+      /*
+       * The mail carries `verifyEmailUrl(token)` — the app's own page — and
+       * not the `url` Better Auth hands in, for the reason `sendMagicLink`
+       * gives below: its URL is a GET on this API that spends the token, and
+       * with `autoSignInAfterVerification` the session it creates is set on
+       * whatever followed that GET. From an inbox that is the mail client's
+       * browser, so the app was left signed out and the new account typed its
+       * password a second time to get in.
+       */
+      sendVerificationEmail: async ({ user, token }, request) => {
+        const url = verifyEmailUrl(token)
         const locale = await mailLocale(user.id, request?.headers)
         /*
          * The same link, worded twice. `runVerifyReminderPass` claims the

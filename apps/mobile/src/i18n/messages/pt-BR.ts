@@ -337,6 +337,8 @@ export const ptBR: Localized<EnMessages> = {
     subtitle:
       'Dá uma olhada antes: você pode escolher seus idiomas e ver quem está aqui sem se cadastrar.',
     browse: 'Dar uma olhada',
+    line2: 'Corrija e seja corrigido',
+    line3: 'Apareça todo dia e acumula',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Intercâmbios de idiomas',
     createAccount: 'Criar uma conta',
@@ -373,7 +375,7 @@ export const ptBR: Localized<EnMessages> = {
     goToSignIn: 'Ir para entrar',
     checkEmailTitle: 'Confira seu e-mail',
     checkEmailBody:
-      'Enviamos um link de confirmação para\n{email}\n\nToque nele, depois volte e entre.',
+      'Enviamos um link de confirmação para\n{email}\n\nToque nele e o app abre já conectado.',
     resendEmail: 'Reenviar e-mail',
     resent: 'Enviado — reenviar de novo',
     resetTitle: 'Redefina sua senha',
@@ -396,6 +398,11 @@ export const ptBR: Localized<EnMessages> = {
       'Você abriu um link de acesso. Toque no botão para concluir o login neste aparelho.',
     openLinkButton: 'Entrar',
     openInApp: 'Abrir no app do LangX',
+    verifyLinkTitle: 'Confirme seu e-mail',
+    verifyLinkBody:
+      'Você abriu um link de confirmação. Toque no botão para terminar de configurar sua conta neste aparelho.',
+    verifyLinkButton: 'Confirmar e-mail',
+    verifying: 'Confirmando seu e-mail…',
     setNewPassword: 'Defina uma senha nova',
     newPassword: 'Senha nova',
     updatePassword: 'Atualizar senha',
@@ -459,9 +466,9 @@ export const ptBR: Localized<EnMessages> = {
     doneHandle: '@{handle} é seu.',
     doneReady: 'Seu perfil está pronto.',
     whatNext: 'O que acontece agora',
-    whatNextBody:
-      'Descobrir mostra pessoas que falam o que você aprende e aprendem o que você fala. Dê um oi para alguém — a primeira mensagem vale fichas e é a única coisa entre você e uma conversa.',
+    whatNextBody: 'Descobrir mostra pessoas que falam o que você aprende. Dê um oi para alguém.',
     findSomeone: 'Achar alguém para conversar',
+    sayHelloTo: 'Dê um oi para {name}',
     inviteCodeToggle: 'Tem um código de convite?',
     inviteCodeLabel: 'Código de convite',
     inviteCodePlaceholder: 'nome de usuário',
@@ -1654,6 +1661,7 @@ export const ptBR: Localized<EnMessages> = {
     yearlySaving: 'Anual · economize {percent}%',
     billingPeriod: 'Período de cobrança',
     start: 'Começar com {plan}',
+    continueFree: 'Continuar de graça',
     perMonthBilledYearly: 'por mês · cobrado anualmente',
   },
 

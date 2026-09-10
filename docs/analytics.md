@@ -19,6 +19,8 @@ our own database and shares no field with this — see
 | `apps/mobile/src/hooks/useScreenTracking.ts`      | One `$screen` per route change, named after the route file                                   |
 | `apps/mobile/src/hooks/useAnalyticsPreference.ts` | The Settings switch                                                                          |
 | `apps/mobile/app/_layout.tsx`                     | Starts the SDK; binds and unbinds the user id in the same effect that does it for RevenueCat |
+| `apps/mobile/src/lib/installedAt.ts`              | The device's own record of its first launch, for `seconds_since_install`                     |
+| `apps/mobile/src/lib/signupOrigin.ts`             | Counts a sign-up and remembers how it was made, so the end of the wizard can say             |
 
 ## Configuration
 
@@ -52,14 +54,36 @@ reached a screen of ours.
 
 **Events.** The closed union in `analyticsEvents.ts`:
 
-| Event                  | Properties                                           | Fired                                                               |
-| ---------------------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
-| `onboarding_completed` | `referred`, `native_languages`, `learning_languages` | The profile is created                                              |
-| `message_sent`         | `kind` (text, correction, image, audio), `reply`     | The server acknowledged a send. Never the body                      |
-| `paywall_viewed`       | `feature` (what sent them there, or null), `tier`    | The paywall opens                                                   |
-| `purchase_started`     | `offer`, `tier`, `period`                            | A buy button is tapped                                              |
-| `purchase_finished`    | the same, plus `outcome`                             | The store sheet closes: purchased, cancelled, failed or unavailable |
-| `review_prompted`      | `trigger` (streakMilestone or correction)            | The OS review sheet was requested; whether it showed is unknowable  |
+| Event                       | Properties                                                                                            | Fired                                                               |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `welcome_chosen`            | `choice` (browse, create, sign_in)                                                                    | One of the welcome screen's three actions                           |
+| `signup_submitted`          | `method` (email, google, apple), `from_guest`                                                         | The sign-up request leaves the device. Not that it succeeded        |
+| `signup_verified`           | `method`                                                                                              | The mailed link was opened and spent by the app. Email only         |
+| `guest_gate_hit`            | `action` (message, like, follow, post, other)                                                         | A guest was refused a write and sent to sign-up                     |
+| `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                            | One wizard step was finished — what `$screen` cannot say            |
+| `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install` | The profile is created                                              |
+| `message_sent`              | `kind` (text, correction, image, audio), `reply`                                                      | The server acknowledged a send. Never the body                      |
+| `paywall_viewed`            | `feature` (what sent them there, or null), `tier`, `source`                                           | The paywall opens                                                   |
+| `paywall_dismissed`         | `source`, `seconds_open`                                                                              | It was closed without a purchase — the X, or "Continue free"        |
+| `purchase_started`          | `offer`, `tier`, `period`                                                                             | A buy button is tapped                                              |
+| `purchase_finished`         | the same, plus `outcome`                                                                              | The store sheet closes: purchased, cancelled, failed or unavailable |
+| `review_prompted`           | `trigger` (streakMilestone or correction)                                                             | The OS review sheet was requested; whether it showed is unknowable  |
+
+Three of these carry a number that needs a caveat rather than a footnote:
+
+- **`seconds_since_install`** counts from the first launch the device recorded,
+  which is `FLAG_KEYS.installedAt` (`src/lib/installedAt.ts`) rather than
+  PostHog's own `Application Installed` — that one is stamped server-side and
+  cannot be read back on the phone. A device that was already running the app
+  when this shipped mints the stamp on its next launch, so the number is only
+  meaningful for installs from that release onwards. It is `null` where nothing
+  was recorded.
+- **`paywall_dismissed`** does not fire for a hardware back on Android. That
+  exposure shows up as a view with no dismissal, which is a countable gap
+  rather than a wrong number.
+- **`source`** on the paywall separates the once-only exposure at the end of
+  onboarding from the quota and locked-feature gates. Mixed together, a
+  conversion rate describes neither.
 
 Purchases themselves — renewals, refunds, what was actually charged — come
 from RevenueCat's server-side PostHog integration (below), not from the app.
@@ -146,7 +170,10 @@ pnpm insight 90     # a longer window
 `scripts/insight.mjs` asks the query API the one question this tool was chosen
 for — where in install → onboarding → first conversation → paywall people stop
 — and writes a single HTML file: the funnel, active people per day, the most
-seen screens, and the split by `langx_surface`. It exists because the answer
+seen screens, how many people finished onboarding per sign-up method, and the
+split by `langx_surface`. The funnel walks the wizard a step at a time, so the
+five screens between the install and the profile are no longer one number that
+only says how many came out. It exists because the answer
 was a dashboard that had to be assembled before it could be read, and because
 the page anyone can read ([`insight.md`](insight.md)) deliberately carries
 none of this.
@@ -157,7 +184,7 @@ right-hand column of that document's table. The two variables it needs are in
 `.env.example`; the key is a **personal** API key, which reads everything the
 account can and therefore stays on one machine.
 
-### Two things about the funnel that look like bugs
+### Three things about the funnel that look like bugs
 
 **It disagrees with `insight.langx.io`, and both are right.** The public page
 counts rows in our own database, all of them, since the beginning. The funnel
@@ -173,8 +200,14 @@ switch off sends nothing after that. Development builds are invisible by
 design. So the top of the funnel is the population the SDK could see, and
 every rate below it is a rate within that population.
 
-Neither is worth writing a number down for: run the command, the numbers are
-current. What is worth writing down is that both of these look like broken
+**A step nobody can reach zeroes everything under it.** The funnel is ordered,
+so a step whose event no build fires reports 0 — and every step after it too.
+That is the reason the wizard's `photo` step is not in it (it comes after
+`onboarding_completed`) and the reason the intro was taken out of the plan's
+event list rather than left in unfired when the intro screen was removed.
+
+Neither of the first two is worth writing a number down for: run the command,
+the numbers are current. What is worth writing down is that both of these look like broken
 instrumentation the first time, and neither is.
 
 ## Checking it works

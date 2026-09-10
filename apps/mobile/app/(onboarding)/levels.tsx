@@ -14,7 +14,8 @@ import { GUEST_ONBOARDING_STEPS } from '../../src/lib/onboardingStep'
 import { Button } from '../../src/components/ui/Button'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { Screen } from '../../src/components/ui/Screen'
-import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
+import { updateDraft, useOnboardingDraft, useStepResumed } from '../../src/hooks/useOnboardingDraft'
+import { track } from '../../src/lib/analytics'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { levelLabel, useDisplayNames, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -39,6 +40,7 @@ export default function LevelsStep() {
   const complete = draft.learning.every((entry) => entry.level !== null)
   const { data: session } = authClient.useSession()
   const isGuest = shouldGateGuest(session?.user)
+  const resumed = useStepResumed('levels')
   const queryClient = useQueryClient()
   const [submitting, setSubmitting] = useState(false)
 
@@ -53,6 +55,10 @@ export default function LevelsStep() {
    * a real submit, and that has to stay true.
    */
   async function onContinue(): Promise<void> {
+    track({
+      name: 'onboarding_step_completed',
+      properties: { step: 'levels', guest: isGuest, resumed },
+    })
     if (!isGuest) {
       router.push('/(onboarding)/about-you')
       return

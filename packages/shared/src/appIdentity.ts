@@ -95,6 +95,22 @@ export function magicLinkUrl(token: string): string {
 }
 
 /**
+ * Where an emailed address-verification link points: the app's own page,
+ * carrying the token, and **not** Better Auth's `/verify-email` endpoint.
+ *
+ * The same reasoning as `magicLinkUrl`, and for a while the same bug. Better
+ * Auth's own URL is a GET that spends the token and, with
+ * `autoSignInAfterVerification`, sets the session cookie on whatever followed
+ * it — the mail client's browser. The app never saw that session, so a new
+ * account had to type its password a second time to get in. Our page spends
+ * the token from inside the app instead, and the session lands where the
+ * person is.
+ */
+export function verifyEmailUrl(token: string): string {
+  return webUrl(`/verify-email?token=${encodeURIComponent(token)}`)
+}
+
+/**
  * The link somebody shares for their own profile.
  *
  * Root-level, so it is short enough to say out loud, which is the whole point

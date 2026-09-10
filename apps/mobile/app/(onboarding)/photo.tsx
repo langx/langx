@@ -10,6 +10,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
+import { track } from '../../src/lib/analytics'
 import { showAlert } from '../../src/lib/alert'
 import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -91,6 +92,13 @@ export default function PhotoStep() {
       }
       setSaving(false)
     }
+    track({
+      // Skipping counts: the step is over either way, and the funnel is
+      // measuring how many people reach the end, not how many upload a face.
+      // `resumed` is always false — a picture never travels in the draft.
+      name: 'onboarding_step_completed',
+      properties: { step: 'photo', guest: false, resumed: false },
+    })
     router.replace('/(onboarding)/done')
   }
 

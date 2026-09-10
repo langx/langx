@@ -1,5 +1,4 @@
 import { MINIMUM_AGE, passwordTooShort } from '@langx/shared'
-import * as Linking from 'expo-linking'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -12,6 +11,7 @@ import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { openExternal } from '../../src/lib/openExternal'
 import { FormField } from '../../src/components/ui/FormField'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
+import { recordSignupSubmitted } from '../../src/lib/signupOrigin'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
@@ -41,10 +41,14 @@ export default function SignUp() {
   const [error, setError] = useState<string>()
   const [accepted, setAccepted] = useState(false)
   const { data: session } = authClient.useSession()
+  const fromGuest = shouldGateGuest(session?.user)
 
   async function onSubmit() {
     setError(undefined)
     setLoading(true)
+    // Before the guest is signed out below, which is what makes this readable
+    // at the end of the wizard.
+    recordSignupSubmitted('email', fromGuest)
     /*
      * A guest signs out before registering rather than being linked.
      *
@@ -55,17 +59,15 @@ export default function SignUp() {
      * write — and the languages travel in the device draft, which is why the
      * next screen is `about-you` rather than `languages`.
      */
-    if (shouldGateGuest(session?.user)) await authClient.signOut()
+    if (fromGuest) await authClient.signOut()
     const { error: signUpError } = await authClient.signUp.email({
       // v3 asks for no name at sign-up; Better Auth still wants one, so it is
       // guessed from the address and offered back on the about-you step.
       name: nameFromEmail(email),
       email,
       password,
-      // Resolves to langx://verify-email-success on native and the
-      // equivalent same-origin path on web — Linking.createURL handles the
-      // platform difference so this file doesn't have to.
-      callbackURL: Linking.createURL('verify-email-success'),
+      // No `callbackURL`: the API builds the mailed link itself, as
+      // `app/verify-email.tsx` explains, so anything passed here is ignored.
     })
     setLoading(false)
 
@@ -97,6 +99,16 @@ export default function SignUp() {
         <Text style={styles.title}>{t('auth.createAccount')}</Text>
         <Text style={styles.subtitle}>{t('auth.minimumAge', { age: MINIMUM_AGE })}</Text>
       </View>
+
+      {/*
+        Google and Apple first: they are the only paths that never leave for an
+        inbox, and the divider under them is what makes the email form below
+        the alternative rather than the default.
+      */}
+      <SocialAuthButtons
+        divider="below"
+        onStart={(method) => recordSignupSubmitted(method, fromGuest)}
+      />
 
       <View style={styles.fields}>
         <FormField
@@ -156,8 +168,6 @@ export default function SignUp() {
       </View>
 
       <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />
-
-      <SocialAuthButtons />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{t('auth.haveAccount')}</Text>

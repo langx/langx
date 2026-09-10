@@ -34,14 +34,40 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
  */
 export const GUEST_ONBOARDING_STEPS = ['languages', 'levels'] as const
 
+/**
+ * Whether the draft already holds what a step asks for.
+ *
+ * Two readers: the resume above, and `onboarding_step_completed`, whose
+ * `resumed` property says whether the person was answering the question or
+ * confirming an answer the device already had. One function so those two can
+ * never drift apart.
+ *
+ * `photo` is always false — the picture is uploaded onto a profile that
+ * already exists and never travels in the draft.
+ */
+export function isStepAnswered(step: OnboardingStep, draft: OnboardingDraft): boolean {
+  switch (step) {
+    // Either language list empty means the languages screen — it opens on the
+    // tab that still has work in it.
+    case 'languages':
+      return draft.nativeLanguages.length > 0 && draft.learning.length > 0
+    // A level is not optional and has no default: the whole of discovery is
+    // the fit between what you speak and how well you speak it.
+    case 'levels':
+      return isStepAnswered('languages', draft) && draft.learning.every((e) => e.level !== null)
+    case 'about-you':
+      return Boolean(draft.displayName.trim() && draft.birthDate.trim())
+    case 'handle':
+      return Boolean(draft.handle.trim())
+    case 'photo':
+      return false
+  }
+}
+
 export function furthestOnboardingStep(draft: OnboardingDraft): OnboardingStep {
-  // Either language list empty means the languages screen — it opens on the
-  // tab that still has work in it.
-  if (draft.nativeLanguages.length === 0 || draft.learning.length === 0) return 'languages'
-  // A level is not optional and has no default: the whole of discovery is the
-  // fit between what you speak and how well you speak it.
-  if (draft.learning.some((entry) => entry.level === null)) return 'levels'
-  if (!draft.displayName.trim() || !draft.birthDate.trim()) return 'about-you'
+  if (!isStepAnswered('languages', draft)) return 'languages'
+  if (!isStepAnswered('levels', draft)) return 'levels'
+  if (!isStepAnswered('about-you', draft)) return 'about-you'
   return 'handle'
 }
 

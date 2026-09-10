@@ -19,3 +19,14 @@ export const MAGIC_LINK_FAILED_PATH = '/auth/magic-link/failed'
 export function appLinkForToken(token: string): string {
   return `${APP_SCHEME}://magic-link?token=${encodeURIComponent(token)}`
 }
+
+/**
+ * The same escape hatch for the emailed verification link.
+ *
+ * Beside `appLinkForToken` rather than in a file of its own: both links are
+ * one token in a query string, and both exist for the phone whose https link
+ * opened a browser instead of the app.
+ */
+export function appLinkForVerifyToken(token: string): string {
+  return `${APP_SCHEME}://verify-email?token=${encodeURIComponent(token)}`
+}

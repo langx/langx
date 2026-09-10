@@ -397,6 +397,8 @@ export const en = {
     subtitle:
       'Have a look first — you can pick your languages and see who is here before you sign up for anything.',
     browse: 'Look around first',
+    line2: 'Correct and be corrected',
+    line3: 'Show up daily and it adds up',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Language exchanges',
     createAccount: 'Create an account',
@@ -433,7 +435,7 @@ export const en = {
     goToSignIn: 'Go to sign in',
     checkEmailTitle: 'Check your email',
     checkEmailBody:
-      'We sent a verification link to\n{email}\n\nTap it, then come back and sign in.',
+      'We sent a verification link to\n{email}\n\nTap it and the app opens, signed in.',
     resendEmail: 'Resend email',
     resent: 'Sent — resend again',
     resetTitle: 'Reset your password',
@@ -457,6 +459,11 @@ export const en = {
       'You followed a sign-in link. Tap the button to finish signing in on this device.',
     openLinkButton: 'Sign in',
     openInApp: 'Open in the LangX app',
+    verifyLinkTitle: 'Confirm your email',
+    verifyLinkBody:
+      'You followed a verification link. Tap the button to finish setting up your account on this device.',
+    verifyLinkButton: 'Confirm email',
+    verifying: 'Confirming your email…',
     setNewPassword: 'Set a new password',
     newPassword: 'New password',
     updatePassword: 'Update password',
@@ -520,8 +527,9 @@ export const en = {
     doneReady: 'Your profile is ready.',
     whatNext: 'What happens next',
     whatNextBody:
-      'Discover shows people who speak what you are learning and are learning what you speak. Say hello to one of them — a first message is worth tokens, and it is the only thing standing between you and a conversation.',
+      'Discover shows people who speak what you are learning. Say hello to one of them.',
     findSomeone: 'Find someone to talk to',
+    sayHelloTo: 'Say hello to {name}',
     inviteCodeToggle: 'Have an invite code?',
     inviteCodeLabel: 'Invite code',
     inviteCodePlaceholder: 'their username',
@@ -1721,6 +1729,7 @@ export const en = {
     yearlySaving: 'Yearly · save {percent}%',
     billingPeriod: 'Billing period',
     start: 'Start {plan}',
+    continueFree: 'Continue free',
     perMonthBilledYearly: 'a month · billed yearly',
   },
 

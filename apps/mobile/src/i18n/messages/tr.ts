@@ -352,6 +352,8 @@ export const tr: Localized<EnMessages> = {
     subtitle:
       'Önce bir bak — hiçbir şeye kaydolmadan dillerini seçip kimlerin burada olduğunu görebilirsin.',
     browse: 'Önce bir bakayım',
+    line2: 'Düzelt, düzeltilsin',
+    line3: 'Her gün gel, birikir',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Dil değişimleri',
     createAccount: 'Hesap oluştur',
@@ -388,7 +390,7 @@ export const tr: Localized<EnMessages> = {
     goToSignIn: 'Girişe git',
     checkEmailTitle: 'E-postana bak',
     checkEmailBody:
-      'Doğrulama bağlantısını şuraya gönderdik:\n{email}\n\nBağlantıya dokun, sonra dönüp giriş yap.',
+      'Doğrulama bağlantısını şuraya gönderdik:\n{email}\n\nBağlantıya dokun; uygulama açılır ve giriş yapılmış olursun.',
     resendEmail: 'E-postayı yeniden gönder',
     resent: 'Gönderildi — yeniden gönder',
     resetTitle: 'Parolanı sıfırla',
@@ -410,6 +412,11 @@ export const tr: Localized<EnMessages> = {
     openLinkBody: 'Bir giriş bağlantısı açtın. Bu cihazda girişi bitirmek için düğmeye dokun.',
     openLinkButton: 'Giriş yap',
     openInApp: 'LangX uygulamasında aç',
+    verifyLinkTitle: 'E-postanı doğrula',
+    verifyLinkBody:
+      'Bir doğrulama bağlantısı açtın. Hesabını bu cihazda tamamlamak için düğmeye dokun.',
+    verifyLinkButton: 'E-postayı doğrula',
+    verifying: 'E-postan doğrulanıyor…',
     setNewPassword: 'Yeni bir parola belirle',
     newPassword: 'Yeni parola',
     updatePassword: 'Parolayı güncelle',
@@ -472,9 +479,9 @@ export const tr: Localized<EnMessages> = {
     doneHandle: '@{handle} artık senin.',
     doneReady: 'Profilin hazır.',
     whatNext: 'Bundan sonrası',
-    whatNextBody:
-      'Keşfet, senin öğrendiğini konuşan ve senin konuştuğunu öğrenen kişileri gösterir. Birine merhaba de — ilk mesaj jeton kazandırır ve seninle bir sohbet arasındaki tek şey odur.',
+    whatNextBody: 'Keşfet, senin öğrendiğini konuşan kişileri gösterir. Birine merhaba de.',
     findSomeone: 'Konuşacak birini bul',
+    sayHelloTo: '{name} kişisine merhaba de',
     inviteCodeToggle: 'Davet kodun var mı?',
     inviteCodeLabel: 'Davet kodu',
     inviteCodePlaceholder: 'kullanıcı adı',
@@ -1658,6 +1665,7 @@ export const tr: Localized<EnMessages> = {
     yearlySaving: 'Yıllık · %{percent} indirim',
     billingPeriod: 'Ödeme dönemi',
     start: '{plan} ile başla',
+    continueFree: 'Ücretsiz devam et',
     perMonthBilledYearly: 'aylık · yıllık faturalandırılır',
   },
 

@@ -1,3 +1,4 @@
+import { WEB_HOST } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -120,12 +121,24 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
     })
     expect(signUp.statusCode, signUp.body).toBe(200)
 
-    const verifyUrl = emailSender.latestUrl()
+    /*
+     * The mail carries the app's own page, never this API's verify endpoint:
+     * whatever makes that GET is what the session cookie is set on, and from
+     * an inbox that is the mail client's browser rather than the app. So the
+     * app is what spends the token, which is what these two lines stand in
+     * for — see `apps/mobile/app/verify-email.tsx`.
+     */
+    const verifyUrl = new URL(emailSender.latestUrl())
+    expect(verifyUrl.pathname).toBe('/verify-email')
+    expect(verifyUrl.host).toBe(WEB_HOST)
+
     const verify = await app.inject({
       method: 'GET',
-      url: verifyUrl.replace(/^https?:\/\/[^/]+/, ''),
+      url: `/api/auth/verify-email?token=${encodeURIComponent(verifyUrl.searchParams.get('token') ?? '')}`,
     })
     expect(verify.statusCode, verify.body).toBeLessThan(400)
+    // The session lands on the caller's own response, which is the whole point.
+    expect(setCookieValue(verify)).toContain('session_token')
 
     const signIn = await app.inject({
       method: 'POST',

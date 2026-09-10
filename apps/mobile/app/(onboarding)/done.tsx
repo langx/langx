@@ -1,12 +1,19 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Animated, ScrollView, Text, View } from 'react-native'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
+import { authClient } from '../../src/lib/auth-client'
+import { shouldGateGuest } from '../../src/lib/guestGate'
+import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../src/lib/localFlags'
+import { openPaywall } from '../../src/lib/paywall'
+import { takePendingIntent, type PendingIntent } from '../../src/lib/pendingIntent'
+import { getOffers } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -24,6 +31,19 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * gate and goes straight to discover, so nobody meets this twice. No
  * `StepProgress` here on purpose: the wizard is over, and a bar one pixel
  * short of full would say otherwise.
+ *
+ * The button leads one of three places, in this order of precedence:
+ *
+ * 1. **The person they came to talk to**, if a guest was stopped at a message
+ *    gate on the way in (`pendingIntent`). That is the strongest motivation
+ *    this app ever has and it used to be dropped here.
+ * 2. **The paywall**, once, and only when there is a trial to offer.
+ * 3. **Discover.**
+ *
+ * A pending intent skips the paywall outright rather than queueing behind it.
+ * A screen between this one and the first hello costs exactly the thing the
+ * paywall is measured against, and the quota gate will make the offer again
+ * to somebody who is actually using the app by then.
  */
 export default function DoneStep() {
   useScreenInteractive()
@@ -33,6 +53,60 @@ export default function DoneStep() {
 
   const me = useMe()
   const handle = me.data?.handle
+  const { data: session } = authClient.useSession()
+
+  // Read once and spent in the reading, so the offer cannot be made twice or
+  // be made to whoever signs up on this phone next. The button waits for the
+  // name as well as the id: "Say hello to" with a blank after it is worse
+  // than the generic label it replaces.
+  const [intent, setIntent] = useState<PendingIntent | null>(null)
+  useEffect(() => {
+    void takePendingIntent().then(setIntent)
+  }, [])
+  const partnerId = intent?.toUserId ?? ''
+  const partner = useProfileCache(partnerId ? [partnerId] : [])[partnerId]
+  const hello = partner?.displayName ? { id: partnerId, name: partner.displayName } : null
+
+  /*
+   * Whether this account may be shown the one end-of-onboarding paywall.
+   *
+   * Asked here rather than on the press so the tap is instant: `getOffers` is
+   * a round trip to the store, and this screen is read for a few seconds
+   * before anybody presses anything.
+   *
+   * Never for a guest — `identifyForPurchases` is skipped for anonymous
+   * sessions, so a purchase made there would be orphaned. Never twice, by the
+   * device flag. And never with no trial to offer: a first-session paywall
+   * without one is a price tag on an empty room.
+   */
+  const [paywall, setPaywall] = useState(false)
+  useEffect(() => {
+    if (session === undefined || shouldGateGuest(session?.user)) return
+    let cancelled = false
+    void (async () => {
+      if (await readBoolFlag(FLAG_KEYS.onboardingPaywallShown)) return
+      const offers = await getOffers()
+      if (!cancelled) setPaywall(offers.some((offer) => offer.freeTrialDays !== null))
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [session])
+
+  function finish(): void {
+    if (hello) {
+      router.replace(`/(app)/chat/new?to=${hello.id}`)
+      return
+    }
+    if (paywall) {
+      // Written on the way in, not on the way out: a cold start in the middle
+      // of the paywall must not earn a second showing.
+      void setBoolFlag(FLAG_KEYS.onboardingPaywallShown, true)
+      openPaywall(undefined, '/(onboarding)/done', 'onboarding')
+      return
+    }
+    router.replace('/(app)/(tabs)/discover')
+  }
 
   // v3's `pop`: the check grows from .6 as it fades in. Skipped outright for
   // anyone who asked for less motion, as the welcome screen's pairs are.
@@ -80,8 +154,10 @@ export default function DoneStep() {
         <NotificationPriming />
 
         <Button
-          label={t('onboarding.findSomeone')}
-          onPress={() => router.replace('/(app)/(tabs)/discover')}
+          label={
+            hello ? t('onboarding.sayHelloTo', { name: hello.name }) : t('onboarding.findSomeone')
+          }
+          onPress={finish}
           style={styles.cta}
         />
       </ScrollView>

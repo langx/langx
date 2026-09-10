@@ -1,5 +1,23 @@
 import type { BillingPeriod, PaidPlanTier, PlanChange, PlanFeature, PlanTier } from '@langx/shared'
+import type { OnboardingStep } from './onboardingStep'
 import type { PurchaseOutcome } from './purchases'
+
+/** How an account was created. The mailed link is what makes `email` two steps. */
+export type SignUpMethod = 'email' | 'google' | 'apple'
+
+/** What a guest was trying to do when the account gate stopped them. */
+export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'other'
+
+/**
+ * Which exposure a paywall view is.
+ *
+ * `onboarding` is the one shown once at the end of the wizard; `gate` is a
+ * quota or a locked feature, the only moment the pitch answers a question the
+ * person just asked. Keeping them apart is the whole point — mixed together,
+ * a conversion rate says nothing about either.
+ */
+export const PAYWALL_SOURCES = ['onboarding', 'gate', 'me', 'deeplink', 'first_reply'] as const
+export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 
 /**
  * Every event the app sends, and the only shape `track()` accepts.
@@ -24,8 +42,53 @@ import type { PurchaseOutcome } from './purchases'
  */
 export type AnalyticsEvent =
   | {
+      name: 'welcome_chosen'
+      properties: { choice: 'browse' | 'create' | 'sign_in' }
+    }
+  | {
+      /** The sign-up request left the device. Not that it succeeded. */
+      name: 'signup_submitted'
+      properties: { method: SignUpMethod; from_guest: boolean }
+    }
+  | {
+      /**
+       * The mailed link was opened and spent by the app. Email only: the
+       * social paths have no address to prove.
+       */
+      name: 'signup_verified'
+      properties: { method: SignUpMethod }
+    }
+  | {
+      name: 'guest_gate_hit'
+      properties: { action: GuestGateAction }
+    }
+  | {
+      /**
+       * One wizard step was finished — which `$screen` cannot say. A view of
+       * `levels` counts somebody going backwards, and counts somebody who
+       * abandoned the screen the same as somebody who finished it.
+       *
+       * `resumed` means the draft already held that step's answers when the
+       * screen mounted: a returning device, or a guest who registered.
+       */
+      name: 'onboarding_step_completed'
+      properties: { step: OnboardingStep; guest: boolean; resumed: boolean }
+    }
+  | {
       name: 'onboarding_completed'
-      properties: { referred: boolean; native_languages: number; learning_languages: number }
+      properties: {
+        referred: boolean
+        native_languages: number
+        learning_languages: number
+        method: SignUpMethod | null
+        from_guest: boolean
+        /**
+         * How long the whole first minute actually took, from the first
+         * launch of this install. `null` on a device that was already
+         * running the app before the counter existed.
+         */
+        seconds_since_install: number | null
+      }
     }
   | {
       /** One message left the composer and the server acknowledged it. Never its body. */
@@ -34,7 +97,12 @@ export type AnalyticsEvent =
     }
   | {
       name: 'paywall_viewed'
-      properties: { feature: PlanFeature | null; tier: PlanTier }
+      properties: { feature: PlanFeature | null; tier: PlanTier; source: PaywallSource }
+    }
+  | {
+      /** The paywall was closed without a purchase — the X, back, or "Continue free". */
+      name: 'paywall_dismissed'
+      properties: { source: PaywallSource; seconds_open: number }
     }
   | {
       name: 'purchase_started'

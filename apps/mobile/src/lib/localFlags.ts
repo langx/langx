@@ -36,6 +36,27 @@ export const FLAG_KEYS = {
    * Cleared by `resetDraft`, so finishing onboarding leaves nothing behind.
    */
   pendingReferrer: 'pendingReferrer',
+  /**
+   * JSON: what a guest was about to do when the account gate stopped them —
+   * `{ kind: 'message', toUserId }` — held until onboarding can offer it back.
+   *
+   * The same shape and the same lifetime as `pendingReferrer` above, and for
+   * the same reason: it is captured before there is an account. Only the two
+   * message entry points write one. Wanting to message somebody is the
+   * strongest reason this app ever gives to register, and it used to be
+   * dropped at exactly the moment it peaked.
+   */
+  pendingIntent: 'pendingIntent',
+  /**
+   * JSON: how the sign-up now in progress was started — `email`, `google` or
+   * `apple`, and whether it came from a guest hitting a gate.
+   *
+   * The funnel reads `signup_submitted` against `onboarding_completed`, and
+   * the second fires minutes later on a screen where nothing in the session
+   * remembers which door was used. Written by `recordSignupSubmitted`, spent
+   * when the profile is created, cleared with the draft.
+   */
+  signupOrigin: 'signupOrigin',
   /** `auto` | `light` | `dark`. A device preference, not an account one. */
   themePreference: 'themePreference',
   /**
@@ -147,6 +168,27 @@ export const FLAG_KEYS = {
    * nothing to dismiss.
    */
   updateNoticeDismissed: 'updateNoticeDismissed',
+  /**
+   * When this installation first ran, as milliseconds since the epoch.
+   *
+   * PostHog's `Application Installed` is captured server-side and its
+   * timestamp cannot be read back on the device, so `onboarding_completed`
+   * had no way to say how long the first minute actually took. Minted on
+   * first read, like `deviceId`.
+   *
+   * A phone that was already running the app when this shipped has none, and
+   * gets `null` rather than a number invented from the day it updated.
+   */
+  installedAt: 'installedAt',
+  /**
+   * `1` once the end-of-onboarding paywall has been shown here.
+   *
+   * Device-level because the screen it guards is: it is written when that
+   * paywall opens, not when it closes, so a cold start in the middle of it
+   * does not earn a second showing. The quota-hit paywall is unaffected — it
+   * is a different exposure and answers a question the person just asked.
+   */
+  onboardingPaywallShown: 'onboardingPaywallShown',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
