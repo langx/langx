@@ -3,9 +3,8 @@ import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useBoostedProfiles } from '../api/queries'
 import { useT } from '../i18n'
 import { openProfile } from '../lib/navigation'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { Avatar } from './ui/Avatar'
-import { Chip } from './ui/Chip'
 
 /**
  * The paying members above the discovery list — Polyglot first, then Fluent.
@@ -23,6 +22,7 @@ import { Chip } from './ui/Chip'
  */
 export function BoostedProfiles({ params }: { params: Record<string, string> }) {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
   const query = useBoostedProfiles(params)
 
@@ -59,12 +59,25 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
             <Text style={styles.name} numberOfLines={1}>
               {item.displayName}
             </Text>
-            {/* A brand mark, so it is `TIER_BADGES` rather than a translated
-                string — the same word in every locale, as on `me`. */}
-            <Chip
-              label={TIER_BADGES[item.tier] ?? ''}
-              tone={item.tier === 'pro_plus' ? 'proPlus' : 'pro'}
-            />
+            {/*
+              The small tag Settings uses to name a tier, not a `Chip`: a chip
+              is a control with a control's padding, and at 14px "POLYGLOT"
+              does not fit a card this narrow — it wrapped onto two lines the
+              first time this ran on a phone. A brand mark either way, so it
+              is `TIER_BADGES` rather than a translated string.
+            */}
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.tier,
+                {
+                  color: item.tier === 'pro_plus' ? colors.proPlus : colors.pro,
+                  borderColor: item.tier === 'pro_plus' ? colors.proPlus : colors.pro,
+                },
+              ]}
+            >
+              {TIER_BADGES[item.tier]}
+            </Text>
           </Pressable>
         ))}
       </ScrollView>
@@ -72,7 +85,7 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   section: { gap: spacing.sm, paddingBottom: spacing.lg },
   title: { ...font.heading, color: colors.text, fontSize: 17 },
   strip: { gap: spacing.md, paddingVertical: spacing.xs },
@@ -81,7 +94,17 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
    * chip is one of two words, so letting each card size itself would give a
    * row of cards that step in width by whoever happens to be in it.
    */
-  card: { alignItems: 'center', gap: spacing.sm, width: 92 },
+  card: { alignItems: 'center', gap: spacing.sm, width: 96 },
   pressed: { opacity: 0.7 },
   name: { ...font.label, color: colors.text, textAlign: 'center' },
+  /** Same metrics as `proTag` in Settings, which names a tier for the same reason. */
+  tier: {
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    fontSize: 10,
+    fontWeight: '700',
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+  },
 }))
