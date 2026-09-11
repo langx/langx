@@ -104,6 +104,24 @@ export const ptBR: Localized<EnMessages> = {
     discoverCardTitle: 'Comece aqui',
     discoverCardBody:
       'Abra qualquer pessoa para ler o perfil. Dizer oi primeiro é como quase toda troca no LangX começa.',
+    tabChatsTitle: 'Onde as respostas chegam',
+    tabChatsBody:
+      'Toda conversa que você começa fica aqui, e quem espera por você tem uma aba só para isso.',
+    tabChatsGuestBody:
+      'As conversas ficam aqui. Dá para olhar e ler sem conta — escrever é a única coisa que precisa de uma.',
+    tabFeedTitle: 'Pergunte e aprenda',
+    tabFeedBody:
+      'O Feed é a sala inteira: peça para corrigirem uma frase, ouça como se fala uma palavra e faça o mesmo por outra pessoa.',
+    tabMeTitle: 'O seu canto',
+    tabMeBody: 'Seu perfil, seus tokens e sua sequência — e as configurações, atrás da engrenagem.',
+    sayHi: 'Diga oi para {name}',
+    notNow: 'Agora não',
+    feedAskTitle: 'Peça uma coisa só',
+    feedAskBody:
+      'Publique uma frase da qual não tem certeza ou uma palavra que não consegue falar, e deixe as pessoas responderem.',
+    feedKindsTitle: 'Dois tipos de ajuda',
+    feedKindsBody:
+      'Correções são escritas: alguém conserta sua frase. Pronúncia é falada: alguém grava a palavra para você.',
   },
   theme: {
     section: 'Aparência',

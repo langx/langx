@@ -107,6 +107,24 @@ export const es: Localized<EnMessages> = {
     discoverCardTitle: 'Empieza aquí',
     discoverCardBody:
       'Abre a cualquiera para leer su perfil. Saludar primero es como empieza casi todo intercambio en LangX.',
+    tabChatsTitle: 'Donde llegan las respuestas',
+    tabChatsBody:
+      'Cada conversación que empiezas vive aquí, y las que esperan tu respuesta tienen su propia pestaña.',
+    tabChatsGuestBody:
+      'Las conversaciones viven aquí. Puedes mirar y leer sin cuenta: escribir es lo único que la necesita.',
+    tabFeedTitle: 'Pregunta y aprende',
+    tabFeedBody:
+      'El Muro es la sala entera: haz que corrijan una frase, escucha cómo se dice una palabra y haz lo mismo por alguien más.',
+    tabMeTitle: 'Lo tuyo',
+    tabMeBody: 'Tu perfil, tus fichas y tu racha — y los ajustes, detrás del engranaje.',
+    sayHi: 'Saluda a {name}',
+    notNow: 'Ahora no',
+    feedAskTitle: 'Pide una sola cosa',
+    feedAskBody:
+      'Publica una frase que no tengas clara o una palabra que no sabes decir, y deja que te respondan.',
+    feedKindsTitle: 'Dos tipos de ayuda',
+    feedKindsBody:
+      'Las correcciones se escriben: alguien arregla tu frase. La pronunciación se habla: alguien graba la palabra para ti.',
   },
   theme: {
     section: 'Apariencia',

@@ -8,7 +8,7 @@ import {
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
@@ -39,6 +39,7 @@ import {
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
+import { registerTourCta } from '../../../src/lib/tour'
 import { authClient } from '../../../src/lib/auth-client'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
@@ -304,6 +305,20 @@ export default function DiscoverScreen() {
    * replaced. Search closed for the same reason — half the targets are not
    * rendered while the field is open.
    */
+  /*
+   * What the tour's last step offers. The first row, because that is the row
+   * the step is pointing at — and re-registered whenever it changes, so a list
+   * that refreshed mid-run offers whoever is at the top now.
+   */
+  const first = items[0]
+  useEffect(() => {
+    if (!first) return
+    return registerTourCta({
+      name: first.displayName,
+      run: () => openProfile(first.handle, '/(app)/(tabs)/discover'),
+    })
+  }, [first])
+
   const touring = useDiscoveryTour({
     ready: !searching && state === 'content',
     guest: shouldGateGuest(session?.user),

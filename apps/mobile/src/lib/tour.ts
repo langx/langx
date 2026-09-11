@@ -19,6 +19,13 @@ export interface TourRect {
   y: number
   width: number
   height: number
+  /**
+   * How round the hole cut around it should be, when the element's own shape
+   * asks for something other than the house radius — `999` for the circle a
+   * tab-bar icon wants. Set by `TourTarget`, because the element knows its own
+   * shape and the geometry does not.
+   */
+  radius?: number
 }
 
 /**
@@ -31,23 +38,93 @@ export const TOUR_TARGETS = [
   'discoverPair',
   'discoverSorts',
   'discoverFilters',
+  'tabChats',
+  'tabFeed',
+  'feedAsk',
+  'feedKinds',
+  'tabMe',
   'discoverCard',
 ] as const
 
 export type TourTargetId = (typeof TOUR_TARGETS)[number]
 
+/**
+ * Targets whose sentence is different for a guest.
+ *
+ * Only Chats today, and it has to be: a guest cannot have a conversation, so
+ * the account's wording describes a list that can only be empty.
+ */
+export const TOUR_GUEST_BODIES: readonly TourTargetId[] = ['tabChats']
+
+/**
+ * The four tab routes, as literals rather than built from the tab name:
+ * `routeLiterals.test.ts` finds any string starting with `/(` and checks a
+ * screen exists at it, and a path assembled at runtime is invisible to it.
+ */
+export const TOUR_TABS = {
+  discover: '/(app)/(tabs)/discover',
+  chats: '/(app)/(tabs)/chats',
+  feed: '/(app)/(tabs)/feed',
+  me: '/(app)/(tabs)/me',
+} as const
+
+export type TourTab = (typeof TOUR_TABS)[keyof typeof TOUR_TABS]
+
 export interface TourStep {
   target: TourTargetId
+  /**
+   * The tab to be standing on for this step.
+   *
+   * Set on every step that is *about* a tab, because seeing the screen is half
+   * of what the step says — a sentence about the Feed over a dimmed Discovery
+   * describes something the reader has still never seen. The last step names
+   * Discovery for the same reason: the run has to come back before it can
+   * point at a card.
+   */
+  tab?: TourTab
 }
 
 /**
  * The run, in order.
  *
- * Three pieces of chrome and then a card, which is the order a reader's eye
- * takes the screen in — and it ends on the card because the card is the only
- * one of the four that leads anywhere.
+ * The screen's own chrome first, in the order a reader's eye takes it; then
+ * the three tabs they have not opened yet — standing on each one, with the
+ * real screen behind the dim; then back to Discovery for the card, last,
+ * because it is the only step that leads anywhere and the tour should end on
+ * the thing to actually do.
+ *
+ * The anchor on a tab step stays the **tab-bar icon**, not something on the
+ * screen that was just opened. The bar is mounted whatever tab is showing, so
+ * there is nothing to wait for and nothing to race; the screen behind is the
+ * explanation, and the circle says which button brought them there.
  */
-export const TOUR_STEPS: readonly TourStep[] = TOUR_TARGETS.map((target) => ({ target }))
+export const TOUR_STEPS: readonly TourStep[] = [
+  { target: 'discoverPair' },
+  { target: 'discoverSorts' },
+  { target: 'discoverFilters' },
+  { target: 'tabChats', tab: TOUR_TABS.chats },
+  { target: 'tabFeed', tab: TOUR_TABS.feed },
+  // Standing on the Feed already, but still naming the tab: the host treats a
+  // step with a tab as reachable whether or not its target has ever been
+  // mounted, which is exactly the case for a screen the run just opened.
+  { target: 'feedAsk', tab: TOUR_TABS.feed },
+  { target: 'feedKinds', tab: TOUR_TABS.feed },
+  { target: 'tabMe', tab: TOUR_TABS.me },
+  { target: 'discoverCard', tab: TOUR_TABS.discover },
+]
+
+/**
+ * Which message words a step, given who is reading.
+ *
+ * A function rather than a template at the call site so that the guest variant
+ * is a fact with a test, and so `catalogs.test.ts` can walk every key the host
+ * can possibly ask for.
+ */
+export function tourBodyKey(target: TourTargetId, options: { guest: boolean }): string {
+  return options.guest && TOUR_GUEST_BODIES.includes(target)
+    ? `tour.${target}GuestBody`
+    : `tour.${target}Body`
+}
 
 export interface TourState {
   steps: readonly TourStep[]
@@ -89,6 +166,8 @@ export function isLastStep(state: TourState): boolean {
  * open, a card that was there when the tour opened can be gone by the third
  * step. A step with nothing to highlight is skipped; it must never be able to
  * hold the overlay open on an empty rectangle.
+ *
+ * The exception is a step that names a tab; see below.
  */
 export function resolveFrom(
   state: TourState,
@@ -96,7 +175,16 @@ export function resolveFrom(
 ): TourState | null {
   for (let index = state.index; index < state.steps.length; index++) {
     const step = state.steps[index]
-    if (step && isAvailable(step.target)) return { ...state, index }
+    if (!step) continue
+    /*
+     * A step that names a tab is always allowed through, even when its target
+     * is not registered yet: the host is about to switch to that tab, and the
+     * screen it wants may not have been mounted until now. Asking first is how
+     * the run learned to skip every remaining step the moment it left
+     * Discovery — three steps and the ending, gone in a second, with nobody
+     * having touched anything.
+     */
+    if (step.tab || isAvailable(step.target)) return { ...state, index }
   }
   return null
 }
@@ -168,6 +256,33 @@ export function measureTourTarget(id: TourTargetId): Promise<TourRect | null> {
   return measure ? measure() : Promise.resolve(null)
 }
 
+/**
+ * The action the last step offers, when the screen has one to offer.
+ *
+ * Registered by whoever owns the target — Discovery hands over its first card —
+ * because only that screen knows whose profile it is. A run with nothing
+ * registered simply has no button, which is what a list that emptied while the
+ * tour was playing leaves behind.
+ */
+export interface TourCta {
+  /** Shown in the button, so the offer names a person rather than a noun. */
+  name: string
+  run: () => void
+}
+
+let cta: TourCta | null = null
+
+export function registerTourCta(next: TourCta): () => void {
+  cta = next
+  return () => {
+    if (cta === next) cta = null
+  }
+}
+
+export function tourCta(): TourCta | null {
+  return cta
+}
+
 export function setTourState(next: TourState | null): void {
   open = next
   publish()
@@ -180,6 +295,7 @@ export function tourState(): TourState | null {
 /** Test seam: drops the run and every registration. */
 export function resetTourForTest(): void {
   open = null
+  cta = null
   listeners.clear()
   targets.clear()
 }

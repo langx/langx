@@ -1,3 +1,4 @@
+import { router } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import {
   Modal,
@@ -23,11 +24,28 @@ import {
   resolveFrom,
   setTourState,
   subscribeToTour,
+  tourBodyKey,
+  tourCta,
+  TOUR_TABS,
   type TourRect,
   type TourState,
 } from '../lib/tour'
 import { tourLayout } from '../lib/tourLayout'
 import { Button } from './ui/Button'
+
+/** Long enough for the tab that was just switched to to have drawn itself. */
+const SETTLE_MS = 260
+/**
+ * How long a step keeps asking for its target before giving up on it.
+ *
+ * A target on a tab that has never been opened does not exist until the
+ * navigation lands, and the first measurement after `router.navigate` can
+ * still find nothing. One attempt was enough on Discovery and wrong the moment
+ * the run started moving between tabs: each unmeasurable step advanced
+ * immediately, so the whole tail of the tour played itself out in a second.
+ */
+const MEASURE_RETRIES = 8
+const RETRY_MS = 150
 
 /**
  * Draws whatever run `src/lib/tour.ts` has open: the screen dimmed, one real
@@ -58,18 +76,33 @@ export function TourHost() {
   const step = state ? currentStep(state) : undefined
   const target = step?.target
 
-  const finish = useCallback((reason: 'completed' | 'skipped', at: TourState) => {
-    const shown = currentStep(at)
-    track(
-      reason === 'completed'
-        ? { name: 'tour_completed', properties: { is_guest: at.guest } }
-        : {
-            name: 'tour_skipped',
-            properties: { step: shown?.target ?? 'discoverPair', index: at.index },
-          },
-    )
-    setTourState(null)
-  }, [])
+  const finish = useCallback(
+    (reason: 'completed' | 'skipped', at: TourState, openedProfile = false) => {
+      const shown = currentStep(at)
+      track(
+        reason === 'completed'
+          ? {
+              name: 'tour_completed',
+              properties: { is_guest: at.guest, opened_profile: openedProfile },
+            }
+          : {
+              name: 'tour_skipped',
+              properties: { step: shown?.target ?? 'discoverPair', index: at.index },
+            },
+      )
+      setTourState(null)
+      /*
+       * Sent away three tabs from where the run started, somebody is standing
+       * on a screen they did not choose. The run borrowed the navigation, so
+       * it gives it back — except when the offer was taken, which is a
+       * destination of its own.
+       */
+      if (!openedProfile && shown?.tab && shown.tab !== TOUR_TABS.discover) {
+        router.navigate(TOUR_TABS.discover)
+      }
+    },
+    [],
+  )
 
   const goNext = useCallback(() => {
     if (!state) return
@@ -85,30 +118,58 @@ export function TourHost() {
    * laid out at zero size — is skipped rather than drawn as an empty ring.
    */
   useEffect(() => {
-    if (!state || !target) return
+    if (!state || !step || !target) return
     let cancelled = false
     setAnchor(null)
     const index = state.index
-    void measureTourTarget(target).then((rect) => {
-      if (cancelled) return
-      if (!rect) return goNext()
-      setAnchor(rect)
-      // Counted here rather than in an effect on `anchor`, so a re-measure
-      // after a rotation is not a second view of the same step.
-      track({ name: 'tour_step_viewed', properties: { step: target, index } })
-    })
+
+    /*
+     * A step that names a tab switches to it first, and then waits a moment
+     * before measuring — not because the anchor moves (the bar is mounted on
+     * every tab) but because the reader should see the screen arrive before
+     * being told what it is. Switching and speaking in the same frame reads as
+     * a glitch.
+     */
+    if (step.tab) router.navigate(step.tab)
+
+    let timer: ReturnType<typeof setTimeout>
+    const attempt = (left: number): void => {
+      timer = setTimeout(
+        () => {
+          void measureTourTarget(target).then((rect) => {
+            if (cancelled) return
+            if (!rect) return left > 0 ? attempt(left - 1) : goNext()
+            setAnchor(rect)
+            // Counted here rather than in an effect on `anchor`, so a
+            // re-measure after a rotation is not a second view of one step.
+            track({ name: 'tour_step_viewed', properties: { step: target, index } })
+          })
+        },
+        left === MEASURE_RETRIES && step.tab ? SETTLE_MS : left === MEASURE_RETRIES ? 0 : RETRY_MS,
+      )
+    }
+    attempt(MEASURE_RETRIES)
+
     return () => {
       cancelled = true
+      clearTimeout(timer)
     }
     // `state` itself is safe to depend on: it only ever gets a new identity
     // when the run actually moves, because nothing publishes without changing.
-  }, [goNext, screen.height, screen.width, state, target])
+  }, [goNext, screen.height, screen.width, state, step, target])
 
   if (!state || !step) return null
 
   const layout = anchor ? tourLayout({ anchor, screen, insets }) : null
   const { current, total } = progress(state)
   const last = isLastStep(state)
+  /*
+   * The offer only stands on the last step, and only while the screen still
+   * has something to offer. Everything before it is being explained, not
+   * chosen between, and two committing buttons in one run would make the tour
+   * a sequence of decisions.
+   */
+  const cta = last ? tourCta() : null
 
   return (
     <Modal
@@ -138,18 +199,26 @@ export function TourHost() {
         />
         {layout ? (
           <>
-            {layout.panels.map((panel, index) => (
-              <View
-                key={index}
-                pointerEvents="none"
-                style={[styles.panel, { left: panel.x, top: panel.y, ...sized(panel) }]}
-              />
-            ))}
+            {/* The dim and the hole are one view: see `tourLayout`. */}
+            <View
+              pointerEvents="none"
+              style={[
+                styles.mask,
+                layout.mask,
+                { borderRadius: layout.border.radius, borderWidth: layout.border.width },
+              ]}
+            />
             <View
               pointerEvents="none"
               style={[
                 styles.ring,
-                { left: layout.hole.x, top: layout.hole.y, ...sized(layout.hole) },
+                {
+                  left: layout.hole.x,
+                  top: layout.hole.y,
+                  width: layout.hole.width,
+                  height: layout.hole.height,
+                  borderRadius: layout.hole.radius,
+                },
               ]}
             />
           </>
@@ -177,8 +246,8 @@ export function TourHost() {
               showsVerticalScrollIndicator={false}
             >
               <Text style={styles.counter}>{t('tour.progress', { current, total })}</Text>
-              <Text style={styles.title}>{t(`tour.${target}Title` as MessageKey)}</Text>
-              <Text style={styles.body}>{t(`tour.${target}Body` as MessageKey)}</Text>
+              <Text style={styles.title}>{t(`tour.${step.target}Title` as MessageKey)}</Text>
+              <Text style={styles.body}>{t(tourBodyKey(step.target, state) as MessageKey)}</Text>
               <View style={styles.actions}>
                 <Pressable
                   accessibilityRole="button"
@@ -186,11 +255,24 @@ export function TourHost() {
                   hitSlop={12}
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
-                  <Text style={styles.skip}>{t('tour.skip')}</Text>
+                  <Text style={styles.skip}>{cta ? t('tour.notNow') : t('tour.skip')}</Text>
                 </Pressable>
                 <Button
-                  label={last ? t('tour.done') : t('tour.next')}
-                  onPress={goNext}
+                  label={
+                    cta
+                      ? t('tour.sayHi', { name: cta.name })
+                      : last
+                        ? t('tour.done')
+                        : t('tour.next')
+                  }
+                  onPress={() => {
+                    if (!cta) return goNext()
+                    // Closed before the profile opens, not after: the screen
+                    // under the overlay is about to be replaced, and a Modal
+                    // still up over it is a dim nobody can dismiss.
+                    finish('completed', state, true)
+                    cta.run()
+                  }}
                   size="small"
                   // `Button` spans its column by default, which is wrong in a
                   // row — its own doc comment says to pass this here.
@@ -205,23 +287,13 @@ export function TourHost() {
   )
 }
 
-/** Rects come out of the layout as x/y/width/height; styles want the last two. */
-function sized(rect: TourRect): { width: number; height: number } {
-  return { width: rect.width, height: rect.height }
-}
-
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
-  panel: { backgroundColor: colors.scrim, position: 'absolute' },
+  mask: { borderColor: colors.scrim, position: 'absolute' },
   /**
    * A ring, not a fill: the element underneath is the real one, still drawn by
    * the screen below — this only says which one it is.
    */
-  ring: {
-    borderColor: colors.accent,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    position: 'absolute',
-  },
+  ring: { borderColor: colors.accent, borderWidth: 2, position: 'absolute' },
   bubble: {
     backgroundColor: colors.bg,
     borderRadius: radius.xl,
