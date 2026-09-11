@@ -14,8 +14,8 @@ import { Tip } from '../../../src/components/Tip'
 import { SwipeableRow } from '../../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
-import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
@@ -181,9 +181,11 @@ export default function ChatsScreen() {
           ))}
         </View>
       ) : state === 'failed' ? (
-        /* Before the list, because `ListEmptyComponent` would otherwise say
-           "No chats yet" to somebody whose request never arrived — and offer
-           to go and start one. */
+        /*
+         * Otherwise the empty state below tells somebody with a full list that
+         * they have no chats at all, and offers them the free plan's daily
+         * allowance for starting one — advice about a screen that never loaded.
+         */
         <LoadFailed onRetry={() => void conversations.refetch()} />
       ) : (
         <FlatList

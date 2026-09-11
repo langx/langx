@@ -174,8 +174,10 @@ export default function ChatMediaScreen() {
       {state === 'skeleton' ? (
         <ActivityIndicator style={styles.loading} />
       ) : state === 'failed' ? (
-        /* Before either tab: both of them draw `empty`, which says this
-           conversation has no photos in it — a different claim entirely. */
+        // Before the tab split, because both tabs read the same query: a
+        // failure is the same failure whichever one is open, and `empty`
+        // otherwise promises that media "will collect here" over a request
+        // that never arrived.
         <LoadFailed onRetry={() => void page.refetch()} />
       ) : tab === 'visual' ? (
         <FlatList

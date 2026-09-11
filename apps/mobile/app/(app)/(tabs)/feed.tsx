@@ -33,8 +33,8 @@ import { LikeButton } from '../../../src/components/LikeButton'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { TourTarget } from '../../../src/components/TourTarget'
 import { Tip } from '../../../src/components/Tip'
-import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
@@ -318,8 +318,11 @@ export default function FeedScreen() {
           ))}
         </View>
       ) : state === 'failed' ? (
-        /* Rather than the per-tab empty state below, which reads as "nobody
-           has posted" — a sentence nobody can act on and which is not true. */
+        /*
+         * The worst of the empty states to draw over an error: "Everything is
+         * corrected" tells somebody there is no work left when the request for
+         * the work is what failed.
+         */
         <LoadFailed onRetry={() => void feed.refetch()} />
       ) : (
         <FlatList

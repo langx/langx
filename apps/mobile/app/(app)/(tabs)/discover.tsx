@@ -482,16 +482,9 @@ export default function DiscoverScreen() {
         <PeopleSearchResults from="/(app)/(tabs)/discover" />
       ) : state === 'failed' ? (
         /**
-         * A request that failed is not an empty app, and this screen said it
-         * was: the caller went straight to `ListEmptyComponent`, so a timeout
-         * told somebody whose request never arrived that nobody matches their
-         * languages, and to loosen filters they had not set. The case moved
-         * into `listState` afterwards, so the other six lists that had it
-         * could be fixed once rather than six times.
-         *
-         * `state` rather than `items.length`, so a failed *second* page keeps
-         * the rows already on screen: `listState` answers `'content'` whenever
-         * there are any.
+         * A request that failed is not an empty app. Without this branch a
+         * timeout told somebody whose request never arrived that nobody
+         * matches their languages, and to loosen filters they had not set.
          *
          * Below `locationRevoked`, which is also an error but is recoverable
          * in one tap and owns its own panel, and below `searching`, where

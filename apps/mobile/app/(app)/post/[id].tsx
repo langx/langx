@@ -25,8 +25,8 @@ import {
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
-import { PostThreadSkeleton } from '../../../src/components/skeletons/PostThreadSkeleton'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { PostThreadSkeleton } from '../../../src/components/skeletons/PostThreadSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
@@ -371,10 +371,18 @@ export default function PostScreen() {
         }
       />
 
-      {state === 'failed' && !post ? (
-        /* A post that did not load is not a post with no replies, and the
-           skeleton below would have pulsed over it for as long as the screen
-           was open. */
+      {query.isError && !post ? (
+        /*
+         * `!post` rather than `state`, because the `|| !post` below is what
+         * made this the worst of the seven: a failed load leaves `post`
+         * undefined forever, so the condition stayed true and the screen
+         * pulsed placeholders that were never going to resolve. The pronounce
+         * tab counts its rows from a different query, so `state` alone can be
+         * `'content'` while the post itself never arrived.
+         *
+         * A post that is already in hand survives a failed refetch and still
+         * renders below.
+         */
         <LoadFailed onRetry={() => void query.refetch()} />
       ) : state === 'skeleton' || !post ? (
         <PostThreadSkeleton />

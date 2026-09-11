@@ -47,6 +47,7 @@ import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import {
@@ -54,7 +55,6 @@ import {
   type PendingAttachment,
 } from '../../../src/components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
-import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -1582,10 +1582,20 @@ export default function ChatScreen() {
         <View style={styles.listWrap}>
           {state === 'failed' && rows.length === 0 ? (
             /*
-             * `rows.length` as well as the state: a thread that failed to load
-             * can still have something to show — the message just typed into a
-             * tunnel is an unsent row, and replacing it with an error panel
-             * would take away the one copy of that sentence there is.
+             * A thread that did not load drew as an empty one — no messages,
+             * composer ready, exactly what a conversation nobody has written
+             * in looks like. The two must not share a picture: one invites you
+             * to say hello, the other loses what was already said.
+             *
+             * `rows.length` as well as the state, because a thread that failed
+             * to load can still have something to show: a message typed into a
+             * tunnel is an unsent row, and an error panel over it would take
+             * away the one copy of that sentence there is.
+             *
+             * The same `flex: 1` the skeleton needs, and for the same reason.
+             * The composer stays live: sending does not depend on the history
+             * having arrived, and taking it away would strand somebody who
+             * only wanted to reply.
              */
             <View style={[styles.list, styles.skeletonFill]}>
               <LoadFailed onRetry={() => void thread.refetch()} />
@@ -1813,7 +1823,11 @@ export default function ChatScreen() {
             placeholder={
               correcting
                 ? t('chat.writeCorrection')
-                : items.length === 0 && partner
+                : // `state`, not `items.length`: a thread that failed to load
+                  // also has no rows, and inviting somebody to say hello to a
+                  // person they have been talking to for months is the same
+                  // wrong answer the list above used to give.
+                  state === 'empty' && partner
                   ? t('chat.sayHello', { name: partner.displayName })
                   : t('chat.writeMessage')
             }

@@ -1,4 +1,4 @@
-export type ListState = 'skeleton' | 'empty' | 'failed' | 'content'
+export type ListState = 'skeleton' | 'failed' | 'empty' | 'content'
 
 /**
  * What a list should draw right now.
@@ -10,17 +10,17 @@ export type ListState = 'skeleton' | 'empty' | 'failed' | 'content'
  * skeleton; anything else with rows is content, and the caller's empty state
  * gets the rest.
  *
- * `'failed'` used to be folded into `'empty'`, which meant every screen told
- * somebody whose request never arrived that there was nothing to see: "Nobody
- * here yet", "No chats yet", with a button offering to go and start one.
- * Discovery wrote the branch by hand first (#1314); it is here now because
- * six other screens had the same defect and a variant nobody can forget to
- * handle is the only way that stays fixed.
+ * `'failed'` was folded into `'empty'` once, and every caller then drew its
+ * empty state over a request that never arrived: a timeout said nobody matched
+ * your languages, that every post was already corrected, that you had no chats.
+ * Those are opposite news and only one of them is the reader's to act on, so
+ * the distinction lives here rather than in a condition each screen has to
+ * remember to write — which is exactly what all seven of them forgot.
  *
- * `isPaused` is the same news arriving a different way. With `onlineManager`
- * wired to the radio (`lib/queryNetwork.ts`), a query made with no network is
- * never sent — it waits — so it is `isPending` forever with no error to show,
- * which is a skeleton that pulses until the train leaves the tunnel.
+ * `isPaused` is the same news arriving a beat earlier. With `onlineManager`
+ * wired to the radio (`lib/queryNetwork.ts`) a query made with no network is
+ * never sent — it waits — so it stays `isPending` with no error to show, which
+ * is a skeleton that pulses until the train leaves the tunnel.
  */
 export function listState(input: {
   isPending: boolean
@@ -29,6 +29,8 @@ export function listState(input: {
   /** `query.fetchStatus === 'paused'`: waiting for a network that is not there. */
   isPaused?: boolean
 }): ListState {
+  // Rows outrank everything below, so a failed *second* page leaves the list
+  // that is already on screen alone.
   if (input.itemCount > 0) return 'content'
   if (input.isError || input.isPaused) return 'failed'
   if (input.isPending) return 'skeleton'

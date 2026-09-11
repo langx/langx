@@ -3,8 +3,8 @@ import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native
 import { router } from 'expo-router'
 import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
-import { EmptyState } from '../../src/components/ui/EmptyState'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -100,9 +100,8 @@ export default function WritingScreen() {
           ))}
         </View>
       ) : state === 'failed' ? (
-        /* Not the empty state below it: "you have not corrected anybody yet"
-           is a sentence about the reader, and getting it wrong is worse than
-           the usual version of this bug. */
+        // Above the empty state rather than folded into it: "No corrections
+        // yet" is news about your account, and a failed request is not.
         <LoadFailed onRetry={() => void active.refetch()} />
       ) : state === 'empty' ? (
         <EmptyState
