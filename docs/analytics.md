@@ -71,8 +71,13 @@ reached a screen of ours.
 | `boosted_strip_shown`       | `count` (1–12)                                                                                        | Discover is focused with a non-empty Boosted strip                  |
 | `boosted_strip_tapped`      | `slot` (0-based), `tier`                                                                              | A Boosted card is tapped                                            |
 | `discovery_card_tapped`     | `slot` (0-based)                                                                                      | A row in the discovery list below the strip is tapped               |
+| `message_received`          | `kind` (any `MessageType`)                                                                            | A message from somebody else arrives over the socket                |
+| `message_send_failed`       | `kind` (text, media), `reason` (error code or null)                                                   | A send did not land. A quota refusal is a paywall, not a failure    |
+| `notification_opened`       | `kind` (any `PushKind`, or unknown), `cold_start`                                                     | A push was tapped. Counts taps, never sends                         |
+| `filters_applied`           | `count`, `pro`                                                                                        | The discovery filter sheet is applied. How many, never which        |
+| `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                 | A wallet purchase the server accepted. Spending only, never earning |
 
-Four of these carry a number that needs a caveat rather than a footnote:
+Some of these carry a number that needs a caveat rather than a footnote:
 
 - **`seconds_since_install`** counts from the first launch the device recorded,
   which is `FLAG_KEYS.installedAt` (`src/lib/installedAt.ts`) rather than
@@ -104,6 +109,20 @@ Four of these carry a number that needs a caveat rather than a footnote:
   survives an analytics opt-out. `boosted_strip_shown` is the app's first
   high-frequency event, roughly one `$screen`'s worth; every other one here is
   a once-per-account milestone.
+- **`message_received`** is a lower bound, not a count of messages received. It
+  fires where the socket delivers, so a message that arrived as a push while
+  the app was closed is never counted, and neither is one first seen in a cold
+  start's fetch. What it honestly measures is conversations that were live
+  while somebody was looking — which is the thing `message_sent` cannot say.
+- **`message_send_failed`** does not fire for the media quota refusal. That one
+  returns to a paywall and is counted as one; treating it as a failure would
+  put a pricing decision in the same number as a broken upload.
+- **`notification_opened`** counts taps. A push that was delivered and ignored
+  leaves no trace on the device, so the denominator for an open rate has to
+  come from the server's own send log rather than from here.
+- **`tokens_spent`** cannot be summed into a balance. Earning happens in cron
+  jobs and gifts the device never sees, so this is one side of a ledger whose
+  other side exists only on the server.
 
 Purchases themselves — renewals, refunds, what was actually charged — come
 from RevenueCat's server-side PostHog integration (below), not from the app.
