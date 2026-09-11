@@ -49,9 +49,16 @@ export async function sendWelcomeMessage(
   const delivered = await deliverOfficialMessage(app.mongo.db, {
     fromHandle: 'langx',
     toUserId: userId,
-    body: store
-      ? `${t('official.welcome')}\n\n${t('official.welcomeRate', { store })}`
-      : t('official.welcome'),
+    /*
+     * Three parts, in this order: what LangX is, the store ask when there is a
+     * store to ask about, and the sign-off last. The ask reads as a postscript
+     * and the sign-off as the end, which is the wrong way round if they swap.
+     */
+    body: [
+      t('official.welcome'),
+      ...(store ? [t('official.welcomeRate', { store })] : []),
+      t('official.welcomeClosing'),
+    ].join('\n\n'),
     clientId: `welcome:${userId}`,
   })
   // No account, because a real user holds the handle. Onboarding is not the

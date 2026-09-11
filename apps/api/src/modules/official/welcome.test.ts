@@ -178,6 +178,11 @@ describe('a new account meets @langx', () => {
     expect(phone?.body).toContain('App Store')
     expect(web?.body).not.toContain('App Store')
     expect(web?.body).not.toContain('Google Play')
+
+    // The sign-off is last on both, after the ask rather than before it.
+    expect(phone?.body.trimEnd().endsWith('💛')).toBe(true)
+    expect(web?.body.trimEnd().endsWith('💛')).toBe(true)
+    expect(phone?.body.indexOf('App Store')).toBeLessThan(phone!.body.indexOf('💛'))
     // And the welcome itself is the same for both.
     expect(web?.body).toContain('welcome to LangX')
     expect(phone?.body).toContain('welcome to LangX')
