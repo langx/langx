@@ -317,7 +317,7 @@ describe('the badge round-up', () => {
     const healthy = await newProfile({ messagesSent: 5000, withDevice: true })
 
     const warn = vi.fn()
-    const result = await runBadgeRoundUpPass(handle.db, senders, now, { warn })
+    const result = await runBadgeRoundUpPass(handle.db, push, now, { warn })
 
     expect(result).toEqual({ sent: 0, seeded: 1, failed: 0 })
     expect(warn).not.toHaveBeenCalled()
