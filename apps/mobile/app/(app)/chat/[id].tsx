@@ -15,7 +15,7 @@ import {
   type MessageAsk,
   type MessageTranslation,
 } from '@langx/shared'
-import { useQueryClient } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -70,6 +70,7 @@ import {
   retireDelivered,
   type UnsentMessage,
 } from '../../../src/lib/unsentMessages'
+import { loadUnsent, saveUnsent } from '../../../src/lib/unsentStore'
 import {
   addOutgoing,
   isOutgoingId,
@@ -139,6 +140,31 @@ export default function ChatScreen() {
   /** Sends in flight, drawn in the thread before the server has answered. */
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
+  /**
+   * And back out of the device, because until this the rows lived exactly as
+   * long as the screen did. Somebody who types a sentence in a tunnel and goes
+   * back to the chat list to see whether anything else arrived was throwing
+   * away the only copy of it — the composer is empty by then.
+   *
+   * Nothing is written back before the read has landed: saving the empty
+   * initial state would wipe what this is here to keep.
+   */
+  const [unsentHydrated, setUnsentHydrated] = useState(false)
+  useEffect(() => {
+    let cancelled = false
+    void loadUnsent(conversationId).then((stored) => {
+      if (cancelled) return
+      if (stored.length > 0) setUnsent(stored)
+      setUnsentHydrated(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [conversationId])
+  useEffect(() => {
+    if (!unsentHydrated) return
+    void saveUnsent(conversationId, unsent)
+  }, [conversationId, unsent, unsentHydrated])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   /**
    * What this message asks the other person for, once it is sent.
@@ -298,6 +324,7 @@ export default function ChatScreen() {
     isPending: thread.isPending,
     isError: thread.isError,
     itemCount: items.length,
+    isPaused: thread.fetchStatus === 'paused',
   })
   // From the participant list, not from the messages: a thread nobody has
   // replied to yet contains only my own sends, and reading the partner off
@@ -869,6 +896,16 @@ export default function ChatScreen() {
     translation?: MessageTranslation,
   ): Promise<void> {
     try {
+      /*
+       * Twelve seconds is what the ack timeout costs, and with no network it
+       * can only end one way: a composer that looks like it is thinking, and
+       * then a red row. The row is the honest answer, and this is the only
+       * thing between it and the person who typed the sentence. `catch` below
+       * does the rest — the code rides along so the funnel can count them.
+       */
+      if (!onlineManager.isOnline()) {
+        throw Object.assign(new Error('offline'), { code: 'OFFLINE' })
+      }
       const socket = await getSocket()
       await emitWithAck(socket, 'message:send', {
         conversationId,
@@ -1543,12 +1580,17 @@ export default function ChatScreen() {
           own box rather than the screen's — that keeps it above the composer
           whatever height the composer has grown to. */}
         <View style={styles.listWrap}>
-          {state === 'failed' ? (
+          {state === 'failed' && rows.length === 0 ? (
             /*
              * A thread that did not load drew as an empty one — no messages,
              * composer ready, exactly what a conversation nobody has written
              * in looks like. The two must not share a picture: one invites you
              * to say hello, the other loses what was already said.
+             *
+             * `rows.length` as well as the state, because a thread that failed
+             * to load can still have something to show: a message typed into a
+             * tunnel is an unsent row, and an error panel over it would take
+             * away the one copy of that sentence there is.
              *
              * The same `flex: 1` the skeleton needs, and for the same reason.
              * The composer stays live: sending does not depend on the history

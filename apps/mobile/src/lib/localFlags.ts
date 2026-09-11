@@ -57,6 +57,15 @@ export const FLAG_KEYS = {
    * when the profile is created, cleared with the draft.
    */
   signupOrigin: 'signupOrigin',
+  /**
+   * JSON: the messages that could not be sent, by conversation.
+   *
+   * A device flag rather than anything on the account, for the obvious reason
+   * — the thing it holds is what never reached the server. `unsentStore.ts`
+   * owns the shape; it is bounded on both axes so this cannot grow without
+   * limit.
+   */
+  unsentMessages: 'unsentMessages',
   /** `auto` | `light` | `dark`. A device preference, not an account one. */
   themePreference: 'themePreference',
   /**

@@ -1,6 +1,7 @@
 import { MAX_VIDEO_SECONDS } from '@langx/shared'
 import { ApiRequestError } from '../api/client'
 import type { TranslateFn } from '../i18n'
+import { isOfflineFailure } from './reportActionError'
 import { showToast } from './toast'
 
 /**
@@ -20,6 +21,17 @@ import { showToast } from './toast'
  * show up as one screen naming a failure the other one shrugs at.
  */
 export function reportWriteError(caught: unknown, t: TranslateFn): void {
+  /*
+   * Before anything about attachments, because this is the branch a post
+   * written on a train lands in and "the attachment did not upload" was the
+   * sentence it got — for a post with no attachment in it. An upload that
+   * reaches the bucket and is refused carries a status (`putWithProgress`),
+   * so this really is the case where nothing answered.
+   */
+  if (isOfflineFailure(caught)) {
+    showToast(t('errors.offlineAction'))
+    return
+  }
   if (!(caught instanceof ApiRequestError)) {
     showToast(t('feed.attachmentFailed'))
     return

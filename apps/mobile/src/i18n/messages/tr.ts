@@ -24,6 +24,7 @@ export const tr: Localized<EnMessages> = {
     save: 'Kaydet',
     tryAgain: 'Tekrar dene',
     retry: 'Birazdan tekrar dene.',
+    offline: 'İnternet bağlantısı yok',
     checking: 'Kontrol ediliyor…',
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
@@ -274,6 +275,8 @@ export const tr: Localized<EnMessages> = {
     invalidToken: 'Bu bağlantı artık geçerli değil.',
     uploadFailed: 'Yüklenemedi',
     loadFailed: 'Bu yüklenemedi. Bağlantını kontrol edip tekrar dene.',
+    offlineAction: 'Bu işlem gitmedi — internet yok.',
+    actionFailed: 'Bu işlem gitmedi. Tekrar dene.',
   },
 
   location: {

@@ -76,6 +76,7 @@ import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
+import { reportActionError } from '../lib/reportActionError'
 import { isAllowedAudioType } from '../lib/recordingFormat'
 import {
   applyAnswer,
@@ -286,9 +287,17 @@ export function useMe(enabled = true) {
     queryKey: keys.me,
     queryFn: () => api.get<MeProfile>('/profiles/me'),
     enabled,
-    // A 404 here means "signed in but no profile yet" — onboarding, not an
-    // error to retry.
-    retry: false,
+    /*
+     * The client's default predicate, not `retry: false`.
+     *
+     * `false` was written for the 404 — "signed in but no profile yet" is an
+     * answer, and retrying it only delays onboarding — but it applied to lost
+     * packets too, so one dropped request settled this query with nothing and
+     * `index.tsx` had to decide a launch on the strength of a single attempt.
+     * The default (`app/_layout.tsx`) already refuses to retry any 4xx, so the
+     * 404 still settles at once and a bad second on the train gets two more
+     * tries before anybody is told anything.
+     */
   })
 }
 
@@ -1055,6 +1064,12 @@ export function useSetLike() {
       // new name belongs in a keyset page.
       void client.invalidateQueries({ queryKey: keys.likers(targetType, targetId) })
     },
+    /*
+     * The heart is drawn from `LikeButton`'s own state, so a refused like
+     * springs back on its own — and used to do it in silence, which reads as
+     * the button being broken rather than as the tap not having landed.
+     */
+    onError: reportActionError,
   })
 }
 
@@ -1139,10 +1154,13 @@ export function useMarkNotificationsRead() {
       )
       return { previous }
     },
-    onError: (_error, _input, context) => {
+    onError: (error, _input, context) => {
       if (context?.previous !== undefined) {
         client.setQueryData(keys.notificationsUnread, context.previous)
       }
+      // The badge coming back is the only sign otherwise, and it looks like
+      // the count is wrong rather than like the request failed.
+      reportActionError(error)
     },
     onSuccess: (_result, id) => {
       // Stamped into the loaded pages rather than refetched: the dot has to go
@@ -1196,8 +1214,11 @@ export function useSetFollow(handleOrId: string) {
       }
       return { previous }
     },
-    onError: (_error, _input, context) => {
+    onError: (error, _input, context) => {
       if (context?.previous) client.setQueryData(keys.profile(handleOrId), context.previous)
+      // And say so: the button has already sprung back, and a silent
+      // spring-back is indistinguishable from a button that does not work.
+      reportActionError(error)
     },
     onSuccess: (follow) => {
       const previous = client.getQueryData<PublicProfileDto>(keys.profile(handleOrId))

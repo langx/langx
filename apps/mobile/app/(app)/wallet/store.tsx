@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { shiftDayKey, TOKEN_RULES, wornCosmetic } from '@langx/shared'
 import { Text, View } from 'react-native'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { queryFailed } from '../../../src/lib/listState'
 import {
   useActivity,
   useEquip,
@@ -66,7 +67,7 @@ export default function StoreScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? (
+        {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
           <View style={styles.loading}>

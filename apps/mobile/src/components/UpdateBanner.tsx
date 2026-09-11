@@ -5,6 +5,7 @@ import { Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useMe } from '../api/queries'
 import { appPlatform, useAppConfig } from '../hooks/useAppConfig'
+import { useIsOnline } from '../hooks/useIsOnline'
 import { FLAG_KEYS, readFlag, writeFlag } from '../lib/localFlags'
 import { openStoreListing } from '../lib/storeListing'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
@@ -37,6 +38,7 @@ export function UpdateBanner() {
   const config = useAppConfig()
   const me = useMe()
   const insets = useSafeAreaInsets()
+  const online = useIsOnline()
 
   /*
    * Three states, not two: `undefined` is "the flag has not been read yet".
@@ -71,6 +73,12 @@ export function UpdateBanner() {
   // One bar at the top at a time, and a pending deletion is the more urgent of
   // the two by a distance. `DeletionBanner` takes the status-bar inset when it
   // renders, so this one can take it unconditionally.
+  //
+  // `OfflineBanner` is the third, and it wins over this one for as long as it
+  // is up: an update that cannot be downloaded is not the news of the moment,
+  // and `config.data` behind this is cached from whenever the network last
+  // worked anyway.
+  if (!online) return null
   if (me.data?.deletedAt) return null
   if (
     !shouldShowUpdateNotice({ updateAvailable: Boolean(data.updateAvailable), latest, dismissed })

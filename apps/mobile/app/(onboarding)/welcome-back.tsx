@@ -5,6 +5,7 @@ import { Redirect, router, type Href } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { queryFailed } from '../../src/lib/listState'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
@@ -98,7 +99,7 @@ export default function WelcomeBackScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? <LoadFailed onRetry={() => void me.refetch()} /> : <ActivityIndicator />}
+        {queryFailed(me) ? <LoadFailed onRetry={() => void me.refetch()} /> : <ActivityIndicator />}
       </Screen>
     )
   }

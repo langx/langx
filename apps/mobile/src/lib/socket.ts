@@ -23,6 +23,22 @@ let socket: Socket | null = null
 export async function getSocket(): Promise<Socket> {
   if (socket?.connected) return socket
 
+  /*
+   * `active` is socket.io's own word for "still trying", and it goes false for
+   * good when a *middleware* error refuses the handshake — an expired session,
+   * or the server's auth lookup having a bad second. The client stops
+   * reconnecting at that point and nothing here noticed: the check above only
+   * asks whether the socket is connected, so every later call was handed the
+   * dead one back. Realtime stayed dead until the app was force-quit, and
+   * every message typed meanwhile waited out its ack timeout and turned red.
+   * Throwing it away is enough; the lines below build a fresh one, with a
+   * cookie read fresh as well, which is the other half of an expired session.
+   */
+  if (socket && !socket.active) {
+    socket.close()
+    socket = null
+  }
+
   const auth: Record<string, string> = {}
   if (Platform.OS !== 'web') {
     auth.cookie = (await authClient.getCookie()) ?? ''
@@ -48,6 +64,28 @@ export async function getSocket(): Promise<Socket> {
 export function closeSocket(): void {
   socket?.close()
   socket = null
+}
+
+/**
+ * Starts the one socket over without losing the handlers `useSocket` hung on
+ * it.
+ *
+ * A tunnel does not close a connection, it stops carrying it — so socket.io
+ * goes on believing it is connected until its own ping times out, which the
+ * server's defaults put at 45 seconds. Measured: 45.1. The OS knows within a
+ * second, and this is what turns that knowledge into a working connection
+ * instead of a socket that is quietly writing into a pipe nobody is reading.
+ *
+ * `disconnect()` and `connect()` in the same tick, deliberately: in between
+ * them the socket is `!active`, which is the exact state `getSocket()` throws a
+ * socket away for, and nothing can observe it because nothing here awaits. The
+ * app's own listeners survive — socket.io's `destroy()` drops the manager's
+ * subscriptions, not the events the app registered.
+ */
+export function restartSocket(): void {
+  if (!socket) return
+  socket.disconnect()
+  socket.connect()
 }
 
 /**

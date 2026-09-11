@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Text } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { isRequestTimeout } from '../src/api/apiFetch'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
 import { MessageMenuHost } from '../src/components/MessageMenuHost'
@@ -36,6 +37,7 @@ import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '.
 import { markInstalled } from '../src/lib/installedAt'
 import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
 import { configureObserve } from '../src/lib/observe'
+import { configureQueryNetwork } from '../src/lib/queryNetwork'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
@@ -67,6 +69,13 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined)
  */
 configureObserve()
 
+/*
+ * And what the radio is doing, for the same "read once, before anything needs
+ * it" reason. Module scope because `onlineManager`'s listener is global and
+ * setting it twice would leave the first subscription running.
+ */
+configureQueryNetwork()
+
 function createQueryClient(): QueryClient {
   return new QueryClient({
     defaultOptions: {
@@ -76,6 +85,14 @@ function createQueryClient(): QueryClient {
           // Retrying a 4xx just repeats the same refusal. Only transient
           // failures — network, 5xx — are worth a second attempt.
           if (error instanceof ApiRequestError && error.status < 500) return false
+          /*
+           * One extra attempt for a timeout, not two. Each one costs the full
+           * ten seconds before anything can appear on screen, and the case
+           * this exists for — a tunnel, a captive portal — will not answer the
+           * third either. A phone that is merely slow still gets its second
+           * chance.
+           */
+          if (isRequestTimeout(error)) return failureCount < 1
           return failureCount < 2
         },
       },

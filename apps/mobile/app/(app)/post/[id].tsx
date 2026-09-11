@@ -185,6 +185,7 @@ export default function PostScreen() {
     isPending: query.isPending,
     isError: query.isError,
     itemCount: replies.length,
+    isPaused: query.fetchStatus === 'paused',
   })
 
   const mine = post ? post.author._id === me.data?._id : false

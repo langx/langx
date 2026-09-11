@@ -15,6 +15,7 @@ export const fr: Localized<EnMessages> = {
     save: 'Enregistrer',
     tryAgain: 'Réessayer',
     retry: 'Réessaie dans un instant.',
+    offline: 'Pas de connexion internet',
     checking: 'Vérification…',
     oneMoment: 'Un instant…',
     skip: 'Plus tard',
@@ -265,6 +266,8 @@ export const fr: Localized<EnMessages> = {
     invalidToken: 'Ce lien n’est plus valable.',
     uploadFailed: 'Échec de l’envoi',
     loadFailed: 'Impossible de charger. Vérifie ta connexion et réessaie.',
+    offlineAction: 'Ça n’est pas passé — tu es hors ligne.',
+    actionFailed: 'Ça n’est pas passé. Réessaie.',
   },
 
   location: {

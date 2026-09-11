@@ -11,10 +11,14 @@
  * `src/lib/**` and `src/i18n/**`. The same logic inside the chat screen would
  * never be tested.
  *
- * Not persisted yet, deliberately. Surviving an app kill needs a real store —
- * `localFlags` swallows its own write failures by design, which is exactly the
- * wrong contract for a queue — and a server-side `clientId` so a retry cannot
- * double-post. Both are their own change; this one stops the silent loss.
+ * Persisted since the tunnel work, through `unsentStore.ts` — the half of it
+ * that touches `localFlags` lives there, so this file stays loadable by the
+ * tests. The two things that made it wait have both arrived: the server
+ * refuses a second message with the same `(senderId, clientId)` by unique
+ * index, so a retry cannot double-post, and the store's swallowed write
+ * failures are the right contract after all once the promise is read as "kept
+ * where possible" rather than "queued". A write that fails leaves exactly what
+ * was there before this: a row that lives as long as the screen does.
  */
 
 export interface UnsentMessage {
@@ -72,4 +76,35 @@ export function retireDelivered(
  */
 export function newClientId(now: number, random: number): string {
   return `${now.toString(36)}-${Math.floor(random * 1e9).toString(36)}`
+}
+
+/**
+ * Every conversation's unsent rows, as one stored value.
+ *
+ * One key rather than a key per conversation: the store is `expo-secure-store`
+ * on native, whose keys are not enumerable, so anything written per
+ * conversation could never be found again to clean up. Bounded on both axes —
+ * `MAX_UNSENT` rows within a thread, `MAX_UNSENT_THREADS` threads — because a
+ * record that only ever grows is a slow way to fill a keychain.
+ */
+export type UnsentByConversation = Record<string, UnsentMessage[]>
+
+export const MAX_UNSENT_THREADS = 10
+
+/**
+ * Writes one conversation's rows into the record, newest thread first, and
+ * drops a thread that has nothing left in it. Pure, so the bounding is
+ * testable without a device.
+ */
+export function storeUnsent(
+  stored: UnsentByConversation,
+  conversationId: string,
+  list: readonly UnsentMessage[],
+): UnsentByConversation {
+  const rest: [string, UnsentMessage[]][] = Object.entries(stored).filter(
+    ([id]) => id !== conversationId,
+  )
+  const kept: [string, UnsentMessage[]][] =
+    list.length > 0 ? [[conversationId, [...list]], ...rest] : rest
+  return Object.fromEntries(kept.slice(0, MAX_UNSENT_THREADS))
 }

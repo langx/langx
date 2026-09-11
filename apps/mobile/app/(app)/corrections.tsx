@@ -69,6 +69,7 @@ export default function WritingScreen() {
     isPending: active.isPending,
     isError: active.isError,
     itemCount: tab === 'corrections' ? corrections.length : myPosts.length,
+    isPaused: active.fetchStatus === 'paused',
   })
 
   return (

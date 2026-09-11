@@ -85,3 +85,18 @@ export function errorCodeOf(error: unknown): string | undefined {
   const code = (error as { code?: unknown }).code
   return typeof code === 'string' ? code : undefined
 }
+
+/**
+ * The HTTP status behind a failure, when a server gave one.
+ *
+ * `ApiRequestError` carries it; a request that never reached a server carries
+ * nothing. That is the distinction the launch gate turns on — "the server said
+ * no" and "there was no server" used to arrive as the same empty `data` — and
+ * reading it structurally, like `errorCodeOf` above, is what keeps this module
+ * loadable by tests that cannot import the API client.
+ */
+export function errorStatusOf(error: unknown): number | undefined {
+  if (typeof error !== 'object' || error === null) return undefined
+  const status = (error as { status?: unknown }).status
+  return typeof status === 'number' ? status : undefined
+}

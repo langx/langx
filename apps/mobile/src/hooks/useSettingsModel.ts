@@ -19,6 +19,7 @@ import {
   useUpdateProfile,
 } from '../api/queries'
 import { useAnalyticsPreference } from './useAnalyticsPreference'
+import { useIsOnline } from './useIsOnline'
 import { unregisterPushToken } from './usePushRegistration'
 import { useTips } from './useTips'
 import { forgetTour } from './useTour'
@@ -50,6 +51,7 @@ import { showToast } from '../lib/toast'
  */
 export function useSettingsModel() {
   const t = useT()
+  const online = useIsOnline()
   const { preference: locale, deviceLocale } = useLocalePreference()
   // The *resolved* locale, not the preference: `auto` is not something
   // `toLocaleDateString` can read.
@@ -213,7 +215,16 @@ export function useSettingsModel() {
   function setPrivacy(patch: Partial<MeProfile['privacy']>): void {
     update.mutate(
       { privacy: patch },
-      { onError: () => void showAlert(t('settings.privacyFailed'), t('common.retry')) },
+      {
+        // "Try again in a moment" is true of a server having a bad second and
+        // useless on a train, where the moment to try again is the one after
+        // the tunnel.
+        onError: () =>
+          void showAlert(
+            t('settings.privacyFailed'),
+            online ? t('common.retry') : t('common.offline'),
+          ),
+      },
     )
   }
 

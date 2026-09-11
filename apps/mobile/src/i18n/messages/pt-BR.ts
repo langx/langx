@@ -15,6 +15,7 @@ export const ptBR: Localized<EnMessages> = {
     save: 'Salvar',
     tryAgain: 'Tentar de novo',
     retry: 'Tente de novo em um instante.',
+    offline: 'Sem conexão com a internet',
     checking: 'Verificando…',
     oneMoment: 'Um instante…',
     skip: 'Agora não',
@@ -260,6 +261,8 @@ export const ptBR: Localized<EnMessages> = {
     invalidToken: 'Esse link não é mais válido.',
     uploadFailed: 'Falha no envio',
     loadFailed: 'Não deu para carregar. Confira sua conexão e tente de novo.',
+    offlineAction: 'Não deu certo — você está sem conexão.',
+    actionFailed: 'Não deu certo. Tente de novo.',
   },
 
   location: {

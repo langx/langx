@@ -145,6 +145,7 @@ export default function FeedScreen() {
     isPending: feed.isPending,
     isError: feed.isError,
     itemCount: items.length,
+    isPaused: feed.fetchStatus === 'paused',
   })
 
   /** Owned by the screen, not the card: a card is recycled out from under it. */

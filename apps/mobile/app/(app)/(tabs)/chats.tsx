@@ -127,6 +127,7 @@ export default function ChatsScreen() {
     isPending: conversations.isPending,
     isError: conversations.isError,
     itemCount: items.length,
+    isPaused: conversations.fetchStatus === 'paused',
   })
 
   return (

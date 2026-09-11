@@ -15,6 +15,7 @@ import { recordSignupSubmitted } from '../../src/lib/signupOrigin'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
+import { useIsOnline } from '../../src/hooks/useIsOnline'
 import { authErrorKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { PASSWORD_MIN_LENGTH, passwordIssueKey } from '../../src/lib/passwordForm'
@@ -39,6 +40,9 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
+  // Better Auth has no code for "nobody answered", so the form would have
+  // said "Sign in failed" to somebody whose request never left the phone.
+  const online = useIsOnline()
   const [accepted, setAccepted] = useState(false)
   const { data: session } = authClient.useSession()
   const fromGuest = shouldGateGuest(session?.user)
@@ -72,7 +76,7 @@ export default function SignUp() {
     setLoading(false)
 
     if (signUpError) {
-      setError(t(authErrorKey(signUpError) ?? 'errors.signUpFailed'))
+      setError(t(authErrorKey(signUpError) ?? (online ? 'errors.signUpFailed' : 'common.offline')))
       return
     }
     router.replace({ pathname: '/(auth)/check-email', params: { email } })

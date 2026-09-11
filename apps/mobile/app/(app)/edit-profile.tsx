@@ -25,6 +25,7 @@ import {
   type MeProfile,
 } from '../../src/api/queries'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { queryFailed } from '../../src/lib/listState'
 import { ApiRequestError } from '../../src/api/client'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
 import { useDebounced } from '../../src/hooks/useDebounced'
@@ -114,7 +115,7 @@ export default function EditProfileScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? (
+        {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
           <View style={styles.loading}>

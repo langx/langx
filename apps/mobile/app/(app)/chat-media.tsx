@@ -130,6 +130,7 @@ export default function ChatMediaScreen() {
     isPending: page.isPending,
     isError: page.isError,
     itemCount: tab === 'visual' ? tiles.length : messages.length,
+    isPaused: page.fetchStatus === 'paused',
   })
 
   const empty = (

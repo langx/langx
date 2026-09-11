@@ -296,6 +296,7 @@ export default function DiscoverScreen() {
     isPending: query.isPending,
     isError: query.isError,
     itemCount: items.length,
+    isPaused: query.fetchStatus === 'paused',
   })
   const count = activeCount(effective)
   const tips = useTips()
