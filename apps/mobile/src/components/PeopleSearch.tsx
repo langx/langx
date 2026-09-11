@@ -7,6 +7,7 @@ import { useT } from '../i18n'
 import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Avatar } from './ui/Avatar'
+import { OfficialMark } from './OfficialMark'
 
 type SearchHost = '/(app)/(tabs)/discover' | '/(app)/(tabs)/chats'
 
@@ -162,9 +163,12 @@ export function PeopleSearchResults({ from }: { from: SearchHost }) {
         >
           <Avatar url={result.avatarUrl} name={result.displayName} seed={result._id} size={36} />
           <View style={styles.text}>
-            <Text style={styles.name} numberOfLines={1}>
-              {result.displayName}
-            </Text>
+            <View style={styles.nameRow}>
+              <Text style={styles.name} numberOfLines={1}>
+                {result.displayName}
+              </Text>
+              {result.official ? <OfficialMark size={14} /> : null}
+            </View>
             <Text style={styles.handle} numberOfLines={1}>
               @{result.handle}
             </Text>
@@ -207,6 +211,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   spinner: { marginTop: spacing.md },
   row: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: spacing.sm },
   text: { flex: 1, gap: 1 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   name: { ...font.label, color: colors.text, fontSize: 15 },
   handle: { ...font.caption, color: colors.textMuted },
   none: { ...font.caption, color: colors.textFaint, marginTop: spacing.md, textAlign: 'center' },

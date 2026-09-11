@@ -94,6 +94,7 @@ const INFRASTRUCTURE_RESERVED = [
   'blog',
   'cdn',
   'contact',
+  'copilot',
   'developers',
   'docs',
   'download',

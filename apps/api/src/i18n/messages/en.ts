@@ -40,6 +40,8 @@ export const en = {
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
       awayLongBody: 'Your streak and tokens are waiting.',
+      limitReachedTitle: 'You keep hitting the free limits',
+      limitReachedBody: 'A plan lifts them.',
       trialEndingTitle: 'Your free week ends in two days',
       trialEndingBody: 'Keeping your plan takes one tap.',
       winBackTitle: 'Your plan ended a week ago',
@@ -239,6 +241,30 @@ export const en = {
 
     newsletterButton: 'Open LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 reply to your writing today',
+      other: '{count} replies to your writing today',
+    },
+
+    feedDigestPreheader: 'People answered what you posted',
+
+    feedDigestBody: {
+      one: 'Somebody answered a sentence you posted today.',
+      other: '{count} people answered sentences you posted today.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 recording', other: '{count} recordings' },
+
+    feedDigestComments: { one: '1 comment', other: '{count} comments' },
+
+    feedDigestMore: { one: 'And 1 more post.', other: 'And {count} more posts.' },
+
+    feedDigestButton: 'Read the replies',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -278,6 +304,13 @@ export const en = {
         'A month is a long time. Your account, your streak and your tokens are all still here if you want them — and this is the last we will say about it.',
 
       awayLongButton: 'Open LangX',
+
+      limitReachedSubject: 'You are running into the free limits',
+
+      limitReachedBody:
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+
+      limitReachedButton: 'See the plans',
 
       trialEndingSubject: 'Your free week ends in two days',
 
@@ -319,7 +352,7 @@ export const en = {
 
     welcomeTitle: 'Welcome, {name}',
 
-    welcomeBody: 'Your profile is live at @{handle}. Here is what people do first:',
+    welcomeBody: 'Your profile is live at {handle}. Here is what people do first:',
 
     welcomeStep1: 'Find someone who speaks what you are learning, and say hello.',
 
@@ -466,6 +499,42 @@ export const en = {
     fakeProfile: 'Fake profile',
     underage: 'Under 16',
     other: 'Something else',
+  },
+  /**
+   * What the official accounts say for themselves.
+   *
+   * Here rather than in the app's catalogue because these are messages: they
+   * are written into a conversation by the server and read back like anything
+   * else somebody sent, so the app has no idea they were ever translated.
+   * Chosen with `localeFor` — the reader's native language, the rule all
+   * server-worded text follows.
+   */
+  official: {
+    welcome:
+      'Hey, welcome to LangX! 👋 So glad you’re here.\n\nThe best bit starts in Discover: find someone learning your language who speaks the one you’re after, say hi, and the practice takes care of itself. You pick up tokens along the way.\n\nThis is where news about LangX lands, so it’s worth keeping an eye on. And LangX is open source — it gets better because people tell us things. If something breaks, or you think of something we should build, Settings → About → Feedback comes straight to us. We read all of it. And if you know someone who’d like it here, Settings → Share & invite gets you both some tokens.',
+    /**
+     * Appended to the welcome only when the person finished onboarding in
+     * the app — a browser has no store to send them to. `{store}` is a
+     * brand name and stays in English in every locale.
+     */
+    welcomeRate:
+      'One more thing, if you feel like it: rating LangX on the {store} genuinely helps people find us. No pressure at all.',
+    assistantOffline:
+      'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
+    /**
+     * Both ceilings say this — the one on a conversation and the one on the
+     * day's spend. Which was reached is an operational detail, and the
+     * answer is the same either way.
+     *
+     * The second half is the part that matters. Somebody who came to report
+     * harassment and got a limit must not read it as "reporting is closed":
+     * the assistant is a way to reach those flows, never the only one.
+     */
+    assistantLimit:
+      'I can’t answer any more just now — try me again in a few hours.\n\nNothing is waiting on me: you can report someone from their profile, send a bug or an idea from Settings, and {email} always reaches a person.',
+    assistantError: 'Something went wrong on my side. Try sending that again in a moment.',
+    assistantRefusal:
+      'I can’t help with that one. If I have got it wrong, {email} reaches a person.',
   },
 } as const
 

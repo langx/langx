@@ -1,13 +1,29 @@
+import { PUSH_KINDS, type PushKind } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { AppState, Platform } from 'react-native'
 import { markConversationRead } from '../api/queries'
+import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
 import { presentationFor } from '../lib/foregroundPush'
 import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
 import { configureNotifications } from '../lib/notifications'
 import { notificationRoute } from '../lib/notificationRoute'
+
+/**
+ * What the payload called itself, for the analytics event only.
+ *
+ * Not `notificationRoute`'s business: that one answers "where does this go",
+ * and two kinds that route to the same screen are the same answer to it and
+ * different answers to "what brought them back". Anything unrecognised counts
+ * as `unknown` rather than being dropped — a kind the app has not learned yet
+ * is exactly the thing worth seeing in the list.
+ */
+function openedKind(data: unknown): PushKind | 'unknown' {
+  const kind = (data as { kind?: unknown } | null)?.kind
+  return PUSH_KINDS.includes(kind as PushKind) ? (kind as PushKind) : 'unknown'
+}
 
 /**
  * Makes a tapped notification open the thing it is about.
@@ -40,7 +56,12 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
         if (cancelled) return
 
         subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-          const href = notificationRoute(response.notification.request.content.data)
+          const data = response.notification.request.content.data
+          track({
+            name: 'notification_opened',
+            properties: { kind: openedKind(data), cold_start: false },
+          })
+          const href = notificationRoute(data)
           if (href) router.push(href)
         })
 
@@ -75,7 +96,15 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
 
         const initial = await Notifications.getLastNotificationResponseAsync()
         if (cancelled || !initial) return
-        const href = notificationRoute(initial.notification.request.content.data)
+        const data = initial.notification.request.content.data
+        // The tap that launched the app, rather than one it was already
+        // running for. Different amounts of interruption, so they are counted
+        // apart rather than summed.
+        track({
+          name: 'notification_opened',
+          properties: { kind: openedKind(data), cold_start: true },
+        })
+        const href = notificationRoute(data)
         // `push`, not `replace`: the tab the app opened on stays underneath, so
         // the back gesture out of the conversation goes somewhere sensible
         // instead of off the end of the stack.

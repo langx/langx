@@ -651,7 +651,7 @@ export const en = {
     boostedWhat: 'What is this?',
     boostedExplainTitle: 'Boosted profiles',
     boostedExplainBody:
-      'People on Fluent and Polyglot are shown here, Polyglot first. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
+      'People on Fluent and Polyglot are shown here, Polyglot first. The order turns through the day, so everyone takes a turn at the front — a photo, a few words about you, and a recent visit are what put you there. They are matched to your languages exactly as the list below is — nothing about the pairing changes, and anyone can switch it off in Settings.',
     boostedSeePlans: 'See the plans',
     languagesA11y: 'Choose which of your languages to search with',
     searchHandles: 'Search by username',
@@ -752,6 +752,8 @@ export const en = {
     lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
   },
   chat: {
+    /** Shown where the composer would be, on an account that takes no messages. */
+    channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     sendingAttachment: 'Sending…',
     title: 'Chat',
     typing: 'typing…',
@@ -1043,6 +1045,8 @@ export const en = {
   },
 
   profile: {
+    /** Screen-reader label for the tick beside @langx and @copilot. */
+    official: 'Official account',
     suspendedTag: 'Suspended',
     deletedTag: 'Account deleted',
     previewNote:

@@ -13,6 +13,7 @@ import type { InlineAsset } from './inlineAssets'
 import { inlineSrc, LOGO_SRC } from './logo'
 import type { NewsletterNote } from './newsletters'
 import type { MonthlyRecap } from '../modules/notifications/newsletter'
+import type { FeedDigestItem } from '../modules/notifications/feedDigest'
 
 /**
  * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
@@ -367,13 +368,22 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
   const t = translator(locale)
   const url = webUrl('/discover')
   const steps = [t('email.welcomeStep1'), t('email.welcomeStep2'), t('email.welcomeStep3')]
+  /*
+   * The handle is the link, `@` included — which is why the catalogue says
+   * `{handle}` rather than `@{handle}`: a link that starts one character
+   * after the thing it points at is a smaller target and reads as a typo.
+   * The text half gets the address written out instead, since a plain-text
+   * mail cannot hide a URL behind a word.
+   */
+  const profile = profileUrl(input.handle)
+  const handleLink = `<a href="${encodeURI(profile)}" style="color:#3b6cf6; text-decoration:underline;">@${escapeHtml(input.handle)}</a>`
   return {
     subject: t('email.welcomeSubject'),
     html: wrap(
       locale,
       t('email.welcomePreheader'),
       `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${t('email.welcomeTitle', { name: escapeHtml(input.name) })}</strong></p>
-       <p>${t('email.welcomeBody', { handle: escapeHtml(input.handle) })}</p>
+       <p>${t('email.welcomeBody', { handle: handleLink })}</p>
        <ul style="margin:20px 0 0; padding-left:20px; color:#17191c;">
          ${steps.map((step) => `<li style="margin-bottom:8px;">${step}</li>`).join('\n         ')}
        </ul>
@@ -382,7 +392,8 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
     text: [
       t('email.welcomeTitle', { name: input.name }),
       '',
-      t('email.welcomeBody', { handle: input.handle }),
+      t('email.welcomeBody', { handle: `@${input.handle}` }),
+      profile,
       '',
       ...steps.map((step) => `- ${step}`),
       '',
@@ -564,6 +575,69 @@ function monthLabel(locale: Locale, month: string): string {
   }
 }
 
+/**
+ * The day's replies to somebody's posts, in one letter.
+ *
+ * Counts and the opening words of their own sentence — never the correction
+ * itself. The same rule the unread digest follows, for a different reason:
+ * there the text is somebody else's private message, here it is the thing
+ * the reader is being asked to come and read. A mail that already contains
+ * the answer is a mail nobody clicks, and the correction is worth seeing
+ * beside the sentence it corrects.
+ */
+export function feedDigestEmail(
+  locale: Locale,
+  {
+    items,
+    morePosts,
+    unsubscribe,
+  }: { items: FeedDigestItem[]; morePosts: number; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const total = items.reduce(
+    (sum, item) => sum + item.corrections + item.answers + item.comments,
+    0,
+  )
+  const subject = t('email.feedDigestSubject', { count: total })
+  const rows = items
+    .map((item) => {
+      const parts = [
+        item.corrections > 0 ? t('email.feedDigestCorrections', { count: item.corrections }) : '',
+        item.answers > 0 ? t('email.feedDigestAnswers', { count: item.answers }) : '',
+        item.comments > 0 ? t('email.feedDigestComments', { count: item.comments }) : '',
+      ].filter(Boolean)
+      return `<p style="margin:16px 0 0;"><a href="${postUrl(item.postId)}" style="color:#17191c; text-decoration:none;"><strong>&ldquo;${escapeHtml(item.excerpt)}&rdquo;</strong></a><br /><span style="color:#62676d;">${formatList(locale, parts)}</span></p>`
+    })
+    .join('\n       ')
+  const more = morePosts > 0 ? t('email.feedDigestMore', { count: morePosts }) : ''
+  const cta = { url: webUrl('/me'), label: t('email.feedDigestButton') }
+
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: t('email.feedDigestPreheader'),
+      bodyHtml: `<p>${t('email.feedDigestBody', { count: total })}</p>
+       ${rows}
+       ${more ? `<p style="margin:16px 0 0; color:#62676d;">${more}</p>` : ''}`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(
+      locale,
+      [
+        t('email.feedDigestBody', { count: total }),
+        '',
+        ...items.map((item) => `"${item.excerpt}" — ${postUrl(item.postId)}`),
+        ...(more ? ['', more] : []),
+        '',
+        cta.url,
+      ],
+      unsubscribe,
+    ),
+  }
+}
+
 /** The six nudges `modules/notifications/promotions.ts` offers, in its order. */
 export type PromotionScenario =
   | 'addPhoto'
@@ -571,6 +645,7 @@ export type PromotionScenario =
   | 'away'
   | 'awayLong'
   | 'trialEnding'
+  | 'limitReached'
   | 'winBack'
   | 'tokensWaiting'
   | 'inviteFriend'
@@ -623,6 +698,7 @@ const PROMOTION_DESTINATIONS: Record<PromotionScenario, string> = {
   away: webUrl('/discover'),
   awayLong: webUrl('/discover'),
   trialEnding: webUrl('/settings/plan'),
+  limitReached: webUrl('/settings/plan'),
   winBack: webUrl('/settings/plan'),
   tokensWaiting: webUrl('/wallet'),
   inviteFriend: webUrl('/settings/share'),

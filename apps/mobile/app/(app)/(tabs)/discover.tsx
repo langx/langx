@@ -7,6 +7,7 @@ import {
 } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
+import { track } from '../../../src/lib/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
@@ -524,7 +525,10 @@ export default function DiscoverScreen() {
           renderItem={({ item, index }) => {
             const row = (
               <Pressable
-                onPress={() => openProfile(item.handle, '/(app)/(tabs)/discover')}
+                onPress={() => {
+                  track({ name: 'discovery_card_tapped', properties: { slot: index } })
+                  openProfile(item.handle, '/(app)/(tabs)/discover')
+                }}
                 style={({ pressed }) => [
                   styles.row,
                   index === items.length - 1 && styles.rowLast,

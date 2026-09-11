@@ -50,6 +50,25 @@ const envSchema = z.object({
   // Raises GitHub's rate limit for the contributor strip on Our Kitchen.
   // Never required: without it the list is simply refreshed less often.
   GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
+
+  /**
+   * The assistant behind @langx. Optional, like every other outside service
+   * here: without a key `app.assistant` is `null`, a message to @langx is
+   * answered with `official.assistantOffline`, and the welcome message and
+   * announcements — which are ours, not the model's — carry on untouched.
+   */
+  ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
+  /**
+   * Sonnet, on the evidence. Asked in Turkish how to protect a streak, Haiku
+   * answered about the privacy settings — twice, the same way. This app writes
+   * to people in eight languages while they practise a ninth, and a cheap
+   * wrong answer in somebody's own language is the expensive kind.
+   *
+   * `sendsEffort` sends `low` here, so the thinking is bounded; Haiku got none
+   * at all because it rejects the parameter rather than ignoring it.
+   * `scripts/try-assistant.ts` is how to judge a change of model.
+   */
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this
@@ -96,10 +115,13 @@ const envSchema = z.object({
    */
   RESEND_WEBHOOK_SECRET: emptyToUndefined(z.string().optional()),
   /**
-   * The Reply-To on campaign mail. Campaigns say "reply to this email, it
-   * reaches a human"; from a `no-reply@` sender that needs somewhere to go.
-   * Optional: unset, campaigns carry no Reply-To and that line should not be
-   * in them.
+   * The Reply-To on campaign mail, for a deployment sending from a
+   * `no-reply@`: campaigns say "reply to this email, it reaches a human" and
+   * that needs somewhere to go. langx.io leaves it unset, because
+   * `EMAIL_FROM` is `hi@langx.io` and the reply already arrives.
+   * Optional: unset, campaigns carry no Reply-To — right when the From
+   * address is readable, and when it is not, that line does not belong in
+   * the mail either.
    */
   EMAIL_REPLY_TO: emptyToUndefined(z.string().optional()),
 

@@ -266,10 +266,16 @@ rotating it breaks all of them at once, which is the legal way out of the
 mail. Unset, the app falls back to `BETTER_AUTH_SECRET` and inherits exactly
 that problem.
 
-- [x] **`EMAIL_FROM` points at the verified domain**: `LangX <no-reply@langx.io>`,
-      read back from the `langx-api` machine on 6 September 2026. The
-      `onboarding@resend.dev` default in `env.ts` is now only what a bare
-      self-host sends from.
+- [x] **`EMAIL_FROM` points at the verified domain**: `LangX <hi@langx.io>`,
+      set on the `langx-api` machine on 10 September 2026. It was
+      `no-reply@langx.io` until then, and the address changed on Resend's
+      deliverability guidance: a no-reply sender is read as a spam signal by
+      some filters, and it discards the replies that tell a provider the mail
+      is wanted. `hi@` is already the support mailbox (`SUPPORT_EMAIL`), so a
+      reply to a verification or notification mail now reaches the same inbox
+      as a bug report. `EMAIL_REPLY_TO` is redundant once the From address
+      takes replies and is unset in production. The `onboarding@resend.dev`
+      default in `env.ts` is only what a bare self-host sends from.
 
 Read one before anybody else does: leave `RESEND_API_KEY` unset locally and the
 sender prints each message to the log instead, headers included.

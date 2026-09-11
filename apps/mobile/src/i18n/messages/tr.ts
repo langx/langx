@@ -595,7 +595,7 @@ export const tr: Localized<EnMessages> = {
     boostedWhat: 'Bu ne?',
     boostedExplainTitle: 'Öne çıkan profiller',
     boostedExplainBody:
-      'Fluent ve Polyglot kullanıcıları burada gösterilir, önce Polyglot. Aşağıdaki listeyle tamamen aynı şekilde dillerine göre eşleştirilirler — eşleşmede hiçbir şey değişmez, ve isteyen Ayarlar’dan kapatabilir.',
+      'Fluent ve Polyglot kullanıcıları burada gösterilir, önce Polyglot. Sıra gün içinde döner, böylece herkes sırayla öne geçer — öne geçiren şey bir fotoğraf, kendinle ilgili birkaç kelime ve yakın zamanda uğramış olmak. Aşağıdaki listeyle tamamen aynı şekilde dillerine göre eşleştirilirler — eşleşmede hiçbir şey değişmez, ve isteyen Ayarlar’dan kapatabilir.',
     boostedSeePlans: 'Planlara bak',
     languagesA11y: 'Aramada hangi dillerinin kullanılacağını seç',
     searchHandles: 'Kullanıcı adıyla ara',
@@ -696,6 +696,7 @@ export const tr: Localized<EnMessages> = {
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
   },
   chat: {
+    channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',
@@ -983,6 +984,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
     previewNote:

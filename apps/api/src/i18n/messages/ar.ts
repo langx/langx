@@ -42,6 +42,8 @@ export const ar: Localized<ServerMessages> = {
       awayBody: 'أشخاص جدد للتدرب معهم.',
       awayLongTitle: 'نحن هنا متى أردت',
       awayLongBody: 'سلسلتك ورموزك في الانتظار.',
+      limitReachedTitle: 'تصطدم بالحدود باستمرار',
+      limitReachedBody: 'الخطة المدفوعة ترفعها.',
       trialEndingTitle: 'تنتهي أسبوعك المجاني بعد يومين',
       trialEndingBody: 'الاحتفاظ بها نقرة واحدة.',
       winBackTitle: 'انتهت خطتك',
@@ -229,6 +231,30 @@ export const ar: Localized<ServerMessages> = {
 
     newsletterButton: 'افتح LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'رد واحد على ما كتبته اليوم',
+      other: '{count} ردود على ما كتبته اليوم',
+    },
+
+    feedDigestPreheader: 'ردّ الناس على ما نشرته',
+
+    feedDigestBody: {
+      one: 'ردّ أحدهم اليوم على جملة نشرتها.',
+      other: 'ردّ {count} أشخاص اليوم على جمل نشرتها.',
+    },
+
+    feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },
+
+    feedDigestAnswers: { one: 'تسجيل واحد', other: '{count} تسجيلات' },
+
+    feedDigestComments: { one: 'تعليق واحد', other: '{count} تعليقات' },
+
+    feedDigestMore: { one: 'ومنشور واحد آخر.', other: 'و{count} منشورات أخرى.' },
+
+    feedDigestButton: 'اقرأ الردود',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -266,6 +292,13 @@ export const ar: Localized<ServerMessages> = {
         'الشهر مدة طويلة. حسابك وسلسلتك ورموزك ما زالت هنا إن أردتها — وهذه آخر رسالة عن الأمر.',
 
       awayLongButton: 'افتح LangX',
+
+      limitReachedSubject: 'تصطدم بحدود الخطة المجانية',
+
+      limitReachedBody:
+        'بلغت الحد اليومي ثلاث مرات في الأيام الأخيرة. الخطة المدفوعة ترفع هذه الحدود — محادثات وترجمات ومرفقات أكثر كل يوم.',
+
+      limitReachedButton: 'اطّلع على الخطط',
 
       trialEndingSubject: 'تنتهي أسبوعك المجاني بعد يومين',
 
@@ -307,7 +340,7 @@ export const ar: Localized<ServerMessages> = {
 
     welcomeTitle: 'أهلاً، {name}',
 
-    welcomeBody: 'ملفك الشخصي متاح على ‎@{handle}‎. هذا ما يبدأ به معظم الناس:',
+    welcomeBody: 'ملفك الشخصي متاح على ‎{handle}‎. هذا ما يبدأ به معظم الناس:',
 
     welcomeStep1: 'ابحث عن شخص يتحدث اللغة التي تتعلمها وألقِ التحية.',
 
@@ -446,5 +479,17 @@ export const ar: Localized<ServerMessages> = {
     fakeProfile: 'ملف شخصي مزيّف',
     underage: 'أقل من 16 عامًا',
     other: 'شيء آخر',
+  },
+  official: {
+    welcome:
+      'مرحبًا، أهلًا بك في LangX! 👋 سعداء بوجودك معنا.\n\nأجمل ما في الأمر يبدأ من «اكتشف»: ابحث عمّن يتعلّم لغتك ويتحدّث اللغة التي تريدها، ألقِ التحية، وسيتكفّل التدرّب بالباقي. وفي الطريق تجمع الرموز.\n\nهنا تصلك أخبار LangX، فمن المفيد أن تتابعه. وLangX مشروع مفتوح المصدر: يتحسّن لأن الناس يخبروننا. إن تعطّل شيء، أو خطرت لك فكرة ينبغي أن ننفّذها، فـ«الإعدادات ← حول ← ملاحظات» تصل إلينا مباشرة. نقرأها كلها. وإن كنت تعرف شخصًا سيعجبه المكان، فـ«الإعدادات ← المشاركة والدعوة» تمنحكما رموزًا معًا.',
+    welcomeRate:
+      'وأمر أخير، إن رغبت: تقييم LangX على {store} يساعد الناس فعلًا على العثور علينا. دون أي إلزام.',
+    assistantOffline:
+      'لا أستطيع الرد على الرسائل الآن. إن كان الأمر يحتمل الانتظار فحاول لاحقًا، وإن لم يكن فراسل {email} وسيقرأها شخص.',
+    assistantLimit:
+      'لا أستطيع الرد أكثر الآن — جرّب بعد بضع ساعات.\n\nلا شيء متوقف عليّ: يمكنك الإبلاغ عن أحد من صفحته، وإرسال خلل أو فكرة من الإعدادات، و{email} يصل إلى شخص في أي وقت.',
+    assistantError: 'حدث خطأ من جهتي. جرّب الإرسال مرة أخرى بعد قليل.',
+    assistantRefusal: 'لا أستطيع المساعدة في هذا. إن كنت قد أخطأت الفهم، فـ{email} يصل إلى شخص.',
   },
 }

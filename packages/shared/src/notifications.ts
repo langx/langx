@@ -120,12 +120,13 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    */
   meetings: { push: true, email: false },
   /**
-   * Push on, email off. A follow is a small good thing; a daily letter about
-   * it is not. The corrections on a post are the half that would justify
-   * mail, and they are worth their own digest before they are worth turning
-   * this column on.
+   * Both on, like `messages`, and for the same reason: the email half is a
+   * **digest**, not a letter per event. A follow never earns one — the push
+   * is the whole of that — but the corrections on a sentence somebody posted
+   * are the thing they posted it for, and they arrive while that person is
+   * somewhere else.
    */
-  social: { push: true, email: false },
+  social: { push: true, email: true },
   wallet: { push: true, email: false },
   promotions: { push: false, email: true },
 }

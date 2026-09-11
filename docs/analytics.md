@@ -68,8 +68,16 @@ reached a screen of ours.
 | `purchase_started`          | `offer`, `tier`, `period`                                                                             | A buy button is tapped                                              |
 | `purchase_finished`         | the same, plus `outcome`                                                                              | The store sheet closes: purchased, cancelled, failed or unavailable |
 | `review_prompted`           | `trigger` (streakMilestone or correction)                                                             | The OS review sheet was requested; whether it showed is unknowable  |
+| `boosted_strip_shown`       | `count` (1–12)                                                                                        | Discover is focused with a non-empty Boosted strip                  |
+| `boosted_strip_tapped`      | `slot` (0-based), `tier`                                                                              | A Boosted card is tapped                                            |
+| `discovery_card_tapped`     | `slot` (0-based)                                                                                      | A row in the discovery list below the strip is tapped               |
+| `message_received`          | `kind` (any `MessageType`)                                                                            | A message from somebody else arrives over the socket                |
+| `message_send_failed`       | `kind` (text, media), `reason` (error code or null)                                                   | A send did not land. A quota refusal is a paywall, not a failure    |
+| `notification_opened`       | `kind` (any `PushKind`, or unknown), `cold_start`                                                     | A push was tapped. Counts taps, never sends                         |
+| `filters_applied`           | `count`, `pro`                                                                                        | The discovery filter sheet is applied. How many, never which        |
+| `tokens_spent`              | `sku`, `kind` (cosmetic kind or consumable), `amount`                                                 | A wallet purchase the server accepted. Spending only, never earning |
 
-Three of these carry a number that needs a caveat rather than a footnote:
+Some of these carry a number that needs a caveat rather than a footnote:
 
 - **`seconds_since_install`** counts from the first launch the device recorded,
   which is `FLAG_KEYS.installedAt` (`src/lib/installedAt.ts`) rather than
@@ -84,6 +92,37 @@ Three of these carry a number that needs a caveat rather than a footnote:
 - **`source`** on the paywall separates the once-only exposure at the end of
   onboarding from the quota and locked-feature gates. Mixed together, a
   conversion rate describes neither.
+- **The Boosted strip's three** need reading together. `boosted_strip_shown`
+  means the strip was in the list on that visit, not that pixels reached an
+  eye — there is deliberately no viewability maths on a horizontal scroller of
+  at most twelve cards. It re-fires on every refocus, so it is comparable with
+  `$screen` for `(app)/(tabs)/discover`, and the denominator is strip _shows_
+  rather than tab visits; it also fires again when the sort toggle takes the
+  strip away and brings it back, because it genuinely did. `slot` is 0-based on
+  both tap events, so the click-through rate at slot _i_ is
+  `boosted_strip_tapped(slot = i)` over `boosted_strip_shown(count > i)`, and
+  `discovery_card_tapped` is the baseline that makes such a rate mean anything.
+  Neither tap event carries the boosted person's id or handle: an id of theirs
+  in thousands of other people's events would outlive their own deletion, which
+  the purge below cannot reach. So these measure the placement and never one
+  subscriber's delivery — that number belongs on the server, where it also
+  survives an analytics opt-out. `boosted_strip_shown` is the app's first
+  high-frequency event, roughly one `$screen`'s worth; every other one here is
+  a once-per-account milestone.
+- **`message_received`** is a lower bound, not a count of messages received. It
+  fires where the socket delivers, so a message that arrived as a push while
+  the app was closed is never counted, and neither is one first seen in a cold
+  start's fetch. What it honestly measures is conversations that were live
+  while somebody was looking — which is the thing `message_sent` cannot say.
+- **`message_send_failed`** does not fire for the media quota refusal. That one
+  returns to a paywall and is counted as one; treating it as a failure would
+  put a pricing decision in the same number as a broken upload.
+- **`notification_opened`** counts taps. A push that was delivered and ignored
+  leaves no trace on the device, so the denominator for an open rate has to
+  come from the server's own send log rather than from here.
+- **`tokens_spent`** cannot be summed into a balance. Earning happens in cron
+  jobs and gifts the device never sees, so this is one side of a ledger whose
+  other side exists only on the server.
 
 Purchases themselves — renewals, refunds, what was actually charged — come
 from RevenueCat's server-side PostHog integration (below), not from the app.

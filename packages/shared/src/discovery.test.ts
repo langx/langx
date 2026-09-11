@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { DISCOVERY_PRO_FILTER_KEYS, discoveryQuerySchema } from './discovery'
+import {
+  DISCOVERY_BOOSTED_CANDIDATE_MAX,
+  DISCOVERY_BOOSTED_LIMIT,
+  DISCOVERY_PRO_FILTER_KEYS,
+  discoveryQuerySchema,
+} from './discovery'
 
 describe('discoveryQuerySchema', () => {
   it('defaults sort to recommended and limit to 20 when omitted', () => {
@@ -86,5 +91,17 @@ describe('DISCOVERY_PRO_FILTER_KEYS', () => {
 
   it('refuses an empty city id rather than matching everyone with no city', () => {
     expect(discoveryQuerySchema.safeParse({ cityId: '   ' }).success).toBe(false)
+  })
+})
+
+describe('the boosted strip sizes', () => {
+  /**
+   * The ceiling is what the pipeline limits to; the limit is what the strip
+   * shows. Set the ceiling below it and the strip silently gets shorter — no
+   * error, no failing assertion anywhere else, just fewer cards than the plan
+   * sells.
+   */
+  it('hands the ordering more candidates than the strip can show', () => {
+    expect(DISCOVERY_BOOSTED_CANDIDATE_MAX).toBeGreaterThan(DISCOVERY_BOOSTED_LIMIT)
   })
 })

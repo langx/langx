@@ -652,7 +652,7 @@ export const ar: Localized<EnMessages> = {
     boostedWhat: 'ما هذا؟',
     boostedExplainTitle: 'الملفات المُبرَزة',
     boostedExplainBody:
-      'يظهر هنا مشتركو Fluent وPolyglot، وPolyglot أولًا. تتم مطابقتهم بلغاتك تمامًا مثل القائمة أدناه — لا يتغير شيء في المطابقة، ويمكن لأي شخص إيقافها من الإعدادات.',
+      'يظهر هنا مشتركو Fluent وPolyglot، وPolyglot أولًا. يتغيّر الترتيب على مدار اليوم، فيأتي كلٌّ منهم في المقدمة بدوره — وما يضعك في المقدمة هو صورة وبضع كلمات عنك وزيارة قريبة. تتم مطابقتهم بلغاتك تمامًا مثل القائمة أدناه — لا يتغير شيء في المطابقة، ويمكن لأي شخص إيقافها من الإعدادات.',
     boostedSeePlans: 'اطّلع على الخطط',
     languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
@@ -781,6 +781,7 @@ export const ar: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
     sendingAttachment: 'جارٍ الإرسال…',
     title: 'محادثة',
     typing: 'يكتب…',
@@ -1114,6 +1115,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',

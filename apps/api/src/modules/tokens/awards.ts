@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
+import { isOfficialId } from '../official/accounts'
 import { settleReferral } from '../referrals/settle'
 import { recordActivity } from './dailyActivity'
 import { awardTokens } from './ledger'
@@ -41,6 +42,20 @@ export async function awardForSend(
   const at = message.createdAt
   const senderId = message.senderId
   const partnerId = conversation.participants.find((id) => id !== senderId)
+
+  /*
+   * A conversation with an official account is outside the economy, in both
+   * directions and for everything this function does: no tokens, no streak,
+   * no daily activity, no reciprocity bonus, no referral settled, and no
+   * `messagesSent` — which would otherwise put @langx on a leaderboard and
+   * let anyone farm a streak by talking to a program.
+   *
+   * Before the profile read on purpose: the assistant's own sends come
+   * through here too, and there is nothing to count for either party.
+   */
+  if (isOfficialId(senderId) || (partnerId !== undefined && isOfficialId(partnerId))) {
+    return { tokens: 0, streak: null, capped: false }
+  }
 
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 

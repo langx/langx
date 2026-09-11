@@ -67,6 +67,7 @@ describe('the nudges that need permission', () => {
       timezone?: string
       device?: boolean
       entitlement?: Record<string, unknown>
+      refusals?: Date[]
       churnedFrom?: { tier: string; at: Date }
       /** Kills the invite nudge, which every long-standing account qualifies for. */
       invited?: boolean
@@ -91,6 +92,7 @@ describe('the nudges that need permission', () => {
       },
       ...(opts.spent ? { tokenSpent: opts.spent } : {}),
       ...(opts.entitlement ? { entitlement: opts.entitlement } : {}),
+      ...(opts.refusals ? { quotaRefusals: opts.refusals } : {}),
       ...(opts.churnedFrom ? { churnedFrom: opts.churnedFrom } : {}),
       createdAt: new Date(NOW.getTime() - (opts.createdDaysAgo ?? 40) * DAY),
     } as never)
@@ -304,6 +306,49 @@ describe('the nudges that need permission', () => {
       avatar: true,
       invited: true,
       churnedFrom: { tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) },
+      entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * The only nudge whose trigger is a refusal — which is why `consumeQuota`
+   * had to start remembering them. Once is Tuesday; three times in three days
+   * is a plan that no longer fits.
+   */
+  it('argues for a plan after three refusals, and not after two', async () => {
+    const recent = [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    await newProfile({ avatar: true, invited: true, refusals: recent })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('free limits')
+
+    email.messages.length = 0
+    await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
+    await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
+    await newProfile({ avatar: true, invited: true, refusals: recent.slice(0, 2) })
+    // And three refusals from a fortnight ago are a bad week in March, not an
+    // argument about a plan today.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      refusals: recent.map((at) => new Date(at.getTime() - 14 * DAY)),
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  it('never sells a plan to somebody who already has one', async () => {
+    await newProfile({
+      avatar: true,
+      invited: true,
+      refusals: [
+        new Date(NOW.getTime() - 2 * DAY),
+        new Date(NOW.getTime() - DAY),
+        new Date(NOW.getTime() - 3600_000),
+      ],
       entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
