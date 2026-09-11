@@ -43,9 +43,29 @@ export interface AssistantProvider {
   respond(request: AssistantRequest): Promise<string | null>
 }
 
+/**
+ * Whether this model is sent an effort level.
+ *
+ * `effort` tunes how much a model thinks, and Haiku does not think — it
+ * **rejects** the parameter rather than ignoring it, so sending it to the
+ * default model would 400 every reply, invisibly, until somebody wrote to
+ * @langx. Every other model here defaults to thinking hard, which this
+ * workload does not need, so they are sent `low`.
+ *
+ * A prefix match rather than a list of ids: the rule is about the family, and
+ * a list would be one more thing to remember to edit.
+ */
+export function sendsEffort(model: string): boolean {
+  return !model.startsWith('claude-haiku')
+}
+
 export function createAnthropicProvider(env: Env): AssistantProvider | null {
   if (!env.ANTHROPIC_API_KEY) return null
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY })
+
+  const effort = sendsEffort(env.ANTHROPIC_MODEL)
+    ? { output_config: { effort: 'low' as const } }
+    : {}
 
   return {
     async respond({ system, history, tools }) {
@@ -53,35 +73,33 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
         model: env.ANTHROPIC_MODEL,
         max_tokens: OFFICIAL_ASSISTANT.maxReplyTokens,
         system,
-        /*
-         * The work is a short answer about a product, sometimes with one tool
-         * call behind it. `low` is what that costs; the ceiling above is there
-         * for the thinking, not the sentence.
-         */
-        output_config: { effort: 'low' },
+        // See `effort` above: present for the thinking models, absent for Haiku,
+        // which refuses it.
+        ...effort,
         /*
          * The tool definitions and the system prompt are the same bytes on
          * every request, and they are the prefix in that order, so a
          * breakpoint after them is worth asking for.
          *
-         * Whether it *fires* depends on where that prefix lands against the
-         * model's minimum cacheable length — 512 tokens on Opus 5, 1024 on
-         * Sonnet 5. The system prompt alone is around 800; with the two tool
-         * schemas in front of it the prefix is near enough to Sonnet's
-         * threshold that it is not worth predicting from here. Below the
-         * minimum this is a no-op with no error, so the honest thing is to ask
-         * and let `usage.cache_read_input_tokens` say. Nothing here is padded
-         * to reach a threshold: a longer prompt to earn a discount on itself
-         * is not a saving.
+         * On the default model it will not fire: Haiku 4.5 wants a prefix of
+         * 4,096 tokens before it caches anything and this one is around 3,500.
+         * It is here anyway because it is free when it misses, and because the
+         * thinking models ask for less — 512 on Opus 5, 1,024 on Sonnet 5 —
+         * so whoever switches models gets the discount without editing this.
+         * `usage.cache_read_input_tokens` is what says whether it landed.
+         *
+         * Nothing is padded to reach a threshold: a longer prompt bought to
+         * earn a discount on itself is not a saving.
          */
         cache_control: { type: 'ephemeral' },
         /*
-         * If the model declines, the API re-runs the same request on a
-         * fallback rather than handing back nothing. `'default'` routes by
-         * refusal category, so there is no model list here to go stale.
+         * No server-side refusal fallback. It is a feature of the frontier
+         * models, and a beta header an endpoint does not recognise is a 400 on
+         * every call rather than a quiet no-op — a worse failure than the one
+         * it protects against. The refusal itself is still handled below: the
+         * turn comes back 200 with `stop_reason: 'refusal'` and the caller
+         * words it.
          */
-        betas: ['server-side-fallback-2026-07-01'],
-        fallbacks: 'default',
         tools: tools.map((tool) =>
           betaZodTool({
             name: tool.name,

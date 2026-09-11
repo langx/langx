@@ -59,13 +59,17 @@ const envSchema = z.object({
    */
   ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
   /**
-   * Sonnet rather than Opus, and the reason is the workload: short answers
-   * about a product this prompt already describes, with at most one tool call
-   * behind them. Opus is roughly two and a half times the price per token for
-   * a job neither model finds hard. One env var moves it back if the answers
-   * turn out to need it.
+   * Haiku, and the reason is the workload: short answers about a product the
+   * system prompt already describes, with at most one tool call behind them,
+   * to somebody watching a chat window. It is the model built for that — fast
+   * and a fifth of Sonnet's price — and nothing here needs a model that
+   * thinks.
+   *
+   * Setting this to a thinking model works and costs more; `createAnthropicProvider`
+   * sends `effort: low` to those and omits it here, because Haiku rejects the
+   * parameter rather than ignoring it.
    */
-  ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-haiku-4-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this
