@@ -366,7 +366,9 @@ export const fr: Localized<ServerMessages> = {
   },
   official: {
     welcome:
-      'Bienvenue sur LangX ! 👋 Trouve quelqu’un dans Découvrir, envoie-lui un message et gagne des jetons en pratiquant.\n\nC’est par ce compte qu’arrivent les nouveautés de LangX, garde-le à l’œil. LangX est open source et ce sont les retours des gens qui le font avancer : si quelque chose ne marche pas ou si tu as une idée, Réglages → À propos → Commentaires arrive directement à l’équipe.',
+      'Salut, bienvenue sur LangX ! 👋 Content de t’avoir ici.\n\nLe meilleur commence dans Découvrir : trouve quelqu’un qui apprend ta langue et parle celle que tu vises, dis bonjour, et la pratique fait le reste. Tu gagnes des jetons au passage.\n\nC’est ici qu’arrivent les nouvelles de LangX, ça vaut le coup d’y jeter un œil. Et LangX est open source : il s’améliore parce que les gens nous disent des choses. Si quelque chose casse, ou si tu penses à un truc qu’on devrait faire, Réglages → À propos → Commentaires arrive directement chez nous. On lit tout.',
+    welcomeRate:
+      'Un dernier truc, si le cœur t’en dit : noter LangX sur {store} aide vraiment les gens à nous trouver. Aucune pression.',
     assistantOffline:
       'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
     assistantLimit:

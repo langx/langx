@@ -376,7 +376,14 @@ export const en = {
    */
   official: {
     welcome:
-      'Welcome to LangX! 👋 Find a partner in Discover, send them a message, and earn tokens as you practise.\n\nThis account is where news about LangX arrives, so keep an eye on it. LangX is open source, and what people tell us is how it gets better — if something is broken or you have an idea, Settings → About → Feedback goes straight to the team.',
+      'Hey, welcome to LangX! 👋 So glad you’re here.\n\nThe best bit starts in Discover: find someone learning your language who speaks the one you’re after, say hi, and the practice takes care of itself. You pick up tokens along the way.\n\nThis is where news about LangX lands, so it’s worth keeping an eye on. And LangX is open source — it gets better because people tell us things. If something breaks, or you think of something we should build, Settings → About → Feedback comes straight to us. We read all of it.',
+    /**
+     * Appended to the welcome only when the person finished onboarding in
+     * the app — a browser has no store to send them to. `{store}` is a
+     * brand name and stays in English in every locale.
+     */
+    welcomeRate:
+      'One more thing, if you feel like it: rating LangX on {store} genuinely helps people find us. No pressure at all.',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**

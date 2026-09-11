@@ -95,7 +95,7 @@ describe('a new account meets @langx', () => {
     await replSet?.stop()
   })
 
-  async function onboard(email: string, handleName: string, native: string) {
+  async function onboard(email: string, handleName: string, native: string, userAgent?: string) {
     const user = await signUpAndSignIn(app, emailSender, {
       email,
       password: PASSWORD,
@@ -104,7 +104,7 @@ describe('a new account meets @langx', () => {
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
-      headers: { cookie: user.cookie },
+      headers: { cookie: user.cookie, ...(userAgent ? { 'user-agent': userAgent } : {}) },
       payload: onboarding(handleName, native),
     })
     expect(response.statusCode).toBe(201)
@@ -146,13 +146,37 @@ describe('a new account meets @langx', () => {
     expect(items[0]?.participants).toContain(langxId)
   })
 
+  /**
+   * The ask goes only where it can be acted on. Somebody who signed up in a
+   * browser has no store to be sent to, and being asked anyway is a worse
+   * first impression than not being asked.
+   */
+  it('asks for a rating in the app, and never on the web', async () => {
+    const langxId = officialIds().get('langx')!
+
+    const onPhone = await onboard('ios@example.com', 'iphoneone', 'en', 'CFNetwork/1.0 Darwin/23')
+    const onWeb = await onboard('web@example.com', 'browserone', 'en', 'Mozilla/5.0 (Macintosh)')
+    await settle()
+
+    const said = await messagesFrom(langxId)
+    const phone = said.find((m) => m.clientId === `welcome:${onPhone.userId}`)
+    const web = said.find((m) => m.clientId === `welcome:${onWeb.userId}`)
+
+    expect(phone?.body).toContain('the App Store')
+    expect(web?.body).not.toContain('App Store')
+    expect(web?.body).not.toContain('Google Play')
+    // And the welcome itself is the same for both.
+    expect(web?.body).toContain('welcome to LangX')
+    expect(phone?.body).toContain('welcome to LangX')
+  })
+
   it('writes in English to somebody we ship no catalogue for', async () => {
     const user = await onboard('welcome-ja@example.com', 'japaneseone', 'ja')
     await settle()
 
     const said = await messagesFrom(officialIds().get('langx')!)
     const toThem = said.find((m) => m.clientId === `welcome:${user.userId}`)
-    expect(toThem?.body).toContain('Welcome to LangX')
+    expect(toThem?.body).toContain('welcome to LangX')
   })
 
   /**
@@ -177,8 +201,11 @@ describe('a new account meets @langx', () => {
       }),
     ).rejects.toMatchObject({ code: 'FORBIDDEN' })
 
-    // The welcome, and nothing after it.
-    expect(await messagesFrom(langxId)).toHaveLength(3)
+    // The welcome, and nothing after it, in this thread.
+    const inThread = (await messagesFrom(langxId)).filter((m) =>
+      m.conversationId.equals(conversation._id),
+    )
+    expect(inThread).toHaveLength(1)
 
     // And it is reported to the app as a channel, which is what hides the box.
     const view = await app.inject({

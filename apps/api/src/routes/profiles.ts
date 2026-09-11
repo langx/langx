@@ -82,9 +82,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
        * happens after it may turn that into a 500.
        */
       if (!profile.restoredFromV1) {
-        void sendWelcomeMessage(app, request.userId).catch((error: unknown) => {
-          request.log.error({ err: error }, 'welcome message failed')
-        })
+        void sendWelcomeMessage(app, request.userId, request.headers['user-agent']).catch(
+          (error: unknown) => {
+            request.log.error({ err: error }, 'welcome message failed')
+          },
+        )
       }
       return reply.code(201).send(profile)
     },
