@@ -409,7 +409,9 @@ describe('notification centre', () => {
     expect(rows[0]?.count).toBe(2)
     expect((await unread(author)).json<{ total: number }>().total).toBe(1)
     expect(
-      await handle.db.collection(COLLECTIONS.notifications).countDocuments({ userId: author.userId }),
+      await handle.db
+        .collection(COLLECTIONS.notifications)
+        .countDocuments({ userId: author.userId }),
     ).toBe(3)
   })
 
