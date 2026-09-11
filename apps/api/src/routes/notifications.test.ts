@@ -246,8 +246,12 @@ describe('notification centre', () => {
    *
    * `notifyPostReply` sends at most one push per post per hour, on purpose.
    * If the inbox inherited that throttle it would be a second copy of the
-   * push rather than the place the other two replies were always said to be
-   * waiting — so three comments must be three rows.
+   * push rather than the place the other replies were always said to be
+   * waiting — so every one of them has to survive.
+   *
+   * They survive as a **count** rather than as a row each: ten people
+   * commenting on one sentence is ten pieces of one piece of news. The
+   * correction stays separate because it is a different thing to have done.
    */
   it('keeps every reply, where the push keeps one an hour', async () => {
     const author = await newUser('replies-author@example.com')
@@ -259,13 +263,16 @@ describe('notification centre', () => {
     await comment(b, postId, 'Agreed.')
     await correct(a, postId, 'Ich habe gestern ein Buch gelesen!')
 
-    const rows = await inbox(author, 3)
-    expect(rows).toHaveLength(3)
-    expect(rows.map((row) => row.kind).sort()).toEqual([
-      'postComment',
-      'postComment',
-      'postCorrection',
-    ])
+    const rows = await inbox(author, 2)
+    expect(rows).toHaveLength(2)
+    expect(rows.map((row) => row.kind).sort()).toEqual(['postComment', 'postCorrection'])
+
+    // Both comments are still there — as "and 1 other", which is `count`.
+    const comments = rows.find((row) => row.kind === 'postComment')
+    expect(comments?.count).toBe(1)
+    // And the correction, which nobody else made, carries no count at all.
+    expect(rows.find((row) => row.kind === 'postCorrection')?.count).toBeUndefined()
+
     // Every row deep-links to the post and carries enough of it to be read.
     expect(rows.every((row) => row.postId === postId)).toBe(true)
     expect(rows[0]?.preview).toContain('Ich habe gestern')
@@ -378,6 +385,32 @@ describe('notification centre', () => {
     expect(read.json<{ read: number }>().read).toBe(2)
     expect((await unread(author)).json<{ total: number }>().total).toBe(0)
     expect((await inbox(author)).every((row) => row.read)).toBe(true)
+  })
+
+  /**
+   * The badge counts rows of the list, not documents behind it.
+   *
+   * Ten comments on one post are one row, and a badge reading 10 over a list
+   * with one thing in it sends somebody looking for nine that were never
+   * there. This is the test that keeps the two agreeing.
+   */
+  it('counts what the list shows, not what the collection holds', async () => {
+    const author = await newUser('grouped-count-author@example.com')
+    const a = await newUser('grouped-count-a@example.com')
+    const b = await newUser('grouped-count-b@example.com')
+    const postId = await post(author, 'Count the rows, not the rows behind them.')
+
+    await comment(a, postId, 'One.')
+    await comment(b, postId, 'Two.')
+    await comment(a, postId, 'Three.')
+    const rows = await inbox(author, 1)
+
+    expect(rows).toHaveLength(1)
+    expect(rows[0]?.count).toBe(2)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(1)
+    expect(
+      await handle.db.collection(COLLECTIONS.notifications).countDocuments({ userId: author.userId }),
+    ).toBe(3)
   })
 
   it('marks only your own rows read', async () => {

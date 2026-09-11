@@ -173,6 +173,44 @@ export async function recordNotifications(
 }
 
 /**
+ * Which kinds pile up on one thing, and therefore collapse into one row.
+ *
+ * Ten people commenting on one sentence is ten pieces of the same news, and
+ * ten rows saying so is a list nobody can scan — which is the whole purpose of
+ * the screen. A follow is not in here on purpose: each one is a different
+ * person and the row opens *that* person, so collapsing them would take the
+ * destination away. The badge, the pool and the visit round-up are already one
+ * per badge or per day.
+ */
+const GROUPED_KINDS: InAppNotificationKind[] = [
+  'postComment',
+  'postCorrection',
+  'pronunciationAnswer',
+  'like',
+]
+
+/**
+ * One key per collapsible pile, and the row's own id for everything else —
+ * which makes a non-grouped kind a group of one and keeps the pipeline below
+ * free of special cases.
+ */
+const GROUP_KEY = {
+  $cond: [
+    { $and: [{ $in: ['$kind', GROUPED_KINDS] }, { $ne: [{ $type: '$postId' }, 'missing'] }] },
+    { $concat: ['$kind', ':', { $toString: '$postId' }] },
+    { $toString: '$_id' },
+  ],
+}
+
+interface GroupedRow {
+  _id: string
+  /** The newest member: what the row renders, and where the cursor points. */
+  latest: NotificationDoc
+  total: number
+  unread: number
+}
+
+/**
  * The inbox, newest first.
  *
  * Shaped like `listLikers`, including the part that matters most: a row whose
@@ -193,21 +231,57 @@ export async function listNotifications(
 
   const filter: Document = { userId }
   if (hidden.length > 0) filter.actorId = { $nin: hidden }
+
+  const after: Document[] = []
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
-    filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+    // Applied **after** the grouping, because the thing being paged is a
+    // group and its position is its newest member's.
+    after.push({
+      $match: {
+        $or: [
+          { 'latest.createdAt': { $lt: date } },
+          { 'latest.createdAt': date, 'latest._id': { $lt: id } },
+        ],
+      },
+    })
   }
 
-  const page = await db
+  const groups = await db
     .collection<NotificationDoc>(COLLECTIONS.notifications)
-    .find(filter)
-    .sort({ createdAt: -1, _id: -1 })
-    .limit(query.limit + 1)
+    .aggregate<GroupedRow>([
+      { $match: filter },
+      // Index-backed, and the reason `$first` below is the newest member.
+      { $sort: { createdAt: -1, _id: -1 } },
+      { $addFields: { groupKey: GROUP_KEY } },
+      {
+        $group: {
+          _id: '$groupKey',
+          latest: { $first: '$$ROOT' },
+          total: { $sum: 1 },
+          // A group is unread if anything in it is. Absent means unread, so
+          // this counts the rows with no `readAt` rather than comparing one.
+          unread: {
+            $sum: { $cond: [{ $eq: [{ $type: '$readAt' }, 'missing'] }, 1, 0] },
+          },
+        },
+      },
+      { $sort: { 'latest.createdAt': -1, 'latest._id': -1 } },
+      ...after,
+      { $limit: query.limit + 1 },
+    ])
     .toArray()
 
-  const hasMore = page.length > query.limit
-  const rows = hasMore ? page.slice(0, query.limit) : page
+  const hasMore = groups.length > query.limit
+  const kept = hasMore ? groups.slice(0, query.limit) : groups
+  const rows = kept.map((group) => group.latest)
   const last = rows.at(-1)
+  const extraByRow = new Map(
+    kept.map((group) => [
+      group.latest._id.toHexString(),
+      { others: group.total - 1, unread: group.unread },
+    ]),
+  )
 
   const actorIds = [...new Set(rows.flatMap((row) => (row.actorId ? [row.actorId] : [])))]
   const postIds = [
@@ -241,6 +315,7 @@ export async function listNotifications(
   const postById = new Map(posts.map((post) => [post._id.toHexString(), post]))
 
   const items = rows.flatMap((row): InAppNotification[] => {
+    const extra = extraByRow.get(row._id.toHexString())
     const actor = row.actorId ? byId.get(row.actorId) : undefined
     if (row.actorId && !actor) return []
 
@@ -263,9 +338,19 @@ export async function listNotifications(
           : {}),
         ...(row.postId ? { postId: row.postId.toHexString() } : {}),
         ...(post?.body ? { preview: post.body.slice(0, PREVIEW_LENGTH) } : {}),
-        ...(row.count !== undefined ? { count: row.count } : {}),
+        /*
+         * Two different numbers behind one field, and the kind says which.
+         * On a collapsed pile it is how many *other* people did the thing —
+         * the sentence already names the first — and on a visit round-up or a
+         * pool payout it is the count the row was written with.
+         */
+        ...(extra && extra.others > 0
+          ? { count: extra.others }
+          : row.count !== undefined
+            ? { count: row.count }
+            : {}),
         ...(row.badgeId ? { badgeId: row.badgeId } : {}),
-        read: row.readAt !== undefined,
+        read: extra ? extra.unread === 0 : row.readAt !== undefined,
         createdAt: row.createdAt.toISOString(),
       },
     ]
@@ -278,16 +363,36 @@ export async function listNotifications(
 }
 
 /**
- * The number on the bell.
+ * The number on the bell — and it counts **rows of the list**, not documents.
+ *
+ * Ten unread comments on one post are one row, so a raw `countDocuments` would
+ * put 10 on the badge over a list with one thing in it. A badge that disagrees
+ * with the screen it leads to is worse than no badge: it sends somebody
+ * looking for nine things that were never there.
+ *
+ * So it groups the same way the list does, and filters blocked people the same
+ * way, and matches the unread rows *before* grouping — which is both correct
+ * (a group is unread if anything in it is) and cheaper than grouping
+ * everything and then asking.
  *
  * Capped, because past a point the answer stops being a number and starts
- * being "lots" — `unreadBadge` on the client draws `99+` anyway, and counting
- * the true total of a busy account is work nobody reads.
+ * being "lots": `unreadBadge` draws `99+` anyway.
  */
 export async function countUnreadNotifications(db: Db, userId: string): Promise<number> {
-  return db
+  const hidden = await blockedUserIds(db, userId)
+  const match: Document = { userId, readAt: { $exists: false } }
+  if (hidden.length > 0) match.actorId = { $nin: hidden }
+
+  const rows = await db
     .collection<NotificationDoc>(COLLECTIONS.notifications)
-    .countDocuments({ userId, readAt: { $exists: false } }, { limit: UNREAD_COUNT_CAP })
+    .aggregate<{ _id: string }>([
+      { $match: match },
+      { $addFields: { groupKey: GROUP_KEY } },
+      { $group: { _id: '$groupKey' } },
+      { $limit: UNREAD_COUNT_CAP },
+    ])
+    .toArray()
+  return rows.length
 }
 
 /**
