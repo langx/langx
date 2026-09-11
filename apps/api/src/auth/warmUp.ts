@@ -1,7 +1,14 @@
 import { ObjectId, type Db } from 'mongodb'
 import type { Auth } from '../auth'
 
-const WARMUP_EMAIL = 'bootstrap-warmup@internal.langx.invalid'
+/**
+ * The disposable account's address. Exported because `auth.ts` has to
+ * recognise it: `emailVerification.sendOnSignUp` is a static setting with no
+ * per-call override, so the only place to stop the warm-up's sign-up from
+ * mailing a verification link is in the send hook itself. See the guard in
+ * `sendVerificationEmail`.
+ */
+export const WARMUP_EMAIL = 'bootstrap-warmup@internal.langx.invalid'
 const WARMUP_PASSWORD = 'bootstrap-warmup-not-a-real-account'
 
 interface WarmUpLogger {
