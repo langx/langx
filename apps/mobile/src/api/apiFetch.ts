@@ -45,7 +45,15 @@ export function isRequestTimeout(error: unknown): boolean {
  * predates that static. A caller's own signal wins: nothing passes one today,
  * and an upload that does must not have its own cancellation taken away.
  */
-async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+async function fetchWithTimeout(path: string, init: RequestInit): Promise<Response> {
+  /*
+   * Always our own host, and built *here* rather than taken as a parameter.
+   * Paths carry request-derived pieces (a handle, an id, a cursor), and a
+   * whole URL arriving from outside would let one of those pick the host —
+   * which is the shape CodeQL reads as request forgery, and it read this
+   * wrapper that way the moment the URL came in through the door.
+   */
+  const url = `${API_URL}${path}`
   if (init.signal) return fetch(url, init)
   const controller = new AbortController()
   let timedOut = false
@@ -75,11 +83,6 @@ async function fetchWithTimeout(url: string, init: RequestInit): Promise<Respons
  * handles this without help.
  */
 export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  // Always our own host. Paths carry request-derived pieces (a handle, an id,
-  // a cursor), and a path that could also be a whole URL would let one of
-  // those pick the host — which is the shape CodeQL flags as request forgery.
-  const url = `${API_URL}${path}`
-
   if (Platform.OS === 'web') {
     /*
      * `/public/` answers with the wildcard origin (`app.ts`, `publicCors`),
@@ -90,7 +93,7 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
      * web for exactly this reason. Those routes carry no session by design,
      * so the cookie stays home.
      */
-    return fetchWithTimeout(url, {
+    return fetchWithTimeout(path, {
       ...init,
       credentials: path.startsWith('/public/') ? 'omit' : 'include',
       headers: { ...init.headers, ...versionHeaders() },
@@ -98,7 +101,7 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
   }
 
   const cookie = await authClient.getCookie()
-  return fetchWithTimeout(url, {
+  return fetchWithTimeout(path, {
     ...init,
     credentials: 'omit',
     headers: { ...init.headers, ...versionHeaders(), cookie },
