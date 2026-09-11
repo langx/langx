@@ -63,13 +63,14 @@ async function main(): Promise<void> {
     throw new Error('usage: --id <slug> --body <dir> [--confirm]')
   }
 
+  /*
+   * No separate refusal for a live database. There was one, and it fired
+   * *before* the dry run — so the only way to preview an announcement against
+   * production was to arm the send at the same time, which is the opposite of
+   * what a preview is for. `--confirm` already gates every write; a second
+   * gate on the same flag only took the safe path away.
+   */
   const env = loadEnv()
-  if (!env.MONGODB_DB.endsWith('_dev') && !has('confirm')) {
-    throw new Error(
-      `Refusing to write to "${env.MONGODB_DB}" without --confirm. This is a live database; ` +
-        `re-run with --confirm if that is what you mean.`,
-    )
-  }
 
   const bodies = loadBodies(dir)
   const { db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
