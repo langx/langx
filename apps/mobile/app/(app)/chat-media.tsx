@@ -21,6 +21,7 @@ import {
 import { useConversationMedia, useMe, type MessageDto } from '../../src/api/queries'
 import { AudioBubble, VideoTile } from '../../src/components/MediaBubble'
 import { PhotoViewer } from '../../src/components/PhotoViewer'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -171,6 +172,12 @@ export default function ChatMediaScreen() {
 
       {state === 'skeleton' ? (
         <ActivityIndicator style={styles.loading} />
+      ) : state === 'failed' ? (
+        // Before the tab split, because both tabs read the same query: a
+        // failure is the same failure whichever one is open, and `empty`
+        // otherwise promises that media "will collect here" over a request
+        // that never arrived.
+        <LoadFailed onRetry={() => void page.refetch()} />
       ) : tab === 'visual' ? (
         <FlatList
           key="visual"

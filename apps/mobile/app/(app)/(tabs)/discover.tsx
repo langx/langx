@@ -479,18 +479,11 @@ export default function DiscoverScreen() {
         /* In the list's place, in normal flow — not floated over it. See
            `PeopleSearch` for what floating cost. */
         <PeopleSearchResults from="/(app)/(tabs)/discover" />
-      ) : state === 'empty' && query.isError ? (
+      ) : state === 'failed' ? (
         /**
-         * A request that failed is not an empty app, and this screen said it
-         * was. `listState` folds an error into `'empty'` on purpose — it
-         * leaves the case to the caller — and the caller went straight to
-         * `ListEmptyComponent`, so a timeout told somebody whose request never
-         * arrived that nobody matches their languages, and to loosen filters
-         * they had not set.
-         *
-         * `state` rather than `items.length`, so a failed *second* page keeps
-         * the rows already on screen: `listState` answers `'content'` whenever
-         * there are any.
+         * A request that failed is not an empty app. Without this branch a
+         * timeout told somebody whose request never arrived that nobody
+         * matches their languages, and to loosen filters they had not set.
          *
          * Below `locationRevoked`, which is also an error but is recoverable
          * in one tap and owns its own panel, and below `searching`, where

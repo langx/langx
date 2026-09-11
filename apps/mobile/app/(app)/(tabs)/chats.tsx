@@ -14,6 +14,7 @@ import { Tip } from '../../../src/components/Tip'
 import { SwipeableRow } from '../../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
@@ -178,6 +179,13 @@ export default function ChatsScreen() {
             <ConversationRowSkeleton key={key} />
           ))}
         </View>
+      ) : state === 'failed' ? (
+        /*
+         * Otherwise the empty state below tells somebody with a full list that
+         * they have no chats at all, and offers them the free plan's daily
+         * allowance for starting one — advice about a screen that never loaded.
+         */
+        <LoadFailed onRetry={() => void conversations.refetch()} />
       ) : (
         <FlatList
           data={items}

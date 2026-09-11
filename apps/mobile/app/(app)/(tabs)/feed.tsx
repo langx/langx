@@ -33,6 +33,7 @@ import { LikeButton } from '../../../src/components/LikeButton'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { TourTarget } from '../../../src/components/TourTarget'
 import { Tip } from '../../../src/components/Tip'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
@@ -315,6 +316,13 @@ export default function FeedScreen() {
             <FeedPostSkeleton key={key} index={index} />
           ))}
         </View>
+      ) : state === 'failed' ? (
+        /*
+         * The worst of the empty states to draw over an error: "Everything is
+         * corrected" tells somebody there is no work left when the request for
+         * the work is what failed.
+         */
+        <LoadFailed onRetry={() => void feed.refetch()} />
       ) : (
         <FlatList
           data={items}

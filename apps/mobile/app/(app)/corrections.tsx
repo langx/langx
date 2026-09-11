@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native
 import { router } from 'expo-router'
 import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
@@ -97,6 +98,10 @@ export default function WritingScreen() {
             </View>
           ))}
         </View>
+      ) : state === 'failed' ? (
+        // Above the empty state rather than folded into it: "No corrections
+        // yet" is news about your account, and a failed request is not.
+        <LoadFailed onRetry={() => void active.refetch()} />
       ) : state === 'empty' ? (
         <EmptyState
           icon={tab === 'corrections' ? 'edit-3' : 'message-square'}
