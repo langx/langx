@@ -7,10 +7,15 @@
  * the tool for something that has to arrive in an inbox, and it carries the
  * consent rules and the warm-up ramp that mail needs.
  *
- * **Nobody is messaged twice.** `messages.sender_client_id_unique` refuses a
- * second write with the same `announcement:<slug>` id, so a run that died
- * halfway can simply be run again — there is no cursor to keep and no ledger
- * to reconcile.
+ * **Nobody is messaged twice.** Each recipient's message carries
+ * `announcement:<slug>:<userId>`, and `messages.sender_client_id_unique` is on
+ * `{senderId, clientId}` — so a second write for that person is refused while
+ * everybody else's goes through. A run that died halfway can simply be run
+ * again: there is no cursor to keep and no ledger to reconcile.
+ *
+ * The id has to carry the recipient. Without it the first person is messaged
+ * and every other write is refused as a duplicate, which looks like success
+ * from here because `deliverOfficialMessage` returns the message it found.
  *
  * The body is one file per locale in a directory, and each recipient gets the
  * one for their native language (`localeFor`), falling back to `en.txt`. Not
@@ -113,7 +118,12 @@ async function main(): Promise<void> {
           fromHandle: 'langx',
           toUserId: recipient._id,
           body,
-          clientId: `announcement:${slug}`,
+          // Per recipient. `sender_client_id_unique` is on `{senderId,
+          // clientId}`, so one id for the whole announcement means the first
+          // person gets it and every other write is refused as a duplicate —
+          // and `deliverOfficialMessage` hands back the existing message, so
+          // it all looks like it worked. It did that once, to 25 people.
+          clientId: `announcement:${slug}:${recipient._id}`,
         })
         if (!delivered) continue
         sent += 1
