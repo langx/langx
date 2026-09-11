@@ -126,21 +126,27 @@ there is none. Each face links to `app.langx.io/<handle>`.
 
 ## 3. Promotions — `promotions.email` must allow it
 
-### The six nudges
+### The eight nudges
 
 `modules/notifications/promotions.ts` — a table walked in **priority order**
 for each candidate. The first match is sent, the loop breaks, and
 `MARKETING_MIN_GAP_DAYS` (7) keeps the next one a week off. Quiet hours are
 the reader's own clock.
 
-| #   | Nudge                                   | Trigger                                     | Kind       |
-| --- | --------------------------------------- | ------------------------------------------- | ---------- |
-| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h              | promotions |
-| 2   | Your streak broke — repair it           | streak ≥ 3 that lapsed **yesterday**        | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago                 | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago               | promotions |
-| 5   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight | promotions |
-| 6   | Invite a friend                         | 14 days old, active, has invited nobody     | promotions |
+| #   | Nudge                                   | Trigger                                               | Kind       |
+| --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
+| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
+| 2   | Your streak broke — repair it           | streak ≥ 3 that lapsed **yesterday**                  | **streak** |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago                           | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago                         | promotions |
+| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago, still on free             | promotions |
+| 7   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
+| 8   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
+
+`periodType` and `churnedFrom` are written from 10 September 2026 onward and
+**cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
+began, or whose plan ended, after that deploy.
 
 The streak repair sits under the **streak** switch, not promotions: it is
 about the streak, and hiding it behind the marketing switch would hide it
@@ -225,13 +231,11 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 
 Written down so the next person does not have to re-derive them.
 
-| Scenario                                | Blocked on                                                                               |
-| --------------------------------------- | ---------------------------------------------------------------------------------------- |
-| **Your trial ends in 2 days**           | `entitlement` stores no `periodType`; a trial cannot be told from an ending subscription |
-| **Come back to Pro** (churn win-back)   | no `previousTier` is kept when a tier drops                                              |
-| **You hit the free limit again**        | nothing counts a refused quota                                                           |
-| A daily email digest of corrections     | `social.email` has a switch and no sender                                                |
-| Editor's note as a standalone broadcast | the monthly note covers it                                                               |
+| Scenario                                | Blocked on                                |
+| --------------------------------------- | ----------------------------------------- |
+| **You hit the free limit again**        | nothing counts a refused quota            |
+| A daily email digest of corrections     | `social.email` has a switch and no sender |
+| Editor's note as a standalone broadcast | the monthly note covers it                |
 
 ## Every message is one format
 

@@ -36,6 +36,10 @@ export const ptBR: Localized<ServerMessages> = {
       awayBody: 'Gente nova para praticar.',
       awayLongTitle: 'Estaremos aqui quando você voltar',
       awayLongBody: 'Sua sequência e seus tokens esperam.',
+      trialEndingTitle: 'Sua semana grátis termina em dois dias',
+      trialEndingBody: 'Manter é um toque.',
+      winBackTitle: 'Seu plano terminou',
+      winBackBody: 'Tudo o que você criou continua aqui.',
       tokensWaitingTitle: { one: '{count} token esperando', other: '{count} tokens esperando' },
       tokensWaitingBody: 'Abra sua carteira.',
       inviteFriendTitle: 'Convide alguém',
@@ -267,6 +271,20 @@ export const ptBR: Localized<ServerMessages> = {
         'Um mês é muito tempo. Sua conta, sua sequência e seus tokens continuam aqui, se você quiser — e esta é a última vez que falamos disso.',
 
       awayLongButton: 'Abrir o LangX',
+
+      trialEndingSubject: 'Sua semana grátis termina em dois dias',
+
+      trialEndingBody:
+        'Depois disso sua conta volta ao plano gratuito. Tudo o que você criou fica; os limites voltam. Manter é um toque.',
+
+      trialEndingButton: 'Manter meu plano',
+
+      winBackSubject: 'Seu plano terminou há uma semana',
+
+      winBackBody:
+        'Nada foi tirado — sua sequência, seus tokens e tudo o que você escreveu continuam onde estavam. O que parou foram os limites pagos.',
+
+      winBackButton: 'Ver os planos',
 
       tokensWaitingSubject: {
         one: 'Você tem {count} token esperando',

@@ -36,6 +36,10 @@ export const fr: Localized<ServerMessages> = {
       awayBody: 'De nouvelles personnes pour pratiquer.',
       awayLongTitle: 'Nous serons là quand vous voudrez',
       awayLongBody: 'Votre série et vos jetons attendent.',
+      trialEndingTitle: 'Votre semaine gratuite se termine dans deux jours',
+      trialEndingBody: 'La garder tient en un geste.',
+      winBackTitle: 'Votre formule a pris fin',
+      winBackBody: 'Tout ce que vous avez créé est toujours là.',
       tokensWaitingTitle: {
         one: '{count} jeton vous attend',
         other: '{count} jetons vous attendent',
@@ -276,6 +280,20 @@ export const fr: Localized<ServerMessages> = {
         'Un mois, c’est long. Votre compte, votre série et vos jetons sont toujours là si vous les voulez — et c’est la dernière fois que nous en parlons.',
 
       awayLongButton: 'Ouvrir LangX',
+
+      trialEndingSubject: 'Votre semaine gratuite se termine dans deux jours',
+
+      trialEndingBody:
+        'Ensuite, votre compte revient à la formule gratuite. Tout ce que vous avez créé reste ; les limites reviennent. La garder tient en un geste.',
+
+      trialEndingButton: 'Garder ma formule',
+
+      winBackSubject: 'Votre formule a pris fin il y a une semaine',
+
+      winBackBody:
+        'Rien n’a été retiré : votre série, vos jetons et tout ce que vous avez écrit sont là où vous les avez laissés. Ce sont les limites payantes qui se sont arrêtées.',
+
+      winBackButton: 'Voir les formules',
 
       tokensWaitingSubject: {
         one: '{count} jeton vous attend',

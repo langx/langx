@@ -40,6 +40,10 @@ export const en = {
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
       awayLongBody: 'Your streak and tokens are waiting.',
+      trialEndingTitle: 'Your free week ends in two days',
+      trialEndingBody: 'Keeping your plan takes one tap.',
+      winBackTitle: 'Your plan ended a week ago',
+      winBackBody: 'Everything you made is still here.',
       tokensWaitingTitle: { one: '{count} token waiting', other: '{count} tokens waiting' },
       tokensWaitingBody: 'Open your wallet.',
       inviteFriendTitle: 'Invite a friend',
@@ -274,6 +278,20 @@ export const en = {
         'A month is a long time. Your account, your streak and your tokens are all still here if you want them — and this is the last we will say about it.',
 
       awayLongButton: 'Open LangX',
+
+      trialEndingSubject: 'Your free week ends in two days',
+
+      trialEndingBody:
+        'After that your account goes back to the free plan. Everything you made stays; the limits come back. Keeping it is one tap.',
+
+      trialEndingButton: 'Keep my plan',
+
+      winBackSubject: 'Your plan ended a week ago',
+
+      winBackBody:
+        'Nothing was taken away — your streak, your tokens and everything you wrote are where you left them. The paid limits are what stopped.',
+
+      winBackButton: 'See the plans',
 
       tokensWaitingSubject: {
         one: 'You have {count} token waiting',

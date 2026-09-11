@@ -40,8 +40,34 @@ export const revenueCatEventSchema = z.object({
    * existed, or a test fixture, must still parse.
    */
   entitlement_ids: z.array(z.string()).nullable().optional(),
+  /**
+   * `TRIAL`, `INTRO` or `NORMAL` — whether the subscriber is paying yet.
+   *
+   * Read for one reason: a trial ending and a subscription ending are the
+   * same three fields on a profile (`expiresAt` soon, `willRenew` false), so
+   * without this there is no way to word a letter about the first without
+   * sending it to the second. RevenueCat has always sent it; nothing here
+   * looked.
+   *
+   * Optional and unconstrained, like every other field on this event: a
+   * payload from before it existed, or a fixture, must still parse.
+   */
+  period_type: z.string().nullable().optional(),
 })
 export type RevenueCatEvent = z.infer<typeof revenueCatEventSchema>
+
+/**
+ * Whether an entitlement is being paid for yet. `null` is not "no" — it is
+ * "RevenueCat did not say", which is what every event before this field was
+ * read looks like, and what a promotional grant looks like today.
+ */
+export type BillingPeriodType = 'trial' | 'intro' | 'normal'
+
+/** RevenueCat spells these in capitals, and only these three exist. */
+export function periodTypeOf(raw: string | null | undefined): BillingPeriodType | null {
+  const value = raw?.trim().toLowerCase()
+  return value === 'trial' || value === 'intro' || value === 'normal' ? value : null
+}
 
 export const revenueCatWebhookBodySchema = z.object({
   api_version: z.string().optional(),

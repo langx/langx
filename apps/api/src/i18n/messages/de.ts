@@ -36,6 +36,10 @@ export const de: Localized<ServerMessages> = {
       awayBody: 'Neue Leute zum Üben.',
       awayLongTitle: 'Wir sind da, wenn du willst',
       awayLongBody: 'Deine Serie und deine Token warten.',
+      trialEndingTitle: 'Deine Gratiswoche endet in zwei Tagen',
+      trialEndingBody: 'Behalten ist ein Tipp.',
+      winBackTitle: 'Dein Tarif ist ausgelaufen',
+      winBackBody: 'Alles, was du erstellt hast, ist noch da.',
       tokensWaitingTitle: { one: '{count} Token wartet', other: '{count} Token warten' },
       tokensWaitingBody: 'Öffne dein Wallet.',
       inviteFriendTitle: 'Lade jemanden ein',
@@ -269,6 +273,20 @@ export const de: Localized<ServerMessages> = {
         'Ein Monat ist lang. Dein Konto, deine Serie und deine Token sind noch da, falls du sie willst — und das ist das Letzte, was wir dazu sagen.',
 
       awayLongButton: 'LangX öffnen',
+
+      trialEndingSubject: 'Deine Gratiswoche endet in zwei Tagen',
+
+      trialEndingBody:
+        'Danach fällt dein Konto auf den kostenlosen Tarif zurück. Alles, was du erstellt hast, bleibt; die Limits kommen wieder. Behalten ist ein Tipp.',
+
+      trialEndingButton: 'Tarif behalten',
+
+      winBackSubject: 'Dein Tarif ist vor einer Woche ausgelaufen',
+
+      winBackBody:
+        'Nichts wurde weggenommen — deine Serie, deine Token und alles Geschriebene liegen, wo du sie gelassen hast. Aufgehört haben nur die bezahlten Limits.',
+
+      winBackButton: 'Tarife ansehen',
 
       tokensWaitingSubject: {
         one: '{count} Token wartet auf dich',

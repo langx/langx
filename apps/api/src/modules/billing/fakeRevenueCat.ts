@@ -223,6 +223,7 @@ export function createFakeRevenueCat(): FakeRevenueCat {
             // The harness has tracked this since it was written; it simply was
             // not reported, because `refreshEntitlement` overwrote it with `true`.
             willRenew: subscription.willRenew,
+            periodType: null,
           })
         }
         if (record.promotional.includes(id)) {
@@ -232,6 +233,7 @@ export function createFakeRevenueCat(): FakeRevenueCat {
             productId: promoProductId(id),
             store: 'promotional',
             willRenew: false,
+            periodType: null,
           })
         }
       }
