@@ -367,7 +367,7 @@ export const es: Localized<ServerMessages> = {
     assistantOffline:
       'Ahora mismo no puedo responder mensajes. Si puede esperar, inténtalo más tarde; si no, escribe a {email} y lo leerá una persona.',
     assistantLimit:
-      'Es todo lo que puedo responder hoy. Mañana estaré aquí, y en {email} siempre hay una persona.',
+      'Ahora mismo no puedo responder más: inténtalo de nuevo dentro de unas horas.\n\nNada depende de mí: puedes denunciar a alguien desde su perfil, enviar un error o una idea desde Ajustes, y en {email} siempre hay una persona.',
     assistantError: 'Algo ha fallado por mi parte. Prueba a enviarlo otra vez en un momento.',
     assistantRefusal:
       'Con eso no puedo ayudarte. Si me he equivocado, en {email} te atiende una persona.',

@@ -350,7 +350,7 @@ export const tr: Localized<ServerMessages> = {
     assistantOffline:
       'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
     assistantLimit:
-      'Bugünlük bu kadar yanıt verebiliyorum. Yarın buradayım; {email} adresinden her zaman bir insana ulaşırsın.',
+      'Şu an daha fazla yanıt veremiyorum — birkaç saat sonra tekrar dene.\n\nHiçbir şey bana bakmıyor: birini profilinden bildirebilir, Ayarlar’dan hata veya fikir gönderebilirsin, {email} adresinden de her zaman bir insana ulaşırsın.',
     assistantError: 'Bende bir şeyler ters gitti. Birazdan tekrar göndermeyi dene.',
     assistantRefusal:
       'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',

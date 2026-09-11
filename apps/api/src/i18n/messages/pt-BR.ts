@@ -362,7 +362,7 @@ export const ptBR: Localized<ServerMessages> = {
     assistantOffline:
       'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
     assistantLimit:
-      'É tudo o que consigo responder hoje. Amanhã estou aqui, e {email} chega a uma pessoa a qualquer hora.',
+      'Agora não consigo responder mais — tente de novo daqui a algumas horas.\n\nNada depende de mim: você pode denunciar alguém pelo perfil, mandar um erro ou uma ideia pelas Configurações, e {email} sempre chega a uma pessoa.',
     assistantError: 'Algo deu errado do meu lado. Tente enviar de novo daqui a pouco.',
     assistantRefusal:
       'Nisso eu não consigo ajudar. Se eu entendi errado, {email} chega a uma pessoa.',

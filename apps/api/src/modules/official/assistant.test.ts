@@ -285,6 +285,34 @@ describe('answering as an official account', () => {
   })
 
   /**
+   * A welcome and an announcement are messages from @langx too. Counting them
+   * would take somebody's allowance away for something they never asked for —
+   * and on announcement day, everybody's at once.
+   */
+  it('does not spend the allowance on messages the person did not ask for', async () => {
+    const langxId = officialIds().get('langx')!
+    const conversation = await write(ADA, langxId, 'first')
+    assistant.requests = []
+
+    // What the announcement script sends, into the same thread.
+    for (let i = 0; i < OFFICIAL_ASSISTANT.repliesPerDay; i += 1) {
+      await deliverOfficialMessage(handle.db, {
+        fromHandle: 'langx',
+        toUserId: ADA,
+        body: `announcement ${String(i)}`,
+        clientId: `announcement:${String(i)}`,
+      })
+    }
+
+    const { conversation: same, message } = await sendAgain(ADA, langxId, 'still there?')
+    await respondAsOfficial(appStub(), same, message)
+
+    // Still answered: none of those were replies.
+    expect(assistant.requests).toHaveLength(1)
+    expect(same._id).toEqual(conversation._id)
+  })
+
+  /**
    * The ceiling that bounds the bill rather than one conversation. Worded the
    * same as the per-person one on purpose — whose ceiling it was is not the
    * reader's problem.

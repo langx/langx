@@ -381,8 +381,17 @@ export const en = {
       'Copilot isn’t here yet — it’s the in-chat practice partner we’re building. This account exists so you’ll find it the day it lands.\n\nUntil then, write to @langx and I’ll help.',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
+    /**
+     * Both ceilings say this — the one on a conversation and the one on the
+     * day's spend. Which was reached is an operational detail, and the
+     * answer is the same either way.
+     *
+     * The second half is the part that matters. Somebody who came to report
+     * harassment and got a limit must not read it as "reporting is closed":
+     * the assistant is a way to reach those flows, never the only one.
+     */
     assistantLimit:
-      'That’s as much as I can answer today. I’ll be here tomorrow, and {email} reaches a person any time.',
+      'I can’t answer any more just now — try me again in a few hours.\n\nNothing is waiting on me: you can report someone from their profile, send a bug or an idea from Settings, and {email} always reaches a person.',
     assistantError: 'Something went wrong on my side. Try sending that again in a moment.',
     assistantRefusal:
       'I can’t help with that one. If I have got it wrong, {email} reaches a person.',

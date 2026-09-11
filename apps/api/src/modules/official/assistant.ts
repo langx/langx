@@ -237,7 +237,21 @@ async function historyFor(
   }))
 }
 
-/** How many times this account has answered in this conversation today. */
+/**
+ * How many times this account has *answered* in this conversation in the last
+ * twenty-four hours.
+ *
+ * Answers only. A welcome and an announcement are also messages from @langx,
+ * and counting them would take somebody's allowance away for something they
+ * did not ask for — on announcement day, everybody's. Both carry a `clientId`
+ * because that is what makes them idempotent, and a reply never does, so the
+ * field that already exists tells the two apart.
+ *
+ * A rolling window rather than a calendar day: somebody who used their
+ * allowance this morning gets it back through the morning, rather than all at
+ * once at a midnight in a timezone that is not theirs. The wording they see
+ * says "in a few hours" for that reason.
+ */
 async function repliesToday(
   app: FastifyInstance,
   conversation: AnsweredConversation,
@@ -246,6 +260,7 @@ async function repliesToday(
   return app.mongo.db.collection<Message>(COLLECTIONS.messages).countDocuments({
     conversationId: conversation._id,
     senderId: officialId,
+    clientId: { $exists: false },
     createdAt: { $gte: new Date(Date.now() - DAY_MS) },
   })
 }

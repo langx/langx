@@ -37,7 +37,19 @@ export function isOfficialHandle(handle: string): handle is OfficialHandle {
  * bill.
  */
 export const OFFICIAL_ASSISTANT = {
-  /** Replies to one person, in one day. Stops a single conversation running up a bill. */
+  /**
+   * Replies to one person in any twenty-four hours — the fair-use number, not
+   * the cost one.
+   *
+   * A real errand here is five to ten messages: asking how something works,
+   * or walking through a report and confirming it. Thirty covers three of
+   * those in a day, which is past the point where somebody is using the
+   * assistant and into the point where something else is going on. The bill
+   * is bounded by `globalRepliesPerDay` and the two below, not by this.
+   *
+   * Rolling, not a calendar day: the allowance comes back through the morning
+   * rather than all at once at a midnight in somebody else's timezone.
+   */
   repliesPerDay: 30,
   /**
    * Replies to **everybody**, in one UTC day — the ceiling that actually
