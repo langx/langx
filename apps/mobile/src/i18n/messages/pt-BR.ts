@@ -579,6 +579,35 @@ export const ptBR: Localized<EnMessages> = {
       'Quando alguém te manda mensagem, um lembrete às {hour}:00 se sua sequência estiver prestes a quebrar, e uma vez por dia quantas pessoas viram seu perfil.',
     notNow: 'Agora não',
     microphonePermission: 'O LangX precisa do microfone para gravar uma mensagem de voz.',
+    guide: {
+      title: 'Permissão de notificações',
+      rowTitle: 'Permissão de notificações',
+      rowBody: 'Onde ativar as notificações e o que fazer se o seu telefone parou de perguntar.',
+      grantedTitle: 'As notificações estão ligadas',
+      grantedBody:
+        'Este telefone pode receber notificações do LangX. Quais você recebe é a lista da tela anterior, e você pode retirar a permissão quando quiser nos ajustes do aparelho.',
+      askableTitle: 'O LangX ainda não consegue te avisar',
+      askableBody:
+        'Quando chega uma mensagem, um lembrete à noite se sua sequência está prestes a quebrar, e uma vez por dia quantas pessoas viram seu perfil. Nada é enviado enquanto você está lendo uma conversa.',
+      allow: 'Permitir notificações',
+      blockedTitle: 'Seu aparelho não vai perguntar de novo',
+      blockedBody:
+        'As notificações foram negadas ao LangX, então o app não consegue mais abrir a janela de permissão. Você ainda pode ligá-las nos ajustes do aparelho.',
+      iosStep1: 'Abra os Ajustes',
+      iosStep2: 'Encontre o LangX na lista',
+      iosStep3: 'Toque em Notificações e ligue “Permitir notificações”',
+      androidStep1: 'Abra as Configurações',
+      androidStep2: 'Vá em Apps → LangX',
+      androidStep3: 'Toque em Notificações',
+      androidStep4: 'Ligue “Todas as notificações do LangX”',
+      silencedTitle: 'Silenciadas neste telefone',
+      silencedBody:
+        'Seu aparelho permite notificações, mas elas estão desligadas para este telefone no LangX. Ligue “Notificações neste telefone” de novo, uma tela acima — seus outros aparelhos não são afetados de qualquer forma.',
+      webTitle: 'Sem push no navegador',
+      webBody:
+        'As notificações chegam pelo app do LangX para iPhone ou Android. Aqui não há nada para ligar.',
+      openSettings: 'Abrir ajustes',
+    },
   },
 
   corrections: {

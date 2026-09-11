@@ -726,6 +726,20 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         />
       )
 
+    case 'notifications.permission':
+      // A plain link with no live state on it, like `privacy.locationPermission`
+      // above and for the same reason: what the permission currently is takes
+      // an OS read and an `AppState` listener to stay true, and a row that
+      // goes stale in a list of switches reads as a switch that is wrong.
+      return (
+        <ListRow
+          title={t('notifications.guide.rowTitle')}
+          subtitle={t('notifications.guide.rowBody')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/push')}
+        />
+      )
+
     default: {
       /*
        * Notification kinds: one item per kind, two channel rows under a

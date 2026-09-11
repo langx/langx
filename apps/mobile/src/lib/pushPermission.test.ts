@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { pushSwitchAction, pushSwitchIsOn, shouldAskForPush } from './pushPermission'
+import {
+  pushGuideStatus,
+  pushSwitchAction,
+  pushSwitchIsOn,
+  shouldAskForPush,
+} from './pushPermission'
 
 /** Nobody has answered anything yet, on a phone that has never been asked. */
 const fresh = {
@@ -85,5 +90,35 @@ describe('what turning that switch on has to do', () => {
 
   it('does nothing on web', () => {
     expect(pushSwitchAction({ granted: false, canAskAgain: true, platform: 'web' })).toBe('none')
+  })
+})
+
+describe('what the guide screen says', () => {
+  const native = { granted: false, canAskAgain: true, offOnThisDevice: false, platform: 'ios' }
+
+  it('offers the dialog while the OS will still show one', () => {
+    expect(pushGuideStatus(native)).toBe('askable')
+  })
+
+  /** The one state the app cannot fix from the inside. */
+  it('sends them to the Settings app once it will not', () => {
+    expect(pushGuideStatus({ ...native, canAskAgain: false })).toBe('blocked')
+  })
+
+  it('says so when everything is on', () => {
+    expect(pushGuideStatus({ ...native, granted: true })).toBe('granted')
+  })
+
+  /**
+   * Permission granted and our own switch off: nothing for the Settings app to
+   * do, and "notifications are on" would be a lie to somebody receiving none.
+   */
+  it('separates a phone silenced in LangX from one the OS refused', () => {
+    expect(pushGuideStatus({ ...native, granted: true, offOnThisDevice: true })).toBe('silenced')
+  })
+
+  it('answers web before it looks at anything else', () => {
+    expect(pushGuideStatus({ ...native, platform: 'web' })).toBe('web')
+    expect(pushGuideStatus({ ...native, granted: true, platform: 'web' })).toBe('web')
   })
 })

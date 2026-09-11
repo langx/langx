@@ -591,6 +591,36 @@ export const de: Localized<EnMessages> = {
       'Wenn dir jemand schreibt, ein Anstupser um {hour}:00 Uhr, wenn deine Serie zu reißen droht, und einmal am Tag, wie viele dein Profil angesehen haben.',
     notNow: 'Jetzt nicht',
     microphonePermission: 'LangX braucht Mikrofonzugriff, um eine Sprachnachricht aufzunehmen.',
+    guide: {
+      title: 'Benachrichtigungsberechtigung',
+      rowTitle: 'Benachrichtigungsberechtigung',
+      rowBody:
+        'Wo du Benachrichtigungen einschaltest — und was zu tun ist, wenn dein Telefon nicht mehr fragt.',
+      grantedTitle: 'Benachrichtigungen sind an',
+      grantedBody:
+        'Dieses Telefon kann Benachrichtigungen von LangX empfangen. Welche du bekommst, steht in der Liste auf dem vorherigen Bildschirm, und du kannst die Berechtigung jederzeit in den Geräteeinstellungen zurücknehmen.',
+      askableTitle: 'LangX kann dich noch nicht benachrichtigen',
+      askableBody:
+        'Wenn eine Nachricht ankommt, ein Hinweis am Abend, falls deine Serie zu reißen droht, und einmal am Tag, wie viele Leute dein Profil angesehen haben. Während du einen Chat liest, wird nichts geschickt.',
+      allow: 'Benachrichtigungen erlauben',
+      blockedTitle: 'Dein Gerät fragt nicht noch einmal',
+      blockedBody:
+        'Benachrichtigungen wurden für LangX abgelehnt, deshalb kann die App den Berechtigungsdialog nicht mehr öffnen. In den Geräteeinstellungen kannst du sie trotzdem einschalten.',
+      iosStep1: 'Einstellungen öffnen',
+      iosStep2: 'LangX in der Liste suchen',
+      iosStep3: 'Auf „Mitteilungen“ tippen und „Mitteilungen erlauben“ einschalten',
+      androidStep1: 'Einstellungen öffnen',
+      androidStep2: 'Zu Apps → LangX gehen',
+      androidStep3: 'Auf Benachrichtigungen tippen',
+      androidStep4: '„Alle LangX-Benachrichtigungen“ einschalten',
+      silencedTitle: 'Auf diesem Telefon stummgeschaltet',
+      silencedBody:
+        'Dein Gerät erlaubt Benachrichtigungen, aber in LangX sind sie für dieses Telefon ausgeschaltet. Schalte „Benachrichtigungen auf diesem Telefon“ einen Bildschirm weiter oben wieder ein — deine anderen Geräte sind so oder so nicht betroffen.',
+      webTitle: 'Kein Push im Browser',
+      webBody:
+        'Benachrichtigungen erreichen dich in der LangX-App für iPhone oder Android. Hier gibt es nichts einzuschalten.',
+      openSettings: 'Einstellungen öffnen',
+    },
   },
 
   corrections: {

@@ -643,6 +643,40 @@ export const en = {
       'When someone messages you, a nudge at {hour}:00 if your streak is about to break, and once a day how many people viewed your profile.',
     notNow: 'Not now',
     microphonePermission: 'LangX needs microphone access to record a voice message.',
+    /**
+     * The one place that explains notification permission, exactly as
+     * `location.guide` is for location. Four states, because "turn it on" is
+     * wrong advice for three of them.
+     */
+    guide: {
+      title: 'Notification permission',
+      rowTitle: 'Notification permission',
+      rowBody: 'Where to turn notifications on, and what to do if your phone stopped asking.',
+      grantedTitle: 'Notifications are on',
+      grantedBody:
+        'This phone can receive notifications from LangX. Which ones you get is the list on the previous screen, and you can take the permission back in your device settings whenever you like.',
+      askableTitle: 'LangX cannot notify you yet',
+      askableBody:
+        'A message arriving, a nudge if your streak is about to break, and once a day how many people looked at your profile. Nothing is sent while you are reading a chat.',
+      allow: 'Allow notifications',
+      blockedTitle: 'Your device will not ask again',
+      blockedBody:
+        'Notifications were declined for LangX, so the app can no longer bring up the permission dialog. You can still turn them on in your device settings.',
+      iosStep1: 'Open Settings',
+      iosStep2: 'Find LangX in the list',
+      iosStep3: 'Tap Notifications and turn on “Allow Notifications”',
+      androidStep1: 'Open Settings',
+      androidStep2: 'Go to Apps → LangX',
+      androidStep3: 'Tap Notifications',
+      androidStep4: 'Turn on “All LangX notifications”',
+      silencedTitle: 'Silenced on this phone',
+      silencedBody:
+        'Your device allows notifications, but they are switched off for this phone in LangX. Turn “Notifications on this phone” back on, one screen up — your other devices are unaffected either way.',
+      webTitle: 'No push in a browser',
+      webBody:
+        'Notifications reach you on the LangX app for iPhone or Android. This page has nothing to switch on here.',
+      openSettings: 'Open settings',
+    },
   },
 
   corrections: {
