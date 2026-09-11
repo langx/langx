@@ -15,6 +15,7 @@ import { createTranslationProvider } from '../translation/createTranslationProvi
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import type { LoggingPushSender } from '../modules/push/devices'
+import { ACCESS_RECHECK_MS } from './index'
 
 const PASSWORD = 'correct horse battery staple'
 
@@ -205,6 +206,65 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     )
 
     await expect(connectSocket(user.cookie)).rejects.toThrow()
+  })
+
+  /**
+   * The handshake is one moment, and a connection outlives it. A suspension
+   * reaches REST at the very next request — `requireAuth` re-reads the field
+   * every time — and until the socket did the same, an account suspended at
+   * noon went on writing down a socket it had opened at nine.
+   *
+   * Only `Date` is faked, so socket.io's own timers keep running on real time
+   * and the one clock that moves is the re-check's.
+   */
+  it('refuses an account suspended after its socket was already open', async () => {
+    const user = await newUser('ws-suspended-live@example.com')
+    const other = await newUser('ws-suspended-live-other@example.com')
+    const conversation = await startConversation(user, other.userId, 'before the decision')
+    const socket = await connectSocket(user.cookie)
+
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: user.userId },
+      {
+        $set: {
+          suspension: {
+            at: new Date(),
+            until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            permanent: false,
+            reason: 'harassment',
+          },
+        },
+      },
+    )
+
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(Date.now() + ACCESS_RECHECK_MS + 1000)
+    let ack: { ok: boolean; error?: { code: string } }
+    try {
+      ack = await new Promise((resolve) => {
+        socket.emit(
+          'message:send',
+          { conversationId: conversation._id, body: 'and yet here I am' },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(ack.ok).toBe(false)
+    expect(ack.error?.code).toBe('ACCOUNT_SUSPENDED')
+    // Refused, not merely told off: the message is not in the thread.
+    expect(
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .countDocuments({ body: 'and yet here I am' }),
+    ).toBe(0)
+    // And the socket is gone, so the next thing this client does is a
+    // handshake — which is where a suspended account has always been told.
+    await vi.waitFor(() => {
+      expect(socket.connected).toBe(false)
+    })
   })
 
   it('delivers a message to the other participant in under 1 second', async () => {

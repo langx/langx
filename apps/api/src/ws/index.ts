@@ -103,6 +103,65 @@ async function authenticateSocket(app: FastifyInstance, socket: AppSocket): Prom
 }
 
 /**
+ * How long an open socket may go without asking again whether its owner is
+ * still allowed to be here.
+ *
+ * The handshake asks once, and a connection outlives the answer: the app keeps
+ * one open across a background and a foreground, so an account suspended at
+ * noon went on sending messages, corrections and attachments down a socket it
+ * opened at nine. REST has no such window — `requireAuth` re-reads the same
+ * field on every single request — and this is the socket paying the same price
+ * on a throttle, so a typing storm costs one lookup a minute rather than one
+ * per keystroke.
+ *
+ * Half a minute is short next to how long a suspension lasts and long enough
+ * that the read is nothing. It is a ceiling on the window, not a promise about
+ * it: an event arriving after a quiet hour is checked immediately.
+ */
+export const ACCESS_RECHECK_MS = 30_000
+
+/** What has been taken away since the handshake, if anything. */
+type Revocation = 'suspended' | 'deleted'
+
+/**
+ * A guest has no profile and so nothing to take away, which `findOne` answers
+ * with null — the same rule `requireAuth` applies, for the same reason.
+ *
+ * `deletedAt` is here beside the suspension because deletion revokes access
+ * the same way and by a different route: `requestDeletion` drops every session,
+ * which shuts REST immediately and says nothing to a socket that is already
+ * open.
+ */
+async function revocationFor(app: FastifyInstance, userId: string): Promise<Revocation | null> {
+  const profile = await app.mongo.db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { suspension: 1, deletedAt: 1 } })
+  if (!profile) return null
+  if (profile.deletedAt) return 'deleted'
+  return isSuspended(profile) ? 'suspended' : null
+}
+
+/**
+ * Refuses the event that found the revocation, through its ack.
+ *
+ * Answered rather than dropped, for the reason the rate limit is answered: a
+ * client that gets no reply retries. The socket closes straight after, and the
+ * reconnect is refused by the handshake — which is where a suspended account
+ * has always been told.
+ */
+function refuseRevoked(packet: unknown[], revocation: Revocation): void {
+  const ack = packet.at(-1)
+  if (typeof ack !== 'function') return
+  ;(ack as NonNullable<Ack>)({
+    ok: false,
+    error:
+      revocation === 'suspended'
+        ? { code: ERROR_CODES.ACCOUNT_SUSPENDED, message: 'This account is suspended' }
+        : { code: ERROR_CODES.UNAUTHENTICATED, message: 'Sign in required' },
+  })
+}
+
+/**
  * One room per user (`user:<id>`), not one per conversation — a 1-1 chat
  * only ever has two participants, both already known from the conversation
  * document, so there's nothing a per-conversation room buys here and no
@@ -176,6 +235,44 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     socket.data.limiter = new SocketRateLimiter()
     socket.data.presence = new PresenceThrottle()
     void socket.join(userRoom(userId))
+
+    /*
+     * Every event, not just the first one: see `ACCESS_RECHECK_MS`. This is
+     * the only chokepoint every handler passes through, which is what makes it
+     * the right place — a guard repeated in seventeen handlers is a guard the
+     * eighteenth forgets.
+     *
+     * The handshake has just answered, so the clock starts here rather than at
+     * zero.
+     */
+    let accessCheckedAt = Date.now()
+    socket.use((packet, next) => {
+      if (Date.now() - accessCheckedAt < ACCESS_RECHECK_MS) {
+        next()
+        return
+      }
+      // Stamped before the read rather than after it: a client sending a
+      // burst would otherwise open one lookup per packet until the first came
+      // back.
+      accessCheckedAt = Date.now()
+      void revocationFor(app, userId).then(
+        (revocation) => {
+          if (!revocation) {
+            next()
+            return
+          }
+          refuseRevoked(packet, revocation)
+          socket.disconnect(true)
+        },
+        (error: unknown) => {
+          // A lookup that failed is not evidence of anything. Let the event
+          // through and ask again when the window is up, rather than cutting
+          // off a working connection because one read timed out.
+          app.log.warn({ err: error, userId }, 'socket access re-check failed')
+          next()
+        },
+      )
+    })
 
     /**
      * Opening the app makes you online, immediately and unthrottled. People
