@@ -18,6 +18,8 @@ import {
   meetsMinimumAge,
   NOTIFICATION_TYPES,
   newHandleSchema,
+  canClaimNewHandle,
+  type ClaimHandleInput,
   resolveNotificationPrefs,
   toGeoPoint,
   type FollowState,
@@ -73,6 +75,21 @@ export interface Profile {
    */
   official?: true
   handle: string
+  /**
+   * The handle this account held before its owner swapped v1's name for one
+   * they chose — see `claimHandle`. Absent for everybody who never did, which
+   * is what makes the swap a one-shot without a flag beside it.
+   *
+   * It is kept rather than released for two reasons, and the second is the
+   * load-bearing one. Links live longer than names: a v1 profile URL, a QR
+   * code printed on something, a card somebody screenshotted, all carry
+   * `@langx_6430`, and `findProfileByHandleOrId` resolves through this field
+   * so none of them break. And a released name is a name a stranger can take,
+   * which turns every one of those links into somebody else's profile. There
+   * is no index that can express "unique across two different fields", so the
+   * claim paths read this one before writing — see `isHandleAvailable`.
+   */
+  previousHandle?: string
   displayName: string
   avatarUrl?: string
   bio?: string
@@ -498,6 +515,11 @@ export async function createProfile(
     profile.avatarUrl = input.avatarUrl
   }
 
+  // A name that is somebody's `previousHandle` is still theirs — no index can
+  // say so across two fields, so onboarding asks the same question `claimHandle`
+  // does before it writes.
+  await assertNotSomeonesOldHandle(db, input.handle)
+
   try {
     await profiles.insertOne(profile)
   } catch (error) {
@@ -671,6 +693,127 @@ function assertLanguageCap(
 ): void {
   if (next <= max || next <= was) return
   throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, `Your plan allows ${max}`, { limit, max })
+}
+
+/**
+ * The one rename this app allows: a returning v1 account trading the username
+ * v1 gave it for one its owner chose.
+ *
+ * The rule against renaming stands for everybody else, and the reason has not
+ * changed — a handle is a public address, and moving off it breaks every link
+ * already shared. What the rule never accounted for is that nine in ten v1
+ * accounts are carrying an address nobody chose: v1 generated `langx_` plus
+ * four hex characters and let people live with it. "You cannot change your
+ * name" is a fair rule for a name you picked. See `canClaimNewHandle`.
+ *
+ * It is the same claim onboarding makes, through the same machinery, and that
+ * is on purpose rather than for tidiness: `resolveHandleClaim` is what stops
+ * two people racing for one reserved v1 handle, and skipping it here would
+ * make this route the way around it. So a v1 reservation still belongs to
+ * whoever the email hash says, and only somebody claiming a name reserved for
+ * *them* is let past the floor and the reserved list — which is exactly how a
+ * person who onboarded under a made-up name takes their real v1 handle back.
+ *
+ * The write is one conditional update. `previousHandle: { $exists: false }` in
+ * the filter is what makes it once-only under any number of concurrent
+ * requests, and `handle_unique` answers the other race — two accounts reaching
+ * for the same free name — with a duplicate key rather than a lost write.
+ */
+export async function claimHandle(
+  db: Db,
+  userId: string,
+  legacyEmailHash: string | null,
+  input: ClaimHandleInput,
+): Promise<Profile> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const profile = await profiles.findOne({ _id: userId })
+  if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+
+  /*
+   * Two refusals, two codes, because the app's answer differs. Having spent
+   * the claim is a 409 on a name — the row is gone from Settings and the
+   * message says so. Never having been a v1 account is a 403: the request is
+   * well-formed and the caller simply is not who this route is for, which is
+   * also the shape a client bug takes if the row is ever drawn for the wrong
+   * person.
+   */
+  if (profile.previousHandle) {
+    throw new ApiError(ERROR_CODES.HANDLE_ALREADY_CLAIMED, 'You have already chosen a new username')
+  }
+  if (!canClaimNewHandle(profile)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account has no v1 username to replace')
+  }
+
+  const handle = input.handle
+  if (handle === profile.handle) {
+    // Refused rather than answered "done". Writing `previousHandle` here would
+    // spend the one claim on a change that changes nothing, and the person
+    // would find the row gone with the name they were trying to leave.
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `@${handle} is already your username`)
+  }
+
+  let claimingOwnLegacyHandle = false
+  if (legacyEmailHash) {
+    const resolution = await resolveHandleClaim(db, handle, userId, legacyEmailHash)
+    if (resolution.kind === 'reserved_for_other') {
+      throw new ApiError(ERROR_CODES.HANDLE_RESERVED, `@${handle} is reserved`)
+    }
+    claimingOwnLegacyHandle = resolution.kind === 'claimed'
+  }
+
+  // The same split `createProfile` makes, from the same two schemas: what may
+  // be *created* is narrower than what may be *read*, and taking back a name
+  // reserved for you is not a creation.
+  if (!claimingOwnLegacyHandle) {
+    const claim = newHandleSchema.safeParse(handle)
+    if (!claim.success) {
+      throw new ApiError(
+        ERROR_CODES.VALIDATION_FAILED,
+        claim.error.issues[0]?.message ?? 'That username cannot be used',
+      )
+    }
+  }
+
+  await assertNotSomeonesOldHandle(db, handle)
+
+  const now = new Date()
+  let updated: Profile | null
+  try {
+    updated = await profiles.findOneAndUpdate(
+      { _id: userId, handle: profile.handle, previousHandle: { $exists: false } },
+      { $set: { handle, previousHandle: profile.handle, updatedAt: now } },
+      { returnDocument: 'after' },
+    )
+  } catch (error) {
+    if (isDuplicateKeyError(error, 'handle_unique')) {
+      throw new ApiError(ERROR_CODES.HANDLE_TAKEN, `@${handle} is already taken`)
+    }
+    throw error
+  }
+
+  // The filter missed, so another request for this same account got there
+  // first — the only way past `canClaimNewHandle` above.
+  if (!updated) {
+    throw new ApiError(ERROR_CODES.HANDLE_ALREADY_CLAIMED, 'You have already chosen a new username')
+  }
+  return updated
+}
+
+/**
+ * Refuses a name somebody else is still reachable at.
+ *
+ * A read rather than an index, and not for want of trying: Mongo can make
+ * `handle` unique and it can make `previousHandle` unique, and there is no way
+ * to say that a value may not appear in one while it appears in the other. So
+ * both claim paths ask, and the window between the ask and the write stays
+ * open — about as wide as `isHandleAvailable`'s, and closing on the same kind
+ * of name: a four-character hex string nobody is racing anybody for.
+ */
+async function assertNotSomeonesOldHandle(db: Db, handle: string): Promise<void> {
+  const held = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ previousHandle: handle }, { projection: { _id: 1 } })
+  if (held) throw new ApiError(ERROR_CODES.HANDLE_TAKEN, `@${handle} is already taken`)
 }
 
 /**
@@ -1255,6 +1398,11 @@ export function toPublicProfile(
 /**
  * Looks up by `@handle` or by user id — the two things a deep link can carry.
  *
+ * `previousHandle` is in the `$or` because a v1 account that took a new name
+ * left its old one on every link already out there. Resolving it costs one
+ * more branch of an indexed query and is the whole reason the old name is kept
+ * rather than released; see `claimHandle`.
+ *
  * `includeDeleted` is for the one caller that has to answer for an account in
  * its thirty-day grace: the profile route, which shows it tagged as deleted so
  * that somebody arriving from an old conversation is told what happened
@@ -1269,7 +1417,7 @@ export async function findProfileByHandleOrId(
 ): Promise<Profile | null> {
   const key = handleOrId.startsWith('@') ? handleOrId.slice(1) : handleOrId
   return db.collection<Profile>(COLLECTIONS.profiles).findOne({
-    $or: [{ _id: key }, { handle: key }],
+    $or: [{ _id: key }, { handle: key }, { previousHandle: key }],
     ...(options.includeDeleted ? {} : { deletedAt: { $exists: false } }),
   })
 }

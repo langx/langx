@@ -1,4 +1,5 @@
 import {
+  claimHandleSchema,
   countryFromLocationSchema,
   setGenderSchema,
   handleSchema,
@@ -19,6 +20,7 @@ import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
 import { isSuspended } from '../modules/moderation/suspension'
 import {
+  claimHandle,
   clearLocation,
   createGuestProfile,
   createProfile,
@@ -141,6 +143,28 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireMember, schema: { body: setGenderSchema } },
     async (request, reply) => {
       const profile = await setGender(app.mongo.db, request.userId, request.body.gender)
+      return reply.send(profile)
+    },
+  )
+
+  /**
+   * The one rename this app allows, and only for an account that came back
+   * from v1 — see `claimHandle`, which holds the rule and the reasoning.
+   *
+   * `requireVerifiedEmail` rather than `requireMember`, because the legacy
+   * email hash is what decides whether a name reserved in v1 is this person's
+   * to take back, and a hash of an address nobody has proven is not evidence.
+   * It is the same guard `POST /profiles` runs under, computing the same hash
+   * from the same salt.
+   */
+  app.post(
+    '/profiles/me/handle',
+    { preHandler: requireVerifiedEmail, schema: { body: claimHandleSchema } },
+    async (request, reply) => {
+      const legacyEmailHash = app.env.LEGACY_EMAIL_HASH_SALT
+        ? hashLegacyEmail(request.userEmail, app.env.LEGACY_EMAIL_HASH_SALT)
+        : null
+      const profile = await claimHandle(app.mongo.db, request.userId, legacyEmailHash, request.body)
       return reply.send(profile)
     },
   )

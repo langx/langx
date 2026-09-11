@@ -525,6 +525,9 @@ export const ptBR: Localized<EnMessages> = {
     subtitle: 'Isto veio junto com você.',
     handleTitle: '@{handle}',
     handleBody: 'Seu nome de usuário é seu de novo — ninguém conseguiu pegá-lo.',
+    handleBodyChoose:
+      'Foi o LangX antigo que te deu esse nome. Mais ninguém pode pegá-lo — mas você pode escolher o seu.',
+    handleChoose: 'Escolher o meu',
     conversations: {
       one: '{count} conversa restaurada',
       other: '{count} conversas restauradas',
@@ -1221,6 +1224,19 @@ export const ptBR: Localized<EnMessages> = {
     signInSetPasswordSaved: 'Senha definida.',
     signInSetPasswordFailed: 'Não foi possível definir a senha. Tente de novo.',
     signInPasswordAlready: 'Esta conta já tem uma senha.',
+    username: 'Nome de usuário',
+    usernameBody: 'Escolha o seu, uma vez',
+    usernameTitle: 'Escolha seu nome de usuário',
+    usernameIntro:
+      'Quando você entrou no LangX antigo, ele te chamou de @{handle}. Você nunca escolheu isso, então pode escolher agora.',
+    usernameHint: 'Letras, números e sublinhados. É assim que as pessoas encontram você.',
+    usernameOnce:
+      'Isso pode ser feito uma vez. Links e QR codes com seu nome antigo continuam funcionando, e mais ninguém pode ficar com ele.',
+    usernameSave: 'Quero este',
+    usernameSaved: 'Agora você é @{handle}.',
+    usernameFailed: 'Não foi possível trocar seu nome de usuário. Tente de novo.',
+    usernameReserved: '@{handle} pertence a outra conta do LangX antigo.',
+    usernameSpent: 'Você já escolheu seu nome de usuário: @{handle}. Ele não muda de novo.',
     password: 'Senha',
     passwordBody: 'Definir ou trocar',
     changePassword: 'Trocar senha',

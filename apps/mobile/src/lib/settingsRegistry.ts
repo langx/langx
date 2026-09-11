@@ -167,6 +167,13 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     bodyKey: 'settings.accountBody',
     route: '/(app)/settings/account',
     items: [
+      /*
+       * First, and only for the accounts it applies to — `SettingsRow` draws
+       * nothing for anybody else. A username is who you are here, which puts
+       * it ahead of how you get in; and for the person this is for it is the
+       * one row on the page they did not already have.
+       */
+      { id: 'account.username', titleKey: 'settings.username', bodyKey: 'settings.usernameBody' },
       {
         id: 'account.signIn',
         titleKey: 'settings.signInMethods',

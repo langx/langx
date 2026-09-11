@@ -1,9 +1,9 @@
-import { TIER_NAMES, TOKEN_RULES } from '@langx/shared'
+import { TIER_NAMES, TOKEN_RULES, canClaimNewHandle } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient } from '@tanstack/react-query'
-import { Redirect, router } from 'expo-router'
+import { Redirect, router, type Href } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
@@ -18,10 +18,13 @@ function Line({
   icon,
   title,
   body,
+  action,
 }: {
   icon: keyof typeof Feather.glyphMap
   title: string
   body: string
+  /** An offer this line carries, not a step — only the handle has one. */
+  action?: { label: string; onPress: () => void }
 }) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -34,6 +37,15 @@ function Line({
       <View style={styles.lineText}>
         <Text style={styles.lineTitle}>{title}</Text>
         <Text style={styles.lineBody}>{body}</Text>
+        {action ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={action.onPress}
+            style={({ pressed }) => [styles.lineAction, pressed && styles.pressed]}
+          >
+            <Text style={styles.lineActionText}>{action.label}</Text>
+          </Pressable>
+        ) : null}
       </View>
     </View>
   )
@@ -61,7 +73,7 @@ export default function WelcomeBackScreen() {
 
   const restored = me.data?.restoredFromV1
 
-  async function acknowledge(): Promise<void> {
+  async function acknowledge(next: Href = '/(app)/(tabs)/discover'): Promise<void> {
     setBusy(true)
     try {
       await api.post('/me/welcome-back/ack', {})
@@ -73,7 +85,7 @@ export default function WelcomeBackScreen() {
       // and refusing to move them on would be a far worse answer than that.
     } finally {
       setBusy(false)
-      router.replace('/(app)/(tabs)/discover')
+      router.replace(next)
     }
   }
 
@@ -97,6 +109,7 @@ export default function WelcomeBackScreen() {
   if (!restored) return <Redirect href="/(app)/(tabs)/discover" />
 
   const handle = me.data?.handle ?? ''
+  const canClaim = canClaimNewHandle(me.data)
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
 
   return (
@@ -107,10 +120,35 @@ export default function WelcomeBackScreen() {
         <Text style={styles.subtitle}>{t('welcomeBack.subtitle')}</Text>
 
         <View style={styles.lines}>
+          {/*
+            v1 named nine in ten of the people reading this itself — `langx_`
+            and four hex characters — so "your username is yours again" is,
+            for most of them, a sentence about a name they never chose. The
+            offer is made here because this is the one screen a returning user
+            passes through, and it is an offer: skipping it costs nothing, and
+            Settings keeps the same row for as long as it goes untaken.
+
+            Acknowledged on the way out, so the gate in `app/index.tsx` does
+            not send them back here from the picker, and `from` is what the
+            picker's back arrow follows instead of a Settings page they never
+            opened.
+          */}
           <Line
             icon="user"
             title={t('welcomeBack.handleTitle', { handle })}
-            body={t('welcomeBack.handleBody')}
+            body={canClaim ? t('welcomeBack.handleBodyChoose') : t('welcomeBack.handleBody')}
+            {...(canClaim
+              ? {
+                  action: {
+                    label: t('welcomeBack.handleChoose'),
+                    onPress: () =>
+                      void acknowledge({
+                        pathname: '/(app)/settings/username',
+                        params: { from: '/(app)/(tabs)/discover' },
+                      }),
+                  },
+                }
+              : {})}
           />
 
           {conversationsImported > 0 ? (
@@ -216,4 +254,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   lineText: { flex: 1, gap: 3 },
   lineTitle: { ...font.heading, color: colors.text, fontSize: 17 },
   lineBody: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  lineAction: { alignSelf: 'flex-start', height: 36, justifyContent: 'center' },
+  lineActionText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  pressed: { opacity: 0.6 },
 }))

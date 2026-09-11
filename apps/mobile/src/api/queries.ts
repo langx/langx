@@ -304,6 +304,12 @@ function apiPut<T>(path: string, body: unknown): Promise<T> {
 export interface MeProfile {
   _id: string
   handle: string
+  /**
+   * The username this account held in v1, kept after its owner swapped it for
+   * one of their own. Its presence is what says the one claim has been spent —
+   * `canClaimNewHandle` is the rule, and both this app and the server read it.
+   */
+  previousHandle?: string
   displayName: string
   avatarUrl?: string
   bio?: string

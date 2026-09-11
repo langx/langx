@@ -4226,3 +4226,63 @@ rule: those two are registered at the **root**, outside both guards, so nothing
 unmounts them. The guard alone would leave the reader sitting on the screen
 they arrived through. **Replace after a session appears only from a screen the
 guard will not take away.**
+
+## v1 named nine people in ten, and they get one chance to answer
+
+v1 handed out usernames. Its generator wrote `langx_` and four hex characters
+— `langx_6430`, `langx_003c`, `langx_00a5` — and against the staged records
+that is **2846 of 3164** profiles. 313 people named themselves, five typed
+something starting with `langx_` by hand, and everybody else is carrying an
+address a machine picked in 2023. The digits-only ones are not a category:
+they are the draws that happened to land on `0-9`.
+
+So `POST /profiles/me/handle` exists, and the rule against renaming still
+stands for everybody else. The reason it stands has not changed — a handle is
+a public address, and moving off one breaks every link already shared — but it
+was written for a name its owner chose, and most of these are not that.
+"You cannot change your name" is a fair rule; "you cannot change the name we
+gave you" is not.
+
+**The offer is not narrowed to the generated shape**, even though the shape is
+exact enough to match on. Anyone whose v1 profile came back gets the one
+claim. Refusing `langx_david` while allowing `langx_00a5` is a distinction no
+recipient could explain, and the 313 who did name themselves did it under v1's
+rules and years ago. `canClaimNewHandle` is the whole of it, in
+`packages/shared` so the server's refusal and the app's Settings row cannot
+drift into disagreeing about who is being offered what.
+
+**Once, and `previousHandle` is what counts it** — no flag, no counter. The
+old name has to be kept anyway, so its presence already says the claim was
+spent and its absence makes the first one free with no migration. Same shape
+as `genderChangedAt`, for the same reason.
+
+Keeping the old name is the half that took the most thought, and releasing it
+was never really an option. Links outlive names: a v1 profile URL, a QR code
+printed on something, a screenshot of a card. `findProfileByHandleOrId`,
+`getSharedProfile` and `emailForHandle` all resolve through `previousHandle`,
+so none of those break. And a released name is a name a stranger can take,
+which would turn every one of those links into somebody else's profile — a
+small door, since nobody covets `langx_003c`, but an impersonation door all
+the same.
+
+What that costs is one guard no index can express. Mongo will make `handle`
+unique, and `previousHandle` unique, and has no way to say that a value in one
+excludes the same value in the other. So `assertNotSomeonesOldHandle` is a
+read, on both paths that write a handle — the claim and onboarding — and the
+window between the read and the write stays open, about as wide as
+`isHandleAvailable`'s and over the same kind of name.
+
+The claim goes through `resolveHandleClaim` like onboarding does, and that is
+not tidiness: the reservation is what stops two people racing for one v1
+handle, and a second path that skipped it would be the way around it. It also
+buys the case this route is quietly for — somebody who onboarded under a
+made-up name because they could not face `langx_00ec`, and whose real v1
+handle has been sitting unclaimed ever since. They take it back here, past the
+floor and the reserved list, because it was reserved for them all along.
+
+It is offered in two places, and skipping it costs nothing. The welcome-back
+screen already had a line about the handle, saying it was theirs again; for
+these accounts it now says who chose it and offers the alternative, and
+"Start exploring" walks past it. Settings → Account keeps the row for as long
+as it goes untaken, which is also the answer for the people who came back
+before any of this shipped.

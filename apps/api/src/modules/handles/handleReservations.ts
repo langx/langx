@@ -69,7 +69,15 @@ export async function isHandleAvailable(
   handle: string,
   legacyEmailHash: string | null,
 ): Promise<boolean> {
-  const taken = await db.collection(COLLECTIONS.profiles).findOne({ handle })
+  /*
+   * `previousHandle` as well as `handle`: an account that swapped v1's
+   * generated name for one of its own is still reachable at the old one, and
+   * the whole point of keeping it is that nobody else can be handed it. One
+   * query over two indexed fields rather than two round-trips.
+   */
+  const taken = await db
+    .collection(COLLECTIONS.profiles)
+    .findOne({ $or: [{ handle }, { previousHandle: handle }] })
   if (taken) return false
 
   const reservation = await db

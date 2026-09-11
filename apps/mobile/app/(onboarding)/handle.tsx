@@ -1,4 +1,4 @@
-import { ERROR_CODES, HANDLE_MIN_LENGTH, newHandleSchema } from '@langx/shared'
+import { ERROR_CODES } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -24,16 +24,8 @@ import { readSignupOrigin } from '../../src/lib/signupOrigin'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
+import { useHandleAvailability, useHandleStatus } from '../../src/hooks/useHandleAvailability'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
-
-function useDebounced<T>(value: T, delay = 400): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-  return debounced
-}
 
 /**
  * The step that creates the profile: pick a handle, claim it, and the photo
@@ -67,24 +59,8 @@ export default function HandleStep() {
     if (reserved && draft.handle.length === 0) updateDraft({ handle: reserved })
   }, [reserved, draft.handle.length])
 
-  // The claiming schema, so the floor and the reserved list are shown inline
-  // rather than arriving as a 400 after Continue.
-  const parsed = newHandleSchema.safeParse(draft.handle)
-  const debouncedHandle = useDebounced(parsed.success ? draft.handle : '')
-
-  const availability = useQuery({
-    queryKey: ['handle-availability', debouncedHandle],
-    queryFn: () => api.get<{ available: boolean }>(`/handles/${debouncedHandle}/availability`),
-    enabled: debouncedHandle.length > 0,
-    // One retry, not the default three with backoff. A check that cannot run
-    // has to say so while the person is still looking at the field; several
-    // silent seconds of a disabled button is the bug this replaces.
-    retry: 1,
-  })
-
-  const available = availability.data?.available
-  const checking = debouncedHandle.length > 0 && availability.isFetching
-  const checkFailed = debouncedHandle.length > 0 && availability.isError && !availability.isFetching
+  const availability = useHandleAvailability(draft.handle)
+  const { parsed, available, checking } = availability
 
   /*
    * Derived, not seeded. `useState`'s initialiser runs once, on the first
@@ -195,36 +171,7 @@ export default function HandleStep() {
    */
   const canSubmit = parsed.success && available !== false && !checking && !submitting
 
-  /*
-   * One line under the field carries every state, coloured by what it says.
-   * Under the floor it is the plain rule rather than a complaint — nobody has
-   * finished typing yet. The schema's own wording is the odd one out: it is
-   * the developer's English, but it is what the field showed before and the
-   * reserved list has no wording of its own.
-   */
-  const status =
-    draft.handle.length < HANDLE_MIN_LENGTH
-      ? { text: t('onboarding.handleBody'), color: colors.textMuted }
-      : !parsed.success
-        ? {
-            text: parsed.error.issues[0]?.message ?? t('onboarding.handleBody'),
-            color: colors.danger,
-          }
-        : checking
-          ? { text: t('common.checking'), color: colors.textMuted }
-          : available === true
-            ? {
-                text: t('onboarding.handleAvailable', { handle: draft.handle }),
-                color: colors.success,
-              }
-            : available === false
-              ? {
-                  text: t('onboarding.handleTaken', { handle: draft.handle }),
-                  color: colors.danger,
-                }
-              : checkFailed
-                ? { text: t('onboarding.handleCheckFailed'), color: colors.danger, retry: true }
-                : { text: t('onboarding.handleBody'), color: colors.textMuted }
+  const status = useHandleStatus(draft.handle, availability, t('onboarding.handleBody'))
 
   return (
     <Screen fluid>
@@ -275,7 +222,7 @@ export default function HandleStep() {
         {'retry' in status ? (
           <Pressable
             accessibilityRole="button"
-            onPress={() => void availability.refetch()}
+            onPress={availability.refetch}
             style={({ pressed }) => pressed && styles.pressed}
           >
             <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>

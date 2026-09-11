@@ -586,6 +586,9 @@ export const en = {
     subtitle: 'Here is what came with you.',
     handleTitle: '@{handle}',
     handleBody: 'Your username is yours again — nobody else could claim it.',
+    handleBodyChoose:
+      'The old LangX named you this. Nobody else can take it — but you can pick your own.',
+    handleChoose: 'Pick my own username',
     conversations: {
       one: '{count} conversation restored',
       other: '{count} conversations restored',
@@ -1298,6 +1301,19 @@ export const en = {
     signInSetPasswordSaved: 'Password set.',
     signInSetPasswordFailed: 'Could not set your password. Try again.',
     signInPasswordAlready: 'This account already has a password.',
+    username: 'Username',
+    usernameBody: 'Pick your own, once',
+    usernameTitle: 'Choose your username',
+    usernameIntro:
+      'When you joined the old LangX it named you @{handle}. You never picked that, so you can pick one now.',
+    usernameHint: 'Letters, numbers and underscores. This is how people find you.',
+    usernameOnce:
+      'You can do this once. Links and QR codes with your old username keep working, and nobody else can take it.',
+    usernameSave: 'Make it mine',
+    usernameSaved: 'You are @{handle} now.',
+    usernameFailed: 'Could not change your username. Try again.',
+    usernameReserved: '@{handle} belongs to another account from the old LangX.',
+    usernameSpent: 'You have chosen your username: @{handle}. It does not change again.',
     password: 'Password',
     passwordBody: 'Set or change it',
     changePassword: 'Change password',

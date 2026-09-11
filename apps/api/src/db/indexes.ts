@@ -71,6 +71,19 @@ export const INDEXES: Partial<IndexSpec> = {
 
   [COLLECTIONS.profiles]: [
     { key: { handle: 1 }, name: 'handle_unique', unique: true },
+    /*
+     * The name a v1 account left behind when it took one of its own, kept so
+     * old links still resolve — `findProfileByHandleOrId`, `getSharedProfile`
+     * and `emailForHandle` all read it. Unique because two accounts cannot
+     * have vacated the same name: it came from `handle`, which is unique
+     * already.
+     *
+     * What it deliberately does **not** say is that a value here excludes the
+     * same value in `handle` — no index can express a uniqueness that spans
+     * two fields, which is why the claim paths read before they write. See
+     * `assertNotSomeonesOldHandle`.
+     */
+    { key: { previousHandle: 1 }, name: 'previous_handle_unique', unique: true, sparse: true },
     // Discovery needs mutual fit — my learning ∈ their native AND my native ∈
     // their learning — but MongoDB physically refuses a compound index across
     // two array fields in the same document ("cannot index parallel arrays",
