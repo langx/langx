@@ -1604,11 +1604,12 @@ symlink layout keeps a `.pnpm` store containing the entire workspace. The API
 image shipped Expo, React Native and the Hermes compiler until it did not:
 1.15 GB down to 608 MB.
 
-Going past one machine needs a Socket.io adapter first. Socket.io's default
-transport list starts with HTTP polling, which assumes consecutive requests
-reach the same instance, and Fly has no sticky sessions. Everything else about
-the app is already safe to run multiply — the `jobRuns` unique index means only
-one instance can own a given day's pool.
+Going past one machine needs a Socket.io adapter first — the rooms live in
+process memory, so two instances cannot see each other's sockets. That was
+written here, and the second machine went in without it anyway; _Two machines,
+one socket bus_ below is what it cost and what fixed it. Everything else about
+the app was already safe to run multiply — the `jobRuns` unique index means
+only one instance can own a given day's pool.
 
 ## The app speaks eight languages, and English is the one that defines them
 
@@ -3999,3 +4000,61 @@ worth seeing beside the sentence it corrects.
 With a sender behind it, `social.email` now defaults **on**, like `messages`.
 A switch that was off because it did nothing should not stay off once it does
 the thing people joined for.
+
+## Two machines, one socket bus
+
+On 3 September 2026 the API went from one Fly machine to two, so a crash-loop
+would be a degradation rather than an outage. The paragraph above had said,
+since the first deploy, that going past one machine needs a Socket.io adapter
+first. It did not get one.
+
+What that looked like from a chat: two people, two browsers, the first message
+arrives instantly and the reply never does — until a refresh, which fetches it
+over REST and shows it was there all along. Not one direction: whichever
+direction crossed the machines. Socket.io's default adapter keeps every room in
+the process's own memory, and Fly's proxy hands each new WebSocket to whichever
+machine it likes, so the two participants held sockets on different machines
+about half the time. `io.to(userRoom(x))` on the machine that took the send
+reached nobody on the other. The `message:new` was gone, and so was everything
+else on that path: the delivered tick (`fetchSockets()` saw no recipient, so
+none was stamped — and a push went out to somebody who was sitting right
+there), typing, and the read receipt. The client's "resync on reconnect" never
+fired because the socket had not dropped; it was connected, healthy, and
+listening on the wrong machine.
+
+The one-instance test suite could not see it, because with one process every
+room lookup happens to be local. `ws/crossInstance.test.ts` boots two API
+instances over one database — production's shape — puts one participant on
+each, and asserts all four paths. All four failed before the fix and pass
+after it.
+
+The fix is `@socket.io/mongo-adapter`: every emit is written to a
+`socketEvents` collection and every instance tails it with a change stream,
+so a broadcast reaches a socket held anywhere. Mongo rather than Redis because
+Mongo is already here and is already a replica set (Better Auth needs one),
+which is what a change stream needs — no new service, no new secret. A TTL
+index, declared in `db/indexes.ts` like every other, expires the rows after a
+minute: nothing replays them, and a `fetchSockets` answer carries each socket's
+handshake, session cookie included, so they should not linger. That cookie is
+the one thing to know about the collection — it is the same token the
+`session` collection already holds in the same database, so it widens nothing,
+but it is there.
+
+`fetchSockets()` is a cluster-wide question now and can time out (5s) when a
+machine that answered a heartbeat in the last ten seconds has since died —
+a blue-green switch is exactly that. `fanOut.ts` catches it: the emit has
+already gone out, and what is lost is one message's tick and push. The adapter
+also reopens its change stream a second after every close for as long as it
+lives, so `attachSocketServer` closes it in an `onClose` hook — a test that
+closes the Mongo client without that gets a failed reopen every second, forever.
+
+One semantic shift came with it, and the test suite is where it showed. A
+broadcast used to be synchronous: whoever was in the room at the instant of
+the emit got it, nobody else ever would. Now it is written first and delivered
+a moment later — locally on the next tick after the insert, remotely when the
+change stream catches up — so a socket that joins the room inside that gap is
+handed what was just broadcast to it. In the tests, that was the conversation's
+opening message (sent over REST before the sockets connected) arriving on a
+socket that had been waiting for the _next_ one; the waiters now say which
+event they mean. In the app it is a duplicate the client already discards by
+id, since the same echo reaches the sender's own socket by design.

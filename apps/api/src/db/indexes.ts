@@ -701,6 +701,16 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },
   ],
 
+  [COLLECTIONS.socketEvents]: [
+    // A document here is read by the other instances' change streams the
+    // moment it lands and never again, so this only stops the collection
+    // growing. A minute rather than the adapter's suggested hour: nothing
+    // replays old events, and a `fetchSockets` answer carries each socket's
+    // handshake — session cookie included — so the rows should be gone as
+    // soon as the TTL monitor gets to them.
+    { key: { createdAt: 1 }, name: 'ttl_60s', expireAfterSeconds: 60 },
+  ],
+
   [COLLECTIONS.shareCards]: [
     // The purge reads this to find a deleted account's cards; without it that
     // is a collection scan per deletion.

@@ -132,6 +132,15 @@ export const COLLECTIONS = {
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
   /**
+   * Socket.io's bus between API instances. Every emit is written here and
+   * every instance tails it with a change stream, which is how a message sent
+   * through one machine reaches a socket held on the other. Written and read
+   * only by `@socket.io/mongo-adapter`; nothing of ours queries it, and the
+   * TTL in `indexes.ts` is the only reason it does not grow forever. See
+   * `ws/index.ts`.
+   */
+  socketEvents: 'socketEvents',
+  /**
    * A single document (`_id: 'langx/langx'`): the last contributor list GitHub
    * returned and when. Served stale when GitHub refuses — see
    * `modules/kitchen/contributors.ts`.
