@@ -8,6 +8,7 @@ import { track } from '../lib/analytics'
 import { getActiveConversation } from '../lib/activeConversation'
 import { presentationFor } from '../lib/foregroundPush'
 import { previewOf, showMessageBanner } from '../lib/inAppNotifications'
+import { invalidateMissedEvents } from '../lib/missedEvents'
 import { configureNotifications } from '../lib/notifications'
 import { notificationRoute } from '../lib/notificationRoute'
 
@@ -77,6 +78,21 @@ export function useNotificationRouting({ enabled = true }: { enabled?: boolean }
           if (presentationFor(content.data, AppState.currentState === 'active') !== 'suppress') {
             return
           }
+          /*
+           * And the caches, because this push *is* the gap.
+           *
+           * It only arrives when the socket was down while the app was open,
+           * so no `message:new` ever landed: the chat list, the open thread
+           * and the unread total all still hold what they held before the
+           * message existed. The icon does not: the OS applies the push's own
+           * `badge`, which is the server's count. That is how an icon reading
+           * eighteen sits over a Chats tab reading three, with nothing left
+           * to make either of them refetch — the resyncs `useSocket` owns are
+           * a reconnect and a return from the background, and a push landing
+           * on an app that is already open and stays open is neither.
+           */
+          void invalidateMissedEvents(queryClient)
+
           const { conversationId, senderId } = content.data as {
             conversationId?: unknown
             senderId?: unknown

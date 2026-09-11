@@ -2549,6 +2549,35 @@ count, and it has no way to know: it hears nothing, and the total is the
 server's to give. Both emitters now also publish to the reader's own room, and
 the client invalidates the badge when it arrives.
 
+## The same number again: eighteen on the icon, three in the app
+
+The icon had two writers and the resyncs covered one gap each — a reconnect
+and a return from the background — so a screenshot arrived with `18` on the
+home screen and `3` on the Chats tab, taken in the same minute. Two separate
+faults, one symptom.
+
+**A push that lands on an app that is already open.** The server skips push for
+anyone holding a socket, so this one only happens when the socket is down while
+the app is in front — and then the push is the only notice of that message
+there is. The OS applies its `badge` (the server's count); the app draws the
+in-app banner and, until now, refetched nothing. The chat list, the open thread
+and `['unread']` kept what they held before the message existed, and nothing
+was left to correct them: the socket never dropped, so no reconnect fired, and
+the app never went to the background, so no resume fired. The received-listener
+now runs `invalidateMissedEvents`, which is what the rest of the app already
+does with a gap the socket left.
+
+**A deleted thread kept its unread count.** `countUnread` excluded the archive
+and blocked counterparts, and not `deletedBy` — which `listConversations` and
+the unread digest have always excluded. Deleting a thread with two unread
+messages left those two in the badge with nowhere to clear them: reading is
+what zeroes `unread`, and there is no thread left to open. The count is dropped
+at deletion now (every message in it is hidden for that user, so it counts
+nothing) and `countUnread` skips deleted threads besides, for the rows already
+written. Both halves are needed: `recordMessage` revives a deleted thread when
+the other person writes again, and without the first it would come back showing
+its old count over the one message the user can see.
+
 ## The root overlays carry a paint order, not just a place in the tree
 
 The first iOS device test sent a message while the app sat on another tab and
