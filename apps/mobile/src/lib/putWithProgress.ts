@@ -27,7 +27,13 @@ export function putWithProgress(options: {
     }
     request.onload = () => {
       if (request.status >= 200 && request.status < 300) resolve()
-      else reject(new Error(`Upload failed (${request.status})`))
+      // The status rides along: a bucket that answered and refused is not the
+      // same failure as one that was never reached, and `isOfflineFailure`
+      // tells the two apart by exactly this.
+      else
+        reject(
+          Object.assign(new Error(`Upload failed (${request.status})`), { status: request.status }),
+        )
     }
     // No status to report: the request never reached the bucket. Same message
     // shape as above so callers have one thing to catch.

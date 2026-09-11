@@ -304,6 +304,9 @@ export const en = {
     invalidToken: 'That link is no longer valid.',
     uploadFailed: 'Upload failed',
     loadFailed: 'Could not load this. Check your connection and try again.',
+    /** A write that never reached a server: the one failure the reader can place. */
+    offlineAction: 'That didn’t go through — you’re offline.',
+    actionFailed: 'That didn’t go through. Try again.',
   },
 
   location: {

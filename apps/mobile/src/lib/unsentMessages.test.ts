@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { addUnsent, MAX_UNSENT, newClientId, removeUnsent, retireDelivered } from './unsentMessages'
+import {
+  addUnsent,
+  MAX_UNSENT,
+  MAX_UNSENT_THREADS,
+  newClientId,
+  removeUnsent,
+  retireDelivered,
+  storeUnsent,
+  type UnsentByConversation,
+  type UnsentMessage,
+} from './unsentMessages'
 
 const at = (clientId: string, body = 'hi') => ({ clientId, body, failedAt: '2026-08-31T12:00:00Z' })
 
@@ -61,5 +71,33 @@ describe('retireDelivered', () => {
 
   it('returns the same list when nothing matches', () => {
     expect(retireDelivered(list, ['zzz'])).toHaveLength(2)
+  })
+})
+
+describe('storeUnsent', () => {
+  const row = (clientId: string): UnsentMessage => ({
+    clientId,
+    body: 'merhaba',
+    failedAt: '2026-09-11T18:00:00.000Z',
+  })
+
+  it('keeps the thread just written at the front', () => {
+    const stored = storeUnsent({ b: [row('b1')] }, 'a', [row('a1')])
+    expect(Object.keys(stored)).toEqual(['a', 'b'])
+  })
+
+  it('drops a thread once its last row has gone', () => {
+    expect(storeUnsent({ a: [row('a1')] }, 'a', [])).toEqual({})
+  })
+
+  it('remembers only the most recent threads', () => {
+    let stored: UnsentByConversation = {}
+    for (let i = 0; i < MAX_UNSENT_THREADS + 4; i++) {
+      stored = storeUnsent(stored, `c${i}`, [row(`m${i}`)])
+    }
+    expect(Object.keys(stored)).toHaveLength(MAX_UNSENT_THREADS)
+    // The newest is kept, the oldest is not.
+    expect(stored[`c${MAX_UNSENT_THREADS + 3}`]).toBeDefined()
+    expect(stored.c0).toBeUndefined()
   })
 })

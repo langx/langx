@@ -15,7 +15,7 @@ import {
   type MessageAsk,
   type MessageTranslation,
 } from '@langx/shared'
-import { useQueryClient } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -70,6 +70,7 @@ import {
   retireDelivered,
   type UnsentMessage,
 } from '../../../src/lib/unsentMessages'
+import { loadUnsent, saveUnsent } from '../../../src/lib/unsentStore'
 import {
   addOutgoing,
   isOutgoingId,
@@ -139,6 +140,31 @@ export default function ChatScreen() {
   /** Sends in flight, drawn in the thread before the server has answered. */
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
+  /**
+   * And back out of the device, because until this the rows lived exactly as
+   * long as the screen did. Somebody who types a sentence in a tunnel and goes
+   * back to the chat list to see whether anything else arrived was throwing
+   * away the only copy of it — the composer is empty by then.
+   *
+   * Nothing is written back before the read has landed: saving the empty
+   * initial state would wipe what this is here to keep.
+   */
+  const [unsentHydrated, setUnsentHydrated] = useState(false)
+  useEffect(() => {
+    let cancelled = false
+    void loadUnsent(conversationId).then((stored) => {
+      if (cancelled) return
+      if (stored.length > 0) setUnsent(stored)
+      setUnsentHydrated(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [conversationId])
+  useEffect(() => {
+    if (!unsentHydrated) return
+    void saveUnsent(conversationId, unsent)
+  }, [conversationId, unsent, unsentHydrated])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   /**
    * What this message asks the other person for, once it is sent.
@@ -870,6 +896,16 @@ export default function ChatScreen() {
     translation?: MessageTranslation,
   ): Promise<void> {
     try {
+      /*
+       * Twelve seconds is what the ack timeout costs, and with no network it
+       * can only end one way: a composer that looks like it is thinking, and
+       * then a red row. The row is the honest answer, and this is the only
+       * thing between it and the person who typed the sentence. `catch` below
+       * does the rest — the code rides along so the funnel can count them.
+       */
+      if (!onlineManager.isOnline()) {
+        throw Object.assign(new Error('offline'), { code: 'OFFLINE' })
+      }
       const socket = await getSocket()
       await emitWithAck(socket, 'message:send', {
         conversationId,

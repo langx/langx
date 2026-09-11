@@ -9,6 +9,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { authClient } from '../../src/lib/auth-client'
+import { useIsOnline } from '../../src/hooks/useIsOnline'
 import { authErrorKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { withSignInProgress } from '../../src/lib/signInProgress'
@@ -24,6 +25,9 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
+  // Better Auth has no code for "nobody answered", so the form would have
+  // said "Sign in failed" to somebody whose request never left the phone.
+  const online = useIsOnline()
   /**
    * Only Better Auth's own sign-in. A v1 password cannot be checked here — the
    * hash is one-way and from another system — and the bridge that once asked
@@ -43,7 +47,9 @@ export default function SignIn() {
         authClient.signIn.email({ email, password }),
       )
       if (signInError) {
-        setError(t(authErrorKey(signInError) ?? 'errors.signInFailed'))
+        setError(
+          t(authErrorKey(signInError) ?? (online ? 'errors.signInFailed' : 'common.offline')),
+        )
         return
       }
       /*

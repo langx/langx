@@ -302,6 +302,8 @@ export const ru: Localized<EnMessages> = {
     invalidToken: 'Эта ссылка больше не действует.',
     uploadFailed: 'Не удалось загрузить',
     loadFailed: 'Не удалось загрузить. Проверь соединение и попробуй снова.',
+    offlineAction: 'Не отправилось — нет подключения.',
+    actionFailed: 'Не отправилось. Попробуйте ещё раз.',
   },
 
   location: {

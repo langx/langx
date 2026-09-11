@@ -275,6 +275,8 @@ export const tr: Localized<EnMessages> = {
     invalidToken: 'Bu bağlantı artık geçerli değil.',
     uploadFailed: 'Yüklenemedi',
     loadFailed: 'Bu yüklenemedi. Bağlantını kontrol edip tekrar dene.',
+    offlineAction: 'Bu işlem gitmedi — internet yok.',
+    actionFailed: 'Bu işlem gitmedi. Tekrar dene.',
   },
 
   location: {

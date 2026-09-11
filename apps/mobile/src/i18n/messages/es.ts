@@ -264,6 +264,8 @@ export const es: Localized<EnMessages> = {
     invalidToken: 'Ese enlace ya no es válido.',
     uploadFailed: 'Error al subir',
     loadFailed: 'No se pudo cargar. Revisa tu conexión e inténtalo de nuevo.',
+    offlineAction: 'No se pudo completar: estás sin conexión.',
+    actionFailed: 'No se pudo completar. Inténtalo de nuevo.',
   },
 
   location: {

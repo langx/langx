@@ -311,6 +311,8 @@ export const ar: Localized<EnMessages> = {
     invalidToken: 'هذا الرابط لم يعد صالحًا.',
     uploadFailed: 'فشل الرفع',
     loadFailed: 'تعذّر التحميل. تحقّق من اتصالك وحاول مرة أخرى.',
+    offlineAction: 'لم يتم التنفيذ — أنت غير متصل بالإنترنت.',
+    actionFailed: 'لم يتم التنفيذ. حاول مرة أخرى.',
   },
 
   location: {

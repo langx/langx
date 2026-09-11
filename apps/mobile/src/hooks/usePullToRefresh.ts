@@ -1,5 +1,8 @@
+import { onlineManager } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { currentTranslate } from '../i18n/runtime'
 import { isPulling, nextPull, NO_PULL, settlePull } from '../lib/pullToRefresh'
+import { showToast } from '../lib/toast'
 
 /**
  * `refreshing` and `onRefresh` for a `RefreshControl`, driven by the pull
@@ -59,6 +62,15 @@ export function usePullToRefresh(refetch: () => unknown): {
       .catch(() => undefined)
       .finally(() => {
         if (!mounted.current) return
+        /*
+         * `refetch()` resolves whether or not it worked — react-query hands
+         * the error back in the result rather than rejecting — so there is no
+         * failure to catch here without changing twelve call sites. The state
+         * of the radio answers the only question a pull actually asks: a
+         * spinner that opens and closes with nothing new on screen is read as
+         * "there is nothing new", and in a tunnel that is not what happened.
+         */
+        if (!onlineManager.isOnline()) showToast(currentTranslate()('errors.offlineAction'))
         setActive((current) => settlePull(current, pull))
       })
   }, [])

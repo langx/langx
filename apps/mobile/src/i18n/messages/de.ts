@@ -266,6 +266,8 @@ export const de: Localized<EnMessages> = {
     invalidToken: 'Dieser Link ist nicht mehr gültig.',
     uploadFailed: 'Upload fehlgeschlagen',
     loadFailed: 'Das konnte nicht geladen werden. Prüfe deine Verbindung und versuch es erneut.',
+    offlineAction: 'Das ging nicht durch — du bist offline.',
+    actionFailed: 'Das ging nicht durch. Versuch es noch mal.',
   },
 
   location: {
