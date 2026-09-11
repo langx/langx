@@ -210,6 +210,73 @@ interface GroupedRow {
   unread: number
 }
 
+interface RowTargets {
+  /** Absent for an account that has been deleted, soft-deletion included. */
+  actors: Map<string, Profile>
+  /** Absent for a post its author has deleted. */
+  posts: Map<string, Post>
+}
+
+/**
+ * Everything a page of rows names, minus whatever no longer exists.
+ *
+ * Two queries for the whole page rather than two per row. The post lookup has
+ * to happen anyway to drop rows whose post is gone, so the excerpt a row
+ * renders costs one more field in a projection and nothing else.
+ */
+async function resolveRowTargets(db: Db, rows: NotificationDoc[]): Promise<RowTargets> {
+  const actorIds = [...new Set(rows.flatMap((row) => (row.actorId ? [row.actorId] : [])))]
+  const postIds = [
+    ...new Set(rows.flatMap((row) => (row.postId ? [row.postId.toHexString()] : []))),
+  ]
+
+  const [profiles, posts] = await Promise.all([
+    actorIds.length > 0
+      ? db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .find(
+            { _id: { $in: actorIds }, deletedAt: { $exists: false } },
+            { projection: { handle: 1, displayName: 1, avatarUrl: 1 } },
+          )
+          .toArray()
+      : [],
+    postIds.length > 0
+      ? db
+          .collection<Post>(COLLECTIONS.posts)
+          .find(
+            { _id: { $in: postIds.map((id) => new ObjectId(id)) } },
+            { projection: { body: 1 } },
+          )
+          .toArray()
+      : [],
+  ])
+
+  return {
+    actors: new Map(profiles.map((profile) => [profile._id, profile])),
+    posts: new Map(posts.map((post) => [post._id.toHexString(), post])),
+  }
+}
+
+/**
+ * Whether a row can be drawn at all — everything it names still exists.
+ *
+ * One rule, read by the list and by the bell, because they were two and drifted
+ * apart. The list has always dropped these rows; the count did not, so a
+ * comment on a post its author later deleted, or a follow from somebody who has
+ * since deleted their account, sat on the badge over a list that did not
+ * contain it. And it could not be cleared: reading is what zeroes a row, "Mark
+ * all read" is only offered when a *rendered* row is unread, and there is no
+ * row left to open.
+ */
+function isDrawable(
+  row: Pick<NotificationDoc, 'actorId' | 'postId'>,
+  targets: RowTargets,
+): boolean {
+  if (row.actorId && !targets.actors.has(row.actorId)) return false
+  if (row.postId && !targets.posts.has(row.postId.toHexString())) return false
+  return true
+}
+
 /**
  * The inbox, newest first.
  *
@@ -283,44 +350,13 @@ export async function listNotifications(
     ]),
   )
 
-  const actorIds = [...new Set(rows.flatMap((row) => (row.actorId ? [row.actorId] : [])))]
-  const postIds = [
-    ...new Set(rows.flatMap((row) => (row.postId ? [row.postId.toHexString()] : []))),
-  ]
-
-  // Two queries for the whole page rather than two per row. The post lookup
-  // has to happen anyway to drop rows whose post is gone, so the excerpt the
-  // row renders costs one more field in a projection and nothing else.
-  const [profiles, posts] = await Promise.all([
-    actorIds.length > 0
-      ? db
-          .collection<Profile>(COLLECTIONS.profiles)
-          .find(
-            { _id: { $in: actorIds }, deletedAt: { $exists: false } },
-            { projection: { handle: 1, displayName: 1, avatarUrl: 1 } },
-          )
-          .toArray()
-      : [],
-    postIds.length > 0
-      ? db
-          .collection<Post>(COLLECTIONS.posts)
-          .find(
-            { _id: { $in: postIds.map((id) => new ObjectId(id)) } },
-            { projection: { body: 1 } },
-          )
-          .toArray()
-      : [],
-  ])
-  const byId = new Map(profiles.map((profile) => [profile._id, profile]))
-  const postById = new Map(posts.map((post) => [post._id.toHexString(), post]))
+  const targets = await resolveRowTargets(db, rows)
 
   const items = rows.flatMap((row): InAppNotification[] => {
+    if (!isDrawable(row, targets)) return []
     const extra = extraByRow.get(row._id.toHexString())
-    const actor = row.actorId ? byId.get(row.actorId) : undefined
-    if (row.actorId && !actor) return []
-
-    const post = row.postId ? postById.get(row.postId.toHexString()) : undefined
-    if (row.postId && !post) return []
+    const actor = row.actorId ? targets.actors.get(row.actorId) : undefined
+    const post = row.postId ? targets.posts.get(row.postId.toHexString()) : undefined
 
     return [
       {
@@ -370,29 +406,45 @@ export async function listNotifications(
  * with the screen it leads to is worse than no badge: it sends somebody
  * looking for nine things that were never there.
  *
- * So it groups the same way the list does, and filters blocked people the same
- * way, and matches the unread rows *before* grouping — which is both correct
- * (a group is unread if anything in it is) and cheaper than grouping
- * everything and then asking.
+ * So it runs the list's own pipeline — the same grouping, the same block
+ * filter, the same order — and then drops what the list drops, through
+ * `isDrawable`. That last part is why it can no longer match the unread rows
+ * before grouping, cheap as that was: the row the list draws is the group's
+ * *newest* member, which is not necessarily one of the unread ones, and it is
+ * that row's actor and post that decide whether the group appears at all.
  *
  * Capped, because past a point the answer stops being a number and starts
- * being "lots": `unreadBadge` draws `99+` anyway.
+ * being "lots": `unreadBadge` draws `99+` anyway. Sorted before the cap so the
+ * hundred it keeps are the hundred the list opens on.
  */
 export async function countUnreadNotifications(db: Db, userId: string): Promise<number> {
   const hidden = await blockedUserIds(db, userId)
-  const match: Document = { userId, readAt: { $exists: false } }
+  const match: Document = { userId }
   if (hidden.length > 0) match.actorId = { $nin: hidden }
 
-  const rows = await db
+  const groups = await db
     .collection<NotificationDoc>(COLLECTIONS.notifications)
-    .aggregate<{ _id: string }>([
+    .aggregate<{ latest: NotificationDoc }>([
       { $match: match },
+      { $sort: { createdAt: -1, _id: -1 } },
       { $addFields: { groupKey: GROUP_KEY } },
-      { $group: { _id: '$groupKey' } },
+      {
+        $group: {
+          _id: '$groupKey',
+          latest: { $first: '$$ROOT' },
+          // A group is unread if anything in it is. Absent means unread.
+          unread: { $sum: { $cond: [{ $eq: [{ $type: '$readAt' }, 'missing'] }, 1, 0] } },
+        },
+      },
+      { $match: { unread: { $gt: 0 } } },
+      { $sort: { 'latest.createdAt': -1, 'latest._id': -1 } },
       { $limit: UNREAD_COUNT_CAP },
     ])
     .toArray()
-  return rows.length
+
+  const rows = groups.map((group) => group.latest)
+  const targets = await resolveRowTargets(db, rows)
+  return rows.filter((row) => isDrawable(row, targets)).length
 }
 
 /**
