@@ -215,29 +215,92 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 - **An unverified address.** Nothing is ever sent to one — it may belong to
   somebody else.
 
+---
+
+## 4. The notification centre — the one that does not leave
+
+Everything above leaves the app and is then forgotten. `notificationLedger`
+keeps a row so nobody is told twice, but it holds `{_id, sentOn}` and is
+unreadable by design, so somebody who missed the push had no way of ever
+learning what it said.
+
+The `notifications` collection is the other half: a row per thing that
+happened, read by a bell in the Feed header and a screen behind it.
+
+| Kind                                                     | Written where                      | `refId` — what makes it arrive once |
+| -------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
+| `follow`                                                 | `routes/follows.ts`                | the follower's id                   |
+| `postComment` / `postCorrection` / `pronunciationAnswer` | `routes/feed.ts` → `tellTheAuthor` | the reply's own id                  |
+| `like`                                                   | `routes/likes.ts`                  | `<targetType>:<targetId>:<actorId>` |
+| `badgeEarned`                                            | `notifications/badges.ts`          | the badge id                        |
+| `walletPool`                                             | `tokens/pool.ts`, at the payout    | the pool day                        |
+| `profileVisits`                                          | `notifications/profileVisits.ts`   | the local day                       |
+
+### The four rules it runs on
+
+- **Per event, where the push is batched.** Three comments on one post are
+  three rows, though the push sends one an hour and likes go out once a day.
+  The throttles exist because a phone buzzing interrupts; a list somebody chose
+  to open does not. No sender, ledger claim or throttle changed.
+- **Not gated by the switches.** `notificationsAllowed` is never called on this
+  path. Those two channels are about what _leaves_; turning off social push is
+  a request not to be buzzed, not a request to be blinded. The badge write in
+  `badges.ts` sits deliberately **above** the `wantsPush`/`wantsEmail` check,
+  and a test pins it there.
+- **Unique for ninety days.** `{userId, kind, refId}` is unique and the insert
+  failing _is_ the check; `ttl_90d` then bounds it, so refollowing next season
+  is news again. That is right for a feed and wrong for a send-ledger — which
+  is why these are two collections.
+- **No prose on the wire.** The row carries data — an actor, a post, a count —
+  and the app composes the sentence from `messages/en.ts`, so a count reaches a
+  plural entry in the reader's own language.
+
+### What it does not carry
+
+- **Chat messages.** The Chats tab, its per-row counts and its badge are
+  already that inbox.
+- **The hourly gift.** "Your gift is ready" is a statement about a button being
+  available, not a record of something that happened; a row saying it was ready
+  three days ago is noise. The wallet screen draws the cooldown from
+  `giftReadyAt`.
+- **Who viewed you.** The visit row is a **count**, with no actor: identities
+  are the paid half of that feature, and a row carrying a name and a face would
+  hand them out to everyone. The tap lands on `/viewers`, which draws its own
+  line.
+
+Badges and visits are recorded inside their existing passes because neither has
+an event to hang off — a badge is derived rather than stored, and a visit row
+per viewer would be both spam and a paywall leak. Both therefore inherit their
+pass's hour: a badge earned at breakfast appears that evening, a visit at 13:00
+appears at noon the next day.
+
+---
+
 ## Where a tapped push lands
 
 `apps/mobile/src/lib/notificationRoute.ts`.
 
-| Kind                         | Opens                            |
-| ---------------------------- | -------------------------------- |
-| `message`, `meetingReminder` | the conversation, or `/chats`    |
-| `streakReminder`             | `/chats`                         |
-| `badgeEarned`                | `/me`                            |
-| `profileVisits`              | `/viewers`                       |
-| `social`                     | the post, the person, or `/feed` |
-| `wallet`, `bountyPaid`       | `/wallet`                        |
-| `billing`                    | `/settings/plan`                 |
-| `security`                   | `/settings/password`             |
-| `promotion`                  | `/discover`                      |
+| Kind                         | Opens                                     |
+| ---------------------------- | ----------------------------------------- |
+| `message`, `meetingReminder` | the conversation, or `/chats`             |
+| `streakReminder`             | `/chats`                                  |
+| `badgeEarned`                | `/me`                                     |
+| `profileVisits`              | `/viewers`                                |
+| `social`                     | the post, the person, or `/notifications` |
+| `wallet`, `bountyPaid`       | `/wallet`                                 |
+| `billing`                    | `/settings/plan`                          |
+| `security`                   | `/settings/password`                      |
+| `promotion`                  | `/discover`                               |
 
 ## Not built
 
 Written down so the next person does not have to re-derive them.
 
-| Scenario                                | Blocked on                 |
-| --------------------------------------- | -------------------------- |
-| Editor's note as a standalone broadcast | the monthly note covers it |
+| Scenario                                 | Blocked on                                      |
+| ---------------------------------------- | ----------------------------------------------- |
+| Editor's note as a standalone broadcast  | the monthly note covers it                      |
+| Chat messages in the notification centre | the Chats tab is already that inbox             |
+| Backfilled history in the centre         | nothing — it starts empty at deploy, on purpose |
 
 ## Every message is one format
 
