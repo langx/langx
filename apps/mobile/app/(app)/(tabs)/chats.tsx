@@ -207,6 +207,7 @@ export default function ChatsScreen() {
                   : t(EMPTY_COPY[filter].body)
               }
               actionLabel={t('chats.goToDiscover')}
+              actionVariant="secondary"
               onAction={() => router.push('/(app)/(tabs)/discover')}
             />
           }
