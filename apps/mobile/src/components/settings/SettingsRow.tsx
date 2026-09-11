@@ -671,6 +671,15 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
     case 'about.intro':
       return <ListRow title={t('settings.showIntro')} last={last} onPress={model.replayIntro} />
+    case 'about.tour':
+      return (
+        <ListRow
+          title={t('settings.showTour')}
+          subtitle={t('settings.showTourBody')}
+          last={last}
+          onPress={() => void model.replayTour()}
+        />
+      )
     case 'about.rate':
       // The listing itself, not the rationed in-app sheet: a row somebody
       // taps on purpose should always lead somewhere. Nowhere to send a

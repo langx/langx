@@ -14,6 +14,7 @@ import {
 } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
+import { TOUR_TARGETS } from '../lib/tour'
 import {
   accountAgeLabel,
   genderLabel,
@@ -194,6 +195,18 @@ describe('dynamically built keys', () => {
     for (const type of NOTIFICATION_TYPES) {
       expect(t(`notifications.${type}` as never), type).not.toContain('notifications.')
       expect(t(`notifications.${type}Body` as never), type).not.toContain('notifications.')
+    }
+  })
+
+  /*
+   * `TourHost` builds these with an `as MessageKey` cast too, and a step is
+   * added by adding a target — so without this, a new step ships as a bubble
+   * with a dotted path where its sentence should be.
+   */
+  it('resolves a title and a body for every tour step', () => {
+    for (const target of TOUR_TARGETS) {
+      expect(t(`tour.${target}Title` as never), target).not.toContain('tour.')
+      expect(t(`tour.${target}Body` as never), target).not.toContain('tour.')
     }
   })
 

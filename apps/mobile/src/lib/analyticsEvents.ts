@@ -1,5 +1,6 @@
 import type { BillingPeriod, PaidPlanTier, PlanChange, PlanFeature, PlanTier } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
+import type { TourTargetId } from './tour'
 import type { PurchaseOutcome } from './purchases'
 
 /** How an account was created. The mailed link is what makes `email` two steps. */
@@ -135,6 +136,30 @@ export type AnalyticsEvent =
        */
       name: 'review_prompted'
       properties: { trigger: 'streakMilestone' | 'correction' }
+    }
+  | {
+      /** The first-run tour opened. Once per install, so this counts installs toured. */
+      name: 'tour_started'
+      properties: { is_guest: boolean }
+    }
+  | {
+      /**
+       * One step was drawn against a measured element. A step whose target
+       * could not be measured is skipped and never counted — otherwise the
+       * drop-off would read as people refusing a step they were never shown.
+       */
+      name: 'tour_step_viewed'
+      properties: { step: TourTargetId; index: number }
+    }
+  | {
+      /** Sent away part-way through, by the Skip button or the back button. */
+      name: 'tour_skipped'
+      properties: { step: TourTargetId; index: number }
+    }
+  | {
+      /** The last step was passed. Against `tour_started`, this is the funnel. */
+      name: 'tour_completed'
+      properties: { is_guest: boolean }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

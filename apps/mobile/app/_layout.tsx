@@ -26,6 +26,7 @@ import { AppSplash, SplashFill } from '../src/components/AppSplash'
 import { Button } from '../src/components/ui/Button'
 import { MessageBannerHost } from '../src/components/MessageBannerHost'
 import { ToastHost } from '../src/components/ToastHost'
+import { TourHost } from '../src/components/TourHost'
 import { authClient } from '../src/lib/auth-client'
 import { useGuestSessionReset } from '../src/hooks/useGuestSessionReset'
 import { usePendingInvite } from '../src/hooks/usePendingInvite'
@@ -311,6 +312,13 @@ function RootShell() {
             */}
             <AlertHost />
             <MessageMenuHost />
+            {/*
+              Above the navigator with the other two dialogs, and a Modal like
+              them: the tour dims the tab bar as well as the screen, and it has
+              to outlive the screen that started it — the Settings row that
+              replays it navigates while the run is being set up.
+            */}
+            <TourHost />
             <Stack screenOptions={{ headerShown: false }}>
               {/*
                 Outside both guards, because it *is* the guard: `index` is the

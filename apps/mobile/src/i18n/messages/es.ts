@@ -90,6 +90,24 @@ export const es: Localized<EnMessages> = {
     discoverFilters: 'Usa los filtros para acotar por nivel, edad o país.',
     feedAsk: '¿Atascado con una frase? Publícala aquí y alguien la corregirá.',
   },
+  tour: {
+    progress: 'Paso {current} de {total}',
+    next: 'Siguiente',
+    done: 'Entendido',
+    skip: 'Omitir',
+    discoverPairTitle: 'Coincidencia en ambos sentidos',
+    discoverPairBody:
+      'Todas las personas de esta pantalla hablan el idioma que aprendes y aprenden uno que tú hablas. Toca el par para cambiarlo.',
+    discoverSortsTitle: 'Tres formas de mirar',
+    discoverSortsBody:
+      'Para ti se ajusta a tus idiomas, Activos muestra a quien acaba de estar aquí y Cerca funciona cuando compartes tu ubicación.',
+    discoverFiltersTitle: 'Reduce la lista',
+    discoverFiltersBody:
+      'Filtra por nivel, edad o país, o usa la búsqueda cuando ya sabes a quién buscas.',
+    discoverCardTitle: 'Empieza aquí',
+    discoverCardBody:
+      'Abre a cualquiera para leer su perfil. Saludar primero es como empieza casi todo intercambio en LangX.',
+  },
   theme: {
     section: 'Apariencia',
     label: 'Tema',
@@ -1209,6 +1227,8 @@ export const es: Localized<EnMessages> = {
     languageAuto: 'Dispositivo ({name})',
     blockedPeople: 'Personas bloqueadas',
     showIntro: 'Ver la introducción otra vez',
+    showTour: 'Repetir el recorrido',
+    showTourBody: 'Recorre la pantalla Descubrir otra vez, paso a paso.',
     rateApp: 'Valorar LangX',
     exportData: 'Exportar mis datos',
     deleteAccount: 'Eliminar cuenta',
