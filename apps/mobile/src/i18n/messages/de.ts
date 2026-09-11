@@ -564,7 +564,7 @@ export const de: Localized<EnMessages> = {
     boostedWhat: 'Was ist das?',
     boostedExplainTitle: 'Hervorgehobene Profile',
     boostedExplainBody:
-      'Hier erscheinen Fluent- und Polyglot-Mitglieder, Polyglot zuerst. Sie werden genauso nach Sprachen zugeordnet wie die Liste darunter — an der Zuordnung ändert sich nichts, und abschalten lässt es sich in den Einstellungen.',
+      'Hier erscheinen Fluent- und Polyglot-Mitglieder, Polyglot zuerst. Die Reihenfolge wechselt im Lauf des Tages, damit alle einmal vorn stehen. Sie werden genauso nach Sprachen zugeordnet wie die Liste darunter — an der Zuordnung ändert sich nichts, und abschalten lässt es sich in den Einstellungen.',
     boostedSeePlans: 'Zu den Plänen',
     languagesA11y: 'Wähle, mit welchen deiner Sprachen gesucht wird',
     searchHandles: 'Nach Benutzername suchen',
