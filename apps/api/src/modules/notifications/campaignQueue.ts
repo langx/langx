@@ -17,7 +17,7 @@ import {
 import { localeFor } from '../profiles/localeFor'
 import type { JobRun } from '../tokens/pool'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
-import { audiencePlan } from './audience'
+import { audiencePlan, chosenName } from './audience'
 import {
   campaignRecipients,
   claimCampaignRecipients,
@@ -212,10 +212,13 @@ export async function resolveCampaignAudience(
         skipped.suppressed++
         continue
       }
+      // Five of the 837 carry their address as their name, same as the live
+      // v1 rows do; `chosenName` is what decides that there for the letter.
+      const name = chosenName(row.name)
       candidates.push({
         id: row._id,
         email: row.email,
-        firstName: row.name,
+        ...(name ? { firstName: name } : {}),
         scope: 'v1contact',
         hasProfile: false,
       })

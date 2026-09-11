@@ -214,6 +214,24 @@ describe('what a Resend audience should contain', () => {
     expect(byId.get(typed)?.name).toBe('langx_abcd')
   })
 
+  /**
+   * The other shape of no-name: v1 stored the address itself whenever the
+   * provider handed over nothing, which on Apple's relay reads "Hi
+   * 8yr8jmtvmn@privaterelay.appleid.com,".
+   */
+  it('drops a name that is only the address again', async () => {
+    const relay = await newAccount({
+      fromV1: true,
+      profile: false,
+      email: '8yr8jmtvmn@privaterelay.appleid.com',
+      name: '8yr8jmtvmn@privaterelay.appleid.com',
+    })
+
+    const plan = await audiencePlan(handle.db, 'v1')
+    const byId = new Map(plan.contacts.map((contact) => [contact.userId, contact]))
+    expect(byId.get(relay)?.name).toBeUndefined()
+  })
+
   it('excludes guests and addresses nobody proved', async () => {
     await newAccount({ notifications: optedIn, verified: false })
     await newAccount({ notifications: optedIn, anonymous: true, email: 'g@guest.langx.invalid' })
