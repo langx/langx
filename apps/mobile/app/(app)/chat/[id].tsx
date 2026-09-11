@@ -47,6 +47,7 @@ import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import {
@@ -1542,7 +1543,22 @@ export default function ChatScreen() {
           own box rather than the screen's — that keeps it above the composer
           whatever height the composer has grown to. */}
         <View style={styles.listWrap}>
-          {state === 'skeleton' ? (
+          {state === 'failed' ? (
+            /*
+             * A thread that did not load drew as an empty one — no messages,
+             * composer ready, exactly what a conversation nobody has written
+             * in looks like. The two must not share a picture: one invites you
+             * to say hello, the other loses what was already said.
+             *
+             * The same `flex: 1` the skeleton needs, and for the same reason.
+             * The composer stays live: sending does not depend on the history
+             * having arrived, and taking it away would strand somebody who
+             * only wanted to reply.
+             */
+            <View style={[styles.list, styles.skeletonFill]}>
+              <LoadFailed onRetry={() => void thread.refetch()} />
+            </View>
+          ) : state === 'skeleton' ? (
             // `flex: 1` because the FlatList it stands in for takes the whole
             // height; without it the composer rides up under the placeholders and
             // then drops when the real thread arrives.
@@ -1765,7 +1781,11 @@ export default function ChatScreen() {
             placeholder={
               correcting
                 ? t('chat.writeCorrection')
-                : items.length === 0 && partner
+                : // `state`, not `items.length`: a thread that failed to load
+                  // also has no rows, and inviting somebody to say hello to a
+                  // person they have been talking to for months is the same
+                  // wrong answer the list above used to give.
+                  state === 'empty' && partner
                   ? t('chat.sayHello', { name: partner.displayName })
                   : t('chat.writeMessage')
             }

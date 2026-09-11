@@ -19,12 +19,27 @@ describe('listState', () => {
     expect(listState({ isPending: true, isError: false, itemCount: 20 })).toBe('content')
   })
 
+  /** And a page two that fails must not throw away page one either. */
+  it('keeps showing content when a later page fails', () => {
+    expect(listState({ isPending: false, isError: true, itemCount: 20 })).toBe('content')
+  })
+
   it('leaves an empty successful result to the caller`s empty state', () => {
+    expect(listState({ isPending: false, isError: false, itemCount: 0 })).toBe('empty')
+  })
+
+  /**
+   * The distinction the callers exist to draw: "nothing here" is news the
+   * reader can act on, "it did not load" is a button. Folding the second into
+   * the first is what made a timeout read as an empty app.
+   */
+  it('tells a failed request apart from an empty one', () => {
+    expect(listState({ isPending: false, isError: true, itemCount: 0 })).toBe('failed')
     expect(listState({ isPending: false, isError: false, itemCount: 0 })).toBe('empty')
   })
 
   /** A failed refetch is pending-with-nothing; a pulse there promises data that is not coming. */
   it('does not pulse forever over an error', () => {
-    expect(listState({ isPending: true, isError: true, itemCount: 0 })).toBe('empty')
+    expect(listState({ isPending: true, isError: true, itemCount: 0 })).toBe('failed')
   })
 })
