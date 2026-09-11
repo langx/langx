@@ -37,7 +37,19 @@ export function isOfficialHandle(handle: string): handle is OfficialHandle {
  * bill.
  */
 export const OFFICIAL_ASSISTANT = {
+  /** Replies to one person, in one day. Stops a single conversation running up a bill. */
   repliesPerDay: 30,
+  /**
+   * Replies to **everybody**, in one UTC day — the ceiling that actually
+   * bounds the bill, because the one above is per person and the number of
+   * people is not bounded by anything.
+   *
+   * 500 is arithmetic, not a feeling: a reply costs roughly half a cent at
+   * Sonnet rates, so this is about $3 a day and under $100 a month in the
+   * worst case. Raise it when the bill is worth paying; it is one number and
+   * the app says the same thing to the 501st person it says to the 31st.
+   */
+  globalRepliesPerDay: 500,
   historyMessages: 20,
 } as const
 

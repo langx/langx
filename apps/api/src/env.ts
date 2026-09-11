@@ -58,7 +58,14 @@ const envSchema = z.object({
    * announcements — which are ours, not the model's — carry on untouched.
    */
   ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
-  ANTHROPIC_MODEL: z.string().min(1).default('claude-opus-5'),
+  /**
+   * Sonnet rather than Opus, and the reason is the workload: short answers
+   * about a product this prompt already describes, with at most one tool call
+   * behind them. Opus is roughly two and a half times the price per token for
+   * a job neither model finds hard. One env var moves it back if the answers
+   * turn out to need it.
+   */
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this

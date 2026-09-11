@@ -623,6 +623,14 @@ assistant behind it is an **optional service** in the same sense as email and
 storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
 and everything else about the account still works.
 
+Two ceilings bound it, both in `OFFICIAL_ASSISTANT`: `repliesPerDay` per
+conversation, and `globalRepliesPerDay` across everybody — the second is the one
+that bounds the bill, because the number of conversations is not bounded by
+anything. The global one counts **model calls** in a per-day counter
+(`assistantUsage`), not messages: an announcement writes to every account on the
+service, and counting messages would take the assistant down on exactly the day
+it was most visible.
+
 An account that has been run by hand can be **adopted** rather than replaced:
 `scripts/adopt-official-account.ts` flips the flag, revokes every session and
 credential, and rewrites the address to the undeliverable one — keeping the

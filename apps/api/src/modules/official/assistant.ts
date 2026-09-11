@@ -21,6 +21,7 @@ import { reportUser } from '../moderation/blocks'
 import { findProfileByHandleOrId } from '../profiles/profiles'
 import { localeFor } from '../profiles/localeFor'
 import { officialHandleOf, officialIds } from './accounts'
+import { claimAssistantCall } from './assistantBudget'
 import type { AssistantTool, AssistantTurn } from './assistantProvider'
 import { deliverOfficialMessage } from './deliver'
 
@@ -258,6 +259,22 @@ export async function respondAsOfficial(
       if (!officialId) return
 
       if ((await repliesToday(app, conversation, officialId)) >= OFFICIAL_ASSISTANT.repliesPerDay) {
+        await say(app, handle, senderId, t('official.assistantLimit', { email }))
+        return
+      }
+
+      /*
+       * The ceiling on the bill, taken last — after everything that could
+       * still refuse this reply for free, so a slot is never spent on a turn
+       * that was not going to happen.
+       *
+       * The same wording as the per-person limit on purpose. Whose ceiling it
+       * was is our problem, not the reader's, and "everyone has used it up
+       * today" is an operational detail that tells them nothing they can act
+       * on.
+       */
+      if (!(await claimAssistantCall(app.mongo.db))) {
+        app.log.warn('assistant daily budget exhausted')
         await say(app, handle, senderId, t('official.assistantLimit', { email }))
         return
       }

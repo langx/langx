@@ -3,6 +3,8 @@ import { ObjectId } from 'mongodb'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { OFFICIAL_ASSISTANT } from '@langx/shared'
+import { assistantCallsToday } from './assistantBudget'
+import { deliverOfficialMessage } from './deliver'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
@@ -152,6 +154,7 @@ describe('answering as an official account', () => {
       COLLECTIONS.messages,
       COLLECTIONS.reports,
       COLLECTIONS.tokenLedger,
+      COLLECTIONS.assistantUsage,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
@@ -259,6 +262,41 @@ describe('answering as an official account', () => {
       })
       expect(sent.map((mail) => mail.to)).toEqual([SUPPORT])
     })
+  })
+
+  /**
+   * The ceiling that bounds the bill rather than one conversation. Worded the
+   * same as the per-person one on purpose — whose ceiling it was is not the
+   * reader's problem.
+   */
+  it('stops answering everybody once the day’s budget is gone', async () => {
+    await handle.db.collection(COLLECTIONS.assistantUsage).insertOne({
+      _id: new Date().toISOString().slice(0, 10) as never,
+      calls: OFFICIAL_ASSISTANT.globalRepliesPerDay,
+      createdAt: new Date(),
+    })
+
+    await write(ADA, officialIds().get('langx')!, 'hello?')
+
+    expect(assistant.requests).toHaveLength(0)
+    const replies = await saidTo(ADA)
+    expect(replies).toHaveLength(1)
+    expect(replies[0]).toContain(SUPPORT)
+  })
+
+  /**
+   * A welcome or an announcement is ours, not the model's — it costs nothing
+   * and must not eat a slot. On announcement day that difference is the
+   * assistant staying up.
+   */
+  it('spends no budget on a message it did not think about', async () => {
+    await deliverOfficialMessage(handle.db, {
+      fromHandle: 'langx',
+      toUserId: ADA,
+      body: 'an announcement',
+      clientId: 'announcement:test',
+    })
+    expect(await assistantCallsToday(handle.db)).toBe(0)
   })
 
   it('stops answering once the daily ceiling is reached', async () => {
