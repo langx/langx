@@ -14,6 +14,7 @@ import { Tip } from '../../../src/components/Tip'
 import { SwipeableRow } from '../../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
@@ -38,36 +39,6 @@ const EMPTY_COPY: Record<ConversationFilter, { title: MessageKey; body: MessageK
   all: { title: 'chats.emptyTitle', body: 'chats.emptyBody' },
   unreplied: { title: 'chats.unrepliedEmptyTitle', body: 'chats.unrepliedEmptyBody' },
   archived: { title: 'chats.archivedEmptyTitle', body: 'chats.archivedEmptyBody' },
-}
-
-/**
- * Not `EmptyState`: that one ends on the yellow `Button`, and the design ends
- * this one on a plain accent text link. The box is otherwise the same — the
- * 56px `fill` disc, the 20px title, the 15/22 body — so the two still read as
- * one thing. Every tab gets the link: an empty Archived tab is as good a
- * moment to go and find someone as an empty inbox.
- */
-function ChatsEmpty({ title, body }: { title: string; body: string }) {
-  const { colors } = useTheme()
-  const styles = useStyles()
-  const t = useT()
-
-  return (
-    <View style={styles.empty}>
-      <View style={styles.emptyBadge}>
-        <Feather name="message-square" size={24} color={colors.textFaint} />
-      </View>
-      <Text style={styles.emptyTitle}>{title}</Text>
-      <Text style={styles.emptyBody}>{body}</Text>
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.push('/(app)/(tabs)/discover')}
-        style={({ pressed }) => [styles.emptyLink, pressed && styles.pressed]}
-      >
-        <Text style={styles.emptyLinkText}>{t('chats.goToDiscover')}</Text>
-      </Pressable>
-    </View>
-  )
 }
 
 export default function ChatsScreen() {
@@ -225,15 +196,19 @@ export default function ChatsScreen() {
             /*
               Per tab, because "no chats at all" and "nothing waiting on you"
               are opposite news and the generic copy makes the second read as
-              the first — with a link offering to go and start one.
+              the first — with a button offering to go and start one.
             */
-            <ChatsEmpty
+            <EmptyState
+              icon="message-square"
               title={t(EMPTY_COPY[filter].title)}
               body={
                 filter === 'all'
                   ? t('chats.emptyBody', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })
                   : t(EMPTY_COPY[filter].body)
               }
+              actionLabel={t('chats.goToDiscover')}
+              actionVariant="secondary"
+              onAction={() => router.push('/(app)/(tabs)/discover')}
             />
           }
           renderItem={({ item, index }) => {
@@ -414,22 +389,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // The one press state that is a fill rather than a dip: a round button on a
   // plain row has nothing else to show it was hit.
   morePressed: { backgroundColor: colors.fill },
-  // Tall margins on purpose, as in `EmptyState`: an empty list is the one
-  // screen with nothing to push against, and a message hugging the header
-  // reads as an error.
-  empty: { alignItems: 'center', gap: 10, paddingHorizontal: spacing.xl, paddingVertical: 64 },
-  emptyBadge: {
-    alignItems: 'center',
-    backgroundColor: colors.fill,
-    borderRadius: radius.pill,
-    height: 56,
-    justifyContent: 'center',
-    width: 56,
-  },
-  emptyTitle: { ...font.heading, color: colors.text, textAlign: 'center' },
-  emptyBody: { ...font.body, color: colors.textMuted, lineHeight: 22, textAlign: 'center' },
-  emptyLink: { height: 44, justifyContent: 'center', marginTop: spacing.sm, paddingHorizontal: 18 },
-  emptyLinkText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */

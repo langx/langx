@@ -10,9 +10,18 @@ interface EmptyStateProps {
   body: string
   actionLabel?: string
   onAction?: () => void
+  /** The yellow is the default; pass `secondary` where the action is an offer. */
+  actionVariant?: 'primary' | 'secondary'
 }
 
-export function EmptyState({ icon, title, body, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  body,
+  actionLabel,
+  onAction,
+  actionVariant = 'primary',
+}: EmptyStateProps) {
   const { colors } = useTheme()
   const styles = useStyles()
 
@@ -24,7 +33,12 @@ export function EmptyState({ icon, title, body, actionLabel, onAction }: EmptySt
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
       {actionLabel && onAction ? (
-        <Button label={actionLabel} onPress={onAction} style={styles.action} />
+        <Button
+          label={actionLabel}
+          onPress={onAction}
+          variant={actionVariant}
+          style={styles.action}
+        />
       ) : null}
     </View>
   )
