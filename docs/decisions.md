@@ -1004,6 +1004,38 @@ new answer on both store forms and a cost the funnel question does not need
 paid. `docs/analytics.md` has the event list; the store consequences are in
 `docs/store/privacy-data-safety.md`.
 
+**Session replay was turned on on 11 September 2026**, and the sentence above
+is the one being reversed. It was right about the funnel and wrong about what
+comes after it. The funnel says how many people left a screen and nothing here
+could say why: `onboarding_step_completed` counts the step being finished,
+`$screen` counts it being seen, and the gap between the two is the entire
+question. A masked recording is the only instrument that answers it without
+asking anybody anything, and the events that were added after the original
+funnel — a send that failed, a push nobody taps — were the same admission a
+step at a time.
+
+"However masked" is now load-bearing, so it is written down rather than
+assumed. All text is masked, not only the fields somebody types into, and so
+is every image, which leaves a chat recording as a column of grey blocks:
+layout, timing and where the taps went. Console logs and network telemetry are
+the two ways text would get past that — a log line is whatever was logged, a
+URL carries the ids the events deliberately leave on the phone — and they are
+the only two options in `analytics.ts` that are the SDK's defaults inverted
+rather than repeated. The masks themselves are defaults too, and they are
+written out anyway: a dependency bump that changed one would change what
+leaves the phone without changing a line of ours.
+
+Two prices, both paid where this repo can see them. It is a native module, so
+it moves the `runtimeVersion` fingerprint and cannot arrive over the air — the
+first build carrying replay is a store build, and older installs simply see no
+update. And it is iOS and Android only: the SDK skips the plugin on web, so
+`app.langx.io` records nothing and `enableSessionReplay` says
+`Platform.OS !== 'web'` rather than `true` so that the web build does not
+warn about a module it will never have. How many sessions are recorded is a
+dial in PostHog rather than a constant here, for the same reason every other
+threshold is config — set locally it would win over the project's, and
+recording less would mean a release.
+
 ## Discovery filters live in the URL, not a store
 
 The filter screen is pushed on top of Discover and has to hand its result back,

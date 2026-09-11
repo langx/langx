@@ -1327,7 +1327,7 @@ export const de: Localized<EnMessages> = {
     shareLocationBody: 'Andere sehen eine Entfernungsspanne, nie einen Punkt.',
     shareUsage: 'Nutzungsdaten teilen',
     shareUsageBody:
-      'Welche Bildschirme und Schaltflächen genutzt werden — nie, was du schreibst. So sehen wir, wo Leute hängen bleiben.',
+      'Welche Bildschirme und Schaltflächen genutzt werden, und eine Aufzeichnung des Bildschirms, in der jedes Wort und jedes Bild unkenntlich gemacht ist — nie, was du schreibst. So sehen wir, wo Leute hängen bleiben.',
     activityMap: 'Meine Aktivitätskarte zeigen',
     activityMapBody: 'Die Kästchen auf deinem Profil. Deine Serie bleibt so oder so sichtbar.',
     updateLocation: 'Meinen Standort aktualisieren',

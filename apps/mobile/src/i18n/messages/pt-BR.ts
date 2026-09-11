@@ -1289,7 +1289,7 @@ export const ptBR: Localized<EnMessages> = {
     shareLocationBody: 'Os outros veem uma faixa de distância, nunca um ponto.',
     shareUsage: 'Compartilhar dados de uso',
     shareUsageBody:
-      'Quais telas e botões são usados — nunca o que você escreve. Mostra onde as pessoas travam.',
+      'Quais telas e botões são usados, e uma gravação da tela com cada palavra e imagem ocultas — nunca o que você escreve. Mostra onde as pessoas travam.',
     activityMap: 'Mostrar meu mapa de atividade',
     activityMapBody:
       'Os quadradinhos do seu perfil. Sua sequência continua visível de qualquer jeito.',

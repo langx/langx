@@ -134,11 +134,63 @@ guest, the SDK's own anonymous id; the two are merged on identify. Sign-out
 resets to a fresh anonymous id.
 
 **Never:** message bodies, free text, email, handle, display name, location,
-the IP-derived country (`disableGeoip`), session recordings
-(`enableSessionReplay: false`). The first four are enforced twice — by the
-type of `AnalyticsEvent`, and by `sanitizeEventProperties` at runtime; the
-last two are SDK options in `analytics.ts`, and changing either changes the
-store forms.
+the IP-derived country (`disableGeoip`). The first four are enforced twice — by
+the type of `AnalyticsEvent`, and by `sanitizeEventProperties` at runtime; the
+last is an SDK option in `analytics.ts`, and changing it changes the store
+forms. Screens are also recorded now, and _Session replay_ below is what keeps
+this same sentence true inside a recording.
+
+## Session replay
+
+Screens are recorded on iOS and Android, and what the recording holds is a
+wireframe: the native plugin masks every piece of text and every image before
+a frame leaves the device, so a chat is a column of grey blocks and a profile
+is a grey block where the photo was. What is left is layout, timing and where
+the taps went — which is the half of the funnel no event here could reach.
+`onboarding_step_completed` says the step was finished and `$screen` says it
+was seen; why somebody left between the two is what this answers.
+
+Five options in `analytics.ts` are that claim, and all five are written out:
+
+| Option                           | Why                                                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `maskAllTextInputs: true`        | Despite the name, **all** text — a message bubble, a handle, a bio, a display name — not only fields somebody types into |
+| `maskAllImages: true`            | Avatars, gallery photos, image messages                                                                                  |
+| `maskAllSandboxedViews: true`    | The system pickers a photo is chosen in, drawn by the OS and outside our own view tree. iOS only                         |
+| `captureLog: false`              | A console line is whatever the app logged, which no masking ever sees. Defaults to `true`                                |
+| `captureNetworkTelemetry: false` | A request URL carries the chat and profile ids the events deliberately leave on the device. Defaults to `true`, iOS only |
+
+The first three are the SDK's own defaults, written out anyway: a dependency
+bump that changed one would change what leaves the phone without changing a
+line here, and the store forms are answered from that file. The last two are
+the only defaults in it that are inverted rather than repeated.
+
+**It needs a native module, so it needs a build.**
+`@posthog/react-native-plugin` is autolinked — `expo prebuild` and EAS pick it
+up — but Expo Go has no such module and neither has the web build: the SDK
+skips the plugin on web entirely, which is why `enableSessionReplay` is
+`Platform.OS !== 'web'` rather than `true`. `app.langx.io` records nothing.
+Adding the module also moves the `runtimeVersion` fingerprint
+(`apps/mobile/app.config.ts`), so replay cannot arrive over the air: the first
+build carrying it is a store build, and an older install simply sees no update.
+That is the guard working.
+
+**How much is recorded is a dashboard setting, not a constant here.**
+`sessionReplayConfig.sampleRate` is deliberately unset, because a rate set
+locally wins over the project's and would make "record fewer sessions" a store
+release. The project's rate arrives with the remote config — which is why
+`disableRemoteConfig` is now `false`, the first thing in this app that reads
+it — and it is _cached_, so a rate set today reaches a phone on its next
+launch rather than this one. The project's own **Record user sessions** switch
+is the other half: with it off nothing is ingested, whatever a phone sends.
+
+**What the plugin is not allowed to do.** It can hand PostHog the device's push
+token and count notification opens, and both are on by default;
+`capturePushNotificationSubscriptions` and `capturePushNotificationOpened` turn
+them off. The token belongs in `devices` and `notification_opened` already
+counts taps — a second copy of both, on a third party, for nothing. Native
+crash capture stays off as well: it needs `errorTracking.autocapture`, which
+nothing sets, and the store forms say crash logs are not collected.
 
 ## Opting out
 
@@ -146,16 +198,21 @@ Settings → Privacy → **Share usage data**. Default on; the refusal is stored
 the device (`analyticsOptOut` in `localFlags.ts`), read before the SDK is
 started, and honoured before there is an account. Turning it off resets the
 anonymous id and discards the SDK's queue, so nothing captured before the
-switch is sent afterwards. Turning it back on starts from a new id.
+switch is sent afterwards. Turning it back on starts from a new id. The refusal
+reaches the recorder too — the SDK passes it down to the native plugin — so the
+switch stops the recording as well as the events, without waiting for a
+restart.
 
 ## Outside the repo
 
 Set up once, in dashboards, not in code:
 
-- **PostHog project** on EU Cloud, with the key above. Autocapture, session
-  replay, surveys and heatmaps stay off in the project settings as well — the
-  app does not enable them, but a project-level default is one fewer thing to
-  rely on the app for.
+- **PostHog project** on EU Cloud, with the key above. **Record user sessions**
+  has to be on there, and its sample rate is the only dial for how much gets
+  recorded — the app deliberately sets none (_Session replay_ above).
+  Autocapture, surveys and heatmaps stay off in the project settings as well —
+  the app does not enable them, but a project-level default is one fewer thing
+  to rely on the app for.
 - **RevenueCat → Integrations → PostHog**, region EU, with the same project
   key. Leave the sandbox key empty (test-store purchases have no business in
   the production project), leave "send subscriber attributes as person
@@ -259,3 +316,9 @@ EXPO_PUBLIC_POSTHOG_KEY=phc_… pnpm dev
 PostHog → Activity shows events within seconds. On the web build the anonymous
 id is kept in `localStorage`; on a phone, in the SDK's own file. Nothing
 arrives at all with the key unset — that is the intended state, not a bug.
+
+Recordings are outside that check. `pnpm dev` is Expo Go and the browser,
+neither of which carries the native plugin, so replay needs a development build
+(`pnpm ios`, `pnpm android`) and lands under PostHog → Replay rather than
+Activity. A build with the plugin missing says so in the log — _Session replay
+enabled but not installed_ — and goes on sending events.

@@ -1298,7 +1298,7 @@ export const tr: Localized<EnMessages> = {
     shareLocationBody: 'Başkaları bir nokta değil, bir mesafe aralığı görür.',
     shareUsage: 'Kullanım verisi paylaş',
     shareUsageBody:
-      'Hangi ekranların ve düğmelerin kullanıldığı — yazdıkların asla. İnsanların nerede takıldığını görmemizi sağlar.',
+      'Hangi ekranların ve düğmelerin kullanıldığı ve ekranın, içindeki her yazı ile görselin kapatıldığı bir kaydı — yazdıkların asla. İnsanların nerede takıldığını görmemizi sağlar.',
     activityMap: 'Etkinlik haritamı göster',
     activityMapBody: 'Profilindeki kareler. Serin her hâlükârda görünür kalır.',
     updateLocation: 'Konumumu güncelle',
