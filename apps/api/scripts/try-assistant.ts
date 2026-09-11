@@ -27,7 +27,7 @@ import { ensureOfficialAccounts, officialIds } from '../src/modules/official/acc
 import { createAnthropicProvider } from '../src/modules/official/assistantProvider'
 import { sendTextMessage } from '../src/modules/chat/messages'
 import {
-  startConversation,
+  findConversationBetween,
   type Conversation,
   type Message,
 } from '../src/modules/chat/conversations'
@@ -133,24 +133,27 @@ async function main(): Promise<void> {
     if (!langxId) throw new Error('@langx was not created')
     console.log(`model: ${env.ANTHROPIC_MODEL}\n`)
 
+    /*
+     * The thread already exists: finishing onboarding is what makes @langx say
+     * hello, and that opens it. Waiting for it rather than assuming it, because
+     * the route does not await the welcome either.
+     */
     let conversation: Conversation | null = null
+    const opened = Date.now() + 15_000
+    while (Date.now() < opened) {
+      conversation = await findConversationBetween(handle.db, user.userId, langxId)
+      if (conversation) break
+      await new Promise((resolve) => setTimeout(resolve, 250))
+    }
+    if (!conversation) throw new Error('the welcome never arrived — no thread to write into')
+
     for (const question of asked) {
-      let message: Message
-      if (!conversation) {
-        const started = await startConversation(handle.db, user.userId, {
-          toUserId: langxId,
-          body: question,
-        })
-        conversation = started.conversation
-        message = started.message
-      } else {
-        const sent = await sendTextMessage(handle.db, user.userId, {
-          conversationId: conversation._id.toHexString(),
-          body: question,
-        })
-        conversation = sent.conversation
-        message = sent.message
-      }
+      const sent = await sendTextMessage(handle.db, user.userId, {
+        conversationId: conversation._id.toHexString(),
+        body: question,
+      })
+      conversation = sent.conversation
+      const message: Message = sent.message
 
       const before = await handle.db
         .collection<Message>(COLLECTIONS.messages)
@@ -183,9 +186,16 @@ async function main(): Promise<void> {
       console.log()
     }
 
+    /*
+     * Only mail to the support address. The outbox also holds the verification
+     * and welcome mail that signing an account up sends, and counting those as
+     * "support mail" reads like the assistant filed something it did not.
+     */
     const reports = await handle.db.collection(COLLECTIONS.reports).countDocuments()
+    const toSupport = emailSender.messages.filter((mail) => mail.to === env.SUPPORT_EMAIL).length
     console.log(
-      `reports filed: ${String(reports)} · support mails sent: ${String(emailSender.messages.length)}`,
+      `reports filed: ${String(reports)} · feedback to ${env.SUPPORT_EMAIL}: ${String(toSupport)}` +
+        ` · other mail (sign-up, welcome): ${String(emailSender.messages.length - toSupport)}`,
     )
   } finally {
     await app.close()

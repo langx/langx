@@ -28,6 +28,12 @@ const ROWS = [
   'App language',
   'Delete account',
   'Edit profile',
+  'Wallet',
+  'Badges',
+  'Corrections',
+  'Invite a friend',
+  'Scan a code',
+  'Preview my profile',
 ]
 
 const SECTIONS = ['Privacy', 'Notifications', 'Appearance', 'Account', 'Subscription', 'About']
