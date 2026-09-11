@@ -31,6 +31,7 @@ import {
   updateProfile,
 } from '../modules/profiles/profiles'
 import { deleteGuest } from '../modules/profiles/purgeGuests'
+import { sendWelcomeMessage } from '../modules/official/welcome'
 import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
@@ -69,6 +70,25 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
           request.log.error({ err: error }, 'welcome email failed')
         },
       )
+      /*
+       * And the same hello inside the app, from @langx.
+       *
+       * Not for somebody coming back from v1: they have the welcome-back
+       * screen, which says more than this could and says it about their own
+       * account. `createProfile` returns the restored profile, so the flag is
+       * already here.
+       *
+       * Wrapped and unawaited for the same reason as the mail above — the
+       * profile is written and onboarding has succeeded, so nothing that
+       * happens after it may turn that into a 500.
+       */
+      if (!profile.restoredFromV1) {
+        void sendWelcomeMessage(app, request.userId, request.headers['user-agent']).catch(
+          (error: unknown) => {
+            request.log.error({ err: error }, 'welcome message failed')
+          },
+        )
+      }
       return reply.code(201).send(profile)
     },
   )

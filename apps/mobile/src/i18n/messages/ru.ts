@@ -730,6 +730,7 @@ export const ru: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly: 'Этот аккаунт публикует новости и объявления. Ответить сюда нельзя.',
     sendingAttachment: 'Отправка…',
     title: 'Чат',
     typing: 'печатает…',
@@ -1046,6 +1047,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Официальный аккаунт',
     suspendedTag: 'Заблокирован',
     deletedTag: 'Аккаунт удалён',
     previewNote: 'Так ваш профиль видят другие — настройки приватности уже применены.',

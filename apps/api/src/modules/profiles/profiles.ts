@@ -1,4 +1,6 @@
 import {
+  OFFICIAL_WRITABLE,
+  isOfficialHandle,
   type BillingPeriodType,
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
@@ -61,6 +63,15 @@ export interface Profile {
    * job when it lands.
    */
   guest?: true
+  /**
+   * One of the accounts LangX speaks from — see `OFFICIAL_HANDLES`. Created at
+   * boot by `ensureOfficialAccounts`, never by a form.
+   *
+   * The flag is what every guard reads, not the handle: comparing handles
+   * would put the string 'langx' in a dozen call sites, and an account that
+   * was renamed would silently stop being official.
+   */
+  official?: true
   handle: string
   displayName: string
   avatarUrl?: string
@@ -1072,7 +1083,12 @@ export interface PublicProfile {
   photos: { url: string }[]
   bio?: string
   pronouns?: string
-  age: number
+  /**
+   * Absent on an official account, which has a placeholder birth date rather
+   * than one somebody gave. Publishing an age derived from it would be a
+   * number the app made up.
+   */
+  age?: number
   gender: Profile['gender']
   country?: string
   city?: string
@@ -1112,6 +1128,15 @@ export interface PublicProfile {
    * than deleting them" stays legible one line at a time.
    */
   follow: FollowState
+  /** Draws the tick beside the display name. See `Profile.official`. */
+  official?: true
+  /**
+   * Whether this account takes messages. Absent for a person, who always does;
+   * present and `false` on a channel, which the chat screen reads to draw no
+   * composer. Sent rather than derived client-side so the app never has to
+   * know which handle is which.
+   */
+  acceptsMessages?: boolean
   /**
    * Whether this account is still an account.
    *
@@ -1165,7 +1190,6 @@ export function toPublicProfile(
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
     photos: (profile.photos ?? []).map((p) => ({ url: p.url })),
-    age: ageFromBirthDate(profile.birthDate, now),
     gender: profile.gender,
     nativeLanguages: profile.nativeLanguages ?? [],
     learning: profile.learning ?? [],
@@ -1189,6 +1213,14 @@ export function toPublicProfile(
         ? 'suspended'
         : 'active',
   }
+  if (profile.official) {
+    result.official = true
+    // From the handle rather than from `modules/official`, which imports this
+    // file — the shared config is the one both can read without a cycle.
+    result.acceptsMessages = isOfficialHandle(profile.handle)
+      ? OFFICIAL_WRITABLE[profile.handle]
+      : true
+  } else result.age = ageFromBirthDate(profile.birthDate, now)
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio

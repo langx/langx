@@ -50,6 +50,25 @@ const envSchema = z.object({
   // Raises GitHub's rate limit for the contributor strip on Our Kitchen.
   // Never required: without it the list is simply refreshed less often.
   GITHUB_TOKEN: emptyToUndefined(z.string().optional()),
+
+  /**
+   * The assistant behind @langx. Optional, like every other outside service
+   * here: without a key `app.assistant` is `null`, a message to @langx is
+   * answered with `official.assistantOffline`, and the welcome message and
+   * announcements — which are ours, not the model's — carry on untouched.
+   */
+  ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
+  /**
+   * Sonnet, on the evidence. Asked in Turkish how to protect a streak, Haiku
+   * answered about the privacy settings — twice, the same way. This app writes
+   * to people in eight languages while they practise a ninth, and a cheap
+   * wrong answer in somebody's own language is the expensive kind.
+   *
+   * `sendsEffort` sends `low` here, so the thinking is bounded; Haiku got none
+   * at all because it rejects the parameter rather than ignoring it.
+   * `scripts/try-assistant.ts` is how to judge a change of model.
+   */
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this

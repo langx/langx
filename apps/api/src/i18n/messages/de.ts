@@ -480,4 +480,17 @@ export const de: Localized<ServerMessages> = {
     underage: 'Unter 16',
     other: 'Etwas anderes',
   },
+  official: {
+    welcome:
+      'Hey, willkommen bei LangX! 👋 Schön, dass du da bist.\n\nDas Beste beginnt in Entdecken: Finde jemanden, der deine Sprache lernt und die spricht, die du lernst, sag Hallo — den Rest macht das Üben von allein. Unterwegs sammelst du Tokens.\n\nHier landen die Neuigkeiten zu LangX, also schau ruhig mal rein. Und LangX ist Open Source: Es wird besser, weil Leute uns Dinge sagen. Wenn etwas kaputt ist oder dir einfällt, was wir bauen sollten — Einstellungen → Info → Feedback kommt direkt bei uns an. Wir lesen alles. Und wenn du jemanden kennst, dem es hier gefallen würde: Über Einstellungen → Teilen und einladen bekommt ihr beide Tokens.',
+    welcomeRate:
+      'Noch eine Kleinigkeit, wenn du magst: Eine Bewertung für LangX im {store} hilft wirklich dabei, dass uns Leute finden. Ganz ohne Druck.',
+    assistantOffline:
+      'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
+    assistantLimit:
+      'Mehr kann ich gerade nicht beantworten — versuch es in ein paar Stunden noch einmal.\n\nNichts hängt an mir: Du kannst jemanden über sein Profil melden, einen Fehler oder eine Idee über die Einstellungen schicken, und unter {email} erreichst du jederzeit einen Menschen.',
+    assistantError: 'Bei mir ist etwas schiefgelaufen. Versuch es gleich noch einmal.',
+    assistantRefusal:
+      'Dabei kann ich nicht helfen. Falls ich das falsch verstanden habe, erreichst du unter {email} einen Menschen.',
+  },
 }

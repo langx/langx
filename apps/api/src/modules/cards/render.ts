@@ -1,9 +1,7 @@
 import type { CardShape } from '@langx/shared'
 import { Resvg } from '@resvg/resvg-js'
-import { readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import satori from 'satori'
+import { loadAsset as readAsset } from '../../lib/assets'
 
 /** What `design.ts` builds: satori's element shape, without React. */
 export interface CardNode {
@@ -24,29 +22,7 @@ export const CARD_PIXELS: Record<CardShape, { width: number; height: number }> =
   wide: { width: 1200, height: 675 },
 }
 
-const HERE = dirname(fileURLToPath(import.meta.url))
-/**
- * Up out of `dist/` when bundled, and up out of `src/modules/cards` when run
- * from source. Resolved by trying both rather than by branching on
- * `NODE_ENV`, because the thing that differs is the build layout and a flag
- * about the environment is only a proxy for it.
- */
-const ASSET_ROOTS = [
-  join(HERE, '../../../assets'),
-  join(HERE, '../../assets'),
-  join(HERE, 'assets'),
-]
-
-async function loadAsset(relative: string): Promise<Buffer> {
-  for (const root of ASSET_ROOTS) {
-    try {
-      return await readFile(join(root, relative))
-    } catch {
-      continue
-    }
-  }
-  throw new Error(`Card asset not found: ${relative}`)
-}
+const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Card asset')
 
 let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800; style: 'normal' }[] | null = null
 

@@ -18,6 +18,7 @@ import { placeLabel } from '../../../src/lib/placeLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
+import { OfficialMark } from '../../../src/components/OfficialMark'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
@@ -214,7 +215,19 @@ export default function ProfileScreen() {
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
-            <Text style={styles.age}>{user.age}</Text>
+            {/*
+              An official account has no age to show — the server omits it
+              rather than deriving one from a placeholder birth date — and
+              wears a tick in its place. Everything else below that a program
+              has no honest answer for is hidden the same way: a streak, a
+              language pair and a correction count on @langx would be numbers
+              about nobody.
+            */}
+            {user.official ? (
+              <OfficialMark size={18} />
+            ) : (
+              <Text style={styles.age}>{user.age}</Text>
+            )}
           </View>
           <Text style={styles.handle} numberOfLines={1}>
             {handleLine}
@@ -266,7 +279,7 @@ export default function ProfileScreen() {
             wording until the dot has something to follow.
           */}
           <View style={styles.facts}>
-            {summary.data ? (
+            {summary.data && !user.official ? (
               <View style={styles.streak}>
                 <Feather name="zap" size={13} color={colors.streak} />
                 <Text style={styles.fact}>
@@ -274,11 +287,13 @@ export default function ProfileScreen() {
                 </Text>
               </View>
             ) : null}
-            <Text style={styles.fact}>
-              {summary.data
-                ? t('profile.registered', { age })
-                : `${t('profile.registeredLabel')} ${age}`}
-            </Text>
+            {user.official ? null : (
+              <Text style={styles.fact}>
+                {summary.data
+                  ? t('profile.registered', { age })
+                  : `${t('profile.registeredLabel')} ${age}`}
+              </Text>
+            )}
           </View>
         </View>
       </View>
@@ -294,14 +309,16 @@ export default function ProfileScreen() {
 
       {/* v3's two-column language block, shared with the owner's own tab so
           the two views of one profile cannot drift apart. */}
-      <LanguageColumns nativeLanguages={user.nativeLanguages} learning={user.learning} />
+      {user.official ? null : (
+        <LanguageColumns nativeLanguages={user.nativeLanguages} learning={user.learning} />
+      )}
 
       {/*
         The numbers: the quickest read of whether this person is here to
         teach. The streak has moved up beside the name, and the follower count
         is the way into the list — the "›" is the hint that it opens.
       */}
-      {summary.data ? (
+      {summary.data && !user.official ? (
         <View style={styles.stats}>
           <StatTile
             tone="success"
@@ -336,7 +353,7 @@ export default function ProfileScreen() {
 
       {/* Read-only, and drawn from the same component as your own — a second
           implementation of a grid is a second grid to keep in step. */}
-      <ActivityMap handle={user.handle} />
+      {user.official ? null : <ActivityMap handle={user.handle} />}
 
       {/*
         The week's chart, only if it is offered: `weekChartVisible` is checked
@@ -344,7 +361,7 @@ export default function ProfileScreen() {
         there is nothing here to hide. Beside the activity map, which is the
         same kind of thing at a different zoom.
       */}
-      {summary.data?.week ? <WeeklyChart week={summary.data.week} /> : null}
+      {summary.data?.week && !user.official ? <WeeklyChart week={summary.data.week} /> : null}
 
       {/*
         Everything below is addressed to somebody else, so none of it belongs

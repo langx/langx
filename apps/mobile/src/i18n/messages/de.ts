@@ -679,6 +679,8 @@ export const de: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly:
+      'Dieses Konto postet Neuigkeiten und Ankündigungen. Antworten ist hier nicht möglich.',
     sendingAttachment: 'Wird gesendet…',
     title: 'Chat',
     typing: 'schreibt…',
@@ -967,6 +969,7 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',
     previewNote:

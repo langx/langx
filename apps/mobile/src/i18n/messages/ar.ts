@@ -750,6 +750,7 @@ export const ar: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
     sendingAttachment: 'جارٍ الإرسال…',
     title: 'محادثة',
     typing: 'يكتب…',
@@ -1083,6 +1084,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',

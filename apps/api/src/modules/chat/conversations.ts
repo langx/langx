@@ -13,6 +13,7 @@ import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
+import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 
 export interface Conversation {
@@ -260,6 +261,13 @@ export async function startConversation(
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
   if (!recipient) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Recipient not found')
 
+  // A channel takes no messages, so it cannot be the start of a conversation
+  // either. In practice the welcome has already opened that thread, so this is
+  // the second lock rather than the first.
+  if (!acceptsMessages(recipient._id)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
+  }
+
   const blocks = db.collection<{ blockerId: string; blockedId: string }>(COLLECTIONS.blocks)
   const blocked = await blocks.findOne({
     $or: [
@@ -283,13 +291,24 @@ export async function startConversation(
     )
   }
 
-  const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
-  if (!quota.consumed) {
-    throw new ApiError(
-      ERROR_CODES.QUOTA_EXCEEDED,
-      'Daily new-conversation limit reached',
-      quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
-    )
+  /*
+   * Writing to LangX costs nothing. The initiation quota exists to pace how
+   * many strangers one person opens a thread with; the assistant is not one
+   * of them, and spending a slot to ask a question — or to report somebody —
+   * would price support out of the free tier.
+   *
+   * Everything above still applies: a blocked pair is still refused, and a
+   * second conversation is still impossible.
+   */
+  if (!recipient.official) {
+    const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
+    if (!quota.consumed) {
+      throw new ApiError(
+        ERROR_CODES.QUOTA_EXCEEDED,
+        'Daily new-conversation limit reached',
+        quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
+      )
+    }
   }
 
   const now = new Date()

@@ -661,6 +661,7 @@ export const tr: Localized<EnMessages> = {
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
   },
   chat: {
+    channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',
@@ -948,6 +949,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
     previewNote:

@@ -30,6 +30,7 @@ import { useLocale, useT } from '../../../src/i18n'
 import type { MessageKey } from '../../../src/i18n/runtime'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { OfficialMark } from '../../../src/components/OfficialMark'
 
 /** The design draws chat avatars at 56, the same size as Discover's rows. */
 const AVATAR_SIZE = 56
@@ -288,9 +289,12 @@ export default function ChatsScreen() {
                     <View style={styles.body}>
                       <View style={styles.top}>
                         {partner ? (
-                          <Text style={styles.name} numberOfLines={1}>
-                            {partner.displayName}
-                          </Text>
+                          <View style={styles.nameRow}>
+                            <Text style={styles.name} numberOfLines={1}>
+                              {partner.displayName}
+                            </Text>
+                            {partner.official ? <OfficialMark size={14} /> : null}
+                          </View>
                         ) : (
                           // The row is real, its partner is not resolved yet: the
                           // names come from a separate batched query. This used to
@@ -368,6 +372,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   grow: { flex: 1 },
   top: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   bottom: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+  nameRow: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 6 },
   name: { ...font.heading, color: colors.text, flex: 1, fontSize: 17 },
   time: { color: colors.textFaint, fontSize: 13 },
   preview: { color: colors.textMuted, flex: 1, fontSize: 15 },

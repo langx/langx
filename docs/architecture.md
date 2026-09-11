@@ -630,6 +630,73 @@ correction ("I have a apple" → "I have an apple", with a short reason). v2
 rebuilds the same function under the name **Copilot**, as part of the chat
 module. Quota: free 5 uses a day, Polyglot unlimited within fair use.
 
+The **account** exists already, and the feature does not. `@copilot` is created
+at boot alongside `@langx` so the handle cannot be claimed by somebody else in
+the meantime and the identity is there to point at; until the feature lands, a
+message to it gets an immediate canned reply. See _Official accounts_ below.
+
+### Official accounts
+
+`@langx` and `@copilot` are ordinary profile rows carrying `official: true`,
+created by `ensureOfficialAccounts` at boot — so every environment has them
+without anybody seeding anything. Nobody can sign in to either: the Better Auth
+row behind them holds an address under `.invalid`, which resolves nowhere, so no
+reset link, magic link or verification mail can reach a mailbox.
+
+`@langx` is a **channel**. It greets every new account and carries
+announcements (`scripts/send-announcement.ts`), and it cannot be written to:
+`recordMessage` refuses a message addressed to it and the chat screen draws no
+composer. Nothing about it is answered by a model. A broadcast account that
+sometimes replies is a promise about attention that nobody can keep.
+
+`@copilot` is the account that will answer, and it ships closed. Everything
+behind it is built and tested — the provider, the per-tier allowances, the daily
+budget, the prompt, the one tool — and opening it is
+`OFFICIAL_WRITABLE.copilot` plus an `ANTHROPIC_API_KEY`. Two switches rather
+than one, because without the key it would answer that it cannot answer. It is
+deliberately narrow: it welcomes, it answers the practical how-do-I questions
+written into its prompt, and it takes a bug report or an idea — which for an
+open-source project is the most useful thing anybody hands it. It cannot report
+a person; that is a moderation decision reached from that person's profile, and
+a model filing them is a queue somebody has to work through. The
+assistant behind it is an **optional service** in the same sense as email and
+storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
+and everything else about the account still works.
+
+Four numbers bound what it can spend, and they only work together.
+`PLAN_LIMITS[tier].assistantRepliesPerDay` bounds one account — per tier,
+because every reply is a paid model call and a free account brings in nothing
+to pay for it, so the ceiling for a tier is kept under what that tier earns —
+and `OFFICIAL_ASSISTANT.globalRepliesPerDay` bounds everybody — the second matters because the number
+of conversations is not bounded by anything. Those two cap the _count_ of
+replies; `historyCharsPerMessage` and `maxReplyTokens` are what make a reply's
+cost bounded, which is what turns a cap on the count into a cap on the bill. A
+chat message may be 2,000 characters and twenty of them reach the model on every
+turn, so without the third number a single reply can carry ten thousand tokens
+of context, and five hundred of those is a different order of bill entirely.
+
+The global count is **model calls**, kept in a per-day counter
+(`assistantUsage`), not a count of messages @langx has sent: an announcement
+writes to every account on the service, and counting messages would take the
+assistant down on exactly the day it was most visible.
+
+An account that has been run by hand can be **adopted** rather than replaced:
+`scripts/adopt-official-account.ts` flips the flag, revokes every session and
+credential, and rewrites the address to the undeliverable one — keeping the
+conversations, messages and photos. That is a deliberate one-off, which is why
+it is a script and not something the boot decides. It is how `@langx` became
+official on production, where the handle was already held by the account
+answering as LangX by hand.
+
+The display name, the avatar **and the bio** are written from code on every
+boot. Not tidiness: nobody can sign in to these accounts, so there is no screen
+anywhere that can edit them, and code is the only editor they have.
+
+Conversations with an official account are **outside the token economy** —
+`awardForSend` returns early for either side, and `startConversation` charges no
+initiation quota — so nobody can farm a streak by talking to a program, and
+asking for support is free on every tier.
+
 ## MongoDB schema
 
 Principle: what is read together is embedded, what grows without bound is
@@ -643,6 +710,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  official?: true,                    ← @langx or @copilot; created at boot, never by a form
   photos: [{ url, createdAt }],
   bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',   ← changeable, once per 180 days

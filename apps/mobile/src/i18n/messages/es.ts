@@ -658,6 +658,7 @@ export const es: Localized<EnMessages> = {
     lastSeenYears: { one: 'Visto hace {count} año', other: 'Visto hace {count} años' },
   },
   chat: {
+    channelOnly: 'Esta cuenta publica novedades y anuncios. No puedes responder aquí.',
     sendingAttachment: 'Enviando…',
     title: 'Chat',
     typing: 'escribiendo…',
@@ -944,6 +945,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
     previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',

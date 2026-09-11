@@ -716,6 +716,8 @@ export const en = {
     lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
   },
   chat: {
+    /** Shown where the composer would be, on an account that takes no messages. */
+    channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     sendingAttachment: 'Sending…',
     title: 'Chat',
     typing: 'typing…',
@@ -1007,6 +1009,8 @@ export const en = {
   },
 
   profile: {
+    /** Screen-reader label for the tick beside @langx and @copilot. */
+    official: 'Official account',
     suspendedTag: 'Suspended',
     deletedTag: 'Account deleted',
     previewNote:
