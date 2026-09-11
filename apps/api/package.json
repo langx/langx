@@ -26,6 +26,7 @@
     "@langx/shared": "workspace:*",
     "@resvg/resvg-js": "^2.6.2",
     "@sentry/node": "catalog:",
+    "@socket.io/mongo-adapter": "catalog:",
     "better-auth": "catalog:",
     "fastify": "catalog:",
     "fastify-type-provider-zod": "catalog:",

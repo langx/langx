@@ -30,18 +30,34 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   }
 }
 
-/** Waits for a named event once, rejecting if it doesn't arrive in time — used everywhere below instead of a bare `on` + manual timer. */
+/**
+ * Waits for a named event, rejecting if it doesn't arrive in time — used
+ * everywhere below instead of a bare `on` + manual timer.
+ *
+ * `matches` is for the tests that open a conversation over REST and only then
+ * connect: since the Mongo adapter a broadcast is written before it is
+ * delivered, so a socket that joins the room in that gap is handed the opening
+ * message too, and the first `message:new` is not necessarily the one under
+ * test. The client's id check absorbs the duplicate; here it has to be named.
+ */
 function waitForEvent<T = unknown>(
   socket: ClientSocket,
   event: string,
   timeoutMs = 2000,
+  matches: (payload: T) => boolean = () => true,
 ): Promise<T> {
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`timed out waiting for "${event}"`)), timeoutMs)
-    socket.once(event, (payload: T) => {
+    const timer = setTimeout(() => {
+      socket.off(event, listener)
+      reject(new Error(`timed out waiting for "${event}"`))
+    }, timeoutMs)
+    const listener = (payload: T): void => {
+      if (!matches(payload)) return
       clearTimeout(timer)
+      socket.off(event, listener)
       resolve(payload)
-    })
+    }
+    socket.on(event, listener)
   })
 }
 
@@ -199,7 +215,12 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const aliceSocket = await connectSocket(alice.cookie)
     const bobSocket = await connectSocket(bob.cookie)
 
-    const received = waitForEvent<{ body: string; senderId: string }>(bobSocket, 'message:new')
+    const received = waitForEvent<{ body: string; senderId: string }>(
+      bobSocket,
+      'message:new',
+      2000,
+      (message) => message.body === 'are you there?',
+    )
     const startedAt = Date.now()
     aliceSocket.emit('message:send', { conversationId: conversation._id, body: 'are you there?' })
 
@@ -477,7 +498,7 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const correctionEvent = waitForEvent<{
       type: string
       correction: { original: string; corrected: string }
-    }>(aliceSocket, 'message:new')
+    }>(aliceSocket, 'message:new', 2000, (message) => message.type === 'correction')
 
     bobSocket.emit('message:correct', {
       conversationId: conversation._id,

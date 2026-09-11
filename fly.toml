@@ -27,8 +27,10 @@ primary_region = 'fra'
 # Safe here because nothing in this process assumes it is alone: the four
 # schedulers all claim their work with a conditional update or a unique index
 # (`jobRuns`'s `{job, periodKey}`, and the same pattern in the purge and import
-# sweeps), so the moment where both versions are running costs nothing. The app
-# has no volumes, which is blue-green's other requirement.
+# sweeps), and Socket.io's rooms are shared between instances through
+# `@socket.io/mongo-adapter` (see `ws/index.ts`), so the moment where both
+# versions are running costs nothing. The app has no volumes, which is
+# blue-green's other requirement.
 #
 # It doubles the machine count *during* a deploy only — the extra one is
 # released when the switch completes.

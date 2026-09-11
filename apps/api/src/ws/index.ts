@@ -15,6 +15,7 @@ import {
   sendTextMessageSchema,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
+import { createAdapter } from '@socket.io/mongo-adapter'
 import { Server as SocketIOServer } from 'socket.io'
 import { z, ZodError } from 'zod'
 import { ERROR_CODES } from '@langx/shared'
@@ -113,10 +114,43 @@ async function authenticateSocket(app: FastifyInstance, socket: AppSocket): Prom
  */
 export function attachSocketServer(app: FastifyInstance): AppServer {
   const io: AppServer = new SocketIOServer(app.server, {
+    /*
+     * Production is two machines (`fly.toml`), and a blue-green deploy briefly
+     * makes it four. Socket.io's default adapter keeps every room in the
+     * process's own memory, so `io.to(userRoom(x))` on one machine reached
+     * nobody on the other — and the two people in a conversation held sockets
+     * on different machines about half the time. Whatever crossed that gap
+     * simply never arrived: no message, no delivered tick, no typing, no read
+     * receipt, until a refresh fetched it over REST. The second machine went
+     * in on 3 September 2026 without this. `docs/decisions.md` → *Two
+     * machines, one socket bus* has the account.
+     *
+     * Every emit is written to `socketEvents` and every instance tails that
+     * collection with a change stream, so a broadcast reaches a socket held
+     * anywhere. Mongo rather than Redis because Mongo is already here and is
+     * already a replica set — Better Auth needs one — which is what a change
+     * stream needs. `fetchSockets()` becomes a cluster-wide question too,
+     * asked and answered over the same collection; `fanOut.ts` says what that
+     * costs. `addCreatedAtField` is what the TTL in `db/indexes.ts` expires on.
+     */
+    adapter: createAdapter(app.mongo.db.collection(COLLECTIONS.socketEvents), {
+      addCreatedAtField: true,
+    }),
     cors: {
       origin: app.env.TRUSTED_ORIGINS.length > 0 ? app.env.TRUSTED_ORIGINS : true,
       credentials: true,
     },
+  })
+
+  /*
+   * The adapter reopens its change stream a second after every close, for as
+   * long as it lives — so a Mongo client closed underneath it is a failed
+   * reopen every second until the process ends, which in a test is never.
+   * Closing the adapter with the app is what ends it. Not `io.close()`: that
+   * closes the HTTP server as well, and the server is Fastify's to close.
+   */
+  app.addHook('onClose', async () => {
+    await io.sockets.adapter.close()
   })
 
   io.use((socket, next) => {

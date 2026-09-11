@@ -50,6 +50,7 @@ catalog:
   'node-appwrite': ^28.0.0
   'socket.io': ^4.8.3
   'socket.io-client': ^4.8.3
+  '@socket.io/mongo-adapter': ^0.4.0
 
   # mobile client
   '@tanstack/react-query': ^5.102.8
