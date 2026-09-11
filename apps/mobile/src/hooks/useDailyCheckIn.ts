@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { AppState } from 'react-native'
 import { useCheckIn } from '../api/queries'
+import { deviceDayKey } from '../lib/deviceDay'
 import { useReviewPrompt } from './useReviewPrompt'
 
 /**
@@ -17,6 +18,13 @@ import { useReviewPrompt } from './useReviewPrompt'
  * about not making a request per app switch rather than about correctness. The
  * day is the device's own, deliberately loose: the server owns the real answer
  * in the user's stored timezone, and this only decides whether to ask.
+ *
+ * Loose in one direction only, which is why the key is `deviceDayKey` and not
+ * `toISOString().slice(0, 10)`. The UTC day lags the local one east of
+ * Greenwich — nine hours in Tokyo, three in Istanbul — so a process still
+ * alive from last night held a key that said "asked already" through the first
+ * hours of the new local day, and somebody who opened the app in the morning
+ * and wrote nothing was never checked in at all.
  *
  * Never for a guest. A guest has no profile to hold a streak.
  */
@@ -35,7 +43,7 @@ export function useDailyCheckIn({ enabled }: { enabled: boolean }) {
     if (!enabled) return
 
     const ask = (): void => {
-      const today = new Date().toISOString().slice(0, 10)
+      const today = deviceDayKey()
       if (lastAsked.current === today) return
       lastAsked.current = today
       mutate.current(undefined, {

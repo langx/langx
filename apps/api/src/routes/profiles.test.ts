@@ -1420,9 +1420,21 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.statusCode).toBe(401)
     })
 
+    /**
+     * Not Istanbul, unlike every other fixture here, and the coordinates are
+     * the assertion's doing rather than the test's.
+     *
+     * The check is a substring of the whole payload on purpose — a leak in a
+     * field nobody thought of is exactly what it is for — and a coarsened
+     * `28.98` is also what `…T23:15:28.982Z` reads as. That is a real
+     * timestamp this test failed on: ten milliseconds in every minute where a
+     * `createdAt` spells the longitude. Seconds stop at 59, so a coordinate
+     * above 60 cannot be one, and the check goes back to meaning only what it
+     * says.
+     */
     it('never appears on somebody else profile', async () => {
       const viewed = await onboarded('location-public-viewed@example.com', 'locationviewed')
-      await share(viewed, { lat: 41.0082, lng: 28.9784 })
+      await share(viewed, { lat: 61.4991, lng: 88.9784 })
       const viewer = await onboarded('location-public-viewer@example.com', 'locationviewer')
 
       const response = await app.inject({
@@ -1432,7 +1444,8 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
       expect(response.statusCode).toBe(200)
       expect(response.json()).not.toHaveProperty('location')
-      expect(response.body).not.toContain('28.98')
+      expect(response.body).not.toContain('88.98')
+      expect(response.body).not.toContain('61.5')
     })
   })
 
