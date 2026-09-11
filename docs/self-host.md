@@ -85,7 +85,9 @@ during the window catches up on its next tick instead of skipping silently.
 Running several API instances is safe. The pool's `jobRuns` unique index means
 only one instance can own a given day, every notification pass claims a row
 in `notificationLedger` before it sends, and a campaign claims each recipient
-in `emailCampaigns` — so nobody is told the same thing twice.
+in `emailCampaigns` — so nobody is told the same thing twice. Sockets are
+covered too: instances share their rooms over `socketEvents`, see _Deploying_
+below.
 
 Four things are told to a person about their own account and ask no
 preference at all: a sign-in from a device the account has not been seen on,
@@ -162,10 +164,13 @@ none of them, and no request arrives to wake it at 20:00 in a user's timezone.
 `auto_stop_machines = 'off'` in `fly.toml` is there for that reason.
 
 Socket.io is served by the same process over the same port, so WebSockets need
-no extra configuration — but its default transport list starts with HTTP
-polling, which assumes consecutive requests reach the same instance. Fly does
-not do sticky sessions, so going past one machine needs a Socket.io adapter
-first.
+no extra configuration. Its rooms are shared between instances through
+`@socket.io/mongo-adapter`, over a `socketEvents` collection every instance
+tails with a change stream — so two machines (or four, mid-deploy) deliver to
+each other's sockets and nothing about scaling out is left to configure. The
+adapter needs a replica set for the change stream, which the database already
+has to be for Better Auth. The client connects over WebSocket only, so Fly's
+lack of sticky sessions does not matter either.
 
 **Web** — `pnpm --filter @langx/mobile exec expo export --platform web` emits
 a static site in `dist/`. Serve it from any static host. It needs

@@ -214,7 +214,11 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   },
   // Three shades of work, the busiest in ink rather than a fourth blue: at
   // this size two more steps of the same hue stop being tellable apart.
-  low: { backgroundColor: colors.accentBg },
+  //
+  // The lowest is the accent thinned out, not `accentBg`: that tint is a
+  // near-match for `fill` in both schemes, so a quiet day read as a missed
+  // one — a ten-day streak over a map with six squares showing.
+  low: { backgroundColor: colors.accent, opacity: 0.4 },
   mid: { backgroundColor: colors.accent },
   high: { backgroundColor: colors.ink, opacity: 0.85 },
   legend: {

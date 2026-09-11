@@ -535,8 +535,11 @@ export const ptBR: Localized<EnMessages> = {
     tokensCarriedBody: '{carried} vieram do seu saldo antigo, mais {bonus} por ter voltado.',
     tokensBonus: { one: '{count} ficha', other: '{count} fichas' },
     tokensBonusBody: 'Um bônus de boas-vindas para começar. Ganhe mais conversando e corrigindo.',
-    streak: 'Melhor sequência: {days}',
-    streakBody: 'Fica guardada como seu recorde. Sua sequência atual começa do zero hoje.',
+    streak: {
+      one: 'sequência de {count} dia, ainda viva',
+      other: 'sequência de {count} dias, ainda viva',
+    },
+    streakBody: 'Ela voltou viva, não como recorde. Volte amanhã para mantê-la.',
     tierForLife: '{plan}, para sempre',
     proBody:
       'Pelo que você construiu na v1. Nunca expira e não há nada a pagar — obrigado por estar aqui desde o começo.',

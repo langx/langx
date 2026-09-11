@@ -106,6 +106,16 @@ async function deliver(
      * turned out to be. Delivery is still stamped the moment any socket is
      * holding — the message really has arrived — but the notification now goes
      * to every device that is *not* holding one.
+     *
+     * Since the Mongo adapter this asks every instance, not just this one: a
+     * request goes out over `socketEvents` and the answer is the union of
+     * what each machine holds, so a recipient connected to the other machine
+     * is seen. It also means this can now reject — the adapter waits
+     * `requestsTimeout` (5s) for an instance it heard from in the last ten
+     * seconds, and a machine that just died mid-deploy is one of those. The
+     * `catch` below turns that into a warning and a message with no tick and
+     * no push, which is the right loss: the emit above already went out and
+     * did not wait on this.
      */
     const sockets = await io.in(userRoom(recipientId)).fetchSockets()
     if (sockets.length > 0) {

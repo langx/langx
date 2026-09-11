@@ -544,8 +544,11 @@ export const tr: Localized<EnMessages> = {
     tokensBonus: { one: '{count} jeton', other: '{count} jeton' },
     tokensBonusBody:
       'Başlangıç için bir dönüş hediyesi. Konuşarak ve düzelterek daha fazlasını kazan.',
-    streak: 'En iyi seri: {days}',
-    streakBody: 'Rekorun olarak duruyor. Yaşayan serin bugünden sıfırdan başlıyor.',
+    streak: {
+      one: '{count} günlük seri, hâlâ sürüyor',
+      other: '{count} günlük seri, hâlâ sürüyor',
+    },
+    streakBody: 'Rekor olarak değil, canlı olarak geri geldi. Yarın da uğra ki devam etsin.',
     tierForLife: 'Ömür boyu {plan}',
     proBody:
       'v1’de kurduğun şey için. Süresi hiç dolmaz, ödenecek bir şey de yok — ilk günden burada olduğun için teşekkürler.',

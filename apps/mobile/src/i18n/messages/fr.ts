@@ -545,8 +545,11 @@ export const fr: Localized<EnMessages> = {
     tokensBonus: { one: '{count} jeton', other: '{count} jetons' },
     tokensBonusBody:
       'Un cadeau de bienvenue pour démarrer. Gagnes-en plus en parlant et en corrigeant.',
-    streak: 'Meilleure série : {days}',
-    streakBody: 'Gardée comme record. Ta série en cours repart de zéro aujourd’hui.',
+    streak: {
+      one: 'série de {count} jour, toujours en cours',
+      other: 'série de {count} jours, toujours en cours',
+    },
+    streakBody: 'Elle est revenue vivante, pas comme un record. Reviens demain pour la garder.',
     tierForLife: '{plan}, à vie',
     proBody:
       'Pour ce que tu as construit sur la v1. Cela n’expire jamais et il n’y a rien à payer — merci d’avoir été là en premier.',
