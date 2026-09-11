@@ -119,6 +119,24 @@ export const en = {
     discoverFilters: 'Use the filters to narrow by level, age or country.',
     feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
   },
+  tour: {
+    progress: 'Step {current} of {total}',
+    next: 'Next',
+    done: 'Got it',
+    skip: 'Skip',
+    discoverPairTitle: 'Matched both ways',
+    discoverPairBody:
+      'Everyone on this screen speaks the language you are learning and is learning one you speak. Tap the pair to change it.',
+    discoverSortsTitle: 'Three ways to look',
+    discoverSortsBody:
+      'For you is matched to your languages, Active is who has just been here, and Nearby uses your location once you share it.',
+    discoverFiltersTitle: 'Narrow it down',
+    discoverFiltersBody:
+      'Filter by level, age or country — or use the search field when you already know whose name you are after.',
+    discoverCardTitle: 'Start here',
+    discoverCardBody:
+      'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
+  },
   theme: {
     section: 'Appearance',
     label: 'Theme',
@@ -1277,6 +1295,8 @@ export const en = {
     languageAuto: 'Device ({name})',
     blockedPeople: 'Blocked people',
     showIntro: 'Show intro again',
+    showTour: 'Replay the tour',
+    showTourBody: 'Walk through the Discovery screen again, one step at a time.',
     rateApp: 'Rate LangX',
     exportData: 'Export my data',
     deleteAccount: 'Delete account',

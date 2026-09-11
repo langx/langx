@@ -100,6 +100,23 @@ export const ar: Localized<EnMessages> = {
     discoverFilters: 'استخدم المرشحات للتضييق حسب المستوى أو العمر أو البلد.',
     feedAsk: 'تعثرت في جملة؟ انشرها هنا وسيصححها أحدهم.',
   },
+  tour: {
+    progress: 'الخطوة {current} من {total}',
+    next: 'التالي',
+    done: 'فهمت',
+    skip: 'تخطٍّ',
+    discoverPairTitle: 'تطابق في الاتجاهين',
+    discoverPairBody:
+      'كل من في هذه الشاشة يتحدث اللغة التي تتعلمها ويتعلم لغة تتحدثها أنت. اضغط على الزوج لتغييره.',
+    discoverSortsTitle: 'ثلاث طرق للنظر',
+    discoverSortsBody:
+      'لك مبني على لغاتك، ونشِط يعرض من كان هنا للتو، والقريب يعمل بمجرد مشاركتك موقعك.',
+    discoverFiltersTitle: 'ضيّق القائمة',
+    discoverFiltersBody: 'صفِّ حسب المستوى أو العمر أو البلد — أو ابحث مباشرة إن كنت تعرف من تريد.',
+    discoverCardTitle: 'ابدأ من هنا',
+    discoverCardBody:
+      'افتح أي شخص لقراءة ملفه. إلقاء التحية أولًا هو ما يبدأ به كل تبادل تقريبًا في LangX.',
+  },
   theme: {
     section: 'المظهر',
     label: 'السمة',
@@ -1382,6 +1399,8 @@ export const ar: Localized<EnMessages> = {
     languageAuto: 'الجهاز ({name})',
     blockedPeople: 'المحظورون',
     showIntro: 'إظهار المقدمة مجددًا',
+    showTour: 'إعادة الجولة',
+    showTourBody: 'تجوّل في شاشة الاستكشاف مرة أخرى، خطوة بخطوة.',
     rateApp: 'قيّم LangX',
     exportData: 'تصدير بياناتي',
     deleteAccount: 'حذف الحساب',

@@ -199,6 +199,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       },
       { id: 'about.community', titleKey: 'kitchen.title', bodyKey: 'kitchen.intro' },
       { id: 'about.intro', titleKey: 'settings.showIntro' },
+      { id: 'about.tour', titleKey: 'settings.showTour' },
       { id: 'about.rate', titleKey: 'settings.rateApp' },
     ],
   },

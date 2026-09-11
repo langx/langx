@@ -102,6 +102,24 @@ export const tr: Localized<EnMessages> = {
     discoverFilters: 'Seviyeye, yaşa veya ülkeye göre daraltmak için filtreleri kullan.',
     feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
   },
+  tour: {
+    progress: 'Adım {current} / {total}',
+    next: 'Sonraki',
+    done: 'Anladım',
+    skip: 'Geç',
+    discoverPairTitle: 'Karşılıklı eşleşme',
+    discoverPairBody:
+      'Bu ekrandaki herkes senin öğrendiğin dili konuşuyor ve senin bildiğin bir dili öğreniyor. Değiştirmek için çiftin üstüne dokun.',
+    discoverSortsTitle: 'Üç farklı bakış',
+    discoverSortsBody:
+      'Sana özel dillerine göre eşleştirir, Aktif az önce buradan ayrılanları gösterir, Yakında ise konumunu paylaştığında çalışır.',
+    discoverFiltersTitle: 'Listeyi daralt',
+    discoverFiltersBody:
+      'Seviyeye, yaşa veya ülkeye göre süz — ya da aradığın kişinin adını biliyorsan arama alanını kullan.',
+    discoverCardTitle: 'Buradan başla',
+    discoverCardBody:
+      'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
+  },
   theme: {
     section: 'Görünüm',
     label: 'Tema',
@@ -1217,6 +1235,8 @@ export const tr: Localized<EnMessages> = {
     languageAuto: 'Cihaz ({name})',
     blockedPeople: 'Engellenenler',
     showIntro: 'Tanıtımı tekrar göster',
+    showTour: 'Turu tekrar oynat',
+    showTourBody: 'Keşfet ekranını adım adım bir kez daha gez.',
     rateApp: 'LangX’i değerlendir',
     exportData: 'Verilerimi dışa aktar',
     deleteAccount: 'Hesabı sil',

@@ -24,6 +24,7 @@ import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Tip } from '../../../src/components/Tip'
+import { TourTarget } from '../../../src/components/TourTarget'
 import {
   activeCount,
   hasProFilters,
@@ -37,11 +38,15 @@ import {
   type LocationFailure,
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
+import { shouldGateGuest } from '../../../src/lib/guestGate'
+import { authClient } from '../../../src/lib/auth-client'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { listState } from '../../../src/lib/listState'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useT, type MessageKey } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useDiscoveryTour } from '../../../src/hooks/useTour'
+import { useTips } from '../../../src/hooks/useTips'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
@@ -291,6 +296,24 @@ export default function DiscoverScreen() {
     itemCount: items.length,
   })
   const count = activeCount(effective)
+  const tips = useTips()
+  const { data: session } = authClient.useSession()
+  /*
+   * Only over a list that has rows: the tour points at a card, and a run
+   * started over skeletons would highlight rectangles that are about to be
+   * replaced. Search closed for the same reason — half the targets are not
+   * rendered while the field is open.
+   */
+  const touring = useDiscoveryTour({
+    ready: !searching && state === 'content',
+    guest: shouldGateGuest(session?.user),
+    onFinished: () => {
+      // The tour just taught both of these. A tip repeating one of them a
+      // minute later reads as the app having forgotten.
+      tips.dismiss('discoverFilters')
+      tips.dismiss('discoverSearch')
+    },
+  })
   const locationRevoked =
     query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
 
@@ -315,22 +338,24 @@ export default function DiscoverScreen() {
               I am looking for". */}
           <PeopleSearch from="/(app)/(tabs)/discover" onSearchingChange={setSearching} />
           {searching ? null : (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={
-                count > 0
-                  ? t('discover.filtersWithCount', { count })
-                  : isPro
-                    ? t('filters.title')
-                    : t('discover.filters')
-              }
-              onPress={() => router.push({ pathname: '/(app)/filters', params })}
-              style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
-              hitSlop={8}
-            >
-              <Feather name="sliders" size={22} color={colors.text} />
-              {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
-            </Pressable>
+            <TourTarget id="discoverFilters">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={
+                  count > 0
+                    ? t('discover.filtersWithCount', { count })
+                    : isPro
+                      ? t('filters.title')
+                      : t('discover.filters')
+                }
+                onPress={() => router.push({ pathname: '/(app)/filters', params })}
+                style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+                hitSlop={8}
+              >
+                <Feather name="sliders" size={22} color={colors.text} />
+                {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
+              </Pressable>
+            </TourTarget>
           )}
         </View>
         {/* Which direction this list is matched in. Every row below is
@@ -338,20 +363,22 @@ export default function DiscoverScreen() {
             speak, and without this the list looks unsorted rather than
             matched. */}
         {pair && !searching ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('discover.languagesA11y')}
-            onPress={() => router.push({ pathname: '/(app)/filters', params })}
-            hitSlop={8}
-            style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
-          >
-            <Text style={styles.pair}>{pair}</Text>
-          </Pressable>
+          <TourTarget id="discoverPair" style={styles.pairTarget}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('discover.languagesA11y')}
+              onPress={() => router.push({ pathname: '/(app)/filters', params })}
+              hitSlop={8}
+              style={({ pressed }) => [styles.pairButton, pressed && styles.pressed]}
+            >
+              <Text style={styles.pair}>{pair}</Text>
+            </Pressable>
+          </TourTarget>
         ) : null}
         {/* Search takes the screen, not a strip of it: a sort control above a
             list that has been blanked is answering a question nobody asked. */}
         {searching ? null : (
-          <View style={styles.segmented}>
+          <TourTarget id="discoverSorts" style={styles.segmented}>
             <SegmentedControl
               options={SORTS.map((option) => ({
                 value: option.key,
@@ -364,7 +391,7 @@ export default function DiscoverScreen() {
               onToggle={(key) => (key === 'nearby' ? void chooseNearby() : setSort(key))}
               accessibilityLabel={t('discover.sortLabel')}
             />
-          </View>
+          </TourTarget>
         )}
         {/* Only while it applies. A radius control above a list that is not
             sorted by distance would be a control with nothing to control —
@@ -387,7 +414,7 @@ export default function DiscoverScreen() {
 
       {/* Above the list rather than inside it: a hint that scrolls away is
           one nobody reads. */}
-      {searching ? null : <Tip slot="discover" />}
+      {searching || touring ? null : <Tip slot="discover" />}
 
       {nearbyStuck && !searching ? (
         /**
@@ -480,60 +507,65 @@ export default function DiscoverScreen() {
           ListFooterComponent={
             query.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => {
-                track({ name: 'discovery_card_tapped', properties: { slot: index } })
-                openProfile(item.handle, '/(app)/(tabs)/discover')
-              }}
-              style={({ pressed }) => [
-                styles.row,
-                index === items.length - 1 && styles.rowLast,
-                pressed && styles.pressed,
-              ]}
-            >
-              <Avatar
-                url={item.avatarUrl}
-                name={item.displayName}
-                seed={item._id}
-                size={56}
-                online={item.isOnline}
-              />
-              <View style={styles.rowBody}>
-                <View style={styles.rowTop}>
-                  <Text style={styles.name} numberOfLines={1}>
-                    {item.displayName}
-                  </Text>
-                  <Text style={styles.age}>{item.age}</Text>
-                  {/* The flag, not the country's name: it is one glyph in a row
+          renderItem={({ item, index }) => {
+            const row = (
+              <Pressable
+                onPress={() => {
+                  track({ name: 'discovery_card_tapped', properties: { slot: index } })
+                  openProfile(item.handle, '/(app)/(tabs)/discover')
+                }}
+                style={({ pressed }) => [
+                  styles.row,
+                  index === items.length - 1 && styles.rowLast,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Avatar
+                  url={item.avatarUrl}
+                  name={item.displayName}
+                  seed={item._id}
+                  size={56}
+                  online={item.isOnline}
+                />
+                <View style={styles.rowBody}>
+                  <View style={styles.rowTop}>
+                    <Text style={styles.name} numberOfLines={1}>
+                      {item.displayName}
+                    </Text>
+                    <Text style={styles.age}>{item.age}</Text>
+                    {/* The flag, not the country's name: it is one glyph in a row
                       that has none to spare, and it is the one thing on this
                       row that is the same word in every language. */}
-                  {item.country ? (
-                    <Text style={styles.flag}>{countryFlag(item.country)}</Text>
+                    {item.country ? (
+                      <Text style={styles.flag}>{countryFlag(item.country)}</Text>
+                    ) : null}
+                    {item.streak.current > 0 ? (
+                      <View style={styles.streak}>
+                        <Feather name="zap" size={13} color={colors.textMuted} />
+                        <Text style={styles.streakCount} numberOfLines={1}>
+                          {item.streak.current}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <LanguageLine item={item} />
+                  {item.distanceKm !== undefined ? (
+                    // `formatDistance` words it as the bound it is — the server
+                    // sends a bucket edge, never a measured distance.
+                    <Text style={styles.distance}>{formatDistance(item.distanceKm)}</Text>
                   ) : null}
-                  {item.streak.current > 0 ? (
-                    <View style={styles.streak}>
-                      <Feather name="zap" size={13} color={colors.textMuted} />
-                      <Text style={styles.streakCount} numberOfLines={1}>
-                        {item.streak.current}
-                      </Text>
-                    </View>
+                  {item.bio ? (
+                    <Text style={styles.bio} numberOfLines={2}>
+                      {item.bio}
+                    </Text>
                   ) : null}
                 </View>
-                <LanguageLine item={item} />
-                {item.distanceKm !== undefined ? (
-                  // `formatDistance` words it as the bound it is — the server
-                  // sends a bucket edge, never a measured distance.
-                  <Text style={styles.distance}>{formatDistance(item.distanceKm)}</Text>
-                ) : null}
-                {item.bio ? (
-                  <Text style={styles.bio} numberOfLines={2}>
-                    {item.bio}
-                  </Text>
-                ) : null}
-              </View>
-            </Pressable>
-          )}
+              </Pressable>
+            )
+            /* Only the first row. The tour needs one card to point at, and a
+               registration per row would mean the last one to mount wins. */
+            return index === 0 ? <TourTarget id="discoverCard">{row}</TourTarget> : row
+          }}
         />
       )}
     </Screen>
@@ -549,6 +581,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: 14, minHeight: 48 },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34 },
   pairButton: { alignSelf: 'flex-start', marginTop: 2 },
+  /* The wrapper takes the self-alignment the button used to do on its own:
+     a plain View would otherwise stretch the highlight across the header. */
+  pairTarget: { alignSelf: 'flex-start' },
   pair: { color: colors.accent, fontSize: 14, fontWeight: '700' },
   filterButton: { alignItems: 'center', flexDirection: 'row', gap: 6, height: 40 },
   filterCount: {

@@ -189,6 +189,19 @@ export const FLAG_KEYS = {
    * is a different exposure and answers a question the person just asked.
    */
   onboardingPaywallShown: 'onboardingPaywallShown',
+  /**
+   * `1` once the first-run tour of the Discovery screen has played here.
+   *
+   * Written when the run **opens**, for the same reason as the flag above:
+   * somebody who walks away in the middle of it has seen it, and a tour that
+   * came back at the next launch would be the app failing to take a hint.
+   * Cleared by the Settings row that replays it.
+   *
+   * Device-level rather than account-level because the tour teaches this
+   * screen, not this account: a second account on the same phone is the same
+   * person, already shown.
+   */
+  discoverTourSeen: 'discoverTourSeen',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

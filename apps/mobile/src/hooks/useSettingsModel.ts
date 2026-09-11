@@ -21,6 +21,7 @@ import {
 import { useAnalyticsPreference } from './useAnalyticsPreference'
 import { unregisterPushToken } from './usePushRegistration'
 import { useTips } from './useTips'
+import { forgetTour } from './useTour'
 import { useLocale, useLocalePreference, useT } from '../i18n'
 import { confirmAlert, showAlert } from '../lib/alert'
 import { isAnalyticsAvailable } from '../lib/analytics'
@@ -279,6 +280,20 @@ export function useSettingsModel() {
     router.push('/(app)/intro')
   }
 
+  /**
+   * Forgets that the first-run tour has played, then goes to the screen it
+   * plays on.
+   *
+   * The navigation is the second half of the feature, not a convenience: the
+   * Discovery tab is already mounted, so clearing the flag alone changes
+   * nothing until something looks at it again — which is what its
+   * `useFocusEffect` is for.
+   */
+  async function replayTour(): Promise<void> {
+    await forgetTour()
+    router.navigate('/(app)/(tabs)/discover')
+  }
+
   return {
     t,
     locale,
@@ -318,6 +333,7 @@ export function useSettingsModel() {
     exportData,
     signOut,
     replayIntro,
+    replayTour,
   }
 }
 
