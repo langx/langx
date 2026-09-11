@@ -40,6 +40,8 @@ export const TOUR_TARGETS = [
   'discoverFilters',
   'tabChats',
   'tabFeed',
+  'feedAsk',
+  'feedKinds',
   'tabMe',
   'discoverCard',
 ] as const
@@ -54,24 +56,62 @@ export type TourTargetId = (typeof TOUR_TARGETS)[number]
  */
 export const TOUR_GUEST_BODIES: readonly TourTargetId[] = ['tabChats']
 
+/**
+ * The four tab routes, as literals rather than built from the tab name:
+ * `routeLiterals.test.ts` finds any string starting with `/(` and checks a
+ * screen exists at it, and a path assembled at runtime is invisible to it.
+ */
+export const TOUR_TABS = {
+  discover: '/(app)/(tabs)/discover',
+  chats: '/(app)/(tabs)/chats',
+  feed: '/(app)/(tabs)/feed',
+  me: '/(app)/(tabs)/me',
+} as const
+
+export type TourTab = (typeof TOUR_TABS)[keyof typeof TOUR_TABS]
+
 export interface TourStep {
   target: TourTargetId
+  /**
+   * The tab to be standing on for this step.
+   *
+   * Set on every step that is *about* a tab, because seeing the screen is half
+   * of what the step says — a sentence about the Feed over a dimmed Discovery
+   * describes something the reader has still never seen. The last step names
+   * Discovery for the same reason: the run has to come back before it can
+   * point at a card.
+   */
+  tab?: TourTab
 }
 
 /**
  * The run, in order.
  *
  * The screen's own chrome first, in the order a reader's eye takes it; then
- * the three tabs they have not opened yet; then the card, last, because it is
- * the only step that leads anywhere and the tour should end on the thing to
- * actually do.
+ * the three tabs they have not opened yet — standing on each one, with the
+ * real screen behind the dim; then back to Discovery for the card, last,
+ * because it is the only step that leads anywhere and the tour should end on
+ * the thing to actually do.
  *
- * The tab steps light the **tab-bar icons** rather than navigating to each
- * tab. Navigating mid-run means unmounting the current target, waiting for the
- * next screen to lay out and measuring again — a race with no good failure
- * mode — and the bar says everything these three steps have to say.
+ * The anchor on a tab step stays the **tab-bar icon**, not something on the
+ * screen that was just opened. The bar is mounted whatever tab is showing, so
+ * there is nothing to wait for and nothing to race; the screen behind is the
+ * explanation, and the circle says which button brought them there.
  */
-export const TOUR_STEPS: readonly TourStep[] = TOUR_TARGETS.map((target) => ({ target }))
+export const TOUR_STEPS: readonly TourStep[] = [
+  { target: 'discoverPair' },
+  { target: 'discoverSorts' },
+  { target: 'discoverFilters' },
+  { target: 'tabChats', tab: TOUR_TABS.chats },
+  { target: 'tabFeed', tab: TOUR_TABS.feed },
+  // Standing on the Feed already, but still naming the tab: the host treats a
+  // step with a tab as reachable whether or not its target has ever been
+  // mounted, which is exactly the case for a screen the run just opened.
+  { target: 'feedAsk', tab: TOUR_TABS.feed },
+  { target: 'feedKinds', tab: TOUR_TABS.feed },
+  { target: 'tabMe', tab: TOUR_TABS.me },
+  { target: 'discoverCard', tab: TOUR_TABS.discover },
+]
 
 /**
  * Which message words a step, given who is reading.
@@ -126,6 +166,8 @@ export function isLastStep(state: TourState): boolean {
  * open, a card that was there when the tour opened can be gone by the third
  * step. A step with nothing to highlight is skipped; it must never be able to
  * hold the overlay open on an empty rectangle.
+ *
+ * The exception is a step that names a tab; see below.
  */
 export function resolveFrom(
   state: TourState,
@@ -133,7 +175,16 @@ export function resolveFrom(
 ): TourState | null {
   for (let index = state.index; index < state.steps.length; index++) {
     const step = state.steps[index]
-    if (step && isAvailable(step.target)) return { ...state, index }
+    if (!step) continue
+    /*
+     * A step that names a tab is always allowed through, even when its target
+     * is not registered yet: the host is about to switch to that tab, and the
+     * screen it wants may not have been mounted until now. Asking first is how
+     * the run learned to skip every remaining step the moment it left
+     * Discovery — three steps and the ending, gone in a second, with nobody
+     * having touched anything.
+     */
+    if (step.tab || isAvailable(step.target)) return { ...state, index }
   }
   return null
 }

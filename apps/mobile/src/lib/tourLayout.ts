@@ -10,18 +10,27 @@ import type { TourRect } from './tour'
  *
  * **There is no mask here, and no SVG.** The dim is one view with an enormous
  * border: a border's inner corner radius is its outer radius minus its width,
- * so a single bordered box with nothing in the middle leaves a *rounded*
- * rectangular hole with the real UI showing through it. Four panels around the
- * anchor was the first attempt and it left the four corners undimmed — the
- * hole was square while the ring over it was round.
+ * so a single bordered box with nothing in the middle leaves a hole of any
+ * corner we ask for, with the real UI showing through it. Four panels around
+ * the anchor was the first attempt, and it could only ever leave a square
+ * hole — which is fine for the rectangles and wrong for the one target that
+ * wants a circle.
  */
 
 /** Between the hole and the bubble, and between the bubble and the screen edge. */
 const GAP = 12
 /** How far the hole is grown past the element, so the ring does not clip it. */
 const PAD = 6
-/** The house corner, when the element does not ask for its own. */
-const RADIUS = 16
+/**
+ * Square, unless the element asks for something else.
+ *
+ * The hole was rounded for one afternoon and Behic asked for the corners back:
+ * a hard rectangle reads as a cut-out over the screen, where a rounded one
+ * reads as a card floating on it. A tab icon asks for a soft corner rather
+ * than a hard one — the hole there is a square around a glyph rather than a
+ * cut around a control — but never for a circle.
+ */
+const RADIUS = 0
 /** Wide enough for two lines of body text, narrow enough to point at something. */
 const MAX_BUBBLE_WIDTH = 420
 

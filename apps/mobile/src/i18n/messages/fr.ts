@@ -111,16 +111,22 @@ export const fr: Localized<EnMessages> = {
       'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
     tabChatsTitle: 'Là où arrivent les réponses',
     tabChatsBody:
-      'Chaque conversation que tu commences vit ici, et celles qui attendent encore ta réponse restent à part.',
+      'Chaque conversation que tu commences vit ici, et celles qui t’attendent ont leur propre onglet.',
     tabChatsGuestBody:
       'Les conversations vivent ici. Tu peux lire et explorer sans compte — écrire est la seule chose qui en demande un.',
-    tabFeedTitle: 'Demande à la communauté',
+    tabFeedTitle: 'Demande et apprends',
     tabFeedBody:
-      'Publie une phrase dont tu doutes et quelqu’un la corrigera. En corriger une toi-même est la minute la plus utile que tu puisses passer ici.',
+      'Le Fil, c’est toute la communauté : fais corriger une phrase, écoute comment un mot se prononce, et rends la pareille à quelqu’un.',
     tabMeTitle: 'Chez toi',
-    tabMeBody: 'Ton profil, tes jetons et la série que tu vas commencer.',
+    tabMeBody: 'Ton profil, tes jetons et ta série — et les réglages, derrière la roue dentée.',
     sayHi: 'Dis bonjour à {name}',
     notNow: 'Pas maintenant',
+    feedAskTitle: 'Demande une seule chose',
+    feedAskBody:
+      'Publie une phrase dont tu doutes ou un mot que tu n’arrives pas à dire, et laisse les autres répondre.',
+    feedKindsTitle: 'Deux sortes d’aide',
+    feedKindsBody:
+      'Les corrections s’écrivent : quelqu’un corrige ta phrase. La prononciation se parle : quelqu’un enregistre le mot pour toi.',
   },
   theme: {
     section: 'Apparence',

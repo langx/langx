@@ -120,17 +120,22 @@ export const tr: Localized<EnMessages> = {
     discoverCardBody:
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
     tabChatsTitle: 'Cevaplar buraya düşer',
-    tabChatsBody:
-      'Başlattığın her sohbet burada; hâlâ senden yanıt bekleyenler ayrı bir sekmede durur.',
+    tabChatsBody: 'Başlattığın her sohbet burada; senden yanıt bekleyenler kendi sekmesinde durur.',
     tabChatsGuestBody:
       'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
-    tabFeedTitle: 'Herkese sor',
+    tabFeedTitle: 'Sor ve öğren',
     tabFeedBody:
-      'Emin olmadığın bir cümleyi paylaş, biri düzeltsin. Başkasının cümlesini düzeltmek de burada geçirebileceğin en faydalı dakika.',
+      'Akış tüm topluluğun ortak alanı: bir cümleni düzelttir, bir kelimenin nasıl söylendiğini dinle, aynısını başkası için yap.',
     tabMeTitle: 'Senin alanın',
-    tabMeBody: 'Profilin, jetonların ve birazdan başlatacağın seri.',
+    tabMeBody: 'Profilin, jetonların ve serin — ayarlar da dişli simgesinin arkasında.',
     sayHi: '{name} kişisine selam ver',
     notNow: 'Şimdi değil',
+    feedAskTitle: 'Tek bir şey sor',
+    feedAskBody:
+      'Emin olmadığın bir cümleyi ya da telaffuz edemediğin bir kelimeyi paylaş, insanlar cevaplasın.',
+    feedKindsTitle: 'İki tür yardım',
+    feedKindsBody:
+      'Düzeltmeler yazılı: biri cümleni düzeltir. Telaffuz sesli: biri kelimeyi senin için kaydeder.',
   },
   theme: {
     section: 'Görünüm',

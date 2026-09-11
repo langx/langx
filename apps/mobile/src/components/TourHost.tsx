@@ -1,3 +1,4 @@
+import { router } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import {
   Modal,
@@ -25,11 +26,26 @@ import {
   subscribeToTour,
   tourBodyKey,
   tourCta,
+  TOUR_TABS,
   type TourRect,
   type TourState,
 } from '../lib/tour'
 import { tourLayout } from '../lib/tourLayout'
 import { Button } from './ui/Button'
+
+/** Long enough for the tab that was just switched to to have drawn itself. */
+const SETTLE_MS = 260
+/**
+ * How long a step keeps asking for its target before giving up on it.
+ *
+ * A target on a tab that has never been opened does not exist until the
+ * navigation lands, and the first measurement after `router.navigate` can
+ * still find nothing. One attempt was enough on Discovery and wrong the moment
+ * the run started moving between tabs: each unmeasurable step advanced
+ * immediately, so the whole tail of the tour played itself out in a second.
+ */
+const MEASURE_RETRIES = 8
+const RETRY_MS = 150
 
 /**
  * Draws whatever run `src/lib/tour.ts` has open: the screen dimmed, one real
@@ -75,6 +91,15 @@ export function TourHost() {
             },
       )
       setTourState(null)
+      /*
+       * Sent away three tabs from where the run started, somebody is standing
+       * on a screen they did not choose. The run borrowed the navigation, so
+       * it gives it back — except when the offer was taken, which is a
+       * destination of its own.
+       */
+      if (!openedProfile && shown?.tab && shown.tab !== TOUR_TABS.discover) {
+        router.navigate(TOUR_TABS.discover)
+      }
     },
     [],
   )
@@ -93,24 +118,45 @@ export function TourHost() {
    * laid out at zero size — is skipped rather than drawn as an empty ring.
    */
   useEffect(() => {
-    if (!state || !target) return
+    if (!state || !step || !target) return
     let cancelled = false
     setAnchor(null)
     const index = state.index
-    void measureTourTarget(target).then((rect) => {
-      if (cancelled) return
-      if (!rect) return goNext()
-      setAnchor(rect)
-      // Counted here rather than in an effect on `anchor`, so a re-measure
-      // after a rotation is not a second view of the same step.
-      track({ name: 'tour_step_viewed', properties: { step: target, index } })
-    })
+
+    /*
+     * A step that names a tab switches to it first, and then waits a moment
+     * before measuring — not because the anchor moves (the bar is mounted on
+     * every tab) but because the reader should see the screen arrive before
+     * being told what it is. Switching and speaking in the same frame reads as
+     * a glitch.
+     */
+    if (step.tab) router.navigate(step.tab)
+
+    let timer: ReturnType<typeof setTimeout>
+    const attempt = (left: number): void => {
+      timer = setTimeout(
+        () => {
+          void measureTourTarget(target).then((rect) => {
+            if (cancelled) return
+            if (!rect) return left > 0 ? attempt(left - 1) : goNext()
+            setAnchor(rect)
+            // Counted here rather than in an effect on `anchor`, so a
+            // re-measure after a rotation is not a second view of one step.
+            track({ name: 'tour_step_viewed', properties: { step: target, index } })
+          })
+        },
+        left === MEASURE_RETRIES && step.tab ? SETTLE_MS : left === MEASURE_RETRIES ? 0 : RETRY_MS,
+      )
+    }
+    attempt(MEASURE_RETRIES)
+
     return () => {
       cancelled = true
+      clearTimeout(timer)
     }
     // `state` itself is safe to depend on: it only ever gets a new identity
     // when the run actually moves, because nothing publishes without changing.
-  }, [goNext, screen.height, screen.width, state, target])
+  }, [goNext, screen.height, screen.width, state, step, target])
 
   if (!state || !step) return null
 

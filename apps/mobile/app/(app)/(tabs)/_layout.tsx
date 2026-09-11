@@ -34,12 +34,14 @@ function TabIcon({
 }) {
   const icon = <Feather name={name} size={22} color={color} />
   /*
-   * Padded and round: a hole that hugs a 22-point glyph reads as a speck, not
-   * as "this tab". The padding is on the measurement, not on the view — see
-   * `TourTarget` — so the bar itself is untouched.
+   * Padded, and a rounded square rather than a circle: a hole that hugs a
+   * 22-point glyph reads as a speck, not as "this tab", and a circle around a
+   * square-ish target reads as a different kind of thing from the hard-edged
+   * holes every other step cuts. The padding is on the measurement, not on the
+   * view — see `TourTarget` — so the bar itself is untouched.
    */
   return tour ? (
-    <TourTarget id={tour} pad={14} radius={999}>
+    <TourTarget id={tour} pad={14} radius={14}>
       {icon}
     </TourTarget>
   ) : (

@@ -11,7 +11,7 @@ describe('tourLayout', () => {
       screen,
       insets,
     })
-    expect(hole).toEqual({ x: 94, y: 194, width: 92, height: 52, radius: 16 })
+    expect(hole).toEqual({ x: 94, y: 194, width: 92, height: 52, radius: 0 })
   })
 
   it('keeps the hole inside the screen when the element touches an edge', () => {
@@ -49,7 +49,7 @@ describe('tourLayout', () => {
     expect(mask.top + mask.height).toBeGreaterThan(screen.height)
   })
 
-  it('takes the corner an element asks for, bounded to a pill', () => {
+  it('is square unless the element asks for a corner, and bounds that to a pill', () => {
     const square = tourLayout({
       anchor: { x: 20, y: 700, width: 50, height: 50, radius: 999 },
       screen,
@@ -59,7 +59,7 @@ describe('tourLayout', () => {
     expect(square.hole.radius).toBe(31)
 
     const plain = tourLayout({ anchor: { x: 20, y: 300, width: 200, height: 40 }, screen, insets })
-    expect(plain.hole.radius).toBe(16)
+    expect(plain.hole.radius).toBe(0)
   })
 
   it('puts the bubble under an element in the top half', () => {

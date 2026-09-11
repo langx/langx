@@ -16,6 +16,7 @@ import {
   subscribeToTour,
   setTourState,
   TOUR_GUEST_BODIES,
+  TOUR_TABS,
   tourBodyKey,
   tourCta,
   registerTourCta,
@@ -39,6 +40,22 @@ describe('the step list', () => {
 
   it('carries the guest flag on the state, not just on the call', () => {
     expect(startTour({ guest: true }).guest).toBe(true)
+  })
+})
+
+describe('where a step stands', () => {
+  it('sends the three tab steps to their own tab', () => {
+    const tabs = TOUR_STEPS.filter((step) => step.target.startsWith('tab'))
+    expect(tabs.map((step) => step.tab)).toEqual([TOUR_TABS.chats, TOUR_TABS.feed, TOUR_TABS.me])
+  })
+
+  /** Otherwise the run ends pointing at a card on a screen nobody is on. */
+  it('comes back to Discovery for the last step', () => {
+    expect(TOUR_STEPS.at(-1)).toEqual({ target: 'discoverCard', tab: TOUR_TABS.discover })
+  })
+
+  it('leaves the Discovery chrome steps where they already are', () => {
+    for (const step of TOUR_STEPS.slice(0, 3)) expect(step.tab).toBeUndefined()
   })
 })
 
@@ -97,14 +114,26 @@ describe('walking the run', () => {
 
   it('skips a step whose target is not on screen', () => {
     const state = startTour({ guest: false })
-    const resolved = resolveFrom(state, (target) => target === 'discoverCard')
-    expect(resolved?.index).toBe(TOUR_STEPS.length - 1)
-    expect(currentStep(resolved!)?.target).toBe('discoverCard')
+    // The first step that is neither available nor on a tab of its own.
+    const resolved = resolveFrom(state, (target) => target === 'discoverFilters')
+    expect(currentStep(resolved!)?.target).toBe('discoverFilters')
   })
 
-  /** Nothing to point at anywhere means no tour at all, not an empty overlay. */
-  it('ends the run when no target is available', () => {
-    expect(resolveFrom(startTour({ guest: false }), () => false)).toBeNull()
+  /**
+   * A step that names a tab is reachable by definition: the host switches to
+   * that tab before measuring, and the screen may never have been mounted
+   * before. Asking first is what made the run skip its whole tail the moment
+   * it left Discovery.
+   */
+  it('lets a step with a tab through even when nothing is registered', () => {
+    const resolved = resolveFrom(startTour({ guest: false }), () => false)
+    expect(resolved?.index).toBe(TOUR_STEPS.findIndex((step) => step.tab !== undefined))
+  })
+
+  /** With no tabs and no targets there is no tour at all, not an empty overlay. */
+  it('ends the run when nothing is available and nothing navigates', () => {
+    const only = { steps: [{ target: 'discoverPair' as const }], index: 0, guest: false }
+    expect(resolveFrom(only, () => false)).toBeNull()
   })
 
   it('counts from one, over the whole list', () => {
