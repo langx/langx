@@ -1263,34 +1263,92 @@ describe('Faz 3 — discovery aggregation', () => {
       return response.json<BoostedProfilesPage>().items.map((item) => item.handle)
     }
 
-    it('leads with Polyglot, then Fluent, each group most recently active first', async () => {
+    /**
+     * Within a tier the order rotates — see `boostedOrder.ts` — so this asserts
+     * the band, not the sequence. The band is the part somebody paid for:
+     * `en.ts` promises Polyglot leads the strip, and nothing the rotation does
+     * may cross that line.
+     */
+    it('leads with Polyglot and never lets Fluent above it', async () => {
       const viewer = await viewerFor('boost-order-viewer@example.com')
-      const plusStale = await candidateFor('boost-plus-stale@example.com')
-      const plusFresh = await candidateFor('boost-plus-fresh@example.com')
-      const proStale = await candidateFor('boost-pro-stale@example.com')
-      const proFresh = await candidateFor('boost-pro-fresh@example.com')
+      const plusOne = await candidateFor('boost-plus-stale@example.com')
+      const plusTwo = await candidateFor('boost-plus-fresh@example.com')
+      const proOne = await candidateFor('boost-pro-stale@example.com')
+      const proTwo = await candidateFor('boost-pro-fresh@example.com')
       const free = await candidateFor('boost-free@example.com')
 
-      await setTier(plusStale.userId, 'pro_plus')
-      await setTier(plusFresh.userId, 'pro_plus')
-      await setTier(proStale.userId, 'pro')
-      await setTier(proFresh.userId, 'pro')
-      await setLastActiveAt(plusStale.userId, new Date('2026-01-01T00:00:00Z'))
-      await setLastActiveAt(plusFresh.userId, new Date('2026-02-01T00:00:00Z'))
-      await setLastActiveAt(proStale.userId, new Date('2026-01-01T00:00:00Z'))
-      await setLastActiveAt(proFresh.userId, new Date('2026-02-01T00:00:00Z'))
+      await setTier(plusOne.userId, 'pro_plus')
+      await setTier(plusTwo.userId, 'pro_plus')
+      await setTier(proOne.userId, 'pro')
+      await setTier(proTwo.userId, 'pro')
 
       const response = await boosted(viewer)
       expect(response.statusCode).toBe(200)
       const items = response.json<BoostedProfilesPage>().items
-      expect(items.map((item) => item.handle)).toEqual([
-        plusFresh.handle,
-        plusStale.handle,
-        proFresh.handle,
-        proStale.handle,
-      ])
+      expect(items.map((item) => item.handle).toSorted()).toEqual(
+        [plusOne, plusTwo, proOne, proTwo].map((c) => c.handle).toSorted(),
+      )
       expect(items.map((item) => item.tier)).toEqual(['pro_plus', 'pro_plus', 'pro', 'pro'])
       expect(items.map((item) => item.handle)).not.toContain(free.handle)
+    })
+
+    /**
+     * Its own pair again (`yo` / `zu`), because by this point the `qu` / `rm`
+     * fixtures are close enough to `DISCOVERY_BOOSTED_LIMIT` that which of
+     * them survives the slice depends on the rotation.
+     *
+     * Offsets from now, never literal dates: the week is measured against the
+     * clock, and a fixed date would quietly drift out of it and take the
+     * test's meaning with it.
+     */
+    it('puts a subscriber who was here this week ahead of a dormant one in the same tier', async () => {
+      const viewer = await newUser('boost-fresh-viewer@example.com', {
+        nativeLanguages: [{ code: 'yo' }],
+        learning: [{ code: 'zu', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'zu' }],
+        learning: [{ code: 'yo', level: 'intermediate', priority: 1 }],
+      }
+      const here = await newUser('boost-here@example.com', options)
+      const dormant = await newUser('boost-dormant@example.com', options)
+
+      await setTier(here.userId, 'pro_plus')
+      await setTier(dormant.userId, 'pro_plus')
+      await setLastActiveAt(dormant.userId, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles.indexOf(here.handle)).toBeLessThan(handles.indexOf(dormant.handle))
+    })
+
+    /**
+     * The strip is refetched on every mount and focus, so an order that
+     * changed per request would read as a bug long before it read as fair.
+     * `boostedOrder.test.ts` pins the window itself; this pins that the route
+     * seeds it from something stable rather than from the request.
+     */
+    it('answers the same order twice inside a rotation window', async () => {
+      const viewer = await newUser('boost-stable-viewer@example.com', {
+        nativeLanguages: [{ code: 'wo' }],
+        learning: [{ code: 'xh', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'xh' }],
+        learning: [{ code: 'wo', level: 'intermediate', priority: 1 }],
+      }
+      for (const email of [
+        'boost-stable-a@example.com',
+        'boost-stable-b@example.com',
+        'boost-stable-c@example.com',
+      ]) {
+        const person = await newUser(email, options)
+        await setTier(person.userId, 'pro_plus')
+      }
+
+      const first = handlesOf(await boosted(viewer))
+      const second = handlesOf(await boosted(viewer))
+      expect(first).toHaveLength(3)
+      expect(second).toEqual(first)
     })
 
     /**
