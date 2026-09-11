@@ -846,10 +846,18 @@ window on top, and bucketing ahead of `sort=nearby` would put someone online
 blocking in-memory sort, because a computed field cannot be indexed.
 
 **`GET /discovery/handles?q=`** is the other way in: an anchored `^prefix`
-match on `handle`, riding `handle_unique`, capped at ten. It applies the same
-blocks and `discoverable` rule as the feed and deliberately **not** the mutual
-language fit — finding somebody whose name you already know cannot depend on
-whether you are learnable to each other.
+match, capped at ten. Two halves in one `$or` — `handle`, riding
+`handle_unique`, and `nameTokens`, riding `name_tokens` — so a term finds the
+start of somebody's username or the start of any word in their name. Anchored
+on both, because an unanchored regex is a collection scan per keystroke, and
+that is also why the name half matches a derived token array rather than
+`displayName` itself: a case-insensitive regex over free text cannot use an
+index however it is written. `nameTokens` is written in the same update as the
+name it comes from, and `scripts/backfill-name-tokens.ts` filled in the
+profiles written before the field existed. It applies the same blocks and
+`discoverable` rule as the feed and deliberately **not** the mutual language
+fit — finding somebody whose name you already know cannot depend on whether
+you are learnable to each other.
 
 **`GET /discovery/boosted`** is the strip above the list: the paying members
 inside exactly the same scope, capped at `DISCOVERY_BOOSTED_LIMIT` with no

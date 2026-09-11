@@ -922,6 +922,120 @@ describe('Faz 3 — discovery aggregation', () => {
       const viewer = await newUser('search-short-viewer@example.com')
       expect((await search(viewer, 'a')).statusCode).toBe(400)
     })
+
+    it('finds by the start of any word in a name, not just the first', async () => {
+      const viewer = await newUser('search-name-viewer@example.com')
+      const target = await newUser('search-name-target@example.com', {
+        handle: 'zzsomeoneelse',
+        displayName: 'Ada Lovelace',
+      })
+
+      // The whole point of indexing words rather than the name: somebody who
+      // knows a surname and neither the first name nor the username.
+      expect(handlesIn(await search(viewer, 'lovelace'))).toContain(target.handle)
+      expect(handlesIn(await search(viewer, 'ada'))).toContain(target.handle)
+      // Still anchored, the way the handle half is. Matching the middle of a
+      // word is what makes this a collection scan.
+      expect(handlesIn(await search(viewer, 'ovelace'))).not.toContain(target.handle)
+    })
+
+    it('folds case and Latin accents, so an ASCII keyboard reaches the name', async () => {
+      const viewer = await newUser('search-fold-viewer@example.com')
+      const target = await newUser('search-fold-target@example.com', {
+        handle: 'zzfoldtarget',
+        displayName: 'Özgür Şahin',
+      })
+
+      for (const term of ['ozgur', 'OZGUR', 'özgür', 'sahin', 'Şahin']) {
+        expect(handlesIn(await search(viewer, term)), term).toContain(target.handle)
+      }
+    })
+
+    it('takes a multi-word term as every word at once, in any order', async () => {
+      const viewer = await newUser('search-multi-viewer@example.com')
+      const target = await newUser('search-multi-target@example.com', {
+        handle: 'zzmultitarget',
+        displayName: 'Ada Lovelace',
+      })
+
+      expect(handlesIn(await search(viewer, 'ada lo'))).toContain(target.handle)
+      expect(handlesIn(await search(viewer, 'lovelace ad'))).toContain(target.handle)
+      // Every word has to land somewhere — "ada" alone is not enough.
+      expect(handlesIn(await search(viewer, 'ada byron'))).not.toContain(target.handle)
+    })
+
+    it('follows a name that changed, and forgets the one it replaced', async () => {
+      const viewer = await newUser('search-rename-viewer@example.com')
+      const target = await newUser('search-rename-target@example.com', {
+        handle: 'zzrenametarget',
+        displayName: 'Ada Lovelace',
+      })
+
+      const renamed = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: target.cookie },
+        payload: { displayName: 'Grace Hopper' },
+      })
+      expect(renamed.statusCode).toBe(200)
+
+      expect(handlesIn(await search(viewer, 'hopper'))).toContain(target.handle)
+      // The derived tokens move in the same write as the name. If they did not,
+      // this is the assertion that would still find the old one.
+      expect(handlesIn(await search(viewer, 'lovelace'))).not.toContain(target.handle)
+    })
+
+    /**
+     * The name half and the visibility rule are two separate `$or`s, and two
+     * `$or` keys in one object silently replace each other. If that regresses,
+     * this is what catches it: a name match would walk straight past
+     * `discoverable: false`.
+     */
+    it('applies the same visibility rules to a name match as to a handle match', async () => {
+      const viewer = await newUser('search-name-hidden-viewer@example.com')
+      const hidden = await newUser('search-name-hidden@example.com', {
+        handle: 'zznamehidden',
+        displayName: 'Hedy Lamarr',
+      })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: hidden.userId }, { $set: { 'settings.discoverable': false } })
+
+      expect(handlesIn(await search(viewer, 'lamarr'))).not.toContain(hidden.handle)
+    })
+
+    /**
+     * The same acceptance criterion the discovery `$match` has below, for the
+     * same reason: both halves of this `$or` are indexed, and the day one of
+     * them is not the query stops erroring and starts scanning everybody.
+     */
+    it('is served by indexes on both halves, not a collection scan', async () => {
+      const viewer = await newUser('search-explain-viewer@example.com')
+      await newUser('search-explain-target@example.com', { displayName: 'Ada Lovelace' })
+
+      // Mirrors the $or searchHandles builds — see it for why the two sit under
+      // an explicit $and.
+      const explainResult = await handle.db
+        .collection(COLLECTIONS.profiles)
+        .aggregate([
+          {
+            $match: {
+              _id: { $nin: [viewer.userId] },
+              $and: [
+                { $or: [{ handle: { $regex: '^ada' } }, { nameTokens: { $all: [/^ada/] } }] },
+                { $or: [{ 'settings.discoverable': true }, { official: true }] },
+              ],
+              guest: { $exists: false },
+              deletedAt: { $exists: false },
+            },
+          },
+        ])
+        .explain('executionStats')
+
+      const serialized = JSON.stringify(explainResult)
+      expect(serialized).toContain('IXSCAN')
+      expect(serialized).not.toContain('COLLSCAN')
+    })
   })
 
   describe('sort presets and pagination', () => {

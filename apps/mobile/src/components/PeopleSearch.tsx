@@ -55,13 +55,13 @@ function useTerm(): string {
 }
 
 /**
- * Find somebody by username, wherever you already are.
+ * Find somebody by name or username, wherever you already are.
  *
  * The field half. It sits in the host's title row and owns whether search is
  * open; `PeopleSearchResults` is the other half and goes where the host's
  * list was. Free on every plan, and always was: the endpoint behind it is
- * `requireAuth` with no tier check. Somebody who already knows the username
- * is not browsing.
+ * `requireAuth` with no tier check. Somebody who already knows who they are
+ * looking for is not browsing.
  */
 export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
   const t = useT()

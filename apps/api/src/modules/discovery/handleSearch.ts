@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { blockedUserIds } from '../moderation/blocks'
 import { notSuspended } from '../moderation/suspension'
+import { nameTokens } from '../profiles/nameTokens'
 import type { Profile } from '../profiles/profiles'
 
 /**
@@ -18,13 +19,26 @@ function escapeRegex(value: string): string {
 }
 
 /**
- * Find someone by the start of their handle.
+ * Find someone by the start of their username, or by the start of any word in
+ * their name.
  *
- * **Anchored, always.** `^term` rides the `handle_unique` btree index; an
- * unanchored `/term/` cannot, and would turn a search box into a collection
- * scan per keystroke. Handles are stored lower-cased by `handleSchema`, so the
- * query lower-cases too rather than asking for a case-insensitive regex, which
- * would also give up the index.
+ * **Anchored, always, on both halves.** `^term` rides an index — `handle` on
+ * `handle_unique`, `nameTokens` on `name_tokens` — while an unanchored
+ * `/term/` cannot, and would turn a search box into a collection scan per
+ * keystroke. That is also the whole reason the name half matches a *derived*
+ * token array rather than `displayName` itself: a case-insensitive regex over
+ * free text is unindexable however it is written. See `nameTokens`.
+ *
+ * The two halves are one `$or` rather than two queries, so the ten results are
+ * ranked together instead of one half crowding out the other. Both branches
+ * are indexed, which is what keeps that an index scan; unindex either and the
+ * planner quietly falls back to scanning everybody. `discovery.test.ts` pins
+ * it with an `explain()`.
+ *
+ * A multi-word term is an `$and` across the tokens — "ada lo" wants somebody
+ * with a word starting "ada" *and* a word starting "lo", which is what typing
+ * a full name means. `$all` of no tokens matches nobody, which is the right
+ * answer for a term that is all punctuation.
  *
  * The rules it shares with discovery, and the two it does not:
  *
@@ -47,21 +61,36 @@ export async function searchHandles(
   term: string,
 ): Promise<HandleSearchPage> {
   const excludedIds = [viewerId, ...(await blockedUserIds(db, viewerId))]
+  // Already letters and digits only — `nameTokens` breaks on everything else —
+  // so the escape is belt and braces rather than the load-bearing one above.
+  const wordPrefixes = nameTokens(term).map((token) => new RegExp(`^${escapeRegex(token)}`))
 
   const rows = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
       {
         _id: { $nin: excludedIds },
-        handle: { $regex: `^${escapeRegex(term)}` },
         /*
-         * An official account is not discoverable — it must never be proposed
-         * as a partner — but it must be findable, because typing the name is
-         * how somebody reaches the assistant at all. Searching for a name you
-         * already know is the one case where "do not browse me" and "do not
-         * exist" come apart.
+         * Two `$or`s, so they have to sit under an explicit `$and` — a second
+         * `$or` key in the same object replaces the first, and the one that
+         * would have been lost here is the visibility rule.
          */
-        $or: [{ 'settings.discoverable': true }, { official: true }],
+        $and: [
+          {
+            $or: [
+              { handle: { $regex: `^${escapeRegex(term)}` } },
+              { nameTokens: { $all: wordPrefixes } },
+            ],
+          },
+          /*
+           * An official account is not discoverable — it must never be proposed
+           * as a partner — but it must be findable, because typing the name is
+           * how somebody reaches the assistant at all. Searching for a name you
+           * already know is the one case where "do not browse me" and "do not
+           * exist" come apart.
+           */
+          { $or: [{ 'settings.discoverable': true }, { official: true }] },
+        ],
         // Belt and braces. `discoverable: false` already excludes them, but a
         // guest surfacing in somebody's results is the single worst failure of
         // this feature, and one flag flipped by a future default should not be
