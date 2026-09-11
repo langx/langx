@@ -238,10 +238,21 @@ happened, read by a bell in the Feed header and a screen behind it.
 
 ### The four rules it runs on
 
-- **Per event, where the push is batched.** Three comments on one post are
-  three rows, though the push sends one an hour and likes go out once a day.
-  The throttles exist because a phone buzzing interrupts; a list somebody chose
-  to open does not. No sender, ledger claim or throttle changed.
+- **Per event, where the push is batched — but collapsed into one row.**
+  Nothing is dropped: the push sends one an hour and likes go out once a day,
+  because a phone buzzing interrupts, while a list somebody chose to open does
+  not. Ten comments on one post are ten rows in the collection and **one** row
+  on the screen, reading "and 9 others" — ten rows saying the same thing is a
+  list nobody can scan. A follow is never collapsed: each is a different
+  person, and the row opens that person. No sender, ledger claim or throttle
+  changed.
+
+  The grouping happens when the list is **read**, never by keeping a counter on
+  a row: a row whose count grew would have to move its `createdAt` to be
+  noticed, and a row that moves inside a keyset page makes a cursor skip or
+  repeat. The unread count groups identically, so the badge and the list can
+  never disagree.
+
 - **Not gated by the switches.** `notificationsAllowed` is never called on this
   path. Those two channels are about what _leaves_; turning off social push is
   a request not to be buzzed, not a request to be blinded. The badge write in
@@ -254,6 +265,10 @@ happened, read by a bell in the Feed header and a screen behind it.
 - **No prose on the wire.** The row carries data — an actor, a post, a count —
   and the app composes the sentence from `messages/en.ts`, so a count reaches a
   plural entry in the reader's own language.
+- **Reading is not marking.** Opening the centre changes nothing; a
+  **Mark all read** button in the header does, and it is offered only when
+  there is something to clear. Somebody who came to check one name has not
+  dealt with the other eleven.
 
 ### What it does not carry
 

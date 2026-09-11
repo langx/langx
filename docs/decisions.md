@@ -4002,3 +4002,42 @@ pool payout does have a real source, `awardTokens` saying it paid, so its row
 lands at 04:00 with the money while the push still waits for 09:00 on the
 reader's own clock. A record and a phone buzzing are different things, and
 only the second has an opinion about what hour it is.
+
+## Ten comments are one piece of news, and reading is not marking
+
+Two things were wrong with the notification centre the day after it worked.
+
+**A pile of replies was a pile of rows.** Ten people commenting on one
+sentence produced ten rows, which is faithful and useless: the screen exists
+to be scanned, and a list that repeats itself ten times cannot be. They
+collapse now — one row per `{kind, post}`, reading "and 9 others" — while a
+follow never does, because each one is a different person and the row opens
+that person rather than the pile.
+
+The grouping is done when the list is **read**, in an aggregation, and not by
+keeping a counter on a single row. A counter is the obvious design and it is
+the wrong one here for a reason this codebase has already paid for once: a row
+whose count grows has to move its `createdAt` to be noticed, and a row that
+moves inside a keyset page makes a cursor skip or repeat — which is exactly
+why the profile-visit row is insert-only. So the cursor points at the group's
+newest member and the `$match` for it runs after the `$group`.
+
+The unread count had to learn the same trick, and that is not a detail. It was
+a plain `countDocuments`, which would have put **10** on the badge over a list
+with one thing in it. A badge that disagrees with the screen it leads to is
+worse than no badge: it sends somebody looking for nine things that were never
+there. It filters blocked people for the same reason.
+
+**And opening the list marked it read.** That was convenient and quietly
+destructive: somebody who came to check one name had thereby dealt with the
+other eleven, and the only record of what they had not looked at was gone.
+It is a button now — hard right in the header, and drawn only when there is
+something to clear, because a control that can do nothing should not be on
+screen.
+
+Making it explicit deleted more code than it added. The dots read `read`
+straight off the row again, so the sticky set that kept them visible through
+the automatic mark, and the fetch-timestamp latch that stopped that mark
+firing before the page it was marking had arrived, both went. Both were
+careful, both were tested, and both existed only to hold up a behaviour that
+turned out to be the wrong one.
