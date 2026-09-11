@@ -18,6 +18,7 @@ import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import { magicLink } from 'better-auth/plugins/magic-link'
 import type { Db, MongoClient, ObjectId } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
+import { WARMUP_EMAIL } from './auth/warmUp'
 import {
   emailForHandle,
   looksLikeHandle,
@@ -339,6 +340,20 @@ export async function createAuth({
        * password a second time to get in.
        */
       sendVerificationEmail: async ({ user, token }, request) => {
+        /*
+         * `warmUpAuthCollections` signs up a disposable account at every boot
+         * and deletes it again, and `sendOnSignUp` has no per-call override —
+         * so without this line each boot mailed a verification link to an
+         * address on the reserved `.invalid` TLD, which by definition never
+         * resolves. Two machines, several deploys a day, and the warm-up's
+         * retry loop sending again on each attempt: 477 of 606 sends over the
+         * month to 2026-09-11 bounced, a 78% bounce rate on the same domain
+         * every real mail leaves from — past what Gmail and Yahoo tolerate
+         * from a bulk sender, with the v1 launch campaign still to go out on
+         * it. The warm-up is left exactly as it was; it was the send that had
+         * no business happening.
+         */
+        if (user.email === WARMUP_EMAIL) return
         const url = verifyEmailUrl(token)
         const locale = await mailLocale(user.id, request?.headers)
         /*

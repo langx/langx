@@ -26,7 +26,14 @@ describe('Faz 1 — auth collection warm-up', () => {
       MONGODB_DB: 'langx_warmup_test',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
     })
-    const noopEmailSender: EmailSender = { deliverable: true, send: () => Promise.resolve() }
+    const sent: string[] = []
+    const noopEmailSender: EmailSender = {
+      deliverable: true,
+      send: (message) => {
+        sent.push(message.to)
+        return Promise.resolve()
+      },
+    }
     const auth = await createAuth({
       env,
       db: handle.db,
@@ -43,6 +50,12 @@ describe('Faz 1 — auth collection warm-up', () => {
     expect(warnings).toEqual([])
     await expect(handle.db.collection('user').countDocuments()).resolves.toBe(0)
     await expect(handle.db.collection('account').countDocuments()).resolves.toBe(0)
+
+    // The warm-up runs at every boot, on two machines, several deploys a day.
+    // Anything it mails goes to an address on the reserved `.invalid` TLD that
+    // can never resolve, so every one of those sends is a bounce recorded
+    // against the domain the app's real mail leaves from.
+    expect(sent).toEqual([])
 
     // And the real first sign-up a user makes now succeeds on the first try.
     const signUp = await auth.api.signUpEmail({
