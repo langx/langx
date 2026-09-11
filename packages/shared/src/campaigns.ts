@@ -37,12 +37,14 @@ export type CampaignSource = (typeof CAMPAIGN_SOURCES)[number]
  * days for a few thousand people is the price of the transactional mail
  * still arriving.
  *
- * Doubled on 11 September 2026, Behic's call, after the first day of the v1
- * campaign was spent on Apple relay addresses that bounced. The shape is
- * what matters — each day at most twice the one before — and the domain had
- * by then sent a few hundred a day for a fortnight rather than twenty.
+ * Raised twice on 11 September 2026, Behic's call both times, after the v1
+ * campaign's first day went to Apple relay addresses that bounced and was
+ * lost. The shape is what the ramp is for — each day twice the one before,
+ * never a jump — and that is intact; the floor moved because the reasoning
+ * above was written when the domain sent twenty mails a day and it had been
+ * sending a few hundred for a fortnight by then.
  */
-export const CAMPAIGN_WARMUP_PER_DAY = [500, 1000, 2000, 4000, 8000] as const
+export const CAMPAIGN_WARMUP_PER_DAY = [1000, 2000, 4000, 8000] as const
 
 /** The day's budget for a campaign that started `dayIndex` days ago. */
 export function campaignDayBudget(dayIndex: number): number {
