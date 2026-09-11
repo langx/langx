@@ -48,7 +48,12 @@ export default function LocationPermissionScreen() {
   const [status, setStatus] = useState<LocationGuideStatus | null>(null)
 
   const read = useCallback(() => {
-    void readLocationGuideStatus().then(setStatus)
+    // A rejection here used to leave `status` at `null` for good, and a screen
+    // whose every branch is behind that check renders as a bare header — the
+    // shape this arrived in. Falling back to `blocked` is the honest answer to
+    // "we could not read it": it is the one state whose instructions are worth
+    // following whatever the truth turns out to be.
+    readLocationGuideStatus(Platform.OS).then(setStatus, () => setStatus('blocked'))
   }, [])
 
   /*
