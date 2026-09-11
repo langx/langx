@@ -1,9 +1,11 @@
-import { giftReadyAt, localHour, notificationsAllowed, utcDayKey } from '@langx/shared'
+import { giftReadyAt, localHour, notificationsAllowed, utcDayKey, type Locale } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { walletPoolSection } from '../../email/templates'
 import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
+import type { DigestCandidate } from './digest'
 import { claimOnce } from './ledger'
 
 /**
@@ -14,9 +16,10 @@ import { claimOnce } from './ledger'
  * were silent, which made a currency people had to remember to check — and a
  * currency nobody checks is a feature nobody found.
  *
- * `wallet.email` is off by default and there is no sender for it. Mail about
- * a number going up is the kind that gets a domain filtered; the wallet is
- * two taps away, and the push is the whole point.
+ * The gift stays push-only. A button being available is not something that
+ * happened, and a mail saying so would be a mail about nothing. The pool is
+ * the other case: it pays overnight while nobody is watching, so it earns a
+ * paragraph in the evening digest — see `walletPoolSectionFor`.
  */
 
 /** The hour, on the reader's clock, at which yesterday's pool is worth saying. */
@@ -64,31 +67,28 @@ export async function runPoolPayoutPass(
   sender: PushSender,
   now: Date = new Date(),
 ): Promise<{ sent: number }> {
-  const day = utcDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000))
-  const paid = await db
-    .collection<LedgerRow>(COLLECTIONS.tokenLedger)
-    .find({ kind: 'dailyPool', refId: day }, { projection: { userId: 1, amount: 1 } })
-    .toArray()
-  if (paid.length === 0) return { sent: 0 }
+  const paid = await collectPoolPayouts(db, now)
+  if (paid.size === 0) return { sent: 0 }
+  const day = poolDay(now)
 
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
-      { _id: { $in: paid.map((row) => row.userId) }, deletedAt: { $exists: false } },
+      { _id: { $in: [...paid.keys()] }, deletedAt: { $exists: false } },
       { projection: { settings: 1, timezone: 1 } },
     )
     .toArray()
   const byId = new Map(profiles.map((profile) => [profile._id, profile]))
 
   let sent = 0
-  for (const row of paid) {
-    const profile = byId.get(row.userId)
+  for (const [userId, amount] of paid) {
+    const profile = byId.get(userId)
     if (!profile) continue
     if (localHour(now, profile.timezone ?? 'UTC') !== WALLET_LOCAL_HOUR) continue
     if (!(await claimOnce(db, 'wallet.pool', profile._id, day))) continue
     if (
       await pushWallet(db, sender, profile, (t) => ({
-        title: t('push.wallet.poolTitle', { count: row.amount }),
+        title: t('push.wallet.poolTitle', { count: amount }),
         body: t('push.wallet.poolBody'),
       }))
     ) {
@@ -96,6 +96,53 @@ export async function runPoolPayoutPass(
     }
   }
   return { sent }
+}
+
+/** Which pool run is the one being talked about: the one that paid overnight. */
+function poolDay(now: Date): string {
+  return utcDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000))
+}
+
+/**
+ * Yesterday's pool, for everybody it paid, read once for the whole tick.
+ *
+ * The same rows `runPoolPayoutPass` pushes from, asked an hour-block later so
+ * the evening mail can mention them. One query for everybody rather than one
+ * per reader: the pool pays a few hundred people at most and the digest would
+ * otherwise ask the ledger the same question once per profile.
+ */
+export async function collectPoolPayouts(db: Db, now: Date): Promise<Map<string, number>> {
+  const day = poolDay(now)
+  const paid = await db
+    .collection<LedgerRow>(COLLECTIONS.tokenLedger)
+    .find({ kind: 'dailyPool', refId: day }, { projection: { userId: 1, amount: 1 } })
+    .toArray()
+  return new Map(paid.map((row) => [row.userId, row.amount]))
+}
+
+/**
+ * One reader's share of it, as a section.
+ *
+ * A passenger for anybody with a phone: the push said this at nine in the
+ * morning and a mail repeating it twelve hours later is not news. For the web
+ * audience, which has no push at all, it is the only way the pool is ever
+ * visible, and there it is worth the mail.
+ */
+export function walletPoolSectionFor(
+  db: Db,
+  profile: Profile,
+  amount: number | undefined,
+  hasPushDevice: boolean,
+  now: Date,
+): DigestCandidate | null {
+  if (!amount || amount <= 0) return null
+  const day = poolDay(now)
+
+  return {
+    trigger: !hasPushDevice,
+    claim: () => claimOnce(db, 'wallet.poolDigest', profile._id, day),
+    build: (locale: Locale) => walletPoolSection(locale, { count: amount }),
+  }
 }
 
 /**

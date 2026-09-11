@@ -1,4 +1,4 @@
-import { UNREAD_DIGEST_MAX_SENDERS } from '@langx/shared'
+import { DAILY_DIGEST_LOCAL_HOUR, UNREAD_DIGEST_MAX_SENDERS } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,15 +7,15 @@ import { COLLECTIONS } from '../../db/collections'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
-import { runUnreadDigestPass } from './unreadDigest'
+import { runDailyDigestPass } from './digest'
 
 const STORAGE_BASE = 'https://media.langx.test'
 const SECRET = 'd'.repeat(40)
 const HOUR = 60 * 60 * 1000
 
-/** A zone in which `now` reads as noon, safely inside the send window. */
-function zoneWhereItIsNoon(now: Date): string {
-  const offset = (now.getUTCHours() - 12 + 24) % 24
+/** A zone in which `now` reads as the digest's hour. */
+function zoneWhereItIsEvening(now: Date): string {
+  const offset = (now.getUTCHours() - DAILY_DIGEST_LOCAL_HOUR + 24) % 24
   if (offset === 0) return 'UTC'
   return offset <= 12 ? `Etc/GMT+${offset}` : `Etc/GMT-${24 - offset}`
 }
@@ -26,7 +26,7 @@ describe('the unread-message digest', () => {
   let sender: CapturingEmailSender
   let ctx: NotificationEmailContext
   const now = new Date('2026-09-03T15:00:00Z')
-  const zone = zoneWhereItIsNoon(now)
+  const zone = zoneWhereItIsEvening(now)
 
   beforeAll(async () => {
     mongo = await MongoMemoryServer.create()
@@ -105,7 +105,7 @@ describe('the unread-message digest', () => {
     const writer = await newProfile({ name: 'Ada Lovelace' })
     await thread(reader, writer, { unread: 2 })
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 1 })
     const message = sender.messages[0]
     expect(message?.subject).toContain('2')
     expect(message?.html).toContain('Ada Lovelace')
@@ -134,7 +134,7 @@ describe('the unread-message digest', () => {
       'fetch',
       vi.fn().mockResolvedValue(new Response(png, { headers: { 'content-type': 'image/png' } })),
     )
-    expect(await runUnreadDigestPass(handle.db, ctx, now, STORAGE_BASE)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, now, STORAGE_BASE)).toMatchObject({ sent: 1 })
     vi.unstubAllGlobals()
 
     const message = sender.messages[0]
@@ -151,7 +151,7 @@ describe('the unread-message digest', () => {
     const writer = await newProfile({ name: 'Ada', avatarUrl: `${STORAGE_BASE}/avatars/a.png` })
     await thread(reader, writer)
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('gone')))
-    expect(await runUnreadDigestPass(handle.db, ctx, now, STORAGE_BASE)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, now, STORAGE_BASE)).toMatchObject({ sent: 1 })
     vi.unstubAllGlobals()
     expect(sender.messages[0]?.attachments ?? []).toEqual([])
     expect(sender.messages[0]?.html).toContain('>A<')
@@ -165,17 +165,19 @@ describe('the unread-message digest', () => {
     const reader = await newProfile()
     await thread(reader, await newProfile())
 
-    await runUnreadDigestPass(handle.db, ctx, now)
-    expect(await runUnreadDigestPass(handle.db, ctx, new Date(now.getTime() + HOUR))).toEqual({
-      sent: 0,
-    })
+    await runDailyDigestPass(handle.db, ctx, now)
+    // The next evening, when the digest's own daily key has rolled over and
+    // only the section's `lastActiveAt` key is left to stop it.
+    expect(
+      await runDailyDigestPass(handle.db, ctx, new Date(now.getTime() + 24 * HOUR)),
+    ).toMatchObject({ sent: 0 })
     expect(sender.messages).toHaveLength(1)
   })
 
   it('sends again after they came back, left, and were written to once more', async () => {
     const reader = await newProfile()
     const id = await thread(reader, await newProfile())
-    await runUnreadDigestPass(handle.db, ctx, now)
+    await runDailyDigestPass(handle.db, ctx, now)
 
     // They opened the app, went away again, and a new message arrived after
     // that — which is a fresh `lastActiveAt`, so a fresh period key.
@@ -191,38 +193,38 @@ describe('the unread-message digest', () => {
         { $set: { 'lastMessage.createdAt': new Date(cameBack.getTime() + HOUR) } },
       )
 
-    expect(await runUnreadDigestPass(handle.db, ctx, later)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, later)).toMatchObject({ sent: 1 })
     expect(sender.messages).toHaveLength(2)
   })
 
   it('leaves alone somebody who was here an hour ago', async () => {
     const reader = await newProfile({ awayHours: 1 })
     await thread(reader, await newProfile())
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   it('leaves alone somebody gone longer than a fortnight', async () => {
     const reader = await newProfile({ awayHours: 24 * 20 })
     await thread(reader, await newProfile())
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   it('respects the switch for message email', async () => {
     const reader = await newProfile({ notifications: { messages: { email: false } } })
     await thread(reader, await newProfile())
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   /** 3am mail is a phone buzzing, whatever it says on the label. */
-  it('waits for waking hours in the reader’s own timezone', async () => {
+  it('waits for the evening in the reader’s own timezone', async () => {
     const middleOfTheNight = (now.getUTCHours() - 3 + 24) % 24
     const reader = await newProfile({
       timezone: middleOfTheNight === 0 ? 'UTC' : `Etc/GMT+${middleOfTheNight}`,
     })
     await thread(reader, await newProfile())
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
-    // And nothing was claimed, so the 9am tick still gets to send it.
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
+    // And nothing was claimed, so their own seven o'clock still gets to send it.
     expect(await handle.db.collection(COLLECTIONS.notificationLedger).countDocuments({})).toBe(0)
   })
 
@@ -234,7 +236,7 @@ describe('the unread-message digest', () => {
       .collection(COLLECTIONS.blocks)
       .insertOne({ blockerId: reader, blockedId: writer, createdAt: now })
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   it('ignores a thread the reader archived', async () => {
@@ -244,7 +246,7 @@ describe('the unread-message digest', () => {
       .collection(COLLECTIONS.conversations)
       .updateOne({ _id: id }, { $set: { [`archivedBy.${reader}`]: true } })
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   it('ignores a thread whose last word was the reader’s own', async () => {
@@ -255,7 +257,7 @@ describe('the unread-message digest', () => {
       .collection(COLLECTIONS.conversations)
       .updateOne({ _id: id }, { $set: { 'lastMessage.senderId': reader } })
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 0 })
   })
 
   it('says how many more there are once it has named enough', async () => {
@@ -264,7 +266,7 @@ describe('the unread-message digest', () => {
       await thread(reader, await newProfile(), { unread: 1, minutesAgo: 60 + i })
     }
 
-    expect(await runUnreadDigestPass(handle.db, ctx, now)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 1 })
     expect(sender.messages[0]?.text).toContain('1 more')
   })
 })

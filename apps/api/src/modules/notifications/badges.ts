@@ -4,16 +4,17 @@ import {
   localDayKey,
   localHour,
   notificationsAllowed,
+  type Locale,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
-import { badgeEarnedEmail } from '../../email/templates'
+import { badgeEarnedSection } from '../../email/templates'
 import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { getBadgeSummary } from '../tokens/badges'
+import type { DigestCandidate } from './digest'
 import { recordNotifications } from './inbox'
 import { claimOnce } from './ledger'
 
@@ -44,7 +45,7 @@ import { claimOnce } from './ledger'
  */
 export async function runBadgeRoundUpPass(
   db: Db,
-  senders: { push: PushSender; email: NotificationEmailContext },
+  push: PushSender,
   now: Date = new Date(),
   logger?: Pick<SchedulerLogger, 'warn'>,
 ): Promise<{ sent: number; seeded: number; failed: number }> {
@@ -163,33 +164,66 @@ export async function runBadgeRoundUpPass(
     const only = fresh.length === 1 ? findBadge(fresh[0] as string) : undefined
 
     const byLocale = wantsPush ? await tokensByLocale(db, profile._id) : new Map<never, never>()
-    if (byLocale.size > 0) {
-      for (const [locale, tokens] of byLocale) {
-        const t = translator(locale)
-        await sendPush(db, senders.push, {
-          to: tokens,
-          title: only
-            ? t('push.badgeOneTitle', { label: only.label })
-            : t('push.badgeManyTitle', { count: fresh.length }),
-          body: t('push.badgeBody'),
-          data: { kind: 'badgeEarned' },
-        })
-      }
-      sent++
-      return
+    for (const [locale, tokens] of byLocale) {
+      const t = translator(locale)
+      await sendPush(db, push, {
+        to: tokens,
+        title: only
+          ? t('push.badgeOneTitle', { label: only.label })
+          : t('push.badgeManyTitle', { count: fresh.length }),
+        body: t('push.badgeBody'),
+        data: { kind: 'badgeEarned' },
+      })
     }
+    const pushed = byLocale.size > 0
+    if (pushed) sent++
 
+    /*
+     * The mail half is no longer sent from here — it is left for tonight's
+     * digest, an hour later, because `notifiedBadgeIds` has just been
+     * overwritten and the difference this pass found cannot be recomputed.
+     *
+     * Written whether or not a push went out, with `pushed` recorded beside
+     * it. A badge that already buzzed a phone is worth a line in a mail that
+     * is going anyway and is not worth a mail of its own, and that is a
+     * distinction only the digest can act on.
+     */
     if (!wantsEmail) return
-    const outcome = await sendNotificationEmail(db, senders.email, {
-      userId: profile._id,
-      type: 'badges',
-      build: (locale, unsubscribe) =>
-        badgeEarnedEmail(locale, {
-          count: fresh.length,
-          label: only?.label ?? null,
-          unsubscribe,
-        }),
-    })
-    if (outcome === 'sent') sent++
+    await profiles.updateOne(
+      { _id: profile._id },
+      {
+        $set: {
+          'stats.digestBadges': {
+            day: localDayKey(now, zone),
+            count: fresh.length,
+            label: only?.label ?? null,
+            pushed,
+          },
+        },
+      },
+    )
+  }
+}
+
+/**
+ * What the round-up left for tonight, if it is still tonight.
+ *
+ * The day key is compared rather than trusted: a row survives on the profile
+ * until the next badge is earned, and congratulating somebody again next
+ * Tuesday for a badge they got today is exactly the failure `notifiedBadgeIds`
+ * exists to prevent.
+ */
+export function badgeSectionFor(db: Db, profile: Profile, now: Date): DigestCandidate | null {
+  const pending = profile.stats?.digestBadges
+  if (!pending) return null
+  if (pending.day !== localDayKey(now, profile.timezone ?? 'UTC')) return null
+
+  return {
+    // A badge that already buzzed a phone rides along; one that did not is
+    // the news itself.
+    trigger: !pending.pushed,
+    claim: () => claimOnce(db, 'badgeDigest', profile._id, pending.day),
+    build: (locale: Locale) =>
+      badgeEarnedSection(locale, { count: pending.count, label: pending.label }),
   }
 }

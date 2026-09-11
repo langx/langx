@@ -4,13 +4,12 @@ import type { PushSender } from '../push/devices'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
-import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
-import { runFeedDigestPass } from './feedDigest'
+import { runDailyDigestPass } from './digest'
+import { runProfileVisitsPushPass } from './profileVisits'
 import { runNewsletterPass } from './newsletter'
 import { runLikesRoundUpPass } from './social'
 import { runPromotionsPass } from './promotions'
 import { runGiftReadyPass, runPoolPayoutPass } from './wallet'
-import { runUnreadDigestPass } from './unreadDigest'
 import { runVerifyReminderPass } from './verifyReminder'
 
 /**
@@ -55,12 +54,8 @@ export function startNotificationScheduler(
     const now = new Date()
     try {
       await Promise.allSettled([
-        run('unread digest', () =>
-          runUnreadDigestPass(db, senders.email, now, options.storagePublicBaseUrl),
-        ),
         run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
-        run('profile visit email', () => runProfileVisitsEmailPass(db, senders.email, now)),
-        run('badge round-up', () => runBadgeRoundUpPass(db, senders, now, logger)),
+        run('badge round-up', () => runBadgeRoundUpPass(db, senders.push, now, logger)),
         ...(options.resendVerification
           ? [
               run('verify reminder', () =>
@@ -72,12 +67,19 @@ export function startNotificationScheduler(
               ),
             ]
           : []),
-        // Before the nudges: on the first of a month the recap is the thing
-        // worth saying, and the cap would otherwise let a nudge take its place.
-        run('feed digest', () => runFeedDigestPass(db, senders.email, now)),
         run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
         run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
         run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),
+        /*
+         * The one notification email, and everything after it in this list is
+         * marketing that must not take its slot. The digest runs at 19:00 and
+         * both of those at 20:00, so the ordering is settled by the clock
+         * rather than by the position here — this array is concurrent, and a
+         * guarantee that rested on it would be a guarantee resting on nothing.
+         */
+        run('daily digest', () =>
+          runDailyDigestPass(db, senders.email, now, options.storagePublicBaseUrl, logger),
+        ),
         run('newsletter', () => runNewsletterPass(db, senders.email, now)),
         run('promotions', () => runPromotionsPass(db, senders, now)),
         run('campaign queue', () =>

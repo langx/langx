@@ -7,7 +7,7 @@ import { isEmailSuppressed } from '../modules/notifications/suppressions'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Email } from './templates'
 import type { EmailSender } from './sender'
-import { signUnsubscribeToken, unsubscribeUrl } from './unsubscribeToken'
+import { signUnsubscribeToken, unsubscribeUrl, type UnsubscribeScope } from './unsubscribeToken'
 
 /** What every notification sender needs, built once in `index.ts`. */
 export interface NotificationEmailContext {
@@ -64,7 +64,47 @@ export async function sendNotificationEmail(
     return 'opted-out'
   }
 
-  const address = await emailFor(db, input.userId)
+  return deliver(db, ctx, input.userId, input.type, input.build)
+}
+
+/**
+ * The evening digest, which is the one mail that is not about a single kind.
+ *
+ * No preference check here, and that is not a hole in the wall `notify.ts`
+ * builds. Every section of a digest asks `notificationsAllowed` for *its own*
+ * kind while it is being built, a kind switched off produces no section, and a
+ * digest with no sections is never handed to this function. So the check still
+ * happens exactly once per kind — it has moved from the envelope to the
+ * paragraphs, because that is where the kinds now live.
+ *
+ * The unsubscribe scope is `all` for the same reason: a letter carrying every
+ * kind cannot honestly offer to stop one of them, and `routes/email.ts`
+ * already knows how to switch email off across the board. Per-kind control is
+ * the settings screen, which the footer's second link points at.
+ */
+export async function sendDigestEmail(
+  db: Db,
+  ctx: NotificationEmailContext,
+  input: { userId: string; build: (locale: Locale, unsubscribe: string) => Email },
+): Promise<NotificationEmailOutcome> {
+  const profile = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: input.userId }, { projection: { deletedAt: 1 } })
+  if (!profile) return 'no-profile'
+  if (profile.deletedAt) return 'deleted'
+
+  return deliver(db, ctx, input.userId, 'all', input.build)
+}
+
+/** Address, suppression, locale and the footer — everything past the consent. */
+async function deliver(
+  db: Db,
+  ctx: NotificationEmailContext,
+  userId: string,
+  scope: UnsubscribeScope,
+  build: (locale: Locale, unsubscribe: string) => Email,
+): Promise<NotificationEmailOutcome> {
+  const address = await emailFor(db, userId)
   if (!address) return 'no-email'
   // Never to an unproved address. Somebody who typed a stranger's email at
   // sign-up and never clicked the link has not agreed to anything, and the
@@ -74,15 +114,15 @@ export async function sendNotificationEmail(
   // preference says what they want, the suppression says what can arrive.
   if (await isEmailSuppressed(db, address.email)) return 'suppressed'
 
-  const locale = await localeFor(db, input.userId)
+  const locale = await localeFor(db, userId)
   const url = unsubscribeUrl(
     ctx.apiBaseUrl,
-    signUnsubscribeToken(ctx.unsubscribeSecret, input.userId, input.type),
+    signUnsubscribeToken(ctx.unsubscribeSecret, userId, scope),
   )
 
   await ctx.sender.send({
     to: address.email,
-    ...input.build(locale, url),
+    ...build(locale, url),
     headers: unsubscribeHeaders(url),
   })
   return 'sent'

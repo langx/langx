@@ -169,6 +169,96 @@ export interface Email {
 }
 
 /**
+ * One thing worth saying, on its way into the evening's single mail.
+ *
+ * Nothing here is a letter. A section is a heading, a paragraph or two and one
+ * link, and the mail is however many of them the day produced — which is the
+ * whole point of the rewrite: five senders that each used to post their own
+ * envelope now hand their contents to one.
+ *
+ * `subject` and `preheader` belong to the section rather than to the mail
+ * because the mail has no words of its own. The section that leads lends the
+ * envelope its subject, and that is deliberately a real sentence about
+ * something that happened — "3 unread messages" — rather than a
+ * "Your day on LangX" that says nothing and gets opened accordingly.
+ */
+export interface DigestSection {
+  /** The mail's subject, if this section leads it. */
+  subject: string
+  /** And its preheader. */
+  preheader: string
+  /** The section's own paragraphs. The heading is drawn by the composer. */
+  html: string
+  /** The same, as plain-text lines. */
+  text: string[]
+  /** Where this section's link goes. */
+  cta: { url: string; label: string }
+  /** Faces, for the two sections that carry any. */
+  attachments?: InlineAsset[]
+}
+
+/** Between two sections. Light enough not to read as the end of the mail. */
+const SECTION_RULE = '<hr style="border:none; border-top:1px solid #e8eaec; margin:28px 0 0;" />'
+
+function sectionHeading(text: string): string {
+  return `<p style="margin:20px 0 0;"><strong style="font-family:${TITLE_FONT}; font-size:18px; line-height:24px; color:#17191c;">${text}</strong></p>`
+}
+
+/**
+ * The one notification email of the day.
+ *
+ * The lead section gets the button; every other one gets an inline link under
+ * its own heading. One button rather than five is not a style choice — a mail
+ * with five equal buttons has no primary action, and the lead section is by
+ * construction the most urgent thing in it.
+ *
+ * The caller guarantees at least one section. An empty digest is not a mail
+ * with nothing in it, it is a mail that must never be sent, and that decision
+ * belongs where the sections are gathered rather than here.
+ */
+export function dailyDigestEmail(
+  locale: Locale,
+  { sections, unsubscribe }: { sections: DigestSection[]; unsubscribe: string },
+): Email {
+  const [lead, ...rest] = sections
+  if (!lead) throw new Error('a digest with no sections must not be built')
+
+  const bodyHtml = [
+    sectionHeading(lead.subject),
+    lead.html,
+    ...rest.flatMap((section) => [
+      SECTION_RULE,
+      sectionHeading(section.subject),
+      section.html,
+      `<p style="margin:12px 0 0;"><a href="${section.cta.url}" style="color:#3b6cf6; text-decoration:none; font-weight:600;">${section.cta.label}</a></p>`,
+    ]),
+  ].join('\n      ')
+
+  return {
+    subject: lead.subject,
+    html: notificationEmail(locale, {
+      preheader: lead.preheader,
+      bodyHtml,
+      cta: lead.cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(
+      locale,
+      [
+        lead.subject,
+        ...lead.text,
+        '',
+        lead.cta.url,
+        ...rest.flatMap((section) => ['', '—', section.subject, ...section.text, section.cta.url]),
+      ],
+      unsubscribe,
+    ),
+    attachments: sections.flatMap((section) => section.attachments ?? []),
+  }
+}
+
+/**
  * The shell for mail somebody *chose* to receive, as opposed to the two above,
  * which answer something they just did.
  *
@@ -585,14 +675,10 @@ function monthLabel(locale: Locale, month: string): string {
  * the answer is a mail nobody clicks, and the correction is worth seeing
  * beside the sentence it corrects.
  */
-export function feedDigestEmail(
+export function feedDigestSection(
   locale: Locale,
-  {
-    items,
-    morePosts,
-    unsubscribe,
-  }: { items: FeedDigestItem[]; morePosts: number; unsubscribe: string },
-): Email {
+  { items, morePosts }: { items: FeedDigestItem[]; morePosts: number },
+): DigestSection {
   const t = translator(locale)
   const total = items.reduce(
     (sum, item) => sum + item.corrections + item.answers + item.comments,
@@ -610,31 +696,20 @@ export function feedDigestEmail(
     })
     .join('\n       ')
   const more = morePosts > 0 ? t('email.feedDigestMore', { count: morePosts }) : ''
-  const cta = { url: webUrl('/me'), label: t('email.feedDigestButton') }
 
   return {
     subject,
-    html: notificationEmail(locale, {
-      preheader: t('email.feedDigestPreheader'),
-      bodyHtml: `<p>${t('email.feedDigestBody', { count: total })}</p>
+    preheader: t('email.feedDigestPreheader'),
+    html: `<p>${t('email.feedDigestBody', { count: total })}</p>
        ${rows}
        ${more ? `<p style="margin:16px 0 0; color:#62676d;">${more}</p>` : ''}`,
-      cta,
-      unsubscribeUrl: unsubscribe,
-      manageUrl: webUrl('/settings'),
-    }).html,
-    text: notificationText(
-      locale,
-      [
-        t('email.feedDigestBody', { count: total }),
-        '',
-        ...items.map((item) => `"${item.excerpt}" — ${postUrl(item.postId)}`),
-        ...(more ? ['', more] : []),
-        '',
-        cta.url,
-      ],
-      unsubscribe,
-    ),
+    text: [
+      t('email.feedDigestBody', { count: total }),
+      '',
+      ...items.map((item) => `"${item.excerpt}" — ${postUrl(item.postId)}`),
+      ...(more ? ['', more] : []),
+    ],
+    cta: { url: webUrl('/me'), label: t('email.feedDigestButton') },
   }
 }
 
@@ -779,24 +854,16 @@ export function securityEmail(
  * month and only the web the next, and a reminder that changes its voice
  * depending on how it arrived reads as two different features.
  */
-export function streakReminderEmail(
-  locale: Locale,
-  { count, unsubscribe }: { count: number; unsubscribe: string },
-): Email {
+export function streakReminderSection(locale: Locale, { count }: { count: number }): DigestSection {
   const t = translator(locale)
   const title = t('push.streakTitle', { count })
   const body = t('push.streakBody')
-  const cta = { url: webUrl('/chats'), label: t('email.openChats') }
   return {
     subject: title,
-    html: notificationEmail(locale, {
-      preheader: body,
-      bodyHtml: `<p><strong>${title}</strong></p><p>${body}</p>`,
-      cta,
-      unsubscribeUrl: unsubscribe,
-      manageUrl: webUrl('/settings'),
-    }).html,
-    text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
+    preheader: body,
+    html: `<p>${body}</p>`,
+    text: [body],
+    cta: { url: webUrl('/chats'), label: t('email.openChats') },
   }
 }
 
@@ -809,46 +876,39 @@ export function streakReminderEmail(
  * Resend's logs, and in an inbox that may not be private, is a different
  * disclosure than the one anyone agreed to.
  */
-export function unreadDigestEmail(
+export function unreadDigestSection(
   locale: Locale,
   {
     count,
     faces,
     moreThreads,
     url,
-    unsubscribe,
   }: {
     count: number
     /** Who wrote, in the order the threads came back. */
     faces: AvatarFace[]
     moreThreads: number
     url: string
-    unsubscribe: string
   },
-): Email {
+): DigestSection {
   const t = translator(locale)
-  const subject = t('email.digestSubject', { count })
   // `Intl.ListFormat` because "Ada, Bo and Cy" is not "Ada, Bo, Cy" in most of
   // the eight languages, and joining with a comma is wrong in all of them.
-  const names = faces.map((face) => face.name)
-  const joined = formatList(locale, names)
+  const joined = formatList(
+    locale,
+    faces.map((face) => face.name),
+  )
   const body = t('email.digestBody', { count, names: joined })
   const more = moreThreads > 0 ? t('email.digestMore', { count: moreThreads }) : ''
-  const cta = { url, label: t('email.digestButton') }
 
   return {
-    subject,
-    html: notificationEmail(locale, {
-      preheader: t('email.digestPreheader'),
-      bodyHtml: `<p>${body}</p>`,
-      // The faces stand in for the "and N more" sentence rather than
-      // repeating it: a grey +N disc says the same thing in less room.
-      extraHtml: facesRow(faces, moreThreads, locale === 'ar' ? 'rtl' : 'ltr'),
-      cta,
-      unsubscribeUrl: unsubscribe,
-      manageUrl: webUrl('/settings'),
-    }).html,
-    text: notificationText(locale, [body, ...(more ? [more] : []), '', cta.url], unsubscribe),
+    subject: t('email.digestSubject', { count }),
+    preheader: t('email.digestPreheader'),
+    // The faces stand in for the "and N more" sentence rather than repeating
+    // it: a grey +N disc says the same thing in less room.
+    html: `<p>${body}</p>${facesRow(faces, moreThreads, locale === 'ar' ? 'rtl' : 'ltr')}`,
+    text: [body, ...(more ? [more] : [])],
+    cta: { url, label: t('email.digestButton') },
     attachments: faces.flatMap((face) => (face.asset ? [face.asset] : [])),
   }
 }
@@ -863,6 +923,112 @@ function formatList(locale: Locale, items: string[]): string {
 }
 
 /**
+ * "People you could practise with" — the same faces the digest draws, for
+ * people the reader has never met rather than ones who wrote to them.
+ *
+ * Names and photos only, and nothing about why each one was picked. The
+ * matching is mutual language fit and the body says so in general terms; a
+ * line reading "she is learning your native language at B1" would be a
+ * profile field sent to somebody who never opened that profile, which is a
+ * different disclosure than the one a discoverable account agreed to.
+ */
+export function matchSuggestionsSection(
+  locale: Locale,
+  {
+    faces,
+    more,
+  }: {
+    /** Who to show, already ordered by fit. */
+    faces: AvatarFace[]
+    /** How many further matches there were, for the grey disc. */
+    more: number
+  },
+): DigestSection {
+  const t = translator(locale)
+  const body = t('email.matchesBody', {
+    names: formatList(
+      locale,
+      faces.map((face) => face.name),
+    ),
+  })
+
+  return {
+    subject: t('email.matchesSubject'),
+    preheader: t('email.matchesPreheader'),
+    html: `<p>${body}</p>${facesRow(faces, more, locale === 'ar' ? 'rtl' : 'ltr')}`,
+    text: [body],
+    cta: { url: webUrl('/discover'), label: t('email.matchesButton') },
+    attachments: faces.flatMap((face) => (face.asset ? [face.asset] : [])),
+  }
+}
+
+/**
+ * "Yesterday's pool paid you N tokens", which used to be a push and nothing
+ * else.
+ *
+ * It is still not worth a letter of its own — a mail whose entire content is a
+ * number going up is how a sending domain gets filtered — but it is worth a
+ * paragraph in one that was going out anyway, because the pool is the part of
+ * the wallet nobody can see happening.
+ */
+export function walletPoolSection(locale: Locale, { count }: { count: number }): DigestSection {
+  const t = translator(locale)
+  const title = t('push.wallet.poolTitle', { count })
+  const body = t('email.walletBody')
+
+  return {
+    subject: title,
+    preheader: title,
+    html: `<p>${body}</p>`,
+    text: [body],
+    cta: { url: webUrl('/wallet'), label: t('email.walletButton') },
+  }
+}
+
+/** One call in the diary: when it starts, on the reader's clock, and with whom. */
+export interface DigestMeeting {
+  /** Already formatted in the reader's zone — this file has no clock. */
+  time: string
+  name: string
+  conversationId: string
+}
+
+/**
+ * "Tomorrow you have a call with Ada at 18:00."
+ *
+ * Not the hour-before reminder, which stays a push: an email an hour before a
+ * call is either too late to read or a copy of the buzz that already worked.
+ * This answers the question an hour's notice cannot — what is in the diary
+ * tomorrow — which is the only form of this the evening mail can honestly
+ * carry.
+ */
+export function meetingsSection(
+  locale: Locale,
+  { meetings }: { meetings: DigestMeeting[] },
+): DigestSection {
+  const t = translator(locale)
+  const title = t('email.meetingsSubject', { count: meetings.length })
+  const rows = meetings
+    .map(
+      (meeting) =>
+        `<p style="margin:12px 0 0;"><a href="${webUrl(`/chat/${meeting.conversationId}`)}" style="color:#17191c; text-decoration:none;"><strong>${escapeHtml(meeting.time)}</strong> &nbsp;${escapeHtml(meeting.name)}</a></p>`,
+    )
+    .join('\n       ')
+
+  return {
+    subject: title,
+    preheader: t('email.meetingsPreheader'),
+    html: `<p>${t('email.meetingsBody', { count: meetings.length })}</p>\n       ${rows}`,
+    text: [
+      t('email.meetingsBody', { count: meetings.length }),
+      '',
+      ...meetings.map((meeting) => `${meeting.time} ${meeting.name}`),
+    ],
+    cta: { url: webUrl('/chats'), label: t('email.meetingsButton') },
+  }
+}
+
+/**
  * "People looked at your profile this week."
  *
  * `names` is `null` for a free account — not empty, which would read as
@@ -870,29 +1036,23 @@ function formatList(locale: Locale, items: string[]): string {
  * half, so this says how many either way and adds the line about upgrading
  * only when it has something to withhold.
  */
-export function profileVisitsEmail(
+export function profileVisitsSection(
   locale: Locale,
-  { count, names, unsubscribe }: { count: number; names: string[] | null; unsubscribe: string },
-): Email {
+  { count, names }: { count: number; names: string[] | null },
+): DigestSection {
   const t = translator(locale)
-  const subject = t('email.visitsSubject', { count })
   const body = t('email.visitsBody', { count })
   const detail =
     names && names.length > 0
       ? t('email.visitsNames', { names: formatList(locale, names) })
       : t('email.visitsLocked')
-  const cta = { url: webUrl('/viewers'), label: t('email.visitsButton') }
 
   return {
-    subject,
-    html: notificationEmail(locale, {
-      preheader: t('email.visitsPreheader'),
-      bodyHtml: `<p>${body}</p><p style="color:#62676d;">${detail}</p>`,
-      cta,
-      unsubscribeUrl: unsubscribe,
-      manageUrl: webUrl('/settings'),
-    }).html,
-    text: notificationText(locale, [body, detail, '', cta.url], unsubscribe),
+    subject: t('email.visitsSubject', { count }),
+    preheader: t('email.visitsPreheader'),
+    html: `<p>${body}</p><p style="color:#62676d;">${detail}</p>`,
+    text: [body, detail],
+    cta: { url: webUrl('/viewers'), label: t('email.visitsButton') },
   }
 }
 
@@ -904,27 +1064,22 @@ export function profileVisitsEmail(
  * badge is new; several become a count, because five English labels inside an
  * Arabic sentence read worse than a number does.
  */
-export function badgeEarnedEmail(
+export function badgeEarnedSection(
   locale: Locale,
-  { count, label, unsubscribe }: { count: number; label: string | null; unsubscribe: string },
-): Email {
+  { count, label }: { count: number; label: string | null },
+): DigestSection {
   const t = translator(locale)
   const title = label
     ? t('email.badgeOneSubject', { label })
     : t('email.badgeManySubject', { count })
   const body = t('email.badgeBody')
-  const cta = { url: webUrl('/me'), label: t('email.badgeButton') }
 
   return {
     subject: title,
-    html: notificationEmail(locale, {
-      preheader: title,
-      bodyHtml: `<p><strong>${title}</strong></p><p>${body}</p>`,
-      cta,
-      unsubscribeUrl: unsubscribe,
-      manageUrl: webUrl('/settings'),
-    }).html,
-    text: notificationText(locale, [title, body, '', cta.url], unsubscribe),
+    preheader: title,
+    html: `<p>${body}</p>`,
+    text: [body],
+    cta: { url: webUrl('/me'), label: t('email.badgeButton') },
   }
 }
 

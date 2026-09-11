@@ -629,7 +629,7 @@ export const ar: Localized<EnMessages> = {
     profileVisits: 'زيارات الملف',
     profileVisitsBody: 'مرة كل يوم، كم شخصًا اطّلع على ملفك. وملخّص بالبريد كل أسبوع.',
     meetings: 'المواعيد',
-    meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. إشعار فقط.',
+    meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. وبريد المساء يقول ما ينتظرك غدًا.',
     social: 'الموجز ومن فيه',
     socialBody: 'المتابعات والتصحيحات على منشوراتك والإعجابات.',
     wallet: 'الرموز',
@@ -637,7 +637,7 @@ export const ar: Localized<EnMessages> = {
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'إشعار فوري', email: 'البريد' },
+    channel: { push: 'إشعار فوري', email: 'بريد يومي' },
     emailUnverified: 'وثّق عنوان بريدك لتفعيل هذا.',
     primingTitle: 'تفعيل الإشعارات؟',
     primingBody:

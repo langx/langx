@@ -1,11 +1,11 @@
-import { NEWSLETTER_LOCAL_HOUR, localDayKey, localHour, notificationsAllowed } from '@langx/shared'
+import { PROMOTION_LOCAL_HOUR, localDayKey, localHour, notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
 import { newsletterEmail } from '../../email/templates'
 import { noteFor } from '../../email/newsletters'
 import type { Profile } from '../profiles/profiles'
-import { claimOnce } from './ledger'
+import { alreadyClaimed, claimOnce } from './ledger'
 import { recentlyMarketed } from './marketing'
 
 /** What a month looked like for one person, and for everybody. */
@@ -88,7 +88,7 @@ export async function personalMonth(
  * **Monthly rather than weekly**, and the reason is the numbers themselves: a
  * week of a language exchange is three conversations and a correction, which
  * reads as an accusation rather than a summary. Switching it is
- * `NEWSLETTER_LOCAL_HOUR`'s neighbours in `packages/shared`, not a rewrite.
+ * `PROMOTION_LOCAL_HOUR`'s neighbours in `packages/shared`, not a rewrite.
  *
  * **"On or after the first", not "on the first."** A deploy on the third
  * would otherwise skip the month silently, and the claim is what stops it
@@ -121,10 +121,16 @@ export async function runNewsletterPass(
     if (!notificationsAllowed(profile.settings?.notifications, 'promotions', 'email')) continue
     const zone = profile.timezone ?? 'UTC'
     // Their first of the month — or one of the six days after it, so a
-    // deploy that slipped does not skip a month — and any hour from ten
-    // onwards, since a tick missed at ten is not a month skipped either.
-    if (!isSendingDay(localDayKey(now, zone))) continue
-    if (localHour(now, zone) < NEWSLETTER_LOCAL_HOUR) continue
+    // deploy that slipped does not skip a month.
+    const day = localDayKey(now, zone)
+    if (!isSendingDay(day)) continue
+    // The marketing slot, which is an hour after the digest rather than the
+    // morning it used to be. Seven days of chances at it is what makes one
+    // missed evening not a missed month.
+    if (localHour(now, zone) !== PROMOTION_LOCAL_HOUR) continue
+    // The recap never takes the day's slot from the evening mail. Real news
+    // outranks a summary of a month that has already finished.
+    if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue
     if (await recentlyMarketed(db, profile._id, now)) continue
 
     // Computed on the first tick that needs it, then reused for the rest.

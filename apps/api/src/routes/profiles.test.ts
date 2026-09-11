@@ -539,7 +539,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(
       updated.json<{ settings: { notifications: Record<string, unknown> } }>().settings
         .notifications.meetings,
-    ).toEqual({ push: false, email: false })
+    ).toEqual({ push: false, email: true })
 
     const reread = await app.inject({
       method: 'GET',
@@ -549,7 +549,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(
       reread.json<{ settings: { notifications: Record<string, unknown> } }>().settings.notifications
         .meetings,
-    ).toEqual({ push: false, email: false })
+    ).toEqual({ push: false, email: true })
   })
 
   /**

@@ -1,4 +1,4 @@
-import { NOTIFICATION_EMAIL_LOCAL_HOURS, localHour, notificationsAllowed } from '@langx/shared'
+import { PROMOTION_LOCAL_HOUR, localDayKey, localHour, notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
@@ -7,7 +7,7 @@ import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
-import { claimOnce } from './ledger'
+import { alreadyClaimed, claimOnce } from './ledger'
 import { recentlyMarketed } from './marketing'
 import { readAggregates } from '../tokens/ledger'
 
@@ -261,11 +261,14 @@ export const PROMOTIONS: Promotion[] = [
 
 /**
  * One tick: everybody eligible for something hears the first thing they are
- * eligible for.
+ * eligible for — if the evening has not already spoken for them.
  *
- * Quiet hours are the reader's, not the server's — a promotional mail landing
- * at 3am is the same buzz as a push, and this is the class of mail people are
- * least forgiving about.
+ * One hour rather than the waking day, and that hour is deliberately *after*
+ * the digest's. It used to run any time between nine and nine, which with a
+ * daily mail in the picture would have let a nudge at ten in the morning take
+ * the day's one slot and leave the evening's real news with nowhere to go. At
+ * twenty hundred the question is already settled: if a digest went out, this
+ * is not the day for marketing.
  */
 export async function runPromotionsPass(
   db: Db,
@@ -285,9 +288,9 @@ export async function runPromotionsPass(
 
   let sent = 0
   for (const profile of profiles) {
-    const hour = localHour(now, profile.timezone ?? 'UTC')
-    if (hour < NOTIFICATION_EMAIL_LOCAL_HOURS.earliest) continue
-    if (hour > NOTIFICATION_EMAIL_LOCAL_HOURS.latest) continue
+    const zone = profile.timezone ?? 'UTC'
+    if (localHour(now, zone) !== PROMOTION_LOCAL_HOUR) continue
+    if (await alreadyClaimed(db, 'dailyDigest', profile._id, localDayKey(now, zone))) continue
     if (await recentlyMarketed(db, profile._id, now)) continue
 
     const candidate: PromotionCandidate = { profile, now, db }

@@ -293,6 +293,21 @@ export interface Profile {
      * two-year-old streak the day this ships.
      */
     notifiedBadgeIds?: string[]
+    /**
+     * Tonight's badge news, left for the digest to collect an hour later.
+     *
+     * The round-up cannot simply be recomputed at the digest's hour: it works
+     * by diffing what is earned against `notifiedBadgeIds` and then writing
+     * the new list, so by 19:00 the difference it found at 18:00 is gone.
+     * Rather than move that pass or make the digest do badge arithmetic, the
+     * pass leaves what it found here and the digest reads it.
+     *
+     * `day` is the reader's local day, so a stale row from last week cannot
+     * be mistaken for tonight's. `pushed` is why the section is sometimes a
+     * passenger: a badge that already buzzed a phone is not a reason to send
+     * a mail, only something to mention in one that is going anyway.
+     */
+    digestBadges?: { day: string; count: number; label: string | null; pushed: boolean }
   }
   /**
    * Who invited this account, if anybody. Written once by `attachReferral`

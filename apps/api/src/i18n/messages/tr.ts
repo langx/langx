@@ -245,6 +245,36 @@ export const tr: Localized<ServerMessages> = {
 
     feedDigestButton: 'Yanıtları oku',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'Pratik yapabileceğin kişiler',
+
+    matchesPreheader: 'Dilleri seninkilerle eşleşen yeni kişiler',
+
+    matchesBody: '{names} senin öğrendiğin dilleri konuşuyor — ve senin dilini öğreniyor.',
+
+    matchesButton: 'Kimler var, bak',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      'Jetonlar çoktan cüzdanında. Havuz her gece, bir önceki gün birine yardım eden herkes arasında paylaştırılıyor.',
+
+    walletButton: 'Cüzdanımı aç',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'Yarın bir görüşmen var',
+      other: 'Yarın {count} görüşmen var',
+    },
+
+    meetingsPreheader: 'Yarın ajandanda ne var',
+
+    meetingsBody: {
+      one: 'Yarın için bir görüşmeye söz verdin.',
+      other: 'Yarın için {count} görüşmeye söz verdin.',
+    },
+
+    meetingsButton: 'Sohbetlerimi aç',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

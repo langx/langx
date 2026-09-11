@@ -570,7 +570,8 @@ export const fr: Localized<EnMessages> = {
     profileVisitsBody:
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
     meetings: 'Rendez-vous',
-    meetingsBody: 'Une heure avant un appel que vous avez accepté tous les deux. Push uniquement.',
+    meetingsBody:
+      "Une heure avant un appel que vous avez accepté tous les deux. L'e-mail du soir dit ce qui vous attend demain.",
     social: 'Le fil et les gens qui y sont',
     socialBody: 'Abonnements, corrections de vos publications et j’aime.',
     wallet: 'Jetons',
@@ -578,7 +579,7 @@ export const fr: Localized<EnMessages> = {
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'Push', email: 'E-mail' },
+    channel: { push: 'Push', email: 'E-mail quotidien' },
     emailUnverified: 'Vérifiez votre adresse e-mail pour l’activer.',
     primingTitle: 'Activer les notifications ?',
     primingBody:
