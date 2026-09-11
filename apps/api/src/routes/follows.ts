@@ -2,6 +2,7 @@ import { listFollowsQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { recordNotification } from '../modules/notifications/inbox'
 import { notifyFollowed } from '../modules/notifications/social'
 import { followUser, listFollowers, listFollowing, unfollowUser } from '../modules/social/follows'
 
@@ -30,6 +31,23 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
       ).catch((error: unknown) => {
         request.log.error({ err: error }, 'follow push failed')
       })
+      /*
+       * And the row that outlives the push. The notification centre is
+       * ungated on purpose — somebody who turned social push off asked not to
+       * be buzzed, not to be kept from ever finding out.
+       */
+      void recordNotification(
+        app.mongo.db,
+        {
+          userId: request.params.userId,
+          kind: 'follow',
+          // One row per follower: refollowing next week is not news, and the
+          // unique index is what says so.
+          refId: request.userId,
+          actorId: request.userId,
+        },
+        { io: app.io, logger: app.log },
+      )
       return reply.send(state)
     },
   )

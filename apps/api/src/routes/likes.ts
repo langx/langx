@@ -1,6 +1,8 @@
 import { likeTargetSchema, listLikersQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { ObjectId } from 'mongodb'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { likeTargetOwner, recordNotification } from '../modules/notifications/inbox'
 import { likeTarget, listLikers, unlikeTarget } from '../modules/feed/likes'
 
 /**
@@ -19,7 +21,47 @@ export const likeRoutes: FastifyPluginAsyncZod = async (app) => {
     '/likes',
     { preHandler: requireVerifiedEmail, schema: { body: likeTargetSchema } },
     async (request, reply) => {
-      return reply.send(await likeTarget(app.mongo.db, request.userId, request.body))
+      const state = await likeTarget(app.mongo.db, request.userId, request.body)
+      /*
+       * The first notification a like has ever produced at the moment it
+       * happens.
+       *
+       * There is still no push here, and there must not be: a like is the
+       * cheapest thing anybody can do in this app, and a post that does well
+       * would be twenty buzzes about twenty taps — which is why
+       * `runLikesRoundUpPass` batches them to one a day. The inbox is the
+       * other half of that ruling. Nothing interrupts, so every like can have
+       * its row, and the daily push stays exactly as it was.
+       *
+       * Not awaited, and never allowed to throw: the like is already written.
+       */
+      void (async () => {
+        const owner = await likeTargetOwner(
+          app.mongo.db,
+          request.body.targetType,
+          new ObjectId(request.body.targetId),
+        )
+        if (!owner) return
+        await recordNotification(
+          app.mongo.db,
+          {
+            userId: owner.authorId,
+            kind: 'like',
+            /*
+             * One row per person per thing, for good. Unliking and liking
+             * again is a tap, not news, and `createdAt` staying at the first
+             * one is correct — that is when it happened.
+             */
+            refId: `${request.body.targetType}:${request.body.targetId}:${request.userId}`,
+            actorId: request.userId,
+            postId: owner.postId,
+          },
+          { io: app.io, logger: app.log },
+        )
+      })().catch((error: unknown) => {
+        request.log.error({ err: error }, 'like notification failed')
+      })
+      return reply.send(state)
     },
   )
 
