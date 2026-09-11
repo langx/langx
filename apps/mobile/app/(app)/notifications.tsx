@@ -70,20 +70,38 @@ export default function NotificationsScreen() {
   unreadAtEntry.current = stickyUnread(unreadAtEntry.current, items)
 
   /*
-   * After the first page, not on mount.
+   * Marked read once per fetch that brought something unread — not once per
+   * mount, and not on `isSuccess`.
    *
-   * `POST /read` marks *everything*, including rows this screen has not
-   * fetched — firing it before the list resolves means page one arrives
-   * already read, with no dots to show at all. The ref is what keeps a double
-   * invoke from posting twice.
+   * Two traps, both found by driving the real app rather than by reading it.
+   *
+   * `isSuccess` is already true on a second visit, because the cache still
+   * holds the last page. Gating on it fires the POST while this mount's
+   * refetch is still in flight, so a notification that arrived in between
+   * comes back from that refetch already read, with no dot — precisely the
+   * case the dot exists for. `isFetchedAfterMount` is the flag that means
+   * "what is in the cache was fetched since this screen opened".
+   *
+   * And once-per-mount is not enough, because on the web a push does not
+   * unmount what it covers: opening a post from a row and coming back returns
+   * to this same component with its refs intact. A row that arrived in between
+   * would never be marked, and the bell would keep a count for something the
+   * reader is looking at.
+   *
+   * So the latch is the fetch timestamp rather than a boolean. A double invoke
+   * shares one timestamp and posts once; the cache patch that follows a
+   * successful mark moves it again, but by then nothing is unread and the
+   * guard below stops there.
    */
-  const posted = useRef(false)
+  const hasUnread = items.some((item) => !item.read)
+  const markedAt = useRef(0)
   const mark = markRead.mutate
   useEffect(() => {
-    if (posted.current || !list.isSuccess) return
-    posted.current = true
+    if (!list.isFetchedAfterMount || !hasUnread) return
+    if (list.dataUpdatedAt === markedAt.current) return
+    markedAt.current = list.dataUpdatedAt
     mark()
-  }, [list.isSuccess, mark])
+  }, [list.isFetchedAfterMount, list.dataUpdatedAt, hasUnread, mark])
 
   return (
     <Screen fluid>
