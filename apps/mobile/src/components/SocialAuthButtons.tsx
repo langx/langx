@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking'
-import { router, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
@@ -119,8 +119,12 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
         setSocialError(t(authErrorKey(appleError) ?? 'errors.appleSignInFailed'))
         return
       }
-      // The native path never leaves the app, so nothing else will navigate.
-      router.replace('/')
+      /*
+       * And then nothing, for the reason `sign-in.tsx` gives at length: this
+       * button only ever renders inside `(auth)`, so the session it just
+       * created unmounts the screen it is on, and replacing in the same commit
+       * is what crashes Android's Fabric rather than what smooths it over.
+       */
     } catch {
       setSocialError(t('errors.appleSignInFailed'))
     }
