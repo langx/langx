@@ -658,6 +658,33 @@ The `!Device.isDevice` guard inside the hook never got a chance to run, because
 the module died while loading. The import now sits inside the `useEffect`'s
 try/catch, after the guards.
 
+## Updates — two files whose bytes decide who gets an update
+
+**10 September 2026, learned the expensive way.** `apps/mobile/app.config.ts`
+imports `@langx/shared/appIdentity` and `@langx/shared/appScheme` by path, so
+`@expo/fingerprint` counts both files as config sources and hashes their
+**contents**. That hash is the runtime version, and EAS delivers an update only
+to a binary whose runtime version matches it.
+
+So editing either file — even adding a function the config never calls — makes
+every update published afterwards invisible to every build already on a phone.
+That is exactly what PR #1279 did by adding `verifyEmailUrl` to
+`appIdentity.ts`: three merges' worth of updates published to a runtime version
+no shipped binary had, with green CI and a successful publish each time. The
+symptom is silence, which is why it is written down here rather than left to be
+noticed.
+
+The rule: **treat `appIdentity.ts` and `appScheme.ts` as frozen between native
+builds.** Anything new that wants to live near them goes in a sibling file —
+`emailLinks.ts` is the first — which may import them freely. Importing them
+costs nothing; changing their bytes costs the release.
+
+Two things that follow. A deliberate change to either is a change that needs a
+new build, so it belongs in the release round rather than in an OTA-only PR.
+And when an update seems not to arrive, compare
+`eas update:list`'s `runtimeVersion` against the shipped build's
+`Fingerprint` in `eas build:view` before looking anywhere else.
+
 ## Updates — OTA plus a server-side gate, chosen together
 
 The two were designed as one thing because they answer the same question from
