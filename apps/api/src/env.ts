@@ -96,10 +96,13 @@ const envSchema = z.object({
    */
   RESEND_WEBHOOK_SECRET: emptyToUndefined(z.string().optional()),
   /**
-   * The Reply-To on campaign mail. Campaigns say "reply to this email, it
-   * reaches a human"; from a `no-reply@` sender that needs somewhere to go.
-   * Optional: unset, campaigns carry no Reply-To and that line should not be
-   * in them.
+   * The Reply-To on campaign mail, for a deployment sending from a
+   * `no-reply@`: campaigns say "reply to this email, it reaches a human" and
+   * that needs somewhere to go. langx.io leaves it unset, because
+   * `EMAIL_FROM` is `hi@langx.io` and the reply already arrives.
+   * Optional: unset, campaigns carry no Reply-To — right when the From
+   * address is readable, and when it is not, that line does not belong in
+   * the mail either.
    */
   EMAIL_REPLY_TO: emptyToUndefined(z.string().optional()),
 
