@@ -34,7 +34,7 @@ import { deliverOfficialMessage } from '../src/modules/official/deliver'
 import { ensureOfficialAccounts } from '../src/modules/official/accounts'
 import { localeFor } from '../src/modules/profiles/localeFor'
 import type { Profile } from '../src/modules/profiles/profiles'
-import { ExpoPushSender, sendPush, tokensByLocale } from '../src/modules/push/devices'
+import { ExpoPushSender, sendPush, tokensFor } from '../src/modules/push/devices'
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -123,16 +123,24 @@ async function main(): Promise<void> {
          * has the app open sees the thread on the next focus, and a script
          * outside the API process has no `io` to emit on anyway.
          *
+         * **One language for both**, and it is the reader's native one, not
+         * the phone's. `tokensByLocale` groups by device locale and is right
+         * for a streak nudge — that is a sentence written for the screen it
+         * appears on and nothing else. This one is a preview of a message
+         * sitting in a thread, and a Turkish notification opening a Russian
+         * message reads like two different senders. So the push follows
+         * `localeFor`, like the message and the welcome before it.
+         *
          * Best-effort — a phone that cannot be reached does not undo a message
          * that is already in the thread.
          */
-        const byLocale = await tokensByLocale(db, recipient._id)
-        for (const [deviceLocale, tokens] of byLocale) {
-          const deviceBody = bodies.get(deviceLocale) ?? body
+        const tokens = await tokensFor(db, recipient._id)
+        if (tokens.length > 0) {
           await sendPush(db, push, {
             to: tokens,
             title: 'LangX',
-            body: deviceBody.slice(0, 120),
+            // The same words as the message, in the same language.
+            body: body.slice(0, 120),
             data: {
               kind: 'message',
               conversationId: delivered.conversation._id.toHexString(),
