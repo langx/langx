@@ -9,7 +9,6 @@ import {
   MAX_INTERESTS,
   PLAN_LIMITS,
   PRONOUNS_MAX_LENGTH,
-  getLanguage,
   type Gender,
   type LanguageLevel,
 } from '@langx/shared'
@@ -76,6 +75,28 @@ const LANGUAGE_STATUS_KEYS = {
   saved: 'editProfile.saved',
   failed: 'editProfile.saveFailed',
 } as const
+
+/**
+ * The × at the end of a language row, drawn only while the block is being
+ * edited. Faint rather than red: it is one tap to put the language back, and a
+ * red mark on every row would make a list of languages look like a list of
+ * warnings.
+ */
+function RemoveLanguage({ label, onPress }: { label: string; onPress: () => void }) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={10}
+      onPress={onPress}
+      style={({ pressed }) => [styles.removeLanguage, pressed && styles.pressed]}
+    >
+      <Feather name="x" size={15} color={colors.textMuted} />
+    </Pressable>
+  )
+}
 
 export default function EditProfileScreen() {
   useScreenInteractive()
@@ -186,9 +207,23 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       })
       .then(() => setLanguageStatus('saved'))
       .catch((caught: unknown) => {
-        // Forget what was saved so the next edit retries this one with it.
         void caught
-        savedLanguages.current = ''
+        /*
+         * The signature stays marked as attempted, and that is the whole of
+         * the retry policy.
+         *
+         * It used to be cleared here, to "let the next edit retry this one" —
+         * but clearing it while also setting state made this effect its own
+         * trigger: the render caused by the status change re-entered it, found
+         * nothing recorded as saved, and sent the same rejected body again.
+         * A request the server refuses for a reason that will not change on
+         * its own became a loop, hundreds of requests deep, with the screen
+         * stuck on "Saving…" and the device hammering the API for as long as
+         * the user left it open.
+         *
+         * Nothing is lost by not retrying: every save sends both lists whole,
+         * so the next real edit carries whatever this one was going to.
+         */
         // Reported on the line under the language rows, not in the form's
         // error slot at the foot of the screen: with the picker open that slot
         // is several hundred pixels below the fold, so a language that failed
@@ -269,6 +304,32 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         ? t('editProfile.storageUnconfigured')
         : t('editProfile.uploadRetry'),
     )
+  }
+
+  /**
+   * Removing a language from the row it is drawn on.
+   *
+   * The picker underneath can deselect one too, but only after you have found
+   * it among a hundred and eighty chips, and only for whichever list it is
+   * currently showing — so the list you are looking at offered no way to take
+   * anything out of it. A button on the row is the one everybody reaches for.
+   * Not a swipe: this screen is also the web build, where there is no touch to
+   * swipe with, and a gesture that exists on two platforms out of three is a
+   * feature half the users cannot find.
+   *
+   * The last one of either list stays, and says why. `save` and the autosave
+   * both refuse a profile with no native or no learning language, so removing
+   * it would be a tap that quietly changes nothing — which is exactly the
+   * complaint this whole button answers.
+   */
+  function removeLanguage(kind: 'native' | 'learning', code: string): void {
+    const list = kind === 'native' ? native : learning
+    if (list.length === 1) {
+      showToast(t('editProfile.pickOneOfEach'))
+      return
+    }
+    if (kind === 'native') setNative((current) => current.filter((each) => each !== code))
+    else setLearning((current) => current.filter((each) => each.code !== code))
   }
 
   /**
@@ -503,7 +564,15 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             {native.map((code) => (
               <View key={code} style={styles.languageRow}>
                 <Text style={styles.languageName}>{names.language(code)}</Text>
-                <Text style={styles.languageLevel}>{t('onboarding.native')}</Text>
+                <View style={styles.languageLevelRow}>
+                  <Text style={styles.languageLevel}>{t('onboarding.native')}</Text>
+                  {editing !== 'none' ? (
+                    <RemoveLanguage
+                      label={`${t('common.remove')} · ${names.language(code)}`}
+                      onPress={() => removeLanguage('native', code)}
+                    />
+                  ) : null}
+                </View>
               </View>
             ))}
             {learning.map((l) => (
@@ -519,6 +588,12 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                 <View style={styles.languageLevelRow}>
                   <Text style={styles.languageLevel}>{levelLabel(t, l.level)}</Text>
                   <LevelBars level={l.level} size={12} />
+                  {editing !== 'none' ? (
+                    <RemoveLanguage
+                      label={`${t('common.remove')} · ${names.language(l.code)}`}
+                      onPress={() => removeLanguage('learning', l.code)}
+                    />
+                  ) : null}
                 </View>
               </View>
             ))}
@@ -531,6 +606,43 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
               {t(LANGUAGE_STATUS_KEYS[languageStatus])}
             </Text>
           )}
+
+          {/*
+            The levels sit between the rows they belong to and the picker that
+            adds new ones, and they are drawn whole.
+
+            They used to live inside the picker's pane, in a 140-pixel box with
+            a scroll view of their own: five languages meant hunting for the
+            one you wanted through a window two rows tall, nested inside the
+            page's own scroll. Out here the block is as tall as it needs to be
+            and the page scrolls, which is the only scroll anybody has to
+            think about.
+          */}
+          {editing === 'learning' && learning.length > 0 ? (
+            <View style={styles.levels}>
+              {learning.map((entry) => (
+                <View key={entry.code} style={styles.levelRow}>
+                  {/* The reader's own language for the name, as everywhere else
+                      on this screen — `getLanguage().name` is always English. */}
+                  <Text style={styles.levelLang}>{names.language(entry.code)}</Text>
+                  <View style={styles.row}>
+                    {LANGUAGE_LEVELS.map((level) => (
+                      <Chip
+                        key={level}
+                        label={levelShortLabel(t, level)}
+                        selected={entry.level === level}
+                        onPress={() =>
+                          setLearning((current) =>
+                            current.map((l) => (l.code === entry.code ? { ...l, level } : l)),
+                          )
+                        }
+                      />
+                    ))}
+                  </View>
+                </View>
+              ))}
+            </View>
+          ) : null}
 
           {editing !== 'none' ? (
             <View style={styles.pickerPane}>
@@ -570,31 +682,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                   }
                 }}
               />
-              {editing === 'learning' && learning.length > 0 ? (
-                <ScrollView style={styles.levels} keyboardShouldPersistTaps="handled">
-                  {learning.map((entry) => (
-                    <View key={entry.code} style={styles.levelRow}>
-                      <Text style={styles.levelLang}>
-                        {getLanguage(entry.code)?.name ?? entry.code}
-                      </Text>
-                      <View style={styles.row}>
-                        {LANGUAGE_LEVELS.map((level) => (
-                          <Chip
-                            key={level}
-                            label={levelShortLabel(t, level)}
-                            selected={entry.level === level}
-                            onPress={() =>
-                              setLearning((current) =>
-                                current.map((l) => (l.code === entry.code ? { ...l, level } : l)),
-                              )
-                            }
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  ))}
-                </ScrollView>
-              ) : null}
             </View>
           ) : null}
         </View>
@@ -707,15 +794,26 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   languageLevel: { color: colors.textMuted, fontSize: 14 },
   languageStatus: { ...font.label, color: colors.textMuted, fontWeight: '400' },
   languageBad: { color: colors.danger },
+  // A circle the size of a chip's height, so the × has a real target on a row
+  // whose other contents are text.
+  removeLanguage: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 26,
+    justifyContent: 'center',
+    marginLeft: spacing.xs,
+    width: 26,
+  },
   pickerPane: { height: 320 },
   levels: {
     borderTopColor: colors.border,
     borderTopWidth: 1,
-    maxHeight: 140,
-    paddingTop: spacing.sm,
+    gap: spacing.md,
+    paddingTop: spacing.md,
   },
-  levelRow: { marginBottom: spacing.sm },
-  levelLang: { ...font.caption, color: colors.textMuted, marginBottom: spacing.xs },
+  levelRow: { gap: spacing.xs },
+  levelLang: { ...font.caption, color: colors.textMuted },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm + 1 },
   photo: { backgroundColor: colors.fill, borderRadius: 14, height: PHOTO_TILE, width: PHOTO_TILE },
   photoAdd: {
