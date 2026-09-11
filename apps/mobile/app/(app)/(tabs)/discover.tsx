@@ -16,6 +16,7 @@ import { ApiRequestError } from '../../../src/api/client'
 import type { DiscoveryItem } from '../../../src/api/types'
 import { BoostedProfiles } from '../../../src/components/BoostedProfiles'
 import { DiscoveryCardSkeleton } from '../../../src/components/skeletons/DiscoveryCardSkeleton'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
 import { Chip } from '../../../src/components/ui/Chip'
@@ -478,6 +479,24 @@ export default function DiscoverScreen() {
         /* In the list's place, in normal flow — not floated over it. See
            `PeopleSearch` for what floating cost. */
         <PeopleSearchResults from="/(app)/(tabs)/discover" />
+      ) : state === 'empty' && query.isError ? (
+        /**
+         * A request that failed is not an empty app, and this screen said it
+         * was. `listState` folds an error into `'empty'` on purpose — it
+         * leaves the case to the caller — and the caller went straight to
+         * `ListEmptyComponent`, so a timeout told somebody whose request never
+         * arrived that nobody matches their languages, and to loosen filters
+         * they had not set.
+         *
+         * `state` rather than `items.length`, so a failed *second* page keeps
+         * the rows already on screen: `listState` answers `'content'` whenever
+         * there are any.
+         *
+         * Below `locationRevoked`, which is also an error but is recoverable
+         * in one tap and owns its own panel, and below `searching`, where
+         * `PeopleSearchResults` owns its own states.
+         */
+        <LoadFailed onRetry={() => void query.refetch()} />
       ) : (
         <FlatList
           data={items}
