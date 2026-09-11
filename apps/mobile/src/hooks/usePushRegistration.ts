@@ -2,13 +2,13 @@ import Constants from 'expo-constants'
 import * as Device from 'expo-device'
 import { useFocusEffect } from 'expo-router'
 import { useCallback, useEffect } from 'react'
-import { Platform } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { api } from '../api/client'
 import { deviceId } from '../lib/deviceId'
 import { pushEnabledOnThisDevice } from '../lib/devicePush'
 import { currentLocale } from '../i18n/runtime'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
-import { shouldAskForPush } from '../lib/pushPermission'
+import { pushSwitchAction, shouldAskForPush } from '../lib/pushPermission'
 
 /**
  * Expo needs to know which project a push token belongs to. It can usually
@@ -151,6 +151,77 @@ export function usePushRegistration({ enabled = true }: { enabled?: boolean } = 
     })()
     return () => subscription?.remove()
   }, [enabled])
+}
+
+/**
+ * Whether the OS has granted this phone notifications at all.
+ *
+ * The switch in Settings reads this beside its own flag, so that it can stop
+ * claiming to be on for a phone that has been granted nothing.
+ */
+export async function pushPermissionGranted(): Promise<boolean> {
+  if (Platform.OS === 'web' || !Device.isDevice) return false
+  try {
+    const Notifications = await import('expo-notifications')
+    return (await Notifications.getPermissionsAsync()).granted
+  } catch {
+    return false
+  }
+}
+
+/**
+ * The second asker, and the only one somebody can reach on purpose.
+ *
+ * Every other ask happens once and passes: the priming card mounts on the two
+ * onboarding exits and `welcome-back` is shown once, so a phone that comes to
+ * an existing account — a reinstall, a new handset — meets neither, and the
+ * chats tab's one attempt is all there is. A phone that misses that is silent
+ * with nowhere to complain: iOS shows no Notifications row for an app that
+ * has never requested, so there is nothing to switch on from the outside
+ * either. Settings is the place a person goes looking, so Settings has to be
+ * able to ask.
+ *
+ * Answers whether notifications are on afterwards, which is what the switch
+ * should then read.
+ */
+export async function enablePushOnThisDevice(): Promise<boolean> {
+  if (Platform.OS === 'web' || !Device.isDevice) return false
+  try {
+    const Notifications = await import('expo-notifications')
+    const current = await Notifications.getPermissionsAsync()
+    switch (
+      pushSwitchAction({
+        granted: current.granted,
+        canAskAgain: current.canAskAgain,
+        platform: Platform.OS,
+      })
+    ) {
+      case 'register':
+        // Granted already, and still worth a registration: a phone with
+        // permission and no device row is exactly the state this is for.
+        await registerPushToken()
+        return true
+      case 'ask': {
+        const result = await Notifications.requestPermissionsAsync()
+        // After the dialog, like the chats tab's — a flag written beside one
+        // that never opened is what silences a phone for good.
+        await setBoolFlag(FLAG_KEYS.pushAsked, true)
+        if (result.granted) await registerPushToken()
+        return result.granted
+      }
+      case 'openSettings':
+        // iOS will not raise the dialog again, so the answer can only be
+        // changed where the OS keeps it. The switch stays off until they come
+        // back with a different one.
+        await Linking.openSettings()
+        return false
+      default:
+        return false
+    }
+  } catch {
+    // Never let notification setup break the screen it is decorating.
+    return false
+  }
 }
 
 /**

@@ -4344,7 +4344,20 @@ state, so the flag stands there, which is what keeps one dismissal from
 becoming a dialog on every visit to the tab. The asymmetry is the platforms',
 not a preference.
 
-What this does not fix: Settings still shows a per-device push switch that
-reads on while the OS has granted nothing, and turning it off and on again
-asks for nothing. The switch is the obvious place for somebody hunting a
-missing notification to go, and it should be the second asker.
+**And Settings became the second asker**, because the first one cannot be
+enough. Every automatic ask happens once and passes: the priming card mounts
+on the two onboarding exits, `welcome-back` is shown once, and a phone that
+arrives at an existing account — a reinstall, a new handset — reaches neither,
+so the chats tab's single attempt is the whole of it. A phone that misses that
+has nowhere to complain, since iOS shows no Notifications row for an app that
+has never requested. The reinstall that was supposed to prove the flag theory
+is what settled this: it cleared the flag, and the phone was still silent.
+
+So the per-device switch tells the truth and does something about it. It read
+its own flag, which defaults to on, and so sat there promising notifications a
+phone had been granted nothing for; it now reads granted-and-not-silenced, and
+turning it on raises the dialog — ignoring `pushAsked` entirely, because
+somebody who taps a switch labelled "notifications on this phone" has asked in
+so many words. Where iOS will not raise it again the switch opens the Settings
+app instead, which is the only place left that can change the answer, and the
+screen re-reads the permission on focus for when they come back from it.

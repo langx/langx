@@ -41,3 +41,49 @@ export function shouldAskForPush(input: {
   if (!input.asked) return true
   return input.platform === 'ios' && input.undetermined
 }
+
+/**
+ * What the "notifications on this phone" switch in Settings should read.
+ *
+ * It used to read the device flag alone, which defaults to on — so a phone the
+ * OS has granted nothing sat there showing an on switch, promising
+ * notifications that could never arrive, and giving the one person actually
+ * hunting the problem no reason to touch it. Off is the truth, and it is also
+ * what makes the switch usable: turning it on is how the dialog gets raised a
+ * second time.
+ *
+ * Web keeps the old meaning. There is no push there at all and no permission
+ * to reflect, so the flag is the whole answer.
+ */
+export function pushSwitchIsOn(input: {
+  granted: boolean
+  offOnThisDevice: boolean
+  platform: string
+}): boolean {
+  if (input.platform === 'web') return !input.offOnThisDevice
+  return input.granted && !input.offOnThisDevice
+}
+
+/**
+ * What turning that switch **on** has to do.
+ *
+ * Unlike the chats tab this is somebody asking for notifications in so many
+ * words, so it ignores `pushAsked` entirely: a person who taps a switch
+ * labelled "notifications on this phone" has earned a dialog, whatever any
+ * flag remembers. When iOS will no longer show one, the only place left that
+ * can change the answer is the Settings app, and sending them there beats a
+ * switch that springs back with no explanation.
+ *
+ * `register` rather than nothing when permission is already granted: the
+ * failure that started this is a phone with permission and no device row, and
+ * the row is what a push is addressed to.
+ */
+export function pushSwitchAction(input: {
+  granted: boolean
+  canAskAgain: boolean
+  platform: string
+}): 'register' | 'ask' | 'openSettings' | 'none' {
+  if (input.platform === 'web') return 'none'
+  if (input.granted) return 'register'
+  return input.canAskAgain ? 'ask' : 'openSettings'
+}

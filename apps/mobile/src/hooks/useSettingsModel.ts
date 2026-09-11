@@ -5,8 +5,8 @@ import {
   resolveNotificationPrefs,
   tierUnlocking,
 } from '@langx/shared'
-import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { router, useFocusEffect } from 'expo-router'
+import { useCallback, useEffect, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import {
   type MeProfile,
@@ -20,7 +20,11 @@ import {
 } from '../api/queries'
 import { useAnalyticsPreference } from './useAnalyticsPreference'
 import { useIsOnline } from './useIsOnline'
-import { unregisterPushToken } from './usePushRegistration'
+import {
+  enablePushOnThisDevice,
+  pushPermissionGranted,
+  unregisterPushToken,
+} from './usePushRegistration'
 import { useTips } from './useTips'
 import { forgetTour } from './useTour'
 import { useLocale, useLocalePreference, useT } from '../i18n'
@@ -32,6 +36,7 @@ import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
+import { pushSwitchIsOn } from '../lib/pushPermission'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { storeManagementUrl } from '../lib/purchases'
 import { openPaywall } from '../lib/paywall'
@@ -68,19 +73,38 @@ export function useSettingsModel() {
    * Notifications on this phone, as opposed to the account-wide switches
    * below it — those say *what*, this says *where*.
    *
-   * Read from device storage rather than from the profile, so it is right
-   * before any request has answered and stays right on a phone that is
-   * silenced while another one is not. Defaults to on, which is what an
-   * unreadable store also reads as.
+   * Two answers, not one: the device's own flag, and whether the OS has
+   * granted anything at all. The flag alone defaults to on, so a phone that
+   * was never asked — and iOS gives such an app no Notifications row to find
+   * either — sat here showing an on switch over notifications that could not
+   * arrive. `pushSwitchIsOn` is what the switch reads now, and turning it on
+   * is what raises the dialog a second time.
    */
-  const [pushOnThisDevice, setPushOnThisDevice] = useState(true)
-  useEffect(() => {
-    void pushEnabledOnThisDevice().then(setPushOnThisDevice)
-  }, [])
+  const [pushOffOnThisDevice, setPushOffOnThisDevice] = useState(false)
+  const [pushGranted, setPushGranted] = useState(false)
+  const pushOnThisDevice = pushSwitchIsOn({
+    granted: pushGranted,
+    offOnThisDevice: pushOffOnThisDevice,
+    platform: Platform.OS,
+  })
+  /*
+   * On focus rather than on mount: `openSettings` is one of the answers, and
+   * the phone comes back to this screen with the permission changed
+   * underneath it.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      void pushEnabledOnThisDevice().then((on) => setPushOffOnThisDevice(!on))
+      void pushPermissionGranted().then(setPushGranted)
+    }, []),
+  )
 
   async function togglePushOnThisDevice(next: boolean): Promise<void> {
-    setPushOnThisDevice(next)
+    setPushOffOnThisDevice(!next)
     await setPushEnabledOnThisDevice(next)
+    // Turning it off is this app's business alone; turning it on may need the
+    // OS's permission, which only the OS can give.
+    if (next) setPushGranted(await enablePushOnThisDevice())
   }
 
   const profile = me.data

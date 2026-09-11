@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shouldAskForPush } from './pushPermission'
+import { pushSwitchAction, pushSwitchIsOn, shouldAskForPush } from './pushPermission'
 
 /** Nobody has answered anything yet, on a phone that has never been asked. */
 const fresh = {
@@ -46,5 +46,44 @@ describe('whether the chats tab raises the notification dialog', () => {
 
   it('does not ask again once an answer is on record', () => {
     expect(shouldAskForPush({ ...fresh, asked: true, undetermined: false })).toBe(false)
+  })
+})
+
+describe('what the switch in Settings reads', () => {
+  it('is off on a phone the OS has granted nothing, however the flag reads', () => {
+    expect(pushSwitchIsOn({ granted: false, offOnThisDevice: false, platform: 'ios' })).toBe(false)
+  })
+
+  it('is on only when both agree', () => {
+    expect(pushSwitchIsOn({ granted: true, offOnThisDevice: false, platform: 'ios' })).toBe(true)
+    expect(pushSwitchIsOn({ granted: true, offOnThisDevice: true, platform: 'ios' })).toBe(false)
+  })
+
+  /** No push on the web at all, so there is no permission to reflect. */
+  it('keeps meaning the flag alone on web', () => {
+    expect(pushSwitchIsOn({ granted: false, offOnThisDevice: false, platform: 'web' })).toBe(true)
+    expect(pushSwitchIsOn({ granted: false, offOnThisDevice: true, platform: 'web' })).toBe(false)
+  })
+})
+
+describe('what turning that switch on has to do', () => {
+  /** A phone with permission and no device row is the failure this is for. */
+  it('registers the token when permission is already granted', () => {
+    expect(pushSwitchAction({ granted: true, canAskAgain: true, platform: 'ios' })).toBe('register')
+  })
+
+  it('raises the dialog when the OS will still show one', () => {
+    expect(pushSwitchAction({ granted: false, canAskAgain: true, platform: 'ios' })).toBe('ask')
+  })
+
+  /** Somebody who tapped this switch gets an answer, not a switch that springs back. */
+  it('sends them to the OS settings when it will not', () => {
+    expect(pushSwitchAction({ granted: false, canAskAgain: false, platform: 'ios' })).toBe(
+      'openSettings',
+    )
+  })
+
+  it('does nothing on web', () => {
+    expect(pushSwitchAction({ granted: false, canAskAgain: true, platform: 'web' })).toBe('none')
   })
 })
