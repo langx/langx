@@ -42,6 +42,8 @@ export const ar: Localized<ServerMessages> = {
       awayBody: 'أشخاص جدد للتدرب معهم.',
       awayLongTitle: 'نحن هنا متى أردت',
       awayLongBody: 'سلسلتك ورموزك في الانتظار.',
+      limitReachedTitle: 'تصطدم بالحدود باستمرار',
+      limitReachedBody: 'الخطة المدفوعة ترفعها.',
       trialEndingTitle: 'تنتهي أسبوعك المجاني بعد يومين',
       trialEndingBody: 'الاحتفاظ بها نقرة واحدة.',
       winBackTitle: 'انتهت خطتك',
@@ -229,6 +231,30 @@ export const ar: Localized<ServerMessages> = {
 
     newsletterButton: 'افتح LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'رد واحد على ما كتبته اليوم',
+      other: '{count} ردود على ما كتبته اليوم',
+    },
+
+    feedDigestPreheader: 'ردّ الناس على ما نشرته',
+
+    feedDigestBody: {
+      one: 'ردّ أحدهم اليوم على جملة نشرتها.',
+      other: 'ردّ {count} أشخاص اليوم على جمل نشرتها.',
+    },
+
+    feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },
+
+    feedDigestAnswers: { one: 'تسجيل واحد', other: '{count} تسجيلات' },
+
+    feedDigestComments: { one: 'تعليق واحد', other: '{count} تعليقات' },
+
+    feedDigestMore: { one: 'ومنشور واحد آخر.', other: 'و{count} منشورات أخرى.' },
+
+    feedDigestButton: 'اقرأ الردود',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -266,6 +292,13 @@ export const ar: Localized<ServerMessages> = {
         'الشهر مدة طويلة. حسابك وسلسلتك ورموزك ما زالت هنا إن أردتها — وهذه آخر رسالة عن الأمر.',
 
       awayLongButton: 'افتح LangX',
+
+      limitReachedSubject: 'تصطدم بحدود الخطة المجانية',
+
+      limitReachedBody:
+        'بلغت الحد اليومي ثلاث مرات في الأيام الأخيرة. الخطة المدفوعة ترفع هذه الحدود — محادثات وترجمات ومرفقات أكثر كل يوم.',
+
+      limitReachedButton: 'اطّلع على الخطط',
 
       trialEndingSubject: 'تنتهي أسبوعك المجاني بعد يومين',
 

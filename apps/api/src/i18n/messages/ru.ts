@@ -48,6 +48,8 @@ export const ru: Localized<ServerMessages> = {
       awayBody: 'Новые собеседники.',
       awayLongTitle: 'Мы здесь, когда захотите',
       awayLongBody: 'Серия и токены ждут.',
+      limitReachedTitle: 'Вы часто упираетесь в лимиты',
+      limitReachedBody: 'Тариф снимает их.',
       trialEndingTitle: 'Бесплатная неделя заканчивается через два дня',
       trialEndingBody: 'Продлить — одно касание.',
       winBackTitle: 'Ваш тариф закончился',
@@ -244,6 +246,30 @@ export const ru: Localized<ServerMessages> = {
 
     newsletterButton: 'Открыть LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 ответ на ваш пост сегодня',
+      other: '{count} ответов на ваши посты сегодня',
+    },
+
+    feedDigestPreheader: 'На ваши посты ответили',
+
+    feedDigestBody: {
+      one: 'Сегодня кто-то ответил на вашу фразу.',
+      other: 'Сегодня на ваши фразы ответили {count} человек.',
+    },
+
+    feedDigestCorrections: { one: '1 исправление', other: '{count} исправлений' },
+
+    feedDigestAnswers: { one: '1 запись', other: '{count} записей' },
+
+    feedDigestComments: { one: '1 комментарий', other: '{count} комментариев' },
+
+    feedDigestMore: { one: 'И ещё 1 пост.', other: 'И ещё {count} постов.' },
+
+    feedDigestButton: 'Читать ответы',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -281,6 +307,13 @@ export const ru: Localized<ServerMessages> = {
         'Месяц — долгий срок. Ваш аккаунт, серия и токены на месте, если они вам нужны, и это последнее, что мы об этом скажем.',
 
       awayLongButton: 'Открыть LangX',
+
+      limitReachedSubject: 'Вы упираетесь в бесплатные лимиты',
+
+      limitReachedBody:
+        'За последние дни вы трижды упёрлись в дневной лимит. Тариф снимает их — больше разговоров, больше переводов, больше вложений каждый день.',
+
+      limitReachedButton: 'Посмотреть тарифы',
 
       trialEndingSubject: 'Бесплатная неделя заканчивается через два дня',
 

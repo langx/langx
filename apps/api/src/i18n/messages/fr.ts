@@ -36,6 +36,8 @@ export const fr: Localized<ServerMessages> = {
       awayBody: 'De nouvelles personnes pour pratiquer.',
       awayLongTitle: 'Nous serons là quand vous voudrez',
       awayLongBody: 'Votre série et vos jetons attendent.',
+      limitReachedTitle: 'Vous butez souvent sur les limites',
+      limitReachedBody: 'Une formule les lève.',
       trialEndingTitle: 'Votre semaine gratuite se termine dans deux jours',
       trialEndingBody: 'La garder tient en un geste.',
       winBackTitle: 'Votre formule a pris fin',
@@ -241,6 +243,30 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterButton: 'Ouvrir LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 réponse à ce que vous avez écrit aujourd’hui',
+      other: '{count} réponses à ce que vous avez écrit aujourd’hui',
+    },
+
+    feedDigestPreheader: 'On a répondu à vos publications',
+
+    feedDigestBody: {
+      one: 'Quelqu’un a répondu à une phrase que vous avez publiée aujourd’hui.',
+      other: '{count} personnes ont répondu à vos phrases publiées aujourd’hui.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 enregistrement', other: '{count} enregistrements' },
+
+    feedDigestComments: { one: '1 commentaire', other: '{count} commentaires' },
+
+    feedDigestMore: { one: 'Et 1 autre publication.', other: 'Et {count} autres publications.' },
+
+    feedDigestButton: 'Lire les réponses',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -280,6 +306,13 @@ export const fr: Localized<ServerMessages> = {
         'Un mois, c’est long. Votre compte, votre série et vos jetons sont toujours là si vous les voulez — et c’est la dernière fois que nous en parlons.',
 
       awayLongButton: 'Ouvrir LangX',
+
+      limitReachedSubject: 'Vous butez sur les limites gratuites',
+
+      limitReachedBody:
+        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations, plus de traductions, plus de pièces jointes, chaque jour.',
+
+      limitReachedButton: 'Voir les formules',
 
       trialEndingSubject: 'Votre semaine gratuite se termine dans deux jours',
 

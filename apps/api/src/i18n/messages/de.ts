@@ -36,6 +36,8 @@ export const de: Localized<ServerMessages> = {
       awayBody: 'Neue Leute zum Üben.',
       awayLongTitle: 'Wir sind da, wenn du willst',
       awayLongBody: 'Deine Serie und deine Token warten.',
+      limitReachedTitle: 'Du stößt immer wieder an die Limits',
+      limitReachedBody: 'Ein Tarif hebt sie auf.',
       trialEndingTitle: 'Deine Gratiswoche endet in zwei Tagen',
       trialEndingBody: 'Behalten ist ein Tipp.',
       winBackTitle: 'Dein Tarif ist ausgelaufen',
@@ -234,6 +236,30 @@ export const de: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX öffnen',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 Antwort auf deinen Beitrag heute',
+      other: '{count} Antworten auf deine Beiträge heute',
+    },
+
+    feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
+
+    feedDigestBody: {
+      one: 'Jemand hat heute auf einen deiner Sätze geantwortet.',
+      other: '{count} Leute haben heute auf deine Sätze geantwortet.',
+    },
+
+    feedDigestCorrections: { one: '1 Korrektur', other: '{count} Korrekturen' },
+
+    feedDigestAnswers: { one: '1 Aufnahme', other: '{count} Aufnahmen' },
+
+    feedDigestComments: { one: '1 Kommentar', other: '{count} Kommentare' },
+
+    feedDigestMore: { one: 'Und 1 weiterer Beitrag.', other: 'Und {count} weitere Beiträge.' },
+
+    feedDigestButton: 'Antworten lesen',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -273,6 +299,13 @@ export const de: Localized<ServerMessages> = {
         'Ein Monat ist lang. Dein Konto, deine Serie und deine Token sind noch da, falls du sie willst — und das ist das Letzte, was wir dazu sagen.',
 
       awayLongButton: 'LangX öffnen',
+
+      limitReachedSubject: 'Du stößt an die kostenlosen Limits',
+
+      limitReachedBody:
+        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche, mehr Übersetzungen, mehr Anhänge, jeden Tag.',
+
+      limitReachedButton: 'Tarife ansehen',
 
       trialEndingSubject: 'Deine Gratiswoche endet in zwei Tagen',
 

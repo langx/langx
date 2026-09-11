@@ -29,7 +29,7 @@ two channels and both are real.
 | `badges`        | on      | off    | A badge earned                          |
 | `profileVisits` | on      | on     | Who looked at you                       |
 | `meetings`      | on      | off    | An hour before a call you agreed to     |
-| `social`        | on      | off    | The feed reacting to you                |
+| `social`        | on      | on     | The feed reacting to you                |
 | `wallet`        | on      | off    | Tokens arriving                         |
 | `promotions`    | **off** | **on** | Marketing, the newsletter, campaigns    |
 
@@ -106,6 +106,7 @@ every one claims a row in `notificationLedger` before it sends.
 | **Somebody followed you**                        | `social`        | push                          | on the follow                               | one per follower, **ever**                      |
 | **A correction, answer or comment on your post** | `social`        | push                          | on the reply                                | one per post per **hour**                       |
 | **Your posts' likes**                            | `social`        | push                          | daily batch                                 | UTC day                                         |
+| **The day's replies to your posts**              | `social`        | email                         | 19:00 local                                 | local day                                       |
 | **Yesterday's pool paid you N tokens**           | `wallet`        | push                          | 09:00 local                                 | pool day                                        |
 | **Your hourly gift is ready**                    | `wallet`        | push                          | waking hours                                | UTC day, and only if they have taken one before |
 
@@ -121,12 +122,14 @@ there is none. Each face links to `app.langx.io/<handle>`.
   anybody can do here.
 - **One follow notice per follower, ever.** Unfollowing and following again
   is not news.
+- **One digest per local day.** A reply landing after the letter has gone
+  waits for tomorrow's — the push already said it.
 
 ---
 
 ## 3. Promotions — `promotions.email` must allow it
 
-### The eight nudges
+### The nine nudges
 
 `modules/notifications/promotions.ts` — a table walked in **priority order**
 for each candidate. The first match is sent, the loop breaks, and
@@ -141,8 +144,9 @@ the reader's own clock.
 | 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago                         | promotions |
 | 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
 | 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago, still on free             | promotions |
-| 7   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
-| 8   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
+| 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
+| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
+| 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
 
 `periodType` and `churnedFrom` are written from 10 September 2026 onward and
 **cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
@@ -231,11 +235,9 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 
 Written down so the next person does not have to re-derive them.
 
-| Scenario                                | Blocked on                                |
-| --------------------------------------- | ----------------------------------------- |
-| **You hit the free limit again**        | nothing counts a refused quota            |
-| A daily email digest of corrections     | `social.email` has a switch and no sender |
-| Editor's note as a standalone broadcast | the monthly note covers it                |
+| Scenario                                | Blocked on                 |
+| --------------------------------------- | -------------------------- |
+| Editor's note as a standalone broadcast | the monthly note covers it |
 
 ## Every message is one format
 

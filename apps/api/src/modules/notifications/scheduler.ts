@@ -5,6 +5,7 @@ import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
 import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
+import { runFeedDigestPass } from './feedDigest'
 import { runNewsletterPass } from './newsletter'
 import { runLikesRoundUpPass } from './social'
 import { runPromotionsPass } from './promotions'
@@ -73,6 +74,7 @@ export function startNotificationScheduler(
           : []),
         // Before the nudges: on the first of a month the recap is the thing
         // worth saying, and the cap would otherwise let a nudge take its place.
+        run('feed digest', () => runFeedDigestPass(db, senders.email, now)),
         run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
         run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
         run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),

@@ -36,6 +36,8 @@ export const es: Localized<ServerMessages> = {
       awayBody: 'Gente nueva con quien practicar.',
       awayLongTitle: 'Aquí cuando quieras',
       awayLongBody: 'Tu racha y tus tokens te esperan.',
+      limitReachedTitle: 'Sigues chocando con los límites',
+      limitReachedBody: 'Un plan los quita.',
       trialEndingTitle: 'Tu semana gratis termina en dos días',
       trialEndingBody: 'Mantenerlo es un toque.',
       winBackTitle: 'Tu plan terminó',
@@ -236,6 +238,30 @@ export const es: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 respuesta a lo que escribiste hoy',
+      other: '{count} respuestas a lo que escribiste hoy',
+    },
+
+    feedDigestPreheader: 'Respondieron a lo que publicaste',
+
+    feedDigestBody: {
+      one: 'Alguien respondió a una frase que publicaste hoy.',
+      other: '{count} personas respondieron a frases que publicaste hoy.',
+    },
+
+    feedDigestCorrections: { one: '1 corrección', other: '{count} correcciones' },
+
+    feedDigestAnswers: { one: '1 grabación', other: '{count} grabaciones' },
+
+    feedDigestComments: { one: '1 comentario', other: '{count} comentarios' },
+
+    feedDigestMore: { one: 'Y 1 publicación más.', other: 'Y {count} publicaciones más.' },
+
+    feedDigestButton: 'Leer las respuestas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -275,6 +301,13 @@ export const es: Localized<ServerMessages> = {
         'Un mes es mucho tiempo. Tu cuenta, tu racha y tus tokens siguen aquí si los quieres, y esto es lo último que diremos.',
 
       awayLongButton: 'Abrir LangX',
+
+      limitReachedSubject: 'Estás chocando con los límites gratuitos',
+
+      limitReachedBody:
+        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones, más traducciones, más adjuntos, cada día.',
+
+      limitReachedButton: 'Ver los planes',
 
       trialEndingSubject: 'Tu semana gratis termina en dos días',
 

@@ -176,6 +176,15 @@ export interface Profile {
    */
   churnedFrom?: { tier: PlanTier; at: Date }
   quota: { initiations: Date[]; translations: Date[]; media: Date[] }
+  /**
+   * When this account was last told it had run out — a rolling window, kept
+   * by `consumeQuota` and read by nothing but the upsell nudge.
+   *
+   * Separate from `quota` because it is the opposite measurement: those
+   * arrays are what somebody *used*, this is what they were refused. Absent
+   * on everybody who has never hit a limit, which is most people.
+   */
+  quotaRefusals?: Date[]
   photos?: { url: string; createdAt: Date }[]
   /**
    * Where a `promotions.email: true` on this profile came from, when it was

@@ -70,6 +70,7 @@ during the window catches up on its next tick instead of skipping silently.
 | Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                                                              |
 | Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.                                                       |
 | Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.                                                    |
+| Feed digest      | 30 min   | The day's corrections, answers and comments on somebody's posts, at 19:00 local. The email half of `social`.                                                                       |
 | Pool payout      | 30 min   | "Yesterday's pool paid you N tokens", at 09:00 on each reader's own clock. Push only.                                                                                              |
 | Gift ready       | 30 min   | "Your hourly gift is ready", at most once a day, and only for somebody who has taken one before.                                                                                   |
 | Likes round-up   | 30 min   | A day of likes on somebody's posts as one push, once a day.                                                                                                                        |

@@ -30,6 +30,8 @@ export const tr: Localized<ServerMessages> = {
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
       awayLongBody: 'Serin ve token’ların bekliyor.',
+      limitReachedTitle: 'Ücretsiz sınırlara takılıp duruyorsun',
+      limitReachedBody: 'Bir plan bunları kaldırır.',
       trialEndingTitle: 'Ücretsiz haftan iki gün sonra bitiyor',
       trialEndingBody: 'Sürdürmek tek dokunuş.',
       winBackTitle: 'Planın bir hafta önce bitti',
@@ -219,6 +221,30 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX’i aç',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'Bugün yazdığına 1 yanıt geldi',
+      other: 'Bugün yazdığına {count} yanıt geldi',
+    },
+
+    feedDigestPreheader: 'Paylaştığın cümlelere cevap verdiler',
+
+    feedDigestBody: {
+      one: 'Bugün paylaştığın bir cümleye cevap verildi.',
+      other: 'Bugün paylaştığın cümlelere {count} kişi cevap verdi.',
+    },
+
+    feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },
+
+    feedDigestAnswers: { one: '1 seslendirme', other: '{count} seslendirme' },
+
+    feedDigestComments: { one: '1 yorum', other: '{count} yorum' },
+
+    feedDigestMore: { one: 'Ve 1 gönderi daha.', other: 'Ve {count} gönderi daha.' },
+
+    feedDigestButton: 'Yanıtları oku',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -256,6 +282,13 @@ export const tr: Localized<ServerMessages> = {
         'Bir ay uzun bir süre. Hesabın, serin ve token’ların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
 
       awayLongButton: 'LangX’i aç',
+
+      limitReachedSubject: 'Ücretsiz sınırlara takılıyorsun',
+
+      limitReachedBody:
+        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet, daha fazla çeviri, daha fazla ek.',
+
+      limitReachedButton: 'Planlara bak',
 
       trialEndingSubject: 'Ücretsiz haftan iki gün sonra bitiyor',
 

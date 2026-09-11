@@ -104,6 +104,52 @@ export async function consumeQuota(
 
   if (result) return { consumed: true }
 
+  await recordRefusal(db, userId, now)
   const status = await getQuotaStatus(db, userId, tier, kind)
   return { consumed: false, nextAvailableAt: status.nextAvailableAt }
+}
+
+/**
+ * How long a refusal is remembered. Three days: long enough that hitting the
+ * limit on two evenings running still reads as a pattern, short enough that
+ * a bad week in March is not an argument about a plan in June.
+ */
+export const QUOTA_REFUSAL_WINDOW_MS = 3 * 24 * 60 * 60 * 1000
+
+/**
+ * Remembers that somebody was refused, so a nudge can tell "hit the limit
+ * once" from "keeps hitting it".
+ *
+ * Here rather than at the three call sites, because here is the only place
+ * a refusal is decided — and the fourth caller, whenever it arrives, gets
+ * this for free rather than being the one that forgot.
+ *
+ * The same prune-and-append pipeline the quota itself uses, so the array
+ * cannot grow: everything outside the window is dropped on each write.
+ * Failure is swallowed — this is a counter for a marketing nudge, and
+ * nothing about it is worth turning a 429 into a 500.
+ */
+async function recordRefusal(db: Db, userId: string, now: Date): Promise<void> {
+  const since = new Date(now.getTime() - QUOTA_REFUSAL_WINDOW_MS)
+  try {
+    await db.collection<Profile>(COLLECTIONS.profiles).updateOne({ _id: userId }, [
+      {
+        $set: {
+          quotaRefusals: {
+            $concatArrays: [
+              {
+                $filter: {
+                  input: { $ifNull: ['$quotaRefusals', []] },
+                  cond: { $gte: ['$$this', since] },
+                },
+              },
+              [now],
+            ],
+          },
+        },
+      },
+    ])
+  } catch {
+    // A counter nobody is waiting on.
+  }
 }
