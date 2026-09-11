@@ -403,13 +403,18 @@ export default function ProfileScreen() {
             sentence is written where the reply will arrive. `chat/new` cannot
             start a second conversation — `startConversation` refuses — which
             is why the existing one is offered first.
+
+            A channel gets neither: the API refuses a message to it, and the
+            same rule the suspended branch above states applies here — a button
+            that refuses is worse than a button that is not there. Opening the
+            thread stays, because reading what it has said is the point of it.
           */}
           {user.conversationId ? (
             <Button
               label={t('profile.openChat')}
               onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
             />
-          ) : (
+          ) : user.acceptsMessages === false ? null : (
             <Button
               label={t('profile.sendMessage')}
               // Gated here as well as at the send: a guest should hear about

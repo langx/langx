@@ -128,7 +128,24 @@ async function ensureOne(
     await profiles.updateOne(
       { _id: existing._id },
       {
-        $set: { avatarUrl, displayName, bio: OFFICIAL_BIOS[handle], updatedAt: now },
+        $set: {
+          avatarUrl,
+          displayName,
+          bio: OFFICIAL_BIOS[handle],
+          /*
+           * The same shape a created one gets, not just the same name. An
+           * adopted account arrives carrying whatever it was set to, and an
+           * account that is discoverable, notifiable or drawing an activity
+           * map is one of those things behaving like a person.
+           */
+          'settings.discoverable': false,
+          'settings.notifications': false,
+          'privacy.hideOnlineStatus': true,
+          'privacy.activityMapVisible': false,
+          'privacy.weekChartVisible': false,
+          tokenFrozenAt: now,
+          updatedAt: now,
+        },
         /*
          * And the things an official account must not be carrying.
          *
@@ -143,12 +160,20 @@ async function ensureOne(
         $unset: {
           photos: '',
           pronouns: '',
+          interests: '',
           country: '',
           cityId: '',
           cityName: '',
           cityCountryCode: '',
           location: '',
           locationUpdatedAt: '',
+          // A discovery boost on an undiscoverable account does nothing, and a
+          // stats switch from somebody's own profile is not ours to keep. Not
+          // on `Profile` at all, which is why they are cleared by name here
+          // rather than set above.
+          'settings.boosted': '',
+          'privacy.statsVisible': '',
+          'privacy.hideCity': '',
         },
       },
     )
