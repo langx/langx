@@ -43,7 +43,7 @@ const TOKEN_PROMISE = 'There is no chain, no contract and no market.'
 const SECTIONS = ['Privacy', 'Notifications', 'Appearance', 'Account', 'Subscription', 'About']
 
 describe('what the assistant says is in the app', () => {
-  const prompt = assistantSystemPrompt('hi@langx.test')
+  const prompt = assistantSystemPrompt('hi@langx.test', 'the App Store')
   const catalogue = readFileSync(MOBILE_EN, 'utf8')
 
   /**

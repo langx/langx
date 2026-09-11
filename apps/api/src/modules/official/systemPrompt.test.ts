@@ -1,9 +1,9 @@
-import { MINIMUM_AGE, PLAN_LIMITS, TIER_NAMES, TOKEN_RULES } from '@langx/shared'
+import { MINIMUM_AGE, TIER_NAMES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { assistantSystemPrompt } from './assistant'
 
 const SUPPORT = 'hi@langx.test'
-const prompt = assistantSystemPrompt(SUPPORT)
+const prompt = assistantSystemPrompt(SUPPORT, 'the App Store')
 
 /**
  * What the assistant is allowed to believe about the product.
@@ -25,29 +25,62 @@ describe('what @langx is told about LangX', () => {
     expect(prompt).not.toMatch(/\bPro\+? (?:plan|tier|subscription)\b/)
   })
 
-  it('quotes the limits it is given, not remembered ones', () => {
-    expect(prompt).toContain(
-      `${String(PLAN_LIMITS.free.initiationsPer24h)} new conversations a day`,
-    )
-    expect(prompt).toContain(`${String(PLAN_LIMITS.free.translationsPer24h)} translations a day`)
-    expect(prompt).toContain(
-      `${String(PLAN_LIMITS.pro_plus.maxLearningLanguages)} learning languages`,
-    )
-    expect(prompt).toContain(`${String(TOKEN_RULES.award.correction)} for a correction`)
-    expect(prompt).toContain(`${String(TOKEN_RULES.caps.messagesPerDay)} a day`)
+  it('takes the age from config rather than repeating it', () => {
     expect(prompt).toContain(`${String(MINIMUM_AGE)} or older`)
+    expect(prompt).not.toContain('null')
   })
 
-  /** Unlimited is a word, not `null` printed into a sentence. */
-  it('says unlimited rather than null', () => {
-    expect(PLAN_LIMITS.pro.initiationsPer24h).toBeNull()
-    expect(prompt).toContain('unlimited new conversations')
-    expect(prompt).not.toContain('null')
+  /**
+   * It used to recite every plan's limits. It does not any more — the job is
+   * to welcome somebody and get them to a person, and a feature table is the
+   * part most likely to be quietly wrong a release later. What it keeps is the
+   * names, so it cannot invent "Pro", and the refusal to quote a price.
+   */
+  it('names the plans without reciting what is in them', () => {
+    expect(prompt).not.toContain('translations a day')
+    expect(prompt).not.toContain('for a correction')
+    expect(prompt).toContain('You do not know what they cost or exactly what each includes')
+  })
+
+  it('knows its job is to hand somebody to a person, and to collect ideas', () => {
+    expect(prompt).toContain('You are the door, not the room')
+    expect(prompt).toContain('send them to Discover')
+    expect(prompt).toContain('open-source project')
+  })
+
+  /**
+   * The one thing it must be clear it cannot do. Reporting a person is a
+   * moderation decision reached from that person's profile; a model filing
+   * them is a queue somebody has to work through.
+   */
+  /**
+   * Somebody reading LangX in a browser has no store to be sent to, and being
+   * asked for a review anyway is the kind of small nonsense that tells a
+   * reader nobody thought about them. So it is not a rule the model is asked
+   * to remember — the sentence is simply not in its prompt.
+   */
+  it('asks for a rating only where there is somewhere to leave one', () => {
+    expect(assistantSystemPrompt(SUPPORT, 'the App Store')).toContain('rate LangX on the App Store')
+    expect(assistantSystemPrompt(SUPPORT, 'Google Play')).toContain('rate LangX on Google Play')
+
+    const onWeb = assistantSystemPrompt(SUPPORT, null)
+    expect(onWeb).not.toContain('rate LangX')
+    expect(onWeb).toContain('reads LangX in a browser')
+  })
+
+  it('asks once and drops it, rather than asking again', () => {
+    expect(prompt).toContain('Never twice in a conversation')
+    expect(prompt).toContain('never to somebody who came with a problem you have not solved')
+  })
+
+  it('cannot report a person and says where that is done', () => {
+    expect(prompt).toContain('You cannot report a person')
+    expect(prompt).not.toContain('report_user')
   })
 
   it('refuses the three things it must never improvise', () => {
     // Prices: they differ by country and store and are not in this repo.
-    expect(prompt).toContain('You do not know what any plan costs')
+    expect(prompt).toContain('prices differ by country and store')
     // The account: it has no tool that can read one.
     expect(prompt).toContain('You cannot see their account')
     // The other kind of token, which shares a word and nothing else.
@@ -68,8 +101,8 @@ describe('what @langx is told about LangX', () => {
     expect(prompt).toContain('local emergency services')
     // Never a literal: a self-host has its own address, and an assistant
     // pointing people at somebody else's mailbox is worse than not pointing.
-    expect(assistantSystemPrompt('help@elsewhere.test')).toContain('help@elsewhere.test')
-    expect(assistantSystemPrompt('help@elsewhere.test')).not.toContain('langx.io')
+    expect(assistantSystemPrompt('help@elsewhere.test', null)).toContain('help@elsewhere.test')
+    expect(assistantSystemPrompt('help@elsewhere.test', null)).not.toContain('langx.io')
   })
 
   it('treats what follows as something said, not something asked of it', () => {

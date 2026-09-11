@@ -13,7 +13,6 @@ import { createTranslationProvider } from '../../translation/createTranslationPr
 import { CapturingEmailSender, signUpAndSignIn } from '../../testSupport/authFlow'
 import type { Conversation, Message } from '../chat/conversations'
 import { sendTextMessage } from '../chat/messages'
-import { fanOutMessage } from '../../ws/fanOut'
 import { ensureOfficialAccounts, officialIds } from './accounts'
 
 const PASSWORD = 'correct horse battery staple'
@@ -156,7 +155,13 @@ describe('a new account meets @langx', () => {
     expect(toThem?.body).toContain('Welcome to LangX')
   })
 
-  it('answers a message to @langx even with no key, and charges nothing for it', async () => {
+  /**
+   * The welcome opens a thread that cannot be written back into. That is the
+   * whole shape of `@langx`: it says things, and the reply box is not there —
+   * on the screen because the app draws none, and here because the API would
+   * refuse it anyway.
+   */
+  it('opens a thread nobody can write into', async () => {
     const user = await onboard('writes-back@example.com', 'writesback', 'en')
     await settle()
 
@@ -165,44 +170,25 @@ describe('a new account meets @langx', () => {
       .collection<Conversation>(COLLECTIONS.conversations)
       .findOne({ participants: { $all: [user.userId, langxId] } }))!
 
-    /*
-     * The socket's own two lines. Text messages have no REST route — the
-     * composer sends over the socket — so this is the real path, driven
-     * without a socket: write, then fan out. The trigger lives at the end of
-     * `fanOutMessage`, which is the point of putting it there.
-     */
-    const { message, conversation: updated } = await sendTextMessage(handle.db, user.userId, {
-      conversationId: conversation._id.toHexString(),
-      body: 'how do tokens work?',
+    await expect(
+      sendTextMessage(handle.db, user.userId, {
+        conversationId: conversation._id.toHexString(),
+        body: 'how do tokens work?',
+      }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+
+    // The welcome, and nothing after it.
+    expect(await messagesFrom(langxId)).toHaveLength(3)
+
+    // And it is reported to the app as a channel, which is what hides the box.
+    const view = await app.inject({
+      method: 'GET',
+      url: `/profiles/langx`,
+      headers: { cookie: user.cookie },
     })
-    await fanOutMessage(app, app.io, updated, message, { pushWhenAway: true })
-    await settle()
-
-    // Scoped to this thread: the suite's earlier accounts have welcomes of
-    // their own, and @langx is the sender of all of them.
-    const said = (await messagesFrom(langxId)).filter((m) =>
-      m.conversationId.equals(conversation._id),
-    )
-    // The welcome, then the offline line — which names the support address.
-    expect(said).toHaveLength(2)
-    expect(said[1]?.body).toContain(app.env.SUPPORT_EMAIL)
-
-    /*
-     * Nothing was paid for the exchange, in either direction. Scoped by kind
-     * rather than counting rows: onboarding pays a signup bonus, which is the
-     * account existing and not the conversation happening.
-     */
-    expect(
-      await handle.db
-        .collection(COLLECTIONS.tokenLedger)
-        .countDocuments({ kind: { $ne: 'signupBonus' } }),
-    ).toBe(0)
-    expect(
-      await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({ userId: langxId }),
-    ).toBe(0)
-    const profile = await handle.db
-      .collection<{ _id: string; quota: { initiations: Date[] } }>(COLLECTIONS.profiles)
-      .findOne({ _id: user.userId })
-    expect(profile?.quota.initiations).toEqual([])
+    expect(view.json<{ official?: true; acceptsMessages?: boolean }>()).toMatchObject({
+      official: true,
+      acceptsMessages: false,
+    })
   })
 })

@@ -59,18 +59,14 @@ const envSchema = z.object({
    */
   ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
   /**
-   * Sonnet, on the evidence rather than the price list.
+   * Sonnet, on the evidence. Asked in Turkish how to protect a streak, Haiku
+   * answered about the privacy settings — twice, the same way. This app writes
+   * to people in eight languages while they practise a ninth, and a cheap
+   * wrong answer in somebody's own language is the expensive kind.
    *
-   * Haiku was the obvious choice — short answers, a chat window, a fifth of
-   * the cost — and it answered English questions well. It also read the
-   * Turkish for "my streak" as "my profile" twice running and explained the
-   * privacy settings instead, which is not variance, and this app is answering
-   * in eight languages to people practising a ninth. A cheap wrong answer in
-   * somebody's own language is the expensive kind.
-   *
-   * `createAnthropicProvider` sends `effort: low` here, so the thinking is
-   * bounded; Haiku got no effort at all because it rejects the parameter. If
-   * the answers ever stop needing the extra, `claude-haiku-4-5` is one line.
+   * `sendsEffort` sends `low` here, so the thinking is bounded; Haiku got none
+   * at all because it rejects the parameter rather than ignoring it.
+   * `scripts/try-assistant.ts` is how to judge a change of model.
    */
   ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**

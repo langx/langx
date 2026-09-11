@@ -1,4 +1,6 @@
 import {
+  OFFICIAL_WRITABLE,
+  isOfficialHandle,
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
@@ -1051,6 +1053,13 @@ export interface PublicProfile {
   follow: FollowState
   /** Draws the tick beside the display name. See `Profile.official`. */
   official?: true
+  /**
+   * Whether this account takes messages. Absent for a person, who always does;
+   * present and `false` on a channel, which the chat screen reads to draw no
+   * composer. Sent rather than derived client-side so the app never has to
+   * know which handle is which.
+   */
+  acceptsMessages?: boolean
 }
 
 /**
@@ -1106,8 +1115,14 @@ export function toPublicProfile(
     emailVerified,
     follow,
   }
-  if (profile.official) result.official = true
-  else result.age = ageFromBirthDate(profile.birthDate, now)
+  if (profile.official) {
+    result.official = true
+    // From the handle rather than from `modules/official`, which imports this
+    // file — the shared config is the one both can read without a cycle.
+    result.acceptsMessages = isOfficialHandle(profile.handle)
+      ? OFFICIAL_WRITABLE[profile.handle]
+      : true
+  } else result.age = ageFromBirthDate(profile.birthDate, now)
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio

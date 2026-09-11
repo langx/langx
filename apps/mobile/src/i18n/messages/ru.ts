@@ -651,6 +651,7 @@ export const ru: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly: 'Этот аккаунт публикует новости и объявления. Ответить сюда нельзя.',
     sendingAttachment: 'Отправка…',
     title: 'Чат',
     typing: 'печатает…',

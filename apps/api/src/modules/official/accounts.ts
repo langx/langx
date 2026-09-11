@@ -2,6 +2,7 @@ import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import {
   OFFICIAL_DISPLAY_NAMES,
   OFFICIAL_HANDLES,
+  OFFICIAL_WRITABLE,
   officialAvatarUrl,
   type OfficialHandle,
 } from '@langx/shared'
@@ -70,6 +71,18 @@ export function officialIds(): ReadonlyMap<OfficialHandle, string> {
  */
 export function isOfficialId(id: string): boolean {
   return handlesById.has(id)
+}
+
+/**
+ * Whether a message may be sent to this account at all.
+ *
+ * True for every person, and for the one official account that answers. False
+ * for `@langx`, which is a channel: it welcomes and it announces, and there is
+ * nothing at the other end to read a reply. See `OFFICIAL_WRITABLE`.
+ */
+export function acceptsMessages(id: string): boolean {
+  const handle = officialHandleOf(id)
+  return handle === null || OFFICIAL_WRITABLE[handle]
 }
 
 export function officialHandleOf(id: string): OfficialHandle | null {

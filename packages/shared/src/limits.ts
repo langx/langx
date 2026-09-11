@@ -183,6 +183,23 @@ export interface PlanLimits {
    * bilingual a second native language is an identity fact, not a feature.
    */
   maxNativeLanguages: number
+  /**
+   * Replies the @langx assistant will give this account in any twenty-four
+   * hours.
+   *
+   * Per tier because the assistant is the one limit here with a real marginal
+   * cost — every reply is a paid model call — and a flat number would have
+   * meant an account paying nothing and an account paying for a year getting
+   * the same allowance. Worked from the price list: the ceiling for a tier is
+   * kept under what that tier brings in, in the script that costs most to
+   * write. See `OFFICIAL_ASSISTANT` for the arithmetic.
+   *
+   * It gates the assistant, never the thing behind it. Reporting somebody from
+   * their profile, sending feedback from Settings and writing to the support
+   * address are unlimited on every tier, including free — what a tier buys is
+   * the convenience of doing it in a conversation.
+   */
+  assistantRepliesPerDay: number
 }
 
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
@@ -201,6 +218,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     maxPhotos: 5,
     maxLearningLanguages: 1,
     maxNativeLanguages: 1,
+    assistantRepliesPerDay: 5,
   },
   pro: {
     initiationsPer24h: null,
@@ -217,6 +235,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     maxPhotos: 10,
     maxLearningLanguages: 2,
     maxNativeLanguages: 2,
+    assistantRepliesPerDay: 10,
   },
   /**
    * A strict superset of `pro` — every value here is pro's, with `nearby` and
@@ -239,6 +258,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     maxPhotos: 10,
     maxLearningLanguages: 5,
     maxNativeLanguages: 5,
+    assistantRepliesPerDay: 15,
   },
 }
 

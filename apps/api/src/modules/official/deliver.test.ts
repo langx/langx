@@ -3,9 +3,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
-import { startConversation, type Conversation } from '../chat/conversations'
+import type { Conversation } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
-import { ensureOfficialAccounts, officialIds } from './accounts'
+import { ensureOfficialAccounts } from './accounts'
 import { deliverOfficialMessage } from './deliver'
 
 function person(id: string): Profile {
@@ -100,18 +100,24 @@ describe('a message from an official account', () => {
     expect(conversation?.unread.ada).toBe(1)
   })
 
-  it('joins the thread the user opened rather than starting a second one', async () => {
-    const langxId = officialIds().get('langx')!
-    await startConversation(handle.db, 'ada', { toUserId: langxId, body: 'are you there?' })
-
-    const delivered = await deliverOfficialMessage(handle.db, {
+  /** Two announcements are two messages in one thread, not two threads. */
+  it('writes into the thread it already opened rather than a second one', async () => {
+    await deliverOfficialMessage(handle.db, {
       fromHandle: 'langx',
       toUserId: 'ada',
-      body: 'I am',
+      body: 'first',
+      clientId: 'announcement:one',
+    })
+    const second = await deliverOfficialMessage(handle.db, {
+      fromHandle: 'langx',
+      toUserId: 'ada',
+      body: 'second',
+      clientId: 'announcement:two',
     })
 
     expect(await handle.db.collection(COLLECTIONS.conversations).countDocuments()).toBe(1)
-    expect(delivered?.conversation.bothSpoke).toBe(true)
+    expect(second?.conversation.messageCount).toBe(2)
+    expect(second?.conversation.unread.ada).toBe(2)
   })
 
   it('pays nobody for the exchange', async () => {

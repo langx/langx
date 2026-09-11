@@ -617,15 +617,31 @@ without anybody seeding anything. Nobody can sign in to either: the Better Auth
 row behind them holds an address under `.invalid`, which resolves nowhere, so no
 reset link, magic link or verification mail can reach a mailbox.
 
-`@langx` greets every new account, carries announcements
-(`scripts/send-announcement.ts`) and answers when somebody writes to it. The
+`@langx` is a **channel**. It greets every new account and carries
+announcements (`scripts/send-announcement.ts`), and it cannot be written to:
+`recordMessage` refuses a message addressed to it and the chat screen draws no
+composer. Nothing about it is answered by a model. A broadcast account that
+sometimes replies is a promise about attention that nobody can keep.
+
+`@copilot` is the account that will answer, and it ships closed. Everything
+behind it is built and tested — the provider, the per-tier allowances, the daily
+budget, the prompt, the one tool — and opening it is
+`OFFICIAL_WRITABLE.copilot` plus an `ANTHROPIC_API_KEY`. Two switches rather
+than one, because without the key it would answer that it cannot answer. It is
+deliberately narrow: it welcomes, it answers the practical how-do-I questions
+written into its prompt, and it takes a bug report or an idea — which for an
+open-source project is the most useful thing anybody hands it. It cannot report
+a person; that is a moderation decision reached from that person's profile, and
+a model filing them is a queue somebody has to work through. The
 assistant behind it is an **optional service** in the same sense as email and
 storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
 and everything else about the account still works.
 
-Four numbers in `OFFICIAL_ASSISTANT` bound what it can spend, and they only
-work together. `repliesPerDay` bounds one conversation and
-`globalRepliesPerDay` bounds everybody — the second matters because the number
+Four numbers bound what it can spend, and they only work together.
+`PLAN_LIMITS[tier].assistantRepliesPerDay` bounds one account — per tier,
+because every reply is a paid model call and a free account brings in nothing
+to pay for it, so the ceiling for a tier is kept under what that tier earns —
+and `OFFICIAL_ASSISTANT.globalRepliesPerDay` bounds everybody — the second matters because the number
 of conversations is not bounded by anything. Those two cap the _count_ of
 replies; `historyCharsPerMessage` and `maxReplyTokens` are what make a reply's
 cost bounded, which is what turns a cap on the count into a cap on the bill. A

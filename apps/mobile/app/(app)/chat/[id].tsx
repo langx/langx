@@ -1735,117 +1735,129 @@ export default function ChatScreen() {
           attach control, the recorder, the microphone — is passed in from
           here, and the mode banner and picked attachments ride above the row.
         */}
-        <ChatComposer
-          value={draft}
-          onChangeText={onChangeDraft}
-          placeholder={
-            correcting
-              ? t('chat.writeCorrection')
-              : items.length === 0 && partner
-                ? t('chat.sayHello', { name: partner.displayName })
-                : t('chat.writeMessage')
-          }
-          onSend={() => void send()}
-          hasAttachment={pendingMedia.length > 0}
-          busy={sendingMedia}
-          above={
-            <>
-              {/*
+        {/*
+          A channel has no composer. `@langx` welcomes and announces, and the
+          API refuses a message to it — so a box to type in would be offering
+          something that answers 403. The line in its place says what the
+          thread is, rather than leaving the screen ending in nothing.
+        */}
+        {partner?.official && partner.acceptsMessages === false ? (
+          <View style={styles.channelNote}>
+            <Text style={styles.channelNoteText}>{t('chat.channelOnly')}</Text>
+          </View>
+        ) : (
+          <ChatComposer
+            value={draft}
+            onChangeText={onChangeDraft}
+            placeholder={
+              correcting
+                ? t('chat.writeCorrection')
+                : items.length === 0 && partner
+                  ? t('chat.sayHello', { name: partner.displayName })
+                  : t('chat.writeMessage')
+            }
+            onSend={() => void send()}
+            hasAttachment={pendingMedia.length > 0}
+            busy={sendingMedia}
+            above={
+              <>
+                {/*
                 One shape for all three modes — reply, edit, correct. The label
                 says which; the line under it is the message it is about, cut
                 to one line because the field below already holds the text
                 being written.
               */}
-              {mode ? (
-                <View style={styles.modeBanner}>
-                  <View style={styles.modeText}>
-                    <Text style={styles.modeLabel} numberOfLines={1}>
-                      {mode.label}
-                    </Text>
-                    <Text style={styles.modePreview} numberOfLines={1}>
-                      {mode.preview}
-                    </Text>
+                {mode ? (
+                  <View style={styles.modeBanner}>
+                    <View style={styles.modeText}>
+                      <Text style={styles.modeLabel} numberOfLines={1}>
+                        {mode.label}
+                      </Text>
+                      <Text style={styles.modePreview} numberOfLines={1}>
+                        {mode.preview}
+                      </Text>
+                    </View>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('common.cancel')}
+                      hitSlop={8}
+                      onPress={mode.clear}
+                    >
+                      <Feather name="x" size={18} color={colors.textMuted} />
+                    </Pressable>
                   </View>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('common.cancel')}
-                    hitSlop={8}
-                    onPress={mode.clear}
-                  >
-                    <Feather name="x" size={18} color={colors.textMuted} />
-                  </Pressable>
-                </View>
-              ) : null}
-              {/* Above the row rather than inside it: the row holds the send
+                ) : null}
+                {/* Above the row rather than inside it: the row holds the send
                 button, and anything that grows in there competes for width with
                 the only control that sends the message. */}
-              <AttachmentPreviewRow
-                pending={pendingMedia}
-                onRemove={(index) =>
-                  setPendingMedia((items) => items.filter((_, at) => at !== index))
-                }
-              />
-            </>
-          }
-          leading={
-            recorder.isRecording ? (
-              <View style={styles.recording}>
-                <Text style={styles.recordingDot}>●</Text>
-                <Text style={styles.recordingTime}>
-                  {Math.floor(recorder.seconds / 60)}:
-                  {String(recorder.seconds % 60).padStart(2, '0')}
-                </Text>
-                <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
-                  <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
-                </Pressable>
-              </View>
-            ) : (
-              /*
+                <AttachmentPreviewRow
+                  pending={pendingMedia}
+                  onRemove={(index) =>
+                    setPendingMedia((items) => items.filter((_, at) => at !== index))
+                  }
+                />
+              </>
+            }
+            leading={
+              recorder.isRecording ? (
+                <View style={styles.recording}>
+                  <Text style={styles.recordingDot}>●</Text>
+                  <Text style={styles.recordingTime}>
+                    {Math.floor(recorder.seconds / 60)}:
+                    {String(recorder.seconds % 60).padStart(2, '0')}
+                  </Text>
+                  <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
+                    <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
+                  </Pressable>
+                </View>
+              ) : (
+                /*
                 Neither greyed nor disabled by the media lock any more: it
                 opens a menu, and the lock belongs to the rows inside that
                 carry bytes — which is where the sheet draws it, with the
                 number of messages still to come.
               */
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('composer.attachMenu')}
+                  onPress={() => void openAttachMenu()}
+                  disabled={
+                    sendingMedia ||
+                    pendingMedia.length >= MAX_ATTACHMENTS ||
+                    // A voice draft is waiting for the send button, and a note
+                    // travels alone. Send it or throw it away first.
+                    pendingMedia.some((item) => item.kind === 'audio')
+                  }
+                  hitSlop={8}
+                  style={styles.attach}
+                >
+                  <Feather name="plus" size={22} color={colors.textMuted} />
+                </Pressable>
+              )
+            }
+            idleAction={
+              /* A microphone when there is nothing to send, which is the gesture
+              people already expect from a chat app. */
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={t('composer.attachMenu')}
-                onPress={() => void openAttachMenu()}
-                disabled={
-                  sendingMedia ||
-                  pendingMedia.length >= MAX_ATTACHMENTS ||
-                  // A voice draft is waiting for the send button, and a note
-                  // travels alone. Send it or throw it away first.
-                  pendingMedia.some((item) => item.kind === 'audio')
-                }
-                hitSlop={8}
-                style={styles.attach}
+                accessibilityLabel={t('chat.voiceMessage')}
+                onPress={() => void toggleRecording()}
+                disabled={sendingMedia}
+                style={[
+                  styles.mic,
+                  recorder.isRecording && styles.recordButtonActive,
+                  sendingMedia && styles.micDisabled,
+                ]}
               >
-                <Feather name="plus" size={22} color={colors.textMuted} />
+                <Feather
+                  name={recorder.isRecording ? 'square' : 'mic'}
+                  size={20}
+                  color={recorder.isRecording ? colors.textInverse : colors.text}
+                />
               </Pressable>
-            )
-          }
-          idleAction={
-            /* A microphone when there is nothing to send, which is the gesture
-              people already expect from a chat app. */
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('chat.voiceMessage')}
-              onPress={() => void toggleRecording()}
-              disabled={sendingMedia}
-              style={[
-                styles.mic,
-                recorder.isRecording && styles.recordButtonActive,
-                sendingMedia && styles.micDisabled,
-              ]}
-            >
-              <Feather
-                name={recorder.isRecording ? 'square' : 'mic'}
-                size={20}
-                color={recorder.isRecording ? colors.textInverse : colors.text}
-              />
-            </Pressable>
-          }
-        />
+            }
+          />
+        )}
         <PhotoViewer
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
@@ -1859,6 +1871,8 @@ export default function ChatScreen() {
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   screen: { paddingHorizontal: 0 },
   avoid: { flex: 1 },
+  channelNote: { paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
+  channelNoteText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
   header: {
     alignItems: 'center',
     backgroundColor: colors.surface,

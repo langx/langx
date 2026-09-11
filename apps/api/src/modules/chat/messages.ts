@@ -23,6 +23,7 @@ import { ApiError } from '../../lib/ApiError'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
+import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { toMessageView, type MessageView } from './messageView'
@@ -122,9 +123,22 @@ export async function recordMessage(
   conversation: Conversation,
   message: Message,
 ): Promise<Conversation> {
-  await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
-
   const recipientId = conversation.participants.find((id) => id !== message.senderId)
+
+  /*
+   * A channel has nothing at the other end to read a reply. `@langx` welcomes
+   * and announces; there is no composer for it in the app, and this is the
+   * guard behind that — every message of every type lands here, so refusing
+   * once refuses all of them rather than one screen's worth.
+   *
+   * The official account writing *out* is unaffected: the recipient there is a
+   * person.
+   */
+  if (recipientId !== undefined && !acceptsMessages(recipientId)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
+  }
+
+  await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
   const bothSpoke = conversation.bothSpoke || message.senderId !== conversation.firstMessageBy
 
   const updated = await db.collection<Conversation>(COLLECTIONS.conversations).findOneAndUpdate(

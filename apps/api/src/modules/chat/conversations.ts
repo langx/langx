@@ -13,6 +13,7 @@ import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
+import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 
 export interface Conversation {
@@ -259,6 +260,13 @@ export async function startConversation(
   ])
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
   if (!recipient) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Recipient not found')
+
+  // A channel takes no messages, so it cannot be the start of a conversation
+  // either. In practice the welcome has already opened that thread, so this is
+  // the second lock rather than the first.
+  if (!acceptsMessages(recipient._id)) {
+    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
+  }
 
   const blocks = db.collection<{ blockerId: string; blockedId: string }>(COLLECTIONS.blocks)
   const blocked = await blocks.findOne({

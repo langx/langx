@@ -574,6 +574,7 @@ export const ptBR: Localized<EnMessages> = {
     lastSeenYears: { one: 'Visto há {count} ano', other: 'Visto há {count} anos' },
   },
   chat: {
+    channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
     sendingAttachment: 'Enviando…',
     title: 'Conversa',
     typing: 'digitando…',

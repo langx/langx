@@ -158,13 +158,22 @@ describe('the official accounts', () => {
       await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne(person('ada'))
     })
 
-    it('costs no initiation quota and pays no token', async () => {
-      const langxId = officialIds().get('langx')!
-      await startConversation(handle.db, 'ada', { toUserId: langxId, body: 'hello' })
+    /**
+     * Both official accounts are channels today, so this is where a message to
+     * one stops. `@langx` is one by design; `@copilot` is one until it opens.
+     */
+    it('is refused, and costs the sender nothing', async () => {
+      for (const name of ['langx', 'copilot'] as const) {
+        await expect(
+          startConversation(handle.db, 'ada', {
+            toUserId: officialIds().get(name)!,
+            body: 'hello',
+          }),
+        ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+      }
 
       const ada = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: 'ada' })
       expect(ada?.quota.initiations).toEqual([])
-      expect(ada?.stats.messagesSent).toBe(0)
       expect(await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments()).toBe(0)
     })
 

@@ -582,6 +582,7 @@ export const tr: Localized<EnMessages> = {
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
   },
   chat: {
+    channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',

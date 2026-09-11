@@ -344,9 +344,7 @@ export const tr: Localized<ServerMessages> = {
   },
   official: {
     welcome:
-      'LangX’e hoş geldin! 👋 Ben LangX asistanıyım. Keşfet’te bir partner bul, mesaj gönder, pratik yaptıkça jeton kazan.\n\nİstediğin zaman bana yazabilirsin: bir şeyin nasıl çalıştığını sor, birini bildir ya da bir hata veya fikrini anlat.',
-    copilotSoon:
-      'Copilot henüz burada değil — sohbet içinde pratik yapacağın partneri geliştiriyoruz. Bu hesap, geldiği gün onu bulabilesin diye açıldı.\n\nO zamana kadar @langx’e yaz, yardım edeyim.',
+      'LangX’e hoş geldin! 👋 Keşfet’te bir partner bul, mesaj gönder, pratik yaptıkça jeton kazan.\n\nLangX’le ilgili haberler bu hesaptan geliyor, takipte kal. LangX açık kaynak bir proje ve daha iyi olmasını sağlayan şey insanların bize söyledikleri — bozuk bir şey bulursan ya da bir fikrin varsa, Ayarlar → Hakkında → Geri bildirim doğrudan ekibe gidiyor.',
     assistantOffline:
       'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
     assistantLimit:

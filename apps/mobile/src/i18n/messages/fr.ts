@@ -582,6 +582,7 @@ export const fr: Localized<EnMessages> = {
     lastSeenYears: { one: 'Vu il y a {count} an', other: 'Vu il y a {count} ans' },
   },
   chat: {
+    channelOnly: 'Ce compte publie des nouveautés et des annonces. Tu ne peux pas y répondre.',
     sendingAttachment: 'Envoi…',
     title: 'Discussion',
     typing: 'écrit…',

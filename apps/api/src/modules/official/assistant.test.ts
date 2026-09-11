@@ -2,7 +2,12 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { MAX_MESSAGE_LENGTH, OFFICIAL_ASSISTANT } from '@langx/shared'
+import {
+  MAX_MESSAGE_LENGTH,
+  OFFICIAL_ASSISTANT,
+  OFFICIAL_WRITABLE,
+  PLAN_LIMITS,
+} from '@langx/shared'
 import { assistantCallsToday } from './assistantBudget'
 import { deliverOfficialMessage } from './deliver'
 import { connectToDatabase, type DbHandle } from '../../db/client'
@@ -135,13 +140,23 @@ describe('answering as an official account', () => {
     return rows.map((row) => row.body)
   }
 
+  /**
+   * `@copilot` ships closed — `OFFICIAL_WRITABLE.copilot` is `false`, so
+   * nobody can write to it and nothing behind it runs. This suite opens it,
+   * because "the infrastructure is ready" is a claim about what happens when
+   * somebody flips that boolean, and this is where that claim is checked.
+   */
+  const closed = OFFICIAL_WRITABLE.copilot
+
   beforeAll(async () => {
+    OFFICIAL_WRITABLE.copilot = true
     server = await MongoMemoryServer.create()
     handle = await connectToDatabase(server.getUri(), 'langx_official_assistant_test')
     await ensureIndexes(handle.db)
   })
 
   afterAll(async () => {
+    OFFICIAL_WRITABLE.copilot = closed
     await handle.close()
     await server.stop()
   })
@@ -164,26 +179,16 @@ describe('answering as an official account', () => {
     await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne(person(ADA, 'ada'))
   })
 
-  it('answers @copilot immediately, without asking the model', async () => {
-    await write(ADA, officialIds().get('copilot')!, 'when?')
-
-    const replies = await saidTo(ADA)
-    expect(replies).toHaveLength(1)
-    // Turkish, because that is Ada's native language.
-    expect(replies[0]).toContain('Copilot')
-    expect(assistant.requests).toHaveLength(0)
-  })
-
-  it('gives @langx the conversation, oldest first, with the roles the right way round', async () => {
-    const conversation = await write(ADA, officialIds().get('langx')!, 'how do tokens work?')
+  it('gives it the conversation, oldest first, with the roles the right way round', async () => {
+    const conversation = await write(ADA, officialIds().get('copilot')!, 'how do tokens work?')
 
     expect(assistant.requests).toHaveLength(1)
     const request = assistant.requests[0]!
     expect(request.history).toEqual([{ role: 'user', text: 'how do tokens work?' }])
-    // The numbers come from the config, so a changed limit changes the prompt.
-    expect(request.system).toContain('5 new conversations a day')
+    // It no longer recites the plan limits — see systemPrompt.test.ts — but it
+    // still knows where to send anything it cannot answer.
     expect(request.system).toContain(SUPPORT)
-    expect(request.tools.map((t) => t.name)).toEqual(['report_user', 'submit_feedback'])
+    expect(request.tools.map((t) => t.name)).toEqual(['submit_feedback'])
 
     expect(await saidTo(ADA)).toEqual(['the answer'])
     expect(conversation.participants).toContain(ADA)
@@ -196,7 +201,7 @@ describe('answering as an official account', () => {
     ;(app as { assistant: AssistantProvider | null }).assistant = null
 
     const { conversation, message } = await startConversation(handle.db, ADA, {
-      toUserId: officialIds().get('langx')!,
+      toUserId: officialIds().get('copilot')!,
       body: 'hello?',
     })
     await respondAsOfficial(app, conversation, message)
@@ -208,7 +213,7 @@ describe('answering as an official account', () => {
 
   it('words a refusal rather than saying nothing', async () => {
     assistant.answer = null
-    await write(ADA, officialIds().get('langx')!, 'do something forbidden')
+    await write(ADA, officialIds().get('copilot')!, 'do something forbidden')
     expect(await saidTo(ADA)).toHaveLength(1)
   })
 
@@ -218,7 +223,7 @@ describe('answering as an official account', () => {
    */
   it('cuts older messages down but never the question it is answering', async () => {
     const long = 'x'.repeat(MAX_MESSAGE_LENGTH)
-    const langxId = officialIds().get('langx')!
+    const langxId = officialIds().get('copilot')!
     await write(ADA, langxId, long)
     assistant.requests = []
 
@@ -233,7 +238,7 @@ describe('answering as an official account', () => {
   })
 
   it('says nothing to a photo', async () => {
-    const langxId = officialIds().get('langx')!
+    const langxId = officialIds().get('copilot')!
     const { conversation, message } = await startConversation(handle.db, ADA, {
       toUserId: langxId,
       body: 'look',
@@ -244,36 +249,25 @@ describe('answering as an official account', () => {
     expect(assistant.requests).toHaveLength(0)
   })
 
-  describe('the tools', () => {
+  describe('the one tool', () => {
     beforeEach(async () => {
       await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne(person(BO, 'bo'))
     })
 
+    /**
+     * Reporting a person is not something it can do, deliberately: that is a
+     * moderation decision reached from the profile, and a model filing them is
+     * a queue a human has to work through.
+     */
+    it('cannot report anybody', () => {
+      expect(assistant.requests).toHaveLength(0)
+    })
+
     async function toolRun(name: string, input: unknown): Promise<string> {
-      await write(ADA, officialIds().get('langx')!, 'hello')
+      await write(ADA, officialIds().get('copilot')!, 'hello')
       const tool = assistant.requests[0]!.tools.find((t) => t.name === name)!
       return tool.run(input)
     }
-
-    it('files a report as the person writing, never as anyone else', async () => {
-      const result = await toolRun('report_user', { handle: 'bo', reason: 'spam' })
-
-      expect(result).toContain('@bo')
-      const report = await handle.db
-        .collection<{ reporterId: string; reportedId: string; reason: string }>(COLLECTIONS.reports)
-        .findOne({})
-      expect(report).toMatchObject({ reporterId: ADA, reportedId: BO, reason: 'spam' })
-    })
-
-    it('refuses a self-report and an official target', async () => {
-      await toolRun('report_user', { handle: 'ada', reason: 'spam' })
-      expect(await handle.db.collection(COLLECTIONS.reports).countDocuments()).toBe(0)
-
-      await write(ADA, officialIds().get('copilot')!, 'x')
-      const tool = assistant.requests[0]!.tools.find((t) => t.name === 'report_user')!
-      expect(await tool.run({ handle: 'langx', reason: 'spam' })).toContain('official')
-      expect(await handle.db.collection(COLLECTIONS.reports).countDocuments()).toBe(0)
-    })
 
     it('sends feedback to the support mailbox', async () => {
       await toolRun('submit_feedback', {
@@ -290,12 +284,12 @@ describe('answering as an official account', () => {
    * and on announcement day, everybody's at once.
    */
   it('does not spend the allowance on messages the person did not ask for', async () => {
-    const langxId = officialIds().get('langx')!
+    const langxId = officialIds().get('copilot')!
     const conversation = await write(ADA, langxId, 'first')
     assistant.requests = []
 
     // What the announcement script sends, into the same thread.
-    for (let i = 0; i < OFFICIAL_ASSISTANT.repliesPerDay; i += 1) {
+    for (let i = 0; i < PLAN_LIMITS.free.assistantRepliesPerDay; i += 1) {
       await deliverOfficialMessage(handle.db, {
         fromHandle: 'langx',
         toUserId: ADA,
@@ -313,6 +307,42 @@ describe('answering as an official account', () => {
   })
 
   /**
+   * The allowance is the sender's tier, not a flat number: every reply is a
+   * paid model call, and an account paying nothing and an account paying for a
+   * year should not get the same one.
+   */
+  it('gives a paying account more replies than a free one', async () => {
+    const langxId = officialIds().get('copilot')!
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: ADA }, { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } })
+    const conversation = await write(ADA, langxId, 'first')
+
+    // Everything a free account would be allowed, and then one more.
+    const now = new Date()
+    await handle.db.collection<Message>(COLLECTIONS.messages).insertMany(
+      Array.from({ length: PLAN_LIMITS.free.assistantRepliesPerDay }, () => ({
+        _id: new ObjectId(),
+        conversationId: conversation._id,
+        senderId: langxId,
+        type: 'text' as const,
+        body: 'earlier',
+        createdAt: now,
+      })),
+    )
+    assistant.requests = []
+
+    const { conversation: same, message } = await sendAgain(ADA, langxId, 'one more')
+    await respondAsOfficial(appStub(), same, message)
+
+    // A free account would have been refused here; this one is on Fluent.
+    expect(PLAN_LIMITS.pro.assistantRepliesPerDay).toBeGreaterThan(
+      PLAN_LIMITS.free.assistantRepliesPerDay,
+    )
+    expect(assistant.requests).toHaveLength(1)
+  })
+
+  /**
    * The ceiling that bounds the bill rather than one conversation. Worded the
    * same as the per-person one on purpose — whose ceiling it was is not the
    * reader's problem.
@@ -324,7 +354,7 @@ describe('answering as an official account', () => {
       createdAt: new Date(),
     })
 
-    await write(ADA, officialIds().get('langx')!, 'hello?')
+    await write(ADA, officialIds().get('copilot')!, 'hello?')
 
     expect(assistant.requests).toHaveLength(0)
     const replies = await saidTo(ADA)
@@ -348,7 +378,7 @@ describe('answering as an official account', () => {
   })
 
   it('stops answering once the daily ceiling is reached', async () => {
-    const langxId = officialIds().get('langx')!
+    const langxId = officialIds().get('copilot')!
     const conversation = await write(ADA, langxId, 'first')
 
     // Everything @langx would have said today, straight into the collection —
@@ -356,7 +386,7 @@ describe('answering as an official account', () => {
     // prove that would be thirty fake replies for the same assertion.
     const now = new Date()
     await handle.db.collection<Message>(COLLECTIONS.messages).insertMany(
-      Array.from({ length: OFFICIAL_ASSISTANT.repliesPerDay }, () => ({
+      Array.from({ length: PLAN_LIMITS.free.assistantRepliesPerDay }, () => ({
         _id: new ObjectId(),
         conversationId: conversation._id,
         senderId: langxId,

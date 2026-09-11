@@ -361,9 +361,7 @@ export const es: Localized<ServerMessages> = {
   },
   official: {
     welcome:
-      '¡Te damos la bienvenida a LangX! 👋 Soy el asistente de LangX. Busca a alguien en Descubrir, envía un mensaje y gana tokens mientras practicas.\n\nPuedes escribirme cuando quieras: pregúntame cómo funciona algo, denuncia a alguien o cuéntame un error o una idea.',
-    copilotSoon:
-      'Copilot todavía no está aquí: es el compañero de práctica dentro del chat que estamos creando. Esta cuenta existe para que lo encuentres el día que llegue.\n\nMientras tanto, escribe a @langx y te ayudo.',
+      '¡Te damos la bienvenida a LangX! 👋 Busca a alguien en Descubrir, envíale un mensaje y gana tokens mientras practicas.\n\nPor esta cuenta llegan las novedades de LangX, así que échale un ojo. LangX es de código abierto y mejora con lo que nos cuenta la gente: si algo falla o tienes una idea, Ajustes → Información → Comentarios llega directo al equipo.',
     assistantOffline:
       'Ahora mismo no puedo responder mensajes. Si puede esperar, inténtalo más tarde; si no, escribe a {email} y lo leerá una persona.',
     assistantLimit:

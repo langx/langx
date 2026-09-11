@@ -89,6 +89,12 @@ export interface PublicProfileDto {
   follow: FollowState
   /** @langx or @copilot: draws the tick, and hides everything a program has no answer for. */
   official?: true
+  /**
+   * False on an official account that is a channel. The chat screen draws no
+   * composer for one — the API refuses the message, so a box to type in would
+   * be offering something that answers 403.
+   */
+  acceptsMessages?: boolean
 }
 
 export interface DiscoveryItem {
