@@ -119,6 +119,18 @@ export const tr: Localized<EnMessages> = {
     discoverCardTitle: 'Buradan başla',
     discoverCardBody:
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
+    tabChatsTitle: 'Cevaplar buraya düşer',
+    tabChatsBody:
+      'Başlattığın her sohbet burada; hâlâ senden yanıt bekleyenler ayrı bir sekmede durur.',
+    tabChatsGuestBody:
+      'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
+    tabFeedTitle: 'Herkese sor',
+    tabFeedBody:
+      'Emin olmadığın bir cümleyi paylaş, biri düzeltsin. Başkasının cümlesini düzeltmek de burada geçirebileceğin en faydalı dakika.',
+    tabMeTitle: 'Senin alanın',
+    tabMeBody: 'Profilin, jetonların ve birazdan başlatacağın seri.',
+    sayHi: '{name} kişisine selam ver',
+    notNow: 'Şimdi değil',
   },
   theme: {
     section: 'Görünüm',

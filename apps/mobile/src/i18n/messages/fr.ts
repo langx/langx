@@ -109,6 +109,18 @@ export const fr: Localized<EnMessages> = {
     discoverCardTitle: 'Commence ici',
     discoverCardBody:
       'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
+    tabChatsTitle: 'Là où arrivent les réponses',
+    tabChatsBody:
+      'Chaque conversation que tu commences vit ici, et celles qui attendent encore ta réponse restent à part.',
+    tabChatsGuestBody:
+      'Les conversations vivent ici. Tu peux lire et explorer sans compte — écrire est la seule chose qui en demande un.',
+    tabFeedTitle: 'Demande à la communauté',
+    tabFeedBody:
+      'Publie une phrase dont tu doutes et quelqu’un la corrigera. En corriger une toi-même est la minute la plus utile que tu puisses passer ici.',
+    tabMeTitle: 'Chez toi',
+    tabMeBody: 'Ton profil, tes jetons et la série que tu vas commencer.',
+    sayHi: 'Dis bonjour à {name}',
+    notNow: 'Pas maintenant',
   },
   theme: {
     section: 'Apparence',

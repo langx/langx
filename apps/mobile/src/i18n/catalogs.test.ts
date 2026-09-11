@@ -14,7 +14,7 @@ import {
 } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
-import { TOUR_TARGETS } from '../lib/tour'
+import { TOUR_TARGETS, tourBodyKey } from '../lib/tour'
 import {
   accountAgeLabel,
   genderLabel,
@@ -203,10 +203,12 @@ describe('dynamically built keys', () => {
    * added by adding a target — so without this, a new step ships as a bubble
    * with a dotted path where its sentence should be.
    */
-  it('resolves a title and a body for every tour step', () => {
+  it('resolves a title and a body for every tour step, guest or not', () => {
     for (const target of TOUR_TARGETS) {
       expect(t(`tour.${target}Title` as never), target).not.toContain('tour.')
-      expect(t(`tour.${target}Body` as never), target).not.toContain('tour.')
+      for (const guest of [false, true]) {
+        expect(t(tourBodyKey(target, { guest }) as never), target).not.toContain('tour.')
+      }
     }
   })
 

@@ -31,10 +31,21 @@ export const TOUR_TARGETS = [
   'discoverPair',
   'discoverSorts',
   'discoverFilters',
+  'tabChats',
+  'tabFeed',
+  'tabMe',
   'discoverCard',
 ] as const
 
 export type TourTargetId = (typeof TOUR_TARGETS)[number]
+
+/**
+ * Targets whose sentence is different for a guest.
+ *
+ * Only Chats today, and it has to be: a guest cannot have a conversation, so
+ * the account's wording describes a list that can only be empty.
+ */
+export const TOUR_GUEST_BODIES: readonly TourTargetId[] = ['tabChats']
 
 export interface TourStep {
   target: TourTargetId
@@ -43,11 +54,30 @@ export interface TourStep {
 /**
  * The run, in order.
  *
- * Three pieces of chrome and then a card, which is the order a reader's eye
- * takes the screen in — and it ends on the card because the card is the only
- * one of the four that leads anywhere.
+ * The screen's own chrome first, in the order a reader's eye takes it; then
+ * the three tabs they have not opened yet; then the card, last, because it is
+ * the only step that leads anywhere and the tour should end on the thing to
+ * actually do.
+ *
+ * The tab steps light the **tab-bar icons** rather than navigating to each
+ * tab. Navigating mid-run means unmounting the current target, waiting for the
+ * next screen to lay out and measuring again — a race with no good failure
+ * mode — and the bar says everything these three steps have to say.
  */
 export const TOUR_STEPS: readonly TourStep[] = TOUR_TARGETS.map((target) => ({ target }))
+
+/**
+ * Which message words a step, given who is reading.
+ *
+ * A function rather than a template at the call site so that the guest variant
+ * is a fact with a test, and so `catalogs.test.ts` can walk every key the host
+ * can possibly ask for.
+ */
+export function tourBodyKey(target: TourTargetId, options: { guest: boolean }): string {
+  return options.guest && TOUR_GUEST_BODIES.includes(target)
+    ? `tour.${target}GuestBody`
+    : `tour.${target}Body`
+}
 
 export interface TourState {
   steps: readonly TourStep[]
@@ -168,6 +198,33 @@ export function measureTourTarget(id: TourTargetId): Promise<TourRect | null> {
   return measure ? measure() : Promise.resolve(null)
 }
 
+/**
+ * The action the last step offers, when the screen has one to offer.
+ *
+ * Registered by whoever owns the target — Discovery hands over its first card —
+ * because only that screen knows whose profile it is. A run with nothing
+ * registered simply has no button, which is what a list that emptied while the
+ * tour was playing leaves behind.
+ */
+export interface TourCta {
+  /** Shown in the button, so the offer names a person rather than a noun. */
+  name: string
+  run: () => void
+}
+
+let cta: TourCta | null = null
+
+export function registerTourCta(next: TourCta): () => void {
+  cta = next
+  return () => {
+    if (cta === next) cta = null
+  }
+}
+
+export function tourCta(): TourCta | null {
+  return cta
+}
+
 export function setTourState(next: TourState | null): void {
   open = next
   publish()
@@ -180,6 +237,7 @@ export function tourState(): TourState | null {
 /** Test seam: drops the run and every registration. */
 export function resetTourForTest(): void {
   open = null
+  cta = null
   listeners.clear()
   targets.clear()
 }

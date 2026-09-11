@@ -136,6 +136,18 @@ export const en = {
     discoverCardTitle: 'Start here',
     discoverCardBody:
       'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
+    tabChatsTitle: 'Where replies land',
+    tabChatsBody:
+      'Every conversation you start lives here, with the ones still waiting on you kept separate.',
+    tabChatsGuestBody:
+      'Conversations live here. You can read and browse without an account — messaging is the one thing that needs one.',
+    tabFeedTitle: 'Ask the room',
+    tabFeedBody:
+      'Post a sentence you are unsure of and someone will fix it. Correcting one yourself is the most useful minute you can spend here.',
+    tabMeTitle: 'Yours',
+    tabMeBody: 'Your profile, your tokens and the streak you are about to start.',
+    sayHi: 'Say hi to {name}',
+    notNow: 'Not now',
   },
   theme: {
     section: 'Appearance',

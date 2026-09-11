@@ -23,6 +23,8 @@ import {
   resolveFrom,
   setTourState,
   subscribeToTour,
+  tourBodyKey,
+  tourCta,
   type TourRect,
   type TourState,
 } from '../lib/tour'
@@ -58,18 +60,24 @@ export function TourHost() {
   const step = state ? currentStep(state) : undefined
   const target = step?.target
 
-  const finish = useCallback((reason: 'completed' | 'skipped', at: TourState) => {
-    const shown = currentStep(at)
-    track(
-      reason === 'completed'
-        ? { name: 'tour_completed', properties: { is_guest: at.guest } }
-        : {
-            name: 'tour_skipped',
-            properties: { step: shown?.target ?? 'discoverPair', index: at.index },
-          },
-    )
-    setTourState(null)
-  }, [])
+  const finish = useCallback(
+    (reason: 'completed' | 'skipped', at: TourState, openedProfile = false) => {
+      const shown = currentStep(at)
+      track(
+        reason === 'completed'
+          ? {
+              name: 'tour_completed',
+              properties: { is_guest: at.guest, opened_profile: openedProfile },
+            }
+          : {
+              name: 'tour_skipped',
+              properties: { step: shown?.target ?? 'discoverPair', index: at.index },
+            },
+      )
+      setTourState(null)
+    },
+    [],
+  )
 
   const goNext = useCallback(() => {
     if (!state) return
@@ -109,6 +117,13 @@ export function TourHost() {
   const layout = anchor ? tourLayout({ anchor, screen, insets }) : null
   const { current, total } = progress(state)
   const last = isLastStep(state)
+  /*
+   * The offer only stands on the last step, and only while the screen still
+   * has something to offer. Everything before it is being explained, not
+   * chosen between, and two committing buttons in one run would make the tour
+   * a sequence of decisions.
+   */
+  const cta = last ? tourCta() : null
 
   return (
     <Modal
@@ -177,8 +192,8 @@ export function TourHost() {
               showsVerticalScrollIndicator={false}
             >
               <Text style={styles.counter}>{t('tour.progress', { current, total })}</Text>
-              <Text style={styles.title}>{t(`tour.${target}Title` as MessageKey)}</Text>
-              <Text style={styles.body}>{t(`tour.${target}Body` as MessageKey)}</Text>
+              <Text style={styles.title}>{t(`tour.${step.target}Title` as MessageKey)}</Text>
+              <Text style={styles.body}>{t(tourBodyKey(step.target, state) as MessageKey)}</Text>
               <View style={styles.actions}>
                 <Pressable
                   accessibilityRole="button"
@@ -186,11 +201,24 @@ export function TourHost() {
                   hitSlop={12}
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
-                  <Text style={styles.skip}>{t('tour.skip')}</Text>
+                  <Text style={styles.skip}>{cta ? t('tour.notNow') : t('tour.skip')}</Text>
                 </Pressable>
                 <Button
-                  label={last ? t('tour.done') : t('tour.next')}
-                  onPress={goNext}
+                  label={
+                    cta
+                      ? t('tour.sayHi', { name: cta.name })
+                      : last
+                        ? t('tour.done')
+                        : t('tour.next')
+                  }
+                  onPress={() => {
+                    if (!cta) return goNext()
+                    // Closed before the profile opens, not after: the screen
+                    // under the overlay is about to be replaced, and a Modal
+                    // still up over it is a dim nobody can dismiss.
+                    finish('completed', state, true)
+                    cta.run()
+                  }}
                   size="small"
                   // `Button` spans its column by default, which is wrong in a
                   // row — its own doc comment says to pass this here.

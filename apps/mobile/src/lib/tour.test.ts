@@ -15,6 +15,10 @@ import {
   stepsFor,
   subscribeToTour,
   setTourState,
+  TOUR_GUEST_BODIES,
+  tourBodyKey,
+  tourCta,
+  registerTourCta,
   type TourState,
 } from './tour'
 
@@ -35,6 +39,41 @@ describe('the step list', () => {
 
   it('carries the guest flag on the state, not just on the call', () => {
     expect(startTour({ guest: true }).guest).toBe(true)
+  })
+})
+
+describe('wording a step', () => {
+  it('gives an account the plain body for every target', () => {
+    for (const target of TOUR_TARGETS) {
+      expect(tourBodyKey(target, { guest: false })).toBe(`tour.${target}Body`)
+    }
+  })
+
+  /** Only the targets that say so — a guest reads the same sentence elsewhere. */
+  it('gives a guest its own body only where one is declared', () => {
+    for (const target of TOUR_TARGETS) {
+      const expected = TOUR_GUEST_BODIES.includes(target)
+        ? `tour.${target}GuestBody`
+        : `tour.${target}Body`
+      expect(tourBodyKey(target, { guest: true })).toBe(expected)
+    }
+  })
+})
+
+describe('the offer on the last step', () => {
+  it('is whatever registered last, and is gone once unregistered', () => {
+    const run = (): void => undefined
+    const unregister = registerTourCta({ name: 'Anna', run })
+    expect(tourCta()?.name).toBe('Anna')
+    unregister()
+    expect(tourCta()).toBeNull()
+  })
+
+  it('does not let a stale unregister drop the current offer', () => {
+    const unregisterFirst = registerTourCta({ name: 'Anna', run: () => undefined })
+    registerTourCta({ name: 'Olga', run: () => undefined })
+    unregisterFirst()
+    expect(tourCta()?.name).toBe('Olga')
   })
 })
 

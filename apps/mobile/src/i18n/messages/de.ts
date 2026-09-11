@@ -108,6 +108,18 @@ export const de: Localized<EnMessages> = {
     discoverCardTitle: 'Fang hier an',
     discoverCardBody:
       'Öffne jemanden, um das Profil zu lesen. Zuerst Hallo zu sagen, so beginnt fast jeder Austausch auf LangX.',
+    tabChatsTitle: 'Wo Antworten ankommen',
+    tabChatsBody:
+      'Jedes Gespräch, das du beginnst, lebt hier — und wer noch auf dich wartet, steht separat.',
+    tabChatsGuestBody:
+      'Gespräche liegen hier. Lesen und stöbern geht ohne Konto — nur Schreiben braucht eines.',
+    tabFeedTitle: 'Frag die Runde',
+    tabFeedBody:
+      'Poste einen Satz, bei dem du unsicher bist, und jemand korrigiert ihn. Selbst einen zu korrigieren ist die nützlichste Minute hier.',
+    tabMeTitle: 'Deins',
+    tabMeBody: 'Dein Profil, deine Token und die Serie, die du gleich startest.',
+    sayHi: 'Sag {name} Hallo',
+    notNow: 'Jetzt nicht',
   },
   theme: {
     section: 'Darstellung',

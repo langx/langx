@@ -104,6 +104,18 @@ export const ptBR: Localized<EnMessages> = {
     discoverCardTitle: 'Comece aqui',
     discoverCardBody:
       'Abra qualquer pessoa para ler o perfil. Dizer oi primeiro é como quase toda troca no LangX começa.',
+    tabChatsTitle: 'Onde as respostas chegam',
+    tabChatsBody:
+      'Toda conversa que você começa fica aqui, e quem ainda espera por você fica em uma lista à parte.',
+    tabChatsGuestBody:
+      'As conversas ficam aqui. Dá para olhar e ler sem conta — escrever é a única coisa que precisa de uma.',
+    tabFeedTitle: 'Pergunte para todo mundo',
+    tabFeedBody:
+      'Publique uma frase da qual você não tem certeza e alguém corrige. Corrigir a de outra pessoa é o minuto mais útil que você passa aqui.',
+    tabMeTitle: 'O seu canto',
+    tabMeBody: 'Seu perfil, seus tokens e a sequência que você está prestes a começar.',
+    sayHi: 'Diga oi para {name}',
+    notNow: 'Agora não',
   },
   theme: {
     section: 'Aparência',
