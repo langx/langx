@@ -777,10 +777,9 @@ language fit — finding somebody whose name you already know cannot depend on
 whether you are learnable to each other.
 
 **`GET /discovery/boosted`** is the strip above the list: the paying members
-inside exactly the same scope, in `DISCOVERY_BOOSTED_TIERS` order — Polyglot
-first, then Fluent — capped at `DISCOVERY_BOOSTED_LIMIT` with no cursor. The
-client draws it on the **`recommended` sort only**: the other two are a
-question the reader asked — who is active, who is near me — and a strip
+inside exactly the same scope, capped at `DISCOVERY_BOOSTED_LIMIT` with no
+cursor. The client draws it on the **`recommended` sort only**: the other two
+are a question the reader asked — who is active, who is near me — and a strip
 ordered by somebody's subscription is not an answer to either. It
 shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
 filter are one definition; the sort, the cursor and the radius are accepted
@@ -790,6 +789,33 @@ half of `effectivePlanTier`), and `settings.boosted: false` opts out — an
 absent flag means on, so a first subscription boosts without a billing-side
 hook. Boosted people stay in the vertical list too: it is a second chance to
 be seen, not a promotion out of the feed.
+
+**The strip's order is three bands, not one sort** — `orderBoosted`.
+`DISCOVERY_BOOSTED_TIERS` first, Polyglot above Fluent, a hard band because
+the paywall sells that sentence and `rules.test.ts` pins the list it comes
+from. Then one coarse cut: seen within `DISCOVERY_BOOSTED_FRESH_MS`, or not.
+Then a rotation seeded on the viewer, the profile and the hour
+(`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id` as the last tiebreak.
+
+Rotation exists because of the arithmetic of the thing: mutual language fit
+cuts a viewer's boosted candidates down to a handful, and only the first two
+or three cards are on screen. A total order over that is a permanent one — the
+same profile led every impression for as long as it kept opening the app, and
+where the cap bit it dropped the _least_ recently active, so the subscribers
+closest to leaving got nothing. That is why ordering by `stats.lastActiveAt`
+outright is gone, replaced by the single weekly cut. The viewer is in the seed
+rather than the hour alone because one person sees very few hours in a day:
+with time alone a subscriber would wait a week to lead once.
+
+It is not a `$sort` stage because the rotation hashes three strings together
+and MQL has no string hash. So the ordering runs in Node, and the pipeline's
+`$sort` and `$limit` change jobs: they are now the **truncation rule**, tier
+first so a ceiling can never drop a Polyglot for a Fluent, limiting to
+`DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win a slot — with the
+strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering. There is deliberately
+no "online now" band: the strip's `isOnline` already has to respect
+`hidesOnlineStatus`, and a third band would mean a second copy of that rule,
+where a wrong copy leaks exactly what the setting hides.
 
 **`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot

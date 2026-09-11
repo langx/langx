@@ -89,6 +89,9 @@ describe('every event survives the sanitizer', () => {
       },
     },
     { name: 'review_prompted', properties: { trigger: 'correction' } },
+    { name: 'boosted_strip_shown', properties: { count: 4 } },
+    { name: 'boosted_strip_tapped', properties: { slot: 0, tier: 'pro_plus' } },
+    { name: 'discovery_card_tapped', properties: { slot: 17 } },
   ]
 
   for (const event of events) {

@@ -29,12 +29,15 @@ export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
  * call site is one nobody would know to.
  *
  * The events trace the one funnel `docs/decisions.md` chose the tool for —
- * install → onboarding → first conversation → paywall — and stop there.
- * Screens are captured separately (`$screen`, see `useScreenTracking`), so a
- * step being *seen* needs no event of its own; these are the steps being
- * *done*. Purchases themselves arrive from RevenueCat's server-side
- * integration, so `purchase_finished` is the client's view of the store sheet,
- * not the source of revenue truth.
+ * install → onboarding → first conversation → paywall — and stop there, with
+ * one deliberate exception. The Boosted strip is a placement people pay for,
+ * and whether it delivers anything is not readable from a funnel that ends at
+ * the purchase; the three `discovery`/`boosted` events below are that
+ * exception, not the list opening up. Screens are captured separately
+ * (`$screen`, see `useScreenTracking`), so a step being *seen* needs no event
+ * of its own; these are the steps being *done*. Purchases themselves arrive
+ * from RevenueCat's server-side integration, so `purchase_finished` is the
+ * client's view of the store sheet, not the source of revenue truth.
  *
  * Property names are snake_case because that is what PostHog's own are, and a
  * dashboard reading `$screen_name` next to `learningLanguages` is a dashboard
@@ -135,6 +138,52 @@ export type AnalyticsEvent =
        */
       name: 'review_prompted'
       properties: { trigger: 'streakMilestone' | 'correction' }
+    }
+  | {
+      /**
+       * Discover was focused with a non-empty Boosted strip.
+       *
+       * The denominator, and the app's first high-frequency event — every
+       * other one here is a once-per-account milestone. It says the strip was
+       * in the list, not that pixels reached an eye: there is deliberately no
+       * viewability maths on a horizontal scroller of at most twelve cards.
+       *
+       * It re-fires on every refocus, which is what makes it comparable with
+       * `$screen` for the same route. So the denominator is strip *shows*, not
+       * tab visits.
+       */
+      name: 'boosted_strip_shown'
+      properties: { count: number }
+    }
+  | {
+      /**
+       * A Boosted card was tapped. `slot` is the zero-based position, so the
+       * click-through rate at slot *i* is this over `boosted_strip_shown`
+       * where `count > i`.
+       *
+       * Carries no identifier for the person in the card, and `tier` is the
+       * only thing it says about them. That is not squeamishness: an id of
+       * theirs sitting in thousands of other people's events would outlive
+       * their own account deletion, which `purgeExpiredAccounts` cannot reach.
+       * The price is that this measures placement, never one subscriber's
+       * delivery — that number belongs on the server, where it survives an
+       * analytics opt-out.
+       */
+      name: 'boosted_strip_tapped'
+      properties: { slot: number; tier: PaidPlanTier }
+    }
+  | {
+      /**
+       * A row in the discovery list below was tapped, `slot` zero-based.
+       *
+       * The baseline the strip is read against: "boosted slot 0 gets 4%" says
+       * nothing until an ordinary row's number sits next to it. Both are taken
+       * per Discover `$screen`, which is why neither needs a denominator event
+       * of its own. Unlike the strip's, this `slot` is unbounded — the list
+       * pages forever.
+       */
+      name: 'discovery_card_tapped'
+      properties: { slot: number }
     }
 
 export type AnalyticsEventName = AnalyticsEvent['name']

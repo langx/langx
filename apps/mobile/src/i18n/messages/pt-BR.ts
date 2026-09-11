@@ -553,7 +553,7 @@ export const ptBR: Localized<EnMessages> = {
     boostedWhat: 'O que é isso?',
     boostedExplainTitle: 'Perfis em destaque',
     boostedExplainBody:
-      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
+      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. A ordem gira ao longo do dia, então todo mundo passa pela frente. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
     boostedSeePlans: 'Ver os planos',
     languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome de usuário',
