@@ -46,10 +46,27 @@ export default function SignIn() {
         setError(t(authErrorKey(signInError) ?? 'errors.signInFailed'))
         return
       }
-      // The root layout's Stack.Protected re-evaluates on the session change
-      // this triggers, but replacing the route now avoids a stale "sign in"
-      // screen flash while that catches up.
-      router.replace('/')
+      /*
+       * And then nothing. `Stack.Protected` re-evaluates on the session this
+       * just created: `(auth)` unmounts, taking this screen with it, and the
+       * navigator falls back to `index`, which redirects.
+       *
+       * There used to be a `router.replace('/')` here to cover the frame
+       * before that caught up. It was not covering a flash — it was racing
+       * one. The replace and the guard change land in the *same* commit, so
+       * react-native-screens is asked to move a screen out of the stack and
+       * rebuild the stack's contents at once, and on Android's Fabric that
+       * ends in `addViewAt: cannot insert view … View already has a parent`
+       * and a red screen on every single sign-in. iOS survived it, which is
+       * why it went unnoticed. Measured frame by frame with the call gone:
+       * form, one splash frame, Discovery — the flash it was written for is
+       * not there.
+       *
+       * The two screens that still replace after a session appears —
+       * `magic-link` and `verify-email` — are registered at the root rather
+       * than inside `(auth)`, so nothing unmounts them and the guard alone
+       * would leave the reader sitting on them. They keep their call.
+       */
     } finally {
       setLoading(false)
     }

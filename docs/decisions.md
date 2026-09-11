@@ -4188,3 +4188,41 @@ opening message (sent over REST before the sockets connected) arriving on a
 socket that had been waiting for the _next_ one; the waiters now say which
 event they mean. In the app it is a duplicate the client already discards by
 id, since the same echo reaches the sender's own socket by design.
+
+## Signing in navigated and reconfigured the navigator in the same breath
+
+Every sign-in on Android ended on a red screen. `SurfaceMountingManager` threw
+`addViewAt: cannot insert view [328] into parent [348]: View already has a
+parent [330]` — Fabric being asked to move a view it had not been told to
+remove first. Reloading recovered completely, which is the only reason it was
+survivable in development and the reason it went unnoticed for so long: iOS
+never reproduced it, and a reload made it look like a hiccup rather than a
+certainty.
+
+It was neither a stale dev client nor a library bug. Rebuilding the Android
+dev client from the current tree reproduced it exactly, and so did a tree with
+the overlay hosts removed, and one with every `Stack.Protected` guard pinned
+open — all three of the obvious suspects, all three wrong.
+
+The cause was one line in `sign-in.tsx`, and its own comment described the
+race without naming it: _"the root layout's Stack.Protected re-evaluates on
+the session change this triggers, but replacing the route now avoids a stale
+sign-in screen flash while that catches up"_. Both things happen in the **same
+commit**. The session appears, so `Stack.Protected` rebuilds the set of screens
+in the root navigator — and `router.replace('/')` asks that same navigator to
+move between two of them at the same moment. `react-native-screens` gets a
+reorder and a rebuild in one mounting transaction, and on Fabric that is the
+reparent above.
+
+The replace is not needed. `(auth)` unmounts when the guard flips, taking the
+sign-in screen with it, and the navigator falls back to `index`, which
+redirects. Measured frame by frame with the call removed: the form, one splash
+frame, then Discovery — there is no flash for it to have been covering. The
+same call in `SocialAuthButtons` goes for the same reason; it only ever renders
+inside `(auth)`.
+
+`magic-link` and `verify-email` keep theirs, and the difference is the whole
+rule: those two are registered at the **root**, outside both guards, so nothing
+unmounts them. The guard alone would leave the reader sitting on the screen
+they arrived through. **Replace after a session appears only from a screen the
+guard will not take away.**
