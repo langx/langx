@@ -5,7 +5,12 @@ import { useEffect } from 'react'
 import { AppState } from 'react-native'
 import type { Socket } from 'socket.io-client'
 import type { MeProfile, MessageDto } from '../api/queries'
-import { invalidateUnread, keys, markConversationRead } from '../api/queries'
+import {
+  invalidateNotifications,
+  invalidateUnread,
+  keys,
+  markConversationRead,
+} from '../api/queries'
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { track } from '../lib/analytics'
@@ -268,6 +273,30 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         // The badge cannot be recomputed from here, so it goes back to the
         // server — the same reason this event is invalidated, not patched.
         invalidateUnread(queryClient)
+      })
+
+      /**
+       * Somebody followed you, corrected your post, or liked it.
+       *
+       * Invalidated rather than patched — the opposite of `message:new` above,
+       * and for the opposite reason. The event says a row was written; building
+       * a first page out of its payload would be a second definition of the
+       * row's shape for this app to keep in step with the API, and the count is
+       * a server-side total the client cannot recompute anyway. That is
+       * `conversation:read`'s situation, not the chat fan-out's.
+       *
+       * The cost is bounded by `refetchType: 'active'`. The usual case is
+       * somebody on another tab, where only the bare count is mounted and this
+       * is one small request; the list refetches only while the inbox is open,
+       * which is both the rare case and the one where freshness is the point.
+       */
+      socket.on('notification:new', () => {
+        invalidateNotifications(queryClient)
+      })
+
+      /** The same account on another device has cleared the bell. */
+      socket.on('notification:read', () => {
+        invalidateNotifications(queryClient)
       })
     })()
 

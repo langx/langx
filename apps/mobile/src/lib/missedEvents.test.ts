@@ -37,6 +37,11 @@ describe('invalidateMissedEvents', () => {
       // covered here for a while by `['conversations', 'unread']` — which is
       // not a key anything writes: the filters are all/unreplied/archived.
       ['unread'],
+      // The bell, and the list behind it. A follow that lands while the phone
+      // is asleep is a push rather than a socket event, so this is the only
+      // thing that corrects the count on the way back.
+      ['notifications'],
+      ['notificationsUnread'],
       ['messages', 'c1'],
       ['messages', 'c1', 'around', 'm9'],
     ]

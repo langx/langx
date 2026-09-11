@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
 import type { ColorValue } from 'react-native'
-import { useUnreadTotal } from '../../../src/api/queries'
+import { useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { useTheme } from '../../../src/lib/theme'
 import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
@@ -41,6 +41,14 @@ export default function TabsLayout() {
   // Spread rather than passed as `undefined`: the option is typed as present
   // or absent, and an explicit `undefined` is neither.
   const badge = unreadBadge(unread.data)
+  /*
+   * The bell's number, on the tab as well as in the Feed header.
+   *
+   * Same guest gate and the same reason: a guest follows nobody and posts
+   * nothing, so the request could only ever answer zero — and would 401
+   * rather than answer it.
+   */
+  const feedBadge = unreadBadge(useNotificationUnread(!shouldGateGuest(session?.user)).data)
   /*
    * The icon follows the same number as the tab, from the same query — see
    * `syncIconBadge`. Whatever changes the total invalidates that query, so
@@ -108,6 +116,23 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.feed'),
           tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} />,
+          /*
+           * The notification centre lives behind the bell in this tab's
+           * header, so the tab is where its count has to show — somebody on
+           * Chats has no other way of learning there is anything to read.
+           * Spread rather than passed as `undefined`, like the badge above.
+           */
+          ...(feedBadge
+            ? {
+                tabBarBadge: feedBadge,
+                tabBarBadgeStyle: {
+                  backgroundColor: colors.danger,
+                  color: colors.textInverse,
+                  fontSize: 11,
+                  fontWeight: '700',
+                },
+              }
+            : {}),
         }}
       />
       <Tabs.Screen
