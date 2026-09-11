@@ -2549,6 +2549,35 @@ count, and it has no way to know: it hears nothing, and the total is the
 server's to give. Both emitters now also publish to the reader's own room, and
 the client invalidates the badge when it arrives.
 
+## The same number again: eighteen on the icon, three in the app
+
+The icon had two writers and the resyncs covered one gap each — a reconnect
+and a return from the background — so a screenshot arrived with `18` on the
+home screen and `3` on the Chats tab, taken in the same minute. Two separate
+faults, one symptom.
+
+**A push that lands on an app that is already open.** The server skips push for
+anyone holding a socket, so this one only happens when the socket is down while
+the app is in front — and then the push is the only notice of that message
+there is. The OS applies its `badge` (the server's count); the app draws the
+in-app banner and, until now, refetched nothing. The chat list, the open thread
+and `['unread']` kept what they held before the message existed, and nothing
+was left to correct them: the socket never dropped, so no reconnect fired, and
+the app never went to the background, so no resume fired. The received-listener
+now runs `invalidateMissedEvents`, which is what the rest of the app already
+does with a gap the socket left.
+
+**A deleted thread kept its unread count.** `countUnread` excluded the archive
+and blocked counterparts, and not `deletedBy` — which `listConversations` and
+the unread digest have always excluded. Deleting a thread with two unread
+messages left those two in the badge with nowhere to clear them: reading is
+what zeroes `unread`, and there is no thread left to open. The count is dropped
+at deletion now (every message in it is hidden for that user, so it counts
+nothing) and `countUnread` skips deleted threads besides, for the rows already
+written. Both halves are needed: `recordMessage` revives a deleted thread when
+the other person writes again, and without the first it would come back showing
+its old count over the one message the user can see.
+
 ## The root overlays carry a paint order, not just a place in the tree
 
 The first iOS device test sent a message while the app sat on another tab and
@@ -4286,3 +4315,49 @@ these accounts it now says who chose it and offers the alternative, and
 "Start exploring" walks past it. Settings → Account keeps the row for as long
 as it goes untaken, which is also the answer for the people who came back
 before any of this shipped.
+
+## The one dialog, and the flag that was written before it opened
+
+A phone arrived with no notifications at all, and its iOS Settings page showed
+no Notifications row either — Siri, Search, Cellular Data, and then nothing.
+That row is not something an app can lose: iOS adds it the first time
+an app actually requests authorisation, so its absence is proof the dialog had
+never opened, not that permission had been refused.
+
+Two things met to make that state permanent. The chats tab is the only asker
+after onboarding — `NotificationPriming` mounts on the two onboarding exits and
+`welcome-back` is shown once, so neither is reachable again — and the tab wrote
+`pushAsked` _before_ calling `requestPermissionsAsync`. That order is right for
+a ledger claim, where a notification nobody gets beats one that repeats every
+evening; here it is exactly backwards. Anything between the two — a throw
+inside the request, the app killed on that frame — records an answer to a
+dialog nobody saw, and there is no second asker and no row in Settings to put
+it right from the outside. The phone is silent for good, while the per-kind
+push switches in Settings go on reading as on.
+
+So the flag is written after the dialog returns, and `shouldAskForPush` decides
+when it is worth believing. **iOS cannot collect an answer without showing the
+dialog**, so a status still undetermined there means it never appeared,
+whatever the flag says — and asking again is the only thing that can be right.
+**Android can**: its dialog is dismissable and a dismissal leaves that same
+state, so the flag stands there, which is what keeps one dismissal from
+becoming a dialog on every visit to the tab. The asymmetry is the platforms',
+not a preference.
+
+**And Settings became the second asker**, because the first one cannot be
+enough. Every automatic ask happens once and passes: the priming card mounts
+on the two onboarding exits, `welcome-back` is shown once, and a phone that
+arrives at an existing account — a reinstall, a new handset — reaches neither,
+so the chats tab's single attempt is the whole of it. A phone that misses that
+has nowhere to complain, since iOS shows no Notifications row for an app that
+has never requested. The reinstall that was supposed to prove the flag theory
+is what settled this: it cleared the flag, and the phone was still silent.
+
+So the per-device switch tells the truth and does something about it. It read
+its own flag, which defaults to on, and so sat there promising notifications a
+phone had been granted nothing for; it now reads granted-and-not-silenced, and
+turning it on raises the dialog — ignoring `pushAsked` entirely, because
+somebody who taps a switch labelled "notifications on this phone" has asked in
+so many words. Where iOS will not raise it again the switch opens the Settings
+app instead, which is the only place left that can change the answer, and the
+screen re-reads the permission on focus for when they come back from it.

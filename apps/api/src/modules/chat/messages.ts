@@ -917,6 +917,14 @@ export async function markPendingDelivered(db: Db, userId: string): Promise<Deli
  * Blocked counterparts are left out for the same reason their threads are left
  * out of the list: a badge that counts a conversation nobody can open is a
  * number with nowhere to go.
+ *
+ * Deleted threads are left out for a sharper version of that reason. They are
+ * gone from every tab, the archive included, so their count is not merely
+ * pointing nowhere — it can never be cleared either: reading is what zeroes
+ * `unread`, and there is no thread left to open. One deletion of an unread
+ * conversation left a badge that outlived it, on the tab, on the icon and in
+ * every push's `badge`. `listConversations` and the unread digest have always
+ * excluded them; this was the one reader that did not.
  */
 export async function countUnread(db: Db, userId: string): Promise<number> {
   const hidden = await blockedUserIds(db, userId)
@@ -928,6 +936,7 @@ export async function countUnread(db: Db, userId: string): Promise<number> {
         $match: {
           participants: hidden.length > 0 ? { $eq: userId, $nin: hidden } : userId,
           [`archivedBy.${userId}`]: { $ne: true },
+          [`deletedBy.${userId}`]: { $ne: true },
           [unreadPath]: { $gt: 0 },
         },
       },

@@ -478,10 +478,16 @@ export async function deleteConversationForUser(
    * still listed, which is recoverable by deleting again; the other order
    * would hide a thread whose messages are still there and give no way back
    * to it.
+   *
+   * The unread counter goes with the flag. Every message this thread held is
+   * now hidden for this user, so there is nothing left for the count to be
+   * *of* — and leaving it standing is worse than untidy: `recordMessage`
+   * revives a deleted thread on the next message, and it would come back
+   * showing sixteen unread over the one message the user can actually see.
    */
   const updated = await db
     .collection<Conversation>(COLLECTIONS.conversations)
-    .updateOne({ _id }, { $set: { [`deletedBy.${userId}`]: true } })
+    .updateOne({ _id }, { $set: { [`deletedBy.${userId}`]: true, [`unread.${userId}`]: 0 } })
   if (updated.matchedCount === 0) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
   }

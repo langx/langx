@@ -340,6 +340,41 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(await unreadTotal(viewer)).toBe(0)
     })
 
+    it('forgets what a deleted thread was holding, and does not bring it back', async () => {
+      const viewer = await newUser('unread-deleted-viewer@example.com')
+      const gone = await newUser('unread-deleted-other@example.com')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+
+      const thread = (await startConversation(gone, viewer.userId, 'first'))._id
+      await sendTextMessage(handle.db, gone.userId, {
+        conversationId: thread,
+        body: 'second',
+        clientId: 'unread-deleted-1',
+      })
+      expect(await unreadTotal(viewer)).toBe(2)
+
+      const deleted = await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${thread}`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(deleted.statusCode, deleted.body).toBe(204)
+      /*
+       * The thread is gone from every tab, so nothing can ever mark it read —
+       * a count left standing here is one the badge can never lose.
+       */
+      expect(await unreadTotal(viewer)).toBe(0)
+
+      // A new message revives the thread, and it comes back holding only what
+      // arrived after the deletion: the two above are hidden for this viewer.
+      await sendTextMessage(handle.db, gone.userId, {
+        conversationId: thread,
+        body: 'are you there',
+        clientId: 'unread-deleted-2',
+      })
+      expect(await unreadTotal(viewer)).toBe(1)
+    })
+
     it('needs a session', async () => {
       expect((await app.inject({ method: 'GET', url: '/me/unread' })).statusCode).toBe(401)
     })
