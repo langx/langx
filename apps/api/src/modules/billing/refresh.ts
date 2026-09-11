@@ -60,6 +60,7 @@ async function applyEntitlement(
         willRenew: entitlement.willRenew,
         store: entitlement.store,
         updatedAt: now,
+        ...(entitlement.periodType ? { periodType: entitlement.periodType } : {}),
       }
     : { tier: 'free', willRenew: false, updatedAt: now }
   if (entitlement?.expiresAt) next.expiresAt = entitlement.expiresAt

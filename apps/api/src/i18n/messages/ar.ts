@@ -42,6 +42,10 @@ export const ar: Localized<ServerMessages> = {
       awayBody: 'أشخاص جدد للتدرب معهم.',
       awayLongTitle: 'نحن هنا متى أردت',
       awayLongBody: 'سلسلتك ورموزك في الانتظار.',
+      trialEndingTitle: 'تنتهي أسبوعك المجاني بعد يومين',
+      trialEndingBody: 'الاحتفاظ بها نقرة واحدة.',
+      winBackTitle: 'انتهت خطتك',
+      winBackBody: 'كل ما أنشأته ما زال هنا.',
       tokensWaitingTitle: { one: '{count} رمز في الانتظار', other: '{count} رمزاً في الانتظار' },
       tokensWaitingBody: 'افتح محفظتك.',
       inviteFriendTitle: 'ادعُ صديقاً',
@@ -262,6 +266,20 @@ export const ar: Localized<ServerMessages> = {
         'الشهر مدة طويلة. حسابك وسلسلتك ورموزك ما زالت هنا إن أردتها — وهذه آخر رسالة عن الأمر.',
 
       awayLongButton: 'افتح LangX',
+
+      trialEndingSubject: 'تنتهي أسبوعك المجاني بعد يومين',
+
+      trialEndingBody:
+        'بعدها يعود حسابك إلى الخطة المجانية. كل ما أنشأته يبقى، لكن الحدود تعود. الاحتفاظ بالخطة نقرة واحدة.',
+
+      trialEndingButton: 'احتفظ بخطتي',
+
+      winBackSubject: 'انتهت خطتك قبل أسبوع',
+
+      winBackBody:
+        'لم يُؤخذ منك شيء — سلسلتك ورموزك وكل ما كتبته في مكانه. ما توقف هو حدود الخطة المدفوعة.',
+
+      winBackButton: 'اطّلع على الخطط',
 
       tokensWaitingSubject: {
         one: 'لديك {count} رمز في الانتظار',

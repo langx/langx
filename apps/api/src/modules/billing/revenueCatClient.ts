@@ -1,4 +1,10 @@
-import { ENTITLEMENT_PRECEDENCE, ENTITLEMENT_TIERS, type PlanTier } from '@langx/shared'
+import {
+  ENTITLEMENT_PRECEDENCE,
+  ENTITLEMENT_TIERS,
+  periodTypeOf,
+  type BillingPeriodType,
+  type PlanTier,
+} from '@langx/shared'
 
 /**
  * One *active* entitlement, already resolved to the tier it grants.
@@ -13,6 +19,11 @@ export interface SubscriberEntitlement {
   expiresAt: Date | null
   productId: string
   store: string
+  /**
+   * Whether they are paying yet. `null` for a lifetime grant and for anything
+   * RevenueCat did not label — see `BillingPeriodType`.
+   */
+  periodType: BillingPeriodType | null
   /**
    * Whether it renews at `expiresAt`, or simply ends there.
    *
@@ -67,7 +78,10 @@ export interface RevenueCatClient {
 interface RevenueCatSubscriberResponse {
   subscriber: {
     entitlements: Record<string, { expires_date: string | null; product_identifier: string }>
-    subscriptions?: Record<string, { store?: string; unsubscribe_detected_at?: string | null }>
+    subscriptions?: Record<
+      string,
+      { store?: string; unsubscribe_detected_at?: string | null; period_type?: string | null }
+    >
     non_subscriptions?: Record<string, { store?: string }[]>
   }
 }
@@ -163,6 +177,11 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
           willRenew: lifetime
             ? false
             : willRenewProduct(body.subscriber, entitlement.product_identifier),
+          periodType: lifetime
+            ? null
+            : periodTypeOf(
+                body.subscriber.subscriptions?.[entitlement.product_identifier]?.period_type,
+              ),
         }
       }
       return null

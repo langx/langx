@@ -1,4 +1,5 @@
 import {
+  type BillingPeriodType,
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
@@ -153,8 +154,27 @@ export interface Profile {
     expiresAt?: Date
     willRenew?: boolean
     store?: string
+    /**
+     * Whether this is being paid for yet — `trial` while the free week runs.
+     *
+     * Absent on every entitlement written before 10 September 2026 and on
+     * every promotional grant, and absence means "not known" rather than
+     * "normal": a nudge about a trial ending must fire on a positive answer
+     * only, or it goes to subscribers.
+     */
+    periodType?: BillingPeriodType
     updatedAt: Date
   }
+  /**
+   * What was held before the account dropped to free, and when.
+   *
+   * Written only on the fall, and never cleared by a later upgrade — so a
+   * churn nudge can ask "did this person lose something, and how long ago"
+   * without the answer being erased by the resubscription it is trying to
+   * cause. `entitlement.updatedAt` cannot answer it: a plain
+   * `/billing/refresh` moves that.
+   */
+  churnedFrom?: { tier: PlanTier; at: Date }
   quota: { initiations: Date[]; translations: Date[]; media: Date[] }
   photos?: { url: string; createdAt: Date }[]
   /**

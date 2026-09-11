@@ -566,7 +566,14 @@ function monthLabel(locale: Locale, month: string): string {
 
 /** The six nudges `modules/notifications/promotions.ts` offers, in its order. */
 export type PromotionScenario =
-  'addPhoto' | 'streakBroke' | 'away' | 'awayLong' | 'tokensWaiting' | 'inviteFriend'
+  | 'addPhoto'
+  | 'streakBroke'
+  | 'away'
+  | 'awayLong'
+  | 'trialEnding'
+  | 'winBack'
+  | 'tokensWaiting'
+  | 'inviteFriend'
 
 /**
  * One nudge, worded from the catalogue rather than assembled here.
@@ -615,6 +622,8 @@ const PROMOTION_DESTINATIONS: Record<PromotionScenario, string> = {
   streakBroke: webUrl('/wallet'),
   away: webUrl('/discover'),
   awayLong: webUrl('/discover'),
+  trialEnding: webUrl('/settings/plan'),
+  winBack: webUrl('/settings/plan'),
   tokensWaiting: webUrl('/wallet'),
   inviteFriend: webUrl('/settings/share'),
 }

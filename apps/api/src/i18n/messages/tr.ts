@@ -30,6 +30,10 @@ export const tr: Localized<ServerMessages> = {
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
       awayLongBody: 'Serin ve token’ların bekliyor.',
+      trialEndingTitle: 'Ücretsiz haftan iki gün sonra bitiyor',
+      trialEndingBody: 'Sürdürmek tek dokunuş.',
+      winBackTitle: 'Planın bir hafta önce bitti',
+      winBackBody: 'Oluşturduğun her şey hâlâ burada.',
       tokensWaitingTitle: { one: '{count} token bekliyor', other: '{count} token bekliyor' },
       tokensWaitingBody: 'Cüzdanını aç.',
       inviteFriendTitle: 'Bir arkadaşını davet et',
@@ -252,6 +256,20 @@ export const tr: Localized<ServerMessages> = {
         'Bir ay uzun bir süre. Hesabın, serin ve token’ların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
 
       awayLongButton: 'LangX’i aç',
+
+      trialEndingSubject: 'Ücretsiz haftan iki gün sonra bitiyor',
+
+      trialEndingBody:
+        'Sonrasında hesabın ücretsiz plana döner. Oluşturduğun her şey kalır; sınırlar geri gelir. Devam ettirmek tek dokunuş.',
+
+      trialEndingButton: 'Planımı sürdür',
+
+      winBackSubject: 'Planın bir hafta önce sona erdi',
+
+      winBackBody:
+        'Hiçbir şey alınmadı — serin, token’ların ve yazdığın her şey bıraktığın yerde. Duran şey ücretli sınırlar.',
+
+      winBackButton: 'Planlara bak',
 
       tokensWaitingSubject: {
         one: '{count} token’ın bekliyor',

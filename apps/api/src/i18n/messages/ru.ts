@@ -48,6 +48,10 @@ export const ru: Localized<ServerMessages> = {
       awayBody: 'Новые собеседники.',
       awayLongTitle: 'Мы здесь, когда захотите',
       awayLongBody: 'Серия и токены ждут.',
+      trialEndingTitle: 'Бесплатная неделя заканчивается через два дня',
+      trialEndingBody: 'Продлить — одно касание.',
+      winBackTitle: 'Ваш тариф закончился',
+      winBackBody: 'Всё созданное на месте.',
       tokensWaitingTitle: { one: 'Ждёт {count} токен', other: 'Ждут {count} токенов' },
       tokensWaitingBody: 'Откройте кошелёк.',
       inviteFriendTitle: 'Пригласите знакомого',
@@ -277,6 +281,20 @@ export const ru: Localized<ServerMessages> = {
         'Месяц — долгий срок. Ваш аккаунт, серия и токены на месте, если они вам нужны, и это последнее, что мы об этом скажем.',
 
       awayLongButton: 'Открыть LangX',
+
+      trialEndingSubject: 'Бесплатная неделя заканчивается через два дня',
+
+      trialEndingBody:
+        'После этого аккаунт вернётся на бесплатный тариф. Всё созданное останется, но лимиты вернутся. Продлить — одно касание.',
+
+      trialEndingButton: 'Сохранить тариф',
+
+      winBackSubject: 'Ваш тариф закончился неделю назад',
+
+      winBackBody:
+        'Ничего не забрали — серия, токены и всё написанное на месте. Закончились только платные лимиты.',
+
+      winBackButton: 'Посмотреть тарифы',
 
       tokensWaitingSubject: { one: 'Вас ждёт {count} токен', other: 'Вас ждут {count} токенов' },
 

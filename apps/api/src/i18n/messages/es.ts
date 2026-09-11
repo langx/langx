@@ -36,6 +36,10 @@ export const es: Localized<ServerMessages> = {
       awayBody: 'Gente nueva con quien practicar.',
       awayLongTitle: 'Aquí cuando quieras',
       awayLongBody: 'Tu racha y tus tokens te esperan.',
+      trialEndingTitle: 'Tu semana gratis termina en dos días',
+      trialEndingBody: 'Mantenerlo es un toque.',
+      winBackTitle: 'Tu plan terminó',
+      winBackBody: 'Todo lo que creaste sigue aquí.',
       tokensWaitingTitle: { one: '{count} token esperando', other: '{count} tokens esperando' },
       tokensWaitingBody: 'Abre tu cartera.',
       inviteFriendTitle: 'Invita a alguien',
@@ -271,6 +275,20 @@ export const es: Localized<ServerMessages> = {
         'Un mes es mucho tiempo. Tu cuenta, tu racha y tus tokens siguen aquí si los quieres, y esto es lo último que diremos.',
 
       awayLongButton: 'Abrir LangX',
+
+      trialEndingSubject: 'Tu semana gratis termina en dos días',
+
+      trialEndingBody:
+        'Después tu cuenta vuelve al plan gratuito. Todo lo que creaste se queda; los límites regresan. Mantenerlo es un toque.',
+
+      trialEndingButton: 'Mantener mi plan',
+
+      winBackSubject: 'Tu plan terminó hace una semana',
+
+      winBackBody:
+        'No se quitó nada: tu racha, tus tokens y todo lo que escribiste siguen donde los dejaste. Lo que se detuvo son los límites de pago.',
+
+      winBackButton: 'Ver los planes',
 
       tokensWaitingSubject: {
         one: 'Tienes {count} token esperando',

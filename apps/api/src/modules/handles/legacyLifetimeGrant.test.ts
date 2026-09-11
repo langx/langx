@@ -42,6 +42,7 @@ class RecordingBilling implements RevenueCatClient {
       productId: `rc_promo_${id}_lifetime`,
       store: 'promotional',
       willRenew: false,
+      periodType: null,
     })
   }
 
@@ -225,6 +226,9 @@ describe('v1 loyalty lifetime grant', () => {
       willRenew: false,
       store: 'promotional',
     })
+    // A lifetime is in no period, and the cell is written only when
+    // RevenueCat names one.
+    expect(stored?.entitlement.periodType).toBeUndefined()
   })
 
   it('leaves the tier at free when no rung is earned', async () => {

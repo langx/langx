@@ -194,6 +194,8 @@ describe('createRevenueCatClient', () => {
       expiresAt: null,
       productId: 'rc_promo_pro_plus_lifetime',
       store: 'promotional',
+      // Nothing renews, so there is no period to be in.
+      periodType: null,
       willRenew: false,
     })
   })
