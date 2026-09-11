@@ -34,7 +34,11 @@ const ROWS = [
   'Invite a friend',
   'Scan a code',
   'Preview my profile',
+  'Day streak',
 ]
+
+/** The app's own words about what a token is, which the prompt repeats verbatim. */
+const TOKEN_PROMISE = 'There is no chain, no contract and no market.'
 
 const SECTIONS = ['Privacy', 'Notifications', 'Appearance', 'Account', 'Subscription', 'About']
 
@@ -55,6 +59,11 @@ describe('what the assistant says is in the app', () => {
   it.each(SECTIONS)('still has a %s section in Settings', (section) => {
     expect(prompt).toContain(section)
     expect(catalogue).toContain(`Section: '${section}'`)
+  })
+
+  it('repeats the app’s own sentence about tokens, word for word', () => {
+    expect(catalogue).toContain(TOKEN_PROMISE)
+    expect(prompt).toContain(TOKEN_PROMISE)
   })
 
   it('takes the gender cooldown from config rather than repeating it', () => {

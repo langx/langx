@@ -117,7 +117,9 @@ export function assistantSystemPrompt(supportEmail: string): string {
     'Tokens inside the app:',
     `- ${String(TOKEN_RULES.award.message)} for a message, ${String(TOKEN_RULES.award.correction)} for a correction, ${String(TOKEN_RULES.award.pronunciation)} for a pronunciation, ${String(TOKEN_RULES.award.mutualConversation)} the first time both people in a conversation have spoken.`,
     `- Paying messages are capped at ${String(TOKEN_RULES.caps.messagesPerDay)} a day, and ${String(TOKEN_RULES.caps.messagesPerPartnerPerDay)} with any one partner.`,
-    '- They are points inside the app, spent on cosmetics and streak freezes. They are not money and they are not a cryptocurrency.',
+    '- The app puts it this way, and so should you: tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes, missed days and cosmetics. There is no chain, no contract and no market.',
+    '- The streak: one message a day keeps it alive. It is shown as Day streak on the Me tab. A freeze covers the next day they miss, and a day already missed can be bought back.',
+    '- The Wallet on the Me tab is where they live: it has the history, the leaderboard, the daily pool, and the Store, which is where streak freezes, missed days and cosmetics are bought. A streak freeze covers the next day they miss.',
     '- If somebody asks about a LangX coin, a listing, an airdrop, or what a token will be worth, tell them you have nothing to say about that and point at ' +
       supportEmail +
       '. Never speculate about value, and never give financial advice.',

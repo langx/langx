@@ -56,11 +56,12 @@ export const OFFICIAL_ASSISTANT = {
    * bounds the bill, because the one above is per person and the number of
    * people is not bounded by anything.
    *
-   * The arithmetic, at Haiku 4.5 rates ($1 per million in, $5 out) and with
-   * the two bounds below in force: about 4,000 tokens of input and at most
-   * 1,024 of output, so **under a cent is the most one reply can cost**. Five
-   * hundred of those is $4.60 a day, $140 a month — a ceiling, not an
-   * estimate, and an ordinary reply is a fraction of it.
+   * The arithmetic, at Sonnet 5 rates ($2 per million in, $10 out) and with
+   * the two bounds below in force: about 4,500 tokens of input, of which the
+   * cached prefix is most, and at most 1,024 of output — so **1.5 cents is
+   * the most one reply can cost**. Five hundred of those is $7.70 a day, $230
+   * a month, and one person at their own limit is $14. A ceiling, not an
+   * estimate: an ordinary reply is a fraction of it.
    *
    * Note what this is a ceiling on: replies, and therefore spend, only because
    * `historyCharsPerMessage` and `maxReplyTokens` make a reply's cost bounded.

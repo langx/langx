@@ -51,7 +51,10 @@ describe('what @langx is told about LangX', () => {
     // The account: it has no tool that can read one.
     expect(prompt).toContain('You cannot see their account')
     // The other kind of token, which shares a word and nothing else.
-    expect(prompt).toContain('not a cryptocurrency')
+    // The app's own sentence, repeated rather than paraphrased — it is the
+    // promise the wallet screen already makes.
+    expect(prompt).toContain('There is no chain, no contract and no market')
+    expect(prompt).toContain('cannot be bought, traded, withdrawn')
     expect(prompt).toContain('Never speculate about value')
   })
 

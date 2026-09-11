@@ -59,17 +59,20 @@ const envSchema = z.object({
    */
   ANTHROPIC_API_KEY: emptyToUndefined(z.string().optional()),
   /**
-   * Haiku, and the reason is the workload: short answers about a product the
-   * system prompt already describes, with at most one tool call behind them,
-   * to somebody watching a chat window. It is the model built for that — fast
-   * and a fifth of Sonnet's price — and nothing here needs a model that
-   * thinks.
+   * Sonnet, on the evidence rather than the price list.
    *
-   * Setting this to a thinking model works and costs more; `createAnthropicProvider`
-   * sends `effort: low` to those and omits it here, because Haiku rejects the
-   * parameter rather than ignoring it.
+   * Haiku was the obvious choice — short answers, a chat window, a fifth of
+   * the cost — and it answered English questions well. It also read the
+   * Turkish for "my streak" as "my profile" twice running and explained the
+   * privacy settings instead, which is not variance, and this app is answering
+   * in eight languages to people practising a ninth. A cheap wrong answer in
+   * somebody's own language is the expensive kind.
+   *
+   * `createAnthropicProvider` sends `effort: low` here, so the thinking is
+   * bounded; Haiku got no effort at all because it rejects the parameter. If
+   * the answers ever stop needing the extra, `claude-haiku-4-5` is one line.
    */
-  ANTHROPIC_MODEL: z.string().min(1).default('claude-haiku-4-5'),
+  ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
    * Where a bug report or feature request offers to become an issue, as
    * `owner/name`. The support email carries a prefilled link to this
