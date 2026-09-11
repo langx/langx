@@ -8,6 +8,7 @@ import {
 } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import { nameTokens } from '../profiles/nameTokens'
 
 /**
  * The Better Auth row behind an official account.
@@ -131,6 +132,7 @@ async function ensureOne(
         $set: {
           avatarUrl,
           displayName,
+          nameTokens: nameTokens(displayName),
           bio: OFFICIAL_BIOS[handle],
           /*
            * The same shape a created one gets, not just the same name. An
@@ -206,6 +208,7 @@ async function ensureOne(
     official: true,
     handle,
     displayName,
+    nameTokens: nameTokens(displayName),
     avatarUrl,
     bio: OFFICIAL_BIOS[handle],
     // Never rendered: `toPublicProfile` omits the age of an official account

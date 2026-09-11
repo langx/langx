@@ -39,6 +39,7 @@ import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mon
 import { COLLECTIONS } from '../../db/collections'
 import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
+import { nameTokens } from './nameTokens'
 import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
@@ -91,6 +92,16 @@ export interface Profile {
    */
   previousHandle?: string
   displayName: string
+  /**
+   * `displayName` cut into the words it can be searched by — derived, never
+   * sent by a client. See `nameTokens`, and `searchHandles` for what reads it.
+   *
+   * Optional only because a profile written before this existed has none until
+   * `scripts/backfill-name-tokens.ts` has run over it; every write since sets
+   * it, and a name that changes without this changing is a search box that
+   * answers with the old one.
+   */
+  nameTokens?: string[]
   avatarUrl?: string
   bio?: string
   /** Free text, `PRONOUNS_MAX_LENGTH` at most. Absent until somebody fills it in. */
@@ -466,6 +477,7 @@ export async function createProfile(
     _id: userId,
     handle: input.handle,
     displayName: input.displayName,
+    nameTokens: nameTokens(input.displayName),
     birthDate: input.birthDate,
     gender: input.gender,
     nativeLanguages: input.nativeLanguages,
@@ -844,6 +856,7 @@ export async function createGuestProfile(
     guest: true,
     handle: `guest:${userId}`,
     displayName: '',
+    nameTokens: [],
     // Never rendered and never compared: a guest has no profile of their own
     // and cannot be looked at. It is here because the type requires it, and a
     // date rather than an empty string so nothing downstream has to guard.
@@ -1058,6 +1071,14 @@ export async function updateProfile(
     {
       $set: {
         ...rest,
+        /*
+         * Derived, and derived here rather than anywhere else: `nameTokens` is
+         * what the search box matches a name against, so it has to move in the
+         * same write as the name it came from. A second write would leave a
+         * window where searching someone's new name finds nothing and their
+         * old one still finds them.
+         */
+        ...(input.displayName !== undefined ? { nameTokens: nameTokens(input.displayName) } : {}),
         ...privacyPaths,
         ...settingsPaths,
         ...equippedPaths,

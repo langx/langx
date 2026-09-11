@@ -84,6 +84,22 @@ export const INDEXES: Partial<IndexSpec> = {
      * `assertNotSomeonesOldHandle`.
      */
     { key: { previousHandle: 1 }, name: 'previous_handle_unique', unique: true, sparse: true },
+    /*
+     * The other half of the search box. `handle_unique` above answers "whose
+     * username starts with this"; this one answers "whose *name* has a word
+     * starting with this", and `searchHandles` asks both in one `$or` — which
+     * only stays an index scan while both halves are indexed. Unindex this and
+     * the whole query silently becomes a collection scan per keystroke.
+     *
+     * Multikey, over the derived `nameTokens` rather than `displayName`, so
+     * somebody typing a surname finds a person whose first name they do not
+     * know. `nameTokens` says why that cannot be a regex over the name itself.
+     *
+     * Not sparse: a profile written before the field existed has no value, and
+     * a sparse index would leave it out of a query it should simply not match.
+     * `scripts/backfill-name-tokens.ts` is what gives the old ones one.
+     */
+    { key: { nameTokens: 1 }, name: 'name_tokens' },
     // Discovery needs mutual fit — my learning ∈ their native AND my native ∈
     // their learning — but MongoDB physically refuses a compound index across
     // two array fields in the same document ("cannot index parallel arrays",

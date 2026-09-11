@@ -14,6 +14,7 @@ import { awardTokens } from '../tokens/ledger'
 import { streakDay } from '../tokens/streak'
 import { grantSignupBonus } from '../tokens/signupBonus'
 import type { Profile } from '../profiles/profiles'
+import { nameTokens } from '../profiles/nameTokens'
 import { resolveHandleClaim } from './handleReservations'
 import { hashLegacyEmail } from './legacyEmailHash'
 import { importLegacyConversations } from './legacyConversations'
@@ -311,6 +312,7 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     _id: userId,
     handle: legacy.handle,
     displayName: legacy.displayName ?? legacy.handle,
+    nameTokens: nameTokens(legacy.displayName ?? legacy.handle),
     birthDate: legacy.birthDate!,
     gender: legacy.gender ?? 'undisclosed',
     nativeLanguages: legacy.nativeLanguages,

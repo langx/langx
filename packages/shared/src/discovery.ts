@@ -4,7 +4,7 @@ import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
 import { PLAN_LIMITS } from './limits'
-import { genderSchema } from './profile'
+import { DISPLAY_NAME_MAX_LENGTH, genderSchema } from './profile'
 import { z } from 'zod'
 
 /**
@@ -245,11 +245,13 @@ export const HANDLE_SEARCH_LIMIT = 10
 
 export const handleSearchQuerySchema = z.object({
   /**
-   * A handle prefix. Lower-cased to match how handles are stored, and bounded
-   * at the same length one can be, because this reaches a database index and
-   * an unbounded string is a way to make it scan.
+   * A username prefix, or a prefix of any word in somebody's name — see
+   * `searchHandles` for which half matches what. Lower-cased to match how
+   * handles are stored, and bounded at the length of the longest thing it can
+   * match, because this reaches a database index and an unbounded string is a
+   * way to make it scan. A display name is the longer of the two.
    */
-  q: z.string().trim().toLowerCase().min(2).max(20),
+  q: z.string().trim().toLowerCase().min(2).max(DISPLAY_NAME_MAX_LENGTH),
 })
 export type HandleSearchQuery = z.infer<typeof handleSearchQuerySchema>
 
