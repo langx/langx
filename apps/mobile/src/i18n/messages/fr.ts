@@ -562,7 +562,7 @@ export const fr: Localized<EnMessages> = {
     boostedWhat: 'Qu’est-ce que c’est ?',
     boostedExplainTitle: 'Profils mis en avant',
     boostedExplainBody:
-      'Les membres Fluent et Polyglot apparaissent ici, Polyglot en premier. L’ordre tourne au fil de la journée, pour que chacun passe en tête. Ils sont associés à tes langues exactement comme la liste ci-dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les réglages.',
+      'Les membres Fluent et Polyglot apparaissent ici, Polyglot en premier. L’ordre tourne au fil de la journée, pour que chacun passe en tête — ce qui t’y met, c’est une photo, quelques mots sur toi et un passage récent. Ils sont associés à tes langues exactement comme la liste ci-dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les réglages.',
     boostedSeePlans: 'Voir les formules',
     languagesA11y: 'Choisir avec quelles langues chercher',
     searchHandles: 'Rechercher par nom d’utilisateur',

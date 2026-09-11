@@ -283,7 +283,8 @@ export const DISCOVERY_BOOSTED_TIERS = ['pro_plus', 'pro'] as const
 export const DISCOVERY_BOOSTED_LIMIT = 12
 
 /**
- * How recently a subscriber must have been here to lead the strip.
+ * How recently a subscriber must have been here to lead the strip — one of the
+ * three things `orderBoosted` asks for, alongside a photo and a bio.
  *
  * The strip used to order by `stats.lastActiveAt` outright, and with a handful
  * of candidates a total order is a permanent one: whoever opens the app most

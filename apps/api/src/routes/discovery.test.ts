@@ -66,6 +66,23 @@ describe('Faz 3 — discovery aggregation', () => {
   }
 
   /**
+   * A photo and a bio, written straight in — the upload routes assert the URL
+   * points into our own bucket, and this is a fixture, not a test of that.
+   *
+   * The boosted strip's leading band wants both, so a fixture that means to
+   * test anything *else* about the order has to have them or it falls into the
+   * band behind and the rotation, not the thing under test, decides.
+   */
+  async function setShowcase(userId: string) {
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: { avatarUrl: `https://media.test/avatars/${userId}.jpg`, bio: 'Here to practise.' },
+      },
+    )
+  }
+
+  /**
    * Grants a tier the way RevenueCat's webhook would, minus RevenueCat.
    *
    * `expiresAt` is optional because most fixtures want a subscription that
@@ -1315,10 +1332,38 @@ describe('Faz 3 — discovery aggregation', () => {
 
       await setTier(here.userId, 'pro_plus')
       await setTier(dormant.userId, 'pro_plus')
+      // Both, so the only thing separating them is when they were last here.
+      await setShowcase(here.userId)
+      await setShowcase(dormant.userId)
       await setLastActiveAt(dormant.userId, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
 
       const handles = handlesOf(await boosted(viewer))
       expect(handles.indexOf(here.handle)).toBeLessThan(handles.indexOf(dormant.handle))
+    })
+
+    /**
+     * Its own pair (`ha` / `ig`). Nobody is excluded for an empty profile —
+     * they paid — so this asserts both are present and which one leads.
+     */
+    it('leaves a subscriber with no photo behind one with a full profile', async () => {
+      const viewer = await newUser('boost-showcase-viewer@example.com', {
+        nativeLanguages: [{ code: 'ha' }],
+        learning: [{ code: 'ig', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'ig' }],
+        learning: [{ code: 'ha', level: 'intermediate', priority: 1 }],
+      }
+      const full = await newUser('boost-showcase-full@example.com', options)
+      const bare = await newUser('boost-showcase-bare@example.com', options)
+
+      await setTier(full.userId, 'pro_plus')
+      await setTier(bare.userId, 'pro_plus')
+      await setShowcase(full.userId)
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles).toContain(bare.handle)
+      expect(handles.indexOf(full.handle)).toBeLessThan(handles.indexOf(bare.handle))
     })
 
     /**

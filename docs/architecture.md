@@ -793,9 +793,27 @@ be seen, not a promotion out of the feed.
 **The strip's order is three bands, not one sort** — `orderBoosted`.
 `DISCOVERY_BOOSTED_TIERS` first, Polyglot above Fluent, a hard band because
 the paywall sells that sentence and `rules.test.ts` pins the list it comes
-from. Then one coarse cut: seen within `DISCOVERY_BOOSTED_FRESH_MS`, or not.
-Then a rotation seeded on the viewer, the profile and the hour
-(`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id` as the last tiebreak.
+from. Then one coarse cut — ready to lead, or not: a photo, something written,
+and a visit within `DISCOVERY_BOOSTED_FRESH_MS`. Then a rotation seeded on the
+viewer, the profile and the hour (`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id`
+as the last tiebreak.
+
+Those three conditions are **one band and not three**, which is the part worth
+not undoing. A viewer has one to four boosted candidates, so every extra band
+halves the chance that two of them share a bucket — and a candidate alone in
+its bucket has a fixed position, which is exactly the permanent order the
+rotation exists to break. A continuous quality score would do it in one step.
+Two buckets is what keeps the rotation real, so anything added to the
+definition of "ready" goes _inside_ this band rather than beside it.
+
+The photo and the bio are not a new idea of a good profile: `promotions.ts`
+already nudges an account with no `avatarUrl` on the grounds that a faceless
+one is scrolled past, and onboarding calls the avatar and the bio the two
+things that make a first impression. `avatarUrl` is only ever an uploaded file
+— `assertOwnBucket` refuses anything else and the drawn fallback is generated
+client-side from the id, never stored — so its presence _is_ the test. Nobody
+is excluded for failing any of this: they paid, so they are in the strip
+either way; they just do not lead it, and the explainer on the screen says so.
 
 Rotation exists because of the arithmetic of the thing: mutual language fit
 cuts a viewer's boosted candidates down to a handful, and only the first two
