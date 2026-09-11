@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { feedAuthorSchema } from './feed'
 
 /**
  * What the app may send.
@@ -387,3 +388,81 @@ export const NOTIFICATION_EMAIL_LOCAL_HOURS = { earliest: 9, latest: 21 } as con
  * a different period key, not a rewrite.
  */
 export const NEWSLETTER_LOCAL_HOUR = 10
+
+/**
+ * What the notification centre can show — and **not a ninth switch**.
+ *
+ * Deliberately beside the 8×2 matrix above rather than in a file of its own,
+ * because the thing most worth knowing about it is the relationship: those
+ * eight kinds each have two channels, push and email, and both are about what
+ * *leaves* the app. This list is about what the app keeps. Somebody who turned
+ * off `social` push asked not to be buzzed; they did not ask to be blinded,
+ * and `notificationsAllowed` is not consulted before a row is written.
+ *
+ * Nor is it `PushKind`. A push has to name a destination for a tap and is
+ * composed server-side because the OS renders it; a row here is data the app
+ * renders itself, from the catalogues, in the reader's own language. Three
+ * overlapping enums for three different jobs is the shape this already has.
+ *
+ * The gift is absent on purpose. "Your hourly gift is ready" is a statement
+ * about a button being available, not a record of something that happened —
+ * a row saying it was ready three days ago is noise in a list meant to be
+ * scanned, and the wallet screen already draws the cooldown from `giftReadyAt`.
+ */
+export const IN_APP_NOTIFICATION_KINDS = [
+  'follow',
+  'postComment',
+  'postCorrection',
+  'pronunciationAnswer',
+  'like',
+  'badgeEarned',
+  'walletPool',
+  'profileVisits',
+] as const
+export type InAppNotificationKind = (typeof IN_APP_NOTIFICATION_KINDS)[number]
+
+export const NOTIFICATIONS_PAGE_SIZE_DEFAULT = 30
+export const NOTIFICATIONS_PAGE_SIZE_MAX = 100
+
+export const listNotificationsQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(NOTIFICATIONS_PAGE_SIZE_MAX)
+    .default(NOTIFICATIONS_PAGE_SIZE_DEFAULT),
+})
+export type ListNotificationsQuery = z.infer<typeof listNotificationsQuerySchema>
+
+/**
+ * One row, as data — never as prose.
+ *
+ * No `title`, no `body`, and that is the difference between this and every
+ * push in the app. A push is composed server-side because the OS draws it; a
+ * row here is drawn by a component that has all eight catalogues, so a count
+ * reaches a **plural entry** rather than a sentence somebody built with a
+ * ternary. Russian and Arabic do not split where English does.
+ */
+export const inAppNotificationSchema = z.object({
+  _id: z.string(),
+  kind: z.enum(IN_APP_NOTIFICATION_KINDS),
+  /** Absent on the kinds nobody did to you — a pool payout has no actor. */
+  actor: feedAuthorSchema.optional(),
+  postId: z.string().optional(),
+  /** The opening of the post this is about, so a row can name what it means. */
+  preview: z.string().optional(),
+  /** Visits: people that day. Pool: tokens paid. Likes: how many others. */
+  count: z.number().int().positive().optional(),
+  badgeId: z.string().optional(),
+  /** `read`, not `readAt`: the row draws a dot, and a timestamp is not one. */
+  read: z.boolean(),
+  createdAt: z.string(),
+})
+export type InAppNotification = z.infer<typeof inAppNotificationSchema>
+
+export const notificationsPageSchema = z.object({
+  items: z.array(inAppNotificationSchema),
+  nextCursor: z.string().nullable(),
+})
+export type NotificationsPage = z.infer<typeof notificationsPageSchema>
