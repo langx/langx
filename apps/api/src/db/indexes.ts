@@ -646,6 +646,14 @@ export const INDEXES: Partial<IndexSpec> = {
     // means the large one.
     { key: { asciiName: 1, population: -1 }, name: 'city_name_population' },
   ],
+  /**
+   * One row per UTC day and nothing to look anything up by — the `_id` *is*
+   * the day. The TTL is the only index here, and it exists so a counter that
+   * nobody ever reads again does not accumulate a row a day forever.
+   */
+  [COLLECTIONS.assistantUsage]: [
+    { key: { createdAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
+  ],
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
   [COLLECTIONS.streakReminders]: [

@@ -12,6 +12,7 @@ import type { Db, MongoClient } from 'mongodb'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
+import type { AssistantProvider } from './modules/official/assistantProvider'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
 import { emailRoutes } from './routes/email'
@@ -77,6 +78,13 @@ declare module 'fastify' {
      * one outbox from the reader's side, and were two from ours.
      */
     email: EmailSender
+    /**
+     * The model behind @langx, or `null` when no key is configured — in which
+     * case a message to it is answered with `official.assistantOffline` and
+     * everything else about the account still works. Decorated like `push` and
+     * `email` so a test can hand it a provider that answers without a network.
+     */
+    assistant: AssistantProvider | null
     appVersion: string
     /**
      * The pinned server type, not socket.io's default. Its generics default
@@ -107,6 +115,12 @@ export interface BuildAppOptions {
    * logging one: a test that never sends mail should not have to name it.
    */
   email?: EmailSender
+  /**
+   * Defaults to `null`, which is exactly what production does without
+   * `ANTHROPIC_API_KEY` — so the offline path is the one every test exercises
+   * unless it says otherwise.
+   */
+  assistant?: AssistantProvider | null
   version?: string
 }
 
@@ -129,6 +143,7 @@ export async function buildApp({
   revenueCat,
   push = new LoggingPushSender(),
   email = new ConsoleEmailSender(console),
+  assistant = null,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -164,6 +179,7 @@ export async function buildApp({
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
   app.decorate('email', email)
+  app.decorate('assistant', assistant)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })

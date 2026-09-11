@@ -102,6 +102,41 @@ export const tr: Localized<EnMessages> = {
     discoverFilters: 'Seviyeye, yaşa veya ülkeye göre daraltmak için filtreleri kullan.',
     feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
   },
+  tour: {
+    progress: 'Adım {current} / {total}',
+    next: 'Sonraki',
+    done: 'Anladım',
+    skip: 'Geç',
+    discoverPairTitle: 'Karşılıklı eşleşme',
+    discoverPairBody:
+      'Bu ekrandaki herkes senin öğrendiğin dili konuşuyor ve senin bildiğin bir dili öğreniyor. Değiştirmek için çiftin üstüne dokun.',
+    discoverSortsTitle: 'Üç farklı bakış',
+    discoverSortsBody:
+      'Sana özel dillerine göre eşleştirir, Aktif az önce buradan ayrılanları gösterir, Yakında ise konumunu paylaştığında çalışır.',
+    discoverFiltersTitle: 'Listeyi daralt',
+    discoverFiltersBody:
+      'Seviyeye, yaşa veya ülkeye göre süz — ya da aradığın kişinin adını biliyorsan arama alanını kullan.',
+    discoverCardTitle: 'Buradan başla',
+    discoverCardBody:
+      'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
+    tabChatsTitle: 'Cevaplar buraya düşer',
+    tabChatsBody: 'Başlattığın her sohbet burada; senden yanıt bekleyenler kendi sekmesinde durur.',
+    tabChatsGuestBody:
+      'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
+    tabFeedTitle: 'Sor ve öğren',
+    tabFeedBody:
+      'Akış tüm topluluğun ortak alanı: bir cümleni düzelttir, bir kelimenin nasıl söylendiğini dinle, aynısını başkası için yap.',
+    tabMeTitle: 'Senin alanın',
+    tabMeBody: 'Profilin, jetonların ve serin — ayarlar da dişli simgesinin arkasında.',
+    sayHi: '{name} kişisine selam ver',
+    notNow: 'Şimdi değil',
+    feedAskTitle: 'Tek bir şey sor',
+    feedAskBody:
+      'Emin olmadığın bir cümleyi ya da telaffuz edemediğin bir kelimeyi paylaş, insanlar cevaplasın.',
+    feedKindsTitle: 'İki tür yardım',
+    feedKindsBody:
+      'Düzeltmeler yazılı: biri cümleni düzeltir. Telaffuz sesli: biri kelimeyi senin için kaydeder.',
+  },
   theme: {
     section: 'Görünüm',
     label: 'Tema',
@@ -661,6 +696,7 @@ export const tr: Localized<EnMessages> = {
     lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
   },
   chat: {
+    channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',
@@ -986,6 +1022,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
     previewNote:
@@ -1253,6 +1290,8 @@ export const tr: Localized<EnMessages> = {
     languageAuto: 'Cihaz ({name})',
     blockedPeople: 'Engellenenler',
     showIntro: 'Tanıtımı tekrar göster',
+    showTour: 'Turu tekrar oynat',
+    showTourBody: 'Keşfet ekranını adım adım bir kez daha gez.',
     rateApp: 'LangX’i değerlendir',
     exportData: 'Verilerimi dışa aktar',
     deleteAccount: 'Hesabı sil',

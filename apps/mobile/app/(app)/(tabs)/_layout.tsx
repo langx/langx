@@ -3,6 +3,8 @@ import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
 import type { ColorValue } from 'react-native'
 import { useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
+import { TourTarget } from '../../../src/components/TourTarget'
+import type { TourTargetId } from '../../../src/lib/tour'
 import { useTheme } from '../../../src/lib/theme'
 import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
@@ -16,8 +18,35 @@ import { unreadBadge } from '../../../src/lib/unreadBadge'
  * `react-native-svg`, and @expo/vector-icons is already a dependency. A whole
  * native module for a set of icons we already have is not a trade worth making.
  */
-function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: ColorValue }) {
-  return <Feather name={name} size={22} color={color} />
+function TabIcon({
+  name,
+  color,
+  tour,
+}: {
+  name: keyof typeof Feather.glyphMap
+  color: ColorValue
+  /**
+   * The id the first-run tour points at, on the three tabs it introduces.
+   * Discover has none: it is the tab the tour plays on, so there is nothing to
+   * say about the icon for the screen already filling the screen.
+   */
+  tour?: TourTargetId
+}) {
+  const icon = <Feather name={name} size={22} color={color} />
+  /*
+   * Padded, and a rounded square rather than a circle: a hole that hugs a
+   * 22-point glyph reads as a speck, not as "this tab", and a circle around a
+   * square-ish target reads as a different kind of thing from the hard-edged
+   * holes every other step cuts. The padding is on the measurement, not on the
+   * view — see `TourTarget` — so the bar itself is untouched.
+   */
+  return tour ? (
+    <TourTarget id={tour} pad={14} radius={14}>
+      {icon}
+    </TourTarget>
+  ) : (
+    icon
+  )
 }
 
 /**
@@ -91,7 +120,9 @@ export default function TabsLayout() {
         name="chats"
         options={{
           title: t('tabs.chats'),
-          tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabIcon name="message-square" color={color} tour="tabChats" />
+          ),
           /*
            * A message that arrives while somebody is on another tab was
            * invisible until they went looking for it. The count comes from
@@ -115,7 +146,7 @@ export default function TabsLayout() {
         name="feed"
         options={{
           title: t('tabs.feed'),
-          tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} tour="tabFeed" />,
           /*
            * The notification centre lives behind the bell in this tab's
            * header, so the tab is where its count has to show — somebody on
@@ -139,7 +170,7 @@ export default function TabsLayout() {
         name="me"
         options={{
           title: t('tabs.me'),
-          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="user" color={color} tour="tabMe" />,
         }}
       />
     </Tabs>

@@ -463,4 +463,17 @@ export const tr: Localized<ServerMessages> = {
     underage: '16 yaşından küçük',
     other: 'Başka bir şey',
   },
+  official: {
+    welcome:
+      'Selam, LangX’e hoş geldin! 👋 Aramıza katılmana sevindik.\n\nİşin güzel kısmı Keşfet’te başlıyor: senin dilini öğrenen ve senin öğrendiğin dili konuşan birini bul, bir merhaba de, gerisi kendiliğinden geliyor. Yol boyunca jeton da biriktiriyorsun.\n\nLangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Bir de LangX açık kaynak — iyileşmesinin sebebi insanların bize bir şeyler söylemesi. Bozuk bir şey görürsen ya da aklına yapmamız gereken bir şey gelirse, Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Hepsini okuyoruz. Bir de burayı sevecek birini tanıyorsan, Ayarlar → Paylaş ve davet et ikinize de jeton kazandırıyor.',
+    welcomeRate:
+      'Son bir şey, canın isterse: {store} üzerinde LangX’e puan vermen bizi bulmalarına cidden yardım ediyor. Zorunlu değil tabii.',
+    assistantOffline:
+      'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
+    assistantLimit:
+      'Şu an daha fazla yanıt veremiyorum — birkaç saat sonra tekrar dene.\n\nHiçbir şey bana bakmıyor: birini profilinden bildirebilir, Ayarlar’dan hata veya fikir gönderebilirsin, {email} adresinden de her zaman bir insana ulaşırsın.',
+    assistantError: 'Bende bir şeyler ters gitti. Birazdan tekrar göndermeyi dene.',
+    assistantRefusal:
+      'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',
+  },
 }

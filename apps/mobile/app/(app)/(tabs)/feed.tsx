@@ -31,6 +31,7 @@ import { requireAccount } from '../../../src/lib/requireAccount'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { LikeButton } from '../../../src/components/LikeButton'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { TourTarget } from '../../../src/components/TourTarget'
 import { Tip } from '../../../src/components/Tip'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -262,13 +263,15 @@ export default function FeedScreen() {
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{t('feed.title')}</Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.push(`/(app)/compose?kind=${section}`)}
-            style={({ pressed }) => [styles.askButton, pressed && styles.askPressed]}
-          >
-            <Text style={styles.ask}>{pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}</Text>
-          </Pressable>
+          <TourTarget id="feedAsk">
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push(`/(app)/compose?kind=${section}`)}
+              style={({ pressed }) => [styles.askButton, pressed && styles.askPressed]}
+            >
+              <Text style={styles.ask}>{pronouncing ? t('feed.pronounceAsk') : t('feed.ask')}</Text>
+            </Pressable>
+          </TourTarget>
           {/*
             The way into the notification centre, and the only one. A fifth tab
             was the alternative and the layout next door says why not: four
@@ -289,7 +292,7 @@ export default function FeedScreen() {
             ) : null}
           </Pressable>
         </View>
-        <View style={styles.sections}>
+        <TourTarget id="feedKinds" style={styles.sections}>
           <SegmentedControl<PostKind>
             options={POST_KINDS.map((option) => ({
               value: option,
@@ -299,7 +302,7 @@ export default function FeedScreen() {
             onToggle={setSection}
             accessibilityLabel={t('feed.title')}
           />
-        </View>
+        </TourTarget>
       </View>
 
       {/* Above the list rather than inside it: a hint that scrolls away is

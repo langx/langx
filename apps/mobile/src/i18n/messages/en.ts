@@ -119,6 +119,42 @@ export const en = {
     discoverFilters: 'Use the filters to narrow by level, age or country.',
     feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
   },
+  tour: {
+    progress: 'Step {current} of {total}',
+    next: 'Next',
+    done: 'Got it',
+    skip: 'Skip',
+    discoverPairTitle: 'Matched both ways',
+    discoverPairBody:
+      'Everyone on this screen speaks the language you are learning and is learning one you speak. Tap the pair to change it.',
+    discoverSortsTitle: 'Three ways to look',
+    discoverSortsBody:
+      'For you is matched to your languages, Active is who has just been here, and Nearby uses your location once you share it.',
+    discoverFiltersTitle: 'Narrow it down',
+    discoverFiltersBody:
+      'Filter by level, age or country — or use the search field when you already know whose name you are after.',
+    discoverCardTitle: 'Start here',
+    discoverCardBody:
+      'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
+    tabChatsTitle: 'Where replies land',
+    tabChatsBody:
+      'Every conversation you start lives here, and the ones still waiting on you sit in their own tab.',
+    tabChatsGuestBody:
+      'Conversations live here. You can read and browse without an account — messaging is the one thing that needs one.',
+    tabFeedTitle: 'Ask and learn',
+    tabFeedBody:
+      'The Feed is the whole room: get a sentence corrected, hear how a word is said, and do the same for someone else.',
+    tabMeTitle: 'Yours',
+    tabMeBody: 'Your profile, your tokens and your streak — and Settings, behind the gear.',
+    sayHi: 'Say hi to {name}',
+    notNow: 'Not now',
+    feedAskTitle: 'Ask for one thing',
+    feedAskBody:
+      'Post a sentence you are unsure of, or a word you cannot say, and let people answer it.',
+    feedKindsTitle: 'Two kinds of help',
+    feedKindsBody:
+      'Corrections are written: someone fixes your sentence. Pronunciation is spoken: someone records the word for you.',
+  },
   theme: {
     section: 'Appearance',
     label: 'Theme',
@@ -716,6 +752,8 @@ export const en = {
     lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
   },
   chat: {
+    /** Shown where the composer would be, on an account that takes no messages. */
+    channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     sendingAttachment: 'Sending…',
     title: 'Chat',
     typing: 'typing…',
@@ -1051,6 +1089,8 @@ export const en = {
   },
 
   profile: {
+    /** Screen-reader label for the tick beside @langx and @copilot. */
+    official: 'Official account',
     suspendedTag: 'Suspended',
     deletedTag: 'Account deleted',
     previewNote:
@@ -1317,6 +1357,8 @@ export const en = {
     languageAuto: 'Device ({name})',
     blockedPeople: 'Blocked people',
     showIntro: 'Show intro again',
+    showTour: 'Replay the tour',
+    showTourBody: 'Walk through the Discovery screen again, one step at a time.',
     rateApp: 'Rate LangX',
     exportData: 'Export my data',
     deleteAccount: 'Delete account',

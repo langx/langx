@@ -92,6 +92,42 @@ export const fr: Localized<EnMessages> = {
     discoverFilters: 'Utilise les filtres pour affiner par niveau, âge ou pays.',
     feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
   },
+  tour: {
+    progress: 'Étape {current} sur {total}',
+    next: 'Suivant',
+    done: 'Compris',
+    skip: 'Passer',
+    discoverPairTitle: 'Une correspondance mutuelle',
+    discoverPairBody:
+      'Toutes les personnes de cet écran parlent la langue que tu apprends et apprennent une langue que tu parles. Touche la paire pour la changer.',
+    discoverSortsTitle: 'Trois façons de regarder',
+    discoverSortsBody:
+      'Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité fonctionne dès que tu partages ta position.',
+    discoverFiltersTitle: 'Affine la liste',
+    discoverFiltersBody:
+      'Filtre par niveau, âge ou pays — ou utilise la recherche quand tu sais déjà qui tu cherches.',
+    discoverCardTitle: 'Commence ici',
+    discoverCardBody:
+      'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
+    tabChatsTitle: 'Là où arrivent les réponses',
+    tabChatsBody:
+      'Chaque conversation que tu commences vit ici, et celles qui t’attendent ont leur propre onglet.',
+    tabChatsGuestBody:
+      'Les conversations vivent ici. Tu peux lire et explorer sans compte — écrire est la seule chose qui en demande un.',
+    tabFeedTitle: 'Demande et apprends',
+    tabFeedBody:
+      'Le Fil, c’est toute la communauté : fais corriger une phrase, écoute comment un mot se prononce, et rends la pareille à quelqu’un.',
+    tabMeTitle: 'Chez toi',
+    tabMeBody: 'Ton profil, tes jetons et ta série — et les réglages, derrière la roue dentée.',
+    sayHi: 'Dis bonjour à {name}',
+    notNow: 'Pas maintenant',
+    feedAskTitle: 'Demande une seule chose',
+    feedAskBody:
+      'Publie une phrase dont tu doutes ou un mot que tu n’arrives pas à dire, et laisse les autres répondre.',
+    feedKindsTitle: 'Deux sortes d’aide',
+    feedKindsBody:
+      'Les corrections s’écrivent : quelqu’un corrige ta phrase. La prononciation se parle : quelqu’un enregistre le mot pour toi.',
+  },
   theme: {
     section: 'Apparence',
     label: 'Thème',
@@ -662,6 +698,7 @@ export const fr: Localized<EnMessages> = {
     lastSeenYears: { one: 'Vu il y a {count} an', other: 'Vu il y a {count} ans' },
   },
   chat: {
+    channelOnly: 'Ce compte publie des nouveautés et des annonces. Tu ne peux pas y répondre.',
     sendingAttachment: 'Envoi…',
     title: 'Discussion',
     typing: 'écrit…',
@@ -987,6 +1024,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Compte officiel',
     suspendedTag: 'Suspendu',
     deletedTag: 'Compte supprimé',
     previewNote:
@@ -1257,6 +1295,8 @@ export const fr: Localized<EnMessages> = {
     languageAuto: 'Appareil ({name})',
     blockedPeople: 'Personnes bloquées',
     showIntro: 'Revoir l’introduction',
+    showTour: 'Revoir la visite',
+    showTourBody: 'Reparcours l’écran Découvrir, étape par étape.',
     rateApp: 'Noter LangX',
     exportData: 'Exporter mes données',
     deleteAccount: 'Supprimer le compte',

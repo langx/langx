@@ -91,6 +91,43 @@ export const de: Localized<EnMessages> = {
     discoverFilters: 'Filtere nach Niveau, Alter oder Land.',
     feedAsk: 'Bei einem Satz festgefahren? Poste ihn hier, jemand korrigiert ihn.',
   },
+  tour: {
+    progress: 'Schritt {current} von {total}',
+    next: 'Weiter',
+    done: 'Alles klar',
+    skip: 'Überspringen',
+    discoverPairTitle: 'Beide Richtungen passen',
+    discoverPairBody:
+      'Alle auf diesem Bildschirm sprechen die Sprache, die du lernst, und lernen eine, die du sprichst. Tippe auf das Paar, um es zu ändern.',
+    discoverSortsTitle: 'Drei Blickwinkel',
+    discoverSortsBody:
+      'Für dich richtet sich nach deinen Sprachen, Aktiv zeigt, wer gerade hier war, und In der Nähe wirkt, sobald du deinen Standort teilst.',
+    discoverFiltersTitle: 'Liste eingrenzen',
+    discoverFiltersBody:
+      'Filtere nach Niveau, Alter oder Land — oder such direkt, wenn du schon weißt, wen du suchst.',
+    discoverCardTitle: 'Fang hier an',
+    discoverCardBody:
+      'Öffne jemanden, um das Profil zu lesen. Zuerst Hallo zu sagen, so beginnt fast jeder Austausch auf LangX.',
+    tabChatsTitle: 'Wo Antworten ankommen',
+    tabChatsBody:
+      'Jedes Gespräch, das du beginnst, lebt hier; wer noch auf dich wartet, hat einen eigenen Reiter.',
+    tabChatsGuestBody:
+      'Gespräche liegen hier. Lesen und stöbern geht ohne Konto — nur Schreiben braucht eines.',
+    tabFeedTitle: 'Fragen und lernen',
+    tabFeedBody:
+      'Der Feed ist der ganze Raum: lass einen Satz korrigieren, hör, wie ein Wort klingt, und tu dasselbe für jemand anderen.',
+    tabMeTitle: 'Deins',
+    tabMeBody:
+      'Dein Profil, deine Token und deine Serie — und die Einstellungen hinter dem Zahnrad.',
+    sayHi: 'Sag {name} Hallo',
+    notNow: 'Jetzt nicht',
+    feedAskTitle: 'Frag nach einer Sache',
+    feedAskBody:
+      'Poste einen Satz, bei dem du unsicher bist, oder ein Wort, das du nicht aussprechen kannst — und lass andere antworten.',
+    feedKindsTitle: 'Zwei Arten von Hilfe',
+    feedKindsBody:
+      'Korrekturen sind geschrieben: jemand bessert deinen Satz aus. Aussprache ist gesprochen: jemand nimmt das Wort für dich auf.',
+  },
   theme: {
     section: 'Darstellung',
     label: 'Design',
@@ -679,6 +716,8 @@ export const de: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly:
+      'Dieses Konto postet Neuigkeiten und Ankündigungen. Antworten ist hier nicht möglich.',
     sendingAttachment: 'Wird gesendet…',
     title: 'Chat',
     typing: 'schreibt…',
@@ -1005,6 +1044,7 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',
     previewNote:
@@ -1278,6 +1318,8 @@ export const de: Localized<EnMessages> = {
     languageAuto: 'Gerät ({name})',
     blockedPeople: 'Blockierte Personen',
     showIntro: 'Einführung noch einmal zeigen',
+    showTour: 'Rundgang wiederholen',
+    showTourBody: 'Geh den Entdecken-Bildschirm noch einmal Schritt für Schritt durch.',
     rateApp: 'LangX bewerten',
     exportData: 'Meine Daten exportieren',
     deleteAccount: 'Konto löschen',

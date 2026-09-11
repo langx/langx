@@ -100,6 +100,37 @@ export const ar: Localized<EnMessages> = {
     discoverFilters: 'استخدم المرشحات للتضييق حسب المستوى أو العمر أو البلد.',
     feedAsk: 'تعثرت في جملة؟ انشرها هنا وسيصححها أحدهم.',
   },
+  tour: {
+    progress: 'الخطوة {current} من {total}',
+    next: 'التالي',
+    done: 'فهمت',
+    skip: 'تخطٍّ',
+    discoverPairTitle: 'تطابق في الاتجاهين',
+    discoverPairBody:
+      'كل من في هذه الشاشة يتحدث اللغة التي تتعلمها ويتعلم لغة تتحدثها أنت. اضغط على الزوج لتغييره.',
+    discoverSortsTitle: 'ثلاث طرق للنظر',
+    discoverSortsBody:
+      'لك مبني على لغاتك، ونشِط يعرض من كان هنا للتو، والقريب يعمل بمجرد مشاركتك موقعك.',
+    discoverFiltersTitle: 'ضيّق القائمة',
+    discoverFiltersBody: 'صفِّ حسب المستوى أو العمر أو البلد — أو ابحث مباشرة إن كنت تعرف من تريد.',
+    discoverCardTitle: 'ابدأ من هنا',
+    discoverCardBody:
+      'افتح أي شخص لقراءة ملفه. إلقاء التحية أولًا هو ما يبدأ به كل تبادل تقريبًا في LangX.',
+    tabChatsTitle: 'حيث تصل الردود',
+    tabChatsBody: 'كل محادثة تبدأها تعيش هنا، ومن ينتظر ردك له تبويب خاص.',
+    tabChatsGuestBody:
+      'المحادثات تجتمع هنا. يمكنك التصفح والقراءة دون حساب — الكتابة وحدها هي ما يحتاج إليه.',
+    tabFeedTitle: 'اسأل وتعلّم',
+    tabFeedBody: 'التدفّق هو الغرفة كلها: صحِّح جملتك، واسمع كيف تُنطق كلمة، وافعل المثل لغيرك.',
+    tabMeTitle: 'ما يخصك',
+    tabMeBody: 'ملفك ورموزك وسلسلتك — والإعدادات خلف رمز الترس.',
+    sayHi: 'ألقِ التحية على {name}',
+    notNow: 'ليس الآن',
+    feedAskTitle: 'اسأل عن شيء واحد',
+    feedAskBody: 'انشر جملة لست واثقًا منها أو كلمة لا تستطيع نطقها، ودع الآخرين يجيبون.',
+    feedKindsTitle: 'نوعان من المساعدة',
+    feedKindsBody: 'التصحيحات مكتوبة: أحدهم يصلح جملتك. والنطق مسموع: أحدهم يسجّل لك الكلمة.',
+  },
   theme: {
     section: 'المظهر',
     label: 'السمة',
@@ -750,6 +781,7 @@ export const ar: Localized<EnMessages> = {
     },
   },
   chat: {
+    channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
     sendingAttachment: 'جارٍ الإرسال…',
     title: 'محادثة',
     typing: 'يكتب…',
@@ -1145,6 +1177,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
@@ -1442,6 +1475,8 @@ export const ar: Localized<EnMessages> = {
     languageAuto: 'الجهاز ({name})',
     blockedPeople: 'المحظورون',
     showIntro: 'إظهار المقدمة مجددًا',
+    showTour: 'إعادة الجولة',
+    showTourBody: 'تجوّل في شاشة الاستكشاف مرة أخرى، خطوة بخطوة.',
     rateApp: 'قيّم LangX',
     exportData: 'تصدير بياناتي',
     deleteAccount: 'حذف الحساب',

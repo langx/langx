@@ -87,6 +87,42 @@ export const ptBR: Localized<EnMessages> = {
     discoverFilters: 'Use os filtros para refinar por nível, idade ou país.',
     feedAsk: 'Travado numa frase? Publique aqui e alguém corrige.',
   },
+  tour: {
+    progress: 'Passo {current} de {total}',
+    next: 'Próximo',
+    done: 'Entendi',
+    skip: 'Pular',
+    discoverPairTitle: 'Combinação nos dois sentidos',
+    discoverPairBody:
+      'Todo mundo nesta tela fala o idioma que você aprende e aprende um que você fala. Toque no par para mudar.',
+    discoverSortsTitle: 'Três jeitos de olhar',
+    discoverSortsBody:
+      'Para você segue seus idiomas, Ativos mostra quem esteve aqui agora há pouco e Por perto funciona quando você compartilha sua localização.',
+    discoverFiltersTitle: 'Diminua a lista',
+    discoverFiltersBody:
+      'Filtre por nível, idade ou país — ou use a busca quando já souber de quem está atrás.',
+    discoverCardTitle: 'Comece aqui',
+    discoverCardBody:
+      'Abra qualquer pessoa para ler o perfil. Dizer oi primeiro é como quase toda troca no LangX começa.',
+    tabChatsTitle: 'Onde as respostas chegam',
+    tabChatsBody:
+      'Toda conversa que você começa fica aqui, e quem espera por você tem uma aba só para isso.',
+    tabChatsGuestBody:
+      'As conversas ficam aqui. Dá para olhar e ler sem conta — escrever é a única coisa que precisa de uma.',
+    tabFeedTitle: 'Pergunte e aprenda',
+    tabFeedBody:
+      'O Feed é a sala inteira: peça para corrigirem uma frase, ouça como se fala uma palavra e faça o mesmo por outra pessoa.',
+    tabMeTitle: 'O seu canto',
+    tabMeBody: 'Seu perfil, seus tokens e sua sequência — e as configurações, atrás da engrenagem.',
+    sayHi: 'Diga oi para {name}',
+    notNow: 'Agora não',
+    feedAskTitle: 'Peça uma coisa só',
+    feedAskBody:
+      'Publique uma frase da qual não tem certeza ou uma palavra que não consegue falar, e deixe as pessoas responderem.',
+    feedKindsTitle: 'Dois tipos de ajuda',
+    feedKindsBody:
+      'Correções são escritas: alguém conserta sua frase. Pronúncia é falada: alguém grava a palavra para você.',
+  },
   theme: {
     section: 'Aparência',
     label: 'Tema',
@@ -653,6 +689,7 @@ export const ptBR: Localized<EnMessages> = {
     lastSeenYears: { one: 'Visto há {count} ano', other: 'Visto há {count} anos' },
   },
   chat: {
+    channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
     sendingAttachment: 'Enviando…',
     title: 'Conversa',
     typing: 'digitando…',
@@ -975,6 +1012,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',
     previewNote:
@@ -1244,6 +1282,8 @@ export const ptBR: Localized<EnMessages> = {
     languageAuto: 'Aparelho ({name})',
     blockedPeople: 'Pessoas bloqueadas',
     showIntro: 'Ver a introdução de novo',
+    showTour: 'Repetir o tour',
+    showTourBody: 'Percorra a tela Descobrir de novo, passo a passo.',
     rateApp: 'Avaliar o LangX',
     exportData: 'Exportar meus dados',
     deleteAccount: 'Excluir conta',

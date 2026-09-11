@@ -3837,6 +3837,69 @@ a default-on list under text that says "off unless you ask" is a false claim
 rather than a stale one: the Settings row in eight locales, and
 `docs/legal/promise-change.md`, which describes the default out loud.
 
+## The app speaks for itself from a profile row, not a message type
+
+`@langx` and `@copilot` are accounts. They could have been a `system` message
+type with a flag on it, and every consideration pointed the other way: a
+conversation with the assistant has to sort, unread-count, translate, archive,
+delete, push and render exactly like a conversation with a person, and all of
+that already exists for profiles. A parallel system-message world would have
+had to re-earn every one of those behaviours, and would have got one of them
+subtly wrong.
+
+What follows from that choice is the rest of this entry.
+
+**They are created at boot**, right after the indexes, rather than by a
+migration or a seed script. A migration is a thing somebody has to remember to
+run; boot is a thing that happens. So a fresh self-host, a test database and
+production all have the accounts, and nobody has to be told to make them. It is
+idempotent on `handle_unique`, and a handle already held by a real account is
+left alone and logged loudly — `copilot` was only reserved once these accounts
+were designed, so a database that predates that may have somebody sitting on
+the word, and taking it off them would be a data loss no index would catch.
+
+**Nobody can sign in to them.** The Better Auth row carries an address under
+`.invalid`, which RFC 2606 reserves and DNS resolves nowhere. That is stronger
+than a flag saying "do not allow login": there is no mailbox for a reset link,
+a magic link or a verification mail to arrive in, so the account cannot become
+a session by any route the app has, including ones added later.
+
+**The assistant is an optional service**, like email, storage and translation.
+Without `ANTHROPIC_API_KEY` it is off and says so; the welcome message and
+announcements are unaffected, because those are ours and not the model's. The
+provider sits behind an interface so the orchestration is tested against a fake
+— which account answers, the daily ceiling, what the tools write, what a
+failure says — and no test needs a key or a network.
+
+**Official conversations are outside the token economy.** `awardForSend`
+returns early for either side of an official pair, so talking to a program pays
+nothing, moves no streak and reaches no leaderboard. `startConversation` charges
+no initiation quota, because spending one of five daily slots to ask a question
+— or to report somebody — would price support out of the free tier.
+
+**An account already answering as LangX is adopted, not replaced.** Production
+had a real account on `@langx` — the support address, a bio of links, five
+conversations, two dozen messages — which is precisely the thing this feature
+automates. Renaming it would have broken every link anybody had been given, and
+`ensureOfficialAccounts` will not take a handle from a profile it did not
+create, by design. So adoption is its own script, run once by a person: it
+keeps the history and takes away the sign-in, because "nobody can sign in to an
+official account" is a property of the design rather than a rule with an
+exception in it. The side effect is that the support address goes back to being
+only a mailbox, which is what it should have been.
+
+That is also why the display name, the avatar and the bio are rewritten from
+code on every boot rather than only at creation: an adopted account arrives
+wearing whatever it was wearing, and after adoption there is no screen left
+that could change it.
+
+The one thing the accounts are _not_ is a second authorisation story. The
+assistant's two tools are the flows that already existed: `report_user` is the
+call the profile menu makes, and `submit_feedback` is the call `POST /feedback`
+makes, lifted out of the route unchanged. The reporter is always the person
+writing — not a rule the model is asked to honour, but the only id the call can
+be given.
+
 ## The feed and the wallet get switches of their own
 
 Two kinds joined the six: `social` — a follow, a correction or a recorded
