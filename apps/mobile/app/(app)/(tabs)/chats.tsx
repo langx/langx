@@ -15,6 +15,7 @@ import { SwipeableRow } from '../../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Screen } from '../../../src/components/ui/Screen'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
@@ -126,6 +127,7 @@ export default function ChatsScreen() {
     isPending: conversations.isPending,
     isError: conversations.isError,
     itemCount: items.length,
+    isPaused: conversations.fetchStatus === 'paused',
   })
 
   return (
@@ -178,6 +180,11 @@ export default function ChatsScreen() {
             <ConversationRowSkeleton key={key} />
           ))}
         </View>
+      ) : state === 'failed' ? (
+        /* Before the list, because `ListEmptyComponent` would otherwise say
+           "No chats yet" to somebody whose request never arrived — and offer
+           to go and start one. */
+        <LoadFailed onRetry={() => void conversations.refetch()} />
       ) : (
         <FlatList
           data={items}

@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router'
 import { View } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
+import { OfflineBanner } from '../../src/components/OfflineBanner'
 import { UpdateBanner } from '../../src/components/UpdateBanner'
 import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
@@ -64,7 +65,13 @@ export default function AppLayout() {
     <View style={{ backgroundColor: colors.bg, flex: 1 }}>
       {/* Above the navigator so a pending deletion is visible on every screen. */}
       <DeletionBanner />
-      {/* After it, and silent while it is up — only one bar takes the top. */}
+      {/*
+        Then the network, which is the more urgent of the two below it: while
+        it is up, the update notice is offering a trip to a store that cannot
+        be reached either.
+      */}
+      <OfflineBanner />
+      {/* After both, and silent while either is up — only one bar takes the top. */}
       <UpdateBanner />
       <Stack
         screenOptions={{

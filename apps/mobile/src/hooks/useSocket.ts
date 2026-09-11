@@ -1,6 +1,6 @@
 import { notificationsAllowed, PRESENCE_HEARTBEAT_MS } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
-import { useQueryClient } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { AppState } from 'react-native'
 import type { Socket } from 'socket.io-client'
@@ -23,7 +23,7 @@ import {
   applyPinned,
   type MessagePageDto,
 } from '../lib/messageCache'
-import { closeSocket, getSocket } from '../lib/socket'
+import { closeSocket, getSocket, restartSocket } from '../lib/socket'
 
 /**
  * Opens the app's single socket and turns realtime events into cache updates.
@@ -69,6 +69,21 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     const appStateSubscription = AppState.addEventListener('change', (next) => {
       if (resumedFromBackground(lastAppState, next)) resync()
       lastAppState = next
+    })
+
+    /**
+     * The third signal, and the only one that arrives while the app is open
+     * and the socket believes everything is fine.
+     *
+     * `lib/queryNetwork.ts` has the radio wired to `onlineManager`, so this is
+     * the OS saying the network came back. The socket cannot know that:
+     * nothing closed its connection, it is holding one that stopped carrying
+     * packets, and its own ping timeout is 45 seconds away. Restarting it here
+     * turns those 45 seconds into about one — and the reconnect that follows
+     * fires `resync` through the handler below, so the gap is covered too.
+     */
+    const unsubscribeOnline = onlineManager.subscribe((online) => {
+      if (online) restartSocket()
     })
 
     void (async () => {
@@ -304,6 +319,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       cancelled = true
       if (heartbeat) clearInterval(heartbeat)
       appStateSubscription.remove()
+      unsubscribeOnline()
       opened?.io.off('reconnect', resync)
       closeSocket()
     }

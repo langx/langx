@@ -15,6 +15,7 @@ export const de: Localized<EnMessages> = {
     save: 'Speichern',
     tryAgain: 'Erneut versuchen',
     retry: 'Versuch es gleich noch einmal.',
+    offline: 'Keine Internetverbindung',
     checking: 'Wird geprüft…',
     oneMoment: 'Einen Moment…',
     skip: 'Später',

@@ -296,6 +296,7 @@ export default function DiscoverScreen() {
     isPending: query.isPending,
     isError: query.isError,
     itemCount: items.length,
+    isPaused: query.fetchStatus === 'paused',
   })
   const count = activeCount(effective)
   const tips = useTips()
@@ -479,14 +480,14 @@ export default function DiscoverScreen() {
         /* In the list's place, in normal flow — not floated over it. See
            `PeopleSearch` for what floating cost. */
         <PeopleSearchResults from="/(app)/(tabs)/discover" />
-      ) : state === 'empty' && query.isError ? (
+      ) : state === 'failed' ? (
         /**
          * A request that failed is not an empty app, and this screen said it
-         * was. `listState` folds an error into `'empty'` on purpose — it
-         * leaves the case to the caller — and the caller went straight to
-         * `ListEmptyComponent`, so a timeout told somebody whose request never
-         * arrived that nobody matches their languages, and to loosen filters
-         * they had not set.
+         * was: the caller went straight to `ListEmptyComponent`, so a timeout
+         * told somebody whose request never arrived that nobody matches their
+         * languages, and to loosen filters they had not set. The case moved
+         * into `listState` afterwards, so the other six lists that had it
+         * could be fixed once rather than six times.
          *
          * `state` rather than `items.length`, so a failed *second* page keeps
          * the rows already on screen: `listState` answers `'content'` whenever

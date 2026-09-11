@@ -28,6 +28,7 @@ export const ar: Localized<EnMessages> = {
     save: 'حفظ',
     tryAgain: 'إعادة المحاولة',
     retry: 'حاول مرة أخرى بعد قليل.',
+    offline: 'لا يوجد اتصال بالإنترنت',
     checking: 'جارٍ التحقق…',
     oneMoment: 'لحظة…',
     skip: 'ليس الآن',

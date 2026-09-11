@@ -15,6 +15,7 @@ export const ptBR: Localized<EnMessages> = {
     save: 'Salvar',
     tryAgain: 'Tentar de novo',
     retry: 'Tente de novo em um instante.',
+    offline: 'Sem conexão com a internet',
     checking: 'Verificando…',
     oneMoment: 'Um instante…',
     skip: 'Agora não',

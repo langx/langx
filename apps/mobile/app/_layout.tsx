@@ -36,6 +36,7 @@ import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '.
 import { markInstalled } from '../src/lib/installedAt'
 import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
 import { configureObserve } from '../src/lib/observe'
+import { configureQueryNetwork } from '../src/lib/queryNetwork'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
@@ -66,6 +67,13 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined)
  * that, so there is no effect early enough to do this in.
  */
 configureObserve()
+
+/*
+ * And what the radio is doing, for the same "read once, before anything needs
+ * it" reason. Module scope because `onlineManager`'s listener is global and
+ * setting it twice would leave the first subscription running.
+ */
+configureQueryNetwork()
 
 function createQueryClient(): QueryClient {
   return new QueryClient({

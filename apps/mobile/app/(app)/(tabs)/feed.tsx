@@ -34,6 +34,7 @@ import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { TourTarget } from '../../../src/components/TourTarget'
 import { Tip } from '../../../src/components/Tip'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
@@ -144,6 +145,7 @@ export default function FeedScreen() {
     isPending: feed.isPending,
     isError: feed.isError,
     itemCount: items.length,
+    isPaused: feed.fetchStatus === 'paused',
   })
 
   /** Owned by the screen, not the card: a card is recycled out from under it. */
@@ -315,6 +317,10 @@ export default function FeedScreen() {
             <FeedPostSkeleton key={key} index={index} />
           ))}
         </View>
+      ) : state === 'failed' ? (
+        /* Rather than the per-tab empty state below, which reads as "nobody
+           has posted" — a sentence nobody can act on and which is not true. */
+        <LoadFailed onRetry={() => void feed.refetch()} />
       ) : (
         <FlatList
           data={items}

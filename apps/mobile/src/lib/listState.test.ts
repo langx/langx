@@ -25,6 +25,26 @@ describe('listState', () => {
 
   /** A failed refetch is pending-with-nothing; a pulse there promises data that is not coming. */
   it('does not pulse forever over an error', () => {
-    expect(listState({ isPending: true, isError: true, itemCount: 0 })).toBe('empty')
+    expect(listState({ isPending: true, isError: true, itemCount: 0 })).toBe('failed')
+  })
+
+  /** The whole point of the variant: "it did not load" is not "there is nothing". */
+  it('separates a failed request from an empty answer', () => {
+    expect(listState({ isPending: false, isError: true, itemCount: 0 })).toBe('failed')
+  })
+
+  /** A query held back for want of a network is the same news, arriving earlier. */
+  it('treats a paused query as failed rather than as a first load', () => {
+    expect(listState({ isPending: true, isError: false, itemCount: 0, isPaused: true })).toBe(
+      'failed',
+    )
+  })
+
+  /** Rows already on screen outlast both. */
+  it('keeps rows over an error or a pause', () => {
+    expect(listState({ isPending: false, isError: true, itemCount: 4 })).toBe('content')
+    expect(listState({ isPending: true, isError: false, itemCount: 4, isPaused: true })).toBe(
+      'content',
+    )
   })
 })

@@ -33,6 +33,8 @@ export const en = {
     save: 'Save',
     tryAgain: 'Try again',
     retry: 'Try again in a moment.',
+    /** The offline banner, and the only place the app says this at all. */
+    offline: 'No internet connection',
     checking: 'Checking…',
     oneMoment: 'One moment…',
     skip: 'Skip for now',

@@ -25,6 +25,7 @@ export const ru: Localized<EnMessages> = {
     save: 'Сохранить',
     tryAgain: 'Повторить',
     retry: 'Попробуй ещё раз через минуту.',
+    offline: 'Нет подключения к интернету',
     checking: 'Проверяем…',
     oneMoment: 'Минуту…',
     skip: 'Пока пропустить',

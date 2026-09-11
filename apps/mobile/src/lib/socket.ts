@@ -67,6 +67,28 @@ export function closeSocket(): void {
 }
 
 /**
+ * Starts the one socket over without losing the handlers `useSocket` hung on
+ * it.
+ *
+ * A tunnel does not close a connection, it stops carrying it — so socket.io
+ * goes on believing it is connected until its own ping times out, which the
+ * server's defaults put at 45 seconds. Measured: 45.1. The OS knows within a
+ * second, and this is what turns that knowledge into a working connection
+ * instead of a socket that is quietly writing into a pipe nobody is reading.
+ *
+ * `disconnect()` and `connect()` in the same tick, deliberately: in between
+ * them the socket is `!active`, which is the exact state `getSocket()` throws a
+ * socket away for, and nothing can observe it because nothing here awaits. The
+ * app's own listeners survive — socket.io's `destroy()` drops the manager's
+ * subscriptions, not the events the app registered.
+ */
+export function restartSocket(): void {
+  if (!socket) return
+  socket.disconnect()
+  socket.connect()
+}
+
+/**
  * Promise wrapper over socket.io's ack callback, with the API's error shape.
  *
  * `.timeout()` is not optional decoration. Without it socket.io registers the

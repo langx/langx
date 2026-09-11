@@ -21,6 +21,7 @@ import {
 import { useConversationMedia, useMe, type MessageDto } from '../../src/api/queries'
 import { AudioBubble, VideoTile } from '../../src/components/MediaBubble'
 import { PhotoViewer } from '../../src/components/PhotoViewer'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -129,6 +130,7 @@ export default function ChatMediaScreen() {
     isPending: page.isPending,
     isError: page.isError,
     itemCount: tab === 'visual' ? tiles.length : messages.length,
+    isPaused: page.fetchStatus === 'paused',
   })
 
   const empty = (
@@ -171,6 +173,10 @@ export default function ChatMediaScreen() {
 
       {state === 'skeleton' ? (
         <ActivityIndicator style={styles.loading} />
+      ) : state === 'failed' ? (
+        /* Before either tab: both of them draw `empty`, which says this
+           conversation has no photos in it — a different claim entirely. */
+        <LoadFailed onRetry={() => void page.refetch()} />
       ) : tab === 'visual' ? (
         <FlatList
           key="visual"

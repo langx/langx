@@ -4,6 +4,7 @@ import { router } from 'expo-router'
 import { useCorrectionsWritten, useMyPosts, type MessageDto } from '../../src/api/queries'
 import type { FeedPost } from '../../src/api/types'
 import { EmptyState } from '../../src/components/ui/EmptyState'
+import { LoadFailed } from '../../src/components/LoadFailed'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -68,6 +69,7 @@ export default function WritingScreen() {
     isPending: active.isPending,
     isError: active.isError,
     itemCount: tab === 'corrections' ? corrections.length : myPosts.length,
+    isPaused: active.fetchStatus === 'paused',
   })
 
   return (
@@ -97,6 +99,11 @@ export default function WritingScreen() {
             </View>
           ))}
         </View>
+      ) : state === 'failed' ? (
+        /* Not the empty state below it: "you have not corrected anybody yet"
+           is a sentence about the reader, and getting it wrong is worse than
+           the usual version of this bug. */
+        <LoadFailed onRetry={() => void active.refetch()} />
       ) : state === 'empty' ? (
         <EmptyState
           icon={tab === 'corrections' ? 'edit-3' : 'message-square'}

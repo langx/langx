@@ -26,6 +26,7 @@ import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/ap
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { PostThreadSkeleton } from '../../../src/components/skeletons/PostThreadSkeleton'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { FormField } from '../../../src/components/ui/FormField'
@@ -184,6 +185,7 @@ export default function PostScreen() {
     isPending: query.isPending,
     isError: query.isError,
     itemCount: replies.length,
+    isPaused: query.fetchStatus === 'paused',
   })
 
   const mine = post ? post.author._id === me.data?._id : false
@@ -369,7 +371,12 @@ export default function PostScreen() {
         }
       />
 
-      {state === 'skeleton' || !post ? (
+      {state === 'failed' && !post ? (
+        /* A post that did not load is not a post with no replies, and the
+           skeleton below would have pulsed over it for as long as the screen
+           was open. */
+        <LoadFailed onRetry={() => void query.refetch()} />
+      ) : state === 'skeleton' || !post ? (
         <PostThreadSkeleton />
       ) : (
         <FlatList

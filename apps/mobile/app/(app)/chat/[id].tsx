@@ -54,6 +54,7 @@ import {
   type PendingAttachment,
 } from '../../../src/components/AttachmentPreview'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
+import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -297,6 +298,7 @@ export default function ChatScreen() {
     isPending: thread.isPending,
     isError: thread.isError,
     itemCount: items.length,
+    isPaused: thread.fetchStatus === 'paused',
   })
   // From the participant list, not from the messages: a thread nobody has
   // replied to yet contains only my own sends, and reading the partner off
@@ -1542,7 +1544,17 @@ export default function ChatScreen() {
           own box rather than the screen's — that keeps it above the composer
           whatever height the composer has grown to. */}
         <View style={styles.listWrap}>
-          {state === 'skeleton' ? (
+          {state === 'failed' && rows.length === 0 ? (
+            /*
+             * `rows.length` as well as the state: a thread that failed to load
+             * can still have something to show — the message just typed into a
+             * tunnel is an unsent row, and replacing it with an error panel
+             * would take away the one copy of that sentence there is.
+             */
+            <View style={[styles.list, styles.skeletonFill]}>
+              <LoadFailed onRetry={() => void thread.refetch()} />
+            </View>
+          ) : state === 'skeleton' ? (
             // `flex: 1` because the FlatList it stands in for takes the whole
             // height; without it the composer rides up under the placeholders and
             // then drops when the real thread arrives.

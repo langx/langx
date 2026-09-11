@@ -24,6 +24,7 @@ export const tr: Localized<EnMessages> = {
     save: 'Kaydet',
     tryAgain: 'Tekrar dene',
     retry: 'Birazdan tekrar dene.',
+    offline: 'İnternet bağlantısı yok',
     checking: 'Kontrol ediliyor…',
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
