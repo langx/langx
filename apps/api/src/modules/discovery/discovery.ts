@@ -3,6 +3,7 @@ import {
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
+  DISCOVERY_BOOSTED_CANDIDATE_MAX,
   DISCOVERY_BOOSTED_LIMIT,
   DISCOVERY_BOOSTED_TIERS,
   DISCOVERY_PRO_FILTER_KEYS,
@@ -27,6 +28,7 @@ import { hidesOnlineStatus } from '../profiles/presenceVisibility'
 import { ApiError } from '../../lib/ApiError'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
+import { orderBoosted } from './boostedOrder'
 
 /**
  * `active`'s cursor is a real keyset token over the same field the discovery
@@ -527,7 +529,8 @@ export async function discoverProfiles(
  * of the feed — so there is no dedupe and no cursor. `sort`, `cursor`,
  * `limit` and `radiusKm` are accepted (the querystring is
  * `discoveryQuerySchema`, a refined schema that cannot be extended or
- * narrowed) and ignored: the strip has one order of its own and one size.
+ * narrowed) and ignored: the strip has an order of its own — one order per
+ * viewer per hour, see `orderBoosted` — and one size.
  */
 export async function boostedProfiles(
   db: Db,
@@ -570,22 +573,35 @@ export async function boostedProfiles(
         },
       },
       /*
-       * A computed field, so this sort is in-memory and cannot be indexed.
-       * The `$match` above is still served by `discovery_native_active` /
-       * `discovery_learning_active`, and what reaches the sort is the paying
-       * members inside one language fit — a handful of documents, not a
-       * collection. That is why there is no new index for this.
+       * This is no longer the order the strip is shown in — `orderBoosted`
+       * below is, and it cannot be a stage here because it hashes the viewer,
+       * the profile and the hour together and MQL has no string hash.
+       *
+       * What this sort still decides is the truncation: which candidates are
+       * even considered when there are more of them than the ceiling. Tier
+       * first, so a Polyglot can never be dropped in favour of a Fluent, then
+       * recency — the behaviour the rotation replaces, kept here because a
+       * ceiling has to cut somewhere and cutting by natural order could drop
+       * the person who paid the most.
+       *
+       * A computed field, so the sort is in-memory and cannot be indexed. The
+       * `$match` above is still served by `discovery_native_active` /
+       * `discovery_learning_active`, and what reaches it is the paying members
+       * inside one language fit — a handful of documents, not a collection.
+       * That is why there is no new index for this.
        */
       { $sort: { boostedRank: 1, 'stats.lastActiveAt': -1, _id: 1 } },
-      { $limit: DISCOVERY_BOOSTED_LIMIT },
+      { $limit: DISCOVERY_BOOSTED_CANDIDATE_MAX },
     ])
     .toArray()
 
   return {
-    items: docs.map((doc) => ({
-      ...toDiscoveryItem(doc, now),
-      // Narrowed by the `$match` above, which the driver's types cannot see.
-      tier: doc.entitlement.tier as BoostedProfile['tier'],
-    })),
+    items: orderBoosted(docs, viewerId, now)
+      .slice(0, DISCOVERY_BOOSTED_LIMIT)
+      .map((doc) => ({
+        ...toDiscoveryItem(doc, now),
+        // Narrowed by the `$match` above, which the driver's types cannot see.
+        tier: doc.entitlement.tier as BoostedProfile['tier'],
+      })),
   }
 }

@@ -630,6 +630,73 @@ correction ("I have a apple" → "I have an apple", with a short reason). v2
 rebuilds the same function under the name **Copilot**, as part of the chat
 module. Quota: free 5 uses a day, Polyglot unlimited within fair use.
 
+The **account** exists already, and the feature does not. `@copilot` is created
+at boot alongside `@langx` so the handle cannot be claimed by somebody else in
+the meantime and the identity is there to point at; until the feature lands, a
+message to it gets an immediate canned reply. See _Official accounts_ below.
+
+### Official accounts
+
+`@langx` and `@copilot` are ordinary profile rows carrying `official: true`,
+created by `ensureOfficialAccounts` at boot — so every environment has them
+without anybody seeding anything. Nobody can sign in to either: the Better Auth
+row behind them holds an address under `.invalid`, which resolves nowhere, so no
+reset link, magic link or verification mail can reach a mailbox.
+
+`@langx` is a **channel**. It greets every new account and carries
+announcements (`scripts/send-announcement.ts`), and it cannot be written to:
+`recordMessage` refuses a message addressed to it and the chat screen draws no
+composer. Nothing about it is answered by a model. A broadcast account that
+sometimes replies is a promise about attention that nobody can keep.
+
+`@copilot` is the account that will answer, and it ships closed. Everything
+behind it is built and tested — the provider, the per-tier allowances, the daily
+budget, the prompt, the one tool — and opening it is
+`OFFICIAL_WRITABLE.copilot` plus an `ANTHROPIC_API_KEY`. Two switches rather
+than one, because without the key it would answer that it cannot answer. It is
+deliberately narrow: it welcomes, it answers the practical how-do-I questions
+written into its prompt, and it takes a bug report or an idea — which for an
+open-source project is the most useful thing anybody hands it. It cannot report
+a person; that is a moderation decision reached from that person's profile, and
+a model filing them is a queue somebody has to work through. The
+assistant behind it is an **optional service** in the same sense as email and
+storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
+and everything else about the account still works.
+
+Four numbers bound what it can spend, and they only work together.
+`PLAN_LIMITS[tier].assistantRepliesPerDay` bounds one account — per tier,
+because every reply is a paid model call and a free account brings in nothing
+to pay for it, so the ceiling for a tier is kept under what that tier earns —
+and `OFFICIAL_ASSISTANT.globalRepliesPerDay` bounds everybody — the second matters because the number
+of conversations is not bounded by anything. Those two cap the _count_ of
+replies; `historyCharsPerMessage` and `maxReplyTokens` are what make a reply's
+cost bounded, which is what turns a cap on the count into a cap on the bill. A
+chat message may be 2,000 characters and twenty of them reach the model on every
+turn, so without the third number a single reply can carry ten thousand tokens
+of context, and five hundred of those is a different order of bill entirely.
+
+The global count is **model calls**, kept in a per-day counter
+(`assistantUsage`), not a count of messages @langx has sent: an announcement
+writes to every account on the service, and counting messages would take the
+assistant down on exactly the day it was most visible.
+
+An account that has been run by hand can be **adopted** rather than replaced:
+`scripts/adopt-official-account.ts` flips the flag, revokes every session and
+credential, and rewrites the address to the undeliverable one — keeping the
+conversations, messages and photos. That is a deliberate one-off, which is why
+it is a script and not something the boot decides. It is how `@langx` became
+official on production, where the handle was already held by the account
+answering as LangX by hand.
+
+The display name, the avatar **and the bio** are written from code on every
+boot. Not tidiness: nobody can sign in to these accounts, so there is no screen
+anywhere that can edit them, and code is the only editor they have.
+
+Conversations with an official account are **outside the token economy** —
+`awardForSend` returns early for either side, and `startConversation` charges no
+initiation quota — so nobody can farm a streak by talking to a program, and
+asking for support is free on every tier.
+
 ## MongoDB schema
 
 Principle: what is read together is embedded, what grows without bound is
@@ -643,6 +710,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  official?: true,                    ← @langx or @copilot; created at boot, never by a form
   photos: [{ url, createdAt }],
   bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',   ← changeable, once per 180 days
@@ -777,10 +845,9 @@ language fit — finding somebody whose name you already know cannot depend on
 whether you are learnable to each other.
 
 **`GET /discovery/boosted`** is the strip above the list: the paying members
-inside exactly the same scope, in `DISCOVERY_BOOSTED_TIERS` order — Polyglot
-first, then Fluent — capped at `DISCOVERY_BOOSTED_LIMIT` with no cursor. The
-client draws it on the **`recommended` sort only**: the other two are a
-question the reader asked — who is active, who is near me — and a strip
+inside exactly the same scope, capped at `DISCOVERY_BOOSTED_LIMIT` with no
+cursor. The client draws it on the **`recommended` sort only**: the other two
+are a question the reader asked — who is active, who is near me — and a strip
 ordered by somebody's subscription is not an answer to either. It
 shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
 filter are one definition; the sort, the cursor and the radius are accepted
@@ -790,6 +857,51 @@ half of `effectivePlanTier`), and `settings.boosted: false` opts out — an
 absent flag means on, so a first subscription boosts without a billing-side
 hook. Boosted people stay in the vertical list too: it is a second chance to
 be seen, not a promotion out of the feed.
+
+**The strip's order is three bands, not one sort** — `orderBoosted`.
+`DISCOVERY_BOOSTED_TIERS` first, Polyglot above Fluent, a hard band because
+the paywall sells that sentence and `rules.test.ts` pins the list it comes
+from. Then one coarse cut — ready to lead, or not: a photo, something written,
+and a visit within `DISCOVERY_BOOSTED_FRESH_MS`. Then a rotation seeded on the
+viewer, the profile and the hour (`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id`
+as the last tiebreak.
+
+Those three conditions are **one band and not three**, which is the part worth
+not undoing. A viewer has one to four boosted candidates, so every extra band
+halves the chance that two of them share a bucket — and a candidate alone in
+its bucket has a fixed position, which is exactly the permanent order the
+rotation exists to break. A continuous quality score would do it in one step.
+Two buckets is what keeps the rotation real, so anything added to the
+definition of "ready" goes _inside_ this band rather than beside it.
+
+The photo and the bio are not a new idea of a good profile: `promotions.ts`
+already nudges an account with no `avatarUrl` on the grounds that a faceless
+one is scrolled past, and onboarding calls the avatar and the bio the two
+things that make a first impression. `avatarUrl` is only ever an uploaded file
+— `assertOwnBucket` refuses anything else and the drawn fallback is generated
+client-side from the id, never stored — so its presence _is_ the test. Nobody
+is excluded for failing any of this: they paid, so they are in the strip
+either way; they just do not lead it, and the explainer on the screen says so.
+
+Rotation exists because of the arithmetic of the thing: mutual language fit
+cuts a viewer's boosted candidates down to a handful, and only the first two
+or three cards are on screen. A total order over that is a permanent one — the
+same profile led every impression for as long as it kept opening the app, and
+where the cap bit it dropped the _least_ recently active, so the subscribers
+closest to leaving got nothing. That is why ordering by `stats.lastActiveAt`
+outright is gone, replaced by the single weekly cut. The viewer is in the seed
+rather than the hour alone because one person sees very few hours in a day:
+with time alone a subscriber would wait a week to lead once.
+
+It is not a `$sort` stage because the rotation hashes three strings together
+and MQL has no string hash. So the ordering runs in Node, and the pipeline's
+`$sort` and `$limit` change jobs: they are now the **truncation rule**, tier
+first so a ceiling can never drop a Polyglot for a Fluent, limiting to
+`DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win a slot — with the
+strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering. There is deliberately
+no "online now" band: the strip's `isOnline` already has to respect
+`hidesOnlineStatus`, and a third band would mean a second copy of that rule,
+where a wrong copy leaks exactly what the setting hides.
 
 **`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot

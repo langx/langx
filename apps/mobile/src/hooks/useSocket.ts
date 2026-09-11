@@ -8,6 +8,7 @@ import type { MeProfile, MessageDto } from '../api/queries'
 import { invalidateUnread, keys, markConversationRead } from '../api/queries'
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
+import { track } from '../lib/analytics'
 import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
 import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
 import {
@@ -104,6 +105,16 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * one a new message belongs in.
          */
         const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
+
+        /*
+         * The sender gets their own message back here too — that echo is what
+         * retires the optimistic row — so this asks whose it is before
+         * counting it. Without the guard `message_received` would be
+         * `message_sent` with extra steps.
+         */
+        if (meId && message.senderId !== meId) {
+          track({ name: 'message_received', properties: { kind: message.type } })
+        }
 
         queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
           { queryKey: keys.messages(conversationId) },

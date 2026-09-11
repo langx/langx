@@ -112,6 +112,13 @@ export const COLLECTIONS = {
   referrals: 'referrals',
 
   // gamification
+  /**
+   * One document per UTC day, counting the model calls the @langx assistant
+   * has made. The whole collection is the global spend ceiling — see
+   * `assistantBudget.ts` for why it is a counter rather than a count of
+   * messages.
+   */
+  assistantUsage: 'assistantUsage',
   tokenLedger: 'tokenLedger',
   tokenAggregates: 'tokenAggregates',
   dailyActivity: 'dailyActivity',

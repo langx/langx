@@ -25,9 +25,11 @@ export interface EmailMessage {
    */
   headers?: Record<string, string>
   /**
-   * Where a reply goes when the sender is `no-reply@`. Only campaigns set
-   * it: they are the mail that says "reply to this, it reaches a human", and
-   * from the app's transactional address that would be a lie.
+   * Where a reply goes when the From address cannot take one. langx.io sends
+   * from `hi@`, a mailbox a person reads, so nothing sets this here; a
+   * deployment sending from a `no-reply@` still owes its campaigns somewhere
+   * to land, since they are the mail that says "reply to this, it reaches a
+   * human".
    */
   replyTo?: string
   /** Images for this one message, beside the shared ones. See `Email`. */

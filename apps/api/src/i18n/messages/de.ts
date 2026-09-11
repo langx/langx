@@ -36,6 +36,8 @@ export const de: Localized<ServerMessages> = {
       awayBody: 'Neue Leute zum Üben.',
       awayLongTitle: 'Wir sind da, wenn du willst',
       awayLongBody: 'Deine Serie und deine Token warten.',
+      limitReachedTitle: 'Du stößt immer wieder an die Limits',
+      limitReachedBody: 'Ein Tarif hebt sie auf.',
       trialEndingTitle: 'Deine Gratiswoche endet in zwei Tagen',
       trialEndingBody: 'Behalten ist ein Tipp.',
       winBackTitle: 'Dein Tarif ist ausgelaufen',
@@ -234,6 +236,30 @@ export const de: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX öffnen',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 Antwort auf deinen Beitrag heute',
+      other: '{count} Antworten auf deine Beiträge heute',
+    },
+
+    feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
+
+    feedDigestBody: {
+      one: 'Jemand hat heute auf einen deiner Sätze geantwortet.',
+      other: '{count} Leute haben heute auf deine Sätze geantwortet.',
+    },
+
+    feedDigestCorrections: { one: '1 Korrektur', other: '{count} Korrekturen' },
+
+    feedDigestAnswers: { one: '1 Aufnahme', other: '{count} Aufnahmen' },
+
+    feedDigestComments: { one: '1 Kommentar', other: '{count} Kommentare' },
+
+    feedDigestMore: { one: 'Und 1 weiterer Beitrag.', other: 'Und {count} weitere Beiträge.' },
+
+    feedDigestButton: 'Antworten lesen',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -273,6 +299,13 @@ export const de: Localized<ServerMessages> = {
         'Ein Monat ist lang. Dein Konto, deine Serie und deine Token sind noch da, falls du sie willst — und das ist das Letzte, was wir dazu sagen.',
 
       awayLongButton: 'LangX öffnen',
+
+      limitReachedSubject: 'Du stößt an die kostenlosen Limits',
+
+      limitReachedBody:
+        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche, mehr Übersetzungen, mehr Anhänge, jeden Tag.',
+
+      limitReachedButton: 'Tarife ansehen',
 
       trialEndingSubject: 'Deine Gratiswoche endet in zwei Tagen',
 
@@ -314,7 +347,7 @@ export const de: Localized<ServerMessages> = {
 
     welcomeTitle: 'Willkommen, {name}',
 
-    welcomeBody: 'Dein Profil ist unter @{handle} online. Das machen die meisten zuerst:',
+    welcomeBody: 'Dein Profil ist unter {handle} online. Das machen die meisten zuerst:',
 
     welcomeStep1: 'Finde jemanden, der deine Lernsprache spricht, und sag Hallo.',
 
@@ -446,5 +479,18 @@ export const de: Localized<ServerMessages> = {
     fakeProfile: 'Fake-Profil',
     underage: 'Unter 16',
     other: 'Etwas anderes',
+  },
+  official: {
+    welcome:
+      'Hey, willkommen bei LangX! 👋 Schön, dass du da bist.\n\nDas Beste beginnt in Entdecken: Finde jemanden, der deine Sprache lernt und die spricht, die du lernst, sag Hallo — den Rest macht das Üben von allein. Unterwegs sammelst du Tokens.\n\nHier landen die Neuigkeiten zu LangX, also schau ruhig mal rein. Und LangX ist Open Source: Es wird besser, weil Leute uns Dinge sagen. Wenn etwas kaputt ist oder dir einfällt, was wir bauen sollten — Einstellungen → Info → Feedback kommt direkt bei uns an. Wir lesen alles. Und wenn du jemanden kennst, dem es hier gefallen würde: Über Einstellungen → Teilen und einladen bekommt ihr beide Tokens.',
+    welcomeRate:
+      'Noch eine Kleinigkeit, wenn du magst: Eine Bewertung für LangX im {store} hilft wirklich dabei, dass uns Leute finden. Ganz ohne Druck.',
+    assistantOffline:
+      'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
+    assistantLimit:
+      'Mehr kann ich gerade nicht beantworten — versuch es in ein paar Stunden noch einmal.\n\nNichts hängt an mir: Du kannst jemanden über sein Profil melden, einen Fehler oder eine Idee über die Einstellungen schicken, und unter {email} erreichst du jederzeit einen Menschen.',
+    assistantError: 'Bei mir ist etwas schiefgelaufen. Versuch es gleich noch einmal.',
+    assistantRefusal:
+      'Dabei kann ich nicht helfen. Falls ich das falsch verstanden habe, erreichst du unter {email} einen Menschen.',
   },
 }

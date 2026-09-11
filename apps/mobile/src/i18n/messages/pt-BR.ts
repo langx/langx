@@ -571,7 +571,7 @@ export const ptBR: Localized<EnMessages> = {
     boostedWhat: 'O que é isso?',
     boostedExplainTitle: 'Perfis em destaque',
     boostedExplainBody:
-      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
+      'Aqui aparecem quem tem Fluent e Polyglot, Polyglot primeiro. A ordem gira ao longo do dia, então todo mundo passa pela frente — o que te leva pra lá é uma foto, algumas palavras sobre você e ter entrado há pouco. São combinados por idioma igual à lista abaixo — nada muda na combinação, e dá para desligar nos Ajustes.',
     boostedSeePlans: 'Ver os planos',
     languagesA11y: 'Escolha com quais dos seus idiomas buscar',
     searchHandles: 'Buscar por nome de usuário',
@@ -671,6 +671,7 @@ export const ptBR: Localized<EnMessages> = {
     lastSeenYears: { one: 'Visto há {count} ano', other: 'Visto há {count} anos' },
   },
   chat: {
+    channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
     sendingAttachment: 'Enviando…',
     title: 'Conversa',
     typing: 'digitando…',
@@ -955,6 +956,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',
     previewNote:

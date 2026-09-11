@@ -36,6 +36,8 @@ export const fr: Localized<ServerMessages> = {
       awayBody: 'De nouvelles personnes pour pratiquer.',
       awayLongTitle: 'Nous serons là quand vous voudrez',
       awayLongBody: 'Votre série et vos jetons attendent.',
+      limitReachedTitle: 'Vous butez souvent sur les limites',
+      limitReachedBody: 'Une formule les lève.',
       trialEndingTitle: 'Votre semaine gratuite se termine dans deux jours',
       trialEndingBody: 'La garder tient en un geste.',
       winBackTitle: 'Votre formule a pris fin',
@@ -241,6 +243,30 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterButton: 'Ouvrir LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 réponse à ce que vous avez écrit aujourd’hui',
+      other: '{count} réponses à ce que vous avez écrit aujourd’hui',
+    },
+
+    feedDigestPreheader: 'On a répondu à vos publications',
+
+    feedDigestBody: {
+      one: 'Quelqu’un a répondu à une phrase que vous avez publiée aujourd’hui.',
+      other: '{count} personnes ont répondu à vos phrases publiées aujourd’hui.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 enregistrement', other: '{count} enregistrements' },
+
+    feedDigestComments: { one: '1 commentaire', other: '{count} commentaires' },
+
+    feedDigestMore: { one: 'Et 1 autre publication.', other: 'Et {count} autres publications.' },
+
+    feedDigestButton: 'Lire les réponses',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -280,6 +306,13 @@ export const fr: Localized<ServerMessages> = {
         'Un mois, c’est long. Votre compte, votre série et vos jetons sont toujours là si vous les voulez — et c’est la dernière fois que nous en parlons.',
 
       awayLongButton: 'Ouvrir LangX',
+
+      limitReachedSubject: 'Vous butez sur les limites gratuites',
+
+      limitReachedBody:
+        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations, plus de traductions, plus de pièces jointes, chaque jour.',
+
+      limitReachedButton: 'Voir les formules',
 
       trialEndingSubject: 'Votre semaine gratuite se termine dans deux jours',
 
@@ -321,7 +354,7 @@ export const fr: Localized<ServerMessages> = {
 
     welcomeTitle: 'Bienvenue, {name}',
 
-    welcomeBody: 'Votre profil est en ligne sur @{handle}. Voici ce que les gens font en premier :',
+    welcomeBody: 'Votre profil est en ligne sur {handle}. Voici ce que les gens font en premier :',
 
     welcomeStep1: 'Trouvez quelqu’un qui parle la langue que vous apprenez et dites bonjour.',
 
@@ -453,5 +486,18 @@ export const fr: Localized<ServerMessages> = {
     fakeProfile: 'Faux profil',
     underage: 'Moins de 16 ans',
     other: 'Autre chose',
+  },
+  official: {
+    welcome:
+      'Salut, bienvenue sur LangX ! 👋 Content de t’avoir ici.\n\nLe meilleur commence dans Découvrir : trouve quelqu’un qui apprend ta langue et parle celle que tu vises, dis bonjour, et la pratique fait le reste. Tu gagnes des jetons au passage.\n\nC’est ici qu’arrivent les nouvelles de LangX, ça vaut le coup d’y jeter un œil. Et LangX est open source : il s’améliore parce que les gens nous disent des choses. Si quelque chose casse, ou si tu penses à un truc qu’on devrait faire, Réglages → À propos → Commentaires arrive directement chez nous. On lit tout. Et si tu connais quelqu’un à qui ça plairait, Réglages → Partager et inviter vous rapporte des jetons à tous les deux.',
+    welcomeRate:
+      'Un dernier truc, si le cœur t’en dit : noter LangX sur {store} aide vraiment les gens à nous trouver. Aucune pression.',
+    assistantOffline:
+      'Je ne peux pas répondre aux messages pour le moment. Si ça peut attendre, réessaie plus tard ; sinon, écris à {email} et une personne te lira.',
+    assistantLimit:
+      'Je ne peux pas répondre davantage pour l’instant — réessaie dans quelques heures.\n\nRien ne dépend de moi : tu peux signaler quelqu’un depuis son profil, envoyer un bug ou une idée depuis les Réglages, et {email} joint une personne à tout moment.',
+    assistantError: 'Quelque chose a échoué de mon côté. Réessaie dans un instant.',
+    assistantRefusal:
+      'Je ne peux pas t’aider là-dessus. Si je me trompe, {email} joint une personne.',
   },
 }

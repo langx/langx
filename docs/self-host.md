@@ -17,7 +17,10 @@ means verification links and notification mail are printed to the log, no
 unsubscribe secret means those links are signed with the auth secret instead,
 no translation credentials means `/translate` returns a clear "not configured"
 error, no RevenueCat means everyone stays on the free tier, no push credentials
-means notifications are logged instead of sent, and no ffmpeg on the host means
+means notifications are logged instead of sent, no `ANTHROPIC_API_KEY` means the
+@langx assistant is off — the account still greets new users and carries
+announcements, it just answers a direct message with a line saying it cannot —
+and no ffmpeg on the host means
 a voice note recorded in a browser is stored as recorded — WebM, which iPhones
 cannot play, and which the app then says it cannot play. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
@@ -70,6 +73,7 @@ during the window catches up on its next tick instead of skipping silently.
 | Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                                                                              |
 | Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day — as a push, or as email to somebody with no phone.                                                       |
 | Notifications    | 30 min   | Three passes: the unread-message digest, the profile-visit round-up (daily push, weekly email) and the badge round-up at 18:00.                                                    |
+| Feed digest      | 30 min   | The day's corrections, answers and comments on somebody's posts, at 19:00 local. The email half of `social`.                                                                       |
 | Pool payout      | 30 min   | "Yesterday's pool paid you N tokens", at 09:00 on each reader's own clock. Push only.                                                                                              |
 | Gift ready       | 30 min   | "Your hourly gift is ready", at most once a day, and only for somebody who has taken one before.                                                                                   |
 | Likes round-up   | 30 min   | A day of likes on somebody's posts as one push, once a day.                                                                                                                        |
@@ -167,6 +171,13 @@ first.
 a static site in `dist/`. Serve it from any static host. It needs
 `EXPO_PUBLIC_API_URL` set at build time, and that origin must appear in the
 API's `TRUSTED_ORIGINS` or the browser will block the session cookie.
+
+**The two official accounts appear by themselves.** `@langx` and `@copilot` are
+created at boot, on the first start of any instance — there is nothing to seed
+and no script to run. Nobody can sign in to either; the address behind them is
+undeliverable by construction. Set `ANTHROPIC_API_KEY` to have `@langx` answer
+messages, or leave it unset and it says so instead. See
+[`architecture.md`](architecture.md) → _Official accounts_.
 
 **Analytics** is optional. Set `EXPO_PUBLIC_POSTHOG_KEY` (and
 `EXPO_PUBLIC_POSTHOG_HOST` for a region other than the EU) at build time and

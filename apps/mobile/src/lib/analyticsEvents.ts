@@ -1,4 +1,13 @@
-import type { BillingPeriod, PaidPlanTier, PlanChange, PlanFeature, PlanTier } from '@langx/shared'
+import type {
+  BillingPeriod,
+  CosmeticKind,
+  MessageType,
+  PaidPlanTier,
+  PlanChange,
+  PlanFeature,
+  PlanTier,
+  PushKind,
+} from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
 import type { TourTargetId } from './tour'
 import type { PurchaseOutcome } from './purchases'
@@ -29,13 +38,20 @@ export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
  * file. A property added here is a property to declare; a string typed at a
  * call site is one nobody would know to.
  *
- * The events trace the one funnel `docs/decisions.md` chose the tool for —
- * install → onboarding → first conversation → paywall — and stop there.
- * Screens are captured separately (`$screen`, see `useScreenTracking`), so a
- * step being *seen* needs no event of its own; these are the steps being
- * *done*. Purchases themselves arrive from RevenueCat's server-side
- * integration, so `purchase_finished` is the client's view of the store sheet,
- * not the source of revenue truth.
+ * The events traced the one funnel `docs/decisions.md` chose the tool for —
+ * install → onboarding → first conversation → paywall — and for a while they
+ * stopped there. They no longer do, and the reason is worth stating once: that
+ * funnel ends at the moment somebody pays, and every question about whether
+ * they *stay* lives after it. The Boosted strip is a placement people pay for;
+ * a message that is never answered, a send that quietly fails, a push nobody
+ * taps and a feature nobody uses are the four ways this app can be failing
+ * while the funnel looks fine. Each event below past `review_prompted` earns
+ * its place by answering one of those, and the list is still closed.
+ * Screens are captured separately
+ * (`$screen`, see `useScreenTracking`), so a step being *seen* needs no event
+ * of its own; these are the steps being *done*. Purchases themselves arrive
+ * from RevenueCat's server-side integration, so `purchase_finished` is the
+ * client's view of the store sheet, not the source of revenue truth.
  *
  * Property names are snake_case because that is what PostHog's own are, and a
  * dashboard reading `$screen_name` next to `learningLanguages` is a dashboard
@@ -136,6 +152,136 @@ export type AnalyticsEvent =
        */
       name: 'review_prompted'
       properties: { trigger: 'streakMilestone' | 'correction' }
+    }
+  | {
+      /**
+       * Discover was focused with a non-empty Boosted strip.
+       *
+       * The denominator, and the app's first high-frequency event — every
+       * other one here is a once-per-account milestone. It says the strip was
+       * in the list, not that pixels reached an eye: there is deliberately no
+       * viewability maths on a horizontal scroller of at most twelve cards.
+       *
+       * It re-fires on every refocus, which is what makes it comparable with
+       * `$screen` for the same route. So the denominator is strip *shows*, not
+       * tab visits.
+       */
+      name: 'boosted_strip_shown'
+      properties: { count: number }
+    }
+  | {
+      /**
+       * A Boosted card was tapped. `slot` is the zero-based position, so the
+       * click-through rate at slot *i* is this over `boosted_strip_shown`
+       * where `count > i`.
+       *
+       * Carries no identifier for the person in the card, and `tier` is the
+       * only thing it says about them. That is not squeamishness: an id of
+       * theirs sitting in thousands of other people's events would outlive
+       * their own account deletion, which `purgeExpiredAccounts` cannot reach.
+       * The price is that this measures placement, never one subscriber's
+       * delivery — that number belongs on the server, where it survives an
+       * analytics opt-out.
+       */
+      name: 'boosted_strip_tapped'
+      properties: { slot: number; tier: PaidPlanTier }
+    }
+  | {
+      /**
+       * A row in the discovery list below was tapped, `slot` zero-based.
+       *
+       * The baseline the strip is read against: "boosted slot 0 gets 4%" says
+       * nothing until an ordinary row's number sits next to it. Both are taken
+       * per Discover `$screen`, which is why neither needs a denominator event
+       * of its own. Unlike the strip's, this `slot` is unbounded — the list
+       * pages forever.
+       */
+      name: 'discovery_card_tapped'
+      properties: { slot: number }
+    }
+  | {
+      /**
+       * A message arrived from somebody else while the socket was up.
+       *
+       * The one thing `message_sent` cannot tell you: whether anybody answers.
+       * A language exchange where everyone writes and nobody replies looks,
+       * from the sent side alone, exactly like one that works — and `reply` on
+       * the sent event describes the *sender's* intent, not the fact of an
+       * answer arriving.
+       *
+       * Deliberately narrower than "messages received". It fires where the
+       * socket delivers, so a message that arrived as a push while the app was
+       * closed is not counted, and neither is one read from a cold start's
+       * first fetch. That makes it a lower bound on received traffic and an
+       * honest count of conversations that were live while somebody was
+       * looking. `kind` is the full `MessageType`, not the composer's shorter
+       * list: what can be received is wider than what this app can send.
+       */
+      name: 'message_received'
+      properties: { kind: MessageType }
+    }
+  | {
+      /**
+       * A send that did not land. `reason` is the server's error code where
+       * there was one, `null` for a socket that never answered.
+       *
+       * The counterpart to `message_sent`, and the reason it is worth its own
+       * event rather than a property: a failure rate is invisible in a funnel
+       * built from successes. Both failure paths in the composer are quiet by
+       * design — the text one leaves an unsent row, the media one a retry row —
+       * so nothing anywhere counts them today.
+       */
+      name: 'message_send_failed'
+      properties: { kind: 'text' | 'media'; reason: string | null }
+    }
+  | {
+      /**
+       * A push notification was tapped and the app opened on it.
+       *
+       * Eleven kinds of message go out and not one of them was measured, so
+       * "does the streak reminder bring anybody back" had no answer. `kind` is
+       * what the payload declared; `cold_start` separates a tap that launched
+       * the app from one that came to it already running, which are different
+       * amounts of interruption and convert differently.
+       *
+       * Counts taps, never sends — the server knows what it sent, and a push
+       * that was delivered and ignored leaves no trace on the device.
+       */
+      name: 'notification_opened'
+      properties: { kind: PushKind | 'unknown'; cold_start: boolean }
+    }
+  | {
+      /**
+       * The discovery filter sheet was applied.
+       *
+       * `pro` is the question: the advanced filters are a paid feature, and
+       * `paywall_viewed` already says how many people are *refused* them.
+       * Nothing said how many people who have them use them, which is the
+       * other half of whether they are worth selling.
+       *
+       * `count` is how many filters the search carries, never which — a filter
+       * set is a description of who somebody is looking for, and that is a
+       * sharper thing to keep than this needs.
+       */
+      name: 'filters_applied'
+      properties: { count: number; pro: boolean }
+    }
+  | {
+      /**
+       * Tokens left the balance for something in the wallet store.
+       *
+       * The token economy is a whole screen of the app and a whole sibling
+       * site, and nothing measured whether anybody spends. `sku` is the
+       * catalogue id, which is a product name and not a person; `kind` is the
+       * catalogue it came from, with `consumable` for the streak freeze and
+       * the day repair, which have none.
+       *
+       * Spending only. Earning is the server's business — it happens in cron
+       * jobs and gifts the device never sees — so a balance cannot be
+       * reconstructed from this, and is not meant to be.
+       */
+      name: 'tokens_spent'
+      properties: { sku: string; kind: CosmeticKind | 'consumable'; amount: number }
     }
   | {
       /** The first-run tour opened. Once per install, so this counts installs toured. */

@@ -89,6 +89,14 @@ describe('every event survives the sanitizer', () => {
       },
     },
     { name: 'review_prompted', properties: { trigger: 'correction' } },
+    { name: 'boosted_strip_shown', properties: { count: 4 } },
+    { name: 'boosted_strip_tapped', properties: { slot: 0, tier: 'pro_plus' } },
+    { name: 'discovery_card_tapped', properties: { slot: 17 } },
+    { name: 'message_received', properties: { kind: 'audio' } },
+    { name: 'message_send_failed', properties: { kind: 'media', reason: 'MEDIA_TOO_LARGE' } },
+    { name: 'notification_opened', properties: { kind: 'streakReminder', cold_start: true } },
+    { name: 'filters_applied', properties: { count: 3, pro: true } },
+    { name: 'tokens_spent', properties: { sku: 'frame_gold', kind: 'frame', amount: 250 } },
   ]
 
   for (const event of events) {

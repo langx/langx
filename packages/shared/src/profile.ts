@@ -414,5 +414,7 @@ export const sharedProfileSchema = z.object({
   country: z.string().optional(),
   nativeLanguages: z.array(z.object({ code: z.string() })),
   learning: z.array(z.object({ code: z.string(), level: languageLevelSchema })),
+  /** Draws the tick, and hides the language pair a program does not have. */
+  official: z.literal(true).optional(),
 })
 export type SharedProfile = z.infer<typeof sharedProfileSchema>

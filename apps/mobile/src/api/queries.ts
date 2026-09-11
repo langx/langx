@@ -479,9 +479,9 @@ export function useDiscovery(
 /**
  * The paying members above the discovery list.
  *
- * Takes the filters only — no sort, no radius. The strip has one order of
- * its own, and passing them would give it a second cache entry per sort for
- * a response that never changes.
+ * Takes the filters only — no sort, no radius. The strip has an order of its
+ * own, which the server turns once an hour and never by these, so passing
+ * them would only give it a second cache entry per sort for the same answer.
  */
 export function useBoostedProfiles(params: Record<string, string>) {
   const search = new URLSearchParams(params).toString()

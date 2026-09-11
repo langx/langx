@@ -1,10 +1,13 @@
 import { TIER_BADGES } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
+import { useFocusEffect } from 'expo-router'
+import { useCallback } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useBoostedProfiles } from '../api/queries'
 import type { BoostedProfile } from '../api/types'
 import { useDisplayNames, useT } from '../i18n'
 import { confirmAlert } from '../lib/alert'
+import { track } from '../lib/analytics'
 import { openProfile } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { makeStyles, useTheme } from '../lib/theme'
@@ -34,6 +37,24 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
   const query = useBoostedProfiles(params)
 
   const items = query.data?.items ?? []
+
+  /*
+   * The dependency is the count, and that is the load-bearing part.
+   * `useFocusEffect` re-runs when its callback's identity changes while the
+   * screen is focused: on a cold first visit focus happens while the query is
+   * still pending and the count is 0, so an empty list would mean the event
+   * never fired at all. `items` itself must stay out — a fresh array every
+   * render would fire on every render.
+   *
+   * Above the early return because hooks cannot sit below one.
+   */
+  const count = items.length
+  useFocusEffect(
+    useCallback(() => {
+      if (count > 0) track({ name: 'boosted_strip_shown', properties: { count } })
+    }, [count]),
+  )
+
   if (items.length === 0) return null
 
   /** One row of the pair, in the reader's language: what they speak → what they are learning. */
@@ -88,10 +109,16 @@ export function BoostedProfiles({ params }: { params: Record<string, string> }) 
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.strip}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <Pressable
             key={item._id}
-            onPress={() => openProfile(item.handle, FROM)}
+            onPress={() => {
+              track({
+                name: 'boosted_strip_tapped',
+                properties: { slot: index, tier: item.tier },
+              })
+              openProfile(item.handle, FROM)
+            }}
             style={({ pressed }) => [styles.card, pressed && styles.pressed]}
           >
             {/* The ring is what marks the card as boosted at a glance; the

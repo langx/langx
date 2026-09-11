@@ -539,7 +539,16 @@ export default function PaywallScreen() {
                 {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
               </Text>
             ) : null}
-            {tier !== 'free' ? (
+            {/*
+              Three states, not two. A lifetime grant says so; a plan a store
+              sold says where to manage it; and a plan that came from neither
+              — granted by hand, `store: 'manual'` — says nothing at all,
+              because "manage it in your store account" points at a page with
+              nothing on it. That was already fixed for the lifetime gift and
+              `boughtOn` is what makes it true of every grant: `platformOfStore`
+              answers `null` for anything no store of ours sold.
+            */}
+            {tier !== 'free' && (held.store === 'promotional' || boughtOn) ? (
               <Text style={styles.contextText}>
                 {held.store === 'promotional'
                   ? t('paywall.lifetimeNotice', { plan: TIER_NAMES[tier] })

@@ -36,6 +36,8 @@ export const ptBR: Localized<ServerMessages> = {
       awayBody: 'Gente nova para praticar.',
       awayLongTitle: 'Estaremos aqui quando você voltar',
       awayLongBody: 'Sua sequência e seus tokens esperam.',
+      limitReachedTitle: 'Você continua esbarrando nos limites',
+      limitReachedBody: 'Um plano remove esses limites.',
       trialEndingTitle: 'Sua semana grátis termina em dois dias',
       trialEndingBody: 'Manter é um toque.',
       winBackTitle: 'Seu plano terminou',
@@ -233,6 +235,30 @@ export const ptBR: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir o LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 resposta ao que você escreveu hoje',
+      other: '{count} respostas ao que você escreveu hoje',
+    },
+
+    feedDigestPreheader: 'Responderam ao que você publicou',
+
+    feedDigestBody: {
+      one: 'Alguém respondeu a uma frase que você publicou hoje.',
+      other: '{count} pessoas responderam a frases que você publicou hoje.',
+    },
+
+    feedDigestCorrections: { one: '1 correção', other: '{count} correções' },
+
+    feedDigestAnswers: { one: '1 gravação', other: '{count} gravações' },
+
+    feedDigestComments: { one: '1 comentário', other: '{count} comentários' },
+
+    feedDigestMore: { one: 'E mais 1 publicação.', other: 'E mais {count} publicações.' },
+
+    feedDigestButton: 'Ler as respostas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -271,6 +297,13 @@ export const ptBR: Localized<ServerMessages> = {
         'Um mês é muito tempo. Sua conta, sua sequência e seus tokens continuam aqui, se você quiser — e esta é a última vez que falamos disso.',
 
       awayLongButton: 'Abrir o LangX',
+
+      limitReachedSubject: 'Você está esbarrando nos limites gratuitos',
+
+      limitReachedBody:
+        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas, mais traduções, mais anexos, todo dia.',
+
+      limitReachedButton: 'Ver os planos',
 
       trialEndingSubject: 'Sua semana grátis termina em dois dias',
 
@@ -312,7 +345,7 @@ export const ptBR: Localized<ServerMessages> = {
 
     welcomeTitle: 'Boas-vindas, {name}',
 
-    welcomeBody: 'Seu perfil está no ar em @{handle}. É isto que as pessoas fazem primeiro:',
+    welcomeBody: 'Seu perfil está no ar em {handle}. É isto que as pessoas fazem primeiro:',
 
     welcomeStep1: 'Encontre alguém que fale o que você está aprendendo e diga oi.',
 
@@ -443,5 +476,18 @@ export const ptBR: Localized<ServerMessages> = {
     fakeProfile: 'Perfil falso',
     underage: 'Menor de 16 anos',
     other: 'Outra coisa',
+  },
+  official: {
+    welcome:
+      'Oi, boas-vindas ao LangX! 👋 Que bom ter você aqui.\n\nA melhor parte começa em Descobrir: ache alguém que esteja aprendendo a sua língua e fale a que você quer, mande um oi, e a prática se resolve sozinha. No caminho você vai juntando tokens.\n\nÉ aqui que chegam as novidades do LangX, vale ficar de olho. E o LangX é de código aberto: ele melhora porque as pessoas nos contam coisas. Se algo quebrar, ou você pensar em algo que deveríamos fazer, Configurações → Sobre → Feedback vem direto para a gente. Lemos tudo. E se você conhece alguém que ia curtir daqui, em Configurações → Compartilhar e convidar vocês dois ganham tokens.',
+    welcomeRate:
+      'Mais uma coisinha, se você quiser: avaliar o LangX na {store} ajuda de verdade as pessoas a nos acharem. Sem pressão nenhuma.',
+    assistantOffline:
+      'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
+    assistantLimit:
+      'Agora não consigo responder mais — tente de novo daqui a algumas horas.\n\nNada depende de mim: você pode denunciar alguém pelo perfil, mandar um erro ou uma ideia pelas Configurações, e {email} sempre chega a uma pessoa.',
+    assistantError: 'Algo deu errado do meu lado. Tente enviar de novo daqui a pouco.',
+    assistantRefusal:
+      'Nisso eu não consigo ajudar. Se eu entendi errado, {email} chega a uma pessoa.',
   },
 }

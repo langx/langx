@@ -30,6 +30,8 @@ export const tr: Localized<ServerMessages> = {
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
       awayLongBody: 'Serin ve token’ların bekliyor.',
+      limitReachedTitle: 'Ücretsiz sınırlara takılıp duruyorsun',
+      limitReachedBody: 'Bir plan bunları kaldırır.',
       trialEndingTitle: 'Ücretsiz haftan iki gün sonra bitiyor',
       trialEndingBody: 'Sürdürmek tek dokunuş.',
       winBackTitle: 'Planın bir hafta önce bitti',
@@ -219,6 +221,30 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX’i aç',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'Bugün yazdığına 1 yanıt geldi',
+      other: 'Bugün yazdığına {count} yanıt geldi',
+    },
+
+    feedDigestPreheader: 'Paylaştığın cümlelere cevap verdiler',
+
+    feedDigestBody: {
+      one: 'Bugün paylaştığın bir cümleye cevap verildi.',
+      other: 'Bugün paylaştığın cümlelere {count} kişi cevap verdi.',
+    },
+
+    feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },
+
+    feedDigestAnswers: { one: '1 seslendirme', other: '{count} seslendirme' },
+
+    feedDigestComments: { one: '1 yorum', other: '{count} yorum' },
+
+    feedDigestMore: { one: 'Ve 1 gönderi daha.', other: 'Ve {count} gönderi daha.' },
+
+    feedDigestButton: 'Yanıtları oku',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -256,6 +282,13 @@ export const tr: Localized<ServerMessages> = {
         'Bir ay uzun bir süre. Hesabın, serin ve token’ların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
 
       awayLongButton: 'LangX’i aç',
+
+      limitReachedSubject: 'Ücretsiz sınırlara takılıyorsun',
+
+      limitReachedBody:
+        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet, daha fazla çeviri, daha fazla ek.',
+
+      limitReachedButton: 'Planlara bak',
 
       trialEndingSubject: 'Ücretsiz haftan iki gün sonra bitiyor',
 
@@ -297,7 +330,7 @@ export const tr: Localized<ServerMessages> = {
 
     welcomeTitle: 'Hoş geldin, {name}',
 
-    welcomeBody: 'Profilin @{handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
+    welcomeBody: 'Profilin {handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
 
     welcomeStep1: 'Öğrendiğin dili konuşan birini bul ve selam ver.',
 
@@ -429,5 +462,18 @@ export const tr: Localized<ServerMessages> = {
     fakeProfile: 'Sahte profil',
     underage: '16 yaşından küçük',
     other: 'Başka bir şey',
+  },
+  official: {
+    welcome:
+      'Selam, LangX’e hoş geldin! 👋 Aramıza katılmana sevindik.\n\nİşin güzel kısmı Keşfet’te başlıyor: senin dilini öğrenen ve senin öğrendiğin dili konuşan birini bul, bir merhaba de, gerisi kendiliğinden geliyor. Yol boyunca jeton da biriktiriyorsun.\n\nLangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Bir de LangX açık kaynak — iyileşmesinin sebebi insanların bize bir şeyler söylemesi. Bozuk bir şey görürsen ya da aklına yapmamız gereken bir şey gelirse, Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Hepsini okuyoruz. Bir de burayı sevecek birini tanıyorsan, Ayarlar → Paylaş ve davet et ikinize de jeton kazandırıyor.',
+    welcomeRate:
+      'Son bir şey, canın isterse: {store} üzerinde LangX’e puan vermen bizi bulmalarına cidden yardım ediyor. Zorunlu değil tabii.',
+    assistantOffline:
+      'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
+    assistantLimit:
+      'Şu an daha fazla yanıt veremiyorum — birkaç saat sonra tekrar dene.\n\nHiçbir şey bana bakmıyor: birini profilinden bildirebilir, Ayarlar’dan hata veya fikir gönderebilirsin, {email} adresinden de her zaman bir insana ulaşırsın.',
+    assistantError: 'Bende bir şeyler ters gitti. Birazdan tekrar göndermeyi dene.',
+    assistantRefusal:
+      'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',
   },
 }

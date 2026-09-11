@@ -157,7 +157,7 @@ describe('the campaign queue', () => {
     expect(row).toMatchObject({ status: 'sending', sent: 1, startedAt: MORNING })
   })
 
-  /** "Reply to this email — it reaches a human" has to be true from a no-reply@ sender. */
+  /** From a no-reply@ sender, only a Reply-To makes "it reaches a human" true. */
   it('carries the Reply-To the context names', async () => {
     await newAccount()
     await queued()

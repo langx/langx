@@ -1,21 +1,4 @@
-import { readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const HERE = dirname(fileURLToPath(import.meta.url))
-/**
- * Up out of `dist/` when bundled, and up out of `src/modules/insight` when
- * run from source — the same probe `modules/cards/render.ts` uses, and for the
- * same reason: what differs between the two is the build layout, not the
- * environment. The Dockerfile copies `apps/api/assets` to `dist/assets`; a
- * file only ever `readFile`d at runtime is invisible to esbuild and to
- * `pnpm deploy`, so it reaches the image by that line alone.
- */
-const ASSET_ROOTS = [
-  join(HERE, '../../../assets'),
-  join(HERE, '../../assets'),
-  join(HERE, 'assets'),
-]
+import { loadAsset as readAsset } from '../../lib/assets'
 
 /**
  * The images the page draws, and the only names its route will serve.
@@ -29,16 +12,7 @@ const ASSET_ROOTS = [
 export const INSIGHT_IMAGES = ['lockup.png', 'lockup-dark.png', 'icon.png'] as const
 export type InsightImage = (typeof INSIGHT_IMAGES)[number]
 
-async function loadAsset(relative: string): Promise<Buffer> {
-  for (const root of ASSET_ROOTS) {
-    try {
-      return await readFile(join(root, relative))
-    } catch {
-      continue
-    }
-  }
-  throw new Error(`Insight asset not found: ${relative}`)
-}
+const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Insight asset')
 
 let page: string | null = null
 
