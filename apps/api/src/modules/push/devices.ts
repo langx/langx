@@ -191,18 +191,32 @@ export class LoggingPushSender implements PushSender {
 /** Expo accepts at most this many messages in one request. */
 const EXPO_BATCH_SIZE = 100
 
+/**
+ * Just enough of pino's `warn` to log structurally, and narrow for the reason
+ * `EmailSenderLogger` is narrow: the sender is built in `index.ts` before
+ * `buildApp` has constructed `app.log`, because `createAuth` needs one.
+ */
+export interface PushSenderLogger {
+  warn(obj: Record<string, unknown>, msg: string): void
+}
+
 /** Expo's push service — one HTTP call, no SDK, no per-platform certificates. */
 export class ExpoPushSender implements PushSender {
   readonly #endpoint = 'https://exp.host/--/api/v2/push/send'
   readonly #accessToken: string | undefined
+  readonly #logger: PushSenderLogger | undefined
 
   /**
    * `accessToken` is only needed when the Expo project has enhanced push
    * security switched on, which makes an unauthenticated send fail wholesale.
    * Unset is the normal case.
+   *
+   * `logger` is optional so the tests can construct one bare, and passed
+   * everywhere else: everything below it used to fail in silence.
    */
-  constructor(accessToken?: string) {
+  constructor(accessToken?: string, logger?: PushSenderLogger) {
     this.#accessToken = accessToken
+    this.#logger = logger
   }
 
   async send(message: PushMessage): Promise<PushResult> {
@@ -242,19 +256,61 @@ export class ExpoPushSender implements PushSender {
        *
        * Tickets are positional, so a ticket's index is its token's index.
        */
-      if (!response.ok) continue
-      const payload = (await response.json()) as {
-        data?: { status: string; details?: { error?: string } }[]
+      if (!response.ok) {
+        /*
+         * A refused request used to be a `continue` and nothing else, which is
+         * how an entire platform can stop receiving notifications without one
+         * line anywhere saying so. This is the wholesale failure: a bad access
+         * token, a malformed batch, Expo being down. Every message in the
+         * batch is gone, and the only thing that ever notices is somebody
+         * saying "I get no notifications".
+         *
+         * The body is read as text rather than JSON because a 502 from a
+         * proxy in front of Expo is not JSON, and a parse error here would
+         * replace the diagnosis with a different one. Truncated: it is a
+         * reason, not a payload to keep.
+         */
+        this.#logger?.warn(
+          {
+            status: response.status,
+            kind: message.data.kind,
+            tokens: batch.length,
+            body: (await response.text().catch(() => '')).slice(0, 500),
+          },
+          'expo push refused the request',
+        )
+        continue
       }
+      const payload = (await response.json()) as {
+        data?: { status: string; message?: string; details?: { error?: string } }[]
+      }
+      /*
+       * Everything Expo said about a token that is not "gone". These were
+       * dropped on the floor — including `InvalidCredentials`, which is what
+       * a missing or expired APNs key looks like and which silences one whole
+       * platform while the other keeps working. Counted rather than listed:
+       * one line per send, whatever the batch size, and no push tokens in it.
+       */
+      const errors = new Map<string, number>()
       payload.data?.forEach((ticket, ticketIndex) => {
         if (ticket.status === 'ok') return
+        const error = ticket.details?.error ?? ticket.message ?? 'unknown'
         // Only DeviceNotRegistered is permanent. MessageRateExceeded and
         // MessageTooBig say something about this send, not about the device,
         // and deleting a token over either would silence a real phone.
-        if (ticket.details?.error !== 'DeviceNotRegistered') return
+        if (ticket.details?.error !== 'DeviceNotRegistered') {
+          errors.set(error, (errors.get(error) ?? 0) + 1)
+          return
+        }
         const token = batch[ticketIndex]
         if (token) invalidTokens.push(token)
       })
+      if (errors.size > 0) {
+        this.#logger?.warn(
+          { errors: Object.fromEntries(errors), kind: message.data.kind, tokens: batch.length },
+          'expo push rejected some of the batch',
+        )
+      }
     }
 
     return { invalidTokens }

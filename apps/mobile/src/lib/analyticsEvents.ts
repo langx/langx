@@ -252,6 +252,24 @@ export type AnalyticsEvent =
     }
   | {
       /**
+       * This phone has permission and could not register a push token.
+       *
+       * The counterpart to `notification_opened`, and here for the reason
+       * `message_send_failed` is: the failures are invisible in a count of
+       * successes. Everything on this path swallows its error — Expo minting
+       * the token, and the `POST /me/devices` that files it — so a phone can
+       * sit with the notification switches reading on and no row on the
+       * server at all, which is a person who receives nothing and has nothing
+       * to show for it. It was found by a screenshot of an iOS Settings page.
+       *
+       * `step` is which half failed, and `reason` the error's own word for it
+       * — never the token, which is an address for reaching somebody.
+       */
+      name: 'push_registration_failed'
+      properties: { step: 'token' | 'register'; reason: string }
+    }
+  | {
+      /**
        * The discovery filter sheet was applied.
        *
        * `pro` is the question: the advanced filters are a paid feature, and
