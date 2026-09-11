@@ -91,6 +91,7 @@ export const es: Localized<EnMessages> = {
     feedAsk: '¿Atascado con una frase? Publícala aquí y alguien la corregirá.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Paso {current} de {total}',
     next: 'Siguiente',
     done: 'Entendido',

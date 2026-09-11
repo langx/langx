@@ -88,6 +88,7 @@ export const ptBR: Localized<EnMessages> = {
     feedAsk: 'Travado numa frase? Publique aqui e alguém corrige.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Passo {current} de {total}',
     next: 'Próximo',
     done: 'Entendi',
