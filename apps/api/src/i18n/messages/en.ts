@@ -40,6 +40,8 @@ export const en = {
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
       awayLongBody: 'Your streak and tokens are waiting.',
+      limitReachedTitle: 'You keep hitting the free limits',
+      limitReachedBody: 'A plan lifts them.',
       trialEndingTitle: 'Your free week ends in two days',
       trialEndingBody: 'Keeping your plan takes one tap.',
       winBackTitle: 'Your plan ended a week ago',
@@ -239,6 +241,30 @@ export const en = {
 
     newsletterButton: 'Open LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 reply to your writing today',
+      other: '{count} replies to your writing today',
+    },
+
+    feedDigestPreheader: 'People answered what you posted',
+
+    feedDigestBody: {
+      one: 'Somebody answered a sentence you posted today.',
+      other: '{count} people answered sentences you posted today.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 recording', other: '{count} recordings' },
+
+    feedDigestComments: { one: '1 comment', other: '{count} comments' },
+
+    feedDigestMore: { one: 'And 1 more post.', other: 'And {count} more posts.' },
+
+    feedDigestButton: 'Read the replies',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -278,6 +304,13 @@ export const en = {
         'A month is a long time. Your account, your streak and your tokens are all still here if you want them — and this is the last we will say about it.',
 
       awayLongButton: 'Open LangX',
+
+      limitReachedSubject: 'You are running into the free limits',
+
+      limitReachedBody:
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+
+      limitReachedButton: 'See the plans',
 
       trialEndingSubject: 'Your free week ends in two days',
 

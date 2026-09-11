@@ -3901,3 +3901,38 @@ possible — `HANDLE_PATTERN` requires a letter first.
 The reading schema does not move, because it never could: v1 handles came
 across under a three-character rule, so a three-letter account has existed all
 along. What changed is that somebody can now be given one on purpose.
+
+## A refusal is worth remembering, and a correction is worth a digest
+
+The last two scenarios in the plan, and both were blocked on the same kind of
+thing: the code knew something momentarily and threw it away.
+
+**`consumeQuota` refused people and forgot.** "You keep hitting the free
+limits" is the one nudge here that is an argument for paying, and it needs to
+tell a person who ran out once from a person who runs out every evening —
+which nothing recorded. `quotaRefusals` is a rolling three-day array,
+written inside `consumeQuota` rather than at the three call sites that catch
+its `false`: that is where the refusal is _decided_, so the fourth caller,
+whenever it arrives, gets this for free rather than being the one that forgot.
+Three refusals in three days is the threshold — once is Tuesday, twice is a
+coincidence. Free tiers only: a paid tier has no limit to hit, so the array
+can only be stale, and somebody who upgraded yesterday must not be sold the
+thing they just bought.
+
+**`social.email` had a switch and nothing behind it.** The feed's push fires
+on the reply and is throttled to one an hour; the digest is the other half,
+and the two answer different questions. A push says _something happened, look
+now_. A digest says _here is what the day amounted to_ — which is the one
+worth reading when the corrections are the reason somebody posted at all. It
+goes in the evening, because a sentence posted in the morning has had the day
+to be answered and a correction is something people sit down with.
+
+The letter carries counts and the opening words of the reader's **own**
+sentence, never the correction itself. The unread digest withholds message
+text for privacy; this withholds it for a different reason — a mail that
+already contains the answer is a mail nobody clicks, and a correction is
+worth seeing beside the sentence it corrects.
+
+With a sender behind it, `social.email` now defaults **on**, like `messages`.
+A switch that was off because it did nothing should not stay off once it does
+the thing people joined for.

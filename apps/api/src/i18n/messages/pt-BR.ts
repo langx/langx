@@ -36,6 +36,8 @@ export const ptBR: Localized<ServerMessages> = {
       awayBody: 'Gente nova para praticar.',
       awayLongTitle: 'Estaremos aqui quando você voltar',
       awayLongBody: 'Sua sequência e seus tokens esperam.',
+      limitReachedTitle: 'Você continua esbarrando nos limites',
+      limitReachedBody: 'Um plano remove esses limites.',
       trialEndingTitle: 'Sua semana grátis termina em dois dias',
       trialEndingBody: 'Manter é um toque.',
       winBackTitle: 'Seu plano terminou',
@@ -233,6 +235,30 @@ export const ptBR: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir o LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 resposta ao que você escreveu hoje',
+      other: '{count} respostas ao que você escreveu hoje',
+    },
+
+    feedDigestPreheader: 'Responderam ao que você publicou',
+
+    feedDigestBody: {
+      one: 'Alguém respondeu a uma frase que você publicou hoje.',
+      other: '{count} pessoas responderam a frases que você publicou hoje.',
+    },
+
+    feedDigestCorrections: { one: '1 correção', other: '{count} correções' },
+
+    feedDigestAnswers: { one: '1 gravação', other: '{count} gravações' },
+
+    feedDigestComments: { one: '1 comentário', other: '{count} comentários' },
+
+    feedDigestMore: { one: 'E mais 1 publicação.', other: 'E mais {count} publicações.' },
+
+    feedDigestButton: 'Ler as respostas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -271,6 +297,13 @@ export const ptBR: Localized<ServerMessages> = {
         'Um mês é muito tempo. Sua conta, sua sequência e seus tokens continuam aqui, se você quiser — e esta é a última vez que falamos disso.',
 
       awayLongButton: 'Abrir o LangX',
+
+      limitReachedSubject: 'Você está esbarrando nos limites gratuitos',
+
+      limitReachedBody:
+        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas, mais traduções, mais anexos, todo dia.',
+
+      limitReachedButton: 'Ver os planos',
 
       trialEndingSubject: 'Sua semana grátis termina em dois dias',
 

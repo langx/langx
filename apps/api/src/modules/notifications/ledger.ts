@@ -8,6 +8,7 @@ export type NotificationJob =
   | 'profileVisitsEmail'
   | 'badgeEarned'
   | 'verifyReminder'
+  | 'feedDigest'
   /** The feed's own pushes: one per follower ever, one per post per hour. */
   | 'social.follow'
   | 'social.postReply'
