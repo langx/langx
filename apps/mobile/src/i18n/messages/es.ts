@@ -539,8 +539,11 @@ export const es: Localized<EnMessages> = {
     tokensCarriedBody: '{carried} vienen de tu saldo anterior, más {bonus} por volver.',
     tokensBonus: { one: '{count} ficha', other: '{count} fichas' },
     tokensBonusBody: 'Un regalo de bienvenida para empezar. Gana más hablando y corrigiendo.',
-    streak: 'Mejor racha: {days}',
-    streakBody: 'Se guarda como tu récord. Tu racha en curso empieza hoy de cero.',
+    streak: {
+      one: 'racha de {count} día, sigue viva',
+      other: 'racha de {count} días, sigue viva',
+    },
+    streakBody: 'Ha vuelto viva, no como récord. Vuelve mañana y la mantienes.',
     tierForLife: '{plan}, de por vida',
     proBody:
       'Por lo que construiste en la v1. No caduca y no hay nada que pagar: gracias por estar aquí desde el principio.',

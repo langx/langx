@@ -79,7 +79,7 @@ export default function Index() {
 
   /**
    * A restored v1 user skips the wizard entirely, so without this they would
-   * land on a discovery feed holding a handle, a streak record and a token
+   * land on a discovery feed holding a handle, a live streak and a token
    * balance nothing ever told them about. One check covers all three ways back
    * in — the password bridge, Google/Apple, and the email link — because all
    * three write the same field.
