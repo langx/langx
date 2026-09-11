@@ -23,6 +23,22 @@ let socket: Socket | null = null
 export async function getSocket(): Promise<Socket> {
   if (socket?.connected) return socket
 
+  /*
+   * `active` is socket.io's own word for "still trying", and it goes false for
+   * good when a *middleware* error refuses the handshake — an expired session,
+   * or the server's auth lookup having a bad second. The client stops
+   * reconnecting at that point and nothing here noticed: the check above only
+   * asks whether the socket is connected, so every later call was handed the
+   * dead one back. Realtime stayed dead until the app was force-quit, and
+   * every message typed meanwhile waited out its ack timeout and turned red.
+   * Throwing it away is enough; the lines below build a fresh one, with a
+   * cookie read fresh as well, which is the other half of an expired session.
+   */
+  if (socket && !socket.active) {
+    socket.close()
+    socket = null
+  }
+
   const auth: Record<string, string> = {}
   if (Platform.OS !== 'web') {
     auth.cookie = (await authClient.getCookie()) ?? ''

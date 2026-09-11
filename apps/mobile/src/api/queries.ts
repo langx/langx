@@ -286,9 +286,17 @@ export function useMe(enabled = true) {
     queryKey: keys.me,
     queryFn: () => api.get<MeProfile>('/profiles/me'),
     enabled,
-    // A 404 here means "signed in but no profile yet" — onboarding, not an
-    // error to retry.
-    retry: false,
+    /*
+     * The client's default predicate, not `retry: false`.
+     *
+     * `false` was written for the 404 — "signed in but no profile yet" is an
+     * answer, and retrying it only delays onboarding — but it applied to lost
+     * packets too, so one dropped request settled this query with nothing and
+     * `index.tsx` had to decide a launch on the strength of a single attempt.
+     * The default (`app/_layout.tsx`) already refuses to retry any 4xx, so the
+     * 404 still settles at once and a bad second on the train gets two more
+     * tries before anybody is told anything.
+     */
   })
 }
 

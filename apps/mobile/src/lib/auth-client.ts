@@ -24,6 +24,15 @@ export const authClient = createAuthClient({
    * is the only thing that can tell the server which language to write in.
    */
   fetchOptions: {
+    /*
+     * The same fifteen seconds `apiFetch` gives our own routes, and for the
+     * same reason: nothing in React Native's fetch stack times out on its own,
+     * so a connection that is accepted and never answered leaves `/get-session`
+     * pending for as long as the app is open — which is a launch that never
+     * resolves. Better Auth uses `@better-fetch/fetch`, which takes the number
+     * here and does the aborting itself.
+     */
+    timeout: 15_000,
     headers: {
       get 'accept-language'() {
         return currentLocale()

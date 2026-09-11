@@ -2,11 +2,15 @@ import { Redirect } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ApiRequestError } from '../src/api/client'
 import { SplashFill } from '../src/components/AppSplash'
+import { LoadFailed } from '../src/components/LoadFailed'
+import { Screen } from '../src/components/ui/Screen'
 import { useSignalAppReady } from '../src/hooks/useAppReady'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
+import { errorStatusOf } from '../src/lib/errors'
+import { meState } from '../src/lib/meState'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
 
 /**
@@ -33,9 +37,9 @@ export default function Index() {
   const { data: session } = authClient.useSession()
   const signedIn = Boolean(session)
   // Disabled while signed out: without a session `/profiles/me` is a 401, and
-  // an unread failed request per launch is the least of it — `needsOnboarding`
-  // below reads "no profile" off exactly that shape.
-  const { data: profile, isPending, error } = useMe(signedIn)
+  // an unread failed request per launch is the least of it — the gate below
+  // reads "no profile" off a 404, which a signed-out request never gets to.
+  const { data: profile, isPending, error, refetch } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
@@ -73,9 +77,32 @@ export default function Index() {
     return <Redirect href="/suspended" />
   }
 
-  const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
+  /*
+   * `!profile` used to be the whole test, and it read a failed request as an
+   * account with no profile — which is what sent a member with no network into
+   * the onboarding wizard. `meState` says which of the two this is; the status
+   * is the only thing that can tell them apart.
+   */
+  const state = meState({ hasProfile: Boolean(profile), errorStatus: errorStatusOf(error) })
+
   // Back to the step the draft has actually earned, not always the first one.
-  if (needsOnboarding) return <Redirect href={onboardingHref(furthestOnboardingStep(getDraft()))} />
+  if (state === 'onboarding') {
+    return <Redirect href={onboardingHref(furthestOnboardingStep(getDraft()))} />
+  }
+
+  /*
+   * Everything that is not an answer. A screen with a button rather than a
+   * spinner, because the thing it is waiting for may never arrive on its own —
+   * and rather than a redirect, because this screen is the one that asks the
+   * question, and it has to still be here to ask it again.
+   */
+  if (!profile) {
+    return (
+      <Screen>
+        <LoadFailed onRetry={() => void refetch()} />
+      </Screen>
+    )
+  }
 
   /**
    * A restored v1 user skips the wizard entirely, so without this they would
