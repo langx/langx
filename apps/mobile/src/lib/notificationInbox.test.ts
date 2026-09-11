@@ -95,14 +95,27 @@ describe('notificationCopy', () => {
 })
 
 describe('markPagesRead', () => {
-  it('stamps every loaded page, so coming back shows no dot', () => {
-    const data = {
+  const twoPages = () =>
+    ({
       pageParams: ['', 'c1'],
-      pages: [{ items: [{ read: false }] }, { items: [{ read: false }] }],
-    } as InfiniteData<{ items: { read: boolean }[] }>
+      pages: [{ items: [{ _id: 'a', read: false }] }, { items: [{ _id: 'b', read: false }] }],
+    }) as InfiniteData<{ items: { _id: string; read: boolean }[] }>
 
-    const next = markPagesRead(data)
-    expect(next?.pages.flatMap((page) => page.items).every((item) => item.read)).toBe(true)
+  const flat = (data: ReturnType<typeof twoPages> | undefined) =>
+    data?.pages.flatMap((page) => page.items) ?? []
+
+  it('stamps every loaded page when the button was pressed', () => {
+    expect(flat(markPagesRead(twoPages())).every((item) => item.read)).toBe(true)
+  })
+
+  /**
+   * A tap is not the button. Clearing the rest of the list because somebody
+   * opened one row is the behaviour this whole design exists to avoid.
+   */
+  it('stamps only the row that was opened', () => {
+    const next = flat(markPagesRead(twoPages(), 'b'))
+    expect(next.find((item) => item._id === 'b')?.read).toBe(true)
+    expect(next.find((item) => item._id === 'a')?.read).toBe(false)
   })
 
   it('leaves an empty cache alone', () => {

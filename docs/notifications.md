@@ -265,10 +265,15 @@ happened, read by a bell in the Feed header and a screen behind it.
 - **No prose on the wire.** The row carries data — an actor, a post, a count —
   and the app composes the sentence from `messages/en.ts`, so a count reaches a
   plural entry in the reader's own language.
-- **Reading is not marking.** Opening the centre changes nothing; a
-  **Mark all read** button in the header does, and it is offered only when
-  there is something to clear. Somebody who came to check one name has not
-  dealt with the other eleven.
+- **Reading is not marking; acting is.** Opening the centre changes nothing.
+  Tapping a row reads that row — and the whole pile behind it, since the row
+  was already speaking for all of it — so the count falls as things are dealt
+  with, which is what makes it mean anything. A **Mark all read** button in the
+  header clears the rest, and is offered only when there is something to clear.
+
+  The middle option, marking everything the moment the screen opens, was tried
+  and removed: somebody who came to check one name had then dealt with the
+  other eleven whether they meant to or not.
 
 ### What it does not carry
 

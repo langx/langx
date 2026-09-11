@@ -1,5 +1,11 @@
-import { listNotificationsQuerySchema } from '@langx/shared'
+import {
+  ERROR_CODES,
+  listNotificationsQuerySchema,
+  markNotificationsReadSchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { ObjectId } from 'mongodb'
+import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
 import {
   countUnreadNotifications,
@@ -37,18 +43,43 @@ export const notificationRoutes: FastifyPluginAsyncZod = async (app) => {
     return reply.send({ total })
   })
 
-  app.post('/me/notifications/read', { preHandler: requireAuth }, async (request, reply) => {
-    const result = await markNotificationsRead(app.mongo.db, request.userId)
+  /**
+   * One row, or all of them.
+   *
+   * Opening the centre marks nothing — somebody who came to check one name has
+   * not dealt with the other eleven, and clearing them on their behalf throws
+   * away the only record of what they have not looked at. So the client sends
+   * an `id` when a row is opened, and none when the header button is pressed.
+   */
+  app.post(
+    '/me/notifications/read',
     /*
-     * And say so to this account's *other* devices.
-     *
-     * Exactly the hole `conversation:read` exists to close: a phone that
-     * cleared the bell knows the number is zero, and the tablet in the next
-     * room is still drawing the old one with no way of finding out. The
-     * emitter is the reader's own room, so this is the one socket event whose
-     * sender and audience are the same person.
+     * `.optional()`, because "read everything" sends no body at all and an
+     * object schema rejects a missing one outright — a 400 on the plainest
+     * call the route has.
      */
-    app.io.to(userRoom(request.userId)).emit('notification:read', {})
-    return reply.send(result)
-  })
+    { preHandler: requireAuth, schema: { body: markNotificationsReadSchema.optional() } },
+    async (request, reply) => {
+      let only: ObjectId | undefined
+      if (request.body?.id) {
+        try {
+          only = new ObjectId(request.body.id)
+        } catch {
+          throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed notification id')
+        }
+      }
+      const result = await markNotificationsRead(app.mongo.db, request.userId, only)
+      /*
+       * And say so to this account's *other* devices.
+       *
+       * Exactly the hole `conversation:read` exists to close: a phone that
+       * cleared the bell knows the number is zero, and the tablet in the next
+       * room is still drawing the old one with no way of finding out. The
+       * emitter is the reader's own room, so this is the one socket event whose
+       * sender and audience are the same person.
+       */
+      app.io.to(userRoom(request.userId)).emit('notification:read', {})
+      return reply.send(result)
+    },
+  )
 }

@@ -1117,10 +1117,20 @@ export function useNotificationUnread(enabled = true) {
 export function useMarkNotificationsRead() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: () => api.post<{ read: number }>('/me/notifications/read'),
-    onMutate: () => {
+    mutationFn: (id?: string) =>
+      api.post<{ read: number }>('/me/notifications/read', id ? { id } : {}),
+    onMutate: (id) => {
       const previous = client.getQueryData<number>(keys.notificationsUnread)
-      client.setQueryData<number>(keys.notificationsUnread, 0)
+      /*
+       * One row down, or the whole thing to zero.
+       *
+       * Optimistic either way, because the badge has to move in the same frame
+       * as the thing that moved it — a tap that opens a post while the bell
+       * still reads what it read a second ago is the bug this avoids.
+       */
+      client.setQueryData<number>(keys.notificationsUnread, (total) =>
+        id === undefined ? 0 : Math.max(0, (total ?? 0) - 1),
+      )
       return { previous }
     },
     onError: (_error, _input, context) => {
@@ -1128,11 +1138,11 @@ export function useMarkNotificationsRead() {
         client.setQueryData(keys.notificationsUnread, context.previous)
       }
     },
-    onSuccess: () => {
-      // Stamped into the loaded pages rather than refetched: the dots have to
-      // go the instant the button is pressed, and the list must not reorder.
+    onSuccess: (_result, id) => {
+      // Stamped into the loaded pages rather than refetched: the dot has to go
+      // the instant it is acted on, and the list must not reorder under it.
       client.setQueryData<InfiniteData<NotificationsPage>>(keys.notifications, (data) =>
-        markPagesRead(data),
+        markPagesRead(data, id),
       )
     },
   })

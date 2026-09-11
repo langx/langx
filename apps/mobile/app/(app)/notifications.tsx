@@ -127,7 +127,12 @@ export default function NotificationsScreen() {
                 // empty screen — it is not a button.
                 disabled={!href}
                 onPress={() => {
-                  if (href) openNotification(href)
+                  if (!href) return
+                  // Opening it *is* dealing with it, so the dot goes and the
+                  // bell drops by one. The server reads the whole pile behind
+                  // this row, which is what the row was already speaking for.
+                  if (!item.read) markRead.mutate(item._id)
+                  openNotification(href)
                 }}
                 style={({ pressed }) => [
                   styles.row,

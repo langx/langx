@@ -4041,3 +4041,28 @@ the automatic mark, and the fetch-timestamp latch that stopped that mark
 firing before the page it was marking had arrived, both went. Both were
 careful, both were tested, and both existed only to hold up a behaviour that
 turned out to be the wrong one.
+
+## A tap is what marks a notification read
+
+Opening the centre marks nothing, and for a while a **Mark all read** button
+was the only thing that did. That was better than the automatic version it
+replaced, and still wrong in its own way: most people never press a button
+like that, so the badge becomes a number that is always on — and a number
+always on stops being read, which eventually trains people not to look at the
+bell at all. An explicit control was the right instinct applied to the wrong
+half of the problem.
+
+So a tap reads the row it opened. The count then means "things not yet dealt
+with" and falls as they are dealt with, which is the only reading of a badge
+that survives contact with somebody who uses the app every day. The button
+keeps its job — the leftovers, the ones being deliberately ignored — and is
+drawn only when there are any.
+
+A tap reads the **whole pile** behind the row, not the one document the row
+was named after. The row already said nine other people commented; leaving
+eight of its members unread would put the badge straight back up for something
+the reader has demonstrably just looked at. Server-side that is the same
+grouping rule the list uses, which is why `markNotificationsRead` takes a row
+id rather than a list of them and resolves the group itself — and why it scopes
+the lookup by `userId` as well as `_id`, so an id belonging to somebody else
+matches nothing instead of reading their inbox for them.

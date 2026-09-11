@@ -406,11 +406,33 @@ export async function countUnreadNotifications(db: Db, userId: string): Promise<
 export async function markNotificationsRead(
   db: Db,
   userId: string,
+  /**
+   * One row's id to read just that one, or nothing for the lot.
+   *
+   * "That one" means the whole pile behind it, not the single document: the
+   * row on screen says nine other people commented too, and marking it read
+   * while leaving eight of its members unread would put the badge back up for
+   * something the reader has demonstrably just looked at.
+   */
+  only?: ObjectId,
   now: Date = new Date(),
 ): Promise<{ readAt: string; read: number }> {
-  const result = await db
-    .collection<NotificationDoc>(COLLECTIONS.notifications)
-    .updateMany({ userId, readAt: { $exists: false } }, { $set: { readAt: now } })
+  const rows = db.collection<NotificationDoc>(COLLECTIONS.notifications)
+  const filter: Document = { userId, readAt: { $exists: false } }
+
+  if (only) {
+    // Scoped by `userId` as well as `_id`, so an id belonging to somebody else
+    // matches nothing rather than reading their inbox for them.
+    const row = await rows.findOne({ _id: only, userId })
+    if (!row) return { readAt: now.toISOString(), read: 0 }
+    filter.kind = row.kind
+    // The same rule `GROUP_KEY` applies, spelled out: a kind that collapses is
+    // marked across its post, and one that does not is marked on its own.
+    if (GROUPED_KINDS.includes(row.kind) && row.postId) filter.postId = row.postId
+    else filter._id = row._id
+  }
+
+  const result = await rows.updateMany(filter, { $set: { readAt: now } })
   return { readAt: now.toISOString(), read: result.modifiedCount }
 }
 

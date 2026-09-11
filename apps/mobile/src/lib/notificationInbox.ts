@@ -104,20 +104,25 @@ export function notificationHref(item: InboxItem, from: string): string | null {
 /**
  * Stamp every loaded page as read, instead of refetching them.
  *
- * What "Mark all read" does to the screen it was pressed on. The alternative —
+ * What a tap on a row, and what "Mark all read", do to the screen they happened
+ * on. The alternative —
  * invalidating after the mark — refetches the list the reader is looking at,
  * which is the one moment it must not reorder or jump, and would spend a
  * request re-reading something the client already knows the answer to.
  */
-export function markPagesRead<Page extends { items: { read: boolean }[] }>(
+export function markPagesRead<Page extends { items: { _id: string; read: boolean }[] }>(
   data: InfiniteData<Page> | undefined,
+  /** One row's id for a tap, or nothing for the header button. */
+  only?: string,
 ): InfiniteData<Page> | undefined {
   if (!data) return data
   return {
     ...data,
     pages: data.pages.map((page) => ({
       ...page,
-      items: page.items.map((item) => (item.read ? item : { ...item, read: true })),
+      items: page.items.map((item) =>
+        item.read || (only !== undefined && item._id !== only) ? item : { ...item, read: true },
+      ),
     })),
   }
 }

@@ -161,11 +161,13 @@ describe('notification centre', () => {
     })
   }
 
-  function markRead(user: SignedUpUser) {
+  /** No `id` clears everything; an `id` clears the one row and its pile. */
+  function markRead(user: SignedUpUser, id?: string) {
     return app.inject({
       method: 'POST',
       url: '/me/notifications/read',
       headers: { cookie: user.cookie },
+      payload: id ? { id } : {},
     })
   }
 
@@ -413,6 +415,54 @@ describe('notification centre', () => {
         .collection(COLLECTIONS.notifications)
         .countDocuments({ userId: author.userId }),
     ).toBe(3)
+  })
+
+  /**
+   * Opening one row is not opening the inbox.
+   *
+   * Somebody who came to check one name has not dealt with the other eleven,
+   * so a tap reads exactly what it opened — and the *whole pile* behind it,
+   * because the row on screen already spoke for all of it. Leaving eight of a
+   * group's ten members unread would put the badge straight back up for
+   * something the reader has demonstrably just looked at.
+   */
+  it('reads the row you opened and the pile behind it, and nothing else', async () => {
+    const author = await newUser('one-row-author@example.com')
+    const a = await newUser('one-row-a@example.com')
+    const b = await newUser('one-row-b@example.com')
+    const postId = await post(author, 'One of these is about to be read.')
+
+    await comment(a, postId, 'One.')
+    await comment(b, postId, 'Two.')
+    await follow(a, author.userId)
+    const before = await inbox(author, 2)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(2)
+
+    const comments = before.find((row) => row.kind === 'postComment')
+    const marked = await markRead(author, comments?._id)
+    expect(marked.statusCode).toBe(200)
+    // Both comments, not just the one the row was named after.
+    expect(marked.json<{ read: number }>().read).toBe(2)
+
+    expect((await unread(author)).json<{ total: number }>().total).toBe(1)
+    const after = await inbox(author)
+    expect(after.find((row) => row.kind === 'postComment')?.read).toBe(true)
+    expect(after.find((row) => row.kind === 'follow')?.read).toBe(false)
+  })
+
+  it('ignores a row id that belongs to somebody else', async () => {
+    const mine = await newUser('foreign-id-mine@example.com')
+    const theirs = await newUser('foreign-id-theirs@example.com')
+    const actor = await newUser('foreign-id-actor@example.com')
+    await follow(actor, theirs.userId)
+    const theirRow = (await inbox(theirs, 1))[0]
+
+    // Scoped by `userId` as well as `_id`, so this reads nothing rather than
+    // reaching into somebody else's inbox.
+    const response = await markRead(mine, theirRow?._id)
+    expect(response.statusCode).toBe(200)
+    expect(response.json<{ read: number }>().read).toBe(0)
+    expect((await unread(theirs)).json<{ total: number }>().total).toBe(1)
   })
 
   it('marks only your own rows read', async () => {

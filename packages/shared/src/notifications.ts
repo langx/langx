@@ -461,6 +461,18 @@ export const inAppNotificationSchema = z.object({
 })
 export type InAppNotification = z.infer<typeof inAppNotificationSchema>
 
+/**
+ * Which rows the reader has dealt with.
+ *
+ * An id reads the one row they opened — and the pile behind it, since the row
+ * on screen speaks for all of it. No id reads everything, which is what the
+ * header button asks for.
+ */
+export const markNotificationsReadSchema = z.object({
+  id: z.string().trim().min(1).optional(),
+})
+export type MarkNotificationsReadInput = z.infer<typeof markNotificationsReadSchema>
+
 export const notificationsPageSchema = z.object({
   items: z.array(inAppNotificationSchema),
   nextCursor: z.string().nullable(),
