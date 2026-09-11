@@ -340,7 +340,7 @@ export const ar: Localized<ServerMessages> = {
 
     welcomeTitle: 'أهلاً، {name}',
 
-    welcomeBody: 'ملفك الشخصي متاح على ‎@{handle}‎. هذا ما يبدأ به معظم الناس:',
+    welcomeBody: 'ملفك الشخصي متاح على ‎{handle}‎. هذا ما يبدأ به معظم الناس:',
 
     welcomeStep1: 'ابحث عن شخص يتحدث اللغة التي تتعلمها وألقِ التحية.',
 

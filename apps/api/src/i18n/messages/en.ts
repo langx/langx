@@ -352,7 +352,7 @@ export const en = {
 
     welcomeTitle: 'Welcome, {name}',
 
-    welcomeBody: 'Your profile is live at @{handle}. Here is what people do first:',
+    welcomeBody: 'Your profile is live at {handle}. Here is what people do first:',
 
     welcomeStep1: 'Find someone who speaks what you are learning, and say hello.',
 

@@ -368,13 +368,22 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
   const t = translator(locale)
   const url = webUrl('/discover')
   const steps = [t('email.welcomeStep1'), t('email.welcomeStep2'), t('email.welcomeStep3')]
+  /*
+   * The handle is the link, `@` included — which is why the catalogue says
+   * `{handle}` rather than `@{handle}`: a link that starts one character
+   * after the thing it points at is a smaller target and reads as a typo.
+   * The text half gets the address written out instead, since a plain-text
+   * mail cannot hide a URL behind a word.
+   */
+  const profile = profileUrl(input.handle)
+  const handleLink = `<a href="${encodeURI(profile)}" style="color:#3b6cf6; text-decoration:underline;">@${escapeHtml(input.handle)}</a>`
   return {
     subject: t('email.welcomeSubject'),
     html: wrap(
       locale,
       t('email.welcomePreheader'),
       `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${t('email.welcomeTitle', { name: escapeHtml(input.name) })}</strong></p>
-       <p>${t('email.welcomeBody', { handle: escapeHtml(input.handle) })}</p>
+       <p>${t('email.welcomeBody', { handle: handleLink })}</p>
        <ul style="margin:20px 0 0; padding-left:20px; color:#17191c;">
          ${steps.map((step) => `<li style="margin-bottom:8px;">${step}</li>`).join('\n         ')}
        </ul>
@@ -383,7 +392,8 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
     text: [
       t('email.welcomeTitle', { name: input.name }),
       '',
-      t('email.welcomeBody', { handle: input.handle }),
+      t('email.welcomeBody', { handle: `@${input.handle}` }),
+      profile,
       '',
       ...steps.map((step) => `- ${step}`),
       '',

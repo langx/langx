@@ -181,7 +181,11 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
     const mail = emailSender.messages.at(-1)
     expect(mail?.html).toContain('Sofia R.')
-    expect(mail?.html).toContain('welcomed')
+    // The handle is the link, `@` included, and the text half spells the
+    // address out because a plain-text mail cannot hide one behind a word.
+    expect(mail?.html).toContain('href="https://app.langx.io/welcomed"')
+    expect(mail?.html).toContain('@welcomed</a>')
+    expect(mail?.text).toContain('https://app.langx.io/welcomed')
     // Transactional: it answers something they just did, so no unsubscribe.
     expect(mail?.headers).toBeUndefined()
   })

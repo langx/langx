@@ -330,7 +330,7 @@ export const tr: Localized<ServerMessages> = {
 
     welcomeTitle: 'Hoş geldin, {name}',
 
-    welcomeBody: 'Profilin @{handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
+    welcomeBody: 'Profilin {handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
 
     welcomeStep1: 'Öğrendiğin dili konuşan birini bul ve selam ver.',
 
