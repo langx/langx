@@ -22,6 +22,7 @@ import {
   type MessageTranslation,
   type MessageType,
   type CreateShareCardInput,
+  type NotificationsPage,
   type ShareCardResult,
 } from '@langx/shared'
 import type {
@@ -70,6 +71,7 @@ import {
   type QueryClient,
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
+import { markPagesRead } from '../lib/notificationInbox'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
@@ -181,6 +183,20 @@ export const keys = {
    * and would throw. `invalidateUnread` is what keeps the two in step instead.
    */
   unread: ['unread'] as const,
+  /**
+   * The notification centre, paged. Its own top-level prefix rather than a
+   * corner of `['feed']`: `feedCache`'s writers patch that one with
+   * `setQueriesData` and walk it as pages of posts.
+   */
+  notifications: ['notifications'] as const,
+  /*
+   * The number on the bell and on the Feed tab — and, exactly as with
+   * `unread` above, deliberately **not** `['notifications', 'unread']`. The
+   * moment anything patches the list prefix with `setQueriesData` it walks
+   * `data.pages`, and a bare number handed to that walker throws.
+   * `invalidateNotifications` is what keeps the two in step instead.
+   */
+  notificationsUnread: ['notificationsUnread'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
   contributors: ['contributors'] as const,
@@ -1046,6 +1062,86 @@ export function useLikers(targetType: LikeTargetType, targetId: string) {
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
+}
+
+/**
+ * The notification centre.
+ *
+ * `maxPages` is a bound on what one invalidation costs: an active infinite
+ * query refetches **every** loaded page, and `notification:new` can fire while
+ * this screen is open and scrolled.
+ */
+export function useNotifications(enabled = true) {
+  return useInfiniteQuery({
+    queryKey: keys.notifications,
+    queryFn: ({ pageParam }) =>
+      api.get<NotificationsPage>(
+        `/me/notifications${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    maxPages: 10,
+    enabled,
+  })
+}
+
+/**
+ * The number on the bell, and on the Feed tab.
+ *
+ * Its own request rather than a count taken off the list, for the reason
+ * `useUnreadTotal` gives: the badge has to be right on tabs that never open
+ * the list, and the list is paged besides.
+ */
+export function useNotificationUnread(enabled = true) {
+  return useQuery({
+    queryKey: keys.notificationsUnread,
+    queryFn: async () => (await api.get<{ total: number }>('/me/notifications/unread')).total,
+    enabled,
+  })
+}
+
+/**
+ * "I have looked at the inbox."
+ *
+ * Optimistic on the count and patching on the list, and neither is a shortcut.
+ * The badge has to reach zero in the same frame the screen appears, and the
+ * rows have to keep the dot they arrived with — invalidating either would get
+ * one of those wrong, which is why `invalidateNotifications` is deliberately
+ * not called here. See `notificationInbox.stickyUnread`.
+ */
+export function useMarkNotificationsRead() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post<{ read: number }>('/me/notifications/read'),
+    onMutate: () => {
+      const previous = client.getQueryData<number>(keys.notificationsUnread)
+      client.setQueryData<number>(keys.notificationsUnread, 0)
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous !== undefined) {
+        client.setQueryData(keys.notificationsUnread, context.previous)
+      }
+    },
+    onSuccess: () => {
+      // Stamped into the loaded pages rather than refetched: the next visit
+      // must not show a dot on a row this call already read.
+      client.setQueryData<InfiniteData<NotificationsPage>>(keys.notifications, (data) =>
+        markPagesRead(data),
+      )
+    },
+  })
+}
+
+/**
+ * Called wherever something wrote a notification this client did not.
+ *
+ * Both halves, for the reason `invalidateUnread` gives: the bell is on screen
+ * on tabs that never load the list, so the list's own refetch cannot reach it.
+ */
+export function invalidateNotifications(client: QueryClient): void {
+  void client.invalidateQueries({ queryKey: keys.notifications })
+  void client.invalidateQueries({ queryKey: keys.notificationsUnread })
 }
 
 /**
