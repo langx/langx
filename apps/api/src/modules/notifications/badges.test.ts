@@ -286,6 +286,49 @@ describe('the badge round-up', () => {
     expect(await notifiedIdsOf(healthy)).toBeDefined()
   })
 
+  /**
+   * A guest is not an audience, and this was the one pass that walked them.
+   *
+   * The second row is the shape a guest is actually found in on the dev
+   * database — no `streak` at all — which is how this surfaced: the round-up
+   * reached it, `getBadgeSummary` read `streak.longest` off nothing, and the
+   * pass logged a skipped profile on every tick. Both rows are asserted, so
+   * the rule stays "a guest is never a candidate" rather than "a guest that
+   * happens to be readable is harmless".
+   */
+  it('leaves a guest out of the audience entirely', async () => {
+    for (const guest of [
+      { _id: new ObjectId().toHexString(), streak: { current: 0, longest: 0 } },
+      { _id: new ObjectId().toHexString() },
+    ]) {
+      await handle.db.collection(COLLECTIONS.profiles).insertOne({
+        ...guest,
+        guest: true,
+        handle: `guest:${guest._id}`,
+        displayName: '',
+        // Otherwise the hour gate hides the bug rather than the fix doing it.
+        timezone: zone,
+        entitlement: { tier: 'free' },
+        settings: { discoverable: false, notifications: {} },
+        stats: { lastActiveAt: now, messagesSent: 0 },
+        createdAt: new Date('2026-09-01T00:00:00Z'),
+      } as never)
+    }
+    const healthy = await newProfile({ messagesSent: 5000, withDevice: true })
+
+    const warn = vi.fn()
+    const result = await runBadgeRoundUpPass(handle.db, senders, now, { warn })
+
+    expect(result).toEqual({ sent: 0, seeded: 1, failed: 0 })
+    expect(warn).not.toHaveBeenCalled()
+    expect(await notifiedIdsOf(healthy)).toBeDefined()
+    const guests = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .find({ guest: true })
+      .toArray()
+    expect(guests.map((row) => row.stats?.notifiedBadgeIds)).toEqual([undefined, undefined])
+  })
+
   it('leaves alone anyone for whom it is not the round-up hour', async () => {
     await newProfile({
       withDevice: true,
