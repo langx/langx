@@ -14,6 +14,7 @@ import { type BoostedCandidate, orderBoosted } from './boostedOrder'
 const BUCKET = 500_000
 const AT = new Date(BUCKET * DISCOVERY_BOOSTED_ROTATION_MS)
 
+/** Ready to lead by default — a photo and a bio — so a test can remove one thing at a time. */
 function candidate(
   id: string,
   tier: 'pro' | 'pro_plus',
@@ -24,11 +25,32 @@ function candidate(
     _id: id,
     entitlement: { tier },
     stats: { lastActiveAt: new Date(at.getTime() - lastActiveAgoMs) },
+    avatarUrl: `https://media.example.test/avatars/${id}.jpg`,
+    bio: 'Here to practise.',
   }
 }
 
 const HOUR = DISCOVERY_BOOSTED_ROTATION_MS
 const DAY = 24 * HOUR
+
+/**
+ * The same candidate with a showcase field genuinely absent.
+ *
+ * Not `{ ...c, avatarUrl: undefined }`: `exactOptionalPropertyTypes` refuses
+ * that, and rightly — a document out of Mongo has no key at all, which is the
+ * state being tested.
+ */
+function withoutPhoto(c: BoostedCandidate): BoostedCandidate {
+  const copy = { ...c }
+  delete copy.avatarUrl
+  return copy
+}
+
+function withoutBio(c: BoostedCandidate): BoostedCandidate {
+  const copy = { ...c }
+  delete copy.bio
+  return copy
+}
 
 /** One bucket's leader, for a viewer, as an id. */
 function leader(candidates: BoostedCandidate[], viewerId: string, at: Date): string {
@@ -53,7 +75,7 @@ describe('orderBoosted', () => {
     }
   })
 
-  it('leads with the subscriber who was here this week, whatever the rotation falls', () => {
+  it('leaves a subscriber who has not been here this week behind one who has', () => {
     for (let bucket = BUCKET; bucket < BUCKET + 200; bucket++) {
       const at = new Date(bucket * HOUR)
       const here = candidate('here', 'pro_plus', DAY, at)
@@ -67,10 +89,61 @@ describe('orderBoosted', () => {
    * dormant subscriber in front and no other test here would notice, because
    * the two bands are otherwise symmetrical.
    */
-  it('counts the last moment of the week as here, and the one after it as dormant', () => {
+  it('counts the last moment of the week as here, and the one after it as too long ago', () => {
     const inside = candidate('inside', 'pro_plus', DISCOVERY_BOOSTED_FRESH_MS - 1)
     const outside = candidate('outside', 'pro_plus', DISCOVERY_BOOSTED_FRESH_MS + 1)
     expect(leader([outside, inside], 'viewer', AT)).toBe('inside')
+  })
+
+  /**
+   * A boosted card is mostly a photo, so a subscriber without one is paying
+   * for the best space in the app to show a drawn face. They keep the place
+   * they paid for; they just do not lead with it.
+   */
+  it('leaves a subscriber with no photo behind one who has uploaded a face', () => {
+    for (let bucket = BUCKET; bucket < BUCKET + 200; bucket++) {
+      // Rebuilt per bucket: a candidate fixed at one instant drifts out of the
+      // week as the loop walks forward, and would fail the wrong assertion.
+      const at = new Date(bucket * HOUR)
+      const withPhoto = candidate('with-photo', 'pro_plus', HOUR, at)
+      const noPhoto = withoutPhoto(candidate('no-photo', 'pro_plus', HOUR, at))
+      expect(leader([noPhoto, withPhoto], 'viewer', at), `bucket ${bucket}`).toBe('with-photo')
+    }
+  })
+
+  /** The card gets the tap; the bio is what the tap lands on. */
+  it('leaves a subscriber with nothing written behind one who wrote something', () => {
+    const written = candidate('written', 'pro_plus', HOUR)
+    const blank = withoutBio(candidate('blank', 'pro_plus', HOUR))
+    expect(leader([blank, written], 'viewer', AT)).toBe('written')
+  })
+
+  /**
+   * Clearing the bio in the editor writes an empty string rather than removing
+   * the field, and whitespace survives that. Truthiness alone would be fooled.
+   */
+  it('does not count a blank bio as something written', () => {
+    const written = candidate('written', 'pro_plus', HOUR)
+    const spaces = { ...candidate('spaces', 'pro_plus', HOUR), bio: '   ' }
+    expect(leader([spaces, written], 'viewer', AT)).toBe('written')
+  })
+
+  /**
+   * The three conditions are one band, not three. Two candidates each failing
+   * a different one are equals, and the rotation decides between them — which
+   * is the whole reason they were folded together: more bands mean more
+   * candidates alone in their bucket, and a candidate alone in a bucket has a
+   * permanent position.
+   */
+  it('treats every way of falling short as the same band, so the rotation still decides', () => {
+    const leaders = new Set<string>()
+    for (let bucket = BUCKET; bucket < BUCKET + 24; bucket++) {
+      const at = new Date(bucket * HOUR)
+      const noPhoto = withoutPhoto(candidate('no-photo', 'pro_plus', HOUR, at))
+      const noBio = withoutBio(candidate('no-bio', 'pro_plus', HOUR, at))
+      leaders.add(leader([noPhoto, noBio], 'viewer', at))
+    }
+    expect(leaders.size).toBe(2)
   })
 
   /**
