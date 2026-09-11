@@ -40,7 +40,15 @@ const ROWS = [
 /** The app's own words about what a token is, which the prompt repeats verbatim. */
 const TOKEN_PROMISE = 'There is no chain, no contract and no market.'
 
-const SECTIONS = ['Privacy', 'Notifications', 'Appearance', 'Account', 'Subscription', 'About']
+const SECTIONS = [
+  'Privacy',
+  'Notifications',
+  'Appearance',
+  'Account',
+  'Subscription',
+  'About',
+  'Share & invite',
+]
 
 describe('what the assistant says is in the app', () => {
   const prompt = assistantSystemPrompt('hi@langx.test', 'the App Store')

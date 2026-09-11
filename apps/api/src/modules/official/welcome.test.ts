@@ -147,6 +147,19 @@ describe('a new account meets @langx', () => {
   })
 
   /**
+   * Two ways to help, and they live in different places: the store ask is only
+   * for somebody who has a store, the invite is for everybody.
+   */
+  it('points at inviting a friend, whatever they signed up on', async () => {
+    const user = await onboard('invite@example.com', 'inviteone', 'en', 'Mozilla/5.0 (Macintosh)')
+    await settle()
+
+    const said = await messagesFrom(officialIds().get('langx')!)
+    const welcome = said.find((m) => m.clientId === `welcome:${user.userId}`)
+    expect(welcome?.body).toContain('Share & invite')
+  })
+
+  /**
    * The ask goes only where it can be acted on. Somebody who signed up in a
    * browser has no store to be sent to, and being asked anyway is a worse
    * first impression than not being asked.

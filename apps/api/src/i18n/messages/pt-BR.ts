@@ -356,7 +356,7 @@ export const ptBR: Localized<ServerMessages> = {
   },
   official: {
     welcome:
-      'Oi, boas-vindas ao LangX! 👋 Que bom ter você aqui.\n\nA melhor parte começa em Descobrir: ache alguém que esteja aprendendo a sua língua e fale a que você quer, mande um oi, e a prática se resolve sozinha. No caminho você vai juntando tokens.\n\nÉ aqui que chegam as novidades do LangX, vale ficar de olho. E o LangX é de código aberto: ele melhora porque as pessoas nos contam coisas. Se algo quebrar, ou você pensar em algo que deveríamos fazer, Configurações → Sobre → Feedback vem direto para a gente. Lemos tudo.',
+      'Oi, boas-vindas ao LangX! 👋 Que bom ter você aqui.\n\nA melhor parte começa em Descobrir: ache alguém que esteja aprendendo a sua língua e fale a que você quer, mande um oi, e a prática se resolve sozinha. No caminho você vai juntando tokens.\n\nÉ aqui que chegam as novidades do LangX, vale ficar de olho. E o LangX é de código aberto: ele melhora porque as pessoas nos contam coisas. Se algo quebrar, ou você pensar em algo que deveríamos fazer, Configurações → Sobre → Feedback vem direto para a gente. Lemos tudo. E se você conhece alguém que ia curtir daqui, em Configurações → Compartilhar e convidar vocês dois ganham tokens.',
     welcomeRate:
       'Mais uma coisinha, se você quiser: avaliar o LangX na {store} ajuda de verdade as pessoas a nos acharem. Sem pressão nenhuma.',
     assistantOffline:

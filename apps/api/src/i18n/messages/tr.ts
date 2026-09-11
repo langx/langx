@@ -344,7 +344,7 @@ export const tr: Localized<ServerMessages> = {
   },
   official: {
     welcome:
-      'Selam, LangX’e hoş geldin! 👋 Aramıza katılmana sevindik.\n\nİşin güzel kısmı Keşfet’te başlıyor: senin dilini öğrenen ve senin öğrendiğin dili konuşan birini bul, bir merhaba de, gerisi kendiliğinden geliyor. Yol boyunca jeton da biriktiriyorsun.\n\nLangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Bir de LangX açık kaynak — iyileşmesinin sebebi insanların bize bir şeyler söylemesi. Bozuk bir şey görürsen ya da aklına yapmamız gereken bir şey gelirse, Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Hepsini okuyoruz.',
+      'Selam, LangX’e hoş geldin! 👋 Aramıza katılmana sevindik.\n\nİşin güzel kısmı Keşfet’te başlıyor: senin dilini öğrenen ve senin öğrendiğin dili konuşan birini bul, bir merhaba de, gerisi kendiliğinden geliyor. Yol boyunca jeton da biriktiriyorsun.\n\nLangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Bir de LangX açık kaynak — iyileşmesinin sebebi insanların bize bir şeyler söylemesi. Bozuk bir şey görürsen ya da aklına yapmamız gereken bir şey gelirse, Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Hepsini okuyoruz. Bir de burayı sevecek birini tanıyorsan, Ayarlar → Paylaş ve davet et ikinize de jeton kazandırıyor.',
     welcomeRate:
       'Bir de, canın isterse: {store} üzerinde LangX’e puan vermen bizi bulmalarına cidden yardım ediyor. Zorunlu değil tabii.',
     assistantOffline:

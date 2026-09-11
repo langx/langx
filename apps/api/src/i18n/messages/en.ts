@@ -376,7 +376,7 @@ export const en = {
    */
   official: {
     welcome:
-      'Hey, welcome to LangX! 👋 So glad you’re here.\n\nThe best bit starts in Discover: find someone learning your language who speaks the one you’re after, say hi, and the practice takes care of itself. You pick up tokens along the way.\n\nThis is where news about LangX lands, so it’s worth keeping an eye on. And LangX is open source — it gets better because people tell us things. If something breaks, or you think of something we should build, Settings → About → Feedback comes straight to us. We read all of it.',
+      'Hey, welcome to LangX! 👋 So glad you’re here.\n\nThe best bit starts in Discover: find someone learning your language who speaks the one you’re after, say hi, and the practice takes care of itself. You pick up tokens along the way.\n\nThis is where news about LangX lands, so it’s worth keeping an eye on. And LangX is open source — it gets better because people tell us things. If something breaks, or you think of something we should build, Settings → About → Feedback comes straight to us. We read all of it. And if you know someone who’d like it here, Settings → Share & invite gets you both some tokens.',
     /**
      * Appended to the welcome only when the person finished onboarding in
      * the app — a browser has no store to send them to. `{store}` is a
