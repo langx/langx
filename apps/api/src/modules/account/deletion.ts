@@ -322,6 +322,21 @@ export async function purgeExpiredAccounts(
       // on content that survives the author, the same way a post outlives the
       // account that wrote it.
       db.collection(COLLECTIONS.likes).deleteMany({ userId }),
+      /*
+       * Both sides, and the second is the one that is easy to forget.
+       *
+       * `userId` is this account's own inbox. `actorId` is every *other*
+       * person's — the rows saying this account followed them or liked their
+       * post, each carrying a name and a face that are about to stop existing.
+       * Deleting only the first leaves a ghost in strangers' notification
+       * centres that no purge would ever come back for.
+       *
+       * Not in `exportAccount`: the inbox is derived from follows, comments
+       * and likes, and all three are already in the export.
+       */
+      db.collection(COLLECTIONS.notifications).deleteMany({
+        $or: [{ userId }, { actorId: userId }],
+      }),
       // Comments go with the account. They are chatter — nobody's thread
       // depends on one, nothing was paid for it, and unlike a post or a
       // correction there is no learner whose page it would leave a hole in.

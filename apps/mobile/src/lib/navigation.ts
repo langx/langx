@@ -55,6 +55,17 @@ export function openPost(postId: string, from: string): void {
   push(`/(app)/post/${postId}?from=${encodeURIComponent(from)}`)
 }
 
+/**
+ * Open whatever a notification row is about.
+ *
+ * Takes a finished href rather than the row, so `notificationInbox` can decide
+ * the destination without importing `expo-router` — that module has to stay
+ * loadable by vitest, which cannot parse the native side of it.
+ */
+export function openNotification(href: string): void {
+  push(href)
+}
+
 /** Who liked one post or one correction. */
 export function openLikers(targetType: string, targetId: string, from: string): void {
   push(

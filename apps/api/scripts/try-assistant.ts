@@ -1,5 +1,5 @@
 /**
- * Asks @langx real questions against the real API, and prints what it says.
+ * Asks @copilot real questions against the real API, and prints what it says.
  *
  * The assistant's orchestration is covered by tests against a fake provider —
  * which account answers, the ceilings, what the tools write. What no test can
@@ -15,6 +15,7 @@
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env scripts/try-assistant.ts
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env scripts/try-assistant.ts "how do I block someone?"
  */
+import { OFFICIAL_WRITABLE } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { buildApp } from '../src/app'
 import { createAuth } from '../src/auth'
@@ -27,7 +28,7 @@ import { ensureOfficialAccounts, officialIds } from '../src/modules/official/acc
 import { createAnthropicProvider } from '../src/modules/official/assistantProvider'
 import { sendTextMessage } from '../src/modules/chat/messages'
 import {
-  findConversationBetween,
+  startConversation,
   type Conversation,
   type Message,
 } from '../src/modules/chat/conversations'
@@ -64,6 +65,13 @@ async function main(): Promise<void> {
   if (!base.ANTHROPIC_API_KEY) {
     throw new Error('ANTHROPIC_API_KEY is not set — there is nothing to try.')
   }
+
+  /*
+   * @copilot ships closed. This opens it for the length of the run, against a
+   * database thrown away at the end — which is the only way to judge whether
+   * it is worth opening for real.
+   */
+  OFFICIAL_WRITABLE.copilot = true
 
   const replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
   const handle = await connectToDatabase(replSet.getUri(), DB)
@@ -129,23 +137,19 @@ async function main(): Promise<void> {
       },
     })
 
-    const langxId = officialIds().get('langx')
-    if (!langxId) throw new Error('@langx was not created')
+    const copilotId = officialIds().get('copilot')
+    if (!copilotId) throw new Error('@copilot was not created')
     console.log(`model: ${env.ANTHROPIC_MODEL}\n`)
 
     /*
-     * The thread already exists: finishing onboarding is what makes @langx say
-     * hello, and that opens it. Waiting for it rather than assuming it, because
-     * the route does not await the welcome either.
+     * @copilot has no welcome to open a thread with — @langx sends that — so
+     * this is an ordinary first message to an account that takes them.
      */
-    let conversation: Conversation | null = null
-    const opened = Date.now() + 15_000
-    while (Date.now() < opened) {
-      conversation = await findConversationBetween(handle.db, user.userId, langxId)
-      if (conversation) break
-      await new Promise((resolve) => setTimeout(resolve, 250))
-    }
-    if (!conversation) throw new Error('the welcome never arrived — no thread to write into')
+    const { conversation: opened } = await startConversation(handle.db, user.userId, {
+      toUserId: copilotId,
+      body: 'hello',
+    })
+    let conversation: Conversation = opened
 
     for (const question of asked) {
       const sent = await sendTextMessage(handle.db, user.userId, {
@@ -157,7 +161,7 @@ async function main(): Promise<void> {
 
       const before = await handle.db
         .collection<Message>(COLLECTIONS.messages)
-        .countDocuments({ senderId: langxId })
+        .countDocuments({ senderId: copilotId })
       // The real path: the trigger lives at the end of the fan-out.
       await fanOutMessage(app, app.io, conversation, message, { pushWhenAway: false })
 
@@ -167,13 +171,13 @@ async function main(): Promise<void> {
       while (Date.now() < deadline) {
         const latest = await handle.db
           .collection<Message>(COLLECTIONS.messages)
-          .find({ senderId: langxId })
+          .find({ senderId: copilotId })
           .sort({ createdAt: -1, _id: -1 })
           .limit(1)
           .next()
         const count = await handle.db
           .collection<Message>(COLLECTIONS.messages)
-          .countDocuments({ senderId: langxId })
+          .countDocuments({ senderId: copilotId })
         if (count > before && latest) {
           reply = latest
           break

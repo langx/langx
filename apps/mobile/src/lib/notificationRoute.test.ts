@@ -37,10 +37,12 @@ describe('notificationRoute', () => {
     expect(notificationRoute({ kind: 'security' })).toBe('/settings/password')
   })
 
-  it('sends feed news to the post, the person, or the room', () => {
+  it('sends feed news to the post, the person, or the inbox', () => {
     expect(notificationRoute({ kind: 'social', postId: 'p1' })).toBe('/post/p1')
     expect(notificationRoute({ kind: 'social', handle: 'sofia' })).toBe('/sofia')
-    expect(notificationRoute({ kind: 'social' })).toBe('/feed')
+    // Neither id: the notification centre, not the feed. The row this push
+    // came from is the first thing in it, and the feed mentions it nowhere.
+    expect(notificationRoute({ kind: 'social' })).toBe('/notifications')
   })
 
   it('sends token news to the wallet', () => {

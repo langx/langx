@@ -53,5 +53,15 @@ export async function invalidateMissedEvents(queryClient: QueryClient): Promise<
     queryClient.invalidateQueries({ queryKey: ['conversations'] }),
     queryClient.invalidateQueries({ queryKey: ['messages'] }),
     queryClient.invalidateQueries({ queryKey: ['unread'] }),
+    /*
+     * The bell has the same blind spot, and a wider one. A follow that lands
+     * while the phone is in the background is never a `notification:new` — it
+     * is a push, or, for somebody who turned social push off, nothing at all —
+     * and the nightly pool payout is written with no socket server in the
+     * process to announce it. Without these two the count is whatever it was
+     * when the app was last awake.
+     */
+    queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    queryClient.invalidateQueries({ queryKey: ['notificationsUnread'] }),
   ])
 }

@@ -14,6 +14,7 @@ import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { getBadgeSummary } from '../tokens/badges'
+import { recordNotifications } from './inbox'
 import { claimOnce } from './ledger'
 
 /**
@@ -114,6 +115,37 @@ export async function runBadgeRoundUpPass(
     // notification nobody got is better than one that arrives every evening
     // because the write that would have stopped it never happened.
     await profiles.updateOne({ _id: profile._id }, { $set: { 'stats.notifiedBadgeIds': earned } })
+
+    /*
+     * The inbox row goes in **above** the preference gate below, and that
+     * placement is the whole point rather than an accident of ordering.
+     *
+     * Those two switches decide whether a phone buzzes and whether a letter
+     * goes out. They do not decide whether this account is ever allowed to
+     * learn it earned something: somebody who turned badge push off asked for
+     * quiet, not for the badges screen to stay a mystery. Move this below the
+     * `return` and it silently becomes a ninth switch nobody agreed to.
+     *
+     * The 18:00 gate above still applies, so a badge earned at breakfast is in
+     * the inbox that evening. That latency is the pass's, not this feature's:
+     * walking every profile through `getBadgeSummary` every half hour to
+     * shorten it would cost roughly forty-eight times the queries for a list
+     * nobody is watching in real time.
+     */
+    await recordNotifications(
+      db,
+      fresh.map((badgeId) => ({
+        userId: profile._id,
+        kind: 'badgeEarned' as const,
+        // The badge itself: earned once, said once, and the unique index is
+        // what makes a re-run of this pass unable to repeat it.
+        refId: badgeId,
+        badgeId,
+        at: now,
+      })),
+      logger,
+    )
+
     if (!wantsPush && !wantsEmail) return
     if (!(await claimOnce(db, 'badgeEarned', profile._id, localDayKey(now, zone)))) return
 

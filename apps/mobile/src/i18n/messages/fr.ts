@@ -93,6 +93,7 @@ export const fr: Localized<EnMessages> = {
     feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
   },
   tour: {
+    announcement: '{title}\u00a0: {body}',
     progress: 'Étape {current} sur {total}',
     next: 'Suivant',
     done: 'Compris',
@@ -894,6 +895,44 @@ export const fr: Localized<EnMessages> = {
     failed: 'Signalement impossible',
   },
 
+  inbox: {
+    title: 'Notifications',
+    bell: 'Notifications',
+    unread: 'Non lu',
+    markAllRead: 'Tout marquer comme lu',
+    emptyTitle: 'Rien pour le moment',
+    emptyBody: 'Les abonnements, les corrections et les j’aime arrivent ici.',
+    follow: '{name} vous suit',
+    postComment: '{name} a commenté votre publication',
+    postCorrection: '{name} a corrigé votre phrase',
+    pronunciationAnswer: '{name} a enregistré votre phrase',
+    like: '{name} a aimé votre publication',
+    likeOthers: {
+      one: '{name} et {count} autre personne ont aimé votre publication',
+      other: '{name} et {count} autres personnes ont aimé votre publication',
+    },
+    postCommentOthers: {
+      one: '{name} et {count} autre personne ont commenté votre publication',
+      other: '{name} et {count} autres personnes ont commenté votre publication',
+    },
+    postCorrectionOthers: {
+      one: '{name} et {count} autre personne ont corrigé votre phrase',
+      other: '{name} et {count} autres personnes ont corrigé votre phrase',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} et {count} autre personne ont enregistré votre phrase',
+      other: '{name} et {count} autres personnes ont enregistré votre phrase',
+    },
+    badgeEarned: 'Vous avez obtenu un nouveau badge',
+    walletPool: {
+      one: 'La cagnotte d’hier vous a versé {count} jeton',
+      other: 'La cagnotte d’hier vous a versé {count} jetons',
+    },
+    profileVisits: {
+      one: '{count} personne a consulté votre profil',
+      other: '{count} personnes ont consulté votre profil',
+    },
+  },
   feed: {
     topTag: 'Meilleure',
     ask: '+ Demander',

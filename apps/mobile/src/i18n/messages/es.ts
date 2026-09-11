@@ -91,6 +91,7 @@ export const es: Localized<EnMessages> = {
     feedAsk: '¿Atascado con una frase? Publícala aquí y alguien la corregirá.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Paso {current} de {total}',
     next: 'Siguiente',
     done: 'Entendido',
@@ -890,6 +891,44 @@ export const es: Localized<EnMessages> = {
     failed: 'No se pudo denunciar',
   },
 
+  inbox: {
+    title: 'Notificaciones',
+    bell: 'Notificaciones',
+    unread: 'Sin leer',
+    markAllRead: 'Marcar todo como leído',
+    emptyTitle: 'Nada todavía',
+    emptyBody: 'Aquí llegan los seguidores, las correcciones y los me gusta.',
+    follow: '{name} te empezó a seguir',
+    postComment: '{name} comentó tu publicación',
+    postCorrection: '{name} corrigió tu frase',
+    pronunciationAnswer: '{name} grabó tu frase',
+    like: 'A {name} le gustó tu publicación',
+    likeOthers: {
+      one: 'A {name} y {count} persona más les gustó tu publicación',
+      other: 'A {name} y {count} personas más les gustó tu publicación',
+    },
+    postCommentOthers: {
+      one: '{name} y {count} persona más comentaron tu publicación',
+      other: '{name} y {count} personas más comentaron tu publicación',
+    },
+    postCorrectionOthers: {
+      one: '{name} y {count} persona más corrigieron tu frase',
+      other: '{name} y {count} personas más corrigieron tu frase',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} y {count} persona más grabaron tu frase',
+      other: '{name} y {count} personas más grabaron tu frase',
+    },
+    badgeEarned: 'Ganaste una insignia nueva',
+    walletPool: {
+      one: 'El bote de ayer te pagó {count} ficha',
+      other: 'El bote de ayer te pagó {count} fichas',
+    },
+    profileVisits: {
+      one: '{count} persona vio tu perfil',
+      other: '{count} personas vieron tu perfil',
+    },
+  },
   feed: {
     topTag: 'Mejor',
     ask: '+ Preguntar',

@@ -103,6 +103,7 @@ export const tr: Localized<EnMessages> = {
     feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Adım {current} / {total}',
     next: 'Sonraki',
     done: 'Anladım',
@@ -893,6 +894,44 @@ export const tr: Localized<EnMessages> = {
     failed: 'Bildirilemedi',
   },
 
+  inbox: {
+    title: 'Bildirimler',
+    bell: 'Bildirimler',
+    unread: 'Okunmamış',
+    markAllRead: 'Tümünü okundu yap',
+    emptyTitle: 'Henüz bir şey yok',
+    emptyBody: 'Takipler, düzeltmeler ve paylaştıklarına gelen beğeniler burada.',
+    follow: '{name} seni takip etti',
+    postComment: '{name} gönderine yorum yaptı',
+    postCorrection: '{name} cümleni düzeltti',
+    pronunciationAnswer: '{name} cümleni seslendirdi',
+    like: '{name} gönderini beğendi',
+    likeOthers: {
+      one: '{name} ve {count} kişi daha gönderini beğendi',
+      other: '{name} ve {count} kişi daha gönderini beğendi',
+    },
+    postCommentOthers: {
+      one: '{name} ve {count} kişi daha gönderine yorum yaptı',
+      other: '{name} ve {count} kişi daha gönderine yorum yaptı',
+    },
+    postCorrectionOthers: {
+      one: '{name} ve {count} kişi daha cümleni düzeltti',
+      other: '{name} ve {count} kişi daha cümleni düzeltti',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} ve {count} kişi daha cümleni seslendirdi',
+      other: '{name} ve {count} kişi daha cümleni seslendirdi',
+    },
+    badgeEarned: 'Yeni bir rozet kazandın',
+    walletPool: {
+      one: 'Dünkü havuz sana {count} jeton ödedi',
+      other: 'Dünkü havuz sana {count} jeton ödedi',
+    },
+    profileVisits: {
+      one: 'Profiline {count} kişi baktı',
+      other: 'Profiline {count} kişi baktı',
+    },
+  },
   feed: {
     topTag: 'En iyi',
     ask: '+ Sor',

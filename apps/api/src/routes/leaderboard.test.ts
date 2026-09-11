@@ -362,6 +362,43 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(await totalXp()).toBe(afterFirst)
     })
 
+    /**
+     * The pool is the one kind recorded at its real source rather than in a
+     * notification pass, because there *is* a real source: `awardTokens`
+     * saying it paid. The row therefore lands at 04:00 with the money, while
+     * `runPoolPayoutPass` still waits for 09:00 on the reader's own clock to
+     * buzz about it — a record and a phone buzzing are different things, and
+     * only the second has an opinion about the hour.
+     */
+    it('tells the payee once, however often the pass is re-run', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId)
+      const day = shiftDayKey(YESTERDAY, -8)
+      await seedActivity(user.userId, { messages: 10, partners: ['x'] }, day)
+
+      await runDailyPool(handle.db, { day })
+      const rows = () =>
+        handle.db
+          .collection(COLLECTIONS.notifications)
+          .find({ userId: user.userId, kind: 'walletPool' })
+          .toArray()
+
+      const first = await rows()
+      expect(first).toHaveLength(1)
+      expect(first[0]?.refId).toBe(day)
+      // The number in the row is the number that was paid.
+      expect(first[0]?.count).toBeGreaterThan(0)
+
+      // The lock gone, the ledger still refuses the second award — and with
+      // no award there is nothing to announce, so the unique index never even
+      // has to do its half.
+      await handle.db
+        .collection<JobRun>(COLLECTIONS.jobRuns)
+        .deleteOne({ job: DAILY_POOL_JOB, periodKey: day })
+      await runDailyPool(handle.db, { day })
+      expect(await rows()).toHaveLength(1)
+    })
+
     it('recovers a day whose lock was left behind by a run that died', async () => {
       const user = await newUser()
       await ageAccount(user.userId)

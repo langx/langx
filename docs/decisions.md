@@ -4001,6 +4001,136 @@ With a sender behind it, `social.email` now defaults **on**, like `messages`.
 A switch that was off because it did nothing should not stay off once it does
 the thing people joined for.
 
+## The app keeps what it says, not only that it said it
+
+`social.ts` throttles the reply push to one per post per hour and explains
+why in a comment that ends _"the rest are waiting in the app"_. They were
+not. Nothing stored them. A person could write a sentence, have it corrected
+by three strangers, get one push, read it on a lock screen and swipe it away,
+and there was no screen anywhere that could tell them what the other two had
+said. The same hole swallowed every like — batched to a daily push by design,
+because a like is one tap — and every follow after the first.
+
+So there is a `notifications` collection now, and a bell in the Feed header
+over it. Four things about its shape were decisions rather than defaults.
+
+**It is per event, where the push is batched.** Three comments are three rows
+even though they were one push. The throttles were never about volume being
+uninteresting; they were about a phone buzzing three times, which is how a
+notification permission gets revoked. A list somebody chose to open interrupts
+nobody, so the reason does not apply and the rows all stay. Not one sender,
+ledger claim or throttle changed to make room for this.
+
+**It is not gated by the notification switches.** `notificationsAllowed` is
+never called on the write path, and the badge write in `badges.ts` sits
+deliberately _above_ the `wantsPush`/`wantsEmail` check with a test pinning it
+there — because moving it below reads like tidying and would quietly make the
+centre a ninth switch nobody agreed to. Those eight kinds have two channels,
+push and email, and both are about what **leaves** the app. Somebody who
+turned social push off asked not to be buzzed at. They did not ask never to
+find out.
+
+**Uniqueness is ninety days long, not eternal.** `{userId, kind, refId}` is
+unique and the insert failing is the check, the same trick as everywhere else
+here — but `ttl_90d` removes the row that carries it, so unfollowing and
+refollowing next season is news again. That would be a bug in
+`notificationLedger`, whose whole job is "we already told them, ever", and it
+is correct in a feed, which is the clearest statement of why the two are
+different collections rather than one with a flag.
+
+**The wire carries data, never prose.** Every push in this app is composed
+server-side because the OS draws it; an inbox row is drawn by a component that
+has all eight catalogues, so the row ships an actor and a count and the app
+writes the sentence. A count assembled on the server would be English grammar
+wearing eight translations — and `{count} people looked at your profile` needs
+a plural entry, which Russian splits four ways and Arabic six.
+
+Three things were deliberately left out. **Chat messages**, because the Chats
+tab already is that inbox and folding them in would bury everything else under
+them. **The hourly gift**, because "your gift is ready" is a statement about a
+button being available rather than a record of something that happened, and a
+row saying it was ready three days ago is noise in a list meant to be scanned.
+And **who viewed you** — the visit row is a count with no actor, because
+identities are the paid half of that feature and a row carrying a name and a
+face would hand the paywall's argument out to everybody. That one also had a
+second, quieter reason: a per-day row whose count grew would have to be
+_updated_, and a row that moves inside a keyset page makes a cursor skip or
+repeat, which is the exact failure `dateIdCursor` exists to prevent.
+
+Badges and profile visits are written inside their existing scheduled passes
+rather than at a source, because neither has one: a badge is derived from
+counters and never stored, so the pass that diffs `notifiedBadgeIds` is the
+only thing in the system that knows one was earned. Both therefore inherit
+their pass's hour — a badge earned at breakfast appears that evening. The
+pool payout does have a real source, `awardTokens` saying it paid, so its row
+lands at 04:00 with the money while the push still waits for 09:00 on the
+reader's own clock. A record and a phone buzzing are different things, and
+only the second has an opinion about what hour it is.
+
+## Ten comments are one piece of news, and reading is not marking
+
+Two things were wrong with the notification centre the day after it worked.
+
+**A pile of replies was a pile of rows.** Ten people commenting on one
+sentence produced ten rows, which is faithful and useless: the screen exists
+to be scanned, and a list that repeats itself ten times cannot be. They
+collapse now — one row per `{kind, post}`, reading "and 9 others" — while a
+follow never does, because each one is a different person and the row opens
+that person rather than the pile.
+
+The grouping is done when the list is **read**, in an aggregation, and not by
+keeping a counter on a single row. A counter is the obvious design and it is
+the wrong one here for a reason this codebase has already paid for once: a row
+whose count grows has to move its `createdAt` to be noticed, and a row that
+moves inside a keyset page makes a cursor skip or repeat — which is exactly
+why the profile-visit row is insert-only. So the cursor points at the group's
+newest member and the `$match` for it runs after the `$group`.
+
+The unread count had to learn the same trick, and that is not a detail. It was
+a plain `countDocuments`, which would have put **10** on the badge over a list
+with one thing in it. A badge that disagrees with the screen it leads to is
+worse than no badge: it sends somebody looking for nine things that were never
+there. It filters blocked people for the same reason.
+
+**And opening the list marked it read.** That was convenient and quietly
+destructive: somebody who came to check one name had thereby dealt with the
+other eleven, and the only record of what they had not looked at was gone.
+It is a button now — hard right in the header, and drawn only when there is
+something to clear, because a control that can do nothing should not be on
+screen.
+
+Making it explicit deleted more code than it added. The dots read `read`
+straight off the row again, so the sticky set that kept them visible through
+the automatic mark, and the fetch-timestamp latch that stopped that mark
+firing before the page it was marking had arrived, both went. Both were
+careful, both were tested, and both existed only to hold up a behaviour that
+turned out to be the wrong one.
+
+## A tap is what marks a notification read
+
+Opening the centre marks nothing, and for a while a **Mark all read** button
+was the only thing that did. That was better than the automatic version it
+replaced, and still wrong in its own way: most people never press a button
+like that, so the badge becomes a number that is always on — and a number
+always on stops being read, which eventually trains people not to look at the
+bell at all. An explicit control was the right instinct applied to the wrong
+half of the problem.
+
+So a tap reads the row it opened. The count then means "things not yet dealt
+with" and falls as they are dealt with, which is the only reading of a badge
+that survives contact with somebody who uses the app every day. The button
+keeps its job — the leftovers, the ones being deliberately ignored — and is
+drawn only when there are any.
+
+A tap reads the **whole pile** behind the row, not the one document the row
+was named after. The row already said nine other people commented; leaving
+eight of its members unread would put the badge straight back up for something
+the reader has demonstrably just looked at. Server-side that is the same
+grouping rule the list uses, which is why `markNotificationsRead` takes a row
+id rather than a list of them and resolves the group itself — and why it scopes
+the lookup by `userId` as well as `_id`, so an id belonging to somebody else
+matches nothing instead of reading their inbox for them.
+
 ## Two machines, one socket bus
 
 On 3 September 2026 the API went from one Fly machine to two, so a crash-loop
