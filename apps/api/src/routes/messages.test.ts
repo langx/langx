@@ -2006,6 +2006,59 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(list.json<{ items: unknown[] }>().items).toEqual([])
     })
 
+    /**
+     * The star points at the message; it does not copy it. So it may only
+     * outlive what the reader can still see — and hiding a message never
+     * unstars it, by either route: "delete for me" on the one message, or
+     * deleting the thread it is in.
+     */
+    it('leaves out a message the reader has hidden', async () => {
+      const { b, conversationId, messageId } = await pair('star-hidden')
+      const { deleteMessage, starMessage } = await import('../modules/chat/mutations')
+
+      await starMessage(handle.db, b.userId, { conversationId, messageId, starred: true })
+      await deleteMessage(handle.db, b.userId, { conversationId, messageId, scope: 'me' })
+
+      const list = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: b.cookie },
+      })
+      expect(list.json<{ items: unknown[] }>().items).toEqual([])
+    })
+
+    it('leaves out one whose whole thread the reader deleted', async () => {
+      const { a, b, conversationId, messageId } = await pair('star-thread-deleted')
+      const { starMessage } = await import('../modules/chat/mutations')
+
+      await starMessage(handle.db, b.userId, { conversationId, messageId, starred: true })
+
+      const deleted = await app.inject({
+        method: 'DELETE',
+        url: `/conversations/${conversationId}`,
+        headers: { cookie: b.cookie },
+      })
+      expect(deleted.statusCode, deleted.body).toBe(204)
+
+      const list = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: b.cookie },
+      })
+      expect(list.json<{ items: unknown[] }>().items).toEqual([])
+
+      // The other side deleted nothing, so their own star is untouched.
+      await starMessage(handle.db, a.userId, { conversationId, messageId, starred: true })
+      const theirs = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: a.cookie },
+      })
+      expect(theirs.json<{ items: { _id: string }[] }>().items.map((m) => m._id)).toEqual([
+        messageId,
+      ])
+    })
+
     it('pins one message at a time, and either person can change it', async () => {
       const { a, b, conversationId, messageId } = await pair('pin-one')
       const { sendTextMessage } = await import('../modules/chat/messages')

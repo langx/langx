@@ -401,6 +401,14 @@ export async function pinMessage(
  * Backed by `messages.starred_created`; without that index this is a scan of
  * every message the user can see, which is the whole collection on a busy
  * account.
+ *
+ * **Hidden rows are left out, like the media grid leaves them out.** Nothing
+ * unstars a message when it is hidden — "delete for me" and deleting a whole
+ * thread both only add to `hiddenFor` — so this list was the one reader that
+ * still drew the body of something its reader had deleted, and its row led
+ * back to a thread that is gone for them. It cannot be left to the client
+ * either: the list is capped rather than paged, so rows dropped after the
+ * fact make it arrive short of the cap with nothing behind them.
  */
 export async function listStarredMessages(
   db: Db,
@@ -409,7 +417,7 @@ export async function listStarredMessages(
 ): Promise<Message[]> {
   return db
     .collection<Message>(COLLECTIONS.messages)
-    .find({ starredBy: userId, deletedAt: { $exists: false } })
+    .find({ starredBy: userId, deletedAt: { $exists: false }, hiddenFor: { $ne: userId } })
     .sort({ createdAt: -1 })
     .limit(limit)
     .toArray()
