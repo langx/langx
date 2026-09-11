@@ -1,6 +1,7 @@
 import { GENERATED_AVATAR_BACKGROUNDS } from '@langx/shared'
 import type { InlineAsset } from './inlineAssets'
 import { inlineSrc } from './logo'
+import { isOwnBucketUrl } from '../lib/assertOwnBucket'
 
 /**
  * Faces in an email, which is harder than it sounds.
@@ -75,7 +76,9 @@ export async function fetchAvatarAsset(
   cid: string,
   baseUrl: string | undefined,
 ): Promise<InlineAsset | null> {
-  if (!baseUrl || !url.startsWith(baseUrl)) return null
+  // The slash matters here too: a sibling of the bucket is somebody else's,
+  // and this function fetches what it is given. See `isOwnBucketUrl`.
+  if (!isOwnBucketUrl(baseUrl, url)) return null
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) })
     if (!response.ok) return null

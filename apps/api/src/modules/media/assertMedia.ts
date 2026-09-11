@@ -7,6 +7,7 @@ import {
   type MediaKind,
 } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
+import { isOwnBucketUrl } from '../../lib/assertOwnBucket'
 
 export type { MediaKind }
 
@@ -69,7 +70,9 @@ export function assertMediaAllowed(
     }
   }
 
-  if (!storagePublicBaseUrl || !media.url.startsWith(storagePublicBaseUrl)) {
+  // `isOwnBucketUrl`, not a bare `startsWith`: the slash is what stops a
+  // sibling bucket from passing for ours. See that function.
+  if (!isOwnBucketUrl(storagePublicBaseUrl, media.url)) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
       'Attachment must point into our own storage bucket',
