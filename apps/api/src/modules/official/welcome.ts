@@ -32,7 +32,7 @@ import { deliverOfficialMessage } from './deliver'
  */
 function storeFor(userAgent: string | undefined): string | null {
   const { fingerprint } = deviceIdentity(userAgent)
-  if (fingerprint === 'ios-app') return 'the App Store'
+  if (fingerprint === 'ios-app') return 'App Store'
   if (fingerprint === 'android-app') return 'Google Play'
   return null
 }

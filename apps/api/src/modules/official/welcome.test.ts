@@ -175,7 +175,7 @@ describe('a new account meets @langx', () => {
     const phone = said.find((m) => m.clientId === `welcome:${onPhone.userId}`)
     const web = said.find((m) => m.clientId === `welcome:${onWeb.userId}`)
 
-    expect(phone?.body).toContain('the App Store')
+    expect(phone?.body).toContain('App Store')
     expect(web?.body).not.toContain('App Store')
     expect(web?.body).not.toContain('Google Play')
     // And the welcome itself is the same for both.

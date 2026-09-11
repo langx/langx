@@ -383,7 +383,7 @@ export const en = {
      * brand name and stays in English in every locale.
      */
     welcomeRate:
-      'One more thing, if you feel like it: rating LangX on {store} genuinely helps people find us. No pressure at all.',
+      'One more thing, if you feel like it: rating LangX on the {store} genuinely helps people find us. No pressure at all.',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**

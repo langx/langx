@@ -51,7 +51,7 @@ const SECTIONS = [
 ]
 
 describe('what the assistant says is in the app', () => {
-  const prompt = assistantSystemPrompt('hi@langx.test', 'the App Store')
+  const prompt = assistantSystemPrompt('hi@langx.test', 'App Store')
   const catalogue = readFileSync(MOBILE_EN, 'utf8')
 
   /**

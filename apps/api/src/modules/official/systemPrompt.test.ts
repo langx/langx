@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { assistantSystemPrompt } from './assistant'
 
 const SUPPORT = 'hi@langx.test'
-const prompt = assistantSystemPrompt(SUPPORT, 'the App Store')
+const prompt = assistantSystemPrompt(SUPPORT, 'App Store')
 
 /**
  * What the assistant is allowed to believe about the product.
@@ -60,7 +60,7 @@ describe('what @langx is told about LangX', () => {
    * to remember — the sentence is simply not in its prompt.
    */
   it('asks for a rating only where there is somewhere to leave one', () => {
-    expect(assistantSystemPrompt(SUPPORT, 'the App Store')).toContain('rate LangX on the App Store')
+    expect(assistantSystemPrompt(SUPPORT, 'App Store')).toContain('rate LangX on App Store')
     expect(assistantSystemPrompt(SUPPORT, 'Google Play')).toContain('rate LangX on Google Play')
 
     const onWeb = assistantSystemPrompt(SUPPORT, null)

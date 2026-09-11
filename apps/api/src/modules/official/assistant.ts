@@ -85,7 +85,7 @@ function serialize(conversationId: string, work: () => Promise<void>): Promise<v
  * them to leave a review is asking for something impossible — the kind of
  * small nonsense that tells a reader nobody thought about them.
  */
-export type RatingStore = 'the App Store' | 'Google Play'
+export type RatingStore = 'App Store' | 'Google Play'
 
 export function assistantSystemPrompt(supportEmail: string, store: RatingStore | null): string {
   return [
@@ -276,7 +276,7 @@ async function ratingStoreFor(app: FastifyInstance, userId: string): Promise<Rat
     .find({ userId }, { projection: { platform: 1 } })
     .toArray()
   const platforms = new Set(devices.map((device) => device.platform))
-  if (platforms.has('ios')) return 'the App Store'
+  if (platforms.has('ios')) return 'App Store'
   if (platforms.has('android')) return 'Google Play'
   return null
 }
