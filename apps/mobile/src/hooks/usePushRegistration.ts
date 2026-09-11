@@ -8,6 +8,7 @@ import { deviceId } from '../lib/deviceId'
 import { pushEnabledOnThisDevice } from '../lib/devicePush'
 import { currentLocale } from '../i18n/runtime'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
+import { shouldAskForPush } from '../lib/pushPermission'
 
 /**
  * Expo needs to know which project a push token belongs to. It can usually
@@ -164,6 +165,14 @@ export function usePushRegistration({ enabled = true }: { enabled?: boolean } = 
  * Once per device (`pushAsked`), whatever the answer: a refusal here must not
  * turn into a dialog on every visit. A grant registers the token straight
  * away, the same as the priming card does.
+ *
+ * `shouldAskForPush` says when that flag is worth trusting, and the flag is
+ * written *after* the dialog rather than before it. Both halves are one fix
+ * for one failure: written first, it recorded an answer to a dialog that
+ * never opened — and since nothing else asks after onboarding, that phone
+ * never sees one again. It does not even leave a Notifications row in iOS
+ * Settings to flip, because iOS adds that row only once an app has actually
+ * requested. It was found on a phone whose owner had never been asked at all.
  */
 export function usePushPermissionPrompt(): void {
   useFocusEffect(
@@ -171,12 +180,21 @@ export function usePushPermissionPrompt(): void {
       void (async () => {
         try {
           if (Platform.OS === 'web' || !Device.isDevice) return
-          if (await readBoolFlag(FLAG_KEYS.pushAsked)) return
           const Notifications = await import('expo-notifications')
           const current = await Notifications.getPermissionsAsync()
-          if (current.granted || !current.canAskAgain) return
-          await setBoolFlag(FLAG_KEYS.pushAsked, true)
+          const ask = shouldAskForPush({
+            granted: current.granted,
+            canAskAgain: current.canAskAgain,
+            // Expo's own enum, never the string: `granted` above is read
+            // through its field for the same reason — the two are not the
+            // same type, and a literal comparison silently never matches.
+            undetermined: current.status === Notifications.PermissionStatus.UNDETERMINED,
+            asked: await readBoolFlag(FLAG_KEYS.pushAsked),
+            platform: Platform.OS,
+          })
+          if (!ask) return
           const result = await Notifications.requestPermissionsAsync()
+          await setBoolFlag(FLAG_KEYS.pushAsked, true)
           if (result.granted) await registerPushToken()
         } catch {
           // Never let notification setup break the screen it is decorating.

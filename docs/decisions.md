@@ -4315,3 +4315,36 @@ these accounts it now says who chose it and offers the alternative, and
 "Start exploring" walks past it. Settings → Account keeps the row for as long
 as it goes untaken, which is also the answer for the people who came back
 before any of this shipped.
+
+## The one dialog, and the flag that was written before it opened
+
+A phone arrived with no notifications at all, and its iOS Settings page showed
+no Notifications row either — Siri, Search, Cellular Data, and then nothing.
+That row is not something an app can lose: iOS adds it the first time
+an app actually requests authorisation, so its absence is proof the dialog had
+never opened, not that permission had been refused.
+
+Two things met to make that state permanent. The chats tab is the only asker
+after onboarding — `NotificationPriming` mounts on the two onboarding exits and
+`welcome-back` is shown once, so neither is reachable again — and the tab wrote
+`pushAsked` _before_ calling `requestPermissionsAsync`. That order is right for
+a ledger claim, where a notification nobody gets beats one that repeats every
+evening; here it is exactly backwards. Anything between the two — a throw
+inside the request, the app killed on that frame — records an answer to a
+dialog nobody saw, and there is no second asker and no row in Settings to put
+it right from the outside. The phone is silent for good, while the per-kind
+push switches in Settings go on reading as on.
+
+So the flag is written after the dialog returns, and `shouldAskForPush` decides
+when it is worth believing. **iOS cannot collect an answer without showing the
+dialog**, so a status still undetermined there means it never appeared,
+whatever the flag says — and asking again is the only thing that can be right.
+**Android can**: its dialog is dismissable and a dismissal leaves that same
+state, so the flag stands there, which is what keeps one dismissal from
+becoming a dialog on every visit to the tab. The asymmetry is the platforms',
+not a preference.
+
+What this does not fix: Settings still shows a per-device push switch that
+reads on while the OS has granted nothing, and turning it off and on again
+asks for nothing. The switch is the obvious place for somebody hunting a
+missing notification to go, and it should be the second asker.
