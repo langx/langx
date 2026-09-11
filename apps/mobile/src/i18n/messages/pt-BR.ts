@@ -75,7 +75,8 @@ export const ptBR: Localized<EnMessages> = {
     chatsSwipe: 'Arraste uma conversa para o lado para fixá-la ou arquivá-la.',
     chatsPin: 'Fixe as conversas às quais você volta e elas ficam no topo.',
     chatsUnreplied: 'A aba Sem resposta são todos que ainda esperam por você.',
-    discoverRadius: 'Aumente o raio se não houver ninguém por perto — a maioria não está.',
+    discoverRadius:
+      '“Por perto” vai do mais próximo para fora. Defina um raio nos filtros para limitar.',
     discoverSearch: 'Procurando alguém específico? Busque pelo nome de usuário.',
     feedCorrect: 'Corrigir uma frase leva um instante e é a coisa mais útil que você faz aqui.',
     feedPronounce: 'Não sabe dizer uma palavra? Pergunte e alguém grava para você.',
@@ -613,7 +614,6 @@ export const ptBR: Localized<EnMessages> = {
     nearby: 'Por perto',
     filters: 'Filtros ✦',
     filtersWithCount: 'Filtros · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'O compartilhamento de localização está desligado',
     locationOffBody:
       'Por perto precisa saber mais ou menos onde você está. Nada preciso é guardado e ninguém vê mais que uma distância aproximada.',
@@ -622,6 +622,9 @@ export const ptBR: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Ninguém a menos de {radius} km',
     nobodyNearbyBody:
       'Aqui só aparece quem ligou o compartilhamento de localização. Tente um raio maior ou outra aba.',
+    nobodySharingTitle: 'Ninguém para localizar ainda',
+    nobodySharingBody:
+      '“Por perto” só mostra quem ligou o compartilhamento de localização. Tente outra aba.',
     nearbyNeedsPermissionTitle: 'Por perto precisa da sua localização',
     nearbyNeedsPermissionBody:
       'A permissão de localização não foi concedida, então não há nada para ordenar por distância.',
@@ -647,6 +650,10 @@ export const ptBR: Localized<EnMessages> = {
     gender: 'Gênero',
     age: 'Idade',
     country: 'País',
+    distance: 'Distância',
+    distanceBody:
+      'Limita até onde “Por perto” procura. Sem limite, a lista vai do mais próximo para fora.',
+    distanceKm: '{km} km',
     practiseBody:
       'Qual dos seus idiomas você quer praticar. Todo mundo aqui já fala esse idioma como nativo.',
     onlyMyGender: 'Só do meu gênero',

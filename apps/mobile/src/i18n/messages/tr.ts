@@ -89,7 +89,8 @@ export const tr: Localized<EnMessages> = {
     chatsSwipe: 'Bir sohbeti yana kaydırıp sabitleyebilir veya arşivleyebilirsin.',
     chatsPin: 'Sık döndüğün sohbetleri sabitle, en üstte kalsınlar.',
     chatsUnreplied: 'Yanıtlanmayan sekmesi, hâlâ senden cevap bekleyenler.',
-    discoverRadius: 'Yakında kimse yoksa yarıçapı genişlet — buradakilerin çoğu yakında değil.',
+    discoverRadius:
+      'Yakında en yakından başlayıp dışa doğru gider. Sınırlamak için filtrelerden bir yarıçap seç.',
     discoverSearch: 'Belirli birini mi arıyorsun? Kullanıcı adıyla ara.',
     feedCorrect: 'Bir cümleyi düzeltmek bir dakikanı alır ve burada yapabileceğin en faydalı şey.',
     feedPronounce: 'Bir kelimeyi söyleyemiyor musun? Sor, biri senin için kaydetsin.',
@@ -619,7 +620,6 @@ export const tr: Localized<EnMessages> = {
     nearby: 'Yakında',
     filters: 'Filtreler ✦',
     filtersWithCount: 'Filtreler · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'Konum paylaşımı kapalı',
     locationOffBody:
       'Yakındakiler için kabaca nerede olduğunu bilmemiz gerekiyor. Kesin konum saklanmıyor ve kimse yaklaşık bir mesafeden fazlasını görmüyor.',
@@ -628,6 +628,9 @@ export const tr: Localized<EnMessages> = {
     nobodyNearbyTitle: '{radius} km içinde kimse yok',
     nobodyNearbyBody:
       'Burada sadece konum paylaşımını açmış kişiler görünür. Yarıçapı genişletmeyi ya da diğer sekmeleri dene.',
+    nobodySharingTitle: 'Konumunu paylaşan yok',
+    nobodySharingBody:
+      'Yakında yalnızca konum paylaşımını açmış kişileri gösterebilir. Diğer sekmeleri dene.',
     nearbyNeedsPermissionTitle: 'Yakındakiler için konum gerekiyor',
     nearbyNeedsPermissionBody:
       'Konum izni verilmemiş, dolayısıyla mesafeye göre sıralanacak bir şey yok.',
@@ -651,6 +654,10 @@ export const tr: Localized<EnMessages> = {
     gender: 'Cinsiyet',
     age: 'Yaş',
     country: 'Ülke',
+    distance: 'Mesafe',
+    distanceBody:
+      'Yakında’nın ne kadar uzağa bakacağını sınırlar. Seçilmezse en yakından başlayıp dışa doğru gider.',
+    distanceKm: '{km} km',
     practiseBody:
       'Kendi dillerinden hangisini pratik etmek istiyorsun. Buradaki herkes onu zaten ana dili olarak konuşuyor.',
     onlyMyGender: 'Sadece kendi cinsiyetim',

@@ -106,7 +106,7 @@ export const en = {
     chatsSwipe: 'Swipe a chat sideways to pin or archive it.',
     chatsPin: 'Pin the chats you come back to and they stay at the top.',
     chatsUnreplied: 'The Unreplied tab is everyone still waiting on you.',
-    discoverRadius: 'Widen the radius if nobody is nearby — most people here are not.',
+    discoverRadius: 'Nearby goes from closest outwards. Set a radius in the filters to stop it.',
     discoverSearch: 'Looking for someone in particular? Search their handle.',
     feedCorrect: 'Fixing one sentence takes a moment and is the most useful thing you can do here.',
     feedPronounce: 'Cannot say a word? Ask, and someone will record it for you.',
@@ -677,15 +677,19 @@ export const en = {
     nearby: 'Nearby',
     filters: 'Filters ✦',
     filtersWithCount: 'Filters · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'Location sharing is off',
     locationOffBody:
       'Nearby needs to know roughly where you are. Nothing precise is stored, and nobody sees more than a rough distance.',
     turnOn: 'Turn it on',
     turningOn: 'Turning on…',
+    /* Only when a radius filter drew the circle. Without one there is no
+       circle to widen, which is what `nobodySharing*` says instead. */
     nobodyNearbyTitle: 'Nobody within {radius} km',
     nobodyNearbyBody:
       'Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs.',
+    nobodySharingTitle: 'Nobody to place yet',
+    nobodySharingBody:
+      'Nearby can only show people who have turned on location sharing. Try one of the other tabs.',
     nearbyNeedsPermissionTitle: 'Nearby needs your location',
     nearbyNeedsPermissionBody:
       'Location permission has not been granted, so there is nothing to sort by distance.',
@@ -709,6 +713,11 @@ export const en = {
     gender: 'Gender',
     age: 'Age',
     country: 'Country',
+    distance: 'Distance',
+    /* Says which sort it reaches, because it reaches exactly one: everywhere
+       else this control would be a setting with nothing to set. */
+    distanceBody: 'Caps how far Nearby looks. Without it, Nearby just goes from closest outwards.',
+    distanceKm: '{km} km',
     practiseBody:
       'Which of your own languages you want to practise. Everyone here already speaks it natively.',
     onlyMyGender: 'Only my gender',

@@ -27,14 +27,19 @@ import { z } from 'zod'
 export const LOCATION_PRECISION_DECIMALS = 2
 
 /**
- * How far `sort=nearby` will look before giving up.
+ * The largest radius the filter offers, and the last distance bucket.
  *
- * A cap is required rather than merely tidy: without one, `$geoNear` walks the
- * index outward from the viewer until it has filled a page, so a user with
- * nobody within a thousand kilometres pays for a scan of the entire index to
- * be told exactly that. It also keeps the word honest — a result 3,000 km away
- * is not "nearby", it is just the nearest, and showing it would make the sort
- * look broken rather than empty.
+ * It was once the cap `sort=nearby` always ran under, on the argument that a
+ * result 3,000 km away is not "nearby" but merely nearest. The argument was
+ * about the word rather than about the person reading it: somebody who opens a
+ * list sorted by distance wants the nearest people there are, and a silent
+ * 500 km wall told them the app was empty when what was true is that it was
+ * empty *near them*. So the radius is a filter now — absent means no limit —
+ * and this is where its highest option sits.
+ *
+ * What that gives up is named in `decisions.md`: unbounded, `$geoNear` walks
+ * the index outward until the page is full, so a viewer with a rare language
+ * pair can pull most of the index before they have twenty rows.
  */
 /**
  * How stale a shared location may get before the app quietly refreshes it.
@@ -55,7 +60,7 @@ export const LOCATION_REFRESH_MIN_GAP_MS = 60 * 60 * 1000
 
 export const NEARBY_MAX_KM = 500
 
-/** Radii the UI offers. Any value up to {@link NEARBY_MAX_KM} is accepted. */
+/** Radii the filter offers, beside "any". Any value up to {@link NEARBY_MAX_KM} is accepted. */
 export const NEARBY_RADIUS_OPTIONS_KM = [25, 100, NEARBY_MAX_KM] as const
 
 /**
@@ -109,8 +114,10 @@ export function toGeoPoint({ lat, lng }: LocationInput): GeoPoint {
  */
 export function bucketDistanceKm(meters: number): number {
   const km = meters / 1000
-  // The final edge is `NEARBY_MAX_KM`, which the query never exceeds, so the
-  // fallback is unreachable in practice — it is here so the function is total.
+  // The fallback is the normal case past the last edge now that the query runs
+  // unbounded unless a radius was asked for: everyone beyond `NEARBY_MAX_KM`
+  // reports that edge, which `formatDistance` words as a floor rather than a
+  // ceiling.
   return DISTANCE_BUCKETS_KM.find((edge) => km <= edge) ?? NEARBY_MAX_KM
 }
 

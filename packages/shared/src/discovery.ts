@@ -156,12 +156,21 @@ export const discoveryQuerySchema = z
     /**
      * How far `sort=nearby` looks. Ignored by every other sort.
      *
+     * **Absent means no limit**, and that is the whole shape of the sort:
+     * nearest first, outwards, until the page is full — across a border if
+     * that is where the next person is. It used to default to
+     * `NEARBY_MAX_KM`, which made "nearby" mean "within 500 km of you" and
+     * quietly hid everyone past it from a list whose own promise is only an
+     * ordering. A radius is now something a searcher asks for in the filters,
+     * where a cut-off is a thing somebody chose rather than a thing they ran
+     * into.
+     *
      * Deliberately **not** in `DISCOVERY_PRO_FILTER_KEYS`: it is a parameter
      * of a sort that is already gated, not a filter of its own, and listing it
      * there would refuse a free account over a value that cannot affect the
      * query it is actually allowed to run.
      */
-    radiusKm: z.coerce.number().min(1).max(NEARBY_MAX_KM).default(NEARBY_MAX_KM),
+    radiusKm: z.coerce.number().min(1).max(NEARBY_MAX_KM).optional(),
     /**
      * v1's "Match My Gender". Free, and the only gender filter that is — see
      * `DISCOVERY_PRO_FILTER_KEYS` for the line between them.

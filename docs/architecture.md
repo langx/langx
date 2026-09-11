@@ -360,11 +360,13 @@ even remove one.
 grant both entitlements. It adds who-viewed-you, incognito, Nearby and the
 copilot, and raises both numbers again.
 
-**Distance is a sort, not a filter.** There is no "within X km" filter next to
-gender and country: Nearby re-orders the same list by distance, with a radius
-that bounds the search rather than narrowing a result set the user could
-otherwise have had. Sharing a location is free on every tier — a Polyglot-only
-pool would have been empty on the day it shipped.
+**Distance is a sort; the radius beside it is a filter.** Nearby re-orders the
+same list by distance — nearest first, outwards, no wall — and "within X km"
+sits next to gender and country as something a searcher may ask for rather than
+something the sort does to them. It was the other way round until it was clear
+what a silent 500 km cut-off looks like from inside a quiet city: an empty app.
+Sharing a location is free on every tier — a Polyglot-only pool would have been
+empty on the day it shipped.
 
 **Correction quota was deliberately dropped:** writing a correction is a favour
 to the other person, and limiting it would shrink the value a free user
@@ -923,7 +925,9 @@ where a wrong copy leaks exactly what the setting hides.
 share the position. The match above is handed to it as its `query` argument
 instead, so both still apply; what changes is that the 2dsphere index drives
 the query and the language arrays are filtered over the candidates it returns.
-`maxDistance` is what keeps that candidate set small. See `decisions.md`.
+`maxDistance` is applied only when the searcher asked for a radius — it is a
+filter beside age and country now, not a property of the sort, so an unasked-for
+Nearby is nearest-first outwards with no wall. See `decisions.md`.
 
 ### Handles are public addresses
 

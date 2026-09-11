@@ -4,6 +4,7 @@ import {
   GENDERS,
   LANGUAGE_LEVELS,
   levelRank,
+  NEARBY_RADIUS_OPTIONS_KM,
   TIER_BADGES,
   tierUnlocking,
   type Gender,
@@ -339,6 +340,37 @@ export default function FiltersScreen() {
           <CountryPicker
             value={filters.country ?? ''}
             onChange={(country) => set({ country: country || undefined })}
+          />
+        </View>
+
+        {/*
+          The radius used to be three chips above the results, which made it
+          part of what Nearby *is* — and a list that stopped at 500 km without
+          being asked to reads as an empty app rather than a bounded search.
+          It is a filter here, "any" by default, and Nearby is otherwise
+          nearest-first for as far as there are people.
+
+          Free, and not because it is cheap: it is a parameter of a sort that
+          is already Polyglot's, so charging for it would be a second gate on
+          one feature. The hint says which sort it reaches rather than the
+          screen hiding it, for the same reason the locked sections are shown.
+        */}
+        <View style={[styles.section, styles.gapMd]}>
+          <SectionTitle title={t('filters.distance')} />
+          <Text style={styles.hint}>{t('filters.distanceBody')}</Text>
+          <SegmentedControl
+            options={[
+              { value: 'any', label: t('common.any') },
+              // Strings because the control keys its segments by their value;
+              // the number goes back on the way out.
+              ...NEARBY_RADIUS_OPTIONS_KM.map((km) => ({
+                value: String(km),
+                label: t('filters.distanceKm', { km }),
+              })),
+            ]}
+            selected={[filters.radiusKm === undefined ? 'any' : String(filters.radiusKm)]}
+            onToggle={(value) => set({ radiusKm: value === 'any' ? undefined : Number(value) })}
+            accessibilityLabel={t('filters.distance')}
           />
         </View>
 

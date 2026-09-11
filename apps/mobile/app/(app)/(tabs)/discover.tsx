@@ -1,10 +1,4 @@
-import {
-  countryFlag,
-  formatDistance,
-  NEARBY_MAX_KM,
-  NEARBY_RADIUS_OPTIONS_KM,
-  type DiscoverySort,
-} from '@langx/shared'
+import { countryFlag, formatDistance, type DiscoverySort } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
@@ -19,7 +13,6 @@ import { DiscoveryCardSkeleton } from '../../../src/components/skeletons/Discove
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { PeopleSearch, PeopleSearchResults } from '../../../src/components/PeopleSearch'
-import { Chip } from '../../../src/components/ui/Chip'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -107,7 +100,6 @@ export default function DiscoverScreen() {
 
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<DiscoverySort>('recommended')
-  const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
   const [searching, setSearching] = useState(false)
   /**
    * Why Nearby has nothing to show, when the reason is on this device rather
@@ -275,14 +267,22 @@ export default function DiscoverScreen() {
   // Nearby, with a reason on this device why it cannot work. The list is not
   // merely empty here — there is nothing to ask for.
   const nearbyStuck = sort === 'nearby' && nearbyBlocked !== null
+  /**
+   * The radius, when the filters asked for one. Absent is the normal state:
+   * Nearby orders by distance and stops when the page is full, wherever that
+   * lands — a cut-off is something a searcher chooses, not something the list
+   * runs into.
+   *
+   * Added here rather than in `toQuery` for the reason that function gives:
+   * only this sort does anything with it, and `filterParams` is also the
+   * boosted strip's cache key.
+   */
+  const radiusKm = effective.radiusKm
   const query = useDiscovery(
     {
       sort,
       ...filterParams,
-      // Only sent where it means something. On any other sort the server
-      // ignores it, but sending it anyway would put it in the query string the
-      // cache is keyed on and refetch every list each time the radius changed.
-      ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
+      ...(sort === 'nearby' && radiusKm !== undefined ? { radiusKm: String(radiusKm) } : {}),
     },
     { enabled: !nearbyStuck },
   )
@@ -410,23 +410,6 @@ export default function DiscoverScreen() {
             />
           </TourTarget>
         )}
-        {/* Only while it applies. A radius control above a list that is not
-            sorted by distance would be a control with nothing to control —
-            and the row is dropped rather than emptied, because an empty one
-            still spends its `marginTop` and that stray 14px was the gap above
-            this screen's tip. */}
-        {sort === 'nearby' ? (
-          <View style={styles.chips}>
-            {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
-              <Chip
-                key={km}
-                label={t('discover.distanceKm', { km })}
-                selected={radiusKm === km}
-                onPress={() => setRadiusKm(km)}
-              />
-            ))}
-          </View>
-        ) : null}
       </View>
 
       {/* Above the list rather than inside it: a hint that scrolls away is
@@ -516,14 +499,26 @@ export default function DiscoverScreen() {
           }}
           ListEmptyComponent={
             sort === 'nearby' ? (
-              // Two things narrow this list that narrow no other, and a user
-              // who is not told about the second one concludes the feature is
-              // broken rather than that the pool is small.
-              <EmptyState
-                icon="map-pin"
-                title={t('discover.nobodyNearbyTitle', { radius: radiusKm })}
-                body={t('discover.nobodyNearbyBody')}
-              />
+              /*
+               * Two empty lists, two reasons. With a radius the reader drew a
+               * circle and nobody is in it, and the fix is a wider one; with
+               * none there is no circle to widen, so what is left to say is
+               * the thing that narrows this list and no other — it can only
+               * ever show people who turned location sharing on.
+               */
+              radiusKm !== undefined ? (
+                <EmptyState
+                  icon="map-pin"
+                  title={t('discover.nobodyNearbyTitle', { radius: radiusKm })}
+                  body={t('discover.nobodyNearbyBody')}
+                />
+              ) : (
+                <EmptyState
+                  icon="map-pin"
+                  title={t('discover.nobodySharingTitle')}
+                  body={t('discover.nobodySharingBody')}
+                />
+              )
             ) : (
               <EmptyState
                 icon="search"
@@ -627,7 +622,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     textAlign: 'center',
   },
   segmented: { marginTop: 18 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: 14 },
   list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   row: {
