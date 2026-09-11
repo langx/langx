@@ -1522,12 +1522,12 @@ export const es: Localized<EnMessages> = {
     badges: 'Insignias',
     pays: { one: 'Da {amount} ficha', other: 'Da {amount} fichas' },
     you: 'Tú',
-    streakTitle: 'Tabla de rachas',
+    streakTitle: 'Clasificación',
     metricCurrent: 'Ahora',
     metricLongest: 'Más larga',
     streakPicker: 'Clasificación de rachas',
     streakEmptyTitle: 'Aún no hay rachas',
-    streakEmptyBody: 'Aparece dos días seguidos y estarás en esta tabla.',
+    streakEmptyBody: 'Aparece dos días seguidos y estarás en esta clasificación.',
   },
 
   badges: {

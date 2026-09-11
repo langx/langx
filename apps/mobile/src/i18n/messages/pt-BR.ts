@@ -1521,12 +1521,12 @@ export const ptBR: Localized<EnMessages> = {
     badges: 'Insígnias',
     pays: { one: 'Paga {amount} ficha', other: 'Paga {amount} fichas' },
     you: 'Você',
-    streakTitle: 'Tabela de sequências',
+    streakTitle: 'Classificação',
     metricCurrent: 'Agora',
     metricLongest: 'Mais longa',
     streakPicker: 'Ranking de sequências',
     streakEmptyTitle: 'Ainda não há sequências',
-    streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta tabela.',
+    streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta classificação.',
   },
 
   badges: {

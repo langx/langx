@@ -1527,7 +1527,7 @@ export const tr: Localized<EnMessages> = {
     badges: 'Rozetler',
     pays: { one: '{amount} jeton kazandırır', other: '{amount} jeton kazandırır' },
     you: 'Sen',
-    streakTitle: 'Seri tablosu',
+    streakTitle: 'Liderlik tablosu',
     metricCurrent: 'Şu an',
     metricLongest: 'En uzun',
     streakPicker: 'Seri sıralaması',

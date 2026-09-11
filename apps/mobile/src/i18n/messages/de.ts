@@ -1558,12 +1558,12 @@ export const de: Localized<EnMessages> = {
     badges: 'Abzeichen',
     pays: { one: 'Bringt {amount} Token', other: 'Bringt {amount} Token' },
     you: 'Du',
-    streakTitle: 'Serien-Tabelle',
+    streakTitle: 'Bestenliste',
     metricCurrent: 'Jetzt',
     metricLongest: 'Längste',
     streakPicker: 'Serien-Rangliste',
     streakEmptyTitle: 'Noch keine Serien',
-    streakEmptyBody: 'Sei an zwei Tagen hintereinander da, dann stehst du in dieser Tabelle.',
+    streakEmptyBody: 'Sei an zwei Tagen hintereinander da, dann stehst du in dieser Liste.',
   },
 
   badges: {
