@@ -334,6 +334,46 @@ describe('notification centre', () => {
   })
 
   /**
+   * The badge has to go with it, and this is the worst place for the two to
+   * disagree: a row the list drops can never be read. Reading is what zeroes
+   * one, "Mark all read" is offered only when a *rendered* row is unread, and
+   * there is no row left to open — so a badge over an empty inbox stayed up
+   * for good.
+   */
+  it('stops counting a row whose post has been deleted', async () => {
+    const author = await newUser('deleted-post-count-author@example.com')
+    const commenter = await newUser('deleted-post-count-actor@example.com')
+    const postId = await post(author, 'Count this while it lasts.')
+    await comment(commenter, postId, 'Nice one.')
+    await inbox(author, 1)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(1)
+
+    await app.inject({
+      method: 'DELETE',
+      url: `/posts/${postId}`,
+      headers: { cookie: author.cookie },
+    })
+
+    expect(await inbox(author)).toHaveLength(0)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(0)
+  })
+
+  /** The other half of the same rule: the actor, rather than what they did. */
+  it('stops counting a follow from an account that has since been deleted', async () => {
+    const author = await newUser('deleted-actor-count-author@example.com')
+    const follower = await newUser('deleted-actor-count-actor@example.com')
+    await follow(follower, author.userId)
+    await inbox(author, 1)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(1)
+
+    const { requestDeletion } = await import('../modules/account/deletion')
+    await requestDeletion(handle.db, follower.userId)
+
+    expect(await inbox(author)).toHaveLength(0)
+    expect((await unread(author)).json<{ total: number }>().total).toBe(0)
+  })
+
+  /**
    * Written straight into the collection with one `insertMany`, so every row
    * shares a millisecond. Inserting them one at a time would let the clock
    * separate them and the `_id` tiebreak would never be exercised — which is
