@@ -37,7 +37,10 @@ async function main(): Promise<void> {
 
   // Before `createAuth`: the security notices it sends go to a phone as well
   // as an inbox.
-  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
+  // `console` for the same reason `createEmailSender` takes it: this is built
+  // before `buildApp`, so `app.log` does not exist yet — and a push that Expo
+  // refuses has to say so somewhere.
+  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN, console)
 
   const auth = await createAuth({ env, db, client, emailSender, revenueCat, push })
   const storage = createStorageProvider(env)

@@ -4,6 +4,7 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback, useEffect } from 'react'
 import { Linking, Platform } from 'react-native'
 import { api } from '../api/client'
+import { track } from '../lib/analytics'
 import { deviceId } from '../lib/deviceId'
 import { pushEnabledOnThisDevice } from '../lib/devicePush'
 import { currentLocale } from '../i18n/runtime'
@@ -31,9 +32,23 @@ function pushTokenOptions(): { projectId?: string } {
  * than once — `/me/devices` upserts on the installation.
  */
 export async function registerPushToken(): Promise<void> {
-  try {
-    if (Platform.OS === 'web' || !Device.isDevice) return
+  if (Platform.OS === 'web' || !Device.isDevice) return
 
+  /*
+   * Two halves, each with its own `catch`, and that is the point rather than
+   * ceremony: Expo minting the token and the API filing it fail for entirely
+   * different reasons — a project id or push credentials on one side, a
+   * session or a network on the other — and a single swallowed error made
+   * them one indistinguishable silence. A phone that lands here keeps the
+   * notification switches reading on while the server has no row to address
+   * anything to, and nobody learns until somebody photographs an iOS Settings
+   * page.
+   *
+   * Still swallowed, because notification setup must never break the app it
+   * is decorating. Only no longer unrecorded.
+   */
+  let token: string
+  try {
     // Imported here, not at module scope. Inside Expo Go on Android,
     // `expo-notifications` throws the moment it is imported — remote push was
     // removed from Expo Go there in SDK 53. At module scope that throw takes
@@ -42,13 +57,18 @@ export async function registerPushToken(): Promise<void> {
     // is missing the required default export". A development build has the
     // native module and works normally.
     const Notifications = await import('expo-notifications')
+    token = (await Notifications.getExpoPushTokenAsync(pushTokenOptions())).data
+  } catch (error) {
+    track({ name: 'push_registration_failed', properties: { step: 'token', reason: why(error) } })
+    return
+  }
 
-    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
+  try {
     await api.post('/me/devices', {
       // The device's language, not the account's: a streak reminder arrives
       // when the app is closed, so nothing else can decide what it says.
       locale: currentLocale(),
-      pushToken: token.data,
+      pushToken: token,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
       /*
        * Who this phone is, so its row survives a token rotation and so a
@@ -62,9 +82,26 @@ export async function registerPushToken(): Promise<void> {
        */
       pushEnabled: await pushEnabledOnThisDevice(),
     })
-  } catch {
-    // Never let notification setup break the app it is decorating.
+  } catch (error) {
+    track({
+      name: 'push_registration_failed',
+      properties: { step: 'register', reason: why(error) },
+    })
   }
+}
+
+/**
+ * An error's own word for itself, for the analytics property.
+ *
+ * The API's errors carry a `code` — `UNAUTHENTICATED`, `GUEST_ACCOUNT` — and
+ * that is the useful half; anything else falls back to its message. Never the
+ * whole error: a message can carry a URL, and a URL here would carry a push
+ * token.
+ */
+function why(error: unknown): string {
+  const code = (error as { code?: unknown } | null)?.code
+  if (typeof code === 'string' && code.length > 0) return code
+  return error instanceof Error ? error.name : 'unknown'
 }
 
 /**

@@ -145,6 +145,66 @@ describe('ExpoPushSender', () => {
       new ExpoPushSender().send({ to: ['t'], title: 'a', body: 'b', data: { kind: 'message' } }),
     ).resolves.toEqual({ invalidTokens: [] })
   })
+
+  /**
+   * The whole batch refused — a bad access token, a malformed body, Expo
+   * down. Nobody gets a notification and, until this, nothing said so.
+   */
+  it('says so when Expo refuses the request outright', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('nope', { status: 400 })))
+    const logger = { warn: vi.fn() }
+
+    await new ExpoPushSender(undefined, logger).send({
+      to: ['t'],
+      title: 'a',
+      body: 'b',
+      data: { kind: 'message' },
+    })
+
+    expect(logger.warn).toHaveBeenCalledTimes(1)
+    const [details, msg] = logger.warn.mock.calls[0] as [Record<string, unknown>, string]
+    expect(msg).toContain('refused')
+    expect(details).toMatchObject({ status: 400, kind: 'message', tokens: 1, body: 'nope' })
+  })
+
+  /**
+   * `InvalidCredentials` is what a missing APNs key looks like: one platform
+   * silent, the other fine, and a ticket nobody was reading.
+   */
+  it('says so when Expo rejects tokens for a reason that is not the device', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(ticketsFor(['MessageRateExceeded', 'ok'])))
+    const logger = { warn: vi.fn() }
+
+    const result = await new ExpoPushSender(undefined, logger).send({
+      to: ['busy', 'fine'],
+      title: 'a',
+      body: 'b',
+      data: { kind: 'message' },
+    })
+
+    // Still not a dead device, so still not deleted — the logging is the only
+    // thing that changed about this case.
+    expect(result.invalidTokens).toEqual([])
+    const [details] = logger.warn.mock.calls[0] as [Record<string, unknown>]
+    expect(details.errors).toEqual({ MessageRateExceeded: 1 })
+  })
+
+  it('stays quiet when Expo accepts everything', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(ticketsFor(['ok', 'DeviceNotRegistered'])))
+    const logger = { warn: vi.fn() }
+
+    const result = await new ExpoPushSender(undefined, logger).send({
+      to: ['fine', 'gone'],
+      title: 'a',
+      body: 'b',
+      data: { kind: 'message' },
+    })
+
+    // A phone that uninstalled the app is an ordinary outcome with an ordinary
+    // answer — the token is dropped, and nobody needs telling.
+    expect(result.invalidTokens).toEqual(['gone'])
+    expect(logger.warn).not.toHaveBeenCalled()
+  })
 })
 
 describe('sendPush', () => {

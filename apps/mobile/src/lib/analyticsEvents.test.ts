@@ -95,6 +95,7 @@ describe('every event survives the sanitizer', () => {
     { name: 'message_received', properties: { kind: 'audio' } },
     { name: 'message_send_failed', properties: { kind: 'media', reason: 'MEDIA_TOO_LARGE' } },
     { name: 'notification_opened', properties: { kind: 'streakReminder', cold_start: true } },
+    { name: 'push_registration_failed', properties: { step: 'token', reason: 'Error' } },
     { name: 'filters_applied', properties: { count: 3, pro: true } },
     { name: 'tokens_spent', properties: { sku: 'frame_gold', kind: 'frame', amount: 250 } },
   ]
