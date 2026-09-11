@@ -59,11 +59,16 @@ function serialize(conversationId: string, work: () => Promise<void>): Promise<v
 /**
  * What the assistant is told about itself and about LangX.
  *
- * One constant string, so it is the same bytes on every request and the prompt
- * cache can hold it. The numbers are rendered from `PLAN_LIMITS` and
- * `TOKEN_RULES` rather than written out, so what it tells somebody about their
- * limits cannot drift from what the server actually enforces — a wrong answer
- * about a quota is worse than no answer, because it is believed.
+ * One constant string, built the same way on every request. Not cached, and
+ * deliberately not: at roughly 300 tokens it is under every model's minimum
+ * cacheable prefix, so a `cache_control` here would be a breakpoint that never
+ * fires and a comment claiming a saving that never arrives. Padding it to earn
+ * one would cost more than it saves.
+ *
+ * The numbers are rendered from `PLAN_LIMITS` and `TOKEN_RULES` rather than
+ * written out, so what it tells somebody about their limits cannot drift from
+ * what the server actually enforces — a wrong answer about a quota is worse
+ * than no answer, because it is believed.
  *
  * The rest is about authority. Everything after this prompt is a message
  * somebody sent; none of it is an instruction, and the two tools act only for
