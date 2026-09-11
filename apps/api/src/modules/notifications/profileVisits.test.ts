@@ -1,4 +1,4 @@
-import { PROFILE_VISITS_LOCAL_HOUR } from '@langx/shared'
+import { DAILY_DIGEST_LOCAL_HOUR, PROFILE_VISITS_LOCAL_HOUR } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -8,7 +8,8 @@ import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
 import { LoggingPushSender, type Device } from '../push/devices'
-import { runProfileVisitsEmailPass, runProfileVisitsPushPass } from './profileVisits'
+import { runDailyDigestPass } from './digest'
+import { runProfileVisitsPushPass } from './profileVisits'
 
 const SECRET = 'e'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
@@ -29,6 +30,14 @@ describe('the profile-visit round-up', () => {
   // A Monday, so the weekly pass has something to do.
   const monday = new Date('2026-09-07T14:00:00Z')
   const zone = zoneWhereItIsRoundUpHour(monday)
+  /*
+   * The same Monday, later: the visits mail is a section of the evening
+   * digest now, so it goes out at seven rather than at the round-up hour the
+   * push still uses. Same zone, same local day.
+   */
+  const mondayEvening = new Date(
+    monday.getTime() + (DAILY_DIGEST_LOCAL_HOUR - PROFILE_VISITS_LOCAL_HOUR) * 60 * 60 * 1000,
+  )
 
   beforeAll(async () => {
     mongo = await MongoMemoryServer.create()
@@ -106,7 +115,7 @@ describe('the profile-visit round-up', () => {
       await view(await newProfile({ name: 'Ada' }), me)
       await view(await newProfile({ name: 'Bo' }), me)
 
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 1 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 1 })
       const sent = push.sent[0]
       expect(sent?.data.kind).toBe('profileVisits')
       expect(sent?.title).toContain('2')
@@ -119,19 +128,19 @@ describe('the profile-visit round-up', () => {
       await view(await newProfile(), me)
 
       await runProfileVisitsPushPass(handle.db, push, monday)
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
       expect(push.sent).toHaveLength(1)
     })
 
     it('says nothing when nobody looked', async () => {
       await newProfile({ withDevice: true })
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
     })
 
     it('ignores a view older than a day', async () => {
       const me = await newProfile({ withDevice: true })
       await view(await newProfile(), me, 3)
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
     })
 
     it('does not count somebody the viewed person blocked', async () => {
@@ -142,7 +151,7 @@ describe('the profile-visit round-up', () => {
         .collection(COLLECTIONS.blocks)
         .insertOne({ blockerId: me, blockedId: blocked, createdAt: monday })
 
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
     })
 
     it('respects the switch', async () => {
@@ -151,24 +160,24 @@ describe('the profile-visit round-up', () => {
         notifications: { profileVisits: { push: false } },
       })
       await view(await newProfile(), me)
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
     })
 
     /** The email face of this kind is the weekly summary, not a daily one. */
     it('has no email fallback', async () => {
       const me = await newProfile()
       await view(await newProfile(), me)
-      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toEqual({ sent: 0 })
+      expect(await runProfileVisitsPushPass(handle.db, push, monday)).toMatchObject({ sent: 0 })
       expect(sender.messages).toHaveLength(0)
     })
   })
 
-  describe('the weekly email', () => {
+  describe('the weekly section of the evening digest', () => {
     it('gives a free account the count and the reason to upgrade', async () => {
       const me = await newProfile()
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
-      expect(await runProfileVisitsEmailPass(handle.db, email, monday)).toEqual({ sent: 1 })
+      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 1 })
       const message = sender.messages[0]
       expect(message?.subject).toContain('1')
       expect(message?.html).not.toContain('Ada Lovelace')
@@ -180,7 +189,7 @@ describe('the profile-visit round-up', () => {
       const me = await newProfile({ tier: 'pro_plus' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
-      await runProfileVisitsEmailPass(handle.db, email, monday)
+      await runDailyDigestPass(handle.db, email, mondayEvening)
       expect(sender.messages[0]?.html).toContain('Ada Lovelace')
     })
 
@@ -193,7 +202,7 @@ describe('the profile-visit round-up', () => {
       const me = await newProfile({ tier: 'pro' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
-      await runProfileVisitsEmailPass(handle.db, email, monday)
+      await runDailyDigestPass(handle.db, email, mondayEvening)
       expect(sender.messages[0]?.html).not.toContain('Ada Lovelace')
     })
 
@@ -201,16 +210,16 @@ describe('the profile-visit round-up', () => {
       const me = await newProfile()
       await view(await newProfile(), me, 2)
 
-      const tuesday = new Date(monday.getTime() + DAY)
-      expect(await runProfileVisitsEmailPass(handle.db, email, tuesday)).toEqual({ sent: 0 })
+      const tuesday = new Date(mondayEvening.getTime() + DAY)
+      expect(await runDailyDigestPass(handle.db, email, tuesday)).toMatchObject({ sent: 0 })
     })
 
     it('does not send twice in one week', async () => {
       const me = await newProfile()
       await view(await newProfile(), me, 2)
 
-      await runProfileVisitsEmailPass(handle.db, email, monday)
-      expect(await runProfileVisitsEmailPass(handle.db, email, monday)).toEqual({ sent: 0 })
+      await runDailyDigestPass(handle.db, email, mondayEvening)
+      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 0 })
       expect(sender.messages).toHaveLength(1)
     })
 
@@ -218,7 +227,7 @@ describe('the profile-visit round-up', () => {
       const me = await newProfile()
       for (const daysAgo of [0, 2, 5]) await view(await newProfile(), me, daysAgo)
 
-      await runProfileVisitsEmailPass(handle.db, email, monday)
+      await runDailyDigestPass(handle.db, email, mondayEvening)
       expect(sender.messages[0]?.subject).toContain('3')
     })
   })

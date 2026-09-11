@@ -262,6 +262,36 @@ export const es: Localized<ServerMessages> = {
 
     feedDigestButton: 'Leer las respuestas',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'Gente con la que podrías practicar',
+
+    matchesPreheader: 'Gente nueva cuyos idiomas encajan con los tuyos',
+
+    matchesBody: '{names} hablan los idiomas que estás aprendiendo, y están aprendiendo el tuyo.',
+
+    matchesButton: 'Mira quién está aquí',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      'Ya están en tu monedero. El fondo se reparte cada noche entre quienes ayudaron a alguien el día anterior.',
+
+    walletButton: 'Abrir mi monedero',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'Mañana tienes una llamada',
+      other: 'Mañana tienes {count} llamadas',
+    },
+
+    meetingsPreheader: 'Lo que tienes mañana en la agenda',
+
+    meetingsBody: {
+      one: 'Has quedado en una llamada para mañana.',
+      other: 'Has quedado en {count} llamadas para mañana.',
+    },
+
+    meetingsButton: 'Abrir mis chats',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

@@ -255,6 +255,35 @@ export const ar: Localized<ServerMessages> = {
 
     feedDigestButton: 'اقرأ الردود',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'أشخاص يمكنك التدرب معهم',
+
+    matchesPreheader: 'أشخاص جدد لغاتهم تناسب لغاتك',
+
+    matchesBody: '{names} يتحدثون اللغات التي تتعلمها، ويتعلمون لغتك.',
+
+    matchesButton: 'شاهد من هنا',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody: 'هي في محفظتك بالفعل. يوزَّع المجمّع كل ليلة على كل من ساعد شخصًا في اليوم السابق.',
+
+    walletButton: 'افتح محفظتي',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'لديك مكالمة غدًا',
+      other: 'لديك {count} مكالمات غدًا',
+    },
+
+    meetingsPreheader: 'ما ينتظرك غدًا',
+
+    meetingsBody: {
+      one: 'اتفقت على مكالمة واحدة غدًا.',
+      other: 'اتفقت على {count} مكالمات غدًا.',
+    },
+
+    meetingsButton: 'افتح محادثاتي',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

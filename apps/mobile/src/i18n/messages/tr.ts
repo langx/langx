@@ -567,7 +567,8 @@ export const tr: Localized<EnMessages> = {
     profileVisits: 'Profil ziyaretleri',
     profileVisitsBody: 'Günde bir kez, profiline kaç kişinin baktığı. Haftada bir e-postayla özet.',
     meetings: 'Randevular',
-    meetingsBody: 'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Sadece bildirim.',
+    meetingsBody:
+      'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Akşam maili yarın ne olduğunu söyler.',
     social: 'Akış ve oradaki insanlar',
     socialBody: 'Takipler, gönderilerine gelen düzeltmeler ve beğeniler.',
     wallet: 'Token’lar',
@@ -575,7 +576,7 @@ export const tr: Localized<EnMessages> = {
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. Tek dokunuşla durur.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'Anlık bildirim', email: 'E-posta' },
+    channel: { push: 'Anlık bildirim', email: 'Günlük e-posta' },
     emailUnverified: 'Bunu açmak için e-posta adresini doğrula.',
     primingTitle: 'Bildirimler açılsın mı?',
     primingBody:

@@ -101,7 +101,7 @@ async function main(): Promise<void> {
   const schedulers = [
     startDailyPoolScheduler(db, app.log),
     startPurgeScheduler(db, app.log, { storage, ...(analytics ? { analytics } : {}) }),
-    startStreakReminderScheduler(db, push, notificationEmail, app.log),
+    startStreakReminderScheduler(db, push, app.log),
     startMeetingReminderScheduler(db, push, app.log),
     startLegacyImportScheduler(db, app.log),
     startNotificationScheduler(db, { push, email: notificationEmail }, app.log, {

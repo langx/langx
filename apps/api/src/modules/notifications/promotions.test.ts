@@ -14,7 +14,7 @@ import { runPromotionsPass } from './promotions'
 const SECRET = 'p'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
 /** 12:00 UTC, so UTC is inside the reader's waking hours. */
-const NOW = new Date('2026-09-14T12:00:00Z')
+const NOW = new Date('2026-09-14T20:00:00Z')
 
 describe('the nudges that need permission', () => {
   let mongo: MongoMemoryServer

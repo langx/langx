@@ -6,18 +6,19 @@ import {
   localHour,
   notificationsAllowed,
   weekKey,
+  type Locale,
   type NotificationChannel,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
-import { profileVisitsEmail } from '../../email/templates'
+import { profileVisitsSection as buildSection } from '../../email/templates'
 import { translator } from '../../i18n'
 import { viewSummarySince } from '../moderation/profileViews'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
+import type { DigestCandidate } from './digest'
 import { recordNotification } from './inbox'
-import { claimOnce } from './ledger'
+import { alreadyClaimed, claimOnce } from './ledger'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -142,54 +143,44 @@ export async function runProfileVisitsPushPass(
 }
 
 /**
- * The same thing once a week, by email, and this one may name people — to the
- * tier that is allowed to see them. `viewSummarySince` decides that; nothing
- * here knows what a plan is.
+ * The same thing once a week, as a section, and this one may name people — to
+ * the tier that is allowed to see them. `viewSummarySince` decides that;
+ * nothing here knows what a plan is.
+ *
+ * Weekly rather than daily, unchanged by the move into the digest. The mail is
+ * capped at one a day now, so a daily line would cost nothing in envelopes —
+ * but "two people looked at you" every evening is a smaller thing said more
+ * often, and the promise on the settings screen is a weekly summary.
  */
-export async function runProfileVisitsEmailPass(
+export async function profileVisitsSectionFor(
   db: Db,
-  ctx: NotificationEmailContext,
-  now: Date = new Date(),
-): Promise<{ sent: number }> {
-  const candidates = await profilesAtLocalHour(
+  profile: Profile,
+  now: Date,
+): Promise<DigestCandidate | null> {
+  // The weekday on *their* calendar, not the server's: the local day key is
+  // already computed for that zone, so parsing it back is exact.
+  const localDay = localDayKey(now, profile.timezone ?? 'UTC')
+  const weekday = new Date(`${localDay}T00:00:00Z`).getUTCDay()
+  if (weekday !== PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY) return null
+
+  const week = weekKey(now)
+  if (await alreadyClaimed(db, 'profileVisitsEmail', profile._id, week)) return null
+
+  const summary = await viewSummarySince(
     db,
-    PROFILE_VISITS_LOCAL_HOUR,
-    'email',
-    'profileVisits',
-    now,
+    profile._id,
+    new Date(now.getTime() - 7 * DAY_MS),
+    PROFILE_VISITS_EMAIL_MAX_NAMES,
   )
-  let sent = 0
+  if (!summary || summary.count === 0) return null
 
-  for (const profile of candidates) {
-    const zone = profile.timezone ?? 'UTC'
-    // The weekday on *their* calendar, not the server's: the local day key is
-    // already computed for that zone, so parsing it back is exact.
-    const localDay = localDayKey(now, zone)
-    const weekday = new Date(`${localDay}T00:00:00Z`).getUTCDay()
-    if (weekday !== PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY) continue
-
-    const summary = await viewSummarySince(
-      db,
-      profile._id,
-      new Date(now.getTime() - 7 * DAY_MS),
-      PROFILE_VISITS_EMAIL_MAX_NAMES,
-    )
-    if (!summary || summary.count === 0) continue
-
-    if (!(await claimOnce(db, 'profileVisitsEmail', profile._id, weekKey(now)))) continue
-
-    const outcome = await sendNotificationEmail(db, ctx, {
-      userId: profile._id,
-      type: 'profileVisits',
-      build: (locale, unsubscribe) =>
-        profileVisitsEmail(locale, {
-          count: summary.count,
-          names: summary.viewers?.map((viewer) => viewer.displayName) ?? null,
-          unsubscribe,
-        }),
-    })
-    if (outcome === 'sent') sent++
+  return {
+    trigger: true,
+    claim: () => claimOnce(db, 'profileVisitsEmail', profile._id, week),
+    build: (locale: Locale) =>
+      buildSection(locale, {
+        count: summary.count,
+        names: summary.viewers?.map((viewer) => viewer.displayName) ?? null,
+      }),
   }
-
-  return { sent }
 }

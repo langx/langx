@@ -14,28 +14,58 @@ there is a switch, an unsubscribe link, or neither.
 | Class             | Asks a preference?         | Unsubscribe?   | Why                                                                                                                                                                                               |
 | ----------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Transactional** | no                         | no             | It answers something the person just did, or it is about their money or their account's safety. A switch whose honest label is "do not tell me when somebody signs in as me" is not one to offer. |
-| **Notification**  | yes, per kind per channel  | yes, one click | They asked for it by installing the app. `sendNotificationEmail` is the only way one leaves.                                                                                                      |
+| **Notification**  | yes, per kind per channel  | yes, one click | They asked for it by installing the app. Push leaves when it happens; **mail leaves once a day**, as one digest — see below.                                                                      |
 | **Campaign**      | `promotions` must allow it | yes, one click | A decision somebody makes on a particular day. Queued by hand, dripped by the API.                                                                                                                |
+
+### One mail a day
+
+Every notification email is a **section of one letter**, sent at 19:00 on the
+reader's own clock, and only when something is actually pending. Two rules make
+that true rather than aspirational:
+
+- **Nothing pending, nothing sent.** A section is either a _trigger_ —
+  something happened — or a _passenger_, which rides along in a mail that is
+  going anyway and may never summon one. The suggestions are a passenger, and
+  so is anything a push has already delivered to a phone.
+- **Marketing runs an hour later and stands down.** The nine nudges and the
+  monthly recap moved to 20:00 local, and both skip anybody whose digest has
+  already gone out today.
+
+Security and transactional mail sit outside all of this: they answer something
+that just happened, and are never batched or held back.
+
+The assembler is `modules/notifications/digest.ts`; each section is built by
+the module that owns its subject.
 
 ## The eight kinds
 
 `NOTIFICATION_TYPES` in `packages/shared/src/notifications.ts`. Every kind has
 two channels and both are real.
 
-| Kind            | Push    | Email  | Covers                                  |
-| --------------- | ------- | ------ | --------------------------------------- |
-| `messages`      | on      | on     | Chat, and the unread digest             |
-| `streak`        | on      | on     | The evening nudge, and the repair offer |
-| `badges`        | on      | off    | A badge earned                          |
-| `profileVisits` | on      | on     | Who looked at you                       |
-| `meetings`      | on      | off    | An hour before a call you agreed to     |
-| `social`        | on      | on     | The feed reacting to you                |
-| `wallet`        | on      | off    | Tokens arriving                         |
-| `promotions`    | **off** | **on** | Marketing, the newsletter, campaigns    |
+| Kind            | Push    | Email  | Covers                                                    |
+| --------------- | ------- | ------ | --------------------------------------------------------- |
+| `messages`      | on      | on     | Chat, and the unread section                              |
+| `streak`        | on      | on     | The evening nudge, and the repair offer                   |
+| `badges`        | on      | on     | A badge earned                                            |
+| `profileVisits` | on      | on     | Who looked at you                                         |
+| `meetings`      | on      | on     | Push: an hour before. Mail: what tomorrow's diary holds   |
+| `social`        | on      | on     | The feed reacting to you                                  |
+| `wallet`        | on      | on     | Tokens arriving                                           |
+| `promotions`    | **off** | **on** | Marketing, the newsletter, campaigns, and the suggestions |
 
 `promotions.email` defaults **on** since 10 September 2026 — the reversal is
 in `decisions.md`. `promotions.push` stays off: nobody asked to be buzzed at
 by marketing.
+
+`badges`, `meetings` and `wallet` email moved from off to on when the digest
+landed. What kept them off was never the content — it was that none of them is
+worth _a letter_. A paragraph in one that was going out anyway costs no
+envelope, so the objection went away with the envelopes.
+
+An email switch now decides whether a kind gets a **paragraph**, not whether it
+gets a message of its own. Turn them all off and no digest is sent at all —
+which is also what the footer's one-click unsubscribe does, since a letter
+carrying every kind cannot honestly offer to stop one of them.
 
 ---
 
@@ -89,30 +119,56 @@ A renewal that succeeds says nothing — the store already mails a receipt.
 
 ---
 
-## 2. Notifications — a switch each, both channels
+## 2. Notifications — a switch each, two very different channels
 
 All of these run on the half-hourly pass in
 `modules/notifications/scheduler.ts` unless the trigger says otherwise, and
 every one claims a row in `notificationLedger` before it sends.
 
-| Message                                          | Kind            | Channel                       | When                                        | Period key                                      |
-| ------------------------------------------------ | --------------- | ----------------------------- | ------------------------------------------- | ----------------------------------------------- |
-| A message arrived                                | `messages`      | push                          | on the message                              | — (fan-out)                                     |
-| Unread digest                                    | `messages`      | email                         | 8 h–14 d after `lastActiveAt`, waking hours | `lastActiveAt` — one absence, one letter        |
-| Streak reminder                                  | `streak`        | push, or email with no device | 20:00 local                                 | local day                                       |
-| Badge round-up                                   | `badges`        | push                          | 18:00 local                                 | badge ids                                       |
-| Profile visits                                   | `profileVisits` | push daily / email weekly     | 12:00 local / Monday                        | local day / ISO week                            |
-| Meeting reminder                                 | `meetings`      | push                          | an hour before                              | message id                                      |
-| **Somebody followed you**                        | `social`        | push                          | on the follow                               | one per follower, **ever**                      |
-| **A correction, answer or comment on your post** | `social`        | push                          | on the reply                                | one per post per **hour**                       |
-| **Your posts' likes**                            | `social`        | push                          | daily batch                                 | UTC day                                         |
-| **The day's replies to your posts**              | `social`        | email                         | 19:00 local                                 | local day                                       |
-| **Yesterday's pool paid you N tokens**           | `wallet`        | push                          | 09:00 local                                 | pool day                                        |
-| **Your hourly gift is ready**                    | `wallet`        | push                          | waking hours                                | UTC day, and only if they have taken one before |
+**Push, the moment it happens:**
 
-The unread digest carries **faces**: up to three writers, photo fetched from
-our own bucket and attached to the mail, initials on a coloured disc when
-there is none. Each face links to `app.langx.io/<handle>`.
+| Message                                          | Kind            | When           | Period key                                      |
+| ------------------------------------------------ | --------------- | -------------- | ----------------------------------------------- |
+| A message arrived                                | `messages`      | on the message | — (fan-out)                                     |
+| Streak reminder                                  | `streak`        | 20:00 local    | local day                                       |
+| Badge round-up                                   | `badges`        | 18:00 local    | badge ids                                       |
+| Profile visits                                   | `profileVisits` | 12:00 local    | local day                                       |
+| Meeting reminder                                 | `meetings`      | an hour before | message id                                      |
+| **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                      |
+| **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                       |
+| **Your posts' likes**                            | `social`        | daily batch    | UTC day                                         |
+| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day                                        |
+| **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before |
+
+**Email, all of it in one letter at 19:00 local.** The order is the order in
+the mail, and the first section that survives gives the letter its subject —
+so it runs from what cannot wait to what could have waited a fortnight. A
+_passenger_ never causes the mail to be sent; it is only ever included in one
+that was going anyway.
+
+| Section                            | Kind            | Trigger?                 | Period key                               |
+| ---------------------------------- | --------------- | ------------------------ | ---------------------------------------- |
+| Unread messages, with faces        | `messages`      | yes                      | `lastActiveAt` — one absence, one saying |
+| Your streak breaks tonight         | `streak`        | only with no push device | local day                                |
+| Tomorrow's calls                   | `meetings`      | yes                      | tomorrow's local day                     |
+| The day's replies to your posts    | `social`        | yes                      | local day                                |
+| Badges earned                      | `badges`        | only if no push went     | local day                                |
+| Yesterday's pool paid you N tokens | `wallet`        | only with no push device | pool day                                 |
+| Who looked at you                  | `profileVisits` | yes, Mondays             | ISO week                                 |
+| People you could practise with     | `promotions`    | **no — passenger**       | fortnight                                |
+
+Two of those sections say something the phone has already said, and that is
+what the trigger column is for: they are worth a line in a letter that is
+going out, and never worth one of their own. The hourly gift is in neither
+table — a button becoming available is not something that happened.
+
+The unread section and the suggestions carry **faces**: up to three people,
+photo fetched from our own bucket and attached to the mail, initials on a
+coloured disc when there is none. Each face links to `app.langx.io/<handle>`.
+
+The badge section is the one that cannot be recomputed at seven o'clock: the
+round-up overwrites `notifiedBadgeIds` at six, so it leaves what it found in
+`stats.digestBadges` for the digest to collect.
 
 ### The three throttles that matter
 
@@ -122,8 +178,10 @@ there is none. Each face links to `app.langx.io/<handle>`.
   anybody can do here.
 - **One follow notice per follower, ever.** Unfollowing and following again
   is not news.
-- **One digest per local day.** A reply landing after the letter has gone
-  waits for tomorrow's — the push already said it.
+- **One mail per local day, and one section per its own period.** The letter
+  is daily; almost nothing in it is. An absence produces one unread section
+  however many evenings it spans, visitors stay weekly, and a reply landing
+  after the letter has gone waits for tomorrow's — the push already said it.
 
 ---
 
@@ -133,8 +191,13 @@ there is none. Each face links to `app.langx.io/<handle>`.
 
 `modules/notifications/promotions.ts` — a table walked in **priority order**
 for each candidate. The first match is sent, the loop breaks, and
-`MARKETING_MIN_GAP_DAYS` (7) keeps the next one a week off. Quiet hours are
-the reader's own clock.
+`MARKETING_MIN_GAP_DAYS` (7) keeps the next one a week off.
+
+The pass runs at **20:00 on the reader's clock and nowhere else in the day**,
+an hour after the digest, and skips anybody whose digest has already gone out.
+It used to run any time between nine and nine, which with a daily mail in the
+picture would have let a nudge at ten in the morning take the day's one slot
+and leave the evening's real news with nowhere to go.
 
 | #   | Nudge                                   | Trigger                                               | Kind       |
 | --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
@@ -159,8 +222,13 @@ from the people it is for.
 ### The monthly recap
 
 `modules/notifications/newsletter.ts`. "Your **September 2026** on LangX", on
-any of the first seven days of a month at 10:00 local, once per reader per
-month.
+any of the first seven days of a month at 20:00 local — the same marketing
+slot the nudges use, which it outranks — once per reader per month, and never
+on a day the digest has written.
+
+Monthly rather than weekly, and the numbers are the reason: a week of a
+language exchange is three conversations and a correction, which reads as an
+accusation rather than a summary.
 
 - **Your month** — messages, corrections, tokens, streak. A month somebody
   sat out swaps all four for one sentence.
@@ -193,12 +261,13 @@ tick.
 
 Four mechanisms, and each is in the database rather than in a caller's care.
 
-| Mechanism                                                 | Used by                                               |
-| --------------------------------------------------------- | ----------------------------------------------------- |
-| `notificationLedger` `_id` = `<job>:<userId>:<periodKey>` | every scheduled pass; insert failing **is** the check |
-| `emailCampaigns` unique `{campaignId, userId}`            | campaigns, claimed before each batch                  |
-| `knownDevices` `_id` = `<userId>:<fingerprint>`           | the new-device notice                                 |
-| `jobRuns` unique `{job, periodKey}`                       | the daily pool, and the campaign drip's per-tick lock |
+| Mechanism                                                 | Used by                                                                       |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `notificationLedger` `_id` = `<job>:<userId>:<periodKey>` | every scheduled pass; insert failing **is** the check                         |
+| `dailyDigest:<userId>:<localDay>`                         | the one mail a day — and what the nudges and the recap check before they send |
+| `emailCampaigns` unique `{campaignId, userId}`            | campaigns, claimed before each batch                                          |
+| `knownDevices` `_id` = `<userId>:<fingerprint>`           | the new-device notice                                                         |
+| `jobRuns` unique `{job, periodKey}`                       | the daily pool, and the campaign drip's per-tick lock                         |
 
 ## What stops a message arriving at all
 

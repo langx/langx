@@ -259,6 +259,36 @@ export const ptBR: Localized<ServerMessages> = {
 
     feedDigestButton: 'Ler as respostas',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'Pessoas com quem você poderia praticar',
+
+    matchesPreheader: 'Pessoas novas cujos idiomas combinam com os seus',
+
+    matchesBody: '{names} falam os idiomas que você está aprendendo — e estão aprendendo o seu.',
+
+    matchesButton: 'Veja quem está aqui',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      'Eles já estão na sua carteira. O fundo é dividido toda noite entre quem ajudou alguém no dia anterior.',
+
+    walletButton: 'Abrir minha carteira',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'Amanhã você tem uma chamada',
+      other: 'Amanhã você tem {count} chamadas',
+    },
+
+    meetingsPreheader: 'O que está na sua agenda amanhã',
+
+    meetingsBody: {
+      one: 'Você combinou uma chamada para amanhã.',
+      other: 'Você combinou {count} chamadas para amanhã.',
+    },
+
+    meetingsButton: 'Abrir minhas conversas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

@@ -270,6 +270,36 @@ export const ru: Localized<ServerMessages> = {
 
     feedDigestButton: 'Читать ответы',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'Люди, с которыми можно попрактиковаться',
+
+    matchesPreheader: 'Новые люди, чьи языки совпадают с вашими',
+
+    matchesBody: '{names} говорят на языках, которые вы учите, и учат ваш.',
+
+    matchesButton: 'Посмотреть, кто здесь',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      'Они уже в вашем кошельке. Пул каждую ночь делится между всеми, кто накануне кому-то помог.',
+
+    walletButton: 'Открыть кошелёк',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'Завтра у вас звонок',
+      other: 'Завтра у вас {count} звонков',
+    },
+
+    meetingsPreheader: 'Что у вас запланировано на завтра',
+
+    meetingsBody: {
+      one: 'Вы договорились об одном звонке на завтра.',
+      other: 'Вы договорились о {count} звонках на завтра.',
+    },
+
+    meetingsButton: 'Открыть чаты',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

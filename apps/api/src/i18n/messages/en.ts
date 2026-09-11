@@ -265,6 +265,36 @@ export const en = {
 
     feedDigestButton: 'Read the replies',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'People you could practise with',
+
+    matchesPreheader: 'New people whose languages match yours',
+
+    matchesBody: '{names} speak the languages you are learning — and are learning yours.',
+
+    matchesButton: 'See who is here',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      'They are in your wallet already. The pool is shared out every night between everybody who helped somebody the day before.',
+
+    walletButton: 'Open my wallet',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'A call tomorrow',
+      other: '{count} calls tomorrow',
+    },
+
+    meetingsPreheader: 'What is in your diary tomorrow',
+
+    meetingsBody: {
+      one: 'You agreed to one call tomorrow.',
+      other: 'You agreed to {count} calls tomorrow.',
+    },
+
+    meetingsButton: 'Open my chats',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

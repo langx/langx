@@ -105,21 +105,22 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
   messages: { push: true, email: true },
   streak: { push: true, email: true },
   /*
-   * Push on, email off. A badge is a small good thing that belongs on the
-   * screen you earned it on; an unasked-for email about one is the kind of
-   * mail people describe as spam even when they like the app. The switch is
-   * real either way — turned on, the same words arrive by mail for somebody
-   * with no phone signed in.
+   * Both on since the daily digest, and the argument that kept email off has
+   * been answered rather than overruled. It was never about badges: it was
+   * that an unasked-for *letter* about one is the kind of mail people call
+   * spam even when they like the app. A badge is now a paragraph in a mail
+   * that was going out anyway, and there is no letter to resent.
    */
-  badges: { push: true, email: false },
+  badges: { push: true, email: true },
   profileVisits: { push: true, email: true },
   /*
-   * Push on, email off, for the badge's reason turned around: a reminder an
-   * hour out is only useful on the thing that buzzes, and an email arriving
-   * an hour before a call is either too late to read or a duplicate of the
-   * push that already worked.
+   * Push on, and email on for something the push does not do. The hour-before
+   * reminder is still push only — an email arriving an hour before a call is
+   * either too late to read or a duplicate of the buzz that already worked.
+   * What the digest carries is the other question, the one an hour's notice
+   * cannot answer: what is in the diary tomorrow.
    */
-  meetings: { push: true, email: false },
+  meetings: { push: true, email: true },
   /**
    * Both on, like `messages`, and for the same reason: the email half is a
    * **digest**, not a letter per event. A follow never earns one — the push
@@ -128,7 +129,12 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    * somewhere else.
    */
   social: { push: true, email: true },
-  wallet: { push: true, email: false },
+  /*
+   * Email on for the digest's sake only. A letter whose whole content is a
+   * number going up is how a domain gets filtered; a line inside the evening
+   * mail costs nothing and answers "where did these come from".
+   */
+  wallet: { push: true, email: true },
   promotions: { push: false, email: true },
 }
 
@@ -375,19 +381,66 @@ export const UNREAD_DIGEST_MAX_SENDERS = 3
 export const NOTIFICATION_EMAIL_LOCAL_HOURS = { earliest: 9, latest: 21 } as const
 
 /**
- * When the monthly recap goes out, on the reader's own clock.
+ * When the one notification email of the day goes out, on the reader's clock.
  *
- * Ten in the morning: late enough not to be the first thing on a phone,
- * early enough to be read the day it arrives. It is sent on the first of the
- * month or any of the six days after — see `runNewsletterPass` for why the
- * window is wider than the day.
+ * Seven in the evening, which is the hour the feed digest already used: a
+ * sentence posted in the morning has had the day to be answered, and what the
+ * day amounted to is only worth saying once the day has happened.
  *
- * **Monthly rather than weekly**, and the numbers are the reason: a week of a
- * language exchange is three conversations and a correction, which reads as
- * an accusation rather than a summary. A weekly cadence is this constant plus
- * a different period key, not a rewrite.
+ * It is a **ceiling, not a cadence**. The mail goes only if something is
+ * actually pending, and nothing in it may invent a reason to write — see
+ * `runDailyDigestPass` for the trigger/passenger split that enforces that.
  */
-export const NEWSLETTER_LOCAL_HOUR = 10
+export const DAILY_DIGEST_LOCAL_HOUR = 19
+
+/**
+ * And when the marketing slot opens, an hour later: the nine nudges, and the
+ * monthly recap that outranks them.
+ *
+ * A fixed hour rather than the whole waking day, and *after* the digest rather
+ * than before it, which is the only ordering that keeps "one mail a day"
+ * pointing the right way. Marketing at ten in the morning would otherwise take
+ * the day's slot and leave the evening's real news with nowhere to go; at
+ * twenty hundred the question is already settled, and both of them skip
+ * anybody whose digest has gone out today.
+ */
+export const PROMOTION_LOCAL_HOUR = 20
+
+/**
+ * "People you could practise with" — the only section that names people the
+ * reader has never spoken to, so every number here is a restraint. It is the
+ * digest's one passenger and never a reason to send it.
+ *
+ * `everyDays` is the one to argue about, and fourteen is a claim about the
+ * size of the pool rather than about attention. The section is three faces
+ * drawn from everybody whose languages fit; while the app is small that set
+ * barely changes from one week to the next, and a weekly letter would be the
+ * same three people with a new date on it. A fortnight also sits under the
+ * ledger's thirty-day TTL, which a monthly key would not.
+ *
+ * `minCandidates` is what keeps it honest. Below three it is not a
+ * suggestion, it is the app admitting how few people are here — and the
+ * section is left out instead. The right fix for that is more members,
+ * not a shorter list.
+ *
+ * `maxAwayDays` matches the second and last absence nudge. That letter ends
+ * "this is the last we will say about it", and a suggestion landing on day 40
+ * would make it a lie.
+ */
+export const MATCH_SUGGESTIONS = {
+  /** At most one mention per person per fortnight. */
+  everyDays: 14,
+  /** Fewer matches than this and the section is left out. */
+  minCandidates: 3,
+  /** Faces in the mail; the rest become a grey `+N` disc. */
+  faces: 3,
+  /** Read per recipient, so the `+N` is answerable without a second count. */
+  candidates: 8,
+  /** Past this, silence was promised — see `promo.away30`. */
+  maxAwayDays: 30,
+  /** Long enough to have finished onboarding and scrolled Discover once. */
+  minAccountDays: 3,
+} as const
 
 /**
  * What the notification centre can show — and **not a ninth switch**.

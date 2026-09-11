@@ -615,7 +615,8 @@ export const ru: Localized<EnMessages> = {
     profileVisitsBody:
       'Раз в день, сколько человек посмотрели ваш профиль. Раз в неделю сводка на почту.',
     meetings: 'Встречи',
-    meetingsBody: 'За час до звонка, на который вы оба согласились. Только пуш.',
+    meetingsBody:
+      'За час до звонка, на который вы оба согласились. Вечернее письмо расскажет, что запланировано на завтра.',
     social: 'Лента и люди в ней',
     socialBody: 'Подписки, исправления ваших постов и лайки.',
     wallet: 'Токены',
@@ -623,7 +624,7 @@ export const ru: Localized<EnMessages> = {
     promotions: 'Новости и предложения',
     promotionsBody: 'Изредка о новом. Одно касание — и всё прекратится.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'Пуш', email: 'Почта' },
+    channel: { push: 'Пуш', email: 'Письмо раз в день' },
     emailUnverified: 'Подтвердите адрес почты, чтобы включить это.',
     primingTitle: 'Включить уведомления?',
     primingBody:

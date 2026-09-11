@@ -4,14 +4,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
-import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
 import type { Profile } from '../profiles/profiles'
 import { LoggingPushSender, type Device } from '../push/devices'
 import { runBadgeRoundUpPass } from './badges'
-
-const SECRET = 'f'.repeat(40)
 
 function zoneWhereItIsRoundUpHour(now: Date): string {
   const offset = (now.getUTCHours() - BADGE_ROUND_UP_LOCAL_HOUR + 24) % 24
@@ -24,7 +21,6 @@ describe('the badge round-up', () => {
   let handle: DbHandle
   let push: LoggingPushSender
   let sender: CapturingEmailSender
-  let senders: { push: LoggingPushSender; email: NotificationEmailContext }
   const now = new Date('2026-09-03T15:00:00Z')
   const zone = zoneWhereItIsRoundUpHour(now)
 
@@ -54,10 +50,6 @@ describe('the badge round-up', () => {
     }
     push = new LoggingPushSender()
     sender = new CapturingEmailSender()
-    senders = {
-      push,
-      email: { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' },
-    }
   })
 
   async function newProfile(
@@ -107,6 +99,14 @@ describe('the badge round-up', () => {
     return profile?.stats.notifiedBadgeIds
   }
 
+  /** What the round-up left on the profile for the evening digest to collect. */
+  async function pendingOf(userId: string): Promise<Profile['stats']['digestBadges']> {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: userId })
+    return profile?.stats.digestBadges
+  }
+
   /**
    * The one that matters on the day this ships: everybody already has badges,
    * and none of them are news.
@@ -114,7 +114,7 @@ describe('the badge round-up', () => {
   it('seeds a profile it has never seen and says nothing', async () => {
     const userId = await newProfile({ messagesSent: 5000, withDevice: true })
 
-    const result = await runBadgeRoundUpPass(handle.db, senders, now)
+    const result = await runBadgeRoundUpPass(handle.db, push, now)
     expect(result).toEqual({ sent: 0, seeded: 1, failed: 0 })
     expect(push.sent).toHaveLength(0)
     expect((await notifiedIdsOf(userId))?.length).toBeGreaterThan(0)
@@ -122,13 +122,13 @@ describe('the badge round-up', () => {
 
   it('names a single new badge', async () => {
     const userId = await newProfile({ messagesSent: 0, withDevice: true })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     // Cross one threshold between passes.
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
 
-    const result = await runBadgeRoundUpPass(handle.db, senders, now)
+    const result = await runBadgeRoundUpPass(handle.db, push, now)
     expect(result.sent).toBe(1)
     expect(push.sent[0]?.data.kind).toBe('badgeEarned')
     expect(push.sent[0]?.title).toContain('100 messages')
@@ -136,7 +136,7 @@ describe('the badge round-up', () => {
 
   it('counts them instead when several arrive at once', async () => {
     const userId = await newProfile({ withDevice: true })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne(
@@ -144,45 +144,66 @@ describe('the badge round-up', () => {
         { $set: { 'stats.messagesSent': 5000, 'streak.longest': 60 } },
       )
 
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     // More than one, so a count rather than a list of English labels.
     expect(push.sent[0]?.title).not.toContain('messages')
   })
 
   it('says nothing twice about the same badge', async () => {
     const userId = await newProfile({ withDevice: true })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
 
-    await runBadgeRoundUpPass(handle.db, senders, now)
-    const again = await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
+    const again = await runBadgeRoundUpPass(handle.db, push, now)
     expect(again.sent).toBe(0)
     expect(push.sent).toHaveLength(1)
   })
 
-  it('emails somebody with no phone who asked for it', async () => {
-    const userId = await newProfile({ notifications: { badges: { email: true } } })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+  /**
+   * The mail half is no longer sent from here. `notifiedBadgeIds` is
+   * overwritten by this pass, so the difference it found cannot be recomputed
+   * at seven o'clock — it is written down instead, and the digest collects it.
+   */
+  it('leaves tonight’s badge news for the digest to carry', async () => {
+    const userId = await newProfile()
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
 
-    expect((await runBadgeRoundUpPass(handle.db, senders, now)).sent).toBe(1)
-    expect(sender.messages[0]?.subject).toContain('100 messages')
+    // No phone, so nothing was pushed and the mail is the only channel left.
+    expect((await runBadgeRoundUpPass(handle.db, push, now)).sent).toBe(0)
+    expect(await pendingOf(userId)).toMatchObject({
+      count: 1,
+      label: '100 messages',
+      pushed: false,
+    })
   })
 
-  /** Email is off by default for this kind; the round-up must respect that. */
-  it('sends nothing to somebody with no phone who did not ask for mail', async () => {
-    const userId = await newProfile()
-    await runBadgeRoundUpPass(handle.db, senders, now)
+  /** A badge that buzzed a phone is a passenger, not a reason to write. */
+  it('records that a phone was already told', async () => {
+    const userId = await newProfile({ withDevice: true })
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
 
-    expect((await runBadgeRoundUpPass(handle.db, senders, now)).sent).toBe(0)
-    expect(sender.messages).toHaveLength(0)
+    expect((await runBadgeRoundUpPass(handle.db, push, now)).sent).toBe(1)
+    expect(await pendingOf(userId)).toMatchObject({ pushed: true })
+  })
+
+  it('writes nothing down for somebody who turned badge mail off', async () => {
+    const userId = await newProfile({ notifications: { badges: { push: true, email: false } } })
+    await runBadgeRoundUpPass(handle.db, push, now)
+    await handle.db
+      .collection(COLLECTIONS.profiles)
+      .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
+
+    await runBadgeRoundUpPass(handle.db, push, now)
+    expect(await pendingOf(userId)).toBeUndefined()
   })
 
   /**
@@ -194,12 +215,12 @@ describe('the badge round-up', () => {
       withDevice: true,
       notifications: { badges: { push: false, email: false } },
     })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
 
-    expect((await runBadgeRoundUpPass(handle.db, senders, now)).sent).toBe(0)
+    expect((await runBadgeRoundUpPass(handle.db, push, now)).sent).toBe(0)
     expect(push.sent).toHaveLength(0)
     expect(await notifiedIdsOf(userId)).toContain('messages.100')
   })
@@ -219,11 +240,11 @@ describe('the badge round-up', () => {
       withDevice: true,
       notifications: { badges: { push: false, email: false } },
     })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
     await handle.db
       .collection(COLLECTIONS.profiles)
       .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
-    await runBadgeRoundUpPass(handle.db, senders, now)
+    await runBadgeRoundUpPass(handle.db, push, now)
 
     expect(push.sent).toHaveLength(0)
     expect(sender.messages).toHaveLength(0)
@@ -256,7 +277,7 @@ describe('the badge round-up', () => {
     const healthy = await newProfile({ messagesSent: 5000, withDevice: true })
 
     const warn = vi.fn()
-    const result = await runBadgeRoundUpPass(handle.db, senders, now, { warn })
+    const result = await runBadgeRoundUpPass(handle.db, push, now, { warn })
 
     expect(result.failed).toBe(1)
     expect(warn).toHaveBeenCalledOnce()
@@ -270,7 +291,7 @@ describe('the badge round-up', () => {
       withDevice: true,
       timezone: zone === 'Etc/GMT+1' ? 'Etc/GMT+2' : 'Etc/GMT+1',
     })
-    expect(await runBadgeRoundUpPass(handle.db, senders, now)).toEqual({
+    expect(await runBadgeRoundUpPass(handle.db, push, now)).toEqual({
       sent: 0,
       seeded: 0,
       failed: 0,

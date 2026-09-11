@@ -622,7 +622,8 @@ export const en = {
     profileVisitsBody:
       'Once a day, how many people looked at your profile. A summary by email each week.',
     meetings: 'Meetings',
-    meetingsBody: 'An hour before a call you both agreed to. Push only.',
+    meetingsBody:
+      'An hour before a call you both agreed to. The evening mail says what tomorrow holds.',
     social: 'The feed and the people on it',
     socialBody: 'Follows, corrections on your posts, and likes.',
     wallet: 'Tokens',
@@ -630,7 +631,7 @@ export const en = {
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. One tap to stop.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'Push', email: 'Email' },
+    channel: { push: 'Push', email: 'Daily email' },
     emailUnverified: 'Verify your email address to turn this on.',
     primingTitle: 'Turn on notifications?',
     primingBody:

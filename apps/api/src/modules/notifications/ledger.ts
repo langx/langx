@@ -3,10 +3,20 @@ import { COLLECTIONS } from '../../db/collections'
 
 /** Which scheduled pass a row belongs to; first component of the `_id`. */
 export type NotificationJob =
+  /** The evening mail itself: one per person per local day, and its ceiling. */
+  | 'dailyDigest'
+  /*
+   * Its sections, each keeping the period it had when it was a letter of its
+   * own — an absence, a week, a day, a pool run. The mail is daily; almost
+   * nothing in it is.
+   */
   | 'unreadDigest'
   | 'profileVisitsPush'
   | 'profileVisitsEmail'
   | 'badgeEarned'
+  | 'badgeDigest'
+  | 'meetingsDigest'
+  | 'wallet.poolDigest'
   | 'verifyReminder'
   | 'feedDigest'
   /** The feed's own pushes: one per follower ever, one per post per hour. */

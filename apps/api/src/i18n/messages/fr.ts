@@ -267,6 +267,36 @@ export const fr: Localized<ServerMessages> = {
 
     feedDigestButton: 'Lire les réponses',
 
+    /** The digest's one passenger: people the reader has never spoken to. */
+    matchesSubject: 'Des personnes avec qui pratiquer',
+
+    matchesPreheader: 'De nouvelles personnes dont les langues correspondent aux vôtres',
+
+    matchesBody: '{names} parlent les langues que vous apprenez — et apprennent la vôtre.',
+
+    matchesButton: 'Voir qui est là',
+
+    /** Yesterday's pool, as a paragraph rather than the letter it never was. */
+    walletBody:
+      "Ils sont déjà dans votre portefeuille. La cagnotte est partagée chaque nuit entre celles et ceux qui ont aidé quelqu'un la veille.",
+
+    walletButton: 'Ouvrir mon portefeuille',
+
+    /** Tomorrow's diary. The hour-before reminder is still a push. */
+    meetingsSubject: {
+      one: 'Un appel demain',
+      other: '{count} appels demain',
+    },
+
+    meetingsPreheader: 'Ce qui vous attend demain',
+
+    meetingsBody: {
+      one: 'Vous avez accepté un appel pour demain.',
+      other: 'Vous avez accepté {count} appels pour demain.',
+    },
+
+    meetingsButton: 'Ouvrir mes discussions',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.

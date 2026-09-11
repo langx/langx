@@ -1,17 +1,18 @@
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { DAILY_DIGEST_LOCAL_HOUR } from '@langx/shared'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
-import { FEED_DIGEST_LOCAL_HOUR, runFeedDigestPass } from './feedDigest'
+import { runDailyDigestPass } from './digest'
 
 const SECRET = 'f'.repeat(40)
 const HOUR = 60 * 60 * 1000
 /** 19:00 UTC — the digest hour for a reader on UTC. */
-const EVENING = new Date(`2026-09-14T${String(FEED_DIGEST_LOCAL_HOUR).padStart(2, '0')}:00:00Z`)
+const EVENING = new Date(`2026-09-14T${String(DAILY_DIGEST_LOCAL_HOUR).padStart(2, '0')}:00:00Z`)
 
 describe("the day's replies to somebody's posts", () => {
   let mongo: MongoMemoryServer
@@ -96,7 +97,7 @@ describe("the day's replies to somebody's posts", () => {
     // Yesterday's replies belong to yesterday's digest.
     await reply(COLLECTIONS.postCorrections, postId, new Date(EVENING.getTime() - 30 * HOUR))
 
-    expect(await runFeedDigestPass(handle.db, ctx, EVENING)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
     const mail = sender.messages[0]
     expect(mail?.subject).toContain('3')
     expect(mail?.html).toContain('I go to the school yesterday')
@@ -116,7 +117,7 @@ describe("the day's replies to somebody's posts", () => {
       createdAt: new Date(EVENING.getTime() - HOUR),
     })
 
-    await runFeedDigestPass(handle.db, ctx, EVENING)
+    await runDailyDigestPass(handle.db, ctx, EVENING)
     expect(sender.messages[0]?.html).toContain('my own words')
     expect(sender.messages[0]?.html).not.toContain('THE CORRECTED SENTENCE')
     expect(sender.messages[0]?.text).not.toContain('THE CORRECTED SENTENCE')
@@ -127,13 +128,17 @@ describe("the day's replies to somebody's posts", () => {
     await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))
 
     // Noon is not the evening.
-    expect(await runFeedDigestPass(handle.db, ctx, new Date('2026-09-14T12:00:00Z'))).toEqual({
+    expect(
+      await runDailyDigestPass(handle.db, ctx, new Date('2026-09-14T12:00:00Z')),
+    ).toMatchObject({
       sent: 0,
     })
-    expect(await runFeedDigestPass(handle.db, ctx, EVENING)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
     // A reply landing after the letter waits for tomorrow's.
     await reply(COLLECTIONS.postComments, await newPost(author, 'again'))
-    expect(await runFeedDigestPass(handle.db, ctx, new Date(EVENING.getTime() + HOUR))).toEqual({
+    expect(
+      await runDailyDigestPass(handle.db, ctx, new Date(EVENING.getTime() + HOUR)),
+    ).toMatchObject({
       sent: 0,
     })
   })
@@ -141,12 +146,12 @@ describe("the day's replies to somebody's posts", () => {
   it('says nothing to somebody who turned the email half off', async () => {
     const author = await newProfile({ notifications: { social: { push: true, email: false } } })
     await reply(COLLECTIONS.postCorrections, await newPost(author, 'hello'))
-    expect(await runFeedDigestPass(handle.db, ctx, EVENING)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
   })
 
   it('sends nothing on a day nobody answered anybody', async () => {
     await newProfile()
-    expect(await runFeedDigestPass(handle.db, ctx, EVENING)).toEqual({ sent: 0 })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
     expect(sender.messages).toHaveLength(0)
   })
 
@@ -155,7 +160,7 @@ describe("the day's replies to somebody's posts", () => {
     for (let index = 0; index < 5; index++) {
       await reply(COLLECTIONS.postCorrections, await newPost(author, `sentence ${index}`))
     }
-    expect(await runFeedDigestPass(handle.db, ctx, EVENING)).toEqual({ sent: 1 })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
     expect(sender.messages[0]?.html).toContain('2 more posts')
   })
 })

@@ -4,13 +4,9 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
-import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
-import { CapturingEmailSender } from '../../testSupport/authFlow'
 import { LoggingPushSender, type Device } from './devices'
 import { runStreakReminderTick } from './reminderScheduler'
-
-const SECRET = 'c'.repeat(40)
 
 /**
  * A fixed zone in which `now` is the reminder hour.
@@ -29,8 +25,6 @@ describe('the streak reminder pass', () => {
   let mongo: MongoMemoryServer
   let handle: DbHandle
   let push: LoggingPushSender
-  let sender: CapturingEmailSender
-  let email: NotificationEmailContext
   const now = new Date('2026-09-03T14:00:00Z')
   const zone = zoneWhereItIsReminderHour(now)
 
@@ -54,8 +48,6 @@ describe('the streak reminder pass', () => {
       await handle.db.collection(name).deleteMany({})
     }
     push = new LoggingPushSender()
-    sender = new CapturingEmailSender()
-    email = { sender, unsubscribeSecret: SECRET, apiBaseUrl: 'https://api.langx.io' }
   })
 
   async function seed(
@@ -98,87 +90,67 @@ describe('the streak reminder pass', () => {
     return userId
   }
 
-  it('pushes to a phone and sends no email', async () => {
+  it('pushes to a phone', async () => {
     await seed({ withDevice: true })
-    const result = await runStreakReminderTick(handle.db, push, email, now)
+    const result = await runStreakReminderTick(handle.db, push, now)
 
-    expect(result).toEqual({ pushed: 1, emailed: 0 })
+    expect(result).toEqual({ pushed: 1 })
     expect(push.sent).toHaveLength(1)
     expect(push.sent[0]?.data.kind).toBe('streakReminder')
-    expect(sender.messages).toHaveLength(0)
   })
 
   /**
-   * The web audience, and anyone who declined the permission. Before this
-   * they were found, ledgered and then silently skipped.
+   * The web audience, and anyone who declined the permission. They are nudged
+   * an hour earlier, as a section of the evening digest — so this pass leaves
+   * them alone *and leaves the day unclaimed*, which is what lets the digest
+   * claim it. Claiming here would silence the only channel they have.
    */
-  it('emails somebody with no phone signed in', async () => {
+  it('leaves somebody with no phone to the evening digest', async () => {
     await seed()
-    const result = await runStreakReminderTick(handle.db, push, email, now)
+    const result = await runStreakReminderTick(handle.db, push, now)
 
-    expect(result).toEqual({ pushed: 0, emailed: 1 })
+    expect(result).toEqual({ pushed: 0 })
     expect(push.sent).toHaveLength(0)
-    expect(sender.messages).toHaveLength(1)
-    // The same words as the push, with the streak count filled in.
-    expect(sender.messages[0]?.subject).toContain('3')
-    expect(sender.messages[0]?.headers?.['List-Unsubscribe-Post']).toBe(
-      'List-Unsubscribe=One-Click',
-    )
+    expect(await handle.db.collection(COLLECTIONS.streakReminders).countDocuments({})).toBe(0)
   })
 
   it('nudges once a day however many times it runs', async () => {
-    await seed()
-    await runStreakReminderTick(handle.db, push, email, now)
-    const second = await runStreakReminderTick(handle.db, push, email, now)
+    await seed({ withDevice: true })
+    await runStreakReminderTick(handle.db, push, now)
+    const second = await runStreakReminderTick(handle.db, push, now)
 
-    expect(second).toEqual({ pushed: 0, emailed: 0 })
-    expect(sender.messages).toHaveLength(1)
+    expect(second).toEqual({ pushed: 0 })
+    expect(push.sent).toHaveLength(1)
   })
 
   it('says nothing to somebody who turned both channels off', async () => {
-    await seed({ notifications: { streak: { push: false, email: false } } })
-    await runStreakReminderTick(handle.db, push, email, now)
+    await seed({ withDevice: true, notifications: { streak: { push: false, email: false } } })
+    await runStreakReminderTick(handle.db, push, now)
 
-    expect(sender.messages).toHaveLength(0)
     expect(push.sent).toHaveLength(0)
     // Not even claimed: the day should still be free if they change their mind.
     expect(await handle.db.collection(COLLECTIONS.streakReminders).countDocuments({})).toBe(0)
   })
 
-  it('emails somebody who wants mail but not a push', async () => {
+  it('does not push to somebody who asked for mail instead', async () => {
     await seed({ withDevice: true, notifications: { streak: { push: false, email: true } } })
-    const result = await runStreakReminderTick(handle.db, push, email, now)
+    const result = await runStreakReminderTick(handle.db, push, now)
 
-    expect(result).toEqual({ pushed: 0, emailed: 1 })
+    expect(result).toEqual({ pushed: 0 })
     expect(push.sent).toHaveLength(0)
-  })
-
-  /**
-   * The day is claimed before the send is attempted, so a person the mail
-   * cannot reach is not retried thirty minutes later — and again the next
-   * evening after that.
-   */
-  it('still claims the day when the address is unverified', async () => {
-    await seed({ verified: false })
-    const result = await runStreakReminderTick(handle.db, push, email, now)
-
-    expect(result).toEqual({ pushed: 0, emailed: 0 })
-    expect(sender.messages).toHaveLength(0)
-    expect(await handle.db.collection(COLLECTIONS.streakReminders).countDocuments({})).toBe(1)
+    // The digest is their channel, so the day must still be theirs to claim.
+    expect(await handle.db.collection(COLLECTIONS.streakReminders).countDocuments({})).toBe(0)
   })
 
   it('leaves alone anyone for whom it is not the reminder hour', async () => {
-    await seed({ timezone: 'Etc/GMT+1' === zone ? 'Etc/GMT+2' : 'Etc/GMT+1' })
-    const result = await runStreakReminderTick(handle.db, push, email, now)
-    expect(result).toEqual({ pushed: 0, emailed: 0 })
+    await seed({ withDevice: true, timezone: 'Etc/GMT+1' === zone ? 'Etc/GMT+2' : 'Etc/GMT+1' })
+    const result = await runStreakReminderTick(handle.db, push, now)
+    expect(result).toEqual({ pushed: 0 })
   })
 
   it('leaves alone anyone who has already kept the streak today', async () => {
     const today = new Intl.DateTimeFormat('en-CA', { timeZone: zone }).format(now)
-    await seed({ lastQualifiedDay: today })
-    expect(await runStreakReminderTick(handle.db, push, email, now)).toEqual({
-      pushed: 0,
-      emailed: 0,
-    })
+    await seed({ withDevice: true, lastQualifiedDay: today })
+    expect(await runStreakReminderTick(handle.db, push, now)).toEqual({ pushed: 0 })
   })
 })

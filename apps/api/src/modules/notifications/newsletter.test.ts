@@ -11,7 +11,7 @@ import { lastMonthKey, runNewsletterPass } from './newsletter'
 
 const SECRET = 'n'.repeat(40)
 /** The first of October at noon UTC: the recap is about September. */
-const FIRST = new Date('2026-10-01T12:00:00Z')
+const FIRST = new Date('2026-10-01T20:00:00Z')
 
 describe('the monthly recap', () => {
   let mongo: MongoMemoryServer
@@ -144,7 +144,7 @@ describe('the monthly recap', () => {
     expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 1 })
     expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 0 })
     // A day later is still the same month's recap.
-    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-03T12:00:00Z'))).toEqual({
+    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-03T20:00:00Z'))).toEqual({
       sent: 0,
     })
   })
@@ -152,26 +152,28 @@ describe('the monthly recap', () => {
   /** A deploy on the third must not skip the month; the claim stops the double. */
   it('catches up within the first week', async () => {
     await newProfile()
-    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-05T12:00:00Z'))).toEqual({
+    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-05T20:00:00Z'))).toEqual({
       sent: 1,
     })
     // And after the window it waits for the next month rather than arriving late.
     await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
-    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-20T12:00:00Z'))).toEqual({
+    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-20T20:00:00Z'))).toEqual({
       sent: 0,
     })
   })
 
-  it('waits for ten in the morning, on the reader’s own clock', async () => {
+  it('waits for the marketing slot, on the reader’s own clock', async () => {
     await newProfile({ timezone: 'Asia/Tokyo' })
-    // Noon UTC is 21:00 in Tokyo on the 1st — past ten, so it goes.
-    expect(await runNewsletterPass(handle.db, ctx, FIRST)).toEqual({ sent: 1 })
+    // 11:00 UTC is eight in the evening in Tokyo on the 1st.
+    expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-01T11:00:00Z'))).toEqual({
+      sent: 1,
+    })
 
     await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
     await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
     sender.messages.length = 0
     await newProfile({ timezone: 'America/Los_Angeles' })
-    // 03:00 in Los Angeles is not ten in the morning anywhere.
+    // 03:00 in Los Angeles is not eight in the evening anywhere.
     expect(await runNewsletterPass(handle.db, ctx, new Date('2026-10-01T10:00:00Z'))).toEqual({
       sent: 0,
     })

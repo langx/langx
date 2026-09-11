@@ -560,7 +560,8 @@ export const ptBR: Localized<EnMessages> = {
     profileVisitsBody:
       'Uma vez por dia, quantas pessoas olharam seu perfil. Um resumo por e-mail toda semana.',
     meetings: 'Encontros',
-    meetingsBody: 'Uma hora antes de uma chamada que vocês dois aceitaram. Só push.',
+    meetingsBody:
+      'Uma hora antes de uma chamada que vocês dois aceitaram. O e-mail da noite diz o que há amanhã.',
     social: 'O feed e quem está nele',
     socialBody: 'Seguidores, correções nas suas publicações e curtidas.',
     wallet: 'Tokens',
@@ -568,7 +569,7 @@ export const ptBR: Localized<EnMessages> = {
     promotions: 'Novidades e ofertas',
     promotionsBody: 'De vez em quando, o que há de novo. Um toque para parar.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
-    channel: { push: 'Push', email: 'E-mail' },
+    channel: { push: 'Push', email: 'E-mail diário' },
     emailUnverified: 'Verifique seu endereço de e-mail para ativar isto.',
     primingTitle: 'Ativar as notificações?',
     primingBody:
