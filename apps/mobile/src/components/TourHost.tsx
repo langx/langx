@@ -153,18 +153,26 @@ export function TourHost() {
         />
         {layout ? (
           <>
-            {layout.panels.map((panel, index) => (
-              <View
-                key={index}
-                pointerEvents="none"
-                style={[styles.panel, { left: panel.x, top: panel.y, ...sized(panel) }]}
-              />
-            ))}
+            {/* The dim and the hole are one view: see `tourLayout`. */}
+            <View
+              pointerEvents="none"
+              style={[
+                styles.mask,
+                layout.mask,
+                { borderRadius: layout.border.radius, borderWidth: layout.border.width },
+              ]}
+            />
             <View
               pointerEvents="none"
               style={[
                 styles.ring,
-                { left: layout.hole.x, top: layout.hole.y, ...sized(layout.hole) },
+                {
+                  left: layout.hole.x,
+                  top: layout.hole.y,
+                  width: layout.hole.width,
+                  height: layout.hole.height,
+                  borderRadius: layout.hole.radius,
+                },
               ]}
             />
           </>
@@ -233,23 +241,13 @@ export function TourHost() {
   )
 }
 
-/** Rects come out of the layout as x/y/width/height; styles want the last two. */
-function sized(rect: TourRect): { width: number; height: number } {
-  return { width: rect.width, height: rect.height }
-}
-
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
-  panel: { backgroundColor: colors.scrim, position: 'absolute' },
+  mask: { borderColor: colors.scrim, position: 'absolute' },
   /**
    * A ring, not a fill: the element underneath is the real one, still drawn by
    * the screen below — this only says which one it is.
    */
-  ring: {
-    borderColor: colors.accent,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    position: 'absolute',
-  },
+  ring: { borderColor: colors.accent, borderWidth: 2, position: 'absolute' },
   bubble: {
     backgroundColor: colors.bg,
     borderRadius: radius.xl,

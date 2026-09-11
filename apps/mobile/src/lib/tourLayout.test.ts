@@ -11,7 +11,7 @@ describe('tourLayout', () => {
       screen,
       insets,
     })
-    expect(hole).toEqual({ x: 94, y: 194, width: 92, height: 52 })
+    expect(hole).toEqual({ x: 94, y: 194, width: 92, height: 52, radius: 16 })
   })
 
   it('keeps the hole inside the screen when the element touches an edge', () => {
@@ -25,24 +25,41 @@ describe('tourLayout', () => {
     expect(hole.x + hole.width).toBeLessThanOrEqual(screen.width)
   })
 
-  /** Four panels, no gaps, nothing negative — the dim has to be a dim. */
-  it('covers everything but the hole', () => {
-    const { hole, panels } = tourLayout({
+  /**
+   * The dim is one bordered box whose hollow middle is the hole, so two things
+   * have to hold: its border reaches past every edge of the screen, and the
+   * inner radius the platform derives (`borderRadius - borderWidth`) is the
+   * hole's own corner. Get the second wrong and the corners of the hole are
+   * undimmed — which is exactly what four panels did.
+   */
+  it('covers everything but the hole, with the hole rounded as asked', () => {
+    const { hole, mask, border } = tourLayout({
       anchor: { x: 40, y: 300, width: 120, height: 60 },
       screen,
       insets,
     })
-    for (const panel of panels) {
-      expect(panel.width).toBeGreaterThanOrEqual(0)
-      expect(panel.height).toBeGreaterThanOrEqual(0)
-    }
-    const [top, bottom, left, right] = panels
-    expect(top!.height).toBe(hole.y)
-    expect(bottom!.y).toBe(hole.y + hole.height)
-    expect(bottom!.y + bottom!.height).toBe(screen.height)
-    expect(left!.width).toBe(hole.x)
-    expect(right!.x).toBe(hole.x + hole.width)
-    expect(right!.x + right!.width).toBe(screen.width)
+    expect(mask.left + border.width).toBe(hole.x)
+    expect(mask.top + border.width).toBe(hole.y)
+    expect(mask.width - border.width * 2).toBe(hole.width)
+    expect(mask.height - border.width * 2).toBe(hole.height)
+    expect(border.radius - border.width).toBe(hole.radius)
+    expect(mask.left).toBeLessThan(0)
+    expect(mask.top).toBeLessThan(0)
+    expect(mask.left + mask.width).toBeGreaterThan(screen.width)
+    expect(mask.top + mask.height).toBeGreaterThan(screen.height)
+  })
+
+  it('takes the corner an element asks for, bounded to a pill', () => {
+    const square = tourLayout({
+      anchor: { x: 20, y: 700, width: 50, height: 50, radius: 999 },
+      screen,
+      insets,
+    })
+    // 50 + two 6-point pads is 62 across, so the pill's radius is 31.
+    expect(square.hole.radius).toBe(31)
+
+    const plain = tourLayout({ anchor: { x: 20, y: 300, width: 200, height: 40 }, screen, insets })
+    expect(plain.hole.radius).toBe(16)
   })
 
   it('puts the bubble under an element in the top half', () => {

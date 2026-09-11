@@ -33,7 +33,18 @@ function TabIcon({
   tour?: TourTargetId
 }) {
   const icon = <Feather name={name} size={22} color={color} />
-  return tour ? <TourTarget id={tour}>{icon}</TourTarget> : icon
+  /*
+   * Padded and round: a hole that hugs a 22-point glyph reads as a speck, not
+   * as "this tab". The padding is on the measurement, not on the view — see
+   * `TourTarget` — so the bar itself is untouched.
+   */
+  return tour ? (
+    <TourTarget id={tour} pad={14} radius={999}>
+      {icon}
+    </TourTarget>
+  ) : (
+    icon
+  )
 }
 
 /**

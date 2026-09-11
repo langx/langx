@@ -19,6 +19,13 @@ export interface TourRect {
   y: number
   width: number
   height: number
+  /**
+   * How round the hole cut around it should be, when the element's own shape
+   * asks for something other than the house radius — `999` for the circle a
+   * tab-bar icon wants. Set by `TourTarget`, because the element knows its own
+   * shape and the geometry does not.
+   */
+  radius?: number
 }
 
 /**

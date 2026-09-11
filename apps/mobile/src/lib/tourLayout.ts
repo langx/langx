@@ -1,23 +1,27 @@
 import type { TourRect } from './tour'
 
 /**
- * Where the hole, the four dim panels and the bubble go for one tour step.
+ * Where the hole, the dim around it and the bubble go for one tour step.
  *
  * Pure and renderer-free, like `messageMenuLayout.ts` — and for the same
  * reason: this is the part that can be wrong on one screen size and right on
  * every other, which is exactly what a test can hold still and a simulator
  * cannot.
  *
- * **There is no mask here, and no SVG.** The hole is the gap left between four
- * opaque-ish panels drawn around the anchor, so the real UI shows through
- * untouched in either theme. `react-native-svg` is not a dependency of this
- * app and a cut-out is not a good enough reason to make it one.
+ * **There is no mask here, and no SVG.** The dim is one view with an enormous
+ * border: a border's inner corner radius is its outer radius minus its width,
+ * so a single bordered box with nothing in the middle leaves a *rounded*
+ * rectangular hole with the real UI showing through it. Four panels around the
+ * anchor was the first attempt and it left the four corners undimmed — the
+ * hole was square while the ring over it was round.
  */
 
 /** Between the hole and the bubble, and between the bubble and the screen edge. */
 const GAP = 12
 /** How far the hole is grown past the element, so the ring does not clip it. */
 const PAD = 6
+/** The house corner, when the element does not ask for its own. */
+const RADIUS = 16
 /** Wide enough for two lines of body text, narrow enough to point at something. */
 const MAX_BUBBLE_WIDTH = 420
 
@@ -29,9 +33,14 @@ export interface TourLayoutInput {
 
 export interface TourLayout {
   /** The lit rectangle: the anchor, grown by `PAD` and clamped to the screen. */
-  hole: TourRect
-  /** Top, bottom, left, right — in that order, ready to map over. */
-  panels: readonly TourRect[]
+  hole: TourRect & { radius: number }
+  /**
+   * The dim, as one bordered box. Its border is the dim; its hollow middle is
+   * the hole. Wide enough to cover the screen from wherever the hole is.
+   */
+  mask: { left: number; top: number; width: number; height: number }
+  /** `borderWidth` for the mask, and the radius that rounds its inside. */
+  border: { width: number; radius: number }
   /**
    * Anchored by one edge only, so the bubble's height never has to be known
    * in advance. Measuring it first would mean one frame drawn in the wrong
@@ -60,14 +69,28 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
   const top = clamp(anchor.y - PAD, 0, screen.height)
   const right = clamp(anchor.x + anchor.width + PAD, left, screen.width)
   const bottom = clamp(anchor.y + anchor.height + PAD, top, screen.height)
-  const hole: TourRect = { x: left, y: top, width: right - left, height: bottom - top }
+  const width = right - left
+  const height = bottom - top
+  // A radius larger than half the shorter side is not a rounder rectangle, it
+  // is a pill — which is exactly what `radius: 999` on a tab icon asks for,
+  // and what the border arithmetic below needs bounded to stay a rectangle.
+  const radius = Math.min(anchor.radius ?? RADIUS, Math.min(width, height) / 2)
+  const hole = { x: left, y: top, width, height, radius }
 
-  const panels: TourRect[] = [
-    { x: 0, y: 0, width: screen.width, height: hole.y },
-    { x: 0, y: bottom, width: screen.width, height: Math.max(0, screen.height - bottom) },
-    { x: 0, y: hole.y, width: hole.x, height: hole.height },
-    { x: right, y: hole.y, width: Math.max(0, screen.width - right), height: hole.height },
-  ]
+  /*
+   * One border, thick enough to reach every edge of the screen from a hole
+   * anywhere on it. The inner radius React Native (and CSS) derives is
+   * `borderRadius - borderWidth`, so the outer radius has to carry the border
+   * width as well as the corner we actually want.
+   */
+  const border = { width: screen.width + screen.height, radius: 0 }
+  border.radius = border.width + radius
+  const mask = {
+    left: left - border.width,
+    top: top - border.width,
+    width: width + border.width * 2,
+    height: height + border.width * 2,
+  }
 
   /*
    * Which side of the hole the bubble takes is decided by where the hole is,
@@ -76,36 +99,42 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
    * The alternative — fitting by height — needs the height, which is the one
    * thing this function refuses to wait for.
    */
-  const placement = hole.y + hole.height / 2 < screen.height / 2 ? 'below' : 'above'
-  const width = Math.min(MAX_BUBBLE_WIDTH, Math.max(0, screen.width - GAP * 2))
+  const placement = top + height / 2 < screen.height / 2 ? 'below' : 'above'
+  const bubbleWidth = Math.min(MAX_BUBBLE_WIDTH, Math.max(0, screen.width - GAP * 2))
   // Centred on what it points at, then pulled back inside the screen — so a
   // bubble for the filter button at the trailing edge still reads as being
   // about the filter button.
-  const bubbleLeft = clamp(anchor.x + anchor.width / 2 - width / 2, GAP, screen.width - width - GAP)
+  const bubbleLeft = clamp(
+    anchor.x + anchor.width / 2 - bubbleWidth / 2,
+    GAP,
+    screen.width - bubbleWidth - GAP,
+  )
 
   if (placement === 'below') {
     const bubbleTop = bottom + GAP
     return {
       hole,
-      panels,
+      mask,
+      border,
       bubble: {
         placement,
         left: bubbleLeft,
-        width,
+        width: bubbleWidth,
         top: bubbleTop,
         maxHeight: Math.max(0, screen.height - insets.bottom - GAP - bubbleTop),
       },
     }
   }
 
-  const bubbleBottom = Math.max(0, screen.height - hole.y) + GAP
+  const bubbleBottom = Math.max(0, screen.height - top) + GAP
   return {
     hole,
-    panels,
+    mask,
+    border,
     bubble: {
       placement,
       left: bubbleLeft,
-      width,
+      width: bubbleWidth,
       bottom: bubbleBottom,
       maxHeight: Math.max(0, screen.height - bubbleBottom - insets.top - GAP),
     },
