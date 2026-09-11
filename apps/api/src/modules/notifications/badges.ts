@@ -52,6 +52,13 @@ export async function runBadgeRoundUpPass(
   const candidates = await profiles
     .find({
       deletedAt: { $exists: false },
+      // A guest is nobody to notify: no address, no device, and a row that
+      // `purgeStaleGuests` deletes on its own timer. Left in, the round-up
+      // seeds `notifiedBadgeIds` onto a profile that will not exist to read
+      // it, and pays `getBadgeSummary`'s three reads a head to do it. The
+      // other two passes that walk every profile — the newsletter and the
+      // promotions sweep — bound themselves the same way.
+      guest: { $exists: false },
       // Bounds the scan; `notificationsAllowed` decides. Only the oldest
       // stored shape is a bare `false` this can read.
       'settings.notifications': { $ne: false },
