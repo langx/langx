@@ -40,8 +40,8 @@ interface OfficialUserDoc {
  */
 const OFFICIAL_BIOS: Record<OfficialHandle, string> = {
   langx:
-    'The LangX assistant. Ask me how the app works, report someone, or tell me about a bug or an idea.',
-  copilot: 'Your in-chat practice partner. Coming soon.',
+    'News and announcements from LangX. This account doesn’t take messages — Settings → About → Feedback reaches the team.',
+  copilot: 'The LangX assistant. Not open yet.',
 }
 
 const idsByHandle = new Map<OfficialHandle, string>()
@@ -127,7 +127,30 @@ async function ensureOne(
      */
     await profiles.updateOne(
       { _id: existing._id },
-      { $set: { avatarUrl, displayName, bio: OFFICIAL_BIOS[handle], updatedAt: now } },
+      {
+        $set: { avatarUrl, displayName, bio: OFFICIAL_BIOS[handle], updatedAt: now },
+        /*
+         * And the things an official account must not be carrying.
+         *
+         * A created one never has them; an **adopted** one arrives with
+         * whatever the person was using it for. Two cats in the gallery and a
+         * country under the name are exactly the kind of leftover that nobody
+         * thinks to look for, because the account otherwise reads correctly.
+         *
+         * `$unset` on an absent field costs nothing, so this runs on every
+         * boot and the account heals itself rather than needing a migration.
+         */
+        $unset: {
+          photos: '',
+          pronouns: '',
+          country: '',
+          cityId: '',
+          cityName: '',
+          cityCountryCode: '',
+          location: '',
+          locationUpdatedAt: '',
+        },
+      },
     )
     return { handle, outcome: 'updated', userId: existing._id }
   }

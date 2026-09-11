@@ -112,8 +112,8 @@ describe('adopting an account that was run by hand', () => {
     const profile = await handle.db
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: USER_ID })
-    // Kept.
-    expect(profile?.photos).toHaveLength(1)
+    // Kept: the history, which is the reason to adopt rather than rename. The
+    // gallery is not history — see the boot test below, which clears it.
     expect(profile?.streak.current).toBe(9)
     expect(profile?.stats.messagesSent).toBe(24)
     // Applied.
@@ -144,7 +144,16 @@ describe('adopting an account that was run by hand', () => {
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: USER_ID })
     expect(profile?.displayName).toBe('LangX')
-    expect(profile?.bio).toContain('LangX assistant')
+    expect(profile?.bio).toContain('News and announcements')
+
+    /*
+     * The leftovers. An adopted account arrives with what the person was
+     * using it for — a gallery, a country under the name — and an official
+     * account has neither. The boot clears them rather than a migration.
+     */
+    expect(profile?.photos).toBeUndefined()
+    expect(profile?.country).toBeUndefined()
+    expect(profile?.pronouns).toBeUndefined()
     expect(profile?.avatarUrl).toBe('https://api.langx.test/public/avatar/official/langx')
   })
 
