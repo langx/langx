@@ -876,6 +876,31 @@ export const de: Localized<EnMessages> = {
     failed: 'Melden fehlgeschlagen',
   },
 
+  inbox: {
+    title: 'Mitteilungen',
+    bell: 'Mitteilungen',
+    unread: 'Ungelesen',
+    emptyTitle: 'Noch nichts',
+    emptyBody: 'Neue Follower, Korrekturen und Likes landen hier.',
+    follow: '{name} folgt dir jetzt',
+    postComment: '{name} hat deinen Beitrag kommentiert',
+    postCorrection: '{name} hat deinen Satz korrigiert',
+    pronunciationAnswer: '{name} hat deinen Satz aufgenommen',
+    like: '{name} gefällt dein Beitrag',
+    likeOthers: {
+      one: '{name} und {count} weiterer Person gefällt dein Beitrag',
+      other: '{name} und {count} weiteren Personen gefällt dein Beitrag',
+    },
+    badgeEarned: 'Du hast ein neues Abzeichen erhalten',
+    walletPool: {
+      one: 'Der gestrige Pool hat dir {count} Token ausgezahlt',
+      other: 'Der gestrige Pool hat dir {count} Token ausgezahlt',
+    },
+    profileVisits: {
+      one: '{count} Person hat dein Profil angesehen',
+      other: '{count} Personen haben dein Profil angesehen',
+    },
+  },
   feed: {
     topTag: 'Top',
     ask: '+ Fragen',

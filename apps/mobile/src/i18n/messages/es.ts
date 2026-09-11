@@ -853,6 +853,31 @@ export const es: Localized<EnMessages> = {
     failed: 'No se pudo denunciar',
   },
 
+  inbox: {
+    title: 'Notificaciones',
+    bell: 'Notificaciones',
+    unread: 'Sin leer',
+    emptyTitle: 'Nada todavía',
+    emptyBody: 'Aquí llegan los seguidores, las correcciones y los me gusta.',
+    follow: '{name} te empezó a seguir',
+    postComment: '{name} comentó tu publicación',
+    postCorrection: '{name} corrigió tu frase',
+    pronunciationAnswer: '{name} grabó tu frase',
+    like: 'A {name} le gustó tu publicación',
+    likeOthers: {
+      one: 'A {name} y {count} persona más les gustó tu publicación',
+      other: 'A {name} y {count} personas más les gustó tu publicación',
+    },
+    badgeEarned: 'Ganaste una insignia nueva',
+    walletPool: {
+      one: 'El bote de ayer te pagó {count} ficha',
+      other: 'El bote de ayer te pagó {count} fichas',
+    },
+    profileVisits: {
+      one: '{count} persona vio tu perfil',
+      other: '{count} personas vieron tu perfil',
+    },
+  },
   feed: {
     topTag: 'Mejor',
     ask: '+ Preguntar',

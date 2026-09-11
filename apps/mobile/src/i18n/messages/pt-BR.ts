@@ -846,6 +846,31 @@ export const ptBR: Localized<EnMessages> = {
     failed: 'Não foi possível denunciar',
   },
 
+  inbox: {
+    title: 'Notificações',
+    bell: 'Notificações',
+    unread: 'Não lida',
+    emptyTitle: 'Nada ainda',
+    emptyBody: 'Seguidores, correções e curtidas no que você publica chegam aqui.',
+    follow: '{name} começou a seguir você',
+    postComment: '{name} comentou na sua publicação',
+    postCorrection: '{name} corrigiu sua frase',
+    pronunciationAnswer: '{name} gravou sua frase',
+    like: '{name} curtiu sua publicação',
+    likeOthers: {
+      one: '{name} e mais {count} pessoa curtiram sua publicação',
+      other: '{name} e mais {count} pessoas curtiram sua publicação',
+    },
+    badgeEarned: 'Você ganhou uma nova insígnia',
+    walletPool: {
+      one: 'O bolo de ontem pagou {count} ficha a você',
+      other: 'O bolo de ontem pagou {count} fichas a você',
+    },
+    profileVisits: {
+      one: '{count} pessoa viu seu perfil',
+      other: '{count} pessoas viram seu perfil',
+    },
+  },
   feed: {
     topTag: 'Melhor',
     ask: '+ Perguntar',

@@ -857,6 +857,31 @@ export const fr: Localized<EnMessages> = {
     failed: 'Signalement impossible',
   },
 
+  inbox: {
+    title: 'Notifications',
+    bell: 'Notifications',
+    unread: 'Non lu',
+    emptyTitle: 'Rien pour le moment',
+    emptyBody: 'Les abonnements, les corrections et les j’aime arrivent ici.',
+    follow: '{name} vous suit',
+    postComment: '{name} a commenté votre publication',
+    postCorrection: '{name} a corrigé votre phrase',
+    pronunciationAnswer: '{name} a enregistré votre phrase',
+    like: '{name} a aimé votre publication',
+    likeOthers: {
+      one: '{name} et {count} autre personne ont aimé votre publication',
+      other: '{name} et {count} autres personnes ont aimé votre publication',
+    },
+    badgeEarned: 'Vous avez obtenu un nouveau badge',
+    walletPool: {
+      one: 'La cagnotte d’hier vous a versé {count} jeton',
+      other: 'La cagnotte d’hier vous a versé {count} jetons',
+    },
+    profileVisits: {
+      one: '{count} personne a consulté votre profil',
+      other: '{count} personnes ont consulté votre profil',
+    },
+  },
   feed: {
     topTag: 'Meilleure',
     ask: '+ Demander',

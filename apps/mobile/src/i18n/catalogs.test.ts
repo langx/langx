@@ -3,6 +3,7 @@ import {
   GENDERS,
   INTEREST_SUGGESTIONS,
   LANGUAGE_LEVELS,
+  IN_APP_NOTIFICATION_KINDS,
   NOTIFICATION_CHANNELS,
   NOTIFICATION_TYPES,
   PERIOD_TYPES,
@@ -13,6 +14,7 @@ import {
   type Message,
 } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
+import { notificationCopy } from '../lib/notificationInbox'
 import { catalogs } from './catalogs'
 import {
   accountAgeLabel,
@@ -194,6 +196,30 @@ describe('dynamically built keys', () => {
     for (const type of NOTIFICATION_TYPES) {
       expect(t(`notifications.${type}` as never), type).not.toContain('notifications.')
       expect(t(`notifications.${type}Body` as never), type).not.toContain('notifications.')
+    }
+  })
+
+  /**
+   * Driven through the mapper rather than against an `inbox.${kind}` naming
+   * convention, because the convention is not what ships — the mapper is, and
+   * for a like it picks between two different keys depending on how many
+   * people liked. A test of the convention would miss the branch entirely.
+   */
+  it('resolves a line for every notification the inbox can show', () => {
+    for (const kind of IN_APP_NOTIFICATION_KINDS) {
+      for (const count of [0, 3]) {
+        const { key, params } = notificationCopy({
+          _id: 'n1',
+          kind,
+          actor: { handle: 'sofia', displayName: 'Sofia' },
+          count,
+        })
+        const line = t(key, params)
+        expect(line, `${kind}/${String(count)}`).not.toContain('inbox.')
+        // `interpolate` leaves an unfilled placeholder in the text on purpose,
+        // so this is what catches a mapper that forgot to pass one.
+        expect(line, `${kind}/${String(count)}`).not.toContain('{')
+      }
     }
   })
 
