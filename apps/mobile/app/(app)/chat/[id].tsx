@@ -58,6 +58,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache, useProfileCacheStatus } from '../../../src/hooks/useProfileCache'
+import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
@@ -184,6 +185,7 @@ export default function ChatScreen() {
   const conversation = useConversation(conversationId)
   const flags = useConversationFlags()
   const recorder = useVoiceRecorder()
+  const review = useReviewPrompt()
   /** Only for the pill's dress: white ground and accent ring while it has focus. */
   const [sendingMedia, setSendingMedia] = useState(false)
   /**
@@ -1037,6 +1039,7 @@ export default function ChatScreen() {
         corrected,
       })
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
+      review.request({ kind: 'correction' })
     } catch {
       setCorrecting(target)
       setDraft(corrected)
