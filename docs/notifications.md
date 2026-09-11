@@ -252,7 +252,7 @@ accusation rather than a summary.
 | `v1deleted` | the addresses v1's deleted accounts left in `v1DeletedContacts`           |
 
 `--exclude-returned` drops anybody who has since onboarded. Warm-up ramp:
-1000 / 2000 / 4000 / 8000 a day, 08–20 UTC. `--pause` stops the next
+1000 / 4000 / 8000 a day, 08–20 UTC. `--pause` stops the next
 tick.
 
 ---

@@ -33,18 +33,20 @@ export type CampaignSource = (typeof CAMPAIGN_SOURCES)[number]
  * A ramp rather than one burst, and not because of any quota: mailbox
  * providers rate a domain on what it did yesterday, and one that goes from
  * twenty mails a day to four thousand in an hour gets throttled — with the
- * penalty landing on the verification links as well as the campaign. Three
+ * penalty landing on the verification links as well as the campaign. Two
  * days for a few thousand people is the price of the transactional mail
  * still arriving.
  *
- * Raised twice on 11 September 2026, Behic's call both times, after the v1
- * campaign's first day went to Apple relay addresses that bounced and was
- * lost. The shape is what the ramp is for — each day twice the one before,
- * never a jump — and that is intact; the floor moved because the reasoning
- * above was written when the domain sent twenty mails a day and it had been
- * sending a few hundred for a fortnight by then.
+ * Raised three times on 11 September 2026, Behic's call each time, after the
+ * v1 campaign's first day went to Apple relay addresses that bounced and was
+ * lost. The second day is now four times the first rather than twice it —
+ * the alternative he was choosing between was sending the whole remainder in
+ * one hour that same evening, and a day spread across the twelve-hour window
+ * is the far smaller jump. What the ramp still buys, and the reason it was
+ * not abandoned outright: the Apple failure was caught at the 144th mail
+ * because the first day was slow.
  */
-export const CAMPAIGN_WARMUP_PER_DAY = [1000, 2000, 4000, 8000] as const
+export const CAMPAIGN_WARMUP_PER_DAY = [1000, 4000, 8000] as const
 
 /** The day's budget for a campaign that started `dayIndex` days ago. */
 export function campaignDayBudget(dayIndex: number): number {
