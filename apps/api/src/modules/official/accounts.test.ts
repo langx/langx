@@ -105,6 +105,26 @@ describe('the official accounts', () => {
     expect(await handle.db.collection(COLLECTIONS.user).countDocuments()).toBe(1)
   })
 
+  /**
+   * The bio is the one sentence a stranger reads on a profile, and it is the
+   * easiest thing to leave describing an account that no longer exists — the
+   * first one invited people to write in, months after the composer was gone.
+   */
+  it('describes what each account actually is', async () => {
+    await ensureOfficialAccounts(handle.db, API_URL)
+    const rows = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .find({ official: true })
+      .toArray()
+
+    for (const row of rows) {
+      expect(row.bio, row.handle).toBeTruthy()
+      // Neither takes messages today, so neither may ask for one.
+      expect(row.bio, row.handle).not.toMatch(/ask me|write to me|report someone/i)
+    }
+    expect(rows.find((r) => r.handle === 'langx')?.bio).toContain('doesn’t take messages')
+  })
+
   it('publishes no age for an official account', async () => {
     await ensureOfficialAccounts(handle.db, API_URL)
     const profile = await handle.db

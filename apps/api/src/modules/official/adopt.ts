@@ -25,11 +25,12 @@ export interface AdoptionResult {
  * conversations and history are worth keeping. This is that case, done
  * deliberately and once, by a person running a script.
  *
- * What it does **not** do is delete anything of the account's own: the
- * conversations, the messages, the photos and the streak all stay. What it
- * takes away is the ability to sign in, because "nobody can sign in to an
- * official account" is a property of the whole design and not a rule this one
- * gets to be an exception to.
+ * What it does **not** do is delete the account's history: the conversations,
+ * the messages and the streak all stay. What it takes away is the ability to
+ * sign in, because "nobody can sign in to an official account" is a property
+ * of the whole design and not a rule this one gets to be an exception to. The
+ * gallery, the country and the pronouns go on the next boot — see
+ * `ensureOfficialAccounts`, which owns what an official profile looks like.
  *
  * The order matters. Credentials go first, so a run that dies halfway leaves
  * an account nobody can sign into that is not yet official — harmless, and
