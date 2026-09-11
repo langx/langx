@@ -57,9 +57,9 @@ export const OFFICIAL_ASSISTANT = {
    * people is not bounded by anything.
    *
    * The arithmetic, at Haiku 4.5 rates ($1 per million in, $5 out) and with
-   * the two bounds below in force: about 3,500 tokens of input and at most
+   * the two bounds below in force: about 4,000 tokens of input and at most
    * 1,024 of output, so **under a cent is the most one reply can cost**. Five
-   * hundred of those is $4.30 a day, $130 a month — a ceiling, not an
+   * hundred of those is $4.60 a day, $140 a month — a ceiling, not an
    * estimate, and an ordinary reply is a fraction of it.
    *
    * Note what this is a ceiling on: replies, and therefore spend, only because

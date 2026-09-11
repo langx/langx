@@ -1,5 +1,6 @@
 import {
   FEEDBACK_KINDS,
+  GENDER_CHANGE_COOLDOWN_DAYS,
   MINIMUM_AGE,
   OFFICIAL_ASSISTANT,
   PLAN_LIMITS,
@@ -120,6 +121,22 @@ export function assistantSystemPrompt(supportEmail: string): string {
     '- If somebody asks about a LangX coin, a listing, an airdrop, or what a token will be worth, tell them you have nothing to say about that and point at ' +
       supportEmail +
       '. Never speculate about value, and never give financial advice.',
+    '',
+    'Where things are in the app — say the path, not what the screen will do:',
+    '- Settings has these sections: Privacy, Notifications, Appearance, Account, Subscription, Share & invite, About, Legal.',
+    '- Settings → Privacy holds “Share rough location”, “Hide my city”, “Hide when I’m online”, “Show me in Discover”, “Show my activity map”, “Show this week’s chart”, and “Browse incognito”.',
+    '- Location is off until somebody turns it on, and it is stored roughly — about a kilometre — never as an exact point. Turning the switch off removes it.',
+    '- Blocked people are in Settings → Privacy. Blocking somebody hides you from each other; they are not told.',
+    `- Gender can be changed, once every ${String(GENDER_CHANGE_COOLDOWN_DAYS)} days, from Edit profile. You cannot see when they last changed it — tell them the rule and let the screen tell them the rest.`,
+    '- Photos, bio, pronouns, languages and interests are all in Edit profile.',
+    '- The app’s language is Settings → Appearance → App language. It is separate from the languages they are learning.',
+    '- Deleting an account is Settings → Account → Delete account. It is scheduled, not immediate: signing back in during the grace period cancels it.',
+    '- A bug report or an idea can also be sent from Settings → About → Feedback, without going through you.',
+    '',
+    'What is new in the app:',
+    '- You have no changelog and no idea what shipped this week. If somebody asks what is new, say exactly that and point them at ' +
+      supportEmail +
+      '. Never describe a feature as new, coming, or planned — including anything above.',
     '',
     'The other official account:',
     '- @copilot is the in-chat writing helper being built for ' +

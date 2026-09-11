@@ -81,11 +81,12 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
          * every request, and they are the prefix in that order, so a
          * breakpoint after them is worth asking for.
          *
-         * On the default model it will not fire: Haiku 4.5 wants a prefix of
-         * 4,096 tokens before it caches anything and this one is around 3,500.
-         * It is here anyway because it is free when it misses, and because the
-         * thinking models ask for less — 512 on Opus 5, 1,024 on Sonnet 5 —
-         * so whoever switches models gets the discount without editing this.
+         * The prefix is the tools and the system prompt, around 1,650 tokens —
+         * not the whole request, since the history changes every turn. That is
+         * over Opus 5's minimum of 512 and over Sonnet 5's 1,024, and under
+         * Haiku 4.5's 4,096. So it misses on the default model and lands on
+         * either of the two somebody would switch to, which is the right way
+         * round: the discount arrives with the model that needs it.
          * `usage.cache_read_input_tokens` is what says whether it landed.
          *
          * Nothing is padded to reach a threshold: a longer prompt bought to
