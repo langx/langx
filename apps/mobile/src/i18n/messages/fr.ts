@@ -1536,12 +1536,12 @@ export const fr: Localized<EnMessages> = {
     badges: 'Badges',
     pays: { one: 'Rapporte {amount} jeton', other: 'Rapporte {amount} jetons' },
     you: 'Toi',
-    streakTitle: 'Classement des séries',
+    streakTitle: 'Classement',
     metricCurrent: 'En cours',
     metricLongest: 'La plus longue',
     streakPicker: 'Classement des séries',
     streakEmptyTitle: 'Pas encore de séries',
-    streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce tableau.',
+    streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce classement.',
   },
 
   badges: {

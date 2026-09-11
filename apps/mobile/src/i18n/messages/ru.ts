@@ -1696,7 +1696,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Даёт {amount} жетона',
     },
     you: 'Ты',
-    streakTitle: 'Таблица серий',
+    streakTitle: 'Таблица лидеров',
     metricCurrent: 'Сейчас',
     metricLongest: 'Самая длинная',
     streakPicker: 'Рейтинг серий',

@@ -1773,12 +1773,12 @@ export const ar: Localized<EnMessages> = {
       other: 'تمنح {amount} رمز',
     },
     you: 'أنت',
-    streakTitle: 'جدول السلاسل',
+    streakTitle: 'لوحة الصدارة',
     metricCurrent: 'الآن',
     metricLongest: 'الأطول',
     streakPicker: 'ترتيب السلاسل',
     streakEmptyTitle: 'لا سلاسل بعد',
-    streakEmptyBody: 'احضر يومين متتاليين وستظهر في هذا الجدول.',
+    streakEmptyBody: 'احضر يومين متتاليين وستظهر في هذه اللوحة.',
   },
 
   badges: {

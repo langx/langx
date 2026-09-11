@@ -1597,12 +1597,12 @@ export const en = {
     badges: 'Badges',
     pays: { one: 'Pays {amount} token', other: 'Pays {amount} tokens' },
     you: 'You',
-    streakTitle: 'Streak table',
+    streakTitle: 'Leaderboard',
     metricCurrent: 'Now',
     metricLongest: 'Longest',
     streakPicker: 'Streak ranking',
     streakEmptyTitle: 'No streaks yet',
-    streakEmptyBody: 'Show up on two days in a row and you are on this table.',
+    streakEmptyBody: 'Show up on two days in a row and you are on this board.',
   },
 
   badges: {
