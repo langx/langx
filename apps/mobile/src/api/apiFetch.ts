@@ -16,7 +16,26 @@ import { authClient } from '../lib/auth-client'
  * reaches the branch that would say so. Fifteen seconds is far past a slow
  * answer on a bad connection and far short of forever.
  */
-const REQUEST_TIMEOUT_MS = 15_000
+const REQUEST_TIMEOUT_MS = 10_000
+
+/**
+ * What a request we abandoned ourselves rejects with.
+ *
+ * Worth its own type because the retry policy has to tell it from every other
+ * failure: three attempts at fifteen seconds each meant a tunnel took
+ * three-quarters of a minute to reach the screen that says so. Measured on a
+ * device, with the list pulsing throughout.
+ */
+export class RequestTimeoutError extends Error {
+  constructor(ms: number) {
+    super(`Request timed out after ${ms}ms`)
+    this.name = 'RequestTimeoutError'
+  }
+}
+
+export function isRequestTimeout(error: unknown): boolean {
+  return error instanceof RequestTimeoutError
+}
 
 /**
  * `fetch`, with the timeout the platform does not give it.
@@ -29,9 +48,18 @@ const REQUEST_TIMEOUT_MS = 15_000
 async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
   if (init.signal) return fetch(url, init)
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  let timedOut = false
+  const timer = setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, REQUEST_TIMEOUT_MS)
   try {
     return await fetch(url, { ...init, signal: controller.signal })
+  } catch (error) {
+    // Rethrown as our own, so the retry policy can recognise the one failure
+    // that has already cost the caller ten seconds.
+    if (timedOut) throw new RequestTimeoutError(REQUEST_TIMEOUT_MS)
+    throw error
   } finally {
     clearTimeout(timer)
   }
