@@ -1,4 +1,5 @@
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { queryFailed } from '../../../src/lib/listState'
 import { wornCosmetic, TIER_BADGES, TIER_NAMES, tierUnlocking } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
@@ -86,7 +87,7 @@ export default function MeScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? (
+        {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
           <ProfileSkeleton avatarSize={80} />

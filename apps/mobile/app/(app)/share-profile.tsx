@@ -4,6 +4,7 @@ import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
 import { Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { queryFailed } from '../../src/lib/listState'
 import { useMe } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -47,7 +48,7 @@ export default function ShareProfileScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? (
+        {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
           <View style={styles.loading}>

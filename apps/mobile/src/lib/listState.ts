@@ -34,3 +34,19 @@ export function listState(input: {
   if (input.isPending) return 'skeleton'
   return 'empty'
 }
+
+/**
+ * A query that is not going to answer: it failed, or it is waiting for a
+ * network that is not there.
+ *
+ * The second half only exists because `onlineManager` is wired to the radio
+ * now (`lib/queryNetwork.ts`). Pausing is the right behaviour — the request
+ * runs by itself when the phone is back — but to a screen it looks exactly
+ * like a first load that is taking its time, and "taking its time" is drawn as
+ * a skeleton, forever. Every screen that draws a `LoadFailed` has to ask this
+ * rather than `isError`, which is why it is one function and not six
+ * conditions.
+ */
+export function queryFailed(query: { isError: boolean; fetchStatus: string }): boolean {
+  return query.isError || query.fetchStatus === 'paused'
+}

@@ -39,7 +39,7 @@ export default function Index() {
   // Disabled while signed out: without a session `/profiles/me` is a 401, and
   // an unread failed request per launch is the least of it — the gate below
   // reads "no profile" off a 404, which a signed-out request never gets to.
-  const { data: profile, isPending, error, refetch } = useMe(signedIn)
+  const { data: profile, isPending, error, refetch, fetchStatus } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
@@ -66,7 +66,14 @@ export default function Index() {
 
   if (!signedIn) return <Redirect href={authLandingHref()} />
 
-  if (isPending || !draftReady) return <SplashFill />
+  /*
+   * `fetchStatus` as well as `isPending`, because a query held back for want of
+   * a network is pending and will stay pending: with `onlineManager` wired to
+   * the radio, a launch in a tunnel never fires the request at all. Without
+   * this that is a splash with no spinner to end and no button to press — the
+   * exact screen the retry below exists to replace.
+   */
+  if ((isPending && fetchStatus !== 'paused') || !draftReady) return <SplashFill />
 
   /*
    * Before the onboarding branch, because a suspended account has no profile

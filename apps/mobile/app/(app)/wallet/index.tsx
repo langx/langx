@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native'
 import { router, type Href } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { queryFailed } from '../../../src/lib/listState'
 import { useMe, useWallet } from '../../../src/api/queries'
 import { GiftCard } from '../../../src/components/store/GiftCard'
 import { ListRow } from '../../../src/components/ui/ListRow'
@@ -80,7 +81,7 @@ export default function WalletScreen() {
   if (!me.data) {
     return (
       <Screen>
-        {me.isError ? (
+        {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
           <View style={styles.loading}>

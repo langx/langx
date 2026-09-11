@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { listState } from './listState'
+import { listState, queryFailed } from './listState'
 
 describe('listState', () => {
   it('shows a skeleton only while there is nothing for this query key yet', () => {
@@ -46,5 +46,20 @@ describe('listState', () => {
     expect(listState({ isPending: true, isError: false, itemCount: 4, isPaused: true })).toBe(
       'content',
     )
+  })
+})
+
+describe('queryFailed', () => {
+  it('is true for an error', () => {
+    expect(queryFailed({ isError: true, fetchStatus: 'idle' })).toBe(true)
+  })
+
+  /** The whole reason it exists: a paused query looks like a slow one. */
+  it('is true for a query waiting on a network that is not there', () => {
+    expect(queryFailed({ isError: false, fetchStatus: 'paused' })).toBe(true)
+  })
+
+  it('is false while a request is actually in flight', () => {
+    expect(queryFailed({ isError: false, fetchStatus: 'fetching' })).toBe(false)
   })
 })
