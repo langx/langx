@@ -31,13 +31,23 @@ export function locationGuideStatus(input: {
   return input.servicesEnabled ? 'granted' : 'servicesOff'
 }
 
-/** The same decision, made from what the OS currently says. */
-export async function readLocationGuideStatus(): Promise<LocationGuideStatus> {
-  const { Platform } = await import('react-native')
+/**
+ * The same decision, made from what the OS currently says.
+ *
+ * `platform` is a parameter rather than something this module reads, and that
+ * is not a style choice: a dynamic import of `react-native` compiles to Metro's
+ * `importAll`, which touches **every** named export on the barrel to build the
+ * namespace object — including the deprecated getters that exist only to throw
+ * (`PushNotificationIOS`). So the import rejected on device while resolving
+ * fine on the web, where the barrel is react-native-web's. The caller has
+ * `Platform` statically imported already; nothing here needs it. There is a
+ * test that keeps it that way — `noDynamicReactNativeImport.test.ts`.
+ */
+export async function readLocationGuideStatus(platform: string): Promise<LocationGuideStatus> {
   // Nothing to read in a browser, and `expo-location` is precisely what must
   // not be reached there. The pure function answers `web` before it looks at
   // anything else; this is that branch, taken early.
-  if (Platform.OS === 'web') return 'web'
+  if (platform === 'web') return 'web'
 
   const { locationPermissionState } = await import('./location')
   const Location = await import('expo-location')
@@ -47,5 +57,5 @@ export async function readLocationGuideStatus(): Promise<LocationGuideStatus> {
   // somebody who has simply never granted the app anything sends them to the
   // wrong screen entirely.
   const servicesEnabled = permission.granted ? await Location.hasServicesEnabledAsync() : false
-  return locationGuideStatus({ ...permission, servicesEnabled, platform: Platform.OS })
+  return locationGuideStatus({ ...permission, servicesEnabled, platform })
 }
