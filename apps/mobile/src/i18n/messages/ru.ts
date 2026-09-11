@@ -940,6 +940,7 @@ export const ru: Localized<EnMessages> = {
     title: 'Уведомления',
     bell: 'Уведомления',
     unread: 'Непрочитано',
+    markAllRead: 'Отметить всё прочитанным',
     emptyTitle: 'Пока пусто',
     emptyBody: 'Здесь появятся подписки, исправления и лайки ваших записей.',
     follow: '{name} подписался на вас',
@@ -952,6 +953,24 @@ export const ru: Localized<EnMessages> = {
       few: '{name} и ещё {count} человека оценили вашу запись',
       many: '{name} и ещё {count} человек оценили вашу запись',
       other: '{name} и ещё {count} человека оценили вашу запись',
+    },
+    postCommentOthers: {
+      one: '{name} и ещё {count} человек прокомментировали вашу запись',
+      few: '{name} и ещё {count} человека прокомментировали вашу запись',
+      many: '{name} и ещё {count} человек прокомментировали вашу запись',
+      other: '{name} и ещё {count} человека прокомментировали вашу запись',
+    },
+    postCorrectionOthers: {
+      one: '{name} и ещё {count} человек исправили ваше предложение',
+      few: '{name} и ещё {count} человека исправили ваше предложение',
+      many: '{name} и ещё {count} человек исправили ваше предложение',
+      other: '{name} и ещё {count} человека исправили ваше предложение',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} и ещё {count} человек записали ваше предложение',
+      few: '{name} и ещё {count} человека записали ваше предложение',
+      many: '{name} и ещё {count} человек записали ваше предложение',
+      other: '{name} и ещё {count} человека записали ваше предложение',
     },
     badgeEarned: 'Вы получили новый значок',
     walletPool: {

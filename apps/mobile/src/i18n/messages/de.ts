@@ -880,6 +880,7 @@ export const de: Localized<EnMessages> = {
     title: 'Mitteilungen',
     bell: 'Mitteilungen',
     unread: 'Ungelesen',
+    markAllRead: 'Alle als gelesen markieren',
     emptyTitle: 'Noch nichts',
     emptyBody: 'Neue Follower, Korrekturen und Likes landen hier.',
     follow: '{name} folgt dir jetzt',
@@ -890,6 +891,18 @@ export const de: Localized<EnMessages> = {
     likeOthers: {
       one: '{name} und {count} weiterer Person gefällt dein Beitrag',
       other: '{name} und {count} weiteren Personen gefällt dein Beitrag',
+    },
+    postCommentOthers: {
+      one: '{name} und {count} weitere Person haben deinen Beitrag kommentiert',
+      other: '{name} und {count} weitere Personen haben deinen Beitrag kommentiert',
+    },
+    postCorrectionOthers: {
+      one: '{name} und {count} weitere Person haben deinen Satz korrigiert',
+      other: '{name} und {count} weitere Personen haben deinen Satz korrigiert',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} und {count} weitere Person haben deinen Satz aufgenommen',
+      other: '{name} und {count} weitere Personen haben deinen Satz aufgenommen',
     },
     badgeEarned: 'Du hast ein neues Abzeichen erhalten',
     walletPool: {

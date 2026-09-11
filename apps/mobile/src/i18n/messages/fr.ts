@@ -861,6 +861,7 @@ export const fr: Localized<EnMessages> = {
     title: 'Notifications',
     bell: 'Notifications',
     unread: 'Non lu',
+    markAllRead: 'Tout marquer comme lu',
     emptyTitle: 'Rien pour le moment',
     emptyBody: 'Les abonnements, les corrections et les j’aime arrivent ici.',
     follow: '{name} vous suit',
@@ -871,6 +872,18 @@ export const fr: Localized<EnMessages> = {
     likeOthers: {
       one: '{name} et {count} autre personne ont aimé votre publication',
       other: '{name} et {count} autres personnes ont aimé votre publication',
+    },
+    postCommentOthers: {
+      one: '{name} et {count} autre personne ont commenté votre publication',
+      other: '{name} et {count} autres personnes ont commenté votre publication',
+    },
+    postCorrectionOthers: {
+      one: '{name} et {count} autre personne ont corrigé votre phrase',
+      other: '{name} et {count} autres personnes ont corrigé votre phrase',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} et {count} autre personne ont enregistré votre phrase',
+      other: '{name} et {count} autres personnes ont enregistré votre phrase',
     },
     badgeEarned: 'Vous avez obtenu un nouveau badge',
     walletPool: {

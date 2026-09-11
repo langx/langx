@@ -850,6 +850,7 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Notificações',
     bell: 'Notificações',
     unread: 'Não lida',
+    markAllRead: 'Marcar tudo como lido',
     emptyTitle: 'Nada ainda',
     emptyBody: 'Seguidores, correções e curtidas no que você publica chegam aqui.',
     follow: '{name} começou a seguir você',
@@ -860,6 +861,18 @@ export const ptBR: Localized<EnMessages> = {
     likeOthers: {
       one: '{name} e mais {count} pessoa curtiram sua publicação',
       other: '{name} e mais {count} pessoas curtiram sua publicação',
+    },
+    postCommentOthers: {
+      one: '{name} e mais {count} pessoa comentaram na sua publicação',
+      other: '{name} e mais {count} pessoas comentaram na sua publicação',
+    },
+    postCorrectionOthers: {
+      one: '{name} e mais {count} pessoa corrigiram sua frase',
+      other: '{name} e mais {count} pessoas corrigiram sua frase',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} e mais {count} pessoa gravaram sua frase',
+      other: '{name} e mais {count} pessoas gravaram sua frase',
     },
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {

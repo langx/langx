@@ -1,6 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { InAppNotificationKind } from '@langx/shared'
-import { useEffect, useRef } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMarkNotificationsRead, useNotifications } from '../../src/api/queries'
 import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
@@ -14,7 +13,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { relativeTime } from '../../src/lib/format'
 import { goBackTo, openNotification } from '../../src/lib/navigation'
-import { notificationCopy, notificationHref, stickyUnread } from '../../src/lib/notificationInbox'
+import { notificationCopy, notificationHref } from '../../src/lib/notificationInbox'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
 const HERE = '/(app)/notifications'
@@ -44,8 +43,13 @@ const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> =
  *
  * The place the feed's pushes have always claimed things were waiting. A reply
  * push is throttled to one per post per hour and likes are batched to a day,
- * because a phone buzzing interrupts — this list does not, so every one of
- * them is here.
+ * because a phone buzzing interrupts — this list does not, so none of them is
+ * dropped.
+ *
+ * They are *collapsed*, which is a different thing: ten people commenting on
+ * one sentence is ten pieces of one piece of news, and ten rows saying so is a
+ * list nobody can read. The server groups them and the row says how many, so
+ * nothing is lost and the screen stays scannable. See `listNotifications`.
  */
 export default function NotificationsScreen() {
   useScreenInteractive()
@@ -59,53 +63,36 @@ export default function NotificationsScreen() {
   const pull = usePullToRefresh(() => list.refetch())
   const items = dedupeById(list.data?.pages.flatMap((page) => page.items) ?? [])
 
-  /*
-   * Which rows draw a dot — and deliberately not "the ones the server still
-   * calls unread". Marking read patches the cache the moment it lands, so a
-   * dot bound to that flag would blink out while the reader was looking at it.
-   * The set only grows and dies with the screen, so a refetch cannot take a
-   * dot away either and a later visit correctly shows none.
-   */
-  const unreadAtEntry = useRef<Set<string>>(new Set())
-  unreadAtEntry.current = stickyUnread(unreadAtEntry.current, items)
-
-  /*
-   * Marked read once per fetch that brought something unread — not once per
-   * mount, and not on `isSuccess`.
-   *
-   * Two traps, both found by driving the real app rather than by reading it.
-   *
-   * `isSuccess` is already true on a second visit, because the cache still
-   * holds the last page. Gating on it fires the POST while this mount's
-   * refetch is still in flight, so a notification that arrived in between
-   * comes back from that refetch already read, with no dot — precisely the
-   * case the dot exists for. `isFetchedAfterMount` is the flag that means
-   * "what is in the cache was fetched since this screen opened".
-   *
-   * And once-per-mount is not enough, because on the web a push does not
-   * unmount what it covers: opening a post from a row and coming back returns
-   * to this same component with its refs intact. A row that arrived in between
-   * would never be marked, and the bell would keep a count for something the
-   * reader is looking at.
-   *
-   * So the latch is the fetch timestamp rather than a boolean. A double invoke
-   * shares one timestamp and posts once; the cache patch that follows a
-   * successful mark moves it again, but by then nothing is unread and the
-   * guard below stops there.
-   */
   const hasUnread = items.some((item) => !item.read)
-  const markedAt = useRef(0)
-  const mark = markRead.mutate
-  useEffect(() => {
-    if (!list.isFetchedAfterMount || !hasUnread) return
-    if (list.dataUpdatedAt === markedAt.current) return
-    markedAt.current = list.dataUpdatedAt
-    mark()
-  }, [list.isFetchedAfterMount, list.dataUpdatedAt, hasUnread, mark])
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('inbox.title')} onBack={() => goBackTo('/(app)/(tabs)/feed')} />
+      <ScreenHeader
+        title={t('inbox.title')}
+        onBack={() => goBackTo('/(app)/(tabs)/feed')}
+        /*
+         * Reading the list does **not** mark it read, which is why this is a
+         * button rather than a thing that happens to you. Somebody who opens
+         * the centre to check one name has not dealt with the other eleven,
+         * and clearing them on their behalf loses the only record of what
+         * they have not looked at yet. It is offered only when there is
+         * something to clear — a control that can do nothing should not be
+         * on screen.
+         */
+        trailing={
+          hasUnread ? (
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              disabled={markRead.isPending}
+              onPress={() => markRead.mutate()}
+              style={({ pressed }) => [pressed && styles.pressed]}
+            >
+              <Text style={styles.markAll}>{t('inbox.markAllRead')}</Text>
+            </Pressable>
+          ) : null
+        }
+      />
 
       {list.isPending ? (
         <View style={styles.list}>
@@ -132,7 +119,7 @@ export default function NotificationsScreen() {
           renderItem={({ item }) => {
             const copy = notificationCopy(item)
             const href = notificationHref(item, HERE)
-            const unread = unreadAtEntry.current.has(item._id)
+            const unread = !item.read
             return (
               <Pressable
                 accessibilityRole="button"
@@ -215,5 +202,6 @@ const useStyles = makeStyles(({ colors, font, layout, radius, spacing }) => ({
   line: { ...font.body, color: colors.text, fontSize: 15 },
   preview: { color: colors.textMuted, fontSize: 13, fontStyle: 'italic' },
   when: { color: colors.textFaint, fontSize: 12 },
+  markAll: { color: colors.accent, fontSize: 14, fontWeight: '600' },
   dot: { backgroundColor: colors.accent, borderRadius: radius.pill, height: 8, width: 8 },
 }))

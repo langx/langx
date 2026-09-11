@@ -5,7 +5,6 @@ import {
   markPagesRead,
   notificationCopy,
   notificationHref,
-  stickyUnread,
   type InboxItem,
 } from './notificationInbox'
 
@@ -56,14 +55,25 @@ describe('notificationHref', () => {
 })
 
 describe('notificationCopy', () => {
-  it('words one liker and several differently', () => {
-    expect(notificationCopy(row({ kind: 'like', actor: SOFIA })).key).toBe('inbox.like')
+  it('words one person and a collapsed pile differently', () => {
+    for (const kind of ['like', 'postComment', 'postCorrection', 'pronunciationAnswer'] as const) {
+      expect(notificationCopy(row({ kind, actor: SOFIA })).key, kind).toBe(`inbox.${kind}`)
 
-    const many = notificationCopy(row({ kind: 'like', actor: SOFIA, count: 3 }))
-    expect(many.key).toBe('inbox.likeOthers')
-    // The plural selects on the number of *others*, never on the total — the
-    // sentence already names the first one.
-    expect(many.params).toEqual({ name: 'Sofia', count: 3 })
+      const many = notificationCopy(row({ kind, actor: SOFIA, count: 3 }))
+      expect(many.key, kind).toBe(`inbox.${kind}Others`)
+      // The plural selects on the number of *others*, never on the total —
+      // the sentence already names the first one.
+      expect(many.params, kind).toEqual({ name: 'Sofia', count: 3 })
+    }
+  })
+
+  /**
+   * The server sends `count` only when somebody else joined the pile, so a
+   * zero should never arrive — but if one did, "and 0 others" is the sentence
+   * it would produce, and English has no plural category that avoids it.
+   */
+  it('treats a zero count as nobody else', () => {
+    expect(notificationCopy(row({ kind: 'like', actor: SOFIA, count: 0 })).key).toBe('inbox.like')
   })
 
   it('names nobody on a kind that has no actor', () => {
@@ -81,34 +91,6 @@ describe('notificationCopy', () => {
     for (const kind of IN_APP_NOTIFICATION_KINDS) {
       expect(notificationCopy(row({ kind, actor: SOFIA, count: 2 })).key).toMatch(/^inbox\./)
     }
-  })
-})
-
-describe('stickyUnread', () => {
-  it('remembers a row that arrived unread', () => {
-    expect([...stickyUnread(new Set(), [row({ kind: 'follow', read: false })])]).toEqual(['n1'])
-  })
-
-  /**
-   * The whole point. Opening the screen marks everything read and patches the
-   * cache in the same breath, so a dot bound to `readAt` would blink out while
-   * the reader was still looking at it.
-   */
-  it('keeps remembering once the server says it is read', () => {
-    const first = stickyUnread(new Set(), [row({ kind: 'follow', read: false })])
-    const second = stickyUnread(first, [row({ kind: 'follow', read: true })])
-    expect([...second]).toEqual(['n1'])
-  })
-
-  it('never adds a row that was already read on arrival', () => {
-    const seen = stickyUnread(new Set(), [row({ kind: 'follow', read: true })])
-    expect(seen.size).toBe(0)
-  })
-
-  it('is idempotent, which is what makes it safe during render', () => {
-    const items = [row({ kind: 'follow', read: false })]
-    const once = stickyUnread(new Set(), items)
-    expect([...stickyUnread(once, items)]).toEqual([...once])
   })
 })
 

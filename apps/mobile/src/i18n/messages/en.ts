@@ -925,6 +925,7 @@ export const en = {
     title: 'Notifications',
     bell: 'Notifications',
     unread: 'Unread',
+    markAllRead: 'Mark all read',
     emptyTitle: 'Nothing yet',
     emptyBody: 'Follows, corrections and likes on what you post land here.',
     follow: '{name} followed you',
@@ -936,6 +937,18 @@ export const en = {
     likeOthers: {
       one: '{name} and {count} other liked your post',
       other: '{name} and {count} others liked your post',
+    },
+    postCommentOthers: {
+      one: '{name} and {count} other commented on your post',
+      other: '{name} and {count} others commented on your post',
+    },
+    postCorrectionOthers: {
+      one: '{name} and {count} other corrected your sentence',
+      other: '{name} and {count} others corrected your sentence',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} and {count} other recorded your sentence',
+      other: '{name} and {count} others recorded your sentence',
     },
     badgeEarned: 'You earned a new badge',
     walletPool: {

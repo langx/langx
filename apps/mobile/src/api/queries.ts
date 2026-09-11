@@ -1101,13 +1101,18 @@ export function useNotificationUnread(enabled = true) {
 }
 
 /**
- * "I have looked at the inbox."
+ * "Mark all read", and only ever from that button.
  *
- * Optimistic on the count and patching on the list, and neither is a shortcut.
- * The badge has to reach zero in the same frame the screen appears, and the
- * rows have to keep the dot they arrived with — invalidating either would get
- * one of those wrong, which is why `invalidateNotifications` is deliberately
- * not called here. See `notificationInbox.stickyUnread`.
+ * Opening the centre does not do this. Somebody who came to check one name
+ * has not dealt with the other eleven, and clearing them on their behalf
+ * throws away the only record of what they have not looked at yet.
+ *
+ * Optimistic on the count and patching on the list, and neither is a
+ * shortcut: the badge has to go in the same frame the button is pressed, and
+ * the list must not refetch and jump under the thumb that pressed it. Which
+ * is why `invalidateNotifications` is deliberately not called here — it is
+ * the helper for "something changed that this client did not do", and this
+ * is the opposite.
  */
 export function useMarkNotificationsRead() {
   const client = useQueryClient()
@@ -1124,8 +1129,8 @@ export function useMarkNotificationsRead() {
       }
     },
     onSuccess: () => {
-      // Stamped into the loaded pages rather than refetched: the next visit
-      // must not show a dot on a row this call already read.
+      // Stamped into the loaded pages rather than refetched: the dots have to
+      // go the instant the button is pressed, and the list must not reorder.
       client.setQueryData<InfiniteData<NotificationsPage>>(keys.notifications, (data) =>
         markPagesRead(data),
       )

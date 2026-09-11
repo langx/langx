@@ -42,26 +42,25 @@ export function notificationCopy(item: InboxItem): { key: MessageKey; params: Me
   switch (item.kind) {
     case 'follow':
       return { key: 'inbox.follow', params: { name } }
+    /*
+     * The four that collapse. `count` is how many **other** people did the
+     * same thing to the same post, so it is never zero when it is there.
+     *
+     * Two keys per kind rather than one plural group, and this is not the
+     * banned `count === 1 ? … : …`. "Sofia commented on your post" and "Sofia
+     * and 3 others commented on your post" are different sentences, not two
+     * forms of one — and the second still pluralises on its own count, which
+     * a ternary over a single string could never do. A single group with a
+     * `zero` category would not work either: English selects `other` for 0,
+     * so it would read "and 0 others".
+     */
     case 'postComment':
-      return { key: 'inbox.postComment', params: { name } }
     case 'postCorrection':
-      return { key: 'inbox.postCorrection', params: { name } }
     case 'pronunciationAnswer':
-      return { key: 'inbox.pronunciationAnswer', params: { name } }
     case 'like':
-      /*
-       * Two keys rather than one plural group, and this is not the banned
-       * `count === 1 ? … : …`.
-       *
-       * "Sofia liked your post" and "Sofia and 3 others liked your post" are
-       * different sentences, not two forms of one — and the second still
-       * pluralises on its own count, which a ternary over a single string
-       * could never do. A single group with a `zero` category would not work
-       * either: English selects `other` for 0, so it would read "and 0 others".
-       */
       return item.count && item.count > 0
-        ? { key: 'inbox.likeOthers', params: { name, count: item.count } }
-        : { key: 'inbox.like', params: { name } }
+        ? { key: `inbox.${item.kind}Others`, params: { name, count: item.count } }
+        : { key: `inbox.${item.kind}`, params: { name } }
     case 'badgeEarned':
       return { key: 'inbox.badgeEarned', params: {} }
     case 'walletPool':
@@ -103,35 +102,12 @@ export function notificationHref(item: InboxItem, from: string): string | null {
 }
 
 /**
- * Which rows draw an unread dot — and deliberately not "the ones where
- * `readAt` is null".
- *
- * Opening the screen marks everything read, and the mark patches the cache
- * immediately so the badge can reach zero in the same frame. A dot bound to
- * `readAt` would therefore blink out under the reader's eyes, which is the one
- * thing the dot exists to prevent. This set only ever grows, so a refetch —
- * pull-to-refresh, a socket event, a resume — cannot take a dot away either.
- *
- * Idempotent and order-independent, which is what makes it safe to run during
- * render rather than in an effect: an effect would paint one frame without the
- * dots after every refetch. It lives and dies with the screen, so coming back
- * later correctly shows nothing.
- */
-export function stickyUnread(seen: ReadonlySet<string>, items: readonly InboxItem[]): Set<string> {
-  const next = new Set(seen)
-  for (const item of items) {
-    if (!item.read) next.add(item._id)
-  }
-  return next
-}
-
-/**
  * Stamp every loaded page as read, instead of refetching them.
  *
- * The alternative — invalidating after the mark — refetches the list the
- * reader is currently looking at, which is the one moment it must not change.
- * Patching also means that coming back inside the stale window draws no dots,
- * rather than resurrecting them for rows already read.
+ * What "Mark all read" does to the screen it was pressed on. The alternative —
+ * invalidating after the mark — refetches the list the reader is looking at,
+ * which is the one moment it must not reorder or jump, and would spend a
+ * request re-reading something the client already knows the answer to.
  */
 export function markPagesRead<Page extends { items: { read: boolean }[] }>(
   data: InfiniteData<Page> | undefined,
