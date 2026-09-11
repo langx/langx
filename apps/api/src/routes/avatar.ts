@@ -115,11 +115,18 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
       if (handle === 'copilot') {
         return cached.header('content-type', 'image/svg+xml').send(COPILOT_SVG)
       }
-      // @langx wears the app icon: the assistant is the product speaking, and
-      // a second mark for it would be a second brand to keep in step.
+      /*
+       * @langx wears the app icon: the assistant is the product speaking, and
+       * a second mark for it would be a second brand to keep in step.
+       *
+       * Its own 512px copy rather than `icon.png`, which is 64px and shared
+       * with the insight page — right there, and soft on a profile that draws
+       * an avatar at 96pt on a retina screen. Two files because the two sizes
+       * are for two different jobs, not because the picture differs.
+       */
       return cached
         .header('content-type', 'image/png')
-        .send(await loadAsset('icon.png', 'Official avatar'))
+        .send(await loadAsset('official-langx.png', 'Official avatar'))
     },
   )
 

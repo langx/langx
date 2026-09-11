@@ -44,13 +44,38 @@ export const OFFICIAL_ASSISTANT = {
    * bounds the bill, because the one above is per person and the number of
    * people is not bounded by anything.
    *
-   * 500 is arithmetic, not a feeling: a reply costs roughly half a cent at
-   * Sonnet rates, so this is about $3 a day and under $100 a month in the
-   * worst case. Raise it when the bill is worth paying; it is one number and
-   * the app says the same thing to the 501st person it says to the 31st.
+   * The arithmetic, at Sonnet rates ($2 per million in, $10 out) and with the
+   * two bounds below in force: about 3,500 tokens of input and at most 1,024
+   * of output, so **1.7 cents is the most one reply can cost**. Five hundred
+   * of those is $8.60 a day, $260 a month — a ceiling, not an estimate, and an
+   * ordinary reply is a fraction of it.
+   *
+   * Note what this is a ceiling on: replies, and therefore spend, only because
+   * `historyCharsPerMessage` and `maxReplyTokens` make a reply's cost bounded.
+   * Without those two a reply could carry ten thousand tokens of history and
+   * four thousand of answer, and five hundred of *those* is nearer a thousand
+   * dollars a month. A cap on the count of something whose price is unbounded
+   * is not a cap on anything.
    */
   globalRepliesPerDay: 500,
   historyMessages: 20,
+  /**
+   * How much of an *older* message is shown. The newest one — the question
+   * being answered — is never cut.
+   *
+   * A chat message may be 2,000 characters, so twenty of them is 40,000: ten
+   * thousand tokens of input on a reply that answers the last one. This is the
+   * difference between a ceiling on the count of replies and a ceiling on what
+   * they cost, and the count was never the expensive part.
+   */
+  historyCharsPerMessage: 400,
+  /**
+   * Room for two or three sentences and the thinking behind them, and not much
+   * more. Output is five times the price of input on every model here, so this
+   * is the number that decides the bill — `max_tokens` is a hard stop the
+   * model cannot exceed, unlike a request to be brief.
+   */
+  maxReplyTokens: 1024,
 } as const
 
 /**

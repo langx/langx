@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { OFFICIAL_ASSISTANT } from '@langx/shared'
 import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod'
 import type { z } from 'zod'
 import type { Env } from '../../env'
@@ -42,14 +43,6 @@ export interface AssistantProvider {
   respond(request: AssistantRequest): Promise<string | null>
 }
 
-/**
- * Short. This is a chat message in a language-exchange app, not a document,
- * and a wall of text in a chat bubble is its own kind of unhelpful. Thinking
- * counts against the same ceiling, hence the headroom over what the reply
- * itself needs.
- */
-const MAX_TOKENS = 4096
-
 export function createAnthropicProvider(env: Env): AssistantProvider | null {
   if (!env.ANTHROPIC_API_KEY) return null
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY })
@@ -58,7 +51,7 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
     async respond({ system, history, tools }) {
       const runner = client.beta.messages.toolRunner({
         model: env.ANTHROPIC_MODEL,
-        max_tokens: MAX_TOKENS,
+        max_tokens: OFFICIAL_ASSISTANT.maxReplyTokens,
         system,
         /*
          * The work is a short answer about a product, sometimes with one tool
@@ -66,6 +59,22 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
          * for the thinking, not the sentence.
          */
         output_config: { effort: 'low' },
+        /*
+         * The tool definitions and the system prompt are the same bytes on
+         * every request, and they are the prefix in that order, so a
+         * breakpoint after them is worth asking for.
+         *
+         * Whether it *fires* depends on where that prefix lands against the
+         * model's minimum cacheable length — 512 tokens on Opus 5, 1024 on
+         * Sonnet 5. The system prompt alone is around 800; with the two tool
+         * schemas in front of it the prefix is near enough to Sonnet's
+         * threshold that it is not worth predicting from here. Below the
+         * minimum this is a no-op with no error, so the honest thing is to ask
+         * and let `usage.cache_read_input_tokens` say. Nothing here is padded
+         * to reach a threshold: a longer prompt to earn a discount on itself
+         * is not a saving.
+         */
+        cache_control: { type: 'ephemeral' },
         /*
          * If the model declines, the API re-runs the same request on a
          * fallback rather than handing back nothing. `'default'` routes by

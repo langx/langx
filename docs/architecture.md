@@ -623,13 +623,20 @@ assistant behind it is an **optional service** in the same sense as email and
 storage: without `ANTHROPIC_API_KEY` it is off, a message gets a line saying so,
 and everything else about the account still works.
 
-Two ceilings bound it, both in `OFFICIAL_ASSISTANT`: `repliesPerDay` per
-conversation, and `globalRepliesPerDay` across everybody — the second is the one
-that bounds the bill, because the number of conversations is not bounded by
-anything. The global one counts **model calls** in a per-day counter
-(`assistantUsage`), not messages: an announcement writes to every account on the
-service, and counting messages would take the assistant down on exactly the day
-it was most visible.
+Four numbers in `OFFICIAL_ASSISTANT` bound what it can spend, and they only
+work together. `repliesPerDay` bounds one conversation and
+`globalRepliesPerDay` bounds everybody — the second matters because the number
+of conversations is not bounded by anything. Those two cap the _count_ of
+replies; `historyCharsPerMessage` and `maxReplyTokens` are what make a reply's
+cost bounded, which is what turns a cap on the count into a cap on the bill. A
+chat message may be 2,000 characters and twenty of them reach the model on every
+turn, so without the third number a single reply can carry ten thousand tokens
+of context, and five hundred of those is a different order of bill entirely.
+
+The global count is **model calls**, kept in a per-day counter
+(`assistantUsage`), not a count of messages @langx has sent: an announcement
+writes to every account on the service, and counting messages would take the
+assistant down on exactly the day it was most visible.
 
 An account that has been run by hand can be **adopted** rather than replaced:
 `scripts/adopt-official-account.ts` flips the flag, revokes every session and

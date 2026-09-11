@@ -2,7 +2,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { OFFICIAL_ASSISTANT } from '@langx/shared'
+import { MAX_MESSAGE_LENGTH, OFFICIAL_ASSISTANT } from '@langx/shared'
 import { assistantCallsToday } from './assistantBudget'
 import { deliverOfficialMessage } from './deliver'
 import { connectToDatabase, type DbHandle } from '../../db/client'
@@ -210,6 +210,26 @@ describe('answering as an official account', () => {
     assistant.answer = null
     await write(ADA, officialIds().get('langx')!, 'do something forbidden')
     expect(await saidTo(ADA)).toHaveLength(1)
+  })
+
+  /**
+   * The bound that turns a cap on replies into a cap on spend. A chat message
+   * may be 2,000 characters and twenty of them reach the model on every turn.
+   */
+  it('cuts older messages down but never the question it is answering', async () => {
+    const long = 'x'.repeat(MAX_MESSAGE_LENGTH)
+    const langxId = officialIds().get('langx')!
+    await write(ADA, langxId, long)
+    assistant.requests = []
+
+    const { conversation, message } = await sendAgain(ADA, langxId, long)
+    await respondAsOfficial(appStub(), conversation, message)
+
+    const history = assistant.requests[0]!.history
+    expect(history.at(-1)!.text).toHaveLength(MAX_MESSAGE_LENGTH)
+    for (const older of history.slice(0, -1)) {
+      expect(older.text.length).toBeLessThanOrEqual(OFFICIAL_ASSISTANT.historyCharsPerMessage + 1)
+    }
   })
 
   it('says nothing to a photo', async () => {
