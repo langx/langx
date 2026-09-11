@@ -1,9 +1,11 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { discoveryQuerySchema } from '@langx/shared'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import { startConversation } from '../chat/conversations'
+import { discoverProfiles } from '../discovery/discovery'
 import { searchHandles } from '../discovery/handleSearch'
 import { toPublicProfile, type Profile } from '../profiles/profiles'
 import { getSharedProfile } from '../profiles/sharedProfile'
@@ -123,6 +125,70 @@ describe('the official accounts', () => {
       expect(row.bio, row.handle).not.toMatch(/ask me|write to me|report someone/i)
     }
     expect(rows.find((r) => r.handle === 'langx')?.bio).toContain('doesn’t take messages')
+  })
+
+  /**
+   * Everything an adopted account arrives carrying that an official one must
+   * not keep — and, more to the point, that nothing downstream may trip over
+   * once it is gone.
+   *
+   * `interests` is the one worth a test rather than an assertion: discovery's
+   * scoring does `$size: { $setIntersection: ['$interests', …] }`, and in
+   * MongoDB that is an error rather than a zero when the field is missing. An
+   * official account never reaches it — `discoverable: false` is checked in
+   * the same match — but "never reaches it" is exactly the kind of claim that
+   * stops being true quietly.
+   */
+  it('clears what an adopted account brought with it, and nothing trips over the gap', async () => {
+    const now = new Date()
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne({
+      ...person('langx'),
+      official: true,
+      interests: ['animals'],
+      photos: [{ url: 'https://media.langx.test/cat.jpg', createdAt: now }],
+      country: 'CA',
+      pronouns: 'they/them',
+      cityName: 'Toronto',
+    })
+
+    await ensureOfficialAccounts(handle.db, API_URL)
+
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'langx' })
+    expect(profile?.interests).toBeUndefined()
+    expect(profile?.photos).toBeUndefined()
+    expect(profile?.country).toBeUndefined()
+    expect(profile?.pronouns).toBeUndefined()
+    expect(profile?.cityName).toBeUndefined()
+    expect(profile?.settings.discoverable).toBe(false)
+    expect(profile?.privacy.activityMapVisible).toBe(false)
+
+    // The two projections a stranger can reach, neither of which may throw on
+    // a field that is no longer there.
+    const view = toPublicProfile(profile!, true, {
+      followers: 0,
+      following: 0,
+      viewerFollows: false,
+    })
+    expect(view.interests).toEqual([])
+    expect(view.photos).toEqual([])
+    expect(view.country).toBeUndefined()
+    expect((await getSharedProfile(handle.db, 'langx')).official).toBe(true)
+
+    // And discovery, which is where a missing `interests` would actually blow
+    // up. It runs, and the channel is not in it.
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).insertMany([
+      person('ada'),
+      // Somebody the viewer actually matches, so the pipeline has work to do.
+      {
+        ...person('bo'),
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
+      },
+    ])
+    const page = await discoverProfiles(handle.db, 'ada', discoveryQuerySchema.parse({ limit: 20 }))
+    expect(page.items.map((i) => i.handle)).not.toContain('langx')
   })
 
   it('publishes no age for an official account', async () => {

@@ -7,10 +7,15 @@
  * the tool for something that has to arrive in an inbox, and it carries the
  * consent rules and the warm-up ramp that mail needs.
  *
- * **Nobody is messaged twice.** `messages.sender_client_id_unique` refuses a
- * second write with the same `announcement:<slug>` id, so a run that died
- * halfway can simply be run again — there is no cursor to keep and no ledger
- * to reconcile.
+ * **Nobody is messaged twice.** Each recipient's message carries
+ * `announcement:<slug>:<userId>`, and `messages.sender_client_id_unique` is on
+ * `{senderId, clientId}` — so a second write for that person is refused while
+ * everybody else's goes through. A run that died halfway can simply be run
+ * again: there is no cursor to keep and no ledger to reconcile.
+ *
+ * The id has to carry the recipient. Without it the first person is messaged
+ * and every other write is refused as a duplicate, which looks like success
+ * from here because `deliverOfficialMessage` returns the message it found.
  *
  * The body is one file per locale in a directory, and each recipient gets the
  * one for their native language (`localeFor`), falling back to `en.txt`. Not
@@ -34,7 +39,7 @@ import { deliverOfficialMessage } from '../src/modules/official/deliver'
 import { ensureOfficialAccounts } from '../src/modules/official/accounts'
 import { localeFor } from '../src/modules/profiles/localeFor'
 import type { Profile } from '../src/modules/profiles/profiles'
-import { ExpoPushSender, sendPush, tokensByLocale } from '../src/modules/push/devices'
+import { ExpoPushSender, sendPush, tokensFor } from '../src/modules/push/devices'
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -63,13 +68,14 @@ async function main(): Promise<void> {
     throw new Error('usage: --id <slug> --body <dir> [--confirm]')
   }
 
+  /*
+   * No separate refusal for a live database. There was one, and it fired
+   * *before* the dry run — so the only way to preview an announcement against
+   * production was to arm the send at the same time, which is the opposite of
+   * what a preview is for. `--confirm` already gates every write; a second
+   * gate on the same flag only took the safe path away.
+   */
   const env = loadEnv()
-  if (!env.MONGODB_DB.endsWith('_dev') && !has('confirm')) {
-    throw new Error(
-      `Refusing to write to "${env.MONGODB_DB}" without --confirm. This is a live database; ` +
-        `re-run with --confirm if that is what you mean.`,
-    )
-  }
 
   const bodies = loadBodies(dir)
   const { db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
@@ -112,7 +118,12 @@ async function main(): Promise<void> {
           fromHandle: 'langx',
           toUserId: recipient._id,
           body,
-          clientId: `announcement:${slug}`,
+          // Per recipient. `sender_client_id_unique` is on `{senderId,
+          // clientId}`, so one id for the whole announcement means the first
+          // person gets it and every other write is refused as a duplicate —
+          // and `deliverOfficialMessage` hands back the existing message, so
+          // it all looks like it worked. It did that once, to 25 people.
+          clientId: `announcement:${slug}:${recipient._id}`,
         })
         if (!delivered) continue
         sent += 1
@@ -122,16 +133,24 @@ async function main(): Promise<void> {
          * has the app open sees the thread on the next focus, and a script
          * outside the API process has no `io` to emit on anyway.
          *
+         * **One language for both**, and it is the reader's native one, not
+         * the phone's. `tokensByLocale` groups by device locale and is right
+         * for a streak nudge — that is a sentence written for the screen it
+         * appears on and nothing else. This one is a preview of a message
+         * sitting in a thread, and a Turkish notification opening a Russian
+         * message reads like two different senders. So the push follows
+         * `localeFor`, like the message and the welcome before it.
+         *
          * Best-effort — a phone that cannot be reached does not undo a message
          * that is already in the thread.
          */
-        const byLocale = await tokensByLocale(db, recipient._id)
-        for (const [deviceLocale, tokens] of byLocale) {
-          const deviceBody = bodies.get(deviceLocale) ?? body
+        const tokens = await tokensFor(db, recipient._id)
+        if (tokens.length > 0) {
           await sendPush(db, push, {
             to: tokens,
             title: 'LangX',
-            body: deviceBody.slice(0, 120),
+            // The same words as the message, in the same language.
+            body: body.slice(0, 120),
             data: {
               kind: 'message',
               conversationId: delivered.conversation._id.toHexString(),

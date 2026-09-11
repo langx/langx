@@ -519,6 +519,13 @@ export const en = {
      */
     welcomeRate:
       'One more thing, if you feel like it: rating LangX on the {store} genuinely helps people find us. No pressure at all.',
+    /**
+     * The last line of the welcome, after a blank line and after the store
+     * ask when there is one. A sign-off rather than an instruction: the
+     * message before it is all doors to open, and somebody should be left
+     * with a person wishing them well rather than a fourth thing to do.
+     */
+    welcomeClosing: 'Enjoy your practice — and good luck with it. 💛',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**
