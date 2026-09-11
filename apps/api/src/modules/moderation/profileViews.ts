@@ -60,6 +60,11 @@ export interface ViewerSummary {
    * the whole paid feature in the response body for anyone who reads the JSON.
    */
   viewers: {
+    /**
+     * The viewer — except while `locked`, where it is the row's own id
+     * instead. See the push below: a user id is an identity in this API, and
+     * an identity is the whole of what the lock withholds.
+     */
     userId: string
     /** The UTC day this row is about. */
     day: string
@@ -349,7 +354,20 @@ export async function getViewers(
      */
     if (locked) {
       viewers.push({
-        userId: view.viewerId,
+        /*
+         * The row's own id, not the viewer's, and this is the other half of
+         * not sending the handle.
+         *
+         * `GET /profiles/:handleOrId` takes a **user id** and answers with a
+         * handle, a display name and an avatar. So a blurred row carrying the
+         * real id withheld nothing at all: one request per row, from the
+         * network tab or from anything scripted against the API, and the
+         * whole of what this plan sells was free. The client needs *a* stable
+         * string here — it keys the list by it and seeds a colour from it —
+         * and the row's id is one: unique per person per day, the same on
+         * every page and after every refetch, and it resolves to nobody.
+         */
+        userId: view._id.toHexString(),
         day: dayOf(view),
         lastViewedAt: view.lastViewedAt.toISOString(),
         // `?? 1` for the rows written before the counter existed: a view
