@@ -670,6 +670,50 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { sentOn: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
   ],
 
+  [COLLECTIONS.notifications]: [
+    /**
+     * "It arrived once." The insert failing on a duplicate key *is* the check,
+     * the same trick `follower_followee_unique` and `target_user_unique` use —
+     * so `recordNotification` is an insert with no read before it, and two
+     * taps that race cannot make two rows.
+     *
+     * `refId` is **required on the document**, never absent. A missing field
+     * indexes as null, so one row per `{userId, kind}` with no `refId` would
+     * quietly become the constraint for that entire kind — one follow
+     * notification, ever, for anybody.
+     *
+     * This invariant is ninety days long rather than eternal, because
+     * `ttl_90d` below removes the row that carries it. Following, unfollowing
+     * and following again in March is one row; doing it again in July is a
+     * second. That is right for a feed and wrong for a send-ledger, which is
+     * why `notificationLedger` is a different collection.
+     */
+    { key: { userId: 1, kind: 1, refId: 1 }, name: 'user_kind_ref_unique', unique: true },
+    // The inbox page, newest first, with the tiebreak already in the key —
+    // the `likes.target_recent` shape. Its `{userId}` prefix is also what the
+    // account purge deletes the recipient side by.
+    { key: { userId: 1, createdAt: -1, _id: -1 }, name: 'user_recent' },
+    /**
+     * The number on the bell: `{userId, readAt: {$exists: false}}`.
+     *
+     * **Not a partial index**, and not for want of trying — the filter that
+     * would make one is `$exists: false`, which `partialFilterExpression`
+     * rejects outright. That is why the three partials elsewhere in this file
+     * all point the other way. The other escape, writing `readAt: null` on
+     * every unread row so the filter becomes an equality, would leave
+     * "absent" and "null" both meaning unread, and one of the two would
+     * eventually stop being written. **Absent means unread; null is never
+     * written.** The count is capped by its caller, so it stays cheap.
+     */
+    { key: { userId: 1, readAt: 1 }, name: 'user_unread' },
+    // The other half of the purge. A deleted account has to leave everybody
+    // else's inbox too, and without this that is a collection scan.
+    { key: { actorId: 1 }, name: 'actor' },
+    // A notification from last spring is not news anybody is going back for,
+    // and an inbox that only grows is one nobody can page to the end of.
+    { key: { createdAt: 1 }, name: 'ttl_90d', expireAfterSeconds: NINETY_DAYS },
+  ],
+
   [COLLECTIONS.emailCampaigns]: [
     // The invariant that makes a re-run unable to mail somebody twice — the
     // same doctrine as `jobRuns`, in the database rather than in the script's

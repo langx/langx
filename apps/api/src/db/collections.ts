@@ -102,6 +102,23 @@ export const COLLECTIONS = {
    */
   likes: 'likes',
 
+  /**
+   * The notification centre: what has happened to an account, kept so it can
+   * be read later.
+   *
+   * Not `notificationLedger`, which is two fields and unreadable by design —
+   * that one is keyed `<job>:<userId>:<periodKey>` and exists so nobody is
+   * *told* a thing twice. This one is the thing itself. The distinction is
+   * load-bearing: the push for a comment is throttled to one per post per
+   * hour and likes are batched to a day, because a push interrupts; a list
+   * somebody chose to open does not, so every event gets its own row here
+   * even when the two senders agreed to stay quiet.
+   *
+   * Unique on `{userId, kind, refId}`, which the ninety-day TTL then bounds —
+   * refollowing next season is news again, and for a feed that is right.
+   */
+  notifications: 'notifications',
+
   // billing
   subscriptions: 'subscriptions',
 
