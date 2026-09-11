@@ -33,11 +33,16 @@ export type CampaignSource = (typeof CAMPAIGN_SOURCES)[number]
  * A ramp rather than one burst, and not because of any quota: mailbox
  * providers rate a domain on what it did yesterday, and one that goes from
  * twenty mails a day to four thousand in an hour gets throttled — with the
- * penalty landing on the verification links as well as the campaign. Five
+ * penalty landing on the verification links as well as the campaign. Three
  * days for a few thousand people is the price of the transactional mail
  * still arriving.
+ *
+ * Doubled on 11 September 2026, Behic's call, after the first day of the v1
+ * campaign was spent on Apple relay addresses that bounced. The shape is
+ * what matters — each day at most twice the one before — and the domain had
+ * by then sent a few hundred a day for a fortnight rather than twenty.
  */
-export const CAMPAIGN_WARMUP_PER_DAY = [250, 500, 1000, 2000, 4000] as const
+export const CAMPAIGN_WARMUP_PER_DAY = [500, 1000, 2000, 4000, 8000] as const
 
 /** The day's budget for a campaign that started `dayIndex` days ago. */
 export function campaignDayBudget(dayIndex: number): number {

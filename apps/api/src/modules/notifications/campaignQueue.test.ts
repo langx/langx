@@ -197,12 +197,12 @@ describe('the campaign queue', () => {
   })
 
   it("spreads the day's budget over the ticks left in the window", async () => {
-    // More people than the first day's budget allows in one tick.
-    for (let index = 0; index < 30; index++) await newAccount()
-    await queued()
-    // 09:00 → 22 half-hour ticks left until 20:00; 250 / 22 = 12 per tick.
+    // 09:00 → 22 half-hour ticks left until 20:00, so a tick takes the day's
+    // budget divided by 22. More people than two of those ticks can hold.
     const firstDayBudget = CAMPAIGN_WARMUP_PER_DAY[0]
     const perTick = Math.ceil(firstDayBudget / 22)
+    for (let index = 0; index < perTick * 2 + 1; index++) await newAccount()
+    await queued()
     expect(await runCampaignQueuePass(handle.db, ctx, MORNING)).toEqual({ sent: perTick })
     // The next tick sees what is already sent today and keeps the same pace.
     const next = new Date(MORNING.getTime() + 30 * 60 * 1000)
