@@ -49,6 +49,12 @@ export const UNRESOLVED_HANDLE_EMAIL = 'no-such-handle@handle.langx.invalid'
  * schema can never produce, so guests fall out here rather than needing a case
  * of their own.
  *
+ * `previousHandle` matches too. Somebody who swapped v1's generated name for
+ * one of their own last week still types the old one here, and the old one is
+ * kept precisely so it points at nobody else — so resolving it costs nothing
+ * and spares them a 401 for typing a name that is still, in every other part
+ * of the app, theirs.
+ *
  * `null` when nothing matches; the caller substitutes
  * `UNRESOLVED_HANDLE_EMAIL` rather than passing the miss through, for the
  * reason documented there.
@@ -59,7 +65,10 @@ export async function emailForHandle(db: Db, typed: string): Promise<string | nu
 
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ handle: parsed.data }, { projection: { _id: 1 } })
+    .findOne(
+      { $or: [{ handle: parsed.data }, { previousHandle: parsed.data }] },
+      { projection: { _id: 1 } },
+    )
   if (!profile) return null
 
   return (await emailFor(db, profile._id))?.email ?? null

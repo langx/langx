@@ -529,6 +529,9 @@ export const es: Localized<EnMessages> = {
     subtitle: 'Esto es lo que ha venido contigo.',
     handleTitle: '@{handle}',
     handleBody: 'Tu nombre de usuario vuelve a ser tuyo: nadie más pudo cogerlo.',
+    handleBodyChoose:
+      'Este nombre te lo puso el LangX antiguo. Nadie más puede cogerlo, pero tú puedes elegir el tuyo.',
+    handleChoose: 'Elegir el mío',
     conversations: {
       one: '{count} conversación recuperada',
       other: '{count} conversaciones recuperadas',
@@ -1225,6 +1228,19 @@ export const es: Localized<EnMessages> = {
     signInSetPasswordSaved: 'Contraseña creada.',
     signInSetPasswordFailed: 'No se pudo crear la contraseña. Inténtalo de nuevo.',
     signInPasswordAlready: 'Esta cuenta ya tiene contraseña.',
+    username: 'Nombre de usuario',
+    usernameBody: 'Elige el tuyo, una vez',
+    usernameTitle: 'Elige tu nombre de usuario',
+    usernameIntro:
+      'Cuando entraste en el LangX antiguo, te puso @{handle}. Nunca lo elegiste tú, así que puedes elegirlo ahora.',
+    usernameHint: 'Letras, números y guiones bajos. Así te encuentra la gente.',
+    usernameOnce:
+      'Puedes hacerlo una vez. Los enlaces y los códigos QR con tu nombre antiguo siguen funcionando, y nadie más puede quedárselo.',
+    usernameSave: 'Quiero este',
+    usernameSaved: 'Ahora eres @{handle}.',
+    usernameFailed: 'No se pudo cambiar tu nombre de usuario. Inténtalo de nuevo.',
+    usernameReserved: '@{handle} pertenece a otra cuenta del LangX antiguo.',
+    usernameSpent: 'Ya elegiste tu nombre de usuario: @{handle}. No vuelve a cambiar.',
     password: 'Contraseña',
     passwordBody: 'Crearla o cambiarla',
     changePassword: 'Cambiar contraseña',

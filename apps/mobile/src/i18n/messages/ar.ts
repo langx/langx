@@ -574,6 +574,9 @@ export const ar: Localized<EnMessages> = {
     subtitle: 'هذا ما عاد معك.',
     handleTitle: '@{handle}',
     handleBody: 'اسم المستخدم لك من جديد — لم يستطع أحد أخذه.',
+    handleBodyChoose:
+      'هذا الاسم منحك إياه LangX القديم. لا يستطيع أحد أخذه — لكن يمكنك اختيار اسمك أنت.',
+    handleChoose: 'أختار اسمي',
     conversations: {
       zero: 'استُعيدت {count} محادثة',
       one: 'استُعيدت محادثة واحدة',
@@ -1422,6 +1425,19 @@ export const ar: Localized<EnMessages> = {
     signInSetPasswordSaved: 'تم تعيين كلمة السر.',
     signInSetPasswordFailed: 'تعذّر تعيين كلمة السر. حاول مرة أخرى.',
     signInPasswordAlready: 'هذا الحساب لديه كلمة سر بالفعل.',
+    username: 'اسم المستخدم',
+    usernameBody: 'اختر اسمك، مرة واحدة',
+    usernameTitle: 'اختر اسم المستخدم',
+    usernameIntro:
+      'حين انضممت إلى LangX القديم، سمّاك @{handle}. لم تختر ذلك يومًا، ويمكنك اختياره الآن.',
+    usernameHint: 'أحرف وأرقام وشرطات سفلية. هكذا يجدك الآخرون.',
+    usernameOnce:
+      'يمكنك فعل ذلك مرة واحدة. الروابط ورموز QR التي تحمل اسمك القديم تظل تعمل، ولا يستطيع أحد أخذه.',
+    usernameSave: 'أريد هذا الاسم',
+    usernameSaved: 'أنت الآن @{handle}.',
+    usernameFailed: 'تعذّر تغيير اسم المستخدم. حاول مرة أخرى.',
+    usernameReserved: '@{handle} يخص حسابًا آخر من LangX القديم.',
+    usernameSpent: 'اخترت اسم المستخدم: @{handle}. لا يتغيّر مرة أخرى.',
     password: 'كلمة السر',
     passwordBody: 'تعيينها أو تغييرها',
     changePassword: 'تغيير كلمة السر',

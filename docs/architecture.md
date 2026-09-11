@@ -267,7 +267,7 @@ files.
   a v2-native account from that window has nothing on file to recover it from.
   See `scripts/backfill-country.ts`.
 
-**Username claim**
+**Username claim** (and the one rename that follows from it)
 
 1. The ETL fills `handleReservations` from Appwrite: `{ handle,
 legacyEmailHash, legacyUserId, expiresAt, claimedBy?, claimedAt? }`, unique
@@ -278,6 +278,12 @@ legacyEmailHash, legacyUserId, expiresAt, claimedBy?, claimedAt? }`, unique
    one-shot and `claimedBy` is written with an atomic `findOneAndUpdate`.
 3. Reserved handles are held until `expiresAt` (12 months by default).
 4. v1 users whose email has changed go through a manual support path.
+5. v1 named most of its users itself — `langx_` plus four hex characters, 2846
+   of 3164 staged profiles — so a restored account may trade that name for one
+   of its own **once**, through `POST /profiles/me/handle`. The old name is
+   kept in `previousHandle`: every lookup resolves through it, so shared links
+   survive, and nobody else can be given it. See `decisions.md` → _v1 named
+   nine people in ten_.
 
 ## Authorisation and quota (replacing Appwrite's document permissions)
 
@@ -710,6 +716,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  previousHandle?,                    ← unique, sparse; the v1 name traded in once, still resolvable
   official?: true,                    ← @langx or @copilot; created at boot, never by a form
   photos: [{ url, createdAt }],
   bio, birthDate,

@@ -249,8 +249,27 @@ export const setGenderSchema = z.object({
 export type SetGenderInput = z.infer<typeof setGenderSchema>
 
 /**
+ * Body of `POST /profiles/me/handle` — the one rename this app allows, and
+ * only for an account that came back from v1.
+ *
+ * The *reading* schema, exactly as `onboardingProfileSchema` uses it and for
+ * the same reason: `claimHandle` is the only place that can see whether the
+ * name being asked for is reserved *for this person*, and a returning user
+ * taking back the `haticealtun` they had in v1 must not be refused by a floor
+ * and a reserved list written for strangers. Everyone else is held to
+ * `newHandleSchema` there.
+ *
+ * Its own route rather than a key on `updateProfileSchema`, on the rule
+ * `setGenderSchema` established two blocks up: "written once, under a
+ * condition" is not something a general-purpose PATCH body can say.
+ */
+export const claimHandleSchema = z.object({ handle: handleSchema })
+export type ClaimHandleInput = z.infer<typeof claimHandleSchema>
+
+/**
  * Body of `PATCH /profiles/me`. Deliberately excludes `handle` (no rename —
- * changing it would break shared `/user/[handle]` links) and every
+ * changing it would break shared `/user/[handle]` links; the one exception is
+ * `claimHandleSchema` above, which is why it has a route of its own) and every
  * server-owned field (`entitlement`, `quota`, `streak`, `stats`, `avatarUrl`
  * — the last is set only via the upload-url confirm step, not free-form).
  *

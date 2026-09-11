@@ -565,6 +565,9 @@ export const ru: Localized<EnMessages> = {
     subtitle: 'Вот что вернулось вместе с тобой.',
     handleTitle: '@{handle}',
     handleBody: 'Твоё имя снова твоё — никто другой не смог его занять.',
+    handleBodyChoose:
+      'Это имя дал тебе старый LangX. Никто другой его не займёт — но ты можешь выбрать своё.',
+    handleChoose: 'Выбрать своё имя',
     conversations: {
       one: 'Восстановлен {count} диалог',
       few: 'Восстановлено {count} диалога',
@@ -1367,6 +1370,19 @@ export const ru: Localized<EnMessages> = {
     signInSetPasswordSaved: 'Пароль задан.',
     signInSetPasswordFailed: 'Не удалось задать пароль. Попробуйте ещё раз.',
     signInPasswordAlready: 'У этого аккаунта уже есть пароль.',
+    username: 'Имя пользователя',
+    usernameBody: 'Выбери своё, один раз',
+    usernameTitle: 'Выбери имя пользователя',
+    usernameIntro:
+      'Когда ты пришёл в старый LangX, он назвал тебя @{handle}. Ты этого не выбирал — выбери сейчас.',
+    usernameHint: 'Буквы, цифры и подчёркивания. Так тебя будут находить.',
+    usernameOnce:
+      'Это можно сделать один раз. Ссылки и QR-коды со старым именем продолжат работать, и никто другой его не займёт.',
+    usernameSave: 'Беру это',
+    usernameSaved: 'Теперь ты @{handle}.',
+    usernameFailed: 'Не удалось изменить имя пользователя. Попробуй ещё раз.',
+    usernameReserved: '@{handle} принадлежит другому аккаунту из старого LangX.',
+    usernameSpent: 'Ты выбрал имя пользователя: @{handle}. Оно больше не меняется.',
     password: 'Пароль',
     passwordBody: 'Задать или изменить',
     changePassword: 'Изменить пароль',

@@ -62,3 +62,35 @@ export const newHandleSchema = handleSchema
   .refine((handle) => !isReservedHandle(handle), {
     message: 'That username is reserved',
   })
+
+/**
+ * Whether this account may still swap the username v1 gave it.
+ *
+ * v1 named people itself. Its generator produced `langx_` plus four hex
+ * characters — `langx_6430`, `langx_003c`, `langx_00a5` — and against the
+ * staged records that is **2846 of 3164** profiles: nine in ten of everybody
+ * coming back is carrying a name a machine picked, and the digits-only ones
+ * are not a separate case, just the draws that happened to land on `0-9`.
+ *
+ * So the offer is not narrowed to a shape. Anyone whose v1 profile came back
+ * gets one chance to choose, because the 313 who *did* name themselves chose
+ * under v1's rules and years ago, and telling them apart by regex would refuse
+ * `langx_david` while allowing `langx_00a5` for no reason a person could
+ * explain.
+ *
+ * **One chance, and `previousHandle` is what counts it** rather than a flag or
+ * a counter. The old name has to be kept anyway — old links resolve through it
+ * and nobody else may take it — so its presence already says the swap
+ * happened, and its absence makes the first one free with no migration. Same
+ * shape as `genderChangedAt`, for the same reason.
+ *
+ * This is the whole rule, and both sides import it: the server refuses on it,
+ * and the app draws the row and the welcome-back prompt on it. A second copy
+ * would eventually disagree with the first about who is being offered what.
+ */
+export function canClaimNewHandle(profile: {
+  restoredFromV1?: unknown
+  previousHandle?: unknown
+}): boolean {
+  return Boolean(profile.restoredFromV1) && !profile.previousHandle
+}

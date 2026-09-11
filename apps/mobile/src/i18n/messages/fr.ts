@@ -534,6 +534,9 @@ export const fr: Localized<EnMessages> = {
     subtitle: 'Voici ce qui t’a suivi.',
     handleTitle: '@{handle}',
     handleBody: 'Ton nom d’utilisateur est de nouveau à toi — personne n’a pu le prendre.',
+    handleBodyChoose:
+      'C’est l’ancien LangX qui t’a donné ce nom. Personne d’autre ne peut le prendre — mais tu peux choisir le tien.',
+    handleChoose: 'Choisir le mien',
     conversations: {
       one: '{count} conversation restaurée',
       other: '{count} conversations restaurées',
@@ -1235,6 +1238,19 @@ export const fr: Localized<EnMessages> = {
     signInSetPasswordSaved: 'Mot de passe défini.',
     signInSetPasswordFailed: 'Impossible de définir le mot de passe. Réessayez.',
     signInPasswordAlready: 'Ce compte a déjà un mot de passe.',
+    username: 'Nom d’utilisateur',
+    usernameBody: 'Choisis le tien, une fois',
+    usernameTitle: 'Choisis ton nom d’utilisateur',
+    usernameIntro:
+      'À ton arrivée sur l’ancien LangX, il t’a appelé @{handle}. Tu ne l’as jamais choisi, tu peux le faire maintenant.',
+    usernameHint: 'Lettres, chiffres et tirets bas. C’est ainsi qu’on te trouve.',
+    usernameOnce:
+      'C’est possible une seule fois. Les liens et les QR codes portant ton ancien nom continuent de fonctionner, et personne d’autre ne peut le prendre.',
+    usernameSave: 'Je prends celui-ci',
+    usernameSaved: 'Tu es @{handle} désormais.',
+    usernameFailed: 'Impossible de changer ton nom d’utilisateur. Réessaie.',
+    usernameReserved: '@{handle} appartient à un autre compte de l’ancien LangX.',
+    usernameSpent: 'Tu as choisi ton nom d’utilisateur : @{handle}. Il ne change plus.',
     password: 'Mot de passe',
     passwordBody: 'Le définir ou le changer',
     changePassword: 'Changer le mot de passe',
