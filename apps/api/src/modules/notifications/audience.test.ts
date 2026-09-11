@@ -39,6 +39,8 @@ describe('what a Resend audience should contain', () => {
       profile?: boolean
       anonymous?: boolean
       email?: string
+      name?: string
+      displayName?: string
     } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
@@ -46,7 +48,7 @@ describe('what a Resend audience should contain', () => {
       await handle.db.collection(COLLECTIONS.profiles).insertOne({
         _id: userId,
         handle: `h${userId.slice(-12)}`,
-        displayName: 'Sofia R.',
+        displayName: opts.displayName ?? 'Sofia R.',
         settings: { discoverable: true, notifications: opts.notifications ?? {} },
         ...(opts.deleted ? { deletedAt: new Date() } : {}),
       } as never)
@@ -54,6 +56,7 @@ describe('what a Resend audience should contain', () => {
     await handle.db.collection(COLLECTIONS.user).insertOne({
       _id: authId(userId),
       email: opts.email ?? `${userId}@example.com`,
+      ...(opts.name ? { name: opts.name } : {}),
       emailVerified: opts.verified ?? true,
       ...(opts.anonymous ? { isAnonymous: true } : {}),
       ...(opts.fromV1 ? { precreatedFromV1: { at: new Date(), legacyUserId: 'v1id' } } : {}),
@@ -190,6 +193,25 @@ describe('what a Resend audience should contain', () => {
 
     const plan = await audiencePlan(handle.db, 'consented')
     expect(plan.contacts).toEqual([expect.objectContaining({ userId: gone, action: 'remove' })])
+  })
+
+  /**
+   * v1's generated names are not names: 379 of the 3,901 pre-created rows
+   * carry `langx_` and four hex digits, and a letter greeting one of them
+   * opens "Hi langx_6430,". The plan must offer no name at all so the letter
+   * falls back to "there" — while a `displayName` somebody typed is kept
+   * whatever it happens to look like.
+   */
+  it('drops the name v1 generated for somebody who never chose one', async () => {
+    const generated = await newAccount({ fromV1: true, profile: false, name: 'langx_6430' })
+    const chosen = await newAccount({ fromV1: true, profile: false, name: 'Yash' })
+    const typed = await newAccount({ fromV1: true, displayName: 'langx_abcd' })
+
+    const plan = await audiencePlan(handle.db, 'v1')
+    const byId = new Map(plan.contacts.map((contact) => [contact.userId, contact]))
+    expect(byId.get(generated)?.name).toBeUndefined()
+    expect(byId.get(chosen)?.name).toBe('Yash')
+    expect(byId.get(typed)?.name).toBe('langx_abcd')
   })
 
   it('excludes guests and addresses nobody proved', async () => {

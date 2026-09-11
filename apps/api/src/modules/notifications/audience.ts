@@ -106,6 +106,23 @@ export function audienceAction(
 }
 
 /**
+ * v1 gave anybody who never chose a display name a generated one — `langx_`
+ * and four hex digits — and 379 of the 3,901 pre-created rows carry it. It is
+ * not a name the person picked or would recognise, so greeting them with it
+ * addresses a stranger by a serial number: "Hi langx_6430,". Treated as no
+ * name at all, which is what it is, so `{{firstName}}` falls back to "there".
+ *
+ * Only the v1 row's own name is filtered. A `displayName` on a profile was
+ * typed by somebody, whatever it looks like.
+ */
+const V1_GENERATED_NAME = /^langx_[0-9a-f]{4}$/
+
+function chosenName(name: string | undefined): string | undefined {
+  if (!name) return undefined
+  return V1_GENERATED_NAME.test(name) ? undefined : name
+}
+
+/**
  * Reads every mailable account and says what should happen to it.
  *
  * Driven from `user` rather than from `profiles`, unlike `campaignRecipients`:
@@ -190,7 +207,7 @@ export async function audiencePlan(
       continue
     }
 
-    const name = profile?.displayName || user.name
+    const name = profile?.displayName || chosenName(user.name)
     contacts.push({
       userId,
       email,
