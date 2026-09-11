@@ -115,6 +115,35 @@ describe('profile views, a row per day', () => {
     expect(summary.viewers[1]).toMatchObject({ handle: 'xue', displayName: 'xue' })
   })
 
+  /**
+   * What a free account is shown, and the part that is easy to get wrong: the
+   * lock is about identity, and a user id is one — `/profiles/:handleOrId`
+   * turns it into a handle, a name and a face. A blurred row carrying the real
+   * id sells nothing, however well the client blurs it.
+   */
+  it('withholds the viewer id itself while the list is locked', async () => {
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: 'me' }, { $set: { entitlement: { tier: 'free', updatedAt: DAY } } })
+    await recordProfileView(handle.db, xue, 'me', at(0))
+
+    const summary = await getViewers(handle.db, 'me', { limit: 20 }, at(10 * MIN))
+    expect(summary.locked).toBe(true)
+    // The count is free; it is the names the plan is arguing about.
+    expect(summary.total).toBe(1)
+
+    const row = summary.viewers[0]!
+    expect(row.userId).not.toBe('xue')
+    expect(row.handle).toBeUndefined()
+    expect(row.displayName).toBeUndefined()
+    // Still everything the row is entitled to say about the reader's own
+    // profile, and still a key the client can hold on to between reads.
+    expect(row.day).toBe('2026-09-05')
+    expect(row.viewCount).toBe(1)
+    const again = await getViewers(handle.db, 'me', { limit: 20 }, at(11 * MIN))
+    expect(again.viewers[0]?.userId).toBe(row.userId)
+  })
+
   it('sums visits per day for the last seven days on the first page only', async () => {
     await recordProfileView(handle.db, xue, 'me', at(-3 * 24 * 60 * MIN))
     await recordProfileView(handle.db, xue, 'me', at(0))
