@@ -27,7 +27,23 @@ import { Button } from './ui/Button'
  * reason sign-up has the block at all. A returning v1 user is told to continue
  * with Google or Apple, and sign-up is the screen most of them land on first.
  */
-export function SocialAuthButtons() {
+export interface SocialAuthButtonsProps {
+  /**
+   * Where the "or" rule is drawn. `below` is for sign-up, where the providers
+   * come first — they are the only paths with no trip to an inbox — and the
+   * rule then separates them from the email form underneath rather than
+   * hanging above the screen's first choice.
+   */
+  divider?: 'above' | 'below'
+  /**
+   * Called when a provider button is pressed, before the flow leaves the app.
+   * Sign-up passes the counter; sign-in passes nothing, because signing in is
+   * not a sign-up and must not arrive in the funnel as one.
+   */
+  onStart?: (method: 'google' | 'apple') => void
+}
+
+export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButtonsProps = {}) {
   const styles = useStyles()
   const t = useT()
 
@@ -69,6 +85,7 @@ export function SocialAuthButtons() {
 
   async function onGoogle() {
     setSocialError(undefined)
+    onStart?.('google')
     // No `router.replace` after this one: the browser redirect comes back into
     // the app on its own and the root layout reacts to the new session.
     const { error: googleError } = await withSignInProgress(() =>
@@ -79,6 +96,7 @@ export function SocialAuthButtons() {
 
   async function onApple() {
     setSocialError(undefined)
+    onStart?.('apple')
     try {
       if (!(await isNativeAppleSignInAvailable())) {
         const { error: webError } = await authClient.signIn.social({
@@ -110,13 +128,17 @@ export function SocialAuthButtons() {
 
   if (!providers?.google && !providers?.apple) return null
 
+  const rule = (
+    <View style={styles.divider}>
+      <View style={styles.dividerLine} />
+      <Text style={styles.dividerText}>{t('auth.or')}</Text>
+      <View style={styles.dividerLine} />
+    </View>
+  )
+
   return (
     <>
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>{t('auth.or')}</Text>
-        <View style={styles.dividerLine} />
-      </View>
+      {divider === 'above' ? rule : null}
 
       {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
 
@@ -141,6 +163,7 @@ export function SocialAuthButtons() {
           icon={<ProviderMark provider="apple" />}
         />
       ) : null}
+      {divider === 'below' ? rule : null}
     </>
   )
 }

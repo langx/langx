@@ -19,7 +19,7 @@ import {
   type ProPlusBenefit,
   TIER_NAMES,
 } from '@langx/shared'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
 import { AppState, Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
@@ -28,6 +28,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { track } from '../../src/lib/analytics'
+import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
 import { goBackTo } from '../../src/lib/navigation'
 import { isFakePurchasesEnabled } from '../../src/lib/fakePurchases'
 import { yearlySavingPercent } from '../../src/lib/planSaving'
@@ -130,6 +131,10 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     body: 'paywall.learningLanguagesBody',
     vars: { count: PLAN_LIMITS.pro.maxLearningLanguages },
   },
+  boostedProfile: {
+    title: 'paywall.boostedProfile',
+    body: 'paywall.boostedProfileBody',
+  },
   welcomePack: {
     title: 'paywall.welcomePack',
     body: 'paywall.welcomePackBody',
@@ -182,6 +187,16 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
     vars: { count: PLAN_LIMITS.pro_plus.maxLearningLanguages },
     shipped: true,
   },
+  /*
+   * Not the Fluent line repeated: Fluent buys a place in the strip and
+   * Polyglot buys the front of it, so this column says the thing that is
+   * actually different.
+   */
+  boostedProfile: {
+    title: 'paywall.boostedProfileFirst',
+    body: 'paywall.boostedProfileFirstBody',
+    shipped: true,
+  },
   nearby: {
     // The body says what it does *and* what it costs the reader, because the
     // second half is the part they would otherwise find out after paying.
@@ -206,6 +221,7 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
+  boostedProfile: BENEFIT_COPY.boostedProfile.title,
   sendTranslation: PRO_PLUS_BENEFIT_COPY.sendTranslation.title,
   deckExport: PRO_PLUS_BENEFIT_COPY.deckExport.title,
   profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,
@@ -220,6 +236,13 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
   return (PLAN_FEATURES as readonly string[]).includes(raw) ? (raw as PlanFeature) : null
 }
 
+/** As above: a param from a deep link is a string until it is checked. */
+function parseSource(raw: string | undefined): PaywallSource {
+  return (PAYWALL_SOURCES as readonly string[]).includes(raw ?? '')
+    ? (raw as PaywallSource)
+    : 'gate'
+}
+
 export default function PaywallScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
@@ -228,11 +251,17 @@ export default function PaywallScreen() {
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
-  const { feature: featureParam, from } = useLocalSearchParams<{
+  const {
+    feature: featureParam,
+    from,
+    source: sourceParam,
+  } = useLocalSearchParams<{
     feature?: string
     from?: string
+    source?: string
   }>()
   const feature = parseFeature(featureParam)
+  const source = parseSource(sourceParam)
   // Which tier the context line points at, read off `PLAN_LIMITS` rather than
   // assumed: move a capability between tiers and the sentence follows it.
   const highlightTier = feature ? tierUnlocking(feature) : null
@@ -299,8 +328,37 @@ export default function PaywallScreen() {
   // funnel, and which capability people hit it from is the question. Mount
   // only: the tier changing after a purchase is not a second viewing.
   useEffect(() => {
-    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier } })
+    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier, source } })
   }, [])
+
+  /**
+   * Closing without buying, and how long the screen was open for.
+   *
+   * The pair `paywall_viewed`/`paywall_dismissed` is what separates "nobody
+   * reads this" from "everybody reads it and says no" — two failures with
+   * opposite fixes. Both exits go through here: the X, and the onboarding
+   * paywall's own "Continue free".
+   *
+   * A hardware back on Android is not caught, and deliberately not fought
+   * over: it leaves the same view unbought and shows up as a view with no
+   * dismissal, which is a known and countable gap rather than a wrong number.
+   */
+  const openedAt = useRef(Date.now())
+
+  function dismiss(): void {
+    track({
+      name: 'paywall_dismissed',
+      properties: { source, seconds_open: Math.round((Date.now() - openedAt.current) / 1000) },
+    })
+    // The onboarding exposure is the last screen of the wizard, so there is
+    // nothing behind it worth going back to — and `goBackTo` would pop onto
+    // `done`, whose CTA opened this.
+    if (source === 'onboarding') {
+      router.replace('/(app)/(tabs)/discover')
+      return
+    }
+    goBackTo('/(app)/(tabs)/me', from)
+  }
 
   async function buy(offerId: string, change: PlanChange): Promise<void> {
     setNotice(null)
@@ -434,7 +492,7 @@ export default function PaywallScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('common.backPlain')}
           hitSlop={12}
-          onPress={() => goBackTo('/(app)/(tabs)/me', from)}
+          onPress={dismiss}
           style={({ pressed }) => [styles.close, pressed && styles.pressed]}
         >
           <Feather name="x" size={22} color={colors.text} />
@@ -481,7 +539,16 @@ export default function PaywallScreen() {
                 {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
               </Text>
             ) : null}
-            {tier !== 'free' ? (
+            {/*
+              Three states, not two. A lifetime grant says so; a plan a store
+              sold says where to manage it; and a plan that came from neither
+              — granted by hand, `store: 'manual'` — says nothing at all,
+              because "manage it in your store account" points at a page with
+              nothing on it. That was already fixed for the lifetime gift and
+              `boughtOn` is what makes it true of every grant: `platformOfStore`
+              answers `null` for anything no store of ours sold.
+            */}
+            {tier !== 'free' && (held.store === 'promotional' || boughtOn) ? (
               <Text style={styles.contextText}>
                 {held.store === 'promotional'
                   ? t('paywall.lifetimeNotice', { plan: TIER_NAMES[tier] })
@@ -626,6 +693,15 @@ export default function PaywallScreen() {
             viaPortal ? changePlanInPortal() : offer ? buy(offer.id, change) : undefined
           }
         />
+        {/*
+          Only the onboarding exposure, and named rather than deflected: "No
+          thanks" and "Maybe later" both imply the free app is a consolation.
+          It is the product, and somebody arriving here in their first minute
+          has to be able to see that in one tap.
+        */}
+        {source === 'onboarding' ? (
+          <Button variant="secondary" label={t('paywall.continueFree')} onPress={dismiss} />
+        ) : null}
       </View>
     </Screen>
   )

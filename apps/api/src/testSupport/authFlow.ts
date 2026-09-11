@@ -19,6 +19,13 @@ export class CapturingEmailSender implements EmailSender {
     if (!match) throw new Error(`no URL found in email text: ${message.text}`)
     return match[0]
   }
+
+  /** The `token` query parameter of the latest emailed link. */
+  latestToken(): string {
+    const token = new URL(this.latestUrl()).searchParams.get('token')
+    if (!token) throw new Error(`no token in emailed link: ${this.latestUrl()}`)
+    return token
+  }
 }
 
 export function setCookieValue(response: { headers: Record<string, unknown> }): string {
@@ -58,10 +65,15 @@ export async function signUpAndSignIn(
   }
   const userId = signUp.json<{ user: { id: string } }>().user.id
 
-  const verifyUrl = emailSender.latestUrl()
+  /*
+   * The token, not the link. The mailed link is a page in the app
+   * (`app.langx.io/verify-email`) rather than this API's endpoint, precisely
+   * so that the app is what spends the token — which is what this stands in
+   * for.
+   */
   const verify = await app.inject({
     method: 'GET',
-    url: verifyUrl.replace(/^https?:\/\/[^/]+/, ''),
+    url: `/api/auth/verify-email?token=${encodeURIComponent(emailSender.latestToken())}`,
   })
   if (verify.statusCode >= 400) {
     throw new Error(`verify failed (${verify.statusCode}): ${verify.body}`)

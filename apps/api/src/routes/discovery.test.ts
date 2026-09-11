@@ -1,6 +1,7 @@
 import {
   DISCOVERY_CURSOR_MAX_AGE_MS,
   DISTANCE_BUCKETS_KM,
+  type BoostedProfilesPage,
   type DiscoveryPage,
   type HandleSearchPage,
 } from '@langx/shared'
@@ -62,6 +63,42 @@ describe('Faz 3 — discovery aggregation', () => {
     await handle.db
       .collection<Profile>(COLLECTIONS.profiles)
       .updateOne({ _id: userId }, { $set: { 'stats.lastActiveAt': date } })
+  }
+
+  /**
+   * A photo and a bio, written straight in — the upload routes assert the URL
+   * points into our own bucket, and this is a fixture, not a test of that.
+   *
+   * The boosted strip's leading band wants both, so a fixture that means to
+   * test anything *else* about the order has to have them or it falls into the
+   * band behind and the rotation, not the thing under test, decides.
+   */
+  async function setShowcase(userId: string) {
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: { avatarUrl: `https://media.test/avatars/${userId}.jpg`, bio: 'Here to practise.' },
+      },
+    )
+  }
+
+  /**
+   * Grants a tier the way RevenueCat's webhook would, minus RevenueCat.
+   *
+   * `expiresAt` is optional because most fixtures want a subscription that
+   * simply is; the boosted strip needs one that has lapsed, which is a stored
+   * tier the server must refuse to honour.
+   */
+  async function setTier(userId: string, tier: Profile['entitlement']['tier'], expiresAt?: Date) {
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: userId },
+      {
+        $set: {
+          'entitlement.tier': tier,
+          ...(expiresAt ? { 'entitlement.expiresAt': expiresAt } : {}),
+        },
+      },
+    )
   }
 
   async function discover(user: SignedUpUser, qs = '') {
@@ -955,12 +992,6 @@ describe('Faz 3 — discovery aggregation', () => {
     const ANOTHER_CITY = { lat: 40.19, lng: 29.06 } //  ~91 km  (Bursa)
     const FAR_AWAY = { lat: 39.93, lng: 32.86 } //     ~350 km  (Ankara)
 
-    async function setTier(userId: string, tier: Profile['entitlement']['tier']) {
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: userId }, { $set: { 'entitlement.tier': tier } })
-    }
-
     // Generic so it hands back exactly what it was given — `newUser` returns a
     // `SignedUpUser` *plus* the handle, and every assertion below needs it.
     async function share<T extends SignedUpUser>(
@@ -1211,6 +1242,270 @@ describe('Faz 3 — discovery aggregation', () => {
 
       expect(new Set(seen).size).toBe(seen.length)
       expect(seen.sort()).toEqual(tied.map((c) => c.handle).sort())
+    })
+  })
+
+  /**
+   * The strip above the list. Its own language pair (`qu` / `rm`, used by no
+   * other fixture in this file) so that ordering assertions see only what
+   * each test put there — the suite shares one database.
+   */
+  describe('GET /discovery/boosted', () => {
+    async function boosted(user: SignedUpUser, qs = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/discovery/boosted${qs ? `?${qs}` : ''}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    /** A viewer nobody else in this file is a mutual fit for. */
+    async function viewerFor(email: string) {
+      return newUser(email, {
+        nativeLanguages: [{ code: 'qu' }],
+        learning: [{ code: 'rm', level: 'intermediate', priority: 1 }],
+      })
+    }
+
+    /** Someone who mutually fits that viewer. */
+    async function candidateFor(email: string, overrides: Record<string, unknown> = {}) {
+      return newUser(email, {
+        nativeLanguages: [{ code: 'rm' }],
+        learning: [{ code: 'qu', level: 'intermediate', priority: 1 }],
+        ...overrides,
+      })
+    }
+
+    function handlesOf(response: { json: <T>() => T }) {
+      return response.json<BoostedProfilesPage>().items.map((item) => item.handle)
+    }
+
+    /**
+     * Within a tier the order rotates — see `boostedOrder.ts` — so this asserts
+     * the band, not the sequence. The band is the part somebody paid for:
+     * `en.ts` promises Polyglot leads the strip, and nothing the rotation does
+     * may cross that line.
+     */
+    it('leads with Polyglot and never lets Fluent above it', async () => {
+      const viewer = await viewerFor('boost-order-viewer@example.com')
+      const plusOne = await candidateFor('boost-plus-stale@example.com')
+      const plusTwo = await candidateFor('boost-plus-fresh@example.com')
+      const proOne = await candidateFor('boost-pro-stale@example.com')
+      const proTwo = await candidateFor('boost-pro-fresh@example.com')
+      const free = await candidateFor('boost-free@example.com')
+
+      await setTier(plusOne.userId, 'pro_plus')
+      await setTier(plusTwo.userId, 'pro_plus')
+      await setTier(proOne.userId, 'pro')
+      await setTier(proTwo.userId, 'pro')
+
+      const response = await boosted(viewer)
+      expect(response.statusCode).toBe(200)
+      const items = response.json<BoostedProfilesPage>().items
+      expect(items.map((item) => item.handle).toSorted()).toEqual(
+        [plusOne, plusTwo, proOne, proTwo].map((c) => c.handle).toSorted(),
+      )
+      expect(items.map((item) => item.tier)).toEqual(['pro_plus', 'pro_plus', 'pro', 'pro'])
+      expect(items.map((item) => item.handle)).not.toContain(free.handle)
+    })
+
+    /**
+     * Its own pair again (`yo` / `zu`), because by this point the `qu` / `rm`
+     * fixtures are close enough to `DISCOVERY_BOOSTED_LIMIT` that which of
+     * them survives the slice depends on the rotation.
+     *
+     * Offsets from now, never literal dates: the week is measured against the
+     * clock, and a fixed date would quietly drift out of it and take the
+     * test's meaning with it.
+     */
+    it('puts a subscriber who was here this week ahead of a dormant one in the same tier', async () => {
+      const viewer = await newUser('boost-fresh-viewer@example.com', {
+        nativeLanguages: [{ code: 'yo' }],
+        learning: [{ code: 'zu', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'zu' }],
+        learning: [{ code: 'yo', level: 'intermediate', priority: 1 }],
+      }
+      const here = await newUser('boost-here@example.com', options)
+      const dormant = await newUser('boost-dormant@example.com', options)
+
+      await setTier(here.userId, 'pro_plus')
+      await setTier(dormant.userId, 'pro_plus')
+      // Both, so the only thing separating them is when they were last here.
+      await setShowcase(here.userId)
+      await setShowcase(dormant.userId)
+      await setLastActiveAt(dormant.userId, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles.indexOf(here.handle)).toBeLessThan(handles.indexOf(dormant.handle))
+    })
+
+    /**
+     * Its own pair (`ha` / `ig`). Nobody is excluded for an empty profile —
+     * they paid — so this asserts both are present and which one leads.
+     */
+    it('leaves a subscriber with no photo behind one with a full profile', async () => {
+      const viewer = await newUser('boost-showcase-viewer@example.com', {
+        nativeLanguages: [{ code: 'ha' }],
+        learning: [{ code: 'ig', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'ig' }],
+        learning: [{ code: 'ha', level: 'intermediate', priority: 1 }],
+      }
+      const full = await newUser('boost-showcase-full@example.com', options)
+      const bare = await newUser('boost-showcase-bare@example.com', options)
+
+      await setTier(full.userId, 'pro_plus')
+      await setTier(bare.userId, 'pro_plus')
+      await setShowcase(full.userId)
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles).toContain(bare.handle)
+      expect(handles.indexOf(full.handle)).toBeLessThan(handles.indexOf(bare.handle))
+    })
+
+    /**
+     * The strip is refetched on every mount and focus, so an order that
+     * changed per request would read as a bug long before it read as fair.
+     * `boostedOrder.test.ts` pins the window itself; this pins that the route
+     * seeds it from something stable rather than from the request.
+     */
+    it('answers the same order twice inside a rotation window', async () => {
+      const viewer = await newUser('boost-stable-viewer@example.com', {
+        nativeLanguages: [{ code: 'wo' }],
+        learning: [{ code: 'xh', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'xh' }],
+        learning: [{ code: 'wo', level: 'intermediate', priority: 1 }],
+      }
+      for (const email of [
+        'boost-stable-a@example.com',
+        'boost-stable-b@example.com',
+        'boost-stable-c@example.com',
+      ]) {
+        const person = await newUser(email, options)
+        await setTier(person.userId, 'pro_plus')
+      }
+
+      const first = handlesOf(await boosted(viewer))
+      const second = handlesOf(await boosted(viewer))
+      expect(first).toHaveLength(3)
+      expect(second).toEqual(first)
+    })
+
+    /**
+     * The stored tier is not the answer — `effectivePlanTier` is, and this is
+     * its Mongo half. A lapsed subscription whose EXPIRATION webhook never
+     * arrived would otherwise keep buying a place in the strip forever.
+     */
+    it('drops a subscription that has lapsed and keeps one that has not', async () => {
+      const viewer = await viewerFor('boost-expiry-viewer@example.com')
+      const lapsed = await candidateFor('boost-lapsed@example.com')
+      const current = await candidateFor('boost-current@example.com')
+
+      await setTier(lapsed.userId, 'pro', new Date(Date.now() - 60_000))
+      await setTier(current.userId, 'pro', new Date(Date.now() + 60 * 60 * 1000))
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles).toContain(current.handle)
+      expect(handles).not.toContain(lapsed.handle)
+    })
+
+    it("obeys the list's scope: no language fit and blocked are both absent", async () => {
+      const viewer = await viewerFor('boost-scope-viewer@example.com')
+      const blocked = await candidateFor('boost-blocked@example.com')
+      const noFit = await newUser('boost-no-fit@example.com', {
+        nativeLanguages: [{ code: 'rm' }],
+        learning: [{ code: 'is', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(blocked.userId, 'pro_plus')
+      await setTier(noFit.userId, 'pro_plus')
+
+      const block = await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: viewer.cookie },
+        payload: { userId: blocked.userId },
+      })
+      expect(block.statusCode).toBe(201)
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles).not.toContain(blocked.handle)
+      expect(handles).not.toContain(noFit.handle)
+    })
+
+    /**
+     * An empty strip is a valid answer, not an error: the client hides the
+     * whole row on it. A 404 here would be a screen showing a failure for a
+     * pool that simply has nobody paying in it.
+     */
+    it('answers 200 with an empty list when nobody qualifies', async () => {
+      /*
+       * Its own pair again — `ug` / `za`, used nowhere else. Every other test
+       * in this describe leaves paying `rm` natives behind, and they are a
+       * mutual fit for any `qu` viewer, this one included.
+       */
+      const viewer = await newUser('boost-empty-viewer@example.com', {
+        nativeLanguages: [{ code: 'ug' }],
+        learning: [{ code: 'za', level: 'intermediate', priority: 1 }],
+      })
+      await newUser('boost-empty-candidate@example.com', {
+        nativeLanguages: [{ code: 'za' }],
+        learning: [{ code: 'ug', level: 'intermediate', priority: 1 }],
+      })
+
+      const response = await boosted(viewer)
+      expect(response.statusCode).toBe(200)
+      expect(response.json<BoostedProfilesPage>()).toEqual({ items: [] })
+    })
+
+    it('applies the filters and ignores the sort — a free viewer is not refused over one', async () => {
+      const viewer = await viewerFor('boost-filter-viewer@example.com')
+      const here = await candidateFor('boost-country-here@example.com', { country: 'US' })
+      const elsewhere = await candidateFor('boost-country-elsewhere@example.com', { country: 'FR' })
+      await setTier(here.userId, 'pro')
+      await setTier(elsewhere.userId, 'pro')
+
+      const filtered = handlesOf(await boosted(viewer, 'country=US'))
+      expect(filtered).toContain(here.handle)
+      expect(filtered).not.toContain(elsewhere.handle)
+
+      /*
+       * `sort` and `radiusKm` reach this route because it reuses
+       * `discoveryQuerySchema`, and the strip has neither. A free viewer must
+       * not be handed `UPGRADE_REQUIRED` or `LOCATION_REQUIRED` for a
+       * parameter that changed nothing.
+       */
+      const sorted = await boosted(viewer, 'sort=nearby')
+      expect(sorted.statusCode).toBe(200)
+      expect(handlesOf(sorted)).toContain(here.handle)
+    })
+
+    /**
+     * Absent means on, `false` means off, and the tier decides regardless —
+     * the same shape as `incognito`, which is also stored without a
+     * write-time tier guard because a free account writing `true` gains
+     * nothing from it.
+     */
+    it('honours settings.boosted, and it buys a free account nothing', async () => {
+      const viewer = await viewerFor('boost-toggle-viewer@example.com')
+      const optedOut = await candidateFor('boost-opted-out@example.com')
+      const untouched = await candidateFor('boost-untouched@example.com')
+      const freeOptedIn = await candidateFor('boost-free-opted-in@example.com')
+      await setTier(optedOut.userId, 'pro')
+      await setTier(untouched.userId, 'pro')
+
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+      await profiles.updateOne({ _id: optedOut.userId }, { $set: { 'settings.boosted': false } })
+      await profiles.updateOne({ _id: freeOptedIn.userId }, { $set: { 'settings.boosted': true } })
+
+      const handles = handlesOf(await boosted(viewer))
+      expect(handles).toContain(untouched.handle)
+      expect(handles).not.toContain(optedOut.handle)
+      expect(handles).not.toContain(freeOptedIn.handle)
     })
   })
 

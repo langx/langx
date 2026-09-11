@@ -36,10 +36,58 @@ export const ptBR: Localized<ServerMessages> = {
       awayBody: 'Gente nova para praticar.',
       awayLongTitle: 'Estaremos aqui quando você voltar',
       awayLongBody: 'Sua sequência e seus tokens esperam.',
+      limitReachedTitle: 'Você continua esbarrando nos limites',
+      limitReachedBody: 'Um plano remove esses limites.',
+      trialEndingTitle: 'Sua semana grátis termina em dois dias',
+      trialEndingBody: 'Manter é um toque.',
+      winBackTitle: 'Seu plano terminou',
+      winBackBody: 'Tudo o que você criou continua aqui.',
       tokensWaitingTitle: { one: '{count} token esperando', other: '{count} tokens esperando' },
       tokensWaitingBody: 'Abra sua carteira.',
       inviteFriendTitle: 'Convide alguém',
       inviteFriendBody: 'Vocês dois ganham tokens.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} começou a seguir você',
+
+      followBody: 'Toque para ver o perfil.',
+
+      correctionTitle: '{name} corrigiu sua frase',
+
+      correctionBody: 'Toque para ler a correção.',
+
+      answerTitle: '{name} gravou sua frase',
+
+      answerBody: 'Toque para ouvir.',
+
+      commentTitle: '{name} comentou na sua publicação',
+
+      commentBody: 'Toque para ler.',
+
+      likesTitle: {
+        one: 'Sua publicação recebeu 1 curtida',
+        other: 'Sua publicação recebeu {count} curtidas',
+      },
+
+      likesBody: 'Alguém curtiu o que você escreveu.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'O rateio de ontem te pagou 1 token',
+        other: 'O rateio de ontem te pagou {count} tokens',
+      },
+
+      poolBody: 'Toque para abrir sua carteira.',
+
+      giftTitle: 'Seu presente por hora está pronto',
+
+      giftBody: 'Abra a carteira e pegue.',
     },
 
     /** Security, which no preference can switch off. */
@@ -187,6 +235,30 @@ export const ptBR: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir o LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 resposta ao que você escreveu hoje',
+      other: '{count} respostas ao que você escreveu hoje',
+    },
+
+    feedDigestPreheader: 'Responderam ao que você publicou',
+
+    feedDigestBody: {
+      one: 'Alguém respondeu a uma frase que você publicou hoje.',
+      other: '{count} pessoas responderam a frases que você publicou hoje.',
+    },
+
+    feedDigestCorrections: { one: '1 correção', other: '{count} correções' },
+
+    feedDigestAnswers: { one: '1 gravação', other: '{count} gravações' },
+
+    feedDigestComments: { one: '1 comentário', other: '{count} comentários' },
+
+    feedDigestMore: { one: 'E mais 1 publicação.', other: 'E mais {count} publicações.' },
+
+    feedDigestButton: 'Ler as respostas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -226,6 +298,27 @@ export const ptBR: Localized<ServerMessages> = {
 
       awayLongButton: 'Abrir o LangX',
 
+      limitReachedSubject: 'Você está esbarrando nos limites gratuitos',
+
+      limitReachedBody:
+        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas, mais traduções, mais anexos, todo dia.',
+
+      limitReachedButton: 'Ver os planos',
+
+      trialEndingSubject: 'Sua semana grátis termina em dois dias',
+
+      trialEndingBody:
+        'Depois disso sua conta volta ao plano gratuito. Tudo o que você criou fica; os limites voltam. Manter é um toque.',
+
+      trialEndingButton: 'Manter meu plano',
+
+      winBackSubject: 'Seu plano terminou há uma semana',
+
+      winBackBody:
+        'Nada foi tirado — sua sequência, seus tokens e tudo o que você escreveu continuam onde estavam. O que parou foram os limites pagos.',
+
+      winBackButton: 'Ver os planos',
+
       tokensWaitingSubject: {
         one: 'Você tem {count} token esperando',
         other: 'Você tem {count} tokens esperando',
@@ -252,7 +345,7 @@ export const ptBR: Localized<ServerMessages> = {
 
     welcomeTitle: 'Boas-vindas, {name}',
 
-    welcomeBody: 'Seu perfil está no ar em @{handle}. É isto que as pessoas fazem primeiro:',
+    welcomeBody: 'Seu perfil está no ar em {handle}. É isto que as pessoas fazem primeiro:',
 
     welcomeStep1: 'Encontre alguém que fale o que você está aprendendo e diga oi.',
 
@@ -334,6 +427,8 @@ export const ptBR: Localized<ServerMessages> = {
       messages: 'os resumos de mensagens',
       streak: 'os lembretes de sequência',
       profileVisits: 'os resumos de visitas ao perfil',
+      social: 'atividade do feed',
+      wallet: 'novidades de tokens',
       promotions: 'as novidades e ofertas',
       all: 'os e-mails do LangX',
       v1contact: 'a única mensagem sobre o novo LangX',
@@ -353,6 +448,34 @@ export const ptBR: Localized<ServerMessages> = {
       one: '{count} ficha foi adicionada à sua carteira pelo aviso que você enviou: {url}',
       other: '{count} fichas foram adicionadas à sua carteira pelo aviso que você enviou: {url}',
     },
+
+    suspendedSubject: 'Sua conta LangX foi suspensa',
+    suspendedPreheader: 'Uma denúncia sobre sua conta foi analisada',
+    suspendedUntilBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela está suspensa até {until}. Até lá você não pode usar o LangX, e seu perfil fica fora do Descobrir e da busca.',
+    suspendedPermanentBody:
+      'Uma pessoa analisou uma denúncia sobre sua conta, e ela foi suspensa permanentemente. Seu perfil fica fora do Descobrir e da busca.',
+    suspendedReason: 'Motivo: {reason}',
+    suspendedAppeal:
+      'Se você acha que é um engano, pode recorrer uma vez pelo app ou respondendo a este e-mail.',
+    suspendedText:
+      'Sua conta LangX está suspensa. {detail} {reason} Você pode recorrer uma vez pelo app.',
+    suspensionUpdatedSubject: 'Sua suspensão no LangX foi atualizada',
+    suspensionUpdatedPreheader: 'Analisamos seu recurso',
+    suspensionUpdatedShortened: 'Lemos seu recurso. Sua suspensão agora termina em {until}.',
+    suspensionUpdatedLifted:
+      'Lemos seu recurso. A suspensão foi retirada — você pode usar o LangX de novo.',
+    suspensionUpdatedText: 'Sua suspensão no LangX foi atualizada. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Assédio',
+    hateSpeech: 'Discurso de ódio',
+    inappropriateContent: 'Conteúdo inadequado',
+    fakeProfile: 'Perfil falso',
+    underage: 'Menor de 16 anos',
+    other: 'Outra coisa',
   },
   official: {
     welcome:

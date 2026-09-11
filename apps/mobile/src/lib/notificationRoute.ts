@@ -17,7 +17,12 @@ import type { Href } from 'expo-router'
  */
 export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
-  const { kind, conversationId } = data as { kind?: unknown; conversationId?: unknown }
+  const { kind, conversationId, postId, handle } = data as {
+    kind?: unknown
+    conversationId?: unknown
+    postId?: unknown
+    handle?: unknown
+  }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
 
   switch (kind as PushKind) {
@@ -49,6 +54,17 @@ export function notificationRoute(data: unknown): Href | null {
       // The count is what the notification said; the names are behind the
       // paywall this screen draws. Landing here is the whole point of it.
       return '/viewers'
+    case 'social':
+      // A correction or an answer lands on the post it is about; a follow on
+      // the person who did it. Neither id is guaranteed — a batch of likes
+      // carries a post, a follow carries a handle — so the feed is the
+      // fallback, which is at least the right room.
+      if (typeof postId === 'string' && postId.length > 0) return `/post/${postId}`
+      if (typeof handle === 'string' && handle.length > 0) return `/${handle}`
+      return '/feed'
+    case 'wallet':
+      // Tokens arrived. The wallet is where they are counted.
+      return '/wallet'
     case 'promotion':
       // Every nudge that is not about the streak points at the same place:
       // people to talk to. The mail carries the specific destination; a push

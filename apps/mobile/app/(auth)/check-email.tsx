@@ -1,5 +1,4 @@
 import Feather from '@expo/vector-icons/Feather'
-import * as Linking from 'expo-linking'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -29,10 +28,9 @@ export default function CheckEmail() {
   async function onResend() {
     if (!email) return
     setLoading(true)
-    await authClient.sendVerificationEmail({
-      email,
-      callbackURL: Linking.createURL('verify-email-success'),
-    })
+    // No `callbackURL`: the API builds the mailed link itself, the same one
+    // sign-up's mail carries.
+    await authClient.sendVerificationEmail({ email })
     setLoading(false)
     setSent(true)
   }

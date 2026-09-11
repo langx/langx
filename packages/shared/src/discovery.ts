@@ -269,3 +269,70 @@ export type HandleSearchResult = z.infer<typeof handleSearchResultSchema>
 
 export const handleSearchPageSchema = z.object({ items: z.array(handleSearchResultSchema) })
 export type HandleSearchPage = z.infer<typeof handleSearchPageSchema>
+
+/**
+ * The strip above the discovery list, most expensive plan first.
+ *
+ * A presentation order like `tierUnlocking`, not a guard — see the note on
+ * `PLAN_TIERS` for why no guard may compare tiers. Which tiers belong here is
+ * decided by `PLAN_LIMITS[tier].boostedProfile`, and `rules.test.ts` pins the
+ * two together so a capability moved between tiers cannot leave this list
+ * behind.
+ */
+export const DISCOVERY_BOOSTED_TIERS = ['pro_plus', 'pro'] as const
+
+/**
+ * How many cards the strip holds. It is a horizontal row somebody flicks
+ * through, not a list they page — there is no cursor, so this is the whole of
+ * it.
+ */
+export const DISCOVERY_BOOSTED_LIMIT = 12
+
+/**
+ * How recently a subscriber must have been here to lead the strip — one of the
+ * three things `orderBoosted` asks for, alongside a photo and a bio.
+ *
+ * The strip used to order by `stats.lastActiveAt` outright, and with a handful
+ * of candidates a total order is a permanent one: whoever opens the app most
+ * owns the first card forever, and the rest pay for a position nobody looks
+ * at. This replaces that ladder with a single cut, and the rotation below
+ * decides the order inside each side of it.
+ *
+ * Not `ONLINE_WINDOW_MS`: five minutes puts nearly every subscriber on the
+ * same side and the cut does nothing. A week is long enough that a normal user
+ * never leaves the leading band between sessions, and short enough that a
+ * subscriber who has stopped coming stops leading.
+ */
+export const DISCOVERY_BOOSTED_FRESH_MS = 7 * 24 * 60 * 60 * 1000
+
+/**
+ * How long one viewer's strip order holds before it turns.
+ *
+ * Not a day: somebody who opens the app once a day would see one order for
+ * life, which is the problem this exists to fix. Not a minute: the order would
+ * change under a reader between two glances at the same screen, and a strip
+ * that reshuffles while you look at it reads as broken rather than fair.
+ */
+export const DISCOVERY_BOOSTED_ROTATION_MS = 60 * 60 * 1000
+
+/**
+ * How many candidates the pipeline hands to the ordering.
+ *
+ * The order is a hash of the viewer, the profile and the hour, and MQL has no
+ * string hash — so it is computed in Node and the pipeline can no longer stop
+ * at `DISCOVERY_BOOSTED_LIMIT`. It must pass on everyone who could win a slot.
+ *
+ * The ceiling is what keeps "fetch before limiting" bounded. Above it the
+ * pipeline's own sort truncates — by tier, then by recency — which is exactly
+ * the behaviour this change replaces, so the one place the old starvation
+ * survives is a language pair with two hundred paying members in it.
+ */
+export const DISCOVERY_BOOSTED_CANDIDATE_MAX = 200
+
+export const boostedProfileSchema = discoveryItemSchema.extend({
+  tier: z.enum(DISCOVERY_BOOSTED_TIERS),
+})
+export type BoostedProfile = z.infer<typeof boostedProfileSchema>
+
+export const boostedProfilesPageSchema = z.object({ items: z.array(boostedProfileSchema) })
+export type BoostedProfilesPage = z.infer<typeof boostedProfilesPageSchema>

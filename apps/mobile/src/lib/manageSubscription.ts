@@ -10,10 +10,15 @@
  * worth testing, and it would be untestable inside the screen.
  */
 
+import { platformOfStore } from '@langx/shared'
+
 /** RevenueCat fills this in for every store it knows, including web checkouts. */
 export interface ManageSource {
   managementURL?: string | null
-  /** `profiles.entitlement.store` — `promotional` for the v1 loyalty gift. */
+  /**
+   * `profiles.entitlement.store` — `promotional` for the v1 loyalty gift,
+   * `manual` for one granted straight into the database.
+   */
   store?: string | null
 }
 
@@ -35,10 +40,18 @@ export function manageSubscriptionUrl(
   platform: string,
 ): string | null {
   if (source?.managementURL) return source.managementURL
-  // A lifetime grant was never sold by a store, so the store's subscriptions
-  // page has nothing on it to manage — and a row that leads to an empty list
-  // reads as "your plan is missing".
-  if (source?.store === 'promotional') return null
+  /*
+   * A plan no store sold has nothing on the store's subscriptions page to
+   * manage, and a row that leads to an empty list reads as "your plan is
+   * missing". That was written for the v1 lifetime gift (`promotional`) and
+   * is just as true of one granted by hand (`manual`) — so the test is
+   * whether a store we sell through is named, not whether it is the one grant
+   * we happened to think of.
+   *
+   * A *missing* store still falls through to the platform page: absent means
+   * "not recorded", which is the older rows, not "nobody sold it".
+   */
+  if (source?.store && platformOfStore(source.store) === null) return null
   if (platform === 'ios') return APP_STORE
   if (platform === 'android') return PLAY_STORE
   return null

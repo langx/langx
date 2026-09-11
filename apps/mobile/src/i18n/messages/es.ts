@@ -231,8 +231,6 @@ export const es: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Usar mi ubicación',
     deniedTitle: 'La ubicación está desactivada para LangX',
-    deniedBodyIos: 'Abre Ajustes → LangX → Ubicación y elige «Al usar la app».',
-    deniedBodyAndroid: 'Abre Ajustes → Apps → LangX → Permisos → Ubicación y permítelo.',
     openSettings: 'Abrir ajustes',
     failedTitle: 'No pudimos leer tu ubicación',
     noCountry: 'No pudimos saber de qué país se trata.',
@@ -242,7 +240,64 @@ export const es: Localized<EnMessages> = {
     disabled: 'Los servicios de ubicación están desactivados en este dispositivo.',
     unavailable: 'No se pudo obtener la ubicación ahora mismo. Inténtalo en un momento.',
     unavailableTitle: 'Ubicación no disponible',
-    needed: 'Se necesita la ubicación',
+    guide: {
+      title: 'Permiso de ubicación',
+      rowTitle: 'Permiso de ubicación',
+      rowBody: 'Dónde activarlo y qué hacer si tu teléfono dejó de preguntar.',
+      grantedTitle: 'La ubicación está activada',
+      grantedBody:
+        'LangX puede leer tu posición aproximada mientras la usas. Puedes retirarlo cuando quieras desde los ajustes del dispositivo.',
+      askableTitle: 'LangX necesita tu ubicación',
+      askableBody:
+        'Cerca ordena a la gente por lo lejos que está, más o menos. No se guarda nada preciso y nadie ve más que una distancia aproximada.',
+      allow: 'Permitir ubicación',
+      blockedTitle: 'Tu dispositivo no volverá a preguntar',
+      blockedBody:
+        'Se denegó la ubicación a LangX, así que la app ya no puede mostrar el diálogo de permiso. Aun así puedes concederlo en los ajustes del dispositivo.',
+      iosStep1: 'Abre Ajustes',
+      iosStep2: 'Busca LangX en la lista',
+      iosStep3: 'Toca Ubicación y elige “Al usar la app”',
+      androidStep1: 'Abre Ajustes',
+      androidStep2: 'Ve a Aplicaciones → LangX',
+      androidStep3: 'Toca Permisos → Ubicación',
+      androidStep4: 'Elige “Permitir solo mientras se usa la app”',
+      servicesOffTitle: 'La ubicación está desactivada en este dispositivo',
+      servicesOffBodyIos:
+        'LangX tiene permiso, pero la Localización está apagada para todo el teléfono. Vuelve a activarla en Ajustes → Privacidad y seguridad → Localización.',
+      servicesOffBodyAndroid:
+        'LangX tiene permiso, pero la ubicación está apagada para todo el dispositivo. Vuelve a activarla en Ajustes → Ubicación.',
+      webTitle: 'Esto lo decide tu navegador',
+      webBody:
+        'Aquí el permiso de ubicación es del navegador, no de LangX. Busca el icono de ubicación en la barra de direcciones o permite la ubicación en los ajustes de este sitio.',
+      howTo: 'Cómo activarla',
+    },
+  },
+
+  suspended: {
+    title: 'Tu cuenta está suspendida',
+    untilBody:
+      'Una persona revisó un reporte sobre tu cuenta. No puedes usar LangX hasta el {until}, y tu perfil no aparece en Descubrir ni en la búsqueda.',
+    permanentBody:
+      'Una persona revisó un reporte sobre tu cuenta, y queda suspendida de forma permanente. Tu perfil no aparece en Descubrir ni en la búsqueda.',
+    reasonLabel: 'Motivo',
+    appealTitle: 'Apelación',
+    appealBody:
+      'Puedes apelar una vez. Una persona lee cada apelación y no hay ninguna cola que vigilar: la respuesta llega por correo.',
+    appealPlaceholder: 'Cuéntanos en qué nos equivocamos.',
+    appealTooShort: {
+      one: 'Al menos {count} carácter.',
+      other: 'Al menos {count} caracteres.',
+    },
+    send: 'Enviar apelación',
+    sending: 'Enviando…',
+    sent: 'Apelación enviada',
+    sentBody:
+      'Tu apelación se ha enviado. Hay una por suspensión, así que esta era: te responderemos.',
+    failed: 'No se pudo enviar. Inténtalo de nuevo en un momento.',
+    alreadyAppealed: 'Ya has apelado esta suspensión.',
+    checkAgain: 'Volver a comprobar',
+    signOut: 'Cerrar sesión',
+    contact: 'Cualquier otra cosa: {email}',
   },
 
   gate: {
@@ -285,6 +340,8 @@ export const es: Localized<EnMessages> = {
     title: 'Practica con alguien que está aprendiendo el tuyo',
     subtitle: 'Mira primero: puedes elegir tus idiomas y ver quién está aquí antes de registrarte.',
     browse: 'Echar un vistazo',
+    line2: 'Corrige y deja que te corrijan',
+    line3: 'Ven cada día y se acumula',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Intercambios de idiomas',
     createAccount: 'Crear una cuenta',
@@ -322,7 +379,7 @@ export const es: Localized<EnMessages> = {
     goToSignIn: 'Ir al inicio de sesión',
     checkEmailTitle: 'Revisa tu correo',
     checkEmailBody:
-      'Hemos enviado un enlace de verificación a\n{email}\n\nTócalo y luego vuelve e inicia sesión.',
+      'Hemos enviado un enlace de verificación a\n{email}\n\nTócalo y la app se abre con la sesión iniciada.',
     resendEmail: 'Reenviar correo',
     resent: 'Enviado: reenviar otra vez',
     resetTitle: 'Restablece tu contraseña',
@@ -346,6 +403,11 @@ export const es: Localized<EnMessages> = {
       'Has abierto un enlace de acceso. Toca el botón para terminar de iniciar sesión en este dispositivo.',
     openLinkButton: 'Entrar',
     openInApp: 'Abrir en la app de LangX',
+    verifyLinkTitle: 'Confirma tu correo',
+    verifyLinkBody:
+      'Has abierto un enlace de verificación. Toca el botón para terminar de configurar tu cuenta en este dispositivo.',
+    verifyLinkButton: 'Confirmar correo',
+    verifying: 'Verificando tu correo…',
     setNewPassword: 'Elige una contraseña nueva',
     newPassword: 'Contraseña nueva',
     updatePassword: 'Actualizar contraseña',
@@ -408,9 +470,9 @@ export const es: Localized<EnMessages> = {
     doneHandle: '@{handle} es tuyo.',
     doneReady: 'Tu perfil está listo.',
     whatNext: 'Qué pasa ahora',
-    whatNextBody:
-      'Descubrir te muestra a gente que habla lo que aprendes y aprende lo que hablas. Saluda a alguien: el primer mensaje da fichas y es lo único que te separa de una conversación.',
+    whatNextBody: 'Descubrir te muestra a gente que habla lo que aprendes. Saluda a alguien.',
     findSomeone: 'Buscar con quién hablar',
+    sayHelloTo: 'Saluda a {name}',
     inviteCodeToggle: '¿Tienes un código de invitación?',
     inviteCodeLabel: 'Código de invitación',
     inviteCodePlaceholder: 'su nombre de usuario',
@@ -460,6 +522,10 @@ export const es: Localized<EnMessages> = {
       'Una vez al día, cuánta gente miró tu perfil. Un resumen por correo cada semana.',
     meetings: 'Citas',
     meetingsBody: 'Una hora antes de una llamada que ambos aceptasteis. Solo push.',
+    social: 'El feed y quienes están en él',
+    socialBody: 'Seguidores, correcciones a tus publicaciones y me gusta.',
+    wallet: 'Tokens',
+    walletBody: 'El reparto diario y tu regalo por hora.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Un toque para parar.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -486,6 +552,12 @@ export const es: Localized<EnMessages> = {
       'Pregunta por una frase que no tienes clara, o una palabra que no sabes decir — aparecerá aquí.',
   },
   discover: {
+    boosted: 'Destacados',
+    boostedWhat: '¿Qué es esto?',
+    boostedExplainTitle: 'Perfiles destacados',
+    boostedExplainBody:
+      'Aquí se muestran las personas con Fluent y Polyglot, primero Polyglot. El orden va rotando durante el día, así que todos pasan por delante: lo que te pone ahí es una foto, unas palabras sobre ti y haber entrado hace poco. Se emparejan por idiomas igual que la lista de abajo: nada cambia en el emparejamiento, y cualquiera puede desactivarlo en Ajustes.',
+    boostedSeePlans: 'Ver los planes',
     languagesA11y: 'Elige con cuáles de tus idiomas buscar',
     searchHandles: 'Buscar por nombre de usuario',
     searchPlaceholder: 'Nombre de usuario',
@@ -506,6 +578,13 @@ export const es: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Nadie a menos de {radius} km',
     nobodyNearbyBody:
       'Aquí solo aparece quien ha activado la ubicación. Prueba con un radio mayor o con otra pestaña.',
+    nearbyNeedsPermissionTitle: 'Cerca necesita tu ubicación',
+    nearbyNeedsPermissionBody:
+      'No se ha concedido el permiso de ubicación, así que no hay nada que ordenar por distancia.',
+    nearbyServicesOffTitle: 'La ubicación está desactivada en este dispositivo',
+    nearbyServicesOffBody: 'Cerca no puede funcionar hasta que vuelvas a activar la ubicación.',
+    nearbyUnavailableTitle: 'No pudimos encontrarte',
+    nearbyUnavailableBody: 'No llegó ninguna posición ahora mismo. Inténtalo en un momento.',
     emptyTitle: 'Aún no hay nadie',
     emptyBody:
       'Aquí aparece gente cuyos idiomas encajan con los tuyos en ambos sentidos. Prueba a relajar los filtros.',
@@ -867,6 +946,8 @@ export const es: Localized<EnMessages> = {
 
   profile: {
     official: 'Cuenta oficial',
+    suspendedTag: 'Suspendida',
+    deletedTag: 'Cuenta eliminada',
     previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',
     teaches: 'Enseña',
     learns: 'Aprende',
@@ -1099,6 +1180,9 @@ export const es: Localized<EnMessages> = {
     showInDiscover: 'Mostrarme en Descubrir',
     showInDiscoverBody:
       'Desactívalo y nadie te encontrará: ni en Descubrir ni buscando tu nombre de usuario.',
+    boost: 'Destacar mi perfil',
+    boostBody:
+      'Muéstrame en la franja de perfiles destacados, arriba de Descubrir, a las personas cuyos idiomas coinciden con los míos. Activo con Fluent y Polyglot.',
     incognito: 'Navegar de incógnito',
     incognitoBody: 'No aparecerás entre sus visitas.',
     hideOnline: 'Ocultarme cuando esté en línea',
@@ -1514,6 +1598,11 @@ export const es: Localized<EnMessages> = {
     welcomePackBody:
       'Un marco de perfil y dos congelaciones de racha para empezar. {plan} trae el set completo.',
     advancedFilters: 'Filtros avanzados',
+    boostedProfile: 'Perfil destacado',
+    boostedProfileBody:
+      'Apareces en la franja sobre la lista de Descubrir, para todas las personas cuyos idiomas coinciden con los tuyos. Activo por defecto; puedes desactivarlo en Ajustes.',
+    boostedProfileFirst: 'Destacado al frente',
+    boostedProfileFirstBody: 'Los perfiles Polyglot encabezan la franja, por delante de Fluent.',
     sendTranslation: 'Envía en su idioma',
     sendTranslationBody: 'Escribe en el tuyo; van los dos, así te leen sin adivinar.',
     deckExport: 'Llévate tus expresiones',
@@ -1576,6 +1665,7 @@ export const es: Localized<EnMessages> = {
     yearlySaving: 'Anual · ahorra un {percent}%',
     billingPeriod: 'Periodo de facturación',
     start: 'Empieza con {plan}',
+    continueFree: 'Seguir gratis',
     perMonthBilledYearly: 'al mes · facturado anualmente',
   },
 

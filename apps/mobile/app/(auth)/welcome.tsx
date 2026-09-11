@@ -9,6 +9,7 @@ import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useLocale, useT } from '../../src/i18n'
+import { track } from '../../src/lib/analytics'
 import { welcomePairs, type LanguagePair } from '../../src/lib/welcomePairs'
 import { makeStyles } from '../../src/lib/theme'
 
@@ -69,21 +70,48 @@ export default function WelcomeScreen() {
             <PairRow key={`${pair.left}-${pair.right}`} pair={pair} index={index} />
           ))}
         </View>
+
+        {/*
+          What the intro's other two slides said, as two lines under the thing
+          they describe. The carousel is Settings-only now — three screens of
+          copy in front of a screen that already showed the exchange was two
+          descriptions of an offer nobody had been made yet.
+        */}
+        <View style={styles.lines}>
+          <Text style={styles.line}>{t('welcome.line2')}</Text>
+          <Text style={styles.line}>{t('welcome.line3')}</Text>
+        </View>
       </View>
 
       <View style={styles.actions}>
-        <Button label={t('welcome.browse')} onPress={browse} loading={starting} />
+        <Button
+          label={t('welcome.browse')}
+          onPress={() => {
+            track({ name: 'welcome_chosen', properties: { choice: 'browse' } })
+            void browse()
+          }}
+          loading={starting}
+        />
         <Button
           variant="secondary"
           label={t('welcome.createAccount')}
-          onPress={() => router.push('/(auth)/sign-up')}
+          onPress={() => {
+            track({ name: 'welcome_chosen', properties: { choice: 'create' } })
+            router.push('/(auth)/sign-up')
+          }}
         />
         {/*
           A text row rather than a third button: somebody who already has an
           account knows they do, and does not need it competing for attention
           with the two choices for somebody who does not.
         */}
-        <Text style={styles.signIn} onPress={() => router.push('/(auth)/sign-in')}>
+        <Text
+          style={styles.signIn}
+          onPress={() => {
+            track({ name: 'welcome_chosen', properties: { choice: 'sign_in' } })
+            router.push('/(auth)/sign-in')
+          }}
+        >
           {t('welcome.haveAccount')}
         </Text>
       </View>
@@ -156,6 +184,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   subtitle: { color: colors.textMuted, fontSize: 16, lineHeight: 24 },
   // 20 on top of the column's gap, as the prototype spaces the rows off the text.
   pairs: { gap: spacing.md, marginTop: 20 },
+  lines: { gap: spacing.xs, marginTop: 20 },
+  line: { color: colors.textMuted, fontSize: 15, lineHeight: 22 },
   pair: {
     alignItems: 'center',
     alignSelf: 'flex-start',

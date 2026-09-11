@@ -6,6 +6,7 @@ import { promotionEmail, type PromotionScenario } from '../../email/templates'
 import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
+import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
 import { claimOnce } from './ledger'
 import { recentlyMarketed } from './marketing'
 import { readAggregates } from '../tokens/ledger'
@@ -63,6 +64,16 @@ const AWAY_LONG_DAYS = 30
 const IDLE_TOKENS_MIN = 200
 const IDLE_TOKENS_DAYS = 14
 const INVITE_AFTER_DAYS = 14
+/** How long before a trial ends it is worth saying so. */
+const TRIAL_WARNING_DAYS = 2
+/** And how long after a plan ended before asking somebody to come back. */
+const WIN_BACK_DAYS = 7
+/**
+ * How many refusals inside `QUOTA_REFUSAL_WINDOW_MS` make a pattern. Three:
+ * once is Tuesday, twice is a coincidence, and three times in three days is
+ * a plan that no longer fits.
+ */
+const QUOTA_REFUSALS_BEFORE_NUDGE = 3
 
 function daysAgo(date: Date | undefined, now: Date): number {
   return date ? (now.getTime() - new Date(date).getTime()) / DAY_MS : Number.POSITIVE_INFINITY
@@ -151,6 +162,82 @@ export const PROMOTIONS: Promotion[] = [
     detail: async ({ profile, db }) => ({
       count: (await readAggregates(db, profile._id)).all - (profile.tokenSpent ?? 0),
     }),
+  },
+  {
+    /*
+     * The free week ending, and the one nudge here with a deadline in it.
+     *
+     * `periodType === 'trial'` is what makes it honest: a trial ending and a
+     * subscription ending are the same three fields on a profile, and before
+     * that cell existed this letter could not be written without sending it
+     * to paying subscribers. Absence is not "normal" — a grant RevenueCat
+     * never labelled says nothing either way, and silence is the right answer
+     * to a question nobody can answer.
+     *
+     * `willRenew: false` narrows it further: a trial that converts on its own
+     * needs no letter, and telling somebody their card is about to be charged
+     * is the store's job.
+     */
+    job: 'promo.trialEnding',
+    scenario: 'trialEnding',
+    type: 'promotions',
+    periodKey: ({ profile }) => profile.entitlement?.expiresAt?.toISOString() ?? 'none',
+    eligible: ({ profile, now }) => {
+      const { entitlement } = profile
+      if (entitlement?.periodType !== 'trial') return false
+      if (entitlement.willRenew !== false) return false
+      const endsIn = entitlement.expiresAt
+        ? (new Date(entitlement.expiresAt).getTime() - now.getTime()) / DAY_MS
+        : Number.POSITIVE_INFINITY
+      // Two days out, and never after it has already ended — by then the
+      // letter to write is the one `billingEmail` already sent.
+      return endsIn > 0 && endsIn <= TRIAL_WARNING_DAYS
+    },
+  },
+  {
+    /*
+     * Somebody who paid and stopped. A week later, because the first days
+     * after a plan ends are when the decision still feels fresh and a letter
+     * reads as an argument with it.
+     *
+     * `churnedFrom` is written on the fall and never cleared by the upgrade
+     * it is meant to cause, which is what lets this ask "how long ago" at
+     * all: `entitlement.updatedAt` moves on an ordinary `/billing/refresh`.
+     */
+    job: 'promo.winBack',
+    scenario: 'winBack',
+    type: 'promotions',
+    periodKey: ({ profile }) => profile.churnedFrom?.at.toISOString() ?? 'none',
+    eligible: ({ profile, now }) => {
+      if (!profile.churnedFrom) return false
+      // Still free: somebody who resubscribed has answered already.
+      if ((profile.entitlement?.tier ?? 'free') !== 'free') return false
+      const since = daysAgo(profile.churnedFrom.at, now)
+      return since >= WIN_BACK_DAYS && since < WIN_BACK_DAYS + 1
+    },
+  },
+  {
+    /*
+     * Somebody who keeps running out. The only nudge here that is an argument
+     * for paying, and the only one whose trigger is a *refusal* — which is
+     * why `consumeQuota` had to start remembering them: one person hitting a
+     * limit once is Tuesday, and three times in three days is a plan that no
+     * longer fits.
+     *
+     * Free accounts only. A paid tier has no limit to hit, so the array can
+     * only be stale — somebody who upgraded yesterday must not be sold the
+     * thing they just bought.
+     */
+    job: 'promo.quotaHit',
+    scenario: 'limitReached',
+    type: 'promotions',
+    periodKey: ({ now }) => now.toISOString().slice(0, 7),
+    eligible: ({ profile, now }) => {
+      if ((profile.entitlement?.tier ?? 'free') !== 'free') return false
+      const since = now.getTime() - QUOTA_REFUSAL_WINDOW_MS
+      const recent = (profile.quotaRefusals ?? []).filter((at) => new Date(at).getTime() >= since)
+      return recent.length >= QUOTA_REFUSALS_BEFORE_NUDGE
+    },
   },
   {
     /*

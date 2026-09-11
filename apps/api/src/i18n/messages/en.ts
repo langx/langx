@@ -40,10 +40,55 @@ export const en = {
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
       awayLongBody: 'Your streak and tokens are waiting.',
+      limitReachedTitle: 'You keep hitting the free limits',
+      limitReachedBody: 'A plan lifts them.',
+      trialEndingTitle: 'Your free week ends in two days',
+      trialEndingBody: 'Keeping your plan takes one tap.',
+      winBackTitle: 'Your plan ended a week ago',
+      winBackBody: 'Everything you made is still here.',
       tokensWaitingTitle: { one: '{count} token waiting', other: '{count} tokens waiting' },
       tokensWaitingBody: 'Open your wallet.',
       inviteFriendTitle: 'Invite a friend',
       inviteFriendBody: 'You both get tokens when they join.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} followed you',
+
+      followBody: 'Tap to see their profile.',
+
+      correctionTitle: '{name} corrected your sentence',
+
+      correctionBody: 'Tap to read the correction.',
+
+      answerTitle: '{name} recorded your sentence',
+
+      answerBody: 'Tap to listen.',
+
+      commentTitle: '{name} commented on your post',
+
+      commentBody: 'Tap to read it.',
+
+      likesTitle: { one: 'Your post got 1 like', other: 'Your post got {count} likes' },
+
+      likesBody: 'Somebody liked what you wrote.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: "Yesterday's pool paid you 1 token",
+        other: "Yesterday's pool paid you {count} tokens",
+      },
+
+      poolBody: 'Tap to open your wallet.',
+
+      giftTitle: 'Your hourly gift is ready',
+
+      giftBody: 'Open the wallet and collect it.',
     },
 
     /** Security, which no preference can switch off. */
@@ -196,6 +241,30 @@ export const en = {
 
     newsletterButton: 'Open LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 reply to your writing today',
+      other: '{count} replies to your writing today',
+    },
+
+    feedDigestPreheader: 'People answered what you posted',
+
+    feedDigestBody: {
+      one: 'Somebody answered a sentence you posted today.',
+      other: '{count} people answered sentences you posted today.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 recording', other: '{count} recordings' },
+
+    feedDigestComments: { one: '1 comment', other: '{count} comments' },
+
+    feedDigestMore: { one: 'And 1 more post.', other: 'And {count} more posts.' },
+
+    feedDigestButton: 'Read the replies',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -236,6 +305,27 @@ export const en = {
 
       awayLongButton: 'Open LangX',
 
+      limitReachedSubject: 'You are running into the free limits',
+
+      limitReachedBody:
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+
+      limitReachedButton: 'See the plans',
+
+      trialEndingSubject: 'Your free week ends in two days',
+
+      trialEndingBody:
+        'After that your account goes back to the free plan. Everything you made stays; the limits come back. Keeping it is one tap.',
+
+      trialEndingButton: 'Keep my plan',
+
+      winBackSubject: 'Your plan ended a week ago',
+
+      winBackBody:
+        'Nothing was taken away — your streak, your tokens and everything you wrote are where you left them. The paid limits are what stopped.',
+
+      winBackButton: 'See the plans',
+
       tokensWaitingSubject: {
         one: 'You have {count} token waiting',
         other: 'You have {count} tokens waiting',
@@ -262,7 +352,7 @@ export const en = {
 
     welcomeTitle: 'Welcome, {name}',
 
-    welcomeBody: 'Your profile is live at @{handle}. Here is what people do first:',
+    welcomeBody: 'Your profile is live at {handle}. Here is what people do first:',
 
     welcomeStep1: 'Find someone who speaks what you are learning, and say hello.',
 
@@ -345,6 +435,8 @@ export const en = {
       messages: 'message summaries',
       streak: 'streak reminders',
       profileVisits: 'profile-visit summaries',
+      social: 'feed activity',
+      wallet: 'token news',
       promotions: 'news and offers',
       all: 'email from LangX',
       v1contact: 'the one message about the new LangX',
@@ -364,6 +456,49 @@ export const en = {
       one: '{count} token has been added to your wallet for the report you sent: {url}',
       other: '{count} tokens have been added to your wallet for the report you sent: {url}',
     },
+
+    /*
+     * A suspension notice is a receipt, not a preference — it is sent
+     * directly rather than through `notify.ts`, so it carries no
+     * unsubscribe footer and nobody can switch it off. The reporter is
+     * never named: see `docs/community-guidelines.md`.
+     */
+    suspendedSubject: 'Your LangX account has been suspended',
+    suspendedPreheader: 'A report about your account was reviewed',
+    suspendedUntilBody:
+      'A report about your account was reviewed by a person, and your account is suspended until {until}. Until then you cannot use LangX, and your profile is hidden from discovery and search.',
+    suspendedPermanentBody:
+      'A report about your account was reviewed by a person, and your account has been suspended permanently. Your profile is hidden from discovery and search.',
+    suspendedReason: 'Reason: {reason}',
+    suspendedAppeal:
+      'If you think this is wrong, you can appeal once from the app, or by replying to this email.',
+    suspendedText:
+      'Your LangX account is suspended. {detail} {reason} You can appeal once from the app.',
+    suspensionUpdatedSubject: 'Your LangX suspension has been updated',
+    suspensionUpdatedPreheader: 'We looked at your appeal',
+    suspensionUpdatedShortened: 'We read your appeal. Your suspension now ends on {until}.',
+    suspensionUpdatedLifted:
+      'We read your appeal. Your suspension has been lifted — you can use LangX again.',
+    suspensionUpdatedText: 'Your LangX suspension has been updated. {detail}',
+  },
+
+  /**
+   * Why an account was suspended, in the reader's language.
+   *
+   * The app has these words too, in its own catalogue. They are here
+   * rather than shared because the two catalogues are deliberately
+   * separate — see the note at the top of this file — and a suspension
+   * email that named the reason in English would be the one sentence of
+   * the mail that the reader most needs to understand.
+   */
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Harassment',
+    hateSpeech: 'Hate speech',
+    inappropriateContent: 'Inappropriate content',
+    fakeProfile: 'Fake profile',
+    underage: 'Under 16',
+    other: 'Something else',
   },
   /**
    * What the official accounts say for themselves.

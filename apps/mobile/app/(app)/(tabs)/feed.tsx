@@ -211,7 +211,7 @@ export default function FeedScreen() {
    * retrying and is exactly what the retry it invited would hit again.
    */
   async function submitCorrection(postId: string): Promise<void> {
-    if (!requireAccount(session?.user)) return
+    if (!requireAccount(session?.user, { action: 'post' })) return
     if (!correction.trim() || uploading) return
     setUploading(true)
     let attachments

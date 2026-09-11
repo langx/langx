@@ -36,10 +36,55 @@ export const de: Localized<ServerMessages> = {
       awayBody: 'Neue Leute zum Üben.',
       awayLongTitle: 'Wir sind da, wenn du willst',
       awayLongBody: 'Deine Serie und deine Token warten.',
+      limitReachedTitle: 'Du stößt immer wieder an die Limits',
+      limitReachedBody: 'Ein Tarif hebt sie auf.',
+      trialEndingTitle: 'Deine Gratiswoche endet in zwei Tagen',
+      trialEndingBody: 'Behalten ist ein Tipp.',
+      winBackTitle: 'Dein Tarif ist ausgelaufen',
+      winBackBody: 'Alles, was du erstellt hast, ist noch da.',
       tokensWaitingTitle: { one: '{count} Token wartet', other: '{count} Token warten' },
       tokensWaitingBody: 'Öffne dein Wallet.',
       inviteFriendTitle: 'Lade jemanden ein',
       inviteFriendBody: 'Ihr bekommt beide Token.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} folgt dir jetzt',
+
+      followBody: 'Tippe, um das Profil zu sehen.',
+
+      correctionTitle: '{name} hat deinen Satz korrigiert',
+
+      correctionBody: 'Tippe, um die Korrektur zu lesen.',
+
+      answerTitle: '{name} hat deinen Satz aufgenommen',
+
+      answerBody: 'Tippe zum Anhören.',
+
+      commentTitle: '{name} hat deinen Beitrag kommentiert',
+
+      commentBody: 'Tippe, um ihn zu lesen.',
+
+      likesTitle: { one: 'Dein Beitrag hat 1 Like', other: 'Dein Beitrag hat {count} Likes' },
+
+      likesBody: 'Jemandem gefällt, was du geschrieben hast.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Die gestrige Ausschüttung brachte dir 1 Token',
+        other: 'Die gestrige Ausschüttung brachte dir {count} Token',
+      },
+
+      poolBody: 'Tippe, um dein Wallet zu öffnen.',
+
+      giftTitle: 'Dein stündliches Geschenk ist bereit',
+
+      giftBody: 'Öffne das Wallet und hol es dir.',
     },
 
     /** Security, which no preference can switch off. */
@@ -191,6 +236,30 @@ export const de: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX öffnen',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 Antwort auf deinen Beitrag heute',
+      other: '{count} Antworten auf deine Beiträge heute',
+    },
+
+    feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
+
+    feedDigestBody: {
+      one: 'Jemand hat heute auf einen deiner Sätze geantwortet.',
+      other: '{count} Leute haben heute auf deine Sätze geantwortet.',
+    },
+
+    feedDigestCorrections: { one: '1 Korrektur', other: '{count} Korrekturen' },
+
+    feedDigestAnswers: { one: '1 Aufnahme', other: '{count} Aufnahmen' },
+
+    feedDigestComments: { one: '1 Kommentar', other: '{count} Kommentare' },
+
+    feedDigestMore: { one: 'Und 1 weiterer Beitrag.', other: 'Und {count} weitere Beiträge.' },
+
+    feedDigestButton: 'Antworten lesen',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -231,6 +300,27 @@ export const de: Localized<ServerMessages> = {
 
       awayLongButton: 'LangX öffnen',
 
+      limitReachedSubject: 'Du stößt an die kostenlosen Limits',
+
+      limitReachedBody:
+        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche, mehr Übersetzungen, mehr Anhänge, jeden Tag.',
+
+      limitReachedButton: 'Tarife ansehen',
+
+      trialEndingSubject: 'Deine Gratiswoche endet in zwei Tagen',
+
+      trialEndingBody:
+        'Danach fällt dein Konto auf den kostenlosen Tarif zurück. Alles, was du erstellt hast, bleibt; die Limits kommen wieder. Behalten ist ein Tipp.',
+
+      trialEndingButton: 'Tarif behalten',
+
+      winBackSubject: 'Dein Tarif ist vor einer Woche ausgelaufen',
+
+      winBackBody:
+        'Nichts wurde weggenommen — deine Serie, deine Token und alles Geschriebene liegen, wo du sie gelassen hast. Aufgehört haben nur die bezahlten Limits.',
+
+      winBackButton: 'Tarife ansehen',
+
       tokensWaitingSubject: {
         one: '{count} Token wartet auf dich',
         other: '{count} Token warten auf dich',
@@ -257,7 +347,7 @@ export const de: Localized<ServerMessages> = {
 
     welcomeTitle: 'Willkommen, {name}',
 
-    welcomeBody: 'Dein Profil ist unter @{handle} online. Das machen die meisten zuerst:',
+    welcomeBody: 'Dein Profil ist unter {handle} online. Das machen die meisten zuerst:',
 
     welcomeStep1: 'Finde jemanden, der deine Lernsprache spricht, und sag Hallo.',
 
@@ -339,6 +429,8 @@ export const de: Localized<ServerMessages> = {
       messages: 'Nachrichtenübersichten',
       streak: 'Streak-Erinnerungen',
       profileVisits: 'Übersichten zu Profilbesuchen',
+      social: 'Feed-Aktivität',
+      wallet: 'Token-Neuigkeiten',
       promotions: 'Neues und Angebote',
       all: 'E-Mails von LangX',
       v1contact: 'die eine Nachricht über das neue LangX',
@@ -358,6 +450,35 @@ export const de: Localized<ServerMessages> = {
       one: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
       other: 'Für deinen Hinweis wurden dir {count} Token gutgeschrieben: {url}',
     },
+
+    suspendedSubject: 'Dein LangX-Konto wurde gesperrt',
+    suspendedPreheader: 'Eine Meldung zu deinem Konto wurde geprüft',
+    suspendedUntilBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und dein Konto ist bis zum {until} gesperrt. Bis dahin kannst du LangX nicht nutzen, und dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    suspendedPermanentBody:
+      'Eine Person hat eine Meldung zu deinem Konto geprüft, und dein Konto wurde dauerhaft gesperrt. Dein Profil ist aus Entdecken und der Suche ausgeblendet.',
+    suspendedReason: 'Grund: {reason}',
+    suspendedAppeal:
+      'Wenn das aus deiner Sicht falsch ist, kannst du einmal Einspruch erheben — in der App oder als Antwort auf diese Mail.',
+    suspendedText:
+      'Dein LangX-Konto ist gesperrt. {detail} {reason} Du kannst einmal Einspruch erheben, in der App.',
+    suspensionUpdatedSubject: 'Deine LangX-Sperre wurde aktualisiert',
+    suspensionUpdatedPreheader: 'Wir haben deinen Einspruch angesehen',
+    suspensionUpdatedShortened:
+      'Wir haben deinen Einspruch gelesen. Deine Sperre endet jetzt am {until}.',
+    suspensionUpdatedLifted:
+      'Wir haben deinen Einspruch gelesen. Die Sperre ist aufgehoben — du kannst LangX wieder nutzen.',
+    suspensionUpdatedText: 'Deine LangX-Sperre wurde aktualisiert. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Belästigung',
+    hateSpeech: 'Hassrede',
+    inappropriateContent: 'Unangemessener Inhalt',
+    fakeProfile: 'Fake-Profil',
+    underage: 'Unter 16',
+    other: 'Etwas anderes',
   },
   official: {
     welcome:

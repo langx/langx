@@ -49,12 +49,19 @@ const ROUTE_RESERVED = [
   'photo',
   'phrases',
   'post',
+  /*
+   * The website's own `/pro` page, not a screen in this tree — which is why
+   * `routeLiterals.test.ts` cannot find it and it is written here by hand.
+   * It became claimable the moment the floor dropped to three.
+   */
+  'pro',
   'profile',
   'quiz',
   'settings',
   'starred',
   'stickers',
   'streak',
+  'suspended',
   'gift',
   'store',
   'tokens',
@@ -75,6 +82,14 @@ const INFRASTRUCTURE_RESERVED = [
   'api',
   'app',
   'assets',
+  /*
+   * Three letters, and each of them a hostname or a path something else
+   * answers on. Reachable for the first time now that a three-letter handle
+   * can be claimed.
+   */
+  'dev',
+  'ftp',
+  'git',
   'auth',
   'blog',
   'cdn',

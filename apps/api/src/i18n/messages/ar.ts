@@ -42,10 +42,52 @@ export const ar: Localized<ServerMessages> = {
       awayBody: 'أشخاص جدد للتدرب معهم.',
       awayLongTitle: 'نحن هنا متى أردت',
       awayLongBody: 'سلسلتك ورموزك في الانتظار.',
+      limitReachedTitle: 'تصطدم بالحدود باستمرار',
+      limitReachedBody: 'الخطة المدفوعة ترفعها.',
+      trialEndingTitle: 'تنتهي أسبوعك المجاني بعد يومين',
+      trialEndingBody: 'الاحتفاظ بها نقرة واحدة.',
+      winBackTitle: 'انتهت خطتك',
+      winBackBody: 'كل ما أنشأته ما زال هنا.',
       tokensWaitingTitle: { one: '{count} رمز في الانتظار', other: '{count} رمزاً في الانتظار' },
       tokensWaitingBody: 'افتح محفظتك.',
       inviteFriendTitle: 'ادعُ صديقاً',
       inviteFriendBody: 'ستحصلان كلاكما على رموز.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} يتابعك الآن',
+
+      followBody: 'انقر لرؤية ملفه الشخصي.',
+
+      correctionTitle: '{name} صحّح جملتك',
+
+      correctionBody: 'انقر لقراءة التصحيح.',
+
+      answerTitle: '{name} سجّل جملتك صوتياً',
+
+      answerBody: 'انقر للاستماع.',
+
+      commentTitle: '{name} علّق على منشورك',
+
+      commentBody: 'انقر لقراءته.',
+
+      likesTitle: { one: 'حصل منشورك على إعجاب واحد', other: 'حصل منشورك على {count} إعجاباً' },
+
+      likesBody: 'أعجب أحدهم بما كتبت.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: { one: 'منحك توزيع الأمس رمزاً واحداً', other: 'منحك توزيع الأمس {count} رمزاً' },
+
+      poolBody: 'انقر لفتح محفظتك.',
+
+      giftTitle: 'هديتك كل ساعة جاهزة',
+
+      giftBody: 'افتح المحفظة واحصل عليها.',
     },
 
     /** Security, which no preference can switch off. */
@@ -189,6 +231,30 @@ export const ar: Localized<ServerMessages> = {
 
     newsletterButton: 'افتح LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'رد واحد على ما كتبته اليوم',
+      other: '{count} ردود على ما كتبته اليوم',
+    },
+
+    feedDigestPreheader: 'ردّ الناس على ما نشرته',
+
+    feedDigestBody: {
+      one: 'ردّ أحدهم اليوم على جملة نشرتها.',
+      other: 'ردّ {count} أشخاص اليوم على جمل نشرتها.',
+    },
+
+    feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },
+
+    feedDigestAnswers: { one: 'تسجيل واحد', other: '{count} تسجيلات' },
+
+    feedDigestComments: { one: 'تعليق واحد', other: '{count} تعليقات' },
+
+    feedDigestMore: { one: 'ومنشور واحد آخر.', other: 'و{count} منشورات أخرى.' },
+
+    feedDigestButton: 'اقرأ الردود',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -227,6 +293,27 @@ export const ar: Localized<ServerMessages> = {
 
       awayLongButton: 'افتح LangX',
 
+      limitReachedSubject: 'تصطدم بحدود الخطة المجانية',
+
+      limitReachedBody:
+        'بلغت الحد اليومي ثلاث مرات في الأيام الأخيرة. الخطة المدفوعة ترفع هذه الحدود — محادثات وترجمات ومرفقات أكثر كل يوم.',
+
+      limitReachedButton: 'اطّلع على الخطط',
+
+      trialEndingSubject: 'تنتهي أسبوعك المجاني بعد يومين',
+
+      trialEndingBody:
+        'بعدها يعود حسابك إلى الخطة المجانية. كل ما أنشأته يبقى، لكن الحدود تعود. الاحتفاظ بالخطة نقرة واحدة.',
+
+      trialEndingButton: 'احتفظ بخطتي',
+
+      winBackSubject: 'انتهت خطتك قبل أسبوع',
+
+      winBackBody:
+        'لم يُؤخذ منك شيء — سلسلتك ورموزك وكل ما كتبته في مكانه. ما توقف هو حدود الخطة المدفوعة.',
+
+      winBackButton: 'اطّلع على الخطط',
+
       tokensWaitingSubject: {
         one: 'لديك {count} رمز في الانتظار',
         other: 'لديك {count} رمزاً في الانتظار',
@@ -253,7 +340,7 @@ export const ar: Localized<ServerMessages> = {
 
     welcomeTitle: 'أهلاً، {name}',
 
-    welcomeBody: 'ملفك الشخصي متاح على ‎@{handle}‎. هذا ما يبدأ به معظم الناس:',
+    welcomeBody: 'ملفك الشخصي متاح على ‎{handle}‎. هذا ما يبدأ به معظم الناس:',
 
     welcomeStep1: 'ابحث عن شخص يتحدث اللغة التي تتعلمها وألقِ التحية.',
 
@@ -334,6 +421,8 @@ export const ar: Localized<ServerMessages> = {
       messages: 'ملخّصات الرسائل',
       streak: 'تذكيرات السلسلة',
       profileVisits: 'ملخّصات زيارات الملف',
+      social: 'نشاط الموجز',
+      wallet: 'أخبار الرموز',
       promotions: 'الأخبار والعروض',
       all: 'رسائل LangX',
       v1contact: 'الرسالة الوحيدة عن LangX الجديد',
@@ -364,6 +453,32 @@ export const ar: Localized<ServerMessages> = {
       many: 'أُضيف {count} رمزًا إلى محفظتك مقابل البلاغ الذي أرسلته: {url}',
       other: 'أُضيف {count} رمز إلى محفظتك مقابل البلاغ الذي أرسلته: {url}',
     },
+
+    suspendedSubject: 'تم تعليق حسابك في LangX',
+    suspendedPreheader: 'تمت مراجعة بلاغ بخصوص حسابك',
+    suspendedUntilBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليق حسابك حتى {until}. حتى ذلك الحين لا يمكنك استخدام LangX، وملفك مخفي من الاستكشاف والبحث.',
+    suspendedPermanentBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليق حسابك نهائيًا. ملفك مخفي من الاستكشاف والبحث.',
+    suspendedReason: 'السبب: {reason}',
+    suspendedAppeal:
+      'إن كنت ترى أن هذا خطأ، يمكنك تقديم اعتراض واحد من التطبيق أو بالرد على هذا البريد.',
+    suspendedText: 'حسابك في LangX معلّق. {detail} {reason} يمكنك تقديم اعتراض واحد من التطبيق.',
+    suspensionUpdatedSubject: 'تم تحديث تعليق حسابك في LangX',
+    suspensionUpdatedPreheader: 'اطّلعنا على اعتراضك',
+    suspensionUpdatedShortened: 'قرأنا اعتراضك. ينتهي التعليق الآن في {until}.',
+    suspensionUpdatedLifted: 'قرأنا اعتراضك. تم رفع التعليق — يمكنك استخدام LangX من جديد.',
+    suspensionUpdatedText: 'تم تحديث تعليق حسابك في LangX. {detail}',
+  },
+
+  reportReason: {
+    spam: 'رسائل مزعجة',
+    harassment: 'مضايقة',
+    hateSpeech: 'خطاب كراهية',
+    inappropriateContent: 'محتوى غير لائق',
+    fakeProfile: 'ملف شخصي مزيّف',
+    underage: 'أقل من 16 عامًا',
+    other: 'شيء آخر',
   },
   official: {
     welcome:

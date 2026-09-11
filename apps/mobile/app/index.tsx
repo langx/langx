@@ -7,7 +7,6 @@ import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
-import { FLAG_KEYS, readBoolFlag } from '../src/lib/localFlags'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
 
 /**
@@ -38,7 +37,6 @@ export default function Index() {
   // below reads "no profile" off exactly that shape.
   const { data: profile, isPending, error } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
-  const [introSeen, setIntroSeen] = useState<boolean | null>(null)
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
   // would send someone who was three screens in back to screen one — the exact
@@ -54,33 +52,26 @@ export default function Index() {
     }
   }, [draftReady])
 
-  // Held on a spinner until the flag resolves rather than defaulting to one
-  // branch: guessing "not seen" would replay the intro on every cold start for
-  // everyone, and guessing "seen" would mean nobody ever sees it.
-  useEffect(() => {
-    let cancelled = false
-    void readBoolFlag(FLAG_KEYS.introSeen).then((value) => {
-      if (!cancelled) setIntroSeen(value)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
   /*
    * Both branches below wait on something, and until one of them can redirect
    * this screen is the last thing standing between a cold start and the first
    * screen anyone wanted. Saying so here is what lets the opening animation
    * cover the whole redirect chain instead of ending a beat too early.
    */
-  useSignalAppReady(signedIn ? !isPending && draftReady : introSeen !== null)
+  useSignalAppReady(signedIn ? !isPending && draftReady : true)
 
-  if (!signedIn) {
-    if (introSeen === null) return <SplashFill />
-    return <Redirect href={authLandingHref(introSeen)} />
-  }
+  if (!signedIn) return <Redirect href={authLandingHref()} />
 
   if (isPending || !draftReady) return <SplashFill />
+
+  /*
+   * Before the onboarding branch, because a suspended account has no profile
+   * as far as `/profiles/me` is concerned — the guard refuses it — and being
+   * sent to the wizard is the one answer that would make no sense at all.
+   */
+  if (error instanceof ApiRequestError && error.code === 'ACCOUNT_SUSPENDED') {
+    return <Redirect href="/suspended" />
+  }
 
   const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
   // Back to the step the draft has actually earned, not always the first one.

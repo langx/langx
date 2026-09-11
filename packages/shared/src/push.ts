@@ -65,6 +65,10 @@ export const PUSH_KINDS = [
    * is off until somebody turns it on.
    */
   'promotion',
+  /** A follow, a correction or an answer on a post, a batch of likes. */
+  'social',
+  /** Yesterday's pool, or the hourly gift being ready again. */
+  'wallet',
 ] as const
 export type PushKind = (typeof PUSH_KINDS)[number]
 

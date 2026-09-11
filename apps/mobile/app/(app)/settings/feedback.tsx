@@ -68,7 +68,7 @@ export default function FeedbackScreen() {
   const ready = draft.trim().length >= FEEDBACK_MIN_LENGTH
 
   async function submit(): Promise<void> {
-    if (!requireAccount(session?.user)) return
+    if (!requireAccount(session?.user, { action: 'other' })) return
     if (!ready || busy) return
 
     // The files go up first and only then the report, so a report that is sent

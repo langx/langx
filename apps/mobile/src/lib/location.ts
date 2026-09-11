@@ -1,6 +1,6 @@
 import type { MessageKey, TranslateFn } from '../i18n/runtime'
 import * as Location from 'expo-location'
-import { Linking, Platform } from 'react-native'
+import { router } from 'expo-router'
 import { confirmAlert, showAlert } from './alert'
 
 /**
@@ -25,6 +25,9 @@ const ACCURACY = Location.Accuracy.Lowest
 export type LocationResult =
   | { ok: true; lat: number; lng: number }
   | { ok: false; reason: 'denied' | 'disabled' | 'unavailable' }
+
+/** Why there is no fix — the three cases every caller has separate copy for. */
+export type LocationFailure = Extract<LocationResult, { ok: false }>['reason']
 
 export interface CaptureOptions {
   /**
@@ -86,10 +89,7 @@ export async function captureLocation({
  * Discover say the same thing — and keys rather than sentences, so they also
  * say it in the same language the rest of the screen is in.
  */
-export const LOCATION_FAILURE_KEY: Record<
-  Extract<LocationResult, { ok: false }>['reason'],
-  MessageKey
-> = {
+export const LOCATION_FAILURE_KEY: Record<LocationFailure, MessageKey> = {
   denied: 'location.denied',
   disabled: 'location.disabled',
   unavailable: 'location.unavailable',
@@ -123,33 +123,43 @@ export async function locationPermissionState(): Promise<{
 }
 
 /**
- * Tells someone why a fix did not arrive, and where the switch is.
+ * Tells someone why a fix did not arrive, and offers the way out.
  *
  * A refusal is not an error to report, it is a setting somewhere else: iOS
  * never asks twice and Android stops after the second no, so an alert that
  * says "denied" leaves a person holding a control that will not move and no
- * idea why. Settings and the country picker each wrote this block out in full;
- * Discover had only `showAlert(t('location.needed'), …)`, which is why a
- * revoked permission there produced an empty list and nothing else.
+ * idea why. Settings and the country picker each wrote the instructions out in
+ * full, in a two-button dialog whose confirm ran `Linking.openSettings()` —
+ * which react-native-web does not have, so on the web both buttons threw a
+ * `TypeError` into a `void`ed promise and did nothing at all.
  *
- * Only the non-refusal title stays with the caller, because the three screens
- * legitimately word that case differently — Settings says "unavailable", the
- * country picker says "failed", and Discover says what it needed it for.
+ * So the button routes to `settings/location` instead. That screen is the only
+ * place the instructions live now, it knows which of the four states this
+ * device is actually in, and it exists on the web.
+ *
+ * Only the non-refusal title stays with the caller, because the screens
+ * legitimately word that case differently — Settings says "unavailable" and
+ * the country picker says "failed".
  */
 export async function reportLocationFailure(
-  reason: Extract<LocationResult, { ok: false }>['reason'],
+  reason: LocationFailure,
   t: TranslateFn,
-  /** The title for everything that is not a refusal; the three screens differ. */
+  /** The title for everything that is not a refusal; the screens differ. */
   failedTitleKey: MessageKey,
 ): Promise<void> {
-  if (reason === 'denied') {
-    const open = await confirmAlert({
-      title: t('location.deniedTitle'),
-      message: t(Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid'),
-      confirmLabel: t('location.openSettings'),
-    })
-    if (open) await Linking.openSettings()
+  // Weather, not configuration. There is no switch to send anyone to, and
+  // offering the guide would be offering to fix something that is not broken.
+  if (reason === 'unavailable') {
+    await showAlert(t(failedTitleKey), t(LOCATION_FAILURE_KEY[reason]))
     return
   }
-  await showAlert(t(failedTitleKey), t(LOCATION_FAILURE_KEY[reason]))
+
+  const open = await confirmAlert({
+    title: reason === 'denied' ? t('location.deniedTitle') : t(failedTitleKey),
+    message: t(LOCATION_FAILURE_KEY[reason]),
+    confirmLabel: t('location.guide.howTo'),
+  })
+  // No `from`: every caller pushes this from a screen it is already standing
+  // on, so `goBackTo` pops rather than needing to be told where to land.
+  if (open) router.push('/(app)/settings/location')
 }

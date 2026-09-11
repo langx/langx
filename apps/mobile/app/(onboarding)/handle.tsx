@@ -14,10 +14,13 @@ import {
   resetDraft,
   updateDraft,
   useOnboardingDraft,
+  useStepResumed,
 } from '../../src/hooks/useOnboardingDraft'
 import { useQueryClient } from '@tanstack/react-query'
 import { track } from '../../src/lib/analytics'
+import { secondsSinceInstall } from '../../src/lib/installedAt'
 import { normalizeInviteCode } from '../../src/lib/inviteLink'
+import { readSignupOrigin } from '../../src/lib/signupOrigin'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
@@ -49,6 +52,7 @@ export default function HandleStep() {
   const t = useT()
 
   const draft = useOnboardingDraft()
+  const resumed = useStepResumed('handle')
   const queryClient = useQueryClient()
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | undefined>()
@@ -111,6 +115,10 @@ export default function HandleStep() {
     setSubmitting(true)
     setSubmitError(undefined)
     const current = getDraft()
+    // Read before `resetDraft` below clears it, and before the request that
+    // could fail: this is what says which door this account came through.
+    const origin = await readSignupOrigin()
+    const secondsSince = await secondsSinceInstall()
     try {
       await api.post('/profiles', {
         handle: current.handle,
@@ -136,6 +144,12 @@ export default function HandleStep() {
         // the streak's notion of "today".
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       })
+      track({
+        name: 'onboarding_step_completed',
+        // Fired on the claim rather than on the tap: this step's Continue is
+        // a request that can come back "that name is taken".
+        properties: { step: 'handle', guest: false, resumed },
+      })
       resetDraft()
       // Counts and flags only — the profile itself just went to the server,
       // and none of it belongs in an analytics event.
@@ -145,6 +159,9 @@ export default function HandleStep() {
           referred: Boolean(current.referredByHandle),
           native_languages: current.nativeLanguages.length,
           learning_languages: current.learning.length,
+          method: origin?.method ?? null,
+          from_guest: origin?.fromGuest ?? false,
+          seconds_since_install: secondsSince,
         },
       })
       await queryClient.invalidateQueries({ queryKey: keys.me })

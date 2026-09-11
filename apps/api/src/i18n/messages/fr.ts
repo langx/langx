@@ -36,6 +36,12 @@ export const fr: Localized<ServerMessages> = {
       awayBody: 'De nouvelles personnes pour pratiquer.',
       awayLongTitle: 'Nous serons là quand vous voudrez',
       awayLongBody: 'Votre série et vos jetons attendent.',
+      limitReachedTitle: 'Vous butez souvent sur les limites',
+      limitReachedBody: 'Une formule les lève.',
+      trialEndingTitle: 'Votre semaine gratuite se termine dans deux jours',
+      trialEndingBody: 'La garder tient en un geste.',
+      winBackTitle: 'Votre formule a pris fin',
+      winBackBody: 'Tout ce que vous avez créé est toujours là.',
       tokensWaitingTitle: {
         one: '{count} jeton vous attend',
         other: '{count} jetons vous attendent',
@@ -43,6 +49,48 @@ export const fr: Localized<ServerMessages> = {
       tokensWaitingBody: 'Ouvrez votre portefeuille.',
       inviteFriendTitle: 'Invitez quelqu’un',
       inviteFriendBody: 'Vous gagnez tous les deux des jetons.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} vous suit',
+
+      followBody: 'Touchez pour voir son profil.',
+
+      correctionTitle: '{name} a corrigé votre phrase',
+
+      correctionBody: 'Touchez pour lire la correction.',
+
+      answerTitle: '{name} a enregistré votre phrase',
+
+      answerBody: 'Touchez pour écouter.',
+
+      commentTitle: '{name} a commenté votre publication',
+
+      commentBody: 'Touchez pour la lire.',
+
+      likesTitle: {
+        one: 'Votre publication a 1 j’aime',
+        other: 'Votre publication a {count} j’aime',
+      },
+
+      likesBody: 'Quelqu’un a aimé ce que vous avez écrit.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'La distribution d’hier vous a versé 1 jeton',
+        other: 'La distribution d’hier vous a versé {count} jetons',
+      },
+
+      poolBody: 'Touchez pour ouvrir votre portefeuille.',
+
+      giftTitle: 'Votre cadeau horaire est prêt',
+
+      giftBody: 'Ouvrez le portefeuille et récupérez-le.',
     },
 
     /** Security, which no preference can switch off. */
@@ -195,6 +243,30 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterButton: 'Ouvrir LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 réponse à ce que vous avez écrit aujourd’hui',
+      other: '{count} réponses à ce que vous avez écrit aujourd’hui',
+    },
+
+    feedDigestPreheader: 'On a répondu à vos publications',
+
+    feedDigestBody: {
+      one: 'Quelqu’un a répondu à une phrase que vous avez publiée aujourd’hui.',
+      other: '{count} personnes ont répondu à vos phrases publiées aujourd’hui.',
+    },
+
+    feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
+
+    feedDigestAnswers: { one: '1 enregistrement', other: '{count} enregistrements' },
+
+    feedDigestComments: { one: '1 commentaire', other: '{count} commentaires' },
+
+    feedDigestMore: { one: 'Et 1 autre publication.', other: 'Et {count} autres publications.' },
+
+    feedDigestButton: 'Lire les réponses',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -235,6 +307,27 @@ export const fr: Localized<ServerMessages> = {
 
       awayLongButton: 'Ouvrir LangX',
 
+      limitReachedSubject: 'Vous butez sur les limites gratuites',
+
+      limitReachedBody:
+        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations, plus de traductions, plus de pièces jointes, chaque jour.',
+
+      limitReachedButton: 'Voir les formules',
+
+      trialEndingSubject: 'Votre semaine gratuite se termine dans deux jours',
+
+      trialEndingBody:
+        'Ensuite, votre compte revient à la formule gratuite. Tout ce que vous avez créé reste ; les limites reviennent. La garder tient en un geste.',
+
+      trialEndingButton: 'Garder ma formule',
+
+      winBackSubject: 'Votre formule a pris fin il y a une semaine',
+
+      winBackBody:
+        'Rien n’a été retiré : votre série, vos jetons et tout ce que vous avez écrit sont là où vous les avez laissés. Ce sont les limites payantes qui se sont arrêtées.',
+
+      winBackButton: 'Voir les formules',
+
       tokensWaitingSubject: {
         one: '{count} jeton vous attend',
         other: '{count} jetons vous attendent',
@@ -261,7 +354,7 @@ export const fr: Localized<ServerMessages> = {
 
     welcomeTitle: 'Bienvenue, {name}',
 
-    welcomeBody: 'Votre profil est en ligne sur @{handle}. Voici ce que les gens font en premier :',
+    welcomeBody: 'Votre profil est en ligne sur {handle}. Voici ce que les gens font en premier :',
 
     welcomeStep1: 'Trouvez quelqu’un qui parle la langue que vous apprenez et dites bonjour.',
 
@@ -344,6 +437,8 @@ export const fr: Localized<ServerMessages> = {
       messages: 'les résumés de messages',
       streak: 'les rappels de série',
       profileVisits: 'les résumés de visites de profil',
+      social: 'l’activité du fil',
+      wallet: 'les nouvelles de jetons',
       promotions: 'les actualités et offres',
       all: 'les e-mails de LangX',
       v1contact: 'le message unique sur le nouveau LangX',
@@ -363,6 +458,34 @@ export const fr: Localized<ServerMessages> = {
       one: '{count} jeton a été ajouté à ton portefeuille pour ton signalement : {url}',
       other: '{count} jetons ont été ajoutés à ton portefeuille pour ton signalement : {url}',
     },
+
+    suspendedSubject: 'Ton compte LangX a été suspendu',
+    suspendedPreheader: 'Un signalement sur ton compte a été examiné',
+    suspendedUntilBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu jusqu’au {until}. D’ici là tu ne peux pas utiliser LangX, et ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    suspendedPermanentBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu définitivement. Ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    suspendedReason: 'Motif : {reason}',
+    suspendedAppeal:
+      'Si tu penses que c’est une erreur, tu peux faire appel une fois depuis l’app, ou en répondant à cet e-mail.',
+    suspendedText:
+      'Ton compte LangX est suspendu. {detail} {reason} Tu peux faire appel une fois depuis l’app.',
+    suspensionUpdatedSubject: 'Ta suspension LangX a été mise à jour',
+    suspensionUpdatedPreheader: 'Nous avons examiné ton appel',
+    suspensionUpdatedShortened: 'Nous avons lu ton appel. Ta suspension prend fin le {until}.',
+    suspensionUpdatedLifted:
+      'Nous avons lu ton appel. Ta suspension est levée — tu peux réutiliser LangX.',
+    suspensionUpdatedText: 'Ta suspension LangX a été mise à jour. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Harcèlement',
+    hateSpeech: 'Discours haineux',
+    inappropriateContent: 'Contenu inapproprié',
+    fakeProfile: 'Faux profil',
+    underage: 'Moins de 16 ans',
+    other: 'Autre chose',
   },
   official: {
     welcome:

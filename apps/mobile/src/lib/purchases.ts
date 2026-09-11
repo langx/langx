@@ -144,6 +144,40 @@ function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number |
   return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
 }
 
+/**
+ * Which of these products this *person* would actually get a trial on.
+ *
+ * `introPrice` above describes the **product**, not the customer, and the App
+ * Store gives one introductory offer per subscription group per Apple ID. So
+ * a Fluent subscriber tapping Polyglot — same group — was being promised
+ * seven free days the store was never going to grant, which is a false price
+ * and exactly what App Review 3.1.2 asks to be accurate.
+ *
+ * **iOS only, because the answer only exists there.** RevenueCat documents
+ * that Android always answers `UNKNOWN`, and hiding the trial on `UNKNOWN`
+ * would hide one Play really would give: Billing Library 5 returns an offer's
+ * free phase only to somebody eligible for it, so the Android product data is
+ * already the answer. On iOS, `UNKNOWN` *does* mean hide — the SDK's own
+ * advice is to show non-intro pricing rather than risk the misleading one.
+ *
+ * A failed call hides nothing. Losing a trial somebody is entitled to is a
+ * worse outcome than showing one the store then declines to give, and the
+ * store's own sheet is the last word on the charge either way.
+ */
+async function ineligibleForTrial(
+  sdk: PurchasesModule,
+  productIds: readonly string[],
+): Promise<ReadonlySet<string>> {
+  if (Platform.OS !== 'ios' || productIds.length === 0) return new Set()
+  try {
+    const eligibility = await sdk.default.checkTrialOrIntroductoryPriceEligibility([...productIds])
+    const eligible = sdk.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+    return new Set(productIds.filter((id) => eligibility[id]?.status !== eligible))
+  } catch {
+    return new Set()
+  }
+}
+
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'unavailable' | 'failed'
 
 let configuredFor: string | null = null
@@ -236,6 +270,20 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
     const available = offerings.current?.availablePackages ?? []
     packagesById.clear()
 
+    /*
+     * One eligibility call for the whole offering rather than one per package:
+     * it is a round trip to StoreKit, and the paywall is already waiting on it
+     * before it can draw a price.
+     */
+    const sellable = available.filter((pkg) => {
+      const definition = packageDefinition(pkg.identifier)
+      return definition !== null && definition.tier !== 'free'
+    })
+    const ineligible = await ineligibleForTrial(
+      sdk,
+      sellable.map((pkg) => pkg.product.identifier),
+    )
+
     const offers: PurchaseOffer[] = []
     for (const pkg of available) {
       // A package the dashboard offers but `PACKAGES` does not know is skipped
@@ -252,7 +300,9 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
         ...(perMonth ? { perMonthPriceString: perMonth } : {}),
         period: definition.period,
         price: pkg.product.price,
-        freeTrialDays: freeTrialDays(pkg.product.introPrice),
+        freeTrialDays: ineligible.has(pkg.product.identifier)
+          ? null
+          : freeTrialDays(pkg.product.introPrice),
       })
     }
     return offers

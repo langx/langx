@@ -58,6 +58,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache, useProfileCacheStatus } from '../../../src/hooks/useProfileCache'
+import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
@@ -185,6 +186,7 @@ export default function ChatScreen() {
   const conversation = useConversation(conversationId)
   const flags = useConversationFlags()
   const recorder = useVoiceRecorder()
+  const review = useReviewPrompt()
   /** Only for the pill's dress: white ground and accent ring while it has focus. */
   const [sendingMedia, setSendingMedia] = useState(false)
   /**
@@ -828,6 +830,9 @@ export default function ChatScreen() {
       // Logged before it is generalised: "could not be sent" once covered an
       // unsupported HEIC for a whole test cycle, and nothing anywhere said so.
       console.warn('attachment failed', code ?? error)
+      // The quota refusal above returns before this: it is a paywall moment,
+      // already counted as one, and not a failure of the send path.
+      track({ name: 'message_send_failed', properties: { kind: 'media', reason: code ?? null } })
       const reason =
         code === 'UNSUPPORTED_MEDIA_TYPE'
           ? t('errors.attachmentUnsupported')
@@ -877,7 +882,7 @@ export default function ChatScreen() {
         name: 'message_sent',
         properties: { kind: 'text', reply: replyToMessageId !== undefined },
       })
-    } catch {
+    } catch (error) {
       /*
        * Swallowed on purpose, and this is the whole change: it used to be
        * swallowed by *nothing* — `send()` had a `try/finally` with no `catch`,
@@ -893,6 +898,13 @@ export default function ChatScreen() {
           failedAt: new Date().toISOString(),
         }),
       )
+      // Swallowed for the reader, counted for us: an unsent row is quiet by
+      // design and a rising number of them is not something to find out from
+      // a support message.
+      track({
+        name: 'message_send_failed',
+        properties: { kind: 'text', reason: errorCodeOf(error) ?? null },
+      })
     } finally {
       // Landed or failed, the stand-in has somewhere better to be: the echo
       // has usually retired it already, the unsent row takes over otherwise.
@@ -1038,6 +1050,7 @@ export default function ChatScreen() {
         corrected,
       })
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
+      review.request({ kind: 'correction' })
     } catch {
       setCorrecting(target)
       setDraft(corrected)

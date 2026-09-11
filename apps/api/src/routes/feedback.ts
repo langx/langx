@@ -12,6 +12,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { verifyBountyToken } from '../email/bountyToken'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
+import { escapeHtml, html, page, submitButton, who } from './operatorPage'
 import { notifyBountyPaid } from '../modules/feedback/bountyNotice'
 import { submitFeedback } from '../modules/feedback/submit'
 import { objectExtension } from '../modules/media/objectExtension'
@@ -122,16 +123,20 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const token = (request.query as { token?: string }).token
       const claim = verifyBountyToken(app.env.BETTER_AUTH_SECRET, token)
-      if (!claim) return html(reply.code(400), page('That link is no longer valid.'))
+      if (!claim) return html(reply.code(400), page('Bounty', 'That link is no longer valid.'))
 
       const profile = await getProfile(app.mongo.db, claim.userId)
       if (!profile || profile.deletedAt) {
-        return html(reply.code(404), page('That account is gone; there is nobody to pay.'))
+        return html(
+          reply.code(404),
+          page('Bounty', 'That account is gone; there is nobody to pay.'),
+        )
       }
 
       return html(
         reply,
         page(
+          'Bounty',
           `<p>Reward <strong>${escapeHtml(who(profile.handle, claim.userId))}</strong> for what they sent.</p>
            <form method="post" action="/feedback/award?token=${encodeURIComponent(token ?? '')}">
              <label style="display:block;margin-bottom:8px;color:#555;font-size:14px;">
@@ -140,9 +145,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
              <input type="number" name="amount" value="${BOUNTY_MIN}" min="${BOUNTY_MIN}" max="${BOUNTY_MAX}" step="100" required
                     style="font-size:18px;padding:10px;width:140px;border:1px solid #ccc;border-radius:8px;" />
              <p style="color:#888;font-size:13px;">Paid once. Opening this link again pays nothing.</p>
-             <button type="submit" style="background:#111;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;cursor:pointer;">
-               Send the reward
-             </button>
+             ${submitButton('Send the reward')}
            </form>`,
         ),
       )
@@ -163,19 +166,22 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
       const body = (request.body ?? {}) as { token?: string; amount?: unknown }
       const token = (request.query as { token?: string }).token ?? body.token
       const claim = verifyBountyToken(app.env.BETTER_AUTH_SECRET, token)
-      if (!claim) return html(reply.code(400), page('That link is no longer valid.'))
+      if (!claim) return html(reply.code(400), page('Bounty', 'That link is no longer valid.'))
 
       const parsed = bountyAwardSchema.safeParse({ amount: body.amount })
       if (!parsed.success) {
         return html(
           reply.code(400),
-          page(`A reward is between ${BOUNTY_MIN} and ${BOUNTY_MAX} tokens.`),
+          page('Bounty', `A reward is between ${BOUNTY_MIN} and ${BOUNTY_MAX} tokens.`),
         )
       }
 
       const profile = await getProfile(app.mongo.db, claim.userId)
       if (!profile || profile.deletedAt) {
-        return html(reply.code(404), page('That account is gone; there is nobody to pay.'))
+        return html(
+          reply.code(404),
+          page('Bounty', 'That account is gone; there is nobody to pay.'),
+        )
       }
 
       const result = await awardTokens(app.mongo.db, {
@@ -203,6 +209,7 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
       return html(
         reply,
         page(
+          'Bounty',
           result.awarded
             ? `<p>Paid <strong>${result.amount}</strong> tokens to ${escapeHtml(who(profile.handle, claim.userId))}.</p>`
             : '<p>This report has already been paid.</p>',
@@ -210,38 +217,4 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
       )
     },
   )
-}
-
-/** The sender, as the person deciding would recognise them. */
-function who(handle: string | null | undefined, userId: string): string {
-  return handle ? `@${handle}` : userId
-}
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
-}
-
-/**
- * English, and no locale anywhere near it: every other page this API renders
- * is read by the person it is about, and this one is read by us.
- */
-function page(bodyHtml: string): string {
-  return `<!doctype html>
-<html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bounty</title></head>
-  <body style="font-family: -apple-system, system-ui, sans-serif; color:#111; background:#f7f7f7; padding:24px;">
-    <div style="max-width:480px; margin:0 auto; background:#fff; border-radius:12px; padding:32px;">
-      <h1 style="font-size:18px;margin:0 0 16px;">Bounty</h1>
-      ${bodyHtml.trimStart().startsWith('<') ? bodyHtml : `<p>${bodyHtml}</p>`}
-    </div>
-  </body>
-</html>`
-}
-
-function html(
-  reply: { type: (value: string) => { send: (body: string) => unknown } },
-  body: string,
-) {
-  return reply.type('text/html; charset=utf-8').send(body)
 }

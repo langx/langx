@@ -1,6 +1,7 @@
-import { useSyncExternalStore } from 'react'
+import { useRef, useSyncExternalStore } from 'react'
 import type { LanguageLevel, Gender, ReferralSource } from '@langx/shared'
 import { resolveReferrer } from '../lib/inviteLink'
+import { isStepAnswered, type OnboardingStep } from '../lib/onboardingStep'
 import { FLAG_KEYS, clearFlag, readFlag, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
 
 export interface OnboardingDraft {
@@ -164,6 +165,13 @@ export function resetDraft(): void {
   // or been abandoned, and either way it must not attach itself to whoever
   // signs up on this device next.
   void clearFlag(FLAG_KEYS.pendingReferrer)
+  // And how the sign-up was started, which the event fired beside this call
+  // has just spent.
+  //
+  // The captured *intent* deliberately does not go here: it is offered on the
+  // last screen of the wizard, which comes after the profile this reset marks,
+  // and `done.tsx` clears it as it spends it.
+  void clearFlag(FLAG_KEYS.signupOrigin)
   emit()
 }
 
@@ -180,4 +188,20 @@ export function useOnboardingDraft(): OnboardingDraft {
     () => draft,
     () => draft,
   )
+}
+
+/**
+ * Whether this step's answers were already in the draft when the screen
+ * opened — the `resumed` property of `onboarding_step_completed`.
+ *
+ * Captured on the first render after hydration rather than on mount: the
+ * draft is read from storage asynchronously, so a screen's first render on a
+ * returning device shows an empty draft that fills in a moment later. Reading
+ * it at mount would report every resumed step as a fresh one.
+ */
+export function useStepResumed(step: OnboardingStep): boolean {
+  const current = useOnboardingDraft()
+  const captured = useRef<boolean | null>(null)
+  if (captured.current === null && hydrated) captured.current = isStepAnswered(step, current)
+  return captured.current ?? false
 }

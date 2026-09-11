@@ -1,4 +1,5 @@
 import {
+  periodTypeOf,
   ENTITLEMENT_CANCEL_EVENTS,
   ENTITLEMENT_GRANT_EVENTS,
   ENTITLEMENT_REVOKE_EVENTS,
@@ -112,7 +113,26 @@ export async function processRevenueCatWebhook(
      * says something was just bought or given, so an empty answer is a record
      * that has not caught up with its own webhook, and the event decides.
      */
-    if (client && (await reconciledIfHeld(db, client, userId))) return { processed: true }
+    /*
+     * Whether they are paying yet, and the only place a webhook can say so.
+     * Written on both branches below — the reconciled one has already put the
+     * entitlement in place and only this cell is missing from it.
+     *
+     * Only when RevenueCat said. Absence means "not known", and a nudge about
+     * a trial ending has to fire on a positive answer or it goes to
+     * subscribers.
+     */
+    const periodType = periodTypeOf(event.period_type)
+
+    if (client && (await reconciledIfHeld(db, client, userId))) {
+      if (periodType) {
+        await profiles.updateOne(
+          { _id: userId },
+          { $set: { 'entitlement.periodType': periodType } },
+        )
+      }
+      return { processed: true }
+    }
 
     const tier = tierFromEntitlementIds(event.entitlement_ids)
 
@@ -127,6 +147,7 @@ export async function processRevenueCatWebhook(
       willRenew: true,
       store: record.store,
       updatedAt: now,
+      ...(periodType ? { periodType } : {}),
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
     await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
@@ -173,6 +194,18 @@ export async function processRevenueCatWebhook(
      * Pro+ subscription whose plain Pro runs on ends nothing from the
      * subscriber's point of view, and `reconciled` is what knows that.
      */
+    /*
+     * What was lost, and when — written only on the fall, and never cleared
+     * by the upgrade it is meant to cause. `entitlement.updatedAt` cannot
+     * answer "how long ago did they churn": an ordinary `/billing/refresh`
+     * moves it.
+     */
+    if (previousTier !== 'free') {
+      await profiles.updateOne(
+        { _id: userId },
+        { $set: { churnedFrom: { tier: previousTier, at: now } } },
+      )
+    }
     if (notify && previousTier !== 'free') {
       const left = await profiles.findOne({ _id: userId }, { projection: { entitlement: 1 } })
       if ((left?.entitlement?.tier ?? 'free') === 'free') {

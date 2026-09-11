@@ -66,6 +66,9 @@ describe('the nudges that need permission', () => {
       spent?: number
       timezone?: string
       device?: boolean
+      entitlement?: Record<string, unknown>
+      refusals?: Date[]
+      churnedFrom?: { tier: string; at: Date }
       /** Kills the invite nudge, which every long-standing account qualifies for. */
       invited?: boolean
     } = {},
@@ -88,6 +91,9 @@ describe('the nudges that need permission', () => {
         messagesSent: 1,
       },
       ...(opts.spent ? { tokenSpent: opts.spent } : {}),
+      ...(opts.entitlement ? { entitlement: opts.entitlement } : {}),
+      ...(opts.refusals ? { quotaRefusals: opts.refusals } : {}),
+      ...(opts.churnedFrom ? { churnedFrom: opts.churnedFrom } : {}),
       createdAt: new Date(NOW.getTime() - (opts.createdDaysAgo ?? 40) * DAY),
     } as never)
     await handle.db.collection(COLLECTIONS.user).insertOne({
@@ -212,6 +218,138 @@ describe('the nudges that need permission', () => {
       week: '2026-W37',
       month: '2026-09',
       createdAt: new Date(NOW.getTime() - 2 * DAY),
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * The cell that made this letter writable at all: a trial ending and a
+   * subscription ending are otherwise the same three fields, and before
+   * `periodType` existed this would have gone to paying subscribers.
+   */
+  it('warns about a trial that ends in two days, and nobody else', async () => {
+    await newProfile({
+      avatar: true,
+      invited: true,
+      entitlement: {
+        tier: 'pro',
+        periodType: 'trial',
+        willRenew: false,
+        expiresAt: new Date(NOW.getTime() + 1.5 * DAY),
+        updatedAt: NOW,
+      },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('free week')
+
+    email.messages.length = 0
+    await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
+    await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
+    // A paying subscriber whose plan ends on the same day.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      entitlement: {
+        tier: 'pro',
+        periodType: 'normal',
+        willRenew: false,
+        expiresAt: new Date(NOW.getTime() + 1.5 * DAY),
+        updatedAt: NOW,
+      },
+    })
+    // A trial that converts on its own — the store will charge the card, and
+    // saying so is the store's job.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      entitlement: {
+        tier: 'pro',
+        periodType: 'trial',
+        willRenew: true,
+        expiresAt: new Date(NOW.getTime() + 1.5 * DAY),
+        updatedAt: NOW,
+      },
+    })
+    // And one RevenueCat never labelled: silence is the right answer to a
+    // question nobody can answer.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      entitlement: {
+        tier: 'pro',
+        willRenew: false,
+        expiresAt: new Date(NOW.getTime() + 1.5 * DAY),
+        updatedAt: NOW,
+      },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  it('asks somebody back a week after their plan ended, once', async () => {
+    await newProfile({
+      avatar: true,
+      invited: true,
+      churnedFrom: { tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('ended')
+
+    // The same person tomorrow is outside the window, and the claim holds
+    // besides.
+    expect(await runPromotionsPass(handle.db, senders, new Date(NOW.getTime() + DAY))).toEqual({
+      sent: 0,
+    })
+  })
+
+  it('says nothing to somebody who churned and came back', async () => {
+    await newProfile({
+      avatar: true,
+      invited: true,
+      churnedFrom: { tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) },
+      entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * The only nudge whose trigger is a refusal — which is why `consumeQuota`
+   * had to start remembering them. Once is Tuesday; three times in three days
+   * is a plan that no longer fits.
+   */
+  it('argues for a plan after three refusals, and not after two', async () => {
+    const recent = [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    await newProfile({ avatar: true, invited: true, refusals: recent })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('free limits')
+
+    email.messages.length = 0
+    await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
+    await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
+    await newProfile({ avatar: true, invited: true, refusals: recent.slice(0, 2) })
+    // And three refusals from a fortnight ago are a bad week in March, not an
+    // argument about a plan today.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      refusals: recent.map((at) => new Date(at.getTime() - 14 * DAY)),
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  it('never sells a plan to somebody who already has one', async () => {
+    await newProfile({
+      avatar: true,
+      invited: true,
+      refusals: [
+        new Date(NOW.getTime() - 2 * DAY),
+        new Date(NOW.getTime() - DAY),
+        new Date(NOW.getTime() - 3600_000),
+      ],
+      entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
   })

@@ -233,9 +233,6 @@ export const fr: Localized<EnMessages> = {
   location: {
     useMyLocation: 'Utiliser ma position',
     deniedTitle: 'La localisation est désactivée pour LangX',
-    deniedBodyIos: 'Ouvrez Réglages → LangX → Position et choisissez « Lorsque l’app est active ».',
-    deniedBodyAndroid:
-      'Ouvrez Paramètres → Applications → LangX → Autorisations → Position et autorisez-la.',
     openSettings: 'Ouvrir les réglages',
     failedTitle: 'Impossible de lire votre position',
     noCountry: 'Nous n’avons pas pu déterminer le pays.',
@@ -245,7 +242,64 @@ export const fr: Localized<EnMessages> = {
     disabled: 'Les services de localisation sont désactivés sur cet appareil.',
     unavailable: 'Impossible d’obtenir une position pour le moment. Réessaie dans un instant.',
     unavailableTitle: 'Position indisponible',
-    needed: 'Position requise',
+    guide: {
+      title: 'Autorisation de localisation',
+      rowTitle: 'Autorisation de localisation',
+      rowBody: 'Où l’activer, et quoi faire si votre téléphone ne demande plus.',
+      grantedTitle: 'La localisation est activée',
+      grantedBody:
+        'LangX peut lire votre position approximative pendant que vous l’utilisez. Vous pouvez revenir dessus à tout moment dans les réglages de l’appareil.',
+      askableTitle: 'LangX a besoin de votre position',
+      askableBody:
+        'À proximité classe les gens selon la distance approximative. Rien de précis n’est conservé, et personne ne voit plus qu’une distance grossière.',
+      allow: 'Autoriser la localisation',
+      blockedTitle: 'Votre appareil ne redemandera pas',
+      blockedBody:
+        'La localisation a été refusée à LangX : l’app ne peut donc plus afficher la demande d’autorisation. Vous pouvez toujours l’accorder dans les réglages de l’appareil.',
+      iosStep1: 'Ouvrez Réglages',
+      iosStep2: 'Trouvez LangX dans la liste',
+      iosStep3: 'Touchez Position et choisissez « Lorsque l’app est active »',
+      androidStep1: 'Ouvrez Paramètres',
+      androidStep2: 'Allez dans Applications → LangX',
+      androidStep3: 'Touchez Autorisations → Localisation',
+      androidStep4: 'Choisissez « Autoriser uniquement si l’app est en cours d’utilisation »',
+      servicesOffTitle: 'La localisation est désactivée sur cet appareil',
+      servicesOffBodyIos:
+        'LangX a l’autorisation, mais le service de localisation est coupé pour tout le téléphone. Réactivez-le dans Réglages → Confidentialité et sécurité → Service de localisation.',
+      servicesOffBodyAndroid:
+        'LangX a l’autorisation, mais la localisation est coupée pour tout l’appareil. Réactivez-la dans Paramètres → Localisation.',
+      webTitle: 'Ici, c’est votre navigateur qui décide',
+      webBody:
+        'L’autorisation de localisation appartient au navigateur, pas à LangX. Cherchez l’icône de localisation dans la barre d’adresse, ou autorisez la localisation dans les réglages de ce site.',
+      howTo: 'Comment l’activer',
+    },
+  },
+
+  suspended: {
+    title: 'Ton compte est suspendu',
+    untilBody:
+      'Une personne a examiné un signalement concernant ton compte. Tu ne peux pas utiliser LangX jusqu’au {until}, et ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    permanentBody:
+      'Une personne a examiné un signalement concernant ton compte, et celui-ci est suspendu définitivement. Ton profil n’apparaît ni dans Découvrir ni dans la recherche.',
+    reasonLabel: 'Motif',
+    appealTitle: 'Appel',
+    appealBody:
+      'Tu peux faire appel une fois. Une personne lit chaque appel, et il n’y a aucune file à surveiller : la réponse arrive par e-mail.',
+    appealPlaceholder: 'Dis-nous ce que nous avons mal compris.',
+    appealTooShort: {
+      one: 'Au moins {count} caractère.',
+      other: 'Au moins {count} caractères.',
+    },
+    send: 'Envoyer l’appel',
+    sending: 'Envoi…',
+    sent: 'Appel envoyé',
+    sentBody:
+      'Ton appel est parti. Il y en a un par suspension, donc c’était celui-là — nous te répondrons.',
+    failed: 'L’envoi a échoué. Réessaie dans un instant.',
+    alreadyAppealed: 'Tu as déjà fait appel de cette suspension.',
+    checkAgain: 'Vérifier à nouveau',
+    signOut: 'Se déconnecter',
+    contact: 'Pour tout le reste : {email}',
   },
 
   gate: {
@@ -289,6 +343,8 @@ export const fr: Localized<EnMessages> = {
     subtitle:
       'Regarde d’abord : tu peux choisir tes langues et voir qui est là avant de t’inscrire.',
     browse: 'Jeter un œil',
+    line2: 'Corrige et fais-toi corriger',
+    line3: 'Viens chaque jour, ça s’accumule',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'Échanges linguistiques',
     createAccount: 'Créer un compte',
@@ -326,7 +382,7 @@ export const fr: Localized<EnMessages> = {
     goToSignIn: 'Aller à la connexion',
     checkEmailTitle: 'Regarde tes e-mails',
     checkEmailBody:
-      'Nous avons envoyé un lien de vérification à\n{email}\n\nClique dessus, puis reviens te connecter.',
+      'Nous avons envoyé un lien de vérification à\n{email}\n\nClique dessus : l’app s’ouvre, déjà connectée.',
     resendEmail: 'Renvoyer l’e-mail',
     resent: 'Envoyé — renvoyer encore',
     resetTitle: 'Réinitialise ton mot de passe',
@@ -350,6 +406,11 @@ export const fr: Localized<EnMessages> = {
       'Tu as suivi un lien de connexion. Touche le bouton pour terminer la connexion sur cet appareil.',
     openLinkButton: 'Se connecter',
     openInApp: 'Ouvrir dans l’app LangX',
+    verifyLinkTitle: 'Confirme ton e-mail',
+    verifyLinkBody:
+      'Tu as ouvert un lien de vérification. Appuie sur le bouton pour finir de configurer ton compte sur cet appareil.',
+    verifyLinkButton: 'Confirmer l’e-mail',
+    verifying: 'Vérification de ton e-mail…',
     setNewPassword: 'Choisis un nouveau mot de passe',
     newPassword: 'Nouveau mot de passe',
     updatePassword: 'Mettre à jour',
@@ -414,8 +475,9 @@ export const fr: Localized<EnMessages> = {
     doneReady: 'Ton profil est prêt.',
     whatNext: 'La suite',
     whatNextBody:
-      'Découvrir te montre des gens qui parlent ce que tu apprends et apprennent ce que tu parles. Dis bonjour à l’un d’eux — un premier message rapporte des jetons, et c’est la seule chose entre toi et une conversation.',
+      'Découvrir te montre des gens qui parlent ce que tu apprends. Dis bonjour à l’un d’eux.',
     findSomeone: 'Trouver quelqu’un à qui parler',
+    sayHelloTo: 'Dis bonjour à {name}',
     inviteCodeToggle: 'Tu as un code d’invitation ?',
     inviteCodeLabel: 'Code d’invitation',
     inviteCodePlaceholder: 'son nom d’utilisateur',
@@ -466,6 +528,10 @@ export const fr: Localized<EnMessages> = {
       'Une fois par jour, combien de personnes ont consulté votre profil. Un résumé par e-mail chaque semaine.',
     meetings: 'Rendez-vous',
     meetingsBody: 'Une heure avant un appel que vous avez accepté tous les deux. Push uniquement.',
+    social: 'Le fil et les gens qui y sont',
+    socialBody: 'Abonnements, corrections de vos publications et j’aime.',
+    wallet: 'Jetons',
+    walletBody: 'La distribution quotidienne et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -492,6 +558,12 @@ export const fr: Localized<EnMessages> = {
       'Pose une question sur une phrase dont tu n’es pas sûr, ou un mot que tu n’arrives pas à dire — elle apparaîtra ici.',
   },
   discover: {
+    boosted: 'En avant',
+    boostedWhat: 'Qu’est-ce que c’est ?',
+    boostedExplainTitle: 'Profils mis en avant',
+    boostedExplainBody:
+      'Les membres Fluent et Polyglot apparaissent ici, Polyglot en premier. L’ordre tourne au fil de la journée, pour que chacun passe en tête — ce qui t’y met, c’est une photo, quelques mots sur toi et un passage récent. Ils sont associés à tes langues exactement comme la liste ci-dessous — rien ne change dans l’appariement, et chacun peut le désactiver dans les réglages.',
+    boostedSeePlans: 'Voir les formules',
     languagesA11y: 'Choisir avec quelles langues chercher',
     searchHandles: 'Rechercher par nom d’utilisateur',
     searchPlaceholder: 'Nom d’utilisateur',
@@ -512,6 +584,14 @@ export const fr: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Personne à moins de {radius} km',
     nobodyNearbyBody:
       'Seules les personnes ayant activé le partage de position apparaissent ici. Essaie un rayon plus large, ou un autre onglet.',
+    nearbyNeedsPermissionTitle: 'À proximité a besoin de votre position',
+    nearbyNeedsPermissionBody:
+      'L’autorisation de localisation n’a pas été accordée : il n’y a donc rien à trier par distance.',
+    nearbyServicesOffTitle: 'La localisation est désactivée sur cet appareil',
+    nearbyServicesOffBody:
+      'À proximité ne peut pas fonctionner tant que la localisation n’est pas réactivée.',
+    nearbyUnavailableTitle: 'Nous n’avons pas pu vous situer',
+    nearbyUnavailableBody: 'Aucune position n’est revenue à l’instant. Réessayez dans un moment.',
     emptyTitle: 'Personne pour l’instant',
     emptyBody:
       'On affiche ici les gens dont les langues correspondent aux tiennes dans les deux sens. Essaie d’assouplir les filtres.',
@@ -871,6 +951,8 @@ export const fr: Localized<EnMessages> = {
 
   profile: {
     official: 'Compte officiel',
+    suspendedTag: 'Suspendu',
+    deletedTag: 'Compte supprimé',
     previewNote:
       'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',
@@ -1109,6 +1191,9 @@ export const fr: Localized<EnMessages> = {
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody:
       'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
+    boost: 'Mettre mon profil en avant',
+    boostBody:
+      'Affiche-moi dans le bandeau des profils mis en avant, en haut de Découvrir, aux personnes dont les langues correspondent aux miennes. Actif avec Fluent et Polyglot.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
@@ -1527,6 +1612,11 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
+    boostedProfile: 'Profil mis en avant',
+    boostedProfileBody:
+      'Tu apparais dans le bandeau au-dessus de la liste Découvrir, pour toutes les personnes dont les langues correspondent aux tiennes. Actif par défaut ; désactivable dans les réglages.',
+    boostedProfileFirst: 'En tête du bandeau',
+    boostedProfileFirstBody: 'Les profils Polyglot ouvrent le bandeau, devant Fluent.',
     sendTranslation: 'Envoyer dans leur langue',
     sendTranslationBody: 'Écris dans la tienne ; les deux partent, on te lit sans deviner.',
     deckExport: 'Emporte tes expressions',
@@ -1589,6 +1679,7 @@ export const fr: Localized<EnMessages> = {
     yearlySaving: 'Annuel · {percent}% d’économie',
     billingPeriod: 'Période de facturation',
     start: 'Commencer avec {plan}',
+    continueFree: 'Continuer gratuitement',
     perMonthBilledYearly: 'par mois · facturé à l’année',
   },
 

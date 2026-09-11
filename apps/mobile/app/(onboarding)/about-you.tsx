@@ -12,7 +12,9 @@ import {
   isDraftHydrated,
   updateDraft,
   useOnboardingDraft,
+  useStepResumed,
 } from '../../src/hooks/useOnboardingDraft'
+import { track } from '../../src/lib/analytics'
 import { authClient } from '../../src/lib/auth-client'
 import { goBackTo } from '../../src/lib/navigation'
 import { displayNameToSeed } from '../../src/lib/seedDisplayName'
@@ -26,6 +28,7 @@ export default function AboutYouStep() {
   const t = useT()
 
   const draft = useOnboardingDraft()
+  const resumed = useStepResumed('about-you')
   const accountName = authClient.useSession().data?.user.name?.trim() ?? ''
   const seeded = useRef(false)
 
@@ -139,7 +142,14 @@ export default function AboutYouStep() {
         <Button
           label={t('common.continue')}
           disabled={!canContinue}
-          onPress={() => router.push('/(onboarding)/handle')}
+          onPress={() => {
+            track({
+              name: 'onboarding_step_completed',
+              // Never a guest: a guest is not asked for a name or a birth date.
+              properties: { step: 'about-you', guest: false, resumed },
+            })
+            router.push('/(onboarding)/handle')
+          }}
         />
       </ScrollView>
     </Screen>

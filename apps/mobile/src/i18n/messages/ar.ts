@@ -283,8 +283,6 @@ export const ar: Localized<EnMessages> = {
   location: {
     useMyLocation: 'استخدم موقعي',
     deniedTitle: 'الموقع مغلق لتطبيق LangX',
-    deniedBodyIos: 'افتح الإعدادات ← LangX ← الموقع واختر «أثناء استخدام التطبيق».',
-    deniedBodyAndroid: 'افتح الإعدادات ← التطبيقات ← LangX ← الأذونات ← الموقع واسمح به.',
     openSettings: 'فتح الإعدادات',
     failedTitle: 'تعذّرت قراءة موقعك',
     noCountry: 'لم نتمكن من تحديد الدولة.',
@@ -293,7 +291,63 @@ export const ar: Localized<EnMessages> = {
     disabled: 'خدمات الموقع مغلقة على هذا الجهاز.',
     unavailable: 'تعذّر تحديد الموقع الآن. حاول بعد قليل.',
     unavailableTitle: 'الموقع غير متاح',
-    needed: 'الموقع مطلوب',
+    guide: {
+      title: 'إذن الموقع',
+      rowTitle: 'إذن الموقع',
+      rowBody: 'أين تفعّله، وماذا تفعل إذا توقّف هاتفك عن السؤال.',
+      grantedTitle: 'الموقع مفعّل',
+      grantedBody:
+        'يستطيع LangX قراءة موقعك التقريبي أثناء استخدامك للتطبيق. يمكنك سحب ذلك متى شئت من إعدادات الجهاز.',
+      askableTitle: 'يحتاج LangX إلى موقعك',
+      askableBody:
+        'يرتّب «القريبون» الأشخاص حسب بعدهم التقريبي. لا يُحفظ أي موقع دقيق، ولا يرى أحد أكثر من مسافة تقريبية.',
+      allow: 'السماح بالموقع',
+      blockedTitle: 'لن يسأل جهازك مرة أخرى',
+      blockedBody:
+        'رُفض الموقع لـ LangX، لذا لم يعد بإمكان التطبيق إظهار نافذة الإذن. ما زال بإمكانك منحه من إعدادات الجهاز.',
+      iosStep1: 'افتح الإعدادات',
+      iosStep2: 'ابحث عن LangX في القائمة',
+      iosStep3: 'اضغط على «الموقع» واختر «أثناء استخدام التطبيق»',
+      androidStep1: 'افتح الإعدادات',
+      androidStep2: 'اذهب إلى التطبيقات ← LangX',
+      androidStep3: 'اضغط على الأذونات ← الموقع',
+      androidStep4: 'اختر «السماح أثناء استخدام التطبيق فقط»',
+      servicesOffTitle: 'الموقع مُعطَّل على هذا الجهاز',
+      servicesOffBodyIos:
+        'لدى LangX الإذن، لكن خدمات الموقع مُعطَّلة في الهاتف كله. فعّلها من الإعدادات ← الخصوصية والأمان ← خدمات الموقع.',
+      servicesOffBodyAndroid:
+        'لدى LangX الإذن، لكن الموقع مُعطَّل في الجهاز كله. فعّله من الإعدادات ← الموقع.',
+      webTitle: 'المتصفح هو من يقرّر هنا',
+      webBody:
+        'إذن الموقع هنا يخصّ المتصفح لا LangX. ابحث عن أيقونة الموقع في شريط العنوان، أو اسمح بالموقع من إعدادات هذا الموقع الإلكتروني.',
+      howTo: 'كيف تفعّله',
+    },
+  },
+
+  suspended: {
+    title: 'حسابك معلّق',
+    untilBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك. لا يمكنك استخدام LangX حتى {until}، وملفك مخفي من الاستكشاف والبحث.',
+    permanentBody:
+      'راجع شخصٌ بلاغًا بخصوص حسابك، وتم تعليقه نهائيًا. ملفك مخفي من الاستكشاف والبحث.',
+    reasonLabel: 'السبب',
+    appealTitle: 'اعتراض',
+    appealBody:
+      'يمكنك الاعتراض مرة واحدة. يقرأ كل اعتراض شخصٌ، ولا يوجد طابور تنتظره — يصل الرد بالبريد.',
+    appealPlaceholder: 'اكتب لنا ما الذي أخطأنا فيه.',
+    appealTooShort: {
+      one: '{count} حرف على الأقل.',
+      other: '{count} حرفًا على الأقل.',
+    },
+    send: 'إرسال الاعتراض',
+    sending: 'جارٍ الإرسال…',
+    sent: 'تم إرسال الاعتراض',
+    sentBody: 'تم إرسال اعتراضك. هناك اعتراض واحد لكل تعليق، وهذا هو — سنرد عليك.',
+    failed: 'تعذّر الإرسال. حاول بعد قليل.',
+    alreadyAppealed: 'سبق أن اعترضت على هذا التعليق.',
+    checkAgain: 'تحقق مرة أخرى',
+    signOut: 'تسجيل الخروج',
+    contact: 'لأي شيء آخر: {email}',
   },
 
   gate: {
@@ -335,6 +389,8 @@ export const ar: Localized<EnMessages> = {
     title: 'تدرّب مع من يتعلّم لغتك',
     subtitle: 'ألقِ نظرة أولًا — يمكنك اختيار لغاتك ورؤية من هنا قبل التسجيل.',
     browse: 'ألقِ نظرة أولًا',
+    line2: 'صحّح وليُصحّح لك',
+    line3: 'احضر كل يوم فيتراكم',
     /** Screen-reader name for the row of example exchanges. */
     pairsLabel: 'تبادلات لغوية',
     createAccount: 'أنشئ حسابًا',
@@ -370,7 +426,7 @@ export const ar: Localized<EnMessages> = {
     backToSignIn: 'العودة لتسجيل الدخول',
     goToSignIn: 'الذهاب لتسجيل الدخول',
     checkEmailTitle: 'تحقق من بريدك',
-    checkEmailBody: 'أرسلنا رابط تأكيد إلى\n{email}\n\nاضغط عليه ثم عد وسجّل الدخول.',
+    checkEmailBody: 'أرسلنا رابط تأكيد إلى\n{email}\n\nاضغط عليه فيفتح التطبيق وقد سجّلت دخولك.',
     resendEmail: 'إعادة إرسال البريد',
     resent: 'أُرسل — أعد الإرسال',
     resetTitle: 'إعادة تعيين كلمة المرور',
@@ -391,6 +447,10 @@ export const ar: Localized<EnMessages> = {
     openLinkBody: 'فتحت رابط دخول. انقر على الزر لإتمام تسجيل الدخول على هذا الجهاز.',
     openLinkButton: 'تسجيل الدخول',
     openInApp: 'فتح في تطبيق LangX',
+    verifyLinkTitle: 'أكّد بريدك',
+    verifyLinkBody: 'فتحت رابط تأكيد. انقر على الزر لإكمال إعداد حسابك على هذا الجهاز.',
+    verifyLinkButton: 'تأكيد البريد',
+    verifying: 'جارٍ تأكيد بريدك…',
     setNewPassword: 'اختر كلمة مرور جديدة',
     newPassword: 'كلمة المرور الجديدة',
     updatePassword: 'تحديث كلمة المرور',
@@ -460,9 +520,9 @@ export const ar: Localized<EnMessages> = {
     doneHandle: '@{handle} أصبح لك.',
     doneReady: 'ملفك جاهز.',
     whatNext: 'ماذا بعد',
-    whatNextBody:
-      'يعرض لك الاستكشاف أشخاصًا يتكلمون ما تتعلّمه ويتعلّمون ما تتكلمه. ألقِ التحية على أحدهم — الرسالة الأولى تكسب رموزًا وهي الشيء الوحيد بينك وبين محادثة.',
+    whatNextBody: 'يعرض لك الاستكشاف أشخاصًا يتكلمون ما تتعلّمه. ألقِ التحية على أحدهم.',
     findSomeone: 'ابحث عن شخص للحديث معه',
+    sayHelloTo: 'ألقِ التحية على {name}',
     inviteCodeToggle: 'هل لديك رمز دعوة؟',
     inviteCodeLabel: 'رمز الدعوة',
     inviteCodePlaceholder: 'اسم المستخدم',
@@ -528,6 +588,10 @@ export const ar: Localized<EnMessages> = {
     profileVisitsBody: 'مرة كل يوم، كم شخصًا اطّلع على ملفك. وملخّص بالبريد كل أسبوع.',
     meetings: 'المواعيد',
     meetingsBody: 'قبل ساعة من مكالمة اتفقتما عليها. إشعار فقط.',
+    social: 'الموجز ومن فيه',
+    socialBody: 'المتابعات والتصحيحات على منشوراتك والإعجابات.',
+    wallet: 'الرموز',
+    walletBody: 'التوزيع اليومي وهديتك كل ساعة.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
@@ -553,6 +617,12 @@ export const ar: Localized<EnMessages> = {
     emptyBody: 'اسأل عن جملة لست متأكدًا منها، أو كلمة لا تستطيع نطقها — ستظهر هنا.',
   },
   discover: {
+    boosted: 'مُبرَزون',
+    boostedWhat: 'ما هذا؟',
+    boostedExplainTitle: 'الملفات المُبرَزة',
+    boostedExplainBody:
+      'يظهر هنا مشتركو Fluent وPolyglot، وPolyglot أولًا. يتغيّر الترتيب على مدار اليوم، فيأتي كلٌّ منهم في المقدمة بدوره — وما يضعك في المقدمة هو صورة وبضع كلمات عنك وزيارة قريبة. تتم مطابقتهم بلغاتك تمامًا مثل القائمة أدناه — لا يتغير شيء في المطابقة، ويمكن لأي شخص إيقافها من الإعدادات.',
+    boostedSeePlans: 'اطّلع على الخطط',
     languagesA11y: 'اختر اللغات التي يُبحث بها',
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',
@@ -572,6 +642,12 @@ export const ar: Localized<EnMessages> = {
     turningOn: 'جارٍ التفعيل…',
     nobodyNearbyTitle: 'لا أحد ضمن {radius} كم',
     nobodyNearbyBody: 'يظهر هنا فقط من فعّلوا مشاركة الموقع. جرّب نطاقًا أوسع أو تبويبًا آخر.',
+    nearbyNeedsPermissionTitle: 'يحتاج «القريبون» إلى موقعك',
+    nearbyNeedsPermissionBody: 'لم يُمنح إذن الموقع، فليس هناك ما يمكن ترتيبه حسب المسافة.',
+    nearbyServicesOffTitle: 'الموقع مُعطَّل على هذا الجهاز',
+    nearbyServicesOffBody: 'لن يعمل «القريبون» حتى تعيد تفعيل الموقع.',
+    nearbyUnavailableTitle: 'تعذّر تحديد مكانك',
+    nearbyUnavailableBody: 'لم يصل أي موقع الآن. حاول بعد قليل.',
     emptyTitle: 'لا أحد هنا بعد',
     emptyBody: 'يظهر هنا من تتطابق لغاتهم مع لغاتك في الاتجاهين. جرّب تخفيف عوامل التصفية.',
   },
@@ -1009,6 +1085,8 @@ export const ar: Localized<EnMessages> = {
 
   profile: {
     official: 'حساب رسمي',
+    suspendedTag: 'معلّق',
+    deletedTag: 'حساب محذوف',
     previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
     teaches: 'يُعلّم',
     learns: 'يتعلّم',
@@ -1275,6 +1353,9 @@ export const ar: Localized<EnMessages> = {
     linkDeviceBody: 'وافق على تسجيل دخول وشاهد أين سجّلت الدخول.',
     showInDiscover: 'أظهرني في الاستكشاف',
     showInDiscoverBody: 'أطفئه ولن يعثر عليك أحد — لا في الاستكشاف ولا بالبحث عن اسم المستخدم.',
+    boost: 'إبراز ملفي',
+    boostBody:
+      'أظهِرني في شريط الملفات المُبرَزة أعلى «استكشاف»، لمن تتطابق لغاتهم مع لغاتي. مُفعّل مع Fluent وPolyglot.',
     incognito: 'تصفّح خفي',
     incognitoBody: 'لن تظهر ضمن زوّارهم.',
     hideOnline: 'أخفني عندما أكون متصلًا',
@@ -1788,6 +1869,11 @@ export const ar: Localized<EnMessages> = {
     welcomePack: 'حزمة ترحيب',
     welcomePackBody: 'إطار للملف الشخصي وتجميدتان للسلسلة للبداية. و‏{plan} يمنح المجموعة كاملة.',
     advancedFilters: 'عوامل تصفية متقدمة',
+    boostedProfile: 'ملف مُبرَز',
+    boostedProfileBody:
+      'تظهر في شريط الملفات المُبرَزة فوق قائمة الاستكشاف، لكل من تتطابق لغاتهم مع لغاتك. مُفعّل افتراضيًا، ويمكن إيقافه من الإعدادات.',
+    boostedProfileFirst: 'في مقدمة الشريط',
+    boostedProfileFirstBody: 'ملفات Polyglot تتصدّر الشريط قبل Fluent.',
     sendTranslation: 'أرسل بلغته',
     sendTranslationBody: 'اكتب بلغتك؛ يُرسل الاثنان، فيقرأك دون تخمين.',
     deckExport: 'خذ عباراتك معك',
@@ -1849,6 +1935,7 @@ export const ar: Localized<EnMessages> = {
     yearlySaving: 'سنوي · وفّر {percent}%',
     billingPeriod: 'فترة الفوترة',
     start: 'ابدأ مع {plan}',
+    continueFree: 'المتابعة مجانًا',
     perMonthBilledYearly: 'شهريًا · تُحصَّل سنويًا',
   },
 

@@ -32,6 +32,7 @@ import { usePendingInvite } from '../src/hooks/usePendingInvite'
 import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { forgetAnalyticsIdentity, identifyForAnalytics, startAnalytics } from '../src/lib/analytics'
+import { markInstalled } from '../src/lib/installedAt'
 import { ensurePlaybackAudioMode } from '../src/lib/audioSession'
 import { configureObserve } from '../src/lib/observe'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
@@ -154,6 +155,9 @@ function RootShell() {
    */
   useEffect(() => {
     void startAnalytics()
+    // The device's own record of its first launch, which is the only thing
+    // that can tell `onboarding_completed` how long the first minute took.
+    void markInstalled()
     /*
      * And the audio session, for the same "before anything needs it" reason.
      * A voice note played by someone who has not recorded in this session used
@@ -328,6 +332,16 @@ function RootShell() {
                 fall through to `[username]` because `(auth)` is unmounted.
               */}
               <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
+              {/* The verification link, for the same reason. */}
+              <Stack.Screen name="verify-email" options={{ gestureEnabled: false }} />
+              {/*
+                Outside both guards for the same reason, from the other end: a
+                suspended account still holds a perfectly good session — that
+                is what a suspension is — so the guard has nothing to say about
+                this screen, and the transport `replace`s here from wherever
+                the 403 was met.
+              */}
+              <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
               <Stack.Protected guard={!!session}>
                 <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
                 <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />

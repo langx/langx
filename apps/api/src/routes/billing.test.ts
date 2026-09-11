@@ -336,6 +336,7 @@ describe('Faz 7 — billing', () => {
         productId: 'monthly',
         store: 'app_store',
         willRenew: true,
+        periodType: null,
       }
 
       await app.inject({
@@ -375,6 +376,7 @@ describe('Faz 7 — billing', () => {
         productId: 'pro_plus_monthly',
         store: 'app_store',
         willRenew: true,
+        periodType: null,
       }
 
       const response = await app.inject({
@@ -506,6 +508,7 @@ describe('Faz 7 — billing', () => {
         productId: 'monthly',
         store: 'play_store',
         willRenew: true,
+        periodType: null,
       }
 
       const response = await app.inject({
@@ -526,6 +529,7 @@ describe('Faz 7 — billing', () => {
         productId: 'pro_plus_yearly',
         store: 'play_store',
         willRenew: true,
+        periodType: null,
       }
 
       const response = await app.inject({
@@ -553,6 +557,7 @@ describe('Faz 7 — billing', () => {
         productId: 'monthly',
         store: 'app_store',
         willRenew: false,
+        periodType: null,
       }
 
       const response = await app.inject({

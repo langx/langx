@@ -1,6 +1,7 @@
 import {
   OFFICIAL_WRITABLE,
   isOfficialHandle,
+  type BillingPeriodType,
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
@@ -32,7 +33,7 @@ import {
   type PlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
-import { MongoServerError, type Db, type UpdateFilter } from 'mongodb'
+import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
@@ -44,6 +45,7 @@ import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
+import { isSuspended } from '../moderation/suspension'
 import { attachReferral } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
 
@@ -126,6 +128,21 @@ export interface Profile {
   interests: string[]
   settings: {
     discoverable: boolean
+    /**
+     * Whether this profile appears in the Boosted strip on Discover.
+     *
+     * **Absent means on**, which is the whole reason it is optional. The flag
+     * is written only when somebody flips the toggle, so a first-time
+     * subscriber is boosted the moment the entitlement lands and nothing on
+     * the billing side has to write a default — and an explicit `false`
+     * survives a lapse and a re-subscribe, because a billing event never
+     * silently changes a setting a person chose.
+     *
+     * Read against the tier on every request (`boostedProfiles`), so it is
+     * stored without a write-time guard: `true` here on a free account buys
+     * nothing.
+     */
+    boosted?: boolean
     /** A native language code, or absent for "the first native language". See `translateTargetFor`. */
     translateTo?: string
     /**
@@ -148,9 +165,37 @@ export interface Profile {
     expiresAt?: Date
     willRenew?: boolean
     store?: string
+    /**
+     * Whether this is being paid for yet — `trial` while the free week runs.
+     *
+     * Absent on every entitlement written before 10 September 2026 and on
+     * every promotional grant, and absence means "not known" rather than
+     * "normal": a nudge about a trial ending must fire on a positive answer
+     * only, or it goes to subscribers.
+     */
+    periodType?: BillingPeriodType
     updatedAt: Date
   }
+  /**
+   * What was held before the account dropped to free, and when.
+   *
+   * Written only on the fall, and never cleared by a later upgrade — so a
+   * churn nudge can ask "did this person lose something, and how long ago"
+   * without the answer being erased by the resubscription it is trying to
+   * cause. `entitlement.updatedAt` cannot answer it: a plain
+   * `/billing/refresh` moves that.
+   */
+  churnedFrom?: { tier: PlanTier; at: Date }
   quota: { initiations: Date[]; translations: Date[]; media: Date[] }
+  /**
+   * When this account was last told it had run out — a rolling window, kept
+   * by `consumeQuota` and read by nothing but the upsell nudge.
+   *
+   * Separate from `quota` because it is the opposite measurement: those
+   * arrays are what somebody *used*, this is what they were refused. Absent
+   * on everybody who has never hit a limit, which is most people.
+   */
+  quotaRefusals?: Date[]
   photos?: { url: string; createdAt: Date }[]
   /**
    * Where a `promotions.email: true` on this profile came from, when it was
@@ -258,6 +303,30 @@ export interface Profile {
     /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
     lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: Date
+  }
+  /**
+   * Set when a report was reviewed by a person and the account was suspended.
+   *
+   * `until` is the whole of the state: "suspended" is `until > now`, computed
+   * on every check, so an expiry needs no cron and no sweep. A permanent
+   * suspension stores `SUSPENSION_FOREVER`, which is why one comparison and
+   * one Mongo filter serve both — `permanent` is kept beside it only so the
+   * app can say the word instead of printing the year 9999.
+   *
+   * A second decision overwrites the first rather than appending: what is in
+   * force is one thing, and the review page shows what that is before asking.
+   *
+   * Never leaves the server. `toPublicProfile` names its fields, so there is
+   * nothing to remove there; other people learn only `accountStatus`.
+   */
+  suspension?: {
+    at: Date
+    until: Date
+    permanent: boolean
+    reason: string
+    reportId?: ObjectId
+    /** The one appeal. Its presence is what refuses a second. */
+    appeal?: { at: Date; text: string }
   }
   deletedAt?: Date
   createdAt: Date
@@ -739,6 +808,7 @@ export async function updateProfile(
     privacy?: Record<string, boolean>
     settings?: {
       discoverable?: boolean
+      boosted?: boolean
       translateTo?: string | null
       notifications?: NotificationPrefsInput
     }
@@ -768,6 +838,13 @@ export async function updateProfile(
   const settingsUnset: Record<string, ''> = {}
   if (settings?.discoverable !== undefined)
     settingsPaths['settings.discoverable'] = settings.discoverable
+  /*
+   * No tier guard on the way in, deliberately — `incognito` has none either.
+   * The strip re-reads the entitlement on every request, so `true` written by
+   * a free account buys nothing, and refusing the write would instead mean a
+   * subscriber who lapsed and came back could not change a setting they own.
+   */
+  if (settings?.boosted !== undefined) settingsPaths['settings.boosted'] = settings.boosted
   /*
    * The translation target has to be one of the person's *native* languages
    * — the schema cannot see the profile, so the check is here, against the
@@ -1060,6 +1137,20 @@ export interface PublicProfile {
    * know which handle is which.
    */
   acceptsMessages?: boolean
+  /**
+   * Whether this account is still an account.
+   *
+   * `suspended` and `deleted` are states somebody arriving from an old
+   * conversation or a link has to be told about — "Profile not found" is a
+   * lie that reads as a bug. This is the **whole** of that disclosure: not
+   * when a suspension ends, not why, not that an appeal exists. Those belong
+   * to the person it is about, and `GET /me/suspension` is where they get
+   * them.
+   *
+   * `deleted` wins over `suspended`: a deleted account is on its way out
+   * whatever else was true of it, and only one word fits on a tag.
+   */
+  accountStatus: 'active' | 'suspended' | 'deleted'
 }
 
 /**
@@ -1114,6 +1205,13 @@ export function toPublicProfile(
     createdAt: profile.createdAt,
     emailVerified,
     follow,
+    // Derived, never copied: `suspension` and `deletedAt` themselves are not
+    // named here, so neither leaves.
+    accountStatus: profile.deletedAt
+      ? 'deleted'
+      : isSuspended(profile, now)
+        ? 'suspended'
+        : 'active',
   }
   if (profile.official) {
     result.official = true
@@ -1154,12 +1252,26 @@ export function toPublicProfile(
   return result
 }
 
-/** Looks up by `@handle` or by user id — the two things a deep link can carry. */
-export async function findProfileByHandleOrId(db: Db, handleOrId: string): Promise<Profile | null> {
+/**
+ * Looks up by `@handle` or by user id — the two things a deep link can carry.
+ *
+ * `includeDeleted` is for the one caller that has to answer for an account in
+ * its thirty-day grace: the profile route, which shows it tagged as deleted so
+ * that somebody arriving from an old conversation is told what happened
+ * instead of getting "Profile not found". Every other caller keeps the filter.
+ * A purged account has no document at all, so "deleted" here always means
+ * "inside the grace period".
+ */
+export async function findProfileByHandleOrId(
+  db: Db,
+  handleOrId: string,
+  options: { includeDeleted?: boolean } = {},
+): Promise<Profile | null> {
   const key = handleOrId.startsWith('@') ? handleOrId.slice(1) : handleOrId
-  return db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ $or: [{ _id: key }, { handle: key }], deletedAt: { $exists: false } })
+  return db.collection<Profile>(COLLECTIONS.profiles).findOne({
+    $or: [{ _id: key }, { handle: key }],
+    ...(options.includeDeleted ? {} : { deletedAt: { $exists: false } }),
+  })
 }
 
 /**

@@ -30,10 +30,55 @@ export const tr: Localized<ServerMessages> = {
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
       awayLongBody: 'Serin ve token’ların bekliyor.',
+      limitReachedTitle: 'Ücretsiz sınırlara takılıp duruyorsun',
+      limitReachedBody: 'Bir plan bunları kaldırır.',
+      trialEndingTitle: 'Ücretsiz haftan iki gün sonra bitiyor',
+      trialEndingBody: 'Sürdürmek tek dokunuş.',
+      winBackTitle: 'Planın bir hafta önce bitti',
+      winBackBody: 'Oluşturduğun her şey hâlâ burada.',
       tokensWaitingTitle: { one: '{count} token bekliyor', other: '{count} token bekliyor' },
       tokensWaitingBody: 'Cüzdanını aç.',
       inviteFriendTitle: 'Bir arkadaşını davet et',
       inviteFriendBody: 'O katılınca ikiniz de token kazanırsınız.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} seni takip etmeye başladı',
+
+      followBody: 'Profiline bakmak için dokun.',
+
+      correctionTitle: '{name} cümleni düzeltti',
+
+      correctionBody: 'Düzeltmeyi okumak için dokun.',
+
+      answerTitle: '{name} cümleni seslendirdi',
+
+      answerBody: 'Dinlemek için dokun.',
+
+      commentTitle: '{name} gönderine yorum yaptı',
+
+      commentBody: 'Okumak için dokun.',
+
+      likesTitle: { one: 'Gönderin 1 beğeni aldı', other: 'Gönderin {count} beğeni aldı' },
+
+      likesBody: 'Yazdığın şeyi beğendiler.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Dünkü havuz sana 1 token ödedi',
+        other: 'Dünkü havuz sana {count} token ödedi',
+      },
+
+      poolBody: 'Cüzdanını açmak için dokun.',
+
+      giftTitle: 'Saatlik hediyen hazır',
+
+      giftBody: 'Cüzdanı aç ve al.',
     },
 
     /** Security, which no preference can switch off. */
@@ -176,6 +221,30 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterButton: 'LangX’i aç',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: 'Bugün yazdığına 1 yanıt geldi',
+      other: 'Bugün yazdığına {count} yanıt geldi',
+    },
+
+    feedDigestPreheader: 'Paylaştığın cümlelere cevap verdiler',
+
+    feedDigestBody: {
+      one: 'Bugün paylaştığın bir cümleye cevap verildi.',
+      other: 'Bugün paylaştığın cümlelere {count} kişi cevap verdi.',
+    },
+
+    feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },
+
+    feedDigestAnswers: { one: '1 seslendirme', other: '{count} seslendirme' },
+
+    feedDigestComments: { one: '1 yorum', other: '{count} yorum' },
+
+    feedDigestMore: { one: 'Ve 1 gönderi daha.', other: 'Ve {count} gönderi daha.' },
+
+    feedDigestButton: 'Yanıtları oku',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -214,6 +283,27 @@ export const tr: Localized<ServerMessages> = {
 
       awayLongButton: 'LangX’i aç',
 
+      limitReachedSubject: 'Ücretsiz sınırlara takılıyorsun',
+
+      limitReachedBody:
+        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet, daha fazla çeviri, daha fazla ek.',
+
+      limitReachedButton: 'Planlara bak',
+
+      trialEndingSubject: 'Ücretsiz haftan iki gün sonra bitiyor',
+
+      trialEndingBody:
+        'Sonrasında hesabın ücretsiz plana döner. Oluşturduğun her şey kalır; sınırlar geri gelir. Devam ettirmek tek dokunuş.',
+
+      trialEndingButton: 'Planımı sürdür',
+
+      winBackSubject: 'Planın bir hafta önce sona erdi',
+
+      winBackBody:
+        'Hiçbir şey alınmadı — serin, token’ların ve yazdığın her şey bıraktığın yerde. Duran şey ücretli sınırlar.',
+
+      winBackButton: 'Planlara bak',
+
       tokensWaitingSubject: {
         one: '{count} token’ın bekliyor',
         other: '{count} token’ın bekliyor',
@@ -240,7 +330,7 @@ export const tr: Localized<ServerMessages> = {
 
     welcomeTitle: 'Hoş geldin, {name}',
 
-    welcomeBody: 'Profilin @{handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
+    welcomeBody: 'Profilin {handle} adresinde yayında. İnsanlar genelde önce şunları yapıyor:',
 
     welcomeStep1: 'Öğrendiğin dili konuşan birini bul ve selam ver.',
 
@@ -322,6 +412,8 @@ export const tr: Localized<ServerMessages> = {
       messages: 'mesaj özetleri',
       streak: 'streak hatırlatmaları',
       profileVisits: 'profil ziyareti özetleri',
+      social: 'akış bildirimleri',
+      wallet: 'token haberleri',
       promotions: 'haberler ve kampanyalar',
       all: 'LangX’ten gelen e-postalar',
       v1contact: 'yeni LangX hakkındaki tek mesaj',
@@ -341,6 +433,35 @@ export const tr: Localized<ServerMessages> = {
       one: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
       other: 'Gönderdiğin bildirim için cüzdanına {count} jeton eklendi: {url}',
     },
+
+    suspendedSubject: 'LangX hesabın askıya alındı',
+    suspendedPreheader: 'Hesabınla ilgili bir bildirim incelendi',
+    suspendedUntilBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın {until} tarihine kadar askıya alındı. O zamana kadar LangX’i kullanamazsın; profilin keşfette ve aramada görünmez.',
+    suspendedPermanentBody:
+      'Hesabınla ilgili bir bildirim bir kişi tarafından incelendi ve hesabın kalıcı olarak askıya alındı. Profilin keşfette ve aramada görünmez.',
+    suspendedReason: 'Gerekçe: {reason}',
+    suspendedAppeal:
+      'Bunun yanlış olduğunu düşünüyorsan uygulamadan bir kez itiraz edebilir ya da bu e-postayı yanıtlayabilirsin.',
+    suspendedText:
+      'LangX hesabın askıya alındı. {detail} {reason} Uygulamadan bir kez itiraz edebilirsin.',
+    suspensionUpdatedSubject: 'LangX askıya alma durumun güncellendi',
+    suspensionUpdatedPreheader: 'İtirazına baktık',
+    suspensionUpdatedShortened:
+      'İtirazını okuduk. Askıya alma artık {until} tarihinde sona eriyor.',
+    suspensionUpdatedLifted:
+      'İtirazını okuduk. Askıya alma kaldırıldı — LangX’i yeniden kullanabilirsin.',
+    suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Taciz',
+    hateSpeech: 'Nefret söylemi',
+    inappropriateContent: 'Uygunsuz içerik',
+    fakeProfile: 'Sahte profil',
+    underage: '16 yaşından küçük',
+    other: 'Başka bir şey',
   },
   official: {
     welcome:

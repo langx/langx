@@ -129,8 +129,8 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                                      |
-| Polyglot bundle     | Everything in Fluent · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                             |
+| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                        |
+| Polyglot bundle     | Everything in Fluent · first in the boosted strip · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                       |
@@ -306,20 +306,21 @@ The tiers are `free | pro | pro_plus` in code and **Free**, **Fluent** and
 entitlement identifier cannot be renamed after creation, so the display names
 live in `TIER_NAMES` and the identifiers never move.
 
-|                            | Free                                         | Fluent         | Polyglot       |
-| -------------------------- | -------------------------------------------- | -------------- | -------------- |
-| Starting new conversations | **5** per rolling 24h                        | Unlimited      | Unlimited      |
-| Replying                   | **Unlimited**                                | Unlimited      | Unlimited      |
-| Filters                    | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
-| Sort by distance (Nearby)  | —                                            | —              | **Yes**        |
-| Translation                | **20** per rolling 24h                       | **300**        | **1000**       |
-| Languages you are learning | **1**                                        | **2**          | **5**          |
-| Languages you speak        | **1**                                        | **2**          | **5**          |
-| **Message correction**     | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
-| Who viewed me              | Count only                                   | Count only     | **Identities** |
-| Incognito                  | —                                            | —              | **Yes**        |
-| Hiding that you are online | **Yes**                                      | **Yes**        | **Yes**        |
-| AI copilot                 | —                                            | —              | **Not built**  |
+|                             | Free                                         | Fluent         | Polyglot       |
+| --------------------------- | -------------------------------------------- | -------------- | -------------- |
+| Starting new conversations  | **5** per rolling 24h                        | Unlimited      | Unlimited      |
+| Replying                    | **Unlimited**                                | Unlimited      | Unlimited      |
+| Filters                     | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
+| Sort by distance (Nearby)   | —                                            | —              | **Yes**        |
+| Boosted profile on Discover | —                                            | **Yes**        | **First**      |
+| Translation                 | **20** per rolling 24h                       | **300**        | **1000**       |
+| Languages you are learning  | **1**                                        | **2**          | **5**          |
+| Languages you speak         | **1**                                        | **2**          | **5**          |
+| **Message correction**      | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
+| Who viewed me               | Count only                                   | Count only     | **Identities** |
+| Incognito                   | —                                            | —              | **Yes**        |
+| Hiding that you are online  | **Yes**                                      | **Yes**        | **Yes**        |
+| AI copilot                  | —                                            | —              | **Not built**  |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
@@ -591,6 +592,31 @@ has been reported or blocked, and reversal via an `adjustment` row. **Every
 threshold is visible in the public repo** — the defence is server-side
 enforcement and idempotency, not secrecy.
 
+**Suspension** is the step past a freeze, and it is a person's decision every
+time. The report email carries a signed review link (`email/reviewToken.ts`,
+the same capability-token trade the bug bounty makes) that opens a small HTML
+page: suspend for N days, suspend permanently, or dismiss. There is no admin
+route, no session and no console — the review happens in the mailbox the
+report already arrives in.
+
+The state is one field. `suspension.until > now` is the whole of "suspended",
+computed on every check, so expiry needs no cron and nothing to sweep;
+permanent stores a far-future sentinel so the same comparison covers it.
+Enforcement lives in `requireAuth` rather than route by route, because "every
+route except two" is a rule that cannot survive being repeated — the next
+route added would be the one that forgot. It costs one projected `_id` read
+per authenticated request; the alternative, a flag on Better Auth's `user`
+document, would put our moderation state in their collection. `authenticateSocket`
+makes the same read, so the WebSocket cannot become a back door around it.
+
+`notSuspended()` joins the three reads that must not surface a suspended
+account — discovery and the boosted strip, handle search, and the signed-out
+shared link. The profile itself still opens for a signed-in member, carrying
+`accountStatus: 'suspended'` and nothing else: when it ends, why, and whether
+it was appealed belong to the person it is about. One appeal per suspension,
+enforced by the update's own filter, emailed to support with its own signed
+link that can shorten or lift.
+
 ### Copilot
 
 The only paid feature ever promised publicly. The plan keeps it as a **P1 Polyglot
@@ -818,6 +844,65 @@ blocks and `discoverable` rule as the feed and deliberately **not** the mutual
 language fit — finding somebody whose name you already know cannot depend on
 whether you are learnable to each other.
 
+**`GET /discovery/boosted`** is the strip above the list: the paying members
+inside exactly the same scope, capped at `DISCOVERY_BOOSTED_LIMIT` with no
+cursor. The client draws it on the **`recommended` sort only**: the other two
+are a question the reader asked — who is active, who is near me — and a strip
+ordered by somebody's subscription is not an answer to either. It
+shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
+filter are one definition; the sort, the cursor and the radius are accepted
+and ignored, because the strip has an order of its own. Entitlement is
+re-checked per request (stored tier **and** `entitlement.expiresAt`, the Mongo
+half of `effectivePlanTier`), and `settings.boosted: false` opts out — an
+absent flag means on, so a first subscription boosts without a billing-side
+hook. Boosted people stay in the vertical list too: it is a second chance to
+be seen, not a promotion out of the feed.
+
+**The strip's order is three bands, not one sort** — `orderBoosted`.
+`DISCOVERY_BOOSTED_TIERS` first, Polyglot above Fluent, a hard band because
+the paywall sells that sentence and `rules.test.ts` pins the list it comes
+from. Then one coarse cut — ready to lead, or not: a photo, something written,
+and a visit within `DISCOVERY_BOOSTED_FRESH_MS`. Then a rotation seeded on the
+viewer, the profile and the hour (`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id`
+as the last tiebreak.
+
+Those three conditions are **one band and not three**, which is the part worth
+not undoing. A viewer has one to four boosted candidates, so every extra band
+halves the chance that two of them share a bucket — and a candidate alone in
+its bucket has a fixed position, which is exactly the permanent order the
+rotation exists to break. A continuous quality score would do it in one step.
+Two buckets is what keeps the rotation real, so anything added to the
+definition of "ready" goes _inside_ this band rather than beside it.
+
+The photo and the bio are not a new idea of a good profile: `promotions.ts`
+already nudges an account with no `avatarUrl` on the grounds that a faceless
+one is scrolled past, and onboarding calls the avatar and the bio the two
+things that make a first impression. `avatarUrl` is only ever an uploaded file
+— `assertOwnBucket` refuses anything else and the drawn fallback is generated
+client-side from the id, never stored — so its presence _is_ the test. Nobody
+is excluded for failing any of this: they paid, so they are in the strip
+either way; they just do not lead it, and the explainer on the screen says so.
+
+Rotation exists because of the arithmetic of the thing: mutual language fit
+cuts a viewer's boosted candidates down to a handful, and only the first two
+or three cards are on screen. A total order over that is a permanent one — the
+same profile led every impression for as long as it kept opening the app, and
+where the cap bit it dropped the _least_ recently active, so the subscribers
+closest to leaving got nothing. That is why ordering by `stats.lastActiveAt`
+outright is gone, replaced by the single weekly cut. The viewer is in the seed
+rather than the hour alone because one person sees very few hours in a day:
+with time alone a subscriber would wait a week to lead once.
+
+It is not a `$sort` stage because the rotation hashes three strings together
+and MQL has no string hash. So the ordering runs in Node, and the pipeline's
+`$sort` and `$limit` change jobs: they are now the **truncation rule**, tier
+first so a ceiling can never drop a Polyglot for a Fluent, limiting to
+`DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win a slot — with the
+strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering. There is deliberately
+no "online now" band: the strip's `isOnline` already has to respect
+`hidesOnlineStatus`, and a third band would mean a second copy of that rule,
+where a wrong copy leaks exactly what the setting hides.
+
 **`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot
 share the position. The match above is handed to it as its `query` argument
@@ -849,12 +934,16 @@ Three consequences for handles:
   _user_, whose link quietly resolves to a page instead of to them.
   `RESERVED_HANDLES` holds them, and `routeLiterals.test.ts` walks `app/` and
   fails if a route name is missing from it.
-- **New handles are at least `HANDLE_MIN_LENGTH`.** Short names are where route
-  collisions live, and a floor is what stops squatting on a public address.
-- **Two schemas, not one.** `handleSchema` reads; `newHandleSchema` claims. v1
-  handles came across under the old rule, so tightening the reading schema
-  would 400 an existing account's own profile — including the link they have
-  already shared. The claim rules are applied in `createProfile` rather than in
+- **New handles are at least `HANDLE_MIN_LENGTH`, which is three** — the
+  pattern's own minimum. It was four, on the argument that short names are
+  where route collisions live; the reserved list is what actually answers
+  that, so the length was a proxy for a check that exists, and the cost of it
+  was paid by everybody whose name is three letters.
+- **Two schemas, not one.** `handleSchema` reads; `newHandleSchema` claims, and
+  what separates them now is the reserved list rather than a length. v1
+  handles came across under a three-character rule, so tightening the reading
+  schema would 400 an existing account's own profile — including the link they
+  have already shared. The claim rules are applied in `createProfile` rather than in
   the schema, because only there is it visible whether the handle is reserved
   _for this person_: a returning v1 user taking `ada` back is not a new claim.
 

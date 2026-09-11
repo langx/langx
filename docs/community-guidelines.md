@@ -70,6 +70,20 @@ console — reviews happen by hand. We are not going to pretend that is a fast
 process. If somebody is making the app unusable for you right now, block them:
 that is the part that is immediate.
 
+When a review does end in a suspension, it is either for a stated period or
+permanent. The suspended account is shown which, with the end date when there
+is one and the reason it was reported for, and can appeal once from that
+screen; a person reads every appeal. While a suspension is in force the
+account cannot use the app, and the profile is out of Discover, out of search
+and out of the shared link — though somebody who already has a conversation
+with them can still open the profile, marked as suspended. Some conduct does
+not get a temporary suspension: the "no second chance" cases below lead
+straight to a permanent one.
+
+You will not be told the outcome of a report you filed, and the person
+suspended is not told who reported them. Those are the same rule from both
+ends.
+
 For anything urgent, or involving a minor or a credible threat, write to
 [hi@langx.io](mailto:hi@langx.io) rather than only filing a report.
 

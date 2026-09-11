@@ -168,6 +168,7 @@ describe('processRevenueCatWebhook', () => {
           productId: 'rc_promo_pro_plus_lifetime',
           store: 'promotional',
           willRenew: false,
+          periodType: null,
         }),
       grantLifetimeEntitlement: () => Promise.resolve(),
     }
@@ -208,6 +209,9 @@ describe('processRevenueCatWebhook', () => {
         willRenew: false,
         store: 'promotional',
       })
+      // Absence, not `null`: a promotional grant is in no period, and the
+      // cell is written only when RevenueCat says which one.
+      expect(profile?.entitlement.periodType).toBeUndefined()
       expect(profile?.entitlement.expiresAt).toBeUndefined()
     })
 

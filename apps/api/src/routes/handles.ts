@@ -55,12 +55,15 @@ export const handleRoutes: FastifyPluginAsyncZod = async (app) => {
         : null
 
       /*
-       * "Available" means claimable, not merely unclaimed. Reserved words and
-       * anything under `HANDLE_MIN_LENGTH` are answered here rather than left
-       * to fail at `POST /profiles` — the param schema stays permissive so a
-       * legacy three-letter handle can still be *looked up*, but this endpoint
-       * exists to answer the onboarding question, and the honest answer to
-       * "can I have `api`?" is no rather than 400.
+       * "Available" means claimable, not merely unclaimed. A reserved word is
+       * answered here rather than left to fail at `POST /profiles`: this
+       * endpoint exists to answer the onboarding question, and the honest
+       * answer to "can I have `api`?" is no rather than 400.
+       *
+       * Length no longer enters into it — `HANDLE_MIN_LENGTH` is the
+       * pattern's own three now, so anything shorter is refused by the param
+       * schema before this runs, as a malformed request rather than an
+       * unavailable name.
        */
       const claimable = newHandleSchema.safeParse(request.params.handle).success
       const available =

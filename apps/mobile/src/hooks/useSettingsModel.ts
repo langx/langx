@@ -28,7 +28,6 @@ import { API_URL } from '../lib/apiUrl'
 import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from '../lib/appIcon'
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
-import { FLAG_KEYS, readBoolFlag } from '../lib/localFlags'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
@@ -103,6 +102,13 @@ export function useSettingsModel() {
    * refuses — a switch that flips and does nothing.
    */
   const canIncognito = useHasFeature('incognito')
+  /*
+   * Asks about the strip itself rather than "any paid plan", the same way the
+   * incognito row does — the two rows sit next to each other and are unlocked
+   * by different tiers, which is exactly the mistake `useHasFeature` exists
+   * to stop.
+   */
+  const canBoost = useHasFeature('boostedProfile')
   const tier = useEffectiveTier()
   const entitlement = profile?.entitlement
   /**
@@ -156,6 +162,8 @@ export function useSettingsModel() {
   // The tag names the plan that unlocks the incognito row. It reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
+  // Reads FLUENT today, and would follow the capability if it ever moved.
+  const boostBadge = TIER_BADGES[tierUnlocking('boostedProfile') ?? 'free']
   // Same idiom for the cross-conversation deck: the row is drawn either way
   // and says which plan opens it.
   const canDeckExport = hasFeature(tier, 'deckExport')
@@ -180,7 +188,7 @@ export function useSettingsModel() {
    */
   async function chooseIcon(next: AppIcon): Promise<void> {
     if (!isPro) {
-      openPaywall()
+      openPaywall(undefined, undefined, 'me')
       return
     }
     if (next === appIcon) return
@@ -255,7 +263,7 @@ export function useSettingsModel() {
     // A count that belonged to this account must not outlive it on the icon.
     await syncIconBadge(0)
     await authClient.signOut()
-    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    router.replace(authLandingHref())
   }
 
   /**
@@ -291,6 +299,7 @@ export function useSettingsModel() {
     togglePushOnThisDevice,
     emailVerified,
     canIncognito,
+    canBoost,
     tier,
     tierName: TIER_NAMES[tier],
     renewal,
@@ -299,6 +308,7 @@ export function useSettingsModel() {
     analytics,
     analyticsRow,
     incognitoBadge,
+    boostBadge,
     canDeckExport,
     deckExportBadge,
     shareLocation,

@@ -48,10 +48,55 @@ export const ru: Localized<ServerMessages> = {
       awayBody: 'Новые собеседники.',
       awayLongTitle: 'Мы здесь, когда захотите',
       awayLongBody: 'Серия и токены ждут.',
+      limitReachedTitle: 'Вы часто упираетесь в лимиты',
+      limitReachedBody: 'Тариф снимает их.',
+      trialEndingTitle: 'Бесплатная неделя заканчивается через два дня',
+      trialEndingBody: 'Продлить — одно касание.',
+      winBackTitle: 'Ваш тариф закончился',
+      winBackBody: 'Всё созданное на месте.',
       tokensWaitingTitle: { one: 'Ждёт {count} токен', other: 'Ждут {count} токенов' },
       tokensWaitingBody: 'Откройте кошелёк.',
       inviteFriendTitle: 'Пригласите знакомого',
       inviteFriendBody: 'Токены получите оба.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} подписался на вас',
+
+      followBody: 'Нажмите, чтобы открыть профиль.',
+
+      correctionTitle: '{name} исправил вашу фразу',
+
+      correctionBody: 'Нажмите, чтобы прочитать исправление.',
+
+      answerTitle: '{name} озвучил вашу фразу',
+
+      answerBody: 'Нажмите, чтобы послушать.',
+
+      commentTitle: '{name} прокомментировал ваш пост',
+
+      commentBody: 'Нажмите, чтобы прочитать.',
+
+      likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
+
+      likesBody: 'Кому-то понравилось написанное вами.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'Вчерашний пул принёс вам 1 токен',
+        other: 'Вчерашний пул принёс вам {count} токенов',
+      },
+
+      poolBody: 'Нажмите, чтобы открыть кошелёк.',
+
+      giftTitle: 'Почасовой подарок готов',
+
+      giftBody: 'Откройте кошелёк и заберите.',
     },
 
     /** Security, which no preference can switch off. */
@@ -201,6 +246,30 @@ export const ru: Localized<ServerMessages> = {
 
     newsletterButton: 'Открыть LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 ответ на ваш пост сегодня',
+      other: '{count} ответов на ваши посты сегодня',
+    },
+
+    feedDigestPreheader: 'На ваши посты ответили',
+
+    feedDigestBody: {
+      one: 'Сегодня кто-то ответил на вашу фразу.',
+      other: 'Сегодня на ваши фразы ответили {count} человек.',
+    },
+
+    feedDigestCorrections: { one: '1 исправление', other: '{count} исправлений' },
+
+    feedDigestAnswers: { one: '1 запись', other: '{count} записей' },
+
+    feedDigestComments: { one: '1 комментарий', other: '{count} комментариев' },
+
+    feedDigestMore: { one: 'И ещё 1 пост.', other: 'И ещё {count} постов.' },
+
+    feedDigestButton: 'Читать ответы',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -239,6 +308,27 @@ export const ru: Localized<ServerMessages> = {
 
       awayLongButton: 'Открыть LangX',
 
+      limitReachedSubject: 'Вы упираетесь в бесплатные лимиты',
+
+      limitReachedBody:
+        'За последние дни вы трижды упёрлись в дневной лимит. Тариф снимает их — больше разговоров, больше переводов, больше вложений каждый день.',
+
+      limitReachedButton: 'Посмотреть тарифы',
+
+      trialEndingSubject: 'Бесплатная неделя заканчивается через два дня',
+
+      trialEndingBody:
+        'После этого аккаунт вернётся на бесплатный тариф. Всё созданное останется, но лимиты вернутся. Продлить — одно касание.',
+
+      trialEndingButton: 'Сохранить тариф',
+
+      winBackSubject: 'Ваш тариф закончился неделю назад',
+
+      winBackBody:
+        'Ничего не забрали — серия, токены и всё написанное на месте. Закончились только платные лимиты.',
+
+      winBackButton: 'Посмотреть тарифы',
+
       tokensWaitingSubject: { one: 'Вас ждёт {count} токен', other: 'Вас ждут {count} токенов' },
 
       tokensWaitingBody:
@@ -262,7 +352,7 @@ export const ru: Localized<ServerMessages> = {
 
     welcomeTitle: 'Добро пожаловать, {name}',
 
-    welcomeBody: 'Ваш профиль доступен по адресу @{handle}. Вот с чего обычно начинают:',
+    welcomeBody: 'Ваш профиль доступен по адресу {handle}. Вот с чего обычно начинают:',
 
     welcomeStep1: 'Найдите того, кто говорит на языке, который вы учите, и поздоровайтесь.',
 
@@ -344,6 +434,8 @@ export const ru: Localized<ServerMessages> = {
       messages: 'сводки сообщений',
       streak: 'напоминания о стрике',
       profileVisits: 'сводки визитов в профиль',
+      social: 'события ленты',
+      wallet: 'новости о токенах',
       promotions: 'новости и предложения',
       all: 'письма от LangX',
       v1contact: 'единственное сообщение о новом LangX',
@@ -369,6 +461,35 @@ export const ru: Localized<ServerMessages> = {
       many: 'За твоё сообщение в кошелёк добавлено {count} жетонов: {url}',
       other: 'За твоё сообщение в кошелёк добавлено {count} жетона: {url}',
     },
+
+    suspendedSubject: 'Ваш аккаунт LangX заблокирован',
+    suspendedPreheader: 'Жалобу на ваш аккаунт рассмотрели',
+    suspendedUntilBody:
+      'Жалобу на ваш аккаунт рассмотрел человек, и аккаунт заблокирован до {until}. До этого времени вы не можете пользоваться LangX, а ваш профиль скрыт из поиска и подбора.',
+    suspendedPermanentBody:
+      'Жалобу на ваш аккаунт рассмотрел человек, и аккаунт заблокирован навсегда. Ваш профиль скрыт из поиска и подбора.',
+    suspendedReason: 'Причина: {reason}',
+    suspendedAppeal:
+      'Если это ошибка, вы можете один раз подать апелляцию из приложения или ответить на это письмо.',
+    suspendedText:
+      'Ваш аккаунт LangX заблокирован. {detail} {reason} Вы можете один раз подать апелляцию из приложения.',
+    suspensionUpdatedSubject: 'Блокировка вашего аккаунта LangX изменена',
+    suspensionUpdatedPreheader: 'Мы рассмотрели вашу апелляцию',
+    suspensionUpdatedShortened:
+      'Мы прочитали вашу апелляцию. Блокировка теперь заканчивается {until}.',
+    suspensionUpdatedLifted:
+      'Мы прочитали вашу апелляцию. Блокировка снята — вы снова можете пользоваться LangX.',
+    suspensionUpdatedText: 'Блокировка вашего аккаунта LangX изменена. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Спам',
+    harassment: 'Домогательства',
+    hateSpeech: 'Язык вражды',
+    inappropriateContent: 'Неприемлемый контент',
+    fakeProfile: 'Фальшивый профиль',
+    underage: 'Младше 16 лет',
+    other: 'Другое',
   },
   official: {
     welcome:

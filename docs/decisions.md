@@ -599,6 +599,37 @@ Signed out, signed in **without** a profile, and ready. The middle state is real
 and common: Better Auth creates the account, but `profiles` is ours and
 onboarding writes it. A 404 from `/profiles/me` is that state, not an error.
 
+**10 September 2026 — the mailed verification link now arrives here signed
+in.** The link used to point at Better Auth's own `/verify-email`, which spends
+the token and, with `autoSignInAfterVerification`, sets the session cookie on
+whatever made that request — from an inbox, the mail client's browser. The app
+never saw it, so a brand-new account was sent back to type its password a
+second time. The mail now carries `app/verify-email.tsx`, which spends the
+token itself and replaces to `/`; this gate then routes it to the first
+onboarding step like any other session. Same shape as `magic-link.tsx`, and
+the same reasoning.
+
+## Client — the first screen is the welcome screen, not an intro
+
+**10 September 2026.** A signed-out launch used to open on `(auth)/intro`:
+three slides of copy, played once per device, in front of a welcome screen
+whose first line said what the first slide said. Two screens describing an
+exchange before one was offered — on the launch that decides whether there is
+a second one.
+
+The carousel is not deleted, it is moved: Settings → "Show intro again" plays
+it on demand, `(app)/intro`, exactly as before. What the other two slides said
+is now two lines under the language pairs on the welcome screen, next to the
+thing they describe rather than three taps in front of it. `authLandingHref`
+therefore takes no argument and always answers `/(auth)/welcome`.
+
+`FLAG_KEYS.introSeen` stays in place, written by nothing and read by nothing.
+An OTA update can be rolled back, and a build that reads that flag has to find
+whatever it left there rather than a flag this version cleaned up.
+
+Measured before/after rather than as an experiment: at this volume two arms
+would report a coin toss. See `docs/plans/onboarding-first-minute.md`.
+
 ## Client — the onboarding draft lives outside React
 
 expo-router remounts a screen when it is navigated back to, so component state
@@ -626,6 +657,33 @@ every signed-in user hit a blank error screen on Android.
 The `!Device.isDevice` guard inside the hook never got a chance to run, because
 the module died while loading. The import now sits inside the `useEffect`'s
 try/catch, after the guards.
+
+## Updates — two files whose bytes decide who gets an update
+
+**10 September 2026, learned the expensive way.** `apps/mobile/app.config.ts`
+imports `@langx/shared/appIdentity` and `@langx/shared/appScheme` by path, so
+`@expo/fingerprint` counts both files as config sources and hashes their
+**contents**. That hash is the runtime version, and EAS delivers an update only
+to a binary whose runtime version matches it.
+
+So editing either file — even adding a function the config never calls — makes
+every update published afterwards invisible to every build already on a phone.
+That is exactly what PR #1279 did by adding `verifyEmailUrl` to
+`appIdentity.ts`: three merges' worth of updates published to a runtime version
+no shipped binary had, with green CI and a successful publish each time. The
+symptom is silence, which is why it is written down here rather than left to be
+noticed.
+
+The rule: **treat `appIdentity.ts` and `appScheme.ts` as frozen between native
+builds.** Anything new that wants to live near them goes in a sibling file —
+`emailLinks.ts` is the first — which may import them freely. Importing them
+costs nothing; changing their bytes costs the release.
+
+Two things that follow. A deliberate change to either is a change that needs a
+new build, so it belongs in the release round rather than in an OTA-only PR.
+And when an update seems not to arrive, compare
+`eas update:list`'s `runtimeVersion` against the shipped build's
+`Fingerprint` in `eas build:view` before looking anywhere else.
 
 ## Updates — OTA plus a server-side gate, chosen together
 
@@ -3841,3 +3899,103 @@ call the profile menu makes, and `submit_feedback` is the call `POST /feedback`
 makes, lifted out of the route unchanged. The reporter is always the person
 writing — not a rule the model is asked to honour, but the only id the call can
 be given.
+
+## The feed and the wallet get switches of their own
+
+Two kinds joined the six: `social` — a follow, a correction or a recorded
+answer on a post, a batch of likes — and `wallet`, for the daily pool paying
+out and the hourly gift coming back. Both default to push on, email off, and
+neither has an email sender.
+
+They are not folded into the kinds that already existed, and the reason is
+what a person means when they turn one off. A message is somebody addressing
+you directly and waiting; the feed is the room reacting to something you left
+in it. Somebody who mutes one very often wants the other, and a shared switch
+makes that choice unavailable. `wallet` is separated from both for a simpler
+reason: it is the only kind that is about a number rather than a person.
+
+**The feed sent nothing at all before this**, which was the largest hole on
+the channel and the most expensive one: a correction is the whole product,
+and it arrives while its author is somewhere else.
+
+Three throttles carry the design, and each is the answer to a specific way
+these become the notifications people mute:
+
+- **One push per post per hour.** Three people correcting the same sentence
+  within a minute is the good case, not the rare one.
+- **Likes are a daily batch, never an event.** A like is the cheapest thing
+  anybody can do here, so a post that does well would otherwise be twenty
+  buzzes about twenty taps.
+- **One follow notice per follower, ever.** Unfollowing and following again
+  is not news.
+
+The pool push is read from `tokenLedger` by a pass rather than sent by
+`runDailyPool` itself, and that is deliberate: the pool pays at a fixed UTC
+hour, and being buzzed about tokens at four in the morning is worse than not
+being told. The pass picks each person up when it is nine where they are.
+
+## Three-letter usernames, and what the floor was actually protecting
+
+`HANDLE_MIN_LENGTH` was four; on 10 September 2026 it became three, which is
+`HANDLE_PATTERN`'s own minimum. Claiming and reading now agree on length, and
+the only thing left between the two schemas is the reserved list.
+
+Two arguments had held the floor up, and neither survived being looked at.
+
+The first was route collisions: a profile lives at `/<handle>`, short names
+are the ones a future page will want, and `api`, `www` and `app` are all three
+letters. True, and answered by the wrong mechanism. `RESERVED_HANDLES` is what
+stops a collision, `routeLiterals.test.ts` fails CI when a screen is added
+without reserving its name, and a four-letter route — `chat`, `feed`, `post` —
+is exactly as much of a collision as a three-letter one. The length was a
+proxy for a check that already exists and is stricter.
+
+The second was squatting, and it was a guess. Nobody has squatted anything
+here; what the floor did instead was refuse the handle to every person whose
+name is three letters, which is a great many people in Turkish, Chinese and
+Korean.
+
+Dropping it made four words claimable that had never been reachable before, so
+they are reserved now: `pro`, which is a page on langx.io rather than a screen
+in this tree and so is invisible to the route test, and `dev`, `ftp` and `git`
+beside the hostnames already there. Numbers-first names like `404` were never
+possible — `HANDLE_PATTERN` requires a letter first.
+
+The reading schema does not move, because it never could: v1 handles came
+across under a three-character rule, so a three-letter account has existed all
+along. What changed is that somebody can now be given one on purpose.
+
+## A refusal is worth remembering, and a correction is worth a digest
+
+The last two scenarios in the plan, and both were blocked on the same kind of
+thing: the code knew something momentarily and threw it away.
+
+**`consumeQuota` refused people and forgot.** "You keep hitting the free
+limits" is the one nudge here that is an argument for paying, and it needs to
+tell a person who ran out once from a person who runs out every evening —
+which nothing recorded. `quotaRefusals` is a rolling three-day array,
+written inside `consumeQuota` rather than at the three call sites that catch
+its `false`: that is where the refusal is _decided_, so the fourth caller,
+whenever it arrives, gets this for free rather than being the one that forgot.
+Three refusals in three days is the threshold — once is Tuesday, twice is a
+coincidence. Free tiers only: a paid tier has no limit to hit, so the array
+can only be stale, and somebody who upgraded yesterday must not be sold the
+thing they just bought.
+
+**`social.email` had a switch and nothing behind it.** The feed's push fires
+on the reply and is throttled to one an hour; the digest is the other half,
+and the two answer different questions. A push says _something happened, look
+now_. A digest says _here is what the day amounted to_ — which is the one
+worth reading when the corrections are the reason somebody posted at all. It
+goes in the evening, because a sentence posted in the morning has had the day
+to be answered and a correction is something people sit down with.
+
+The letter carries counts and the opening words of the reader's **own**
+sentence, never the correction itself. The unread digest withholds message
+text for privacy; this withholds it for a different reason — a mail that
+already contains the answer is a mail nobody clicks, and a correction is
+worth seeing beside the sentence it corrects.
+
+With a sender behind it, `social.email` now defaults **on**, like `messages`.
+A switch that was off because it did nothing should not stay off once it does
+the thing people joined for.

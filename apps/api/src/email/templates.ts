@@ -13,6 +13,7 @@ import type { InlineAsset } from './inlineAssets'
 import { inlineSrc, LOGO_SRC } from './logo'
 import type { NewsletterNote } from './newsletters'
 import type { MonthlyRecap } from '../modules/notifications/newsletter'
+import type { FeedDigestItem } from '../modules/notifications/feedDigest'
 
 /**
  * The site's display voice — `--font--title` in `website/src/lib/scss/_variables.scss`,
@@ -367,13 +368,22 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
   const t = translator(locale)
   const url = webUrl('/discover')
   const steps = [t('email.welcomeStep1'), t('email.welcomeStep2'), t('email.welcomeStep3')]
+  /*
+   * The handle is the link, `@` included — which is why the catalogue says
+   * `{handle}` rather than `@{handle}`: a link that starts one character
+   * after the thing it points at is a smaller target and reads as a typo.
+   * The text half gets the address written out instead, since a plain-text
+   * mail cannot hide a URL behind a word.
+   */
+  const profile = profileUrl(input.handle)
+  const handleLink = `<a href="${encodeURI(profile)}" style="color:#3b6cf6; text-decoration:underline;">@${escapeHtml(input.handle)}</a>`
   return {
     subject: t('email.welcomeSubject'),
     html: wrap(
       locale,
       t('email.welcomePreheader'),
       `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${t('email.welcomeTitle', { name: escapeHtml(input.name) })}</strong></p>
-       <p>${t('email.welcomeBody', { handle: escapeHtml(input.handle) })}</p>
+       <p>${t('email.welcomeBody', { handle: handleLink })}</p>
        <ul style="margin:20px 0 0; padding-left:20px; color:#17191c;">
          ${steps.map((step) => `<li style="margin-bottom:8px;">${step}</li>`).join('\n         ')}
        </ul>
@@ -382,7 +392,8 @@ export function welcomeEmail(locale: Locale, input: { name: string; handle: stri
     text: [
       t('email.welcomeTitle', { name: input.name }),
       '',
-      t('email.welcomeBody', { handle: input.handle }),
+      t('email.welcomeBody', { handle: `@${input.handle}` }),
+      profile,
       '',
       ...steps.map((step) => `- ${step}`),
       '',
@@ -564,9 +575,80 @@ function monthLabel(locale: Locale, month: string): string {
   }
 }
 
+/**
+ * The day's replies to somebody's posts, in one letter.
+ *
+ * Counts and the opening words of their own sentence — never the correction
+ * itself. The same rule the unread digest follows, for a different reason:
+ * there the text is somebody else's private message, here it is the thing
+ * the reader is being asked to come and read. A mail that already contains
+ * the answer is a mail nobody clicks, and the correction is worth seeing
+ * beside the sentence it corrects.
+ */
+export function feedDigestEmail(
+  locale: Locale,
+  {
+    items,
+    morePosts,
+    unsubscribe,
+  }: { items: FeedDigestItem[]; morePosts: number; unsubscribe: string },
+): Email {
+  const t = translator(locale)
+  const total = items.reduce(
+    (sum, item) => sum + item.corrections + item.answers + item.comments,
+    0,
+  )
+  const subject = t('email.feedDigestSubject', { count: total })
+  const rows = items
+    .map((item) => {
+      const parts = [
+        item.corrections > 0 ? t('email.feedDigestCorrections', { count: item.corrections }) : '',
+        item.answers > 0 ? t('email.feedDigestAnswers', { count: item.answers }) : '',
+        item.comments > 0 ? t('email.feedDigestComments', { count: item.comments }) : '',
+      ].filter(Boolean)
+      return `<p style="margin:16px 0 0;"><a href="${postUrl(item.postId)}" style="color:#17191c; text-decoration:none;"><strong>&ldquo;${escapeHtml(item.excerpt)}&rdquo;</strong></a><br /><span style="color:#62676d;">${formatList(locale, parts)}</span></p>`
+    })
+    .join('\n       ')
+  const more = morePosts > 0 ? t('email.feedDigestMore', { count: morePosts }) : ''
+  const cta = { url: webUrl('/me'), label: t('email.feedDigestButton') }
+
+  return {
+    subject,
+    html: notificationEmail(locale, {
+      preheader: t('email.feedDigestPreheader'),
+      bodyHtml: `<p>${t('email.feedDigestBody', { count: total })}</p>
+       ${rows}
+       ${more ? `<p style="margin:16px 0 0; color:#62676d;">${more}</p>` : ''}`,
+      cta,
+      unsubscribeUrl: unsubscribe,
+      manageUrl: webUrl('/settings'),
+    }).html,
+    text: notificationText(
+      locale,
+      [
+        t('email.feedDigestBody', { count: total }),
+        '',
+        ...items.map((item) => `"${item.excerpt}" — ${postUrl(item.postId)}`),
+        ...(more ? ['', more] : []),
+        '',
+        cta.url,
+      ],
+      unsubscribe,
+    ),
+  }
+}
+
 /** The six nudges `modules/notifications/promotions.ts` offers, in its order. */
 export type PromotionScenario =
-  'addPhoto' | 'streakBroke' | 'away' | 'awayLong' | 'tokensWaiting' | 'inviteFriend'
+  | 'addPhoto'
+  | 'streakBroke'
+  | 'away'
+  | 'awayLong'
+  | 'trialEnding'
+  | 'limitReached'
+  | 'winBack'
+  | 'tokensWaiting'
+  | 'inviteFriend'
 
 /**
  * One nudge, worded from the catalogue rather than assembled here.
@@ -615,6 +697,9 @@ const PROMOTION_DESTINATIONS: Record<PromotionScenario, string> = {
   streakBroke: webUrl('/wallet'),
   away: webUrl('/discover'),
   awayLong: webUrl('/discover'),
+  trialEnding: webUrl('/settings/plan'),
+  limitReached: webUrl('/settings/plan'),
+  winBack: webUrl('/settings/plan'),
   tokensWaiting: webUrl('/wallet'),
   inviteFriend: webUrl('/settings/share'),
 }
@@ -998,6 +1083,8 @@ export function reportEmail(input: {
   /** True only when this report is the one that crossed the threshold. */
   xpFrozen: boolean
   context: { conversationId: string | null; messageId: string | null; postId: string | null }
+  /** The signed link that decides this report — see `reviewToken.ts`. */
+  reviewUrl: string
 }): Email {
   // The enum values are already English words; a lookup table beside them
   // would be one more thing to forget when a reason is added.
@@ -1045,9 +1132,10 @@ export function reportEmail(input: {
     ${partyHtml('Reported', input.reported)}
     ${partyHtml('Reporter', input.reporter)}
     ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
+    <p style="margin:24px 0 8px;"><a href="${encodeURI(input.reviewUrl)}" style="display:inline-block;background:#111;color:#fff;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;">Review this report</a></p>
     <p style="color: #888; font-size: 12px;">Report ${escapeHtml(
       input.reportId,
-    )}, stored in <code>reports</code> with status <code>open</code>. Nothing changes it yet.</p>
+    )}, stored in <code>reports</code> with status <code>open</code>. Nothing changes until somebody decides on that page.</p>
   </body>
 </html>`,
     text: [
@@ -1070,7 +1158,108 @@ export function reportEmail(input: {
       ...(input.context.messageId ? [`Message: ${input.context.messageId}`] : []),
       ...(input.context.postId ? [`Post: ${postUrl(input.context.postId)}`] : []),
       '',
+      `Review: ${input.reviewUrl}`,
+      '',
       `Report ${input.reportId} — reports collection, status open.`,
+    ].join('\n'),
+  }
+}
+
+/**
+ * `hate_speech` → `hateSpeech`, which is how the catalogue keys them.
+ *
+ * The enum values are snake_case because they are stored; a lookup table
+ * beside `REPORT_REASONS` would be one more thing to forget when a reason is
+ * added, and this cannot fall out of step because the key is derived.
+ */
+function reasonLabel(t: ReturnType<typeof translator>, reason: string): string {
+  const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
+  return t(`reportReason.${key}` as Parameters<typeof t>[0])
+}
+
+/**
+ * What the suspended person is told, in their own language.
+ *
+ * A receipt, not a notification: sent directly rather than through
+ * `notify.ts`, with no unsubscribe footer, because there is no preference
+ * under which somebody could decline to be told their account is closed.
+ *
+ * It never says who reported them — `docs/community-guidelines.md` — and the
+ * reporter is never told the outcome either. Those are the same rule read
+ * from both ends.
+ */
+export function suspendedEmail(
+  locale: Locale,
+  input: { until: Date | null; reason: string },
+): Email {
+  const t = translator(locale)
+  const until = input.until ? input.until.toLocaleDateString(locale) : null
+  const detail = until
+    ? t('email.suspendedUntilBody', { until })
+    : t('email.suspendedPermanentBody')
+  const reason = t('email.suspendedReason', { reason: reasonLabel(t, input.reason) })
+  return {
+    subject: t('email.suspendedSubject'),
+    html: wrap(
+      locale,
+      t('email.suspendedPreheader'),
+      `<p>${escapeHtml(detail)}</p>
+       <p>${escapeHtml(reason)}</p>
+       <p style="color:#62676d;">${escapeHtml(t('email.suspendedAppeal'))}</p>`,
+    ),
+    text: t('email.suspendedText', { detail, reason }),
+  }
+}
+
+/** Sent after an appeal is decided — shortened, or lifted. Never after "keep". */
+export function suspensionUpdatedEmail(locale: Locale, input: { until: Date | null }): Email {
+  const t = translator(locale)
+  const detail = input.until
+    ? t('email.suspensionUpdatedShortened', { until: input.until.toLocaleDateString(locale) })
+    : t('email.suspensionUpdatedLifted')
+  return {
+    subject: t('email.suspensionUpdatedSubject'),
+    html: wrap(locale, t('email.suspensionUpdatedPreheader'), `<p>${escapeHtml(detail)}</p>`),
+    text: t('email.suspensionUpdatedText', { detail }),
+  }
+}
+
+/**
+ * The operator's copy of an appeal — English, like every other mail in this
+ * file that is read by us rather than about us.
+ */
+export function appealEmail(input: {
+  text: string
+  user: ReportedParty
+  until: Date | null
+  reason: string
+  reviewUrl: string
+}): Email {
+  const subject = `Appeal from ${partyName(input.user)}`
+  const ends = input.until ? input.until.toISOString() : 'permanent'
+  return {
+    subject,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="font-family: -apple-system, system-ui, sans-serif; color: #111;">
+    <h1 style="font-size: 18px;">${escapeHtml(subject)}</h1>
+    ${partyHtml('Suspended', input.user)}
+    <p><strong>Suspended for</strong> ${escapeHtml(input.reason)} &middot; <strong>ends</strong> ${escapeHtml(ends)}</p>
+    <p style="white-space: pre-wrap;">${escapeHtml(input.text)}</p>
+    <p style="margin:24px 0 8px;"><a href="${encodeURI(input.reviewUrl)}" style="display:inline-block;background:#111;color:#fff;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;">Decide this appeal</a></p>
+    <p style="color: #888; font-size: 12px;">One appeal per suspension; there will not be another.</p>
+  </body>
+</html>`,
+    text: [
+      subject,
+      '',
+      ...partyText('Suspended', input.user),
+      `Suspended for: ${input.reason}`,
+      `Ends: ${ends}`,
+      '',
+      input.text,
+      '',
+      `Decide: ${input.reviewUrl}`,
     ].join('\n'),
   }
 }

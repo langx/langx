@@ -39,3 +39,53 @@ platform :ios do
     )
   end
 end
+
+# The Play half. Same shape as the App Store one: a collect script lays the
+# branding repo out the way the tool wants, the tool sends it, and a person
+# presses the button.
+#
+#   node scripts/collect-play-screenshots.mjs
+#   export SUPPLY_JSON_KEY=~/path/to/eas-submit-service-account.json
+#   fastlane android play
+#
+# The platform prefix is not optional: `default_platform` above is :ios, so a
+# bare `fastlane play` looks for `ios play` and fails.
+#
+# There is no by-hand fallback for this one. The Play Console keeps no
+# `<input type=file>` in its page, so "Add assets" opens the operating
+# system's file picker and nothing but a person can drive it — 192 times,
+# across eight languages and three device sizes.
+#
+# The key is the `eas-submit@` service account, the one EAS already submits
+# Android builds with, so it has the Android Publisher access supply needs.
+# Like the .p8 above, it stays where it is and fastlane reads it.
+platform :android do
+  desc 'Put the Play screenshots up, in every language, in order'
+  # `fastlane android play submit:true` sends the listing for review as well as
+  # uploading. Without it the images land as pending changes and a person
+  # presses Send for review, which is the default for the same reason the iOS
+  # lane does not submit.
+  lane :play do |options|
+    # Screenshots only. The copy, the feature graphic, the icon and the binary
+    # are all skipped, and `collect-play-screenshots.mjs` writes nothing but
+    # images — so there is no metadata on disk for supply to send even if one
+    # of these flags were wrong.
+    #
+    # Unlike the App Store, this really is images-only: a Play listing is
+    # reviewed on its own, without the binary riding along.
+    supply(
+      package_name: 'tech.newchapter.languageXchange',
+      json_key: File.expand_path(ENV.fetch('SUPPLY_JSON_KEY')),
+      metadata_path: './fastlane/metadata/android',
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      # `images` is the icon and the feature graphic; `screenshots` is the set
+      # this lane exists for. Two separate flags.
+      skip_upload_images: true,
+      skip_upload_screenshots: false,
+      changes_not_sent_for_review: !options[:submit],
+    )
+  end
+end

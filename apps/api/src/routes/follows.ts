@@ -2,6 +2,7 @@ import { listFollowsQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { notifyFollowed } from '../modules/notifications/social'
 import { followUser, listFollowers, listFollowing, unfollowUser } from '../modules/social/follows'
 
 const userParamsSchema = z.object({ userId: z.string().trim().min(1) })
@@ -15,7 +16,21 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
     '/profiles/:userId/follow',
     { preHandler: requireVerifiedEmail, schema: { params: userParamsSchema } },
     async (request, reply) => {
-      return reply.send(await followUser(app.mongo.db, request.userId, request.params.userId))
+      const state = await followUser(app.mongo.db, request.userId, request.params.userId)
+      /*
+       * Not awaited: the follow is written, and a push service having a bad
+       * minute must not turn it into a 500. `notifyFollowed` claims the
+       * ledger row itself, so following, unfollowing and following again is
+       * one notification rather than three.
+       */
+      void notifyFollowed(
+        app.mongo.db,
+        { push: app.push, logger: app.log },
+        { followerId: request.userId, followeeId: request.params.userId },
+      ).catch((error: unknown) => {
+        request.log.error({ err: error }, 'follow push failed')
+      })
+      return reply.send(state)
     },
   )
 

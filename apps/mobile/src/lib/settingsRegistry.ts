@@ -74,6 +74,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         bodyKey: 'settings.showInDiscoverBody',
       },
       {
+        id: 'privacy.boost',
+        titleKey: 'settings.boost',
+        bodyKey: 'settings.boostBody',
+      },
+      {
         id: 'privacy.incognito',
         titleKey: 'settings.incognito',
         bodyKey: 'settings.incognitoBody',
@@ -100,6 +105,13 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         bodyKey: 'settings.shareLocationBody',
       },
       { id: 'privacy.updateLocation', titleKey: 'settings.updateLocation' },
+      // Under the two rows it explains. The switch above can fail for four
+      // different reasons and none of them is something a toggle can say.
+      {
+        id: 'privacy.locationPermission',
+        titleKey: 'location.guide.rowTitle',
+        bodyKey: 'location.guide.rowBody',
+      },
       {
         id: 'privacy.analytics',
         titleKey: 'settings.shareUsage',

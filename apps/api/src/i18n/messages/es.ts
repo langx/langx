@@ -36,10 +36,58 @@ export const es: Localized<ServerMessages> = {
       awayBody: 'Gente nueva con quien practicar.',
       awayLongTitle: 'Aquí cuando quieras',
       awayLongBody: 'Tu racha y tus tokens te esperan.',
+      limitReachedTitle: 'Sigues chocando con los límites',
+      limitReachedBody: 'Un plan los quita.',
+      trialEndingTitle: 'Tu semana gratis termina en dos días',
+      trialEndingBody: 'Mantenerlo es un toque.',
+      winBackTitle: 'Tu plan terminó',
+      winBackBody: 'Todo lo que creaste sigue aquí.',
       tokensWaitingTitle: { one: '{count} token esperando', other: '{count} tokens esperando' },
       tokensWaitingBody: 'Abre tu cartera.',
       inviteFriendTitle: 'Invita a alguien',
       inviteFriendBody: 'Los dos ganáis tokens.',
+    },
+
+    /** The feed reacting to something somebody left in it. */
+
+    social: {
+      followTitle: '{name} te sigue',
+
+      followBody: 'Toca para ver su perfil.',
+
+      correctionTitle: '{name} corrigió tu frase',
+
+      correctionBody: 'Toca para leer la corrección.',
+
+      answerTitle: '{name} grabó tu frase',
+
+      answerBody: 'Toca para escuchar.',
+
+      commentTitle: '{name} comentó tu publicación',
+
+      commentBody: 'Toca para leerlo.',
+
+      likesTitle: {
+        one: 'Tu publicación tiene 1 me gusta',
+        other: 'Tu publicación tiene {count} me gusta',
+      },
+
+      likesBody: 'A alguien le gustó lo que escribiste.',
+    },
+
+    /** Tokens arriving. */
+
+    wallet: {
+      poolTitle: {
+        one: 'El reparto de ayer te dio 1 token',
+        other: 'El reparto de ayer te dio {count} tokens',
+      },
+
+      poolBody: 'Toca para abrir tu cartera.',
+
+      giftTitle: 'Tu regalo por hora está listo',
+
+      giftBody: 'Abre la cartera y recógelo.',
     },
 
     /** Security, which no preference can switch off. */
@@ -190,6 +238,30 @@ export const es: Localized<ServerMessages> = {
 
     newsletterButton: 'Abrir LangX',
 
+    /** The day's replies to somebody's posts, in one letter. */
+
+    feedDigestSubject: {
+      one: '1 respuesta a lo que escribiste hoy',
+      other: '{count} respuestas a lo que escribiste hoy',
+    },
+
+    feedDigestPreheader: 'Respondieron a lo que publicaste',
+
+    feedDigestBody: {
+      one: 'Alguien respondió a una frase que publicaste hoy.',
+      other: '{count} personas respondieron a frases que publicaste hoy.',
+    },
+
+    feedDigestCorrections: { one: '1 corrección', other: '{count} correcciones' },
+
+    feedDigestAnswers: { one: '1 grabación', other: '{count} grabaciones' },
+
+    feedDigestComments: { one: '1 comentario', other: '{count} comentarios' },
+
+    feedDigestMore: { one: 'Y 1 publicación más.', other: 'Y {count} publicaciones más.' },
+
+    feedDigestButton: 'Leer las respuestas',
+
     /**
 
      * The nudges in `modules/notifications/promotions.ts`, in its order.
@@ -230,6 +302,27 @@ export const es: Localized<ServerMessages> = {
 
       awayLongButton: 'Abrir LangX',
 
+      limitReachedSubject: 'Estás chocando con los límites gratuitos',
+
+      limitReachedBody:
+        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones, más traducciones, más adjuntos, cada día.',
+
+      limitReachedButton: 'Ver los planes',
+
+      trialEndingSubject: 'Tu semana gratis termina en dos días',
+
+      trialEndingBody:
+        'Después tu cuenta vuelve al plan gratuito. Todo lo que creaste se queda; los límites regresan. Mantenerlo es un toque.',
+
+      trialEndingButton: 'Mantener mi plan',
+
+      winBackSubject: 'Tu plan terminó hace una semana',
+
+      winBackBody:
+        'No se quitó nada: tu racha, tus tokens y todo lo que escribiste siguen donde los dejaste. Lo que se detuvo son los límites de pago.',
+
+      winBackButton: 'Ver los planes',
+
       tokensWaitingSubject: {
         one: 'Tienes {count} token esperando',
         other: 'Tienes {count} tokens esperando',
@@ -256,7 +349,7 @@ export const es: Localized<ServerMessages> = {
 
     welcomeTitle: 'Hola, {name}',
 
-    welcomeBody: 'Tu perfil ya está en @{handle}. Esto es lo que hace la gente primero:',
+    welcomeBody: 'Tu perfil ya está en {handle}. Esto es lo que hace la gente primero:',
 
     welcomeStep1: 'Encuentra a alguien que hable lo que estás aprendiendo y salúdalo.',
 
@@ -339,6 +432,8 @@ export const es: Localized<ServerMessages> = {
       messages: 'los resúmenes de mensajes',
       streak: 'los recordatorios de racha',
       profileVisits: 'los resúmenes de visitas a tu perfil',
+      social: 'actividad del feed',
+      wallet: 'novedades de tokens',
       promotions: 'las novedades y ofertas',
       all: 'el correo de LangX',
       v1contact: 'el único mensaje sobre el nuevo LangX',
@@ -358,6 +453,34 @@ export const es: Localized<ServerMessages> = {
       one: 'Se añadió {count} ficha a tu cartera por el aviso que enviaste: {url}',
       other: 'Se añadieron {count} fichas a tu cartera por el aviso que enviaste: {url}',
     },
+
+    suspendedSubject: 'Tu cuenta de LangX ha sido suspendida',
+    suspendedPreheader: 'Se revisó un reporte sobre tu cuenta',
+    suspendedUntilBody:
+      'Una persona revisó un reporte sobre tu cuenta y queda suspendida hasta el {until}. Hasta entonces no puedes usar LangX, y tu perfil no aparece en Descubrir ni en la búsqueda.',
+    suspendedPermanentBody:
+      'Una persona revisó un reporte sobre tu cuenta y queda suspendida de forma permanente. Tu perfil no aparece en Descubrir ni en la búsqueda.',
+    suspendedReason: 'Motivo: {reason}',
+    suspendedAppeal:
+      'Si crees que es un error, puedes apelar una vez desde la app o respondiendo a este correo.',
+    suspendedText:
+      'Tu cuenta de LangX está suspendida. {detail} {reason} Puedes apelar una vez desde la app.',
+    suspensionUpdatedSubject: 'Tu suspensión de LangX se ha actualizado',
+    suspensionUpdatedPreheader: 'Hemos visto tu apelación',
+    suspensionUpdatedShortened: 'Leímos tu apelación. Tu suspensión ahora termina el {until}.',
+    suspensionUpdatedLifted:
+      'Leímos tu apelación. Tu suspensión se ha levantado: ya puedes usar LangX.',
+    suspensionUpdatedText: 'Tu suspensión de LangX se ha actualizado. {detail}',
+  },
+
+  reportReason: {
+    spam: 'Spam',
+    harassment: 'Acoso',
+    hateSpeech: 'Discurso de odio',
+    inappropriateContent: 'Contenido inapropiado',
+    fakeProfile: 'Perfil falso',
+    underage: 'Menor de 16 años',
+    other: 'Otra cosa',
   },
   official: {
     welcome:
