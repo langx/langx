@@ -6,7 +6,7 @@ import { birthDateSchema } from './age'
 import { languageLevelSchema } from './level'
 import { referralSourceSchema } from './referral'
 import { handleSchema } from './handle'
-import { languageCodeSchema } from './languages'
+import { LANGUAGES, languageCodeSchema } from './languages'
 import { z } from 'zod'
 
 export const GENDERS = ['female', 'male', 'other', 'undisclosed'] as const
@@ -120,6 +120,27 @@ const pronounsSchema = z.string().trim().max(PRONOUNS_MAX_LENGTH)
 const interestsSchema = z.array(z.string().trim().min(1).max(30)).max(MAX_INTERESTS)
 const nativeLanguagesSchema = z.array(nativeLanguageSchema).min(1).max(MAX_NATIVE_LANGUAGES)
 const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_LEARNING_LANGUAGES)
+
+/**
+ * The same two lists as they arrive in an *update*, with the catalogue as
+ * their only ceiling.
+ *
+ * v1 had no language limit and the import keeps whatever it finds, so a
+ * migrated profile can hold more languages than even the top tier allows.
+ * `updateProfile` grandfathers exactly that — any list no longer than the one
+ * already stored is accepted, which is what lets somebody over the limit fix
+ * a level or drop a language — but a body schema refusing the request first
+ * made that unreachable: removing one of seven still sends six, and six was
+ * "too big". The one group the grandfathering exists for were the only people
+ * it could not help, and the screen reported it as nothing happening at all.
+ *
+ * The tier ceiling is not lost, only moved to the one place that can apply it
+ * honestly: `assertLanguageCap`, which knows both the tier and what is already
+ * there. What is left here is the bound a schema can state on its own — you
+ * cannot list more languages than there are.
+ */
+const nativeLanguagesUpdateSchema = z.array(nativeLanguageSchema).min(1).max(LANGUAGES.length)
+const learningLanguagesUpdateSchema = z.array(learningLanguageSchema).min(1).max(LANGUAGES.length)
 
 /**
  * Body of `POST /profiles` — onboarding. `birthDate` is validated here
@@ -276,8 +297,8 @@ export const updateProfileSchema = z
     bio: bioSchema,
     /** Empty clears it — there is no separate "remove my pronouns" call. */
     pronouns: pronounsSchema,
-    nativeLanguages: nativeLanguagesSchema,
-    learning: learningLanguagesSchema,
+    nativeLanguages: nativeLanguagesUpdateSchema,
+    learning: learningLanguagesUpdateSchema,
     interests: interestsSchema,
     timezone: z.string().trim().min(1),
     /**

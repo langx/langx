@@ -1583,6 +1583,38 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(grown.statusCode).toBe(403)
     })
 
+    /**
+     * The same grandfathering, above the *absolute* ceiling rather than the
+     * tier's. v1 had no language limit and `mapLanguages` imports whatever it
+     * finds, so a migrated profile can carry more than the top tier allows —
+     * and a body schema that refused it took the repository's careful
+     * "you may always shrink" and made it unreachable. The only way out of an
+     * over-ceiling profile was to delete enough languages in a single request
+     * to land under the ceiling, which is not what the screen sends.
+     */
+    it('lets a migrated profile over the absolute ceiling remove one', async () => {
+      const { user } = await onboardedWith('lang-ceiling@example.com', 'langceiling', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      const imported = ['en', 'de', 'fr', 'es', 'it', 'ru', 'ja'].map((code, index) => ({
+        code,
+        level: 'beginner',
+        priority: index + 1,
+      }))
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { learning: imported } })
+
+      const removed = await patch(user, { learning: imported.slice(0, -1) })
+      expect(removed.statusCode, removed.body).toBe(200)
+      expect(removed.json<{ learning: unknown[] }>().learning).toHaveLength(imported.length - 1)
+
+      const grown = await patch(user, {
+        learning: [...imported, { code: 'zh', level: 'beginner', priority: imported.length + 1 }],
+      })
+      expect(grown.statusCode).toBe(403)
+    })
+
     it('gives a paid tier its wider allowance', async () => {
       const { user } = await onboardedWith('lang-paid@example.com', 'langpaid', [
         { code: 'en', level: 'intermediate', priority: 1 },

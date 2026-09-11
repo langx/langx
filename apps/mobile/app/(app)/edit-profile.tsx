@@ -70,6 +70,13 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 /** One number for the stored tiles and the pending ones, so they cannot drift. */
 const PHOTO_TILE = 58
 
+/** What the line under the language rows says, per state of the autosave. */
+const LANGUAGE_STATUS_KEYS = {
+  saving: 'editProfile.savingLanguages',
+  saved: 'editProfile.saved',
+  failed: 'editProfile.saveFailed',
+} as const
+
 export default function EditProfileScreen() {
   useScreenInteractive()
   const styles = useStyles()
@@ -129,7 +136,9 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [editing, setEditing] = useState<'none' | 'native' | 'learning'>('none')
   const tier = useEffectiveTier()
   const [error, setError] = useState<string | undefined>()
-  const [languageStatus, setLanguageStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [languageStatus, setLanguageStatus] = useState<'idle' | 'saving' | 'saved' | 'failed'>(
+    'idle',
+  )
 
   const photos = profile.photos ?? []
   const learningCodes = learning.map((l) => l.code)
@@ -180,8 +189,12 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         // Forget what was saved so the next edit retries this one with it.
         void caught
         savedLanguages.current = ''
-        setLanguageStatus('idle')
-        setError(t('editProfile.saveFailed'))
+        // Reported on the line under the language rows, not in the form's
+        // error slot at the foot of the screen: with the picker open that slot
+        // is several hundred pixels below the fold, so a language that failed
+        // to save looked exactly like one that had saved — the row was gone
+        // from the list either way, and came back on the next visit.
+        setLanguageStatus('failed')
       })
     // `update` and `t` are deliberately absent: both change identity on a
     // render this effect can itself cause, and depending on them would make a
@@ -512,8 +525,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           </View>
 
           {languageStatus === 'idle' ? null : (
-            <Text style={styles.languageStatus}>
-              {t(languageStatus === 'saving' ? 'editProfile.savingLanguages' : 'editProfile.saved')}
+            <Text
+              style={[styles.languageStatus, languageStatus === 'failed' && styles.languageBad]}
+            >
+              {t(LANGUAGE_STATUS_KEYS[languageStatus])}
             </Text>
           )}
 
@@ -691,6 +706,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   languageLevelRow: { alignItems: 'center', flexDirection: 'row', gap: 10 },
   languageLevel: { color: colors.textMuted, fontSize: 14 },
   languageStatus: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  languageBad: { color: colors.danger },
   pickerPane: { height: 320 },
   levels: {
     borderTopColor: colors.border,
