@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
+  DISCOVERY_PRO_FILTER_KEYS,
   GENDERS,
   LANGUAGE_LEVELS,
   levelRank,
@@ -20,6 +21,7 @@ import { RangeSlider } from '../../src/components/ui/RangeSlider'
 import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { Toggle } from '../../src/components/ui/Toggle'
+import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import {
@@ -148,6 +150,19 @@ export default function FiltersScreen() {
   }
 
   function apply(): void {
+    /*
+     * Counted here rather than on the results screen: this is the moment
+     * somebody decided what they were looking for. `activeCount` rather than
+     * the size of the query, so this counts filters the way the badge on the
+     * Discover chip does — a level band is one filter, not two bounds.
+     */
+    track({
+      name: 'filters_applied',
+      properties: {
+        count: activeCount(filters),
+        pro: DISCOVERY_PRO_FILTER_KEYS.some((key) => Boolean(filters[key])),
+      },
+    })
     // `replace`, not `push`: the filter screen has done its job and should not
     // sit in the history behind the results it produced.
     router.replace({ pathname: '/(app)/(tabs)/discover', params: toParams(filters) })

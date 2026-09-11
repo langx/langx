@@ -829,6 +829,9 @@ export default function ChatScreen() {
       // Logged before it is generalised: "could not be sent" once covered an
       // unsupported HEIC for a whole test cycle, and nothing anywhere said so.
       console.warn('attachment failed', code ?? error)
+      // The quota refusal above returns before this: it is a paywall moment,
+      // already counted as one, and not a failure of the send path.
+      track({ name: 'message_send_failed', properties: { kind: 'media', reason: code ?? null } })
       const reason =
         code === 'UNSUPPORTED_MEDIA_TYPE'
           ? t('errors.attachmentUnsupported')
@@ -878,7 +881,7 @@ export default function ChatScreen() {
         name: 'message_sent',
         properties: { kind: 'text', reply: replyToMessageId !== undefined },
       })
-    } catch {
+    } catch (error) {
       /*
        * Swallowed on purpose, and this is the whole change: it used to be
        * swallowed by *nothing* — `send()` had a `try/finally` with no `catch`,
@@ -894,6 +897,13 @@ export default function ChatScreen() {
           failedAt: new Date().toISOString(),
         }),
       )
+      // Swallowed for the reader, counted for us: an unsent row is quiet by
+      // design and a rising number of them is not something to find out from
+      // a support message.
+      track({
+        name: 'message_send_failed',
+        properties: { kind: 'text', reason: errorCodeOf(error) ?? null },
+      })
     } finally {
       // Landed or failed, the stand-in has somewhere better to be: the echo
       // has usually retired it already, the unsent row takes over otherwise.

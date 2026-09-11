@@ -17,6 +17,7 @@ import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { showAlert } from '../../../src/lib/alert'
+import { track } from '../../../src/lib/analytics'
 import { goBackTo } from '../../../src/lib/navigation'
 import { confirmAndRepair } from '../../../src/lib/repairFlow'
 import { showToast } from '../../../src/lib/toast'
@@ -145,7 +146,20 @@ export default function StoreScreen() {
       return
     }
     purchase.mutate(offer.id, {
-      onSuccess: () => showToast(t('store.bought', { title: offer.title })),
+      onSuccess: () => {
+        /*
+         * On success rather than on the tap: a spend that the server refused
+         * is not a spend, and at these volumes a "started" count would be a
+         * second number that only ever confuses the first. `title` is left
+         * out on purpose — it is translated, so it would arrive in eight
+         * spellings for one product; `id` is the same string everywhere.
+         */
+        track({
+          name: 'tokens_spent',
+          properties: { sku: offer.id, kind: offer.kind ?? 'consumable', amount: offer.price },
+        })
+        showToast(t('store.bought', { title: offer.title }))
+      },
       onError: () => void showAlert(t('store.buyFailed'), t('common.retry')),
     })
   }
