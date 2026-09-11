@@ -345,7 +345,7 @@ export const ptBR: Localized<ServerMessages> = {
 
     welcomeTitle: 'Boas-vindas, {name}',
 
-    welcomeBody: 'Seu perfil está no ar em @{handle}. É isto que as pessoas fazem primeiro:',
+    welcomeBody: 'Seu perfil está no ar em {handle}. É isto que as pessoas fazem primeiro:',
 
     welcomeStep1: 'Encontre alguém que fale o que você está aprendendo e diga oi.',
 

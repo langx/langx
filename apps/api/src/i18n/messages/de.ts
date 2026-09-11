@@ -347,7 +347,7 @@ export const de: Localized<ServerMessages> = {
 
     welcomeTitle: 'Willkommen, {name}',
 
-    welcomeBody: 'Dein Profil ist unter @{handle} online. Das machen die meisten zuerst:',
+    welcomeBody: 'Dein Profil ist unter {handle} online. Das machen die meisten zuerst:',
 
     welcomeStep1: 'Finde jemanden, der deine Lernsprache spricht, und sag Hallo.',
 

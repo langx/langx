@@ -352,7 +352,7 @@ export const ru: Localized<ServerMessages> = {
 
     welcomeTitle: 'Добро пожаловать, {name}',
 
-    welcomeBody: 'Ваш профиль доступен по адресу @{handle}. Вот с чего обычно начинают:',
+    welcomeBody: 'Ваш профиль доступен по адресу {handle}. Вот с чего обычно начинают:',
 
     welcomeStep1: 'Найдите того, кто говорит на языке, который вы учите, и поздоровайтесь.',
 
