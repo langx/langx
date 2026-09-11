@@ -120,6 +120,7 @@ export const en = {
     feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Step {current} of {total}',
     next: 'Next',
     done: 'Got it',

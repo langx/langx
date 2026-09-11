@@ -99,6 +99,7 @@ export const ru: Localized<EnMessages> = {
     feedAsk: 'Застрял на фразе? Выложи её здесь, кто-нибудь поправит.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Шаг {current} из {total}',
     next: 'Дальше',
     done: 'Понятно',

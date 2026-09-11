@@ -1,6 +1,7 @@
 import { router } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import {
+  AccessibilityInfo,
   Modal,
   Pressable,
   ScrollView,
@@ -143,6 +144,22 @@ export function TourHost() {
             // Counted here rather than in an effect on `anchor`, so a
             // re-measure after a rotation is not a second view of one step.
             track({ name: 'tour_step_viewed', properties: { step: target, index } })
+            /*
+             * Said out loud, because a screen reader has no idea the sentence
+             * changed: the overlay stays mounted from the first step to the
+             * last, so only its contents move, and nothing about that moves
+             * VoiceOver's cursor. A no-op when no screen reader is running.
+             *
+             * The two messages are joined by a *third* message rather than by
+             * a full stop in code — punctuation and spacing before it differ
+             * by language, and this is read aloud in eight of them.
+             */
+            AccessibilityInfo.announceForAccessibility(
+              t('tour.announcement', {
+                title: t(`tour.${target}Title` as MessageKey),
+                body: t(tourBodyKey(target, state) as MessageKey),
+              }),
+            )
           })
         },
         left === MEASURE_RETRIES && step.tab ? SETTLE_MS : left === MEASURE_RETRIES ? 0 : RETRY_MS,
@@ -156,7 +173,7 @@ export function TourHost() {
     }
     // `state` itself is safe to depend on: it only ever gets a new identity
     // when the run actually moves, because nothing publishes without changing.
-  }, [goNext, screen.height, screen.width, state, step, target])
+  }, [goNext, screen.height, screen.width, state, step, t, target])
 
   if (!state || !step) return null
 
@@ -229,6 +246,14 @@ export function TourHost() {
 
         {layout ? (
           <View
+            /*
+             * Politely live as well as announced. The announcement above is
+             * the iOS path; `announceForAccessibility` does nothing on
+             * react-native-web, and TalkBack prefers a live region — and the
+             * bubble is exactly that, one region whose words change while it
+             * stays mounted.
+             */
+            accessibilityLiveRegion="polite"
             style={[
               styles.bubble,
               {

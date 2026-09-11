@@ -103,6 +103,7 @@ export const tr: Localized<EnMessages> = {
     feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Adım {current} / {total}',
     next: 'Sonraki',
     done: 'Anladım',

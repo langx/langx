@@ -93,6 +93,7 @@ export const fr: Localized<EnMessages> = {
     feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
   },
   tour: {
+    announcement: '{title}\u00a0: {body}',
     progress: 'Étape {current} sur {total}',
     next: 'Suivant',
     done: 'Compris',

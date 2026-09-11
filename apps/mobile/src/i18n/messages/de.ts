@@ -92,6 +92,7 @@ export const de: Localized<EnMessages> = {
     feedAsk: 'Bei einem Satz festgefahren? Poste ihn hier, jemand korrigiert ihn.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'Schritt {current} von {total}',
     next: 'Weiter',
     done: 'Alles klar',

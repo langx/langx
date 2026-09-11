@@ -101,6 +101,7 @@ export const ar: Localized<EnMessages> = {
     feedAsk: 'تعثرت في جملة؟ انشرها هنا وسيصححها أحدهم.',
   },
   tour: {
+    announcement: '{title}. {body}',
     progress: 'الخطوة {current} من {total}',
     next: 'التالي',
     done: 'فهمت',
