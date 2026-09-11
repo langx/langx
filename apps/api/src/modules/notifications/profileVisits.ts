@@ -16,6 +16,7 @@ import { translator } from '../../i18n'
 import { viewSummarySince } from '../moderation/profileViews'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
+import { recordNotification } from './inbox'
 import { claimOnce } from './ledger'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -33,7 +34,15 @@ const DAY_MS = 24 * 60 * 60 * 1000
 async function profilesAtLocalHour(
   db: Db,
   hour: number,
-  channel: NotificationChannel,
+  /**
+   * `null` asks for everybody at that hour, switch or no switch.
+   *
+   * The inbox needs that set: its rows are not a channel, and gating them on
+   * a push preference would turn the notification centre into a ninth switch
+   * by the back door. The push filter is then applied per profile by the
+   * caller, after the row is written.
+   */
+  channel: NotificationChannel | null,
   type: 'profileVisits',
   now: Date,
 ): Promise<Profile[]> {
@@ -49,7 +58,7 @@ async function profilesAtLocalHour(
 
   return profiles.filter(
     (profile) =>
-      notificationsAllowed(profile.settings?.notifications, type, channel) &&
+      (channel === null || notificationsAllowed(profile.settings?.notifications, type, channel)) &&
       localHour(now, profile.timezone ?? 'UTC') === hour,
   )
 }
@@ -75,7 +84,9 @@ export async function runProfileVisitsPushPass(
   const candidates = await profilesAtLocalHour(
     db,
     PROFILE_VISITS_LOCAL_HOUR,
-    'push',
+    // Everybody at this hour, not only those who want the push — the inbox
+    // row below is written for all of them, and the switch is applied after.
+    null,
     'profileVisits',
     now,
   )
@@ -85,6 +96,30 @@ export async function runProfileVisitsPushPass(
     const zone = profile.timezone ?? 'UTC'
     const summary = await viewSummarySince(db, profile._id, new Date(now.getTime() - DAY_MS))
     if (!summary || summary.count === 0) continue
+
+    /*
+     * A count, and deliberately no `actorId`.
+     *
+     * Who looked is a Pro feature — `viewSummarySince` returns `null` for the
+     * viewer list rather than an empty array precisely so the paywall's line
+     * is drawn in one module — and a row carrying an actor plus a hydrated
+     * name and face would hand that out to everybody in a JSON body.
+     *
+     * Inserted once per local day and never updated, which is the other half
+     * of why this is not one row per visitor. A row whose count grew would
+     * have to move its `createdAt` to be noticed, and a row that moves inside
+     * a keyset page makes a cursor skip or repeat — the exact failure
+     * `dateIdCursor` exists to prevent.
+     */
+    await recordNotification(db, {
+      userId: profile._id,
+      kind: 'profileVisits',
+      refId: localDayKey(now, zone),
+      count: summary.count,
+      at: now,
+    })
+
+    if (!notificationsAllowed(profile.settings?.notifications, 'profileVisits', 'push')) continue
 
     const byLocale = await tokensByLocale(db, profile._id)
     if (byLocale.size === 0) continue

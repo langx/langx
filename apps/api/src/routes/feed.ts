@@ -18,6 +18,7 @@ import { requireAuth } from '../middleware/requireAuth'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { addComment, deleteComment, listPostComments } from '../modules/feed/comments'
 import type { Post } from '../modules/feed/documents'
+import { recordNotification } from '../modules/notifications/inbox'
 import { notifyPostReply, type FeedReply } from '../modules/notifications/social'
 import {
   correctPost,
@@ -45,17 +46,54 @@ const childParamsSchema = z.object({ postId: z.string(), id: z.string() })
  * minute must not turn a successful write into a 500. `notifyPostReply`
  * swallows its own failures too; this catch is the belt to that's braces.
  */
+/**
+ * The push kind and the inbox kind are not the same word.
+ *
+ * `FeedReply` is what a push says — three shapes of "somebody answered you" —
+ * while the inbox names the thing that was written, because its row deep-links
+ * to it and its copy has to describe it. Kept as a table so adding a fourth
+ * kind of reply is a compile error here rather than a blank row.
+ */
+const INBOX_KIND = {
+  correction: 'postCorrection',
+  comment: 'postComment',
+  answer: 'pronunciationAnswer',
+} as const
+
 function tellTheAuthor(
   app: FastifyInstance,
   postId: string,
   responderId: string,
   kind: FeedReply,
+  replyId: string,
 ): void {
   void (async () => {
     const post = await app.mongo.db
       .collection<Post>(COLLECTIONS.posts)
       .findOne({ _id: new ObjectId(postId) }, { projection: { authorId: 1 } })
     if (!post) return
+    /*
+     * The row first, and outside the push's throttle on purpose.
+     *
+     * `notifyPostReply` sends at most one push per post per hour, because
+     * three people correcting the same sentence within a minute is the good
+     * case and three buzzes about it is how the switch gets turned off. The
+     * inbox has no such problem — nothing interrupts anybody — so all three
+     * land here, which is what makes this the place the others were always
+     * said to be waiting.
+     */
+    await recordNotification(
+      app.mongo.db,
+      {
+        userId: post.authorId,
+        kind: INBOX_KIND[kind],
+        // The reply's own id: one row per thing written, not per post.
+        refId: replyId,
+        actorId: responderId,
+        postId: post._id,
+      },
+      { io: app.io, logger: app.log },
+    )
     await notifyPostReply(
       app.mongo.db,
       { push: app.push, logger: app.log },
@@ -141,7 +179,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         app.env.STORAGE_PUBLIC_BASE_URL,
         app.normalizeAttachments,
       )
-      tellTheAuthor(app, request.params.id, request.userId, 'correction')
+      tellTheAuthor(app, request.params.id, request.userId, 'correction', correction._id)
       return reply.code(201).send(correction)
     },
   )
@@ -186,7 +224,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         request.params.id,
         request.body,
       )
-      tellTheAuthor(app, request.params.id, request.userId, 'comment')
+      tellTheAuthor(app, request.params.id, request.userId, 'comment', comment._id)
       return reply.code(201).send(comment)
     },
   )
@@ -248,7 +286,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         app.env.STORAGE_PUBLIC_BASE_URL,
         app.normalizeAttachments,
       )
-      tellTheAuthor(app, request.params.id, request.userId, 'answer')
+      tellTheAuthor(app, request.params.id, request.userId, 'answer', answer._id)
       return reply.code(201).send(answer)
     },
   )

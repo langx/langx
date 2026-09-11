@@ -22,6 +22,7 @@ import {
   type MessageTranslation,
   type MessageType,
   type CreateShareCardInput,
+  type NotificationsPage,
   type ShareCardResult,
 } from '@langx/shared'
 import type {
@@ -70,6 +71,7 @@ import {
   type QueryClient,
 } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
+import { markPagesRead } from '../lib/notificationInbox'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
@@ -181,6 +183,20 @@ export const keys = {
    * and would throw. `invalidateUnread` is what keeps the two in step instead.
    */
   unread: ['unread'] as const,
+  /**
+   * The notification centre, paged. Its own top-level prefix rather than a
+   * corner of `['feed']`: `feedCache`'s writers patch that one with
+   * `setQueriesData` and walk it as pages of posts.
+   */
+  notifications: ['notifications'] as const,
+  /*
+   * The number on the bell and on the Feed tab — and, exactly as with
+   * `unread` above, deliberately **not** `['notifications', 'unread']`. The
+   * moment anything patches the list prefix with `setQueriesData` it walks
+   * `data.pages`, and a bare number handed to that walker throws.
+   * `invalidateNotifications` is what keeps the two in step instead.
+   */
+  notificationsUnread: ['notificationsUnread'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
   contributors: ['contributors'] as const,
@@ -1046,6 +1062,101 @@ export function useLikers(targetType: LikeTargetType, targetId: string) {
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
+}
+
+/**
+ * The notification centre.
+ *
+ * `maxPages` is a bound on what one invalidation costs: an active infinite
+ * query refetches **every** loaded page, and `notification:new` can fire while
+ * this screen is open and scrolled.
+ */
+export function useNotifications(enabled = true) {
+  return useInfiniteQuery({
+    queryKey: keys.notifications,
+    queryFn: ({ pageParam }) =>
+      api.get<NotificationsPage>(
+        `/me/notifications${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    maxPages: 10,
+    enabled,
+  })
+}
+
+/**
+ * The number on the bell, and on the Feed tab.
+ *
+ * Its own request rather than a count taken off the list, for the reason
+ * `useUnreadTotal` gives: the badge has to be right on tabs that never open
+ * the list, and the list is paged besides.
+ */
+export function useNotificationUnread(enabled = true) {
+  return useQuery({
+    queryKey: keys.notificationsUnread,
+    queryFn: async () => (await api.get<{ total: number }>('/me/notifications/unread')).total,
+    enabled,
+  })
+}
+
+/**
+ * "Mark all read", and only ever from that button.
+ *
+ * Opening the centre does not do this. Somebody who came to check one name
+ * has not dealt with the other eleven, and clearing them on their behalf
+ * throws away the only record of what they have not looked at yet.
+ *
+ * Optimistic on the count and patching on the list, and neither is a
+ * shortcut: the badge has to go in the same frame the button is pressed, and
+ * the list must not refetch and jump under the thumb that pressed it. Which
+ * is why `invalidateNotifications` is deliberately not called here — it is
+ * the helper for "something changed that this client did not do", and this
+ * is the opposite.
+ */
+export function useMarkNotificationsRead() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id?: string) =>
+      api.post<{ read: number }>('/me/notifications/read', id ? { id } : {}),
+    onMutate: (id) => {
+      const previous = client.getQueryData<number>(keys.notificationsUnread)
+      /*
+       * One row down, or the whole thing to zero.
+       *
+       * Optimistic either way, because the badge has to move in the same frame
+       * as the thing that moved it — a tap that opens a post while the bell
+       * still reads what it read a second ago is the bug this avoids.
+       */
+      client.setQueryData<number>(keys.notificationsUnread, (total) =>
+        id === undefined ? 0 : Math.max(0, (total ?? 0) - 1),
+      )
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous !== undefined) {
+        client.setQueryData(keys.notificationsUnread, context.previous)
+      }
+    },
+    onSuccess: (_result, id) => {
+      // Stamped into the loaded pages rather than refetched: the dot has to go
+      // the instant it is acted on, and the list must not reorder under it.
+      client.setQueryData<InfiniteData<NotificationsPage>>(keys.notifications, (data) =>
+        markPagesRead(data, id),
+      )
+    },
+  })
+}
+
+/**
+ * Called wherever something wrote a notification this client did not.
+ *
+ * Both halves, for the reason `invalidateUnread` gives: the bell is on screen
+ * on tabs that never load the list, so the list's own refetch cannot reach it.
+ */
+export function invalidateNotifications(client: QueryClient): void {
+  void client.invalidateQueries({ queryKey: keys.notifications })
+  void client.invalidateQueries({ queryKey: keys.notificationsUnread })
 }
 
 /**

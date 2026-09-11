@@ -32,6 +32,7 @@ import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
 import { activityRoutes } from './routes/activity'
 import { messageRoutes } from './routes/messages'
+import { notificationRoutes } from './routes/notifications'
 import { moderationRoutes } from './routes/moderation'
 import { profileRoutes } from './routes/profiles'
 import { avatarRoutes } from './routes/avatar'
@@ -310,6 +311,7 @@ export async function buildApp({
   await app.register(likeRoutes)
   await app.register(conversationRoutes)
   await app.register(messageRoutes)
+  await app.register(notificationRoutes)
   await app.register(translationRoutes)
   await app.register(billingRoutes)
   await app.register(resendWebhookRoutes)

@@ -57,11 +57,14 @@ export function notificationRoute(data: unknown): Href | null {
     case 'social':
       // A correction or an answer lands on the post it is about; a follow on
       // the person who did it. Neither id is guaranteed — a batch of likes
-      // carries a post, a follow carries a handle — so the feed is the
-      // fallback, which is at least the right room.
+      // carries a post, a follow carries a handle.
       if (typeof postId === 'string' && postId.length > 0) return `/post/${postId}`
       if (typeof handle === 'string' && handle.length > 0) return `/${handle}`
-      return '/feed'
+      // Neither survived, so the push cannot name what it is about — but the
+      // notification centre can, because the row it came from is the first
+      // thing in it. The feed used to be the fallback, which was the right
+      // room and the wrong screen: nothing in it mentions the thing notified.
+      return '/notifications'
     case 'wallet':
       // Tokens arrived. The wallet is where they are counted.
       return '/wallet'

@@ -1,6 +1,7 @@
 import { TOKEN_RULES, activityScore, poolShare, shiftDayKey, utcDayKey } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { recordNotifications, type RecordNotificationInput } from '../notifications/inbox'
 import type { Profile } from '../profiles/profiles'
 import { countersOf, type DailyActivity } from './dailyActivity'
 import { awardTokens, type TokenLedgerEntry } from './ledger'
@@ -184,6 +185,13 @@ export async function runDailyPool(
 
   let distributed = 0
   let paid = 0
+  /*
+   * Collected here and written in one batch below rather than a row at a time
+   * inside the loop: this runs under the day's lock, and a payout to ten
+   * thousand people should not become ten thousand extra round trips before
+   * the lock is released.
+   */
+  const news: RecordNotificationInput[] = []
   for (const { userId, score } of eligible) {
     const amount = poolShare(score, totalScore)
     const award = await awardTokens(db, {
@@ -196,8 +204,29 @@ export async function runDailyPool(
     if (award.awarded) {
       distributed += award.amount
       paid++
+      news.push({
+        userId,
+        kind: 'walletPool',
+        // The same key the ledger row carries, so a re-run of a half-finished
+        // pass cannot tell anybody twice about one day's pool.
+        refId: day,
+        count: award.amount,
+        at: closedAt,
+      })
     }
   }
+
+  /*
+   * The inbox hears at 04:00 with the money; the push waits for 09:00 on the
+   * reader's own clock — `runPoolPayoutPass` still owns that, and its switch.
+   * The two are deliberately out of step: one is a record, the other is a
+   * phone buzzing, and only the second has an opinion about what hour it is.
+   *
+   * No socket server down here, and none should be threaded in. Nobody is
+   * watching a badge at four in the morning, and the client refetches the
+   * count the next time it comes to the foreground.
+   */
+  await recordNotifications(db, news)
 
   const result: PoolResult = {
     day,

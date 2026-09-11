@@ -44,6 +44,7 @@ describe('the badge round-up', () => {
       COLLECTIONS.user,
       COLLECTIONS.devices,
       COLLECTIONS.notificationLedger,
+      COLLECTIONS.notifications,
       COLLECTIONS.tokenLedger,
       COLLECTIONS.tokenAggregates,
       COLLECTIONS.postCorrections,
@@ -201,6 +202,36 @@ describe('the badge round-up', () => {
     expect((await runBadgeRoundUpPass(handle.db, senders, now)).sent).toBe(0)
     expect(push.sent).toHaveLength(0)
     expect(await notifiedIdsOf(userId)).toContain('messages.100')
+  })
+
+  /**
+   * The switches govern what *leaves* the app, and nothing else.
+   *
+   * Pins the notification centre's one load-bearing rule in the place it is
+   * easiest to undo: the inbox row is written above the `wantsPush` /
+   * `wantsEmail` gate in `notifyOne`, and moving it below — which reads like
+   * tidying — silently turns the centre into a ninth switch nobody agreed to.
+   * Somebody who muted badge push asked for quiet, not for the badges screen
+   * to stay a mystery.
+   */
+  it('still records the badge for somebody who wants no notice of it', async () => {
+    const userId = await newProfile({
+      withDevice: true,
+      notifications: { badges: { push: false, email: false } },
+    })
+    await runBadgeRoundUpPass(handle.db, senders, now)
+    await handle.db
+      .collection(COLLECTIONS.profiles)
+      .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 100 } })
+    await runBadgeRoundUpPass(handle.db, senders, now)
+
+    expect(push.sent).toHaveLength(0)
+    expect(sender.messages).toHaveLength(0)
+    const rows = await handle.db
+      .collection<{ refId: string }>(COLLECTIONS.notifications)
+      .find({ userId, kind: 'badgeEarned' })
+      .toArray()
+    expect(rows.map((row) => row.refId)).toContain('messages.100')
   })
 
   /**

@@ -955,6 +955,50 @@ export const en = {
     failed: 'Could not report',
   },
 
+  /**
+   * The notification centre. Its own namespace rather than a corner of
+   * `notifications` above: that one is the settings switches, and three of its
+   * keys are words this one also needs.
+   */
+  inbox: {
+    title: 'Notifications',
+    bell: 'Notifications',
+    unread: 'Unread',
+    markAllRead: 'Mark all read',
+    emptyTitle: 'Nothing yet',
+    emptyBody: 'Follows, corrections and likes on what you post land here.',
+    follow: '{name} followed you',
+    postComment: '{name} commented on your post',
+    postCorrection: '{name} corrected your sentence',
+    pronunciationAnswer: '{name} recorded your sentence',
+    like: '{name} liked your post',
+    /** `{count}` is how many *others*, so it is never zero. */
+    likeOthers: {
+      one: '{name} and {count} other liked your post',
+      other: '{name} and {count} others liked your post',
+    },
+    postCommentOthers: {
+      one: '{name} and {count} other commented on your post',
+      other: '{name} and {count} others commented on your post',
+    },
+    postCorrectionOthers: {
+      one: '{name} and {count} other corrected your sentence',
+      other: '{name} and {count} others corrected your sentence',
+    },
+    pronunciationAnswerOthers: {
+      one: '{name} and {count} other recorded your sentence',
+      other: '{name} and {count} others recorded your sentence',
+    },
+    badgeEarned: 'You earned a new badge',
+    walletPool: {
+      one: "Yesterday's pool paid you {count} token",
+      other: "Yesterday's pool paid you {count} tokens",
+    },
+    profileVisits: {
+      one: '{count} person looked at your profile',
+      other: '{count} people looked at your profile',
+    },
+  },
   feed: {
     topTag: 'Top',
     ask: '+ Ask',
