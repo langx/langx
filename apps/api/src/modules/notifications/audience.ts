@@ -112,14 +112,22 @@ export function audienceAction(
  * addresses a stranger by a serial number: "Hi langx_6430,". Treated as no
  * name at all, which is what it is, so `{{firstName}}` falls back to "there".
  *
+ * The other 40 carry their own email address as their name, 34 of them an
+ * Apple relay address, and they read worse still: "Hi 8yr8jmtvmn@privaterelay
+ * .appleid.com,". v1 stored the address whenever the provider handed over no
+ * name, so this is the same absence wearing a different mask.
+ *
  * Only the v1 row's own name is filtered. A `displayName` on a profile was
  * typed by somebody, whatever it looks like.
  */
 const V1_GENERATED_NAME = /^langx_[0-9a-f]{4}$/
+const LOOKS_LIKE_ADDRESS = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function chosenName(name: string | undefined): string | undefined {
+export function chosenName(name: string | undefined): string | undefined {
   if (!name) return undefined
-  return V1_GENERATED_NAME.test(name) ? undefined : name
+  const trimmed = name.trim()
+  if (V1_GENERATED_NAME.test(trimmed) || LOOKS_LIKE_ADDRESS.test(trimmed)) return undefined
+  return name
 }
 
 /**

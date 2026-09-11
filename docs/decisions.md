@@ -3671,7 +3671,7 @@ and the throttle does not know a verification link from a broadcast.
 
 So the script now writes the campaign into `campaignQueue` and the
 notification scheduler sends it: a day's budget from
-`CAMPAIGN_WARMUP_PER_DAY` (250, 500, 1000, 2000, 4000), spread over the
+`CAMPAIGN_WARMUP_PER_DAY` (500, 1000, 2000, 4000, 8000), spread over the
 half-hour ticks left in `CAMPAIGN_SEND_WINDOW_UTC`, so a process restarted at
 noon carries on at the right pace rather than starting the day over. Two
 instances are serialised through `jobRuns` on the tick's half-hour — that is
