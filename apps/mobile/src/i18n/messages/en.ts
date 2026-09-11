@@ -597,8 +597,11 @@ export const en = {
       '{carried} carried over from your old balance, plus {bonus} for coming back.',
     tokensBonus: { one: '{count} token', other: '{count} tokens' },
     tokensBonusBody: 'A welcome-back bonus to start with. Earn more by talking and by correcting.',
-    streak: '{days} best streak',
-    streakBody: 'Kept as your record. Your live streak starts fresh from today.',
+    streak: {
+      one: '{count}-day streak, still going',
+      other: '{count}-day streak, still going',
+    },
+    streakBody: 'It came back alive, not as a record. Show up tomorrow to keep it.',
     tierForLife: '{plan}, for life',
     proBody:
       'For what you built in v1. It never expires and there is nothing to pay — thank you for being here first.',

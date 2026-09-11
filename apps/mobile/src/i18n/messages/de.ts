@@ -547,8 +547,11 @@ export const de: Localized<EnMessages> = {
     tokensBonus: { one: '{count} Token', other: '{count} Token' },
     tokensBonusBody:
       'Ein Willkommensbonus für den Anfang. Mehr gibt es fürs Reden und Korrigieren.',
-    streak: 'Beste Serie: {days}',
-    streakBody: 'Bleibt als dein Rekord stehen. Deine laufende Serie fängt heute neu an.',
+    streak: {
+      one: '{count} Tag in Folge, läuft weiter',
+      other: '{count} Tage in Folge, läuft weiter',
+    },
+    streakBody: 'Sie kam lebendig zurück, nicht als Rekord. Komm morgen wieder, dann bleibt sie.',
     tierForLife: '{plan}, auf Lebenszeit',
     proBody:
       'Für das, was du in v1 aufgebaut hast. Es läuft nie ab und kostet nichts — danke, dass du von Anfang an dabei warst.',

@@ -42,7 +42,7 @@ function Line({
 /**
  * The one screen a returning v1 user sees, and the only "onboarding" they get:
  * a full restore skips the wizard entirely, so without this they would land on
- * a discovery feed with a handle, a streak record and a token balance they were
+ * a discovery feed with a handle, a live streak and a token balance they were
  * never told about.
  *
  * It counts back what actually returned rather than saying "welcome back" and
@@ -146,10 +146,17 @@ export default function WelcomeBackScreen() {
             />
           )}
 
+          {/*
+            `frozenStreak` is the restore's only streak number, and it is the
+            *live* one: `legacyRestore` sets `current` to it and dates
+            `lastQualifiedDay` today. The wording has to say so — a screen that
+            calls it a record contradicts the streak the app is already
+            counting, on the first screen the person sees.
+          */}
           {frozenStreak > 0 ? (
             <Line
               icon="zap"
-              title={t('welcomeBack.streak', { days: t('format.days', { count: frozenStreak }) })}
+              title={t('welcomeBack.streak', { count: frozenStreak })}
               body={t('welcomeBack.streakBody')}
             />
           ) : null}
