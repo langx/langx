@@ -93,6 +93,32 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
 export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'cityId'] as const
 
 /**
+ * **Temporary.** Whether an unfiltered discovery search accepts a one-sided
+ * language match.
+ *
+ * The honest rule is mutual fit — their native is something I am learning
+ * *and* their learning is something I speak — and with a user base this size
+ * that conjunction empties the screen. Somebody signs up, opens Discover and
+ * sees nothing, which is the one first impression there is no recovering
+ * from. So while this is on, either side on its own is enough: a Turkish
+ * native learning English sees an English native learning French.
+ *
+ * Two things it deliberately does not do. Someone who shares no language at
+ * all is still not a candidate — this widens the match, it does not remove
+ * it. And a search that named its own language scope keeps both sides:
+ * a relaxation that exists to fill an empty *default* must not overrule a
+ * question somebody asked explicitly.
+ *
+ * Nothing orders the two kinds apart, because nothing has to —
+ * `recommended`'s score already sums both intersections, so a mutual fit
+ * scores above a one-sided one on its own.
+ *
+ * Flip to `false` once there are enough profiles for the honest rule to fill
+ * a page, and delete the tests that pin the relaxed behaviour with it.
+ */
+export const DISCOVERY_CROSS_MATCH_FALLBACK: boolean = true
+
+/**
  * `en,ru` → `['en', 'ru']`. Capped at the largest allowance any tier has, so
  * a crafted query cannot post two hundred codes, and each code is a real one.
  */
