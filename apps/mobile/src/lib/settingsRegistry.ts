@@ -136,6 +136,14 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         titleKey: 'settings.pushThisDevice',
         bodyKey: 'settings.pushThisDeviceBody',
       },
+      // Under the switch it explains, exactly as `privacy.locationPermission`
+      // sits under the two rows it explains. The switch above can be off for
+      // four different reasons and none of them is something a toggle can say.
+      {
+        id: 'notifications.permission',
+        titleKey: 'notifications.guide.rowTitle',
+        bodyKey: 'notifications.guide.rowBody',
+      },
       // Then one item per kind; the row draws the kind's two channels under it.
       ...NOTIFICATION_TYPES.map((type) => ({
         id: `notifications.${type}`,

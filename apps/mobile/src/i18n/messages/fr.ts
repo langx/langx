@@ -589,6 +589,35 @@ export const fr: Localized<EnMessages> = {
       'Quand quelqu’un t’écrit, un rappel à {hour}h00 si ta série est sur le point de se rompre, et une fois par jour combien de personnes ont vu ton profil.',
     notNow: 'Pas maintenant',
     microphonePermission: 'LangX a besoin du micro pour enregistrer un message vocal.',
+    guide: {
+      title: 'Autorisation de notifications',
+      rowTitle: 'Autorisation de notifications',
+      rowBody: 'Où activer les notifications, et quoi faire si votre téléphone ne demande plus.',
+      grantedTitle: 'Les notifications sont activées',
+      grantedBody:
+        'Ce téléphone peut recevoir les notifications de LangX. Lesquelles vous recevez, c’est la liste de l’écran précédent, et vous pouvez retirer l’autorisation à tout moment dans les réglages de l’appareil.',
+      askableTitle: 'LangX ne peut pas encore vous notifier',
+      askableBody:
+        'À l’arrivée d’un message, un rappel le soir si votre série est sur le point de se rompre, et une fois par jour le nombre de personnes ayant vu votre profil. Rien n’est envoyé pendant que vous lisez une conversation.',
+      allow: 'Autoriser les notifications',
+      blockedTitle: 'Votre appareil ne redemandera pas',
+      blockedBody:
+        'Les notifications ont été refusées à LangX : l’app ne peut donc plus afficher la demande d’autorisation. Vous pouvez toujours les activer dans les réglages de l’appareil.',
+      iosStep1: 'Ouvrez Réglages',
+      iosStep2: 'Trouvez LangX dans la liste',
+      iosStep3: 'Touchez Notifications et activez « Autoriser les notifications »',
+      androidStep1: 'Ouvrez Paramètres',
+      androidStep2: 'Allez dans Applications → LangX',
+      androidStep3: 'Touchez Notifications',
+      androidStep4: 'Activez « Toutes les notifications LangX »',
+      silencedTitle: 'Coupées sur ce téléphone',
+      silencedBody:
+        'Votre appareil autorise les notifications, mais elles sont désactivées pour ce téléphone dans LangX. Réactivez « Notifications sur ce téléphone », un écran plus haut — vos autres appareils ne sont concernés ni dans un cas ni dans l’autre.',
+      webTitle: 'Pas de push dans un navigateur',
+      webBody:
+        'Les notifications vous parviennent dans l’app LangX pour iPhone ou Android. Il n’y a rien à activer ici.',
+      openSettings: 'Ouvrir les réglages',
+    },
   },
 
   corrections: {

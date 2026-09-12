@@ -583,6 +583,35 @@ export const es: Localized<EnMessages> = {
       'Cuando alguien te escribe, un aviso a las {hour}:00 si tu racha está a punto de romperse, y una vez al día cuánta gente vio tu perfil.',
     notNow: 'Ahora no',
     microphonePermission: 'LangX necesita acceso al micrófono para grabar un mensaje de voz.',
+    guide: {
+      title: 'Permiso de notificaciones',
+      rowTitle: 'Permiso de notificaciones',
+      rowBody: 'Dónde activar las notificaciones y qué hacer si tu teléfono dejó de preguntar.',
+      grantedTitle: 'Las notificaciones están activadas',
+      grantedBody:
+        'Este teléfono puede recibir notificaciones de LangX. Cuáles recibes es la lista de la pantalla anterior, y puedes retirar el permiso cuando quieras desde los ajustes del dispositivo.',
+      askableTitle: 'LangX todavía no puede avisarte',
+      askableBody:
+        'Cuando llega un mensaje, un aviso por la tarde si tu racha está a punto de romperse, y una vez al día cuánta gente miró tu perfil. Nada se envía mientras estás leyendo un chat.',
+      allow: 'Permitir notificaciones',
+      blockedTitle: 'Tu dispositivo no volverá a preguntar',
+      blockedBody:
+        'Se denegaron las notificaciones a LangX, así que la app ya no puede mostrar el diálogo de permiso. Aun así puedes activarlas en los ajustes del dispositivo.',
+      iosStep1: 'Abre Ajustes',
+      iosStep2: 'Busca LangX en la lista',
+      iosStep3: 'Toca Notificaciones y activa “Permitir notificaciones”',
+      androidStep1: 'Abre Ajustes',
+      androidStep2: 'Ve a Aplicaciones → LangX',
+      androidStep3: 'Toca Notificaciones',
+      androidStep4: 'Activa “Todas las notificaciones de LangX”',
+      silencedTitle: 'Silenciadas en este teléfono',
+      silencedBody:
+        'Tu dispositivo permite las notificaciones, pero en LangX están desactivadas para este teléfono. Vuelve a activar “Notificaciones en este teléfono”, una pantalla más arriba: tus otros dispositivos no se ven afectados en ningún caso.',
+      webTitle: 'No hay push en el navegador',
+      webBody:
+        'Las notificaciones te llegan en la app de LangX para iPhone o Android. Aquí no hay nada que activar.',
+      openSettings: 'Abrir ajustes',
+    },
   },
 
   corrections: {

@@ -87,3 +87,67 @@ export function pushSwitchAction(input: {
   if (input.granted) return 'register'
   return input.canAskAgain ? 'ask' : 'openSettings'
 }
+
+/**
+ * What the notification guide screen has to say, as one value.
+ *
+ * Mirrors `locationGuideStatus`, and splits the refusals for the same reason:
+ * one of them the app can still raise a dialog for, and the other only the
+ * Settings app can undo. Telling somebody to "allow it" when nothing will ever
+ * ask again is how a help screen becomes the problem.
+ *
+ * `silenced` is the fourth, and the one this permission has that location does
+ * not: the OS granted notifications and LangX's own per-device switch is off.
+ * Nothing is wrong with the phone and the Settings app has nothing to fix —
+ * the switch one screen up is the answer, and saying "notifications are on"
+ * to somebody receiving none would be a lie by omission.
+ */
+export type PushGuideStatus = 'granted' | 'askable' | 'blocked' | 'silenced' | 'web'
+
+export function pushGuideStatus(input: {
+  granted: boolean
+  canAskAgain: boolean
+  /** LangX's own switch for this phone, not the OS's. */
+  offOnThisDevice: boolean
+  platform: string
+}): PushGuideStatus {
+  // First, and not as a variety of `blocked`: there is no push on the web at
+  // all, so every instruction the other branches give names a screen that does
+  // not exist there.
+  if (input.platform === 'web') return 'web'
+  if (!input.granted) return input.canAskAgain ? 'askable' : 'blocked'
+  return input.offOnThisDevice ? 'silenced' : 'granted'
+}
+
+/**
+ * The same decision, made from what the OS and this device currently say.
+ *
+ * `platform` is a parameter rather than something this module reads, and that
+ * is `locationPermission.ts`'s reason exactly: a dynamic import of
+ * `react-native` compiles to Metro's `importAll`, which touches every named
+ * export on the barrel — including the deprecated getters that exist only to
+ * throw. `noDynamicReactNativeImport.test.ts` is what keeps it that way.
+ */
+export async function readPushGuideStatus(platform: string): Promise<PushGuideStatus> {
+  // Imported here rather than at the top, like `readLocationGuideStatus` does
+  // with `./location`: `devicePush` reaches the API client and the API client
+  // reaches `react-native`, and this module has to stay loadable by the tests
+  // that cover the decision above.
+  const { pushEnabledOnThisDevice } = await import('./devicePush')
+  const offOnThisDevice = !(await pushEnabledOnThisDevice())
+  // Answered before `expo-notifications` is reached, which is precisely what
+  // must not happen in a browser.
+  if (platform === 'web') return pushGuideStatus({ ...NO_PERMISSION, offOnThisDevice, platform })
+
+  const Notifications = await import('expo-notifications')
+  const permission = await Notifications.getPermissionsAsync()
+  return pushGuideStatus({
+    granted: permission.granted,
+    canAskAgain: permission.canAskAgain,
+    offOnThisDevice,
+    platform,
+  })
+}
+
+/** What the web has, and the shape `pushGuideStatus` answers `web` to anyway. */
+const NO_PERMISSION = { granted: false, canAskAgain: false }

@@ -586,6 +586,35 @@ export const tr: Localized<EnMessages> = {
       'Biri sana mesaj attığında, serin kopmak üzereyse saat {hour}:00’da bir dürtme ve günde bir kez profiline kaç kişinin baktığı.',
     notNow: 'Şimdi değil',
     microphonePermission: 'Sesli mesaj kaydetmek için LangX’in mikrofon iznine ihtiyacı var.',
+    guide: {
+      title: 'Bildirim izni',
+      rowTitle: 'Bildirim izni',
+      rowBody: 'Bildirimler nasıl açılır ve telefonun artık sormuyorsa ne yapmalı.',
+      grantedTitle: 'Bildirimler açık',
+      grantedBody:
+        'Bu telefon LangX’ten bildirim alabiliyor. Hangilerini alacağın bir önceki ekrandaki liste; izni istediğin an cihaz ayarlarından geri alabilirsin.',
+      askableTitle: 'LangX sana henüz bildirim gönderemiyor',
+      askableBody:
+        'Bir mesaj geldiğinde, serin kopmak üzereyse akşam bir hatırlatma, ve günde bir kez profiline kaç kişinin baktığı. Sen sohbeti okurken hiçbir şey gönderilmiyor.',
+      allow: 'Bildirimlere izin ver',
+      blockedTitle: 'Cihazın bir daha sormayacak',
+      blockedBody:
+        'LangX için bildirimler reddedilmiş, bu yüzden uygulama artık izin penceresini açamıyor. Bildirimleri cihaz ayarlarından yine de açabilirsin.',
+      iosStep1: 'Ayarlar’ı aç',
+      iosStep2: 'Listede LangX’i bul',
+      iosStep3: 'Bildirimler’e dokun ve “Bildirimlere İzin Ver”i aç',
+      androidStep1: 'Ayarlar’ı aç',
+      androidStep2: 'Uygulamalar → LangX yolunu izle',
+      androidStep3: 'Bildirimler’e dokun',
+      androidStep4: '“Tüm LangX bildirimleri”ni aç',
+      silencedTitle: 'Bu telefonda susturulmuş',
+      silencedBody:
+        'Cihazın bildirimlere izin veriyor ama LangX içinde bu telefon için kapalılar. Bir üstteki ekrandan “Bu telefonda bildirimler”i geri aç — diğer cihazların her iki durumda da etkilenmiyor.',
+      webTitle: 'Tarayıcıda push yok',
+      webBody:
+        'Bildirimler sana iPhone ya da Android’deki LangX uygulamasından ulaşıyor. Bu sayfada açılacak bir şey yok.',
+      openSettings: 'Ayarları aç',
+    },
   },
 
   corrections: {

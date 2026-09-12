@@ -4393,3 +4393,32 @@ somebody who taps a switch labelled "notifications on this phone" has asked in
 so many words. Where iOS will not raise it again the switch opens the Settings
 app instead, which is the only place left that can change the answer, and the
 screen re-reads the permission on focus for when they come back from it.
+
+## Notification permission gets the page location already had
+
+`settings/location.tsx` exists because "location does not work" has four
+different answers and only one of them is "allow it" — the OS may never ask
+again, the device-wide switch may be off, and a browser settles it somewhere
+the app cannot reach. Notifications have exactly that shape and had no such
+page: the only thing the app could say was a switch that sprang back.
+
+So there is a second guide, `settings/push.tsx`, and it is deliberately the
+same screen: the same states-as-a-value split (`pushGuideStatus`, pure and
+tested, beside `locationGuideStatus`), the same numbered steps per platform,
+the same re-read on every foreground — the path both pages exist for ends in
+the Settings app, and a guide still saying "your device will not ask again"
+when you come back from granting it looks broken at the moment it worked.
+
+Its fourth state is the one location does not have. `servicesOff` there means
+the device switch is off; `silenced` here means **LangX's own** per-device
+switch is off while the OS is perfectly willing. Nothing in the Settings app
+would fix it, so that state offers no button at all and names the switch one
+screen up instead. Calling it "on" because the OS said yes would be a lie to
+somebody receiving nothing, which is the failure this whole run of work
+started from.
+
+The row sits under the switch it explains, exactly where
+`privacy.locationPermission` sits under the two rows it explains, and it
+carries no live state for that row's stated reason: what the permission
+currently is takes an OS read and an `AppState` listener to stay true, and a
+row that goes stale in a list of switches reads as a switch that is wrong.
