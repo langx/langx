@@ -1132,16 +1132,24 @@ describe('Faz 3 — discovery aggregation', () => {
   })
 
   describe('sort presets and pagination', () => {
+    /*
+     * `af` / `am`, a pair no other fixture in this file uses on either side.
+     * It asserts an exact set, and the suite shares one database — which used
+     * to mean the pair had to be unique as a *pair*. Under the cross-match
+     * fallback either code on its own pulls a profile in, so each side has to
+     * be unique too. `ro` / `bg` was not, and this asserted five people while
+     * seven fitted.
+     */
     it('sort=active pages through by lastActiveAt with no duplicates or gaps', async () => {
       const viewer = await newUser('active-sort-viewer@example.com', {
-        nativeLanguages: [{ code: 'ro' }],
-        learning: [{ code: 'bg', level: 'intermediate', priority: 1 }],
+        nativeLanguages: [{ code: 'af' }],
+        learning: [{ code: 'am', level: 'intermediate', priority: 1 }],
       })
       const candidates = []
       for (let i = 0; i < 5; i++) {
         const c = await newUser(`active-sort-${i}@example.com`, {
-          nativeLanguages: [{ code: 'bg' }],
-          learning: [{ code: 'ro', level: 'intermediate', priority: 1 }],
+          nativeLanguages: [{ code: 'am' }],
+          learning: [{ code: 'af', level: 'intermediate', priority: 1 }],
         })
         await setLastActiveAt(c.userId, new Date(Date.now() - i * 1000))
         candidates.push(c)
@@ -1672,9 +1680,16 @@ describe('Faz 3 — discovery aggregation', () => {
     it("obeys the list's scope: no language fit and blocked are both absent", async () => {
       const viewer = await viewerFor('boost-scope-viewer@example.com')
       const blocked = await candidateFor('boost-blocked@example.com')
+      /*
+       * Outside the scope in *both* directions. It used to be native `rm` —
+       * the viewer's learning language — which was outside the mutual rule
+       * and inside the cross-match fallback, so the fixture named "no fit"
+       * became a fit. Neither side is one of the viewer's now, which is what
+       * the test always meant.
+       */
       const noFit = await newUser('boost-no-fit@example.com', {
-        nativeLanguages: [{ code: 'rm' }],
-        learning: [{ code: 'is', level: 'intermediate', priority: 1 }],
+        nativeLanguages: [{ code: 'is' }],
+        learning: [{ code: 'mt', level: 'intermediate', priority: 1 }],
       })
       await setTier(blocked.userId, 'pro_plus')
       await setTier(noFit.userId, 'pro_plus')
