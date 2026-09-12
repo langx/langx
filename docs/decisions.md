@@ -4483,3 +4483,56 @@ can reach is worse than either honest answer.
 
 Showing it again does not reopen the report. The second decision corrects the
 first rather than handing somebody work that is already done.
+
+## Discovery accepts a one-sided match while the app is this small — temporarily
+
+Mutual fit is the honest rule and the whole point of the product: their native
+is something I am learning **and** their learning is something I speak. With
+the number of profiles there are today that conjunction returns nothing for
+most people. Somebody signs up, finishes onboarding, opens Discover and sees an
+empty screen — which is not a list with no results, it is an app that looks
+broken, and it is the one first impression there is no recovering from.
+
+So `DISCOVERY_CROSS_MATCH_FALLBACK` in `packages/shared` turns the `and` into
+an `or` for the **default** search. A Turkish native learning English now sees
+an English native learning French: one side fits, the other does not, and a
+half-fit somebody can still talk to beats a blank screen. It is one constant
+and it is meant to be flipped back.
+
+Three boundaries, each of which is the thing the relaxation could easily have
+broken:
+
+**It widens the match, it does not remove it.** Somebody who shares no language
+at all in either direction is still not a candidate. The screen fills with
+people you have something in common with, not with everybody.
+
+**A named language scope restores both directions.** `learningLanguages` or
+`nativeLanguages` on the request is somebody asking about particular languages,
+and the answer to a question asked explicitly is the strict one. Note that
+_either_ side named restores _both_ — scoping the relaxation to the side the
+request happened to narrow would answer a question nobody asked.
+
+Other filters do not turn it off, deliberately. Age, country or gender narrow a
+pool that is already too small; a relaxation that exists to fill an empty
+screen must not switch itself off the moment somebody touches the filter
+sheet. The level band is the one that constrains the match anyway, because
+`$elemMatch` on `learning` re-imposes "their learning is one of my natives" by
+construction — that is consistent rather than accidental, and it is what a
+level filter means.
+
+**Ranking needed no rule.** `recommended` scores the two intersections and
+sums them, so a mutual fit scores 2 where a one-sided fit scores 1 and leads
+it without anything being added. `active` and `nearby` intermix them, which is
+correct: those sorts answer "who is here" and "who is close", not "who fits
+best".
+
+The one thing this cost is a shape. The language fit is a top-level `$or` now,
+and the boosted strip spreads the shared scope into an object where it adds an
+expiry `$or` of its own — the second key would have silently replaced the
+first, and the strip would have shown every paying member in the app
+regardless of language, with nothing failing anywhere. The strip composes the
+two halves with `$and` instead, and a test pins it.
+
+Reverting is the constant, the tests named `cross-match fallback`, and the
+second case in the index-usage test. Do it once there are enough profiles for
+the honest rule to fill a page.

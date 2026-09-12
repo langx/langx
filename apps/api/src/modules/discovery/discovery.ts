@@ -6,6 +6,7 @@ import {
   DISCOVERY_BOOSTED_CANDIDATE_MAX,
   DISCOVERY_BOOSTED_LIMIT,
   DISCOVERY_BOOSTED_TIERS,
+  DISCOVERY_CROSS_MATCH_FALLBACK,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
@@ -200,6 +201,27 @@ async function resolveDiscoveryScope(
   // list, the leaderboard and profile views — see `blockedUserIds`.
   const excludedIds = [viewerId, ...(await blockedUserIds(db, viewerId))]
 
+  /**
+   * Mutual fit, both directions — the reason for the two split indexes.
+   *
+   * `DISCOVERY_CROSS_MATCH_FALLBACK` turns the `and` into an `or` while the
+   * app is small enough that the honest rule returns an empty screen; see the
+   * note on that constant. It applies to the **default** search only. Naming
+   * a language scope is asking a question about particular languages, and the
+   * answer to that question is the strict one — which is also why this reads
+   * `query`, not the resolved codes: those are the viewer's full set when the
+   * request named nothing, and indistinguishable at this point from a request
+   * that named all of them.
+   */
+  const namedLanguageScope =
+    query.learningLanguages !== undefined || query.nativeLanguages !== undefined
+  const theirNativeFits = { 'nativeLanguages.code': { $in: wantTheirNative } }
+  const theirLearningFits = { 'learning.code': { $in: myNativeCodes } }
+  const languageFit: Document =
+    DISCOVERY_CROSS_MATCH_FALLBACK && !namedLanguageScope
+      ? { $or: [theirNativeFits, theirLearningFits] }
+      : { ...theirNativeFits, ...theirLearningFits }
+
   const match: Document = {
     _id: { $nin: excludedIds },
     'settings.discoverable': true,
@@ -213,9 +235,7 @@ async function resolveDiscoveryScope(
     // profile still opens for somebody who has the link — see
     // `accountStatus` on `toPublicProfile` — but nothing proposes them.
     ...notSuspended(),
-    // Mutual fit, both directions — the reason for the two split indexes.
-    'nativeLanguages.code': { $in: wantTheirNative },
-    'learning.code': { $in: myNativeCodes },
+    ...languageFit,
   }
 
   if (query.gender) match.gender = query.gender
@@ -550,8 +570,18 @@ export async function boostedProfiles(
   const { match } = await resolveDiscoveryScope(db, viewerId, query)
   const now = new Date()
 
-  const boostedMatch: Document = {
-    ...match,
+  /*
+   * `$and` rather than a spread, and that is load-bearing.
+   *
+   * The scope's language fit is a top-level `$or` whenever the cross-match
+   * fallback is on, and so is the expiry check below. Spread into one object
+   * the second key wins and the first disappears — silently, since a `$match`
+   * with one condition missing is a valid query that returns more. The strip
+   * would have shown every paying member in the app regardless of language,
+   * and nothing would have failed. Both halves are named here instead, where
+   * neither can shadow the other.
+   */
+  const boostedConditions: Document = {
     'entitlement.tier': { $in: [...DISCOVERY_BOOSTED_TIERS] },
     /*
      * Absent means on. The flag is only ever written when somebody flips the
@@ -575,7 +605,7 @@ export async function boostedProfiles(
 
   const docs = await profiles
     .aggregate<Profile>([
-      { $match: boostedMatch },
+      { $match: { $and: [match, boostedConditions] } },
       {
         $addFields: {
           boostedRank: { $indexOfArray: [[...DISCOVERY_BOOSTED_TIERS], '$entitlement.tier'] },

@@ -176,18 +176,26 @@ describe('Faz 3 — discovery aggregation', () => {
   })
 
   describe('mutual-fit matching', () => {
-    it('returns a candidate whose native/learning mutually fit, and excludes one-directional and unrelated fits', async () => {
+    /**
+     * Written against `DISCOVERY_CROSS_MATCH_FALLBACK`, which is temporary.
+     * The assertions it changed are named in the comments below; when the
+     * flag goes, a one-directional fit is excluded here again and the
+     * `cross-match fallback` block further down is deleted whole.
+     */
+    it('returns a mutual fit and a one-sided one, and still excludes an unrelated profile', async () => {
       const viewer = await newUser('mutual-viewer@example.com')
       const mutual = await newUser('mutual-match@example.com', {
         nativeLanguages: [{ code: 'en' }],
         learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
-      // Speaks what I'm learning, but isn't learning what I speak.
+      // Speaks what I'm learning, but isn't learning what I speak. Excluded
+      // until the fallback; a candidate while it is on.
       const oneDirectional = await newUser('one-directional@example.com', {
         nativeLanguages: [{ code: 'en' }],
         learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
       })
-      // Neither direction fits.
+      // Neither direction fits. Excluded either way — the fallback widens the
+      // match, it does not remove it.
       const unrelated = await newUser('unrelated@example.com', {
         nativeLanguages: [{ code: 'de' }],
         learning: [{ code: 'es', level: 'intermediate', priority: 1 }],
@@ -198,9 +206,12 @@ describe('Faz 3 — discovery aggregation', () => {
       const body = response.json<{ items: { handle: string }[] }>()
       const handles = body.items.map((i) => i.handle)
       expect(handles).toContain(mutual.handle)
-      expect(handles).not.toContain(oneDirectional.handle)
+      expect(handles).toContain(oneDirectional.handle)
       expect(handles).not.toContain(unrelated.handle)
-      expect(handles.length).toBe(1)
+      expect(handles.length).toBe(2)
+      // The one thing the fallback must not cost: a mutual fit still leads a
+      // one-sided one, because `recommended` scores both intersections.
+      expect(handles.indexOf(mutual.handle)).toBeLessThan(handles.indexOf(oneDirectional.handle))
     })
 
     it('never returns the viewer themselves', async () => {
@@ -531,6 +542,87 @@ describe('Faz 3 — discovery aggregation', () => {
       expect((await discover(viewer, 'learningLanguages=fr')).statusCode).toBe(400)
       expect((await discover(viewer, 'nativeLanguages=en')).statusCode).toBe(400)
       expect((await discover(viewer, 'learningLanguages=')).statusCode).toBe(400)
+    })
+  })
+
+  /**
+   * `DISCOVERY_CROSS_MATCH_FALLBACK`, and the whole of it — delete this block
+   * along with the flag.
+   */
+  describe('cross-match fallback', () => {
+    it('drops back to both directions as soon as the search names a language scope', async () => {
+      const viewer = await newUser('cross-scope-viewer@example.com', {
+        nativeLanguages: [{ code: 'ba' }],
+        learning: [{ code: 'av', level: 'intermediate', priority: 1 }],
+      })
+      const mutual = await newUser('cross-scope-mutual@example.com', {
+        nativeLanguages: [{ code: 'av' }],
+        learning: [{ code: 'ba', level: 'intermediate', priority: 1 }],
+      })
+      // Speaks what the viewer is learning, but is learning something else.
+      const oneSided = await newUser('cross-scope-one-sided@example.com', {
+        nativeLanguages: [{ code: 'av' }],
+        learning: [{ code: 'ay', level: 'intermediate', priority: 1 }],
+      })
+      const handlesOf = (response: Awaited<ReturnType<typeof discover>>) =>
+        response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+
+      const unfiltered = handlesOf(await discover(viewer))
+      expect(unfiltered).toEqual(expect.arrayContaining([mutual.handle, oneSided.handle]))
+
+      /*
+       * Naming either side asks about particular languages, and the answer to
+       * that is the strict one — in *both* directions, not only the side that
+       * was named. `nativeLanguages=ba` excluding the one-sided fit is the
+       * assertion that would fail if the fallback had been scoped to the side
+       * the request happened to narrow.
+       */
+      const byLearning = handlesOf(await discover(viewer, 'learningLanguages=av'))
+      expect(byLearning).toContain(mutual.handle)
+      expect(byLearning).not.toContain(oneSided.handle)
+
+      const byNative = handlesOf(await discover(viewer, 'nativeLanguages=ba'))
+      expect(byNative).toContain(mutual.handle)
+      expect(byNative).not.toContain(oneSided.handle)
+    })
+
+    /**
+     * A regression for the shape of the change rather than its behaviour.
+     * The scope's language fit is a top-level `$or` now and the strip adds an
+     * expiry `$or` of its own; spread into one object, one silently replaces
+     * the other and the strip shows every paying member in the app.
+     */
+    it('reaches the boosted strip without costing it the language fit or the expiry check', async () => {
+      const viewer = await newUser('cross-boost-viewer@example.com', {
+        nativeLanguages: [{ code: 'br' }],
+        learning: [{ code: 'eu', level: 'intermediate', priority: 1 }],
+      })
+      const oneSided = await newUser('cross-boost-one-sided@example.com', {
+        nativeLanguages: [{ code: 'eu' }],
+        learning: [{ code: 'bs', level: 'intermediate', priority: 1 }],
+      })
+      const lapsed = await newUser('cross-boost-lapsed@example.com', {
+        nativeLanguages: [{ code: 'eu' }],
+        learning: [{ code: 'bn', level: 'intermediate', priority: 1 }],
+      })
+      const unrelated = await newUser('cross-boost-unrelated@example.com', {
+        nativeLanguages: [{ code: 'my' }],
+        learning: [{ code: 'as', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(oneSided.userId, 'pro')
+      await setTier(lapsed.userId, 'pro', new Date(Date.now() - 60_000))
+      await setTier(unrelated.userId, 'pro')
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/discovery/boosted',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const handles = response.json<BoostedProfilesPage>().items.map((item) => item.handle)
+      expect(handles).toContain(oneSided.handle)
+      expect(handles).not.toContain(lapsed.handle)
+      expect(handles).not.toContain(unrelated.handle)
     })
   })
 
@@ -1040,16 +1132,24 @@ describe('Faz 3 — discovery aggregation', () => {
   })
 
   describe('sort presets and pagination', () => {
+    /*
+     * `af` / `am`, a pair no other fixture in this file uses on either side.
+     * It asserts an exact set, and the suite shares one database — which used
+     * to mean the pair had to be unique as a *pair*. Under the cross-match
+     * fallback either code on its own pulls a profile in, so each side has to
+     * be unique too. `ro` / `bg` was not, and this asserted five people while
+     * seven fitted.
+     */
     it('sort=active pages through by lastActiveAt with no duplicates or gaps', async () => {
       const viewer = await newUser('active-sort-viewer@example.com', {
-        nativeLanguages: [{ code: 'ro' }],
-        learning: [{ code: 'bg', level: 'intermediate', priority: 1 }],
+        nativeLanguages: [{ code: 'af' }],
+        learning: [{ code: 'am', level: 'intermediate', priority: 1 }],
       })
       const candidates = []
       for (let i = 0; i < 5; i++) {
         const c = await newUser(`active-sort-${i}@example.com`, {
-          nativeLanguages: [{ code: 'bg' }],
-          learning: [{ code: 'ro', level: 'intermediate', priority: 1 }],
+          nativeLanguages: [{ code: 'am' }],
+          learning: [{ code: 'af', level: 'intermediate', priority: 1 }],
         })
         await setLastActiveAt(c.userId, new Date(Date.now() - i * 1000))
         candidates.push(c)
@@ -1580,9 +1680,16 @@ describe('Faz 3 — discovery aggregation', () => {
     it("obeys the list's scope: no language fit and blocked are both absent", async () => {
       const viewer = await viewerFor('boost-scope-viewer@example.com')
       const blocked = await candidateFor('boost-blocked@example.com')
+      /*
+       * Outside the scope in *both* directions. It used to be native `rm` —
+       * the viewer's learning language — which was outside the mutual rule
+       * and inside the cross-match fallback, so the fixture named "no fit"
+       * became a fit. Neither side is one of the viewer's now, which is what
+       * the test always meant.
+       */
       const noFit = await newUser('boost-no-fit@example.com', {
-        nativeLanguages: [{ code: 'rm' }],
-        learning: [{ code: 'is', level: 'intermediate', priority: 1 }],
+        nativeLanguages: [{ code: 'is' }],
+        learning: [{ code: 'mt', level: 'intermediate', priority: 1 }],
       })
       await setTier(blocked.userId, 'pro_plus')
       await setTier(noFit.userId, 'pro_plus')
@@ -1682,24 +1789,44 @@ describe('Faz 3 — discovery aggregation', () => {
 
       // Mirrors the mutual-fit $match discoverProfiles builds — see its
       // comment on why this needs two indexes, not one.
-      const explainResult = await handle.db
-        .collection(COLLECTIONS.profiles)
-        .aggregate([
-          {
-            $match: {
-              _id: { $nin: [viewer.userId] },
-              'settings.discoverable': true,
-              deletedAt: { $exists: false },
-              'nativeLanguages.code': { $in: ['en'] },
-              'learning.code': { $in: ['tr'] },
-            },
-          },
-        ])
-        .explain('executionStats')
+      const common = {
+        _id: { $nin: [viewer.userId] },
+        'settings.discoverable': true,
+        deletedAt: { $exists: false },
+      }
+      const theirNativeFits = { 'nativeLanguages.code': { $in: ['en'] } }
+      const theirLearningFits = { 'learning.code': { $in: ['tr'] } }
 
-      const serialized = JSON.stringify(explainResult)
-      expect(serialized).toContain('IXSCAN')
-      expect(serialized).not.toContain('COLLSCAN')
+      /*
+       * Both shapes, because the cross-match fallback made them two. A
+       * filtered search still sends the conjunction; an unfiltered one now
+       * sends the `$or`, and *that* is the one every default request runs —
+       * an `$or` whose branches are not both indexed is a collection scan of
+       * the whole of `profiles`, which is the failure this criterion exists
+       * to catch. When the fallback goes, so does the second case.
+       */
+      for (const languageFit of [
+        { ...theirNativeFits, ...theirLearningFits },
+        { $or: [theirNativeFits, theirLearningFits] },
+      ]) {
+        const explainResult = await handle.db
+          .collection(COLLECTIONS.profiles)
+          .aggregate([{ $match: { ...common, ...languageFit } }])
+          .explain('executionStats')
+
+        /*
+         * `rejectedPlans` dropped, because it is not what runs. An `$or` is
+         * planned per branch and the loser of each is reported alongside the
+         * winner — a COLLSCAN the planner *considered and threw away* would
+         * fail an assertion about the query being index-driven, which is the
+         * opposite of what it means.
+         */
+        const serialized = JSON.stringify(explainResult, (key: string, value: unknown) =>
+          key === 'rejectedPlans' ? undefined : value,
+        )
+        expect(serialized, JSON.stringify(languageFit)).toContain('IXSCAN')
+        expect(serialized, JSON.stringify(languageFit)).not.toContain('COLLSCAN')
+      }
     })
     /**
      * Online-first used to be a chip that applied here too, and it is gone

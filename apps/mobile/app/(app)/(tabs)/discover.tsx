@@ -375,10 +375,10 @@ export default function DiscoverScreen() {
             </TourTarget>
           )}
         </View>
-        {/* Which direction this list is matched in. Every row below is
-            someone native in what you are learning and learning what you
-            speak, and without this the list looks unsorted rather than
-            matched. */}
+        {/* Which direction this list is matched in. Without it the list
+            looks unsorted rather than matched. Rows below are matched on
+            that pair — on both sides of it normally, on either side while
+            `DISCOVERY_CROSS_MATCH_FALLBACK` is on. */}
         {pair && !searching ? (
           <TourTarget id="discoverPair" style={styles.pairTarget}>
             <Pressable
