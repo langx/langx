@@ -87,9 +87,9 @@ Nothing is dropped and nothing is unioned.
 What is really traded is **which index drives the query**. The 2dsphere index
 selects the candidates and the language arrays are filtered over that
 already-narrowed set, rather than the language indexes narrowing first. That is
-the "demote the language filter" option, and it is acceptable only because
-`maxDistance` bounds the candidate set — which is why `NEARBY_MAX_KM` is a cap
-rather than a nicety, and why a radius with no ceiling was never on the table.
+the "demote the language filter" option, and `maxDistance` used to be what kept
+the demoted set small — see the next entry for why it no longer runs on every
+request, and what that costs.
 
 Three consequences worth knowing before changing any of it:
 
@@ -114,6 +114,37 @@ Three consequences worth knowing before changing any of it:
 Sharing a location is free on every tier while sorting by it is Pro+. A
 paid-only pool would have contained nobody on the day it shipped, and the
 people worth finding nearby are mostly not the people paying to look.
+
+### The radius belongs to the searcher, not to the sort
+
+Nearby shipped with a 500 km cap on every request and three chips above the
+results to move it. Both are gone: the sort is an **ordering** — nearest first,
+outwards, until the page is full — and `radiusKm` is an optional filter next to
+age and country, "any" by default.
+
+The cap was defended on two grounds and neither survives contact with a real
+account. That a result 3,000 km away "is not nearby, it is just the nearest" is
+an argument about the word: someone who opens a list sorted by distance wants
+the nearest people there are, and the honest thing to do with a small pool is
+to show it in order, not to stop at a line they cannot see. And a wall drawn
+for them reads as an empty app — the same blank screen a user in a quiet city
+got, with no way to tell "nobody near you" from "nobody at all". A border is
+not a cut-off either: the next town over can be another country.
+
+The other ground was real and is now a known cost. Unbounded, `$geoNear` walks
+the index outward until the page is full, so a rare language pair can pull most
+of the 2dsphere index to find twenty people — which is precisely the search
+that used to come back empty. Common pairs stop within a few rings. If
+discovery ever becomes the bottleneck, this is the first thing to measure, and
+a wide internal ceiling (well past any radius a person would choose) is the
+cheapest lever.
+
+Two things follow for the client. `bucketDistanceKm`'s fallback past the last
+edge is now the normal case rather than dead code, and `formatDistance` words
+it `500+ km away` — a floor, not a measured value. And the empty state splits
+in two: with a radius, "nobody within {radius} km" and a wider one to try;
+without, the one thing that still narrows this list and no other — it can only
+show people who turned location sharing on.
 
 ## Phase 4 — quota decrement is one atomic `findOneAndUpdate`
 

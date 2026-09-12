@@ -77,7 +77,7 @@ export const fr: Localized<EnMessages> = {
     chatsPin: 'Épinglez les conversations où vous revenez : elles restent en haut.',
     chatsUnreplied: 'L’onglet Sans réponse, ce sont tous ceux qui vous attendent encore.',
     discoverRadius:
-      'Élargissez le rayon si personne n’est à proximité — la plupart ne le sont pas.',
+      '« À proximité » part du plus proche vers l’extérieur. Mets un rayon dans les filtres pour le limiter.',
     discoverSearch: 'Vous cherchez quelqu’un en particulier ? Cherchez son identifiant.',
     feedCorrect:
       'Corriger une phrase prend un instant et c’est le plus utile que vous puissiez faire ici.',
@@ -651,7 +651,6 @@ export const fr: Localized<EnMessages> = {
     nearby: 'À proximité',
     filters: 'Filtres ✦',
     filtersWithCount: 'Filtres · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'Le partage de position est désactivé',
     locationOffBody:
       'À proximité doit savoir grossièrement où tu es. Rien de précis n’est conservé et personne ne voit plus qu’une distance approximative.',
@@ -660,6 +659,9 @@ export const fr: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Personne à moins de {radius} km',
     nobodyNearbyBody:
       'Seules les personnes ayant activé le partage de position apparaissent ici. Essaie un rayon plus large, ou un autre onglet.',
+    nobodySharingTitle: 'Personne à situer pour l’instant',
+    nobodySharingBody:
+      '« À proximité » ne peut montrer que les personnes ayant activé le partage de position. Essaie un autre onglet.',
     nearbyNeedsPermissionTitle: 'À proximité a besoin de votre position',
     nearbyNeedsPermissionBody:
       'L’autorisation de localisation n’a pas été accordée : il n’y a donc rien à trier par distance.',
@@ -685,6 +687,10 @@ export const fr: Localized<EnMessages> = {
     gender: 'Genre',
     age: 'Âge',
     country: 'Pays',
+    distance: 'Distance',
+    distanceBody:
+      'Limite jusqu’où « À proximité » cherche. Sans limite, la liste part du plus proche vers l’extérieur.',
+    distanceKm: '{km} km',
     practiseBody:
       'Laquelle de tes langues tu veux pratiquer. Ici, tout le monde la parle déjà nativement.',
     onlyMyGender: 'Uniquement mon genre',

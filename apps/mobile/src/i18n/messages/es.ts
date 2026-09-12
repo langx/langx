@@ -78,7 +78,8 @@ export const es: Localized<EnMessages> = {
     chatsSwipe: 'Desliza un chat hacia un lado para fijarlo o archivarlo.',
     chatsPin: 'Fija los chats a los que vuelves y se quedarán arriba.',
     chatsUnreplied: 'La pestaña Sin responder es todo el que sigue esperándote.',
-    discoverRadius: 'Amplía el radio si no hay nadie cerca; la mayoría no lo está.',
+    discoverRadius:
+      '«Cerca» va de lo más próximo hacia fuera. Pon un radio en los filtros para acotarlo.',
     discoverSearch: '¿Buscas a alguien en concreto? Busca su usuario.',
     feedCorrect: 'Corregir una frase lleva un momento y es lo más útil que puedes hacer aquí.',
     feedPronounce: '¿No sabes decir una palabra? Pregunta y alguien la grabará para ti.',
@@ -645,7 +646,6 @@ export const es: Localized<EnMessages> = {
     nearby: 'Cerca',
     filters: 'Filtros ✦',
     filtersWithCount: 'Filtros · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'La ubicación está desactivada',
     locationOffBody:
       'Cerca necesita saber más o menos dónde estás. No se guarda nada preciso y nadie ve más que una distancia aproximada.',
@@ -654,6 +654,9 @@ export const es: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Nadie a menos de {radius} km',
     nobodyNearbyBody:
       'Aquí solo aparece quien ha activado la ubicación. Prueba con un radio mayor o con otra pestaña.',
+    nobodySharingTitle: 'Todavía no hay a quién ubicar',
+    nobodySharingBody:
+      '«Cerca» solo puede mostrar a quien ha activado la ubicación. Prueba con otra pestaña.',
     nearbyNeedsPermissionTitle: 'Cerca necesita tu ubicación',
     nearbyNeedsPermissionBody:
       'No se ha concedido el permiso de ubicación, así que no hay nada que ordenar por distancia.',
@@ -678,6 +681,9 @@ export const es: Localized<EnMessages> = {
     gender: 'Género',
     age: 'Edad',
     country: 'País',
+    distance: 'Distancia',
+    distanceBody: 'Limita hasta dónde busca «Cerca». Sin límite, va de lo más próximo hacia fuera.',
+    distanceKm: '{km} km',
     practiseBody:
       'Cuál de tus idiomas quieres practicar. Todo el mundo aquí ya lo habla de forma nativa.',
     onlyMyGender: 'Solo mi género',

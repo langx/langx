@@ -1,6 +1,7 @@
 import {
   DISCOVERY_CURSOR_MAX_AGE_MS,
   DISTANCE_BUCKETS_KM,
+  NEARBY_MAX_KM,
   type BoostedProfilesPage,
   type DiscoveryPage,
   type HandleSearchPage,
@@ -1105,6 +1106,9 @@ describe('Faz 3 — discovery aggregation', () => {
     const ACROSS_TOWN = { lat: 41.2, lng: 29.1 } //     ~23 km
     const ANOTHER_CITY = { lat: 40.19, lng: 29.06 } //  ~91 km  (Bursa)
     const FAR_AWAY = { lat: 39.93, lng: 32.86 } //     ~350 km  (Ankara)
+    // Past `NEARBY_MAX_KM`, and past the border: the rows the old default
+    // radius dropped without anybody asking it to.
+    const ABROAD = { lat: 52.52, lng: 13.405 } //     ~1,735 km (Berlin)
 
     // Generic so it hands back exactly what it was given — `newUser` returns a
     // `SignedUpUser` *plus* the handle, and every assertion below needs it.
@@ -1243,7 +1247,7 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(withDistance).toEqual([])
     })
 
-    it('honours radiusKm, which is what stops "nearby" meaning "nearest"', async () => {
+    it('honours radiusKm when one is asked for, and looks past it when none is', async () => {
       const viewer = await newUser('nearby-radius-viewer@example.com', {
         nativeLanguages: [{ code: 'no' }],
         learning: [{ code: 'is', level: 'intermediate', priority: 1 }],
@@ -1275,6 +1279,51 @@ describe('Faz 3 — discovery aggregation', () => {
       const tightHandles = tight.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(tightHandles).toContain(inside.handle)
       expect(tightHandles).not.toContain(outside.handle)
+    })
+
+    /**
+     * The default used to be `NEARBY_MAX_KM`, so this person did not exist to
+     * anybody in Istanbul — a silent wall that looked exactly like an empty
+     * app. An unasked-for list is now an ordering and nothing else: nearest
+     * first, across a border if that is where the next person is.
+     */
+    it('reaches past NEARBY_MAX_KM and across borders when no radius was asked for', async () => {
+      const viewer = await newUser('nearby-unbounded-viewer@example.com', {
+        nativeLanguages: [{ code: 'ka' }],
+        learning: [{ code: 'hy', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const fits = {
+        nativeLanguages: [{ code: 'hy' }],
+        learning: [{ code: 'ka', level: 'intermediate', priority: 1 }],
+      }
+      const near = await share(
+        await candidate('nearby-unbounded-near@example.com', fits),
+        ACROSS_TOWN,
+      )
+      const far = await share(await candidate('nearby-unbounded-far@example.com', fits), FAR_AWAY)
+      const abroad = await share(
+        await candidate('nearby-unbounded-abroad@example.com', fits),
+        ABROAD,
+      )
+
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode, response.body).toBe(200)
+      const items = response.json<DiscoveryPage>().items
+
+      expect(items.map((item) => item.handle)).toEqual([near.handle, far.handle, abroad.handle])
+      // Still bucketed, and the last bucket reads as a floor — `formatDistance`
+      // words it `500+ km away` rather than claiming a measured 1,735.
+      expect(items.map((item) => item.distanceKm)).toEqual([25, NEARBY_MAX_KM, NEARBY_MAX_KM])
+
+      // A radius is the searcher's own cut-off, and it still cuts.
+      const tight = await discover(viewer, `sort=nearby&radiusKm=${NEARBY_MAX_KM}`)
+      expect(tight.json<DiscoveryPage>().items.map((item) => item.handle)).toEqual([
+        near.handle,
+        far.handle,
+      ])
     })
 
     it('still applies the mutual-fit match and blocks — $geoNear runs them as its own `query`', async () => {

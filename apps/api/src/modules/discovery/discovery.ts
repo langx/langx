@@ -338,9 +338,15 @@ export async function discoverProfiles(
    *
    * What is genuinely given up is which index drives the query: the 2dsphere
    * index selects candidates and the language arrays are filtered over that
-   * already-narrowed set, rather than the other way round. Bounded by
-   * `maxDistance` that set is small, which is the other reason the radius cap
-   * is not optional.
+   * already-narrowed set, rather than the other way round.
+   *
+   * `maxDistance` used to bound that set on every request and now appears only
+   * when the searcher asked for a radius, which is the cost of the sort
+   * meaning what it says. `$geoNear` walks the index outward until the page is
+   * full, so a common language pair still stops within a few rings, while a
+   * rare one can walk most of the index to find twenty people — and that is
+   * exactly the search whose answer used to be a blank screen. Watch it if
+   * discovery ever becomes the bottleneck; see `decisions.md`.
    */
   const pipeline: Document[] =
     query.sort === 'nearby' && viewer.location
@@ -349,7 +355,10 @@ export async function discoverProfiles(
             $geoNear: {
               near: viewer.location,
               distanceField: 'distanceMeters',
-              maxDistance: query.radiusKm * 1000,
+              // Omitted entirely when no radius was asked for. `maxDistance:
+              // undefined` would not do: the driver serialises the key and
+              // MongoDB refuses a null bound.
+              ...(query.radiusKm !== undefined ? { maxDistance: query.radiusKm * 1000 } : {}),
               // Named explicitly rather than left to MongoDB's single-geo-index
               // inference: a second geo index added later would otherwise turn
               // this into an error at runtime instead of at review.

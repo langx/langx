@@ -1,5 +1,8 @@
 {
   "enabledPlugins": {
     "claude-code-setup@claude-plugins-official": true
+  },
+  "permissions": {
+    "defaultMode": "plan"
   }
 }

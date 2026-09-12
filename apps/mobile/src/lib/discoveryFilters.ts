@@ -28,6 +28,13 @@ export interface DiscoveryFilters {
   /** Free. */
   country?: string
   /**
+   * Free. How far `sort=nearby` looks; absent means no limit, which is that
+   * sort's normal state — it orders by distance and stops when the page is
+   * full, wherever that lands. The other sorts ignore it, which is why it is
+   * the one filter `toQuery` leaves out.
+   */
+  radiusKm?: number
+  /**
    * Free, and the only gender filter that is: it names the caller's own
    * gender rather than anybody else's, and the server resolves it from their
    * profile. See `DISCOVERY_PRO_FILTER_KEYS`.
@@ -109,6 +116,9 @@ export function parseFilters(
   const maxLevel = one(params.maxLevel)
   if (maxLevel) filters.maxLevel = maxLevel as LanguageLevel
 
+  const radiusKm = Number(one(params.radiusKm))
+  if (Number.isInteger(radiusKm) && radiusKm > 0) filters.radiusKm = radiusKm
+
   const ageMin = Number(one(params.ageMin))
   if (Number.isInteger(ageMin) && ageMin > 0) filters.ageMin = ageMin
   const ageMax = Number(one(params.ageMax))
@@ -133,6 +143,7 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
   if (filters.maxLevel) params.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) params.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) params.ageMax = String(filters.ageMax)
+  if (filters.radiusKm !== undefined) params.radiusKm = String(filters.radiusKm)
   if (filters.cityId) params.cityId = filters.cityId
   if (filters.cityName) params.cityName = filters.cityName
   return params
@@ -142,6 +153,10 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
  * The API query. `onlyMyGender` goes over the wire as `true`, which is what
  * `z.coerce.boolean()` on the other side reads — `'1'` is the URL's spelling,
  * not the API's.
+ *
+ * `radiusKm` is deliberately absent: only `sort=nearby` does anything with it,
+ * and this object is also the boosted strip's cache key. Discover adds it to
+ * the nearby request itself — see the note there.
  */
 export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   const query: Record<string, string> = {}
@@ -169,6 +184,7 @@ export function activeCount(filters: DiscoveryFilters): number {
   if (filters.minLevel || filters.maxLevel) count++
   // One age *range*, however many bounds express it.
   if (filters.ageMin !== undefined || filters.ageMax !== undefined) count++
+  if (filters.radiusKm !== undefined) count++
   if (filters.cityId) count++
   return count
 }
@@ -192,6 +208,7 @@ export function withoutProFilters(filters: DiscoveryFilters): DiscoveryFilters {
   if (filters.ageMin !== undefined) free.ageMin = filters.ageMin
   if (filters.ageMax !== undefined) free.ageMax = filters.ageMax
   if (filters.country) free.country = filters.country
+  if (filters.radiusKm !== undefined) free.radiusKm = filters.radiusKm
   // Free since the paywall stopped running through the middle of the gender
   // pair. An allow-list is the safe shape for this function — a key nobody
   // remembers to add is dropped, not leaked — but it does mean a filter that

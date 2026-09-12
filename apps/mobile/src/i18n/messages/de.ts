@@ -77,7 +77,7 @@ export const de: Localized<EnMessages> = {
     chatsPin: 'Hefte die Chats an, zu denen du zurückkommst — sie bleiben oben.',
     chatsUnreplied: 'Der Tab Unbeantwortet sind alle, die noch auf dich warten.',
     discoverRadius:
-      'Erweitere den Radius, wenn niemand in der Nähe ist — die meisten sind es nicht.',
+      '„In der Nähe“ geht vom Nächsten nach außen. Setz in den Filtern einen Radius, um es zu begrenzen.',
     discoverSearch: 'Suchst du jemand Bestimmten? Such nach dem Namen.',
     feedCorrect: 'Einen Satz zu korrigieren dauert einen Moment und ist das Nützlichste hier.',
     feedPronounce: 'Du weißt nicht, wie ein Wort klingt? Frag, und jemand nimmt es für dich auf.',
@@ -655,7 +655,6 @@ export const de: Localized<EnMessages> = {
     nearby: 'In der Nähe',
     filters: 'Filter ✦',
     filtersWithCount: 'Filter · {count}',
-    distanceKm: '{km} km',
     locationOffTitle: 'Standortfreigabe ist aus',
     locationOffBody:
       '„In der Nähe“ muss ungefähr wissen, wo du bist. Nichts Genaues wird gespeichert, und niemand sieht mehr als eine grobe Entfernung.',
@@ -664,6 +663,9 @@ export const de: Localized<EnMessages> = {
     nobodyNearbyTitle: 'Niemand innerhalb von {radius} km',
     nobodyNearbyBody:
       'Hier erscheinen nur Leute, die die Standortfreigabe eingeschaltet haben. Versuch einen größeren Radius oder einen anderen Tab.',
+    nobodySharingTitle: 'Noch niemand zu verorten',
+    nobodySharingBody:
+      '„In der Nähe“ kann nur Leute zeigen, die die Standortfreigabe eingeschaltet haben. Versuch einen anderen Tab.',
     nearbyNeedsPermissionTitle: 'In der Nähe braucht deinen Standort',
     nearbyNeedsPermissionBody:
       'Die Standortberechtigung wurde nicht erteilt, also gibt es nichts, was sich nach Entfernung sortieren ließe.',
@@ -689,6 +691,10 @@ export const de: Localized<EnMessages> = {
     gender: 'Geschlecht',
     age: 'Alter',
     country: 'Land',
+    distance: 'Entfernung',
+    distanceBody:
+      'Begrenzt, wie weit „In der Nähe“ sucht. Ohne Grenze geht es einfach vom Nächsten nach außen.',
+    distanceKm: '{km} km',
     practiseBody:
       'Welche deiner Sprachen du üben willst. Alle hier sprechen sie bereits muttersprachlich.',
     onlyMyGender: 'Nur mein Geschlecht',
