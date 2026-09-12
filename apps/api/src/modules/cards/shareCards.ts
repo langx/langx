@@ -7,6 +7,8 @@ import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
 import type { CardKind, CardShape } from '@langx/shared'
+import { notSuspended } from '../moderation/suspension'
+import type { Profile } from '../profiles/profiles'
 import { cardElement, type CardCopy } from './design'
 import { renderCard } from './render'
 
@@ -119,7 +121,31 @@ async function profileQr(handle: string): Promise<string | undefined> {
  * a card by its owner in order to be posted publicly. It carries no email, no
  * age, no location and no post text — the three things a card can be about are
  * the owner's own numbers.
+ *
+ * **While that owner is still someone the open internet may see.** This is the
+ * app's second unauthenticated read, and `getSharedProfile` — which calls
+ * itself the one that draws this line — is the first: a suspended account is
+ * closed to strangers, and so is one inside its deletion grace period. A card
+ * is the same surface by another address, carrying the same handle and a
+ * headline its owner wrote, so it answers the same way. Here rather than in
+ * the route because that is where access control lives in this codebase.
+ *
+ * Nothing is deleted and nothing is rewritten: the page stops answering and
+ * starts again by itself when a suspension runs out or a deletion is
+ * cancelled, which is what makes this safe to apply to a decision that is
+ * reversible for thirty days. What it cannot take back is a bucket URL
+ * somebody already has — the object is public, and removing it is the purge's
+ * job — but the page is the only thing that ever hands that URL out.
  */
 export async function readShareCard(db: Db, id: string): Promise<ShareCard | null> {
-  return db.collection<ShareCard>(COLLECTIONS.shareCards).findOne({ _id: id })
+  const card = await db.collection<ShareCard>(COLLECTIONS.shareCards).findOne({ _id: id })
+  if (!card) return null
+
+  const owner = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne(
+      { _id: card.userId, deletedAt: { $exists: false }, ...notSuspended() },
+      { projection: { _id: 1 } },
+    )
+  return owner ? card : null
 }

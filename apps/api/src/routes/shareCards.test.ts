@@ -4,9 +4,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
+import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import type { Profile } from '../modules/profiles/profiles'
 import { cardElement } from '../modules/cards/design'
 import { renderCard } from '../modules/cards/render'
 import type { StorageProviderWithPut, UploadUrl } from '../storage/StorageProvider'
@@ -179,6 +181,68 @@ describe('share cards', () => {
 
     const missing = await app.inject({ method: 'GET', url: '/public/share/deadbeefdeadbeef' })
     expect(missing.statusCode).toBe(404)
+  }, 60_000)
+
+  /**
+   * The line `getSharedProfile` draws, drawn here too. A card is the app's
+   * other unauthenticated read, at another address and carrying the same
+   * handle, and it used to answer for an account the profile page refuses to
+   * confirm exists.
+   *
+   * Both states are reversible, and the page comes back on its own for both:
+   * nothing is deleted, the read simply stops finding an owner it may show.
+   */
+  it('stops serving a card while its owner is suspended, and serves it again after', async () => {
+    const created = await make({
+      kind: 'streak',
+      shape: 'story',
+      headline: '9',
+      caption: 'day streak on LangX',
+    })
+    const { id } = created.json<{ id: string }>()
+    const page = () => app.inject({ method: 'GET', url: `/public/share/${id}` })
+    expect((await page()).statusCode).toBe(200)
+
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    await profiles.updateOne(
+      { handle: 'cardhaver' },
+      {
+        $set: {
+          suspension: {
+            at: new Date(),
+            until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            permanent: false,
+            reason: 'harassment',
+          },
+        },
+      },
+    )
+    // 404, not 403: a refusal that confirms the card exists is a refusal that
+    // answers the question it was meant to close.
+    expect((await page()).statusCode).toBe(404)
+
+    await profiles.updateOne({ handle: 'cardhaver' }, { $unset: { suspension: '' } })
+    expect((await page()).statusCode).toBe(200)
+  }, 60_000)
+
+  it('stops serving a card while its owner is inside the deletion grace period', async () => {
+    const created = await make({
+      kind: 'badge',
+      shape: 'wide',
+      headline: 'First Correction',
+      caption: 'badge earned',
+    })
+    const { id } = created.json<{ id: string }>()
+    const page = () => app.inject({ method: 'GET', url: `/public/share/${id}` })
+    expect((await page()).statusCode).toBe(200)
+
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    await profiles.updateOne({ handle: 'cardhaver' }, { $set: { deletedAt: new Date() } })
+    expect((await page()).statusCode).toBe(404)
+
+    // Signing back in is the cancel gesture, and the card is theirs again.
+    await profiles.updateOne({ handle: 'cardhaver' }, { $unset: { deletedAt: '' } })
+    expect((await page()).statusCode).toBe(200)
   }, 60_000)
 
   it('refuses a card for somebody who is not signed in', async () => {
