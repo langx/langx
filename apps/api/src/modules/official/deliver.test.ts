@@ -4,6 +4,7 @@ import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import type { Conversation } from '../chat/conversations'
+import { listConversations } from '../chat/messages'
 import type { Profile } from '../profiles/profiles'
 import { ensureOfficialAccounts } from './accounts'
 import { deliverOfficialMessage } from './deliver'
@@ -118,6 +119,26 @@ describe('a message from an official account', () => {
     expect(await handle.db.collection(COLLECTIONS.conversations).countDocuments()).toBe(1)
     expect(second?.conversation.messageCount).toBe(2)
     expect(second?.conversation.unread.ada).toBe(2)
+  })
+
+  /**
+   * The unreplied tab is a to-do list, and an announcement is not on it: the
+   * account takes no messages, so nothing the viewer could do would ever clear
+   * the thread from that tab. It belongs in the chat list and nowhere else.
+   */
+  it('stays out of the unreplied tab', async () => {
+    const delivered = await deliverOfficialMessage(handle.db, {
+      fromHandle: 'langx',
+      toUserId: 'ada',
+      body: 'hello',
+    })
+
+    const all = await listConversations(handle.db, 'ada', { limit: 20 })
+    expect(all.items.map((c) => c._id)).toEqual([delivered?.conversation._id.toHexString()])
+
+    const unreplied = await listConversations(handle.db, 'ada', { filter: 'unreplied', limit: 20 })
+    expect(unreplied.items).toHaveLength(0)
+    expect(unreplied.pinned).toHaveLength(0)
   })
 
   it('pays nobody for the exchange', async () => {

@@ -23,7 +23,7 @@ import { ApiError } from '../../lib/ApiError'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
-import { acceptsMessages } from '../official/accounts'
+import { acceptsMessages, unwritableOfficialIds } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { toMessageView, type MessageView } from './messageView'
@@ -995,6 +995,15 @@ export async function listConversations(
   // `assertConversationAccess` already refuses to open it; without this the
   // thread would still sit in the list, unopenable — the worst of both.
   const hidden = await blockedUserIds(db, userId)
+  /*
+   * An account nobody can write to is hidden the same way, but from this one
+   * tab: `unreplied` is a to-do list, and a thread that takes no reply can
+   * never be crossed off it — @langx would announce once and sit at the top of
+   * the tab for good. Keyed on `OFFICIAL_WRITABLE` rather than on "is
+   * official", so @copilot leaves the tab today and joins it again on the day
+   * it opens.
+   */
+  if (filter === 'unreplied') hidden.push(...unwritableOfficialIds())
   // On an array field `$nin` means "contains none of these", so this reads as
   //: my threads, minus any whose participant list includes someone hidden.
   const base: Document = {
