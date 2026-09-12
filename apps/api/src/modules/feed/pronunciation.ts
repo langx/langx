@@ -18,6 +18,7 @@ import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import { assertAttachable, deleteObjects } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
+import { notHidden } from './documents'
 import type { Post, PronunciationAnswerDoc } from './documents'
 import { answerDto, loadAuthors, postDto } from './dto'
 import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
@@ -88,7 +89,7 @@ export async function answerPronunciation(
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
 
-  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id })
+  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   // Without this the collection fills with rows no reader ever queries: the
   // pronunciation section is the only place answers are listed, and a
@@ -205,7 +206,7 @@ export async function listPronunciationAnswers(
   const _id = new ObjectId(postId)
 
   const [post, hidden, { topByPost, viewerAnswered }, commentCounts] = await Promise.all([
-    db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
+    db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
     readAnswerSummary(db, userId, [_id]),
     readCommentSummary(db, [_id]),

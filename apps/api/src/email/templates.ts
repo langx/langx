@@ -1238,6 +1238,15 @@ export function reportEmail(input: {
   /** True only when this report is the one that crossed the threshold. */
   xpFrozen: boolean
   context: { conversationId: string | null; messageId: string | null; postId: string | null }
+  /**
+   * The reported post's own words, when it was raised from one.
+   *
+   * Worth the extra read the route makes for it: the alternative is a link
+   * that has to be opened, on an account that can see the post, before anyone
+   * knows whether the report is serious. Most of them can be judged from the
+   * sentence alone.
+   */
+  postBody: string | null
   /** The signed link that decides this report — see `reviewToken.ts`. */
   reviewUrl: string
 }): Email {
@@ -1275,6 +1284,10 @@ export function reportEmail(input: {
     ? `<p style="white-space: pre-wrap;">${escapeHtml(input.details)}</p>`
     : '<p style="color: #888;">No details were given.</p>'
 
+  const quoted = input.postBody
+    ? `<p style="margin:16px 0 8px;"><strong>The post</strong></p><blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 16px;padding:0 0 0 12px;color:#333;">${escapeHtml(input.postBody)}</blockquote>`
+    : ''
+
   return {
     subject,
     html: `<!doctype html>
@@ -1284,6 +1297,7 @@ export function reportEmail(input: {
     ${frozenLine}
     <p><strong>Reason</strong> ${escapeHtml(reason)}</p>
     ${details}
+    ${quoted}
     ${partyHtml('Reported', input.reported)}
     ${partyHtml('Reporter', input.reporter)}
     ${pointers.length ? `<p><strong>Raised from</strong></p><ul>${pointers.join('')}</ul>` : ''}
@@ -1306,6 +1320,7 @@ export function reportEmail(input: {
       '',
       input.details ?? 'No details were given.',
       '',
+      ...(input.postBody ? ['The post:', input.postBody, ''] : []),
       ...partyText('Reported', input.reported),
       ...partyText('Reporter', input.reporter),
       '',

@@ -12,6 +12,7 @@ import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { blockedUserIds } from '../moderation/blocks'
 import type { Profile } from '../profiles/profiles'
+import { notHidden } from './documents'
 import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
 
 export interface Like {
@@ -130,7 +131,7 @@ async function resolveTarget(
   const hidden = await blockedUserIds(db, userId)
 
   if (target.targetType === 'post') {
-    const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id })
+    const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
     if (!post || hidden.includes(post.authorId)) {
       throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nothing to like')
     }
@@ -150,7 +151,9 @@ async function resolveTarget(
     if (answer.authorId === userId) {
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot like your own answer')
     }
-    const parent = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id: answer.postId })
+    const parent = await db
+      .collection<Post>(COLLECTIONS.posts)
+      .findOne({ _id: answer.postId, ...notHidden() })
     if (!parent || hidden.includes(parent.authorId)) {
       throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nothing to like')
     }
@@ -166,7 +169,9 @@ async function resolveTarget(
   if (correction.authorId === userId) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot like your own correction')
   }
-  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id: correction.postId })
+  const post = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .findOne({ _id: correction.postId, ...notHidden() })
   if (!post || hidden.includes(post.authorId)) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nothing to like')
   }

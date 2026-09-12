@@ -1,5 +1,5 @@
 import type { Media } from '@langx/shared'
-import type { ObjectId } from 'mongodb'
+import type { Document, ObjectId } from 'mongodb'
 
 /**
  * The shapes stored in the feed's four collections.
@@ -47,7 +47,36 @@ export interface Post {
   attachments?: Media[]
   /** The first of `attachments`, repeated for builds that predate the list. */
   media?: Media
+  /**
+   * When a moderator hid this post from the report email, or absent — which is
+   * almost every post, and why this is a missing field rather than a `false`.
+   *
+   * Hidden, not deleted: the row and its attachments stay exactly where they
+   * are and the same link puts it back. Every read that can surface a post to
+   * somebody filters on it, **including the author's own list** — the decision
+   * is silent, so a post that is still visible to the person who wrote it
+   * would be a different feature wearing this one's name.
+   *
+   * A date rather than a flag because "when" is the only question anyone asks
+   * afterwards, and it costs the same to store.
+   */
+  hiddenAt?: Date
   createdAt: Date
+}
+
+/**
+ * "Not hidden by a moderator", as a Mongo fragment — the one every read that
+ * can put a post in front of somebody spreads into its filter.
+ *
+ * `$exists: false` rather than `$ne: true`, and the difference is the same one
+ * `listFeed` makes over `kind`: a missing field has to pass, because that is
+ * every post there has ever been. It is a residual filter either way — the
+ * bounds still come from the compound index's leading keys — and that costs
+ * nothing worth naming, since the documents it rejects are a handful in the
+ * whole collection.
+ */
+export function notHidden(): Document {
+  return { hiddenAt: { $exists: false } }
 }
 
 export interface PostCorrectionDoc {

@@ -147,8 +147,27 @@ export type SuspensionStatus = z.infer<typeof suspensionStatusSchema>
 export const REVIEW_KINDS = ['report', 'appeal'] as const
 export type ReviewKind = (typeof REVIEW_KINDS)[number]
 
-/** Deciding a report, and deciding an appeal against the decision. */
-export const REPORT_REVIEW_ACTIONS = ['suspend', 'permanent', 'dismiss'] as const
+/**
+ * Deciding a report, and deciding an appeal against the decision.
+ *
+ * `hide_post` and `unhide_post` act on the thing reported rather than on the
+ * account behind it, which is most of what a report about a post actually
+ * wants: one sentence is the problem and suspending its author is not
+ * proportionate. Both are offered only when the report names a post.
+ *
+ * There is deliberately no `delete_post`. The signed link's whole bargain —
+ * see `email/reviewToken.ts` — is that a forwarded or stolen one can do
+ * nothing a person cannot undo, and a hard delete takes the post, its
+ * corrections and its attachments with it. Hiding is the reversible half of
+ * the same intent; a genuine deletion stays a script run by hand.
+ */
+export const REPORT_REVIEW_ACTIONS = [
+  'suspend',
+  'permanent',
+  'dismiss',
+  'hide_post',
+  'unhide_post',
+] as const
 export const APPEAL_REVIEW_ACTIONS = ['shorten', 'lift', 'keep'] as const
 export const REVIEW_ACTIONS = [...REPORT_REVIEW_ACTIONS, ...APPEAL_REVIEW_ACTIONS] as const
 export type ReviewAction = (typeof REVIEW_ACTIONS)[number]
@@ -168,7 +187,7 @@ export const REVIEW_ACTIONS_BY_KIND = {
 export const reviewDecisionSchema = z
   .object({
     action: z.enum(REVIEW_ACTIONS),
-    /** Required by `suspend` and `shorten`, meaningless to the other four. */
+    /** Required by `suspend` and `shorten`, meaningless to the other six. */
     days: z.coerce.number().int().min(1).max(SUSPENSION_MAX_DAYS).optional(),
   })
   .refine((d) => !(d.action === 'suspend' || d.action === 'shorten') || d.days !== undefined, {

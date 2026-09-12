@@ -27,6 +27,7 @@ import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { authClient } from '../../../src/lib/auth-client'
 import { reportWriteError } from '../../../src/lib/reportWriteError'
+import { chooseAlert } from '../../../src/lib/alert'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { LikeButton } from '../../../src/components/LikeButton'
@@ -202,6 +203,26 @@ export default function FeedScreen() {
       setUploadProgress(null)
     }
     return uploaded
+  }
+
+  /**
+   * The row's long-press, which reporting a post needed and did not have: the
+   * action lived only in the post screen's "more" sheet, so seeing something
+   * in the feed and reporting it cost a navigation first.
+   *
+   * Long-press rather than a button on the card, because that is what a list
+   * row does here already — see `chats.tsx` — and a fourth control on a card
+   * that is mostly somebody's sentence is a worse trade than a hidden one.
+   */
+  async function openMore(post: FeedPost): Promise<void> {
+    const choice = await chooseAlert(t('feed.post'), undefined, [
+      { label: t('common.report'), value: 'report' as const, destructive: true },
+    ])
+    if (choice !== 'report') return
+    router.push({
+      pathname: '/(app)/report',
+      params: { userId: post.author._id, postId: post._id },
+    })
   }
 
   function startCorrecting(post: FeedPost): void {
@@ -394,7 +415,13 @@ export default function FeedScreen() {
                 </Pressable>
 
                 {/* The sentence opens its thread; it is the one affordance every row has. */}
-                <Pressable accessibilityRole="button" onPress={open}>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={open}
+                  // Nothing to report on your own post, and the API says so
+                  // too — a sheet whose only item 400s is worse than no sheet.
+                  onLongPress={mine ? undefined : () => void openMore(item)}
+                >
                   <Text style={pronouncing ? styles.word : styles.body}>{item.body}</Text>
                 </Pressable>
 
