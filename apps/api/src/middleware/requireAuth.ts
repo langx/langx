@@ -158,3 +158,22 @@ export async function requireVerifiedEmail(
     return reply.code(ERROR_STATUS.EMAIL_NOT_VERIFIED).send(body)
   }
 }
+
+/**
+ * Layer on top of `requireAuth` for the operator-only routes, gated by the
+ * same `ADMIN_USER_IDS` the maintenance gate already reads — one list, so
+ * there is no second idea of who an admin is to keep in step.
+ *
+ * `FORBIDDEN`, not a 404 that hides the route: this repository is public, so
+ * the path is already known to anyone who wants it. Hiding would cost an
+ * operator a clear answer and buy nothing.
+ */
+export async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  await requireAuth(request, reply)
+  if (reply.sent) return
+
+  if (!request.server.env.ADMIN_USER_IDS.includes(request.userId)) {
+    const body: ApiErrorBody = { code: ERROR_CODES.FORBIDDEN, message: 'Admins only' }
+    return reply.code(ERROR_STATUS.FORBIDDEN).send(body)
+  }
+}
