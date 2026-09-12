@@ -21,6 +21,7 @@ import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
+import { PresenceLine } from '../../../src/components/PresenceLine'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
@@ -31,7 +32,7 @@ import { shareLink } from '../../../src/lib/share'
 import { profileShareText } from '../../../src/lib/shareText'
 import { showToast } from '../../../src/lib/toast'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-import { accountAgeLabel, interestLabel, useDisplayNames, useT } from '../../../src/i18n'
+import { interestLabel, useDisplayNames, useT } from '../../../src/i18n'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 export default function ProfileScreen() {
@@ -100,7 +101,6 @@ export default function ProfileScreen() {
    * field existed.
    */
   const active = (user.accountStatus ?? 'active') === 'active'
-  const age = accountAgeLabel(t, new Date(user.createdAt))
 
   // One line under the name — the handle, then where they are. The city and
   // the country used to be separate entries and wrapped on most phones; see
@@ -272,28 +272,36 @@ export default function ProfileScreen() {
             </View>
           )}
           {/*
-            How long the account has existed, next to how often it shows up:
-            the two questions someone asks about a stranger who just messaged
-            them are the same question, so they share a line. The streak waits
-            for the summary; "registered" does not, so it takes the standalone
-            wording until the dot has something to follow.
+            The two things somebody wants to know about a stranger who has just
+            written to them: how often this person comes back, and whether they
+            are here now. How long the account has existed used to sit here too
+            and was the line that never fit — it is on the activity map below
+            in every sense that matters, and a hero that wraps to read it was
+            paying too much.
+
+            `PresenceLine` is the chat header's, so the two cannot drift apart
+            again; it draws nothing when the profile hides its online status,
+            since the field is then absent from the payload.
           */}
           <View style={styles.facts}>
             {summary.data && !user.official ? (
-              <View style={styles.streak}>
+              /*
+                The bolt and the number alone, as on a Discover card — this is
+                where the convention is learned, and spelling it out here cost
+                the row a whole line on a phone. The words survive for a screen
+                reader, which has no bolt to go on.
+              */
+              <View
+                accessibilityLabel={t('profile.dayStreak', {
+                  count: summary.data.streak.current,
+                })}
+                style={styles.streak}
+              >
                 <Feather name="zap" size={13} color={colors.streak} />
-                <Text style={styles.fact}>
-                  {t('profile.dayStreak', { count: summary.data.streak.current })}
-                </Text>
+                <Text style={styles.fact}>{summary.data.streak.current}</Text>
               </View>
             ) : null}
-            {user.official ? null : (
-              <Text style={styles.fact}>
-                {summary.data
-                  ? t('profile.registered', { age })
-                  : `${t('profile.registeredLabel')} ${age}`}
-              </Text>
-            )}
+            {user.official ? null : <PresenceLine lastActiveAt={user.lastActiveAt} />}
           </View>
         </View>
       </View>
@@ -482,7 +490,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   age: { color: colors.textMuted, fontSize: 18 },
   handle: { color: colors.textMuted, fontSize: 14 },
   pronouns: { color: colors.textFaint, fontSize: 13 },
-  facts: { alignItems: 'center', flexDirection: 'row', gap: 14, marginTop: 2 },
+  // Wraps: "Last seen 3 hours ago" is a whole sentence in every language and
+  // a long one in some, so the pair runs past a phone's hero column in German
+  // before it does in English. A row that cannot wrap makes the sentence wrap
+  // inside itself instead, which reads as a broken line rather than a second
+  // fact.
+  facts: {
+    alignItems: 'center',
+    columnGap: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 2,
+    rowGap: 2,
+  },
   streak: { alignItems: 'center', flexDirection: 'row', gap: 3 },
   fact: { color: colors.textMuted, fontSize: 13 },
   stats: {
