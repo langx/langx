@@ -832,13 +832,27 @@ The language list and CEFR levels are constants in `packages/shared`.
 
 ```
 $match:    discoverable, !deleted, !blocked (either direction),
-           nativeLanguages.code ∈ my learning,      ← mutual fit
-           learning.code ∈ my nativeLanguages
+           nativeLanguages.code ∈ my learning,      ← mutual fit …
+           learning.code ∈ my nativeLanguages       … but see below
            country / age / CEFR / only-my-gender (free), [if Fluent] gender / city
 $addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
 ```
+
+**Mutual fit is temporarily an `or`.** `DISCOVERY_CROSS_MATCH_FALLBACK` in
+`packages/shared` is on, and while it is, the **default** search accepts either
+side on its own: a Turkish native learning English sees an English native
+learning French. The honest rule is the conjunction above, and at this number
+of profiles it returns nothing for most people — an empty Discover on the day
+somebody signs up reads as a broken app rather than a small one. Naming a
+language scope (`learningLanguages` / `nativeLanguages`) restores both
+directions, because a question asked explicitly gets the strict answer; other
+filters do not, since they narrow a pool that is already too small. Somebody
+who shares no language at all is still not a candidate, and the score above
+still sums both intersections, so a mutual fit outranks a one-sided one
+without a rule of its own. Flip the constant back once the honest rule fills a
+page — `decisions.md` has the entry and the revert steps.
 
 `onlineBucket` is an **ordering, not a filter** — everyone still comes back,
 the online ones lead. It was a chip once and is now unconditional, but only on
