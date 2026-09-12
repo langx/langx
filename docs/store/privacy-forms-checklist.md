@@ -78,6 +78,12 @@ gain rows. None of them is "shared" — PostHog processes for us — and all of
 them are optional. **These answers go in before the first build carrying
 `EXPO_PUBLIC_POSTHOG_KEY` is submitted**, not after.
 
+Since 11 September 2026 the SDK also records the screen on iOS and Android,
+masked on the device. It adds no category to either form — a recording of
+behaviour is App interactions and Product Interaction, which are already
+ticked below — but it does change the privacy policy, and it is the reason the
+crash-log line below is worth re-reading rather than copying.
+
 ### Play Data Safety
 
 - [ ] **App activity → App interactions: collected.**
@@ -86,15 +92,28 @@ them are optional. **These answers go in before the first build carrying
     data_
   - Purpose: **Analytics** (only)
   - Processed ephemerally: **no**
+  - This covers the masked session recording too. Play has no screen-recording
+    category; what is recorded is which screens and taps, with all text and
+    every image masked before the frame leaves the phone, so it belongs here
+    and not under Messages or Photos.
 - [ ] **Device or other IDs: collected.** PostHog's own anonymous id before
       sign-in, our account id after. Not shared, optional, purpose Analytics.
 - [ ] **App info and performance → Crash logs, Diagnostics: leave unchecked.**
-      Error tracking is not enabled in the SDK.
+      Error tracking is not enabled in the SDK. The native plugin that arrived
+      with session replay _can_ capture native crashes; it is off
+      (`errorTracking.autocapture` is unset), so this answer holds — but it is
+      now a choice rather than a missing capability, and turning it on ticks
+      this box.
 
 ### Apple App Privacy
 
 - [ ] **Usage Data → Product Interaction: collected.** Linked to the user:
-      **yes**. Used for tracking: **no**. Purpose: **Analytics** (only).
+      **yes**. Used for tracking: **no**. Purpose: **Analytics** (only). The
+      masked session recording is declared here: Apple's nearest categories are
+      Product Interaction for behaviour and "Other Data" for anything else, and
+      a recording in which all text and every image is masked on the device is
+      behaviour. Nothing about it is linked to another company's data, so
+      Tracking stays **no**.
 - [ ] **Identifiers → User ID: collected.** Linked, Analytics, not tracking.
 - [ ] **Identifiers → Device ID: collected.** Linked, Analytics, not tracking.
       It is the SDK's random id, not IDFA — there is still no IDFA and no
@@ -108,6 +127,12 @@ them are optional. **These answers go in before the first build carrying
       switch is, says message bodies are never sent, and says deletion of
       analytics data is on request until it is automated
       ([`analytics.md`](../analytics.md) → _Deletion_).
+- [ ] It says the app records the screen on iOS and Android, that every word
+      and image in the recording is masked on the device before it is sent,
+      that the same Settings switch turns it off, and that the web app records
+      nothing. A recording is the one thing in this document a person would be
+      surprised to learn about after the fact, so the policy says it plainly
+      rather than inside the analytics sentence.
 
 ## 6. The hourly gift — no new answers
 
@@ -132,7 +157,7 @@ document. Every row is "collected, not shared".
 | Location → Approximate location               | optional, see above                                                |
 | Photos and videos → Photos                    | avatar and gallery — optional                                      |
 | Messages → Other in-app messages              | chat bodies                                                        |
-| App activity → App interactions               | screen names and funnel events — optional, see §5                  |
+| App activity → App interactions               | screen names, funnel events, masked screen recording — see §5      |
 | Device or other IDs                           | PostHog's anonymous id, then the account id — optional, see §5     |
 | App info and performance                      | nothing                                                            |
 | Financial info                                | nothing — purchase state only, never a card number                 |

@@ -35,7 +35,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Purchase state | `subscriptions` | Knowing whether you have Pro | Only if you subscribe |
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
-| Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
+| Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read, and a recording of the screen on iOS and Android with every word and image masked on the device before it is sent. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
 **Analytics are collected, and declared.** A PostHog SDK ships in the app with
 an opt-out in Settings; the row above and the section below are written from
@@ -107,8 +107,9 @@ Location stays unchecked on both.
 One third-party SDK sees user behaviour: PostHog, on its EU Cloud, with the
 dashboard internal (the reasoning is in [`decisions.md`](../decisions.md)). What
 it receives is listed in [`analytics.md`](../analytics.md); for the forms it is
-**screen names, a short list of funnel events, and our user id**, and it must
-be declared: Play Data Safety wants **App activity → App interactions** and
+**screen names, a short list of funnel events, our user id, and — on iOS and
+Android since 11 September 2026 — a masked recording of the screen**, and it
+must be declared: Play Data Safety wants **App activity → App interactions** and
 **Device or other IDs**, Apple wants **Product Interaction**, **User ID** and
 **Device ID** under the **Analytics** purpose. All of it "collected, not
 shared" — PostHog processes it for us and for nothing of its own — and all of
@@ -120,16 +121,25 @@ neither collect nor disclose anything: no third party sees a user, no email
 hash leaves the device, and nothing new is stored. They are not a data
 practice and belong in neither form.
 
-Three configuration facts belong in the declaration rather than in the code,
+Four configuration facts belong in the declaration rather than in the code,
 because the honest answer on the forms changes if any of them changes. Each is
 set in `apps/mobile/src/lib/analytics.ts`, and the file says so:
 
 - **Message bodies never reach it.** Events carry screen and action names
   only, and the event list is a closed type (`analyticsEvents.ts`) with the
   obvious keys — body, text, email, handle — refused at compile time and
-  stripped at runtime. Session replay is **off** (`enableSessionReplay:
-false`); turning it on would be a new answer on both forms, and this is a
-  messaging app.
+  stripped at runtime.
+- **Session replay is on, and masked.** It was off until 11 September 2026 on
+  the grounds that this is a messaging app; what makes the reversal answerable
+  on a form is that the masking happens on the device, before a frame is sent.
+  All text is masked, not only fields somebody types into, and so is every
+  image, so a chat records as grey blocks. Console logs and network telemetry —
+  the two ways text would get past the masking, and both on by default — are
+  off. It is iOS and Android only; the web build records nothing. For Play this
+  stays **App activity → App interactions** and for Apple **Product
+  Interaction**: it is behaviour, not content, and there is no screen-recording
+  category to tick on either form. Crash logs stay unchecked — the same plugin
+  could capture them, and does not.
 - **The id is ours, not the device's.** PostHog is identified with the same
   user id the API uses, and with nothing else, so a deleted account's events
   are findable by that id. Before sign-in the SDK's own anonymous id stands

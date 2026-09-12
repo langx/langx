@@ -1293,7 +1293,7 @@ export const es: Localized<EnMessages> = {
     shareLocationBody: 'Los demás ven un rango de distancia, nunca un punto.',
     shareUsage: 'Compartir datos de uso',
     shareUsageBody:
-      'Qué pantallas y botones se usan, nunca lo que escribes. Nos muestra dónde se atasca la gente.',
+      'Qué pantallas y botones se usan, y una grabación de la pantalla con cada palabra e imagen tapadas; nunca lo que escribes. Nos muestra dónde se atasca la gente.',
     activityMap: 'Mostrar mi mapa de actividad',
     activityMapBody: 'Los cuadrados de tu perfil. Tu racha se ve igualmente.',
     updateLocation: 'Actualizar mi ubicación',

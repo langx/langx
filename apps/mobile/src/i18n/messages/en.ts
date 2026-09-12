@@ -1367,7 +1367,7 @@ export const en = {
     shareLocationBody: 'Others see a distance bucket, never a point.',
     shareUsage: 'Share usage data',
     shareUsageBody:
-      'Which screens and buttons get used — never what you write. It shows us where people get stuck.',
+      'Which screens and buttons get used, and a recording of the screen with every word and picture blanked out — never what you write. It shows us where people get stuck.',
     activityMap: 'Show my activity map',
     activityMapBody: 'The squares on your profile. Your streak stays visible either way.',
     updateLocation: 'Update my location',
