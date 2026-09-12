@@ -30,6 +30,7 @@ import { assertAttachable, deleteObjects } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { readCommentSummary } from './comments'
 import type { PostCommentDoc } from './documents'
+import { notHidden } from './documents'
 import type { Post, PostCorrectionDoc, PronunciationAnswerDoc } from './documents'
 import { correctionDto, loadAuthors, postDto } from './dto'
 import { readAnswerSummary } from './pronunciation'
@@ -203,7 +204,10 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
    * and cannot be bounded — it would quietly turn the main feed into a
    * collection scan, which nothing would fail to warn about.
    */
-  const base: Document = { kind: pronunciation ? 'pronunciation' : { $in: ['correction', null] } }
+  const base: Document = {
+    kind: pronunciation ? 'pronunciation' : { $in: ['correction', null] },
+    ...notHidden(),
+  }
   const sort: Document = { [countField]: 1, createdAt: -1, _id: -1 }
 
   /**
@@ -302,7 +306,9 @@ export async function listMyPosts(
   userId: string,
   query: ListMyPostsQuery,
 ): Promise<FeedPage> {
-  const filter: Document = { authorId: userId }
+  // Hidden posts are absent here too. Hiding is a silent decision, so the one
+  // list that would still show it is the one place the silence would break.
+  const filter: Document = { authorId: userId, ...notHidden() }
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
     filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
@@ -403,7 +409,10 @@ export async function correctPost(
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
 
-  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id })
+  // A hidden post reads as a missing one, here and at every other site that
+  // looks one up to act on it: the 404 each of them already throws is the
+  // right answer, so the filter goes in rather than a branch beside it.
+  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() })
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   // The mirror of the guard in `answerPronunciation`. A request for a recording
   // is not a sentence to rewrite, and a correction on one would sit in a list
@@ -527,7 +536,7 @@ export async function listPostCorrections(
   // The correction summary only needs the post's id, which we already have, so
   // it rides along here rather than costing a second round trip below.
   const [post, hidden, { topByPost, viewerCorrected }, commentCounts] = await Promise.all([
-    db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
+    db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
     readCorrectionSummary(db, userId, [_id]),
     // Carried here so the detail screen's header agrees with the card that
@@ -668,6 +677,32 @@ export async function deletePost(
     ...childCorrections.map((c) => c.media?.url),
     ...childAnswers.flatMap((a) => [a.media.url, a.slowMedia?.url]),
   ])
+}
+
+/**
+ * Hide a post from everybody, or put it back — the decision the report email's
+ * link makes about the thing reported, rather than about its author.
+ *
+ * No ownership filter, unlike `deletePost`: this is the one write in the feed
+ * that is deliberately somebody else's. What stands in for ownership is the
+ * signed link that reached it, which names the report, and the report names
+ * this post — see `email/reviewToken.ts`.
+ *
+ * Returns the post as it was *before* the write, so the caller can tell a
+ * decision from a no-op and say "already hidden" rather than claiming to have
+ * done something. `null` when there is no such post: a moderator can be
+ * reading a report about something its author deleted in the meantime.
+ */
+export async function setPostHidden(db: Db, postId: string, hidden: boolean): Promise<Post | null> {
+  if (!ObjectId.isValid(postId)) return null
+  const _id = new ObjectId(postId)
+  return db
+    .collection<Post>(COLLECTIONS.posts)
+    .findOneAndUpdate(
+      { _id },
+      hidden ? { $set: { hiddenAt: new Date() } } : { $unset: { hiddenAt: '' } },
+      { returnDocument: 'before' },
+    )
 }
 
 /**

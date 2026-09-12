@@ -4453,3 +4453,33 @@ The row sits under the switch it explains, exactly where
 carries no live state for that row's stated reason: what the permission
 currently is takes an OS read and an `AppState` listener to stay true, and a
 row that goes stale in a list of switches reads as a switch that is wrong.
+
+## A reported post can be hidden from the mailbox, never deleted from it
+
+A report raised from the feed is usually about one sentence, not about the
+person who wrote it, and until now the report email could only decide the
+person: suspend for N days, suspend forever, dismiss. The proportionate answer
+— take that post down and leave the account alone — did not exist, so the
+choice was between doing too much and doing nothing.
+
+It exists now as `hide_post` / `unhide_post`, offered on the review page only
+when the report names a post. What it writes is `hiddenAt` on the post, and
+`notHidden()` is spread into every read that can put a post in front of
+somebody — the feed's two queries, the thread, the comments, the answers, the
+likes, and the author's own `/me/posts`.
+
+**There is deliberately no `delete_post`.** `email/reviewToken.ts` justifies
+treating a mailbox as authorisation by a single property: the worst a stolen or
+forwarded link can do is something a person can undo. A hard delete takes the
+post, its corrections, its answers and its attachments with it and breaks that
+property outright. Hiding is the reversible half of the same intent; a genuine
+deletion stays a script somebody runs by hand.
+
+The author's own list filters it too, which is the part worth stating because
+it looks like an oversight. Hiding is silent — nobody is emailed, nothing is
+labelled — so the one place the post stayed visible would be the one place the
+silence broke, and a writer watching their sentence sit in a list nobody else
+can reach is worse than either honest answer.
+
+Showing it again does not reopen the report. The second decision corrects the
+first rather than handing somebody work that is already done.

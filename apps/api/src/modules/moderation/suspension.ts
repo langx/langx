@@ -101,6 +101,17 @@ export async function dismissReport(db: Db, reportId: ObjectId): Promise<void> {
     .updateOne({ _id: reportId }, { $set: { status: 'dismissed' } })
 }
 
+/**
+ * Closes a report that was decided by something other than a suspension —
+ * today, hiding the post it named. `suspendUser` writes the same status
+ * inline, because there it is one line of the write it is already making.
+ */
+export async function actionReport(db: Db, reportId: ObjectId): Promise<void> {
+  await db
+    .collection<Report>(COLLECTIONS.reports)
+    .updateOne({ _id: reportId }, { $set: { status: 'actioned' } })
+}
+
 /** Moves the end date in, leaving everything else — the reason, the appeal — as it was. */
 export async function shortenSuspension(db: Db, userId: string, days: number): Promise<Date> {
   const until = new Date(Date.now() + days * 24 * 60 * 60 * 1000)

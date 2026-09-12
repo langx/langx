@@ -10,6 +10,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { blockedUserIds } from '../moderation/blocks'
+import { notHidden } from './documents'
 import type { Post, PostCommentDoc } from './documents'
 import { commentDto, loadAuthors } from './dto'
 
@@ -69,7 +70,7 @@ export async function addComment(
   const _id = new ObjectId(postId)
 
   const [post, hidden] = await Promise.all([
-    db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
+    db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
   ])
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
@@ -107,7 +108,7 @@ export async function listPostComments(
   const _id = new ObjectId(postId)
 
   const [post, hidden] = await Promise.all([
-    db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
+    db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
   ])
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')

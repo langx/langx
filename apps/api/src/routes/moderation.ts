@@ -2,6 +2,7 @@ import {
   REVIEW_ACTIONS_BY_KIND,
   SUSPENSION_MAX_DAYS,
   appealSchema,
+  attachmentsOf,
   blockSchema,
   moderationListQuerySchema,
   reportSchema,
@@ -22,11 +23,14 @@ import {
   signReviewToken,
   verifyReviewToken,
 } from '../email/reviewToken'
+import { COLLECTIONS } from '../db/collections'
 import { publicApiUrl } from '../env'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
+import { setPostHidden, type Post } from '../modules/feed/feed'
 import { blockUser, listBlocked, reportUser, unblockUser } from '../modules/moderation/blocks'
 import { getViewers } from '../modules/moderation/profileViews'
 import {
+  actionReport,
   dismissReport,
   liftSuspension,
   shortenSuspension,
@@ -75,6 +79,31 @@ function actionForm(token: string, action: ReviewAction, label: string): string 
             <input type="hidden" name="action" value="${action}" />
             ${submitButton(label)}
           </form>`
+}
+
+/**
+ * The reported post, shown before the decisions about its author.
+ *
+ * Shown at all because the mail before it carries only an id and a link, and
+ * following that link means signing in as somebody who can see the post — the
+ * decision should not depend on being able to. The sentence is what is being
+ * judged, so it is on the page that judges it.
+ *
+ * Nothing here for a report raised from a profile or a message: a post-shaped
+ * empty box on those would suggest one is missing.
+ */
+function postSection(token: string, post: Post | null): string {
+  if (!post) return ''
+  const attachments = attachmentsOf(post).length
+  const files = attachments > 0 ? ` · ${attachments} attachment${attachments > 1 ? 's' : ''}` : ''
+  return `<p style="margin:24px 0 8px;"><strong>The post</strong> <span style="color:#888;">${escapeHtml(post.language)}${files}</span></p>
+          <blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 12px;padding:0 0 0 12px;color:#333;">${escapeHtml(post.body)}</blockquote>
+          ${
+            post.hiddenAt
+              ? `<p style="background:#fff3cd;padding:12px;border-radius:8px;">Hidden since <strong>${escapeHtml(post.hiddenAt.toISOString())}</strong>. Nobody can see it, its author included.</p>
+                 ${actionForm(token, 'unhide_post', 'Show it again')}`
+              : actionForm(token, 'hide_post', 'Hide this post')
+          }`
 }
 
 /**
@@ -146,9 +175,14 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
        * into a 500 would tell somebody their report of harassment failed when
        * it did not, and invite a retry that files it twice.
        */
-      const [reporter, reported] = await Promise.all([
+      const [reporter, reported, post] = await Promise.all([
         getProfile(app.mongo.db, request.userId),
         getProfile(app.mongo.db, request.body.userId),
+        result.report.postId
+          ? app.mongo.db
+              .collection<Post>(COLLECTIONS.posts)
+              .findOne({ _id: result.report.postId }, { projection: { body: 1 } })
+          : null,
       ])
       try {
         await app.email.send({
@@ -165,6 +199,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
               messageId: result.report.messageId?.toHexString() ?? null,
               postId: result.report.postId?.toHexString() ?? null,
             },
+            postBody: post?.body ?? null,
             reviewUrl: reviewUrl(
               publicApiUrl(app.env),
               signReviewToken(app.env.BETTER_AUTH_SECRET, {
@@ -254,9 +289,20 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const reportId = toObjectId(claim.reportId)
       const report = reportId
-        ? await app.mongo.db.collection('reports').findOne<{ reason: string; details?: string }>({
-            _id: reportId,
-          })
+        ? await app.mongo.db
+            .collection('reports')
+            .findOne<{ reason: string; details?: string; postId?: ObjectId }>({
+              _id: reportId,
+            })
+        : null
+
+      /*
+       * The post itself, when the report named one — read unfiltered, because
+       * this is the one reader that must still find a post it has already
+       * hidden. Everything else treats hidden as missing.
+       */
+      const post = report?.postId
+        ? await app.mongo.db.collection<Post>(COLLECTIONS.posts).findOne({ _id: report.postId })
         : null
 
       return html(
@@ -267,6 +313,14 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
             report ? ` for <strong>${escapeHtml(report.reason.replace(/_/g, ' '))}</strong>` : ''
           }.</p>
          ${report?.details ? `<blockquote style="white-space:pre-wrap;border-left:3px solid #ddd;margin:0 0 20px;padding:0 0 0 12px;color:#333;">${escapeHtml(report.details)}</blockquote>` : '<p style="color:#888;">No details were given.</p>'}
+         ${postSection(token, post)}
+         ${
+           /* Two groups of buttons now, and "hide this sentence" and "suspend
+              this person forever" are not things to mistake for each other. A
+              heading is what keeps the second from reading as more of the
+              first — but only when there is a first. */
+           post ? '<p style="margin:24px 0 8px;"><strong>The account</strong></p>' : ''
+         }
          ${inForce}
          ${daysForm(token, 'suspend', 'Suspend for N days', 7)}
          ${actionForm(token, 'permanent', 'Suspend permanently')}
@@ -309,6 +363,43 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
       }
       const name = escapeHtml(who(profile.handle, claim.userId))
       const reportId = toObjectId(claim.reportId)
+
+      /*
+       * The two decisions about the post rather than the account, handled
+       * before the address lookups below because neither needs one: hiding is
+       * silent, which is the whole shape of it.
+       */
+      if (action === 'hide_post' || action === 'unhide_post') {
+        const report = reportId
+          ? await app.mongo.db
+              .collection('reports')
+              .findOne<{ postId?: ObjectId }>({ _id: reportId })
+          : null
+        if (!report?.postId) {
+          return html(reply.code(400), page(REVIEW_TITLE, 'That report is not about a post.'))
+        }
+        const hide = action === 'hide_post'
+        const before = await setPostHidden(app.mongo.db, report.postId.toHexString(), hide)
+        if (!before) {
+          return html(reply.code(404), page(REVIEW_TITLE, 'That post no longer exists.'))
+        }
+        /*
+         * Hiding decides the report; showing it again does not reopen it. The
+         * second is a correction of the first, and a report that bounced back
+         * to `open` would arrive in the next list as work nobody owes.
+         */
+        if (hide && reportId) await actionReport(app.mongo.db, reportId)
+        const changed = Boolean(before.hiddenAt) !== hide
+        return html(
+          reply,
+          page(
+            REVIEW_TITLE,
+            hide
+              ? `<p>Hidden. Nobody can see it, ${name} included${changed ? '' : ' — it already was'}.</p>`
+              : `<p>Back in the feed${changed ? '' : ' — it was never hidden'}.</p>`,
+          ),
+        )
+      }
 
       /**
        * Telling the person is never fatal to the decision. The suspension is

@@ -1480,6 +1480,139 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect((await decide(path, { action: 'suspend' })).statusCode).toBe(400)
       expect((await decide(path, { action: 'suspend', days: '400' })).statusCode).toBe(400)
     })
+
+    /**
+     * Hiding the post rather than suspending the person who wrote it — which
+     * is what most reports about a post actually want.
+     */
+    describe('hiding the reported post', () => {
+      /** A post by `author`, reported by somebody else, and the link that decides it. */
+      async function reportedPost(author: SignedUpUser, body = 'the reported sentence') {
+        const created = await post(author, '/posts', { body, language: 'en' })
+        expect(created.statusCode, created.body).toBe(201)
+        const postId = created.json<{ _id: string }>()._id
+
+        const reporter = await newUser()
+        emailSender.messages.length = 0
+        const filed = await post(reporter, '/reports', {
+          userId: author.userId,
+          reason: 'inappropriate_content',
+          postId,
+        })
+        expect(filed.statusCode, filed.body).toBe(201)
+        const mail = reportMails().at(-1)
+        if (!mail) throw new Error('no report mail')
+        return { postId, reporter, path: reviewPathFrom(mail.text), mail }
+      }
+
+      const feedIds = async (user: SignedUpUser) =>
+        (await get(user, '/feed')).json<{ items: { _id: string }[] }>().items.map((i) => i._id)
+
+      it('quotes the post in the mail, so the link need not be opened to judge it', async () => {
+        const author = await newUser()
+        const { mail } = await reportedPost(author, 'a sentence somebody objected to')
+        expect(mail.text).toContain('a sentence somebody objected to')
+      })
+
+      it('takes the post out of the feed, the thread and its author’s own list', async () => {
+        const author = await newUser()
+        const viewer = await newUser()
+        const { postId, path } = await reportedPost(author)
+
+        expect(await feedIds(viewer)).toContain(postId)
+        const page = await app.inject({ method: 'GET', url: path })
+        expect(page.statusCode).toBe(200)
+        expect(page.body).toContain('the reported sentence')
+        expect(page.body).toContain('Hide this post')
+
+        const hidden = await decide(path, { action: 'hide_post' })
+        expect(hidden.statusCode, hidden.body).toBe(200)
+        // The page turns around once the decision is made: the same link now
+        // offers the way back rather than the way in again.
+        const after = await app.inject({ method: 'GET', url: path })
+        expect(after.body).toContain('Show it again')
+        expect(after.body).not.toContain('Hide this post')
+
+        expect(await feedIds(viewer)).not.toContain(postId)
+        expect((await get(viewer, `/posts/${postId}/corrections`)).statusCode).toBe(404)
+        // The author's own list too: the decision is silent, and a post still
+        // sitting in the one place its writer looks would not be.
+        expect(await feedIds(author)).not.toContain(postId)
+        const mine = await get(author, '/me/posts')
+        expect(mine.json<{ items: { _id: string }[] }>().items.map((i) => i._id)).not.toContain(
+          postId,
+        )
+
+        const report = await handle.db
+          .collection<Report>(COLLECTIONS.reports)
+          .findOne({ postId: new ObjectId(postId) })
+        expect(report?.status).toBe('actioned')
+      })
+
+      it('refuses every write against a post nobody can see', async () => {
+        const author = await newUser()
+        const stranger = await newUser()
+        const { postId, path } = await reportedPost(author)
+        expect((await decide(path, { action: 'hide_post' })).statusCode).toBe(200)
+
+        // Each of these 404s because the lookup behind it now finds nothing —
+        // which is also what stops a hidden post from going on paying token.
+        expect(
+          (await post(stranger, `/posts/${postId}/corrections`, { corrected: 'fixed' })).statusCode,
+        ).toBe(404)
+        expect((await post(stranger, `/posts/${postId}/comments`, { body: 'hm' })).statusCode).toBe(
+          404,
+        )
+        expect(
+          (await post(stranger, '/likes', { targetType: 'post', targetId: postId })).statusCode,
+        ).toBe(404)
+      })
+
+      it('puts it back, and leaves the decided report decided', async () => {
+        const author = await newUser()
+        const viewer = await newUser()
+        const { postId, path } = await reportedPost(author)
+
+        expect((await decide(path, { action: 'hide_post' })).statusCode).toBe(200)
+        expect(await feedIds(viewer)).not.toContain(postId)
+
+        const shown = await decide(path, { action: 'unhide_post' })
+        expect(shown.statusCode, shown.body).toBe(200)
+        expect(await feedIds(viewer)).toContain(postId)
+
+        // Not back to `open`: showing it again corrects the first decision
+        // rather than handing the report to somebody as work still owed.
+        const report = await handle.db
+          .collection<Report>(COLLECTIONS.reports)
+          .findOne({ postId: new ObjectId(postId) })
+        expect(report?.status).toBe('actioned')
+      })
+
+      it('will not hide anything from an appeal link, or from a report with no post', async () => {
+        const author = await newUser()
+        const viewer = await newUser()
+        const { postId } = await reportedPost(author)
+
+        // A report raised from a profile names no post, so there is nothing
+        // for this decision to be about.
+        const { path: profileReport } = await reportAndReviewPath(author)
+        const refused = await decide(profileReport, { action: 'hide_post' })
+        expect(refused.statusCode).toBe(400)
+        expect(await feedIds(viewer)).toContain(postId)
+
+        // And the appeal link, which the kind check turns away before any of
+        // the above runs.
+        await decide(profileReport, { action: 'suspend', days: '3' })
+        const appeal = await post(author, '/me/suspension/appeal', {
+          text: 'I did not do the thing.',
+        })
+        expect(appeal.statusCode, appeal.body).toBe(202)
+        const appealMail = emailSender.messages.filter((m) => m.subject.includes('Appeal')).at(-1)
+        if (!appealMail) throw new Error('no appeal mail')
+        const crossed = await decide(appealPathFrom(appealMail.text), { action: 'hide_post' })
+        expect(crossed.statusCode).toBe(400)
+      })
+    })
   })
 
   describe('push registration', () => {
