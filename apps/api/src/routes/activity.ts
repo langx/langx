@@ -10,7 +10,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
-import { getProfile } from '../modules/profiles/profiles'
+import { findProfileByHandleOrId, getProfile } from '../modules/profiles/profiles'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { getPublicSummary } from '../modules/tokens/publicSummary'
 import { listStreakDays, repairsInMonth } from '../modules/tokens/streakDays'
@@ -129,14 +129,11 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireAuth, schema: { querystring: activityRangeSchema } },
     async (request, reply) => {
       const { handle } = request.params as { handle: string }
-      const target = await app.mongo.db
-        .collection<{
-          _id: string
-          timezone?: string
-          streak?: { current: number; lastQualifiedDay: string | null }
-          privacy?: { activityMapVisible?: boolean }
-        }>('profiles')
-        .findOne({ handle })
+      // Through the repository, which is also what resolves a `previousHandle`:
+      // a v1 account that took a new name is still reachable at the old one
+      // everywhere else, and a map that 404s on the link in somebody's bio
+      // would be the one place it is not.
+      const target = await findProfileByHandleOrId(app.mongo.db, handle)
 
       // Blocked either way reads as "no such person", the same as the profile
       // itself — a 403 here would confirm the account exists.
@@ -174,9 +171,8 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.get('/profiles/:handle/summary', { preHandler: requireAuth }, async (request, reply) => {
     const { handle } = request.params as { handle: string }
-    const target = await app.mongo.db
-      .collection<{ _id: string }>('profiles')
-      .findOne({ handle }, { projection: { _id: 1 } })
+    // The old name too — see the activity route above.
+    const target = await findProfileByHandleOrId(app.mongo.db, handle)
 
     const hidden = await blockedUserIds(app.mongo.db, request.userId)
     if (!target || hidden.includes(target._id)) {

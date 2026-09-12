@@ -19,9 +19,10 @@ export interface Referral {
   referrerId: string
   /**
    * The handle as it resolved at attach time, kept beside the id it points at.
-   * Handles cannot be renamed today, so this is redundant today — and it is
-   * what makes the row readable in a shell six months from now without a
-   * second lookup, which is what an audit row is for.
+   * A snapshot on purpose: a returning v1 account may trade its name once
+   * (`claimHandle`), and what this row is for is reading in a shell six months
+   * from now — which link was actually used — not naming the referrer today.
+   * Everything shown to a person re-reads the live profile; see `readReferralStatus`.
    */
   referrerHandle: string
   /** Where the code came from: a marked invite URL, or typed in at onboarding. */
@@ -70,10 +71,19 @@ export async function attachReferral(
   handle: string,
   source: Referral['source'],
 ): Promise<Referral | null> {
-  const bare = handle.startsWith('@') ? handle.slice(1) : handle
+  const bare = (handle.startsWith('@') ? handle.slice(1) : handle).toLowerCase()
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const referrer = await profiles.findOne(
-    { handle: bare.toLowerCase(), deletedAt: { $exists: false } },
+    {
+      // The old name resolves here too, for the same reason it resolves on the
+      // profile route: an invite link is the longest-lived thing a handle ends
+      // up inside — a QR on a sticker, a bio, a screenshot — and the accounts
+      // that may rename are precisely the ones whose links are years old. The
+      // failure would be silent (every failure here is), so the attribution
+      // would just quietly stop arriving.
+      $or: [{ handle: bare }, { previousHandle: bare }],
+      deletedAt: { $exists: false },
+    },
     { projection: { handle: 1 } },
   )
   if (!referrer) return null
