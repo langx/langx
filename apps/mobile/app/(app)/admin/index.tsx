@@ -93,8 +93,16 @@ export default function AdminHomeScreen() {
 
             <Text style={styles.heading}>{ADMIN.home.sections.money}</Text>
             <View style={styles.tiles}>
-              <StatTile value={String(money?.tiers.pro ?? 0)} label={ADMIN.home.pro} />
-              <StatTile value={String(money?.tiers.proPlus ?? 0)} label={ADMIN.home.proPlus} />
+              <StatTile
+                value={String(money?.tiers.pro ?? 0)}
+                label={ADMIN.home.pro}
+                onPress={() => router.push('/(app)/admin/members?tier=pro')}
+              />
+              <StatTile
+                value={String(money?.tiers.proPlus ?? 0)}
+                label={ADMIN.home.proPlus}
+                onPress={() => router.push('/(app)/admin/members?tier=pro_plus')}
+              />
               <StatTile value={String(money?.tiers.free ?? 0)} label={ADMIN.home.free} />
             </View>
 

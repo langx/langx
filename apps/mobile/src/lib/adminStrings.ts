@@ -185,6 +185,17 @@ export const ADMIN = {
     noHistory: 'Nothing yet.',
   },
 
+  members: {
+    title: 'Subscribers',
+    tabs: { pro: 'Pro', proPlus: 'Pro+' },
+    empty: 'Nobody is on this plan.',
+    renews: 'renews',
+    ends: 'ends',
+    forever: 'no expiry',
+    trial: 'trial',
+    since: 'since',
+  },
+
   diagnose: {
     discovery: 'Why Discover looks the way it does',
     discoveryHint: 'Each row is the one above it, narrowed once more.',

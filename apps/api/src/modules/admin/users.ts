@@ -1,12 +1,14 @@
 import {
   NOTIFICATION_TYPES,
   notificationsAllowed,
+  type AdminMemberListQuery,
   type NotificationType,
   type PlanTier,
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { readAdminActions, type AdminAction } from './auditLog'
+import { onPaidTier } from './stats'
 import { blockedUserIds } from '../moderation/blocks'
 import { resolveDiscoveryScope } from '../discovery/discovery'
 import { effectiveTier } from '../profiles/entitlement'
@@ -100,6 +102,63 @@ export interface AdminUserDetail {
   discovery: DiscoveryDiagnosis
   push: PushDiagnosis
   legacy: LegacyDiagnosis
+}
+
+/** One row of the list behind a plan tile: who, and what their subscription is doing. */
+export interface AdminMemberRow {
+  userId: string
+  handle: string
+  displayName: string
+  tier: PlanTier
+  /** When the current entitlement was last written — a purchase, a renewal, a grant. */
+  since: string
+  expiresAt: string | null
+  willRenew: boolean | null
+  store: string | null
+  periodType: string | null
+  lastActiveAt: string | null
+}
+
+/**
+ * Everybody on one paid tier, newest entitlement first.
+ *
+ * The same filter as the dashboard's count, so the number on the tile and the
+ * length of this list agree. No index leads with `entitlement`, and none is
+ * added: the count already walks the collection once a minute for the
+ * dashboard, and a list opened by hand is rarer than that.
+ */
+export async function listMembers(
+  db: Db,
+  query: AdminMemberListQuery,
+  now: Date = new Date(),
+): Promise<{ items: AdminMemberRow[]; nextCursor: string | null }> {
+  const rows = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .find({
+      ...onPaidTier(query.tier, now),
+      ...(query.cursor ? { 'entitlement.updatedAt': { $lt: new Date(query.cursor) } } : {}),
+    })
+    .sort({ 'entitlement.updatedAt': -1 })
+    .limit(query.limit + 1)
+    .toArray()
+
+  const page = rows.slice(0, query.limit)
+  return {
+    items: page.map((profile) => ({
+      userId: profile._id,
+      handle: profile.handle,
+      displayName: profile.displayName,
+      tier: profile.entitlement.tier,
+      since: profile.entitlement.updatedAt.toISOString(),
+      expiresAt: profile.entitlement.expiresAt?.toISOString() ?? null,
+      willRenew: profile.entitlement.willRenew ?? null,
+      store: profile.entitlement.store ?? null,
+      periodType: profile.entitlement.periodType ?? null,
+      lastActiveAt: profile.stats.lastActiveAt?.toISOString() ?? null,
+    })),
+    nextCursor:
+      rows.length > query.limit ? (page.at(-1)?.entitlement.updatedAt.toISOString() ?? null) : null,
+  }
 }
 
 /** Handle, previous handle, user id, or the email address a support thread came from. */

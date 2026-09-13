@@ -1,4 +1,4 @@
-import { shiftDayKey, utcDayKey, type AppConfig } from '@langx/shared'
+import { shiftDayKey, utcDayKey, type AppConfig, type PlanTier } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { getAppConfig } from '../appConfig/appConfig'
@@ -190,20 +190,31 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
  * a free account with a row about last month in it.
  */
 async function countTiers(db: Db, now: Date): Promise<AdminStats['money']['tiers']> {
-  const live: Document = {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const [total, pro, proPlus] = await Promise.all([
+    profiles.countDocuments(MEMBER_FILTER),
+    profiles.countDocuments(onPaidTier('pro', now)),
+    profiles.countDocuments(onPaidTier('pro_plus', now)),
+  ])
+  return { total, pro, proPlus, free: total - pro - proPlus }
+}
+
+/** Accounts a person can be behind: not a guest, not deleted. */
+const MEMBER_FILTER: Document = { guest: { $exists: false }, deletedAt: { $exists: false } }
+
+/**
+ * The members currently on a paid tier — shared with the list behind the
+ * tile, so what the tile says and what the list shows cannot disagree.
+ */
+export function onPaidTier(tier: PlanTier, now: Date): Document {
+  return {
+    ...MEMBER_FILTER,
+    'entitlement.tier': tier,
     $or: [
       { 'entitlement.expiresAt': { $exists: false } },
       { 'entitlement.expiresAt': { $gt: now } },
     ],
   }
-  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
-  const member = { guest: { $exists: false }, deletedAt: { $exists: false } }
-  const [total, pro, proPlus] = await Promise.all([
-    profiles.countDocuments(member),
-    profiles.countDocuments({ ...member, 'entitlement.tier': 'pro', ...live }),
-    profiles.countDocuments({ ...member, 'entitlement.tier': 'pro_plus', ...live }),
-  ])
-  return { total, pro, proPlus, free: total - pro - proPlus }
 }
 
 /** Which builds people are actually on — see `Profile.stats.appVersion`. */
