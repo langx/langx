@@ -120,17 +120,44 @@ describe('walking the run', () => {
   })
 
   /**
-   * A step that names a tab is reachable by definition: the host switches to
-   * that tab before measuring, and the screen may never have been mounted
-   * before. Asking first is what made the run skip its whole tail the moment
-   * it left Discovery.
+   * A step waiting for a mount is reachable by definition: the host opens the
+   * screen its target lives on before measuring. Asking first is what made the
+   * run skip its whole tail the moment it left Discovery.
    */
-  it('lets a step with a tab through even when nothing is registered', () => {
+  it('lets a step through when it is waiting for a mount', () => {
     const resolved = resolveFrom(startTour({ guest: false }), () => false)
-    expect(resolved?.index).toBe(TOUR_STEPS.findIndex((step) => step.tab !== undefined))
+    expect(resolved?.index).toBe(TOUR_STEPS.findIndex((step) => step.awaitsMount))
   })
 
-  /** With no tabs and no targets there is no tour at all, not an empty overlay. */
+  /**
+   * Only the Feed's two steps wait. Everything else the run points at is
+   * mounted — the tab-bar icons whatever tab is showing, Discovery throughout
+   * — so "not registered" there means genuinely absent.
+   */
+  it('waits only for the screen the run itself opens', () => {
+    expect(TOUR_STEPS.filter((step) => step.awaitsMount).map((step) => step.target)).toEqual([
+      'feedAsk',
+      'feedKinds',
+    ])
+  })
+
+  /**
+   * The ending is an offer, and an empty list has nobody to offer. Left to the
+   * old rule — every step that names a tab gets through — it dimmed the screen
+   * for a second while the host asked eight times for a card that was never
+   * coming, then closed on nothing.
+   */
+  it('ends rather than waiting for a card that is not there', () => {
+    const beforeTheCard = {
+      steps: TOUR_STEPS,
+      index: TOUR_STEPS.findIndex((step) => step.target === 'discoverCard'),
+      guest: false,
+    }
+    expect(resolveFrom(beforeTheCard, (target) => target !== 'discoverCard')).toBeNull()
+    expect(resolveFrom(beforeTheCard, all)?.index).toBe(beforeTheCard.index)
+  })
+
+  /** With nothing mounted and nothing to wait for there is no tour at all. */
   it('ends the run when nothing is available and nothing navigates', () => {
     const only = { steps: [{ target: 'discoverPair' as const }], index: 0, guest: false }
     expect(resolveFrom(only, () => false)).toBeNull()
