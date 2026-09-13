@@ -29,6 +29,20 @@ export const ERROR_CODES = {
    * second request, the way `retryAt` rides on `RATE_LIMITED`.
    */
   ACCOUNT_SUSPENDED: 'ACCOUNT_SUSPENDED',
+  /**
+   * A signed-in account that is not a moderator asked for something under
+   * `/admin`.
+   *
+   * Its own code rather than `FORBIDDEN` because the client's answer is to
+   * hide the entry and forget it ever drew one — the flag on
+   * `GET /profiles/me` is what normally decides that, and this is the stale
+   * client and the hostile one.
+   *
+   * The message carries no detail on purpose. The repository is public, so the
+   * routes are already known, and confirming which of them exist for whom
+   * gains nothing.
+   */
+  ADMIN_REQUIRED: 'ADMIN_REQUIRED',
 
   // entitlement + quota
   UPGRADE_REQUIRED: 'UPGRADE_REQUIRED',
@@ -159,6 +173,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   GUEST_ACCOUNT: 403,
   UNDERAGE: 403,
   ACCOUNT_SUSPENDED: 403,
+  ADMIN_REQUIRED: 403,
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,
   MEDIA_LOCKED: 409,

@@ -75,6 +75,19 @@ export interface Profile {
    * was renamed would silently stop being official.
    */
   official?: true
+  /**
+   * A moderator. Set only by `scripts/grant-admin.ts`, never by a form —
+   * `updateProfileSchema` is a closed object and no route `$set`s a
+   * client-supplied shape onto a profile, so there is no path from a request
+   * body to this field.
+   *
+   * Read by `requireAuth`, which folds it into the projection it already makes
+   * for the suspension check. It reaches its owner through `GET /profiles/me`,
+   * which sends the stored document, and nobody else: `toPublicProfile` and
+   * `getSharedProfile` are both allow-lists, so a field added here is private
+   * until somebody names it.
+   */
+  admin?: true
   handle: string
   /**
    * The handle this account held before its owner swapped v1's name for one
