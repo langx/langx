@@ -26,6 +26,7 @@ import {
 } from './modules/account/handleSignIn'
 import { isUnclaimedV1Row, settlePrecreatedUser } from './modules/handles/legacyPrecreate'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
+import { notifyLifetimeGift } from './modules/handles/lifetimeGiftNotice'
 import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
 import {
@@ -137,7 +138,30 @@ export async function createAuth({
    */
   const tryRestore = async (userId: string, email: string): Promise<void> => {
     try {
-      await restoreLegacyProfile(db, userId, email, env.LEGACY_EMAIL_HASH_SALT, revenueCat)
+      const outcome = await restoreLegacyProfile(
+        db,
+        userId,
+        email,
+        env.LEGACY_EMAIL_HASH_SALT,
+        revenueCat,
+      )
+      /*
+       * The lifetime gift is the one thing a restore hands over that the
+       * person would otherwise only ever see on the welcome-back screen —
+       * and this path often is not the device they are holding: an email
+       * link clicked on a laptop restores the account. So it is said out
+       * loud here. `notifyLifetimeGift` never throws and claims its own
+       * ledger row, so the same grant reaching this twice is not a second
+       * message.
+       */
+      if (outcome.kind === 'restored' && outcome.lifetimeGranted) {
+        await notifyLifetimeGift(
+          db,
+          { email: emailSender, push: push ?? new LoggingPushSender() },
+          { userId, tier: outcome.lifetimeGranted },
+          (error, message) => console.error(`[lifetime-gift] ${message}`, { userId, error }),
+        )
+      }
     } catch (error) {
       console.error('[legacy-restore] failed', { userId, error })
     }

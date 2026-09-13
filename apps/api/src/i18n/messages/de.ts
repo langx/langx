@@ -92,6 +92,11 @@ export const de: Localized<ServerMessages> = {
     billingFailedTitle: 'Deine Zahlung ist fehlgeschlagen',
     billingEndedTitle: 'Dein Tarif ist beendet',
     billingBody: 'Tippe, um deinen Tarif zu prüfen.',
+    lifetimeGiftTitle: '{plan}, auf Lebenszeit 🎉',
+    lifetimeGiftBody: {
+      one: 'Dein {total} Token aus v1 hat es verdient.',
+      other: 'Deine {total} Token aus v1 haben es verdient.',
+    },
     securityBody: 'Öffne LangX, falls du das nicht warst.',
     securityBodyDevice: 'Von {device}. Öffne LangX, falls du das nicht warst.',
     security: {
@@ -499,8 +504,23 @@ export const de: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Wir haben deinen Einspruch gelesen. Die Sperre ist aufgehoben — du kannst LangX wieder nutzen.',
     suspensionUpdatedText: 'Deine LangX-Sperre wurde aktualisiert. {detail}',
+    lifetimeGiftSubject: '{plan}, auf Lebenszeit',
+    lifetimeGiftButton: 'Meinen Tarif ansehen',
   },
 
+  lifetimeGift: {
+    intro: 'Glückwunsch – {plan} gehört dir auf Lebenszeit.',
+    earned: {
+      one: 'Du hast v1 mit {total} Token beendet. Das hat es verdient: Das Geschenk ging an die Konten, die das alte LangX aufgebaut haben. Es läuft nie ab, und es gibt nichts zu bezahlen.',
+      other:
+        'Du hast v1 mit {total} Token beendet. Das hat es verdient: Das Geschenk ging an die Konten, die das alte LangX aufgebaut haben. Es läuft nie ab, und es gibt nichts zu bezahlen.',
+    },
+    wallet: {
+      one: 'Dein altes Guthaben kam im Verhältnis hundert v1-Token zu eins herüber, also liegen {carried} davon in deiner neuen Brieftasche. Heute hält sie {balance} Token.',
+      other:
+        'Dein altes Guthaben kam im Verhältnis hundert v1-Token zu eins herüber, also liegen {carried} davon in deiner neuen Brieftasche. Heute hält sie {balance} Token.',
+    },
+  },
   reportReason: {
     spam: 'Spam',
     harassment: 'Belästigung',

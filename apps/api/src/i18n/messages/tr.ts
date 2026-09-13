@@ -86,6 +86,11 @@ export const tr: Localized<ServerMessages> = {
     billingFailedTitle: 'Ödemen alınamadı',
     billingEndedTitle: 'Planın sona erdi',
     billingBody: 'Planını kontrol etmek için dokun.',
+    lifetimeGiftTitle: '{plan}, ömür boyu 🎉',
+    lifetimeGiftBody: {
+      one: 'v1’deki {total} jetonun kazandırdı.',
+      other: 'v1’deki {total} jetonun kazandırdı.',
+    },
     securityBody: 'Bu sen değilsen LangX’i aç.',
     securityBodyDevice: '{device} üzerinden. Bu sen değilsen LangX’i aç.',
     security: {
@@ -482,8 +487,23 @@ export const tr: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'İtirazını okuduk. Askıya alma kaldırıldı — LangX’i yeniden kullanabilirsin.',
     suspensionUpdatedText: 'LangX askıya alma durumun güncellendi. {detail}',
+    lifetimeGiftSubject: '{plan}, ömür boyu',
+    lifetimeGiftButton: 'Planımı gör',
   },
 
+  lifetimeGift: {
+    intro: 'Tebrikler — {plan} ömür boyu senin.',
+    earned: {
+      one: 'v1’i {total} jetonla bitirdin. Bunu kazandıran o: hediye, eski LangX’i kuran hesaplara gitti. Süresi hiç dolmaz, ödenecek bir şey yok.',
+      other:
+        'v1’i {total} jetonla bitirdin. Bunu kazandıran o: hediye, eski LangX’i kuran hesaplara gitti. Süresi hiç dolmaz, ödenecek bir şey yok.',
+    },
+    wallet: {
+      one: 'Eski bakiyen yüz v1 jetonu bire gelecek şekilde aktarıldı, yani {carried} tanesi yeni cüzdanında. Bugün {balance} jeton tutuyor.',
+      other:
+        'Eski bakiyen yüz v1 jetonu bire gelecek şekilde aktarıldı, yani {carried} tanesi yeni cüzdanında. Bugün {balance} jeton tutuyor.',
+    },
+  },
   reportReason: {
     spam: 'Spam',
     harassment: 'Taciz',

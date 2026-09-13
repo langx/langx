@@ -26,6 +26,15 @@ export type NotificationJob =
   /** Tokens arriving: the pool once a day, the gift once a day. */
   | 'wallet.pool'
   | 'wallet.gift'
+  /**
+   * The v1 loyalty gift, once in an account's life — period key `'once'`.
+   *
+   * It is here rather than relying on the message's `clientId` because this
+   * one claim covers three channels: the mail and the push have no unique
+   * index to fail on, and a second pass must not re-send them just because
+   * the chat message was refused as a duplicate.
+   */
+  | 'lifetimeGift'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 
