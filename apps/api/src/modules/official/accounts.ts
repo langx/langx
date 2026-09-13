@@ -90,6 +90,19 @@ export function officialHandleOf(id: string): OfficialHandle | null {
   return handlesById.get(id) ?? null
 }
 
+/**
+ * The same question as `acceptsMessages`, asked of the whole set rather than
+ * of an id already in hand — for a query that has to exclude these accounts
+ * before it knows which threads it is looking at.
+ *
+ * Empty before `ensureOfficialAccounts` has run, which is the same harmless
+ * shape the guards above take: a database with no official accounts has no
+ * threads with one either.
+ */
+export function unwritableOfficialIds(): string[] {
+  return [...handlesById].filter(([, handle]) => !OFFICIAL_WRITABLE[handle]).map(([id]) => id)
+}
+
 function isDuplicateKey(error: unknown): boolean {
   return error instanceof MongoServerError && error.code === 11000
 }
