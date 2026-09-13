@@ -82,6 +82,17 @@ export interface TourStep {
    * point at a card.
    */
   tab?: TourTab
+  /**
+   * Let the step through before anything has registered its target.
+   *
+   * Only true of a target on a screen the run itself opens: the Feed is not
+   * mounted until the tour switches to it, so asking whether its button is
+   * there is asking too early. Everywhere else the answer is trustworthy —
+   * the tab-bar icons are mounted whatever tab is showing, and Discovery is
+   * mounted throughout — so a step with nothing to point at is a step that
+   * must be skipped rather than one that must wait.
+   */
+  awaitsMount?: true
 }
 
 /**
@@ -104,11 +115,11 @@ export const TOUR_STEPS: readonly TourStep[] = [
   { target: 'discoverFilters' },
   { target: 'tabChats', tab: TOUR_TABS.chats },
   { target: 'tabFeed', tab: TOUR_TABS.feed },
-  // Standing on the Feed already, but still naming the tab: the host treats a
-  // step with a tab as reachable whether or not its target has ever been
-  // mounted, which is exactly the case for a screen the run just opened.
-  { target: 'feedAsk', tab: TOUR_TABS.feed },
-  { target: 'feedKinds', tab: TOUR_TABS.feed },
+  // Standing on the Feed already, but still naming the tab — and the only two
+  // steps that wait for a mount, because the Feed is the one screen the run
+  // opens that nothing had rendered before.
+  { target: 'feedAsk', tab: TOUR_TABS.feed, awaitsMount: true },
+  { target: 'feedKinds', tab: TOUR_TABS.feed, awaitsMount: true },
   { target: 'tabMe', tab: TOUR_TABS.me },
   { target: 'discoverCard', tab: TOUR_TABS.discover },
 ]
@@ -167,7 +178,7 @@ export function isLastStep(state: TourState): boolean {
  * step. A step with nothing to highlight is skipped; it must never be able to
  * hold the overlay open on an empty rectangle.
  *
- * The exception is a step that names a tab; see below.
+ * The exception is a step that says it is waiting for a mount; see below.
  */
 export function resolveFrom(
   state: TourState,
@@ -177,14 +188,19 @@ export function resolveFrom(
     const step = state.steps[index]
     if (!step) continue
     /*
-     * A step that names a tab is always allowed through, even when its target
-     * is not registered yet: the host is about to switch to that tab, and the
-     * screen it wants may not have been mounted until now. Asking first is how
-     * the run learned to skip every remaining step the moment it left
+     * A step marked `awaitsMount` is allowed through with nothing registered:
+     * the host is about to open the screen its target lives on, and asking
+     * first is how the run learned to skip its whole tail the moment it left
      * Discovery — three steps and the ending, gone in a second, with nobody
      * having touched anything.
+     *
+     * Naming a tab is *not* enough on its own, and that distinction is the
+     * ending: `discoverCard` names Discovery, but Discovery has been mounted
+     * since the run began, so "no card registered" means the list is empty
+     * rather than late. Waiting for it dimmed the screen for a second and
+     * closed on nothing.
      */
-    if (step.tab || isAvailable(step.target)) return { ...state, index }
+    if (step.awaitsMount || isAvailable(step.target)) return { ...state, index }
   }
   return null
 }

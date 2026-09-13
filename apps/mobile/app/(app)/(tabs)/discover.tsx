@@ -302,12 +302,6 @@ export default function DiscoverScreen() {
   const tips = useTips()
   const { data: session } = authClient.useSession()
   /*
-   * Only over a list that has rows: the tour points at a card, and a run
-   * started over skeletons would highlight rectangles that are about to be
-   * replaced. Search closed for the same reason — half the targets are not
-   * rendered while the field is open.
-   */
-  /*
    * What the tour's last step offers. The first row, because that is the row
    * the step is pointing at — and re-registered whenever it changes, so a list
    * that refreshed mid-run offers whoever is at the top now.
@@ -321,8 +315,22 @@ export default function DiscoverScreen() {
     })
   }, [first])
 
+  /*
+   * Over a list that has settled, whatever it settled on — not only one with
+   * rows in it.
+   *
+   * `state === 'content'` was the condition, and it made the tour silently
+   * conditional on having matches: somebody whose Discover came back empty, or
+   * failed, or was waiting on a network, got no tour at first run and nothing
+   * at all from the Settings row that replays it. The screen it teaches is the
+   * same screen either way, and an empty one is where the explanation is worth
+   * the most.
+   *
+   * Skeletons still block it — those are rectangles about to be replaced — and
+   * so does an open search field, which is covering half the targets.
+   */
   const touring = useDiscoveryTour({
-    ready: !searching && state === 'content',
+    ready: !searching && state !== 'skeleton',
     guest: shouldGateGuest(session?.user),
     onFinished: () => {
       // The tour just taught both of these. A tip repeating one of them a

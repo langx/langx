@@ -57,9 +57,13 @@ export function useTourOpen(): boolean {
 
 interface DiscoveryTourOptions {
   /**
-   * Whether the screen is in a state worth touring: it has rendered at least
-   * one real card, and nothing is covering it. A tour over skeletons points at
-   * rectangles that are about to move.
+   * Whether the screen is in a state worth touring: its list has settled on
+   * something — rows, an empty panel, a failure — and nothing is covering it.
+   * A tour over skeletons points at rectangles that are about to move.
+   *
+   * Deliberately not "has rows": see the call site. A tour that only plays for
+   * people who already have matches skips the ones who most need telling what
+   * the screen is.
    */
   ready: boolean
   guest: boolean
