@@ -163,7 +163,13 @@ interface DiscoveryScope {
   myLearningCodes: string[]
 }
 
-async function resolveDiscoveryScope(
+/*
+ * Exported for one reader beyond this file: the operator panel's "why is
+ * Discover empty for this person" diagnosis, which has to evaluate the filter
+ * the feature actually uses. A diagnosis built from a copy of these clauses
+ * would answer confidently and be wrong the first time one of them changed.
+ */
+export async function resolveDiscoveryScope(
   db: Db,
   viewerId: string,
   query: DiscoveryQuery,

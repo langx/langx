@@ -394,7 +394,15 @@ export interface Profile {
     reason: string
     reportId?: ObjectId
     /** The one appeal. Its presence is what refuses a second. */
-    appeal?: { at: Date; text: string }
+    /** The moderator who decided it, when the decision came from the panel. */
+    by?: string
+    /**
+     * `decidedAt` is what takes an appeal out of the queue. Answering with
+     * `lift` removes this whole sub-document and needs nothing; `keep` and
+     * `shorten` leave the appeal where it was, so without a stamp a refused
+     * appeal is indistinguishable from an unread one.
+     */
+    appeal?: { at: Date; text: string; decidedAt?: Date; decidedBy?: string }
   }
   deletedAt?: Date
   createdAt: Date

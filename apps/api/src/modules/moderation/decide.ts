@@ -14,6 +14,7 @@ import { localeFor } from '../profiles/localeFor'
 import { getProfile } from '../profiles/profiles'
 import {
   actionReport,
+  closeAppeal,
   dismissReport,
   liftSuspension,
   shortenSuspension,
@@ -62,13 +63,25 @@ export interface ReviewDecisionInput extends ReviewDecision {
   userId: string
   /** The report being decided, or `null` for an appeal with none behind it. */
   reportId: ObjectId | null
+  /**
+   * Who decided, when that is knowable. The panel knows; the emailed link does
+   * not, because it authorises whoever holds it.
+   */
+  byAdminId?: string
+  /**
+   * The reason to record, for a suspension with no report behind it — the
+   * panel's search-box path, where there is nothing to read one from. A
+   * report's own reason always wins: this decision is about *that* report, and
+   * the person is about to be told which one it was.
+   */
+  reason?: string
 }
 
 export async function applyReviewDecision(
   app: FastifyInstance,
   input: ReviewDecisionInput,
 ): Promise<ReviewDecisionResult> {
-  const { kind, userId, reportId, action, days } = input
+  const { kind, userId, reportId, action, days, byAdminId } = input
 
   /*
    * The token (or the route) says *which* report or appeal; this says what may
@@ -131,6 +144,9 @@ export async function applyReviewDecision(
   }
 
   if (action === 'keep') {
+    // Refusing an appeal still answers it. Without this the appeal queue never
+    // empties — see `closeAppeal`.
+    await closeAppeal(app.mongo.db, userId, byAdminId)
     return { ok: true, handle, outcome: { action } }
   }
 
@@ -149,12 +165,13 @@ export async function applyReviewDecision(
           .collection(COLLECTIONS.reports)
           .findOne<{ reason: string }>({ _id: reportId })
       : null
-    const reason = report?.reason ?? profile.suspension?.reason ?? 'other'
+    const reason = report?.reason ?? input.reason ?? profile.suspension?.reason ?? 'other'
     const until = await suspendUser(app.mongo.db, {
       userId,
       reason,
       ...(permanent ? { permanent: true } : { days: days ?? 1 }),
       ...(reportId ? { reportId } : {}),
+      ...(byAdminId ? { byAdminId } : {}),
     })
     if (address?.verified) {
       await tell(() =>
@@ -170,6 +187,9 @@ export async function applyReviewDecision(
   // `shorten` and `lift` — the two an appeal can drive.
   const until =
     action === 'shorten' ? await shortenSuspension(app.mongo.db, userId, days ?? 1) : null
+  // Shortening answers the appeal; lifting removes the sub-document the appeal
+  // lives in, so it needs no stamp and must not be given one after the fact.
+  if (action === 'shorten') await closeAppeal(app.mongo.db, userId, byAdminId)
   if (action === 'lift') await liftSuspension(app.mongo.db, userId)
   if (address?.verified) {
     await tell(() =>

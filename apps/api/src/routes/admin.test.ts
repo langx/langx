@@ -1,4 +1,4 @@
-import { ERROR_CODES, SUSPENSION_FOREVER } from '@langx/shared'
+import { ERROR_CODES, REPORTS_TO_FREEZE_XP, SUSPENSION_FOREVER } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -10,6 +10,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
+import { signReviewToken } from '../email/reviewToken'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -56,6 +57,17 @@ describe('the operator panel', () => {
   async function makeAdmin(user: SignedUpUser): Promise<void> {
     await profiles().updateOne({ _id: user.userId }, { $set: { admin: true } })
   }
+
+  // Always a payload, even an empty one: a conditional spread makes `inject`
+  // resolve to a union of its overloads, and `.json<T>()` on that union is an
+  // error type rather than a response. The routes with no body schema ignore it.
+  const post = (user: SignedUpUser, url: string, payload: unknown = {}) =>
+    app.inject({
+      method: 'POST',
+      url,
+      headers: { cookie: user.cookie },
+      payload: payload as Record<string, unknown>,
+    })
 
   const get = (user: SignedUpUser | null, url: string) =>
     app.inject({
@@ -248,6 +260,224 @@ describe('the operator panel', () => {
       await makeAdmin(admin)
       const jobs = (await get(admin, '/admin/stats')).json<AdminStats>().system.jobs
       expect(jobs.map((job) => job._id)).toContain('test pass')
+    })
+  })
+
+  describe('reports', () => {
+    it('is the same decision through the panel as through the emailed link', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      // Two reports, two targets, so the two decisions cannot interfere.
+      const viaPanel = await newUser()
+      const viaLink = await newUser()
+      const reporter = await newUser()
+      for (const target of [viaPanel, viaLink]) {
+        expect(
+          (await post(reporter, '/reports', { userId: target.userId, reason: 'spam' })).statusCode,
+        ).toBe(201)
+      }
+
+      const queue = (await get(admin, '/admin/reports?status=open')).json<{
+        items: { id: string; reported: { userId: string } }[]
+      }>()
+      expect(queue.items).toHaveLength(2)
+      const reportFor = (user: SignedUpUser) =>
+        queue.items.find((item) => item.reported.userId === user.userId)!.id
+
+      // The panel.
+      const decided = await post(admin, `/admin/reports/${reportFor(viaPanel)}/decision`, {
+        action: 'suspend',
+        days: 3,
+      })
+      expect(decided.statusCode).toBe(200)
+
+      // The emailed form, which posts urlencoded and carries a signed token.
+      const token = signReviewToken('a'.repeat(32), {
+        kind: 'report',
+        userId: viaLink.userId,
+        reportId: reportFor(viaLink),
+        expiresAt: Date.now() + 60_000,
+      })
+      const page = await app.inject({
+        method: 'POST',
+        url: `/moderation/review?token=${encodeURIComponent(token)}`,
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'action=suspend&days=3',
+      })
+      expect(page.statusCode).toBe(200)
+
+      const [a, b] = await Promise.all([
+        profiles().findOne({ _id: viaPanel.userId }),
+        profiles().findOne({ _id: viaLink.userId }),
+      ])
+      // Identical but for `by`, which only the panel can know: the mailbox
+      // authorises whoever holds the link and can name nobody.
+      expect(a?.suspension?.by).toBe(admin.userId)
+      expect(b?.suspension?.by).toBeUndefined()
+      expect(a?.suspension?.permanent).toBe(b?.suspension?.permanent)
+      expect(a?.suspension?.reason).toBe(b?.suspension?.reason)
+      expect(a?.suspension?.reportId).toBeDefined()
+      expect(b?.suspension?.reportId).toBeDefined()
+
+      // Both reports are closed, and both people were told the same thing.
+      const closed = (await get(admin, '/admin/reports?status=actioned')).json<{
+        items: unknown[]
+      }>()
+      expect(closed.items).toHaveLength(2)
+    })
+
+    it('writes what it did, and shows it on the account it did it to', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const reporter = await newUser()
+      await post(reporter, '/reports', { userId: target.userId, reason: 'harassment' })
+
+      const queue = (await get(admin, '/admin/reports?status=open')).json<{
+        items: { id: string }[]
+      }>()
+      await post(admin, `/admin/reports/${queue.items[0]!.id}/decision`, { action: 'dismiss' })
+
+      const detail = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        user: { actions: { action: string; adminId: string }[] }
+      }>()
+      expect(detail.user.actions[0]).toMatchObject({
+        action: 'report.decide',
+        adminId: admin.userId,
+      })
+    })
+  })
+
+  describe('appeals', () => {
+    it('leaves the queue when it is answered, however it is answered', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+
+      await post(admin, `/admin/users/${target.userId}/suspend`, { reason: 'spam', days: 7 })
+      expect(
+        (
+          await post(target, '/me/suspension/appeal', {
+            text: 'It was not me, and I would like this looked at again.',
+          })
+        ).statusCode,
+      ).toBe(202)
+
+      const waiting = () =>
+        get(admin, '/admin/appeals').then((response) =>
+          response.json<{ items: { userId: string }[] }>(),
+        )
+      expect((await waiting()).items.map((item) => item.userId)).toContain(target.userId)
+
+      // `keep` is the one that used to leave it behind: `lift` removes the
+      // whole sub-document and always looked answered.
+      const kept = await post(admin, `/admin/appeals/${target.userId}/decision`, { action: 'keep' })
+      expect(kept.statusCode).toBe(200)
+      expect((await waiting()).items.map((item) => item.userId)).not.toContain(target.userId)
+
+      const profile = await profiles().findOne({ _id: target.userId })
+      expect(profile?.suspension?.appeal?.decidedBy).toBe(admin.userId)
+      // Still suspended — answering an appeal is not lifting one.
+      expect(profile?.suspension?.until).toBeDefined()
+    })
+  })
+
+  describe('the two things a report was the only way to reach', () => {
+    it('thaws an account whose earning three reports froze', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+
+      for (let i = 0; i < REPORTS_TO_FREEZE_XP; i++) {
+        const reporter = await newUser()
+        await post(reporter, '/reports', { userId: target.userId, reason: 'spam' })
+      }
+      expect((await profiles().findOne({ _id: target.userId }))?.tokenFrozenAt).toBeDefined()
+
+      const thawed = await post(admin, `/admin/users/${target.userId}/unfreeze-tokens`)
+      expect(thawed.json<{ thawed: boolean }>().thawed).toBe(true)
+      expect((await profiles().findOne({ _id: target.userId }))?.tokenFrozenAt).toBeUndefined()
+    })
+
+    it('hides a post nobody reported, and can put it back', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const author = await newUser()
+      const created = await post(author, '/posts', {
+        body: 'something worth hiding',
+        language: 'en',
+      })
+      expect(created.statusCode).toBe(201)
+      const postId = created.json<{ _id: string }>()._id
+
+      const hidden = await post(admin, `/admin/posts/${postId}/hide`)
+      expect(hidden.json<{ hidden: boolean; changed: boolean }>()).toEqual({
+        hidden: true,
+        changed: true,
+      })
+      // Hiding it twice changes nothing and says so.
+      expect(
+        (await post(admin, `/admin/posts/${postId}/hide`)).json<{ changed: boolean }>().changed,
+      ).toBe(false)
+      expect(
+        (await post(admin, `/admin/posts/${postId}/unhide`)).json<{ hidden: boolean }>().hidden,
+      ).toBe(false)
+    })
+  })
+
+  describe('the support questions', () => {
+    it("says which filter empties this person's Discover", async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const lonely = await newUser()
+
+      const { discovery } = (await get(admin, `/admin/users/${lonely.userId}`)).json<{
+        discovery: { matches: number; steps: { filter: string; remaining: number }[] }
+      }>()
+
+      // Cumulative and in order, so the step where it collapses is the answer.
+      expect(discovery.steps.map((step) => step.filter)).toEqual([
+        'everybody',
+        'discoverable',
+        'not suspended',
+        'not blocked either way',
+        'language fit',
+      ])
+      expect(discovery.steps.at(-1)!.remaining).toBe(discovery.matches)
+      for (let i = 1; i < discovery.steps.length; i++) {
+        expect(discovery.steps[i]!.remaining).toBeLessThanOrEqual(discovery.steps[i - 1]!.remaining)
+      }
+    })
+
+    it('resolves the notification switches rather than printing what is stored', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+
+      // The oldest of the three stored shapes: one boolean for everything.
+      await profiles().updateOne(
+        { _id: target.userId },
+        { $set: { 'settings.notifications': false } },
+      )
+
+      const { push } = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        push: { prefs: { type: string; push: boolean; email: boolean }[] }
+      }>()
+      expect(push.prefs.length).toBeGreaterThan(0)
+      expect(push.prefs.every((pref) => !pref.push && !pref.email)).toBe(true)
+    })
+
+    it('finds somebody by the address a support thread came from', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+
+      const found = await get(admin, `/admin/users?q=${encodeURIComponent(target.email)}`)
+      expect(found.statusCode).toBe(200)
+      expect(found.json<{ user: { userId: string; email: string } }>().user.userId).toBe(
+        target.userId,
+      )
     })
   })
 })
