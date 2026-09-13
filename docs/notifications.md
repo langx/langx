@@ -110,12 +110,30 @@ account is noise.
 
 `modules/billing/notify.ts`, fired from the RevenueCat webhook.
 
-| Message                             | Fires on                                               | Note                                                                  |
-| ----------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------- |
-| **Your payment did not go through** | `BILLING_ISSUE`                                        | Access is untouched; the store will retry                             |
-| **Your plan has ended**             | `EXPIRATION` **and** the tier actually dropped to free | An expiry on a Pro+ subscription whose plain Pro runs on ends nothing |
+| Message                             | Fires on                                                                   | Note                                                                  |
+| ----------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                         | Access is untouched; the store will retry                             |
+| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts` | An expiry on a Pro+ subscription whose plain Pro runs on ends nothing |
 
 A renewal that succeeds says nothing — the store already mails a receipt.
+
+Two things this deliberately does not do, both learned on 12 September 2026,
+when an account was told twice that it had lost a subscription it still had:
+
+- **The expiry letter waits half an hour.** The entitlement drops to free the
+  moment RevenueCat says so, but a store retrying a card sends `EXPIRATION` and
+  then, minutes later, the `RENEWAL` that undoes it — seven minutes, that day.
+  So the webhook records `churnedFrom` and says nothing; `runPlanEndedPass`, on
+  the half-hourly timer, looks again and writes only to accounts still free.
+  That is also what keeps the Pro+-lapsing-onto-Pro case quiet, without a rule
+  of its own.
+- **A `BILLING_ISSUE` whose period has already ended says nothing.** A store
+  that has given up sends both events together — twenty-four milliseconds
+  apart, that day — and "the store will retry" is then simply false.
+
+And nothing at all is said about a **sandbox or TestFlight** event: those move
+the entitlement so a tester can see the paid app, and write no `churnedFrom`,
+send no mail and no push. None of it is anybody's money.
 
 ---
 
