@@ -56,8 +56,8 @@ What it absorbs:
   changes: every phrase card saved also becomes an Echo card for its author,
   and Echo does not replace the deck screen or its CSV export.
 
-What it does **not** touch: starring (a bookmark, no structure), quizzes (a
-message type between two people), the token pool.
+What it does **not** touch: starring (a bookmark, no structure), quizzes as a
+message type between two people, the token pool.
 
 ## The Add echo gesture
 
@@ -392,3 +392,23 @@ Four questions the first draft left open, closed on 13 September 2026:
    because introducing an empty tab is an empty promise.
 4. **First pack** — 300 items at `absoluteBeginner` per language first; the
    700-item `beginner` pack when a human has read it end to end.
+
+## Later, without adding a screen
+
+Three things the first three phases do not need and that ride on machinery
+already there. None adds a screen; each is one branch in code that exists.
+
+1. **Ask the partner from a card.** On an `Again` in the session, an "Ask
+   Marie" link opens the conversation with the sentence quoted and sends it as
+   a `pronunciation` or `correction` ask (`MESSAGE_ASKS`). It is the only path
+   that leads from Echo back into a conversation, which in a cold start is the
+   direction that matters: a forgotten card becomes a reason to write to
+   somebody.
+2. **A card from a quiz message.** A `quiz` message already carries the
+   question and the option its author marked correct. Add echo on it makes
+   `front` the question and `back` the correct option — one more
+   `source.kind`, no new interface, and the quiz stays what it is between the
+   two people.
+3. **One tile on Me.** Cards reviewed this week, a `StatTile` beside the
+   weekly chart on the Me tab, read from `GET /echo/summary`. The number a
+   person looks at when deciding whether the week counted.
