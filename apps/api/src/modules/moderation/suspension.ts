@@ -19,9 +19,13 @@ import type { Profile } from '../profiles/profiles'
  * it — see the note on that constant for why permanence is a date here rather
  * than a flag.
  *
- * Decisions arrive from the signed link in the report email
- * (`email/reviewToken.ts`), never from a route with a session behind it: there
- * is no moderation console, and this does not build one.
+ * Decisions reach these functions two ways and write the same thing either
+ * way: the signed link in the report email (`email/reviewToken.ts`), which
+ * needs no session and works when nobody can sign in, and the operator panel
+ * (`routes/admin.ts`). Both go through `applyReviewDecision`, which is what
+ * keeps them one decision rather than two. Nothing below knows which door it
+ * came through, except that `byAdminId` is absent for the link — the mailbox
+ * authorises whoever holds it and can name nobody.
  */
 
 /** The suspension a profile is under right now, or none. */
@@ -54,6 +58,13 @@ export interface SuspendInput {
   permanent?: boolean
   reason: string
   reportId?: ObjectId
+  /**
+   * The moderator who decided it, when one is known. Absent for the emailed
+   * link, which authorises whoever holds it and can name nobody — so this
+   * answers "who suspended this account" without a join, for the decisions
+   * that can answer it at all.
+   */
+  byAdminId?: string
 }
 
 /**
@@ -82,6 +93,7 @@ export async function suspendUser(db: Db, input: SuspendInput): Promise<Date> {
           permanent,
           reason: input.reason,
           ...(input.reportId ? { reportId: input.reportId } : {}),
+          ...(input.byAdminId ? { by: input.byAdminId } : {}),
         },
       },
     },
@@ -122,6 +134,30 @@ export async function shortenSuspension(db: Db, userId: string, days: number): P
       { $set: { 'suspension.until': until, 'suspension.permanent': false } },
     )
   return until
+}
+
+/**
+ * Marks an appeal as answered, whatever the answer was.
+ *
+ * Without this the appeal queue never empties. `lift` has always cleared it by
+ * removing the whole sub-document, but `keep` and `shorten` leave the appeal
+ * exactly as they found it — so an appeal that was read and refused is
+ * indistinguishable from one nobody has looked at, and the emailed flow has
+ * had that hole since it shipped.
+ *
+ * Filtered on the appeal existing rather than read first, so answering twice
+ * does not move the date.
+ */
+export async function closeAppeal(db: Db, userId: string, byAdminId?: string): Promise<void> {
+  await db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+    { _id: userId, 'suspension.appeal': { $exists: true } },
+    {
+      $set: {
+        'suspension.appeal.decidedAt': new Date(),
+        ...(byAdminId ? { 'suspension.appeal.decidedBy': byAdminId } : {}),
+      },
+    },
+  )
 }
 
 /**

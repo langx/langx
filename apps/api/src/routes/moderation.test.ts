@@ -1216,8 +1216,10 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
   /**
    * Suspension, end to end from the link in the report email.
    *
-   * There is no admin route to drive here, which is the design: the decision
-   * happens in the mailbox the report already arrives in.
+   * The operator panel decides the same reports through the same function
+   * (`moderation/decide.ts`); what is pinned here is the door that needs no
+   * session, which is the one that has to keep working when nobody can sign
+   * in. `routes/admin.test.ts` asserts the two write the same thing.
    */
   describe('suspension', () => {
     /** The `Review:` line the report mail carries, as a path this app can be injected with. */

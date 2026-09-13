@@ -75,6 +75,19 @@ export interface Profile {
    * was renamed would silently stop being official.
    */
   official?: true
+  /**
+   * A moderator. Set only by `scripts/grant-admin.ts`, never by a form —
+   * `updateProfileSchema` is a closed object and no route `$set`s a
+   * client-supplied shape onto a profile, so there is no path from a request
+   * body to this field.
+   *
+   * Read by `requireAuth`, which folds it into the projection it already makes
+   * for the suspension check. It reaches its owner through `GET /profiles/me`,
+   * which sends the stored document, and nobody else: `toPublicProfile` and
+   * `getSharedProfile` are both allow-lists, so a field added here is private
+   * until somebody names it.
+   */
+  admin?: true
   handle: string
   /**
    * The handle this account held before its owner swapped v1's name for one
@@ -274,6 +287,18 @@ export interface Profile {
     lastActiveAt: Date
     messagesSent: number
     /**
+     * The build this account was last seen on, from the two headers every
+     * client already sends — validated in `clientBuildOf` before it is stored,
+     * because a header is whatever the sender says it is.
+     *
+     * Here rather than on `devices` because `devices` holds only the accounts
+     * that registered for push, and "how many people are still on the old
+     * build" is a question about everybody. Absent until the next connection
+     * after this shipped.
+     */
+    appVersion?: string
+    appPlatform?: 'ios' | 'android' | 'web'
+    /**
      * Which badges this account has already been *told* about.
      *
      * Not a second copy of the badges — those stay derived, and this cannot
@@ -369,7 +394,15 @@ export interface Profile {
     reason: string
     reportId?: ObjectId
     /** The one appeal. Its presence is what refuses a second. */
-    appeal?: { at: Date; text: string }
+    /** The moderator who decided it, when the decision came from the panel. */
+    by?: string
+    /**
+     * `decidedAt` is what takes an appeal out of the queue. Answering with
+     * `lift` removes this whole sub-document and needs nothing; `keep` and
+     * `shorten` leave the appeal where it was, so without a stamp a refused
+     * appeal is indistinguishable from an unread one.
+     */
+    appeal?: { at: Date; text: string; decidedAt?: Date; decidedBy?: string }
   }
   deletedAt?: Date
   createdAt: Date

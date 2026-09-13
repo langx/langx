@@ -203,6 +203,21 @@ export const keys = {
   contributors: ['contributors'] as const,
   streakLeaderboard: (metric: string) => ['leaderboard', 'streak', metric] as const,
   blocks: ['blocks'] as const,
+  /*
+   * The operator panel, all of it under one prefix so a decision can
+   * invalidate every queue it might have changed with a single call. Nothing
+   * patches this prefix with `setQueriesData`, so the page-walking trap the
+   * two comments above describe does not apply here.
+   */
+  adminStats: ['admin', 'stats'] as const,
+  adminReports: (status: string) => ['admin', 'reports', status] as const,
+  adminReport: (id: string) => ['admin', 'reports', 'one', id] as const,
+  adminAppeals: ['admin', 'appeals'] as const,
+  adminFeedback: (status: string) => ['admin', 'feedback', status] as const,
+  adminFeedbackItem: (id: string) => ['admin', 'feedback', 'one', id] as const,
+  adminBroadcasts: ['admin', 'broadcasts'] as const,
+  adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
+  adminUser: (q: string) => ['admin', 'user', q] as const,
 }
 
 /**
@@ -313,6 +328,12 @@ function apiPut<T>(path: string, body: unknown): Promise<T> {
 export interface MeProfile {
   _id: string
   handle: string
+  /**
+   * A moderator. Only ever present on your own profile — the public and shared
+   * projections are allow-lists and do not name it — and set only by
+   * `scripts/grant-admin.ts` on the server.
+   */
+  admin?: true
   /**
    * The username this account held in v1, kept after its owner swapped it for
    * one of their own. Its presence is what says the one claim has been spent —
@@ -2186,6 +2207,308 @@ export function useRevokeOtherSessions() {
     },
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.sessions })
+    },
+  })
+}
+
+/*
+ * ── The operator panel ──────────────────────────────────────────────────────
+ *
+ * Every one of these is refused with `ADMIN_REQUIRED` for anybody without the
+ * flag, which is the real gate — `AdminGate` only decides whether a screen is
+ * drawn. The DTOs are deliberately loose here: these shapes are read by five
+ * screens nobody else sees, and mirroring them field for field from the server
+ * would be a second place to update every time a diagnosis gains a line.
+ */
+
+export interface AdminStatsDto {
+  generatedAt: string
+  queue: { reports: number; appeals: number; feedback: number }
+  audience: {
+    profiles: number
+    messages: number
+    activeToday: number
+    activeDaily: { day: string; count: number }[]
+    seenLastWeek: number
+    joinedToday: number
+    joinedLastWeek: number
+    builds: { platform: string; version: string; count: number }[]
+  }
+  money: {
+    tiers: { total: number; pro: number; proPlus: number; free: number }
+    pool: { day: string; paid: number; distributed: number; active: number } | null
+    tokensDaily: { day: string; count: number }[]
+  }
+  system: {
+    jobs: {
+      _id: string
+      lastFinishedAt?: string
+      lastDurationMs?: number
+      lastError?: string | null
+      runs: number
+      failures: number
+    }[]
+    suppressions: { total: number; unsubscribed: number; bounced: number; complained: number }
+    purge: { accounts: number; analytics: number }
+    assistantCallsToday: number
+    campaigns: { id: string; status: string; sent: number; total: number }[]
+    config: {
+      maintenance: { enabled: boolean; message: string }
+      minVersion: { ios: string; android: string; web: string }
+      flags: Record<string, boolean>
+    }
+  }
+}
+
+export interface AdminPartyDto {
+  userId: string
+  handle: string | null
+  displayName: string | null
+  avatarUrl: string | null
+  suspended: boolean
+}
+
+export interface AdminReportDto {
+  id: string
+  reason: string
+  details: string | null
+  status: string
+  createdAt: string
+  reported: AdminPartyDto
+  reporter: AdminPartyDto
+  aboutPost: boolean
+  post?: { id: string; body: string; language: string; hiddenAt: string | null } | null
+  suspension?: { until: string; permanent: boolean; reason: string } | null
+  otherOpenReports?: number
+}
+
+export interface AdminAppealDto {
+  userId: string
+  handle: string | null
+  displayName: string | null
+  text: string
+  appealedAt: string
+  until: string | null
+  permanent: boolean
+  reason: string
+}
+
+export interface AdminFeedbackDto {
+  _id: string
+  kind: 'bug' | 'feature'
+  body: string
+  attachmentUrls: string[]
+  issueUrl?: string
+  status: 'open' | 'triaged' | 'closed'
+  bounty: { amount: number; at: string } | null
+  createdAt: string
+  sender: { userId: string; handle: string | null; displayName: string | null }
+}
+
+export interface AdminBroadcastDto {
+  _id: string
+  bodies: Record<string, string>
+  pushTitle: string
+  status: 'draft' | 'queued' | 'sending' | 'paused' | 'done'
+  total: number
+  sent: number
+  failed: number
+  createdAt: string
+  startedAt?: string
+  finishedAt?: string
+}
+
+export interface AdminUserDto {
+  user: {
+    userId: string
+    handle: string
+    previousHandle: string | null
+    displayName: string
+    avatarUrl: string | null
+    country: string | null
+    createdAt: string
+    lastActiveAt: string | null
+    build: { version: string; platform: string } | null
+    tier: string
+    admin: boolean
+    email: string | null
+    emailVerified: boolean
+    deletedAt: string | null
+    tokenFrozenAt: string | null
+    suspension: { until: string; permanent: boolean; reason: string } | null
+    counts: { reportsAgainst: number; reportsFiled: number; blockedBy: number }
+    actions: { action: string; adminId: string; at: string }[]
+  }
+  discovery: {
+    matches: number
+    steps: { filter: string; remaining: number }[]
+    discoverable: boolean
+    nativeLanguages: string[]
+    learning: string[]
+  }
+  push: {
+    devices: { platform: string; pushEnabled: boolean; locale: string | null }[]
+    prefs: { type: string; push: boolean; email: boolean }[]
+    suppression: { reason: string; at: string } | null
+  }
+  legacy: { staged: boolean; reserved: boolean; restored: boolean; previousHandle: string | null }
+}
+
+export function useAdminStats(enabled = true) {
+  return useQuery({
+    queryKey: keys.adminStats,
+    queryFn: () => api.get<AdminStatsDto>('/admin/stats'),
+    enabled,
+  })
+}
+
+export function useAdminReports(status: string) {
+  return useQuery({
+    queryKey: keys.adminReports(status),
+    queryFn: () => api.get<{ items: AdminReportDto[] }>(`/admin/reports?status=${status}`),
+  })
+}
+
+export function useAdminReport(id: string) {
+  return useQuery({
+    queryKey: keys.adminReport(id),
+    queryFn: () => api.get<AdminReportDto>(`/admin/reports/${id}`),
+    enabled: id.length > 0,
+  })
+}
+
+export function useAdminAppeals() {
+  return useQuery({
+    queryKey: keys.adminAppeals,
+    queryFn: () => api.get<{ items: AdminAppealDto[] }>('/admin/appeals'),
+  })
+}
+
+/**
+ * One decision, whichever queue it came from.
+ *
+ * Invalidates the whole `['admin']` prefix rather than the one list it
+ * changed: a suspension moves a report between two tabs, empties an appeal,
+ * changes the dashboard's counts and rewrites that account's history. Naming
+ * them individually is how one of them goes stale.
+ */
+export function useAdminDecision() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { kind: 'report' | 'appeal'; id: string; action: string; days?: number }) =>
+      api.post<unknown>(
+        input.kind === 'report'
+          ? `/admin/reports/${input.id}/decision`
+          : `/admin/appeals/${input.id}/decision`,
+        { action: input.action, ...(input.days === undefined ? {} : { days: input.days }) },
+      ),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminFeedback(status: string) {
+  return useQuery({
+    queryKey: keys.adminFeedback(status),
+    queryFn: () => api.get<{ items: AdminFeedbackDto[] }>(`/admin/feedback?status=${status}`),
+  })
+}
+
+export function useAdminPayBounty() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; amount: number }) =>
+      api.post<{ awarded: boolean; amount: number }>(`/admin/feedback/${input.id}/award`, {
+        amount: input.amount,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminCloseFeedback() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; closeReason: string; note?: string }) =>
+      api.patch<AdminFeedbackDto>(`/admin/feedback/${input.id}`, {
+        status: 'closed',
+        closeReason: input.closeReason,
+        ...(input.note ? { note: input.note } : {}),
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminBroadcasts() {
+  return useQuery({
+    queryKey: keys.adminBroadcasts,
+    queryFn: () => api.get<{ items: AdminBroadcastDto[]; audience: number }>('/admin/broadcasts'),
+  })
+}
+
+/**
+ * While it is going out, this is the only thing that says how far it has got —
+ * so it polls, and only then. A finished broadcast asking every two seconds
+ * forever is a battery bug on a screen somebody left open.
+ */
+export function useAdminBroadcast(id: string) {
+  return useQuery({
+    queryKey: keys.adminBroadcast(id),
+    queryFn: () => api.get<AdminBroadcastDto>(`/admin/broadcasts/${id}`),
+    enabled: id.length > 0,
+    refetchInterval: (query) =>
+      query.state.data?.status === 'sending' || query.state.data?.status === 'queued'
+        ? 2000
+        : false,
+  })
+}
+
+export function useAdminCreateBroadcast() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; bodies: Record<string, string> }) =>
+      api.post<AdminBroadcastDto>('/admin/broadcasts', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminBroadcasts })
+    },
+  })
+}
+
+export function useAdminBroadcastAction() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; action: 'test' | 'start' | 'pause' | 'resume' }) =>
+      api.post<AdminBroadcastDto | { delivered: boolean }>(
+        `/admin/broadcasts/${input.id}/${input.action}`,
+        {},
+      ),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminUser(q: string) {
+  return useQuery({
+    queryKey: keys.adminUser(q),
+    queryFn: () => api.get<AdminUserDto>(`/admin/users?q=${encodeURIComponent(q)}`),
+    enabled: q.trim().length >= 2,
+    retry: false,
+  })
+}
+
+/** The account actions that are not a moderation decision: thaw, sign out, write to. */
+export function useAdminUserAction() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string; action: string; body?: unknown }) =>
+      api.post<unknown>(`/admin/users/${input.userId}/${input.action}`, input.body ?? {}),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
     },
   })
 }

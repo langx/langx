@@ -5,11 +5,12 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
  * finder.
  *
  * Signed rather than stored, unlike `deletionTokens.ts`, because there is
- * nothing to store: a report leaves no row, and the thing that must not
- * happen twice — the payout — is already made impossible twice over by the
- * ledger's unique `{userId, kind, refId}` index. `reportId` is that `refId`,
- * so opening the link again pays nothing and says so, and a forwarded mail
- * cannot pay a second time either.
+ * nothing to store *about the token*: the thing that must not happen twice —
+ * the payout — is already impossible twice over through the ledger's unique
+ * `{userId, kind, refId}` index. `reportId` is that `refId`, and it is also
+ * the `_id` of the report's row in `feedback`, so opening the link again pays
+ * nothing and says so, a forwarded mail cannot pay a second time, and neither
+ * can the operator panel, which reaches the same ledger row by the same id.
  *
  * **It is a capability: whoever holds the link can pay this one reporter, once,
  * within the range in `BOUNTY_MIN`/`MAX`.** That is the same trade the
