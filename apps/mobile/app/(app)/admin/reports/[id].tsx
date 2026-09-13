@@ -98,9 +98,11 @@ export default function AdminCaseScreen() {
             <>
               <Text style={styles.subject}>{shown}</Text>
               <Callout tone="warning">
-                {appeal.permanent
-                  ? `${ADMIN.reports.inForce} (∞, ${appeal.reason})`
-                  : `${ADMIN.reports.inForce} (${appeal.until ?? ''}, ${appeal.reason})`}
+                <Text style={styles.calloutBody}>
+                  {appeal.permanent
+                    ? `${ADMIN.reports.inForce} (∞, ${appeal.reason})`
+                    : `${ADMIN.reports.inForce} (${appeal.until ?? ''}, ${appeal.reason})`}
+                </Text>
               </Callout>
 
               <Text style={styles.heading}>{ADMIN.appeals.said}</Text>
@@ -138,7 +140,9 @@ export default function AdminCaseScreen() {
               </View>
             </>
           ) : (
-            <Callout tone="info">{ADMIN.appeals.empty}</Callout>
+            <Callout tone="info">
+              <Text style={styles.calloutBody}>{ADMIN.appeals.empty}</Text>
+            </Callout>
           )
         ) : report.data ? (
           <>
@@ -147,11 +151,15 @@ export default function AdminCaseScreen() {
 
             {report.data.otherOpenReports ? (
               <Callout tone="warning">
-                {ADMIN.reports.otherReports(report.data.otherOpenReports)}
+                <Text style={styles.calloutBody}>
+                  {ADMIN.reports.otherReports(report.data.otherOpenReports)}
+                </Text>
               </Callout>
             ) : null}
             {report.data.suspension ? (
-              <Callout tone="warning">{ADMIN.reports.inForce}</Callout>
+              <Callout tone="warning">
+                <Text style={styles.calloutBody}>{ADMIN.reports.inForce}</Text>
+              </Callout>
             ) : null}
 
             <Text style={styles.heading}>{ADMIN.reports.details}</Text>
@@ -166,7 +174,9 @@ export default function AdminCaseScreen() {
                   <Text style={styles.quote}>{report.data.post.body}</Text>
                 </Card>
                 {report.data.post.hiddenAt ? (
-                  <Callout tone="warning">{ADMIN.reports.postHidden}</Callout>
+                  <Callout tone="warning">
+                    <Text style={styles.calloutBody}>{ADMIN.reports.postHidden}</Text>
+                  </Callout>
                 ) : null}
                 <View style={styles.actions}>
                   <Button
@@ -217,7 +227,9 @@ export default function AdminCaseScreen() {
             </View>
           </>
         ) : (
-          <Callout tone="info">{ADMIN.reports.empty}</Callout>
+          <Callout tone="info">
+            <Text style={styles.calloutBody}>{ADMIN.reports.empty}</Text>
+          </Callout>
         )}
       </Screen>
     </AdminGate>
@@ -226,6 +238,7 @@ export default function AdminCaseScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   subject: { fontSize: 22, fontWeight: '700', color: theme.colors.text, marginTop: 12 },
   muted: { fontSize: 15, color: theme.colors.textMuted, marginBottom: 8 },
   heading: {

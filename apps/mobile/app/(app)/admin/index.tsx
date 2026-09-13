@@ -36,7 +36,7 @@ export default function AdminHomeScreen() {
         <ScreenHeader title={ADMIN.home.title} onBack={() => goBackTo('/(app)/settings')} />
 
         <Callout tone="warning" icon="shield">
-          {ADMIN.warning}
+          <Text style={styles.calloutBody}>{ADMIN.warning}</Text>
         </Callout>
 
         {stats.isPending ? (
@@ -45,7 +45,9 @@ export default function AdminHomeScreen() {
             <Skeleton height={200} />
           </View>
         ) : stats.isError ? (
-          <Callout tone="error">{ADMIN.home.failedToLoad}</Callout>
+          <Callout tone="error">
+            <Text style={styles.calloutBody}>{ADMIN.home.failedToLoad}</Text>
+          </Callout>
         ) : (
           <>
             <View style={styles.group}>
@@ -125,6 +127,7 @@ export default function AdminHomeScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   group: { marginTop: 16 },
   heading: {
     marginTop: 24,

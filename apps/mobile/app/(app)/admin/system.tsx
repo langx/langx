@@ -105,7 +105,9 @@ export default function AdminSystemScreen() {
                   .join(' · ')}
               </Text>
             </Card>
-            <Callout tone="info">{ADMIN.system.readOnly}</Callout>
+            <Callout tone="info">
+              <Text style={styles.calloutBody}>{ADMIN.system.readOnly}</Text>
+            </Callout>
           </>
         )}
       </Screen>
@@ -115,6 +117,7 @@ export default function AdminSystemScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   heading: {
     marginTop: 24,
     marginBottom: 8,

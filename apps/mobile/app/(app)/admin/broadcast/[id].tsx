@@ -81,11 +81,11 @@ export default function AdminBroadcastDetailScreen() {
             </Card>
 
             <View style={styles.tiles}>
-              <StatTile value={String(data.total)} label={ADMIN.home.reports} />
-              <StatTile value={String(data.sent)} label={ADMIN.broadcast.status.sending} />
+              <StatTile value={String(data.total)} label={ADMIN.broadcast.people} />
+              <StatTile value={String(data.sent)} label={ADMIN.broadcast.sent} />
               <StatTile
                 value={ADMIN.broadcast.status[data.status]}
-                label={ADMIN.broadcast.title}
+                label={ADMIN.broadcast.state}
                 valueSize={16}
               />
             </View>
@@ -97,7 +97,9 @@ export default function AdminBroadcastDetailScreen() {
               />
             ) : null}
             {data.failed > 0 ? (
-              <Callout tone="error">{ADMIN.broadcast.failed(data.failed)}</Callout>
+              <Callout tone="error">
+                <Text style={styles.calloutBody}>{ADMIN.broadcast.failed(data.failed)}</Text>
+              </Callout>
             ) : null}
 
             {data.status === 'draft' ? (
@@ -129,7 +131,9 @@ export default function AdminBroadcastDetailScreen() {
 
             {data.status === 'queued' || data.status === 'sending' ? (
               <>
-                <Callout tone="warning">{ADMIN.broadcast.stoppedNote}</Callout>
+                <Callout tone="warning">
+                  <Text style={styles.calloutBody}>{ADMIN.broadcast.stoppedNote}</Text>
+                </Callout>
                 <Button
                   label={ADMIN.broadcast.pause}
                   variant="neutral"
@@ -154,6 +158,7 @@ export default function AdminBroadcastDetailScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   body: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
   tiles: { flexDirection: 'row', gap: 24, marginVertical: 20 },
   actions: { gap: 12, marginVertical: 16 },

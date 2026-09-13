@@ -49,7 +49,9 @@ export default function AdminBroadcastScreen() {
         <ScreenHeader title={ADMIN.broadcast.title} onBack={() => goBackTo('/(app)/admin')} />
 
         <Callout tone="warning" icon="users">
-          {ADMIN.broadcast.audience(list.data?.audience ?? 0)}
+          <Text style={styles.calloutBody}>
+            {ADMIN.broadcast.audience(list.data?.audience ?? 0)}
+          </Text>
         </Callout>
 
         <Text style={styles.heading}>{ADMIN.broadcast.newTitle}</Text>
@@ -78,7 +80,7 @@ export default function AdminBroadcastScreen() {
           loading={create.isPending}
         />
 
-        <Text style={styles.heading}>{ADMIN.broadcast.title}</Text>
+        <Text style={styles.heading}>{ADMIN.broadcast.history}</Text>
         {list.data?.items.length ? (
           <View>
             {list.data.items.map((item, index) => (
@@ -110,4 +112,5 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
   },
   hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
 }))

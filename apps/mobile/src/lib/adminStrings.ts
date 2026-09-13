@@ -124,6 +124,10 @@ export const ADMIN = {
     bodyHint: 'Everyone who speaks another language gets this unless a translation is added.',
     audience: (n: number) => `${n} people`,
     createDraft: 'Create draft',
+    history: 'Past broadcasts',
+    people: 'People',
+    sent: 'Sent',
+    state: 'Status',
     empty: 'No broadcasts yet.',
     status: {
       draft: 'Draft',

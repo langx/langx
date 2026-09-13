@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import { REPORT_REASONS, SUSPENSION_MAX_DAYS } from '@langx/shared'
 import {
@@ -35,9 +35,22 @@ import { showToast } from '../../../src/lib/toast'
  */
 export default function AdminUsersScreen() {
   useScreenInteractive()
+  const styles = useStyles()
   const [query, setQuery] = useState('')
-  const [submitted, setSubmitted] = useState('')
-  const found = useAdminUser(submitted)
+  const [debounced, setDebounced] = useState('')
+  const found = useAdminUser(debounced)
+
+  /*
+   * Searches as it is typed rather than on submit. `onSubmitEditing` was the
+   * first shape and it does not fire on the web build — the field keeps the
+   * text and nothing happens, which is the worst of the three possible
+   * behaviours. A delay is enough to keep this to one request per search, and
+   * react-query dedupes what gets through.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(query.trim()), 400)
+    return () => clearTimeout(timer)
+  }, [query])
 
   return (
     <AdminGate>
@@ -50,11 +63,17 @@ export default function AdminUsersScreen() {
           onChangeText={setQuery}
           autoCapitalize="none"
           autoCorrect={false}
-          onSubmitEditing={() => setSubmitted(query.trim())}
           returnKeyType="search"
         />
 
-        {found.isError ? <Callout tone="info">{ADMIN.users.notFound}</Callout> : null}
+        {found.isError ? (
+          <Callout tone="info">
+            <Text style={styles.calloutBody}>{ADMIN.users.notFound}</Text>
+          </Callout>
+        ) : null}
+        {found.isFetching && !found.data ? (
+          <Text style={styles.searching}>{ADMIN.common.loading}</Text>
+        ) : null}
         {found.data ? <Found data={found.data} /> : null}
       </Screen>
     </AdminGate>
@@ -149,8 +168,16 @@ function Found({ data }: { data: AdminUserDto }) {
         {ADMIN.users.blockedBy}
       </Text>
 
-      {user.suspension ? <Callout tone="error">{ADMIN.users.suspended}</Callout> : null}
-      {user.tokenFrozenAt ? <Callout tone="warning">{ADMIN.users.tokensFrozen}</Callout> : null}
+      {user.suspension ? (
+        <Callout tone="error">
+          <Text style={styles.calloutBody}>{ADMIN.users.suspended}</Text>
+        </Callout>
+      ) : null}
+      {user.tokenFrozenAt ? (
+        <Callout tone="warning">
+          <Text style={styles.calloutBody}>{ADMIN.users.tokensFrozen}</Text>
+        </Callout>
+      ) : null}
 
       {/* ── why Discover looks the way it does ── */}
       <Text style={styles.heading}>{ADMIN.diagnose.discovery}</Text>
@@ -163,7 +190,9 @@ function Found({ data }: { data: AdminUserDto }) {
         ))}
       </Card>
       {data.discovery.discoverable ? null : (
-        <Callout tone="warning">{ADMIN.diagnose.notDiscoverable}</Callout>
+        <Callout tone="warning">
+          <Text style={styles.calloutBody}>{ADMIN.diagnose.notDiscoverable}</Text>
+        </Callout>
       )}
       <Text style={styles.muted}>
         {ADMIN.diagnose.languages}: {data.discovery.nativeLanguages.join(', ')} →{' '}
@@ -173,7 +202,9 @@ function Found({ data }: { data: AdminUserDto }) {
       {/* ── why no notification arrives ── */}
       <Text style={styles.heading}>{ADMIN.diagnose.push}</Text>
       {data.push.devices.length === 0 ? (
-        <Callout tone="warning">{ADMIN.diagnose.noDevices}</Callout>
+        <Callout tone="warning">
+          <Text style={styles.calloutBody}>{ADMIN.diagnose.noDevices}</Text>
+        </Callout>
       ) : (
         <Card>
           {data.push.devices.map((device, index) => (
@@ -186,7 +217,9 @@ function Found({ data }: { data: AdminUserDto }) {
       )}
       {data.push.suppression ? (
         <Callout tone="error">
-          {ADMIN.diagnose.suppressed} ({data.push.suppression.reason})
+          <Text style={styles.calloutBody}>
+            {ADMIN.diagnose.suppressed} ({data.push.suppression.reason})
+          </Text>
         </Callout>
       ) : null}
       <Card>
@@ -261,6 +294,8 @@ function Found({ data }: { data: AdminUserDto }) {
 
 const useStyles = makeStyles((theme) => ({
   found: { gap: 8, paddingBottom: 48 },
+  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
+  searching: { fontSize: 14, color: theme.colors.textMuted, marginTop: 8 },
   name: { fontSize: 22, fontWeight: '700', color: theme.colors.text, marginTop: 12 },
   muted: { fontSize: 14, color: theme.colors.textMuted },
   heading: {
