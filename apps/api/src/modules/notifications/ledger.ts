@@ -35,6 +35,8 @@ export type NotificationJob =
    * the chat message was refused as a duplicate.
    */
   | 'lifetimeGift'
+  /** Once per fall, keyed by `churnedFrom.at` rather than by a day. */
+  | 'billing.planEnded'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 

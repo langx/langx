@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
 import { runBroadcastQueuePass } from '../admin/broadcastQueue'
+import { runPlanEndedPass } from '../billing/planEnded'
 import { withJobHealth } from '../admin/jobHealth'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
@@ -69,6 +70,15 @@ export function startNotificationScheduler(
               ),
             ]
           : []),
+        /*
+         * The one transactional letter on this timer, and the only reason it
+         * is on a timer at all: it is deliberately late, so that a renewal
+         * arriving behind its own expiry has time to make it unnecessary.
+         * Everything else here is scheduled because the clock is its trigger.
+         */
+        run('billing plan ended', () =>
+          runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
+        ),
         run('pool payout', () => runPoolPayoutPass(db, senders.push, now)),
         run('gift ready', () => runGiftReadyPass(db, senders.push, now)),
         run('likes round-up', () => runLikesRoundUpPass(db, senders.push, now)),
