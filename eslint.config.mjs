@@ -74,6 +74,47 @@ export default tseslint.config(
     },
   },
   {
+    /*
+     * The operator panel is English, and this rule is the thing that keeps it
+     * that way. Every other screen in this app draws its words from
+     * `src/i18n`; these ones must not, because a key there is a key in eight
+     * catalogues and operator vocabulary would ship in everybody's bundle and
+     * land in the Settings search index. The words live in
+     * `src/lib/adminStrings.ts` — see the note at the top of that file.
+     *
+     * A rule pointing the opposite way to the project's own convention is
+     * deliberate: without it, "finish the translations" is the obvious and
+     * wrong thing for the next person to do here.
+     *
+     * The `Alert` entry is repeated because a file-scoped
+     * `no-restricted-imports` replaces the block above rather than adding to
+     * it — leave it out and `Alert`, which is a silent no-op on the web, is
+     * allowed again in exactly the screens with the most destructive buttons.
+     */
+    files: ['apps/mobile/app/(app)/admin/**/*.tsx', 'apps/mobile/src/lib/adminStrings.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-native',
+              importNames: ['Alert'],
+              message: 'Alert is a no-op on react-native-web. Use src/lib/alert.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['**/i18n', '**/i18n/*'],
+              message:
+                'The operator panel is English by design. Its words are in src/lib/adminStrings.ts.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/vitest.config.ts'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
