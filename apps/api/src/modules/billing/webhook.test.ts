@@ -1,8 +1,12 @@
+import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
+import type { EmailMessage, EmailSender } from '../../email/sender'
+import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
+import type { BillingNotifier } from './notify'
 import type { RevenueCatClient } from './revenueCatClient'
 import { processRevenueCatWebhook } from './webhook'
 
@@ -52,6 +56,39 @@ describe('processRevenueCatWebhook', () => {
 
   async function getProfile(id: string) {
     return handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+  }
+
+  /**
+   * A subscriber with a verified address, since that is the only kind
+   * `notifyBilling` writes to — and a real ObjectId, since `emailFor` looks
+   * the address up in Better Auth's collection, where a string matches
+   * nothing. The `mailbox` is what the assertions read.
+   */
+  async function subscriber(tier: Profile['entitlement']['tier']) {
+    const _id = new ObjectId()
+    const userId = _id.toHexString()
+    await handle.db
+      .collection(COLLECTIONS.user)
+      .insertOne({ _id, email: `${userId}@example.com`, emailVerified: true })
+    await insertProfile({
+      ...minimalProfile(userId),
+      entitlement: { tier, willRenew: true, updatedAt: new Date() },
+    })
+
+    const mailbox: EmailMessage[] = []
+    const email: EmailSender = {
+      deliverable: true,
+      send: (message) => {
+        mailbox.push(message)
+        return Promise.resolve()
+      },
+    }
+    const notify: BillingNotifier = {
+      email,
+      push: { send: () => Promise.resolve({ invalidTokens: [] }) },
+      logger: { error: vi.fn() },
+    }
+    return { userId, mailbox, notify }
   }
 
   it('INITIAL_PURCHASE grants Pro with the event expiration', async () => {
@@ -149,6 +186,125 @@ describe('processRevenueCatWebhook', () => {
       .collection(COLLECTIONS.subscriptions)
       .findOne({ eventId: 'evt-billing-issue' })
     expect(recorded).toMatchObject({ type: 'BILLING_ISSUE', userId: 'billing-issue-user' })
+  })
+
+  describe('what the webhook says out loud', () => {
+    it('BILLING_ISSUE inside the period says the card failed', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-issue-live',
+          type: 'BILLING_ISSUE',
+          app_user_id: userId,
+          environment: 'PRODUCTION',
+          expiration_at_ms: Date.now() + 60_000,
+        },
+        undefined,
+        notify,
+      )
+
+      // In their own language, like every letter this app sends — the profile
+      // above is a Turkish speaker, so the English subject is the wrong one.
+      expect(mailbox).toHaveLength(1)
+      expect(mailbox[0]?.subject).toBe(translator('tr')('email.billing.paymentFailedTitle'))
+    })
+
+    /**
+     * The 12 September 2026 pair, twenty-four milliseconds apart. A store that
+     * has given up sends both, and the letter about a retry that is no longer
+     * coming would arrive in the same minute as the one about the expiry.
+     */
+    it('BILLING_ISSUE on a period already over says nothing', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro_plus')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-issue-expired',
+          type: 'BILLING_ISSUE',
+          app_user_id: userId,
+          environment: 'PRODUCTION',
+          expiration_at_ms: Date.now() - 29_000,
+        },
+        undefined,
+        notify,
+      )
+
+      expect(mailbox).toHaveLength(0)
+    })
+
+    /**
+     * The expiry is applied at once — access is not a thing to be generous
+     * with on a guess — but the letter waits for `runPlanEndedPass`, because
+     * the renewal that undoes it can be seven minutes behind it.
+     */
+    it('EXPIRATION records the fall and leaves the telling to the pass', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro_plus')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-expire-quiet',
+          type: 'EXPIRATION',
+          app_user_id: userId,
+          environment: 'PRODUCTION',
+        },
+        undefined,
+        notify,
+      )
+
+      const profile = await getProfile(userId)
+      expect(profile?.entitlement.tier).toBe('free')
+      expect(profile?.churnedFrom).toMatchObject({ tier: 'pro_plus' })
+      expect(mailbox).toHaveLength(0)
+    })
+
+    /**
+     * A sandbox purchase moves the entitlement and nothing else. Learned the
+     * hard way: a sandbox renewal that ran late mailed and pushed a payment
+     * failure about a card that has never been charged.
+     */
+    it('a SANDBOX expiry moves the tier but says nothing and records no churn', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro_plus')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-expire-sandbox',
+          type: 'EXPIRATION',
+          app_user_id: userId,
+          environment: 'SANDBOX',
+        },
+        undefined,
+        notify,
+      )
+
+      const profile = await getProfile(userId)
+      expect(profile?.entitlement.tier).toBe('free')
+      expect(profile?.churnedFrom).toBeUndefined()
+      expect(mailbox).toHaveLength(0)
+    })
+
+    it('a SANDBOX billing issue says nothing either', async () => {
+      const { userId, mailbox, notify } = await subscriber('pro')
+
+      await processRevenueCatWebhook(
+        handle.db,
+        {
+          id: 'evt-issue-sandbox',
+          type: 'BILLING_ISSUE',
+          app_user_id: userId,
+          environment: 'SANDBOX',
+          expiration_at_ms: Date.now() + 60_000,
+        },
+        undefined,
+        notify,
+      )
+
+      expect(mailbox).toHaveLength(0)
+    })
   })
 
   /**

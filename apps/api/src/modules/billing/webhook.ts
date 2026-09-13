@@ -85,9 +85,24 @@ export async function processRevenueCatWebhook(
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const now = new Date()
 
+  /*
+   * A sandbox or TestFlight purchase moves the entitlement — a tester has to
+   * be able to see the paid app — and nothing else. No mail, no push, no
+   * `churnedFrom`, because none of those are about a subscription anybody
+   * paid for, and every one of them is customer-facing.
+   *
+   * Learned on 12 September 2026: a sandbox renewal arrived seven minutes
+   * late, and "your payment did not go through" and "your plan has ended"
+   * both landed on a real phone, about a card that has never been charged.
+   *
+   * Defaults to PRODUCTION when RevenueCat did not label the event, which is
+   * the safe direction — an unlabelled event is still announced.
+   */
+  const announce = record.environment === 'PRODUCTION' ? notify : undefined
+
   // Read before anything is written: the mail says which plan this was about,
   // and by the time an EXPIRATION has been applied the answer is "free".
-  const previousTier = notify
+  const previousTier = announce
     ? ((await profiles.findOne({ _id: userId }, { projection: { entitlement: 1 } }))?.entitlement
         ?.tier ?? 'free')
     : 'free'
@@ -189,16 +204,17 @@ export async function processRevenueCatWebhook(
       await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
     }
     /*
-     * Said only when something was actually lost, which is why it is asked
-     * after the write rather than derived from the event. An EXPIRATION on a
-     * Pro+ subscription whose plain Pro runs on ends nothing from the
-     * subscriber's point of view, and `reconciled` is what knows that.
-     */
-    /*
      * What was lost, and when — written only on the fall, and never cleared
      * by the upgrade it is meant to cause. `entitlement.updatedAt` cannot
      * answer "how long ago did they churn": an ordinary `/billing/refresh`
      * moves it.
+     *
+     * It is also the whole trigger for the letter. **Nothing is said here**:
+     * an expiry and the renewal that repairs it can arrive minutes apart —
+     * the store retries a card, and RevenueCat reports both truthfully — so
+     * the mail waits for `runPlanEndedPass` to look again half an hour later
+     * and find the account still free. Saying it now is how somebody who
+     * never lost anything gets told their plan ended.
      */
     if (previousTier !== 'free') {
       await profiles.updateOne(
@@ -206,26 +222,28 @@ export async function processRevenueCatWebhook(
         { $set: { churnedFrom: { tier: previousTier, at: now } } },
       )
     }
-    if (notify && previousTier !== 'free') {
-      const left = await profiles.findOne({ _id: userId }, { projection: { entitlement: 1 } })
-      if ((left?.entitlement?.tier ?? 'free') === 'free') {
-        await notifyBilling(db, notify, userId, 'planEnded', previousTier)
-      }
-    }
   } else if (CANCEL_SET.has(event.type)) {
     // Access continues until expiresAt — only the renewal intent changes.
     await profiles.updateOne(
       { _id: userId },
       { $set: { 'entitlement.willRenew': false, updatedAt: now } },
     )
-  } else if (event.type === 'BILLING_ISSUE' && notify) {
+  } else if (event.type === 'BILLING_ISSUE' && announce) {
     /*
      * The one event that changes no entitlement and still has to be said out
      * loud. The store will retry, and the subscription stays active while it
      * does — but the card that failed is a thing only its owner can fix, and
      * the first they would otherwise hear of it is the plan ending.
+     *
+     * "Stays active while it does" is the premise, and it is not always true:
+     * a store that has given up sends BILLING_ISSUE and EXPIRATION together —
+     * twenty-four milliseconds apart on 12 September 2026 — and then this
+     * letter says the subscription is fine in the same minute the other says
+     * it ended. When the period is already over there is nothing left to
+     * retry into, so the expiry is the only message worth sending.
      */
-    await notifyBilling(db, notify, userId, 'paymentFailed', previousTier)
+    const expired = record.expiresAt !== null && record.expiresAt <= now
+    if (!expired) await notifyBilling(db, announce, userId, 'paymentFailed', previousTier)
   }
   // Anything else unrecognized: recorded above for audit, no entitlement change.
 
