@@ -1,0 +1,64 @@
+# Every merge to main that touches the API becomes the running process on
+# api.langx.io — the sibling of deploy-web.yml, which does the same for the
+# browser build. Until this file existed the API half was `fly deploy` from a
+# laptop, by hand, and it showed: the discovery cross-match flag sat merged on
+# main for hours while api.langx.io still served the release from the night
+# before. A deploy that depends on someone being at a computer is a deploy that
+# does not happen when they are not.
+#
+# The token is a repository secret. An app-scoped deploy token for `langx-api`
+# is enough: the image is built here on the runner, so nothing needs permission
+# to start a builder machine in the organisation.
+#
+# `flyctl deploy` is spelt as docs/repo-map.md documents the manual command, so
+# there is one definition of an API deploy whether it runs here or from a
+# laptop. The app name comes from fly.toml.
+#
+# No verification step follows it, unlike deploy-web.yml. That one checks
+# app.langx.io because a Pages upload can succeed onto a stale edge; here the
+# blue-green strategy in fly.toml already withholds traffic until /health
+# passes on the new machines, so a green run means the new version answered.
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/api/**
+      - packages/shared/**
+      - Dockerfile
+      - fly.toml
+      - pnpm-lock.yaml
+      - .github/workflows/deploy-api.yml
+      - '!**/*.md'
+  workflow_dispatch:
+
+# One deploy at a time, in order. Blue-green tolerates two versions of the app
+# running, but not two deploys racing to decide which one wins.
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installed from Fly's script rather than superfly/flyctl-actions, which
+      # CodeQL would want pinned to a commit for the same reason deploy-web.yml
+      # pins pnpm/action-setup — this job holds a deploy token. Pinning the
+      # version here is the same guarantee without a third-party action in the
+      # chain: 0.4.102 is the flyctl that built the last hand-made release.
+      - name: Install flyctl
+        run: |
+          curl -fsSL https://fly.io/install.sh | sh -s -- 0.4.102
+          echo "$HOME/.fly/bin" >> "$GITHUB_PATH"
+
+      - name: Deploy to Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: flyctl deploy
