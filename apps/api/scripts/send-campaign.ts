@@ -34,20 +34,31 @@
  *     [--source consented|v1|all|v1deleted] [--exclude-returned] [--locale tr] \
  *     [--ignore-cap] [--confirm]
  *
+ *   # The same, rendered for one person and sent to them alone — nothing queued.
+ *   scripts/send-campaign.ts ... --preview-to you@example.com [--preview-name Sofia]
+ *
  *   scripts/send-campaign.ts --status
  *   scripts/send-campaign.ts --pause  --campaign 2026-09-launch
  *   scripts/send-campaign.ts --resume --campaign 2026-09-launch
  *
- * Without `--confirm` it counts and prints and queues nothing.
+ * Without `--confirm` it counts and prints and queues nothing. `--preview-to`
+ * sends the finished mail to one address through the configured sender and
+ * queues nothing either: the way to read it in a real inbox before anybody
+ * else does. Its unsubscribe link is signed with this machine's secret,
+ * which is only a working link if that secret is the API's.
  */
 import { readFileSync } from 'node:fs'
 import { CAMPAIGN_SOURCES, type CampaignSource } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
-import { loadEnv } from '../src/env'
+import { unsubscribeHeaders } from '../src/email/notify'
+import { createEmailSender } from '../src/email/sender'
+import { signUnsubscribeToken, unsubscribeUrl } from '../src/email/unsubscribeToken'
+import { loadEnv, publicApiUrl, unsubscribeSecret } from '../src/env'
 import { deriveTextBody, UNSUBSCRIBE_PLACEHOLDER } from '../src/modules/notifications/campaign'
 import {
   enqueueCampaign,
   listCampaigns,
+  personalise,
   resolveCampaignAudience,
   setCampaignStatus,
 } from '../src/modules/notifications/campaignQueue'
@@ -137,6 +148,30 @@ async function main(): Promise<void> {
       excludeReturned: has('exclude-returned'),
       ...(locale ? { locale } : {}),
       ignoreCap: has('ignore-cap'),
+    }
+
+    const previewTo = flag('preview-to')
+    if (previewTo) {
+      // Rendered exactly as the drip would render it for this person, under
+      // the scope the source uses, and sent once. The id `preview` is nobody:
+      // pressing the link on the API deletes or switches off nothing.
+      const scope = source === 'v1deleted' ? 'v1contact' : 'promotions'
+      const url = unsubscribeUrl(
+        publicApiUrl(env),
+        signUnsubscribeToken(unsubscribeSecret(env), 'preview', scope),
+      )
+      const name = flag('preview-name')
+      const target = { email: previewTo, ...(name ? { firstName: name } : {}) }
+      await createEmailSender(env, console).send({
+        to: previewTo,
+        subject,
+        html: personalise(html, target, url),
+        text: personalise(text, target, url),
+        headers: unsubscribeHeaders(url),
+        ...(env.EMAIL_REPLY_TO ? { replyTo: env.EMAIL_REPLY_TO } : {}),
+      })
+      console.log(`preview of ${campaignId} sent to ${mask(previewTo)} — nothing queued`)
+      return
     }
 
     const audience = await resolveCampaignAudience(db, campaign)
