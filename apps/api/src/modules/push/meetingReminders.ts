@@ -1,5 +1,6 @@
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { withJobHealth } from '../admin/jobHealth'
 import { notificationsAllowed } from '@langx/shared'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
@@ -115,7 +116,9 @@ export function startMeetingReminderScheduler(
     if (running) return
     running = true
     try {
-      const { pushed } = await runMeetingReminderTick(db, sender, new Date())
+      const { pushed } = await withJobHealth(db, 'meeting reminder', () =>
+        runMeetingReminderTick(db, sender, new Date()),
+      )
       if (pushed > 0) logger.info({ pushed }, 'meeting reminders sent')
     } catch (error) {
       logger.error({ err: error }, 'meeting reminder run failed')

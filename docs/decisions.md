@@ -4536,3 +4536,108 @@ two halves with `$and` instead, and a test pins it.
 Reverting is the constant, the tests named `cross-match fallback`, and the
 second case in the index-usage test. Do it once there are enough profiles for
 the honest rule to fill a page.
+
+## The operator panel, and why the mailbox stays
+
+Every operator decision this app has ever taken was made from `hi@langx.io`.
+A report, an appeal and a bug report each arrived as mail carrying a signed
+link to a small HTML page the API rendered, and that was deliberate: no admin
+route, no session, no console — see `email/reviewToken.ts` for the bargain,
+which is that a forwarded or stolen link can only do things a person can undo.
+
+It worked for deciding. It could not answer **"what is still open"**, and
+three things were only visible once somebody tried to build a screen that
+could:
+
+- `tokenFrozenAt`, which `reportUser` sets after three distinct reporters and
+  which **nothing in the codebase ever cleared**. A report that turned out to
+  be wrong left that person unable to earn a token, permanently and silently.
+- The appeal queue, which could only grow. `lift` removes the whole suspension
+  sub-document so an appeal answered that way disappears; `keep` and `shorten`
+  left the appeal exactly as they found it, so a refused appeal and an unread
+  one were the same row.
+- Bug reports, which had no row at all. `routes/feedback.ts` argued against a
+  collection and the argument was sound — "a copy of a decision taken in an
+  inbox, with no screen able to close a row and nobody looking at the ones left
+  open". The panel is that screen, and the row is not a copy: its `_id` is the
+  uuid `submit.ts` already minted for the emailed bounty link, which is also
+  the ledger's `refId`. One string in three places, so paying from the panel
+  and paying from a six-week-old forwarded mail are physically the same
+  payment.
+
+**The mailbox flow is not removed.** It is the path that still works when
+nobody can sign in, and the one that can be handed to somebody who has no
+account. Both doors call `moderation/decide.ts` — the emailed page's POST with
+the HTML taken off — so the only difference in what they write is
+`suspension.by`, which a capability token cannot know because it authorises
+whoever holds it.
+
+### The parts that were argued about
+
+**Authorisation is a flag on a profile, not `ADMIN_USER_IDS`.** That env var
+already existed and was tempting. It exists to let an id through the
+maintenance gate when the database may itself be the problem, which is a
+different question from who may decide a report — and reading it here would
+have made that depend on a redeploy. `requireAuth` already made one projected
+profile read per request for the suspension check; it projects one more field
+now, so the panel costs no extra round trip.
+
+**The panel is English, and a lint rule points the opposite way to the
+convention.** Every other string in this app comes from `t()` and exists in
+eight catalogues. These do not, for the reason `routes/operatorPage.ts` gives
+about the pages it renders: every other page and mail this service produces is
+read by the person it is about, and this one is read by us. The real cost of
+doing it the usual way is not seven translations of "Suspend permanently" — it
+is that operator vocabulary would ship in everybody's bundle and turn up in the
+Settings search index. `eslint.config.mjs` refuses the i18n import inside
+`app/(app)/admin/**`, `adminStrings.test.ts` asserts no screen reaches for `t()`
+by another route, and the note at the top of `src/lib/adminStrings.ts` says
+why — three layers, because a single one reads as an oversight and the obvious
+next move for whoever finds it is to "finish the translations".
+
+**Maintenance is read only.** `scripts/maintenance.ts` explains why the kill
+switch is a script: it is the control you reach for when something is wrong,
+and it must not depend on the API being healthy enough to authenticate you. On
+top of that, `ALWAYS_OPEN` does not include `/admin/*`, so the panel is already
+503 during maintenance — making it the maintenance switch would have put the
+key behind the door it locks. The feature flags are read only for the same
+reason at one remove: splitting them would make the panel "the thing that
+changes some config", and which half is which is not readable from the screen.
+
+**Job health is its own collection, not `jobRuns`.** `jobRuns` looked like the
+place — two schedulers already write to it. But its unique `{job, periodKey}`
+is a **lock**: the first inserter owns the tick. Giving the other eight passes
+a row there would have handed them lock semantics they were never written for
+and quietly changed which instance runs what. `jobHealth` is a record and only
+a record: one document per job, swallowed write failures, and it rethrows so
+every existing catch still runs. Until it existed, a scheduled pass that
+stopped firing said nothing at all — the first sign would have been somebody
+asking why their streak reminders had stopped.
+
+**The broadcast queue needs no claim collection.** `campaignQueue` has
+`emailCampaigns` beside it because an SMTP send leaves no row we own, so
+nothing can be asked afterwards whether a person was already written to. A chat
+message _is_ the row: `messages.sender_client_id_unique` on
+`{senderId, clientId}` refuses the second write for a recipient and lets every
+other one through. The cursor paces the work and the index makes it exactly
+once, so a batch lost to a crash is simply replayed. There is a test that rolls
+the cursor back and asserts on the **message count** rather than on what the
+pass returned, because `deliverOfficialMessage` hands back the message it found
+and a duplicate looks like success from the caller's side — which is exactly
+how a shared clientId once messaged 25 people and reported five thousand.
+
+**The confirmation for a broadcast is the recipient count, typed.** "SEND" is
+muscle memory. A number proves the preview above it was read, and unlike a word
+it does not depend on what language the operator thinks in. Beside it,
+`/test` delivers the real message to the operator alone first — the only
+preview that catches a broken line break in a translated body before everybody
+gets it.
+
+**A note from `@langx` is one way, and stays one way.** `OFFICIAL_WRITABLE.langx`
+is false, so nothing can be addressed back and the chat screen draws no
+composer on that thread. That was decided when the account was built — a
+broadcast account that sometimes replies is a promise about attention nobody
+can keep — and building a support surface was not the moment to quietly undo
+it. So the feature is right for "we got your report" and wrong for a
+conversation, and what is written should say where a reply goes. A test asserts
+the refusal, so opening that thread stays a decision somebody makes.

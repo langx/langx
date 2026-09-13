@@ -48,7 +48,7 @@ import {
   sendTextMessage,
 } from '../modules/chat/messages'
 import { fanOutConversationPinned, fanOutMessage, fanOutMessageUpdate } from './fanOut'
-import { PresenceThrottle, touchPresence } from '../modules/presence/presence'
+import { PresenceThrottle, clientBuildOf, touchPresence } from '../modules/presence/presence'
 import { SocketRateLimiter } from './rateLimit'
 import { userRoom, type AppServer, type AppSocket } from './types'
 
@@ -281,7 +281,14 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
      * missed presence write decays away by itself, a rejection here would
      * take down a working connection.
      */
-    void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+    /*
+     * The build, read once per connection rather than per write: the headers
+     * cannot change while a socket is open, and re-parsing them on every
+     * heartbeat would be work for an answer that is already known.
+     */
+    const build = clientBuildOf(socket.handshake.headers)
+
+    void touchPresence(app.mongo.db, userId, new Date(), build).catch((error: unknown) =>
       app.log.warn({ err: error }, 'presence write on connect failed'),
     )
 
@@ -593,7 +600,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       // Throttled: a heartbeat is cheap to send and not cheap to store, and
       // without a floor every connected tab is a write per interval.
       if (socket.data.presence.shouldWrite()) {
-        void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+        void touchPresence(app.mongo.db, userId, new Date(), build).catch((error: unknown) =>
           app.log.warn({ err: error }, 'presence heartbeat write failed'),
         )
       }
@@ -610,7 +617,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
      * boolean left `true` by a crashed process marks everyone online forever.
      */
     socket.on('disconnect', () => {
-      void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+      void touchPresence(app.mongo.db, userId, new Date(), build).catch((error: unknown) =>
         app.log.warn({ err: error }, 'presence write on disconnect failed'),
       )
     })

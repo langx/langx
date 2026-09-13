@@ -8,6 +8,7 @@ import { assertAttachmentsAllowed } from '../media/assertMedia'
 import { emailFor } from '../profiles/emailFor'
 import { getProfile } from '../profiles/profiles'
 import { newIssueUrl } from './githubIssue'
+import { recordFeedback } from './reports'
 
 /**
  * A bug or an idea, on its way to the support mailbox.
@@ -51,9 +52,10 @@ export async function submitFeedback(
   })
 
   /*
-   * The report's own id, and the only place it is ever written down is the
-   * link below — which is enough, because the one thing it has to be is the
-   * ledger's `refId`, and the ledger is what remembers it after that.
+   * The report's own id, and one string in three places: the row below, the
+   * bounty link, and the ledger's `refId`. That identity is what makes paying
+   * from the panel and paying from a forwarded mail the same payment rather
+   * than two that have to be reconciled.
    */
   const reportId = randomUUID()
   const awardUrl = bountyAwardUrl(
@@ -78,11 +80,31 @@ export async function submitFeedback(
     newIssueUrl: issueUrl,
   })
 
-  await app.email.send({
-    to: app.env.SUPPORT_EMAIL,
-    ...mail,
-    // So that confirming a report — or asking for the step that is missing —
-    // is a reply rather than a lookup.
-    ...(address ? { headers: { 'Reply-To': address.email } } : {}),
+  /*
+   * The row first, and it is the one write here that may fail the request.
+   * Until it existed the mail *was* the record, so a failed send had to be a
+   * 500; now the record is this, and a mail provider's bad minute must not
+   * tell somebody their bug report did not go — the same shape `POST /reports`
+   * already uses for the same reason.
+   */
+  await recordFeedback(app.mongo.db, {
+    _id: reportId,
+    userId,
+    kind: input.kind,
+    body: input.body,
+    attachmentUrls,
+    issueUrl,
   })
+
+  try {
+    await app.email.send({
+      to: app.env.SUPPORT_EMAIL,
+      ...mail,
+      // So that confirming a report — or asking for the step that is missing —
+      // is a reply rather than a lookup.
+      ...(address ? { headers: { 'Reply-To': address.email } } : {}),
+    })
+  } catch (error) {
+    app.log.warn({ err: error, reportId }, 'feedback notification email failed')
+  }
 }

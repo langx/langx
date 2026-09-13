@@ -126,6 +126,27 @@ export const INDEXES: Partial<IndexSpec> = {
      * scan every half hour.
      */
     { key: { 'stats.lastActiveAt': 1 }, name: 'last_active' },
+    /*
+     * "How many people joined today?" — the number the operator dashboard is
+     * opened for, and until this existed the only way to answer it was a
+     * collection scan. Nothing in `profiles` led with `createdAt`: the text
+     * index, the two discovery compounds and `last_active` all lead with
+     * something else, and Mongo will not skip-scan to reach a later field.
+     *
+     * It pays for itself twice. `publicStats.perDay` runs three of those scans
+     * every ten minutes for the public counters, and they land here now too.
+     */
+    { key: { createdAt: -1 }, name: 'joined' },
+    /*
+     * The appeal queue. Partial because almost nobody has ever appealed, and
+     * an index entry per profile that never will is the whole collection for
+     * one screen.
+     */
+    {
+      key: { 'suspension.appeal.at': -1 },
+      name: 'appeal_recent',
+      partialFilterExpression: { 'suspension.appeal.at': { $exists: true } },
+    },
     /**
      * The Pro city filter, on the canonical id.
      *
@@ -769,6 +790,38 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1 }, name: 'device_owner' },
   ],
 
+  [COLLECTIONS.broadcastQueue]: [
+    /*
+     * "Is anything waiting?", asked twice a minute by the scheduler. The slug
+     * is the `_id`, so the uniqueness that matters — one broadcast per slug —
+     * needs no index of its own.
+     */
+    { key: { status: 1, createdAt: 1 }, name: 'status_created' },
+  ],
+
+  [COLLECTIONS.feedback]: [
+    /*
+     * The triage queue, and **ascending** — the opposite of every other list
+     * here. Those are feeds, where the newest row is the interesting one; this
+     * is a queue, where the interesting row is the one that has been waiting
+     * longest. Sorting it the other way is how the oldest open report becomes
+     * the one nobody ever sees.
+     */
+    { key: { status: 1, createdAt: 1 }, name: 'status_created' },
+    // "What else has this person sent", and the path the account purge takes.
+    { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
+  ],
+
+  [COLLECTIONS.adminActions]: [
+    /*
+     * "What has been done to this account", which is the only question this
+     * collection is ever asked and the whole reason it is written. No TTL: a
+     * suspension has to stay explicable long after the person has stopped
+     * asking, and a decision is not the subject's data to expire.
+     */
+    { key: { subjectUserId: 1, at: -1 }, name: 'subject_recent' },
+    { key: { at: -1 }, name: 'recent' },
+  ],
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },

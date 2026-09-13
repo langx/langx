@@ -24,6 +24,7 @@ import { cityRoutes } from './routes/cities'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
 import { feedRoutes } from './routes/feed'
+import { adminRoutes } from './routes/admin'
 import { feedbackRoutes } from './routes/feedback'
 import { followRoutes } from './routes/follows'
 import { likeRoutes } from './routes/likes'
@@ -320,6 +321,7 @@ export async function buildApp({
   await app.register(activityRoutes)
   await app.register(leaderboardRoutes)
   await app.register(moderationRoutes)
+  await app.register(adminRoutes)
   await app.register(accountRoutes)
   await app.register(emailRoutes)
   await app.register(feedbackRoutes)

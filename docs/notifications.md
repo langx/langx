@@ -388,8 +388,31 @@ Written down so the next person does not have to re-derive them.
 | Scenario                                 | Blocked on                                      |
 | ---------------------------------------- | ----------------------------------------------- |
 | Editor's note as a standalone broadcast  | the monthly note covers it                      |
+| Two-way support in the @langx thread     | `OFFICIAL_WRITABLE.langx` is false on purpose   |
 | Chat messages in the notification centre | the Chats tab is already that inbox             |
 | Backfilled history in the centre         | nothing — it starts empty at deploy, on purpose |
+
+## Messages sent by hand
+
+Two of them, both from `@langx`, both landing in the same chat thread the
+welcome did — not an email and not a push-only broadcast, so they are still
+there next week.
+
+| Message                  | Sent from                                             | Once because                                                      |
+| ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------- |
+| **A broadcast**          | the operator panel, or `scripts/send-announcement.ts` | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
+| **A note to one person** | the operator panel's user screen                      | nothing — the same words twice are two messages here              |
+
+A broadcast is a row in `broadcastQueue` that the notification scheduler works
+through, 500 recipients a tick inside 07–21 UTC. That ceiling is **not** a
+deliverability ramp like `campaignDayBudget` — an in-app message has no domain
+reputation to warm up; it bounds the Expo relay, the write rate, and how much
+of a broadcast is already gone by the time somebody presses stop.
+
+Neither can be replied to: `@langx` is a channel, `OFFICIAL_WRITABLE.langx` is
+false, and the chat screen draws no composer on that thread. So a note to one
+person is right for "we got your report" and wrong for a conversation — what
+is written should say where a reply goes.
 
 ## Every message is one format
 

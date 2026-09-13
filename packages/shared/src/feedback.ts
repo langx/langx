@@ -5,12 +5,17 @@ import { z } from 'zod'
  * What somebody sends us from inside the app: a bug they hit, or a feature
  * they want.
  *
- * It is **mail and an issue, not a record of ours**: the message is sent to
- * the address the API's `SUPPORT_EMAIL` names and opened as an issue on the
- * repository, and nothing is written to our database. Whoever reads that
- * mailbox is the one who confirms it and decides what the sender is paid, so a
- * collection here would be a second copy of a decision made somewhere else —
- * and one nobody would ever go back and close.
+ * It goes three places: a row in `feedback`, a mail to the address the API's
+ * `SUPPORT_EMAIL` names, and a prefilled link to open it as an issue on the
+ * repository.
+ *
+ * The row is the newest of the three and was argued against for a long time —
+ * "a second copy of a decision made somewhere else, and one nobody would ever
+ * go back and close". What changed is that there is now a screen that closes
+ * it, and that the row is not a copy: its `_id` is the id the bounty link
+ * carries, so the row, the link and the ledger's `refId` are one string, and a
+ * report paid from the panel and the same report paid from a forwarded mail
+ * are the same payment rather than two.
  *
  * That is also why no amount appears on the screen that posts here. What a
  * confirmed report is worth is a judgement made per report; the bounds below

@@ -1,6 +1,7 @@
 import { localDayKey, type Locale } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { withJobHealth } from '../admin/jobHealth'
 import { streakReminderSection } from '../../email/templates'
 import type { DigestCandidate } from '../notifications/digest'
 import type { Profile } from '../profiles/profiles'
@@ -138,7 +139,9 @@ export function startStreakReminderScheduler(
     if (running) return
     running = true
     try {
-      const { pushed } = await runStreakReminderTick(db, sender, new Date())
+      const { pushed } = await withJobHealth(db, 'streak reminder', () =>
+        runStreakReminderTick(db, sender, new Date()),
+      )
       if (pushed > 0) logger.info({ pushed }, 'streak reminders sent')
     } catch (error) {
       logger.error({ err: error }, 'streak reminder run failed')

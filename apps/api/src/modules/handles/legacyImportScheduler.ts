@@ -1,6 +1,7 @@
 import type { Db } from 'mongodb'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sweepLegacyImports } from './legacyConversations'
+import { withJobHealth } from '../admin/jobHealth'
 
 /**
  * Slow on purpose. The fast path is the restore hook, which imports a
@@ -27,9 +28,11 @@ export function startLegacyImportScheduler(
     if (running) return
     running = true
     try {
-      const result = await sweepLegacyImports(db, {
-        ...(options.limit !== undefined ? { limit: options.limit } : {}),
-      })
+      const result = await withJobHealth(db, 'legacy import', () =>
+        sweepLegacyImports(db, {
+          ...(options.limit !== undefined ? { limit: options.limit } : {}),
+        }),
+      )
       if (result.conversationsImported > 0) {
         logger.info(
           {

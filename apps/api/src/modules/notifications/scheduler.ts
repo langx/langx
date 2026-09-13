@@ -1,6 +1,8 @@
 import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
+import { runBroadcastQueuePass } from '../admin/broadcastQueue'
+import { withJobHealth } from '../admin/jobHealth'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
@@ -88,19 +90,31 @@ export function startNotificationScheduler(
             logger,
           }),
         ),
+        /*
+         * The in-app half of the same idea, and a pass like the others. It
+         * needs no `tickMinutes`: an announcement has no day budget to spread,
+         * only a ceiling per tick — see `BROADCAST_PER_TICK` for why this is
+         * not a warm-up ramp.
+         */
+        run('broadcast queue', () => runBroadcastQueuePass(db, senders.push, now, { logger })),
       ])
     } finally {
       running = false
     }
   }
 
-  /** Each pass on its own, so one throwing does not starve the two after it. */
+  /**
+   * Each pass on its own, so one throwing does not starve the two after it —
+   * and each one's outcome recorded, which is the only reason the operator
+   * panel can say a pass stopped firing. `withJobHealth` rethrows, so the
+   * catch below is unchanged.
+   */
   async function run(
     name: string,
     pass: () => Promise<{ sent: number; failed?: number }>,
   ): Promise<void> {
     try {
-      const { sent, failed } = await pass()
+      const { sent, failed } = await withJobHealth(db, name, pass)
       if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
       if (failed) logger.warn({ failed, pass: name }, 'notifications skipped')
     } catch (error) {

@@ -172,7 +172,10 @@ comes from `src/i18n/messages/en.ts` through `t('some.key')`; the other seven
 locales are typed against English, so adding a key without translating it does
 not compile. A count takes a plural entry, not `count === 1 ? … : …` — Russian
 and Arabic do not split there. See `docs/decisions.md` → _The app speaks eight
-languages_.
+languages_. The one exception is `app/(app)/admin/**`, the operator panel,
+which is read by us rather than by the person it is about and is English by
+design — its words are in `src/lib/adminStrings.ts`, and a lint rule refuses
+the i18n import there.
 
 **Optional services degrade, they do not crash.** No email credentials means
 verification links are logged; no storage means the upload endpoint fails with

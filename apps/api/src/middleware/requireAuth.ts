@@ -21,6 +21,12 @@ declare module 'fastify' {
     emailVerified: boolean
     /** Set by requireAuth. A guest browsing without an account of their own. */
     isGuest: boolean
+    /**
+     * Set by requireAuth, from the same projected read the suspension check
+     * already makes. Always defined on a route behind that guard, and always
+     * `false` on the two a suspended account may still reach.
+     */
+    isAdmin: boolean
   }
 }
 
@@ -53,6 +59,12 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
   // `isAnonymous` is declared by the plugin with `input: false`, so a client
   // cannot assert it — it is only ever true because Better Auth made the user.
   request.isGuest = (session.user as { isAnonymous?: boolean }).isAnonymous === true
+  /*
+   * Set before the early return below, so the two routes a suspended account
+   * may reach leave it defined rather than undefined. Neither is an admin
+   * route, and a suspended admin is refused by the branch under it anyway.
+   */
+  request.isAdmin = false
 
   /*
    * Suspension is enforced here rather than route by route, because "every
@@ -72,8 +84,15 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
 
   const profile = await request.server.mongo.db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ _id: request.userId }, { projection: { suspension: 1 } })
+    .findOne({ _id: request.userId }, { projection: { suspension: 1, admin: 1 } })
   const suspension = profile?.suspension
+  /*
+   * One more field on a read that was already being made, rather than a
+   * lookup of its own in `requireAdmin`: the panel costs no extra round trip,
+   * and the flag cannot be true for an account this guard has not just seen.
+   */
+  request.isAdmin = profile?.admin === true
+
   if (suspension && isSuspended(profile)) {
     const body: ApiErrorBody = {
       code: ERROR_CODES.ACCOUNT_SUSPENDED,
@@ -156,5 +175,30 @@ export async function requireVerifiedEmail(
       message: 'Verify your email first',
     }
     return reply.code(ERROR_STATUS.EMAIL_NOT_VERIFIED).send(body)
+  }
+}
+
+/**
+ * Layer on top of `requireAuth` for the operator panel.
+ *
+ * The order the three refusals come in is the point. Unauthenticated is
+ * answered first, then suspension — so a suspended moderator is told they are
+ * suspended and cannot moderate their way out of it — and only then this. A
+ * guest reaches it and is answered with `ADMIN_REQUIRED` rather than
+ * `GUEST_ACCOUNT`: that code is an offer ("create an account"), and there is
+ * nothing here to offer.
+ *
+ * `ADMIN_USER_IDS` is deliberately not consulted. That env var lets an id
+ * through the maintenance gate when the database may itself be the problem
+ * (`middleware/maintenance.ts`); it is not an authorisation primitive, and
+ * reading it here would make who can moderate depend on a redeploy.
+ */
+export async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  await requireAuth(request, reply)
+  if (reply.sent) return
+
+  if (!request.isAdmin) {
+    const body: ApiErrorBody = { code: ERROR_CODES.ADMIN_REQUIRED, message: 'Not available' }
+    return reply.code(ERROR_STATUS.ADMIN_REQUIRED).send(body)
   }
 }

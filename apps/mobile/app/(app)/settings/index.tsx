@@ -10,6 +10,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { appVersion } from '../../../src/hooks/useAppConfig'
 import { useSettingsModel } from '../../../src/hooks/useSettingsModel'
 import { useT } from '../../../src/i18n'
+import { ADMIN } from '../../../src/lib/adminStrings'
 import { goBackTo } from '../../../src/lib/navigation'
 import { matchSettings, SETTINGS_SECTIONS } from '../../../src/lib/settingsRegistry'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -89,6 +90,19 @@ export default function SettingsScreen() {
               onPress={() => router.push(section.route)}
             />
           ))}
+          {/*
+           * Drawn here rather than added to `SETTINGS_SECTIONS`, and that is
+           * not tidiness: `settingsRegistry.test.ts` asserts every row in that
+           * list resolves in all eight catalogues, and the panel is English by
+           * design (`src/lib/adminStrings.ts`). Keeping it out also keeps
+           * operator vocabulary out of the search index above.
+           *
+           * `model.profile` is `useMe()`'s data, already loaded — so no extra
+           * request — and the flag only ever appears on your own profile.
+           */}
+          {model.profile?.admin ? (
+            <ListRow title={ADMIN.entryRow} onPress={() => router.push('/(app)/admin')} last />
+          ) : null}
         </View>
       )}
 
