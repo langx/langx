@@ -1,5 +1,4 @@
 import {
-  REVIEW_ACTIONS_BY_KIND,
   SUSPENSION_MAX_DAYS,
   appealSchema,
   attachmentsOf,
@@ -11,12 +10,7 @@ import {
 } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import {
-  appealEmail,
-  reportEmail,
-  suspendedEmail,
-  suspensionUpdatedEmail,
-} from '../email/templates'
+import { appealEmail, reportEmail } from '../email/templates'
 import {
   REVIEW_TOKEN_TTL_MS,
   reviewUrl,
@@ -26,20 +20,15 @@ import {
 import { COLLECTIONS } from '../db/collections'
 import { publicApiUrl } from '../env'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
-import { setPostHidden, type Post } from '../modules/feed/feed'
+import type { Post } from '../modules/feed/feed'
 import { blockUser, listBlocked, reportUser, unblockUser } from '../modules/moderation/blocks'
-import { getViewers } from '../modules/moderation/profileViews'
 import {
-  actionReport,
-  dismissReport,
-  liftSuspension,
-  shortenSuspension,
-  submitAppeal,
-  suspendUser,
-  suspensionStatus,
-} from '../modules/moderation/suspension'
-import { emailFor } from '../modules/profiles/emailFor'
-import { localeFor } from '../modules/profiles/localeFor'
+  applyReviewDecision,
+  type ReviewOutcome,
+  type ReviewRefusal,
+} from '../modules/moderation/decide'
+import { getViewers } from '../modules/moderation/profileViews'
+import { submitAppeal, suspensionStatus } from '../modules/moderation/suspension'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
 import { escapeHtml, html, page, submitButton, who } from './operatorPage'
 
@@ -104,6 +93,39 @@ function postSection(token: string, post: Post | null): string {
                  ${actionForm(token, 'unhide_post', 'Show it again')}`
               : actionForm(token, 'hide_post', 'Hide this post')
           }`
+}
+
+/** Why a decision could not be made, as this page says it. */
+const REFUSALS: Record<ReviewRefusal, [number, string]> = {
+  action_not_allowed: [400, 'That link cannot make that decision.'],
+  account_gone: [404, 'That account no longer exists.'],
+  not_a_post: [400, 'That report is not about a post.'],
+  post_gone: [404, 'That post no longer exists.'],
+}
+
+/** What was decided, in the one sentence this page answers with. */
+function decided(outcome: ReviewOutcome, name: string): string {
+  switch (outcome.action) {
+    case 'hide_post':
+      return `<p>Hidden. Nobody can see it, ${name} included${outcome.changed ? '' : ' — it already was'}.</p>`
+    case 'unhide_post':
+      return `<p>Back in the feed${outcome.changed ? '' : ' — it was never hidden'}.</p>`
+    case 'dismiss':
+      return `<p>Dismissed. Nothing changes on ${name}.</p>`
+    case 'keep':
+      return `<p>Kept as it is. ${name} was not told.</p>`
+    case 'suspend':
+    case 'permanent':
+      return `<p>${name} is suspended ${
+        outcome.permanent
+          ? '<strong>permanently</strong>'
+          : `until <strong>${escapeHtml(outcome.until.toISOString())}</strong>`
+      }.</p>`
+    case 'shorten':
+      return `<p>${name} is now suspended until <strong>${escapeHtml(outcome.until.toISOString())}</strong>.</p>`
+    case 'lift':
+      return `<p>Lifted. ${name} can use the app again.</p>`
+  }
 }
 
 /**
@@ -347,135 +369,22 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
           page(REVIEW_TITLE, 'That is not a decision this page can make.'),
         )
       }
-      const { action, days } = parsed.data
-      /*
-       * The token says *which* report or appeal; this says what may be done
-       * with it. Both halves are checked, so a report link cannot lift a
-       * suspension it was never shown, and an appeal link cannot open a new one.
-       */
-      if (!(REVIEW_ACTIONS_BY_KIND[claim.kind] as readonly ReviewAction[]).includes(action)) {
-        return html(reply.code(400), page(REVIEW_TITLE, 'That link cannot make that decision.'))
+
+      const result = await applyReviewDecision(app, {
+        kind: claim.kind,
+        userId: claim.userId,
+        reportId: toObjectId(claim.reportId),
+        action: parsed.data.action,
+        days: parsed.data.days,
+      })
+      if (!result.ok) {
+        const [status, sentence] = REFUSALS[result.refusal]
+        return html(reply.code(status), page(REVIEW_TITLE, sentence))
       }
 
-      const profile = await getProfile(app.mongo.db, claim.userId)
-      if (!profile) {
-        return html(reply.code(404), page(REVIEW_TITLE, 'That account no longer exists.'))
-      }
-      const name = escapeHtml(who(profile.handle, claim.userId))
-      const reportId = toObjectId(claim.reportId)
-
-      /*
-       * The two decisions about the post rather than the account, handled
-       * before the address lookups below because neither needs one: hiding is
-       * silent, which is the whole shape of it.
-       */
-      if (action === 'hide_post' || action === 'unhide_post') {
-        const report = reportId
-          ? await app.mongo.db
-              .collection('reports')
-              .findOne<{ postId?: ObjectId }>({ _id: reportId })
-          : null
-        if (!report?.postId) {
-          return html(reply.code(400), page(REVIEW_TITLE, 'That report is not about a post.'))
-        }
-        const hide = action === 'hide_post'
-        const before = await setPostHidden(app.mongo.db, report.postId.toHexString(), hide)
-        if (!before) {
-          return html(reply.code(404), page(REVIEW_TITLE, 'That post no longer exists.'))
-        }
-        /*
-         * Hiding decides the report; showing it again does not reopen it. The
-         * second is a correction of the first, and a report that bounced back
-         * to `open` would arrive in the next list as work nobody owes.
-         */
-        if (hide && reportId) await actionReport(app.mongo.db, reportId)
-        const changed = Boolean(before.hiddenAt) !== hide
-        return html(
-          reply,
-          page(
-            REVIEW_TITLE,
-            hide
-              ? `<p>Hidden. Nobody can see it, ${name} included${changed ? '' : ' — it already was'}.</p>`
-              : `<p>Back in the feed${changed ? '' : ' — it was never hidden'}.</p>`,
-          ),
-        )
-      }
-
-      /**
-       * Telling the person is never fatal to the decision. The suspension is
-       * already written; a mail provider's bad minute must not turn it into a
-       * 500 that invites the same button being pressed again.
-       */
-      const tell = async (send: () => Promise<void>) => {
-        try {
-          await send()
-        } catch (error) {
-          request.log.warn({ err: error, userId: claim.userId }, 'suspension email failed')
-        }
-      }
-      const address = await emailFor(app.mongo.db, claim.userId)
-      const locale = await localeFor(app.mongo.db, claim.userId)
-
-      if (action === 'dismiss') {
-        if (reportId) await dismissReport(app.mongo.db, reportId)
-        return html(reply, page(REVIEW_TITLE, `<p>Dismissed. Nothing changes on ${name}.</p>`))
-      }
-
-      if (action === 'keep') {
-        return html(reply, page(REVIEW_TITLE, `<p>Kept as it is. ${name} was not told.</p>`))
-      }
-
-      if (action === 'suspend' || action === 'permanent') {
-        const permanent = action === 'permanent'
-        /*
-         * The reason comes from the report being decided, not from whatever a
-         * previous decision stored: this link is about *this* report, and the
-         * person is about to be told which one it was.
-         */
-        const report = reportId
-          ? await app.mongo.db.collection('reports').findOne<{ reason: string }>({ _id: reportId })
-          : null
-        const reason = report?.reason ?? profile.suspension?.reason ?? 'other'
-        const until = await suspendUser(app.mongo.db, {
-          userId: claim.userId,
-          reason,
-          ...(permanent ? { permanent: true } : { days: days ?? 1 }),
-          ...(reportId ? { reportId } : {}),
-        })
-        if (address?.verified) {
-          await tell(() =>
-            app.email.send({
-              to: address.email,
-              ...suspendedEmail(locale, { until: permanent ? null : until, reason }),
-            }),
-          )
-        }
-        return html(
-          reply,
-          page(
-            REVIEW_TITLE,
-            `<p>${name} is suspended ${permanent ? '<strong>permanently</strong>' : `until <strong>${escapeHtml(until.toISOString())}</strong>`}.</p>`,
-          ),
-        )
-      }
-
-      // `shorten` and `lift` — the two an appeal link can drive.
-      const until =
-        action === 'shorten' ? await shortenSuspension(app.mongo.db, claim.userId, days ?? 1) : null
-      if (action === 'lift') await liftSuspension(app.mongo.db, claim.userId)
-      if (address?.verified) {
-        await tell(() =>
-          app.email.send({ to: address.email, ...suspensionUpdatedEmail(locale, { until }) }),
-        )
-      }
       return html(
         reply,
-        page(
-          REVIEW_TITLE,
-          until
-            ? `<p>${name} is now suspended until <strong>${escapeHtml(until.toISOString())}</strong>.</p>`
-            : `<p>Lifted. ${name} can use the app again.</p>`,
-        ),
+        page(REVIEW_TITLE, decided(result.outcome, escapeHtml(who(result.handle, claim.userId)))),
       )
     },
   )

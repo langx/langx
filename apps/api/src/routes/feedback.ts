@@ -13,11 +13,10 @@ import { ApiError } from '../lib/ApiError'
 import { verifyBountyToken } from '../email/bountyToken'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { escapeHtml, html, page, submitButton, who } from './operatorPage'
-import { notifyBountyPaid } from '../modules/feedback/bountyNotice'
+import { payBounty } from '../modules/feedback/awardBounty'
 import { submitFeedback } from '../modules/feedback/submit'
 import { objectExtension } from '../modules/media/objectExtension'
 import { getProfile } from '../modules/profiles/profiles'
-import { awardTokens } from '../modules/tokens/ledger'
 
 /**
  * Bug reports and feature requests from inside the app — and, in the email
@@ -184,27 +183,11 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
         )
       }
 
-      const result = await awardTokens(app.mongo.db, {
+      const result = await payBounty(app, {
         userId: claim.userId,
-        kind: 'bounty',
-        amount: parsed.data.amount,
         refId: claim.reportId,
+        amount: parsed.data.amount,
       })
-
-      /*
-       * Only on the award that actually happened. The ledger's unique index on
-       * `{userId, kind, refId}` makes that exactly once per report, so a
-       * second press of the same link pays nothing and says nothing either —
-       * no second notification, and no need for a claim row to prevent one.
-       */
-      if (result.awarded) {
-        await notifyBountyPaid(
-          app.mongo.db,
-          { push: app.push, email: app.email },
-          { userId: claim.userId, amount: result.amount },
-          (err, message) => request.log.warn({ err, userId: claim.userId }, message),
-        )
-      }
 
       return html(
         reply,
