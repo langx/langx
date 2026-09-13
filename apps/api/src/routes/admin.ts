@@ -448,9 +448,20 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       config: { rateLimit: limit(60, '1 minute') },
     },
     async (request, reply) => {
+      /*
+       * The profile is looked up rather than trusted, and the id that goes
+       * into the write is the one that came back. Without it a typo in the URL
+       * opens a conversation with a participant who does not exist — and
+       * `deliverOfficialMessage` builds `unread` and `messageCountBy` as
+       * objects keyed by that id, which is a route parameter reaching a
+       * property name. CodeQL says so too (`js/remote-property-injection`).
+       */
+      const recipient = await getProfile(app.mongo.db, request.params.userId)
+      if (!recipient) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+
       const delivered = await deliverOfficialMessage(app.mongo.db, {
         fromHandle: 'langx',
-        toUserId: request.params.userId,
+        toUserId: recipient._id,
         body: request.body.body,
         // Unique per send rather than per subject: the same words twice are
         // two messages here, unlike a broadcast, which must never repeat.
@@ -466,7 +477,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'user.message',
-        subjectUserId: request.params.userId,
+        subjectUserId: recipient._id,
         // The body is deliberately not stored here: it is already a message
         // row, and the audit log is a record of decisions rather than a second
         // copy of everything anybody was told.

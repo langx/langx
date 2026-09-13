@@ -591,6 +591,13 @@ describe('the operator panel', () => {
        * Against the repository rather than a route because text messages are
        * sent over the socket, and the guard is below both.
        */
+      // A typo in the URL opens no conversation with a participant who is not
+      // there — the id that reaches the write is the one the lookup returned.
+      expect(
+        (await post(admin, '/admin/users/nobody-by-that-id/message', { body: 'hello?' }))
+          .statusCode,
+      ).toBe(404)
+
       const { sendTextMessage } = await import('../modules/chat/messages')
       await expect(
         sendTextMessage(handle.db, recipient.userId, {
