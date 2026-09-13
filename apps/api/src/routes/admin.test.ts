@@ -235,6 +235,83 @@ describe('the operator panel', () => {
     })
   })
 
+  describe('the list behind a plan tile', () => {
+    it('shows who the count counts, newest first, and pages the rest', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const current = await newUser()
+      const newer = await newUser()
+      const lapsed = await newUser()
+      const other = await newUser()
+
+      const future = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      const past = new Date(Date.now() - 24 * 60 * 60 * 1000)
+      const day = 24 * 60 * 60 * 1000
+      await profiles().updateOne(
+        { _id: current.userId },
+        {
+          $set: {
+            entitlement: {
+              tier: 'pro',
+              expiresAt: future,
+              updatedAt: new Date(Date.now() - 2 * day),
+            },
+          },
+        },
+      )
+      await profiles().updateOne(
+        { _id: newer.userId },
+        {
+          $set: {
+            entitlement: {
+              tier: 'pro',
+              expiresAt: future,
+              willRenew: true,
+              store: 'app_store',
+              updatedAt: new Date(Date.now() - day),
+            },
+          },
+        },
+      )
+      // A lapsed Pro is a free account with a row about last month in it.
+      await profiles().updateOne(
+        { _id: lapsed.userId },
+        { $set: { entitlement: { tier: 'pro', expiresAt: past, updatedAt: new Date() } } },
+      )
+      await profiles().updateOne(
+        { _id: other.userId },
+        { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
+      )
+
+      type Page = {
+        items: { userId: string; willRenew: boolean | null }[]
+        nextCursor: string | null
+      }
+      const pro = (await get(admin, '/admin/members?tier=pro')).json<Page>()
+      expect(pro.items.map((row) => row.userId)).toEqual([newer.userId, current.userId])
+      expect(pro.items[0]!.willRenew).toBe(true)
+      expect(pro.nextCursor).toBeNull()
+
+      // The tile and the list are the same filter.
+      const stats = (await get(admin, '/admin/stats')).json<AdminStats>()
+      expect(stats.money.tiers.pro).toBe(pro.items.length)
+
+      const first = (await get(admin, '/admin/members?tier=pro&limit=1')).json<Page>()
+      expect(first.items.map((row) => row.userId)).toEqual([newer.userId])
+      expect(first.nextCursor).not.toBeNull()
+      const rest = (
+        await get(admin, `/admin/members?tier=pro&limit=1&cursor=${first.nextCursor}`)
+      ).json<Page>()
+      expect(rest.items.map((row) => row.userId)).toEqual([current.userId])
+      expect(rest.nextCursor).toBeNull()
+
+      const proPlus = (await get(admin, '/admin/members?tier=pro_plus')).json<Page>()
+      expect(proPlus.items.map((row) => row.userId)).toEqual([other.userId])
+
+      expect((await get(null, '/admin/members?tier=pro')).statusCode).toBe(401)
+    })
+  })
+
   describe('job health', () => {
     it('records a pass that worked, a pass that threw, and clears the error after', async () => {
       const health = () =>

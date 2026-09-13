@@ -218,6 +218,7 @@ export const keys = {
   adminBroadcasts: ['admin', 'broadcasts'] as const,
   adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
   adminUser: (q: string) => ['admin', 'user', q] as const,
+  adminMembers: (tier: string) => ['admin', 'members', tier] as const,
 }
 
 /**
@@ -2489,6 +2490,30 @@ export function useAdminBroadcastAction() {
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
+  })
+}
+
+export interface AdminMemberDto {
+  userId: string
+  handle: string
+  displayName: string
+  tier: string
+  since: string
+  expiresAt: string | null
+  willRenew: boolean | null
+  store: string | null
+  periodType: string | null
+  lastActiveAt: string | null
+}
+
+/** Everybody on one paid tier — the list behind the Pro and Pro+ tiles. */
+export function useAdminMembers(tier: string) {
+  return useQuery({
+    queryKey: keys.adminMembers(tier),
+    queryFn: () =>
+      api.get<{ items: AdminMemberDto[]; nextCursor: string | null }>(
+        `/admin/members?tier=${tier}`,
+      ),
   })
 }
 

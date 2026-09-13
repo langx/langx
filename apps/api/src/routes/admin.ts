@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   adminListQuerySchema,
+  adminMemberListQuerySchema,
   adminMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
@@ -28,7 +29,7 @@ import {
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { readAdminStats } from '../modules/admin/stats'
-import { findAdminUser, getAdminUser } from '../modules/admin/users'
+import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
@@ -185,6 +186,15 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       const profile = await findAdminUser(app.mongo.db, request.query.q)
       if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Nobody by that name or address')
       return reply.send(await getAdminUser(app.mongo.db, profile))
+    },
+  )
+
+  /** The list behind the Pro and Pro+ tiles on the dashboard. */
+  app.get(
+    '/admin/members',
+    { preHandler: requireAdmin, schema: { querystring: adminMemberListQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await listMembers(app.mongo.db, request.query))
     },
   )
 

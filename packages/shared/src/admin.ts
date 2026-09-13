@@ -46,6 +46,18 @@ export const adminFeedbackListQuerySchema = adminListQuerySchema.extend({
 export type AdminFeedbackListQuery = z.infer<typeof adminFeedbackListQuerySchema>
 
 /**
+ * Who is on a paid plan. Only the two paid tiers: the free list is everybody
+ * else, and a list of everybody is a search box, which the panel already has.
+ */
+export const ADMIN_MEMBER_TIERS = ['pro', 'pro_plus'] as const
+export type AdminMemberTier = (typeof ADMIN_MEMBER_TIERS)[number]
+
+export const adminMemberListQuerySchema = adminListQuerySchema.extend({
+  tier: z.enum(ADMIN_MEMBER_TIERS).default('pro'),
+})
+export type AdminMemberListQuery = z.infer<typeof adminMemberListQuerySchema>
+
+/**
  * Finding one person. A handle, a previous handle, a user id or an email
  * address — whichever the operator happens to have, which in a support thread
  * is usually the address.

@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import { REPORT_REASONS, SUSPENSION_MAX_DAYS } from '@langx/shared'
@@ -36,8 +37,10 @@ import { showToast } from '../../../src/lib/toast'
 export default function AdminUsersScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const [query, setQuery] = useState('')
-  const [debounced, setDebounced] = useState('')
+  // A row in the subscribers list lands here with the handle already typed.
+  const params = useLocalSearchParams<{ q?: string }>()
+  const [query, setQuery] = useState(params.q ?? '')
+  const [debounced, setDebounced] = useState(params.q?.trim() ?? '')
   const found = useAdminUser(debounced)
 
   /*
