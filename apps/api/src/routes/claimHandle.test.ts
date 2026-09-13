@@ -195,6 +195,50 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
     expect(squat.json()).toMatchObject({ code: 'HANDLE_TAKEN' })
   })
 
+  it('answers the activity map and the summary at the old name too', async () => {
+    // The profile route resolved `previousHandle` from the start; these two
+    // read the same person by the same key and used not to, so a deep link
+    // carrying a v1 name opened a profile with its numbers missing.
+    const user = await newUser('v1-old-activity@example.com')
+    await asReturningV1User(user, 'langx_0114')
+    expect((await claim(user, 'deniz')).statusCode).toBe(200)
+
+    const viewer = await newUser('v1-old-activity-viewer@example.com')
+    const range = 'from=2026-01-01&to=2026-01-31'
+
+    for (const url of [`/profiles/langx_0114/activity?${range}`, '/profiles/langx_0114/summary']) {
+      const response = await app.inject({ method: 'GET', url, headers: { cookie: viewer.cookie } })
+      expect(response.statusCode, `${url} — ${response.body}`).toBe(200)
+    }
+  })
+
+  it('still attributes an invite link that carries the old name', async () => {
+    // Every failure in `attachReferral` is silent, so this one cost the
+    // referrer their tokens without anybody being told. Their links are years
+    // old by construction — they are the accounts that came back from v1.
+    const referrer = await newUser('v1-old-invite@example.com')
+    await asReturningV1User(referrer, 'langx_0125')
+    expect((await claim(referrer, 'yusuf')).statusCode).toBe(200)
+
+    const invitee = await signUpAndSignIn(app, emailSender, {
+      email: 'v1-old-invite-guest@example.com',
+      password: PASSWORD,
+      name: 'T',
+    })
+    const onboarded = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: invitee.cookie },
+      payload: onboardingBody({ referredByHandle: 'langx_0125', referredBySource: 'link' }),
+    })
+    expect(onboarded.statusCode, onboarded.body).toBe(201)
+
+    const row = await handle.db
+      .collection(COLLECTIONS.referrals)
+      .findOne({ _id: invitee.userId as never })
+    expect(row).toMatchObject({ referrerId: referrer.userId })
+  })
+
   it('allows exactly one claim', async () => {
     const user = await newUser('v1-twice@example.com')
     await asReturningV1User(user, 'langx_00a5')
