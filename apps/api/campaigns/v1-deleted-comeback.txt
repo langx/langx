@@ -1,0 +1,44 @@
+LangX
+
+ONE-TIME NOTE
+
+You left once.
+We rebuilt everything.
+
+Hi {{firstName}}, a while ago you deleted your LangX account. That still stands — the account is gone, and the only thing we kept is this email address, for exactly one message. This is it.
+
+Since then we rebuilt LangX from the ground up. It's not an update on top of the old app — it's a new one: more stable, more active, with a brand-new interface and hundreds of new features. If the old one let you down, this one is worth a second look.
+
+Give LangX v2 a try → https://langx.io
+
+Starting fresh
+
+Your old profile is not coming back — exactly as you asked. A new account takes about a minute: Google, Apple, or an email address.
+
+Create a free account: https://app.langx.io/sign-up
+
+What's new
+
+Rebuilt from scratch — faster, more stable, cleaner design.
+Streaks — chat a little every day and watch your week fill up.
+Wallet & tokens — hourly gifts, leaderboards and a daily token pool.
+Store & cosmetics — streak freezes, missed-day repairs, frames and titles.
+Community Feed — post a sentence, get corrections from real people.
+Voice, photo & video — plus built-in translation and a dark theme.
+
+182 languages. The same app on iPhone, Android and the web. Still open source, still no ads.
+
+Some things that were free in v1 moved into paid plans, and we'd rather you hear it from us than discover it. Everything that changed is on the welcome-back page: https://langx.io/welcome-back
+
+Get the app
+Scan the QR with your phone, or open https://get.langx.io
+iPhone · Android · Browser
+
+This is the only email we'll send to this address. If you'd rather we forgot it right now, the unsubscribe link below deletes it on the spot — no list, no follow-up.
+
+If something feels off or you have a question, just reply to this email — it reaches a human.
+
+— The LangX Team
+
+LangX · New Chapter Technology LLC · Open source, no ads
+langx.io https://langx.io  ·  Discord https://discord.langx.io  ·  GitHub https://github.com/langx/langx  ·  Unsubscribe {{unsubscribeUrl}}
