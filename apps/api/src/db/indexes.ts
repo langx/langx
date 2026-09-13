@@ -126,6 +126,17 @@ export const INDEXES: Partial<IndexSpec> = {
      * scan every half hour.
      */
     { key: { 'stats.lastActiveAt': 1 }, name: 'last_active' },
+    /*
+     * "How many people joined today?" — the number the operator dashboard is
+     * opened for, and until this existed the only way to answer it was a
+     * collection scan. Nothing in `profiles` led with `createdAt`: the text
+     * index, the two discovery compounds and `last_active` all lead with
+     * something else, and Mongo will not skip-scan to reach a later field.
+     *
+     * It pays for itself twice. `publicStats.perDay` runs three of those scans
+     * every ten minutes for the public counters, and they land here now too.
+     */
+    { key: { createdAt: -1 }, name: 'joined' },
     /**
      * The Pro city filter, on the canonical id.
      *

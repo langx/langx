@@ -287,6 +287,18 @@ export interface Profile {
     lastActiveAt: Date
     messagesSent: number
     /**
+     * The build this account was last seen on, from the two headers every
+     * client already sends — validated in `clientBuildOf` before it is stored,
+     * because a header is whatever the sender says it is.
+     *
+     * Here rather than on `devices` because `devices` holds only the accounts
+     * that registered for push, and "how many people are still on the old
+     * build" is a question about everybody. Absent until the next connection
+     * after this shipped.
+     */
+    appVersion?: string
+    appPlatform?: 'ios' | 'android' | 'web'
+    /**
      * Which badges this account has already been *told* about.
      *
      * Not a second copy of the badges — those stay derived, and this cannot

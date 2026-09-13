@@ -1,6 +1,7 @@
 import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
+import { withJobHealth } from '../admin/jobHealth'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
 import { runCampaignQueuePass } from './campaignQueue'
@@ -94,13 +95,18 @@ export function startNotificationScheduler(
     }
   }
 
-  /** Each pass on its own, so one throwing does not starve the two after it. */
+  /**
+   * Each pass on its own, so one throwing does not starve the two after it —
+   * and each one's outcome recorded, which is the only reason the operator
+   * panel can say a pass stopped firing. `withJobHealth` rethrows, so the
+   * catch below is unchanged.
+   */
   async function run(
     name: string,
     pass: () => Promise<{ sent: number; failed?: number }>,
   ): Promise<void> {
     try {
-      const { sent, failed } = await pass()
+      const { sent, failed } = await withJobHealth(db, name, pass)
       if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
       if (failed) logger.warn({ failed, pass: name }, 'notifications skipped')
     } catch (error) {

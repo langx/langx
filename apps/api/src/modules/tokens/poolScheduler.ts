@@ -1,6 +1,7 @@
 import { newestPayableDay, shiftDayKey, utcDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { runDailyPool } from './pool'
+import { withJobHealth } from '../admin/jobHealth'
 
 export interface SchedulerLogger {
   info: (obj: object, msg: string) => void
@@ -51,19 +52,30 @@ export function startDailyPoolScheduler(
     if (running) return // a slow run must not overlap itself
     running = true
     try {
-      const now = new Date()
-      const today = utcDayKey(now)
-      const newestPayable = newestPayableDay(now)
-      // Oldest first, so a catch-up pays days out in the order they happened.
-      for (let back = catchUpDays; back >= 1; back--) {
-        const day = shiftDayKey(today, -back)
-        // Day keys are `YYYY-MM-DD`, so this compares chronologically.
-        if (day > newestPayable) continue // closed, but its payout hour has not come
-        const outcome = await runDailyPool(db, { day })
-        if (outcome.ran) {
-          logger.info({ ...outcome.result }, 'daily token pool distributed')
+      /*
+       * The health record is of the tick, not of a day: a tick that walks five
+       * days and pays none of them still ran, and that is the fact worth being
+       * able to see. What each *day* did stays on its `jobRuns` row, which is
+       * the ledger-shaped half and outlives this.
+       */
+      await withJobHealth(db, 'daily pool', async () => {
+        const now = new Date()
+        const today = utcDayKey(now)
+        const newestPayable = newestPayableDay(now)
+        let paid = 0
+        // Oldest first, so a catch-up pays days out in the order they happened.
+        for (let back = catchUpDays; back >= 1; back--) {
+          const day = shiftDayKey(today, -back)
+          // Day keys are `YYYY-MM-DD`, so this compares chronologically.
+          if (day > newestPayable) continue // closed, but its payout hour has not come
+          const outcome = await runDailyPool(db, { day })
+          if (outcome.ran) {
+            paid += 1
+            logger.info({ ...outcome.result }, 'daily token pool distributed')
+          }
         }
-      }
+        return { daysPaid: paid }
+      })
     } catch (error) {
       // Never let a bad day kill the timer — the next tick retries, and the
       // `jobRuns` row for a day that failed mid-flight is what needs a human.

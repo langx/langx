@@ -55,6 +55,13 @@ export const COLLECTIONS = {
    */
   follows: 'follows',
   reports: 'reports',
+  /**
+   * Bug reports and feature requests, as the queue the operator panel works
+   * through. The `_id` is the uuid `feedback/submit.ts` already mints for the
+   * emailed bounty link, so the row, the link and the ledger's `refId` are one
+   * string rather than three that have to be kept in step.
+   */
+  feedback: 'feedback',
   devices: 'devices',
   profileViews: 'profileViews',
   translationCache: 'translationCache',
@@ -148,6 +155,14 @@ export const COLLECTIONS = {
   /** A single document (`_id: 'current'`) — maintenance, min versions, feature flags. */
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
+  /**
+   * One document per scheduled pass, holding its last run. A record, not a
+   * lock — `jobRuns` is the lock, and the two must not be confused. See
+   * `modules/admin/jobHealth.ts`.
+   */
+  jobHealth: 'jobHealth',
+  /** Every mutating decision an operator made in the panel, append-only. */
+  adminActions: 'adminActions',
   /**
    * Socket.io's bus between API instances. Every emit is written here and
    * every instance tails it with a change stream, which is how a message sent
