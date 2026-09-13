@@ -22,14 +22,19 @@ import { getProfile } from '../modules/profiles/profiles'
  * Bug reports and feature requests from inside the app — and, in the email
  * each one becomes, paying for it.
  *
- * A report goes two places and into no table of ours: an email to
- * `SUPPORT_EMAIL`, and a public issue on the repository. That is the design,
- * not a shortcut. A confirmed report is paid for, and both halves of that —
- * whether it is real and what it is worth — are one person's judgement made
- * while reading the mail; the tracker is where the work then lives. A
- * collection here would hold a copy of a decision taken in an inbox, with no
- * screen in the app able to close a row and nobody looking at the ones left
- * open.
+ * A report goes three places: a row in `feedback`, an email to
+ * `SUPPORT_EMAIL`, and a prefilled link that opens a public issue on the
+ * repository. A confirmed report is paid for, and both halves of that —
+ * whether it is real and what it is worth — are one person's judgement; the
+ * tracker is where the work then lives.
+ *
+ * The row came last, and the objection it answers is worth keeping in view:
+ * a collection here would be a copy of a decision taken in an inbox, with no
+ * screen able to close a row and nobody looking at the ones left open. The
+ * operator panel is that screen, its queue is ordered oldest-open-first so the
+ * ones left open are the ones it shows, and the row's `_id` is the id the
+ * bounty link already carried — so it is the same object as the link rather
+ * than a copy of it.
  *
  * `requireVerifiedEmail` on both of the routes the app calls. A signed URL is a
  * capability, so the upload route needs the same guard the feed's does — and
@@ -77,10 +82,10 @@ export const feedbackRoutes: FastifyPluginAsyncZod = async (app) => {
         )
       }
 
-      // Its own prefix, keyed by user, and load-bearing rather than tidy: a
-      // report is written to no table of ours, so this prefix is the only
-      // thing that can find the file again. The account purge sweeps it with
-      // `deleteByPrefix` — proof of a bug is still their file.
+      // Its own prefix, keyed by user, and load-bearing rather than tidy: the
+      // report's row carries the URLs but the storage does not know about it,
+      // so this prefix is what can still find the files. The account purge
+      // sweeps it with `deleteByPrefix` — proof of a bug is still their file.
       const extension = objectExtension(contentType)
       const key = `feedback/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))

@@ -790,6 +790,19 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1 }, name: 'device_owner' },
   ],
 
+  [COLLECTIONS.feedback]: [
+    /*
+     * The triage queue, and **ascending** — the opposite of every other list
+     * here. Those are feeds, where the newest row is the interesting one; this
+     * is a queue, where the interesting row is the one that has been waiting
+     * longest. Sorting it the other way is how the oldest open report becomes
+     * the one nobody ever sees.
+     */
+    { key: { status: 1, createdAt: 1 }, name: 'status_created' },
+    // "What else has this person sent", and the path the account purge takes.
+    { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
+  ],
+
   [COLLECTIONS.adminActions]: [
     /*
      * "What has been done to this account", which is the only question this

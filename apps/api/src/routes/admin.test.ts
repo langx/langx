@@ -1,4 +1,4 @@
-import { ERROR_CODES, REPORTS_TO_FREEZE_XP, SUSPENSION_FOREVER } from '@langx/shared'
+import { BOUNTY_MIN, ERROR_CODES, REPORTS_TO_FREEZE_XP, SUSPENSION_FOREVER } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -10,6 +10,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
+import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Profile } from '../modules/profiles/profiles'
@@ -478,6 +479,80 @@ describe('the operator panel', () => {
       expect(found.json<{ user: { userId: string; email: string } }>().user.userId).toBe(
         target.userId,
       )
+    })
+  })
+
+  describe('bug reports', () => {
+    it('is the same object as the link in the mail, and pays once across both', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const finder = await newUser()
+
+      const sent = await post(finder, '/feedback', {
+        kind: 'bug',
+        body: 'The compose button does nothing on a cold start.',
+      })
+      expect(sent.statusCode).toBe(202)
+
+      const queue = (await get(admin, '/admin/feedback?status=open')).json<{
+        items: { _id: string; kind: string; sender: { userId: string } }[]
+      }>()
+      expect(queue.items).toHaveLength(1)
+      const row = queue.items[0]!
+      expect(row.kind).toBe('bug')
+      expect(row.sender.userId).toBe(finder.userId)
+
+      /*
+       * The row's id is the id the emailed bounty link carries. This is the
+       * assertion the whole design rests on: if these two ever differ, paying
+       * from the panel and paying from the mail become two payments.
+       */
+      const mail = emailSender.messages.find((message) =>
+        message.subject.startsWith('Bug report from'),
+      )
+      expect(mail).toBeDefined()
+      const token = decodeURIComponent(
+        /\/feedback\/award\?token=([^"'&\s]+)/.exec(mail?.html ?? '')?.[1] ?? '',
+      )
+      expect(verifyBountyToken('a'.repeat(32), token)?.reportId).toBe(row._id)
+
+      const paid = await post(admin, `/admin/feedback/${row._id}/award`, { amount: BOUNTY_MIN })
+      expect(paid.json<{ awarded: boolean; amount: number }>()).toEqual({
+        awarded: true,
+        amount: BOUNTY_MIN,
+      })
+
+      // Paying again — from either door — pays nothing and says so.
+      const again = await post(admin, `/admin/feedback/${row._id}/award`, { amount: BOUNTY_MIN })
+      expect(again.json<{ awarded: boolean }>().awarded).toBe(false)
+
+      const ledger = await handle.db
+        .collection(COLLECTIONS.tokenLedger)
+        .countDocuments({ userId: finder.userId, kind: 'bounty', refId: row._id })
+      expect(ledger).toBe(1)
+
+      // Paying moves it to `triaged`, not `closed`: it says the report was
+      // real, not that the fix shipped.
+      const triaged = (await get(admin, '/admin/feedback?status=triaged')).json<{
+        items: { _id: string; bounty: { amount: number } | null }[]
+      }>()
+      expect(triaged.items[0]?._id).toBe(row._id)
+      expect(triaged.items[0]?.bounty?.amount).toBe(BOUNTY_MIN)
+    })
+
+    it('shows the oldest open report first, because it is a queue and not a feed', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const sender = await newUser()
+
+      for (const body of ['The first thing that went wrong.', 'The second thing.']) {
+        await post(sender, '/feedback', { kind: 'bug', body })
+      }
+
+      const queue = (await get(admin, '/admin/feedback?status=open')).json<{
+        items: { body: string }[]
+      }>()
+      expect(queue.items[0]?.body).toBe('The first thing that went wrong.')
     })
   })
 })

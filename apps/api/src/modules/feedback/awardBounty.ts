@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { notifyBountyPaid } from './bountyNotice'
+import { markFeedbackPaid } from './reports'
 import { awardTokens } from '../tokens/ledger'
 
 /**
@@ -36,6 +37,12 @@ export async function payBounty(
    * one.
    */
   if (result.awarded) {
+    /*
+     * `triaged`, not `closed`: paying says the report was real, not that the
+     * fix has shipped. And only on the award that happened, so the row cannot
+     * gain a second, later `bounty.at` from a press that paid nothing.
+     */
+    await markFeedbackPaid(app.mongo.db, input.refId, result.amount)
     await notifyBountyPaid(
       app.mongo.db,
       { push: app.push, email: app.email },

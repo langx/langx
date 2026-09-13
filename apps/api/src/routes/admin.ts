@@ -2,8 +2,10 @@ import {
   ERROR_CODES,
   adminListQuerySchema,
   adminReportListQuerySchema,
+  adminFeedbackListQuerySchema,
   adminSuspendSchema,
   adminUserSearchSchema,
+  bountyAwardSchema,
   reviewDecisionSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -16,6 +18,8 @@ import { recordAdminAction } from '../modules/admin/auditLog'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser } from '../modules/admin/users'
+import { payBounty } from '../modules/feedback/awardBounty'
+import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
@@ -309,6 +313,104 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         payload: { sessions: deletedCount },
       })
       return reply.send({ sessions: deletedCount })
+    },
+  )
+
+  // ── bug reports and ideas ────────────────────────────────────────────────
+
+  app.get(
+    '/admin/feedback',
+    { preHandler: requireAdmin, schema: { querystring: adminFeedbackListQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await listFeedback(app.mongo.db, request.query))
+    },
+  )
+
+  app.get(
+    '/admin/feedback/:id',
+    { preHandler: requireAdmin, schema: { params: z.object({ id: z.string() }) } },
+    async (request, reply) => {
+      const row = await getFeedback(app.mongo.db, request.params.id)
+      if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      return reply.send(row)
+    },
+  )
+
+  app.patch(
+    '/admin/feedback/:id',
+    {
+      preHandler: requireAdmin,
+      schema: {
+        params: z.object({ id: z.string() }),
+        body: z.object({
+          status: z.enum(['open', 'triaged', 'closed']).optional(),
+          issueUrl: z.url().optional(),
+          closeReason: z.enum(['fixed', 'shipped', 'wontfix', 'duplicate', 'invalid']).optional(),
+          note: z.string().trim().max(1000).optional(),
+        }),
+      },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const row = await updateFeedback(
+        app.mongo.db,
+        request.params.id,
+        {
+          ...(request.body.status ? { status: request.body.status } : {}),
+          ...(request.body.issueUrl ? { issueUrl: request.body.issueUrl } : {}),
+          ...(request.body.closeReason ? { closeReason: request.body.closeReason } : {}),
+          ...(request.body.note === undefined ? {} : { note: request.body.note }),
+        },
+        request.userId,
+      )
+      if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'feedback.update',
+        subjectUserId: row.userId,
+        refId: request.params.id,
+        payload: { ...request.body },
+      })
+      return reply.send(row)
+    },
+  )
+
+  /**
+   * Paying for a confirmed report.
+   *
+   * Through `payBounty`, which the emailed link also calls — so the ledger's
+   * unique `{userId, kind, refId}` index makes it paid once *across both
+   * doors*, not once per door. A second press of either says so and changes
+   * nothing.
+   */
+  app.post(
+    '/admin/feedback/:id/award',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: bountyAwardSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const row = await getFeedback(app.mongo.db, request.params.id)
+      if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+
+      const result = await payBounty(app, {
+        userId: row.userId,
+        refId: row._id,
+        amount: request.body.amount,
+      })
+
+      if (result.awarded) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'feedback.award',
+          subjectUserId: row.userId,
+          refId: row._id,
+          payload: { amount: result.amount },
+        })
+      }
+      return reply.send(result)
     },
   )
 
