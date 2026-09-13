@@ -10,7 +10,7 @@ vi.mock('resend', () => ({
   },
 }))
 
-const { ResendEmailSender } = await import('./sender')
+const { EmailRejectedError, ResendEmailSender } = await import('./sender')
 const { LOGO_SRC, inlineSrc } = await import('./logo')
 
 const withLogo = (to: string) => ({
@@ -71,5 +71,21 @@ describe('the Resend sender and the logo', () => {
 
     await sender.sendBatch([plain('a@example.com'), plain('b@example.com')])
     expect(batchSend).toHaveBeenCalledTimes(1)
+  })
+
+  it('tells a rejected message apart from a service that is down', async () => {
+    send.mockResolvedValueOnce({
+      data: null,
+      error: { name: 'validation_error', message: 'Invalid `to` field', statusCode: 422 },
+    })
+    await expect(sender.send(plain('bad@test.com1'))).rejects.toBeInstanceOf(EmailRejectedError)
+
+    send.mockResolvedValueOnce({
+      data: null,
+      error: { name: 'rate_limit_exceeded', message: 'Too many requests', statusCode: 429 },
+    })
+    const outage = sender.send(plain('c@example.com'))
+    await expect(outage).rejects.toThrow('Too many requests')
+    await expect(outage).rejects.not.toBeInstanceOf(EmailRejectedError)
   })
 })
