@@ -330,16 +330,34 @@ async function sentToday(db: Db, campaignId: string, now: Date): Promise<number>
 }
 
 /**
- * One tick of the drip: the oldest campaign that is queued or sending gets
- * this tick's share of today's budget.
+ * One tick of the drip: **every** campaign that is queued or sending gets
+ * this tick's share of its own day's budget, oldest first.
+ *
+ * It used to be the oldest campaign alone, and that made one campaign able
+ * to starve the rest. A campaign whose remaining audience is entirely inside
+ * the marketing gap keeps the status `sending` on purpose — those people are
+ * deferred, not finished — so it stayed at the head of the queue, took every
+ * tick, sent nobody, and the campaigns behind it did not move for as long as
+ * the gap lasted. Observed on 13 September 2026 with three campaigns live at
+ * once.
+ *
+ * Each campaign keeps its own ramp, its own day budget and its own tick
+ * lock, so running them together changes the pace of none of them — what
+ * changes is that a campaign with nothing to send this tick now hands the
+ * tick to the next one instead of consuming it. The per-campaign lock is
+ * also what keeps two instances from doubling up: the tick's half-hour and
+ * the campaign id are its period key, and only the instance that inserts it
+ * sends for that campaign.
+ *
+ * A **service** failure stops the whole pass rather than the one campaign:
+ * a mail provider having a bad minute will have one for the next campaign
+ * too, and the next tick retries exactly whoever was released.
  *
  * The share is worked out from the ramp and what has already gone today, so
  * a process restarted mid-day continues at the right pace rather than
  * starting the day over; and it is spread across the ticks left in the
- * window, so the budget is not spent in the first hour. Two instances
- * ticking at once are serialised through `jobRuns`: the tick's half-hour is
- * its period key, and only the instance that inserts it sends. Even without
- * that, `claimCampaignRecipients` would keep anyone from being mailed twice
+ * window, so the budget is not spent in the first hour. Even without the
+ * lock, `claimCampaignRecipients` would keep anyone from being mailed twice
  * — the lock is about pace, the claim is about correctness.
  *
  * A campaign is finished when a tick finds nobody left who is not merely
@@ -354,10 +372,43 @@ export async function runCampaignQueuePass(
 ): Promise<{ sent: number; failed?: number }> {
   const tickMinutes = options.tickMinutes ?? 30
 
-  const campaign =
-    (await queue(db).findOne({ status: 'sending' }, { sort: { createdAt: 1 } })) ??
-    (await queue(db).findOne({ status: 'queued' }, { sort: { createdAt: 1 } }))
-  if (!campaign) return { sent: 0 }
+  /*
+   * Oldest first, and `sending` before `queued` — the order the single-pick
+   * version used, now the order they are worked through rather than the
+   * grounds for ignoring all but one.
+   */
+  const campaigns = [
+    ...(await queue(db).find({ status: 'sending' }).sort({ createdAt: 1 }).toArray()),
+    ...(await queue(db).find({ status: 'queued' }).sort({ createdAt: 1 }).toArray()),
+  ]
+  if (campaigns.length === 0) return { sent: 0 }
+
+  let sentAll = 0
+  let failedAll = 0
+  for (const campaign of campaigns) {
+    const result = await runOneCampaign(db, ctx, campaign, now, tickMinutes, options)
+    sentAll += result.sent
+    failedAll += result.failed
+    if (result.serviceFailed) break
+  }
+  return failedAll > 0 ? { sent: sentAll, failed: failedAll } : { sent: sentAll }
+}
+
+/**
+ * One campaign's share of one tick.
+ *
+ * `serviceFailed` is the mail provider refusing to talk to us, as opposed to
+ * refusing one address: the caller stops the whole pass on it.
+ */
+async function runOneCampaign(
+  db: Db,
+  ctx: NotificationEmailContext,
+  campaign: QueuedCampaign,
+  now: Date,
+  tickMinutes: number,
+  options: { logger?: SchedulerLogger },
+): Promise<{ sent: number; failed: number; serviceFailed: boolean }> {
+  const nothing = { sent: 0, failed: 0, serviceFailed: false }
 
   // Not started on the tick that finds it if that tick is outside the window
   // — the day count would otherwise begin at night, with the whole first
@@ -370,7 +421,7 @@ export async function runCampaignQueuePass(
     budget - (await sentToday(db, campaign._id, now)),
     tickMinutes,
   )
-  if (share <= 0) return { sent: 0 }
+  if (share <= 0) return nothing
 
   const tickKey = `${campaign._id}:${utcDayKey(now)}:${now.getUTCHours()}:${now.getUTCMinutes() < 30 ? '00' : '30'}`
   try {
@@ -378,7 +429,7 @@ export async function runCampaignQueuePass(
       .collection<JobRun>(COLLECTIONS.jobRuns)
       .insertOne({ job: 'campaignQueue', periodKey: tickKey, startedAt: now })
   } catch (error) {
-    if ((error as { code?: number }).code === 11000) return { sent: 0 }
+    if ((error as { code?: number }).code === 11000) return nothing
     throw error
   }
 
@@ -398,11 +449,12 @@ export async function runCampaignQueuePass(
       )
       options.logger?.info({ campaign: campaign._id, sent: campaign.sent }, 'campaign finished')
     }
-    return { sent: 0 }
+    return nothing
   }
 
   let sent = 0
   let failed = 0
+  let serviceFailed = false
   /*
    * Claimed a hundred at a time, sent one at a time. The batch endpoint was
    * never used for these — every campaign body carries the logo, which the
@@ -458,11 +510,12 @@ export async function runCampaignQueuePass(
         // and stop. The next tick retries exactly them.
         await releaseCampaignRecipients(db, campaign._id, [target.id, ...claimed])
         options.logger?.error({ err: error, campaign: campaign._id }, 'campaign send failed')
+        serviceFailed = true
         break batches
       }
     }
   }
 
   await queue(db).updateOne({ _id: campaign._id }, { $inc: { sent, failed } })
-  return failed > 0 ? { sent, failed } : { sent }
+  return { sent, failed, serviceFailed }
 }
