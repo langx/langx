@@ -1,6 +1,7 @@
 import {
   campaignDayBudget,
   campaignTickShare,
+  TIER_NAMES,
   utcDayKey,
   type CampaignSource,
   type Locale,
@@ -18,6 +19,7 @@ import { localeFor } from '../profiles/localeFor'
 import type { JobRun } from '../tokens/pool'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { audiencePlan, chosenName } from './audience'
+import { lifetimeWinBackAudience } from './lifetimeWinBack'
 import {
   campaignRecipients,
   claimCampaignRecipients,
@@ -32,9 +34,17 @@ import type { DeletedContact } from './v1DeletedContacts'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-/** The two per-person tokens a campaign body may carry beside the unsubscribe one. */
+/** The per-person tokens a campaign body may carry beside the unsubscribe one. */
 export const FIRST_NAME_PLACEHOLDER = '{{firstName}}'
 export const EMAIL_PLACEHOLDER = '{{email}}'
+/**
+ * The two `v1lifetime` fills. Left in place rather than blanked when the
+ * source does not carry them: a letter that reached somebody reading
+ * "{{plan}}, for life" is a mistake worth seeing in a dry run, where a
+ * silently empty sentence is not.
+ */
+export const PLAN_PLACEHOLDER = '{{plan}}'
+export const V1_TOKENS_PLACEHOLDER = '{{v1Tokens}}'
 /** What `{{firstName}}` becomes for somebody whose name we do not have. */
 export const FIRST_NAME_FALLBACK = 'there'
 
@@ -79,6 +89,13 @@ export interface CampaignTarget {
   locale: Locale
   firstName?: string
   scope: UnsubscribeScope
+  /**
+   * The two tokens only `v1lifetime` fills: the tier waiting for this person
+   * and the v1 balance that earned it. Absent everywhere else, and a body
+   * that does not name them never notices.
+   */
+  plan?: string
+  v1Tokens?: string
 }
 
 export interface CampaignAudienceResolution {
@@ -224,6 +241,27 @@ export async function resolveCampaignAudience(
         hasProfile: false,
       })
     }
+  } else if (campaign.source === 'v1lifetime') {
+    /*
+     * Its own reader rather than `audiencePlan` with a filter, because the
+     * body names a tier and a number: somebody this cannot name both for has
+     * no letter to be sent. `lifetimeWinBackAudience` has already applied the
+     * v1 consent rule and the suppression list, and has already left out
+     * whoever restored — which is the same fact as "has been told".
+     */
+    const audience = await lifetimeWinBackAudience(db)
+    skipped.upstream = { ...audience.skipped }
+    candidates = audience.contacts.map((contact) => ({
+      id: contact.userId,
+      email: contact.email,
+      ...(contact.name ? { firstName: contact.name } : {}),
+      plan: TIER_NAMES[contact.tier],
+      // English, like the body it goes into: these letters are written once,
+      // in one language, and `--locale` is what narrows them.
+      v1Tokens: contact.legacyTokens.toLocaleString('en'),
+      scope: 'promotions' as const,
+      hasProfile: contact.hasProfile,
+    }))
   } else {
     const plan = await audiencePlan(db, campaign.source)
     skipped.upstream = { ...plan.skipped }
@@ -270,13 +308,17 @@ export async function resolveCampaignAudience(
 /** The body for one person: the three tokens replaced. */
 export function personalise(
   body: string,
-  target: Pick<CampaignTarget, 'email' | 'firstName'>,
+  target: Pick<CampaignTarget, 'email' | 'firstName' | 'plan' | 'v1Tokens'>,
   unsubscribe: string,
 ): string {
-  return body
+  const replaced = body
     .replaceAll(UNSUBSCRIBE_PLACEHOLDER, unsubscribe)
     .replaceAll(FIRST_NAME_PLACEHOLDER, target.firstName?.trim() || FIRST_NAME_FALLBACK)
     .replaceAll(EMAIL_PLACEHOLDER, encodeURIComponent(target.email))
+  if (target.plan === undefined && target.v1Tokens === undefined) return replaced
+  return replaced
+    .replaceAll(PLAN_PLACEHOLDER, target.plan ?? '')
+    .replaceAll(V1_TOKENS_PLACEHOLDER, target.v1Tokens ?? '')
 }
 
 /** How many this campaign has sent since midnight UTC — the budget's denominator. */

@@ -464,4 +464,21 @@ describe('the campaign queue', () => {
       'Hi there',
     )
   })
+
+  it('fills the plan and the v1 balance only for the source that carries them', () => {
+    expect(
+      personalise(
+        '{{plan}}, for life — {{v1Tokens}} tokens {{unsubscribeUrl}}',
+        { email: 'a@b.c', plan: 'Polyglot', v1Tokens: '41,203' },
+        'U',
+      ),
+    ).toBe('Polyglot, for life — 41,203 tokens U')
+
+    /*
+     * Every other campaign leaves them alone rather than blanking them. A
+     * body that names a token its source cannot fill is a mistake, and one
+     * that survives to the dry run is one somebody can see.
+     */
+    expect(personalise('{{plan}} {{unsubscribeUrl}}', { email: 'a@b.c' }, 'U')).toBe('{{plan}} U')
+  })
 })

@@ -22,8 +22,13 @@ export const MARKETING_MIN_GAP_DAYS = 7
  *   v1deleted  the addresses v1's deleted accounts left behind, held in
  *              `v1DeletedContacts`; no account, so an unsubscribe forgets
  *              the address rather than switching anything off.
+ *   v1lifetime the few pre-created rows whose v1 wallet clears a
+ *              `LOYALTY_LIFETIME_GRANTS` rung and who have not come back.
+ *              The same consent as `v1` over a hundredth of the people —
+ *              a separate source because the letter can only be written to
+ *              somebody it can name a tier and a number for.
  */
-export const CAMPAIGN_SOURCES = ['consented', 'v1', 'all', 'v1deleted'] as const
+export const CAMPAIGN_SOURCES = ['consented', 'v1', 'all', 'v1deleted', 'v1lifetime'] as const
 export type CampaignSource = (typeof CAMPAIGN_SOURCES)[number]
 
 /**

@@ -15,6 +15,8 @@
  *   v1         plus every pre-created v1 row that has not said no
  *   all        plus everybody else with a verified address
  *   v1deleted  the addresses v1's deleted accounts left in `v1DeletedContacts`
+ *   v1lifetime the `v1` rule over the few whose v1 wallet earned a lifetime
+ *              tier they have not come back to collect
  *
  * **Nobody is mailed twice.** Recipients are claimed into `emailCampaigns`
  * before each batch, and the unique index on `{campaignId, userId}` enforces
@@ -25,6 +27,11 @@
  * (URL-encoded, for `sign-in-link?email=`). A text part derived from the
  * HTML gets the unsubscribe link appended, since stripping tags takes away
  * the `href` it was written in.
+ *
+ * `--source v1lifetime` fills two more, `{{plan}}` and `{{v1Tokens}}`, and it
+ * is the only source that can: every other one would leave them in the body
+ * unreplaced, which is the point — a letter naming a tier nobody can be told
+ * they hold should fail in a dry run rather than go out with a blank in it.
  *
  * Usage:
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env --env-file=../../.env.prod \
@@ -48,7 +55,7 @@
  * which is only a working link if that secret is the API's.
  */
 import { readFileSync } from 'node:fs'
-import { CAMPAIGN_SOURCES, type CampaignSource } from '@langx/shared'
+import { CAMPAIGN_SOURCES, TIER_NAMES, type CampaignSource } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { unsubscribeHeaders } from '../src/email/notify'
 import { createEmailSender } from '../src/email/sender'
@@ -161,7 +168,14 @@ async function main(): Promise<void> {
         signUnsubscribeToken(unsubscribeSecret(env), 'preview', scope),
       )
       const name = flag('preview-name')
-      const target = { email: previewTo, ...(name ? { firstName: name } : {}) }
+      /*
+       * The lifetime letter names a tier and a v1 balance, and a preview has
+       * no recipient to read either off. Sample values rather than the bare
+       * tokens: a preview exists to be read, and `{{plan}}` sitting in the
+       * middle of a sentence tells you nothing about how the sentence lands.
+       */
+      const sample = source === 'v1lifetime' ? { plan: TIER_NAMES.pro, v1Tokens: '11,579' } : {}
+      const target = { email: previewTo, ...(name ? { firstName: name } : {}), ...sample }
       await createEmailSender(env, console).send({
         to: previewTo,
         subject,

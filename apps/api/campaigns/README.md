@@ -14,6 +14,12 @@ Every body carries three tokens, filled per person when the API sends:
 | `{{unsubscribeUrl}}` | A signed one-click unsubscribe link. **Required.**            |
 | `{{firstName}}`      | The display name, or the name the v1 row carries, or "there". |
 | `{{email}}`          | The address, URL-encoded — for `sign-in-link?email=`.         |
+| `{{plan}}`           | `Fluent` or `Polyglot` — **`--source v1lifetime` only.**      |
+| `{{v1Tokens}}`       | The v1 balance that earned it — **`v1lifetime` only.**        |
+
+The last two are left in the body unreplaced by every other source, on
+purpose: a letter that names a tier its audience cannot be told they hold
+should be visible in a dry run rather than go out with a blank sentence.
 
 ## The v1 win-back sequence
 
@@ -48,6 +54,33 @@ pnpm exec tsx $ENV scripts/send-campaign.ts \
 # Any time:
 pnpm exec tsx $ENV scripts/send-campaign.ts --status
 ```
+
+## The lifetime letter
+
+Its own mail, to about a hundred people, and the only one in here that can
+tell somebody something they do not already know: a v1 balance over a
+`LOYALTY_LIFETIME_GRANTS` rung earns a paid tier for life, the restore hands
+it over, and somebody who has not come back has therefore earned something
+nobody has ever told them about.
+
+```bash
+pnpm exec tsx $ENV scripts/send-campaign.ts \
+  --campaign 2026-09-v1-lifetime \
+  --subject "You have a LangX plan waiting — for life" \
+  --html-file campaigns/v1-lifetime.html --text-file campaigns/v1-lifetime.txt \
+  --source v1lifetime --confirm
+```
+
+No `--exclude-returned`: the audience is read from the staged v1 records and
+whoever restored is already gone from it, which is the same fact as "has been
+told" — `modules/handles/lifetimeGiftNotice.ts` says it as the grant lands.
+
+The subject cannot name the tier, because a subject is not personalised;
+`{{plan}}` and `{{v1Tokens}}` in the body do that. Ten of them hold Polyglot
+and the rest Fluent, so a subject naming either would be wrong for somebody.
+
+Worth a `--preview-to` first, below: it is the only body in here whose two
+extra tokens no other campaign exercises.
 
 ## The one mail to v1's deleted accounts
 
