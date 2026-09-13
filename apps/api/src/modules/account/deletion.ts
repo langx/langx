@@ -242,11 +242,11 @@ export async function purgeExpiredAccounts(
     }
 
     /*
-     * The one kind of file no row points at. A bug report goes to an email
-     * and into no table of ours — see `routes/feedback.ts` for why — so the
-     * sweep above cannot reach its attachments however carefully it reads.
-     * The prefix is the only handle the upload kept, which is why it chose
-     * one — and until this, nothing had ever used it.
+     * The one kind of file the sweep above cannot reach. A bug report's row
+     * does carry its attachment URLs, but that row is deleted by this same
+     * purge and the ordering between the two is not worth depending on — so
+     * the handle this uses is the prefix the upload chose, which is why it
+     * chose one.
      *
      * Its own capability check, outside the block above: listing objects and
      * writing them are separate things a provider may or may not do.

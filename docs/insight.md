@@ -33,6 +33,14 @@ The right-hand column is not a backlog. Publishing it hands pricing and channel
 strategy to anyone who asks, permanently — a share link can be switched off,
 what has already been read cannot be unread.
 
+Most of that column **is** computed, and is on the operator dashboard:
+`apps/api/src/modules/admin/stats.ts`, served as `GET /admin/stats` behind
+`requireAdmin`. That module is deliberately separate from `publicStats.ts`
+rather than a superset of it, and the separation is the safeguard: this file's
+module is served unauthenticated to the world, so a number added to it is
+published by that act alone. Add a private number to the admin module. The
+admin module reads this one rather than recomputing beside it.
+
 Everything on the left is a count over a whole collection. No document is read
 out, the smallest group is a language, and guests and deleted accounts are
 excluded from every number — a guest is a browsing session with no account

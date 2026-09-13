@@ -601,11 +601,24 @@ threshold is visible in the public repo** — the defence is server-side
 enforcement and idempotency, not secrecy.
 
 **Suspension** is the step past a freeze, and it is a person's decision every
-time. The report email carries a signed review link (`email/reviewToken.ts`,
-the same capability-token trade the bug bounty makes) that opens a small HTML
-page: suspend for N days, suspend permanently, or dismiss. There is no admin
-route, no session and no console — the review happens in the mailbox the
-report already arrives in.
+time. There are two doors to that decision and they write the same thing.
+
+The first is the mailbox: the report email carries a signed review link
+(`email/reviewToken.ts`, the same capability-token trade the bug bounty makes)
+that opens a small HTML page — suspend for N days, suspend permanently, or
+dismiss. It needs no session, which is exactly why it is kept: it works when
+nobody can sign in, and it can be handed to somebody who has no account.
+
+The second is the operator panel (`routes/admin.ts`, and
+`app/(app)/admin/` in the app), behind `requireAdmin` — a flag on a profile,
+set by `scripts/grant-admin.ts` and by nothing else. It exists because the
+mailbox could only ever answer one report at a time and could not answer
+"what is still open".
+
+Both call `moderation/decide.ts`, which is the body of the emailed page's POST
+with the HTML taken off. That is what keeps them one decision rather than two
+that drift: the only difference in what they write is `suspension.by`, which
+the panel knows and a capability token cannot.
 
 The state is one field. `suspension.until > now` is the whole of "suspended",
 computed on every check, so expiry needs no cron and nothing to sweep;
@@ -623,7 +636,10 @@ shared link. The profile itself still opens for a signed-in member, carrying
 `accountStatus: 'suspended'` and nothing else: when it ends, why, and whether
 it was appealed belong to the person it is about. One appeal per suspension,
 enforced by the update's own filter, emailed to support with its own signed
-link that can shorten or lift.
+link that can shorten or lift. Answering it — with any of the three answers —
+stamps `suspension.appeal.decidedAt`, which is what takes it out of the
+panel's queue; before that stamp existed, a refused appeal was
+indistinguishable from an unread one and the queue could only grow.
 
 ### Copilot
 
@@ -1320,8 +1336,12 @@ only thing that matters is preserving store identity.
 **P1:** Copilot, badges, availability hours, discovery boost, the "New Users"
 and "Enthusiasts" sort presets. _(Voice messages moved into P0 — the message
 migration needs them.)_
-**P2:** video calls, groups, the **learning module**, moderation console, an
-on-chain distribution layer (after legal review). The learning module — spaced
+**P2:** video calls, groups, the **learning module**, an on-chain distribution
+layer (after legal review). _(The moderation console was on this list and was
+pulled forward: the mailbox flow could decide a report but could not show which
+ones were still open, and three separate things — a frozen `tokenFrozenAt` that
+nothing cleared, an appeal queue that never emptied, a bug report with no
+row — were only visible once somebody tried to build the screen.)_ The learning module — spaced
 repetition over curated per-language, per-level courses — is what this list
 used to call the vocabulary notebook, widened from a personal word list into a
 content product; it is planned in [`learn-module.md`](./learn-module.md).

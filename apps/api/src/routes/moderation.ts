@@ -131,11 +131,16 @@ function decided(outcome: ReviewOutcome, name: string): string {
 /**
  * Blocks, reports, and what a report can lead to.
  *
- * Suspension is decided from the signed link in the report email, not from a
- * route with a session behind it. There is no moderation console and this
- * does not build one: the review happens in the mailbox where the report
- * already arrives, which is the same trade `feedback.ts` makes for a bounty.
- * See `email/reviewToken.ts` for what authorises those two routes.
+ * The two routes at the bottom are decided from the signed link in the report
+ * email rather than from a session — see `email/reviewToken.ts` for what
+ * authorises them, and `feedback.ts` for the same trade made for a bounty.
+ * They are **not** the only way any more: `routes/admin.ts` decides the same
+ * reports from the operator panel. This one stays because it is the path that
+ * still works when nobody can sign in, and the one that can be handed to
+ * somebody without an account.
+ *
+ * Both call `applyReviewDecision`. Nothing about a decision lives in this
+ * file except the sentence it is rendered as.
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {

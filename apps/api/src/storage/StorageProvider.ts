@@ -59,10 +59,11 @@ export interface StorageProviderWithPut extends StorageProvider {
  *
  * The purge finds a person's files through the documents that reference them,
  * which works for everything the app stores a URL for. A bug report's
- * attachment is the exception: it goes to an email and into no table of ours,
- * so the only handle we kept on it is the prefix the upload chose. Without
- * this it stays in the bucket forever, publicly fetchable, after the account
- * that sent it is gone.
+ * attachment is the exception. Its row does hold the URLs, but the row is
+ * deleted by the same purge and the ordering between the two is not something
+ * to rely on — so the handle that has always worked, the prefix the upload
+ * chose, is still what this sweeps. Without it an attachment stays in the
+ * bucket forever, publicly fetchable, after the account that sent it is gone.
  *
  * Its own interface rather than another method on `StorageProviderWithPut`,
  * for the reason that one is separate from `StorageProvider`: a provider that
