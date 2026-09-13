@@ -95,6 +95,11 @@ export const ptBR: Localized<ServerMessages> = {
     billingFailedTitle: 'Seu pagamento não foi concluído',
     billingEndedTitle: 'Seu plano terminou',
     billingBody: 'Toque para ver seu plano.',
+    lifetimeGiftTitle: '{plan}, para sempre 🎉',
+    lifetimeGiftBody: {
+      one: 'Sua {total} ficha do v1 garantiu isso.',
+      other: 'Suas {total} fichas do v1 garantiram isso.',
+    },
     securityBody: 'Abra o LangX se não foi você.',
     securityBodyDevice: 'De {device}. Abra o LangX se não foi você.',
     security: {
@@ -496,8 +501,23 @@ export const ptBR: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Lemos seu recurso. A suspensão foi retirada — você pode usar o LangX de novo.',
     suspensionUpdatedText: 'Sua suspensão no LangX foi atualizada. {detail}',
+    lifetimeGiftSubject: '{plan}, para sempre',
+    lifetimeGiftButton: 'Ver meu plano',
   },
 
+  lifetimeGift: {
+    intro: 'Parabéns — {plan} é seu para sempre.',
+    earned: {
+      one: 'Você terminou o v1 com {total} ficha. Foi isso que garantiu: o presente foi para as contas que construíram o LangX antigo. Nunca expira e não há nada a pagar.',
+      other:
+        'Você terminou o v1 com {total} fichas. Foi isso que garantiu: o presente foi para as contas que construíram o LangX antigo. Nunca expira e não há nada a pagar.',
+    },
+    wallet: {
+      one: 'Seu saldo antigo veio na proporção de cem fichas do v1 para uma, então {carried} delas estão na sua nova carteira. Hoje ela tem {balance} ficha.',
+      other:
+        'Seu saldo antigo veio na proporção de cem fichas do v1 para uma, então {carried} delas estão na sua nova carteira. Hoje ela tem {balance} fichas.',
+    },
+  },
   reportReason: {
     spam: 'Spam',
     harassment: 'Assédio',

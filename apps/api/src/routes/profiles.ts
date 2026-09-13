@@ -34,6 +34,7 @@ import {
 } from '../modules/profiles/profiles'
 import { deleteGuest } from '../modules/profiles/purgeGuests'
 import { sendWelcomeMessage } from '../modules/official/welcome'
+import { notifyLifetimeGift } from '../modules/handles/lifetimeGiftNotice'
 import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
@@ -89,6 +90,21 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
           (error: unknown) => {
             request.log.error({ err: error }, 'welcome message failed')
           },
+        )
+      }
+      /*
+       * And for the few who came back to a lifetime tier, the one @langx
+       * message they do get. `createProfile` restores as well as creates, so
+       * this is the other half of the path `auth.ts` covers — whichever of
+       * the two gets there first sends it, and the ledger row in
+       * `notifyLifetimeGift` is what stops the second one.
+       */
+      if (profile.restoredFromV1?.lifetimeGranted) {
+        void notifyLifetimeGift(
+          app.mongo.db,
+          { email: app.email, push: app.push },
+          { userId: request.userId, tier: profile.restoredFromV1.lifetimeGranted },
+          (error, message) => request.log.error({ err: error }, message),
         )
       }
       return reply.code(201).send(profile)

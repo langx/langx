@@ -98,6 +98,11 @@ export const fr: Localized<ServerMessages> = {
     billingFailedTitle: 'Votre paiement n’a pas abouti',
     billingEndedTitle: 'Votre formule a pris fin',
     billingBody: 'Touchez pour vérifier votre formule.',
+    lifetimeGiftTitle: '{plan}, à vie 🎉',
+    lifetimeGiftBody: {
+      one: 'Ton {total} jeton de v1 te l’a valu.',
+      other: 'Tes {total} jetons de v1 te l’ont valu.',
+    },
     securityBody: 'Ouvrez LangX si ce n’était pas vous.',
     securityBodyDevice: 'Depuis {device}. Ouvrez LangX si ce n’était pas vous.',
     security: {
@@ -506,8 +511,23 @@ export const fr: Localized<ServerMessages> = {
     suspensionUpdatedLifted:
       'Nous avons lu ton appel. Ta suspension est levée — tu peux réutiliser LangX.',
     suspensionUpdatedText: 'Ta suspension LangX a été mise à jour. {detail}',
+    lifetimeGiftSubject: '{plan}, à vie',
+    lifetimeGiftButton: 'Voir ma formule',
   },
 
+  lifetimeGift: {
+    intro: 'Félicitations — {plan} est à toi, à vie.',
+    earned: {
+      one: 'Tu as terminé v1 avec {total} jeton. C’est ce qui te l’a valu : le cadeau est allé aux comptes qui ont bâti l’ancien LangX. Ça n’expire jamais, et il n’y a rien à payer.',
+      other:
+        'Tu as terminé v1 avec {total} jetons. C’est ce qui te l’a valu : le cadeau est allé aux comptes qui ont bâti l’ancien LangX. Ça n’expire jamais, et il n’y a rien à payer.',
+    },
+    wallet: {
+      one: 'Ton ancien solde a été converti à raison de cent jetons v1 pour un, donc {carried} d’entre eux sont dans ton nouveau portefeuille. Il contient {balance} jeton aujourd’hui.',
+      other:
+        'Ton ancien solde a été converti à raison de cent jetons v1 pour un, donc {carried} d’entre eux sont dans ton nouveau portefeuille. Il contient {balance} jetons aujourd’hui.',
+    },
+  },
   reportReason: {
     spam: 'Spam',
     harassment: 'Harcèlement',

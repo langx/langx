@@ -96,6 +96,17 @@ export const en = {
     billingFailedTitle: 'Your payment did not go through',
     billingEndedTitle: 'Your plan has ended',
     billingBody: 'Tap to check your plan.',
+    /**
+     * The v1 loyalty gift. Ungated like the two above and for the same
+     * reason — it is a receipt, not a nudge — but it is sent as a `message`
+     * push, so the tap opens the @langx thread the news is written in rather
+     * than a settings screen. `{plan}` is a brand name and stays in English.
+     */
+    lifetimeGiftTitle: '{plan}, for life 🎉',
+    lifetimeGiftBody: {
+      one: 'Your {total} token from v1 earned it.',
+      other: 'Your {total} tokens from v1 earned it.',
+    },
     securityBody: 'Open LangX if this was not you.',
     securityBodyDevice: 'From {device}. Open LangX if this was not you.',
     security: {
@@ -510,6 +521,48 @@ export const en = {
     suspensionUpdatedLifted:
       'We read your appeal. Your suspension has been lifted — you can use LangX again.',
     suspensionUpdatedText: 'Your LangX suspension has been updated. {detail}',
+
+    /*
+     * The v1 loyalty gift. Only the envelope is here — the letter itself is
+     * `lifetimeGift` below, which the @langx message uses word for word. One
+     * piece of news, told once, in whichever place the reader opens first.
+     */
+    lifetimeGiftSubject: '{plan}, for life',
+    lifetimeGiftButton: 'See your plan',
+  },
+
+  /**
+   * The v1 loyalty gift, in three paragraphs — the @langx message and the
+   * email both say exactly this.
+   *
+   * Split into three keys rather than one because plural selection reads a
+   * single `count`, and the letter carries three different numbers: what
+   * they finished v1 with, what it converted to, and what the wallet holds
+   * now. Each paragraph inflects on its own number, and `{carried}` is
+   * phrased as "of them" so it never needs a noun after it.
+   *
+   * `count` is passed but never printed: the visible `{total}` and
+   * `{balance}` are the same numbers already run through `toLocaleString`,
+   * because eleven thousand tokens written `11579` reads like a serial
+   * number. So `count` selects the form and the placeholder carries the
+   * digits — a translator changing one must keep the other.
+   *
+   * The threshold is deliberately not named. Writing "over nine thousand"
+   * tells somebody who came back with nine thousand exactly how narrowly
+   * they missed something they can never now earn.
+   */
+  lifetimeGift: {
+    intro: 'Congratulations — you have {plan}, for life.',
+    earned: {
+      one: 'You finished v1 with {total} token. That is what earned it: the gift went to the accounts that built the old LangX. It never expires, and there is nothing to pay.',
+      other:
+        'You finished v1 with {total} tokens. That is what earned it: the gift went to the accounts that built the old LangX. It never expires, and there is nothing to pay.',
+    },
+    wallet: {
+      one: 'Your old balance came across at a hundred v1 tokens to one, so {carried} of them are in your new wallet. It holds {balance} token today.',
+      other:
+        'Your old balance came across at a hundred v1 tokens to one, so {carried} of them are in your new wallet. It holds {balance} tokens today.',
+    },
   },
 
   /**

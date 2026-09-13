@@ -1113,6 +1113,59 @@ export function bountyPaidEmail(locale: Locale, input: { amount: number; url: st
   }
 }
 
+/**
+ * The v1 loyalty gift, in an inbox.
+ *
+ * Word for word what @langx writes in the chat — `lifetimeGift.*` is one text
+ * with two deliveries, because the same news told two different ways leaves
+ * somebody working out which version is true.
+ *
+ * `shell` with an empty footer for the reason `bountyPaidEmail` gives above:
+ * `wrap`'s footer offers to be ignored, which is the wrong thing to say under
+ * something somebody earned and cannot earn again.
+ *
+ * The numbers arrive already formatted. Plural selection needs the raw
+ * integer and `interpolate` prints whatever it is given, so the caller passes
+ * both — see the note on `lifetimeGift` in the catalogue.
+ */
+export function lifetimeGiftEmail(
+  locale: Locale,
+  input: {
+    plan: string
+    legacyTokens: number
+    legacyTokensText: string
+    carriedText: string
+    balance: number
+    balanceText: string
+    url: string
+  },
+): Email {
+  const t = translator(locale)
+  const intro = t('lifetimeGift.intro', { plan: input.plan })
+  const earned = t('lifetimeGift.earned', {
+    count: input.legacyTokens,
+    total: input.legacyTokensText,
+  })
+  const wallet = t('lifetimeGift.wallet', {
+    count: input.balance,
+    carried: input.carriedText,
+    balance: input.balanceText,
+  })
+  return {
+    subject: t('email.lifetimeGiftSubject', { plan: input.plan }),
+    html: shell(
+      locale,
+      intro,
+      `<p>${intro}</p>
+       <p>${earned}</p>
+       <p>${wallet}</p>
+       <p>${button(encodeURI(input.url), t('email.lifetimeGiftButton'))}</p>`,
+      '',
+    ),
+    text: `${intro}\n\n${earned}\n\n${wallet}\n\n${input.url}`,
+  }
+}
+
 /** User-typed text goes into an HTML body, so it is escaped before it does. */
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
