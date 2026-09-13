@@ -71,17 +71,30 @@ carrying every kind cannot honestly offer to stop one of them.
 
 ## 1. Transactional — no switch, no unsubscribe
 
-| Message                           | Fires on                                          | Channels         | Once because                                |
-| --------------------------------- | ------------------------------------------------- | ---------------- | ------------------------------------------- |
-| Verify your email                 | sign-up                                           | email            | Better Auth mints the link                  |
-| Reset your password               | forgot password                                   | email            | —                                           |
-| Sign-in link                      | magic-link request                                | email            | single-use, 15 min                          |
-| You already have an account       | sign-up over an existing address                  | email            | —                                           |
-| Confirm account deletion          | delete request                                    | email            | token burned on use                         |
-| **Welcome to LangX**              | onboarding completes                              | email            | `createProfile` refuses a second profile    |
-| **Confirm your email** (reminder) | unverified 24 h after sign-up, never after a week | email            | ledger `verifyReminder:<id>:once`           |
-| Bounty paid                       | a report is confirmed                             | email + push     | the ledger's unique `{userId, kind, refId}` |
-| Report received / feedback        | somebody reports or writes in                     | email to support | —                                           |
+| Message                           | Fires on                                          | Channels                      | Once because                                |
+| --------------------------------- | ------------------------------------------------- | ----------------------------- | ------------------------------------------- |
+| Verify your email                 | sign-up                                           | email                         | Better Auth mints the link                  |
+| Reset your password               | forgot password                                   | email                         | —                                           |
+| Sign-in link                      | magic-link request                                | email                         | single-use, 15 min                          |
+| You already have an account       | sign-up over an existing address                  | email                         | —                                           |
+| Confirm account deletion          | delete request                                    | email                         | token burned on use                         |
+| **Welcome to LangX**              | onboarding completes                              | email                         | `createProfile` refuses a second profile    |
+| **Confirm your email** (reminder) | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`           |
+| Bounty paid                       | a report is confirmed                             | email + push                  | the ledger's unique `{userId, kind, refId}` |
+| **The v1 lifetime gift**          | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`             |
+| Report received / feedback        | somebody reports or writes in                     | email to support              | —                                           |
+
+The lifetime gift is the only transactional message that arrives as a
+**message in the app** as well as in the two usual places, and the push is the
+only one in this table that opens a conversation rather than a screen. Both
+follow from what it is: news with no action attached, which a screen cannot
+hold onto and a thread can. It quotes what they finished v1 with, what
+converted at `legacyTokenDivisor`, and the balance as it stands when the
+letter is written — three numbers from three sources, which is why
+`lifetimeGiftNotice.ts` reads them itself rather than being handed them.
+
+Whoever earned a rung and has **not** come back is not in this table at all:
+there is nothing to notify an account nobody has opened.
 
 ### Security — the same class, and never gated
 
