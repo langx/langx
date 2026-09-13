@@ -14,6 +14,7 @@ import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
 import type { Profile } from '../modules/profiles/profiles'
+import { ensureOfficialAccounts } from '../modules/official/accounts'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -102,6 +103,9 @@ describe('the operator panel', () => {
       revenueCat: createRevenueCatClientFromEnv(env),
     })
     await app.ready()
+    // `index.ts` does this at boot; `buildApp` does not, and the panel can
+    // send from @langx.
+    await ensureOfficialAccounts(handle.db, 'http://localhost:4000')
     for (let attempt = 1; attempt <= 5; attempt++) {
       const warmUp = await app.inject({
         method: 'POST',
@@ -553,6 +557,89 @@ describe('the operator panel', () => {
         items: { body: string }[]
       }>()
       expect(queue.items[0]?.body).toBe('The first thing that went wrong.')
+    })
+  })
+
+  describe('speaking as @langx', () => {
+    it('delivers one message, which the person cannot reply to', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const recipient = await newUser()
+
+      const sent = await post(admin, `/admin/users/${recipient.userId}/message`, {
+        body: 'Your report was received. Replies go to hi@langx.io.',
+      })
+      expect(sent.statusCode).toBe(201)
+      const conversationId = sent.json<{ conversationId: string }>().conversationId
+
+      /*
+       * It lands in the thread the welcome is already in — one conversation per
+       * pair, forever, which is what `pairKey` is for. So this looks through
+       * the thread rather than at the top of it.
+       */
+      const thread = await get(recipient, `/conversations/${conversationId}/messages`)
+      expect(thread.statusCode).toBe(200)
+      const bodies = thread.json<{ items: { body: string }[] }>().items.map((item) => item.body)
+      expect(bodies.some((body) => body.includes('Your report was received'))).toBe(true)
+
+      /*
+       * And it is one way. `OFFICIAL_WRITABLE.langx` is false, so
+       * `recordMessage` refuses anything addressed back — a deliberate product
+       * decision, asserted here so that turning @langx into a support inbox
+       * becomes a choice somebody makes rather than something that happens.
+       *
+       * Against the repository rather than a route because text messages are
+       * sent over the socket, and the guard is below both.
+       */
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendTextMessage(handle.db, recipient.userId, {
+          conversationId,
+          body: 'thanks!',
+          clientId: 'reply-attempt',
+        }),
+      ).rejects.toThrow(/does not take messages/i)
+    })
+  })
+
+  describe('broadcasts', () => {
+    it('is a draft first, and the slug cannot be used twice', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const created = await post(admin, '/admin/broadcasts', {
+        id: 'autumn-news',
+        bodies: { en: 'Something new is here.' },
+      })
+      expect(created.statusCode).toBe(201)
+      expect(created.json<{ status: string; total: number }>().status).toBe('draft')
+      expect(created.json<{ total: number }>().total).toBeGreaterThan(0)
+
+      // Sent to the operator alone, before anybody else can see it.
+      const tested = await post(admin, '/admin/broadcasts/autumn-news/test')
+      expect(tested.json<{ delivered: boolean }>().delivered).toBe(true)
+
+      const armed = await post(admin, '/admin/broadcasts/autumn-news/start')
+      expect(armed.json<{ status: string }>().status).toBe('queued')
+
+      // Starting it again is refused rather than silently ignored.
+      expect((await post(admin, '/admin/broadcasts/autumn-news/start')).statusCode).toBe(400)
+
+      const again = await post(admin, '/admin/broadcasts', {
+        id: 'autumn-news',
+        bodies: { en: 'A different message under the same name.' },
+      })
+      expect(again.statusCode).toBe(400)
+    })
+
+    it('refuses a broadcast with no English body, because English is the fallback', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const created = await post(admin, '/admin/broadcasts', {
+        id: 'turkish-only',
+        bodies: { tr: 'Sadece Türkçe' },
+      })
+      expect(created.statusCode).toBe(400)
     })
   })
 })

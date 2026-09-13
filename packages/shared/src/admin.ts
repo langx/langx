@@ -103,3 +103,62 @@ export const ADMIN_ACTIONS = [
   'broadcast.delete',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
+
+/**
+ * How many people one scheduler tick messages.
+ *
+ * Not a deliverability ramp. `campaignDayBudget` exists because mailbox
+ * providers judge a domain by how suddenly it starts sending, and an in-app
+ * message has no reputation to warm up — copying that ramp here would be
+ * cargo cult. What this bounds is the Expo relay, the write rate, and the
+ * blast radius of a broadcast somebody wants to stop halfway.
+ */
+export const BROADCAST_PER_TICK = 500
+
+/**
+ * The hours a broadcast may go out in, UTC.
+ *
+ * The *message* could land at any hour; the push beside it could not, and
+ * there is one push per message. Recipients have timezones on file, but
+ * batching by timezone would mean an audience query per zone per tick for a
+ * gain nobody has asked for — so this is the same blunt compromise
+ * `CAMPAIGN_SEND_WINDOW_UTC` makes, widened by an hour at each end because a
+ * chat message is a smaller intrusion than a marketing mail.
+ */
+export const BROADCAST_SEND_WINDOW_UTC = { from: 7, to: 21 } as const
+
+/**
+ * How many this tick may send: the per-tick ceiling inside the window, zero
+ * outside it.
+ */
+export function broadcastTickShare(now: Date): number {
+  const hour = now.getUTCHours()
+  if (hour < BROADCAST_SEND_WINDOW_UTC.from || hour >= BROADCAST_SEND_WINDOW_UTC.to) return 0
+  return BROADCAST_PER_TICK
+}
+
+export const BROADCAST_STATUSES = ['draft', 'queued', 'sending', 'paused', 'done'] as const
+export type BroadcastStatus = (typeof BROADCAST_STATUSES)[number]
+
+/**
+ * The slug is the primary key, so "you cannot start the same broadcast twice"
+ * is the database's answer rather than a check. Same shape as the `--id` the
+ * announcement script has always taken.
+ */
+export const broadcastCreateSchema = z
+  .object({
+    id: z
+      .string()
+      .trim()
+      .min(3)
+      .max(64)
+      .regex(/^[a-z0-9][a-z0-9-]*$/, 'Lower case, digits and dashes'),
+    /** One body per locale. `en` is required — it is the fallback. */
+    bodies: z.record(z.string(), z.string().trim().min(1).max(4000)),
+    pushTitle: z.string().trim().min(1).max(60).default('LangX'),
+  })
+  .refine((input) => typeof input.bodies.en === 'string', {
+    message: 'An English body is required — it is the fallback',
+    path: ['bodies', 'en'],
+  })
+export type BroadcastCreateInput = z.infer<typeof broadcastCreateSchema>

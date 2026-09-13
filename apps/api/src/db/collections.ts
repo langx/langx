@@ -154,6 +154,12 @@ export const COLLECTIONS = {
   // ops
   /** A single document (`_id: 'current'`) — maintenance, min versions, feature flags. */
   appConfig: 'appConfig',
+  /**
+   * One document per in-app broadcast from `@langx`, worked through by the
+   * scheduler. No claim collection beside it — the message row is the claim.
+   * See `modules/admin/broadcast.ts`.
+   */
+  broadcastQueue: 'broadcastQueue',
   jobRuns: 'jobRuns',
   /**
    * One document per scheduled pass, holding its last run. A record, not a

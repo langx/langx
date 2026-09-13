@@ -1,11 +1,13 @@
 import {
   ERROR_CODES,
   adminListQuerySchema,
+  adminMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
   adminSuspendSchema,
   adminUserSearchSchema,
   bountyAwardSchema,
+  broadcastCreateSchema,
   reviewDecisionSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -15,6 +17,15 @@ import { ApiError } from '../lib/ApiError'
 import { authId } from '../lib/authId'
 import { requireAdmin } from '../middleware/requireAuth'
 import { recordAdminAction } from '../modules/admin/auditLog'
+import {
+  countBroadcastAudience,
+  createBroadcast,
+  deleteBroadcast,
+  getBroadcast,
+  listBroadcasts,
+  setBroadcastStatus,
+} from '../modules/admin/broadcast'
+import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser } from '../modules/admin/users'
@@ -22,7 +33,9 @@ import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
+import { deliverOfficialMessage } from '../modules/official/deliver'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
+import { fanOutMessage } from '../ws/fanOut'
 import { userRoom } from '../ws/types'
 
 /**
@@ -411,6 +424,178 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       }
       return reply.send(result)
+    },
+  )
+
+  // ── one message, and a message to everybody ──────────────────────────────
+
+  /**
+   * A message from `@langx` to one person.
+   *
+   * **One way.** `OFFICIAL_WRITABLE.langx` is false, so `recordMessage`
+   * refuses anything addressed back and the chat screen draws no composer —
+   * which is a deliberate product decision (a broadcast account that sometimes
+   * replies is a promise about attention nobody can keep) and is not being
+   * undone here. So this is right for "your report was received", "the bounty
+   * is paid", "your suspension was lifted", and wrong for a conversation: what
+   * is written should say where a reply goes.
+   */
+  app.post(
+    '/admin/users/:userId/message',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }), body: adminMessageSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const delivered = await deliverOfficialMessage(app.mongo.db, {
+        fromHandle: 'langx',
+        toUserId: request.params.userId,
+        body: request.body.body,
+        // Unique per send rather than per subject: the same words twice are
+        // two messages here, unlike a broadcast, which must never repeat.
+        clientId: `admin:${request.userId}:${Date.now()}`,
+      })
+      if (!delivered) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'There is no @langx account to send from')
+      }
+      await fanOutMessage(app, app.io, delivered.conversation, delivered.message, {
+        pushWhenAway: true,
+      })
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'user.message',
+        subjectUserId: request.params.userId,
+        // The body is deliberately not stored here: it is already a message
+        // row, and the audit log is a record of decisions rather than a second
+        // copy of everything anybody was told.
+        refId: delivered.message._id.toHexString(),
+      })
+      return reply.code(201).send({ conversationId: delivered.conversation._id.toHexString() })
+    },
+  )
+
+  app.get('/admin/broadcasts', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({
+      items: await listBroadcasts(app.mongo.db),
+      audience: await countBroadcastAudience(app.mongo.db),
+    })
+  })
+
+  app.post(
+    '/admin/broadcasts',
+    {
+      preHandler: requireAdmin,
+      schema: { body: broadcastCreateSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      if (await getBroadcast(app.mongo.db, request.body.id)) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That slug has already been used')
+      }
+      const job = await createBroadcast(app.mongo.db, {
+        id: request.body.id,
+        bodies: request.body.bodies,
+        pushTitle: request.body.pushTitle,
+        createdBy: request.userId,
+      })
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'broadcast.create',
+        refId: job._id,
+        payload: { total: job.total, locales: Object.keys(job.bodies) },
+      })
+      return reply.code(201).send(job)
+    },
+  )
+
+  app.get(
+    '/admin/broadcasts/:id',
+    { preHandler: requireAdmin, schema: { params: z.object({ id: z.string() }) } },
+    async (request, reply) => {
+      const job = await getBroadcast(app.mongo.db, request.params.id)
+      if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
+      return reply.send(job)
+    },
+  )
+
+  /** To the operator and nobody else — see `sendBroadcastTest`. */
+  app.post(
+    '/admin/broadcasts/:id/test',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }) },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const job = await getBroadcast(app.mongo.db, request.params.id)
+      if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
+
+      const delivered = await sendBroadcastTest(app.mongo.db, app.push, job, request.userId)
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'broadcast.test',
+        refId: job._id,
+      })
+      return reply.send({ delivered })
+    },
+  )
+
+  /*
+   * Arming, stopping and letting go again. The transitions live in
+   * `setBroadcastStatus` as a table; a refused one is a 409 rather than a
+   * silent no-op, because "I pressed Start and nothing happened" is the one
+   * thing this screen must never do.
+   */
+  for (const [path, next, action] of [
+    ['start', 'queued', 'broadcast.start'],
+    ['pause', 'paused', 'broadcast.pause'],
+    ['resume', 'queued', 'broadcast.resume'],
+  ] as const) {
+    app.post(
+      `/admin/broadcasts/:id/${path}`,
+      {
+        preHandler: requireAdmin,
+        schema: { params: z.object({ id: z.string() }) },
+        // Five an hour on the irreversible one. Not anti-abuse — one person
+        // holds this flag — but a bound on the blast radius of a stuck client.
+        config: { rateLimit: limit(path === 'start' ? 5 : 30, '1 hour') },
+      },
+      async (request, reply) => {
+        const job = await setBroadcastStatus(app.mongo.db, request.params.id, next)
+        if (!job) {
+          throw new ApiError(
+            ERROR_CODES.VALIDATION_FAILED,
+            'That broadcast is not in a state this can change',
+          )
+        }
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action,
+          refId: job._id,
+          payload: { status: job.status, sent: job.sent, total: job.total },
+        })
+        return reply.send(job)
+      },
+    )
+  }
+
+  /** Only a draft: once it has been armed there may be messages out. */
+  app.delete(
+    '/admin/broadcasts/:id',
+    { preHandler: requireAdmin, schema: { params: z.object({ id: z.string() }) } },
+    async (request, reply) => {
+      if (!(await deleteBroadcast(app.mongo.db, request.params.id))) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Only a draft can be deleted')
+      }
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'broadcast.delete',
+        refId: request.params.id,
+      })
+      return reply.code(204).send()
     },
   )
 

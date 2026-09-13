@@ -790,6 +790,15 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1 }, name: 'device_owner' },
   ],
 
+  [COLLECTIONS.broadcastQueue]: [
+    /*
+     * "Is anything waiting?", asked twice a minute by the scheduler. The slug
+     * is the `_id`, so the uniqueness that matters — one broadcast per slug —
+     * needs no index of its own.
+     */
+    { key: { status: 1, createdAt: 1 }, name: 'status_created' },
+  ],
+
   [COLLECTIONS.feedback]: [
     /*
      * The triage queue, and **ascending** — the opposite of every other list

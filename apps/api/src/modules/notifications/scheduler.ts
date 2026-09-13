@@ -1,6 +1,7 @@
 import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
+import { runBroadcastQueuePass } from '../admin/broadcastQueue'
 import { withJobHealth } from '../admin/jobHealth'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { runBadgeRoundUpPass } from './badges'
@@ -89,6 +90,13 @@ export function startNotificationScheduler(
             logger,
           }),
         ),
+        /*
+         * The in-app half of the same idea, and a pass like the others. It
+         * needs no `tickMinutes`: an announcement has no day budget to spread,
+         * only a ceiling per tick — see `BROADCAST_PER_TICK` for why this is
+         * not a warm-up ramp.
+         */
+        run('broadcast queue', () => runBroadcastQueuePass(db, senders.push, now, { logger })),
       ])
     } finally {
       running = false
