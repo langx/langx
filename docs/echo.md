@@ -24,6 +24,11 @@ review on day one, and so the empty tab does not read as "come back after you
 have made friends". They are the same cards in the same queue. A card from a
 pack and a card from a chat differ only in `source`.
 
+**Any language, not only the pack languages.** A card's `lang` is any code in
+`languages.ts`. The packs are the one thing limited to English and French;
+a Russian sentence echoed from a chat lives beside a French pack card, and the
+tab groups by language. Nothing about capture knows which packs exist.
+
 **Why now, and why free.** We are in the cold start. A person who signs up
 tonight may find nobody to talk to tonight, and a chat app with nobody online
 gives them no reason to open it tomorrow. Echo does: a due count is a reason to
@@ -100,6 +105,49 @@ sold as one.
 not referenced. An edited or deleted message, a deleted account, a left
 conversation: the card stands, the deep link simply stops resolving.
 
+## Feed posts are a source too
+
+The feed is the other place a learner meets a sentence worth keeping — their
+own, once somebody has corrected it, or a stranger's that a native reader
+recorded. Both become Echo cards with the same tap.
+
+| Field    | From                                                                                                                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `front`  | The post body. If the post has corrections, the **top correction's `corrected` text** — the corrected sentence is the thing to learn, and the top one is what the feed already ranks first. |
+| `back`   | The translation of the original body into the reader's language, by the same rule as a chat capture.                                                                                        |
+| `lang`   | `post.language` — the language the author is learning, which the post already carries.                                                                                                      |
+| `audio`  | On a pronunciation post, the top answer's `media` and, if recorded, `slowMedia`. A native speaker saying the sentence, already uploaded, already ranked by likes. See "Audio".              |
+| `source` | `{ kind: 'post', postId, authorId }`, `sourceKey: post:<id>`. Deep-links to the post detail.                                                                                                |
+
+Entry points: the post's action row in the feed and the detail screen. Same
+capture cap, same repository gate (`listPost` access rules apply before the
+card is written).
+
+## Audio
+
+Every card can be heard. Three sources, cheapest first, and one field —
+`audio?: { key, slowKey?, origin: 'post' | 'chat' | 'pack' }` on the card:
+
+1. **A real person who already recorded it.** A pronunciation post's answer
+   (`pronunciationAnswerSchema.media`, `slowMedia`), or in a chat the voice
+   note that answers a `pronunciation` ask on the message. Nothing new is
+   recorded and no new UI exists for it; capture copies the media key. This is
+   the differentiator: Memrise plays a stranger's sample, Echo plays the
+   person you were talking to. Posts in Phase 1; chat voice notes in Phase 2,
+   because resolving "the voice note that quotes this message" is fiddlier.
+2. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
+   (CC BY-SA 4.0, attribution in the content directory) for single words;
+   phrases fall back to text-to-speech until Common Voice (CC0) or our own
+   recordings cover them. Phase 2.
+3. **Text-to-speech on the device** (`expo-speech`, the Web Speech API on
+   web): a speaker button on every card front, in every language the platform
+   has a voice for, no content cost. When no voice exists the button is not
+   drawn. **This one needs a store build** — see "Over the air, or a build".
+
+Playback goes through `expo-audio`, which the app already uses for voice
+notes. A listening card type — hear it, then reveal — rides on the same field
+in Phase 3.
+
 ## What the existing codebase already decides
 
 Unchanged from the earlier plan, restated because each one has a way of being
@@ -128,23 +176,24 @@ violated by accident:
 
 Four collections, registered in `collections.ts`:
 
-| Collection      | Holds                                                                                                                                                |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
-| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                       |
-| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                              |
-| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                      |
+| Collection      | Holds                                                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                               |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                      |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                              |
 
 `source` is a tagged union:
 
 ```
 { kind: 'chat',   conversationId, messageId, partnerId }
+{ kind: 'post',   postId, authorId }
 { kind: 'phrase', phraseCardId, conversationId }
 { kind: 'pack',   packId, itemId }
 ```
 
-`sourceKey` is the string form of it — `msg:<messageId>`, `phrase:<id>`,
-`pack:<itemId>` — and exists for one index.
+`sourceKey` is the string form of it — `msg:<messageId>`, `post:<postId>`,
+`phrase:<id>`, `pack:<itemId>` — and exists for one index.
 
 The card carries its own text even when it came from a pack. Content gets
 re-seeded (a fixed gloss, a better example) and a re-seed must never touch
@@ -155,7 +204,7 @@ made. That is the right price: a card somebody has reviewed six times is theirs.
 Indexes, in `indexes.ts`:
 
 - **unique `{ userId, sourceKey }` on `echoCards`** — one card per message,
-  per phrase card, per pack item. Add echo twice is a no-op, not a duplicate.
+  per post, per phrase card, per pack item. Add echo twice is a no-op, not a duplicate.
   An invariant, like `conversation_term_unique` on `phraseCards`.
 - `{ userId, srs.due }` on `echoCards` — the due queue, the only hot read.
 - `{ userId, lang, createdAt: -1 }` on `echoCards` — the "from your chats"
@@ -224,21 +273,33 @@ The first wave is two languages, chosen by hand rather than from the v1
 distribution, because two is what can be read end to end by a human before it
 ships. The matrix is 2 languages × 4 levels × 8 gloss locales.
 
-**Scope for the first pass**: one pack per language at `absoluteBeginner` and
-`beginner` — roughly 300 and 700 items — words and short phrases from a
-frequency list, with a gloss in eight locales and one example sentence. The two
-upper levels are Phase 3, where phrases and idiom have to dominate anyway.
+**Scope for the first pass**: one pack per language at `absoluteBeginner`,
+about 300 items — words and short phrases from a frequency list, with a gloss
+in eight locales and one example sentence. The 700-item `beginner` pack
+follows once a human has read the first one end to end. The two upper levels
+are Phase 3, where phrases and idiom have to dominate anyway.
 
 **Sources and licence** — verify at the version downloaded, record it:
 
-- Frequency ranking: a subtitle-derived list (licence varies, often
-  CC BY-SA) or Wiktionary frequency lists.
-- Glosses: drafted from a sense-carrying lexical source (Wiktextract, CC
-  BY-SA), not machine-translated from a bare lemma — `light`, `bank` and
-  `right` come back as whichever sense the machine guessed.
-- Example sentences: written by us, so nothing share-alike binds the text.
-  Tatoeba (CC-BY) is the fallback with attribution.
-- Anki shared decks are out: no provenance.
+| Source                            | Gives                                          | Licence                            | Use                                                 |
+| --------------------------------- | ---------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
+| Lexique 3 (lexique.org)           | FR: 142k words, frequency, IPA, part of speech | CC BY-SA 4.0                       | French ranking and phonetics                        |
+| NGSL (Browne, Culligan, Phillips) | EN: 2,801 core words                           | CC BY-SA 4.0                       | English `absoluteBeginner` / `beginner` word list   |
+| Wiktionary frequency lists        | EN / FR / RU subtitle-derived lists            | CC BY-SA                           | Cross-check; the Russian list when a RU pack comes  |
+| Wiktextract (kaikki.org)          | Senses, glosses, examples, IPA                 | CC BY-SA                           | Sense-carrying glosses — the polysemy trap, avoided |
+| Tatoeba                           | Example sentences with translations            | CC BY 2.0 FR                       | Example sentences, with attribution                 |
+| Lingua Libre (Wikimedia Commons)  | Human word recordings, per language            | CC BY-SA 4.0                       | Pack audio for single words                         |
+| Common Voice                      | Sentence recordings                            | CC0                                | Sentence audio, later                               |
+| Kelly lists (Leeds)               | EN / RU learner lists by CEFR                  | CC BY-NC-ND-SA, offline since 2026 | **Out** — non-commercial, no derivatives            |
+| Anki shared decks                 | —                                              | none stated                        | **Out** — no provenance                             |
+
+Glosses are drafted from the sense-carrying source, never machine-translated
+from a bare lemma — `light`, `bank` and `right` come back as whichever sense
+the machine guessed. Example sentences are written by us where we can, so
+nothing share-alike binds the text; Tatoeba is the fallback.
+
+`ts-fsrs` (MIT) is the obvious later replacement for the scheduler; it is
+noted here so nobody writes a second FSRS.
 
 **Where it lives**: `content/echo/<lang>/<level>.json` in this repo, with its
 own `LICENSE` and `ATTRIBUTION.md`. A share-alike source binds the derived
@@ -267,19 +328,20 @@ GitBook docs. Nothing checks that.
 **Tokens.** Reviews must not enter the daily pool split: everything scored
 there is done with another person, the pool is zero-sum, and a solitary,
 repeatable action would dilute the people it exists to reward. Instead a new
-`TOKEN_KIND` `'echo'`: a fixed award per **completed session** of
-`SRS_RULES.sessionSize` cards, capped in `TOKEN_RULES.caps.echoSessionsPerDay`.
-Proposed 5 tokens × 5 sessions — 25 a day, an eighth of the message cap.
-Awarded on the review batch, so the unique `{ userId, reviewId }` is what makes
-double payment impossible.
+`TOKEN_KIND` `'echo'`: **5 tokens per completed session** of
+`SRS_RULES.sessionSize` cards, capped at **5 sessions a day** in
+`TOKEN_RULES.caps.echoSessionsPerDay` — 25 a day, an eighth of the message cap,
+so it can never outpay talking to a person. Awarded on the review batch, so the
+unique `{ userId, reviewId }` is what makes double payment impossible.
 
 **Streak.** Opening the app already holds the streak (`POST /me/check-in`);
-what a meaningful action does is pay the milestone. Recommendation: **a
-completed session is a meaningful action.** The milestone tokens do not come
-from the pool, so nobody is diluted, and in a cold start a session is the one
-kind of practice that does not require somebody else to be online. A single
-card is never enough — that would be "open the app and tap once" under another
-name. Owner's call; see open decisions.
+what a meaningful action does is pay the milestone. **A completed session is a
+meaningful action.** The milestone tokens do not come from the pool, so nobody
+is diluted, and in a cold start a session is the one kind of practice that
+does not require somebody else to be online. A single card is never enough —
+that would be "open the app and tap once" under another name. This changes
+what the streak means, from a social commitment to a practice commitment, and
+it is taken on purpose.
 
 **Push.** One new notification kind, `echo` — push on, mail off — firing at
 19:00 local when cards are due and the person has not reviewed that day,
@@ -289,25 +351,44 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 
 ## Phases
 
-| Phase | Output                                                                                                                                                                                                                                                                       | Done when                                                                                                                                     |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in both places; the tab, session, done and cards screens; phrase cards mirrored into Echo | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | Content pipeline and licence file; `en` and `fr` packs at two levels; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak decision; the 19:00 push                                                                                         | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | Production cards, pack multiple choice, audio, the upper two levels, more languages, offline                                                                                                                                                                                 | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                 | Done when                                                                                                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer attached as the card's audio | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; chat voice notes as card audio; the tour step                                                                                                                              | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                           | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
 starting until one pack exists end to end.
 
-## Open decisions
+Text-to-speech belongs to no phase: it is one native module and ships with
+whichever store build comes next. Echo does not wait for it.
 
-1. **Streak** — does a completed session count as a meaningful action?
-   Recommended yes. This changes what the streak means, so it is made on
-   purpose.
-2. **Token amounts** — 5 per session, 5 sessions a day, or nothing at all in
-   the first pass. Echo could ship with no token award and add one later; the
-   reverse is a promise withdrawn.
-3. **The middle tab's tour step** — the first-run tour introduces three tabs.
-   Echo gets a step or does not; with a step, the tour is one screen longer.
-4. **Pack size for the first pass** — 300 + 700 items per language is a
-   guess. Smaller ships sooner; the glosses are the cost, not the code.
+## Over the air, or a build
+
+`architecture.md` → "Over-the-air updates": screens, logic, copy and the API
+go out by EAS Update; a new native module, a new permission or an SDK bump
+needs a build, and `runtimeVersion` is a fingerprint, so a bundle that changed
+the native side reaches nobody until the matching build ships.
+
+| Piece                                                                  | Ships by  | Why                                              |
+| ---------------------------------------------------------------------- | --------- | ------------------------------------------------ |
+| The tab, capture, session, cards, feed capture, API, `packages/shared` | Update    | JavaScript and the server                        |
+| Human audio playback — post answers, chat voice notes                  | Update    | `expo-audio` is already in the binary            |
+| Packs, tokens, streak rule, the `echo` push                            | Update    | Data, rules and the existing push path           |
+| Text-to-speech (`expo-speech`)                                         | **Build** | A new native module; on web it works without one |
+| Offline review (`expo-sqlite`, Phase 3)                                | **Build** | A new native module                              |
+
+## Decisions taken
+
+Four questions the first draft left open, closed on 13 September 2026:
+
+1. **Streak** — a completed session is a meaningful action. Never a single
+   card.
+2. **Tokens** — 5 per completed session, 5 sessions a day, outside the pool.
+   Shipping with a small award beats adding one later only if it never has to
+   be taken back; 25 a day is small enough to keep.
+3. **Tour** — no Echo step in Phase 1. A step is added when the packs land,
+   because introducing an empty tab is an empty promise.
+4. **First pack** — 300 items at `absoluteBeginner` per language first; the
+   700-item `beginner` pack when a human has read it end to end.
