@@ -1,0 +1,313 @@
+# Echo — spaced repetition, fed by real conversations
+
+**Status: a plan, nothing is built.** This supersedes
+[`learn-module.md`](./learn-module.md), which planned the same module under a
+generic name and with the chat-to-card path scheduled last. Echo turns that
+order around: the card you make from a real message is the product, and the
+curated packs are what make the tab worth opening before you have any.
+
+The design it fits into is [`architecture.md`](./architecture.md); the reasons
+the surrounding pieces are shaped the way they are are in
+[`decisions.md`](./decisions.md).
+
+## What this is
+
+A Memrise/Anki-shaped review loop with one difference that nothing else in the
+category has: **the cards come out of conversations with real people.** While
+you are chatting, one tap on a message — theirs or your own, a correction they
+wrote, a phrase they used — makes an Echo card. The front is the sentence as it
+was written; the back is what it means in your language. The scheduler brings
+it back tomorrow, then in three days, then in a week.
+
+Curated packs (English and French first) exist so a new user has something to
+review on day one, and so the empty tab does not read as "come back after you
+have made friends". They are the same cards in the same queue. A card from a
+pack and a card from a chat differ only in `source`.
+
+**Why now, and why free.** We are in the cold start. A person who signs up
+tonight may find nobody to talk to tonight, and a chat app with nobody online
+gives them no reason to open it tomorrow. Echo does: a due count is a reason to
+come back that does not depend on anyone else being awake. So the whole module
+is free on every tier at launch. The plan-limit row exists from day one so that
+metering _new_ cards later is a config change, but nothing in the app, on the
+website or in the store copy says "forever".
+
+## The name, and what it replaces
+
+`Echo` everywhere — the tab, the routes, the collections, the token kind, the
+i18n section. It is the thing coming back to you. The word is not used
+anywhere in the codebase or the docs today, so it is safe as an identifier.
+
+What it absorbs:
+
+- **`learn-module.md`**: the scheduler placement, the four-collection split,
+  the idempotent review ledger, the token rule and the plan-limit reasoning all
+  carry over. The "fifth tab" becomes the middle tab. The document is retired
+  once this one is accepted.
+- **The "vocabulary notebook"** line in `architecture.md`'s P2 list.
+- **Phrase cards** stay as they are. A phrase card is a message — both people
+  see it, it is written on purpose, with a meaning and an example typed by
+  hand. That is a social act and it keeps its place in the composer. What
+  changes: every phrase card saved also becomes an Echo card for its author,
+  and Echo does not replace the deck screen or its CSV export.
+
+What it does **not** touch: starring (a bookmark, no structure), quizzes (a
+message type between two people), the token pool.
+
+## The Add echo gesture
+
+This is the feature. Everything else is the machinery under it.
+
+**One tap, no form.** The existing "Save as a phrase" action pushes a
+three-field form, which is right for a phrase card — it is being written for
+another person. Echo is written for yourself, so the fields are filled in for
+you:
+
+| Field     | From                                                                                                                                                                                                 |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `front`   | The message body, as written. A correction message uses the **corrected** text. Media, stickers, meetings and quizzes are not offered the action.                                                    |
+| `back`    | The translation into the reader's own language. If the message was already translated in the thread, that translation, with no second request. Otherwise the server translates once at capture time. |
+| `lang`    | The language the front is in: the partner's first native language with a written form — the same `translateTargetFor` rule the Translate and phrase actions already use, pointed at the partner.     |
+| `example` | Empty. A chat card's front _is_ the example; the sentence was said to you.                                                                                                                           |
+| `source`  | `{ kind: 'chat', conversationId, messageId, partnerId }`. Kept so the session can say "Marie, 3 days ago" and deep-link back to the thread with `?at=`.                                              |
+
+Two places to tap, both cheap, both in the first pass:
+
+1. **The long-press menu, on the primary page** — not behind "More…". The row
+   is one `actions.push` in `messageActionsFor` and one branch in
+   `openActions`; `phrase` is the template.
+2. **The translation line under a bubble.** The moment somebody translates a
+   message is the moment they met a word they did not know. A small `+ Echo`
+   at the end of the translation is the tap that costs nothing to find.
+
+The response is a toast — `Added to Echo` — and the message shows a small mark
+so it is not added twice. It cannot be added twice anyway: see the unique
+index below. Tapping an already-echoed message offers `Remove from Echo`.
+
+**Text limits.** `front` is capped at `ECHO_FRONT_MAX_LENGTH` (200, the same
+as a phrase meaning). A longer message is offered the action with the first
+200 characters and a trailing ellipsis in the preview; a person who wants a
+specific clause has the phrase-card form.
+
+**Translation cost.** Capture is not a Translate action. A translation that is
+already on the message is copied; a missing one is fetched server-side and
+metered by `PLAN_LIMITS.echoCapturesPerDay`, not by `translationsPer24h`. The
+capture cap is an abuse ceiling — Add echo must not become a free translator —
+and is the same on every tier (50). It is not a paywall and it should not be
+sold as one.
+
+**The card survives the message.** `front` and `back` are copied at capture,
+not referenced. An edited or deleted message, a deleted account, a left
+conversation: the card stands, the deep link simply stops resolving.
+
+## What the existing codebase already decides
+
+Unchanged from the earlier plan, restated because each one has a way of being
+violated by accident:
+
+- **Levels are not CEFR.** Pack levels reuse `LANGUAGE_LEVELS`
+  (`absoluteBeginner | beginner | intermediate | fluent`). No second scale.
+- **Eight interface locales, one hundred and eighty languages.** A pack item's
+  `gloss` is `Record<Locale, string>` — the known side is drawn from the
+  eight, never the hundred and eighty. The fallback when a learner's own
+  language is not among them is `nativeLanguages[0]` → interface locale →
+  `en`, in exactly one function.
+- **No handler queries a collection directly**; indexes live in
+  `apps/api/src/db/indexes.ts`; thresholds live in `packages/shared`; no
+  user-facing string is written in a component. Card _content_ is data, not
+  interface copy: `t('echo.session.done')` is a key; the French on the card is
+  not, and never goes through the i18n files.
+- **There is no local persistence in the client** beyond `expo-secure-store`.
+  Offline review is a new dependency and a new merge problem. Deferred, as
+  before.
+- **Socket events pass through the same guards as REST.** Capture goes over
+  REST; there is no realtime need, and REST is where the quota check already
+  lives.
+
+## Data model
+
+Four collections, registered in `collections.ts`:
+
+| Collection      | Holds                                                                                                                                                |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                       |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                              |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                      |
+
+`source` is a tagged union:
+
+```
+{ kind: 'chat',   conversationId, messageId, partnerId }
+{ kind: 'phrase', phraseCardId, conversationId }
+{ kind: 'pack',   packId, itemId }
+```
+
+`sourceKey` is the string form of it — `msg:<messageId>`, `phrase:<id>`,
+`pack:<itemId>` — and exists for one index.
+
+The card carries its own text even when it came from a pack. Content gets
+re-seeded (a fixed gloss, a better example) and a re-seed must never touch
+anybody's schedule; copying the text at intake is what makes the two
+independent. The price is that a corrected gloss does not reach cards already
+made. That is the right price: a card somebody has reviewed six times is theirs.
+
+Indexes, in `indexes.ts`:
+
+- **unique `{ userId, sourceKey }` on `echoCards`** — one card per message,
+  per phrase card, per pack item. Add echo twice is a no-op, not a duplicate.
+  An invariant, like `conversation_term_unique` on `phraseCards`.
+- `{ userId, srs.due }` on `echoCards` — the due queue, the only hot read.
+- `{ userId, lang, createdAt: -1 }` on `echoCards` — the "from your chats"
+  list on the tab.
+- **unique `{ userId, reviewId }` on `echoReviews`**, `reviewId` minted by the
+  client. A session submitted twice because the network dropped and the app
+  retried must be physically incapable of advancing a card twice or paying
+  twice. Idempotency by index, not by the handler remembering to check. Same
+  device as `{ job, periodKey }` on `jobRuns`.
+- unique `{ packId, index }` on `echoPackItems`, so the seed script is
+  idempotent by construction.
+
+## The scheduler
+
+`packages/shared/src/srs.ts`: a pure `schedule(card, grade, now)` plus an
+`SRS_RULES` config — starting ease, floor ease, interval multipliers, the
+lapse penalty, `sessionSize`, `learningSteps`. No dependency; unit-tested in
+vitest without a database.
+
+**SM-2 first, FSRS later.** FSRS schedules better but wants parameters fitted
+to a review history that does not exist yet. The algorithm sits behind one
+function so replacing it is contained.
+
+**One implementation, both sides.** The client computes the next due date
+optimistically so a session feels instant; the server is authoritative and
+recomputes from the ledger. They are the same function in `shared`, for the
+reason `effectivePlanTier` is in `shared`: two implementations of one rule is
+how the app says "due tomorrow" and the API says "due in three days", and the
+mismatch reads as a bug in the feature rather than a duplicated rule.
+
+**Four grades: Again · Hard · Good · Easy.** Self-graded reveal cards, not
+multiple choice, in the first pass. A chat card has no distractors to draw from
+— the alternatives would have to be invented, and a wrong invented alternative
+teaches the wrong thing. Recognition (front → back) only at first; production
+(type the front from the back) and pack-only multiple choice are Phase 3.
+
+## Client
+
+Five tabs, Echo in the middle: **Discover · Chats · Echo · Feed · Me**. The
+tab-layout comment that says "the four tabs, and only the four tabs" is about
+not registering stack screens as tabs; a fifth real tab is within its rule.
+Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
+
+| Route                | Screen                                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `(tabs)/echo.tsx`    | The tab root: due count and the one yellow button, then "From your chats" (latest cards, partner face, tap to open the thread), then Packs |
+| `echo/session.tsx`   | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
+| `echo/pack/[id].tsx` | A pack: description, progress, "Start" / "Continue"                                                                                        |
+| `echo/cards.tsx`     | Every card, filter by language and source, remove                                                                                          |
+
+The session screen is the whole feature as far as a user is concerned. What
+decides whether it is opened twice is how it ends — a done screen that says
+what happened and when to come back — and how it behaves on a bad connection:
+grades are queued in memory and submitted as one idempotent batch at the end,
+so a dropped socket in the middle of a session loses nothing.
+
+**Guests** see the tab with the packs and are gated on the first review, like
+every other guest gate.
+
+**i18n**: one `echo.*` section in `en.ts`, translated into the other seven
+before it compiles. Plurals for the due count.
+
+## Content: English and French first
+
+The first wave is two languages, chosen by hand rather than from the v1
+distribution, because two is what can be read end to end by a human before it
+ships. The matrix is 2 languages × 4 levels × 8 gloss locales.
+
+**Scope for the first pass**: one pack per language at `absoluteBeginner` and
+`beginner` — roughly 300 and 700 items — words and short phrases from a
+frequency list, with a gloss in eight locales and one example sentence. The two
+upper levels are Phase 3, where phrases and idiom have to dominate anyway.
+
+**Sources and licence** — verify at the version downloaded, record it:
+
+- Frequency ranking: a subtitle-derived list (licence varies, often
+  CC BY-SA) or Wiktionary frequency lists.
+- Glosses: drafted from a sense-carrying lexical source (Wiktextract, CC
+  BY-SA), not machine-translated from a bare lemma — `light`, `bank` and
+  `right` come back as whichever sense the machine guessed.
+- Example sentences: written by us, so nothing share-alike binds the text.
+  Tatoeba (CC-BY) is the fallback with attribution.
+- Anki shared decks are out: no provenance.
+
+**Where it lives**: `content/echo/<lang>/<level>.json` in this repo, with its
+own `LICENSE` and `ATTRIBUTION.md`. A share-alike source binds the derived
+content, not the code; the directory's licence file is what says so. One repo
+keeps the seed script and the data it seeds in one commit. Loaded by an
+idempotent seed script keyed on `{ packId, index }`, run at deploy like the
+ETL.
+
+Not in `packages/shared` — that package is config, and a thousand cards would
+be a data blob every consumer parses at import.
+
+## Plan limits, tokens, streak, push
+
+**Plan limits** — three rows in `PLAN_LIMITS`, all present from day one:
+
+| Row                  | free | pro  | pro_plus | Why                                                      |
+| -------------------- | ---- | ---- | -------- | -------------------------------------------------------- |
+| `echoNewCardsPerDay` | null | null | null     | The one row that may be metered later. Free at launch.   |
+| `echoCapturesPerDay` | 50   | 50   | 50       | Abuse ceiling on server-side translation. Not a paywall. |
+| `echoReviewsPerDay`  | null | null | null     | Reviews are **never** capped, on any tier, ever.         |
+
+If a number changes it changes by hand in three more places —
+`website/src/lib/data/plans.ts`, `website/src/lib/data/features.ts`, and the
+GitBook docs. Nothing checks that.
+
+**Tokens.** Reviews must not enter the daily pool split: everything scored
+there is done with another person, the pool is zero-sum, and a solitary,
+repeatable action would dilute the people it exists to reward. Instead a new
+`TOKEN_KIND` `'echo'`: a fixed award per **completed session** of
+`SRS_RULES.sessionSize` cards, capped in `TOKEN_RULES.caps.echoSessionsPerDay`.
+Proposed 5 tokens × 5 sessions — 25 a day, an eighth of the message cap.
+Awarded on the review batch, so the unique `{ userId, reviewId }` is what makes
+double payment impossible.
+
+**Streak.** Opening the app already holds the streak (`POST /me/check-in`);
+what a meaningful action does is pay the milestone. Recommendation: **a
+completed session is a meaningful action.** The milestone tokens do not come
+from the pool, so nobody is diluted, and in a cold start a session is the one
+kind of practice that does not require somebody else to be online. A single
+card is never enough — that would be "open the app and tap once" under another
+name. Owner's call; see open decisions.
+
+**Push.** One new notification kind, `echo` — push on, mail off — firing at
+19:00 local when cards are due and the person has not reviewed that day,
+period key the local day. Adding a kind means a preference row and copy in
+eight locales; folding it into `streak` would mislabel it. Goes into
+[`notifications.md`](./notifications.md) when built.
+
+## Phases
+
+| Phase | Output                                                                                                                                                                                                                                                                       | Done when                                                                                                                                     |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in both places; the tab, session, done and cards screens; phrase cards mirrored into Echo | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | Content pipeline and licence file; `en` and `fr` packs at two levels; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak decision; the 19:00 push                                                                                         | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | Production cards, pack multiple choice, audio, the upper two levels, more languages, offline                                                                                                                                                                                 | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+
+Phase 1 is the whole promise and is deliberately content-free, so it cannot be
+blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
+starting until one pack exists end to end.
+
+## Open decisions
+
+1. **Streak** — does a completed session count as a meaningful action?
+   Recommended yes. This changes what the streak means, so it is made on
+   purpose.
+2. **Token amounts** — 5 per session, 5 sessions a day, or nothing at all in
+   the first pass. Echo could ship with no token award and add one later; the
+   reverse is a promise withdrawn.
+3. **The middle tab's tour step** — the first-run tour introduces three tabs.
+   Echo gets a step or does not; with a step, the tour is one screen longer.
+4. **Pack size for the first pass** — 300 + 700 items per language is a
+   guess. Smaller ships sooner; the glosses are the cost, not the code.

@@ -1,5 +1,9 @@
 # The learning module — spaced repetition, courses and levels
 
+**Status: superseded by [`echo.md`](./echo.md).** Kept until that plan is
+accepted; the module it describes is now called Echo, and the chat-to-card path
+it scheduled last is that plan's first phase.
+
 **Status: a plan, nothing is built.** This is post-MVP work. It is written down
 now so that the decisions it forces — most of them about content and about the
 token economy, not about code — are visible before anyone starts.
