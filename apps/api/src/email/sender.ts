@@ -61,10 +61,35 @@ export interface EmailSender {
 export const EMAIL_BATCH_SIZE = 100
 
 /**
- * Between two single sends inside a batch that could not go as one: Resend's
- * default is two requests a second, and this stays under it.
+ * Between two single sends: Resend's default is two requests a second, and
+ * this stays under it. Enforced by the sender itself, so a caller sending a
+ * list one message at a time — the campaign drip — need not know the rate.
  */
-const SINGLE_SEND_SPACING_MS = 600
+export const SINGLE_SEND_SPACING_MS = 600
+
+/**
+ * The provider refused this one message — the address, the body — and no
+ * retry can change that. The campaign drip writes such a person off and moves
+ * on; every other failure (rate limit, quota, outage) is retried later.
+ *
+ * The distinction exists because of 12–13 September 2026: one v1 row carried
+ * an address with an invalid top-level domain, Resend rejected it, the drip
+ * released the whole batch as "not sent", and the next tick mailed the
+ * eighteen people before it again. Twenty-seven ticks later they had each
+ * received the launch mail twenty-eight times.
+ */
+export class EmailRejectedError extends Error {
+  readonly to: string
+
+  constructor(to: string, message: string) {
+    super(message)
+    this.name = 'EmailRejectedError'
+    this.to = to
+  }
+}
+
+/** Resend's error names for a message that is wrong rather than a service that is busy. */
+const REJECTION_NAMES = new Set(['validation_error', 'invalid_parameter', 'missing_required_field'])
 
 /**
  * The images a message shows, attached inline. See `inlineAssets.ts` for why
@@ -88,6 +113,8 @@ export class ResendEmailSender implements EmailSender {
   readonly deliverable = true
   readonly #client: Resend
   readonly #from: string
+  /** When the next single send may go, per `SINGLE_SEND_SPACING_MS`. */
+  #nextSendAt = 0
 
   constructor(apiKey: string, from: string) {
     this.#client = new Resend(apiKey)
@@ -103,6 +130,10 @@ export class ResendEmailSender implements EmailSender {
     replyTo,
     attachments,
   }: EmailMessage): Promise<void> {
+    const wait = this.#nextSendAt - Date.now()
+    if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait))
+    this.#nextSendAt = Date.now() + SINGLE_SEND_SPACING_MS
+
     const { error } = await this.#client.emails.send({
       from: this.#from,
       to,
@@ -114,28 +145,25 @@ export class ResendEmailSender implements EmailSender {
       ...inlineAttachments(html, attachments),
     })
     if (error) {
-      throw new Error(`Resend failed to send "${subject}" to ${to}: ${error.message}`)
+      const message = `Resend failed to send "${subject}" to ${to}: ${error.message}`
+      if (REJECTION_NAMES.has(error.name)) throw new EmailRejectedError(to, message)
+      throw new Error(message)
     }
   }
 
   async sendBatch(messages: EmailMessage[]): Promise<void> {
     /*
      * The batch endpoint takes no attachments, so a message that carries an
-     * inline image goes on its own. Slower — one request per person rather than per
-     * hundred — and the only caller is the campaign drip, which sends a few
-     * dozen a tick and has the whole half hour to do it in. A thrown error
-     * still means "release everything not yet sent": the claim was for the
-     * whole batch, and the caller cannot tell which of these went.
+     * inline image goes on its own, paced by `send`. A thrown error from this
+     * path says nothing about which of the earlier messages went — which is
+     * why the campaign drip no longer uses it and sends one at a time.
      */
     if (
       messages.some(
         (message) => Object.keys(inlineAttachments(message.html, message.attachments)).length > 0,
       )
     ) {
-      for (const [index, message] of messages.entries()) {
-        if (index > 0) await new Promise((resolve) => setTimeout(resolve, SINGLE_SEND_SPACING_MS))
-        await this.send(message)
-      }
+      for (const message of messages) await this.send(message)
       return
     }
     for (let index = 0; index < messages.length; index += EMAIL_BATCH_SIZE) {

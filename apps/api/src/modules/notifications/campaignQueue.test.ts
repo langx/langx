@@ -6,10 +6,11 @@ import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import type { NotificationEmailContext } from '../../email/notify'
+import { EmailRejectedError } from '../../email/sender'
 import { verifyUnsubscribeToken } from '../../email/unsubscribeToken'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
-import { claimCampaignRecipients } from './campaign'
+import { claimCampaignRecipients, type CampaignSend } from './campaign'
 import {
   enqueueCampaign,
   personalise,
@@ -258,6 +259,80 @@ describe('the campaign queue', () => {
     expect(await runCampaignQueuePass(handle.db, ctx, new Date(MORNING.getTime() + HOUR))).toEqual({
       sent: 1,
     })
+  })
+
+  /**
+   * 12–13 September 2026: one address with an invalid domain, the whole batch
+   * released, and the eighteen people before it mailed again every half hour
+   * for a day. A rejected address is that person's failure alone.
+   */
+  it('writes off an address the provider rejects, and mails nobody twice around it', async () => {
+    const [first, second, third] = [await newAccount(), await newAccount(), await newAccount()]
+    const id = await queued()
+    const bad = `${second}@example.com`
+    const rejecting: NotificationEmailContext = {
+      ...ctx,
+      sender: {
+        deliverable: true,
+        send: (message) =>
+          message.to === bad
+            ? Promise.reject(new EmailRejectedError(bad, 'Invalid `to` field'))
+            : sender.send(message),
+      },
+    }
+    expect(await runCampaignQueuePass(handle.db, rejecting, MORNING)).toEqual({
+      sent: 2,
+      failed: 1,
+    })
+    expect(sender.messages.map((m) => m.to).sort()).toEqual(
+      [`${first}@example.com`, `${third}@example.com`].sort(),
+    )
+    const rows = await handle.db
+      .collection<CampaignSend>(COLLECTIONS.emailCampaigns)
+      .find({ campaignId: id })
+      .toArray()
+    expect(rows).toHaveLength(3)
+    expect(rows.find((row) => row.userId === second)?.rejectedAt).toEqual(MORNING)
+    expect(rows.find((row) => row.userId === second)?.error).toContain('Invalid `to` field')
+
+    // The next tick finds nobody left — not the rejected address, and not
+    // the two who were sent to — and the campaign finishes.
+    const later = new Date(MORNING.getTime() + HOUR)
+    expect(await runCampaignQueuePass(handle.db, ctx, later)).toEqual({ sent: 0 })
+    expect(sender.messages).toHaveLength(2)
+    const row = await handle.db
+      .collection<QueuedCampaign>(COLLECTIONS.campaignQueue)
+      .findOne({ _id: id })
+    expect(row?.status).toBe('done')
+  })
+
+  it('on an outage, releases the unsent rest of the batch and keeps what went', async () => {
+    const [first, second, third] = [await newAccount(), await newAccount(), await newAccount()]
+    const id = await queued()
+    const down = `${second}@example.com`
+    const flaky: NotificationEmailContext = {
+      ...ctx,
+      sender: {
+        deliverable: true,
+        send: (message) =>
+          message.to === down ? Promise.reject(new Error('resend down')) : sender.send(message),
+      },
+    }
+    expect(await runCampaignQueuePass(handle.db, flaky, MORNING)).toEqual({ sent: 1, failed: 1 })
+    expect(sender.messages.map((m) => m.to)).toEqual([`${first}@example.com`])
+    // Only the first person stays claimed; the one that failed and the one
+    // after them are back in the queue for the next tick.
+    const claimed = await handle.db
+      .collection<CampaignSend>(COLLECTIONS.emailCampaigns)
+      .find({ campaignId: id })
+      .toArray()
+    expect(claimed.map((row) => row.userId)).toEqual([first])
+    expect(await runCampaignQueuePass(handle.db, ctx, new Date(MORNING.getTime() + HOUR))).toEqual({
+      sent: 2,
+    })
+    expect(sender.messages.map((m) => m.to).sort()).toEqual(
+      [first, second, third].map((userId) => `${userId}@example.com`).sort(),
+    )
   })
 
   describe('who a source reaches', () => {

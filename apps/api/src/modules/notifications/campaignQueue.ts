@@ -9,7 +9,7 @@ import {
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { unsubscribeHeaders, type NotificationEmailContext } from '../../email/notify'
-import { EMAIL_BATCH_SIZE, type EmailMessage } from '../../email/sender'
+import { EMAIL_BATCH_SIZE, EmailRejectedError, type EmailMessage } from '../../email/sender'
 import {
   signUnsubscribeToken,
   unsubscribeUrl,
@@ -23,6 +23,7 @@ import { lifetimeWinBackAudience } from './lifetimeWinBack'
 import {
   campaignRecipients,
   claimCampaignRecipients,
+  rejectCampaignRecipient,
   releaseCampaignRecipients,
   UNSUBSCRIBE_PLACEHOLDER,
   type CampaignSend,
@@ -402,7 +403,15 @@ export async function runCampaignQueuePass(
 
   let sent = 0
   let failed = 0
-  for (let index = 0; index < targets.length; index += EMAIL_BATCH_SIZE) {
+  /*
+   * Claimed a hundred at a time, sent one at a time. The batch endpoint was
+   * never used for these — every campaign body carries the logo, which the
+   * batch endpoint cannot attach — and sending singly is what lets a failure
+   * be about one person. On 12–13 September 2026 one invalid address made
+   * the whole batch throw, the whole batch was released, and the eighteen
+   * people already sent to were sent to again on every tick for a day.
+   */
+  batches: for (let index = 0; index < targets.length; index += EMAIL_BATCH_SIZE) {
     const batch = targets.slice(index, index + EMAIL_BATCH_SIZE)
     const claimed = new Set(
       await claimCampaignRecipients(
@@ -412,35 +421,45 @@ export async function runCampaignQueuePass(
         now,
       ),
     )
-    const messages: EmailMessage[] = batch
-      .filter((target) => claimed.has(target.id))
-      .map((target) => {
-        const url = unsubscribeUrl(
-          ctx.apiBaseUrl,
-          signUnsubscribeToken(ctx.unsubscribeSecret, target.id, target.scope),
-        )
-        return {
-          to: target.email,
-          subject: campaign.subject,
-          html: personalise(campaign.html, target, url),
-          text: personalise(campaign.text, target, url),
-          headers: unsubscribeHeaders(url),
-          ...(ctx.replyTo ? { replyTo: ctx.replyTo } : {}),
-        }
-      })
-    if (messages.length === 0) continue
 
-    try {
-      if (ctx.sender.sendBatch) await ctx.sender.sendBatch(messages)
-      else for (const message of messages) await ctx.sender.send(message)
-      sent += messages.length
-    } catch (error) {
-      // Release, so the next tick retries exactly these people rather than
-      // recording a send that never happened.
-      await releaseCampaignRecipients(db, campaign._id, [...claimed])
-      failed += messages.length
-      options.logger?.error({ err: error, campaign: campaign._id }, 'campaign batch failed')
-      break
+    for (const target of batch) {
+      if (!claimed.has(target.id)) continue
+      claimed.delete(target.id)
+      const url = unsubscribeUrl(
+        ctx.apiBaseUrl,
+        signUnsubscribeToken(ctx.unsubscribeSecret, target.id, target.scope),
+      )
+      const message: EmailMessage = {
+        to: target.email,
+        subject: campaign.subject,
+        html: personalise(campaign.html, target, url),
+        text: personalise(campaign.text, target, url),
+        headers: unsubscribeHeaders(url),
+        ...(ctx.replyTo ? { replyTo: ctx.replyTo } : {}),
+      }
+
+      try {
+        await ctx.sender.send(message)
+        sent++
+      } catch (error) {
+        failed++
+        if (error instanceof EmailRejectedError) {
+          // This address, not the service: keep the claim so nobody tries it
+          // again, note why, and carry on with the next person.
+          await rejectCampaignRecipient(db, campaign._id, target.id, error.message, now)
+          options.logger?.error(
+            { err: error, campaign: campaign._id, userId: target.id },
+            'campaign recipient rejected',
+          )
+          continue
+        }
+        // The service, not the address: release this person and everyone
+        // claimed after them in the batch — nobody sent to is among those —
+        // and stop. The next tick retries exactly them.
+        await releaseCampaignRecipients(db, campaign._id, [target.id, ...claimed])
+        options.logger?.error({ err: error, campaign: campaign._id }, 'campaign send failed')
+        break batches
+      }
     }
   }
 

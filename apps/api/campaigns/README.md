@@ -30,17 +30,12 @@ the production env; the dry run prints the audience and queues nothing.
 ```bash
 ENV="--env-file=../../.env --env-file=../../.env.prod"
 
-# Day 0 — "v2 is live". Everybody from v1, and the deleted accounts too.
+# Day 0 — "v2 is live". Everybody from v1.
 pnpm exec tsx $ENV scripts/send-campaign.ts \
   --campaign 2026-09-v1-launch \
   --subject "LangX v2 is live — your username, tokens and streak are waiting" \
   --html-file campaigns/v1-launch.html --text-file campaigns/v1-launch.txt \
   --source v1 --confirm
-pnpm exec tsx $ENV scripts/send-campaign.ts \
-  --campaign 2026-09-v1-launch-deleted \
-  --subject "LangX v2 is live — your username, tokens and streak are waiting" \
-  --html-file campaigns/v1-launch.html --text-file campaigns/v1-launch.txt \
-  --source v1deleted --confirm
 
 # Day +10 — "still reserved". Only those who have not come back.
 pnpm exec tsx $ENV scripts/send-campaign.ts \
@@ -84,15 +79,36 @@ The subject cannot name the tier, because a subject is not personalised;
 `{{plan}}` and `{{v1Tokens}}` in the body do that. Ten of them hold Polyglot
 and the rest Fluent, so a subject naming either would be wrong for somebody.
 
-The deleted-account list (`--source v1deleted`) has no accounts behind it, so
-`--exclude-returned` means nothing there and its unsubscribe forgets the
-address outright. Whether it gets the follow-ups is a judgement call — these
-are people who once left — and the day-0 mail is the one they were kept for.
+Worth a `--preview-to` first, below: it is the only body in here whose two
+extra tokens no other campaign exercises.
 
-Before the first real send: `--limit` is gone, so send one to yourself by
-queuing against a database where only your own profile has promotions on,
-or read the rendering by leaving `RESEND_API_KEY` unset and letting the
-console sender print it.
+## The one mail to v1's deleted accounts
+
+A different letter for a different audience: the addresses in
+`v1DeletedContacts` have no account behind them, so nothing carried over,
+the sign-in link would reach nobody, and the honest offer is a fresh start.
+`v1-deleted-comeback.*` says so and points at sign-up. The list gets this
+mail and **no follow-ups** — these are people who once left — and its
+unsubscribe forgets the address outright. Once the campaign is `done` the
+collection is dropped (`docs/decisions.md` → _Every v1 account has a v2
+`user` row_).
+
+```bash
+pnpm exec tsx $ENV scripts/send-campaign.ts \
+  --campaign 2026-09-v1-deleted \
+  --subject "You deleted LangX once — we rebuilt it from scratch" \
+  --html-file campaigns/v1-deleted-comeback.html --text-file campaigns/v1-deleted-comeback.txt \
+  --source v1deleted --confirm
+```
+
+## Reading it in a real inbox first
+
+`--preview-to you@example.com [--preview-name Sofia]` with the same
+arguments sends the finished mail to that one address — rendered as the drip
+would render it, inline images and unsubscribe headers included — and
+queues nothing. The unsubscribe link in a preview is signed with your
+machine's secret and points at nobody, so pressing it changes nothing.
+Without `RESEND_API_KEY` the console sender prints the mail instead.
 
 `docs/release-runbook.md` → _Sending a campaign_ has the rules; the warm-up
 ramp and the send window are in `packages/shared/src/campaigns.ts`.
