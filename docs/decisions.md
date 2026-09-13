@@ -2942,12 +2942,25 @@ kept for **one** announcement, so the script writes them to
 `v1DeletedContacts`, the only place a v1 email is stored in the clear. That
 mail is to people who ended their relationship with the product, so it is
 one mail, with an unsubscribe, and the collection is dropped afterwards —
-keeping it would turn a courtesy into a list. That send is
-`scripts/send-v1-deleted-announcement.ts`: it claims each row before the
-batch goes out, so a re-run cannot mail anybody twice; its unsubscribe link
-carries the `v1contact` scope, which has no preference to switch off and
-simply forgets the address; and `--drop` removes the collection only once
-nobody is left unsent.
+keeping it would turn a courtesy into a list. Its unsubscribe link carries
+the `v1contact` scope, which has no preference to switch off and simply
+forgets the address.
+
+**Amended 13 September 2026: the send goes through the campaign queue**
+(`send-campaign.ts --source v1deleted`, body `campaigns/v1-deleted-comeback.*`),
+not `scripts/send-v1-deleted-announcement.ts`. The queue is what the launch
+mail to 3,900 people went out on — the warm-up ramp, the send window, the
+per-tick lock and the `emailCampaigns` claim — and a second sender with its
+own claim column (`sentAt` on the contact row) is a second place for the
+same mistake. The older script stays for its `--drop`, but that keys on the
+`sentAt` it would have written, so after a queued campaign the drop is a
+hand step once `--status` says `done` and every row is either claimed in
+`emailCampaigns` or gone by its own unsubscribe.
+
+The letter itself is not the launch mail. These people have no `user` row,
+so nothing carried over and the magic link (`disableSignUp: true`) would
+reach nobody; it says the account is gone as they asked, offers a fresh
+start, and points at sign-up.
 
 Appwrite is still running and is the only place the plaintext v1 emails live;
 the script needs it.

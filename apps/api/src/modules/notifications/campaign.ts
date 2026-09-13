@@ -33,6 +33,13 @@ export interface CampaignSend {
   campaignId: string
   userId: string
   sentAt: Date
+  /**
+   * The provider refused the message and the claim was kept, so the person
+   * is never tried again — see `EmailRejectedError`. `sentAt` is then the
+   * claim time, not a delivery.
+   */
+  rejectedAt?: Date
+  error?: string
 }
 
 export interface CampaignRecipient {
@@ -177,6 +184,23 @@ export async function claimCampaignRecipients(
 }
 
 /** Undoes a claim whose send then failed, so a re-run retries exactly those. */
+/**
+ * Keeps a claim whose send the provider rejected, and says why. The row is
+ * what stops the next tick from trying the address again; the fields are
+ * for whoever asks later why a person never got the mail.
+ */
+export async function rejectCampaignRecipient(
+  db: Db,
+  campaignId: string,
+  userId: string,
+  error: string,
+  at: Date = new Date(),
+): Promise<void> {
+  await db
+    .collection<CampaignSend>(COLLECTIONS.emailCampaigns)
+    .updateOne({ campaignId, userId }, { $set: { rejectedAt: at, error } })
+}
+
 export async function releaseCampaignRecipients(
   db: Db,
   campaignId: string,

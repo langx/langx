@@ -283,7 +283,7 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `notificationLedger` `_id` = `<job>:<userId>:<periodKey>` | every scheduled pass; insert failing **is** the check                         |
 | `dailyDigest:<userId>:<localDay>`                         | the one mail a day — and what the nudges and the recap check before they send |
-| `emailCampaigns` unique `{campaignId, userId}`            | campaigns, claimed before each batch                                          |
+| `emailCampaigns` unique `{campaignId, userId}`            | campaigns, claimed before each batch; a claim the provider rejects is kept    |
 | `knownDevices` `_id` = `<userId>:<fingerprint>`           | the new-device notice                                                         |
 | `jobRuns` unique `{job, periodKey}`                       | the daily pool, and the campaign drip's per-tick lock                         |
 
