@@ -69,7 +69,13 @@ describe('the campaign queue', () => {
 
   /** A verified account; `profile: false` leaves it as a bare v1-style row. */
   async function newAccount(
-    opts: { profile?: boolean; fromV1?: boolean; name?: string; optedIn?: boolean } = {},
+    opts: {
+      profile?: boolean
+      fromV1?: boolean
+      name?: string
+      optedIn?: boolean
+      locale?: string
+    } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
     if (opts.profile !== false) {
@@ -81,7 +87,7 @@ describe('the campaign queue', () => {
           discoverable: true,
           notifications: opts.optedIn === false ? {} : { promotions: { push: false, email: true } },
         },
-        nativeLanguages: [{ code: 'tr' }],
+        nativeLanguages: [{ code: opts.locale ?? 'tr' }],
       } as never)
     }
     await handle.db.collection(COLLECTIONS.user).insertOne({
@@ -480,5 +486,101 @@ describe('the campaign queue', () => {
      * that survives to the dry run is one somebody can see.
      */
     expect(personalise('{{plan}} {{unsubscribeUrl}}', { email: 'a@b.c' }, 'U')).toBe('{{plan}} U')
+  })
+
+  describe('more than one campaign at a time', () => {
+    /**
+     * The regression this was written for. A campaign whose remaining
+     * audience is entirely inside the marketing gap stays `sending` — those
+     * people are deferred, not finished — and it is the oldest, so under the
+     * single-pick version it took every tick, sent nobody, and the campaigns
+     * behind it did not move until the gap expired.
+     */
+    it('hands the tick on when the campaign in front has nobody to send to today', async () => {
+      const deferred = await newAccount({ locale: 'tr' })
+      await newAccount({ locale: 'en' })
+      // Marketed yesterday, so every campaign defers them for a week.
+      await handle.db.collection<CampaignSend>(COLLECTIONS.emailCampaigns).insertOne({
+        campaignId: 'yesterday',
+        userId: deferred,
+        sentAt: new Date(MORNING.getTime() - DAY),
+      })
+
+      await enqueueCampaign(
+        handle.db,
+        {
+          _id: 'stalled',
+          subject: 'hello',
+          html: HTML,
+          text: TEXT,
+          source: 'consented',
+          excludeReturned: false,
+          locale: 'tr',
+          ignoreCap: false,
+          total: 0,
+        },
+        new Date(MORNING.getTime() - 2 * DAY),
+      )
+      await enqueueCampaign(
+        handle.db,
+        {
+          _id: 'moving',
+          subject: 'hello',
+          html: HTML,
+          text: TEXT,
+          source: 'consented',
+          excludeReturned: false,
+          locale: 'en',
+          ignoreCap: false,
+          total: 0,
+        },
+        new Date(MORNING.getTime() - DAY),
+      )
+
+      expect(await runCampaignQueuePass(handle.db, ctx, MORNING)).toEqual({ sent: 1 })
+      expect(sender.messages).toHaveLength(1)
+
+      // And the one in front is still waiting for its people, not finished.
+      const stalled = await handle.db
+        .collection<QueuedCampaign>(COLLECTIONS.campaignQueue)
+        .findOne({ _id: 'stalled' })
+      expect(stalled?.status).toBe('sending')
+      expect(stalled?.sent).toBe(0)
+    })
+
+    /** Each keeps its own ramp and its own tick lock, so both move in one tick. */
+    it('sends for every live campaign in the same tick', async () => {
+      await newAccount()
+      await queued({ _id: 'first', ignoreCap: true })
+      await queued({ _id: 'second', ignoreCap: true })
+
+      expect(await runCampaignQueuePass(handle.db, ctx, MORNING)).toEqual({ sent: 2 })
+      expect(sender.messages).toHaveLength(2)
+    })
+
+    /**
+     * A provider having a bad minute will have one for the next campaign too,
+     * so the pass stops rather than burning the second campaign's tick on the
+     * same outage. Whoever was claimed is released either way.
+     */
+    it('stops the whole pass when the mail service itself fails', async () => {
+      await newAccount()
+      await queued({ _id: 'first', ignoreCap: true })
+      await queued({ _id: 'second', ignoreCap: true })
+      const failing: NotificationEmailContext = {
+        ...ctx,
+        sender: { deliverable: true, send: () => Promise.reject(new Error('resend down')) },
+      }
+
+      expect(await runCampaignQueuePass(handle.db, failing, MORNING)).toEqual({
+        sent: 0,
+        failed: 1,
+      })
+      const second = await handle.db
+        .collection<QueuedCampaign>(COLLECTIONS.campaignQueue)
+        .findOne({ _id: 'second' })
+      expect(second?.sent).toBe(0)
+      expect(second?.failed).toBe(0)
+    })
   })
 })
