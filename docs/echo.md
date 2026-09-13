@@ -75,6 +75,8 @@ you:
 | `lang`    | The language the front is in: the partner's first native language with a written form — the same `translateTargetFor` rule the Translate and phrase actions already use, pointed at the partner.     |
 | `example` | Empty. A chat card's front _is_ the example; the sentence was said to you.                                                                                                                           |
 | `source`  | `{ kind: 'chat', conversationId, messageId, partnerId }`. Kept so the session can say "Marie, 3 days ago" and deep-link back to the thread with `?at=`.                                              |
+| `audio`   | The voice note that answers a `pronunciation` ask on this message, if there is one (Phase 2); otherwise the server voice. See "Audio".                                                               |
+| `image`   | The photo the message carried, if it carried one. See "Images".                                                                                                                                      |
 
 Two places to tap, both cheap, both in the first pass:
 
@@ -125,8 +127,9 @@ card is written).
 
 ## Audio
 
-Every card can be heard. Three sources, cheapest first, and one field —
-`audio?: { key, slowKey?, origin: 'post' | 'chat' | 'pack' }` on the card:
+Every card can be heard. One field — `audio?: { key, slowKey?, origin: 'post'
+| 'chat' | 'tts' | 'pack' }` — and three sources, in the order the session
+prefers them:
 
 1. **A real person who already recorded it.** A pronunciation post's answer
    (`pronunciationAnswerSchema.media`, `slowMedia`), or in a chat the voice
@@ -135,18 +138,52 @@ Every card can be heard. Three sources, cheapest first, and one field —
    the differentiator: Memrise plays a stranger's sample, Echo plays the
    person you were talking to. Posts in Phase 1; chat voice notes in Phase 2,
    because resolving "the voice note that quotes this message" is fiddlier.
-2. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
-   (CC BY-SA 4.0, attribution in the content directory) for single words;
-   phrases fall back to text-to-speech until Common Voice (CC0) or our own
-   recordings cover them. Phase 2.
-3. **Text-to-speech on the device** (`expo-speech`, the Web Speech API on
-   web): a speaker button on every card front, in every language the platform
-   has a voice for, no content cost. When no voice exists the button is not
-   drawn. **This one needs a store build** — see "Over the air, or a build".
+2. **Text-to-speech, on the server.** Google Cloud Text-to-Speech through the
+   same service account the translation module already uses, behind an
+   optional `tts/` provider shaped like `translation/` (`TtsProvider`,
+   `createTtsProvider`, `googleTtsProvider`; two `GOOGLE_TTS_*` lines in
+   `.env.example`). The mp3 is written to storage at
+   `echo/tts/<lang>/<sha1(text)>.mp3` and looked up by that key first, so a
+   sentence is synthesised once however many people echo it. Chat and post
+   cards are synthesised at capture, inside the same `echoCapturesPerDay`
+   ceiling; pack items are synthesised by the seed script. One chosen voice
+   per language, the same on every platform. **No key, no button**: like mail
+   and storage, the service degrades and the card still works. Phase 1.
+3. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
+   (CC BY-SA 4.0, attribution in the content directory) replace the synthetic
+   voice for single words when a pack item has one; phrases keep TTS until
+   Common Voice (CC0) or our own recordings cover them. Phase 2.
+
+Not on the device. `expo-speech` would do the same job for free, but it is a
+native module, so it waits for a store build and speaks with whatever voice
+the phone happens to have. The server voice ships over the air and sounds the
+same on iOS, Android and the web.
 
 Playback goes through `expo-audio`, which the app already uses for voice
-notes. A listening card type — hear it, then reveal — rides on the same field
-in Phase 3.
+notes. The session says who is speaking — "Léa" or "synthetic voice" — so a
+human recording is never mistaken for a machine and the reverse. A listening
+card type — hear it, then reveal — rides on the same field in Phase 3.
+
+## Images
+
+One field, `image?: { key, origin: 'chat' | 'pack' }`, filled only from what
+already exists:
+
+- **The photo that came with the sentence.** A chat message that carried a
+  photo and a caption gives the card the photo; capture copies the storage
+  key. Marie's picture of the market above "On y va demain ?" is a better cue
+  than any illustration, and it costs nothing. Phase 1.
+- **An icon for concrete pack words.** In the 300-item packs, nouns you can
+  point at — bread, train, dog — carry an OpenMoji glyph (CC BY-SA 4.0) as
+  `image: 'openmoji:<hex>'` in the content JSON, rendered as SVG in the app's
+  own colours. Abstract words stay plain; a forced picture for "maybe" teaches
+  nothing. Mapped by hand in the content pipeline, attributed in
+  `content/echo/ATTRIBUTION.md`. Phase 2.
+
+Not generated, not uploaded. A generated image per card costs money and
+moderation on every capture and drifts in style; letting a person attach their
+own picture adds a form to a gesture whose whole point is one tap. Both stay
+out until somebody asks for them twice.
 
 ## What the existing codebase already decides
 
@@ -176,12 +213,12 @@ violated by accident:
 
 Four collections, registered in `collections.ts`:
 
-| Collection      | Holds                                                                                                                                                        |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
-| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                               |
-| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                      |
-| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                              |
+| Collection      | Holds                                                                                                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                       |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                              |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                      |
 
 `source` is a tagged union:
 
@@ -351,18 +388,15 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 
 ## Phases
 
-| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                 | Done when                                                                                                                                     |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer attached as the card's audio | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; chat voice notes as card audio; the tour step                                                                                                                              | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                           | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Done when                                                                                                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer attached as the card's audio; the server voice (`tts/` provider, cached in storage); a message's photo attached as the card's image | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; chat voice notes as card audio; OpenMoji icons for concrete pack words; the tour step                                                                                                                                                                                             | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                  | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
 starting until one pack exists end to end.
-
-Text-to-speech belongs to no phase: it is one native module and ships with
-whichever store build comes next. Echo does not wait for it.
 
 ## Over the air, or a build
 
@@ -371,13 +405,13 @@ go out by EAS Update; a new native module, a new permission or an SDK bump
 needs a build, and `runtimeVersion` is a fingerprint, so a bundle that changed
 the native side reaches nobody until the matching build ships.
 
-| Piece                                                                  | Ships by  | Why                                              |
-| ---------------------------------------------------------------------- | --------- | ------------------------------------------------ |
-| The tab, capture, session, cards, feed capture, API, `packages/shared` | Update    | JavaScript and the server                        |
-| Human audio playback — post answers, chat voice notes                  | Update    | `expo-audio` is already in the binary            |
-| Packs, tokens, streak rule, the `echo` push                            | Update    | Data, rules and the existing push path           |
-| Text-to-speech (`expo-speech`)                                         | **Build** | A new native module; on web it works without one |
-| Offline review (`expo-sqlite`, Phase 3)                                | **Build** | A new native module                              |
+| Piece                                                                  | Ships by  | Why                                                             |
+| ---------------------------------------------------------------------- | --------- | --------------------------------------------------------------- |
+| The tab, capture, session, cards, feed capture, API, `packages/shared` | Update    | JavaScript and the server                                       |
+| Audio playback — post answers, chat voice notes, the server voice      | Update    | `expo-audio` is already in the binary; synthesis is server-side |
+| Card images — message photos, OpenMoji SVGs                            | Update    | Storage keys and inline SVG                                     |
+| Packs, tokens, streak rule, the `echo` push                            | Update    | Data, rules and the existing push path                          |
+| Offline review (`expo-sqlite`, Phase 3)                                | **Build** | A new native module — the only one Echo ever needs              |
 
 ## Decisions taken
 
