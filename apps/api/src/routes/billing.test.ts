@@ -9,6 +9,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import type { Profile } from '../modules/profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from '../modules/billing/revenueCatClient'
+import { runPlanEndedPass, PLAN_ENDED_DELAY_MS } from '../modules/billing/planEnded'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -197,7 +198,7 @@ describe('Faz 7 — billing', () => {
       expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
     })
 
-    it('writes when the plan actually ends, naming the plan that ended', async () => {
+    it('says nothing when the plan ends, and writes half an hour later', async () => {
       const user = await newUser('billing-expired@example.com')
       await app.inject({
         method: 'POST',
@@ -229,9 +230,26 @@ describe('Faz 7 — billing', () => {
         },
       })
 
+      /*
+       * Nothing yet. The expiry is applied — access is not given away on a
+       * guess — but a store retrying a card sends the RENEWAL that undoes it
+       * minutes later, so the letter waits for a second look.
+       */
+      expect(emailSender.messages).toHaveLength(0)
+
+      // Half an hour on, still free, and now it is true.
+      const later = new Date(Date.now() + PLAN_ENDED_DELAY_MS + 60_000)
+      expect(
+        await runPlanEndedPass(
+          handle.db,
+          { email: emailSender, push: app.push, logger: app.log },
+          later,
+        ),
+      ).toEqual({ sent: 1 })
+
       const mail = emailSender.messages.at(-1)
       expect(mail?.subject).toContain('sona erdi')
-      // Read before the write, so it names what was lost rather than "free".
+      // From `churnedFrom`, so it names what was lost rather than "free".
       expect(mail?.html).toContain('pro')
     })
 

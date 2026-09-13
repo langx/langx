@@ -26,6 +26,8 @@ export type NotificationJob =
   /** Tokens arriving: the pool once a day, the gift once a day. */
   | 'wallet.pool'
   | 'wallet.gift'
+  /** Once per fall, keyed by `churnedFrom.at` rather than by a day. */
+  | 'billing.planEnded'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 
