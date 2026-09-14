@@ -182,8 +182,15 @@ export const captureEchoSchema = z.object({
        * paying for a second translation of a sentence already translated.
        */
       translation: z.string().trim().min(1).max(ECHO_BACK_MAX_LENGTH).optional(),
-      /** What language that translation is in, if one was sent. */
-      translationLang: languageCodeSchema.optional(),
+      /**
+       * What language that translation is in, if one was sent.
+       *
+       * A loose string rather than a checked language code: the server only
+       * ever compares it with the reader's own target, and a value it does
+       * not recognise simply means the offer is ignored and the translation
+       * is fetched. Nothing is routed on it, so there is nothing to protect.
+       */
+      translationLang: z.string().trim().min(1).max(16).optional(),
     }),
     z.object({ kind: z.literal('post'), postId: z.string().trim().min(1) }),
   ]),

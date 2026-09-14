@@ -9,6 +9,7 @@ import {
   type Media,
   MESSAGE_REACTIONS,
   PHRASE_EXAMPLE_MAX_LENGTH,
+  PLAN_LIMITS,
   hasFeature,
   webUrl,
   messageTranslationSchema,
@@ -31,6 +32,8 @@ import {
   markConversationRead,
   uploadMessageMedia,
   useBlockUser,
+  useCaptureEcho,
+  useRemoveEcho,
   useConversation,
   useEffectiveTier,
   useConversationFlags,
@@ -216,6 +219,8 @@ export default function ChatScreen() {
   const [jumpAnchor, setJumpAnchor] = useState<string | null>(at ?? null)
   const [highlighted, setHighlighted] = useState<string | null>(null)
   const translateApi = useTranslate()
+  const captureEcho = useCaptureEcho()
+  const removeEchoApi = useRemoveEcho()
   const keyboardInset = useKeyboardInset()
   const block = useBlockUser()
   // For the header menu's pin — the message window does not carry the flags.
@@ -1181,6 +1186,9 @@ export default function ChatScreen() {
       corrected: message.corrected === true,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
+      // Strict, like `corrected` above: an unknown shape reads as "not kept"
+      // rather than offering to remove a card that does not exist.
+      echoed: message.echoed === true,
       t,
     })
 
@@ -1261,8 +1269,59 @@ export default function ChatScreen() {
           example: message.body.slice(0, PHRASE_EXAMPLE_MAX_LENGTH),
         },
       })
+    } else if (picked.id === 'echo') {
+      await (message.echoed ? removeEcho(message) : addEcho(message))
     } else if (picked.id === 'report') {
       reportMessage(message)
+    }
+  }
+
+  /**
+   * Keeps a sentence.
+   *
+   * The private translation this screen is holding travels with the request.
+   * It lives only in `translations` — a reader's own view of somebody else's
+   * sentence, never stored — so the server cannot find it, and sending it is
+   * what stops a second translation being paid for.
+   */
+  async function addEcho(message: MessageDto): Promise<void> {
+    try {
+      const result = await captureEcho.mutateAsync({
+        source: {
+          kind: 'chat',
+          conversationId,
+          messageId: message._id,
+          ...(translations[message._id] && translateTarget
+            ? { translation: translations[message._id], translationLang: translateTarget }
+            : {}),
+        },
+      })
+      showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
+    } catch (error) {
+      /*
+       * No paywall, deliberately — and this is the one place the difference
+       * from `translate` above matters. `echoCapturesPerDay` is the same 50
+       * on every plan, so the upgrade screen would be offering something that
+       * does not exist. A ceiling gets an explanation; only a gate gets a
+       * price.
+       */
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.limitBody', { count: PLAN_LIMITS.free.echoCapturesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.addFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
+  async function removeEcho(message: MessageDto): Promise<void> {
+    try {
+      await removeEchoApi.mutateAsync({ idOrSourceKey: `msg:${message._id}`, conversationId })
+      showToast(t('echo.removed'))
+    } catch {
+      await showAlert(t('echo.removeFailedTitle'), t('common.retry'))
     }
   }
 
