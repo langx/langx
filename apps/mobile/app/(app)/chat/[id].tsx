@@ -1453,6 +1453,15 @@ export default function ChatScreen() {
     [],
   )
 
+  /** The bubble's Echo chip, stabilised for the same reason. */
+  const addEchoRef = useRef(addEcho)
+  useEffect(() => {
+    addEchoRef.current = addEcho
+  })
+  const onEcho = useCallback((message: MessageDto) => {
+    void addEchoRef.current(message)
+  }, [])
+
   function reportMessage(message: MessageDto): void {
     if (!partnerId) return
     router.push({
@@ -1822,7 +1831,8 @@ export default function ChatScreen() {
                   </View>
                 ) : (
                   // A stand-in has no server id yet, so a menu or a reply on it
-                  // would have nothing to act on until the echo lands.
+                  // would have nothing to act on until the server's copy
+                  // arrives.
                   <MessageBubble
                     message={row.message}
                     mine={isMine(row.message)}
@@ -1841,6 +1851,7 @@ export default function ChatScreen() {
                     meetingTheirWhen={meetingTheirWhenFor(row.message)}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                    onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
                     onJumpTo={onJumpTo}
                     onOpenMedia={onOpenMedia}

@@ -15,19 +15,36 @@ import type { EchoCardDoc } from './documents'
  * this, and `cards.ts` calls `chat/access.ts`. Keeping the two apart is what
  * stops the pair becoming a cycle.
  */
+async function readEchoedIds(
+  db: Db,
+  userId: string,
+  prefix: 'msg:' | 'post:',
+  ids: readonly ObjectId[],
+): Promise<Set<string>> {
+  if (ids.length === 0) return new Set()
+
+  const rows = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .find({ userId, sourceKey: { $in: ids.map((id) => `${prefix}${id.toHexString()}`) } })
+    .project<{ sourceKey: string }>({ sourceKey: 1 })
+    .toArray()
+
+  return new Set(rows.map((row) => row.sourceKey.slice(prefix.length)))
+}
+
 export async function readEchoedMessageIds(
   db: Db,
   userId: string,
   messageIds: readonly ObjectId[],
 ): Promise<Set<string>> {
-  if (messageIds.length === 0) return new Set()
+  return await readEchoedIds(db, userId, 'msg:', messageIds)
+}
 
-  const prefix = 'msg:'
-  const rows = await db
-    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .find({ userId, sourceKey: { $in: messageIds.map((id) => `${prefix}${id.toHexString()}`) } })
-    .project<{ sourceKey: string }>({ sourceKey: 1 })
-    .toArray()
-
-  return new Set(rows.map((row) => row.sourceKey.slice(prefix.length)))
+/** The same, for a page of the feed. */
+export async function readEchoedPostIds(
+  db: Db,
+  userId: string,
+  postIds: readonly ObjectId[],
+): Promise<Set<string>> {
+  return await readEchoedIds(db, userId, 'post:', postIds)
 }

@@ -14,6 +14,7 @@ import {
 } from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { readEchoedPostIds } from '../echo/echoed'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
@@ -101,10 +102,14 @@ async function hydratePosts(
   want: { corrections: boolean; answers: boolean },
 ): Promise<FeedPost[]> {
   const ids = items.map((post) => post._id)
-  const [corrections, answers, commentCounts] = await Promise.all([
+  const [corrections, answers, commentCounts, echoed] = await Promise.all([
     want.corrections ? readCorrectionSummary(db, userId, ids) : EMPTY_CORRECTION_SUMMARY,
     want.answers ? readAnswerSummary(db, userId, ids) : EMPTY_ANSWER_SUMMARY,
     readCommentSummary(db, ids),
+    // One more query for the whole page, on the same argument the like
+    // summary makes: the mark is per viewer, and `card_source_unique` reads
+    // at most one row per post by definition.
+    readEchoedPostIds(db, userId, ids),
   ])
   const tops = [...corrections.topByPost.values()]
   const topAnswers = [...answers.topByPost.values()]
@@ -133,6 +138,7 @@ async function hydratePosts(
       topAnswer: answers.topByPost.get(key) ?? null,
       correctedByViewer: corrections.viewerCorrected.has(key),
       answeredByViewer: answers.viewerAnswered.has(key),
+      echoedByViewer: echoed.has(key),
       commentCount: commentCounts.get(key) ?? 0,
     })
   })
@@ -394,6 +400,7 @@ export async function createPost(
     topAnswer: null,
     correctedByViewer: false,
     answeredByViewer: false,
+    echoedByViewer: false,
     commentCount: 0,
   })
 }
@@ -535,13 +542,14 @@ export async function listPostCorrections(
 
   // The correction summary only needs the post's id, which we already have, so
   // it rides along here rather than costing a second round trip below.
-  const [post, hidden, { topByPost, viewerCorrected }, commentCounts] = await Promise.all([
+  const [post, hidden, { topByPost, viewerCorrected }, commentCounts, echoed] = await Promise.all([
     db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
     readCorrectionSummary(db, userId, [_id]),
     // Carried here so the detail screen's header agrees with the card that
     // opened it. A count that differs between the two reads as a bug.
     readCommentSummary(db, [_id]),
+    readEchoedPostIds(db, userId, [_id]),
   ])
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   // 404 rather than 403, for the reason the profile route gives: a blocked
@@ -592,6 +600,7 @@ export async function listPostCorrections(
       topAnswer: null,
       correctedByViewer: viewerCorrected.has(postId),
       answeredByViewer: false,
+      echoedByViewer: echoed.has(postId),
       commentCount: commentCounts.get(postId) ?? 0,
     }),
     items: items.map((doc) => correctionDto(doc, authors, likes)),

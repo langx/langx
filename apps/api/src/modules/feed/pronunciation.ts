@@ -8,6 +8,7 @@ import {
 } from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { readEchoedPostIds } from '../echo/echoed'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { blockedUserIds } from '../moderation/blocks'
@@ -205,11 +206,12 @@ export async function listPronunciationAnswers(
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
 
-  const [post, hidden, { topByPost, viewerAnswered }, commentCounts] = await Promise.all([
+  const [post, hidden, { topByPost, viewerAnswered }, commentCounts, echoed] = await Promise.all([
     db.collection<Post>(COLLECTIONS.posts).findOne({ _id, ...notHidden() }),
     blockedUserIds(db, userId),
     readAnswerSummary(db, userId, [_id]),
     readCommentSummary(db, [_id]),
+    readEchoedPostIds(db, userId, [_id]),
   ])
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   if (hidden.includes(post.authorId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
@@ -256,6 +258,7 @@ export async function listPronunciationAnswers(
       topAnswer: top,
       correctedByViewer: false,
       answeredByViewer: viewerAnswered.has(postId),
+      echoedByViewer: echoed.has(postId),
       commentCount: commentCounts.get(postId) ?? 0,
     }),
     items: items.map((doc) => answerDto(doc, authors, likes)),

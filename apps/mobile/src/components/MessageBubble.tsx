@@ -72,6 +72,8 @@ export interface MessageBubbleProps {
    */
   askAnswered?: boolean
   onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
+  /** Keeps the sentence. `message.echoed` says whether there is one already. */
+  onEcho: (message: MessageDto) => void
   onReply: (message: MessageDto) => void
   /** Answers the request on somebody else's message — correct it, or say it. */
   onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
@@ -119,6 +121,7 @@ export const MessageBubble = memo(function MessageBubble({
   pending = false,
   askAnswered = false,
   onLongPress,
+  onEcho,
   onReply,
   onAnswerAsk,
   onRespondMeeting,
@@ -688,6 +691,34 @@ export const MessageBubble = memo(function MessageBubble({
           <Text style={styles.translation}>{translation}</Text>
         </View>
       ) : null}
+      {/*
+        The moment somebody translates a message is the moment they met a word
+        they did not know, so this is where the offer costs nothing to find.
+        Only on the private translation, never on `message.translation`: that
+        one the sender published for both of them, and it sits on outgoing
+        bubbles too.
+      */}
+      {translation ? (
+        <View style={styles.echoRow}>
+          <Feather
+            name="repeat"
+            size={12}
+            color={message.echoed ? colors.textFaint : colors.accent}
+          />
+          {message.echoed ? (
+            <Text style={styles.echoMark}>{t('echo.bubbleAdded')}</Text>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('messageActions.echo')}
+              hitSlop={8}
+              onPress={() => onEcho(message)}
+            >
+              <Text style={styles.echoAction}>{t('echo.bubbleAdd')}</Text>
+            </Pressable>
+          )}
+        </View>
+      ) : null}
       {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
       {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
@@ -876,6 +907,17 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   askRow: { alignItems: 'center', flexDirection: 'row', gap: 5, marginTop: 4 },
   askLabel: { color: colors.textFaint, fontSize: 12 },
   askAction: { color: colors.accent, fontSize: 12, fontWeight: '700' },
+  echoRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 5,
+    marginTop: 4,
+    paddingHorizontal: 6,
+  },
+  // The `askAction` pair one line up: this is the same thing on the same kind
+  // of sub-line, and the two must not drift.
+  echoAction: { color: colors.accent, fontSize: 12, fontWeight: '700' },
+  echoMark: { color: colors.textFaint, fontSize: 12 },
   translationIcon: { marginTop: 3 },
   translation: { ...font.body, color: colors.accent, flexShrink: 1, fontSize: 14, lineHeight: 20 },
   translateLink: { ...font.caption, color: colors.accent },

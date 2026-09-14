@@ -6,12 +6,15 @@ import {
   FEED_TOP_CORRECTIONS,
   MAX_COMMENT_LENGTH,
   MAX_POST_LENGTH,
+  PLAN_LIMITS,
   TOKEN_RULES,
+  type FeedPost,
 } from '@langx/shared'
 import {
   uploadPostMedia,
   useAddComment,
   useAnswerPronunciation,
+  useCaptureEcho,
   useCorrectPost,
   useDeleteAnswer,
   useDeleteComment,
@@ -21,6 +24,7 @@ import {
   usePostAnswers,
   usePostComments,
   usePostCorrections,
+  useRemoveEcho,
 } from '../../../src/api/queries'
 import type { Media, PostCorrection, PronunciationAnswer } from '../../../src/api/types'
 import { AudioBubble, MediaGallery } from '../../../src/components/MediaBubble'
@@ -40,7 +44,8 @@ import { foldCorrection } from '../../../src/lib/feedCache'
 import { listState } from '../../../src/lib/listState'
 import { goBackTo, openLikers, openProfile } from '../../../src/lib/navigation'
 import { relativeTime } from '../../../src/lib/format'
-import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
+import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
+import { errorCodeOf } from '../../../src/lib/errors'
 import { showToast } from '../../../src/lib/toast'
 import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
@@ -116,6 +121,8 @@ export default function PostScreen() {
   const review = useReviewPrompt()
   const answerPost = useAnswerPronunciation()
   const addComment = useAddComment()
+  const captureEcho = useCaptureEcho()
+  const removeEcho = useRemoveEcho()
   const deletePost = useDeletePost()
   const deleteCorrection = useDeleteCorrection()
   const deleteAnswer = useDeleteAnswer()
@@ -319,6 +326,28 @@ export default function PostScreen() {
     )
   }
 
+  async function toggleEcho(post: FeedPost): Promise<void> {
+    try {
+      if (post.echoedByViewer) {
+        await removeEcho.mutateAsync({ idOrSourceKey: `post:${post._id}` })
+        showToast(t('echo.removed'))
+        return
+      }
+      const result = await captureEcho.mutateAsync({ source: { kind: 'post', postId: post._id } })
+      showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
+    } catch (error) {
+      // A ceiling, not a paywall: the same number on every plan.
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.limitBody', { count: PLAN_LIMITS.free.echoCapturesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.addFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
   async function confirmDeletePost(): Promise<void> {
     if (!post) return
     const yes = await confirmAlert({
@@ -461,6 +490,27 @@ export default function PostScreen() {
                   {t(pronouncing ? 'feed.answers' : 'feed.corrections', { count: replyCount })}
                 </Text>
               </View>
+              {/*
+                Visible here, and behind a long press in the feed. This screen
+                is where a learner lands after reading the correction, and the
+                row has space; a card in a list, mostly somebody's sentence,
+                does not.
+              */}
+              <Pressable
+                accessibilityRole="button"
+                hitSlop={8}
+                onPress={() => void toggleEcho(post)}
+                style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
+              >
+                <Feather
+                  name="repeat"
+                  size={14}
+                  color={post.echoedByViewer ? colors.textFaint : colors.accent}
+                />
+                <Text style={post.echoedByViewer ? styles.actionMuted : styles.accentAction}>
+                  {t(post.echoedByViewer ? 'echo.removeFromEcho' : 'echo.addToEcho')}
+                </Text>
+              </Pressable>
               <Text style={styles.sectionTitle}>
                 {t(pronouncing ? 'feed.pronunciationSection' : 'feed.correctionSection')}
               </Text>
@@ -805,6 +855,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   actionMuted: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   actionEnd: { marginStart: 'auto' },
+  echoRow: { alignItems: 'center', flexDirection: 'row', gap: 6, paddingVertical: 10 },
   sectionTitle: {
     ...font.heading,
     color: colors.text,

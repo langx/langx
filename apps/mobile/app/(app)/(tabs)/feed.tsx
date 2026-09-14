@@ -1,5 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
-import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
+import {
+  FEED_TOP_CORRECTIONS,
+  MAX_POST_LENGTH,
+  PLAN_LIMITS,
+  POST_KINDS,
+  type PostKind,
+} from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
@@ -14,7 +20,14 @@ import {
   type ActiveUpload,
 } from '../../../src/lib/uploadProgress'
 import { playableIds, shouldPlay } from '../../../src/lib/videoVisibility'
-import { useCorrectPost, useFeed, useMe, useNotificationUnread } from '../../../src/api/queries'
+import {
+  useCaptureEcho,
+  useCorrectPost,
+  useFeed,
+  useMe,
+  useNotificationUnread,
+  useRemoveEcho,
+} from '../../../src/api/queries'
 import type { FeedPost } from '../../../src/api/types'
 import {
   AttachmentBar,
@@ -27,7 +40,8 @@ import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { authClient } from '../../../src/lib/auth-client'
 import { reportWriteError } from '../../../src/lib/reportWriteError'
-import { chooseAlert } from '../../../src/lib/alert'
+import { chooseAlert, showAlert } from '../../../src/lib/alert'
+import { errorCodeOf } from '../../../src/lib/errors'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { LikeButton } from '../../../src/components/LikeButton'
@@ -135,6 +149,8 @@ export default function FeedScreen() {
   )
   const { data: session } = authClient.useSession()
   const me = useMe()
+  const captureEcho = useCaptureEcho()
+  const removeEcho = useRemoveEcho()
   const feed = useFeed(section)
   const pull = usePullToRefresh(() => feed.refetch())
   const correctPost = useCorrectPost()
@@ -215,14 +231,58 @@ export default function FeedScreen() {
    * that is mostly somebody's sentence is a worse trade than a hidden one.
    */
   async function openMore(post: FeedPost): Promise<void> {
+    const mine = post.author._id === me.data?._id
     const choice = await chooseAlert(t('feed.post'), undefined, [
-      { label: t('common.report'), value: 'report' as const, destructive: true },
+      /*
+       * Here rather than as a fourth control on the card, for the reason the
+       * comment above gives about reporting: a row that is mostly somebody's
+       * sentence has no room left, and the pronunciation variant is already
+       * at three. The post screen has space and carries the visible version.
+       */
+      {
+        label: t(post.echoedByViewer ? 'echo.removeFromEcho' : 'echo.addToEcho'),
+        value: 'echo' as const,
+      },
+      // Your own post is worth keeping once somebody has corrected it, and is
+      // not worth reporting.
+      ...(mine ? [] : [{ label: t('common.report'), value: 'report' as const, destructive: true }]),
     ])
+    if (choice === 'echo') {
+      await (post.echoedByViewer ? removePostEcho(post) : addPostEcho(post))
+      return
+    }
     if (choice !== 'report') return
     router.push({
       pathname: '/(app)/report',
       params: { userId: post.author._id, postId: post._id },
     })
+  }
+
+  async function addPostEcho(post: FeedPost): Promise<void> {
+    try {
+      const result = await captureEcho.mutateAsync({ source: { kind: 'post', postId: post._id } })
+      showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
+    } catch (error) {
+      // A ceiling, not a paywall — the number is the same on every plan, so
+      // there is nothing here to sell.
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.limitBody', { count: PLAN_LIMITS.free.echoCapturesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.addFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
+  async function removePostEcho(post: FeedPost): Promise<void> {
+    try {
+      await removeEcho.mutateAsync({ idOrSourceKey: `post:${post._id}` })
+      showToast(t('echo.removed'))
+    } catch {
+      await showAlert(t('echo.removeFailedTitle'), t('common.retry'))
+    }
   }
 
   function startCorrecting(post: FeedPost): void {
@@ -420,7 +480,7 @@ export default function FeedScreen() {
                   onPress={open}
                   // Nothing to report on your own post, and the API says so
                   // too — a sheet whose only item 400s is worse than no sheet.
-                  onLongPress={mine ? undefined : () => void openMore(item)}
+                  onLongPress={() => void openMore(item)}
                 >
                   <Text style={pronouncing ? styles.word : styles.body}>{item.body}</Text>
                 </Pressable>
