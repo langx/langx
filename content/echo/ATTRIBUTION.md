@@ -10,14 +10,15 @@ Nothing yet. `en/absoluteBeginner.json` is a draft; see "Drafts" below.
 
 ## Chosen, and why
 
-| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                             |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------- |
-| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack        |
-| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`       |
-| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering           |
-| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example |
-| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses            |
-| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                   |
+| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                                              |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                         |
+| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) (Octanove Labs) | English: 2,136 headwords at C1 and C2                                    | CC BY-SA 4.0                                                   | The ceiling CEFR-J stops below, so `fluent` has words of its own |
+| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                        |
+| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering                            |
+| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example                  |
+| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses                             |
+| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                                    |
 
 **A pack is phrases, so the glosses come from two places.** A phrasebook entry
 is a dictionary entry and kaikki glosses it. A sentence is not — nothing has an
@@ -27,6 +28,12 @@ carries the translation a Tatoeba contributor wrote, in all eight locales or
 not at all: the gloss is the half a learner cannot check, and a pack that
 quietly falls back to English for its Arabic readers is worse for them without
 saying so.
+
+**Two profiles, because one stops at B2.** CEFR-J bands A1 through B2; the
+Octanove profile in the same repository bands C1 and C2. Read in that order,
+first band wins. Without the second, a phrase whose hardest word is C1 has no
+band at all and is dropped as unlisted — `fluent` would come out empty rather
+than wrong, which is a harder bug to notice.
 
 **CEFR-J is cited, not share-alike.** Its grant is its own wording rather than a
 CC licence: free for research and commercial use _provided that you cite the

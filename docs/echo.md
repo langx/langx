@@ -421,11 +421,28 @@ are A1 is an `absoluteBeginner` phrase, and no second scale appears anywhere. A
 word CEFR-J does not list counts as **above** the band rather than below it,
 which is what keeps _beware of the dog_ and _bon voyage_ out of a first pack.
 
-**Scope for the first pass**: one pack per language at `absoluteBeginner`,
-about 300 phrases, with a gloss in eight locales. A sentence is its own example,
-so `example` is filled only for a phrasebook entry, where the dictionary has
-one. The `beginner` pack follows once a human has read the first one end to
-end, on the same rule with A2 as the ceiling.
+**A phrase is more than one word.** The phrasebook category carries `hello`,
+`yes` and `sorry`, expressions in the sense a phrasebook means and single words
+in the sense this does. Six of them opened the first draft, which is the
+dictionary the module exists not to be; the picker now requires a space.
+Nothing is lost that a learner does not meet in the first sentence that greets
+them.
+
+**Scope**: three packs per language, at `absoluteBeginner`, `beginner` and
+`intermediate`, about 300 phrases each with a gloss in eight locales. A
+sentence is its own example, so `example` is filled only for a phrasebook
+entry, where the dictionary has one. Each is read end to end by a person before
+its `"reviewed": true`; they are drafted together because the Tatoeba exports
+are two hundred megabytes and one pass answers every level.
+
+**`fluent` has no pack, and the reason is the eight locales rather than the
+level.** Requiring a human translation in all eight is what makes a gloss
+trustworthy, and Arabic is where it binds: across every level Tatoeba links
+Arabic to 16,322 of the 657,063 candidate sentences, 2.5%. At A1 a pool that
+large still leaves a thousand; at C1 and C2 it leaves four. Filling the top
+level means either sourcing it somewhere other than Tatoeba or letting a pack
+ship in fewer locales than eight — both decisions, neither a default, and
+neither needed before the three below it have been read.
 
 **Sources and licence** — verify at the version downloaded, record it:
 

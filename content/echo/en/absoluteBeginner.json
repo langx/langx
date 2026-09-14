@@ -21,6 +21,11 @@
       "url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
     },
     {
+      "name": "Octanove Vocabulary Profile C1/C2 1.0 (Octanove Labs)",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
+    },
+    {
       "name": "New General Service List (NGSL) 1.2",
       "licence": "CC BY-SA 4.0",
       "url": "https://www.newgeneralservicelist.com/"
@@ -29,256 +34,6 @@
   "items": [
     {
       "index": 0,
-      "kind": "word",
-      "text": "no",
-      "gloss": {
-        "tr": "yok",
-        "de": "nein",
-        "es": "no",
-        "fr": "non",
-        "pt-BR": "não",
-        "ru": "нет",
-        "ar": "لَا",
-        "en": "used to show disagreement or negation"
-      },
-      "example": "No, you are mistaken.",
-      "freqRank": 1,
-      "review": {
-        "sense": "used to show disagreement or negation",
-        "translationCount": 266,
-        "definition": "Used to show disagreement, negation, denial, refusal, or prohibition.",
-        "otherSenses": [
-          "not any (157)",
-          "a negating expression (100)",
-          "used to show an activity is forbidden (86)",
-          "used to show agreement with a negative question (in some languages this response is the usual word for \"yes\") (45)",
-          "a vote not in favor (26)"
-        ],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/91/En-uk-no.ogg/En-uk-no.ogg.mp3",
-            "file": "en-uk-no.ogg",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/19/En-us-no.ogg/En-us-no.ogg.mp3",
-            "file": "en-us-no.ogg",
-            "tags": []
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9d/En-nz-no.ogg/En-nz-no.ogg.mp3",
-            "file": "en-nz-no.ogg",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 1,
-      "kind": "word",
-      "text": "yes",
-      "gloss": {
-        "tr": "evet",
-        "de": "ja",
-        "es": "sí",
-        "fr": "oui",
-        "pt-BR": "sim",
-        "ru": "да",
-        "ar": "نَعَم",
-        "en": "word used to indicate agreement or acceptance"
-      },
-      "example": "Yes, you are correct.",
-      "freqRank": 2,
-      "review": {
-        "sense": "word used to indicate agreement or acceptance",
-        "translationCount": 381,
-        "definition": "Used to show agreement or acceptance.",
-        "otherSenses": [
-          "word used to indicate disagreement or dissent in reply to a negative statement (60)",
-          "expression of pleasure, joy or great excitement — see also yay, whoo, yippee (41)",
-          "answer that shows agreement or acceptance (26)",
-          "vote of support (15)",
-          "response that confirms attention (14)"
-        ],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/ff/LL-Q1860_%28eng%29-Naomi_Persephone_Amethyst_%28NaomiAmethyst%29-yes.wav/LL-Q1860_%28eng%29-Naomi_Persephone_Amethyst_%28NaomiAmethyst%29-yes.wav.mp3",
-            "file": "LL-Q1860 (eng)-Naomi Persephone Amethyst (NaomiAmethyst)-yes.wav",
-            "tags": ["General-American"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a3/En-uk-yes.ogg/En-uk-yes.ogg.mp3",
-            "file": "En-uk-yes.ogg",
-            "tags": ["UK"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b1/En-us-yes.ogg/En-us-yes.ogg.mp3",
-            "file": "En-us-yes.ogg",
-            "tags": ["US"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 2,
-      "kind": "word",
-      "text": "stop",
-      "gloss": {
-        "tr": "durmak",
-        "de": "anhalten",
-        "es": "parar",
-        "fr": "s'arrêter",
-        "pt-BR": "parar",
-        "ru": "остана́вливаться",
-        "ar": "وَقَفَ",
-        "en": "to cease moving"
-      },
-      "example": "I stopped at the traffic lights.",
-      "freqRank": 3,
-      "review": {
-        "sense": "to cease moving",
-        "translationCount": 168,
-        "definition": "To cease moving.",
-        "otherSenses": [
-          "not to continue — see also cease, desist (105)",
-          "to cause to cease moving — see also detain (92)",
-          "place to get on and off mass transport (77)",
-          "to cause to come to an end — see also discontinue (62)",
-          "to stay a while (36)"
-        ],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c2/LL-Q1860_%28eng%29-Vealhurl-stop.wav/LL-Q1860_%28eng%29-Vealhurl-stop.wav.mp3",
-            "file": "LL-Q1860 (eng)-Vealhurl-stop.wav",
-            "tags": ["Southern-England"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d1/En-uk-a_stop.ogg/En-uk-a_stop.ogg.mp3",
-            "file": "En-uk-a stop.ogg",
-            "tags": ["Received-Pronunciation"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/43/En-us-stop.ogg/En-us-stop.ogg.mp3",
-            "file": "en-us-stop.ogg",
-            "tags": ["General-American"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 3,
-      "kind": "word",
-      "text": "sorry",
-      "gloss": {
-        "tr": "pardon",
-        "de": "Entschuldigung",
-        "es": "disculpe/perdone (usted)",
-        "fr": "désolé",
-        "pt-BR": "desculpa",
-        "ru": "извини́те",
-        "ar": "آسِف",
-        "en": "expression of regret or sorrow"
-      },
-      "example": "Sorry! I didn't see that you were on the phone.",
-      "freqRank": 4,
-      "review": {
-        "sense": "expression of regret or sorrow",
-        "translationCount": 243,
-        "definition": "Expresses regret, remorse, or sorrow.",
-        "otherSenses": [
-          "request to repeat (93)",
-          "poor, regrettable (33)",
-          "repentant, apologetic (21)",
-          "grieved, saddened (18)",
-          "act of saying sorry (11)"
-        ],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/2f/LL-Q1860_%28eng%29-Back_ache-sorry.wav/LL-Q1860_%28eng%29-Back_ache-sorry.wav.mp3",
-            "file": "LL-Q1860 (eng)-Back ache-sorry.wav",
-            "tags": ["London"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/47/En-us-sorry.ogg/En-us-sorry.ogg.mp3",
-            "file": "en-us-sorry.ogg",
-            "tags": ["California"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/25/En-ca-sorry.ogg/En-ca-sorry.ogg.mp3",
-            "file": "en-ca-sorry.ogg",
-            "tags": []
-          }
-        ]
-      }
-    },
-    {
-      "index": 4,
-      "kind": "word",
-      "text": "hello",
-      "gloss": {
-        "tr": "merhaba",
-        "de": "hallo",
-        "es": "hola",
-        "fr": "bonjour",
-        "pt-BR": "oi",
-        "ru": "приве́т",
-        "ar": "السَّلَامُ عَلَيْكُمْ",
-        "en": "greeting"
-      },
-      "freqRank": 5,
-      "review": {
-        "sense": "greeting",
-        "translationCount": 589,
-        "otherSenses": [
-          "when answering the telephone (148)",
-          "is anyone there? (76)",
-          "sarcastic: that was foolish (46)",
-          "expression of puzzlement (33)"
-        ],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/48/En-uk-hello.ogg/En-uk-hello.ogg.mp3",
-            "file": "En-uk-hello.ogg",
-            "tags": ["UK"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e9/En-au-hello.ogg/En-au-hello.ogg.mp3",
-            "file": "En-au-hello.ogg",
-            "tags": ["Australia"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 5,
-      "kind": "word",
-      "text": "I've",
-      "gloss": {
-        "tr": "... var",
-        "de": "ich habe",
-        "es": "(yo) tengo",
-        "fr": "j'ai",
-        "pt-BR": "(eu) tenho",
-        "ru": "у меня́",
-        "ar": "عِنْدِي",
-        "en": "I have"
-      },
-      "freqRank": 6,
-      "review": {
-        "sense": "I have",
-        "translationCount": 70,
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a5/En-us-I%27ve.ogg/En-us-I%27ve.ogg.mp3",
-            "file": "en-us-I've.ogg",
-            "tags": ["US"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 6,
       "kind": "phrase",
       "text": "I know",
       "gloss": {
@@ -291,7 +46,7 @@
         "ar": "أَنَا أَعْرِفُ",
         "en": "response indicating agreement with prior statement before it was made"
       },
-      "freqRank": 7,
+      "freqRank": 1,
       "review": {
         "sense": "response indicating agreement with prior statement before it was made",
         "translationCount": 70,
@@ -307,7 +62,7 @@
       }
     },
     {
-      "index": 7,
+      "index": 1,
       "kind": "phrase",
       "text": "see you",
       "gloss": {
@@ -320,7 +75,7 @@
         "ar": "أراكَ قَريبًا",
         "en": "see you later"
       },
-      "freqRank": 8,
+      "freqRank": 2,
       "review": {
         "sense": "see you later",
         "translationCount": 103,
@@ -336,7 +91,7 @@
       }
     },
     {
-      "index": 8,
+      "index": 2,
       "kind": "phrase",
       "text": "good day",
       "gloss": {
@@ -350,7 +105,7 @@
         "en": "greeting between sunrise and sunset"
       },
       "example": "Good day, gentlemen.",
-      "freqRank": 9,
+      "freqRank": 3,
       "review": {
         "sense": "greeting between sunrise and sunset",
         "translationCount": 138,
@@ -366,7 +121,7 @@
       }
     },
     {
-      "index": 9,
+      "index": 3,
       "kind": "phrase",
       "text": "right now",
       "gloss": {
@@ -378,7 +133,7 @@
         "ru": "пря́мо сейча́с",
         "en": "at this precise moment"
       },
-      "freqRank": 11,
+      "freqRank": 5,
       "review": {
         "sense": "at this precise moment",
         "translationCount": 72,
@@ -393,7 +148,7 @@
       }
     },
     {
-      "index": 10,
+      "index": 4,
       "kind": "phrase",
       "text": "no problem",
       "gloss": {
@@ -406,7 +161,7 @@
         "ar": "لَا بَأْس",
         "en": "it does not pose a problem"
       },
-      "freqRank": 12,
+      "freqRank": 6,
       "review": {
         "sense": "it does not pose a problem",
         "translationCount": 86,
@@ -421,14 +176,14 @@
       }
     },
     {
-      "index": 11,
+      "index": 5,
       "kind": "phrase",
       "text": "this week",
       "gloss": {
         "de": "diese Woche",
         "en": "in the current week"
       },
-      "freqRank": 13,
+      "freqRank": 7,
       "review": {
         "sense": "in the current week",
         "translationCount": 11,
@@ -436,7 +191,7 @@
       }
     },
     {
-      "index": 12,
+      "index": 6,
       "kind": "phrase",
       "text": "love you",
       "gloss": {
@@ -449,7 +204,7 @@
         "ar": "أُحِبُّكَ",
         "en": "affirmation of romantic feeling"
       },
-      "freqRank": 14,
+      "freqRank": 8,
       "review": {
         "sense": "affirmation of romantic feeling",
         "translationCount": 386,
@@ -469,7 +224,7 @@
       }
     },
     {
-      "index": 13,
+      "index": 7,
       "kind": "phrase",
       "text": "thank you",
       "gloss": {
@@ -483,7 +238,7 @@
         "en": "an expression of gratitude"
       },
       "example": "“Thank you!” said the girl after her mom gave her a gift.",
-      "freqRank": 15,
+      "freqRank": 9,
       "review": {
         "sense": "an expression of gratitude",
         "translationCount": 534,
@@ -509,7 +264,7 @@
       }
     },
     {
-      "index": 14,
+      "index": 8,
       "kind": "phrase",
       "text": "good night",
       "gloss": {
@@ -522,7 +277,7 @@
         "ar": "تُصْبِح عَلَى خَيْر",
         "en": "a farewell"
       },
-      "freqRank": 16,
+      "freqRank": 10,
       "review": {
         "sense": "a farewell",
         "translationCount": 192,
@@ -542,7 +297,7 @@
       }
     },
     {
-      "index": 15,
+      "index": 9,
       "kind": "phrase",
       "text": "good morning",
       "gloss": {
@@ -556,7 +311,7 @@
         "en": "when seeing someone for the first time in the morning"
       },
       "example": "The teacher welcomed the kids to school with \"Good morning, boys and girls.\"",
-      "freqRank": 17,
+      "freqRank": 11,
       "review": {
         "sense": "when seeing someone for the first time in the morning",
         "translationCount": 238,
@@ -577,7 +332,7 @@
       }
     },
     {
-      "index": 16,
+      "index": 10,
       "kind": "phrase",
       "text": "this morning",
       "gloss": {
@@ -590,7 +345,7 @@
         "en": "during the morning of today"
       },
       "example": "This morning is the first of the work week.",
-      "freqRank": 18,
+      "freqRank": 12,
       "review": {
         "sense": "during the morning of today",
         "translationCount": 70,
@@ -606,7 +361,7 @@
       }
     },
     {
-      "index": 17,
+      "index": 11,
       "kind": "phrase",
       "text": "good evening",
       "gloss": {
@@ -620,7 +375,7 @@
         "en": "greeting said in the evening"
       },
       "example": "Good evening everyone and welcome to our 34th annual general meeting.",
-      "freqRank": 19,
+      "freqRank": 13,
       "review": {
         "sense": "greeting said in the evening",
         "translationCount": 174,
@@ -641,7 +396,7 @@
       }
     },
     {
-      "index": 18,
+      "index": 12,
       "kind": "phrase",
       "text": "this evening",
       "gloss": {
@@ -653,7 +408,7 @@
         "en": "during the evening of today"
       },
       "example": "Normally I stay at home in the evening, but this evening I'm going to the movies.",
-      "freqRank": 20,
+      "freqRank": 14,
       "review": {
         "sense": "during the evening of today",
         "translationCount": 49,
@@ -669,7 +424,7 @@
       }
     },
     {
-      "index": 19,
+      "index": 13,
       "kind": "phrase",
       "text": "have fun",
       "gloss": {
@@ -682,7 +437,7 @@
         "ar": "اِسْتَمْتِعْ",
         "en": "wish someone a good time"
       },
-      "freqRank": 21,
+      "freqRank": 15,
       "review": {
         "sense": "wish someone a good time",
         "translationCount": 47,
@@ -698,7 +453,7 @@
       }
     },
     {
-      "index": 20,
+      "index": 14,
       "kind": "phrase",
       "text": "good afternoon",
       "gloss": {
@@ -712,7 +467,7 @@
         "en": "greeting said in the afternoon"
       },
       "example": "Good afternoon everyone and thank you for coming to our special meeting today.",
-      "freqRank": 22,
+      "freqRank": 16,
       "review": {
         "sense": "greeting said in the afternoon",
         "translationCount": 138,
@@ -733,7 +488,7 @@
       }
     },
     {
-      "index": 21,
+      "index": 15,
       "kind": "phrase",
       "text": "this afternoon",
       "gloss": {
@@ -742,7 +497,7 @@
         "ru": "сего́дня днём",
         "en": "during the afternoon of today"
       },
-      "freqRank": 23,
+      "freqRank": 17,
       "review": {
         "sense": "during the afternoon of today",
         "translationCount": 19,
@@ -750,7 +505,7 @@
       }
     },
     {
-      "index": 22,
+      "index": 16,
       "kind": "phrase",
       "text": "be careful",
       "gloss": {
@@ -761,7 +516,7 @@
         "ru": "бу́дьте осторо́жны",
         "en": "proceed with caution"
       },
-      "freqRank": 24,
+      "freqRank": 18,
       "review": {
         "sense": "proceed with caution",
         "translationCount": 101,
@@ -770,14 +525,14 @@
       }
     },
     {
-      "index": 23,
+      "index": 17,
       "kind": "phrase",
       "text": "sick person",
       "gloss": {
         "de": "Kranker",
         "en": "afflicted individual"
       },
-      "freqRank": 25,
+      "freqRank": 19,
       "review": {
         "sense": "afflicted individual",
         "translationCount": 31,
@@ -785,7 +540,7 @@
       }
     },
     {
-      "index": 24,
+      "index": 18,
       "kind": "phrase",
       "text": "good luck",
       "gloss": {
@@ -799,7 +554,7 @@
         "en": "used to wish fortune on someone or as encouragement"
       },
       "example": "Near-synonym: God bless",
-      "freqRank": 26,
+      "freqRank": 20,
       "review": {
         "sense": "used to wish fortune on someone or as encouragement",
         "translationCount": 138,
@@ -815,7 +570,7 @@
       }
     },
     {
-      "index": 25,
+      "index": 19,
       "kind": "phrase",
       "text": "be called",
       "gloss": {
@@ -828,7 +583,7 @@
         "ar": "سُمِّيَ",
         "en": "to have a specific name"
       },
-      "freqRank": 27,
+      "freqRank": 21,
       "review": {
         "sense": "to have a specific name",
         "translationCount": 84,
@@ -837,7 +592,7 @@
       }
     },
     {
-      "index": 26,
+      "index": 20,
       "kind": "phrase",
       "text": "excuse me",
       "gloss": {
@@ -849,7 +604,7 @@
         "ar": "اِعْذِرْنِي",
         "en": "sorry, as apology"
       },
-      "freqRank": 28,
+      "freqRank": 22,
       "review": {
         "sense": "sorry, as apology",
         "translationCount": 153,
@@ -870,7 +625,7 @@
       }
     },
     {
-      "index": 27,
+      "index": 21,
       "kind": "phrase",
       "text": "give me",
       "gloss": {
@@ -884,7 +639,7 @@
         "en": "expression of preference"
       },
       "example": "Give me a quiet evening with a book any time.",
-      "freqRank": 29,
+      "freqRank": 23,
       "review": {
         "sense": "expression of preference",
         "translationCount": 70,
@@ -900,7 +655,7 @@
       }
     },
     {
-      "index": 28,
+      "index": 22,
       "kind": "phrase",
       "text": "happy birthday",
       "gloss": {
@@ -914,7 +669,7 @@
         "en": "good wishes for a birthday"
       },
       "example": "Happy birthday, Joe! Have a fantastic day!",
-      "freqRank": 30,
+      "freqRank": 24,
       "review": {
         "sense": "good wishes for a birthday",
         "translationCount": 255,
@@ -935,7 +690,7 @@
       }
     },
     {
-      "index": 29,
+      "index": 23,
       "kind": "phrase",
       "text": "happy holidays",
       "gloss": {
@@ -946,7 +701,7 @@
         "ru": "с праздником",
         "en": "holiday greeting"
       },
-      "freqRank": 31,
+      "freqRank": 25,
       "review": {
         "sense": "holiday greeting",
         "translationCount": 44,
@@ -962,7 +717,7 @@
       }
     },
     {
-      "index": 30,
+      "index": 24,
       "kind": "phrase",
       "text": "kiss me",
       "gloss": {
@@ -975,7 +730,7 @@
         "ar": "قَبِّلْنِي",
         "en": "kiss me"
       },
-      "freqRank": 32,
+      "freqRank": 26,
       "review": {
         "sense": "kiss me",
         "translationCount": 83,
@@ -990,7 +745,7 @@
       }
     },
     {
-      "index": 31,
+      "index": 25,
       "kind": "phrase",
       "text": "many thanks",
       "gloss": {
@@ -1003,7 +758,7 @@
         "ar": "شُكْرًا",
         "en": "many thanks"
       },
-      "freqRank": 33,
+      "freqRank": 27,
       "review": {
         "sense": "many thanks",
         "translationCount": 71,
@@ -1018,7 +773,7 @@
       }
     },
     {
-      "index": 32,
+      "index": 26,
       "kind": "phrase",
       "text": "me too",
       "gloss": {
@@ -1030,7 +785,7 @@
         "ar": "أَنَا أَيْضًا",
         "en": "I agree"
       },
-      "freqRank": 34,
+      "freqRank": 28,
       "review": {
         "sense": "I agree",
         "translationCount": 62,
@@ -1045,7 +800,7 @@
       }
     },
     {
-      "index": 33,
+      "index": 27,
       "kind": "phrase",
       "text": "my pleasure",
       "gloss": {
@@ -1057,7 +812,7 @@
         "ar": "عَفْوًا",
         "en": "a polite reaction to receiving thanks"
       },
-      "freqRank": 35,
+      "freqRank": 29,
       "review": {
         "sense": "a polite reaction to receiving thanks",
         "translationCount": 45,
@@ -1073,7 +828,7 @@
       }
     },
     {
-      "index": 34,
+      "index": 28,
       "kind": "phrase",
       "text": "no smoking",
       "gloss": {
@@ -1086,7 +841,7 @@
         "ar": "التَّدْخِين مَمْنُوعَ",
         "en": "phrase used in notices indicating that the smoking of cigarettes is not permitted"
       },
-      "freqRank": 36,
+      "freqRank": 30,
       "review": {
         "sense": "phrase used in notices indicating that the smoking of cigarettes is not permitted",
         "translationCount": 97,
@@ -1095,7 +850,7 @@
       }
     },
     {
-      "index": 35,
+      "index": 29,
       "kind": "phrase",
       "text": "no, thanks",
       "gloss": {
@@ -1106,7 +861,7 @@
         "ru": "нет, спаси́бо",
         "en": "(polite refusal of an offer)"
       },
-      "freqRank": 37,
+      "freqRank": 31,
       "review": {
         "sense": "(polite refusal of an offer)",
         "translationCount": 29,
@@ -1121,7 +876,7 @@
       }
     },
     {
-      "index": 36,
+      "index": 30,
       "kind": "phrase",
       "text": "pardon me",
       "gloss": {
@@ -1134,7 +889,7 @@
         "en": "sorry, as an apology"
       },
       "example": "Pardon me for stepping on your foot.",
-      "freqRank": 38,
+      "freqRank": 32,
       "review": {
         "sense": "sorry, as an apology",
         "translationCount": 56,
@@ -1153,7 +908,7 @@
       }
     },
     {
-      "index": 37,
+      "index": 31,
       "kind": "phrase",
       "text": "sweet dreams",
       "gloss": {
@@ -1166,7 +921,7 @@
         "ar": "لَيْلَة سَعِيدَة وَأَحْلَام لَذِيذَة",
         "en": "sweet dreams"
       },
-      "freqRank": 39,
+      "freqRank": 33,
       "review": {
         "sense": "sweet dreams",
         "translationCount": 59,
@@ -1181,14 +936,14 @@
       }
     },
     {
-      "index": 38,
+      "index": 32,
       "kind": "phrase",
       "text": "who cares",
       "gloss": {
         "es": "(y) a quién le importa",
         "en": "reply to an unimportant statement"
       },
-      "freqRank": 40,
+      "freqRank": 34,
       "review": {
         "sense": "reply to an unimportant statement",
         "translationCount": 10,
@@ -1204,7 +959,7 @@
       }
     },
     {
-      "index": 39,
+      "index": 33,
       "kind": "phrase",
       "text": "why me",
       "gloss": {
@@ -1212,7 +967,7 @@
         "en": "expression questioning why something bad has happened to the speaker"
       },
       "example": "I can't believe I got teased and ridiculed for my musical tastes again. Why me?",
-      "freqRank": 41,
+      "freqRank": 35,
       "review": {
         "sense": "expression questioning why something bad has happened to the speaker",
         "translationCount": 3,
@@ -1228,7 +983,7 @@
       }
     },
     {
-      "index": 40,
+      "index": 34,
       "kind": "phrase",
       "text": "you OK",
       "gloss": {
@@ -1241,7 +996,7 @@
         "ar": "هَلْ أَنْتَ بِخَيْر؟",
         "en": "familiar"
       },
-      "freqRank": 42,
+      "freqRank": 36,
       "review": {
         "sense": "familiar",
         "translationCount": 56,
@@ -1257,7 +1012,7 @@
       }
     },
     {
-      "index": 41,
+      "index": 35,
       "kind": "phrase",
       "text": "do you know",
       "gloss": {
@@ -1269,7 +1024,7 @@
         "ar": "هَل تَعْرِف؟",
         "en": "do you know? (of knowledge)"
       },
-      "freqRank": 43,
+      "freqRank": 37,
       "review": {
         "sense": "do you know? (of knowledge)",
         "translationCount": 61,
@@ -1284,14 +1039,14 @@
       }
     },
     {
-      "index": 42,
+      "index": 36,
       "kind": "phrase",
       "text": "you would think",
       "gloss": {
         "de": "man könnte meinen",
         "en": "Translations"
       },
-      "freqRank": 45,
+      "freqRank": 39,
       "review": {
         "sense": "Translations",
         "translationCount": 7,
@@ -1306,7 +1061,7 @@
       }
     },
     {
-      "index": 43,
+      "index": 37,
       "kind": "phrase",
       "text": "time will tell",
       "gloss": {
@@ -1318,7 +1073,7 @@
         "en": "results of an action cannot be known beforehand"
       },
       "example": "This may not be a good idea, but time will tell.",
-      "freqRank": 47,
+      "freqRank": 41,
       "review": {
         "sense": "results of an action cannot be known beforehand",
         "translationCount": 42,
@@ -1334,14 +1089,14 @@
       }
     },
     {
-      "index": 44,
+      "index": 38,
       "kind": "phrase",
       "text": "well, I never",
       "gloss": {
         "fr": "ça alors",
         "en": "exclamation of great surprise"
       },
-      "freqRank": 48,
+      "freqRank": 42,
       "review": {
         "sense": "exclamation of great surprise",
         "translationCount": 17,
@@ -1357,7 +1112,7 @@
       }
     },
     {
-      "index": 45,
+      "index": 39,
       "kind": "phrase",
       "text": "keep the change",
       "gloss": {
@@ -1370,7 +1125,7 @@
         "ar": "احتفظ بالباقي",
         "en": "instruction to keep the change"
       },
-      "freqRank": 49,
+      "freqRank": 43,
       "review": {
         "sense": "instruction to keep the change",
         "translationCount": 24,
@@ -1379,7 +1134,7 @@
       }
     },
     {
-      "index": 46,
+      "index": 40,
       "kind": "phrase",
       "text": "I love you",
       "gloss": {
@@ -1392,7 +1147,7 @@
         "ar": "أُحِبُّكَ",
         "en": "affirmation of romantic feeling"
       },
-      "freqRank": 50,
+      "freqRank": 44,
       "review": {
         "sense": "affirmation of romantic feeling",
         "translationCount": 386,
@@ -1411,7 +1166,7 @@
       }
     },
     {
-      "index": 47,
+      "index": 41,
       "kind": "phrase",
       "text": "get well soon",
       "gloss": {
@@ -1424,7 +1179,7 @@
         "ar": "أَتَمَنَّى لَكَ الشِّفَاءَ الْكَامِل",
         "en": "expressing hope that someone recovers soon"
       },
-      "freqRank": 51,
+      "freqRank": 45,
       "review": {
         "sense": "expressing hope that someone recovers soon",
         "translationCount": 66,
@@ -1440,7 +1195,7 @@
       }
     },
     {
-      "index": 48,
+      "index": 42,
       "kind": "phrase",
       "text": "stop the car",
       "gloss": {
@@ -1451,7 +1206,7 @@
         "ru": "останови́те маши́ну!",
         "en": "stop the car"
       },
-      "freqRank": 52,
+      "freqRank": 46,
       "review": {
         "sense": "stop the car",
         "translationCount": 32,
@@ -1459,7 +1214,7 @@
       }
     },
     {
-      "index": 49,
+      "index": 43,
       "kind": "phrase",
       "text": "one moment, please",
       "gloss": {
@@ -1472,7 +1227,7 @@
         "ar": "لَحْظَةً مِنْ فَضْلِكَ",
         "en": "one moment please"
       },
-      "freqRank": 53,
+      "freqRank": 47,
       "review": {
         "sense": "one moment please",
         "translationCount": 44,
@@ -1487,7 +1242,7 @@
       }
     },
     {
-      "index": 50,
+      "index": 44,
       "kind": "phrase",
       "text": "please turn right",
       "gloss": {
@@ -1500,7 +1255,7 @@
         "ar": "لِفّ يَمِين، مِن فَضْلِكَ",
         "en": "please turn right"
       },
-      "freqRank": 54,
+      "freqRank": 48,
       "review": {
         "sense": "please turn right",
         "translationCount": 47,
@@ -1509,7 +1264,7 @@
       }
     },
     {
-      "index": 51,
+      "index": 45,
       "kind": "phrase",
       "text": "happy New Year",
       "gloss": {
@@ -1522,7 +1277,7 @@
         "ar": "كُلُّ عَامٍ وَأَنْتُمْ بِخَيْرٍ",
         "en": "Happy New Year"
       },
-      "freqRank": 55,
+      "freqRank": 49,
       "review": {
         "sense": "Happy New Year",
         "translationCount": 219,
@@ -1538,7 +1293,7 @@
       }
     },
     {
-      "index": 52,
+      "index": 46,
       "kind": "phrase",
       "text": "I miss you",
       "gloss": {
@@ -1550,7 +1305,7 @@
         "ar": "أَشْتَاقُ إِلَيْكَ",
         "en": "I miss you"
       },
-      "freqRank": 56,
+      "freqRank": 50,
       "review": {
         "sense": "I miss you",
         "translationCount": 100,
@@ -1558,7 +1313,7 @@
       }
     },
     {
-      "index": 53,
+      "index": 47,
       "kind": "phrase",
       "text": "don't worry",
       "gloss": {
@@ -1572,7 +1327,7 @@
         "en": "indicates to the interlocutor not to worry about something"
       },
       "example": "A: What about the late fee? B: Don't worry about it — it's only a little bit.",
-      "freqRank": 57,
+      "freqRank": 51,
       "review": {
         "sense": "indicates to the interlocutor not to worry about something",
         "translationCount": 79,
@@ -1581,7 +1336,7 @@
       }
     },
     {
-      "index": 54,
+      "index": 48,
       "kind": "phrase",
       "text": "see you tomorrow",
       "gloss": {
@@ -1594,7 +1349,7 @@
         "ar": "أَرَاكَ غَدًا",
         "en": "see you tomorrow"
       },
-      "freqRank": 58,
+      "freqRank": 52,
       "review": {
         "sense": "see you tomorrow",
         "translationCount": 50,
@@ -1602,7 +1357,7 @@
       }
     },
     {
-      "index": 55,
+      "index": 49,
       "kind": "phrase",
       "text": "have a seat",
       "gloss": {
@@ -1614,7 +1369,7 @@
         "ar": "جَلَسَ",
         "en": "to sit down"
       },
-      "freqRank": 59,
+      "freqRank": 53,
       "review": {
         "sense": "to sit down",
         "translationCount": 25,
@@ -1630,7 +1385,7 @@
       }
     },
     {
-      "index": 56,
+      "index": 50,
       "kind": "phrase",
       "text": "please turn left",
       "gloss": {
@@ -1643,7 +1398,7 @@
         "ar": "لِفّ يَسَار، مِن فَضْلِكَ",
         "en": "please turn left"
       },
-      "freqRank": 60,
+      "freqRank": 54,
       "review": {
         "sense": "please turn left",
         "translationCount": 45,
@@ -1652,7 +1407,7 @@
       }
     },
     {
-      "index": 57,
+      "index": 51,
       "kind": "phrase",
       "text": "can I smoke",
       "gloss": {
@@ -1665,7 +1420,7 @@
         "ar": "هَلْ يُمْكِنُنِي التَّدْخِين؟",
         "en": "phrase"
       },
-      "freqRank": 61,
+      "freqRank": 55,
       "review": {
         "sense": "phrase",
         "translationCount": 55,
@@ -1673,7 +1428,7 @@
       }
     },
     {
-      "index": 58,
+      "index": 52,
       "kind": "phrase",
       "text": "are you OK",
       "gloss": {
@@ -1686,7 +1441,7 @@
         "ar": "هَلْ أَنْتَ بِخَيْر؟",
         "en": "familiar"
       },
-      "freqRank": 62,
+      "freqRank": 56,
       "review": {
         "sense": "familiar",
         "translationCount": 56,
@@ -1701,7 +1456,7 @@
       }
     },
     {
-      "index": 59,
+      "index": 53,
       "kind": "phrase",
       "text": "here you are",
       "gloss": {
@@ -1714,7 +1469,7 @@
         "ar": "تَفَضَّل",
         "en": "said when handing something over"
       },
-      "freqRank": 64,
+      "freqRank": 58,
       "review": {
         "sense": "said when handing something over",
         "translationCount": 112,
@@ -1730,7 +1485,7 @@
       }
     },
     {
-      "index": 60,
+      "index": 54,
       "kind": "phrase",
       "text": "how are you",
       "gloss": {
@@ -1743,7 +1498,7 @@
         "ar": "كَيْف الْحال؟",
         "en": "greeting"
       },
-      "freqRank": 65,
+      "freqRank": 59,
       "review": {
         "sense": "greeting",
         "translationCount": 410,
@@ -1763,7 +1518,7 @@
       }
     },
     {
-      "index": 61,
+      "index": 55,
       "kind": "phrase",
       "text": "I am hungry",
       "gloss": {
@@ -1776,7 +1531,7 @@
         "ar": "أَنَا جَائِع",
         "en": "I'm hungry"
       },
-      "freqRank": 66,
+      "freqRank": 60,
       "review": {
         "sense": "I'm hungry",
         "translationCount": 157,
@@ -1785,7 +1540,7 @@
       }
     },
     {
-      "index": 62,
+      "index": 56,
       "kind": "phrase",
       "text": "I am tired",
       "gloss": {
@@ -1799,7 +1554,7 @@
         "en": "I am tired (in need of rest or sleep)"
       },
       "example": "Gosh, I'm tired today.",
-      "freqRank": 67,
+      "freqRank": 61,
       "review": {
         "sense": "I am tired (in need of rest or sleep)",
         "translationCount": 111,
@@ -1809,14 +1564,14 @@
       }
     },
     {
-      "index": 63,
+      "index": 57,
       "kind": "phrase",
       "text": "I stand corrected",
       "gloss": {
         "fr": "au temps pour moi",
         "en": "I was wrong — see also stand corrected"
       },
-      "freqRank": 68,
+      "freqRank": 62,
       "review": {
         "sense": "I was wrong — see also stand corrected",
         "translationCount": 4,
@@ -1825,14 +1580,14 @@
       }
     },
     {
-      "index": 64,
+      "index": 58,
       "kind": "phrase",
       "text": "I told you",
       "gloss": {
         "pt-BR": "eu te disse",
         "en": "I told you"
       },
-      "freqRank": 69,
+      "freqRank": 63,
       "review": {
         "sense": "I told you",
         "translationCount": 14,
@@ -1840,7 +1595,7 @@
       }
     },
     {
-      "index": 65,
+      "index": 59,
       "kind": "phrase",
       "text": "I'm busy",
       "gloss": {
@@ -1851,7 +1606,7 @@
         "ru": "я за́нят",
         "en": "I'm busy"
       },
-      "freqRank": 70,
+      "freqRank": 64,
       "review": {
         "sense": "I'm busy",
         "translationCount": 24,
@@ -1859,7 +1614,7 @@
       }
     },
     {
-      "index": 66,
+      "index": 60,
       "kind": "phrase",
       "text": "I'm cold",
       "gloss": {
@@ -1872,7 +1627,7 @@
         "ar": "أَنَا بَرْدَان",
         "en": "I'm cold"
       },
-      "freqRank": 71,
+      "freqRank": 65,
       "review": {
         "sense": "I'm cold",
         "translationCount": 42,
@@ -1880,7 +1635,7 @@
       }
     },
     {
-      "index": 67,
+      "index": 61,
       "kind": "phrase",
       "text": "I'm fine",
       "gloss": {
@@ -1893,7 +1648,7 @@
         "ar": "بِخَيْر",
         "en": "response"
       },
-      "freqRank": 72,
+      "freqRank": 66,
       "review": {
         "sense": "response",
         "translationCount": 125,
@@ -1908,14 +1663,14 @@
       }
     },
     {
-      "index": 68,
+      "index": 62,
       "kind": "phrase",
       "text": "I'm from",
       "gloss": {
         "de": "ich komme aus",
         "en": "I am from ..."
       },
-      "freqRank": 73,
+      "freqRank": 67,
       "review": {
         "sense": "I am from ...",
         "translationCount": 5,
@@ -1923,7 +1678,7 @@
       }
     },
     {
-      "index": 69,
+      "index": 63,
       "kind": "phrase",
       "text": "I'm full",
       "gloss": {
@@ -1933,7 +1688,7 @@
         "ru": "я сыт",
         "en": "I'm full"
       },
-      "freqRank": 74,
+      "freqRank": 68,
       "review": {
         "sense": "I'm full",
         "translationCount": 30,
@@ -1941,7 +1696,7 @@
       }
     },
     {
-      "index": 70,
+      "index": 64,
       "kind": "phrase",
       "text": "I'm hot",
       "gloss": {
@@ -1953,7 +1708,7 @@
         "ar": "أَنَا حَرَّان",
         "en": "I'm hot"
       },
-      "freqRank": 75,
+      "freqRank": 69,
       "review": {
         "sense": "I'm hot",
         "translationCount": 31,
@@ -1961,7 +1716,7 @@
       }
     },
     {
-      "index": 71,
+      "index": 65,
       "kind": "phrase",
       "text": "I'm hungry",
       "gloss": {
@@ -1974,7 +1729,7 @@
         "ar": "أَنَا جَائِع",
         "en": "I'm hungry"
       },
-      "freqRank": 76,
+      "freqRank": 70,
       "review": {
         "sense": "I'm hungry",
         "translationCount": 157,
@@ -1982,7 +1737,7 @@
       }
     },
     {
-      "index": 72,
+      "index": 66,
       "kind": "phrase",
       "text": "I'm sick",
       "gloss": {
@@ -1995,7 +1750,7 @@
         "ar": "أَنَا مَرِيض",
         "en": "I'm sick/ill"
       },
-      "freqRank": 77,
+      "freqRank": 71,
       "review": {
         "sense": "I'm sick/ill",
         "translationCount": 71,
@@ -2003,7 +1758,7 @@
       }
     },
     {
-      "index": 73,
+      "index": 67,
       "kind": "phrase",
       "text": "I'm sorry",
       "gloss": {
@@ -2016,7 +1771,7 @@
         "ar": "أَنَا آسِف",
         "en": "I'm sorry, I apologize"
       },
-      "freqRank": 78,
+      "freqRank": 72,
       "review": {
         "sense": "I'm sorry, I apologize",
         "translationCount": 114,
@@ -2031,7 +1786,7 @@
       }
     },
     {
-      "index": 74,
+      "index": 68,
       "kind": "phrase",
       "text": "I'm tired",
       "gloss": {
@@ -2045,7 +1800,7 @@
         "en": "I am tired (in need of rest or sleep)"
       },
       "example": "Gosh, I'm tired today.",
-      "freqRank": 79,
+      "freqRank": 73,
       "review": {
         "sense": "I am tired (in need of rest or sleep)",
         "translationCount": 111,
@@ -2054,7 +1809,7 @@
       }
     },
     {
-      "index": 75,
+      "index": 69,
       "kind": "phrase",
       "text": "my name is",
       "gloss": {
@@ -2067,7 +1822,7 @@
         "ar": "اِسْمِي ...",
         "en": "a way to identify oneself"
       },
-      "freqRank": 80,
+      "freqRank": 74,
       "review": {
         "sense": "a way to identify oneself",
         "translationCount": 224,
@@ -2076,14 +1831,14 @@
       }
     },
     {
-      "index": 76,
+      "index": 70,
       "kind": "phrase",
       "text": "what's good",
       "gloss": {
         "en": "(colloquial) what is good, especially in reference to food"
       },
       "example": "What's good here? I'm way too indecisive to choose from a menu.",
-      "freqRank": 81,
+      "freqRank": 75,
       "review": {
         "sense": "(colloquial) what is good, especially in reference to food",
         "translationCount": 3,
@@ -2099,7 +1854,7 @@
       }
     },
     {
-      "index": 77,
+      "index": 71,
       "kind": "phrase",
       "text": "what's new",
       "gloss": {
@@ -2110,7 +1865,7 @@
         "ru": "что но́вого?",
         "en": "informal greeting asking what has happened recently"
       },
-      "freqRank": 82,
+      "freqRank": 76,
       "review": {
         "sense": "informal greeting asking what has happened recently",
         "translationCount": 30,
@@ -2129,7 +1884,7 @@
       }
     },
     {
-      "index": 78,
+      "index": 72,
       "kind": "phrase",
       "text": "where are we",
       "gloss": {
@@ -2142,7 +1897,7 @@
         "ar": "أَيْنَ نَحْنُ؟",
         "en": "where are we"
       },
-      "freqRank": 84,
+      "freqRank": 78,
       "review": {
         "sense": "where are we",
         "translationCount": 44,
@@ -2150,7 +1905,7 @@
       }
     },
     {
-      "index": 79,
+      "index": 73,
       "kind": "phrase",
       "text": "where are you",
       "gloss": {
@@ -2163,7 +1918,7 @@
         "ar": "أَيْنَ أَنْتَ؟",
         "en": "where are you?"
       },
-      "freqRank": 85,
+      "freqRank": 79,
       "review": {
         "sense": "where are you?",
         "translationCount": 85,
@@ -2172,7 +1927,7 @@
       }
     },
     {
-      "index": 80,
+      "index": 74,
       "kind": "phrase",
       "text": "who are you",
       "gloss": {
@@ -2185,7 +1940,7 @@
         "ar": "مَنْ أَنْتَ؟",
         "en": "who are you?"
       },
-      "freqRank": 86,
+      "freqRank": 80,
       "review": {
         "sense": "who are you?",
         "translationCount": 160,
@@ -2193,7 +1948,7 @@
       }
     },
     {
-      "index": 81,
+      "index": 75,
       "kind": "phrase",
       "text": "you're right",
       "gloss": {
@@ -2205,7 +1960,7 @@
         "ar": "أَنْتَ عَلَى حَقّ",
         "en": "you're right"
       },
-      "freqRank": 87,
+      "freqRank": 81,
       "review": {
         "sense": "you're right",
         "translationCount": 45,
@@ -2220,7 +1975,7 @@
       }
     },
     {
-      "index": 82,
+      "index": 76,
       "kind": "phrase",
       "text": "do I know you",
       "gloss": {
@@ -2232,7 +1987,7 @@
         "ar": "هل أعرفُكَ؟",
         "en": "do I know you?"
       },
-      "freqRank": 88,
+      "freqRank": 82,
       "review": {
         "sense": "do I know you?",
         "translationCount": 46,
@@ -2240,7 +1995,7 @@
       }
     },
     {
-      "index": 83,
+      "index": 77,
       "kind": "phrase",
       "text": "I don't know",
       "gloss": {
@@ -2253,7 +2008,7 @@
         "ar": "لَا أَعْلَمُ",
         "en": "I don’t know"
       },
-      "freqRank": 89,
+      "freqRank": 83,
       "review": {
         "sense": "I don’t know",
         "translationCount": 229,
@@ -2279,13 +2034,13 @@
       }
     },
     {
-      "index": 84,
+      "index": 78,
       "kind": "phrase",
       "text": "what do you do",
       "gloss": {
         "en": "what do you do?"
       },
-      "freqRank": 90,
+      "freqRank": 84,
       "review": {
         "sense": "what do you do?",
         "translationCount": 1,
@@ -2293,7 +2048,7 @@
       }
     },
     {
-      "index": 85,
+      "index": 79,
       "kind": "phrase",
       "text": "what should I do",
       "gloss": {
@@ -2304,7 +2059,7 @@
         "ru": "что я должен сделать?",
         "en": "what should I do?"
       },
-      "freqRank": 92,
+      "freqRank": 86,
       "review": {
         "sense": "what should I do?",
         "translationCount": 20,
@@ -2313,7 +2068,7 @@
       }
     },
     {
-      "index": 86,
+      "index": 80,
       "kind": "phrase",
       "text": "how do you do",
       "gloss": {
@@ -2326,7 +2081,7 @@
         "ar": "تَشَرَّفْنَا",
         "en": "Phrase: how do you do"
       },
-      "freqRank": 93,
+      "freqRank": 87,
       "review": {
         "sense": "Phrase: how do you do",
         "translationCount": 76,
@@ -2342,7 +2097,7 @@
       }
     },
     {
-      "index": 87,
+      "index": 81,
       "kind": "phrase",
       "text": "I have a question",
       "gloss": {
@@ -2355,7 +2110,7 @@
         "ar": "عِنْدِي سُؤَال",
         "en": "I have a question"
       },
-      "freqRank": 94,
+      "freqRank": 88,
       "review": {
         "sense": "I have a question",
         "translationCount": 96,
@@ -2363,7 +2118,7 @@
       }
     },
     {
-      "index": 88,
+      "index": 82,
       "kind": "phrase",
       "text": "I have no money",
       "gloss": {
@@ -2376,7 +2131,7 @@
         "ar": "لَيْسَ لَدَيَّ مَالٌ",
         "en": "I have no money"
       },
-      "freqRank": 95,
+      "freqRank": 89,
       "review": {
         "sense": "I have no money",
         "translationCount": 91,
@@ -2384,7 +2139,7 @@
       }
     },
     {
-      "index": 89,
+      "index": 83,
       "kind": "phrase",
       "text": "I don't care",
       "gloss": {
@@ -2397,7 +2152,7 @@
         "ar": "لَا يَهُمُّنِي",
         "en": "I don't care"
       },
-      "freqRank": 96,
+      "freqRank": 90,
       "review": {
         "sense": "I don't care",
         "translationCount": 131,
@@ -2405,7 +2160,7 @@
       }
     },
     {
-      "index": 90,
+      "index": 84,
       "kind": "phrase",
       "text": "I don't drive",
       "gloss": {
@@ -2417,7 +2172,7 @@
         "ru": "я не вожу́",
         "en": "I don't drive (a car, a vehicle)"
       },
-      "freqRank": 97,
+      "freqRank": 91,
       "review": {
         "sense": "I don't drive (a car, a vehicle)",
         "translationCount": 39,
@@ -2426,7 +2181,7 @@
       }
     },
     {
-      "index": 91,
+      "index": 85,
       "kind": "phrase",
       "text": "have a nice day",
       "gloss": {
@@ -2439,7 +2194,7 @@
         "ar": "يَوْمًا سَعِيدًا",
         "en": "goodbye"
       },
-      "freqRank": 98,
+      "freqRank": 92,
       "review": {
         "sense": "goodbye",
         "translationCount": 58,
@@ -2454,7 +2209,7 @@
       }
     },
     {
-      "index": 92,
+      "index": 86,
       "kind": "phrase",
       "text": "I need a doctor",
       "gloss": {
@@ -2467,7 +2222,7 @@
         "ar": "أَحْتَاجُ طَبِيبًا",
         "en": "request for a doctor"
       },
-      "freqRank": 100,
+      "freqRank": 94,
       "review": {
         "sense": "request for a doctor",
         "translationCount": 72,
@@ -2476,7 +2231,7 @@
       }
     },
     {
-      "index": 93,
+      "index": 87,
       "kind": "phrase",
       "text": "I have a cold",
       "gloss": {
@@ -2489,7 +2244,7 @@
         "ar": "عِنْدِي رَشْح",
         "en": "I have a cold"
       },
-      "freqRank": 101,
+      "freqRank": 95,
       "review": {
         "sense": "I have a cold",
         "translationCount": 63,
@@ -2497,7 +2252,7 @@
       }
     },
     {
-      "index": 94,
+      "index": 88,
       "kind": "phrase",
       "text": "have a good weekend",
       "gloss": {
@@ -2507,7 +2262,7 @@
         "ar": "أَتَمَنَّى لَكَ نِهَايَةَ أُسْبُوع سَعِيدَة!",
         "en": "wish of a good weekend"
       },
-      "freqRank": 102,
+      "freqRank": 96,
       "review": {
         "sense": "wish of a good weekend",
         "translationCount": 16,
@@ -2516,7 +2271,7 @@
       }
     },
     {
-      "index": 95,
+      "index": 89,
       "kind": "phrase",
       "text": "I can't swim",
       "gloss": {
@@ -2529,7 +2284,7 @@
         "ar": "لَا أَسْتَطِيعُ السِّبَاحَة",
         "en": "I can't swim"
       },
-      "freqRank": 103,
+      "freqRank": 97,
       "review": {
         "sense": "I can't swim",
         "translationCount": 77,
@@ -2537,7 +2292,7 @@
       }
     },
     {
-      "index": 96,
+      "index": 90,
       "kind": "phrase",
       "text": "what a lovely day",
       "gloss": {
@@ -2549,7 +2304,7 @@
         "ru": "како́й чуде́сный день",
         "en": "what a lovely day"
       },
-      "freqRank": 104,
+      "freqRank": 98,
       "review": {
         "sense": "what a lovely day",
         "translationCount": 28,
@@ -2565,7 +2320,7 @@
       }
     },
     {
-      "index": 97,
+      "index": 91,
       "kind": "phrase",
       "text": "are you feeling better",
       "gloss": {
@@ -2575,7 +2330,7 @@
         "ru": "тебе́ лу́чше",
         "en": "polite"
       },
-      "freqRank": 105,
+      "freqRank": 99,
       "review": {
         "sense": "polite",
         "translationCount": 24,
@@ -2583,7 +2338,7 @@
       }
     },
     {
-      "index": 98,
+      "index": 92,
       "kind": "phrase",
       "text": "can you tell us",
       "gloss": {
@@ -2594,7 +2349,7 @@
         "en": "begins a polite request"
       },
       "example": "Can you tell us how you will motivate your students to learn?",
-      "freqRank": 106,
+      "freqRank": 100,
       "review": {
         "sense": "begins a polite request",
         "translationCount": 25,
@@ -2603,7 +2358,7 @@
       }
     },
     {
-      "index": 99,
+      "index": 93,
       "kind": "phrase",
       "text": "do you have children",
       "gloss": {
@@ -2616,7 +2371,7 @@
         "ar": "هَلْ لَدَيْكَ أَوْلاد؟",
         "en": "do you have children?"
       },
-      "freqRank": 107,
+      "freqRank": 101,
       "review": {
         "sense": "do you have children?",
         "translationCount": 108,
@@ -2624,7 +2379,7 @@
       }
     },
     {
-      "index": 100,
+      "index": 94,
       "kind": "phrase",
       "text": "do you love me",
       "gloss": {
@@ -2637,7 +2392,7 @@
         "ar": "هَلْ تُحِبُّنِي؟",
         "en": "do you love me?"
       },
-      "freqRank": 108,
+      "freqRank": 102,
       "review": {
         "sense": "do you love me?",
         "translationCount": 76,
@@ -2653,7 +2408,7 @@
       }
     },
     {
-      "index": 101,
+      "index": 95,
       "kind": "phrase",
       "text": "how old are you",
       "gloss": {
@@ -2666,7 +2421,7 @@
         "ar": "كَم عُمْرُكَ؟",
         "en": "what is your age in years"
       },
-      "freqRank": 109,
+      "freqRank": 103,
       "review": {
         "sense": "what is your age in years",
         "translationCount": 212,
@@ -2681,7 +2436,7 @@
       }
     },
     {
-      "index": 102,
+      "index": 96,
       "kind": "phrase",
       "text": "I am a doctor",
       "gloss": {
@@ -2693,7 +2448,7 @@
         "ar": "أَنَا طَبِيب",
         "en": "I am a doctor (a physician)"
       },
-      "freqRank": 110,
+      "freqRank": 104,
       "review": {
         "sense": "I am a doctor (a physician)",
         "translationCount": 34,
@@ -2702,7 +2457,7 @@
       }
     },
     {
-      "index": 103,
+      "index": 97,
       "kind": "phrase",
       "text": "I have a fever",
       "gloss": {
@@ -2714,7 +2469,7 @@
         "ru": "у меня́ жар",
         "en": "I have a fever"
       },
-      "freqRank": 111,
+      "freqRank": 105,
       "review": {
         "sense": "I have a fever",
         "translationCount": 32,
@@ -2722,7 +2477,7 @@
       }
     },
     {
-      "index": 104,
+      "index": 98,
       "kind": "phrase",
       "text": "I have a headache",
       "gloss": {
@@ -2735,7 +2490,7 @@
         "ar": "لَدَيَّ صُدَاع",
         "en": "I have a headache"
       },
-      "freqRank": 112,
+      "freqRank": 106,
       "review": {
         "sense": "I have a headache",
         "translationCount": 57,
@@ -2743,7 +2498,7 @@
       }
     },
     {
-      "index": 105,
+      "index": 99,
       "kind": "phrase",
       "text": "I'm a girl",
       "gloss": {
@@ -2753,7 +2508,7 @@
         "ru": "я де́вушка",
         "en": "I'm a girl"
       },
-      "freqRank": 113,
+      "freqRank": 107,
       "review": {
         "sense": "I'm a girl",
         "translationCount": 27,
@@ -2761,7 +2516,7 @@
       }
     },
     {
-      "index": 106,
+      "index": 100,
       "kind": "phrase",
       "text": "I'm a guy",
       "gloss": {
@@ -2769,7 +2524,7 @@
         "ru": "я мужчи́на",
         "en": "I'm a guy"
       },
-      "freqRank": 114,
+      "freqRank": 108,
       "review": {
         "sense": "I'm a guy",
         "translationCount": 20,
@@ -2777,7 +2532,7 @@
       }
     },
     {
-      "index": 107,
+      "index": 101,
       "kind": "phrase",
       "text": "I'm afraid not",
       "gloss": {
@@ -2788,7 +2543,7 @@
         "ru": "к сожале́нию",
         "en": "unfortunately, no"
       },
-      "freqRank": 115,
+      "freqRank": 109,
       "review": {
         "sense": "unfortunately, no",
         "translationCount": 24,
@@ -2803,7 +2558,7 @@
       }
     },
     {
-      "index": 108,
+      "index": 102,
       "kind": "phrase",
       "text": "I'm not interested",
       "gloss": {
@@ -2814,7 +2569,7 @@
         "ru": "я не заинтересован",
         "en": "I'm not interested"
       },
-      "freqRank": 116,
+      "freqRank": 110,
       "review": {
         "sense": "I'm not interested",
         "translationCount": 26,
@@ -2822,7 +2577,7 @@
       }
     },
     {
-      "index": 109,
+      "index": 103,
       "kind": "phrase",
       "text": "is anyone sitting here",
       "gloss": {
@@ -2830,7 +2585,7 @@
         "de": "sitzt hier schon jemand?",
         "en": "is anyone sitting here?"
       },
-      "freqRank": 117,
+      "freqRank": 111,
       "review": {
         "sense": "is anyone sitting here?",
         "translationCount": 12,
@@ -2838,7 +2593,7 @@
       }
     },
     {
-      "index": 110,
+      "index": 104,
       "kind": "phrase",
       "text": "is there a problem",
       "gloss": {
@@ -2851,7 +2606,7 @@
         "ar": "هَلْ هُنَاكَ مُشْكِلَة؟",
         "en": "is there a problem?"
       },
-      "freqRank": 118,
+      "freqRank": 112,
       "review": {
         "sense": "is there a problem?",
         "translationCount": 39,
@@ -2867,7 +2622,7 @@
       }
     },
     {
-      "index": 111,
+      "index": 105,
       "kind": "phrase",
       "text": "sorry I'm late",
       "gloss": {
@@ -2878,7 +2633,7 @@
         "ru": "извини́те, что опозда́л",
         "en": "sorry I'm late"
       },
-      "freqRank": 119,
+      "freqRank": 113,
       "review": {
         "sense": "sorry I'm late",
         "translationCount": 24,
@@ -2893,7 +2648,7 @@
       }
     },
     {
-      "index": 112,
+      "index": 106,
       "kind": "phrase",
       "text": "the line is busy",
       "gloss": {
@@ -2904,7 +2659,7 @@
         "ru": "ли́ния занята́",
         "en": "the line is busy"
       },
-      "freqRank": 120,
+      "freqRank": 114,
       "review": {
         "sense": "the line is busy",
         "translationCount": 17,
@@ -2913,7 +2668,7 @@
       }
     },
     {
-      "index": 113,
+      "index": 107,
       "kind": "phrase",
       "text": "this is a book",
       "gloss": {
@@ -2925,7 +2680,7 @@
         "ru": "э́то кни́га",
         "en": "a sample phrase to indicate an object (here: a book) and explain what it is"
       },
-      "freqRank": 121,
+      "freqRank": 115,
       "review": {
         "sense": "a sample phrase to indicate an object (here: a book) and explain what it is",
         "translationCount": 74,
@@ -2934,7 +2689,7 @@
       }
     },
     {
-      "index": 114,
+      "index": 108,
       "kind": "phrase",
       "text": "what are you doing",
       "gloss": {
@@ -2947,7 +2702,7 @@
         "ar": "مَاذَا تَفْعَلُ؟",
         "en": "what are you doing"
       },
-      "freqRank": 122,
+      "freqRank": 116,
       "review": {
         "sense": "what are you doing",
         "translationCount": 151,
@@ -2956,7 +2711,7 @@
       }
     },
     {
-      "index": 115,
+      "index": 109,
       "kind": "phrase",
       "text": "what is her name",
       "gloss": {
@@ -2965,7 +2720,7 @@
         "ar": "مَا اسْمُهَا",
         "en": "what is her name?"
       },
-      "freqRank": 123,
+      "freqRank": 117,
       "review": {
         "sense": "what is her name?",
         "translationCount": 24,
@@ -2973,7 +2728,7 @@
       }
     },
     {
-      "index": 116,
+      "index": 110,
       "kind": "phrase",
       "text": "what is his name",
       "gloss": {
@@ -2981,7 +2736,7 @@
         "pt-BR": "qual é o nome dele?",
         "en": "what is his name?"
       },
-      "freqRank": 124,
+      "freqRank": 118,
       "review": {
         "sense": "what is his name?",
         "translationCount": 21,
@@ -2989,13 +2744,13 @@
       }
     },
     {
-      "index": 117,
+      "index": 111,
       "kind": "phrase",
       "text": "what is their name",
       "gloss": {
         "en": "what is their name?"
       },
-      "freqRank": 125,
+      "freqRank": 119,
       "review": {
         "sense": "what is their name?",
         "translationCount": 7,
@@ -3003,7 +2758,7 @@
       }
     },
     {
-      "index": 118,
+      "index": 112,
       "kind": "phrase",
       "text": "what is your name",
       "gloss": {
@@ -3016,7 +2771,7 @@
         "ar": "مَا ٱسْمُكَ؟",
         "en": "what is your name?"
       },
-      "freqRank": 126,
+      "freqRank": 120,
       "review": {
         "sense": "what is your name?",
         "translationCount": 309,
@@ -3024,7 +2779,7 @@
       }
     },
     {
-      "index": 119,
+      "index": 113,
       "kind": "phrase",
       "text": "what's the matter",
       "gloss": {
@@ -3038,7 +2793,7 @@
         "en": "what's wrong?"
       },
       "example": "Why're you crying? What's the matter?",
-      "freqRank": 127,
+      "freqRank": 121,
       "review": {
         "sense": "what's wrong?",
         "translationCount": 86,
@@ -3054,7 +2809,7 @@
       }
     },
     {
-      "index": 120,
+      "index": 114,
       "kind": "phrase",
       "text": "what's your job",
       "gloss": {
@@ -3066,7 +2821,7 @@
         "ar": "مَا عَمَلُك؟",
         "en": "what's your job?"
       },
-      "freqRank": 128,
+      "freqRank": 122,
       "review": {
         "sense": "what's your job?",
         "translationCount": 45,
@@ -3074,7 +2829,7 @@
       }
     },
     {
-      "index": 121,
+      "index": 115,
       "kind": "phrase",
       "text": "what's your name",
       "gloss": {
@@ -3087,7 +2842,7 @@
         "ar": "مَا ٱسْمُكَ؟",
         "en": "what is your name?"
       },
-      "freqRank": 129,
+      "freqRank": 123,
       "review": {
         "sense": "what is your name?",
         "translationCount": 309,
@@ -3096,7 +2851,7 @@
       }
     },
     {
-      "index": 122,
+      "index": 116,
       "kind": "phrase",
       "text": "when is closing time",
       "gloss": {
@@ -3105,7 +2860,7 @@
         "pt-BR": "a que horas vocês fecham?",
         "en": "when is closing time?"
       },
-      "freqRank": 130,
+      "freqRank": 124,
       "review": {
         "sense": "when is closing time?",
         "translationCount": 10,
@@ -3113,7 +2868,7 @@
       }
     },
     {
-      "index": 123,
+      "index": 117,
       "kind": "phrase",
       "text": "where are you from",
       "gloss": {
@@ -3126,7 +2881,7 @@
         "ar": "مِنْ أَيْنَ أَنْتَ؟",
         "en": "in which country or region were you born or raised"
       },
-      "freqRank": 131,
+      "freqRank": 125,
       "review": {
         "sense": "in which country or region were you born or raised",
         "translationCount": 182,
@@ -3142,7 +2897,7 @@
       }
     },
     {
-      "index": 124,
+      "index": 118,
       "kind": "phrase",
       "text": "where are your parents",
       "gloss": {
@@ -3153,7 +2908,7 @@
         "ru": "где твои родители?",
         "en": "where are your parents?"
       },
-      "freqRank": 132,
+      "freqRank": 126,
       "review": {
         "sense": "where are your parents?",
         "translationCount": 15,
@@ -3161,7 +2916,7 @@
       }
     },
     {
-      "index": 125,
+      "index": 119,
       "kind": "phrase",
       "text": "where is the toilet",
       "gloss": {
@@ -3174,7 +2929,7 @@
         "ar": "أَيْنَ الْمِرْحَاض؟",
         "en": "direct me to the restroom"
       },
-      "freqRank": 133,
+      "freqRank": 127,
       "review": {
         "sense": "direct me to the restroom",
         "translationCount": 136,
@@ -3190,7 +2945,7 @@
       }
     },
     {
-      "index": 126,
+      "index": 120,
       "kind": "phrase",
       "text": "you have beautiful eyes",
       "gloss": {
@@ -3202,7 +2957,7 @@
         "ar": "لَدَيْكِ عَيْنَيْن جَمِيلَتَيْن",
         "en": "you have beautiful eyes"
       },
-      "freqRank": 134,
+      "freqRank": 128,
       "review": {
         "sense": "you have beautiful eyes",
         "translationCount": 32,
@@ -3217,7 +2972,7 @@
       }
     },
     {
-      "index": 127,
+      "index": 121,
       "kind": "phrase",
       "text": "how do I get to",
       "gloss": {
@@ -3230,7 +2985,7 @@
         "ar": "كَيْفَ يُمْكِنُنِي الْوُصُولُ إِلَى...؟",
         "en": "how do I get to...?"
       },
-      "freqRank": 135,
+      "freqRank": 129,
       "review": {
         "sense": "how do I get to...?",
         "translationCount": 28,
@@ -3238,7 +2993,7 @@
       }
     },
     {
-      "index": 128,
+      "index": 122,
       "kind": "phrase",
       "text": "do you come here often",
       "gloss": {
@@ -3249,7 +3004,7 @@
         "ru": "вы ча́сто сюда́ прихо́дите?",
         "en": "do you come here often?"
       },
-      "freqRank": 136,
+      "freqRank": 130,
       "review": {
         "sense": "do you come here often?",
         "translationCount": 23,
@@ -3257,7 +3012,7 @@
       }
     },
     {
-      "index": 129,
+      "index": 123,
       "kind": "phrase",
       "text": "I don't eat fish",
       "gloss": {
@@ -3270,7 +3025,7 @@
         "ar": "أَنَا لَا آكَل اَلسَّمَك",
         "en": "I don't eat fish"
       },
-      "freqRank": 137,
+      "freqRank": 131,
       "review": {
         "sense": "I don't eat fish",
         "translationCount": 42,
@@ -3279,7 +3034,7 @@
       }
     },
     {
-      "index": 130,
+      "index": 124,
       "kind": "phrase",
       "text": "I could eat a horse",
       "gloss": {
@@ -3291,7 +3046,7 @@
         "ru": "я быка́ бы съел",
         "en": "I am very hungry"
       },
-      "freqRank": 138,
+      "freqRank": 132,
       "review": {
         "sense": "I am very hungry",
         "translationCount": 31,
@@ -3307,7 +3062,7 @@
       }
     },
     {
-      "index": 131,
+      "index": 125,
       "kind": "phrase",
       "text": "I don't eat meat",
       "gloss": {
@@ -3320,7 +3075,7 @@
         "ar": "أَنَا لَا آكَل اللَّحْم",
         "en": "I don't eat meat"
       },
-      "freqRank": 139,
+      "freqRank": 133,
       "review": {
         "sense": "I don't eat meat",
         "translationCount": 65,
@@ -3329,7 +3084,7 @@
       }
     },
     {
-      "index": 132,
+      "index": 126,
       "kind": "phrase",
       "text": "are you doing anything tomorrow",
       "gloss": {
@@ -3340,7 +3095,7 @@
         "ar": "هَلْ تَفْعَلُ شَيْئًا غَدًا؟",
         "en": "familiar"
       },
-      "freqRank": 140,
+      "freqRank": 134,
       "review": {
         "sense": "familiar",
         "translationCount": 14,
@@ -3355,7 +3110,7 @@
       }
     },
     {
-      "index": 133,
+      "index": 127,
       "kind": "phrase",
       "text": "do you have a boyfriend",
       "gloss": {
@@ -3368,7 +3123,7 @@
         "ar": "هَلْ لَدَيْكِ حَبِيب؟",
         "en": "do you have a boyfriend?"
       },
-      "freqRank": 141,
+      "freqRank": 135,
       "review": {
         "sense": "do you have a boyfriend?",
         "translationCount": 43,
@@ -3376,7 +3131,7 @@
       }
     },
     {
-      "index": 134,
+      "index": 128,
       "kind": "phrase",
       "text": "do you have a girlfriend",
       "gloss": {
@@ -3389,7 +3144,7 @@
         "ar": "هَلْ لَدَيْكَ حَبِيبَة؟",
         "en": "do you have a girlfriend?"
       },
-      "freqRank": 142,
+      "freqRank": 136,
       "review": {
         "sense": "do you have a girlfriend?",
         "translationCount": 40,
@@ -3397,13 +3152,13 @@
       }
     },
     {
-      "index": 135,
+      "index": 129,
       "kind": "phrase",
       "text": "does this train stop at",
       "gloss": {
         "en": "Translations"
       },
-      "freqRank": 143,
+      "freqRank": 137,
       "review": {
         "sense": "Translations",
         "translationCount": 1,
@@ -3418,7 +3173,7 @@
       }
     },
     {
-      "index": 136,
+      "index": 130,
       "kind": "phrase",
       "text": "I am afraid of this",
       "gloss": {
@@ -3431,7 +3186,7 @@
         "ar": "أَنَا خَائِفٌ مِنْ هٰذَا",
         "en": "indicates that the speaker is afraid of something"
       },
-      "freqRank": 144,
+      "freqRank": 138,
       "review": {
         "sense": "indicates that the speaker is afraid of something",
         "translationCount": 41,
@@ -3440,7 +3195,7 @@
       }
     },
     {
-      "index": 137,
+      "index": 131,
       "kind": "phrase",
       "text": "I don't eat beef",
       "gloss": {
@@ -3448,7 +3203,7 @@
         "ar": "أنا لا آكل اللحم البقري",
         "en": "I don't eat beef"
       },
-      "freqRank": 146,
+      "freqRank": 140,
       "review": {
         "sense": "I don't eat beef",
         "translationCount": 26,
@@ -3464,7 +3219,7 @@
       }
     },
     {
-      "index": 138,
+      "index": 132,
       "kind": "phrase",
       "text": "I'm fine, thank you",
       "gloss": {
@@ -3476,7 +3231,7 @@
         "ru": "спаси́бо, хорошо́",
         "en": "expected, polite response to how are you?"
       },
-      "freqRank": 148,
+      "freqRank": 142,
       "review": {
         "sense": "expected, polite response to how are you?",
         "translationCount": 48,
@@ -3492,7 +3247,7 @@
       }
     },
     {
-      "index": 139,
+      "index": 133,
       "kind": "phrase",
       "text": "I'm twenty years old",
       "gloss": {
@@ -3505,7 +3260,7 @@
         "ar": "عُمْرِي عِشْرُونَ سَنَةً",
         "en": "I am twenty years old"
       },
-      "freqRank": 150,
+      "freqRank": 144,
       "review": {
         "sense": "I am twenty years old",
         "translationCount": 95,
@@ -3520,7 +3275,7 @@
       }
     },
     {
-      "index": 140,
+      "index": 134,
       "kind": "phrase",
       "text": "is anyone here a doctor",
       "gloss": {
@@ -3530,7 +3285,7 @@
         "ru": "здесь есть врач?",
         "en": "is anyone here a doctor?"
       },
-      "freqRank": 151,
+      "freqRank": 145,
       "review": {
         "sense": "is anyone here a doctor?",
         "translationCount": 16,
@@ -3538,7 +3293,7 @@
       }
     },
     {
-      "index": 141,
+      "index": 135,
       "kind": "phrase",
       "text": "is there a smaller size",
       "gloss": {
@@ -3550,7 +3305,7 @@
         "ar": "هَل يُوجَد مَقَاس أَصْغَر؟",
         "en": "is there a smaller size?"
       },
-      "freqRank": 152,
+      "freqRank": 146,
       "review": {
         "sense": "is there a smaller size?",
         "translationCount": 23,
@@ -3559,7 +3314,7 @@
       }
     },
     {
-      "index": 142,
+      "index": 136,
       "kind": "phrase",
       "text": "what languages do you speak",
       "gloss": {
@@ -3572,7 +3327,7 @@
         "ar": "مَا هِيَ اللُّغَات اَلَّتِي تَتَكَلَّمُهَا؟",
         "en": "what languages do you speak?"
       },
-      "freqRank": 154,
+      "freqRank": 148,
       "review": {
         "sense": "what languages do you speak?",
         "translationCount": 54,
@@ -3588,7 +3343,7 @@
       }
     },
     {
-      "index": 143,
+      "index": 137,
       "kind": "phrase",
       "text": "what's your phone number",
       "gloss": {
@@ -3601,7 +3356,7 @@
         "ar": "مَا رَقْمُ هَاتِفِكَ؟",
         "en": "what's your phone number?"
       },
-      "freqRank": 155,
+      "freqRank": 149,
       "review": {
         "sense": "what's your phone number?",
         "translationCount": 77,
@@ -3610,7 +3365,7 @@
       }
     },
     {
-      "index": 144,
+      "index": 138,
       "kind": "phrase",
       "text": "I don't have any money",
       "gloss": {
@@ -3623,7 +3378,7 @@
         "ar": "لَيْسَ لَدَيَّ مَالٌ",
         "en": "I have no money"
       },
-      "freqRank": 156,
+      "freqRank": 150,
       "review": {
         "sense": "I have no money",
         "translationCount": 91,
@@ -3632,7 +3387,7 @@
       }
     },
     {
-      "index": 145,
+      "index": 139,
       "kind": "phrase",
       "text": "do you think you can walk",
       "gloss": {
@@ -3643,7 +3398,7 @@
         "ru": "вы мо́жете идти́?",
         "en": "do you think you can walk?"
       },
-      "freqRank": 157,
+      "freqRank": 151,
       "review": {
         "sense": "do you think you can walk?",
         "translationCount": 24,
@@ -3651,7 +3406,7 @@
       }
     },
     {
-      "index": 146,
+      "index": 140,
       "kind": "phrase",
       "text": "can I buy you a drink",
       "gloss": {
@@ -3664,7 +3419,7 @@
         "ar": "هل تريد ان اشتري لك مشروب؟",
         "en": "can I buy you a drink?"
       },
-      "freqRank": 158,
+      "freqRank": 152,
       "review": {
         "sense": "can I buy you a drink?",
         "translationCount": 26,
@@ -3673,7 +3428,7 @@
       }
     },
     {
-      "index": 147,
+      "index": 141,
       "kind": "phrase",
       "text": "where can I find a hotel",
       "gloss": {
@@ -3683,7 +3438,7 @@
         "fr": "où puis-je trouver un hôtel",
         "en": "where can I find a hotel"
       },
-      "freqRank": 159,
+      "freqRank": 153,
       "review": {
         "sense": "where can I find a hotel",
         "translationCount": 19,
@@ -3691,7 +3446,7 @@
       }
     },
     {
-      "index": 148,
+      "index": 142,
       "kind": "phrase",
       "text": "how do you spell this word",
       "gloss": {
@@ -3704,7 +3459,7 @@
         "ar": "كَيْفَ تَتَهَجَّى هٰذِهِ الْكَلِمَة؟",
         "en": "how do you spell this word?"
       },
-      "freqRank": 160,
+      "freqRank": 154,
       "review": {
         "sense": "how do you spell this word?",
         "translationCount": 26,
@@ -3713,7 +3468,7 @@
       }
     },
     {
-      "index": 149,
+      "index": 143,
       "kind": "phrase",
       "text": "how many languages do you speak",
       "gloss": {
@@ -3726,7 +3481,7 @@
         "ar": "كَمْ لُغَةً تَتَحَدَّثُ؟",
         "en": "how many languages do you speak?"
       },
-      "freqRank": 161,
+      "freqRank": 155,
       "review": {
         "sense": "how many languages do you speak?",
         "translationCount": 55,
@@ -3742,7 +3497,7 @@
       }
     },
     {
-      "index": 150,
+      "index": 144,
       "kind": "phrase",
       "text": "do you have any brothers or sisters",
       "gloss": {
@@ -3753,7 +3508,7 @@
         "ar": "هَلْ لَدَيْكَ أَشِقَّاء؟",
         "en": "do you have any siblings?"
       },
-      "freqRank": 162,
+      "freqRank": 156,
       "review": {
         "sense": "do you have any siblings?",
         "translationCount": 40,
@@ -3762,7 +3517,7 @@
       }
     },
     {
-      "index": 151,
+      "index": 145,
       "kind": "phrase",
       "text": "how do I get to the airport",
       "gloss": {
@@ -3775,7 +3530,7 @@
         "ar": "كَيْفَ يُمْكِنُنِي الْوُصُولُ إِلَى الْمَطَار؟",
         "en": "how do I get to the airport?"
       },
-      "freqRank": 163,
+      "freqRank": 157,
       "review": {
         "sense": "how do I get to the airport?",
         "translationCount": 41,
@@ -3783,7 +3538,7 @@
       }
     },
     {
-      "index": 152,
+      "index": 146,
       "kind": "phrase",
       "text": "how do I get to the train station",
       "gloss": {
@@ -3796,7 +3551,7 @@
         "ar": "كَيْفَ أَصِلُ إِلَى مَحَطَّةِ الْقِطَار؟",
         "en": "how do I get to the train station?"
       },
-      "freqRank": 164,
+      "freqRank": 158,
       "review": {
         "sense": "how do I get to the train station?",
         "translationCount": 33,
@@ -3805,7 +3560,7 @@
       }
     },
     {
-      "index": 153,
+      "index": 147,
       "kind": "phrase",
       "text": "how do I get to the bus station",
       "gloss": {
@@ -3817,7 +3572,7 @@
         "ru": "как дое́хать до автовокза́ла?",
         "en": "how do I get to the bus station?"
       },
-      "freqRank": 165,
+      "freqRank": 159,
       "review": {
         "sense": "how do I get to the bus station?",
         "translationCount": 24,
@@ -3826,7 +3581,7 @@
       }
     },
     {
-      "index": 154,
+      "index": 148,
       "kind": "phrase",
       "text": "I can't.",
       "gloss": {
@@ -3838,13 +3593,13 @@
         "ru": "Я не могу.",
         "ar": "لا يمكنني."
       },
-      "freqRank": 166,
+      "freqRank": 160,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 155,
+      "index": 149,
       "kind": "phrase",
       "text": "Can you come?",
       "gloss": {
@@ -3856,13 +3611,13 @@
         "ru": "Можешь прийти?",
         "ar": "هل يمكنك القدوم؟"
       },
-      "freqRank": 167,
+      "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 156,
+      "index": 150,
       "kind": "phrase",
       "text": "He can come.",
       "gloss": {
@@ -3874,31 +3629,13 @@
         "ru": "Он может прийти.",
         "ar": "بإمكانه المجيء"
       },
-      "freqRank": 168,
+      "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 157,
-      "kind": "phrase",
-      "text": "Will she come?",
-      "gloss": {
-        "tr": "O gelecek mi?",
-        "de": "Wird sie kommen?",
-        "es": "¿Ella vendrá?",
-        "fr": "Viendra-t-elle ?",
-        "pt-BR": "Ela virá?",
-        "ru": "Она придёт?",
-        "ar": "هل ستأتي؟"
-      },
-      "freqRank": 169,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 158,
+      "index": 151,
       "kind": "phrase",
       "text": "I need you.",
       "gloss": {
@@ -3910,13 +3647,13 @@
         "ru": "Ты нужен мне.",
         "ar": "أحتاج إليك."
       },
-      "freqRank": 170,
+      "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 159,
+      "index": 152,
       "kind": "phrase",
       "text": "You need this.",
       "gloss": {
@@ -3928,13 +3665,13 @@
         "ru": "Вам это нужно.",
         "ar": "ستحتاج إلى ذلك."
       },
-      "freqRank": 171,
+      "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 160,
+      "index": 153,
       "kind": "phrase",
       "text": "How about you?",
       "gloss": {
@@ -3946,13 +3683,13 @@
         "ru": "А ты?",
         "ar": "ماذا عنك؟"
       },
-      "freqRank": 172,
+      "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 161,
+      "index": 154,
       "kind": "phrase",
       "text": "Here they come.",
       "gloss": {
@@ -3964,13 +3701,13 @@
         "ru": "Вот и они.",
         "ar": "ها قد أَتَوْا."
       },
-      "freqRank": 173,
+      "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 162,
+      "index": 155,
       "kind": "phrase",
       "text": "Never play here.",
       "gloss": {
@@ -3982,13 +3719,13 @@
         "ru": "Никогда тут не играй.",
         "ar": "لا تلعب هنا أبداً."
       },
-      "freqRank": 174,
+      "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 163,
+      "index": 156,
       "kind": "phrase",
       "text": "See you again.",
       "gloss": {
@@ -4000,31 +3737,31 @@
         "ru": "Увидимся.",
         "ar": "أراك مجدداً."
       },
-      "freqRank": 175,
+      "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 164,
+      "index": 157,
       "kind": "phrase",
       "text": "I hear you.",
       "gloss": {
-        "tr": "Ne demek istediğini anladım.",
+        "tr": "Seni duyuyorum.",
         "de": "Ich höre dich.",
         "es": "Te oigo.",
-        "fr": "Je comprends ce que tu es en train de dire.",
+        "fr": "Je t'entends.",
         "pt-BR": "Estou te ouvindo.",
         "ru": "Я тебя слышу.",
         "ar": "أنا أسمعك."
       },
-      "freqRank": 176,
+      "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 165,
+      "index": 158,
       "kind": "phrase",
       "text": "Don't move.",
       "gloss": {
@@ -4036,31 +3773,13 @@
         "ru": "Не двигайся.",
         "ar": "لا تتحرك."
       },
-      "freqRank": 177,
+      "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 166,
-      "kind": "phrase",
-      "text": "I'll pay.",
-      "gloss": {
-        "tr": "Ödeyeceğim.",
-        "de": "Ich werde zahlen.",
-        "es": "Yo pagaré.",
-        "fr": "Je paierai.",
-        "pt-BR": "Eu pagarei.",
-        "ru": "Я заплачу.",
-        "ar": "سأدفع أنا."
-      },
-      "freqRank": 178,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 167,
+      "index": 159,
       "kind": "phrase",
       "text": "I believe you.",
       "gloss": {
@@ -4072,13 +3791,13 @@
         "ru": "Я вам верю.",
         "ar": "أصدقك."
       },
-      "freqRank": 179,
+      "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 168,
+      "index": 160,
       "kind": "phrase",
       "text": "Yes, of course.",
       "gloss": {
@@ -4090,13 +3809,13 @@
         "ru": "Да, конечно.",
         "ar": "نعم، بالطبع."
       },
-      "freqRank": 180,
+      "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 169,
+      "index": 161,
       "kind": "phrase",
       "text": "No, thank you.",
       "gloss": {
@@ -4108,13 +3827,13 @@
         "ru": "Нет, спасибо.",
         "ar": "لا، شكراً لك."
       },
-      "freqRank": 181,
+      "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 170,
+      "index": 162,
       "kind": "phrase",
       "text": "I hope not.",
       "gloss": {
@@ -4126,13 +3845,13 @@
         "ru": "Надеюсь, нет.",
         "ar": "لا أتمنى ذلك."
       },
-      "freqRank": 182,
+      "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 171,
+      "index": 163,
       "kind": "phrase",
       "text": "We need water.",
       "gloss": {
@@ -4144,13 +3863,13 @@
         "ru": "Нам нужна вода.",
         "ar": "نحتاج الماء"
       },
-      "freqRank": 183,
+      "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 172,
+      "index": 164,
       "kind": "phrase",
       "text": "Do you remember?",
       "gloss": {
@@ -4162,13 +3881,13 @@
         "ru": "Ты помнишь?",
         "ar": "أما زلت تذكر؟"
       },
-      "freqRank": 184,
+      "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 173,
+      "index": 165,
       "kind": "phrase",
       "text": "Now I remember.",
       "gloss": {
@@ -4180,13 +3899,13 @@
         "ru": "Сейчас я помню.",
         "ar": "الآن تذكرت."
       },
-      "freqRank": 185,
+      "freqRank": 177,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 174,
+      "index": 166,
       "kind": "phrase",
       "text": "Answer the question.",
       "gloss": {
@@ -4198,13 +3917,13 @@
         "ru": "Ответь на вопрос.",
         "ar": "أجب على السؤال."
       },
-      "freqRank": 186,
+      "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 175,
+      "index": 167,
       "kind": "phrase",
       "text": "Just a minute.",
       "gloss": {
@@ -4216,13 +3935,13 @@
         "ru": "Одну минуту.",
         "ar": "دقيقة من فضلك."
       },
-      "freqRank": 187,
+      "freqRank": 179,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 176,
+      "index": 168,
       "kind": "phrase",
       "text": "Everything will change.",
       "gloss": {
@@ -4234,13 +3953,13 @@
         "ru": "Всё изменится.",
         "ar": "كل شيئ سيتغير."
       },
-      "freqRank": 188,
+      "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 177,
+      "index": 169,
       "kind": "phrase",
       "text": "I know everything.",
       "gloss": {
@@ -4252,13 +3971,13 @@
         "ru": "Я всё знаю.",
         "ar": "أعرف كل شيء."
       },
-      "freqRank": 189,
+      "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 178,
+      "index": 170,
       "kind": "phrase",
       "text": "Choose one person.",
       "gloss": {
@@ -4270,13 +3989,13 @@
         "ru": "Выбери одного человека.",
         "ar": "اختر شخصاً واحداً."
       },
-      "freqRank": 190,
+      "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 179,
+      "index": 171,
       "kind": "phrase",
       "text": "Please come here.",
       "gloss": {
@@ -4288,13 +4007,13 @@
         "ru": "Пожалуйста, приходите сюда.",
         "ar": "تعال الى هنا من فضلك."
       },
-      "freqRank": 191,
+      "freqRank": 183,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 180,
+      "index": 172,
       "kind": "phrase",
       "text": "Some water, please.",
       "gloss": {
@@ -4306,49 +4025,13 @@
         "ru": "Воды, пожалуйста.",
         "ar": "بعض الماء، من فضلك"
       },
-      "freqRank": 192,
+      "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 181,
-      "kind": "phrase",
-      "text": "Close the door.",
-      "gloss": {
-        "tr": "Kapıyı kapat.",
-        "de": "Mach die Tür zu.",
-        "es": "Cierra la puerta.",
-        "fr": "Ferme la porte !",
-        "pt-BR": "Feche a porta.",
-        "ru": "Закрой дверь.",
-        "ar": "أقفل الباب!"
-      },
-      "freqRank": 193,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 182,
-      "kind": "phrase",
-      "text": "You look happy.",
-      "gloss": {
-        "tr": "Mutlu görünüyorsun.",
-        "de": "Du siehst glücklich aus.",
-        "es": "Te ves contento.",
-        "fr": "Vous avez l'air heureux.",
-        "pt-BR": "Você parece feliz.",
-        "ru": "Ты выглядишь счастливым.",
-        "ar": "تبدو سعيداً"
-      },
-      "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 183,
+      "index": 173,
       "kind": "phrase",
       "text": "I usually walk.",
       "gloss": {
@@ -4360,13 +4043,13 @@
         "ru": "Обычно я иду пешком.",
         "ar": "عادةً أمشي."
       },
-      "freqRank": 195,
+      "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 184,
+      "index": 174,
       "kind": "phrase",
       "text": "The check, please.",
       "gloss": {
@@ -4378,13 +4061,13 @@
         "ru": "Чек, пожалуйста.",
         "ar": "الفاتورة من فضلك."
       },
-      "freqRank": 196,
+      "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 185,
+      "index": 175,
       "kind": "phrase",
       "text": "What a surprise!",
       "gloss": {
@@ -4396,13 +4079,13 @@
         "ru": "Какой сюрприз!",
         "ar": "يا لها من مفاجأة!"
       },
-      "freqRank": 197,
+      "freqRank": 187,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 186,
+      "index": 176,
       "kind": "phrase",
       "text": "Do you drink?",
       "gloss": {
@@ -4411,16 +4094,16 @@
         "es": "¿Bebes?",
         "fr": "Buvez-vous ?",
         "pt-BR": "Você bebe?",
-        "ru": "Вы пьёте спиртное?",
+        "ru": "Ты пьёшь?",
         "ar": "هل تشرب؟"
       },
-      "freqRank": 198,
+      "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 187,
+      "index": 177,
       "kind": "phrase",
       "text": "Bring the key.",
       "gloss": {
@@ -4432,13 +4115,13 @@
         "ru": "Принеси ключ.",
         "ar": "أحضر المفتاح."
       },
-      "freqRank": 199,
+      "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 188,
+      "index": 178,
       "kind": "phrase",
       "text": "Open the window.",
       "gloss": {
@@ -4450,13 +4133,13 @@
         "ru": "Открой окно.",
         "ar": "افتح النافذة."
       },
-      "freqRank": 200,
+      "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 189,
+      "index": 179,
       "kind": "phrase",
       "text": "Call the doctor!",
       "gloss": {
@@ -4468,31 +4151,31 @@
         "ru": "Вызови врача!",
         "ar": "اتصل بالطبيب!"
       },
-      "freqRank": 201,
+      "freqRank": 191,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 190,
+      "index": 180,
       "kind": "phrase",
       "text": "You look beautiful.",
       "gloss": {
         "tr": "Güzel görünüyorsun.",
         "de": "Du siehst schön aus.",
         "es": "Estás guapa.",
-        "fr": "Tu es très belle.",
+        "fr": "Tu es très beau.",
         "pt-BR": "Você está bonita.",
         "ru": "Ты красиво выглядишь.",
         "ar": "تبدين جميلة."
       },
-      "freqRank": 202,
+      "freqRank": 192,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 191,
+      "index": 181,
       "kind": "phrase",
       "text": "Good morning, everybody.",
       "gloss": {
@@ -4504,13 +4187,13 @@
         "ru": "Доброе утро всем.",
         "ar": "صَبَاح الْخَيْر جَمِيْعاً."
       },
-      "freqRank": 203,
+      "freqRank": 193,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 192,
+      "index": 182,
       "kind": "phrase",
       "text": "What a sentence!",
       "gloss": {
@@ -4522,13 +4205,13 @@
         "ru": "Ах какое предложение!",
         "ar": "يا لها من جملة!"
       },
-      "freqRank": 204,
+      "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 193,
+      "index": 183,
       "kind": "phrase",
       "text": "Love and Peace.",
       "gloss": {
@@ -4540,13 +4223,13 @@
         "ru": "Любовь и мир.",
         "ar": "الحب و السلام."
       },
-      "freqRank": 205,
+      "freqRank": 195,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 194,
+      "index": 184,
       "kind": "phrase",
       "text": "Don't cry.",
       "gloss": {
@@ -4558,13 +4241,13 @@
         "ru": "Не плачь.",
         "ar": "لا تبكي."
       },
-      "freqRank": 206,
+      "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 195,
+      "index": 185,
       "kind": "phrase",
       "text": "Do you smoke?",
       "gloss": {
@@ -4576,13 +4259,13 @@
         "ru": "Вы курите?",
         "ar": "هل تدخن؟"
       },
-      "freqRank": 207,
+      "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 196,
+      "index": 186,
       "kind": "phrase",
       "text": "You look busy.",
       "gloss": {
@@ -4594,13 +4277,13 @@
         "ru": "Ты выглядишь занятым.",
         "ar": "تبدو مشغولاً."
       },
-      "freqRank": 208,
+      "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 197,
+      "index": 187,
       "kind": "phrase",
       "text": "Please be quiet.",
       "gloss": {
@@ -4612,13 +4295,13 @@
         "ru": "Тише, пожалуйста.",
         "ar": "ابقَ هادئاً من فضلك."
       },
-      "freqRank": 209,
+      "freqRank": 199,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 198,
+      "index": 188,
       "kind": "phrase",
       "text": "Please drive carefully.",
       "gloss": {
@@ -4630,13 +4313,13 @@
         "ru": "Ведите осторожно, пожалуйста.",
         "ar": "قد بحذر من فضلك."
       },
-      "freqRank": 210,
+      "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 199,
+      "index": 189,
       "kind": "phrase",
       "text": "Can you swim?",
       "gloss": {
@@ -4648,13 +4331,13 @@
         "ru": "Ты умеешь плавать?",
         "ar": "هل بإمكانك السباحة؟"
       },
-      "freqRank": 211,
+      "freqRank": 201,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 200,
+      "index": 190,
       "kind": "phrase",
       "text": "He can swim.",
       "gloss": {
@@ -4666,13 +4349,13 @@
         "ru": "Он умеет плавать.",
         "ar": "هو يستطيع أن يسبح."
       },
-      "freqRank": 212,
+      "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 201,
+      "index": 191,
       "kind": "phrase",
       "text": "You look sick.",
       "gloss": {
@@ -4684,13 +4367,13 @@
         "ru": "Ты выглядишь больным.",
         "ar": "يبدو عليك المرض."
       },
-      "freqRank": 213,
+      "freqRank": 203,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 202,
+      "index": 192,
       "kind": "phrase",
       "text": "Meat or fish?",
       "gloss": {
@@ -4702,13 +4385,13 @@
         "ru": "Мясо или рыба?",
         "ar": "لحم أو سمك؟"
       },
-      "freqRank": 214,
+      "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 203,
+      "index": 193,
       "kind": "phrase",
       "text": "They eat meat.",
       "gloss": {
@@ -4720,13 +4403,13 @@
         "ru": "Они едят мясо.",
         "ar": "أكلوا لحما."
       },
-      "freqRank": 215,
+      "freqRank": 205,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 204,
+      "index": 194,
       "kind": "phrase",
       "text": "Good night, Mom.",
       "gloss": {
@@ -4738,13 +4421,13 @@
         "ru": "Спокойной ночи, мама.",
         "ar": "تصبحين على خير يا أمي."
       },
-      "freqRank": 216,
+      "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 205,
+      "index": 195,
       "kind": "phrase",
       "text": "Try the cake.",
       "gloss": {
@@ -4756,13 +4439,13 @@
         "ru": "Попробуй торт.",
         "ar": "جرب الكعكة."
       },
-      "freqRank": 217,
+      "freqRank": 207,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 206,
+      "index": 196,
       "kind": "phrase",
       "text": "Am I wrong?",
       "gloss": {
@@ -4774,13 +4457,13 @@
         "ru": "Я ошибаюсь?",
         "ar": "هل أنا مخطئ؟"
       },
-      "freqRank": 218,
+      "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 207,
+      "index": 197,
       "kind": "phrase",
       "text": "Answer my question.",
       "gloss": {
@@ -4792,13 +4475,13 @@
         "ru": "Ответь на мой вопрос.",
         "ar": "أجبني علی سؤالي."
       },
-      "freqRank": 219,
+      "freqRank": 209,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 208,
+      "index": 198,
       "kind": "phrase",
       "text": "Are these yours?",
       "gloss": {
@@ -4810,13 +4493,13 @@
         "ru": "Это ваши?",
         "ar": "هل هذه الأشياء لك؟"
       },
-      "freqRank": 220,
+      "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 209,
+      "index": 199,
       "kind": "phrase",
       "text": "Are they friends?",
       "gloss": {
@@ -4828,13 +4511,13 @@
         "ru": "Они друзья?",
         "ar": "هل هم أصدقاء؟"
       },
-      "freqRank": 221,
+      "freqRank": 211,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 210,
+      "index": 200,
       "kind": "phrase",
       "text": "Are you afraid?",
       "gloss": {
@@ -4846,13 +4529,13 @@
         "ru": "Боишься?",
         "ar": "هل أنتَ خائف؟"
       },
-      "freqRank": 222,
+      "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 211,
+      "index": 201,
       "kind": "phrase",
       "text": "Are you coming?",
       "gloss": {
@@ -4864,13 +4547,13 @@
         "ru": "Ты идёшь?",
         "ar": "هل أنت آتٍ؟"
       },
-      "freqRank": 223,
+      "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 212,
+      "index": 202,
       "kind": "phrase",
       "text": "Are you happy?",
       "gloss": {
@@ -4882,13 +4565,13 @@
         "ru": "Ты счастлива?",
         "ar": "هل أنت سعيد؟"
       },
-      "freqRank": 224,
+      "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 213,
+      "index": 203,
       "kind": "phrase",
       "text": "Are you hungry?",
       "gloss": {
@@ -4900,13 +4583,13 @@
         "ru": "Голоден?",
         "ar": "هل أنت جائع؟"
       },
-      "freqRank": 225,
+      "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 214,
+      "index": 204,
       "kind": "phrase",
       "text": "Are you kidding?",
       "gloss": {
@@ -4918,13 +4601,13 @@
         "ru": "Ты шутишь?",
         "ar": "هل تَمْزَح؟"
       },
-      "freqRank": 226,
+      "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 215,
+      "index": 205,
       "kind": "phrase",
       "text": "Are you listening?",
       "gloss": {
@@ -4936,31 +4619,13 @@
         "ru": "Вы слушаете?",
         "ar": "هل تستمع؟"
       },
-      "freqRank": 227,
+      "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 216,
-      "kind": "phrase",
-      "text": "Are you sad?",
-      "gloss": {
-        "tr": "Üzgün müsün?",
-        "de": "Bist du traurig?",
-        "es": "¿Estáis tristes?",
-        "fr": "Es-tu triste ?",
-        "pt-BR": "Você está triste?",
-        "ru": "Вы опечалены?",
-        "ar": "هل أنتَ حزين؟"
-      },
-      "freqRank": 228,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 217,
+      "index": 206,
       "kind": "phrase",
       "text": "Are you sure?",
       "gloss": {
@@ -4972,13 +4637,13 @@
         "ru": "Ты уверен?",
         "ar": "هل أنت متأكد؟"
       },
-      "freqRank": 229,
+      "freqRank": 218,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 218,
+      "index": 207,
       "kind": "phrase",
       "text": "Are you tired?",
       "gloss": {
@@ -4990,13 +4655,13 @@
         "ru": "Ты устал?",
         "ar": "هل أنت مُتعب؟"
       },
-      "freqRank": 230,
+      "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 219,
+      "index": 208,
       "kind": "phrase",
       "text": "Brush your teeth.",
       "gloss": {
@@ -5008,13 +4673,13 @@
         "ru": "Зубы почисти.",
         "ar": "فرش أسنانك."
       },
-      "freqRank": 231,
+      "freqRank": 220,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 220,
+      "index": 209,
       "kind": "phrase",
       "text": "Call me tomorrow.",
       "gloss": {
@@ -5026,13 +4691,13 @@
         "ru": "Звони мне завтра.",
         "ar": "اتصل بي غداً."
       },
-      "freqRank": 232,
+      "freqRank": 221,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 221,
+      "index": 210,
       "kind": "phrase",
       "text": "Clean your room.",
       "gloss": {
@@ -5044,13 +4709,13 @@
         "ru": "Уберись в своей комнате.",
         "ar": "نظف غرفتك."
       },
-      "freqRank": 233,
+      "freqRank": 222,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 222,
+      "index": 211,
       "kind": "phrase",
       "text": "Close your eyes.",
       "gloss": {
@@ -5062,13 +4727,13 @@
         "ru": "Закрой глаза.",
         "ar": "أغلق عينيك."
       },
-      "freqRank": 234,
+      "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 223,
+      "index": 212,
       "kind": "phrase",
       "text": "Did you call?",
       "gloss": {
@@ -5080,31 +4745,31 @@
         "ru": "Ты звонил?",
         "ar": "هل اتصلت؟"
       },
-      "freqRank": 235,
+      "freqRank": 224,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 224,
+      "index": 213,
       "kind": "phrase",
       "text": "Everybody loves her.",
       "gloss": {
         "tr": "Onu herkes sever.",
         "de": "Alle lieben sie.",
         "es": "Todos la aman.",
-        "fr": "Tout le monde l'aime.",
+        "fr": "Tout le monde l'adore.",
         "pt-BR": "Todos a amam.",
-        "ru": "Все любят её.",
+        "ru": "Все её любят.",
         "ar": "الجميع يحبونها."
       },
-      "freqRank": 236,
+      "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 225,
+      "index": 214,
       "kind": "phrase",
       "text": "Everybody loves music.",
       "gloss": {
@@ -5116,31 +4781,13 @@
         "ru": "Все любят музыку.",
         "ar": "الجميع يحبون الموسيقى."
       },
-      "freqRank": 237,
+      "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 226,
-      "kind": "phrase",
-      "text": "Everyone was happy.",
-      "gloss": {
-        "tr": "Herkes mutluydu.",
-        "de": "Alle waren glücklich.",
-        "es": "Todos estaban felices.",
-        "fr": "Tous étaient heureux.",
-        "pt-BR": "Todos estavam felizes.",
-        "ru": "Все были счастливы.",
-        "ar": "الكل كان سعيداً."
-      },
-      "freqRank": 238,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 227,
+      "index": 215,
       "kind": "phrase",
       "text": "Has anything changed?",
       "gloss": {
@@ -5152,13 +4799,13 @@
         "ru": "Что-нибудь изменилось?",
         "ar": "هل تغير أي شيء؟"
       },
-      "freqRank": 239,
+      "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 228,
+      "index": 216,
       "kind": "phrase",
       "text": "Have you finished?",
       "gloss": {
@@ -5166,17 +4813,17 @@
         "de": "Sind Sie fertig?",
         "es": "¿Ha terminado usted?",
         "fr": "As-tu fini ?",
-        "pt-BR": "Você terminou?",
+        "pt-BR": "Você já terminou?",
         "ru": "Вы закончили?",
         "ar": "هل إنتهيت؟"
       },
-      "freqRank": 240,
+      "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 229,
+      "index": 217,
       "kind": "phrase",
       "text": "He became rich.",
       "gloss": {
@@ -5188,13 +4835,13 @@
         "ru": "Он разбогател.",
         "ar": "هو صار غني."
       },
-      "freqRank": 241,
+      "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 230,
+      "index": 218,
       "kind": "phrase",
       "text": "He is eating.",
       "gloss": {
@@ -5206,13 +4853,13 @@
         "ru": "Он ест.",
         "ar": "إنه يأكل."
       },
-      "freqRank": 242,
+      "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 231,
+      "index": 219,
       "kind": "phrase",
       "text": "He is happy.",
       "gloss": {
@@ -5224,13 +4871,13 @@
         "ru": "Он счастлив.",
         "ar": "هو سعيد"
       },
-      "freqRank": 243,
+      "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 232,
+      "index": 220,
       "kind": "phrase",
       "text": "He is nice.",
       "gloss": {
@@ -5242,49 +4889,31 @@
         "ru": "Он хороший.",
         "ar": "إنه لطيف."
       },
-      "freqRank": 244,
+      "freqRank": 232,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 233,
-      "kind": "phrase",
-      "text": "He is sick.",
-      "gloss": {
-        "tr": "O, hastadır.",
-        "de": "Er ist krank.",
-        "es": "Él está enfermo.",
-        "fr": "Il est malade.",
-        "pt-BR": "Ele está doente.",
-        "ru": "Он болен.",
-        "ar": "إنه مريض."
-      },
-      "freqRank": 245,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 234,
+      "index": 221,
       "kind": "phrase",
       "text": "He learns fast.",
       "gloss": {
         "tr": "O hızlı öğrenir.",
-        "de": "Er lernt schnell.",
-        "es": "Él aprende rápidamente.",
+        "de": "Er lernt rasch.",
+        "es": "Él aprende rápido.",
         "fr": "Il apprend vite.",
         "pt-BR": "Ele aprende rápido.",
         "ru": "Он быстро учится.",
         "ar": "يتعلم بسرعة."
       },
-      "freqRank": 246,
+      "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 235,
+      "index": 222,
       "kind": "phrase",
       "text": "He looks strong.",
       "gloss": {
@@ -5296,13 +4925,13 @@
         "ru": "Он выглядит сильным.",
         "ar": "يبدو قوياً."
       },
-      "freqRank": 247,
+      "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 236,
+      "index": 223,
       "kind": "phrase",
       "text": "He loves her.",
       "gloss": {
@@ -5314,13 +4943,13 @@
         "ru": "Он ее любит.",
         "ar": "إنه يحبها."
       },
-      "freqRank": 248,
+      "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 237,
+      "index": 224,
       "kind": "phrase",
       "text": "He loves music.",
       "gloss": {
@@ -5332,13 +4961,13 @@
         "ru": "Он любит музыку.",
         "ar": "يحب الموسيقي."
       },
-      "freqRank": 249,
+      "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 238,
+      "index": 225,
       "kind": "phrase",
       "text": "He loves trains.",
       "gloss": {
@@ -5350,13 +4979,13 @@
         "ru": "Он обожает поезда.",
         "ar": "إنه يحب القطارات."
       },
-      "freqRank": 250,
+      "freqRank": 237,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 239,
+      "index": 226,
       "kind": "phrase",
       "text": "He remembers you.",
       "gloss": {
@@ -5368,13 +4997,13 @@
         "ru": "Он тебя помнит.",
         "ar": "هو يتذكرك."
       },
-      "freqRank": 251,
+      "freqRank": 238,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 240,
+      "index": 227,
       "kind": "phrase",
       "text": "He sells cars.",
       "gloss": {
@@ -5386,31 +5015,13 @@
         "ru": "Он продаёт автомобили.",
         "ar": "يبيع سيارات."
       },
-      "freqRank": 252,
+      "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 241,
-      "kind": "phrase",
-      "text": "He speaks quickly.",
-      "gloss": {
-        "tr": "O hızlı konuşur.",
-        "de": "Er spricht schnell.",
-        "es": "Él habla rápido.",
-        "fr": "Il parle vite.",
-        "pt-BR": "Ele fala rápido.",
-        "ru": "Он говорит быстро.",
-        "ar": "يتكلم بسرعة."
-      },
-      "freqRank": 253,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 242,
+      "index": 228,
       "kind": "phrase",
       "text": "He worked hard.",
       "gloss": {
@@ -5422,13 +5033,13 @@
         "ru": "Он работал не покладая рук.",
         "ar": "عمل بجد."
       },
-      "freqRank": 254,
+      "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 243,
+      "index": 229,
       "kind": "phrase",
       "text": "Here he comes.",
       "gloss": {
@@ -5440,13 +5051,13 @@
         "ru": "А вот и он.",
         "ar": "ها قد أتى."
       },
-      "freqRank": 255,
+      "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 244,
+      "index": 230,
       "kind": "phrase",
       "text": "Here we are.",
       "gloss": {
@@ -5458,13 +5069,13 @@
         "ru": "Вот мы здесь.",
         "ar": "ها قد وصلنا."
       },
-      "freqRank": 256,
+      "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 245,
+      "index": 231,
       "kind": "phrase",
       "text": "I am sick.",
       "gloss": {
@@ -5476,13 +5087,13 @@
         "ru": "Я болен.",
         "ar": "أنا مريض."
       },
-      "freqRank": 257,
+      "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 246,
+      "index": 232,
       "kind": "phrase",
       "text": "I am sure.",
       "gloss": {
@@ -5494,13 +5105,13 @@
         "ru": "Я уверен.",
         "ar": "أنا متأكد."
       },
-      "freqRank": 258,
+      "freqRank": 244,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 247,
+      "index": 233,
       "kind": "phrase",
       "text": "I am tall.",
       "gloss": {
@@ -5512,13 +5123,13 @@
         "ru": "Я высокий.",
         "ar": "أنا طويل."
       },
-      "freqRank": 259,
+      "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 248,
+      "index": 234,
       "kind": "phrase",
       "text": "I have brothers.",
       "gloss": {
@@ -5530,13 +5141,13 @@
         "ru": "У меня есть братья.",
         "ar": "عندي أخوة."
       },
-      "freqRank": 260,
+      "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 249,
+      "index": 235,
       "kind": "phrase",
       "text": "I have sisters.",
       "gloss": {
@@ -5548,13 +5159,13 @@
         "ru": "У меня есть сёстры.",
         "ar": "لدي أخوات."
       },
-      "freqRank": 261,
+      "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 250,
+      "index": 236,
       "kind": "phrase",
       "text": "I know him.",
       "gloss": {
@@ -5566,31 +5177,13 @@
         "ru": "Я знаю его.",
         "ar": "أعرفه."
       },
-      "freqRank": 262,
+      "freqRank": 248,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 251,
-      "kind": "phrase",
-      "text": "I love movies.",
-      "gloss": {
-        "tr": "Sinemaları seviyorum.",
-        "de": "Ich liebe Filme.",
-        "es": "Me encantan las películas.",
-        "fr": "J'aime les films.",
-        "pt-BR": "Eu adoro filmes.",
-        "ru": "Я обожаю кино.",
-        "ar": "أحب الأفلام."
-      },
-      "freqRank": 263,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 252,
+      "index": 237,
       "kind": "phrase",
       "text": "I love parties.",
       "gloss": {
@@ -5602,13 +5195,13 @@
         "ru": "Я люблю вечеринки.",
         "ar": "أحب الحفلات."
       },
-      "freqRank": 264,
+      "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 253,
+      "index": 238,
       "kind": "phrase",
       "text": "I love trips.",
       "gloss": {
@@ -5620,13 +5213,13 @@
         "ru": "Я люблю поездки.",
         "ar": "أحب الرحلات."
       },
-      "freqRank": 265,
+      "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 254,
+      "index": 239,
       "kind": "phrase",
       "text": "I loved you.",
       "gloss": {
@@ -5638,13 +5231,13 @@
         "ru": "Я любил тебя.",
         "ar": "عشقتك."
       },
-      "freqRank": 266,
+      "freqRank": 251,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 255,
+      "index": 240,
       "kind": "phrase",
       "text": "I played tennis.",
       "gloss": {
@@ -5656,13 +5249,13 @@
         "ru": "Я играл в теннис.",
         "ar": "لعبت التنس."
       },
-      "freqRank": 267,
+      "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 256,
+      "index": 241,
       "kind": "phrase",
       "text": "I saw nothing.",
       "gloss": {
@@ -5674,13 +5267,13 @@
         "ru": "Я ничего не увидел.",
         "ar": "انا لم ارى اي شيء."
       },
-      "freqRank": 268,
+      "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 257,
+      "index": 242,
       "kind": "phrase",
       "text": "I turned right.",
       "gloss": {
@@ -5692,31 +5285,13 @@
         "ru": "Я повернул направо.",
         "ar": "انعطفتُ يمينًا."
       },
-      "freqRank": 269,
+      "freqRank": 254,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 258,
-      "kind": "phrase",
-      "text": "I was hungry.",
-      "gloss": {
-        "tr": "Ben acıkmıştım.",
-        "de": "Ich war hungrig.",
-        "es": "Tenía hambre.",
-        "fr": "J'avais faim.",
-        "pt-BR": "Eu estava com fome.",
-        "ru": "Я был голоден.",
-        "ar": "كنت جائعاً."
-      },
-      "freqRank": 270,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 259,
+      "index": 243,
       "kind": "phrase",
       "text": "I was tired.",
       "gloss": {
@@ -5728,13 +5303,13 @@
         "ru": "Я был уставшим.",
         "ar": "كنت متعَبا."
       },
-      "freqRank": 271,
+      "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 260,
+      "index": 244,
       "kind": "phrase",
       "text": "I was wrong.",
       "gloss": {
@@ -5743,16 +5318,16 @@
         "es": "Estaba equivocado.",
         "fr": "Je me suis trompé.",
         "pt-BR": "Eu me enganei.",
-        "ru": "Я ошибся.",
+        "ru": "Я ошибался.",
         "ar": "كنت مخطئاً."
       },
-      "freqRank": 272,
+      "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 261,
+      "index": 245,
       "kind": "phrase",
       "text": "I'm coming.",
       "gloss": {
@@ -5764,13 +5339,13 @@
         "ru": "Иду.",
         "ar": "سآتي."
       },
-      "freqRank": 273,
+      "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 262,
+      "index": 246,
       "kind": "phrase",
       "text": "I'm free.",
       "gloss": {
@@ -5782,13 +5357,13 @@
         "ru": "Я свободен.",
         "ar": "أنا حُرّ."
       },
-      "freqRank": 274,
+      "freqRank": 258,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 263,
+      "index": 247,
       "kind": "phrase",
       "text": "I'm poor.",
       "gloss": {
@@ -5800,13 +5375,13 @@
         "ru": "Я беден.",
         "ar": "أنا فقير."
       },
-      "freqRank": 275,
+      "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 264,
+      "index": 248,
       "kind": "phrase",
       "text": "I'm rich.",
       "gloss": {
@@ -5815,16 +5390,16 @@
         "es": "Soy rico.",
         "fr": "Je suis riche.",
         "pt-BR": "Eu sou rico.",
-        "ru": "Я богат.",
+        "ru": "Я богатый.",
         "ar": "أنا ثري."
       },
-      "freqRank": 276,
+      "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 265,
+      "index": 249,
       "kind": "phrase",
       "text": "I'm sad.",
       "gloss": {
@@ -5836,31 +5411,13 @@
         "ru": "Мне грустно.",
         "ar": "أنا حزين."
       },
-      "freqRank": 277,
+      "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 266,
-      "kind": "phrase",
-      "text": "I'm thinking.",
-      "gloss": {
-        "tr": "Düşünüyorum.",
-        "de": "Ich überlege.",
-        "es": "Estoy pensando.",
-        "fr": "Je réfléchis.",
-        "pt-BR": "Estou pensando.",
-        "ru": "Я думаю.",
-        "ar": "أفكر."
-      },
-      "freqRank": 278,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 267,
+      "index": 250,
       "kind": "phrase",
       "text": "Is dinner ready?",
       "gloss": {
@@ -5872,13 +5429,13 @@
         "ru": "Обед готов?",
         "ar": "هل العشاء جاهز؟"
       },
-      "freqRank": 279,
+      "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 268,
+      "index": 251,
       "kind": "phrase",
       "text": "Is this love?",
       "gloss": {
@@ -5890,13 +5447,13 @@
         "ru": "Это любовь?",
         "ar": "هل هذا هو الحب؟"
       },
-      "freqRank": 280,
+      "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 269,
+      "index": 252,
       "kind": "phrase",
       "text": "Let me out!",
       "gloss": {
@@ -5908,31 +5465,13 @@
         "ru": "Выпустите меня!",
         "ar": "دعني أخرُج!"
       },
-      "freqRank": 281,
+      "freqRank": 264,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 270,
-      "kind": "phrase",
-      "text": "Let's begin.",
-      "gloss": {
-        "tr": "Başlayalım.",
-        "de": "Lasst uns beginnen.",
-        "es": "¡Empecemos!",
-        "fr": "Commençons !",
-        "pt-BR": "Vamos começar.",
-        "ru": "Давай начнём.",
-        "ar": "لنبدأ."
-      },
-      "freqRank": 282,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 271,
+      "index": 253,
       "kind": "phrase",
       "text": "Life is beautiful.",
       "gloss": {
@@ -5944,13 +5483,13 @@
         "ru": "Жизнь прекрасна.",
         "ar": "الحياة جميلة."
       },
-      "freqRank": 283,
+      "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 272,
+      "index": 254,
       "kind": "phrase",
       "text": "Life is short.",
       "gloss": {
@@ -5962,31 +5501,13 @@
         "ru": "Жизнь коротка.",
         "ar": "الحياة قصيرة."
       },
-      "freqRank": 284,
+      "freqRank": 266,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 273,
-      "kind": "phrase",
-      "text": "Look at him.",
-      "gloss": {
-        "tr": "Ona bak.",
-        "de": "Schaue ihn an.",
-        "es": "Míralo.",
-        "fr": "Regarde-le.",
-        "pt-BR": "Olhe para ele.",
-        "ru": "Посмотри на него.",
-        "ar": "انظر إليه"
-      },
-      "freqRank": 285,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 274,
+      "index": 255,
       "kind": "phrase",
       "text": "Look at me.",
       "gloss": {
@@ -5998,13 +5519,13 @@
         "ru": "Посмотрите на меня.",
         "ar": "انظر إليّ."
       },
-      "freqRank": 286,
+      "freqRank": 267,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 275,
+      "index": 256,
       "kind": "phrase",
       "text": "Mr. Smith came.",
       "gloss": {
@@ -6016,13 +5537,13 @@
         "ru": "Господин Смит пришёл.",
         "ar": "أتى السيد سميث."
       },
-      "freqRank": 287,
+      "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 276,
+      "index": 257,
       "kind": "phrase",
       "text": "No one knows.",
       "gloss": {
@@ -6034,13 +5555,13 @@
         "ru": "Никто не знает.",
         "ar": "لا أحد يعلم."
       },
-      "freqRank": 288,
+      "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 277,
+      "index": 258,
       "kind": "phrase",
       "text": "Open your mouth!",
       "gloss": {
@@ -6052,13 +5573,13 @@
         "ru": "Рот открой!",
         "ar": "إفتح فمك!"
       },
-      "freqRank": 289,
+      "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 278,
+      "index": 259,
       "kind": "phrase",
       "text": "People are people.",
       "gloss": {
@@ -6070,13 +5591,13 @@
         "ru": "Люди есть люди.",
         "ar": "الناس هم الناس."
       },
-      "freqRank": 290,
+      "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 279,
+      "index": 260,
       "kind": "phrase",
       "text": "Prices are high.",
       "gloss": {
@@ -6088,13 +5609,13 @@
         "ru": "Цены высокие.",
         "ar": "الأسعار مرتفعة."
       },
-      "freqRank": 291,
+      "freqRank": 272,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 280,
+      "index": 261,
       "kind": "phrase",
       "text": "Schools were built.",
       "gloss": {
@@ -6106,13 +5627,13 @@
         "ru": "Построили школы.",
         "ar": "أُنْشِئَتْ مدارس."
       },
-      "freqRank": 292,
+      "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 281,
+      "index": 262,
       "kind": "phrase",
       "text": "She began crying.",
       "gloss": {
@@ -6124,13 +5645,13 @@
         "ru": "Она заплакала.",
         "ar": "اِنهالت بالبكاء."
       },
-      "freqRank": 293,
+      "freqRank": 274,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 282,
+      "index": 263,
       "kind": "phrase",
       "text": "She grew roses.",
       "gloss": {
@@ -6142,13 +5663,13 @@
         "ru": "Она выращивала розы.",
         "ar": "زرعت ورداً."
       },
-      "freqRank": 294,
+      "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 283,
+      "index": 264,
       "kind": "phrase",
       "text": "She is beautiful.",
       "gloss": {
@@ -6160,13 +5681,13 @@
         "ru": "Она красивая.",
         "ar": "إنها جميلة."
       },
-      "freqRank": 295,
+      "freqRank": 276,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 284,
+      "index": 265,
       "kind": "phrase",
       "text": "She is crying.",
       "gloss": {
@@ -6178,13 +5699,13 @@
         "ru": "Она плачет.",
         "ar": "انها تبكي."
       },
-      "freqRank": 296,
+      "freqRank": 277,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 285,
+      "index": 266,
       "kind": "phrase",
       "text": "She is eating.",
       "gloss": {
@@ -6196,13 +5717,13 @@
         "ru": "Она ест.",
         "ar": "إنها تأكل."
       },
-      "freqRank": 297,
+      "freqRank": 278,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 286,
+      "index": 267,
       "kind": "phrase",
       "text": "She is happy.",
       "gloss": {
@@ -6214,13 +5735,13 @@
         "ru": "Она счастлива.",
         "ar": "هي سعيدة"
       },
-      "freqRank": 298,
+      "freqRank": 279,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 287,
+      "index": 268,
       "kind": "phrase",
       "text": "She is strong.",
       "gloss": {
@@ -6232,13 +5753,13 @@
         "ru": "Она сильная.",
         "ar": "هي قوية."
       },
-      "freqRank": 299,
+      "freqRank": 280,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 288,
+      "index": 269,
       "kind": "phrase",
       "text": "She loves children.",
       "gloss": {
@@ -6249,6 +5770,348 @@
         "pt-BR": "Ela adora crianças.",
         "ru": "Она любит детей.",
         "ar": "إنها تحب الأطفال."
+      },
+      "freqRank": 281,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 270,
+      "kind": "phrase",
+      "text": "Swimming is easy.",
+      "gloss": {
+        "tr": "Yüzme kolaydır.",
+        "de": "Schwimmen ist leicht.",
+        "es": "Nadar es fácil.",
+        "fr": "Nager, c'est facile.",
+        "pt-BR": "Nadar é fácil.",
+        "ru": "Плавать легко.",
+        "ar": "السباحة أمر سهل."
+      },
+      "freqRank": 282,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 271,
+      "kind": "phrase",
+      "text": "The answer is 42.",
+      "gloss": {
+        "tr": "Cevap 42.",
+        "de": "Die Antwort lautet zweiundvierzig.",
+        "es": "La respuesta es 42.",
+        "fr": "La réponse est 42.",
+        "pt-BR": "A resposta é 42.",
+        "ru": "Ответ 42.",
+        "ar": "الجواب هو 42."
+      },
+      "freqRank": 283,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 272,
+      "kind": "phrase",
+      "text": "The door opened.",
+      "gloss": {
+        "tr": "Kapı açıldı.",
+        "de": "Die Tür öffnete sich.",
+        "es": "La puerta se abrió.",
+        "fr": "La porte s'est ouverte.",
+        "pt-BR": "A porta abriu-se.",
+        "ru": "Дверь открылась.",
+        "ar": "فُتح الباب."
+      },
+      "freqRank": 284,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 273,
+      "kind": "phrase",
+      "text": "They were hungry.",
+      "gloss": {
+        "tr": "Onlar açtı.",
+        "de": "Sie waren hungrig.",
+        "es": "Ellos tenían hambre.",
+        "fr": "Ils avaient faim.",
+        "pt-BR": "Eles estavam com fome.",
+        "ru": "Они были голодны.",
+        "ar": "كانوا جائعين."
+      },
+      "freqRank": 285,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 274,
+      "kind": "phrase",
+      "text": "They're small.",
+      "gloss": {
+        "tr": "Onlar küçük.",
+        "de": "Sie sind klein.",
+        "es": "Son pequeños.",
+        "fr": "Ils sont petits.",
+        "pt-BR": "Eles são pequenos.",
+        "ru": "Они маленькие.",
+        "ar": "هم صغار."
+      },
+      "freqRank": 286,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 275,
+      "kind": "phrase",
+      "text": "This smells good.",
+      "gloss": {
+        "tr": "Bu güzel kokuyor.",
+        "de": "Das duftet gut.",
+        "es": "Esto huele bien.",
+        "fr": "Ça sent bon.",
+        "pt-BR": "Isso tem um bom cheiro.",
+        "ru": "Это хорошо пахнет.",
+        "ar": "لديها رائحة طيبة."
+      },
+      "freqRank": 287,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 276,
+      "kind": "phrase",
+      "text": "Today is Sunday.",
+      "gloss": {
+        "tr": "Bugün pazar.",
+        "de": "Heute ist Sonntag.",
+        "es": "Este día es domingo.",
+        "fr": "Aujourd'hui c'est dimanche.",
+        "pt-BR": "Hoje é domingo.",
+        "ru": "Сегодня воскресенье.",
+        "ar": "اليوم هو الأحد"
+      },
+      "freqRank": 288,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 277,
+      "kind": "phrase",
+      "text": "Today is Thursday.",
+      "gloss": {
+        "tr": "Bugün perşembe.",
+        "de": "Heute ist Donnerstag.",
+        "es": "Hoy es jueves.",
+        "fr": "Nous sommes jeudi.",
+        "pt-BR": "Hoje é quinta-feira.",
+        "ru": "Сегодня четверг.",
+        "ar": "اليوم هو الخميس."
+      },
+      "freqRank": 289,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 278,
+      "kind": "phrase",
+      "text": "Wash your hands.",
+      "gloss": {
+        "tr": "Ellerinizi yıkayın.",
+        "de": "Wasch dir die Hände.",
+        "es": "Lávense las manos.",
+        "fr": "Lave-toi les mains.",
+        "pt-BR": "Lave as mãos.",
+        "ru": "Вымой руки.",
+        "ar": "اِغسل يديك."
+      },
+      "freqRank": 290,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 279,
+      "kind": "phrase",
+      "text": "Water is life.",
+      "gloss": {
+        "tr": "Su yaşamdır.",
+        "de": "Wasser ist Leben.",
+        "es": "El agua es vida.",
+        "fr": "L'eau c'est la vie.",
+        "pt-BR": "Água é vida.",
+        "ru": "Вода - это жизнь.",
+        "ar": "الماء هو الحياة."
+      },
+      "freqRank": 291,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 280,
+      "kind": "phrase",
+      "text": "We are boys.",
+      "gloss": {
+        "tr": "Biz erkek çocuklarız.",
+        "de": "Wir sind Jungs.",
+        "es": "Somos muchachos.",
+        "fr": "Nous sommes des garçons.",
+        "pt-BR": "Somos meninos.",
+        "ru": "Мы мальчики.",
+        "ar": "إننا صبية."
+      },
+      "freqRank": 292,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 281,
+      "kind": "phrase",
+      "text": "We are happy.",
+      "gloss": {
+        "tr": "Biz mutluyuz.",
+        "de": "Wir sind glücklich.",
+        "es": "Estamos contentos.",
+        "fr": "Nous sommes heureux.",
+        "pt-BR": "Somos felizes.",
+        "ru": "Мы счастливы.",
+        "ar": "نحن مسرورون."
+      },
+      "freqRank": 293,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 282,
+      "kind": "phrase",
+      "text": "We are hungry.",
+      "gloss": {
+        "tr": "Biz açız.",
+        "de": "Wir sind hungrig.",
+        "es": "Tenemos hambre.",
+        "fr": "Nous avons faim.",
+        "pt-BR": "Nós estamos com fome.",
+        "ru": "Мы голодны.",
+        "ar": "إننا جائعون."
+      },
+      "freqRank": 294,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 283,
+      "kind": "phrase",
+      "text": "We are men.",
+      "gloss": {
+        "tr": "Biz erkeğiz.",
+        "de": "Wir sind Männer.",
+        "es": "Somos hombres.",
+        "fr": "Nous sommes des hommes.",
+        "pt-BR": "Somos homens.",
+        "ru": "Мы мужчины.",
+        "ar": "نحن رجال."
+      },
+      "freqRank": 295,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 284,
+      "kind": "phrase",
+      "text": "We arrived first.",
+      "gloss": {
+        "tr": "Biz ilk olarak vardık.",
+        "de": "Wir sind zuerst angekommen.",
+        "es": "Llegamos primero.",
+        "fr": "Nous arrivâmes les premiers.",
+        "pt-BR": "Nós chegamos primeiro.",
+        "ru": "Мы пришли первыми.",
+        "ar": "وصلنا أولاً"
+      },
+      "freqRank": 296,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 285,
+      "kind": "phrase",
+      "text": "We have arrived.",
+      "gloss": {
+        "tr": "Biz geldik.",
+        "de": "Wir sind angekommen.",
+        "es": "Llegamos.",
+        "fr": "Nous sommes arrivés.",
+        "pt-BR": "Chegamos.",
+        "ru": "Мы приехали.",
+        "ar": "لقد وصلنا."
+      },
+      "freqRank": 297,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 286,
+      "kind": "phrase",
+      "text": "We have guests.",
+      "gloss": {
+        "tr": "Misafirlerimiz var.",
+        "de": "Wir haben Gäste.",
+        "es": "Tenemos invitados.",
+        "fr": "Nous avons des invités.",
+        "pt-BR": "Temos convidados.",
+        "ru": "У нас гости.",
+        "ar": "لدينا ضيوف."
+      },
+      "freqRank": 298,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 287,
+      "kind": "phrase",
+      "text": "We know him.",
+      "gloss": {
+        "tr": "Biz onu tanırız.",
+        "de": "Wir kennen ihn.",
+        "es": "Lo conocemos.",
+        "fr": "Nous le connaissons.",
+        "pt-BR": "Nós conhecemos ele.",
+        "ru": "Мы его знаем.",
+        "ar": "نحن نعرفه"
+      },
+      "freqRank": 299,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 288,
+      "kind": "phrase",
+      "text": "We need answers.",
+      "gloss": {
+        "tr": "Bizim cevaplara ihtiyacımız var.",
+        "de": "Wir brauchen Antworten.",
+        "es": "Necesitamos respuestas.",
+        "fr": "Nous avons besoin de réponses.",
+        "pt-BR": "Precisamos de respostas.",
+        "ru": "Нам нужны ответы.",
+        "ar": "نحتاج لأجوبة."
       },
       "freqRank": 300,
       "review": {
