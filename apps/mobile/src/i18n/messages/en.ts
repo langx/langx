@@ -55,6 +55,7 @@ export const en = {
   tabs: {
     discover: 'Discover',
     chats: 'Chats',
+    echo: 'Echo',
     feed: 'Feed',
     me: 'Me',
   },
@@ -181,6 +182,80 @@ export const en = {
     correctedCannotEdit: 'Corrected — can’t be edited',
     share: 'Share',
     savePhrase: 'Save as a phrase',
+    echo: 'Add to Echo',
+    unecho: 'Remove from Echo',
+  },
+
+  /**
+   * Echo — the review tab.
+   *
+   * Nothing on a *card* is here. A card's front, back and example are a
+   * sentence somebody said in French or Russian, and they are data: they
+   * never pass through `t()` and they are never translated into the eight.
+   */
+  echo: {
+    title: 'Echo',
+    due: { one: '{count} card due', other: '{count} cards due' },
+    allCaughtUp: 'Nothing due right now',
+    review: 'Review',
+    allLanguages: 'All',
+
+    // Capture, from a chat bubble or a post.
+    added: 'Added to Echo',
+    alreadyAdded: 'Already in Echo',
+    removed: 'Removed from Echo',
+    addToEcho: 'Add echo',
+    removeFromEcho: 'Remove from Echo',
+    /** The chip at the end of a translation line, where the word is met. */
+    bubbleAdd: '+ Echo',
+    bubbleAdded: 'In Echo',
+    addFailedTitle: 'Could not add this card',
+    removeFailedTitle: 'Could not remove this card',
+    /**
+     * A ceiling, not a paywall — the number is the same on every plan, so
+     * this alert offers nothing to buy and must never open the upgrade screen.
+     */
+    limitTitle: 'Daily Echo limit reached',
+    limitBody: 'You can keep {count} cards a day. It resets tomorrow.',
+
+    // The tab.
+    fromYourChats: 'From your chats',
+    fromAPost: 'From a post',
+    seeAllCards: 'See all cards',
+    emptyTitle: 'Nothing to review yet',
+    emptyBody:
+      'Press and hold a message in a chat, then choose Add to Echo. It comes back tomorrow, then in three days, then in a week.',
+    emptyAction: 'Go to Chats',
+
+    // Every card.
+    cards: 'Cards',
+    cardCount: { one: '{count} card', other: '{count} cards' },
+    cardsEmptyTitle: 'No cards yet',
+    cardsEmptyBody: 'Sentences you keep from chats and posts collect here.',
+    remove: 'Remove',
+    removeTitle: 'Remove this card?',
+    removeBody: 'Its schedule goes with it. The message itself stays where it is.',
+
+    // The session.
+    sessionProgress: '{done} of {total}',
+    show: 'Show answer',
+    again: 'Again',
+    hard: 'Hard',
+    good: 'Good',
+    easy: 'Easy',
+    play: 'Play',
+    /** So a recording by a person is never mistaken for anything else. */
+    spokenBy: 'Spoken by {name}',
+    askToHearIt: 'Ask them to say it',
+    sessionEmptyTitle: 'Nothing due',
+    sessionEmptyBody: 'Come back later, or keep a sentence from one of your chats.',
+    doneTitle: 'Session complete',
+    doneReviewed: 'Reviewed',
+    doneRemembered: 'Remembered',
+    doneAgain: 'Again',
+    doneBody: 'Echo brings these back when they are due.',
+    saveFailedTitle: 'Your review did not save',
+    saveFailedBody: 'Your answers are still here. Try again.',
   },
 
   messageMeta: {

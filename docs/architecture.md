@@ -1336,15 +1336,15 @@ only thing that matters is preserving store identity.
 **P1:** Copilot, badges, availability hours, discovery boost, the "New Users"
 and "Enthusiasts" sort presets. _(Voice messages moved into P0 — the message
 migration needs them.)_
-**P2:** video calls, groups, the **learning module**, an on-chain distribution
+**P2:** video calls, groups, **Echo**, an on-chain distribution
 layer (after legal review). _(The moderation console was on this list and was
 pulled forward: the mailbox flow could decide a report but could not show which
 ones were still open, and three separate things — a frozen `tokenFrozenAt` that
 nothing cleared, an appeal queue that never emptied, a bug report with no
-row — were only visible once somebody tried to build the screen.)_ The learning module — spaced
-repetition over curated per-language, per-level courses — is what this list
-used to call the vocabulary notebook, widened from a personal word list into a
-content product; it is planned in [`learn-module.md`](./learn-module.md).
+row — were only visible once somebody tried to build the screen.)_ Echo — spaced repetition
+whose cards come out of real conversations, with curated packs beside them —
+is what this list used to call the vocabulary notebook and then the learning
+module. It is planned in [`echo.md`](./echo.md); phase 1 is built.
 
 > **Note — v1 feature parity:** voice messages and images are back in P0,
 > because the message migration would otherwise have to drop 1,270 voice notes

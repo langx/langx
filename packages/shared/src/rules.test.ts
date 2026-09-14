@@ -90,6 +90,25 @@ describe('plan limits', () => {
     }
   })
 
+  it('never caps Echo reviews, on any tier', () => {
+    // The design document says "ever". A number here would mean a person who
+    // wants to sit with their cards for an hour is told to stop, which is the
+    // opposite of what the module is for.
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].echoReviewsPerDay).toBeNull()
+    }
+  })
+
+  it('charges every tier the same Echo capture ceiling', () => {
+    // An abuse ceiling, not a paywall. The moment the paid tiers get a bigger
+    // number it becomes something to sell, and the refusal in the app is a
+    // plain alert that offers nothing to buy.
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].echoCapturesPerDay, tier).toBe(PLAN_LIMITS.free.echoCapturesPerDay)
+    }
+    expect(PLAN_LIMITS.free.echoCapturesPerDay).toBeGreaterThan(0)
+  })
+
   /** Iterates the real list rather than retyping it — a fourth feature added to
    *  `PRO_FEATURES` is then covered by this test automatically instead of
    *  silently escaping it. */

@@ -61,6 +61,7 @@ function post(overrides: Partial<FeedPost> = {}): FeedPost {
     topAnswer: null,
     correctedByViewer: false,
     answeredByViewer: false,
+    echoedByViewer: false,
     likeCount: 0,
     likedByViewer: false,
     createdAt: '2026-08-29T11:00:00.000Z',

@@ -359,6 +359,18 @@ export async function purgeExpiredAccounts(
         .updateMany({ userId }, { $set: { userId: `deleted:${randomUUID()}` } }),
       db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
+      /*
+       * Echo is entirely private — a card is a note somebody wrote to
+       * themselves and nobody else can see one — so both collections go
+       * whole, with no audit copy kept.
+       *
+       * The media a card points at is deliberately *not* touched. A card
+       * holds the URL of a photo in a message or a recording on a post, and
+       * both of those are owned by the thing they were sent to; deleting
+       * them here would empty somebody else's thread.
+       */
+      db.collection(COLLECTIONS.echoCards).deleteMany({ userId }),
+      db.collection(COLLECTIONS.echoReviews).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
       // The rows behind the images deleted above. A card's `_id` is a public
       // `/s/<id>` page about a person, so leaving it is leaving a profile

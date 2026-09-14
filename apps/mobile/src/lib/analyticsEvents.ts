@@ -16,7 +16,7 @@ import type { PurchaseOutcome } from './purchases'
 export type SignUpMethod = 'email' | 'google' | 'apple'
 
 /** What a guest was trying to do when the account gate stopped them. */
-export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'other'
+export type GuestGateAction = 'message' | 'like' | 'follow' | 'post' | 'echo' | 'other'
 
 /**
  * Which exposure a paywall view is.

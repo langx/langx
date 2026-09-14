@@ -12,6 +12,7 @@ const theirs: MessageActionContext = {
   corrected: false,
   starred: false,
   pinned: false,
+  echoed: false,
   t: createTranslate('en'),
 }
 
@@ -28,6 +29,7 @@ describe('messageActionsFor', () => {
       'correct',
       'translate',
       'copy',
+      'echo',
       'delete',
       'star',
       'pin',
@@ -142,12 +144,51 @@ describe('messageActionsFor', () => {
   })
 })
 
+describe('Add to Echo', () => {
+  it('is offered on your own message, unlike saving a phrase', () => {
+    // The case that decides it is a correction: the corrected line is the
+    // thing worth learning, and it is written on your sentence.
+    expect(ids({ mine: true })).toContain('echo')
+    expect(ids({ mine: true })).not.toContain('phrase')
+    expect(ids({ mine: true, type: 'correction' })).toContain('echo')
+  })
+
+  it('is offered on a photo that came with a caption', () => {
+    // The caption is the front; the photo is the cue. Without this a card
+    // made from a chat could never carry a picture.
+    expect(ids({ type: 'image', hasBody: true })).toContain('echo')
+    expect(ids({ type: 'image', hasBody: false })).not.toContain('echo')
+  })
+
+  it('is not offered where there is no sentence to keep', () => {
+    for (const type of ['audio', 'video', 'sticker', 'meeting', 'quiz', 'phrase'] as const) {
+      expect(ids({ type }), type).not.toContain('echo')
+    }
+  })
+
+  it('offers to take it back once it is kept', () => {
+    expect(find({ echoed: false }, 'echo')?.label).toBe('Add to Echo')
+    expect(find({ echoed: true }, 'echo')?.label).toBe('Remove from Echo')
+  })
+
+  it('sits on the first page, where one tap reaches it', () => {
+    expect(find({}, 'echo')?.page).toBe('primary')
+  })
+})
+
 describe('paginateActions', () => {
   const all = messageActionsFor(theirs)
 
-  it('keeps the everyday five on the first page', () => {
+  it('keeps the everyday six on the first page', () => {
     const { actions, hasMore } = paginateActions(all, 'primary')
-    expect(actions.map((a) => a.id)).toEqual(['reply', 'correct', 'translate', 'copy', 'delete'])
+    expect(actions.map((a) => a.id)).toEqual([
+      'reply',
+      'correct',
+      'translate',
+      'copy',
+      'echo',
+      'delete',
+    ])
     expect(hasMore).toBe(true)
   })
 

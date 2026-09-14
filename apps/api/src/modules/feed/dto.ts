@@ -99,6 +99,7 @@ export interface PostDtoContext {
   topAnswer: PronunciationAnswerDoc | null
   correctedByViewer: boolean
   answeredByViewer: boolean
+  echoedByViewer: boolean
   commentCount: number
   likes: LikeSummary
 }
@@ -123,6 +124,7 @@ export function postDto(post: Post, context: PostDtoContext): FeedPost {
       : null,
     correctedByViewer: context.correctedByViewer,
     answeredByViewer: context.answeredByViewer,
+    echoedByViewer: context.echoedByViewer,
     ...likeStateOf(context.likes, 'post', post._id),
     ...attachmentFields(post),
     createdAt: post.createdAt.toISOString(),

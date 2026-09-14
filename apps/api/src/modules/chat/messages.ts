@@ -26,6 +26,8 @@ import { blockedUserIds } from '../moderation/blocks'
 import { acceptsMessages, unwritableOfficialIds } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
+import { readEchoedMessageIds } from '../echo/echoed'
+import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
 import type { Profile } from '../profiles/profiles'
@@ -106,6 +108,36 @@ async function resolveReplyTo(
       REPLY_PREVIEW_MAX_LENGTH,
     ),
   }
+}
+
+/**
+ * The message this recording answers, if it is answering one.
+ *
+ * Validated the way `resolveReplyTo` validates its target and then some: the
+ * message has to be in this conversation, it has to have actually asked to be
+ * said out loud, and the person answering cannot be the person who asked.
+ * Reading your own sentence back to yourself is not an answer, and the
+ * client-side guess this replaces counted it as one.
+ *
+ * A target that fails any of those is dropped rather than refused. The
+ * recording is a real message either way, and failing the send because a
+ * pointer went stale would lose it.
+ */
+async function resolveAnswerTarget(
+  db: Db,
+  conversation: Conversation,
+  senderId: string,
+  answersMessageId: string | undefined,
+): Promise<Message | null> {
+  if (!answersMessageId || !ObjectId.isValid(answersMessageId)) return null
+
+  const target = await db.collection<Message>(COLLECTIONS.messages).findOne({
+    _id: new ObjectId(answersMessageId),
+    conversationId: conversation._id,
+    ask: 'pronunciation',
+  })
+  if (!target || target.senderId === senderId) return null
+  return target
 }
 
 /**
@@ -291,8 +323,12 @@ export async function sendPhrase(
 
   const updatedConversation = await recordMessage(db, conversation, message)
 
+  // Minted here rather than left to Mongo, so the Echo mirror below has a key
+  // on both the success and the duplicate path.
+  let phraseCardId = new ObjectId()
   try {
     await db.collection(COLLECTIONS.phraseCards).insertOne({
+      _id: phraseCardId,
       conversationId: conversation._id,
       messageId: message._id,
       authorId: senderId,
@@ -303,7 +339,32 @@ export async function sendPhrase(
     // `conversation_term_unique` refusing a repeat is the expected outcome, not
     // a failure. Anything else is.
     if (!(caught instanceof MongoServerError) || caught.code !== 11000) throw caught
+    /*
+     * The deck row already exists, written by whoever saved this word first —
+     * the index is per *conversation*, not per author, so the loser here is
+     * often the other person. Their Echo card is still theirs to have, and
+     * `card_source_unique` is per user, so both people end up with one card
+     * each against the same phrase. Without this the second person would
+     * silently get nothing.
+     */
+    const existing = await db
+      .collection<{ _id: ObjectId }>(COLLECTIONS.phraseCards)
+      .findOne({ conversationId: conversation._id, term: phrase.term })
+    if (!existing) return { message, conversation: updatedConversation }
+    phraseCardId = existing._id
   }
+
+  /*
+   * Awaited rather than fired off, so a test sees a deterministic outcome —
+   * it is one insert. It cannot throw: saving a phrase is what the person
+   * asked for, and a mirror that failed must not turn that into an error.
+   */
+  await mirrorPhraseToEcho(db, {
+    phraseCardId,
+    conversationId: conversation._id,
+    authorId: senderId,
+    phrase,
+  })
 
   return { message, conversation: updatedConversation }
 }
@@ -620,6 +681,7 @@ export async function sendMediaMessage(
   const kind = assertAttachmentsAllowed(input.attachments, storagePublicBaseUrl)
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+  const answers = await resolveAnswerTarget(db, conversation, senderId, input.answersMessageId)
 
   /*
    * After the checks above and before the insert, which is the only correct
@@ -651,7 +713,26 @@ export async function sendMediaMessage(
      */
     ...(first ? { media: first } : {}),
     ...(replyTo ? { replyTo } : {}),
+    ...(answers ? { answersMessageId: answers._id } : {}),
     createdAt: new Date(),
+  }
+
+  if (answers) {
+    /*
+     * Stamped on the asked message for the same reason `sendCorrection`
+     * stamps `correctedAt`: the target is already loaded, so this costs
+     * nothing, and it turns "has this been said out loud" into a field read
+     * for every reader instead of a scan of whatever happens to be on screen.
+     *
+     * First answer wins. A second recording is still a message and still
+     * plays; it just does not rewrite who answered first.
+     */
+    await db
+      .collection<Message>(COLLECTIONS.messages)
+      .updateOne(
+        { _id: answers._id, answeredAt: { $exists: false } },
+        { $set: { answeredAt: message.createdAt, answeredBy: senderId } },
+      )
   }
 
   const updatedConversation = await recordMessage(db, conversation, message)
@@ -734,8 +815,19 @@ export async function listMessages(
 
   const oldest = items[0]
   const newest = items.at(-1)
+  /*
+   * One query for the page, never one per message. The mark on a bubble is
+   * per viewer and lives in another collection, so it cannot ride along on the
+   * document the way `starred` does — this is the feed's `readLikeSummary`
+   * shape, applied to a thread.
+   */
+  const echoed = await readEchoedMessageIds(
+    db,
+    userId,
+    items.map((message) => message._id),
+  )
   return {
-    items: items.map((message) => toMessageView(message, userId)),
+    items: items.map((message) => toMessageView(message, userId, echoed)),
     // Only the direction actually being paged reports more: the caller already
     // holds everything on the side it came from, and claiming otherwise would
     // have an infinite query walk back over pages it has.
@@ -823,9 +915,14 @@ export async function listMessagesAround(
   const items = [...older, anchor, ...newer]
   const oldest = items[0]
   const newest = items.at(-1)
+  const echoed = await readEchoedMessageIds(
+    db,
+    userId,
+    items.map((message) => message._id),
+  )
 
   return {
-    items: items.map((message) => toMessageView(message, userId)),
+    items: items.map((message) => toMessageView(message, userId, echoed)),
     nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
     prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
     participants: conversation.participants,

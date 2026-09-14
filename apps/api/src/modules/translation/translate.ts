@@ -32,10 +32,62 @@ export interface TranslateOutcome {
 }
 
 /**
+ * The cached translation, or null.
+ *
+ * Split out from `translateText` so that Echo can share the cache without
+ * sharing the meter. A capture is charged `echoCapturesPerDay`, deliberately
+ * not `translationsPer24h` — but a sentence translated in a chat must still
+ * be free to echo, and one translated at capture must still be free to read
+ * in the thread, so both paths read and write the same rows.
+ *
  * Cache key is `{sourceHash, targetLang}` only, per the plan — `sourceLang`
- * (even auto-detected) doesn't participate. A cache hit costs nothing:
- * no quota check, no provider call. Only a genuine miss consumes the
- * caller's daily quota (unlimited on Pro) and reaches the network.
+ * (even auto-detected) doesn't participate.
+ */
+export async function lookupTranslation(
+  db: Db,
+  input: TranslateRequestInput,
+): Promise<TranslateOutcome | null> {
+  const hit = await db
+    .collection<TranslationCacheDoc>(COLLECTIONS.translationCache)
+    .findOne({ sourceHash: hashSourceText(input.text), targetLang: input.targetLang })
+  if (!hit) return null
+  return { translatedText: hit.translatedText, sourceLang: hit.sourceLang, cached: true }
+}
+
+/**
+ * Writes what the provider said, for whoever asks next.
+ *
+ * upsert, not insertOne — a concurrent miss for the same brand-new text can
+ * land here twice (each already paid its own quota slot, accepted the same
+ * way Faz 4's rare pairKey race is); `$setOnInsert` makes the loser a no-op
+ * instead of a duplicate-key error.
+ */
+export async function rememberTranslation(
+  db: Db,
+  input: TranslateRequestInput,
+  result: { translatedText: string; sourceLang: string },
+): Promise<void> {
+  const now = new Date()
+  await db.collection<TranslationCacheDoc>(COLLECTIONS.translationCache).updateOne(
+    { sourceHash: hashSourceText(input.text), targetLang: input.targetLang },
+    {
+      $setOnInsert: {
+        sourceHash: hashSourceText(input.text),
+        targetLang: input.targetLang,
+        translatedText: result.translatedText,
+        sourceLang: result.sourceLang,
+        createdAt: now,
+        expiresAt: new Date(now.getTime() + CACHE_TTL_MS),
+      },
+    },
+    { upsert: true },
+  )
+}
+
+/**
+ * A cache hit costs nothing: no quota check, no provider call. Only a genuine
+ * miss consumes the caller's daily quota (unlimited on Pro) and reaches the
+ * network.
  */
 export async function translateText(
   db: Db,
@@ -43,11 +95,8 @@ export async function translateText(
   userId: string,
   input: TranslateRequestInput,
 ): Promise<TranslateOutcome> {
-  const sourceHash = hashSourceText(input.text)
-  const cache = db.collection<TranslationCacheDoc>(COLLECTIONS.translationCache)
-
-  const hit = await cache.findOne({ sourceHash, targetLang: input.targetLang })
-  if (hit) return { translatedText: hit.translatedText, sourceLang: hit.sourceLang, cached: true }
+  const hit = await lookupTranslation(db, input)
+  if (hit) return hit
 
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
@@ -62,26 +111,7 @@ export async function translateText(
   }
 
   const result = await provider.translate(input)
-  const now = new Date()
-
-  // upsert, not insertOne — a concurrent miss for the same brand-new text can
-  // land here twice (each already paid its own quota slot, accepted the same
-  // way Faz 4's rare pairKey race is); `$setOnInsert` makes the loser a no-op
-  // instead of a duplicate-key error.
-  await cache.updateOne(
-    { sourceHash, targetLang: input.targetLang },
-    {
-      $setOnInsert: {
-        sourceHash,
-        targetLang: input.targetLang,
-        translatedText: result.translatedText,
-        sourceLang: result.sourceLang,
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + CACHE_TTL_MS),
-      },
-    },
-    { upsert: true },
-  )
+  await rememberTranslation(db, input, result)
 
   return { translatedText: result.translatedText, sourceLang: result.sourceLang, cached: false }
 }

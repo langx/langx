@@ -8,9 +8,11 @@ import type { Profile } from '../modules/profiles/profiles'
  * `null` on both tiers (see limits.ts's doc comment), so nothing ever needs
  * to track it, and `profiles.quota` spends no storage on a limit that does
  * not exist. `media` *is* tracked: attachments cost bytes we store and serve
- * forever, which text does not.
+ * forever, which text does not. `echoCaptures` is tracked for the same reason
+ * as `translations`: capturing a card asks Google to translate a sentence the
+ * thread had not translated, and that is billed per character.
  */
-export type TrackedQuotaKind = 'initiations' | 'translations' | 'media'
+export type TrackedQuotaKind = 'initiations' | 'translations' | 'media' | 'echoCaptures'
 
 export interface QuotaStatus {
   limit: number | null
@@ -77,13 +79,27 @@ export async function consumeQuota(
   const now = new Date()
   const windowStart = windowStartAt(now)
   const field = `quota.${kind}`
+  /**
+   * `$ifNull`, because `$filter` raises on a missing field rather than
+   * treating it as empty — and every profile written before a quota kind was
+   * added lacks its array. Without this the first request of a newly added
+   * kind is a 500 for every account that predates it, which is the whole
+   * user base. `recordRefusal` below already does the same thing for the same
+   * reason; doing it here makes the helper safe for the next kind too, and
+   * removes the backfill that would otherwise have to run before a deploy.
+   */
+  const inWindow = { $ifNull: [`$${field}`, []] }
 
   const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
     {
       _id: userId,
       $expr: {
         $lt: [
-          { $size: { $filter: { input: `$${field}`, cond: { $gte: ['$$this', windowStart] } } } },
+          {
+            $size: {
+              $filter: { input: inWindow, cond: { $gte: ['$$this', windowStart] } },
+            },
+          },
           limit,
         ],
       },
@@ -93,7 +109,7 @@ export async function consumeQuota(
         $set: {
           [field]: {
             $concatArrays: [
-              { $filter: { input: `$${field}`, cond: { $gte: ['$$this', windowStart] } } },
+              { $filter: { input: inWindow, cond: { $gte: ['$$this', windowStart] } } },
               [now],
             ],
           },

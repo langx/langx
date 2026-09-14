@@ -9,6 +9,7 @@ import {
   type Media,
   MESSAGE_REACTIONS,
   PHRASE_EXAMPLE_MAX_LENGTH,
+  PLAN_LIMITS,
   hasFeature,
   webUrl,
   messageTranslationSchema,
@@ -37,6 +38,8 @@ import {
   markConversationRead,
   uploadMessageMedia,
   useBlockUser,
+  useCaptureEcho,
+  useRemoveEcho,
   useConversation,
   useEffectiveTier,
   useConversationFlags,
@@ -136,10 +139,20 @@ export default function ChatScreen() {
 
   // `at` is the single entry point for "open this thread at that message": a
   // tapped quote uses it, and so will the pinned banner and the starred list.
-  const { id, at, inPlace } = useLocalSearchParams<{
+  const {
+    id,
+    at,
+    inPlace,
+    ask: askParam,
+    draft: draftParam,
+  } = useLocalSearchParams<{
     id: string
     at?: string
     inPlace?: string
+    /** Arms the composer for a request. Echo's "ask them to say it" sends this. */
+    ask?: string
+    /** Seeds the composer. The sentence being asked about, from a card. */
+    draft?: string
   }>()
   const conversationId = id ?? ''
   /*
@@ -196,6 +209,20 @@ export default function ChatScreen() {
    * edit, correct and reply.
    */
   const [asking, setAsking] = useState<MessageAsk | null>(null)
+  /*
+   * Arrived asking. An Echo card with no recording links here so a forgotten
+   * sentence becomes a reason to write to somebody — which, in a cold start,
+   * is the direction that matters.
+   *
+   * Once, on mount: re-applying it would fight whatever the person typed next.
+   */
+  const armed = useRef(false)
+  useEffect(() => {
+    if (armed.current || askParam !== 'pronunciation') return
+    armed.current = true
+    setAsking('pronunciation')
+    if (draftParam) setDraft(draftParam)
+  }, [askParam, draftParam])
   /**
    * Send this one in their language too.
    *
@@ -217,6 +244,15 @@ export default function ChatScreen() {
    */
   const [awayFrom, setAwayFrom] = useState<string | null>(null)
   const [replyingTo, setReplyingTo] = useState<MessageDto | null>(null)
+  /**
+   * The pronunciation ask the recorder was opened to answer.
+   *
+   * Trusted only while the quote still points at the same message, which is
+   * what `answersAskId` below works out. Clearing the banner or quoting
+   * something else takes the claim with it, so none of the six places that
+   * reset `replyingTo` has to remember this one exists.
+   */
+  const [answeringAskId, setAnsweringAskId] = useState<string | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
@@ -228,6 +264,8 @@ export default function ChatScreen() {
   const [jumpAnchor, setJumpAnchor] = useState<string | null>(at ?? null)
   const [highlighted, setHighlighted] = useState<string | null>(null)
   const translateApi = useTranslate()
+  const captureEcho = useCaptureEcho()
+  const removeEchoApi = useRemoveEcho()
   const keyboardInset = useKeyboardInset()
   const block = useBlockUser()
   // For the header menu's pin — the message window does not carry the flags.
@@ -590,10 +628,18 @@ export default function ChatScreen() {
     const answered = new Set<string>()
     for (const message of items) {
       if (message.corrected) answered.add(message._id)
+      if (message.askAnswered) answered.add(message._id)
+      // The fallback, for recordings sent before the server started stamping
+      // the message they answer. Wrong in both directions — it counts a voice
+      // note that merely quotes, and it sees only the loaded window — which is
+      // why it is no longer the rule.
       if (message.type === 'audio' && message.replyTo) answered.add(message.replyTo.messageId)
     }
     return answered
   }, [items])
+
+  /** Null unless the recording about to be sent really is answering an ask. */
+  const answersAskId = replyingTo && replyingTo._id === answeringAskId ? answeringAskId : null
 
   /**
    * Answers the request on somebody else's message.
@@ -607,6 +653,7 @@ export default function ChatScreen() {
     if (ask === 'correction') {
       setAsking(null)
       setReplyingTo(null)
+      setAnsweringAskId(null)
       setCorrecting(message)
       setDraft(message.body)
       return
@@ -619,6 +666,7 @@ export default function ChatScreen() {
       return
     }
     setReplyingTo(message)
+    setAnsweringAskId(message._id)
     void toggleRecording()
   }
 
@@ -861,10 +909,15 @@ export default function ChatScreen() {
         attachments: uploaded,
         ...(body ? { body } : {}),
         ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+        // Separate from the quote: a reply quotes, and quoting is not
+        // answering. The server re-checks all of it and drops the claim if the
+        // target never asked, or if the asker is the one recording.
+        ...(answersAskId ? { answersMessageId: answersAskId } : {}),
       })
       track({ name: 'message_sent', properties: { kind: first.kind, reply: replyingTo !== null } })
       setPending((list) => removePending(list, clientId))
       setReplyingTo(null)
+      setAnsweringAskId(null)
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched
@@ -1178,6 +1231,9 @@ export default function ChatScreen() {
       corrected: message.corrected === true,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
+      // Strict, like `corrected` above: an unknown shape reads as "not kept"
+      // rather than offering to remove a card that does not exist.
+      echoed: message.echoed === true,
       t,
     })
 
@@ -1258,8 +1314,59 @@ export default function ChatScreen() {
           example: message.body.slice(0, PHRASE_EXAMPLE_MAX_LENGTH),
         },
       })
+    } else if (picked.id === 'echo') {
+      await (message.echoed ? removeEcho(message) : addEcho(message))
     } else if (picked.id === 'report') {
       reportMessage(message)
+    }
+  }
+
+  /**
+   * Keeps a sentence.
+   *
+   * The private translation this screen is holding travels with the request.
+   * It lives only in `translations` — a reader's own view of somebody else's
+   * sentence, never stored — so the server cannot find it, and sending it is
+   * what stops a second translation being paid for.
+   */
+  async function addEcho(message: MessageDto): Promise<void> {
+    try {
+      const result = await captureEcho.mutateAsync({
+        source: {
+          kind: 'chat',
+          conversationId,
+          messageId: message._id,
+          ...(translations[message._id] && translateTarget
+            ? { translation: translations[message._id], translationLang: translateTarget }
+            : {}),
+        },
+      })
+      showToast(t(result.created ? 'echo.added' : 'echo.alreadyAdded'))
+    } catch (error) {
+      /*
+       * No paywall, deliberately — and this is the one place the difference
+       * from `translate` above matters. `echoCapturesPerDay` is the same 50
+       * on every plan, so the upgrade screen would be offering something that
+       * does not exist. A ceiling gets an explanation; only a gate gets a
+       * price.
+       */
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.limitBody', { count: PLAN_LIMITS.free.echoCapturesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.addFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
+  async function removeEcho(message: MessageDto): Promise<void> {
+    try {
+      await removeEchoApi.mutateAsync({ idOrSourceKey: `msg:${message._id}`, conversationId })
+      showToast(t('echo.removed'))
+    } catch {
+      await showAlert(t('echo.removeFailedTitle'), t('common.retry'))
     }
   }
 
@@ -1390,6 +1497,15 @@ export default function ChatScreen() {
     },
     [],
   )
+
+  /** The bubble's Echo chip, stabilised for the same reason. */
+  const addEchoRef = useRef(addEcho)
+  useEffect(() => {
+    addEchoRef.current = addEcho
+  })
+  const onEcho = useCallback((message: MessageDto) => {
+    void addEchoRef.current(message)
+  }, [])
 
   function reportMessage(message: MessageDto): void {
     if (!partnerId) return
@@ -1760,7 +1876,8 @@ export default function ChatScreen() {
                   </View>
                 ) : (
                   // A stand-in has no server id yet, so a menu or a reply on it
-                  // would have nothing to act on until the echo lands.
+                  // would have nothing to act on until the server's copy
+                  // arrives.
                   <MessageBubble
                     message={row.message}
                     mine={isMine(row.message)}
@@ -1779,6 +1896,7 @@ export default function ChatScreen() {
                     meetingTheirWhen={meetingTheirWhenFor(row.message)}
                     pending={isOutgoingId(row.message._id)}
                     onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                    onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
                     onReply={isOutgoingId(row.message._id) ? ignore : onReply}
                     onJumpTo={onJumpTo}
                     onOpenMedia={onOpenMedia}

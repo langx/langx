@@ -21,7 +21,14 @@ import {
   type MessageAsk,
   type MessageTranslation,
   type MessageType,
+  type CaptureEchoInput,
+  type CaptureEchoResult,
   type CreateShareCardInput,
+  type EchoCardPage,
+  type EchoQueue,
+  type EchoSummary,
+  type SubmitEchoReviewsInput,
+  type SubmitEchoReviewsResult,
   type NotificationsPage,
   type ShareCardResult,
 } from '@langx/shared'
@@ -143,6 +150,17 @@ export const keys = {
    * prefix costs nothing and makes "any deck" one invalidation.
    */
   allPhraseCards: (scope: string) => ['phraseCards', 'all', scope] as const,
+  /**
+   * Its own top-level prefix, and deliberately not a child of `messages` or
+   * `conversations`: the socket patcher walks both of those with
+   * `setQueriesData` and expects everything under them to be page-shaped.
+   * Being its own prefix also makes "everything Echo" one invalidation, which
+   * is what every capture and every review needs.
+   */
+  echo: ['echo'] as const,
+  echoSummary: ['echo', 'summary'] as const,
+  echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
+  echoCards: (lang: string) => ['echo', 'cards', lang] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -667,6 +685,10 @@ export interface MessageDto {
   recipientId?: string
   /** Somebody corrected this sentence, so it can no longer be edited. */
   corrected?: boolean
+  /** Somebody has recorded this sentence, answering its `pronunciation` ask. */
+  askAnswered?: boolean
+  /** I keep an Echo card for this message. Absent means no. */
+  echoed?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string
@@ -2565,6 +2587,101 @@ export function useAdminUserAction() {
       api.post<unknown>(`/admin/users/${input.userId}/${input.action}`, input.body ?? {}),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/**
+ * Echo — the cards, the queue and the two ways to change them.
+ *
+ * Every mutation invalidates the whole `['echo']` prefix rather than naming
+ * summary, queue and cards one at a time: the three disagree the moment one
+ * of them is missed, and the due count on the tab is the number a person
+ * decides whether to open the app by.
+ */
+export function useEchoSummary(enabled = true) {
+  return useQuery({
+    queryKey: keys.echoSummary,
+    queryFn: () => api.get<EchoSummary>('/echo/summary'),
+    enabled,
+  })
+}
+
+export function useEchoQueue(lang?: string) {
+  return useQuery({
+    queryKey: keys.echoQueue(lang ?? 'all'),
+    queryFn: () =>
+      api.get<EchoQueue>(`/echo/queue${lang ? `?lang=${encodeURIComponent(lang)}` : ''}`),
+    // The deck a session is about to draw from must be what the server has
+    // now, not what it had when the tab was last opened.
+    staleTime: 0,
+  })
+}
+
+/**
+ * Infinite where `usePhraseCards` is not: a phrase deck is bounded by
+ * `conversation_term_unique` within one conversation, and an Echo library is
+ * bounded by nothing but the daily ceiling.
+ */
+export function useEchoCards(lang?: string) {
+  return useInfiniteQuery({
+    queryKey: keys.echoCards(lang ?? 'all'),
+    queryFn: ({ pageParam }) =>
+      api.get<EchoCardPage>(
+        `/echo/cards?${new URLSearchParams({
+          ...(lang ? { lang } : {}),
+          ...(pageParam ? { cursor: pageParam } : {}),
+        }).toString()}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+export function useCaptureEcho() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CaptureEchoInput) => api.post<CaptureEchoResult>('/echo/cards', input),
+    onSuccess: (_result, input) => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+      // The bubble's mark rides on the message, so the thread has to be told
+      // as well. `messagesAround` is a child of this key, so an open jump
+      // window is refreshed by the same call.
+      if (input.source.kind === 'chat') {
+        void client.invalidateQueries({ queryKey: keys.messages(input.source.conversationId) })
+      } else {
+        void client.invalidateQueries({ queryKey: ['feed'] })
+      }
+    },
+  })
+}
+
+/**
+ * Removal takes either a card id or the `msg:`/`post:` key it was made from.
+ * The chat screen only ever knows the latter: it draws the mark from a flag
+ * on the message and has no card id to send.
+ */
+export function useRemoveEcho() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { idOrSourceKey: string; conversationId?: string }) =>
+      api.delete<void>(`/echo/cards/${encodeURIComponent(input.idOrSourceKey)}`),
+    onSuccess: (_result, input) => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+      if (input.conversationId) {
+        void client.invalidateQueries({ queryKey: keys.messages(input.conversationId) })
+      }
+    },
+  })
+}
+
+export function useSubmitEchoReviews() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: SubmitEchoReviewsInput) =>
+      api.post<SubmitEchoReviewsResult>('/echo/reviews', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
     },
   })
 }

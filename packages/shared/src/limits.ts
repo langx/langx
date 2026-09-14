@@ -57,6 +57,34 @@ export interface PlanLimits {
    */
   mediaPer24h: Limit
   /**
+   * New Echo cards a person may start reviewing in a day.
+   *
+   * Unlimited on every tier, and the one Echo row that may ever be metered.
+   * It exists from the first day so that capping intake later is a config
+   * change rather than a migration — but nothing in the app, on the website
+   * or in the store copy says "forever".
+   */
+  echoNewCardsPerDay: Limit
+  /**
+   * Messages and posts turned into Echo cards per rolling 24 hours.
+   *
+   * The same number on every tier, deliberately. Capture asks the server to
+   * translate a sentence that was not translated in the thread, so it has a
+   * real per-request cost — this is the ceiling that stops Add echo becoming
+   * a free translator, and it is set high enough that ordinary use never
+   * meets it. **Not a paywall**, and it must never be sold as one: a refusal
+   * shows a plain alert, not the upgrade screen.
+   */
+  echoCapturesPerDay: Limit
+  /**
+   * Cards reviewed per rolling 24 hours.
+   *
+   * Unlimited on every tier, ever. Reviewing is the thing the module is for
+   * and it costs us nothing; a person who wants to sit with their cards for
+   * an hour is the best outcome this feature has.
+   */
+  echoReviewsPerDay: Limit
+  /**
    * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
@@ -222,6 +250,9 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     translationsPer24h: 20,
     correctionsPer24h: null,
     mediaPer24h: 50,
+    echoNewCardsPerDay: null,
+    echoCapturesPerDay: 50,
+    echoReviewsPerDay: null,
     advancedFilters: false,
     boostedProfile: false,
     sendTranslation: false,
@@ -240,6 +271,9 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     translationsPer24h: 300,
     correctionsPer24h: null,
     mediaPer24h: null,
+    echoNewCardsPerDay: null,
+    echoCapturesPerDay: 50,
+    echoReviewsPerDay: null,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: false,
@@ -264,6 +298,9 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     translationsPer24h: 1000,
     correctionsPer24h: null,
     mediaPer24h: null,
+    echoNewCardsPerDay: null,
+    echoCapturesPerDay: 50,
+    echoReviewsPerDay: null,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,
@@ -311,7 +348,13 @@ export const TIER_BADGES: Record<PlanTier, string | null> = {
 }
 
 /** Quota buckets that are enforced with a rolling 24h timestamp array. */
-export const QUOTA_KINDS = ['initiations', 'translations', 'corrections', 'media'] as const
+export const QUOTA_KINDS = [
+  'initiations',
+  'translations',
+  'corrections',
+  'media',
+  'echoCaptures',
+] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
 const QUOTA_LIMIT_KEY = {
@@ -319,6 +362,7 @@ const QUOTA_LIMIT_KEY = {
   translations: 'translationsPer24h',
   corrections: 'correctionsPer24h',
   media: 'mediaPer24h',
+  echoCaptures: 'echoCapturesPerDay',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

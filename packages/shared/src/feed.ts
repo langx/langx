@@ -283,6 +283,8 @@ export const feedPostSchema = z.object({
   correctedByViewer: z.boolean(),
   /** The same, for the pronunciation section's composer. */
   answeredByViewer: z.boolean(),
+  /** The viewer keeps an Echo card for this post, so the action offers to undo. */
+  echoedByViewer: z.boolean(),
   likeCount: z.number().int().nonnegative(),
   likedByViewer: z.boolean(),
   /**

@@ -6,6 +6,7 @@ export const MESSAGE_ACTION_IDS = [
   'copy',
   'translate',
   'correct',
+  'echo',
   'delete',
   'edit',
   'star',
@@ -53,6 +54,8 @@ export interface MessageActionContext {
   corrected: boolean
   starred: boolean
   pinned: boolean
+  /** The reader already keeps an Echo card for this message. */
+  echoed: boolean
   /**
    * Passed in rather than reached for: this stays a pure function the tests
    * call directly, and the labels are the reader's language rather than the
@@ -117,6 +120,30 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       id: 'copy',
       label: t('messageActions.copy'),
       icon: 'copy-outline',
+      page: 'primary',
+    })
+  }
+
+  /**
+   * Anything with a sentence on it, and — unlike `phrase` — your own messages
+   * too. A correction is the case that settles it: the corrected line is
+   * exactly the thing worth learning, and it is written on *your* sentence.
+   *
+   * `image` is here because a photo with a caption is typed `image`: the
+   * caption is the sentence and the photo becomes the card's cue. A sticker,
+   * a meeting, a quiz and a voice note without a caption have no sentence at
+   * all, and a phrase card's author already holds the mirrored card.
+   */
+  if (
+    context.hasBody &&
+    (context.type === 'text' || context.type === 'correction' || context.type === 'image')
+  ) {
+    actions.push({
+      id: 'echo',
+      label: t(context.echoed ? 'messageActions.unecho' : 'messageActions.echo'),
+      // Solid once it is kept, outline while it is on offer — the same "on"
+      // state `star` uses two rows below.
+      icon: context.echoed ? 'repeat' : 'repeat-outline',
       page: 'primary',
     })
   }

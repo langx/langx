@@ -110,6 +110,43 @@ export const COLLECTIONS = {
   likes: 'likes',
 
   /**
+   * Echo: the cards a person kept out of their own conversations.
+   *
+   * The text is **copied** at capture, never referenced. A message can be
+   * edited, deleted, or sit in a conversation somebody has left; the account
+   * that wrote it can go. None of that may empty a card somebody has reviewed
+   * six times — so the card carries its own front and back, and the deep link
+   * back to the thread is allowed to stop resolving.
+   *
+   * `sourceKey` is the tagged `source` flattened to one string, and it exists
+   * for exactly one index: a compound uniqueness across a union cannot be
+   * expressed in Mongo, and "one card per message" has to be an invariant
+   * rather than a check a handler remembers to make.
+   */
+  echoCards: 'echoCards',
+  /**
+   * One row per graded card, written **before** the card is advanced.
+   *
+   * The row is the claim, and the unique `{userId, reviewId}` on it is the
+   * whole of the idempotency story — a session the app retried because the
+   * network dropped is physically incapable of advancing a card twice. Same
+   * device as `{job, periodKey}` on `jobRuns`, and for the same reason: a
+   * handler that remembers to check is a handler that will one day forget.
+   */
+  echoReviews: 'echoReviews',
+  /**
+   * The curated packs, and their items. Written by Phase 2's seed script and
+   * read by nothing yet.
+   *
+   * Named now because `pack_index_unique` in `indexes.ts` is what makes that
+   * script idempotent by construction, and an index needs a collection to
+   * hang on. Registering the name a phase early costs nothing and is how
+   * `deviceCode` got here too.
+   */
+  echoPacks: 'echoPacks',
+  echoPackItems: 'echoPackItems',
+
+  /**
    * The notification centre: what has happened to an account, kept so it can
    * be read later.
    *
