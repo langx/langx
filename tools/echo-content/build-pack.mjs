@@ -41,6 +41,7 @@
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { writable } from './text.mjs'
 
 /** Interface locale → the language code Wiktionary tags a translation with. */
 const LOCALES = {
@@ -159,7 +160,9 @@ function draftSense(groups) {
 function glossFrom(group) {
   const gloss = {}
   for (const [locale, code] of Object.entries(LOCALES)) {
-    const match = group.translations.find((translation) => translation.lang_code === code)
+    const match = group.translations.find(
+      (translation) => translation.lang_code === code && writable(translation.word),
+    )
     if (match) gloss[locale] = match.word
   }
   // The sense label is Wiktionary's own summary of the sense, which is what an
@@ -212,8 +215,10 @@ function definitionFor(entry, sense) {
   }
   if (!best) return null
   // Plain usage examples only. A dated literary quotation is evidence the word
-  // existed in 1803, not a sentence to put on a card.
-  const example = best.sense.examples?.find((item) => item.text && !item.ref)
+  // existed in 1803, not a sentence to put on a card — and `writable` is what
+  // catches the ones that carry no `ref` and are a citation anyway, or that are
+  // two lines of dialogue rather than one sentence.
+  const example = best.sense.examples?.find((item) => item.text && !item.ref && writable(item.text))
   return { definition: best.gloss, ...(example ? { example: example.text } : {}) }
 }
 

@@ -39,6 +39,7 @@ import { spawn } from 'node:child_process'
 import { createInterface } from 'node:readline'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { writable } from './text.mjs'
 
 /** Interface locale → the Tatoeba language directory that holds it. */
 const LOCALES = {
@@ -258,9 +259,12 @@ async function tatoeba(graded, level) {
 
   const complete = []
   for (const [id, gloss] of glosses) {
-    if (Object.keys(gloss).length === Object.keys(LOCALES).length) {
-      complete.push({ text: english.get(id), gloss })
-    }
+    if (Object.keys(gloss).length !== Object.keys(LOCALES).length) continue
+    const text = english.get(id)
+    // All of it or none of it: a sentence whose Russian is unusable is not a
+    // sentence with six good glosses, it is a card that is blank for a reader.
+    if (!writable(text) || !Object.values(gloss).every(writable)) continue
+    complete.push({ text, gloss })
   }
   return complete
 }
@@ -317,7 +321,7 @@ async function main() {
   // first day than a well-formed sentence, and there are only ever a few of them.
   for (const phrase of [...book, ...sentences.map((item) => item.text)]) {
     const key = shape(phrase)
-    if (!key || seen.has(key)) continue
+    if (!key || seen.has(key) || !writable(phrase)) continue
     seen.add(key)
     chosen.push(phrase)
   }
