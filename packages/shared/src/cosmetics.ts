@@ -204,14 +204,21 @@ export const COSMETICS: readonly Cosmetic[] = [
    * `tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
    * characters; edit that and re-run it rather than editing the SVGs.
    *
-   * Priced with the other two for the reason given above them: packs are
-   * shopped, not climbed, and a dearer third one would read as a rung.
+   * **Dearer than the other two, and still not a rung above them.** Those are
+   * half Fluent Emoji, which cost us six drawings each; this one cost twelve,
+   * because there was no pixel variant to take. That is the whole of the
+   * difference — it is a price, not a gate. `isLadderKind` leaves stickers
+   * out, so `previousCosmetic` returns nothing for every pack and this one can
+   * be bought first, alone, or never. A reader who finds 1,000/1,000/1,500 in
+   * the shop and reads a ladder into it is reading something that is not
+   * there; levelling the price back would not fix that and would only stop
+   * saying what the pack cost to make.
    */
   {
     id: 'stickers.pixel',
     kind: 'stickers',
     label: 'Pixel stickers',
-    price: 1000,
+    price: 1500,
     stickers: [
       'levelup',
       'coin',
