@@ -1576,6 +1576,14 @@ export function useStartConversation() {
       void queryClient.invalidateQueries({ queryKey: ['conversations'] })
       void queryClient.invalidateQueries({ queryKey: keys.quota })
       void queryClient.invalidateQueries({ queryKey: keys.tokens })
+      // And every cached profile, because `conversationId` is what the profile
+      // screen reads to choose between "open chat" and "send a message" — left
+      // stale, it goes on offering to start the conversation that was just
+      // started, `chat/new` opens over a thread that already exists, and the
+      // send from it is refused. The whole prefix rather than one key: the same
+      // person is cached under their handle by `useProfile` and under their id
+      // by `useProfileCache`, and this mutation only knows the id.
+      void queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
   })
 }
