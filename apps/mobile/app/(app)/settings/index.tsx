@@ -110,6 +110,7 @@ export default function SettingsScreen() {
         label={t('settings.signOut')}
         variant="secondary"
         onPress={() => void model.signOut()}
+        loading={model.signingOut}
         style={styles.signOut}
       />
 
