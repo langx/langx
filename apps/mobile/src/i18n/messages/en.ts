@@ -1697,6 +1697,7 @@ export const en = {
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
     bounty: 'Bug bounty',
+    echo: 'Echo session',
   },
 
   cosmetics: {

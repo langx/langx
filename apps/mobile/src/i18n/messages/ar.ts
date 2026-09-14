@@ -1844,6 +1844,7 @@ export const ar: Localized<EnMessages> = {
     referralWelcome: 'مكافأة ترحيب بالدعوة',
     gift: 'هدية كل ساعة',
     bounty: 'مكافأة اكتشاف خلل',
+    echo: 'جلسة صدى',
   },
 
   cosmetics: {

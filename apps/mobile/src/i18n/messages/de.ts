@@ -1633,6 +1633,7 @@ export const de: Localized<EnMessages> = {
     referralWelcome: 'Einladungs-Willkommensbonus',
     gift: 'Stündliches Geschenk',
     bounty: 'Fehlerprämie',
+    echo: 'Echo-Einheit',
   },
 
   cosmetics: {

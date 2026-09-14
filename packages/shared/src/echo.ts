@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { languageCodeSchema } from './languages'
 import { ECHO_GRADES, SRS_RULES } from './srs'
+import { TOKEN_RULES } from './token'
 
 /**
  * Echo: the cards a person keeps out of their own conversations.
@@ -272,3 +273,31 @@ export const echoQueueQuerySchema = z.object({
   lang: languageCodeSchema.optional(),
 })
 export type EchoQueueQuery = z.infer<typeof echoQueueQuerySchema>
+
+/**
+ * The ledger key for the nth completed session of one local day.
+ *
+ * A session is counted rather than recorded: there is no session row, only
+ * graded cards, so "the third session of the 14th" is the honest identity for
+ * a payment. `user_kind_ref_unique` then makes paying it twice impossible,
+ * which is what lets `submitReviews` recompute from scratch on every batch
+ * without remembering what it already paid.
+ */
+export function echoSessionRefId(localDay: string, sessionNumber: number): string {
+  return `echo:${localDay}:${sessionNumber}`
+}
+
+/**
+ * How many sessions a day's reviews have completed, and so how many are
+ * payable — capped at `TOKEN_RULES.caps.echoSessionsPerDay`.
+ *
+ * Floor, not round: eight cards is not a session. The cap is applied here so
+ * that the number of payments and the number the app could draw are the same
+ * number, computed by one function.
+ */
+export function completedEchoSessions(reviewedToday: number): number {
+  return Math.min(
+    Math.floor(reviewedToday / SRS_RULES.sessionSize),
+    TOKEN_RULES.caps.echoSessionsPerDay,
+  )
+}

@@ -1610,6 +1610,7 @@ export const fr: Localized<EnMessages> = {
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
     bounty: 'Prime de bug',
+    echo: 'Séance Echo',
   },
 
   cosmetics: {

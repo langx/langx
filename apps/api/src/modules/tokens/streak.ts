@@ -46,8 +46,13 @@ export function streakDay(profile: Pick<Profile, 'timezone'>, at: Date): string 
 }
 
 /**
- * Credits today's streak for a **meaningful action** — a message, a correction
- * or a recorded pronunciation answer.
+ * Credits today's streak for a **meaningful action** — a message, a
+ * correction, a recorded pronunciation answer, or a completed Echo session.
+ *
+ * The fourth one changed what the streak means, from a social commitment to a
+ * practice commitment, and it was taken on purpose: in a cold start a session
+ * is the one kind of practice that does not need somebody else to be awake.
+ * A *single card* is never enough — see `settleSessions`.
  *
  * This is the only entry point that can pay a milestone. See `recordCheckIn`
  * for the other half of the rule.
