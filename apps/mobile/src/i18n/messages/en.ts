@@ -1745,6 +1745,7 @@ export const en = {
   },
 
   cosmetics: {
+    stickersPixel: 'Pixel stickers',
     stickersPractice: 'Practice stickers',
     stickersStarter: 'Starter stickers',
     frameSlate: 'Slate frame',

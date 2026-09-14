@@ -188,6 +188,45 @@ export const COSMETICS: readonly Cosmetic[] = [
       'sparkles',
     ],
   },
+  /**
+   * The third pack, and the first drawn in a different language.
+   *
+   * The other two are the same flat, rounded, ink-outlined art — half of each
+   * is Fluent Emoji, and the six we drew were drawn to sit beside it. Somebody
+   * who owns both is choosing between two shades of one style. This one is
+   * 16x16 pixel art, which reads as a deliberate second voice rather than as
+   * more of the first, and its twelve symbols speak an 8-bit game's language:
+   * a coin, a checkpoint, a save, a level up.
+   *
+   * **All twelve are ours.** Fluent has no pixel variant, so there was nothing
+   * to take even if we had wanted to — which is why this pack adds no entry to
+   * `docs/data-sources.md`'s licence table. The art itself is generated from
+   * `tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
+   * characters; edit that and re-run it rather than editing the SVGs.
+   *
+   * Priced with the other two for the reason given above them: packs are
+   * shopped, not climbed, and a dearer third one would read as a rung.
+   */
+  {
+    id: 'stickers.pixel',
+    kind: 'stickers',
+    label: 'Pixel stickers',
+    price: 1000,
+    stickers: [
+      'levelup',
+      'coin',
+      'checkpoint',
+      'flame',
+      'key',
+      'save',
+      'potion',
+      'shield',
+      'thumb',
+      'controller',
+      'slime',
+      'ghost',
+    ],
+  },
 ]
 
 /** Progress against a gate: what the client draws and the server checks. */

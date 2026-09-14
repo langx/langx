@@ -1641,6 +1641,7 @@ export const es: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPixel: 'Stickers pixel art',
     stickersPractice: 'Stickers de práctica',
     stickersStarter: 'Stickers iniciales',
     frameSlate: 'Marco pizarra',

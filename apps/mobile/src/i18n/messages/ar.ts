@@ -1892,6 +1892,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPixel: 'ملصقات بكسل',
     stickersPractice: 'ملصقات التدريب',
     stickersStarter: 'ملصقات البداية',
     frameSlate: 'إطار أردوازي',

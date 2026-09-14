@@ -36,12 +36,18 @@ list it came from.
 **Attribution is a licence condition, not a courtesy.** Removing it from any of
 the three places above is a licence breach, and the repo is public.
 
-## Stickers — half Microsoft, half ours
+## Stickers — part Microsoft, part ours
 
-Each sticker pack is twelve flat SVGs, split down the middle: six are drawn for
-this app and carry no licence but ours, and six are lifted unmodified from
-Microsoft's Fluent Emoji, whose flat variant is the closest match to what v3
-draws. Two packs so far, `starter` and `practice`.
+Each sticker pack is twelve flat SVGs. In `starter` and `practice` they are
+split down the middle: six are drawn for this app and carry no licence but
+ours, and six are lifted unmodified from Microsoft's Fluent Emoji, whose flat
+variant is the closest match to what v3 draws.
+
+`pixel` is the exception and takes nothing. It is 16x16 pixel art, a style
+Fluent has no variant of, so all twelve are ours — generated from
+`tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
+characters rather than a path. Edit the grid and re-run it; the SVGs are
+committed output.
 
 |             |                                                                                                                                                                                                           |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -55,7 +61,7 @@ MIT asks for one thing: the copyright notice travels with the files. It is in
 the directory beside them, which is why that file is there and must not be
 tidied away.
 
-Two rules the pack follows, both of which outlive this particular art:
+Three rules every pack follows, all of which outlive this particular art:
 
 **No lettering.** A sticker saying "Nice!" reads as English to somebody who is
 not obliged to read English, and this app speaks eight languages. It is the

@@ -1648,6 +1648,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPixel: 'Pixel stickerları',
     stickersPractice: 'Pratik stickerları',
     stickersStarter: 'Başlangıç stickerları',
     frameSlate: 'Arduvaz çerçeve',
