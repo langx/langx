@@ -1662,6 +1662,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPixel: 'Stickers pixel art',
     stickersPractice: 'Stickers d’entraînement',
     stickersStarter: 'Stickers de départ',
     frameSlate: 'Cadre ardoise',

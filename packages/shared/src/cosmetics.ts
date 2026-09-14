@@ -188,6 +188,52 @@ export const COSMETICS: readonly Cosmetic[] = [
       'sparkles',
     ],
   },
+  /**
+   * The third pack, and the first drawn in a different language.
+   *
+   * The other two are the same flat, rounded, ink-outlined art — half of each
+   * is Fluent Emoji, and the six we drew were drawn to sit beside it. Somebody
+   * who owns both is choosing between two shades of one style. This one is
+   * 16x16 pixel art, which reads as a deliberate second voice rather than as
+   * more of the first, and its twelve symbols speak an 8-bit game's language:
+   * a coin, a checkpoint, a save, a level up.
+   *
+   * **All twelve are ours.** Fluent has no pixel variant, so there was nothing
+   * to take even if we had wanted to — which is why this pack adds no entry to
+   * `docs/data-sources.md`'s licence table. The art itself is generated from
+   * `tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
+   * characters; edit that and re-run it rather than editing the SVGs.
+   *
+   * **Dearer than the other two, and still not a rung above them.** Those are
+   * half Fluent Emoji, which cost us six drawings each; this one cost twelve,
+   * because there was no pixel variant to take. That is the whole of the
+   * difference — it is a price, not a gate. `isLadderKind` leaves stickers
+   * out, so `previousCosmetic` returns nothing for every pack and this one can
+   * be bought first, alone, or never. A reader who finds 1,000/1,000/1,500 in
+   * the shop and reads a ladder into it is reading something that is not
+   * there; levelling the price back would not fix that and would only stop
+   * saying what the pack cost to make.
+   */
+  {
+    id: 'stickers.pixel',
+    kind: 'stickers',
+    label: 'Pixel stickers',
+    price: 1500,
+    stickers: [
+      'levelup',
+      'coin',
+      'checkpoint',
+      'flame',
+      'key',
+      'save',
+      'potion',
+      'shield',
+      'thumb',
+      'controller',
+      'slime',
+      'ghost',
+    ],
+  },
 ]
 
 /** Progress against a gate: what the client draws and the server checks. */

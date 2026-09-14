@@ -10,6 +10,18 @@
  * no entry here and an entry with no id in the catalogue are both invisible to
  * the compiler.
  */
+import checkpoint from '../../assets/stickers/pixel/checkpoint.svg'
+import coin from '../../assets/stickers/pixel/coin.svg'
+import controller from '../../assets/stickers/pixel/controller.svg'
+import flame from '../../assets/stickers/pixel/flame.svg'
+import ghost from '../../assets/stickers/pixel/ghost.svg'
+import key from '../../assets/stickers/pixel/key.svg'
+import levelup from '../../assets/stickers/pixel/levelup.svg'
+import potion from '../../assets/stickers/pixel/potion.svg'
+import save from '../../assets/stickers/pixel/save.svg'
+import shield from '../../assets/stickers/pixel/shield.svg'
+import slime from '../../assets/stickers/pixel/slime.svg'
+import thumb from '../../assets/stickers/pixel/thumb.svg'
 import again from '../../assets/stickers/practice/again.svg'
 import bullseye from '../../assets/stickers/practice/bullseye.svg'
 import hourglass from '../../assets/stickers/practice/hourglass.svg'
@@ -36,6 +48,20 @@ import thinking from '../../assets/stickers/starter/thinking.svg'
 import wave from '../../assets/stickers/starter/wave.svg'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
+  'stickers.pixel': {
+    checkpoint,
+    coin,
+    controller,
+    flame,
+    ghost,
+    key,
+    levelup,
+    potion,
+    save,
+    shield,
+    slime,
+    thumb,
+  },
   'stickers.starter': {
     book,
     bulb,

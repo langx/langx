@@ -1823,6 +1823,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPixel: 'Пиксельные стикеры',
     stickersPractice: 'Стикеры для практики',
     stickersStarter: 'Стартовые стикеры',
     frameSlate: 'Сланцевая рамка',
