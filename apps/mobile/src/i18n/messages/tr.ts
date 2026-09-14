@@ -239,6 +239,13 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kart eklendi',
     },
     packProgress: '{total} karttan {done} tanesi başladı',
+    producePrompt: '{language} olarak yaz',
+    produceHint: 'İfadeyi yaz',
+    check: 'Kontrol et',
+    yourAnswer: 'Sen şunu yazdın',
+    verdictExact: 'Tam doğru',
+    verdictClose: 'Doğru, bir işaret farkıyla',
+    verdictWrong: 'Tam değil',
   },
 
   messageMeta: {

@@ -1,6 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
+  asksProduction,
   ECHO_GRADES,
+  productionVerdict,
   scheduledDelayMinutes,
   type EchoCard,
   type EchoGrade,
@@ -10,7 +12,7 @@ import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { useEchoQueue, useSubmitEchoReviews } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
@@ -19,6 +21,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useT } from '../../../src/i18n'
+import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -56,6 +59,7 @@ export default function EchoSessionScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const names = useDisplayNames()
   const { lang } = useLocalSearchParams<{ lang?: string }>()
   const queue = useEchoQueue(lang)
   const submit = useSubmitEchoReviews()
@@ -63,6 +67,8 @@ export default function EchoSessionScreen() {
   const [deck, setDeck] = useState<EchoCard[] | null>(null)
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
+  /** What was typed for this card, when it is a production review. */
+  const [typed, setTyped] = useState('')
   const [graded, setGraded] = useState<Graded[]>([])
   const [saved, setSaved] = useState(false)
   const [saveFailed, setSaveFailed] = useState(false)
@@ -74,6 +80,12 @@ export default function EchoSessionScreen() {
 
   const card = deck?.[index]
   const player = useAudioPlayer(card?.audio?.url ?? null)
+  /**
+   * Writing it, rather than recognising it. The card and its schedule are
+   * unchanged — this is a presentation of the same row, decided by a pure
+   * rule so that leaving and coming back asks the same thing.
+   */
+  const producing = card ? asksProduction(parseSrs(card), card.front) : false
 
   /**
    * Sends whatever has been graded, and keeps it if the send fails.
@@ -123,10 +135,13 @@ export default function EchoSessionScreen() {
     const next = [...graded, entry]
     setGraded(next)
     setRevealed(false)
+    setTyped('')
     shownAt.current = Date.now()
     setIndex((current) => current + 1)
     if (deck && index + 1 >= deck.length) void flush(next)
   }
+
+  const verdict = card && producing ? productionVerdict(typed, card.front) : 'wrong'
 
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
@@ -239,9 +254,34 @@ export default function EchoSessionScreen() {
         {card.image ? (
           <Image source={{ uri: card.image.url }} style={styles.picture} contentFit="cover" />
         ) : null}
-        {/* The sentence as it was written. Data, never interface copy. */}
-        <Text style={styles.front}>{card.front}</Text>
-        {!card.audio && card.source.kind === 'chat' ? (
+        {producing && !revealed ? (
+          /*
+           * The meaning, and a box. The sentence is the answer, so it is not
+           * on screen — and neither is the speaker button below, which would
+           * read it out.
+           */
+          <>
+            <Text style={styles.prompt}>
+              {t('echo.producePrompt', { language: names.language(card.lang) })}
+            </Text>
+            <Text style={styles.front}>{card.back}</Text>
+            <TextInput
+              value={typed}
+              onChangeText={setTyped}
+              style={styles.input}
+              placeholder={t('echo.produceHint')}
+              placeholderTextColor={colors.textFaint}
+              autoCapitalize="none"
+              autoCorrect={false}
+              multiline
+              accessibilityLabel={t('echo.produceHint')}
+            />
+          </>
+        ) : (
+          /* The sentence as it was written. Data, never interface copy. */
+          <Text style={styles.front}>{card.front}</Text>
+        )}
+        {!producing && !card.audio && card.source.kind === 'chat' ? (
           <Pressable
             accessibilityRole="button"
             hitSlop={8}
@@ -252,7 +292,7 @@ export default function EchoSessionScreen() {
             <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
           </Pressable>
         ) : null}
-        {card.audio ? (
+        {card.audio && (!producing || revealed) ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('echo.play')}
@@ -274,7 +314,24 @@ export default function EchoSessionScreen() {
         {revealed ? (
           <>
             <View style={styles.rule} />
-            <Text style={styles.back}>{card.back}</Text>
+            {producing ? (
+              <>
+                <Text style={styles.yourAnswerLabel}>{t('echo.yourAnswer')}</Text>
+                <Text style={styles.yourAnswer}>{typed.trim() || '—'}</Text>
+                {/*
+                  Reported, never graded. Only the person knows whether they
+                  knew it or guessed it, and a checker that decided for them
+                  would be wrong in exactly the cases that matter.
+                */}
+                <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
+                  {t(
+                    `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
+                  )}
+                </Text>
+              </>
+            ) : (
+              <Text style={styles.back}>{card.back}</Text>
+            )}
             {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
           </>
         ) : null}
@@ -296,7 +353,10 @@ export default function EchoSessionScreen() {
             ))}
           </View>
         ) : (
-          <Button label={t('echo.show')} onPress={() => setRevealed(true)} />
+          <Button
+            label={t(producing && typed.trim().length > 0 ? 'echo.check' : 'echo.show')}
+            onPress={() => setRevealed(true)}
+          />
         )}
       </View>
     </Screen>
@@ -324,6 +384,24 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   pressed: { opacity: 0.6 },
   rule: { backgroundColor: colors.border, height: 1, width: '60%' },
   back: { color: colors.text, fontSize: 18, lineHeight: 26, textAlign: 'center' },
+  prompt: { color: colors.textFaint, fontSize: 13, fontWeight: '700', textAlign: 'center' },
+  input: {
+    ...font.body,
+    alignSelf: 'stretch',
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    color: colors.text,
+    fontSize: 18,
+    minHeight: 56,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    textAlign: 'center',
+  },
+  yourAnswerLabel: { color: colors.textFaint, fontSize: 12, fontWeight: '700' },
+  yourAnswer: { color: colors.textMuted, fontSize: 17, textAlign: 'center' },
+  verdictOk: { color: colors.accent, fontSize: 14, fontWeight: '700' },
+  verdictWrong: { color: colors.danger, fontSize: 14, fontWeight: '700' },
   example: { color: colors.textMuted, fontSize: 15, fontStyle: 'italic', textAlign: 'center' },
   actions: { padding: spacing.lg },
   grades: { flexDirection: 'row', gap: spacing.xs },

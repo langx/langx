@@ -228,6 +228,13 @@ export const de: Localized<EnMessages> = {
       other: '{count} Karten hinzugefügt',
     },
     packProgress: '{done} von {total} begonnen',
+    producePrompt: 'Schreib es auf {language}',
+    produceHint: 'Den Ausdruck tippen',
+    check: 'Prüfen',
+    yourAnswer: 'Du hast geschrieben',
+    verdictExact: 'Genau richtig',
+    verdictClose: 'Richtig, bis auf ein Zeichen',
+    verdictWrong: 'Nicht ganz',
   },
 
   messageMeta: {

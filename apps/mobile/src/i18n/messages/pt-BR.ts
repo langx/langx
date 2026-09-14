@@ -224,6 +224,13 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} cartões adicionados',
     },
     packProgress: '{done} de {total} começados',
+    producePrompt: 'Escreva em {language}',
+    produceHint: 'Digite a expressão',
+    check: 'Conferir',
+    yourAnswer: 'Você escreveu',
+    verdictExact: 'Exatamente',
+    verdictClose: 'Certo, fora um acento',
+    verdictWrong: 'Quase',
   },
 
   messageMeta: {

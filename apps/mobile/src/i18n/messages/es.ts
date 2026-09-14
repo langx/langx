@@ -227,6 +227,13 @@ export const es: Localized<EnMessages> = {
       other: '{count} tarjetas añadidas',
     },
     packProgress: '{done} de {total} empezadas',
+    producePrompt: 'Escríbelo en {language}',
+    produceHint: 'Escribe la expresión',
+    check: 'Comprobar',
+    yourAnswer: 'Escribiste',
+    verdictExact: 'Exacto',
+    verdictClose: 'Bien, salvo por una tilde',
+    verdictWrong: 'Casi',
   },
 
   messageMeta: {

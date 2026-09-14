@@ -242,6 +242,13 @@ export const ar: Localized<EnMessages> = {
       other: 'أُضيفت {count} بطاقة',
     },
     packProgress: 'بدأت {done} من {total}',
+    producePrompt: 'اكتبها بـ{language}',
+    produceHint: 'اكتب العبارة',
+    check: 'تحقّق',
+    yourAnswer: 'كتبت',
+    verdictExact: 'صحيح تمامًا',
+    verdictClose: 'صحيح، باستثناء علامة',
+    verdictWrong: 'ليس تمامًا',
   },
 
   messageMeta: {

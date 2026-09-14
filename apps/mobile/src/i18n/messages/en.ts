@@ -272,6 +272,13 @@ export const en = {
       other: '{count} cards added',
     },
     packProgress: '{done} of {total} started',
+    producePrompt: 'Write it in {language}',
+    produceHint: 'Type the phrase',
+    check: 'Check',
+    yourAnswer: 'You wrote',
+    verdictExact: 'Exactly right',
+    verdictClose: 'Right, give or take an accent',
+    verdictWrong: 'Not quite',
   },
 
   messageMeta: {

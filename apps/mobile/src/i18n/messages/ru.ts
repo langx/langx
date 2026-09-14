@@ -240,6 +240,13 @@ export const ru: Localized<EnMessages> = {
       other: 'Добавлено {count} карточки',
     },
     packProgress: 'Начато {done} из {total}',
+    producePrompt: 'Напишите на языке: {language}',
+    produceHint: 'Введите фразу',
+    check: 'Проверить',
+    yourAnswer: 'Вы написали',
+    verdictExact: 'В точку',
+    verdictClose: 'Верно, с точностью до знака',
+    verdictWrong: 'Не совсем',
   },
 
   messageMeta: {

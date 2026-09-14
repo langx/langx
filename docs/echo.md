@@ -303,8 +303,17 @@ mismatch reads as a bug in the feature rather than a duplicated rule.
 **Four grades: Again · Hard · Good · Easy.** Self-graded reveal cards, not
 multiple choice, in the first pass. A chat card has no distractors to draw from
 — the alternatives would have to be invented, and a wrong invented alternative
-teaches the wrong thing. Recognition (front → back) only at first; production
-(type the front from the back) and pack-only multiple choice are Phase 3.
+teaches the wrong thing. Recognition (front → back) came first; **production — writing the sentence
+from its meaning — is built**, and pack-only multiple choice is still Phase 3.
+
+Production is a _presentation_ of the same card, not a second schedule: one
+row, one `srs`, one queue. It is asked only once a card has graduated out of
+the learning steps, only when the front is short enough to type on a phone
+(`ECHO_PRODUCTION_MAX_LENGTH`), and only on every other review, by parity of
+`reps` — deterministic, so leaving a session and coming back does not change
+what the card asks. The typed answer is compared with diacritics, case,
+punctuation and spacing stripped, and the result is **reported, never
+graded**: only the person knows whether they knew it or guessed it.
 
 ## Client
 
@@ -440,7 +449,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
 | 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. **Not built:** the `en` and `fr` packs themselves, pack audio from Lingua Libre, OpenMoji icons — all three wait on content a person has read                                                                                                                                                                                               | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                         | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| 3     | **Built:** production cards. **Left:** pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                    | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
