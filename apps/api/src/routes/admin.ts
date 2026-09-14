@@ -25,7 +25,9 @@ import {
   createBroadcast,
   deleteBroadcast,
   getBroadcast,
+  isUntestedDraft,
   listBroadcasts,
+  markBroadcastTested,
   setBroadcastStatus,
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
@@ -596,7 +598,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  /** To the operator and nobody else — see `sendBroadcastTest`. */
+  /**
+   * To the operator and nobody else — see `sendBroadcastTest`. It is also what
+   * unlocks arming: `isUntestedDraft` refuses a draft nobody has read.
+   */
   app.post(
     '/admin/broadcasts/:id/test',
     {
@@ -609,6 +614,9 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
 
       const delivered = await sendBroadcastTest(app.mongo.db, app.push, job, request.userId)
+      // Only a message that actually landed counts. With no `@langx` account
+      // there is nothing to read, and arming would be unlocked by a no-op.
+      if (delivered) await markBroadcastTested(app.mongo.db, job._id)
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'broadcast.test',
@@ -641,9 +649,14 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       async (request, reply) => {
         const job = await setBroadcastStatus(app.mongo.db, request.params.id, next)
         if (!job) {
+          // Two refusals wear the same 400, and which one it is decides what
+          // the operator does next: reload the screen, or read the message.
+          const current = await getBroadcast(app.mongo.db, request.params.id)
           throw new ApiError(
             ERROR_CODES.VALIDATION_FAILED,
-            'That broadcast is not in a state this can change',
+            current && isUntestedDraft(current)
+              ? 'Send it to yourself first — a broadcast nobody has read cannot be armed'
+              : 'That broadcast is not in a state this can change',
           )
         }
         await recordAdminAction(app.mongo.db, request.log, {

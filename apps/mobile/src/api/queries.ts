@@ -2380,6 +2380,8 @@ export interface AdminBroadcastDto {
   createdAt: string
   startedAt?: string
   finishedAt?: string
+  /** Set by a test send, and what the API requires before it will arm one. */
+  testedAt?: string
 }
 
 export interface AdminUserDto {

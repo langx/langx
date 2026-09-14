@@ -4699,7 +4699,11 @@ muscle memory. A number proves the preview above it was read, and unlike a word
 it does not depend on what language the operator thinks in. Beside it,
 `/test` delivers the real message to the operator alone first — the only
 preview that catches a broken line break in a translated body before everybody
-gets it.
+gets it, and it is **required**: `isUntestedDraft` refuses `draft → queued`, so
+neither the panel nor `send-announcement.ts --confirm` can arm something nobody
+has read. The proof is `testedAt` on the job rather than the toast the button
+used to leave, because a toast is gone on the next render and the job is what
+the next person asks.
 
 **A note from `@langx` is one way, and stays one way.** `OFFICIAL_WRITABLE.langx`
 is false, so nothing can be addressed back and the chat screen draws no
