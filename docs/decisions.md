@@ -4682,3 +4682,73 @@ can keep — and building a support surface was not the moment to quietly undo
 it. So the feature is right for "we got your report" and wrong for a
 conversation, and what is written should say where a reply goes. A test asserts
 the refusal, so opening that thread stays a decision somebody makes.
+
+## A card is a copy, the cap is not a price, and a phrase card is mirrored
+
+[`echo.md`](./echo.md) is the design. Four things about the first phase are
+decisions rather than details, and each one has an obvious-looking alternative
+that is wrong for a reason worth writing down.
+
+**A capture copies the text instead of pointing at the message.** The
+referencing version is cheaper and reads better in a schema: one id, no
+duplication, an edit to the message quietly improving the card. It is wrong
+because of what a card is. A message belongs to two people and can be edited,
+withdrawn, deleted with its account, or left behind in a conversation somebody
+walked out of. A card belongs to one person and is the residue of work they
+did — six reviews, an ease of 2.1, a due date three weeks out. Making the
+second depend on the first means an ordinary act by the other person empties
+something that was yours. So `front`, `back` and the media are taken once, at
+capture, and `source` is kept only so the session can say "Marie, three days
+ago" and deep-link back. The deep link is the part allowed to stop resolving.
+The price is that fixing a typo in a message does not fix the card, which is
+the right price: a card somebody has reviewed six times is theirs, including
+its mistakes.
+
+**`echoCapturesPerDay` is a ceiling, and the app must never sell it.** Fifty a
+day, the same number on all three tiers, and `rules.test.ts` asserts the
+sameness so it cannot drift into a product decision by accident. It exists
+because capture asks Google to translate a sentence the thread had not
+translated, which is billed per character — so it is an abuse control on a
+third-party bill, exactly like `mediaPer24h`. Everything follows from that.
+The refusal is a plain alert and not the paywall, which is the one place the
+Echo code deliberately differs from the translate quota three lines above it
+in the same file: `translationsPer24h` really does differ by plan, so there is
+something to offer; here the upgrade screen would be selling a number the
+buyer already has. The row is `PLAN_LIMITS` rather than a constant so that
+metering _new cards_ later — `echoNewCardsPerDay`, null on every tier today —
+is a config change and not a migration. Nothing in the app, on the website or
+in the store copy says "forever".
+
+**A phrase card is mirrored into Echo, not replaced by it.** The two look like
+the same feature and are not. A phrase card is a _message_: both people see
+it, it was written on purpose, with a meaning and an example typed by hand,
+and it has a deck screen and a CSV export behind Polyglot. That is a social
+act between two people. An Echo card is a note to yourself that nobody else
+can see. Folding one into the other would have had to lose something — either
+the recipient stops seeing what was written for them, or a private schedule
+becomes visible to somebody else. So `sendPhrase` writes both, and the mirror
+is awaited, swallowed, and incapable of failing the send: the person asked to
+save a phrase, and a card that did not get made must not turn that into an
+error. It also runs on the duplicate path, because `conversation_term_unique`
+is per _conversation_ and the person who loses that race is usually the other
+one — whose own card is still theirs to have, under a per-user index that
+keeps the two apart correctly.
+
+**The server voice was costed and dropped.** Google Cloud Text-to-Speech is
+$4 per million characters for a Standard voice and $16 for Neural2, free up to
+four million and one million a month. At thirty-five live profiles that is
+zero. The reason it is not built anyway is that the daily cap bounds how many
+cards a person makes and not what those cards cost: a thousand daily users at
+fifty captures is three hundred million characters a month, which is
+thousands of dollars for a voice worse than the one already in the building.
+A pronunciation answer is a real person saying the sentence, already recorded,
+already paid for, and it is the thing that distinguishes this from Memrise —
+which plays a stranger. What the decision cost is that resolving "the
+recording that answers this message" had to stop being a guess: the client
+used to scan whatever messages happened to be loaded for any voice note
+quoting the sentence, which counted replies that answered nothing, counted the
+asker reading their own sentence back, and forgot every answer that had
+scrolled out of the window. A recording now carries `answersMessageId` and the
+asked message is stamped `answeredAt`, the way `sendCorrection` already stamps
+`correctedAt` — fifteen lines that make the chat's own "answered" badge a
+server fact as well.

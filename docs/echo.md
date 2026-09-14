@@ -1,10 +1,15 @@
 # Echo — spaced repetition, fed by real conversations
 
-**Status: a plan, nothing is built.** This supersedes
-[`learn-module.md`](./learn-module.md), which planned the same module under a
-generic name and with the chat-to-card path scheduled last. Echo turns that
+**Status: phase 1 is built.** This superseded `learn-module.md`, a plan for
+the same module under a generic name and with the chat-to-card path scheduled
+last; that document was deleted when this one was accepted. Echo turns the
 order around: the card you make from a real message is the product, and the
 curated packs are what make the tab worth opening before you have any.
+
+Where this document and the code disagree, the code is right and the
+paragraph is marked. Three things moved during the build and are corrected
+in place below: the server voice, what `audio` and `image` hold, and how the
+top answer on a post is chosen.
 
 The design it fits into is [`architecture.md`](./architecture.md); the reasons
 the surrounding pieces are shaped the way they are are in
@@ -47,8 +52,8 @@ What it absorbs:
 
 - **`learn-module.md`**: the scheduler placement, the four-collection split,
   the idempotent review ledger, the token rule and the plan-limit reasoning all
-  carry over. The "fifth tab" becomes the middle tab. The document is retired
-  once this one is accepted.
+  carried over. The "fifth tab" became the middle tab. The document was
+  deleted when this one was accepted.
 - **The "vocabulary notebook"** line in `architecture.md`'s P2 list.
 - **Phrase cards** stay as they are. A phrase card is a message — both people
   see it, it is written on purpose, with a meaning and an example typed by
@@ -113,13 +118,13 @@ The feed is the other place a learner meets a sentence worth keeping — their
 own, once somebody has corrected it, or a stranger's that a native reader
 recorded. Both become Echo cards with the same tap.
 
-| Field    | From                                                                                                                                                                                        |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `front`  | The post body. If the post has corrections, the **top correction's `corrected` text** — the corrected sentence is the thing to learn, and the top one is what the feed already ranks first. |
-| `back`   | The translation of the original body into the reader's language, by the same rule as a chat capture.                                                                                        |
-| `lang`   | `post.language` — the language the author is learning, which the post already carries.                                                                                                      |
-| `audio`  | On a pronunciation post, the top answer's `media` and, if recorded, `slowMedia`. A native speaker saying the sentence, already uploaded, already ranked by likes. See "Audio".              |
-| `source` | `{ kind: 'post', postId, authorId }`, `sourceKey: post:<id>`. Deep-links to the post detail.                                                                                                |
+| Field    | From                                                                                                                                                                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `front`  | The post body. If the post has corrections, the **top correction's `corrected` text** — the corrected sentence is the thing to learn, and the top one is what the feed already ranks first.                                                                                |
+| `back`   | The translation of the original body into the reader's language, by the same rule as a chat capture.                                                                                                                                                                       |
+| `lang`   | `post.language` — the language the author is learning, which the post already carries.                                                                                                                                                                                     |
+| `audio`  | On a pronunciation post, the top answer's `media` and, if recorded, `slowMedia`. A native speaker saying the sentence, already uploaded. "Top" is the **oldest**, not the most-liked — `readAnswerSummary` sorts by `createdAt`, on the feed's own "first, not best" rule. |
+| `source` | `{ kind: 'post', postId, authorId }`, `sourceKey: post:<id>`. Deep-links to the post detail.                                                                                                                                                                               |
 
 Entry points: the post's action row in the feed and the detail screen. Same
 capture cap, same repository gate (`listPost` access rules apply before the
@@ -127,29 +132,45 @@ card is written).
 
 ## Audio
 
-Every card can be heard. One field — `audio?: { key, slowKey?, origin: 'post'
-| 'chat' | 'tts' | 'pack' }` — and three sources, in the order the session
-prefers them:
+Every card can be heard. One field — `audio?: { url, slowUrl?, origin: 'post'
+| 'chat' | 'pack', speakerName? }` — and the sources the session prefers, in
+order:
+
+**A URL, not a storage key**, and this document said key until the code was
+written. Every piece of media in this app is a `Media` with a `url`;
+`keyFromPublicUrl` returns null for every attachment imported from v1, and
+neither the app nor the API has anything that turns a key back into
+something `expo-audio` can play. `image` holds a URL for the same reason.
 
 1. **A real person who already recorded it.** A pronunciation post's answer
-   (`pronunciationAnswerSchema.media`, `slowMedia`), or in a chat the voice
-   note that answers a `pronunciation` ask on the message. Nothing new is
-   recorded and no new UI exists for it; capture copies the media key. This is
-   the differentiator: Memrise plays a stranger's sample, Echo plays the
-   person you were talking to. Posts in Phase 1; chat voice notes in Phase 2,
-   because resolving "the voice note that quotes this message" is fiddlier.
-2. **Text-to-speech, on the server.** Google Cloud Text-to-Speech through the
-   same service account the translation module already uses, behind an
-   optional `tts/` provider shaped like `translation/` (`TtsProvider`,
-   `createTtsProvider`, `googleTtsProvider`; two `GOOGLE_TTS_*` lines in
-   `.env.example`). The mp3 is written to storage at
-   `echo/tts/<lang>/<sha1(text)>.mp3` and looked up by that key first, so a
-   sentence is synthesised once however many people echo it. Chat and post
-   cards are synthesised at capture, inside the same `echoCapturesPerDay`
-   ceiling; pack items are synthesised by the seed script. One chosen voice
-   per language, the same on every platform. **No key, no button**: like mail
-   and storage, the service degrades and the card still works. Phase 1.
-3. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
+   (`pronunciationAnswerSchema.media`, `slowMedia`). Nothing new is recorded
+   and no new interface exists for it; capture copies the URL. This is the
+   differentiator: Memrise plays a stranger's sample, Echo plays the person
+   you were talking to. Phase 1.
+2. **A voice note in the chat, answering a `pronunciation` ask.** Phase 1,
+   and it replaced the server voice below. The link used to be a guess — any
+   audio message quoting the sentence, resolved in the client from whatever
+   was on screen — so a recording now says which ask it answers
+   (`answersMessageId`) and the asked message is stamped `answeredAt`, the
+   way `sendCorrection` already stamps `correctedAt`. Capture copies the
+   URL, so the card keeps playing after the recording is deleted. A card
+   with no recording offers **Ask them to say it**, which opens the
+   conversation with the composer armed and the sentence in it.
+
+3. **~~Text-to-speech, on the server.~~ Not built, and not planned for now.**
+   Google Cloud Text-to-Speech was costed before it was written: $4 per
+   million characters for a Standard voice, $16 for Neural2, with the first
+   four million and one million free respectively. At today's scale that is
+   nothing. The problem is the ceiling — `echoCapturesPerDay` bounds how many
+   cards a person makes and not what they cost, and a thousand daily users at
+   the cap is thousands of dollars a month for a synthetic voice that is
+   worse than the real one. A person who already recorded the sentence is
+   both cheaper and the actual differentiator: Memrise plays a stranger's
+   sample, Echo plays the person you were talking to. If a synthetic fallback
+   is ever wanted, it goes behind an optional `tts/` provider shaped like
+   `translation/`, writing `echo/tts/<lang>/<sha1(text)>.mp3` to storage and
+   looking that key up first.
+4. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
    (CC BY-SA 4.0, attribution in the content directory) replace the synthetic
    voice for single words when a pack item has one; phrases keep TTS until
    Common Voice (CC0) or our own recordings cover them. Phase 2.
@@ -166,13 +187,20 @@ card type — hear it, then reveal — rides on the same field in Phase 3.
 
 ## Images
 
-One field, `image?: { key, origin: 'chat' | 'pack' }`, filled only from what
-already exists:
+One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' }`,
+filled only from what already exists:
 
 - **The photo that came with the sentence.** A chat message that carried a
-  photo and a caption gives the card the photo; capture copies the storage
-  key. Marie's picture of the market above "On y va demain ?" is a better cue
-  than any illustration, and it costs nothing. Phase 1.
+  photo and a caption gives the card the photo; capture copies the URL.
+  Marie's picture of the market above "On y va demain ?" is a better cue than
+  any illustration, and it costs nothing. Phase 1.
+
+  This is why the **Add echo action is offered on an `image` message**, which
+  the table above says it is not. A photo with a caption is typed `image`;
+  refusing the type would have left the field with no way to be filled from a
+  chat and this section untrue. The caption is the front, the photo is the
+  cue, and a photo with no caption is still refused.
+
 - **An icon for concrete pack words.** In the 300-item packs, nouns you can
   point at — bread, train, dog — carry an OpenMoji glyph (CC BY-SA 4.0) as
   `image: 'openmoji:<hex>'` in the content JSON, rendered as SVG in the app's
@@ -281,8 +309,9 @@ teaches the wrong thing. Recognition (front → back) only at first; production
 ## Client
 
 Five tabs, Echo in the middle: **Discover · Chats · Echo · Feed · Me**. The
-tab-layout comment that says "the four tabs, and only the four tabs" is about
-not registering stack screens as tabs; a fifth real tab is within its rule.
+tab-layout comment said "the four tabs, and only the four tabs"; the number
+was never the rule — the rule is that nothing which is not a tab may be
+registered there — and it now says five and states the rule instead.
 Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
 
 | Route                | Screen                                                                                                                                     |
@@ -388,11 +417,11 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 
 ## Phases
 
-| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Done when                                                                                                                                     |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer attached as the card's audio; the server voice (`tts/` provider, cached in storage); a message's photo attached as the card's image | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; chat voice notes as card audio; OpenMoji icons for concrete pack words; the tour step                                                                                                                                                                                             | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                  | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Done when                                                                                                                                     |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
+| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; OpenMoji icons for concrete pack words; the tour step                                                                                                                                                                                                                                    | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                         | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
@@ -432,12 +461,18 @@ Four questions the first draft left open, closed on 13 September 2026:
 Three things the first three phases do not need and that ride on machinery
 already there. None adds a screen; each is one branch in code that exists.
 
-1. **Ask the partner from a card.** On an `Again` in the session, an "Ask
-   Marie" link opens the conversation with the sentence quoted and sends it as
-   a `pronunciation` or `correction` ask (`MESSAGE_ASKS`). It is the only path
-   that leads from Echo back into a conversation, which in a cold start is the
-   direction that matters: a forgotten card becomes a reason to write to
-   somebody.
+1. ~~**Ask the partner from a card.**~~ **Built in phase 1**, in place of the
+   server voice. A card with no recording offers "Ask them to say it", which
+   opens the conversation at the card's message with the composer armed for a
+   `pronunciation` ask and the sentence in it. It is the only path that leads
+   from Echo back into a conversation, which in a cold start is the direction
+   that matters: a forgotten card becomes a reason to write to somebody.
+
+   One limitation, left on purpose: the ask lands on a **new** message, not
+   on the one the card came from, because `ask` is written once at send time
+   and the original may never have carried one. So the recording that answers
+   it gives its _own_ card a voice rather than the one you asked from.
+
 2. **A card from a quiz message.** A `quiz` message already carries the
    question and the option its author marked correct. Add echo on it makes
    `front` the question and `back` the correct option — one more
