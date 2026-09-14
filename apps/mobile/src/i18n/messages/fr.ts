@@ -215,6 +215,7 @@ export const fr: Localized<EnMessages> = {
     doneBody: 'Echo te les ramènera le moment venu.',
     saveFailedTitle: 'Ta séance n’a pas été enregistrée',
     saveFailedBody: 'Tes réponses sont toujours là. Réessaie.',
+    offlineSession: 'Hors ligne. Tes réponses sont gardées et envoyées au retour.',
     packs: 'Packs',
     packsFor: 'Commencer avec un pack',
     packBlurb:
@@ -229,6 +230,13 @@ export const fr: Localized<EnMessages> = {
       other: '{count} cartes ajoutées',
     },
     packProgress: '{done} sur {total} commencées',
+    producePrompt: 'Écris-le en {language}',
+    produceHint: 'Tape la phrase',
+    check: 'Vérifier',
+    yourAnswer: 'Tu as écrit',
+    verdictExact: 'Exact',
+    verdictClose: 'Juste, à un accent près',
+    verdictWrong: 'Pas tout à fait',
   },
 
   messageMeta: {

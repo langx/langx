@@ -225,6 +225,7 @@ export const tr: Localized<EnMessages> = {
     doneBody: 'Echo bu kartları zamanı gelince geri getirir.',
     saveFailedTitle: 'Tekrarın kaydedilmedi',
     saveFailedBody: 'Cevapların duruyor. Tekrar dene.',
+    offlineSession: 'Çevrimdışısın. Cevapların kaydediliyor, bağlanınca gönderilecek.',
     packs: 'Paketler',
     packsFor: 'Bir paketle başla',
     packBlurb:
@@ -239,6 +240,13 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kart eklendi',
     },
     packProgress: '{total} karttan {done} tanesi başladı',
+    producePrompt: '{language} olarak yaz',
+    produceHint: 'İfadeyi yaz',
+    check: 'Kontrol et',
+    yourAnswer: 'Sen şunu yazdın',
+    verdictExact: 'Tam doğru',
+    verdictClose: 'Doğru, bir işaret farkıyla',
+    verdictWrong: 'Tam değil',
   },
 
   messageMeta: {

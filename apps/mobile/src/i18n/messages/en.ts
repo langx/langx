@@ -258,6 +258,7 @@ export const en = {
     doneBody: 'Echo brings these back when they are due.',
     saveFailedTitle: 'Your review did not save',
     saveFailedBody: 'Your answers are still here. Try again.',
+    offlineSession: 'Offline. Your answers are saved and sent when you are back.',
     packs: 'Packs',
     packsFor: 'Start from a pack',
     packBlurb:
@@ -272,6 +273,13 @@ export const en = {
       other: '{count} cards added',
     },
     packProgress: '{done} of {total} started',
+    producePrompt: 'Write it in {language}',
+    produceHint: 'Type the phrase',
+    check: 'Check',
+    yourAnswer: 'You wrote',
+    verdictExact: 'Exactly right',
+    verdictClose: 'Right, give or take an accent',
+    verdictWrong: 'Not quite',
   },
 
   messageMeta: {

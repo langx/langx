@@ -230,9 +230,10 @@ violated by accident:
   user-facing string is written in a component. Card _content_ is data, not
   interface copy: `t('echo.session.done')` is a key; the French on the card is
   not, and never goes through the i18n files.
-- **There is no local persistence in the client** beyond `expo-secure-store`.
-  Offline review is a new dependency and a new merge problem. Deferred, as
-  before.
+- **Local persistence is one JSON file**, written with `expo-file-system`,
+  which was already in the binary. It holds the due queue, the counts and any
+  grades waiting for a network — see "Offline review needs no build". There is
+  still no local _copy of the card library_, and no offline capture.
 - **Socket events pass through the same guards as REST.** Capture goes over
   REST; there is no realtime need, and REST is where the quota check already
   lives.
@@ -303,8 +304,17 @@ mismatch reads as a bug in the feature rather than a duplicated rule.
 **Four grades: Again · Hard · Good · Easy.** Self-graded reveal cards, not
 multiple choice, in the first pass. A chat card has no distractors to draw from
 — the alternatives would have to be invented, and a wrong invented alternative
-teaches the wrong thing. Recognition (front → back) only at first; production
-(type the front from the back) and pack-only multiple choice are Phase 3.
+teaches the wrong thing. Recognition (front → back) came first; **production — writing the sentence
+from its meaning — is built**, and pack-only multiple choice is still Phase 3.
+
+Production is a _presentation_ of the same card, not a second schedule: one
+row, one `srs`, one queue. It is asked only once a card has graduated out of
+the learning steps, only when the front is short enough to type on a phone
+(`ECHO_PRODUCTION_MAX_LENGTH`), and only on every other review, by parity of
+`reps` — deterministic, so leaving a session and coming back does not change
+what the card asks. The typed answer is compared with diacritics, case,
+punctuation and spacing stripped, and the result is **reported, never
+graded**: only the person knows whether they knew it or guessed it.
 
 ## Client
 
@@ -440,7 +450,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
 | 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. **Not built:** the `en` and `fr` packs themselves, pack audio from Lingua Libre, OpenMoji icons — all three wait on content a person has read                                                                                                                                                                                               | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                         | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| 3     | **Built:** production cards, offline review. **Left:** pack multiple choice, listening cards, the upper two levels, more languages, FSRS                                                                                                                                                                                                                                                                                                                                                                             | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth
@@ -453,13 +463,44 @@ go out by EAS Update; a new native module, a new permission or an SDK bump
 needs a build, and `runtimeVersion` is a fingerprint, so a bundle that changed
 the native side reaches nobody until the matching build ships.
 
-| Piece                                                                  | Ships by  | Why                                                             |
-| ---------------------------------------------------------------------- | --------- | --------------------------------------------------------------- |
-| The tab, capture, session, cards, feed capture, API, `packages/shared` | Update    | JavaScript and the server                                       |
-| Audio playback — post answers, chat voice notes, the server voice      | Update    | `expo-audio` is already in the binary; synthesis is server-side |
-| Card images — message photos, OpenMoji SVGs                            | Update    | Storage keys and inline SVG                                     |
-| Packs, tokens, streak rule, the `echo` push                            | Update    | Data, rules and the existing push path                          |
-| Offline review (`expo-sqlite`, Phase 3)                                | **Build** | A new native module — the only one Echo ever needs              |
+| Piece                                                                  | Ships by | Why                                                             |
+| ---------------------------------------------------------------------- | -------- | --------------------------------------------------------------- |
+| The tab, capture, session, cards, feed capture, API, `packages/shared` | Update   | JavaScript and the server                                       |
+| Audio playback — post answers, chat voice notes, the server voice      | Update   | `expo-audio` is already in the binary; synthesis is server-side |
+| Card images — message photos, OpenMoji SVGs                            | Update   | Storage keys and inline SVG                                     |
+| Packs, tokens, streak rule, the `echo` push                            | Update   | Data, rules and the existing push path                          |
+| Offline review (`expo-file-system`)                                    | Update   | **Not** a new native module — see below. Echo needs none        |
+
+## Offline review needs no build
+
+This document said offline meant `expo-sqlite`, and therefore a store build,
+and that it was the one native module Echo would ever want. That was wrong,
+and the correction is worth stating because the wrong version is the
+expensive one.
+
+A due queue is ten cards and a summary is four numbers. That is a few
+kilobytes of JSON, and `expo-file-system` has been in the binary since the
+meeting file and the deck export — three call sites predating Echo. So the
+whole of offline review ships **over the air**: the queue and the counts are
+written on every successful fetch, a session with no network draws from that
+copy, and grades given in a tunnel are written to the device before the
+screen says anything.
+
+SQLite would have bought a migration story, a native module and a build, to
+hold less data than one chat thread.
+
+Two rules make it honest rather than merely possible:
+
+- **A saved queue expires after three days.** The schedule is the point of the
+  module, and a queue from last month would put a card in front of somebody
+  that the server thinks is not due for a fortnight. Showing nothing is better
+  than teaching the wrong thing about when cards come back.
+- **A grade is never dropped for being old.** It is work somebody did. The
+  `reviewId` is minted when the grade is given, so the batch sent a day later
+  is the same idempotent batch, and `user_review_unique` decides.
+
+The one thing still deliberately absent is offline _capture_. Adding a card
+needs the server to translate it, and a card with no back is not a card.
 
 ## Decisions taken
 

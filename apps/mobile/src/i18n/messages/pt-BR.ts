@@ -210,6 +210,7 @@ export const ptBR: Localized<EnMessages> = {
     doneBody: 'O Echo traz esses cartões de volta na hora certa.',
     saveFailedTitle: 'Sua revisão não foi salva',
     saveFailedBody: 'Suas respostas continuam aqui. Tente de novo.',
+    offlineSession: 'Sem conexão. Suas respostas ficam salvas e vão quando você voltar.',
     packs: 'Pacotes',
     packsFor: 'Comece com um pacote',
     packBlurb:
@@ -224,6 +225,13 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} cartões adicionados',
     },
     packProgress: '{done} de {total} começados',
+    producePrompt: 'Escreva em {language}',
+    produceHint: 'Digite a expressão',
+    check: 'Conferir',
+    yourAnswer: 'Você escreveu',
+    verdictExact: 'Exatamente',
+    verdictClose: 'Certo, fora um acento',
+    verdictWrong: 'Quase',
   },
 
   messageMeta: {

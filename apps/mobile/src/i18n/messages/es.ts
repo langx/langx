@@ -213,6 +213,7 @@ export const es: Localized<EnMessages> = {
     doneBody: 'Echo te las traerá de vuelta cuando toque.',
     saveFailedTitle: 'Tu repaso no se guardó',
     saveFailedBody: 'Tus respuestas siguen aquí. Inténtalo otra vez.',
+    offlineSession: 'Sin conexión. Tus respuestas se guardan y se envían al volver.',
     packs: 'Packs',
     packsFor: 'Empieza con un pack',
     packBlurb:
@@ -227,6 +228,13 @@ export const es: Localized<EnMessages> = {
       other: '{count} tarjetas añadidas',
     },
     packProgress: '{done} de {total} empezadas',
+    producePrompt: 'Escríbelo en {language}',
+    produceHint: 'Escribe la expresión',
+    check: 'Comprobar',
+    yourAnswer: 'Escribiste',
+    verdictExact: 'Exacto',
+    verdictClose: 'Bien, salvo por una tilde',
+    verdictWrong: 'Casi',
   },
 
   messageMeta: {

@@ -224,6 +224,7 @@ export const ru: Localized<EnMessages> = {
     doneBody: 'Эхо вернёт их, когда придёт время.',
     saveFailedTitle: 'Занятие не сохранилось',
     saveFailedBody: 'Ваши ответы на месте. Попробуйте ещё раз.',
+    offlineSession: 'Без сети. Ответы сохранены и уйдут, когда связь вернётся.',
     packs: 'Наборы',
     packsFor: 'Начните с набора',
     packBlurb:
@@ -240,6 +241,13 @@ export const ru: Localized<EnMessages> = {
       other: 'Добавлено {count} карточки',
     },
     packProgress: 'Начато {done} из {total}',
+    producePrompt: 'Напишите на языке: {language}',
+    produceHint: 'Введите фразу',
+    check: 'Проверить',
+    yourAnswer: 'Вы написали',
+    verdictExact: 'В точку',
+    verdictClose: 'Верно, с точностью до знака',
+    verdictWrong: 'Не совсем',
   },
 
   messageMeta: {
