@@ -31,11 +31,12 @@ export async function getStreakLeaderboard(
   const filter: Filter<Profile> = { deletedAt: { $exists: false } }
   if (query.metric === 'current') {
     /*
-     * Liveness, and the board is meaningless without it. **Nothing decays
-     * `streak.current`** — it is only ever written forwards, when a day is
-     * credited — so somebody who last showed up in March still carries a 40 in
-     * the field. Without this the "current" board is a list of ghosts, sorted
-     * by how long ago they gave up.
+     * Liveness, and the board is meaningless without it. `streak.current` is
+     * written forwards when a day is credited and decays a day late, on
+     * purpose (`runStreakDecayPass`) — so a streak that died last night still
+     * carries its number this evening. Without this the "current" board would
+     * show it, and before the decay pass existed it showed everyone who had
+     * ever given up, sorted by how long ago.
      *
      * Yesterday counts, not just today: a streak is alive until the day after
      * its last qualified one has passed, and somebody who has not opened the

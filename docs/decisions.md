@@ -331,6 +331,34 @@ away would empty the streak of the meaning that brings people back. Banking is
 capped at 2. If the streak write loses its race, the spent freeze is refunded:
 it bridged nothing.
 
+## Streaks decay, one day late
+
+`streak.current` was only ever written forwards: `advance` credits a day, and
+the reset to 1 happened lazily, on the person's _next_ action. For the person
+who left, that action never came. So a 40 from March sat on a public profile
+all summer, and — worse — the evening reminder's predicate was "`current >= 1`
+and nothing today", which is a description of every account that ever sent one
+message and stopped. Each of them was told to keep it going, every evening, in
+their own language, for as long as the account existed. The per-day dedupe
+ledger made that tidy rather than impossible.
+
+Two predicates now, in `periods.ts`, and they are deliberately not the same
+line:
+
+- `streakSavable` — yesterday counted, or the day before did and a banked
+  freeze can bridge the gap. This is what the push and the digest section ask.
+  Inactivity disqualifies.
+- `streakLapsed` — the last qualified day is three or more local days back.
+  This is where `runStreakDecayPass`, on the reminder's half-hourly clock,
+  resets `current` to 0. Not two days: a freeze bridges exactly one missed day,
+  and the pass must not be the thing that wastes a freeze somebody paid for;
+  and the streak-repair offer is still being evaluated on that day east of
+  UTC+8. `longest` is history and is never touched.
+
+The cost of the gap is one evening on which a freeze-less dead streak still
+shows its old number on a profile. The leaderboard already filtered for
+liveness (it says so in `streakLeaderboard.ts`); the reminder never had.
+
 ## Phase 9 — competition ranking, and not by preference
 
 Equal token shares a rank and the next distinct score skips (1, 2, 2, 4).

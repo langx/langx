@@ -1,7 +1,8 @@
-import { localDayKey, type Locale } from '@langx/shared'
+import { localDayKey, streakSavable, type Locale } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { withJobHealth } from '../admin/jobHealth'
+import { runStreakDecayPass } from '../tokens/streak'
 import { streakReminderSection } from '../../email/templates'
 import type { DigestCandidate } from '../notifications/digest'
 import type { Profile } from '../profiles/profiles'
@@ -96,11 +97,12 @@ export function streakSectionFor(
 ): DigestCandidate | null {
   if (hasPushDevice) return null
   const streak = profile.streak?.current ?? 0
-  if (streak < 1) return null
-
   const day = localDayKey(now, profile.timezone ?? 'UTC')
-  // Already practised today: there is nothing to save.
-  if (profile.streak?.lastQualifiedDay === day) return null
+  // Still savable tonight, and not already saved. The same test as the push
+  // candidates, and for the same reason: `current` alone is a number that
+  // outlives the streak, and this section on its own is enough to send the
+  // whole mail — so a stale 1 was a digest every evening, forever.
+  if (!streakSavable(profile.streak, profile.streakFreezes ?? 0, day)) return null
 
   return {
     trigger: true,
@@ -139,6 +141,14 @@ export function startStreakReminderScheduler(
     if (running) return
     running = true
     try {
+      // Decay first, on the same clock: a streak nobody can save any more is
+      // reset before anyone is asked to save one. Its own health row, so the
+      // operator panel shows the two passes separately.
+      const { reset } = await withJobHealth(db, 'streak decay', () =>
+        runStreakDecayPass(db, new Date()),
+      )
+      if (reset > 0) logger.info({ reset }, 'lapsed streaks reset')
+
       const { pushed } = await withJobHealth(db, 'streak reminder', () =>
         runStreakReminderTick(db, sender, new Date()),
       )

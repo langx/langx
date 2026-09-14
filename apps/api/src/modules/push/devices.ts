@@ -4,6 +4,9 @@ import {
   STREAK_REMINDER_LOCAL_HOUR,
   localDayKey,
   localHour,
+  shiftDayKey,
+  streakSavable,
+  utcDayKey,
   type Locale,
   type PushKind,
   type PushPlatform,
@@ -407,8 +410,14 @@ export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale
 
 /**
  * Users who should get tonight's "keep your streak" nudge: it is
- * `STREAK_REMINDER_LOCAL_HOUR` **where they are**, they have a streak worth
- * saving, and they have not already acted today.
+ * `STREAK_REMINDER_LOCAL_HOUR` **where they are**, and they have a streak that
+ * is still savable today — yesterday counted, or a freeze covers the one day
+ * they missed — and have not already acted today.
+ *
+ * "Savable", not "`current >= 1`". The field only moves forwards until the
+ * decay pass catches up with it, so a person who sent one message in June and
+ * never returned still carries a 1 — and was told to keep it going every
+ * single evening since. Inactivity has to disqualify, not qualify.
  *
  * Local hour, like the streak itself — a reminder at 8pm UTC is 5am in Tokyo,
  * which is not a nudge, it is an alarm clock.
@@ -427,6 +436,11 @@ export async function streakReminderCandidates(
     .collection<Profile>(COLLECTIONS.profiles)
     .find({
       'streak.current': { $gte: 1 },
+      // Bounds the scan to streaks that can still be alive somewhere on
+      // Earth: the local day is never more than one behind UTC, so a streak
+      // savable locally has its last day within three UTC days. The real
+      // decision is `streakSavable` below, on the user's own day.
+      'streak.lastQualifiedDay': { $gte: shiftDayKey(utcDayKey(now), -3) },
       // The streak nudge is its own switch. `$ne: false` only rules out the
       // oldest shape, a bare `false` meaning silence for everything; the other
       // two — the retired push/email matrix and today's boolean per kind — are
@@ -444,7 +458,7 @@ export async function streakReminderCandidates(
     if (!push && !email) continue
     const zone = profile.timezone ?? 'UTC'
     if (localHour(now, zone) !== STREAK_REMINDER_LOCAL_HOUR) continue
-    if (profile.streak.lastQualifiedDay === localDayKey(now, zone)) continue
+    if (!streakSavable(profile.streak, profile.streakFreezes ?? 0, localDayKey(now, zone))) continue
     candidates.push({ userId: profile._id, streak: profile.streak.current, push, email })
   }
   return candidates

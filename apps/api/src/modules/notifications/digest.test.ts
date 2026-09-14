@@ -60,6 +60,7 @@ describe('the one notification email of the day', () => {
       speaks?: string
       learns?: string
       avatar?: boolean
+      streak?: { current: number; lastQualifiedDay: string }
     } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
@@ -74,7 +75,7 @@ describe('the one notification email of the day', () => {
       learning: [{ code: opts.learns ?? 'es', level: 'a1', priority: 1 }],
       interests: [],
       birthDate: '1996-04-01',
-      streak: { current: 0 },
+      streak: opts.streak ?? { current: 0 },
       privacy: { incognito: false, hideOnlineStatus: false },
       ...(opts.avatar === false ? {} : { avatarUrl: 'https://media.langx.test/a.jpg' }),
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
@@ -133,6 +134,23 @@ describe('the one notification email of the day', () => {
     await newProfile()
     expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
     expect(sender.messages).toHaveLength(0)
+  })
+
+  /**
+   * The streak section can send the mail on its own, and `current` outlives
+   * the streak — so a stale 1 was an entire digest every evening, to every
+   * account that had ever sent one message and stopped.
+   */
+  it('does not write a whole mail about a streak that already died', async () => {
+    await newProfile({ streak: { current: 1, lastQualifiedDay: '2026-09-07' } })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 0 })
+    expect(sender.messages).toHaveLength(0)
+  })
+
+  it('still warns about a streak that breaks tonight', async () => {
+    await newProfile({ streak: { current: 4, lastQualifiedDay: '2026-09-13' } })
+    expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
+    expect(sender.messages).toHaveLength(1)
   })
 
   it('carries every kind that has something to say in one mail', async () => {

@@ -161,7 +161,7 @@ every one claims a row in `notificationLedger` before it sends.
 | Message                                          | Kind            | When           | Period key                                      |
 | ------------------------------------------------ | --------------- | -------------- | ----------------------------------------------- |
 | A message arrived                                | `messages`      | on the message | — (fan-out)                                     |
-| Streak reminder                                  | `streak`        | 20:00 local    | local day                                       |
+| Streak reminder — only while still savable today | `streak`        | 20:00 local    | local day                                       |
 | Badge round-up                                   | `badges`        | 18:00 local    | badge ids                                       |
 | Profile visits                                   | `profileVisits` | 12:00 local    | local day                                       |
 | Meeting reminder                                 | `meetings`      | an hour before | message id                                      |
@@ -180,7 +180,7 @@ that was going anyway.
 | Section                            | Kind            | Trigger?                 | Period key                               |
 | ---------------------------------- | --------------- | ------------------------ | ---------------------------------------- |
 | Unread messages, with faces        | `messages`      | yes                      | `lastActiveAt` — one absence, one saying |
-| Your streak breaks tonight         | `streak`        | only with no push device | local day                                |
+| Your streak breaks tonight         | `streak`        | no push device, savable  | local day                                |
 | Tomorrow's calls                   | `meetings`      | yes                      | tomorrow's local day                     |
 | The day's replies to your posts    | `social`        | yes                      | local day                                |
 | Badges earned                      | `badges`        | only if no push went     | local day                                |

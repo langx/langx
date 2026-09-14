@@ -130,3 +130,36 @@ export function nextStreak(
   if (lastQualifiedDay !== null && isConsecutiveDay(lastQualifiedDay, today)) return current + 1
   return 1
 }
+
+/**
+ * Whether a streak is still worth a nudge today: yesterday counted, or the
+ * day before did and a banked freeze can bridge the one missed day — the
+ * exact gap `recordQualifyingAction` is willing to spend a freeze on.
+ *
+ * Nothing decays `streak.current` on its own the moment a day is missed, so
+ * "has a number in the field" is not the same as "has a streak". The evening
+ * reminder used the former and nagged every person who ever sent one message,
+ * every evening, for as long as the account existed.
+ */
+export function streakSavable(
+  streak: { current: number; lastQualifiedDay: string | null },
+  freezes: number,
+  today: string,
+): boolean {
+  const last = streak.lastQualifiedDay
+  if (last === null || streak.current < 1) return false
+  if (last === shiftDayKey(today, -1)) return true
+  return last === shiftDayKey(today, -2) && freezes > 0
+}
+
+/**
+ * Whether a streak is beyond any rescue, freeze included: the last qualified
+ * day is three or more days back. This is the line the decay pass resets at.
+ *
+ * Deliberately one day later than "not savable without a freeze". A freeze
+ * bridges exactly one missed day, so `today - 2` is still alive for somebody
+ * who paid for one; the pass must not be the thing that wastes it.
+ */
+export function streakLapsed(lastQualifiedDay: string | null, today: string): boolean {
+  return lastQualifiedDay !== null && lastQualifiedDay < shiftDayKey(today, -2)
+}

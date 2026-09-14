@@ -2,8 +2,10 @@ import {
   isConsecutiveDay,
   localDayKey,
   nextStreak,
+  streakLapsed,
   streakMilestoneBonus,
   shiftDayKey,
+  utcDayKey,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -208,4 +210,61 @@ async function advance(
   }
 
   return { current, longest, lastQualifiedDay: today, advanced, milestoneXp, freezeUsed }
+}
+
+/**
+ * Resets every streak that nothing can save any more.
+ *
+ * `advance` only ever writes `current` forwards, and the reset to 1 happens
+ * lazily on the next action — which, for the person who left, never comes. So
+ * a 40 from March sat on a public profile all summer, and the evening reminder
+ * told everyone who had ever sent one message to "keep it going", every
+ * evening, for as long as the account existed. This pass is the missing half
+ * of the mechanic: it only takes the number away once the streak is dead.
+ *
+ * Dead means `streakLapsed` — the last qualified day three or more local days
+ * back. Not two: a banked freeze bridges exactly one missed day, so at two
+ * days the person who paid for one can still walk in and keep the run, and the
+ * streak-repair offer (`promo.streakRepair`) is still being evaluated on that
+ * day in the far-east zones. The price of the extra day is a dead streak
+ * showing its old number for one more evening. The reminder does not use this
+ * line; it asks `streakSavable`, which is stricter, so nobody is nudged about
+ * a streak this pass has not reached yet.
+ *
+ * The prefilter is on the UTC day and generous by one, because the local day
+ * is never more than one day ahead of it; the user's own day decides, in
+ * `streakLapsed`. Once reset, a profile drops out of `current >= 1` and is
+ * never scanned again, so the pass stays the size of the live population.
+ *
+ * The guard on `lastQualifiedDay` is the whole concurrency story: a message
+ * landing between the read and the write moves that field to today, and the
+ * reset then matches nothing. Idempotent by construction — no ledger claim.
+ * `longest` is never touched; that number is history, not state.
+ */
+export async function runStreakDecayPass(
+  db: Db,
+  now: Date = new Date(),
+): Promise<{ reset: number }> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const lapsedSomewhere = await profiles
+    .find(
+      {
+        'streak.current': { $gte: 1 },
+        'streak.lastQualifiedDay': { $lte: shiftDayKey(utcDayKey(now), -2) },
+      },
+      { projection: { timezone: 1, streak: 1 } },
+    )
+    .toArray()
+
+  let reset = 0
+  for (const profile of lapsedSomewhere) {
+    const last = profile.streak.lastQualifiedDay
+    if (!streakLapsed(last, streakDay(profile, now))) continue
+    const result = await profiles.updateOne(
+      { _id: profile._id, 'streak.lastQualifiedDay': last },
+      { $set: { 'streak.current': 0, updatedAt: now } },
+    )
+    reset += result.modifiedCount
+  }
+  return { reset }
 }
