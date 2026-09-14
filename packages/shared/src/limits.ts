@@ -354,6 +354,7 @@ export const QUOTA_KINDS = [
   'corrections',
   'media',
   'echoCaptures',
+  'echoNewCards',
 ] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
@@ -363,6 +364,7 @@ const QUOTA_LIMIT_KEY = {
   corrections: 'correctionsPer24h',
   media: 'mediaPer24h',
   echoCaptures: 'echoCapturesPerDay',
+  echoNewCards: 'echoNewCardsPerDay',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

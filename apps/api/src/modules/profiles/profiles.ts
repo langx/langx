@@ -232,7 +232,13 @@ export interface Profile {
    * every existing profile was written, and `consumeQuota` reads the array
    * through `$ifNull` rather than a migration filling it in.
    */
-  quota: { initiations: Date[]; translations: Date[]; media: Date[]; echoCaptures?: Date[] }
+  quota: {
+    initiations: Date[]
+    translations: Date[]
+    media: Date[]
+    echoCaptures?: Date[]
+    echoNewCards?: Date[]
+  }
   /**
    * When this account was last told it had run out — a rolling window, kept
    * by `consumeQuota` and read by nothing but the upsell nudge.
