@@ -121,6 +121,26 @@ export default tseslint.config(
     },
   },
   {
+    /*
+     * The content pipeline: a real ES module run with `node`, not a config
+     * file and not a throwaway. Typechecking is off for the same reason as
+     * the block below — there is no tsconfig covering it — but it keeps every
+     * other rule, so it is linted like code rather than excused like
+     * `tools/ext-lab`.
+     */
+    files: ['tools/echo-content/**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        fetch: 'readonly',
+        process: 'readonly',
+        setTimeout: 'readonly',
+      },
+    },
+  },
+  {
     // Metro/Babel config files are CommonJS and never typechecked.
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
     extends: [tseslint.configs.disableTypeChecked],

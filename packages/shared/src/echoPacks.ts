@@ -38,7 +38,7 @@ export type EchoPackItemKind = (typeof ECHO_PACK_ITEM_KINDS)[number]
  * usable pack in the seven that are, and `glossFor` falls back rather than
  * showing a blank back.
  */
-export const echoGlossSchema = z.record(localeSchema, z.string().trim().min(1))
+export const echoGlossSchema = z.partialRecord(localeSchema, z.string().trim().min(1))
 export type EchoGloss = z.infer<typeof echoGlossSchema>
 
 export const echoPackItemSchema = z.object({

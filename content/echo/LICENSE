@@ -1,0 +1,26 @@
+# The content in this directory
+
+The code in this repository is BSD-3-Clause. **This directory is not code and
+is not under that licence.**
+
+Every pack here is derived from sources listed in `ATTRIBUTION.md`, and some of
+them are share-alike: CC BY-SA 4.0 obliges a derived work to carry the same
+licence. A derived work is what a pack is — the word list, the ordering and the
+glosses all come from somewhere.
+
+So: **the JSON files under `content/echo/` are licensed CC BY-SA 4.0**, and
+carry the attribution their sources require. The licence binds this directory
+and nothing else: share-alike attaches to the derived content, not to the
+program that reads it, and the seed script, the API and the app stay
+BSD-3-Clause.
+
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Two rules follow, and both are easy to break by accident:
+
+- **A pack file may not be moved into `packages/shared` or `apps/`.** It would
+  take this licence with it into a directory that is BSD-3-Clause, and the two
+  cannot both be true of one file.
+- **A new source has to be recorded in `ATTRIBUTION.md` before the pack that
+  uses it is committed**, with the version or the date it was taken. "CC BY-SA"
+  is not attribution; a name, a link and a date are.
