@@ -354,13 +354,29 @@ before it compiles. Plurals for the due count.
 ## Content: English and French first
 
 **The machine cannot pick the sense, and that is measured rather than
-feared.** `tools/echo-content/build-pack.mjs` pulls the sense-carrying
-translation tables out of the English Wiktionary, which is the right source —
-but taking the first block gave the wrong sense for three of the six beginner
-words that resolved at all: _train_ as the back of a dress, _dog_ as a verb,
-_water_ as watering a garden. Scoping the search to the word's part of speech
-made it worse, turning three wrong answers into no answer, because the tables
-are not reliably inside the section they belong to.
+feared.** The first `tools/echo-content/build-pack.mjs` pulled the
+sense-carrying translation tables out of the English Wiktionary as raw
+wikitext, which is the right source — but taking the first block gave the wrong
+sense for three of the six beginner words that resolved at all: _train_ as the
+back of a dress, _dog_ as a verb, _water_ as watering a garden. Scoping the
+search to the word's part of speech made it worse, turning three wrong answers
+into no answer, because the tables are not reliably inside the section they
+belong to.
+
+**It reads kaikki.org now, and drafts the most-translated sense.** Two changes,
+and the paragraph above is the reason for both. wiktextract gives the same
+tables already parsed — each translation tagged with its sense, beside the
+definition and the examples — so nothing depends on where the markup put a
+table. And the draft is no longer the first sense but the one the most
+languages have a word for, which is the only usage signal the data carries;
+Wiktionary's own order is by etymology and age, which is how the dress came
+before the vehicle. On those six words it is six out of six, measured in
+`content/echo/ATTRIBUTION.md`.
+
+**The gate does not move.** Six is six, not a guarantee: `be` drafts as _to
+occupy a place_ rather than as the copula, and no count decides that. What
+changed is that the reviewer now reads a definition and the runner-up senses
+instead of a bare word.
 
 So the pipeline drafts, writing the sense it chose beside every gloss, and
 marks the file `"reviewed": false`. `apps/api/scripts/seed-echo-packs.ts`
@@ -370,7 +386,9 @@ content, and a wrong gloss is worse than no pack.
 
 What remains for the first pack is therefore a **reading**, not a build: feed
 the pipeline a frequency list, read the draft, fix the senses, set
-`"reviewed": true`.
+`"reviewed": true`. `content/echo/en/absoluteBeginner.json` is that draft — 300
+items, `"reviewed": false`, unreadable by the seed until somebody has been
+through it.
 
 The first wave is two languages, chosen by hand rather than from the v1
 distribution, because two is what can be read end to end by a human before it
@@ -387,13 +405,16 @@ are Phase 3, where phrases and idiom have to dominate anyway.
 | Source                            | Gives                                          | Licence                            | Use                                                 |
 | --------------------------------- | ---------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
 | Lexique 3 (lexique.org)           | FR: 142k words, frequency, IPA, part of speech | CC BY-SA 4.0                       | French ranking and phonetics                        |
-| NGSL (Browne, Culligan, Phillips) | EN: 2,801 core words                           | CC BY-SA 4.0                       | English `absoluteBeginner` / `beginner` word list   |
+| CEFR-J Vocabulary Profile 1.5     | EN: 7,798 headwords with a CEFR level          | Free commercially, **if cited**    | Which English words are in which pack               |
+| NGSL (Browne, Culligan, Phillips) | EN: 2,801 core words with a frequency rank     | CC BY-SA 4.0                       | The order they go in, and `freqRank`                |
 | Wiktionary frequency lists        | EN / FR / RU subtitle-derived lists            | CC BY-SA                           | Cross-check; the Russian list when a RU pack comes  |
-| Wiktextract (kaikki.org)          | Senses, glosses, examples, IPA                 | CC BY-SA                           | Sense-carrying glosses — the polysemy trap, avoided |
-| Tatoeba                           | Example sentences with translations            | CC BY 2.0 FR                       | Example sentences, with attribution                 |
+| Wiktextract (kaikki.org)          | Senses, definitions, examples, IPA, recordings | CC BY-SA 4.0                       | Glosses and examples. What the pipeline reads       |
+| Tatoeba                           | Example sentences with translations            | CC BY 2.0 FR                       | Unused — kaikki carries examples. The fallback      |
 | Lingua Libre (Wikimedia Commons)  | Human word recordings, per language            | CC BY-SA 4.0                       | Pack audio for single words                         |
 | Common Voice                      | Sentence recordings                            | CC0                                | Sentence audio, later                               |
+| CEFRLex — EFLLex, FLELex          | EN / FR lemmas by CEFR level                   | CC BY-NC-SA 4.0                    | **Out** — non-commercial. The French levels problem |
 | Kelly lists (Leeds)               | EN / RU learner lists by CEFR                  | CC BY-NC-ND-SA, offline since 2026 | **Out** — non-commercial, no derivatives            |
+| Oxford 3000 / EVP (Cambridge)     | EN word lists by CEFR                          | none granted                       | **Out** — no licence; the MIT mirrors have no right |
 | Anki shared decks                 | —                                              | none stated                        | **Out** — no provenance                             |
 
 Glosses are drafted from the sense-carrying source, never machine-translated

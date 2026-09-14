@@ -16,7 +16,7 @@ BSD-3-Clause.
 
 https://creativecommons.org/licenses/by-sa/4.0/
 
-Two rules follow, and both are easy to break by accident:
+Three rules follow, and each is easy to break by accident:
 
 - **A pack file may not be moved into `packages/shared` or `apps/`.** It would
   take this licence with it into a directory that is BSD-3-Clause, and the two
@@ -24,3 +24,9 @@ Two rules follow, and both are easy to break by accident:
 - **A new source has to be recorded in `ATTRIBUTION.md` before the pack that
   uses it is committed**, with the version or the date it was taken. "CC BY-SA"
   is not attribution; a name, a link and a date are.
+- **A source that is not share-alike keeps its own conditions anyway.** The
+  CEFR-J wordlist is free for commercial use on one condition, that it is
+  cited. Putting it into a pack that is CC BY-SA does not absorb that condition
+  or make the citation optional — CC BY-SA is what *we* grant downstream, and it
+  cannot be more than what we were given. Every such condition is written out in
+  `ATTRIBUTION.md`, and dropping one is a licence breach in a public repo.
