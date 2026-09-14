@@ -202,7 +202,7 @@ export const en = {
     review: 'Review',
     allLanguages: 'All',
 
-    // Capture, from a chat bubble or a post.
+    // Capture: from a chat bubble, from a post, or written by hand.
     added: 'Added to Echo',
     alreadyAdded: 'Already in Echo',
     removed: 'Removed from Echo',
@@ -223,6 +223,7 @@ export const en = {
     // The tab.
     fromYourChats: 'From your chats',
     fromAPost: 'From a post',
+    fromYourself: 'Written by you',
     seeAllCards: 'See all cards',
     emptyTitle: 'Nothing to review yet',
     emptyBody:
@@ -233,7 +234,8 @@ export const en = {
     cards: 'Cards',
     cardCount: { one: '{count} card', other: '{count} cards' },
     cardsEmptyTitle: 'No cards yet',
-    cardsEmptyBody: 'Sentences you keep from chats and posts collect here.',
+    cardsEmptyBody:
+      'Sentences you keep from chats and posts collect here, along with the ones you write yourself.',
     remove: 'Remove',
     removeTitle: 'Remove this card?',
     removeBody: 'Its schedule goes with it. The message itself stays where it is.',
@@ -243,6 +245,9 @@ export const en = {
     edited: 'Card updated',
     editFailedTitle: 'Could not save this card',
     cardMenu: 'Card options',
+    newTitle: 'New card',
+    cardLanguage: 'Language',
+    backHint: 'Leave the meaning empty and it will be translated for you.',
 
     // The session.
     sessionProgress: '{done} of {total}',

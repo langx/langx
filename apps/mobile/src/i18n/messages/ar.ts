@@ -188,6 +188,7 @@ export const ar: Localized<EnMessages> = {
     limitBody: 'يمكنك حفظ {count} بطاقة في اليوم. يبدأ العد من جديد غدًا.',
     fromYourChats: 'من محادثاتك',
     fromAPost: 'من منشور',
+    fromYourself: 'كتبتها بنفسك',
     seeAllCards: 'كل البطاقات',
     emptyTitle: 'لا شيء للمراجعة بعد',
     emptyBody:
@@ -203,7 +204,8 @@ export const ar: Localized<EnMessages> = {
       other: '{count} بطاقة',
     },
     cardsEmptyTitle: 'لا بطاقات بعد',
-    cardsEmptyBody: 'الجمل التي تحفظها من المحادثات والمنشورات تتجمّع هنا.',
+    cardsEmptyBody:
+      'الجمل التي تحتفظ بها من المحادثات والمنشورات تجتمع هنا، إلى جانب ما تكتبه بنفسك.',
     remove: 'إزالة',
     removeTitle: 'إزالة هذه البطاقة؟',
     removeBody: 'يذهب جدولها معها. أمّا الرسالة نفسها فتبقى مكانها.',
@@ -213,6 +215,9 @@ export const ar: Localized<EnMessages> = {
     edited: 'تم تحديث البطاقة',
     editFailedTitle: 'تعذّر حفظ هذه البطاقة',
     cardMenu: 'خيارات البطاقة',
+    newTitle: 'بطاقة جديدة',
+    cardLanguage: 'اللغة',
+    backHint: 'اترك المعنى فارغًا وسنترجمه لك.',
     sessionProgress: '{done} من {total}',
     show: 'أظهر الإجابة',
     again: 'مرة أخرى',

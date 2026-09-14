@@ -85,18 +85,33 @@ export default function EchoCardsScreen() {
   function openEdit(card: EchoCard): void {
     router.push({
       pathname: '/(app)/echo/edit',
-      params: { id: card._id, front: card.front, back: card.back },
+      params: { id: card._id, front: card.front, back: card.back, lang: card.lang },
     })
   }
 
   function sourceLabel(card: EchoCard): string {
     if (card.source.kind === 'post') return t('echo.fromAPost')
+    if (card.source.kind === 'manual') return t('echo.fromYourself')
     return names.language(card.lang)
   }
 
   return (
     <Screen fluid>
-      <ScreenHeader title={t('echo.cards')} onBack={() => goBackTo('/(app)/(tabs)/echo')} />
+      <ScreenHeader
+        title={t('echo.cards')}
+        onBack={() => goBackTo('/(app)/(tabs)/echo')}
+        trailing={
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('echo.newTitle')}
+            hitSlop={12}
+            onPress={() => router.push('/(app)/echo/new')}
+            style={({ pressed }) => (pressed ? styles.pressed : null)}
+          >
+            <Feather name="plus" size={22} color={colors.text} />
+          </Pressable>
+        }
+      />
       {languages.length > 1 ? (
         <View style={styles.chips}>
           <Chip

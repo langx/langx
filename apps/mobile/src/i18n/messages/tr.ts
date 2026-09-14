@@ -192,6 +192,7 @@ export const tr: Localized<EnMessages> = {
     limitBody: 'Günde {count} kart saklayabilirsin. Yarın sıfırlanır.',
     fromYourChats: 'Sohbetlerinden',
     fromAPost: 'Bir gönderiden',
+    fromYourself: 'Kendi yazdığın',
     seeAllCards: 'Tüm kartları gör',
     emptyTitle: 'Henüz tekrar edilecek bir şey yok',
     emptyBody:
@@ -203,7 +204,8 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kart',
     },
     cardsEmptyTitle: 'Henüz kart yok',
-    cardsEmptyBody: 'Sohbetlerden ve gönderilerden sakladığın cümleler burada toplanır.',
+    cardsEmptyBody:
+      'Sohbetlerden ve gönderilerden sakladığın cümleler, kendi yazdıklarınla birlikte burada toplanır.',
     remove: 'Çıkar',
     removeTitle: 'Bu kart çıkarılsın mı?',
     removeBody: 'Programı da onunla gider. Mesajın kendisi yerinde kalır.',
@@ -213,6 +215,9 @@ export const tr: Localized<EnMessages> = {
     edited: 'Kart güncellendi',
     editFailedTitle: 'Bu kart kaydedilemedi',
     cardMenu: 'Kart seçenekleri',
+    newTitle: 'Yeni kart',
+    cardLanguage: 'Dil',
+    backHint: 'Anlamı boş bırakırsan senin için çevrilir.',
     sessionProgress: '{done} / {total}',
     show: 'Cevabı göster',
     again: 'Tekrar',

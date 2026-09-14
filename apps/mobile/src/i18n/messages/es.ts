@@ -180,6 +180,7 @@ export const es: Localized<EnMessages> = {
     limitBody: 'Puedes guardar {count} tarjetas al día. Mañana empieza de nuevo.',
     fromYourChats: 'De tus chats',
     fromAPost: 'De una publicación',
+    fromYourself: 'Escrita por ti',
     seeAllCards: 'Ver todas las tarjetas',
     emptyTitle: 'Todavía no hay nada que repasar',
     emptyBody:
@@ -191,7 +192,8 @@ export const es: Localized<EnMessages> = {
       other: '{count} tarjetas',
     },
     cardsEmptyTitle: 'Aún no hay tarjetas',
-    cardsEmptyBody: 'Las frases que guardes de chats y publicaciones se reúnen aquí.',
+    cardsEmptyBody:
+      'Las frases que guardas de los chats y las publicaciones se reúnen aquí, junto con las que escribes tú.',
     remove: 'Quitar',
     removeTitle: '¿Quitar esta tarjeta?',
     removeBody: 'Su calendario se va con ella. El mensaje se queda donde está.',
@@ -201,6 +203,9 @@ export const es: Localized<EnMessages> = {
     edited: 'Tarjeta actualizada',
     editFailedTitle: 'No se pudo guardar esta tarjeta',
     cardMenu: 'Opciones de la tarjeta',
+    newTitle: 'Tarjeta nueva',
+    cardLanguage: 'Idioma',
+    backHint: 'Deja el significado vacío y lo traduciremos por ti.',
     sessionProgress: '{done} de {total}',
     show: 'Ver la respuesta',
     again: 'Otra vez',

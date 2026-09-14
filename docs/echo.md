@@ -130,6 +130,48 @@ Entry points: the post's action row in the feed and the detail screen. Same
 capture cap, same repository gate (`listPost` access rules apply before the
 card is written).
 
+## A card you write yourself
+
+The four sources above all name something that already exists; this one does
+not. A word heard out loud, read on a sign, or remembered from a lesson has
+nothing to be captured from, and until `manual` arrived there was no way to
+keep it.
+
+`+` on the cards screen opens a form with three fields: the sentence, what it
+means, and which language it is in. The language is asked for here because
+this is the one card that cannot be told — every other path reads it off the
+message or the post.
+
+**Leaving the meaning empty asks for it.** `captureManual` runs the same
+`backFor` every other capture runs — the offered translation, then the shared
+cache, then the provider — so writing down a single word still produces a
+whole card, and an unconfigured provider leaves the back empty rather than
+failing the save. A card already in the reader's own language skips the call:
+the answer would be the sentence back again.
+
+**It is one capture like any other.** Same `echoCapturesPerDay` ceiling, same
+402 and the same alert, which offers nothing to buy.
+
+**Idempotent on a client-minted id.** A hand-written card has no natural key,
+so the screen mints a `clientId` once and it becomes `manual:<id>`. A save that
+times out and is retried lands on the card the first attempt may already have
+written; `card_source_unique` decides, exactly as it does for a message
+captured twice. The same device and the same argument as `reviewId`.
+
+### The language became editable
+
+The edit screen used to change only the two lines, on the argument that the
+language is a _fact_ about the message rather than a choice. On a manual card
+it is a choice, and a choice made wrongly has to be correctable.
+
+The field is offered on **every** card rather than only manual ones — a product
+decision, recorded here with its cost rather than hidden: relabelling a card
+made from a chat message leaves it disagreeing with the thread it links to.
+Nothing breaks. `lang` is read only by the language chips and the summary's
+grouping, so the card moves between chips, which is what somebody correcting
+it wants. The picker is drawn only when the card's current language is among
+the ones you are learning and there is more than one to choose from.
+
 ## Audio
 
 Every card can be heard. One field — `audio?: { url, slowUrl?, origin: 'post'
@@ -258,10 +300,11 @@ Four collections, registered in `collections.ts`:
 { kind: 'post',   postId, authorId }
 { kind: 'phrase', phraseCardId, conversationId }
 { kind: 'pack',   packId, itemId }
+{ kind: 'manual', id }
 ```
 
 `sourceKey` is the string form of it — `msg:<messageId>`, `post:<postId>`,
-`phrase:<id>`, `pack:<itemId>` — and exists for one index.
+`phrase:<id>`, `pack:<itemId>`, `manual:<id>` — and exists for one index.
 
 The card carries its own text even when it came from a pack. Content gets
 re-seeded (a fixed gloss, a better example) and a re-seed must never touch
