@@ -1921,6 +1921,14 @@ export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
 }
 
 /**
+ * A picture or a recording somebody puts on their own Echo card, into the
+ * `echo/` prefix its own signing route keys by user.
+ */
+export function uploadEchoMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/echo/upload-url', input)
+}
+
+/**
  * Proof for a bug report or a feature request — a screenshot or a screen
  * recording — into the `feedback/` prefix its own signing route keys by user.
  */
@@ -2724,6 +2732,10 @@ export function useUpdateEchoCard() {
         front: input.front,
         back: input.back,
         ...(input.lang ? { lang: input.lang } : {}),
+        // `undefined` is dropped by the spread and `null` is not: absent
+        // leaves the file alone, null takes it off. See `updateEchoCardSchema`.
+        ...(input.image !== undefined ? { image: input.image } : {}),
+        ...(input.audio !== undefined ? { audio: input.audio } : {}),
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })

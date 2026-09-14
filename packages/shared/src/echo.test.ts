@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { captureEchoSchema, ECHO_SOURCE_KINDS, sourceKeyOf } from './echo'
+import { captureEchoSchema, ECHO_SOURCE_KINDS, sourceKeyOf, updateEchoCardSchema } from './echo'
 
 describe('sourceKeyOf', () => {
   it('names what each card was made from', () => {
@@ -61,5 +61,41 @@ describe('captureEchoSchema, writing a card by hand', () => {
       captureEchoSchema.safeParse({ source: { kind: 'manual', ...manual, clientId: 'abc' } })
         .success,
     ).toBe(false)
+  })
+})
+
+describe('updateEchoCardSchema, the two files', () => {
+  const lines = { front: 'la grenouille', back: 'the frog' }
+  const picture = {
+    url: 'https://cdn.example.com/echo/u/1.jpg',
+    contentType: 'image/jpeg',
+    sizeBytes: 4096,
+  }
+
+  /*
+   * Three states, and the whole reason the field is nullable rather than
+   * optional: a client that means "leave it" and one that means "take it off"
+   * have to be able to say different things.
+   */
+  it('tells absent, null and a file apart', () => {
+    expect(updateEchoCardSchema.parse(lines).image).toBeUndefined()
+    expect(updateEchoCardSchema.parse({ ...lines, image: null }).image).toBeNull()
+    expect(updateEchoCardSchema.parse({ ...lines, image: picture }).image).toMatchObject({
+      url: picture.url,
+    })
+  })
+
+  it('takes a file, not a bare URL', () => {
+    expect(updateEchoCardSchema.safeParse({ ...lines, image: picture.url }).success).toBe(false)
+    expect(updateEchoCardSchema.safeParse({ ...lines, audio: picture.url }).success).toBe(false)
+  })
+
+  /* The card's own shape is the server's to build — see `updateCard`. */
+  it('does not accept an origin from the client', () => {
+    const parsed = updateEchoCardSchema.parse({
+      ...lines,
+      audio: { ...picture, contentType: 'audio/m4a', origin: 'chat' },
+    })
+    expect(parsed.audio).not.toHaveProperty('origin')
   })
 })

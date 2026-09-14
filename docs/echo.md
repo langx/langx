@@ -218,6 +218,11 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    (CC BY-SA 4.0, attribution in the content directory) replace the synthetic
    voice for single words when a pack item has one; phrases keep TTS until
    Common Voice (CC0) or our own recordings cover them. Phase 2.
+5. **A recording the owner made for the card**, from the edit screen. The one
+   source that is not a copy of something else, and `origin` says so: `post`,
+   `chat` and `pack` all name a file something else still plays, and `self` is
+   the card's own. That distinction is what `updateCard` reads before deleting
+   an object — see "A card's own files" below.
 
 Not on the device. `expo-speech` would do the same job for free, but it is a
 native module, so it waits for a store build and speaks with whatever voice
@@ -231,8 +236,7 @@ card type — hear it, then reveal — rides on the same field in Phase 3.
 
 ## Images
 
-One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' }`,
-filled only from what already exists:
+One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' | 'self' }`:
 
 - **The photo that came with the sentence.** A chat message that carried a
   photo and a caption gives the card the photo; capture copies the URL.
@@ -252,10 +256,42 @@ filled only from what already exists:
   nothing. Mapped by hand in the content pipeline, attributed in
   `content/echo/ATTRIBUTION.md`. Phase 2.
 
-Not generated, not uploaded. A generated image per card costs money and
-moderation on every capture and drifts in style; letting a person attach their
-own picture adds a form to a gesture whose whole point is one tap. Both stay
-out until somebody asks for them twice.
+- **A picture the owner put there**, from the edit screen. `origin: 'self'`.
+
+**Still not generated.** An image per card costs money and moderation on every
+capture and drifts in style. That one stays out.
+
+~~**Not uploaded either.**~~ This section used to rule that out too, on the
+argument that a form is the wrong price for a gesture whose whole point is one
+tap — and said it would stay out "until somebody asks for them twice". Somebody
+asked. The argument survives intact because the form is not on the capture:
+**Add echo is still one tap and still asks nothing.** Attaching is on the edit
+screen, which is a different place, reached on purpose, by somebody who has
+already decided this particular card needs a picture or a voice.
+
+### A card's own files
+
+The edit screen attaches, replaces and removes both the picture and the
+recording. Three things make that safe to have added:
+
+- **`origin: 'self'` is a fact, not a label.** Every other origin names a copy
+  of an object a message, a post or a pack still plays. `updateCard` deletes
+  the object behind a replaced or cleared file **only when its origin was
+  `self`** — a bare `deleteObjects(previous.url)` there would look right and
+  would take a recording out of somebody's thread because a card stopped
+  pointing at it.
+- **The server builds the field.** A client sends the `Media` an upload
+  returned and nothing else; `origin` is stamped here, so nobody can file their
+  own recording under a partner's name.
+- **One prefix, one purge.** Uploads are signed into `echo/<userId>/` by
+  `POST /echo/upload-url`, and the account purge sweeps that prefix beside
+  `feedback/`. The card rows are deleted by the same purge, so a prefix is the
+  handle that does not depend on which runs first.
+
+`image` and `audio` are three-state on the wire — absent leaves the file alone,
+`null` takes it off, a `Media` replaces it. A photo and a recording saved
+together cost **one** unit of the daily media budget, as a pronunciation
+answer's two takes do.
 
 ## What the existing codebase already decides
 
@@ -380,7 +416,19 @@ Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
 | `echo/session.tsx`   | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
 | `echo/pack/[id].tsx` | A pack: description, progress, "Start" / "Continue"                                                                                        |
 | `echo/cards.tsx`     | Every card, filter by language and source, edit or remove                                                                                  |
-| `echo/edit.tsx`      | The card's two lines — the sentence and what it means. Nothing else about a card can be typed over                                         |
+| `echo/new.tsx`       | A card written by hand: the sentence, what it means, the language                                                                          |
+| `echo/edit.tsx`      | Everything but the source: the two lines, the language, the picture and the recording                                                      |
+
+**Review asks which language.** A deck drawn across every language at once is
+not a study session — it is a French word, then a Russian one, then French
+again, with the reader switching alphabets between cards. The chips on the tab
+filter the _list_, and "All" is a reasonable thing to browse; it was never a
+reasonable thing to be quizzed on, and passing it straight through to the
+session is what made it one. So the button asks, and only when it has something
+to ask: a chip already chosen is an answer, and one language with cards due is
+not a question. There is deliberately **no "All languages" row** — the mixed
+deck is what this removes, not a choice it offers. The pack screen passes
+`pack.lang` for the same reason: you pressed start on a French pack.
 
 The session screen is the whole feature as far as a user is concerned. What
 decides whether it is opened twice is how it ends — a done screen that says

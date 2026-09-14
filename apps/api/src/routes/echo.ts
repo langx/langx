@@ -69,7 +69,14 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireAuth, schema: { params: cardParamsSchema, body: updateEchoCardSchema } },
     async (request, reply) => {
       return reply.send(
-        await updateCard(app.mongo.db, request.userId, request.params.id, request.body),
+        await updateCard(
+          app.mongo.db,
+          request.userId,
+          request.params.id,
+          request.body,
+          app.env.STORAGE_PUBLIC_BASE_URL,
+          app.storage,
+        ),
       )
     },
   )

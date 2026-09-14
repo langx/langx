@@ -248,6 +248,14 @@ export const en = {
     newTitle: 'New card',
     cardLanguage: 'Language',
     backHint: 'Leave the meaning empty and it will be translated for you.',
+    reviewWhich: 'Which language?',
+    cardPhoto: 'Picture',
+    addPhoto: 'Add a picture',
+    replacePhoto: 'Replace the picture',
+    removePhoto: 'Remove the picture',
+    cardAudio: 'Recording',
+    recordIt: 'Say it yourself',
+    removeAudio: 'Remove the recording',
 
     // The session.
     sessionProgress: '{done} of {total}',

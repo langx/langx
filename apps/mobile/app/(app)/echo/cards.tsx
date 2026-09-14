@@ -85,7 +85,16 @@ export default function EchoCardsScreen() {
   function openEdit(card: EchoCard): void {
     router.push({
       pathname: '/(app)/echo/edit',
-      params: { id: card._id, front: card.front, back: card.back, lang: card.lang },
+      params: {
+        id: card._id,
+        front: card.front,
+        back: card.back,
+        lang: card.lang,
+        // The two files, so the screen can show what is already on the card.
+        // Only the URLs: which of them are safe to delete is the server's call.
+        ...(card.image ? { imageUrl: card.image.url } : {}),
+        ...(card.audio ? { audioUrl: card.audio.url } : {}),
+      },
     })
   }
 
