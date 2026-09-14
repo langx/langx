@@ -65,15 +65,17 @@ export default function NewChatScreen() {
    *
    * Only while the composer is empty: mid-sentence the send below hands the
    * words to the thread rather than dropping them, and that is the better of
-   * the two. Not while a send is in flight either — that one replaces this
-   * screen with the thread it just created.
+   * the two. And only before a send has been made — `isIdle`, not merely "not
+   * in flight": the send that succeeds invalidates the profiles, which fills
+   * in `conversationId` here a beat before the screen is gone, and this must
+   * not answer it with a second `replace` behind the one the send makes.
    */
   const existingConversationId = partner?.conversationId
   useEffect(() => {
-    if (existingConversationId && !draft && !startConversation.isPending) {
+    if (existingConversationId && !draft && startConversation.isIdle) {
       router.replace(`/(app)/chat/${existingConversationId}`)
     }
-  }, [existingConversationId, draft, startConversation.isPending])
+  }, [existingConversationId, draft, startConversation.isIdle])
 
   /**
    * Moves what was typed into the conversation that turned out to exist.
@@ -121,7 +123,10 @@ export default function NewChatScreen() {
     setDraft('')
     try {
       const conversation = await startConversation.mutateAsync({ toUserId: partnerId, body })
-      router.replace(`/(app)/chat/${conversation._id}`)
+      // `inPlace`: the thread takes this screen's place without the stack's
+      // slide — this screen was drawn as that thread, and a second screen
+      // sliding in over it reads as the app opening the chat twice.
+      router.replace(`/(app)/chat/${conversation._id}?inPlace=1`)
     } catch (caught) {
       setDraft(body)
       if (caught instanceof ApiRequestError) {

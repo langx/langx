@@ -672,10 +672,16 @@ export interface MessageDto {
   createdAt: string
 }
 
-export function useMessages(conversationId: string) {
-  return useInfiniteQuery({
+/**
+ * The thread's live query, as options rather than a hook, so that the one
+ * place that opens a thread before the screen exists — `useStartConversation`,
+ * which replaces `chat/new` with the thread it just made — can fill the same
+ * cache entry the screen will read.
+ */
+function messagesQuery(conversationId: string) {
+  return {
     queryKey: keys.messages(conversationId),
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam }: { pageParam: string }) =>
       api.get<MessagePageDto>(
         `/conversations/${conversationId}/messages${
           pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''
@@ -685,7 +691,13 @@ export function useMessages(conversationId: string) {
     // The cursor walks *backwards* into history, so "the next page" is older
     // messages and `pages[0]` stays the newest. `messagesNewestFirst` is the
     // only sanctioned way to read this — see the note there.
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    getNextPageParam: (last: MessagePageDto) => last.nextCursor ?? undefined,
+  }
+}
+
+export function useMessages(conversationId: string) {
+  return useInfiniteQuery({
+    ...messagesQuery(conversationId),
     enabled: conversationId.length > 0,
   })
 }
@@ -1570,7 +1582,7 @@ export function useStartConversation() {
   return useMutation({
     mutationFn: (input: { toUserId: string; body: string }) =>
       api.post<{ _id: string }>('/conversations', input),
-    onSuccess: () => {
+    onSuccess: async (conversation) => {
       // Starting a conversation spends quota and earns tokens — both visible
       // elsewhere in the UI, so both caches are now stale.
       void queryClient.invalidateQueries({ queryKey: ['conversations'] })
@@ -1584,6 +1596,17 @@ export function useStartConversation() {
       // person is cached under their handle by `useProfile` and under their id
       // by `useProfileCache`, and this mutation only knows the id.
       void queryClient.invalidateQueries({ queryKey: ['profile'] })
+      /*
+       * Awaited, so `mutateAsync` resolves with the thread already in the
+       * cache. `chat/new` is drawn as the thread it is about to become and
+       * replaces itself with the real one on this answer; a thread that then
+       * mounts on an empty cache draws six skeleton bubbles over a
+       * conversation with one message in it, for as long as the fetch takes.
+       * The send already waits a round trip, and one more on the same cleared
+       * composer is invisible where the flash is not. `prefetch` never
+       * throws: if it fails, the thread loads itself the way it always did.
+       */
+      await queryClient.prefetchInfiniteQuery(messagesQuery(conversation._id))
     },
   })
 }

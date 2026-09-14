@@ -94,7 +94,24 @@ export default function AppLayout() {
           would win it. The edge is where iOS's own apps keep the gesture when
           the content swipes too.
         */}
-        <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
+        <Stack.Screen
+          name="chat/[id]"
+          options={({ route }) => ({
+            fullScreenGestureEnabled: false,
+            /*
+             * No slide when the thread is taking `chat/new`'s place: that
+             * screen is drawn as this one, and a second copy sliding in over
+             * it reads as the chat opening twice. Here rather than in the
+             * screen, because options set from inside it land after the
+             * native push has already started animating. The entrance only:
+             * the screen puts the slide back once it is up, so the swipe and
+             * the pop still animate.
+             */
+            ...((route.params as { inPlace?: string } | undefined)?.inPlace
+              ? { animation: 'none' as const }
+              : {}),
+          })}
+        />
       </Stack>
     </View>
   )
