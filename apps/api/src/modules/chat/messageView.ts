@@ -80,6 +80,23 @@ export interface MessageView {
   editedAt?: string
   /** Someone has corrected this sentence, so it can no longer be edited. */
   corrected?: boolean
+  /**
+   * Somebody has recorded this sentence, answering its `pronunciation` ask.
+   *
+   * A server fact, like `corrected` above. It used to be inferred in the chat
+   * screen from any voice note in the loaded page that quoted the message,
+   * which counted replies that answered nothing and forgot answers that had
+   * scrolled away.
+   */
+  askAnswered?: boolean
+  /**
+   * The viewer keeps an Echo card for this message.
+   *
+   * Absent means no, like `starred` and `hidden` — the two other per-viewer
+   * flags. Unlike them it is not on the message document, so it is resolved
+   * once per page and handed in; see `toMessageView`'s third argument.
+   */
+  echoed?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string
@@ -91,7 +108,21 @@ export interface MessageView {
   clientId?: string
 }
 
-export function toMessageView(message: Message, viewerId: string): MessageView {
+export function toMessageView(
+  message: Message,
+  viewerId: string,
+  /**
+   * Which of the page's messages this viewer has echoed, resolved in one
+   * query by `readEchoedMessageIds` before the page is mapped.
+   *
+   * Optional, and absent from every caller that hands out a single message —
+   * a socket fan-out, an edit's ack — because a message nobody has seen yet
+   * cannot be on a card. Passing it as an argument is what keeps this
+   * function pure and synchronous, which is the reason it can be called from
+   * ten places without any of them awaiting anything.
+   */
+  echoedMessageIds?: ReadonlySet<string>,
+): MessageView {
   const deleted = Boolean(message.deletedAt)
   const hidden = Boolean(message.hiddenFor?.includes(viewerId))
   const myReaction = Object.entries(message.reactions ?? {}).find(([, users]) =>
@@ -117,6 +148,10 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (message.clientId && message.senderId === viewerId) view.clientId = message.clientId
   if (!deleted && message.editedAt) view.editedAt = message.editedAt.toISOString()
   if (!deleted && message.correctedAt) view.corrected = true
+  if (!deleted && message.answeredAt) view.askAnswered = true
+  // The card outlives the message, but the mark on the bubble does not: a
+  // tombstone has no sentence left to say is kept.
+  if (!deleted && echoedMessageIds?.has(message._id.toHexString())) view.echoed = true
   // A tombstone asks for nothing: the sentence it was about is gone.
   if (!deleted && message.ask) view.ask = message.ask
   if (!deleted && message.translation) view.translation = message.translation

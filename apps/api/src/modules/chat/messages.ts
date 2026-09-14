@@ -109,6 +109,36 @@ async function resolveReplyTo(
 }
 
 /**
+ * The message this recording answers, if it is answering one.
+ *
+ * Validated the way `resolveReplyTo` validates its target and then some: the
+ * message has to be in this conversation, it has to have actually asked to be
+ * said out loud, and the person answering cannot be the person who asked.
+ * Reading your own sentence back to yourself is not an answer, and the
+ * client-side guess this replaces counted it as one.
+ *
+ * A target that fails any of those is dropped rather than refused. The
+ * recording is a real message either way, and failing the send because a
+ * pointer went stale would lose it.
+ */
+async function resolveAnswerTarget(
+  db: Db,
+  conversation: Conversation,
+  senderId: string,
+  answersMessageId: string | undefined,
+): Promise<Message | null> {
+  if (!answersMessageId || !ObjectId.isValid(answersMessageId)) return null
+
+  const target = await db.collection<Message>(COLLECTIONS.messages).findOne({
+    _id: new ObjectId(answersMessageId),
+    conversationId: conversation._id,
+    ask: 'pronunciation',
+  })
+  if (!target || target.senderId === senderId) return null
+  return target
+}
+
+/**
  * The single write every message goes through: the insert, the conversation's
  * counters and last-message line, and the award.
  *
@@ -620,6 +650,7 @@ export async function sendMediaMessage(
   const kind = assertAttachmentsAllowed(input.attachments, storagePublicBaseUrl)
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+  const answers = await resolveAnswerTarget(db, conversation, senderId, input.answersMessageId)
 
   /*
    * After the checks above and before the insert, which is the only correct
@@ -651,7 +682,26 @@ export async function sendMediaMessage(
      */
     ...(first ? { media: first } : {}),
     ...(replyTo ? { replyTo } : {}),
+    ...(answers ? { answersMessageId: answers._id } : {}),
     createdAt: new Date(),
+  }
+
+  if (answers) {
+    /*
+     * Stamped on the asked message for the same reason `sendCorrection`
+     * stamps `correctedAt`: the target is already loaded, so this costs
+     * nothing, and it turns "has this been said out loud" into a field read
+     * for every reader instead of a scan of whatever happens to be on screen.
+     *
+     * First answer wins. A second recording is still a message and still
+     * plays; it just does not rewrite who answered first.
+     */
+    await db
+      .collection<Message>(COLLECTIONS.messages)
+      .updateOne(
+        { _id: answers._id, answeredAt: { $exists: false } },
+        { $set: { answeredAt: message.createdAt, answeredBy: senderId } },
+      )
   }
 
   const updatedConversation = await recordMessage(db, conversation, message)

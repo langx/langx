@@ -684,6 +684,19 @@ export const sendMediaMessageSchema = z.preprocess(
     attachments: attachmentsSchema,
     body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
     replyToMessageId: z.string().trim().min(1).optional(),
+    /**
+     * This recording answers that message's `pronunciation` ask.
+     *
+     * Separate from `replyToMessageId`, which the client also sets, because
+     * the two say different things: a reply quotes, and quoting is not
+     * answering. Without the distinction "has somebody said this out loud"
+     * has to be guessed from any voice note that happens to quote the
+     * sentence — which is what the chat screen did, in memory, forgetting
+     * every answer that had scrolled out of the loaded window.
+     *
+     * Echo reads it to give a card a human voice, so the guess had to go.
+     */
+    answersMessageId: z.string().trim().min(1).optional(),
   }),
 )
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>

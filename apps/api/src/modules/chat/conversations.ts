@@ -98,6 +98,14 @@ export interface Message {
   }
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
   /**
+   * The message whose `pronunciation` ask this recording answers.
+   *
+   * The audio equivalent of `correction.targetMessageId`. `replyTo` is set as
+   * well and is not a substitute: it is a snapshot that is allowed to dangle,
+   * and it means "quotes".
+   */
+  answersMessageId?: ObjectId
+  /**
    * The sender asked for something back — a correction, or to hear it said.
    *
    * Only ever set on the sender's own text. It is a note on the sentence, not
@@ -106,6 +114,18 @@ export interface Message {
    * does not draw the badge.
    */
   ask?: MessageAsk
+  /**
+   * Who answered the `ask` above, and when.
+   *
+   * Stamped on the asked message by the answer, exactly as `correctedAt` is
+   * stamped by `sendCorrection` — the target is already loaded there, so the
+   * stamp is free where a lookup would not be. Before this, "answered" was a
+   * client-side scan of the loaded page for any voice note quoting the
+   * message, which was wrong twice over: it counted replies that answered
+   * nothing, and it forgot answers older than the window.
+   */
+  answeredAt?: Date
+  answeredBy?: string
   /**
    * The sender's own words, rendered into the reader's language, sent with the
    * message rather than asked for afterwards.

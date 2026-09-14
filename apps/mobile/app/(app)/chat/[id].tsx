@@ -196,6 +196,15 @@ export default function ChatScreen() {
    */
   const [awayFrom, setAwayFrom] = useState<string | null>(null)
   const [replyingTo, setReplyingTo] = useState<MessageDto | null>(null)
+  /**
+   * The pronunciation ask the recorder was opened to answer.
+   *
+   * Trusted only while the quote still points at the same message, which is
+   * what `answersAskId` below works out. Clearing the banner or quoting
+   * something else takes the claim with it, so none of the six places that
+   * reset `replyingTo` has to remember this one exists.
+   */
+  const [answeringAskId, setAnsweringAskId] = useState<string | null>(null)
   const [editing, setEditing] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
@@ -569,10 +578,18 @@ export default function ChatScreen() {
     const answered = new Set<string>()
     for (const message of items) {
       if (message.corrected) answered.add(message._id)
+      if (message.askAnswered) answered.add(message._id)
+      // The fallback, for recordings sent before the server started stamping
+      // the message they answer. Wrong in both directions — it counts a voice
+      // note that merely quotes, and it sees only the loaded window — which is
+      // why it is no longer the rule.
       if (message.type === 'audio' && message.replyTo) answered.add(message.replyTo.messageId)
     }
     return answered
   }, [items])
+
+  /** Null unless the recording about to be sent really is answering an ask. */
+  const answersAskId = replyingTo && replyingTo._id === answeringAskId ? answeringAskId : null
 
   /**
    * Answers the request on somebody else's message.
@@ -586,6 +603,7 @@ export default function ChatScreen() {
     if (ask === 'correction') {
       setAsking(null)
       setReplyingTo(null)
+      setAnsweringAskId(null)
       setCorrecting(message)
       setDraft(message.body)
       return
@@ -598,6 +616,7 @@ export default function ChatScreen() {
       return
     }
     setReplyingTo(message)
+    setAnsweringAskId(message._id)
     void toggleRecording()
   }
 
@@ -840,10 +859,15 @@ export default function ChatScreen() {
         attachments: uploaded,
         ...(body ? { body } : {}),
         ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+        // Separate from the quote: a reply quotes, and quoting is not
+        // answering. The server re-checks all of it and drops the claim if the
+        // target never asked, or if the asker is the one recording.
+        ...(answersAskId ? { answersMessageId: answersAskId } : {}),
       })
       track({ name: 'message_sent', properties: { kind: first.kind, reply: replyingTo !== null } })
       setPending((list) => removePending(list, clientId))
       setReplyingTo(null)
+      setAnsweringAskId(null)
     } catch (error) {
       // `emitWithAck` rejects with a plain Error carrying `.code`, not an
       // ApiRequestError, so the `instanceof` this used to do never matched

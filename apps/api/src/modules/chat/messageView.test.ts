@@ -36,6 +36,27 @@ describe('toMessageView', () => {
     expect(JSON.stringify(toMessageView(doc, ME))).not.toContain('hiddenFor')
   })
 
+  it('says when a request to hear it said has been answered', () => {
+    const asked = message({ ask: 'pronunciation' })
+    expect(toMessageView(asked, ME).askAnswered).toBeUndefined()
+    const answered = message({ ...asked, answeredAt: new Date(), answeredBy: ME })
+    expect(toMessageView(answered, ME).askAnswered).toBe(true)
+    // A tombstone asks for nothing, so it claims nothing either.
+    expect(
+      toMessageView(message({ ...answered, deletedAt: new Date() }), ME).askAnswered,
+    ).toBeUndefined()
+  })
+
+  it('marks only the messages the viewer was told they had echoed', () => {
+    const kept = message()
+    const other = message()
+    const echoed = new Set([kept._id.toHexString()])
+    expect(toMessageView(kept, ME, echoed).echoed).toBe(true)
+    expect(toMessageView(other, ME, echoed).echoed).toBeUndefined()
+    // Every caller that hands out one message passes no set at all.
+    expect(toMessageView(kept, ME).echoed).toBeUndefined()
+  })
+
   it('carries the request the sender attached, and drops it with the message', () => {
     expect(toMessageView(message({ ask: 'correction' }), ME).ask).toBe('correction')
     expect(toMessageView(message({ ask: 'pronunciation' }), ME).ask).toBe('pronunciation')

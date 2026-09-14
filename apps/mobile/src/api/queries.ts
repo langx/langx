@@ -667,6 +667,10 @@ export interface MessageDto {
   recipientId?: string
   /** Somebody corrected this sentence, so it can no longer be edited. */
   corrected?: boolean
+  /** Somebody has recorded this sentence, answering its `pronunciation` ask. */
+  askAnswered?: boolean
+  /** I keep an Echo card for this message. Absent means no. */
+  echoed?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string
