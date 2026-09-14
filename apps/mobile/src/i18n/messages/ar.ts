@@ -120,6 +120,8 @@ export const ar: Localized<EnMessages> = {
       'افتح أي شخص لقراءة ملفه. إلقاء التحية أولًا هو ما يبدأ به كل تبادل تقريبًا في LangX.',
     tabChatsTitle: 'حيث تصل الردود',
     tabChatsBody: 'كل محادثة تبدأها تعيش هنا، ومن ينتظر ردك له تبويب خاص.',
+    tabEchoTitle: 'صدى',
+    tabEchoBody: 'احفظ جملة من أي محادثة، وستعود إليك حتى تتقنها.',
     tabChatsGuestBody:
       'المحادثات تجتمع هنا. يمكنك التصفح والقراءة دون حساب — الكتابة وحدها هي ما يحتاج إليه.',
     tabFeedTitle: 'اسأل وتعلّم',
@@ -223,6 +225,23 @@ export const ar: Localized<EnMessages> = {
     doneBody: 'سيعيدها صدى في موعدها.',
     saveFailedTitle: 'لم تُحفظ مراجعتك',
     saveFailedBody: 'إجاباتك ما زالت هنا. حاول مرة أخرى.',
+    packs: 'الحزم',
+    packsFor: 'ابدأ من حزمة',
+    packBlurb: 'مجموعة جاهزة للبداية. كل بطاقة تدخل الطابور نفسه مع ما تحفظه بنفسك.',
+    packStart: 'ابدأ',
+    packContinue: 'تابع',
+    packAllStarted: 'بدأت كلها',
+    packMissing: 'لم تعد هذه الحزمة متاحة.',
+    packFinished: 'كل بطاقات هذه الحزمة لديك بالفعل.',
+    packStarted: {
+      zero: 'لم تُضف بطاقات',
+      one: 'أُضيفت بطاقة واحدة',
+      two: 'أُضيفت بطاقتان',
+      few: 'أُضيفت {count} بطاقات',
+      many: 'أُضيفت {count} بطاقة',
+      other: 'أُضيفت {count} بطاقة',
+    },
+    packProgress: 'بدأت {done} من {total}',
   },
 
   messageMeta: {
@@ -706,6 +725,8 @@ export const ar: Localized<EnMessages> = {
     walletBody: 'التوزيع اليومي وهديتك كل ساعة.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
+    echo: 'صدى',
+    echoBody: 'البطاقات المستحقة، مرة واحدة مساءً.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'إشعار فوري', email: 'بريد يومي' },
     emailUnverified: 'وثّق عنوان بريدك لتفعيل هذا.',
@@ -1844,6 +1865,7 @@ export const ar: Localized<EnMessages> = {
     referralWelcome: 'مكافأة ترحيب بالدعوة',
     gift: 'هدية كل ساعة',
     bounty: 'مكافأة اكتشاف خلل',
+    echo: 'جلسة صدى',
   },
 
   cosmetics: {

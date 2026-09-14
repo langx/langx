@@ -25,8 +25,10 @@ import {
   type CaptureEchoResult,
   type CreateShareCardInput,
   type EchoCardPage,
+  type EchoPack,
   type EchoQueue,
   type EchoSummary,
+  type StartPackResult,
   type SubmitEchoReviewsInput,
   type SubmitEchoReviewsResult,
   type NotificationsPage,
@@ -161,6 +163,7 @@ export const keys = {
   echoSummary: ['echo', 'summary'] as const,
   echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
   echoCards: (lang: string) => ['echo', 'cards', lang] as const,
+  echoPacks: ['echo', 'packs'] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -2680,6 +2683,35 @@ export function useSubmitEchoReviews() {
   return useMutation({
     mutationFn: (input: SubmitEchoReviewsInput) =>
       api.post<SubmitEchoReviewsResult>('/echo/reviews', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+export function useEchoPacks(enabled = true) {
+  return useQuery({
+    queryKey: keys.echoPacks,
+    queryFn: () => api.get<{ items: EchoPack[] }>('/echo/packs'),
+    enabled,
+  })
+}
+
+/**
+ * Turns the next few items of a pack into cards.
+ *
+ * Invalidates the whole `['echo']` prefix, which is the packs list as well as
+ * the queue and the summary: starting cards moves the due count, and a
+ * progress bar that disagreed with the number above it would be the first
+ * thing anybody noticed.
+ */
+export function useStartPack() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { packId: string; count: number }) =>
+      api.post<StartPackResult>(`/echo/packs/${encodeURIComponent(input.packId)}/start`, {
+        count: input.count,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },

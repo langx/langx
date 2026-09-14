@@ -32,6 +32,10 @@ export function notificationRoute(data: unknown): Href | null {
       return typeof conversationId === 'string' && conversationId.length > 0
         ? `/chat/${conversationId}`
         : '/chats'
+    case 'echo':
+      // Straight to the tab, not to the session: the count in the push is a
+      // reason to open the app, and how much of it to do is the reader's.
+      return '/echo'
     case 'streakReminder':
       // The nudge asks for one message, so the useful destination is the list
       // of people already being talked to, not the feed of strangers.

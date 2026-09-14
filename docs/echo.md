@@ -1,6 +1,6 @@
 # Echo — spaced repetition, fed by real conversations
 
-**Status: phase 1 is built.** This superseded `learn-module.md`, a plan for
+**Status: phases 1 and 2 are built, except the content itself.** This superseded `learn-module.md`, a plan for
 the same module under a generic name and with the chat-to-card path scheduled
 last; that document was deleted when this one was accepted. Echo turns the
 order around: the card you make from a real message is the product, and the
@@ -335,6 +335,25 @@ before it compiles. Plurals for the due count.
 
 ## Content: English and French first
 
+**The machine cannot pick the sense, and that is measured rather than
+feared.** `tools/echo-content/build-pack.mjs` pulls the sense-carrying
+translation tables out of the English Wiktionary, which is the right source —
+but taking the first block gave the wrong sense for three of the six beginner
+words that resolved at all: _train_ as the back of a dress, _dog_ as a verb,
+_water_ as watering a garden. Scoping the search to the word's part of speech
+made it worse, turning three wrong answers into no answer, because the tables
+are not reliably inside the section they belong to.
+
+So the pipeline drafts, writing the sense it chose beside every gloss, and
+marks the file `"reviewed": false`. `apps/api/scripts/seed-echo-packs.ts`
+refuses to write a file that still says that. The gate lives in the seed
+because the seed is the last thing that runs before a learner reads the
+content, and a wrong gloss is worse than no pack.
+
+What remains for the first pack is therefore a **reading**, not a build: feed
+the pipeline a frequency list, read the draft, fix the senses, set
+`"reviewed": true`.
+
 The first wave is two languages, chosen by hand rather than from the v1
 distribution, because two is what can be read end to end by a human before it
 ships. The matrix is 2 languages × 4 levels × 8 gloss locales.
@@ -420,7 +439,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Done when                                                                                                                                     |
 | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | Content pipeline and licence file; `en` and `fr` packs, `absoluteBeginner` first; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; pack audio from Lingua Libre; OpenMoji icons for concrete pack words; the tour step                                                                                                                                                                                                                                    | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. **Not built:** the `en` and `fr` packs themselves, pack audio from Lingua Libre, OpenMoji icons — all three wait on content a person has read                                                                                                                                                                                               | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
 | 3     | Production cards, pack multiple choice, listening cards, the upper two levels, more languages, FSRS, offline                                                                                                                                                                                                                                                                                                                                                                                                         | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be

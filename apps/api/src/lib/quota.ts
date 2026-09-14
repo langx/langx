@@ -12,7 +12,18 @@ import type { Profile } from '../modules/profiles/profiles'
  * as `translations`: capturing a card asks Google to translate a sentence the
  * thread had not translated, and that is billed per character.
  */
-export type TrackedQuotaKind = 'initiations' | 'translations' | 'media' | 'echoCaptures'
+export type TrackedQuotaKind =
+  | 'initiations'
+  | 'translations'
+  | 'media'
+  | 'echoCaptures'
+  /**
+   * Starting pack cards. `echoNewCardsPerDay` is null on every tier, so this
+   * costs one comparison and writes nothing — which is the point: the row
+   * exists so that metering intake later is a number in `limits.ts` and not a
+   * new code path under a feature that is already live.
+   */
+  | 'echoNewCards'
 
 export interface QuotaStatus {
   limit: number | null

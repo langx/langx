@@ -42,16 +42,17 @@ the module that owns its subject.
 `NOTIFICATION_TYPES` in `packages/shared/src/notifications.ts`. Every kind has
 two channels and both are real.
 
-| Kind            | Push    | Email  | Covers                                                    |
-| --------------- | ------- | ------ | --------------------------------------------------------- |
-| `messages`      | on      | on     | Chat, and the unread section                              |
-| `streak`        | on      | on     | The evening nudge, and the repair offer                   |
-| `badges`        | on      | on     | A badge earned                                            |
-| `profileVisits` | on      | on     | Who looked at you                                         |
-| `meetings`      | on      | on     | Push: an hour before. Mail: what tomorrow's diary holds   |
-| `social`        | on      | on     | The feed reacting to you                                  |
-| `wallet`        | on      | on     | Tokens arriving                                           |
-| `promotions`    | **off** | **on** | Marketing, the newsletter, campaigns, and the suggestions |
+| Kind            | Push    | Email   | Covers                                                                                                     |
+| --------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| `messages`      | on      | on      | Chat, and the unread section                                                                               |
+| `streak`        | on      | on      | The evening nudge, and the repair offer                                                                    |
+| `badges`        | on      | on      | A badge earned                                                                                             |
+| `profileVisits` | on      | on      | Who looked at you                                                                                          |
+| `meetings`      | on      | on      | Push: an hour before. Mail: what tomorrow's diary holds                                                    |
+| `social`        | on      | on      | The feed reacting to you                                                                                   |
+| `wallet`        | on      | on      | Tokens arriving                                                                                            |
+| `promotions`    | **off** | **on**  | Marketing, the newsletter, campaigns, and the suggestions                                                  |
+| `echo`          | on      | **off** | Cards due in Echo. The only service kind with mail off — the 19:00 digest is already a letter at that hour |
 
 `promotions.email` defaults **on** since 10 September 2026 — the reversal is
 in `decisions.md`. `promotions.push` stays off: nobody asked to be buzzed at
@@ -158,18 +159,19 @@ every one claims a row in `notificationLedger` before it sends.
 
 **Push, the moment it happens:**
 
-| Message                                          | Kind            | When           | Period key                                      |
-| ------------------------------------------------ | --------------- | -------------- | ----------------------------------------------- |
-| A message arrived                                | `messages`      | on the message | — (fan-out)                                     |
-| Streak reminder — only while still savable today | `streak`        | 20:00 local    | local day                                       |
-| Badge round-up                                   | `badges`        | 18:00 local    | badge ids                                       |
-| Profile visits                                   | `profileVisits` | 12:00 local    | local day                                       |
-| Meeting reminder                                 | `meetings`      | an hour before | message id                                      |
-| **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                      |
-| **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                       |
-| **Your posts' likes**                            | `social`        | daily batch    | UTC day                                         |
-| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day                                        |
-| **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before |
+| Message                                          | Kind            | When           | Period key                                        |
+| ------------------------------------------------ | --------------- | -------------- | ------------------------------------------------- |
+| A message arrived                                | `messages`      | on the message | — (fan-out)                                       |
+| Streak reminder — only while still savable today | `streak`        | 20:00 local    | local day                                         |
+| Badge round-up                                   | `badges`        | 18:00 local    | badge ids                                         |
+| Profile visits                                   | `profileVisits` | 12:00 local    | local day                                         |
+| Meeting reminder                                 | `meetings`      | an hour before | message id                                        |
+| **Somebody followed you**                        | `social`        | on the follow  | one per follower, **ever**                        |
+| **A correction, answer or comment on your post** | `social`        | on the reply   | one per post per **hour**                         |
+| **Your posts' likes**                            | `social`        | daily batch    | UTC day                                           |
+| **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local    | pool day                                          |
+| **Your hourly gift is ready**                    | `wallet`        | waking hours   | UTC day, and only if they have taken one before   |
+| **Cards are due in Echo**                        | `echo`          | 19:00 local    | local day, and only if nothing was reviewed today |
 
 **Email, all of it in one letter at 19:00 local.** The order is the order in
 the mail, and the first section that survives gives the letter its subject —
@@ -410,6 +412,7 @@ appears at noon the next day.
 | `wallet`, `bountyPaid`       | `/wallet`                                 |
 | `billing`                    | `/settings/plan`                          |
 | `security`                   | `/settings/password`                      |
+| `echo`                       | `/echo`                                   |
 | `promotion`                  | `/discover`                               |
 
 ## Not built

@@ -112,6 +112,8 @@ export const fr: Localized<EnMessages> = {
     discoverCardBody:
       'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
     tabChatsTitle: 'Là où arrivent les réponses',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Garde une phrase d’une discussion : elle revient jusqu’à ce que tu la saches.',
     tabChatsBody:
       'Chaque conversation que tu commences vit ici, et celles qui t’attendent ont leur propre onglet.',
     tabChatsGuestBody:
@@ -213,6 +215,20 @@ export const fr: Localized<EnMessages> = {
     doneBody: 'Echo te les ramènera le moment venu.',
     saveFailedTitle: 'Ta séance n’a pas été enregistrée',
     saveFailedBody: 'Tes réponses sont toujours là. Réessaie.',
+    packs: 'Packs',
+    packsFor: 'Commencer avec un pack',
+    packBlurb:
+      'Un ensemble préparé pour commencer. Chaque carte rejoint la même file que celles que tu gardes toi-même.',
+    packStart: 'Commencer',
+    packContinue: 'Continuer',
+    packAllStarted: 'Toutes commencées',
+    packMissing: 'Ce pack n’existe plus.',
+    packFinished: 'Tu as déjà toutes les cartes de ce pack.',
+    packStarted: {
+      one: '{count} carte ajoutée',
+      other: '{count} cartes ajoutées',
+    },
+    packProgress: '{done} sur {total} commencées',
   },
 
   messageMeta: {
@@ -641,6 +657,8 @@ export const fr: Localized<EnMessages> = {
     walletBody: 'La distribution quotidienne et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
+    echo: 'Echo',
+    echoBody: 'Les cartes à revoir, une fois le soir.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'E-mail quotidien' },
     emailUnverified: 'Vérifiez votre adresse e-mail pour l’activer.',
@@ -1610,6 +1628,7 @@ export const fr: Localized<EnMessages> = {
     referralWelcome: 'Bonus de bienvenue sur invitation',
     gift: 'Cadeau de l’heure',
     bounty: 'Prime de bug',
+    echo: 'Séance Echo',
   },
 
   cosmetics: {

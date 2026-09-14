@@ -118,6 +118,8 @@ export const ru: Localized<EnMessages> = {
     discoverCardBody:
       'Откройте любого, чтобы прочитать профиль. Почти каждый обмен в LangX начинается с простого приветствия.',
     tabChatsTitle: 'Куда приходят ответы',
+    tabEchoTitle: 'Эхо',
+    tabEchoBody: 'Сохраните фразу из чата — она будет возвращаться, пока не запомнится.',
     tabChatsBody:
       'Каждый начатый разговор живёт здесь, а те, кто ждёт вашего ответа, — на отдельной вкладке.',
     tabChatsGuestBody:
@@ -222,6 +224,22 @@ export const ru: Localized<EnMessages> = {
     doneBody: 'Эхо вернёт их, когда придёт время.',
     saveFailedTitle: 'Занятие не сохранилось',
     saveFailedBody: 'Ваши ответы на месте. Попробуйте ещё раз.',
+    packs: 'Наборы',
+    packsFor: 'Начните с набора',
+    packBlurb:
+      'Готовый набор для начала. Каждая карточка попадает в ту же очередь, что и сохранённые вами.',
+    packStart: 'Начать',
+    packContinue: 'Продолжить',
+    packAllStarted: 'Все начаты',
+    packMissing: 'Этого набора больше нет.',
+    packFinished: 'Все карточки из набора уже у вас.',
+    packStarted: {
+      one: 'Добавлена {count} карточка',
+      few: 'Добавлены {count} карточки',
+      many: 'Добавлено {count} карточек',
+      other: 'Добавлено {count} карточки',
+    },
+    packProgress: 'Начато {done} из {total}',
   },
 
   messageMeta: {
@@ -689,6 +707,8 @@ export const ru: Localized<EnMessages> = {
     walletBody: 'Ежедневный пул и почасовой подарок.',
     promotions: 'Новости и предложения',
     promotionsBody: 'Изредка о новом. Одно касание — и всё прекратится.',
+    echo: 'Эхо',
+    echoBody: 'Карточки, которые ждут, — раз вечером.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Пуш', email: 'Письмо раз в день' },
     emailUnverified: 'Подтвердите адрес почты, чтобы включить это.',
@@ -1769,6 +1789,7 @@ export const ru: Localized<EnMessages> = {
     referralWelcome: 'Приветственный бонус по приглашению',
     gift: 'Подарок каждый час',
     bounty: 'Награда за ошибку',
+    echo: 'Занятие в Эхе',
   },
 
   cosmetics: {

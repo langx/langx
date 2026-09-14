@@ -141,6 +141,8 @@ export const en = {
     discoverCardBody:
       'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
     tabChatsTitle: 'Where replies land',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Keep a sentence from any chat and it comes back until you know it.',
     tabChatsBody:
       'Every conversation you start lives here, and the ones still waiting on you sit in their own tab.',
     tabChatsGuestBody:
@@ -256,6 +258,20 @@ export const en = {
     doneBody: 'Echo brings these back when they are due.',
     saveFailedTitle: 'Your review did not save',
     saveFailedBody: 'Your answers are still here. Try again.',
+    packs: 'Packs',
+    packsFor: 'Start from a pack',
+    packBlurb:
+      'A curated set to start from. Every card joins the same queue as the ones you keep yourself.',
+    packStart: 'Start',
+    packContinue: 'Continue',
+    packAllStarted: 'All started',
+    packMissing: 'This pack is no longer available.',
+    packFinished: 'Every card in this pack is already yours.',
+    packStarted: {
+      one: '{count} card added',
+      other: '{count} cards added',
+    },
+    packProgress: '{done} of {total} started',
   },
 
   messageMeta: {
@@ -710,6 +726,8 @@ export const en = {
     walletBody: 'The daily pool paying out, and your hourly gift.',
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. One tap to stop.',
+    echo: 'Echo',
+    echoBody: 'Cards due, once in the evening.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Daily email' },
     emailUnverified: 'Verify your email address to turn this on.',
@@ -1697,6 +1715,7 @@ export const en = {
     referralWelcome: 'Invite welcome bonus',
     gift: 'Hourly gift',
     bounty: 'Bug bounty',
+    echo: 'Echo session',
   },
 
   cosmetics: {

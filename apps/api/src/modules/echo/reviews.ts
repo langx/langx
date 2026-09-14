@@ -1,6 +1,16 @@
-import { schedule, type SubmitEchoReviewsInput, type SubmitEchoReviewsResult } from '@langx/shared'
+import {
+  completedEchoSessions,
+  echoSessionRefId,
+  schedule,
+  TOKEN_RULES,
+  type SubmitEchoReviewsInput,
+  type SubmitEchoReviewsResult,
+} from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import type { Profile } from '../profiles/profiles'
+import { awardTokens } from '../tokens/ledger'
+import { recordQualifyingAction, streakDay } from '../tokens/streak'
 import { toEchoSrs, type EchoCardDoc, type EchoReviewDoc } from './documents'
 
 function isDuplicate(error: unknown): boolean {
@@ -91,5 +101,53 @@ export async function submitReviews(
     })
   }
 
+  await settleSessions(db, userId, now)
   return { results }
+}
+
+/**
+ * Pays for whatever sessions the day's reviews now add up to, and fills the
+ * streak square if any of them is new.
+ *
+ * Recomputed from the ledger on every batch rather than tracked: a session is
+ * not a row anywhere — there are only graded cards — so "the third session of
+ * the 14th" is the honest identity, and `user_kind_ref_unique` makes paying it
+ * twice impossible. That is what lets this run unconditionally after a
+ * resubmitted batch and cost nothing.
+ *
+ * Counted on the **local** day, like the streak it feeds. The message caps are
+ * UTC for a reason written down beside them; this one is a person's own
+ * evening, and a UTC boundary here would disagree with the square it fills.
+ *
+ * Nothing here calls `recordActivity`. Echo is outside the daily pool on
+ * purpose: the pool is zero-sum and scores acts done with another person, so
+ * a solitary repeatable one would dilute the people it exists to reward.
+ */
+async function settleSessions(db: Db, userId: string, now: Date): Promise<void> {
+  const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+  if (!profile) return
+
+  const day = streakDay(profile, now)
+  const since = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+  const reviewedToday = await db
+    .collection<EchoReviewDoc>(COLLECTIONS.echoReviews)
+    .countDocuments({ userId, at: { $gte: since } })
+
+  const sessions = completedEchoSessions(reviewedToday)
+  for (let session = 1; session <= sessions; session += 1) {
+    const paid = await awardTokens(db, {
+      userId,
+      kind: 'echo',
+      amount: TOKEN_RULES.award.echoSession,
+      refId: echoSessionRefId(day, session),
+      at: now,
+    })
+    /*
+     * Only a session that had not been paid before advances the streak, and a
+     * single card never does — that would be "open the app and tap once"
+     * under another name. A resubmitted batch reports `duplicate` here and
+     * leaves the square exactly as it found it.
+     */
+    if (paid.awarded) await recordQualifyingAction(db, profile, now)
+  }
 }

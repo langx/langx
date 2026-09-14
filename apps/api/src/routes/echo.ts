@@ -2,13 +2,16 @@ import {
   captureEchoSchema,
   echoQueueQuerySchema,
   listEchoCardsQuerySchema,
+  startPackSchema,
   submitEchoReviewsSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import { captureEcho, dueQueue, listCards, removeCard, summary } from '../modules/echo/cards'
+import { listPacks, startPack } from '../modules/echo/packs'
 import { submitReviews } from '../modules/echo/reviews'
+import { localeFromHeader } from '../i18n'
 
 /**
  * The card id, or the source it was made from.
@@ -86,4 +89,32 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get('/echo/summary', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await summary(app.mongo.db, request.userId))
   })
+
+  app.get('/echo/packs', { preHandler: requireAuth }, async (request, reply) => {
+    return reply.send(await listPacks(app.mongo.db, request.userId))
+  })
+
+  /*
+   * `requireMember`, like reviewing and for the same reason: starting a pack
+   * writes a schedule, and a schedule with nowhere to live is a promise that
+   * cannot be kept. A guest can see every pack and is asked for an account at
+   * the moment they would begin one.
+   */
+  app.post(
+    '/echo/packs/:id/start',
+    {
+      preHandler: requireMember,
+      schema: { params: cardParamsSchema, body: startPackSchema.omit({ packId: true }) },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await startPack(
+          app.mongo.db,
+          request.userId,
+          { packId: request.params.id, count: request.body.count },
+          localeFromHeader(request.headers['accept-language']),
+        ),
+      )
+    },
+  )
 }

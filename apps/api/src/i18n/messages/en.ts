@@ -12,6 +12,11 @@ export const en = {
   push: {
     streakTitle: { one: '{count} day streak! 🔥', other: '{count} day streak! 🔥' },
     streakBody: 'Send one message today to keep it going.',
+    echoTitle: {
+      one: '1 card is ready',
+      other: '{count} cards are ready',
+    },
+    echoBody: 'A few minutes now and they stay with you.',
     profileVisitsTitle: {
       one: '1 person viewed your profile',
       other: '{count} people viewed your profile',

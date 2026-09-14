@@ -5,6 +5,11 @@ export const de: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: '{count} Tag Serie! 🔥', other: '{count} Tage Serie! 🔥' },
     streakBody: 'Schick heute eine Nachricht, damit sie weiterläuft.',
+    echoTitle: {
+      one: '1 Karte ist dran',
+      other: '{count} Karten sind dran',
+    },
+    echoBody: 'Ein paar Minuten jetzt, und sie bleiben sitzen.',
     profileVisitsTitle: {
       one: '1 Person hat dein Profil angesehen',
       other: '{count} Personen haben dein Profil angesehen',

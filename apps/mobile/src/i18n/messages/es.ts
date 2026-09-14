@@ -111,6 +111,8 @@ export const es: Localized<EnMessages> = {
     discoverCardBody:
       'Abre a cualquiera para leer su perfil. Saludar primero es como empieza casi todo intercambio en LangX.',
     tabChatsTitle: 'Donde llegan las respuestas',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Guarda una frase de cualquier chat y volverá hasta que te la sepas.',
     tabChatsBody:
       'Cada conversación que empiezas vive aquí, y las que esperan tu respuesta tienen su propia pestaña.',
     tabChatsGuestBody:
@@ -211,6 +213,20 @@ export const es: Localized<EnMessages> = {
     doneBody: 'Echo te las traerá de vuelta cuando toque.',
     saveFailedTitle: 'Tu repaso no se guardó',
     saveFailedBody: 'Tus respuestas siguen aquí. Inténtalo otra vez.',
+    packs: 'Packs',
+    packsFor: 'Empieza con un pack',
+    packBlurb:
+      'Un conjunto preparado para empezar. Cada tarjeta entra en la misma cola que las que guardas tú.',
+    packStart: 'Empezar',
+    packContinue: 'Continuar',
+    packAllStarted: 'Todas empezadas',
+    packMissing: 'Este pack ya no está disponible.',
+    packFinished: 'Ya tienes todas las tarjetas de este pack.',
+    packStarted: {
+      one: '{count} tarjeta añadida',
+      other: '{count} tarjetas añadidas',
+    },
+    packProgress: '{done} de {total} empezadas',
   },
 
   messageMeta: {
@@ -635,6 +651,8 @@ export const es: Localized<EnMessages> = {
     walletBody: 'El reparto diario y tu regalo por hora.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Un toque para parar.',
+    echo: 'Echo',
+    echoBody: 'Tarjetas pendientes, una vez por la tarde.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Correo diario' },
     emailUnverified: 'Verifica tu dirección de correo para activarlo.',
@@ -1596,6 +1614,7 @@ export const es: Localized<EnMessages> = {
     referralWelcome: 'Bono de bienvenida por invitación',
     gift: 'Regalo de cada hora',
     bounty: 'Recompensa por error',
+    echo: 'Sesión de Echo',
   },
 
   cosmetics: {

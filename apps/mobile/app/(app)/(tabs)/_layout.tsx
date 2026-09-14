@@ -154,14 +154,11 @@ export default function TabsLayout() {
         name="echo"
         options={{
           title: t('tabs.echo'),
-          tabBarIcon: ({ color }) => <TabIcon name="repeat" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="repeat" color={color} tour="tabEcho" />,
           /*
            * Accent, where the other two badges are `danger`. Red in this bar
            * means somebody is waiting for you; a due count is an invitation
            * you made to yourself, and it must not compete with a person.
-           *
-           * No tour target: a step that introduces an empty tab is an empty
-           * promise, and it arrives with the packs.
            */
           ...(echoBadge
             ? {

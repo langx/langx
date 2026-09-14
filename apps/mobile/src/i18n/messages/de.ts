@@ -111,6 +111,8 @@ export const de: Localized<EnMessages> = {
     discoverCardBody:
       'Öffne jemanden, um das Profil zu lesen. Zuerst Hallo zu sagen, so beginnt fast jeder Austausch auf LangX.',
     tabChatsTitle: 'Wo Antworten ankommen',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Behalte einen Satz aus einem Chat — er kommt wieder, bis er sitzt.',
     tabChatsBody:
       'Jedes Gespräch, das du beginnst, lebt hier; wer noch auf dich wartet, hat einen eigenen Reiter.',
     tabChatsGuestBody:
@@ -212,6 +214,20 @@ export const de: Localized<EnMessages> = {
     doneBody: 'Echo holt diese Karten zurück, wenn sie dran sind.',
     saveFailedTitle: 'Deine Übung wurde nicht gespeichert',
     saveFailedBody: 'Deine Antworten sind noch da. Versuch es noch einmal.',
+    packs: 'Pakete',
+    packsFor: 'Mit einem Paket anfangen',
+    packBlurb:
+      'Ein zusammengestelltes Set für den Anfang. Jede Karte kommt in dieselbe Reihe wie die, die du selbst behältst.',
+    packStart: 'Starten',
+    packContinue: 'Weiter',
+    packAllStarted: 'Alle begonnen',
+    packMissing: 'Dieses Paket gibt es nicht mehr.',
+    packFinished: 'Jede Karte aus diesem Paket hast du schon.',
+    packStarted: {
+      one: '{count} Karte hinzugefügt',
+      other: '{count} Karten hinzugefügt',
+    },
+    packProgress: '{done} von {total} begonnen',
   },
 
   messageMeta: {
@@ -642,6 +658,8 @@ export const de: Localized<EnMessages> = {
     walletBody: 'Die tägliche Ausschüttung und dein stündliches Geschenk.',
     promotions: 'Neues und Angebote',
     promotionsBody: 'Gelegentlich, was es Neues gibt. Ein Tipp beendet es.',
+    echo: 'Echo',
+    echoBody: 'Fällige Karten, einmal am Abend.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Tägliche E-Mail' },
     emailUnverified: 'Bestätige deine E-Mail-Adresse, um das einzuschalten.',
@@ -1633,6 +1651,7 @@ export const de: Localized<EnMessages> = {
     referralWelcome: 'Einladungs-Willkommensbonus',
     gift: 'Stündliches Geschenk',
     bounty: 'Fehlerprämie',
+    echo: 'Echo-Einheit',
   },
 
   cosmetics: {

@@ -20,6 +20,20 @@ export const TOKEN_KINDS = [
   'message',
   'correction',
   /**
+   * A completed Echo review session.
+   *
+   * Deliberately **outside the daily pool**: everything the pool scores is
+   * done with another person, the pool is zero-sum, and a solitary repeatable
+   * action would dilute the people it exists to reward. So this pays its five
+   * and calls no `recordActivity` — the same bargain a pronunciation answer
+   * strikes, for the same reason.
+   *
+   * It is also small on purpose. Five a session and five sessions a day is
+   * twenty-five, an eighth of the message cap, so reviewing alone can never
+   * outpay talking to somebody.
+   */
+  'echo',
+  /**
    * A recorded answer to a pronunciation request.
    *
    * Its own kind rather than `correction`, because `refId` uniqueness, the
@@ -143,6 +157,12 @@ export interface TokenRules {
     pronunciation: number
     /** Granted once per conversation, the first time both sides have spoken. */
     mutualConversation: number
+    /**
+     * One completed Echo session — `SRS_RULES.sessionSize` cards graded in a
+     * day. Not per card: a single card is "open the app and tap once" under
+     * another name.
+     */
+    echoSession: number
   }
   caps: {
     /**
@@ -160,6 +180,17 @@ export interface TokenRules {
     messagesPerDay: number
     /** Max paying messages per partner per UTC day — blocks single-partner farming. */
     messagesPerPartnerPerDay: number
+    /**
+     * Paying Echo sessions per **local** day.
+     *
+     * Local, unlike the message caps above, and the difference is what is
+     * being counted. Those bound ledger rows against a UTC leaderboard bucket,
+     * where a clock moved east would open a second window. This one bounds a
+     * person's own practice, which happens in their own evening — and the
+     * streak it feeds is already local, so a UTC cap here would disagree with
+     * the square it fills.
+     */
+    echoSessionsPerDay: number
   }
   /** Bonus token at streak milestones, keyed by day count. */
   streakMilestones: Record<number, number>
@@ -359,6 +390,13 @@ export const TOKEN_RULES: TokenRules = {
     // medium: somebody spending their own time on a stranger's sentence.
     pronunciation: 10,
     mutualConversation: 15,
+    /*
+     * Five, against a message's one and a correction's ten. Reviewing is
+     * worth paying for — in a cold start it is the one kind of practice that
+     * does not need somebody else awake — but it is done alone, so it sits
+     * below the two acts that need another person.
+     */
+    echoSession: 5,
   },
   caps: {
     /*
@@ -382,6 +420,8 @@ export const TOKEN_RULES: TokenRules = {
      * always did.
      */
     messagesPerPartnerPerDay: 60,
+    // Twenty-five token a day at the top, an eighth of the message cap.
+    echoSessionsPerDay: 5,
   },
   /*
    * Every payout here must be **distinct**. `streakMilestoneDates` dates a

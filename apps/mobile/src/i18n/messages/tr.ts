@@ -125,6 +125,8 @@ export const tr: Localized<EnMessages> = {
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
     tabChatsTitle: 'Cevaplar buraya düşer',
     tabChatsBody: 'Başlattığın her sohbet burada; senden yanıt bekleyenler kendi sekmesinde durur.',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Sohbetten bir cümle sakla, bilene kadar karşına çıksın.',
     tabChatsGuestBody:
       'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
     tabFeedTitle: 'Sor ve öğren',
@@ -223,6 +225,20 @@ export const tr: Localized<EnMessages> = {
     doneBody: 'Echo bu kartları zamanı gelince geri getirir.',
     saveFailedTitle: 'Tekrarın kaydedilmedi',
     saveFailedBody: 'Cevapların duruyor. Tekrar dene.',
+    packs: 'Paketler',
+    packsFor: 'Bir paketle başla',
+    packBlurb:
+      'Başlamak için derlenmiş bir set. Her kart, kendi sakladıklarınla aynı sıraya girer.',
+    packStart: 'Başla',
+    packContinue: 'Devam et',
+    packAllStarted: 'Hepsi başladı',
+    packMissing: 'Bu paket artık yok.',
+    packFinished: 'Bu paketteki her kart zaten sende.',
+    packStarted: {
+      one: '{count} kart eklendi',
+      other: '{count} kart eklendi',
+    },
+    packProgress: '{total} karttan {done} tanesi başladı',
   },
 
   messageMeta: {
@@ -639,6 +655,8 @@ export const tr: Localized<EnMessages> = {
     walletBody: 'Günlük havuzun ödemesi ve saatlik hediyen.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. Tek dokunuşla durur.',
+    echo: 'Echo',
+    echoBody: 'Bekleyen kartlar, akşamda bir kez.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Anlık bildirim', email: 'Günlük e-posta' },
     emailUnverified: 'Bunu açmak için e-posta adresini doğrula.',
@@ -1603,6 +1621,7 @@ export const tr: Localized<EnMessages> = {
     referralWelcome: 'Davetle gelme bonusu',
     gift: 'Saatlik hediye',
     bounty: 'Hata ödülü',
+    echo: 'Echo oturumu',
   },
 
   cosmetics: {

@@ -12,6 +12,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
+import { newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
 
 const PASSWORD = 'correct horse battery staple'
 const DB_NAME = 'langx_echo_test'
@@ -433,6 +434,117 @@ describe('echo', () => {
       .updateOne({ _id: new ObjectId(postId) }, { $set: { hiddenAt: new Date() } })
 
     expect((await capture(author, { kind: 'post', postId })).statusCode).toBe(404)
+  })
+
+  /**
+   * A session pays once and fills the streak square once. Written as a route
+   * test rather than a unit one because the thing worth asserting is that the
+   * ledger, the streak and the review rows agree after a *resubmitted* batch —
+   * which is exactly where a handler that remembered what it had paid would
+   * get it wrong.
+   */
+  describe('what a completed session pays', () => {
+    /** `sessionSize` cards, straight into the collection: intake is not the subject here. */
+    async function giveCards(userId: string, count: number): Promise<string[]> {
+      const now = new Date()
+      const docs = Array.from({ length: count }, (_, index) => ({
+        _id: new ObjectId(),
+        userId,
+        lang: 'fr',
+        front: `phrase ${index}`,
+        back: `meaning ${index}`,
+        source: { kind: 'pack' as const, packId: 'fr:test', itemId: `fr:test#${index}` },
+        sourceKey: `pack:fr:test#${index}`,
+        srs: newCardSrs(now),
+        createdAt: now,
+      }))
+      await handle.db.collection(COLLECTIONS.echoCards).insertMany(docs)
+      return docs.map((doc) => doc._id.toHexString())
+    }
+
+    const grade = (user: SignedUpUser, reviews: unknown[]) =>
+      app.inject({
+        method: 'POST',
+        url: '/echo/reviews',
+        headers: { cookie: user.cookie },
+        payload: { reviews },
+      })
+
+    const balanceOf = async (userId: string) =>
+      (
+        await handle.db
+          .collection(COLLECTIONS.tokenLedger)
+          .aggregate<{ total: number }>([
+            { $match: { userId, kind: 'echo' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } },
+          ])
+          .toArray()
+      )[0]?.total ?? 0
+
+    it('pays nothing for a part of a session', async () => {
+      const user = await newUser('pay-part@example.com')
+      const cards = await giveCards(user.userId, SRS_RULES.sessionSize - 1)
+      const response = await grade(
+        user,
+        cards.map((cardId, index) => ({
+          reviewId: `rv-part-${index}-0000`,
+          cardId,
+          grade: 'good',
+          durationMs: 900,
+        })),
+      )
+      expect(response.statusCode).toBe(200)
+      expect(await balanceOf(user.userId)).toBe(0)
+    })
+
+    it('pays once for a session, and not again when the batch is resent', async () => {
+      const user = await newUser('pay-full@example.com')
+      const cards = await giveCards(user.userId, SRS_RULES.sessionSize)
+      const reviews = cards.map((cardId, index) => ({
+        reviewId: `rv-full-${index}-0000`,
+        cardId,
+        grade: 'good',
+        durationMs: 900,
+      }))
+
+      const first = await grade(user, reviews)
+      expect(first.statusCode).toBe(200)
+      expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
+
+      // The network dropped and the app retried. The ledger decides, twice.
+      await grade(user, reviews)
+      expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
+      expect(
+        await handle.db.collection(COLLECTIONS.echoReviews).countDocuments({ userId: user.userId }),
+      ).toBe(SRS_RULES.sessionSize)
+    })
+
+    it('fills the streak square, and leaves the daily pool alone', async () => {
+      const user = await newUser('pay-streak@example.com')
+      const cards = await giveCards(user.userId, SRS_RULES.sessionSize)
+      await grade(
+        user,
+        cards.map((cardId, index) => ({
+          reviewId: `rv-streak-${index}-0000`,
+          cardId,
+          grade: 'good',
+          durationMs: 900,
+        })),
+      )
+
+      const profile = await handle.db
+        .collection<{ streak?: { current: number } }>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId as never })
+      expect(profile?.streak?.current).toBe(1)
+
+      // Outside the pool, deliberately: `dailyActivity` is the pool's input and
+      // a solitary action must not dilute the people it exists to reward.
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.dailyActivity)
+          .countDocuments({ userId: user.userId }),
+      ).toBe(0)
+    })
   })
 
   it('mirrors a saved phrase into its author’s cards', async () => {
