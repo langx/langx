@@ -138,6 +138,7 @@ export const ADMIN = {
     },
     test: 'Send it to me first',
     tested: 'Sent to you. Check the thread and the notification.',
+    testFirst: 'Send it to yourself first. Nothing can be armed until somebody has read it here.',
     confirmPrompt: (n: number) => `Type ${n} to confirm`,
     confirmHint: 'The number of people this goes to.',
     start: 'Start sending',

@@ -708,7 +708,8 @@ describe('the operator panel', () => {
       expect(created.json<{ status: string; total: number }>().status).toBe('draft')
       expect(created.json<{ total: number }>().total).toBeGreaterThan(0)
 
-      // Sent to the operator alone, before anybody else can see it.
+      // Sent to the operator alone, before anybody else can see it — and it
+      // is what unlocks arming, so it comes first here for a reason.
       const tested = await post(admin, '/admin/broadcasts/autumn-news/test')
       expect(tested.json<{ delivered: boolean }>().delivered).toBe(true)
 
@@ -723,6 +724,34 @@ describe('the operator panel', () => {
         bodies: { en: 'A different message under the same name.' },
       })
       expect(again.statusCode).toBe(400)
+    })
+
+    it('will not arm a draft nobody has read, and the test send is what unlocks it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      await post(admin, '/admin/broadcasts', {
+        id: 'untested-news',
+        bodies: { en: 'Nobody has seen this yet.' },
+      })
+
+      const early = await post(admin, '/admin/broadcasts/untested-news/start')
+      expect(early.statusCode).toBe(400)
+      // The message has to say which of the two refusals this is: reload the
+      // screen, or go and read the message.
+      expect(early.json<{ message: string }>().message).toContain('Send it to yourself first')
+      expect(
+        (await get(admin, '/admin/broadcasts/untested-news')).json<{ status: string }>().status,
+      ).toBe('draft')
+
+      await post(admin, '/admin/broadcasts/untested-news/test')
+      expect(
+        (await get(admin, '/admin/broadcasts/untested-news')).json<{ testedAt?: string }>()
+          .testedAt,
+      ).toBeTruthy()
+
+      const armed = await post(admin, '/admin/broadcasts/untested-news/start')
+      expect(armed.json<{ status: string }>().status).toBe('queued')
     })
 
     it('refuses a broadcast with no English body, because English is the fallback', async () => {

@@ -33,6 +33,12 @@ export interface BroadcastJob {
   createdBy: string
   startedAt?: Date
   finishedAt?: Date
+  /**
+   * When the operator last sent it to themselves. Nothing can be armed without
+   * it — and it is a field rather than a toast because a toast is gone on the
+   * next render, so it cannot be asked afterwards whether anybody read this.
+   */
+  testedAt?: Date
   /** The audience counted at create — a number to watch progress against. */
   total: number
   sent: number
@@ -99,6 +105,15 @@ export async function getBroadcast(db: Db, id: string): Promise<BroadcastJob | n
   return broadcasts(db).findOne({ _id: id })
 }
 
+/** The test send landed. The latest one, not the first: both prove the same thing. */
+export async function markBroadcastTested(
+  db: Db,
+  id: string,
+  now: Date = new Date(),
+): Promise<void> {
+  await broadcasts(db).updateOne({ _id: id }, { $set: { testedAt: now } })
+}
+
 /**
  * The state machine, as a table rather than a pile of conditionals.
  *
@@ -112,6 +127,20 @@ const ALLOWED: Record<string, BroadcastStatus[]> = {
   paused: ['queued'],
 }
 
+/**
+ * The one precondition the table cannot express: arming a draft nobody has
+ * read in the app.
+ *
+ * The typed recipient count proves the operator read the *screen*. Only a test
+ * send proves somebody read the *message* — which is where a broken line break
+ * in a translated body actually shows up, and the last moment it costs
+ * nothing. It sits here rather than in the route so that the script cannot
+ * arm one either.
+ */
+export function isUntestedDraft(job: BroadcastJob): boolean {
+  return job.status === 'draft' && !job.testedAt
+}
+
 export async function setBroadcastStatus(
   db: Db,
   id: string,
@@ -120,6 +149,7 @@ export async function setBroadcastStatus(
   const job = await getBroadcast(db, id)
   if (!job) return null
   if (!ALLOWED[job.status]?.includes(next)) return null
+  if (next === 'queued' && isUntestedDraft(job)) return null
   return broadcasts(db).findOneAndUpdate(
     { _id: id, status: job.status },
     { $set: { status: next } },

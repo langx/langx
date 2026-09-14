@@ -28,7 +28,10 @@ import { showToast } from '../../../../src/lib/toast'
  * 1. It is already a draft — writing it and sending it were separate requests.
  * 2. `Send it to me first` delivers the real message, in the real font, with
  *    the real push. It is the only preview that catches a broken line break in
- *    a translated body before everybody gets it.
+ *    a translated body before everybody gets it, so it is **required**: until
+ *    it has landed the API refuses to arm the draft, and this screen draws no
+ *    way to ask. The proof is `testedAt` on the job rather than the toast,
+ *    which is gone on the next render.
  * 3. The confirmation is the **recipient count**, typed. "SEND" is muscle
  *    memory; a number proves the preview above it was read, and it does not
  *    depend on what language the operator thinks in.
@@ -113,19 +116,33 @@ export default function AdminBroadcastDetailScreen() {
                   />
                 </View>
 
-                <FormField
-                  label={ADMIN.broadcast.confirmPrompt(data.total)}
-                  value={typed}
-                  onChangeText={setTyped}
-                  keyboardType="number-pad"
-                />
-                <Text style={styles.hint}>{ADMIN.broadcast.confirmHint}</Text>
-                <Button
-                  label={ADMIN.broadcast.start}
-                  variant="danger"
-                  disabled={!armed}
-                  onPress={() => run('start')}
-                />
+                <Callout
+                  tone={data.testedAt ? 'info' : 'warning'}
+                  icon={data.testedAt ? 'check' : 'alert-triangle'}
+                  style={styles.testNote}
+                >
+                  <Text style={styles.calloutBody}>
+                    {data.testedAt ? ADMIN.broadcast.tested : ADMIN.broadcast.testFirst}
+                  </Text>
+                </Callout>
+
+                {data.testedAt ? (
+                  <>
+                    <FormField
+                      label={ADMIN.broadcast.confirmPrompt(data.total)}
+                      value={typed}
+                      onChangeText={setTyped}
+                      keyboardType="number-pad"
+                    />
+                    <Text style={styles.hint}>{ADMIN.broadcast.confirmHint}</Text>
+                    <Button
+                      label={ADMIN.broadcast.start}
+                      variant="danger"
+                      disabled={!armed}
+                      onPress={() => run('start')}
+                    />
+                  </>
+                ) : null}
               </>
             ) : null}
 
@@ -163,4 +180,5 @@ const useStyles = makeStyles((theme) => ({
   tiles: { flexDirection: 'row', gap: 24, marginVertical: 20 },
   actions: { gap: 12, marginVertical: 16 },
   hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
+  testNote: { marginBottom: 16 },
 }))

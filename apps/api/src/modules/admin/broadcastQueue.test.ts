@@ -5,7 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
-import { createBroadcast, broadcasts, setBroadcastStatus } from './broadcast'
+import { createBroadcast, broadcasts, markBroadcastTested, setBroadcastStatus } from './broadcast'
 import { runBroadcastQueuePass } from './broadcastQueue'
 import { ensureOfficialAccounts } from '../official/accounts'
 import type { Profile } from '../profiles/profiles'
@@ -14,6 +14,16 @@ import type { PushSender } from '../push/devices'
 /** Nothing is registered for push in here, so this is never asked to send. */
 const push: PushSender = {
   send: () => Promise.resolve({ invalidTokens: [] }),
+}
+
+/**
+ * Arms a draft the way the panel does: the test send first, because
+ * `draft → queued` is refused without it. Every test below is about the queue
+ * rather than that gate, so it lives here instead of in each of them.
+ */
+async function arm(db: Db, id: string): Promise<void> {
+  await markBroadcastTested(db, id)
+  await setBroadcastStatus(db, id, 'queued')
 }
 
 /** Inside `BROADCAST_SEND_WINDOW_UTC`, which is the only clock this cares about. */
@@ -81,7 +91,7 @@ describe('the in-app broadcast queue', () => {
       pushTitle: 'LangX',
       createdBy: 'test',
     })
-    await setBroadcastStatus(db, 'hello', 'queued')
+    await arm(db, 'hello')
 
     expect(await runBroadcastQueuePass(db, push, NOON)).toEqual({ sent: 3 })
     expect(await messagesSent()).toBe(3)
@@ -107,7 +117,7 @@ describe('the in-app broadcast queue', () => {
       pushTitle: 'LangX',
       createdBy: 'test',
     })
-    await setBroadcastStatus(db, 'replay', 'queued')
+    await arm(db, 'replay')
     await runBroadcastQueuePass(db, push, NOON)
     expect(await messagesSent()).toBe(2)
 
@@ -151,7 +161,7 @@ describe('the in-app broadcast queue', () => {
       pushTitle: 'LangX',
       createdBy: 'test',
     })
-    await setBroadcastStatus(db, 'narrow', 'queued')
+    await arm(db, 'narrow')
 
     expect(await runBroadcastQueuePass(db, push, NOON)).toEqual({ sent: 1 })
     const recipients = await db
@@ -175,7 +185,7 @@ describe('the in-app broadcast queue', () => {
     expect(await runBroadcastQueuePass(db, push, NOON)).toEqual({ sent: 0 })
     expect(await messagesSent()).toBe(0)
 
-    await setBroadcastStatus(db, 'held', 'queued')
+    await arm(db, 'held')
     await setBroadcastStatus(db, 'held', 'paused')
     expect(await runBroadcastQueuePass(db, push, HALF_PAST)).toEqual({ sent: 0 })
     expect(await messagesSent()).toBe(0)
@@ -189,7 +199,7 @@ describe('the in-app broadcast queue', () => {
       pushTitle: 'LangX',
       createdBy: 'test',
     })
-    await setBroadcastStatus(db, 'night', 'queued')
+    await arm(db, 'night')
 
     const threeAm = new Date('2026-09-13T03:00:00.000Z')
     expect(await runBroadcastQueuePass(db, push, threeAm)).toEqual({ sent: 0 })
@@ -210,7 +220,7 @@ describe('the in-app broadcast queue', () => {
       pushTitle: 'LangX',
       createdBy: 'test',
     })
-    await setBroadcastStatus(db, 'localised', 'queued')
+    await arm(db, 'localised')
     await runBroadcastQueuePass(db, push, NOON)
 
     const bodies = await db

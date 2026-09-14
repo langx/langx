@@ -26,14 +26,21 @@
  *
  * Without `--confirm` it writes the draft and stops there — which is a real
  * preview now rather than a printed one: the row is in the panel, where it can
- * be sent to yourself before it is armed.
+ * be sent to yourself before it is armed. `--confirm` arms a draft that has
+ * been; an untested one it refuses, because a file reviewed in a diff is not
+ * the same thing as the message read in the app.
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { SUPPORTED_LOCALES, type Locale } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv, publicApiUrl } from '../src/env'
-import { createBroadcast, getBroadcast, setBroadcastStatus } from '../src/modules/admin/broadcast'
+import {
+  createBroadcast,
+  getBroadcast,
+  isUntestedDraft,
+  setBroadcastStatus,
+} from '../src/modules/admin/broadcast'
 import { ensureOfficialAccounts } from '../src/modules/official/accounts'
 
 function flag(name: string): string | undefined {
@@ -87,6 +94,11 @@ async function main(): Promise<void> {
 
     if (!process.argv.includes('--confirm')) {
       console.log('(draft written — re-run with --confirm to arm it, or start it from the panel)')
+      return
+    }
+
+    if (isUntestedDraft(job)) {
+      console.log('(not armed — open it in the panel and send it to yourself first)')
       return
     }
 
