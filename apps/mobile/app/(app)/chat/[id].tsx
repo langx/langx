@@ -17,7 +17,13 @@ import {
   type MessageTranslation,
 } from '@langx/shared'
 import { onlineManager, useQueryClient } from '@tanstack/react-query'
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
+import {
+  type NativeStackNavigationProp,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -136,17 +142,30 @@ export default function ChatScreen() {
   const {
     id,
     at,
+    inPlace,
     ask: askParam,
     draft: draftParam,
   } = useLocalSearchParams<{
     id: string
     at?: string
+    inPlace?: string
     /** Arms the composer for a request. Echo's "ask them to say it" sends this. */
     ask?: string
     /** Seeds the composer. The sentence being asked about, from a card. */
     draft?: string
   }>()
   const conversationId = id ?? ''
+  /*
+   * The stack reads a screen's `animation` for its pop as well as its push.
+   * The layout enters this screen without one when it is taking `chat/new`'s
+   * place (`inPlace`); left like that, the swipe back would cut rather than
+   * slide. Put back from here, after the mount the native stack has already
+   * pushed without animating, so only the entrance is silent.
+   */
+  const navigation = useNavigation<NativeStackNavigationProp<Record<string, object | undefined>>>()
+  useEffect(() => {
+    if (inPlace) navigation.setOptions({ animation: 'slide_from_right' })
+  }, [inPlace, navigation])
   const me = useMe()
   const queryClient = useQueryClient()
   const messages = useMessages(conversationId)
