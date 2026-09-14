@@ -26,6 +26,7 @@ import { discoveryRoutes } from './routes/discovery'
 import { feedRoutes } from './routes/feed'
 import { adminRoutes } from './routes/admin'
 import { feedbackRoutes } from './routes/feedback'
+import { echoRoutes } from './routes/echo'
 import { followRoutes } from './routes/follows'
 import { likeRoutes } from './routes/likes'
 import { handleRoutes } from './routes/handles'
@@ -304,6 +305,7 @@ export async function buildApp({
   await app.register(publicRoutes)
   await app.register(shareCardRoutes)
   await app.register(followRoutes)
+  await app.register(echoRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
   await app.register(cityRoutes)

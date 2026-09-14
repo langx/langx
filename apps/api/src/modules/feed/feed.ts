@@ -53,7 +53,7 @@ export type { Post, PostCorrectionDoc } from './documents'
  * than a second pass over the same documents — it reads at most one row per
  * post by definition, since that index is unique.
  */
-async function readCorrectionSummary(
+export async function readCorrectionSummary(
   db: Db,
   userId: string,
   ids: ObjectId[],
