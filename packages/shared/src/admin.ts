@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isVersion, minVersionSchema } from './appConfig'
 import {
   MODERATION_PAGE_SIZE_DEFAULT,
   MODERATION_PAGE_SIZE_MAX,
@@ -89,6 +90,26 @@ export const adminMessageSchema = z.object({
 export type AdminMessageInput = z.infer<typeof adminMessageSchema>
 
 /**
+ * Raising the "a new version is out" banner for one platform.
+ *
+ * The only part of `AppConfig` the panel may write, and the line is drawn by
+ * blast radius rather than by convenience. `latestVersion` can do one thing:
+ * show a dismissible banner to people on something older. `minVersion`,
+ * `maintenance` and the flags each stop something from working, and a typo in
+ * any of them is an outage — those stay in `scripts/maintenance.ts`, which
+ * talks to Mongo directly and so still works when the API does not.
+ *
+ * The platform comes from `minVersionSchema`'s own keys for the reason the
+ * script checks it the same way: the value becomes a property name, and a typo
+ * should be a validation error rather than a fourth platform nobody reads.
+ */
+export const adminLatestVersionSchema = z.object({
+  platform: minVersionSchema.keyof(),
+  version: z.string().trim().refine(isVersion, 'Use a version like 2.3 or 2.3.0'),
+})
+export type AdminLatestVersionInput = z.infer<typeof adminLatestVersionSchema>
+
+/**
  * Every mutating thing the panel can do, as the audit log names it.
  *
  * A closed list rather than free text: these end up in a collection nobody
@@ -113,6 +134,7 @@ export const ADMIN_ACTIONS = [
   'broadcast.pause',
   'broadcast.resume',
   'broadcast.delete',
+  'appConfig.latestVersion',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 

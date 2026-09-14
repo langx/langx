@@ -33,6 +33,8 @@ import {
   type SubmitEchoReviewsResult,
   type NotificationsPage,
   type ShareCardResult,
+  type AdminLatestVersionInput,
+  type AppConfig,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -2309,11 +2311,13 @@ export interface AdminStatsDto {
     purge: { accounts: number; analytics: number }
     assistantCallsToday: number
     campaigns: { id: string; status: string; sent: number; total: number }[]
-    config: {
-      maintenance: { enabled: boolean; message: string }
-      minVersion: { ios: string; android: string; web: string }
-      flags: Record<string, boolean>
-    }
+    /*
+     * The server's own type rather than a copy of its shape. The copy that
+     * used to be here was already a field behind — it had never heard of
+     * `latestVersion` — and a DTO that silently omits what the endpoint sends
+     * is indistinguishable from an endpoint that does not send it.
+     */
+    config: AppConfig
   }
 }
 
@@ -2416,6 +2420,26 @@ export function useAdminStats(enabled = true) {
     queryKey: keys.adminStats,
     queryFn: () => api.get<AdminStatsDto>('/admin/stats'),
     enabled,
+  })
+}
+
+/**
+ * Raising the update banner for one platform, from the system screen.
+ *
+ * The config this screen prints comes from the dashboard's response, so the
+ * press has to invalidate that rather than anything version-shaped — hence the
+ * whole `['admin']` prefix, the same blunt instrument `useAdminDecision` uses.
+ * This half only makes the client ask again; the route drops the dashboard's
+ * own minute-long memory, which is what makes the answer new.
+ */
+export function useAdminSetLatestVersion() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminLatestVersionInput) =>
+      api.post<AppConfig>('/admin/app-config/latest-version', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
   })
 }
 

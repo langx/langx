@@ -231,9 +231,16 @@ export const ADMIN = {
     maintenanceOn: 'ON',
     maintenanceOff: 'off',
     readOnly:
-      'Read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
+      'Everything else is read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
     minVersion: 'Minimum version',
     flags: 'Flags',
+    latestVersion: 'Latest version',
+    raiseBanner: 'Raise the update banner',
+    raiseBannerHint:
+      'The version now live in the stores. Everyone on an older build gets a dismissible banner offering the store. Nothing is blocked — that is Minimum version, and it is still a script.',
+    versionPlaceholder: 'e.g. 2.3',
+    set: 'Set',
+    setDone: (platform: string, version: string) => `Latest ${platform} version is now ${version}`,
   },
 
   common: {

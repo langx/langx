@@ -775,6 +775,33 @@ forced-update screen is correct and it is also the worst possible first
 mention of the subject; `latestVersion` moves the first mention weeks earlier,
 to a point where the app still works and the answer can be "not now".
 
+## The panel may raise the banner, and may not touch anything else
+
+`scripts/maintenance.ts` is a script rather than an admin endpoint on purpose,
+and that reasoning holds for everything in it but one field. `latestVersion`
+now also has a control on the operator panel's system screen, through
+`POST /admin/app-config/latest-version`.
+
+What made it worth an exception is when it is needed rather than how often. It
+is set the moment a store release goes live — a moment Apple's review queue
+decides, not one anybody schedules — and the value is useless a day late,
+because the whole point of the banner is to reach people weeks before
+`minVersion` ever does. Requiring a machine that can reach Mongo at exactly
+that moment is how the field stays at `0.0.0` and the banner never appears,
+which is what it had been doing.
+
+What makes it safe is the blast radius. `latestVersion` can show a dismissible
+banner or show nothing; it cannot stop anybody using the app. `minVersion`,
+`maintenance` and the flags each can, and a panel served by the API still must
+not be the thing that turns the API off — so those stay where they are, and the
+line is drawn at "can this refuse somebody service" rather than at "is this
+config".
+
+The check on the way in is `isVersion`, the same function the gate uses, so a
+typo is a 400 rather than a fourth platform key or a string that sorts below
+every build. The write is recorded in the audit log like every other panel
+action: a banner nobody remembers raising is a mystery a week later.
+
 ## Maintenance — two switches on purpose
 
 The database-backed flag is the everyday one: a single write, no redeploy. The
