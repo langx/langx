@@ -1,11 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
-import type { ColorValue } from 'react-native'
+import { View, type ColorValue } from 'react-native'
 import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
 import type { TourTargetId } from '../../../src/lib/tour'
-import { useTheme } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
@@ -48,6 +48,73 @@ function TabIcon({
     icon
   )
 }
+
+/**
+ * The bar's own label style, kept as a constant because a screen that sets
+ * `tabBarLabelStyle` of its own replaces this one rather than merging with it
+ * — and Echo sets one.
+ */
+const TAB_LABEL = { fontSize: 11, fontWeight: '600' } as const
+
+/**
+ * The raised disc under the Echo tab, and the geometry that keeps the five
+ * words on one line.
+ *
+ * `tabBarIconStyle` overrides the fixed slot the bar lays out for an icon —
+ * 31 by 28 — so the disc has to hand back what it borrows: it starts
+ * `ECHO_LIFT` above the other glyphs and gives the remainder of the 28 back
+ * underneath, which is what `marginBottom` works out to. Get either margin
+ * wrong and Echo's label sits off the line the other four share.
+ *
+ * The lift stops at 20 because the part of the disc that clears the bar's top
+ * edge is drawn but not tappable on Android, which delivers no touch outside a
+ * view's parent. At 20 the disc's centre and two thirds of its face stay
+ * inside the bar; a taller lift would start trading looks for a dead target.
+ */
+const ECHO_SIZE = 46
+const ECHO_LIFT = 20
+const ECHO_GLYPH = 24
+const ECHO_ICON_STYLE = {
+  width: ECHO_SIZE,
+  height: ECHO_SIZE,
+  marginTop: -ECHO_LIFT,
+  marginBottom: 28 + ECHO_LIFT - ECHO_SIZE,
+} as const
+
+/**
+ * Accent whether the tab is focused or not, which is the whole point: the bar
+ * renders every icon twice and cross-fades an active copy against an inactive
+ * one, and this one has nothing to fade between. Echo is the habit the app is
+ * built around, and a habit that only announces itself once you are already
+ * looking at it announces nothing.
+ *
+ * The tour hole hugs the disc — `pad={6}` and a circle, against the 14-point
+ * square the flat glyphs need — because a 46-point disc is already the size of
+ * a thing you can point at.
+ */
+function EchoTabIcon() {
+  const styles = useStyles()
+  const { colors, radius } = useTheme()
+  return (
+    <TourTarget id="tabEcho" pad={6} radius={radius.pill}>
+      <View style={styles.echoDisc}>
+        <Feather name="repeat" size={ECHO_GLYPH} color={colors.textInverse} />
+      </View>
+    </TourTarget>
+  )
+}
+
+const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
+  echoDisc: {
+    ...cardShadow,
+    alignItems: 'center',
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    height: ECHO_SIZE,
+    justifyContent: 'center',
+    width: ECHO_SIZE,
+  },
+}))
 
 /**
  * The five tabs, and only the five tabs.
@@ -113,7 +180,15 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: colors.textFaint,
         // v3 brings the words back under the icons — 11px, semibold.
         tabBarShowLabel: true,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarLabelStyle: TAB_LABEL,
+        /*
+         * Forced, rather than left to the bar's own rule, which moves the words
+         * beside the icons once the window is 768 points wide — the web build,
+         * on a desktop. Echo's disc is laid out as a column: it borrows space
+         * above the glyph and returns it below the word, and in a row there is
+         * no below.
+         */
+        tabBarLabelPosition: 'below-icon',
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}
     >
@@ -154,18 +229,24 @@ export default function TabsLayout() {
         name="echo"
         options={{
           title: t('tabs.echo'),
-          tabBarIcon: ({ color }) => <TabIcon name="repeat" color={color} tour="tabEcho" />,
+          tabBarIcon: () => <EchoTabIcon />,
+          tabBarIconStyle: ECHO_ICON_STYLE,
+          // The word under the disc is lit for the same reason the disc is.
+          tabBarLabelStyle: { ...TAB_LABEL, color: colors.accent, fontWeight: '700' },
           /*
-           * Accent, where the other two badges are `danger`. Red in this bar
-           * means somebody is waiting for you; a due count is an invitation
-           * you made to yourself, and it must not compete with a person.
+           * `ink`, where this badge used to be `accent` and the other two are
+           * `danger`. Red in this bar means somebody is waiting for you, and a
+           * due count is an invitation you made to yourself — that part has
+           * not changed. What changed is that accent is now the disc the badge
+           * sits on, so the old colour would have gone missing over exactly
+           * the half of the badge that overlaps it. Ink reads on both.
            */
           ...(echoBadge
             ? {
                 tabBarBadge: echoBadge,
                 tabBarBadgeStyle: {
-                  backgroundColor: colors.accent,
-                  color: colors.textInverse,
+                  backgroundColor: colors.ink,
+                  color: colors.bg,
                   fontSize: 11,
                   fontWeight: '700',
                 },
