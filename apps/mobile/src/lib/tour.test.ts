@@ -44,9 +44,14 @@ describe('the step list', () => {
 })
 
 describe('where a step stands', () => {
-  it('sends the three tab steps to their own tab', () => {
+  it('sends the four tab steps to their own tab, left to right', () => {
     const tabs = TOUR_STEPS.filter((step) => step.target.startsWith('tab'))
-    expect(tabs.map((step) => step.tab)).toEqual([TOUR_TABS.chats, TOUR_TABS.feed, TOUR_TABS.me])
+    expect(tabs.map((step) => step.tab)).toEqual([
+      TOUR_TABS.chats,
+      TOUR_TABS.echo,
+      TOUR_TABS.feed,
+      TOUR_TABS.me,
+    ])
   })
 
   /** Otherwise the run ends pointing at a card on a screen nobody is on. */

@@ -39,6 +39,7 @@ export const TOUR_TARGETS = [
   'discoverSorts',
   'discoverFilters',
   'tabChats',
+  'tabEcho',
   'tabFeed',
   'feedAsk',
   'feedKinds',
@@ -57,13 +58,14 @@ export type TourTargetId = (typeof TOUR_TARGETS)[number]
 export const TOUR_GUEST_BODIES: readonly TourTargetId[] = ['tabChats']
 
 /**
- * The four tab routes, as literals rather than built from the tab name:
+ * The five tab routes, as literals rather than built from the tab name:
  * `routeLiterals.test.ts` finds any string starting with `/(` and checks a
  * screen exists at it, and a path assembled at runtime is invisible to it.
  */
 export const TOUR_TABS = {
   discover: '/(app)/(tabs)/discover',
   chats: '/(app)/(tabs)/chats',
+  echo: '/(app)/(tabs)/echo',
   feed: '/(app)/(tabs)/feed',
   me: '/(app)/(tabs)/me',
 } as const
@@ -99,7 +101,7 @@ export interface TourStep {
  * The run, in order.
  *
  * The screen's own chrome first, in the order a reader's eye takes it; then
- * the three tabs they have not opened yet — standing on each one, with the
+ * the four tabs they have not opened yet — standing on each one, with the
  * real screen behind the dim; then back to Discovery for the card, last,
  * because it is the only step that leads anywhere and the tour should end on
  * the thing to actually do.
@@ -114,6 +116,15 @@ export const TOUR_STEPS: readonly TourStep[] = [
   { target: 'discoverSorts' },
   { target: 'discoverFilters' },
   { target: 'tabChats', tab: TOUR_TABS.chats },
+  /*
+   * Between Chats and Feed, which is where the tab sits — the run walks the
+   * bar left to right, and a step out of that order would make the circle
+   * jump backwards.
+   *
+   * It only earns a step now that the packs exist. Introducing an empty tab
+   * was the reason there was no step in phase one.
+   */
+  { target: 'tabEcho', tab: TOUR_TABS.echo },
   { target: 'tabFeed', tab: TOUR_TABS.feed },
   // Standing on the Feed already, but still naming the tab — and the only two
   // steps that wait for a mount, because the Feed is the one screen the run

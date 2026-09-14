@@ -125,6 +125,8 @@ export const tr: Localized<EnMessages> = {
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
     tabChatsTitle: 'Cevaplar buraya düşer',
     tabChatsBody: 'Başlattığın her sohbet burada; senden yanıt bekleyenler kendi sekmesinde durur.',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Sohbetten bir cümle sakla, bilene kadar karşına çıksın.',
     tabChatsGuestBody:
       'Sohbetler burada toplanır. Hesapsız gezip okuyabilirsin — hesap isteyen tek şey mesaj yazmak.',
     tabFeedTitle: 'Sor ve öğren',

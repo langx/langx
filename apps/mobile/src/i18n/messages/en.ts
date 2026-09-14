@@ -141,6 +141,8 @@ export const en = {
     discoverCardBody:
       'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
     tabChatsTitle: 'Where replies land',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Keep a sentence from any chat and it comes back until you know it.',
     tabChatsBody:
       'Every conversation you start lives here, and the ones still waiting on you sit in their own tab.',
     tabChatsGuestBody:

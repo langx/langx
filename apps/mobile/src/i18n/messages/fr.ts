@@ -112,6 +112,8 @@ export const fr: Localized<EnMessages> = {
     discoverCardBody:
       'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
     tabChatsTitle: 'Là où arrivent les réponses',
+    tabEchoTitle: 'Echo',
+    tabEchoBody: 'Garde une phrase d’une discussion : elle revient jusqu’à ce que tu la saches.',
     tabChatsBody:
       'Chaque conversation que tu commences vit ici, et celles qui t’attendent ont leur propre onglet.',
     tabChatsGuestBody:
