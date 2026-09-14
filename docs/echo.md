@@ -154,8 +154,10 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    (`answersMessageId`) and the asked message is stamped `answeredAt`, the
    way `sendCorrection` already stamps `correctedAt`. Capture copies the
    URL, so the card keeps playing after the recording is deleted. A card
-   with no recording offers **Ask them to say it**, which opens the
-   conversation with the composer armed and the sentence in it.
+   with no recording offers **Ask the feed how it is said** — see _Later,
+   without adding a screen_; it used to open the conversation and now opens a
+   pronunciation post, and an answer to that post can be kept on the card in
+   one tap.
 
 3. **~~Text-to-speech, on the server.~~ Not built, and not planned for now.**
    Google Cloud Text-to-Speech was costed before it was written: $4 per
@@ -242,12 +244,12 @@ violated by accident:
 
 Four collections, registered in `collections.ts`:
 
-| Collection      | Holds                                                                                                                                                                |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
-| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                       |
-| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                              |
-| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                      |
+| Collection      | Holds                                                                                                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, askedPostId?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                                     |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                                            |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                                    |
 
 `source` is a tagged union:
 
@@ -275,6 +277,11 @@ Indexes, in `indexes.ts`:
 - `{ userId, srs.due }` on `echoCards` — the due queue, the only hot read.
 - `{ userId, lang, createdAt: -1 }` on `echoCards` — the "from your chats"
   list on the tab.
+- **unique `{ userId, askedPostId }` on `echoCards`**, partial on
+  `askedPostId: { $exists: true }` — which of your cards asked this post. One
+  card per post per person, which is what makes the reverse lookup a point
+  read. Partial and not sparse: almost no card has ever asked anything, and a
+  plain unique index would collide on the missing value.
 - **unique `{ userId, reviewId }` on `echoReviews`**, `reviewId` minted by the
   client. A session submitted twice because the network dropped and the app
   retried must be physically incapable of advancing a card twice or paying
@@ -522,17 +529,40 @@ Four questions the first draft left open, closed on 13 September 2026:
 Three things the first three phases do not need and that ride on machinery
 already there. None adds a screen; each is one branch in code that exists.
 
-1. ~~**Ask the partner from a card.**~~ **Built in phase 1**, in place of the
-   server voice. A card with no recording offers "Ask them to say it", which
-   opens the conversation at the card's message with the composer armed for a
-   `pronunciation` ask and the sentence in it. It is the only path that leads
-   from Echo back into a conversation, which in a cold start is the direction
-   that matters: a forgotten card becomes a reason to write to somebody.
+1. ~~**Ask the partner from a card.**~~ **Built in phase 1, and since
+   replaced.** It opened the conversation the card came from, with the
+   composer armed for a `pronunciation` ask. Two things were wrong with that.
+   It existed only for cards whose `source.kind` is `chat`, so a pack card —
+   the kind most likely to have no recording — was offered nothing. And it
+   asked one person, who may never answer.
 
-   One limitation, left on purpose: the ask lands on a **new** message, not
-   on the one the card came from, because `ask` is written once at send time
-   and the original may never have carried one. So the recording that answers
-   it gives its _own_ card a voice rather than the one you asked from.
+   **Now it asks the feed.** A card with no recording offers "Ask the feed how
+   it is said", which opens `compose` as a `pronunciation` post with the
+   sentence, the card's language and the card's id already in it. Nothing new
+   was written for the composer; the section and the screen were both already
+   there. `echoAsk.ts` decides whether the button is drawn at all, refusing a
+   front longer than `MAX_POST_LENGTH` and a language its owner is not
+   learning — the two things `createPost` would reject — because a composer
+   that silently falls back to another language would file the sentence under
+   the wrong one.
+
+   **And the answer comes back.** The card remembers the post it asked on in
+   `askedPostId`, written by `POST /echo/cards/:id/ask` once the post exists —
+   a second call rather than a field on `createPostSchema`, so the feed module
+   keeps knowing nothing about Echo. On that post, every answer then carries
+   one more action: keep this recording on the card that asked. It replaces
+   whatever the card had, deliberately — the reason to tap it on a card that
+   already speaks is that the first voice was hard to follow.
+
+   The client sends an **answer id, never a URL**. `attachAnswerAudio` reads
+   the media off the answer itself and requires
+   `answer.postId === card.askedPostId`, which is the whole authorisation
+   story: you can only ever attach an answer written on a post one of your own
+   cards asked.
+
+   One limitation, left on purpose: a card asked twice keeps only the newer
+   post, and the older one stops offering the button. A list of every question
+   a card ever asked is machinery for something nobody would read.
 
 2. **A card from a quiz message.** A `quiz` message already carries the
    question and the option its author marked correct. Add echo on it makes

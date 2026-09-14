@@ -14,12 +14,14 @@ import {
   uploadPostMedia,
   useAddComment,
   useAnswerPronunciation,
+  useAttachEchoAudio,
   useCaptureEcho,
   useCorrectPost,
   useDeleteAnswer,
   useDeleteComment,
   useDeleteCorrection,
   useDeletePost,
+  useEchoCardForPost,
   useMe,
   usePostAnswers,
   usePostComments,
@@ -126,6 +128,13 @@ export default function PostScreen() {
   const deletePost = useDeletePost()
   const deleteCorrection = useDeleteCorrection()
   const deleteAnswer = useDeleteAnswer()
+  /*
+   * The Echo card this post was asked from, when it was asked from one. Null
+   * for every pronunciation post written straight from the composer, which is
+   * most of them — so the action below is drawn only when it resolves.
+   */
+  const askedFrom = useEchoCardForPost(id, pronouncing)
+  const attachAudio = useAttachEchoAudio()
   const deleteComment = useDeleteComment()
 
   /** The recorder's open/closed state. The correction box is always open. */
@@ -380,6 +389,26 @@ export default function PostScreen() {
     else deleteCorrection.mutate({ postId: post._id, correctionId: replyId }, done)
   }
 
+  /**
+   * Keep this recording on the card that asked the question.
+   *
+   * Replaces whatever the card had, which is deliberate: the reason to tap
+   * this on a card that already speaks is that the first voice was hard to
+   * follow, and a refusal would leave nothing to say that with. The label
+   * says so before the tap.
+   */
+  function keepOnCard(answerId: string): void {
+    const cardId = askedFrom.data?._id
+    if (!cardId) return
+    attachAudio.mutate(
+      { cardId, answerId },
+      {
+        onSuccess: () => showToast(t('echo.audioKept')),
+        onError: () => showToast(t('common.retry')),
+      },
+    )
+  }
+
   return (
     <Screen fluid>
       <ScreenHeader
@@ -587,6 +616,25 @@ export default function PostScreen() {
                   from={here}
                   size="small"
                 />
+                {/*
+                  The recording, onto the card that asked for it. Drawn only
+                  on an answer to a post one of your own cards opened — which
+                  is the same condition the server checks, so a button that is
+                  here always works.
+                */}
+                {pronouncing && askedFrom.data ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    disabled={attachAudio.isPending}
+                    onPress={() => keepOnCard(item._id)}
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                  >
+                    <Text style={styles.keepAction}>
+                      {t(askedFrom.data.audio ? 'echo.replaceCardAudio' : 'echo.keepOnCard')}
+                    </Text>
+                  </Pressable>
+                ) : null}
                 {item.author._id === me.data?._id ? (
                   <Pressable
                     accessibilityRole="button"
@@ -895,6 +943,9 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   takeLabel: { color: colors.textFaint, fontSize: 12, fontWeight: '600' },
   likeRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   deleteAction: { color: colors.danger, fontSize: 13, fontWeight: '600' },
+  // The same row as Delete, in the accent instead of the danger colour: this
+  // one adds something.
+  keepAction: { color: colors.accent, fontSize: 13, fontWeight: '600' },
   done: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 20 },
   doneLabel: { color: colors.success, fontSize: 14, fontWeight: '600' },
   compose: { gap: spacing.md, paddingTop: 22 },

@@ -673,4 +673,189 @@ describe('echo', () => {
       await handle.db.collection(COLLECTIONS.echoCards).countDocuments({ userId: b.userId }),
     ).toBe(0)
   })
+
+  /**
+   * A card asks the feed how its sentence is said, and the answer comes back
+   * to the card in one tap. Route tests rather than unit ones: the whole point
+   * is a link between two modules that otherwise know nothing about each other.
+   */
+  describe('asking the feed, and keeping the answer', () => {
+    const take = (name: string) => ({
+      url: `https://cdn.example.com/posts/u/${name}.m4a`,
+      contentType: 'audio/m4a',
+      sizeBytes: 4096,
+      durationSeconds: 3,
+    })
+
+    async function askPost(user: SignedUpUser, body = 'squirrel') {
+      const created = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { body, language: 'en', kind: 'pronunciation' },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ _id: string }>()._id
+    }
+
+    /**
+     * An answer written straight into the collection.
+     *
+     * `POST /posts/:id/answers` would refuse every URL above: this suite
+     * builds the app with no storage configured, on purpose, so no attachment
+     * can point into "our own bucket". What is under test here is what happens
+     * to an answer once it exists, not how it came to.
+     */
+    async function answerWith(author: SignedUpUser, postId: string, fast = 'fast', slow?: string) {
+      const _id = new ObjectId()
+      await handle.db.collection(COLLECTIONS.pronunciationAnswers).insertOne({
+        _id,
+        postId: new ObjectId(postId),
+        authorId: author.userId,
+        media: take(fast),
+        ...(slow ? { slowMedia: take(slow) } : {}),
+        createdAt: new Date(),
+      })
+      return _id.toHexString()
+    }
+
+    /** A card from something the partner wrote, which is the ordinary case. */
+    async function makeCard(owner: SignedUpUser, partner: SignedUpUser, body: string) {
+      const conversation = await startConversation(partner, owner.userId, body)
+      const created = await captureMessage(
+        owner,
+        conversation._id,
+        await firstMessageId(conversation._id),
+      )
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ card: { _id: string } }>().card._id
+    }
+
+    function link(user: SignedUpUser, cardId: string, postId: string) {
+      return app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/ask`,
+        headers: { cookie: user.cookie },
+        payload: { postId },
+      })
+    }
+
+    function attach(user: SignedUpUser, cardId: string, answerId: string) {
+      return app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/audio`,
+        headers: { cookie: user.cookie },
+        payload: { answerId },
+      })
+    }
+
+    function forPost(user: SignedUpUser, postId: string) {
+      return app.inject({
+        method: 'GET',
+        url: `/echo/cards/for-post/${postId}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    it('answers with nothing when no card asked the post', async () => {
+      const asker = await newUser('ask-none@example.com')
+      const response = await forPost(asker, await askPost(asker))
+      expect(response.statusCode).toBe(200)
+      expect(response.json()).toBeNull()
+    })
+
+    it('links a card to the post it asked, and finds it again by the post', async () => {
+      const [asker, friend] = await newPair('ask-link')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+
+      expect((await link(asker, cardId, postId)).statusCode).toBe(200)
+      expect((await forPost(asker, postId)).json<{ _id: string }>()._id).toBe(cardId)
+      // Somebody else's cards are not consulted, whoever wrote the post.
+      expect((await forPost(friend, postId)).json()).toBeNull()
+    })
+
+    it('refuses to link a post somebody else wrote', async () => {
+      const [asker, other] = await newPair('ask-theirs')
+      const cardId = await makeCard(asker, other, 'squirrel')
+
+      expect((await link(asker, cardId, await askPost(other))).statusCode).toBe(404)
+    })
+
+    /*
+     * Asking again from a second card moves the link rather than colliding on
+     * `owner_asked_post_unique`. The first card keeps whatever recording it
+     * had and simply stops offering the button.
+     */
+    it('moves the link when a second card asks the same post', async () => {
+      const [asker, friend] = await newPair('ask-move')
+      const first = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      const second = (await capture(asker, { kind: 'post', postId })).json<{
+        card: { _id: string }
+      }>().card._id
+
+      expect((await link(asker, first, postId)).statusCode).toBe(200)
+      expect((await link(asker, second, postId)).statusCode).toBe(200)
+      expect((await forPost(asker, postId)).json<{ _id: string }>()._id).toBe(second)
+    })
+
+    it('keeps an answer\u2019s recording, both takes and the speaker\u2019s name', async () => {
+      const [asker, friend] = await newPair('ask-keep')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+      const answerId = await answerWith(friend, postId, 'fast', 'slow')
+
+      const response = await attach(asker, cardId, answerId)
+      expect(response.statusCode, response.body).toBe(200)
+      const { audio } = response.json<{
+        audio?: { url: string; slowUrl?: string; origin: string; speakerName?: string }
+      }>()
+      expect(audio?.url).toContain('fast.m4a')
+      expect(audio?.slowUrl).toContain('slow.m4a')
+      expect(audio?.origin).toBe('post')
+      expect(audio?.speakerName).toBe('Test User')
+    })
+
+    /* The reason to tap this twice is that the first voice was hard to follow. */
+    it('replaces a recording the card already had', async () => {
+      const [asker, first] = await newPair('ask-replace')
+      const second = await newUser('ask-replace-c@example.com')
+      const cardId = await makeCard(asker, first, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+
+      await attach(asker, cardId, await answerWith(first, postId, 'first'))
+      const later = await answerWith(second, postId, 'second')
+
+      const response = await attach(asker, cardId, later)
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ audio: { url: string } }>().audio.url).toContain('second.m4a')
+    })
+
+    /*
+     * `answer.postId === card.askedPostId` is the whole authorisation story for
+     * the attach, so this is the test holding it up: without the check, any
+     * answer anywhere could be pointed at any of your cards.
+     */
+    it('refuses an answer written on a different post', async () => {
+      const [asker, friend] = await newPair('ask-elsewhere')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      await link(asker, cardId, await askPost(asker))
+
+      const elsewhere = await askPost(friend, 'thorough')
+      const answerId = await answerWith(asker, elsewhere)
+
+      expect((await attach(asker, cardId, answerId)).statusCode).toBe(404)
+    })
+
+    it('refuses to attach to a card that never asked anything', async () => {
+      const [asker, friend] = await newPair('ask-unlinked')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const answerId = await answerWith(friend, await askPost(asker))
+
+      expect((await attach(asker, cardId, answerId)).statusCode).toBe(404)
+    })
+  })
 })

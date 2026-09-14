@@ -1,6 +1,8 @@
 import {
+  attachEchoAudioSchema,
   captureEchoSchema,
   echoQueueQuerySchema,
+  linkEchoAskSchema,
   listEchoCardsQuerySchema,
   startPackSchema,
   submitEchoReviewsSchema,
@@ -10,8 +12,11 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
+  attachAnswerAudio,
   captureEcho,
+  cardForPost,
   dueQueue,
+  linkAsk,
   listCards,
   removeCard,
   summary,
@@ -66,6 +71,47 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(
         await updateCard(app.mongo.db, request.userId, request.params.id, request.body),
       )
+    },
+  )
+
+  /*
+   * The card asked the feed how its sentence is said, and this is the post it
+   * asked on. Written by the composer once the post exists — see `linkAsk` for
+   * why it is not part of creating the post.
+   */
+  app.post(
+    '/echo/cards/:id/ask',
+    { preHandler: requireAuth, schema: { params: cardParamsSchema, body: linkEchoAskSchema } },
+    async (request, reply) => {
+      return reply.send(
+        await linkAsk(app.mongo.db, request.userId, request.params.id, request.body),
+      )
+    },
+  )
+
+  /*
+   * An answer on that post, kept as the card's recording. A card that already
+   * has one is overwritten — see `attachAnswerAudio`.
+   */
+  app.post(
+    '/echo/cards/:id/audio',
+    { preHandler: requireAuth, schema: { params: cardParamsSchema, body: attachEchoAudioSchema } },
+    async (request, reply) => {
+      return reply.send(
+        await attachAnswerAudio(app.mongo.db, request.userId, request.params.id, request.body),
+      )
+    },
+  )
+
+  /*
+   * Which of my cards asked this post, if any. Four segments, so it does not
+   * collide with `/echo/cards/:id` above.
+   */
+  app.get(
+    '/echo/cards/for-post/:postId',
+    { preHandler: requireAuth, schema: { params: z.object({ postId: z.string().trim().min(1) }) } },
+    async (request, reply) => {
+      return reply.send(await cardForPost(app.mongo.db, request.userId, request.params.postId))
     },
   )
 

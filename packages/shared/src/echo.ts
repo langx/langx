@@ -129,6 +129,12 @@ export const echoCardSchema = z.object({
   source: echoSourceSchema,
   audio: echoAudioSchema.optional(),
   image: echoImageSchema.optional(),
+  /**
+   * The pronunciation post this card's owner opened from it, when they asked
+   * the feed to say the sentence. What lets the post screen offer the answer
+   * back to the card it was asked from, in one tap.
+   */
+  askedPostId: z.string().optional(),
   srs: echoSrsSchema,
   createdAt: z.string(),
 })
@@ -227,6 +233,32 @@ export const updateEchoCardSchema = z.object({
   back: z.string().trim().max(ECHO_BACK_MAX_LENGTH),
 })
 export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
+
+/**
+ * Remembering that this card asked the feed how its sentence is said.
+ *
+ * Its own call rather than a field on `createPostSchema`: the feed module does
+ * not know what an Echo card is, and nothing in this design makes it worth
+ * teaching it. A link that fails to be written costs the button on the post
+ * screen and nothing else.
+ */
+export const linkEchoAskSchema = z.object({
+  postId: z.string().trim().min(1),
+})
+export type LinkEchoAskInput = z.infer<typeof linkEchoAskSchema>
+
+/**
+ * Putting a pronunciation answer's recording on the card that asked for it.
+ *
+ * An answer id, never a URL. The server reads the answer itself and builds the
+ * `EchoAudio` from it, so a caller cannot point a card at a file of their
+ * choosing — and `answer.postId === card.askedPostId` is then the whole
+ * authorisation story.
+ */
+export const attachEchoAudioSchema = z.object({
+  answerId: z.string().trim().min(1),
+})
+export type AttachEchoAudioInput = z.infer<typeof attachEchoAudioSchema>
 
 /**
  * Minted by the client, one per graded card, before the batch is sent.
