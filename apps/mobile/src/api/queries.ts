@@ -2679,9 +2679,11 @@ export function useCaptureEcho() {
       // window is refreshed by the same call.
       if (input.source.kind === 'chat') {
         void client.invalidateQueries({ queryKey: keys.messages(input.source.conversationId) })
-      } else {
+      } else if (input.source.kind === 'post') {
         void client.invalidateQueries({ queryKey: ['feed'] })
       }
+      // A hand-written card marks nothing: there is no message and no post to
+      // draw it on, so the `echo` prefix above is the whole of the news.
     },
   })
 }
@@ -2721,6 +2723,7 @@ export function useUpdateEchoCard() {
       api.patch<EchoCard>(`/echo/cards/${input.cardId}`, {
         front: input.front,
         back: input.back,
+        ...(input.lang ? { lang: input.lang } : {}),
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })

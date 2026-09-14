@@ -181,6 +181,7 @@ export const de: Localized<EnMessages> = {
     limitBody: 'Du kannst {count} Karten pro Tag behalten. Morgen geht es weiter.',
     fromYourChats: 'Aus deinen Chats',
     fromAPost: 'Aus einem Beitrag',
+    fromYourself: 'Von dir geschrieben',
     seeAllCards: 'Alle Karten ansehen',
     emptyTitle: 'Noch nichts zu üben',
     emptyBody:
@@ -192,7 +193,8 @@ export const de: Localized<EnMessages> = {
       other: '{count} Karten',
     },
     cardsEmptyTitle: 'Noch keine Karten',
-    cardsEmptyBody: 'Sätze, die du aus Chats und Beiträgen behältst, sammeln sich hier.',
+    cardsEmptyBody:
+      'Sätze, die du aus Chats und Beiträgen behältst, sammeln sich hier — zusammen mit denen, die du selbst schreibst.',
     remove: 'Entfernen',
     removeTitle: 'Diese Karte entfernen?',
     removeBody: 'Ihr Zeitplan geht mit. Die Nachricht selbst bleibt, wo sie ist.',
@@ -202,6 +204,9 @@ export const de: Localized<EnMessages> = {
     edited: 'Karte aktualisiert',
     editFailedTitle: 'Diese Karte konnte nicht gespeichert werden',
     cardMenu: 'Kartenoptionen',
+    newTitle: 'Neue Karte',
+    cardLanguage: 'Sprache',
+    backHint: 'Lass die Bedeutung leer, dann wird sie für dich übersetzt.',
     sessionProgress: '{done} von {total}',
     show: 'Antwort zeigen',
     again: 'Nochmal',

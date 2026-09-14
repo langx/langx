@@ -177,6 +177,7 @@ export const ptBR: Localized<EnMessages> = {
     limitBody: 'Você pode guardar {count} cartões por dia. Amanhã recomeça.',
     fromYourChats: 'Das suas conversas',
     fromAPost: 'De uma publicação',
+    fromYourself: 'Escrito por você',
     seeAllCards: 'Ver todos os cartões',
     emptyTitle: 'Ainda não há nada para revisar',
     emptyBody:
@@ -188,7 +189,8 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} cartões',
     },
     cardsEmptyTitle: 'Nenhum cartão ainda',
-    cardsEmptyBody: 'As frases que você guarda de conversas e publicações ficam aqui.',
+    cardsEmptyBody:
+      'As frases que você guarda de conversas e publicações ficam aqui, junto com as que você mesmo escreve.',
     remove: 'Remover',
     removeTitle: 'Remover este cartão?',
     removeBody: 'O calendário dele vai junto. A mensagem continua onde está.',
@@ -198,6 +200,9 @@ export const ptBR: Localized<EnMessages> = {
     edited: 'Cartão atualizado',
     editFailedTitle: 'Não foi possível salvar este cartão',
     cardMenu: 'Opções do cartão',
+    newTitle: 'Novo cartão',
+    cardLanguage: 'Idioma',
+    backHint: 'Deixe o significado vazio e ele será traduzido para você.',
     sessionProgress: '{done} de {total}',
     show: 'Ver a resposta',
     again: 'De novo',

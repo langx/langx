@@ -35,7 +35,7 @@ export const ECHO_BACK_MAX_LENGTH = 200
 export const ECHO_REVIEW_BATCH_MAX = 10 * SRS_RULES.sessionSize
 
 /** Where a card came from. The string form is `sourceKey`; see below. */
-export const ECHO_SOURCE_KINDS = ['chat', 'post', 'phrase', 'pack'] as const
+export const ECHO_SOURCE_KINDS = ['chat', 'post', 'phrase', 'pack', 'manual'] as const
 export type EchoSourceKind = (typeof ECHO_SOURCE_KINDS)[number]
 
 export const echoSourceSchema = z.discriminatedUnion('kind', [
@@ -49,6 +49,15 @@ export const echoSourceSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('post'), postId: z.string(), authorId: z.string() }),
   z.object({ kind: z.literal('phrase'), phraseCardId: z.string(), conversationId: z.string() }),
   z.object({ kind: z.literal('pack'), packId: z.string(), itemId: z.string() }),
+  /**
+   * Written by hand, with nothing behind it.
+   *
+   * The other four name something that exists; this one carries an id that
+   * exists only to be different from the last one. Without it `sourceKey`
+   * would be the same string for every hand-written card and
+   * `card_source_unique` would allow exactly one of them per person.
+   */
+  z.object({ kind: z.literal('manual'), id: z.string() }),
 ])
 export type EchoSource = z.infer<typeof echoSourceSchema>
 
@@ -60,6 +69,10 @@ export type EchoSource = z.infer<typeof echoSourceSchema>
  * tagged union cannot be expressed in a Mongo index, and "one card per
  * message, per post, per phrase card, per pack item" has to be an invariant
  * rather than something a handler remembers to check.
+ *
+ * A manual card has nothing to be one *per*, so it brings its own id and the
+ * invariant becomes idempotency instead: the same `clientId` sent twice is the
+ * same card. See `captureEchoSchema`.
  */
 export function sourceKeyOf(source: EchoSource): string {
   switch (source.kind) {
@@ -71,6 +84,8 @@ export function sourceKeyOf(source: EchoSource): string {
       return `phrase:${source.phraseCardId}`
     case 'pack':
       return `pack:${source.itemId}`
+    case 'manual':
+      return `manual:${source.id}`
   }
 }
 
@@ -202,6 +217,26 @@ export const captureEchoSchema = z.object({
       translationLang: z.string().trim().min(1).max(16).optional(),
     }),
     z.object({ kind: z.literal('post'), postId: z.string().trim().min(1) }),
+    /**
+     * A card written by hand. The only member that carries the card itself
+     * rather than a reference to something that already holds it.
+     *
+     * `clientId` is minted by the client and becomes the `sourceKey`, the same
+     * device and the same reason as `reviewId` on a review batch: this is the
+     * one capture with no natural key, so a double tap or a retry after a
+     * dropped response has to be made incapable of writing a second card.
+     *
+     * `back` is optional, not empty-able. Omitting it asks for the translation
+     * every other capture gets; sending an empty string would be asking for a
+     * card with no back, which is what the edit screen is for.
+     */
+    z.object({
+      kind: z.literal('manual'),
+      clientId: z.string().trim().min(8).max(64),
+      front: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH),
+      back: z.string().trim().min(1).max(ECHO_BACK_MAX_LENGTH).optional(),
+      lang: languageCodeSchema,
+    }),
   ]),
 })
 export type CaptureEchoInput = z.infer<typeof captureEchoSchema>
@@ -220,9 +255,19 @@ export type CaptureEchoResult = z.infer<typeof captureEchoResultSchema>
 /**
  * What a person may change about a card of their own.
  *
- * The two lines they read, and nothing else. The language, the media and the
- * source are what the card was *made* from: editing those would leave
- * `sourceKey` claiming a card is still the one message it can no longer be.
+ * The two lines they read, and the language they are in. The media and the
+ * source stay as they were: those are what the card was *made* from, and
+ * editing them would leave `sourceKey` claiming a card is still the one
+ * message it can no longer be.
+ *
+ * `lang` was held back for the same reason until hand-written cards arrived,
+ * and it is offered on every card rather than only those — the call the
+ * product made, with its cost stated rather than hidden. On a manual card the
+ * language is a choice, and a choice made wrongly must be correctable. On a
+ * card that came from a message it is a *fact* about that message, so changing
+ * it leaves the card disagreeing with the thread it links to. Nothing breaks:
+ * `lang` is read only by the language chips and the summary's grouping, and a
+ * card moving between chips is exactly what somebody correcting it wants.
  *
  * `back` may be emptied. A card whose translation came back wrong is better
  * with no back than with a wrong one, and the capture already writes an empty
@@ -231,6 +276,7 @@ export type CaptureEchoResult = z.infer<typeof captureEchoResultSchema>
 export const updateEchoCardSchema = z.object({
   front: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH),
   back: z.string().trim().max(ECHO_BACK_MAX_LENGTH),
+  lang: languageCodeSchema.optional(),
 })
 export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
 

@@ -675,6 +675,122 @@ describe('echo', () => {
   })
 
   /**
+   * Cards written by hand: the one capture that is handed its own contents.
+   *
+   * No provider is configured in this suite, so an absent back comes back
+   * empty — which is the degradation the module promises, and exactly what
+   * makes the "translate it for me" path safe to leave unconfigured.
+   */
+  describe('a card written by hand', () => {
+    function write(user: SignedUpUser, source: Record<string, unknown>) {
+      return capture(user, { kind: 'manual', ...source })
+    }
+
+    const card = { clientId: 'manual-one', front: 'la grenouille', lang: 'en' }
+
+    it('keeps the two lines and the language it was given', async () => {
+      const user = await newUser('manual-basic@example.com')
+      const response = await write(user, { ...card, back: 'the frog' })
+
+      expect(response.statusCode, response.body).toBe(201)
+      const body = response.json<{
+        created: boolean
+        card: { front: string; back: string; lang: string; source: { kind: string; id: string } }
+      }>()
+      expect(body.created).toBe(true)
+      expect(body.card).toMatchObject({
+        front: 'la grenouille',
+        back: 'the frog',
+        lang: 'en',
+        source: { kind: 'manual', id: 'manual-one' },
+      })
+    })
+
+    /*
+     * The whole reason `clientId` is minted by the client. A save that timed
+     * out and was tried again has to land on the card the first attempt may
+     * already have written.
+     */
+    it('writes one card however many times the same save is retried', async () => {
+      const user = await newUser('manual-retry@example.com')
+      const first = await write(user, { ...card, clientId: 'manual-retry' })
+      const again = await write(user, { ...card, clientId: 'manual-retry', front: 'changed' })
+
+      expect(first.statusCode).toBe(201)
+      expect(again.statusCode).toBe(200)
+      expect(again.json<{ created: boolean }>().created).toBe(false)
+      // The first card wins: a retry is the same save, not an edit.
+      expect(again.json<{ card: { front: string } }>().card.front).toBe('la grenouille')
+      expect(
+        await handle.db.collection(COLLECTIONS.echoCards).countDocuments({ userId: user.userId }),
+      ).toBe(1)
+    })
+
+    it('gives two different ids two different cards', async () => {
+      const user = await newUser('manual-two@example.com')
+      expect((await write(user, { ...card, clientId: 'manual-a' })).statusCode).toBe(201)
+      expect((await write(user, { ...card, clientId: 'manual-b' })).statusCode).toBe(201)
+      expect(
+        await handle.db.collection(COLLECTIONS.echoCards).countDocuments({ userId: user.userId }),
+      ).toBe(2)
+    })
+
+    /* No provider here, so the back is empty rather than translated. */
+    it('leaves the back empty when nothing can translate it', async () => {
+      const user = await newUser('manual-noback@example.com')
+      const response = await write(user, { ...card, clientId: 'manual-noback' })
+
+      expect(response.statusCode).toBe(201)
+      expect(response.json<{ card: { back: string } }>().card.back).toBe('')
+    })
+
+    it('refuses a language this build has no name for', async () => {
+      const user = await newUser('manual-badlang@example.com')
+      expect((await write(user, { ...card, lang: 'zz' })).statusCode).toBe(400)
+    })
+
+    it('spends one of the daily captures, like every other card', async () => {
+      const user = await newUser('manual-quota@example.com')
+      await write(user, { ...card, clientId: 'manual-quota' })
+
+      const profile = await handle.db
+        .collection<{ _id: string; quota: { echoCaptures?: Date[] } }>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.quota.echoCaptures ?? []).toHaveLength(1)
+    })
+  })
+
+  /*
+   * The language became editable when hand-written cards arrived: on those it
+   * is a choice, and a choice made wrongly has to be correctable. It is
+   * offered on every card rather than only those — a product decision whose
+   * cost is a chat card that can be made to disagree with its own thread.
+   */
+  it('relabels a card\u2019s language without touching its schedule', async () => {
+    const user = await newUser('manual-relabel@example.com')
+    const made = await capture(user, {
+      kind: 'manual',
+      clientId: 'manual-relabel',
+      front: 'la grenouille',
+      lang: 'en',
+    })
+    const cardId = made.json<{ card: { _id: string } }>().card._id
+    const before = made.json<{ card: { srs: { due: string } } }>().card.srs.due
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/echo/cards/${cardId}`,
+      headers: { cookie: user.cookie },
+      payload: { front: 'la grenouille', back: 'the frog', lang: 'fr' },
+    })
+
+    expect(response.statusCode, response.body).toBe(200)
+    const after = response.json<{ lang: string; srs: { due: string } }>()
+    expect(after.lang).toBe('fr')
+    expect(after.srs.due).toBe(before)
+  })
+
+  /**
    * A card asks the feed how its sentence is said, and the answer comes back
    * to the card in one tap. Route tests rather than unit ones: the whole point
    * is a link between two modules that otherwise know nothing about each other.

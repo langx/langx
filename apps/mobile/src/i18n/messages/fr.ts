@@ -181,6 +181,7 @@ export const fr: Localized<EnMessages> = {
     limitBody: 'Tu peux garder {count} cartes par jour. Ça repart demain.',
     fromYourChats: 'De tes discussions',
     fromAPost: 'D’une publication',
+    fromYourself: 'Écrite par toi',
     seeAllCards: 'Voir toutes les cartes',
     emptyTitle: 'Rien à revoir pour le moment',
     emptyBody:
@@ -193,7 +194,7 @@ export const fr: Localized<EnMessages> = {
     },
     cardsEmptyTitle: 'Pas encore de cartes',
     cardsEmptyBody:
-      'Les phrases que tu gardes des discussions et des publications se retrouvent ici.',
+      'Les phrases que tu gardes des conversations et des publications s’accumulent ici, avec celles que tu écris toi-même.',
     remove: 'Retirer',
     removeTitle: 'Retirer cette carte ?',
     removeBody: 'Son calendrier part avec elle. Le message, lui, reste où il est.',
@@ -203,6 +204,9 @@ export const fr: Localized<EnMessages> = {
     edited: 'Carte mise à jour',
     editFailedTitle: 'Impossible d’enregistrer cette carte',
     cardMenu: 'Options de la carte',
+    newTitle: 'Nouvelle carte',
+    cardLanguage: 'Langue',
+    backHint: 'Laisse le sens vide et il sera traduit pour toi.',
     sessionProgress: '{done} sur {total}',
     show: 'Voir la réponse',
     again: 'À revoir',

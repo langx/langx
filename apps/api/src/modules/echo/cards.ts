@@ -412,6 +412,54 @@ export async function captureFromPost(
   )
 }
 
+/**
+ * A card somebody wrote themselves.
+ *
+ * The only capture that is handed its own contents: there is no message to
+ * read them off, and no access check to make, because the person is the
+ * source. What is left is the same machinery as every other capture — the
+ * daily ceiling, the unique source key, the translated back — which is the
+ * whole reason this is a branch of `captureEcho` rather than an endpoint of
+ * its own.
+ *
+ * Idempotent on `clientId`. A card with nothing behind it has no natural key,
+ * so the client mints one and `card_source_unique` turns a retry into the
+ * no-op every other capture already gets for free.
+ */
+export async function captureManual(
+  db: Db,
+  deps: CaptureDeps,
+  userId: string,
+  args: { clientId: string; front: string; back?: string; lang: string },
+): Promise<CaptureEchoResult> {
+  const me = await profileOf(db, userId)
+  if (!me) throw notFound('Complete onboarding first')
+
+  const front = args.front.trim().slice(0, ECHO_FRONT_MAX_LENGTH)
+  const target = targetLangFor(me)
+
+  return await upsertCard(
+    db,
+    userId,
+    { kind: 'manual', id: args.clientId },
+    async () => {
+      /*
+       * A typed back is kept as typed. An absent one is translated like any
+       * other capture, so writing down a single word still makes a whole card
+       * — unless the card is already in the language it would be translated
+       * into, where the answer would be the sentence back again.
+       */
+      const back = args.back
+        ? args.back.trim()
+        : args.lang === target
+          ? ''
+          : await backFor(db, deps, front, target, undefined)
+      return { lang: args.lang, front, back }
+    },
+    me,
+  )
+}
+
 export async function captureEcho(
   db: Db,
   deps: CaptureDeps,
@@ -420,6 +468,14 @@ export async function captureEcho(
 ): Promise<CaptureEchoResult> {
   if (input.source.kind === 'post') {
     return await captureFromPost(db, deps, userId, { postId: input.source.postId })
+  }
+  if (input.source.kind === 'manual') {
+    return await captureManual(db, deps, userId, {
+      clientId: input.source.clientId,
+      front: input.source.front,
+      ...(input.source.back ? { back: input.source.back } : {}),
+      lang: input.source.lang,
+    })
   }
   return await captureFromMessage(db, deps, userId, {
     conversationId: input.source.conversationId,
@@ -450,12 +506,14 @@ export async function removeCard(db: Db, userId: string, idOrSourceKey: string):
 }
 
 /**
- * Fixing the two lines a person reads.
+ * Fixing the two lines a person reads, and the language they are in.
  *
  * The schedule is left where it is: a card whose wording was corrected is the
  * same card and keeps the interval it earned. So is the source — the link
  * back to the message stays true about where the sentence came from, even
- * once the copy on the card no longer matches what is in the thread.
+ * once the copy on the card no longer matches what is in the thread. The
+ * language is the one *fact* about the origin a person may now overwrite; see
+ * `updateEchoCardSchema` for what that costs on a card made from a message.
  *
  * The `userId` in the filter is the whole of the access control, as it is for
  * `removeCard`: a card belongs to one person and nobody else can see it, so a
@@ -469,13 +527,13 @@ export async function updateCard(
 ): Promise<EchoCard> {
   if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
 
-  const updated = await db
-    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .findOneAndUpdate(
-      { _id: new ObjectId(cardId), userId },
-      { $set: { front: input.front, back: input.back } },
-      { returnDocument: 'after' },
-    )
+  const updated = await db.collection<EchoCardDoc>(COLLECTIONS.echoCards).findOneAndUpdate(
+    { _id: new ObjectId(cardId), userId },
+    // `lang` only when one was sent: a client that predates the language
+    // field must not blank the language of every card it saves.
+    { $set: { front: input.front, back: input.back, ...(input.lang ? { lang: input.lang } : {}) } },
+    { returnDocument: 'after' },
+  )
   if (!updated) throw notFound('Card not found')
 
   return toEchoCard(updated)
