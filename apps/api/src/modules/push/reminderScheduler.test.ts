@@ -57,6 +57,7 @@ describe('the streak reminder pass', () => {
       verified?: boolean
       streak?: number
       lastQualifiedDay?: string
+      streakFreezes?: number
       timezone?: string
     } = {},
   ): Promise<string> {
@@ -71,6 +72,7 @@ describe('the streak reminder pass', () => {
         // reason the nudge is worth sending.
         lastQualifiedDay: opts.lastQualifiedDay ?? '2026-09-02',
       },
+      ...(opts.streakFreezes === undefined ? {} : { streakFreezes: opts.streakFreezes }),
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
     } as never)
     await handle.db.collection(COLLECTIONS.user).insertOne({
@@ -152,5 +154,29 @@ describe('the streak reminder pass', () => {
     const today = new Intl.DateTimeFormat('en-CA', { timeZone: zone }).format(now)
     await seed({ withDevice: true, lastQualifiedDay: today })
     expect(await runStreakReminderTick(handle.db, push, now)).toEqual({ pushed: 0 })
+  })
+
+  /**
+   * The bug this file existed without a test for. `current` never moved
+   * backwards on its own, so somebody who sent one message and left still
+   * matched "has a streak" every evening, and was told to keep it going every
+   * evening — the day claimed each time, the mail sent each time, forever.
+   */
+  it('says nothing about a streak that died days ago', async () => {
+    await seed({ withDevice: true, streak: 1, lastQualifiedDay: '2026-08-29' })
+    expect(await runStreakReminderTick(handle.db, push, now)).toEqual({ pushed: 0 })
+    expect(push.sent).toHaveLength(0)
+    // Not claimed either: there is no nudge to hand to the digest.
+    expect(await handle.db.collection(COLLECTIONS.streakReminders).countDocuments({})).toBe(0)
+  })
+
+  it('says nothing about a two-day gap nobody paid to bridge', async () => {
+    await seed({ withDevice: true, lastQualifiedDay: '2026-09-01' })
+    expect(await runStreakReminderTick(handle.db, push, now)).toEqual({ pushed: 0 })
+  })
+
+  it('still nudges across a two-day gap when a freeze can bridge it', async () => {
+    await seed({ withDevice: true, lastQualifiedDay: '2026-09-01', streakFreezes: 1 })
+    expect(await runStreakReminderTick(handle.db, push, now)).toEqual({ pushed: 1 })
   })
 })

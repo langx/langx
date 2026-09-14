@@ -7,6 +7,8 @@ import {
   nextStreak,
   periodKeys,
   shiftDayKey,
+  streakLapsed,
+  streakSavable,
   utcDayKey,
   weekKey,
   yearKey,
@@ -71,5 +73,26 @@ describe('streak days (user-local)', () => {
     expect(nextStreak(4, '2026-08-26', '2026-08-26')).toBe(4) // same day, no-op
     expect(nextStreak(4, '2026-08-24', '2026-08-26')).toBe(1) // missed a day
     expect(nextStreak(0, null, '2026-08-26')).toBe(1) // first ever action
+  })
+
+  it('is savable only while yesterday counted, or a freeze covers the gap', () => {
+    const today = '2026-09-13'
+    expect(streakSavable({ current: 3, lastQualifiedDay: '2026-09-12' }, 0, today)).toBe(true)
+    expect(streakSavable({ current: 3, lastQualifiedDay: '2026-09-11' }, 0, today)).toBe(false)
+    expect(streakSavable({ current: 3, lastQualifiedDay: '2026-09-11' }, 1, today)).toBe(true)
+    expect(streakSavable({ current: 3, lastQualifiedDay: '2026-09-10' }, 2, today)).toBe(false)
+    // Already counted today: nothing left to save.
+    expect(streakSavable({ current: 3, lastQualifiedDay: today }, 0, today)).toBe(false)
+    expect(streakSavable({ current: 0, lastQualifiedDay: '2026-09-12' }, 0, today)).toBe(false)
+    expect(streakSavable({ current: 0, lastQualifiedDay: null }, 0, today)).toBe(false)
+  })
+
+  it('lapses one day after the last day a freeze could have bridged', () => {
+    const today = '2026-09-13'
+    expect(streakLapsed('2026-09-12', today)).toBe(false)
+    expect(streakLapsed('2026-09-11', today)).toBe(false)
+    expect(streakLapsed('2026-09-10', today)).toBe(true)
+    expect(streakLapsed('2026-03-01', today)).toBe(true)
+    expect(streakLapsed(null, today)).toBe(false)
   })
 })
