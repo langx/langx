@@ -28,6 +28,7 @@ const ROUTE_RESERVED = [
   'corrections',
   'discover',
   'done',
+  'echo',
   'feed',
   'filters',
   'follows',
