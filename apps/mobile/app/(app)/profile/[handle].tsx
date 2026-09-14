@@ -33,6 +33,7 @@ import { profileShareText } from '../../../src/lib/shareText'
 import { showToast } from '../../../src/lib/toast'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { interestLabel, useDisplayNames, useT } from '../../../src/i18n'
+import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 
 export default function ProfileScreen() {
@@ -55,6 +56,13 @@ export default function ProfileScreen() {
   const block = useBlockUser()
 
   const [avatarOpen, setAvatarOpen] = useState(false)
+  /*
+   * Both queries or neither: the header comes from one and the week's map
+   * below it from the other, so a pull that refreshed only the top would
+   * leave the two halves of one profile describing different days. Above the
+   * early returns, where hooks have to be.
+   */
+  const pull = usePullToRefresh(() => Promise.all([profile.refetch(), summary.refetch()]))
 
   if (profile.isPending) {
     // The bar with the back arrow is drawn now, not with the profile: it needs
@@ -144,7 +152,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <Screen scroll>
+    <Screen scroll {...pull}>
       {/* No title: the name below is the title. */}
       <View style={styles.topBar}>
         <Pressable
