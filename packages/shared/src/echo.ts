@@ -161,6 +161,8 @@ export const echoSummarySchema = z.object({
   /** Every language the person has a card in, most cards first. */
   languages: z.array(echoLanguageSummarySchema),
   reviewedToday: z.number().int().nonnegative(),
+  /** A rolling seven days, as `reviewedToday` is a rolling twenty-four hours. */
+  reviewedThisWeek: z.number().int().nonnegative(),
 })
 export type EchoSummary = z.infer<typeof echoSummarySchema>
 

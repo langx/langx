@@ -1214,6 +1214,7 @@ export const tr: Localized<EnMessages> = {
     shareProfile: 'Profilimi paylaş',
     shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
+    echoWeek: 'Bu hafta Echo',
     invite: 'Arkadaşını davet et',
     inviteBody: 'LangX’i kullanmaya başlayınca token kazan',
     dayStreak: 'Günlük seri',

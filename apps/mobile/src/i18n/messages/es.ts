@@ -1208,6 +1208,7 @@ export const es: Localized<EnMessages> = {
     shareProfile: 'Compartir mi perfil',
     shareMessage: 'Practica idiomas conmigo en LangX: {url}',
     badges: 'Insignias',
+    echoWeek: 'Echo esta semana',
     invite: 'Invitar a alguien',
     inviteBody: 'Gana tokens cuando empiece a usar LangX',
     dayStreak: 'Racha diaria',

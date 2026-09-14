@@ -531,8 +531,12 @@ export async function summary(
 ): Promise<EchoSummary> {
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const startOfDay = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+  // Rolling, like the day beside it rather than a calendar week. Two windows
+  // on one screen that are counted differently read as one of them being
+  // wrong, and the Monday reset would be the half nobody expects.
+  const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const [byLanguage, reviewedToday] = await Promise.all([
+  const [byLanguage, reviewedToday, reviewedThisWeek] = await Promise.all([
     cards
       .aggregate<{ _id: string; total: number; due: number }>([
         { $match: { userId } },
@@ -547,6 +551,7 @@ export async function summary(
       ])
       .toArray(),
     db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfDay } }),
+    db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfWeek } }),
   ])
 
   const languages = byLanguage.map((row) => ({ lang: row._id, total: row.total, due: row.due }))
@@ -555,5 +560,6 @@ export async function summary(
     total: languages.reduce((sum, row) => sum + row.total, 0),
     languages,
     reviewedToday,
+    reviewedThisWeek,
   }
 }
