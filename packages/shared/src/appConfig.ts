@@ -187,3 +187,37 @@ export function versionForPlatform(versions: MinVersion, platform: string | unde
       ? versions.android
       : versions.web
 }
+
+/**
+ * The same versions with one platform's entry replaced.
+ *
+ * A switch rather than `{ ...versions, [platform]: version }`, because the
+ * panel's route reaches this with a platform that arrived on a request, and a
+ * property name computed from remote input is CodeQL's
+ * `js/remote-property-injection`. Nothing is exploitable through the shape it
+ * flagged — the schema narrows `platform` to one of three literals before the
+ * handler runs, and a computed key in an object literal sets an own property
+ * rather than a prototype — but "safe because validation upstream is correct"
+ * is a property worth not having to keep true. The switch cannot write a key
+ * that is not one of these three however the value got here.
+ *
+ * Exhaustive, so a fourth platform added to `minVersionSchema` fails to
+ * compile here rather than silently never being settable.
+ *
+ * `scripts/maintenance.ts` still does this inline, which is fine: its platform
+ * comes from `process.argv`, not from a request.
+ */
+export function withPlatformVersion(
+  versions: MinVersion,
+  platform: keyof MinVersion,
+  version: string,
+): MinVersion {
+  switch (platform) {
+    case 'ios':
+      return { ...versions, ios: version }
+    case 'android':
+      return { ...versions, android: version }
+    case 'web':
+      return { ...versions, web: version }
+  }
+}

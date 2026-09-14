@@ -11,6 +11,7 @@ import {
   bountyAwardSchema,
   broadcastCreateSchema,
   reviewDecisionSchema,
+  withPlatformVersion,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -97,6 +98,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    * would be the thing that eventually disagrees. `updateAppConfig` drops the
    * ten-second memory cache, so setting iOS and then Android reads the first
    * write back rather than the value it replaced.
+   *
+   * The merge goes through `withPlatformVersion` rather than a computed key:
+   * see the note there for why a validated platform is still not written as
+   * `[platform]:` when it came off a request.
    */
   app.post(
     '/admin/app-config/latest-version',
@@ -109,7 +114,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       const { platform, version } = request.body
       const current = await getAppConfig(app.mongo.db)
       const config = await updateAppConfig(app.mongo.db, {
-        latestVersion: { ...current.latestVersion, [platform]: version },
+        latestVersion: withPlatformVersion(current.latestVersion, platform, version),
       })
       /*
        * The dashboard prints this config and memoises for a minute, which is
