@@ -77,6 +77,11 @@ export default function MeScreen() {
       echo.refetch(),
       quota.refetch(),
       ownProfile.refetch(),
+      // The badge count and the viewer count are tiles on this screen like
+      // any other, and were the two the pull did not reach: pulling redrew
+      // every number around them and left those two as they were.
+      badges.refetch(),
+      viewers.refetch(),
     ]),
   )
 

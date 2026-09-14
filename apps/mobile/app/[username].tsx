@@ -24,6 +24,7 @@ import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { openExternal } from '../src/lib/openExternal'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../src/i18n'
+import { usePullToRefresh } from '../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 import { OfficialMark } from '../src/components/OfficialMark'
 
@@ -78,6 +79,9 @@ export default function SharedProfileScreen() {
     enabled: handle.length > 0 && !session,
     retry: false,
   })
+  // Above the early returns, where hooks have to be. One query on this
+  // screen, so the pull is done when it is.
+  const pull = usePullToRefresh(() => profile.refetch())
 
   // Nothing renders until the session is known, or a signed-in user sees the
   // signed-out card flash before being redirected off it.
@@ -126,7 +130,7 @@ export default function SharedProfileScreen() {
   const country = user.country ? getCountry(user.country) : undefined
 
   return (
-    <Screen scroll>
+    <Screen scroll {...pull}>
       {/* The same hero as a member sees, minus what the public DTO does not
           carry: no age, no streak, no account age, no online dot. */}
       <View style={styles.hero}>

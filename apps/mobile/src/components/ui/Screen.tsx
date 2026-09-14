@@ -53,8 +53,18 @@ export function Screen({
          * window for the keyboard already (`adjustResize`), so doing this
          * there would inset twice. `useKeyboardInset` exists for the screens
          * that do not scroll and documents the same split.
+         *
+         * Off when there is a refresh control, because on iOS the two fight
+         * over the same `contentInset` and the keyboard wins. A
+         * `RefreshControl` is a child of the scroll view there rather than a
+         * wrapper around it, so with the inset managed out from under it the
+         * spinner never appears at all: a pull on Me or on the wallet
+         * refetched in complete silence, which reads as a screen that does
+         * not refresh. The lists get their spinner because a `FlatList`
+         * passes no such prop. Nothing is lost by the split — no screen in
+         * the app both pulls to refresh and holds a text field.
          */
-        automaticallyAdjustKeyboardInsets
+        automaticallyAdjustKeyboardInsets={!onRefresh}
         {...(onRefresh
           ? { refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
           : {})}
