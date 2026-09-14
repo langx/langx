@@ -31,6 +31,12 @@
  * `--source` names a source the *word list* came from, as `name|licence|url`.
  * Repeatable. kaikki is added on its own; everything else has to be said,
  * because a pack's `sources` array is the licence record for the file.
+ *
+ * `--glosses` is a prepared `{ "<text>": { "<locale>": "…" } }` map, written by
+ * `pick-phrases.mjs`. A line found in it is glossed from it and never looked
+ * up: no dictionary has an entry for "Why do you ask?", and the translation of
+ * a sentence has to come from a person who wrote one, not from a machine
+ * choosing a sense. Everything else falls through to kaikki as before.
  */
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -231,6 +237,25 @@ function recordings(found) {
   return heard.sort((a, b) => Number(b.file?.startsWith('LL-')) - Number(a.file?.startsWith('LL-')))
 }
 
+/**
+ * The entry a phrase is an alternative spelling of, if it is one.
+ *
+ * `what's your name` carries a definition and no translations, because the
+ * table is on `what is your name`; a third of the phrasebook entries that
+ * resolved to nothing were this. Followed once and no further — a chain of
+ * alternative forms is a redirect loop waiting to happen, and one hop is what
+ * the data actually uses.
+ */
+function alternativeOf(found) {
+  for (const entry of found) {
+    for (const sense of entry.senses ?? []) {
+      const alt = (sense.alt_of ?? sense.form_of ?? [])[0]?.word
+      if (alt) return alt
+    }
+  }
+  return null
+}
+
 function parseSource(value) {
   const [name, licence, url] = value.split('|').map((part) => part.trim())
   if (!name || !licence || !url) {
@@ -260,13 +285,47 @@ async function main() {
     .map((line) => line.trim())
     .filter((line) => line.length > 0 && !line.startsWith('#'))
 
+  const glossesPath = arg('glosses')
+  const prepared = glossesPath ? JSON.parse(await readFile(glossesPath, 'utf8')) : {}
+
   const items = []
   let missing = 0
+  let fromPrepared = 0
   for (const [index, line] of lines.entries()) {
     const [text, partOfSpeech] = line.split('\t')
-    const found = await entries(text, edition)
+
+    const ready = prepared[text]
+    if (ready) {
+      fromPrepared += 1
+      items.push({
+        index: items.length,
+        kind: text.includes(' ') ? 'phrase' : 'word',
+        text,
+        gloss: ready,
+        freqRank: index + 1,
+        // A sentence *is* its own example, the way a card captured from a chat
+        // is, so nothing fills `example` here. What the reviewer checks is the
+        // translation, and there is no sense to second-guess.
+        review: { glossedBy: 'Tatoeba' },
+      })
+      continue
+    }
+
+    let found = await entries(text, edition)
     await sleep(PAUSE_MS)
-    const groups = sensesWithTranslations(found, partOfSpeech)
+    let groups = sensesWithTranslations(found, partOfSpeech)
+    let alternativeFor = null
+
+    if (groups.length === 0) {
+      const canonical = alternativeOf(found)
+      if (canonical) {
+        alternativeFor = canonical
+        found = await entries(canonical, edition)
+        await sleep(PAUSE_MS)
+        groups = sensesWithTranslations(found, partOfSpeech)
+      }
+    }
+
     const chosen = draftSense(groups)
     if (!chosen) {
       missing += 1
@@ -296,6 +355,8 @@ async function main() {
           .slice(0, 5)
           .map((group) => `${group.sense} (${group.translations.length})`),
         ...(heard.length > 0 ? { audio: heard.slice(0, 3) } : {}),
+        // The gloss describes this entry, and the card says something else.
+        ...(alternativeFor ? { glossedFrom: alternativeFor } : {}),
       },
     })
     if (items.length % 25 === 0) console.error(`  ${items.length} drafted…`)
@@ -314,6 +375,9 @@ async function main() {
         licence: 'CC BY-SA 4.0',
         url: 'https://kaikki.org/',
       },
+      ...(fromPrepared > 0
+        ? [{ name: 'Tatoeba', licence: 'CC BY 2.0 FR', url: 'https://tatoeba.org/' }]
+        : []),
       ...args('source').map(parseSource),
     ],
     items,
@@ -321,7 +385,10 @@ async function main() {
 
   await mkdir(dirname(out), { recursive: true })
   await writeFile(out, `${JSON.stringify(pack, null, 2)}\n`, 'utf8')
-  console.error(`\nWrote ${items.length} items to ${out} (${missing} had no translations).`)
+  console.error(
+    `\nWrote ${items.length} items to ${out} ` +
+      `(${fromPrepared} glossed from ${glossesPath ?? 'nothing'}, ${missing} had no translations).`,
+  )
   console.error('Marked reviewed: false. A person reads it before it can be seeded.')
 }
 

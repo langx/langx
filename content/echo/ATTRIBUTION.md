@@ -10,13 +10,23 @@ Nothing yet. `en/absoluteBeginner.json` is a draft; see "Drafts" below.
 
 ## Chosen, and why
 
-| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                                              |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                         |
-| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                        |
-| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering                            |
-| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Draft glosses in the eight interface locales, and the examples   |
-| [Tatoeba](https://tatoeba.org/)                                                                               | Example sentences with translations                                      | CC BY 2.0 FR                                                   | Unused today — kaikki carries examples. The fallback if it stops |
+| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                             |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------- |
+| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack        |
+| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`       |
+| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering           |
+| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example |
+| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses            |
+| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                   |
+
+**A pack is phrases, so the glosses come from two places.** A phrasebook entry
+is a dictionary entry and kaikki glosses it. A sentence is not — nothing has an
+entry for "Why do you ask?", and inventing a translation for one is the same
+mistake as picking a sense by counting, one step further along. So a sentence
+carries the translation a Tatoeba contributor wrote, in all eight locales or
+not at all: the gloss is the half a learner cannot check, and a pack that
+quietly falls back to English for its Arabic readers is worse for them without
+saying so.
 
 **CEFR-J is cited, not share-alike.** Its grant is its own wording rather than a
 CC licence: free for research and commercial use _provided that you cite the
@@ -86,6 +96,10 @@ ahead of the dress. On the same six words:
 | train    | line of connected cars           | 258       | yes    |
 | dog      | animal                           | 953       | yes    |
 | water    | inorganic compound H₂O           | 4,031     | yes    |
+
+That machinery now runs over the phrasebook half of a pack only. A Tatoeba
+sentence has no sense to choose: it arrives with its translation attached, and
+what a reviewer checks there is whether the two say the same thing.
 
 Six out of six is not a guarantee, it is six. The senses a frequency list is
 made of are the easy ones; `be` drafts as _to occupy a place_ rather than the
