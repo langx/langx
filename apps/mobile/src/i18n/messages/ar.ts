@@ -225,6 +225,23 @@ export const ar: Localized<EnMessages> = {
     doneBody: 'سيعيدها صدى في موعدها.',
     saveFailedTitle: 'لم تُحفظ مراجعتك',
     saveFailedBody: 'إجاباتك ما زالت هنا. حاول مرة أخرى.',
+    packs: 'الحزم',
+    packsFor: 'ابدأ من حزمة',
+    packBlurb: 'مجموعة جاهزة للبداية. كل بطاقة تدخل الطابور نفسه مع ما تحفظه بنفسك.',
+    packStart: 'ابدأ',
+    packContinue: 'تابع',
+    packAllStarted: 'بدأت كلها',
+    packMissing: 'لم تعد هذه الحزمة متاحة.',
+    packFinished: 'كل بطاقات هذه الحزمة لديك بالفعل.',
+    packStarted: {
+      zero: 'لم تُضف بطاقات',
+      one: 'أُضيفت بطاقة واحدة',
+      two: 'أُضيفت بطاقتان',
+      few: 'أُضيفت {count} بطاقات',
+      many: 'أُضيفت {count} بطاقة',
+      other: 'أُضيفت {count} بطاقة',
+    },
+    packProgress: 'بدأت {done} من {total}',
   },
 
   messageMeta: {

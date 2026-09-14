@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import type { EchoCard } from '@langx/shared'
-import { useEchoCards, useEchoSummary } from '../../../src/api/queries'
+import { useEchoCards, useEchoPacks, useEchoSummary } from '../../../src/api/queries'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
@@ -45,8 +45,9 @@ export default function EchoScreen() {
    *  page: a chip row that changed as you scrolled would be unusable. */
   const [lang, setLang] = useState<string | null>(null)
   const cards = useEchoCards(lang ?? undefined)
+  const packs = useEchoPacks()
   const pull = usePullToRefresh(async () => {
-    await Promise.all([summary.refetch(), cards.refetch()])
+    await Promise.all([summary.refetch(), cards.refetch(), packs.refetch()])
   })
 
   const items = dedupeById(cards.data?.pages.flatMap((page) => page.items) ?? [])
@@ -55,6 +56,7 @@ export default function EchoScreen() {
     chats.map((card) => (card.source.kind === 'chat' ? card.source.partnerId : '')).filter(Boolean),
   )
   const due = summary.data?.due ?? 0
+  const packRows = packs.data?.items ?? []
   const languages = summary.data?.languages ?? []
 
   const state = listState({
@@ -134,14 +136,27 @@ export default function EchoScreen() {
           ListHeaderComponent={
             chats.length > 0 ? <Text style={styles.section}>{t('echo.fromYourChats')}</Text> : null
           }
+          /*
+           * A pack when there is one, and Chats when there is not. Somebody
+           * who has just signed up has no conversations to keep a sentence
+           * from, and sending them to an empty Chats tab is the empty promise
+           * the packs exist to answer.
+           */
           ListEmptyComponent={
             <EmptyState
               icon="repeat"
               title={t('echo.emptyTitle')}
               body={t('echo.emptyBody')}
-              actionLabel={t('echo.emptyAction')}
+              actionLabel={t(packRows.length > 0 ? 'echo.packsFor' : 'echo.emptyAction')}
               actionVariant="secondary"
-              onAction={() => router.push('/(app)/(tabs)/chats')}
+              onAction={() =>
+                packRows[0]
+                  ? router.push({
+                      pathname: '/(app)/echo/pack/[id]',
+                      params: { id: packRows[0]._id },
+                    })
+                  : router.push('/(app)/(tabs)/chats')
+              }
             />
           }
           renderItem={({ item }) => {
@@ -180,15 +195,46 @@ export default function EchoScreen() {
            * and a footer still renders on an empty list.
            */
           ListFooterComponent={
-            <Pressable
-              accessibilityRole="button"
-              hitSlop={12}
-              onPress={() => router.push('/(app)/echo/cards')}
-              style={styles.allLink}
-            >
-              <Feather name="layers" size={16} color={colors.accent} />
-              <Text style={styles.allLinkText}>{t('echo.seeAllCards')}</Text>
-            </Pressable>
+            <>
+              {packRows.length > 0 ? (
+                <View style={styles.packs}>
+                  <Text style={styles.section}>{t('echo.packs')}</Text>
+                  {packRows.map((pack) => {
+                    const done = Math.min(pack.startedCount, pack.itemCount)
+                    return (
+                      <Pressable
+                        key={pack._id}
+                        accessibilityRole="button"
+                        onPress={() =>
+                          router.push({
+                            pathname: '/(app)/echo/pack/[id]',
+                            params: { id: pack._id },
+                          })
+                        }
+                        style={({ pressed }) => [styles.packRow, pressed && styles.pressed]}
+                      >
+                        <View style={styles.rowText}>
+                          <Text style={styles.front}>{names.language(pack.lang)}</Text>
+                          <Text style={styles.back}>
+                            {t('echo.packProgress', { done, total: pack.itemCount })}
+                          </Text>
+                        </View>
+                        <Feather name="chevron-right" size={18} color={colors.textFaint} />
+                      </Pressable>
+                    )
+                  })}
+                </View>
+              ) : null}
+              <Pressable
+                accessibilityRole="button"
+                hitSlop={12}
+                onPress={() => router.push('/(app)/echo/cards')}
+                style={styles.allLink}
+              >
+                <Feather name="layers" size={16} color={colors.accent} />
+                <Text style={styles.allLinkText}>{t('echo.seeAllCards')}</Text>
+              </Pressable>
+            </>
           }
         />
       )}
@@ -215,6 +261,8 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   front: { color: colors.text, fontSize: 16, fontWeight: '600' },
   back: { color: colors.textMuted, fontSize: 14 },
   when: { color: colors.textFaint, fontSize: 12 },
+  packs: { gap: spacing.xs, paddingTop: spacing.md },
+  packRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 12 },
   allLink: {
     alignItems: 'center',
     flexDirection: 'row',

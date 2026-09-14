@@ -258,6 +258,20 @@ export const en = {
     doneBody: 'Echo brings these back when they are due.',
     saveFailedTitle: 'Your review did not save',
     saveFailedBody: 'Your answers are still here. Try again.',
+    packs: 'Packs',
+    packsFor: 'Start from a pack',
+    packBlurb:
+      'A curated set to start from. Every card joins the same queue as the ones you keep yourself.',
+    packStart: 'Start',
+    packContinue: 'Continue',
+    packAllStarted: 'All started',
+    packMissing: 'This pack is no longer available.',
+    packFinished: 'Every card in this pack is already yours.',
+    packStarted: {
+      one: '{count} card added',
+      other: '{count} cards added',
+    },
+    packProgress: '{done} of {total} started',
   },
 
   messageMeta: {

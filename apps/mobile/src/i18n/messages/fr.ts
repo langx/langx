@@ -215,6 +215,20 @@ export const fr: Localized<EnMessages> = {
     doneBody: 'Echo te les ramènera le moment venu.',
     saveFailedTitle: 'Ta séance n’a pas été enregistrée',
     saveFailedBody: 'Tes réponses sont toujours là. Réessaie.',
+    packs: 'Packs',
+    packsFor: 'Commencer avec un pack',
+    packBlurb:
+      'Un ensemble préparé pour commencer. Chaque carte rejoint la même file que celles que tu gardes toi-même.',
+    packStart: 'Commencer',
+    packContinue: 'Continuer',
+    packAllStarted: 'Toutes commencées',
+    packMissing: 'Ce pack n’existe plus.',
+    packFinished: 'Tu as déjà toutes les cartes de ce pack.',
+    packStarted: {
+      one: '{count} carte ajoutée',
+      other: '{count} cartes ajoutées',
+    },
+    packProgress: '{done} sur {total} commencées',
   },
 
   messageMeta: {

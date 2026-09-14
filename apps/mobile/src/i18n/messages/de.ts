@@ -214,6 +214,20 @@ export const de: Localized<EnMessages> = {
     doneBody: 'Echo holt diese Karten zurück, wenn sie dran sind.',
     saveFailedTitle: 'Deine Übung wurde nicht gespeichert',
     saveFailedBody: 'Deine Antworten sind noch da. Versuch es noch einmal.',
+    packs: 'Pakete',
+    packsFor: 'Mit einem Paket anfangen',
+    packBlurb:
+      'Ein zusammengestelltes Set für den Anfang. Jede Karte kommt in dieselbe Reihe wie die, die du selbst behältst.',
+    packStart: 'Starten',
+    packContinue: 'Weiter',
+    packAllStarted: 'Alle begonnen',
+    packMissing: 'Dieses Paket gibt es nicht mehr.',
+    packFinished: 'Jede Karte aus diesem Paket hast du schon.',
+    packStarted: {
+      one: '{count} Karte hinzugefügt',
+      other: '{count} Karten hinzugefügt',
+    },
+    packProgress: '{done} von {total} begonnen',
   },
 
   messageMeta: {

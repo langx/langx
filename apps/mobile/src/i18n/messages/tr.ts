@@ -225,6 +225,20 @@ export const tr: Localized<EnMessages> = {
     doneBody: 'Echo bu kartları zamanı gelince geri getirir.',
     saveFailedTitle: 'Tekrarın kaydedilmedi',
     saveFailedBody: 'Cevapların duruyor. Tekrar dene.',
+    packs: 'Paketler',
+    packsFor: 'Bir paketle başla',
+    packBlurb:
+      'Başlamak için derlenmiş bir set. Her kart, kendi sakladıklarınla aynı sıraya girer.',
+    packStart: 'Başla',
+    packContinue: 'Devam et',
+    packAllStarted: 'Hepsi başladı',
+    packMissing: 'Bu paket artık yok.',
+    packFinished: 'Bu paketteki her kart zaten sende.',
+    packStarted: {
+      one: '{count} kart eklendi',
+      other: '{count} kart eklendi',
+    },
+    packProgress: '{total} karttan {done} tanesi başladı',
   },
 
   messageMeta: {

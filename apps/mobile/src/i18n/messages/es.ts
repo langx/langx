@@ -213,6 +213,20 @@ export const es: Localized<EnMessages> = {
     doneBody: 'Echo te las traerá de vuelta cuando toque.',
     saveFailedTitle: 'Tu repaso no se guardó',
     saveFailedBody: 'Tus respuestas siguen aquí. Inténtalo otra vez.',
+    packs: 'Packs',
+    packsFor: 'Empieza con un pack',
+    packBlurb:
+      'Un conjunto preparado para empezar. Cada tarjeta entra en la misma cola que las que guardas tú.',
+    packStart: 'Empezar',
+    packContinue: 'Continuar',
+    packAllStarted: 'Todas empezadas',
+    packMissing: 'Este pack ya no está disponible.',
+    packFinished: 'Ya tienes todas las tarjetas de este pack.',
+    packStarted: {
+      one: '{count} tarjeta añadida',
+      other: '{count} tarjetas añadidas',
+    },
+    packProgress: '{done} de {total} empezadas',
   },
 
   messageMeta: {

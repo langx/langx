@@ -224,6 +224,22 @@ export const ru: Localized<EnMessages> = {
     doneBody: 'Эхо вернёт их, когда придёт время.',
     saveFailedTitle: 'Занятие не сохранилось',
     saveFailedBody: 'Ваши ответы на месте. Попробуйте ещё раз.',
+    packs: 'Наборы',
+    packsFor: 'Начните с набора',
+    packBlurb:
+      'Готовый набор для начала. Каждая карточка попадает в ту же очередь, что и сохранённые вами.',
+    packStart: 'Начать',
+    packContinue: 'Продолжить',
+    packAllStarted: 'Все начаты',
+    packMissing: 'Этого набора больше нет.',
+    packFinished: 'Все карточки из набора уже у вас.',
+    packStarted: {
+      one: 'Добавлена {count} карточка',
+      few: 'Добавлены {count} карточки',
+      many: 'Добавлено {count} карточек',
+      other: 'Добавлено {count} карточки',
+    },
+    packProgress: 'Начато {done} из {total}',
   },
 
   messageMeta: {

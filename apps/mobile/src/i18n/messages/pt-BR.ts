@@ -210,6 +210,20 @@ export const ptBR: Localized<EnMessages> = {
     doneBody: 'O Echo traz esses cartões de volta na hora certa.',
     saveFailedTitle: 'Sua revisão não foi salva',
     saveFailedBody: 'Suas respostas continuam aqui. Tente de novo.',
+    packs: 'Pacotes',
+    packsFor: 'Comece com um pacote',
+    packBlurb:
+      'Um conjunto pronto para começar. Cada cartão entra na mesma fila dos que você guarda.',
+    packStart: 'Começar',
+    packContinue: 'Continuar',
+    packAllStarted: 'Todos começados',
+    packMissing: 'Este pacote não existe mais.',
+    packFinished: 'Você já tem todos os cartões deste pacote.',
+    packStarted: {
+      one: '{count} cartão adicionado',
+      other: '{count} cartões adicionados',
+    },
+    packProgress: '{done} de {total} começados',
   },
 
   messageMeta: {
