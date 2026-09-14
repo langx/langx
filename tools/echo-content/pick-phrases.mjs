@@ -25,11 +25,16 @@
  * the band rather than below it, which is what keeps _beware of the dog_ and
  * _bon voyage_ out of a first pack.
  *
- * Usage:
+ * Usage — the category listing first, saved exactly as the API returns it:
+ *
+ *   curl -s 'https://en.wiktionary.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:English%20phrasebook&cmlimit=500&cmnamespace=0&format=json&formatversion=2' -o ./phrasebook.json
+ *
  *   node tools/echo-content/pick-phrases.mjs \
  *     --cefrj ./cefrj-vocabulary-profile-1.5.csv --ngsl ./NGSL_12_lemmatized_for_teaching.csv \
- *     --level absoluteBeginner --limit 300 \
+ *     --phrasebook ./phrasebook.json --level absoluteBeginner --limit 300 \
  *     --glosses ./glosses.json --out ./phrases.txt
+ *
+ * Leave `--phrasebook` off and the pack is Tatoeba sentences only.
  *
  * Needs `bzip2` on the path: Tatoeba publishes bz2 and node has no decoder for
  * it. Everything is streamed, so the exports are never written to disk.
@@ -106,8 +111,6 @@ function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`)
   return index < 0 ? fallback : process.argv[index + 1]
 }
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /** A bz2 export, decompressed and handed over a line at a time. */
 async function* lines(url) {
@@ -193,22 +196,20 @@ function shape(phrase) {
     .trim()
 }
 
-async function phrasebook() {
-  const url =
-    'https://en.wiktionary.org/w/api.php?action=query&list=categorymembers' +
-    '&cmtitle=Category:English%20phrasebook&cmlimit=500&cmnamespace=0&format=json&formatversion=2'
-  // Wikimedia rate-limits this hard from a shared address; it is one request
-  // per run and it is worth waiting for rather than shipping a stale copy.
-  for (let attempt = 0; attempt < 6; attempt += 1) {
-    const response = await fetch(url, { headers: { 'user-agent': UA } })
-    if (response.ok) {
-      const body = await response.json()
-      return body.query.categorymembers.map((member) => member.title)
-    }
-    await sleep(5000 * (attempt + 1))
-  }
-  console.error('Could not read the phrasebook category; continuing with Tatoeba only.')
-  return []
+/**
+ * The category listing, exactly as the API returned it.
+ *
+ * An input rather than a request this makes, and that is a correction: the
+ * first version fetched it and needed a retry loop, because Wikimedia
+ * rate-limits the API hard from a shared address and answered 429 four times
+ * running. A twenty-minute Tatoeba stream that then dies on a category listing
+ * is a run nobody repeats, and every other input here — the CEFR-J profile, the
+ * NGSL lists — is already a file somebody downloaded once.
+ */
+async function phrasebook(path) {
+  if (!path) return []
+  const body = JSON.parse(await readFile(path, 'utf8'))
+  return (body.query?.categorymembers ?? []).map((member) => member.title)
 }
 
 /**
@@ -308,7 +309,9 @@ async function main() {
   const rank = await frequencyRanks(statsPath)
   console.error(`graded ${graded.size} word forms`)
 
-  const book = (await phrasebook()).filter((phrase) => levelOf(phrase, graded) === level)
+  const book = (await phrasebook(arg('phrasebook'))).filter(
+    (phrase) => levelOf(phrase, graded) === level,
+  )
   console.error(`  phrasebook: ${book.length} entries at ${level}`)
 
   const sentences = await tatoeba(graded, level)

@@ -454,7 +454,10 @@ The pipeline is two scripts: `tools/echo-content/pick-phrases.mjs` chooses the
 phrases and carries Tatoeba's glosses out with them, and
 `tools/echo-content/build-pack.mjs` writes the pack, glossing from kaikki
 anything the first did not already gloss. Both need `bzip2` on the path, which
-is what Tatoeba publishes into and what node cannot decode.
+is what Tatoeba publishes into and what node cannot decode. Every input is a
+file somebody downloaded — the CEFR-J profile, the NGSL lists, and the
+phrasebook category listing, which was a request the tool made until Wikimedia
+answered 429 to it three times running.
 
 `ts-fsrs` (MIT) is the obvious later replacement for the scheduler; it is
 noted here so nobody writes a second FSRS.
