@@ -254,7 +254,13 @@ export const en = {
     play: 'Play',
     /** So a recording by a person is never mistaken for anything else. */
     spokenBy: 'Spoken by {name}',
-    askToHearIt: 'Ask them to say it',
+    /** Names the feed, because the post is public and the chat one was not. */
+    askToHearIt: 'Ask the feed how it is said',
+    /** On an answer, when the card that asked has no recording yet. */
+    keepOnCard: 'Keep on my card',
+    /** The same tap on a card that already speaks. It says so before the tap. */
+    replaceCardAudio: 'Replace my card’s recording',
+    audioKept: 'Kept on your card',
     sessionEmptyTitle: 'Nothing due',
     sessionEmptyBody: 'Come back later, or keep a sentence from one of your chats.',
     doneTitle: 'Session complete',

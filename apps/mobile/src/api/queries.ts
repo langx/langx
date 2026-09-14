@@ -168,6 +168,7 @@ export const keys = {
   echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
   echoCards: (lang: string) => ['echo', 'cards', lang] as const,
   echoPacks: ['echo', 'packs'] as const,
+  echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -2720,6 +2721,62 @@ export function useUpdateEchoCard() {
       api.patch<EchoCard>(`/echo/cards/${input.cardId}`, {
         front: input.front,
         back: input.back,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
+ * The card that asked this post, if one did.
+ *
+ * Null is an answer, not a miss: most pronunciation posts were written from
+ * the composer and never had a card behind them. The post screen draws its
+ * extra action only when this resolves to something.
+ */
+export function useEchoCardForPost(postId: string, enabled = true) {
+  return useQuery({
+    queryKey: keys.echoCardForPost(postId),
+    queryFn: () => api.get<EchoCard | null>(`/echo/cards/for-post/${encodeURIComponent(postId)}`),
+    enabled,
+  })
+}
+
+/**
+ * Tell the card which post it asked on, once the post exists.
+ *
+ * Fired and not watched: a link that fails to be written costs the button on
+ * the post screen, and nothing the person who just posted would notice or
+ * could act on. The composer does not wait for it and does not report it.
+ */
+export function useLinkEchoAsk() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { cardId: string; postId: string }) =>
+      api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/ask`, {
+        postId: input.postId,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
+ * Keep an answer's recording on the card that asked for it.
+ *
+ * An answer id, never a URL — the server reads the media off the answer, so
+ * the card cannot be pointed at a file of the caller's choosing. Invalidates
+ * the whole `echo` prefix for the usual reason: the queue holds its own copy
+ * of every card, and a session drawn a minute ago would still be silent.
+ */
+export function useAttachEchoAudio() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { cardId: string; answerId: string }) =>
+      api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/audio`, {
+        answerId: input.answerId,
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })

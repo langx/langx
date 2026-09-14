@@ -11,9 +11,9 @@ import {
 import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { useEchoQueue, useSubmitEchoReviews } from '../../../src/api/queries'
+import { useEchoQueue, useMe, useSubmitEchoReviews } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -23,7 +23,9 @@ import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useT } from '../../../src/i18n'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
+import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
 import { goBackTo } from '../../../src/lib/navigation'
+import { postLanguages } from '../../../src/lib/postLanguage'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { offlineQueue } from '../../../src/lib/echoSnapshot'
 import {
@@ -76,6 +78,10 @@ export default function EchoSessionScreen() {
   const { lang } = useLocalSearchParams<{ lang?: string }>()
   const queue = useEchoQueue(lang)
   const submit = useSubmitEchoReviews()
+  const me = useMe()
+  // The languages a post may be written in, which is what decides whether a
+  // card can be asked about at all. Same pair the composer itself uses.
+  const languages = useMemo(() => postLanguages(me.data?.learning), [me.data])
 
   const [deck, setDeck] = useState<EchoCard[] | null>(null)
   const [index, setIndex] = useState(0)
@@ -209,6 +215,9 @@ export default function EchoSessionScreen() {
 
   const verdict = card && producing ? productionVerdict(typed, card.front) : 'wrong'
 
+  /** The card as a question for the feed, or `null` when it cannot be one. */
+  const ask = card ? echoAskParams(card, languages) : null
+
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
     if (!card) return ''
@@ -219,24 +228,20 @@ export default function EchoSessionScreen() {
   }
 
   /**
-   * Opens the conversation with the composer armed and the sentence in it.
+   * Opens the composer as a pronunciation post, with the sentence in it.
    *
-   * The one path that leads out of Echo and back into a conversation. It
-   * asks on a *new* message rather than on the one the card came from —
-   * `ask` is written once, at send time, and the original may never have
-   * carried one. The recording that answers it can be kept in turn.
+   * It used to open the conversation the card came from, which made this the
+   * one path out of Echo and back into a chat — and limited it to the cards
+   * that had a chat behind them. A pack card, the one most likely to have no
+   * recording, got nothing, and the ask depended on one person being willing.
+   * The feed asks the same question of everybody.
+   *
+   * The card's id rides along so that `compose` can tell the card which post
+   * it asked on; that link is what lets an answer's recording come back here
+   * in one tap.
    */
-  function askToHearIt(target: EchoCard): void {
-    if (target.source.kind !== 'chat') return
-    router.push({
-      pathname: '/(app)/chat/[id]',
-      params: {
-        id: target.source.conversationId,
-        at: target.source.messageId,
-        ask: 'pronunciation',
-        draft: target.front,
-      },
-    })
+  function askToHearIt(params: EchoAskParams): void {
+    router.push({ pathname: '/(app)/compose', params })
   }
 
   async function play(): Promise<void> {
@@ -352,11 +357,11 @@ export default function EchoSessionScreen() {
           /* The sentence as it was written. Data, never interface copy. */
           <Text style={styles.front}>{card.front}</Text>
         )}
-        {!producing && !card.audio && card.source.kind === 'chat' ? (
+        {!producing && !card.audio && ask ? (
           <Pressable
             accessibilityRole="button"
             hitSlop={8}
-            onPress={() => askToHearIt(card)}
+            onPress={() => askToHearIt(ask)}
             style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
           >
             <Feather name="mic" size={16} color={colors.accent} />

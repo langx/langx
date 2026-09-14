@@ -32,6 +32,16 @@ export interface EchoCardDoc {
   example?: string
   audio?: EchoAudio
   image?: EchoImage
+  /**
+   * The pronunciation post opened from this card, when its owner asked the
+   * feed how the sentence is said. The one field here that is a *link* rather
+   * than a copy, and it may stop resolving like `source` does — the post can
+   * be deleted, and the button that depends on it simply stops being drawn.
+   *
+   * A card asked twice keeps only the newer post. The older one loses its
+   * button, which is cheaper than a list nobody would read.
+   */
+  askedPostId?: string
   source: EchoSource
   /** `sourceKeyOf(source)`. The second half of `card_source_unique`. */
   sourceKey: string
@@ -81,6 +91,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     source: doc.source,
     ...(doc.audio ? { audio: doc.audio } : {}),
     ...(doc.image ? { image: doc.image } : {}),
+    ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),
     srs: toEchoSrs(doc.srs),
     createdAt: doc.createdAt.toISOString(),
   }

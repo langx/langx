@@ -3,7 +3,7 @@ import { MAX_POST_LENGTH, POST_KINDS, type PostKind } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { useCreatePost, useMe } from '../../src/api/queries'
+import { useCreatePost, useLinkEchoAsk, useMe } from '../../src/api/queries'
 import {
   AttachmentBar,
   AttachmentPreviewRow,
@@ -50,7 +50,12 @@ export default function ComposeScreen() {
   const names = useDisplayNames()
   const { data: session } = authClient.useSession()
 
-  const { kind } = useLocalSearchParams<{ kind?: string }>()
+  const {
+    kind,
+    draft: draftParam,
+    lang: langParam,
+    card: cardParam,
+  } = useLocalSearchParams<{ kind?: string; draft?: string; lang?: string; card?: string }>()
   // A hand-typed or stale `?kind=` falls back rather than posting into a
   // section the server would refuse.
   const section: PostKind = isPostKind(kind) ? kind : 'correction'
@@ -58,9 +63,10 @@ export default function ComposeScreen() {
 
   const me = useMe()
   const createPost = useCreatePost()
+  const linkAsk = useLinkEchoAsk()
   const { attach, progress } = usePostAttachments()
 
-  const [draft, setDraft] = useState('')
+  const [draft, setDraft] = useState(draftParam ?? '')
   const [media, setMedia] = useState<PendingAttachment[]>([])
   const [uploading, setUploading] = useState(false)
 
@@ -71,14 +77,21 @@ export default function ComposeScreen() {
    * the default instead of pointing the composer at a language the server
    * would refuse the post in.
    */
-  const [chosenLanguage, setChosenLanguage] = useState<string | null>(null)
+  const [chosenLanguage, setChosenLanguage] = useState<string | null>(langParam ?? null)
   const languages = useMemo(() => postLanguages(me.data?.learning), [me.data])
   const language = resolvePostLanguage(languages, chosenLanguage)
 
   // Read-once hydration, the same shape `ThemeProvider` uses: `readFlag` is
   // async, and until it lands the composer shows the default — which is what
   // the stored value usually says anyway.
+  //
+  // Skipped entirely when a `?lang=` was handed in, and that is the whole
+  // point of the branch: the read resolves *after* the first render, so a
+  // stored preference would quietly land on top of the language the caller
+  // asked for. An Echo card in Russian must not become a Spanish post because
+  // Spanish is what this phone posted in last week.
   useEffect(() => {
+    if (langParam) return
     let cancelled = false
     void readFlag(FLAG_KEYS.postLanguage).then((stored) => {
       if (!cancelled && stored) setChosenLanguage(stored)
@@ -86,7 +99,7 @@ export default function ComposeScreen() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [langParam])
 
   function chooseLanguage(code: string): void {
     setChosenLanguage(code)
@@ -115,7 +128,17 @@ export default function ComposeScreen() {
         ...(attachments ? { attachments } : {}),
       },
       {
-        onSuccess: () => {
+        onSuccess: (post) => {
+          /*
+           * Asked from an Echo card: tell the card which post it asked on, so
+           * the post screen can offer an answer's recording back to it.
+           *
+           * Not awaited and not reported. The post is written either way, and
+           * a link that never lands costs one button on a screen the writer
+           * has not opened yet — telling them about it here would be noise
+           * about something they cannot act on.
+           */
+          if (cardParam) linkAsk.mutate({ cardId: cardParam, postId: post._id })
           // Back to the feed rather than clearing in place: the post is now on
           // the list, and the list is where its answers will arrive.
           goBackTo('/(app)/(tabs)/feed')

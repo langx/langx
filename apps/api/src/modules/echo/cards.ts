@@ -11,6 +11,8 @@ import {
   type EchoQueue,
   type EchoSource,
   type EchoSummary,
+  type AttachEchoAudioInput,
+  type LinkEchoAskInput,
   type ListEchoCardsQuery,
   newCardSrs,
   sourceKeyOf,
@@ -27,7 +29,7 @@ import { consumeQuota } from '../../lib/quota'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import { assertConversationAccess } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
-import { notHidden, type Post } from '../feed/documents'
+import { notHidden, type Post, type PronunciationAnswerDoc } from '../feed/documents'
 import { readCorrectionSummary } from '../feed/feed'
 import { readAnswerSummary } from '../feed/pronunciation'
 import { blockedUserIds } from '../moderation/blocks'
@@ -73,6 +75,27 @@ function frontOf(message: Message): string {
 
 async function profileOf(db: Db, userId: string): Promise<Profile | null> {
   return await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+}
+
+/**
+ * A pronunciation answer, as a card's recording.
+ *
+ * One function for the two ways an answer reaches a card — copied at capture
+ * when the card is made from the post, and attached later when the card asked
+ * the question and somebody replied. They were the same eight lines twice, and
+ * the second copy is exactly where `slowMedia` or the speaker's name would
+ * have been forgotten.
+ */
+async function audioFromAnswer(db: Db, answer: PronunciationAnswerDoc): Promise<EchoAudio> {
+  const speaker = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: answer.authorId }, { projection: { displayName: 1 } })
+  return {
+    url: answer.media.url,
+    ...(answer.slowMedia ? { slowUrl: answer.slowMedia.url } : {}),
+    origin: 'post',
+    ...(speaker?.displayName ? { speakerName: speaker.displayName } : {}),
+  }
 }
 
 type TargetLang = TranslateRequestInput['targetLang']
@@ -364,19 +387,7 @@ export async function captureFromPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'There is no sentence to keep')
 
   const answer = answers.topByPost.get(postId.toHexString())
-  const speaker = answer
-    ? await db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .findOne({ _id: answer.authorId }, { projection: { displayName: 1 } })
-    : null
-  const audio: EchoAudio | undefined = answer
-    ? {
-        url: answer.media.url,
-        ...(answer.slowMedia ? { slowUrl: answer.slowMedia.url } : {}),
-        origin: 'post',
-        ...(speaker?.displayName ? { speakerName: speaker.displayName } : {}),
-      }
-    : undefined
+  const audio = answer ? await audioFromAnswer(db, answer) : undefined
 
   const target = targetLangFor(me)
 
@@ -465,6 +476,109 @@ export async function updateCard(
       { $set: { front: input.front, back: input.back } },
       { returnDocument: 'after' },
     )
+  if (!updated) throw notFound('Card not found')
+
+  return toEchoCard(updated)
+}
+
+/**
+ * Remember that this card asked the feed how its sentence is said.
+ *
+ * Written after the post exists rather than as part of creating it: the feed
+ * module has no idea what an Echo card is, and this is the whole price of
+ * keeping it that way. A link that never gets written costs the button on the
+ * post screen and nothing else, so the client does not retry or report it.
+ *
+ * The post must be the caller's own pronunciation post. Not a privacy
+ * measure — a post id is not a secret — but the invariant the attach below
+ * leans on: a card can only ever point at a question its owner asked.
+ */
+export async function linkAsk(
+  db: Db,
+  userId: string,
+  cardId: string,
+  input: LinkEchoAskInput,
+): Promise<EchoCard> {
+  if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
+  if (!ObjectId.isValid(input.postId)) throw notFound('Post not found')
+
+  const post = await db
+    .collection<Post>(COLLECTIONS.posts)
+    .findOne({ _id: new ObjectId(input.postId), authorId: userId, ...notHidden() })
+  if (!post || post.kind !== 'pronunciation') throw notFound('Post not found')
+
+  /*
+   * The post is asked from one card, so a second card claiming it would break
+   * `owner_asked_post_unique` rather than overwrite. Clearing it first is what
+   * makes re-asking from a different card work, and it is why this is two
+   * writes instead of one.
+   */
+  await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .updateMany({ userId, askedPostId: input.postId }, { $unset: { askedPostId: '' } })
+
+  const updated = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .findOneAndUpdate(
+      { _id: new ObjectId(cardId), userId },
+      { $set: { askedPostId: input.postId } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw notFound('Card not found')
+
+  return toEchoCard(updated)
+}
+
+/** The caller's card that asked this post, if one did. */
+export async function cardForPost(
+  db: Db,
+  userId: string,
+  postId: string,
+): Promise<EchoCard | null> {
+  if (!ObjectId.isValid(postId)) return null
+  const doc = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .findOne({ userId, askedPostId: postId })
+  return doc ? toEchoCard(doc) : null
+}
+
+/**
+ * Put a pronunciation answer's recording on the card that asked for it.
+ *
+ * `answer.postId === card.askedPostId` is the entire authorisation check, and
+ * it is enough: the card is the caller's, and `linkAsk` only ever points a
+ * card at a pronunciation post the caller wrote. Nothing here trusts a URL —
+ * the client sends an answer id and the media is read from the answer.
+ *
+ * The write is unconditional. A card that already has a recording is meant to
+ * be overwritten: the reason to tap this is usually that the first voice was
+ * hard to follow, and a refusal would leave no way to say so.
+ */
+export async function attachAnswerAudio(
+  db: Db,
+  userId: string,
+  cardId: string,
+  input: AttachEchoAudioInput,
+): Promise<EchoCard> {
+  if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
+  if (!ObjectId.isValid(input.answerId)) throw notFound('Recording not found')
+
+  const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
+  const card = await cards.findOne({ _id: new ObjectId(cardId), userId })
+  if (!card) throw notFound('Card not found')
+
+  const answer = await db
+    .collection<PronunciationAnswerDoc>(COLLECTIONS.pronunciationAnswers)
+    .findOne({ _id: new ObjectId(input.answerId) })
+  if (!answer || !card.askedPostId || answer.postId.toHexString() !== card.askedPostId) {
+    throw notFound('Recording not found')
+  }
+
+  const updated = await cards.findOneAndUpdate(
+    { _id: card._id, userId },
+    { $set: { audio: await audioFromAnswer(db, answer) } },
+    { returnDocument: 'after' },
+  )
   if (!updated) throw notFound('Card not found')
 
   return toEchoCard(updated)

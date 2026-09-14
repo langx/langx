@@ -595,6 +595,21 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, 'srs.due': 1 }, name: 'owner_due' },
     // The tab's "From your chats" list, and the language filter on it.
     { key: { userId: 1, lang: 1, createdAt: -1, _id: -1 }, name: 'owner_lang_recent' },
+    /**
+     * "Which of my cards asked this post?" — the read behind the button that
+     * puts an answer's recording on the card that asked for it.
+     *
+     * Unique, and partial because almost no card has ever asked anything: a
+     * plain unique index would collide on every second card, since they all
+     * share the missing value. One card per post per person is the invariant
+     * that lets the lookup be a point read instead of a scan.
+     */
+    {
+      key: { userId: 1, askedPostId: 1 },
+      name: 'owner_asked_post_unique',
+      unique: true,
+      partialFilterExpression: { askedPostId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.echoReviews]: [
