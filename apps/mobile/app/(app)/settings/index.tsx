@@ -125,7 +125,7 @@ export default function SettingsScreen() {
         shipped with — and simply absent then.
       */}
       <Text style={styles.build} selectable>
-        LangX {appVersion()}
+        v{appVersion()}
         {Updates.updateId ? ` (${Updates.updateId.slice(0, 8)})` : ''} {t('settings.licence')}
         {model.profile ? `\n${model.profile._id}` : ''}
       </Text>
