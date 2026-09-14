@@ -356,9 +356,10 @@ export default function FeedScreen() {
             </Pressable>
           </TourTarget>
           {/*
-            The way into the notification centre, and the only one. A fifth tab
-            was the alternative and the layout next door says why not: four
-            tabs, and only the four.
+            The way into the notification centre, and the only one. A tab of
+            its own was the alternative and the answer has not changed now
+            that the fifth slot is Echo: a bell is somewhere you go when a
+            number appears, not a place you live.
           */}
           <Pressable
             accessibilityRole="button"

@@ -133,7 +133,19 @@ export default function ChatScreen() {
 
   // `at` is the single entry point for "open this thread at that message": a
   // tapped quote uses it, and so will the pinned banner and the starred list.
-  const { id, at } = useLocalSearchParams<{ id: string; at?: string }>()
+  const {
+    id,
+    at,
+    ask: askParam,
+    draft: draftParam,
+  } = useLocalSearchParams<{
+    id: string
+    at?: string
+    /** Arms the composer for a request. Echo's "ask them to say it" sends this. */
+    ask?: string
+    /** Seeds the composer. The sentence being asked about, from a card. */
+    draft?: string
+  }>()
   const conversationId = id ?? ''
   const me = useMe()
   const queryClient = useQueryClient()
@@ -178,6 +190,20 @@ export default function ChatScreen() {
    * edit, correct and reply.
    */
   const [asking, setAsking] = useState<MessageAsk | null>(null)
+  /*
+   * Arrived asking. An Echo card with no recording links here so a forgotten
+   * sentence becomes a reason to write to somebody — which, in a cold start,
+   * is the direction that matters.
+   *
+   * Once, on mount: re-applying it would fight whatever the person typed next.
+   */
+  const armed = useRef(false)
+  useEffect(() => {
+    if (armed.current || askParam !== 'pronunciation') return
+    armed.current = true
+    setAsking('pronunciation')
+    if (draftParam) setDraft(draftParam)
+  }, [askParam, draftParam])
   /**
    * Send this one in their language too.
    *

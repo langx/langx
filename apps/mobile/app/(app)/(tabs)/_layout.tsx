@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
 import type { ColorValue } from 'react-native'
-import { useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
+import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
 import type { TourTargetId } from '../../../src/lib/tour'
 import { useTheme } from '../../../src/lib/theme'
@@ -50,7 +50,10 @@ function TabIcon({
 }
 
 /**
- * The four tabs, and only the four tabs.
+ * The five tabs, and only the five tabs.
+ *
+ * The rule the number is standing in for is the one that matters, and adding
+ * Echo does not touch it: nothing that is not a tab may be registered here.
  *
  * Every other signed-in screen used to be registered here too, as a
  * `Tabs.Screen` with `href: null` and a hidden bar — which made them tabs
@@ -78,6 +81,11 @@ export default function TabsLayout() {
    * rather than answer it.
    */
   const feedBadge = unreadBadge(useNotificationUnread(!shouldGateGuest(session?.user)).data)
+  /*
+   * Cards due. Same guest gate: a guest has no cards, and the request would
+   * 401 rather than answer zero.
+   */
+  const echoBadge = unreadBadge(useEchoSummary(!shouldGateGuest(session?.user)).data?.due)
   /*
    * The icon follows the same number as the tab, from the same query — see
    * `syncIconBadge`. Whatever changes the total invalidates that query, so
@@ -134,6 +142,32 @@ export default function TabsLayout() {
                 tabBarBadge: badge,
                 tabBarBadgeStyle: {
                   backgroundColor: colors.danger,
+                  color: colors.textInverse,
+                  fontSize: 11,
+                  fontWeight: '700',
+                },
+              }
+            : {}),
+        }}
+      />
+      <Tabs.Screen
+        name="echo"
+        options={{
+          title: t('tabs.echo'),
+          tabBarIcon: ({ color }) => <TabIcon name="repeat" color={color} />,
+          /*
+           * Accent, where the other two badges are `danger`. Red in this bar
+           * means somebody is waiting for you; a due count is an invitation
+           * you made to yourself, and it must not compete with a person.
+           *
+           * No tour target: a step that introduces an empty tab is an empty
+           * promise, and it arrives with the packs.
+           */
+          ...(echoBadge
+            ? {
+                tabBarBadge: echoBadge,
+                tabBarBadgeStyle: {
+                  backgroundColor: colors.accent,
                   color: colors.textInverse,
                   fontSize: 11,
                   fontWeight: '700',
