@@ -42,7 +42,7 @@ export default function LegalScreen() {
       </View>
       {/* The settings footer's version line, minus the build id — this is the licence page. */}
       <Text style={styles.footer}>
-        LangX {appVersion()} {t('settings.licence')}
+        v{appVersion()} {t('settings.licence')}
       </Text>
     </Screen>
   )
