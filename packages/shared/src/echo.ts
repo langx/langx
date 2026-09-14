@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { languageCodeSchema } from './languages'
+import { mediaSchema } from './media'
 import { ECHO_GRADES, SRS_RULES } from './srs'
 import { TOKEN_RULES } from './token'
 
@@ -101,7 +102,14 @@ export const echoAudioSchema = z.object({
   url: z.url(),
   /** A deliberate slower take, when the person who recorded it made one. */
   slowUrl: z.url().optional(),
-  origin: z.enum(['post', 'chat', 'pack']),
+  /**
+   * Where the file came from — and, load-bearing, whether it is ours to
+   * delete. Every value but `self` names a *copy* of somebody else's object:
+   * the message, post or pack it belongs to still plays it, so removing it
+   * from a card must never remove it from storage. `self` is the one the card's
+   * owner uploaded for this card and nothing else holds.
+   */
+  origin: z.enum(['post', 'chat', 'pack', 'self']),
   /** The speaker's display name. Absent means the card does not claim one. */
   speakerName: z.string().optional(),
 })
@@ -112,7 +120,8 @@ export const echoImageSchema = z.object({
   url: z.url(),
   width: z.number().int().positive().optional(),
   height: z.number().int().positive().optional(),
-  origin: z.enum(['chat', 'pack']),
+  /** As `echoAudioSchema.origin`: only `self` is the card's own file. */
+  origin: z.enum(['chat', 'pack', 'self']),
 })
 export type EchoImage = z.infer<typeof echoImageSchema>
 
@@ -255,10 +264,10 @@ export type CaptureEchoResult = z.infer<typeof captureEchoResultSchema>
 /**
  * What a person may change about a card of their own.
  *
- * The two lines they read, and the language they are in. The media and the
- * source stay as they were: those are what the card was *made* from, and
- * editing them would leave `sourceKey` claiming a card is still the one
- * message it can no longer be.
+ * The two lines they read, the language they are in, and the two files. The
+ * source stays as it was: it is what the card was *made* from, and editing it
+ * would leave `sourceKey` claiming a card is still the one message it can no
+ * longer be.
  *
  * `lang` was held back for the same reason until hand-written cards arrived,
  * and it is offered on every card rather than only those — the call the
@@ -277,6 +286,22 @@ export const updateEchoCardSchema = z.object({
   front: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH),
   back: z.string().trim().max(ECHO_BACK_MAX_LENGTH),
   lang: languageCodeSchema.optional(),
+  /**
+   * The picture and the recording, each in three states — and this is the one
+   * thing here a reader will get wrong, so it is written out:
+   *
+   * - **absent** leaves whatever the card has alone;
+   * - **`null`** takes it off the card;
+   * - **a `Media`** replaces it.
+   *
+   * A `Media` and not an `EchoImage`/`EchoAudio`: what a client holds is what
+   * an upload returned. The server checks it against our own bucket and builds
+   * the card's field itself, stamping `origin: 'self'` — so nobody can file
+   * their own recording under a partner's name, and nothing can claim to be a
+   * copy of a message it never came from.
+   */
+  image: mediaSchema.nullable().optional(),
+  audio: mediaSchema.nullable().optional(),
 })
 export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
 

@@ -252,12 +252,24 @@ export async function purgeExpiredAccounts(
      * writing them are separate things a provider may or may not do.
      */
     if (options.storage && supportsPrefixDelete(options.storage)) {
-      try {
-        objectsDeleted += await options.storage.deleteByPrefix(`feedback/${userId}/`)
-      } catch {
-        // Swallowed for the reason the per-object failure above is: an
-        // orphaned file is a better outcome than an account that never gets
-        // purged.
+      /*
+       * Two prefixes, for the same reason. A bug report's attachments and the
+       * files somebody put on their own Echo cards are both deleted by *this*
+       * purge along with the rows that name them, so the prefix is the handle
+       * that does not depend on which of the two runs first.
+       *
+       * Only `echo/` — never the URLs on the cards themselves. A card's other
+       * media is a copy of a message's, a post's or a pack's object, which
+       * outlives the card and belongs to whatever still plays it.
+       */
+      for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`]) {
+        try {
+          objectsDeleted += await options.storage.deleteByPrefix(prefix)
+        } catch {
+          // Swallowed for the reason the per-object failure above is: an
+          // orphaned file is a better outcome than an account that never gets
+          // purged.
+        }
       }
     }
 

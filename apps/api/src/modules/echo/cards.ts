@@ -8,6 +8,7 @@ import {
   type EchoCard,
   type EchoCardPage,
   type EchoImage,
+  type Media,
   type EchoQueue,
   type EchoSource,
   type EchoSummary,
@@ -26,9 +27,11 @@ import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
+import type { StorageProvider } from '../../storage/StorageProvider'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import { assertConversationAccess } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
+import { assertAttachable, deleteObjects } from '../feed/attachments'
 import { notHidden, type Post, type PronunciationAnswerDoc } from '../feed/documents'
 import { readCorrectionSummary } from '../feed/feed'
 import { readAnswerSummary } from '../feed/pronunciation'
@@ -506,7 +509,29 @@ export async function removeCard(db: Db, userId: string, idOrSourceKey: string):
 }
 
 /**
- * Fixing the two lines a person reads, and the language they are in.
+ * A file the card's owner is putting on it, as the card stores it.
+ *
+ * `origin: 'self'` is the load-bearing part rather than a label. Every other
+ * origin names a *copy* of an object something else still plays, and telling
+ * the two apart is what lets `updateCard` below delete the old file when it is
+ * ours and leave it alone when it is not.
+ */
+function selfImage(media: Media): EchoImage {
+  return {
+    url: media.url,
+    ...(media.width ? { width: media.width } : {}),
+    ...(media.height ? { height: media.height } : {}),
+    origin: 'self',
+  }
+}
+
+function selfAudio(media: Media): EchoAudio {
+  return { url: media.url, origin: 'self' }
+}
+
+/**
+ * Fixing the two lines a person reads, the language they are in, and the two
+ * files on the card.
  *
  * The schedule is left where it is: a card whose wording was corrected is the
  * same card and keeps the interval it earned. So is the source — the link
@@ -518,23 +543,74 @@ export async function removeCard(db: Db, userId: string, idOrSourceKey: string):
  * The `userId` in the filter is the whole of the access control, as it is for
  * `removeCard`: a card belongs to one person and nobody else can see it, so a
  * card that is not theirs is a card that is not there.
+ *
+ * `image` and `audio` are three-state — absent, `null`, a `Media` — and the
+ * schema says which is which. What is worth saying here is the deletion rule:
+ * **the object behind a replaced or cleared file is removed only when its
+ * origin was `self`.** Every other origin is a URL this card copied from a
+ * message, a post or a pack, all of which still play it; deleting one would
+ * take the recording out of somebody's thread because a card stopped
+ * pointing at it. A bare `deleteObjects(previous.url)` here would look right
+ * and be exactly that bug.
  */
 export async function updateCard(
   db: Db,
   userId: string,
   cardId: string,
   input: UpdateEchoCardInput,
+  storagePublicBaseUrl?: string,
+  storage?: StorageProvider,
 ): Promise<EchoCard> {
   if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
 
-  const updated = await db.collection<EchoCardDoc>(COLLECTIONS.echoCards).findOneAndUpdate(
-    { _id: new ObjectId(cardId), userId },
+  const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
+  const card = await cards.findOne({ _id: new ObjectId(cardId), userId })
+  if (!card) throw notFound('Card not found')
+
+  /*
+   * Checked before anything is written, and both files in one call: that is
+   * what makes a photo and a recording saved together cost one unit of the
+   * daily media budget rather than two, exactly as a pronunciation answer's
+   * two takes do.
+   */
+  const attached = [input.image, input.audio].filter((media) => !!media)
+  if (attached.length > 0) {
+    const me = await profileOf(db, userId)
+    if (!me) throw notFound('Complete onboarding first')
+    if (input.image)
+      await assertAttachable(db, userId, me, [input.image], storagePublicBaseUrl, 'image')
+    if (input.audio)
+      await assertAttachable(db, userId, me, [input.audio], storagePublicBaseUrl, 'audio')
+  }
+
+  const set: Partial<EchoCardDoc> = {
+    front: input.front,
+    back: input.back,
     // `lang` only when one was sent: a client that predates the language
     // field must not blank the language of every card it saves.
-    { $set: { front: input.front, back: input.back, ...(input.lang ? { lang: input.lang } : {}) } },
+    ...(input.lang ? { lang: input.lang } : {}),
+    ...(input.image ? { image: selfImage(input.image) } : {}),
+    ...(input.audio ? { audio: selfAudio(input.audio) } : {}),
+  }
+  // The empty strings are typed, not inferred: Mongo's `$unset` accepts only
+  // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
+  const unset: { image?: ''; audio?: '' } = {
+    ...(input.image === null ? { image: '' as const } : {}),
+    ...(input.audio === null ? { audio: '' as const } : {}),
+  }
+
+  const updated = await cards.findOneAndUpdate(
+    { _id: card._id, userId },
+    { $set: set, ...(Object.keys(unset).length > 0 ? { $unset: unset } : {}) },
     { returnDocument: 'after' },
   )
   if (!updated) throw notFound('Card not found')
+
+  // After the write, and only ours. See the rule in the doc comment.
+  await deleteObjects(storage, [
+    input.image !== undefined && card.image?.origin === 'self' ? card.image.url : undefined,
+    input.audio !== undefined && card.audio?.origin === 'self' ? card.audio.url : undefined,
+  ])
 
   return toEchoCard(updated)
 }

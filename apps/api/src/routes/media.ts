@@ -13,7 +13,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertOwnBucket } from '../lib/assertOwnBucket'
-import { requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
+import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
@@ -143,6 +143,38 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // One table for every kind now — see `objectExtension`.
       const extension = objectExtension(contentType)
       const key = `posts/${request.userId}/${randomUUID()}.${extension}`
+      return reply.send(await app.storage.getUploadUrl(key, contentType))
+    },
+  )
+
+  /**
+   * A presigned URL for a picture or a recording a person puts on their own
+   * Echo card.
+   *
+   * `requireAuth`, not the `requireVerifiedEmail` above it, and matching the
+   * rest of the module: a card is a note to yourself that nobody else can see,
+   * so the guard is the one Echo already uses. The daily media ceiling is what
+   * bounds the bytes, checked when the card is saved.
+   *
+   * Its own `echo/` prefix rather than the `posts/` one next door, for the
+   * reason `feedback/` has one: the account purge deletes these by prefix,
+   * because the card rows are deleted by the same purge and depending on which
+   * of the two runs first is not worth doing.
+   */
+  app.post(
+    '/echo/upload-url',
+    { preHandler: requireAuth, schema: { body: postMediaUploadUrlSchema } },
+    async (request, reply) => {
+      const { kind, contentType } = request.body
+      if (mediaKindOfContentType(contentType) !== kind) {
+        throw new ApiError(
+          ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
+          `${contentType} is not a supported ${kind} type`,
+        )
+      }
+
+      const extension = objectExtension(contentType)
+      const key = `echo/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
   )

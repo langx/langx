@@ -791,6 +791,172 @@ describe('echo', () => {
   })
 
   /**
+   * The picture and the recording somebody puts on their own card.
+   *
+   * `updateCard` is called directly rather than through `PATCH`, and that is
+   * not a shortcut: this suite builds the app with no storage configured on
+   * purpose, so `assertAttachable` refuses every URL through the route. The
+   * module takes the bucket's base URL as an argument, which lets these tests
+   * exercise the happy path without giving the whole suite a storage provider
+   * it is deliberately without. The refusal itself is tested through the route,
+   * where it belongs.
+   */
+  describe('a card\u2019s own picture and recording', () => {
+    const BUCKET = 'https://cdn.example.com'
+    const picture = (name: string) => ({
+      url: `${BUCKET}/echo/u/${name}.jpg`,
+      contentType: 'image/jpeg',
+      sizeBytes: 4096,
+      width: 800,
+      height: 600,
+    })
+    const recording = (name: string) => ({
+      url: `${BUCKET}/echo/u/${name}.m4a`,
+      contentType: 'audio/m4a',
+      sizeBytes: 4096,
+      durationSeconds: 3,
+    })
+
+    /** Remembers what it was asked to delete, which is the whole assertion. */
+    function fakeStorage() {
+      const deleted: string[] = []
+      return {
+        deleted,
+        storage: {
+          getUploadUrl: () => {
+            throw new Error('not used')
+          },
+          putObject: () => {
+            throw new Error('not used')
+          },
+          getObject: () => {
+            throw new Error('not used')
+          },
+          deleteObject: (key: string) => {
+            deleted.push(key)
+            return Promise.resolve()
+          },
+          keyFromPublicUrl: (url: string) =>
+            url.startsWith(`${BUCKET}/`) ? url.slice(BUCKET.length + 1) : null,
+        },
+      }
+    }
+
+    async function writeCard(user: SignedUpUser, clientId: string) {
+      const made = await capture(user, {
+        kind: 'manual',
+        clientId,
+        front: 'la grenouille',
+        lang: 'en',
+      })
+      expect(made.statusCode, made.body).toBe(201)
+      return made.json<{ card: { _id: string } }>().card._id
+    }
+
+    const lines = { front: 'la grenouille', back: 'the frog' }
+
+    it('stamps a file the owner uploaded as their own', async () => {
+      const user = await newUser('media-attach@example.com')
+      const cardId = await writeCard(user, 'media-attach')
+
+      const { updateCard } = await import('../modules/echo/cards')
+      const card = await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, image: picture('one'), audio: recording('one') },
+        BUCKET,
+      )
+
+      // `self` is what tells the deletion paths the file is ours to remove.
+      expect(card.image).toMatchObject({ url: picture('one').url, width: 800, origin: 'self' })
+      expect(card.audio).toMatchObject({ url: recording('one').url, origin: 'self' })
+    })
+
+    it('leaves the files alone when neither field is sent, and clears them on null', async () => {
+      const user = await newUser('media-clear@example.com')
+      const cardId = await writeCard(user, 'media-clear')
+      const { updateCard } = await import('../modules/echo/cards')
+
+      await updateCard(handle.db, user.userId, cardId, { ...lines, image: picture('two') }, BUCKET)
+      const untouched = await updateCard(handle.db, user.userId, cardId, lines, BUCKET)
+      expect(untouched.image?.url).toBe(picture('two').url)
+
+      const cleared = await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, image: null },
+        BUCKET,
+      )
+      expect(cleared.image).toBeUndefined()
+    })
+
+    /*
+     * The rule the whole `origin` field exists for. A copied URL belongs to the
+     * message, post or pack that still plays it; deleting it because a card
+     * stopped pointing at it would take a recording out of somebody's thread.
+     */
+    it('deletes the object it replaces only when the card owned it', async () => {
+      const user = await newUser('media-delete@example.com')
+      const cardId = await writeCard(user, 'media-delete')
+      const { updateCard } = await import('../modules/echo/cards')
+      const cards = handle.db.collection(COLLECTIONS.echoCards)
+
+      // A copy, as a capture would have written it.
+      await cards.updateOne(
+        { _id: new ObjectId(cardId) },
+        { $set: { audio: { url: `${BUCKET}/posts/other/answer.m4a`, origin: 'post' } } },
+      )
+      const copied = fakeStorage()
+      await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, audio: recording('mine') },
+        BUCKET,
+        copied.storage,
+      )
+      expect(copied.deleted).toEqual([])
+
+      // Now the card's own recording, replaced by another of its own.
+      const own = fakeStorage()
+      await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, audio: recording('newer') },
+        BUCKET,
+        own.storage,
+      )
+      expect(own.deleted).toEqual(['echo/u/mine.m4a'])
+    })
+
+    it('refuses a file that is not in our bucket', async () => {
+      const user = await newUser('media-elsewhere@example.com')
+      const cardId = await writeCard(user, 'media-elsewhere')
+
+      const response = await app.inject({
+        method: 'PATCH',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: user.cookie },
+        payload: { ...lines, image: { ...picture('x'), url: 'https://elsewhere.test/1.jpg' } },
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('refuses a recording sent as the picture', async () => {
+      const user = await newUser('media-wrongkind@example.com')
+      const cardId = await writeCard(user, 'media-wrongkind')
+      const { updateCard } = await import('../modules/echo/cards')
+
+      await expect(
+        updateCard(handle.db, user.userId, cardId, { ...lines, image: recording('nope') }, BUCKET),
+      ).rejects.toThrow()
+    })
+  })
+
+  /**
    * A card asks the feed how its sentence is said, and the answer comes back
    * to the card in one tap. Route tests rather than unit ones: the whole point
    * is a link between two modules that otherwise know nothing about each other.

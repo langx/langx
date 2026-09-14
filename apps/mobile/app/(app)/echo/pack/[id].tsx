@@ -44,7 +44,9 @@ export default function EchoPackScreen() {
         return
       }
       showToast(t('echo.packStarted', { count: result.started }))
-      router.push('/(app)/echo/session')
+      // The pack's own language, not whatever is due across all of them: you
+      // pressed start on a French pack, so the session that opens is French.
+      router.push({ pathname: '/(app)/echo/session', params: { lang: pack.lang } })
     } catch {
       await showAlert(t('echo.addFailedTitle'), t('common.retry'))
     }

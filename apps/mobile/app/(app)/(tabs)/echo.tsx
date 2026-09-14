@@ -16,6 +16,7 @@ import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { useEchoOffline } from '../../../src/hooks/useEchoOffline'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { chooseAlert } from '../../../src/lib/alert'
 import { authClient } from '../../../src/lib/auth-client'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { relativeTimeCompact } from '../../../src/lib/format'
@@ -76,16 +77,58 @@ export default function EchoScreen() {
     isPaused: cards.fetchStatus === 'paused',
   })
 
-  function startSession(): void {
+  function open(chosen: string | null): void {
+    router.push({
+      pathname: '/(app)/echo/session',
+      params: chosen ? { lang: chosen } : {},
+    })
+  }
+
+  /**
+   * Review, and first: which language.
+   *
+   * A deck drawn across every language at once is not a study session — it is
+   * a French word, then a Russian one, then French again, with the reader
+   * switching alphabets between cards. The chips above filter the *list*, and
+   * "All" is a reasonable thing to browse; it was never a reasonable thing to
+   * be quizzed on, and passing it straight through to the session is what made
+   * it one.
+   *
+   * So the sheet, and only when it has something to ask: a chip already chosen
+   * is an answer, and one language with cards due is not a question. There is
+   * deliberately no "All languages" row — the mixed deck is the thing this
+   * removes, not a choice it offers.
+   */
+  async function startSession(): Promise<void> {
     // The one guest gate in the module, and the place the design document puts
     // it: a guest sees everything and is asked for an account at the first
     // answer, because a schedule with nowhere to live is a promise we cannot
     // keep.
     if (!requireAccount(session?.user, { action: 'echo' })) return
-    router.push({
-      pathname: '/(app)/echo/session',
-      params: lang ? { lang } : {},
-    })
+    if (lang) {
+      open(lang)
+      return
+    }
+
+    const due = languages.filter((row) => row.due > 0)
+    const only = due[0]
+    if (!only) return
+    if (due.length === 1) {
+      open(only.lang)
+      return
+    }
+
+    const chosen = await chooseAlert(
+      t('echo.reviewWhich'),
+      undefined,
+      // `cardCount` rather than a plural of its own: the row is a language and
+      // a number of cards, and that plural already exists in all eight.
+      due.map((row) => ({
+        label: `${names.language(row.lang)} · ${t('echo.cardCount', { count: row.due })}`,
+        value: row.lang,
+      })),
+    )
+    if (chosen) open(chosen)
   }
 
   function openThread(card: EchoCard): void {
@@ -105,7 +148,7 @@ export default function EchoScreen() {
         <Text style={styles.due}>
           {due > 0 ? t('echo.due', { count: due }) : t('echo.allCaughtUp')}
         </Text>
-        <Button label={t('echo.review')} onPress={startSession} disabled={due === 0} />
+        <Button label={t('echo.review')} onPress={() => void startSession()} disabled={due === 0} />
         {languages.length > 1 ? (
           <View style={styles.chips}>
             <Chip
