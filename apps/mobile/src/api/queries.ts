@@ -24,6 +24,7 @@ import {
   type CaptureEchoInput,
   type CaptureEchoResult,
   type CreateShareCardInput,
+  type EchoCard,
   type EchoCardPage,
   type EchoPack,
   type EchoQueue,
@@ -31,6 +32,7 @@ import {
   type StartPackResult,
   type SubmitEchoReviewsInput,
   type SubmitEchoReviewsResult,
+  type UpdateEchoCardInput,
   type NotificationsPage,
   type ShareCardResult,
 } from '@langx/shared'
@@ -2674,6 +2676,29 @@ export function useRemoveEcho() {
       if (input.conversationId) {
         void client.invalidateQueries({ queryKey: keys.messages(input.conversationId) })
       }
+    },
+  })
+}
+
+/**
+ * Rewriting the two lines of a card.
+ *
+ * A card id only — the source key `useRemoveEcho` also takes is the chat
+ * screen's way in, and the chat screen has nothing to edit. The whole `echo`
+ * prefix is invalidated like every other mutation here: the queue holds its
+ * own copies of the cards, and a session drawn before the edit would keep
+ * showing the old wording.
+ */
+export function useUpdateEchoCard() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { cardId: string } & UpdateEchoCardInput) =>
+      api.patch<EchoCard>(`/echo/cards/${input.cardId}`, {
+        front: input.front,
+        back: input.back,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
     },
   })
 }

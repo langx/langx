@@ -237,6 +237,12 @@ export const en = {
     remove: 'Remove',
     removeTitle: 'Remove this card?',
     removeBody: 'Its schedule goes with it. The message itself stays where it is.',
+    editTitle: 'Edit card',
+    editFront: 'Sentence',
+    editBack: 'What it means',
+    edited: 'Card updated',
+    editFailedTitle: 'Could not save this card',
+    cardMenu: 'Card options',
 
     // The session.
     sessionProgress: '{done} of {total}',

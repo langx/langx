@@ -354,6 +354,58 @@ describe('echo', () => {
     ).toBe(1)
   })
 
+  it('edits the two lines of a card without touching its schedule', async () => {
+    const [a, b] = await newPair('edit')
+    const conversation = await startConversation(a, b.userId)
+    const captured = await captureMessage(
+      b,
+      conversation._id,
+      await firstMessageId(conversation._id),
+    )
+    const card = captured.json<{ card: { _id: string; srs: { due: string } } }>().card
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/echo/cards/${card._id}`,
+      headers: { cookie: b.cookie },
+      payload: { front: 'On y va demain.', back: 'Yarın gidiyoruz.' },
+    })
+    expect(response.statusCode).toBe(200)
+    expect(response.json()).toMatchObject({
+      _id: card._id,
+      front: 'On y va demain.',
+      back: 'Yarın gidiyoruz.',
+      // The source still points at the message the sentence came from, and the
+      // interval the card earned is the card's, not the wording's.
+      source: { kind: 'chat' },
+      srs: { due: card.srs.due },
+    })
+  })
+
+  it('will not let one person edit another’s card', async () => {
+    const [a, b] = await newPair('edit-own')
+    const conversation = await startConversation(a, b.userId)
+    const captured = await captureMessage(
+      b,
+      conversation._id,
+      await firstMessageId(conversation._id),
+    )
+    const cardId = captured.json<{ card: { _id: string; front: string } }>().card._id
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/echo/cards/${cardId}`,
+      headers: { cookie: a.cookie },
+      payload: { front: 'mine now', back: '' },
+    })
+    expect(response.statusCode).toBe(404)
+    expect(
+      await handle.db
+        .collection(COLLECTIONS.echoCards)
+        .countDocuments({ userId: b.userId, front: 'mine now' }),
+    ).toBe(0)
+  })
+
   it('counts the cards by language on the summary', async () => {
     const [a, b] = await newPair('sum', { nativeLanguages: [{ code: 'fr' }] })
     const conversation = await startConversation(a, b.userId)

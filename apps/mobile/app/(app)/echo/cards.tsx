@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { EchoCard } from '@langx/shared'
+import { router } from 'expo-router'
 import { useState } from 'react'
 import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useEchoCards, useEchoSummary, useRemoveEcho } from '../../../src/api/queries'
@@ -20,7 +21,7 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 
-/** Everything kept, with the one thing this screen is for: taking it back. */
+/** Everything kept, and the two things this screen is for: fixing a card, and taking it back. */
 export default function EchoCardsScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -69,9 +70,23 @@ export default function EchoCardsScreen() {
    */
   async function openMore(card: EchoCard): Promise<void> {
     const choice = await chooseAlert(t('echo.cards'), undefined, [
+      { label: t('common.edit'), value: 'edit' as const },
       { label: t('echo.remove'), value: 'remove' as const, destructive: true },
     ])
+    if (choice === 'edit') openEdit(card)
     if (choice === 'remove') await confirmRemove(card)
+  }
+
+  /*
+   * The card travels in the params rather than the edit screen fetching it:
+   * this list is holding it already, and the module has no endpoint for a
+   * single card.
+   */
+  function openEdit(card: EchoCard): void {
+    router.push({
+      pathname: '/(app)/echo/edit',
+      params: { id: card._id, front: card.front, back: card.back },
+    })
   }
 
   function sourceLabel(card: EchoCard): string {
@@ -127,7 +142,18 @@ export default function EchoCardsScreen() {
           }
           renderItem={({ item }) => (
             <SwipeableRow
-              right={[]}
+              right={[
+                {
+                  id: 'edit',
+                  icon: 'edit-2' as const,
+                  label: t('common.edit'),
+                  colour: colors.accent,
+                  onAction: () => {
+                    setOpenRow(null)
+                    openEdit(item)
+                  },
+                },
+              ]}
               left={[
                 {
                   id: 'remove',
@@ -153,7 +179,7 @@ export default function EchoCardsScreen() {
                 </View>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={t('echo.remove')}
+                  accessibilityLabel={t('echo.cardMenu')}
                   hitSlop={8}
                   onPress={() => void openMore(item)}
                   style={({ pressed }) => (pressed ? styles.pressed : null)}

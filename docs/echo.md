@@ -329,7 +329,8 @@ Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
 | `(tabs)/echo.tsx`    | The tab root: due count and the one yellow button, then "From your chats" (latest cards, partner face, tap to open the thread), then Packs |
 | `echo/session.tsx`   | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
 | `echo/pack/[id].tsx` | A pack: description, progress, "Start" / "Continue"                                                                                        |
-| `echo/cards.tsx`     | Every card, filter by language and source, remove                                                                                          |
+| `echo/cards.tsx`     | Every card, filter by language and source, edit or remove                                                                                  |
+| `echo/edit.tsx`      | The card's two lines — the sentence and what it means. Nothing else about a card can be typed over                                         |
 
 The session screen is the whole feature as far as a user is concerned. What
 decides whether it is opened twice is how it ends — a done screen that says
