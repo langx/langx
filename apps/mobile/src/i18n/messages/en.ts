@@ -258,6 +258,7 @@ export const en = {
     doneBody: 'Echo brings these back when they are due.',
     saveFailedTitle: 'Your review did not save',
     saveFailedBody: 'Your answers are still here. Try again.',
+    offlineSession: 'Offline. Your answers are saved and sent when you are back.',
     packs: 'Packs',
     packsFor: 'Start from a pack',
     packBlurb:

@@ -225,6 +225,7 @@ export const ar: Localized<EnMessages> = {
     doneBody: 'سيعيدها صدى في موعدها.',
     saveFailedTitle: 'لم تُحفظ مراجعتك',
     saveFailedBody: 'إجاباتك ما زالت هنا. حاول مرة أخرى.',
+    offlineSession: 'دون اتصال. إجاباتك محفوظة وستُرسل عند عودة الشبكة.',
     packs: 'الحزم',
     packsFor: 'ابدأ من حزمة',
     packBlurb: 'مجموعة جاهزة للبداية. كل بطاقة تدخل الطابور نفسه مع ما تحفظه بنفسك.',

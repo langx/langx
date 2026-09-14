@@ -214,6 +214,7 @@ export const de: Localized<EnMessages> = {
     doneBody: 'Echo holt diese Karten zurück, wenn sie dran sind.',
     saveFailedTitle: 'Deine Übung wurde nicht gespeichert',
     saveFailedBody: 'Deine Antworten sind noch da. Versuch es noch einmal.',
+    offlineSession: 'Offline. Deine Antworten werden gespeichert und später gesendet.',
     packs: 'Pakete',
     packsFor: 'Mit einem Paket anfangen',
     packBlurb:

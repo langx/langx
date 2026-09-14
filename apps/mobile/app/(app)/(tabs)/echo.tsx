@@ -13,6 +13,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useT } from '../../../src/i18n'
 import { useLocale } from '../../../src/i18n/I18nProvider'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
+import { useEchoOffline } from '../../../src/hooks/useEchoOffline'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { authClient } from '../../../src/lib/auth-client'
@@ -55,9 +56,18 @@ export default function EchoScreen() {
   const partners = useProfileCache(
     chats.map((card) => (card.source.kind === 'chat' ? card.source.partnerId : '')).filter(Boolean),
   )
-  const due = summary.data?.due ?? 0
+  /*
+   * The counts saved on the device, and the one place grades stranded by a
+   * tunnel are sent from. A person who answered ten cards with no network and
+   * closed the app has their work in a file; opening this tab is where it
+   * goes.
+   */
+  const { saved } = useEchoOffline(summary.data)
+  // The server when it has answered, the device when it has not.
+  const counts = summary.data ?? saved?.summary ?? undefined
+  const due = counts?.due ?? 0
   const packRows = packs.data?.items ?? []
-  const languages = summary.data?.languages ?? []
+  const languages = counts?.languages ?? []
 
   const state = listState({
     isPending: cards.isPending,
@@ -150,7 +160,7 @@ export default function EchoScreen() {
            * carries the screen for them.
            */
           ListEmptyComponent={
-            (summary.data?.total ?? 0) > 0 ? null : (
+            (counts?.total ?? 0) > 0 ? null : (
               <EmptyState
                 icon="repeat"
                 title={t('echo.emptyTitle')}

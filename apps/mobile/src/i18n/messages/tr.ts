@@ -225,6 +225,7 @@ export const tr: Localized<EnMessages> = {
     doneBody: 'Echo bu kartları zamanı gelince geri getirir.',
     saveFailedTitle: 'Tekrarın kaydedilmedi',
     saveFailedBody: 'Cevapların duruyor. Tekrar dene.',
+    offlineSession: 'Çevrimdışısın. Cevapların kaydediliyor, bağlanınca gönderilecek.',
     packs: 'Paketler',
     packsFor: 'Bir paketle başla',
     packBlurb:

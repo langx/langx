@@ -25,6 +25,13 @@ import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { offlineQueue } from '../../../src/lib/echoSnapshot'
+import {
+  forgetPendingReviews,
+  readEchoSnapshot,
+  rememberEchoCards,
+  rememberPendingReviews,
+} from '../../../src/lib/echoStore'
 import { newClientId } from '../../../src/lib/unsentMessages'
 
 /**
@@ -92,9 +99,29 @@ export default function EchoSessionScreen() {
    */
   const revealedAt = useRef(0)
 
+  /** True when the deck came off the device rather than off the server. */
+  const [offline, setOffline] = useState(false)
+
   useEffect(() => {
-    if (deck === null && queue.data) setDeck(queue.data.cards)
-  }, [deck, queue.data])
+    if (deck !== null) return
+    if (queue.data) {
+      setDeck(queue.data.cards)
+      // The cheapest moment to know the truth is the moment it arrives.
+      void rememberEchoCards(queue.data.cards)
+      return
+    }
+    /*
+     * No network. `isPaused` is the honest signal — `queryNetwork.ts` wires
+     * the radio to TanStack, so a request made offline is held rather than
+     * failed — and `isError` covers the web, where it is sent and refused.
+     */
+    if (!queue.isPaused && !queue.isError) return
+    void readEchoSnapshot().then((snapshot) => {
+      if (!snapshot) return
+      setDeck(offlineQueue(snapshot, new Date()))
+      setOffline(true)
+    })
+  }, [deck, queue.data, queue.isPaused, queue.isError])
 
   const card = deck?.[index]
   const player = useAudioPlayer(card?.audio?.url ?? null)
@@ -119,8 +146,19 @@ export default function EchoSessionScreen() {
       await submit.mutateAsync({ reviews: batch })
       setSaved(true)
       setSaveFailed(false)
+      void forgetPendingReviews(batch.map((entry) => entry.reviewId))
     } catch {
       setSaveFailed(true)
+      /*
+       * Written to the device before the screen says anything. Keeping them
+       * in memory was enough for a dropped request; it is not enough for a
+       * phone that is closed on the train, and the grades are work somebody
+       * did. The ids were minted when each grade was given, so sending them
+       * again tomorrow is the same idempotent batch.
+       */
+      void rememberPendingReviews(
+        batch.map((entry) => ({ ...entry, at: new Date().toISOString() })),
+      )
     }
   }
 
@@ -271,6 +309,11 @@ export default function EchoSessionScreen() {
   return (
     <Screen fluid>
       {header}
+      {offline ? (
+        /* Said out loud, because the grades will sit on the phone until there
+           is a network and somebody should know that before they answer ten. */
+        <Text style={styles.offline}>{t('echo.offlineSession')}</Text>
+      ) : null}
       <View style={styles.progress}>
         <ProgressBar
           value={index / deck.length}
@@ -404,6 +447,13 @@ function Count({ label, value }: { label: string; value: number }) {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { padding: spacing.lg },
   progress: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
+  offline: {
+    color: colors.textFaint,
+    fontSize: 13,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+    textAlign: 'center',
+  },
   card: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
   picture: { borderRadius: radius.md, height: 140, width: '100%' },
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
