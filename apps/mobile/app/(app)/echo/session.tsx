@@ -12,7 +12,7 @@ import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { useEchoQueue, useSubmitEchoReviews } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
@@ -26,6 +26,12 @@ import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { newClientId } from '../../../src/lib/unsentMessages'
+
+/**
+ * How long after the answer appears a grade is ignored. Long enough to absorb
+ * the keyboard's dismissal, short enough that nobody deliberate is refused.
+ */
+const REVEAL_GUARD_MS = 400
 
 interface Graded {
   reviewId: string
@@ -73,6 +79,18 @@ export default function EchoSessionScreen() {
   const [saved, setSaved] = useState(false)
   const [saveFailed, setSaveFailed] = useState(false)
   const shownAt = useRef(Date.now())
+  /**
+   * When the answer was shown, so the gesture that showed it cannot also
+   * grade the card.
+   *
+   * On a production card the keyboard is open, and dismissing it moves the
+   * whole layout up — so the grade row lands exactly where the Check button
+   * was, and the browser dispatches the click to whatever is under the finger
+   * at touch-up. One tap revealed the answer and marked the card Again,
+   * silently. Caught on an iPhone; a mouse never reproduces it, and neither
+   * does a recognition card, which has no keyboard to dismiss.
+   */
+  const revealedAt = useRef(0)
 
   useEffect(() => {
     if (deck === null && queue.data) setDeck(queue.data.cards)
@@ -122,8 +140,18 @@ export default function EchoSessionScreen() {
     }
   }, [])
 
+  function reveal(): void {
+    // Before the state change, so the layout has one frame to settle rather
+    // than shifting under the finger that is still down.
+    Keyboard.dismiss()
+    revealedAt.current = Date.now()
+    setRevealed(true)
+  }
+
   function grade(value: EchoGrade): void {
     if (!card) return
+    // See `revealedAt`. A grade this close to the reveal is the same tap.
+    if (Date.now() - revealedAt.current < REVEAL_GUARD_MS) return
     const entry: Graded = {
       // Hermes has no `crypto.randomUUID`; this is the same minter the unsent
       // message rows use, for the same reason.
@@ -355,7 +383,7 @@ export default function EchoSessionScreen() {
         ) : (
           <Button
             label={t(producing && typed.trim().length > 0 ? 'echo.check' : 'echo.show')}
-            onPress={() => setRevealed(true)}
+            onPress={reveal}
           />
         )}
       </View>

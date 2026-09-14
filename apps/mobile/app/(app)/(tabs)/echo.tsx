@@ -142,22 +142,31 @@ export default function EchoScreen() {
            * from, and sending them to an empty Chats tab is the empty promise
            * the packs exist to answer.
            */
+          /*
+           * Only when there is genuinely nothing. The list is the chat-made
+           * cards alone, so a person whose cards all came from a pack was
+           * being told "Nothing to review yet" under a heading that said two
+           * were due — a contradiction, and the packs section below already
+           * carries the screen for them.
+           */
           ListEmptyComponent={
-            <EmptyState
-              icon="repeat"
-              title={t('echo.emptyTitle')}
-              body={t('echo.emptyBody')}
-              actionLabel={t(packRows.length > 0 ? 'echo.packsFor' : 'echo.emptyAction')}
-              actionVariant="secondary"
-              onAction={() =>
-                packRows[0]
-                  ? router.push({
-                      pathname: '/(app)/echo/pack/[id]',
-                      params: { id: packRows[0]._id },
-                    })
-                  : router.push('/(app)/(tabs)/chats')
-              }
-            />
+            (summary.data?.total ?? 0) > 0 ? null : (
+              <EmptyState
+                icon="repeat"
+                title={t('echo.emptyTitle')}
+                body={t('echo.emptyBody')}
+                actionLabel={t(packRows.length > 0 ? 'echo.packsFor' : 'echo.emptyAction')}
+                actionVariant="secondary"
+                onAction={() =>
+                  packRows[0]
+                    ? router.push({
+                        pathname: '/(app)/echo/pack/[id]',
+                        params: { id: packRows[0]._id },
+                      })
+                    : router.push('/(app)/(tabs)/chats')
+                }
+              />
+            )
           }
           renderItem={({ item }) => {
             const partner =
