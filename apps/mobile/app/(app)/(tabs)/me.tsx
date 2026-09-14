@@ -8,6 +8,7 @@ import { placeLabel } from '../../../src/lib/placeLabel'
 import { Platform, Pressable, Text, View } from 'react-native'
 import {
   useBadges,
+  useEchoSummary,
   useEffectiveTier,
   useMe,
   useProfile,
@@ -50,6 +51,7 @@ export default function MeScreen() {
   const xp = useTokens()
   const wallet = useWallet()
   const badges = useBadges()
+  const echo = useEchoSummary()
   const quota = useQuota()
   const viewers = useViewers()
   /*
@@ -72,6 +74,7 @@ export default function MeScreen() {
       me.refetch(),
       xp.refetch(),
       wallet.refetch(),
+      echo.refetch(),
       quota.refetch(),
       ownProfile.refetch(),
     ]),
@@ -271,6 +274,24 @@ export default function MeScreen() {
         />
       </View>
 
+      {/*
+        Its own row rather than a fifth tile in the one above: five across
+        leaves 59px each at 375px, and "Corrections" — 11 characters in
+        English, German, Russian and Turkish alike — needs more than that, so
+        the new tile would have wrapped the labels beside it. Here instead,
+        against the chart, because both are about the week: the day's number
+        is already the first thing the Echo tab itself says, and the one worth
+        putting on this screen is whether the week counted.
+      */}
+      <View style={styles.echoTile}>
+        <StatTile
+          label={`${t('me.echoWeek')} ›`}
+          value={compactCount(echo.data?.reviewedThisWeek ?? 0, locale)}
+          valueSize={26}
+          onPress={() => router.push('/(app)/(tabs)/echo')}
+        />
+      </View>
+
       <WeeklyChart week={summary?.week} />
 
       {/*
@@ -390,6 +411,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   iconButton: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
   pressed: { opacity: 0.6 },
   languages: { paddingVertical: 20 },
+  echoTile: { flexDirection: 'row', paddingTop: spacing.lg },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

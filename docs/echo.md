@@ -538,6 +538,15 @@ already there. None adds a screen; each is one branch in code that exists.
    `front` the question and `back` the correct option — one more
    `source.kind`, no new interface, and the quiz stays what it is between the
    two people.
-3. **One tile on Me.** Cards reviewed this week, a `StatTile` beside the
-   weekly chart on the Me tab, read from `GET /echo/summary`. The number a
-   person looks at when deciding whether the week counted.
+3. ~~**One tile on Me.**~~ **Built.** Cards reviewed this week, a `StatTile`
+   on its own row above the weekly chart on the Me tab, read from
+   `GET /echo/summary`. The number a person looks at when deciding whether the
+   week counted.
+
+   Two things the sentence above did not say. The window is a rolling seven
+   days rather than a calendar week, because `reviewedToday` beside it is a
+   rolling twenty-four hours and two windows counted differently on one
+   screen read as one of them being wrong. And the tile has a row to itself
+   rather than joining the four already there: five across leaves 59px each
+   at 375px, which is narrower than the word `Corrections` in four of the
+   eight languages.

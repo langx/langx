@@ -372,6 +372,56 @@ describe('echo', () => {
     })
   })
 
+  it('counts the week on the summary as a rolling seven days', async () => {
+    const [a, b] = await newPair('week')
+    const conversation = await startConversation(a, b.userId)
+    const captured = await captureMessage(
+      b,
+      conversation._id,
+      await firstMessageId(conversation._id),
+    )
+    const cardId = captured.json<{ card: { _id: string } }>().card._id
+
+    // Three grades on the one card, then two of them moved back: the counts
+    // are read off the ledger rather than off the card, so the same card
+    // carrying all three is what the week actually sums.
+    await app.inject({
+      method: 'POST',
+      url: '/echo/reviews',
+      headers: { cookie: b.cookie },
+      payload: {
+        reviews: [
+          { reviewId: 'r-week-now', cardId, grade: 'good', durationMs: 900 },
+          { reviewId: 'r-week-inside', cardId, grade: 'good', durationMs: 900 },
+          { reviewId: 'r-week-outside', cardId, grade: 'good', durationMs: 900 },
+        ],
+      },
+    })
+
+    const reviews = handle.db.collection(COLLECTIONS.echoReviews)
+    const daysAgo = (days: number) => new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+    await reviews.updateOne(
+      { userId: b.userId, reviewId: 'r-week-inside' },
+      {
+        $set: { at: daysAgo(3) },
+      },
+    )
+    await reviews.updateOne(
+      { userId: b.userId, reviewId: 'r-week-outside' },
+      {
+        $set: { at: daysAgo(8) },
+      },
+    )
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/echo/summary',
+      headers: { cookie: b.cookie },
+    })
+    expect(response.statusCode).toBe(200)
+    expect(response.json()).toMatchObject({ reviewedToday: 1, reviewedThisWeek: 2 })
+  })
+
   it('refuses a message type with no sentence on it', async () => {
     const [a, b] = await newPair('type')
     const conversation = await startConversation(a, b.userId)

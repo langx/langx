@@ -1346,6 +1346,7 @@ export const ru: Localized<EnMessages> = {
     shareProfile: 'Поделиться профилем',
     shareMessage: 'Практикуйте языки со мной в LangX: {url}',
     badges: 'Значки',
+    echoWeek: 'Эхо за неделю',
     invite: 'Пригласить друга',
     inviteBody: 'Получайте токены, когда он начнёт пользоваться LangX',
     dayStreak: 'Серия дней',

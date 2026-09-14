@@ -1402,6 +1402,7 @@ export const ar: Localized<EnMessages> = {
     shareProfile: 'مشاركة ملفي الشخصي',
     shareMessage: 'تدرّب على اللغات معي في LangX: ‏{url}',
     badges: 'الشارات',
+    echoWeek: 'صدى هذا الأسبوع',
     invite: 'ادعُ صديقًا',
     inviteBody: 'اكسب توكنات عندما يبدأ باستخدام LangX',
     dayStreak: 'سلسلة الأيام',

@@ -1198,6 +1198,7 @@ export const ptBR: Localized<EnMessages> = {
     shareProfile: 'Compartilhar meu perfil',
     shareMessage: 'Pratique idiomas comigo no LangX: {url}',
     badges: 'Insígnias',
+    echoWeek: 'Echo esta semana',
     invite: 'Convidar alguém',
     inviteBody: 'Ganhe tokens quando a pessoa começar a usar o LangX',
     dayStreak: 'Sequência de dias',
