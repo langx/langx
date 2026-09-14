@@ -577,6 +577,48 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
   ],
 
+  [COLLECTIONS.echoCards]: [
+    /**
+     * One card per message, per post, per phrase card, per pack item — per
+     * person. Add echo twice is a no-op, not a duplicate and not an error.
+     *
+     * An invariant, like `conversation_term_unique` next door. The gesture is
+     * advertised as idempotent and two taps race routinely: a check-then-write
+     * would let both pass, and this is the only thing that decides for the
+     * whole cluster at once.
+     *
+     * Per person, not global: two people echoing the same message each get
+     * their own card, with their own schedule and their own back.
+     */
+    { key: { userId: 1, sourceKey: 1 }, name: 'card_source_unique', unique: true },
+    // The due queue — the one hot read in the module.
+    { key: { userId: 1, 'srs.due': 1 }, name: 'owner_due' },
+    // The tab's "From your chats" list, and the language filter on it.
+    { key: { userId: 1, lang: 1, createdAt: -1, _id: -1 }, name: 'owner_lang_recent' },
+  ],
+
+  [COLLECTIONS.echoReviews]: [
+    /**
+     * `reviewId` is minted by the client, one per graded card, before the
+     * batch is sent. A session submitted twice because the network dropped
+     * and the app retried must be physically incapable of advancing a card
+     * twice — idempotency by index, not by the handler remembering.
+     *
+     * Same device as `{job, periodKey}` on `jobRuns`.
+     */
+    { key: { userId: 1, reviewId: 1 }, name: 'user_review_unique', unique: true },
+    /**
+     * "Reviewed today" on the summary. The unique above cannot answer it:
+     * its second key is a random client string, so it sorts on nothing.
+     */
+    { key: { userId: 1, at: -1 }, name: 'owner_recent' },
+  ],
+
+  [COLLECTIONS.echoPackItems]: [
+    // The seed script's idempotency, asserted before the script exists.
+    { key: { packId: 1, index: 1 }, name: 'pack_index_unique', unique: true },
+  ],
+
   [COLLECTIONS.phraseCards]: [
     /**
      * One card per term per conversation. The deck is a vocabulary list, and a
