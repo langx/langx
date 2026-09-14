@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  adminLatestVersionSchema,
   adminListQuerySchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
@@ -10,6 +11,7 @@ import {
   bountyAwardSchema,
   broadcastCreateSchema,
   reviewDecisionSchema,
+  withPlatformVersion,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -28,8 +30,9 @@ import {
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
-import { readAdminStats } from '../modules/admin/stats'
+import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
+import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
@@ -78,6 +81,57 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get('/admin/stats', { preHandler: requireAdmin }, async (_request, reply) => {
     return reply.send(await readAdminStats(app.mongo.db))
   })
+
+  /**
+   * Telling everyone on an older build that a new one is in the stores.
+   *
+   * The one piece of `AppConfig` the panel writes, and the exception is about
+   * *when* it is needed rather than about convenience. This is set the moment a
+   * store release goes live — a moment decided by Apple's review queue, not by
+   * whether anybody is sitting at a machine that can reach Mongo. Everything
+   * else in the config stays in `scripts/maintenance.ts`; see
+   * `adminLatestVersionSchema` for where the line is and why it is there.
+   *
+   * Read-modify-write rather than a `$set` on the nested key, which is what the
+   * script does too: one operator holds this flag, so the race the atomic
+   * version would win does not exist, and two mechanisms that look different
+   * would be the thing that eventually disagrees. `updateAppConfig` drops the
+   * ten-second memory cache, so setting iOS and then Android reads the first
+   * write back rather than the value it replaced.
+   *
+   * The merge goes through `withPlatformVersion` rather than a computed key:
+   * see the note there for why a validated platform is still not written as
+   * `[platform]:` when it came off a request.
+   */
+  app.post(
+    '/admin/app-config/latest-version',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminLatestVersionSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { platform, version } = request.body
+      const current = await getAppConfig(app.mongo.db)
+      const config = await updateAppConfig(app.mongo.db, {
+        latestVersion: withPlatformVersion(current.latestVersion, platform, version),
+      })
+      /*
+       * The dashboard prints this config and memoises for a minute, which is
+       * right for counts and wrong for a value the operator has this second
+       * typed: without this the screen answers the press by showing what it
+       * showed before, and the natural second press sets it twice.
+       */
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.latestVersion',
+        payload: { platform, version },
+      })
+      return reply.send(config)
+    },
+  )
 
   // ── reports ──────────────────────────────────────────────────────────────
 

@@ -1,4 +1,13 @@
-import { BOUNTY_MIN, ERROR_CODES, REPORTS_TO_FREEZE_XP, SUSPENSION_FOREVER } from '@langx/shared'
+import {
+  APP_PLATFORM_HEADER,
+  APP_VERSION_HEADER,
+  BOUNTY_MIN,
+  ERROR_CODES,
+  REPORTS_TO_FREEZE_XP,
+  SUSPENSION_FOREVER,
+  type AppConfig,
+  type AppConfigResponse,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -724,6 +733,123 @@ describe('the operator panel', () => {
         bodies: { tr: 'Sadece Türkçe' },
       })
       expect(created.statusCode).toBe(400)
+    })
+  })
+
+  describe('the update banner', () => {
+    it('raises it for one platform and leaves the others where they were', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const ios = await post(admin, '/admin/app-config/latest-version', {
+        platform: 'ios',
+        version: '2.3',
+      })
+      expect(ios.statusCode).toBe(200)
+      expect(ios.json<AppConfig>().latestVersion).toEqual({
+        ios: '2.3',
+        android: '0.0.0',
+        web: '0.0.0',
+      })
+
+      // The second platform reads the first one back rather than the value it
+      // replaced — the ten-second config cache is dropped on every write.
+      const android = await post(admin, '/admin/app-config/latest-version', {
+        platform: 'android',
+        version: '2.3',
+      })
+      expect(android.json<AppConfig>().latestVersion).toEqual({
+        ios: '2.3',
+        android: '2.3',
+        web: '0.0.0',
+      })
+
+      // Nothing here may block anybody. This is the half of the version story
+      // that only ever offers.
+      expect(android.json<AppConfig>().minVersion).toEqual({
+        ios: '0.0.0',
+        android: '0.0.0',
+        web: '0.0.0',
+      })
+    })
+
+    it('is what a client on the old build is then told', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'ios', version: '2.3' })
+
+      const old = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.2', [APP_PLATFORM_HEADER]: 'ios' },
+      })
+      expect(old.json<AppConfigResponse>().updateAvailable).toBe(true)
+      expect(old.json<AppConfigResponse>().updateRequired).toBe(false)
+
+      const current = await app.inject({
+        method: 'GET',
+        url: '/app-config',
+        headers: { [APP_VERSION_HEADER]: '2.3', [APP_PLATFORM_HEADER]: 'ios' },
+      })
+      expect(current.json<AppConfigResponse>().updateAvailable).toBe(false)
+    })
+
+    it('shows on the dashboard at once, not when its minute is up', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      // Read first, so the dashboard's one-minute memory holds the old value
+      // and the write has something to invalidate.
+      const before = await get(admin, '/admin/stats')
+      expect(before.json<AdminStats>().system.config.latestVersion.android).not.toBe('2.4')
+
+      await post(admin, '/admin/app-config/latest-version', { platform: 'android', version: '2.4' })
+
+      const after = await get(admin, '/admin/stats')
+      expect(after.json<AdminStats>().system.config.latestVersion.android).toBe('2.4')
+    })
+
+    it('refuses something that is not a version, rather than storing it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      for (const version of ['v2.3', '2.3-beta', 'latest', '']) {
+        const response = await post(admin, '/admin/app-config/latest-version', {
+          platform: 'ios',
+          version,
+        })
+        expect(response.statusCode, `"${version}" was accepted`).toBe(400)
+      }
+
+      // And a platform that is not one of the three, which would otherwise
+      // become a fourth key nothing reads.
+      const platform = await post(admin, '/admin/app-config/latest-version', {
+        platform: 'windows',
+        version: '2.3',
+      })
+      expect(platform.statusCode).toBe(400)
+    })
+
+    it('is not something an ordinary member can do', async () => {
+      const member = await newUser()
+      const response = await post(member, '/admin/app-config/latest-version', {
+        platform: 'ios',
+        version: '9.9',
+      })
+      expect(response.statusCode).toBe(403)
+    })
+
+    it('leaves a trace, because a banner nobody remembers raising is a mystery', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/latest-version', { platform: 'web', version: '2.3' })
+
+      // By this admin, not just by action: the tests above this one raised
+      // the banner too, and `findOne` would answer with whichever came first.
+      const row = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .findOne({ action: 'appConfig.latestVersion', adminId: admin.userId })
+      expect(row?.payload).toEqual({ platform: 'web', version: '2.3' })
     })
   })
 })

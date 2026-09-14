@@ -1,15 +1,27 @@
+import { isVersion, type MinVersion } from '@langx/shared'
+import { useState } from 'react'
 import { Text, View } from 'react-native'
-import { useAdminStats } from '../../../src/api/queries'
+import { useAdminSetLatestVersion, useAdminStats } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { Card } from '../../../src/components/ui/Card'
+import { FormField } from '../../../src/components/ui/FormField'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
+import { showToast } from '../../../src/lib/toast'
+
+const PLATFORMS: readonly { value: keyof MinVersion; label: string }[] = [
+  { value: 'ios', label: 'iOS' },
+  { value: 'android', label: 'Android' },
+  { value: 'web', label: 'Web' },
+]
 
 /**
  * Whether anything is quietly broken.
@@ -20,17 +32,49 @@ import { makeStyles } from '../../../src/lib/theme'
  * why their streak reminders had stopped. `jobHealth` records every pass now,
  * and this is what reads it.
  *
- * Everything here is read only, and the config block most deliberately of all.
- * `scripts/maintenance.ts` explains why the kill switch is a script: it is the
- * control you reach for when something is wrong, and it must not depend on the
- * API being healthy enough to authenticate you. A panel served *by* that API
- * cannot be the thing that turns it off.
+ * Everything here is read only bar one field, and the exception is drawn
+ * narrowly. `scripts/maintenance.ts` explains why the kill switch is a script:
+ * it is the control you reach for when something is wrong, and it must not
+ * depend on the API being healthy enough to authenticate you. A panel served
+ * *by* that API cannot be the thing that turns it off.
+ *
+ * `latestVersion` is not that kind of control. The worst a wrong value there
+ * can do is show a dismissible banner, or show none — it blocks nobody. And it
+ * is needed at a moment nobody chooses: when a store release goes live, which
+ * is Apple's review queue's decision rather than a time anybody is sitting at a
+ * machine that can reach Mongo. So that one field is here, and everything that
+ * can stop the app working is still in the script.
  */
 export default function AdminSystemScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const stats = useAdminStats()
   const system = stats.data?.system
+
+  const [platform, setPlatform] = useState<keyof MinVersion>('ios')
+  const [version, setVersion] = useState('')
+  const raise = useAdminSetLatestVersion()
+
+  /*
+   * Checked here as well as on the server, against the same function, because
+   * the server's refusal arrives as a 400 with nothing to point at: the button
+   * is simply disabled until what is typed is a version.
+   */
+  const typed = version.trim()
+  const ready = isVersion(typed)
+
+  function submit(): void {
+    raise.mutate(
+      { platform, version: typed },
+      {
+        onSuccess: () => {
+          setVersion('')
+          showToast(ADMIN.system.setDone(platform, typed))
+        },
+        onError: () => showToast(ADMIN.common.failed),
+      },
+    )
+  }
 
   return (
     <AdminGate>
@@ -99,12 +143,44 @@ export default function AdminSystemScreen() {
                 {system.config.minVersion.android} · web {system.config.minVersion.web}
               </Text>
               <Text style={styles.row}>
+                {ADMIN.system.latestVersion}: ios {system.config.latestVersion.ios} · android{' '}
+                {system.config.latestVersion.android} · web {system.config.latestVersion.web}
+              </Text>
+              <Text style={styles.row}>
                 {ADMIN.system.flags}:{' '}
                 {Object.entries(system.config.flags)
                   .map(([name, on]) => `${name} ${on ? 'on' : 'off'}`)
                   .join(' · ')}
               </Text>
             </Card>
+            <Text style={styles.heading}>{ADMIN.system.raiseBanner}</Text>
+            <Card>
+              <Text style={styles.muted}>{ADMIN.system.raiseBannerHint}</Text>
+              <View style={styles.editor}>
+                <SegmentedControl
+                  options={PLATFORMS}
+                  selected={[platform]}
+                  onToggle={setPlatform}
+                  accessibilityLabel={ADMIN.system.raiseBanner}
+                />
+                <FormField
+                  value={version}
+                  onChangeText={setVersion}
+                  placeholder={ADMIN.system.versionPlaceholder}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="numbers-and-punctuation"
+                  accessibilityLabel={ADMIN.system.latestVersion}
+                />
+                <Button
+                  label={ADMIN.system.set}
+                  onPress={submit}
+                  disabled={!ready}
+                  loading={raise.isPending}
+                />
+              </View>
+            </Card>
+
             <Callout tone="info">
               <Text style={styles.calloutBody}>{ADMIN.system.readOnly}</Text>
             </Callout>
@@ -117,6 +193,7 @@ export default function AdminSystemScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  editor: { gap: 12, marginTop: 12 },
   calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   heading: {
     marginTop: 24,

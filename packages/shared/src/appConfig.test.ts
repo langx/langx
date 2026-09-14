@@ -4,6 +4,7 @@ import {
   isUpdateAvailable,
   isUpdateRequired,
   versionForPlatform,
+  withPlatformVersion,
 } from './appConfig'
 
 describe('isUpdateAvailable', () => {
@@ -49,5 +50,29 @@ describe('versionForPlatform', () => {
   it('falls to web for anything it does not recognise', () => {
     expect(versionForPlatform(versions, undefined)).toBe('1.0.0')
     expect(versionForPlatform(versions, 'windows-phone')).toBe('1.0.0')
+  })
+})
+
+describe('withPlatformVersion', () => {
+  const versions = { ios: '1.0.0', android: '1.0.0', web: '1.0.0' }
+
+  it('replaces one platform and leaves the other two alone', () => {
+    expect(withPlatformVersion(versions, 'ios', '2.3')).toEqual({
+      ios: '2.3',
+      android: '1.0.0',
+      web: '1.0.0',
+    })
+    expect(withPlatformVersion(versions, 'web', '2.3').web).toBe('2.3')
+  })
+
+  it('does not mutate what it was given', () => {
+    withPlatformVersion(versions, 'android', '2.3')
+    expect(versions.android).toBe('1.0.0')
+  })
+
+  it('writes an own property and never a prototype', () => {
+    const next = withPlatformVersion(versions, 'ios', '2.3')
+    expect(Object.keys(next).sort()).toEqual(['android', 'ios', 'web'])
+    expect(Object.getPrototypeOf(next)).toBe(Object.prototype)
   })
 })
