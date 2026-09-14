@@ -227,7 +227,12 @@ export interface Profile {
    * `/billing/refresh` moves that.
    */
   churnedFrom?: { tier: PlanTier; at: Date }
-  quota: { initiations: Date[]; translations: Date[]; media: Date[] }
+  /**
+   * `echoCaptures` is optional where the other three are not: it arrived after
+   * every existing profile was written, and `consumeQuota` reads the array
+   * through `$ifNull` rather than a migration filling it in.
+   */
+  quota: { initiations: Date[]; translations: Date[]; media: Date[]; echoCaptures?: Date[] }
   /**
    * When this account was last told it had run out — a rolling window, kept
    * by `consumeQuota` and read by nothing but the upsell nudge.
@@ -544,7 +549,7 @@ export async function createProfile(
       weekChartVisible: true,
     },
     entitlement: { tier: 'free', updatedAt: now },
-    quota: { initiations: [], translations: [], media: [] },
+    quota: { initiations: [], translations: [], media: [], echoCaptures: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },
     createdAt: now,
@@ -921,7 +926,7 @@ export async function createGuestProfile(
       weekChartVisible: false,
     },
     entitlement: { tier: 'free', updatedAt: now },
-    quota: { initiations: [], translations: [], media: [] },
+    quota: { initiations: [], translations: [], media: [], echoCaptures: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },
     createdAt: now,

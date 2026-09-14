@@ -8,6 +8,7 @@ import type { Profile } from '../modules/profiles/profiles'
 import { consumeQuota, QUOTA_REFUSAL_WINDOW_MS } from './quota'
 
 const FREE_INITIATIONS = quotaLimit('free', 'initiations') ?? 0
+const FREE_CAPTURES = quotaLimit('free', 'echoCaptures') ?? 0
 
 describe('what a refused quota leaves behind', () => {
   let mongo: MongoMemoryServer
@@ -89,5 +90,73 @@ describe('what a refused quota leaves behind', () => {
       })
     }
     expect(await refusalsOf(userId)).toEqual([])
+  })
+})
+
+/**
+ * A quota kind added after the profiles were written.
+ *
+ * `$filter` raises on a missing field rather than reading it as empty, so
+ * before `$ifNull` this was a 500 on the first Echo capture by every account
+ * that existed before Echo did — which is all of them. The profile below is
+ * deliberately written the way `newProfile` above writes it, with the three
+ * original arrays and no `echoCaptures`.
+ */
+describe('a quota bucket the profile has never had', () => {
+  let mongo: MongoMemoryServer
+  let handle: DbHandle
+
+  beforeAll(async () => {
+    mongo = await MongoMemoryServer.create()
+    handle = await connectToDatabase(mongo.getUri(), 'quota_missing_bucket_test')
+  })
+
+  afterAll(async () => {
+    await handle.close()
+    await mongo.stop()
+  })
+
+  async function profileWithoutEchoQuota(): Promise<string> {
+    const userId = new ObjectId().toHexString()
+    await handle.db.collection(COLLECTIONS.profiles).insertOne({
+      _id: userId,
+      handle: `h${userId.slice(-10)}`,
+      quota: { initiations: [], translations: [], media: [] },
+    } as never)
+    return userId
+  }
+
+  it('is consumed rather than raising', async () => {
+    const userId = await profileWithoutEchoQuota()
+    expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toEqual({
+      consumed: true,
+    })
+
+    const stored = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: userId }, { projection: { quota: 1 } })
+    expect(stored?.quota.echoCaptures).toHaveLength(1)
+  })
+
+  it('still refuses at the ceiling once the array exists', async () => {
+    const userId = await profileWithoutEchoQuota()
+    for (let index = 0; index < FREE_CAPTURES; index++) {
+      expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toEqual({
+        consumed: true,
+      })
+    }
+    expect(await consumeQuota(handle.db, userId, 'free', 'echoCaptures')).toMatchObject({
+      consumed: false,
+    })
+  })
+
+  it('charges the paid tiers the same, because the ceiling is not a paywall', async () => {
+    const userId = await profileWithoutEchoQuota()
+    for (let index = 0; index < FREE_CAPTURES; index++) {
+      await consumeQuota(handle.db, userId, 'pro_plus', 'echoCaptures')
+    }
+    expect(await consumeQuota(handle.db, userId, 'pro_plus', 'echoCaptures')).toMatchObject({
+      consumed: false,
+    })
   })
 })
