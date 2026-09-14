@@ -631,6 +631,8 @@ export const ptBR: Localized<EnMessages> = {
     walletBody: 'O rateio diário e seu presente por hora.',
     promotions: 'Novidades e ofertas',
     promotionsBody: 'De vez em quando, o que há de novo. Um toque para parar.',
+    echo: 'Echo',
+    echoBody: 'Cartões para revisar, uma vez à noite.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'E-mail diário' },
     emailUnverified: 'Verifique seu endereço de e-mail para ativar isto.',

@@ -710,6 +710,8 @@ export const en = {
     walletBody: 'The daily pool paying out, and your hourly gift.',
     promotions: 'News and offers',
     promotionsBody: 'Occasional word about what is new. One tap to stop.',
+    echo: 'Echo',
+    echoBody: 'Cards due, once in the evening.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Daily email' },
     emailUnverified: 'Verify your email address to turn this on.',

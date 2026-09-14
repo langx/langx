@@ -635,6 +635,8 @@ export const es: Localized<EnMessages> = {
     walletBody: 'El reparto diario y tu regalo por hora.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Un toque para parar.',
+    echo: 'Echo',
+    echoBody: 'Tarjetas pendientes, una vez por la tarde.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'Correo diario' },
     emailUnverified: 'Verifica tu dirección de correo para activarlo.',

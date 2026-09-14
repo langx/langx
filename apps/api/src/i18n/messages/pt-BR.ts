@@ -5,6 +5,11 @@ export const ptBR: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: 'Sequência de {count} dia! 🔥', other: 'Sequência de {count} dias! 🔥' },
     streakBody: 'Mande uma mensagem hoje para mantê-la.',
+    echoTitle: {
+      one: '1 cartão está pronto',
+      other: '{count} cartões estão prontos',
+    },
+    echoBody: 'Alguns minutos agora e eles ficam com você.',
     profileVisitsTitle: {
       one: '1 pessoa viu seu perfil',
       other: '{count} pessoas viram seu perfil',

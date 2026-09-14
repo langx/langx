@@ -5,6 +5,11 @@ export const tr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: '{count} günlük seri! 🔥', other: '{count} günlük seri! 🔥' },
     streakBody: 'Seriyi sürdürmek için bugün bir mesaj gönder.',
+    echoTitle: {
+      one: '1 kart hazır',
+      other: '{count} kart hazır',
+    },
+    echoBody: 'Şimdi birkaç dakika, sonra aklında kalır.',
     profileVisitsTitle: { one: '1 kişi profiline baktı', other: '{count} kişi profiline baktı' },
     profileVisitsBody: 'Kim olduğunu görmek için dokun.',
     badgeOneTitle: 'Yeni rozet: {label} 🏅',

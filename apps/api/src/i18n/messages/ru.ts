@@ -15,6 +15,13 @@ export const ru: Localized<ServerMessages> = {
       other: 'Серия из {count} дня! 🔥',
     },
     streakBody: 'Отправьте сегодня сообщение, чтобы её сохранить.',
+    echoTitle: {
+      one: '{count} карточка ждёт',
+      few: '{count} карточки ждут',
+      many: '{count} карточек ждут',
+      other: '{count} карточки ждут',
+    },
+    echoBody: 'Несколько минут сейчас — и они останутся с вами.',
     profileVisitsTitle: {
       one: '1 человек посмотрел ваш профиль',
       other: 'Ваш профиль посмотрели: {count}',

@@ -54,6 +54,17 @@ export const NOTIFICATION_TYPES = [
    * a currency somebody did not ask for is the definition of noise.
    */
   'wallet',
+  /**
+   * Cards waiting in Echo, at the end of the day.
+   *
+   * Its own kind rather than folded into `streak`, and the reason is what the
+   * two sentences actually say. A streak nudge is about a run you are about
+   * to break; this is about work that is ready whether or not you have a run.
+   * Somebody who has turned the streak off because they do not want to be
+   * chased by a number may still want to be told their cards are due — and
+   * labelling one as the other is how a switch stops meaning anything.
+   */
+  'echo',
   'promotions',
 ] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
@@ -136,6 +147,15 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
    */
   wallet: { push: true, email: true },
   promotions: { push: false, email: true },
+  /*
+   * Push on, mail off — and the only service kind with mail off, which is a
+   * deliberate exception rather than an oversight. The evening digest already
+   * goes out at 19:00 local and this fires at the same hour; a second letter
+   * saying the same thing on the same evening is the fastest way to make
+   * somebody turn both off. The buzz is the right medium for "there is
+   * something ready now"; a letter is not.
+   */
+  echo: { push: true, email: false },
 }
 
 /**
@@ -156,6 +176,7 @@ export const notificationPrefsSchema = z
     social: channelPrefsSchema,
     wallet: channelPrefsSchema,
     promotions: channelPrefsSchema,
+    echo: channelPrefsSchema,
   })
   .partial()
 export type NotificationPrefsInput = z.infer<typeof notificationPrefsSchema>
@@ -266,6 +287,13 @@ const SYSTEM_WRITTEN_DEFAULTS: StoredNotificationPrefs[] = [
    * chose as a refusal.
    */
   { ...DEFAULT_NOTIFICATION_PREFS, promotions: { push: false, email: false } },
+  /*
+   * Today's shape without the Echo cell. Every profile written before Echo
+   * shipped carries this, and the comparison counts keys — so leaving it out
+   * would make all of them read as "touched" and hand `audience.ts` a refusal
+   * nobody chose.
+   */
+  (({ echo: _echo, ...rest }) => rest)(DEFAULT_NOTIFICATION_PREFS),
   // The bare boolean per kind — no `badges`, which did not exist yet.
   { messages: true, streak: true, profileVisits: true, promotions: false },
   // The retired matrix, in the shape it was written in.

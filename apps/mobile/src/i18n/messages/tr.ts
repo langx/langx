@@ -639,6 +639,8 @@ export const tr: Localized<EnMessages> = {
     walletBody: 'Günlük havuzun ödemesi ve saatlik hediyen.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. Tek dokunuşla durur.',
+    echo: 'Echo',
+    echoBody: 'Bekleyen kartlar, akşamda bir kez.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Anlık bildirim', email: 'Günlük e-posta' },
     emailUnverified: 'Bunu açmak için e-posta adresini doğrula.',

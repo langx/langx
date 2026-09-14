@@ -641,6 +641,8 @@ export const fr: Localized<EnMessages> = {
     walletBody: 'La distribution quotidienne et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
+    echo: 'Echo',
+    echoBody: 'Les cartes à revoir, une fois le soir.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Push', email: 'E-mail quotidien' },
     emailUnverified: 'Vérifiez votre adresse e-mail pour l’activer.',

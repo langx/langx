@@ -12,6 +12,8 @@ export type NotificationJob =
    */
   | 'unreadDigest'
   | 'profileVisitsPush'
+  /** The evening Echo nudge. One per person per local day. */
+  | 'echoReminder'
   | 'profileVisitsEmail'
   | 'badgeEarned'
   | 'badgeDigest'

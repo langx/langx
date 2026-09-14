@@ -43,6 +43,8 @@ export type UpdateDeviceInput = z.infer<typeof updateDeviceSchema>
 export const PUSH_KINDS = [
   'message',
   'streakReminder',
+  /** Cards due in Echo, at the end of the reader's day. */
+  'echo',
   'badgeEarned',
   'profileVisits',
   'meetingReminder',
@@ -88,6 +90,21 @@ export const STREAK_REMINDER_LOCAL_HOUR = 20
  * looked at you" is something a person can act on.
  */
 export const PROFILE_VISITS_LOCAL_HOUR = 12
+
+/**
+ * When the Echo nudge goes out.
+ *
+ * Seven, an hour before the streak reminder rather than beside it, and the
+ * order is the point: the cards are the thing you can act on, and the streak
+ * nudge an hour later is the one that says the day is nearly gone. Reversed,
+ * the streak nudge would arrive first and the Echo one would read as a second
+ * chase for the same thing.
+ *
+ * It shares the hour with the daily digest, which is mail. Different channel,
+ * different medium, and the digest is a summary where this is an invitation
+ * to do something now.
+ */
+export const ECHO_REMINDER_LOCAL_HOUR = 19
 
 /** Monday, on the reader's own calendar. `Date.getUTCDay()` numbering. */
 export const PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY = 1

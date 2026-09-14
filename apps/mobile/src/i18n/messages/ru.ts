@@ -689,6 +689,8 @@ export const ru: Localized<EnMessages> = {
     walletBody: 'Ежедневный пул и почасовой подарок.',
     promotions: 'Новости и предложения',
     promotionsBody: 'Изредка о новом. Одно касание — и всё прекратится.',
+    echo: 'Эхо',
+    echoBody: 'Карточки, которые ждут, — раз вечером.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'Пуш', email: 'Письмо раз в день' },
     emailUnverified: 'Подтвердите адрес почты, чтобы включить это.',

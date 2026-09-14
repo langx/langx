@@ -706,6 +706,8 @@ export const ar: Localized<EnMessages> = {
     walletBody: 'التوزيع اليومي وهديتك كل ساعة.',
     promotions: 'الأخبار والعروض',
     promotionsBody: 'بين حين وآخر عن الجديد. نقرة واحدة توقفه.',
+    echo: 'صدى',
+    echoBody: 'البطاقات المستحقة، مرة واحدة مساءً.',
     /** The two halves of every kind above; the row title, so no kind name in it. */
     channel: { push: 'إشعار فوري', email: 'بريد يومي' },
     emailUnverified: 'وثّق عنوان بريدك لتفعيل هذا.',
