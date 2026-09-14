@@ -1,9 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
-import { ApiRequestError } from '../../../src/api/client'
+import { api, ApiRequestError } from '../../../src/api/client'
 import { useStartConversation } from '../../../src/api/queries'
+import type { PublicProfileDto } from '../../../src/api/types'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
 import { PresenceLine } from '../../../src/components/PresenceLine'
@@ -20,6 +21,8 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { addUnsent, newClientId } from '../../../src/lib/unsentMessages'
+import { loadUnsent, saveUnsent } from '../../../src/lib/unsentStore'
 
 /**
  * A conversation that does not exist yet, drawn as the one it is about to be.
@@ -52,6 +55,63 @@ export default function NewChatScreen() {
     useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
   const [draft, setDraft] = useState('')
 
+  /*
+   * A conversation these two already have makes this the wrong screen: the
+   * server refuses a second one, so anything written here would be refused at
+   * the send. The profile that pushed here can be seconds out of date — the
+   * thread may have been opened from another device, or by the other person
+   * writing first — so the decision is taken again here, off the profile this
+   * screen fetches for its own header.
+   *
+   * Only while the composer is empty: mid-sentence the send below hands the
+   * words to the thread rather than dropping them, and that is the better of
+   * the two. And only before a send has been made — `isIdle`, not merely "not
+   * in flight": the send that succeeds invalidates the profiles, which fills
+   * in `conversationId` here a beat before the screen is gone, and this must
+   * not answer it with a second `replace` behind the one the send makes.
+   */
+  const existingConversationId = partner?.conversationId
+  useEffect(() => {
+    if (existingConversationId && !draft && startConversation.isIdle) {
+      router.replace(`/(app)/chat/${existingConversationId}`)
+    }
+  }, [existingConversationId, draft, startConversation.isIdle])
+
+  /**
+   * Moves what was typed into the conversation that turned out to exist.
+   *
+   * The refusal does not carry its id, so it is read from the profile — the
+   * same request the header is drawn from. The body is left as an unsent row
+   * rather than sent: that row is what a thread already has for a sentence the
+   * server never took, and one tap on it sends it. Before this the words went
+   * nowhere and the chats list appeared instead, which from the composer reads
+   * as the message having been swallowed.
+   */
+  async function handOverToExisting(body: string): Promise<void> {
+    let conversationId: string | undefined
+    try {
+      conversationId = (await api.get<PublicProfileDto>(`/profiles/${partnerId}`)).conversationId
+    } catch {
+      // Nothing to add to the refusal that already happened.
+    }
+    if (!conversationId) {
+      router.replace('/(app)/(tabs)/chats')
+      return
+    }
+    // Added to what is stored rather than written over it: a thread reached
+    // this way can already be holding rows from a tunnel.
+    const stored = await loadUnsent(conversationId)
+    await saveUnsent(
+      conversationId,
+      addUnsent(stored, {
+        clientId: newClientId(Date.now(), Math.random()),
+        body,
+        failedAt: new Date().toISOString(),
+      }),
+    )
+    router.replace(`/(app)/chat/${conversationId}`)
+  }
+
   async function send(): Promise<void> {
     const body = draft.trim()
     if (!body || !partnerId || startConversation.isPending) return
@@ -63,7 +123,10 @@ export default function NewChatScreen() {
     setDraft('')
     try {
       const conversation = await startConversation.mutateAsync({ toUserId: partnerId, body })
-      router.replace(`/(app)/chat/${conversation._id}`)
+      // `inPlace`: the thread takes this screen's place without the stack's
+      // slide — this screen was drawn as that thread, and a second screen
+      // sliding in over it reads as the app opening the chat twice.
+      router.replace(`/(app)/chat/${conversation._id}?inPlace=1`)
     } catch (caught) {
       setDraft(body)
       if (caught instanceof ApiRequestError) {
@@ -76,9 +139,9 @@ export default function NewChatScreen() {
           return
         }
         // Somebody else got there first — from another device, or the other
-        // person wrote. The list has the thread; this screen has nothing.
+        // person wrote. The thread exists, so what was typed goes to it.
         if (caught.code === 'CONVERSATION_EXISTS') {
-          router.replace('/(app)/(tabs)/chats')
+          await handOverToExisting(body)
           return
         }
         showToast(caught.message)
