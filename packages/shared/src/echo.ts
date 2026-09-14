@@ -210,6 +210,23 @@ export const captureEchoResultSchema = z.object({
 export type CaptureEchoResult = z.infer<typeof captureEchoResultSchema>
 
 /**
+ * What a person may change about a card of their own.
+ *
+ * The two lines they read, and nothing else. The language, the media and the
+ * source are what the card was *made* from: editing those would leave
+ * `sourceKey` claiming a card is still the one message it can no longer be.
+ *
+ * `back` may be emptied. A card whose translation came back wrong is better
+ * with no back than with a wrong one, and the capture already writes an empty
+ * one whenever nothing could translate the sentence.
+ */
+export const updateEchoCardSchema = z.object({
+  front: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH),
+  back: z.string().trim().max(ECHO_BACK_MAX_LENGTH),
+})
+export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
+
+/**
  * Minted by the client, one per graded card, before the batch is sent.
  *
  * Minted at grade time and not at submit time: the unique `{ userId, reviewId }`

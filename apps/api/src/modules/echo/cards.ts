@@ -5,6 +5,7 @@ import {
   type CaptureEchoInput,
   type CaptureEchoResult,
   type EchoAudio,
+  type EchoCard,
   type EchoCardPage,
   type EchoImage,
   type EchoQueue,
@@ -17,6 +18,7 @@ import {
   translatableLanguageSchema,
   type TranslateRequestInput,
   translateTargetFor,
+  type UpdateEchoCardInput,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -434,6 +436,38 @@ export async function removeCard(db: Db, userId: string, idOrSourceKey: string):
       ? { userId, _id: new ObjectId(idOrSourceKey) }
       : { userId, sourceKey: idOrSourceKey }
   await cards.deleteOne(filter)
+}
+
+/**
+ * Fixing the two lines a person reads.
+ *
+ * The schedule is left where it is: a card whose wording was corrected is the
+ * same card and keeps the interval it earned. So is the source — the link
+ * back to the message stays true about where the sentence came from, even
+ * once the copy on the card no longer matches what is in the thread.
+ *
+ * The `userId` in the filter is the whole of the access control, as it is for
+ * `removeCard`: a card belongs to one person and nobody else can see it, so a
+ * card that is not theirs is a card that is not there.
+ */
+export async function updateCard(
+  db: Db,
+  userId: string,
+  cardId: string,
+  input: UpdateEchoCardInput,
+): Promise<EchoCard> {
+  if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
+
+  const updated = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .findOneAndUpdate(
+      { _id: new ObjectId(cardId), userId },
+      { $set: { front: input.front, back: input.back } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw notFound('Card not found')
+
+  return toEchoCard(updated)
 }
 
 export async function listCards(

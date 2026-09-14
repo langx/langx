@@ -4,11 +4,19 @@ import {
   listEchoCardsQuerySchema,
   startPackSchema,
   submitEchoReviewsSchema,
+  updateEchoCardSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
-import { captureEcho, dueQueue, listCards, removeCard, summary } from '../modules/echo/cards'
+import {
+  captureEcho,
+  dueQueue,
+  listCards,
+  removeCard,
+  summary,
+  updateCard,
+} from '../modules/echo/cards'
 import { listPacks, startPack } from '../modules/echo/packs'
 import { submitReviews } from '../modules/echo/reviews'
 import { localeFromHeader } from '../i18n'
@@ -44,6 +52,20 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
       // the card that was already there, which is what makes the gesture
       // idempotent rather than merely forgiving.
       return reply.code(result.created ? 201 : 200).send(result)
+    },
+  )
+
+  /*
+   * A card id only, unlike the `DELETE` below: the two shapes exist for the
+   * chat screen, which holds a message id and never edits anything.
+   */
+  app.patch(
+    '/echo/cards/:id',
+    { preHandler: requireAuth, schema: { params: cardParamsSchema, body: updateEchoCardSchema } },
+    async (request, reply) => {
+      return reply.send(
+        await updateCard(app.mongo.db, request.userId, request.params.id, request.body),
+      )
     },
   )
 
