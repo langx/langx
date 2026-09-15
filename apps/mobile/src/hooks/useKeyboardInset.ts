@@ -16,8 +16,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
  * subtracts the bottom inset the screen already pads — the arithmetic has
  * nothing to measure and nothing to get wrong.
  *
- * iOS only. Android resizes the window for the keyboard (`adjustResize`), so
- * the value stays at zero there and nothing is padded twice. Follows
+ * iOS only. Android is padded once for every screen by `KeyboardResizeHost`
+ * at the root, so the value stays at zero there and nothing is padded twice.
+ * Follows
  * `keyboardWillChangeFrame`, so the pad moves with the keyboard rather than
  * after it, and takes the animation's own duration and curve.
  */

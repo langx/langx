@@ -24,6 +24,7 @@ import { AlertHost } from '../src/components/AlertHost'
 import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { AppSplash, SplashFill } from '../src/components/AppSplash'
+import { KeyboardResizeHost } from '../src/components/KeyboardResizeHost'
 import { Button } from '../src/components/ui/Button'
 import { MessageBannerHost } from '../src/components/MessageBannerHost'
 import { ToastHost } from '../src/components/ToastHost'
@@ -323,77 +324,85 @@ function RootShell() {
         ) : (
           <AppGate>
             {/*
-              Above the navigator, not inside a screen: the delete-account flow
-              signs out while its own confirmation is still open, and a dialog
-              owned by a screen dies with it.
+              Around the whole tree, because it stands in for the window
+              resize Android used to do for the keyboard — see the component.
+              The dialog hosts are Modals, which are windows of their own and
+              pad for the keyboard themselves.
             */}
-            <AlertHost />
-            <MessageMenuHost />
-            {/*
-              Above the navigator with the other two dialogs, and a Modal like
-              them: the tour dims the tab bar as well as the screen, and it has
-              to outlive the screen that started it — the Settings row that
-              replays it navigates while the run is being set up.
-            */}
-            <TourHost />
-            <Stack screenOptions={{ headerShown: false }}>
+            <KeyboardResizeHost>
               {/*
-                Outside both guards, because it *is* the guard: `index` is the
-                only screen at `/` in every state, and it reads the session
-                itself. Behind `!!session` it was one of two screens matching
-                the empty path, and which one answered a returning guest was
-                decided by route-file order.
+                Above the navigator, not inside a screen: the delete-account flow
+                signs out while its own confirmation is still open, and a dialog
+                owned by a screen dies with it.
               */}
+              <AlertHost />
+              <MessageMenuHost />
               {/*
-                No swipe between the groups. They switch by `replace` and
-                `<Redirect>`, so there is nothing to pop to today — this is
-                what keeps a future `push` from ever swiping a signed-in user
-                back onto the sign-in form.
+                Above the navigator with the other two dialogs, and a Modal like
+                them: the tour dims the tab bar as well as the screen, and it has
+                to outlive the screen that started it — the Settings row that
+                replays it navigates while the run is being set up.
               */}
-              <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+              <TourHost />
+              <Stack screenOptions={{ headerShown: false }}>
+                {/*
+                  Outside both guards, because it *is* the guard: `index` is the
+                  only screen at `/` in every state, and it reads the session
+                  itself. Behind `!!session` it was one of two screens matching
+                  the empty path, and which one answered a returning guest was
+                  decided by route-file order.
+                */}
+                {/*
+                  No swipe between the groups. They switch by `replace` and
+                  `<Redirect>`, so there is nothing to pop to today — this is
+                  what keeps a future `push` from ever swiping a signed-in user
+                  back onto the sign-in form.
+                */}
+                <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+                {/*
+                  Also outside both guards: the emailed sign-in link lands here
+                  whoever taps it, and a signed-in member tapping it must not
+                  fall through to `[username]` because `(auth)` is unmounted.
+                */}
+                <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
+                {/* The verification link, for the same reason. */}
+                <Stack.Screen name="verify-email" options={{ gestureEnabled: false }} />
+                {/*
+                  Outside both guards for the same reason, from the other end: a
+                  suspended account still holds a perfectly good session — that
+                  is what a suspension is — so the guard has nothing to say about
+                  this screen, and the transport `replace`s here from wherever
+                  the 403 was met.
+                */}
+                <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
+                <Stack.Protected guard={!!session}>
+                  <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
+                  <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
+                </Stack.Protected>
+                {/*
+                  `!session` alone was right while every session meant an account.
+                  A guest holds one, so `(auth)` would unmount and "send them to
+                  sign up" would have nowhere to go. Both branches mount for a
+                  guest, which is exactly the state they are in: browsing inside
+                  `(app)`, one tap away from `(auth)`.
+                */}
+                <Stack.Protected guard={!session || isGuest}>
+                  <Stack.Screen name="(auth)" options={{ gestureEnabled: false }} />
+                </Stack.Protected>
+              </Stack>
               {/*
-                Also outside both guards: the emailed sign-in link lands here
-                whoever taps it, and a signed-in member tapping it must not
-                fall through to `[username]` because `(auth)` is unmounted.
+                After the navigator, not before it: this one is a plain
+                positioned view rather than a Modal, so painting over the screen
+                is a matter of coming later in the tree.
               */}
-              <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
-              {/* The verification link, for the same reason. */}
-              <Stack.Screen name="verify-email" options={{ gestureEnabled: false }} />
+              <ToastHost />
               {/*
-                Outside both guards for the same reason, from the other end: a
-                suspended account still holds a perfectly good session — that
-                is what a suspension is — so the guard has nothing to say about
-                this screen, and the transport `replace`s here from wherever
-                the 403 was met.
+                Last, so it paints over the toast as well: a message arriving is
+                the more urgent of the two, and both at once is rare enough that
+                the toast losing four seconds costs nothing.
               */}
-              <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
-              <Stack.Protected guard={!!session}>
-                <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
-                <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
-              </Stack.Protected>
-              {/*
-                `!session` alone was right while every session meant an account.
-                A guest holds one, so `(auth)` would unmount and "send them to
-                sign up" would have nowhere to go. Both branches mount for a
-                guest, which is exactly the state they are in: browsing inside
-                `(app)`, one tap away from `(auth)`.
-              */}
-              <Stack.Protected guard={!session || isGuest}>
-                <Stack.Screen name="(auth)" options={{ gestureEnabled: false }} />
-              </Stack.Protected>
-            </Stack>
-            {/*
-              After the navigator, not before it: this one is a plain
-              positioned view rather than a Modal, so painting over the screen
-              is a matter of coming later in the tree.
-            */}
-            <ToastHost />
-            {/*
-              Last, so it paints over the toast as well: a message arriving is
-              the more urgent of the two, and both at once is rare enough that
-              the toast losing four seconds costs nothing.
-            */}
-            <MessageBannerHost />
+              <MessageBannerHost />
+            </KeyboardResizeHost>
           </AppGate>
         )}
         {/*
