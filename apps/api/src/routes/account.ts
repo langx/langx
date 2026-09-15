@@ -5,6 +5,7 @@ import {
   handlesMatch,
   registerDeviceSchema,
   setPasswordSchema,
+  unregisterDeviceQuerySchema,
   updateDeviceSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -142,6 +143,30 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  /**
+   * Withdraw this installation, which is what signing out does.
+   *
+   * By `deviceId` and nothing else — see `unregisterDeviceQuerySchema` for why
+   * the token-shaped route below could not be the one a sign-out calls. A
+   * `deviceId` this account has no row for matches nothing and still answers
+   * 204: the caller asked for the device to be gone, and it is.
+   */
+  app.delete(
+    '/me/devices',
+    { preHandler: requireMember, schema: { querystring: unregisterDeviceQuerySchema } },
+    async (request, reply) => {
+      await unregisterDevice(app.mongo.db, request.userId, { deviceId: request.query.deviceId })
+      return reply.code(204).send()
+    },
+  )
+
+  /**
+   * The same thing keyed by the push token, for builds already on phones.
+   *
+   * Every current client calls the route above; this one stays because an
+   * older one cannot be asked to stop, and because a token is still the only
+   * handle a client that never had a `deviceId` has.
+   */
   app.delete('/me/devices/:token', { preHandler: requireMember }, async (request, reply) => {
     const { token } = request.params as { token: string }
     const { deviceId } = request.query as { deviceId?: string }

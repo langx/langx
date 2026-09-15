@@ -105,35 +105,33 @@ function why(error: unknown): string {
 }
 
 /**
- * Removes this device's push token from the account it is currently signed
- * into. Call before ending the session.
+ * Removes this device from the account it is currently signed into. Call
+ * before ending the session.
  *
  * Without it a signed-out device keeps receiving that account's message and
- * streak notifications until the token happens to be reassigned — someone
- * signs out on a borrowed or sold phone and their messages keep arriving on
- * it. `DELETE /me/devices/:token` existed for this from the beginning and
- * nothing called it.
+ * streak notifications until the row happens to be reassigned — someone signs
+ * out on a borrowed or sold phone and their messages keep arriving on it.
  *
- * Every failure is swallowed. A token that cannot be removed must never be
- * able to trap someone in a signed-in state: being unable to sign out is a
- * worse outcome than a stale token, and the server drops the token anyway the
- * moment it is claimed by another account.
+ * **The installation id, and nothing else.** It used to mint an Expo push
+ * token first, to fill the `:token` segment of the route it called — and the
+ * server, given a `deviceId`, has always matched on that and never read the
+ * token. So the one call on this path with no timeout of its own, waiting on
+ * APNs registration and then on Expo's server, was being made for a value
+ * nothing was going to look at. It sat directly in front of the sign-out, and
+ * a phone where it did not come back was a phone that could not sign out. The
+ * permission check went with it: it only existed to decide whether minting a
+ * token was worth it, and there is no token to mint. `deviceId()` is a local
+ * read, and a device the account has no row for answers 204 either way.
+ *
+ * Every failure is still swallowed. Being unable to sign out is a worse
+ * outcome than a stale row, and the server drops the row anyway the moment the
+ * installation is claimed by another account.
  */
 export async function unregisterPushToken(): Promise<void> {
   try {
     if (Platform.OS === 'web' || !Device.isDevice) return
-    const Notifications = await import('expo-notifications')
-    const existing = await Notifications.getPermissionsAsync()
-    // No permission means no token was ever registered from this device.
-    if (!existing.granted) return
-
-    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
-    // The id as well as the token: a phone whose token has rotated since it
-    // registered would otherwise leave its row behind, still receiving.
     const id = await deviceId()
-    await api.delete(
-      `/me/devices/${encodeURIComponent(token.data)}?deviceId=${encodeURIComponent(id)}`,
-    )
+    await api.delete(`/me/devices?deviceId=${encodeURIComponent(id)}`)
   } catch {
     // See above: never block a sign-out.
   }

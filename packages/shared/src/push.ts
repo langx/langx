@@ -40,6 +40,22 @@ export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>
 export const updateDeviceSchema = z.object({ pushEnabled: z.boolean() })
 export type UpdateDeviceInput = z.infer<typeof updateDeviceSchema>
 
+/**
+ * `DELETE /me/devices?deviceId=…` — withdrawing this installation on sign-out.
+ *
+ * The installation alone, because that is all the server ever reads: given a
+ * `deviceId`, `unregisterDevice` matches on it and never looks at the token.
+ * The older `DELETE /me/devices/:token` therefore made the client mint an Expo
+ * push token purely to fill a path segment — and on iOS minting one waits on
+ * APNs registration and then on Expo's own server, neither of which has a
+ * timeout. That wait sat in front of the sign-out itself. Nothing is looked up
+ * here, so there is nothing to wait for.
+ */
+export const unregisterDeviceQuerySchema = z.object({
+  deviceId: z.string().trim().min(1).max(128),
+})
+export type UnregisterDeviceQuery = z.infer<typeof unregisterDeviceQuerySchema>
+
 export const PUSH_KINDS = [
   'message',
   'streakReminder',
