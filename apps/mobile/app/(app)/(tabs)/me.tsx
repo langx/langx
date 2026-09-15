@@ -94,7 +94,7 @@ export default function MeScreen() {
    */
   if (!me.data) {
     return (
-      <Screen>
+      <Screen tabbed>
         {queryFailed(me) ? (
           <LoadFailed onRetry={() => void me.refetch()} />
         ) : (
@@ -134,7 +134,7 @@ export default function MeScreen() {
     .join(' · ')
 
   return (
-    <Screen scroll {...pull}>
+    <Screen scroll tabbed {...pull}>
       <View style={styles.hero}>
         {/*
           A photo opens full screen, as on the public profile; a generated face

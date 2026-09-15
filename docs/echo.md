@@ -214,10 +214,26 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    is ever wanted, it goes behind an optional `tts/` provider shaped like
    `translation/`, writing `echo/tts/<lang>/<sha1(text)>.mp3` to storage and
    looking that key up first.
-4. **Pack recordings.** Lingua Libre word recordings from Wikimedia Commons
-   (CC BY-SA 4.0, attribution in the content directory) replace the synthetic
-   voice for single words when a pack item has one; phrases keep TTS until
-   Common Voice (CC0) or our own recordings cover them. Phase 2.
+4. **Pack recordings. Built.** A Wikimedia Commons file on the pack item,
+   played from Commons rather than copied into our storage — the decision
+   `build-pack.mjs` said nobody had taken. **Its cost, stated rather than
+   absorbed:** a file renamed or deleted on Commons silences that card. That is
+   the opposite of the rule the other three sources follow, and it is accepted
+   only here, because a pack is content we can re-seed where a captured
+   sentence is somebody's own.
+
+   Nothing is assumed from a filename. `add-audio.mjs` looks every candidate up
+   and keeps only permissive terms — the three English drafts came back with
+   **six different licences across 130 files**, so treating Commons audio as
+   uniformly CC BY-SA would have been wrong about more than half of them. A
+   file whose author cannot be read is refused rather than played uncredited,
+   and the speaker's name travels to `EchoAudio.speakerName`, which the session
+   already draws as "Spoken by {name}". See `content/echo/ATTRIBUTION.md`.
+
+   133 of 870 items in the English drafts have one. The rest keep no audio:
+   phrases mostly have no recording anywhere, and Common Voice (CC0) or our own
+   is the answer for them.
+
 5. **A recording the owner made for the card**, from the edit screen. The one
    source that is not a copy of something else, and `origin` says so: `post`,
    `chat` and `pack` all name a file something else still plays, and `self` is
@@ -623,7 +639,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | Phase | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Done when                                                                                                                                     |
 | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio" | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
-| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. **Not built:** the `en` and `fr` packs themselves, pack audio from Lingua Libre, OpenMoji icons — all three wait on content a person has read                                                                                                                                                                                               | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
+| 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file. **Not built:** the `en` and `fr` packs themselves and OpenMoji icons — both wait on content a person has read, which is also what the English drafts' audio is waiting behind                                                                                                   | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
 | 3     | **Built:** production cards, offline review. **Left:** pack multiple choice, listening cards, the upper two levels, more languages, FSRS                                                                                                                                                                                                                                                                                                                                                                             | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be

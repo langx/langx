@@ -11,6 +11,16 @@ interface ScreenProps {
   /** Pull-to-refresh. Only meaningful together with `scroll`. */
   onRefresh?: () => void
   refreshing?: boolean
+  /**
+   * The screen sits inside the tab navigator. The bar below it already pays
+   * the bottom inset — that padding is what keeps its five words off the home
+   * indicator — and the tabs are laid out beside the scene rather than over
+   * it, so a screen that pays the inset again stops a home indicator's worth
+   * of air short of the tab line and leaves a band of bare background there.
+   * On the phone only: a browser's bottom inset is zero, which is why the web
+   * build never showed it.
+   */
+  tabbed?: boolean
   style?: ViewStyle
 }
 
@@ -25,6 +35,7 @@ export function Screen({
   fluid = false,
   onRefresh,
   refreshing = false,
+  tabbed = false,
   style,
 }: ScreenProps) {
   const styles = useStyles()
@@ -32,7 +43,7 @@ export function Screen({
   const insets = useSafeAreaInsets()
   const padding = {
     paddingTop: insets.top,
-    paddingBottom: insets.bottom,
+    paddingBottom: tabbed ? 0 : insets.bottom,
   }
 
   const inner = <View style={[styles.column, fluid && styles.fluid, style]}>{children}</View>

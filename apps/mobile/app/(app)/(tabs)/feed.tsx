@@ -342,7 +342,7 @@ export default function FeedScreen() {
   }
 
   return (
-    <Screen fluid>
+    <Screen fluid tabbed>
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{t('feed.title')}</Text>

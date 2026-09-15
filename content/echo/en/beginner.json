@@ -79,6 +79,12 @@
             "tags": ["General-American"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7d/LL-Q1860_%28eng%29-Vealhurl-so_long.wav/LL-Q1860_%28eng%29-Vealhurl-so_long.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-so long.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -224,6 +230,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/dc/En-us-get_lost.ogg/En-us-get_lost.ogg.mp3",
+        "file": "en-us-get_lost.ogg",
+        "speaker": "Dvortygirl",
+        "licence": "CC BY-SA 3.0"
       }
     },
     {
@@ -289,6 +301,12 @@
         ],
         "machineSense": "Do you understand?",
         "correctedTr": "anladın mı?"
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6e/LL-Q1860_%28eng%29-Vealhurl-got_it.wav/LL-Q1860_%28eng%29-Vealhurl-got_it.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-got it.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -352,6 +370,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/32/LL-Q1860_%28eng%29-Sapaa-it_depends.wav/LL-Q1860_%28eng%29-Sapaa-it_depends.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-it depends.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -413,24 +437,6 @@
     {
       "index": 18,
       "kind": "phrase",
-      "text": "I'm so fat.",
-      "gloss": {
-        "tr": "Çok şişmanım.",
-        "de": "Ich bin so dick.",
-        "es": "Estoy tan gordo.",
-        "fr": "Je suis si gros.",
-        "pt-BR": "Estou tão gorda.",
-        "ru": "Я такой жирный.",
-        "ar": "أنا بدين جداً."
-      },
-      "freqRank": 19,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 19,
-      "kind": "phrase",
       "text": "Are you mad?",
       "gloss": {
         "tr": "Deli misin?",
@@ -441,13 +447,13 @@
         "ru": "Ты с ума сошёл?",
         "ar": "هل أنت غاضب؟"
       },
-      "freqRank": 20,
+      "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 20,
+      "index": 19,
       "kind": "phrase",
       "text": "Don't do it!",
       "gloss": {
@@ -458,6 +464,24 @@
         "pt-BR": "Não o faça!",
         "ru": "Не делай этого!",
         "ar": "لا تفعل ذلك!"
+      },
+      "freqRank": 20,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "He is alone.",
+      "gloss": {
+        "tr": "O yalnızdır.",
+        "de": "Er ist alleine.",
+        "es": "Él está solo.",
+        "fr": "Il est seul.",
+        "pt-BR": "Ele está sozinho.",
+        "ru": "Он одинок.",
+        "ar": "إنه وحيد."
       },
       "freqRank": 21,
       "review": {
@@ -493,28 +517,16 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/82/En-au-yours_truly.ogg/En-au-yours_truly.ogg.mp3",
+        "file": "En-au-yours truly.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
       "index": 22,
-      "kind": "phrase",
-      "text": "He is alone.",
-      "gloss": {
-        "tr": "O yalnızdır.",
-        "de": "Er ist alleine.",
-        "es": "Él está solo.",
-        "fr": "Il est seul.",
-        "pt-BR": "Ele está sozinho.",
-        "ru": "Он одинок.",
-        "ar": "إنه وحيد."
-      },
-      "freqRank": 23,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 23,
       "kind": "phrase",
       "text": "I love rock.",
       "gloss": {
@@ -526,13 +538,13 @@
         "ru": "Мне нравится рок.",
         "ar": "أعشق موسيقى الروك."
       },
-      "freqRank": 24,
+      "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 24,
+      "index": 23,
       "kind": "phrase",
       "text": "not at all",
       "gloss": {
@@ -546,7 +558,7 @@
         "en": "conventional reply to expression of gratitude"
       },
       "example": "—Thank you for coming. —Not at all. Thank you for having me.",
-      "freqRank": 25,
+      "freqRank": 24,
       "review": {
         "sense": "conventional reply to expression of gratitude",
         "translationCount": 90,
@@ -559,10 +571,16 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1b/En-au-not_at_all.ogg/En-au-not_at_all.ogg.mp3",
+        "file": "En-au-not at all.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 25,
+      "index": 24,
       "kind": "phrase",
       "text": "I need help.",
       "gloss": {
@@ -574,13 +592,13 @@
         "ru": "Мне нужна помощь.",
         "ar": "أحتاج للمساعدة."
       },
-      "freqRank": 26,
+      "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 26,
+      "index": 25,
       "kind": "phrase",
       "text": "It can't be!",
       "gloss": {
@@ -591,6 +609,24 @@
         "pt-BR": "Não pode ser!",
         "ru": "Не может быть!",
         "ar": "لا يمكن أن يحصل ذلك!"
+      },
+      "freqRank": 26,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "Who drew it?",
+      "gloss": {
+        "tr": "Onu kim çizdi?",
+        "de": "Wer hat das gezeichnet?",
+        "es": "¿Quién lo dibujó?",
+        "fr": "Qui l'a dessiné ?",
+        "pt-BR": "Quem desenhou?",
+        "ru": "Кто это нарисовал?",
+        "ar": "من رسم ذلك؟"
       },
       "freqRank": 27,
       "review": {
@@ -623,46 +659,16 @@
             "tags": ["Mid-Atlantic", "US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/bc/En-us-I_think_so.ogg/En-us-I_think_so.ogg.mp3",
+        "file": "en-us-I think so.ogg",
+        "speaker": "Steve Shives",
+        "licence": "CC0"
       }
     },
     {
       "index": 28,
-      "kind": "phrase",
-      "text": "It may rain.",
-      "gloss": {
-        "tr": "Yağmur yağabilir.",
-        "de": "Vielleicht wird es regnen.",
-        "es": "Puede que llueva.",
-        "fr": "Il pourrait pleuvoir.",
-        "pt-BR": "Pode chover.",
-        "ru": "Возможно, пойдет дождь.",
-        "ar": "من الممكن أن تمطر."
-      },
-      "freqRank": 29,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 29,
-      "kind": "phrase",
-      "text": "Who drew it?",
-      "gloss": {
-        "tr": "Onu kim çizdi?",
-        "de": "Wer hat das gezeichnet?",
-        "es": "¿Quién lo dibujó?",
-        "fr": "Qui l'a dessiné ?",
-        "pt-BR": "Quem desenhou?",
-        "ru": "Кто это нарисовал?",
-        "ar": "من رسم ذلك؟"
-      },
-      "freqRank": 30,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 30,
       "kind": "phrase",
       "text": "It may snow.",
       "gloss": {
@@ -674,13 +680,13 @@
         "ru": "Может пойти снег.",
         "ar": "قد ينزل الثلج"
       },
-      "freqRank": 31,
+      "freqRank": 29,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 31,
+      "index": 29,
       "kind": "phrase",
       "text": "be right back",
       "gloss": {
@@ -692,7 +698,7 @@
         "ar": "سَأَعُودُ بَعْدَ قَلِيل",
         "en": "indicate speaker will return in a moment"
       },
-      "freqRank": 32,
+      "freqRank": 30,
       "review": {
         "sense": "indicate speaker will return in a moment",
         "translationCount": 28,
@@ -701,7 +707,25 @@
       }
     },
     {
-      "index": 32,
+      "index": 30,
+      "kind": "phrase",
+      "text": "It may rain.",
+      "gloss": {
+        "tr": "Yağmur yağabilir.",
+        "de": "Vielleicht wird es regnen.",
+        "es": "Puede que llueva.",
+        "fr": "Il pourrait pleuvoir.",
+        "pt-BR": "Pode chover.",
+        "ru": "Возможно, пойдет дождь.",
+        "ar": "من الممكن أن تمطر."
+      },
+      "freqRank": 31,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 31,
       "kind": "phrase",
       "text": "Will he die?",
       "gloss": {
@@ -713,13 +737,13 @@
         "ru": "Он умрёт?",
         "ar": "هل سيموت؟"
       },
-      "freqRank": 33,
+      "freqRank": 32,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 33,
+      "index": 32,
       "kind": "phrase",
       "text": "Bring him in.",
       "gloss": {
@@ -731,13 +755,13 @@
         "ru": "Введите его.",
         "ar": "أدخله."
       },
-      "freqRank": 34,
+      "freqRank": 33,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 34,
+      "index": 33,
       "kind": "phrase",
       "text": "do you understand",
       "gloss": {
@@ -750,7 +774,7 @@
         "ar": "هَلْ تَفْهَمُ؟",
         "en": "do you understand?"
       },
-      "freqRank": 35,
+      "freqRank": 34,
       "review": {
         "sense": "do you understand?",
         "translationCount": 133,
@@ -758,7 +782,7 @@
       }
     },
     {
-      "index": 35,
+      "index": 34,
       "kind": "phrase",
       "text": "I had doubts.",
       "gloss": {
@@ -770,6 +794,24 @@
         "ru": "У меня были сомнения.",
         "ar": "كانت لدي شكوك."
       },
+      "freqRank": 35,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "It was night.",
+      "gloss": {
+        "tr": "Geceydi.",
+        "de": "Es war Nacht.",
+        "es": "Era de noche.",
+        "fr": "Il faisait nuit.",
+        "pt-BR": "Era noite.",
+        "ru": "Была ночь.",
+        "ar": "إنه المساء"
+      },
       "freqRank": 36,
       "review": {
         "glossedBy": "Tatoeba"
@@ -777,6 +819,24 @@
     },
     {
       "index": 36,
+      "kind": "phrase",
+      "text": "I won't lose!",
+      "gloss": {
+        "tr": "Kaybetmeyeceğim!",
+        "de": "Ich werde nicht verlieren!",
+        "es": "¡No voy a perder!",
+        "fr": "Je ne perdrai pas !",
+        "pt-BR": "Eu não vou perder!",
+        "ru": "Не проиграю!",
+        "ar": "لن أخسر!"
+      },
+      "freqRank": 37,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 37,
       "kind": "phrase",
       "text": "thank you all",
       "gloss": {
@@ -786,7 +846,7 @@
         "ar": "شكرا لكم جميعا",
         "en": "thank you all"
       },
-      "freqRank": 37,
+      "freqRank": 38,
       "review": {
         "sense": "thank you all",
         "translationCount": 20,
@@ -799,46 +859,16 @@
             "tags": ["Mid-Atlantic", "US"]
           }
         ]
-      }
-    },
-    {
-      "index": 37,
-      "kind": "phrase",
-      "text": "I won't lose!",
-      "gloss": {
-        "tr": "Kaybetmeyeceğim!",
-        "de": "Ich werde nicht verlieren!",
-        "es": "¡No voy a perder!",
-        "fr": "Je ne perdrai pas !",
-        "pt-BR": "Eu não vou perder!",
-        "ru": "Не проиграю!",
-        "ar": "لن أخسر!"
       },
-      "freqRank": 38,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/23/En-us-thank_you_all.ogg/En-us-thank_you_all.ogg.mp3",
+        "file": "en-us-thank you all.ogg",
+        "speaker": "Steve Shives",
+        "licence": "CC0"
       }
     },
     {
       "index": 38,
-      "kind": "phrase",
-      "text": "It was night.",
-      "gloss": {
-        "tr": "Geceydi.",
-        "de": "Es war Nacht.",
-        "es": "Era de noche.",
-        "fr": "Il faisait nuit.",
-        "pt-BR": "Era noite.",
-        "ru": "Была ночь.",
-        "ar": "إنه المساء"
-      },
-      "freqRank": 39,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 39,
       "kind": "phrase",
       "text": "It's too big.",
       "gloss": {
@@ -850,13 +880,13 @@
         "ru": "Он слишком большой.",
         "ar": "هل توم كبير؟"
       },
-      "freqRank": 40,
+      "freqRank": 39,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 40,
+      "index": 39,
       "kind": "phrase",
       "text": "call the police",
       "gloss": {
@@ -869,7 +899,7 @@
         "ar": "أُطْلُب الشُّرْطَة",
         "en": "call the police"
       },
-      "freqRank": 41,
+      "freqRank": 40,
       "review": {
         "sense": "call the police",
         "translationCount": 88,
@@ -877,7 +907,7 @@
       }
     },
     {
-      "index": 41,
+      "index": 40,
       "kind": "phrase",
       "text": "It's too hot.",
       "gloss": {
@@ -889,13 +919,13 @@
         "ru": "Слишком жарко.",
         "ar": "إنه ساخن جداً."
       },
-      "freqRank": 42,
+      "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 42,
+      "index": 41,
       "kind": "phrase",
       "text": "Put it there.",
       "gloss": {
@@ -907,13 +937,13 @@
         "ru": "Положи это туда.",
         "ar": "ضعه هناك."
       },
-      "freqRank": 43,
+      "freqRank": 42,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 43,
+      "index": 42,
       "kind": "phrase",
       "text": "Try it again.",
       "gloss": {
@@ -925,13 +955,13 @@
         "ru": "Попробуй ещё.",
         "ar": "حاول مرة أخرى."
       },
-      "freqRank": 44,
+      "freqRank": 43,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 44,
+      "index": 43,
       "kind": "phrase",
       "text": "do not enter",
       "gloss": {
@@ -942,7 +972,7 @@
         "ru": "не входи́ть",
         "en": "a sign forbidding entry"
       },
-      "freqRank": 45,
+      "freqRank": 44,
       "review": {
         "sense": "a sign forbidding entry",
         "translationCount": 33,
@@ -955,10 +985,16 @@
           }
         ],
         "machineSense": "building sign"
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f5/LL-Q1860_%28eng%29-Vealhurl-do_not_enter.wav/LL-Q1860_%28eng%29-Vealhurl-do_not_enter.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-do not enter.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 45,
+      "index": 44,
       "kind": "phrase",
       "text": "Wake them up.",
       "gloss": {
@@ -970,13 +1006,13 @@
         "ru": "Разбуди их.",
         "ar": "أيقظهم."
       },
-      "freqRank": 46,
+      "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 46,
+      "index": 45,
       "kind": "phrase",
       "text": "We need help.",
       "gloss": {
@@ -988,13 +1024,13 @@
         "ru": "Нам нужна помощь.",
         "ar": "نحن نحتاج إلى مساعدة"
       },
-      "freqRank": 47,
+      "freqRank": 46,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 47,
+      "index": 46,
       "kind": "phrase",
       "text": "the bill, please",
       "gloss": {
@@ -1007,7 +1043,7 @@
         "ar": "الْحِسَابُ مِن فَضْلَك",
         "en": "the bill, please"
       },
-      "freqRank": 48,
+      "freqRank": 47,
       "review": {
         "sense": "the bill, please",
         "translationCount": 47,
@@ -1015,7 +1051,7 @@
       }
     },
     {
-      "index": 48,
+      "index": 47,
       "kind": "phrase",
       "text": "All are happy.",
       "gloss": {
@@ -1027,14 +1063,14 @@
         "ru": "Все счастливы.",
         "ar": "الجميع سعداء."
       },
-      "freqRank": 49,
+      "freqRank": 48,
       "review": {
         "glossedBy": "Tatoeba",
         "correctedTr": "Hepimiz mutluyuz."
       }
     },
     {
-      "index": 49,
+      "index": 48,
       "kind": "phrase",
       "text": "Are you alone?",
       "gloss": {
@@ -1045,6 +1081,24 @@
         "pt-BR": "Você está só?",
         "ru": "Вы один?",
         "ar": "هل أنت وحدك؟"
+      },
+      "freqRank": 49,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "Bring it here.",
+      "gloss": {
+        "tr": "Onu buraya getir.",
+        "de": "Bringe es her.",
+        "es": "Tráelo aquí.",
+        "fr": "Apporte-le ici.",
+        "pt-BR": "Traga isso aqui.",
+        "ru": "Принеси его сюда.",
+        "ar": "احضره الى هنا."
       },
       "freqRank": 50,
       "review": {
@@ -1077,28 +1131,16 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/51/LL-Q1860_%28eng%29-Vealhurl-do_not_disturb.wav/LL-Q1860_%28eng%29-Vealhurl-do_not_disturb.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-do not disturb.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC0"
       }
     },
     {
       "index": 51,
-      "kind": "phrase",
-      "text": "Bring it here.",
-      "gloss": {
-        "tr": "Onu buraya getir.",
-        "de": "Bringe es her.",
-        "es": "Tráelo aquí.",
-        "fr": "Apporte-le ici.",
-        "pt-BR": "Traga isso aqui.",
-        "ru": "Принеси его сюда.",
-        "ar": "احضره الى هنا."
-      },
-      "freqRank": 52,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 52,
       "kind": "phrase",
       "text": "I have doubts.",
       "gloss": {
@@ -1109,6 +1151,24 @@
         "pt-BR": "Estou em dúvida.",
         "ru": "У меня есть сомнения.",
         "ar": "لدي شكوك."
+      },
+      "freqRank": 52,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "It won't work.",
+      "gloss": {
+        "tr": "O çalışmaz.",
+        "de": "Das geht nicht.",
+        "es": "No servirá.",
+        "fr": "Ça ne marchera pas.",
+        "pt-BR": "Isso não funcionará.",
+        "ru": "Это не будет работать.",
+        "ar": "لن ينجح هذا."
       },
       "freqRank": 53,
       "review": {
@@ -1140,28 +1200,16 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0c/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-all the best.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
       "index": 54,
-      "kind": "phrase",
-      "text": "It won't work.",
-      "gloss": {
-        "tr": "O çalışmaz.",
-        "de": "Das geht nicht.",
-        "es": "No servirá.",
-        "fr": "Ça ne marchera pas.",
-        "pt-BR": "Isso não funcionará.",
-        "ru": "Это не будет работать.",
-        "ar": "لن ينجح هذا."
-      },
-      "freqRank": 55,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 55,
       "kind": "phrase",
       "text": "Nobody saw me.",
       "gloss": {
@@ -1173,13 +1221,13 @@
         "ru": "Меня никто не видел.",
         "ar": "لم يرني أحد."
       },
-      "freqRank": 56,
+      "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 56,
+      "index": 55,
       "kind": "phrase",
       "text": "Our team lost.",
       "gloss": {
@@ -1191,13 +1239,13 @@
         "ru": "Наша команда проиграла.",
         "ar": "خسر فريقنا."
       },
-      "freqRank": 57,
+      "freqRank": 56,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 57,
+      "index": 56,
       "kind": "phrase",
       "text": "are you married",
       "gloss": {
@@ -1210,7 +1258,7 @@
         "ar": "هَلْ أَنْتَ مُتَزَوِّج؟",
         "en": "asking about someone's marital status"
       },
-      "freqRank": 58,
+      "freqRank": 57,
       "review": {
         "sense": "asking about someone's marital status",
         "translationCount": 135,
@@ -1219,7 +1267,7 @@
       }
     },
     {
-      "index": 58,
+      "index": 57,
       "kind": "phrase",
       "text": "You are human.",
       "gloss": {
@@ -1231,13 +1279,13 @@
         "ru": "Ты человек.",
         "ar": "انت إنسان."
       },
-      "freqRank": 59,
+      "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 59,
+      "index": 58,
       "kind": "phrase",
       "text": "are you single",
       "gloss": {
@@ -1247,7 +1295,7 @@
         "pt-BR": "tu tá solteira?",
         "en": "asking whether someone has a partner"
       },
-      "freqRank": 60,
+      "freqRank": 59,
       "review": {
         "sense": "asking whether someone has a partner",
         "translationCount": 31,
@@ -1256,7 +1304,7 @@
       }
     },
     {
-      "index": 60,
+      "index": 59,
       "kind": "phrase",
       "text": "You helped us.",
       "gloss": {
@@ -1268,13 +1316,13 @@
         "ru": "Ты нам помог.",
         "ar": "لقد ساعدتنا."
       },
-      "freqRank": 61,
+      "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 61,
+      "index": 60,
       "kind": "phrase",
       "text": "Come back soon.",
       "gloss": {
@@ -1286,13 +1334,13 @@
         "ru": "Возвращайтесь поскорее.",
         "ar": "عُد قريبًا."
       },
-      "freqRank": 62,
+      "freqRank": 61,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 62,
+      "index": 61,
       "kind": "phrase",
       "text": "Do you promise?",
       "gloss": {
@@ -1304,13 +1352,13 @@
         "ru": "Обещаешь?",
         "ar": "أتعدني؟"
       },
-      "freqRank": 63,
+      "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 63,
+      "index": 62,
       "kind": "phrase",
       "text": "consider it done",
       "gloss": {
@@ -1318,7 +1366,7 @@
         "pt-BR": "é pra já",
         "en": "consider it done"
       },
-      "freqRank": 64,
+      "freqRank": 63,
       "review": {
         "sense": "consider it done",
         "translationCount": 21,
@@ -1330,10 +1378,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/2b/LL-Q1860_%28eng%29-Sapaa-consider_it_done.wav/LL-Q1860_%28eng%29-Sapaa-consider_it_done.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-consider it done.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 64,
+      "index": 63,
       "kind": "phrase",
       "text": "Do you recycle?",
       "gloss": {
@@ -1345,13 +1399,13 @@
         "ru": "Вы занимаетесь переработкой?",
         "ar": "هل تقومون بإعادة التصنيع ؟"
       },
-      "freqRank": 65,
+      "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 65,
+      "index": 64,
       "kind": "phrase",
       "text": "I accept gifts.",
       "gloss": {
@@ -1363,13 +1417,13 @@
         "ru": "Я принимаю подарки.",
         "ar": "أقبل الهدايا."
       },
-      "freqRank": 66,
+      "freqRank": 65,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 66,
+      "index": 65,
       "kind": "phrase",
       "text": "I'm dying",
       "gloss": {
@@ -1382,7 +1436,7 @@
         "ar": "أَنَا أَمُوت",
         "en": "I'm dying"
       },
-      "freqRank": 67,
+      "freqRank": 66,
       "review": {
         "sense": "I'm dying",
         "translationCount": 36,
@@ -1394,10 +1448,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/11/LL-Q1860_%28eng%29-Flame%2C_not_lame-I%26%2339%3Bm_dying.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-I%26%2339%3Bm_dying.wav.mp3",
+        "file": "LL-Q1860 (eng)-Flame, not lame-I&#39;m dying.wav",
+        "speaker": "Flame, not lame",
+        "licence": "CC0"
       }
     },
     {
-      "index": 67,
+      "index": 66,
       "kind": "phrase",
       "text": "I wasn't alone.",
       "gloss": {
@@ -1409,13 +1469,13 @@
         "ru": "Я не был один.",
         "ar": "ما كنت وحيداً."
       },
-      "freqRank": 68,
+      "freqRank": 67,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 68,
+      "index": 67,
       "kind": "phrase",
       "text": "I'll come back.",
       "gloss": {
@@ -1427,13 +1487,13 @@
         "ru": "Я вернусь.",
         "ar": "سأعود."
       },
-      "freqRank": 69,
+      "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 69,
+      "index": 68,
       "kind": "phrase",
       "text": "It's brand new.",
       "gloss": {
@@ -1445,13 +1505,13 @@
         "ru": "Он совсем новый.",
         "ar": "إنها جديدة."
       },
-      "freqRank": 70,
+      "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 70,
+      "index": 69,
       "kind": "phrase",
       "text": "I'm lost",
       "gloss": {
@@ -1464,7 +1524,7 @@
         "ar": "أَنَا تَائِه",
         "en": "indicates that the speaker is unable to find his or her way"
       },
-      "freqRank": 71,
+      "freqRank": 70,
       "review": {
         "sense": "indicates that the speaker is unable to find his or her way",
         "translationCount": 74,
@@ -1473,7 +1533,7 @@
       }
     },
     {
-      "index": 71,
+      "index": 70,
       "kind": "phrase",
       "text": "It's hot today.",
       "gloss": {
@@ -1485,13 +1545,13 @@
         "ru": "Сегодня жарко.",
         "ar": "الجو حار اليوم."
       },
-      "freqRank": 72,
+      "freqRank": 71,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 72,
+      "index": 71,
       "kind": "phrase",
       "text": "Please come in.",
       "gloss": {
@@ -1503,13 +1563,13 @@
         "ru": "Входите, пожалуйста!",
         "ar": "تفضل بالدخول."
       },
-      "freqRank": 73,
+      "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 73,
+      "index": 72,
       "kind": "phrase",
       "text": "I'm married",
       "gloss": {
@@ -1522,7 +1582,7 @@
         "ar": "أَنَا مُتَزَوِّج",
         "en": "I'm married"
       },
-      "freqRank": 74,
+      "freqRank": 73,
       "review": {
         "sense": "I'm married",
         "translationCount": 107,
@@ -1530,7 +1590,7 @@
       }
     },
     {
-      "index": 74,
+      "index": 73,
       "kind": "phrase",
       "text": "It's too small.",
       "gloss": {
@@ -1542,6 +1602,24 @@
         "ru": "Оно слишком маленькое.",
         "ar": "إنها صغيرة جداً."
       },
+      "freqRank": 74,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "She is walking.",
+      "gloss": {
+        "tr": "O yürüyor.",
+        "de": "Sie geht.",
+        "es": "Ella está caminando.",
+        "fr": "Elle marche.",
+        "pt-BR": "Ela está caminhando.",
+        "ru": "Она идёт.",
+        "ar": "هي تمشي."
+      },
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
@@ -1549,6 +1627,24 @@
     },
     {
       "index": 75,
+      "kind": "phrase",
+      "text": "It's ready now.",
+      "gloss": {
+        "tr": "O artık hazır.",
+        "de": "Es ist jetzt fertig.",
+        "es": "Ahora está listo.",
+        "fr": "C'est prêt maintenant.",
+        "pt-BR": "Está pronta agora.",
+        "ru": "Теперь готово.",
+        "ar": "إنها جاهزة الأن."
+      },
+      "freqRank": 76,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 76,
       "kind": "phrase",
       "text": "I'm single",
       "gloss": {
@@ -1561,7 +1657,7 @@
         "ar": "أَنَا أَعْزَب",
         "en": "I'm single"
       },
-      "freqRank": 76,
+      "freqRank": 77,
       "review": {
         "sense": "I'm single",
         "translationCount": 118,
@@ -1569,43 +1665,7 @@
       }
     },
     {
-      "index": 76,
-      "kind": "phrase",
-      "text": "It's ready now.",
-      "gloss": {
-        "tr": "O artık hazır.",
-        "de": "Es ist jetzt fertig.",
-        "es": "Ahora está listo.",
-        "fr": "C'est prêt maintenant.",
-        "pt-BR": "Está pronta agora.",
-        "ru": "Теперь готово.",
-        "ar": "إنها جاهزة الأن."
-      },
-      "freqRank": 77,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
       "index": 77,
-      "kind": "phrase",
-      "text": "She is walking.",
-      "gloss": {
-        "tr": "O yürüyor.",
-        "de": "Sie geht.",
-        "es": "Ella está caminando.",
-        "fr": "Elle marche.",
-        "pt-BR": "Ela está caminhando.",
-        "ru": "Она идёт.",
-        "ar": "هي تمشي."
-      },
-      "freqRank": 78,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 78,
       "kind": "phrase",
       "text": "Tell the truth.",
       "gloss": {
@@ -1617,13 +1677,13 @@
         "ru": "Скажи правду.",
         "ar": "قل الحقيقة"
       },
-      "freqRank": 79,
+      "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 79,
+      "index": 78,
       "kind": "phrase",
       "text": "Think about it.",
       "gloss": {
@@ -1635,13 +1695,13 @@
         "ru": "Подумай об этом.",
         "ar": "فكر في ذلك."
       },
-      "freqRank": 80,
+      "freqRank": 79,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 80,
+      "index": 79,
       "kind": "phrase",
       "text": "I'm straight",
       "gloss": {
@@ -1653,7 +1713,7 @@
         "ru": "я гетеросексуа́л",
         "en": "I'm straight"
       },
-      "freqRank": 81,
+      "freqRank": 80,
       "review": {
         "sense": "I'm straight",
         "translationCount": 54,
@@ -1661,7 +1721,7 @@
       }
     },
     {
-      "index": 81,
+      "index": 80,
       "kind": "phrase",
       "text": "We got married.",
       "gloss": {
@@ -1673,13 +1733,13 @@
         "ru": "Мы поженились.",
         "ar": "لقد تزوجنا ."
       },
-      "freqRank": 82,
+      "freqRank": 81,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 82,
+      "index": 81,
       "kind": "phrase",
       "text": "I'm thirsty",
       "gloss": {
@@ -1692,7 +1752,7 @@
         "ar": "أَنَا عَطْشَان",
         "en": "I need a drink"
       },
-      "freqRank": 83,
+      "freqRank": 82,
       "review": {
         "sense": "I need a drink",
         "translationCount": 128,
@@ -1701,7 +1761,7 @@
       }
     },
     {
-      "index": 83,
+      "index": 82,
       "kind": "phrase",
       "text": "We study music.",
       "gloss": {
@@ -1713,13 +1773,13 @@
         "ru": "Мы занимаемся музыкой.",
         "ar": "ندرس الموسيقى."
       },
-      "freqRank": 84,
+      "freqRank": 83,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 84,
+      "index": 83,
       "kind": "phrase",
       "text": "Who broke this?",
       "gloss": {
@@ -1731,13 +1791,13 @@
         "ru": "Кто сломал это?",
         "ar": "من كسر هذا؟"
       },
-      "freqRank": 85,
+      "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 85,
+      "index": 84,
       "kind": "phrase",
       "text": "You look bored.",
       "gloss": {
@@ -1749,13 +1809,13 @@
         "ru": "Ты выглядишь скучающей.",
         "ar": "يبدو عليك الملل."
       },
-      "freqRank": 86,
+      "freqRank": 85,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 86,
+      "index": 85,
       "kind": "phrase",
       "text": "I'm worried",
       "gloss": {
@@ -1765,7 +1825,7 @@
         "pt-BR": "estou preocupado",
         "en": "Indicates that the speaker is worried"
       },
-      "freqRank": 87,
+      "freqRank": 86,
       "review": {
         "sense": "Indicates that the speaker is worried",
         "translationCount": 25,
@@ -1774,7 +1834,7 @@
       }
     },
     {
-      "index": 87,
+      "index": 86,
       "kind": "phrase",
       "text": "Don't look back.",
       "gloss": {
@@ -1786,13 +1846,13 @@
         "ru": "Не оглядывайся.",
         "ar": "لا تنظر إلى الوراء."
       },
-      "freqRank": 88,
+      "freqRank": 87,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 88,
+      "index": 87,
       "kind": "phrase",
       "text": "Green suits you.",
       "gloss": {
@@ -1804,13 +1864,13 @@
         "ru": "Зеленый тебе идет.",
         "ar": "يناسبك اللون الأخضر."
       },
-      "freqRank": 89,
+      "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 89,
+      "index": 88,
       "kind": "phrase",
       "text": "it was delicious",
       "gloss": {
@@ -1823,7 +1883,7 @@
         "ar": "كَانَ لَذِيذًا جِدًّا",
         "en": "phrase said to compliment a meal after eating it"
       },
-      "freqRank": 90,
+      "freqRank": 89,
       "review": {
         "sense": "phrase said to compliment a meal after eating it",
         "translationCount": 39,
@@ -1832,7 +1892,7 @@
       }
     },
     {
-      "index": 90,
+      "index": 89,
       "kind": "phrase",
       "text": "I'm not thirsty.",
       "gloss": {
@@ -1844,14 +1904,14 @@
         "ru": "Я не хочу пить.",
         "ar": "أنا لست عاطشا."
       },
-      "freqRank": 91,
+      "freqRank": 90,
       "review": {
         "glossedBy": "Tatoeba",
         "correctedTr": "Susuz değilim."
       }
     },
     {
-      "index": 91,
+      "index": 90,
       "kind": "phrase",
       "text": "It really works.",
       "gloss": {
@@ -1863,13 +1923,13 @@
         "ru": "Это действительно работает.",
         "ar": "نجح الأمر حقّا."
       },
-      "freqRank": 92,
+      "freqRank": 91,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 92,
+      "index": 91,
       "kind": "phrase",
       "text": "It's a surprise.",
       "gloss": {
@@ -1881,13 +1941,13 @@
         "ru": "Это сюрприз.",
         "ar": "إنّها مفاجأة."
       },
-      "freqRank": 93,
+      "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 93,
+      "index": 92,
       "kind": "phrase",
       "text": "Raise your hand.",
       "gloss": {
@@ -1899,13 +1959,13 @@
         "ru": "Подними руку.",
         "ar": "ارفع يديك."
       },
-      "freqRank": 94,
+      "freqRank": 93,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 94,
+      "index": 93,
       "kind": "phrase",
       "text": "It's not broken.",
       "gloss": {
@@ -1917,13 +1977,13 @@
         "ru": "Он не сломан.",
         "ar": "إنها ليست مكسورة"
       },
-      "freqRank": 95,
+      "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 95,
+      "index": 94,
       "kind": "phrase",
       "text": "Nobody was home.",
       "gloss": {
@@ -1935,13 +1995,13 @@
         "ru": "Никого не было дома.",
         "ar": "لم يكن أحد في البيت."
       },
-      "freqRank": 96,
+      "freqRank": 95,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 96,
+      "index": 95,
       "kind": "phrase",
       "text": "it's snowing",
       "gloss": {
@@ -1953,7 +2013,7 @@
         "ar": "تَثْلُج اَلسَّمَاء",
         "en": "it's snowing"
       },
-      "freqRank": 97,
+      "freqRank": 96,
       "review": {
         "sense": "it's snowing",
         "translationCount": 39,
@@ -1961,7 +2021,7 @@
       }
     },
     {
-      "index": 97,
+      "index": 96,
       "kind": "phrase",
       "text": "Sit up straight.",
       "gloss": {
@@ -1973,13 +2033,13 @@
         "ru": "Сядьте прямо.",
         "ar": "إجلس مستقيماً."
       },
-      "freqRank": 98,
+      "freqRank": 97,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 98,
+      "index": 97,
       "kind": "phrase",
       "text": "it's raining",
       "gloss": {
@@ -1992,7 +2052,7 @@
         "ar": "تُمْطِرُ السَّمَاء",
         "en": "it's raining"
       },
-      "freqRank": 99,
+      "freqRank": 98,
       "review": {
         "sense": "it's raining",
         "translationCount": 98,
@@ -2000,7 +2060,7 @@
       }
     },
     {
-      "index": 99,
+      "index": 98,
       "kind": "phrase",
       "text": "please help me",
       "gloss": {
@@ -2013,7 +2073,7 @@
         "ar": "سَاعِدُونِي",
         "en": "please help me"
       },
-      "freqRank": 100,
+      "freqRank": 99,
       "review": {
         "sense": "please help me",
         "translationCount": 56,
@@ -2021,7 +2081,7 @@
       }
     },
     {
-      "index": 100,
+      "index": 99,
       "kind": "phrase",
       "text": "They believe it.",
       "gloss": {
@@ -2033,49 +2093,13 @@
         "ru": "Они в это верят.",
         "ar": "هم يصدقونه."
       },
-      "freqRank": 101,
+      "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 101,
-      "kind": "phrase",
-      "text": "You almost died.",
-      "gloss": {
-        "tr": "Neredeyse ölüyordun.",
-        "de": "Du wärest fast gestorben.",
-        "es": "Casi te mueres.",
-        "fr": "Tu es presque mort.",
-        "pt-BR": "Você quase morreu.",
-        "ru": "Ты чуть не умер.",
-        "ar": "أنتَ تقريباً مت."
-      },
-      "freqRank": 102,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 102,
-      "kind": "phrase",
-      "text": "They lost again.",
-      "gloss": {
-        "tr": "Onlar yine kaybettiler.",
-        "de": "Sie haben wieder verloren.",
-        "es": "Perdieron de nuevo.",
-        "fr": "Ils ont encore perdu.",
-        "pt-BR": "Eles perderam de novo.",
-        "ru": "Они опять проиграли.",
-        "ar": "خسروا من جديد."
-      },
-      "freqRank": 103,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 103,
+      "index": 100,
       "kind": "phrase",
       "text": "two beers, please",
       "gloss": {
@@ -2087,7 +2111,7 @@
         "ru": "два пи́ва, пожа́луйста",
         "en": "two beers, please"
       },
-      "freqRank": 104,
+      "freqRank": 101,
       "review": {
         "sense": "two beers, please",
         "translationCount": 40,
@@ -2100,6 +2124,66 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a5/LL-Q1860_%28eng%29-Vealhurl-two_beers%2C_please.wav/LL-Q1860_%28eng%29-Vealhurl-two_beers%2C_please.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-two beers, please.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
+      }
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "They lost again.",
+      "gloss": {
+        "tr": "Onlar yine kaybettiler.",
+        "de": "Sie haben wieder verloren.",
+        "es": "Perdieron de nuevo.",
+        "fr": "Ils ont encore perdu.",
+        "pt-BR": "Eles perderam de novo.",
+        "ru": "Они опять проиграли.",
+        "ar": "خسروا من جديد."
+      },
+      "freqRank": 102,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "You almost died.",
+      "gloss": {
+        "tr": "Neredeyse ölüyordun.",
+        "de": "Du wärest fast gestorben.",
+        "es": "Casi te mueres.",
+        "fr": "Tu es presque mort.",
+        "pt-BR": "Você quase morreu.",
+        "ru": "Ты чуть не умер.",
+        "ar": "أنتَ تقريباً مت."
+      },
+      "freqRank": 103,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Are you studying?",
+      "gloss": {
+        "tr": "Çalışıyor musun?",
+        "de": "Studierst du?",
+        "es": "¿Estudias?",
+        "fr": "Étudiez-vous ?",
+        "pt-BR": "Você está estudando?",
+        "ru": "Учишься?",
+        "ar": "هل تدرس؟"
+      },
+      "freqRank": 104,
+      "review": {
+        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -2123,24 +2207,6 @@
     {
       "index": 105,
       "kind": "phrase",
-      "text": "Are you studying?",
-      "gloss": {
-        "tr": "Çalışıyor musun?",
-        "de": "Studierst du?",
-        "es": "¿Estudias?",
-        "fr": "Étudiez-vous ?",
-        "pt-BR": "Você está estudando?",
-        "ru": "Учишься?",
-        "ar": "هل تدرس؟"
-      },
-      "freqRank": 106,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 106,
-      "kind": "phrase",
       "text": "what a pity",
       "gloss": {
         "tr": "ne yazık",
@@ -2153,7 +2219,7 @@
         "en": "used to express regret"
       },
       "example": "What a pity you can't attend our party tonight.",
-      "freqRank": 107,
+      "freqRank": 106,
       "review": {
         "sense": "used to express regret",
         "translationCount": 71,
@@ -2166,10 +2232,16 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3e/LL-Q1860_%28eng%29-Vealhurl-what_a_pity.wav/LL-Q1860_%28eng%29-Vealhurl-what_a_pity.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-what a pity.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 107,
+      "index": 106,
       "kind": "phrase",
       "text": "Clean the mirror.",
       "gloss": {
@@ -2181,13 +2253,13 @@
         "ru": "Протри зеркало.",
         "ar": "نظف المرايا."
       },
-      "freqRank": 108,
+      "freqRank": 107,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 108,
+      "index": 107,
       "kind": "phrase",
       "text": "Don't mention it.",
       "gloss": {
@@ -2199,13 +2271,13 @@
         "ru": "Не стоит благодарности.",
         "ar": "لا شكر على واجب."
       },
-      "freqRank": 109,
+      "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 109,
+      "index": 108,
       "kind": "phrase",
       "text": "what does … mean",
       "gloss": {
@@ -2218,7 +2290,7 @@
         "ar": "مَاذَا يَعْنِي …؟",
         "en": "what does … mean?"
       },
-      "freqRank": 110,
+      "freqRank": 109,
       "review": {
         "sense": "what does … mean?",
         "translationCount": 78,
@@ -2226,7 +2298,7 @@
       }
     },
     {
-      "index": 110,
+      "index": 109,
       "kind": "phrase",
       "text": "Here's my wallet.",
       "gloss": {
@@ -2238,13 +2310,13 @@
         "ru": "Вот мой кошелёк.",
         "ar": "ها هي محفظتي."
       },
-      "freqRank": 111,
+      "freqRank": 110,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 111,
+      "index": 110,
       "kind": "phrase",
       "text": "He died yesterday.",
       "gloss": {
@@ -2256,13 +2328,13 @@
         "ru": "Он вчера умер.",
         "ar": "مات البارحة."
       },
-      "freqRank": 112,
+      "freqRank": 111,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 112,
+      "index": 111,
       "kind": "phrase",
       "text": "can I come in",
       "gloss": {
@@ -2275,7 +2347,7 @@
         "ar": "هَل يُمْكِنُنِي أَن أَدْخُل؟",
         "en": "asking permission to enter"
       },
-      "freqRank": 113,
+      "freqRank": 112,
       "review": {
         "sense": "asking permission to enter",
         "translationCount": 64,
@@ -2284,7 +2356,7 @@
       }
     },
     {
-      "index": 113,
+      "index": 112,
       "kind": "phrase",
       "text": "It never happened.",
       "gloss": {
@@ -2296,13 +2368,13 @@
         "ru": "Этого так и не случилось.",
         "ar": "لم یحدث قط."
       },
-      "freqRank": 114,
+      "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 114,
+      "index": 113,
       "kind": "phrase",
       "text": "What is happiness?",
       "gloss": {
@@ -2314,9 +2386,40 @@
         "ru": "Что такое счастье?",
         "ar": "ما هي السعادة؟"
       },
-      "freqRank": 115,
+      "freqRank": 114,
       "review": {
         "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "how do you mean",
+      "gloss": {
+        "de": "wie meinst du das?",
+        "fr": "comment ça",
+        "pt-BR": "o que você quer dizer?",
+        "en": "a request for clarification of what the listener just said"
+      },
+      "freqRank": 115,
+      "review": {
+        "sense": "a request for clarification of what the listener just said",
+        "translationCount": 14,
+        "definition": "A request for clarification of what the listener just said.",
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav.mp3",
+            "file": "LL-Q1860 (eng)-Sapaa-how do you mean.wav",
+            "tags": ["US"]
+          }
+        ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-how do you mean.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -2340,31 +2443,6 @@
     {
       "index": 116,
       "kind": "phrase",
-      "text": "how do you mean",
-      "gloss": {
-        "de": "wie meinst du das?",
-        "fr": "comment ça",
-        "pt-BR": "o que você quer dizer?",
-        "en": "a request for clarification of what the listener just said"
-      },
-      "freqRank": 117,
-      "review": {
-        "sense": "a request for clarification of what the listener just said",
-        "translationCount": 14,
-        "definition": "A request for clarification of what the listener just said.",
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav.mp3",
-            "file": "LL-Q1860 (eng)-Sapaa-how do you mean.wav",
-            "tags": ["US"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 117,
-      "kind": "phrase",
       "text": "You understand me.",
       "gloss": {
         "tr": "Beni anlıyorsun.",
@@ -2375,13 +2453,13 @@
         "ru": "Ты меня понимаешь.",
         "ar": "أنت تفهمني."
       },
-      "freqRank": 118,
+      "freqRank": 117,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 118,
+      "index": 117,
       "kind": "phrase",
       "text": "Aren't you thirsty?",
       "gloss": {
@@ -2393,13 +2471,13 @@
         "ru": "Вы пить не хотите?",
         "ar": "ألست عطشاناً؟"
       },
-      "freqRank": 119,
+      "freqRank": 118,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 119,
+      "index": 118,
       "kind": "phrase",
       "text": "what do you mean",
       "gloss": {
@@ -2410,7 +2488,7 @@
         "ru": "что Вы имеете в виду?",
         "en": "what do you mean? (request for clarification)"
       },
-      "freqRank": 120,
+      "freqRank": 119,
       "review": {
         "sense": "what do you mean? (request for clarification)",
         "translationCount": 28,
@@ -2425,10 +2503,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fb/LL-Q1860_%28eng%29-Sapaa-what_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-what_do_you_mean.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-what do you mean.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 120,
+      "index": 119,
       "kind": "phrase",
       "text": "He loves traveling.",
       "gloss": {
@@ -2440,13 +2524,13 @@
         "ru": "Он обожает путешествовать.",
         "ar": "إنه يحب السفر."
       },
-      "freqRank": 121,
+      "freqRank": 120,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 121,
+      "index": 120,
       "kind": "phrase",
       "text": "I was disappointed.",
       "gloss": {
@@ -2458,13 +2542,13 @@
         "ru": "Я был разочарован.",
         "ar": "لقد أُصبت بالخيبة."
       },
-      "freqRank": 122,
+      "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 122,
+      "index": 121,
       "kind": "phrase",
       "text": "can I help you",
       "gloss": {
@@ -2477,7 +2561,7 @@
         "ar": "هَلْ يُمْكِنُنِي مُسَاعَدَتُكَ؟",
         "en": "offering of assistance"
       },
-      "freqRank": 123,
+      "freqRank": 122,
       "review": {
         "sense": "offering of assistance",
         "translationCount": 62,
@@ -2486,7 +2570,7 @@
       }
     },
     {
-      "index": 123,
+      "index": 122,
       "kind": "phrase",
       "text": "It's gotten better.",
       "gloss": {
@@ -2498,13 +2582,13 @@
         "ru": "Стало лучше.",
         "ar": "تحسنت."
       },
-      "freqRank": 124,
+      "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 124,
+      "index": 123,
       "kind": "phrase",
       "text": "do you need help",
       "gloss": {
@@ -2517,7 +2601,7 @@
         "ar": "هَلْ تَحْتَاجُ مُسَاعَدَة؟",
         "en": "do you need help?"
       },
-      "freqRank": 125,
+      "freqRank": 124,
       "review": {
         "sense": "do you need help?",
         "translationCount": 98,
@@ -2525,7 +2609,7 @@
       }
     },
     {
-      "index": 125,
+      "index": 124,
       "kind": "phrase",
       "text": "It's raining again!",
       "gloss": {
@@ -2537,13 +2621,13 @@
         "ru": "Опять дождь!",
         "ar": "إنها تمطر مجدداً!"
       },
-      "freqRank": 126,
+      "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 126,
+      "index": 125,
       "kind": "phrase",
       "text": "Knowledge is power.",
       "gloss": {
@@ -2555,13 +2639,13 @@
         "ru": "Знание — сила.",
         "ar": "العلم قوة."
       },
-      "freqRank": 127,
+      "freqRank": 126,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 127,
+      "index": 126,
       "kind": "phrase",
       "text": "Nothing is missing.",
       "gloss": {
@@ -2573,9 +2657,48 @@
         "ru": "Всё есть.",
         "ar": "ليس هناك ما ينقص."
       },
-      "freqRank": 128,
+      "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "I don't understand",
+      "gloss": {
+        "tr": "anlamıyorum",
+        "de": "ich verstehe nicht",
+        "es": "no entiendo",
+        "fr": "je ne comprends pas",
+        "pt-BR": "eu não entendo",
+        "ru": "не понима́ю",
+        "ar": "لَا أَفْهَم",
+        "en": "I don't understand"
+      },
+      "freqRank": 128,
+      "review": {
+        "sense": "I don't understand",
+        "translationCount": 158,
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4c/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav.mp3",
+            "file": "LL-Q1860 (eng)-Vealhurl-I don&#39;t understand.wav",
+            "tags": ["Southern-England"]
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1a/LL-Q1860_%28eng%29-Vealhurl-I_don%27t_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%27t_understand.wav.mp3",
+            "file": "LL-Q1860 (eng)-Vealhurl-I don't understand.wav",
+            "tags": ["Southern-England"]
+          }
+        ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4c/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-I don&#39;t understand.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -2600,39 +2723,6 @@
     {
       "index": 129,
       "kind": "phrase",
-      "text": "I don't understand",
-      "gloss": {
-        "tr": "anlamıyorum",
-        "de": "ich verstehe nicht",
-        "es": "no entiendo",
-        "fr": "je ne comprends pas",
-        "pt-BR": "eu não entendo",
-        "ru": "не понима́ю",
-        "ar": "لَا أَفْهَم",
-        "en": "I don't understand"
-      },
-      "freqRank": 130,
-      "review": {
-        "sense": "I don't understand",
-        "translationCount": 158,
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4c/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav.mp3",
-            "file": "LL-Q1860 (eng)-Vealhurl-I don&#39;t understand.wav",
-            "tags": ["Southern-England"]
-          },
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1a/LL-Q1860_%28eng%29-Vealhurl-I_don%27t_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%27t_understand.wav.mp3",
-            "file": "LL-Q1860 (eng)-Vealhurl-I don't understand.wav",
-            "tags": ["Southern-England"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 130,
-      "kind": "phrase",
       "text": "Stand back, please.",
       "gloss": {
         "tr": "Geride durun lütfen.",
@@ -2643,13 +2733,13 @@
         "ru": "Отойди, пожалуйста.",
         "ar": "ارجع إلى الوراء من فضلك."
       },
-      "freqRank": 131,
+      "freqRank": 130,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 131,
+      "index": 130,
       "kind": "phrase",
       "text": "They were attacked.",
       "gloss": {
@@ -2661,13 +2751,13 @@
         "ru": "На них напали.",
         "ar": "لقد هوجموا."
       },
-      "freqRank": 132,
+      "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 132,
+      "index": 131,
       "kind": "phrase",
       "text": "as much as possible",
       "gloss": {
@@ -2680,7 +2770,7 @@
         "ar": "قَدْر اَلْمُسْتَطَاع",
         "en": "as much as is possible"
       },
-      "freqRank": 133,
+      "freqRank": 132,
       "review": {
         "sense": "as much as is possible",
         "translationCount": 49,
@@ -2693,28 +2783,16 @@
             "tags": ["Southern-England"]
           }
         ]
-      }
-    },
-    {
-      "index": 133,
-      "kind": "phrase",
-      "text": "Destroy this temple.",
-      "gloss": {
-        "tr": "Bu tapınağı imha et.",
-        "de": "Zerstört diesen Tempel.",
-        "es": "Destruye este templo.",
-        "fr": "Détruisez ce temple.",
-        "pt-BR": "Destrua esse templo.",
-        "ru": "Разрушьте этот храм.",
-        "ar": "دَمّر هذا المعبَد."
       },
-      "freqRank": 134,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/05/LL-Q1860_%28eng%29-Vealhurl-as_much_as_possible.wav/LL-Q1860_%28eng%29-Vealhurl-as_much_as_possible.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-as much as possible.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 134,
+      "index": 132,
       "kind": "phrase",
       "text": "Glass breaks easily.",
       "gloss": {
@@ -2726,13 +2804,31 @@
         "ru": "Стекло легко бьётся.",
         "ar": "ينكسر الزجاج بسهوله."
       },
-      "freqRank": 135,
+      "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 135,
+      "index": 133,
+      "kind": "phrase",
+      "text": "People love freedom.",
+      "gloss": {
+        "tr": "İnsanlar özgürlüğü sever.",
+        "de": "Das Volk liebt die Freiheit.",
+        "es": "La gente ama la libertad.",
+        "fr": "Le peuple aime la liberté.",
+        "pt-BR": "As pessoas amam a liberdade.",
+        "ru": "Люди любят свободу.",
+        "ar": "الناس يحبون الحرية."
+      },
+      "freqRank": 134,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 134,
       "kind": "phrase",
       "text": "as soon as possible",
       "gloss": {
@@ -2745,7 +2841,7 @@
         "ar": "فِي أَقْرَب وَقْت مُمْكِن",
         "en": "as soon as is possible"
       },
-      "freqRank": 136,
+      "freqRank": 135,
       "review": {
         "sense": "as soon as is possible",
         "translationCount": 106,
@@ -2758,28 +2854,16 @@
             "tags": ["US"]
           }
         ]
-      }
-    },
-    {
-      "index": 136,
-      "kind": "phrase",
-      "text": "People love freedom.",
-      "gloss": {
-        "tr": "İnsanlar özgürlüğü sever.",
-        "de": "Das Volk liebt die Freiheit.",
-        "es": "La gente ama la libertad.",
-        "fr": "Le peuple aime la liberté.",
-        "pt-BR": "As pessoas amam a liberdade.",
-        "ru": "Люди любят свободу.",
-        "ar": "الناس يحبون الحرية."
       },
-      "freqRank": 137,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/LL-Q1860_%28eng%29-Wodencafe-as_soon_as_possible.wav/LL-Q1860_%28eng%29-Wodencafe-as_soon_as_possible.wav.mp3",
+        "file": "LL-Q1860 (eng)-Wodencafe-as soon as possible.wav",
+        "speaker": "Wodencafe",
+        "licence": "CC0"
       }
     },
     {
-      "index": 137,
+      "index": 135,
       "kind": "phrase",
       "text": "Please speak slowly.",
       "gloss": {
@@ -2791,13 +2875,13 @@
         "ru": "Говорите, пожалуйста, медленно.",
         "ar": "من فضلك، تحدث ببطء."
       },
-      "freqRank": 138,
+      "freqRank": 136,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 138,
+      "index": 136,
       "kind": "phrase",
       "text": "This fits perfectly.",
       "gloss": {
@@ -2809,13 +2893,13 @@
         "ru": "Это идеально подходит.",
         "ar": "هي مناسبة تماما."
       },
-      "freqRank": 139,
+      "freqRank": 137,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 139,
+      "index": 137,
       "kind": "phrase",
       "text": "please pass the salt",
       "gloss": {
@@ -2828,7 +2912,7 @@
         "ar": "امرر الملح لي من فضلك",
         "en": "please pass the salt"
       },
-      "freqRank": 140,
+      "freqRank": 138,
       "review": {
         "sense": "please pass the salt",
         "translationCount": 36,
@@ -2836,7 +2920,7 @@
       }
     },
     {
-      "index": 140,
+      "index": 138,
       "kind": "phrase",
       "text": "Who searches, finds.",
       "gloss": {
@@ -2848,13 +2932,13 @@
         "ru": "Кто ищет, тот найдет.",
         "ar": "من بحث وجد."
       },
-      "freqRank": 141,
+      "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 141,
+      "index": 139,
       "kind": "phrase",
       "text": "You disappointed me.",
       "gloss": {
@@ -2866,13 +2950,13 @@
         "ru": "Ты меня разочаровал.",
         "ar": "خيبت أملي."
       },
-      "freqRank": 142,
+      "freqRank": 140,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 142,
+      "index": 140,
       "kind": "phrase",
       "text": "can you help me",
       "gloss": {
@@ -2885,7 +2969,7 @@
         "ar": "هَل يُمْكِنُكَ مُسَاعَدَتِي؟",
         "en": "can you help me?"
       },
-      "freqRank": 143,
+      "freqRank": 141,
       "review": {
         "sense": "can you help me?",
         "translationCount": 114,
@@ -2893,7 +2977,7 @@
       }
     },
     {
-      "index": 143,
+      "index": 141,
       "kind": "phrase",
       "text": "Finally, it's Friday.",
       "gloss": {
@@ -2905,13 +2989,13 @@
         "ru": "Ура! Сегодня пятница!",
         "ar": "و أخيراً أتى الجمعة."
       },
-      "freqRank": 144,
+      "freqRank": 142,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 144,
+      "index": 142,
       "kind": "phrase",
       "text": "Please help yourself.",
       "gloss": {
@@ -2923,13 +3007,13 @@
         "ru": "Пожалуйста, угощайтесь.",
         "ar": "تفضّل البيت بيتك."
       },
-      "freqRank": 145,
+      "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 145,
+      "index": 143,
       "kind": "phrase",
       "text": "I have a toothache",
       "gloss": {
@@ -2940,7 +3024,7 @@
         "ar": "لَدَيَّ أَلَم فِي الْأَسْنَان",
         "en": "I have a toothache"
       },
-      "freqRank": 146,
+      "freqRank": 144,
       "review": {
         "sense": "I have a toothache",
         "translationCount": 26,
@@ -2948,7 +3032,7 @@
       }
     },
     {
-      "index": 146,
+      "index": 144,
       "kind": "phrase",
       "text": "You should apologize.",
       "gloss": {
@@ -2960,13 +3044,13 @@
         "ru": "Ты должен извиниться.",
         "ar": "عليك أن تتأسف."
       },
-      "freqRank": 147,
+      "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 147,
+      "index": 145,
       "kind": "phrase",
       "text": "Nobody understands me.",
       "gloss": {
@@ -2978,34 +3062,13 @@
         "ru": "Никто меня не понимает.",
         "ar": "لا يفهمني أحد."
       },
-      "freqRank": 148,
+      "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 148,
-      "kind": "phrase",
-      "text": "I lost my glasses",
-      "gloss": {
-        "tr": "gözlüğümü kaybettim",
-        "de": "ich habe meine Brille verloren",
-        "es": "se me perdieron mis gafas",
-        "fr": "j'ai perdu mes lunettes",
-        "pt-BR": "perdi os meus óculos",
-        "ru": "я потеря́л свои́ очки́",
-        "en": "I lost my glasses"
-      },
-      "freqRank": 149,
-      "review": {
-        "sense": "I lost my glasses",
-        "translationCount": 27,
-        "definition": "Indicates that the speaker has lost his or her glasses.",
-        "otherSenses": []
-      }
-    },
-    {
-      "index": 149,
+      "index": 146,
       "kind": "phrase",
       "text": "Remember your promise.",
       "gloss": {
@@ -3017,13 +3080,34 @@
         "ru": "Помни о своем обещании.",
         "ar": "تذكر وعدك."
       },
-      "freqRank": 150,
+      "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 150,
+      "index": 147,
+      "kind": "phrase",
+      "text": "I lost my glasses",
+      "gloss": {
+        "tr": "gözlüğümü kaybettim",
+        "de": "ich habe meine Brille verloren",
+        "es": "se me perdieron mis gafas",
+        "fr": "j'ai perdu mes lunettes",
+        "pt-BR": "perdi os meus óculos",
+        "ru": "я потеря́л свои́ очки́",
+        "en": "I lost my glasses"
+      },
+      "freqRank": 148,
+      "review": {
+        "sense": "I lost my glasses",
+        "translationCount": 27,
+        "definition": "Indicates that the speaker has lost his or her glasses.",
+        "otherSenses": []
+      }
+    },
+    {
+      "index": 148,
       "kind": "phrase",
       "text": "Rock, paper, scissors.",
       "gloss": {
@@ -3035,13 +3119,13 @@
         "ru": "Камень, ножницы, бумага.",
         "ar": "حجرة، ورقة، مقص."
       },
-      "freqRank": 151,
+      "freqRank": 149,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 151,
+      "index": 149,
       "kind": "phrase",
       "text": "History repeats itself.",
       "gloss": {
@@ -3053,13 +3137,13 @@
         "ru": "История повторяется.",
         "ar": "التاريخ يعيد نفسه."
       },
-      "freqRank": 152,
+      "freqRank": 150,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 152,
+      "index": 150,
       "kind": "phrase",
       "text": "I lost my handbag",
       "gloss": {
@@ -3071,7 +3155,7 @@
         "ru": "я потеря́ла свою́ су́мку",
         "en": "I lost my handbag"
       },
-      "freqRank": 153,
+      "freqRank": 151,
       "review": {
         "sense": "I lost my handbag",
         "translationCount": 17,
@@ -3080,7 +3164,7 @@
       }
     },
     {
-      "index": 153,
+      "index": 151,
       "kind": "phrase",
       "text": "Words express thoughts.",
       "gloss": {
@@ -3092,13 +3176,13 @@
         "ru": "Слова выражают мысли.",
         "ar": "تعبر الكلمات عن الأفكار."
       },
-      "freqRank": 154,
+      "freqRank": 152,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 154,
+      "index": 152,
       "kind": "phrase",
       "text": "Consider yourself lucky.",
       "gloss": {
@@ -3110,14 +3194,14 @@
         "ru": "Считай, что тебе повезло.",
         "ar": "اعتبر نفسك محظوظا"
       },
-      "freqRank": 155,
+      "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba",
         "correctedTr": "Kendini şanslı düşün."
       }
     },
     {
-      "index": 155,
+      "index": 153,
       "kind": "phrase",
       "text": "I lost my keys",
       "gloss": {
@@ -3130,7 +3214,7 @@
         "ar": "فَقَدْتُ مَفَاتِيحِي",
         "en": "I lost my keys"
       },
-      "freqRank": 156,
+      "freqRank": 154,
       "review": {
         "sense": "I lost my keys",
         "translationCount": 41,
@@ -3139,7 +3223,7 @@
       }
     },
     {
-      "index": 156,
+      "index": 154,
       "kind": "phrase",
       "text": "You surprised everybody.",
       "gloss": {
@@ -3151,13 +3235,13 @@
         "ru": "Ты всех удивил.",
         "ar": "لقد فاجأت الجميع."
       },
-      "freqRank": 157,
+      "freqRank": 155,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 157,
+      "index": 155,
       "kind": "phrase",
       "text": "He is a hero.",
       "gloss": {
@@ -3169,13 +3253,13 @@
         "ru": "Он герой.",
         "ar": "هو بطل."
       },
-      "freqRank": 158,
+      "freqRank": 156,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 158,
+      "index": 156,
       "kind": "phrase",
       "text": "I lost my wallet",
       "gloss": {
@@ -3188,7 +3272,7 @@
         "ar": "فَقَدْتُ مِحْفَظَتِي",
         "en": "I lost my wallet"
       },
-      "freqRank": 159,
+      "freqRank": 157,
       "review": {
         "sense": "I lost my wallet",
         "translationCount": 60,
@@ -3197,7 +3281,7 @@
       }
     },
     {
-      "index": 159,
+      "index": 157,
       "kind": "phrase",
       "text": "He shot at me.",
       "gloss": {
@@ -3209,13 +3293,13 @@
         "ru": "Он выстрелил в меня.",
         "ar": "أطلق عليّ الرّصاص."
       },
-      "freqRank": 160,
+      "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 160,
+      "index": 158,
       "kind": "phrase",
       "text": "I just got up.",
       "gloss": {
@@ -3227,13 +3311,31 @@
         "ru": "Я только что встал.",
         "ar": "استيقظت للتوّ."
       },
-      "freqRank": 161,
+      "freqRank": 159,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 161,
+      "index": 159,
+      "kind": "phrase",
+      "text": "You can do it.",
+      "gloss": {
+        "tr": "Onu yapabilirsin!",
+        "de": "Du kannst das machen!",
+        "es": "¡Puedes hacerlo!",
+        "fr": "Tu peux le faire !",
+        "pt-BR": "Tu consegues fazê-lo!",
+        "ru": "Ты можешь сделать это!",
+        "ar": "يمكنك أن تفعلها!"
+      },
+      "freqRank": 160,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 160,
       "kind": "phrase",
       "text": "I've been shot",
       "gloss": {
@@ -3247,7 +3349,7 @@
         "en": "I've been shot"
       },
       "example": "I've been shot! We've been shot! Oh my God, help!",
-      "freqRank": 162,
+      "freqRank": 161,
       "review": {
         "sense": "I've been shot",
         "translationCount": 34,
@@ -3256,25 +3358,7 @@
       }
     },
     {
-      "index": 162,
-      "kind": "phrase",
-      "text": "You can do it.",
-      "gloss": {
-        "tr": "Onu yapabilirsin!",
-        "de": "Du kannst das machen!",
-        "es": "¡Puedes hacerlo!",
-        "fr": "Tu peux le faire !",
-        "pt-BR": "Tu consegues fazê-lo!",
-        "ru": "Ты можешь сделать это!",
-        "ar": "يمكنك أن تفعلها!"
-      },
-      "freqRank": 163,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 163,
+      "index": 161,
       "kind": "phrase",
       "text": "Bring it to me.",
       "gloss": {
@@ -3286,13 +3370,13 @@
         "ru": "Принеси его мне.",
         "ar": "أحضرها لي."
       },
-      "freqRank": 164,
+      "freqRank": 162,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 164,
+      "index": 162,
       "kind": "phrase",
       "text": "Give it to him.",
       "gloss": {
@@ -3304,13 +3388,13 @@
         "ru": "Дай это ему.",
         "ar": "أعطه إياه."
       },
-      "freqRank": 165,
+      "freqRank": 163,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 165,
+      "index": 163,
       "kind": "phrase",
       "text": "I've burned myself",
       "gloss": {
@@ -3323,7 +3407,7 @@
         "ar": "لَقَدْ اْحْرَقْتُ نَفْسِي",
         "en": "I've burned myself"
       },
-      "freqRank": 166,
+      "freqRank": 164,
       "review": {
         "sense": "I've burned myself",
         "translationCount": 30,
@@ -3331,7 +3415,7 @@
       }
     },
     {
-      "index": 166,
+      "index": 164,
       "kind": "phrase",
       "text": "How can I help?",
       "gloss": {
@@ -3343,13 +3427,13 @@
         "ru": "Как я могу помочь?",
         "ar": "كيف بإمكاني مساعدتك ؟"
       },
-      "freqRank": 167,
+      "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 167,
+      "index": 165,
       "kind": "phrase",
       "text": "is it safe here",
       "gloss": {
@@ -3360,7 +3444,7 @@
         "ru": "здесь он в безопасности?",
         "en": "is it safe here?"
       },
-      "freqRank": 168,
+      "freqRank": 166,
       "review": {
         "sense": "is it safe here?",
         "translationCount": 25,
@@ -3369,7 +3453,7 @@
       }
     },
     {
-      "index": 168,
+      "index": 166,
       "kind": "phrase",
       "text": "How high is it?",
       "gloss": {
@@ -3381,13 +3465,13 @@
         "ru": "Какая у него высота?",
         "ar": "ما مدي ارتفاعها؟"
       },
-      "freqRank": 169,
+      "freqRank": 167,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 169,
+      "index": 167,
       "kind": "phrase",
       "text": "I am a tourist.",
       "gloss": {
@@ -3399,13 +3483,13 @@
         "ru": "Я турист.",
         "ar": "أنا سائح."
       },
-      "freqRank": 170,
+      "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 170,
+      "index": 168,
       "kind": "phrase",
       "text": "It was a mouse.",
       "gloss": {
@@ -3417,13 +3501,13 @@
         "ru": "Это была мышь.",
         "ar": "كان ذلك فأراً."
       },
-      "freqRank": 171,
+      "freqRank": 169,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 171,
+      "index": 169,
       "kind": "phrase",
       "text": "isn't it so",
       "gloss": {
@@ -3436,7 +3520,7 @@
         "ar": "أَلَيْسَ كَذٰلِكَ؟",
         "en": "isn't it so?"
       },
-      "freqRank": 172,
+      "freqRank": 170,
       "review": {
         "sense": "isn't it so?",
         "translationCount": 72,
@@ -3444,7 +3528,7 @@
       }
     },
     {
-      "index": 172,
+      "index": 170,
       "kind": "phrase",
       "text": "May I help you?",
       "gloss": {
@@ -3456,13 +3540,13 @@
         "ru": "Могу я Вам чем-то помочь?",
         "ar": "هل تحتاج لمساعدة؟"
       },
-      "freqRank": 173,
+      "freqRank": 171,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 173,
+      "index": 171,
       "kind": "phrase",
       "text": "Time to get up.",
       "gloss": {
@@ -3474,40 +3558,13 @@
         "ru": "Время взять ноги в руки.",
         "ar": "حان وقت الإستيقاظ."
       },
-      "freqRank": 174,
+      "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 174,
-      "kind": "phrase",
-      "text": "it doesn't matter",
-      "gloss": {
-        "tr": "fark etmez",
-        "de": "es spielt keine Rolle",
-        "es": "no importa",
-        "fr": "c'est pas grave",
-        "pt-BR": "não interessa",
-        "ru": "нева́жно",
-        "en": "it doesn’t matter"
-      },
-      "freqRank": 175,
-      "review": {
-        "sense": "it doesn’t matter",
-        "translationCount": 79,
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7c/En-us-it_doesn%27t_matter.oga/En-us-it_doesn%27t_matter.oga.mp3",
-            "file": "En-us-it doesn't matter.oga",
-            "tags": ["US"]
-          }
-        ]
-      }
-    },
-    {
-      "index": 175,
+      "index": 172,
       "kind": "phrase",
       "text": "Are you at home?",
       "gloss": {
@@ -3519,13 +3576,46 @@
         "ru": "Ты дома?",
         "ar": "هل أنت في البيت؟"
       },
-      "freqRank": 176,
+      "freqRank": 173,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 176,
+      "index": 173,
+      "kind": "phrase",
+      "text": "it doesn't matter",
+      "gloss": {
+        "tr": "fark etmez",
+        "de": "es spielt keine Rolle",
+        "es": "no importa",
+        "fr": "c'est pas grave",
+        "pt-BR": "não interessa",
+        "ru": "нева́жно",
+        "en": "it doesn’t matter"
+      },
+      "freqRank": 174,
+      "review": {
+        "sense": "it doesn’t matter",
+        "translationCount": 79,
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7c/En-us-it_doesn%27t_matter.oga/En-us-it_doesn%27t_matter.oga.mp3",
+            "file": "En-us-it doesn't matter.oga",
+            "tags": ["US"]
+          }
+        ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7c/En-us-it_doesn%27t_matter.oga/En-us-it_doesn%27t_matter.oga.mp3",
+        "file": "En-us-it doesn't matter.oga",
+        "speaker": "Paul2520",
+        "licence": "CC0"
+      }
+    },
+    {
+      "index": 174,
       "kind": "phrase",
       "text": "Do you think so?",
       "gloss": {
@@ -3537,13 +3627,13 @@
         "ru": "Ты думаешь?",
         "ar": "أتعتقد ذلك؟"
       },
-      "freqRank": 177,
+      "freqRank": 175,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 177,
+      "index": 175,
       "kind": "phrase",
       "text": "I have to study.",
       "gloss": {
@@ -3555,13 +3645,13 @@
         "ru": "Мне надо учиться.",
         "ar": "عليّ أن أدرس."
       },
-      "freqRank": 178,
+      "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 178,
+      "index": 176,
       "kind": "phrase",
       "text": "it's an emergency",
       "gloss": {
@@ -3574,7 +3664,7 @@
         "ar": "إِنَّهَا حَالَة طَوَارِئ",
         "en": "it's an emergency"
       },
-      "freqRank": 179,
+      "freqRank": 177,
       "review": {
         "sense": "it's an emergency",
         "translationCount": 30,
@@ -3582,7 +3672,7 @@
       }
     },
     {
-      "index": 179,
+      "index": 177,
       "kind": "phrase",
       "text": "I need his help.",
       "gloss": {
@@ -3594,13 +3684,13 @@
         "ru": "Мне нужна его помощь.",
         "ar": "أحتاج إلى مساعدته."
       },
-      "freqRank": 180,
+      "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 180,
+      "index": 178,
       "kind": "phrase",
       "text": "it's too expensive",
       "gloss": {
@@ -3613,7 +3703,7 @@
         "ar": "هٰذَا اَلسِّعْر غَالٍ جِدًّا",
         "en": "it's too expensive"
       },
-      "freqRank": 181,
+      "freqRank": 179,
       "review": {
         "sense": "it's too expensive",
         "translationCount": 38,
@@ -3621,7 +3711,7 @@
       }
     },
     {
-      "index": 181,
+      "index": 179,
       "kind": "phrase",
       "text": "I wake up early.",
       "gloss": {
@@ -3633,13 +3723,13 @@
         "ru": "Я встаю рано.",
         "ar": "أستيقظ مبكراً."
       },
-      "freqRank": 182,
+      "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 182,
+      "index": 180,
       "kind": "phrase",
       "text": "Is it not black?",
       "gloss": {
@@ -3651,31 +3741,31 @@
         "ru": "Он не чёрный?",
         "ar": "أليست سوداء؟"
       },
-      "freqRank": 183,
+      "freqRank": 181,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 183,
+      "index": 181,
       "kind": "phrase",
-      "text": "All men must die.",
+      "text": "Are you a lawyer?",
       "gloss": {
-        "tr": "Bütün insanlar ölmeli.",
-        "de": "Alle Menschen müssen sterben.",
-        "es": "Todos los hombres deben morir.",
-        "fr": "Tous les hommes doivent mourir.",
-        "pt-BR": "Todos os homens devem morrer.",
-        "ru": "Все люди должны умереть.",
-        "ar": "كل الناس سيموتون حتماً."
+        "tr": "Sen bir avukat mısın?",
+        "de": "Sind Sie Rechtsanwalt?",
+        "es": "¿Eres tú un abogado?",
+        "fr": "Êtes-vous avocat ?",
+        "pt-BR": "Você é advogada?",
+        "ru": "Ты адвокат?",
+        "ar": "هل أنت محامٍ؟"
       },
-      "freqRank": 184,
+      "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 184,
+      "index": 182,
       "kind": "phrase",
       "text": "please repeat after me",
       "gloss": {
@@ -3688,7 +3778,7 @@
         "ar": "كَرِّر بَعْدِي مِن فَضْلَك",
         "en": "asking a listener to say the same words back"
       },
-      "freqRank": 185,
+      "freqRank": 183,
       "review": {
         "sense": "asking a listener to say the same words back",
         "translationCount": 49,
@@ -3701,28 +3791,16 @@
           }
         ],
         "machineSense": "phrase"
-      }
-    },
-    {
-      "index": 185,
-      "kind": "phrase",
-      "text": "Are you a lawyer?",
-      "gloss": {
-        "tr": "Sen bir avukat mısın?",
-        "de": "Sind Sie Rechtsanwalt?",
-        "es": "¿Eres tú un abogado?",
-        "fr": "Êtes-vous avocat ?",
-        "pt-BR": "Você é advogada?",
-        "ru": "Ты адвокат?",
-        "ar": "هل أنت محامٍ؟"
       },
-      "freqRank": 186,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3d/LL-Q1860_%28eng%29-Sapaa-please_repeat_after_me.wav/LL-Q1860_%28eng%29-Sapaa-please_repeat_after_me.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-please repeat after me.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 186,
+      "index": 183,
       "kind": "phrase",
       "text": "Come and help us.",
       "gloss": {
@@ -3734,13 +3812,13 @@
         "ru": "Иди помоги нам.",
         "ar": "تعال و ساعدنا."
       },
-      "freqRank": 187,
+      "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 187,
+      "index": 184,
       "kind": "phrase",
       "text": "I believe in you.",
       "gloss": {
@@ -3752,13 +3830,31 @@
         "ru": "Я верю в тебя.",
         "ar": "أثق في قدرتك."
       },
-      "freqRank": 188,
+      "freqRank": 185,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 188,
+      "index": 185,
+      "kind": "phrase",
+      "text": "It may rain soon.",
+      "gloss": {
+        "tr": "Çok geçmeden yağmur yağabilir.",
+        "de": "Vielleicht wird es bald regnen.",
+        "es": "Puede ser que llueva pronto.",
+        "fr": "Il devrait pleuvoir bientôt.",
+        "pt-BR": "Pode ser que chova já, já.",
+        "ru": "Похоже, скоро будет дождь.",
+        "ar": "ستمطر قريباً."
+      },
+      "freqRank": 186,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 186,
       "kind": "phrase",
       "text": "pleased to meet you",
       "gloss": {
@@ -3771,7 +3867,7 @@
         "ar": "تَشَرَّفْنَا",
         "en": "polite formula used when being introduced to somebody"
       },
-      "freqRank": 189,
+      "freqRank": 187,
       "review": {
         "sense": "polite formula used when being introduced to somebody",
         "translationCount": 147,
@@ -3784,28 +3880,34 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0c/LL-Q1860_%28eng%29-Sapaa-pleased_to_meet_you.wav/LL-Q1860_%28eng%29-Sapaa-pleased_to_meet_you.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-pleased to meet you.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 189,
+      "index": 187,
       "kind": "phrase",
-      "text": "I drank the wine.",
+      "text": "I know the truth.",
       "gloss": {
-        "tr": "Ben şarabı içtim.",
-        "de": "Ich habe den Wein getrunken.",
-        "es": "Bebí el vino.",
-        "fr": "Je bus le vin.",
-        "pt-BR": "Eu bebi o vinho.",
-        "ru": "Я выпил вино.",
-        "ar": "أنا شربت النبيذ."
+        "tr": "Ben gerçeği biliyorum.",
+        "de": "Ich kenne die Wahrheit.",
+        "es": "Sé la verdad.",
+        "fr": "Je connais la vérité.",
+        "pt-BR": "Eu conheço a verdade.",
+        "ru": "Я знаю правду.",
+        "ar": "أعرف الحقيقة."
       },
-      "freqRank": 190,
+      "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 190,
+      "index": 188,
       "kind": "phrase",
       "text": "what time is it",
       "gloss": {
@@ -3818,7 +3920,7 @@
         "ar": "كَمِ ٱلسَّاعَةُ؟",
         "en": "what is the time of day?"
       },
-      "freqRank": 191,
+      "freqRank": 189,
       "review": {
         "sense": "what is the time of day?",
         "translationCount": 171,
@@ -3831,10 +3933,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5a/LL-Q1860_%28eng%29-Sapaa-what_time_is_it.wav/LL-Q1860_%28eng%29-Sapaa-what_time_is_it.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-what time is it.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 191,
+      "index": 189,
       "kind": "phrase",
       "text": "thanks for your help",
       "gloss": {
@@ -3846,11 +3954,47 @@
         "ru": "спаси́бо за по́мощь",
         "en": "thanks for your help"
       },
-      "freqRank": 192,
+      "freqRank": 190,
       "review": {
         "sense": "thanks for your help",
         "translationCount": 46,
         "otherSenses": []
+      }
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "I need your help.",
+      "gloss": {
+        "tr": "Yardımınıza ihtiyacım var.",
+        "de": "Ich brauche deine Hilfe.",
+        "es": "Necesito tu ayuda.",
+        "fr": "J'ai besoin que tu m'aides.",
+        "pt-BR": "Preciso da sua ajuda.",
+        "ru": "Мне нужна твоя помощь.",
+        "ar": "أحتاج مساعدتك."
+      },
+      "freqRank": 191,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "It was at school.",
+      "gloss": {
+        "tr": "Okuldaydı.",
+        "de": "Es war in der Schule.",
+        "es": "Fue en la escuela.",
+        "fr": "C'était à l'école.",
+        "pt-BR": "Foi na escola.",
+        "ru": "Это было в школе.",
+        "ar": "كان في المدرسة."
+      },
+      "freqRank": 192,
+      "review": {
+        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -3874,97 +4018,6 @@
     {
       "index": 193,
       "kind": "phrase",
-      "text": "It may rain soon.",
-      "gloss": {
-        "tr": "Çok geçmeden yağmur yağabilir.",
-        "de": "Vielleicht wird es bald regnen.",
-        "es": "Puede ser que llueva pronto.",
-        "fr": "Il devrait pleuvoir bientôt.",
-        "pt-BR": "Pode ser que chova já, já.",
-        "ru": "Похоже, скоро будет дождь.",
-        "ar": "ستمطر قريباً."
-      },
-      "freqRank": 194,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 194,
-      "kind": "phrase",
-      "text": "I know the truth.",
-      "gloss": {
-        "tr": "Ben gerçeği biliyorum.",
-        "de": "Ich kenne die Wahrheit.",
-        "es": "Sé la verdad.",
-        "fr": "Je connais la vérité.",
-        "pt-BR": "Eu conheço a verdade.",
-        "ru": "Я знаю правду.",
-        "ar": "أعرف الحقيقة."
-      },
-      "freqRank": 195,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 195,
-      "kind": "phrase",
-      "text": "It was at school.",
-      "gloss": {
-        "tr": "Okuldaydı.",
-        "de": "Es war in der Schule.",
-        "es": "Fue en la escuela.",
-        "fr": "C'était à l'école.",
-        "pt-BR": "Foi na escola.",
-        "ru": "Это было в школе.",
-        "ar": "كان في المدرسة."
-      },
-      "freqRank": 196,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 196,
-      "kind": "phrase",
-      "text": "I need your help.",
-      "gloss": {
-        "tr": "Yardımınıza ihtiyacım var.",
-        "de": "Ich brauche deine Hilfe.",
-        "es": "Necesito tu ayuda.",
-        "fr": "J'ai besoin que tu m'aides.",
-        "pt-BR": "Preciso da sua ajuda.",
-        "ru": "Мне нужна твоя помощь.",
-        "ar": "أحتاج مساعدتك."
-      },
-      "freqRank": 197,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 197,
-      "kind": "phrase",
-      "text": "where have you been",
-      "gloss": {
-        "de": "wo bist du gewesen?",
-        "fr": "où êtes-vous allé",
-        "pt-BR": "onde você esteve?",
-        "ru": "где ты был?",
-        "en": "where have you been?"
-      },
-      "freqRank": 198,
-      "review": {
-        "sense": "where have you been?",
-        "translationCount": 25,
-        "definition": "where have you been?",
-        "otherSenses": []
-      }
-    },
-    {
-      "index": 198,
-      "kind": "phrase",
       "text": "Why do you study?",
       "gloss": {
         "tr": "Niçin çalışıyorsun?",
@@ -3975,13 +4028,50 @@
         "ru": "Почему ты учишься?",
         "ar": "لماذا تدرس؟"
       },
-      "freqRank": 199,
+      "freqRank": 194,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 199,
+      "index": 194,
+      "kind": "phrase",
+      "text": "I drank the wine.",
+      "gloss": {
+        "tr": "Ben şarabı içtim.",
+        "de": "Ich habe den Wein getrunken.",
+        "es": "Bebí el vino.",
+        "fr": "Je bus le vin.",
+        "pt-BR": "Eu bebi o vinho.",
+        "ru": "Я выпил вино.",
+        "ar": "أنا شربت النبيذ."
+      },
+      "freqRank": 195,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "where have you been",
+      "gloss": {
+        "de": "wo bist du gewesen?",
+        "fr": "où êtes-vous allé",
+        "pt-BR": "onde você esteve?",
+        "ru": "где ты был?",
+        "en": "where have you been?"
+      },
+      "freqRank": 196,
+      "review": {
+        "sense": "where have you been?",
+        "translationCount": 25,
+        "definition": "where have you been?",
+        "otherSenses": []
+      }
+    },
+    {
+      "index": 196,
       "kind": "phrase",
       "text": "Are you all ready?",
       "gloss": {
@@ -3993,13 +4083,13 @@
         "ru": "Вы все готовы?",
         "ar": "هل الجميع جاهز؟"
       },
-      "freqRank": 200,
+      "freqRank": 197,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 200,
+      "index": 197,
       "kind": "phrase",
       "text": "Could you help me?",
       "gloss": {
@@ -4011,13 +4101,13 @@
         "ru": "Вы не могли бы мне помочь?",
         "ar": "أيمكنك مساعدتي؟"
       },
-      "freqRank": 201,
+      "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 201,
+      "index": 198,
       "kind": "phrase",
       "text": "will you marry me",
       "gloss": {
@@ -4030,7 +4120,7 @@
         "ar": "هَل سَتَتَزَوَّجِينَنِي؟",
         "en": "marriage proposal"
       },
-      "freqRank": 202,
+      "freqRank": 199,
       "review": {
         "sense": "marriage proposal",
         "translationCount": 68,
@@ -4038,7 +4128,7 @@
       }
     },
     {
-      "index": 202,
+      "index": 199,
       "kind": "phrase",
       "text": "He began to shout.",
       "gloss": {
@@ -4050,34 +4140,49 @@
         "ru": "Он начал кричать.",
         "ar": "بدأ يصرخ."
       },
-      "freqRank": 203,
+      "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 203,
+      "index": 200,
       "kind": "phrase",
-      "text": "I'll call the police",
+      "text": "I called for help.",
       "gloss": {
-        "tr": "polisi arayacağım",
-        "de": "ich rufe die Polizei",
-        "es": "voy a llamar a la policía",
-        "fr": "je vais appeler la police",
-        "pt-BR": "chamarei a polícia",
-        "ru": "я вы́зову поли́цию",
-        "en": "I'll call the police"
+        "tr": "Ben yardım için çağrıda bulundum.",
+        "de": "Ich habe um Hilfe gerufen.",
+        "es": "He pedido ayuda.",
+        "fr": "J'ai appelé à l'aide.",
+        "pt-BR": "Eu pedi ajuda.",
+        "ru": "Я позвал на помощь.",
+        "ar": "طلبت النجدة."
       },
-      "freqRank": 204,
+      "freqRank": 201,
       "review": {
-        "sense": "I'll call the police",
-        "translationCount": 25,
-        "definition": "Indicates that the speaker is going to call the police, presumably to counter actions from the interlocutor.",
-        "otherSenses": []
+        "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 204,
+      "index": 201,
+      "kind": "phrase",
+      "text": "He came in person.",
+      "gloss": {
+        "tr": "O bizzat geldi.",
+        "de": "Er kam persönlich.",
+        "es": "Él vino en persona.",
+        "fr": "Il est venu en personne.",
+        "pt-BR": "Ele veio em pessoa.",
+        "ru": "Он пришел лично.",
+        "ar": "لقد أتى بنفسه"
+      },
+      "freqRank": 202,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 202,
       "kind": "phrase",
       "text": "I don't think so",
       "gloss": {
@@ -4090,7 +4195,7 @@
         "ar": "لَا أَظُنُّ ذٰلِكَ",
         "en": "I think that what has been said is untrue"
       },
-      "freqRank": 205,
+      "freqRank": 203,
       "review": {
         "sense": "I think that what has been said is untrue",
         "translationCount": 81,
@@ -4103,82 +4208,16 @@
             "tags": ["US"]
           }
         ]
-      }
-    },
-    {
-      "index": 205,
-      "kind": "phrase",
-      "text": "He came in person.",
-      "gloss": {
-        "tr": "O bizzat geldi.",
-        "de": "Er kam persönlich.",
-        "es": "Él vino en persona.",
-        "fr": "Il est venu en personne.",
-        "pt-BR": "Ele veio em pessoa.",
-        "ru": "Он пришел лично.",
-        "ar": "لقد أتى بنفسه"
       },
-      "freqRank": 206,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/74/LL-Q1860_%28eng%29-Persent101-I_don%26%2339%3Bt_think_so.wav/LL-Q1860_%28eng%29-Persent101-I_don%26%2339%3Bt_think_so.wav.mp3",
+        "file": "LL-Q1860 (eng)-Persent101-I don&#39;t think so.wav",
+        "speaker": "Persent101",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 206,
-      "kind": "phrase",
-      "text": "I called for help.",
-      "gloss": {
-        "tr": "Ben yardım için çağrıda bulundum.",
-        "de": "Ich habe um Hilfe gerufen.",
-        "es": "He pedido ayuda.",
-        "fr": "J'ai appelé à l'aide.",
-        "pt-BR": "Eu pedi ajuda.",
-        "ru": "Я позвал на помощь.",
-        "ar": "طلبت النجدة."
-      },
-      "freqRank": 207,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 207,
-      "kind": "phrase",
-      "text": "He broke his word.",
-      "gloss": {
-        "tr": "O sözünü tutmadı.",
-        "de": "Er hat sein Wort gebrochen.",
-        "es": "Él ha roto su palabra.",
-        "fr": "Il n'a pas tenu sa parole.",
-        "pt-BR": "Ele não cumpriu com sua palavra.",
-        "ru": "Он нарушил своё слово.",
-        "ar": "لقد أخلف وعده."
-      },
-      "freqRank": 208,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 208,
-      "kind": "phrase",
-      "text": "I can hardly walk.",
-      "gloss": {
-        "tr": "Güçlükle yürüyebiliyorum.",
-        "de": "Ich kann kaum laufen.",
-        "es": "Apenas puedo caminar.",
-        "fr": "Je peux difficilement marcher.",
-        "pt-BR": "Eu mal consigo andar.",
-        "ru": "Я едва могу идти.",
-        "ar": "بالكاد يمكنني المشي."
-      },
-      "freqRank": 209,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 209,
+      "index": 203,
       "kind": "phrase",
       "text": "He struck a match.",
       "gloss": {
@@ -4190,34 +4229,70 @@
         "ru": "Он чиркнул спичкой.",
         "ar": "أشعل عود ثقاب."
       },
-      "freqRank": 210,
+      "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 210,
+      "index": 204,
       "kind": "phrase",
-      "text": "I have high blood pressure",
+      "text": "I'll call the police",
       "gloss": {
-        "tr": "yüksek tansiyonum var",
-        "de": "ich habe einen hohen Blutdruck",
-        "es": "tengo la presión alta",
-        "fr": "je fais de l'hypertension",
-        "pt-BR": "tenho pressão alta",
-        "ru": "у меня́ высо́кое давле́ние",
-        "en": "I have high blood pressure"
+        "tr": "polisi arayacağım",
+        "de": "ich rufe die Polizei",
+        "es": "voy a llamar a la policía",
+        "fr": "je vais appeler la police",
+        "pt-BR": "chamarei a polícia",
+        "ru": "я вы́зову поли́цию",
+        "en": "I'll call the police"
       },
-      "freqRank": 211,
+      "freqRank": 205,
       "review": {
-        "sense": "I have high blood pressure",
-        "translationCount": 35,
-        "definition": "Indicates that the speaker has hypertension (high blood pressure).",
+        "sense": "I'll call the police",
+        "translationCount": 25,
+        "definition": "Indicates that the speaker is going to call the police, presumably to counter actions from the interlocutor.",
         "otherSenses": []
       }
     },
     {
-      "index": 211,
+      "index": 205,
+      "kind": "phrase",
+      "text": "He broke his word.",
+      "gloss": {
+        "tr": "O sözünü tutmadı.",
+        "de": "Er hat sein Wort gebrochen.",
+        "es": "Él ha roto su palabra.",
+        "fr": "Il n'a pas tenu sa parole.",
+        "pt-BR": "Ele não cumpriu com sua palavra.",
+        "ru": "Он нарушил своё слово.",
+        "ar": "لقد أخلف وعده."
+      },
+      "freqRank": 206,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "I can hardly walk.",
+      "gloss": {
+        "tr": "Güçlükle yürüyebiliyorum.",
+        "de": "Ich kann kaum laufen.",
+        "es": "Apenas puedo caminar.",
+        "fr": "Je peux difficilement marcher.",
+        "pt-BR": "Eu mal consigo andar.",
+        "ru": "Я едва могу идти.",
+        "ar": "بالكاد يمكنني المشي."
+      },
+      "freqRank": 207,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 207,
       "kind": "phrase",
       "text": "It is sunny today.",
       "gloss": {
@@ -4229,71 +4304,34 @@
         "ru": "Сегодня солнечно.",
         "ar": "الجو مشمس اليوم."
       },
-      "freqRank": 212,
+      "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 212,
+      "index": 208,
       "kind": "phrase",
-      "text": "I saw him running.",
+      "text": "I have high blood pressure",
       "gloss": {
-        "tr": "Onun koştuğunu gördüm.",
-        "de": "Ich habe ihn rennen sehen.",
-        "es": "Lo vi correr.",
-        "fr": "Je l’ai vu courir.",
-        "pt-BR": "Eu o vi correndo.",
-        "ru": "Я видел, как он бежал.",
-        "ar": "رأيته يركض."
+        "tr": "yüksek tansiyonum var",
+        "de": "ich habe einen hohen Blutdruck",
+        "es": "tengo la presión alta",
+        "fr": "je fais de l'hypertension",
+        "pt-BR": "tenho pressão alta",
+        "ru": "у меня́ высо́кое давле́ние",
+        "en": "I have high blood pressure"
       },
-      "freqRank": 213,
+      "freqRank": 209,
       "review": {
-        "glossedBy": "Tatoeba"
+        "sense": "I have high blood pressure",
+        "translationCount": 35,
+        "definition": "Indicates that the speaker has hypertension (high blood pressure).",
+        "otherSenses": []
       }
     },
     {
-      "index": 213,
-      "kind": "phrase",
-      "text": "No problem at all!",
-      "gloss": {
-        "tr": "Hiç sorun değil!",
-        "de": "Kein Problem!",
-        "es": "¡Sin ningún problema!",
-        "fr": "Aucun problème !",
-        "pt-BR": "Sem problema!",
-        "ru": "Без проблем!",
-        "ar": "لا مشكلة مطلقا!"
-      },
-      "freqRank": 214,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 214,
-      "kind": "phrase",
-      "text": "I have low blood pressure",
-      "gloss": {
-        "tr": "tansiyonum düşük",
-        "de": "ich habe einen niedrigen Blutdruck",
-        "es": "tengo la tensión baja",
-        "fr": "je fais de l'hypotension",
-        "pt-BR": "(eu) tenho pressão baixa",
-        "ru": "у меня́ ни́зкое давле́ние",
-        "en": "I have low blood pressure"
-      },
-      "freqRank": 215,
-      "review": {
-        "sense": "I have low blood pressure",
-        "translationCount": 28,
-        "definition": "Indicates that the speaker has hypotension (low blood pressure).",
-        "otherSenses": [],
-        "correctedTr": "tansiyonum düştü"
-      }
-    },
-    {
-      "index": 215,
+      "index": 209,
       "kind": "phrase",
       "text": "See you next week!",
       "gloss": {
@@ -4305,13 +4343,53 @@
         "ru": "Увидимся на следующей неделе!",
         "ar": "أراك الأسبوع القادم!"
       },
-      "freqRank": 216,
+      "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 216,
+      "index": 210,
+      "kind": "phrase",
+      "text": "No problem at all!",
+      "gloss": {
+        "tr": "Hiç sorun değil!",
+        "de": "Kein Problem!",
+        "es": "¡Sin ningún problema!",
+        "fr": "Aucun problème !",
+        "pt-BR": "Sem problema!",
+        "ru": "Без проблем!",
+        "ar": "لا مشكلة مطلقا!"
+      },
+      "freqRank": 211,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "I have low blood pressure",
+      "gloss": {
+        "tr": "tansiyonum düşük",
+        "de": "ich habe einen niedrigen Blutdruck",
+        "es": "tengo la tensión baja",
+        "fr": "je fais de l'hypotension",
+        "pt-BR": "(eu) tenho pressão baixa",
+        "ru": "у меня́ ни́зкое давле́ние",
+        "en": "I have low blood pressure"
+      },
+      "freqRank": 212,
+      "review": {
+        "sense": "I have low blood pressure",
+        "translationCount": 28,
+        "definition": "Indicates that the speaker has hypotension (low blood pressure).",
+        "otherSenses": [],
+        "correctedTr": "tansiyonum düştü"
+      }
+    },
+    {
+      "index": 212,
       "kind": "phrase",
       "text": "Turn on the radio.",
       "gloss": {
@@ -4323,30 +4401,31 @@
         "ru": "Включи радио.",
         "ar": "افتح الراديو."
       },
-      "freqRank": 217,
+      "freqRank": 213,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 217,
+      "index": 213,
       "kind": "phrase",
-      "text": "have a safe trip home",
+      "text": "I saw him running.",
       "gloss": {
-        "de": "komm gut nach Hause",
-        "fr": "rentre bien",
-        "en": "a farewell wishing someone a safe journey home"
+        "tr": "Onun koştuğunu gördüm.",
+        "de": "Ich habe ihn rennen sehen.",
+        "es": "Lo vi correr.",
+        "fr": "Je l’ai vu courir.",
+        "pt-BR": "Eu o vi correndo.",
+        "ru": "Я видел, как он бежал.",
+        "ar": "رأيته يركض."
       },
-      "freqRank": 218,
+      "freqRank": 214,
       "review": {
-        "sense": "a farewell wishing someone a safe journey home",
-        "translationCount": 11,
-        "otherSenses": [],
-        "machineSense": "Translations"
+        "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 218,
+      "index": 214,
       "kind": "phrase",
       "text": "You must hurry up.",
       "gloss": {
@@ -4358,13 +4437,30 @@
         "ru": "Ты должен торопиться.",
         "ar": "عليك أن تسرع."
       },
-      "freqRank": 219,
+      "freqRank": 215,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 219,
+      "index": 215,
+      "kind": "phrase",
+      "text": "have a safe trip home",
+      "gloss": {
+        "de": "komm gut nach Hause",
+        "fr": "rentre bien",
+        "en": "a farewell wishing someone a safe journey home"
+      },
+      "freqRank": 216,
+      "review": {
+        "sense": "a farewell wishing someone a safe journey home",
+        "translationCount": 11,
+        "otherSenses": [],
+        "machineSense": "Translations"
+      }
+    },
+    {
+      "index": 216,
       "kind": "phrase",
       "text": "I expect your help.",
       "gloss": {
@@ -4376,13 +4472,47 @@
         "ru": "Я рассчитываю, что ты мне поможешь.",
         "ar": "أتوقع مساعدتك."
       },
-      "freqRank": 220,
+      "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 220,
+      "index": 217,
+      "kind": "phrase",
+      "text": "do you accept credit cards",
+      "gloss": {
+        "tr": "kredi kartı geçiyor mu?",
+        "de": "akzeptieren Sie Kreditkarten?",
+        "es": "¿aceptan tarjetas de crédito?",
+        "fr": "acceptez-vous les cartes de crédit",
+        "pt-BR": "vocês aceitam cartões de crédito?",
+        "ru": "вы принима́ете креди́тную ка́рточку?",
+        "ar": "هَل تَقْبَلُونَ بِبِطَاقَات الاِئْتِمَان؟",
+        "en": "do you accept credit cards?"
+      },
+      "freqRank": 218,
+      "review": {
+        "sense": "do you accept credit cards?",
+        "translationCount": 44,
+        "otherSenses": [],
+        "audio": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav.mp3",
+            "file": "LL-Q1860 (eng)-Flame, not lame-do you accept credit cards.wav",
+            "tags": ["US"]
+          }
+        ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav.mp3",
+        "file": "LL-Q1860 (eng)-Flame, not lame-do you accept credit cards.wav",
+        "speaker": "Flame, not lame",
+        "licence": "CC0"
+      }
+    },
+    {
+      "index": 218,
       "kind": "phrase",
       "text": "can I use your phone",
       "gloss": {
@@ -4395,11 +4525,47 @@
         "ar": "هَل مُمْكِن اَسْتَعْمَل تِلِفُونَك؟",
         "en": "can I use your phone?"
       },
-      "freqRank": 221,
+      "freqRank": 219,
       "review": {
         "sense": "can I use your phone?",
         "translationCount": 48,
         "otherSenses": []
+      }
+    },
+    {
+      "index": 219,
+      "kind": "phrase",
+      "text": "I need your advice.",
+      "gloss": {
+        "tr": "Tavsiyene ihtiyacım var.",
+        "de": "Ich brauche deinen Rat.",
+        "es": "Necesito tu consejo.",
+        "fr": "J’ai besoin de ton conseil.",
+        "pt-BR": "Eu preciso do seu conselho.",
+        "ru": "Мне нужен ваш совет.",
+        "ar": "أحتاج نصيحتك."
+      },
+      "freqRank": 220,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 220,
+      "kind": "phrase",
+      "text": "Let me handle this.",
+      "gloss": {
+        "tr": "Bırak bunu ben halledeyim.",
+        "de": "Lass mich das erledigen.",
+        "es": "Déjamelo a mí.",
+        "fr": "Laisse-moi m'occuper de ça.",
+        "pt-BR": "Deixe-me cuidar disso.",
+        "ru": "Предоставь это мне.",
+        "ar": "دعِ الأمر لي."
+      },
+      "freqRank": 221,
+      "review": {
+        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -4423,29 +4589,19 @@
     {
       "index": 222,
       "kind": "phrase",
-      "text": "do you accept credit cards",
+      "text": "This will cost €30.",
       "gloss": {
-        "tr": "kredi kartı geçiyor mu?",
-        "de": "akzeptieren Sie Kreditkarten?",
-        "es": "¿aceptan tarjetas de crédito?",
-        "fr": "acceptez-vous les cartes de crédit",
-        "pt-BR": "vocês aceitam cartões de crédito?",
-        "ru": "вы принима́ете креди́тную ка́рточку?",
-        "ar": "هَل تَقْبَلُونَ بِبِطَاقَات الاِئْتِمَان؟",
-        "en": "do you accept credit cards?"
+        "tr": "Bu €30'a mal olacak.",
+        "de": "Das wird 30 € kosten.",
+        "es": "Eso va a costar 30 €.",
+        "fr": "Ça coûtera 30 €.",
+        "pt-BR": "Vai custar €30.",
+        "ru": "Это будет стоить 30 евро.",
+        "ar": "سيكلفك ذلك ثلاثين يورو."
       },
       "freqRank": 223,
       "review": {
-        "sense": "do you accept credit cards?",
-        "translationCount": 44,
-        "otherSenses": [],
-        "audio": [
-          {
-            "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav.mp3",
-            "file": "LL-Q1860 (eng)-Flame, not lame-do you accept credit cards.wav",
-            "tags": ["US"]
-          }
-        ]
+        "glossedBy": "Tatoeba"
       }
     },
     {
@@ -4469,60 +4625,6 @@
     {
       "index": 224,
       "kind": "phrase",
-      "text": "Let me handle this.",
-      "gloss": {
-        "tr": "Bırak bunu ben halledeyim.",
-        "de": "Lass mich das erledigen.",
-        "es": "Déjamelo a mí.",
-        "fr": "Laisse-moi m'occuper de ça.",
-        "pt-BR": "Deixe-me cuidar disso.",
-        "ru": "Предоставь это мне.",
-        "ar": "دعِ الأمر لي."
-      },
-      "freqRank": 225,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 225,
-      "kind": "phrase",
-      "text": "I need your advice.",
-      "gloss": {
-        "tr": "Tavsiyene ihtiyacım var.",
-        "de": "Ich brauche deinen Rat.",
-        "es": "Necesito tu consejo.",
-        "fr": "J’ai besoin de ton conseil.",
-        "pt-BR": "Eu preciso do seu conselho.",
-        "ru": "Мне нужен ваш совет.",
-        "ar": "أحتاج نصيحتك."
-      },
-      "freqRank": 226,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 226,
-      "kind": "phrase",
-      "text": "This will cost €30.",
-      "gloss": {
-        "tr": "Bu €30'a mal olacak.",
-        "de": "Das wird 30 € kosten.",
-        "es": "Eso va a costar 30 €.",
-        "fr": "Ça coûtera 30 €.",
-        "pt-BR": "Vai custar €30.",
-        "ru": "Это будет стоить 30 евро.",
-        "ar": "سيكلفك ذلك ثلاثين يورو."
-      },
-      "freqRank": 227,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 227,
-      "kind": "phrase",
       "text": "help is on the way",
       "gloss": {
         "de": "Hilfe ist auf dem Weg",
@@ -4531,7 +4633,7 @@
         "pt-BR": "ajuda está a caminho",
         "en": "used to inform the interlocutor that emergency assistance is approaching"
       },
-      "freqRank": 228,
+      "freqRank": 225,
       "review": {
         "sense": "used to inform the interlocutor that emergency assistance is approaching",
         "translationCount": 13,
@@ -4540,7 +4642,7 @@
       }
     },
     {
-      "index": 228,
+      "index": 225,
       "kind": "phrase",
       "text": "Turn off the alarm.",
       "gloss": {
@@ -4552,13 +4654,13 @@
         "ru": "Отключите сигнализацию.",
         "ar": "أوقف المنبه."
       },
-      "freqRank": 229,
+      "freqRank": 226,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 229,
+      "index": 226,
       "kind": "phrase",
       "text": "Will it rain today?",
       "gloss": {
@@ -4570,34 +4672,13 @@
         "ru": "Сегодня дождь пойдет?",
         "ar": "أستمطر اليوم؟"
       },
-      "freqRank": 230,
+      "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 230,
-      "kind": "phrase",
-      "text": "how much does it cost",
-      "gloss": {
-        "de": "was kostet es?",
-        "es": "¿cuánto cuesta?",
-        "fr": "combien ça coûte",
-        "pt-BR": "quanto custa?",
-        "ru": "ско́лько э́то сто́ит?",
-        "ar": "بِكَمْ هٰذَا؟",
-        "en": "how much is it?"
-      },
-      "freqRank": 231,
-      "review": {
-        "sense": "how much is it?",
-        "translationCount": 142,
-        "definition": "What is its price? How much money do you want for it?",
-        "otherSenses": []
-      }
-    },
-    {
-      "index": 231,
+      "index": 227,
       "kind": "phrase",
       "text": "You can study here.",
       "gloss": {
@@ -4609,13 +4690,34 @@
         "ru": "Ты можешь учиться здесь.",
         "ar": "يمكنك أن تدرس هنا."
       },
-      "freqRank": 232,
+      "freqRank": 228,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 232,
+      "index": 228,
+      "kind": "phrase",
+      "text": "how much does it cost",
+      "gloss": {
+        "de": "was kostet es?",
+        "es": "¿cuánto cuesta?",
+        "fr": "combien ça coûte",
+        "pt-BR": "quanto custa?",
+        "ru": "ско́лько э́то сто́ит?",
+        "ar": "بِكَمْ هٰذَا؟",
+        "en": "how much is it?"
+      },
+      "freqRank": 229,
+      "review": {
+        "sense": "how much is it?",
+        "translationCount": 142,
+        "definition": "What is its price? How much money do you want for it?",
+        "otherSenses": []
+      }
+    },
+    {
+      "index": 229,
       "kind": "phrase",
       "text": "Fish is cheap today.",
       "gloss": {
@@ -4627,13 +4729,31 @@
         "ru": "Сегодня рыба дешевая.",
         "ar": "السمك رخيص اليوم."
       },
-      "freqRank": 233,
+      "freqRank": 230,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 233,
+      "index": 230,
+      "kind": "phrase",
+      "text": "He wrote the report.",
+      "gloss": {
+        "tr": "Raporu yazdı.",
+        "de": "Er schrieb den Bericht.",
+        "es": "Él escribió el informe.",
+        "fr": "Il écrivit le rapport.",
+        "pt-BR": "Ele escreveu o relatório.",
+        "ru": "Он написал доклад.",
+        "ar": "كتب التقرير."
+      },
+      "freqRank": 231,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 231,
       "kind": "phrase",
       "text": "it can't be helped",
       "gloss": {
@@ -4646,7 +4766,7 @@
         "ar": "لَا مَفَرّ",
         "en": "it is inevitable"
       },
-      "freqRank": 234,
+      "freqRank": 232,
       "review": {
         "sense": "it is inevitable",
         "translationCount": 48,
@@ -4658,28 +4778,16 @@
             "tags": ["Australia"]
           }
         ]
-      }
-    },
-    {
-      "index": 234,
-      "kind": "phrase",
-      "text": "He wrote the report.",
-      "gloss": {
-        "tr": "Raporu yazdı.",
-        "de": "Er schrieb den Bericht.",
-        "es": "Él escribió el informe.",
-        "fr": "Il écrivit le rapport.",
-        "pt-BR": "Ele escreveu o relatório.",
-        "ru": "Он написал доклад.",
-        "ar": "كتب التقرير."
       },
-      "freqRank": 235,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/En-au-it_can%27t_be_helped.ogg/En-au-it_can%27t_be_helped.ogg.mp3",
+        "file": "En-au-it can't be helped.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
-      "index": 235,
+      "index": 232,
       "kind": "phrase",
       "text": "Is it still raining?",
       "gloss": {
@@ -4691,13 +4799,13 @@
         "ru": "Дождь всё ещё идёт?",
         "ar": "أما زالت تمطر؟"
       },
-      "freqRank": 236,
+      "freqRank": 233,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 236,
+      "index": 233,
       "kind": "phrase",
       "text": "It may rain tonight.",
       "gloss": {
@@ -4709,13 +4817,13 @@
         "ru": "Сегодня вечером может пойти дождь.",
         "ar": "ربما ستمطر الليلة."
       },
-      "freqRank": 237,
+      "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 237,
+      "index": 234,
       "kind": "phrase",
       "text": "it's not my fault",
       "gloss": {
@@ -4726,7 +4834,7 @@
         "en": "I did not cause the problem"
       },
       "example": "It's not my fault that it's raining.",
-      "freqRank": 238,
+      "freqRank": 235,
       "review": {
         "sense": "I did not cause the problem",
         "translationCount": 20,
@@ -4739,10 +4847,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1c/LL-Q1860_%28eng%29-Sapaa-it%27s_not_my_fault.wav/LL-Q1860_%28eng%29-Sapaa-it%27s_not_my_fault.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-it's not my fault.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 238,
+      "index": 235,
       "kind": "phrase",
       "text": "It was really cheap.",
       "gloss": {
@@ -4754,13 +4868,13 @@
         "ru": "Это было очень дёшево.",
         "ar": "كان رخيصاً جداً."
       },
-      "freqRank": 239,
+      "freqRank": 236,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 239,
+      "index": 236,
       "kind": "phrase",
       "text": "What do you suggest?",
       "gloss": {
@@ -4772,13 +4886,13 @@
         "ru": "Что ты предлагаешь?",
         "ar": "ماذا تقترح؟"
       },
-      "freqRank": 240,
+      "freqRank": 237,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 240,
+      "index": 237,
       "kind": "phrase",
       "text": "the drinks are on me",
       "gloss": {
@@ -4787,7 +4901,7 @@
         "pt-BR": "eu pago as bebidas",
         "en": "the drinks are on me"
       },
-      "freqRank": 241,
+      "freqRank": 238,
       "review": {
         "sense": "the drinks are on me",
         "translationCount": 10,
@@ -4795,7 +4909,7 @@
       }
     },
     {
-      "index": 241,
+      "index": 238,
       "kind": "phrase",
       "text": "You must study hard.",
       "gloss": {
@@ -4807,13 +4921,13 @@
         "ru": "Ты должен усердно учиться.",
         "ar": "عليك أن تدرس بجدّ."
       },
-      "freqRank": 242,
+      "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 242,
+      "index": 239,
       "kind": "phrase",
       "text": "Do you understand me?",
       "gloss": {
@@ -4825,32 +4939,13 @@
         "ru": "Вы меня понимаете?",
         "ar": "هل تفهمني؟"
       },
-      "freqRank": 243,
+      "freqRank": 240,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 243,
-      "kind": "phrase",
-      "text": "there's been an accident",
-      "gloss": {
-        "de": "es ist ein Unfall passiert",
-        "es": "ha habido un accidente",
-        "fr": "il y a eu un accident",
-        "ru": "произошла́ ава́рия",
-        "ar": "حَدَثَتْ حَادِثَةٌ",
-        "en": "there's been an accident"
-      },
-      "freqRank": 244,
-      "review": {
-        "sense": "there's been an accident",
-        "translationCount": 23,
-        "otherSenses": []
-      }
-    },
-    {
-      "index": 244,
+      "index": 240,
       "kind": "phrase",
       "text": "Draw a straight line.",
       "gloss": {
@@ -4862,13 +4957,32 @@
         "ru": "Нарисуй прямую линию.",
         "ar": "إرسم خط مستقيم."
       },
-      "freqRank": 245,
+      "freqRank": 241,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 245,
+      "index": 241,
+      "kind": "phrase",
+      "text": "there's been an accident",
+      "gloss": {
+        "de": "es ist ein Unfall passiert",
+        "es": "ha habido un accidente",
+        "fr": "il y a eu un accident",
+        "ru": "произошла́ ава́рия",
+        "ar": "حَدَثَتْ حَادِثَةٌ",
+        "en": "there's been an accident"
+      },
+      "freqRank": 242,
+      "review": {
+        "sense": "there's been an accident",
+        "translationCount": 23,
+        "otherSenses": []
+      }
+    },
+    {
+      "index": 242,
       "kind": "phrase",
       "text": "Have you finished it?",
       "gloss": {
@@ -4880,13 +4994,31 @@
         "ru": "Ты закончил это?",
         "ar": "هل أنهيتها؟"
       },
-      "freqRank": 246,
+      "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 246,
+      "index": 243,
+      "kind": "phrase",
+      "text": "I apologize for this.",
+      "gloss": {
+        "tr": "Bunun için özür dilerim.",
+        "de": "Ich entschuldige mich dafür.",
+        "es": "Me excuso por ello.",
+        "fr": "Je m'en excuse.",
+        "pt-BR": "Peço desculpas por isso.",
+        "ru": "Я прошу за это прощения.",
+        "ar": "انا اعتذر لهذا."
+      },
+      "freqRank": 244,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 244,
       "kind": "phrase",
       "text": "to whom it may concern",
       "gloss": {
@@ -4899,7 +5031,7 @@
         "ar": "إِلَى مَنْ يَهُمُّهُ الْأَمْرُ",
         "en": "phrase used to begin a formal letter to an unknown recipient"
       },
-      "freqRank": 247,
+      "freqRank": 245,
       "review": {
         "sense": "phrase used to begin a formal letter to an unknown recipient",
         "translationCount": 36,
@@ -4912,46 +5044,16 @@
             "tags": ["US"]
           }
         ]
-      }
-    },
-    {
-      "index": 247,
-      "kind": "phrase",
-      "text": "I apologize for this.",
-      "gloss": {
-        "tr": "Bunun için özür dilerim.",
-        "de": "Ich entschuldige mich dafür.",
-        "es": "Me excuso por ello.",
-        "fr": "Je m'en excuse.",
-        "pt-BR": "Peço desculpas por isso.",
-        "ru": "Я прошу за это прощения.",
-        "ar": "انا اعتذر لهذا."
       },
-      "freqRank": 248,
-      "review": {
-        "glossedBy": "Tatoeba"
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ec/LL-Q1860_%28eng%29-Sapaa-to_whom_it_may_concern.wav/LL-Q1860_%28eng%29-Sapaa-to_whom_it_may_concern.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-to whom it may concern.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 248,
-      "kind": "phrase",
-      "text": "Is there an elevator?",
-      "gloss": {
-        "tr": "Bir asansör var mı?",
-        "de": "Gibt es einen Aufzug?",
-        "es": "¿Hay ascensor?",
-        "fr": "Y a-t-il un ascenseur ?",
-        "pt-BR": "Há elevador?",
-        "ru": "Здесь есть лифт?",
-        "ar": "هل هناك مصعد؟"
-      },
-      "freqRank": 249,
-      "review": {
-        "glossedBy": "Tatoeba"
-      }
-    },
-    {
-      "index": 249,
+      "index": 245,
       "kind": "phrase",
       "text": "I think I understand.",
       "gloss": {
@@ -4963,13 +5065,31 @@
         "ru": "Кажется, понимаю.",
         "ar": "أظنني أنني فهمت"
       },
-      "freqRank": 250,
+      "freqRank": 246,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 250,
+      "index": 246,
+      "kind": "phrase",
+      "text": "Is there an elevator?",
+      "gloss": {
+        "tr": "Bir asansör var mı?",
+        "de": "Gibt es einen Aufzug?",
+        "es": "¿Hay ascensor?",
+        "fr": "Y a-t-il un ascenseur ?",
+        "pt-BR": "Há elevador?",
+        "ru": "Здесь есть лифт?",
+        "ar": "هل هناك مصعد؟"
+      },
+      "freqRank": 247,
+      "review": {
+        "glossedBy": "Tatoeba"
+      }
+    },
+    {
+      "index": 247,
       "kind": "phrase",
       "text": "what date is it today",
       "gloss": {
@@ -4981,7 +5101,7 @@
         "ar": "مَا تَارِيخُ ٱلْيَوْم؟",
         "en": "what date is it today?"
       },
-      "freqRank": 251,
+      "freqRank": 248,
       "review": {
         "sense": "what date is it today?",
         "translationCount": 31,
@@ -4990,7 +5110,7 @@
       }
     },
     {
-      "index": 251,
+      "index": 248,
       "kind": "phrase",
       "text": "Always tell the truth.",
       "gloss": {
@@ -5002,13 +5122,13 @@
         "ru": "Всегда говори правду.",
         "ar": "قل الحقيقة دائماً."
       },
-      "freqRank": 252,
+      "freqRank": 249,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 252,
+      "index": 249,
       "kind": "phrase",
       "text": "Do you understand her?",
       "gloss": {
@@ -5020,13 +5140,13 @@
         "ru": "Ты её понимаешь?",
         "ar": "هل تفهَمُها؟"
       },
-      "freqRank": 253,
+      "freqRank": 250,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 253,
+      "index": 250,
       "kind": "phrase",
       "text": "what day is it today",
       "gloss": {
@@ -5037,7 +5157,7 @@
         "ru": "какой сегодня день?",
         "en": "what day is it today? (current day of the week or of the month)"
       },
-      "freqRank": 254,
+      "freqRank": 251,
       "review": {
         "sense": "what day is it today? (current day of the week or of the month)",
         "translationCount": 23,
@@ -5046,7 +5166,7 @@
       }
     },
     {
-      "index": 254,
+      "index": 251,
       "kind": "phrase",
       "text": "I dislike being alone.",
       "gloss": {
@@ -5058,13 +5178,13 @@
         "ru": "Мне не нравится быть в одиночестве.",
         "ar": "لا أحب أن أكون وحدي."
       },
-      "freqRank": 255,
+      "freqRank": 252,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 255,
+      "index": 252,
       "kind": "phrase",
       "text": "It was cold yesterday.",
       "gloss": {
@@ -5076,13 +5196,13 @@
         "ru": "Вчера было холодно.",
         "ar": "كان الجو بارداً البارحة."
       },
-      "freqRank": 256,
+      "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 256,
+      "index": 253,
       "kind": "phrase",
       "text": "what's on your mind",
       "gloss": {
@@ -5093,7 +5213,7 @@
         "en": "what is bothering you?"
       },
       "example": "You look bothered. What’s on your mind?",
-      "freqRank": 257,
+      "freqRank": 254,
       "review": {
         "sense": "what is bothering you?",
         "translationCount": 23,
@@ -5102,7 +5222,7 @@
       }
     },
     {
-      "index": 257,
+      "index": 254,
       "kind": "phrase",
       "text": "Will it rain tomorrow?",
       "gloss": {
@@ -5114,13 +5234,13 @@
         "ru": "Завтра будет идти дождь?",
         "ar": "هل ستمطر غداً؟"
       },
-      "freqRank": 258,
+      "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 258,
+      "index": 255,
       "kind": "phrase",
       "text": "Cats dislike being wet.",
       "gloss": {
@@ -5132,13 +5252,13 @@
         "ru": "Кошки не любят быть мокрыми.",
         "ar": "القطط تكره البلل."
       },
-      "freqRank": 259,
+      "freqRank": 256,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 259,
+      "index": 256,
       "kind": "phrase",
       "text": "Give me another chance.",
       "gloss": {
@@ -5150,13 +5270,13 @@
         "ru": "Дай мне ещё один шанс.",
         "ar": "أعطني فرصةً أخرى."
       },
-      "freqRank": 260,
+      "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 260,
+      "index": 257,
       "kind": "phrase",
       "text": "could I see the menu, please",
       "gloss": {
@@ -5169,7 +5289,7 @@
         "ar": "قَائِمَة اَلطَّعَام لَو سَمَحْت",
         "en": "said to ask for a menu"
       },
-      "freqRank": 261,
+      "freqRank": 258,
       "review": {
         "sense": "said to ask for a menu",
         "translationCount": 42,
@@ -5178,7 +5298,7 @@
       }
     },
     {
-      "index": 261,
+      "index": 258,
       "kind": "phrase",
       "text": "He attempted to escape.",
       "gloss": {
@@ -5190,13 +5310,13 @@
         "ru": "Он попытался сбежать.",
         "ar": "حاول أن يهرب."
       },
-      "freqRank": 262,
+      "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 262,
+      "index": 259,
       "kind": "phrase",
       "text": "I appreciate your help.",
       "gloss": {
@@ -5208,13 +5328,13 @@
         "ru": "Я ценю твою помощь.",
         "ar": "أُقَدِّر مساعدتك."
       },
-      "freqRank": 263,
+      "freqRank": 260,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 263,
+      "index": 260,
       "kind": "phrase",
       "text": "how do you pronounce this word",
       "gloss": {
@@ -5227,7 +5347,7 @@
         "ar": "كَيْفَ نَنْطِق هٰذِهِ الْكَلِمَة؟",
         "en": "how do you pronounce this word?"
       },
-      "freqRank": 264,
+      "freqRank": 261,
       "review": {
         "sense": "how do you pronounce this word?",
         "translationCount": 68,
@@ -5240,10 +5360,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/62/LL-Q1860_%28eng%29-Sapaa-how_do_you_pronounce_this_word.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_pronounce_this_word.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-how do you pronounce this word.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 264,
+      "index": 261,
       "kind": "phrase",
       "text": "I helped him yesterday.",
       "gloss": {
@@ -5255,13 +5381,13 @@
         "ru": "Я ему вчера помог.",
         "ar": "ساعدته بالأمس."
       },
-      "freqRank": 265,
+      "freqRank": 262,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 265,
+      "index": 262,
       "kind": "phrase",
       "text": "Just follow your heart.",
       "gloss": {
@@ -5273,13 +5399,13 @@
         "ru": "Просто сделай, как велит тебе сердце.",
         "ar": "إتبع قلبك فحسب."
       },
-      "freqRank": 266,
+      "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 266,
+      "index": 263,
       "kind": "phrase",
       "text": "I'm in love with you",
       "gloss": {
@@ -5293,7 +5419,7 @@
         "en": "declaration of romantic feeling"
       },
       "example": "‘I’m in love with you, Michael,’ Camilla said longingly.",
-      "freqRank": 267,
+      "freqRank": 264,
       "review": {
         "sense": "declaration of romantic feeling",
         "translationCount": 76,
@@ -5306,10 +5432,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/58/En-us-I%27m_in_love_with_you.oga/En-us-I%27m_in_love_with_you.oga.mp3",
+        "file": "En-us-I'm in love with you.oga",
+        "speaker": "Paul2520",
+        "licence": "CC0"
       }
     },
     {
-      "index": 267,
+      "index": 264,
       "kind": "phrase",
       "text": "We learn by experience.",
       "gloss": {
@@ -5321,13 +5453,13 @@
         "ru": "Мы учимся на основании опыта.",
         "ar": "نحن نتعلم بالتجربة."
       },
-      "freqRank": 268,
+      "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 268,
+      "index": 265,
       "kind": "phrase",
       "text": "All our attempts failed.",
       "gloss": {
@@ -5339,13 +5471,13 @@
         "ru": "Все наши попытки провалились.",
         "ar": "باءت كل محاولاتنا بالفشل."
       },
-      "freqRank": 269,
+      "freqRank": 266,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 269,
+      "index": 266,
       "kind": "phrase",
       "text": "I'm looking for a job",
       "gloss": {
@@ -5358,7 +5490,7 @@
         "ar": "أَنَا أَبْحَث عَن عَمَل",
         "en": "I'm looking for a job"
       },
-      "freqRank": 270,
+      "freqRank": 267,
       "review": {
         "sense": "I'm looking for a job",
         "translationCount": 48,
@@ -5367,7 +5499,7 @@
       }
     },
     {
-      "index": 270,
+      "index": 267,
       "kind": "phrase",
       "text": "Is everything all right?",
       "gloss": {
@@ -5379,13 +5511,13 @@
         "ru": "Всё в порядке?",
         "ar": "هل كل شيء على ما يرام؟"
       },
-      "freqRank": 271,
+      "freqRank": 268,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 271,
+      "index": 268,
       "kind": "phrase",
       "text": "It is unfortunately true.",
       "gloss": {
@@ -5397,13 +5529,13 @@
         "ru": "К сожалению, это правда.",
         "ar": "للأسف ذلك صحيح."
       },
-      "freqRank": 272,
+      "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 272,
+      "index": 269,
       "kind": "phrase",
       "text": "Another world is possible.",
       "gloss": {
@@ -5415,13 +5547,13 @@
         "ru": "Возможен другой мир.",
         "ar": "عالم آخر ممكن."
       },
-      "freqRank": 273,
+      "freqRank": 270,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 273,
+      "index": 270,
       "kind": "phrase",
       "text": "do you need to use the bathroom",
       "gloss": {
@@ -5432,7 +5564,7 @@
         "ru": "вам ну́жно в туале́т?",
         "en": "do you need to use the bathroom"
       },
-      "freqRank": 274,
+      "freqRank": 271,
       "review": {
         "sense": "do you need to use the bathroom",
         "translationCount": 19,
@@ -5440,7 +5572,7 @@
       }
     },
     {
-      "index": 274,
+      "index": 271,
       "kind": "phrase",
       "text": "You must control yourself.",
       "gloss": {
@@ -5452,13 +5584,13 @@
         "ru": "Ты должен держать себя в руках.",
         "ar": "عليك أن تتحكم بنزواتك."
       },
-      "freqRank": 275,
+      "freqRank": 272,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 275,
+      "index": 272,
       "kind": "phrase",
       "text": "Choose your favorite racket.",
       "gloss": {
@@ -5470,13 +5602,13 @@
         "ru": "Выбери ракетку, которая больше всего тебе нравится.",
         "ar": "اختر مضربك المفضل."
       },
-      "freqRank": 276,
+      "freqRank": 273,
       "review": {
         "glossedBy": "Tatoeba"
       }
     },
     {
-      "index": 276,
+      "index": 273,
       "kind": "phrase",
       "text": "sorry, we don't accept credit cards",
       "gloss": {
@@ -5487,7 +5619,7 @@
         "ru": "извините, мы не принимаем оплату картой",
         "en": "sorry, we don't accept credit cards"
       },
-      "freqRank": 277,
+      "freqRank": 274,
       "review": {
         "sense": "sorry, we don't accept credit cards",
         "translationCount": 21,
@@ -5499,10 +5631,16 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/82/LL-Q1860_%28eng%29-Sapaa-sorry%2C_we_don%27t_accept_credit_cards.wav/LL-Q1860_%28eng%29-Sapaa-sorry%2C_we_don%27t_accept_credit_cards.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-sorry, we don't accept credit cards.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
-      "index": 277,
+      "index": 274,
       "kind": "phrase",
       "text": "I was born in 1972.",
       "gloss": {
@@ -5514,7 +5652,7 @@
         "ru": "Я родился в тысяча девятьсот семьдесят втором году.",
         "ar": "أن ولدت في عام 1972."
       },
-      "freqRank": 278,
+      "freqRank": 275,
       "review": {
         "glossedBy": "Tatoeba"
       }

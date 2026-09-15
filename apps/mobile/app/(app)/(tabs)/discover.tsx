@@ -343,7 +343,7 @@ export default function DiscoverScreen() {
     query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
 
   return (
-    <Screen fluid>
+    <Screen fluid tabbed>
       <View style={styles.header}>
         {/*
           While search is open the row belongs to the field. Everything else

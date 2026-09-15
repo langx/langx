@@ -65,8 +65,35 @@ export const echoPackItemSchema = z.object({
     .trim()
     .regex(/^openmoji:[0-9A-F-]+$/)
     .optional(),
-  /** A human saying it. A storage URL, on the same rule a card's audio follows. */
-  audioUrl: z.url().optional(),
+  /**
+   * A human saying it: a Wikimedia Commons recording, with the credit its
+   * licence requires.
+   *
+   * One object rather than a bare URL, because a URL on its own cannot be
+   * lawfully played. Every licence on the allowlist — CC0 aside — requires
+   * naming the author, and `speaker` is how that name reaches
+   * `EchoAudio.speakerName`, which the session already draws as
+   * "Spoken by {name}".
+   *
+   * `file` and `licence` are the record of the check rather than anything the
+   * app reads: `docs/echo.md` says to verify a source at the version
+   * downloaded and write down what was found, and this is that, per file.
+   *
+   * **The URL points at Commons**, not at our own storage — the decision
+   * `build-pack.mjs` said nobody had taken. Its cost is that a file renamed or
+   * deleted there silences the card. Acceptable here and nowhere else: a pack
+   * is content we can re-seed, where a captured sentence is somebody's own.
+   */
+  audio: z
+    .object({
+      url: z.url(),
+      /** The Commons `File:` title the licence was checked against. */
+      file: z.string().trim().min(1),
+      /** Absent only where the licence asks for no attribution. */
+      speaker: z.string().trim().min(1).optional(),
+      licence: z.string().trim().min(1),
+    })
+    .optional(),
 })
 export type EchoPackItem = z.infer<typeof echoPackItemSchema>
 
