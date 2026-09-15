@@ -44,12 +44,20 @@ import { spacing } from '../lib/theme'
  *   again. Scrolled as the keyboard rises rather than after it, so the two
  *   move together.
  *
- * iOS only. Android is padded once for every screen by `KeyboardResizeHost`
- * at the root, and its scroll view moves the focused field into view by
- * itself when it shrinks. `useKeyboardInset` is the same pad for a screen
- * whose composer sits outside the scroll view, as the chat thread's does.
+ * iOS only, and nothing here is attached anywhere else. Android's story is
+ * the whole window: the manifest asks for `adjustResize`, `KeyboardResizeHost`
+ * gives that back where Android 15's edge-to-edge took it away, and a scroll
+ * view that shrinks brings its focused child back into view itself —
+ * `ReactScrollView` extends the framework's own, whose `onSizeChanged` does
+ * exactly that. So `scrollProps` is empty off iOS rather than merely unused:
+ * `scrollEventThrottle` at 16 means no throttling at all, and Android ignores
+ * it in any case, so leaving the listener on would fire a scroll event per
+ * frame down the feed — the app's longest list — for a handler with nothing
+ * to do. `useKeyboardInset` is the same pad for a screen whose composer sits
+ * outside the scroll view, as the chat thread's does.
  */
 export function useKeyboardClearance(scrollTo: (offset: number) => void) {
+  const ios = Platform.OS === 'ios'
   const pad = useRef(new Animated.Value(0)).current
   const frameRef = useRef<View>(null)
   const scrollY = useRef(0)
@@ -58,7 +66,7 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
   scroll.current = scrollTo
 
   useEffect(() => {
-    if (Platform.OS !== 'ios') return
+    if (!ios) return
     // Follows `keyboardWillChangeFrame`'s timing: the keyboard's own
     // duration, and a linear curve since the keyboard's is private.
     const follow = (event: KeyboardEvent, toValue: number) =>
@@ -83,18 +91,20 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
       show.remove()
       hide.remove()
     }
-  }, [pad])
+  }, [ios, pad])
 
   return {
     pad,
     frameRef,
-    scrollProps: {
-      scrollToOverflowEnabled: true,
-      scrollEventThrottle: 16,
-      onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        scrollY.current = event.nativeEvent.contentOffset.y
-      },
-    },
+    scrollProps: ios
+      ? {
+          scrollToOverflowEnabled: true,
+          scrollEventThrottle: 16,
+          onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            scrollY.current = event.nativeEvent.contentOffset.y
+          },
+        }
+      : {},
     fieldProps: {
       onFocus: (event: FocusEvent) => {
         field.current = event.target
