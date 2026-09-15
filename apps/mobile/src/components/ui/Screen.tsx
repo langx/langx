@@ -40,8 +40,21 @@ export function Screen({
   if (scroll) {
     return (
       <ScrollView
-        style={[styles.root, padding]}
-        contentContainerStyle={styles.scrollContent}
+        style={styles.root}
+        /*
+         * The safe area belongs to the content here, not to the scroll view.
+         * On iOS a `RefreshControl` is a child of the scroll view, so padding
+         * on the scroll view's own style pushes the control down with
+         * everything else: the spinner came to rest behind the status bar
+         * while the content started a notch below it, which is the detached
+         * spinner over an empty band. Padding the content container leaves
+         * the scroll view flush with the screen, and `progressViewOffset`
+         * puts the spinner back where the pull actually opens.
+         */
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: insets.bottom + CONTENT_BOTTOM, paddingTop: insets.top + CONTENT_TOP },
+        ]}
         keyboardShouldPersistTaps="handled"
         /*
          * The keyboard insets the scroll view and the focused field is kept
@@ -66,7 +79,15 @@ export function Screen({
          */
         automaticallyAdjustKeyboardInsets={!onRefresh}
         {...(onRefresh
-          ? { refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
+          ? {
+              refreshControl: (
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  progressViewOffset={insets.top}
+                />
+              ),
+            }
           : {})}
       >
         {inner}
@@ -83,13 +104,17 @@ export function Screen({
  */
 const GUTTER = 20
 
+// Nearly flush to the status bar at the top — the header row brings its own
+// air — and 28 at the bottom so the last row is not sitting on the home
+// indicator. Added to the safe-area insets rather than set beside them,
+// because the content container now carries both.
+const CONTENT_TOP = 6
+const CONTENT_BOTTOM = 28
+
 const useStyles = makeStyles(({ colors, layout }) => ({
   root: { backgroundColor: colors.bg, flex: 1 },
   centre: { alignItems: 'center' },
-  // Nearly flush to the status bar at the top — the header row brings its own
-  // air — and 28 at the bottom so the last row is not sitting on the home
-  // indicator.
-  scrollContent: { alignItems: 'center', paddingBottom: 28, paddingTop: 6 },
+  scrollContent: { alignItems: 'center' },
   column: { maxWidth: layout.maxWidth, paddingHorizontal: GUTTER, width: '100%' },
   fluid: { flex: 1, maxWidth: Platform.OS === 'web' ? layout.maxWidth : undefined },
 }))

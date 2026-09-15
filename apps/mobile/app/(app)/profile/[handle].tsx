@@ -153,7 +153,12 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll {...pull}>
-      {/* No title: the name below is the title. */}
+      {/*
+        No title on somebody else's profile: the name below is the title. Your
+        own preview is the exception — the name below it is yours, so it says
+        whose page this is but not why you are looking at it. The row you
+        arrived from names that, so it is the same string.
+      */}
       <View style={styles.topBar}>
         <Pressable
           accessibilityRole="button"
@@ -164,7 +169,13 @@ export default function ProfileScreen() {
         >
           <Feather name="arrow-left" size={22} color={colors.text} />
         </Pressable>
-        <View style={styles.spacer} />
+        {isSelf ? (
+          <Text style={styles.topTitle} numberOfLines={1}>
+            {t('me.previewProfile')}
+          </Text>
+        ) : (
+          <View style={styles.spacer} />
+        )}
         {isSelf ? null : (
           <Pressable
             accessibilityRole="button"
@@ -487,6 +498,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // 34 square like `ScreenHeader`'s arrow; the kebab gets the design's 36.
   back: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
   more: { alignItems: 'center', height: 36, justifyContent: 'center', width: 36 },
+  // `ScreenHeader`'s title, since this row is that row hand-rolled.
+  topTitle: { ...font.heading, color: colors.text, flex: 1, fontSize: 24 },
   spacer: { flex: 1 },
   iconPressed: { opacity: 0.6 },
   previewNote: { marginBottom: spacing.lg },
