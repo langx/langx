@@ -7,9 +7,10 @@ import { languageCapAllows, type LanguageLevel } from '@langx/shared'
  * Here rather than in the screen because none of it can be tested there —
  * mobile's vitest cannot import `react-native`, so anything inside a component
  * is unreachable — and because the screen is not the only thing that has to
- * agree with it: the mutation rebuilds the body from the cache as it is when
- * the request finally runs, which is a second application of the same edit at
- * a different moment. One function, applied twice, cannot drift from itself.
+ * agree with it: the screen asks whether an edit is allowed as it draws the
+ * control, and the mutation applies it against the cache as it is when the
+ * request finally runs. Two moments, two states, one function — which is what
+ * keeps a control that offers something from being refused when it is pressed.
  *
  * No copy lives here. A refusal is named, not worded; the screen owns the
  * sentence, because that is the file `en.ts` is typed against.

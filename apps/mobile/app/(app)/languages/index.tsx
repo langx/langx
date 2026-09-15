@@ -1,9 +1,10 @@
 import { LANGUAGE_LEVELS, type LanguageLevel } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useLocalSearchParams } from 'expo-router'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useMe } from '../../../src/api/queries'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -38,8 +39,13 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  *
  * The third is that this screen holds no state of its own. `useMe` is the
  * list; the optimistic cache moves it under the finger and puts it back if the
- * server refuses. There is nothing to save on the way out, so there is no Save
- * button, and nothing is lost by leaving.
+ * server refuses. Nothing is lost by leaving, whichever way you leave.
+ *
+ * Save, at the bottom, is that way out rather than the thing that writes —
+ * every tap has already been written by the time it is pressed. It is there
+ * because a screen of controls with no button at the end reads as unfinished,
+ * and because the way back to a profile should not be only the arrow in the
+ * corner. It goes exactly where that arrow goes.
  */
 export default function LanguagesScreen() {
   useScreenInteractive()
@@ -95,62 +101,70 @@ export default function LanguagesScreen() {
   }
 
   return (
-    <Screen scroll>
+    // `fluid` rather than `scroll`, the shape edit-profile has: Save sits in a
+    // footer under the scrolling list, so this screen owns its own ScrollView.
+    <Screen fluid>
       <ScreenHeader
         title={t('languages.title')}
         onBack={() => goBackTo('/(app)/(tabs)/me', from)}
       />
 
-      <Text style={styles.section}>{t('languages.nativeSection')}</Text>
-      <Text style={styles.body}>{t('languages.nativeBody')}</Text>
-      <View style={styles.list}>
-        {profile.nativeLanguages.map((entry) => (
-          <LanguageRow
-            key={entry.code}
-            name={names.language(entry.code)}
-            onChange={() => openLanguagePicker('native', entry.code)}
-            onRemove={() => void remove('native', entry.code)}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <Text style={styles.section}>{t('languages.nativeSection')}</Text>
+        <Text style={styles.body}>{t('languages.nativeBody')}</Text>
+        <View style={styles.list}>
+          {profile.nativeLanguages.map((entry) => (
+            <LanguageRow
+              key={entry.code}
+              name={names.language(entry.code)}
+              onChange={() => openLanguagePicker('native', entry.code)}
+              onRemove={() => void remove('native', entry.code)}
+            />
+          ))}
+          <AddRow
+            label={t('languages.addNative')}
+            onPress={() => {
+              if (canAddTo('nativeLanguages')) openLanguagePicker('native')
+            }}
           />
-        ))}
-        <AddRow
-          label={t('languages.addNative')}
-          onPress={() => {
-            if (canAddTo('nativeLanguages')) openLanguagePicker('native')
-          }}
-        />
-      </View>
+        </View>
 
-      <Text style={styles.section}>{t('languages.learningSection')}</Text>
-      <Text style={styles.body}>{t('languages.learningBody')}</Text>
-      <View style={styles.list}>
-        {learning.map((entry, index) => (
-          <LanguageRow
-            key={entry.code}
-            name={names.language(entry.code)}
-            level={entry.level}
-            onLevel={(level) => apply({ kind: 'setLevel', code: entry.code, level })}
-            onChange={() => openLanguagePicker('learning', entry.code)}
-            onRemove={() => void remove('learning', entry.code)}
-            {...(index > 0
-              ? { onUp: () => apply({ kind: 'moveLearning', code: entry.code, direction: 'up' }) }
-              : {})}
-            {...(index < learning.length - 1
-              ? {
-                  onDown: () =>
-                    apply({ kind: 'moveLearning', code: entry.code, direction: 'down' }),
-                }
-              : {})}
+        <Text style={styles.section}>{t('languages.learningSection')}</Text>
+        <Text style={styles.body}>{t('languages.learningBody')}</Text>
+        <View style={styles.list}>
+          {learning.map((entry, index) => (
+            <LanguageRow
+              key={entry.code}
+              name={names.language(entry.code)}
+              level={entry.level}
+              onLevel={(level) => apply({ kind: 'setLevel', code: entry.code, level })}
+              onChange={() => openLanguagePicker('learning', entry.code)}
+              onRemove={() => void remove('learning', entry.code)}
+              {...(index > 0
+                ? { onUp: () => apply({ kind: 'moveLearning', code: entry.code, direction: 'up' }) }
+                : {})}
+              {...(index < learning.length - 1
+                ? {
+                    onDown: () =>
+                      apply({ kind: 'moveLearning', code: entry.code, direction: 'down' }),
+                  }
+                : {})}
+            />
+          ))}
+          <AddRow
+            label={t('languages.addLearning')}
+            onPress={() => {
+              if (canAddTo('learningLanguages')) openLanguagePicker('learning')
+            }}
           />
-        ))}
-        <AddRow
-          label={t('languages.addLearning')}
-          onPress={() => {
-            if (canAddTo('learningLanguages')) openLanguagePicker('learning')
-          }}
-        />
-      </View>
+        </View>
 
-      <Text style={styles.footer}>{t('languages.changeHint')}</Text>
+        <Text style={styles.hint}>{t('languages.changeHint')}</Text>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <Button label={t('common.save')} onPress={() => goBackTo('/(app)/(tabs)/me', from)} />
+      </View>
     </Screen>
   )
 }
@@ -306,5 +320,15 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingVertical: 16,
   },
   addLabel: { color: colors.accent, fontSize: 16, fontWeight: '600' },
-  footer: { color: colors.textFaint, fontSize: 14, lineHeight: 21, marginTop: 20 },
+  hint: { color: colors.textFaint, fontSize: 14, lineHeight: 21, marginTop: 20 },
+  scroll: { flex: 1 },
+  content: { paddingBottom: spacing.xl },
+  // 28 at the bottom for the same reason `Screen`'s scroll content has it: the
+  // button must not sit on the home indicator.
+  footer: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    paddingBottom: 28,
+    paddingTop: spacing.md,
+  },
 }))
