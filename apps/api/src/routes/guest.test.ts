@@ -197,6 +197,7 @@ describe('guests', () => {
         payload: { pushToken: 'ExponentPushToken[x]', platform: 'ios' },
       },
       { method: 'PATCH', url: '/me/devices/phone-a', payload: { pushEnabled: false } },
+      { method: 'DELETE', url: '/me/devices?deviceId=phone-a' },
       { method: 'POST', url: '/blocks', payload: { userId: 'someone' } },
       { method: 'POST', url: '/reports', payload: { userId: 'someone', reason: 'spam' } },
 
