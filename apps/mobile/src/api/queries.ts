@@ -2284,21 +2284,27 @@ export function useEditLanguages() {
       // An edit naming a language that is no longer there — a second tap
       // queued behind a first one that failed and rolled back. Nothing to say.
       if (sameLanguageLists(current, next)) return Promise.resolve(current)
+      /*
+       * The optimistic move is written here, not in `onMutate`, and that is the
+       * whole of a bug that made one tap count as two.
+       *
+       * Both hooks run at execute time — `Mutation.execute` awaits `onMutate`
+       * and then calls this — and both read the same cache. So an edit applied
+       * in `onMutate` arrived here already applied, and was applied again to
+       * its own result: adding a language sent it twice, and the × then took
+       * both copies at once, because a removal filters by code rather than by
+       * position. Building the body at execute time was right; doing it on top
+       * of this tap's own optimistic write was not.
+       */
+      queryClient.setQueryData<MeProfile>(keys.me, { ...current, ...next })
       return api.patch<MeProfile>('/profiles/me', {
         nativeLanguages: next.nativeLanguages,
         learning: next.learning,
       })
     },
-    onMutate: async (edit) => {
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: keys.me })
-      const previous = queryClient.getQueryData<MeProfile>(keys.me)
-      if (previous) {
-        queryClient.setQueryData<MeProfile>(keys.me, {
-          ...previous,
-          ...applyLanguageEdit(previous, edit),
-        })
-      }
-      return { previous }
+      return { previous: queryClient.getQueryData<MeProfile>(keys.me) }
     },
     /*
      * The snapshot is this tap's own, so rolling back also drops a later tap
