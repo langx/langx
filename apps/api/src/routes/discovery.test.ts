@@ -138,6 +138,7 @@ describe('Faz 3 — discovery aggregation', () => {
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 

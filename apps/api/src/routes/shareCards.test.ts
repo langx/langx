@@ -76,6 +76,7 @@ describe('share cards', () => {
       storage,
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
     })
     await app.ready()
 

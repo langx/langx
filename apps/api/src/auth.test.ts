@@ -51,6 +51,7 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 

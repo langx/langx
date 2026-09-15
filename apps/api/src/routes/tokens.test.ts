@@ -183,6 +183,7 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
     })
     await app.ready()
 

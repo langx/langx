@@ -146,6 +146,7 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
 
     // A real listening socket, not `app.ready()` — Socket.io needs an actual

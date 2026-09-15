@@ -102,6 +102,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 

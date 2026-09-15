@@ -115,6 +115,7 @@ describe('POST /billing/test-event (REVENUECAT_FAKE_STORE)', () => {
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 
