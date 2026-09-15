@@ -1,18 +1,14 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   Animated,
   FlatList,
-  Keyboard,
-  Platform,
   Pressable,
   RefreshControl,
   Text,
   View,
-  type HostInstance,
-  type FocusEvent,
 } from 'react-native'
 import {
   echoAudiosOf,
@@ -54,7 +50,7 @@ import { LikeButton } from '../../../src/components/LikeButton'
 import { attachmentsOf } from '@langx/shared'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
-import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
+import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
@@ -66,7 +62,7 @@ import { errorCodeOf } from '../../../src/lib/errors'
 import { showToast } from '../../../src/lib/toast'
 import { shareLink } from '../../../src/lib/share'
 import { postShareText } from '../../../src/lib/shareText'
-import { makeStyles, spacing, useTheme } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import {
@@ -135,46 +131,12 @@ export default function PostScreen() {
   const commentQuery = usePostComments(id)
 
   /*
-   * The two text fields on this screen — the correction box and the comment
-   * box — sit at the bottom of the thread, exactly where the keyboard lands.
-   * Every other scrolling screen hands this to iOS with
-   * `automaticallyAdjustKeyboardInsets`, but this list pulls to refresh, and
-   * `Screen` documents why the two are not combined: with the keyboard
-   * managing the scroll view's inset, the pull spinner never appears. So the
-   * screen pads itself the way the chat thread does, and brings the focused
-   * field up itself: when the keyboard announces where its top edge will be,
-   * the field is measured against it and the list scrolled by the overlap.
-   *
-   * Scrolled as the keyboard rises, not after, so the two move together —
-   * which needs `scrollToOverflowEnabled` on the list. A programmatic scroll
-   * is clamped to the list's current bounds, and at that moment the list is
-   * still full height with the pad only starting to shrink it, so the offset
-   * that is right once the keyboard is up is out of range when asked for.
-   * The pad lands before the scroll finishes and the offset is valid again.
-   *
-   * iOS only, like `useKeyboardInset`: Android resizes for the keyboard at
-   * the root and its scroll view moves the focused field into view itself.
+   * The correction box and the comment box sit at the bottom of the thread,
+   * where the keyboard lands, and this list pulls to refresh, so it cannot
+   * hand the problem to `automaticallyAdjustKeyboardInsets` — see the hook.
    */
-  const keyboardInset = useKeyboardInset()
+  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
   const listRef = useRef<FlatList<PostCorrection | PronunciationAnswer>>(null)
-  const scrollY = useRef(0)
-  const focusedField = useRef<HostInstance | null>(null)
-  const rememberField = (event: FocusEvent) => {
-    focusedField.current = event.target
-  }
-  const forgetField = () => {
-    focusedField.current = null
-  }
-  useEffect(() => {
-    if (Platform.OS !== 'ios') return
-    const show = Keyboard.addListener('keyboardWillShow', (event) => {
-      focusedField.current?.measureInWindow((_x, y, _width, height) => {
-        const covered = y + height + spacing.md - event.endCoordinates.screenY
-        if (covered > 0) listRef.current?.scrollToOffset({ offset: scrollY.current + covered })
-      })
-    })
-    return () => show.remove()
-  }, [])
 
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
@@ -495,8 +457,10 @@ export default function PostScreen() {
 
   return (
     <Screen fluid>
-      {/* Padded for the keyboard the same way the chat thread is — see above. */}
-      <Animated.View style={[styles.avoid, { paddingBottom: keyboardInset }]}>
+      <Animated.View
+        ref={keyboard.frameRef}
+        style={[styles.avoid, { paddingBottom: keyboard.pad }]}
+      >
         <ScreenHeader
           title={t('feed.post')}
           onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
@@ -533,15 +497,11 @@ export default function PostScreen() {
         ) : (
           <FlatList
             ref={listRef}
+            {...keyboard.scrollProps}
             data={replies}
             keyExtractor={(item) => item._id}
             contentContainerStyle={styles.list}
             refreshControl={<RefreshControl {...pull} />}
-            scrollToOverflowEnabled
-            onScroll={({ nativeEvent }) => {
-              scrollY.current = nativeEvent.contentOffset.y
-            }}
-            scrollEventThrottle={16}
             onEndReachedThreshold={0.6}
             onEndReached={() => {
               if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage()
@@ -825,8 +785,7 @@ export default function PostScreen() {
                       <FormField
                         value={correction}
                         onChangeText={setCorrection}
-                        onFocus={rememberField}
-                        onBlur={forgetField}
+                        {...keyboard.fieldProps}
                         placeholder={t('feed.correctionPlaceholder')}
                         multiline
                         autoCapitalize="sentences"
@@ -900,8 +859,7 @@ export default function PostScreen() {
                     label={t('feed.addComment')}
                     value={commentDraft}
                     onChangeText={setCommentDraft}
-                    onFocus={rememberField}
-                    onBlur={forgetField}
+                    {...keyboard.fieldProps}
                     placeholder={t('feed.commentPlaceholder')}
                     multiline
                     autoCapitalize="sentences"

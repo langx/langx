@@ -90,7 +90,14 @@ export default function ReportScreen() {
   return (
     <Screen fluid>
       <ScreenHeader title={t('common.report')} onBack={() => goBackTo(backTo)} />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        // The details box is the last thing before the button, right where
+        // the keyboard lands; this keeps it above. iOS only, by design — see
+        // `Screen` for the split with Android.
+        automaticallyAdjustKeyboardInsets
+      >
         <Text style={styles.question}>{question}</Text>
 
         <View style={styles.reasons}>
