@@ -260,6 +260,23 @@ export default function EchoSessionScreen() {
     <ScreenHeader title={t('echo.title')} onBack={() => goBackTo('/(app)/(tabs)/echo')} />
   )
 
+  /*
+   * The same header with the count beside it. A bar says roughly how far in
+   * you are; the number says how many more questions there are, which is the
+   * thing somebody deciding whether to finish actually wants.
+   */
+  const deckHeader = (deck: EchoCard[], index: number) => (
+    <ScreenHeader
+      title={t('echo.title')}
+      onBack={() => goBackTo('/(app)/(tabs)/echo')}
+      trailing={
+        <Text style={styles.counter}>
+          {t('echo.sessionProgress', { done: index + 1, total: deck.length })}
+        </Text>
+      }
+    />
+  )
+
   if (queue.isPending || deck === null) {
     return (
       <Screen fluid>
@@ -291,7 +308,16 @@ export default function EchoSessionScreen() {
       <Screen fluid>
         {header}
         <View style={styles.done}>
-          <Feather name="check-circle" size={40} color={colors.accent} />
+          {/*
+            The tab's tile, closing the loop the tab opened — in the neutral
+            grey, not the yellow. Yellow in this app means "tappable, and the
+            thing to press"; a yellow square that does nothing, above an
+            outlined button that does, teaches the opposite. `gift.tsx` makes
+            the same split: its tile is yellow only while it is the button.
+          */}
+          <View style={styles.doneTile}>
+            <Feather name="check" size={72} color={colors.success} />
+          </View>
           <Text style={styles.doneTitle}>{t('echo.doneTitle')}</Text>
           <View style={styles.counts}>
             <Count label={t('echo.doneReviewed')} value={graded.length} />
@@ -310,7 +336,12 @@ export default function EchoSessionScreen() {
               />
             </View>
           ) : (
-            <Button label={t('common.done')} onPress={() => goBackTo('/(app)/(tabs)/echo')} />
+            <Button
+              label={t('common.done')}
+              variant="secondary"
+              onPress={() => goBackTo('/(app)/(tabs)/echo')}
+              style={styles.doneAction}
+            />
           )}
         </View>
       </Screen>
@@ -319,7 +350,7 @@ export default function EchoSessionScreen() {
 
   return (
     <Screen fluid>
-      {header}
+      {deckHeader(deck, index)}
       {offline ? (
         /* Said out loud, because the grades will sit on the phone until there
            is a network and somebody should know that before they answer ten. */
@@ -440,10 +471,18 @@ export default function EchoSessionScreen() {
                 key={value}
                 accessibilityRole="button"
                 onPress={() => grade(value)}
-                style={({ pressed }) => [styles.grade, pressed && styles.pressed]}
+                style={({ pressed }) => [
+                  styles.grade,
+                  value === 'good' && styles.gradeGood,
+                  pressed && styles.pressed,
+                ]}
               >
-                <Text style={styles.gradeLabel}>{t(`echo.${value}`)}</Text>
-                <Text style={styles.gradeInterval}>{intervalLabel(value)}</Text>
+                <Text style={[styles.gradeLabel, value === 'good' && styles.gradeGoodLabel]}>
+                  {t(`echo.${value}`)}
+                </Text>
+                <Text style={[styles.gradeInterval, value === 'good' && styles.gradeGoodInterval]}>
+                  {intervalLabel(value)}
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -624,13 +663,47 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     gap: 2,
     paddingVertical: 12,
   },
+  /*
+   * The expected answer, and the one yellow on this screen: "Show answer" is
+   * gone by the time the grades are up, so nothing competes with it.
+   */
+  gradeGood: { backgroundColor: colors.primary, borderColor: colors.primaryShade },
   gradeLabel: { color: colors.text, fontSize: 14, fontWeight: '700' },
+  gradeGoodLabel: { color: colors.primaryText },
   gradeInterval: { color: colors.textFaint, fontSize: 12 },
-  done: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
+  gradeGoodInterval: { color: colors.primaryTextMuted },
+  counter: { color: colors.textMuted, fontSize: 14, fontVariant: ['tabular-nums'] },
+  done: {
+    alignItems: 'center',
+    flex: 1,
+    gap: spacing.md,
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  doneTile: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    // 40, as the tab's tile and the gift's.
+    borderRadius: 40,
+    height: 160,
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+    width: 160,
+  },
   doneTitle: { ...font.heading, color: colors.text },
-  counts: { flexDirection: 'row', gap: spacing.lg },
-  count: { alignItems: 'center', gap: 2 },
-  countValue: { ...font.title, color: colors.text },
+  doneAction: { alignSelf: 'stretch' },
+  // The tab's hairline strip, so the end of a session is drawn as the tab is.
+  counts: {
+    alignSelf: 'stretch',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    marginTop: spacing.sm,
+  },
+  count: { alignItems: 'center', flex: 1, gap: 2, paddingVertical: spacing.md },
+  countValue: { ...font.heading, color: colors.text },
   countLabel: { color: colors.textFaint, fontSize: 13 },
   doneBody: { color: colors.textMuted, fontSize: 15, textAlign: 'center' },
   retry: { alignSelf: 'stretch', gap: spacing.sm },

@@ -1,8 +1,7 @@
-import Feather from '@expo/vector-icons/Feather'
 import { ECHO_PACK_PREVIEW_PAGE, SRS_RULES, type EchoPack } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useEchoPackItems, useEchoPacks, useStartPack } from '../../../../src/api/queries'
 import { Button } from '../../../../src/components/ui/Button'
 import { ProgressBar } from '../../../../src/components/ui/ProgressBar'
@@ -13,7 +12,7 @@ import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
 import { showAlert } from '../../../../src/lib/alert'
 import { goBackTo } from '../../../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../../../src/lib/theme'
+import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 
 /**
@@ -26,7 +25,6 @@ import { showToast } from '../../../../src/lib/toast'
  */
 export default function EchoPackScreen() {
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -58,7 +56,7 @@ export default function EchoPackScreen() {
   if (packs.isPending) {
     return (
       <Screen fluid>
-        <ScreenHeader title={t('echo.packs')} onBack={() => goBackTo('/(app)/(tabs)/echo')} />
+        <ScreenHeader title={t('echo.packs')} onBack={() => goBackTo('/(app)/echo/packs')} />
         <View style={styles.body}>
           <Skeleton height={120} />
         </View>
@@ -69,7 +67,7 @@ export default function EchoPackScreen() {
   if (!pack) {
     return (
       <Screen fluid>
-        <ScreenHeader title={t('echo.packs')} onBack={() => goBackTo('/(app)/(tabs)/echo')} />
+        <ScreenHeader title={t('echo.packs')} onBack={() => goBackTo('/(app)/echo/packs')} />
         <View style={styles.body}>
           <Text style={styles.blurb}>{t('echo.packMissing')}</Text>
         </View>
@@ -86,22 +84,43 @@ export default function EchoPackScreen() {
     <Screen fluid>
       <ScreenHeader
         title={names.language(pack.lang)}
-        onBack={() => goBackTo('/(app)/(tabs)/echo')}
+        onBack={() => goBackTo('/(app)/echo/packs')}
       />
-      <View style={styles.body}>
-        <View style={styles.badgeRow}>
-          <Feather name="layers" size={16} color={colors.accent} />
-          <Text style={styles.level}>{t(`level.${pack.level}` as never)}</Text>
+      {/*
+        Scrolling, which it has to be: the preview below is twenty rows and a
+        pager, and the screen it was added to did not scroll at all.
+      */}
+      <ScrollView contentContainerStyle={styles.body}>
+        {/*
+          The tab's tile, in the neutral grey: a pack is a thing you are part
+          way through rather than a thing that is due, and yellow here would
+          compete with the one button that starts it.
+        */}
+        <View style={styles.stage}>
+          <View style={styles.tile}>
+            <Text style={styles.tileCount}>{done}</Text>
+            <Text style={styles.tileUnit}>{t('echo.packTileSub', { total: pack.itemCount })}</Text>
+          </View>
+          <View style={styles.caption}>
+            <Text style={styles.level}>{t(`level.${pack.level}` as never)}</Text>
+            <Text style={styles.blurb}>{t('echo.packBlurb')}</Text>
+          </View>
         </View>
-        <Text style={styles.blurb}>{t('echo.packBlurb')}</Text>
         <ProgressBar
           value={pack.itemCount === 0 ? 0 : done / pack.itemCount}
           height={6}
           accessibilityLabel={t('echo.packProgress', { done, total: pack.itemCount })}
         />
-        <Text style={styles.progress}>
-          {t('echo.packProgress', { done, total: pack.itemCount })}
-        </Text>
+        <View style={styles.stats}>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{pack.itemCount}</Text>
+            <Text style={styles.statLabel}>{t('echo.statWords')}</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{done}</Text>
+            <Text style={styles.statLabel}>{t('echo.statYours')}</Text>
+          </View>
+        </View>
         <Button
           label={t(
             finished ? 'echo.packAllStarted' : done > 0 ? 'echo.packContinue' : 'echo.packStart',
@@ -161,17 +180,44 @@ export default function EchoPackScreen() {
             </View>
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   body: { gap: spacing.md, padding: spacing.lg },
-  badgeRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
-  level: { color: colors.accent, fontSize: 14, fontWeight: '700' },
-  blurb: { ...font.body, color: colors.textMuted, fontSize: 15, lineHeight: 22 },
-  progress: { color: colors.textFaint, fontSize: 13 },
+  stage: { alignItems: 'center', gap: spacing.lg, paddingVertical: spacing.lg },
+  tile: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    // 40, as the tab's tile: rounder than any card, squarer than a circle.
+    borderRadius: 40,
+    height: 160,
+    justifyContent: 'center',
+    width: 160,
+  },
+  tileCount: { ...font.title, color: colors.text, fontSize: 56, lineHeight: 64 },
+  tileUnit: { color: colors.textFaint, fontSize: 13, fontWeight: '600', textAlign: 'center' },
+  caption: { alignItems: 'center', gap: spacing.xs },
+  level: { ...font.heading, color: colors.text, textAlign: 'center' },
+  blurb: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+  stats: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+  },
+  stat: { alignItems: 'center', flex: 1, gap: 2, paddingVertical: spacing.md },
+  statValue: { ...font.heading, color: colors.text },
+  statLabel: { color: colors.textFaint, fontSize: 12 },
   preview: { gap: spacing.sm, paddingTop: spacing.md },
   section: { color: colors.textFaint, fontSize: 13, fontWeight: '700' },
   row: { borderTopColor: colors.border, borderTopWidth: 1, gap: 2, paddingVertical: spacing.sm },

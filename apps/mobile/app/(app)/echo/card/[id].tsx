@@ -5,17 +5,22 @@ import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { useEchoCard } from '../../../../src/api/queries'
+import { useEchoCard, useRemoveEcho } from '../../../../src/api/queries'
 import { LoadFailed } from '../../../../src/components/LoadFailed'
+import { Avatar } from '../../../../src/components/ui/Avatar'
+import { Button } from '../../../../src/components/ui/Button'
 import { Screen } from '../../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
+import { useProfileCache } from '../../../../src/hooks/useProfileCache'
+import { confirmAlert, showAlert } from '../../../../src/lib/alert'
 import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
 import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../../src/lib/theme'
+import { showToast } from '../../../../src/lib/toast'
 
 /** As on the session card, and for the same reason: never crop the picture. */
 const PICTURE_MAX_HEIGHT = 240
@@ -97,15 +102,130 @@ function Card({ card }: { card: EchoCard }) {
         </View>
       ) : null}
 
-      <View style={styles.block}>
-        <Text style={styles.label}>{t('echo.cardLanguage')}</Text>
-        <Text style={styles.value}>{names.language(card.lang)}</Text>
+      {/*
+        The schedule, the work and the language as one strip, the way the tab
+        draws its three numbers. They were two label-over-value blocks, which
+        is a lot of screen for four words and a date.
+      */}
+      <View style={styles.stats}>
+        <Stat label={t('echo.nextReview')} value={due ?? t('echo.dueNow')} />
+        <Stat label={t('echo.statReviews')} value={String(card.srs.reps)} />
+        <Stat label={t('echo.cardLanguage')} value={names.language(card.lang)} />
       </View>
-      <View style={styles.block}>
-        <Text style={styles.label}>{t('echo.nextReview')}</Text>
-        <Text style={styles.value}>{due ? t('echo.dueIn', { time: due }) : t('echo.dueNow')}</Text>
-      </View>
+
+      <Source card={card} />
+      <Remove card={card} />
     </View>
+  )
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  const styles = useStyles()
+  return (
+    <View style={styles.stat}>
+      <Text style={styles.statValue} numberOfLines={1}>
+        {value}
+      </Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
+  )
+}
+
+/**
+ * Where the sentence came from, and the way back to it.
+ *
+ * The Echo tab used to list the cards made from chats, and tapping one opened
+ * the thread at the message. The tab is a stage now and that list has gone, so
+ * the link lives here — on the card itself, which is where somebody arriving
+ * from the feed or from a search would look for it anyway. A hand-written card
+ * has nowhere to go, and says nothing rather than showing a dead row.
+ */
+function Source({ card }: { card: EchoCard }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const partnerId = card.source.kind === 'chat' ? card.source.partnerId : ''
+  const profiles = useProfileCache(partnerId ? [partnerId] : [])
+  const partner = partnerId ? profiles[partnerId] : undefined
+
+  if (card.source.kind !== 'chat' && card.source.kind !== 'post') return null
+  const source = card.source
+
+  return (
+    <View style={styles.block}>
+      <Text style={styles.label}>{t('echo.cardSource')}</Text>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() =>
+          source.kind === 'chat'
+            ? // `params`, never a query string built by hand: `routeLiterals.test.ts`
+              // reads an interpolated literal as a wildcard.
+              router.push({
+                pathname: '/(app)/chat/[id]',
+                params: { id: source.conversationId, at: source.messageId },
+              })
+            : router.push({ pathname: '/(app)/post/[id]', params: { id: source.postId } })
+        }
+        style={({ pressed }) => [styles.sourceRow, pressed && styles.pressed]}
+      >
+        {source.kind === 'chat' ? (
+          <Avatar
+            {...(partner?.avatarUrl ? { url: partner.avatarUrl } : {})}
+            name={partner?.displayName ?? t('chat.them')}
+            seed={source.partnerId}
+            size={40}
+          />
+        ) : (
+          <Feather name="align-left" size={20} color={colors.textFaint} />
+        )}
+        <Text style={styles.sourceLabel} numberOfLines={1}>
+          {source.kind === 'chat'
+            ? (partner?.displayName ?? t('echo.fromYourChats'))
+            : t('echo.fromAPost')}
+        </Text>
+        <Feather name="chevron-right" size={18} color={colors.textFaint} />
+      </Pressable>
+    </View>
+  )
+}
+
+/**
+ * Taking the card back, from the card.
+ *
+ * The same three calls the list makes, and here because the list is not the
+ * only way in any more: a card reached from a post — or from the tab's All
+ * cards after a search — could be edited but never removed.
+ */
+function Remove({ card }: { card: EchoCard }) {
+  const styles = useStyles()
+  const t = useT()
+  const removeEcho = useRemoveEcho()
+
+  async function confirm(): Promise<void> {
+    const yes = await confirmAlert({
+      title: t('echo.removeTitle'),
+      message: t('echo.removeBody'),
+      confirmLabel: t('echo.remove'),
+      destructive: true,
+    })
+    if (!yes) return
+    try {
+      await removeEcho.mutateAsync({ idOrSourceKey: card._id })
+      showToast(t('echo.removed'))
+      goBackTo('/(app)/echo/cards')
+    } catch {
+      await showAlert(t('echo.removeFailedTitle'), t('common.retry'))
+    }
+  }
+
+  return (
+    <Button
+      label={t('echo.removeCard')}
+      variant="secondary"
+      loading={removeEcho.isPending}
+      onPress={() => void confirm()}
+      style={styles.remove}
+    />
   )
 }
 
@@ -175,7 +295,26 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   example: { color: colors.textMuted, fontSize: 15, fontStyle: 'italic' },
   block: { gap: spacing.xs },
   label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
-  value: { color: colors.text, fontSize: 16 },
+  stats: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    marginTop: spacing.xs,
+  },
+  stat: {
+    alignItems: 'center',
+    flex: 1,
+    gap: 2,
+    paddingHorizontal: 4,
+    paddingVertical: spacing.md,
+  },
+  statValue: { ...font.heading, color: colors.text, fontSize: 18 },
+  statLabel: { color: colors.textFaint, fontSize: 12, textAlign: 'center' },
+  sourceRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingVertical: 6 },
+  sourceLabel: { color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  remove: { marginTop: spacing.sm },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 14, fontWeight: '600' },
   pressed: { opacity: 0.6 },
