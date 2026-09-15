@@ -1,7 +1,12 @@
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
-import { useAdminBroadcast, useAdminBroadcastAction } from '../../../../src/api/queries'
+import {
+  useAdminBroadcast,
+  useAdminBroadcastAction,
+  useAdminDeleteBroadcast,
+  useAdminEditBroadcast,
+} from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
 import { Button } from '../../../../src/components/ui/Button'
 import { Callout } from '../../../../src/components/ui/Callout'
@@ -37,6 +42,11 @@ import { showToast } from '../../../../src/lib/toast'
  *    depend on what language the operator thinks in.
  * 4. Stop works between batches, and says honestly that what has gone cannot
  *    be recalled.
+ *
+ * Editing and deleting are both draft-only, for the same reason arming is a
+ * second request: past that there are messages out, and they say what they
+ * said. An edit un-tests the draft, so the arming controls go away and the
+ * words have to be read once more before anybody else gets them.
  */
 export default function AdminBroadcastDetailScreen() {
   useScreenInteractive()
@@ -44,10 +54,46 @@ export default function AdminBroadcastDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const job = useAdminBroadcast(id)
   const act = useAdminBroadcastAction()
+  const edit = useAdminEditBroadcast()
+  const remove = useAdminDeleteBroadcast()
+  /** The text being written, or `null` when the message is only being read. */
+  const [editing, setEditing] = useState<string | null>(null)
   const [typed, setTyped] = useState('')
 
   const data = job.data
   const armed = typed.trim() === String(data?.total ?? -1)
+  /*
+   * English is all this screen can write, and `bodies` replaces rather than
+   * merges — so saving here would drop the seven translations. Those are
+   * authored in files; the panel says so instead of quietly eating them.
+   */
+  const translated = Object.keys(data?.bodies ?? {}).some((locale) => locale !== 'en')
+
+  async function onSave(body: string) {
+    try {
+      await edit.mutateAsync({ id, bodies: { en: body.trim() } })
+      setEditing(null)
+      setTyped('')
+      showToast(ADMIN.broadcast.edited)
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function onDelete() {
+    const ok = await confirmAlert({
+      title: ADMIN.broadcast.confirmDelete,
+      confirmLabel: ADMIN.broadcast.deleteDraft,
+      destructive: true,
+    })
+    if (!ok) return
+    try {
+      await remove.mutateAsync(id)
+      goBackTo('/(app)/admin/broadcast')
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
 
   async function run(action: 'test' | 'start' | 'pause' | 'resume') {
     if (action === 'start') {
@@ -79,9 +125,35 @@ export default function AdminBroadcastDetailScreen() {
           </View>
         ) : (
           <>
-            <Card>
-              <Text style={styles.body}>{data.bodies.en}</Text>
-            </Card>
+            {editing === null ? (
+              <Card>
+                <Text style={styles.body}>{data.bodies.en}</Text>
+              </Card>
+            ) : (
+              <>
+                <FormField
+                  label={ADMIN.broadcast.body}
+                  value={editing}
+                  onChangeText={setEditing}
+                  multiline
+                  numberOfLines={6}
+                  maxLength={4000}
+                />
+                <View style={styles.actions}>
+                  <Button
+                    label={ADMIN.broadcast.save}
+                    disabled={editing.trim().length === 0}
+                    loading={edit.isPending}
+                    onPress={() => onSave(editing)}
+                  />
+                  <Button
+                    label={ADMIN.common.cancel}
+                    variant="neutral"
+                    onPress={() => setEditing(null)}
+                  />
+                </View>
+              </>
+            )}
 
             <View style={styles.tiles}>
               <StatTile value={String(data.total)} label={ADMIN.broadcast.people} />
@@ -105,9 +177,22 @@ export default function AdminBroadcastDetailScreen() {
               </Callout>
             ) : null}
 
-            {data.status === 'draft' ? (
+            {data.status === 'draft' && editing === null ? (
               <>
+                {translated ? (
+                  <Callout tone="info" icon="file-text" style={styles.testNote}>
+                    <Text style={styles.calloutBody}>{ADMIN.broadcast.editTranslated}</Text>
+                  </Callout>
+                ) : null}
+
                 <View style={styles.actions}>
+                  {translated ? null : (
+                    <Button
+                      label={ADMIN.broadcast.edit}
+                      variant="neutral"
+                      onPress={() => setEditing(data.bodies.en ?? '')}
+                    />
+                  )}
                   <Button
                     label={ADMIN.broadcast.test}
                     variant="secondary"
@@ -143,6 +228,15 @@ export default function AdminBroadcastDetailScreen() {
                     />
                   </>
                 ) : null}
+
+                <View style={styles.actions}>
+                  <Button
+                    label={ADMIN.broadcast.deleteDraft}
+                    variant="ink"
+                    loading={remove.isPending}
+                    onPress={onDelete}
+                  />
+                </View>
               </>
             ) : null}
 

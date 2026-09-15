@@ -124,6 +124,11 @@ export const ADMIN = {
     bodyHint: 'Everyone who speaks another language gets this unless a translation is added.',
     audience: (n: number) => `${n} people`,
     createDraft: 'Create draft',
+    edit: 'Edit the message',
+    save: 'Save',
+    edited: 'Saved. Send it to yourself again — the old test was of the old words.',
+    editTranslated:
+      'This one has translations, which are authored in files. Edit those and run the announcement script, or delete this draft and start again.',
     history: 'Past broadcasts',
     people: 'People',
     sent: 'Sent',

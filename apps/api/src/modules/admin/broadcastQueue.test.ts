@@ -5,8 +5,15 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
-import { createBroadcast, broadcasts, markBroadcastTested, setBroadcastStatus } from './broadcast'
-import { runBroadcastQueuePass } from './broadcastQueue'
+import {
+  createBroadcast,
+  broadcasts,
+  getBroadcast,
+  markBroadcastTested,
+  setBroadcastStatus,
+  updateBroadcastBodies,
+} from './broadcast'
+import { runBroadcastQueuePass, sendBroadcastTest } from './broadcastQueue'
 import { ensureOfficialAccounts } from '../official/accounts'
 import type { Profile } from '../profiles/profiles'
 import type { PushSender } from '../push/devices'
@@ -207,6 +214,36 @@ describe('the in-app broadcast queue', () => {
       0,
     )
     expect(await runBroadcastQueuePass(db, push, NOON)).toEqual({ sent: 1 })
+  })
+
+  it('sends the test again after an edit, rather than the body that was fixed', async () => {
+    await member('operator')
+    await createBroadcast(db, {
+      id: 'typo',
+      bodies: { en: 'Somehting new' },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+
+    const first = await getBroadcast(db, 'typo')
+    expect(await sendBroadcastTest(db, push, first!, 'operator')).toBe(true)
+
+    await updateBroadcastBodies(db, 'typo', { en: 'Something new' })
+    const second = await getBroadcast(db, 'typo')
+    expect(await sendBroadcastTest(db, push, second!, 'operator')).toBe(true)
+
+    /*
+     * Two messages, not one. Without the `rev` in the clientId the second is
+     * refused as a duplicate and `deliverOfficialMessage` hands back the first
+     * — so the operator reads the typo again and nothing says it happened.
+     */
+    expect(await messagesSent()).toBe(2)
+    const bodies = await db
+      .collection<{ body: string }>(COLLECTIONS.messages)
+      .find({})
+      .map((row) => row.body)
+      .toArray()
+    expect(bodies.sort()).toEqual(['Somehting new', 'Something new'])
   })
 
   it('writes each recipient the body in their own language, English otherwise', async () => {

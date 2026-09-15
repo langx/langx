@@ -10,6 +10,7 @@ import {
   adminUserSearchSchema,
   bountyAwardSchema,
   broadcastCreateSchema,
+  broadcastUpdateSchema,
   reviewDecisionSchema,
   withPlatformVersion,
 } from '@langx/shared'
@@ -29,6 +30,7 @@ import {
   listBroadcasts,
   markBroadcastTested,
   setBroadcastStatus,
+  updateBroadcastBodies,
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
@@ -594,6 +596,36 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const job = await getBroadcast(app.mongo.db, request.params.id)
       if (!job) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such broadcast')
+      return reply.send(job)
+    },
+  )
+
+  /**
+   * Rewriting a draft, which un-tests it — see `updateBroadcastBodies`. The
+   * slug is not editable: it is the primary key and the thing that stops the
+   * same broadcast going out twice.
+   */
+  app.patch(
+    '/admin/broadcasts/:id',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: broadcastUpdateSchema },
+      config: { rateLimit: limit(60, '1 hour') },
+    },
+    async (request, reply) => {
+      const job = await updateBroadcastBodies(app.mongo.db, request.params.id, request.body.bodies)
+      if (!job) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          'Only a draft can be edited — past that there are messages out',
+        )
+      }
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'broadcast.edit',
+        refId: job._id,
+        payload: { locales: Object.keys(job.bodies) },
+      })
       return reply.send(job)
     },
   )
