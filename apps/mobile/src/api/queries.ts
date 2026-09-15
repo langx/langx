@@ -166,7 +166,7 @@ export const keys = {
   echo: ['echo'] as const,
   echoSummary: ['echo', 'summary'] as const,
   echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
-  echoCards: (lang: string) => ['echo', 'cards', lang] as const,
+  echoCards: (lang: string, q: string) => ['echo', 'cards', lang, q] as const,
   echoPacks: ['echo', 'packs'] as const,
   echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
   messages: (id: string) => ['messages', id] as const,
@@ -2686,18 +2686,26 @@ export function useEchoQueue(lang?: string) {
  * `conversation_term_unique` within one conversation, and an Echo library is
  * bounded by nothing but the daily ceiling.
  */
-export function useEchoCards(lang?: string) {
+export function useEchoCards(lang?: string, q?: string) {
   return useInfiniteQuery({
-    queryKey: keys.echoCards(lang ?? 'all'),
+    queryKey: keys.echoCards(lang ?? 'all', q ?? ''),
     queryFn: ({ pageParam }) =>
       api.get<EchoCardPage>(
         `/echo/cards?${new URLSearchParams({
           ...(lang ? { lang } : {}),
+          ...(q ? { q } : {}),
           ...(pageParam ? { cursor: pageParam } : {}),
         }).toString()}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    /*
+     * The term is part of the key, so every keystroke that survives the
+     * debounce is a fresh cache entry — and without this each one would flip
+     * `isPending` and replace the list with skeletons while you are still
+     * typing. `useDiscovery` makes the same argument about its filter chips.
+     */
+    placeholderData: keepPreviousData,
   })
 }
 

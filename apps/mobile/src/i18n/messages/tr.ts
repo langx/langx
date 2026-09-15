@@ -206,6 +206,11 @@ export const tr: Localized<EnMessages> = {
     cardsEmptyTitle: 'Henüz kart yok',
     cardsEmptyBody:
       'Sohbetlerden ve gönderilerden sakladığın cümleler, kendi yazdıklarınla birlikte burada toplanır.',
+    searchPlaceholder: 'Kartlarında ara',
+    searchNoneTitle: 'Eşleşen yok',
+    searchNoneBody: 'Hiçbir kartın cümlesinde, anlamında ya da örneğinde bu geçmiyor.',
+    dueIn: '{time} sonra',
+    dueNow: 'Şimdi',
     remove: 'Çıkar',
     removeTitle: 'Bu kart çıkarılsın mı?',
     removeBody: 'Programı da onunla gider. Mesajın kendisi yerinde kalır.',

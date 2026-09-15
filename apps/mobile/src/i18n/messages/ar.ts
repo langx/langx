@@ -206,6 +206,11 @@ export const ar: Localized<EnMessages> = {
     cardsEmptyTitle: 'لا بطاقات بعد',
     cardsEmptyBody:
       'الجمل التي تحتفظ بها من المحادثات والمنشورات تجتمع هنا، إلى جانب ما تكتبه بنفسك.',
+    searchPlaceholder: 'ابحث في بطاقاتك',
+    searchNoneTitle: 'لا نتائج',
+    searchNoneBody: 'لا توجد بطاقة تحتوي على ذلك في جملتها أو معناها أو مثالها.',
+    dueIn: 'بعد {time}',
+    dueNow: 'حان الآن',
     remove: 'إزالة',
     removeTitle: 'إزالة هذه البطاقة؟',
     removeBody: 'يذهب جدولها معها. أمّا الرسالة نفسها فتبقى مكانها.',

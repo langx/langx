@@ -386,6 +386,15 @@ export type SubmitEchoReviewsResult = z.infer<typeof submitEchoReviewsResultSche
 
 export const listEchoCardsQuerySchema = z.object({
   lang: languageCodeSchema.optional(),
+  /**
+   * What to look for, in the sentence, the meaning or the example.
+   *
+   * One character is a floor rather than the two a handle search asks for:
+   * in Chinese or Japanese a single character is a whole word, and a box that
+   * refuses to search until the second keystroke would be refusing the only
+   * keystroke there is. The ceiling is the longest thing it could match.
+   */
+  q: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH).optional(),
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 })

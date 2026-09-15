@@ -195,6 +195,11 @@ export const de: Localized<EnMessages> = {
     cardsEmptyTitle: 'Noch keine Karten',
     cardsEmptyBody:
       'Sätze, die du aus Chats und Beiträgen behältst, sammeln sich hier — zusammen mit denen, die du selbst schreibst.',
+    searchPlaceholder: 'Deine Karten durchsuchen',
+    searchNoneTitle: 'Nichts gefunden',
+    searchNoneBody: 'Keine Karte hat das im Satz, in der Bedeutung oder im Beispiel.',
+    dueIn: 'In {time}',
+    dueNow: 'Jetzt fällig',
     remove: 'Entfernen',
     removeTitle: 'Diese Karte entfernen?',
     removeBody: 'Ihr Zeitplan geht mit. Die Nachricht selbst bleibt, wo sie ist.',
