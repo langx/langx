@@ -191,6 +191,18 @@ export const ptBR: Localized<EnMessages> = {
     cardsEmptyTitle: 'Nenhum cartão ainda',
     cardsEmptyBody:
       'As frases que você guarda de conversas e publicações ficam aqui, junto com as que você mesmo escreve.',
+    archiveCard: 'Arquivar este cartão',
+    archiveCards: 'Arquivar',
+    unarchive: 'Devolver',
+    activeTab: 'Cartões',
+    archived: 'Arquivo',
+    archivedEmptyTitle: 'Nada arquivado ainda',
+    archivedEmptyBody:
+      'Os cartões que você já sabe ficam aqui. Guardam tudo e param de voltar, até você devolver algum.',
+    selectCards: 'Selecionar cartões',
+    selectedCount: { one: '{count} selecionado', other: '{count} selecionados' },
+    archivedToast: { one: '{count} cartão arquivado', other: '{count} cartões arquivados' },
+    restoredToast: { one: '{count} cartão voltou', other: '{count} cartões voltaram' },
     searchPlaceholder: 'Busque nos seus cartões',
     searchNoneTitle: 'Nada encontrado',
     searchNoneBody: 'Nenhum cartão tem isso na frase, no significado ou no exemplo.',

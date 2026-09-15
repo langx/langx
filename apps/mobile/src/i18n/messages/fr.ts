@@ -195,6 +195,18 @@ export const fr: Localized<EnMessages> = {
     cardsEmptyTitle: 'Pas encore de cartes',
     cardsEmptyBody:
       'Les phrases que tu gardes des conversations et des publications s’accumulent ici, avec celles que tu écris toi-même.',
+    archiveCard: 'Archiver cette carte',
+    archiveCards: 'Archiver',
+    unarchive: 'La remettre',
+    activeTab: 'Cartes',
+    archived: 'Archives',
+    archivedEmptyTitle: 'Rien d’archivé pour l’instant',
+    archivedEmptyBody:
+      'Les cartes que tu sais déjà arrivent ici. Elles gardent tout et ne reviennent plus, jusqu’à ce que tu en remettes une.',
+    selectCards: 'Sélectionner des cartes',
+    selectedCount: { one: '{count} sélectionnée', other: '{count} sélectionnées' },
+    archivedToast: { one: '{count} carte archivée', other: '{count} cartes archivées' },
+    restoredToast: { one: '{count} carte est revenue', other: '{count} cartes sont revenues' },
     searchPlaceholder: 'Cherche dans tes cartes',
     searchNoneTitle: 'Aucun résultat',
     searchNoneBody: 'Aucune carte ne contient cela dans sa phrase, son sens ou son exemple.',

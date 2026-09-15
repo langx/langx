@@ -12,7 +12,13 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
-import { ECHO_AUDIO_MAX, newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
+import {
+  ECHO_ARCHIVE_BATCH_MAX,
+  ECHO_AUDIO_MAX,
+  newCardSrs,
+  SRS_RULES,
+  TOKEN_RULES,
+} from '@langx/shared'
 
 const PASSWORD = 'correct horse battery staple'
 const DB_NAME = 'langx_echo_test'
@@ -830,6 +836,135 @@ describe('echo', () => {
       const serialized = JSON.stringify(explained)
       expect(serialized).toContain('IXSCAN')
       expect(serialized).not.toContain('COLLSCAN')
+    })
+  })
+
+  /**
+   * Cards a person already knows.
+   *
+   * `good morning` is in everybody's library and nobody's memory problem, and
+   * the only way to stop being asked used to be removing the card — which says
+   * "I never wanted this" rather than "I know this".
+   */
+  describe('putting a card away as learned', () => {
+    async function write(user: SignedUpUser, clientId: string, front: string, lang = 'en') {
+      const response = await capture(user, {
+        kind: 'manual',
+        clientId,
+        front,
+        back: 'the meaning',
+        lang,
+      })
+      expect(response.statusCode, response.body).toBe(201)
+      return response.json<{ card: { _id: string } }>().card._id
+    }
+
+    function archive(user: SignedUpUser, cardIds: string[], archived = true) {
+      return app.inject({
+        method: 'POST',
+        url: '/echo/cards/archive',
+        headers: { cookie: user.cookie },
+        payload: { cardIds, archived },
+      })
+    }
+
+    function list(user: SignedUpUser, query = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/echo/cards${query}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    function ids(response: { json: <T>() => T }): string[] {
+      return response.json<{ items: { _id: string }[] }>().items.map((item) => item._id)
+    }
+
+    it('takes the card out of the queue and the counts, and gives it back', async () => {
+      const user = await newUser('archive-queue@example.com')
+      const known = await write(user, 'archive-known', 'good morning')
+      await write(user, 'archive-hard', 'a harder one')
+
+      const before = await app.inject({
+        method: 'GET',
+        url: '/echo/queue',
+        headers: { cookie: user.cookie },
+      })
+      expect(before.json<{ dueCount: number }>().dueCount).toBe(2)
+
+      expect((await archive(user, [known])).json<{ changed: number }>().changed).toBe(1)
+
+      const after = await app.inject({
+        method: 'GET',
+        url: '/echo/queue',
+        headers: { cookie: user.cookie },
+      })
+      expect(after.json<{ dueCount: number }>().dueCount).toBe(1)
+      expect(after.json<{ cards: { _id: string }[] }>().cards.map((c) => c._id)).not.toContain(
+        known,
+      )
+
+      const summaryAfter = await app.inject({
+        method: 'GET',
+        url: '/echo/summary',
+        headers: { cookie: user.cookie },
+      })
+      expect(summaryAfter.json<{ languages: { total: number }[] }>().languages[0]?.total).toBe(1)
+
+      // And back: the schedule was never touched, so it is simply due again.
+      expect((await archive(user, [known], false)).json<{ changed: number }>().changed).toBe(1)
+      const restored = await app.inject({
+        method: 'GET',
+        url: '/echo/queue',
+        headers: { cookie: user.cookie },
+      })
+      expect(restored.json<{ dueCount: number }>().dueCount).toBe(2)
+    })
+
+    it('lists the archive separately from the library', async () => {
+      const user = await newUser('archive-lists@example.com')
+      const known = await write(user, 'archive-list-known', 'good morning')
+      const learning = await write(user, 'archive-list-learning', 'still learning this')
+      await archive(user, [known])
+
+      expect(ids(await list(user))).toEqual([learning])
+      expect(ids(await list(user, '?archived=true'))).toEqual([known])
+    })
+
+    it('archives several at once, and says how many moved', async () => {
+      const user = await newUser('archive-many@example.com')
+      const first = await write(user, 'archive-many-1', 'good morning')
+      const second = await write(user, 'archive-many-2', 'good night')
+      const third = await write(user, 'archive-many-3', 'hello')
+
+      expect(
+        (await archive(user, [first, second, third])).json<{ changed: number }>().changed,
+      ).toBe(3)
+      // Again changes nothing: they are already away.
+      expect((await archive(user, [first, second])).json<{ changed: number }>().changed).toBe(0)
+    })
+
+    /*
+     * The owner is in the filter rather than checked first, so a stale id in a
+     * selection — a card removed on another device — is skipped rather than
+     * failing the whole call.
+     */
+    it('never moves somebody else’s card', async () => {
+      const [mine, theirs] = await newPair('archive-owner')
+      const ours = await write(mine, 'archive-owner-mine', 'good morning')
+      const yours = await write(theirs, 'archive-owner-theirs', 'good morning')
+
+      expect((await archive(mine, [ours, yours])).json<{ changed: number }>().changed).toBe(1)
+      expect(ids(await list(theirs, '?archived=true'))).toEqual([])
+    })
+
+    it('refuses an empty list and one past the ceiling', async () => {
+      const user = await newUser('archive-bounds@example.com')
+      expect((await archive(user, [])).statusCode).toBe(400)
+      const many = Array.from({ length: ECHO_ARCHIVE_BATCH_MAX + 1 }, () =>
+        new ObjectId().toHexString(),
+      )
+      expect((await archive(user, many)).statusCode).toBe(400)
     })
   })
 

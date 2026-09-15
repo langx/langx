@@ -1,5 +1,6 @@
 import {
   applyEchoCorrectionSchema,
+  archiveEchoCardsSchema,
   attachEchoAudioSchema,
   captureEchoSchema,
   echoPackPreviewQuerySchema,
@@ -23,6 +24,7 @@ import {
   linkAsk,
   listCards,
   removeCard,
+  setArchived,
   summary,
   updateCard,
 } from '../modules/echo/cards'
@@ -129,6 +131,19 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(
         await applyCorrection(app.mongo.db, request.userId, request.params.id, request.body),
       )
+    },
+  )
+
+  /*
+   * Cards put away as learned, or taken back. Plural because the gesture is —
+   * see `setArchived`, and `archiveEchoCardsSchema` for why one card is a list
+   * of one.
+   */
+  app.post(
+    '/echo/cards/archive',
+    { preHandler: requireAuth, schema: { body: archiveEchoCardsSchema } },
+    async (request, reply) => {
+      return reply.send(await setArchived(app.mongo.db, request.userId, request.body))
     },
   )
 

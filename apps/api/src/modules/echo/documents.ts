@@ -55,6 +55,12 @@ export interface EchoCardDoc {
   askedPostId?: string
   /** The correction post opened from this card. `askedPostId`'s twin; see the DTO. */
   askedCorrectionPostId?: string
+  /**
+   * Put away as learned. Absent for a card in the rotation — and absent
+   * rather than `false`, so the queue's filter is an `$exists` and the field
+   * costs nothing on the cards that never have it.
+   */
+  archivedAt?: Date
   source: EchoSource
   /** `sourceKeyOf(source)`. The second half of `card_source_unique`. */
   sourceKey: string
@@ -108,6 +114,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     ...(doc.image ? { image: doc.image } : {}),
     ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),
     ...(doc.askedCorrectionPostId ? { askedCorrectionPostId: doc.askedCorrectionPostId } : {}),
+    ...(doc.archivedAt ? { archivedAt: doc.archivedAt.toISOString() } : {}),
     srs: toEchoSrs(doc.srs),
     createdAt: doc.createdAt.toISOString(),
   }
