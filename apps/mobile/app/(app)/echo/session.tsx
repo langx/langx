@@ -6,6 +6,7 @@ import {
   scheduledDelayMinutes,
   type EchoCard,
   type EchoGrade,
+  type EchoImage,
   type EchoSrs,
 } from '@langx/shared'
 import { useAudioPlayer } from 'expo-audio'
@@ -24,6 +25,7 @@ import { useT } from '../../../src/i18n'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
+import { compactDuration } from '../../../src/lib/format'
 import { goBackTo } from '../../../src/lib/navigation'
 import { postLanguages } from '../../../src/lib/postLanguage'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -41,6 +43,13 @@ import { newClientId } from '../../../src/lib/unsentMessages'
  * the keyboard's dismissal, short enough that nobody deliberate is refused.
  */
 const REVEAL_GUARD_MS = 400
+
+/**
+ * How tall a card's picture is allowed to get. The sentence is the card; a
+ * portrait photograph given its whole aspect ratio would push it under the
+ * fold on a phone, and the picture is the hint, not the question.
+ */
+const PICTURE_MAX_HEIGHT = 240
 
 interface Graded {
   reviewId: string
@@ -221,10 +230,7 @@ export default function EchoSessionScreen() {
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
     if (!card) return ''
-    const minutes = scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date())
-    if (minutes < 60) return t('format.minutesCompact', { count: Math.max(1, minutes) })
-    if (minutes < 60 * 24) return t('format.hoursCompact', { count: Math.round(minutes / 60) })
-    return t('format.daysCompact', { count: Math.round(minutes / (60 * 24)) })
+    return compactDuration(t, scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()))
   }
 
   /**
@@ -327,9 +333,7 @@ export default function EchoSessionScreen() {
         />
       </View>
       <ScrollView contentContainerStyle={styles.card}>
-        {card.image ? (
-          <Image source={{ uri: card.image.url }} style={styles.picture} contentFit="cover" />
-        ) : null}
+        {card.image ? <CardPicture key={card.image.url} image={card.image} /> : null}
         {producing && !revealed ? (
           /*
            * The meaning, and a box. The sentence is the answer, so it is not
@@ -439,6 +443,42 @@ export default function EchoSessionScreen() {
   )
 }
 
+/**
+ * The card's picture, whole.
+ *
+ * It used to be a fixed 140pt band with `contentFit: cover`, which did not
+ * merely guess the shape wrong — it *cropped*: the screenshot that started
+ * this had a face with the top of the head and the chin cut off. The box takes
+ * the picture's own ratio instead, from the card when it carries one and from
+ * the file itself when it does not, the way `ImageBubble` does for a message.
+ *
+ * `contain` rather than `cover`, and that is forced: the width is fixed at
+ * 100%, so once `maxHeight` clamps a tall picture the box's ratio is no longer
+ * the picture's and `cover` would crop again — exactly what this is fixing. No
+ * background colour behind it, so the letterbox that clamping leaves does not
+ * draw as two grey bands.
+ */
+function CardPicture({ image }: { image: EchoImage }) {
+  const styles = useStyles()
+  const [measured, setMeasured] = useState<number | null>(null)
+  const ratio = image.width && image.height ? image.width / image.height : measured
+
+  return (
+    <View style={[styles.picture, { aspectRatio: ratio ?? 4 / 3 }]}>
+      <Image
+        source={{ uri: image.url }}
+        style={styles.pictureFill}
+        contentFit="contain"
+        transition={150}
+        onLoad={({ source }) => {
+          if (ratio || !source.width || !source.height) return
+          setMeasured(source.width / source.height)
+        }}
+      />
+    </View>
+  )
+}
+
 function Count({ label, value }: { label: string; value: number }) {
   const styles = useStyles()
   return (
@@ -460,7 +500,13 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     textAlign: 'center',
   },
   card: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
-  picture: { borderRadius: radius.md, height: 140, width: '100%' },
+  picture: {
+    borderRadius: radius.md,
+    maxHeight: PICTURE_MAX_HEIGHT,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  pictureFill: { height: '100%', width: '100%' },
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },

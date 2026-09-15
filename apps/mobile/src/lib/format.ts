@@ -72,6 +72,44 @@ export function relativeTimeCompact(
 }
 
 /**
+ * How long until something is due — `10m`, `3h`, `4d` — or `null` once it is.
+ *
+ * The mirror of `relativeTimeCompact`, which only ever looks backwards: its
+ * `elapsed` floors at zero, so a future date reads as "now" there. An Echo
+ * card's next review is the one thing in the app that is genuinely ahead of
+ * the clock, and a schedule that says "now" for tomorrow would be a lie about
+ * the only number on the row.
+ *
+ * Rounded rather than floored, unlike the ages above: 23 hours away is a day,
+ * not "23h", and a card that comes back in 90 seconds is "2m", not "1m".
+ * `null` for a card already due — the caller has a word for that and it is not
+ * a duration.
+ */
+export function dueInCompact(
+  iso: string,
+  { t, now = new Date() }: Omit<FormatOptions, 'locale'>,
+): string | null {
+  const at = new Date(iso)
+  if (Number.isNaN(at.getTime())) return null
+  const minutes = Math.round((at.getTime() - now.getTime()) / 60_000)
+  if (minutes <= 0) return null
+  return compactDuration(t, minutes)
+}
+
+/**
+ * A span of minutes as one or two characters, for a schedule rather than an
+ * age: the grade buttons in a review say what each answer costs in exactly
+ * this shape, and the row in the card list says the same thing about the card.
+ * Floored at a minute, because every caller is describing something that will
+ * happen and "0m" describes nothing.
+ */
+export function compactDuration(t: TranslateFn, minutes: number): string {
+  if (minutes < 60) return t('format.minutesCompact', { count: Math.max(1, minutes) })
+  if (minutes < 60 * 24) return t('format.hoursCompact', { count: Math.round(minutes / 60) })
+  return t('format.daysCompact', { count: Math.round(minutes / (60 * 24)) })
+}
+
+/**
  * A count that has to fit in a tile: `845`, `1.1k`, `19k`, `2.3M`.
  *
  * Below a thousand it is the number, grouped for the locale. From a thousand
