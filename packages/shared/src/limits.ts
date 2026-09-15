@@ -372,6 +372,30 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
 }
 
 /**
+ * Whether a language list of `next` entries may be written by somebody who has
+ * `was` of them today, on a plan allowing `max`.
+ *
+ * The `next <= was` clause is the whole of the grandfathering, and it is not a
+ * nicety. A migrated v1 user with five learning languages is over a free
+ * tier's limit of one by definition — without it, every write they make
+ * carries an over-limit array and is refused, so they could never change a
+ * level, reorder their priorities, or even *remove* a language. The limit
+ * would read as "your profile is frozen". Nothing is ever stripped, and
+ * discovery keeps matching on whatever is stored; this only stops the list
+ * growing.
+ *
+ * Here rather than in the API because both sides need the same answer, to the
+ * character: the server decides whether to accept the write, and the client
+ * decides whether "Add a language" opens the picker or explains itself. Two
+ * implementations of one rule is how a dead, unexplained control gets shipped
+ * — which is exactly what the edit-profile picker did, dimming every chip at
+ * the cap with nothing to say why.
+ */
+export function languageCapAllows(next: number, was: number, max: number): boolean {
+  return next <= max || next <= was
+}
+
+/**
  * Pro-only *capabilities* — the boolean gates, keyed for the
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.

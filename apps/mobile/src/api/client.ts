@@ -1,5 +1,5 @@
 import { apiFetch } from './apiFetch'
-import { ERROR_CODES } from '@langx/shared'
+import { ERROR_CODES, type ApiErrorBody } from '@langx/shared'
 import { router } from 'expo-router'
 import { currentLocale } from '../i18n/runtime'
 
@@ -10,6 +10,15 @@ export class ApiRequestError extends Error {
   readonly feature?: string
   /** Present on QUOTA_EXCEEDED — ISO timestamp the next slot frees up. */
   readonly retryAt?: string
+  /**
+   * Present on an UPGRADE_REQUIRED that is an *allowance* rather than a
+   * capability — which list was refused, and how many the plan holds. Kept
+   * apart from `feature` because that one names a boolean gate, and a number
+   * is not one. Without them a screen has to look the allowance up again and
+   * hope its own copy of the table agrees with the server's.
+   */
+  readonly limit?: string
+  readonly max?: number
   /**
    * Present on ACCOUNT_SUSPENDED. Carried on the refusal itself so the screen
    * can say when it ends without a second request the same guard would have
@@ -25,6 +34,8 @@ export class ApiRequestError extends Error {
       message?: string
       feature?: string
       retryAt?: string
+      limit?: string
+      max?: number
       until?: string | null
       permanent?: boolean
     },
@@ -38,6 +49,8 @@ export class ApiRequestError extends Error {
     this.code = body.code ?? 'INTERNAL'
     if (body.feature) this.feature = body.feature
     if (body.retryAt) this.retryAt = body.retryAt
+    if (body.limit) this.limit = body.limit
+    if (body.max !== undefined) this.max = body.max
     if (body.until !== undefined) this.until = body.until
     if (body.permanent !== undefined) this.permanent = body.permanent
   }
@@ -68,7 +81,13 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
   const body: unknown = text ? JSON.parse(text) : {}
 
   if (!response.ok) {
-    const error = new ApiRequestError(response.status, body as { code?: string; message?: string })
+    /*
+     * The whole body, not a two-field slice of it. The cast used to name only
+     * `code` and `message`, which is where `feature`, `retryAt`, `limit` and
+     * `max` were quietly lost — the constructor was ready for all of them and
+     * never saw any. `ApiErrorBody` is the server's own type for this.
+     */
+    const error = new ApiRequestError(response.status, body as ApiErrorBody)
     /*
      * The third net under `requireAccount`.
      *

@@ -1430,8 +1430,6 @@ export const en = {
     genderConfirmTitle: 'Set your gender?',
     genderConfirmBody: 'Your profile will say {gender}. You can change it again in {days} days.',
     languages: 'Languages',
-    editNative: 'Edit native',
-    editLearning: 'Edit learning',
     longPressToRemove: 'Long-press a photo to remove it.',
     removePhotoTitle: 'Remove photo',
     removePhotoBody: 'Remove this photo from your profile?',
@@ -1443,13 +1441,52 @@ export const en = {
     photosTrimmed: 'Your gallery holds {max} photos, so not all of those were added.',
     photoUpdated: 'Photo updated.',
     saved: 'Profile saved.',
-    savingLanguages: 'Saving languages…',
     saveFailed: 'Could not save your profile.',
     storageUnconfigured: 'Photo storage is not configured on this server yet.',
     uploadRetry: 'Could not upload that image. Try again.',
-    bothNativeAndLearning: 'A language cannot be both native and something you are learning.',
-    pickOneOfEach: 'Pick at least one native language and one you are learning.',
     interestsUpTo: 'Interests · up to {max}',
+  },
+
+  /**
+   * The languages screen. Its own block rather than more of `editProfile`,
+   * because it is its own screen — and because every sentence here exists to
+   * answer a control that would otherwise dim without a word.
+   */
+  languages: {
+    title: 'Your languages',
+    nativeSection: 'Native',
+    nativeBody: 'The languages you grew up with. People learning them find you this way.',
+    learningSection: 'Learning',
+    learningBody: 'What you are learning. The first one leads your profile.',
+    addNative: 'Add a native language',
+    addLearning: 'Add a language you are learning',
+    pickNativeTitle: 'Native language',
+    pickLearningTitle: 'Language you are learning',
+    replaceTitle: 'Change {language}',
+    replaceBody: 'Pick the language that takes its place.',
+    startsAtNew: 'It starts at the first level. You can change that afterwards.',
+    alreadyInList: 'You already have {language}.',
+    overlapRefused: 'A language cannot be both native and one you are learning.',
+    moveUp: 'Move {language} up',
+    moveDown: 'Move {language} down',
+    removeTitle: 'Remove {language}?',
+    removeBody: 'It comes off your profile straight away.',
+    lastNative: 'You need at least one native language. Change this one rather than removing it.',
+    lastLearning:
+      'You need at least one language you are learning. Change this one rather than removing it.',
+    capReached: {
+      one: 'Your plan holds {count} language in this list.',
+      other: 'Your plan holds {count} languages in this list.',
+    },
+    capReachedShort: {
+      one: 'Your plan holds {count} language.',
+      other: 'Your plan holds {count} languages.',
+    },
+    capUpgrade: '{fluent} holds {fluentMax}, {polyglot} holds {polyglotMax}.',
+    capOverGrandfathered:
+      'You already have more than your plan holds. You can change these or remove them, but not add another.',
+    changeHint: 'Tap a language to change it.',
+    saveFailed: 'That did not save. Nothing changed.',
   },
 
   legal: {

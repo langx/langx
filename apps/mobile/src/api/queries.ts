@@ -41,6 +41,7 @@ import {
   type ShareCardResult,
   type AdminLatestVersionInput,
   type AppConfig,
+  ERROR_CODES,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -93,7 +94,11 @@ import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
-import { reportActionError } from '../lib/reportActionError'
+import { isOfflineFailure, reportActionError } from '../lib/reportActionError'
+import { errorCodeOf } from '../lib/errors'
+import { showToast } from '../lib/toast'
+import { currentTranslate } from '../i18n/runtime'
+import { applyLanguageEdit, sameLanguageLists, type LanguageEdit } from '../lib/profileLanguages'
 import { isAllowedAudioType } from '../lib/recordingFormat'
 import {
   applyAnswer,
@@ -2227,12 +2232,123 @@ export interface ProfilePatch extends Record<string, unknown> {
 export function useUpdateProfile() {
   const queryClient = useQueryClient()
   return useMutation({
+    scope: PROFILE_PATCH_SCOPE,
     mutationFn: (input: ProfilePatch) => api.patch<MeProfile>('/profiles/me', input),
     onSuccess: (profile) => {
       queryClient.setQueryData(keys.me, profile)
       invalidateOwnPublicViews(queryClient, profile)
     },
   })
+}
+
+/**
+ * One scope over every write to `PATCH /profiles/me`, so at most one is ever
+ * in flight.
+ *
+ * Two of them at once is not a theoretical race on the languages screen, it is
+ * the normal way it is used: tapping a level and then a second level is two
+ * taps in well under a second, and the replies would land in whatever order
+ * the network chose, each overwriting `keys.me` with its own view of the
+ * profile. The old screen bought the same property with a 600 ms debounce,
+ * which cost every edit made in the last 600 ms before leaving the screen.
+ *
+ * A scope keeps the serialisation and drops the wait: `onMutate` still runs
+ * the instant the row is tapped, so the list moves under the finger, while
+ * query-core holds the request itself until the one before it has settled.
+ */
+const PROFILE_PATCH_SCOPE = { id: 'profile-patch' }
+
+/**
+ * One tap on the languages screen: add, replace, remove, level, reorder.
+ *
+ * Optimistic, because the cache *is* that screen's state — it keeps no form
+ * of its own, so there is nothing to lose by leaving and nothing to flush on
+ * the way out. A refusal puts the profile back and says why.
+ *
+ * The body is built in `mutationFn` rather than in `onMutate`, and that is the
+ * whole reason the scope exists. By the time this runs the previous request
+ * has settled and `keys.me` holds the server's answer to it; a body built at
+ * tap time, from the lists that tap saw, would carry the state before that
+ * answer and silently undo it. `applyLanguageEdit` is therefore applied twice
+ * — once to the cache for the eye, once to the settled profile for the wire —
+ * which is only safe because it is pure.
+ */
+export function useEditLanguages() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    scope: PROFILE_PATCH_SCOPE,
+    mutationFn: (edit: LanguageEdit) => {
+      const current = queryClient.getQueryData<MeProfile>(keys.me)
+      if (!current) throw new Error('no profile to edit')
+      const next = applyLanguageEdit(current, edit)
+      // An edit naming a language that is no longer there — a second tap
+      // queued behind a first one that failed and rolled back. Nothing to say.
+      if (sameLanguageLists(current, next)) return Promise.resolve(current)
+      return api.patch<MeProfile>('/profiles/me', {
+        nativeLanguages: next.nativeLanguages,
+        learning: next.learning,
+      })
+    },
+    onMutate: async (edit) => {
+      await queryClient.cancelQueries({ queryKey: keys.me })
+      const previous = queryClient.getQueryData<MeProfile>(keys.me)
+      if (previous) {
+        queryClient.setQueryData<MeProfile>(keys.me, {
+          ...previous,
+          ...applyLanguageEdit(previous, edit),
+        })
+      }
+      return { previous }
+    },
+    /*
+     * The snapshot is this tap's own, so rolling back also drops a later tap
+     * that was already on screen — which then reappears when its own request
+     * lands. One frame of flicker in the rare case where two taps are in the
+     * air and the first is refused, against a shared undo stack for a screen
+     * whose whole point is that there is no state to undo.
+     */
+    onError: (error, _edit, context) => {
+      if (context?.previous) queryClient.setQueryData(keys.me, context.previous)
+      showToast(languageEditFailure(error))
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+      invalidateOwnPublicViews(queryClient, profile)
+      // Discovery's match is the language overlap before it is anything else,
+      // so a deck built against the list you have just changed is scoring
+      // against somebody who no longer exists. `useSetGender` says the same
+      // one field below.
+      void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+    onSettled: (_profile, error) => {
+      // Only after a refusal: a success already wrote the server's own
+      // document, and the rollback above wrote a guess.
+      if (error) void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * What a refused language edit says, in the reader's language.
+ *
+ * Worded here rather than in the screen because the request outlives it: the
+ * picker pops the moment a language is chosen, so by the time a refusal comes
+ * back there may be no component left to show it. `currentTranslate` is the
+ * same escape hatch `lib/alert.ts` uses for exactly this.
+ *
+ * `max` comes off the refusal rather than out of `PLAN_LIMITS`, so the number
+ * in the sentence is the one the server actually applied — a grandfathered
+ * account and a stale build both get told the truth.
+ */
+function languageEditFailure(error: unknown): string {
+  const t = currentTranslate()
+  const code = errorCodeOf(error)
+  if (code === ERROR_CODES.UPGRADE_REQUIRED) {
+    const max = error instanceof ApiRequestError ? error.max : undefined
+    if (max !== undefined) return t('languages.capReachedShort', { count: max })
+  }
+  if (code === ERROR_CODES.VALIDATION_FAILED) return t('languages.overlapRefused')
+  return isOfflineFailure(error) ? t('errors.offlineAction') : t('languages.saveFailed')
 }
 
 /**
