@@ -675,6 +675,165 @@ describe('echo', () => {
   })
 
   /**
+   * The library, and finding one card in it.
+   *
+   * `q` is the only free-text search in the app that is not anchored, and the
+   * reason it is allowed to be is that the filter is pinned to one person's
+   * cards first — so the tests that matter are the ones about what it matches
+   * and about what it still costs.
+   */
+  describe('listing and searching cards', () => {
+    async function write(
+      user: SignedUpUser,
+      clientId: string,
+      front: string,
+      back = 'the meaning',
+      lang = 'en',
+    ) {
+      const response = await capture(user, { kind: 'manual', clientId, front, back, lang })
+      if (response.statusCode >= 300) {
+        throw new Error(`capture failed (${response.statusCode}): ${response.body}`)
+      }
+      return response.json<{ card: { _id: string } }>().card._id
+    }
+
+    function list(user: SignedUpUser, query = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/echo/cards${query}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    function frontsOf(response: { json: <T>() => T }): string[] {
+      return response.json<{ items: { front: string }[] }>().items.map((item) => item.front)
+    }
+
+    it('finds a card by its sentence, its meaning or its example', async () => {
+      const user = await newUser('search-fields@example.com')
+      await write(user, 'search-front', 'le hibou hulule', 'the owl hoots')
+      await write(user, 'search-back', 'la chouette', 'a different owl')
+      await write(user, 'search-neither', 'le chat dort', 'the cat sleeps')
+      // The example line only ever arrives on a pack card, so it is written
+      // straight onto the document rather than captured.
+      const withExample = await write(user, 'search-example', 'ronronner', 'to purr')
+      await handle.db
+        .collection(COLLECTIONS.echoCards)
+        .updateOne({ _id: new ObjectId(withExample) }, { $set: { example: 'the owl is asleep' } })
+
+      const response = await list(user, '?q=owl')
+
+      expect(response.statusCode, response.body).toBe(200)
+      expect(frontsOf(response).sort()).toEqual(['la chouette', 'le hibou hulule', 'ronronner'])
+    })
+
+    it('ignores case', async () => {
+      const user = await newUser('search-case@example.com')
+      await write(user, 'search-case-1', 'Guten Morgen', 'good morning')
+
+      expect(frontsOf(await list(user, '?q=guten'))).toEqual(['Guten Morgen'])
+      expect(frontsOf(await list(user, '?q=MORGEN'))).toEqual(['Guten Morgen'])
+    })
+
+    /*
+     * The escape, proved rather than assumed. Unescaped, `a.c` is a pattern
+     * whose dot matches the `b` in `abc` — so a search for one card would
+     * quietly return two, and every other character in that class is a worse
+     * version of the same bug.
+     */
+    it('treats a regex metacharacter as itself', async () => {
+      const user = await newUser('search-escape@example.com')
+      await write(user, 'search-escape-dot', 'a.c', 'with a dot')
+      await write(user, 'search-escape-plain', 'abc', 'without one')
+
+      expect(frontsOf(await list(user, '?q=a.c'))).toEqual(['a.c'])
+    })
+
+    it('narrows by language and term together', async () => {
+      const user = await newUser('search-lang@example.com')
+      // Straight to the profile: a second learning language is a paid benefit
+      // and the plan gate is not what is under test. Same move as the pack
+      // ordering test below.
+      await handle.db.collection(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId as never },
+        {
+          $set: {
+            learning: [
+              { code: 'en', level: 'intermediate', priority: 1 },
+              { code: 'fr', level: 'beginner', priority: 2 },
+            ],
+          },
+        },
+      )
+      await write(user, 'search-lang-en', 'the owl', 'baykuş', 'en')
+      await write(user, 'search-lang-fr', 'le hibou owl', 'baykuş', 'fr')
+
+      expect(frontsOf(await list(user, '?q=owl&lang=fr'))).toEqual(['le hibou owl'])
+    })
+
+    it('pages a search the same way it pages the library', async () => {
+      const user = await newUser('search-paging@example.com')
+      await write(user, 'search-page-1', 'owl one')
+      await write(user, 'search-page-2', 'owl two')
+      await write(user, 'search-page-3', 'owl three')
+      await write(user, 'search-page-4', 'a cat')
+
+      const first = await list(user, '?q=owl&limit=2')
+      const firstPage = first.json<{ items: { front: string }[]; nextCursor: string | null }>()
+      expect(firstPage.items).toHaveLength(2)
+      expect(firstPage.nextCursor).toBeTruthy()
+
+      const second = await list(user, `?q=owl&limit=2&cursor=${firstPage.nextCursor}`)
+      const secondPage = second.json<{ items: { front: string }[]; nextCursor: string | null }>()
+
+      const seen = [...firstPage.items, ...secondPage.items].map((item) => item.front)
+      expect(seen.sort()).toEqual(['owl one', 'owl three', 'owl two'])
+      expect(secondPage.nextCursor).toBeNull()
+    })
+
+    it("never reaches another person's cards", async () => {
+      const [mine, theirs] = await newPair('search-owner')
+      await write(theirs, 'search-owner-theirs', 'the owl is theirs')
+      await write(mine, 'search-owner-mine', 'the owl is mine')
+
+      expect(frontsOf(await list(mine, '?q=owl'))).toEqual(['the owl is mine'])
+    })
+
+    it('refuses an empty term rather than listing everything', async () => {
+      const user = await newUser('search-empty@example.com')
+      expect((await list(user, '?q=')).statusCode).toBe(400)
+      expect((await list(user, '?q=%20')).statusCode).toBe(400)
+    })
+
+    /**
+     * The acceptance criterion for the unanchored pattern: `userId` has to
+     * stay an index bound, so the regex only ever decides which of one
+     * person's cards come back. The day the `$or` costs the index instead,
+     * this search becomes a scan of everybody's library.
+     */
+    it('is served by an index, not a collection scan', async () => {
+      const user = await newUser('search-explain@example.com')
+      await write(user, 'search-explain-1', 'the owl')
+
+      const explained = await handle.db
+        .collection(COLLECTIONS.echoCards)
+        .find({
+          userId: user.userId,
+          $or: [
+            { front: { $regex: 'owl', $options: 'i' } },
+            { back: { $regex: 'owl', $options: 'i' } },
+            { example: { $regex: 'owl', $options: 'i' } },
+          ],
+        })
+        .explain('executionStats')
+
+      const serialized = JSON.stringify(explained)
+      expect(serialized).toContain('IXSCAN')
+      expect(serialized).not.toContain('COLLSCAN')
+    })
+  })
+
+  /**
    * Cards written by hand: the one capture that is handed its own contents.
    *
    * No provider is configured in this suite, so an absent back comes back

@@ -236,6 +236,12 @@ export const en = {
     cardsEmptyTitle: 'No cards yet',
     cardsEmptyBody:
       'Sentences you keep from chats and posts collect here, along with the ones you write yourself.',
+    searchPlaceholder: 'Search your cards',
+    searchNoneTitle: 'Nothing matches',
+    searchNoneBody: 'No card has that in its sentence, its meaning or its example.',
+    /** When the card comes back. `{time}` is already short: `10m`, `4d`. */
+    dueIn: 'Due in {time}',
+    dueNow: 'Due now',
     remove: 'Remove',
     removeTitle: 'Remove this card?',
     removeBody: 'Its schedule goes with it. The message itself stays where it is.',

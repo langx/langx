@@ -195,6 +195,11 @@ export const fr: Localized<EnMessages> = {
     cardsEmptyTitle: 'Pas encore de cartes',
     cardsEmptyBody:
       'Les phrases que tu gardes des conversations et des publications s’accumulent ici, avec celles que tu écris toi-même.',
+    searchPlaceholder: 'Cherche dans tes cartes',
+    searchNoneTitle: 'Aucun résultat',
+    searchNoneBody: 'Aucune carte ne contient cela dans sa phrase, son sens ou son exemple.',
+    dueIn: 'Dans {time}',
+    dueNow: 'À revoir',
     remove: 'Retirer',
     removeTitle: 'Retirer cette carte ?',
     removeBody: 'Son calendrier part avec elle. Le message, lui, reste où il est.',

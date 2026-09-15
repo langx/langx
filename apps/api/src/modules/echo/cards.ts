@@ -718,6 +718,11 @@ export async function attachAnswerAudio(
   return toEchoCard(updated)
 }
 
+/** Somebody's search term, as a pattern that matches only itself. */
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export async function listCards(
   db: Db,
   userId: string,
@@ -726,6 +731,20 @@ export async function listCards(
   const filter: Filter<EchoCardDoc> = { userId, ...(query.lang ? { lang: query.lang } : {}) }
   if (query.cursor && ObjectId.isValid(query.cursor)) {
     filter._id = { $lt: new ObjectId(query.cursor) }
+  }
+  if (query.q) {
+    /*
+     * Unanchored, which `handleSearch` argues at length against — and the
+     * argument is about a different query. There the pattern is matched across
+     * every profile in the collection, so an unanchored regex is a scan per
+     * keystroke; here `userId` is an equality bound on `owner_lang_recent`, so
+     * the walk is one person's cards and the pattern only decides which of
+     * them are returned. A card is found by any word in it, which is what
+     * somebody looking for a sentence they half remember actually needs, and
+     * no index can offer that. Nothing is added to `indexes.ts` for it.
+     */
+    const rx = { $regex: escapeRegex(query.q), $options: 'i' }
+    filter.$or = [{ front: rx }, { back: rx }, { example: rx }]
   }
 
   // `{ createdAt: -1, _id: -1 }` is the tail of `owner_lang_recent`, so the

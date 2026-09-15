@@ -194,6 +194,11 @@ export const es: Localized<EnMessages> = {
     cardsEmptyTitle: 'Aún no hay tarjetas',
     cardsEmptyBody:
       'Las frases que guardas de los chats y las publicaciones se reúnen aquí, junto con las que escribes tú.',
+    searchPlaceholder: 'Busca en tus tarjetas',
+    searchNoneTitle: 'No hay coincidencias',
+    searchNoneBody: 'Ninguna tarjeta tiene eso en su frase, su significado ni su ejemplo.',
+    dueIn: 'En {time}',
+    dueNow: 'Toca ahora',
     remove: 'Quitar',
     removeTitle: '¿Quitar esta tarjeta?',
     removeBody: 'Su calendario se va con ella. El mensaje se queda donde está.',

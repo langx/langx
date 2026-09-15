@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import type { EchoCard } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { FlatList, Pressable, RefreshControl, Text, TextInput, View } from 'react-native'
 import { useEchoCards, useEchoSummary, useRemoveEcho } from '../../../src/api/queries'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { SwipeableRow } from '../../../src/components/SwipeableRow'
@@ -13,9 +13,11 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useT } from '../../../src/i18n'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
+import { useDebounced } from '../../../src/hooks/useDebounced'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { chooseAlert, confirmAlert, showAlert } from '../../../src/lib/alert'
 import { dedupeById } from '../../../src/lib/dedupeById'
+import { dueInCompact } from '../../../src/lib/format'
 import { listState } from '../../../src/lib/listState'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -30,7 +32,14 @@ export default function EchoCardsScreen() {
 
   const summary = useEchoSummary()
   const [lang, setLang] = useState<string | null>(null)
-  const cards = useEchoCards(lang ?? undefined)
+  const [query, setQuery] = useState('')
+  /*
+   * Debounced, so the request follows the typing rather than racing it; the
+   * empty state reads this one too, not the raw field, or "nothing matches"
+   * appears a keystroke before the answer that would disprove it.
+   */
+  const term = useDebounced(query.trim())
+  const cards = useEchoCards(lang ?? undefined, term || undefined)
   const removeEcho = useRemoveEcho()
   const [openRow, setOpenRow] = useState<string | null>(null)
   const pull = usePullToRefresh(async () => {
@@ -121,6 +130,21 @@ export default function EchoCardsScreen() {
           </Pressable>
         }
       />
+      <View style={styles.search}>
+        <Feather name="search" size={18} color={colors.textFaint} />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder={t('echo.searchPlaceholder')}
+          placeholderTextColor={colors.textFaint}
+          autoCapitalize="none"
+          autoCorrect={false}
+          clearButtonMode="while-editing"
+          accessibilityLabel={t('echo.searchPlaceholder')}
+          style={styles.searchInput}
+        />
+      </View>
+
       {languages.length > 1 ? (
         <View style={styles.chips}>
           <Chip
@@ -153,16 +177,32 @@ export default function EchoCardsScreen() {
           keyExtractor={(card) => card._id}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl {...pull} />}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           onEndReachedThreshold={0.6}
           onEndReached={() => {
+            /*
+             * Not while the previous term's list is still on screen: the pages
+             * held then belong to the old key, and their cursor would fetch
+             * the old search's next page into the new one.
+             */
+            if (cards.isPlaceholderData) return
             if (cards.hasNextPage && !cards.isFetchingNextPage) void cards.fetchNextPage()
           }}
           ListEmptyComponent={
-            <EmptyState
-              icon="repeat"
-              title={t('echo.cardsEmptyTitle')}
-              body={t('echo.cardsEmptyBody')}
-            />
+            term ? (
+              <EmptyState
+                icon="search"
+                title={t('echo.searchNoneTitle')}
+                body={t('echo.searchNoneBody')}
+              />
+            ) : (
+              <EmptyState
+                icon="repeat"
+                title={t('echo.cardsEmptyTitle')}
+                body={t('echo.cardsEmptyBody')}
+              />
+            )
           }
           renderItem={({ item }) => (
             <SwipeableRow
@@ -201,6 +241,7 @@ export default function EchoCardsScreen() {
                   <Text style={styles.back}>{item.back}</Text>
                   <Text style={styles.source}>{sourceLabel(item)}</Text>
                 </View>
+                <Due card={item} />
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('echo.cardMenu')}
@@ -219,7 +260,47 @@ export default function EchoCardsScreen() {
   )
 }
 
+/**
+ * When the card comes back — `4d`, `10m`, or the word for a card already due.
+ *
+ * Two characters on the row and the whole sentence to a screen reader: `4d`
+ * beside a card could as easily be read as its age, which is the one other
+ * number a list of saved things usually carries.
+ */
+function Due({ card }: { card: EchoCard }) {
+  const styles = useStyles()
+  const t = useT()
+  const time = dueInCompact(card.srs.due, { t })
+
+  return (
+    <Text
+      style={styles.due}
+      accessibilityLabel={time ? t('echo.dueIn', { time }) : t('echo.dueNow')}
+    >
+      {time ?? t('echo.dueNow')}
+    </Text>
+  )
+}
+
 const useStyles = makeStyles(({ colors, spacing }) => ({
+  /*
+   * The settings screen's box, and its 50pt `fill` pill: the one thing on the
+   * page that is not a row. Its own `paddingHorizontal` is the glyph's inset,
+   * so the gutter that lines it up with the chips and the rows below has to be
+   * a margin — padding there would push the glyph twice as far in.
+   */
+  search: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: 14,
+    flexDirection: 'row',
+    gap: 10,
+    height: 50,
+    marginHorizontal: spacing.lg,
+    marginTop: 2,
+    paddingHorizontal: spacing.lg,
+  },
+  searchInput: { color: colors.text, flex: 1, fontSize: 16, height: '100%' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, paddingHorizontal: spacing.lg },
   loading: { gap: spacing.sm, padding: spacing.lg },
   list: { paddingBottom: spacing.lg, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
@@ -235,5 +316,8 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   front: { color: colors.text, fontSize: 17, fontWeight: '700' },
   back: { color: colors.text, fontSize: 15, lineHeight: 21 },
   source: { color: colors.textFaint, fontSize: 12 },
+  // Tabular figures: the column of them down the list should not shuffle
+  // sideways as `9m` becomes `10m`.
+  due: { color: colors.textFaint, fontSize: 13, fontVariant: ['tabular-nums'] },
   pressed: { opacity: 0.6 },
 }))

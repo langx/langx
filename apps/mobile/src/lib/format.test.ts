@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from '../i18n/runtime'
-import { compactCount, relativeTime, relativeTimeCompact } from './format'
+import { compactCount, dueInCompact, relativeTime, relativeTimeCompact } from './format'
 
 describe('relativeTime', () => {
   const now = new Date('2026-08-29T12:00:00Z')
@@ -70,5 +70,38 @@ describe('compactCount', () => {
   it('uses the locale decimal separator', () => {
     expect(compactCount(1150, 'tr')).toBe('1,1k')
     expect(compactCount(1150, 'de')).toBe('1,1k')
+  })
+})
+
+describe('dueInCompact', () => {
+  const now = new Date('2026-08-29T12:00:00Z')
+  const en = { t: createTranslate('en'), now } as const
+
+  it('steps through minutes, hours and days ahead', () => {
+    expect(dueInCompact('2026-08-29T12:10:00Z', en)).toBe('10m')
+    expect(dueInCompact('2026-08-29T15:00:00Z', en)).toBe('3h')
+    expect(dueInCompact('2026-09-02T12:00:00Z', en)).toBe('4d')
+  })
+
+  /*
+   * The half-open edges. 23 hours away is a day to anybody reading a row, and
+   * a card 90 seconds out is two minutes rather than one — the opposite of the
+   * flooring the ages above do, because this describes something that has not
+   * happened yet.
+   */
+  it('rounds to the unit a person would say', () => {
+    expect(dueInCompact('2026-08-30T11:00:00Z', en)).toBe('23h')
+    expect(dueInCompact('2026-08-29T12:01:30Z', en)).toBe('2m')
+    expect(dueInCompact('2026-08-29T13:00:00Z', en)).toBe('1h')
+  })
+
+  /** A card already due has a word of its own, and it is not a duration. */
+  it('returns null once the card is due', () => {
+    expect(dueInCompact('2026-08-29T12:00:00Z', en)).toBeNull()
+    expect(dueInCompact('2026-08-28T12:00:00Z', en)).toBeNull()
+  })
+
+  it('returns null for an unparseable date rather than "NaNm"', () => {
+    expect(dueInCompact('not a date', en)).toBeNull()
   })
 })

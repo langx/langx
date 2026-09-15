@@ -191,6 +191,11 @@ export const ptBR: Localized<EnMessages> = {
     cardsEmptyTitle: 'Nenhum cartão ainda',
     cardsEmptyBody:
       'As frases que você guarda de conversas e publicações ficam aqui, junto com as que você mesmo escreve.',
+    searchPlaceholder: 'Busque nos seus cartões',
+    searchNoneTitle: 'Nada encontrado',
+    searchNoneBody: 'Nenhum cartão tem isso na frase, no significado ou no exemplo.',
+    dueIn: 'Em {time}',
+    dueNow: 'Agora',
     remove: 'Remover',
     removeTitle: 'Remover este cartão?',
     removeBody: 'O calendário dele vai junto. A mensagem continua onde está.',
