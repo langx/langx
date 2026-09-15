@@ -143,24 +143,42 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
 }
 
 /**
- * Turns the next few items of a pack into cards.
+ * The next items of a pack this person holds no card for, in index order.
  *
- * "Next" is by `index` among the items this person has no card for, so
- * pressing Start again continues rather than restarting, and a re-seed that
- * inserted items in the middle is picked up on the next press.
- *
- * The gloss is resolved **here**, at intake, and copied onto the card. The
- * same argument the chat path makes: content gets re-seeded, and a corrected
- * gloss must not rewrite the back of a card somebody has already reviewed six
- * times. The price is that the correction does not reach cards already made,
- * which is the price worth paying.
+ * "Next" is by `index` among the items with no card, so pressing Start again
+ * continues rather than restarting, and a re-seed that inserted items in the
+ * middle is picked up on the next press. One function because two screens
+ * depend on agreeing about it: `startPack` writes these rows, and
+ * `previewPack` shows them first — a preview that paged the pack from the top
+ * showed cards already held and never the ones about to arrive.
  */
+async function unheldItems(db: Db, userId: string, packId: string): Promise<EchoPackItemDoc[]> {
+  const held = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .find({ userId, 'source.kind': 'pack', 'source.packId': packId })
+    .project<{ sourceKey: string }>({ sourceKey: 1 })
+    .toArray()
+  const alreadyHeld = new Set(held.map((row) => row.sourceKey))
+
+  const items = await db
+    .collection<EchoPackItemDoc>(COLLECTIONS.echoPackItems)
+    .find({ packId })
+    .sort({ index: 1 })
+    .toArray()
+
+  return items.filter(
+    (item) => !alreadyHeld.has(sourceKeyOf({ kind: 'pack', packId, itemId: item._id })),
+  )
+}
+
 /**
- * A page of what a pack holds, before anybody starts it.
+ * What a pack would give you next, before you press Start.
  *
  * Reads the same way a card would: the back is resolved through `glossFor`
  * with this reader's own languages, so the preview is not a different rendering
- * of the content from the thing they are deciding whether to begin.
+ * of the content from the thing they are deciding whether to begin. The rows
+ * are `unheldItems` cut to `limit`, which is what `startPack` would write
+ * for the same count.
  *
  * Open to a guest, like the listing it is reached from. Looking is the whole
  * offer before an account; `startPack` is where the account is asked for.
@@ -180,24 +198,28 @@ export async function previewPack(
     .findOne({ _id: userId }, { projection: { nativeLanguages: 1 } })
   const nativeLocale = matchLocale(profile?.nativeLanguages?.map((l) => l.code) ?? []) ?? undefined
 
-  const items = await db
-    .collection<EchoPackItemDoc>(COLLECTIONS.echoPackItems)
-    .find({ packId, index: { $gte: query.offset } })
-    .sort({ index: 1 })
-    .limit(query.limit)
-    .toArray()
-
-  return {
-    // An item whose gloss resolves to nothing is dropped rather than shown
+  const items: EchoPackPreview['items'] = []
+  for (const item of await unheldItems(db, userId, packId)) {
+    if (items.length >= query.limit) break
+    // An item whose gloss resolves to nothing is skipped rather than shown
     // blank — `startPack` skips it too, so the preview matches what arrives.
-    items: items.flatMap((item) => {
-      const back = glossFor(item.gloss, nativeLocale, interfaceLocale)
-      return back ? [{ index: item.index, text: item.text, back }] : []
-    }),
-    total: pack.itemCount,
+    const back = glossFor(item.gloss, nativeLocale, interfaceLocale)
+    if (back) items.push({ index: item.index, text: item.text, back })
   }
+
+  return { items, total: pack.itemCount }
 }
 
+/**
+ * Turns the next few items of a pack into cards — `unheldItems`, cut to
+ * `count`.
+ *
+ * The gloss is resolved **here**, at intake, and copied onto the card. The
+ * same argument the chat path makes: content gets re-seeded, and a corrected
+ * gloss must not rewrite the back of a card somebody has already reviewed six
+ * times. The price is that the correction does not reach cards already made,
+ * which is the price worth paying.
+ */
 export async function startPack(
   db: Db,
   userId: string,
@@ -213,17 +235,7 @@ export async function startPack(
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
-  const held = await cards
-    .find({ userId, 'source.kind': 'pack', 'source.packId': pack._id })
-    .project<{ sourceKey: string }>({ sourceKey: 1 })
-    .toArray()
-  const alreadyHeld = new Set(held.map((row) => row.sourceKey))
-
-  const items = await db
-    .collection<EchoPackItemDoc>(COLLECTIONS.echoPackItems)
-    .find({ packId: pack._id })
-    .sort({ index: 1 })
-    .toArray()
+  const items = await unheldItems(db, userId, pack._id)
 
   // The reader's own language decides the back; the app's language is the
   // fallback, and English the last resort. One chain, in `glossFor`.
@@ -234,7 +246,6 @@ export async function startPack(
     if (started >= input.count) break
     const source: EchoSource = { kind: 'pack', packId: pack._id, itemId: item._id }
     const sourceKey = sourceKeyOf(source)
-    if (alreadyHeld.has(sourceKey)) continue
 
     /*
      * Charged per card rather than per press, and before the write. The limit

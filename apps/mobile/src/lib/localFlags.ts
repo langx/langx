@@ -211,6 +211,15 @@ export const FLAG_KEYS = {
    * person, already shown.
    */
   discoverTourSeen: 'discoverTourSeen',
+  /**
+   * `1` when the review session should *not* read a card out as it appears.
+   *
+   * Stored as the exception rather than the rule, so a device that has never
+   * been asked — and one whose store cannot be read — gets the default, which
+   * is on. Device-level because it is about this phone's speaker and where it
+   * is, not about the account.
+   */
+  echoAutoplayOff: 'echoAutoplayOff',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

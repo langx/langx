@@ -6,18 +6,18 @@ import {
   productionVerdict,
   scheduledDelayMinutes,
   type EchoAudio,
+  type EchoVoice,
   type EchoCard,
   type EchoGrade,
   type EchoImage,
   type EchoSrs,
 } from '@langx/shared'
-import { useAudioPlayer } from 'expo-audio'
+import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { useEchoQueue, useMe, useSubmitEchoReviews } from '../../../src/api/queries'
-import { Reading } from '../../../src/components/echo/Reading'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -25,10 +25,12 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useT } from '../../../src/i18n'
+import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
 import { compactDuration } from '../../../src/lib/format'
+import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
 import { postLanguages } from '../../../src/lib/postLanguage'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -119,6 +121,24 @@ export default function EchoSessionScreen() {
 
   /** True when the deck came off the device rather than off the server. */
   const [offline, setOffline] = useState(false)
+  /**
+   * Whether a card is read out as it appears. On unless this phone said
+   * otherwise: the point of a voice on the card is to hear the sentence
+   * before deciding, and a tap to hear it every time is a tap most people
+   * stop making. The stored value is the exception — see `echoAutoplayOff`.
+   */
+  const [autoplay, setAutoplay] = useState(true)
+  useEffect(() => {
+    void readBoolFlag(FLAG_KEYS.echoAutoplayOff).then((off) => {
+      if (off) setAutoplay(false)
+    })
+  }, [])
+
+  function toggleAutoplay(): void {
+    const next = !autoplay
+    setAutoplay(next)
+    void setBoolFlag(FLAG_KEYS.echoAutoplayOff, !next)
+  }
 
   useEffect(() => {
     if (deck !== null) return
@@ -262,16 +282,34 @@ export default function EchoSessionScreen() {
   /*
    * The same header with the count beside it. A bar says roughly how far in
    * you are; the number says how many more questions there are, which is the
-   * thing somebody deciding whether to finish actually wants.
+   * thing somebody deciding whether to finish actually wants. The speaker
+   * before it is the autoplay switch — up here rather than on the card, so it
+   * is one control for the session and not a thing re-decided per card.
    */
   const deckHeader = (deck: EchoCard[], index: number) => (
     <ScreenHeader
       title={t('echo.title')}
       onBack={() => goBackTo('/(app)/(tabs)/echo')}
       trailing={
-        <Text style={styles.counter}>
-          {t('echo.sessionProgress', { done: index + 1, total: deck.length })}
-        </Text>
+        <View style={styles.trailing}>
+          <Pressable
+            accessibilityRole="switch"
+            accessibilityState={{ checked: autoplay }}
+            accessibilityLabel={t(autoplay ? 'echo.autoplayOn' : 'echo.autoplayOff')}
+            hitSlop={12}
+            onPress={toggleAutoplay}
+            style={({ pressed }) => (pressed ? styles.pressed : null)}
+          >
+            <Feather
+              name={autoplay ? 'volume-2' : 'volume-x'}
+              size={20}
+              color={autoplay ? colors.accent : colors.textFaint}
+            />
+          </Pressable>
+          <Text style={styles.counter}>
+            {t('echo.sessionProgress', { done: index + 1, total: deck.length })}
+          </Text>
+        </View>
       }
     />
   )
@@ -423,9 +461,22 @@ export default function EchoSessionScreen() {
           Every recording, each with its own player: one card can hold several
           people saying the same sentence, and which of them is speaking is the
           whole reason to keep more than one.
+
+          The first one on the card plays by itself when autoplay is on — a
+          person's take when there is one, the pack's reading otherwise. Keyed
+          by card as well as by file, so that two cards sharing a recording
+          still mount a fresh player and the second one is read out too. A
+          production card mounts these only once the answer is up, which is
+          also when they may speak: the sentence *is* the answer.
         */}
         {!producing || revealed
-          ? recordings.map((audio) => <Recording key={audio.url} audio={audio} />)
+          ? recordings.map((audio, i) => (
+              <Recording
+                key={`${card._id}:${audio.url}`}
+                audio={audio}
+                autoplay={autoplay && i === 0}
+              />
+            ))
           : null}
         {/*
           The pack's own readings, under the people. Labelled by register and
@@ -433,7 +484,13 @@ export default function EchoSessionScreen() {
           make a voice model indistinguishable from the volunteer above it.
         */}
         {!producing || revealed
-          ? (card.voices ?? []).map((take) => <Reading key={take.voice} take={take} />)
+          ? (card.voices ?? []).map((take, i) => (
+              <Reading
+                key={`${card._id}:${take.voice}`}
+                take={take}
+                autoplay={autoplay && recordings.length === 0 && i === 0}
+              />
+            ))
           : null}
 
         {revealed ? (
@@ -539,11 +596,12 @@ function CardPicture({ image }: { image: EchoImage }) {
  * `useAudioPlayer` is a hook, so a card holding three voices needs three of
  * them, and a hook cannot be called in a loop from the screen itself.
  */
-function Recording({ audio }: { audio: EchoAudio }) {
+function Recording({ audio, autoplay = false }: { audio: EchoAudio; autoplay?: boolean }) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
   const player = useAudioPlayer(audio.url)
+  useAutoplay(player, autoplay)
 
   async function play(): Promise<void> {
     await ensurePlaybackAudioMode()
@@ -567,6 +625,56 @@ function Recording({ audio }: { audio: EchoAudio }) {
       </Text>
     </Pressable>
   )
+}
+
+/** A synthesised take. `Recording`'s twin, and deliberately not the same thing. */
+function Reading({ take, autoplay = false }: { take: EchoVoice; autoplay?: boolean }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(take.url)
+  useAutoplay(player, autoplay)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={voiceLabel(t, take.voice)}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="cpu" size={16} color={colors.textMuted} />
+      <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+    </Pressable>
+  )
+}
+
+/**
+ * Plays the take once, as soon as it can, when the card asked for it.
+ *
+ * Waits for `isLoaded` rather than calling `play()` from a mount effect: the
+ * player starts fetching on creation, and a play asked of a source still on
+ * its way is not something every platform underneath promises to remember.
+ * The first card of a session is exactly the one that has not loaded yet.
+ * Once, by ref, so a status tick after the take ends does not start it again.
+ */
+function useAutoplay(player: AudioPlayer, wanted: boolean): void {
+  const status = useAudioPlayerStatus(player)
+  const played = useRef(false)
+  useEffect(() => {
+    if (!wanted || played.current || !status.isLoaded) return
+    played.current = true
+    void ensurePlaybackAudioMode().then(() => {
+      void player.seekTo(0)
+      player.play()
+    })
+  }, [wanted, status.isLoaded, player])
 }
 
 function Count({ label, value }: { label: string; value: number }) {
@@ -600,6 +708,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  /* Quieter than a person's take, because it is the lesser of the two. */
+  voiceLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '500' },
   pressed: { opacity: 0.6 },
   rule: { backgroundColor: colors.border, height: 1, width: '60%' },
   back: { color: colors.text, fontSize: 18, lineHeight: 26, textAlign: 'center' },
@@ -642,6 +752,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   gradeGoodLabel: { color: colors.primaryText },
   gradeInterval: { color: colors.textFaint, fontSize: 12 },
   gradeGoodInterval: { color: colors.primaryTextMuted },
+  trailing: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   counter: { color: colors.textMuted, fontSize: 14, fontVariant: ['tabular-nums'] },
   done: {
     alignItems: 'center',

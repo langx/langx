@@ -6,6 +6,7 @@ import {
   type EchoAudio,
   type EchoCard,
   type EchoImage,
+  type EchoVoice,
 } from '@langx/shared'
 import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
@@ -13,7 +14,6 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useEchoCard, useRemoveEcho, useSynthesiseEchoCard } from '../../../../src/api/queries'
-import { Reading } from '../../../../src/components/echo/Reading'
 import { LoadFailed } from '../../../../src/components/LoadFailed'
 import { Avatar } from '../../../../src/components/ui/Avatar'
 import { Button } from '../../../../src/components/ui/Button'
@@ -22,6 +22,7 @@ import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
+import { voiceLabel } from '../../../../src/i18n/labels'
 import { useAppConfig } from '../../../../src/hooks/useAppConfig'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
@@ -93,6 +94,7 @@ function Card({ card }: { card: EchoCard }) {
   const t = useT()
   const names = useDisplayNames()
   const recordings = echoAudiosOf(card)
+  const readings = card.voices ?? []
   const due = dueInCompact(card.srs.due, { t })
 
   return (
@@ -103,14 +105,19 @@ function Card({ card }: { card: EchoCard }) {
       {card.back ? <Text style={styles.back}>{card.back}</Text> : null}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
 
-      {recordings.length > 0 || card.voices?.length ? (
+      {/*
+        Both lists, as the session draws them: people first, then the pack's
+        own readings. A pack card usually has only the second, and this block
+        used to be keyed on the first alone — so the card that most needed a
+        voice was the one shown without any.
+      */}
+      {recordings.length > 0 || readings.length > 0 ? (
         <View style={styles.block}>
           <Text style={styles.label}>{t('echo.cardAudio')}</Text>
           {recordings.map((audio) => (
             <Recording key={audio.url} audio={audio} />
           ))}
-          {/* Under the people, as on the session card, and never above them. */}
-          {(card.voices ?? []).map((take) => (
+          {readings.map((take) => (
             <Reading key={take.voice} take={take} />
           ))}
         </View>
@@ -271,10 +278,10 @@ function Picture({ image }: { image: EchoImage }) {
  *
  * Offered only where the deployment has the voice service and the model can
  * read the language — `echoSynthVoicesFor` is the same table the API refuses
- * by, so a tap never learns of a limit the screen could have shown. A card that already holds readings shows nothing:
- * the readings are the answer, and the API would return them unchanged.
- * The daily ceiling gets the plain alert every Echo limit gets, which offers
- * nothing to buy.
+ * by, so a tap never learns of a limit the screen could have shown. A card
+ * that already holds readings shows nothing: the readings are the answer, and
+ * the API would return them unchanged. The daily ceiling gets the plain alert
+ * every Echo limit gets, which offers nothing to buy.
  */
 function ReadAloud({ card }: { card: EchoCard }) {
   const t = useT()
@@ -340,6 +347,33 @@ function Recording({ audio }: { audio: EchoAudio }) {
   )
 }
 
+/** A synthesised take. `Recording`'s twin, and deliberately not the same thing. */
+function Reading({ take }: { take: EchoVoice }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(take.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={voiceLabel(t, take.voice)}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="cpu" size={16} color={colors.textMuted} />
+      <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+    </Pressable>
+  )
+}
+
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { gap: spacing.md, paddingTop: spacing.md },
   card: { gap: spacing.md, paddingTop: spacing.md },
@@ -377,5 +411,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   remove: { marginTop: spacing.sm },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  /* Quieter than a person's take, as on the session card. */
+  voiceLabel: { color: colors.textMuted, fontSize: 14, fontWeight: '500' },
   pressed: { opacity: 0.6 },
 }))

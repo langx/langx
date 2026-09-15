@@ -446,7 +446,7 @@ Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `(tabs)/echo.tsx`    | The tab root: due count and the one yellow button, then "From your chats" (latest cards, partner face, tap to open the thread), then Packs |
 | `echo/session.tsx`   | The review: card, reveal, four grades, progress; the end-of-queue screen                                                                   |
-| `echo/pack/[id].tsx` | A pack: description, progress, "Start" / "Continue"                                                                                        |
+| `echo/pack/[id].tsx` | A pack: progress, "Start" / "Continue", and the session's worth of items the button would add — not a page of the whole pack               |
 | `echo/cards.tsx`     | Every card, filter by language and source, edit or remove                                                                                  |
 | `echo/new.tsx`       | A card written by hand: the sentence, what it means, the language                                                                          |
 | `echo/edit.tsx`      | Everything but the source: the two lines, the language, the picture and the recording                                                      |

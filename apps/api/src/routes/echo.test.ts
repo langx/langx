@@ -1657,7 +1657,7 @@ describe('echo', () => {
       }
       await seedPack('fr', 'beginner')
       await seedPack('it', 'beginner')
-      // Ten items on one of them, so the preview has something to page.
+      // Ten items on one of them, so the preview has something to show.
       await handle.db.collection(COLLECTIONS.echoPackItems).insertMany(
         Array.from({ length: 10 }, (_, index) => ({
           _id: `en:beginner#${index}`,
@@ -1680,7 +1680,7 @@ describe('echo', () => {
       const user = await newUser('packs-preview@example.com')
       const response = await app.inject({
         method: 'GET',
-        url: '/echo/packs/en:beginner/items?offset=0&limit=4',
+        url: '/echo/packs/en:beginner/items?limit=4',
         headers: { cookie: user.cookie },
       })
       expect(response.statusCode, response.body).toBe(200)
@@ -1694,18 +1694,43 @@ describe('echo', () => {
       expect(page.items[0]?.back).toBe('satır 0')
     })
 
-    it('pages from where the last page stopped', async () => {
-      const user = await newUser('packs-preview-page@example.com')
+    /*
+     * The preview is the answer to "what will I get if I press this", so it
+     * has to skip what a press already gave: after three cards are taken the
+     * next four shown are 3–6, not 0–3 again.
+     */
+    it('previews the items you do not hold yet, not the top of the pack', async () => {
+      const user = await newUser('packs-preview-next@example.com')
+      const started = await app.inject({
+        method: 'POST',
+        url: '/echo/packs/en:beginner/start',
+        headers: { cookie: user.cookie },
+        payload: { count: 3 },
+      })
+      expect(started.statusCode, started.body).toBe(200)
       const response = await app.inject({
         method: 'GET',
-        url: '/echo/packs/en:beginner/items?offset=8&limit=4',
+        url: '/echo/packs/en:beginner/items?limit=4',
         headers: { cookie: user.cookie },
       })
       expect(response.statusCode, response.body).toBe(200)
       const page = response.json<{ items: { index: number }[]; total: number }>()
-      // Four asked for, two left: the tail is short rather than wrapped.
-      expect(page.items.map((row) => row.index)).toEqual([8, 9])
+      expect(page.items.map((row) => row.index)).toEqual([3, 4, 5, 6])
+      // The whole pack, not what is left of it: the screen draws "3 of 10".
       expect(page.total).toBe(10)
+    })
+
+    it('previews a session worth when nothing narrower is asked for', async () => {
+      const user = await newUser('packs-preview-default@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/echo/packs/en:beginner/items',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const page = response.json<{ items: { index: number }[] }>()
+      // Ten seeded, and a session is ten, so all of them — and no more asked.
+      expect(page.items).toHaveLength(Math.min(10, SRS_RULES.sessionSize))
     })
 
     it('refuses to preview a pack that does not exist', async () => {
