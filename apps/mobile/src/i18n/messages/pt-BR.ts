@@ -88,6 +88,28 @@ export const ptBR: Localized<EnMessages> = {
     chatSwipeReply: 'Arraste a mensagem para a direita para responder.',
     discoverFilters: 'Use os filtros para refinar por nível, idade ou país.',
     feedAsk: 'Travado numa frase? Publique aqui e alguém corrige.',
+    chatEcho:
+      'Segure uma mensagem e escolha Adicionar ao Echo. Ela volta amanhã, depois em três dias, depois em uma semana.',
+    chatAttach:
+      'O + ao lado da caixa de texto pode pedir uma correção, propor um horário para conversar ou fazer uma pergunta.',
+    chatsStarred:
+      'A estrela no topo abre todas as mensagens que você favoritou, de todas as conversas.',
+    discoverActive: 'Ordene por Ativos para ver quem passou por aqui recentemente.',
+    feedEcho: 'Segure uma publicação para guardar a frase dela no Echo.',
+    feedSlowTake:
+      'Respondendo a um pedido de pronúncia? Adicione também uma versão lenta — é com ela que se aprende.',
+    composerEcho: 'Segure para guardar no Echo',
+    echoAgain:
+      'Esqueceu? Toque em De novo e o cartão volta em dez minutos, não em dias. Nada se perde.',
+    echoAutoplay:
+      'O alto-falante no topo da sessão toca cada cartão assim que aparece. Toque nele para desligar.',
+    echoTyping:
+      'Quando um cartão já está firme, uma revisão sim, outra não pede que você o escreva em vez de só reconhecer.',
+    echoArchive:
+      'Sabe um cartão de cor? Arquive em Todos os cartões. Ele guarda tudo e para de voltar.',
+    echoOwn:
+      'Escreva seu próprio cartão em Todos os cartões. Deixe o significado vazio e ele é traduzido para você.',
+    echoRecord: 'Abra um cartão para adicionar uma foto ou gravá-lo com a sua própria voz.',
   },
   tour: {
     announcement: '{title}. {body}',

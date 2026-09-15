@@ -121,6 +121,26 @@ export const en = {
     chatSwipeReply: 'Swipe a message to the right to reply to it.',
     discoverFilters: 'Use the filters to narrow by level, age or country.',
     feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
+    chatEcho:
+      'Hold a message and choose Add echo. It comes back tomorrow, then in three days, then in a week.',
+    chatAttach:
+      'The + beside the composer can ask for a correction, propose a time to talk, or send a quiz.',
+    chatsStarred: 'The star in the header opens every message you have starred, from every chat.',
+    discoverActive: 'Sort by Active to see who has been around lately.',
+    feedEcho: 'Hold a post to keep its sentence in Echo.',
+    feedSlowTake:
+      'Answering a pronunciation ask? Add a slow take too — that is the one people learn from.',
+    composerEcho: 'Hold a message to keep it in Echo',
+    echoAgain: 'Forgot one? Tap Again and it comes back in ten minutes, not days. Nothing is lost.',
+    echoAutoplay:
+      'The speaker in the session header plays each card as it appears. Tap it to turn that off.',
+    echoTyping:
+      'Once a card has settled in, every other review asks you to write it rather than just recall it.',
+    echoArchive:
+      'Know a card cold? Archive it from All cards. It keeps everything and stops coming back.',
+    echoOwn:
+      'Write a card of your own from All cards. Leave the meaning empty and it is translated for you.',
+    echoRecord: 'Open a card to add a picture, or to record it in your own voice.',
   },
   tour: {
     announcement: '{title}. {body}',

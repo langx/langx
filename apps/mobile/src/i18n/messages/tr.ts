@@ -104,6 +104,25 @@ export const tr: Localized<EnMessages> = {
     chatSwipeReply: 'Yanıtlamak için mesajı sağa kaydır.',
     discoverFilters: 'Seviyeye, yaşa veya ülkeye göre daraltmak için filtreleri kullan.',
     feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
+    chatEcho:
+      'Bir mesaja basılı tutup Echo’ya ekle’yi seç. Yarın geri gelir, sonra üç gün, sonra bir hafta sonra.',
+    chatAttach:
+      'Yazma kutusunun yanındaki + ile düzeltme isteyebilir, görüşmek için saat önerebilir veya soru sorabilirsin.',
+    chatsStarred: 'Üstteki yıldız, tüm sohbetlerde yıldızladığın mesajları tek yerde açar.',
+    discoverActive: 'Aktif’e göre sırala; son zamanlarda buralarda olanları görürsün.',
+    feedEcho: 'Bir gönderiye basılı tutup cümlesini Echo’da sakla.',
+    feedSlowTake:
+      'Bir telaffuz sorusunu mu yanıtlıyorsun? Yavaş bir kayıt da ekle — insanlar asıl ondan öğrenir.',
+    composerEcho: 'Echo’da saklamak için basılı tut',
+    echoAgain:
+      'Unuttun mu? Tekrar’a dokun; günler sonra değil on dakika sonra geri gelir. Hiçbir şey kaybolmaz.',
+    echoAutoplay: 'Oturum başlığındaki hoparlör her kartı göründüğünde çalar. Kapatmak için dokun.',
+    echoTyping:
+      'Bir kart yerine oturduktan sonra her ikinci tekrar, hatırlamanı değil yazmanı ister.',
+    echoArchive:
+      'Bir kartı ezbere mi biliyorsun? Tüm kartlar’dan arşivle. Her şeyi saklar, bir daha gelmez.',
+    echoOwn: 'Tüm kartlar’dan kendi kartını yaz. Anlamı boş bırak, senin için çevrilir.',
+    echoRecord: 'Bir kartı aç; resim ekle ya da kendi sesinle kaydet.',
   },
   tour: {
     announcement: '{title}. {body}',

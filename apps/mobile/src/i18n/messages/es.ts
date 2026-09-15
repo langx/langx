@@ -91,6 +91,28 @@ export const es: Localized<EnMessages> = {
     chatSwipeReply: 'Desliza un mensaje a la derecha para responderlo.',
     discoverFilters: 'Usa los filtros para acotar por nivel, edad o país.',
     feedAsk: '¿Atascado con una frase? Publícala aquí y alguien la corregirá.',
+    chatEcho:
+      'Mantén pulsado un mensaje y elige Añadir a Echo. Vuelve mañana, luego en tres días, luego en una semana.',
+    chatAttach:
+      'El + junto al cuadro de texto puede pedir una corrección, proponer una hora para hablar o hacer una pregunta.',
+    chatsStarred:
+      'La estrella de arriba abre todos los mensajes que has destacado, de todos los chats.',
+    discoverActive: 'Ordena por Activos para ver quién ha pasado por aquí últimamente.',
+    feedEcho: 'Mantén pulsada una publicación para guardar su frase en Echo.',
+    feedSlowTake:
+      '¿Respondes a una pregunta de pronunciación? Añade también una toma lenta: es de la que se aprende.',
+    composerEcho: 'Mantén pulsado para guardarlo en Echo',
+    echoAgain:
+      '¿Se te olvidó? Toca Otra vez y vuelve en diez minutos, no en días. No se pierde nada.',
+    echoAutoplay:
+      'El altavoz de la cabecera de la sesión reproduce cada tarjeta al aparecer. Tócalo para apagarlo.',
+    echoTyping:
+      'Cuando una tarjeta ya está asentada, un repaso de cada dos te pide escribirla en vez de solo reconocerla.',
+    echoArchive:
+      '¿Te sabes una tarjeta de memoria? Archívala desde Todas las tarjetas. Lo conserva todo y deja de volver.',
+    echoOwn:
+      'Escribe tu propia tarjeta desde Todas las tarjetas. Deja el significado vacío y se traduce por ti.',
+    echoRecord: 'Abre una tarjeta para añadirle una imagen o grabarla con tu propia voz.',
   },
   tour: {
     announcement: '{title}. {body}',
