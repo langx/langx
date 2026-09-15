@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
   ACCOUNT_DELETION_GRACE_DAYS,
-  canClaimNewHandle,
+  HANDLE_CHANGE_COOLDOWN_DAYS,
   LOCALE_NAMES,
   NOTIFICATION_CHANNELS,
   PRO_BENEFITS,
@@ -521,21 +521,16 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       )
 
     case 'account.username':
-      /*
-       * Only for an account that came back from v1 and has not yet chosen —
-       * `null` for everybody else, which is this file's established answer for
-       * a row with nowhere to send anybody. The rule is `canClaimNewHandle`,
-       * the same one the server refuses on, so the row and the route cannot
-       * disagree about who this is for.
-       */
-      return profile && canClaimNewHandle(profile) ? (
+      // For everybody now, not only the v1 accounts this row was written for:
+      // the screen behind it says when the name is on cooldown.
+      return (
         <ListRow
           title={t('settings.username')}
-          subtitle={t('settings.usernameBody')}
+          subtitle={t('settings.usernameBody', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
           last={last}
           onPress={() => router.push('/(app)/settings/username')}
         />
-      ) : null
+      )
     case 'account.signIn':
       // Sits above devices: "how do I get in" comes before "where am I
       // already in", and for somebody who only has Google or Apple this is

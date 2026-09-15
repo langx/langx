@@ -19,8 +19,9 @@ import {
   meetsMinimumAge,
   NOTIFICATION_TYPES,
   newHandleSchema,
-  canClaimNewHandle,
-  type ClaimHandleInput,
+  HANDLE_CHANGE_COOLDOWN_DAYS,
+  HANDLE_CHANGE_COOLDOWN_MS,
+  type ChangeHandleInput,
   resolveNotificationPrefs,
   toGeoPoint,
   type FollowState,
@@ -91,9 +92,8 @@ export interface Profile {
   admin?: true
   handle: string
   /**
-   * The handle this account held before its owner swapped v1's name for one
-   * they chose — see `claimHandle`. Absent for everybody who never did, which
-   * is what makes the swap a one-shot without a flag beside it.
+   * The handle this account held before its last change — see
+   * `changeHandle`. Absent for everybody who never changed it.
    *
    * It is kept rather than released for two reasons, and the second is the
    * load-bearing one. Links live longer than names: a v1 profile URL, a QR
@@ -102,9 +102,22 @@ export interface Profile {
    * so none of them break. And a released name is a name a stranger can take,
    * which turns every one of those links into somebody else's profile. There
    * is no index that can express "unique across two different fields", so the
-   * claim paths read this one before writing — see `isHandleAvailable`.
+   * paths that write a handle read this one first — see `isHandleAvailable`.
+   *
+   * One slot, not a history: the next change overwrites it, and the name
+   * before that is released. With a change a week that is the honest limit —
+   * a list would let one account hold fifty names a year — and the slot is
+   * still enough for the week in which an old link is most likely to be
+   * followed.
    */
   previousHandle?: string
+  /**
+   * When `handle` was last changed, which is what `changeHandle`'s cooldown is
+   * measured from. Absent on every profile that has never changed it — onboarding
+   * does not write it, and neither did the v1 one-shot claim this replaced — and
+   * that absence is what makes the first change free without a migration.
+   */
+  handleChangedAt?: Date
   displayName: string
   /**
    * `displayName` cut into the words it can be searched by — derived, never
@@ -589,9 +602,9 @@ export async function createProfile(
   }
 
   // A name that is somebody's `previousHandle` is still theirs — no index can
-  // say so across two fields, so onboarding asks the same question `claimHandle`
+  // say so across two fields, so onboarding asks the same question `changeHandle`
   // does before it writes.
-  await assertNotSomeonesOldHandle(db, input.handle)
+  await assertNotSomeonesOldHandle(db, input.handle, userId)
 
   try {
     await profiles.insertOne(profile)
@@ -763,17 +776,17 @@ function assertLanguageCap(
 }
 
 /**
- * The one rename this app allows: a returning v1 account trading the username
- * v1 gave it for one its owner chose.
+ * Changes the username, once every `HANDLE_CHANGE_COOLDOWN_DAYS`.
  *
- * The rule against renaming stands for everybody else, and the reason has not
- * changed — a handle is a public address, and moving off it breaks every link
- * already shared. What the rule never accounted for is that nine in ten v1
- * accounts are carrying an address nobody chose: v1 generated `langx_` plus
- * four hex characters and let people live with it. "You cannot change your
- * name" is a fair rule for a name you picked. See `canClaimNewHandle`.
+ * This used to be a one-shot for accounts that came back from v1 carrying a
+ * generated name, and the reasoning that made it a one-shot has not gone
+ * anywhere — a handle is a public address, and moving off one breaks every
+ * link already shared. The cooldown is what keeps that true for everybody now:
+ * a week per move makes a handle nobody's plaything while letting a person
+ * fix the name they typed at sign-up. The rule is in `packages/shared`, where
+ * the app reads it too.
  *
- * It is the same claim onboarding makes, through the same machinery, and that
+ * Still the same claim onboarding makes, through the same machinery, and that
  * is on purpose rather than for tidiness: `resolveHandleClaim` is what stops
  * two people racing for one reserved v1 handle, and skipping it here would
  * make this route the way around it. So a v1 reservation still belongs to
@@ -781,41 +794,26 @@ function assertLanguageCap(
  * *them* is let past the floor and the reserved list — which is exactly how a
  * person who onboarded under a made-up name takes their real v1 handle back.
  *
- * The write is one conditional update. `previousHandle: { $exists: false }` in
- * the filter is what makes it once-only under any number of concurrent
- * requests, and `handle_unique` answers the other race — two accounts reaching
- * for the same free name — with a duplicate key rather than a lost write.
+ * The write is one conditional update, the same shape as `setGender`'s: the
+ * cooldown sits in the filter, so two taps that race cannot both pass a
+ * check-then-write, and `handle_unique` answers the other race — two accounts
+ * reaching for the same free name — with a duplicate key rather than a lost
+ * write. The old name goes into `previousHandle`, replacing whatever was there.
  */
-export async function claimHandle(
+export async function changeHandle(
   db: Db,
   userId: string,
   legacyEmailHash: string | null,
-  input: ClaimHandleInput,
+  input: ChangeHandleInput,
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const profile = await profiles.findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
 
-  /*
-   * Two refusals, two codes, because the app's answer differs. Having spent
-   * the claim is a 409 on a name — the row is gone from Settings and the
-   * message says so. Never having been a v1 account is a 403: the request is
-   * well-formed and the caller simply is not who this route is for, which is
-   * also the shape a client bug takes if the row is ever drawn for the wrong
-   * person.
-   */
-  if (profile.previousHandle) {
-    throw new ApiError(ERROR_CODES.HANDLE_ALREADY_CLAIMED, 'You have already chosen a new username')
-  }
-  if (!canClaimNewHandle(profile)) {
-    throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account has no v1 username to replace')
-  }
-
   const handle = input.handle
   if (handle === profile.handle) {
-    // Refused rather than answered "done". Writing `previousHandle` here would
-    // spend the one claim on a change that changes nothing, and the person
-    // would find the row gone with the name they were trying to leave.
+    // Refused rather than answered "done". Writing `handleChangedAt` here
+    // would start the cooldown on a change that changes nothing.
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `@${handle} is already your username`)
   }
 
@@ -841,14 +839,19 @@ export async function claimHandle(
     }
   }
 
-  await assertNotSomeonesOldHandle(db, handle)
+  await assertNotSomeonesOldHandle(db, handle, userId)
 
   const now = new Date()
+  const cutoff = new Date(now.getTime() - HANDLE_CHANGE_COOLDOWN_MS)
   let updated: Profile | null
   try {
     updated = await profiles.findOneAndUpdate(
-      { _id: userId, handle: profile.handle, previousHandle: { $exists: false } },
-      { $set: { handle, previousHandle: profile.handle, updatedAt: now } },
+      {
+        _id: userId,
+        handle: profile.handle,
+        $or: [{ handleChangedAt: { $exists: false } }, { handleChangedAt: { $lte: cutoff } }],
+      },
+      { $set: { handle, previousHandle: profile.handle, handleChangedAt: now, updatedAt: now } },
       { returnDocument: 'after' },
     )
   } catch (error) {
@@ -857,13 +860,25 @@ export async function claimHandle(
     }
     throw error
   }
+  if (updated) return updated
 
-  // The filter missed, so another request for this same account got there
-  // first — the only way past `canClaimNewHandle` above.
-  if (!updated) {
-    throw new ApiError(ERROR_CODES.HANDLE_ALREADY_CLAIMED, 'You have already chosen a new username')
-  }
-  return updated
+  // The filter missed: the cooldown is running, or another request for this
+  // same account got there first and started it. One read tells the client
+  // when, the way `setGender` does — a date it had to compute from a duration
+  // would be a second copy of the rule.
+  const existing = await profiles.findOne({ _id: userId })
+  if (!existing) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  throw new ApiError(
+    ERROR_CODES.HANDLE_CHANGE_TOO_SOON,
+    `Username can only be changed once every ${String(HANDLE_CHANGE_COOLDOWN_DAYS)} days`,
+    existing.handleChangedAt
+      ? {
+          retryAt: new Date(
+            new Date(existing.handleChangedAt).getTime() + HANDLE_CHANGE_COOLDOWN_MS,
+          ).toISOString(),
+        }
+      : undefined,
+  )
 }
 
 /**
@@ -872,14 +887,17 @@ export async function claimHandle(
  * A read rather than an index, and not for want of trying: Mongo can make
  * `handle` unique and it can make `previousHandle` unique, and there is no way
  * to say that a value may not appear in one while it appears in the other. So
- * both claim paths ask, and the window between the ask and the write stays
- * open — about as wide as `isHandleAvailable`'s, and closing on the same kind
- * of name: a four-character hex string nobody is racing anybody for.
+ * both paths that write a handle ask, and the window between the ask and the
+ * write stays open — about as wide as `isHandleAvailable`'s.
+ *
+ * Your own old name is not somebody else's: `userId` is excluded so that
+ * changing back to the name you left last week is allowed, which is the one
+ * change a person is most likely to want after a rename they regret.
  */
-async function assertNotSomeonesOldHandle(db: Db, handle: string): Promise<void> {
+async function assertNotSomeonesOldHandle(db: Db, handle: string, userId: string): Promise<void> {
   const held = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ previousHandle: handle }, { projection: { _id: 1 } })
+    .findOne({ previousHandle: handle, _id: { $ne: userId } }, { projection: { _id: 1 } })
   if (held) throw new ApiError(ERROR_CODES.HANDLE_TAKEN, `@${handle} is already taken`)
 }
 
@@ -1494,10 +1512,10 @@ export function toPublicProfile(
 /**
  * Looks up by `@handle` or by user id — the two things a deep link can carry.
  *
- * `previousHandle` is in the `$or` because a v1 account that took a new name
+ * `previousHandle` is in the `$or` because an account that took a new name
  * left its old one on every link already out there. Resolving it costs one
  * more branch of an indexed query and is the whole reason the old name is kept
- * rather than released; see `claimHandle`.
+ * rather than released; see `changeHandle`.
  *
  * `includeDeleted` is for the one caller that has to answer for an account in
  * its thirty-day grace: the profile route, which shows it tagged as deleted so

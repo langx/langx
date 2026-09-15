@@ -67,7 +67,13 @@ export const handleRoutes: FastifyPluginAsyncZod = async (app) => {
        */
       const claimable = newHandleSchema.safeParse(request.params.handle).success
       const available =
-        claimable && (await isHandleAvailable(app.mongo.db, request.params.handle, legacyEmailHash))
+        claimable &&
+        (await isHandleAvailable(
+          app.mongo.db,
+          request.params.handle,
+          legacyEmailHash,
+          request.userId,
+        ))
       return reply.send({ available })
     },
   )

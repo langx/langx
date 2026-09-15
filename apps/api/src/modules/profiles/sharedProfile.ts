@@ -42,7 +42,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
       /*
        * The old name too. This is the read behind `langx.io/<handle>`, so it
        * is exactly where a v1 link lands — and a v1 link carries the name v1
-       * generated, which its owner may since have traded in. See `claimHandle`.
+       * generated, which its owner may since have traded in. See `changeHandle`.
        */
       $or: [{ handle: handle.toLowerCase() }, { previousHandle: handle.toLowerCase() }],
       deletedAt: { $exists: false },

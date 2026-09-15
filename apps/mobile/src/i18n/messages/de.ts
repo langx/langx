@@ -1370,6 +1370,8 @@ export const de: Localized<EnMessages> = {
     gender: 'Geschlecht',
     genderOnce: 'Du kannst das alle {days} Tage einmal ändern.',
     genderCooldown: 'Du kannst es am {date} wieder ändern.',
+    usernameEvery: 'Du kannst das alle {days} Tage ändern.',
+    usernameCooldown: 'Du kannst es am {date} wieder ändern.',
     pronouns: 'Pronomen',
     pronounsPlaceholder: 'sie/ihr, er/ihm, dey/demm…',
     pronounsHint:
@@ -1537,19 +1539,22 @@ export const de: Localized<EnMessages> = {
     signInSetPasswordFailed: 'Passwort konnte nicht festgelegt werden. Versuch es noch einmal.',
     signInPasswordAlready: 'Dieses Konto hat bereits ein Passwort.',
     username: 'Benutzername',
-    usernameBody: 'Einmal selbst wählen',
-    usernameTitle: 'Benutzernamen wählen',
-    usernameIntro:
+    usernameBody: 'Alle {days} Tage änderbar',
+    usernameTitle: 'Benutzernamen ändern',
+    usernameIntro: 'Du bist @{handle}. Wähle den Benutzernamen, den du stattdessen möchtest.',
+    usernameIntroV1:
       'Als du zum alten LangX kamst, hat es dich @{handle} genannt. Das hast du nie ausgesucht — jetzt kannst du es.',
     usernameHint: 'Buchstaben, Zahlen und Unterstriche. So finden dich andere.',
-    usernameOnce:
-      'Das geht einmal. Links und QR-Codes mit deinem alten Benutzernamen funktionieren weiter, und niemand sonst kann ihn nehmen.',
-    usernameSave: 'Nimm diesen Namen',
+    usernameEvery:
+      'Du kannst das alle {days} Tage ändern. Links und QR-Codes mit deinem alten Benutzernamen funktionieren weiter, bis du ihn erneut änderst.',
+    usernameSave: 'Benutzernamen ändern',
     usernameSaved: 'Du bist jetzt @{handle}.',
     usernameFailed: 'Dein Benutzername konnte nicht geändert werden. Versuch es noch einmal.',
     usernameReserved: '@{handle} gehört einem anderen Konto aus dem alten LangX.',
-    usernameSpent:
-      'Du hast deinen Benutzernamen gewählt: @{handle}. Er ändert sich nicht noch einmal.',
+    usernameCooldown: 'Du bist @{handle}. Du kannst ihn am {date} wieder ändern.',
+    usernameConfirmTitle: 'Benutzernamen ändern?',
+    usernameConfirmBody:
+      'Du wirst @{handle} sein. Du kannst ihn erst in {days} Tagen wieder ändern.',
     password: 'Passwort',
     passwordBody: 'Festlegen oder ändern',
     changePassword: 'Passwort ändern',

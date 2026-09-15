@@ -4,6 +4,8 @@ import {
   GENDER_CHANGE_COOLDOWN_MS,
   GENDERS,
   DISPLAY_NAME_MAX_LENGTH,
+  HANDLE_CHANGE_COOLDOWN_DAYS,
+  handleChangeFreeAt,
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
@@ -11,6 +13,7 @@ import {
   type Gender,
 } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
+import { router } from 'expo-router'
 import { useState } from 'react'
 import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
@@ -203,6 +206,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     ? new Date(new Date(profile.genderChangedAt).getTime() + GENDER_CHANGE_COOLDOWN_MS)
     : undefined
   const genderLocked = genderFreeAt !== undefined && genderFreeAt.getTime() > Date.now()
+  /** Same idea for the username; the rule itself lives in `packages/shared`. */
+  const handleFreeAt = handleChangeFreeAt(profile)
 
   /**
    * Confirmed rather than applied straight from the tap. It is the one control
@@ -354,6 +359,42 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         <Text style={styles.hint}>
           {t('editProfile.photoLimit', { max: PLAN_LIMITS[tier].maxPhotos })}
         </Text>
+
+        {/*
+          A way in, not the field: the username has its own screen because
+          changing it is confirmed and rate-limited, which the typed fields
+          around it are not. While the cooldown runs the row goes dimmed and
+          locked, exactly as the gender picker below does.
+        */}
+        <View style={styles.block}>
+          <View style={styles.blockHead}>
+            <Text style={styles.label}>{t('settings.username')}</Text>
+            {handleFreeAt ? null : (
+              <Pressable
+                accessibilityRole="button"
+                hitSlop={8}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/settings/username',
+                    params: { from: '/(app)/edit-profile' },
+                  })
+                }
+                style={({ pressed }) => pressed && styles.pressed}
+              >
+                <Text style={styles.link}>{t('common.edit')}</Text>
+              </Pressable>
+            )}
+          </View>
+          <View style={styles.lockedField}>
+            <Text style={styles.lockedValue}>@{profile.handle}</Text>
+            {handleFreeAt ? <Feather name="lock" size={16} color={colors.textFaint} /> : null}
+          </View>
+          <Text style={styles.note}>
+            {handleFreeAt
+              ? t('editProfile.usernameCooldown', { date: handleFreeAt.toLocaleDateString(locale) })
+              : t('editProfile.usernameEvery', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+          </Text>
+        </View>
 
         <FormField
           label={t('editProfile.displayName')}

@@ -68,16 +68,27 @@ export async function isHandleAvailable(
   db: Db,
   handle: string,
   legacyEmailHash: string | null,
+  forUserId?: string,
 ): Promise<boolean> {
   /*
-   * `previousHandle` as well as `handle`: an account that swapped v1's
-   * generated name for one of its own is still reachable at the old one, and
-   * the whole point of keeping it is that nobody else can be handed it. One
-   * query over two indexed fields rather than two round-trips.
+   * `previousHandle` as well as `handle`: an account that changed its name is
+   * still reachable at the old one, and the whole point of keeping it is that
+   * nobody else can be handed it. One query over two indexed fields rather
+   * than two round-trips. The asker's own old name is the exception — it is
+   * theirs to go back to, and `changeHandle` allows exactly that.
    */
+  // Typed inline: `_id` is our string id, not the ObjectId the untyped
+  // collection assumes, and `$ne` against it has to say so.
   const taken = await db
-    .collection(COLLECTIONS.profiles)
-    .findOne({ $or: [{ handle }, { previousHandle: handle }] })
+    .collection<{ _id: string; handle: string; previousHandle?: string }>(COLLECTIONS.profiles)
+    .findOne({
+      $or: [
+        { handle },
+        forUserId
+          ? { previousHandle: handle, _id: { $ne: forUserId } }
+          : { previousHandle: handle },
+      ],
+    })
   if (taken) return false
 
   const reservation = await db

@@ -279,11 +279,12 @@ legacyEmailHash, legacyUserId, expiresAt, claimedBy?, claimedAt? }`, unique
 3. Reserved handles are held until `expiresAt` (12 months by default).
 4. v1 users whose email has changed go through a manual support path.
 5. v1 named most of its users itself — `langx_` plus four hex characters, 2846
-   of 3164 staged profiles — so a restored account may trade that name for one
-   of its own **once**, through `POST /profiles/me/handle`. The old name is
-   kept in `previousHandle`: every lookup resolves through it, so shared links
-   survive, and nobody else can be given it. See `decisions.md` → _v1 named
-   nine people in ten_.
+   of 3164 staged profiles — which is what first made a rename necessary. Any
+   account may now change its handle once every `HANDLE_CHANGE_COOLDOWN_DAYS`
+   through `POST /profiles/me/handle`. The name left behind is kept in
+   `previousHandle`: every lookup resolves through it, so shared links survive,
+   and nobody else can be given it — until the next change, which releases it.
+   See `decisions.md` → _A username changes once a week_.
 
 ## Authorisation and quota (replacing Appwrite's document permissions)
 
@@ -742,7 +743,8 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
-  previousHandle?,                    ← unique, sparse; the v1 name traded in once, still resolvable
+  previousHandle?,                    ← unique, sparse; the name left at the last change, still resolvable
+  handleChangedAt?,                   ← the cooldown clock for the next change; absent = never changed
   official?: true,                    ← @langx or @copilot; created at boot, never by a form
   photos: [{ url, createdAt }],
   bio, birthDate,

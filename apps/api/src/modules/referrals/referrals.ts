@@ -19,8 +19,8 @@ export interface Referral {
   referrerId: string
   /**
    * The handle as it resolved at attach time, kept beside the id it points at.
-   * A snapshot on purpose: a returning v1 account may trade its name once
-   * (`claimHandle`), and what this row is for is reading in a shell six months
+   * A snapshot on purpose: a handle may change (`changeHandle`), and what
+   * this row is for is reading in a shell six months
    * from now — which link was actually used — not naming the referrer today.
    * Everything shown to a person re-reads the live profile; see `readReferralStatus`.
    */

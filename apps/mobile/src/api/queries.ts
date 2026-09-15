@@ -373,12 +373,14 @@ export interface MeProfile {
    * `scripts/grant-admin.ts` on the server.
    */
   admin?: true
-  /**
-   * The username this account held in v1, kept after its owner swapped it for
-   * one of their own. Its presence is what says the one claim has been spent —
-   * `canClaimNewHandle` is the rule, and both this app and the server read it.
-   */
+  /** The username this account held before its last change, still resolvable. */
   previousHandle?: string
+  /**
+   * When the username was last changed, absent if it never has been. The
+   * screen needs it to know the field is on cooldown *before* anybody taps —
+   * `handleChangeFreeAt` is the rule, and both this app and the server read it.
+   */
+  handleChangedAt?: string
   displayName: string
   avatarUrl?: string
   bio?: string

@@ -4394,6 +4394,10 @@ guard will not take away.**
 
 ## v1 named nine people in ten, and they get one chance to answer
 
+_Superseded four days later by the section after this one — the one chance
+became a weekly cooldown for everybody. Kept because what it says about
+keeping the old name is still the rule._
+
 v1 handed out usernames. Its generator wrote `langx_` and four hex characters
 — `langx_6430`, `langx_003c`, `langx_00a5` — and against the staged records
 that is **2846 of 3164** profiles. 313 people named themselves, five typed
@@ -4451,6 +4455,58 @@ these accounts it now says who chose it and offers the alternative, and
 "Start exploring" walks past it. Settings → Account keeps the row for as long
 as it goes untaken, which is also the answer for the people who came back
 before any of this shipped.
+
+## A username changes once a week
+
+The section above was the whole rename story for four days, and it was a
+story with two halves: "never", and one exception for the nine in ten v1
+accounts carrying a name a machine picked. The exception was right and the
+"never" was not. It left everybody who signed up here — and the tenth v1
+account, the one that chose `langx_david` in 2023 and regrets it — with the
+old rule's only remedy, which was deleting the account. And it made the
+Settings row a thing that appeared for some people and not others, for a
+reason none of them could see.
+
+So the exception became the rule, on a cooldown: **any account may change its
+handle once every `HANDLE_CHANGE_COOLDOWN_DAYS`**, seven days. The reasoning
+behind "never" has not gone anywhere — a handle is a public address, and one
+that changes daily is nobody's address — and a week per move is what keeps
+that true while letting a person fix the name they typed at sign-up. It is
+the same shape as the gender cooldown, and for the same reason it is a
+cooldown rather than a count: a count runs out, and then the remedy is
+deleting the account again.
+
+**The first change is free and there is no migration**, because nothing wrote
+`handleChangedAt` before this. The eight v1 accounts that had already spent
+their one claim read as accounts that have never changed, which is a week's
+grace they were not promised and nobody will notice. `restoredFromV1` no
+longer gates anything here; the welcome-back screen still makes the offer,
+because that is the one screen a returning user passes through, and the
+username screen still tells a v1 account who chose the name it is leaving.
+
+**`previousHandle` is one slot, not a history.** Everything the section above
+says about keeping the old name still holds — links outlive names, and a
+released name is a name a stranger can take — and it holds for the name you
+left last week exactly as it held for `langx_003c`. What changed is what
+happens on the change after that: the slot is overwritten, and the name
+before last is released. A list would keep every old link alive forever, and
+would also let one account hold fifty names a year at a change a week, which
+is a squatting tool with a nice story attached. One slot covers the week in
+which an old link is most likely to be followed, and it is the most a rate
+limit can honestly promise.
+
+The slot has one exception in the other direction: **your own old name is
+yours to go back to.** `assertNotSomeonesOldHandle` and `isHandleAvailable`
+both exclude the asker, so a rename regretted on Tuesday is undone the
+following Tuesday rather than never — the availability check has to agree,
+because the form's button hangs on it.
+
+**Confirmed before it is applied**, on the screen and not only in the note
+above the field: it is the one control on the profile that spends something,
+and the dialog names the price — a week before it can be changed again.
+Edit profile gained a row that shows the current name and leads to that
+screen, dimmed and locked with the date while the cooldown runs, the same
+drawing the gender picker uses for the same state.
 
 ## The one dialog, and the flag that was written before it opened
 

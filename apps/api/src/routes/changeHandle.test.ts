@@ -29,7 +29,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   }
 }
 
-describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
+describe('POST /profiles/me/handle — a username change, once a week', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
@@ -50,13 +50,13 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
   }
 
   /**
-   * Marks a profile as having come back from v1.
+   * Marks a profile as having come back from v1 under a generated name.
    *
    * Written directly rather than driven through a real restore: what is under
-   * test here is the claim's own rules, and `legacyRestore.test.ts` already
+   * test here is the change's own rules, and `legacyRestore.test.ts` already
    * proves that a returning account ends up with this field. Staging a whole
-   * `legacyProfiles` fixture to obtain one boolean would test that file twice
-   * and this one less clearly.
+   * `legacyProfiles` fixture for it would test that file twice and this one
+   * less clearly.
    */
   async function asReturningV1User(user: SignedUpUser, v1Handle: string) {
     await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
@@ -135,11 +135,15 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
     await replSet?.stop()
   })
 
-  it('refuses an account that never came from v1', async () => {
-    const user = await newUser('never-v1@example.com')
+  it('lets any account change its username, and starts the cooldown', async () => {
+    const user = await newUser('never-v1@example.com', { handle: 'typoatsignup' })
     const response = await claim(user, 'brandnewname')
-    expect(response.statusCode).toBe(403)
-    expect(response.json()).toMatchObject({ code: 'FORBIDDEN' })
+    expect(response.statusCode, response.body).toBe(200)
+    expect(response.json()).toMatchObject({
+      handle: 'brandnewname',
+      previousHandle: 'typoatsignup',
+    })
+    expect(response.json<{ handleChangedAt?: string }>().handleChangedAt).toBeDefined()
   })
 
   it('lets a returning v1 account trade the generated name for one of its own', async () => {
@@ -239,20 +243,65 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
     expect(row).toMatchObject({ referrerId: referrer.userId })
   })
 
-  it('allows exactly one claim', async () => {
+  it('refuses a second change inside the week, and allows it after', async () => {
     const user = await newUser('v1-twice@example.com')
     await asReturningV1User(user, 'langx_00a5')
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
 
     expect((await claim(user, 'firstchoice')).statusCode).toBe(200)
 
     const second = await claim(user, 'secondthoughts')
     expect(second.statusCode).toBe(409)
-    expect(second.json()).toMatchObject({ code: 'HANDLE_ALREADY_CLAIMED' })
+    expect(second.json()).toMatchObject({ code: 'HANDLE_CHANGE_TOO_SOON' })
+    // The client draws this date; it must not have to compute it.
+    expect(second.json<{ retryAt?: string }>().retryAt).toBeDefined()
+    expect((await profiles.findOne({ _id: user.userId }))?.handle).toBe('firstchoice')
 
-    const profile = await handle.db
-      .collection<Profile>(COLLECTIONS.profiles)
-      .findOne({ _id: user.userId })
-    expect(profile?.handle).toBe('firstchoice')
+    // A week later. The clock is the field itself, so moving it is the test.
+    await profiles.updateOne(
+      { _id: user.userId },
+      { $set: { handleChangedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) } },
+    )
+    const third = await claim(user, 'secondthoughts')
+    expect(third.statusCode, third.body).toBe(200)
+    // One slot: the name before last is released…
+    expect(third.json()).toMatchObject({ handle: 'secondthoughts', previousHandle: 'firstchoice' })
+    const released = await app.inject({
+      method: 'GET',
+      url: '/handles/langx_00a5/availability',
+      headers: { cookie: user.cookie },
+    })
+    expect(released.json()).toMatchObject({ available: true })
+  })
+
+  it('lets an account go back to the name it just left', async () => {
+    const user = await newUser('regret@example.com', { handle: 'oldname' })
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    expect((await claim(user, 'newname')).statusCode).toBe(200)
+
+    // Nobody else may have the old name — but its owner may, and the
+    // availability check the form's button hangs on has to say so.
+    const stranger = await newUser('regret-stranger@example.com')
+    const forStranger = await app.inject({
+      method: 'GET',
+      url: '/handles/oldname/availability',
+      headers: { cookie: stranger.cookie },
+    })
+    expect(forStranger.json()).toMatchObject({ available: false })
+    const forOwner = await app.inject({
+      method: 'GET',
+      url: '/handles/oldname/availability',
+      headers: { cookie: user.cookie },
+    })
+    expect(forOwner.json()).toMatchObject({ available: true })
+
+    await profiles.updateOne(
+      { _id: user.userId },
+      { $set: { handleChangedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) } },
+    )
+    const back = await claim(user, 'oldname')
+    expect(back.statusCode, back.body).toBe(200)
+    expect(back.json()).toMatchObject({ handle: 'oldname', previousHandle: 'newname' })
   })
 
   it('refuses a name somebody else holds', async () => {
@@ -308,7 +357,7 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
     expect(reservation?.claimedBy).toBe(user.userId)
   })
 
-  it('refuses the name the account already has, rather than spending the claim on it', async () => {
+  it('refuses the name the account already has, rather than starting the cooldown on it', async () => {
     const user = await newUser('v1-no-op@example.com')
     await asReturningV1User(user, 'langx_00f3')
 
@@ -319,6 +368,7 @@ describe('POST /profiles/me/handle — the one rename, for v1 accounts', () => {
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: user.userId })
     expect(profile?.previousHandle).toBeUndefined()
+    expect(profile?.handleChangedAt).toBeUndefined()
   })
 
   it('refuses an unauthenticated claim', async () => {

@@ -1,4 +1,4 @@
-import { ERROR_CODES, canClaimNewHandle } from '@langx/shared'
+import { ERROR_CODES, HANDLE_CHANGE_COOLDOWN_DAYS, handleChangeFreeAt } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
@@ -12,14 +12,15 @@ import {
   View,
 } from 'react-native'
 import { api, ApiRequestError } from '../../../src/api/client'
-import { keys, useMe } from '../../../src/api/queries'
+import { keys, useMe, type MeProfile } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useHandleAvailability, useHandleStatus } from '../../../src/hooks/useHandleAvailability'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { useT } from '../../../src/i18n'
+import { useLocale, useT } from '../../../src/i18n'
+import { confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
@@ -27,21 +28,27 @@ import { showToast } from '../../../src/lib/toast'
 const BACK_TO = '/(app)/settings/account' as const
 
 /**
- * The one rename this app offers, and only to an account that came back from
- * v1 — see `canClaimNewHandle` for who that is and why it is not narrowed to
- * the machine-generated shape.
+ * Changing the username — once every `HANDLE_CHANGE_COOLDOWN_DAYS`, the rule
+ * `handleChangeFreeAt` in `packages/shared` holds for both this screen and
+ * the server.
  *
  * Its own screen rather than a field on Edit profile, because it is not an
- * edit: it happens once, and the sentence about what survives it (every link
- * already shared) is the part people need before they type, not after.
+ * edit: it is confirmed, it is rate-limited, and the sentence about what
+ * survives it (every link already shared) is the part people need before
+ * they type, not after.
  */
 export default function UsernameScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
   const me = useMe()
   const { from } = useLocalSearchParams<{ from?: string }>()
   const back = () => goBackTo(BACK_TO, from)
+
+  // Derived from the profile, so the screen knows the field is on cooldown
+  // before anybody types; the server's refusal is the backstop for a stale one.
+  const freeAt = me.data ? handleChangeFreeAt(me.data) : undefined
 
   return (
     // Not a scroll on the outside: the button sits at the foot and the
@@ -53,34 +60,29 @@ export default function UsernameScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScreenHeader title={t('settings.usernameTitle')} onBack={back} />
-        {me.data ? (
-          canClaimNewHandle(me.data) ? (
-            <ClaimForm current={me.data.handle} onDone={back} />
-          ) : (
-            /*
-             * Reachable only by deep link — the Settings row is not drawn for
-             * somebody who has already chosen, and neither is the welcome-back
-             * prompt. Answered with the plain fact rather than a form that
-             * could not succeed.
-             */
-            <View style={styles.form}>
-              <Text style={styles.body}>
-                {t('settings.usernameSpent', { handle: me.data.handle })}
-              </Text>
-            </View>
-          )
-        ) : (
+        {!me.data ? (
           <View style={styles.form}>
             <Skeleton width="70%" />
             <Skeleton height={56} />
           </View>
+        ) : freeAt ? (
+          <View style={styles.form}>
+            <Text style={styles.body}>
+              {t('settings.usernameCooldown', {
+                handle: me.data.handle,
+                date: freeAt.toLocaleDateString(locale),
+              })}
+            </Text>
+          </View>
+        ) : (
+          <ChangeForm profile={me.data} onDone={back} />
         )}
       </KeyboardAvoidingView>
     </Screen>
   )
 }
 
-function ClaimForm({ current, onDone }: { current: string; onDone: () => void }) {
+function ChangeForm({ profile, onDone }: { profile: MeProfile; onDone: () => void }) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -95,8 +97,8 @@ function ClaimForm({ current, onDone }: { current: string; onDone: () => void })
 
   /*
    * The same rule onboarding uses: only a definite "taken" blocks. The check
-   * is a courtesy and the claim is the decision, so a check that could not run
-   * must not leave a valid name with a dead button.
+   * is a courtesy and the change is the decision, so a check that could not
+   * run must not leave a valid name with a dead button.
    */
   const canSubmit =
     availability.parsed.success &&
@@ -104,8 +106,23 @@ function ClaimForm({ current, onDone }: { current: string; onDone: () => void })
     !availability.checking &&
     !saving
 
+  // A v1 account still carrying the name v1 generated gets the sentence that
+  // says so; nobody else needs telling who chose their username.
+  const v1Named = Boolean(profile.restoredFromV1) && !profile.previousHandle
+
   async function submit(): Promise<void> {
     if (!canSubmit) return
+    /*
+     * Confirmed rather than applied from the tap: this is the one control on
+     * the profile that spends something, and the dialog names the price — a
+     * week before it can be changed again.
+     */
+    const ok = await confirmAlert({
+      title: t('settings.usernameConfirmTitle'),
+      message: t('settings.usernameConfirmBody', { handle, days: HANDLE_CHANGE_COOLDOWN_DAYS }),
+      confirmLabel: t('settings.usernameSave'),
+    })
+    if (!ok) return
     setSaving(true)
     setError(undefined)
     try {
@@ -115,9 +132,15 @@ function ClaimForm({ current, onDone }: { current: string; onDone: () => void })
       onDone()
     } catch (caught) {
       // The server's messages are English and written for a developer. Only
-      // the two a person can act on get words of their own; the rest is the
+      // the ones a person can act on get words of their own; the rest is the
       // generic failure, which is also what a dropped connection looks like.
       const code = caught instanceof ApiRequestError ? caught.code : undefined
+      if (code === ERROR_CODES.HANDLE_CHANGE_TOO_SOON) {
+        // A stale screen: the profile it drew from predates a change made
+        // elsewhere. Refetching it turns this form into the dated sentence.
+        await queryClient.invalidateQueries({ queryKey: keys.me })
+        return
+      }
       setError(
         code === ERROR_CODES.HANDLE_TAKEN
           ? t('onboarding.handleTaken', { handle })
@@ -136,7 +159,11 @@ function ClaimForm({ current, onDone }: { current: string; onDone: () => void })
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
     >
-      <Text style={styles.body}>{t('settings.usernameIntro', { handle: current })}</Text>
+      <Text style={styles.body}>
+        {v1Named
+          ? t('settings.usernameIntroV1', { handle: profile.handle })
+          : t('settings.usernameIntro', { handle: profile.handle })}
+      </Text>
 
       {/* The same pill the wizard draws, so the field a person met at sign-up
           is the field they meet again here. */}
@@ -169,8 +196,11 @@ function ClaimForm({ current, onDone }: { current: string; onDone: () => void })
         <Text style={[styles.status, { color: status.color }]}>{status.text}</Text>
       )}
 
-      {/* Said before the tap, not after it: this is the one irreversible part. */}
-      <Text style={styles.note}>{t('settings.usernameOnce')}</Text>
+      {/* Said before the tap, not only in the dialog: the cooldown is the part
+          that cannot be taken back. */}
+      <Text style={styles.note}>
+        {t('settings.usernameEvery', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+      </Text>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 

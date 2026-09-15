@@ -1478,6 +1478,8 @@ export const en = {
     gender: 'Gender',
     genderOnce: 'You can change this once every {days} days.',
     genderCooldown: 'You can change this again on {date}.',
+    usernameEvery: 'You can change this once every {days} days.',
+    usernameCooldown: 'You can change this again on {date}.',
     pronouns: 'Pronouns',
     pronounsPlaceholder: 'she/her, they/them, o…',
     pronounsHint: 'Optional, and shown on your profile. Write them however your language does.',
@@ -1647,18 +1649,22 @@ export const en = {
     signInSetPasswordFailed: 'Could not set your password. Try again.',
     signInPasswordAlready: 'This account already has a password.',
     username: 'Username',
-    usernameBody: 'Pick your own, once',
-    usernameTitle: 'Choose your username',
-    usernameIntro:
+    usernameBody: 'Change it once every {days} days',
+    usernameTitle: 'Change your username',
+    usernameIntro: 'You are @{handle}. Pick the username you want instead.',
+    usernameIntroV1:
       'When you joined the old LangX it named you @{handle}. You never picked that, so you can pick one now.',
     usernameHint: 'Letters, numbers and underscores. This is how people find you.',
-    usernameOnce:
-      'You can do this once. Links and QR codes with your old username keep working, and nobody else can take it.',
-    usernameSave: 'Make it mine',
+    usernameEvery:
+      'You can change this once every {days} days. Links and QR codes with your old username keep working until you change it again.',
+    usernameSave: 'Change username',
     usernameSaved: 'You are @{handle} now.',
     usernameFailed: 'Could not change your username. Try again.',
     usernameReserved: '@{handle} belongs to another account from the old LangX.',
-    usernameSpent: 'You have chosen your username: @{handle}. It does not change again.',
+    usernameCooldown: 'You are @{handle}. You can change it again on {date}.',
+    usernameConfirmTitle: 'Change your username?',
+    usernameConfirmBody:
+      'You will be @{handle}. You can change it again in {days} days, not before.',
     password: 'Password',
     passwordBody: 'Set or change it',
     changePassword: 'Change password',
