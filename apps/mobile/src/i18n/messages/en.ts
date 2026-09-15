@@ -328,7 +328,7 @@ export const en = {
     aboutOpen: 'What is this?',
     aboutTitle: 'How Echo works',
     aboutBody:
-      'Most of what you meet today is gone within a week — unless you meet it again. Echo brings a sentence back right before it slips, and every time you remember it the next wait is longer.',
+      'Echo brings a sentence back just before you would forget it. Remember it, and the next wait is longer.',
     aboutWithout: 'Without review',
     aboutWith: 'With Echo',
     aboutChart:
@@ -340,16 +340,12 @@ export const en = {
     aboutStep8d: '8 days',
     aboutStep20d: '20 days',
     aboutStepMore: 'then months, then once a year',
-    aboutRecall:
-      'Being asked is what does the work. Pulling a word out of your own head fixes it far better than reading it again.',
-    aboutLittle:
-      'A language is thousands of words. Echo only asks about the ones you are about to forget, so ten minutes a day goes further than an hour once a week.',
-    aboutYours:
-      'And they are your own sentences, out of your own chats — words you already had a reason to remember.',
-    aboutForgot:
-      'Forgot one? It comes back in a minute and starts again from the short waits. Nothing is lost.',
+    aboutRecall: 'Being asked beats reading it again.',
+    aboutLittle: 'Ten minutes a day beats an hour once a week.',
+    aboutYours: 'Your own sentences, out of your own chats.',
+    aboutForgot: 'Forget one and it comes back sooner. Nothing is lost.',
     aboutProof:
-      'Spacing and self-testing are the two best-proven findings in memory research, tested since the 1880s. This is both of them, pointed at your language.',
+      'Spacing and self-testing: the two best-proven findings in memory research, since the 1880s.',
     aboutClose: 'Got it',
   },
 

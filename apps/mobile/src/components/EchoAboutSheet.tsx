@@ -152,11 +152,21 @@ export function EchoAboutSheet({ visible, onClose }: { visible: boolean; onClose
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   backdrop: { backgroundColor: colors.scrim, flex: 1, justifyContent: 'flex-end' },
+  /*
+   * A phone-width column, centred, even when the window is not a phone. The
+   * same code is the web build: without the cap this is a 2000px-wide sheet
+   * whose chart stretches into a barcode and whose lines of text are too long
+   * to follow. 480 rather than `layout.maxWidth`, because this one is a
+   * paragraph to read rather than a screen to scan.
+   */
   sheet: {
+    alignSelf: 'center',
     backgroundColor: colors.bg,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     maxHeight: '88%',
+    maxWidth: 480,
+    width: '100%',
   },
   content: {
     gap: spacing.md,
