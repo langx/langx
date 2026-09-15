@@ -1140,4 +1140,86 @@ describe('echo', () => {
       expect((await attach(asker, cardId, answerId)).statusCode).toBe(404)
     })
   })
+  /*
+   * The pack list is the first thing in the tab for somebody with no cards, so
+   * what it does and does not offer is the whole of that first impression.
+   */
+  describe('pack listing', () => {
+    async function seedPack(lang: string, level: string): Promise<void> {
+      await handle.db.collection(COLLECTIONS.echoPacks).insertOne({
+        _id: `${lang}:${level}`,
+        lang,
+        level,
+        itemCount: 10,
+        contentVersion: 1,
+        glossLocales: ['en', 'tr'],
+        updatedAt: new Date(),
+      } as never)
+    }
+
+    async function packIds(user: SignedUpUser): Promise<string[]> {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/echo/packs',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{ items: { _id: string }[] }>().items.map((pack) => pack._id)
+    }
+
+    beforeAll(async () => {
+      for (const level of ['fluent', 'absoluteBeginner', 'intermediate', 'beginner']) {
+        await seedPack('en', level)
+      }
+      await seedPack('fr', 'beginner')
+      await seedPack('it', 'beginner')
+    })
+
+    it('offers every level of a language being learned, lowest first', async () => {
+      const user = await newUser('packs-levels@example.com', {
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
+      })
+      // All four, including the three the profile did not claim: the declared
+      // level is self-reported, and a pack has no other way in.
+      expect(await packIds(user)).toEqual([
+        'en:absoluteBeginner',
+        'en:beginner',
+        'en:intermediate',
+        'en:fluent',
+      ])
+    })
+
+    /*
+     * The reason this endpoint filters at all. Alphabetically `fluent` sorts
+     * before `intermediate`, so the order above also holds the ladder up.
+     */
+    it('offers nothing for a language somebody is not learning', async () => {
+      const user = await newUser('packs-other@example.com', {
+        nativeLanguages: [{ code: 'es' }],
+        learning: [{ code: 'it', level: 'beginner', priority: 1 }],
+      })
+      expect(await packIds(user)).toEqual(['it:beginner'])
+    })
+
+    /*
+     * Written straight to the profile rather than through onboarding, because
+     * a second learning language is a paid benefit and the plan gate is not
+     * what is under test here — the order is.
+     */
+    it('puts the language onboarding was asked for first', async () => {
+      const user = await newUser('packs-priority@example.com')
+      await handle.db.collection(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId as never },
+        {
+          $set: {
+            learning: [
+              { code: 'fr', level: 'beginner', priority: 2 },
+              { code: 'it', level: 'beginner', priority: 1 },
+            ],
+          },
+        },
+      )
+      expect(await packIds(user)).toEqual(['it:beginner', 'fr:beginner'])
+    })
+  })
 })
