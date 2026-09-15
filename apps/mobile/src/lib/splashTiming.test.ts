@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { SPLASH_TIMING, floodDiameter, msUntilExitAllowed } from './splashTiming'
+import { SPLASH_TIMING, haloDelayMs, msUntilExitAllowed } from './splashTiming'
 
-const { MIN_VISIBLE_MS } = SPLASH_TIMING
+const { MIN_VISIBLE_MS, HALO_COUNT, HALO_MS } = SPLASH_TIMING
 
 describe('msUntilExitAllowed', () => {
   /** A warm start: the session came back from a cached cookie almost at once. */
@@ -27,24 +27,50 @@ describe('msUntilExitAllowed', () => {
   })
 })
 
-describe('floodDiameter', () => {
+describe('the exit', () => {
   /**
-   * The failure this exists to catch: sizing the disc by the *width* leaves
-   * the four corners of a tall screen uncovered for the whole exit.
+   * The ground is the only opaque thing on the layer, so a fade that starts
+   * before the badge has finished leaving shows the app through the logo. The
+   * two numbers are one number for that reason; this is what notices if they
+   * ever stop being.
    */
-  it('reaches past the corners of a phone', () => {
-    const [width, height] = [390, 844]
-    expect(floodDiameter(width, height) / 2).toBeGreaterThan(Math.hypot(width, height) / 2)
-    expect(floodDiameter(width, height)).toBeGreaterThan(height)
+  it('does not lift the ground while the badge is still on screen', () => {
+    expect(SPLASH_TIMING.EXIT_GROUND_DELAY_MS).toBeGreaterThanOrEqual(SPLASH_TIMING.EXIT_TILE_MS)
   })
 
-  it('covers a landscape tablet the same way round', () => {
-    expect(floodDiameter(1366, 1024)).toBeGreaterThan(1366)
+  /** The halos are the first thing to go, and the badge is not waiting on them. */
+  it('clears the halos before the badge has gone', () => {
+    expect(SPLASH_TIMING.EXIT_HALO_MS).toBeLessThanOrEqual(SPLASH_TIMING.EXIT_TILE_MS)
+  })
+})
+
+describe('haloDelayMs', () => {
+  /** The first ring is what the badge hands over to, so it cannot wait. */
+  it('sends the first one off immediately', () => {
+    expect(haloDelayMs(0)).toBe(0)
   })
 
-  /** A frame of 0x0, which the web reports during the static export's prerender. */
-  it('asks for nothing when there is no window yet', () => {
-    expect(floodDiameter(0, 0)).toBe(0)
-    expect(floodDiameter(Number.NaN, 100)).toBe(0)
+  /**
+   * The failure this exists to catch: spacing the rings by a constant that
+   * does not divide the cycle, which leaves a beat of empty screen once per
+   * loop — a stall on the one screen where a stall means the app has hung.
+   *
+   * The last gap is measured against the end of the cycle, because that is
+   * where the first ring starts again.
+   */
+  it('spreads them evenly over exactly one cycle', () => {
+    const share = HALO_MS / HALO_COUNT
+    for (let index = 0; index < HALO_COUNT; index += 1) {
+      const next = index + 1 === HALO_COUNT ? HALO_MS : haloDelayMs(index + 1)
+      // Within a millisecond: the delays are whole ms and a cycle does not
+      // always divide by the count.
+      expect(Math.abs(next - haloDelayMs(index) - share)).toBeLessThan(1)
+    }
+  })
+
+  it('never delays one past the cycle it belongs to', () => {
+    for (let index = 0; index < HALO_COUNT; index += 1) {
+      expect(haloDelayMs(index)).toBeLessThan(HALO_MS)
+    }
   })
 })

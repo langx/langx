@@ -4783,3 +4783,56 @@ scrolled out of the window. A recording now carries `answersMessageId` and the
 asked message is stamped `answeredAt`, the way `sendCorrection` already stamps
 `correctedAt` — fifteen lines that make the chat's own "answered" badge a
 server fact as well.
+
+## The opening is a ripple, because the old one looked like a fault
+
+The first version of `AppSplash` opened with four arcs: partial rings — two of
+a `View`'s four borders coloured and the other two transparent — at 1.45, 2.3,
+3.4 and 4.8 times the badge's width, each pushed off centre and swung around
+it, turning in alternating directions at four speeds between nine and
+twenty-seven seconds. Every part of that was deliberate and written down. The
+outermost was twice the width of a phone on purpose, so its arc would leave the
+screen and come back.
+
+On a device it reads as a rendering fault. At those radii a part-coloured
+border is not an arc, it is a yellow stripe crossing the whole display, ending
+in the visible mitre where the lit sides meet the transparent ones. Four of
+them at co-prime speeds have no period a viewer can pick up, so there is no
+moment where the thing looks like it is doing what it meant to do. And this is
+the one screen with no context to be read against: it is the first thing anyone
+sees, before any of the app exists, so a reader who thinks something is broken
+has nothing to check that against.
+
+What replaced it is three identical rings, one badge-width across, growing to
+2.2 and fading as they go, set off a third of a cycle apart. No rotation, no
+eccentricity, no difference between them but when each started. A concentric
+ripple has a period anybody can see at a glance, never reaches the bezel, and —
+being a loop with no end state — can be cut off at any frame without looking
+interrupted, which is what let `MIN_VISIBLE_MS` come back down to 800: the
+floor had been raised to 900 only so the last arc's spring could land.
+
+Two smaller things went with it, and both were the same mistake as the arcs —
+motion the reader cannot attribute to anything:
+
+**The badge no longer animates in.** It used to spring from `0.96`, which is a
+4% dip and a bounce landing on the handover frame — the one frame where the JS
+layer and the OS's own splash are supposed to be the same picture, and the one
+most likely to be dropped on a cold start. An entrance for something already on
+screen is just the logo twitching. The life on the screen comes from the halo
+instead, which starts from nothing and so has nothing to jump from.
+
+**The exit no longer floods the screen yellow.** A disc the size of the
+diagonal used to grow out of the badge and cover the display before the ground
+faded — a full-screen `#ffc409` for 460ms, at launch, in a room that might be
+dark. The exit now is the badge dissolving and drifting a few percent towards
+the reader while the ground, which is `colors.bg` in both schemes and therefore
+the same colour the screen behind it starts with, fades out from under it.
+
+The one ordering constraint in that is worth stating because it is invisible
+until you slow it down: **the ground may not start fading before the badge has
+finished.** The ground is the only opaque thing on the layer, so an overlap
+that looks generous on paper shows the first screen's headline and buttons
+_through_ the logo — and the badge fades on `Easing.in`, so it is still at a
+third of its opacity most of the way through. `EXIT_GROUND_DELAY_MS` is
+`EXIT_TILE_MS`, the same constant rather than a number that happens to match,
+and a test in `splashTiming.test.ts` holds the two together.
