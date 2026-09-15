@@ -1,5 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
-import { echoAudiosOf, type EchoAudio, type EchoCard, type EchoImage } from '@langx/shared'
+import {
+  echoAudiosOf,
+  type EchoAudio,
+  type EchoCard,
+  type EchoImage,
+  type EchoVoice,
+} from '@langx/shared'
 import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -14,6 +20,7 @@ import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
+import { voiceLabel } from '../../../../src/i18n/labels'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
 import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
@@ -83,6 +90,7 @@ function Card({ card }: { card: EchoCard }) {
   const t = useT()
   const names = useDisplayNames()
   const recordings = echoAudiosOf(card)
+  const readings = card.voices ?? []
   const due = dueInCompact(card.srs.due, { t })
 
   return (
@@ -93,11 +101,20 @@ function Card({ card }: { card: EchoCard }) {
       {card.back ? <Text style={styles.back}>{card.back}</Text> : null}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
 
-      {recordings.length > 0 ? (
+      {/*
+        Both lists, as the session draws them: people first, then the pack's
+        own readings. A pack card usually has only the second, and this block
+        used to be keyed on the first alone — so the card that most needed a
+        voice was the one shown without any.
+      */}
+      {recordings.length > 0 || readings.length > 0 ? (
         <View style={styles.block}>
           <Text style={styles.label}>{t('echo.cardAudio')}</Text>
           {recordings.map((audio) => (
             <Recording key={audio.url} audio={audio} />
+          ))}
+          {readings.map((take) => (
+            <Reading key={take.voice} take={take} />
           ))}
         </View>
       ) : null}
@@ -280,6 +297,33 @@ function Recording({ audio }: { audio: EchoAudio }) {
   )
 }
 
+/** A synthesised take. `Recording`'s twin, and deliberately not the same thing. */
+function Reading({ take }: { take: EchoVoice }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(take.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={voiceLabel(t, take.voice)}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="cpu" size={16} color={colors.textMuted} />
+      <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+    </Pressable>
+  )
+}
+
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   loading: { gap: spacing.md, paddingTop: spacing.md },
   card: { gap: spacing.md, paddingTop: spacing.md },
@@ -317,5 +361,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   remove: { marginTop: spacing.sm },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  /* Quieter than a person's take, as on the session card. */
+  voiceLabel: { color: colors.textMuted, fontSize: 14, fontWeight: '500' },
   pressed: { opacity: 0.6 },
 }))

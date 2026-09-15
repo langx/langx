@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { languageLevelSchema } from './level'
 import { localeSchema } from './locales'
+import { SRS_RULES } from './srs'
 
 /**
  * Curated packs: the reason the tab is worth opening before you have made a
@@ -230,21 +231,18 @@ export const startPackResultSchema = z.object({
 })
 export type StartPackResult = z.infer<typeof startPackResultSchema>
 
-/** A page of a pack's contents, for looking before starting. */
-export const ECHO_PACK_PREVIEW_PAGE = 20
-
 /**
- * Offset paging rather than a cursor, which everything else here uses.
+ * What a pack would give you next, for looking before pressing Start.
  *
- * A cursor exists because rows shift under a reader — new cards arrive, old
- * ones move. A pack does not: its items are `0 … itemCount - 1` and stay
- * there, because the seed is idempotent by `{ packId, index }` and a card's
- * `sourceKey` depends on it. So an offset is exact, and it buys the one thing
- * a cursor cannot — "showing 21–40 of 271", and a way back.
+ * Not a page of the pack. It was — offset paging over all three hundred rows,
+ * with a "21–40 of 271" and a way back — and nobody read it that way: the
+ * question at that screen is "what will I get if I press this", which is the
+ * next `limit` items this reader holds no card for, in index order. Exactly
+ * the rows `startPack` would write, resolved the same way. The default is a
+ * session's worth, because that is what the button takes.
  */
 export const echoPackPreviewQuerySchema = z.object({
-  offset: z.coerce.number().int().nonnegative().default(0),
-  limit: z.coerce.number().int().min(1).max(50).default(ECHO_PACK_PREVIEW_PAGE),
+  limit: z.coerce.number().int().min(1).max(50).default(SRS_RULES.sessionSize),
 })
 export type EchoPackPreviewQuery = z.infer<typeof echoPackPreviewQuerySchema>
 
@@ -258,7 +256,7 @@ export type EchoPackPreviewItem = z.infer<typeof echoPackPreviewItemSchema>
 
 export const echoPackPreviewSchema = z.object({
   items: z.array(echoPackPreviewItemSchema),
-  /** The pack's whole length, so the page can say what it is a slice of. */
+  /** The pack's whole length, which the preview is the next slice of. */
   total: z.number().int().nonnegative(),
 })
 export type EchoPackPreview = z.infer<typeof echoPackPreviewSchema>

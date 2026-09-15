@@ -264,14 +264,18 @@ export default function EchoScreen() {
         ) : null}
 
         <View style={styles.rows}>
-          {packRows.length > 0 ? (
-            <Row
-              icon="layers"
-              title={t('echo.packs')}
-              sub={t('echo.packsSub')}
-              onPress={() => router.push('/(app)/echo/packs')}
-            />
-          ) : null}
+          {/*
+            Always drawn, even with nothing behind it. The row used to appear
+            only once a pack matched a learning language, which read as the
+            feature not existing rather than as "none for your languages yet"
+            — and the screen behind it already says the second thing.
+          */}
+          <Row
+            icon="layers"
+            title={t('echo.packs')}
+            sub={t(packRows.length > 0 ? 'echo.packsSub' : 'echo.packsEmptyTitle')}
+            onPress={() => router.push('/(app)/echo/packs')}
+          />
           {/* No count on this row: the strip above already says how many
               cards there are, and the same number twice is one too many. */}
           <Row

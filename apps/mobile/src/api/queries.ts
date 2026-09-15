@@ -28,11 +28,11 @@ import {
   type ArchiveEchoCardsInput,
   type ArchiveEchoCardsResult,
   type EchoCardPage,
-  ECHO_PACK_PREVIEW_PAGE,
   type EchoPack,
   type EchoPackPreview,
   type EchoQueue,
   type EchoSummary,
+  SRS_RULES,
   type StartPackResult,
   type SubmitEchoReviewsInput,
   type SubmitEchoReviewsResult,
@@ -179,8 +179,7 @@ export const keys = {
     ['echo', 'cards', lang, q, archived] as const,
   echoPacks: ['echo', 'packs'] as const,
   echoCard: (id: string) => ['echo', 'card', id] as const,
-  echoPackItems: (packId: string, offset: number) =>
-    ['echo', 'packs', packId, 'items', offset] as const,
+  echoPackItems: (packId: string) => ['echo', 'packs', packId, 'items'] as const,
   echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
@@ -3071,14 +3070,20 @@ export function useSubmitEchoReviews() {
  * are a fixed slice of static content, and flashing an empty box between two
  * pages of it reads as a fault rather than as a page turn.
  */
-export function useEchoPackItems(packId: string, offset: number) {
+/**
+ * The next session's worth of a pack — the rows Start would write.
+ *
+ * `SRS_RULES.sessionSize` is the same number `useStartPack` is given by the
+ * pack screen, so what is shown and what arrives cannot drift apart. Under the
+ * `echo` prefix, so starting the pack refetches it and the rows move on.
+ */
+export function useEchoPackItems(packId: string) {
   return useQuery({
-    queryKey: keys.echoPackItems(packId, offset),
+    queryKey: keys.echoPackItems(packId),
     queryFn: () =>
       api.get<EchoPackPreview>(
-        `/echo/packs/${encodeURIComponent(packId)}/items?offset=${offset}&limit=${ECHO_PACK_PREVIEW_PAGE}`,
+        `/echo/packs/${encodeURIComponent(packId)}/items?limit=${SRS_RULES.sessionSize}`,
       ),
-    placeholderData: (previous) => previous,
   })
 }
 
