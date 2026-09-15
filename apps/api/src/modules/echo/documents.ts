@@ -30,7 +30,15 @@ export interface EchoCardDoc {
   front: string
   back: string
   example?: string
+  /**
+   * The first recording, mirrored from `audios[0]` on every write.
+   *
+   * Written for the clients that only know this field — a build frozen in the
+   * stores, and the snapshots already on people's disks. Nothing on the server
+   * reads it as the truth; `echoAudiosOf` does that.
+   */
   audio?: EchoAudio
+  audios?: EchoAudio[]
   image?: EchoImage
   /**
    * The pronunciation post opened from this card, when its owner asked the
@@ -42,6 +50,8 @@ export interface EchoCardDoc {
    * button, which is cheaper than a list nobody would read.
    */
   askedPostId?: string
+  /** The correction post opened from this card. `askedPostId`'s twin; see the DTO. */
+  askedCorrectionPostId?: string
   source: EchoSource
   /** `sourceKeyOf(source)`. The second half of `card_source_unique`. */
   sourceKey: string
@@ -90,8 +100,12 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     lang: doc.lang,
     source: doc.source,
     ...(doc.audio ? { audio: doc.audio } : {}),
+    ...(doc.audios?.length ? { audios: doc.audios } : {}),
     ...(doc.image ? { image: doc.image } : {}),
     ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),
+    ...(doc.askedCorrectionPostId
+      ? { askedCorrectionPostId: doc.askedCorrectionPostId }
+      : {}),
     srs: toEchoSrs(doc.srs),
     createdAt: doc.createdAt.toISOString(),
   }
