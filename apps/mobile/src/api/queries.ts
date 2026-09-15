@@ -2572,6 +2572,29 @@ export function useAdminCreateBroadcast() {
   })
 }
 
+export function useAdminEditBroadcast() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; bodies: Record<string, string> }) =>
+      api.patch<AdminBroadcastDto>(`/admin/broadcasts/${input.id}`, { bodies: input.bodies }),
+    // The whole tree: an edit clears `testedAt`, so the detail screen has to
+    // put the arming controls away again.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminDeleteBroadcast() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.delete<void>(`/admin/broadcasts/${id}`),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.adminBroadcasts })
+    },
+  })
+}
+
 export function useAdminBroadcastAction() {
   const client = useQueryClient()
   return useMutation({

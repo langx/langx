@@ -4705,6 +4705,25 @@ has read. The proof is `testedAt` on the job rather than the toast the button
 used to leave, because a toast is gone on the next render and the job is what
 the next person asks.
 
+**Editing a draft un-tests it, and carries a rev.** The first half is the same
+rule read backwards: a body changed after the test is a body nobody has read,
+so `updateBroadcastBodies` clears `testedAt` and the arming controls go away
+again. The second is not obvious and cost a test to pin down. The test send's
+clientId used to be `broadcast:<slug>:test:<userId>`, which is stable across an
+edit — so the second test send is refused by `sender_client_id_unique`,
+`deliverOfficialMessage` hands back the message it already found, and the
+operator re-reads the typo they just fixed while every return value says it
+worked. The `rev` in that clientId is what makes the second test a second
+message. The **real** send's clientId still has no rev in it: a person gets one
+copy of a broadcast, whatever it was called on the way here.
+
+**The panel will not edit a translated broadcast.** `bodies` replaces rather
+than merges, and the panel writes English alone — so saving there would drop
+the seven translations, invisibly, since a reader only ever sees one body.
+Merging would be worse in a quieter way: a Turkish body still saying last
+week's thing under an English one that was just fixed. Those are authored in
+files and reviewed in a diff, so the panel says so and offers delete instead.
+
 **A note from `@langx` is one way, and stays one way.** `OFFICIAL_WRITABLE.langx`
 is false, so nothing can be addressed back and the chat screen draws no
 composer on that thread. That was decided when the account was built — a

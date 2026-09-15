@@ -39,6 +39,20 @@ export interface BroadcastJob {
    * next render, so it cannot be asked afterwards whether anybody read this.
    */
   testedAt?: Date
+  /**
+   * Bumped by every edit, and part of the **test** clientId.
+   *
+   * Without it the second test send is refused as a duplicate of the first and
+   * the operator reads the body they already fixed — `deliverOfficialMessage`
+   * hands back the message it found, so a stale copy looks exactly like a
+   * fresh one. The real send's clientId has no rev in it on purpose: a person
+   * gets one copy of a broadcast whatever it was called on the way here.
+   *
+   * Optional because rows written before this field existed have none. Those
+   * read as `0` and their first edit makes them `1`, so the two are still
+   * different clientIds — which is the only thing the rev is for.
+   */
+  rev?: number
   /** The audience counted at create — a number to watch progress against. */
   total: number
   sent: number
@@ -92,6 +106,7 @@ export async function createBroadcast(
     total: await countBroadcastAudience(db, now),
     sent: 0,
     failed: 0,
+    rev: 1,
   }
   await broadcasts(db).insertOne(job)
   return job
@@ -112,6 +127,26 @@ export async function markBroadcastTested(
   now: Date = new Date(),
 ): Promise<void> {
   await broadcasts(db).updateOne({ _id: id }, { $set: { testedAt: now } })
+}
+
+/**
+ * Rewriting a draft, which un-tests it.
+ *
+ * Only a draft: past that there may be messages out, and they say what they
+ * said. Clearing `testedAt` is the load-bearing half — an edit after a test
+ * would otherwise leave the arming controls up for a body nobody has read,
+ * which is the exact hole the test send was made to close.
+ */
+export async function updateBroadcastBodies(
+  db: Db,
+  id: string,
+  bodies: Record<string, string>,
+): Promise<BroadcastJob | null> {
+  return broadcasts(db).findOneAndUpdate(
+    { _id: id, status: 'draft' },
+    { $set: { bodies }, $unset: { testedAt: '' }, $inc: { rev: 1 } },
+    { returnDocument: 'after' },
+  )
 }
 
 /**
@@ -161,6 +196,11 @@ export async function setBroadcastStatus(
 export async function deleteBroadcast(db: Db, id: string): Promise<boolean> {
   const { deletedCount } = await broadcasts(db).deleteOne({ _id: id, status: 'draft' })
   return deletedCount > 0
+}
+
+/** Part of the test clientId. See `rev`. */
+export function revOf(job: BroadcastJob): number {
+  return job.rev ?? 0
 }
 
 /** The body for one reader, in their own language, falling back to English. */

@@ -1,7 +1,7 @@
 import { broadcastTickShare, utcDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { bodyFor, broadcastAudience, broadcasts, type BroadcastJob } from './broadcast'
+import { bodyFor, broadcastAudience, broadcasts, revOf, type BroadcastJob } from './broadcast'
 import { deliverOfficialMessage } from '../official/deliver'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
@@ -164,7 +164,9 @@ async function deliver(
  * The only preview that catches a broken line break in the Turkish body
  * before five thousand people get it: the real font, the real thread, the real
  * push. Its own clientId, so testing does not consume the recipient's real
- * copy when the broadcast goes out for real.
+ * copy when the broadcast goes out for real — and the `rev` in it so that the
+ * test after an edit is a new message rather than a duplicate of the body that
+ * was just fixed.
  */
 export async function sendBroadcastTest(
   db: Db,
@@ -177,7 +179,7 @@ export async function sendBroadcastTest(
     fromHandle: 'langx',
     toUserId,
     body,
-    clientId: `broadcast:${job._id}:test:${toUserId}`,
+    clientId: `broadcast:${job._id}:test:${revOf(job)}:${toUserId}`,
   })
   if (!delivered) return false
 

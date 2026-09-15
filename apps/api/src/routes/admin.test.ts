@@ -87,6 +87,17 @@ describe('the operator panel', () => {
       ...(user ? { headers: { cookie: user.cookie } } : {}),
     })
 
+  const patch = (user: SignedUpUser, url: string, payload: unknown = {}) =>
+    app.inject({
+      method: 'PATCH',
+      url,
+      headers: { cookie: user.cookie },
+      payload: payload as Record<string, unknown>,
+    })
+
+  const del = (user: SignedUpUser, url: string) =>
+    app.inject({ method: 'DELETE', url, headers: { cookie: user.cookie } })
+
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_admin_test')
@@ -752,6 +763,59 @@ describe('the operator panel', () => {
 
       const armed = await post(admin, '/admin/broadcasts/untested-news/start')
       expect(armed.json<{ status: string }>().status).toBe('queued')
+    })
+
+    it('un-tests a draft when it is rewritten, and only a draft can be rewritten', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      await post(admin, '/admin/broadcasts', {
+        id: 'typo-news',
+        bodies: { en: 'Somehting new is here.' },
+      })
+      await post(admin, '/admin/broadcasts/typo-news/test')
+
+      const fixed = await patch(admin, '/admin/broadcasts/typo-news', {
+        bodies: { en: 'Something new is here.' },
+      })
+      expect(fixed.statusCode).toBe(200)
+      expect(fixed.json<{ bodies: { en: string } }>().bodies.en).toBe('Something new is here.')
+      // The point of the edit endpoint: the old test was of the old words.
+      expect(fixed.json<{ testedAt?: string }>().testedAt).toBeUndefined()
+
+      const early = await post(admin, '/admin/broadcasts/typo-news/start')
+      expect(early.statusCode).toBe(400)
+      expect(early.json<{ message: string }>().message).toContain('Send it to yourself first')
+
+      await post(admin, '/admin/broadcasts/typo-news/test')
+      expect((await post(admin, '/admin/broadcasts/typo-news/start')).statusCode).toBe(200)
+
+      // Armed is past editing: what it says is what somebody may already have.
+      const late = await patch(admin, '/admin/broadcasts/typo-news', {
+        bodies: { en: 'Too late.' },
+      })
+      expect(late.statusCode).toBe(400)
+      expect(late.json<{ message: string }>().message).toContain('Only a draft can be edited')
+    })
+
+    it('deletes a draft, and refuses once it has been armed', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      await post(admin, '/admin/broadcasts', {
+        id: 'never-mind',
+        bodies: { en: 'On second thoughts.' },
+      })
+      expect((await del(admin, '/admin/broadcasts/never-mind')).statusCode).toBe(204)
+      expect((await get(admin, '/admin/broadcasts/never-mind')).statusCode).toBe(404)
+
+      await post(admin, '/admin/broadcasts', {
+        id: 'gone-out',
+        bodies: { en: 'This one went.' },
+      })
+      await post(admin, '/admin/broadcasts/gone-out/test')
+      await post(admin, '/admin/broadcasts/gone-out/start')
+      expect((await del(admin, '/admin/broadcasts/gone-out')).statusCode).toBe(400)
     })
 
     it('refuses a broadcast with no English body, because English is the fallback', async () => {

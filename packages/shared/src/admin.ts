@@ -129,6 +129,7 @@ export const ADMIN_ACTIONS = [
   'feedback.update',
   'feedback.award',
   'broadcast.create',
+  'broadcast.edit',
   'broadcast.test',
   'broadcast.start',
   'broadcast.pause',
@@ -196,3 +197,24 @@ export const broadcastCreateSchema = z
     path: ['bodies', 'en'],
   })
 export type BroadcastCreateInput = z.infer<typeof broadcastCreateSchema>
+
+/**
+ * Rewriting a draft. The slug is the primary key and the thing that stops it
+ * sending twice, so it is the one field an edit cannot touch — a broadcast
+ * under a new name is a new broadcast.
+ *
+ * `bodies` **replaces** rather than merges. Merging would leave a Turkish body
+ * saying last week's thing under an English one that was just fixed, and a
+ * reader only ever sees one of the two, so the mismatch would never show up
+ * here. The panel writes English alone, which is why it refuses to edit a
+ * broadcast that has translations at all — those are authored in files.
+ */
+export const broadcastUpdateSchema = z
+  .object({
+    bodies: z.record(z.string(), z.string().trim().min(1).max(4000)),
+  })
+  .refine((input) => typeof input.bodies.en === 'string', {
+    message: 'An English body is required — it is the fallback',
+    path: ['bodies', 'en'],
+  })
+export type BroadcastUpdateInput = z.infer<typeof broadcastUpdateSchema>
