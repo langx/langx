@@ -713,10 +713,12 @@ official on production, where the handle was already held by the account
 answering as LangX by hand.
 
 What adoption keeps is also what it leaves behind: the follows, corrections,
-tokens, streak and wallet the account earned while a person was running it.
-The boot heals only the profile document, so those rows live on in other
-collections, and `scripts/reset-official-accounts.ts` is the one-off that
-sweeps them — dry run by default, and it keeps the conversations and the posts.
+tokens, streak, wallet and every message a person sent while running the
+account. The boot heals only the profile document, so those rows live on in
+other collections, and `scripts/reset-official-accounts.ts` is the one-off
+that sweeps them — dry run by default. It tells the two eras of messages apart
+by the `clientId` prefix every official sender stamps, keeps the welcomes and
+broadcasts, and deletes a conversation only once nothing is left in it.
 
 The display name, the avatar **and the bio** are written from code on every
 boot. Not tidiness: nobody can sign in to these accounts, so there is no screen
