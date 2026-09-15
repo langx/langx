@@ -40,4 +40,6 @@ jobs:
       - name: Deploy to Fly
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_TTS_API_TOKEN }}
-        run: flyctl deploy -c apps/tts/fly.toml
+        # The directory, not `-c apps/tts/fly.toml`: the config is found in it,
+        # and it is also the build context the Dockerfile's COPY lines expect.
+        run: flyctl deploy apps/tts

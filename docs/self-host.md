@@ -230,7 +230,8 @@ files from the kokoro-onnx release, espeak-ng and ffmpeg from your package
 manager — and point the API at it with `TTS_URL=http://localhost:8090`.
 
 In production it is the Fly app `langx-tts`, built from `apps/tts/Dockerfile`
-and deployed by `deploy-tts.yml` on every merge that touches the directory.
+and deployed by `deploy-tts.yml` (`flyctl deploy apps/tts`) on every merge
+that touches the directory.
 It has **no public IP**: allocate a Flycast address instead
 (`fly ips allocate-v6 --private -a langx-tts`) and give the API
 `TTS_URL=http://langx-tts.flycast:8080`. Fly's proxy still fronts Flycast
