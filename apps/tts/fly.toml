@@ -2,8 +2,8 @@
 #
 # Secrets are NOT here — this file is committed and the repo is public. Set
 # TTS_SECRET with `fly secrets set -a langx-tts`; the API is given the same
-# value. Deploy with `flyctl deploy -c apps/tts/fly.toml` from the repository
-# root, which deploy-tts.yml does on every merge that touches apps/tts.
+# value. Deploy with `flyctl deploy apps/tts` from the repository root, which
+# deploy-tts.yml does on every merge that touches apps/tts.
 
 app = 'langx-tts'
 primary_region = 'fra'

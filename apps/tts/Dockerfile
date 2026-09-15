@@ -28,10 +28,27 @@ RUN curl -fsSL -o kokoro-v1.0.onnx "$MODEL_BASE/kokoro-v1.0.onnx" \
 COPY server.py ./
 
 # Debian's espeak-ng rather than the wheel's bundled copy — see load_kokoro in
-# server.py for why. The library's soname is enough for ctypes to find it;
-# the data directory is where the package puts it.
-ENV ESPEAK_LIBRARY=libespeak-ng.so.1 \
-    ESPEAK_DATA=/usr/share/espeak-ng-data
+# server.py for why. A full path, not the soname: ctypes would find
+# `libespeak-ng.so.1` on its own, but phonemizer checks that the path it was
+# given is a file before loading it, and answers a bare name with "espeak not
+# installed on your system" — which is what the first deploy said. The
+# symlink is where the multiarch directory is not something to spell out.
+# The data directory the same way: Debian keeps it under the multiarch
+# `/usr/lib/<triplet>/`, not `/usr/share`, and phonemizer answers a data path
+# that is not a directory with the same "not installed" — the second thing
+# the first deploy said, once the library was found.
+RUN set -eux; \
+  lib="$(find /usr/lib -name 'libespeak-ng.so.1' -print -quit)"; \
+  data="$(dirname "$(find /usr -name phontab -path '*espeak-ng-data*' -print -quit)")"; \
+  test -f "$lib" && test -f "$data/phontab"; \
+  ln -s "$lib" /usr/local/lib/libespeak-ng.so.1; \
+  ln -s "$data" /usr/local/share/espeak-ng-data
+ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
+    ESPEAK_DATA=/usr/local/share/espeak-ng-data
+
+# Read one word at build time, so an image that cannot phonemise fails here
+# and not on the first request after a deploy that looked green.
+RUN python -c "from server import load_kokoro; load_kokoro().create('hello', voice='af_heart', lang='en-us')"
 
 RUN useradd --create-home tts
 USER tts
