@@ -93,6 +93,7 @@ describe('POST /translate', () => {
       storage,
       translation: fakeProvider,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 

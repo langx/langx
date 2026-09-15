@@ -20,11 +20,23 @@ export class CapturingEmailSender implements EmailSender {
     return match[0]
   }
 
-  /** The `token` query parameter of the latest emailed link. */
+  /**
+   * The `token` query parameter of the newest emailed link that carries one.
+   *
+   * The newest that carries one, rather than simply the newest: onboarding's
+   * welcome mail is sent unawaited, so it can land in this array after the
+   * verification mail of the *next* sign-up and make that token unreachable.
+   * It carries no token, and no notification mail does — a link somebody has
+   * to spend is what this is for — so skipping the ones without always leaves
+   * the mail that was asked for.
+   */
   latestToken(): string {
-    const token = new URL(this.latestUrl()).searchParams.get('token')
-    if (!token) throw new Error(`no token in emailed link: ${this.latestUrl()}`)
-    return token
+    for (let index = this.messages.length - 1; index >= 0; index--) {
+      const url = /https?:\/\/\S+/.exec(this.messages[index]?.text ?? '')?.[0]
+      const token = url && new URL(url).searchParams.get('token')
+      if (token) return token
+    }
+    throw new Error('no emailed link carried a token')
   }
 }
 

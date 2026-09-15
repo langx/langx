@@ -140,6 +140,7 @@ describe('realtime across two API instances', () => {
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
     })
     await app.listen({ port: 0, host: '127.0.0.1' })
     const address = app.server.address() as AddressInfo

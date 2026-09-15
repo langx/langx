@@ -108,6 +108,7 @@ describe('pre-created v1 users: reset password → sign in → restored', () => 
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
     })
     await app.ready()
 

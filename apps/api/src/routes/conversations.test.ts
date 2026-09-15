@@ -110,6 +110,7 @@ describe('Faz 4 — starting a conversation', () => {
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
 

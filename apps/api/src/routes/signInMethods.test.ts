@@ -103,6 +103,7 @@ describe('sign-in methods', () => {
       storage: createStorageProvider(env),
       translation: createTranslationProvider(env),
       revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
     })
     await app.ready()
 

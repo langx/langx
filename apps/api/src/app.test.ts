@@ -44,6 +44,7 @@ describe('Faz 0 — boot', () => {
       storage,
       translation,
       revenueCat,
+      email: emailSender,
     })
     await app.ready()
   })
