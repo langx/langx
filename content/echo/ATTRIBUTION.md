@@ -6,7 +6,8 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-Nothing yet. `en/absoluteBeginner.json` is a draft; see "Drafts" below.
+Nothing yet. `en/absoluteBeginner.json`, `en/beginner.json` and
+`en/intermediate.json` are drafts; see "Drafts" below.
 
 ## Chosen, and why
 
