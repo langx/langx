@@ -63,6 +63,35 @@ export const echoVoiceSchema = z.object({
 export type EchoVoice = z.infer<typeof echoVoiceSchema>
 
 /**
+ * Which Kokoro voices read a card in each language, and so which languages a
+ * member's own card can be read in at all.
+ *
+ * Two per language where the model has both registers, for the reason the
+ * schema above is a list: one synthetic reading reads as *the* pronunciation.
+ * French has one voice in the model, so French gets one. Japanese and Chinese
+ * are absent on purpose — the model has voices for them, but the service
+ * phonemises through espeak-ng, which is not what those voices were trained
+ * on, and a reading a native speaker would wince at is worse than none.
+ *
+ * Shared rather than API-only because the app reads it too: the card screen
+ * offers "Read it aloud" only for a language that has an entry here, so a
+ * refusal is never the first the person hears of it.
+ */
+export const ECHO_SYNTH_VOICES: Readonly<Record<string, readonly string[]>> = {
+  en: ['af_heart', 'am_michael'],
+  es: ['ef_dora', 'em_alex'],
+  fr: ['ff_siwis'],
+  it: ['if_sara', 'im_nicola'],
+  pt: ['pf_dora', 'pm_alex'],
+  hi: ['hf_alpha', 'hm_omega'],
+}
+
+/** The voices that can read `lang`; empty for a language nothing here speaks. */
+export function echoSynthVoicesFor(lang: string): readonly string[] {
+  return ECHO_SYNTH_VOICES[lang] ?? []
+}
+
+/**
  * The same reading as it is written down, which is a storage key rather than a
  * URL — the one place in this codebase where media is recorded that way.
  *

@@ -266,6 +266,10 @@ export const de: Localized<EnMessages> = {
     voiceFemale: 'Synthetisch · weiblich',
     voiceMale: 'Synthetisch · männlich',
     voiceSynthesised: 'Synthetisch',
+    readAloud: 'Vorlesen',
+    readAloudFailedTitle: 'Diese Karte konnte nicht vorgelesen werden',
+    readAloudLimitBody:
+      'Du kannst dir {count} Karten pro Tag vorlesen lassen. Morgen geht es weiter.',
     spokenBy: 'Gesprochen von {name}',
     askToHearIt: 'Im Feed nach der Aussprache fragen',
     keepOnCard: 'Auf meiner Karte behalten',

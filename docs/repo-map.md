@@ -49,6 +49,7 @@ the repos themselves.
 | ---------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | `app.langx.io`   | Cloudflare Pages project `langx-web` (direct upload)          | push to `main` of this repo; `deploy-web.yml` exports, uploads and checks  |
 | `api.langx.io`   | Fly.io app `langx-api`, behind Cloudflare                     | push to `main` of this repo; `deploy-api.yml` builds and runs `fly deploy` |
+| _(private)_      | Fly.io app `langx-tts`, Flycast only, no public address       | push to `main` of this repo; `deploy-tts.yml` builds and runs `fly deploy` |
 | `langx.io`       | Cloudflare Pages project `website` (direct upload)            | push to `main` of `langx/website`; its workflow builds, uploads and purges |
 | `token.langx.io` | Cloudflare Pages project `token-website` (**Git-integrated**) | push to `main` of `langx/token-website`; Pages builds it                   |
 | `docs.langx.io`  | GitBook, Git Sync on `langx/docs`                             | push to `main` of `langx/docs`                                             |

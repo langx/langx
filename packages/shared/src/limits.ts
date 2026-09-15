@@ -85,6 +85,17 @@ export interface PlanLimits {
    */
   echoReviewsPerDay: Limit
   /**
+   * Cards a person may have read aloud by the server voice per rolling 24
+   * hours — one unit per card, however many voices it is read in.
+   *
+   * Finite on every tier, like `translationsPer24h`, and for a cousin of that
+   * reason: synthesis is CPU seconds on a machine of ours rather than a bill
+   * from someone else's, so the number is a ceiling on how long that machine
+   * stays awake, not a meter on cost. A pack's readings do not count — they
+   * were made once, offline, and a card started from a pack arrives with them.
+   */
+  echoVoicesPerDay: Limit
+  /**
    * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
@@ -253,6 +264,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoNewCardsPerDay: null,
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
+    echoVoicesPerDay: 10,
     advancedFilters: false,
     boostedProfile: false,
     sendTranslation: false,
@@ -274,6 +286,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoNewCardsPerDay: null,
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
+    echoVoicesPerDay: 50,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: false,
@@ -301,6 +314,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoNewCardsPerDay: null,
     echoCapturesPerDay: 50,
     echoReviewsPerDay: null,
+    echoVoicesPerDay: 100,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,
@@ -355,6 +369,7 @@ export const QUOTA_KINDS = [
   'media',
   'echoCaptures',
   'echoNewCards',
+  'echoVoices',
 ] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
@@ -365,6 +380,7 @@ const QUOTA_LIMIT_KEY = {
   media: 'mediaPer24h',
   echoCaptures: 'echoCapturesPerDay',
   echoNewCards: 'echoNewCardsPerDay',
+  echoVoices: 'echoVoicesPerDay',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

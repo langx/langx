@@ -7,6 +7,7 @@ import {
   type AppConfigResponse,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { NotConfiguredTtsProvider } from '../tts/createTtsProvider'
 import { getAppConfig } from '../modules/appConfig/appConfig'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -42,6 +43,7 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
         google: Boolean(registered.google),
         apple: Boolean(registered.apple),
       },
+      voiceService: !(app.tts instanceof NotConfiguredTtsProvider),
     }
     // Short cache: long enough to absorb a launch stampede, short enough that
     // turning maintenance on is not stuck behind a CDN.

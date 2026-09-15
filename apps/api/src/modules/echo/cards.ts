@@ -576,6 +576,17 @@ function selfAudio(media: Media): EchoAudio {
  * take the recording out of somebody's thread because a card stopped
  * pointing at it. A bare `deleteObjects(previous.url)` here would look right
  * and be exactly that bug.
+ *
+ * **A rewritten sentence loses its readings.** `voices` are a machine reading
+ * *this* text in *this* language, so once either changes they are readings of
+ * a card that no longer exists — and left in place they would play the old
+ * line under the new one. They come off the card, which is what makes "Read
+ * it aloud" reappear for the new text. The objects stay in storage: a
+ * reading is content-addressed and shared, so the same file may be on
+ * somebody else's card, and the next person to keep the old sentence is
+ * served it for nothing. A person's recording is not touched by this — it
+ * was a person, saying whatever they said, and only they can decide it no
+ * longer fits.
  */
 export async function updateCard(
   db: Db,
@@ -641,9 +652,12 @@ export async function updateCard(
   }
   // The empty strings are typed, not inferred: Mongo's `$unset` accepts only
   // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
-  const unset: { image?: ''; audio?: ''; audios?: '' } = {
+  const rewritten =
+    input.front !== card.front || (input.lang !== undefined && input.lang !== card.lang)
+  const unset: { image?: ''; audio?: ''; audios?: ''; voices?: '' } = {
     ...(input.image === null ? { image: '' as const } : {}),
     ...(touchesAudio && nextAudios.length === 0 ? { audio: '' as const, audios: '' as const } : {}),
+    ...(rewritten && card.voices?.length ? { voices: '' as const } : {}),
   }
 
   const updated = await cards.findOneAndUpdate(

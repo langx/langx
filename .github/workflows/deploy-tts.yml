@@ -1,0 +1,43 @@
+# The voice service's sibling of deploy-api.yml: a merge that touches apps/tts
+# becomes the running `langx-tts` on Fly. It has its own token because the
+# API's is scoped to the `langx-api` app alone, and a token that can deploy
+# both would be a wider blast radius than either deploy needs.
+#
+# The image is built here on the runner, model files included — a build that
+# downloads 300 MB of weights is the reason this runs rarely, and the reason it
+# is not folded into deploy-api.yml: the API deploys several times a day and
+# must not wait on a download it does not need.
+name: Deploy TTS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/tts/**
+      - .github/workflows/deploy-tts.yml
+      - '!**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-tts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Same pinned install as deploy-api.yml, for the same reason.
+      - name: Install flyctl
+        run: |
+          curl -fsSL https://fly.io/install.sh | sh -s -- 0.4.102
+          echo "$HOME/.fly/bin" >> "$GITHUB_PATH"
+
+      - name: Deploy to Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_TTS_API_TOKEN }}
+        run: flyctl deploy -c apps/tts/fly.toml

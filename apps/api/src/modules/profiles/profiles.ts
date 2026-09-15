@@ -239,6 +239,7 @@ export interface Profile {
     media: Date[]
     echoCaptures?: Date[]
     echoNewCards?: Date[]
+    echoVoices?: Date[]
   }
   /**
    * When this account was last told it had run out — a rolling window, kept

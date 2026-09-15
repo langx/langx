@@ -1,6 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
   echoAudiosOf,
+  echoSynthVoicesFor,
+  PLAN_LIMITS,
   type EchoAudio,
   type EchoCard,
   type EchoImage,
@@ -11,7 +13,7 @@ import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { useEchoCard, useRemoveEcho } from '../../../../src/api/queries'
+import { useEchoCard, useRemoveEcho, useSynthesiseEchoCard } from '../../../../src/api/queries'
 import { LoadFailed } from '../../../../src/components/LoadFailed'
 import { Avatar } from '../../../../src/components/ui/Avatar'
 import { Button } from '../../../../src/components/ui/Button'
@@ -21,9 +23,11 @@ import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
 import { voiceLabel } from '../../../../src/i18n/labels'
+import { useAppConfig } from '../../../../src/hooks/useAppConfig'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
 import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
+import { errorCodeOf } from '../../../../src/lib/errors'
 import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../../src/lib/theme'
@@ -118,6 +122,7 @@ function Card({ card }: { card: EchoCard }) {
           ))}
         </View>
       ) : null}
+      <ReadAloud card={card} />
 
       {/*
         The schedule, the work and the language as one strip, the way the tab
@@ -265,6 +270,51 @@ function Picture({ image }: { image: EchoImage }) {
         }}
       />
     </View>
+  )
+}
+
+/**
+ * The server voice, for a card that has none yet.
+ *
+ * Offered only where the deployment has the voice service and the model can
+ * read the language — `echoSynthVoicesFor` is the same table the API refuses
+ * by, so a tap never learns of a limit the screen could have shown. A card
+ * that already holds readings shows nothing: the readings are the answer, and
+ * the API would return them unchanged. The daily ceiling gets the plain alert
+ * every Echo limit gets, which offers nothing to buy.
+ */
+function ReadAloud({ card }: { card: EchoCard }) {
+  const t = useT()
+  const synthesise = useSynthesiseEchoCard()
+  // Decided by the deployment, not the card: an instance without the voice
+  // service answers the route with a 500, and a button that cannot work
+  // should not be drawn — the same reason `authProviders` rides on the config.
+  const offered = useAppConfig().data?.voiceService === true
+
+  if (!offered || card.voices?.length || echoSynthVoicesFor(card.lang).length === 0) return null
+
+  async function read(): Promise<void> {
+    try {
+      await synthesise.mutateAsync({ cardId: card._id })
+    } catch (error) {
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.readAloudLimitBody', { count: PLAN_LIMITS.free.echoVoicesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.readAloudFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
+  return (
+    <Button
+      label={t('echo.readAloud')}
+      variant="secondary"
+      loading={synthesise.isPending}
+      onPress={() => void read()}
+    />
   )
 }
 

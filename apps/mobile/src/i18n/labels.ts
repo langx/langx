@@ -51,8 +51,11 @@ export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
  * only thing worth telling apart, so that is what the label says.
  */
 export function voiceLabel(t: TranslateFn, voice: string): string {
-  if (voice.startsWith('af_') || voice.startsWith('bf_')) return t('echo.voiceFemale')
-  if (voice.startsWith('am_') || voice.startsWith('bm_')) return t('echo.voiceMale')
+  // Kokoro names a voice by language letter, then register: `af_heart`,
+  // `em_alex`, `pf_dora`. The second letter is the only one that matters here.
+  const register = voice.charAt(1)
+  if (register === 'f' && voice.charAt(2) === '_') return t('echo.voiceFemale')
+  if (register === 'm' && voice.charAt(2) === '_') return t('echo.voiceMale')
   return t('echo.voiceSynthesised')
 }
 

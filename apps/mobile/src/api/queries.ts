@@ -3018,6 +3018,24 @@ export function useAttachEchoAudio() {
 }
 
 /**
+ * Have the server voice read the card, in every voice its language has.
+ *
+ * One call, however many voices; the readings land in `voices`, under the
+ * human recordings and labelled as what they are. Invalidates the whole
+ * `echo` prefix for the same reason the two calls above do.
+ */
+export function useSynthesiseEchoCard() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { cardId: string }) =>
+      api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/voices`, {}),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
  * Keep a correction on the card that asked for it — the text half of the call
  * above, and it replaces the card's sentence rather than adding to it.
  */

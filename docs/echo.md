@@ -201,19 +201,38 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    pronunciation post, and an answer to that post can be kept on the card in
    one tap.
 
-3. **~~Text-to-speech, on the server.~~ Not built, and not planned for now.**
-   Google Cloud Text-to-Speech was costed before it was written: $4 per
-   million characters for a Standard voice, $16 for Neural2, with the first
-   four million and one million free respectively. At today's scale that is
-   nothing. The problem is the ceiling — `echoCapturesPerDay` bounds how many
+3. **Text-to-speech, on the server — on request, from the card.** Built, and
+   it was refused first. Google Cloud Text-to-Speech was costed before it was
+   written: $4 per million characters for a Standard voice, $16 for Neural2,
+   and the problem was the ceiling — `echoCapturesPerDay` bounds how many
    cards a person makes and not what they cost, and a thousand daily users at
-   the cap is thousands of dollars a month for a synthetic voice that is
-   worse than the real one. A person who already recorded the sentence is
-   both cheaper and the actual differentiator: Memrise plays a stranger's
-   sample, Echo plays the person you were talking to. If a synthetic fallback
-   is ever wanted, it goes behind an optional `tts/` provider shaped like
-   `translation/`, writing `echo/tts/<lang>/<sha1(text)>.mp3` to storage and
-   looking that key up first.
+   the cap is thousands of dollars a month for a synthetic voice that is worse
+   than the real one. What changed is who pays per character: nobody. The
+   packs had already settled on Kokoro-82M (Apache-2.0; see source 4), the
+   same model now runs in `apps/tts`, a private Fly app that sleeps between
+   requests, and a reading costs a few CPU seconds on a machine of ours. The
+   ceiling that was the objection became `echoVoicesPerDay`: one unit per
+   card, however many voices — a ceiling on how long that machine stays
+   awake, not a meter on a bill.
+
+   The shape is the one this paragraph reserved before anything existed: an
+   optional `tts/` provider beside `translation/`, `POST /echo/cards/:id/voices`,
+   and `echo/tts/<lang>/<voice>/<sha1(text)>.m4a` in storage, looked up first
+   through `echoVoiceCache` so a sentence somebody else already had read costs
+   the next person nothing — not even a quota unit. The readings land in
+   `voices`, the same field a pack fills, under the people and labelled by
+   register only. **On request, never on capture**: the button sits on a card
+   that has no readings, and a person who already got the sentence from the
+   partner who said it has no reason to press it. Rewriting the sentence, or
+   its language, takes the readings off the card — they read a line that is
+   gone — and the button comes back for the new one; the files stay, because
+   they are content-addressed and may be on somebody else's card. Six
+   languages — English,
+   Spanish, French, Italian, Portuguese, Hindi — because those are the voices
+   the model has and espeak-ng phonemises well (`ECHO_SYNTH_VOICES` is the
+   list); the app hides the button elsewhere. A person who already recorded
+   the sentence is still both cheaper and the actual differentiator.
+
 4. **Pack recordings. Built.** A Wikimedia Commons file on the pack item,
    played from Commons rather than copied into our storage — the decision
    `build-pack.mjs` said nobody had taken. **Its cost, stated rather than
@@ -242,8 +261,9 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
 
 Not on the device. `expo-speech` would do the same job for free, but it is a
 native module, so it waits for a store build and speaks with whatever voice
-the phone happens to have. The server voice ships over the air and sounds the
-same on iOS, Android and the web.
+the phone happens to have. A reading made on the server is a file like every
+other recording — the same on iOS, Android and the web, and there the next
+time the card comes up without being made again.
 
 Playback goes through `expo-audio`, which the app already uses for voice
 notes. The session says who is speaking — "Léa" or "synthetic voice" — so a
@@ -598,13 +618,14 @@ be a data blob every consumer parses at import.
 
 ## Plan limits, tokens, streak, push
 
-**Plan limits** — three rows in `PLAN_LIMITS`, all present from day one:
+**Plan limits** — four rows in `PLAN_LIMITS`, three of them present from day one:
 
 | Row                  | free | pro  | pro_plus | Why                                                      |
 | -------------------- | ---- | ---- | -------- | -------------------------------------------------------- |
 | `echoNewCardsPerDay` | null | null | null     | The one row that may be metered later. Free at launch.   |
 | `echoCapturesPerDay` | 50   | 50   | 50       | Abuse ceiling on server-side translation. Not a paywall. |
 | `echoReviewsPerDay`  | null | null | null     | Reviews are **never** capped, on any tier, ever.         |
+| `echoVoicesPerDay`   | 10   | 50   | 100      | Cards read aloud by the server voice; one unit per card. |
 
 If a number changes it changes by hand in three more places —
 `website/src/lib/data/plans.ts`, `website/src/lib/data/features.ts`, and the

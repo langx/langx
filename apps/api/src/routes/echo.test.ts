@@ -16,6 +16,7 @@ import {
   ECHO_ARCHIVE_BATCH_MAX,
   ECHO_AUDIO_MAX,
   newCardSrs,
+  PLAN_LIMITS,
   SRS_RULES,
   TOKEN_RULES,
 } from '@langx/shared'
@@ -1787,6 +1788,185 @@ describe('echo', () => {
         },
       )
       expect(await packIds(user)).toEqual(['it:beginner', 'fr:beginner'])
+    })
+  })
+
+  describe('reading a card aloud', () => {
+    const BUCKET = 'https://cdn.example.com'
+
+    /** Puts nothing anywhere; remembers what it was handed, which is the assertion. */
+    function fakeStorage() {
+      const put: { key: string; bytes: number; contentType: string }[] = []
+      return {
+        put,
+        storage: {
+          getUploadUrl: () => {
+            throw new Error('not used')
+          },
+          putObject: (key: string, body: Uint8Array, contentType: string) => {
+            put.push({ key, bytes: body.byteLength, contentType })
+            return Promise.resolve(`${BUCKET}/${key}`)
+          },
+          getObject: () => {
+            throw new Error('not used')
+          },
+          deleteObject: () => Promise.resolve(),
+          keyFromPublicUrl: () => null,
+        },
+      }
+    }
+
+    function fakeTts() {
+      const asked: { text: string; lang: string; voice: string }[] = []
+      return {
+        asked,
+        tts: {
+          synthesize: (input: { text: string; lang: string; voice: string }) => {
+            asked.push(input)
+            return Promise.resolve(new Uint8Array([1, 2, 3, 4]))
+          },
+        },
+      }
+    }
+
+    async function writeCard(user: SignedUpUser, clientId: string, front: string, lang = 'en') {
+      const made = await capture(user, { kind: 'manual', clientId, front, lang })
+      expect(made.statusCode, made.body).toBe(201)
+      return made.json<{ card: { _id: string } }>().card._id
+    }
+
+    async function spent(userId: string): Promise<number> {
+      const profile = await handle.db
+        .collection<{ quota?: { echoVoices?: Date[] } }>(COLLECTIONS.profiles)
+        .findOne({ _id: userId } as never)
+      return profile?.quota?.echoVoices?.length ?? 0
+    }
+
+    it('reads the sentence in every voice its language has, for one quota unit', async () => {
+      const user = await newUser('voices-read@example.com')
+      const cardId = await writeCard(user, 'voices-read', 'on y va demain ?')
+      const { storage, put } = fakeStorage()
+      const { tts, asked } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+
+      const card = await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+
+      expect(asked.map((a) => a.voice)).toEqual(['af_heart', 'am_michael'])
+      expect(asked.every((a) => a.text === 'on y va demain ?' && a.lang === 'en')).toBe(true)
+      expect(put.map((p) => p.contentType)).toEqual(['audio/mp4', 'audio/mp4'])
+      expect(put.every((p) => /^echo\/tts\/en\/[a-z_]+\/[0-9a-f]{40}\.m4a$/.test(p.key))).toBe(true)
+      expect(card.voices?.map((v) => v.voice)).toEqual(['af_heart', 'am_michael'])
+      expect(card.voices?.every((v) => v.url.startsWith(`${BUCKET}/echo/tts/en/`))).toBe(true)
+      expect(await spent(user.userId)).toBe(1)
+
+      // Already read: the card comes back as it is and nothing is paid twice.
+      const again = await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+      expect(again.voices).toEqual(card.voices)
+      expect(asked).toHaveLength(2)
+      expect(await spent(user.userId)).toBe(1)
+    })
+
+    it('serves a sentence somebody else already had read from the cache, for free', async () => {
+      const [a, b] = await newPair('voices-cache')
+      const first = await writeCard(a, 'voices-cache-a', 'the frog is green')
+      const second = await writeCard(b, 'voices-cache-b', 'the frog is green')
+      const { storage, put } = fakeStorage()
+      const { tts, asked } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+
+      const one = await synthesiseCard(handle.db, storage, tts, a.userId, first)
+      const two = await synthesiseCard(handle.db, storage, tts, b.userId, second)
+
+      expect(two.voices).toEqual(one.voices)
+      expect(asked).toHaveLength(2)
+      expect(put).toHaveLength(2)
+      expect(await spent(b.userId)).toBe(0)
+    })
+
+    it('drops the readings when the sentence is rewritten, and keeps them otherwise', async () => {
+      const user = await newUser('voices-rewrite@example.com')
+      const cardId = await writeCard(user, 'voices-rewrite', 'the frog is purple')
+      const { storage } = fakeStorage()
+      const { tts } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+      const { updateCard } = await import('../modules/echo/cards')
+      await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+
+      // The meaning changed, the sentence did not: the readings still read it.
+      const retitled = await updateCard(handle.db, user.userId, cardId, {
+        front: 'the frog is purple',
+        back: 'la grenouille est violette',
+      })
+      expect(retitled.voices?.map((v) => v.voice)).toEqual(['af_heart', 'am_michael'])
+
+      // The sentence changed: readings of the old one would play the wrong line.
+      const rewritten = await updateCard(handle.db, user.userId, cardId, {
+        front: 'the frog is blue',
+        back: 'la grenouille est bleue',
+      })
+      expect(rewritten.voices).toBeUndefined()
+
+      // And the card can be read again, for the new text.
+      const again = await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+      expect(again.voices).toHaveLength(2)
+      expect(await spent(user.userId)).toBe(2)
+    })
+
+    it('refuses a language the model cannot read', async () => {
+      const user = await newUser('voices-lang@example.com', {
+        learning: [{ code: 'de', level: 'beginner', priority: 1 }],
+      })
+      const cardId = await writeCard(user, 'voices-lang', 'gehen wir morgen?', 'de')
+      const { storage } = fakeStorage()
+      const { tts, asked } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+
+      await expect(
+        synthesiseCard(handle.db, storage, tts, user.userId, cardId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+      expect(asked).toHaveLength(0)
+      expect(await spent(user.userId)).toBe(0)
+    })
+
+    it('stops at the daily ceiling with a retry time', async () => {
+      const user = await newUser('voices-quota@example.com')
+      const cardId = await writeCard(user, 'voices-quota', 'a sentence past the limit')
+      const limit = PLAN_LIMITS.free.echoVoicesPerDay ?? 0
+      await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: user.userId } as never, {
+        $set: { 'quota.echoVoices': Array.from({ length: limit }, () => new Date()) },
+      })
+      const { storage } = fakeStorage()
+      const { tts, asked } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+
+      const refused = await synthesiseCard(handle.db, storage, tts, user.userId, cardId).then(
+        () => null,
+        (caught: unknown) => caught as { code: string; retryAt?: string },
+      )
+      expect(refused?.code).toBe('QUOTA_EXCEEDED')
+      expect(typeof refused?.retryAt).toBe('string')
+      expect(asked).toHaveLength(0)
+    })
+
+    it('is a member route, and says clearly when nothing is configured', async () => {
+      const user = await newUser('voices-route@example.com')
+      const cardId = await writeCard(user, 'voices-route', 'reached over http')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/voices`,
+        headers: { cookie: user.cookie },
+      })
+      // This app was built with no storage: the route is wired, and the
+      // refusal is the not-configured one rather than a crash.
+      expect(response.statusCode, response.body).toBe(500)
+      expect(response.json<{ code: string }>().code).toBe('INTERNAL')
+
+      const stranger = await app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/voices`,
+      })
+      expect(stranger.statusCode).toBe(401)
     })
   })
 })

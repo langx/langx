@@ -145,6 +145,15 @@ export const COLLECTIONS = {
    */
   echoPacks: 'echoPacks',
   echoPackItems: 'echoPackItems',
+  /**
+   * Which sentences the voice service has already read, keyed by the storage
+   * key the reading lives under: `echo/tts/<lang>/<voice>/<sha1 of text>`.
+   * The `_id` is the key, so a second person keeping the same sentence finds
+   * the file rather than waking the synthesiser for it. Rows are never
+   * deleted — the object they point at is content-addressed and belongs to
+   * nobody, so a purge has nothing to take back.
+   */
+  echoVoiceCache: 'echoVoiceCache',
 
   /**
    * The notification centre: what has happened to an account, kept so it can

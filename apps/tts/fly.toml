@@ -1,0 +1,62 @@
+# The voice service on Fly.io — see server.py for what it is.
+#
+# Secrets are NOT here — this file is committed and the repo is public. Set
+# TTS_SECRET with `fly secrets set -a langx-tts`; the API is given the same
+# value. Deploy with `flyctl deploy -c apps/tts/fly.toml` from the repository
+# root, which deploy-tts.yml does on every merge that touches apps/tts.
+
+app = 'langx-tts'
+primary_region = 'fra'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  PORT = '8080'
+
+# No `[deploy] strategy`: one machine, and a request during the swap simply
+# waits for the new one to boot. Blue-green would double a 2 GB machine for
+# a service that answers a few times an hour.
+
+# Private, and asleep between requests. The app has no public IP — only a
+# Flycast address (`fly ips allocate-v6 --private`), so `langx-tts.flycast`
+# resolves from the API's machines and from nowhere else. Fly's proxy still
+# fronts Flycast traffic, which is what makes autostart work on a private app:
+# the first request of the hour starts the machine, the model loads (see the
+# grace period below), the reading is made, and after a few idle minutes the
+# proxy stops it again. `min_machines_running = 0` is the whole cost story —
+# a stopped machine is billed for its rootfs and nothing else.
+[http_service]
+  internal_port = 8080
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  # One reading at a time — server.py holds a lock around the model — and one
+  # more waiting. Past that the proxy answers 503 rather than queueing a
+  # minute of requests behind a cold start; the API's timeout is sixty seconds
+  # and the app's button shows a spinner, so a refusal is a retry, not a hang.
+  [http_service.concurrency]
+    type = 'requests'
+    soft_limit = 1
+    hard_limit = 2
+
+# /health answers only once the model is loaded, so the grace period is the
+# load: a few seconds for the fp32 model from a warm disk, longer on a cold
+# machine. Sixty is generous on purpose — a check that fails during the load
+# restarts a machine that was about to be ready.
+[[http_service.checks]]
+  interval = '15s'
+  timeout = '5s'
+  grace_period = '60s'
+  method = 'GET'
+  path = '/health'
+
+# 2 GB for a 300 MB model: ONNX Runtime's session and the phonemiser's tables
+# take several times the file, and a machine that swaps mid-read is slower
+# than one that costs a cent more while awake. Two shared vCPUs halve the
+# read time over one, and it is asleep most of the day either way.
+[[vm]]
+  size = 'shared-cpu-2x'
+  memory = '2gb'

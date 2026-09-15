@@ -30,6 +30,7 @@ import {
 } from '../modules/echo/cards'
 import { listPacks, previewPack, startPack } from '../modules/echo/packs'
 import { submitReviews } from '../modules/echo/reviews'
+import { synthesiseCard } from '../modules/echo/voices'
 import { localeFromHeader } from '../i18n'
 
 /**
@@ -113,6 +114,27 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       return reply.send(
         await attachAnswerAudio(app.mongo.db, request.userId, request.params.id, request.body),
+      )
+    },
+  )
+
+  /*
+   * The card read aloud by the server voice, in every voice its language has.
+   * `requireMember` because it wakes a machine of ours; the tight limit is for
+   * the same reason `/me/share-card` has one — this is the most expensive
+   * thing the process does per request, and nobody legitimately reads ten
+   * cards a minute. See `synthesiseCard` for the quota, which is per day.
+   */
+  app.post(
+    '/echo/cards/:id/voices',
+    {
+      preHandler: requireMember,
+      schema: { params: cardParamsSchema },
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await synthesiseCard(app.mongo.db, app.storage, app.tts, request.userId, request.params.id),
       )
     },
   )

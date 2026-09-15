@@ -101,6 +101,13 @@ describe('app config, maintenance and the version gate', () => {
       })
     })
 
+    it('says whether a card can be read aloud, from whether the voice service is set', async () => {
+      // Built with no TTS_URL, like every self-hosted instance by default: the
+      // card screen must not draw a button that answers with a 500.
+      const response = await get('/app-config')
+      expect(response.json<{ voiceService: boolean }>().voiceService).toBe(false)
+    })
+
     it('reports a provider as available once its credentials are set', async () => {
       const env = loadEnv({
         NODE_ENV: 'test',
