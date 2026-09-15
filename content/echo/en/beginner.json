@@ -2,7 +2,7 @@
   "id": "en:beginner",
   "lang": "en",
   "level": "beginner",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -42,12 +42,13 @@
         "es": "Es nuevo.",
         "fr": "C'est nouveau.",
         "pt-BR": "É novo.",
-        "ru": "Это новая.",
+        "ru": "Это новое.",
         "ar": "إنه جديد"
       },
       "freqRank": 1,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -133,11 +134,12 @@
         "fr": "Je suis fauché.",
         "pt-BR": "Estou sem dinheiro.",
         "ru": "Я на нуле.",
-        "ar": "لقد كُسِرت"
+        "ar": "أنا مفلس."
       },
       "freqRank": 5,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -168,12 +170,13 @@
         "es": "Estoy confuso.",
         "fr": "Je me mélange les pinceaux.",
         "pt-BR": "Estou confuso.",
-        "ru": "Я смущен.",
-        "ar": "انا محتار."
+        "ru": "Я запутался.",
+        "ar": "أنا محتار."
       },
       "freqRank": 7,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar", "ru"]
       }
     },
     {
@@ -342,11 +345,12 @@
         "fr": "Le plein.",
         "pt-BR": "Preenchê-lo.",
         "ru": "Полный бак.",
-        "ar": "املئها."
+        "ar": "املأها."
       },
       "freqRank": 14,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -814,11 +818,12 @@
         "fr": "Il faisait nuit.",
         "pt-BR": "Era noite.",
         "ru": "Была ночь.",
-        "ar": "إنه المساء"
+        "ar": "كان الليل."
       },
       "freqRank": 36,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -882,11 +887,12 @@
         "fr": "C'est trop grand.",
         "pt-BR": "É muito grande.",
         "ru": "Он слишком большой.",
-        "ar": "هل توم كبير؟"
+        "ar": "إنه كبير جداً."
       },
       "freqRank": 39,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1188,7 +1194,7 @@
         "fr": "plein de bonnes choses",
         "pt-BR": "boa sorte",
         "ru": "всего́ хоро́шего",
-        "ar": "حَظًّا مُوَفَّقًاَ",
+        "ar": "حَظًّا مُوَفَّقًا",
         "en": "good luck"
       },
       "freqRank": 54,
@@ -1203,7 +1209,8 @@
             "file": "LL-Q1860 (eng)-Vealhurl-all the best.wav",
             "tags": ["Southern-England"]
           }
-        ]
+        ],
+        "edited": ["ar"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0c/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav.mp3",
@@ -1281,11 +1288,12 @@
         "fr": "Tu es humain.",
         "pt-BR": "Você é humano.",
         "ru": "Ты человек.",
-        "ar": "انت إنسان."
+        "ar": "أنت إنسان."
       },
       "freqRank": 58,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1401,11 +1409,12 @@
         "fr": "Pratiques-tu le recyclage ?",
         "pt-BR": "Você recicla?",
         "ru": "Вы занимаетесь переработкой?",
-        "ar": "هل تقومون بإعادة التصنيع ؟"
+        "ar": "هل تقومون بإعادة التصنيع؟"
       },
       "freqRank": 64,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1640,11 +1649,12 @@
         "fr": "C'est prêt maintenant.",
         "pt-BR": "Está pronta agora.",
         "ru": "Теперь готово.",
-        "ar": "إنها جاهزة الأن."
+        "ar": "إنها جاهزة الآن."
       },
       "freqRank": 76,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1735,11 +1745,12 @@
         "fr": "Nous nous mariions.",
         "pt-BR": "Nós nos casamos.",
         "ru": "Мы поженились.",
-        "ar": "لقد تزوجنا ."
+        "ar": "لقد تزوجنا."
       },
       "freqRank": 81,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1961,11 +1972,12 @@
         "fr": "Levez la main.",
         "pt-BR": "Levante a mão.",
         "ru": "Подними руку.",
-        "ar": "ارفع يديك."
+        "ar": "ارفع يدك."
       },
       "freqRank": 93,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2035,11 +2047,12 @@
         "fr": "Tiens-toi droit.",
         "pt-BR": "Sente-se direito.",
         "ru": "Сядьте прямо.",
-        "ar": "إجلس مستقيماً."
+        "ar": "اجلس مستقيماً."
       },
       "freqRank": 97,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2165,11 +2178,12 @@
         "fr": "Tu es presque mort.",
         "pt-BR": "Você quase morreu.",
         "ru": "Ты чуть не умер.",
-        "ar": "أنتَ تقريباً مت."
+        "ar": "كِدْتَ أن تموت."
       },
       "freqRank": 103,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2255,11 +2269,12 @@
         "fr": "Nettoie le miroir.",
         "pt-BR": "Limpe o espelho.",
         "ru": "Протри зеркало.",
-        "ar": "نظف المرايا."
+        "ar": "نظف المرآة."
       },
       "freqRank": 107,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2370,11 +2385,12 @@
         "fr": "Ça n'est jamais arrivé.",
         "pt-BR": "Nunca aconteceu.",
         "ru": "Этого так и не случилось.",
-        "ar": "لم یحدث قط."
+        "ar": "لم يحدث قط."
       },
       "freqRank": 113,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2436,12 +2452,13 @@
         "es": "La madera se quema fácilmente.",
         "fr": "Le bois brûle facilement.",
         "pt-BR": "A madeira queima-se com facilidade.",
-        "ru": "Дерево горит хорошо.",
+        "ru": "Дерево легко горит.",
         "ar": "يحترق الخشب بسهولة."
       },
       "freqRank": 116,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2717,12 +2734,13 @@
         "fr": "Le papier brûle facilement.",
         "pt-BR": "O papel queima com facilidade.",
         "ru": "Бумага легко горит.",
-        "ar": "يحترق الورق بسهوله."
+        "ar": "يحترق الورق بسهولة."
       },
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba",
-        "correctedTr": "Kağıt kolayca yakar."
+        "correctedTr": "Kağıt kolayca yakar.",
+        "edited": ["ar"]
       }
     },
     {
@@ -2807,11 +2825,12 @@
         "fr": "Le verre casse facilement.",
         "pt-BR": "O vidro se quebra com facilidade.",
         "ru": "Стекло легко бьётся.",
-        "ar": "ينكسر الزجاج بسهوله."
+        "ar": "ينكسر الزجاج بسهولة."
       },
       "freqRank": 133,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2913,15 +2932,16 @@
         "es": "por favor, pase la sal",
         "fr": "passez le sel, s'il vous plait",
         "pt-BR": "por favor, passe o sal",
-        "ru": "пожа́луйста, передава́й соль",
-        "ar": "امرر الملح لي من فضلك",
+        "ru": "переда́йте, пожа́луйста, соль",
+        "ar": "مَرِّر لِي الْمِلْح مِن فَضْلِك",
         "en": "please pass the salt"
       },
       "freqRank": 138,
       "review": {
         "sense": "please pass the salt",
         "translationCount": 36,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar", "ru"]
       }
     },
     {
@@ -2993,11 +3013,12 @@
         "fr": "Enfin, c'est vendredi.",
         "pt-BR": "Finalmente, é sexta-feira.",
         "ru": "Ура! Сегодня пятница!",
-        "ar": "و أخيراً أتى الجمعة."
+        "ar": "وأخيراً أتت الجمعة."
       },
       "freqRank": 142,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3351,7 +3372,7 @@
         "fr": "j'ai reçu une balle",
         "pt-BR": "levei um tiro",
         "ru": "в меня́ вы́стрелили",
-        "ar": "لقد صوِبت",
+        "ar": "لَقَدْ أُطْلِقَ عَلَيَّ الرَّصَاص",
         "en": "I've been shot"
       },
       "example": "I've been shot! We've been shot! Oh my God, help!",
@@ -3360,7 +3381,8 @@
         "sense": "I've been shot",
         "translationCount": 34,
         "definition": "Indicates one has been shot and may require medical attention.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -3410,14 +3432,15 @@
         "fr": "je me suis brulé",
         "pt-BR": "eu me queimei",
         "ru": "я обжёгся",
-        "ar": "لَقَدْ اْحْرَقْتُ نَفْسِي",
+        "ar": "لَقَدْ أَحْرَقْتُ نَفْسِي",
         "en": "I've burned myself"
       },
       "freqRank": 164,
       "review": {
         "sense": "I've burned myself",
         "translationCount": 30,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -3431,11 +3454,12 @@
         "fr": "Comment puis-je aider ?",
         "pt-BR": "Como posso ajudar?",
         "ru": "Как я могу помочь?",
-        "ar": "كيف بإمكاني مساعدتك ؟"
+        "ar": "كيف بإمكاني مساعدتك؟"
       },
       "freqRank": 165,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3447,7 +3471,7 @@
         "es": "¿es esto seguro?",
         "fr": "est-il sûr ici",
         "pt-BR": "aqui é seguro?",
-        "ru": "здесь он в безопасности?",
+        "ru": "здесь безопа́сно?",
         "en": "is it safe here?"
       },
       "freqRank": 166,
@@ -3455,7 +3479,8 @@
         "sense": "is it safe here?",
         "translationCount": 25,
         "definition": "is it safe here?",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ru"]
       }
     },
     {
@@ -3469,11 +3494,12 @@
         "fr": "Grand comment ?",
         "pt-BR": "Quão alto?",
         "ru": "Какая у него высота?",
-        "ar": "ما مدي ارتفاعها؟"
+        "ar": "ما مدى ارتفاعها؟"
       },
       "freqRank": 167,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3561,12 +3587,13 @@
         "es": "Hora de levantarse.",
         "fr": "Il est l'heure de se lever.",
         "pt-BR": "Hora de se levantar.",
-        "ru": "Время взять ноги в руки.",
-        "ar": "حان وقت الإستيقاظ."
+        "ru": "Пора вставать.",
+        "ar": "حان وقت الاستيقاظ."
       },
       "freqRank": 172,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar", "ru"]
       }
     },
     {
@@ -3816,11 +3843,12 @@
         "fr": "Venez nous aider.",
         "pt-BR": "Venha e nos ajude.",
         "ru": "Иди помоги нам.",
-        "ar": "تعال و ساعدنا."
+        "ar": "تعال وساعدنا."
       },
       "freqRank": 184,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4534,14 +4562,15 @@
         "fr": "puis-je utiliser votre téléphone",
         "pt-BR": "posso usar seu telefone?",
         "ru": "могу́ ли я воспо́льзоваться ва́шим телефо́ном?",
-        "ar": "هَل مُمْكِن اَسْتَعْمَل تِلِفُونَك؟",
+        "ar": "هَلْ يُمْكِنُنِي اسْتِعْمَالُ هَاتِفِكَ؟",
         "en": "can I use your phone?"
       },
       "freqRank": 219,
       "review": {
         "sense": "can I use your phone?",
         "translationCount": 48,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -4967,11 +4996,12 @@
         "fr": "Dessine une ligne droite.",
         "pt-BR": "Desenhe uma linha reta.",
         "ru": "Нарисуй прямую линию.",
-        "ar": "إرسم خط مستقيم."
+        "ar": "ارسم خطاً مستقيماً."
       },
       "freqRank": 241,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5022,11 +5052,12 @@
         "fr": "Je m'en excuse.",
         "pt-BR": "Peço desculpas por isso.",
         "ru": "Я прошу за это прощения.",
-        "ar": "انا اعتذر لهذا."
+        "ar": "أنا أعتذر عن هذا."
       },
       "freqRank": 244,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5075,11 +5106,12 @@
         "fr": "Je pense avoir compris.",
         "pt-BR": "Eu acho que entendi.",
         "ru": "Кажется, понимаю.",
-        "ar": "أظنني أنني فهمت"
+        "ar": "أظن أنني فهمت."
       },
       "freqRank": 246,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5221,7 +5253,7 @@
         "tr": "aklında ne var?",
         "es": "¿En qué piensas?",
         "fr": "qu'est-ce que tu as en tête?",
-        "ar": "بماذا تفكر به؟",
+        "ar": "بماذا تفكر؟",
         "en": "what is bothering you?"
       },
       "example": "You look bothered. What’s on your mind?",
@@ -5230,7 +5262,8 @@
         "sense": "what is bothering you?",
         "translationCount": 23,
         "definition": "What are you thinking about?",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -5409,11 +5442,12 @@
         "fr": "Suis juste ton cœur.",
         "pt-BR": "Apenas siga seu coração.",
         "ru": "Просто сделай, как велит тебе сердце.",
-        "ar": "إتبع قلبك فحسب."
+        "ar": "اتبع قلبك فحسب."
       },
       "freqRank": 263,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5662,11 +5696,12 @@
         "fr": "Je suis né en 1972.",
         "pt-BR": "Eu nasci em 1972.",
         "ru": "Я родился в тысяча девятьсот семьдесят втором году.",
-        "ar": "أن ولدت في عام 1972."
+        "ar": "أنا وُلدت في عام 1972."
       },
       "freqRank": 275,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     }
   ]
