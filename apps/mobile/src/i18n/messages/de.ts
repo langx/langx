@@ -195,6 +195,16 @@ export const de: Localized<EnMessages> = {
     cardsEmptyTitle: 'Noch keine Karten',
     cardsEmptyBody:
       'Sätze, die du aus Chats und Beiträgen behältst, sammeln sich hier — zusammen mit denen, die du selbst schreibst.',
+    markLearned: 'Das kann ich',
+    putItBack: 'Zurücklegen',
+    archived: 'Gelernt',
+    archivedEmptyTitle: 'Noch nichts abgelegt',
+    archivedEmptyBody:
+      'Karten, die du schon kannst, landen hier. Sie behalten alles und kommen nicht wieder.',
+    selectCards: 'Karten auswählen',
+    selectedCount: { one: '{count} ausgewählt', other: '{count} ausgewählt' },
+    archivedToast: { one: '{count} Karte abgelegt', other: '{count} Karten abgelegt' },
+    restoredToast: { one: '{count} Karte ist zurück', other: '{count} Karten sind zurück' },
     searchPlaceholder: 'Deine Karten durchsuchen',
     searchNoneTitle: 'Nichts gefunden',
     searchNoneBody: 'Keine Karte hat das im Satz, in der Bedeutung oder im Beispiel.',

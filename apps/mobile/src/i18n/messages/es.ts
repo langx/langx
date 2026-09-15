@@ -194,6 +194,16 @@ export const es: Localized<EnMessages> = {
     cardsEmptyTitle: 'Aún no hay tarjetas',
     cardsEmptyBody:
       'Las frases que guardas de los chats y las publicaciones se reúnen aquí, junto con las que escribes tú.',
+    markLearned: 'Esta ya la sé',
+    putItBack: 'Devolverla',
+    archived: 'Aprendidas',
+    archivedEmptyTitle: 'Todavía no has guardado ninguna',
+    archivedEmptyBody:
+      'Las tarjetas que ya sabes vienen aquí. Lo conservan todo y dejan de volver.',
+    selectCards: 'Seleccionar tarjetas',
+    selectedCount: { one: '{count} seleccionada', other: '{count} seleccionadas' },
+    archivedToast: { one: '{count} tarjeta guardada', other: '{count} tarjetas guardadas' },
+    restoredToast: { one: '{count} tarjeta ha vuelto', other: '{count} tarjetas han vuelto' },
     searchPlaceholder: 'Busca en tus tarjetas',
     searchNoneTitle: 'No hay coincidencias',
     searchNoneBody: 'Ninguna tarjeta tiene eso en su frase, su significado ni su ejemplo.',

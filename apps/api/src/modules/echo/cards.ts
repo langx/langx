@@ -14,6 +14,8 @@ import {
   type EchoSource,
   type EchoSummary,
   type ApplyEchoCorrectionInput,
+  type ArchiveEchoCardsInput,
+  type ArchiveEchoCardsResult,
   type AttachEchoAudioInput,
   echoAudiosOf,
   type LinkEchoAskInput,
@@ -721,6 +723,40 @@ export async function linkAsk(
   return toEchoCard(updated)
 }
 
+/**
+ * Put cards away as learned, or take them back.
+ *
+ * One `updateMany` with the owner in the filter, so a list containing somebody
+ * else's card id changes nothing of theirs and is not an error either: the ids
+ * come from a selection on screen, and a stale one is a card that has since
+ * been removed rather than an attack. `changed` is what actually moved.
+ */
+export async function setArchived(
+  db: Db,
+  userId: string,
+  input: ArchiveEchoCardsInput,
+  now: Date = new Date(),
+): Promise<ArchiveEchoCardsResult> {
+  const ids = input.cardIds.filter((id) => ObjectId.isValid(id)).map((id) => new ObjectId(id))
+  if (ids.length === 0) return { changed: 0 }
+
+  const result = await db.collection<EchoCardDoc>(COLLECTIONS.echoCards).updateMany(
+    /*
+     * Only the cards actually changing state. Without the second clause,
+     * archiving a card that is already away would rewrite its `archivedAt` to
+     * now — moving the day it was learned every time somebody taps the action
+     * on a selection that already included it — and `changed` would count it.
+     */
+    { userId, _id: { $in: ids }, archivedAt: { $exists: !input.archived } },
+    input.archived
+      ? { $set: { archivedAt: now } }
+      : // Unset rather than null: "in the rotation" is the absence of this
+        // field everywhere that reads it.
+        { $unset: { archivedAt: '' } },
+  )
+  return { changed: result.modifiedCount }
+}
+
 /** One card of the caller's, by id. What the card screen reads. */
 export async function getCard(db: Db, userId: string, cardId: string): Promise<EchoCard> {
   if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
@@ -857,7 +893,13 @@ export async function listCards(
   userId: string,
   query: ListEchoCardsQuery,
 ): Promise<EchoCardPage> {
-  const filter: Filter<EchoCardDoc> = { userId, ...(query.lang ? { lang: query.lang } : {}) }
+  const filter: Filter<EchoCardDoc> = {
+    userId,
+    ...(query.lang ? { lang: query.lang } : {}),
+    // One list or the other. A card put away as learned sitting between two
+    // you are still learning would make the word mean nothing on screen.
+    archivedAt: { $exists: query.archived },
+  }
   if (query.cursor && ObjectId.isValid(query.cursor)) {
     filter._id = { $lt: new ObjectId(query.cursor) }
   }
@@ -910,6 +952,9 @@ export async function dueQueue(
     userId,
     'srs.due': { $lte: now },
     ...(lang ? { lang } : {}),
+    // The whole point of archiving: never asked again. The schedule is left
+    // alone, so a card taken back out simply becomes due again.
+    archivedAt: { $exists: false },
   }
 
   const [rows, dueCount] = await Promise.all([
@@ -935,7 +980,9 @@ export async function summary(
   const [byLanguage, reviewedToday, reviewedThisWeek] = await Promise.all([
     cards
       .aggregate<{ _id: string; total: number; due: number }>([
-        { $match: { userId } },
+        // Archived cards count nowhere: the badge on the tab and the totals
+        // beside each language both describe what is still being learned.
+        { $match: { userId, archivedAt: { $exists: false } } },
         {
           $group: {
             _id: '$lang',

@@ -25,6 +25,8 @@ import {
   type CaptureEchoResult,
   type CreateShareCardInput,
   type EchoCard,
+  type ArchiveEchoCardsInput,
+  type ArchiveEchoCardsResult,
   type EchoCardPage,
   type EchoPack,
   type EchoQueue,
@@ -166,7 +168,8 @@ export const keys = {
   echo: ['echo'] as const,
   echoSummary: ['echo', 'summary'] as const,
   echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
-  echoCards: (lang: string, q: string) => ['echo', 'cards', lang, q] as const,
+  echoCards: (lang: string, q: string, archived: boolean) =>
+    ['echo', 'cards', lang, q, archived] as const,
   echoPacks: ['echo', 'packs'] as const,
   echoCard: (id: string) => ['echo', 'card', id] as const,
   echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
@@ -2687,14 +2690,15 @@ export function useEchoQueue(lang?: string) {
  * `conversation_term_unique` within one conversation, and an Echo library is
  * bounded by nothing but the daily ceiling.
  */
-export function useEchoCards(lang?: string, q?: string) {
+export function useEchoCards(lang?: string, q?: string, archived = false) {
   return useInfiniteQuery({
-    queryKey: keys.echoCards(lang ?? 'all', q ?? ''),
+    queryKey: keys.echoCards(lang ?? 'all', q ?? '', archived),
     queryFn: ({ pageParam }) =>
       api.get<EchoCardPage>(
         `/echo/cards?${new URLSearchParams({
           ...(lang ? { lang } : {}),
           ...(q ? { q } : {}),
+          ...(archived ? { archived: 'true' } : {}),
           ...(pageParam ? { cursor: pageParam } : {}),
         }).toString()}`,
       ),
@@ -2866,6 +2870,24 @@ export function useApplyEchoCorrection() {
       api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/correction`, {
         correctionId: input.correctionId,
       }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
+ * Put cards away as learned, or take them back.
+ *
+ * Invalidates the whole `echo` prefix rather than the list it was called
+ * from: the queue holds its own copy of every card, the tab's badge counts
+ * them, and both are wrong the moment one is archived.
+ */
+export function useArchiveEchoCards() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: ArchiveEchoCardsInput) =>
+      api.post<ArchiveEchoCardsResult>('/echo/cards/archive', input),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },

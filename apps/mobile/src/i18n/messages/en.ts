@@ -236,6 +236,17 @@ export const en = {
     cardsEmptyTitle: 'No cards yet',
     cardsEmptyBody:
       'Sentences you keep from chats and posts collect here, along with the ones you write yourself.',
+    /** Not "delete": the card stays, with its recordings and its schedule. */
+    markLearned: 'I know this one',
+    putItBack: 'Put it back',
+    archived: 'Learned',
+    archivedEmptyTitle: 'Nothing put away yet',
+    archivedEmptyBody:
+      'Cards you already know go here. They keep everything, and stop coming back.',
+    selectCards: 'Select cards',
+    selectedCount: { one: '{count} selected', other: '{count} selected' },
+    archivedToast: { one: '{count} card put away', other: '{count} cards put away' },
+    restoredToast: { one: '{count} card is back', other: '{count} cards are back' },
     searchPlaceholder: 'Search your cards',
     searchNoneTitle: 'Nothing matches',
     searchNoneBody: 'No card has that in its sentence, its meaning or its example.',

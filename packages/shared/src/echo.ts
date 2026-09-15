@@ -38,6 +38,16 @@ export const ECHO_BACK_MAX_LENGTH = 200
 export const ECHO_AUDIO_MAX = 4
 
 /**
+ * How many cards one archive call may carry.
+ *
+ * A hundred, which is a person clearing out a language's worth of easy cards
+ * in one go — the reason the action is plural at all. Anything beyond it is a
+ * client sending its whole library, and a ceiling is cheaper to reason about
+ * than an unbounded `$in`.
+ */
+export const ECHO_ARCHIVE_BATCH_MAX = 100
+
+/**
  * How many grades one request may carry.
  *
  * Ten sessions' worth. A session is `SRS_RULES.sessionSize` cards and submits
@@ -201,6 +211,18 @@ export const echoCardSchema = z.object({
    * then have to interpret.
    */
   askedCorrectionPostId: z.string().optional(),
+  /**
+   * When the card was put away as learned. Absent for a card still in the
+   * rotation, which is almost all of them.
+   *
+   * "Learned" and "archived" are one state rather than two, because they are
+   * one thing a person does: some cards — `good morning` — are known before
+   * they are ever reviewed, and the only way to stop being asked used to be
+   * removing the card, which says "I never wanted this" rather than "I know
+   * this". An archived card keeps its schedule and its recordings; it is
+   * simply never due.
+   */
+  archivedAt: z.string().optional(),
   srs: echoSrsSchema,
   createdAt: z.string(),
 })
@@ -415,6 +437,25 @@ export type AttachEchoAudioInput = z.infer<typeof attachEchoAudioSchema>
  * that teaches the mistake, and the corrected line is the thing the person
  * asked the feed for.
  */
+/**
+ * Putting cards away as learned, or taking them back.
+ *
+ * Plural because the gesture is: the cards somebody wants to stop being asked
+ * are usually a handful of easy ones noticed together while scrolling the
+ * library. One card is a list of one.
+ */
+export const archiveEchoCardsSchema = z.object({
+  cardIds: z.array(z.string().trim().min(1)).min(1).max(ECHO_ARCHIVE_BATCH_MAX),
+  archived: z.boolean(),
+})
+export type ArchiveEchoCardsInput = z.infer<typeof archiveEchoCardsSchema>
+
+export const archiveEchoCardsResultSchema = z.object({
+  /** How many actually changed — the rest were already in that state. */
+  changed: z.number().int().nonnegative(),
+})
+export type ArchiveEchoCardsResult = z.infer<typeof archiveEchoCardsResultSchema>
+
 export const applyEchoCorrectionSchema = z.object({
   correctionId: z.string().trim().min(1),
 })
@@ -484,6 +525,13 @@ export const listEchoCardsQuerySchema = z.object({
    * keystroke there is. The ceiling is the longest thing it could match.
    */
   q: z.string().trim().min(1).max(ECHO_FRONT_MAX_LENGTH).optional(),
+  /**
+   * The archive instead of the library. One or the other, never both mixed:
+   * a list where a card you have put away sits between two you are still
+   * learning would make "archived" mean nothing on the screen that is
+   * supposed to show it.
+   */
+  archived: z.stringbool().default(false),
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 })

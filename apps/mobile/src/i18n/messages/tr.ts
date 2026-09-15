@@ -206,6 +206,16 @@ export const tr: Localized<EnMessages> = {
     cardsEmptyTitle: 'Henüz kart yok',
     cardsEmptyBody:
       'Sohbetlerden ve gönderilerden sakladığın cümleler, kendi yazdıklarınla birlikte burada toplanır.',
+    markLearned: 'Bunu biliyorum',
+    putItBack: 'Geri koy',
+    archived: 'Öğrenildi',
+    archivedEmptyTitle: 'Henüz kaldırılan yok',
+    archivedEmptyBody:
+      'Zaten bildiğin kartlar buraya gelir. Her şeyini korur, bir daha karşına çıkmaz.',
+    selectCards: 'Kart seç',
+    selectedCount: { one: '{count} seçildi', other: '{count} seçildi' },
+    archivedToast: { one: '{count} kart kaldırıldı', other: '{count} kart kaldırıldı' },
+    restoredToast: { one: '{count} kart geri geldi', other: '{count} kart geri geldi' },
     searchPlaceholder: 'Kartlarında ara',
     searchNoneTitle: 'Eşleşen yok',
     searchNoneBody: 'Hiçbir kartın cümlesinde, anlamında ya da örneğinde bu geçmiyor.',
