@@ -59,6 +59,10 @@ export interface BroadcastJob {
    * Optional because rows written before this field existed have none. Those
    * read as `0` and their first edit makes them `1`, so the two are still
    * different clientIds — which is the only thing the rev is for.
+   *
+   * It does not tell two *drafts* apart: one deleted and written again under
+   * the same slug starts at 1 again. `createdAt` is in the test clientId for
+   * that, and the reason is in `sendBroadcastTest`.
    */
   rev?: number
   /** The audience counted at create — a number to watch progress against. */
