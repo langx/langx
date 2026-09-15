@@ -33,7 +33,7 @@
 </p>
 <p align="center">
   <a href="https://langx.io" target="_blank">
-  <img alt="They need your language. And you need theirs. That is the whole match." src="https://raw.githubusercontent.com/langx/branding/main/2.x/en/android/feature-graphic.png" />
+  <img alt="Help someone speak yours. They'll do the same." src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/print/postcard-front.png" />
   </a>
 </p>
 
