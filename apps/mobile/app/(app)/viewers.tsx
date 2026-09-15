@@ -33,9 +33,11 @@ type ViewerRow = ViewerPageDto['viewers'][number] & { _id: string }
  * A row is one person on one day — visits inside ten minutes of each other
  * count once, which the server decides. It used to be one row per person for
  * life with "43×" next to it, which said how keen somebody was and nothing
- * about when. Above the list, one line with the last seven days' visits: a
- * count, so it is said to the free tier too, above the rows that hide the
- * names.
+ * about when. The count is back beside the time, but it is that day's, on a
+ * dated row: "×3, 10 min" says how often and when at once, and a single visit
+ * says nothing extra. Above the list, one line with the last seven days'
+ * visits: a count, so it is said to the free tier too, above the rows that
+ * hide the names.
  */
 export default function ViewersScreen() {
   useScreenInteractive()
@@ -197,6 +199,13 @@ export default function ViewersScreen() {
                     {nameOf(item)}
                   </Text>
                 )}
+                {/* Sent on locked rows too: how often is a fact about the
+                  reader's own profile, and never who. */}
+                {item.viewCount > 1 ? (
+                  <Text style={styles.repeat}>
+                    {t('viewers.repeat', { count: item.viewCount })}
+                  </Text>
+                ) : null}
                 <Text style={styles.time}>{relativeTime(item.lastViewedAt, { t, locale })}</Text>
               </Pressable>
             )
@@ -256,5 +265,6 @@ const useStyles = makeStyles(({ colors, font, layout, radius, spacing }) => ({
     height: 14,
     maxWidth: 140,
   },
+  repeat: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   time: { color: colors.textFaint, fontSize: 13 },
 }))

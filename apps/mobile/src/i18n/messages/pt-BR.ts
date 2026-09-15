@@ -1954,6 +1954,7 @@ export const ptBR: Localized<EnMessages> = {
       one: '{count} pessoa na última semana.',
       other: '{count} pessoas na última semana.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {

@@ -2274,6 +2274,7 @@ export const ar: Localized<EnMessages> = {
       many: '{count} شخصًا في الأسبوع الأخير.',
       other: '{count} شخص في الأسبوع الأخير.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {

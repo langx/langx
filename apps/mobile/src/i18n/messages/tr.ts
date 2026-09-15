@@ -1954,6 +1954,7 @@ export const tr: Localized<EnMessages> = {
     seeWhoWith: '{plan} ile kim olduğunu gör',
     unlockBody: 'İsimler ve profiller, ayrıca senin için gizli gezinme.',
     weekPeople: { one: 'Son bir haftada {count} kişi.', other: 'Son bir haftada {count} kişi.' },
+    repeat: '×{count}',
   },
 
   blocked: {

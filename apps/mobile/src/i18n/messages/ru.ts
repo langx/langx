@@ -2182,6 +2182,7 @@ export const ru: Localized<EnMessages> = {
       many: '{count} человек за последнюю неделю.',
       other: '{count} человека за последнюю неделю.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {

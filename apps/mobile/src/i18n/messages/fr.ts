@@ -1970,6 +1970,7 @@ export const fr: Localized<EnMessages> = {
       one: '{count} personne la semaine dernière.',
       other: '{count} personnes la semaine dernière.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {
