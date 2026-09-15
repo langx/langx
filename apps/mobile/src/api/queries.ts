@@ -2259,6 +2259,23 @@ export function useUpdateProfile() {
 const PROFILE_PATCH_SCOPE = { id: 'profile-patch' }
 
 /**
+ * One tap on the languages screen, in flight: the edit, and the two states
+ * `onMutate` leaves behind for `mutationFn` to tell them apart.
+ *
+ * Per run rather than in a ref, because two taps can be in the air at once and
+ * each needs its own pair. The mutation's own `context` cannot carry them —
+ * that is handed to `onError`/`onSuccess`, never to `mutationFn` — so the
+ * variables object is the only thing both halves of one run hold.
+ */
+interface LanguageEditRun {
+  edit: LanguageEdit
+  /** The profile this edit was applied to. */
+  before?: MeProfile
+  /** The profile that application produced, and that the eye has been shown. */
+  shown?: MeProfile
+}
+
+/**
  * One tap on the languages screen: add, replace, remove, level, reorder.
  *
  * Optimistic, because the cache *is* that screen's state — it keeps no form
@@ -2269,34 +2286,47 @@ const PROFILE_PATCH_SCOPE = { id: 'profile-patch' }
  * whole reason the scope exists. By the time this runs the previous request
  * has settled and `keys.me` holds the server's answer to it; a body built at
  * tap time, from the lists that tap saw, would carry the state before that
- * answer and silently undo it. `applyLanguageEdit` is therefore applied twice
- * — once to the cache for the eye, once to the settled profile for the wire —
- * which is only safe because it is pure.
+ * answer and silently undo it.
+ *
+ * What it must not do is apply the edit a *second* time. `onMutate` runs
+ * before the scope gate, not after it — so for the common tap, the one with
+ * nothing queued ahead of it, the cache `mutationFn` reads is the cache
+ * `onMutate` just wrote. Applying the edit to that added a language twice and
+ * turned every other edit into a no-op that was never sent: a removal that
+ * came back on the next fetch, a replacement that never happened. So the body
+ * is built from the state this edit has *not* been applied to yet, which is
+ * `before` while the cache still holds `shown`, and the cache itself once
+ * something else has landed in it.
  */
 export function useEditLanguages() {
   const queryClient = useQueryClient()
   return useMutation({
     scope: PROFILE_PATCH_SCOPE,
-    mutationFn: (edit: LanguageEdit) => {
+    mutationFn: (run: LanguageEditRun) => {
       const current = queryClient.getQueryData<MeProfile>(keys.me)
       if (!current) throw new Error('no profile to edit')
-      const next = applyLanguageEdit(current, edit)
+      // Object identity, not equality: `onMutate` put `shown` in the cache, so
+      // finding it still there means nothing has landed since — and anything
+      // else means a request queued ahead of this one has answered, and this
+      // edit belongs on that answer rather than on a guess it replaced.
+      const base = current === run.shown && run.before ? run.before : current
+      const next = applyLanguageEdit(base, run.edit)
       // An edit naming a language that is no longer there — a second tap
       // queued behind a first one that failed and rolled back. Nothing to say.
-      if (sameLanguageLists(current, next)) return Promise.resolve(current)
+      if (sameLanguageLists(base, next)) return Promise.resolve(current)
       return api.patch<MeProfile>('/profiles/me', {
         nativeLanguages: next.nativeLanguages,
         learning: next.learning,
       })
     },
-    onMutate: async (edit) => {
+    onMutate: async (run) => {
       await queryClient.cancelQueries({ queryKey: keys.me })
       const previous = queryClient.getQueryData<MeProfile>(keys.me)
       if (previous) {
-        queryClient.setQueryData<MeProfile>(keys.me, {
-          ...previous,
-          ...applyLanguageEdit(previous, edit),
-        })
+        const shown = { ...previous, ...applyLanguageEdit(previous, run.edit) }
+        run.before = previous
+        run.shown = shown
+        queryClient.setQueryData<MeProfile>(keys.me, shown)
       }
       return { previous }
     },

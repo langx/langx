@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import { useMe } from '../../../src/api/queries'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -38,8 +39,8 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  *
  * The third is that this screen holds no state of its own. `useMe` is the
  * list; the optimistic cache moves it under the finger and puts it back if the
- * server refuses. There is nothing to save on the way out, so there is no Save
- * button, and nothing is lost by leaving.
+ * server refuses. Nothing is lost by leaving, and the Save button at the
+ * bottom is a way out rather than a write — see the note above it.
  */
 export default function LanguagesScreen() {
   useScreenInteractive()
@@ -151,6 +152,21 @@ export default function LanguagesScreen() {
       </View>
 
       <Text style={styles.footer}>{t('languages.changeHint')}</Text>
+
+      {/*
+        Nothing to save, and a button that says so anyway.
+        Every tap on this screen has already been written — but a screen that
+        commits invisibly reads as one that has not committed at all, and a
+        list of languages with no way out but the arrow in the corner is the
+        shape of work somebody is afraid to walk away from. So it is the way
+        out rather than the write: it ends the job and puts the reader back on
+        the profile it changed.
+      */}
+      <Button
+        label={t('common.save')}
+        onPress={() => goBackTo('/(app)/(tabs)/me', from)}
+        style={styles.save}
+      />
     </Screen>
   )
 }
@@ -307,4 +323,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   addLabel: { color: colors.accent, fontSize: 16, fontWeight: '600' },
   footer: { color: colors.textFaint, fontSize: 14, lineHeight: 21, marginTop: 20 },
+  save: { marginBottom: spacing.lg, marginTop: spacing.lg },
 }))
