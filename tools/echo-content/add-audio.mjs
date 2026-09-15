@@ -63,14 +63,32 @@ function needsCredit(slug) {
   return !/^cc0/.test(slug) && !/^pd/.test(slug) && !/^public[-\s]?domain/.test(slug)
 }
 
-/** Commons returns `Artist` as HTML — a link, sometimes several. */
+const NAMED_ENTITIES = { amp: '&', apos: "'", quot: '"', nbsp: ' ', lt: '<', gt: '>' }
+
+/**
+ * Commons returns `Artist` as HTML — a link, sometimes several.
+ *
+ * **One pass over the entities, not one pass each.** Unescaping `&amp;` first
+ * and `&quot;` after turns an input of `&amp;quot;` — which is how a page
+ * writes the literal text `&quot;` — into a quote character, because the `&`
+ * the first replacement produced is read again by the second. Replacing every
+ * entity in a single scan makes that impossible: what a replacement emits is
+ * never looked at again.
+ */
 export function plainText(html) {
   return html
     .replace(/<[^>]*>/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#0?39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&(#\d+|#x[0-9a-f]+|[a-z]+);/gi, (whole, body) => {
+      if (!body.startsWith('#')) return NAMED_ENTITIES[body.toLowerCase()] ?? whole
+      const code = /^#x/i.test(body)
+        ? Number.parseInt(body.slice(2), 16)
+        : Number.parseInt(body.slice(1), 10)
+      // An unreadable code point stays as it was written rather than becoming
+      // a replacement character somebody would have to recognise later.
+      return Number.isInteger(code) && code > 0 && code <= 0x10ffff
+        ? String.fromCodePoint(code)
+        : whole
+    })
     .replace(/\s+/g, ' ')
     .trim()
 }
