@@ -206,6 +206,11 @@ export const tr: Localized<EnMessages> = {
     cardsEmptyTitle: 'Henüz kart yok',
     cardsEmptyBody:
       'Sohbetlerden ve gönderilerden sakladığın cümleler, kendi yazdıklarınla birlikte burada toplanır.',
+    searchPlaceholder: 'Kartlarında ara',
+    searchNoneTitle: 'Eşleşen yok',
+    searchNoneBody: 'Hiçbir kartın cümlesinde, anlamında ya da örneğinde bu geçmiyor.',
+    dueIn: '{time} sonra',
+    dueNow: 'Şimdi',
     remove: 'Çıkar',
     removeTitle: 'Bu kart çıkarılsın mı?',
     removeBody: 'Programı da onunla gider. Mesajın kendisi yerinde kalır.',
@@ -243,8 +248,14 @@ export const tr: Localized<EnMessages> = {
     spokenBy: '{name} seslendirdi',
     askToHearIt: "Feed'de nasıl söylendiğini sor",
     keepOnCard: 'Kartıma ekle',
-    replaceCardAudio: 'Kartımdaki kaydı değiştir',
+    audioAlreadyKept: 'Kartında',
     audioKept: 'Kartına eklendi',
+    askForCorrection: "Feed'de düzeltmesini iste",
+    keepCorrection: 'Cümlem olarak kaydet',
+    correctionKept: 'Kartın artık bunu diyor',
+    seeCard: 'Kartı gör',
+    cardTitle: 'Kart',
+    nextReview: 'Sıradaki tekrar',
     sessionEmptyTitle: 'Bekleyen kart yok',
     sessionEmptyBody: 'Daha sonra gel ya da sohbetlerinden bir cümle sakla.',
     doneTitle: 'Oturum tamamlandı',
@@ -279,7 +290,7 @@ export const tr: Localized<EnMessages> = {
     aboutOpen: 'Bu ne?',
     aboutTitle: 'Echo nasıl çalışır',
     aboutBody:
-      'Bugün karşılaştığın şeyin çoğu bir hafta içinde uçup gider — ona bir daha rastlamazsan. Echo bir cümleyi tam kayıp gitmeden önce geri getirir; her hatırladığında bir sonraki bekleme uzar.',
+      'Echo bir cümleyi tam unutacağın anda geri getirir. Hatırlarsan bir sonraki bekleme uzar.',
     aboutWithout: 'Tekrar olmadan',
     aboutWith: 'Echo ile',
     aboutChart:
@@ -291,16 +302,12 @@ export const tr: Localized<EnMessages> = {
     aboutStep8d: '8 gün',
     aboutStep20d: '20 gün',
     aboutStepMore: 'sonra aylar, sonra yılda bir',
-    aboutRecall:
-      'İşi yapan şey sorulmaktır. Bir kelimeyi kendi kafandan çıkarmak, onu tekrar okumaktan çok daha kalıcı kılar.',
-    aboutLittle:
-      'Bir dil binlerce kelime demek. Echo yalnızca unutmak üzere olduklarını sorar; bu yüzden günde on dakika, haftada bir saatten daha ileri götürür.',
-    aboutYours:
-      'Üstelik bunlar kendi sohbetlerinden çıkan kendi cümlelerin — hatırlamak için zaten bir sebebin vardı.',
-    aboutForgot:
-      'Unuttun mu? Kart bir dakika sonra geri gelir ve kısa sürelerden yeniden başlar. Hiçbir şey kaybolmaz.',
+    aboutRecall: 'Sorulmak, tekrar okumaktan iyidir.',
+    aboutLittle: 'Günde on dakika, haftada bir saatten iyidir.',
+    aboutYours: 'Kendi sohbetlerinden çıkan kendi cümlelerin.',
+    aboutForgot: 'Unutursan daha erken geri gelir. Hiçbir şey kaybolmaz.',
     aboutProof:
-      'Aralıklı tekrar ve kendini test etme, hafıza araştırmalarının 1880’lerden beri en sağlam iki bulgusu. Burada ikisi birden, senin dilinde çalışıyor.',
+      'Aralıklı tekrar ve kendini test etme: 1880’lerden beri en sağlam iki hafıza bulgusu.',
     aboutClose: 'Anladım',
   },
 

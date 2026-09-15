@@ -195,6 +195,11 @@ export const de: Localized<EnMessages> = {
     cardsEmptyTitle: 'Noch keine Karten',
     cardsEmptyBody:
       'Sätze, die du aus Chats und Beiträgen behältst, sammeln sich hier — zusammen mit denen, die du selbst schreibst.',
+    searchPlaceholder: 'Deine Karten durchsuchen',
+    searchNoneTitle: 'Nichts gefunden',
+    searchNoneBody: 'Keine Karte hat das im Satz, in der Bedeutung oder im Beispiel.',
+    dueIn: 'In {time}',
+    dueNow: 'Jetzt fällig',
     remove: 'Entfernen',
     removeTitle: 'Diese Karte entfernen?',
     removeBody: 'Ihr Zeitplan geht mit. Die Nachricht selbst bleibt, wo sie ist.',
@@ -232,8 +237,14 @@ export const de: Localized<EnMessages> = {
     spokenBy: 'Gesprochen von {name}',
     askToHearIt: 'Im Feed nach der Aussprache fragen',
     keepOnCard: 'Auf meiner Karte behalten',
-    replaceCardAudio: 'Aufnahme meiner Karte ersetzen',
+    audioAlreadyKept: 'Auf deiner Karte',
     audioKept: 'Auf deiner Karte gespeichert',
+    askForCorrection: 'Im Feed um eine Korrektur bitten',
+    keepCorrection: 'Als meinen Satz übernehmen',
+    correctionKept: 'Deine Karte sagt jetzt das',
+    seeCard: 'Karte ansehen',
+    cardTitle: 'Karte',
+    nextReview: 'Nächste Wiederholung',
     sessionEmptyTitle: 'Nichts fällig',
     sessionEmptyBody: 'Komm später wieder oder behalte einen Satz aus einem Chat.',
     doneTitle: 'Einheit abgeschlossen',
@@ -268,7 +279,7 @@ export const de: Localized<EnMessages> = {
     aboutOpen: 'Was ist das?',
     aboutTitle: 'So funktioniert Echo',
     aboutBody:
-      'Das meiste, was du heute triffst, ist in einer Woche weg — wenn du es nicht wiedersiehst. Echo holt einen Satz zurück, kurz bevor er verschwindet, und jedes Mal, wenn du dich erinnerst, wird die nächste Pause länger.',
+      'Echo holt einen Satz zurück, kurz bevor du ihn vergisst. Erinnerst du dich, wird die nächste Pause länger.',
     aboutWithout: 'Ohne Wiederholung',
     aboutWith: 'Mit Echo',
     aboutChart:
@@ -280,16 +291,12 @@ export const de: Localized<EnMessages> = {
     aboutStep8d: '8 Tage',
     aboutStep20d: '20 Tage',
     aboutStepMore: 'dann Monate, dann einmal im Jahr',
-    aboutRecall:
-      'Die Arbeit macht das Gefragtwerden. Ein Wort aus dem eigenen Kopf zu holen sitzt weit besser, als es noch einmal zu lesen.',
-    aboutLittle:
-      'Eine Sprache sind Tausende Wörter. Echo fragt nur nach denen, die du gerade vergisst — zehn Minuten am Tag bringen so mehr als eine Stunde pro Woche.',
-    aboutYours:
-      'Und es sind deine eigenen Sätze aus deinen eigenen Chats — Wörter, die du dir ohnehin merken wolltest.',
-    aboutForgot:
-      'Vergessen? Die Karte kommt nach einer Minute zurück und fängt wieder mit den kurzen Pausen an. Nichts geht verloren.',
+    aboutRecall: 'Gefragt werden schlägt Nachlesen.',
+    aboutLittle: 'Zehn Minuten am Tag schlagen eine Stunde pro Woche.',
+    aboutYours: 'Deine eigenen Sätze, aus deinen eigenen Chats.',
+    aboutForgot: 'Vergessen? Dann kommt sie früher zurück. Nichts geht verloren.',
     aboutProof:
-      'Verteiltes Lernen und Selbstabfragen sind die beiden am besten belegten Befunde der Gedächtnisforschung, geprüft seit den 1880er-Jahren. Genau die beiden, auf deine Sprache gerichtet.',
+      'Verteiltes Lernen und Selbstabfragen: die zwei bestbelegten Befunde der Gedächtnisforschung, seit den 1880ern.',
     aboutClose: 'Verstanden',
   },
 

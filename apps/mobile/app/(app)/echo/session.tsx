@@ -2,10 +2,14 @@ import Feather from '@expo/vector-icons/Feather'
 import {
   asksProduction,
   ECHO_GRADES,
+  echoAudiosOf,
   productionVerdict,
   scheduledDelayMinutes,
+  type EchoAudio,
+  type EchoVoice,
   type EchoCard,
   type EchoGrade,
+  type EchoImage,
   type EchoSrs,
 } from '@langx/shared'
 import { useAudioPlayer } from 'expo-audio'
@@ -25,6 +29,7 @@ import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
+import { compactDuration } from '../../../src/lib/format'
 import { goBackTo } from '../../../src/lib/navigation'
 import { postLanguages } from '../../../src/lib/postLanguage'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
@@ -42,6 +47,13 @@ import { newClientId } from '../../../src/lib/unsentMessages'
  * the keyboard's dismissal, short enough that nobody deliberate is refused.
  */
 const REVEAL_GUARD_MS = 400
+
+/**
+ * How tall a card's picture is allowed to get. The sentence is the card; a
+ * portrait photograph given its whole aspect ratio would push it under the
+ * fold on a phone, and the picture is the hint, not the question.
+ */
+const PICTURE_MAX_HEIGHT = 240
 
 interface Graded {
   reviewId: string
@@ -131,7 +143,7 @@ export default function EchoSessionScreen() {
   }, [deck, queue.data, queue.isPaused, queue.isError])
 
   const card = deck?.[index]
-  const player = useAudioPlayer(card?.audio?.url ?? null)
+  const recordings = card ? echoAudiosOf(card) : []
   /**
    * Writing it, rather than recognising it. The card and its schedule are
    * unchanged — this is a presentation of the same row, decided by a pure
@@ -218,14 +230,13 @@ export default function EchoSessionScreen() {
 
   /** The card as a question for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null
+  /** The same card as the other question: whether the sentence is right. */
+  const askCorrection = card ? echoAskParams(card, languages, 'correction') : null
 
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
     if (!card) return ''
-    const minutes = scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date())
-    if (minutes < 60) return t('format.minutesCompact', { count: Math.max(1, minutes) })
-    if (minutes < 60 * 24) return t('format.hoursCompact', { count: Math.round(minutes / 60) })
-    return t('format.daysCompact', { count: Math.round(minutes / (60 * 24)) })
+    return compactDuration(t, scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()))
   }
 
   /**
@@ -241,21 +252,8 @@ export default function EchoSessionScreen() {
    * it asked on; that link is what lets an answer's recording come back here
    * in one tap.
    */
-  function askToHearIt(params: EchoAskParams): void {
+  function askTheFeed(params: EchoAskParams): void {
     router.push({ pathname: '/(app)/compose', params })
-  }
-
-  /*
-   * `replace` on every press rather than one player per take: a card can carry
-   * a person's recording and two synthesised readings, hooks cannot be called
-   * in a loop, and these clips are a second long — reloading one costs less
-   * than tracking which of three is currently loaded.
-   */
-  async function play(url: string): Promise<void> {
-    await ensurePlaybackAudioMode()
-    player.replace(url)
-    void player.seekTo(0)
-    player.play()
   }
 
   const header = (
@@ -335,9 +333,7 @@ export default function EchoSessionScreen() {
         />
       </View>
       <ScrollView contentContainerStyle={styles.card}>
-        {card.image ? (
-          <Image source={{ uri: card.image.url }} style={styles.picture} contentFit="cover" />
-        ) : null}
+        {card.image ? <CardPicture key={card.image.url} image={card.image} /> : null}
         {producing && !revealed ? (
           /*
            * The meaning, and a box. The sentence is the answer, so it is not
@@ -365,55 +361,50 @@ export default function EchoSessionScreen() {
           /* The sentence as it was written. Data, never interface copy. */
           <Text style={styles.front}>{card.front}</Text>
         )}
-        {!producing && !card.audio && ask ? (
+        {!producing && recordings.length === 0 && ask ? (
           <Pressable
             accessibilityRole="button"
             hitSlop={8}
-            onPress={() => askToHearIt(ask)}
+            onPress={() => askTheFeed(ask)}
             style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
           >
             <Feather name="mic" size={16} color={colors.accent} />
             <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
           </Pressable>
         ) : null}
-        {(card.audio || card.voices?.length) && (!producing || revealed) ? (
-          <View style={styles.takes}>
-            {card.audio ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('echo.play')}
-                hitSlop={8}
-                onPress={() => void play(card.audio!.url)}
-                style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-              >
-                <Feather name="volume-2" size={18} color={colors.accent} />
-                {/* Who is speaking, so a person's recording is never taken for
-                    anything else. */}
-                <Text style={styles.speakerLabel}>
-                  {card.audio.speakerName
-                    ? t('echo.spokenBy', { name: card.audio.speakerName })
-                    : t('echo.play')}
-                </Text>
-              </Pressable>
-            ) : null}
-            {/* Synthesised readings, labelled as such and never with a name:
-                there is nobody to credit, and a made-up one would make a
-                machine indistinguishable from the person above it. */}
-            {(card.voices ?? []).map((take) => (
-              <Pressable
-                key={take.voice}
-                accessibilityRole="button"
-                accessibilityLabel={voiceLabel(t, take.voice)}
-                hitSlop={8}
-                onPress={() => void play(take.url)}
-                style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-              >
-                <Feather name="cpu" size={16} color={colors.textMuted} />
-                <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
-              </Pressable>
-            ))}
-          </View>
+        {/*
+          Whether the sentence is right, which is a different question from how
+          it is said and has no answer on the card to suppress it — a card can
+          always turn out to be wrong. Only before the answer, so it does not
+          sit among the grades.
+        */}
+        {!revealed && askCorrection ? (
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => askTheFeed(askCorrection)}
+            style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+          >
+            <Feather name="edit-3" size={16} color={colors.accent} />
+            <Text style={styles.speakerLabel}>{t('echo.askForCorrection')}</Text>
+          </Pressable>
         ) : null}
+        {/*
+          Every recording, each with its own player: one card can hold several
+          people saying the same sentence, and which of them is speaking is the
+          whole reason to keep more than one.
+        */}
+        {!producing || revealed
+          ? recordings.map((audio) => <Recording key={audio.url} audio={audio} />)
+          : null}
+        {/*
+          The pack's own readings, under the people. Labelled by register and
+          by nothing else: there is nobody to credit, and a name here would
+          make a voice model indistinguishable from the volunteer above it.
+        */}
+        {!producing || revealed
+          ? (card.voices ?? []).map((take) => <Reading key={take.voice} take={take} />)
+          : null}
 
         {revealed ? (
           <>
@@ -467,6 +458,106 @@ export default function EchoSessionScreen() {
   )
 }
 
+/**
+ * The card's picture, whole.
+ *
+ * It used to be a fixed 140pt band with `contentFit: cover`, which did not
+ * merely guess the shape wrong — it *cropped*: the screenshot that started
+ * this had a face with the top of the head and the chin cut off. The box takes
+ * the picture's own ratio instead, from the card when it carries one and from
+ * the file itself when it does not, the way `ImageBubble` does for a message.
+ *
+ * `contain` rather than `cover`, and that is forced: the width is fixed at
+ * 100%, so once `maxHeight` clamps a tall picture the box's ratio is no longer
+ * the picture's and `cover` would crop again — exactly what this is fixing. No
+ * background colour behind it, so the letterbox that clamping leaves does not
+ * draw as two grey bands.
+ */
+function CardPicture({ image }: { image: EchoImage }) {
+  const styles = useStyles()
+  const [measured, setMeasured] = useState<number | null>(null)
+  const ratio = image.width && image.height ? image.width / image.height : measured
+
+  return (
+    <View style={[styles.picture, { aspectRatio: ratio ?? 4 / 3 }]}>
+      <Image
+        source={{ uri: image.url }}
+        style={styles.pictureFill}
+        contentFit="contain"
+        transition={150}
+        onLoad={({ source }) => {
+          if (ratio || !source.width || !source.height) return
+          setMeasured(source.width / source.height)
+        }}
+      />
+    </View>
+  )
+}
+
+/**
+ * One of the card's recordings, with its own player.
+ *
+ * A component per recording rather than one player the row switches between:
+ * `useAudioPlayer` is a hook, so a card holding three voices needs three of
+ * them, and a hook cannot be called in a loop from the screen itself.
+ */
+function Recording({ audio }: { audio: EchoAudio }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(audio.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t('echo.play')}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="volume-2" size={18} color={colors.accent} />
+      {/* Who is speaking, so a person's recording is never taken for anything
+          else — and, with several on one card, so the two can be told apart. */}
+      <Text style={styles.speakerLabel}>
+        {audio.speakerName ? t('echo.spokenBy', { name: audio.speakerName }) : t('echo.play')}
+      </Text>
+    </Pressable>
+  )
+}
+
+/** A synthesised take. `Recording`'s twin, and deliberately not the same thing. */
+function Reading({ take }: { take: EchoVoice }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(take.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={voiceLabel(t, take.voice)}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="cpu" size={16} color={colors.textMuted} />
+      <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+    </Pressable>
+  )
+}
+
 function Count({ label, value }: { label: string; value: number }) {
   const styles = useStyles()
   return (
@@ -488,9 +579,14 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     textAlign: 'center',
   },
   card: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
-  picture: { borderRadius: radius.md, height: 140, width: '100%' },
+  picture: {
+    borderRadius: radius.md,
+    maxHeight: PICTURE_MAX_HEIGHT,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  pictureFill: { height: '100%', width: '100%' },
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
-  takes: { alignItems: 'center', gap: spacing.sm },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
   /* Quieter than a person's take, because it is the lesser of the two. */

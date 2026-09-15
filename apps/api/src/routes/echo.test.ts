@@ -12,7 +12,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
-import { newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
+import { ECHO_AUDIO_MAX, newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
 
 const PASSWORD = 'correct horse battery staple'
 const DB_NAME = 'langx_echo_test'
@@ -675,6 +675,165 @@ describe('echo', () => {
   })
 
   /**
+   * The library, and finding one card in it.
+   *
+   * `q` is the only free-text search in the app that is not anchored, and the
+   * reason it is allowed to be is that the filter is pinned to one person's
+   * cards first — so the tests that matter are the ones about what it matches
+   * and about what it still costs.
+   */
+  describe('listing and searching cards', () => {
+    async function write(
+      user: SignedUpUser,
+      clientId: string,
+      front: string,
+      back = 'the meaning',
+      lang = 'en',
+    ) {
+      const response = await capture(user, { kind: 'manual', clientId, front, back, lang })
+      if (response.statusCode >= 300) {
+        throw new Error(`capture failed (${response.statusCode}): ${response.body}`)
+      }
+      return response.json<{ card: { _id: string } }>().card._id
+    }
+
+    function list(user: SignedUpUser, query = '') {
+      return app.inject({
+        method: 'GET',
+        url: `/echo/cards${query}`,
+        headers: { cookie: user.cookie },
+      })
+    }
+
+    function frontsOf(response: { json: <T>() => T }): string[] {
+      return response.json<{ items: { front: string }[] }>().items.map((item) => item.front)
+    }
+
+    it('finds a card by its sentence, its meaning or its example', async () => {
+      const user = await newUser('search-fields@example.com')
+      await write(user, 'search-front', 'le hibou hulule', 'the owl hoots')
+      await write(user, 'search-back', 'la chouette', 'a different owl')
+      await write(user, 'search-neither', 'le chat dort', 'the cat sleeps')
+      // The example line only ever arrives on a pack card, so it is written
+      // straight onto the document rather than captured.
+      const withExample = await write(user, 'search-example', 'ronronner', 'to purr')
+      await handle.db
+        .collection(COLLECTIONS.echoCards)
+        .updateOne({ _id: new ObjectId(withExample) }, { $set: { example: 'the owl is asleep' } })
+
+      const response = await list(user, '?q=owl')
+
+      expect(response.statusCode, response.body).toBe(200)
+      expect(frontsOf(response).sort()).toEqual(['la chouette', 'le hibou hulule', 'ronronner'])
+    })
+
+    it('ignores case', async () => {
+      const user = await newUser('search-case@example.com')
+      await write(user, 'search-case-1', 'Guten Morgen', 'good morning')
+
+      expect(frontsOf(await list(user, '?q=guten'))).toEqual(['Guten Morgen'])
+      expect(frontsOf(await list(user, '?q=MORGEN'))).toEqual(['Guten Morgen'])
+    })
+
+    /*
+     * The escape, proved rather than assumed. Unescaped, `a.c` is a pattern
+     * whose dot matches the `b` in `abc` — so a search for one card would
+     * quietly return two, and every other character in that class is a worse
+     * version of the same bug.
+     */
+    it('treats a regex metacharacter as itself', async () => {
+      const user = await newUser('search-escape@example.com')
+      await write(user, 'search-escape-dot', 'a.c', 'with a dot')
+      await write(user, 'search-escape-plain', 'abc', 'without one')
+
+      expect(frontsOf(await list(user, '?q=a.c'))).toEqual(['a.c'])
+    })
+
+    it('narrows by language and term together', async () => {
+      const user = await newUser('search-lang@example.com')
+      // Straight to the profile: a second learning language is a paid benefit
+      // and the plan gate is not what is under test. Same move as the pack
+      // ordering test below.
+      await handle.db.collection(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId as never },
+        {
+          $set: {
+            learning: [
+              { code: 'en', level: 'intermediate', priority: 1 },
+              { code: 'fr', level: 'beginner', priority: 2 },
+            ],
+          },
+        },
+      )
+      await write(user, 'search-lang-en', 'the owl', 'baykuş', 'en')
+      await write(user, 'search-lang-fr', 'le hibou owl', 'baykuş', 'fr')
+
+      expect(frontsOf(await list(user, '?q=owl&lang=fr'))).toEqual(['le hibou owl'])
+    })
+
+    it('pages a search the same way it pages the library', async () => {
+      const user = await newUser('search-paging@example.com')
+      await write(user, 'search-page-1', 'owl one')
+      await write(user, 'search-page-2', 'owl two')
+      await write(user, 'search-page-3', 'owl three')
+      await write(user, 'search-page-4', 'a cat')
+
+      const first = await list(user, '?q=owl&limit=2')
+      const firstPage = first.json<{ items: { front: string }[]; nextCursor: string | null }>()
+      expect(firstPage.items).toHaveLength(2)
+      expect(firstPage.nextCursor).toBeTruthy()
+
+      const second = await list(user, `?q=owl&limit=2&cursor=${firstPage.nextCursor}`)
+      const secondPage = second.json<{ items: { front: string }[]; nextCursor: string | null }>()
+
+      const seen = [...firstPage.items, ...secondPage.items].map((item) => item.front)
+      expect(seen.sort()).toEqual(['owl one', 'owl three', 'owl two'])
+      expect(secondPage.nextCursor).toBeNull()
+    })
+
+    it("never reaches another person's cards", async () => {
+      const [mine, theirs] = await newPair('search-owner')
+      await write(theirs, 'search-owner-theirs', 'the owl is theirs')
+      await write(mine, 'search-owner-mine', 'the owl is mine')
+
+      expect(frontsOf(await list(mine, '?q=owl'))).toEqual(['the owl is mine'])
+    })
+
+    it('refuses an empty term rather than listing everything', async () => {
+      const user = await newUser('search-empty@example.com')
+      expect((await list(user, '?q=')).statusCode).toBe(400)
+      expect((await list(user, '?q=%20')).statusCode).toBe(400)
+    })
+
+    /**
+     * The acceptance criterion for the unanchored pattern: `userId` has to
+     * stay an index bound, so the regex only ever decides which of one
+     * person's cards come back. The day the `$or` costs the index instead,
+     * this search becomes a scan of everybody's library.
+     */
+    it('is served by an index, not a collection scan', async () => {
+      const user = await newUser('search-explain@example.com')
+      await write(user, 'search-explain-1', 'the owl')
+
+      const explained = await handle.db
+        .collection(COLLECTIONS.echoCards)
+        .find({
+          userId: user.userId,
+          $or: [
+            { front: { $regex: 'owl', $options: 'i' } },
+            { back: { $regex: 'owl', $options: 'i' } },
+            { example: { $regex: 'owl', $options: 'i' } },
+          ],
+        })
+        .explain('executionStats')
+
+      const serialized = JSON.stringify(explained)
+      expect(serialized).toContain('IXSCAN')
+      expect(serialized).not.toContain('COLLSCAN')
+    })
+  })
+
+  /**
    * Cards written by hand: the one capture that is handed its own contents.
    *
    * No provider is configured in this suite, so an absent back comes back
@@ -897,39 +1056,61 @@ describe('echo', () => {
      * message, post or pack that still plays it; deleting it because a card
      * stopped pointing at it would take a recording out of somebody's thread.
      */
-    it('deletes the object it replaces only when the card owned it', async () => {
+    it('deletes a removed recording only when the card owned it', async () => {
       const user = await newUser('media-delete@example.com')
       const cardId = await writeCard(user, 'media-delete')
       const { updateCard } = await import('../modules/echo/cards')
       const cards = handle.db.collection(COLLECTIONS.echoCards)
 
       // A copy, as a capture would have written it.
+      const copiedUrl = `${BUCKET}/posts/other/answer.m4a`
       await cards.updateOne(
         { _id: new ObjectId(cardId) },
-        { $set: { audio: { url: `${BUCKET}/posts/other/answer.m4a`, origin: 'post' } } },
+        {
+          $set: {
+            audio: { url: copiedUrl, origin: 'post' },
+            audios: [{ url: copiedUrl, origin: 'post' }],
+          },
+        },
       )
-      const copied = fakeStorage()
+
+      // Adding one of your own takes nothing away: recordings accumulate.
+      const added = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, audio: recording('mine') },
         BUCKET,
-        copied.storage,
+        added.storage,
       )
-      expect(copied.deleted).toEqual([])
+      expect(added.deleted).toEqual([])
 
-      // Now the card's own recording, replaced by another of its own.
-      const own = fakeStorage()
+      // Taking the copy off leaves the post that still plays it alone.
+      const copy = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
-        { ...lines, audio: recording('newer') },
+        { ...lines, removeAudio: [copiedUrl] },
+        BUCKET,
+        copy.storage,
+      )
+      expect(copy.deleted).toEqual([])
+
+      // Taking off the card's own recording does delete it: nothing else holds it.
+      const own = fakeStorage()
+      const card = await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, removeAudio: [`${BUCKET}/echo/u/mine.m4a`] },
         BUCKET,
         own.storage,
       )
       expect(own.deleted).toEqual(['echo/u/mine.m4a'])
+      expect(card.audios ?? []).toEqual([])
+      expect(card.audio).toBeUndefined()
     })
 
     it('refuses a file that is not in our bucket', async () => {
@@ -1100,20 +1281,82 @@ describe('echo', () => {
       expect(audio?.speakerName).toBe('Test User')
     })
 
-    /* The reason to tap this twice is that the first voice was hard to follow. */
-    it('replaces a recording the card already had', async () => {
-      const [asker, first] = await newPair('ask-replace')
-      const second = await newUser('ask-replace-c@example.com')
+    /*
+     * Two people answering the same question is the reason to ask the feed at
+     * all — one says it the way it is written, the other the way it is said.
+     * The card used to keep only the newer of them.
+     */
+    it('adds a second answer rather than replacing the first', async () => {
+      const [asker, first] = await newPair('ask-second')
+      const second = await newUser('ask-second-c@example.com')
       const cardId = await makeCard(asker, first, 'squirrel')
       const postId = await askPost(asker)
       await link(asker, cardId, postId)
 
       await attach(asker, cardId, await answerWith(first, postId, 'first'))
-      const later = await answerWith(second, postId, 'second')
+      const response = await attach(asker, cardId, await answerWith(second, postId, 'second'))
 
-      const response = await attach(asker, cardId, later)
       expect(response.statusCode, response.body).toBe(200)
-      expect(response.json<{ audio: { url: string } }>().audio.url).toContain('second.m4a')
+      const card = response.json<{ audio: { url: string }; audios: { url: string }[] }>()
+      expect(card.audios.map((entry) => entry.url.split('/').at(-1))).toEqual([
+        'first.m4a',
+        'second.m4a',
+      ])
+      // The mirror an older build reads is the first of them, always.
+      expect(card.audio.url).toBe(card.audios[0]?.url)
+    })
+
+    /** The button is on every row; tapping one twice is not two recordings. */
+    it('keeps the same answer once however often it is kept', async () => {
+      const [asker, friend] = await newPair('ask-twice')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+      const answerId = await answerWith(friend, postId, 'once')
+
+      await attach(asker, cardId, answerId)
+      const again = await attach(asker, cardId, answerId)
+
+      expect(again.statusCode, again.body).toBe(200)
+      expect(again.json<{ audios: unknown[] }>().audios).toHaveLength(1)
+    })
+
+    it('refuses a recording past the ceiling rather than dropping one', async () => {
+      const [asker, friend] = await newPair('ask-full')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+
+      /*
+       * One answer per person per post (`post_author_unique`), so filling a
+       * card takes as many voices as it holds. The authors are ids rather than
+       * accounts: what is under test is the ceiling, and four more sign-ups
+       * would only make the suite slower.
+       */
+      const fill = async (name: string) => {
+        const _id = new ObjectId()
+        await handle.db.collection(COLLECTIONS.pronunciationAnswers).insertOne({
+          _id,
+          postId: new ObjectId(postId),
+          authorId: new ObjectId().toHexString(),
+          media: take(name),
+          createdAt: new Date(),
+        })
+        return _id.toHexString()
+      }
+
+      for (let i = 0; i < ECHO_AUDIO_MAX; i += 1) {
+        expect((await attach(asker, cardId, await fill(`take${i}`))).statusCode).toBe(200)
+      }
+      const overflow = await fill('overflow')
+
+      expect((await attach(asker, cardId, overflow)).statusCode).toBe(400)
+      const card = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: asker.cookie },
+      })
+      expect(card.json<{ audios: unknown[] }>().audios).toHaveLength(ECHO_AUDIO_MAX)
     })
 
     /*
@@ -1121,6 +1364,110 @@ describe('echo', () => {
      * the attach, so this is the test holding it up: without the check, any
      * answer anywhere could be pointed at any of your cards.
      */
+    async function correctionPost(user: SignedUpUser, body = 'i has a squirrel') {
+      const created = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { body, language: 'en', kind: 'correction' },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ _id: string }>()._id
+    }
+
+    async function correctWith(author: SignedUpUser, postId: string, corrected: string) {
+      const created = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: author.cookie },
+        payload: { corrected },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ _id: string }>()._id
+    }
+
+    function applyCorrectionTo(user: SignedUpUser, cardId: string, correctionId: string) {
+      return app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/correction`,
+        headers: { cookie: user.cookie },
+        payload: { correctionId },
+      })
+    }
+
+    it('reads one card by id, and never somebody else’s', async () => {
+      const [mine, theirs] = await newPair('card-by-id')
+      const cardId = await makeCard(mine, theirs, 'squirrel')
+
+      const ok = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: mine.cookie },
+      })
+      expect(ok.statusCode, ok.body).toBe(200)
+      expect(ok.json<{ _id: string }>()._id).toBe(cardId)
+
+      const not = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: theirs.cookie },
+      })
+      expect(not.statusCode).toBe(404)
+    })
+
+    /*
+     * The two questions a card can ask are remembered separately. Asking for a
+     * correction used to be impossible; doing it through one field would have
+     * taken the "keep this recording" button off a pronunciation post somebody
+     * was still answering.
+     */
+    it('remembers a correction ask without forgetting the recording ask', async () => {
+      const [asker, friend] = await newPair('ask-both')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const spoken = await askPost(asker)
+      const written = await correctionPost(asker)
+
+      await link(asker, cardId, spoken)
+      await link(asker, cardId, written)
+
+      const card = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: asker.cookie },
+      })
+      expect(card.json<{ askedPostId: string; askedCorrectionPostId: string }>()).toMatchObject({
+        askedPostId: spoken,
+        askedCorrectionPostId: written,
+      })
+      // And the post screen finds the card from either question.
+      expect((await forPost(asker, spoken)).json<{ _id: string }>()._id).toBe(cardId)
+      expect((await forPost(asker, written)).json<{ _id: string }>()._id).toBe(cardId)
+    })
+
+    it('puts a correction on the card as its sentence', async () => {
+      const [asker, friend] = await newPair('correction-keep')
+      const cardId = await makeCard(asker, friend, 'i has a squirrel')
+      const postId = await correctionPost(asker)
+      await link(asker, cardId, postId)
+      const correctionId = await correctWith(friend, postId, 'I have a squirrel')
+
+      const response = await applyCorrectionTo(asker, cardId, correctionId)
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ front: string }>().front).toBe('I have a squirrel')
+    })
+
+    /* The same authorisation story as the recording: it has to be this post's. */
+    it('refuses a correction written on a different post', async () => {
+      const [asker, friend] = await newPair('correction-elsewhere')
+      const cardId = await makeCard(asker, friend, 'i has a squirrel')
+      await link(asker, cardId, await correctionPost(asker))
+
+      const elsewhere = await correctionPost(friend, 'she go home')
+      const correctionId = await correctWith(asker, elsewhere, 'she goes home')
+
+      expect((await applyCorrectionTo(asker, cardId, correctionId)).statusCode).toBe(404)
+    })
+
     it('refuses an answer written on a different post', async () => {
       const [asker, friend] = await newPair('ask-elsewhere')
       const cardId = await makeCard(asker, friend, 'squirrel')

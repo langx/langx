@@ -236,6 +236,12 @@ export const en = {
     cardsEmptyTitle: 'No cards yet',
     cardsEmptyBody:
       'Sentences you keep from chats and posts collect here, along with the ones you write yourself.',
+    searchPlaceholder: 'Search your cards',
+    searchNoneTitle: 'Nothing matches',
+    searchNoneBody: 'No card has that in its sentence, its meaning or its example.',
+    /** When the card comes back. `{time}` is already short: `10m`, `4d`. */
+    dueIn: 'Due in {time}',
+    dueNow: 'Due now',
     remove: 'Remove',
     removeTitle: 'Remove this card?',
     removeBody: 'Its schedule goes with it. The message itself stays where it is.',
@@ -281,9 +287,17 @@ export const en = {
     askToHearIt: 'Ask the feed how it is said',
     /** On an answer, when the card that asked has no recording yet. */
     keepOnCard: 'Keep on my card',
-    /** The same tap on a card that already speaks. It says so before the tap. */
-    replaceCardAudio: 'Replace my card’s recording',
+    /** On an answer already kept: said, not offered, so nothing is greyed out. */
+    audioAlreadyKept: 'On your card',
     audioKept: 'Kept on your card',
+    /** Names the feed, as the pronunciation one does. */
+    askForCorrection: 'Ask the feed to correct it',
+    /** On a correction, when the card that asked is the viewer's own. */
+    keepCorrection: 'Keep this as my sentence',
+    correctionKept: 'Your card now says this',
+    seeCard: 'See the card',
+    cardTitle: 'Card',
+    nextReview: 'Next review',
     sessionEmptyTitle: 'Nothing due',
     sessionEmptyBody: 'Come back later, or keep a sentence from one of your chats.',
     doneTitle: 'Session complete',
@@ -338,7 +352,7 @@ export const en = {
     aboutOpen: 'What is this?',
     aboutTitle: 'How Echo works',
     aboutBody:
-      'Most of what you meet today is gone within a week — unless you meet it again. Echo brings a sentence back right before it slips, and every time you remember it the next wait is longer.',
+      'Echo brings a sentence back just before you would forget it. Remember it, and the next wait is longer.',
     aboutWithout: 'Without review',
     aboutWith: 'With Echo',
     aboutChart:
@@ -350,16 +364,12 @@ export const en = {
     aboutStep8d: '8 days',
     aboutStep20d: '20 days',
     aboutStepMore: 'then months, then once a year',
-    aboutRecall:
-      'Being asked is what does the work. Pulling a word out of your own head fixes it far better than reading it again.',
-    aboutLittle:
-      'A language is thousands of words. Echo only asks about the ones you are about to forget, so ten minutes a day goes further than an hour once a week.',
-    aboutYours:
-      'And they are your own sentences, out of your own chats — words you already had a reason to remember.',
-    aboutForgot:
-      'Forgot one? It comes back in a minute and starts again from the short waits. Nothing is lost.',
+    aboutRecall: 'Being asked beats reading it again.',
+    aboutLittle: 'Ten minutes a day beats an hour once a week.',
+    aboutYours: 'Your own sentences, out of your own chats.',
+    aboutForgot: 'Forget one and it comes back sooner. Nothing is lost.',
     aboutProof:
-      'Spacing and self-testing are the two best-proven findings in memory research, tested since the 1880s. This is both of them, pointed at your language.',
+      'Spacing and self-testing: the two best-proven findings in memory research, since the 1880s.',
     aboutClose: 'Got it',
   },
 

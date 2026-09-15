@@ -1,4 +1,5 @@
 import {
+  applyEchoCorrectionSchema,
   attachEchoAudioSchema,
   captureEchoSchema,
   echoPackPreviewQuerySchema,
@@ -13,10 +14,12 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
+  applyCorrection,
   attachAnswerAudio,
   captureEcho,
   cardForPost,
   dueQueue,
+  getCard,
   linkAsk,
   listCards,
   removeCard,
@@ -98,8 +101,9 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /*
-   * An answer on that post, kept as the card's recording. A card that already
-   * has one is overwritten — see `attachAnswerAudio`.
+   * An answer on that post, kept as one of the card's recordings. Added rather
+   * than substituted, and keeping the same answer twice is a no-op — see
+   * `attachAnswerAudio`.
    */
   app.post(
     '/echo/cards/:id/audio',
@@ -108,6 +112,35 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(
         await attachAnswerAudio(app.mongo.db, request.userId, request.params.id, request.body),
       )
+    },
+  )
+
+  /*
+   * A correction on that post, kept as the card's sentence. The text half of
+   * the route above — see `applyCorrection`.
+   */
+  app.post(
+    '/echo/cards/:id/correction',
+    {
+      preHandler: requireAuth,
+      schema: { params: cardParamsSchema, body: applyEchoCorrectionSchema },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await applyCorrection(app.mongo.db, request.userId, request.params.id, request.body),
+      )
+    },
+  )
+
+  /*
+   * One card, by id. What the card screen reads: a post links to the card it
+   * was asked from, and that screen is reached with nothing but an id.
+   */
+  app.get(
+    '/echo/cards/:id',
+    { preHandler: requireAuth, schema: { params: cardParamsSchema } },
+    async (request, reply) => {
+      return reply.send(await getCard(app.mongo.db, request.userId, request.params.id))
     },
   )
 

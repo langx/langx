@@ -168,8 +168,9 @@ export const keys = {
   echo: ['echo'] as const,
   echoSummary: ['echo', 'summary'] as const,
   echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
-  echoCards: (lang: string) => ['echo', 'cards', lang] as const,
+  echoCards: (lang: string, q: string) => ['echo', 'cards', lang, q] as const,
   echoPacks: ['echo', 'packs'] as const,
+  echoCard: (id: string) => ['echo', 'card', id] as const,
   echoPackItems: (packId: string, offset: number) =>
     ['echo', 'packs', packId, 'items', offset] as const,
   echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
@@ -2690,18 +2691,26 @@ export function useEchoQueue(lang?: string) {
  * `conversation_term_unique` within one conversation, and an Echo library is
  * bounded by nothing but the daily ceiling.
  */
-export function useEchoCards(lang?: string) {
+export function useEchoCards(lang?: string, q?: string) {
   return useInfiniteQuery({
-    queryKey: keys.echoCards(lang ?? 'all'),
+    queryKey: keys.echoCards(lang ?? 'all', q ?? ''),
     queryFn: ({ pageParam }) =>
       api.get<EchoCardPage>(
         `/echo/cards?${new URLSearchParams({
           ...(lang ? { lang } : {}),
+          ...(q ? { q } : {}),
           ...(pageParam ? { cursor: pageParam } : {}),
         }).toString()}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    /*
+     * The term is part of the key, so every keystroke that survives the
+     * debounce is a fresh cache entry — and without this each one would flip
+     * `isPending` and replace the list with skeletons while you are still
+     * typing. `useDiscovery` makes the same argument about its filter chips.
+     */
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -2765,10 +2774,30 @@ export function useUpdateEchoCard() {
         // leaves the file alone, null takes it off. See `updateEchoCardSchema`.
         ...(input.image !== undefined ? { image: input.image } : {}),
         ...(input.audio !== undefined ? { audio: input.audio } : {}),
+        // Recordings to take off, by URL. Absent when none were, so a save
+        // that only fixes the sentence says nothing about them.
+        ...(input.removeAudio?.length ? { removeAudio: input.removeAudio } : {}),
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },
+  })
+}
+
+/**
+ * One card, by id.
+ *
+ * The card screen and the edit screen both read this. They used to be handed
+ * the card in route params — the list that opened them was holding it and the
+ * module had no endpoint for a single card — and neither is true any more: a
+ * card holds a list of recordings now, which does not fit in a query string,
+ * and a post links back to its card with nothing but an id.
+ */
+export function useEchoCard(id: string, enabled = true) {
+  return useQuery({
+    queryKey: keys.echoCard(id),
+    queryFn: () => api.get<EchoCard>(`/echo/cards/${encodeURIComponent(id)}`),
+    enabled: enabled && id.length > 0,
   })
 }
 
@@ -2811,9 +2840,11 @@ export function useLinkEchoAsk() {
  * Keep an answer's recording on the card that asked for it.
  *
  * An answer id, never a URL — the server reads the media off the answer, so
- * the card cannot be pointed at a file of the caller's choosing. Invalidates
- * the whole `echo` prefix for the usual reason: the queue holds its own copy
- * of every card, and a session drawn a minute ago would still be silent.
+ * the card cannot be pointed at a file of the caller's choosing. It is added
+ * to the card's recordings rather than replacing them, and keeping the same
+ * answer twice changes nothing. Invalidates the whole `echo` prefix for the
+ * usual reason: the queue holds its own copy of every card, and a session
+ * drawn a minute ago would still be silent.
  */
 export function useAttachEchoAudio() {
   const client = useQueryClient()
@@ -2821,6 +2852,23 @@ export function useAttachEchoAudio() {
     mutationFn: (input: { cardId: string; answerId: string }) =>
       api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/audio`, {
         answerId: input.answerId,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
+ * Keep a correction on the card that asked for it — the text half of the call
+ * above, and it replaces the card's sentence rather than adding to it.
+ */
+export function useApplyEchoCorrection() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { cardId: string; correctionId: string }) =>
+      api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/correction`, {
+        correctionId: input.correctionId,
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })

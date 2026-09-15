@@ -610,6 +610,18 @@ export const INDEXES: Partial<IndexSpec> = {
       unique: true,
       partialFilterExpression: { askedPostId: { $exists: true } },
     },
+    /**
+     * The same invariant for the other question a card can ask — a correction
+     * rather than a recording. Its own field and its own index rather than a
+     * list of asks, so that asking for one does not disturb the other: see the
+     * DTO's note beside `askedCorrectionPostId`.
+     */
+    {
+      key: { userId: 1, askedCorrectionPostId: 1 },
+      name: 'owner_asked_correction_unique',
+      unique: true,
+      partialFilterExpression: { askedCorrectionPostId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.echoReviews]: [
