@@ -83,8 +83,8 @@ export function Screen({
            * over the same `contentInset` and the keyboard wins: with the inset
            * managed out from under it the spinner does not appear at all, and
            * a pull on Me or on the wallet refetched in complete silence.
-           * Nothing is lost by the split — no screen in the app both pulls to
-           * refresh and holds a text field.
+           * The one screen that both pulls to refresh and holds a text field,
+           * the post thread, pads itself with `useKeyboardInset` instead.
            */
           automaticallyAdjustKeyboardInsets={!onRefresh}
           {...(onRefresh

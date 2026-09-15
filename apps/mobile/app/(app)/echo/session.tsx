@@ -16,7 +16,7 @@ import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from 'expo-aud
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { Animated, Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { useEchoQueue, useMe, useSubmitEchoReviews } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
@@ -24,6 +24,7 @@ import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
+import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
 import { useT } from '../../../src/i18n'
 import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
@@ -86,6 +87,12 @@ function parseSrs(card: EchoCard): EchoSrs {
  */
 export default function EchoSessionScreen() {
   const styles = useStyles()
+  /*
+   * The answer box sits under the card's picture and the Check button under
+   * the whole card, and the keyboard covered both — see the hook.
+   */
+  const keyboard = useKeyboardClearance((offset) => cardRef.current?.scrollTo({ y: offset }))
+  const cardRef = useRef<ScrollView>(null)
   const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
@@ -387,77 +394,82 @@ export default function EchoSessionScreen() {
 
   return (
     <Screen fluid>
-      {deckHeader(deck, index)}
-      {offline ? (
-        /* Said out loud, because the grades will sit on the phone until there
+      <Animated.View
+        ref={keyboard.frameRef}
+        style={[styles.avoid, { paddingBottom: keyboard.pad }]}
+      >
+        {deckHeader(deck, index)}
+        {offline ? (
+          /* Said out loud, because the grades will sit on the phone until there
            is a network and somebody should know that before they answer ten. */
-        <Text style={styles.offline}>{t('echo.offlineSession')}</Text>
-      ) : null}
-      <View style={styles.progress}>
-        <ProgressBar
-          value={index / deck.length}
-          height={6}
-          accessibilityLabel={t('echo.sessionProgress', { done: index, total: deck.length })}
-        />
-      </View>
-      <ScrollView contentContainerStyle={styles.card}>
-        {card.image ? <CardPicture key={card.image.url} image={card.image} /> : null}
-        {producing && !revealed ? (
-          /*
-           * The meaning, and a box. The sentence is the answer, so it is not
-           * on screen — and neither is the speaker button below, which would
-           * read it out.
-           */
-          <>
-            <Text style={styles.prompt}>
-              {t('echo.producePrompt', { language: names.language(card.lang) })}
-            </Text>
-            <Text style={styles.front}>{card.back}</Text>
-            <TextInput
-              value={typed}
-              onChangeText={setTyped}
-              style={styles.input}
-              placeholder={t('echo.produceHint')}
-              placeholderTextColor={colors.textFaint}
-              autoCapitalize="none"
-              autoCorrect={false}
-              multiline
-              accessibilityLabel={t('echo.produceHint')}
-            />
-          </>
-        ) : (
-          /* The sentence as it was written. Data, never interface copy. */
-          <Text style={styles.front}>{card.front}</Text>
-        )}
-        {!producing && recordings.length === 0 && ask ? (
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => askTheFeed(ask)}
-            style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-          >
-            <Feather name="mic" size={16} color={colors.accent} />
-            <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
-          </Pressable>
+          <Text style={styles.offline}>{t('echo.offlineSession')}</Text>
         ) : null}
-        {/*
+        <View style={styles.progress}>
+          <ProgressBar
+            value={index / deck.length}
+            height={6}
+            accessibilityLabel={t('echo.sessionProgress', { done: index, total: deck.length })}
+          />
+        </View>
+        <ScrollView ref={cardRef} {...keyboard.scrollProps} contentContainerStyle={styles.card}>
+          {card.image ? <CardPicture key={card.image.url} image={card.image} /> : null}
+          {producing && !revealed ? (
+            /*
+             * The meaning, and a box. The sentence is the answer, so it is not
+             * on screen — and neither is the speaker button below, which would
+             * read it out.
+             */
+            <>
+              <Text style={styles.prompt}>
+                {t('echo.producePrompt', { language: names.language(card.lang) })}
+              </Text>
+              <Text style={styles.front}>{card.back}</Text>
+              <TextInput
+                value={typed}
+                onChangeText={setTyped}
+                {...keyboard.fieldProps}
+                style={styles.input}
+                placeholder={t('echo.produceHint')}
+                placeholderTextColor={colors.textFaint}
+                autoCapitalize="none"
+                autoCorrect={false}
+                multiline
+                accessibilityLabel={t('echo.produceHint')}
+              />
+            </>
+          ) : (
+            /* The sentence as it was written. Data, never interface copy. */
+            <Text style={styles.front}>{card.front}</Text>
+          )}
+          {!producing && recordings.length === 0 && ask ? (
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={() => askTheFeed(ask)}
+              style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+            >
+              <Feather name="mic" size={16} color={colors.accent} />
+              <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
+            </Pressable>
+          ) : null}
+          {/*
           Whether the sentence is right, which is a different question from how
           it is said and has no answer on the card to suppress it — a card can
           always turn out to be wrong. Only before the answer, so it does not
           sit among the grades.
         */}
-        {!revealed && askCorrection ? (
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => askTheFeed(askCorrection)}
-            style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-          >
-            <Feather name="edit-3" size={16} color={colors.accent} />
-            <Text style={styles.speakerLabel}>{t('echo.askForCorrection')}</Text>
-          </Pressable>
-        ) : null}
-        {/*
+          {!revealed && askCorrection ? (
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={() => askTheFeed(askCorrection)}
+              style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+            >
+              <Feather name="edit-3" size={16} color={colors.accent} />
+              <Text style={styles.speakerLabel}>{t('echo.askForCorrection')}</Text>
+            </Pressable>
+          ) : null}
+          {/*
           Every recording, each with its own player: one card can hold several
           people saying the same sentence, and which of them is speaking is the
           whole reason to keep more than one.
@@ -469,86 +481,89 @@ export default function EchoSessionScreen() {
           production card mounts these only once the answer is up, which is
           also when they may speak: the sentence *is* the answer.
         */}
-        {!producing || revealed
-          ? recordings.map((audio, i) => (
-              <Recording
-                key={`${card._id}:${audio.url}`}
-                audio={audio}
-                autoplay={autoplay && i === 0}
-              />
-            ))
-          : null}
-        {/*
+          {!producing || revealed
+            ? recordings.map((audio, i) => (
+                <Recording
+                  key={`${card._id}:${audio.url}`}
+                  audio={audio}
+                  autoplay={autoplay && i === 0}
+                />
+              ))
+            : null}
+          {/*
           The pack's own readings, under the people. Labelled by register and
           by nothing else: there is nobody to credit, and a name here would
           make a voice model indistinguishable from the volunteer above it.
         */}
-        {!producing || revealed
-          ? (card.voices ?? []).map((take, i) => (
-              <Reading
-                key={`${card._id}:${take.voice}`}
-                take={take}
-                autoplay={autoplay && recordings.length === 0 && i === 0}
-              />
-            ))
-          : null}
+          {!producing || revealed
+            ? (card.voices ?? []).map((take, i) => (
+                <Reading
+                  key={`${card._id}:${take.voice}`}
+                  take={take}
+                  autoplay={autoplay && recordings.length === 0 && i === 0}
+                />
+              ))
+            : null}
 
-        {revealed ? (
-          <>
-            <View style={styles.rule} />
-            {producing ? (
-              <>
-                <Text style={styles.yourAnswerLabel}>{t('echo.yourAnswer')}</Text>
-                <Text style={styles.yourAnswer}>{typed.trim() || '—'}</Text>
-                {/*
+          {revealed ? (
+            <>
+              <View style={styles.rule} />
+              {producing ? (
+                <>
+                  <Text style={styles.yourAnswerLabel}>{t('echo.yourAnswer')}</Text>
+                  <Text style={styles.yourAnswer}>{typed.trim() || '—'}</Text>
+                  {/*
                   Reported, never graded. Only the person knows whether they
                   knew it or guessed it, and a checker that decided for them
                   would be wrong in exactly the cases that matter.
                 */}
-                <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
-                  {t(
-                    `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
-                  )}
-                </Text>
-              </>
-            ) : (
-              <Text style={styles.back}>{card.back}</Text>
-            )}
-            {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
-          </>
-        ) : null}
-      </ScrollView>
+                  <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
+                    {t(
+                      `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
+                    )}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.back}>{card.back}</Text>
+              )}
+              {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
+            </>
+          ) : null}
+        </ScrollView>
 
-      <View style={styles.actions}>
-        {revealed ? (
-          <View style={styles.grades}>
-            {ECHO_GRADES.map((value) => (
-              <Pressable
-                key={value}
-                accessibilityRole="button"
-                onPress={() => grade(value)}
-                style={({ pressed }) => [
-                  styles.grade,
-                  value === 'good' && styles.gradeGood,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <Text style={[styles.gradeLabel, value === 'good' && styles.gradeGoodLabel]}>
-                  {t(`echo.${value}`)}
-                </Text>
-                <Text style={[styles.gradeInterval, value === 'good' && styles.gradeGoodInterval]}>
-                  {intervalLabel(value)}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        ) : (
-          <Button
-            label={t(producing && typed.trim().length > 0 ? 'echo.check' : 'echo.show')}
-            onPress={reveal}
-          />
-        )}
-      </View>
+        <View style={styles.actions}>
+          {revealed ? (
+            <View style={styles.grades}>
+              {ECHO_GRADES.map((value) => (
+                <Pressable
+                  key={value}
+                  accessibilityRole="button"
+                  onPress={() => grade(value)}
+                  style={({ pressed }) => [
+                    styles.grade,
+                    value === 'good' && styles.gradeGood,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={[styles.gradeLabel, value === 'good' && styles.gradeGoodLabel]}>
+                    {t(`echo.${value}`)}
+                  </Text>
+                  <Text
+                    style={[styles.gradeInterval, value === 'good' && styles.gradeGoodInterval]}
+                  >
+                    {intervalLabel(value)}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : (
+            <Button
+              label={t(producing && typed.trim().length > 0 ? 'echo.check' : 'echo.show')}
+              onPress={reveal}
+            />
+          )}
+        </View>
+      </Animated.View>
     </Screen>
   )
 }
@@ -697,6 +712,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingTop: spacing.sm,
     textAlign: 'center',
   },
+  avoid: { flex: 1 },
   card: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
   picture: {
     borderRadius: radius.md,

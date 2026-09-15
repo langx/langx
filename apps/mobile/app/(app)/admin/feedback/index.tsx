@@ -78,6 +78,9 @@ export default function AdminFeedbackScreen() {
             data={feedback.data?.items ?? []}
             keyExtractor={(item) => item._id}
             contentContainerStyle={styles.list}
+            // Every row holds an amount box; the ones low on the screen were
+            // under the keyboard. iOS only, by design — see `Screen`.
+            automaticallyAdjustKeyboardInsets
             ListEmptyComponent={<EmptyState icon="inbox" title={ADMIN.feedback.empty} body="" />}
             renderItem={({ item }) => <Row row={item} />}
           />

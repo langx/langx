@@ -1,7 +1,15 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
-import { useCallback, useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native'
 import {
   echoAudiosOf,
   FEED_TOP_CORRECTIONS,
@@ -42,6 +50,7 @@ import { LikeButton } from '../../../src/components/LikeButton'
 import { attachmentsOf } from '@langx/shared'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
+import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { dedupeById } from '../../../src/lib/dedupeById'
 import { foldCorrection } from '../../../src/lib/feedCache'
@@ -120,6 +129,14 @@ export default function PostScreen() {
     Promise.all([query.refetch(), ...(pronouncing ? [answerQuery.refetch()] : [])]),
   )
   const commentQuery = usePostComments(id)
+
+  /*
+   * The correction box and the comment box sit at the bottom of the thread,
+   * where the keyboard lands, and this list pulls to refresh, so it cannot
+   * hand the problem to `automaticallyAdjustKeyboardInsets` — see the hook.
+   */
+  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
+  const listRef = useRef<FlatList<PostCorrection | PronunciationAnswer>>(null)
 
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
@@ -440,487 +457,500 @@ export default function PostScreen() {
 
   return (
     <Screen fluid>
-      <ScreenHeader
-        title={t('feed.post')}
-        onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
-        trailing={
-          post ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
-              hitSlop={12}
-              onPress={() => void openMore()}
-              style={({ pressed }) => [styles.more, pressed && styles.pressed]}
-            >
-              <Feather name="more-horizontal" size={22} color={colors.text} />
-            </Pressable>
-          ) : null
-        }
-      />
-
-      {query.isError && !post ? (
-        /*
-         * `!post` rather than `state`, because the `|| !post` below is what
-         * made this the worst of the seven: a failed load leaves `post`
-         * undefined forever, so the condition stayed true and the screen
-         * pulsed placeholders that were never going to resolve. The pronounce
-         * tab counts its rows from a different query, so `state` alone can be
-         * `'content'` while the post itself never arrived.
-         *
-         * A post that is already in hand survives a failed refetch and still
-         * renders below.
-         */
-        <LoadFailed onRetry={() => void query.refetch()} />
-      ) : state === 'skeleton' || !post ? (
-        <PostThreadSkeleton />
-      ) : (
-        <FlatList
-          data={replies}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.list}
-          refreshControl={<RefreshControl {...pull} />}
-          onEndReachedThreshold={0.6}
-          onEndReached={() => {
-            if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage()
-          }}
-          ListHeaderComponent={
-            <View>
+      <Animated.View
+        ref={keyboard.frameRef}
+        style={[styles.avoid, { paddingBottom: keyboard.pad }]}
+      >
+        <ScreenHeader
+          title={t('feed.post')}
+          onBack={() => goBackTo('/(app)/(tabs)/feed', from)}
+          trailing={
+            post ? (
               <Pressable
-                style={styles.who}
-                onPress={() => openProfile(post.author.handle, here)}
                 accessibilityRole="button"
+                accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
+                hitSlop={12}
+                onPress={() => void openMore()}
+                style={({ pressed }) => [styles.more, pressed && styles.pressed]}
               >
-                <Avatar
-                  url={post.author.avatarUrl}
-                  name={post.author.displayName}
-                  seed={post.author._id}
-                  size={40}
-                />
-                <View style={styles.whoText}>
-                  <Text style={styles.name} numberOfLines={1}>
-                    {post.author.displayName}
-                  </Text>
-                  <Text style={styles.meta} numberOfLines={1}>
-                    {names.language(post.language)} · {relativeTime(post.createdAt, { t, locale })}
-                  </Text>
-                </View>
-                {/* The prototype's ink pill on the post itself; the threshold is shared with the feed. */}
-                {post.correctionCount >= FEED_TOP_CORRECTIONS ? (
-                  <Text style={styles.topPost}>{t('feed.top')}</Text>
-                ) : null}
+                <Feather name="more-horizontal" size={22} color={colors.text} />
               </Pressable>
-              <Text style={styles.body}>{post.body}</Text>
-              {attachmentsOf(post).length > 0 ? (
-                <View style={styles.media}>
-                  <MediaGallery
-                    items={attachmentsOf(post)}
-                    onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
-                    /*
-                     * The same preview the feed draws, so a video does not
-                     * change character between the list and the post it was
-                     * tapped from. The replies below keep the thread's
-                     * controls: several clips starting at once in a list of
-                     * answers is the case autoplay is wrong for.
-                     */
-                    videoMode="preview"
-                    videoPlaying={focused}
-                  />
-                </View>
-              ) : null}
-              <View style={styles.actions}>
-                <LikeButton
-                  targetType="post"
-                  targetId={post._id}
-                  likeCount={post.likeCount}
-                  likedByViewer={post.likedByViewer}
-                  disabled={mine}
-                  from={here}
-                />
+            ) : null
+          }
+        />
+
+        {query.isError && !post ? (
+          /*
+           * `!post` rather than `state`, because the `|| !post` below is what
+           * made this the worst of the seven: a failed load leaves `post`
+           * undefined forever, so the condition stayed true and the screen
+           * pulsed placeholders that were never going to resolve. The pronounce
+           * tab counts its rows from a different query, so `state` alone can be
+           * `'content'` while the post itself never arrived.
+           *
+           * A post that is already in hand survives a failed refetch and still
+           * renders below.
+           */
+          <LoadFailed onRetry={() => void query.refetch()} />
+        ) : state === 'skeleton' || !post ? (
+          <PostThreadSkeleton />
+        ) : (
+          <FlatList
+            ref={listRef}
+            {...keyboard.scrollProps}
+            data={replies}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.list}
+            refreshControl={<RefreshControl {...pull} />}
+            onEndReachedThreshold={0.6}
+            onEndReached={() => {
+              if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage()
+            }}
+            ListHeaderComponent={
+              <View>
                 <Pressable
+                  style={styles.who}
+                  onPress={() => openProfile(post.author.handle, here)}
                   accessibilityRole="button"
-                  hitSlop={8}
-                  onPress={() => openLikers('post', post._id, here)}
-                  style={({ pressed }) => (pressed ? styles.pressed : null)}
                 >
-                  <Text style={styles.actionMuted}>{t('feed.likedBy')}</Text>
+                  <Avatar
+                    url={post.author.avatarUrl}
+                    name={post.author.displayName}
+                    seed={post.author._id}
+                    size={40}
+                  />
+                  <View style={styles.whoText}>
+                    <Text style={styles.name} numberOfLines={1}>
+                      {post.author.displayName}
+                    </Text>
+                    <Text style={styles.meta} numberOfLines={1}>
+                      {names.language(post.language)} ·{' '}
+                      {relativeTime(post.createdAt, { t, locale })}
+                    </Text>
+                  </View>
+                  {/* The prototype's ink pill on the post itself; the threshold is shared with the feed. */}
+                  {post.correctionCount >= FEED_TOP_CORRECTIONS ? (
+                    <Text style={styles.topPost}>{t('feed.top')}</Text>
+                  ) : null}
                 </Pressable>
-                <Text style={[styles.actionMuted, styles.actionEnd]}>
-                  {t(pronouncing ? 'feed.answers' : 'feed.corrections', { count: replyCount })}
-                </Text>
-              </View>
-              {/*
+                <Text style={styles.body}>{post.body}</Text>
+                {attachmentsOf(post).length > 0 ? (
+                  <View style={styles.media}>
+                    <MediaGallery
+                      items={attachmentsOf(post)}
+                      onOpen={(index) => setViewing({ items: attachmentsOf(post), index })}
+                      /*
+                       * The same preview the feed draws, so a video does not
+                       * change character between the list and the post it was
+                       * tapped from. The replies below keep the thread's
+                       * controls: several clips starting at once in a list of
+                       * answers is the case autoplay is wrong for.
+                       */
+                      videoMode="preview"
+                      videoPlaying={focused}
+                    />
+                  </View>
+                ) : null}
+                <View style={styles.actions}>
+                  <LikeButton
+                    targetType="post"
+                    targetId={post._id}
+                    likeCount={post.likeCount}
+                    likedByViewer={post.likedByViewer}
+                    disabled={mine}
+                    from={here}
+                  />
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() => openLikers('post', post._id, here)}
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                  >
+                    <Text style={styles.actionMuted}>{t('feed.likedBy')}</Text>
+                  </Pressable>
+                  <Text style={[styles.actionMuted, styles.actionEnd]}>
+                    {t(pronouncing ? 'feed.answers' : 'feed.corrections', { count: replyCount })}
+                  </Text>
+                </View>
+                {/*
                 Visible here, and behind a long press in the feed. This screen
                 is where a learner lands after reading the correction, and the
                 row has space; a card in a list, mostly somebody's sentence,
                 does not.
               */}
-              <Pressable
-                accessibilityRole="button"
-                hitSlop={8}
-                onPress={() => void toggleEcho(post)}
-                style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
-              >
-                <Feather
-                  name="repeat"
-                  size={14}
-                  color={post.echoedByViewer ? colors.textFaint : colors.accent}
-                />
-                <Text style={post.echoedByViewer ? styles.actionMuted : styles.accentAction}>
-                  {t(post.echoedByViewer ? 'echo.removeFromEcho' : 'echo.addToEcho')}
-                </Text>
-              </Pressable>
-              {/*
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => void toggleEcho(post)}
+                  style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
+                >
+                  <Feather
+                    name="repeat"
+                    size={14}
+                    color={post.echoedByViewer ? colors.textFaint : colors.accent}
+                  />
+                  <Text style={post.echoedByViewer ? styles.actionMuted : styles.accentAction}>
+                    {t(post.echoedByViewer ? 'echo.removeFromEcho' : 'echo.addToEcho')}
+                  </Text>
+                </Pressable>
+                {/*
                 Back to the card this post was asked from. Only its owner ever
                 sees it — `askedFrom` is looked up by the viewer — and until
                 now the link ran one way only: a card could open the feed, and
                 the feed could give an answer back, but there was nowhere to go
                 to see what the answer landed on.
               */}
-              {askedCardId ? (
-                <Pressable
-                  accessibilityRole="button"
-                  hitSlop={8}
-                  onPress={() =>
-                    router.push({ pathname: '/(app)/echo/card/[id]', params: { id: askedCardId } })
-                  }
-                  style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
-                >
-                  <Feather name="layers" size={14} color={colors.accent} />
-                  <Text style={styles.accentAction}>{t('echo.seeCard')}</Text>
-                </Pressable>
-              ) : null}
-              <Text style={styles.sectionTitle}>
-                {t(pronouncing ? 'feed.pronunciationSection' : 'feed.correctionSection')}
-              </Text>
-            </View>
-          }
-          ListEmptyComponent={
-            <Text style={styles.empty}>
-              {t(pronouncing ? 'feed.answersEmptyTitle' : 'feed.correctionsEmptyTitle')}.{' '}
-              {t(pronouncing ? 'feed.answersEmptyBody' : 'feed.correctionsEmptyBody')}
-            </Text>
-          }
-          renderItem={({ item }) => (
-            <View style={styles.reply}>
-              <Pressable
-                style={styles.replyWho}
-                onPress={() => openProfile(item.author.handle, here)}
-                accessibilityRole="button"
-              >
-                <Avatar
-                  url={item.author.avatarUrl}
-                  name={item.author.displayName}
-                  seed={item.author._id}
-                  size={36}
-                />
-                <Text style={styles.replyName} numberOfLines={1}>
-                  {item.author.displayName}
-                </Text>
-                {item._id === topId ? (
-                  <View style={styles.topPill}>
-                    <Text style={styles.topPillLabel}>{t('feed.topTag')}</Text>
-                  </View>
+                {askedCardId ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={8}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/(app)/echo/card/[id]',
+                        params: { id: askedCardId },
+                      })
+                    }
+                    style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
+                  >
+                    <Feather name="layers" size={14} color={colors.accent} />
+                    <Text style={styles.accentAction}>{t('echo.seeCard')}</Text>
+                  </Pressable>
                 ) : null}
-              </Pressable>
-
-              {'corrected' in item ? (
-                <View style={styles.card}>
-                  <CorrectedLine original={post.body} corrected={item.corrected} />
-                  {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-                </View>
-              ) : (
-                <View style={styles.takes}>
-                  <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
-                  <AudioBubble media={item.media} />
-                  {item.slowMedia ? (
-                    <>
-                      <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
-                      <AudioBubble media={item.slowMedia} />
-                    </>
+                <Text style={styles.sectionTitle}>
+                  {t(pronouncing ? 'feed.pronunciationSection' : 'feed.correctionSection')}
+                </Text>
+              </View>
+            }
+            ListEmptyComponent={
+              <Text style={styles.empty}>
+                {t(pronouncing ? 'feed.answersEmptyTitle' : 'feed.correctionsEmptyTitle')}.{' '}
+                {t(pronouncing ? 'feed.answersEmptyBody' : 'feed.correctionsEmptyBody')}
+              </Text>
+            }
+            renderItem={({ item }) => (
+              <View style={styles.reply}>
+                <Pressable
+                  style={styles.replyWho}
+                  onPress={() => openProfile(item.author.handle, here)}
+                  accessibilityRole="button"
+                >
+                  <Avatar
+                    url={item.author.avatarUrl}
+                    name={item.author.displayName}
+                    seed={item.author._id}
+                    size={36}
+                  />
+                  <Text style={styles.replyName} numberOfLines={1}>
+                    {item.author.displayName}
+                  </Text>
+                  {item._id === topId ? (
+                    <View style={styles.topPill}>
+                      <Text style={styles.topPillLabel}>{t('feed.topTag')}</Text>
+                    </View>
                   ) : null}
-                  {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-                </View>
-              )}
-              {'corrected' in item && attachmentsOf(item).length > 0 ? (
-                <MediaGallery
-                  items={attachmentsOf(item)}
-                  onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
-                  /*
-                   * As the post's own attachment above, and for the same
-                   * reason: in `controls` mode `onOpen` is ignored, so a
-                   * correction's video was the one thing on this screen that
-                   * would not open.
-                   */
-                  videoMode="preview"
-                  videoPlaying={focused}
-                />
-              ) : null}
-              <View style={styles.likeRow}>
-                <LikeButton
-                  targetType={pronouncing ? 'answer' : 'correction'}
-                  targetId={item._id}
-                  likeCount={item.likeCount}
-                  likedByViewer={item.likedByViewer}
-                  disabled={item.author._id === me.data?._id}
-                  from={here}
-                  size="small"
-                />
-                {/*
+                </Pressable>
+
+                {'corrected' in item ? (
+                  <View style={styles.card}>
+                    <CorrectedLine original={post.body} corrected={item.corrected} />
+                    {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+                  </View>
+                ) : (
+                  <View style={styles.takes}>
+                    <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
+                    <AudioBubble media={item.media} />
+                    {item.slowMedia ? (
+                      <>
+                        <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
+                        <AudioBubble media={item.slowMedia} />
+                      </>
+                    ) : null}
+                    {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+                  </View>
+                )}
+                {'corrected' in item && attachmentsOf(item).length > 0 ? (
+                  <MediaGallery
+                    items={attachmentsOf(item)}
+                    onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
+                    /*
+                     * As the post's own attachment above, and for the same
+                     * reason: in `controls` mode `onOpen` is ignored, so a
+                     * correction's video was the one thing on this screen that
+                     * would not open.
+                     */
+                    videoMode="preview"
+                    videoPlaying={focused}
+                  />
+                ) : null}
+                <View style={styles.likeRow}>
+                  <LikeButton
+                    targetType={pronouncing ? 'answer' : 'correction'}
+                    targetId={item._id}
+                    likeCount={item.likeCount}
+                    likedByViewer={item.likedByViewer}
+                    disabled={item.author._id === me.data?._id}
+                    from={here}
+                    size="small"
+                  />
+                  {/*
                   The recording, onto the card that asked for it. Drawn only
                   on an answer to a post one of your own cards opened — which
                   is the same condition the server checks, so a button that is
                   here always works.
                 */}
-                {pronouncing && askedFrom.data ? (
-                  kept.has(item._id) ? (
-                    <Text style={styles.keptLabel}>{t('echo.audioAlreadyKept')}</Text>
-                  ) : (
+                  {pronouncing && askedFrom.data ? (
+                    kept.has(item._id) ? (
+                      <Text style={styles.keptLabel}>{t('echo.audioAlreadyKept')}</Text>
+                    ) : (
+                      <Pressable
+                        accessibilityRole="button"
+                        hitSlop={8}
+                        disabled={attachAudio.isPending}
+                        onPress={() => keepOnCard(item._id)}
+                        style={({ pressed }) => (pressed ? styles.pressed : null)}
+                      >
+                        <Text style={styles.keepAction}>{t('echo.keepOnCard')}</Text>
+                      </Pressable>
+                    )
+                  ) : null}
+                  {/* The written answer, onto the same card: it replaces the
+                    sentence, because a card whose sentence is wrong teaches
+                    the mistake every time it comes back. */}
+                  {!pronouncing && askedFrom.data ? (
                     <Pressable
                       accessibilityRole="button"
                       hitSlop={8}
-                      disabled={attachAudio.isPending}
-                      onPress={() => keepOnCard(item._id)}
+                      disabled={applyCorrection.isPending}
+                      onPress={() => keepCorrectionOnCard(item._id)}
                       style={({ pressed }) => (pressed ? styles.pressed : null)}
                     >
-                      <Text style={styles.keepAction}>{t('echo.keepOnCard')}</Text>
+                      <Text style={styles.keepAction}>{t('echo.keepCorrection')}</Text>
                     </Pressable>
-                  )
-                ) : null}
-                {/* The written answer, onto the same card: it replaces the
-                    sentence, because a card whose sentence is wrong teaches
-                    the mistake every time it comes back. */}
-                {!pronouncing && askedFrom.data ? (
-                  <Pressable
-                    accessibilityRole="button"
-                    hitSlop={8}
-                    disabled={applyCorrection.isPending}
-                    onPress={() => keepCorrectionOnCard(item._id)}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
-                  >
-                    <Text style={styles.keepAction}>{t('echo.keepCorrection')}</Text>
-                  </Pressable>
-                ) : null}
-                {item.author._id === me.data?._id ? (
-                  <Pressable
-                    accessibilityRole="button"
-                    hitSlop={8}
-                    onPress={() => removeReply(item._id)}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
-                  >
-                    <Text style={styles.deleteAction}>
-                      {t(pronouncing ? 'feed.deleteAnswer' : 'feed.deleteCorrection')}
-                    </Text>
-                  </Pressable>
-                ) : null}
+                  ) : null}
+                  {item.author._id === me.data?._id ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      hitSlop={8}
+                      onPress={() => removeReply(item._id)}
+                      style={({ pressed }) => (pressed ? styles.pressed : null)}
+                    >
+                      <Text style={styles.deleteAction}>
+                        {t(pronouncing ? 'feed.deleteAnswer' : 'feed.deleteCorrection')}
+                      </Text>
+                    </Pressable>
+                  ) : null}
+                </View>
               </View>
-            </View>
-          )}
-          /*
-           * Comments live in the footer as a plain `.map`, not a second list.
-           * A `FlatList` inside a `FlatList` on the same axis loses its
-           * virtualisation and warns about it; these rows are text, so the
-           * bounded map is both cheaper and honest about what it is.
-           */
-          ListFooterComponent={
-            <View>
-              {list.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
+            )}
+            /*
+             * Comments live in the footer as a plain `.map`, not a second list.
+             * A `FlatList` inside a `FlatList` on the same axis loses its
+             * virtualisation and warns about it; these rows are text, so the
+             * bounded map is both cheaper and honest about what it is.
+             */
+            ListFooterComponent={
+              <View>
+                {list.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
 
-              {/*
+                {/*
                 The correction box, always open under the thread. Absent on
                 your own post, and once you have answered — the thread above
                 already carries your row. The screen's one yellow is its
                 send button.
               */}
-              {!pronouncing && !mine ? (
-                post.correctedByViewer ? (
-                  <View style={styles.done}>
-                    <Feather name="check" size={16} color={colors.success} />
-                    <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
-                  </View>
-                ) : (
-                  <View style={styles.compose}>
-                    <View style={styles.composeHead}>
-                      <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
-                      {/*
+                {!pronouncing && !mine ? (
+                  post.correctedByViewer ? (
+                    <View style={styles.done}>
+                      <Feather name="check" size={16} color={colors.success} />
+                      <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
+                    </View>
+                  ) : (
+                    <View style={styles.compose}>
+                      <View style={styles.composeHead}>
+                        <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
+                        {/*
                         Seeded on request rather than by default: a correction
                         is usually an edit of the original, but a rewrite from
                         scratch should not have to delete it first.
                       */}
+                        <Pressable
+                          accessibilityRole="button"
+                          hitSlop={8}
+                          onPress={() => setCorrection(post.body)}
+                          style={({ pressed }) => (pressed ? styles.pressed : null)}
+                        >
+                          <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
+                        </Pressable>
+                      </View>
+                      <FormField
+                        value={correction}
+                        onChangeText={setCorrection}
+                        {...keyboard.fieldProps}
+                        placeholder={t('feed.correctionPlaceholder')}
+                        multiline
+                        autoCapitalize="sentences"
+                        maxLength={MAX_POST_LENGTH}
+                      />
+                      <Button
+                        label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
+                        disabled={!correction.trim() || correctPost.isPending}
+                        onPress={submitCorrection}
+                      />
+                      {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
+                      <Text style={styles.reward}>
+                        {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
+                      </Text>
+                    </View>
+                  )
+                ) : null}
+
+                <Text style={styles.sectionTitle}>{t('feed.allComments')}</Text>
+                {comments.length === 0 ? (
+                  <Text style={styles.empty}>{t('feed.commentsEmptyBody')}</Text>
+                ) : null}
+                {comments.map((item) => (
+                  <View key={item._id} style={styles.comment}>
+                    <Pressable
+                      style={styles.replyWho}
+                      onPress={() => openProfile(item.author.handle, here)}
+                      accessibilityRole="button"
+                    >
+                      <Avatar
+                        url={item.author.avatarUrl}
+                        name={item.author.displayName}
+                        seed={item.author._id}
+                        size={28}
+                      />
+                      <Text style={styles.replyName} numberOfLines={1}>
+                        {item.author.displayName}
+                      </Text>
+                      <Text style={styles.time}>{relativeTime(item.createdAt, { t, locale })}</Text>
+                    </Pressable>
+                    <Text style={styles.commentBody}>{item.body}</Text>
+                    {item.author._id === me.data?._id ? (
                       <Pressable
                         accessibilityRole="button"
                         hitSlop={8}
-                        onPress={() => setCorrection(post.body)}
+                        onPress={() =>
+                          deleteComment.mutate(
+                            { postId: post._id, commentId: item._id },
+                            { onError: () => showToast(t('common.retry')) },
+                          )
+                        }
                         style={({ pressed }) => (pressed ? styles.pressed : null)}
                       >
-                        <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
+                        <Text style={styles.deleteAction}>{t('feed.deleteComment')}</Text>
                       </Pressable>
-                    </View>
-                    <FormField
-                      value={correction}
-                      onChangeText={setCorrection}
-                      placeholder={t('feed.correctionPlaceholder')}
-                      multiline
-                      autoCapitalize="sentences"
-                      maxLength={MAX_POST_LENGTH}
-                    />
-                    <Button
-                      label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
-                      disabled={!correction.trim() || correctPost.isPending}
-                      onPress={submitCorrection}
-                    />
-                    {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
-                    <Text style={styles.reward}>
-                      {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
-                    </Text>
+                    ) : null}
                   </View>
-                )
-              ) : null}
-
-              <Text style={styles.sectionTitle}>{t('feed.allComments')}</Text>
-              {comments.length === 0 ? (
-                <Text style={styles.empty}>{t('feed.commentsEmptyBody')}</Text>
-              ) : null}
-              {comments.map((item) => (
-                <View key={item._id} style={styles.comment}>
+                ))}
+                {commentQuery.hasNextPage ? (
                   <Pressable
-                    style={styles.replyWho}
-                    onPress={() => openProfile(item.author.handle, here)}
                     accessibilityRole="button"
+                    onPress={() => void commentQuery.fetchNextPage()}
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
                   >
-                    <Avatar
-                      url={item.author.avatarUrl}
-                      name={item.author.displayName}
-                      seed={item.author._id}
-                      size={28}
-                    />
-                    <Text style={styles.replyName} numberOfLines={1}>
-                      {item.author.displayName}
-                    </Text>
-                    <Text style={styles.time}>{relativeTime(item.createdAt, { t, locale })}</Text>
+                    <Text style={styles.showMore}>{t('feed.showMoreComments')}</Text>
                   </Pressable>
-                  <Text style={styles.commentBody}>{item.body}</Text>
-                  {item.author._id === me.data?._id ? (
-                    <Pressable
-                      accessibilityRole="button"
-                      hitSlop={8}
-                      onPress={() =>
-                        deleteComment.mutate(
-                          { postId: post._id, commentId: item._id },
-                          { onError: () => showToast(t('common.retry')) },
-                        )
-                      }
-                      style={({ pressed }) => (pressed ? styles.pressed : null)}
-                    >
-                      <Text style={styles.deleteAction}>{t('feed.deleteComment')}</Text>
-                    </Pressable>
-                  ) : null}
+                ) : null}
+
+                <View style={styles.commentCompose}>
+                  <FormField
+                    label={t('feed.addComment')}
+                    value={commentDraft}
+                    onChangeText={setCommentDraft}
+                    {...keyboard.fieldProps}
+                    placeholder={t('feed.commentPlaceholder')}
+                    multiline
+                    autoCapitalize="sentences"
+                    maxLength={MAX_COMMENT_LENGTH}
+                  />
+                  {/* Outlined, not yellow: the correction's send button is this screen's one commit. */}
+                  <Button
+                    label={addComment.isPending ? t('feed.sending') : t('feed.comment')}
+                    variant="secondary"
+                    disabled={!commentDraft.trim() || addComment.isPending}
+                    onPress={submitComment}
+                  />
                 </View>
-              ))}
-              {commentQuery.hasNextPage ? (
-                <Pressable
-                  accessibilityRole="button"
-                  onPress={() => void commentQuery.fetchNextPage()}
-                  style={({ pressed }) => (pressed ? styles.pressed : null)}
-                >
-                  <Text style={styles.showMore}>{t('feed.showMoreComments')}</Text>
-                </Pressable>
+              </View>
+            }
+          />
+        )}
+
+        {/* The recorder, on a pronunciation request. Absent on your own, and once
+          you have recorded — the thread above already carries your row. */}
+        {post && pronouncing && !mine && !post.answeredByViewer ? (
+          composing ? (
+            <View style={styles.takes}>
+              <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
+              {takes.fast ? <AudioBubble media={takes.fast} /> : null}
+              <Button
+                label={
+                  recorder.isRecording && slot === 'fast'
+                    ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
+                    : takes.fast
+                      ? t('feed.recordAgain')
+                      : t('feed.answerThis')
+                }
+                variant={takes.fast ? 'secondary' : 'primary'}
+                disabled={uploading || (recorder.isRecording && slot !== 'fast')}
+                onPress={() => void toggleRecording('fast')}
+              />
+
+              {/* Offered only once there is something to be slower than. */}
+              {takes.fast ? (
+                <>
+                  <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
+                  {takes.slow ? <AudioBubble media={takes.slow} /> : null}
+                  <Button
+                    label={
+                      recorder.isRecording && slot === 'slow'
+                        ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
+                        : takes.slow
+                          ? t('feed.recordAgain')
+                          : t('feed.addSlowTake')
+                    }
+                    variant="secondary"
+                    disabled={uploading || (recorder.isRecording && slot !== 'slow')}
+                    onPress={() => void toggleRecording('slow')}
+                  />
+                </>
               ) : null}
 
-              <View style={styles.commentCompose}>
-                <FormField
-                  label={t('feed.addComment')}
-                  value={commentDraft}
-                  onChangeText={setCommentDraft}
-                  placeholder={t('feed.commentPlaceholder')}
-                  multiline
-                  autoCapitalize="sentences"
-                  maxLength={MAX_COMMENT_LENGTH}
-                />
-                {/* Outlined, not yellow: the correction's send button is this screen's one commit. */}
+              <View style={styles.composeActions}>
                 <Button
-                  label={addComment.isPending ? t('feed.sending') : t('feed.comment')}
-                  variant="secondary"
-                  disabled={!commentDraft.trim() || addComment.isPending}
-                  onPress={submitComment}
+                  label={
+                    takeProgress && takeProgress.phase !== 'reading'
+                      ? t('composer.uploadingPercent', { percent: percentOf(takeProgress) })
+                      : answerPost.isPending || uploading
+                        ? t('feed.sending')
+                        : t('feed.sendAnswer')
+                  }
+                  disabled={!takes.fast || answerPost.isPending || uploading}
+                  onPress={submitAnswer}
+                  style={styles.grow}
+                />
+                <Button
+                  label={t('common.cancel')}
+                  variant="neutral"
+                  onPress={() => {
+                    void recorder.cancel()
+                    setSlot(null)
+                    setTakes({})
+                    setComposing(false)
+                  }}
+                  style={styles.grow}
                 />
               </View>
             </View>
-          }
-        />
-      )}
-
-      {/* The recorder, on a pronunciation request. Absent on your own, and once
-          you have recorded — the thread above already carries your row. */}
-      {post && pronouncing && !mine && !post.answeredByViewer ? (
-        composing ? (
-          <View style={styles.takes}>
-            <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
-            {takes.fast ? <AudioBubble media={takes.fast} /> : null}
-            <Button
-              label={
-                recorder.isRecording && slot === 'fast'
-                  ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
-                  : takes.fast
-                    ? t('feed.recordAgain')
-                    : t('feed.answerThis')
-              }
-              variant={takes.fast ? 'secondary' : 'primary'}
-              disabled={uploading || (recorder.isRecording && slot !== 'fast')}
-              onPress={() => void toggleRecording('fast')}
-            />
-
-            {/* Offered only once there is something to be slower than. */}
-            {takes.fast ? (
-              <>
-                <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
-                {takes.slow ? <AudioBubble media={takes.slow} /> : null}
-                <Button
-                  label={
-                    recorder.isRecording && slot === 'slow'
-                      ? `${t('feed.stopRecording')} · ${recorder.seconds}s`
-                      : takes.slow
-                        ? t('feed.recordAgain')
-                        : t('feed.addSlowTake')
-                  }
-                  variant="secondary"
-                  disabled={uploading || (recorder.isRecording && slot !== 'slow')}
-                  onPress={() => void toggleRecording('slow')}
-                />
-              </>
-            ) : null}
-
-            <View style={styles.composeActions}>
-              <Button
-                label={
-                  takeProgress && takeProgress.phase !== 'reading'
-                    ? t('composer.uploadingPercent', { percent: percentOf(takeProgress) })
-                    : answerPost.isPending || uploading
-                      ? t('feed.sending')
-                      : t('feed.sendAnswer')
-                }
-                disabled={!takes.fast || answerPost.isPending || uploading}
-                onPress={submitAnswer}
-                style={styles.grow}
-              />
-              <Button
-                label={t('common.cancel')}
-                variant="neutral"
-                onPress={() => {
-                  void recorder.cancel()
-                  setSlot(null)
-                  setTakes({})
-                  setComposing(false)
-                }}
-                style={styles.grow}
-              />
+          ) : (
+            <View style={styles.footerBar}>
+              <Button label={t('feed.answerThis')} onPress={() => setComposing(true)} />
             </View>
-          </View>
-        ) : (
-          <View style={styles.footerBar}>
-            <Button label={t('feed.answerThis')} onPress={() => setComposing(true)} />
-          </View>
-        )
-      ) : null}
+          )
+        ) : null}
+      </Animated.View>
       <PhotoViewer
         photos={viewing?.items ?? []}
         index={viewing?.index ?? null}
@@ -932,6 +962,7 @@ export default function PostScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  avoid: { flex: 1 },
   list: { paddingBottom: spacing.xl },
   footer: { paddingVertical: spacing.lg },
   // 36 square: the glyph's own hit box, before `hitSlop` widens it.
