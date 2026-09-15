@@ -23,6 +23,7 @@ import {
   MIN_SCALE,
   type Point,
   type Size,
+  albumSlots,
   clampOffset,
   clampScale,
   distanceBetween,
@@ -92,7 +93,7 @@ function FullscreenVideo({ url }: { url: string }) {
 }
 
 /**
- * One full-screen picture, zoomable.
+ * One full-screen picture, zoomable, with its neighbours mounted either side.
  *
  * Split out of `PhotoGallery`, which owned both a thumbnail strip and a viewer
  * and could therefore only be used by something that wanted both. A chat bubble
@@ -103,6 +104,14 @@ function FullscreenVideo({ url }: { url: string }) {
  * records. `evt.nativeEvent.touches` is where the second finger lives —
  * `gestureState` only ever describes the centroid, so a pinch is invisible to
  * it.
+ *
+ * The album is a strip of three, not one picture swapped for the next. It
+ * used to be the latter: a page turn slid the open picture off the screen,
+ * showed the scrim for a few frames while the host re-rendered and the next
+ * file fetched, then dropped the new one in with no motion at all. Every swipe
+ * was a slide, a blink and a pop. With the pictures either side already
+ * mounted the next one is on screen before the finger lets go, and it is
+ * already decoded by the time it is wanted.
  */
 export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoViewerProps) {
   const styles = useStyles()
@@ -118,6 +127,16 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const scale = useRef(new Animated.Value(MIN_SCALE)).current
   const translateX = useRef(new Animated.Value(0)).current
   const translateY = useRef(new Animated.Value(0)).current
+  /**
+   * Where the strip of three has been dragged to, in pixels. It rests at
+   * `-turned * width`, never at zero: the strip is laid out `turned` pages
+   * along so that the picture that just slid into the middle *is* the middle
+   * once the host has moved the index. Resetting to zero on the new index
+   * instead would race the re-render, and whichever of the two landed first
+   * would show the wrong picture for a frame.
+   */
+  const pageX = useRef(new Animated.Value(0)).current
+  const turned = useRef(0)
 
   /**
    * `Animated.Value` cannot be read back synchronously, and a gesture needs the
@@ -126,7 +145,12 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
    */
   const rest = useRef({ scale: MIN_SCALE, x: 0, y: 0 })
   const frame = useRef<Size>({ width: 0, height: 0 })
-  const natural = useRef<Size>({ width: 0, height: 0 })
+  /**
+   * By URL rather than one size for "the picture": three are mounted, each
+   * reports its own size when it loads, and the one in the middle changes
+   * without any of them loading again.
+   */
+  const naturals = useRef(new Map<string, Size>())
   const start = useRef({ distance: 0, scale: MIN_SCALE, x: 0, y: 0, focus: { x: 0, y: 0 } })
   const lastTap = useRef<{ at: number } | null>(null)
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -165,10 +189,38 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     return fromEdge >= zone.start && fromEdge <= zone.end
   }
 
-  function page(step: number): void {
+  /** Where `pageX` rests for the strip as it is currently laid out. */
+  function stripRest(): number {
+    return -turned.current * frame.current.width
+  }
+
+  function settleStrip(): void {
+    Animated.spring(pageX, { toValue: stripRest(), useNativeDriver: true, bounciness: 0 }).start()
+  }
+
+  /**
+   * Slide the strip one picture along, then tell the host. The layout below
+   * follows `turned`, so the new index draws the same picture in the same
+   * place the strip already put it and nothing snaps.
+   */
+  function turn(step: -1 | 1): void {
     const { index: at, photos: album, onIndexChange: change } = latest.current
-    if (at === null) return
-    change?.((at + album.length + step) % album.length)
+    if (at === null || album.length < 2 || !change) {
+      settleStrip()
+      return
+    }
+    const to = turned.current + step
+    Animated.timing(pageX, {
+      toValue: -to * frame.current.width,
+      duration: 160,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      // Cut short by a finger landing mid-slide: the strip is wherever that
+      // finger now has it, and its release decides.
+      if (!finished) return
+      turned.current = to
+      change((at + album.length + step) % album.length)
+    })
   }
 
   const settle = useCallback(
@@ -194,9 +246,14 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   // A new picture starts life-size. Without this, paging while zoomed lands the
   // next one already halfway off the screen.
   useEffect(() => {
-    natural.current = { width: 0, height: 0 }
     reset()
-  }, [index, reset])
+    // Closed: nothing is on screen, so this is the one moment the strip can go
+    // back to the start without anyone seeing it move.
+    if (index === null) {
+      turned.current = 0
+      pageX.setValue(0)
+    }
+  }, [index, reset, pageX])
 
   useEffect(
     () => () => {
@@ -206,7 +263,9 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   )
 
   function clampTo(offset: Point, at: number): Point {
-    return clampOffset(offset, at, frame.current, fittedSize(natural.current, frame.current))
+    const { index: open, photos: album } = latest.current
+    const natural = naturals.current.get(album[open ?? -1]?.url ?? '') ?? { width: 0, height: 0 }
+    return clampOffset(offset, at, frame.current, fittedSize(natural, frame.current))
   }
 
   function toggleZoom(focus: Point): void {
@@ -275,11 +334,12 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         }
 
         // Life-size: a sideways drag through an album is a page turn and the
-        // picture follows the finger; anything else is a dismissal, and the
-        // picture follows that too, so the gesture is visible before it is
-        // committed to.
+        // whole strip follows the finger, so the next picture is in view
+        // before the gesture is committed to; anything else is a dismissal,
+        // and the open picture follows that on its own.
         if (latest.current.photos.length > 1 && Math.abs(gesture.dx) > Math.abs(gesture.dy)) {
-          translateX.setValue(gesture.dx)
+          pageX.setValue(stripRest() + gesture.dx)
+          translateX.setValue(0)
           translateY.setValue(0)
           return
         }
@@ -320,14 +380,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
           const step =
             latest.current.photos.length > 1 ? swipeStep(gesture.dx, gesture.dy, gesture.vx) : 0
           if (step !== 0) {
-            // Off the edge it was dragged towards, then the next picture: the
-            // `[index]` effect resets the transform, so it lands centred
-            // rather than sliding in from wherever this one was let go.
-            Animated.timing(translateX, {
-              toValue: -step * frame.current.width,
-              duration: 160,
-              useNativeDriver: true,
-            }).start(() => page(step))
+            turn(step)
             return
           }
           if (Math.abs(gesture.dy) > DISMISS_DRAG_PX) {
@@ -335,12 +388,14 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             return
           }
           settle({ scale: MIN_SCALE, x: 0, y: 0 }, true)
+          settleStrip()
           return
         }
         settle({ ...rest.current, ...clampTo(rest.current, rest.current.scale) }, true)
       },
       onPanResponderTerminate: () => {
         settle(rest.current, true)
+        settleStrip()
       },
     }),
   ).current
@@ -348,6 +403,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   if (index === null) return null
   const photo = photos[index]
   if (!photo) return null
+  const slots = albumSlots(index, photos.length)
 
   return (
     <Modal
@@ -378,20 +434,65 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             }}
             {...pan.panHandlers}
           >
+            {/*
+              Three frames wide and laid out `turned` pages along, in percent
+              so it needs no measurement before the first draw. Together with
+              `pageX` resting at `-turned * width` the middle slot always sits
+              in the middle; see `pageX` for why the two are kept in step
+              rather than both reset.
+            */}
             <Animated.View
-              style={[styles.stage, { transform: [{ translateX }, { translateY }, { scale }] }]}
+              style={[
+                styles.strip,
+                { left: `${(turned.current - 1) * 100}%`, transform: [{ translateX: pageX }] },
+              ]}
             >
-              <Image
-                source={{ uri: photo.url }}
-                style={styles.full}
-                contentFit="contain"
-                onLoad={(event) => {
-                  natural.current = {
-                    width: event.source?.width ?? 0,
-                    height: event.source?.height ?? 0,
-                  }
-                }}
-              />
+              {slots.map((slot) => {
+                const neighbour = slot.at === null ? null : photos[slot.at]
+                if (slot.at === index) {
+                  return (
+                    <Animated.View
+                      key={slot.key}
+                      style={[
+                        styles.slot,
+                        { transform: [{ translateX }, { translateY }, { scale }] },
+                      ]}
+                    >
+                      <Image
+                        source={{ uri: photo.url }}
+                        style={styles.full}
+                        contentFit="contain"
+                        onLoad={(event) => {
+                          naturals.current.set(photo.url, {
+                            width: event.source?.width ?? 0,
+                            height: event.source?.height ?? 0,
+                          })
+                        }}
+                      />
+                    </Animated.View>
+                  )
+                }
+                // `Animated.View` like the middle one, not `View`: a key that moves
+                // between slots of two different types is remounted, picture and all.
+                return (
+                  <Animated.View key={slot.key} style={styles.slot}>
+                    {/* A video next door is left as scrim: it plays only once it is opened. */}
+                    {neighbour && !isVideoContentType(neighbour.contentType ?? '') ? (
+                      <Image
+                        source={{ uri: neighbour.url }}
+                        style={styles.full}
+                        contentFit="contain"
+                        onLoad={(event) => {
+                          naturals.current.set(neighbour.url, {
+                            width: event.source?.width ?? 0,
+                            height: event.source?.height ?? 0,
+                          })
+                        }}
+                      />
+                    ) : null}
+                  </Animated.View>
+                )
+              })}
             </Animated.View>
           </Animated.View>
         )}
@@ -423,7 +524,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('photo.previous')}
-                onPress={() => page(-1)}
+                onPress={() => turn(-1)}
                 hitSlop={12}
               >
                 <Text style={styles.pagerArrow}>‹</Text>
@@ -434,7 +535,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('photo.next')}
-                onPress={() => page(1)}
+                onPress={() => turn(1)}
                 hitSlop={12}
               >
                 <Text style={styles.pagerArrow}>›</Text>
@@ -465,7 +566,11 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     position: 'relative',
   },
   chrome: { bottom: 0, elevation: 2, left: 0, position: 'absolute', right: 0, top: 0, zIndex: 2 },
-  stage: { flex: 1, width: '100%' },
+  // `hidden`, for the two neighbours: off-screen on native, but on web an
+  // overflowing sibling widens the page and hands the browser a scrollbar.
+  stage: { flex: 1, overflow: 'hidden', width: '100%' },
+  strip: { bottom: 0, flexDirection: 'row', position: 'absolute', top: 0, width: '300%' },
+  slot: { flex: 1 },
   full: { flex: 1, width: '100%' },
   /*
    * A disc on a scrim rather than a bare glyph: over a light photo the glyph

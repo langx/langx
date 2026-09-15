@@ -6,6 +6,7 @@ import {
   PAGE_SWIPE_PX,
   PAGE_SWIPE_VX,
   TAP_SLOP_PX,
+  albumSlots,
   clampOffset,
   clampScale,
   distanceBetween,
@@ -160,5 +161,32 @@ describe('swipeStep', () => {
   /** A diagonal belongs to the dismissal, which reads the vertical axis. */
   it('ignores a drag that is more vertical than sideways', () => {
     expect(swipeStep(-80, 90, -1)).toBe(0)
+  })
+})
+
+describe('albumSlots', () => {
+  it('leaves a single picture without neighbours', () => {
+    expect(albumSlots(0, 1).map((slot) => slot.at)).toEqual([null, 0, null])
+  })
+
+  it('wraps at both ends of the album', () => {
+    expect(albumSlots(0, 6).map((slot) => slot.at)).toEqual([5, 0, 1])
+    expect(albumSlots(5, 6).map((slot) => slot.at)).toEqual([4, 5, 0])
+    expect(albumSlots(2, 6).map((slot) => slot.at)).toEqual([1, 2, 3])
+  })
+
+  it('keys a slot by the picture in it, so a turn moves the view', () => {
+    expect(albumSlots(2, 6).map((slot) => slot.key)).toEqual(['1', '2', '3'])
+  })
+
+  it('never hands out the same key twice, even when both neighbours are one picture', () => {
+    for (const total of [1, 2, 3, 6]) {
+      for (let index = 0; index < total; index += 1) {
+        const keys = albumSlots(index, total).map((slot) => slot.key)
+        expect(new Set(keys).size).toBe(3)
+      }
+    }
+    expect(albumSlots(0, 2).map((slot) => slot.at)).toEqual([1, 0, 1])
+    expect(albumSlots(0, 2)[2]?.key).toBe('1')
   })
 })
