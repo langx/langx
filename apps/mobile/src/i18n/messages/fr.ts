@@ -261,7 +261,7 @@ export const fr: Localized<EnMessages> = {
     aboutOpen: 'Qu’est-ce que c’est ?',
     aboutTitle: 'Comment fonctionne Echo',
     aboutBody:
-      'La plupart de ce que tu croises aujourd’hui aura disparu dans une semaine — sauf si tu le recroises. Echo ramène une phrase juste avant qu’elle ne s’efface, et chaque fois que tu t’en souviens, l’attente suivante s’allonge.',
+      'Echo ramène une phrase juste avant que tu ne l’oublies. Si tu t’en souviens, l’attente suivante s’allonge.',
     aboutWithout: 'Sans révision',
     aboutWith: 'Avec Echo',
     aboutChart:
@@ -273,16 +273,12 @@ export const fr: Localized<EnMessages> = {
     aboutStep8d: '8 jours',
     aboutStep20d: '20 jours',
     aboutStepMore: 'puis des mois, puis une fois par an',
-    aboutRecall:
-      'Ce qui marche, c’est d’être interrogé. Aller chercher un mot dans sa propre tête l’ancre bien mieux que de le relire.',
-    aboutLittle:
-      'Une langue, c’est des milliers de mots. Echo ne demande que ceux que tu es sur le point d’oublier : dix minutes par jour vont plus loin qu’une heure par semaine.',
-    aboutYours:
-      'Et ce sont tes propres phrases, tirées de tes conversations — des mots que tu avais déjà une raison de retenir.',
-    aboutForgot:
-      'Oubliée ? Elle revient dans une minute et repart des courtes attentes. Rien n’est perdu.',
+    aboutRecall: 'Être interrogé vaut mieux que relire.',
+    aboutLittle: 'Dix minutes par jour valent mieux qu’une heure par semaine.',
+    aboutYours: 'Tes propres phrases, tirées de tes conversations.',
+    aboutForgot: 'Oubliée ? Elle revient plus tôt. Rien n’est perdu.',
     aboutProof:
-      'L’espacement et l’autotest sont les deux résultats les mieux établis de la recherche sur la mémoire, étudiés depuis les années 1880. Ce sont eux deux, appliqués à ta langue.',
+      'Espacement et autotest : les deux résultats les mieux établis sur la mémoire, depuis 1880.',
     aboutClose: 'J’ai compris',
   },
 
