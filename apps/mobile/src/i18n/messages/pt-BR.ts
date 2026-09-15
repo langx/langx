@@ -527,8 +527,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   update: {
-    downloaded: 'Uma nova versão está pronta.',
-    restart: 'Reiniciar agora',
+    applyingTitle: 'Atualizando o LangX',
+    applyingBody: 'Uma nova versão está sendo instalada. Leva um instante.',
     bannerTitle: 'Nova versão disponível',
     bannerBody: 'Atualize para ter o LangX mais recente.',
     dismiss: 'Dispensar',

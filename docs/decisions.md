@@ -761,12 +761,24 @@ and EAS Update is already wired to the channels in `eas.json`), and
 store-updates-only (an urgent fix would take days and could never reach people
 who stop updating).
 
-## Updates — two notices, because there are two ways to get one
+## Updates — one installs itself, the other gets a banner
 
-An over-the-air update is already downloaded and one restart away; a store
-release is a trip out of the app. Wording those as one message would have to
-lie about one of them, so they are two: a toast that offers the restart, and a
-dismissible banner that offers the store.
+An over-the-air update and a store release are two different things to a
+person: one is a download the app can finish on its own, the other is a trip
+out of the app. Wording them as one message would have to lie about one of
+them, so they are handled apart. **An OTA update is installed the moment it
+is found, and nobody is asked** (15 September 2026). The first version raised
+a toast — "a new version is ready, restart now" — on the reasoning that
+reloading under somebody mid-conversation is worse than shipping the fix a
+few minutes later. The reasoning stands; the toast did not. The check runs
+once, as the app comes up, so the restart lands behind the opening animation
+and never mid-session anyway — and given that, offering a choice only meant
+that people who dismissed the toast kept running the old bundle until they
+happened to restart. Now `AppGate` swaps the app for a full-screen "Updating
+LangX" while the bundle downloads and reloads into it; a failed download
+lets the app through on the bundle it already has. The store release keeps
+its dismissible banner, because that one genuinely is the person's to
+decline.
 
 They also cannot be derived from each other. An installed binary reports the
 version it was installed at whatever OTA bundle it is running, so `latestVersion`
