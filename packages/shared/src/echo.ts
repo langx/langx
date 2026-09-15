@@ -27,6 +27,17 @@ export const ECHO_FRONT_MAX_LENGTH = 200
 export const ECHO_BACK_MAX_LENGTH = 200
 
 /**
+ * How many recordings one card may hold.
+ *
+ * A card used to hold exactly one, and keeping a second answer replaced the
+ * first — which threw away the thing that makes asking the feed worth doing:
+ * two people saying the same sentence differently is the lesson, not noise.
+ * Four, because the point is a couple of voices to compare and a card is
+ * reviewed in seconds; a queue of ten recordings is a playlist, not a card.
+ */
+export const ECHO_AUDIO_MAX = 4
+
+/**
  * How many grades one request may carry.
  *
  * Ten sessions' worth. A session is `SRS_RULES.sessionSize` cards and submits
@@ -112,6 +123,15 @@ export const echoAudioSchema = z.object({
   origin: z.enum(['post', 'chat', 'pack', 'self']),
   /** The speaker's display name. Absent means the card does not claim one. */
   speakerName: z.string().optional(),
+  /**
+   * The pronunciation answer this came from, where it came from one.
+   *
+   * What makes keeping a recording idempotent — pressing the button twice on
+   * one answer must not put the same voice on the card twice — and what lets
+   * the post screen say which answers are already on the card instead of
+   * offering all of them as if none were.
+   */
+  answerId: z.string().optional(),
 })
 export type EchoAudio = z.infer<typeof echoAudioSchema>
 
@@ -151,7 +171,17 @@ export const echoCardSchema = z.object({
   example: z.string().optional(),
   lang: z.string(),
   source: echoSourceSchema,
+  /**
+   * The first recording, and the only one an older client understands.
+   *
+   * Kept as a mirror of `audios[0]` rather than removed: a card holds several
+   * voices now, but a build frozen in the stores reads this field and nothing
+   * else, and so do the offline snapshots already written to people's disks.
+   * Read it through `echoAudiosOf`, never directly.
+   */
   audio: echoAudioSchema.optional(),
+  /** Every recording on the card, in the order they were kept. */
+  audios: z.array(echoAudioSchema).max(ECHO_AUDIO_MAX).optional(),
   image: echoImageSchema.optional(),
   /**
    * The pronunciation post this card's owner opened from it, when they asked
@@ -159,10 +189,37 @@ export const echoCardSchema = z.object({
    * back to the card it was asked from, in one tap.
    */
   askedPostId: z.string().optional(),
+  /**
+   * The correction post this card's owner opened from it — the other half of
+   * the same idea, and a second field rather than a second use of the one
+   * above.
+   *
+   * One slot would mean asking for a correction forgets the pronunciation
+   * post, and the "keep this on my card" button on that post would vanish
+   * from under the recordings somebody is still waiting for. Two names, the
+   * way an answer carries `media` and `slowMedia` rather than a list it would
+   * then have to interpret.
+   */
+  askedCorrectionPostId: z.string().optional(),
   srs: echoSrsSchema,
   createdAt: z.string(),
 })
 export type EchoCard = z.infer<typeof echoCardSchema>
+
+/**
+ * Every recording on a card, whichever field it arrived in.
+ *
+ * `attachmentsOf`'s sibling, and for the same reason: a card written this
+ * morning and one written before cards could hold more than one recording have
+ * to look identical to everything downstream.
+ */
+export function echoAudiosOf(card: {
+  audios?: readonly EchoAudio[] | null | undefined
+  audio?: EchoAudio | null | undefined
+}): EchoAudio[] {
+  if (card.audios?.length) return [...card.audios]
+  return card.audio ? [card.audio] : []
+}
 
 export const echoCardPageSchema = z.object({
   items: z.array(echoCardSchema),
@@ -301,7 +358,23 @@ export const updateEchoCardSchema = z.object({
    * copy of a message it never came from.
    */
   image: mediaSchema.nullable().optional(),
+  /**
+   * A recording of your own. It is **added** to the card's recordings now
+   * rather than taking the single slot, because a card holds several; `null`
+   * still clears them all, which is what it has always meant.
+   */
   audio: mediaSchema.nullable().optional(),
+  /**
+   * Recordings to take off the card, by URL.
+   *
+   * Removing the second of three cannot be said with the field above, and the
+   * obvious alternative — sending the list that should remain — cannot be
+   * said at all: a recording already on the card is an `EchoAudio` and has no
+   * `contentType` or `sizeBytes` to send it back as a `Media`, so a client
+   * would have to invent them and would be charged media quota for files it
+   * is keeping rather than adding.
+   */
+  removeAudio: z.array(z.url()).max(ECHO_AUDIO_MAX).optional(),
 })
 export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
 
@@ -330,6 +403,22 @@ export const attachEchoAudioSchema = z.object({
   answerId: z.string().trim().min(1),
 })
 export type AttachEchoAudioInput = z.infer<typeof attachEchoAudioSchema>
+
+/**
+ * Putting a correction's sentence on the card that asked for it.
+ *
+ * `attachEchoAudioSchema`'s twin, and authorised the same way: a correction
+ * id, never the text, so the server reads what somebody actually wrote and
+ * `correction.postId === card.askedCorrectionPostId` is the whole story.
+ *
+ * It replaces the card's **front**. A card whose sentence is wrong is a card
+ * that teaches the mistake, and the corrected line is the thing the person
+ * asked the feed for.
+ */
+export const applyEchoCorrectionSchema = z.object({
+  correctionId: z.string().trim().min(1),
+})
+export type ApplyEchoCorrectionInput = z.infer<typeof applyEchoCorrectionSchema>
 
 /**
  * Minted by the client, one per graded card, before the batch is sent.

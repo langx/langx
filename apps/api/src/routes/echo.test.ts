@@ -12,7 +12,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
-import { newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
+import { ECHO_AUDIO_MAX, newCardSrs, SRS_RULES, TOKEN_RULES } from '@langx/shared'
 
 const PASSWORD = 'correct horse battery staple'
 const DB_NAME = 'langx_echo_test'
@@ -1056,39 +1056,61 @@ describe('echo', () => {
      * message, post or pack that still plays it; deleting it because a card
      * stopped pointing at it would take a recording out of somebody's thread.
      */
-    it('deletes the object it replaces only when the card owned it', async () => {
+    it('deletes a removed recording only when the card owned it', async () => {
       const user = await newUser('media-delete@example.com')
       const cardId = await writeCard(user, 'media-delete')
       const { updateCard } = await import('../modules/echo/cards')
       const cards = handle.db.collection(COLLECTIONS.echoCards)
 
       // A copy, as a capture would have written it.
+      const copiedUrl = `${BUCKET}/posts/other/answer.m4a`
       await cards.updateOne(
         { _id: new ObjectId(cardId) },
-        { $set: { audio: { url: `${BUCKET}/posts/other/answer.m4a`, origin: 'post' } } },
+        {
+          $set: {
+            audio: { url: copiedUrl, origin: 'post' },
+            audios: [{ url: copiedUrl, origin: 'post' }],
+          },
+        },
       )
-      const copied = fakeStorage()
+
+      // Adding one of your own takes nothing away: recordings accumulate.
+      const added = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, audio: recording('mine') },
         BUCKET,
-        copied.storage,
+        added.storage,
       )
-      expect(copied.deleted).toEqual([])
+      expect(added.deleted).toEqual([])
 
-      // Now the card's own recording, replaced by another of its own.
-      const own = fakeStorage()
+      // Taking the copy off leaves the post that still plays it alone.
+      const copy = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
-        { ...lines, audio: recording('newer') },
+        { ...lines, removeAudio: [copiedUrl] },
+        BUCKET,
+        copy.storage,
+      )
+      expect(copy.deleted).toEqual([])
+
+      // Taking off the card's own recording does delete it: nothing else holds it.
+      const own = fakeStorage()
+      const card = await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, removeAudio: [`${BUCKET}/echo/u/mine.m4a`] },
         BUCKET,
         own.storage,
       )
       expect(own.deleted).toEqual(['echo/u/mine.m4a'])
+      expect(card.audios ?? []).toEqual([])
+      expect(card.audio).toBeUndefined()
     })
 
     it('refuses a file that is not in our bucket', async () => {
@@ -1259,20 +1281,82 @@ describe('echo', () => {
       expect(audio?.speakerName).toBe('Test User')
     })
 
-    /* The reason to tap this twice is that the first voice was hard to follow. */
-    it('replaces a recording the card already had', async () => {
-      const [asker, first] = await newPair('ask-replace')
-      const second = await newUser('ask-replace-c@example.com')
+    /*
+     * Two people answering the same question is the reason to ask the feed at
+     * all — one says it the way it is written, the other the way it is said.
+     * The card used to keep only the newer of them.
+     */
+    it('adds a second answer rather than replacing the first', async () => {
+      const [asker, first] = await newPair('ask-second')
+      const second = await newUser('ask-second-c@example.com')
       const cardId = await makeCard(asker, first, 'squirrel')
       const postId = await askPost(asker)
       await link(asker, cardId, postId)
 
       await attach(asker, cardId, await answerWith(first, postId, 'first'))
-      const later = await answerWith(second, postId, 'second')
+      const response = await attach(asker, cardId, await answerWith(second, postId, 'second'))
 
-      const response = await attach(asker, cardId, later)
       expect(response.statusCode, response.body).toBe(200)
-      expect(response.json<{ audio: { url: string } }>().audio.url).toContain('second.m4a')
+      const card = response.json<{ audio: { url: string }; audios: { url: string }[] }>()
+      expect(card.audios.map((entry) => entry.url.split('/').at(-1))).toEqual([
+        'first.m4a',
+        'second.m4a',
+      ])
+      // The mirror an older build reads is the first of them, always.
+      expect(card.audio.url).toBe(card.audios[0]?.url)
+    })
+
+    /** The button is on every row; tapping one twice is not two recordings. */
+    it('keeps the same answer once however often it is kept', async () => {
+      const [asker, friend] = await newPair('ask-twice')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+      const answerId = await answerWith(friend, postId, 'once')
+
+      await attach(asker, cardId, answerId)
+      const again = await attach(asker, cardId, answerId)
+
+      expect(again.statusCode, again.body).toBe(200)
+      expect(again.json<{ audios: unknown[] }>().audios).toHaveLength(1)
+    })
+
+    it('refuses a recording past the ceiling rather than dropping one', async () => {
+      const [asker, friend] = await newPair('ask-full')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const postId = await askPost(asker)
+      await link(asker, cardId, postId)
+
+      /*
+       * One answer per person per post (`post_author_unique`), so filling a
+       * card takes as many voices as it holds. The authors are ids rather than
+       * accounts: what is under test is the ceiling, and four more sign-ups
+       * would only make the suite slower.
+       */
+      const fill = async (name: string) => {
+        const _id = new ObjectId()
+        await handle.db.collection(COLLECTIONS.pronunciationAnswers).insertOne({
+          _id,
+          postId: new ObjectId(postId),
+          authorId: new ObjectId().toHexString(),
+          media: take(name),
+          createdAt: new Date(),
+        })
+        return _id.toHexString()
+      }
+
+      for (let i = 0; i < ECHO_AUDIO_MAX; i += 1) {
+        expect((await attach(asker, cardId, await fill(`take${i}`))).statusCode).toBe(200)
+      }
+      const overflow = await fill('overflow')
+
+      expect((await attach(asker, cardId, overflow)).statusCode).toBe(400)
+      const card = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: asker.cookie },
+      })
+      expect(card.json<{ audios: unknown[] }>().audios).toHaveLength(ECHO_AUDIO_MAX)
     })
 
     /*
@@ -1280,6 +1364,110 @@ describe('echo', () => {
      * the attach, so this is the test holding it up: without the check, any
      * answer anywhere could be pointed at any of your cards.
      */
+    async function correctionPost(user: SignedUpUser, body = 'i has a squirrel') {
+      const created = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { body, language: 'en', kind: 'correction' },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ _id: string }>()._id
+    }
+
+    async function correctWith(author: SignedUpUser, postId: string, corrected: string) {
+      const created = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: author.cookie },
+        payload: { corrected },
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return created.json<{ _id: string }>()._id
+    }
+
+    function applyCorrectionTo(user: SignedUpUser, cardId: string, correctionId: string) {
+      return app.inject({
+        method: 'POST',
+        url: `/echo/cards/${cardId}/correction`,
+        headers: { cookie: user.cookie },
+        payload: { correctionId },
+      })
+    }
+
+    it('reads one card by id, and never somebody else’s', async () => {
+      const [mine, theirs] = await newPair('card-by-id')
+      const cardId = await makeCard(mine, theirs, 'squirrel')
+
+      const ok = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: mine.cookie },
+      })
+      expect(ok.statusCode, ok.body).toBe(200)
+      expect(ok.json<{ _id: string }>()._id).toBe(cardId)
+
+      const not = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: theirs.cookie },
+      })
+      expect(not.statusCode).toBe(404)
+    })
+
+    /*
+     * The two questions a card can ask are remembered separately. Asking for a
+     * correction used to be impossible; doing it through one field would have
+     * taken the "keep this recording" button off a pronunciation post somebody
+     * was still answering.
+     */
+    it('remembers a correction ask without forgetting the recording ask', async () => {
+      const [asker, friend] = await newPair('ask-both')
+      const cardId = await makeCard(asker, friend, 'squirrel')
+      const spoken = await askPost(asker)
+      const written = await correctionPost(asker)
+
+      await link(asker, cardId, spoken)
+      await link(asker, cardId, written)
+
+      const card = await app.inject({
+        method: 'GET',
+        url: `/echo/cards/${cardId}`,
+        headers: { cookie: asker.cookie },
+      })
+      expect(card.json<{ askedPostId: string; askedCorrectionPostId: string }>()).toMatchObject({
+        askedPostId: spoken,
+        askedCorrectionPostId: written,
+      })
+      // And the post screen finds the card from either question.
+      expect((await forPost(asker, spoken)).json<{ _id: string }>()._id).toBe(cardId)
+      expect((await forPost(asker, written)).json<{ _id: string }>()._id).toBe(cardId)
+    })
+
+    it('puts a correction on the card as its sentence', async () => {
+      const [asker, friend] = await newPair('correction-keep')
+      const cardId = await makeCard(asker, friend, 'i has a squirrel')
+      const postId = await correctionPost(asker)
+      await link(asker, cardId, postId)
+      const correctionId = await correctWith(friend, postId, 'I have a squirrel')
+
+      const response = await applyCorrectionTo(asker, cardId, correctionId)
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ front: string }>().front).toBe('I have a squirrel')
+    })
+
+    /* The same authorisation story as the recording: it has to be this post's. */
+    it('refuses a correction written on a different post', async () => {
+      const [asker, friend] = await newPair('correction-elsewhere')
+      const cardId = await makeCard(asker, friend, 'i has a squirrel')
+      await link(asker, cardId, await correctionPost(asker))
+
+      const elsewhere = await correctionPost(friend, 'she go home')
+      const correctionId = await correctWith(asker, elsewhere, 'she goes home')
+
+      expect((await applyCorrectionTo(asker, cardId, correctionId)).statusCode).toBe(404)
+    })
+
     it('refuses an answer written on a different post', async () => {
       const [asker, friend] = await newPair('ask-elsewhere')
       const cardId = await makeCard(asker, friend, 'squirrel')

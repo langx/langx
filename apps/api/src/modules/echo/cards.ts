@@ -1,5 +1,6 @@
 import {
   attachmentsOf,
+  ECHO_AUDIO_MAX,
   ECHO_FRONT_MAX_LENGTH,
   ERROR_CODES,
   type CaptureEchoInput,
@@ -12,7 +13,9 @@ import {
   type EchoQueue,
   type EchoSource,
   type EchoSummary,
+  type ApplyEchoCorrectionInput,
   type AttachEchoAudioInput,
+  echoAudiosOf,
   type LinkEchoAskInput,
   type ListEchoCardsQuery,
   newCardSrs,
@@ -32,7 +35,12 @@ import type { TranslationProvider } from '../../translation/TranslationProvider'
 import { assertConversationAccess } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
 import { assertAttachable, deleteObjects } from '../feed/attachments'
-import { notHidden, type Post, type PronunciationAnswerDoc } from '../feed/documents'
+import {
+  notHidden,
+  type Post,
+  type PostCorrectionDoc,
+  type PronunciationAnswerDoc,
+} from '../feed/documents'
 import { readCorrectionSummary } from '../feed/feed'
 import { readAnswerSummary } from '../feed/pronunciation'
 import { blockedUserIds } from '../moderation/blocks'
@@ -98,7 +106,21 @@ async function audioFromAnswer(db: Db, answer: PronunciationAnswerDoc): Promise<
     ...(answer.slowMedia ? { slowUrl: answer.slowMedia.url } : {}),
     origin: 'post',
     ...(speaker?.displayName ? { speakerName: speaker.displayName } : {}),
+    answerId: answer._id.toHexString(),
   }
+}
+
+/**
+ * The two audio fields, written together, always.
+ *
+ * `audio` is the list's first item and nothing else — the shape a build frozen
+ * in the stores reads, and the one in every offline snapshot already written.
+ * Keeping the mirror in one function is what stops the two drifting: there is
+ * no write of `audios` anywhere that does not go through here.
+ */
+function audioFields(audios: EchoAudio[]): Pick<EchoCardDoc, 'audio' | 'audios'> {
+  const first = audios[0]
+  return first ? { audio: first, audios } : {}
 }
 
 type TargetLang = TranslateRequestInput['targetLang']
@@ -409,7 +431,7 @@ export async function captureFromPost(
         target,
         undefined,
       )
-      return { lang: post.language, front, back, ...(audio ? { audio } : {}) }
+      return { lang: post.language, front, back, ...audioFields(audio ? [audio] : []) }
     },
     me,
   )
@@ -583,6 +605,29 @@ export async function updateCard(
       await assertAttachable(db, userId, me, [input.audio], storagePublicBaseUrl, 'audio')
   }
 
+  /*
+   * Removals first, then the new file: saving an edit that takes one recording
+   * off and adds another must not be refused by the ceiling for a moment it is
+   * never actually over.
+   *
+   * Nothing the card already holds is re-sent. An `EchoAudio` has no
+   * `contentType` to travel as a `Media`, and re-sending one would both invent
+   * that and restamp somebody else's recording as `self` — which is a licence
+   * to delete a file the post it came from still plays.
+   */
+  const touchesAudio =
+    input.audio !== undefined || (input.removeAudio !== undefined && input.removeAudio.length > 0)
+  const dropped = new Set(input.removeAudio ?? [])
+  const remaining =
+    input.audio === null ? [] : echoAudiosOf(card).filter((entry) => !dropped.has(entry.url))
+  const nextAudios = input.audio ? [...remaining, selfAudio(input.audio)] : remaining
+  if (nextAudios.length > ECHO_AUDIO_MAX) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `A card holds at most ${ECHO_AUDIO_MAX} recordings`,
+    )
+  }
+
   const set: Partial<EchoCardDoc> = {
     front: input.front,
     back: input.back,
@@ -590,13 +635,13 @@ export async function updateCard(
     // field must not blank the language of every card it saves.
     ...(input.lang ? { lang: input.lang } : {}),
     ...(input.image ? { image: selfImage(input.image) } : {}),
-    ...(input.audio ? { audio: selfAudio(input.audio) } : {}),
+    ...(touchesAudio ? audioFields(nextAudios) : {}),
   }
   // The empty strings are typed, not inferred: Mongo's `$unset` accepts only
   // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
-  const unset: { image?: ''; audio?: '' } = {
+  const unset: { image?: ''; audio?: ''; audios?: '' } = {
     ...(input.image === null ? { image: '' as const } : {}),
-    ...(input.audio === null ? { audio: '' as const } : {}),
+    ...(touchesAudio && nextAudios.length === 0 ? { audio: '' as const, audios: '' as const } : {}),
   }
 
   const updated = await cards.findOneAndUpdate(
@@ -606,10 +651,15 @@ export async function updateCard(
   )
   if (!updated) throw notFound('Card not found')
 
-  // After the write, and only ours. See the rule in the doc comment.
+  // After the write, and only ours. See the rule in the doc comment: a
+  // recording that survived the edit is not gone, and one the card only ever
+  // held a copy of is not ours to remove.
+  const kept = new Set(nextAudios.map((entry) => entry.url))
   await deleteObjects(storage, [
     input.image !== undefined && card.image?.origin === 'self' ? card.image.url : undefined,
-    input.audio !== undefined && card.audio?.origin === 'self' ? card.audio.url : undefined,
+    ...echoAudiosOf(card)
+      .filter((entry) => entry.origin === 'self' && !kept.has(entry.url))
+      .map((entry) => entry.url),
   ])
 
   return toEchoCard(updated)
@@ -639,28 +689,46 @@ export async function linkAsk(
   const post = await db
     .collection<Post>(COLLECTIONS.posts)
     .findOne({ _id: new ObjectId(input.postId), authorId: userId, ...notHidden() })
-  if (!post || post.kind !== 'pronunciation') throw notFound('Post not found')
+  if (!post) throw notFound('Post not found')
+
+  /*
+   * Which field the link lands in is the post's own kind, not the caller's
+   * word for it: a card remembers the question it asked for a recording and
+   * the question it asked for a correction separately, so asking for one does
+   * not take the other's button off a post somebody is still answering.
+   */
+  const field = post.kind === 'pronunciation' ? 'askedPostId' : 'askedCorrectionPostId'
 
   /*
    * The post is asked from one card, so a second card claiming it would break
-   * `owner_asked_post_unique` rather than overwrite. Clearing it first is what
+   * the partial unique index rather than overwrite. Clearing it first is what
    * makes re-asking from a different card work, and it is why this is two
    * writes instead of one.
    */
   await db
     .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .updateMany({ userId, askedPostId: input.postId }, { $unset: { askedPostId: '' } })
+    .updateMany({ userId, [field]: input.postId }, { $unset: { [field]: '' } })
 
   const updated = await db
     .collection<EchoCardDoc>(COLLECTIONS.echoCards)
     .findOneAndUpdate(
       { _id: new ObjectId(cardId), userId },
-      { $set: { askedPostId: input.postId } },
+      { $set: { [field]: input.postId } },
       { returnDocument: 'after' },
     )
   if (!updated) throw notFound('Card not found')
 
   return toEchoCard(updated)
+}
+
+/** One card of the caller's, by id. What the card screen reads. */
+export async function getCard(db: Db, userId: string, cardId: string): Promise<EchoCard> {
+  if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
+  const doc = await db
+    .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    .findOne({ _id: new ObjectId(cardId), userId })
+  if (!doc) throw notFound('Card not found')
+  return toEchoCard(doc)
 }
 
 /** The caller's card that asked this post, if one did. */
@@ -672,7 +740,7 @@ export async function cardForPost(
   if (!ObjectId.isValid(postId)) return null
   const doc = await db
     .collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    .findOne({ userId, askedPostId: postId })
+    .findOne({ userId, $or: [{ askedPostId: postId }, { askedCorrectionPostId: postId }] })
   return doc ? toEchoCard(doc) : null
 }
 
@@ -684,9 +752,12 @@ export async function cardForPost(
  * card at a pronunciation post the caller wrote. Nothing here trusts a URL —
  * the client sends an answer id and the media is read from the answer.
  *
- * The write is unconditional. A card that already has a recording is meant to
- * be overwritten: the reason to tap this is usually that the first voice was
- * hard to follow, and a refusal would leave no way to say so.
+ * The recording is **added**, not substituted. Two people answering the same
+ * question is the reason to ask the feed rather than a dictionary: one says it
+ * the way it is written and the other the way it is said, and a card that kept
+ * only the newer of them threw away the comparison. Keeping the same answer
+ * twice is a no-op rather than a duplicate — the button is on every row, and
+ * tapping one twice should not put the same voice on the card twice.
  */
 export async function attachAnswerAudio(
   db: Db,
@@ -708,9 +779,67 @@ export async function attachAnswerAudio(
     throw notFound('Recording not found')
   }
 
+  const held = echoAudiosOf(card)
+  if (held.some((entry) => entry.answerId === input.answerId)) return toEchoCard(card)
+  if (held.length >= ECHO_AUDIO_MAX) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `A card holds at most ${ECHO_AUDIO_MAX} recordings`,
+    )
+  }
+
   const updated = await cards.findOneAndUpdate(
     { _id: card._id, userId },
-    { $set: { audio: await audioFromAnswer(db, answer) } },
+    { $set: audioFields([...held, await audioFromAnswer(db, answer)]) },
+    { returnDocument: 'after' },
+  )
+  if (!updated) throw notFound('Card not found')
+
+  return toEchoCard(updated)
+}
+
+/**
+ * Put a correction's sentence on the card that asked for it.
+ *
+ * `attachAnswerAudio`'s twin, authorised the same way — the correction has to
+ * belong to the post this card asked — and it writes the **front**, because a
+ * card whose sentence is wrong teaches the mistake every time it comes back.
+ *
+ * Unlike a recording this replaces rather than adds: a sentence has one right
+ * version, and keeping both would leave the learner to decide which of the two
+ * lines on the card is the one to learn.
+ */
+export async function applyCorrection(
+  db: Db,
+  userId: string,
+  cardId: string,
+  input: ApplyEchoCorrectionInput,
+): Promise<EchoCard> {
+  if (!ObjectId.isValid(cardId)) throw notFound('Card not found')
+  if (!ObjectId.isValid(input.correctionId)) throw notFound('Correction not found')
+
+  const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
+  const card = await cards.findOne({ _id: new ObjectId(cardId), userId })
+  if (!card) throw notFound('Card not found')
+
+  const correction = await db
+    .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
+    .findOne({ _id: new ObjectId(input.correctionId) })
+  if (
+    !correction ||
+    !card.askedCorrectionPostId ||
+    correction.postId.toHexString() !== card.askedCorrectionPostId
+  ) {
+    throw notFound('Correction not found')
+  }
+
+  const front = correction.corrected.trim().slice(0, ECHO_FRONT_MAX_LENGTH)
+  if (front.length === 0)
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'There is no sentence to keep')
+
+  const updated = await cards.findOneAndUpdate(
+    { _id: card._id, userId },
+    { $set: { front } },
     { returnDocument: 'after' },
   )
   if (!updated) throw notFound('Card not found')
