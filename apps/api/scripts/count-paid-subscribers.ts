@@ -13,7 +13,11 @@ import { COLLECTIONS } from '../src/db/collections'
 import type { Profile } from '../src/modules/profiles/profiles'
 
 const env = loadEnv()
-const dbName = process.argv[process.argv.indexOf('--db') + 1] ?? env.MONGODB_DB
+// `indexOf` returns -1 for an absent flag, and argv[0] is the node binary — so
+// the unguarded form passed a file path to `client.db()` on every run without
+// `--db`, which is every ordinary run.
+const dbFlag = process.argv.indexOf('--db')
+const dbName = (dbFlag === -1 ? undefined : process.argv[dbFlag + 1]) ?? env.MONGODB_DB
 const handle = await connectToDatabase(env.MONGODB_URI, dbName)
 const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
 
