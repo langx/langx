@@ -124,17 +124,20 @@ async function settleConversation(db: Db, conversationId: ObjectId): Promise<'ke
     return 'deleted'
   }
 
-  const countBy: Record<string, number> = {}
-  for (const id of conversation.participants) countBy[id] = 0
-  for (const row of remaining) countBy[row.senderId] = (countBy[row.senderId] ?? 0) + 1
+  // Maps rather than objects keyed by id, so a participant id read from the
+  // database is never a property name being written (CodeQL's
+  // `js/remote-property-injection`); `Object.fromEntries` at the end is the
+  // shape the document stores.
+  const countBy = new Map<string, number>(conversation.participants.map((id) => [id, 0]))
+  for (const row of remaining) countBy.set(row.senderId, (countBy.get(row.senderId) ?? 0) + 1)
 
   // An unread count can only ever be as large as what the other side still
   // has in the thread; clamped rather than zeroed, so a genuinely unread
   // broadcast keeps its dot.
-  const unread: Record<string, number> = {}
+  const unread = new Map<string, number>()
   for (const id of conversation.participants) {
     const other = conversation.participants.find((p) => p !== id) ?? id
-    unread[id] = Math.min(conversation.unread[id] ?? 0, countBy[other] ?? 0)
+    unread.set(id, Math.min(conversation.unread[id] ?? 0, countBy.get(other) ?? 0))
   }
 
   const pinnedId = conversation.pinned?.messageId
@@ -146,8 +149,8 @@ async function settleConversation(db: Db, conversationId: ObjectId): Promise<'ke
       $set: {
         lastMessage: { body: latest.body, senderId: latest.senderId, createdAt: latest.createdAt },
         messageCount: remaining.length,
-        messageCountBy: countBy,
-        unread,
+        messageCountBy: Object.fromEntries(countBy),
+        unread: Object.fromEntries(unread),
         bothSpoke: remaining.some((row) => row.senderId !== conversation.firstMessageBy),
       },
       ...(pinnedGone ? { $unset: { pinned: '' } } : {}),
