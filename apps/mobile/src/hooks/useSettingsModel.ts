@@ -42,7 +42,20 @@ import { storeManagementUrl } from '../lib/purchases'
 import { openPaywall } from '../lib/paywall'
 import { useThemePreference } from '../lib/theme'
 import { syncIconBadge } from '../lib/iconBadge'
+import { settleWithin } from '../lib/settleWithin'
 import { showToast } from '../lib/toast'
+
+/**
+ * How long the pre-sign-out housekeeping may take before the session goes
+ * without it.
+ *
+ * Shorter than `apiFetch`'s own ten seconds on purpose. That budget is for a
+ * screen waiting on data it cannot draw without; this one is for somebody who
+ * has already pressed Sign out and confirmed it, and four seconds is the far
+ * end of what a button may stay busy before it reads as broken. The work is
+ * best-effort either way — see `signOut`.
+ */
+const SIGN_OUT_CLEANUP_MS = 4_000
 
 /**
  * Everything the settings rows read and call, in one hook.
@@ -65,6 +78,8 @@ export function useSettingsModel() {
 
   const me = useMe()
   const update = useUpdateProfile()
+  // The button stays busy for as long as the sign-out does; see `signOut`.
+  const [signingOut, setSigningOut] = useState(false)
   const iconSupported = isSupported()
   const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
     iconSupported ? currentAppIcon() : 'default',
@@ -287,6 +302,23 @@ export function useSettingsModel() {
     await Linking.openURL(url)
   }
 
+  /**
+   * Ends the session, and is allowed to take a moment saying so.
+   *
+   * The two calls before the sign-out are housekeeping that needs a session to
+   * do — the push token has to be withdrawn from the account it is registered
+   * against, and the badge count belongs to it too — so they cannot move after
+   * it. They are on a budget instead, and that is what this function is about:
+   * both are native modules with no timeout of their own, and
+   * `getExpoPushTokenAsync` waits on APNs registration before it waits on
+   * Expo's server, so on a phone where registration never completes it answers
+   * neither way. Awaiting it meant the session was never ended at all, with no
+   * error to show for it — a Sign out button that did nothing. Neither call is
+   * worth that: the stale row is swept the moment another account claims the
+   * token, and the badge is corrected on the next launch.
+   *
+   * Web never saw it, which is why it survived: both are no-ops off a device.
+   */
   async function signOut(): Promise<void> {
     const yes = await confirmAlert({
       title: t('settings.signOut'),
@@ -294,11 +326,37 @@ export function useSettingsModel() {
       confirmLabel: t('settings.signOut'),
     })
     if (!yes) return
-    // Before the session goes: unregistering needs one.
-    await unregisterPushToken()
-    // A count that belonged to this account must not outlive it on the icon.
-    await syncIconBadge(0)
-    await authClient.signOut()
+    setSigningOut(true)
+    let ended = false
+    try {
+      await settleWithin(
+        SIGN_OUT_CLEANUP_MS,
+        Promise.all([unregisterPushToken(), syncIconBadge(0)]),
+      )
+      /*
+       * A failure arrives one of two ways, and both were being dropped: a
+       * server that refuses hands it back as `error`, because Better Auth's
+       * client resolves with its failures rather than throwing them, and a
+       * request that gets no answer at all rejects instead.
+       */
+      const { error } = await authClient.signOut()
+      ended = !error
+    } catch {
+      // Left `false`, and said out loud below.
+    } finally {
+      setSigningOut(false)
+    }
+    /*
+     * On web nothing local holds the session, so nothing local can end it: a
+     * sign-out that did not reach the server leaves it exactly as it was, and
+     * replacing into `(auth)` — a group that is only mounted while signed out
+     * — is then a navigation to nowhere. Saying so is the difference between a
+     * button that failed and a button that looks broken.
+     */
+    if (!ended) {
+      showToast(t('common.retry'))
+      return
+    }
     router.replace(authLandingHref())
   }
 
@@ -367,6 +425,7 @@ export function useSettingsModel() {
     toggleLocation,
     exportData,
     signOut,
+    signingOut,
     replayIntro,
     replayTour,
   }
