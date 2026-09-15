@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { isVersion, minVersionSchema } from './appConfig'
+import { mediaSchema } from './media'
 import {
   MODERATION_PAGE_SIZE_DEFAULT,
   MODERATION_PAGE_SIZE_MAX,
@@ -130,6 +131,7 @@ export const ADMIN_ACTIONS = [
   'feedback.award',
   'broadcast.create',
   'broadcast.edit',
+  'broadcast.image',
   'broadcast.test',
   'broadcast.start',
   'broadcast.pause',
@@ -218,3 +220,22 @@ export const broadcastUpdateSchema = z
     path: ['bodies', 'en'],
   })
 export type BroadcastUpdateInput = z.infer<typeof broadcastUpdateSchema>
+
+/**
+ * The picture on a draft, or `null` to take it off again.
+ *
+ * One file, not a gallery: an announcement that needs two pictures needs a
+ * second announcement. It rides on the message as an attachment with the body
+ * as its caption, so the reader gets one bubble rather than a picture and then
+ * a wall of text underneath it.
+ *
+ * Stored per locale like `bodies` and read with the same fallback, because a
+ * chart with words on it is as much a translation as the sentence under it.
+ * The panel writes `en` alone — it has one upload button and no way to say
+ * which language the file is in — and the announcement script writes all eight
+ * from the files next to the bodies.
+ */
+export const broadcastImageSchema = z.object({
+  media: mediaSchema.nullable(),
+})
+export type BroadcastImageInput = z.infer<typeof broadcastImageSchema>

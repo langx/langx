@@ -29,6 +29,8 @@ import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../tes
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 
 const PASSWORD = 'correct horse battery staple'
+/** Where our own files live, as far as `assertOwnBucket` is concerned. */
+const MEDIA_BASE = 'https://media.example.com'
 
 describe('the operator panel', () => {
   let replSet: MongoMemoryReplSet
@@ -98,6 +100,14 @@ describe('the operator panel', () => {
   const del = (user: SignedUpUser, url: string) =>
     app.inject({ method: 'DELETE', url, headers: { cookie: user.cookie } })
 
+  const put = (user: SignedUpUser, url: string, payload: unknown = {}) =>
+    app.inject({
+      method: 'PUT',
+      url,
+      headers: { cookie: user.cookie },
+      payload: payload as Record<string, unknown>,
+    })
+
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_admin_test')
@@ -108,6 +118,9 @@ describe('the operator panel', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      // Only the public base: it is what `assertOwnBucket` compares against,
+      // and nothing in here uploads anything.
+      STORAGE_PUBLIC_BASE_URL: MEDIA_BASE,
     })
     await ensureIndexes(handle.db)
     emailSender = new CapturingEmailSender()
@@ -816,6 +829,78 @@ describe('the operator panel', () => {
       await post(admin, '/admin/broadcasts/gone-out/test')
       await post(admin, '/admin/broadcasts/gone-out/start')
       expect((await del(admin, '/admin/broadcasts/gone-out')).statusCode).toBe(400)
+    })
+
+    it('puts a picture on a draft, and takes the test with it', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/broadcasts', {
+        id: 'illustrated-news',
+        bodies: { en: 'There is a chart above this.' },
+      })
+      await post(admin, '/admin/broadcasts/illustrated-news/test')
+
+      const attached = await put(admin, '/admin/broadcasts/illustrated-news/image', {
+        media: {
+          url: `${MEDIA_BASE}/broadcasts/chart.png`,
+          contentType: 'image/png',
+          sizeBytes: 9,
+        },
+      })
+      expect(attached.statusCode).toBe(200)
+      expect(attached.json<{ images: { en: { url: string } } }>().images.en.url).toBe(
+        `${MEDIA_BASE}/broadcasts/chart.png`,
+      )
+      // The picture is part of what the message says, so the draft is untested
+      // again — the arming controls have to go away until somebody has seen it.
+      expect(attached.json<{ testedAt?: string }>().testedAt).toBeUndefined()
+
+      // And off again.
+      const cleared = await put(admin, '/admin/broadcasts/illustrated-news/image', { media: null })
+      expect(cleared.json<{ images?: unknown }>().images).toBeUndefined()
+    })
+
+    it('refuses a picture that is not in our own bucket', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/broadcasts', {
+        id: 'foreign-picture',
+        bodies: { en: 'Where is this hosted?' },
+      })
+
+      /*
+       * The whole point of the check: an operator account could otherwise
+       * point an announcement at any host on the internet, and everybody's app
+       * would load it.
+       */
+      const refused = await put(admin, '/admin/broadcasts/foreign-picture/image', {
+        media: {
+          url: 'https://example.com/tracker.png',
+          contentType: 'image/png',
+          sizeBytes: 9,
+        },
+      })
+      expect(refused.statusCode).toBe(400)
+      expect(
+        (await get(admin, '/admin/broadcasts/foreign-picture')).json<{ images?: unknown }>().images,
+      ).toBeUndefined()
+    })
+
+    it('refuses a picture once the broadcast has been armed', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/broadcasts', {
+        id: 'late-picture',
+        bodies: { en: 'This one has gone.' },
+      })
+      await post(admin, '/admin/broadcasts/late-picture/test')
+      await post(admin, '/admin/broadcasts/late-picture/start')
+
+      const late = await put(admin, '/admin/broadcasts/late-picture/image', {
+        media: { url: `${MEDIA_BASE}/broadcasts/late.png`, contentType: 'image/png', sizeBytes: 9 },
+      })
+      expect(late.statusCode).toBe(400)
+      expect(late.json<{ message: string }>().message).toContain('Only a draft can be edited')
     })
 
     it('refuses a broadcast with no English body, because English is the fallback', async () => {

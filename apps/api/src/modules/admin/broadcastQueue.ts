@@ -1,7 +1,14 @@
 import { broadcastTickShare, utcDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { bodyFor, broadcastAudience, broadcasts, revOf, type BroadcastJob } from './broadcast'
+import {
+  bodyFor,
+  broadcastAudience,
+  broadcasts,
+  mediaFor,
+  revOf,
+  type BroadcastJob,
+} from './broadcast'
 import { deliverOfficialMessage } from '../official/deliver'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
@@ -118,11 +125,14 @@ async function deliver(
   job: BroadcastJob,
   userId: string,
 ): Promise<boolean> {
-  const body = bodyFor(job, await localeFor(db, userId))
+  const locale = await localeFor(db, userId)
+  const body = bodyFor(job, locale)
+  const attachment = mediaFor(job, locale)
   const delivered = await deliverOfficialMessage(db, {
     fromHandle: 'langx',
     toUserId: userId,
     body,
+    ...(attachment ? { attachment } : {}),
     clientId: `broadcast:${job._id}:${userId}`,
   })
   if (!delivered) return false
@@ -174,11 +184,14 @@ export async function sendBroadcastTest(
   job: BroadcastJob,
   toUserId: string,
 ): Promise<boolean> {
-  const body = bodyFor(job, await localeFor(db, toUserId))
+  const locale = await localeFor(db, toUserId)
+  const body = bodyFor(job, locale)
+  const attachment = mediaFor(job, locale)
   const delivered = await deliverOfficialMessage(db, {
     fromHandle: 'langx',
     toUserId,
     body,
+    ...(attachment ? { attachment } : {}),
     clientId: `broadcast:${job._id}:test:${revOf(job)}:${toUserId}`,
   })
   if (!delivered) return false

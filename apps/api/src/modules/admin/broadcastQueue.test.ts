@@ -267,4 +267,99 @@ describe('the in-app broadcast queue', () => {
       .toArray()
     expect(bodies.sort()).toEqual(['Hello', 'Merhaba'])
   })
+
+  it('carries the picture for the reader’s own language, English otherwise', async () => {
+    await Promise.all([
+      member('painter', { nativeLanguages: [{ code: 'tr' }] }),
+      member('sculptor', { nativeLanguages: [{ code: 'el' }] }),
+    ])
+    const picture = (name: string) => ({
+      url: `https://media.langx.io/broadcasts/${name}.png`,
+      contentType: 'image/png',
+      sizeBytes: 1234,
+      width: 1200,
+      height: 675,
+    })
+    await createBroadcast(db, {
+      id: 'illustrated',
+      bodies: { en: 'A chart', tr: 'Bir grafik' },
+      images: { en: picture('en'), tr: picture('tr') },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    await arm(db, 'illustrated')
+    await runBroadcastQueuePass(db, push, NOON)
+
+    const messages = await db
+      .collection<{ body: string; type: string; media?: { url: string }; attachments?: unknown[] }>(
+        COLLECTIONS.messages,
+      )
+      .find({})
+      .toArray()
+
+    // A picture with a caption is an image message, not a text one — or the
+    // chat list row and the bubble both draw the wrong thing.
+    expect(messages.map((row) => row.type)).toEqual(['image', 'image'])
+    // Written twice: `attachments` for current builds, `media` for the ones
+    // that predate the list.
+    expect(messages.every((row) => row.attachments?.length === 1)).toBe(true)
+    expect(messages.map((row) => row.media?.url).sort()).toEqual([
+      'https://media.langx.io/broadcasts/en.png',
+      'https://media.langx.io/broadcasts/tr.png',
+    ])
+  })
+
+  it('falls back to the English picture for a language that has none', async () => {
+    await member('greekpainter', { nativeLanguages: [{ code: 'el' }] })
+    await createBroadcast(db, {
+      id: 'one-picture',
+      bodies: { en: 'A chart' },
+      images: {
+        en: {
+          url: 'https://media.langx.io/broadcasts/only.png',
+          contentType: 'image/png',
+          sizeBytes: 10,
+        },
+      },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    await arm(db, 'one-picture')
+    await runBroadcastQueuePass(db, push, NOON)
+
+    const message = await db
+      .collection<{ media?: { url: string } }>(COLLECTIONS.messages)
+      .findOne({})
+    expect(message?.media?.url).toBe('https://media.langx.io/broadcasts/only.png')
+  })
+
+  /**
+   * The test send is the only preview, so it has to be a preview of the whole
+   * message. One without the picture would leave the operator arming a draft
+   * whose picture nobody has seen — which is the hole the test send exists to
+   * close, reopened one field at a time.
+   */
+  it('sends the picture to the operator too', async () => {
+    await member('operator')
+    const job = await createBroadcast(db, {
+      id: 'tested-picture',
+      bodies: { en: 'A chart' },
+      images: {
+        en: {
+          url: 'https://media.langx.io/broadcasts/preview.png',
+          contentType: 'image/png',
+          sizeBytes: 10,
+        },
+      },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+
+    expect(await sendBroadcastTest(db, push, job, 'operator')).toBe(true)
+    const message = await db
+      .collection<{ media?: { url: string }; type: string }>(COLLECTIONS.messages)
+      .findOne({})
+    expect(message?.type).toBe('image')
+    expect(message?.media?.url).toBe('https://media.langx.io/broadcasts/preview.png')
+  })
 })

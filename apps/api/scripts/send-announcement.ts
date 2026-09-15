@@ -20,6 +20,12 @@
  * languages is authored in files, reviewed in a diff, and not typed into a
  * textarea.
  *
+ * A `<locale>.png` beside a body is uploaded and rides on the message as its
+ * picture, with the body as the caption. Uploaded here rather than named by
+ * URL, so that what goes out is the file that was reviewed — and into the
+ * `broadcasts/` prefix, which belongs to nobody, because the message rows keep
+ * pointing at it long after this script has exited.
+ *
  * Usage:
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env \
  *     scripts/send-announcement.ts --id 2026-09-copilot --body announcements/copilot [--confirm]
@@ -30,11 +36,12 @@
  * been; an untested one it refuses, because a file reviewed in a diff is not
  * the same thing as the message read in the app.
  */
+import { randomUUID } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { SUPPORTED_LOCALES, type Locale } from '@langx/shared'
+import { SUPPORTED_LOCALES, type Locale, type MessageMedia } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
-import { loadEnv, publicApiUrl } from '../src/env'
+import { loadEnv, publicApiUrl, type Env } from '../src/env'
 import {
   createBroadcast,
   getBroadcast,
@@ -42,6 +49,8 @@ import {
   setBroadcastStatus,
 } from '../src/modules/admin/broadcast'
 import { ensureOfficialAccounts } from '../src/modules/official/accounts'
+import { createStorageProvider } from '../src/storage/createStorageProvider'
+import { supportsPut } from '../src/storage/StorageProvider'
 
 function flag(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -57,6 +66,46 @@ function loadBodies(dir: string): Record<string, string> {
   }
   if (!bodies.en) throw new Error(`${dir}/en.txt is required — it is the fallback`)
   return bodies
+}
+
+/**
+ * A PNG's own idea of how big it is, read off the IHDR chunk.
+ *
+ * The client reserves the space before the bytes land, so a picture with no
+ * dimensions on it jumps the thread when it arrives. Read rather than assumed:
+ * the chart renderer draws 1200x675 today and the next announcement's picture
+ * will be whatever somebody exported.
+ */
+function pngSize(bytes: Buffer): { width: number; height: number } {
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) }
+}
+
+/** `<dir>/<locale>.png`, uploaded — the ones that exist, in the locales they name. */
+async function uploadImages(dir: string, env: Env): Promise<Record<string, MessageMedia>> {
+  const files = (SUPPORTED_LOCALES as readonly Locale[])
+    .map((locale) => ({ locale, path: join(dir, `${locale}.png`) }))
+    .filter((file) => existsSync(file.path))
+  if (files.length === 0) return {}
+
+  const provider = createStorageProvider(env)
+  // Refused rather than skipped: an announcement whose picture quietly did not
+  // go is one nobody finds out about until it has been read by everybody.
+  if (!supportsPut(provider)) {
+    throw new Error(`${dir} has pictures but storage is not configured — set STORAGE_* in .env`)
+  }
+
+  const images: Record<string, MessageMedia> = {}
+  for (const { locale, path } of files) {
+    const bytes = readFileSync(path)
+    const url = await provider.putObject(`broadcasts/${randomUUID()}.png`, bytes, 'image/png')
+    images[locale] = {
+      url,
+      contentType: 'image/png',
+      sizeBytes: bytes.byteLength,
+      ...pngSize(bytes),
+    }
+  }
+  return images
 }
 
 async function main(): Promise<void> {
@@ -77,11 +126,19 @@ async function main(): Promise<void> {
     }
 
     const existing = await getBroadcast(db, slug)
+    /*
+     * Uploaded only when the row is about to be written. Re-running this on a
+     * draft that already exists must not put eight more copies in the bucket
+     * for a job that will not be changed — and a `--confirm` run reaches here
+     * with the files still on disk.
+     */
+    const images = existing ? {} : await uploadImages(dir, env)
     const job =
       existing ??
       (await createBroadcast(db, {
         id: slug,
         bodies,
+        images,
         pushTitle: 'LangX',
         createdBy: 'script:send-announcement',
       }))
@@ -90,6 +147,7 @@ async function main(): Promise<void> {
     console.log(`  status:     ${job.status}${existing ? ' (already queued — left as it is)' : ''}`)
     console.log(`  recipients: ${job.total}`)
     console.log(`  locales:    ${Object.keys(job.bodies).join(', ')}`)
+    console.log(`  pictures:   ${Object.keys(job.images ?? {}).join(', ') || 'none'}`)
     console.log(`\n  en.txt:\n${job.bodies.en?.slice(0, 300) ?? ''}\n`)
 
     if (!process.argv.includes('--confirm')) {

@@ -26,16 +26,27 @@ const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Ca
 
 let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800; style: 'normal' }[] | null = null
 
-/** Read once and kept: the two faces are ~260KB and every card needs both. */
+/**
+ * Read once and kept: the three faces are ~450KB and every render needs them.
+ *
+ * Nunito has no Arabic in it, so anything Arabic — a handle, a caption, the
+ * labels on the Echo chart — came out as a row of empty boxes until Noto Sans
+ * Arabic was added beside it. satori picks the first font it is handed that
+ * has the glyph, so the third face is a fallback rather than a choice any
+ * caller makes; it shapes and joins the letters properly, which was the part
+ * worth checking before shipping a 190KB file to fix two words.
+ */
 async function loadFonts(): Promise<NonNullable<typeof fonts>> {
   if (fonts) return fonts
-  const [extraBold, semiBold] = await Promise.all([
+  const [extraBold, semiBold, arabic] = await Promise.all([
     loadAsset('fonts/Nunito_800ExtraBold.ttf'),
     loadAsset('fonts/Nunito_600SemiBold.ttf'),
+    loadAsset('fonts/NotoSansArabic_600SemiBold.ttf'),
   ])
   fonts = [
     { name: 'Nunito', data: extraBold, weight: 800, style: 'normal' },
     { name: 'Nunito', data: semiBold, weight: 600, style: 'normal' },
+    { name: 'Noto Sans Arabic', data: arabic, weight: 600, style: 'normal' },
   ]
   return fonts
 }
