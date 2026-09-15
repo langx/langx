@@ -21,10 +21,25 @@
  * Order within a slot is the order they are shown in.
  */
 export const TIP_SLOTS = {
-  chat: ['chatCorrect', 'chatSwipeReply', 'chatStar', 'chatTranslate', 'chatVoice'],
-  chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied'],
-  discover: ['discoverFilters', 'discoverRadius', 'discoverSearch'],
-  feed: ['feedAsk', 'feedCorrect', 'feedPronounce'],
+  chat: [
+    'chatCorrect',
+    'chatSwipeReply',
+    'chatEcho',
+    'chatStar',
+    'chatTranslate',
+    'chatVoice',
+    'chatAttach',
+  ],
+  chats: ['chatsSwipe', 'chatsPin', 'chatsUnreplied', 'chatsStarred'],
+  discover: ['discoverFilters', 'discoverRadius', 'discoverSearch', 'discoverActive'],
+  feed: ['feedAsk', 'feedCorrect', 'feedPronounce', 'feedEcho', 'feedSlowTake'],
+  /**
+   * The review tab, once there is a card to review. Every one of these is
+   * about a control the tab does not draw — Again is on the session, Archive
+   * on the cards list — because the tab itself is one tile and two rows, and
+   * what it cannot show is exactly what a hint is for.
+   */
+  echo: ['echoAgain', 'echoAutoplay', 'echoTyping', 'echoArchive', 'echoOwn', 'echoRecord'],
   /**
    * The line under the chat composer, which is not a `Tip`: it has no dismiss
    * button and half a row to live in, so its entries are four words rather
@@ -32,7 +47,7 @@ export const TIP_SLOTS = {
    * was the same one — it said "hold a message to correct it" forever, beneath
    * a yellow tip saying exactly that.
    */
-  composer: ['composerCorrect', 'composerReply', 'composerStar', 'composerVoice'],
+  composer: ['composerCorrect', 'composerReply', 'composerEcho', 'composerStar', 'composerVoice'],
 } as const satisfies Record<string, readonly string[]>
 
 export type TipSlot = keyof typeof TIP_SLOTS

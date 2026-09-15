@@ -8,6 +8,7 @@ import { Chip } from '../../../src/components/ui/Chip'
 import { EchoAboutSheet } from '../../../src/components/EchoAboutSheet'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Tip } from '../../../src/components/Tip'
 import { useT } from '../../../src/i18n'
 import { useLocale } from '../../../src/i18n/I18nProvider'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
@@ -262,6 +263,13 @@ export default function EchoScreen() {
             <Stat label={t('echo.statCards')} value={compactCount(counts.total, locale)} />
           </View>
         ) : null}
+
+        {/*
+          Only once there is a card: every tip in this slot is about grading,
+          archiving or editing one, and the empty stage above already says how
+          to make the first.
+        */}
+        {counts && counts.total > 0 ? <Tip slot="echo" /> : null}
 
         <View style={styles.rows}>
           {/*

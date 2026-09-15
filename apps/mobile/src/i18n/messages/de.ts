@@ -91,6 +91,28 @@ export const de: Localized<EnMessages> = {
     chatSwipeReply: 'Wische eine Nachricht nach rechts, um zu antworten.',
     discoverFilters: 'Filtere nach Niveau, Alter oder Land.',
     feedAsk: 'Bei einem Satz festgefahren? Poste ihn hier, jemand korrigiert ihn.',
+    chatEcho:
+      'Halte eine Nachricht gedrückt und wähle Zu Echo hinzufügen. Sie kommt morgen wieder, dann in drei Tagen, dann in einer Woche.',
+    chatAttach:
+      'Das + neben dem Eingabefeld kann um eine Korrektur bitten, eine Zeit zum Reden vorschlagen oder eine Quizfrage stellen.',
+    chatsStarred: 'Der Stern oben öffnet jede Nachricht, die du markiert hast — aus allen Chats.',
+    discoverActive: 'Sortiere nach Aktiv, um zu sehen, wer zuletzt da war.',
+    feedEcho: 'Halte einen Beitrag gedrückt, um seinen Satz in Echo zu behalten.',
+    feedSlowTake:
+      'Du beantwortest eine Aussprachefrage? Füg auch eine langsame Aufnahme hinzu — von der lernt man.',
+    composerEcho: 'Gedrückt halten, um es in Echo zu behalten',
+    echoAgain:
+      'Vergessen? Tipp auf Nochmal, und die Karte kommt in zehn Minuten wieder statt in Tagen. Nichts geht verloren.',
+    echoAutoplay:
+      'Der Lautsprecher oben in der Sitzung spielt jede Karte ab, sobald sie erscheint. Tipp darauf, um das auszuschalten.',
+    echoTyping:
+      'Sitzt eine Karte erst einmal, fragt jede zweite Wiederholung danach, sie zu schreiben statt sie nur zu erkennen.',
+    echoArchive:
+      'Eine Karte sitzt für immer? Archiviere sie unter Alle Karten. Sie behält alles und kommt nicht mehr.',
+    echoOwn:
+      'Schreib unter Alle Karten eine eigene Karte. Lass die Bedeutung leer und sie wird für dich übersetzt.',
+    echoRecord:
+      'Öffne eine Karte, um ein Bild hinzuzufügen oder sie mit deiner eigenen Stimme aufzunehmen.',
   },
   tour: {
     announcement: '{title}. {body}',

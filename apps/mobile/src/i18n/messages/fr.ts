@@ -92,6 +92,28 @@ export const fr: Localized<EnMessages> = {
     chatSwipeReply: 'Fais glisser un message vers la droite pour y répondre.',
     discoverFilters: 'Utilise les filtres pour affiner par niveau, âge ou pays.',
     feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
+    chatEcho:
+      'Appuie longuement sur un message et choisis Ajouter à Echo. Il revient demain, puis dans trois jours, puis dans une semaine.',
+    chatAttach:
+      'Le + à côté du champ de saisie peut demander une correction, proposer un créneau pour parler ou poser une question.',
+    chatsStarred:
+      'L’étoile en haut ouvre tous les messages que tu as mis en favoris, toutes conversations confondues.',
+    discoverActive: 'Trie par Actifs pour voir qui est passé récemment.',
+    feedEcho: 'Appuie longuement sur une publication pour garder sa phrase dans Echo.',
+    feedSlowTake:
+      'Tu réponds à une demande de prononciation ? Ajoute aussi une prise lente : c’est celle qui apprend.',
+    composerEcho: 'Appui long pour le garder dans Echo',
+    echoAgain:
+      'Oublié ? Touche À revoir et la carte revient dans dix minutes, pas dans des jours. Rien n’est perdu.',
+    echoAutoplay:
+      'Le haut-parleur en haut de la session lit chaque carte dès qu’elle apparaît. Touche-le pour l’éteindre.',
+    echoTyping:
+      'Une fois une carte bien installée, une révision sur deux te demande de l’écrire plutôt que de la reconnaître.',
+    echoArchive:
+      'Tu connais une carte par cœur ? Archive-la depuis Toutes les cartes. Elle garde tout et ne revient plus.',
+    echoOwn:
+      'Écris ta propre carte depuis Toutes les cartes. Laisse le sens vide et il sera traduit pour toi.',
+    echoRecord: 'Ouvre une carte pour y ajouter une image ou l’enregistrer avec ta propre voix.',
   },
   tour: {
     announcement: '{title}\u00a0: {body}',
