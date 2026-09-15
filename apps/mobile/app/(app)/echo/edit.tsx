@@ -20,6 +20,14 @@ import { postLanguages, resolvePostLanguage } from '../../../src/lib/postLanguag
 import { reportWriteError } from '../../../src/lib/reportWriteError'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import {
+  advanceUpload,
+  percentOf,
+  sameDisplayedProgress,
+  uploadFailed,
+  uploadSent,
+  UPLOAD_START,
+} from '../../../src/lib/uploadProgress'
 
 /**
  * Fixing what a card says.
@@ -71,11 +79,26 @@ export default function EchoCardEditScreen() {
    */
   const [image, setImage] = useState<Media | null | undefined>(undefined)
   const [audio, setAudio] = useState<Media | null | undefined>(undefined)
-  const [busy, setBusy] = useState(false)
+  /*
+   * Which of the two files is going up, rather than one `busy` for both: the
+   * button that started it is the one that should show a spinner, and with a
+   * shared flag neither could.
+   */
+  const [uploading, setUploading] = useState<'photo' | 'audio' | null>(null)
+  /*
+   * The picked file, from the moment it is picked. The preview used to wait
+   * for the upload to finish, so the screen answered a photo with nothing at
+   * all for however long the bytes took — and it is kept after the upload too,
+   * so the thumbnail does not blink from the local file to a remote URL it
+   * would have to download again to show the same picture.
+   */
+  const [pending, setPending] = useState<{ uri: string } | null>(null)
+  const [progress, setProgress] = useState(UPLOAD_START)
   const recorder = useVoiceRecorder()
 
   const imageUrl = image === undefined ? params.imageUrl : (image?.url ?? undefined)
   const audioUrl = audio === undefined ? params.audioUrl : (audio?.url ?? undefined)
+  const previewUri = pending?.uri ?? imageUrl
 
   const me = useMe()
   /*
@@ -106,13 +129,34 @@ export default function EchoCardEditScreen() {
     }
     const file = picked.status === 'picked' ? picked.media[0] : undefined
     if (!file) return
-    setBusy(true)
+    setPending({ uri: file.uri })
+    setProgress(UPLOAD_START)
+    setUploading('photo')
     try {
-      setImage(await uploadEchoMedia(file))
+      const media = await uploadEchoMedia({
+        ...file,
+        /*
+         * Guarded, because `XMLHttpRequest` fires a progress event per chunk
+         * and every one of them would re-render a form holding two fields, a
+         * segmented control and an audio player — to move a label that shows
+         * whole percents and usually had not changed.
+         */
+        onProgress: (loaded, total) =>
+          setProgress((current) => {
+            const next = advanceUpload(current, loaded, total)
+            return sameDisplayedProgress(current, next) ? current : next
+          }),
+      })
+      setProgress(uploadSent)
+      setImage(media)
     } catch (error) {
+      // Back to whatever the card already had: a thumbnail of a file that
+      // never arrived is a claim the card cannot keep.
+      setProgress(uploadFailed)
+      setPending(null)
       reportWriteError(error, t)
     } finally {
-      setBusy(false)
+      setUploading(null)
     }
   }
 
@@ -120,13 +164,13 @@ export default function EchoCardEditScreen() {
     if (recorder.isRecording) {
       const recording = await recorder.stop()
       if (!recording) return
-      setBusy(true)
+      setUploading('audio')
       try {
         setAudio(await uploadEchoMedia({ kind: 'audio', ...recording }))
       } catch (error) {
         reportWriteError(error, t)
       } finally {
-        setBusy(false)
+        setUploading(null)
       }
       return
     }
@@ -193,16 +237,44 @@ export default function EchoCardEditScreen() {
         {/* The picture. One, replaced rather than added to: a card is a card. */}
         <View style={styles.mediaBlock}>
           <Text style={styles.label}>{t('echo.cardPhoto')}</Text>
-          {imageUrl ? (
+          {previewUri ? (
             <View style={styles.preview}>
-              <Image source={{ uri: imageUrl }} style={styles.photo} contentFit="cover" />
-              <Remove label={t('echo.removePhoto')} onPress={() => setImage(null)} />
+              <View>
+                <Image source={{ uri: previewUri }} style={styles.photo} contentFit="cover" />
+                {uploading === 'photo' ? (
+                  /*
+                   * Over the thumbnail, in place of the cross rather than
+                   * beside it: while the file is on its way, taking it back is
+                   * not something this screen can still offer. The same scrim
+                   * and the same words as the composer's attachment row.
+                   */
+                  <View style={[styles.photo, styles.uploading]} pointerEvents="none">
+                    <Text style={styles.uploadingText} numberOfLines={1}>
+                      {progress.phase === 'reading'
+                        ? t('composer.percentPending')
+                        : t('composer.percentOnly', { percent: percentOf(progress) })}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+              {uploading === 'photo' ? null : (
+                <Remove
+                  label={t('echo.removePhoto')}
+                  onPress={() => {
+                    // Both, or the picked file stays on screen after the card's
+                    // picture has been taken off it.
+                    setPending(null)
+                    setImage(null)
+                  }}
+                />
+              )}
             </View>
           ) : null}
           <Button
-            label={imageUrl ? t('echo.replacePhoto') : t('echo.addPhoto')}
+            label={previewUri ? t('echo.replacePhoto') : t('echo.addPhoto')}
             variant="secondary"
-            disabled={busy}
+            loading={uploading === 'photo'}
+            disabled={uploading !== null}
             onPress={() => void attachPhoto()}
           />
         </View>
@@ -227,7 +299,8 @@ export default function EchoCardEditScreen() {
                   : t('echo.recordIt')
             }
             variant="secondary"
-            disabled={busy}
+            loading={uploading === 'audio'}
+            disabled={uploading !== null}
             onPress={() => void toggleRecording()}
           />
         </View>
@@ -236,7 +309,7 @@ export default function EchoCardEditScreen() {
           label={t('common.save')}
           onPress={() => void save()}
           loading={update.isPending}
-          disabled={!front.trim() || busy || recorder.isRecording}
+          disabled={!front.trim() || uploading !== null || recorder.isRecording}
         />
       </View>
     </Screen>
@@ -265,6 +338,19 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   preview: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   photo: { borderRadius: radius.md, height: 120, width: 120 },
+  uploading: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  // Tabular figures, so the centred number does not slide as 9%, 49% and 100%
+  // measure differently.
+  uploadingText: { color: '#fff', fontSize: 13, fontVariant: ['tabular-nums'], fontWeight: '700' },
   grow: { flex: 1 },
   pressed: { opacity: 0.6 },
 }))
