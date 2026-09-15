@@ -20,9 +20,11 @@ error, no RevenueCat means everyone stays on the free tier, no push credentials
 means notifications are logged instead of sent, no `ANTHROPIC_API_KEY` means the
 @langx assistant is off — the account still greets new users and carries
 announcements, it just answers a direct message with a line saying it cannot —
-and no ffmpeg on the host means
+no ffmpeg on the host means
 a voice note recorded in a browser is stored as recorded — WebM, which iPhones
-cannot play, and which the app then says it cannot play. That is deliberate — a self-hoster should be able to
+cannot play, and which the app then says it cannot play — and no `TTS_URL`
+means "Read it aloud" on a member's own Echo card fails with a clear error
+while a pack's readings, made offline, still play. That is deliberate — a self-hoster should be able to
 get a working instance before deciding which paid services they want.
 
 ## Quick start
@@ -214,6 +216,29 @@ that rewrites everything to `index.html` would return 200 for every typo.
 own app need their own bundle identifier, their own signing keys, and their
 own store listings. Do not reuse the identifiers in `app.config.ts` — they
 belong to the published LangX app.
+
+## The voice service
+
+`apps/tts` is the one part of the API that is not the API: a Python process
+holding Kokoro-82M, which reads a member's own Echo card aloud on request.
+It is separate because the model and its runtime are a few hundred megabytes
+that the API's image and 512 MB have no room for, and optional because
+nothing else depends on it.
+
+Locally, follow the docstring in `apps/tts/server.py` — a venv, the two model
+files from the kokoro-onnx release, espeak-ng and ffmpeg from your package
+manager — and point the API at it with `TTS_URL=http://localhost:8090`.
+
+In production it is the Fly app `langx-tts`, built from `apps/tts/Dockerfile`
+and deployed by `deploy-tts.yml` on every merge that touches the directory.
+It has **no public IP**: allocate a Flycast address instead
+(`fly ips allocate-v6 --private -a langx-tts`) and give the API
+`TTS_URL=http://langx-tts.flycast:8080`. Fly's proxy still fronts Flycast
+traffic, which is what lets the machine stop when idle and start on the
+first request — `min_machines_running = 0` in its `fly.toml` is the whole
+cost story. Set the same `TTS_SECRET` on both apps, or on neither. The first
+request after a stop pays for a machine start and a model load; the API
+waits sixty seconds for it and the app shows a spinner.
 
 ## Storage: B2 or R2
 

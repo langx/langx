@@ -4808,6 +4808,27 @@ asked message is stamped `answeredAt`, the way `sendCorrection` already stamps
 `correctedAt` — fifteen lines that make the chat's own "answered" badge a
 server fact as well.
 
+**…and came back, self-hosted, a fortnight later.** The objection was never
+the voice; it was the meter. When the packs settled on Kokoro-82M for its
+licence (see _A machine may read a line_ below), the meter went away with it:
+the same model now runs in `apps/tts`, a private Fly app with no public
+address that starts on the first request and stops a few idle minutes later,
+so a reading costs CPU seconds on a machine that sleeps most of the day. What
+had been "thousands of dollars a month" became a `[[vm]]` line. Three things
+were kept from the refusal. **A person's recording stays first** — the button
+appears only on a card with no readings, under whatever people already said.
+**It is on request, never on capture** — a card made from a chat usually has
+the partner's voice a tap away, and a machine that reads every sentence the
+moment it is kept would drown that. And **the ceiling is a number in
+`PLAN_LIMITS`**, `echoVoicesPerDay`, one unit per card however many voices,
+because a sleeping machine is only cheap while it sleeps. Looked up before it
+is spent: `echoVoiceCache` keys a reading by the sentence's hash, so the
+second person to keep "on y va demain ?" is served the file and charged
+nothing. Six languages and not the model's nine, because the service
+phonemises through espeak-ng and Japanese and Chinese were not trained on
+that — a reading a native speaker winces at is worse than the button not
+being there.
+
 ## The opening is a ripple, because the old one looked like a fault
 
 The first version of `AppSplash` opened with four arcs: partial rings — two of
