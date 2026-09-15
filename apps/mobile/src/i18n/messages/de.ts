@@ -1201,6 +1201,7 @@ export const de: Localized<EnMessages> = {
     official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',
+    previewTitle: 'Vorschau',
     previewNote:
       'So sehen andere dein Profil — deine Privatsphäre-Einstellungen sind bereits angewendet.',
     teaches: 'Lehrt',
