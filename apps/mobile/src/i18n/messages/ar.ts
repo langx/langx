@@ -617,8 +617,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   update: {
-    applyingTitle: 'يتم تحديث LangX',
-    applyingBody: 'يتم تثبيت نسخة جديدة. سيستغرق ذلك لحظات.',
+    downloaded: 'هناك نسخة جديدة جاهزة.',
+    restart: 'أعد التشغيل الآن',
     bannerTitle: 'صدرت نسخة جديدة',
     bannerBody: 'حدّث للحصول على أحدث نسخة من LangX.',
     dismiss: 'إغلاق',

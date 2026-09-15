@@ -608,8 +608,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   update: {
-    applyingTitle: 'LangX обновляется',
-    applyingBody: 'Устанавливается новая версия. Это займёт несколько секунд.',
+    downloaded: 'Новая версия готова.',
+    restart: 'Перезапустить',
     bannerTitle: 'Вышла новая версия',
     bannerBody: 'Обнови, чтобы получить последнюю версию LangX.',
     dismiss: 'Закрыть',
