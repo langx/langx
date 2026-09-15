@@ -14,6 +14,7 @@ import {
   effectivePlanTier,
   isOnlineAt,
   findCosmetic,
+  languageCapAllows,
   MINIMUM_AGE,
   meetsMinimumAge,
   NOTIFICATION_TYPES,
@@ -746,15 +747,9 @@ export async function setGender(
  * Refuses a write that would put somebody further over their tier's language
  * limit than they already are.
  *
- * The `> was` clause is the whole of the grandfathering, and it is not a
- * nicety. A migrated v1 user with five learning languages is over a free
- * tier's limit of one by definition — without it, every write they make
- * carries an over-limit array and is refused, so they could never change a
- * level, reorder their priorities, or even *remove* a language. The limit
- * would read as "your profile is frozen".
- *
- * Nothing is ever stripped, and discovery keeps matching on whatever is
- * stored. This only stops the list growing.
+ * The rule itself — grandfathering included, and why — lives on
+ * `languageCapAllows` in `packages/shared`, because the app has to reach the
+ * same verdict before it offers the control. This is only the refusal.
  */
 function assertLanguageCap(
   limit: 'learningLanguages' | 'nativeLanguages',
@@ -762,7 +757,7 @@ function assertLanguageCap(
   was: number,
   max: number,
 ): void {
-  if (next <= max || next <= was) return
+  if (languageCapAllows(next, was, max)) return
   throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, `Your plan allows ${max}`, { limit, max })
 }
 
@@ -1078,6 +1073,26 @@ export async function updateProfile(
         )
       }
       settingsPaths['settings.translateTo'] = settings.translateTo
+    }
+  } else if (input.nativeLanguages) {
+    /*
+     * A native language removed by this same request may be the one
+     * translations were going to.
+     *
+     * `translateTargetFor` already falls back when it reads a target that is
+     * no longer native, so nothing breaks today — but the stored value is a
+     * statement about a profile that no longer holds, and it would come back
+     * the moment that language did. Removed rather than repointed: the default
+     * is the first native language, and which of several to prefer is the
+     * reader's decision to make, not a guess to make on their behalf.
+     *
+     * In the `else` of the explicit branch, not beside it: a request that
+     * changes the native list *and* names a new target must not have that
+     * target unset out from under it.
+     */
+    const stored = current.settings?.translateTo
+    if (stored && !input.nativeLanguages.some((l) => l.code === stored)) {
+      settingsUnset['settings.translateTo'] = ''
     }
   }
   if (settings?.notifications) {

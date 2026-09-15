@@ -20,6 +20,7 @@ import {
   effectivePlanTier,
   hasFeature,
   isPaidTier,
+  languageCapAllows,
   quotaLimit,
 } from './limits'
 import {
@@ -466,6 +467,24 @@ describe('language allowances', () => {
     for (const key of KEYS) {
       expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro_plus[key])
     }
+  })
+
+  it('allows a list that fits the plan', () => {
+    expect(languageCapAllows(1, 1, 1)).toBe(true)
+    expect(languageCapAllows(2, 1, 1)).toBe(false)
+  })
+
+  /**
+   * The grandfathering, which is the half everybody forgets. Somebody carrying
+   * five from v1 on a plan allowing one must still be able to change a level
+   * (same size), drop one (smaller), and be refused a sixth (larger) — in that
+   * order, because "over the limit" must mean "cannot grow", never "frozen".
+   */
+  it('lets an over-limit list be edited and shrunk, but never grown', () => {
+    expect(languageCapAllows(5, 5, 1)).toBe(true)
+    expect(languageCapAllows(4, 5, 1)).toBe(true)
+    expect(languageCapAllows(0, 5, 1)).toBe(true)
+    expect(languageCapAllows(6, 5, 1)).toBe(false)
   })
 })
 

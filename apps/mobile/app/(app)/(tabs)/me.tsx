@@ -29,7 +29,7 @@ import { ListRow } from '../../../src/components/ui/ListRow'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
-import { openFollows, openProfile } from '../../../src/lib/navigation'
+import { openFollows, openLanguages, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
@@ -226,12 +226,15 @@ export default function MeScreen() {
         The same two columns everybody else sees, in the same place — under the
         header, above the numbers. It used to be one compressed row further
         down, which described a different-looking profile from the one being
-        shown to other people. Tapping it edits, since this is the owner.
+        shown to other people. Tapping it edits, since this is the owner —
+        straight to the languages screen rather than to the form that used to
+        hold them, which is now the shorter of the two journeys as well as the
+        one the tap actually asks for.
       */}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('me.languages')}
-        onPress={() => router.push('/(app)/edit-profile')}
+        onPress={() => openLanguages('/(app)/(tabs)/me')}
       >
         <LanguageColumns
           nativeLanguages={profile.nativeLanguages}

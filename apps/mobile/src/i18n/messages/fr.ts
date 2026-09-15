@@ -1257,8 +1257,6 @@ export const fr: Localized<EnMessages> = {
     genderConfirmBody:
       'Votre profil indiquera {gender}. Vous pourrez le changer à nouveau dans {days} jours.',
     languages: 'Langues',
-    editNative: 'Modifier les langues maternelles',
-    editLearning: 'Modifier les langues apprises',
     longPressToRemove: 'Appuie longuement sur une photo pour la retirer.',
     removePhotoTitle: 'Retirer la photo',
     removePhotoBody: 'Retirer cette photo de ton profil ?',
@@ -1271,13 +1269,49 @@ export const fr: Localized<EnMessages> = {
     photosTrimmed: 'Ta galerie contient {max} photos, toutes n’ont donc pas été ajoutées.',
     photoUpdated: 'Photo mise à jour.',
     saved: 'Profil enregistré.',
-    savingLanguages: 'Enregistrement des langues…',
     saveFailed: 'Impossible d’enregistrer ton profil.',
     storageUnconfigured: 'Le stockage des photos n’est pas encore configuré sur ce serveur.',
     uploadRetry: 'Impossible d’envoyer cette image. Réessaie.',
-    bothNativeAndLearning: 'Une langue ne peut pas être à la fois maternelle et en apprentissage.',
-    pickOneOfEach: 'Choisis au moins une langue maternelle et une langue apprise.',
     interestsUpTo: 'Centres d’intérêt · jusqu’à {max}',
+  },
+
+  languages: {
+    title: 'Tes langues',
+    nativeSection: 'Langues maternelles',
+    nativeBody:
+      'Les langues avec lesquelles tu as grandi. C’est ainsi que celles et ceux qui les apprennent te trouvent.',
+    learningSection: 'En apprentissage',
+    learningBody: 'Ce que tu apprends. La première ouvre ton profil.',
+    addNative: 'Ajouter une langue maternelle',
+    addLearning: 'Ajouter une langue que tu apprends',
+    pickNativeTitle: 'Langue maternelle',
+    pickLearningTitle: 'Langue apprise',
+    replaceTitle: 'Changer {language}',
+    replaceBody: 'Choisis la langue qui prend sa place.',
+    startsAtNew: 'Elle démarre au premier niveau. Tu pourras le changer ensuite.',
+    alreadyInList: 'Tu as déjà {language}.',
+    overlapRefused: 'Une langue ne peut pas être à la fois maternelle et apprise.',
+    moveUp: 'Monter {language}',
+    moveDown: 'Descendre {language}',
+    removeTitle: 'Retirer {language} ?',
+    removeBody: 'Elle quitte ton profil immédiatement.',
+    lastNative:
+      'Il te faut au moins une langue maternelle. Change celle-ci plutôt que de la retirer.',
+    lastLearning:
+      'Il te faut au moins une langue apprise. Change celle-ci plutôt que de la retirer.',
+    capReached: {
+      one: 'Ton offre contient {count} langue dans cette liste.',
+      other: 'Ton offre contient {count} langues dans cette liste.',
+    },
+    capReachedShort: {
+      one: 'Ton offre contient {count} langue.',
+      other: 'Ton offre contient {count} langues.',
+    },
+    capUpgrade: '{fluent} en contient {fluentMax}, {polyglot} {polyglotMax}.',
+    capOverGrandfathered:
+      'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
+    changeHint: 'Touche une langue pour la changer.',
+    saveFailed: 'Ça n’a pas été enregistré. Rien n’a changé.',
   },
 
   legal: {

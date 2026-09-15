@@ -1279,8 +1279,6 @@ export const de: Localized<EnMessages> = {
     genderConfirmBody:
       'In deinem Profil steht dann {gender}. In {days} Tagen kannst du es wieder ändern.',
     languages: 'Sprachen',
-    editNative: 'Muttersprachen bearbeiten',
-    editLearning: 'Lernsprachen bearbeiten',
     longPressToRemove: 'Halte ein Foto gedrückt, um es zu entfernen.',
     removePhotoTitle: 'Foto entfernen',
     removePhotoBody: 'Dieses Foto aus deinem Profil entfernen?',
@@ -1293,14 +1291,47 @@ export const de: Localized<EnMessages> = {
     photosTrimmed: 'Deine Galerie fasst {max} Fotos, deshalb wurden nicht alle hinzugefügt.',
     photoUpdated: 'Foto aktualisiert.',
     saved: 'Profil gespeichert.',
-    savingLanguages: 'Sprachen werden gespeichert…',
     saveFailed: 'Dein Profil konnte nicht gespeichert werden.',
     storageUnconfigured: 'Der Fotospeicher ist auf diesem Server noch nicht eingerichtet.',
     uploadRetry: 'Dieses Bild konnte nicht hochgeladen werden. Versuch es noch einmal.',
-    bothNativeAndLearning:
-      'Eine Sprache kann nicht gleichzeitig Muttersprache und Lernsprache sein.',
-    pickOneOfEach: 'Wähle mindestens eine Muttersprache und eine Lernsprache.',
     interestsUpTo: 'Interessen · bis zu {max}',
+  },
+
+  languages: {
+    title: 'Deine Sprachen',
+    nativeSection: 'Muttersprachen',
+    nativeBody:
+      'Die Sprachen, mit denen du aufgewachsen bist. So finden dich die Leute, die sie lernen.',
+    learningSection: 'Lernsprachen',
+    learningBody: 'Was du lernst. Die erste steht deinem Profil voran.',
+    addNative: 'Muttersprache hinzufügen',
+    addLearning: 'Lernsprache hinzufügen',
+    pickNativeTitle: 'Muttersprache',
+    pickLearningTitle: 'Lernsprache',
+    replaceTitle: '{language} ändern',
+    replaceBody: 'Wähle die Sprache, die an ihre Stelle tritt.',
+    startsAtNew: 'Sie beginnt auf der ersten Stufe. Ändern kannst du das danach.',
+    alreadyInList: '{language} hast du schon.',
+    overlapRefused: 'Eine Sprache kann nicht zugleich Muttersprache und Lernsprache sein.',
+    moveUp: '{language} nach oben',
+    moveDown: '{language} nach unten',
+    removeTitle: '{language} entfernen?',
+    removeBody: 'Sie verschwindet sofort aus deinem Profil.',
+    lastNative: 'Du brauchst mindestens eine Muttersprache. Ändere diese, statt sie zu entfernen.',
+    lastLearning: 'Du brauchst mindestens eine Lernsprache. Ändere diese, statt sie zu entfernen.',
+    capReached: {
+      one: 'Dein Tarif fasst {count} Sprache in dieser Liste.',
+      other: 'Dein Tarif fasst {count} Sprachen in dieser Liste.',
+    },
+    capReachedShort: {
+      one: 'Dein Tarif fasst {count} Sprache.',
+      other: 'Dein Tarif fasst {count} Sprachen.',
+    },
+    capUpgrade: '{fluent} fasst {fluentMax}, {polyglot} fasst {polyglotMax}.',
+    capOverGrandfathered:
+      'Du hast bereits mehr, als dein Tarif fasst. Du kannst sie ändern oder entfernen, aber keine weitere hinzufügen.',
+    changeHint: 'Tippe eine Sprache an, um sie zu ändern.',
+    saveFailed: 'Das wurde nicht gespeichert. Es hat sich nichts geändert.',
   },
 
   legal: {

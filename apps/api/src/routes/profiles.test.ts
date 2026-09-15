@@ -1648,6 +1648,207 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
       expect(response.statusCode, response.body).toBe(200)
     })
+
+    /**
+     * The native half of the same ladder, which had no test at all — and the
+     * shape of its refusal is now load-bearing: the screen reads `limit` to
+     * know which list was refused and `max` to say the allowance in words,
+     * rather than looking the number up again and hoping the two agree.
+     */
+    it('refuses a free account a second native language, and names the allowance', async () => {
+      const { user, created } = await onboardedWith('lang-native@example.com', 'langnative', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      expect(created.statusCode).toBe(201)
+
+      const response = await patch(user, {
+        nativeLanguages: [{ code: 'tr' }, { code: 'de' }],
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json<{ code: string; limit: string; max: number }>()).toMatchObject({
+        code: 'UPGRADE_REQUIRED',
+        limit: 'nativeLanguages',
+        max: PLAN_LIMITS.free.maxNativeLanguages,
+      })
+    })
+
+    /**
+     * Swapping the one language a free account is allowed, in a single write.
+     *
+     * This is the case the whole languages screen exists for. The old form
+     * could only do it as remove-then-add, and the moment in between is a
+     * profile with no native language, which nothing will store — so the edit
+     * either never saved or saved half. One request that keeps the count the
+     * same passes the cap untouched.
+     */
+    it('lets a free account swap its only native language in one write', async () => {
+      const { user } = await onboardedWith('lang-swap@example.com', 'langswap', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+
+      const response = await patch(user, { nativeLanguages: [{ code: 'de' }] })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ nativeLanguages: { code: string }[] }>().nativeLanguages).toEqual([
+        { code: 'de' },
+      ])
+    })
+
+    /**
+     * The repository's own overlap check, which the schema cannot make: the
+     * `.refine()` on `updateProfileSchema` only fires when both arrays are in
+     * the body, and the screen sends one list at a time. Until now the only
+     * overlap test sent both, so this branch was never exercised.
+     */
+    it('cross-checks one array against the list already stored', async () => {
+      const { user } = await onboardedWith('lang-overlap@example.com', 'langoverlap', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+
+      // `tr` is this profile's stored native language.
+      const response = await patch(user, {
+        learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+      })
+      expect(response.statusCode).toBe(400)
+      expect(response.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+    })
+
+    /**
+     * The grandfathering ratchet, across two devices.
+     *
+     * "Over the limit may shrink but never grow" is a promise about a
+     * *sequence* of writes, not about one, and the second device is still
+     * holding the list as it was before the first device shortened it. What
+     * makes it hold is that the cap is re-read per request: by the time the
+     * stale three arrives, `was` is two, and going back up is refused exactly
+     * as it would be for anybody else.
+     */
+    it('does not let a stale edit undo a removal it never saw', async () => {
+      const { user } = await onboardedWith('lang-race@example.com', 'langrace', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      const over = [
+        { code: 'en', level: 'intermediate', priority: 1 },
+        { code: 'de', level: 'beginner', priority: 2 },
+        { code: 'fr', level: 'beginner', priority: 3 },
+      ]
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { learning: over } })
+
+      const removed = await patch(user, { learning: [over[0]!, over[1]!] })
+      expect(removed.statusCode, removed.body).toBe(200)
+
+      // The other device's copy, sent after the removal landed.
+      const stale = await patch(user, {
+        learning: [{ ...over[0]!, level: 'fluent' }, over[1]!, over[2]!],
+      })
+      expect(stale.statusCode).toBe(403)
+      expect(stale.json<{ code: string }>().code).toBe('UPGRADE_REQUIRED')
+
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.learning).toHaveLength(2)
+    })
+
+    /** The order is the client's to state, not the array's to imply. */
+    it('stores the priority it is sent rather than the array order', async () => {
+      const { user } = await onboardedWith('lang-priority@example.com', 'langpriority', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+      const response = await patch(user, {
+        learning: [
+          { code: 'de', level: 'beginner', priority: 2 },
+          { code: 'en', level: 'intermediate', priority: 1 },
+        ],
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ learning: { code: string; priority: number }[] }>().learning).toEqual([
+        expect.objectContaining({ code: 'de', priority: 2 }),
+        expect.objectContaining({ code: 'en', priority: 1 }),
+      ])
+    })
+  })
+
+  describe('the translation target follows the native list', () => {
+    const patch = (user: SignedUpUser, body: Record<string, unknown>) =>
+      app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: body,
+      })
+
+    async function proWithNatives(
+      email: string,
+      userHandle: string,
+      natives: string[],
+    ): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      // Onboarding is always the free tier, so the second native language has
+      // to arrive after the upgrade — the same order a real account takes.
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({
+          handle: userHandle,
+          nativeLanguages: [{ code: natives[0] }],
+        }),
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+      if (natives.length > 1) {
+        const widened = await patch(user, {
+          nativeLanguages: natives.map((code) => ({ code })),
+        })
+        expect(widened.statusCode, widened.body).toBe(200)
+      }
+      return user
+    }
+
+    /**
+     * `translateTargetFor` already falls back when it reads a target that is
+     * no longer native, so this is not a live break — but a stored value that
+     * describes a profile which no longer holds comes back the moment that
+     * language does, and the settings row would keep offering it.
+     */
+    it('drops a target the new native list no longer contains', async () => {
+      const user = await proWithNatives('lang-target-drop@example.com', 'langtargetdrop', ['tr'])
+      const chosen = await patch(user, { settings: { translateTo: 'tr' } })
+      expect(chosen.json<{ settings: { translateTo?: string } }>().settings.translateTo).toBe('tr')
+
+      const moved = await patch(user, { nativeLanguages: [{ code: 'de' }] })
+      expect(moved.statusCode, moved.body).toBe(200)
+      expect('translateTo' in moved.json<{ settings: Record<string, unknown> }>().settings).toBe(
+        false,
+      )
+    })
+
+    /** Without this the test above would pass on an unconditional unset. */
+    it('keeps a target the change leaves valid', async () => {
+      const user = await proWithNatives('lang-target-keep@example.com', 'langtargetkeep', [
+        'tr',
+        'de',
+      ])
+      await patch(user, { settings: { translateTo: 'de' } })
+
+      const moved = await patch(user, { nativeLanguages: [{ code: 'de' }, { code: 'fr' }] })
+      expect(moved.statusCode, moved.body).toBe(200)
+      expect(moved.json<{ settings: { translateTo?: string } }>().settings.translateTo).toBe('de')
+    })
   })
 
   describe('terms acceptance', () => {

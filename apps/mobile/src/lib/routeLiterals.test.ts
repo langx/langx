@@ -89,6 +89,8 @@ const ROUTE_CALLEES = new Set([
   'openPost',
   'openLikers',
   'openFollows',
+  'openLanguages',
+  'openLanguagePicker',
 ])
 const ROUTE_ATTRIBUTES = new Set(['href'])
 const ROUTE_PROPERTIES = new Set(['pathname'])

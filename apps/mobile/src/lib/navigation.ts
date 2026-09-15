@@ -66,6 +66,28 @@ export function openNotification(href: string): void {
   push(href)
 }
 
+/**
+ * The languages screen, and its picker.
+ *
+ * Helpers rather than `router.push` at the call sites for the reason the whole
+ * file exists — `Href` is a generated union locally and a plain string in CI,
+ * so a literal has to go through `isAppRoute` to narrow in both worlds. The
+ * picker takes `replacing` when it is changing a language rather than adding
+ * one, which is the difference between a write that keeps the list's length
+ * and one that grows it.
+ */
+export function openLanguages(from?: string): void {
+  // Two whole literals rather than one with the query interpolated onto the
+  // end: `routeLiterals.test.ts` reads an interpolation as a wildcard path
+  // segment, so `/(app)/languages${…}` asks it to find a screen one level
+  // deeper than the one this opens.
+  push(from ? `/(app)/languages?from=${encodeURIComponent(from)}` : '/(app)/languages')
+}
+
+export function openLanguagePicker(list: 'native' | 'learning', replacing?: string): void {
+  push(`/(app)/languages/pick?list=${list}${replacing ? `&replacing=${replacing}` : ''}`)
+}
+
 /** Who liked one post or one correction. */
 export function openLikers(targetType: string, targetId: string, from: string): void {
   push(
