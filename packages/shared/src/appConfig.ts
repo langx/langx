@@ -109,6 +109,13 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    */
   updateAvailable: z.boolean(),
   authProviders: authProvidersSchema,
+  /**
+   * Whether this deployment can read an Echo card aloud — decided by whether
+   * the process was started with `TTS_URL`, for the reason `authProviders`
+   * rides here: a button that cannot work should not be drawn, and a
+   * self-hosted instance without the voice service should not offer it.
+   */
+  voiceService: z.boolean(),
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 

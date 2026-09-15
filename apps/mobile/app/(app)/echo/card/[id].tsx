@@ -22,6 +22,7 @@ import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useT } from '../../../../src/i18n'
 import { useDisplayNames } from '../../../../src/i18n/displayNames'
+import { useAppConfig } from '../../../../src/hooks/useAppConfig'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
 import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
@@ -268,9 +269,9 @@ function Picture({ image }: { image: EchoImage }) {
 /**
  * The server voice, for a card that has none yet.
  *
- * Offered only where the model can read the language — `echoSynthVoicesFor`
- * is the same table the API refuses by, so a tap never learns of a limit the
- * screen could have shown. A card that already holds readings shows nothing:
+ * Offered only where the deployment has the voice service and the model can
+ * read the language — `echoSynthVoicesFor` is the same table the API refuses
+ * by, so a tap never learns of a limit the screen could have shown. A card that already holds readings shows nothing:
  * the readings are the answer, and the API would return them unchanged.
  * The daily ceiling gets the plain alert every Echo limit gets, which offers
  * nothing to buy.
@@ -278,8 +279,12 @@ function Picture({ image }: { image: EchoImage }) {
 function ReadAloud({ card }: { card: EchoCard }) {
   const t = useT()
   const synthesise = useSynthesiseEchoCard()
+  // Decided by the deployment, not the card: an instance without the voice
+  // service answers the route with a 500, and a button that cannot work
+  // should not be drawn — the same reason `authProviders` rides on the config.
+  const offered = useAppConfig().data?.voiceService === true
 
-  if (card.voices?.length || echoSynthVoicesFor(card.lang).length === 0) return null
+  if (!offered || card.voices?.length || echoSynthVoicesFor(card.lang).length === 0) return null
 
   async function read(): Promise<void> {
     try {
