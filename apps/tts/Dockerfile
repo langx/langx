@@ -33,10 +33,16 @@ COPY server.py ./
 # given is a file before loading it, and answers a bare name with "espeak not
 # installed on your system" — which is what the first deploy said. The
 # symlink is where the multiarch directory is not something to spell out.
+# The data directory the same way: Debian keeps it under the multiarch
+# `/usr/lib/<triplet>/`, not `/usr/share`, and phonemizer answers a data path
+# that is not a directory with the same "not installed" — the second thing
+# the first deploy said, once the library was found.
 RUN ln -s "$(find /usr/lib -name 'libespeak-ng.so.1' -print -quit)" /usr/local/lib/libespeak-ng.so.1 \
-  && test -f /usr/local/lib/libespeak-ng.so.1
+  && test -f /usr/local/lib/libespeak-ng.so.1 \
+  && ln -s "$(find /usr -type d -name 'espeak-ng-data' -print -quit)" /usr/local/share/espeak-ng-data \
+  && test -f /usr/local/share/espeak-ng-data/phontab
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
-    ESPEAK_DATA=/usr/share/espeak-ng-data
+    ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
 # Read one word at build time, so an image that cannot phonemise fails here
 # and not on the first request after a deploy that looked green.
