@@ -237,15 +237,17 @@ export const en = {
     cardsEmptyBody:
       'Sentences you keep from chats and posts collect here, along with the ones you write yourself.',
     /** Not "delete": the card stays, with its recordings and its schedule. */
-    markLearned: 'I know this one',
-    putItBack: 'Put it back',
-    archived: 'Learned',
-    archivedEmptyTitle: 'Nothing put away yet',
+    archiveCard: 'Archive this card',
+    archiveCards: 'Archive',
+    unarchive: 'Put it back',
+    activeTab: 'Cards',
+    archived: 'Archived',
+    archivedEmptyTitle: 'Nothing archived yet',
     archivedEmptyBody:
-      'Cards you already know go here. They keep everything, and stop coming back.',
+      'Cards you already know go here. They keep everything and stop coming back, until you put one back.',
     selectCards: 'Select cards',
     selectedCount: { one: '{count} selected', other: '{count} selected' },
-    archivedToast: { one: '{count} card put away', other: '{count} cards put away' },
+    archivedToast: { one: '{count} card archived', other: '{count} cards archived' },
     restoredToast: { one: '{count} card is back', other: '{count} cards are back' },
     searchPlaceholder: 'Search your cards',
     searchNoneTitle: 'Nothing matches',

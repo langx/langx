@@ -13,6 +13,7 @@ import { LoadFailed } from '../../../src/components/LoadFailed'
 import { SwipeableRow } from '../../../src/components/SwipeableRow'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -46,9 +47,9 @@ export default function EchoCardsScreen() {
    */
   const term = useDebounced(query.trim())
   /*
-   * The library or the archive, never both at once: a card put away as
-   * learned sitting between two you are still learning would make the word
-   * mean nothing here.
+   * The rotation or the archive, never both at once: an archived card
+   * sitting between two that are still coming back would make the word mean
+   * nothing here.
    */
   const [archived, setArchived] = useState(false)
   const cards = useEchoCards(lang ?? undefined, term || undefined, archived)
@@ -75,21 +76,21 @@ export default function EchoCardsScreen() {
   })
 
   /**
-   * Put cards away as learned, or take them back.
+   * Put cards in the archive, or take them back out.
    *
    * The toast carries the count rather than the sentence naming one card: the
    * action is usually several, and the number is the only part a person needs
    * to check against what they picked.
    */
-  function setLearned(cardIds: string[], learned: boolean): void {
+  function setArchivedOn(cardIds: string[], archive_: boolean): void {
     if (cardIds.length === 0) return
     archive.mutate(
-      { cardIds, archived: learned },
+      { cardIds, archived: archive_ },
       {
         onSuccess: () => {
           setSelected(null)
           showToast(
-            learned
+            archive_
               ? t('echo.archivedToast', { count: cardIds.length })
               : t('echo.restoredToast', { count: cardIds.length }),
           )
@@ -134,14 +135,14 @@ export default function EchoCardsScreen() {
     const choice = await chooseAlert(t('echo.cards'), undefined, [
       { label: t('common.edit'), value: 'edit' as const },
       {
-        label: archived ? t('echo.putItBack') : t('echo.markLearned'),
-        value: 'learned' as const,
+        label: archived ? t('echo.unarchive') : t('echo.archiveCard'),
+        value: 'archive' as const,
       },
       { label: t('echo.selectCards'), value: 'select' as const },
       { label: t('echo.remove'), value: 'remove' as const, destructive: true },
     ])
     if (choice === 'edit') openEdit(card)
-    if (choice === 'learned') setLearned([card._id], !archived)
+    if (choice === 'archive') setArchivedOn([card._id], !archived)
     if (choice === 'select') setSelected(new Set([card._id]))
     if (choice === 'remove') await confirmRemove(card)
   }
@@ -223,41 +224,45 @@ export default function EchoCardsScreen() {
         />
       </View>
 
-      <View style={styles.chips}>
-        {languages.length > 1 ? (
-          <>
-            <Chip
-              label={t('echo.allLanguages')}
-              selected={lang === null && !archived}
-              onPress={() => {
-                setLang(null)
-                setArchived(false)
-              }}
-            />
-            {languages.map((row) => (
-              <Chip
-                key={row.lang}
-                label={names.language(row.lang)}
-                selected={lang === row.lang}
-                onPress={() => setLang(row.lang)}
-              />
-            ))}
-          </>
-        ) : null}
-        {/*
-          Where a learned card goes. Always offered, even on an empty archive:
-          it is the only place the action's result can be seen, and a chip that
-          appears only once something is in it cannot teach that.
-        */}
-        <Chip
-          label={t('echo.archived')}
-          selected={archived}
-          onPress={() => {
-            setArchived((current) => !current)
+      {/*
+        The cards in rotation or the archive: two tabs, the shape `chats.tsx`
+        and `feed.tsx` use for the same kind of choice — one list at a time,
+        the server doing the narrowing. Always drawn, even on an empty archive:
+        it is the only place the action's result can be seen, and a control
+        that appears once something is in it cannot teach that.
+      */}
+      <View style={styles.tabs}>
+        <SegmentedControl<'active' | 'archived'>
+          options={[
+            { value: 'active', label: t('echo.activeTab') },
+            { value: 'archived', label: t('echo.archived') },
+          ]}
+          selected={[archived ? 'archived' : 'active']}
+          onToggle={(value) => {
+            setArchived(value === 'archived')
             setSelected(null)
           }}
+          accessibilityLabel={t('echo.cards')}
         />
       </View>
+
+      {languages.length > 1 ? (
+        <View style={styles.chips}>
+          <Chip
+            label={t('echo.allLanguages')}
+            selected={lang === null}
+            onPress={() => setLang(null)}
+          />
+          {languages.map((row) => (
+            <Chip
+              key={row.lang}
+              label={names.language(row.lang)}
+              selected={lang === row.lang}
+              onPress={() => setLang(row.lang)}
+            />
+          ))}
+        </View>
+      ) : null}
 
       {state === 'skeleton' ? (
         <View style={styles.loading}>
@@ -397,11 +402,13 @@ export default function EchoCardsScreen() {
             {t('echo.selectedCount', { count: selected.size })}
           </Text>
           <Button
-            label={archived ? t('echo.putItBack') : t('echo.markLearned')}
+            // Not the menu's wording: the bar acts on a selection, and a
+            // sentence about one card over "6 selected" reads as a mistake.
+            label={archived ? t('echo.unarchive') : t('echo.archiveCards')}
             size="small"
             variant="ink"
             loading={archive.isPending}
-            onPress={() => setLearned([...selected], !archived)}
+            onPress={() => setArchivedOn([...selected], !archived)}
             style={styles.selectionButton}
           />
         </View>
@@ -421,6 +428,14 @@ function Due({ card }: { card: EchoCard }) {
   const styles = useStyles()
   const t = useT()
   const time = dueInCompact(card.srs.due, { t })
+
+  /*
+   * Nothing on a card that has been put away. Its schedule is still there and
+   * still says "now" — that is what makes putting it back cost nothing — but
+   * saying so on a card that will never be asked is a promise the archive is
+   * there to break.
+   */
+  if (card.archivedAt) return null
 
   return (
     <Text
@@ -451,7 +466,14 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
     paddingHorizontal: spacing.lg,
   },
   searchInput: { color: colors.text, flex: 1, fontSize: 16, height: '100%' },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, paddingHorizontal: spacing.lg },
+  tabs: { marginTop: spacing.md, paddingHorizontal: spacing.lg },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+  },
   loading: { gap: spacing.sm, padding: spacing.lg },
   list: { paddingBottom: spacing.lg, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
   row: {
