@@ -225,9 +225,15 @@ function definitionFor(entry, sense) {
 /**
  * A human saying the word, where Wiktionary links one.
  *
- * Left in `review` rather than written to `audioUrl`, because these are
- * Wikimedia URLs and whether a pack points at Commons or at a copy in our own
- * storage is a decision nobody has taken. Promoting one is a one-line edit.
+ * Left in `review` rather than promoted here, and still deliberately: these
+ * are candidates, and which one may go on a card depends on a licence this
+ * script never asks about. `add-audio.mjs` looks each file up on Commons,
+ * keeps the ones whose terms allow it, and writes the chosen one — with the
+ * credit its licence requires — to the item's `audio`.
+ *
+ * The order matters and is this function's contribution: Lingua Libre first,
+ * because that is one named speaker per file, and `add-audio.mjs` promotes the
+ * first candidate that passes.
  */
 function recordings(found) {
   const heard = []

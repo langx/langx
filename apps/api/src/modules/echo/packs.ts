@@ -6,6 +6,7 @@ import {
   sourceKeyOf,
   type EchoGloss,
   type EchoPack,
+  type EchoPackItem,
   type EchoPackItemKind,
   type EchoSource,
   type StartPackInput,
@@ -53,7 +54,7 @@ export interface EchoPackItemDoc {
   example?: string
   freqRank?: number
   image?: string
-  audioUrl?: string
+  audio?: EchoPackItem['audio']
   contentVersion: number
 }
 
@@ -172,7 +173,22 @@ export async function startPack(
         front: item.text,
         back,
         ...(item.example ? { example: item.example } : {}),
-        ...(item.audioUrl ? { audio: { url: item.audioUrl, origin: 'pack' as const } } : {}),
+        /*
+         * The speaker's name travels with the recording, because the licence
+         * asks for it: every Commons file on the allowlist but CC0 requires
+         * attribution, and `speakerName` is what the session draws as
+         * "Spoken by {name}". A pack recording that played anonymously would
+         * be the one place this app used somebody's work without crediting it.
+         */
+        ...(item.audio
+          ? {
+              audio: {
+                url: item.audio.url,
+                origin: 'pack' as const,
+                ...(item.audio.speaker ? { speakerName: item.audio.speaker } : {}),
+              },
+            }
+          : {}),
         source,
         sourceKey,
         srs: newCardSrs(now),

@@ -137,6 +137,7 @@ export default tseslint.config(
         fetch: 'readonly',
         process: 'readonly',
         setTimeout: 'readonly',
+        URLSearchParams: 'readonly',
       },
     },
   },
