@@ -712,6 +712,12 @@ it is a script and not something the boot decides. It is how `@langx` became
 official on production, where the handle was already held by the account
 answering as LangX by hand.
 
+What adoption keeps is also what it leaves behind: the follows, corrections,
+tokens, streak and wallet the account earned while a person was running it.
+The boot heals only the profile document, so those rows live on in other
+collections, and `scripts/reset-official-accounts.ts` is the one-off that
+sweeps them — dry run by default, and it keeps the conversations and the posts.
+
 The display name, the avatar **and the bio** are written from code on every
 boot. Not tidiness: nobody can sign in to these accounts, so there is no screen
 anywhere that can edit them, and code is the only editor they have.
