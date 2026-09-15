@@ -101,7 +101,7 @@ async function readPack(path: string): Promise<Draft | null> {
       ...(item.example ? { example: item.example } : {}),
       ...(item.freqRank ? { freqRank: item.freqRank } : {}),
       ...(item.image ? { image: item.image } : {}),
-      ...(item.audioUrl ? { audioUrl: item.audioUrl } : {}),
+      ...(item.audio ? { audio: item.audio } : {}),
       contentVersion: file.contentVersion,
     })),
   }

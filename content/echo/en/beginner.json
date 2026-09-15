@@ -61,6 +61,12 @@
             "tags": ["General-American"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7d/LL-Q1860_%28eng%29-Vealhurl-so_long.wav/LL-Q1860_%28eng%29-Vealhurl-so_long.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-so long.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -116,6 +122,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/dc/En-us-get_lost.ogg/En-us-get_lost.ogg.mp3",
+        "file": "en-us-get_lost.ogg",
+        "speaker": "Dvortygirl",
+        "licence": "CC BY-SA 3.0"
       }
     },
     {
@@ -143,6 +155,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6e/LL-Q1860_%28eng%29-Vealhurl-got_it.wav/LL-Q1860_%28eng%29-Vealhurl-got_it.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-got it.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -170,6 +188,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/32/LL-Q1860_%28eng%29-Sapaa-it_depends.wav/LL-Q1860_%28eng%29-Sapaa-it_depends.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-it depends.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -221,6 +245,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/82/En-au-yours_truly.ogg/En-au-yours_truly.ogg.mp3",
+        "file": "En-au-yours truly.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -251,6 +281,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1b/En-au-not_at_all.ogg/En-au-not_at_all.ogg.mp3",
+        "file": "En-au-not at all.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -279,6 +315,12 @@
             "tags": ["Mid-Atlantic", "US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/bc/En-us-I_think_so.ogg/En-us-I_think_so.ogg.mp3",
+        "file": "en-us-I think so.ogg",
+        "speaker": "Steve Shives",
+        "licence": "CC0"
       }
     },
     {
@@ -347,6 +389,12 @@
             "tags": ["Mid-Atlantic", "US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/23/En-us-thank_you_all.ogg/En-us-thank_you_all.ogg.mp3",
+        "file": "en-us-thank you all.ogg",
+        "speaker": "Steve Shives",
+        "licence": "CC0"
       }
     },
     {
@@ -409,6 +457,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f5/LL-Q1860_%28eng%29-Vealhurl-do_not_enter.wav/LL-Q1860_%28eng%29-Vealhurl-do_not_enter.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-do not enter.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -458,6 +512,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/51/LL-Q1860_%28eng%29-Vealhurl-do_not_disturb.wav/LL-Q1860_%28eng%29-Vealhurl-do_not_disturb.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-do not disturb.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC0"
       }
     },
     {
@@ -485,6 +545,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0c/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav/LL-Q1860_%28eng%29-Vealhurl-all_the_best.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-all the best.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -547,6 +613,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/2b/LL-Q1860_%28eng%29-Sapaa-consider_it_done.wav/LL-Q1860_%28eng%29-Sapaa-consider_it_done.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-consider it done.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -598,6 +670,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/11/LL-Q1860_%28eng%29-Flame%2C_not_lame-I%26%2339%3Bm_dying.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-I%26%2339%3Bm_dying.wav.mp3",
+        "file": "LL-Q1860 (eng)-Flame, not lame-I&#39;m dying.wav",
+        "speaker": "Flame, not lame",
+        "licence": "CC0"
       }
     },
     {
@@ -811,6 +889,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9f/En-au-no_hard_feelings.ogg/En-au-no_hard_feelings.ogg.mp3",
+        "file": "En-au-no hard feelings.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -860,6 +944,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a5/LL-Q1860_%28eng%29-Vealhurl-two_beers%2C_please.wav/LL-Q1860_%28eng%29-Vealhurl-two_beers%2C_please.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-two beers, please.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -890,6 +980,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3e/LL-Q1860_%28eng%29-Vealhurl-what_a_pity.wav/LL-Q1860_%28eng%29-Vealhurl-what_a_pity.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-what a pity.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -957,6 +1053,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_mean.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-how do you mean.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -986,6 +1088,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fb/LL-Q1860_%28eng%29-Sapaa-what_do_you_mean.wav/LL-Q1860_%28eng%29-Sapaa-what_do_you_mean.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-what do you mean.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1062,6 +1170,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4c/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav/LL-Q1860_%28eng%29-Vealhurl-I_don%26%2339%3Bt_understand.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-I don&#39;t understand.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -1091,6 +1205,12 @@
             "tags": ["Southern-England"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/05/LL-Q1860_%28eng%29-Vealhurl-as_much_as_possible.wav/LL-Q1860_%28eng%29-Vealhurl-as_much_as_possible.wav.mp3",
+        "file": "LL-Q1860 (eng)-Vealhurl-as much as possible.wav",
+        "speaker": "Vealhurl",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -1120,6 +1240,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/LL-Q1860_%28eng%29-Wodencafe-as_soon_as_possible.wav/LL-Q1860_%28eng%29-Wodencafe-as_soon_as_possible.wav.mp3",
+        "file": "LL-Q1860 (eng)-Wodencafe-as soon as possible.wav",
+        "speaker": "Wodencafe",
+        "licence": "CC0"
       }
     },
     {
@@ -1379,6 +1505,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7c/En-us-it_doesn%27t_matter.oga/En-us-it_doesn%27t_matter.oga.mp3",
+        "file": "En-us-it doesn't matter.oga",
+        "speaker": "Paul2520",
+        "licence": "CC0"
       }
     },
     {
@@ -1449,6 +1581,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3d/LL-Q1860_%28eng%29-Sapaa-please_repeat_after_me.wav/LL-Q1860_%28eng%29-Sapaa-please_repeat_after_me.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-please repeat after me.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1478,6 +1616,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0c/LL-Q1860_%28eng%29-Sapaa-pleased_to_meet_you.wav/LL-Q1860_%28eng%29-Sapaa-pleased_to_meet_you.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-pleased to meet you.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1527,6 +1671,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5a/LL-Q1860_%28eng%29-Sapaa-what_time_is_it.wav/LL-Q1860_%28eng%29-Sapaa-what_time_is_it.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-what time is it.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1596,6 +1746,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/74/LL-Q1860_%28eng%29-Persent101-I_don%26%2339%3Bt_think_so.wav/LL-Q1860_%28eng%29-Persent101-I_don%26%2339%3Bt_think_so.wav.mp3",
+        "file": "LL-Q1860 (eng)-Persent101-I don&#39;t think so.wav",
+        "speaker": "Persent101",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -1724,6 +1880,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-do_you_accept_credit_cards.wav.mp3",
+        "file": "LL-Q1860 (eng)-Flame, not lame-do you accept credit cards.wav",
+        "speaker": "Flame, not lame",
+        "licence": "CC0"
       }
     },
     {
@@ -1792,6 +1954,12 @@
             "tags": ["Australia"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f8/En-au-it_can%27t_be_helped.ogg/En-au-it_can%27t_be_helped.ogg.mp3",
+        "file": "En-au-it can't be helped.ogg",
+        "speaker": "Commander Keane",
+        "licence": "CC BY-SA 4.0"
       }
     },
     {
@@ -1819,6 +1987,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1c/LL-Q1860_%28eng%29-Sapaa-it%27s_not_my_fault.wav/LL-Q1860_%28eng%29-Sapaa-it%27s_not_my_fault.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-it's not my fault.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1884,6 +2058,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ec/LL-Q1860_%28eng%29-Sapaa-to_whom_it_may_concern.wav/LL-Q1860_%28eng%29-Sapaa-to_whom_it_may_concern.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-to whom it may concern.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -1969,6 +2149,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/LL-Q1860_%28eng%29-RGBLionGam3r17-I_can%27t_thank_you_enough.wav/LL-Q1860_%28eng%29-RGBLionGam3r17-I_can%27t_thank_you_enough.wav.mp3",
+        "file": "LL-Q1860 (eng)-RGBLionGam3r17-I can't thank you enough.wav",
+        "speaker": "RGBLionGam3r17",
+        "licence": "CC BY 4.0"
       }
     },
     {
@@ -2034,6 +2220,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/62/LL-Q1860_%28eng%29-Sapaa-how_do_you_pronounce_this_word.wav/LL-Q1860_%28eng%29-Sapaa-how_do_you_pronounce_this_word.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-how do you pronounce this word.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -2064,6 +2256,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/58/En-us-I%27m_in_love_with_you.oga/En-us-I%27m_in_love_with_you.oga.mp3",
+        "file": "En-us-I'm in love with you.oga",
+        "speaker": "Paul2520",
+        "licence": "CC0"
       }
     },
     {
@@ -2107,6 +2305,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e9/LL-Q1860_%28eng%29-Sapaa-is_this_the_right_direction_for.wav/LL-Q1860_%28eng%29-Sapaa-is_this_the_right_direction_for.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-is this the right direction for.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
@@ -2152,6 +2356,12 @@
             "tags": ["US"]
           }
         ]
+      },
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/82/LL-Q1860_%28eng%29-Sapaa-sorry%2C_we_don%27t_accept_credit_cards.wav/LL-Q1860_%28eng%29-Sapaa-sorry%2C_we_don%27t_accept_credit_cards.wav.mp3",
+        "file": "LL-Q1860 (eng)-Sapaa-sorry, we don't accept credit cards.wav",
+        "speaker": "Sapaa",
+        "licence": "CC0"
       }
     },
     {
