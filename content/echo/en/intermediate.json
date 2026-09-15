@@ -2,8 +2,8 @@
   "id": "en:intermediate",
   "lang": "en",
   "level": "intermediate",
-  "contentVersion": 2,
-  "reviewed": false,
+  "contentVersion": 3,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
@@ -784,7 +784,7 @@
         "de": "Ich habe Krebs",
         "es": "tengo cáncer",
         "fr": "j'ai un cancer",
-        "pt-BR": "(eu) tenho cancro",
+        "pt-BR": "tenho câncer",
         "ru": "у меня́ рак",
         "en": "I have cancer"
       },
@@ -792,7 +792,8 @@
       "review": {
         "sense": "I have cancer",
         "translationCount": 31,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR"]
       }
     },
     {
@@ -1060,7 +1061,7 @@
         "de": "ich habe AIDS",
         "es": "tengo sida",
         "fr": "j'ai le SIDA",
-        "pt-BR": "(eu) tenho AIDS",
+        "pt-BR": "tenho AIDS",
         "ru": "у меня́ СПИД",
         "en": "I have AIDS"
       },
@@ -1068,7 +1069,8 @@
       "review": {
         "sense": "I have AIDS",
         "translationCount": 28,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR"]
       }
     },
     {
@@ -2052,7 +2054,7 @@
       "kind": "phrase",
       "text": "that's all",
       "gloss": {
-        "de": "...bloss...",
+        "de": "das ist alles",
         "es": "para de contar",
         "fr": "c'est tout",
         "pt-BR": "é isso",
@@ -2063,7 +2065,8 @@
       "review": {
         "sense": "that's all",
         "translationCount": 25,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["de"]
       }
     },
     {
@@ -2147,7 +2150,7 @@
       "kind": "phrase",
       "text": "He likes oranges.",
       "gloss": {
-        "tr": "O portakalı sever.",
+        "tr": "O portakal sever.",
         "de": "Er mag Orangen.",
         "es": "A él le gustan las naranjas.",
         "fr": "Il aime les oranges.",
@@ -2157,7 +2160,8 @@
       },
       "freqRank": 105,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -2476,14 +2480,15 @@
         "tr": "Acele işe şeytan karışır.",
         "de": "Eile mit Weile!",
         "es": "La prisa es mala consejera.",
-        "fr": "La vitesse crée de la perte.",
+        "fr": "Rien ne sert de courir, il faut partir à point.",
         "pt-BR": "A pressa é inimiga da perfeição.",
         "ru": "Поспешишь — людей насмешишь.",
         "ar": "العجلة من الشيطان."
       },
       "freqRank": 121,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["fr"]
       }
     },
     {
@@ -2567,7 +2572,12 @@
       "text": "what do you want",
       "gloss": {
         "en": "asking what someone wants",
-        "tr": "ne istiyorsun?"
+        "tr": "ne istiyorsun?",
+        "de": "was willst du?",
+        "es": "¿qué quieres?",
+        "fr": "que veux-tu ?",
+        "pt-BR": "o que você quer?",
+        "ru": "чего ты хочешь?"
       },
       "freqRank": 126,
       "review": {
@@ -2583,7 +2593,8 @@
           }
         ],
         "machineSense": "to indicate that the listener is paying attention",
-        "correctedTr": "(none)"
+        "correctedTr": "(none)",
+        "edited": ["de", "es", "fr", "pt-BR", "ru"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b9/LL-Q1860_%28eng%29-Sapaa-what_do_you_want.wav/LL-Q1860_%28eng%29-Sapaa-what_do_you_want.wav.mp3",
@@ -2978,7 +2989,7 @@
       "gloss": {
         "tr": "Ustalık tekrarla gelir.",
         "de": "Übung macht den Meister.",
-        "es": "Práctica hace la perfección.",
+        "es": "La práctica hace al maestro.",
         "fr": "La pratique conduit à la perfection.",
         "pt-BR": "A prática leva à perfeição.",
         "ru": "Практика — путь к совершенству.",
@@ -2987,7 +2998,8 @@
       "freqRank": 146,
       "review": {
         "glossedBy": "Tatoeba",
-        "correctedTr": "Alıştırma mükemmel yapar."
+        "correctedTr": "Alıştırma mükemmel yapar.",
+        "edited": ["es"]
       }
     },
     {
@@ -3965,7 +3977,7 @@
       "kind": "phrase",
       "text": "How do you say...?",
       "gloss": {
-        "tr": "Nasıl dersiniz...?",
+        "tr": "… nasıl denir?",
         "de": "Wie sagt man...?",
         "es": "¿Cómo se dice...?",
         "fr": "Comment dit-on ... ?",
@@ -3975,7 +3987,8 @@
       },
       "freqRank": 196,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["tr"]
       }
     },
     {
@@ -5234,7 +5247,10 @@
         "tr": "Ne hakkında konuştuğunu bilmiyorsun.",
         "es": "no sabes de lo que estás hablando",
         "fr": "tu ne sais pas de quoi tu parles",
-        "en": "said to someone speaking from ignorance"
+        "en": "said to someone speaking from ignorance",
+        "de": "du weißt nicht, wovon du redest",
+        "pt-BR": "você não sabe do que está falando",
+        "ru": "ты не знаешь, о чём говоришь"
       },
       "freqRank": 262,
       "review": {
@@ -5242,7 +5258,8 @@
         "translationCount": 11,
         "otherSenses": [],
         "machineSense": "Translations",
-        "correctedTr": "daha ne hakkında konuştuğunu bile bilmiyorsun"
+        "correctedTr": "daha ne hakkında konuştuğunu bile bilmiyorsun",
+        "edited": ["de", "pt-BR", "ru"]
       }
     },
     {
