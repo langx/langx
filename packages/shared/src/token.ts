@@ -440,7 +440,15 @@ export const TOKEN_RULES: TokenRules = {
     1095: 25_000,
   },
   pool: {
-    total: 10_000,
+    /*
+     * Halved from 10,000. With `maxShareOfPool` left at 5% this is what sets
+     * the number that actually binds at this population: the most one person
+     * can take out of a day is now 250 rather than 500. The fraction stayed
+     * put on purpose — it is the shape of the split, and moving both at once
+     * would have changed how many people a day needs before the cap stops
+     * flattening everyone onto it (still 1 / 0.05 = 20).
+     */
+    total: 5_000,
     maxShareOfPool: 0.05,
     accountAgeRampUpHours: 24,
     payoutHourUtc: 4,
