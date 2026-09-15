@@ -21,6 +21,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useT } from '../../../src/i18n'
+import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
@@ -244,8 +245,15 @@ export default function EchoSessionScreen() {
     router.push({ pathname: '/(app)/compose', params })
   }
 
-  async function play(): Promise<void> {
+  /*
+   * `replace` on every press rather than one player per take: a card can carry
+   * a person's recording and two synthesised readings, hooks cannot be called
+   * in a loop, and these clips are a second long — reloading one costs less
+   * than tracking which of three is currently loaded.
+   */
+  async function play(url: string): Promise<void> {
     await ensurePlaybackAudioMode()
+    player.replace(url)
     void player.seekTo(0)
     player.play()
   }
@@ -368,23 +376,43 @@ export default function EchoSessionScreen() {
             <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
           </Pressable>
         ) : null}
-        {card.audio && (!producing || revealed) ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('echo.play')}
-            hitSlop={8}
-            onPress={() => void play()}
-            style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
-          >
-            <Feather name="volume-2" size={18} color={colors.accent} />
-            {/* Who is speaking, so a person's recording is never taken for
-                anything else. */}
-            <Text style={styles.speakerLabel}>
-              {card.audio.speakerName
-                ? t('echo.spokenBy', { name: card.audio.speakerName })
-                : t('echo.play')}
-            </Text>
-          </Pressable>
+        {(card.audio || card.voices?.length) && (!producing || revealed) ? (
+          <View style={styles.takes}>
+            {card.audio ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('echo.play')}
+                hitSlop={8}
+                onPress={() => void play(card.audio!.url)}
+                style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+              >
+                <Feather name="volume-2" size={18} color={colors.accent} />
+                {/* Who is speaking, so a person's recording is never taken for
+                    anything else. */}
+                <Text style={styles.speakerLabel}>
+                  {card.audio.speakerName
+                    ? t('echo.spokenBy', { name: card.audio.speakerName })
+                    : t('echo.play')}
+                </Text>
+              </Pressable>
+            ) : null}
+            {/* Synthesised readings, labelled as such and never with a name:
+                there is nobody to credit, and a made-up one would make a
+                machine indistinguishable from the person above it. */}
+            {(card.voices ?? []).map((take) => (
+              <Pressable
+                key={take.voice}
+                accessibilityRole="button"
+                accessibilityLabel={voiceLabel(t, take.voice)}
+                hitSlop={8}
+                onPress={() => void play(take.url)}
+                style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+              >
+                <Feather name="cpu" size={16} color={colors.textMuted} />
+                <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+              </Pressable>
+            ))}
+          </View>
         ) : null}
 
         {revealed ? (
@@ -462,8 +490,11 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   card: { alignItems: 'center', gap: spacing.md, padding: spacing.lg },
   picture: { borderRadius: radius.md, height: 140, width: '100%' },
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
+  takes: { alignItems: 'center', gap: spacing.sm },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  /* Quieter than a person's take, because it is the lesser of the two. */
+  voiceLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '500' },
   pressed: { opacity: 0.6 },
   rule: { backgroundColor: colors.border, height: 1, width: '60%' },
   back: { color: colors.text, fontSize: 18, lineHeight: 26, textAlign: 'center' },

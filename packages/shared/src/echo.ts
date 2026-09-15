@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { echoVoiceSchema } from './echoPacks'
 import { languageCodeSchema } from './languages'
 import { mediaSchema } from './media'
 import { ECHO_GRADES, SRS_RULES } from './srs'
@@ -152,6 +153,12 @@ export const echoCardSchema = z.object({
   lang: z.string(),
   source: echoSourceSchema,
   audio: echoAudioSchema.optional(),
+  /**
+   * Synthesised readings, copied from the pack like every other part of a card.
+   * `audio` is a person and comes first; these are an alternative, never a
+   * replacement, and the session never attributes them to anybody.
+   */
+  voices: z.array(echoVoiceSchema).optional(),
   image: echoImageSchema.optional(),
   /**
    * The pronunciation post this card's owner opened from it, when they asked

@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { echoPackFileSchema } from '@langx/shared'
+import { echoPackFileSchema, packVoiceKey } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -58,6 +58,33 @@ describe('the packs in content/echo', () => {
         .filter((item) => item.audio && !item.audio.speaker)
         .filter((item) => !/^(cc0|public domain)/i.test(item.audio?.licence ?? ''))
       expect(uncredited.map((item) => item.text)).toEqual([])
+    })
+
+    /*
+     * The other half of the same rule. A synthesised reading has nobody to
+     * credit, so it carries no name — and it records a key rather than a URL,
+     * which has to be the key the uploader actually wrote or the card points
+     * at nothing. Derived on both sides from `packVoiceKey`, compared here.
+     */
+    it(`${name} names every synthesised reading by its derived key`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const wrong = pack.items.flatMap((item) =>
+        (item.voices ?? [])
+          .filter((take) => take.key !== packVoiceKey(pack.id, item.index, take.voice))
+          .map((take) => `${item.text} (${take.voice}): ${take.key}`),
+      )
+      expect(wrong).toEqual([])
+    })
+
+    /*
+     * Two takes or none. One synthetic reading presents itself as *the*
+     * pronunciation; the pair is what makes them read as alternatives, and it
+     * is also the cheapest way to catch a generation run that stopped halfway.
+     */
+    it(`${name} gives every read item more than one voice`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const lonely = pack.items.filter((item) => item.voices && item.voices.length < 2)
+      expect(lonely.map((item) => item.text)).toEqual([])
     })
   }
 })

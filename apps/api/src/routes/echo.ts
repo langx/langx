@@ -1,6 +1,7 @@
 import {
   attachEchoAudioSchema,
   captureEchoSchema,
+  echoPackPreviewQuerySchema,
   echoQueueQuerySchema,
   linkEchoAskSchema,
   listEchoCardsQuerySchema,
@@ -22,7 +23,7 @@ import {
   summary,
   updateCard,
 } from '../modules/echo/cards'
-import { listPacks, startPack } from '../modules/echo/packs'
+import { listPacks, previewPack, startPack } from '../modules/echo/packs'
 import { submitReviews } from '../modules/echo/reviews'
 import { localeFromHeader } from '../i18n'
 
@@ -164,6 +165,30 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get('/echo/summary', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await summary(app.mongo.db, request.userId))
   })
+
+  /*
+   * What a pack holds, a page at a time. `requireAuth` rather than
+   * `requireMember` for the same reason the listing is: looking is the offer
+   * made before an account, and `start` is where one is asked for.
+   */
+  app.get(
+    '/echo/packs/:id/items',
+    {
+      preHandler: requireAuth,
+      schema: { params: cardParamsSchema, querystring: echoPackPreviewQuerySchema },
+    },
+    async (request, reply) => {
+      return reply.send(
+        await previewPack(
+          app.mongo.db,
+          request.userId,
+          request.params.id,
+          request.query,
+          localeFromHeader(request.headers['accept-language']),
+        ),
+      )
+    },
+  )
 
   app.get('/echo/packs', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await listPacks(app.mongo.db, request.userId))

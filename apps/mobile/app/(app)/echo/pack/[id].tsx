@@ -1,8 +1,9 @@
 import Feather from '@expo/vector-icons/Feather'
-import { SRS_RULES, type EchoPack } from '@langx/shared'
+import { ECHO_PACK_PREVIEW_PAGE, SRS_RULES, type EchoPack } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Text, View } from 'react-native'
-import { useEchoPacks, useStartPack } from '../../../../src/api/queries'
+import { useState } from 'react'
+import { Pressable, Text, View } from 'react-native'
+import { useEchoPackItems, useEchoPacks, useStartPack } from '../../../../src/api/queries'
 import { Button } from '../../../../src/components/ui/Button'
 import { ProgressBar } from '../../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../../src/components/ui/Screen'
@@ -31,6 +32,8 @@ export default function EchoPackScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const packs = useEchoPacks()
   const start = useStartPack()
+  const [offset, setOffset] = useState(0)
+  const preview = useEchoPackItems(id, offset)
 
   const pack: EchoPack | undefined = packs.data?.items.find((row) => row._id === id)
 
@@ -76,6 +79,8 @@ export default function EchoPackScreen() {
 
   const done = Math.min(pack.startedCount, pack.itemCount)
   const finished = done >= pack.itemCount
+  const rows = preview.data?.items ?? []
+  const lastPage = offset + rows.length >= (preview.data?.total ?? pack.itemCount)
 
   return (
     <Screen fluid>
@@ -105,6 +110,57 @@ export default function EchoPackScreen() {
           loading={start.isPending}
           disabled={finished}
         />
+
+        {/*
+          What the pack actually is, under the button that offers it. Read the
+          same way a started card would be — the back comes from `glossFor`
+          with this reader's languages — so nothing here is a different
+          rendering of the thing being decided about.
+        */}
+        {rows.length > 0 ? (
+          <View style={styles.preview}>
+            <Text style={styles.section}>{t('echo.packContains')}</Text>
+            {rows.map((row) => (
+              <View key={row.index} style={styles.row}>
+                <Text style={styles.front}>{row.text}</Text>
+                <Text style={styles.back}>{row.back}</Text>
+              </View>
+            ))}
+            <View style={styles.pager}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: offset === 0 }}
+                disabled={offset === 0}
+                hitSlop={8}
+                onPress={() => setOffset(Math.max(0, offset - ECHO_PACK_PREVIEW_PAGE))}
+                style={({ pressed }) => [pressed && styles.pressed]}
+              >
+                <Text style={[styles.pageLink, offset === 0 && styles.pageLinkOff]}>
+                  {t('echo.packPagePrev')}
+                </Text>
+              </Pressable>
+              <Text style={styles.range}>
+                {t('echo.packRange', {
+                  from: offset + 1,
+                  to: offset + rows.length,
+                  total: preview.data?.total ?? pack.itemCount,
+                })}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: lastPage }}
+                disabled={lastPage}
+                hitSlop={8}
+                onPress={() => setOffset(offset + ECHO_PACK_PREVIEW_PAGE)}
+                style={({ pressed }) => [pressed && styles.pressed]}
+              >
+                <Text style={[styles.pageLink, lastPage && styles.pageLinkOff]}>
+                  {t('echo.packPageNext')}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
       </View>
     </Screen>
   )
@@ -116,4 +172,19 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   level: { color: colors.accent, fontSize: 14, fontWeight: '700' },
   blurb: { ...font.body, color: colors.textMuted, fontSize: 15, lineHeight: 22 },
   progress: { color: colors.textFaint, fontSize: 13 },
+  preview: { gap: spacing.sm, paddingTop: spacing.md },
+  section: { color: colors.textFaint, fontSize: 13, fontWeight: '700' },
+  row: { borderTopColor: colors.border, borderTopWidth: 1, gap: 2, paddingVertical: spacing.sm },
+  front: { color: colors.text, fontSize: 15, fontWeight: '600' },
+  back: { color: colors.textMuted, fontSize: 14 },
+  pager: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: spacing.sm,
+  },
+  pageLink: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  pageLinkOff: { color: colors.textFaint },
+  range: { color: colors.textFaint, fontSize: 13 },
+  pressed: { opacity: 0.6 },
 }))

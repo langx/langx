@@ -266,6 +266,16 @@ export const en = {
     easy: 'Easy',
     play: 'Play',
     /** So a recording by a person is never mistaken for anything else. */
+    /* A machine reading, and the label says so — there is nobody to credit. */
+    /* A pack is three hundred cards; the screen that offers it should
+       be able to show what they are before anybody commits to them. */
+    packContains: "What's inside",
+    packRange: '{from}–{to} of {total}',
+    packPagePrev: 'Previous',
+    packPageNext: 'Next',
+    voiceFemale: 'Synthesised · female',
+    voiceMale: 'Synthesised · male',
+    voiceSynthesised: 'Synthesised',
     spokenBy: 'Spoken by {name}',
     /** Names the feed, because the post is public and the chat one was not. */
     askToHearIt: 'Ask the feed how it is said',

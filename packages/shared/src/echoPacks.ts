@@ -41,6 +41,53 @@ export type EchoPackItemKind = (typeof ECHO_PACK_ITEM_KINDS)[number]
 export const echoGlossSchema = z.partialRecord(localeSchema, z.string().trim().min(1))
 export type EchoGloss = z.infer<typeof echoGlossSchema>
 
+/**
+ * A synthesised reading of the item, one entry per voice.
+ *
+ * Kept apart from `audio` because the two are not the same kind of thing.
+ * `audio` is a person: it carries a name because the licence asks for one, and
+ * the session says "Spoken by". This is a machine pronouncing text that was
+ * already decided, so it carries no name and must never be labelled as though
+ * it were somebody. See `docs/decisions.md` for why synthesis is allowed for a
+ * reading and refused for a gloss.
+ *
+ * A list rather than one field: a single synthetic reading reads as *the*
+ * pronunciation, where two in different registers read as what they are.
+ */
+export const echoVoiceSchema = z.object({
+  url: z.url(),
+  /** The voice it was read in, e.g. `af_heart`. The app maps it to a label. */
+  voice: z.string().trim().min(1),
+})
+export type EchoVoice = z.infer<typeof echoVoiceSchema>
+
+/**
+ * The same reading as it is written down, which is a storage key rather than a
+ * URL — the one place in this codebase where media is recorded that way.
+ *
+ * Everywhere else a URL is right because the object belongs to whoever sent
+ * it and there is nothing to recompute. These belong to the pack, they are
+ * uploaded once per environment under a key this file decides, and writing the
+ * bucket into the content would make `content/echo/` say which deployment it
+ * was for. It is the same file in dev and in production; `seed-echo-packs.ts`
+ * joins the key to `STORAGE_PUBLIC_BASE_URL` and the card gets a URL like
+ * every other piece of media.
+ */
+export const echoPackVoiceSchema = z.object({
+  /** `echo/packs/<packId with : as _>/<index>-<voice>.m4a`, and derivable. */
+  key: z
+    .string()
+    .trim()
+    .regex(/^echo\/packs\/[A-Za-z0-9_-]+\/\d+-[A-Za-z0-9_]+\.m4a$/),
+  voice: z.string().trim().min(1),
+})
+export type EchoPackVoice = z.infer<typeof echoPackVoiceSchema>
+
+/** Where a pack's reading of an item lives, given an environment's base URL. */
+export function packVoiceKey(packId: string, index: number, voice: string): string {
+  return `echo/packs/${packId.replace(':', '_')}/${index}-${voice}.m4a`
+}
+
 export const echoPackItemSchema = z.object({
   /** Position in the pack, and the second half of `pack_index_unique`. */
   index: z.number().int().nonnegative(),
@@ -94,6 +141,8 @@ export const echoPackItemSchema = z.object({
       licence: z.string().trim().min(1),
     })
     .optional(),
+  /** Synthesised readings. A human recording above is better and comes first. */
+  voices: z.array(echoPackVoiceSchema).optional(),
 })
 export type EchoPackItem = z.infer<typeof echoPackItemSchema>
 
@@ -180,3 +229,36 @@ export const startPackResultSchema = z.object({
   remainingToday: z.number().int().nonnegative().nullable(),
 })
 export type StartPackResult = z.infer<typeof startPackResultSchema>
+
+/** A page of a pack's contents, for looking before starting. */
+export const ECHO_PACK_PREVIEW_PAGE = 20
+
+/**
+ * Offset paging rather than a cursor, which everything else here uses.
+ *
+ * A cursor exists because rows shift under a reader — new cards arrive, old
+ * ones move. A pack does not: its items are `0 … itemCount - 1` and stay
+ * there, because the seed is idempotent by `{ packId, index }` and a card's
+ * `sourceKey` depends on it. So an offset is exact, and it buys the one thing
+ * a cursor cannot — "showing 21–40 of 271", and a way back.
+ */
+export const echoPackPreviewQuerySchema = z.object({
+  offset: z.coerce.number().int().nonnegative().default(0),
+  limit: z.coerce.number().int().min(1).max(50).default(ECHO_PACK_PREVIEW_PAGE),
+})
+export type EchoPackPreviewQuery = z.infer<typeof echoPackPreviewQuerySchema>
+
+export const echoPackPreviewItemSchema = z.object({
+  index: z.number().int().nonnegative(),
+  text: z.string(),
+  /** Resolved for this reader, by the same chain a started card would use. */
+  back: z.string(),
+})
+export type EchoPackPreviewItem = z.infer<typeof echoPackPreviewItemSchema>
+
+export const echoPackPreviewSchema = z.object({
+  items: z.array(echoPackPreviewItemSchema),
+  /** The pack's whole length, so the page can say what it is a slice of. */
+  total: z.number().int().nonnegative(),
+})
+export type EchoPackPreview = z.infer<typeof echoPackPreviewSchema>

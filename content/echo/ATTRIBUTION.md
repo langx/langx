@@ -58,15 +58,16 @@ the card falls back to English.
 
 ## Chosen, and why
 
-| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                                              |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                         |
-| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) (Octanove Labs) | English: 2,136 headwords at C1 and C2                                    | CC BY-SA 4.0                                                   | The ceiling CEFR-J stops below, so `fluent` has words of its own |
-| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                        |
-| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering                            |
-| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example                  |
-| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses                             |
-| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                                    |
+| Source                                                                                                        | Gives                                                                    | Licence                                                        | Use                                                               |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [CEFR-J Vocabulary Profile 1.5](https://github.com/openlanguageprofiles/olp-en-cefrj) (Tono Laboratory, TUFS) | English: 7,798 headwords with a CEFR level and a part of speech          | Free for research **and commercial** use, provided it is cited | Which English words belong to which pack                          |
+| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) (Octanove Labs) | English: 2,136 headwords at C1 and C2                                    | CC BY-SA 4.0                                                   | The ceiling CEFR-J stops below, so `fluent` has words of its own  |
+| [NGSL 1.2](https://www.newgeneralservicelist.com/) (Browne, Culligan, Phillips)                               | English: 2,801 core words with an SFI frequency rank                     | CC BY-SA 4.0                                                   | The order the words go in, and `freqRank`                         |
+| [Lexique 3](http://www.lexique.org/)                                                                          | French: 142k words with frequency, part of speech, phonetics             | CC BY-SA 4.0                                                   | The French word list and its ordering                             |
+| [Wiktionary](https://en.wiktionary.org/), via [kaikki.org](https://kaikki.org/) (wiktextract)                 | Senses with definitions and examples, per-sense translations, recordings | CC BY-SA 4.0                                                   | Glosses for a phrasebook entry, and its example                   |
+| [Tatoeba](https://tatoeba.org/)                                                                               | Short sentences with human translations into the eight locales           | CC BY 2.0 FR                                                   | Sentence patterns, and their glosses                              |
+| [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (hexgrad)                                             | A synthesised reading of any line, in a choice of voices                 | Apache-2.0                                                     | The second and third takes on a card, where a person's is missing |
+| [Wiktionary `Category:English phrasebook`](https://en.wiktionary.org/wiki/Category:English_phrasebook)        | 460 curated everyday expressions                                         | CC BY-SA 4.0                                                   | The set expressions in a pack                                     |
 
 ### The recordings
 
@@ -76,25 +77,30 @@ rather than copied into our own storage. Which candidates exist is decided by
 one may be used is decided by `add-audio.mjs`, which looks every file up and
 keeps only the terms below.
 
-**Nothing is assumed from a filename.** The three English drafts draw on 114
-files under five different licences — 72 of them Lingua Libre, the rest older
+**Nothing is assumed from a filename.** The three English drafts draw on 107
+files under five different licences — 65 of them Lingua Libre, the rest older
 Wiktionary and Shtooka uploads — so "Commons audio is CC BY-SA" would have been
 wrong about two thirds of them:
 
 | Licence       | Files | Credit                                           |
 | ------------- | ----- | ------------------------------------------------ |
-| CC0           | 58    | Not required, and given anyway where it is named |
-| CC BY-SA 4.0  | 39    | Required — Lingua Libre's default                |
+| CC0           | 54    | Not required, and given anyway where it is named |
+| CC BY-SA 4.0  | 36    | Required — Lingua Libre's default                |
 | CC BY 3.0 us  | 8     | Required — the Shtooka Project recordings        |
 | CC BY-SA 3.0  | 6     | Required                                         |
 | Public domain | 3     | Not required                                     |
 
-The speakers, who are the credit those licences ask for: Sapaa (31), Vealhurl
-(20), Commander Keane (18), Flame, not lame (16), Association Shtooka — Judith
+The speakers, who are the credit those licences ask for: Sapaa (31), Commander
+Keane (18), Vealhurl (18), Flame, not lame (12), Association Shtooka — Judith
 Franck (8), Dvortygirl (8), Paul2520 (4), Steve Shives (3), and one each from
-Wreaderick, Pvanp7, Wodencafe, Persent101 and Back ache. Each name is stored on
+Wreaderick, Pvanp7, Wodencafe and Back ache. Each name is stored on
 the item it belongs to and drawn in the app as "Spoken by {name}" — this list is
 the summary, not the mechanism.
+
+Seven more went on 15 September: their filenames had kept an HTML entity for
+the apostrophe — `you&#39;re right.wav` — and because Commons derives a file's
+path from a hash of its name, the escape broke the URL as well as the name.
+All seven returned 404. They are covered by a synthesised reading instead.
 
 These counts fell when the review pass dropped items: the recordings were
 vetted against the drafts as they stood, and nineteen of them belonged to items
@@ -105,6 +111,31 @@ rather than six.
 **A recording with no readable author is refused**, even where the licence is
 otherwise fine: the credit is the term being relied on, so a file that cannot
 carry one cannot go on a card. One candidate was dropped for exactly that.
+
+### The synthesised readings
+
+Most of a pack has no human recording and never will: Wiktionary records
+dictionary entries, not the sentences a phrasebook is made of, so the Tatoeba
+half of every pack was silent. Each item now carries two synthesised takes as
+well — one in each register — read by [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M)
+and generated by `tools/echo-content/tts/generate.py`.
+
+**Apache-2.0 over the weights and the voice packs alike**, which is the reason
+this model and not a better-sounding one. The alternatives were all closed in
+the same way and it is worth writing down which, because each looks free until
+it is read:
+
+| Considered               | Why not                                                                                                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Tatoeba's own recordings | 835,383 of 851,122 English files are CC BY-NC-ND 3.0, and 6,435 more carry no licence at all. 6,663 are usable — of which 153 have both a Turkish and an Arabic translation, so a pack built from them would be a tenth of this one. |
+| macOS `say`              | Apple's SLA licenses the System Voices for personal, non-commercial use, and names recording and redistribution among the things no other licence grants. It does not turn on whether the feature is sold.                           |
+| Coqui XTTS v2            | CPML — non-commercial. The most-recommended answer online, and the wrong one.                                                                                                                                                        |
+| espeak-ng                | GPL, and a quality nobody would learn a language from.                                                                                                                                                                               |
+
+**A person's recording is still better and still comes first.** The card draws
+it above the synthesised ones and says "Spoken by {name}"; a synthesised take
+carries no name, because there is nobody to credit and a made-up one would make
+the two indistinguishable. See `docs/decisions.md`.
 
 **A pack is phrases, so the glosses come from two places.** A phrasebook entry
 is a dictionary entry and kaikki glosses it. A sentence is not — nothing has an
