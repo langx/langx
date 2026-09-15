@@ -1954,6 +1954,7 @@ export const es: Localized<EnMessages> = {
       one: '{count} persona en la última semana.',
       other: '{count} personas en la última semana.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {

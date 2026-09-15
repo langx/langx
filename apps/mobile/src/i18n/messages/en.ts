@@ -2101,6 +2101,8 @@ export const en = {
       one: '{count} person in the last week.',
       other: '{count} people in the last week.',
     },
+    /** Visits by the same person that day; shown only from the second one. */
+    repeat: '×{count}',
   },
 
   blocked: {

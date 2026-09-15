@@ -1993,6 +1993,7 @@ export const de: Localized<EnMessages> = {
       one: '{count} Person in der letzten Woche.',
       other: '{count} Personen in der letzten Woche.',
     },
+    repeat: '×{count}',
   },
 
   blocked: {
