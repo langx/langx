@@ -261,19 +261,27 @@ export const fr: Localized<EnMessages> = {
     aboutOpen: 'Qu’est-ce que c’est ?',
     aboutTitle: 'Comment fonctionne Echo',
     aboutBody:
-      'Une carte revient juste avant que tu ne l’oublies. Chaque fois que tu t’en souviens, l’attente suivante s’allonge : une phrase gardée aujourd’hui est encore là dans un mois.',
-    aboutLadder: 'Si tu continues à t’en souvenir',
+      'La plupart de ce que tu croises aujourd’hui aura disparu dans une semaine — sauf si tu le recroises. Echo ramène une phrase juste avant qu’elle ne s’efface, et chaque fois que tu t’en souviens, l’attente suivante s’allonge.',
+    aboutWithout: 'Sans révision',
+    aboutWith: 'Avec Echo',
     aboutChart:
-      'L’attente s’allonge chaque fois que tu te souviens d’une carte : dix minutes, un jour, trois jours, huit jours, vingt jours.',
+      'Deux courbes sur une semaine. Sans révision, ce dont tu te souviens tombe presque à zéro. Avec Echo, chaque révision le relève et l’oubli ralentit à chaque fois.',
+    aboutLadder: 'Les attentes sont réelles',
     aboutStep10m: '10 minutes',
     aboutStep1d: '1 jour',
     aboutStep3d: '3 jours',
     aboutStep8d: '8 jours',
     aboutStep20d: '20 jours',
+    aboutRecall:
+      'Ce qui marche, c’est d’être interrogé. Aller chercher un mot dans sa propre tête l’ancre bien mieux que de le relire.',
+    aboutLittle:
+      'Une langue, c’est des milliers de mots. Echo ne demande que ceux que tu es sur le point d’oublier : dix minutes par jour vont plus loin qu’une heure par semaine.',
+    aboutYours:
+      'Et ce sont tes propres phrases, tirées de tes conversations — des mots que tu avais déjà une raison de retenir.',
     aboutForgot:
       'Oubliée ? Elle revient dans une minute et repart des courtes attentes. Rien n’est perdu.',
-    aboutWhy:
-      'C’est la répétition espacée : dix minutes par jour valent mieux qu’une heure par semaine.',
+    aboutProof:
+      'L’espacement et l’autotest sont les deux résultats les mieux établis de la recherche sur la mémoire, étudiés depuis les années 1880. Ce sont eux deux, appliqués à ta langue.',
     aboutClose: 'J’ai compris',
   },
 

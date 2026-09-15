@@ -306,29 +306,43 @@ export const en = {
     verdictClose: 'Right, give or take an accent',
     verdictWrong: 'Not quite',
     /*
-     * "What's this?" in the header, and what it opens.
+     * "What is this?" in the header, and what it opens.
      *
-     * The numbers are the real ladder a card climbs on Good — `SRS_RULES`'
-     * two learning steps, then 1, 3, 8, 20 days — and not a rounder set that
-     * would read better: the session draws the same intervals on its grade
-     * buttons, and an explainer that disagreed with them would be teaching
-     * the wrong thing about the screen it sits on.
+     * The intervals named here are the real ladder a card climbs on Good —
+     * `SRS_RULES`' two learning steps, then 1, 3, 8 and 20 days — and not a
+     * rounder set that would read better: the session draws the same numbers
+     * on its grade buttons, and an explainer that disagreed with them would
+     * be teaching the wrong thing about the screen it sits on.
+     *
+     * The claim in `aboutProof` is deliberately the narrow one. Spacing and
+     * retrieval practice are what a century of memory research actually
+     * supports; "the best way to learn a language" is not, and writing it
+     * would be a promise the schedule cannot keep.
      */
     aboutOpen: 'What is this?',
     aboutTitle: 'How Echo works',
     aboutBody:
-      'A card comes back just before you would forget it. Each time you remember it, the next wait is longer — so a sentence you keep today is still there in a month.',
-    aboutLadder: 'If you keep getting it right',
+      'Most of what you meet today is gone within a week — unless you meet it again. Echo brings a sentence back right before it slips, and every time you remember it the next wait is longer.',
+    aboutWithout: 'Without review',
+    aboutWith: 'With Echo',
     aboutChart:
-      'The wait grows each time you remember a card: ten minutes, one day, three days, eight days, twenty days.',
+      'Two lines over one week. Without review, what you remember falls away to almost nothing. With Echo, each review lifts it back and the falling gets slower every time.',
+    aboutLadder: 'The waits are real',
     aboutStep10m: '10 minutes',
     aboutStep1d: '1 day',
     aboutStep3d: '3 days',
     aboutStep8d: '8 days',
     aboutStep20d: '20 days',
+    aboutRecall:
+      'Being asked is what does the work. Pulling a word out of your own head fixes it far better than reading it again.',
+    aboutLittle:
+      'A language is thousands of words. Echo only asks about the ones you are about to forget, so ten minutes a day goes further than an hour once a week.',
+    aboutYours:
+      'And they are your own sentences, out of your own chats — words you already had a reason to remember.',
     aboutForgot:
       'Forgot one? It comes back in a minute and starts again from the short waits. Nothing is lost.',
-    aboutWhy: 'This is spaced repetition: ten minutes a day beats an hour once a week.',
+    aboutProof:
+      'Spacing and self-testing are the two best-proven findings in memory research, tested since the 1880s. This is both of them, pointed at your language.',
     aboutClose: 'Got it',
   },
 

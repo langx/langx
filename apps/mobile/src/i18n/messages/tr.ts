@@ -272,18 +272,27 @@ export const tr: Localized<EnMessages> = {
     aboutOpen: 'Bu ne?',
     aboutTitle: 'Echo nasıl çalışır',
     aboutBody:
-      'Bir kart, sen onu unutmadan hemen önce karşına çıkar. Her hatırladığında bir sonraki bekleme uzar — bugün sakladığın bir cümle bir ay sonra da aklında olur.',
-    aboutLadder: 'Hatırlamaya devam edersen',
+      'Bugün karşılaştığın şeyin çoğu bir hafta içinde uçup gider — ona bir daha rastlamazsan. Echo bir cümleyi tam kayıp gitmeden önce geri getirir; her hatırladığında bir sonraki bekleme uzar.',
+    aboutWithout: 'Tekrar olmadan',
+    aboutWith: 'Echo ile',
     aboutChart:
-      'Bir kartı her hatırladığında bekleme uzar: on dakika, bir gün, üç gün, sekiz gün, yirmi gün.',
+      'Bir haftalık iki eğri. Tekrar olmadan hatırladığın şey neredeyse sıfıra iner. Echo ile her tekrar onu yukarı çeker ve düşüş her seferinde yavaşlar.',
+    aboutLadder: 'Süreler gerçek',
     aboutStep10m: '10 dakika',
     aboutStep1d: '1 gün',
     aboutStep3d: '3 gün',
     aboutStep8d: '8 gün',
     aboutStep20d: '20 gün',
+    aboutRecall:
+      'İşi yapan şey sorulmaktır. Bir kelimeyi kendi kafandan çıkarmak, onu tekrar okumaktan çok daha kalıcı kılar.',
+    aboutLittle:
+      'Bir dil binlerce kelime demek. Echo yalnızca unutmak üzere olduklarını sorar; bu yüzden günde on dakika, haftada bir saatten daha ileri götürür.',
+    aboutYours:
+      'Üstelik bunlar kendi sohbetlerinden çıkan kendi cümlelerin — hatırlamak için zaten bir sebebin vardı.',
     aboutForgot:
       'Unuttun mu? Kart bir dakika sonra geri gelir ve kısa sürelerden yeniden başlar. Hiçbir şey kaybolmaz.',
-    aboutWhy: 'Buna aralıklı tekrar deniyor: günde on dakika, haftada bir saatten iyidir.',
+    aboutProof:
+      'Aralıklı tekrar ve kendini test etme, hafıza araştırmalarının 1880’lerden beri en sağlam iki bulgusu. Burada ikisi birden, senin dilinde çalışıyor.',
     aboutClose: 'Anladım',
   },
 
