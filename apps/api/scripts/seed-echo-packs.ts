@@ -52,7 +52,7 @@ interface Draft {
   items: EchoPackItemDoc[]
 }
 
-async function readPack(path: string): Promise<Draft | null> {
+async function readPack(path: string, mediaBaseUrl?: string): Promise<Draft | null> {
   const raw: unknown = JSON.parse(await readFile(path, 'utf8'))
   if (
     typeof raw === 'object' &&
@@ -102,6 +102,19 @@ async function readPack(path: string): Promise<Draft | null> {
       ...(item.freqRank ? { freqRank: item.freqRank } : {}),
       ...(item.image ? { image: item.image } : {}),
       ...(item.audio ? { audio: item.audio } : {}),
+      /*
+       * The key becomes a URL here, and only here. The pack file records a key
+       * so that `content/echo/` is the same in every environment; a card and
+       * everything downstream of it carries a URL, like all other media.
+       */
+      ...(item.voices?.length && mediaBaseUrl
+        ? {
+            voices: item.voices.map((take) => ({
+              url: `${mediaBaseUrl.replace(/\/+$/, '')}/${take.key}`,
+              voice: take.voice,
+            })),
+          }
+        : {}),
       contentVersion: file.contentVersion,
     })),
   }
@@ -112,9 +125,12 @@ async function main(): Promise<void> {
   const fileIndex = process.argv.indexOf('--file')
   const explicit = fileIndex < 0 ? undefined : process.argv[fileIndex + 1]
 
+  // Read before the loop when applying, because a pack with readings needs the
+  // bucket's public base to turn its keys into something playable.
+  const env = apply ? loadEnv(process.env) : undefined
   const drafts: Draft[] = []
   for (const path of await packFiles(explicit)) {
-    const draft = await readPack(path)
+    const draft = await readPack(path, env?.STORAGE_PUBLIC_BASE_URL)
     if (draft) drafts.push(draft)
   }
 
@@ -135,8 +151,17 @@ async function main(): Promise<void> {
     return
   }
 
-  const env = loadEnv(process.env)
-  const handle = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
+  /*
+   * Refused rather than seeded silently. A pack whose readings resolved to
+   * nothing looks finished — the cards are there, the audio button simply
+   * never appears — and nothing downstream can tell that apart from a pack
+   * that never had any.
+   */
+  if (!env!.STORAGE_PUBLIC_BASE_URL && drafts.some((d) => d.items.some((i) => i.voices?.length))) {
+    throw new Error('STORAGE_PUBLIC_BASE_URL is unset, and these packs have synthesised readings')
+  }
+
+  const handle = await connectToDatabase(env!.MONGODB_URI, env!.MONGODB_DB)
   try {
     for (const draft of drafts) {
       await handle.db

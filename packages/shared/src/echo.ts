@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { echoVoiceSchema } from './echoPacks'
 import { languageCodeSchema } from './languages'
 import { mediaSchema } from './media'
 import { ECHO_GRADES, SRS_RULES } from './srs'
@@ -182,6 +183,20 @@ export const echoCardSchema = z.object({
   audio: echoAudioSchema.optional(),
   /** Every recording on the card, in the order they were kept. */
   audios: z.array(echoAudioSchema).max(ECHO_AUDIO_MAX).optional(),
+  /**
+   * Synthesised readings, copied from the pack like every other part of a card.
+   *
+   * A second list rather than more entries in `audios`, because the two do not
+   * behave alike. `audios` are recordings people made of this card; they
+   * accumulate as the feed answers, which is why they are capped. These are
+   * the pack's own readings: always the same two, never growing, and belonging
+   * to nobody — so a cap on them would mean nothing and putting them in the
+   * same list would spend the cap that exists to keep people's voices from
+   * becoming a playlist.
+   *
+   * The session draws them under the human takes, quieter and unattributed.
+   */
+  voices: z.array(echoVoiceSchema).optional(),
   image: echoImageSchema.optional(),
   /**
    * The pronunciation post this card's owner opened from it, when they asked

@@ -42,6 +42,20 @@ export function levelLabel(t: TranslateFn, level: LanguageLevel): string {
   return t(`level.${level}` as MessageKey)
 }
 
+/**
+ * What to call a synthesised reading.
+ *
+ * Deliberately not a name. A pack's other recordings are people, credited by
+ * `speakerName` because their licence asks for it; giving a voice model a name
+ * in the same list would make the two indistinguishable. The register is the
+ * only thing worth telling apart, so that is what the label says.
+ */
+export function voiceLabel(t: TranslateFn, voice: string): string {
+  if (voice.startsWith('af_') || voice.startsWith('bf_')) return t('echo.voiceFemale')
+  if (voice.startsWith('am_') || voice.startsWith('bm_')) return t('echo.voiceMale')
+  return t('echo.voiceSynthesised')
+}
+
 export function levelShortLabel(t: TranslateFn, level: LanguageLevel): string {
   const key = `level.short${level.charAt(0).toUpperCase()}${level.slice(1)}`
   return t(key as MessageKey)

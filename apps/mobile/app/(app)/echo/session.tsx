@@ -6,6 +6,7 @@ import {
   productionVerdict,
   scheduledDelayMinutes,
   type EchoAudio,
+  type EchoVoice,
   type EchoCard,
   type EchoGrade,
   type EchoImage,
@@ -24,6 +25,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useT } from '../../../src/i18n'
+import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
@@ -395,6 +397,14 @@ export default function EchoSessionScreen() {
         {!producing || revealed
           ? recordings.map((audio) => <Recording key={audio.url} audio={audio} />)
           : null}
+        {/*
+          The pack's own readings, under the people. Labelled by register and
+          by nothing else: there is nobody to credit, and a name here would
+          make a voice model indistinguishable from the volunteer above it.
+        */}
+        {!producing || revealed
+          ? (card.voices ?? []).map((take) => <Reading key={take.voice} take={take} />)
+          : null}
 
         {revealed ? (
           <>
@@ -521,6 +531,33 @@ function Recording({ audio }: { audio: EchoAudio }) {
   )
 }
 
+/** A synthesised take. `Recording`'s twin, and deliberately not the same thing. */
+function Reading({ take }: { take: EchoVoice }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(take.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={voiceLabel(t, take.voice)}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="cpu" size={16} color={colors.textMuted} />
+      <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
+    </Pressable>
+  )
+}
+
 function Count({ label, value }: { label: string; value: number }) {
   const styles = useStyles()
   return (
@@ -552,6 +589,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   front: { ...font.heading, color: colors.text, fontSize: 24, lineHeight: 32, textAlign: 'center' },
   speaker: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   speakerLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  /* Quieter than a person's take, because it is the lesser of the two. */
+  voiceLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '500' },
   pressed: { opacity: 0.6 },
   rule: { backgroundColor: colors.border, height: 1, width: '60%' },
   back: { color: colors.text, fontSize: 18, lineHeight: 26, textAlign: 'center' },

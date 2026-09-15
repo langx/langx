@@ -4860,3 +4860,43 @@ _through_ the logo — and the badge fades on `Easing.in`, so it is still at a
 third of its opacity most of the way through. `EXIT_GROUND_DELAY_MS` is
 `EXIT_TILE_MS`, the same constant rather than a number that happens to match,
 and a test in `splashTiming.test.ts` holds the two together.
+
+## A machine may read a line, but it may not choose what a line means
+
+Echo refuses machine translation for a gloss and accepts machine synthesis for
+a reading. That looks inconsistent and is not, so it is written down.
+
+A gloss is a **judgement**. `bank` is an institution or a river's edge, and the
+pipeline picking one is picking the sense a learner will memorise; measured on
+eight beginner words, taking the first translation table got three wrong, and
+the second version only got six of six by counting how many languages had a
+word for each sense — a signal, not an answer. That is why
+`apps/api/scripts/seed-echo-packs.ts` refuses a pack a person has not read.
+
+A reading is **not** a judgement. The text is already decided, by a person, and
+read by a person before the pack was allowed to ship. The synthesiser adds no
+meaning; it pronounces what is there. The failure it can produce is "that is
+not quite how anyone says it", which is a quality complaint — where a wrong
+gloss teaches somebody the wrong word and they cannot tell.
+
+So the rule is the boundary between the two, not a ban on machines:
+
+- **A machine never decides what a line means.** Glosses come from a person, in
+  every locale, or the card falls back and says so.
+- **A machine may voice a line that is already decided**, if its licence allows
+  it and the card says what it is.
+
+Both halves of that second condition are load-bearing. The licence, because the
+obvious sources are closed: Tatoeba's own recordings are 98% CC BY-NC-ND,
+Apple's `say` voices are personal-use-only by the macOS SLA regardless of
+whether the feature is sold, and Coqui XTTS is non-commercial. Kokoro-82M is
+Apache-2.0 over its weights and its voice packs, which is why it is the one.
+
+And the label, because a pack mixes the two on one card. A person's recording
+is drawn first and credited by name — every Commons licence on the allowlist
+but CC0 requires it. A synthesised take is drawn under it, in a quieter colour,
+labelled by register and by **nothing else**: it carries no name, because there
+is nobody to credit, and inventing one would make a model indistinguishable
+from the volunteer above it. `echoVoiceSchema` is a separate type from
+`echoAudioSchema` for that reason alone — the two are not interchangeable and
+the schema should not let them be confused.

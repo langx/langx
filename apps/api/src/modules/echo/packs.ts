@@ -7,8 +7,11 @@ import {
   sourceKeyOf,
   type EchoGloss,
   type EchoPack,
+  type EchoPackPreview,
+  type EchoPackPreviewQuery,
   type EchoPackItem,
   type EchoPackItemKind,
+  type EchoVoice,
   type EchoSource,
   type StartPackInput,
   type StartPackResult,
@@ -56,6 +59,11 @@ export interface EchoPackItemDoc {
   freqRank?: number
   image?: string
   audio?: EchoPackItem['audio']
+  /*
+   * A URL, where the pack file holds a key: the environment's base is applied
+   * once, by the seed, so nothing downstream has to know a bucket exists.
+   */
+  voices?: EchoVoice[]
   contentVersion: number
 }
 
@@ -147,6 +155,49 @@ export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPa
  * times. The price is that the correction does not reach cards already made,
  * which is the price worth paying.
  */
+/**
+ * A page of what a pack holds, before anybody starts it.
+ *
+ * Reads the same way a card would: the back is resolved through `glossFor`
+ * with this reader's own languages, so the preview is not a different rendering
+ * of the content from the thing they are deciding whether to begin.
+ *
+ * Open to a guest, like the listing it is reached from. Looking is the whole
+ * offer before an account; `startPack` is where the account is asked for.
+ */
+export async function previewPack(
+  db: Db,
+  userId: string,
+  packId: string,
+  query: EchoPackPreviewQuery,
+  interfaceLocale: string,
+): Promise<EchoPackPreview> {
+  const pack = await db.collection<EchoPackDoc>(COLLECTIONS.echoPacks).findOne({ _id: packId })
+  if (!pack) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Pack not found')
+
+  const profile = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { nativeLanguages: 1 } })
+  const nativeLocale = matchLocale(profile?.nativeLanguages?.map((l) => l.code) ?? []) ?? undefined
+
+  const items = await db
+    .collection<EchoPackItemDoc>(COLLECTIONS.echoPackItems)
+    .find({ packId, index: { $gte: query.offset } })
+    .sort({ index: 1 })
+    .limit(query.limit)
+    .toArray()
+
+  return {
+    // An item whose gloss resolves to nothing is dropped rather than shown
+    // blank — `startPack` skips it too, so the preview matches what arrives.
+    items: items.flatMap((item) => {
+      const back = glossFor(item.gloss, nativeLocale, interfaceLocale)
+      return back ? [{ index: item.index, text: item.text, back }] : []
+    }),
+    total: pack.itemCount,
+  }
+}
+
 export async function startPack(
   db: Db,
   userId: string,
@@ -224,6 +275,9 @@ export async function startPack(
               },
             }
           : {}),
+        // Synthesised readings travel the same way and carry no name, because
+        // there is nobody to credit — see `echoVoiceSchema`.
+        ...(item.voices?.length ? { voices: item.voices } : {}),
         source,
         sourceKey,
         srs: newCardSrs(now),

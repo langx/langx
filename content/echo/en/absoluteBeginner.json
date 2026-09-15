@@ -2,7 +2,7 @@
   "id": "en:absoluteBeginner",
   "lang": "en",
   "level": "absoluteBeginner",
-  "contentVersion": 4,
+  "contentVersion": 5,
   "reviewed": true,
   "sources": [
     {
@@ -29,6 +29,11 @@
       "name": "New General Service List (NGSL) 1.2",
       "licence": "CC BY-SA 4.0",
       "url": "https://www.newgeneralservicelist.com/"
+    },
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
     }
   ],
   "items": [
@@ -48,7 +53,17 @@
       "freqRank": 1,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/0-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/0-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 1,
@@ -66,7 +81,17 @@
       "freqRank": 2,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/1-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/1-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 2,
@@ -101,7 +126,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-I know.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/2-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/2-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 3,
@@ -136,7 +171,17 @@
         "file": "En-uk-see you.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/3-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/3-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 4,
@@ -154,7 +199,17 @@
       "freqRank": 5,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/4-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/4-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 5,
@@ -187,7 +242,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-right now.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/5-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/5-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 6,
@@ -205,7 +270,17 @@
       "freqRank": 7,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/6-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/6-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 7,
@@ -239,7 +314,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-no problem.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/7-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/7-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 8,
@@ -257,7 +342,17 @@
       "freqRank": 9,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/8-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/8-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 9,
@@ -272,7 +367,17 @@
         "sense": "in the current week",
         "translationCount": 11,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/9-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/9-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 10,
@@ -290,7 +395,17 @@
       "freqRank": 11,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/10-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/10-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 11,
@@ -336,7 +451,17 @@
         "file": "En-uk-thank you.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/11-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/11-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 12,
@@ -354,7 +479,17 @@
       "freqRank": 13,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/12-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/12-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 13,
@@ -393,7 +528,17 @@
         "file": "en-us-good night.ogg",
         "speaker": "Dvortygirl",
         "licence": "Public domain"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/13-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/13-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 14,
@@ -411,7 +556,17 @@
       "freqRank": 15,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/14-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/14-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 15,
@@ -452,7 +607,17 @@
         "file": "En-uk-good morning.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/15-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/15-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 16,
@@ -470,7 +635,17 @@
       "freqRank": 17,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/16-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/16-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 17,
@@ -505,7 +680,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-this morning.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/17-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/17-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 18,
@@ -523,7 +708,17 @@
       "freqRank": 19,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/18-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/18-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 19,
@@ -564,7 +759,17 @@
         "file": "en-us-good_evening.ogg",
         "speaker": "Dvortygirl",
         "licence": "CC BY-SA 3.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/19-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/19-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 20,
@@ -582,7 +787,17 @@
       "freqRank": 21,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/20-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/20-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 21,
@@ -616,7 +831,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-this evening.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/21-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/21-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 22,
@@ -634,7 +859,17 @@
       "freqRank": 23,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/22-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/22-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 23,
@@ -669,7 +904,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-have fun.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/23-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/23-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 24,
@@ -687,7 +932,17 @@
       "freqRank": 25,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/24-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/24-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 25,
@@ -728,7 +983,17 @@
         "file": "en-us-good afternoon.ogg",
         "speaker": "Dvortygirl",
         "licence": "CC BY-SA 3.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/25-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/25-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 26,
@@ -746,7 +1011,17 @@
       "freqRank": 27,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/26-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/26-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 27,
@@ -763,7 +1038,17 @@
         "sense": "during the afternoon of today",
         "translationCount": 19,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/27-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/27-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 28,
@@ -781,7 +1066,17 @@
       "freqRank": 29,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/28-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/28-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 29,
@@ -801,7 +1096,17 @@
         "translationCount": 101,
         "definition": "Used to warn someone to proceed with caution.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/29-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/29-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 30,
@@ -819,7 +1124,17 @@
       "freqRank": 31,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/30-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/30-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 31,
@@ -834,7 +1149,17 @@
         "sense": "afflicted individual",
         "translationCount": 31,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/31-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/31-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 32,
@@ -852,7 +1177,17 @@
       "freqRank": 33,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/32-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/32-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 33,
@@ -888,7 +1223,17 @@
         "file": "en-us-good luck.ogg",
         "speaker": "Dvortygirl",
         "licence": "CC BY-SA 3.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/33-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/33-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 34,
@@ -906,7 +1251,17 @@
       "freqRank": 35,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/34-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/34-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 35,
@@ -929,7 +1284,17 @@
         "definition": "To have a specific name.",
         "otherSenses": [],
         "correctedTr": "çağrılabilir"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/35-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/35-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 36,
@@ -947,7 +1312,17 @@
       "freqRank": 37,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/36-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/36-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 37,
@@ -986,7 +1361,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-excuse me.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/37-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/37-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 38,
@@ -1004,7 +1389,17 @@
       "freqRank": 39,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/38-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/38-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 39,
@@ -1042,7 +1437,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-give me.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/39-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/39-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 40,
@@ -1060,7 +1465,17 @@
       "freqRank": 41,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/40-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/40-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 41,
@@ -1101,7 +1516,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-happy birthday.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/41-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/41-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 42,
@@ -1119,7 +1544,17 @@
       "freqRank": 43,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/42-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/42-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 43,
@@ -1152,7 +1587,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-happy holidays.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/43-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/43-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 44,
@@ -1170,7 +1615,17 @@
       "freqRank": 45,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/44-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/44-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 45,
@@ -1204,7 +1659,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-kiss me.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/45-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/45-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 46,
@@ -1222,7 +1687,17 @@
       "freqRank": 47,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/46-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/46-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 47,
@@ -1257,7 +1732,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-many thanks.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/47-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/47-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 48,
@@ -1275,7 +1760,17 @@
       "freqRank": 49,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/48-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/48-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 49,
@@ -1308,7 +1803,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-me too.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/49-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/49-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 50,
@@ -1326,7 +1831,17 @@
       "freqRank": 51,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/50-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/50-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 51,
@@ -1360,7 +1875,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-my pleasure.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/51-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/51-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 52,
@@ -1378,7 +1903,17 @@
       "freqRank": 53,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/52-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/52-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 53,
@@ -1401,7 +1936,17 @@
         "definition": "A phrase used in notices indicating that the smoking of cigarettes, etc., is not permitted in the surrounding area.",
         "otherSenses": [],
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/53-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/53-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 54,
@@ -1419,7 +1964,17 @@
       "freqRank": 55,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/54-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/54-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 55,
@@ -1451,7 +2006,17 @@
         "file": "en-us-no thanks.ogg",
         "speaker": "Dvortygirl",
         "licence": "CC BY-SA 3.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/55-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/55-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 56,
@@ -1469,7 +2034,17 @@
       "freqRank": 57,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/56-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/56-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 57,
@@ -1487,7 +2062,17 @@
       "freqRank": 58,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/57-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/57-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 58,
@@ -1526,7 +2111,17 @@
         "file": "En-au-pardon me.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/58-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/58-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 59,
@@ -1544,7 +2139,17 @@
       "freqRank": 60,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/59-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/59-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 60,
@@ -1578,7 +2183,17 @@
         "file": "En-au-sweet dreams.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/60-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/60-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 61,
@@ -1596,7 +2211,17 @@
       "freqRank": 62,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/61-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/61-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 62,
@@ -1625,7 +2250,17 @@
         "file": "En-au-who cares.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/62-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/62-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 63,
@@ -1643,7 +2278,17 @@
       "freqRank": 64,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/63-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/63-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 64,
@@ -1677,7 +2322,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-do you know.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/64-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/64-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 65,
@@ -1706,7 +2361,17 @@
         "file": "En-au-well, I never.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/65-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/65-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 66,
@@ -1740,7 +2405,17 @@
         "file": "En-au-time will tell.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/66-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/66-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 67,
@@ -1758,7 +2433,17 @@
       "freqRank": 68,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/67-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/67-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 68,
@@ -1776,7 +2461,17 @@
       "freqRank": 69,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/68-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/68-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 69,
@@ -1794,7 +2489,17 @@
       "freqRank": 70,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/69-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/69-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 70,
@@ -1816,7 +2521,17 @@
         "translationCount": 24,
         "definition": "An instruction to a taxi driver, waiter etc. to keep the change from the amount handed over as a tip.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/70-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/70-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 71,
@@ -1834,7 +2549,17 @@
       "freqRank": 72,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/71-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/71-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 72,
@@ -1873,7 +2598,17 @@
         "file": "en-us-I_love_you.ogg",
         "speaker": "Dvortygirl",
         "licence": "Public domain"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/72-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/72-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 73,
@@ -1908,7 +2643,17 @@
         "file": "En-us-get well soon.oga",
         "speaker": "Paul2520",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/73-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/73-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 74,
@@ -1926,7 +2671,17 @@
       "freqRank": 75,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/74-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/74-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 75,
@@ -1944,7 +2699,17 @@
       "freqRank": 76,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/75-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/75-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 76,
@@ -1963,7 +2728,17 @@
         "sense": "stop the car",
         "translationCount": 32,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/76-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/76-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 77,
@@ -1981,7 +2756,17 @@
       "freqRank": 78,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/77-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/77-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 78,
@@ -2015,7 +2800,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-one moment, please.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/78-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/78-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 79,
@@ -2033,7 +2828,17 @@
       "freqRank": 80,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/79-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/79-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 80,
@@ -2055,7 +2860,17 @@
         "translationCount": 47,
         "definition": "When giving directions to a person (for example, a taxi driver), indicates that he or she should turn right.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/80-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/80-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 81,
@@ -2073,7 +2888,17 @@
       "freqRank": 82,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/81-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/81-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 82,
@@ -2108,7 +2933,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-happy New Year.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/82-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/82-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 83,
@@ -2126,7 +2961,17 @@
       "freqRank": 84,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/83-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/83-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 84,
@@ -2146,7 +2991,17 @@
         "sense": "I miss you",
         "translationCount": 100,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/84-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/84-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 85,
@@ -2164,7 +3019,17 @@
       "freqRank": 86,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/85-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/85-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 86,
@@ -2188,7 +3053,17 @@
         "definition": "Indicates to the interlocutor not to worry (feel anxiety) about something.",
         "otherSenses": [],
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/86-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/86-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 87,
@@ -2206,7 +3081,17 @@
       "freqRank": 88,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/87-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/87-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 88,
@@ -2227,7 +3112,17 @@
         "sense": "see you tomorrow",
         "translationCount": 50,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/88-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/88-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 89,
@@ -2245,7 +3140,17 @@
       "freqRank": 90,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/89-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/89-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 90,
@@ -2283,7 +3188,17 @@
         "file": "en-au-have a seat.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/90-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/90-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 91,
@@ -2301,7 +3216,17 @@
       "freqRank": 92,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/91-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/91-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 92,
@@ -2323,7 +3248,17 @@
         "translationCount": 45,
         "definition": "When giving directions to a person (for example, a taxi driver), indicates that he or she should turn left.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/92-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/92-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 93,
@@ -2341,7 +3276,17 @@
       "freqRank": 94,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/93-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/93-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 94,
@@ -2363,7 +3308,17 @@
         "translationCount": 55,
         "otherSenses": [],
         "machineSense": "phrase"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/94-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/94-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 95,
@@ -2381,7 +3336,17 @@
       "freqRank": 96,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/95-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/95-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 96,
@@ -2416,7 +3381,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-are you OK.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/96-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/96-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 97,
@@ -2434,7 +3409,17 @@
       "freqRank": 98,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/97-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/97-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 98,
@@ -2469,7 +3454,17 @@
         "file": "en-au-here you are.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/98-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/98-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 99,
@@ -2487,7 +3482,17 @@
       "freqRank": 100,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/99-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/99-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 100,
@@ -2526,7 +3531,17 @@
         "file": "en-us-how_are_you.ogg",
         "speaker": "Dvortygirl",
         "licence": "CC BY-SA 3.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/100-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/100-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 101,
@@ -2545,7 +3560,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/101-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/101-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 102,
@@ -2563,7 +3588,17 @@
       "freqRank": 103,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/102-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/102-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 103,
@@ -2578,7 +3613,17 @@
         "sense": "I told you",
         "translationCount": 14,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/103-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/103-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 104,
@@ -2597,7 +3642,17 @@
         "sense": "I'm busy",
         "translationCount": 24,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/104-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/104-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 105,
@@ -2615,7 +3670,17 @@
       "freqRank": 106,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/105-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/105-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 106,
@@ -2636,7 +3701,17 @@
         "sense": "I'm cold",
         "translationCount": 42,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/106-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/106-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 107,
@@ -2654,7 +3729,17 @@
       "freqRank": 108,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/107-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/107-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 108,
@@ -2672,7 +3757,17 @@
       "freqRank": 109,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/108-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/108-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 109,
@@ -2706,7 +3801,17 @@
         "file": "En-uk-I'm fine.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/109-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/109-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 110,
@@ -2725,7 +3830,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/110-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/110-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 111,
@@ -2743,7 +3858,17 @@
         "sense": "I'm full",
         "translationCount": 30,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/111-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/111-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 112,
@@ -2761,7 +3886,17 @@
       "freqRank": 113,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/112-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/112-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 113,
@@ -2781,7 +3916,17 @@
         "sense": "I'm hot",
         "translationCount": 31,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/113-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/113-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 114,
@@ -2799,7 +3944,17 @@
       "freqRank": 115,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/114-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/114-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 115,
@@ -2820,7 +3975,17 @@
         "sense": "I'm hungry",
         "translationCount": 157,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/115-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/115-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 116,
@@ -2839,7 +4004,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/116-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/116-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 117,
@@ -2860,7 +4035,17 @@
         "sense": "I'm sick/ill",
         "translationCount": 71,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/117-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/117-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 118,
@@ -2879,7 +4064,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/118-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/118-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 119,
@@ -2913,7 +4108,17 @@
         "file": "En-uk-I'm sorry.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/119-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/119-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 120,
@@ -2931,7 +4136,17 @@
       "freqRank": 121,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/120-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/120-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 121,
@@ -2954,7 +4169,17 @@
         "translationCount": 111,
         "definition": "Indicates that the speaker is in need of rest or sleep.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/121-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/121-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 122,
@@ -2972,7 +4197,17 @@
       "freqRank": 123,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/122-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/122-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 123,
@@ -2994,7 +4229,17 @@
         "translationCount": 224,
         "definition": "A common way to identify oneself.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/123-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/123-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 124,
@@ -3012,7 +4257,17 @@
       "freqRank": 125,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/124-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/124-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 125,
@@ -3048,7 +4303,17 @@
         "file": "En-au-what's new.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/125-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/125-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 126,
@@ -3066,7 +4331,17 @@
       "freqRank": 127,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/126-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/126-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 127,
@@ -3087,7 +4362,17 @@
         "sense": "where are we",
         "translationCount": 44,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/127-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/127-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 128,
@@ -3105,7 +4390,17 @@
       "freqRank": 129,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/128-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/128-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 129,
@@ -3127,7 +4422,17 @@
         "translationCount": 85,
         "definition": "where are you? (used over the phone or while texting, for example)",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/129-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/129-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 130,
@@ -3145,7 +4450,17 @@
       "freqRank": 131,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/130-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/130-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 131,
@@ -3166,7 +4481,17 @@
         "sense": "who are you?",
         "translationCount": 160,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/131-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/131-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 132,
@@ -3184,7 +4509,17 @@
       "freqRank": 133,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/132-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/132-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 133,
@@ -3213,12 +4548,16 @@
         ],
         "edited": ["ru"]
       },
-      "audio": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/LL-Q1860_%28eng%29-Vealhurl-you%26%2339%3Bre_right.wav/LL-Q1860_%28eng%29-Vealhurl-you%26%2339%3Bre_right.wav.mp3",
-        "file": "LL-Q1860 (eng)-Vealhurl-you&#39;re right.wav",
-        "speaker": "Vealhurl",
-        "licence": "CC BY-SA 4.0"
-      }
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/133-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/133-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 134,
@@ -3236,7 +4575,17 @@
       "freqRank": 135,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/134-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/134-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 135,
@@ -3257,7 +4606,17 @@
         "translationCount": 46,
         "otherSenses": [],
         "edited": ["pt-BR"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/135-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/135-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 136,
@@ -3276,7 +4635,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/136-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/136-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 137,
@@ -3321,7 +4690,17 @@
         "file": "LL-Q1860 (eng)-Wreaderick-I don't know (tonal, nasalized).wav",
         "speaker": "Wreaderick",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/137-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/137-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 138,
@@ -3339,7 +4718,17 @@
       "freqRank": 139,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/138-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/138-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 139,
@@ -3359,7 +4748,17 @@
         "translationCount": 20,
         "definition": "what should I do?",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/139-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/139-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 140,
@@ -3378,7 +4777,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/140-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/140-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 141,
@@ -3415,7 +4824,17 @@
         "file": "En-au-how do you do.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/141-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/141-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 142,
@@ -3433,7 +4852,17 @@
       "freqRank": 143,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/142-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/142-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 143,
@@ -3454,7 +4883,17 @@
         "sense": "I have a question",
         "translationCount": 96,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/143-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/143-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 144,
@@ -3472,7 +4911,17 @@
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/144-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/144-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 145,
@@ -3493,7 +4942,17 @@
         "sense": "I have no money",
         "translationCount": 91,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/145-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/145-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 146,
@@ -3511,7 +4970,17 @@
       "freqRank": 147,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/146-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/146-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 147,
@@ -3532,7 +5001,17 @@
         "sense": "I don't care",
         "translationCount": 131,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/147-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/147-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 148,
@@ -3551,7 +5030,17 @@
         "translationCount": 16,
         "definition": "Used to wish someone a good weekend.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/148-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/148-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 149,
@@ -3572,7 +5061,17 @@
         "translationCount": 39,
         "definition": "I don't drive (a car, a vehicle)",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/149-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/149-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 150,
@@ -3590,7 +5089,17 @@
       "freqRank": 151,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/150-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/150-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 151,
@@ -3625,7 +5134,17 @@
         "file": "LL-Q1860 (eng)-Vealhurl-have a nice day.wav",
         "speaker": "Vealhurl",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/151-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/151-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 152,
@@ -3643,7 +5162,17 @@
       "freqRank": 153,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/152-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/152-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 153,
@@ -3677,7 +5206,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-what a lovely day.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/153-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/153-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 154,
@@ -3696,7 +5235,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/154-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/154-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 155,
@@ -3717,7 +5266,17 @@
         "sense": "I have a cold",
         "translationCount": 63,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/155-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/155-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 156,
@@ -3735,7 +5294,17 @@
       "freqRank": 157,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/156-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/156-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 157,
@@ -3753,7 +5322,17 @@
       "freqRank": 158,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/157-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/157-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 158,
@@ -3772,7 +5351,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/158-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/158-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 159,
@@ -3793,7 +5382,17 @@
         "sense": "I can't swim",
         "translationCount": 77,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/159-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/159-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 160,
@@ -3811,7 +5410,17 @@
       "freqRank": 161,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/160-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/160-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 161,
@@ -3833,7 +5442,17 @@
         "translationCount": 72,
         "definition": "A request for a doctor",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/161-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/161-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 162,
@@ -3853,7 +5472,17 @@
         "otherSenses": ["familiar (21)"],
         "machineSense": "polite",
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/162-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/162-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 163,
@@ -3871,7 +5500,17 @@
       "freqRank": 164,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/163-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/163-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 164,
@@ -3889,7 +5528,17 @@
       "freqRank": 165,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/164-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/164-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 165,
@@ -3907,7 +5556,17 @@
       "freqRank": 166,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/165-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/165-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 166,
@@ -3927,7 +5586,17 @@
         "translationCount": 25,
         "definition": "Begins a polite request; used on behalf of more than one speaker.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/166-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/166-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 167,
@@ -3945,7 +5614,17 @@
       "freqRank": 168,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/167-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/167-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 168,
@@ -3966,7 +5645,17 @@
         "sense": "do you have children?",
         "translationCount": 108,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/168-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/168-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 169,
@@ -3984,7 +5673,17 @@
       "freqRank": 170,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/169-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/169-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 170,
@@ -4019,7 +5718,17 @@
         "file": "En-us-do you love me.oga",
         "speaker": "Paul2520",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/170-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/170-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 171,
@@ -4037,7 +5746,17 @@
       "freqRank": 172,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/171-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/171-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 172,
@@ -4071,7 +5790,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-how old are you.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/172-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/172-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 173,
@@ -4089,7 +5818,17 @@
       "freqRank": 174,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/173-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/173-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 174,
@@ -4110,7 +5849,17 @@
         "translationCount": 34,
         "definition": "I am a doctor (a physician, a member of the medical profession)",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/174-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/174-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 175,
@@ -4128,7 +5877,17 @@
       "freqRank": 176,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/175-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/175-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 176,
@@ -4148,7 +5907,17 @@
         "sense": "I have a fever",
         "translationCount": 32,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/176-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/176-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 177,
@@ -4166,7 +5935,17 @@
       "freqRank": 178,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/177-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/177-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 178,
@@ -4187,7 +5966,17 @@
         "sense": "I have a headache",
         "translationCount": 57,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/178-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/178-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 179,
@@ -4205,7 +5994,17 @@
       "freqRank": 180,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/179-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/179-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 180,
@@ -4223,7 +6022,17 @@
         "sense": "I'm a girl",
         "translationCount": 27,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/180-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/180-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 181,
@@ -4241,7 +6050,17 @@
       "freqRank": 182,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/181-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/181-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 182,
@@ -4257,7 +6076,17 @@
         "sense": "I'm a guy",
         "translationCount": 20,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/182-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/182-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 183,
@@ -4275,7 +6104,17 @@
       "freqRank": 184,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/183-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/183-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 184,
@@ -4307,7 +6146,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-I'm afraid not.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/184-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/184-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 185,
@@ -4325,7 +6174,17 @@
       "freqRank": 186,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/185-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/185-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 186,
@@ -4344,7 +6203,17 @@
         "sense": "I'm not interested",
         "translationCount": 26,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/186-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/186-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 187,
@@ -4362,7 +6231,17 @@
       "freqRank": 188,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/187-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/187-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 188,
@@ -4380,7 +6259,17 @@
       "freqRank": 189,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/188-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/188-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 189,
@@ -4398,7 +6287,17 @@
       "freqRank": 190,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/189-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/189-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 190,
@@ -4433,7 +6332,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-is there a problem?.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/190-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/190-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 191,
@@ -4460,12 +6369,16 @@
           }
         ]
       },
-      "audio": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1c/LL-Q1860_%28eng%29-Flame%2C_not_lame-sorry_I%26%2339%3Bm_late.wav/LL-Q1860_%28eng%29-Flame%2C_not_lame-sorry_I%26%2339%3Bm_late.wav.mp3",
-        "file": "LL-Q1860 (eng)-Flame, not lame-sorry I&#39;m late.wav",
-        "speaker": "Flame, not lame",
-        "licence": "CC0"
-      }
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/191-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/191-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 192,
@@ -4481,7 +6394,17 @@
         "sense": "is anyone sitting here?",
         "translationCount": 12,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/192-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/192-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 193,
@@ -4500,7 +6423,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/193-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/193-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 194,
@@ -4520,7 +6453,17 @@
         "translationCount": 17,
         "definition": "Indicates that the telephone line is busy.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/194-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/194-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 195,
@@ -4538,7 +6481,17 @@
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/195-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/195-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 196,
@@ -4559,7 +6512,17 @@
         "translationCount": 74,
         "definition": "Used other than figuratively or idiomatically: see this, is, a, book: Indicates to the interlocutor that the indicated object is a book",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/196-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/196-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 197,
@@ -4577,7 +6540,17 @@
       "freqRank": 198,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/197-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/197-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 198,
@@ -4599,7 +6572,17 @@
         "translationCount": 151,
         "definition": "Used to tell the interlocutor to stop what they are currently doing.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/198-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/198-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 199,
@@ -4617,7 +6600,17 @@
       "freqRank": 200,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/199-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/199-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 200,
@@ -4635,7 +6628,17 @@
         "translationCount": 24,
         "otherSenses": [],
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/200-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/200-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 201,
@@ -4653,7 +6656,17 @@
       "freqRank": 202,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/201-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/201-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 202,
@@ -4669,7 +6682,17 @@
         "sense": "what is his name?",
         "translationCount": 21,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/202-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/202-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 203,
@@ -4687,7 +6710,17 @@
       "freqRank": 204,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/203-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/203-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 204,
@@ -4723,7 +6756,17 @@
         "file": "En-au-what's the matter.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/204-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/204-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 205,
@@ -4741,7 +6784,17 @@
       "freqRank": 206,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/205-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/205-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 206,
@@ -4761,7 +6814,17 @@
         "sense": "what's your job?",
         "translationCount": 45,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/206-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/206-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 207,
@@ -4779,7 +6842,17 @@
       "freqRank": 208,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/207-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/207-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 208,
@@ -4801,7 +6874,17 @@
         "translationCount": 309,
         "otherSenses": [],
         "glossedFrom": "what is your name"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/208-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/208-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 209,
@@ -4819,7 +6902,17 @@
       "freqRank": 210,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/209-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/209-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 210,
@@ -4836,7 +6929,17 @@
         "sense": "when is closing time?",
         "translationCount": 10,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/210-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/210-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 211,
@@ -4854,7 +6957,17 @@
       "freqRank": 212,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/211-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/211-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 212,
@@ -4888,7 +7001,17 @@
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ab/En-uk-where_are_you_from.ogg/En-uk-where_are_you_from.ogg.mp3",
         "file": "En-uk-where are you from.ogg",
         "licence": "Public domain"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/212-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/212-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 213,
@@ -4906,7 +7029,17 @@
       "freqRank": 214,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/213-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/213-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 214,
@@ -4925,7 +7058,17 @@
         "sense": "where are your parents?",
         "translationCount": 15,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/214-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/214-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 215,
@@ -4943,7 +7086,17 @@
       "freqRank": 216,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/215-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/215-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 216,
@@ -4961,7 +7114,17 @@
       "freqRank": 217,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/216-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/216-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 217,
@@ -4996,7 +7159,17 @@
         "file": "LL-Q1860 (eng)-Flame, not lame-where is the toilet.wav",
         "speaker": "Flame, not lame",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/217-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/217-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 218,
@@ -5014,7 +7187,17 @@
       "freqRank": 219,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/218-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/218-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 219,
@@ -5048,7 +7231,17 @@
         "file": "LL-Q1860 (eng)-Pvanp7-you have beautiful eyes.wav",
         "speaker": "Pvanp7",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/219-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/219-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 220,
@@ -5067,7 +7260,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/220-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/220-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 221,
@@ -5089,7 +7292,17 @@
         "translationCount": 28,
         "otherSenses": [],
         "edited": ["pt-BR", "tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/221-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/221-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 222,
@@ -5107,7 +7320,17 @@
       "freqRank": 223,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/222-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/222-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 223,
@@ -5126,7 +7349,17 @@
         "sense": "do you come here often?",
         "translationCount": 23,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/223-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/223-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 224,
@@ -5144,7 +7377,17 @@
       "freqRank": 225,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/224-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/224-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 225,
@@ -5167,7 +7410,17 @@
         "definition": "Indicates that the speaker does not eat fish.",
         "otherSenses": [],
         "edited": ["pt-BR", "tr"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/225-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/225-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 226,
@@ -5185,7 +7438,17 @@
       "freqRank": 227,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/226-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/226-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 227,
@@ -5219,7 +7482,17 @@
         "file": "en-au-I could eat a horse.ogg",
         "speaker": "Commander Keane",
         "licence": "CC BY-SA 4.0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/227-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/227-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 228,
@@ -5237,7 +7510,17 @@
       "freqRank": 229,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/228-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/228-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 229,
@@ -5259,7 +7542,17 @@
         "translationCount": 65,
         "definition": "Indicates that the speaker does not eat meat.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/229-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/229-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 230,
@@ -5277,7 +7570,17 @@
       "freqRank": 231,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/230-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/230-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 231,
@@ -5310,7 +7613,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-are you doing anything tomorrow.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/231-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/231-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 232,
@@ -5331,7 +7644,17 @@
         "sense": "do you have a boyfriend?",
         "translationCount": 43,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/232-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/232-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 233,
@@ -5349,7 +7672,17 @@
       "freqRank": 234,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/233-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/233-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 234,
@@ -5367,7 +7700,17 @@
       "freqRank": 235,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/234-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/234-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 235,
@@ -5389,7 +7732,17 @@
         "translationCount": 40,
         "otherSenses": [],
         "edited": ["ru"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/235-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/235-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 236,
@@ -5408,7 +7761,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "correctedTr": "Gitmeye hazır mısın?"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/236-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/236-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 237,
@@ -5430,7 +7793,17 @@
         "translationCount": 41,
         "definition": "Indicates that the speaker is afraid of something.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/237-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/237-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 238,
@@ -5448,7 +7821,17 @@
       "freqRank": 239,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/238-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/238-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 239,
@@ -5478,7 +7861,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-I don't eat beef.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/239-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/239-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 240,
@@ -5512,7 +7905,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-I'm fine, thank you.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/240-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/240-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 241,
@@ -5530,7 +7933,17 @@
       "freqRank": 242,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/241-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/241-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 242,
@@ -5548,7 +7961,17 @@
       "freqRank": 243,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/242-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/242-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 243,
@@ -5582,7 +8005,17 @@
         "file": "En-uk-I'm twenty years old.ogg",
         "speaker": "Association Shtooka, Judith Franck",
         "licence": "CC BY 3.0 us"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/243-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/243-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 244,
@@ -5600,7 +8033,17 @@
       "freqRank": 245,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/244-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/244-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 245,
@@ -5618,7 +8061,17 @@
         "sense": "is anyone here a doctor?",
         "translationCount": 16,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/245-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/245-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 246,
@@ -5636,7 +8089,17 @@
       "freqRank": 247,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/246-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/246-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 247,
@@ -5657,7 +8120,17 @@
         "translationCount": 23,
         "definition": "Indicates that the speaker needs a smaller size (of clothes or shoes).",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/247-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/247-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 248,
@@ -5676,7 +8149,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/248-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/248-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 249,
@@ -5711,7 +8194,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-what languages do you speak.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/249-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/249-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 250,
@@ -5729,7 +8222,17 @@
       "freqRank": 251,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/250-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/250-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 251,
@@ -5751,7 +8254,17 @@
         "translationCount": 77,
         "definition": "Asks the interlocutor to give their phone number for subsequent communication.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/251-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/251-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 252,
@@ -5769,7 +8282,17 @@
       "freqRank": 253,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/252-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/252-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 253,
@@ -5788,7 +8311,17 @@
         "sense": "do you think you can walk?",
         "translationCount": 24,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/253-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/253-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 254,
@@ -5806,7 +8339,17 @@
       "freqRank": 255,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/254-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/254-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 255,
@@ -5829,7 +8372,17 @@
         "definition": "Indicates the speaker wishes to buy the interlocutor a drink, in a bar.",
         "otherSenses": [],
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/255-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/255-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 256,
@@ -5847,7 +8400,17 @@
       "freqRank": 257,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/256-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/256-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 257,
@@ -5865,7 +8428,17 @@
         "sense": "where can I find a hotel",
         "translationCount": 19,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/257-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/257-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 258,
@@ -5883,7 +8456,17 @@
       "freqRank": 259,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/258-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/258-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 259,
@@ -5905,7 +8488,17 @@
         "translationCount": 26,
         "definition": "I would like to know how this word is written.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/259-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/259-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 260,
@@ -5923,7 +8516,17 @@
       "freqRank": 261,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/260-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/260-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 261,
@@ -5958,7 +8561,17 @@
         "file": "LL-Q1860 (eng)-Sapaa-how many languages do you speak.wav",
         "speaker": "Sapaa",
         "licence": "CC0"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/261-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/261-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 262,
@@ -5976,7 +8589,17 @@
       "freqRank": 263,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/262-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/262-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 263,
@@ -5996,7 +8619,17 @@
         "translationCount": 40,
         "definition": "Used to ask whether someone has any siblings.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/263-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/263-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 264,
@@ -6014,7 +8647,17 @@
       "freqRank": 265,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/264-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/264-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 265,
@@ -6035,7 +8678,17 @@
         "sense": "how do I get to the airport?",
         "translationCount": 41,
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/265-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/265-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 266,
@@ -6054,7 +8707,17 @@
       "review": {
         "glossedBy": "Tatoeba",
         "edited": ["ar"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/266-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/266-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 267,
@@ -6076,7 +8739,17 @@
         "translationCount": 33,
         "definition": "Used to ask for directions in order to go to a train station.",
         "otherSenses": []
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/267-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/267-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 268,
@@ -6094,7 +8767,17 @@
       "freqRank": 269,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/268-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/268-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 269,
@@ -6116,7 +8799,17 @@
         "definition": "Used to ask for directions in order to go to a bus station.",
         "otherSenses": [],
         "edited": ["pt-BR"]
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/269-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/269-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     },
     {
       "index": 270,
@@ -6134,7 +8827,17 @@
       "freqRank": 271,
       "review": {
         "glossedBy": "Tatoeba"
-      }
+      },
+      "voices": [
+        {
+          "key": "echo/packs/en_absoluteBeginner/270-af_heart.m4a",
+          "voice": "af_heart"
+        },
+        {
+          "key": "echo/packs/en_absoluteBeginner/270-am_michael.m4a",
+          "voice": "am_michael"
+        }
+      ]
     }
   ]
 }

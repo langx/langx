@@ -1,5 +1,6 @@
 import type {
   EchoAudio,
+  EchoVoice,
   EchoCard,
   EchoGrade,
   EchoImage,
@@ -39,6 +40,8 @@ export interface EchoCardDoc {
    */
   audio?: EchoAudio
   audios?: EchoAudio[]
+  /** Synthesised readings copied from a pack. Never attributed to anybody. */
+  voices?: EchoVoice[]
   image?: EchoImage
   /**
    * The pronunciation post opened from this card, when its owner asked the
@@ -101,6 +104,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     source: doc.source,
     ...(doc.audio ? { audio: doc.audio } : {}),
     ...(doc.audios?.length ? { audios: doc.audios } : {}),
+    ...(doc.voices?.length ? { voices: doc.voices } : {}),
     ...(doc.image ? { image: doc.image } : {}),
     ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),
     ...(doc.askedCorrectionPostId ? { askedCorrectionPostId: doc.askedCorrectionPostId } : {}),

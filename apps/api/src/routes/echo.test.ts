@@ -1520,6 +1520,65 @@ describe('echo', () => {
       }
       await seedPack('fr', 'beginner')
       await seedPack('it', 'beginner')
+      // Ten items on one of them, so the preview has something to page.
+      await handle.db.collection(COLLECTIONS.echoPackItems).insertMany(
+        Array.from({ length: 10 }, (_, index) => ({
+          _id: `en:beginner#${index}`,
+          packId: 'en:beginner',
+          index,
+          kind: 'phrase',
+          text: `line ${index}`,
+          gloss: { tr: `satır ${index}`, en: `line ${index}` },
+          contentVersion: 1,
+        })) as never,
+      )
+    })
+
+    /*
+     * A pack is three hundred cards and the screen offering it has one button.
+     * The preview is what makes that button an informed press, so it has to
+     * read the way a started card would — same gloss chain, same order.
+     */
+    it('previews a pack in the reader own language', async () => {
+      const user = await newUser('packs-preview@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/echo/packs/en:beginner/items?offset=0&limit=4',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const page = response.json<{
+        items: { index: number; text: string; back: string }[]
+        total: number
+      }>()
+      expect(page.total).toBe(10)
+      expect(page.items.map((row) => row.index)).toEqual([0, 1, 2, 3])
+      // The fixture's reader is a Turkish native, so the back is Turkish.
+      expect(page.items[0]?.back).toBe('satır 0')
+    })
+
+    it('pages from where the last page stopped', async () => {
+      const user = await newUser('packs-preview-page@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/echo/packs/en:beginner/items?offset=8&limit=4',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const page = response.json<{ items: { index: number }[]; total: number }>()
+      // Four asked for, two left: the tail is short rather than wrapped.
+      expect(page.items.map((row) => row.index)).toEqual([8, 9])
+      expect(page.total).toBe(10)
+    })
+
+    it('refuses to preview a pack that does not exist', async () => {
+      const user = await newUser('packs-preview-missing@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/echo/packs/xx:beginner/items',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(404)
     })
 
     it('offers every level of a language being learned, lowest first', async () => {

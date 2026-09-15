@@ -26,7 +26,9 @@ import {
   type CreateShareCardInput,
   type EchoCard,
   type EchoCardPage,
+  ECHO_PACK_PREVIEW_PAGE,
   type EchoPack,
+  type EchoPackPreview,
   type EchoQueue,
   type EchoSummary,
   type StartPackResult,
@@ -169,6 +171,8 @@ export const keys = {
   echoCards: (lang: string, q: string) => ['echo', 'cards', lang, q] as const,
   echoPacks: ['echo', 'packs'] as const,
   echoCard: (id: string) => ['echo', 'card', id] as const,
+  echoPackItems: (packId: string, offset: number) =>
+    ['echo', 'packs', packId, 'items', offset] as const,
   echoCardForPost: (postId: string) => ['echo', 'for-post', postId] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
@@ -2913,6 +2917,24 @@ export function useSubmitEchoReviews() {
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },
+  })
+}
+
+/**
+ * A page of what a pack holds, for the screen that asks whether to start it.
+ *
+ * `keepPreviousData` so paging does not blank the list it is paging — the rows
+ * are a fixed slice of static content, and flashing an empty box between two
+ * pages of it reads as a fault rather than as a page turn.
+ */
+export function useEchoPackItems(packId: string, offset: number) {
+  return useQuery({
+    queryKey: keys.echoPackItems(packId, offset),
+    queryFn: () =>
+      api.get<EchoPackPreview>(
+        `/echo/packs/${encodeURIComponent(packId)}/items?offset=${offset}&limit=${ECHO_PACK_PREVIEW_PAGE}`,
+      ),
+    placeholderData: (previous) => previous,
   })
 }
 
