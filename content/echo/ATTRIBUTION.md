@@ -33,13 +33,28 @@ ten glosses carrying dictionary notation onto a card back (`(eu)`, `(você)`,
 edited. Each carries `review.edited` naming the columns that are no longer what
 a source wrote.
 
+The third pass read the Russian and Arabic columns line by line, which the
+second had admitted it had not, and found ninety-five defects — far more than
+either earlier pass, because nobody had actually read them. Most were
+orthographic and clustered by class: more than twenty Arabic words written with
+a wrong hamza or alif (`إجلس` for `اِجلس`, `الى` for `إلى`), two with a Persian
+_yeh_ in place of the Arabic one, a Latin comma, spaces before a question mark,
+`بسهوله` for `بسهولة`. Some were not: `It's too big.` was glossed with an unrelated Tatoeba
+sentence about somebody called Tom, `Count to one hundred.` said _count to
+ten_, `Never say never.` was three letters of a word that does not exist, and
+`I'm broke.` said _I have been broken_. The Russian was in better shape — a
+hyphen where the em dash belongs, a doubled stress mark, `Это новая.` for a
+neuter noun, and `is it safe here` asking whether **he** is safe. Each edited
+gloss carries its locale in `review.edited`.
+
 **Sampled, not read exhaustively.** Eight hundred and nine items across eight
-locales is about 5,600 glosses, and nobody read all of them. The Turkish column
-was sampled at random — 45 items, 44 clean — which is the evidence that defects
-cluster in the Wiktionary idioms and the items a pass has already touched,
-rather than in the Tatoeba sentences. **Russian and Arabic were checked for
-shape, not read line by line**; if a wrong gloss survives anywhere, that is
-where to look first.
+locales is about 5,600 glosses. Turkish, Russian and Arabic have now been read;
+Turkish was sampled at random — 45 items, 44 clean — and the other two in full.
+**German, Spanish, French and Portuguese have been checked for shape, not read
+line by line**; if a wrong gloss survives, that is where to look first, and the
+Arabic yield suggests the number is not small. Separately, every locale has
+gaps — items with no gloss at all, from 11 in German to 104 in Arabic — where
+the card falls back to English.
 
 ## Chosen, and why
 

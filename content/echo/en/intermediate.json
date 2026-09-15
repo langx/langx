@@ -2,7 +2,7 @@
   "id": "en:intermediate",
   "lang": "en",
   "level": "intermediate",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -208,11 +208,12 @@
         "fr": "Ils mentent.",
         "pt-BR": "Elas estão mentindo.",
         "ru": "Они врут.",
-        "ar": "هما تكذبان."
+        "ar": "هم يكذبون."
       },
       "freqRank": 9,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -506,7 +507,7 @@
         "fr": "stationnement interdit",
         "pt-BR": "proibido estacionar",
         "ru": "стоя́нка запрещена́",
-        "ar": "مَمْنُوع اَلمَوْقِف",
+        "ar": "اَلْوُقُوف مَمْنُوع",
         "en": "no parking"
       },
       "freqRank": 24,
@@ -514,7 +515,8 @@
         "sense": "no parking",
         "translationCount": 69,
         "otherSenses": [],
-        "correctedTr": "durmak yasaktır"
+        "correctedTr": "durmak yasaktır",
+        "edited": ["ar"]
       }
     },
     {
@@ -528,11 +530,12 @@
         "fr": "J'aime le riz.",
         "pt-BR": "Eu gosto de arroz.",
         "ru": "Я люблю рис.",
-        "ar": "أحب الرز"
+        "ar": "أحب الأرز."
       },
       "freqRank": 25,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -621,14 +624,15 @@
         "fr": "asseyez-vous s'il vous plaît",
         "pt-BR": "sente-se por favor",
         "ru": "сади́тесь, пожа́луйста",
-        "ar": "إِجْلِس مِن فَضْلَك",
+        "ar": "اِجْلِس مِن فَضْلَك",
         "en": "please sit down"
       },
       "freqRank": 30,
       "review": {
         "sense": "please sit down",
         "translationCount": 53,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -660,11 +664,12 @@
         "fr": "Va à l'école.",
         "pt-BR": "Vá para a escola.",
         "ru": "Иди в школу.",
-        "ar": "اذهب الى المدرسة."
+        "ar": "اذهب إلى المدرسة."
       },
       "freqRank": 32,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -828,11 +833,12 @@
         "fr": "Il aime le thé.",
         "pt-BR": "Ele gosta de chá.",
         "ru": "Он любит чай.",
-        "ar": "انه يحب الشاي."
+        "ar": "إنه يحب الشاي."
       },
       "freqRank": 41,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -952,11 +958,12 @@
         "fr": "J'aime les filles.",
         "pt-BR": "Gosto de meninas.",
         "ru": "Я люблю девушек.",
-        "ar": "احب البنات"
+        "ar": "أحب البنات."
       },
       "freqRank": 46,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1142,11 +1149,12 @@
         "fr": "Que Dieu te bénisse !",
         "pt-BR": "Deus vos abençoe!",
         "ru": "Благослови тебя Бог!",
-        "ar": "باركك الله ."
+        "ar": "باركك الله!"
       },
       "freqRank": 56,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -1329,12 +1337,13 @@
         "es": "Nos preguntamos por qué.",
         "fr": "On se demande pourquoi.",
         "pt-BR": "Nós nos perguntamos o porquê.",
-        "ru": "Мы спрашиваем себя почему.",
+        "ru": "Мы спрашиваем себя, почему.",
         "ar": "نتساءل لِمَ."
       },
       "freqRank": 66,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1887,12 +1896,13 @@
         "es": "Él se vengó.",
         "fr": "Il a pris sa revanche.",
         "pt-BR": "Ele se vingou.",
-        "ru": "Он взял реванш.",
+        "ru": "Он отомстил.",
         "ar": "لقد انتقم."
       },
       "freqRank": 93,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -1976,11 +1986,12 @@
         "fr": "Il ne faut jamais dire jamais.",
         "pt-BR": "Nunca diga nunca.",
         "ru": "Никогда не говори никогда.",
-        "ar": "لا اقو ابدا."
+        "ar": "لا تقل «أبداً» أبداً."
       },
       "freqRank": 97,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2098,11 +2109,12 @@
         "fr": "Coupe les patates.",
         "pt-BR": "Corte as batatas.",
         "ru": "Порежь картошку.",
-        "ar": "قطع البطاطا."
+        "ar": "قطّع البطاطا."
       },
       "freqRank": 103,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2779,14 +2791,15 @@
         "fr": "répétez, s'il vous plaît",
         "pt-BR": "por favor, repita isso",
         "ru": "скажи́те ещё раз, пожа́луйста",
-        "ar": "هَلْ يُمْكِن أَنْ تُعِدْ مِنْ فَضْلِكَ؟",
+        "ar": "هَلْ يُمْكِنُ أَنْ تُعِيدَ مِنْ فَضْلِكَ؟",
         "en": "please say that again"
       },
       "freqRank": 135,
       "review": {
         "sense": "please say that again",
         "translationCount": 51,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -2859,11 +2872,12 @@
         "fr": "Dis quelque chose, s'il te plaît.",
         "pt-BR": "Por favor, diga alguma coisa.",
         "ru": "Пожалуйста, скажи что-нибудь.",
-        "ar": "قُل شيئاً, رجاءً."
+        "ar": "قُل شيئاً، رجاءً."
       },
       "freqRank": 139,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2876,12 +2890,13 @@
         "es": "Enseñar es aprender.",
         "fr": "Enseigner c'est apprendre.",
         "pt-BR": "Ensinar é aprender.",
-        "ru": "Учить - это учиться.",
+        "ru": "Учить — значит учиться.",
         "ar": "التعليم تعلم."
       },
       "freqRank": 140,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -2974,12 +2989,13 @@
         "fr": "Qui ne dit mot consent.",
         "pt-BR": "Quem cala, consente.",
         "ru": "Молчание — знак согласия.",
-        "ar": "السكوت علامة عن الرضا."
+        "ar": "السكوت علامة الرضا."
       },
       "freqRank": 145,
       "review": {
         "glossedBy": "Tatoeba",
-        "correctedTr": "Sessizlik rıza verir."
+        "correctedTr": "Sessizlik rıza verir.",
+        "edited": ["ar"]
       }
     },
     {
@@ -3048,11 +3064,12 @@
         "fr": "Tout le monde commet des fautes.",
         "pt-BR": "Todos cometem erros.",
         "ru": "Все ошибаются.",
-        "ar": "كل ابن آدم خطاّء"
+        "ar": "كل ابن آدم خطّاء."
       },
       "freqRank": 148,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3354,11 +3371,12 @@
         "fr": "Reste dans la voiture !",
         "pt-BR": "Fique no carro.",
         "ru": "Не выходите из машины!",
-        "ar": "إبقى في السيارة"
+        "ar": "ابقَ في السيارة."
       },
       "freqRank": 164,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3484,11 +3502,12 @@
         "fr": "Je ne peux qu'attendre.",
         "pt-BR": "Eu só posso esperar.",
         "ru": "Я могу только ждать.",
-        "ar": "كل ما أستطيع فعله هو الإنتظار."
+        "ar": "كل ما أستطيع فعله هو الانتظار."
       },
       "freqRank": 170,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3645,7 +3664,7 @@
         "es": "ni que decir tiene",
         "fr": "cela va sans dire",
         "pt-BR": "nem é preciso dizer",
-        "ar": "مِن نَّافِلَةِ القَوْلِ",
+        "ar": "مِنْ نَافِلَةِ الْقَوْلِ",
         "en": "it is understood without being said"
       },
       "freqRank": 178,
@@ -3653,7 +3672,8 @@
         "sense": "it is understood without being said",
         "translationCount": 19,
         "definition": "It is understood without being said (but will be or was said anyway).",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -3702,12 +3722,13 @@
         "es": "Quiero un libro.",
         "fr": "Je veux un livre.",
         "pt-BR": "Quero um livro.",
-        "ru": "Мне нужна книга.",
+        "ru": "Я хочу книгу.",
         "ar": "أريد كتابًا."
       },
       "freqRank": 181,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3965,11 +3986,12 @@
         "fr": "Je crois en Dieu.",
         "pt-BR": "Eu creio em Deus.",
         "ru": "Я верю в Бога.",
-        "ar": "أنا اؤمن بالله."
+        "ar": "أنا أؤمن بالله."
       },
       "freqRank": 195,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3983,12 +4005,12 @@
         "fr": "Comment dit-on ... ?",
         "pt-BR": "Como se diz...?",
         "ru": "Как сказать ...?",
-        "ar": "كيف تقول......؟"
+        "ar": "كيف تقول...؟"
       },
       "freqRank": 196,
       "review": {
         "glossedBy": "Tatoeba",
-        "edited": ["tr"]
+        "edited": ["ar", "tr"]
       }
     },
     {
@@ -4114,14 +4136,15 @@
         "es": "no lo quiero",
         "fr": "je ne le veux pas",
         "pt-BR": "eu não quero",
-        "ru": "я не хочу это",
+        "ru": "я не хочу́ э́того",
         "en": "I don't want it"
       },
       "freqRank": 203,
       "review": {
         "sense": "I don't want it",
         "translationCount": 33,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ru"]
       }
     },
     {
@@ -4134,12 +4157,13 @@
         "es": "Nosotros creemos en Dios.",
         "fr": "Nous croyons en Dieu.",
         "pt-BR": "Nós cremos em Deus.",
-        "ru": "Веруем в Бога.",
-        "ar": "آمنا بالله"
+        "ru": "Мы верим в Бога.",
+        "ar": "نؤمن بالله."
       },
       "freqRank": 204,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar", "ru"]
       }
     },
     {
@@ -4188,12 +4212,13 @@
         "es": "Quiero algo de dinero.",
         "fr": "Je veux un peu d'argent.",
         "pt-BR": "Eu quero algum dinheiro.",
-        "ru": "Мне нужно немного денег.",
+        "ru": "Я хочу немного денег.",
         "ar": "أريد بعض المال."
       },
       "freqRank": 207,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -4304,11 +4329,12 @@
         "fr": "Regarde cette maison.",
         "pt-BR": "Olhe aquela casa.",
         "ru": "Посмотри на этот дом.",
-        "ar": "أنظر إلى هذا المنزل."
+        "ar": "انظر إلى ذلك المنزل."
       },
       "freqRank": 213,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4374,11 +4400,12 @@
         "fr": "Prends ce dont tu as besoin.",
         "pt-BR": "Pegue o que você precisa.",
         "ru": "Бери, что тебе нужно.",
-        "ar": "خذ ما تحتاجهُ."
+        "ar": "خذ ما تحتاجه."
       },
       "freqRank": 217,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4487,11 +4514,12 @@
         "fr": "« Fais-moi confiance », dit-il.",
         "pt-BR": "\"Confie em mim\", disse ele.",
         "ru": "«Поверь мне», — сказал он.",
-        "ar": "قال: ثق بي."
+        "ar": "قال: «ثق بي»."
       },
       "freqRank": 223,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4551,11 +4579,12 @@
         "fr": "Tu aimes les oranges ?",
         "pt-BR": "Você gosta de laranjas?",
         "ru": "Вам нравятся апельсины?",
-        "ar": "هل تحب البرتقال ؟"
+        "ar": "هل تحب البرتقال؟"
       },
       "freqRank": 226,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4644,7 +4673,7 @@
         "fr": "où va ce bus",
         "pt-BR": "para onde vai este autocarro?",
         "ru": "куда́ идёт э́тот авто́бус?",
-        "ar": "إِلَى أَيْنَ هِيَ ذَاهِبَةٌ هٰذِهِ الْحَافِلَة؟",
+        "ar": "إِلَى أَيْنَ تَذْهَبُ هٰذِهِ الْحَافِلَة؟",
         "en": "where does this bus go"
       },
       "freqRank": 231,
@@ -4652,7 +4681,8 @@
         "sense": "where does this bus go",
         "translationCount": 38,
         "definition": "Used to ask where the bus is going.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -4724,11 +4754,12 @@
         "fr": "Tu peux aller n'importe où.",
         "pt-BR": "Você pode ir a qualquer lugar.",
         "ru": "Ты можешь идти куда хочешь.",
-        "ar": "يمكنك الذهاب إلى أين تشاء."
+        "ar": "يمكنك الذهاب إلى أي مكان تشاء."
       },
       "freqRank": 235,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4794,11 +4825,12 @@
         "fr": "Compte jusqu'à cent.",
         "pt-BR": "Conte até cem.",
         "ru": "Посчитай до ста.",
-        "ar": "عد الي عشرة."
+        "ar": "عد إلى المئة."
       },
       "freqRank": 238,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4914,11 +4946,12 @@
         "fr": "Disais-tu quelque chose ?",
         "pt-BR": "Você disse alguma coisa?",
         "ru": "Ты что-то сказал?",
-        "ar": "هل قلتَ شيئًا ؟"
+        "ar": "هل قلتَ شيئًا؟"
       },
       "freqRank": 244,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5156,7 +5189,7 @@
         "tr": "bunu söylemenin kolay bir yolu yok",
         "de": "das ist nicht leicht zu sagen",
         "fr": "ce n'est pas une chose simple à dire",
-        "ar": "ليس من سروري قول هذا",
+        "ar": "لا توجد طريقة سهلة لقول هذا",
         "en": "used to introduce bad news"
       },
       "freqRank": 257,
@@ -5164,7 +5197,8 @@
         "sense": "used to introduce bad news",
         "translationCount": 15,
         "definition": "Used to introduce bad news.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {

@@ -2,7 +2,7 @@
   "id": "en:absoluteBeginner",
   "lang": "en",
   "level": "absoluteBeginner",
-  "contentVersion": 3,
+  "contentVersion": 4,
   "reviewed": true,
   "sources": [
     {
@@ -1235,7 +1235,7 @@
         "fr": "merci beaucoup",
         "pt-BR": "muito obrigado",
         "ru": "большо́е спаси́бо",
-        "ar": "شُكْرًا",
+        "ar": "شُكْرًا جَزِيلًا",
         "en": "many thanks"
       },
       "freqRank": 48,
@@ -1249,7 +1249,8 @@
             "file": "LL-Q1860 (eng)-Sapaa-many thanks.wav",
             "tags": ["US"]
           }
-        ]
+        ],
+        "edited": ["ar"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/08/LL-Q1860_%28eng%29-Sapaa-many_thanks.wav/LL-Q1860_%28eng%29-Sapaa-many_thanks.wav.mp3",
@@ -1390,7 +1391,7 @@
         "fr": "défense de fumer",
         "pt-BR": "é proibido fumar",
         "ru": "куре́ние запрещено́",
-        "ar": "التَّدْخِين مَمْنُوعَ",
+        "ar": "التَّدْخِين مَمْنُوع",
         "en": "phrase used in notices indicating that the smoking of cigarettes is not permitted"
       },
       "freqRank": 54,
@@ -1398,7 +1399,8 @@
         "sense": "phrase used in notices indicating that the smoking of cigarettes is not permitted",
         "translationCount": 97,
         "definition": "A phrase used in notices indicating that the smoking of cigarettes, etc., is not permitted in the surrounding area.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -2175,7 +2177,7 @@
         "fr": "ne vous inquiétez pas",
         "pt-BR": "não se preocupe",
         "ru": "не волну́йтесь",
-        "ar": "لَا تَقْلَقْ m. sg.",
+        "ar": "لَا تَقْلَقْ",
         "en": "indicates to the interlocutor not to worry about something"
       },
       "example": "A: What about the late fee? B: Don't worry about it — it's only a little bit.",
@@ -2184,7 +2186,8 @@
         "sense": "indicates to the interlocutor not to worry about something",
         "translationCount": 79,
         "definition": "Indicates to the interlocutor not to worry (feel anxiety) about something.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -2536,11 +2539,12 @@
         "fr": "Je n'ai rien vu.",
         "pt-BR": "Eu não vi nada.",
         "ru": "Я ничего не увидел.",
-        "ar": "انا لم ارى اي شيء."
+        "ar": "لم أرَ أي شيء."
       },
       "freqRank": 102,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2715,11 +2719,12 @@
         "fr": "Elle pleure.",
         "pt-BR": "Ela está chorando.",
         "ru": "Она плачет.",
-        "ar": "انها تبكي."
+        "ar": "إنها تبكي."
       },
       "freqRank": 111,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2828,11 +2833,12 @@
         "fr": "Ils mangent de la viande.",
         "pt-BR": "Eles comem carne.",
         "ru": "Они едят мясо.",
-        "ar": "أكلوا لحما."
+        "ar": "يأكلون اللحم."
       },
       "freqRank": 117,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -2866,12 +2872,13 @@
         "es": "El agua es vida.",
         "fr": "L'eau c'est la vie.",
         "pt-BR": "Água é vida.",
-        "ru": "Вода - это жизнь.",
+        "ru": "Вода — это жизнь.",
         "ar": "الماء هو الحياة."
       },
       "freqRank": 119,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3188,7 +3195,7 @@
         "de": "Sie haben Recht",
         "fr": "vous avez raison",
         "pt-BR": "tem razão",
-        "ru": "вы пра́вы́",
+        "ru": "вы пра́вы",
         "ar": "أَنْتَ عَلَى حَقّ",
         "en": "you're right"
       },
@@ -3203,7 +3210,8 @@
             "file": "LL-Q1860 (eng)-Vealhurl-you&#39;re right.wav",
             "tags": ["Southern-England"]
           }
-        ]
+        ],
+        "edited": ["ru"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/LL-Q1860_%28eng%29-Vealhurl-you%26%2339%3Bre_right.wav/LL-Q1860_%28eng%29-Vealhurl-you%26%2339%3Bre_right.wav.mp3",
@@ -3262,11 +3270,12 @@
         "fr": "Il est devenu riche.",
         "pt-BR": "Ele ficou rico.",
         "ru": "Он разбогател.",
-        "ar": "هو صار غني."
+        "ar": "هو صار غنياً."
       },
       "freqRank": 137,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3363,11 +3372,12 @@
         "fr": "Il adore la musique.",
         "pt-BR": "Ele adora música.",
         "ru": "Он любит музыку.",
-        "ar": "يحب الموسيقي."
+        "ar": "يحب الموسيقى."
       },
       "freqRank": 141,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3680,11 +3690,12 @@
         "fr": "Amour et Paix.",
         "pt-BR": "Amor e paz.",
         "ru": "Любовь и мир.",
-        "ar": "الحب و السلام."
+        "ar": "الحب والسلام."
       },
       "freqRank": 155,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -3754,12 +3765,13 @@
         "es": "Ahora recuerdo.",
         "fr": "Maintenant je me souviens.",
         "pt-BR": "Agora eu me lembro.",
-        "ru": "Сейчас я помню.",
+        "ru": "Теперь я вспомнил.",
         "ar": "الآن تذكرت."
       },
       "freqRank": 159,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ru"]
       }
     },
     {
@@ -3831,7 +3843,7 @@
         "de": "geht es Ihnen besser?",
         "fr": "sentez-vous mieux",
         "pt-BR": "você está se sentindo melhor?",
-        "ru": "тебе́ лу́чше",
+        "ru": "тебе́ лу́чше?",
         "en": "asking whether someone has recovered"
       },
       "freqRank": 163,
@@ -3839,7 +3851,8 @@
         "sense": "asking whether someone has recovered",
         "translationCount": 24,
         "otherSenses": ["familiar (21)"],
-        "machineSense": "polite"
+        "machineSense": "polite",
+        "edited": ["ru"]
       }
     },
     {
@@ -4481,11 +4494,12 @@
         "fr": "Ouvrez la bouche !",
         "pt-BR": "Abra a sua boca!",
         "ru": "Рот открой!",
-        "ar": "إفتح فمك!"
+        "ar": "افتح فمك!"
       },
       "freqRank": 194,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -4612,14 +4626,15 @@
       "gloss": {
         "de": "wie heißt sie?",
         "pt-BR": "qual é o nome dela?",
-        "ar": "مَا اسْمُهَا",
+        "ar": "مَا اسْمُهَا؟",
         "en": "what is her name?"
       },
       "freqRank": 201,
       "review": {
         "sense": "what is her name?",
         "translationCount": 24,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -5011,7 +5026,7 @@
         "fr": "tu as de beaux yeux",
         "pt-BR": "você tem lindos olhos",
         "ru": "у ва́с краси́вые глаза́",
-        "ar": "لَدَيْكِ عَيْنَيْن جَمِيلَتَيْن",
+        "ar": "لَدَيْكِ عَيْنَانِ جَمِيلَتَانِ",
         "en": "you have beautiful eyes"
       },
       "freqRank": 220,
@@ -5025,7 +5040,8 @@
             "file": "LL-Q1860 (eng)-Pvanp7-you have beautiful eyes.wav",
             "tags": ["UK"]
           }
-        ]
+        ],
+        "edited": ["ar"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f4/LL-Q1860_%28eng%29-Pvanp7-you_have_beautiful_eyes.wav/LL-Q1860_%28eng%29-Pvanp7-you_have_beautiful_eyes.wav.mp3",
@@ -5045,11 +5061,12 @@
         "fr": "Elle commença à pleurer.",
         "pt-BR": "Ela começou a chorar.",
         "ru": "Она заплакала.",
-        "ar": "اِنهالت بالبكاء."
+        "ar": "بدأت تبكي."
       },
       "freqRank": 221,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5362,7 +5379,7 @@
         "es": "tienes novia",
         "fr": "as-tu une copine",
         "pt-BR": "você tem namorada?",
-        "ru": "у тебя́ есть де́вушка",
+        "ru": "у тебя́ есть де́вушка?",
         "ar": "هَلْ لَدَيْكَ حَبِيبَة؟",
         "en": "do you have a girlfriend?"
       },
@@ -5370,7 +5387,8 @@
       "review": {
         "sense": "do you have a girlfriend?",
         "translationCount": 40,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ru"]
       }
     },
     {
@@ -5652,11 +5670,12 @@
         "fr": "Réponds à ma question !",
         "pt-BR": "Responda a minha pergunta.",
         "ru": "Ответь на мой вопрос.",
-        "ar": "أجبني علی سؤالي."
+        "ar": "أجبني على سؤالي."
       },
       "freqRank": 249,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
@@ -5800,7 +5819,7 @@
         "fr": "puis-je vous offrir quelque chose à boire",
         "pt-BR": "posso te comprar uma bebida?",
         "ru": "купи́ть вам что́-нибудь вы́пить?",
-        "ar": "هل تريد ان اشتري لك مشروب؟",
+        "ar": "هَلْ تُرِيدُ أَنْ أَشْتَرِيَ لَكَ مَشْرُوبًا؟",
         "en": "can I buy you a drink?"
       },
       "freqRank": 256,
@@ -5808,7 +5827,8 @@
         "sense": "can I buy you a drink?",
         "translationCount": 26,
         "definition": "Indicates the speaker wishes to buy the interlocutor a drink, in a bar.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["ar"]
       }
     },
     {
@@ -6028,11 +6048,12 @@
         "fr": "Tout sera différent.",
         "pt-BR": "Tudo vai mudar.",
         "ru": "Всё изменится.",
-        "ar": "كل شيئ سيتغير."
+        "ar": "كل شيء سيتغير."
       },
       "freqRank": 267,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["ar"]
       }
     },
     {
