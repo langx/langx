@@ -1,11 +1,18 @@
 /**
- * The numbers behind the opening animation, and the one piece of arithmetic in
- * it that is easy to get wrong.
+ * The numbers behind the opening animation, and the two pieces of arithmetic in
+ * it that are easy to get wrong.
  *
  * Split from the component for the reason `swipeAction` and `pinch` are: a
  * renderer cannot be loaded in this package's tests, and "did a fast boot flash
  * the logo for two frames" is a question about numbers.
  */
+
+/**
+ * Named before the table because two entries in it are the same number, and
+ * they have to be. See `EXIT_GROUND_DELAY_MS`.
+ */
+const EXIT_TILE_MS = 260
+
 export const SPLASH_TIMING = {
   /**
    * How long the logo stays up at minimum, measured from mount.
@@ -14,52 +21,69 @@ export const SPLASH_TIMING = {
    * and without a floor the logo would appear and vanish inside about eighty
    * milliseconds — read as a flicker, not as an opening.
    *
-   * Raised from 700 when the arcs arrived: the last of the four is still
-   * springing open at ~800ms, and a floor that lets the exit start before the
-   * bloom has finished shows the reader an animation being interrupted rather
-   * than one being played.
+   * Nothing above this is waiting to finish. The halo below is a loop with no
+   * end state, so the exit can start at any point in it without showing the
+   * reader an animation being interrupted — which is what the floor had to be
+   * raised for when the opening was four springs that had to land first.
    */
-  MIN_VISIBLE_MS: 900,
+  MIN_VISIBLE_MS: 800,
   /**
    * Nothing signalled. Not "the app is fine" — just "stop hiding it": whatever
    * is slow, the reader is better off seeing the screen behind this and its
    * own spinner than a logo breathing at them indefinitely.
    */
   TIMEOUT_MS: 5000,
-  ENTRY_FROM_SCALE: 0.96,
-  ENTRY_SPEED: 14,
-  ENTRY_BOUNCINESS: 4,
-  /** `Skeleton` breathes at 700/700. A logo the size of a thumbnail wants slower. */
-  LOOP_HALF_MS: 900,
-  LOOP_SCALE: 1.045,
-  LOOP_OPACITY: 0.9,
+  /** One halo's whole life: born at the badge's edge, gone before the corners. */
+  HALO_MS: 2600,
+  /** Three in the air at once, a third of a cycle apart. See `haloDelayMs`. */
+  HALO_COUNT: 3,
   /**
-   * The arcs open one after another rather than together, smallest first, so
-   * the bloom reads as coming *out of* the badge instead of appearing around
-   * it. Below about 60ms the four stop being distinguishable.
+   * Multiples of the badge's own width. It starts on the badge's edge, so the
+   * ring reads as leaving the mark rather than arriving around it, and stops
+   * at a little under a phone's width — a ring still at full radius when it
+   * reaches the bezel is a stripe across the screen, which is what the four
+   * rotating arcs this replaces looked like.
    */
-  BLOOM_STAGGER_MS: 90,
+  HALO_TO_SCALE: 2.2,
+  /** Faint on purpose: three of these overlap, and they are behind the mark. */
+  HALO_OPACITY: 0.45,
   /**
-   * Looser than the badge's own spring — these are meant to overshoot — but
-   * not so loose that the outermost is still settling when `MIN_VISIBLE_MS`
-   * is up and the exit wants to start.
+   * How far into its life a halo is at full strength. It fades *in* over the
+   * first tenth so the ring does not appear as a hard edge sitting on the
+   * badge, and fades out over the rest.
    */
-  BLOOM_SPEED: 9,
-  BLOOM_BOUNCINESS: 6,
-  BLOOM_FROM_SCALE: 0.22,
-  EXIT_SETTLE_MS: 180,
-  /** The yellow leaving the badge and taking the screen. The whole exit hangs off it. */
-  EXIT_FLOOD_MS: 460,
+  HALO_FADE_IN: 0.1,
+  /** Slower than `Skeleton`'s 700/700, and about half a halo, so the two agree. */
+  BREATH_HALF_MS: 1300,
+  BREATH_SCALE: 1.03,
+  /** The halos go first, and quickly: they are the part that says "still working". */
+  EXIT_HALO_MS: 200,
   /**
-   * The badge waits a beat before dissolving, so there is a moment of it
-   * sitting *on* the flood rather than being overtaken by it.
+   * The badge drifting towards the reader as it dissolves. Small — at more than
+   * a few percent this stops being a hand-off and becomes a zoom.
    */
-  EXIT_TILE_DELAY_MS: 160,
-  EXIT_TILE_MS: 320,
-  EXIT_TILE_SCALE: 1.1,
-  /** Only once the flood has actually covered the screen — see `EXIT_FLOOD_MS`. */
-  EXIT_GROUND_MS: 360,
-  EXIT_GROUND_DELAY_MS: 380,
+  EXIT_TILE_MS,
+  EXIT_TILE_SCALE: 1.06,
+  /**
+   * The ground waits for the badge to be **gone**, not merely on its way out,
+   * which is why this is `EXIT_TILE_MS` exactly rather than a smaller number
+   * that overlaps it prettily.
+   *
+   * Overlapping them was the first version, and stepping the web build through
+   * a slowed exit frame by frame is what caught it: the ground is the only
+   * opaque thing on this screen, so while it is at half opacity the app behind
+   * shows *through the badge* — the welcome screen's headline and buttons
+   * legible through a logo that has not finished leaving.
+   * The badge dissolves late by design (`Easing.in`), so even a short overlap
+   * catches it at a third of its opacity, which is far from invisible.
+   *
+   * Both schemes paint this ground in `colors.bg`, which is what the screen
+   * behind it starts with too, so once the badge is out of the way the fade
+   * itself has almost nothing to show — that is the intent. The exit people
+   * should notice is the badge, not the backdrop.
+   */
+  EXIT_GROUND_DELAY_MS: EXIT_TILE_MS,
+  EXIT_GROUND_MS: 240,
 } as const
 
 /**
@@ -76,20 +100,18 @@ export function msUntilExitAllowed(mountedAtMs: number, nowMs: number): number {
 }
 
 /**
- * The width of the disc that has to cover the screen on the way out.
+ * When the halo at `index` first sets off.
  *
- * It grows from the centre, so what it must clear is the distance to a
- * *corner*, not to an edge — a disc as wide as the screen leaves four wedges
- * of the app showing through before the ground has faded. The corner is half
- * a diagonal away, so the diagonal is the diameter, plus a few percent for the
- * rounding at the very last frame.
+ * All three run the identical loop; the only thing that distinguishes them is
+ * that each starts a fraction of a cycle after the last, once, before its loop
+ * begins. That is what makes the ripple continuous: at any instant one ring is
+ * leaving the badge, one is halfway out and one is fading at the edge.
  *
- * Guards a zero: `useWindowDimensions` can report 0×0 for a frame on the web
- * during the static export's prerender, and a diameter of zero would make the
- * exit a hard cut.
+ * The failure it exists to prevent is spacing them by a constant. A gap that
+ * does not divide `HALO_MS` leaves a beat with nothing on screen every cycle —
+ * a pause in a loop that is supposed to have no seam, which reads as a stall
+ * on the one screen where a stall means the app has hung.
  */
-export function floodDiameter(width: number, height: number): number {
-  const diagonal = Math.hypot(width, height)
-  if (!Number.isFinite(diagonal) || diagonal <= 0) return 0
-  return diagonal * 1.06
+export function haloDelayMs(index: number): number {
+  return Math.round((index * SPLASH_TIMING.HALO_MS) / SPLASH_TIMING.HALO_COUNT)
 }
