@@ -1883,6 +1883,35 @@ describe('echo', () => {
       expect(await spent(b.userId)).toBe(0)
     })
 
+    it('drops the readings when the sentence is rewritten, and keeps them otherwise', async () => {
+      const user = await newUser('voices-rewrite@example.com')
+      const cardId = await writeCard(user, 'voices-rewrite', 'the frog is purple')
+      const { storage } = fakeStorage()
+      const { tts } = fakeTts()
+      const { synthesiseCard } = await import('../modules/echo/voices')
+      const { updateCard } = await import('../modules/echo/cards')
+      await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+
+      // The meaning changed, the sentence did not: the readings still read it.
+      const retitled = await updateCard(handle.db, user.userId, cardId, {
+        front: 'the frog is purple',
+        back: 'la grenouille est violette',
+      })
+      expect(retitled.voices?.map((v) => v.voice)).toEqual(['af_heart', 'am_michael'])
+
+      // The sentence changed: readings of the old one would play the wrong line.
+      const rewritten = await updateCard(handle.db, user.userId, cardId, {
+        front: 'the frog is blue',
+        back: 'la grenouille est bleue',
+      })
+      expect(rewritten.voices).toBeUndefined()
+
+      // And the card can be read again, for the new text.
+      const again = await synthesiseCard(handle.db, storage, tts, user.userId, cardId)
+      expect(again.voices).toHaveLength(2)
+      expect(await spent(user.userId)).toBe(2)
+    })
+
     it('refuses a language the model cannot read', async () => {
       const user = await newUser('voices-lang@example.com', {
         learning: [{ code: 'de', level: 'beginner', priority: 1 }],

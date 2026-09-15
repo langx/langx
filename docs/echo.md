@@ -223,7 +223,11 @@ something `expo-audio` can play. `image` holds a URL for the same reason.
    `voices`, the same field a pack fills, under the people and labelled by
    register only. **On request, never on capture**: the button sits on a card
    that has no readings, and a person who already got the sentence from the
-   partner who said it has no reason to press it. Six languages — English,
+   partner who said it has no reason to press it. Rewriting the sentence, or
+   its language, takes the readings off the card — they read a line that is
+   gone — and the button comes back for the new one; the files stay, because
+   they are content-addressed and may be on somebody else's card. Six
+   languages — English,
    Spanish, French, Italian, Portuguese, Hindi — because those are the voices
    the model has and espeak-ng phonemises well (`ECHO_SYNTH_VOICES` is the
    list); the app hides the button elsewhere. A person who already recorded
