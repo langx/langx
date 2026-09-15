@@ -313,12 +313,15 @@ export const en = {
     play: 'Play',
     /** So a recording by a person is never mistaken for anything else. */
     /* A machine reading, and the label says so — there is nobody to credit. */
-    /* A pack is three hundred cards; the screen that offers it should
-       be able to show what they are before anybody commits to them. */
-    packContains: "What's inside",
-    packRange: '{from}–{to} of {total}',
-    packPagePrev: 'Previous',
-    packPageNext: 'Next',
+    /* Over the rows a pack would add next, under its Start button. */
+    packNext: 'Up next',
+    /**
+     * The switch in the session header. The label is the state, because
+     * that is what a screen reader wants from a switch: the icon says it to
+     * everybody else.
+     */
+    autoplayOn: 'Autoplay on',
+    autoplayOff: 'Autoplay off',
     voiceFemale: 'Synthesised · female',
     voiceMale: 'Synthesised · male',
     voiceSynthesised: 'Synthesised',
