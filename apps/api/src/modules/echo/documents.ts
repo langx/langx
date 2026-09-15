@@ -103,9 +103,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     ...(doc.audios?.length ? { audios: doc.audios } : {}),
     ...(doc.image ? { image: doc.image } : {}),
     ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),
-    ...(doc.askedCorrectionPostId
-      ? { askedCorrectionPostId: doc.askedCorrectionPostId }
-      : {}),
+    ...(doc.askedCorrectionPostId ? { askedCorrectionPostId: doc.askedCorrectionPostId } : {}),
     srs: toEchoSrs(doc.srs),
     createdAt: doc.createdAt.toISOString(),
   }

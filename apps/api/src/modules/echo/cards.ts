@@ -595,41 +595,38 @@ export async function updateCard(
    * daily media budget rather than two, exactly as a pronunciation answer's
    * two takes do.
    */
-  /*
-   * The single slot and the list say the same thing; the schema refuses a
-   * request carrying both, so folding them here leaves one shape to reason
-   * about below. `undefined` still means "leave the recordings alone".
-   */
-  const audios =
-    input.audios !== undefined
-      ? (input.audios ?? [])
-      : input.audio !== undefined
-        ? input.audio
-          ? [input.audio]
-          : []
-        : undefined
-  const touchesAudio = audios !== undefined
-
-  const attachedAudio = audios ?? []
-  const attached = [input.image, ...attachedAudio].filter((media) => !!media)
+  const attached = [input.image, input.audio].filter((media) => !!media)
   if (attached.length > 0) {
     const me = await profileOf(db, userId)
     if (!me) throw notFound('Complete onboarding first')
     if (input.image)
       await assertAttachable(db, userId, me, [input.image], storagePublicBaseUrl, 'image')
-    if (attachedAudio.length > 0)
-      await assertAttachable(db, userId, me, attachedAudio, storagePublicBaseUrl, 'audio')
+    if (input.audio)
+      await assertAttachable(db, userId, me, [input.audio], storagePublicBaseUrl, 'audio')
   }
 
   /*
-   * A file already on the card keeps the entry it has — its origin and, for a
-   * recording kept from the feed, whose voice it is and which answer it came
-   * from. Re-sending it as a `Media` would otherwise restamp somebody else's
-   * recording as `self`, which is both a lie and a licence to delete a file
-   * the post still plays.
+   * Removals first, then the new file: saving an edit that takes one recording
+   * off and adds another must not be refused by the ceiling for a moment it is
+   * never actually over.
+   *
+   * Nothing the card already holds is re-sent. An `EchoAudio` has no
+   * `contentType` to travel as a `Media`, and re-sending one would both invent
+   * that and restamp somebody else's recording as `self` — which is a licence
+   * to delete a file the post it came from still plays.
    */
-  const held = new Map(echoAudiosOf(card).map((entry) => [entry.url, entry]))
-  const nextAudios = (audios ?? []).map((media) => held.get(media.url) ?? selfAudio(media))
+  const touchesAudio =
+    input.audio !== undefined || (input.removeAudio !== undefined && input.removeAudio.length > 0)
+  const dropped = new Set(input.removeAudio ?? [])
+  const remaining =
+    input.audio === null ? [] : echoAudiosOf(card).filter((entry) => !dropped.has(entry.url))
+  const nextAudios = input.audio ? [...remaining, selfAudio(input.audio)] : remaining
+  if (nextAudios.length > ECHO_AUDIO_MAX) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `A card holds at most ${ECHO_AUDIO_MAX} recordings`,
+    )
+  }
 
   const set: Partial<EchoCardDoc> = {
     front: input.front,
@@ -644,9 +641,7 @@ export async function updateCard(
   // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
   const unset: { image?: ''; audio?: ''; audios?: '' } = {
     ...(input.image === null ? { image: '' as const } : {}),
-    ...(touchesAudio && nextAudios.length === 0
-      ? { audio: '' as const, audios: '' as const }
-      : {}),
+    ...(touchesAudio && nextAudios.length === 0 ? { audio: '' as const, audios: '' as const } : {}),
   }
 
   const updated = await cards.findOneAndUpdate(
@@ -662,11 +657,9 @@ export async function updateCard(
   const kept = new Set(nextAudios.map((entry) => entry.url))
   await deleteObjects(storage, [
     input.image !== undefined && card.image?.origin === 'self' ? card.image.url : undefined,
-    ...(touchesAudio
-      ? echoAudiosOf(card)
-          .filter((entry) => entry.origin === 'self' && !kept.has(entry.url))
-          .map((entry) => entry.url)
-      : []),
+    ...echoAudiosOf(card)
+      .filter((entry) => entry.origin === 'self' && !kept.has(entry.url))
+      .map((entry) => entry.url),
   ])
 
   return toEchoCard(updated)

@@ -358,23 +358,24 @@ export const updateEchoCardSchema = z.object({
    * copy of a message it never came from.
    */
   image: mediaSchema.nullable().optional(),
+  /**
+   * A recording of your own. It is **added** to the card's recordings now
+   * rather than taking the single slot, because a card holds several; `null`
+   * still clears them all, which is what it has always meant.
+   */
   audio: mediaSchema.nullable().optional(),
   /**
-   * The whole list, when a card's recordings are being edited rather than one
-   * file replaced — removing the second of three cannot be said in the three
-   * states above, which only ever describe a single slot.
+   * Recordings to take off the card, by URL.
    *
-   * Absent leaves them alone; a list replaces them. `audio` still works and
-   * still means the single-slot spelling, so a frozen build keeps editing the
-   * way it always did; a request that carries both is refused rather than
-   * guessed at.
+   * Removing the second of three cannot be said with the field above, and the
+   * obvious alternative — sending the list that should remain — cannot be
+   * said at all: a recording already on the card is an `EchoAudio` and has no
+   * `contentType` or `sizeBytes` to send it back as a `Media`, so a client
+   * would have to invent them and would be charged media quota for files it
+   * is keeping rather than adding.
    */
-  audios: z.array(mediaSchema).max(ECHO_AUDIO_MAX).nullable().optional(),
+  removeAudio: z.array(z.url()).max(ECHO_AUDIO_MAX).optional(),
 })
-  .refine((input) => input.audio === undefined || input.audios === undefined, {
-    message: 'Send either audio or audios, not both',
-    path: ['audios'],
-  })
 export type UpdateEchoCardInput = z.infer<typeof updateEchoCardSchema>
 
 /**

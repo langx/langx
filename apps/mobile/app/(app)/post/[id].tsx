@@ -3,6 +3,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
+  echoAudiosOf,
   FEED_TOP_CORRECTIONS,
   MAX_COMMENT_LENGTH,
   MAX_POST_LENGTH,
@@ -14,6 +15,7 @@ import {
   uploadPostMedia,
   useAddComment,
   useAnswerPronunciation,
+  useApplyEchoCorrection,
   useAttachEchoAudio,
   useCaptureEcho,
   useCorrectPost,
@@ -133,9 +135,23 @@ export default function PostScreen() {
    * for every pronunciation post written straight from the composer, which is
    * most of them — so the action below is drawn only when it resolves.
    */
-  const askedFrom = useEchoCardForPost(id, pronouncing)
+  const askedFrom = useEchoCardForPost(id)
   const attachAudio = useAttachEchoAudio()
+  const applyCorrection = useApplyEchoCorrection()
   const deleteComment = useDeleteComment()
+
+  /*
+   * Which answers are already on the card. Every row carries the button, so
+   * without this the card's own recordings would be offered back as if the
+   * card were empty — and the answer id is what the card stores for exactly
+   * this reason.
+   */
+  const askedCardId = askedFrom.data?._id
+  const kept = new Set(
+    echoAudiosOf(askedFrom.data ?? {})
+      .map((audio) => audio.answerId)
+      .filter((answerId) => !!answerId),
+  )
 
   /** The recorder's open/closed state. The correction box is always open. */
   const [composing, setComposing] = useState(false)
@@ -392,10 +408,10 @@ export default function PostScreen() {
   /**
    * Keep this recording on the card that asked the question.
    *
-   * Replaces whatever the card had, which is deliberate: the reason to tap
-   * this on a card that already speaks is that the first voice was hard to
-   * follow, and a refusal would leave nothing to say that with. The label
-   * says so before the tap.
+   * Added to whatever the card already holds rather than replacing it: two
+   * people answering the same question is the reason to ask the feed, and the
+   * card is the place to compare them. Each row says whether its own recording
+   * is already there, so the button never offers what has been done.
    */
   function keepOnCard(answerId: string): void {
     const cardId = askedFrom.data?._id
@@ -404,6 +420,19 @@ export default function PostScreen() {
       { cardId, answerId },
       {
         onSuccess: () => showToast(t('echo.audioKept')),
+        onError: () => showToast(t('common.retry')),
+      },
+    )
+  }
+
+  /** Keep this correction as the card's sentence. The text half of the above. */
+  function keepCorrectionOnCard(correctionId: string): void {
+    const cardId = askedFrom.data?._id
+    if (!cardId) return
+    applyCorrection.mutate(
+      { cardId, correctionId },
+      {
+        onSuccess: () => showToast(t('echo.correctionKept')),
         onError: () => showToast(t('common.retry')),
       },
     )
@@ -540,6 +569,26 @@ export default function PostScreen() {
                   {t(post.echoedByViewer ? 'echo.removeFromEcho' : 'echo.addToEcho')}
                 </Text>
               </Pressable>
+              {/*
+                Back to the card this post was asked from. Only its owner ever
+                sees it — `askedFrom` is looked up by the viewer — and until
+                now the link ran one way only: a card could open the feed, and
+                the feed could give an answer back, but there was nowhere to go
+                to see what the answer landed on.
+              */}
+              {askedCardId ? (
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() =>
+                    router.push({ pathname: '/(app)/echo/card/[id]', params: { id: askedCardId } })
+                  }
+                  style={({ pressed }) => [styles.echoRow, pressed && styles.pressed]}
+                >
+                  <Feather name="layers" size={14} color={colors.accent} />
+                  <Text style={styles.accentAction}>{t('echo.seeCard')}</Text>
+                </Pressable>
+              ) : null}
               <Text style={styles.sectionTitle}>
                 {t(pronouncing ? 'feed.pronunciationSection' : 'feed.correctionSection')}
               </Text>
@@ -623,16 +672,32 @@ export default function PostScreen() {
                   here always works.
                 */}
                 {pronouncing && askedFrom.data ? (
+                  kept.has(item._id) ? (
+                    <Text style={styles.keptLabel}>{t('echo.audioAlreadyKept')}</Text>
+                  ) : (
+                    <Pressable
+                      accessibilityRole="button"
+                      hitSlop={8}
+                      disabled={attachAudio.isPending}
+                      onPress={() => keepOnCard(item._id)}
+                      style={({ pressed }) => (pressed ? styles.pressed : null)}
+                    >
+                      <Text style={styles.keepAction}>{t('echo.keepOnCard')}</Text>
+                    </Pressable>
+                  )
+                ) : null}
+                {/* The written answer, onto the same card: it replaces the
+                    sentence, because a card whose sentence is wrong teaches
+                    the mistake every time it comes back. */}
+                {!pronouncing && askedFrom.data ? (
                   <Pressable
                     accessibilityRole="button"
                     hitSlop={8}
-                    disabled={attachAudio.isPending}
-                    onPress={() => keepOnCard(item._id)}
+                    disabled={applyCorrection.isPending}
+                    onPress={() => keepCorrectionOnCard(item._id)}
                     style={({ pressed }) => (pressed ? styles.pressed : null)}
                   >
-                    <Text style={styles.keepAction}>
-                      {t(askedFrom.data.audio ? 'echo.replaceCardAudio' : 'echo.keepOnCard')}
-                    </Text>
+                    <Text style={styles.keepAction}>{t('echo.keepCorrection')}</Text>
                   </Pressable>
                 ) : null}
                 {item.author._id === me.data?._id ? (
@@ -946,6 +1011,9 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The same row as Delete, in the accent instead of the danger colour: this
   // one adds something.
   keepAction: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  // Said rather than offered: the recording is already there, and a disabled
+  // button would leave the reader working out why it is greyed.
+  keptLabel: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
   done: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 20 },
   doneLabel: { color: colors.success, fontSize: 14, fontWeight: '600' },
   compose: { gap: spacing.md, paddingTop: 22 },

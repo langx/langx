@@ -1056,39 +1056,61 @@ describe('echo', () => {
      * message, post or pack that still plays it; deleting it because a card
      * stopped pointing at it would take a recording out of somebody's thread.
      */
-    it('deletes the object it replaces only when the card owned it', async () => {
+    it('deletes a removed recording only when the card owned it', async () => {
       const user = await newUser('media-delete@example.com')
       const cardId = await writeCard(user, 'media-delete')
       const { updateCard } = await import('../modules/echo/cards')
       const cards = handle.db.collection(COLLECTIONS.echoCards)
 
       // A copy, as a capture would have written it.
+      const copiedUrl = `${BUCKET}/posts/other/answer.m4a`
       await cards.updateOne(
         { _id: new ObjectId(cardId) },
-        { $set: { audio: { url: `${BUCKET}/posts/other/answer.m4a`, origin: 'post' } } },
+        {
+          $set: {
+            audio: { url: copiedUrl, origin: 'post' },
+            audios: [{ url: copiedUrl, origin: 'post' }],
+          },
+        },
       )
-      const copied = fakeStorage()
+
+      // Adding one of your own takes nothing away: recordings accumulate.
+      const added = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
         { ...lines, audio: recording('mine') },
         BUCKET,
-        copied.storage,
+        added.storage,
       )
-      expect(copied.deleted).toEqual([])
+      expect(added.deleted).toEqual([])
 
-      // Now the card's own recording, replaced by another of its own.
-      const own = fakeStorage()
+      // Taking the copy off leaves the post that still plays it alone.
+      const copy = fakeStorage()
       await updateCard(
         handle.db,
         user.userId,
         cardId,
-        { ...lines, audio: recording('newer') },
+        { ...lines, removeAudio: [copiedUrl] },
+        BUCKET,
+        copy.storage,
+      )
+      expect(copy.deleted).toEqual([])
+
+      // Taking off the card's own recording does delete it: nothing else holds it.
+      const own = fakeStorage()
+      const card = await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, removeAudio: [`${BUCKET}/echo/u/mine.m4a`] },
         BUCKET,
         own.storage,
       )
       expect(own.deleted).toEqual(['echo/u/mine.m4a'])
+      expect(card.audios ?? []).toEqual([])
+      expect(card.audio).toBeUndefined()
     })
 
     it('refuses a file that is not in our bucket', async () => {

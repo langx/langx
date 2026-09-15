@@ -2,8 +2,10 @@ import Feather from '@expo/vector-icons/Feather'
 import {
   asksProduction,
   ECHO_GRADES,
+  echoAudiosOf,
   productionVerdict,
   scheduledDelayMinutes,
+  type EchoAudio,
   type EchoCard,
   type EchoGrade,
   type EchoImage,
@@ -139,7 +141,7 @@ export default function EchoSessionScreen() {
   }, [deck, queue.data, queue.isPaused, queue.isError])
 
   const card = deck?.[index]
-  const player = useAudioPlayer(card?.audio?.url ?? null)
+  const recordings = card ? echoAudiosOf(card) : []
   /**
    * Writing it, rather than recognising it. The card and its schedule are
    * unchanged — this is a presentation of the same row, decided by a pure
@@ -226,6 +228,8 @@ export default function EchoSessionScreen() {
 
   /** The card as a question for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null
+  /** The same card as the other question: whether the sentence is right. */
+  const askCorrection = card ? echoAskParams(card, languages, 'correction') : null
 
   /** What the grade buttons say: the same function the server will run. */
   function intervalLabel(value: EchoGrade): string {
@@ -246,14 +250,8 @@ export default function EchoSessionScreen() {
    * it asked on; that link is what lets an answer's recording come back here
    * in one tap.
    */
-  function askToHearIt(params: EchoAskParams): void {
+  function askTheFeed(params: EchoAskParams): void {
     router.push({ pathname: '/(app)/compose', params })
-  }
-
-  async function play(): Promise<void> {
-    await ensurePlaybackAudioMode()
-    void player.seekTo(0)
-    player.play()
   }
 
   const header = (
@@ -361,35 +359,42 @@ export default function EchoSessionScreen() {
           /* The sentence as it was written. Data, never interface copy. */
           <Text style={styles.front}>{card.front}</Text>
         )}
-        {!producing && !card.audio && ask ? (
+        {!producing && recordings.length === 0 && ask ? (
           <Pressable
             accessibilityRole="button"
             hitSlop={8}
-            onPress={() => askToHearIt(ask)}
+            onPress={() => askTheFeed(ask)}
             style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
           >
             <Feather name="mic" size={16} color={colors.accent} />
             <Text style={styles.speakerLabel}>{t('echo.askToHearIt')}</Text>
           </Pressable>
         ) : null}
-        {card.audio && (!producing || revealed) ? (
+        {/*
+          Whether the sentence is right, which is a different question from how
+          it is said and has no answer on the card to suppress it — a card can
+          always turn out to be wrong. Only before the answer, so it does not
+          sit among the grades.
+        */}
+        {!revealed && askCorrection ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={t('echo.play')}
             hitSlop={8}
-            onPress={() => void play()}
+            onPress={() => askTheFeed(askCorrection)}
             style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
           >
-            <Feather name="volume-2" size={18} color={colors.accent} />
-            {/* Who is speaking, so a person's recording is never taken for
-                anything else. */}
-            <Text style={styles.speakerLabel}>
-              {card.audio.speakerName
-                ? t('echo.spokenBy', { name: card.audio.speakerName })
-                : t('echo.play')}
-            </Text>
+            <Feather name="edit-3" size={16} color={colors.accent} />
+            <Text style={styles.speakerLabel}>{t('echo.askForCorrection')}</Text>
           </Pressable>
         ) : null}
+        {/*
+          Every recording, each with its own player: one card can hold several
+          people saying the same sentence, and which of them is speaking is the
+          whole reason to keep more than one.
+        */}
+        {!producing || revealed
+          ? recordings.map((audio) => <Recording key={audio.url} audio={audio} />)
+          : null}
 
         {revealed ? (
           <>
@@ -476,6 +481,43 @@ function CardPicture({ image }: { image: EchoImage }) {
         }}
       />
     </View>
+  )
+}
+
+/**
+ * One of the card's recordings, with its own player.
+ *
+ * A component per recording rather than one player the row switches between:
+ * `useAudioPlayer` is a hook, so a card holding three voices needs three of
+ * them, and a hook cannot be called in a loop from the screen itself.
+ */
+function Recording({ audio }: { audio: EchoAudio }) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  const t = useT()
+  const player = useAudioPlayer(audio.url)
+
+  async function play(): Promise<void> {
+    await ensurePlaybackAudioMode()
+    void player.seekTo(0)
+    player.play()
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t('echo.play')}
+      hitSlop={8}
+      onPress={() => void play()}
+      style={({ pressed }) => [styles.speaker, pressed && styles.pressed]}
+    >
+      <Feather name="volume-2" size={18} color={colors.accent} />
+      {/* Who is speaking, so a person's recording is never taken for anything
+          else — and, with several on one card, so the two can be told apart. */}
+      <Text style={styles.speakerLabel}>
+        {audio.speakerName ? t('echo.spokenBy', { name: audio.speakerName }) : t('echo.play')}
+      </Text>
+    </Pressable>
   )
 }
 

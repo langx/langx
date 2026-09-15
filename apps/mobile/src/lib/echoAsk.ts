@@ -1,4 +1,4 @@
-import { MAX_POST_LENGTH, type EchoCard, type LanguageCode } from '@langx/shared'
+import { MAX_POST_LENGTH, type EchoCard, type LanguageCode, type PostKind } from '@langx/shared'
 
 /**
  * What the composer needs to open as a pronunciation post, already filled in.
@@ -10,7 +10,8 @@ import { MAX_POST_LENGTH, type EchoCard, type LanguageCode } from '@langx/shared
  * shape that is otherwise identical.
  */
 export type EchoAskParams = {
-  kind: 'pronunciation'
+  /** Which question: how it is said, or whether it is right. */
+  kind: PostKind
   draft: string
   lang: LanguageCode
   card: string
@@ -33,10 +34,11 @@ export type EchoAskParams = {
 export function echoAskParams(
   card: Pick<EchoCard, '_id' | 'front' | 'lang'>,
   languages: readonly LanguageCode[],
+  kind: PostKind = 'pronunciation',
 ): EchoAskParams | null {
   const draft = card.front.trim()
   if (!draft || draft.length > MAX_POST_LENGTH) return null
   const lang = languages.find((code) => code === card.lang)
   if (!lang) return null
-  return { kind: 'pronunciation', draft, lang, card: card._id }
+  return { kind, draft, lang, card: card._id }
 }

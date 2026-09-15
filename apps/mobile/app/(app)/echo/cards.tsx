@@ -87,24 +87,18 @@ export default function EchoCardsScreen() {
   }
 
   /*
-   * The card travels in the params rather than the edit screen fetching it:
-   * this list is holding it already, and the module has no endpoint for a
-   * single card.
+   * Only the id. The card used to travel in the params, because this list was
+   * already holding it and the module had no endpoint for a single card;
+   * there is one now, and a card's recordings are a list that would not have
+   * fitted in a query string anyway.
    */
   function openEdit(card: EchoCard): void {
-    router.push({
-      pathname: '/(app)/echo/edit',
-      params: {
-        id: card._id,
-        front: card.front,
-        back: card.back,
-        lang: card.lang,
-        // The two files, so the screen can show what is already on the card.
-        // Only the URLs: which of them are safe to delete is the server's call.
-        ...(card.image ? { imageUrl: card.image.url } : {}),
-        ...(card.audio ? { audioUrl: card.audio.url } : {}),
-      },
-    })
+    router.push({ pathname: '/(app)/echo/edit', params: { id: card._id } })
+  }
+
+  /** The card itself, read-only — where a row goes when it is tapped. */
+  function openCard(card: EchoCard): void {
+    router.push({ pathname: '/(app)/echo/card/[id]', params: { id: card._id } })
   }
 
   function sourceLabel(card: EchoCard): string {
@@ -234,7 +228,11 @@ export default function EchoCardsScreen() {
               open={openRow === item._id}
               onOpenChange={(open) => setOpenRow(open ? item._id : null)}
             >
-              <View style={styles.row}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => openCard(item)}
+                style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+              >
                 <View style={styles.text}>
                   {/* The sentence itself. Data, not interface copy. */}
                   <Text style={styles.front}>{item.front}</Text>
@@ -251,7 +249,7 @@ export default function EchoCardsScreen() {
                 >
                   <Feather name="more-horizontal" size={20} color={colors.textFaint} />
                 </Pressable>
-              </View>
+              </Pressable>
             </SwipeableRow>
           )}
         />

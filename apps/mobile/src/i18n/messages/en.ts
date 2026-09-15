@@ -277,9 +277,17 @@ export const en = {
     askToHearIt: 'Ask the feed how it is said',
     /** On an answer, when the card that asked has no recording yet. */
     keepOnCard: 'Keep on my card',
-    /** The same tap on a card that already speaks. It says so before the tap. */
-    replaceCardAudio: 'Replace my card’s recording',
+    /** On an answer already kept: said, not offered, so nothing is greyed out. */
+    audioAlreadyKept: 'On your card',
     audioKept: 'Kept on your card',
+    /** Names the feed, as the pronunciation one does. */
+    askForCorrection: 'Ask the feed to correct it',
+    /** On a correction, when the card that asked is the viewer's own. */
+    keepCorrection: 'Keep this as my sentence',
+    correctionKept: 'Your card now says this',
+    seeCard: 'See the card',
+    cardTitle: 'Card',
+    nextReview: 'Next review',
     sessionEmptyTitle: 'Nothing due',
     sessionEmptyBody: 'Come back later, or keep a sentence from one of your chats.',
     doneTitle: 'Session complete',
