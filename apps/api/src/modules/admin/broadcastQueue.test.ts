@@ -8,6 +8,7 @@ import { ensureIndexes } from '../../db/indexes'
 import {
   createBroadcast,
   broadcasts,
+  deleteBroadcast,
   getBroadcast,
   markBroadcastTested,
   setBroadcastStatus,
@@ -331,6 +332,47 @@ describe('the in-app broadcast queue', () => {
       .collection<{ media?: { url: string } }>(COLLECTIONS.messages)
       .findOne({})
     expect(message?.media?.url).toBe('https://media.langx.io/broadcasts/only.png')
+  })
+
+  /**
+   * The bug that hid a picture: a draft deleted and written again under the
+   * same slug started at `rev` 1, so its test send carried the clientId the
+   * previous draft's test had already used. The message row outlives the job
+   * row, `deliverOfficialMessage` handed the old one back, and the panel
+   * showed the new draft as tested while nothing had arrived.
+   */
+  it('tests a draft written again under a slug that was already tested', async () => {
+    await member('secondlook')
+    const first = await createBroadcast(db, {
+      id: 'rewritten',
+      bodies: { en: 'The first draft' },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    expect(await sendBroadcastTest(db, push, first, 'secondlook')).toBe(true)
+    await deleteBroadcast(db, 'rewritten')
+
+    const second = await createBroadcast(db, {
+      id: 'rewritten',
+      bodies: { en: 'The second draft, with a picture' },
+      images: {
+        en: {
+          url: 'https://media.langx.io/broadcasts/second.png',
+          contentType: 'image/png',
+          sizeBytes: 10,
+        },
+      },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    expect(await sendBroadcastTest(db, push, second, 'secondlook')).toBe(true)
+
+    const bodies = await db
+      .collection<{ body: string }>(COLLECTIONS.messages)
+      .find({})
+      .map((row) => row.body)
+      .toArray()
+    expect(bodies.sort()).toEqual(['The first draft', 'The second draft, with a picture'])
   })
 
   /**

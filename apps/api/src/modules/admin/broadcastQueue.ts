@@ -177,6 +177,15 @@ async function deliver(
  * copy when the broadcast goes out for real — and the `rev` in it so that the
  * test after an edit is a new message rather than a duplicate of the body that
  * was just fixed.
+ *
+ * `createdAt` is in it for the case `rev` cannot cover: a draft deleted and
+ * written again under the same slug starts at `rev` 1, so its test send
+ * collided with the test of the draft before it. The message row outlives the
+ * job row — deleting a broadcast does not unsay what it already said — so
+ * `deliverOfficialMessage` found the old one, handed it back, and this
+ * returned `true` to a panel that then showed the draft as tested. Nothing
+ * arrived, nothing failed, and the picture nobody had seen was one tap from
+ * going out to everybody. Which is how it was found.
  */
 export async function sendBroadcastTest(
   db: Db,
@@ -192,7 +201,7 @@ export async function sendBroadcastTest(
     toUserId,
     body,
     ...(attachment ? { attachment } : {}),
-    clientId: `broadcast:${job._id}:test:${revOf(job)}:${toUserId}`,
+    clientId: `broadcast:${job._id}:test:${job.createdAt.getTime()}:${revOf(job)}:${toUserId}`,
   })
   if (!delivered) return false
 
