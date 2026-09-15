@@ -50,59 +50,50 @@ export function Screen({
 
   if (scroll) {
     return (
-      <ScrollView
-        style={styles.root}
-        /*
-         * The safe area belongs to the content here, not to the scroll view.
-         * On iOS a `RefreshControl` is a child of the scroll view, so padding
-         * on the scroll view's own style pushes the control down with
-         * everything else: the spinner came to rest behind the status bar
-         * while the content started a notch below it, which is the detached
-         * spinner over an empty band. Padding the content container leaves
-         * the scroll view flush with the screen, and `progressViewOffset`
-         * puts the spinner back where the pull actually opens.
-         */
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: insets.bottom + CONTENT_BOTTOM, paddingTop: insets.top + CONTENT_TOP },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        /*
-         * The keyboard insets the scroll view and the focused field is kept
-         * above it. Without this a `TextInput` low on a scrolling screen is
-         * simply covered as you type into it — the language picker's search
-         * box was, which made adding a second language look broken.
-         *
-         * iOS-only by design, and a no-op elsewhere: Android resizes the
-         * window for the keyboard already (`adjustResize`), so doing this
-         * there would inset twice. `useKeyboardInset` exists for the screens
-         * that do not scroll and documents the same split.
-         *
-         * Off when there is a refresh control, because on iOS the two fight
-         * over the same `contentInset` and the keyboard wins. A
-         * `RefreshControl` is a child of the scroll view there rather than a
-         * wrapper around it, so with the inset managed out from under it the
-         * spinner never appears at all: a pull on Me or on the wallet
-         * refetched in complete silence, which reads as a screen that does
-         * not refresh. The lists get their spinner because a `FlatList`
-         * passes no such prop. Nothing is lost by the split — no screen in
-         * the app both pulls to refresh and holds a text field.
-         */
-        automaticallyAdjustKeyboardInsets={!onRefresh}
-        {...(onRefresh
-          ? {
-              refreshControl: (
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  progressViewOffset={insets.top}
-                />
-              ),
-            }
-          : {})}
-      >
-        {inner}
-      </ScrollView>
+      /*
+       * The safe area insets this wrapper, not the scroll view and not its
+       * content container. On iOS the pull spinner is drawn against the top
+       * edge of the scroll view's own frame, so a scroll view that starts at
+       * the top of the screen puts its spinner behind the status bar — which
+       * is exactly where it sat, a loose mark beside the clock above an empty
+       * band, whichever way the padding inside was arranged.
+       *
+       * The lists have never had the problem, and this is the difference:
+       * they are the branch below, a padded `View` with a `FlatList` inside,
+       * so their scroll view begins under the status bar and the spinner
+       * lands where the pull opens. The scroll branch is that shape now too.
+       */
+      <View style={[styles.root, padding]}>
+        <ScrollView
+          style={styles.fill}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          /*
+           * The keyboard insets the scroll view and the focused field is kept
+           * above it. Without this a `TextInput` low on a scrolling screen is
+           * simply covered as you type into it — the language picker's search
+           * box was, which made adding a second language look broken.
+           *
+           * iOS-only by design, and a no-op elsewhere: Android resizes the
+           * window for the keyboard already (`adjustResize`), so doing this
+           * there would inset twice. `useKeyboardInset` exists for the screens
+           * that do not scroll and documents the same split.
+           *
+           * Off when there is a refresh control, because on iOS the two fight
+           * over the same `contentInset` and the keyboard wins: with the inset
+           * managed out from under it the spinner does not appear at all, and
+           * a pull on Me or on the wallet refetched in complete silence.
+           * Nothing is lost by the split — no screen in the app both pulls to
+           * refresh and holds a text field.
+           */
+          automaticallyAdjustKeyboardInsets={!onRefresh}
+          {...(onRefresh
+            ? { refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
+            : {})}
+        >
+          {inner}
+        </ScrollView>
+      </View>
     )
   }
   return <View style={[styles.root, padding, styles.centre]}>{inner}</View>
@@ -115,17 +106,14 @@ export function Screen({
  */
 const GUTTER = 20
 
-// Nearly flush to the status bar at the top — the header row brings its own
-// air — and 28 at the bottom so the last row is not sitting on the home
-// indicator. Added to the safe-area insets rather than set beside them,
-// because the content container now carries both.
-const CONTENT_TOP = 6
-const CONTENT_BOTTOM = 28
-
 const useStyles = makeStyles(({ colors, layout }) => ({
   root: { backgroundColor: colors.bg, flex: 1 },
   centre: { alignItems: 'center' },
-  scrollContent: { alignItems: 'center' },
+  fill: { flex: 1 },
+  // Nearly flush to the status bar at the top — the header row brings its own
+  // air — and 28 at the bottom so the last row is not sitting on the home
+  // indicator. Beside the wrapper's safe-area padding, not folded into it.
+  scrollContent: { alignItems: 'center', paddingBottom: 28, paddingTop: 6 },
   column: { maxWidth: layout.maxWidth, paddingHorizontal: GUTTER, width: '100%' },
   fluid: { flex: 1, maxWidth: Platform.OS === 'web' ? layout.maxWidth : undefined },
 }))
