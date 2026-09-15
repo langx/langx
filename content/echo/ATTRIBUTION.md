@@ -6,7 +6,8 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-Nothing yet. `en/absoluteBeginner.json` is a draft; see "Drafts" below.
+Nothing yet. `en/absoluteBeginner.json`, `en/beginner.json` and
+`en/intermediate.json` are drafts; see "Drafts" below.
 
 ## Chosen, and why
 
@@ -28,26 +29,31 @@ rather than copied into our own storage. Which candidates exist is decided by
 one may be used is decided by `add-audio.mjs`, which looks every file up and
 keeps only the terms below.
 
-**Nothing is assumed from a filename.** The three English drafts draw on 130
-files under six different licences — 84 of them Lingua Libre, the rest older
+**Nothing is assumed from a filename.** The three English drafts draw on 114
+files under five different licences — 72 of them Lingua Libre, the rest older
 Wiktionary and Shtooka uploads — so "Commons audio is CC BY-SA" would have been
-wrong about more than half of them:
+wrong about two thirds of them:
 
 | Licence       | Files | Credit                                           |
 | ------------- | ----- | ------------------------------------------------ |
-| CC0           | 70    | Not required, and given anyway where it is named |
-| CC BY-SA 4.0  | 41    | Required — Lingua Libre's default                |
-| CC BY 3.0 us  | 9     | Required — the Shtooka Project recordings        |
-| CC BY-SA 3.0  | 7     | Required                                         |
-| Public domain | 4     | Not required                                     |
-| CC BY 4.0     | 2     | Required                                         |
+| CC0           | 58    | Not required, and given anyway where it is named |
+| CC BY-SA 4.0  | 39    | Required — Lingua Libre's default                |
+| CC BY 3.0 us  | 8     | Required — the Shtooka Project recordings        |
+| CC BY-SA 3.0  | 6     | Required                                         |
+| Public domain | 3     | Not required                                     |
 
-The speakers, who are the credit those licences ask for: Sapaa (41), Vealhurl
-(21), Commander Keane (20), Flame, not lame (17), Dvortygirl (10), Association
-Shtooka — Judith Franck (9), Paul2520 (5), Steve Shives (3), and one each from
-Wreaderick, Pvanp7, Wodencafe, Persent101, RGBLionGam3r17 and Back ache. Each
-name is stored on the item it belongs to and drawn in the app as "Spoken by
-{name}" — this list is the summary, not the mechanism.
+The speakers, who are the credit those licences ask for: Sapaa (31), Vealhurl
+(20), Commander Keane (18), Flame, not lame (16), Association Shtooka — Judith
+Franck (8), Dvortygirl (8), Paul2520 (4), Steve Shives (3), and one each from
+Wreaderick, Pvanp7, Wodencafe, Persent101 and Back ache. Each name is stored on
+the item it belongs to and drawn in the app as "Spoken by {name}" — this list is
+the summary, not the mechanism.
+
+These counts fell when the review pass dropped items: the recordings were
+vetted against the drafts as they stood, and nineteen of them belonged to items
+that are no longer in a pack. The last CC BY 4.0 file and the only recording by
+RGBLionGam3r17 went with them, which is why the table above has five licences
+rather than six.
 
 **A recording with no readable author is refused**, even where the licence is
 otherwise fine: the credit is the term being relied on, so a file that cannot
