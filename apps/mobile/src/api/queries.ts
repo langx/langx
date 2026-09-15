@@ -2770,6 +2770,9 @@ export function useUpdateEchoCard() {
         // leaves the file alone, null takes it off. See `updateEchoCardSchema`.
         ...(input.image !== undefined ? { image: input.image } : {}),
         ...(input.audio !== undefined ? { audio: input.audio } : {}),
+        // Recordings to take off, by URL. Absent when none were, so a save
+        // that only fixes the sentence says nothing about them.
+        ...(input.removeAudio?.length ? { removeAudio: input.removeAudio } : {}),
       }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
