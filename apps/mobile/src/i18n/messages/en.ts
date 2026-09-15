@@ -309,10 +309,16 @@ export const en = {
      * "What is this?" in the header, and what it opens.
      *
      * The intervals named here are the real ladder a card climbs on Good —
-     * `SRS_RULES`' two learning steps, then 1, 3, 8 and 20 days — and not a
-     * rounder set that would read better: the session draws the same numbers
-     * on its grade buttons, and an explainer that disagreed with them would
-     * be teaching the wrong thing about the screen it sits on.
+     * `SRS_RULES`' two learning steps, then 1, 3, 8, 20, 50, 125 and 313 days
+     * against a 365-day ceiling — and not a rounder set that would read
+     * better: the session draws the same numbers on its grade buttons, and an
+     * explainer that disagreed with them would be teaching the wrong thing
+     * about the screen it sits on.
+     *
+     * The row names the first five and then `aboutStepMore` says the rest in
+     * words, because five numbers on their own read as "five reviews and then
+     * it is over". Nothing is ever over: a card has no retired state, and at
+     * the top of the ladder it still comes back about once a year.
      *
      * The claim in `aboutProof` is deliberately the narrow one. Spacing and
      * retrieval practice are what a century of memory research actually
@@ -333,6 +339,7 @@ export const en = {
     aboutStep3d: '3 days',
     aboutStep8d: '8 days',
     aboutStep20d: '20 days',
+    aboutStepMore: 'then months, then once a year',
     aboutRecall:
       'Being asked is what does the work. Pulling a word out of your own head fixes it far better than reading it again.',
     aboutLittle:

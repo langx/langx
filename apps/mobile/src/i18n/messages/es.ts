@@ -271,6 +271,7 @@ export const es: Localized<EnMessages> = {
     aboutStep3d: '3 días',
     aboutStep8d: '8 días',
     aboutStep20d: '20 días',
+    aboutStepMore: 'luego meses, luego una vez al año',
     aboutRecall:
       'Lo que funciona es que te pregunten. Sacar una palabra de tu propia cabeza la fija mucho mejor que volver a leerla.',
     aboutLittle:

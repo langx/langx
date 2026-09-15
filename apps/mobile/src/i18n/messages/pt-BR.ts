@@ -268,6 +268,7 @@ export const ptBR: Localized<EnMessages> = {
     aboutStep3d: '3 dias',
     aboutStep8d: '8 dias',
     aboutStep20d: '20 dias',
+    aboutStepMore: 'depois meses, depois uma vez por ano',
     aboutRecall:
       'O que faz o trabalho é ser perguntado. Puxar uma palavra da própria cabeça fixa muito mais do que ler de novo.',
     aboutLittle:

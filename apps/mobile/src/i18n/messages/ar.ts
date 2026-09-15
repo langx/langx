@@ -286,6 +286,7 @@ export const ar: Localized<EnMessages> = {
     aboutStep3d: '3 أيام',
     aboutStep8d: '8 أيام',
     aboutStep20d: '20 يومًا',
+    aboutStepMore: 'ثم شهور، ثم مرة في السنة',
     aboutRecall:
       'ما يصنع الفرق هو أن تُسأل. استخراج الكلمة من رأسك يثبّتها أكثر بكثير من إعادة قراءتها.',
     aboutLittle:

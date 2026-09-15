@@ -121,6 +121,11 @@ export function EchoAboutSheet({ visible, onClose }: { visible: boolean; onClose
                   <Text style={styles.ladderStep}>{t(step)}</Text>
                 </Fragment>
               ))}
+              {/* Five numbers and a full stop would say "five reviews, then
+                  never again". The ladder has no end: past 20 days it is 50,
+                  125, 313, and then a card comes back once a year forever. */}
+              <Text style={styles.ladderDot}>·</Text>
+              <Text style={styles.ladderMore}>{t('echo.aboutStepMore')}</Text>
             </View>
 
             {REASONS.map((reason) => (
@@ -182,6 +187,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   ladderLabel: { ...font.label, color: colors.textFaint, width: '100%' },
   ladderStep: { color: colors.text, fontSize: 13, fontWeight: '700' },
   ladderDot: { color: colors.textFaint, fontSize: 13 },
+  ladderMore: { color: colors.textMuted, fontSize: 13 },
   reason: { alignItems: 'flex-start', flexDirection: 'row', gap: spacing.sm },
   // The tick sits on the first line of text, not in the middle of the block.
   tick: { paddingTop: 3 },

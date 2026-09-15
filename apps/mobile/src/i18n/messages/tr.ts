@@ -283,6 +283,7 @@ export const tr: Localized<EnMessages> = {
     aboutStep3d: '3 gün',
     aboutStep8d: '8 gün',
     aboutStep20d: '20 gün',
+    aboutStepMore: 'sonra aylar, sonra yılda bir',
     aboutRecall:
       'İşi yapan şey sorulmaktır. Bir kelimeyi kendi kafandan çıkarmak, onu tekrar okumaktan çok daha kalıcı kılar.',
     aboutLittle:

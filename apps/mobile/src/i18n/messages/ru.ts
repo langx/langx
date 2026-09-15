@@ -283,6 +283,7 @@ export const ru: Localized<EnMessages> = {
     aboutStep3d: '3 дня',
     aboutStep8d: '8 дней',
     aboutStep20d: '20 дней',
+    aboutStepMore: 'потом месяцы, потом раз в год',
     aboutRecall:
       'Работает именно вопрос. Достать слово из собственной головы закрепляет его гораздо лучше, чем перечитать.',
     aboutLittle:
