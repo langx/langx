@@ -10,6 +10,7 @@ import { loadEnv, publicApiUrl, unsubscribeSecret } from './env'
 import { createPersonDeleterFromEnv } from './modules/analytics/personDeleter'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createTtsProvider } from './tts/createTtsProvider'
 import { createAnthropicProvider } from './modules/official/assistantProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
@@ -50,6 +51,10 @@ async function main(): Promise<void> {
 
   const translation = createTranslationProvider(env)
 
+  // The not-configured one without `TTS_URL`: a pack's readings still play,
+  // only "Read it aloud" on a member's own card says it cannot.
+  const tts = createTtsProvider(env)
+
   // `null` without a key. @langx still greets and announces — those are ours,
   // not the model's — and a message to it is answered with the offline line.
   const assistant = createAnthropicProvider(env)
@@ -75,6 +80,7 @@ async function main(): Promise<void> {
     storage,
     translation,
     revenueCat,
+    tts,
     push,
     email: emailSender,
     assistant,

@@ -187,6 +187,18 @@ const envSchema = z.object({
    */
   FFMPEG_PATH: z.string().min(1).default('ffmpeg'),
 
+  /*
+   * The voice service, for a member's own Echo card. A separate process (see
+   * `apps/tts`) because the model and its runtime are a few hundred megabytes
+   * of Python that the API's own image and 512 MB have no room for. Unset,
+   * "Read it aloud" fails with a clear error and everything else is untouched;
+   * a pack's readings were made offline and never pass through here. The
+   * secret is belt-and-braces on a private network, and mirrors what the
+   * service itself checks.
+   */
+  TTS_URL: emptyToUndefined(z.url().optional()),
+  TTS_SECRET: emptyToUndefined(z.string().optional()),
+
   // Faz 6: translation. Left unset, `/translate` returns a clear
   // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.
   // The service-account key's *content* goes here (not a file path like

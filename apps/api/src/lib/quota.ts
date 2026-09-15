@@ -24,6 +24,8 @@ export type TrackedQuotaKind =
    * new code path under a feature that is already live.
    */
   | 'echoNewCards'
+  /** A member's own card read by the server voice; one unit per card. */
+  | 'echoVoices'
 
 export interface QuotaStatus {
   limit: number | null
