@@ -198,6 +198,27 @@ export const tr: Localized<EnMessages> = {
     emptyBody:
       'Bir sohbette mesaja basılı tut ve Echo’ya ekle’yi seç. Yarın geri gelir, sonra üç gün sonra, sonra bir hafta sonra.',
     emptyAction: 'Sohbetlere git',
+    readyTitle: 'Hazır olduğunda',
+    tileDue: 'kart bekliyor',
+    readySub: 'Başlamak için dokun',
+    nextIn: 'Sonraki kart {time} sonra geliyor',
+    statToday: 'Bugün',
+    statWeek: 'Bu hafta',
+    statCards: 'Kart',
+    allCards: 'Tüm kartlar',
+    allCardsSub: 'Sohbetlerinden, gönderilerden ve kendi yazdıklarından',
+    packsSub: 'Öğrendiğin diller için hazır kelimeler',
+    packsBlurb:
+      'Öğrendiğin diller için hazır kelimeler. Bir avuç al; kendi sakladığın kartlarla aynı programa girsinler.',
+    packsEmptyTitle: 'Henüz paket yok',
+    packsEmptyBody:
+      'Paketler öğrendiğin dilleri takip eder. Profiline bir dil ekle, o dil için elimizdekiler burada belirsin.',
+    packTileSub: '{total} kelimeden başlandı',
+    statWords: 'Kelime',
+    statYours: 'Sende',
+    statReviews: 'Tekrar',
+    cardSource: 'Nereden geldi',
+    removeCard: 'Kartı çıkar',
     cards: 'Kartlar',
     cardCount: {
       one: '{count} kart',

@@ -977,7 +977,7 @@ export async function summary(
   // wrong, and the Monday reset would be the half nobody expects.
   const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const [byLanguage, reviewedToday, reviewedThisWeek] = await Promise.all([
+  const [byLanguage, reviewedToday, reviewedThisWeek, next] = await Promise.all([
     cards
       .aggregate<{ _id: string; total: number; due: number }>([
         // Archived cards count nowhere: the badge on the tab and the totals
@@ -995,6 +995,14 @@ export async function summary(
       .toArray(),
     db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfDay } }),
     db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfWeek } }),
+    // The soonest card still waiting, for a tab with nothing due to say when
+    // there will be. `owner_due` sorts it, so this is a seek rather than a
+    // scan — and archived cards are excluded here for the same reason they are
+    // excluded above: they are not coming back.
+    cards.findOne(
+      { userId, archivedAt: { $exists: false }, 'srs.due': { $gt: now } },
+      { sort: { 'srs.due': 1 }, projection: { 'srs.due': 1 } },
+    ),
   ])
 
   const languages = byLanguage.map((row) => ({ lang: row._id, total: row.total, due: row.due }))
@@ -1004,5 +1012,6 @@ export async function summary(
     languages,
     reviewedToday,
     reviewedThisWeek,
+    nextDue: next ? next.srs.due.toISOString() : null,
   }
 }

@@ -187,6 +187,27 @@ export const de: Localized<EnMessages> = {
     emptyBody:
       'Halte eine Nachricht im Chat gedrückt und wähle „Zu Echo hinzufügen“. Sie kommt morgen wieder, dann in drei Tagen, dann in einer Woche.',
     emptyAction: 'Zu den Chats',
+    readyTitle: 'Bereit, wenn du es bist',
+    tileDue: 'Karten fällig',
+    readySub: 'Zum Wiederholen tippen',
+    nextIn: 'Die nächste Karte kommt in {time} zurück',
+    statToday: 'Heute',
+    statWeek: 'Diese Woche',
+    statCards: 'Karten',
+    allCards: 'Alle Karten',
+    allCardsSub: 'Aus deinen Chats, aus Beiträgen und von dir selbst',
+    packsSub: 'Fertige Wörter für das, was du lernst',
+    packsBlurb:
+      'Fertige Wörter für die Sprachen, die du lernst. Nimm eine Handvoll — sie kommen in denselben Plan wie deine eigenen Karten.',
+    packsEmptyTitle: 'Noch keine Pakete',
+    packsEmptyBody:
+      'Pakete richten sich nach den Sprachen, die du lernst. Füge eine in deinem Profil hinzu, dann taucht hier auf, was wir dafür haben.',
+    packTileSub: 'von {total} begonnen',
+    statWords: 'Wörter',
+    statYours: 'Deine',
+    statReviews: 'Wiederholungen',
+    cardSource: 'Woher sie stammt',
+    removeCard: 'Karte entfernen',
     cards: 'Karten',
     cardCount: {
       one: '{count} Karte',

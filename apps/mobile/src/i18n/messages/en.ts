@@ -230,6 +230,33 @@ export const en = {
       'Press and hold a message in a chat, then choose Add to Echo. It comes back tomorrow, then in three days, then in a week.',
     emptyAction: 'Go to Chats',
 
+    // The tab, drawn as a stage: the tile in the middle is the button, and
+    // every list it used to carry is a row at the bottom.
+    readyTitle: 'Ready when you are',
+    /** Under the number on the tile, uppercase, so the two read as one. */
+    tileDue: 'cards due',
+    readySub: 'Tap to start reviewing',
+    /** `{time}` is already short — `3h`, `4d`. */
+    nextIn: 'The next card comes back in {time}',
+    statToday: 'Today',
+    statWeek: 'This week',
+    statCards: 'Cards',
+    allCards: 'All cards',
+    allCardsSub: 'From your chats, from posts, and your own',
+    packsSub: 'Ready-made words for what you are learning',
+    packsBlurb:
+      'Ready-made words for the languages you are learning. Take a handful and they join the same schedule as the cards you keep yourself.',
+    packsEmptyTitle: 'No packs yet',
+    packsEmptyBody:
+      'Packs follow the languages you are learning. Add one to your profile and whatever we have for it turns up here.',
+    /** Under the number on the pack's tile, so the two read as one line. */
+    packTileSub: 'of {total} started',
+    statWords: 'Words',
+    statYours: 'Yours',
+    statReviews: 'Reviews',
+    cardSource: 'Where it came from',
+    removeCard: 'Remove card',
+
     // Every card.
     cards: 'Cards',
     cardCount: { one: '{count} card', other: '{count} cards' },

@@ -187,6 +187,27 @@ export const fr: Localized<EnMessages> = {
     emptyBody:
       'Appuie longuement sur un message dans une discussion et choisis Ajouter à Echo. Il revient demain, puis dans trois jours, puis dans une semaine.',
     emptyAction: 'Aller aux discussions',
+    readyTitle: 'Quand tu veux',
+    tileDue: 'cartes à revoir',
+    readySub: 'Touche pour réviser',
+    nextIn: 'La prochaine carte revient dans {time}',
+    statToday: 'Aujourd’hui',
+    statWeek: 'Cette semaine',
+    statCards: 'Cartes',
+    allCards: 'Toutes les cartes',
+    allCardsSub: 'De tes discussions, des publications et de toi',
+    packsSub: 'Des mots tout prêts pour ce que tu apprends',
+    packsBlurb:
+      'Des mots tout prêts pour les langues que tu apprends. Prends-en une poignée : ils rejoignent le même programme que tes propres cartes.',
+    packsEmptyTitle: 'Pas encore de packs',
+    packsEmptyBody:
+      'Les packs suivent les langues que tu apprends. Ajoutes-en une à ton profil et ce que nous avons apparaîtra ici.',
+    packTileSub: 'sur {total} commencés',
+    statWords: 'Mots',
+    statYours: 'À toi',
+    statReviews: 'Révisions',
+    cardSource: 'D’où elle vient',
+    removeCard: 'Retirer la carte',
     cards: 'Cartes',
     cardCount: {
       one: '{count} carte',

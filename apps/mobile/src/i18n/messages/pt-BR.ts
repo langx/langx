@@ -183,6 +183,27 @@ export const ptBR: Localized<EnMessages> = {
     emptyBody:
       'Segure uma mensagem em uma conversa e escolha Adicionar ao Echo. Ela volta amanhã, depois em três dias, depois em uma semana.',
     emptyAction: 'Ir para Conversas',
+    readyTitle: 'Quando você quiser',
+    tileDue: 'cartões pendentes',
+    readySub: 'Toque para revisar',
+    nextIn: 'O próximo cartão volta em {time}',
+    statToday: 'Hoje',
+    statWeek: 'Esta semana',
+    statCards: 'Cartões',
+    allCards: 'Todos os cartões',
+    allCardsSub: 'Das suas conversas, de posts e seus',
+    packsSub: 'Palavras prontas para o que você está aprendendo',
+    packsBlurb:
+      'Palavras prontas para os idiomas que você está aprendendo. Pegue um punhado e elas entram no mesmo cronograma dos seus próprios cartões.',
+    packsEmptyTitle: 'Ainda não há pacotes',
+    packsEmptyBody:
+      'Os pacotes seguem os idiomas que você está aprendendo. Adicione um ao seu perfil e o que tivermos para ele aparece aqui.',
+    packTileSub: 'de {total} começados',
+    statWords: 'Palavras',
+    statYours: 'Seus',
+    statReviews: 'Revisões',
+    cardSource: 'De onde veio',
+    removeCard: 'Remover cartão',
     cards: 'Cartões',
     cardCount: {
       one: '{count} cartão',

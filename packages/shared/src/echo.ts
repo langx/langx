@@ -287,6 +287,16 @@ export const echoSummarySchema = z.object({
   reviewedToday: z.number().int().nonnegative(),
   /** A rolling seven days, as `reviewedToday` is a rolling twenty-four hours. */
   reviewedThisWeek: z.number().int().nonnegative(),
+  /**
+   * When the soonest card that is not yet due comes back, so a tab with
+   * nothing to do can say when there will be something. Null when every card
+   * is already due, and when there are no cards at all.
+   *
+   * Optional rather than merely nullable: an app newer than the API it is
+   * talking to has to keep working, and the one screen that reads this says
+   * less when the field is absent instead of failing to parse the summary.
+   */
+  nextDue: z.string().nullable().optional(),
 })
 export type EchoSummary = z.infer<typeof echoSummarySchema>
 

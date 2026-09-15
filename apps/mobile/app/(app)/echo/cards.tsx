@@ -437,17 +437,25 @@ function Due({ card }: { card: EchoCard }) {
    */
   if (card.archivedAt) return null
 
+  /*
+   * A pill rather than loose grey text: down a list of two-line rows the bare
+   * `4d` read as part of the sentence above it, and the one row that says a
+   * word instead of a number — the card that is due now — is the row this
+   * screen is usually opened for.
+   */
   return (
-    <Text
-      style={styles.due}
-      accessibilityLabel={time ? t('echo.dueIn', { time }) : t('echo.dueNow')}
-    >
-      {time ?? t('echo.dueNow')}
-    </Text>
+    <View style={[styles.due, !time && styles.dueNow]}>
+      <Text
+        style={[styles.dueText, !time && styles.dueNowText]}
+        accessibilityLabel={time ? t('echo.dueIn', { time }) : t('echo.dueNow')}
+      >
+        {time ?? t('echo.dueNow')}
+      </Text>
+    </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, spacing }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   /*
    * The settings screen's box, and its 50pt `fill` pill: the one thing on the
    * page that is not a row. Its own `paddingHorizontal` is the glyph's inset,
@@ -488,9 +496,22 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   front: { color: colors.text, fontSize: 17, fontWeight: '700' },
   back: { color: colors.text, fontSize: 15, lineHeight: 21 },
   source: { color: colors.textFaint, fontSize: 12 },
+  due: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+  },
+  dueNow: { backgroundColor: colors.warningBg },
   // Tabular figures: the column of them down the list should not shuffle
   // sideways as `9m` becomes `10m`.
-  due: { color: colors.textFaint, fontSize: 13, fontVariant: ['tabular-nums'] },
+  dueText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontVariant: ['tabular-nums'],
+    fontWeight: '600',
+  },
+  dueNowText: { color: colors.warning },
   headerActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   headerAction: { color: colors.accent, fontSize: 16, fontWeight: '600' },
   selectionBar: {
