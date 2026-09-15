@@ -112,6 +112,34 @@ export function isDoubleTap(
 }
 
 /**
+ * The three pictures the viewer keeps mounted: the one before, the one open,
+ * the one after — as album indexes, wrapped at both ends, each with a key so
+ * that the view already holding a picture is moved when the page turns rather
+ * than handed a new source. `null` is an empty slot: a single picture has no
+ * neighbours.
+ *
+ * In a two-picture album both neighbours are the same picture and a key can
+ * be used once. The one ahead keeps it: forward is the common direction, and
+ * that is the turn that must not blink.
+ */
+export function albumSlots(index: number, total: number): { key: string; at: number | null }[] {
+  if (total < 2) {
+    return [
+      { key: 'before', at: null },
+      { key: String(index), at: index },
+      { key: 'after', at: null },
+    ]
+  }
+  const before = (index + total - 1) % total
+  const after = (index + 1) % total
+  return [
+    { key: before === after ? 'before' : String(before), at: before },
+    { key: String(index), at: index },
+    { key: String(after), at: after },
+  ]
+}
+
+/**
  * Does a released drag turn the page, and which way?
  *
  * Only a drag that is more sideways than not: the same gesture layer reads a

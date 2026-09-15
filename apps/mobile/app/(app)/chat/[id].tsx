@@ -2076,6 +2076,7 @@ export default function ChatScreen() {
           photos={viewing?.items ?? []}
           index={viewing?.index ?? null}
           onClose={() => setViewing(null)}
+          onIndexChange={(index) => setViewing((open) => (open ? { ...open, index } : open))}
         />
       </Animated.View>
     </Screen>
