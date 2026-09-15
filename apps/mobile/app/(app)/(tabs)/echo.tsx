@@ -1,39 +1,35 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import type { EchoCard } from '@langx/shared'
-import { useEchoCards, useEchoPacks, useEchoSummary } from '../../../src/api/queries'
-import { Avatar } from '../../../src/components/ui/Avatar'
+import { useState } from 'react'
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { useEchoPacks, useEchoSummary } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
 import { EchoAboutSheet } from '../../../src/components/EchoAboutSheet'
-import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Screen } from '../../../src/components/ui/Screen'
-import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useT } from '../../../src/i18n'
 import { useLocale } from '../../../src/i18n/I18nProvider'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
-import { levelLabel } from '../../../src/i18n/labels'
 import { useEchoOffline } from '../../../src/hooks/useEchoOffline'
-import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { chooseAlert } from '../../../src/lib/alert'
 import { authClient } from '../../../src/lib/auth-client'
-import { dedupeById } from '../../../src/lib/dedupeById'
-import { relativeTimeCompact } from '../../../src/lib/format'
-import { listState } from '../../../src/lib/listState'
+import { compactCount, dueInCompact } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-import { useState } from 'react'
 
 /**
- * The review tab: what is due, and where it came from.
+ * The review tab: one thing in the middle, and everything else a tap away.
  *
- * No packs section. Phase 1 is deliberately content-free so that nothing in
- * it can be held up by a licence, and an empty Packs heading would be a
- * promise the tab cannot keep yet.
+ * It used to be a header sitting on a list of the cards made from chats, with
+ * the packs and a link to every card in the list's footer — an action and
+ * three lists sharing one screen, none of them obviously the thing to do. The
+ * stage is the hourly gift's (`app/(app)/gift.tsx`): the tile *is* the button,
+ * the number on it is what you came to know, and the lists are two rows at the
+ * bottom. Nothing was removed, it moved — with one exception, which is why
+ * `echo/card/[id].tsx` now carries the row back to the chat a card came from.
  */
 export default function EchoScreen() {
   useScreenInteractive()
@@ -45,21 +41,15 @@ export default function EchoScreen() {
   const { data: session } = authClient.useSession()
 
   const summary = useEchoSummary()
-  /** `null` is All. Named languages come from the summary, never from the loaded
-   *  page: a chip row that changed as you scrolled would be unusable. */
+  /** `null` is All. The chosen language decides the number on the tile and the
+   *  deck the tile opens — see `startSession`. */
   const [lang, setLang] = useState<string | null>(null)
   const [about, setAbout] = useState(false)
-  const cards = useEchoCards(lang ?? undefined)
   const packs = useEchoPacks()
   const pull = usePullToRefresh(async () => {
-    await Promise.all([summary.refetch(), cards.refetch(), packs.refetch()])
+    await Promise.all([summary.refetch(), packs.refetch()])
   })
 
-  const items = dedupeById(cards.data?.pages.flatMap((page) => page.items) ?? [])
-  const chats = items.filter((card) => card.source.kind === 'chat')
-  const partners = useProfileCache(
-    chats.map((card) => (card.source.kind === 'chat' ? card.source.partnerId : '')).filter(Boolean),
-  )
   /*
    * The counts saved on the device, and the one place grades stranded by a
    * tunnel are sent from. A person who answered ten cards with no network and
@@ -69,21 +59,19 @@ export default function EchoScreen() {
   const { saved } = useEchoOffline(summary.data)
   // The server when it has answered, the device when it has not.
   const counts = summary.data ?? saved?.summary ?? undefined
-  const due = counts?.due ?? 0
-  const packRows = packs.data?.items ?? []
   const languages = counts?.languages ?? []
+  const chosen = lang ? languages.find((row) => row.lang === lang) : undefined
+  // A chip narrows the stage as well as the session: the number over "cards
+  // due" has to be the number of cards the tile would open.
+  const due = lang ? (chosen?.due ?? 0) : (counts?.due ?? 0)
+  const total = lang ? (chosen?.total ?? 0) : (counts?.total ?? 0)
+  const packRows = packs.data?.items ?? []
+  const nextDue = summary.data?.nextDue ? dueInCompact(summary.data.nextDue, { t }) : null
 
-  const state = listState({
-    isPending: cards.isPending,
-    isError: cards.isError,
-    itemCount: items.length,
-    isPaused: cards.fetchStatus === 'paused',
-  })
-
-  function open(chosen: string | null): void {
+  function open(pick: string | null): void {
     router.push({
       pathname: '/(app)/echo/session',
-      params: chosen ? { lang: chosen } : {},
+      params: pick ? { lang: pick } : {},
     })
   }
 
@@ -92,15 +80,10 @@ export default function EchoScreen() {
    *
    * A deck drawn across every language at once is not a study session — it is
    * a French word, then a Russian one, then French again, with the reader
-   * switching alphabets between cards. The chips above filter the *list*, and
-   * "All" is a reasonable thing to browse; it was never a reasonable thing to
-   * be quizzed on, and passing it straight through to the session is what made
-   * it one.
-   *
-   * So the sheet, and only when it has something to ask: a chip already chosen
-   * is an answer, and one language with cards due is not a question. There is
-   * deliberately no "All languages" row — the mixed deck is the thing this
-   * removes, not a choice it offers.
+   * switching alphabets between cards. A chip already chosen is an answer, and
+   * one language with cards due is not a question; the sheet is only for the
+   * case that is genuinely ambiguous. There is deliberately no "All languages"
+   * row — the mixed deck is the thing this removes, not a choice it offers.
    */
   async function startSession(): Promise<void> {
     // The one guest gate in the module, and the place the design document puts
@@ -113,256 +96,313 @@ export default function EchoScreen() {
       return
     }
 
-    const due = languages.filter((row) => row.due > 0)
-    const only = due[0]
+    const withCards = languages.filter((row) => row.due > 0)
+    const only = withCards[0]
     if (!only) return
-    if (due.length === 1) {
+    if (withCards.length === 1) {
       open(only.lang)
       return
     }
 
-    const chosen = await chooseAlert(
+    const picked = await chooseAlert(
       t('echo.reviewWhich'),
       undefined,
       // `cardCount` rather than a plural of its own: the row is a language and
       // a number of cards, and that plural already exists in all eight.
-      due.map((row) => ({
+      withCards.map((row) => ({
         label: `${names.language(row.lang)} · ${t('echo.cardCount', { count: row.due })}`,
         value: row.lang,
       })),
     )
-    if (chosen) open(chosen)
+    if (picked) open(picked)
   }
 
-  function openThread(card: EchoCard): void {
-    if (card.source.kind !== 'chat') return
-    // `params`, never a query string built by hand: `routeLiterals.test.ts`
-    // reads an interpolated literal as a wildcard.
-    router.push({
-      pathname: '/(app)/chat/[id]',
-      params: { id: card.source.conversationId, at: card.source.messageId },
-    })
+  /** The stage: what is due, what is resting, or what has not started yet. */
+  function stage() {
+    if (summary.isPending && !counts) return <ActivityIndicator />
+    if (summary.isError && !counts) return <LoadFailed onRetry={() => void summary.refetch()} />
+
+    if (due > 0) {
+      return (
+        <>
+          {/* Two views for the hard shadow, as `Button` and the gift tile draw
+              it: the face drops onto the shade on press. */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('echo.due', { count: due })}
+            onPress={() => void startSession()}
+            style={styles.tileShade}
+          >
+            {({ pressed }) => (
+              <View style={[styles.tileFace, pressed && styles.tilePressed]}>
+                <Text style={styles.tileCount}>{compactCount(due, locale)}</Text>
+                <Text style={styles.tileUnit}>{t('echo.tileDue')}</Text>
+              </View>
+            )}
+          </Pressable>
+          <View style={styles.caption}>
+            <Text style={styles.captionTitle}>{t('echo.readyTitle')}</Text>
+            <Text style={styles.captionSub}>{t('echo.readySub')}</Text>
+          </View>
+        </>
+      )
+    }
+
+    if (total > 0) {
+      return (
+        <>
+          <View style={styles.restingTile}>
+            <Feather name="check" size={64} color={colors.textFaint} />
+          </View>
+          <View style={styles.caption}>
+            <Text style={styles.captionTitle}>{t('echo.allCaughtUp')}</Text>
+            {/* Only when the server has said so: an app talking to an API
+                without `nextDue` says nothing here rather than guessing. */}
+            {nextDue ? (
+              <Text style={styles.captionSub}>{t('echo.nextIn', { time: nextDue })}</Text>
+            ) : null}
+          </View>
+        </>
+      )
+    }
+
+    return (
+      <>
+        <View style={styles.restingTile}>
+          <Feather name="repeat" size={56} color={colors.textFaint} />
+        </View>
+        <View style={styles.caption}>
+          <Text style={styles.captionTitle}>{t('echo.emptyTitle')}</Text>
+          <Text style={styles.captionSub}>{t('echo.emptyBody')}</Text>
+        </View>
+        {/*
+         * A pack when there is one, and Chats when there is not. Somebody who
+         * has just signed up has no conversations to keep a sentence from, and
+         * sending them to an empty Chats tab is the empty promise the packs
+         * exist to answer.
+         */}
+        <Button
+          label={t(packRows.length > 0 ? 'echo.packsFor' : 'echo.emptyAction')}
+          variant="secondary"
+          onPress={() =>
+            packRows.length > 0
+              ? router.push('/(app)/echo/packs')
+              : router.push('/(app)/(tabs)/chats')
+          }
+          style={styles.emptyAction}
+        />
+      </>
+    )
   }
 
   return (
     <Screen fluid tabbed>
       <View style={styles.header}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{t('echo.title')}</Text>
-          {/*
-           * The schedule is the feature, and it is invisible: a card answered
-           * correctly vanishes for days, which reads as the app losing it
-           * until somebody explains why. One tap, in the corner, never in the
-           * way.
-           */}
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={12}
-            onPress={() => setAbout(true)}
-            style={({ pressed }) => pressed && styles.pressed}
-          >
-            {/* Drawn as Discover's "What is this?" is, down to the muted 13. */}
-            <Text style={styles.about}>{t('echo.aboutOpen')}</Text>
-          </Pressable>
-        </View>
-        <Text style={styles.due}>
-          {due > 0 ? t('echo.due', { count: due }) : t('echo.allCaughtUp')}
-        </Text>
-        <Button label={t('echo.review')} onPress={() => void startSession()} disabled={due === 0} />
-        {languages.length > 1 ? (
-          <View style={styles.chips}>
-            <Chip
-              label={t('echo.allLanguages')}
-              selected={lang === null}
-              onPress={() => setLang(null)}
-            />
-            {languages.map((row) => (
-              <Chip
-                key={row.lang}
-                label={names.language(row.lang)}
-                selected={lang === row.lang}
-                onPress={() => setLang(row.lang)}
-              />
-            ))}
-          </View>
-        ) : null}
+        <Text style={styles.title}>{t('echo.title')}</Text>
+        {/*
+         * The schedule is the feature, and it is invisible: a card answered
+         * correctly vanishes for days, which reads as the app losing it until
+         * somebody explains why. One tap, in the corner, never in the way.
+         */}
+        <Pressable
+          accessibilityRole="button"
+          hitSlop={12}
+          onPress={() => setAbout(true)}
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          {/* Drawn as Discover's "What is this?" is, down to the muted 13. */}
+          <Text style={styles.about}>{t('echo.aboutOpen')}</Text>
+        </Pressable>
       </View>
 
-      {state === 'skeleton' ? (
-        <View style={styles.loading}>
-          <Skeleton height={64} />
-          <Skeleton height={64} />
-          <Skeleton height={64} />
-        </View>
-      ) : state === 'failed' ? (
-        <LoadFailed onRetry={() => void cards.refetch()} />
-      ) : (
-        <FlatList
-          data={chats}
-          keyExtractor={(card) => card._id}
-          contentContainerStyle={styles.list}
-          refreshControl={<RefreshControl {...pull} />}
-          onEndReachedThreshold={0.6}
-          onEndReached={() => {
-            if (cards.hasNextPage && !cards.isFetchingNextPage) void cards.fetchNextPage()
-          }}
-          ListHeaderComponent={
-            chats.length > 0 ? <Text style={styles.section}>{t('echo.fromYourChats')}</Text> : null
-          }
-          /*
-           * A pack when there is one, and Chats when there is not. Somebody
-           * who has just signed up has no conversations to keep a sentence
-           * from, and sending them to an empty Chats tab is the empty promise
-           * the packs exist to answer.
-           */
-          /*
-           * Only when there is genuinely nothing. The list is the chat-made
-           * cards alone, so a person whose cards all came from a pack was
-           * being told "Nothing to review yet" under a heading that said two
-           * were due — a contradiction, and the packs section below already
-           * carries the screen for them.
-           */
-          ListEmptyComponent={
-            (counts?.total ?? 0) > 0 ? null : (
-              <EmptyState
-                icon="repeat"
-                title={t('echo.emptyTitle')}
-                body={t('echo.emptyBody')}
-                actionLabel={t(packRows.length > 0 ? 'echo.packsFor' : 'echo.emptyAction')}
-                actionVariant="secondary"
-                onAction={() =>
-                  packRows[0]
-                    ? router.push({
-                        pathname: '/(app)/echo/pack/[id]',
-                        params: { id: packRows[0]._id },
-                      })
-                    : router.push('/(app)/(tabs)/chats')
-                }
+      {/*
+       * A scroll view with nothing much to scroll: `flexGrow` lets the stage
+       * take the height it is centred in, and the pull it carries is what the
+       * list used to bring — the one gesture that refetches this screen.
+       */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.body}
+        refreshControl={<RefreshControl {...pull} />}
+      >
+        <View style={styles.stage}>
+          {stage()}
+          {languages.length > 1 ? (
+            <View style={styles.chips}>
+              <Chip
+                label={t('echo.allLanguages')}
+                selected={lang === null}
+                onPress={() => setLang(null)}
               />
-            )
-          }
-          renderItem={({ item }) => {
-            const partner =
-              item.source.kind === 'chat' ? partners[item.source.partnerId] : undefined
-            return (
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => openThread(item)}
-                style={({ pressed }) => [styles.row, pressed && styles.pressed]}
-              >
-                <Avatar
-                  {...(partner?.avatarUrl ? { url: partner.avatarUrl } : {})}
-                  name={partner?.displayName ?? t('chat.them')}
-                  {...(partner?._id ? { seed: partner._id } : {})}
-                  size={40}
+              {languages.map((row) => (
+                <Chip
+                  key={row.lang}
+                  label={names.language(row.lang)}
+                  selected={lang === row.lang}
+                  onPress={() => setLang(row.lang)}
                 />
-                <View style={styles.rowText}>
-                  {/* The sentence, as it was written. Never through `t()`. */}
-                  <Text style={styles.front} numberOfLines={1}>
-                    {item.front}
-                  </Text>
-                  <Text style={styles.back} numberOfLines={1}>
-                    {item.back}
-                  </Text>
-                </View>
-                <Text style={styles.when}>
-                  {relativeTimeCompact(item.createdAt, { t, locale })}
-                </Text>
-              </Pressable>
-            )
-          }}
-          /*
-           * A footer rather than a header row, on the same argument
-           * `phrases.tsx` makes: the due count is what the reader came for,
-           * and a footer still renders on an empty list.
-           */
-          ListFooterComponent={
-            <>
-              {packRows.length > 0 ? (
-                <View style={styles.packs}>
-                  <Text style={styles.section}>{t('echo.packs')}</Text>
-                  {packRows.map((pack) => {
-                    const done = Math.min(pack.startedCount, pack.itemCount)
-                    return (
-                      <Pressable
-                        key={pack._id}
-                        accessibilityRole="button"
-                        onPress={() =>
-                          router.push({
-                            pathname: '/(app)/echo/pack/[id]',
-                            params: { id: pack._id },
-                          })
-                        }
-                        style={({ pressed }) => [styles.packRow, pressed && styles.pressed]}
-                      >
-                        <View style={styles.rowText}>
-                          {/*
-                           * The level as well as the language: a language has
-                           * a pack per level, so without it every row of the
-                           * same language reads the same and they are told
-                           * apart only by an item count.
-                           */}
-                          <Text style={styles.front}>
-                            {`${names.language(pack.lang)} · ${levelLabel(t, pack.level)}`}
-                          </Text>
-                          <Text style={styles.back}>
-                            {t('echo.packProgress', { done, total: pack.itemCount })}
-                          </Text>
-                        </View>
-                        <Feather name="chevron-right" size={18} color={colors.textFaint} />
-                      </Pressable>
-                    )
-                  })}
-                </View>
-              ) : null}
-              <Pressable
-                accessibilityRole="button"
-                hitSlop={12}
-                onPress={() => router.push('/(app)/echo/cards')}
-                style={styles.allLink}
-              >
-                <Feather name="layers" size={16} color={colors.accent} />
-                <Text style={styles.allLinkText}>{t('echo.seeAllCards')}</Text>
-              </Pressable>
-            </>
-          }
-        />
-      )}
+              ))}
+            </View>
+          ) : null}
+        </View>
+
+        {/*
+         * Three numbers the tab has always had and never shown: the day and
+         * the week come from the same summary as the due count, and the third
+         * is every card kept. Hairlines rather than tiles — v3 has no card
+         * layer, and these are meta, not the action.
+         */}
+        {counts ? (
+          <View style={styles.stats}>
+            <Stat label={t('echo.statToday')} value={compactCount(counts.reviewedToday, locale)} />
+            <Stat
+              label={t('echo.statWeek')}
+              value={compactCount(counts.reviewedThisWeek, locale)}
+            />
+            <Stat label={t('echo.statCards')} value={compactCount(counts.total, locale)} />
+          </View>
+        ) : null}
+
+        <View style={styles.rows}>
+          {packRows.length > 0 ? (
+            <Row
+              icon="layers"
+              title={t('echo.packs')}
+              sub={t('echo.packsSub')}
+              onPress={() => router.push('/(app)/echo/packs')}
+            />
+          ) : null}
+          {/* No count on this row: the strip above already says how many
+              cards there are, and the same number twice is one too many. */}
+          <Row
+            icon="credit-card"
+            title={t('echo.allCards')}
+            sub={t('echo.allCardsSub')}
+            onPress={() => router.push('/(app)/echo/cards')}
+          />
+        </View>
+      </ScrollView>
 
       <EchoAboutSheet visible={about} onClose={() => setAbout(false)} />
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+function Stat({ label, value }: { label: string; value: string }) {
+  const styles = useStyles()
+  return (
+    <View style={styles.stat}>
+      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
+  )
+}
+
+function Row({
+  icon,
+  title,
+  sub,
+  onPress,
+}: {
+  icon: keyof typeof Feather.glyphMap
+  title: string
+  sub: string
+  onPress: () => void
+}) {
+  const styles = useStyles()
+  const { colors } = useTheme()
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+    >
+      <Feather name={icon} size={20} color={colors.textFaint} />
+      <View style={styles.rowText}>
+        <Text style={styles.rowTitle}>{title}</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>
+          {sub}
+        </Text>
+      </View>
+      <Feather name="chevron-right" size={18} color={colors.textFaint} />
+    </Pressable>
+  )
+}
+
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   header: {
-    gap: spacing.sm,
-    paddingBottom: spacing.md,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-  },
-  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  title: { ...font.title, color: colors.text, flex: 1 },
-  about: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  due: { color: colors.textMuted, fontSize: 15 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, paddingTop: spacing.xs },
-  loading: { gap: spacing.sm, padding: spacing.lg },
-  list: { gap: spacing.xs, padding: spacing.lg },
-  section: { color: colors.textFaint, fontSize: 13, fontWeight: '700', paddingBottom: spacing.xs },
-  row: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 10 },
-  pressed: { opacity: 0.6 },
-  rowText: { flex: 1, gap: 2 },
-  front: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  back: { color: colors.textMuted, fontSize: 14 },
-  when: { color: colors.textFaint, fontSize: 12 },
-  packs: { gap: spacing.xs, paddingTop: spacing.md },
-  packRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: 12 },
-  allLink: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 6,
-    paddingBottom: spacing.md,
-    paddingTop: spacing.lg,
+    gap: spacing.sm,
+    paddingBottom: spacing.xs,
+    paddingTop: spacing.md,
   },
-  allLinkText: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  title: { ...font.title, color: colors.text, flex: 1 },
+  about: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+  // The scroll view takes the height; the content grows into it, which is
+  // what lets the stage centre itself when there is room to spare.
+  scroll: { flex: 1 },
+  body: { flexGrow: 1, paddingBottom: spacing.md },
+  stage: {
+    alignItems: 'center',
+    flex: 1,
+    gap: spacing.xl,
+    justifyContent: 'center',
+    paddingVertical: spacing.xl,
+  },
+  // 40 is the gift tile's radius: rounder than any card, squarer than a circle.
+  tileShade: { backgroundColor: colors.primaryShade, borderRadius: 40, paddingBottom: 8 },
+  tileFace: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 40,
+    height: 160,
+    justifyContent: 'center',
+    width: 160,
+  },
+  tilePressed: { transform: [{ translateY: 8 }] },
+  tileCount: { ...font.title, color: colors.primaryText, fontSize: 60, lineHeight: 68 },
+  tileUnit: {
+    color: colors.primaryTextMuted,
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  restingTile: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    height: 160,
+    justifyContent: 'center',
+    width: 160,
+  },
+  caption: { alignItems: 'center', gap: spacing.xs },
+  captionTitle: { ...font.heading, color: colors.text, textAlign: 'center' },
+  captionSub: { color: colors.textMuted, fontSize: 15, lineHeight: 22, textAlign: 'center' },
+  emptyAction: { alignSelf: 'stretch' },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
+  stats: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+  },
+  stat: { alignItems: 'center', flex: 1, gap: 2, paddingVertical: spacing.md },
+  statValue: { ...font.heading, color: colors.text },
+  statLabel: { color: colors.textFaint, fontSize: 12 },
+  rows: { paddingTop: spacing.xs },
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: 14,
+  },
+  rowText: { flex: 1, gap: 1 },
+  rowTitle: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  rowSub: { color: colors.textMuted, fontSize: 13 },
+  pressed: { opacity: 0.6 },
 }))

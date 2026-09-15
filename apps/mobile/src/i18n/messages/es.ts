@@ -186,6 +186,27 @@ export const es: Localized<EnMessages> = {
     emptyBody:
       'Mantén pulsado un mensaje en un chat y elige Añadir a Echo. Volverá mañana, luego a los tres días y luego a la semana.',
     emptyAction: 'Ir a Chats',
+    readyTitle: 'Cuando quieras',
+    tileDue: 'tarjetas pendientes',
+    readySub: 'Toca para repasar',
+    nextIn: 'La próxima tarjeta vuelve en {time}',
+    statToday: 'Hoy',
+    statWeek: 'Esta semana',
+    statCards: 'Tarjetas',
+    allCards: 'Todas las tarjetas',
+    allCardsSub: 'De tus chats, de publicaciones y tuyas',
+    packsSub: 'Palabras listas para lo que estás aprendiendo',
+    packsBlurb:
+      'Palabras listas para los idiomas que estás aprendiendo. Toma un puñado y entran en el mismo calendario que tus propias tarjetas.',
+    packsEmptyTitle: 'Todavía no hay packs',
+    packsEmptyBody:
+      'Los packs siguen los idiomas que estás aprendiendo. Añade uno a tu perfil y aparecerá aquí lo que tengamos para él.',
+    packTileSub: 'de {total} empezadas',
+    statWords: 'Palabras',
+    statYours: 'Tuyas',
+    statReviews: 'Repasos',
+    cardSource: 'De dónde viene',
+    removeCard: 'Quitar la tarjeta',
     cards: 'Tarjetas',
     cardCount: {
       one: '{count} tarjeta',
