@@ -1,10 +1,7 @@
-> [!NOTE]\
-> **v2 is in pre-release.** It ships as an update to the existing App Store and
-> Play Store listings, not as a new app. The version currently on the stores is
-> [v0.15](https://github.com/langx/langx/releases/tag/v0.15); the code it was
-> built from is on the [`v1`](https://github.com/langx/langx/tree/v1) branch.
-
- <h1 align="center"> LangX | Practice, Learn, Succeed! </h1>
+<p align="center">
+  <a href="https://langx.io" target="_blank"><img src="https://raw.githubusercontent.com/langx/branding/main/brand/logo/logo-rounded.png" width="96" alt="LangX"></a>
+</p>
+<h1 align="center">LangX | Practice, Learn, Succeed!</h1>
 <p align="center">
   <a href="https://github.com/langx/langx/actions/workflows/ci.yml" target="_blank"><img src="https://github.com/langx/langx/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://status.langx.io/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
@@ -36,7 +33,7 @@
 </p>
 <p align="center">
   <a href="https://langx.io" target="_blank">
-  <img alt="Featured Image" src="https://raw.githubusercontent.com/langx/.github/main/assets/featured_image.png" />
+  <img alt="Help someone speak yours. They'll do the same." src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/print/postcard-front.png" />
   </a>
 </p>
 
@@ -46,6 +43,30 @@ sentences — and keep a streak while doing it.
 
 iOS, Android and the web all come out of one Expo codebase, with a single
 Fastify API behind them. BSD-3, open source, same as v1.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/discover-dark.png">
+    <img src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/discover.png" width="19%" alt="Discover — people learning your language, nearby and active">
+  </picture>
+  &nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/chat-dark.png">
+    <img src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/chat.png" width="19%" alt="Chat — say it wrong, get it fixed">
+  </picture>
+  &nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/feed-dark.png">
+    <img src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/feed.png" width="19%" alt="Feed — corrections are always free">
+  </picture>
+  &nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/tokens-dark.png">
+    <img src="https://raw.githubusercontent.com/langx/branding/main/marketing/2.x/screens/tokens.png" width="19%" alt="Tokens — earned by teaching">
+  </picture>
+</p>
+
+<p align="center"><sub>Screens are rendered from the app's own layouts with demonstration data; the faces are AI-generated portraits. The full press kit is in <a href="https://github.com/langx/branding">langx/branding</a>.</sub></p>
 
 ## Official Links
 
@@ -67,35 +88,36 @@ Fastify API behind them. BSD-3, open source, same as v1.
 
 ## Tech Stack
 
-| Layer      | Choice                                                             |
-| ---------- | ------------------------------------------------------------------ |
-| Mobile/web | Expo SDK 57 · expo-router · TanStack Query + Zustand · NativeWind  |
-| API        | Node 24 · Fastify 5 · Better Auth · Socket.io — a single container |
-| Data       | MongoDB Atlas, official driver (no Mongoose)                       |
-| Storage    | S3-compatible (Cloudflare R2; Backblaze B2 via config)             |
-| Billing    | RevenueCat — StoreKit / Play Billing / RevenueCat Web + Stripe     |
+| Layer      | Choice                                                              |
+| ---------- | ------------------------------------------------------------------- |
+| Mobile/web | Expo SDK 57 · expo-router · TanStack Query + Zustand · NativeWind   |
+| API        | Node 24 · Fastify 5 · Better Auth · Socket.io — a single container  |
+| Data       | MongoDB Atlas, official driver (no Mongoose)                        |
+| Storage    | S3-compatible (Backblaze B2 in production; Cloudflare R2 works too) |
+| Billing    | RevenueCat — StoreKit / Play Billing / RevenueCat Web + Stripe      |
 
 ### Other Repos
 
 What each one is, where it is hosted and which values are copied between
 them by hand: [`docs/repo-map.md`](docs/repo-map.md).
 
-- 🟢 [website](https://github.com/langx/website) _Svelte_
-- 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS_
-- 🟢 [api](https://github.com/langx/api) _Express, Node.js — v1's API, still
-  serving `api.langx.io`; retired after the v2 rollout_
-- 🟢 [copilot](https://github.com/langx/copilot) _JavaScript_
-- 🟢 [docs](https://github.com/langx/docs)
-- 🟢 [insight](https://github.com/langx/insight)
-- 🟢 [branding](https://github.com/langx/branding)
+- 🟢 [website](https://github.com/langx/website) _SvelteKit — langx.io_
+- 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS — token.langx.io_
+- 🟢 [docs](https://github.com/langx/docs) _GitBook source — docs.langx.io_
+- 🟢 [branding](https://github.com/langx/branding) _logos, icons, store artwork,
+  press kit_
+- 🟡 [copilot](https://github.com/langx/copilot) _Discord assistant; live, not
+  developed_
 
 #### Previous versions
 
 - 🌱 [`v1` branch](https://github.com/langx/langx/tree/v1) — this repository before
   v2; the Expo rewrite that was never released
+- 📦️ [api](https://github.com/langx/api) (Archived) _v1's Express API; served
+  api.langx.io until v2 took the hostname_
 - 📦️ [langx-angular](https://github.com/langx/langx-angular) (Archived) _Originally
-  developed, and what [v0.15](https://github.com/langx/langx/releases/tag/v0.15)
-  on the stores is built from_
+  developed; [v0.15](https://github.com/langx/langx/releases/tag/v0.15), the
+  last v1 on the stores, was built from it_
 - 📦️ [langx-flutter](https://github.com/langx/langx-flutter) (Archived) _(Not
   completed)_
 
