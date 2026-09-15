@@ -257,6 +257,23 @@ export const es: Localized<EnMessages> = {
     verdictExact: 'Exacto',
     verdictClose: 'Bien, salvo por una tilde',
     verdictWrong: 'Casi',
+    aboutOpen: '¿Qué es esto?',
+    aboutTitle: 'Cómo funciona Echo',
+    aboutBody:
+      'Una tarjeta vuelve justo antes de que la olvides. Cada vez que la recuerdas, la siguiente espera es más larga: una frase que guardas hoy sigue ahí dentro de un mes.',
+    aboutLadder: 'Si la sigues recordando',
+    aboutChart:
+      'La espera crece cada vez que recuerdas una tarjeta: diez minutos, un día, tres días, ocho días, veinte días.',
+    aboutStep10m: '10 minutos',
+    aboutStep1d: '1 día',
+    aboutStep3d: '3 días',
+    aboutStep8d: '8 días',
+    aboutStep20d: '20 días',
+    aboutForgot:
+      '¿La olvidaste? Vuelve en un minuto y empieza otra vez por las esperas cortas. No se pierde nada.',
+    aboutWhy:
+      'Esto es repetición espaciada: diez minutos al día rinden más que una hora a la semana.',
+    aboutClose: 'Entendido',
   },
 
   messageMeta: {

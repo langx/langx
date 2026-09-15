@@ -258,6 +258,23 @@ export const fr: Localized<EnMessages> = {
     verdictExact: 'Exact',
     verdictClose: 'Juste, à un accent près',
     verdictWrong: 'Pas tout à fait',
+    aboutOpen: 'Qu’est-ce que c’est ?',
+    aboutTitle: 'Comment fonctionne Echo',
+    aboutBody:
+      'Une carte revient juste avant que tu ne l’oublies. Chaque fois que tu t’en souviens, l’attente suivante s’allonge : une phrase gardée aujourd’hui est encore là dans un mois.',
+    aboutLadder: 'Si tu continues à t’en souvenir',
+    aboutChart:
+      'L’attente s’allonge chaque fois que tu te souviens d’une carte : dix minutes, un jour, trois jours, huit jours, vingt jours.',
+    aboutStep10m: '10 minutes',
+    aboutStep1d: '1 jour',
+    aboutStep3d: '3 jours',
+    aboutStep8d: '8 jours',
+    aboutStep20d: '20 jours',
+    aboutForgot:
+      'Oubliée ? Elle revient dans une minute et repart des courtes attentes. Rien n’est perdu.',
+    aboutWhy:
+      'C’est la répétition espacée : dix minutes par jour valent mieux qu’une heure par semaine.',
+    aboutClose: 'J’ai compris',
   },
 
   messageMeta: {

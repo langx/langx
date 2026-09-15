@@ -258,6 +258,23 @@ export const de: Localized<EnMessages> = {
     verdictExact: 'Genau richtig',
     verdictClose: 'Richtig, bis auf ein Zeichen',
     verdictWrong: 'Nicht ganz',
+    aboutOpen: 'Was ist das?',
+    aboutTitle: 'So funktioniert Echo',
+    aboutBody:
+      'Eine Karte kommt zurück, kurz bevor du sie vergessen würdest. Jedes Mal, wenn du dich erinnerst, wird die nächste Pause länger — ein Satz, den du heute behältst, ist in einem Monat noch da.',
+    aboutLadder: 'Wenn du dich weiter erinnerst',
+    aboutChart:
+      'Die Pause wächst mit jedem Mal, das du dich erinnerst: zehn Minuten, ein Tag, drei Tage, acht Tage, zwanzig Tage.',
+    aboutStep10m: '10 Minuten',
+    aboutStep1d: '1 Tag',
+    aboutStep3d: '3 Tage',
+    aboutStep8d: '8 Tage',
+    aboutStep20d: '20 Tage',
+    aboutForgot:
+      'Vergessen? Die Karte kommt nach einer Minute zurück und fängt wieder mit den kurzen Pausen an. Nichts geht verloren.',
+    aboutWhy:
+      'Das nennt man verteiltes Wiederholen: zehn Minuten am Tag bringen mehr als eine Stunde pro Woche.',
+    aboutClose: 'Verstanden',
   },
 
   messageMeta: {

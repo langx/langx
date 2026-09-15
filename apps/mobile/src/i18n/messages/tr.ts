@@ -269,6 +269,22 @@ export const tr: Localized<EnMessages> = {
     verdictExact: 'Tam doğru',
     verdictClose: 'Doğru, bir işaret farkıyla',
     verdictWrong: 'Tam değil',
+    aboutOpen: 'Bu ne?',
+    aboutTitle: 'Echo nasıl çalışır',
+    aboutBody:
+      'Bir kart, sen onu unutmadan hemen önce karşına çıkar. Her hatırladığında bir sonraki bekleme uzar — bugün sakladığın bir cümle bir ay sonra da aklında olur.',
+    aboutLadder: 'Hatırlamaya devam edersen',
+    aboutChart:
+      'Bir kartı her hatırladığında bekleme uzar: on dakika, bir gün, üç gün, sekiz gün, yirmi gün.',
+    aboutStep10m: '10 dakika',
+    aboutStep1d: '1 gün',
+    aboutStep3d: '3 gün',
+    aboutStep8d: '8 gün',
+    aboutStep20d: '20 gün',
+    aboutForgot:
+      'Unuttun mu? Kart bir dakika sonra geri gelir ve kısa sürelerden yeniden başlar. Hiçbir şey kaybolmaz.',
+    aboutWhy: 'Buna aralıklı tekrar deniyor: günde on dakika, haftada bir saatten iyidir.',
+    aboutClose: 'Anladım',
   },
 
   messageMeta: {

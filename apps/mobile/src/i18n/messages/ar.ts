@@ -272,6 +272,21 @@ export const ar: Localized<EnMessages> = {
     verdictExact: 'صحيح تمامًا',
     verdictClose: 'صحيح، باستثناء علامة',
     verdictWrong: 'ليس تمامًا',
+    aboutOpen: 'ما هذا؟',
+    aboutTitle: 'كيف يعمل Echo',
+    aboutBody:
+      'تعود البطاقة قبل أن تنساها بقليل. وكلما تذكّرتها، طالت المدة قبل عودتها — فالجملة التي تحفظها اليوم تبقى معك بعد شهر.',
+    aboutLadder: 'إذا واصلت تذكّرها',
+    aboutChart:
+      'تطول المدة كلما تذكّرت البطاقة: عشر دقائق، يوم، ثلاثة أيام، ثمانية أيام، عشرون يومًا.',
+    aboutStep10m: '10 دقائق',
+    aboutStep1d: 'يوم واحد',
+    aboutStep3d: '3 أيام',
+    aboutStep8d: '8 أيام',
+    aboutStep20d: '20 يومًا',
+    aboutForgot: 'نسيتها؟ تعود بعد دقيقة وتبدأ من المدد القصيرة من جديد. لا شيء يضيع.',
+    aboutWhy: 'هذا هو التكرار المتباعد: عشر دقائق يوميًا أفضل من ساعة أسبوعيًا.',
+    aboutClose: 'فهمت',
   },
 
   messageMeta: {

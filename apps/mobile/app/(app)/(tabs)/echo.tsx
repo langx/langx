@@ -6,6 +6,7 @@ import { useEchoCards, useEchoPacks, useEchoSummary } from '../../../src/api/que
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
+import { EchoAboutSheet } from '../../../src/components/EchoAboutSheet'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -47,6 +48,7 @@ export default function EchoScreen() {
   /** `null` is All. Named languages come from the summary, never from the loaded
    *  page: a chip row that changed as you scrolled would be unusable. */
   const [lang, setLang] = useState<string | null>(null)
+  const [about, setAbout] = useState(false)
   const cards = useEchoCards(lang ?? undefined)
   const packs = useEchoPacks()
   const pull = usePullToRefresh(async () => {
@@ -145,7 +147,24 @@ export default function EchoScreen() {
   return (
     <Screen fluid tabbed>
       <View style={styles.header}>
-        <Text style={styles.title}>{t('echo.title')}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{t('echo.title')}</Text>
+          {/*
+           * The schedule is the feature, and it is invisible: a card answered
+           * correctly vanishes for days, which reads as the app losing it
+           * until somebody explains why. One tap, in the corner, never in the
+           * way.
+           */}
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={12}
+            onPress={() => setAbout(true)}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            {/* Drawn as Discover's "What is this?" is, down to the muted 13. */}
+            <Text style={styles.about}>{t('echo.aboutOpen')}</Text>
+          </Pressable>
+        </View>
         <Text style={styles.due}>
           {due > 0 ? t('echo.due', { count: due }) : t('echo.allCaughtUp')}
         </Text>
@@ -309,6 +328,8 @@ export default function EchoScreen() {
           }
         />
       )}
+
+      <EchoAboutSheet visible={about} onClose={() => setAbout(false)} />
     </Screen>
   )
 }
@@ -320,7 +341,9 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
   },
-  title: { ...font.title, color: colors.text },
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  title: { ...font.title, color: colors.text, flex: 1 },
+  about: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   due: { color: colors.textMuted, fontSize: 15 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, paddingTop: spacing.xs },
   loading: { gap: spacing.sm, padding: spacing.lg },

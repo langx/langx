@@ -305,6 +305,31 @@ export const en = {
     verdictExact: 'Exactly right',
     verdictClose: 'Right, give or take an accent',
     verdictWrong: 'Not quite',
+    /*
+     * "What's this?" in the header, and what it opens.
+     *
+     * The numbers are the real ladder a card climbs on Good — `SRS_RULES`'
+     * two learning steps, then 1, 3, 8, 20 days — and not a rounder set that
+     * would read better: the session draws the same intervals on its grade
+     * buttons, and an explainer that disagreed with them would be teaching
+     * the wrong thing about the screen it sits on.
+     */
+    aboutOpen: 'What is this?',
+    aboutTitle: 'How Echo works',
+    aboutBody:
+      'A card comes back just before you would forget it. Each time you remember it, the next wait is longer — so a sentence you keep today is still there in a month.',
+    aboutLadder: 'If you keep getting it right',
+    aboutChart:
+      'The wait grows each time you remember a card: ten minutes, one day, three days, eight days, twenty days.',
+    aboutStep10m: '10 minutes',
+    aboutStep1d: '1 day',
+    aboutStep3d: '3 days',
+    aboutStep8d: '8 days',
+    aboutStep20d: '20 days',
+    aboutForgot:
+      'Forgot one? It comes back in a minute and starts again from the short waits. Nothing is lost.',
+    aboutWhy: 'This is spaced repetition: ten minutes a day beats an hour once a week.',
+    aboutClose: 'Got it',
   },
 
   messageMeta: {

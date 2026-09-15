@@ -254,6 +254,21 @@ export const ptBR: Localized<EnMessages> = {
     verdictExact: 'Exatamente',
     verdictClose: 'Certo, fora um acento',
     verdictWrong: 'Quase',
+    aboutOpen: 'O que é isso?',
+    aboutTitle: 'Como o Echo funciona',
+    aboutBody:
+      'Um cartão volta pouco antes de você esquecê-lo. Cada vez que você lembra, a próxima espera fica maior — uma frase guardada hoje ainda está aí daqui a um mês.',
+    aboutLadder: 'Se você continuar lembrando',
+    aboutChart:
+      'A espera cresce cada vez que você lembra de um cartão: dez minutos, um dia, três dias, oito dias, vinte dias.',
+    aboutStep10m: '10 minutos',
+    aboutStep1d: '1 dia',
+    aboutStep3d: '3 dias',
+    aboutStep8d: '8 dias',
+    aboutStep20d: '20 dias',
+    aboutForgot: 'Esqueceu? Ele volta em um minuto e recomeça pelas esperas curtas. Nada se perde.',
+    aboutWhy: 'Isso é repetição espaçada: dez minutos por dia valem mais que uma hora por semana.',
+    aboutClose: 'Entendi',
   },
 
   messageMeta: {
