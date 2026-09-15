@@ -13,7 +13,12 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertOwnBucket } from '../lib/assertOwnBucket'
-import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
+import {
+  requireAdmin,
+  requireAuth,
+  requireMember,
+  requireVerifiedEmail,
+} from '../middleware/requireAuth'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
@@ -175,6 +180,35 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const extension = objectExtension(contentType)
       const key = `echo/${request.userId}/${randomUUID()}.${extension}`
+      return reply.send(await app.storage.getUploadUrl(key, contentType))
+    },
+  )
+
+  /**
+   * A presigned URL for the picture on a broadcast draft.
+   *
+   * `requireAdmin`, and keyed by nothing in particular: a broadcast belongs to
+   * the operator panel rather than to a person, and the file outlives the
+   * draft it was uploaded for — the message rows point at it once it has gone
+   * out, so the account purge must never find it under somebody's prefix.
+   *
+   * Images only. The other two kinds would each need a ceiling, a player and a
+   * reason; an announcement that needs a video needs a link to one.
+   */
+  app.post(
+    '/admin/broadcasts/upload-url',
+    { preHandler: requireAdmin, schema: { body: postMediaUploadUrlSchema } },
+    async (request, reply) => {
+      const { kind, contentType } = request.body
+      if (kind !== 'image' || mediaKindOfContentType(contentType) !== 'image') {
+        throw new ApiError(
+          ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
+          `${contentType} is not a supported image type`,
+        )
+      }
+
+      const extension = objectExtension(contentType)
+      const key = `broadcasts/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
   )

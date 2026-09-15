@@ -1,4 +1,4 @@
-import type { BroadcastStatus, Locale } from '@langx/shared'
+import type { BroadcastStatus, Locale, MessageMedia } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { notSuspended } from '../moderation/suspension'
@@ -27,6 +27,14 @@ export interface BroadcastJob {
   _id: string
   /** One body per locale; `en` is required and is the fallback. */
   bodies: Record<string, string>
+  /**
+   * The picture, per locale and read with the same fallback as `bodies`.
+   *
+   * Per locale because the one we send has words drawn on it — a chart is a
+   * translation too. The panel only ever writes `en`; the announcement script
+   * writes whichever `<locale>.png` sit next to the bodies.
+   */
+  images?: Record<string, MessageMedia>
   pushTitle: string
   status: BroadcastStatus
   createdAt: Date
@@ -91,12 +99,19 @@ export async function countBroadcastAudience(db: Db, now: Date = new Date()): Pr
 
 export async function createBroadcast(
   db: Db,
-  input: { id: string; bodies: Record<string, string>; pushTitle: string; createdBy: string },
+  input: {
+    id: string
+    bodies: Record<string, string>
+    images?: Record<string, MessageMedia>
+    pushTitle: string
+    createdBy: string
+  },
   now: Date = new Date(),
 ): Promise<BroadcastJob> {
   const job: BroadcastJob = {
     _id: input.id,
     bodies: input.bodies,
+    ...(input.images && Object.keys(input.images).length > 0 ? { images: input.images } : {}),
     pushTitle: input.pushTitle,
     // A draft sends nothing. Starting it is a second, separate request — which
     // is the only reason a back button or a double tap cannot broadcast.
@@ -145,6 +160,35 @@ export async function updateBroadcastBodies(
   return broadcasts(db).findOneAndUpdate(
     { _id: id, status: 'draft' },
     { $set: { bodies }, $unset: { testedAt: '' }, $inc: { rev: 1 } },
+    { returnDocument: 'after' },
+  )
+}
+
+/**
+ * Putting a picture on a draft, or taking it off.
+ *
+ * Draft-only and it clears `testedAt`, for the same reason an edit does: the
+ * picture is part of what the message says, and nobody has read this version
+ * of it. `rev` moves too, so the next test send is a new message rather than a
+ * duplicate of the one without the picture — `deliverOfficialMessage` hands
+ * back the message it found, and a stale copy looks exactly like a fresh one.
+ *
+ * Writes `en` and nothing else, because the panel has one upload button and no
+ * way to say which language the file is in. The eight-language version is
+ * authored in files, where the bodies are.
+ */
+export async function setBroadcastImage(
+  db: Db,
+  id: string,
+  media: MessageMedia | null,
+): Promise<BroadcastJob | null> {
+  return broadcasts(db).findOneAndUpdate(
+    { _id: id, status: 'draft' },
+    {
+      ...(media ? { $set: { images: { en: media } } } : {}),
+      $unset: { testedAt: '', ...(media ? {} : { images: '' }) },
+      $inc: { rev: 1 },
+    },
     { returnDocument: 'after' },
   )
 }
@@ -206,4 +250,13 @@ export function revOf(job: BroadcastJob): number {
 /** The body for one reader, in their own language, falling back to English. */
 export function bodyFor(job: BroadcastJob, locale: Locale): string {
   return job.bodies[locale] ?? job.bodies.en ?? ''
+}
+
+/**
+ * The picture for one reader, by the same rule as `bodyFor` — so a locale with
+ * its own body and no picture of its own still gets the English one rather
+ * than nothing.
+ */
+export function mediaFor(job: BroadcastJob, locale: Locale): MessageMedia | undefined {
+  return job.images?.[locale] ?? job.images?.en
 }

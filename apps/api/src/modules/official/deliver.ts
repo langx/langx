@@ -1,5 +1,5 @@
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
-import type { OfficialHandle } from '@langx/shared'
+import { mediaKindOfContentType, type MessageMedia, type OfficialHandle } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import {
   findConversationBetween,
@@ -30,6 +30,19 @@ export interface DeliverInput {
    * collection to keep in step.
    */
   clientId?: string
+  /**
+   * One picture, with `body` as its caption.
+   *
+   * Written as `attachments` *and* `media`, the way `sendMediaMessage` writes
+   * them: installed binaries that predate the list read `media` and would draw
+   * an empty bubble otherwise.
+   *
+   * No ceiling check here, unlike the user path. The bytes are ours — a file
+   * this renders came from the announcement script or from an operator's
+   * upload, both of which are already through `assertOwnBucket` — and there is
+   * no quota to charge a program against.
+   */
+  attachment?: MessageMedia
 }
 
 /**
@@ -65,12 +78,22 @@ export async function deliverOfficialMessage(
   }
 
   const now = new Date()
+  /*
+   * The kind comes off the bytes' own content type, as it does on the user
+   * path — `type` and the file must not be able to disagree. An attachment we
+   * do not serve is dropped rather than sent as a mystery bubble: the caption
+   * is the message, and it is better delivered plain than not at all.
+   */
+  const kind = input.attachment ? mediaKindOfContentType(input.attachment.contentType) : null
+  const attachment = kind ? input.attachment : undefined
+
   const message: Message = {
     _id: new ObjectId(),
     conversationId: new ObjectId(),
     senderId,
-    type: 'text',
+    type: kind ?? 'text',
     body: input.body,
+    ...(attachment ? { attachments: [attachment], media: attachment } : {}),
     ...(input.clientId ? { clientId: input.clientId } : {}),
     createdAt: now,
   }

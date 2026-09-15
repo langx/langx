@@ -129,6 +129,16 @@ export const ADMIN = {
     edited: 'Saved. Send it to yourself again — the old test was of the old words.',
     editTranslated:
       'This one has translations, which are authored in files. Edit those and run the announcement script, or delete this draft and start again.',
+    picture: 'Picture',
+    pictureHint:
+      'One image, above the words, in the same message. Everyone gets this one unless the files carry a translated version.',
+    addPicture: 'Add a picture',
+    replacePicture: 'Replace the picture',
+    removePicture: 'Remove the picture',
+    pictureAttached:
+      'Picture saved. Send it to yourself again — the old test was of the old message.',
+    pictureFailed: 'That picture did not upload.',
+    picturePermission: 'LangX needs permission to reach your photos.',
     history: 'Past broadcasts',
     people: 'People',
     sent: 'Sent',

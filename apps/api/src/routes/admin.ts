@@ -10,6 +10,7 @@ import {
   adminUserSearchSchema,
   bountyAwardSchema,
   broadcastCreateSchema,
+  broadcastImageSchema,
   broadcastUpdateSchema,
   reviewDecisionSchema,
   withPlatformVersion,
@@ -18,6 +19,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { COLLECTIONS } from '../db/collections'
 import { ApiError } from '../lib/ApiError'
+import { assertOwnBucket } from '../lib/assertOwnBucket'
 import { authId } from '../lib/authId'
 import { requireAdmin } from '../middleware/requireAuth'
 import { recordAdminAction } from '../modules/admin/auditLog'
@@ -29,6 +31,7 @@ import {
   isUntestedDraft,
   listBroadcasts,
   markBroadcastTested,
+  setBroadcastImage,
   setBroadcastStatus,
   updateBroadcastBodies,
 } from '../modules/admin/broadcast'
@@ -625,6 +628,46 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         action: 'broadcast.edit',
         refId: job._id,
         payload: { locales: Object.keys(job.bodies) },
+      })
+      return reply.send(job)
+    },
+  )
+
+  /**
+   * The picture on a draft, or `null` to take it off.
+   *
+   * Separate from the `PATCH` above rather than a field on it, because the two
+   * are edited from different controls and a picture uploaded is a picture
+   * already in the bucket — folding it into the body edit would mean a save
+   * that silently drops the file when the panel has nothing to say about it.
+   *
+   * `assertOwnBucket` is the whole security story here, as it is on the avatar
+   * confirm: without it an operator account could point an announcement at any
+   * host on the internet, and 68 people would load it.
+   */
+  app.put(
+    '/admin/broadcasts/:id/image',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: broadcastImageSchema },
+      config: { rateLimit: limit(60, '1 hour') },
+    },
+    async (request, reply) => {
+      const { media } = request.body
+      if (media) assertOwnBucket(app.env.STORAGE_PUBLIC_BASE_URL, media.url)
+
+      const job = await setBroadcastImage(app.mongo.db, request.params.id, media)
+      if (!job) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          'Only a draft can be edited — past that there are messages out',
+        )
+      }
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'broadcast.image',
+        refId: job._id,
+        payload: { attached: media !== null },
       })
       return reply.send(job)
     },

@@ -1,11 +1,14 @@
+import { Image } from 'expo-image'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
 import {
+  uploadBroadcastMedia,
   useAdminBroadcast,
   useAdminBroadcastAction,
   useAdminDeleteBroadcast,
   useAdminEditBroadcast,
+  useAdminSetBroadcastImage,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
 import { Button } from '../../../../src/components/ui/Button'
@@ -21,6 +24,7 @@ import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive
 import { ADMIN } from '../../../../src/lib/adminStrings'
 import { confirmAlert } from '../../../../src/lib/alert'
 import { goBackTo } from '../../../../src/lib/navigation'
+import { pickMediaAssets } from '../../../../src/lib/pickMediaAsset'
 import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 
@@ -55,7 +59,10 @@ export default function AdminBroadcastDetailScreen() {
   const job = useAdminBroadcast(id)
   const act = useAdminBroadcastAction()
   const edit = useAdminEditBroadcast()
+  const picture = useAdminSetBroadcastImage()
   const remove = useAdminDeleteBroadcast()
+  /** True from the moment a file is picked until the draft carries it. */
+  const [uploading, setUploading] = useState(false)
   /** The text being written, or `null` when the message is only being read. */
   const [editing, setEditing] = useState<string | null>(null)
   const [typed, setTyped] = useState('')
@@ -75,6 +82,42 @@ export default function AdminBroadcastDetailScreen() {
       setEditing(null)
       setTyped('')
       showToast(ADMIN.broadcast.edited)
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  /**
+   * The picture, uploaded here and attached in the same gesture.
+   *
+   * Uploaded before it is attached because the draft stores a URL, not bytes —
+   * so there is nothing to show back until the file is in the bucket. A failed
+   * attach leaves an orphan object there, which is the cheap half of the
+   * trade: the alternative is a draft naming a file that never arrived.
+   */
+  async function attachPicture() {
+    const picked = await pickMediaAssets({ remaining: 1, kinds: 'images' })
+    if (picked.status === 'denied') {
+      showToast(ADMIN.broadcast.picturePermission)
+      return
+    }
+    const file = picked.status === 'picked' ? picked.media[0] : undefined
+    if (!file) return
+    setUploading(true)
+    try {
+      const media = await uploadBroadcastMedia(file)
+      await picture.mutateAsync({ id, media })
+      showToast(ADMIN.broadcast.pictureAttached)
+    } catch {
+      showToast(ADMIN.broadcast.pictureFailed)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  async function removePicture() {
+    try {
+      await picture.mutateAsync({ id, media: null })
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -127,6 +170,16 @@ export default function AdminBroadcastDetailScreen() {
           <>
             {editing === null ? (
               <Card>
+                {/* Above the words, because that is where the reader will
+                    find it: the message is one bubble with a caption. */}
+                {data.images?.en ? (
+                  <Image
+                    source={{ uri: data.images.en.url }}
+                    style={styles.picture}
+                    contentFit="cover"
+                    accessibilityLabel={ADMIN.broadcast.picture}
+                  />
+                ) : null}
                 <Text style={styles.body}>{data.bodies.en}</Text>
               </Card>
             ) : (
@@ -184,6 +237,40 @@ export default function AdminBroadcastDetailScreen() {
                     <Text style={styles.calloutBody}>{ADMIN.broadcast.editTranslated}</Text>
                   </Callout>
                 ) : null}
+
+                {/*
+                 * Both the words and the picture are file-authored on a
+                 * translated broadcast — attaching here would write one English
+                 * image over the eight the script uploaded, exactly as saving
+                 * the body would write over the eight translations.
+                 */}
+                {translated ? null : (
+                  <>
+                    <Text style={styles.heading}>{ADMIN.broadcast.picture}</Text>
+                    <Text style={styles.hint}>{ADMIN.broadcast.pictureHint}</Text>
+                    <View style={styles.actions}>
+                      <Button
+                        label={
+                          data.images?.en
+                            ? ADMIN.broadcast.replacePicture
+                            : ADMIN.broadcast.addPicture
+                        }
+                        variant="secondary"
+                        loading={uploading}
+                        disabled={uploading}
+                        onPress={() => void attachPicture()}
+                      />
+                      {data.images?.en ? (
+                        <Button
+                          label={ADMIN.broadcast.removePicture}
+                          variant="neutral"
+                          disabled={uploading}
+                          onPress={() => void removePicture()}
+                        />
+                      ) : null}
+                    </View>
+                  </>
+                )}
 
                 <View style={styles.actions}>
                   {translated ? null : (
@@ -269,6 +356,17 @@ export default function AdminBroadcastDetailScreen() {
 
 const useStyles = makeStyles((theme) => ({
   loading: { gap: 12, marginTop: 16 },
+  heading: {
+    marginTop: 24,
+    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: '700',
+    color: theme.colors.textMuted,
+    textTransform: 'uppercase',
+  },
+  /* 16:9, the shape the announcement script renders — a picture the panel
+     letterboxed would be a lie about what the message looks like. */
+  picture: { aspectRatio: 16 / 9, borderRadius: 8, marginBottom: 12, width: '100%' },
   calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
   body: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
   tiles: { flexDirection: 'row', gap: 24, marginVertical: 20 },

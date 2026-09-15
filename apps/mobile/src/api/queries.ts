@@ -1922,6 +1922,17 @@ export function uploadPostMedia(input: PresignedUpload): Promise<Media> {
 }
 
 /**
+ * The picture on a broadcast draft, into the `broadcasts/` prefix.
+ *
+ * Keyed by nothing: the file outlives the draft — once the announcement has
+ * gone out, every message row points at it — so it must not sit under a
+ * person's prefix, where the account purge would take it away from them.
+ */
+export function uploadBroadcastMedia(input: PresignedUpload): Promise<Media> {
+  return uploadToSigningRoute('/admin/broadcasts/upload-url', input)
+}
+
+/**
  * A picture or a recording somebody puts on their own Echo card, into the
  * `echo/` prefix its own signing route keys by user.
  */
@@ -2381,6 +2392,8 @@ export interface AdminFeedbackDto {
 export interface AdminBroadcastDto {
   _id: string
   bodies: Record<string, string>
+  /** The picture, per locale like the bodies. The panel only ever writes `en`. */
+  images?: Record<string, Media>
   pushTitle: string
   status: 'draft' | 'queued' | 'sending' | 'paused' | 'done'
   total: number
@@ -2580,6 +2593,26 @@ export function useAdminEditBroadcast() {
       api.patch<AdminBroadcastDto>(`/admin/broadcasts/${input.id}`, { bodies: input.bodies }),
     // The whole tree: an edit clears `testedAt`, so the detail screen has to
     // put the arming controls away again.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/**
+ * Puts a picture on a draft, or takes it off with `null`.
+ *
+ * Its own mutation rather than a field on the edit above, because the two are
+ * different controls over different things — and because this one has already
+ * put a file in the bucket by the time it is called.
+ */
+export function useAdminSetBroadcastImage() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; media: Media | null }) =>
+      apiPut<AdminBroadcastDto>(`/admin/broadcasts/${input.id}/image`, { media: input.media }),
+    // As with an edit: attaching un-tests the draft, so the arming controls
+    // have to go away again.
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
