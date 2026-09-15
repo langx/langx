@@ -13,6 +13,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useT } from '../../../src/i18n'
 import { useLocale } from '../../../src/i18n/I18nProvider'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
+import { levelLabel } from '../../../src/i18n/labels'
 import { useEchoOffline } from '../../../src/hooks/useEchoOffline'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -276,7 +277,15 @@ export default function EchoScreen() {
                         style={({ pressed }) => [styles.packRow, pressed && styles.pressed]}
                       >
                         <View style={styles.rowText}>
-                          <Text style={styles.front}>{names.language(pack.lang)}</Text>
+                          {/*
+                           * The level as well as the language: a language has
+                           * a pack per level, so without it every row of the
+                           * same language reads the same and they are told
+                           * apart only by an item count.
+                           */}
+                          <Text style={styles.front}>
+                            {`${names.language(pack.lang)} · ${levelLabel(t, pack.level)}`}
+                          </Text>
                           <Text style={styles.back}>
                             {t('echo.packProgress', { done, total: pack.itemCount })}
                           </Text>

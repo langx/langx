@@ -1,6 +1,7 @@
 import {
   ERROR_CODES,
   glossFor,
+  levelRank,
   matchLocale,
   newCardSrs,
   sourceKeyOf,
@@ -63,19 +64,53 @@ export function packItemId(packId: string, index: number): string {
 }
 
 /**
- * Every pack, with how far this person has got into each.
+ * The packs for the languages this person is learning, with how far they have
+ * got into each.
+ *
+ * **Their languages, not every language.** Somebody who speaks Spanish and is
+ * learning Italian has no use for an English pack, and once there is a pack
+ * per level per language the unfiltered list is dozens of rows of other
+ * people's languages. `learning` is the right source rather than the cards
+ * they hold: a language they have not started is exactly the one a pack is for.
+ * Guests are covered by the same field — `/profiles/guest` writes it from the
+ * onboarding levels screen, so browsing before signing up still finds packs.
+ *
+ * **Every level of those languages, not the one they declared.** The level on
+ * a profile is self-reported and often wrong by one, and a pack has no other
+ * route in, so hiding the rest would put the one they actually want out of
+ * reach. The order is the ladder — absolute beginner first — and they start
+ * wherever they like.
  *
  * Two queries for the whole list rather than one per pack: the started count
  * is a group over the cards whose `sourceKey` begins `pack:`, which is exactly
  * the prefix `card_source_unique` is sorted by within a user.
  */
 export async function listPacks(db: Db, userId: string): Promise<{ items: EchoPack[] }> {
+  const profile = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { learning: 1 } })
+  // No profile yet, so no languages to match. A listing is not the place to
+  // demand onboarding — `startPack` is, and it already does.
+  const learning = profile?.learning ?? []
+  if (learning.length === 0) return { items: [] }
+
+  // Onboarding's first pick is priority 1, and that is the order the tab
+  // should read in: the language they came for, then the rest.
+  const priority = new Map(learning.map((entry) => [entry.code, entry.priority]))
+
   const packs = await db
     .collection<EchoPackDoc>(COLLECTIONS.echoPacks)
-    .find({})
-    .sort({ lang: 1, level: 1 })
+    .find({ lang: { $in: [...priority.keys()] } })
     .toArray()
   if (packs.length === 0) return { items: [] }
+
+  // Sorted here rather than in the query: `level` is a word, so Mongo would
+  // sort it alphabetically and put `fluent` ahead of `intermediate`.
+  packs.sort(
+    (a, b) =>
+      (priority.get(a.lang) ?? 0) - (priority.get(b.lang) ?? 0) ||
+      levelRank(a.level as EchoPack['level']) - levelRank(b.level as EchoPack['level']),
+  )
 
   const started = await db
     .collection<EchoCardDoc>(COLLECTIONS.echoCards)
