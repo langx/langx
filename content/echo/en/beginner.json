@@ -2,8 +2,8 @@
   "id": "en:beginner",
   "lang": "en",
   "level": "beginner",
-  "contentVersion": 2,
-  "reviewed": false,
+  "contentVersion": 3,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
@@ -280,10 +280,13 @@
       "text": "got it",
       "gloss": {
         "tr": "anladım",
-        "de": "verstanden?",
-        "ru": "ты понимаешь?",
-        "ar": "فَهِمْتَ",
-        "en": "I understand"
+        "de": "verstanden",
+        "ru": "понял",
+        "ar": "فهمت",
+        "en": "I understand",
+        "es": "entendido",
+        "fr": "compris",
+        "pt-BR": "entendi"
       },
       "example": "Keep away from my wife and children. Got it?",
       "freqRank": 12,
@@ -300,7 +303,8 @@
           }
         ],
         "machineSense": "Do you understand?",
-        "correctedTr": "anladın mı?"
+        "correctedTr": "anladın mı?",
+        "edited": ["ar", "de", "es", "fr", "pt-BR", "ru"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6e/LL-Q1860_%28eng%29-Vealhurl-got_it.wav/LL-Q1860_%28eng%29-Vealhurl-got_it.wav.mp3",
@@ -2633,7 +2637,7 @@
       "gloss": {
         "tr": "Bilgi güçtür.",
         "de": "Wissen ist Macht.",
-        "es": "Conocimiento es poder.",
+        "es": "El conocimiento es poder.",
         "fr": "Le savoir est une force.",
         "pt-BR": "Saber é poder.",
         "ru": "Знание — сила.",
@@ -2641,7 +2645,8 @@
       },
       "freqRank": 126,
       "review": {
-        "glossedBy": "Tatoeba"
+        "glossedBy": "Tatoeba",
+        "edited": ["es"]
       }
     },
     {
@@ -2960,11 +2965,11 @@
       "kind": "phrase",
       "text": "can you help me",
       "gloss": {
-        "tr": "bana yardım edebilirmisiniz?",
+        "tr": "bana yardım edebilir misiniz?",
         "de": "können Sie mir helfen?",
         "es": "¿puedes ayudarme?",
         "fr": "peux-tu m'aider",
-        "pt-BR": "(você) pode me ajudar?",
+        "pt-BR": "você pode me ajudar?",
         "ru": "вы мо́жете мне помо́чь?",
         "ar": "هَل يُمْكِنُكَ مُسَاعَدَتِي؟",
         "en": "can you help me?"
@@ -2973,7 +2978,8 @@
       "review": {
         "sense": "can you help me?",
         "translationCount": 114,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR", "tr"]
       }
     },
     {
@@ -4375,7 +4381,7 @@
         "de": "ich habe einen niedrigen Blutdruck",
         "es": "tengo la tensión baja",
         "fr": "je fais de l'hypotension",
-        "pt-BR": "(eu) tenho pressão baixa",
+        "pt-BR": "tenho pressão baixa",
         "ru": "у меня́ ни́зкое давле́ние",
         "en": "I have low blood pressure"
       },
@@ -4385,7 +4391,8 @@
         "translationCount": 28,
         "definition": "Indicates that the speaker has hypotension (low blood pressure).",
         "otherSenses": [],
-        "correctedTr": "tansiyonum düştü"
+        "correctedTr": "tansiyonum düştü",
+        "edited": ["pt-BR"]
       }
     },
     {
@@ -4449,14 +4456,19 @@
       "gloss": {
         "de": "komm gut nach Hause",
         "fr": "rentre bien",
-        "en": "a farewell wishing someone a safe journey home"
+        "en": "a farewell wishing someone a safe journey home",
+        "tr": "evine sağ salim dön",
+        "es": "buen viaje de vuelta a casa",
+        "pt-BR": "boa viagem de volta para casa",
+        "ru": "счастливого пути домой"
       },
       "freqRank": 216,
       "review": {
         "sense": "a farewell wishing someone a safe journey home",
         "translationCount": 11,
         "otherSenses": [],
-        "machineSense": "Translations"
+        "machineSense": "Translations",
+        "edited": ["es", "pt-BR", "ru", "tr"]
       }
     },
     {

@@ -6,8 +6,40 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-Nothing yet. `en/absoluteBeginner.json`, `en/beginner.json` and
-`en/intermediate.json` are drafts; see "Drafts" below.
+The three English packs — `en/absoluteBeginner.json` (271 items),
+`en/beginner.json` (275) and `en/intermediate.json` (263).
+`contentVersion: 3`, `"reviewed": true`, so the seed script will write them.
+
+### What that review was, exactly
+
+The flag means somebody read the file, and it is load-bearing enough that a
+later reader should not believe more than was done.
+
+**Two passes, and they found different things.** The first read the drafts as
+content: it dropped fourteen items a language app should not ask anybody to
+memorise, corrected the senses that had been picked mechanically — `have a
+seat` had been glossed as the verb _to sit down_ when Wiktionary's own "polite
+directive" sense was in the same list — repaired twelve items whose English
+gloss was the scraped word "Translations", and rewrote the Turkish column
+throughout.
+
+The second pass checked the columns the first had left behind, which is where
+the remaining defects were: a corrected sense that had only reached Turkish, so
+`got it` still answered "verstanden?" in German and "ты понимаешь?" in Russian
+— both questions — while `have a seat` was still an infinitive in five
+languages; items whose Turkish was written and whose other six were empty; and
+ten glosses carrying dictionary notation onto a card back (`(eu)`, `(você)`,
+`(usted)`, `(-e, -a, -ye, -ya, -ne)`, `...bloss...`). Twenty-two items were
+edited. Each carries `review.edited` naming the columns that are no longer what
+a source wrote.
+
+**Sampled, not read exhaustively.** Eight hundred and nine items across eight
+locales is about 5,600 glosses, and nobody read all of them. The Turkish column
+was sampled at random — 45 items, 44 clean — which is the evidence that defects
+cluster in the Wiktionary idioms and the items a pass has already touched,
+rather than in the Tatoeba sentences. **Russian and Arabic were checked for
+shape, not read line by line**; if a wrong gloss survives anywhere, that is
+where to look first.
 
 ## Chosen, and why
 
@@ -105,7 +137,8 @@ person. That derivation is ours and is the expensive half of a French pack.
 ## Drafts
 
 A draft is a pack file with `"reviewed": false`. **The seed script refuses to
-write one**, and that refusal is the whole quality gate.
+write one**, and that refusal is the whole quality gate. The three English
+packs have passed it; see "In use" above for what passing meant.
 
 The reason it exists is worth stating plainly, because the obvious shortcut is
 very tempting and it does not work. Wiktionary's translation tables are

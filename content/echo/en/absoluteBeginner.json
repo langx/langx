@@ -2,8 +2,8 @@
   "id": "en:absoluteBeginner",
   "lang": "en",
   "level": "absoluteBeginner",
-  "contentVersion": 2,
-  "reviewed": false,
+  "contentVersion": 3,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
@@ -1493,7 +1493,7 @@
       "text": "pardon me",
       "gloss": {
         "de": "Entschuldigung",
-        "es": "discúlpeme/perdóneme (usted)",
+        "es": "discúlpeme",
         "fr": "excusez-moi",
         "pt-BR": "perdão",
         "ru": "прости́те",
@@ -1516,7 +1516,8 @@
             "file": "En-au-pardon me.ogg",
             "tags": ["Australia"]
           }
-        ]
+        ],
+        "edited": ["es"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/06/En-au-pardon_me.ogg/En-au-pardon_me.ogg.mp3",
@@ -1650,7 +1651,7 @@
         "de": "wissen Sie?",
         "es": "¿sabe usted?",
         "fr": "savez-vous",
-        "pt-BR": "(você) sabe",
+        "pt-BR": "você sabe?",
         "ru": "зна́ете ли вы?",
         "ar": "هَل تَعْرِف؟",
         "en": "do you know? (of knowledge)"
@@ -1666,7 +1667,8 @@
             "file": "LL-Q1860 (eng)-Vealhurl-do you know.wav",
             "tags": ["Southern-England"]
           }
-        ]
+        ],
+        "edited": ["pt-BR"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/LL-Q1860_%28eng%29-Vealhurl-do_you_know.wav/LL-Q1860_%28eng%29-Vealhurl-do_you_know.wav.mp3",
@@ -1842,7 +1844,7 @@
         "es": "te quiero",
         "fr": "je t'aime",
         "pt-BR": "amo-te",
-        "ru": "я вас люблю́",
+        "ru": "я тебя люблю",
         "ar": "أُحِبُّكَ",
         "en": "affirmation of romantic feeling"
       },
@@ -1861,7 +1863,8 @@
             "file": "en-us-I_love_you.ogg",
             "tags": ["California"]
           }
-        ]
+        ],
+        "edited": ["ru"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1a/En-us-I_love_you.ogg/En-us-I_love_you.ogg.mp3",
@@ -2247,12 +2250,13 @@
       "text": "have a seat",
       "gloss": {
         "tr": "buyurun, oturun",
-        "de": "Platz nehmen",
-        "fr": "prendre place",
-        "pt-BR": "sentar",
-        "ru": "сади́ться",
-        "ar": "جَلَسَ",
-        "en": "a polite invitation to sit down"
+        "de": "nehmen Sie Platz",
+        "fr": "asseyez-vous",
+        "pt-BR": "sente-se",
+        "ru": "садитесь, пожалуйста",
+        "ar": "تفضل بالجلوس",
+        "en": "a polite invitation to sit down",
+        "es": "siéntese"
       },
       "freqRank": 91,
       "review": {
@@ -2268,7 +2272,8 @@
           }
         ],
         "machineSense": "to sit down",
-        "correctedTr": "oturmak"
+        "correctedTr": "oturmak",
+        "edited": ["ar", "de", "es", "fr", "pt-BR", "ru"]
       },
       "audio": {
         "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5d/En-au-have_a_seat.ogg/En-au-have_a_seat.ogg.mp3",
@@ -3233,7 +3238,7 @@
         "tr": "tanışıyor muyuz",
         "de": "kenne ich dich?",
         "es": "¿te conozco?",
-        "pt-BR": "(eu) te conheço?",
+        "pt-BR": "eu te conheço?",
         "ru": "мы знако́мы?",
         "ar": "هل أعرفُكَ؟",
         "en": "do I know you?"
@@ -3242,7 +3247,8 @@
       "review": {
         "sense": "do I know you?",
         "translationCount": 46,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR"]
       }
     },
     {
@@ -5051,11 +5057,11 @@
       "kind": "phrase",
       "text": "how do I get to",
       "gloss": {
-        "tr": "(-e, -a, -ye, -ya, -ne) nasıl giderim",
+        "tr": "…’a nasıl giderim?",
         "de": "wie komme ich zu.../in.../nach...?",
         "es": "¿cómo puedo llegar a...?",
         "fr": "comment puis-je me rendre à...",
-        "pt-BR": "como chego a (eu)",
+        "pt-BR": "como chego a …?",
         "ru": "как добра́ться до...?",
         "ar": "كَيْفَ يُمْكِنُنِي الْوُصُولُ إِلَى...؟",
         "en": "how do I get to...?"
@@ -5064,7 +5070,8 @@
       "review": {
         "sense": "how do I get to...?",
         "translationCount": 28,
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR", "tr"]
       }
     },
     {
@@ -5127,11 +5134,11 @@
       "kind": "phrase",
       "text": "I don't eat fish",
       "gloss": {
-        "tr": "(ben) balık yemem",
+        "tr": "balık yemem",
         "de": "ich esse keinen Fisch",
         "es": "no como pescado",
         "fr": "je ne mange pas de poisson",
-        "pt-BR": "(eu) não como peixe",
+        "pt-BR": "não como peixe",
         "ru": "я не ем ры́бу",
         "ar": "أَنَا لَا آكَل اَلسَّمَك",
         "en": "I don't eat fish"
@@ -5141,7 +5148,8 @@
         "sense": "I don't eat fish",
         "translationCount": 42,
         "definition": "Indicates that the speaker does not eat fish.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR", "tr"]
       }
     },
     {
@@ -6076,7 +6084,7 @@
         "de": "wie komme ich zum Busbahnhof?",
         "es": "¿cómo llego a la estación de autobuses?",
         "fr": "comment aller à la gare routière",
-        "pt-BR": "como chego à estação de ônibus? (eu)",
+        "pt-BR": "como chego à estação de ônibus?",
         "ru": "как дое́хать до автовокза́ла?",
         "en": "how do I get to the bus station?"
       },
@@ -6085,7 +6093,8 @@
         "sense": "how do I get to the bus station?",
         "translationCount": 24,
         "definition": "Used to ask for directions in order to go to a bus station.",
-        "otherSenses": []
+        "otherSenses": [],
+        "edited": ["pt-BR"]
       }
     },
     {
