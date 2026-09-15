@@ -660,14 +660,13 @@ export const en = {
   },
 
   /**
-   * The soft side of the version story: an over-the-air update being
-   * installed as the app opens, and a store release newer than this build.
-   * `gate.*` is the hard side — the screen that stops a build too old to run
-   * at all.
+   * The soft side of the version story: an over-the-air update that has landed
+   * in the background, and a store release newer than this build. `gate.*` is
+   * the hard side — the screen that stops a build too old to run at all.
    */
   update: {
-    applyingTitle: 'Updating LangX',
-    applyingBody: 'A new version is being installed. This takes a moment.',
+    downloaded: 'A new version is ready.',
+    restart: 'Restart now',
     bannerTitle: 'A new version is out',
     bannerBody: 'Update to get the latest LangX.',
     dismiss: 'Dismiss',

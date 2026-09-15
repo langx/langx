@@ -6,6 +6,8 @@ import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useSignalAppReady } from '../hooks/useAppReady'
 import { makeStyles, useTheme } from '../lib/theme'
+import { showToast, TOAST_DURATION_MS } from '../lib/toast'
+import { currentTranslate } from '../i18n/runtime'
 import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
@@ -58,39 +60,35 @@ export function AppGate({ children }: { children: ReactNode }) {
   const t = useT()
   const { locale } = useLocale()
   const [checkingUpdate, setCheckingUpdate] = useState(false)
-  const [applying, setApplying] = useState(false)
 
-  /*
-   * An over-the-air update is installed the moment it is found, and nobody
-   * is asked. Once per launch: the check runs as the app comes up, so a new
-   * bundle lands behind the opening animation and not under somebody
-   * mid-conversation — which is the case the old "restart now" toast was
-   * protecting, and the reason this still never polls. The toast itself is
-   * gone: an update left for later was a fix people were not getting, and
-   * the ceremony of choosing to take it bought nothing. While the bundle
-   * downloads the screen below stands in for the app; a failed download
-   * simply lets the app through on the bundle it already has, as before.
-   *
-   * `isEmbeddedLaunch` is false once a downloaded update is running, so this
-   * only ever acts on a genuinely new one, and never in development where
-   * updates are disabled.
-   */
+  // Pick up an OTA update in the background. `isEmbeddedLaunch` is false once
+  // a downloaded update is running, so this only ever acts on a genuinely new
+  // one, and never in development where updates are disabled.
   useEffect(() => {
     if (__DEV__ || Platform.OS === 'web') return
     void (async () => {
       try {
         const check = await Updates.checkForUpdateAsync()
         if (!check.isAvailable) return
-        setApplying(true)
         const fetched = await Updates.fetchUpdateAsync()
-        if (fetched.isNew) {
-          await Updates.reloadAsync()
-          return
-        }
+        if (!fetched.isNew) return
+        // Applied on the next launch rather than immediately: reloading under
+        // someone mid-conversation is a worse experience than shipping the fix
+        // a few minutes later. The toast is what stops that from being a
+        // silent decision — it says the update is here, and offers to bring
+        // the restart forward for anyone who would rather have it now.
+        //
+        // `currentTranslate()` rather than the `t` from this component: this
+        // effect runs once, and taking `t` as a dependency would re-run the
+        // whole check every time the locale changes.
+        const translate = currentTranslate()
+        showToast(translate('update.downloaded'), TOAST_DURATION_MS, {
+          label: translate('update.restart'),
+          onPress: () => void Updates.reloadAsync(),
+        })
       } catch {
-        // An update check failing is not a reason to keep anyone out.
+        // An update check failing is not a reason to interrupt anyone.
       }
-      setApplying(false)
     })()
   }, [])
 
@@ -101,20 +99,7 @@ export function AppGate({ children }: { children: ReactNode }) {
    * the opening is over — the animation would sit on top of the maintenance
    * notice for its full timeout before revealing it.
    */
-  useSignalAppReady(Boolean(data?.maintenance.enabled || data?.updateRequired || applying))
-
-  // Full screen, after the opening: the app is about to restart into the
-  // new bundle, and a spinner in a corner would leave the old one usable
-  // for exactly the seconds in which it is being replaced.
-  if (applying) {
-    return (
-      <Blocked
-        icon="download-cloud"
-        title={t('update.applyingTitle')}
-        body={t('update.applyingBody')}
-      />
-    )
-  }
+  useSignalAppReady(Boolean(data?.maintenance.enabled || data?.updateRequired))
 
   if (data?.maintenance.enabled) {
     // Rendered in the viewer's own locale — an expected return time is the one
