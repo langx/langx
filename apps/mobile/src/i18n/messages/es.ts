@@ -257,6 +257,32 @@ export const es: Localized<EnMessages> = {
     verdictExact: 'Exacto',
     verdictClose: 'Bien, salvo por una tilde',
     verdictWrong: 'Casi',
+    aboutOpen: '¿Qué es esto?',
+    aboutTitle: 'Cómo funciona Echo',
+    aboutBody:
+      'Casi todo lo que ves hoy desaparece en una semana, salvo que vuelvas a encontrarlo. Echo trae una frase de vuelta justo antes de que se te escape, y cada vez que la recuerdas la siguiente espera es más larga.',
+    aboutWithout: 'Sin repaso',
+    aboutWith: 'Con Echo',
+    aboutChart:
+      'Dos curvas a lo largo de una semana. Sin repaso, lo que recuerdas cae casi a cero. Con Echo, cada repaso lo levanta y la caída es más lenta cada vez.',
+    aboutLadder: 'Las esperas son reales',
+    aboutStep10m: '10 minutos',
+    aboutStep1d: '1 día',
+    aboutStep3d: '3 días',
+    aboutStep8d: '8 días',
+    aboutStep20d: '20 días',
+    aboutStepMore: 'luego meses, luego una vez al año',
+    aboutRecall:
+      'Lo que funciona es que te pregunten. Sacar una palabra de tu propia cabeza la fija mucho mejor que volver a leerla.',
+    aboutLittle:
+      'Un idioma son miles de palabras. Echo solo pregunta por las que estás a punto de olvidar, así diez minutos al día rinden más que una hora a la semana.',
+    aboutYours:
+      'Y son tus propias frases, de tus propias conversaciones: palabras que ya tenías motivo para recordar.',
+    aboutForgot:
+      '¿La olvidaste? Vuelve en un minuto y empieza otra vez por las esperas cortas. No se pierde nada.',
+    aboutProof:
+      'El espaciado y el autoexamen son los dos hallazgos mejor probados de la investigación sobre la memoria, estudiados desde 1880. Aquí están los dos, aplicados a tu idioma.',
+    aboutClose: 'Entendido',
   },
 
   messageMeta: {

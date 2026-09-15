@@ -305,6 +305,52 @@ export const en = {
     verdictExact: 'Exactly right',
     verdictClose: 'Right, give or take an accent',
     verdictWrong: 'Not quite',
+    /*
+     * "What is this?" in the header, and what it opens.
+     *
+     * The intervals named here are the real ladder a card climbs on Good —
+     * `SRS_RULES`' two learning steps, then 1, 3, 8, 20, 50, 125 and 313 days
+     * against a 365-day ceiling — and not a rounder set that would read
+     * better: the session draws the same numbers on its grade buttons, and an
+     * explainer that disagreed with them would be teaching the wrong thing
+     * about the screen it sits on.
+     *
+     * The row names the first five and then `aboutStepMore` says the rest in
+     * words, because five numbers on their own read as "five reviews and then
+     * it is over". Nothing is ever over: a card has no retired state, and at
+     * the top of the ladder it still comes back about once a year.
+     *
+     * The claim in `aboutProof` is deliberately the narrow one. Spacing and
+     * retrieval practice are what a century of memory research actually
+     * supports; "the best way to learn a language" is not, and writing it
+     * would be a promise the schedule cannot keep.
+     */
+    aboutOpen: 'What is this?',
+    aboutTitle: 'How Echo works',
+    aboutBody:
+      'Most of what you meet today is gone within a week — unless you meet it again. Echo brings a sentence back right before it slips, and every time you remember it the next wait is longer.',
+    aboutWithout: 'Without review',
+    aboutWith: 'With Echo',
+    aboutChart:
+      'Two lines over one week. Without review, what you remember falls away to almost nothing. With Echo, each review lifts it back and the falling gets slower every time.',
+    aboutLadder: 'The waits are real',
+    aboutStep10m: '10 minutes',
+    aboutStep1d: '1 day',
+    aboutStep3d: '3 days',
+    aboutStep8d: '8 days',
+    aboutStep20d: '20 days',
+    aboutStepMore: 'then months, then once a year',
+    aboutRecall:
+      'Being asked is what does the work. Pulling a word out of your own head fixes it far better than reading it again.',
+    aboutLittle:
+      'A language is thousands of words. Echo only asks about the ones you are about to forget, so ten minutes a day goes further than an hour once a week.',
+    aboutYours:
+      'And they are your own sentences, out of your own chats — words you already had a reason to remember.',
+    aboutForgot:
+      'Forgot one? It comes back in a minute and starts again from the short waits. Nothing is lost.',
+    aboutProof:
+      'Spacing and self-testing are the two best-proven findings in memory research, tested since the 1880s. This is both of them, pointed at your language.',
+    aboutClose: 'Got it',
   },
 
   messageMeta: {

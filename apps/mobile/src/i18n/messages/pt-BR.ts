@@ -254,6 +254,31 @@ export const ptBR: Localized<EnMessages> = {
     verdictExact: 'Exatamente',
     verdictClose: 'Certo, fora um acento',
     verdictWrong: 'Quase',
+    aboutOpen: 'O que é isso?',
+    aboutTitle: 'Como o Echo funciona',
+    aboutBody:
+      'Quase tudo o que você vê hoje some em uma semana — a não ser que você encontre de novo. O Echo traz uma frase de volta pouco antes de ela escapar, e cada vez que você lembra a próxima espera fica maior.',
+    aboutWithout: 'Sem revisão',
+    aboutWith: 'Com o Echo',
+    aboutChart:
+      'Duas curvas ao longo de uma semana. Sem revisão, o que você lembra cai para quase nada. Com o Echo, cada revisão levanta de novo e o esquecimento fica mais lento a cada vez.',
+    aboutLadder: 'As esperas são reais',
+    aboutStep10m: '10 minutos',
+    aboutStep1d: '1 dia',
+    aboutStep3d: '3 dias',
+    aboutStep8d: '8 dias',
+    aboutStep20d: '20 dias',
+    aboutStepMore: 'depois meses, depois uma vez por ano',
+    aboutRecall:
+      'O que faz o trabalho é ser perguntado. Puxar uma palavra da própria cabeça fixa muito mais do que ler de novo.',
+    aboutLittle:
+      'Um idioma são milhares de palavras. O Echo só pergunta as que você está prestes a esquecer, então dez minutos por dia rendem mais que uma hora por semana.',
+    aboutYours:
+      'E são suas próprias frases, das suas conversas — palavras que você já tinha motivo para lembrar.',
+    aboutForgot: 'Esqueceu? Ele volta em um minuto e recomeça pelas esperas curtas. Nada se perde.',
+    aboutProof:
+      'Espaçamento e autoteste são os dois achados mais bem comprovados da pesquisa sobre memória, testados desde os anos 1880. São os dois, apontados para o seu idioma.',
+    aboutClose: 'Entendi',
   },
 
   messageMeta: {
