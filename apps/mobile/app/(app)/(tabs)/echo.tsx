@@ -142,7 +142,7 @@ export default function EchoScreen() {
   }
 
   return (
-    <Screen fluid>
+    <Screen fluid tabbed>
       <View style={styles.header}>
         <Text style={styles.title}>{t('echo.title')}</Text>
         <Text style={styles.due}>
