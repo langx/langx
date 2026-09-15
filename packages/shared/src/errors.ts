@@ -59,7 +59,13 @@ export const ERROR_CODES = {
   // handles
   HANDLE_TAKEN: 'HANDLE_TAKEN',
   HANDLE_RESERVED: 'HANDLE_RESERVED',
-  HANDLE_ALREADY_CLAIMED: 'HANDLE_ALREADY_CLAIMED',
+  /**
+   * A username change inside `HANDLE_CHANGE_COOLDOWN_DAYS` of the last one.
+   * The same shape as `GENDER_CHANGE_TOO_SOON` below, for the same reasons:
+   * the body was fine, the answer is a date (`retryAt`), and the client
+   * normally knows before it asks because `handleChangedAt` is on the profile.
+   */
+  HANDLE_CHANGE_TOO_SOON: 'HANDLE_CHANGE_TOO_SOON',
 
   // chat / social graph
   BLOCKED: 'BLOCKED',
@@ -183,7 +189,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   PASSWORD_ALREADY_SET: 409,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
-  HANDLE_ALREADY_CLAIMED: 409,
+  HANDLE_CHANGE_TOO_SOON: 409,
   BLOCKED: 403,
   CONVERSATION_EXISTS: 409,
   GENDER_CHANGE_TOO_SOON: 409,

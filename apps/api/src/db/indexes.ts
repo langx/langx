@@ -80,8 +80,8 @@ export const INDEXES: Partial<IndexSpec> = {
      *
      * What it deliberately does **not** say is that a value here excludes the
      * same value in `handle` — no index can express a uniqueness that spans
-     * two fields, which is why the claim paths read before they write. See
-     * `assertNotSomeonesOldHandle`.
+     * two fields, which is why the paths that write a handle read before
+     * they write. See `assertNotSomeonesOldHandle`.
      */
     { key: { previousHandle: 1 }, name: 'previous_handle_unique', unique: true, sparse: true },
     /*

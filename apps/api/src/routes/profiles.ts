@@ -1,5 +1,5 @@
 import {
-  claimHandleSchema,
+  changeHandleSchema,
   countryFromLocationSchema,
   setGenderSchema,
   handleSchema,
@@ -20,7 +20,7 @@ import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
 import { isSuspended } from '../modules/moderation/suspension'
 import {
-  claimHandle,
+  changeHandle,
   clearLocation,
   createGuestProfile,
   createProfile,
@@ -164,8 +164,8 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   )
 
   /**
-   * The one rename this app allows, and only for an account that came back
-   * from v1 — see `claimHandle`, which holds the rule and the reasoning.
+   * A username change, once a week — see `changeHandle`, which holds the rule
+   * and the reasoning.
    *
    * `requireVerifiedEmail` rather than `requireMember`, because the legacy
    * email hash is what decides whether a name reserved in v1 is this person's
@@ -175,12 +175,17 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
    */
   app.post(
     '/profiles/me/handle',
-    { preHandler: requireVerifiedEmail, schema: { body: claimHandleSchema } },
+    { preHandler: requireVerifiedEmail, schema: { body: changeHandleSchema } },
     async (request, reply) => {
       const legacyEmailHash = app.env.LEGACY_EMAIL_HASH_SALT
         ? hashLegacyEmail(request.userEmail, app.env.LEGACY_EMAIL_HASH_SALT)
         : null
-      const profile = await claimHandle(app.mongo.db, request.userId, legacyEmailHash, request.body)
+      const profile = await changeHandle(
+        app.mongo.db,
+        request.userId,
+        legacyEmailHash,
+        request.body,
+      )
       return reply.send(profile)
     },
   )

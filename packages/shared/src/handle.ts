@@ -64,33 +64,45 @@ export const newHandleSchema = handleSchema
   })
 
 /**
- * Whether this account may still swap the username v1 gave it.
+ * How often a username may change: once every `HANDLE_CHANGE_COOLDOWN_DAYS`.
  *
- * v1 named people itself. Its generator produced `langx_` plus four hex
- * characters — `langx_6430`, `langx_003c`, `langx_00a5` — and against the
- * staged records that is **2846 of 3164** profiles: nine in ten of everybody
- * coming back is carrying a name a machine picked, and the digits-only ones
- * are not a separate case, just the draws that happened to land on `0-9`.
+ * This replaced a rule with two halves — "never", and one exception for an
+ * account that came back from v1 carrying the `langx_` plus four hex
+ * characters v1's generator gave it. That exception was the whole rename
+ * story for nine people in ten, and it left the tenth, and everybody who
+ * signed up here, with the only remedy the old rule ever had: delete the
+ * account. A week per move keeps what the ban was for — a handle is a public
+ * address, and one that changes daily is nobody's address — while letting a
+ * person correct a name they typed at sign-up, or outgrow one.
  *
- * So the offer is not narrowed to a shape. Anyone whose v1 profile came back
- * gets one chance to choose, because the 313 who *did* name themselves chose
- * under v1's rules and years ago, and telling them apart by regex would refuse
- * `langx_david` while allowing `langx_00a5` for no reason a person could
- * explain.
+ * The first change is free, because nothing writes `handleChangedAt` until
+ * a change happens. That is also why there is no migration: every profile
+ * that predates the field reads as one that has never changed, which is
+ * what it is — including the v1 accounts that already spent their one
+ * claim, whose `previousHandle` said so and whose `handleChangedAt` is
+ * simply absent.
  *
- * **One chance, and `previousHandle` is what counts it** rather than a flag or
- * a counter. The old name has to be kept anyway — old links resolve through it
- * and nobody else may take it — so its presence already says the swap
- * happened, and its absence makes the first one free with no migration. Same
- * shape as `genderChangedAt`, for the same reason.
- *
- * This is the whole rule, and both sides import it: the server refuses on it,
- * and the app draws the row and the welcome-back prompt on it. A second copy
- * would eventually disagree with the first about who is being offered what.
+ * Same shape as `GENDER_CHANGE_COOLDOWN_DAYS`, and both sides read this one:
+ * the server's filter refuses on it, the app draws the row on it. A second
+ * copy would eventually disagree with the first about when the field frees.
  */
-export function canClaimNewHandle(profile: {
-  restoredFromV1?: unknown
-  previousHandle?: unknown
-}): boolean {
-  return Boolean(profile.restoredFromV1) && !profile.previousHandle
+export const HANDLE_CHANGE_COOLDOWN_DAYS = 7
+/** Derived, so the number people read and the number the filter uses cannot drift. */
+export const HANDLE_CHANGE_COOLDOWN_MS = HANDLE_CHANGE_COOLDOWN_DAYS * 24 * 60 * 60 * 1000
+
+/**
+ * When the username may change again, or `undefined` if it may change now.
+ *
+ * Derived from the profile rather than from a refused request, so a screen
+ * can say "on {date}" before anybody taps; the server's
+ * `HANDLE_CHANGE_TOO_SOON` is the backstop for a stale screen, not the way
+ * this is normally learned.
+ */
+export function handleChangeFreeAt(
+  profile: { handleChangedAt?: string | Date | null },
+  now: number = Date.now(),
+): Date | undefined {
+  if (!profile.handleChangedAt) return undefined
+  const freeAt = new Date(profile.handleChangedAt).getTime() + HANDLE_CHANGE_COOLDOWN_MS
+  return freeAt > now ? new Date(freeAt) : undefined
 }

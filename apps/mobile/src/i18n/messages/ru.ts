@@ -1498,6 +1498,8 @@ export const ru: Localized<EnMessages> = {
     gender: 'Пол',
     genderOnce: 'Это можно менять раз в {days} дней.',
     genderCooldown: 'Изменить снова можно будет {date}.',
+    usernameEvery: 'Менять можно раз в {days} дней.',
+    usernameCooldown: 'Изменить снова можно будет {date}.',
     pronouns: 'Местоимения',
     pronounsPlaceholder: 'она/её, они/их, он/его…',
     pronounsHint: 'Необязательно, отображается в профиле. Напишите так, как принято в вашем языке.',
@@ -1668,18 +1670,22 @@ export const ru: Localized<EnMessages> = {
     signInSetPasswordFailed: 'Не удалось задать пароль. Попробуйте ещё раз.',
     signInPasswordAlready: 'У этого аккаунта уже есть пароль.',
     username: 'Имя пользователя',
-    usernameBody: 'Выбери своё, один раз',
-    usernameTitle: 'Выбери имя пользователя',
-    usernameIntro:
+    usernameBody: 'Можно менять раз в {days} дней',
+    usernameTitle: 'Сменить имя пользователя',
+    usernameIntro: 'Сейчас ты @{handle}. Выбери имя, которое хочешь вместо него.',
+    usernameIntroV1:
       'Когда ты пришёл в старый LangX, он назвал тебя @{handle}. Ты этого не выбирал — выбери сейчас.',
     usernameHint: 'Буквы, цифры и подчёркивания. Так тебя будут находить.',
-    usernameOnce:
-      'Это можно сделать один раз. Ссылки и QR-коды со старым именем продолжат работать, и никто другой его не займёт.',
-    usernameSave: 'Беру это',
+    usernameEvery:
+      'Менять можно раз в {days} дней. Ссылки и QR-коды со старым именем работают, пока ты не сменишь его снова.',
+    usernameSave: 'Сменить имя',
     usernameSaved: 'Теперь ты @{handle}.',
     usernameFailed: 'Не удалось изменить имя пользователя. Попробуй ещё раз.',
     usernameReserved: '@{handle} принадлежит другому аккаунту из старого LangX.',
-    usernameSpent: 'Ты выбрал имя пользователя: @{handle}. Оно больше не меняется.',
+    usernameCooldown: 'Сейчас ты @{handle}. Изменить снова можно будет {date}.',
+    usernameConfirmTitle: 'Сменить имя пользователя?',
+    usernameConfirmBody:
+      'Ты станешь @{handle}. Снова сменить имя можно будет только через {days} дней.',
     password: 'Пароль',
     passwordBody: 'Задать или изменить',
     changePassword: 'Изменить пароль',

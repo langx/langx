@@ -1,4 +1,4 @@
-import { TIER_NAMES, TOKEN_RULES, canClaimNewHandle } from '@langx/shared'
+import { TIER_NAMES, TOKEN_RULES, handleChangeFreeAt } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { useQueryClient } from '@tanstack/react-query'
 import { Redirect, router, type Href } from 'expo-router'
@@ -110,7 +110,9 @@ export default function WelcomeBackScreen() {
   if (!restored) return <Redirect href="/(app)/(tabs)/discover" />
 
   const handle = me.data?.handle ?? ''
-  const canClaim = canClaimNewHandle(me.data)
+  // Unless the name was changed within the week — which, on the screen a
+  // restore lands on, means it was changed from another device.
+  const canClaim = me.data ? !handleChangeFreeAt(me.data) : false
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
 
   return (
