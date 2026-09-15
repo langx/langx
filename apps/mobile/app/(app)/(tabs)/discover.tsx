@@ -29,6 +29,7 @@ import {
 import {
   captureLocation,
   locationPermissionState,
+  requestLocationPermission,
   type LocationFailure,
 } from '../../../src/lib/location'
 import { openPaywall } from '../../../src/lib/paywall'
@@ -149,6 +150,12 @@ export default function DiscoverScreen() {
    */
   async function chooseNearby(): Promise<void> {
     if (!canUseNearby) {
+      // The OS dialog first, then the pitch. Sharing a location is free and
+      // the permission is the half of Nearby the paywall cannot grant, so it
+      // is asked while the tap that meant "where am I" is still fresh.
+      // Whatever the answer, the paywall follows: a refusal is not a reason
+      // to withhold the offer.
+      await requestLocationPermission()
       openPaywall('nearby', '/(app)/(tabs)/discover')
       return
     }

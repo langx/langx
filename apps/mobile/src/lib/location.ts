@@ -85,6 +85,27 @@ export async function captureLocation({
 }
 
 /**
+ * Raises the OS permission dialog, and nothing else: no fix, no sharing.
+ *
+ * For the person who taps Nearby without the plan for it. The paywall is
+ * where they go next, but asking first puts the dialog at the one moment it
+ * makes sense — right after the tap that named the feature — instead of
+ * after a purchase, when a "no" turns a paid feature into an empty list.
+ * Already granted or already refused for good, the OS shows nothing and this
+ * resolves at once, so the paywall opens with no detour.
+ */
+export async function requestLocationPermission(): Promise<void> {
+  try {
+    const permission = await Location.getForegroundPermissionsAsync()
+    if (!permission.granted && permission.canAskAgain) {
+      await Location.requestForegroundPermissionsAsync()
+    }
+  } catch {
+    // Web without the API. The answer does not matter here; the paywall does.
+  }
+}
+
+/**
  * What to tell someone when it did not work. One place, so Settings and
  * Discover say the same thing — and keys rather than sentences, so they also
  * say it in the same language the rest of the screen is in.
