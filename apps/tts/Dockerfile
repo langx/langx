@@ -37,10 +37,12 @@ COPY server.py ./
 # `/usr/lib/<triplet>/`, not `/usr/share`, and phonemizer answers a data path
 # that is not a directory with the same "not installed" — the second thing
 # the first deploy said, once the library was found.
-RUN ln -s "$(find /usr/lib -name 'libespeak-ng.so.1' -print -quit)" /usr/local/lib/libespeak-ng.so.1 \
-  && test -f /usr/local/lib/libespeak-ng.so.1 \
-  && ln -s "$(find /usr -type d -name 'espeak-ng-data' -print -quit)" /usr/local/share/espeak-ng-data \
-  && test -f /usr/local/share/espeak-ng-data/phontab
+RUN set -eux; \
+  lib="$(find /usr/lib -name 'libespeak-ng.so.1' -print -quit)"; \
+  data="$(dirname "$(find /usr -name phontab -path '*espeak-ng-data*' -print -quit)")"; \
+  test -f "$lib" && test -f "$data/phontab"; \
+  ln -s "$lib" /usr/local/lib/libespeak-ng.so.1; \
+  ln -s "$data" /usr/local/share/espeak-ng-data
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
     ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
