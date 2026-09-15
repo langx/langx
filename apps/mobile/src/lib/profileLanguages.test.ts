@@ -2,6 +2,7 @@ import { PLAN_LIMITS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import {
   applyLanguageEdit,
+  profileBeforeEdit,
   refuseLanguageEdit,
   sameLanguageLists,
   type LanguageLists,
@@ -130,6 +131,39 @@ describe('applying a language edit', () => {
       to: 'es',
     })
     expect(learningAgain.learning.map((l) => l.code)).toEqual(['en', 'es', 'fr'])
+  })
+})
+
+/**
+ * The half of the fix that lives in the mutation: an edit is applied to the
+ * cache once, for the eye, and the body is built from what it was applied to
+ * rather than from what came out.
+ */
+describe('choosing what to build the request body from', () => {
+  const before = free
+  const shown = applyLanguageEdit(free, { kind: 'addLearning', code: 'de' })
+
+  it('goes back to the lists the edit was applied to while the cache still holds its result', () => {
+    expect(profileBeforeEdit(shown, { before, shown })).toBe(before)
+  })
+
+  /**
+   * The queued tap: a request ahead of this one has answered and written the
+   * server's own profile over the optimistic one. That answer is what this
+   * edit belongs on — applying it to the lists from before would undo it.
+   */
+  it('takes the cache when something has landed in it since', () => {
+    const answered = { ...shown }
+    expect(profileBeforeEdit(answered, { before, shown })).toBe(answered)
+  })
+
+  /** An equal-looking profile is not the same profile: identity is the question. */
+  it('does not mistake a copy of the optimistic profile for the optimistic profile', () => {
+    expect(profileBeforeEdit({ ...shown }, { before, shown })).not.toBe(before)
+  })
+
+  it('takes the cache when there was nothing to apply the edit to', () => {
+    expect(profileBeforeEdit(shown, {})).toBe(shown)
   })
 })
 

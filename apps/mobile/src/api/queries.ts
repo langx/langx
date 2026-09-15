@@ -98,7 +98,12 @@ import { isOfflineFailure, reportActionError } from '../lib/reportActionError'
 import { errorCodeOf } from '../lib/errors'
 import { showToast } from '../lib/toast'
 import { currentTranslate } from '../i18n/runtime'
-import { applyLanguageEdit, sameLanguageLists, type LanguageEdit } from '../lib/profileLanguages'
+import {
+  applyLanguageEdit,
+  profileBeforeEdit,
+  sameLanguageLists,
+  type LanguageEdit,
+} from '../lib/profileLanguages'
 import { isAllowedAudioType } from '../lib/recordingFormat'
 import {
   applyAnswer,
@@ -2305,11 +2310,9 @@ export function useEditLanguages() {
     mutationFn: (run: LanguageEditRun) => {
       const current = queryClient.getQueryData<MeProfile>(keys.me)
       if (!current) throw new Error('no profile to edit')
-      // Object identity, not equality: `onMutate` put `shown` in the cache, so
-      // finding it still there means nothing has landed since — and anything
-      // else means a request queued ahead of this one has answered, and this
-      // edit belongs on that answer rather than on a guess it replaced.
-      const base = current === run.shown && run.before ? run.before : current
+      // Once, never twice — `profileBeforeEdit` is where that is decided, and
+      // why.
+      const base = profileBeforeEdit(current, run)
       const next = applyLanguageEdit(base, run.edit)
       // An edit naming a language that is no longer there — a second tap
       // queued behind a first one that failed and rolled back. Nothing to say.

@@ -275,6 +275,29 @@ export function applyLanguageEdit(lists: LanguageLists, edit: LanguageEdit): Lan
 }
 
 /**
+ * Which profile the request body should be built from: the one this edit has
+ * not been applied to yet.
+ *
+ * `useEditLanguages` reaches for the lists twice over one tap's life. Once in
+ * `onMutate`, which applies the edit to the cache so the row moves under the
+ * finger — and once in `mutationFn`, because a request queued ahead of this
+ * one may have answered in between, and the body belongs on that answer rather
+ * than on the guess it replaced. Taking the cache both times is the bug this
+ * exists to prevent: the edit was applied to its own result, which added a
+ * language as two rows and turned every other edit into a request that was
+ * never sent.
+ *
+ * Identity, not equality. `shown` is the object `onMutate` put in the cache,
+ * so finding that very object still there means nothing has landed since and
+ * the edit is already in it — in which case the lists to apply it to are the
+ * ones from before it. Anything else in the cache is a profile this edit is
+ * not in, and is itself the thing to apply it to.
+ */
+export function profileBeforeEdit<T>(cache: T, applied: { before?: T; shown?: T }): T {
+  return cache === applied.shown && applied.before !== undefined ? applied.before : cache
+}
+
+/**
  * Whether two sets of lists say the same thing — codes, levels and order.
  *
  * The mutation asks this of the edit it is about to send: an edit that changes
