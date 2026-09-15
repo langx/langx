@@ -380,7 +380,10 @@ a global endpoint to a 500 for every user. A test caught it.
 ## Phase 9 — the pool under-distributes in a small population, correctly
 
 `maxShareOfPool` is 5%, so distributing the whole pool needs at least 20 active
-users; in a live test two users took 500 each from a 10,000 pool. That is what
+users; in a live test two users took 500 each from what was then a 10,000 pool.
+The pool has since been halved to 5,000 — the same two users would take 250 each
+now, and the headcount the cap needs is unchanged, because it is the fraction
+that sets it and the fraction did not move. That is what
 the first days after launch will look like. The alternative — redistributing
 the remainder when the cap binds — would hand a single active user the entire
 pool, which is exactly what the cap exists to prevent.

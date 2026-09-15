@@ -432,11 +432,12 @@ describe('legacy token conversion', () => {
   })
 
   it('keeps the top v1 account within reach of a new user', () => {
-    // A very active v2 day is ~700 tokens (500 pool ceiling + the 100-message cap).
+    // A very active v2 day is ~350 tokens (250 pool ceiling + the 100-message cap).
     const veryActiveDay =
       TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool + 100 * TOKEN_RULES.award.message
     const daysToCatchTheTop = convertLegacyTokens(2_277_521) / veryActiveDay
-    expect(daysToCatchTheTop).toBeLessThan(60)
+    // Roughly 65 days against the halved pool, up from 46 at the old one.
+    expect(daysToCatchTheTop).toBeLessThan(90)
   })
 
   it('returns nothing for a missing or nonsensical balance', () => {

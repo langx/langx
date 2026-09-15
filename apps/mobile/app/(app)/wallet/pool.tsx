@@ -44,9 +44,9 @@ export default function PoolScreen() {
 
   /*
    * The share against the pool it came out of. A backward-looking fact like
-   * the amount itself, and the one that gives the amount a size: +500 says
+   * the amount itself, and the one that gives the amount a size: +250 says
    * nothing on its own, "5% of the daily pool" says how big a night that was.
-   * A fraction digit because a share of a ten-thousand pool is often under 1%.
+   * A fraction digit because a share of a five-thousand pool is often under 1%.
    */
   const shareOfPool =
     lastPayout &&
