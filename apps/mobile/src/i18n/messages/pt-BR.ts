@@ -1169,6 +1169,7 @@ export const ptBR: Localized<EnMessages> = {
     official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',
+    previewTitle: 'Prévia',
     previewNote:
       'Este é o seu perfil como as outras pessoas o veem — suas configurações de privacidade já estão aplicadas.',
     teaches: 'Ensina',

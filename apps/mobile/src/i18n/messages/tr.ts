@@ -1180,6 +1180,7 @@ export const tr: Localized<EnMessages> = {
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',
+    previewTitle: 'Önizleme',
     previewNote:
       'Bu, başkalarının gördüğü haliyle profilin — gizlilik ayarların zaten uygulanmış durumda.',
     teaches: 'Öğretiyor',

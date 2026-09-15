@@ -2867,9 +2867,11 @@ builds, store submissions and over-the-air updates are EAS workflows in
 `apps/mobile/.eas/workflows/`, started from Expo's dashboard or by a push to
 `main`. GitHub Actions keeps `ci.yml`, and since 5 September 2026 the one
 workflow that turns a version tag into a Release page — see _The version is two
-numbers_ below. The API and the web
-build are unaffected — Fly and Cloudflare Pages are still deployed by hand,
-see the runbook.
+numbers_ below. The API and the web build were deployed by hand when this was
+decided and are not any more: `deploy-api.yml` and `deploy-web.yml` are GitHub
+Actions on the same push to `main`, and the runbook's table is the current
+list. The split the heading names is about the mobile app, where the
+credentials decide the venue — not about everything that ships.
 
 Two things decided the shape of the workflows.
 

@@ -1180,6 +1180,7 @@ export const fr: Localized<EnMessages> = {
     official: 'Compte officiel',
     suspendedTag: 'Suspendu',
     deletedTag: 'Compte supprimé',
+    previewTitle: 'Aperçu',
     previewNote:
       'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',

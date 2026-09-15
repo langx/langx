@@ -1175,6 +1175,7 @@ export const es: Localized<EnMessages> = {
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
+    previewTitle: 'Vista previa',
     previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',
     teaches: 'Enseña',
     learns: 'Aprende',

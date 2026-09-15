@@ -156,8 +156,7 @@ export default function ProfileScreen() {
       {/*
         No title on somebody else's profile: the name below is the title. Your
         own preview is the exception — the name below it is yours, so it says
-        whose page this is but not why you are looking at it. The row you
-        arrived from names that, so it is the same string.
+        whose page this is but not why you are looking at it.
       */}
       <View style={styles.topBar}>
         <Pressable
@@ -171,7 +170,7 @@ export default function ProfileScreen() {
         </Pressable>
         {isSelf ? (
           <Text style={styles.topTitle} numberOfLines={1}>
-            {t('me.previewProfile')}
+            {t('profile.previewTitle')}
           </Text>
         ) : (
           <View style={styles.spacer} />

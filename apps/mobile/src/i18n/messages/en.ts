@@ -1275,6 +1275,7 @@ export const en = {
     official: 'Official account',
     suspendedTag: 'Suspended',
     deletedTag: 'Account deleted',
+    previewTitle: 'Preview',
     previewNote:
       'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',
