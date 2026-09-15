@@ -322,6 +322,10 @@ export const en = {
     voiceFemale: 'Synthesised · female',
     voiceMale: 'Synthesised · male',
     voiceSynthesised: 'Synthesised',
+    /** The server voice, on a card of the member's own. */
+    readAloud: 'Read it aloud',
+    readAloudFailedTitle: 'Could not read this card aloud',
+    readAloudLimitBody: 'You can have {count} cards read aloud a day. It resets tomorrow.',
     spokenBy: 'Spoken by {name}',
     /** Names the feed, because the post is public and the chat one was not. */
     askToHearIt: 'Ask the feed how it is said',

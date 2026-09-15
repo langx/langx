@@ -1,11 +1,19 @@
 import Feather from '@expo/vector-icons/Feather'
-import { echoAudiosOf, type EchoAudio, type EchoCard, type EchoImage } from '@langx/shared'
+import {
+  echoAudiosOf,
+  echoSynthVoicesFor,
+  PLAN_LIMITS,
+  type EchoAudio,
+  type EchoCard,
+  type EchoImage,
+} from '@langx/shared'
 import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { useEchoCard, useRemoveEcho } from '../../../../src/api/queries'
+import { useEchoCard, useRemoveEcho, useSynthesiseEchoCard } from '../../../../src/api/queries'
+import { Reading } from '../../../../src/components/echo/Reading'
 import { LoadFailed } from '../../../../src/components/LoadFailed'
 import { Avatar } from '../../../../src/components/ui/Avatar'
 import { Button } from '../../../../src/components/ui/Button'
@@ -17,6 +25,7 @@ import { useDisplayNames } from '../../../../src/i18n/displayNames'
 import { useProfileCache } from '../../../../src/hooks/useProfileCache'
 import { confirmAlert, showAlert } from '../../../../src/lib/alert'
 import { ensurePlaybackAudioMode } from '../../../../src/lib/audioSession'
+import { errorCodeOf } from '../../../../src/lib/errors'
 import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../../src/lib/theme'
@@ -93,14 +102,19 @@ function Card({ card }: { card: EchoCard }) {
       {card.back ? <Text style={styles.back}>{card.back}</Text> : null}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
 
-      {recordings.length > 0 ? (
+      {recordings.length > 0 || card.voices?.length ? (
         <View style={styles.block}>
           <Text style={styles.label}>{t('echo.cardAudio')}</Text>
           {recordings.map((audio) => (
             <Recording key={audio.url} audio={audio} />
           ))}
+          {/* Under the people, as on the session card, and never above them. */}
+          {(card.voices ?? []).map((take) => (
+            <Reading key={take.voice} take={take} />
+          ))}
         </View>
       ) : null}
+      <ReadAloud card={card} />
 
       {/*
         The schedule, the work and the language as one strip, the way the tab
@@ -248,6 +262,47 @@ function Picture({ image }: { image: EchoImage }) {
         }}
       />
     </View>
+  )
+}
+
+/**
+ * The server voice, for a card that has none yet.
+ *
+ * Offered only where the model can read the language — `echoSynthVoicesFor`
+ * is the same table the API refuses by, so a tap never learns of a limit the
+ * screen could have shown. A card that already holds readings shows nothing:
+ * the readings are the answer, and the API would return them unchanged.
+ * The daily ceiling gets the plain alert every Echo limit gets, which offers
+ * nothing to buy.
+ */
+function ReadAloud({ card }: { card: EchoCard }) {
+  const t = useT()
+  const synthesise = useSynthesiseEchoCard()
+
+  if (card.voices?.length || echoSynthVoicesFor(card.lang).length === 0) return null
+
+  async function read(): Promise<void> {
+    try {
+      await synthesise.mutateAsync({ cardId: card._id })
+    } catch (error) {
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          t('echo.limitTitle'),
+          t('echo.readAloudLimitBody', { count: PLAN_LIMITS.free.echoVoicesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('echo.readAloudFailedTitle'), t('common.retry'))
+      }
+    }
+  }
+
+  return (
+    <Button
+      label={t('echo.readAloud')}
+      variant="secondary"
+      loading={synthesise.isPending}
+      onPress={() => void read()}
+    />
   )
 }
 
