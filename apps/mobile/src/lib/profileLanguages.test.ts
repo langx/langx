@@ -2,6 +2,7 @@ import { PLAN_LIMITS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import {
   applyLanguageEdit,
+  profileBeforeEdit,
   refuseLanguageEdit,
   sameLanguageLists,
   type LanguageLists,
@@ -95,6 +96,74 @@ describe('applying a language edit', () => {
   it('changes nothing when the language it names is gone', () => {
     const next = applyLanguageEdit(free, { kind: 'replaceLearning', from: 'es', to: 'de' })
     expect(sameLanguageLists(next, free)).toBe(true)
+  })
+
+  /**
+   * The shape of the bug this guard exists for: the mutation applied one tap
+   * to the cache and then applied it again to that same cache, so a language
+   * added once arrived as two rows — and removing either of them removed both,
+   * because a row is a language and a language is filtered by its code.
+   *
+   * The screen refuses a duplicate long before this, so the second application
+   * is the only caller that can reach here. It now costs nothing.
+   */
+  it('adds a language once however many times it is applied', () => {
+    const once = applyLanguageEdit(free, { kind: 'addLearning', code: 'de' })
+    const twice = applyLanguageEdit(once, { kind: 'addLearning', code: 'de' })
+    expect(twice.learning).toEqual(once.learning)
+    expect(twice.learning.filter((l) => l.code === 'de')).toHaveLength(1)
+
+    const nativeOnce = applyLanguageEdit(free, { kind: 'addNative', code: 'de' })
+    const nativeTwice = applyLanguageEdit(nativeOnce, { kind: 'addNative', code: 'de' })
+    expect(nativeTwice.nativeLanguages).toEqual([{ code: 'tr' }, { code: 'de' }])
+  })
+
+  /** The same, from the other side: a replacement already made is not a second row. */
+  it('does not duplicate when replacing with a language already on the list', () => {
+    const swapped = applyLanguageEdit(free, { kind: 'replaceNative', from: 'tr', to: 'de' })
+    const again = applyLanguageEdit(swapped, { kind: 'replaceNative', from: 'tr', to: 'de' })
+    expect(again.nativeLanguages).toEqual([{ code: 'de' }])
+
+    const learning = applyLanguageEdit(many, { kind: 'replaceLearning', from: 'de', to: 'es' })
+    const learningAgain = applyLanguageEdit(learning, {
+      kind: 'replaceLearning',
+      from: 'de',
+      to: 'es',
+    })
+    expect(learningAgain.learning.map((l) => l.code)).toEqual(['en', 'es', 'fr'])
+  })
+})
+
+/**
+ * The half of the fix that lives in the mutation: an edit is applied to the
+ * cache once, for the eye, and the body is built from what it was applied to
+ * rather than from what came out.
+ */
+describe('choosing what to build the request body from', () => {
+  const before = free
+  const shown = applyLanguageEdit(free, { kind: 'addLearning', code: 'de' })
+
+  it('goes back to the lists the edit was applied to while the cache still holds its result', () => {
+    expect(profileBeforeEdit(shown, { before, shown })).toBe(before)
+  })
+
+  /**
+   * The queued tap: a request ahead of this one has answered and written the
+   * server's own profile over the optimistic one. That answer is what this
+   * edit belongs on — applying it to the lists from before would undo it.
+   */
+  it('takes the cache when something has landed in it since', () => {
+    const answered = { ...shown }
+    expect(profileBeforeEdit(answered, { before, shown })).toBe(answered)
+  })
+
+  /** An equal-looking profile is not the same profile: identity is the question. */
+  it('does not mistake a copy of the optimistic profile for the optimistic profile', () => {
+    expect(profileBeforeEdit({ ...shown }, { before, shown })).not.toBe(before)
+  })
+
+  it('takes the cache when there was nothing to apply the edit to', () => {
+    expect(profileBeforeEdit(shown, {})).toBe(shown)
   })
 })
 

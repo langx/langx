@@ -111,7 +111,10 @@ export function useLanguageEditor(): {
     allows,
     apply: (next) => {
       if (!allows(next)) return false
-      edit.mutate(next)
+      // A fresh object per tap: the mutation fills in the two states it needs
+      // to keep from applying the same edit twice, and those belong to this
+      // run rather than to the edit's description.
+      edit.mutate({ edit: next })
       return true
     },
     canAddTo: (list) => {

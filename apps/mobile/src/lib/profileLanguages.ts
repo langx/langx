@@ -7,9 +7,15 @@ import { languageCapAllows, type LanguageLevel } from '@langx/shared'
  * Here rather than in the screen because none of it can be tested there —
  * mobile's vitest cannot import `react-native`, so anything inside a component
  * is unreachable — and because the screen is not the only thing that has to
- * agree with it: the mutation rebuilds the body from the cache as it is when
- * the request finally runs, which is a second application of the same edit at
- * a different moment. One function, applied twice, cannot drift from itself.
+ * agree with it: the mutation asks the same questions of the cache before it
+ * draws and of the profile before it writes.
+ *
+ * Every edit is applied exactly once. `useEditLanguages` used to apply it
+ * twice — to the cache for the eye, then to that same cache for the wire —
+ * which added a language as two rows and turned every other edit into a
+ * request that was never sent. The guards below make the first of those
+ * impossible from here as well: adding or replacing with a language already
+ * on the list changes nothing rather than duplicating it.
  *
  * No copy lives here. A refusal is named, not worded; the screen owns the
  * sentence, because that is the file `en.ts` is typed against.
@@ -191,25 +197,42 @@ export function applyLanguageEdit(lists: LanguageLists, edit: LanguageEdit): Lan
   const learning = ordered(lists)
 
   switch (edit.kind) {
+    /*
+     * An add of something already on the list returns the list, rather than a
+     * second copy of it. `refuseLanguageEdit` has already said no to that, so
+     * nothing reaches here by the front door — this is the back one: a list is
+     * a set, and a function that can produce two rows for one language is one
+     * mistake in a caller away from producing them.
+     */
     case 'addNative':
-      return { nativeLanguages: [...native, { code: edit.code }], learning: renumbered(learning) }
+      return nativeCodes(lists).includes(edit.code)
+        ? { nativeLanguages: native, learning: renumbered(learning) }
+        : { nativeLanguages: [...native, { code: edit.code }], learning: renumbered(learning) }
     case 'removeNative':
       return {
         nativeLanguages: native.filter((l) => l.code !== edit.code),
         learning: renumbered(learning),
       }
+    /*
+     * The same guard on the other side of a replacement: replacing a language
+     * with one already on the list would leave two rows of it and one fewer
+     * language. Refused before it is offered; here, it simply does not happen.
+     */
     case 'replaceNative':
       return {
-        nativeLanguages: native.map((l) => (l.code === edit.from ? { code: edit.to } : l)),
+        nativeLanguages: nativeCodes(lists).includes(edit.to)
+          ? native
+          : native.map((l) => (l.code === edit.from ? { code: edit.to } : l)),
         learning: renumbered(learning),
       }
     case 'addLearning':
       return {
         nativeLanguages: native,
-        learning: renumbered([
-          ...learning,
-          { code: edit.code, level: NEW_LANGUAGE_LEVEL, priority: 0 },
-        ]),
+        learning: renumbered(
+          learningCodes(lists).includes(edit.code)
+            ? learning
+            : [...learning, { code: edit.code, level: NEW_LANGUAGE_LEVEL, priority: 0 }],
+        ),
       }
     case 'removeLearning':
       return {
@@ -225,7 +248,9 @@ export function applyLanguageEdit(lists: LanguageLists, edit: LanguageEdit): Lan
       return {
         nativeLanguages: native,
         learning: renumbered(
-          learning.map((l) => (l.code === edit.from ? { ...l, code: edit.to } : l)),
+          learningCodes(lists).includes(edit.to)
+            ? learning
+            : learning.map((l) => (l.code === edit.from ? { ...l, code: edit.to } : l)),
         ),
       }
     case 'setLevel':
@@ -247,6 +272,29 @@ export function applyLanguageEdit(lists: LanguageLists, edit: LanguageEdit): Lan
       return { nativeLanguages: native, learning: renumbered(moved) }
     }
   }
+}
+
+/**
+ * Which profile the request body should be built from: the one this edit has
+ * not been applied to yet.
+ *
+ * `useEditLanguages` reaches for the lists twice over one tap's life. Once in
+ * `onMutate`, which applies the edit to the cache so the row moves under the
+ * finger — and once in `mutationFn`, because a request queued ahead of this
+ * one may have answered in between, and the body belongs on that answer rather
+ * than on the guess it replaced. Taking the cache both times is the bug this
+ * exists to prevent: the edit was applied to its own result, which added a
+ * language as two rows and turned every other edit into a request that was
+ * never sent.
+ *
+ * Identity, not equality. `shown` is the object `onMutate` put in the cache,
+ * so finding that very object still there means nothing has landed since and
+ * the edit is already in it — in which case the lists to apply it to are the
+ * ones from before it. Anything else in the cache is a profile this edit is
+ * not in, and is itself the thing to apply it to.
+ */
+export function profileBeforeEdit<T>(cache: T, applied: { before?: T; shown?: T }): T {
+  return cache === applied.shown && applied.before !== undefined ? applied.before : cache
 }
 
 /**
