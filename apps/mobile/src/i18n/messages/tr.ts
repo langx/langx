@@ -542,8 +542,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   update: {
-    downloaded: 'Yeni sürüm hazır.',
-    restart: 'Şimdi yeniden başlat',
+    applyingTitle: 'LangX güncelleniyor',
+    applyingBody: 'Yeni sürüm yükleniyor. Birkaç saniye sürer.',
     bannerTitle: 'Yeni sürüm çıktı',
     bannerBody: 'LangX’in en yenisi için güncelle.',
     dismiss: 'Kapat',

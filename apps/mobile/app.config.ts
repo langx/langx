@@ -148,8 +148,9 @@ const config: ExpoConfig = {
    * still require a build and a submission.
    *
    * `fallbackToCacheTimeout: 0` means launch never blocks on the network: the
-   * app starts on the bundle it already has and picks up a new one in the
-   * background, applied on the next launch. Blocking would trade a crash for a
+   * app starts on the bundle it already has, then `AppGate` checks for a new
+   * one and, when there is one, installs it there and then behind a
+   * full-screen notice. Blocking here instead would trade a crash for a
    * spinner on a bad connection.
    */
   updates: {

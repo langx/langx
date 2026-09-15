@@ -531,8 +531,8 @@ export const es: Localized<EnMessages> = {
   },
 
   update: {
-    downloaded: 'Hay una nueva versión lista.',
-    restart: 'Reiniciar ahora',
+    applyingTitle: 'Actualizando LangX',
+    applyingBody: 'Se está instalando una nueva versión. Tarda un momento.',
     bannerTitle: 'Nueva versión disponible',
     bannerBody: 'Actualiza para tener lo último de LangX.',
     dismiss: 'Descartar',
