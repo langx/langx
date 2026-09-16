@@ -8,7 +8,7 @@ import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
 import { alreadyClaimed, claimOnce } from './ledger'
-import { recentlyMarketed } from './marketing'
+import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 import { readAggregates } from '../tokens/ledger'
 
 const HOUR_MS = 60 * 60 * 1000
@@ -290,13 +290,18 @@ export async function runPromotionsPass(
   for (const profile of profiles) {
     const zone = profile.timezone ?? 'UTC'
     if (localHour(now, zone) !== PROMOTION_LOCAL_HOUR) continue
-    if (await alreadyClaimed(db, 'dailyDigest', profile._id, localDayKey(now, zone))) continue
+    const day = localDayKey(now, zone)
+    if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue
     if (await recentlyMarketed(db, profile._id, now)) continue
 
     const candidate: PromotionCandidate = { profile, now, db }
     for (const promotion of PROMOTIONS) {
       if (!notificationsAllowed(profile.settings?.notifications, promotion.type, 'email')) continue
       if (!(await promotion.eligible(candidate))) continue
+      // Taken here: after eligibility, so nothing is burnt on a person with
+      // no nudge to send, and before the promotion's own key, so a lost race
+      // costs today rather than a `once` that would never come round again.
+      if (!(await claimOnce(db, MARKETING_SLOT_JOB, profile._id, day))) break
       if (!(await claimOnce(db, promotion.job, profile._id, promotion.periodKey(candidate)))) break
 
       const detail = promotion.detail ? await promotion.detail(candidate) : {}
