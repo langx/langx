@@ -4441,13 +4441,24 @@ read, on both paths that write a handle — the claim and onboarding — and the
 window between the read and the write stays open, about as wide as
 `isHandleAvailable`'s and over the same kind of name.
 
-The claim goes through `resolveHandleClaim` like onboarding does, and that is
-not tidiness: the reservation is what stops two people racing for one v1
-handle, and a second path that skipped it would be the way around it. It also
-buys the case this route is quietly for — somebody who onboarded under a
-made-up name because they could not face `langx_00ec`, and whose real v1
-handle has been sitting unclaimed ever since. They take it back here, past the
-floor and the reserved list, because it was reserved for them all along.
+The claim consults the reservation like onboarding does, and that is not
+tidiness: the reservation is what stops two people racing for one v1 handle,
+and a second path that skipped it would be the way around it. It also buys the
+case this route is quietly for — somebody who onboarded under a made-up name
+because they could not face `langx_00ec`, and whose real v1 handle has been
+sitting unclaimed ever since. They take it back here, past the floor and the
+reserved list, because it was reserved for them all along.
+
+Consulting it and spending it are two calls, and the split is a bug this route
+shipped with. Asking used to write `claimedBy` in the same breath, before the
+cooldown filter had run — so a change refused with `HANDLE_CHANGE_TOO_SOON`
+still spent the reservation. Nothing releases a claim, and `isHandleAvailable`
+reads a claimed one as free, so the refusal handed the person's own v1 name to
+whoever asked for it next. `reservationVerdict` now only reads, and
+`markReservationClaimed` runs after the profile write has succeeded. The
+ordering matters more than the atomicity it replaced: `handle_unique` on
+`profiles` is what actually stops two people holding one handle, because the
+profile write is where a handle changes hands.
 
 It is offered in two places, and skipping it costs nothing. The welcome-back
 screen already had a line about the handle, saying it was theirs again; for

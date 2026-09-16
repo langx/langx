@@ -275,7 +275,10 @@ legacyEmailHash, legacyUserId, expiresAt, claimedBy?, claimedAt? }`, unique
    carrying PII we do not need.
 2. After the user signs up and **verifies their email**, onboarding looks for a
    match and offers "your old username **@x** is waiting". Accepting is
-   one-shot and `claimedBy` is written with an atomic `findOneAndUpdate`.
+   one-shot: `reservationVerdict` reads whether the name is theirs, and
+   `markReservationClaimed` writes `claimedBy` once the profile carrying the
+   handle exists — never before, because nothing releases a claim and a
+   reservation spent on a write that then failed is lost for good.
 3. Reserved handles are held until `expiresAt` (12 months by default).
 4. v1 users whose email has changed go through a manual support path.
 5. v1 named most of its users itself — `langx_` plus four hex characters, 2846

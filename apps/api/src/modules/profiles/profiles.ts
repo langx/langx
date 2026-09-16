@@ -45,7 +45,7 @@ import { nameTokens } from './nameTokens'
 import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
-import { resolveHandleClaim } from '../handles/handleReservations'
+import { markReservationClaimed, reservationVerdict } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
@@ -493,11 +493,11 @@ export async function createProfile(
 
   let claimingOwnLegacyHandle = false
   if (legacyEmailHash) {
-    const resolution = await resolveHandleClaim(db, input.handle, userId, legacyEmailHash)
-    if (resolution.kind === 'reserved_for_other') {
+    const verdict = await reservationVerdict(db, input.handle, legacyEmailHash)
+    if (verdict === 'reserved_for_other') {
       throw new ApiError(ERROR_CODES.HANDLE_RESERVED, `@${input.handle} is reserved`)
     }
-    claimingOwnLegacyHandle = resolution.kind === 'claimed'
+    claimingOwnLegacyHandle = verdict === 'mine'
   }
 
   /*
@@ -614,6 +614,10 @@ export async function createProfile(
     }
     throw error
   }
+
+  // After the insert, not before it: the throws above are the ones that used to
+  // spend a reservation on a profile that was never written.
+  if (claimingOwnLegacyHandle) await markReservationClaimed(db, input.handle, userId)
 
   // Idempotent on the ledger's unique index, so it does not matter that the
   // restore below may reach for it again.
@@ -787,12 +791,17 @@ function assertLanguageCap(
  * the app reads it too.
  *
  * Still the same claim onboarding makes, through the same machinery, and that
- * is on purpose rather than for tidiness: `resolveHandleClaim` is what stops
- * two people racing for one reserved v1 handle, and skipping it here would
- * make this route the way around it. So a v1 reservation still belongs to
- * whoever the email hash says, and only somebody claiming a name reserved for
- * *them* is let past the floor and the reserved list — which is exactly how a
- * person who onboarded under a made-up name takes their real v1 handle back.
+ * is on purpose rather than for tidiness: a v1 reservation belongs to whoever
+ * the email hash says, and only somebody taking a name reserved for *them* is
+ * let past the reserved list — which is exactly how a person who onboarded
+ * under a made-up name takes their real v1 handle back. Skipping the question
+ * here would make this route the way around it.
+ *
+ * Asking it and answering it are two steps, though. `reservationVerdict` only
+ * reads; `markReservationClaimed` runs after the update below has succeeded.
+ * The other order is what this route shipped with, and it meant a change
+ * refused for a running cooldown still spent the reservation — so the user's
+ * own v1 name came free for the next person to ask.
  *
  * The write is one conditional update, the same shape as `setGender`'s: the
  * cooldown sits in the filter, so two taps that race cannot both pass a
@@ -819,11 +828,11 @@ export async function changeHandle(
 
   let claimingOwnLegacyHandle = false
   if (legacyEmailHash) {
-    const resolution = await resolveHandleClaim(db, handle, userId, legacyEmailHash)
-    if (resolution.kind === 'reserved_for_other') {
+    const verdict = await reservationVerdict(db, handle, legacyEmailHash)
+    if (verdict === 'reserved_for_other') {
       throw new ApiError(ERROR_CODES.HANDLE_RESERVED, `@${handle} is reserved`)
     }
-    claimingOwnLegacyHandle = resolution.kind === 'claimed'
+    claimingOwnLegacyHandle = verdict === 'mine'
   }
 
   // The same split `createProfile` makes, from the same two schemas: what may
@@ -860,7 +869,13 @@ export async function changeHandle(
     }
     throw error
   }
-  if (updated) return updated
+  if (updated) {
+    // Only now. Everything above this line can refuse, and a reservation spent
+    // on a refused change is one nobody can spend again — see
+    // `markReservationClaimed`.
+    if (claimingOwnLegacyHandle) await markReservationClaimed(db, handle, userId)
+    return updated
+  }
 
   // The filter missed: the cooldown is running, or another request for this
   // same account got there first and started it. One read tells the client
