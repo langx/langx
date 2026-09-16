@@ -171,9 +171,42 @@ export async function recordMessage(
   }
 
   await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
-  const bothSpoke = conversation.bothSpoke || message.senderId !== conversation.firstMessageBy
+  const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
 
-  const updated = await db.collection<Conversation>(COLLECTIONS.conversations).findOneAndUpdate(
+  /*
+   * The reciprocity transition, claimed rather than derived.
+   *
+   * `becameMutual` used to be `!conversation.bothSpoke && bothSpoke`, read off
+   * the copy this call was handed — so two replies from the second speaker
+   * landing together both saw `bothSpoke` false and both called themselves the
+   * transition. The *payment* survived that, because `awardForSend` files it
+   * under `mutual:<conversationId>` and the ledger's unique index caps it. The
+   * pool score did not: `recordActivity` is a plain `$inc`, and
+   * `mutualConversations` is the heaviest term in `activityScore` and the only
+   * one with no cap. Two simultaneous replies bought five points of somebody
+   * else's share of the day.
+   *
+   * A conditional `$set` is the whole fix: exactly one writer can move the
+   * field from unset-or-false to true, and that one is the transition. It is
+   * also the only write that ever changed `bothSpoke` — the old unconditional
+   * `$set` wrote the value it already had on every other send — so this is
+   * where it belongs rather than an extra write. The round trip is paid at
+   * most once per conversation, and never again on the hot path: the guard in
+   * front of it is false for every message after the second speaker's first.
+   */
+  const becameMutual =
+    !conversation.bothSpoke &&
+    message.senderId !== conversation.firstMessageBy &&
+    (
+      await conversations.updateOne(
+        { _id: conversation._id, bothSpoke: { $ne: true } },
+        {
+          $set: { bothSpoke: true },
+        },
+      )
+    ).modifiedCount === 1
+
+  const updated = await conversations.findOneAndUpdate(
     { _id: conversation._id },
     {
       $set: {
@@ -185,7 +218,6 @@ export async function recordMessage(
           createdAt: message.createdAt,
         },
         updatedAt: message.createdAt,
-        bothSpoke,
       },
       // Riding the write that was already happening. The media gate reads this
       // and must not pay for a `countDocuments` on the send path.
@@ -214,8 +246,9 @@ export async function recordMessage(
     conversation: updated,
     message,
     // The transition, not the state: `bothSpoke` stays true forever after, so
-    // the reciprocity bonus has to fire on the send that flipped it.
-    becameMutual: !conversation.bothSpoke && bothSpoke,
+    // the reciprocity bonus has to fire on the send that flipped it — and on
+    // that one only, which is what the claim above establishes.
+    becameMutual,
   })
 
   return updated

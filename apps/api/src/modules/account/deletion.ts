@@ -371,6 +371,24 @@ export async function purgeExpiredAccounts(
         .updateMany({ userId }, { $set: { userId: `deleted:${randomUUID()}` } }),
       db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
+      // One row per day this account showed up. The same kind of record as
+      // `dailyActivity` above and deleted for the same reason; it was simply
+      // added after this sweep was written and never joined it.
+      db.collection(COLLECTIONS.streakDays).deleteMany({ userId }),
+      /*
+       * The deck, and it belongs here for the reason `lastMessage.body` does.
+       * A phrase card is a *copy* of what this person wrote — the collection
+       * calls itself "the readable copy" — so blanking their messages above
+       * leaves the words sitting in the other person's deck, which is exactly
+       * the text a purge exists to remove.
+       *
+       * Deleted rather than blanked, unlike a message. A card is its term and
+       * its meaning and nothing else, so an emptied one is a row pretending to
+       * be a card — the same reasoning that deletes a recorded answer rather
+       * than stripping it. Only this author's: the index is per conversation,
+       * not per person, so the other side's cards in the same deck stay.
+       */
+      db.collection(COLLECTIONS.phraseCards).deleteMany({ authorId: userId }),
       /*
        * Echo is entirely private — a card is a note somebody wrote to
        * themselves and nobody else can see one — so both collections go

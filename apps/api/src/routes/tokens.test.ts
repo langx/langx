@@ -357,6 +357,39 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect((await summary(a)).tokens.all).toBe(aAfter)
     })
 
+    /**
+     * "Exactly once" above is asserted one reply at a time, which is the shape
+     * the ledger already guarantees. The shape it does not is two replies at
+     * once: `recordMessage` derives `becameMutual` from the conversation it
+     * read, so both see `bothSpoke` as false and both call it a transition.
+     *
+     * The *payment* survives that — `refId` is `mutual:<conversationId>` and
+     * the ledger's unique index caps it. The pool score does not: it moves on
+     * a plain `$inc`, and `mutualConversations` is the heaviest term in
+     * `activityScore` (weight 5) and the only one with no cap.
+     */
+    it('counts the reciprocity once when two replies land at once', async () => {
+      const a = await newUser('xp-mutual-race-a@example.com')
+      const b = await newUser('xp-mutual-race-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'selam')
+
+      await Promise.all([
+        reply(b.userId, conversationId, 'bir'),
+        reply(b.userId, conversationId, 'iki'),
+      ])
+
+      // Paid once, as it always was.
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.tokenLedger)
+          .countDocuments({ userId: b.userId, refId: `mutual:${conversationId}` }),
+      ).toBe(1)
+
+      // And counted once, which is the half that was not guarded.
+      expect((await summary(b)).today.mutualConversations).toBe(1)
+      expect((await summary(a)).today.mutualConversations).toBe(1)
+    })
+
     it('stops paying message token past the per-partner daily cap', async () => {
       const a = await newUser('xp-cap-a@example.com')
       const b = await newUser('xp-cap-b@example.com')
@@ -898,6 +931,43 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       }
       expect(codes.slice(0, cap)).toEqual(Array.from({ length: cap }, () => 200))
       expect(codes[cap]).toBe(400)
+    })
+
+    /**
+     * The same cap, against the burst that actually threatens it.
+     *
+     * The sequential test above passes on a read-then-write check, because
+     * each request sees the previous one's day already inserted. Fired
+     * together they all read the count before any of them has written, which
+     * is the one shape a cap has to survive — `purchase` in the same file puts
+     * its conditions inside the atomic filter for exactly this reason.
+     */
+    it('allows only two repairs a month when they are asked for at once', async () => {
+      const user = await funded('repair-cap-race@example.com', 100_000)
+      const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+      const days = sameMonthDays(cap + 1)
+
+      const responses = await Promise.all(
+        days.map((day) =>
+          app.inject({
+            method: 'POST',
+            url: '/me/activity/repair',
+            headers: { cookie: user.cookie },
+            payload: { day },
+          }),
+        ),
+      )
+
+      const bought = await handle.db
+        .collection<StreakDay>(COLLECTIONS.streakDays)
+        .countDocuments({ userId: user.userId, source: 'purchase' })
+      expect(bought).toBeLessThanOrEqual(cap)
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.tokenSpent ?? 0).toBeLessThanOrEqual(cap * TOKEN_RULES.sinks.dayRepair)
+      expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(bought)
     })
 
     /**

@@ -519,24 +519,6 @@ export async function setConversationFlag(
   }
   await assertConversationAccess(db, conversationId, userId)
 
-  if (on && flag === 'pinnedBy') {
-    /*
-     * The cap exists because pinned threads are fetched whole rather than
-     * paginated. Counted rather than trusted: the client hides the action at
-     * the limit, and the client is not what enforces it.
-     */
-    const pinned = await conversations.countDocuments({
-      participants: userId,
-      [`pinnedBy.${userId}`]: true,
-    })
-    if (pinned >= MAX_PINNED_CONVERSATIONS) {
-      throw new ApiError(
-        ERROR_CODES.VALIDATION_FAILED,
-        `You can pin at most ${MAX_PINNED_CONVERSATIONS} chats`,
-      )
-    }
-  }
-
   const path = `${flag}.${userId}`
   const updated = await conversations.findOneAndUpdate(
     { _id },
@@ -544,5 +526,39 @@ export async function setConversationFlag(
     { returnDocument: 'after' },
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+
+  /*
+   * The cap, counted **after** the write.
+   *
+   * It exists because pinned threads are fetched whole rather than paginated,
+   * and `listConversations` leans on it harder than it looks: it reads the
+   * pins with `.limit(MAX_PINNED_CONVERSATIONS)` and excludes *every* pinned
+   * thread from the paginated half. One pin past the cap is a thread in
+   * neither half — gone from the list, with nothing left to tap to unpin it.
+   *
+   * "Counted rather than trusted" was already the intent, and the count is
+   * over other documents so it cannot ride in the filter above the way the
+   * photo cap rides in its own. Counting in front of the write made it a
+   * read-then-write: two taps at once both read the count before either had
+   * written, and both passed. Behind the write, every racer is visible to
+   * whichever ones count last, so `>` (this pin is in the count) refuses the
+   * surplus and takes it straight back off.
+   *
+   * A pin that was already on and is somehow over the cap — only reachable
+   * from rows written before this ordering — comes off too. That is the
+   * direction worth erring in: it is what the message says, and it walks the
+   * account back toward a list that shows all of itself.
+   */
+  if (on && flag === 'pinnedBy') {
+    const pinned = await conversations.countDocuments({ participants: userId, [path]: true })
+    if (pinned > MAX_PINNED_CONVERSATIONS) {
+      await conversations.updateOne({ _id }, { $unset: { [path]: '' } })
+      throw new ApiError(
+        ERROR_CODES.VALIDATION_FAILED,
+        `You can pin at most ${MAX_PINNED_CONVERSATIONS} chats`,
+      )
+    }
+  }
+
   return toConversationView(updated, userId)
 }

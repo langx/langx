@@ -357,6 +357,42 @@ describe('POST /profiles/me/handle — a username change, once a week', () => {
     expect(reservation?.claimedBy).toBe(user.userId)
   })
 
+  it('leaves the reservation alone when the change is refused', async () => {
+    const email = 'v1-refused-keeps-reservation@example.com'
+    await handle.db.collection(COLLECTIONS.handleReservations).insertOne({
+      handle: 'grace',
+      legacyEmailHash: hashLegacyEmail(email, LEGACY_SALT),
+      legacyUserId: 'appwrite-legacy-id-claim-3',
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    })
+
+    // Onboarded under a made-up name and renamed once, so the cooldown is
+    // running by the time they reach for the name v1 is holding for them.
+    const user = await newUser(email, { handle: 'madeupname' })
+    await asReturningV1User(user, 'langx_00f8')
+    expect((await claim(user, 'renamedonce')).statusCode).toBe(200)
+
+    const tooSoon = await claim(user, 'grace')
+    expect(tooSoon.json()).toMatchObject({ code: 'HANDLE_CHANGE_TOO_SOON' })
+
+    // The refusal must cost them nothing. It used to spend the reservation on
+    // the way to refusing — and since nothing releases a claim and
+    // `isHandleAvailable` reads a claimed one as free, @grace then became
+    // available to whoever asked next.
+    const reservation = await handle.db
+      .collection(COLLECTIONS.handleReservations)
+      .findOne({ handle: 'grace' })
+    expect(reservation?.claimedBy).toBeUndefined()
+
+    const stranger = await newUser('v1-refused-stranger@example.com', { handle: 'strangername' })
+    const availability = await app.inject({
+      method: 'GET',
+      url: '/handles/grace/availability',
+      headers: { cookie: stranger.cookie },
+    })
+    expect(availability.json()).toMatchObject({ available: false })
+  })
+
   it('refuses the name the account already has, rather than starting the cooldown on it', async () => {
     const user = await newUser('v1-no-op@example.com')
     await asReturningV1User(user, 'langx_00f3')

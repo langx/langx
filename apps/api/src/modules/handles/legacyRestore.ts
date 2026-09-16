@@ -15,7 +15,7 @@ import { streakDay } from '../tokens/streak'
 import { grantSignupBonus } from '../tokens/signupBonus'
 import type { Profile } from '../profiles/profiles'
 import { nameTokens } from '../profiles/nameTokens'
-import { resolveHandleClaim } from './handleReservations'
+import { markReservationClaimed, reservationVerdict } from './handleReservations'
 import { hashLegacyEmail } from './legacyEmailHash'
 import { importLegacyConversations } from './legacyConversations'
 import {
@@ -111,15 +111,19 @@ export async function restoreByHash(
   const now = new Date()
 
   if (!existing) {
-    // The handle has to be claimed through the reservation, not just written:
-    // that is what stops a v1 handle being taken by someone else in the gap.
-    const resolution = await resolveHandleClaim(db, legacy.handle, userId, legacyEmailHash)
-    if (resolution.kind === 'reserved_for_other') {
+    // The reservation has to agree before the handle is written: that is what
+    // stops a v1 handle being taken by someone else in the gap.
+    const verdict = await reservationVerdict(db, legacy.handle, legacyEmailHash)
+    if (verdict === 'reserved_for_other') {
       // Should not happen — the reservation and the profile share an email
       // hash — but writing the handle anyway would hand it to the wrong person.
       return { kind: 'needs-onboarding', missing: ['handle'] }
     }
     await profiles.insertOne(buildProfile(userId, legacy, now))
+    // Spent only once the row carrying the handle exists. `insertOne` can
+    // throw, and a reservation marked claimed for a profile that was never
+    // written is one nobody can claim again.
+    if (verdict === 'mine') await markReservationClaimed(db, legacy.handle, userId)
     // This is the other place a profile comes into existence — a restored user
     // never sees the onboarding form, so the starting grant has to happen here
     // too. Idempotent, so the overlap with `createProfile` costs nothing.

@@ -1,5 +1,6 @@
 import {
   MAX_ATTACHMENTS,
+  MAX_PINNED_CONVERSATIONS,
   MAX_IMAGE_BYTES,
   MAX_VIDEO_BYTES,
   MAX_VIDEO_SECONDS,
@@ -503,6 +504,49 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(body.pinned.map((c) => c._id)).toEqual([pinned._id])
       // And not counted twice.
       expect(body.items.map((c) => c._id)).not.toContain(pinned._id)
+    })
+
+    /**
+     * The cap matters more than it looks, because of what the list does with
+     * it: `pinned` is fetched with `.limit(MAX_PINNED_CONVERSATIONS)` and the
+     * paginated half excludes *every* pinned thread. One pin past the cap is
+     * therefore a thread in neither half — gone from the list, with no way
+     * back to it to unpin.
+     *
+     * Counted rather than trusted, says the code, and then counts in a
+     * separate round trip from the write. Two taps at once both read the
+     * count before either has written.
+     */
+    it('holds the pin cap when two pins are asked for at once', async () => {
+      const viewer = await newUser('pin-cap-viewer@example.com')
+      const partner = await newUser('pin-cap-partner@example.com')
+      const other = await newUser('pin-cap-other@example.com')
+      const first = await startConversation(viewer, partner.userId, 'one')
+      const second = await startConversation(viewer, other.userId, 'two')
+
+      // Fill the bank to one short of the cap. Clones of a real thread, so the
+      // documents are the shape the count queries; `pairKey` is unique.
+      const conversations = handle.db.collection(COLLECTIONS.conversations)
+      const seed = await conversations.findOne({ _id: new ObjectId(first._id) })
+      await conversations.insertMany(
+        Array.from({ length: MAX_PINNED_CONVERSATIONS - 1 }, (_unused, i) => ({
+          ...seed,
+          _id: new ObjectId(),
+          pairKey: `pin-cap-clone-${String(i)}`,
+          pinnedBy: { [viewer.userId]: true },
+        })),
+      )
+
+      await Promise.all([
+        setFlags(viewer, first._id, { pinned: true }),
+        setFlags(viewer, second._id, { pinned: true }),
+      ])
+
+      const pinned = await conversations.countDocuments({
+        participants: viewer.userId,
+        [`pinnedBy.${viewer.userId}`]: true,
+      })
+      expect(pinned).toBeLessThanOrEqual(MAX_PINNED_CONVERSATIONS)
     })
 
     /** One side pinning must not pin it for the other. */

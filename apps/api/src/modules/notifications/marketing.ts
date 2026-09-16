@@ -13,6 +13,27 @@ const DAY_MS = 24 * 60 * 60 * 1000
 export const MARKETING_JOB_PREFIX = 'promo.'
 
 /**
+ * The day's single marketing slot, claimed rather than inferred.
+ *
+ * `recentlyMarketed` below is a read, and every sender that respects the gap
+ * then writes its *own* job key — so two senders asking in the same tick both
+ * saw nothing and both sent. That is not hypothetical: the newsletter and the
+ * promotion pass both fire at `PROMOTION_LOCAL_HOUR`, the scheduler runs its
+ * passes through `Promise.allSettled`, and production is two machines, so no
+ * ordering inside one process could settle it either.
+ *
+ * One `_id` per person per local day, so exactly one sender can take it. It
+ * carries the `promo.` prefix deliberately: the row is itself a marketing
+ * record, so `recentlyMarketed` counts it for the following week without
+ * knowing this key exists.
+ *
+ * Claimed *before* the sender's own period key, never after. A lost slot costs
+ * one day and the next one comes round; a burnt `once` or a burnt month is a
+ * nudge that never goes at all.
+ */
+export const MARKETING_SLOT_JOB = 'promo.slot'
+
+/**
  * Whether this person has had marketing — a campaign or a promotional pass,
  * on either channel — inside the gap.
  *

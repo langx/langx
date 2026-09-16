@@ -9,6 +9,7 @@ import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
 import { LoggingPushSender } from '../push/devices'
 import { claimCampaignRecipients } from './campaign'
+import { runNewsletterPass } from './newsletter'
 import { runPromotionsPass } from './promotions'
 
 const SECRET = 'p'.repeat(40)
@@ -130,6 +131,31 @@ describe('the nudges that need permission', () => {
   }
 
   const subjects = () => email.messages.map((message) => message.subject)
+
+  /**
+   * `MARKETING_MIN_GAP_DAYS` is a week, and `recentlyMarketed` is what enforces
+   * it across senders — a read, followed by a `claimOnce` under a *different*
+   * job key. The newsletter and the promotion pass both fire at
+   * `PROMOTION_LOCAL_HOUR`, both gate on that read, and the scheduler runs the
+   * whole array through `Promise.allSettled`. Its own comment says the ordering
+   * in that array "would be a guarantee resting on nothing" — and there are two
+   * API machines, so even running them in order inside one process would not
+   * settle it.
+   *
+   * The third of the month, so `isSendingDay` is true and both are live.
+   */
+  it('sends one marketing mail when the newsletter and a promotion fire together', async () => {
+    const sendingDay = new Date('2026-09-03T20:00:00Z')
+    const userId = await newProfile({ createdDaysAgo: 30 })
+
+    await Promise.all([
+      runNewsletterPass(handle.db, senders.email, sendingDay),
+      runPromotionsPass(handle.db, senders, sendingDay),
+    ])
+
+    const mine = email.messages.filter((message) => message.to === `${userId}@example.com`)
+    expect(mine.map((message) => message.subject)).toHaveLength(1)
+  })
 
   it('asks for a photo from an account two days old that has none', async () => {
     await newProfile({ createdDaysAgo: 3 })

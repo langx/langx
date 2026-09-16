@@ -271,14 +271,6 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
     )
   }
 
-  const used = await repairsInMonth(db, userId, day)
-  if (used >= TOKEN_RULES.sinks.dayRepairPerMonth) {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      `You have used both repairs for ${day.slice(0, 7)}`,
-    )
-  }
-
   const price = TOKEN_RULES.sinks.dayRepair
   const days = db.collection<StreakDay>(COLLECTIONS.streakDays)
   try {
@@ -293,6 +285,37 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
     // The only way `insertOne` fails here is the unique `_id`, which is
     // exactly "that day is already filled".
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That day is already filled')
+  }
+
+  /*
+   * The monthly cap, counted **after** the insert rather than before it.
+   *
+   * Before it, this was a read-then-write: the count is over `streakDays`
+   * rows, so unlike `purchase`'s conditions it cannot ride in an atomic filter
+   * on one document. Asked one at a time that is invisible, because each
+   * request sees the previous one's row — and the test that covered it asked
+   * one at a time. Fired together, every request read the count before any of
+   * them had written, they all passed, and a balance bought as many days as it
+   * could afford. The cap, not the price, is what stops a balance buying a
+   * streak.
+   *
+   * The insert is already the claim this function leans on for "that day is
+   * already filled", so counting behind it makes every racer visible to
+   * whichever ones count last. `> cap` rather than `>= cap` because the row
+   * just written is in the count.
+   *
+   * A burst can now refuse rows it could have kept — three at once, all
+   * counting three before any rolls back, ends with none bought. That is the
+   * safe direction and it self-corrects on the retry: the day comes back out
+   * below, and nothing has been charged yet, because the charge is after this.
+   */
+  const used = await repairsInMonth(db, userId, day)
+  if (used > TOKEN_RULES.sinks.dayRepairPerMonth) {
+    await days.deleteOne({ _id: streakDayId(userId, day) })
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `You have used both repairs for ${day.slice(0, 7)}`,
+    )
   }
 
   const earned = (await readAggregates(db, userId)).all
@@ -380,6 +403,7 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
     // decided the answer and a concurrent message may have raised it further.
     streak: { current: streak.current, longest: streak.longest },
     wallet: walletOf(after ?? charged, earned),
-    repairsLeftThisMonth: TOKEN_RULES.sinks.dayRepairPerMonth - used - 1,
+    // `used` already counts the row this call inserted.
+    repairsLeftThisMonth: TOKEN_RULES.sinks.dayRepairPerMonth - used,
   }
 }

@@ -6,7 +6,7 @@ import { newsletterEmail } from '../../email/templates'
 import { noteFor } from '../../email/newsletters'
 import type { Profile } from '../profiles/profiles'
 import { alreadyClaimed, claimOnce } from './ledger'
-import { recentlyMarketed } from './marketing'
+import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 
 /** What a month looked like for one person, and for everybody. */
 export interface MonthlyRecap {
@@ -132,6 +132,10 @@ export async function runNewsletterPass(
     // outranks a summary of a month that has already finished.
     if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue
     if (await recentlyMarketed(db, profile._id, now)) continue
+    // The read above cannot see a sender that is mid-tick beside this one.
+    // This can. Before the month claim, so a lost race costs today rather
+    // than the month — `isSendingDay` gives six more chances at it.
+    if (!(await claimOnce(db, MARKETING_SLOT_JOB, profile._id, day))) continue
 
     // Computed on the first tick that needs it, then reused for the rest.
     community ??= await communityMonth(db, month)

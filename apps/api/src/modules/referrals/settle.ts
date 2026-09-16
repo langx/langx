@@ -4,7 +4,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { isEmailVerified } from '../profiles/emailVerified'
 import type { Profile } from '../profiles/profiles'
-import { awardTokens, type TokenLedgerEntry } from '../tokens/ledger'
+import { awardTokens, type AwardTokensInput, type TokenLedgerEntry } from '../tokens/ledger'
 import { markInviteeSubscribed, readReferral, type Referral } from './referrals'
 
 /**
@@ -15,6 +15,50 @@ import { markInviteeSubscribed, readReferral, type Referral } from './referrals'
  * writing to somebody else, and each one is the thing this app exists for.
  */
 const EARNING_KINDS = ['message', 'correction', 'pronunciation'] as const
+
+/**
+ * Awards, and answers what the ledger now holds for that award — which is not
+ * always what this call wrote.
+ *
+ * `awardTokens` answers a duplicate with `amount: 0`. That is the right answer
+ * to "what did this call pay", and every other caller wants exactly it: the
+ * number they hand back is what *this* message or session just earned. The
+ * latches below are the one place it is the wrong answer, because they are not
+ * a report on a call — they are the audit record of what the referral has paid
+ * in total, read back by the invite screen as `earned`.
+ *
+ * And settling re-runs over an already-paid referral by ordinary means, not
+ * exotic ones. `settleReferral` awards first and latches second on purpose, so
+ * a crash between the two costs the audit row rather than marking a referral
+ * paid that never was; and it runs on every message, so two of the invitee's
+ * messages landing together both read `activatedAt` as absent before either
+ * writes it. Either way the second pass found the award already on the ledger
+ * and recorded that a referral worth 1,750 had paid nothing.
+ *
+ * Which is why this reads the row rather than reusing the amount the caller
+ * asked for: the earlier award is the one that happened, and it may have been
+ * made under a different freeze state or a different `TOKEN_RULES`.
+ */
+async function awardAndTotal(
+  // `refId` required rather than optional: it is what the ledger's uniqueness
+  // is keyed on, so without one there is no duplicate to answer and nothing
+  // for this function to find. Every referral award has one.
+  db: Db,
+  input: AwardTokensInput & { refId: string },
+): Promise<number> {
+  const result = await awardTokens(db, input)
+  if (result.awarded) return result.amount
+  // Withheld, so there is no row to find and none should be looked for.
+  if (result.reason === 'zero') return 0
+
+  const row = await db
+    .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+    .findOne(
+      { userId: input.userId, kind: input.kind, refId: input.refId },
+      { projection: { amount: 1 } },
+    )
+  return row?.amount ?? 0
+}
 
 /**
  * Pays a referrer whatever they are now owed for one invitee, and nothing they
@@ -31,9 +75,10 @@ const EARNING_KINDS = ['message', 'correction', 'pronunciation'] as const
  * after the award they describe. Calling this on every message is safe and is
  * exactly what happens.
  *
- * **Award first, latch second.** A crash between the two under-records the
- * audit row and self-heals on the next call, because `awardTokens` answers
- * `duplicate` and the latch is rewritten. The reverse order marks a referral
+ * **Award first, latch second.** A crash between the two costs the audit row
+ * and is healed by the next call, which finds the award already on the ledger
+ * and rewrites the latch from it — see `awardAndTotal`, which is what makes
+ * that true rather than merely intended. The reverse order marks a referral
  * paid that never was, which nothing can recover.
  */
 export async function settleReferral(db: Db, inviteeId: string, at: Date): Promise<void> {
@@ -64,7 +109,7 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
   const frozen = Boolean(referrer.tokenFrozenAt)
 
   if (!activationDone) {
-    const award = await awardTokens(db, {
+    const award = await awardAndTotal(db, {
       userId: referral.referrerId,
       kind: 'referral',
       amount: frozen ? 0 : TOKEN_RULES.referral.activation,
@@ -78,7 +123,7 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
      * is judged by `awardTokens` on their own row. Same `refId` (themselves),
      * so the ledger's unique index caps it at once.
      */
-    const welcome = await awardTokens(db, {
+    const welcome = await awardAndTotal(db, {
       userId: inviteeId,
       kind: 'referralWelcome',
       amount: TOKEN_RULES.referral.inviteeActivation,
@@ -87,20 +132,20 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
     })
     await latch(db, inviteeId, {
       activatedAt: at,
-      activationAward: award.amount,
-      inviteeAward: welcome.amount,
+      activationAward: award,
+      inviteeAward: welcome,
     })
   }
 
   if (referral.subscribedAt && !subscriptionDone) {
-    const award = await awardTokens(db, {
+    const award = await awardAndTotal(db, {
       userId: referral.referrerId,
       kind: 'referralSubscription',
       amount: frozen ? 0 : TOKEN_RULES.referral.subscription,
       refId: inviteeId,
       at,
     })
-    await latch(db, inviteeId, { subscriptionAward: award.amount })
+    await latch(db, inviteeId, { subscriptionAward: award })
   }
 }
 
