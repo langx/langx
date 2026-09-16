@@ -881,6 +881,54 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(conversation?.lastMessage.deleted).toBe(true)
     })
 
+    /**
+     * Two collections the sweep never named, found by reading the purge
+     * against `db/collections.ts` rather than against the list below it —
+     * which is hand-maintained, and so only ever checks what somebody
+     * remembered to add.
+     *
+     * A phrase card is the same kind of thing as `lastMessage.body`: a
+     * denormalized copy of what the purged person wrote. The message it came
+     * from is blanked above and the chat-list copy is chased, but the deck
+     * kept the words, readable by whoever is still in the thread.
+     *
+     * A streak day is the twin of `dailyActivity`, which the purge does
+     * delete — one row per day this person showed up, keyed by an account
+     * that no longer exists.
+     */
+    it('takes the phrase deck and the streak calendar with it', async () => {
+      const leaving = await newUser()
+      const staying = await newUser()
+      const started = await startConversation(leaving, staying.userId, 'hello')
+      expect(started.statusCode, started.body).toBe(201)
+      const conversationId = started.json<{ _id: string }>()._id
+
+      const { sendPhrase } = await import('../modules/chat/messages')
+      await sendPhrase(handle.db, leaving.userId, {
+        conversationId,
+        term: 'kolay gelsin',
+        meaning: 'may it come easy',
+        lang: 'tr',
+      })
+      const { recordStreakDay } = await import('../modules/tokens/streakDays')
+      await recordStreakDay(handle.db, leaving.userId, '2026-09-15', new Date())
+
+      const userId = leaving.userId
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+
+      expect(
+        await handle.db.collection(COLLECTIONS.phraseCards).countDocuments({ authorId: userId }),
+        'the phrase deck still holds the purged user words',
+      ).toBe(0)
+      expect(
+        await handle.db.collection(COLLECTIONS.streakDays).countDocuments({ userId }),
+        'the streak calendar still holds the purged user days',
+      ).toBe(0)
+    })
+
     it('removes the images from storage, and never touches an object it does not own', async () => {
       const user = await newUser()
       const deleted: string[] = []
