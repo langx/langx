@@ -83,7 +83,7 @@ describe('likes', () => {
       headers: { cookie: user.cookie },
       payload: {
         media: {
-          url: 'https://cdn.example.com/posts/u/take.m4a',
+          url: `https://cdn.example.com/posts/${user.userId}/take.m4a`,
           contentType: 'audio/m4a',
           sizeBytes: 4096,
           durationSeconds: 3,

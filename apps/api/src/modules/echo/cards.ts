@@ -613,9 +613,25 @@ export async function updateCard(
     const me = await profileOf(db, userId)
     if (!me) throw notFound('Complete onboarding first')
     if (input.image)
-      await assertAttachable(db, userId, me, [input.image], storagePublicBaseUrl, 'image')
+      await assertAttachable(
+        db,
+        userId,
+        me,
+        [input.image],
+        storagePublicBaseUrl,
+        `echo/${userId}/`,
+        'image',
+      )
     if (input.audio)
-      await assertAttachable(db, userId, me, [input.audio], storagePublicBaseUrl, 'audio')
+      await assertAttachable(
+        db,
+        userId,
+        me,
+        [input.audio],
+        storagePublicBaseUrl,
+        `echo/${userId}/`,
+        'audio',
+      )
   }
 
   /*

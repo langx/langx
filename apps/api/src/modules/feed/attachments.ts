@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { assertAttachmentsAllowed, type MediaKind } from '../media/assertMedia'
+import type { ObjectPrefix } from '../../lib/assertOwnBucket'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
@@ -37,10 +38,12 @@ export async function assertAttachable(
   profile: Profile,
   media: readonly Media[],
   storagePublicBaseUrl: string | undefined,
+  /** The prefix these files must already live under — see `isOwnObjectUrl`. */
+  ownerPrefix: ObjectPrefix,
   expected?: MediaKind,
 ): Promise<void> {
   if (media.length === 0) return
-  assertAttachmentsAllowed(media, storagePublicBaseUrl, expected)
+  assertAttachmentsAllowed(media, storagePublicBaseUrl, ownerPrefix, expected)
 
   const quota = await consumeQuota(db, userId, effectiveTier(profile), 'media')
   if (!quota.consumed) {

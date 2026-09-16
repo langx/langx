@@ -41,3 +41,53 @@ export function assertOwnBucket(base: string | undefined, url: string): void {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'URL must point into our own storage bucket')
   }
 }
+
+/**
+ * Whether a URL is an object *this* caller is allowed to record.
+ *
+ * `isOwnBucketUrl` answers "is this our bucket", which turns out not to be the
+ * same question. Every upload key already carries its owner —
+ * `avatars/<userId>/`, `posts/<userId>/`, `messages/<conversationId>/` — but
+ * nothing checked it, so any URL in the bucket could be written against any
+ * account. Avatars and gallery photos are public on the profile they belong
+ * to, which makes somebody else's key something you can simply read off their
+ * page.
+ *
+ * That mattered because of what the purge does with it: it deletes every
+ * object the departing profile points at. Pointing yours at a stranger's
+ * picture and then deleting your account destroyed their file, permanently,
+ * for the price of one throwaway account. The purge guards the case it was
+ * told about — "a URL outside our bucket is not ours to delete" — and this is
+ * the half that was assumed rather than checked.
+ *
+ * `ObjectPrefix` is `${string}/` rather than `string`, and that is load-bearing
+ * twice over. The trailing slash is what makes this an exact match on the
+ * owning segment — `avatars/<id>/` cannot pass for `avatars/<id>extra/`. And it
+ * is what stopped three call sites compiling when this argument was added:
+ * `assertAttachable` already took an optional `MediaKind` last, so a plain
+ * `string` let `'audio'` slide silently into the prefix slot and check nothing.
+ */
+export type ObjectPrefix = `${string}/`
+
+export function isOwnObjectUrl(
+  base: string | undefined,
+  url: string,
+  prefix: ObjectPrefix,
+): boolean {
+  if (!base) return false
+  const root = base.endsWith('/') ? base : `${base}/`
+  return url.startsWith(`${root}${prefix}`)
+}
+
+/** `isOwnObjectUrl`, as the refusal the routes hand back. */
+export function assertOwnObject(
+  base: string | undefined,
+  url: string,
+  prefix: ObjectPrefix,
+  what = 'URL',
+): void {
+  if (!base) throw new ApiError(ERROR_CODES.INTERNAL, 'Storage is not configured')
+  if (!isOwnObjectUrl(base, url, prefix)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `${what} must be a file you uploaded`)
+  }
+}

@@ -993,7 +993,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
           conversationId,
           attachments: [
             {
-              url: 'https://cdn.example.com/messages/c/x.jpg',
+              url: `https://cdn.example.com/messages/${conversationId}/x.jpg`,
               contentType: 'image/jpeg',
               sizeBytes: 500,
             },
@@ -1022,7 +1022,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         storage,
       })
 
-      expect(deleted).toContain('messages/c/x.jpg')
+      expect(deleted).toContain(`messages/${conversationId}/x.jpg`)
       // The row survives — it is half of the other person's conversation —
       // but with no reference to an object that no longer exists.
       const row = await handle.db
