@@ -357,6 +357,39 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect((await summary(a)).tokens.all).toBe(aAfter)
     })
 
+    /**
+     * "Exactly once" above is asserted one reply at a time, which is the shape
+     * the ledger already guarantees. The shape it does not is two replies at
+     * once: `recordMessage` derives `becameMutual` from the conversation it
+     * read, so both see `bothSpoke` as false and both call it a transition.
+     *
+     * The *payment* survives that — `refId` is `mutual:<conversationId>` and
+     * the ledger's unique index caps it. The pool score does not: it moves on
+     * a plain `$inc`, and `mutualConversations` is the heaviest term in
+     * `activityScore` (weight 5) and the only one with no cap.
+     */
+    it('counts the reciprocity once when two replies land at once', async () => {
+      const a = await newUser('xp-mutual-race-a@example.com')
+      const b = await newUser('xp-mutual-race-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'selam')
+
+      await Promise.all([
+        reply(b.userId, conversationId, 'bir'),
+        reply(b.userId, conversationId, 'iki'),
+      ])
+
+      // Paid once, as it always was.
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.tokenLedger)
+          .countDocuments({ userId: b.userId, refId: `mutual:${conversationId}` }),
+      ).toBe(1)
+
+      // And counted once, which is the half that was not guarded.
+      expect((await summary(b)).today.mutualConversations).toBe(1)
+      expect((await summary(a)).today.mutualConversations).toBe(1)
+    })
+
     it('stops paying message token past the per-partner daily cap', async () => {
       const a = await newUser('xp-cap-a@example.com')
       const b = await newUser('xp-cap-b@example.com')
