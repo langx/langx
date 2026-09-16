@@ -367,7 +367,7 @@ export async function createPost(
 
   const picked = input.attachments ?? []
   if (picked.length > 0) {
-    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl)
+    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl, `posts/${userId}/`)
   }
   // Checked first, stored second — see `sendMediaMessage` for why the order is
   // the whole of it. A voice note recorded in a browser becomes AAC here.
@@ -439,7 +439,7 @@ export async function correctPost(
   if (picked.length > 0) {
     const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
     if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
-    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl)
+    await assertAttachable(db, userId, profile, picked, storagePublicBaseUrl, `posts/${userId}/`)
   }
   const attachments = normalizeAttachments ? await normalizeAttachments(picked) : picked
 

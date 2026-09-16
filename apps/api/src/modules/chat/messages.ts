@@ -711,7 +711,14 @@ export async function sendMediaMessage(
   // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
   // cost control, and there must be exactly one copy of them. The kind comes
   // from the bytes rather than from the sender, so the two cannot disagree.
-  const kind = assertAttachmentsAllowed(input.attachments, storagePublicBaseUrl)
+  const kind = assertAttachmentsAllowed(
+    input.attachments,
+    storagePublicBaseUrl,
+    // Keyed by conversation, not by sender — see the upload route. So the
+    // ownership this checks is "a file uploaded for *this thread*", which is
+    // the same guarantee for a pair as a user prefix is for one person.
+    `messages/${conversation._id.toHexString()}/`,
+  )
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
   const answers = await resolveAnswerTarget(db, conversation, senderId, input.answersMessageId)

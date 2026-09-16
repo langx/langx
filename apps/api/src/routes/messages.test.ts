@@ -862,21 +862,24 @@ describe('Faz 5 — conversation/message history REST', () => {
 
   describe('image, video and voice messages', () => {
     const BUCKET = 'https://cdn.example.com'
-    const image = {
-      url: `${BUCKET}/messages/x/a.jpg`,
+    // `messages/<conversationId>/` is the key `/messages/upload-url` really
+    // mints, and the prefix the send now checks: an attachment may only name a
+    // file uploaded for *this* thread.
+    const image = (conversationId: string) => ({
+      url: `${BUCKET}/messages/${conversationId}/a.jpg`,
       contentType: 'image/jpeg',
       sizeBytes: 1024,
       width: 800,
       height: 600,
-    }
-    const video = {
-      url: `${BUCKET}/messages/x/a.mp4`,
+    })
+    const video = (conversationId: string) => ({
+      url: `${BUCKET}/messages/${conversationId}/a.mp4`,
       contentType: 'video/mp4',
       sizeBytes: 4 * 1024 * 1024,
       durationSeconds: 30,
       width: 1280,
       height: 720,
-    }
+    })
 
     /**
      * A conversation warmed past the media gate, because these tests are about
@@ -911,11 +914,11 @@ describe('Faz 5 — conversation/message history REST', () => {
       const result = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, attachments: [image] },
+        { conversationId, attachments: [image(conversationId)] },
         BUCKET,
       )
       expect(result.message.type).toBe('image')
-      expect(result.message.media?.url).toBe(image.url)
+      expect(result.message.media?.url).toBe(image(conversationId).url)
       // A caption-less attachment would otherwise render as a blank row.
       expect(result.conversation.lastMessage.body).toBe('📷 Photo')
     })
@@ -926,7 +929,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const result = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, attachments: [image], body: 'look at this' },
+        { conversationId, attachments: [image(conversationId)], body: 'look at this' },
         BUCKET,
       )
       expect(result.message.body).toBe('look at this')
@@ -944,11 +947,32 @@ describe('Faz 5 — conversation/message history REST', () => {
           a.userId,
           {
             conversationId,
-            attachments: [{ ...image, url: 'https://evil.example.net/x.jpg' }],
+            attachments: [{ ...image(conversationId), url: 'https://evil.example.net/x.jpg' }],
           },
           BUCKET,
         ),
-      ).rejects.toThrow(/own storage bucket/)
+      ).rejects.toThrow(/a file you uploaded/)
+    })
+
+    it("refuses an attachment uploaded for somebody else's thread", async () => {
+      // In our bucket, so the bucket check passes — and still not this
+      // sender's to name. The purge deletes what a thread points at, so
+      // pointing at another thread's file makes its deletion someone else's
+      // to trigger.
+      const mine = await pair('media-otherthread-mine')
+      const theirs = await pair('media-otherthread-theirs')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          mine.a.userId,
+          {
+            conversationId: mine.conversationId,
+            attachments: [image(theirs.conversationId)],
+          },
+          BUCKET,
+        ),
+      ).rejects.toThrow(/a file you uploaded/)
     })
 
     it('refuses a content type we do not serve', async () => {
@@ -962,7 +986,10 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [{ ...image, contentType: 'application/pdf' }] },
+          {
+            conversationId,
+            attachments: [{ ...image(conversationId), contentType: 'application/pdf' }],
+          },
           BUCKET,
         ),
       ).rejects.toMatchObject({
@@ -978,7 +1005,10 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [{ ...image, sizeBytes: MAX_IMAGE_BYTES + 1 }] },
+          {
+            conversationId,
+            attachments: [{ ...image(conversationId), sizeBytes: MAX_IMAGE_BYTES + 1 }],
+          },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'MEDIA_TOO_LARGE', message: /too large/ })
@@ -1032,7 +1062,12 @@ describe('Faz 5 — conversation/message history REST', () => {
         const { a, conversationId } = await pair('media-gate-send', { warm: false })
         const { sendMediaMessage } = await import('../modules/chat/messages')
         await expect(
-          sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [image] }, BUCKET),
+          sendMediaMessage(
+            handle.db,
+            a.userId,
+            { conversationId, attachments: [image(conversationId)] },
+            BUCKET,
+          ),
         ).rejects.toThrow(/unlock after/)
       })
 
@@ -1143,7 +1178,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const result = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, attachments: [video] },
+        { conversationId, attachments: [video(conversationId)] },
         BUCKET,
       )
       expect(result.message.type).toBe('video')
@@ -1159,7 +1194,11 @@ describe('Faz 5 — conversation/message history REST', () => {
         a.userId,
         {
           conversationId,
-          attachments: [image, { ...image, url: `${BUCKET}/messages/x/b.jpg` }, video],
+          attachments: [
+            image(conversationId),
+            { ...image(conversationId), url: `${BUCKET}/messages/${conversationId}/b.jpg` },
+            video(conversationId),
+          ],
         },
         BUCKET,
       )
@@ -1169,7 +1208,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(result.conversation.lastMessage.body).toBe('📷 3 photos')
       // Repeated for a build that predates the list; it shows the first file
       // rather than an empty bubble.
-      expect(result.message.media?.url).toBe(image.url)
+      expect(result.message.media?.url).toBe(image(conversationId).url)
     })
 
     it('stores a browser voice note as what the normaliser made of it', async () => {
@@ -1183,7 +1222,7 @@ describe('Faz 5 — conversation/message history REST', () => {
        * the list and the field repeated beside it.
        */
       const webm = {
-        url: `${BUCKET}/messages/x/a.webm`,
+        url: `${BUCKET}/messages/${conversationId}/a.webm`,
         contentType: 'audio/webm',
         sizeBytes: 40_000,
         durationSeconds: 7,
@@ -1197,7 +1236,7 @@ describe('Faz 5 — conversation/message history REST', () => {
           Promise.resolve([
             {
               ...webm,
-              url: `${BUCKET}/messages/x/a.m4a`,
+              url: `${BUCKET}/messages/${conversationId}/a.m4a`,
               contentType: 'audio/mp4',
               sizeBytes: 9_000,
             },
@@ -1205,7 +1244,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       )
 
       expect(result.message.attachments?.[0]?.contentType).toBe('audio/mp4')
-      expect(result.message.media?.url).toBe(`${BUCKET}/messages/x/a.m4a`)
+      expect(result.message.media?.url).toBe(`${BUCKET}/messages/${conversationId}/a.m4a`)
       // Still a voice note: the kind came from the bytes before the swap, and
       // AAC and Opus are both audio.
       expect(result.message.type).toBe('audio')
@@ -1215,7 +1254,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const { a, conversationId } = await pair('media-mixed')
       const { sendMediaMessage } = await import('../modules/chat/messages')
       const voice = {
-        url: `${BUCKET}/messages/x/a.m4a`,
+        url: `${BUCKET}/messages/${conversationId}/a.m4a`,
         contentType: 'audio/m4a',
         sizeBytes: 2048,
         durationSeconds: 7,
@@ -1224,14 +1263,14 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [image, voice] },
+          { conversationId, attachments: [image(conversationId), voice] },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'VALIDATION_FAILED', message: /on its own/ })
     })
 
     it('refuses more attachments than one message may carry', () => {
-      const tooMany = Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image)
+      const tooMany = Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image('c1'))
       expect(() =>
         sendMediaMessageSchema.parse({ conversationId: 'c1', attachments: tooMany }),
       ).toThrow()
@@ -1242,9 +1281,13 @@ describe('Faz 5 — conversation/message history REST', () => {
       const { sendMediaMessage } = await import('../modules/chat/messages')
       // Binaries in the wild emit `{ kind, media }` and cannot be updated in
       // step with the server.
-      const input = sendMediaMessageSchema.parse({ conversationId, kind: 'image', media: image })
+      const input = sendMediaMessageSchema.parse({
+        conversationId,
+        kind: 'image',
+        media: image(conversationId),
+      })
       const result = await sendMediaMessage(handle.db, a.userId, input, BUCKET)
-      expect(result.message.attachments).toEqual([image])
+      expect(result.message.attachments).toEqual([image(conversationId)])
     })
 
     it('refuses a video longer than the ceiling', async () => {
@@ -1256,7 +1299,10 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [{ ...video, durationSeconds: MAX_VIDEO_SECONDS + 1 }] },
+          {
+            conversationId,
+            attachments: [{ ...video(conversationId), durationSeconds: MAX_VIDEO_SECONDS + 1 }],
+          },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'MEDIA_TOO_LONG', message: /longer than/ })
@@ -1269,7 +1315,10 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [{ ...video, sizeBytes: MAX_VIDEO_BYTES + 1 }] },
+          {
+            conversationId,
+            attachments: [{ ...video(conversationId), sizeBytes: MAX_VIDEO_BYTES + 1 }],
+          },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'MEDIA_TOO_LARGE' })
@@ -1278,7 +1327,7 @@ describe('Faz 5 — conversation/message history REST', () => {
     it('refuses a video that does not say how long it is', async () => {
       const { a, conversationId } = await pair('media-nodur')
       const { sendMediaMessage } = await import('../modules/chat/messages')
-      const { durationSeconds: _omitted, ...withoutDuration } = video
+      const { durationSeconds: _omitted, ...withoutDuration } = video(conversationId)
       // A ceiling that can be bypassed by omitting the field is not a ceiling.
       await expect(
         sendMediaMessage(
@@ -1299,7 +1348,10 @@ describe('Faz 5 — conversation/message history REST', () => {
         sendMediaMessage(
           handle.db,
           a.userId,
-          { conversationId, attachments: [{ ...video, contentType: 'video/webm' }] },
+          {
+            conversationId,
+            attachments: [{ ...video(conversationId), contentType: 'video/webm' }],
+          },
           BUCKET,
         ),
       ).rejects.toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
@@ -1330,7 +1382,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       const sent = await sendMediaMessage(
         handle.db,
         a.userId,
-        { conversationId, attachments: [video] },
+        { conversationId, attachments: [video(conversationId)] },
         BUCKET,
       )
       const reply = await sendTextMessage(handle.db, b.userId, {
@@ -1347,7 +1399,12 @@ describe('Faz 5 — conversation/message history REST', () => {
       const { consumeQuota } = await import('../lib/quota')
 
       await sendTextMessage(handle.db, a.userId, { conversationId, body: 'free of charge' })
-      await sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [image] }, BUCKET)
+      await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, attachments: [image(conversationId)] },
+        BUCKET,
+      )
       // The send path itself does not spend it — the socket handler does, so
       // spend one here and check the bucket is the media one.
       await consumeQuota(handle.db, a.userId, 'free', 'media')
@@ -1360,18 +1417,18 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
 
     describe('GET /conversations/:id/media', () => {
-      const audio = {
-        url: `${BUCKET}/messages/x/a.m4a`,
+      const audio = (conversationId: string) => ({
+        url: `${BUCKET}/messages/${conversationId}/a.m4a`,
         contentType: 'audio/m4a',
         sizeBytes: 64 * 1024,
         durationSeconds: 12,
-      }
+      })
 
       /** One thread with a photo, then a video, then a voice note. */
       async function withMedia(prefix: string) {
         const fixture = await pair(prefix)
         const { sendMediaMessage } = await import('../modules/chat/messages')
-        const send = async (attachment: typeof image | typeof video | typeof audio) => {
+        const send = async (attachment: ReturnType<typeof image | typeof video | typeof audio>) => {
           const { message } = await sendMediaMessage(
             handle.db,
             fixture.a.userId,
@@ -1380,9 +1437,9 @@ describe('Faz 5 — conversation/message history REST', () => {
           )
           return message._id.toHexString()
         }
-        const imageId = await send(image)
-        const videoId = await send(video)
-        const audioId = await send(audio)
+        const imageId = await send(image(fixture.conversationId))
+        const videoId = await send(video(fixture.conversationId))
+        const audioId = await send(audio(fixture.conversationId))
         return { ...fixture, imageId, videoId, audioId }
       }
 
@@ -1492,7 +1549,12 @@ describe('Faz 5 — conversation/message history REST', () => {
             fixture.a.userId,
             {
               conversationId: fixture.conversationId,
-              attachments: [{ ...image, url: `${BUCKET}/messages/x/page-${n}.jpg` }],
+              attachments: [
+                {
+                  ...image(fixture.conversationId),
+                  url: `${BUCKET}/messages/${fixture.conversationId}/page-${n}.jpg`,
+                },
+              ],
             },
             BUCKET,
           )

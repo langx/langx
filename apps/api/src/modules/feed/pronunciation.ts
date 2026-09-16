@@ -113,7 +113,16 @@ export async function answerPronunciation(
   // Both takes together, so they cost one unit and neither is charged for
   // before the other has been checked.
   const takes = [input.media, ...(input.slowMedia ? [input.slowMedia] : [])]
-  await assertAttachable(db, userId, profile, takes, storagePublicBaseUrl, 'audio')
+  // Takes are signed by `/posts/upload-url`, so they live under `posts/`.
+  await assertAttachable(
+    db,
+    userId,
+    profile,
+    takes,
+    storagePublicBaseUrl,
+    `posts/${userId}/`,
+    'audio',
+  )
 
   /*
    * The one place a recording is two fields rather than a list, so the pair

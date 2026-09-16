@@ -105,8 +105,10 @@ describe('community feed', () => {
     })
   }
 
-  const take = (name: string) => ({
-    url: `https://cdn.example.com/posts/u/${name}.m4a`,
+  // Signed by `/posts/upload-url`, so the key carries the uploader's own id —
+  // the shape the route really mints, and the one the ownership check reads.
+  const take = (owner: SignedUpUser, name: string) => ({
+    url: `https://cdn.example.com/posts/${owner.userId}/${name}.m4a`,
     contentType: 'audio/m4a',
     sizeBytes: 4096,
     durationSeconds: 3,
@@ -115,7 +117,7 @@ describe('community feed', () => {
   async function answer(
     user: SignedUpUser,
     postId: string,
-    payload: Record<string, unknown> = { media: take('fast') },
+    payload: Record<string, unknown> = { media: take(user, 'fast') },
   ) {
     return app.inject({
       method: 'POST',
@@ -602,22 +604,24 @@ describe('community feed', () => {
     expect((await corrections(viewer, postId)).statusCode).toBe(404)
   })
   describe('attachments', () => {
-    const image = {
-      url: 'https://cdn.example.com/posts/u/1.jpg',
+    // Owner-aware, because the key a post attachment really has is
+    // `posts/<uploaderId>/…` and that prefix is now checked.
+    const image = (owner: SignedUpUser) => ({
+      url: `https://cdn.example.com/posts/${owner.userId}/1.jpg`,
       contentType: 'image/jpeg',
       sizeBytes: 1024,
       width: 800,
       height: 600,
-    }
+    })
 
-    const video = {
-      url: 'https://cdn.example.com/posts/u/1.mp4',
+    const video = (owner: SignedUpUser) => ({
+      url: `https://cdn.example.com/posts/${owner.userId}/1.mp4`,
       contentType: 'video/mp4',
       sizeBytes: 4 * 1024 * 1024,
       durationSeconds: 30,
       width: 1280,
       height: 720,
-    }
+    })
 
     /** The one-attachment body an installed build still sends. */
     function postWithMedia(user: SignedUpUser, body: string, media: unknown) {
@@ -640,7 +644,7 @@ describe('community feed', () => {
 
     it('carries an attachment back on the feed', async () => {
       const author = await newUser('media-author@example.com')
-      const response = await postWithMedia(author, 'Is this handwriting right?', image)
+      const response = await postWithMedia(author, 'Is this handwriting right?', image(author))
       expect(response.statusCode).toBe(201)
 
       const item = (await feed(author))
@@ -648,7 +652,7 @@ describe('community feed', () => {
           items: { _id: string; media?: { url: string; width?: number } }[]
         }>()
         .items.find((i) => i._id === response.json<{ _id: string }>()._id)
-      expect(item?.media?.url).toBe(image.url)
+      expect(item?.media?.url).toBe(image(author).url)
       expect(item?.media?.width).toBe(800)
     })
 
@@ -664,7 +668,7 @@ describe('community feed', () => {
         payload: {
           corrected: 'I said it wrong.',
           media: {
-            url: 'https://cdn.example.com/posts/u/1.m4a',
+            url: `https://cdn.example.com/posts/${helper.userId}/1.m4a`,
             contentType: 'audio/m4a',
             sizeBytes: 4096,
             durationSeconds: 6,
@@ -682,7 +686,7 @@ describe('community feed', () => {
       // purge, because we could never delete it.
       const author = await newUser('media-foreign@example.com')
       const response = await postWithMedia(author, 'Look at this.', {
-        ...image,
+        ...image(author),
         url: 'https://evil.example.net/a.jpg',
       })
       expect(response.statusCode).toBe(400)
@@ -691,7 +695,7 @@ describe('community feed', () => {
     it('refuses an oversized attachment', async () => {
       const author = await newUser('media-huge@example.com')
       const response = await postWithMedia(author, 'A very large photo.', {
-        ...image,
+        ...image(author),
         sizeBytes: 32 * 1024 * 1024,
       })
       // 413 rather than the 400 this used to be: now that video raises the
@@ -705,9 +709,9 @@ describe('community feed', () => {
     it('refuses a content type we do not serve', async () => {
       const author = await newUser('media-type@example.com')
       const response = await postWithMedia(author, 'A document.', {
-        ...image,
+        ...image(author),
         contentType: 'application/pdf',
-        url: 'https://cdn.example.com/posts/u/1.pdf',
+        url: `https://cdn.example.com/posts/${author.userId}/1.pdf`,
       })
       expect(response.statusCode).toBe(415)
       expect(response.json()).toMatchObject({ code: 'UNSUPPORTED_MEDIA_TYPE' })
@@ -725,7 +729,7 @@ describe('community feed', () => {
         .findOne({ _id: author.userId })
       expect(afterPlain?.quota.media ?? []).toHaveLength(0)
 
-      await postWithMedia(author, 'A sentence with a photo.', image)
+      await postWithMedia(author, 'A sentence with a photo.', image(author))
       const afterMedia = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: author.userId })
@@ -735,27 +739,27 @@ describe('community feed', () => {
     it('carries a gallery back on the feed', async () => {
       const author = await newUser('media-gallery@example.com')
       const response = await postWithAttachments(author, 'Which of these is right?', [
-        image,
-        { ...image, url: 'https://cdn.example.com/posts/u/2.jpg' },
-        video,
+        image(author),
+        { ...image(author), url: `https://cdn.example.com/posts/${author.userId}/2.jpg` },
+        video(author),
       ])
       expect(response.statusCode).toBe(201)
       const body = response.json<{ attachments?: unknown[]; media?: { url: string } }>()
       expect(body.attachments).toHaveLength(3)
       // Repeated as `media` so a build that predates the list shows the first.
-      expect(body.media?.url).toBe(image.url)
+      expect(body.media?.url).toBe(image(author).url)
     })
 
     it('still accepts the one-attachment body an installed build sends', async () => {
       const author = await newUser('media-legacy@example.com')
-      const response = await postWithMedia(author, 'One photo, old client.', image)
+      const response = await postWithMedia(author, 'One photo, old client.', image(author))
       expect(response.statusCode).toBe(201)
       expect(response.json<{ attachments?: unknown[] }>().attachments).toHaveLength(1)
     })
 
     it('accepts a video on a post', async () => {
       const author = await newUser('media-video@example.com')
-      const response = await postWithMedia(author, 'Am I saying this right?', video)
+      const response = await postWithMedia(author, 'Am I saying this right?', video(author))
       expect(response.statusCode).toBe(201)
       expect(response.json<{ media?: { contentType: string } }>().media?.contentType).toBe(
         'video/mp4',
@@ -771,7 +775,7 @@ describe('community feed', () => {
         method: 'POST',
         url: `/posts/${postId}/corrections`,
         headers: { cookie: helper.cookie },
-        payload: { corrected: 'I said it wrong.', attachments: [video] },
+        payload: { corrected: 'I said it wrong.', attachments: [video(helper)] },
       })
       expect(response.statusCode).toBe(201)
       expect(response.json<{ attachments?: unknown[] }>().attachments).toHaveLength(1)
@@ -780,7 +784,7 @@ describe('community feed', () => {
     it('refuses a video longer than the ceiling', async () => {
       const author = await newUser('media-long@example.com')
       const response = await postWithMedia(author, 'A whole film.', {
-        ...video,
+        ...video(author),
         durationSeconds: MAX_VIDEO_SECONDS + 1,
       })
       expect(response.statusCode).toBe(413)
@@ -792,7 +796,7 @@ describe('community feed', () => {
       const response = await postWithAttachments(
         author,
         'Every photo I own.',
-        Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image),
+        Array.from({ length: MAX_ATTACHMENTS + 1 }, () => image(author)),
       )
       expect(response.statusCode).toBe(400)
     })
@@ -802,9 +806,9 @@ describe('community feed', () => {
       // the daily count is a ceiling on abuse, and six photos are one post.
       const author = await newUser('media-gallery-quota@example.com')
       await postWithAttachments(author, 'Three of them.', [
-        image,
-        { ...image, url: 'https://cdn.example.com/posts/u/2.jpg' },
-        { ...image, url: 'https://cdn.example.com/posts/u/3.jpg' },
+        image(author),
+        { ...image(author), url: `https://cdn.example.com/posts/${author.userId}/2.jpg` },
+        { ...image(author), url: `https://cdn.example.com/posts/${author.userId}/3.jpg` },
       ])
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
@@ -1017,7 +1021,7 @@ describe('community feed', () => {
       const b = (await ask(asker, 'lieutenant')).json<{ _id: string }>()._id
 
       expect((await answer(one, a)).statusCode).toBe(201)
-      const both = await answer(two, b, { media: take('fast'), slowMedia: take('slow') })
+      const both = await answer(two, b, { media: take(two, 'fast'), slowMedia: take(two, 'slow') })
       expect(both.statusCode).toBe(201)
       expect(both.json<{ slowMedia?: { url: string } }>().slowMedia?.url).toContain('slow.m4a')
     })
@@ -1045,7 +1049,7 @@ describe('community feed', () => {
 
       try {
         const webm = (name: string) => ({
-          url: `https://cdn.example.com/posts/u/${name}.webm`,
+          url: `https://cdn.example.com/posts/${helper.userId}/${name}.webm`,
           contentType: 'audio/webm',
           sizeBytes: 4096,
           durationSeconds: 3,
@@ -1076,7 +1080,7 @@ describe('community feed', () => {
       expect((await answer(helper, askId, { note: 'Just words.' })).statusCode).toBe(400)
       const asImage = await answer(helper, askId, {
         media: {
-          url: 'https://cdn.example.com/posts/u/1.jpg',
+          url: `https://cdn.example.com/posts/${helper.userId}/1.jpg`,
           contentType: 'image/jpeg',
           sizeBytes: 1024,
         },
@@ -1094,7 +1098,7 @@ describe('community feed', () => {
       const helper = await newUser('pron-quota-helper@example.com')
       const askId = (await ask(asker, 'anemone')).json<{ _id: string }>()._id
 
-      await answer(helper, askId, { media: take('fast'), slowMedia: take('slow') })
+      await answer(helper, askId, { media: take(helper, 'fast'), slowMedia: take(helper, 'slow') })
 
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
@@ -1110,8 +1114,8 @@ describe('community feed', () => {
       const askId = (await ask(asker, 'quinoa')).json<{ _id: string }>()._id
 
       const response = await answer(helper, askId, {
-        media: take('fast'),
-        slowMedia: { ...take('slow'), url: 'https://evil.example.net/slow.m4a' },
+        media: take(helper, 'fast'),
+        slowMedia: { ...take(helper, 'slow'), url: 'https://evil.example.net/slow.m4a' },
       })
       expect(response.statusCode).toBe(400)
 
@@ -1207,7 +1211,7 @@ describe('community feed', () => {
       const asker = await newUser('pron-card-asker@example.com')
       const helper = await newUser('pron-card-helper@example.com')
       const askId = (await ask(asker, 'espresso')).json<{ _id: string }>()._id
-      await answer(helper, askId, { media: take('fast'), slowMedia: take('slow') })
+      await answer(helper, askId, { media: take(helper, 'fast'), slowMedia: take(helper, 'slow') })
 
       const card = (await feed(helper, 'kind=pronunciation'))
         .json<{

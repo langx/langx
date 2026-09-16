@@ -1,3 +1,5 @@
+import { MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { type AddressInfo } from 'node:net'
@@ -888,6 +890,69 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       await new Promise((resolve) => setTimeout(resolve, 300))
 
       expect(push.sent).toEqual([])
+    })
+  })
+  /**
+   * The feed pins this rule for its own attachments — "every file is checked
+   * *before* anything is consumed, so a rejected second take does not burn a
+   * unit the caller never got to use". Chat's only send path is this socket,
+   * and it is the one place the rule was inverted.
+   */
+  describe('the media quota and a refused attachment', () => {
+    /** `b` talks until `a` is past the media gate, which counts what `a` received. */
+    async function warmedPair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversation = await startConversation(a, b.userId, 'hi')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      for (let sent = 1; sent <= MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES; sent++) {
+        await sendTextMessage(handle.db, b.userId, {
+          conversationId: conversation._id,
+          body: `filler ${sent}`,
+        })
+      }
+      return { a, conversationId: conversation._id }
+    }
+
+    function mediaUnitsSpent(userId: string) {
+      return handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+        .then((profile) => (profile?.quota.media ?? []).length)
+    }
+
+    it('spends nothing when the attachment is refused', async () => {
+      const { a, conversationId } = await warmedPair('ws-media-refused')
+      const socket = await connectSocket(a.cookie)
+
+      // A content type we do not serve. Checked inside `sendMediaMessage`,
+      // which the handler only reaches after it has already taken the unit.
+      const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+        socket.emit(
+          'message:media',
+          {
+            conversationId,
+            attachments: [
+              {
+                url: 'https://cdn.example.com/messages/x/a.pdf',
+                contentType: 'application/pdf',
+                sizeBytes: 1024,
+              },
+            ],
+          },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+
+      expect(ack.ok).toBe(false)
+      // Nothing was stored, so nothing should have been charged for.
+      expect(
+        await handle.db.collection(COLLECTIONS.messages).countDocuments({
+          conversationId: new ObjectId(conversationId),
+          type: { $in: ['image', 'video', 'audio'] },
+        }),
+      ).toBe(0)
+      expect(await mediaUnitsSpent(a.userId)).toBe(0)
     })
   })
 })

@@ -12,7 +12,7 @@ import { randomUUID } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { assertOwnBucket } from '../lib/assertOwnBucket'
+import { assertOwnObject } from '../lib/assertOwnBucket'
 import {
   requireAdmin,
   requireAuth,
@@ -44,10 +44,19 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/avatar/confirm',
     { preHandler: requireMember, schema: { body: avatarConfirmSchema } },
     async (request, reply) => {
-      // Confirm-only, not free-form — an avatarUrl outside our own bucket
-      // would break the Faz 10 "delete R2 avatars on hard delete" step and
-      // any future moderation/rehosting of profile images.
-      assertOwnBucket(app.env.STORAGE_PUBLIC_BASE_URL, request.body.avatarUrl)
+      /*
+       * Confirm-only, not free-form, and under this account's own prefix. A
+       * URL outside our bucket would break the purge and hand us an
+       * arbitrary-image-embed surface; one *inside* it but under somebody
+       * else's prefix is worse, because the purge would then delete their
+       * file when this account leaves. See `isOwnObjectUrl`.
+       */
+      assertOwnObject(
+        app.env.STORAGE_PUBLIC_BASE_URL,
+        request.body.avatarUrl,
+        `avatars/${request.userId}/`,
+        'Avatar',
+      )
 
       const profile = await setAvatarUrl(app.mongo.db, request.userId, request.body.avatarUrl)
       return reply.send(profile)
@@ -75,7 +84,12 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/photos',
     { preHandler: requireMember, schema: { body: photoAddSchema } },
     async (request, reply) => {
-      assertOwnBucket(app.env.STORAGE_PUBLIC_BASE_URL, request.body.url)
+      assertOwnObject(
+        app.env.STORAGE_PUBLIC_BASE_URL,
+        request.body.url,
+        `photos/${request.userId}/`,
+        'Photo',
+      )
       return reply.send(await addPhoto(app.mongo.db, request.userId, request.body.url))
     },
   )

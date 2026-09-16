@@ -7,7 +7,7 @@ import {
   type MediaKind,
 } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
-import { isOwnBucketUrl } from '../../lib/assertOwnBucket'
+import { isOwnObjectUrl, type ObjectPrefix } from '../../lib/assertOwnBucket'
 
 export type { MediaKind }
 
@@ -34,6 +34,13 @@ export function mediaKindOf(media: Media): MediaKind | null {
 export function assertMediaAllowed(
   media: Media,
   storagePublicBaseUrl: string | undefined,
+  /**
+   * The key prefix this caller is allowed to record — `posts/<userId>/`,
+   * `messages/<conversationId>/`, and so on. Required rather than optional so
+   * that a new call site cannot quietly skip it; see `isOwnObjectUrl` for what
+   * skipping it cost.
+   */
+  ownerPrefix: ObjectPrefix,
   /** Pass when the caller already knows what it asked for; derived otherwise. */
   expected?: MediaKind,
 ): MediaKind {
@@ -70,13 +77,14 @@ export function assertMediaAllowed(
     }
   }
 
-  // `isOwnBucketUrl`, not a bare `startsWith`: the slash is what stops a
-  // sibling bucket from passing for ours. See that function.
-  if (!isOwnBucketUrl(storagePublicBaseUrl, media.url)) {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'Attachment must point into our own storage bucket',
-    )
+  /*
+   * Our bucket *and* this caller's own prefix. The bucket half stops a post
+   * embedding an arbitrary host; the prefix half stops it naming a file
+   * somebody else uploaded, which the purge would later delete on their
+   * behalf. See `isOwnObjectUrl`.
+   */
+  if (!isOwnObjectUrl(storagePublicBaseUrl, media.url, ownerPrefix)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Attachment must be a file you uploaded')
   }
 
   return kind
@@ -92,6 +100,7 @@ export function assertMediaAllowed(
 export function assertAttachmentsAllowed(
   items: readonly Media[],
   storagePublicBaseUrl: string | undefined,
+  ownerPrefix: ObjectPrefix,
   expected?: MediaKind,
 ): MediaKind {
   const first = items[0]
@@ -99,7 +108,9 @@ export function assertAttachmentsAllowed(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An attachment message needs an attachment')
   }
 
-  const kinds = items.map((item) => assertMediaAllowed(item, storagePublicBaseUrl, expected))
+  const kinds = items.map((item) =>
+    assertMediaAllowed(item, storagePublicBaseUrl, ownerPrefix, expected),
+  )
   if (attachmentKindsValid(items) !== 'ok') {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A voice note is sent on its own')
   }

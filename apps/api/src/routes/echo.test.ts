@@ -1099,15 +1099,17 @@ describe('echo', () => {
    */
   describe('a card\u2019s own picture and recording', () => {
     const BUCKET = 'https://cdn.example.com'
-    const picture = (name: string) => ({
-      url: `${BUCKET}/echo/u/${name}.jpg`,
+    // `echo/<ownerId>/` is the key `/echo/upload-url` really mints, and the
+    // prefix `updateCard` checks: a card may only name a file its owner put there.
+    const picture = (owner: SignedUpUser, name: string) => ({
+      url: `${BUCKET}/echo/${owner.userId}/${name}.jpg`,
       contentType: 'image/jpeg',
       sizeBytes: 4096,
       width: 800,
       height: 600,
     })
-    const recording = (name: string) => ({
-      url: `${BUCKET}/echo/u/${name}.m4a`,
+    const recording = (owner: SignedUpUser, name: string) => ({
+      url: `${BUCKET}/echo/${owner.userId}/${name}.m4a`,
       contentType: 'audio/m4a',
       sizeBytes: 4096,
       durationSeconds: 3,
@@ -1160,13 +1162,17 @@ describe('echo', () => {
         handle.db,
         user.userId,
         cardId,
-        { ...lines, image: picture('one'), audio: recording('one') },
+        { ...lines, image: picture(user, 'one'), audio: recording(user, 'one') },
         BUCKET,
       )
 
       // `self` is what tells the deletion paths the file is ours to remove.
-      expect(card.image).toMatchObject({ url: picture('one').url, width: 800, origin: 'self' })
-      expect(card.audio).toMatchObject({ url: recording('one').url, origin: 'self' })
+      expect(card.image).toMatchObject({
+        url: picture(user, 'one').url,
+        width: 800,
+        origin: 'self',
+      })
+      expect(card.audio).toMatchObject({ url: recording(user, 'one').url, origin: 'self' })
     })
 
     it('leaves the files alone when neither field is sent, and clears them on null', async () => {
@@ -1174,9 +1180,15 @@ describe('echo', () => {
       const cardId = await writeCard(user, 'media-clear')
       const { updateCard } = await import('../modules/echo/cards')
 
-      await updateCard(handle.db, user.userId, cardId, { ...lines, image: picture('two') }, BUCKET)
+      await updateCard(
+        handle.db,
+        user.userId,
+        cardId,
+        { ...lines, image: picture(user, 'two') },
+        BUCKET,
+      )
       const untouched = await updateCard(handle.db, user.userId, cardId, lines, BUCKET)
-      expect(untouched.image?.url).toBe(picture('two').url)
+      expect(untouched.image?.url).toBe(picture(user, 'two').url)
 
       const cleared = await updateCard(
         handle.db,
@@ -1217,7 +1229,7 @@ describe('echo', () => {
         handle.db,
         user.userId,
         cardId,
-        { ...lines, audio: recording('mine') },
+        { ...lines, audio: recording(user, 'mine') },
         BUCKET,
         added.storage,
       )
@@ -1241,11 +1253,11 @@ describe('echo', () => {
         handle.db,
         user.userId,
         cardId,
-        { ...lines, removeAudio: [`${BUCKET}/echo/u/mine.m4a`] },
+        { ...lines, removeAudio: [recording(user, 'mine').url] },
         BUCKET,
         own.storage,
       )
-      expect(own.deleted).toEqual(['echo/u/mine.m4a'])
+      expect(own.deleted).toEqual([`echo/${user.userId}/mine.m4a`])
       expect(card.audios ?? []).toEqual([])
       expect(card.audio).toBeUndefined()
     })
@@ -1258,7 +1270,10 @@ describe('echo', () => {
         method: 'PATCH',
         url: `/echo/cards/${cardId}`,
         headers: { cookie: user.cookie },
-        payload: { ...lines, image: { ...picture('x'), url: 'https://elsewhere.test/1.jpg' } },
+        payload: {
+          ...lines,
+          image: { ...picture(user, 'x'), url: 'https://elsewhere.test/1.jpg' },
+        },
       })
       expect(response.statusCode).toBe(400)
     })
@@ -1269,7 +1284,13 @@ describe('echo', () => {
       const { updateCard } = await import('../modules/echo/cards')
 
       await expect(
-        updateCard(handle.db, user.userId, cardId, { ...lines, image: recording('nope') }, BUCKET),
+        updateCard(
+          handle.db,
+          user.userId,
+          cardId,
+          { ...lines, image: recording(user, 'nope') },
+          BUCKET,
+        ),
       ).rejects.toThrow()
     })
   })

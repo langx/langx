@@ -19,7 +19,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { COLLECTIONS } from '../db/collections'
 import { ApiError } from '../lib/ApiError'
-import { assertOwnBucket } from '../lib/assertOwnBucket'
+import { assertOwnObject } from '../lib/assertOwnBucket'
 import { authId } from '../lib/authId'
 import { requireAdmin } from '../middleware/requireAuth'
 import { recordAdminAction } from '../modules/admin/auditLog'
@@ -654,7 +654,9 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { media } = request.body
-      if (media) assertOwnBucket(app.env.STORAGE_PUBLIC_BASE_URL, media.url)
+      // `broadcasts/` has no user segment — a broadcast belongs to the panel
+      // rather than to a person — so the prefix is the whole of the check here.
+      if (media) assertOwnObject(app.env.STORAGE_PUBLIC_BASE_URL, media.url, 'broadcasts/', 'Image')
 
       const job = await setBroadcastImage(app.mongo.db, request.params.id, media)
       if (!job) {

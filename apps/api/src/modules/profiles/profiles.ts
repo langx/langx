@@ -44,7 +44,7 @@ import { effectiveTier } from './entitlement'
 import { nameTokens } from './nameTokens'
 import { ApiError } from '../../lib/ApiError'
 import { hidesOnlineStatus } from './presenceVisibility'
-import { assertOwnBucket } from '../../lib/assertOwnBucket'
+import { assertOwnObject } from '../../lib/assertOwnBucket'
 import { markReservationClaimed, reservationVerdict } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { cameFromV1 } from '../handles/legacyPrecreate'
@@ -597,7 +597,7 @@ export async function createProfile(
   if (input.avatarUrl) {
     // Onboarding never calls `confirm`, so this is the only thing standing
     // between the form and a profile picture hosted anywhere at all.
-    assertOwnBucket(storagePublicBaseUrl, input.avatarUrl)
+    assertOwnObject(storagePublicBaseUrl, input.avatarUrl, `avatars/${userId}/`, 'Avatar')
     profile.avatarUrl = input.avatarUrl
   }
 

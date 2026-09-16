@@ -32,7 +32,7 @@ export async function submitFeedback(
   // check every other attachment goes through. A URL outside our own storage
   // would put a link to wherever the sender liked in a public issue.
   if (attachments.length > 0) {
-    assertAttachmentsAllowed(attachments, app.env.STORAGE_PUBLIC_BASE_URL)
+    assertAttachmentsAllowed(attachments, app.env.STORAGE_PUBLIC_BASE_URL, `feedback/${userId}/`)
   }
 
   const profile = await getProfile(app.mongo.db, userId)

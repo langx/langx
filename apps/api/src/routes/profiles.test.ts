@@ -1159,6 +1159,64 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
 
     /**
+     * `assertOwnBucket` answers "is this our bucket", which is not the same
+     * question as "is this yours". Every avatar URL is public on the profile
+     * it belongs to, so pointing your own at somebody else's object takes only
+     * reading it off their page — and the purge then deletes whatever your
+     * profile points at, which is how one throwaway account destroys another
+     * person's picture for good.
+     */
+    it('refuses an avatar that is in our bucket but under another account', async () => {
+      const victim = await newUser('avatar-victim@example.com')
+      await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: victim.cookie },
+        payload: onboardingBody({ handle: 'avatarvictim' }),
+      })
+      const thief = await newUser('avatar-thief@example.com')
+      await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: thief.cookie },
+        payload: onboardingBody({ handle: 'avatarthief' }),
+      })
+
+      const response = await configuredApp.inject({
+        method: 'POST',
+        url: '/me/avatar/confirm',
+        headers: { cookie: thief.cookie },
+        payload: { avatarUrl: `https://cdn.example.com/avatars/${victim.userId}/face.png` },
+      })
+      expect(response.statusCode, response.body).toBe(400)
+    })
+
+    it('refuses a gallery photo that is in our bucket but under another account', async () => {
+      const victim = await newUser('photo-victim@example.com')
+      await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: victim.cookie },
+        payload: onboardingBody({ handle: 'photovictim' }),
+      })
+      const thief = await newUser('photo-thief@example.com')
+      await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: thief.cookie },
+        payload: onboardingBody({ handle: 'photothief' }),
+      })
+
+      const response = await configuredApp.inject({
+        method: 'POST',
+        url: '/me/photos',
+        headers: { cookie: thief.cookie },
+        payload: { url: `https://cdn.example.com/photos/${victim.userId}/pic.png` },
+      })
+      expect(response.statusCode, response.body).toBe(400)
+    })
+
+    /**
      * Onboarding writes an `avatarUrl` on a path that never calls `confirm`,
      * so it needs its own copy of the bucket check — without it the wizard
      * quietly reopens the hole `confirm` exists to close: a profile picture
