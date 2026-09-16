@@ -26,6 +26,7 @@ import { getProfile, type Profile } from '../modules/profiles/profiles'
 import { isSuspended } from '../modules/moderation/suspension'
 import { COLLECTIONS } from '../db/collections'
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
+import { assertAttachmentsAllowed } from '../modules/media/assertMedia'
 import { toMessageView } from '../modules/chat/messageView'
 import {
   deleteMessage,
@@ -356,10 +357,28 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           // Before the quota, not after: a refused attachment used to spend a
           // media slot on the way to its own refusal. `sendMediaMessage`
           // checks again, cheaply, for the transport that forgets this.
-          await assertMediaUnlocked(
+          const conversation = await assertConversationAccess(
             app.mongo.db,
-            await assertConversationAccess(app.mongo.db, input.conversationId, userId),
+            input.conversationId,
             userId,
+          )
+          await assertMediaUnlocked(app.mongo.db, conversation, userId)
+
+          /*
+           * And the files themselves, for the same reason and one step later
+           * than the gate above — this is the half that was missed. A photo
+           * over the byte ceiling, a type we do not serve, or a URL that is
+           * not the sender's to name is refused inside `sendMediaMessage`,
+           * which the handler only reaches once the unit is already gone. The
+           * feed states the rule its own attachments follow: every file is
+           * checked before anything is consumed, so a rejected file does not
+           * burn a unit the caller never got to use. Chat's only send path is
+           * this socket, so this is where it has to hold.
+           */
+          assertAttachmentsAllowed(
+            input.attachments,
+            app.env.STORAGE_PUBLIC_BASE_URL,
+            `messages/${conversation._id.toHexString()}/`,
           )
 
           const quota = await consumeQuota(app.mongo.db, userId, effectiveTier(profile), 'media')
