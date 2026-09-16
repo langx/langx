@@ -947,12 +947,10 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect(ack.ok).toBe(false)
       // Nothing was stored, so nothing should have been charged for.
       expect(
-        await handle.db
-          .collection(COLLECTIONS.messages)
-          .countDocuments({
-            conversationId: new ObjectId(conversationId),
-            type: { $in: ['image', 'video', 'audio'] },
-          }),
+        await handle.db.collection(COLLECTIONS.messages).countDocuments({
+          conversationId: new ObjectId(conversationId),
+          type: { $in: ['image', 'video', 'audio'] },
+        }),
       ).toBe(0)
       expect(await mediaUnitsSpent(a.userId)).toBe(0)
     })
