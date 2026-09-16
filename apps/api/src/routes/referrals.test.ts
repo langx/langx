@@ -282,6 +282,41 @@ describe('referrals', () => {
       expect(TOKEN_GRANT_KINDS as readonly string[]).toContain('referral')
     })
 
+    /**
+     * `settleReferral` awards first and latches second, so that a crash between
+     * the two under-records the audit row rather than marking a referral paid
+     * that never was. The doc comment promises the next call heals it. It is
+     * the ordinary case rather than an exotic one: settling runs on every
+     * message, so two of the invitee's messages landing together have both read
+     * `activatedAt` as absent before either has written it.
+     */
+    it('restores the recorded award when a settle re-runs over an already-paid one', async () => {
+      const a = await newUser()
+      const b = await newUser({ referredByHandle: a.handle })
+
+      await earn(b.userId)
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+
+      // The crash: the awards are on the ledger, the latch never landed.
+      await handle.db
+        .collection<Referral>(COLLECTIONS.referrals)
+        .updateOne(
+          { _id: b.userId },
+          { $unset: { activatedAt: '', activationAward: '', inviteeAward: '' } },
+        )
+
+      await earn(b.userId)
+
+      // Still paid exactly once...
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+      expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
+      // ...and the row says so, rather than reporting a payment of nothing.
+      expect(await rowOf(b.userId)).toMatchObject({
+        activationAward: RULES.activation,
+        inviteeAward: RULES.inviteeActivation,
+      })
+    })
+
     it('pays a frozen referrer nothing, and records that it withheld it', async () => {
       const a = await newUser()
       const b = await newUser({ referredByHandle: a.handle })
