@@ -901,6 +901,43 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     })
 
     /**
+     * The same cap, against the burst that actually threatens it.
+     *
+     * The sequential test above passes on a read-then-write check, because
+     * each request sees the previous one's day already inserted. Fired
+     * together they all read the count before any of them has written, which
+     * is the one shape a cap has to survive — `purchase` in the same file puts
+     * its conditions inside the atomic filter for exactly this reason.
+     */
+    it('allows only two repairs a month when they are asked for at once', async () => {
+      const user = await funded('repair-cap-race@example.com', 100_000)
+      const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+      const days = sameMonthDays(cap + 1)
+
+      const responses = await Promise.all(
+        days.map((day) =>
+          app.inject({
+            method: 'POST',
+            url: '/me/activity/repair',
+            headers: { cookie: user.cookie },
+            payload: { day },
+          }),
+        ),
+      )
+
+      const bought = await handle.db
+        .collection<StreakDay>(COLLECTIONS.streakDays)
+        .countDocuments({ userId: user.userId, source: 'purchase' })
+      expect(bought).toBeLessThanOrEqual(cap)
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.tokenSpent ?? 0).toBeLessThanOrEqual(cap * TOKEN_RULES.sinks.dayRepair)
+      expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(bought)
+    })
+
+    /**
      * Two writes in two collections, so the order matters: the day goes in
      * first and has to come back out when the charge fails, or the map would
      * show a square nobody paid for.
