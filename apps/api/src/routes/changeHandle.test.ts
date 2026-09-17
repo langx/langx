@@ -393,6 +393,44 @@ describe('POST /profiles/me/handle — a username change, once a week', () => {
     expect(availability.json()).toMatchObject({ available: false })
   })
 
+  /*
+   * A username change was reported to have taken a paid plan with it. The
+   * change is one field-scoped `$set`, so it cannot — but nothing said so, and
+   * this is what would catch `changeHandle` ever growing a whole-document
+   * write. The tier is written straight to the profile, the same way
+   * `asReturningV1User` writes its fields: what is under test is that the
+   * change leaves the field alone, not how the field is earned.
+   */
+  it('leaves the plan exactly as it was', async () => {
+    const user = await newUser('v1-paid@example.com', { handle: 'paidbefore' })
+    const entitlement: Profile['entitlement'] = {
+      tier: 'pro_plus',
+      willRenew: false,
+      store: 'promotional',
+      updatedAt: new Date('2026-09-01T00:00:00.000Z'),
+    }
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: user.userId }, { $set: { entitlement } })
+
+    const response = await claim(user, 'paidafter')
+    expect(response.statusCode, response.body).toBe(200)
+
+    const stored = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: user.userId })
+    expect(stored?.handle).toBe('paidafter')
+    expect(stored?.entitlement).toEqual(entitlement)
+
+    // And what the app redraws the badge from after the change.
+    const me = await app.inject({
+      method: 'GET',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+    })
+    expect(me.json()).toMatchObject({ handle: 'paidafter', entitlement: { tier: 'pro_plus' } })
+  })
+
   it('refuses the name the account already has, rather than starting the cooldown on it', async () => {
     const user = await newUser('v1-no-op@example.com')
     await asReturningV1User(user, 'langx_00f3')

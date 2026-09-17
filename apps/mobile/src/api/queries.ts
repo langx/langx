@@ -310,7 +310,7 @@ export function invalidateUnread(client: QueryClient): void {
  * correct to write. By handle, which is what the preview navigates with, and
  * by id, which is what a deep link carries.
  */
-function invalidateOwnPublicViews(queryClient: QueryClient, profile: MeProfile): void {
+export function invalidateOwnPublicViews(queryClient: QueryClient, profile: MeProfile): void {
   for (const key of [
     keys.profile(profile.handle),
     keys.profile(profile._id),

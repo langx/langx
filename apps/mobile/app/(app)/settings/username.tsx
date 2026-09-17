@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native'
 import { api, ApiRequestError } from '../../../src/api/client'
-import { keys, useMe, type MeProfile } from '../../../src/api/queries'
+import { invalidateOwnPublicViews, keys, useMe, type MeProfile } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
@@ -128,6 +128,12 @@ function ChangeForm({ profile, onDone }: { profile: MeProfile; onDone: () => voi
     try {
       await api.post('/profiles/me/handle', { handle })
       await queryClient.invalidateQueries({ queryKey: keys.me })
+      // The public views were fetched under the name being left, and the
+      // preview screen reads that cache by id as well as by handle. Every
+      // other profile mutation drops them; this one left them for their
+      // `staleTime`. `profile` is the pre-change one, so its handle is the old
+      // key.
+      invalidateOwnPublicViews(queryClient, profile)
       showToast(t('settings.usernameSaved', { handle }))
       onDone()
     } catch (caught) {
