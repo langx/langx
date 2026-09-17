@@ -234,12 +234,17 @@ and deployed by `deploy-tts.yml` (`flyctl deploy apps/tts`) on every merge
 that touches the directory.
 It has **no public IP**: allocate a Flycast address instead
 (`fly ips allocate-v6 --private -a langx-tts`) and give the API
-`TTS_URL=http://langx-tts.flycast:8080`. Fly's proxy still fronts Flycast
-traffic, which is what lets the machine stop when idle and start on the
-first request — `min_machines_running = 0` in its `fly.toml` is the whole
-cost story. Set the same `TTS_SECRET` on both apps, or on neither. The first
-request after a stop pays for a machine start and a model load; the API
-waits sixty seconds for it and the app shows a spinner.
+`TTS_URL=http://langx-tts.flycast` — with no port. The `8080` in its
+`fly.toml` is `internal_port`, where the process listens inside the machine;
+the Flycast address carries the ports `[http_service]` publishes, 80 and 443.
+Naming 8080 there reaches the proxy, which has no service on that port and
+resets the connection a few seconds in, which reads like a machine that
+will not wake. Fly's proxy still fronts Flycast traffic, which is what lets
+the machine stop when idle and start on the first request —
+`min_machines_running = 0` in its `fly.toml` is the whole cost story. Set the
+same `TTS_SECRET` on both apps, or on neither. The first request after a stop
+pays for a machine start and a model load; the API waits sixty seconds for it
+and the app shows a spinner.
 
 ## Storage: B2 or R2
 
