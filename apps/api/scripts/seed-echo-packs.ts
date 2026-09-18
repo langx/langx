@@ -25,14 +25,13 @@
  */
 import { readdir, readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import { echoPackFileSchema, SUPPORTED_LOCALES, type Locale } from '@langx/shared'
+import { echoPackFileSchema, packImageKey, SUPPORTED_LOCALES, type Locale } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { COLLECTIONS } from '../src/db/collections'
 import { loadEnv } from '../src/env'
 import { packItemId, type EchoPackDoc, type EchoPackItemDoc } from '../src/modules/echo/packs'
 
 const CONTENT_ROOT = resolve(import.meta.dirname, '../../../content/echo')
-
 async function packFiles(explicit: string | undefined): Promise<string[]> {
   if (explicit) return [resolve(explicit)]
   const found: string[] = []
@@ -50,6 +49,13 @@ interface Draft {
   path: string
   pack: EchoPackDoc
   items: EchoPackItemDoc[]
+  /**
+   * Whether the *file* names media, which is not the same question as whether
+   * the draft carries any: a reading and a cue are both dropped when there is
+   * no bucket to resolve them against, so asking the mapped items would always
+   * answer no in exactly the case the check below exists to catch.
+   */
+  needsMedia: boolean
 }
 
 async function readPack(path: string, mediaBaseUrl?: string): Promise<Draft | null> {
@@ -82,6 +88,7 @@ async function readPack(path: string, mediaBaseUrl?: string): Promise<Draft | nu
 
   return {
     path,
+    needsMedia: file.items.some((item) => item.voices?.length || item.image),
     pack: {
       _id: file.id,
       lang: file.lang,
@@ -100,7 +107,14 @@ async function readPack(path: string, mediaBaseUrl?: string): Promise<Draft | nu
       gloss: item.gloss,
       ...(item.example ? { example: item.example } : {}),
       ...(item.freqRank ? { freqRank: item.freqRank } : {}),
-      ...(item.image ? { image: item.image } : {}),
+      // A cue becomes a URL here for the same reason a reading does, one line
+      // down: the content names a slug so that `content/echo/` is the same in
+      // every environment, and everything downstream carries a URL.
+      ...(item.image && mediaBaseUrl
+        ? {
+            image: `${mediaBaseUrl.replace(/\/+$/, '')}/${packImageKey(item.image.slice('cue:'.length))}`,
+          }
+        : {}),
       ...(item.audio ? { audio: item.audio } : {}),
       /*
        * The key becomes a URL here, and only here. The pack file records a key
@@ -155,10 +169,11 @@ async function main(): Promise<void> {
    * Refused rather than seeded silently. A pack whose readings resolved to
    * nothing looks finished — the cards are there, the audio button simply
    * never appears — and nothing downstream can tell that apart from a pack
-   * that never had any.
+   * that never had any. A pack whose cues resolved to nothing is the same
+   * failure with a different button, so it is the same refusal.
    */
-  if (!env!.STORAGE_PUBLIC_BASE_URL && drafts.some((d) => d.items.some((i) => i.voices?.length))) {
-    throw new Error('STORAGE_PUBLIC_BASE_URL is unset, and these packs have synthesised readings')
+  if (!env!.STORAGE_PUBLIC_BASE_URL && drafts.some((draft) => draft.needsMedia)) {
+    throw new Error('STORAGE_PUBLIC_BASE_URL is unset, and these packs have readings or cues')
   }
 
   const handle = await connectToDatabase(env!.MONGODB_URI, env!.MONGODB_DB)

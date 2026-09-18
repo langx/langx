@@ -127,6 +127,22 @@ export function packVoiceKey(packId: string, index: number, voice: string): stri
   return `echo/packs/${packId.replace(':', '_')}/${index}-${voice}.m4a`
 }
 
+/**
+ * Where a cue's picture lives, given an environment's base URL.
+ *
+ * Keyed by the slug and by nothing else — not the pack, not the index — which
+ * is the whole reason a cue is shared: one upload serves every card that
+ * points at it, in every pack and every language. `packVoiceKey` cannot work
+ * that way because a reading *is* per item.
+ *
+ * PNG rather than the vector it is drawn as, because expo-image hands an SVG
+ * to each platform's own decoder and iOS's mishandles the arc syntax most of
+ * OpenMoji is minified into. A flat raster has nothing to disagree about.
+ */
+export function packImageKey(slug: string): string {
+  return `echo/packs/images/${slug}.png`
+}
+
 export const echoPackItemSchema = z.object({
   /** Position in the pack, and the second half of `pack_index_unique`. */
   index: z.number().int().nonnegative(),
@@ -143,13 +159,26 @@ export const echoPackItemSchema = z.object({
    */
   freqRank: z.number().int().positive().optional(),
   /**
-   * `openmoji:<hex>` for a noun you can point at, and absent for everything
-   * else. A forced picture for "maybe" teaches nothing.
+   * `cue:<slug>` — the picture above the sentence, named by what it shows
+   * rather than by which pack it belongs to.
+   *
+   * A slug rather than a file, because the cue is shared: "🤝" is the picture
+   * for sixteen different phrases, and sixteen copies of one drawing is
+   * sixteen chances for fifteen of them to go stale. `content/echo/images/`
+   * holds one file per slug and `tools/echo-content/images/cues.json` says
+   * which phrase points at which — see that file's header for why the cue is
+   * written there as an emoji and never shipped as one.
+   *
+   * This used to read `openmoji:<hex>` and to be documented as "for a noun you
+   * can point at, and absent for everything else". Nothing ever carried it:
+   * these packs are phrases end to end, so the rule as written could not fire
+   * once in eight hundred items. What replaced it is a cue for the *meaning*,
+   * which is a thing a phrase does have.
    */
   image: z
     .string()
     .trim()
-    .regex(/^openmoji:[0-9A-F-]+$/)
+    .regex(/^cue:[a-z0-9-]+$/)
     .optional(),
   /**
    * A human saying it: a Wikimedia Commons recording, with the credit its

@@ -2,7 +2,7 @@
   "id": "en:intermediate",
   "lang": "en",
   "level": "intermediate",
-  "contentVersion": 5,
+  "contentVersion": 6,
   "reviewed": true,
   "sources": [
     {
@@ -63,7 +63,8 @@
           "key": "echo/packs/en_intermediate/0-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:prohibited"
     },
     {
       "index": 1,
@@ -110,7 +111,8 @@
           "key": "echo/packs/en_intermediate/1-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 2,
@@ -138,7 +140,8 @@
           "key": "echo/packs/en_intermediate/2-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 3,
@@ -166,7 +169,8 @@
           "key": "echo/packs/en_intermediate/3-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:drooling-face"
     },
     {
       "index": 4,
@@ -195,7 +199,8 @@
           "key": "echo/packs/en_intermediate/4-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:calendar"
     },
     {
       "index": 5,
@@ -223,7 +228,8 @@
           "key": "echo/packs/en_intermediate/5-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:party-popper"
     },
     {
       "index": 6,
@@ -252,7 +258,8 @@
           "key": "echo/packs/en_intermediate/6-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:smiling-face-with-open-hands"
     },
     {
       "index": 7,
@@ -280,7 +287,8 @@
           "key": "echo/packs/en_intermediate/7-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:raised-hand"
     },
     {
       "index": 8,
@@ -309,7 +317,8 @@
           "key": "echo/packs/en_intermediate/8-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:lying-face"
     },
     {
       "index": 9,
@@ -337,7 +346,8 @@
           "key": "echo/packs/en_intermediate/9-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:trophy"
     },
     {
       "index": 10,
@@ -362,7 +372,8 @@
           "key": "echo/packs/en_intermediate/10-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 11,
@@ -390,7 +401,8 @@
           "key": "echo/packs/en_intermediate/11-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:bed"
     },
     {
       "index": 12,
@@ -418,7 +430,8 @@
           "key": "echo/packs/en_intermediate/12-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-cartwheeling"
     },
     {
       "index": 13,
@@ -448,7 +461,8 @@
           "key": "echo/packs/en_intermediate/13-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 14,
@@ -476,7 +490,8 @@
           "key": "echo/packs/en_intermediate/14-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:heart-with-arrow"
     },
     {
       "index": 15,
@@ -504,7 +519,8 @@
           "key": "echo/packs/en_intermediate/15-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-raised-eyebrow"
     },
     {
       "index": 16,
@@ -532,7 +548,8 @@
           "key": "echo/packs/en_intermediate/16-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 17,
@@ -559,7 +576,8 @@
           "key": "echo/packs/en_intermediate/17-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pushpin"
     },
     {
       "index": 18,
@@ -587,7 +605,8 @@
           "key": "echo/packs/en_intermediate/18-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:beer-mug"
     },
     {
       "index": 19,
@@ -615,7 +634,8 @@
           "key": "echo/packs/en_intermediate/19-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:lying-face"
     },
     {
       "index": 20,
@@ -659,7 +679,8 @@
           "key": "echo/packs/en_intermediate/20-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ring-buoy"
     },
     {
       "index": 21,
@@ -687,7 +708,8 @@
           "key": "echo/packs/en_intermediate/21-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:glass-of-milk"
     },
     {
       "index": 22,
@@ -729,7 +751,8 @@
           "key": "echo/packs/en_intermediate/22-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:relieved-face"
     },
     {
       "index": 23,
@@ -762,7 +785,8 @@
           "key": "echo/packs/en_intermediate/23-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:p-button"
     },
     {
       "index": 24,
@@ -791,7 +815,8 @@
           "key": "echo/packs/en_intermediate/24-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cooked-rice"
     },
     {
       "index": 25,
@@ -819,7 +844,8 @@
           "key": "echo/packs/en_intermediate/25-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 26,
@@ -850,7 +876,8 @@
           "key": "echo/packs/en_intermediate/26-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 27,
@@ -878,7 +905,8 @@
           "key": "echo/packs/en_intermediate/27-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:backhand-index-pointing-down"
     },
     {
       "index": 28,
@@ -906,7 +934,8 @@
           "key": "echo/packs/en_intermediate/28-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 29,
@@ -938,7 +967,8 @@
           "key": "echo/packs/en_intermediate/29-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chair"
     },
     {
       "index": 30,
@@ -966,7 +996,8 @@
           "key": "echo/packs/en_intermediate/30-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:plus"
     },
     {
       "index": 31,
@@ -995,7 +1026,8 @@
           "key": "echo/packs/en_intermediate/31-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:school"
     },
     {
       "index": 32,
@@ -1023,7 +1055,8 @@
           "key": "echo/packs/en_intermediate/32-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thumbs-down"
     },
     {
       "index": 33,
@@ -1051,7 +1084,8 @@
           "key": "echo/packs/en_intermediate/33-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 34,
@@ -1079,7 +1113,8 @@
           "key": "echo/packs/en_intermediate/34-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 35,
@@ -1107,7 +1142,8 @@
           "key": "echo/packs/en_intermediate/35-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:rock"
     },
     {
       "index": 36,
@@ -1135,7 +1171,8 @@
           "key": "echo/packs/en_intermediate/36-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 37,
@@ -1163,7 +1200,8 @@
           "key": "echo/packs/en_intermediate/37-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 38,
@@ -1194,7 +1232,8 @@
           "key": "echo/packs/en_intermediate/38-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:reminder-ribbon"
     },
     {
       "index": 39,
@@ -1225,7 +1264,8 @@
           "key": "echo/packs/en_intermediate/39-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ambulance"
     },
     {
       "index": 40,
@@ -1254,7 +1294,8 @@
           "key": "echo/packs/en_intermediate/40-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:teacup-without-handle"
     },
     {
       "index": 41,
@@ -1300,7 +1341,8 @@
           "key": "echo/packs/en_intermediate/41-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:anger-symbol"
     },
     {
       "index": 42,
@@ -1328,7 +1370,8 @@
           "key": "echo/packs/en_intermediate/42-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:enraged-face"
     },
     {
       "index": 43,
@@ -1356,7 +1399,8 @@
           "key": "echo/packs/en_intermediate/43-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thinking-face"
     },
     {
       "index": 44,
@@ -1400,7 +1444,8 @@
           "key": "echo/packs/en_intermediate/44-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:place-of-worship"
     },
     {
       "index": 45,
@@ -1429,7 +1474,8 @@
           "key": "echo/packs/en_intermediate/45-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:girl"
     },
     {
       "index": 46,
@@ -1457,7 +1503,8 @@
           "key": "echo/packs/en_intermediate/46-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 47,
@@ -1485,7 +1532,8 @@
           "key": "echo/packs/en_intermediate/47-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house-with-garden"
     },
     {
       "index": 48,
@@ -1513,7 +1561,8 @@
           "key": "echo/packs/en_intermediate/48-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 49,
@@ -1544,7 +1593,8 @@
           "key": "echo/packs/en_intermediate/49-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-walking"
     },
     {
       "index": 50,
@@ -1572,7 +1622,8 @@
           "key": "echo/packs/en_intermediate/50-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cut-of-meat"
     },
     {
       "index": 51,
@@ -1603,7 +1654,8 @@
           "key": "echo/packs/en_intermediate/51-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:reminder-ribbon"
     },
     {
       "index": 52,
@@ -1631,7 +1683,8 @@
           "key": "echo/packs/en_intermediate/52-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:1st-place-medal"
     },
     {
       "index": 53,
@@ -1659,7 +1712,8 @@
           "key": "echo/packs/en_intermediate/53-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pregnant-woman"
     },
     {
       "index": 54,
@@ -1691,7 +1745,8 @@
           "key": "echo/packs/en_intermediate/54-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:open-book"
     },
     {
       "index": 55,
@@ -1720,7 +1775,8 @@
           "key": "echo/packs/en_intermediate/55-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 56,
@@ -1748,7 +1804,8 @@
           "key": "echo/packs/en_intermediate/56-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:clapper-board"
     },
     {
       "index": 57,
@@ -1778,7 +1835,8 @@
           "key": "echo/packs/en_intermediate/57-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:flushed-face"
     },
     {
       "index": 58,
@@ -1806,7 +1864,8 @@
           "key": "echo/packs/en_intermediate/58-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tennis"
     },
     {
       "index": 59,
@@ -1834,7 +1893,8 @@
           "key": "echo/packs/en_intermediate/59-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:bed"
     },
     {
       "index": 60,
@@ -1865,7 +1925,8 @@
           "key": "echo/packs/en_intermediate/60-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:white-cane"
     },
     {
       "index": 61,
@@ -1893,7 +1954,8 @@
           "key": "echo/packs/en_intermediate/61-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:door"
     },
     {
       "index": 62,
@@ -1921,7 +1983,8 @@
           "key": "echo/packs/en_intermediate/62-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-standing"
     },
     {
       "index": 63,
@@ -1952,7 +2015,8 @@
           "key": "echo/packs/en_intermediate/63-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ear-with-hearing-aid"
     },
     {
       "index": 64,
@@ -1980,7 +2044,8 @@
           "key": "echo/packs/en_intermediate/64-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:timer-clock"
     },
     {
       "index": 65,
@@ -2009,7 +2074,8 @@
           "key": "echo/packs/en_intermediate/65-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 66,
@@ -2039,7 +2105,8 @@
           "key": "echo/packs/en_intermediate/66-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:broken-heart"
     },
     {
       "index": 67,
@@ -2067,7 +2134,8 @@
           "key": "echo/packs/en_intermediate/67-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:relieved-face"
     },
     {
       "index": 68,
@@ -2095,7 +2163,8 @@
           "key": "echo/packs/en_intermediate/68-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 69,
@@ -2129,7 +2198,8 @@
           "key": "echo/packs/en_intermediate/69-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:flushed-face"
     },
     {
       "index": 70,
@@ -2157,7 +2227,8 @@
           "key": "echo/packs/en_intermediate/70-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 71,
@@ -2185,7 +2256,8 @@
           "key": "echo/packs/en_intermediate/71-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 72,
@@ -2216,7 +2288,8 @@
           "key": "echo/packs/en_intermediate/72-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:rainbow-flag"
     },
     {
       "index": 73,
@@ -2244,7 +2317,8 @@
           "key": "echo/packs/en_intermediate/73-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:egg"
     },
     {
       "index": 74,
@@ -2273,7 +2347,8 @@
           "key": "echo/packs/en_intermediate/74-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-head-bandage"
     },
     {
       "index": 75,
@@ -2304,7 +2379,8 @@
           "key": "echo/packs/en_intermediate/75-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pregnant-woman"
     },
     {
       "index": 76,
@@ -2332,7 +2408,8 @@
           "key": "echo/packs/en_intermediate/76-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:castle"
     },
     {
       "index": 77,
@@ -2360,7 +2437,8 @@
           "key": "echo/packs/en_intermediate/77-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 78,
@@ -2390,7 +2468,8 @@
           "key": "echo/packs/en_intermediate/78-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-screaming-in-fear"
     },
     {
       "index": 79,
@@ -2418,7 +2497,8 @@
           "key": "echo/packs/en_intermediate/79-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 80,
@@ -2446,7 +2526,8 @@
           "key": "echo/packs/en_intermediate/80-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:leg"
     },
     {
       "index": 81,
@@ -2492,7 +2573,8 @@
           "key": "echo/packs/en_intermediate/81-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:no-pedestrians"
     },
     {
       "index": 82,
@@ -2520,7 +2602,8 @@
           "key": "echo/packs/en_intermediate/82-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tooth"
     },
     {
       "index": 83,
@@ -2548,7 +2631,8 @@
           "key": "echo/packs/en_intermediate/83-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 84,
@@ -2576,7 +2660,8 @@
           "key": "echo/packs/en_intermediate/84-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:busts-in-silhouette"
     },
     {
       "index": 85,
@@ -2620,7 +2705,8 @@
           "key": "echo/packs/en_intermediate/85-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-running"
     },
     {
       "index": 86,
@@ -2648,7 +2734,8 @@
           "key": "echo/packs/en_intermediate/86-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chart-increasing"
     },
     {
       "index": 87,
@@ -2676,7 +2763,8 @@
           "key": "echo/packs/en_intermediate/87-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 88,
@@ -2703,7 +2791,8 @@
           "key": "echo/packs/en_intermediate/88-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:paperclip"
     },
     {
       "index": 89,
@@ -2731,7 +2820,8 @@
           "key": "echo/packs/en_intermediate/89-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sneezing-face"
     },
     {
       "index": 90,
@@ -2759,7 +2849,8 @@
           "key": "echo/packs/en_intermediate/90-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 91,
@@ -2803,7 +2894,8 @@
           "key": "echo/packs/en_intermediate/91-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:waving-hand"
     },
     {
       "index": 92,
@@ -2832,7 +2924,8 @@
           "key": "echo/packs/en_intermediate/92-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:crossed-swords"
     },
     {
       "index": 93,
@@ -2860,7 +2953,8 @@
           "key": "echo/packs/en_intermediate/93-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 94,
@@ -2904,7 +2998,8 @@
           "key": "echo/packs/en_intermediate/94-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:flushed-face"
     },
     {
       "index": 95,
@@ -2932,7 +3027,8 @@
           "key": "echo/packs/en_intermediate/95-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shushing-face"
     },
     {
       "index": 96,
@@ -2961,7 +3057,8 @@
           "key": "echo/packs/en_intermediate/96-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:infinity"
     },
     {
       "index": 97,
@@ -3001,7 +3098,8 @@
           "key": "echo/packs/en_intermediate/97-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 98,
@@ -3029,7 +3127,8 @@
           "key": "echo/packs/en_intermediate/98-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:houses"
     },
     {
       "index": 99,
@@ -3057,7 +3156,8 @@
           "key": "echo/packs/en_intermediate/99-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shrimp"
     },
     {
       "index": 100,
@@ -3087,7 +3187,8 @@
           "key": "echo/packs/en_intermediate/100-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chequered-flag"
     },
     {
       "index": 101,
@@ -3115,7 +3216,8 @@
           "key": "echo/packs/en_intermediate/101-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:writing-hand"
     },
     {
       "index": 102,
@@ -3144,7 +3246,8 @@
           "key": "echo/packs/en_intermediate/102-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:potato"
     },
     {
       "index": 103,
@@ -3188,7 +3291,8 @@
           "key": "echo/packs/en_intermediate/103-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 104,
@@ -3217,7 +3321,8 @@
           "key": "echo/packs/en_intermediate/104-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tangerine"
     },
     {
       "index": 105,
@@ -3245,7 +3350,8 @@
           "key": "echo/packs/en_intermediate/105-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:test-tube"
     },
     {
       "index": 106,
@@ -3276,7 +3382,8 @@
           "key": "echo/packs/en_intermediate/106-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 107,
@@ -3304,7 +3411,8 @@
           "key": "echo/packs/en_intermediate/107-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chocolate-bar"
     },
     {
       "index": 108,
@@ -3332,7 +3440,8 @@
           "key": "echo/packs/en_intermediate/108-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shuffle-tracks-button"
     },
     {
       "index": 109,
@@ -3359,7 +3468,8 @@
           "key": "echo/packs/en_intermediate/109-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 110,
@@ -3387,7 +3497,8 @@
           "key": "echo/packs/en_intermediate/110-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:nauseated-face"
     },
     {
       "index": 111,
@@ -3415,7 +3526,8 @@
           "key": "echo/packs/en_intermediate/111-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:check-mark-button"
     },
     {
       "index": 112,
@@ -3460,7 +3572,8 @@
           "key": "echo/packs/en_intermediate/112-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:smiling-face-with-smiling-eyes"
     },
     {
       "index": 113,
@@ -3488,7 +3601,8 @@
           "key": "echo/packs/en_intermediate/113-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-bowing"
     },
     {
       "index": 114,
@@ -3516,7 +3630,8 @@
           "key": "echo/packs/en_intermediate/114-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chair"
     },
     {
       "index": 115,
@@ -3544,7 +3659,8 @@
           "key": "echo/packs/en_intermediate/115-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 116,
@@ -3587,7 +3703,8 @@
           "key": "echo/packs/en_intermediate/116-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 117,
@@ -3615,7 +3732,8 @@
           "key": "echo/packs/en_intermediate/117-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:prohibited"
     },
     {
       "index": 118,
@@ -3643,7 +3761,8 @@
           "key": "echo/packs/en_intermediate/118-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:stop-sign"
     },
     {
       "index": 119,
@@ -3675,7 +3794,8 @@
           "key": "echo/packs/en_intermediate/119-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:clipboard"
     },
     {
       "index": 120,
@@ -3704,7 +3824,8 @@
           "key": "echo/packs/en_intermediate/120-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:turtle"
     },
     {
       "index": 121,
@@ -3732,7 +3853,8 @@
           "key": "echo/packs/en_intermediate/121-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 122,
@@ -3763,7 +3885,8 @@
           "key": "echo/packs/en_intermediate/122-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thinking-face"
     },
     {
       "index": 123,
@@ -3791,7 +3914,8 @@
           "key": "echo/packs/en_intermediate/123-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:stop-sign"
     },
     {
       "index": 124,
@@ -3819,7 +3943,8 @@
           "key": "echo/packs/en_intermediate/124-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cross-mark"
     },
     {
       "index": 125,
@@ -3866,7 +3991,8 @@
           "key": "echo/packs/en_intermediate/125-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 126,
@@ -3894,7 +4020,8 @@
           "key": "echo/packs/en_intermediate/126-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:memo"
     },
     {
       "index": 127,
@@ -3922,7 +4049,8 @@
           "key": "echo/packs/en_intermediate/127-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sparkling-heart"
     },
     {
       "index": 128,
@@ -3953,7 +4081,8 @@
           "key": "echo/packs/en_intermediate/128-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 129,
@@ -3981,7 +4110,8 @@
           "key": "echo/packs/en_intermediate/129-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 130,
@@ -4009,7 +4139,8 @@
           "key": "echo/packs/en_intermediate/130-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-crossed-out-eyes"
     },
     {
       "index": 131,
@@ -4055,7 +4186,8 @@
           "key": "echo/packs/en_intermediate/131-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 132,
@@ -4083,7 +4215,8 @@
           "key": "echo/packs/en_intermediate/132-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:detective"
     },
     {
       "index": 133,
@@ -4111,7 +4244,8 @@
           "key": "echo/packs/en_intermediate/133-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 134,
@@ -4143,7 +4277,8 @@
           "key": "echo/packs/en_intermediate/134-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:repeat-button"
     },
     {
       "index": 135,
@@ -4171,7 +4306,8 @@
           "key": "echo/packs/en_intermediate/135-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:divide"
     },
     {
       "index": 136,
@@ -4204,7 +4340,8 @@
           "key": "echo/packs/en_intermediate/136-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fire-engine"
     },
     {
       "index": 137,
@@ -4232,7 +4369,8 @@
           "key": "echo/packs/en_intermediate/137-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-crossed-out-eyes"
     },
     {
       "index": 138,
@@ -4261,7 +4399,8 @@
           "key": "echo/packs/en_intermediate/138-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 139,
@@ -4290,7 +4429,8 @@
           "key": "echo/packs/en_intermediate/139-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:graduation-cap"
     },
     {
       "index": 140,
@@ -4322,7 +4462,8 @@
           "key": "echo/packs/en_intermediate/140-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 141,
@@ -4350,7 +4491,8 @@
           "key": "echo/packs/en_intermediate/141-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-tears-of-joy"
     },
     {
       "index": 142,
@@ -4378,7 +4520,8 @@
           "key": "echo/packs/en_intermediate/142-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:input-latin-letters"
     },
     {
       "index": 143,
@@ -4409,7 +4552,8 @@
           "key": "echo/packs/en_intermediate/143-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:compass"
     },
     {
       "index": 144,
@@ -4439,7 +4583,8 @@
           "key": "echo/packs/en_intermediate/144-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shushing-face"
     },
     {
       "index": 145,
@@ -4469,7 +4614,8 @@
           "key": "echo/packs/en_intermediate/145-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:repeat-button"
     },
     {
       "index": 146,
@@ -4514,7 +4660,8 @@
           "key": "echo/packs/en_intermediate/146-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:turtle"
     },
     {
       "index": 147,
@@ -4543,7 +4690,8 @@
           "key": "echo/packs/en_intermediate/147-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cross-mark"
     },
     {
       "index": 148,
@@ -4571,7 +4719,8 @@
           "key": "echo/packs/en_intermediate/148-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:passport-control"
     },
     {
       "index": 149,
@@ -4599,7 +4748,8 @@
           "key": "echo/packs/en_intermediate/149-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:dog"
     },
     {
       "index": 150,
@@ -4642,7 +4792,8 @@
           "key": "echo/packs/en_intermediate/150-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:police-officer"
     },
     {
       "index": 151,
@@ -4670,7 +4821,8 @@
           "key": "echo/packs/en_intermediate/151-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:beer-mug"
     },
     {
       "index": 152,
@@ -4698,7 +4850,8 @@
           "key": "echo/packs/en_intermediate/152-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 153,
@@ -4727,7 +4880,8 @@
           "key": "echo/packs/en_intermediate/153-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:reminder-ribbon"
     },
     {
       "index": 154,
@@ -4755,7 +4909,8 @@
           "key": "echo/packs/en_intermediate/154-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:lying-face"
     },
     {
       "index": 155,
@@ -4783,7 +4938,8 @@
           "key": "echo/packs/en_intermediate/155-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-shrugging"
     },
     {
       "index": 156,
@@ -4810,7 +4966,8 @@
           "key": "echo/packs/en_intermediate/156-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:wheelchair-symbol"
     },
     {
       "index": 157,
@@ -4838,7 +4995,8 @@
           "key": "echo/packs/en_intermediate/157-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:prohibited"
     },
     {
       "index": 158,
@@ -4866,7 +5024,8 @@
           "key": "echo/packs/en_intermediate/158-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-medical-mask"
     },
     {
       "index": 159,
@@ -4894,7 +5053,8 @@
           "key": "echo/packs/en_intermediate/159-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 160,
@@ -4922,7 +5082,8 @@
           "key": "echo/packs/en_intermediate/160-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-swimming"
     },
     {
       "index": 161,
@@ -4950,7 +5111,8 @@
           "key": "echo/packs/en_intermediate/161-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:microphone"
     },
     {
       "index": 162,
@@ -4981,7 +5143,8 @@
           "key": "echo/packs/en_intermediate/162-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 163,
@@ -5010,7 +5173,8 @@
           "key": "echo/packs/en_intermediate/163-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 164,
@@ -5038,7 +5202,8 @@
           "key": "echo/packs/en_intermediate/164-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:door"
     },
     {
       "index": 165,
@@ -5081,7 +5246,8 @@
           "key": "echo/packs/en_intermediate/165-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-vomiting"
     },
     {
       "index": 166,
@@ -5113,7 +5279,8 @@
           "key": "echo/packs/en_intermediate/166-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cold-face"
     },
     {
       "index": 167,
@@ -5141,7 +5308,8 @@
           "key": "echo/packs/en_intermediate/167-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:seedling"
     },
     {
       "index": 168,
@@ -5172,7 +5340,8 @@
           "key": "echo/packs/en_intermediate/168-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:latin-cross"
     },
     {
       "index": 169,
@@ -5201,7 +5370,8 @@
           "key": "echo/packs/en_intermediate/169-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:hourglass-not-done"
     },
     {
       "index": 170,
@@ -5229,7 +5399,8 @@
           "key": "echo/packs/en_intermediate/170-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:magnifying-glass-tilted-left"
     },
     {
       "index": 171,
@@ -5260,7 +5431,8 @@
           "key": "echo/packs/en_intermediate/171-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:green-salad"
     },
     {
       "index": 172,
@@ -5288,7 +5460,8 @@
           "key": "echo/packs/en_intermediate/172-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:eyes"
     },
     {
       "index": 173,
@@ -5316,7 +5489,8 @@
           "key": "echo/packs/en_intermediate/173-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 174,
@@ -5347,7 +5521,8 @@
           "key": "echo/packs/en_intermediate/174-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:prohibited"
     },
     {
       "index": 175,
@@ -5375,7 +5550,8 @@
           "key": "echo/packs/en_intermediate/175-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:handbag"
     },
     {
       "index": 176,
@@ -5416,7 +5592,8 @@
           "key": "echo/packs/en_intermediate/176-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 177,
@@ -5447,7 +5624,8 @@
           "key": "echo/packs/en_intermediate/177-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 178,
@@ -5475,7 +5653,8 @@
           "key": "echo/packs/en_intermediate/178-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 179,
@@ -5503,7 +5682,8 @@
           "key": "echo/packs/en_intermediate/179-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:lying-face"
     },
     {
       "index": 180,
@@ -5532,7 +5712,8 @@
           "key": "echo/packs/en_intermediate/180-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:closed-book"
     },
     {
       "index": 181,
@@ -5560,7 +5741,8 @@
           "key": "echo/packs/en_intermediate/181-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-heart"
     },
     {
       "index": 182,
@@ -5588,7 +5770,8 @@
           "key": "echo/packs/en_intermediate/182-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tear-off-calendar"
     },
     {
       "index": 183,
@@ -5619,7 +5802,8 @@
           "key": "echo/packs/en_intermediate/183-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:compass"
     },
     {
       "index": 184,
@@ -5650,7 +5834,8 @@
           "key": "echo/packs/en_intermediate/184-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thumbs-up"
     },
     {
       "index": 185,
@@ -5678,7 +5863,8 @@
           "key": "echo/packs/en_intermediate/185-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shortcake"
     },
     {
       "index": 186,
@@ -5706,7 +5892,8 @@
           "key": "echo/packs/en_intermediate/186-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 187,
@@ -5735,7 +5922,8 @@
           "key": "echo/packs/en_intermediate/187-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:relieved-face"
     },
     {
       "index": 188,
@@ -5763,7 +5951,8 @@
           "key": "echo/packs/en_intermediate/188-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:round-pushpin"
     },
     {
       "index": 189,
@@ -5791,7 +5980,8 @@
           "key": "echo/packs/en_intermediate/189-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:right-arrow"
     },
     {
       "index": 190,
@@ -5819,7 +6009,8 @@
           "key": "echo/packs/en_intermediate/190-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thought-balloon"
     },
     {
       "index": 191,
@@ -5848,7 +6039,8 @@
           "key": "echo/packs/en_intermediate/191-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-head-bandage"
     },
     {
       "index": 192,
@@ -5878,7 +6070,8 @@
           "key": "echo/packs/en_intermediate/192-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:backpack"
     },
     {
       "index": 193,
@@ -5906,7 +6099,8 @@
           "key": "echo/packs/en_intermediate/193-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-standing"
     },
     {
       "index": 194,
@@ -5935,7 +6129,8 @@
           "key": "echo/packs/en_intermediate/194-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 195,
@@ -5964,7 +6159,8 @@
           "key": "echo/packs/en_intermediate/195-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speaking-head"
     },
     {
       "index": 196,
@@ -5992,7 +6188,8 @@
           "key": "echo/packs/en_intermediate/196-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:sleeping-face"
     },
     {
       "index": 197,
@@ -6020,7 +6217,8 @@
           "key": "echo/packs/en_intermediate/197-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-cartwheeling"
     },
     {
       "index": 198,
@@ -6048,7 +6246,8 @@
           "key": "echo/packs/en_intermediate/198-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:adhesive-bandage"
     },
     {
       "index": 199,
@@ -6080,7 +6279,8 @@
           "key": "echo/packs/en_intermediate/199-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:thinking-face"
     },
     {
       "index": 200,
@@ -6108,7 +6308,8 @@
           "key": "echo/packs/en_intermediate/200-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:hot-beverage"
     },
     {
       "index": 201,
@@ -6138,7 +6339,8 @@
           "key": "echo/packs/en_intermediate/201-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:heavy-dollar-sign"
     },
     {
       "index": 202,
@@ -6168,7 +6370,8 @@
           "key": "echo/packs/en_intermediate/202-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-gesturing-no"
     },
     {
       "index": 203,
@@ -6197,7 +6400,8 @@
           "key": "echo/packs/en_intermediate/203-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:folded-hands"
     },
     {
       "index": 204,
@@ -6225,7 +6429,8 @@
           "key": "echo/packs/en_intermediate/204-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:guitar"
     },
     {
       "index": 205,
@@ -6253,7 +6458,8 @@
           "key": "echo/packs/en_intermediate/205-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 206,
@@ -6282,7 +6488,8 @@
           "key": "echo/packs/en_intermediate/206-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 207,
@@ -6313,7 +6520,8 @@
           "key": "echo/packs/en_intermediate/207-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:place-of-worship"
     },
     {
       "index": 208,
@@ -6341,7 +6549,8 @@
           "key": "echo/packs/en_intermediate/208-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:person-getting-haircut"
     },
     {
       "index": 209,
@@ -6369,7 +6578,8 @@
           "key": "echo/packs/en_intermediate/209-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:ok-hand"
     },
     {
       "index": 210,
@@ -6397,7 +6607,8 @@
           "key": "echo/packs/en_intermediate/210-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tennis"
     },
     {
       "index": 211,
@@ -6429,7 +6640,8 @@
           "key": "echo/packs/en_intermediate/211-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pig"
     },
     {
       "index": 212,
@@ -6458,7 +6670,8 @@
           "key": "echo/packs/en_intermediate/212-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:house"
     },
     {
       "index": 213,
@@ -6486,7 +6699,8 @@
           "key": "echo/packs/en_intermediate/213-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:camera"
     },
     {
       "index": 214,
@@ -6514,7 +6728,8 @@
           "key": "echo/packs/en_intermediate/214-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:bathtub"
     },
     {
       "index": 215,
@@ -6540,7 +6755,8 @@
           "key": "echo/packs/en_intermediate/215-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:dollar-banknote"
     },
     {
       "index": 216,
@@ -6569,7 +6785,8 @@
           "key": "echo/packs/en_intermediate/216-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:palm-up-hand"
     },
     {
       "index": 217,
@@ -6597,7 +6814,8 @@
           "key": "echo/packs/en_intermediate/217-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:woman-dancing"
     },
     {
       "index": 218,
@@ -6628,7 +6846,8 @@
           "key": "echo/packs/en_intermediate/218-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pill"
     },
     {
       "index": 219,
@@ -6656,7 +6875,8 @@
           "key": "echo/packs/en_intermediate/219-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 220,
@@ -6686,7 +6906,8 @@
           "key": "echo/packs/en_intermediate/220-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pill"
     },
     {
       "index": 221,
@@ -6714,7 +6935,8 @@
           "key": "echo/packs/en_intermediate/221-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:game-die"
     },
     {
       "index": 222,
@@ -6743,7 +6965,8 @@
           "key": "echo/packs/en_intermediate/222-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:handshake"
     },
     {
       "index": 223,
@@ -6771,7 +6994,8 @@
           "key": "echo/packs/en_intermediate/223-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 224,
@@ -6809,7 +7033,8 @@
           "key": "echo/packs/en_intermediate/224-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cloud-with-rain"
     },
     {
       "index": 225,
@@ -6838,7 +7063,8 @@
           "key": "echo/packs/en_intermediate/225-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:tangerine"
     },
     {
       "index": 226,
@@ -6869,7 +7095,8 @@
           "key": "echo/packs/en_intermediate/226-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:automobile"
     },
     {
       "index": 227,
@@ -6897,7 +7124,8 @@
           "key": "echo/packs/en_intermediate/227-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:microphone"
     },
     {
       "index": 228,
@@ -6925,7 +7153,8 @@
           "key": "echo/packs/en_intermediate/228-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 229,
@@ -6953,7 +7182,8 @@
           "key": "echo/packs/en_intermediate/229-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:bed"
     },
     {
       "index": 230,
@@ -6986,7 +7216,8 @@
           "key": "echo/packs/en_intermediate/230-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:bus"
     },
     {
       "index": 231,
@@ -7015,7 +7246,8 @@
           "key": "echo/packs/en_intermediate/231-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:radio"
     },
     {
       "index": 232,
@@ -7043,7 +7275,8 @@
           "key": "echo/packs/en_intermediate/232-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fearful-face"
     },
     {
       "index": 233,
@@ -7074,7 +7307,8 @@
           "key": "echo/packs/en_intermediate/233-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:train"
     },
     {
       "index": 234,
@@ -7103,7 +7337,8 @@
           "key": "echo/packs/en_intermediate/234-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:world-map"
     },
     {
       "index": 235,
@@ -7147,7 +7382,8 @@
           "key": "echo/packs/en_intermediate/235-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:kiss-mark"
     },
     {
       "index": 236,
@@ -7175,7 +7411,8 @@
           "key": "echo/packs/en_intermediate/236-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:books"
     },
     {
       "index": 237,
@@ -7204,7 +7441,8 @@
           "key": "echo/packs/en_intermediate/237-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:input-numbers"
     },
     {
       "index": 238,
@@ -7232,7 +7470,8 @@
           "key": "echo/packs/en_intermediate/238-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:wine-glass"
     },
     {
       "index": 239,
@@ -7259,7 +7498,8 @@
           "key": "echo/packs/en_intermediate/239-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:receipt"
     },
     {
       "index": 240,
@@ -7287,7 +7527,8 @@
           "key": "echo/packs/en_intermediate/240-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:red-question-mark"
     },
     {
       "index": 241,
@@ -7315,7 +7556,8 @@
           "key": "echo/packs/en_intermediate/241-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:briefcase"
     },
     {
       "index": 242,
@@ -7356,7 +7598,8 @@
           "key": "echo/packs/en_intermediate/242-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 243,
@@ -7385,7 +7628,8 @@
           "key": "echo/packs/en_intermediate/243-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:speech-balloon"
     },
     {
       "index": 244,
@@ -7413,7 +7657,8 @@
           "key": "echo/packs/en_intermediate/244-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:fork-and-knife-with-plate"
     },
     {
       "index": 245,
@@ -7445,7 +7690,8 @@
           "key": "echo/packs/en_intermediate/245-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shopping-cart"
     },
     {
       "index": 246,
@@ -7473,7 +7719,8 @@
           "key": "echo/packs/en_intermediate/246-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:family-man-boy"
     },
     {
       "index": 247,
@@ -7501,7 +7748,8 @@
           "key": "echo/packs/en_intermediate/247-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:necktie"
     },
     {
       "index": 248,
@@ -7529,7 +7777,8 @@
           "key": "echo/packs/en_intermediate/248-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:chair"
     },
     {
       "index": 249,
@@ -7558,7 +7807,8 @@
           "key": "echo/packs/en_intermediate/249-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:musical-note"
     },
     {
       "index": 250,
@@ -7586,7 +7836,8 @@
           "key": "echo/packs/en_intermediate/250-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:new-button"
     },
     {
       "index": 251,
@@ -7614,7 +7865,8 @@
           "key": "echo/packs/en_intermediate/251-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:trophy"
     },
     {
       "index": 252,
@@ -7645,7 +7897,8 @@
           "key": "echo/packs/en_intermediate/252-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:restroom"
     },
     {
       "index": 253,
@@ -7673,7 +7926,8 @@
           "key": "echo/packs/en_intermediate/253-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:luggage"
     },
     {
       "index": 254,
@@ -7701,7 +7955,8 @@
           "key": "echo/packs/en_intermediate/254-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:cat"
     },
     {
       "index": 255,
@@ -7732,7 +7987,8 @@
           "key": "echo/packs/en_intermediate/255-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:zipper-mouth-face"
     },
     {
       "index": 256,
@@ -7762,7 +8018,8 @@
           "key": "echo/packs/en_intermediate/256-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:pensive-face"
     },
     {
       "index": 257,
@@ -7790,7 +8047,8 @@
           "key": "echo/packs/en_intermediate/257-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:candy"
     },
     {
       "index": 258,
@@ -7818,7 +8076,8 @@
           "key": "echo/packs/en_intermediate/258-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:trophy"
     },
     {
       "index": 259,
@@ -7846,7 +8105,8 @@
           "key": "echo/packs/en_intermediate/259-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:television"
     },
     {
       "index": 260,
@@ -7874,7 +8134,8 @@
           "key": "echo/packs/en_intermediate/260-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:shuffle-tracks-button"
     },
     {
       "index": 261,
@@ -7907,7 +8168,8 @@
           "key": "echo/packs/en_intermediate/261-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:face-with-rolling-eyes"
     },
     {
       "index": 262,
@@ -7935,7 +8197,8 @@
           "key": "echo/packs/en_intermediate/262-am_michael.m4a",
           "voice": "am_michael"
         }
-      ]
+      ],
+      "image": "cue:euro-banknote"
     }
   ]
 }
