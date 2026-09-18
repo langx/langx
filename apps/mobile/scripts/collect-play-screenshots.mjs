@@ -15,6 +15,13 @@
  * `<locale>/images/<size>Screenshots/` and sorts by filename, so this only has
  * to copy and rename — the numeric prefix is what keeps the order.
  *
+ * The feature graphic comes across too, as `<locale>/images/featureGraphic.png`.
+ * It is the banner at the top of a Play listing and the one store asset that is
+ * not a screenshot, so it is a different slot in the API and a different flag on
+ * the lane — but it is drawn from the same set, in the same eight languages, and
+ * a listing that got new screenshots and kept the old banner would show two
+ * different versions of the app on one page.
+ *
  *   node apps/mobile/scripts/collect-play-screenshots.mjs
  *   cd apps/mobile && fastlane play
  */
@@ -92,9 +99,11 @@ const SIZES = {
   '10tablet': 'tenInchScreenshots',
 }
 
-// Only the screenshots are rewritten here. Leaving the rest of
-// `metadata/android` absent is what keeps supply from touching the listing
-// copy, the feature graphic or the icon — see the `play` lane.
+// Only the images are rewritten here: the screenshots and the feature graphic.
+// Leaving the rest of `metadata/android` absent is what keeps supply from
+// touching the listing copy or the icon — supply walks its own list of image
+// types and skips every one with no file on disk, so the icon stays as it is
+// without a flag saying so. See the `play` lane.
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0
 for (const [ours, play] of Object.entries(LOCALES)) {
@@ -118,7 +127,18 @@ for (const [ours, play] of Object.entries(LOCALES)) {
       copied++
     }
   }
-  console.log(`${play}: ${Object.keys(SIZES).length * 8} screenshots`)
+
+  // supply reads one file per image type, named for the type itself.
+  const banner = within(BRANDING, '2.x', ours, 'android', 'feature-graphic.png')
+  if (!fs.existsSync(banner)) {
+    console.error(`Missing ${banner}`)
+    process.exit(1)
+  }
+  const images = within(OUT, play, 'images')
+  fs.mkdirSync(images, { recursive: true })
+  fs.copyFileSync(banner, within(images, 'featureGraphic.png'))
+  copied++
+  console.log(`${play}: ${Object.keys(SIZES).length * 8} screenshots, 1 feature graphic`)
 }
 console.log(`\n${copied} files in ${OUT}`)
 console.log('Next: cd apps/mobile && fastlane android play')

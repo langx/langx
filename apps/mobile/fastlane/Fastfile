@@ -54,22 +54,22 @@ end
 # There is no by-hand fallback for this one. The Play Console keeps no
 # `<input type=file>` in its page, so "Add assets" opens the operating
 # system's file picker and nothing but a person can drive it — 192 times,
-# across eight languages and three device sizes.
+# across eight languages and three device sizes, plus a banner each.
 #
 # The key is the `eas-submit@` service account, the one EAS already submits
 # Android builds with, so it has the Android Publisher access supply needs.
 # Like the .p8 above, it stays where it is and fastlane reads it.
 platform :android do
-  desc 'Put the Play screenshots up, in every language, in order'
+  desc 'Put the Play screenshots and the feature graphic up, in every language, in order'
   # `fastlane android play submit:true` sends the listing for review as well as
   # uploading. Without it the images land as pending changes and a person
   # presses Send for review, which is the default for the same reason the iOS
   # lane does not submit.
   lane :play do |options|
-    # Screenshots only. The copy, the feature graphic, the icon and the binary
-    # are all skipped, and `collect-play-screenshots.mjs` writes nothing but
-    # images — so there is no metadata on disk for supply to send even if one
-    # of these flags were wrong.
+    # Pictures only. The copy and the binary are skipped, and
+    # `collect-play-screenshots.mjs` writes nothing but images — so there is no
+    # metadata on disk for supply to send even if one of these flags were
+    # wrong.
     #
     # Unlike the App Store, this really is images-only: a Play listing is
     # reviewed on its own, without the binary riding along.
@@ -81,9 +81,17 @@ platform :android do
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_changelogs: true,
-      # `images` is the icon and the feature graphic; `screenshots` is the set
-      # this lane exists for. Two separate flags.
-      skip_upload_images: true,
+      # Two separate flags for two separate slots: `screenshots` is the set of
+      # eight this lane exists for, `images` is the single-file types — the
+      # feature graphic, the icon, the TV banner. Both go up, because both are
+      # drawn from the same set in `branding/2.x` and a listing showing new
+      # screenshots above an old banner shows two versions of the app at once.
+      #
+      # Only the feature graphic actually moves: supply walks its list of image
+      # types and skips each one with no file on disk, and the collect script
+      # writes `featureGraphic.png` and nothing else. The icon on the listing is
+      # not touched.
+      skip_upload_images: false,
       skip_upload_screenshots: false,
       changes_not_sent_for_review: !options[:submit],
     )
