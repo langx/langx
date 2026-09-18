@@ -30,9 +30,16 @@ const EMAIL = process.env.PROMO_EMAIL ?? 'test_george@test.langx.invalid'
 const PASSWORD = process.env.PROMO_PASSWORD ?? 'TestUser!2026'
 /** Display name as Discover prints it; the capture clicks this. */
 const PARTNER = process.env.PROMO_PARTNER ?? 'Katya'
-/** The same person's handle, used to warm their profile route and to sign in. */
-const PARTNER_HANDLE = process.env.PROMO_PARTNER_HANDLE ?? 'test_katya'
-const PARTNER_EMAIL = process.env.PROMO_PARTNER_EMAIL ?? `${PARTNER_HANDLE}@test.langx.invalid`
+/**
+ * The same person's handle, used to warm their profile route.
+ *
+ * The camera handle, not the seeded one: `seed-promo-chat.ts` renames the cast
+ * so a profile screen does not print `@test_katya` at the viewer. The email
+ * address is unchanged, which is why `PROMO_PARTNER_EMAIL` below still builds
+ * from the seeded name.
+ */
+const PARTNER_HANDLE = process.env.PROMO_PARTNER_HANDLE ?? 'katyadraws'
+const PARTNER_EMAIL = process.env.PROMO_PARTNER_EMAIL ?? 'test_katya@test.langx.invalid'
 /** How the viewer's row is labelled in the partner's chat list. */
 const VIEWER_NAME = process.env.PROMO_VIEWER_NAME ?? 'George'
 

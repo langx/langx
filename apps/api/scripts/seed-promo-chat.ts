@@ -30,6 +30,7 @@ import { COLLECTIONS } from '../src/db/collections'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv, type Env } from '../src/env'
 import { renderCard, type CardNode } from '../src/modules/cards/render'
+import { changeHandle } from '../src/modules/profiles/profiles'
 import { sendMediaMessage, sendCorrection, sendTextMessage } from '../src/modules/chat/messages'
 import { startConversation } from '../src/modules/chat/conversations'
 import { createStorageProvider } from '../src/storage/createStorageProvider'
@@ -43,6 +44,34 @@ const PARTNER = 'test_katya'
 
 /** Who gets a boost, so the strip has cards in it rather than one card. */
 const BOOSTED = ['test_marina', 'test_anna', 'test_yuki', 'test_mateo']
+
+/**
+ * What the fixture cast is called on camera.
+ *
+ * The seeded handles are `test_…`, which is right everywhere except in front
+ * of a lens: a profile screen prints the handle under the name, so two seconds
+ * of any promo video said "@test_katya" and the whole thing read as a staging
+ * build. The email addresses are untouched — they are what `emailFor` builds,
+ * what every other fixture script looks accounts up by, and what
+ * `purgeTestAccounts` matches — so only the visible half changes.
+ *
+ * Run through `changeHandle` rather than written straight onto the profile:
+ * uniqueness, the reserved list and the old-handle check are the rules about
+ * names, and a fixture that goes around them is a fixture that can leave the
+ * database in a state the app cannot produce.
+ */
+const CAMERA_HANDLES: Record<string, string> = {
+  test_george: 'georgecooks',
+  test_katya: 'katyadraws',
+  test_marina: 'marinadesigns',
+  test_anna: 'annareads',
+  test_dmitri: 'dmitricodes',
+  test_pavel: 'pavelteaches',
+  test_olga: 'olgacares',
+  test_mateo: 'mateoplays',
+  test_elif: 'elifdesigns',
+  test_yuki: 'yukitranslates',
+}
 
 interface Turn {
   from: Side
@@ -105,6 +134,32 @@ async function userId(db: Db, handle: string): Promise<string> {
   const user = await db.collection(COLLECTIONS.user).findOne({ email: emailFor(handle) })
   if (!user) throw new Error(`no fixture account for @${handle} — run seed-test-users.ts first`)
   return String(user._id)
+}
+
+/**
+ * Give each fixture account the handle it wears on camera. Idempotent: an
+ * account already carrying its camera handle is left alone, which is what
+ * makes re-running this script safe under the change cooldown.
+ */
+async function renameForCamera(db: Db): Promise<number> {
+  let renamed = 0
+  for (const [seeded, wanted] of Object.entries(CAMERA_HANDLES)) {
+    const user = await db.collection(COLLECTIONS.user).findOne({ email: emailFor(seeded) })
+    if (!user) continue
+    const id = String(user._id)
+    const profile = await db.collection(COLLECTIONS.profiles).findOne({ _id: id as never })
+    const current = (profile as { handle?: string } | null)?.handle
+    if (!profile || current === wanted) continue
+    try {
+      await changeHandle(db, id, null, { handle: wanted })
+      renamed += 1
+    } catch (caught) {
+      // A taken name or a running cooldown is worth saying out loud and not
+      // worth stopping for: the rest of the cast can still be renamed.
+      console.log(`  @${current ?? seeded} -> @${wanted} refused: ${(caught as Error).message}`)
+    }
+  }
+  return renamed
 }
 
 /** Clear the pair's thread, so re-running this script rebuilds rather than appends. */
@@ -328,7 +383,11 @@ async function seed(db: Db, env: Env): Promise<void> {
   }
 
   const boosted = await boost(db, BOOSTED)
-  console.log(`${SCRIPT.length} messages (${media} with media), ${boosted} profile(s) boosted`)
+  const renamed = await renameForCamera(db)
+  console.log(
+    `${SCRIPT.length} messages (${media} with media), ${boosted} profile(s) boosted, ` +
+      `${renamed} handle(s) renamed for camera`,
+  )
   if (!canUpload)
     console.log('storage not configured — the voice note and the picture were skipped')
 }

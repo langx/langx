@@ -78,16 +78,16 @@ the store screenshots.
 
 ## Knobs
 
-| Variable                         | Default                           |                                             |
-| -------------------------------- | --------------------------------- | ------------------------------------------- |
-| `PROMO_PLAYWRIGHT`               | `playwright`                      | module to import; an absolute path works    |
-| `PROMO_CHANNEL`                  | `chrome`                          | `chromium` uses Playwright's own build      |
-| `PROMO_PARTNER`                  | `Katya`                           | display name the capture clicks in Discover |
-| `PROMO_PARTNER_HANDLE`           | `test_katya`                      | the same person, for warming and signing in |
-| `PROMO_VIEWER_NAME`              | `George`                          | the row the partner clicks in their chats   |
-| `PROMO_MUSIC`                    | _(synthesised)_                   | a real track to use instead of the bed      |
-| `PROMO_EMAIL` / `PROMO_PASSWORD` | `test_george@…` / `TestUser!2026` | who is browsing                             |
-| `PROMO_WEB` / `PROMO_API`        | `:8081` / `:4000`                 | the stack                                   |
+| Variable                         | Default                           |                                              |
+| -------------------------------- | --------------------------------- | -------------------------------------------- |
+| `PROMO_PLAYWRIGHT`               | `playwright`                      | module to import; an absolute path works     |
+| `PROMO_CHANNEL`                  | `chrome`                          | `chromium` uses Playwright's own build       |
+| `PROMO_PARTNER`                  | `Katya`                           | display name the capture clicks in Discover  |
+| `PROMO_PARTNER_HANDLE`           | `katyadraws`                      | the camera handle, for warming their profile |
+| `PROMO_VIEWER_NAME`              | `George`                          | the row the partner clicks in their chats    |
+| `PROMO_MUSIC`                    | _(synthesised)_                   | a real track to use instead of the bed       |
+| `PROMO_EMAIL` / `PROMO_PASSWORD` | `test_george@…` / `TestUser!2026` | who is browsing                              |
+| `PROMO_WEB` / `PROMO_API`        | `:8081` / `:4000`                 | the stack                                    |
 
 Copy — the hook, the captions, the message that gets typed — is in
 `captions.json`, keyed by locale. Changing a hook needs no new recording: the
@@ -136,6 +136,13 @@ either.
 `PROMO_MUSIC_STYLE` lays one under the cut, but sine waves do not sound like
 music under an advert — it is there to hear a cut's pacing, not to ship. For a
 real file, `PROMO_MUSIC=/path/to/track.mp3`.
+
+**The cast is renamed for the camera.** A profile screen prints the handle
+under the name, so `seed-promo-chat.ts` moves every fixture account off
+`test_…` and onto something a viewer can see — through `changeHandle`, so
+uniqueness and the reserved list still apply. Only the handle moves: the
+`test.langx.invalid` addresses stay, which is what every other fixture script
+looks accounts up by and what `purgeTestAccounts` matches.
 
 **Selectors are text.** There are no testIDs in the app, so a copy change in
 `src/i18n/messages/en.ts` breaks the capture. It fails loudly rather than
