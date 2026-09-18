@@ -614,6 +614,21 @@ export const en = {
      * with a person wishing them well rather than a fourth thing to do.
      */
     welcomeClosing: 'Enjoy your practice — and good luck with it. 💛',
+    /**
+     * For somebody who was on v1, in place of `welcome`.
+     *
+     * Deliberately says nothing about tokens carried over or a frozen streak:
+     * a `precreatedFromV1` row with nothing staged behind it carried neither,
+     * and one message has to be true for both halves of that cohort. What is
+     * true for all of them is the badge.
+     */
+    welcomeBack:
+      'Hey — welcome back. 👋 You were here for the first LangX, and there’s a badge on your profile that says so. Only people who came from v1 have it, and nobody new ever will.',
+    welcomeBackWhatsNew:
+      'A lot has moved. Corrections are their own thing now, you earn tokens for helping people, and Discover looks for someone learning your language who speaks the one you’re after. Same idea, with room to do it properly this time — have a wander.',
+    /** The sign-off, last and after a blank line, as `welcomeClosing` is. */
+    welcomeBackClosing:
+      'This is where news about LangX lands, so it’s worth keeping an eye on. If something’s missing or broken, Settings → About → Feedback comes straight to us. Good to have you back. 💛',
     assistantOffline:
       'I can’t answer messages right now. If it can wait, try again later — if it can’t, write to {email} and a person will read it.',
     /**

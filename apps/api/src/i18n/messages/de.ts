@@ -541,6 +541,12 @@ export const de: Localized<ServerMessages> = {
     welcomeRate:
       'Noch eine Kleinigkeit, wenn du magst: Eine Bewertung für LangX im {store} hilft wirklich dabei, dass uns Leute finden. Ganz ohne Druck.',
     welcomeClosing: 'Viel Freude beim Üben — und viel Erfolg dabei. 💛',
+    welcomeBack:
+      'Hey — schön, dass du wieder da bist. 👋 Du warst beim ersten LangX dabei, und auf deinem Profil steht jetzt ein Abzeichen, das genau das sagt. Nur wer aus v1 kommt, hat es, und niemand Neues wird es je bekommen.',
+    welcomeBackWhatsNew:
+      'Es hat sich viel getan. Korrekturen sind inzwischen eine eigene Sache, für das Helfen bekommst du Tokens, und Entdecken sucht jemanden, der deine Sprache lernt und die spricht, die du willst. Dieselbe Idee, diesmal mit Platz, sie richtig umzusetzen — schau dich in Ruhe um.',
+    welcomeBackClosing:
+      'Hier landen die Neuigkeiten zu LangX, es lohnt sich also, ab und zu reinzuschauen. Wenn etwas fehlt oder kaputt ist: Einstellungen → Info → Feedback kommt direkt bei uns an. Schön, dich wieder hier zu haben. 💛',
     assistantOffline:
       'Ich kann gerade nicht auf Nachrichten antworten. Wenn es Zeit hat, versuch es später noch einmal — wenn nicht, schreib an {email}, dort liest ein Mensch mit.',
     assistantLimit:

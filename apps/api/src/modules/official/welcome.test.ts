@@ -7,6 +7,7 @@ import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import { loadEnv } from '../../env'
+import { authId } from '../../lib/authId'
 import { createRevenueCatClientFromEnv } from '../billing/createRevenueCatClient'
 import { createStorageProvider } from '../../storage/createStorageProvider'
 import { createTranslationProvider } from '../../translation/createTranslationProvider'
@@ -144,6 +145,48 @@ describe('a new account meets @langx', () => {
     const items = list.json<{ items: { participants: string[] }[] }>().items
     expect(items).toHaveLength(1)
     expect(items[0]?.participants).toContain(langxId)
+  })
+
+  /**
+   * Somebody who was on v1 gets the other message, and only the other one.
+   *
+   * Which of the two is decided by `cameFromV1` — `user.precreatedFromV1` —
+   * and not by `profile.restoredFromV1`, the field that used to gate this.
+   * `restoredFromV1` is only written where a v1 profile was *staged*, and the
+   * pre-creation script also opened rows for v1 accounts with nothing to
+   * stage: those people were sent the *new user's* welcome, having been on
+   * LangX for years.
+   *
+   * The stamp goes on before onboarding because that is the order in life —
+   * the script wrote the row, its owner signs in later.
+   */
+  it('greets a returning v1 account with the welcome back instead', async () => {
+    const user = await signUpAndSignIn(app, emailSender, {
+      email: 'welcome-back@example.com',
+      password: PASSWORD,
+      name: 'backagain',
+    })
+    await handle.db
+      .collection(COLLECTIONS.user)
+      .updateOne(
+        { _id: authId(user.userId) },
+        { $set: { precreatedFromV1: { at: new Date(), legacyUserId: 'v1-id' } } },
+      )
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboarding('backagain', 'tr'),
+    })
+    expect(response.statusCode, response.body).toBe(201)
+    await settle()
+
+    const said = await messagesFrom(officialIds().get('langx')!)
+    const back = said.filter((m) => m.clientId === `welcomeback:${user.userId}`)
+    expect(back).toHaveLength(1)
+    expect(back[0]?.body).toContain('tekrar hoş geldin')
+    // Not both. One person, one hello.
+    expect(said.filter((m) => m.clientId === `welcome:${user.userId}`)).toHaveLength(0)
   })
 
   /**
