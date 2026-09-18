@@ -83,6 +83,12 @@ export interface MessageBubbleProps {
   /** Keeps the sentence. `message.echoed` says whether there is one already. */
   onEcho: (message: MessageDto) => void
   onReply: (message: MessageDto) => void
+  /**
+   * Whether replying is on the table at all. False in a channel, where a
+   * swipe that springs back and does nothing is the gesture equivalent of the
+   * Reply row the menu no longer draws.
+   */
+  canReply: boolean
   /** Answers the request on somebody else's message — correct it, or say it. */
   onAnswerAsk: (message: MessageDto, ask: MessageAsk) => void
   /** Accepts, declines or withdraws a proposed time. */
@@ -134,6 +140,7 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   onEcho,
   onReply,
+  canReply,
   onAnswerAsk,
   onRespondMeeting,
   onAnswerQuiz,
@@ -194,7 +201,7 @@ export const MessageBubble = memo(function MessageBubble({
    */
   const translateX = useSharedValue(0)
   const pan = Gesture.Pan()
-    .enabled(swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
+    .enabled(canReply && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
     /*
      * The same two thresholds `shouldCaptureSwipe` applied, now decided
      * natively — which is what stops the drag from competing with the list's

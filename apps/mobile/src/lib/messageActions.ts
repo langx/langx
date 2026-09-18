@@ -67,6 +67,19 @@ export interface MessageActionContext {
   /** The reader already keeps an Echo card for this message. */
   echoed: boolean
   /**
+   * The thread is a channel: `@langx` announces, and there is nothing at the
+   * other end to read anything sent back. The screen draws no composer for
+   * one, and this is the same fact reaching the menu — every row that would
+   * *send* something is off with it.
+   *
+   * Sending is the whole of the rule. A translation, a copy, an Echo card and
+   * a deletion are things the reader does to their own copy, and an
+   * announcement is exactly the kind of text worth keeping. Report goes to
+   * moderation rather than to the account, so it stays too: a channel is
+   * still where an announcement nobody should have sent would appear.
+   */
+  channel?: boolean
+  /**
    * Passed in rather than reached for: this stays a pure function the tests
    * call directly, and the labels are the reader's language rather than the
    * module's import-time language.
@@ -89,17 +102,25 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
   // Every message can be answered, including a captionless voice note — the
   // quote carries a label for those rather than a body. First in the list
   // because on web it is the only way in: the swipe gesture is native-only.
-  actions.push({
-    id: 'reply',
-    label: t('messageActions.reply'),
-    icon: 'arrow-undo-outline',
-    page: 'primary',
-  })
+  //
+  // Except in a channel, where the composer it would fill is not drawn: the
+  // row used to open a reply that had nowhere to be written and no way to be
+  // sent, which reads as a broken tap rather than as a rule.
+  if (!context.channel) {
+    actions.push({
+      id: 'reply',
+      label: t('messageActions.reply'),
+      icon: 'arrow-undo-outline',
+      page: 'primary',
+    })
+  }
 
   // The teaching gesture, and the highest-earning action in the app. Only on
   // the other person's text: there is nothing to correct in an image, and
-  // correcting a correction is a thread nobody wants.
-  if (!context.mine && context.type === 'text') {
+  // correcting a correction is a thread nobody wants. Never in a channel — a
+  // correction is a message, so the server refuses it, and nobody is learning
+  // a language behind an announcement anyway.
+  if (!context.mine && !context.channel && context.type === 'text') {
     actions.push({
       id: 'correct',
       label: t('messageActions.correct'),
@@ -253,8 +274,12 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    * `hasBody` also removes the tombstone without a `deleted` check: a
    * withdrawn message has an empty `body`, and a card quoting "This message
    * was deleted" is the one thing this must not offer.
+   *
+   * Not in a channel either: the card this opens is *sent* to the other
+   * person as a phrase message, so the form would fill in and then be
+   * refused on save.
    */
-  if (!context.mine && context.hasBody && context.type !== 'phrase') {
+  if (!context.mine && !context.channel && context.hasBody && context.type !== 'phrase') {
     actions.push({
       id: 'phrase',
       label: t('messageActions.savePhrase'),

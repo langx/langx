@@ -262,6 +262,8 @@ export default function NewChatScreen() {
                 onLongPress={ignore}
                 onEcho={ignore}
                 onReply={ignore}
+                // Nothing to swipe towards: the stand-in's handlers are all inert.
+                canReply={false}
                 onAnswerAsk={ignore}
                 onRespondMeeting={ignore}
                 onAnswerQuiz={ignore}

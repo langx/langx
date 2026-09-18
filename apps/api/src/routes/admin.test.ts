@@ -9,6 +9,7 @@ import {
   type AppConfigResponse,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
@@ -22,6 +23,7 @@ import { withJobHealth, type JobHealth } from '../modules/admin/jobHealth'
 import { verifyBountyToken } from '../email/bountyToken'
 import { signReviewToken } from '../email/reviewToken'
 import { forgetAdminStats, type AdminStats } from '../modules/admin/stats'
+import type { Message } from '../modules/chat/conversations'
 import type { Profile } from '../modules/profiles/profiles'
 import { ensureOfficialAccounts } from '../modules/official/accounts'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -716,6 +718,26 @@ describe('the operator panel', () => {
           clientId: 'reply-attempt',
         }),
       ).rejects.toThrow(/does not take messages/i)
+
+      /*
+       * And a reaction is not the way around it. It is addressed to whoever
+       * wrote the bubble exactly as a reply is, so the one account that reads
+       * nothing refuses it too — otherwise the emoji strip is the one thing on
+       * the screen that still points at a process.
+       */
+      const messages = await handle.db
+        .collection<Message>(COLLECTIONS.messages)
+        .find({ conversationId: new ObjectId(conversationId) })
+        .toArray()
+      const announcement = messages.find((message) => message.body.includes('was received'))
+      const { reactToMessage } = await import('../modules/chat/mutations')
+      await expect(
+        reactToMessage(handle.db, recipient.userId, {
+          conversationId,
+          messageId: String(announcement?._id),
+          emoji: '👍',
+        }),
+      ).rejects.toThrow(/does not take reactions/i)
     })
   })
 
