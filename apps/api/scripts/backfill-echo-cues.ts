@@ -9,6 +9,21 @@
  * So: one pass, matching each card back to the pack item its `sourceKey` names,
  * and writing the picture the item now carries.
  *
+ * **It checks that the item still holds the phrase the card was made from.**
+ * A card's `sourceKey` is `pack:<packId>#<index>`, and the seed is idempotent
+ * by that id — which keeps a card pointing at its own item for as long as the
+ * content keeps its order. Reorder the file once and every later index means a
+ * different phrase, while the cards, which carry their own copy of the text,
+ * go on reading correctly. Nothing notices, because nothing downstream reads
+ * the item again.
+ *
+ * This does, and it is the one place where it matters: copying a picture over
+ * on the strength of a stale index puts a drawing of crossed arms above "I
+ * know". So the item's `text` is compared to the card's `front`, and a card
+ * that disagrees is counted and skipped rather than decorated. Where such a
+ * card already carries a pack picture, the picture is *removed* — it was
+ * copied from the wrong item, and no cue is better than a misleading one.
+ *
  * **It never touches a picture that is somebody's own.** `origin: 'self'` is a
  * file they attached and `origin: 'chat'` is the picture the sentence arrived
  * with — a better cue than any of ours, and not ours to replace. Only two
@@ -42,9 +57,9 @@ async function main(): Promise<void> {
      * of under three hundred — and is what lets the card pass below be one
      * cursor rather than a lookup per card.
      */
-    const cueOf = new Map<string, string>()
+    const cueOf = new Map<string, { url: string; text: string }>()
     for await (const item of items.find({ image: { $exists: true } })) {
-      if (item.image) cueOf.set(item._id, item.image)
+      if (item.image) cueOf.set(item._id, { url: item.image, text: item.text })
     }
     console.log(`${cueOf.size} pack item(s) carry a cue.`)
     if (cueOf.size === 0) {
@@ -55,7 +70,8 @@ async function main(): Promise<void> {
     let empty = 0
     let stale = 0
     let missing = 0
-    const writes: { id: EchoCardDoc['_id']; image: EchoImage }[] = []
+    const writes: { id: EchoCardDoc['_id']; image: EchoImage | null }[] = []
+    const drifted: string[] = []
     const query = {
       sourceKey: /^pack:/,
       $or: [{ image: { $exists: false } }, { 'image.origin': 'pack' }],
@@ -68,14 +84,31 @@ async function main(): Promise<void> {
         missing += 1
         continue
       }
-      if (card.image?.url === cue) continue
+      if (cue.text !== card.front) {
+        // The index no longer names this phrase — see the header. Take the
+        // picture away if one was copied from the wrong item, and never add.
+        drifted.push(`"${card.front}" → ${card.sourceKey}, now "${cue.text}"`)
+        if (card.image) writes.push({ id: card._id, image: null })
+        continue
+      }
+      if (card.image?.url === cue.url) continue
       if (card.image) stale += 1
       else empty += 1
-      writes.push({ id: card._id, image: { url: cue, width: 400, height: 300, origin: 'pack' } })
+      writes.push({
+        id: card._id,
+        image: { url: cue.url, width: 400, height: 300, origin: 'pack' },
+      })
     }
 
-    console.log(`${writes.length} card(s) to write: ${empty} with no picture, ${stale} stale.`)
+    const removals = writes.filter((write) => write.image === null).length
+    console.log(
+      `${writes.length} card(s) to write: ${empty} with no picture, ${stale} stale, ${removals} wrong.`,
+    )
     if (missing > 0) console.log(`  ${missing} point at an item the packs no longer have.`)
+    if (drifted.length > 0) {
+      console.log(`  ${drifted.length} card(s) point at an index that has since moved:`)
+      for (const line of drifted.slice(0, 5)) console.log(`    ${line}`)
+    }
     if (!apply) {
       console.log('Dry run. Pass --apply to write.')
       return
@@ -88,7 +121,12 @@ async function main(): Promise<void> {
       const batch = writes.slice(at, at + CHUNK)
       const result = await cards.bulkWrite(
         batch.map((write) => ({
-          updateOne: { filter: { _id: write.id }, update: { $set: { image: write.image } } },
+          updateOne: {
+            filter: { _id: write.id },
+            update: write.image
+              ? { $set: { image: write.image } }
+              : { $unset: { image: '' as const } },
+          },
         })),
       )
       written += result.modifiedCount
