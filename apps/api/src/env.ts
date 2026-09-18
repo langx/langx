@@ -115,6 +115,25 @@ const envSchema = z.object({
    */
   RESEND_WEBHOOK_SECRET: emptyToUndefined(z.string().optional()),
   /**
+   * The four values behind "comment LANGX and I'll DM you the link"
+   * (`POST /webhooks/instagram`).
+   *
+   * `IG_APP_SECRET` signs the webhook — Meta's `X-Hub-Signature-256` is an
+   * HMAC over the raw body with it. `IG_VERIFY_TOKEN` is ours to invent and
+   * is only echoed back during the subscription handshake. `IG_PAGE_TOKEN` is
+   * the long-lived token that sends the replies, and `IG_ACCOUNT_ID` is the
+   * professional account those replies come from — also what keeps the flow
+   * from answering its own comments.
+   *
+   * All optional, and the feature is nothing but an optional service: unset,
+   * both routes answer that they are not configured and everything else boots
+   * and runs untouched.
+   */
+  IG_APP_SECRET: emptyToUndefined(z.string().optional()),
+  IG_VERIFY_TOKEN: emptyToUndefined(z.string().optional()),
+  IG_PAGE_TOKEN: emptyToUndefined(z.string().optional()),
+  IG_ACCOUNT_ID: emptyToUndefined(z.string().optional()),
+  /**
    * The Reply-To on campaign mail, for a deployment sending from a
    * `no-reply@`: campaigns say "reply to this email, it reaches a human" and
    * that needs somewhere to go. langx.io leaves it unset, because
