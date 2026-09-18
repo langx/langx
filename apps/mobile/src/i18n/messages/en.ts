@@ -193,6 +193,7 @@ export const en = {
     reply: 'Reply',
     correct: 'Correct',
     translate: 'Translate',
+    speak: 'Read aloud',
     copy: 'Copy',
     delete: 'Delete',
     edit: 'Edit',
@@ -1156,6 +1157,13 @@ export const en = {
     mediaLocked: {
       one: 'Photos and voice notes unlock after one more message from them.',
       other: 'Photos and voice notes unlock after {count} more messages from them.',
+    },
+    speaking: 'Reading aloud…',
+    speakUnavailable: 'Couldn’t read that aloud',
+    speakFailed: 'Try again in a moment.',
+    speakLimit: {
+      one: 'You’ve used today’s {count} reading. It resets in 24 hours.',
+      other: 'You’ve used today’s {count} readings. They reset in 24 hours.',
     },
     copied: 'Copied',
     couldNotSend: 'Could not send',

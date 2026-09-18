@@ -166,6 +166,7 @@ export const fr: Localized<EnMessages> = {
     reply: 'Répondre',
     correct: 'Corriger',
     translate: 'Traduire',
+    speak: 'Lire à voix haute',
     copy: 'Copier',
     delete: 'Supprimer',
     edit: 'Modifier',
@@ -1037,6 +1038,13 @@ export const fr: Localized<EnMessages> = {
       one: 'Les photos, vidéos et notes vocales se débloquent après un message de plus de l’autre personne.',
       other:
         'Les photos, vidéos et notes vocales se débloquent après {count} messages de plus de l’autre personne.',
+    },
+    speaking: 'Lecture à voix haute…',
+    speakUnavailable: 'Impossible de lire ce message',
+    speakFailed: 'Réessaie dans un instant.',
+    speakLimit: {
+      one: 'Tu as utilisé la {count} lecture du jour. Elle se renouvelle sous 24 heures.',
+      other: 'Tu as utilisé les {count} lectures du jour. Elles se renouvellent sous 24 heures.',
     },
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',

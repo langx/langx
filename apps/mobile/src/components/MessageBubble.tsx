@@ -59,6 +59,8 @@ export interface MessageBubbleProps {
   partnerName: string
   translation?: string | undefined
   translating: boolean
+  /** A reading of this bubble is being made; the machine may be cold. */
+  speaking: boolean
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
   /** An optimistic stand-in for a send in flight; the meta says "Sending". */
@@ -117,6 +119,7 @@ export const MessageBubble = memo(function MessageBubble({
   partnerName,
   translation,
   translating,
+  speaking,
   highlighted,
   pending = false,
   askAnswered = false,
@@ -622,6 +625,7 @@ export const MessageBubble = memo(function MessageBubble({
           </Animated.Text>
         </View>
         {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
+        {speaking ? <Text style={styles.translateLink}>{t('chat.speaking')}</Text> : null}
         {badge}
         {meta}
       </Pressable>,
@@ -722,6 +726,7 @@ export const MessageBubble = memo(function MessageBubble({
       {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
       {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
+      {speaking ? <Text style={styles.translateLink}>{t('chat.speaking')}</Text> : null}
       {/* Beside the clock, not in place of it: "when" and "changed since" are
             two different facts and the reader wants both. */}
       {message.editedAt ? <Text style={styles.edited}>{t('messageMeta.edited')}</Text> : null}

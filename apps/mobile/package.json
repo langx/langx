@@ -63,6 +63,7 @@
     "expo-updates": "~57.0.21",
     "expo-video": "~57.0.3",
     "expo-web-browser": "~57.0.1",
+    "franc": "^6.2.0",
     "posthog-react-native": "^4.67.0",
     "react": "catalog:",
     "react-dom": "catalog:",

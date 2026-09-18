@@ -42,6 +42,7 @@ import {
   type AdminLatestVersionInput,
   type AppConfig,
   ERROR_CODES,
+  type MessageSpeech,
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
@@ -3020,6 +3021,35 @@ export function useAttachEchoAudio() {
 }
 
 /**
+ * How long to wait on the voice service, rather than the ten seconds
+ * `apiFetch` gives everything else.
+ *
+ * `langx-tts` scales to zero, and the first reading of the hour spends thirty
+ * to sixty seconds starting a machine and loading a model — so the default
+ * budget cut off precisely the request it was never sized for. The failure was
+ * invisible rather than loud: the phone gave up, the API finished anyway and
+ * wrote the object, and the retry came back instantly, which reads as
+ * slowness rather than as a bug.
+ *
+ * `fetchWithTimeout` stands aside when the caller brings its own signal. This
+ * one sits just past the sixty seconds `HttpTtsProvider` allows itself, so the
+ * API's own deadline is what gives up first and can say why.
+ */
+const VOICE_TIMEOUT_MS = 75_000
+
+function withVoiceTimeout<T>(path: string, init: RequestInit): Promise<T> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => {
+    controller.abort()
+  }, VOICE_TIMEOUT_MS)
+  return api
+    .request<T>(path, { ...init, signal: controller.signal })
+    .finally(() => {
+      clearTimeout(timer)
+    })
+}
+
+/**
  * Have the server voice read the card, in every voice its language has.
  *
  * One call, however many voices; the readings land in `voices`, under the
@@ -3030,9 +3060,40 @@ export function useSynthesiseEchoCard() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: { cardId: string }) =>
-      api.post<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/voices`, {}),
+      withVoiceTimeout<EchoCard>(`/echo/cards/${encodeURIComponent(input.cardId)}/voices`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
+    },
+  })
+}
+
+/**
+ * Have the server voice read one message of a thread aloud.
+ *
+ * No language in the body: the API decides that from the text it already
+ * holds, so a client cannot name a language and pick which permanent object
+ * gets written. The app runs the same detection to decide whether to offer the
+ * menu row at all, and the two agree because they share the function.
+ *
+ * Nothing is invalidated on success — the reading is not part of any query's
+ * data, it is held in the chat screen for as long as that screen is open. The
+ * quota is, but only when a unit was actually spent.
+ */
+export function useSpeakMessage() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { conversationId: string; messageId: string }) =>
+      withVoiceTimeout<MessageSpeech>(
+        `/conversations/${encodeURIComponent(input.conversationId)}/messages/${encodeURIComponent(
+          input.messageId,
+        )}/speak`,
+        { method: 'POST' },
+      ),
+    onSuccess: (reading) => {
+      if (!reading.cached) void client.invalidateQueries({ queryKey: keys.quota })
     },
   })
 }

@@ -174,6 +174,7 @@ export const tr: Localized<EnMessages> = {
     reply: 'Yanıtla',
     correct: 'Düzelt',
     translate: 'Çevir',
+    speak: 'Sesli oku',
     copy: 'Kopyala',
     delete: 'Sil',
     edit: 'Düzenle',
@@ -1032,6 +1033,13 @@ export const tr: Localized<EnMessages> = {
     mediaLocked: {
       one: 'Fotoğraf ve sesli mesajlar, karşı taraftan bir mesaj daha gelince açılır.',
       other: 'Fotoğraf ve sesli mesajlar, karşı taraftan {count} mesaj daha gelince açılır.',
+    },
+    speaking: 'Sesli okunuyor…',
+    speakUnavailable: 'Bu mesaj sesli okunamadı',
+    speakFailed: 'Birazdan tekrar dene.',
+    speakLimit: {
+      one: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',
+      other: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',
     },
     copied: 'Kopyalandı',
     couldNotSend: 'Gönderilemedi',

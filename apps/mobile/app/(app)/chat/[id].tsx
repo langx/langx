@@ -24,6 +24,7 @@ import {
   useLocalSearchParams,
   useNavigation,
 } from 'expo-router'
+import { useAudioPlayer } from 'expo-audio'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -47,6 +48,7 @@ import {
   useMessages,
   useMessageWindow,
   useTranslate,
+  useSpeakMessage,
   type MessageDto,
 } from '../../../src/api/queries'
 import * as Clipboard from 'expo-clipboard'
@@ -88,6 +90,9 @@ import {
   retireArrived,
   type OutgoingMessage,
 } from '../../../src/lib/outgoingMessages'
+import { useAppConfig } from '../../../src/hooks/useAppConfig'
+import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
+import { speechLanguageFor } from '../../../src/lib/speechLanguage'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
@@ -236,6 +241,19 @@ export default function ChatScreen() {
   // original so the learner can compare the two.
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [translating, setTranslating] = useState<string | null>(null)
+  /**
+   * Readings, by message id, and only for as long as this screen is open.
+   *
+   * The same reasoning as `translations` above, and the same as the comment on
+   * `Message.translation` server-side: a translation somebody *sent* is theirs
+   * and both people see it, while one taken from the menu is a single reader's
+   * private view of somebody else's sentence. A machine reading asked for by
+   * one reader is unambiguously the second kind. Nothing is lost by not
+   * keeping it — the file itself is cached on the server under a hash of the
+   * text, so playing it again from another device costs nothing either.
+   */
+  const [speech, setSpeech] = useState<Record<string, string>>({})
+  const [speaking, setSpeaking] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageRow>>(null)
   /**
    * The newest message at the moment the reader scrolled away from the bottom,
@@ -408,6 +426,17 @@ export default function ChatScreen() {
    * Disabled rather than hidden. A control that vanishes teaches nothing, and
    * the whole value of this rule is that people know it is there.
    */
+  /**
+   * One player for the whole thread, reused for every reading.
+   *
+   * Not one per bubble: `useAudioPlayer` is a hook, so a player per message
+   * would mean a hook per row in a virtualised list. `MediaBubble` already
+   * owns one per voice note, and those are the person's own recordings.
+   */
+  const player = useAudioPlayer(null)
+  const speakMessageApi = useSpeakMessage()
+  /** Some deployments have no voice service at all; then there is no row. */
+  const voiceService = useAppConfig().data?.voiceService === true
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
@@ -1206,6 +1235,73 @@ export default function ChatScreen() {
   }
 
   /**
+   * The languages these two people have between them, which is what a detected
+   * language has to agree with before anything is read aloud.
+   *
+   * `franc` is not reliable enough on one chat message to be trusted alone —
+   * it scores Norwegian above Turkish on a Turkish sentence — and this is the
+   * thing a language-exchange app knows that a detector does not.
+   */
+  const conversationLangs = useMemo(
+    () => [
+      ...(me.data?.nativeLanguages ?? []).map((language) => language.code),
+      ...(me.data?.learning ?? []).map((language) => language.code),
+      ...(partner?.nativeLanguages ?? []).map((language) => language.code),
+      ...(partner?.learning ?? []).map((language) => language.code),
+    ],
+    [me.data, partner],
+  )
+
+  /**
+   * Read a message aloud, through the one player this screen owns.
+   *
+   * One at a time: the voice service runs a single synthesis at a time behind
+   * a lock and answers two concurrent callers at most, so a second tap while
+   * one is in flight would queue behind it and, on a cold machine, wait out a
+   * second start.
+   */
+  async function play(url: string): Promise<void> {
+    await ensurePlaybackAudioMode()
+    player.replace({ uri: url })
+    // Replaying the same reading starts from the top rather than from wherever
+    // the last play stopped — one player serves every bubble in the thread.
+    await player.seekTo(0)
+    player.play()
+  }
+
+  async function speak(message: MessageDto): Promise<void> {
+    const known = speech[message._id]
+    if (known) {
+      await play(known)
+      return
+    }
+    if (speaking !== null) return
+    setSpeaking(message._id)
+    try {
+      const reading = await speakMessageApi.mutateAsync({
+        conversationId,
+        messageId: message._id,
+      })
+      setSpeech((current) => ({ ...current, [message._id]: reading.url }))
+      await play(reading.url)
+    } catch (error) {
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        // A ceiling, not a gate: `chatVoicesPerDay` is finite on every tier,
+        // so there is nothing to sell here. The same stance `ReadAloud` takes
+        // on an Echo card.
+        await showAlert(
+          t('chat.speakUnavailable'),
+          t('chat.speakLimit', { count: PLAN_LIMITS.free.chatVoicesPerDay ?? 0 }),
+        )
+      } else {
+        await showAlert(t('chat.speakUnavailable'), t('chat.speakFailed'))
+      }
+    } finally {
+      setSpeaking(null)
+    }
+  }
+
+  /**
    * Long-press on any bubble. Correction used to *be* the gesture, on the
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
@@ -1221,6 +1317,19 @@ export default function ChatScreen() {
     // row, so it is still worth opening.
     const actions = messageActionsFor({
       canTranslate: translateTarget !== undefined,
+      /*
+       * The same detection the server runs, for the same message, so the row
+       * appears exactly when the tap would work. Its answer is never sent —
+       * the server decides again from the text it holds, because a language
+       * named by a client would pick the cache key it writes under.
+       */
+      canSpeak:
+        voiceService &&
+        speechLanguageFor(message.body, {
+          sourceLang: message.translation?.sourceLang,
+          contextLangs: conversationLangs,
+        }) !== undefined,
+      bodyLength: message.body.trim().length,
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
@@ -1270,6 +1379,8 @@ export default function ChatScreen() {
       await shareLink({ message: message.body })
     } else if (picked.id === 'translate') {
       await translate(message, alreadyTranslated)
+    } else if (picked.id === 'speak') {
+      await speak(message)
     } else if (picked.id === 'correct') {
       setCorrecting(message)
       setDraft(message.body)
@@ -1885,6 +1996,7 @@ export default function ChatScreen() {
                     partnerName={partner?.displayName ?? t('chat.them')}
                     translation={translations[row.message._id]}
                     translating={translating === row.message._id}
+                    speaking={speaking === row.message._id}
                     highlighted={highlighted === row.message._id}
                     askAnswered={answeredAsks.has(row.message._id)}
                     onAnswerAsk={answerAsk}

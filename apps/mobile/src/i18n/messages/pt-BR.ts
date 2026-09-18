@@ -162,6 +162,7 @@ export const ptBR: Localized<EnMessages> = {
     reply: 'Responder',
     correct: 'Corrigir',
     translate: 'Traduzir',
+    speak: 'Ler em voz alta',
     copy: 'Copiar',
     delete: 'Excluir',
     edit: 'Editar',
@@ -1029,6 +1030,13 @@ export const ptBR: Localized<EnMessages> = {
       one: 'Fotos, vídeos e mensagens de voz são liberados depois de mais uma mensagem da outra pessoa.',
       other:
         'Fotos, vídeos e mensagens de voz são liberados depois de mais {count} mensagens da outra pessoa.',
+    },
+    speaking: 'Lendo em voz alta…',
+    speakUnavailable: 'Não deu para ler em voz alta',
+    speakFailed: 'Tente de novo daqui a pouco.',
+    speakLimit: {
+      one: 'Você usou a {count} leitura de hoje. Ela volta em 24 horas.',
+      other: 'Você usou as {count} leituras de hoje. Elas voltam em 24 horas.',
     },
     copied: 'Copiado',
     couldNotSend: 'Não deu para enviar',

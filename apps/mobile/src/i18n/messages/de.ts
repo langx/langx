@@ -166,6 +166,7 @@ export const de: Localized<EnMessages> = {
     reply: 'Antworten',
     correct: 'Korrigieren',
     translate: 'Übersetzen',
+    speak: 'Vorlesen',
     copy: 'Kopieren',
     delete: 'Löschen',
     edit: 'Bearbeiten',
@@ -1060,6 +1061,13 @@ export const de: Localized<EnMessages> = {
       one: 'Fotos und Sprachnachrichten werden nach einer weiteren Nachricht von der anderen Person freigeschaltet.',
       other:
         'Fotos und Sprachnachrichten werden nach {count} weiteren Nachrichten von der anderen Person freigeschaltet.',
+    },
+    speaking: 'Wird vorgelesen…',
+    speakUnavailable: 'Konnte das nicht vorlesen',
+    speakFailed: 'Versuch es gleich noch einmal.',
+    speakLimit: {
+      one: 'Du hast die {count} Lesung für heute verbraucht. In 24 Stunden gibt es wieder neue.',
+      other: 'Du hast die {count} Lesungen für heute verbraucht. In 24 Stunden gibt es wieder neue.',
     },
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',
