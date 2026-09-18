@@ -23,6 +23,7 @@ import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { PhotoViewer } from '../../../src/components/PhotoViewer'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { WeeklyChart } from '../../../src/components/WeeklyChart'
+import { BadgeStrip } from '../../../src/components/BadgeStrip'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -356,17 +357,51 @@ export default function ProfileScreen() {
             value={String(summary.data.corrections)}
             onPress={() => openPostCorrections(user.handle, here)}
           />
-          <StatTile
-            label={`${t('me.badges')} ›`}
-            value={String(summary.data.badges)}
-            onPress={() => openBadges(user.handle, here)}
-          />
+          {/*
+            Where the badge tile was. The strip below says what they have
+            earned better than a count of it did, and both opened the same
+            page — so the slot went to the one number on this screen that
+            nothing else here carries.
+
+            A percentile and not a rank: "#3" is worth reading and "#41,205"
+            is not, and the second is what almost every profile would show.
+            It is this week's board because that is the tab the board opens
+            on — see `weekPercentile` — and because the chart below already
+            makes this screen's timeframe the week.
+          */}
+          {summary.data.rank ? (
+            <StatTile
+              label={`${t('profile.rankLabel')} ›`}
+              value={t('profile.rankValue', { percent: summary.data.rank.percentile })}
+              valueSize={20}
+              onPress={() => router.push('/(app)/wallet/leaderboard')}
+            />
+          ) : (
+            // Off the board is not a zero, and "Top —%" is not a fact. The
+            // followers tile widens into the gap rather than a tile standing
+            // there with nothing to say.
+            <View style={styles.statSpacer} />
+          )}
           <StatTile
             label={`${t('profile.followersTitle')} ›`}
             value={String(user.follow.followers)}
             onPress={() => openFollows(user._id, 'followers', here)}
           />
         </View>
+      ) : null}
+
+      {/*
+        The shelf, above the bio, where a reader is already looking for who
+        this person is rather than what they teach. One button for the whole
+        row — see `BadgeStrip` — and nothing at all for somebody who has
+        earned none.
+      */}
+      {summary.data && !user.official ? (
+        <BadgeStrip
+          badges={summary.data.topBadges}
+          total={summary.data.badges}
+          onPress={() => openBadges(user.handle, here)}
+        />
       ) : null}
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
@@ -541,6 +576,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     gap: 10,
     paddingVertical: 20,
   },
+  // Holds the third column open when there is no rank to put in it, so the
+  // two tiles that remain keep the widths every other profile gives them.
+  statSpacer: { flex: 1 },
   bio: { color: colors.text, fontSize: 16, lineHeight: 25, paddingBottom: 18, paddingTop: 22 },
   interests: {
     borderBottomColor: colors.border,

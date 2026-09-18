@@ -1,6 +1,8 @@
 import {
+  PROFILE_BADGE_STRIP_MAX,
   TOKEN_GRANT_KINDS,
   TOKEN_RULES,
+  aggregateId,
   localDayKey,
   periodKeys,
   shiftDayKey,
@@ -21,7 +23,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
-import { awardTokens, type TokenLedgerEntry } from '../modules/tokens/ledger'
+import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import type { StreakDay } from '../modules/tokens/streakDays'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -1095,6 +1097,116 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(body.corrections).toBe(0)
       expect(body.badges).toBe(0)
       expect(body.tokens).toBeGreaterThan(0)
+    })
+  })
+
+  describe('the strip and the rank on a profile', () => {
+    interface Summary {
+      badges: number
+      topBadges: { id: string; kind: string }[]
+      rank: { percentile: number } | null
+    }
+
+    function summaryOf(viewer: SignedUpUser, of: string) {
+      return app.inject({
+        method: 'GET',
+        url: `/profiles/${of}/summary`,
+        headers: { cookie: viewer.cookie },
+      })
+    }
+
+    it('sends the earned badges only, capped, in the order the badge page draws them', async () => {
+      const owner = await newUser('strip-owner@example.com', { handle: 'stripowner' })
+      const viewer = await newUser('strip-viewer@example.com')
+      // Enough to clear every streak rung, so the cap is what limits the list
+      // rather than how much this account has done.
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: owner.userId }, { $set: { 'streak.longest': 2000 } })
+
+      const body = (await summaryOf(viewer, 'stripowner')).json<Summary>()
+
+      expect(body.topBadges).toHaveLength(PROFILE_BADGE_STRIP_MAX)
+      // Every streak rung is earned, so the first six are the first six rungs
+      // in catalogue order — not six rows of things they have not done.
+      expect(body.topBadges.map((badge) => badge.id)).toEqual([
+        'streak.7',
+        'streak.30',
+        'streak.100',
+        'streak.180',
+        'streak.365',
+        'streak.730',
+      ])
+      // The count is the whole shelf, which is what "+N" on the strip counts.
+      expect(body.badges).toBeGreaterThan(body.topBadges.length)
+    })
+
+    it('sends no marks at all for somebody who has earned none', async () => {
+      const owner = await newUser('strip-empty@example.com', { handle: 'stripempty' })
+      const viewer = await newUser('strip-empty-viewer@example.com')
+
+      const body = (await summaryOf(viewer, 'stripempty')).json<Summary>()
+      expect(body.topBadges).toEqual([])
+      expect(body.badges).toBe(0)
+      void owner
+    })
+
+    /**
+     * The rule this pins down, which is the reason the tile is worth showing
+     * at all: `awardTokens` credits a grant kind to `all` and to nothing else,
+     * so the sign-up bonus, the hourly gift and every referral payout stay off
+     * the weekly board. A percentile there is a reading of what somebody did
+     * this week, not of what they were given.
+     */
+    it('has no rank for somebody who has only ever been given tokens', async () => {
+      const owner = await newUser('rank-idle@example.com', { handle: 'rankidle' })
+      const viewer = await newUser('rank-idle-viewer@example.com')
+      await awardTokens(handle.db, {
+        userId: owner.userId,
+        kind: 'gift',
+        amount: 500_000,
+        refId: 'rank-idle-gift',
+      })
+
+      const week = await handle.db
+        .collection<TokenAggregate>(COLLECTIONS.tokenAggregates)
+        .findOne({ _id: aggregateId(owner.userId, 'week', periodKeys(new Date()).week) })
+      expect(week).toBeNull()
+
+      const body = (await summaryOf(viewer, 'rankidle')).json<Summary>()
+      // Off the board is an absence, not a hundredth place.
+      expect(body.rank).toBeNull()
+    })
+
+    it('puts the week’s leader at the top of the band, never at zero', async () => {
+      const leader = await newUser('rank-leader@example.com', { handle: 'rankleader' })
+      const trailing = await newUser('rank-trailing@example.com', { handle: 'ranktrailing' })
+      const viewer = await newUser('rank-leader-viewer@example.com')
+
+      // `correction` is earned rather than granted, so it reaches the week.
+      await awardTokens(handle.db, {
+        userId: leader.userId,
+        kind: 'correction',
+        amount: 500_000,
+        refId: 'rank-leader-test',
+      })
+      await awardTokens(handle.db, {
+        userId: trailing.userId,
+        kind: 'correction',
+        amount: 1,
+        refId: 'rank-trailing-test',
+      })
+
+      const top = (await summaryOf(viewer, 'rankleader')).json<Summary>()
+      const behind = (await summaryOf(viewer, 'ranktrailing')).json<Summary>()
+
+      // Never zero, whatever the board's size — that is what `ceil` buys.
+      expect(top.rank?.percentile).toBeGreaterThanOrEqual(1)
+      // Not asserted as exactly 1: on a board of n, being first is `ceil(100/n)`
+      // percent, so the leader of a small board is honestly told top 4% rather
+      // than a flattering top 1%. What must hold at every size is the ordering.
+      expect(top.rank?.percentile).toBeLessThan(behind.rank?.percentile ?? 0)
+      expect(behind.rank?.percentile).toBeLessThanOrEqual(100)
     })
   })
 

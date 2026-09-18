@@ -44,6 +44,7 @@ import {
   ERROR_CODES,
   type MessageSpeech,
   type AuthoredCorrectionsPage,
+  type ProfileBadge,
   type PublicBadges,
 } from '@langx/shared'
 import type {
@@ -788,7 +789,11 @@ export interface PublicSummaryDto {
   corrections: number
   /** Badges earned, out of the shared catalogue's total. */
   badges: number
+  /** The first few of them, capped by the server, for the strip above the bio. */
+  topBadges: ProfileBadge[]
   tokens: number
+  /** Where they stand on this week's token board, or `null` when they are off it. */
+  rank: { percentile: number } | null
   week?: { day: string; messages: number; corrections: number }[]
 }
 

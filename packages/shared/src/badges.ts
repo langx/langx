@@ -275,3 +275,22 @@ export const publicBadgesSchema = z.object({
   total: z.number().int(),
 })
 export type PublicBadges = z.infer<typeof publicBadgesSchema>
+
+/**
+ * How many marks the profile's badge strip draws before it gives up and counts.
+ *
+ * Six, because the strip is one button and so cannot scroll: at 40px a mark
+ * and 10px between them, six and a "+12" fit the 343px a 375px phone leaves
+ * after its gutters, and seven do not. Sent capped from the server rather than
+ * sliced on the client, so a member with forty badges does not ship
+ * thirty-four of them to draw none.
+ */
+export const PROFILE_BADGE_STRIP_MAX = 6
+
+/** One mark on that strip: enough to draw it, and nothing else. */
+export const profileBadgeSchema = z.object({
+  id: z.string(),
+  kind: z.enum(BADGE_KINDS),
+  icon: z.string().nullable(),
+})
+export type ProfileBadge = z.infer<typeof profileBadgeSchema>
