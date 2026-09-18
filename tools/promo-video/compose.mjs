@@ -62,7 +62,8 @@ const END_FADE = 0.5
  * along with the wait. A span too short to be worth a dissolve is left alone.
  */
 const CUTS = [
-  { from: 'chatOpenClicked', to: 'chat', keepBefore: 0.5, keepAfter: 0.45 },
+  { from: 'profileClicked', to: 'profilePainted', keepBefore: 0.35, keepAfter: 0.25 },
+  { from: 'chatOpenClicked', to: 'chatPainted', keepBefore: 0.4, keepAfter: 0.25 },
   { from: 'sendClicked', to: 'delivered', keepBefore: 0.6, keepAfter: 0.35 },
   { from: 'awaitReply', to: 'replied', keepBefore: 0.4, keepAfter: 0.3 },
 ]

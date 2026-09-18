@@ -110,7 +110,16 @@ async function glide(page, { distance, durationMs }) {
  */
 async function settled(page, locator, label) {
   const began = Date.now()
-  await locator.waitFor({ state: 'visible', timeout: 30000 })
+  try {
+    await locator.waitFor({ state: 'visible', timeout: 30000 })
+  } catch (caught) {
+    // A run can be twenty minutes of stack; a picture of the screen it gave up
+    // on is the difference between knowing why and guessing.
+    const shot = join(RAW, `failed-${label.replace(/\W+/g, '-')}.png`)
+    await page.screenshot({ path: shot }).catch(() => {})
+    console.error(`  ${label} never painted — url ${page.url()}, screenshot ${shot}`)
+    throw caught
+  }
   console.log(`  ${label} painted in ${((Date.now() - began) / 1000).toFixed(2)}s`)
 }
 
@@ -239,32 +248,46 @@ async function main() {
    * does nothing for the other. These loads are recorded and then trimmed —
    * `journeyStart` is marked after them.
    */
-  for (const route of [`/profile/${PARTNER_HANDLE}`, '/chats', '/discover']) {
+  for (const route of [`/profile/${PARTNER_HANDLE}`, '/chats']) {
     await page.goto(`${WEB}${route}`, { waitUntil: 'load', timeout: 240000 })
     await page.waitForTimeout(2500)
   }
+  /*
+   * And into the thread itself, which `goto` cannot reach without its id.
+   *
+   * This is the one that matters: the drawing in the conversation is fetched
+   * from the media host, and without a pass to put it in the browser's cache
+   * the recorded run opens the chat on a grey rectangle where the picture goes.
+   */
+  await page.getByText(PARTNER, { exact: true }).first().click({ timeout: 30000 })
+  await page.waitForURL(/\/chat\//, { timeout: 30000 })
+  await page.waitForTimeout(3500)
+  await page.goto(`${WEB}/discover`, { waitUntil: 'load', timeout: 240000 })
+  await page.waitForTimeout(2500)
   await page.getByText('For you').first().waitFor({ timeout: 60000 })
   await page.waitForTimeout(1500)
   mark('journeyStart')
 
-  await page.waitForTimeout(900)
-  await glide(page, { distance: 760, durationMs: 1700 })
-  await page.waitForTimeout(600)
-  await glide(page, { distance: 620, durationMs: 1400 })
   await page.waitForTimeout(700)
+  await glide(page, { distance: 820, durationMs: 1600 })
+  await page.waitForTimeout(500)
+  await glide(page, { distance: 560, durationMs: 1200 })
+  await page.waitForTimeout(500)
   mark('scrolled')
 
+  mark('profileClicked')
   await page.getByText(PARTNER, { exact: true }).first().click({ timeout: 15000 })
   await page.waitForURL(/\/profile\//, { timeout: 30000 })
-  // The skeleton, not the screen, is what a fixed wait would have caught.
+  // The skeleton, not the screen, is what a fixed wait would have caught — and
+  // marking the paint is what lets `compose.mjs` cut the skeleton out.
   await settled(page, page.getByText('Teaches', { exact: false }).first(), 'profile')
-  await page.waitForTimeout(1300)
-  mark('profile')
+  mark('profilePainted')
+  await page.waitForTimeout(1200)
 
   // Down past the languages and the bio — which is also what puts the fixture
   // handle out of frame and brings the call to action into it.
-  await glide(page, { distance: 520, durationMs: 1500 })
-  await page.waitForTimeout(900)
+  await glide(page, { distance: 520, durationMs: 1300 })
+  await page.waitForTimeout(700)
 
   mark('chatOpenClicked')
   await page
@@ -272,11 +295,21 @@ async function main() {
     .last()
     .click({ timeout: 15000 })
   await page.waitForURL(/\/chat\//, { timeout: 30000 })
-  // Not `textarea`: the composer of the screen underneath is still mounted, so
-  // that locator is satisfied before this chat has painted anything.
-  await settled(page, page.getByPlaceholder(/Say hello|Write a message/i).last(), 'chat')
-  await page.waitForTimeout(900)
-  mark('chat')
+  /*
+   * A line from the seeded thread, not the composer: the screen underneath is
+   * still mounted, so a `textarea` or a placeholder locator is satisfied before
+   * this chat has painted a single message.
+   */
+  await settled(page, page.getByText(CAPTIONS.en.chatMarker).last(), 'chat')
+  mark('chatPainted')
+  await page.waitForTimeout(700)
+
+  // Up through the history and back down: the correction, the voice note and
+  // the drawing are what the middle of this video is for.
+  await glide(page, { distance: -1500, durationMs: 2000 })
+  await page.waitForTimeout(500)
+  await glide(page, { distance: 1500, durationMs: 1500 })
+  await page.waitForTimeout(400)
 
   const composer = page.locator('textarea').last()
   await composer.click({ timeout: 15000 })

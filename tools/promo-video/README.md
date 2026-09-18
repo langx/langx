@@ -51,10 +51,12 @@ but it can only check the one it signs in against, not the one the app calls.
 ## Cutting a video
 
 ```bash
-# The first message is a real write, so put the pair back first — otherwise
-# the second run opens on the first run's message.
+# The thread the video scrolls through, and the boosts that fill the strip
+# above it. Rebuilds from scratch every time, which is what makes the capture
+# repeatable: the run ends by sending a real message, and without this the
+# next one would open on the last one's.
 cd apps/api && pnpm exec tsx --env-file=../../.env \
-  scripts/reset-promo-chat.ts --db langx_dev test_george test_katya
+  scripts/seed-promo-chat.ts --db langx_dev
 
 # The end card (lives in apps/api because satori and the fonts do)
 cd apps/api && pnpm exec tsx scripts/render-promo-endcard.ts \
@@ -111,6 +113,18 @@ line to its own file, so copy can contain whatever it likes.
 on both branches. Playwright records at a hard 25 fps; converting to 30
 duplicates every fifth frame and shows as judder on exactly the slow scroll
 this pipeline works to get right.
+
+**There is no video message in the chat, deliberately.** The thread has a
+voice note (spoken by `say`, transcoded to AAC) and a picture (drawn by satori,
+which is why it is a drawing and not a photograph — a photograph would have to
+come from somewhere, and a stock one under an advert is a licence question).
+A video would need footage nobody has licensed either, and a video playing
+inside a video of a phone reads as neither.
+
+**Media unlocks after five messages from the other person.** That is a real
+rule (`assertMediaUnlocked`), not a fixture detail: move the voice note or the
+picture earlier in `seed-promo-chat.ts`'s script and the seed stops with
+MEDIA_LOCKED, correctly.
 
 **The music is synthesised, and should be replaced.** `music.mjs` writes a
 plain pentatonic bed, because a public repository cannot carry somebody else's
