@@ -10,6 +10,22 @@ import { COLLECTIONS } from '../../db/collections'
  * second is the lead.
  */
 
+/**
+ * Every id here arrives from a webhook body and is used as a document `_id`,
+ * so each entry point checks it is a string before Mongo sees it.
+ *
+ * The route checks too, and this is not the same check twice: TypeScript's
+ * `string` is a compile-time claim about a value parsed out of somebody else's
+ * JSON, and access control in this codebase lives in the repository. An object
+ * reaching `{ _id: id }` is not a bad lookup, it is every row at once.
+ */
+function assertId(value: unknown, what: string): string {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(`${what} must be a non-empty string`)
+  }
+  return value
+}
+
 export interface InstagramLead {
   /** Instagram-scoped user id — theirs, and only for this account. */
   _id: string
@@ -35,10 +51,11 @@ export interface InstagramLead {
  * platform error for the second.
  */
 export async function claimComment(db: Db, commentId: string): Promise<boolean> {
+  const id = assertId(commentId, 'comment id')
   try {
     await db
       .collection(COLLECTIONS.instagramComments)
-      .insertOne({ _id: commentId as never, answeredAt: new Date() })
+      .insertOne({ _id: id as never, answeredAt: new Date() })
     return true
   } catch (caught) {
     // 11000 is the duplicate key; anything else is a real failure.
@@ -53,10 +70,11 @@ export async function recordInboundMessage(
   igsid: string,
   at: Date = new Date(),
 ): Promise<InstagramLead> {
+  const id = assertId(igsid, 'instagram user id')
   const result = await db
     .collection<InstagramLead>(COLLECTIONS.instagramLeads)
     .findOneAndUpdate(
-      { _id: igsid },
+      { _id: id },
       { $set: { lastMessageAt: at }, $setOnInsert: { createdAt: at } },
       { upsert: true, returnDocument: 'after' },
     )
@@ -65,14 +83,16 @@ export async function recordInboundMessage(
 }
 
 export async function markDelivered(db: Db, igsid: string): Promise<void> {
+  const id = assertId(igsid, 'instagram user id')
   await db
     .collection<InstagramLead>(COLLECTIONS.instagramLeads)
-    .updateOne({ _id: igsid }, { $set: { deliveredAt: new Date() } })
+    .updateOne({ _id: id }, { $set: { deliveredAt: new Date() } })
 }
 
 export async function countFollowAsk(db: Db, igsid: string): Promise<number> {
+  const id = assertId(igsid, 'instagram user id')
   const result = await db
     .collection<InstagramLead>(COLLECTIONS.instagramLeads)
-    .findOneAndUpdate({ _id: igsid }, { $inc: { followAsks: 1 } }, { returnDocument: 'after' })
+    .findOneAndUpdate({ _id: id }, { $inc: { followAsks: 1 } }, { returnDocument: 'after' })
   return result?.followAsks ?? 1
 }
