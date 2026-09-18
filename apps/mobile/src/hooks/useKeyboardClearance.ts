@@ -6,12 +6,19 @@ import {
   type FocusEvent,
   type HostInstance,
   type KeyboardEvent,
+  type LayoutChangeEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  type ScrollView,
   type View,
 } from 'react-native'
 import { spacing } from '../lib/theme'
+
+/**
+ * How long Android's own scroll-the-focused-child-into-view takes, plus a
+ * frame. `ScrollView.smoothScrollBy` animates for 250 ms and the clearance
+ * has to land after it; see the hook's comment.
+ */
+const REVEAL_MS = 300
 
 /**
  * Keeps the keyboard off a text field inside a scroll view that cannot use
@@ -50,24 +57,33 @@ import { spacing } from '../lib/theme'
  *   move together.
  *
  * That is the iOS half. Android needs no `pad` — `KeyboardResizeHost` pays
- * that once at the root, where the window resize used to be — but it needs
- * the same scroll, and for the same reason: a scroll view that gets shorter
- * brings its *focused child* back into view by itself (`ReactScrollView`
- * extends the framework's own, whose `onSizeChanged` does exactly that), and
- * the focused child is the field, never the button under it.
+ * that once at the root, where the window resize used to be — but it has the
+ * same shortfall, from the other side: a scroll view that gets shorter brings
+ * its *focused child* back into view by itself, and the focused child is the
+ * field, never the button under it. `ReactScrollView` extends the framework's
+ * own, so that behaviour is not ours to remove — `scrollsChildToFocus` would
+ * turn it off, but the prop never reaches the view under the new architecture.
  *
- * Its half is measured instead of followed, and takes a different signal:
+ * Its half is measured rather than followed, and takes different signals:
  *
- * - The signal is `onLayout` on the scroll view. Android has no
- *   `keyboardWillShow`, and the height it would announce arrives one React
- *   commit later anyway — the root's pad lands on `keyboardDidShow` and the
- *   scroll view gets shorter after that. Scrolling before it would be clamped
- *   to the bounds the list still has, which is the same trap
- *   `scrollToOverflowEnabled` answers on iOS and Android has no flag for. The
- *   layout that shortens the list is therefore the moment to scroll, and it
- *   is also the moment the framework's own reveal has just run. `onFocus`
- *   asks again, because focus moving from one composer to the next while the
- *   keyboard is already up changes no layout and raises no event.
+ * - `onLayout` on the scroll view is the signal. Android has no
+ *   `keyboardWillShow`, and the layout that shortens the list is what has to
+ *   be waited for anyway: scrolling before it is clamped to the bounds the
+ *   list still has, which is the trap `scrollToOverflowEnabled` answers on
+ *   iOS and Android has no flag for. `onFocus` asks again, because focus
+ *   moving from one composer to the next while the keyboard is already up
+ *   changes no layout, and `onContentSizeChange` because a field that grows
+ *   as it is typed into pushes the button back under the keyboard.
+ * - The scroll waits out the framework's reveal rather than racing it. That
+ *   reveal is a 250 ms `smoothScrollBy`, started while the layout that
+ *   prompts us is still being applied, and a `scrollTo` does not cancel it:
+ *   the animation writes a position every frame and ours is gone by the next
+ *   one — measured at 30 ms, 120 ms and 400 ms, landing exactly where the
+ *   field's own bottom edge meets the keyboard. Once it has finished there is
+ *   nothing left to overwrite the clearance, and nothing to fight: the reveal
+ *   only ever moves a caret that is out of sight, and after the clearance the
+ *   whole box is in view. Hence the delay, and hence the jump rather than a
+ *   glide — a second animation would be the same race again.
  * - `Keyboard.metrics()` rather than a remembered coordinate: it is null
  *   while the keyboard is down, so a layout with no keyboard does nothing
  *   without having to be told the keyboard has gone.
@@ -77,39 +93,52 @@ import { spacing } from '../lib/theme'
  *   `viewY - contentY` is the offset the list is at. Adding the overlap to it
  *   gives a target that does not depend on the scroll position at all: both
  *   halves are read from the same state, so a scroll that native has not told
- *   JS about yet cancels out of the sum rather than becoming a jump. That
- *   matters here, where the framework has just scrolled on its own.
+ *   JS about yet cancels out of the sum rather than becoming a jump.
  *
  * `useKeyboardInset` is the same pad for a screen whose composer sits outside
  * the scroll view, as the chat thread's does.
  */
-export function useKeyboardClearance(scrollTo: (offset: number) => void) {
+export function useKeyboardClearance(scrollTo: (offset: number, animated: boolean) => void) {
   const ios = Platform.OS === 'ios'
   const android = Platform.OS === 'android'
   const pad = useRef(new Animated.Value(0)).current
   const frameRef = useRef<View>(null)
   const scrollY = useRef(0)
   const field = useRef<HostInstance | null>(null)
-  const scroller = useRef<ScrollView>(null)
+  const scroller = useRef<HostInstance | null>(null)
   const content = useRef<View>(null)
   const scroll = useRef(scrollTo)
   scroll.current = scrollTo
 
   /** Android's clearance: see the second half of the comment above. */
-  const clear = useCallback(() => {
+  const run = useCallback(() => {
     const keyboard = Keyboard.metrics()
     const box = field.current
     const inner = content.current
-    const view = scroller.current?.getNativeScrollRef()
+    const view = scroller.current
     if (!keyboard || !box || !inner || !view) return
     box.measureInWindow((_x, y, _width, height) => {
       const covered = y + height + spacing.md - keyboard.screenY
       if (covered <= 0) return
       inner.measureInWindow((_ix, contentY) =>
-        view.measureInWindow((_vx, viewY) => scroll.current(viewY - contentY + covered)),
+        view.measureInWindow((_vx, viewY) => scroll.current(viewY - contentY + covered, false)),
       )
     })
   }, [])
+
+  /*
+   * One clearance, after the framework's reveal has finished — see the comment
+   * above for why it cannot simply be told not to. Rescheduling rather than
+   * queueing also means a field being typed into scrolls once it settles
+   * instead of on every character.
+   */
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const clear = useCallback(() => {
+    if (pending.current) clearTimeout(pending.current)
+    pending.current = setTimeout(run, REVEAL_MS)
+  }, [run])
+
+  useEffect(() => () => (pending.current ? clearTimeout(pending.current) : undefined), [])
 
   useEffect(() => {
     if (!ios) return
@@ -129,7 +158,7 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
       )
       field.current?.measureInWindow((_x, y, _width, height) => {
         const covered = y + height + spacing.md - top
-        if (covered > 0) scroll.current(scrollY.current + covered)
+        if (covered > 0) scroll.current(scrollY.current + covered, true)
       })
     })
     const hide = Keyboard.addListener('keyboardWillHide', (event) => follow(event, 0))
@@ -153,13 +182,22 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
       : android
         ? {
             /*
-             * Cast because React Native declares both props `RefObject<T>`,
-             * and React 19's `RefObject` is invariant — a ref that is null
-             * until it mounts, which is every ref, cannot satisfy it.
+             * The cast is React 19 against React Native's own types:
+             * `innerViewRef` is declared `RefObject<View>` and React 19's
+             * `RefObject` is invariant, so a ref that is null until it mounts
+             * — every ref — cannot satisfy it.
              */
             innerViewRef: content as RefObject<View>,
-            scrollViewRef: scroller as RefObject<ScrollView>,
-            onLayout: clear,
+            onLayout: (event: LayoutChangeEvent) => {
+              /*
+               * The scroll view comes from the event rather than from a ref:
+               * `ScrollView`'s own `scrollViewRef` prop is the one place it
+               * could come from, and the component overwrites it with the ref
+               * it was given — which, inside a `FlatList`, is always one.
+               */
+              scroller.current = event.target
+              clear()
+            },
           }
         : {},
     /*
@@ -171,6 +209,17 @@ export function useKeyboardClearance(scrollTo: (offset: number) => void) {
     fieldProps: (block?: RefObject<View | null>) => ({
       onFocus: (event: FocusEvent) => {
         field.current = block?.current ?? event.target
+        // Focus moving from one composer to the next while the keyboard is
+        // already up changes no layout and raises no keyboard event.
+        if (android) clear()
+      },
+      /*
+       * A field that grows as it is typed into pushes its own send button back
+       * under the keyboard. Android only; on iOS nothing below the field ever
+       * left the screen to begin with, since the scroll there is measured from
+       * the box as the keyboard arrives.
+       */
+      onContentSizeChange: () => {
         if (android) clear()
       },
       onBlur: () => {

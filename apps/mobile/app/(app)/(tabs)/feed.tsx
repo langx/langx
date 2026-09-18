@@ -299,7 +299,9 @@ export default function FeedScreen() {
    * feed, and this list pulls to refresh, so it cannot hand the keyboard to
    * `automaticallyAdjustKeyboardInsets` — see the hook.
    */
-  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
+  const keyboard = useKeyboardClearance((offset, animated) =>
+    listRef.current?.scrollToOffset({ offset, animated }),
+  )
   const listRef = useRef<FlatList<FeedPost>>(null)
   /*
    * The correction box, not the field inside it: the attachment bar and the

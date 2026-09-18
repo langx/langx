@@ -135,7 +135,9 @@ export default function PostScreen() {
    * where the keyboard lands, and this list pulls to refresh, so it cannot
    * hand the problem to `automaticallyAdjustKeyboardInsets` — see the hook.
    */
-  const keyboard = useKeyboardClearance((offset) => listRef.current?.scrollToOffset({ offset }))
+  const keyboard = useKeyboardClearance((offset, animated) =>
+    listRef.current?.scrollToOffset({ offset, animated }),
+  )
   const listRef = useRef<FlatList<PostCorrection | PronunciationAnswer>>(null)
   /*
    * The two boxes, not the two fields: each has a send button under it, and

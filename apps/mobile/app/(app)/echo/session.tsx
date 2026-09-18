@@ -91,7 +91,9 @@ export default function EchoSessionScreen() {
    * The answer box sits under the card's picture and the Check button under
    * the whole card, and the keyboard covered both — see the hook.
    */
-  const keyboard = useKeyboardClearance((offset) => cardRef.current?.scrollTo({ y: offset }))
+  const keyboard = useKeyboardClearance((offset, animated) =>
+    cardRef.current?.scrollTo({ y: offset, animated }),
+  )
   const cardRef = useRef<ScrollView>(null)
   const { colors } = useTheme()
   const t = useT()
