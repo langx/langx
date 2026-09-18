@@ -68,6 +68,31 @@ describe('the voice table', () => {
     const max = source.match(/^MAX_TEXT = (\d+)$/m)
     expect(Number(max?.[1])).toBe(TTS_MAX_TEXT_LENGTH)
   })
+
+  /**
+   * `apps/tts/voices.json` is what the Dockerfile downloads and what the
+   * service looks a Piper voice up in. A voice in this table but not in that
+   * manifest is a 400 the app cannot see coming; one in the manifest but not
+   * here is 60 MB of image nothing will ever ask for.
+   */
+  it('names exactly the Piper voices the service is built with', () => {
+    const manifest: Record<string, { id: string; model: string }[]> = JSON.parse(
+      readFileSync(join(__dirname, '../../../apps/tts/voices.json'), 'utf8'),
+    )
+
+    const fromTable = Object.entries(SPEECH_VOICES).flatMap(([lang, voices]) =>
+      voices.filter((voice) => voice.engine === 'piper').map((voice) => `${lang} ${voice.id} ${voice.model}`),
+    )
+    const fromManifest = Object.entries(manifest).flatMap(([lang, voices]) =>
+      voices.map((voice) => `${lang} ${voice.id} ${voice.model}`),
+    )
+    expect(fromManifest.sort()).toEqual(fromTable.sort())
+
+    // Kokoro's six are the service's own table, never the manifest's.
+    for (const lang of Object.keys(ECHO_SYNTH_VOICES)) {
+      expect(manifest[lang]).toBeUndefined()
+    }
+  })
 })
 
 describe('detectSpeechLanguage', () => {

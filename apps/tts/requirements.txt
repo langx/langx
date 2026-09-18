@@ -1,3 +1,7 @@
 # Pinned, because the model file and the wheel's espeak binding move together.
 kokoro-onnx==0.4.9
 soundfile==0.13.1
+
+# Piper for the thirty-one languages Kokoro does not read; see server.py.
+# GPL-3, and it runs as its own service that we do not distribute.
+piper-tts==1.8.0

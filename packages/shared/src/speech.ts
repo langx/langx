@@ -121,13 +121,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       model: 'cs/cs_CZ/jirka/medium/cs_CZ-jirka-medium.onnx',
       license: 'CC0',
     },
-    {
-      id: 'cs_CZ-kasandra-medium',
-      engine: 'piper',
-      model: 'cs/cs_CZ/kasandra/medium/cs_CZ-kasandra-medium.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'kasandra (cs_CZ), https://huggingface.co/ondrazarici/Cassandra-Kasandra-piper-cz',
-    },
   ],
   cy: [
     {
@@ -151,12 +144,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       id: 'de_DE-thorsten-medium',
       engine: 'piper',
       model: 'de/de_DE/thorsten/medium/de_DE-thorsten-medium.onnx',
-      license: 'CC0',
-    },
-    {
-      id: 'de_DE-thorsten_emotional-medium',
-      engine: 'piper',
-      model: 'de/de_DE/thorsten_emotional/medium/de_DE-thorsten_emotional-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -184,12 +171,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       model: 'fa/fa_IR/amir/medium/fa_IR-amir-medium.onnx',
       license: 'CC0',
     },
-    {
-      id: 'fa_IR-ganji-medium',
-      engine: 'piper',
-      model: 'fa/fa_IR/ganji/medium/fa_IR-ganji-medium.onnx',
-      license: 'CC0',
-    },
   ],
   fi: [
     {
@@ -204,12 +185,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       id: 'hu_HU-anna-medium',
       engine: 'piper',
       model: 'hu/hu_HU/anna/medium/hu_HU-anna-medium.onnx',
-      license: 'CC0',
-    },
-    {
-      id: 'hu_HU-berta-medium',
-      engine: 'piper',
-      model: 'hu/hu_HU/berta/medium/hu_HU-berta-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -255,25 +230,12 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       model: 'ne/ne_NP/chitwan/medium/ne_NP-chitwan-medium.onnx',
       license: 'CC0',
     },
-    {
-      id: 'ne_NP-google-medium',
-      engine: 'piper',
-      model: 'ne/ne_NP/google/medium/ne_NP-google-medium.onnx',
-      license: 'CC-BY-SA-4.0',
-      attribution: 'google (ne_NP), http://www.openslr.org/43/',
-    },
   ],
   nl: [
     {
       id: 'nl_NL-alex-medium',
       engine: 'piper',
       model: 'nl/nl_NL/alex/medium/nl_NL-alex-medium.onnx',
-      license: 'CC0',
-    },
-    {
-      id: 'nl_BE-nathalie-medium',
-      engine: 'piper',
-      model: 'nl/nl_BE/nathalie/medium/nl_BE-nathalie-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -284,24 +246,12 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       model: 'no/no_NO/nvcc/medium/no_NO-nvcc-medium.onnx',
       license: 'CC0',
     },
-    {
-      id: 'no_NO-talesyntese-medium',
-      engine: 'piper',
-      model: 'no/no_NO/talesyntese/medium/no_NO-talesyntese-medium.onnx',
-      license: 'CC0',
-    },
   ],
   pl: [
     {
       id: 'pl_PL-darkman-medium',
       engine: 'piper',
       model: 'pl/pl_PL/darkman/medium/pl_PL-darkman-medium.onnx',
-      license: 'CC0',
-    },
-    {
-      id: 'pl_PL-gosia-medium',
-      engine: 'piper',
-      model: 'pl/pl_PL/gosia/medium/pl_PL-gosia-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -318,12 +268,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       id: 'ru_RU-denis-medium',
       engine: 'piper',
       model: 'ru/ru_RU/denis/medium/ru_RU-denis-medium.onnx',
-      license: 'CC0',
-    },
-    {
-      id: 'ru_RU-dmitri-medium',
-      engine: 'piper',
-      model: 'ru/ru_RU/dmitri/medium/ru_RU-dmitri-medium.onnx',
       license: 'CC0',
     },
   ],
@@ -368,13 +312,6 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       license: 'CC-BY-4.0',
       attribution: 'padmavathi (te_IN), https://huggingface.co/datasets/ai4bharat/indicvoices_r',
     },
-    {
-      id: 'te_IN-venkatesh-medium',
-      engine: 'piper',
-      model: 'te/te_IN/venkatesh/medium/te_IN-venkatesh-medium.onnx',
-      license: 'CC-BY-4.0',
-      attribution: 'venkatesh (te_IN), https://huggingface.co/datasets/ai4bharat/indicvoices_r',
-    },
   ],
   uk: [
     {
@@ -383,24 +320,12 @@ export const SPEECH_VOICES: Readonly<Record<string, readonly SpeechVoice[]>> = {
       model: 'uk/uk_UA/ukrainian_tts/medium/uk_UA-ukrainian_tts-medium.onnx',
       license: 'CC0',
     },
-    {
-      id: 'uk_UA-mykyta-high',
-      engine: 'piper',
-      model: 'uk/uk_UA/mykyta/high/uk_UA-mykyta-high.onnx',
-      license: 'Apache-2.0',
-    },
   ],
   ur: [
     {
       id: 'ur_PK-aegis_female-medium',
       engine: 'piper',
       model: 'ur/ur_PK/aegis_female/medium/ur_PK-aegis_female-medium.onnx',
-      license: 'MIT',
-    },
-    {
-      id: 'ur_PK-fasih-medium',
-      engine: 'piper',
-      model: 'ur/ur_PK/fasih/medium/ur_PK-fasih-medium.onnx',
       license: 'MIT',
     },
   ],

@@ -25,6 +25,25 @@ RUN curl -fsSL -o kokoro-v1.0.onnx "$MODEL_BASE/kokoro-v1.0.onnx" \
   && echo "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5  kokoro-v1.0.onnx" | sha256sum -c - \
   && echo "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d  voices-v1.0.bin" | sha256sum -c -
 
+# The Piper models the manifest names, one language each, in a layer of their
+# own so that editing `server.py` does not re-download two gigabytes and a
+# deploy that changes no voice pushes no voice. `voices.json` is copied first
+# because the layer is keyed on it, and it is the only input.
+#
+# One `.onnx` and its `.onnx.json` config per voice, laid out under `piper/` by
+# the path the manifest gives — which is the path inside `rhasspy/piper-voices`,
+# so a voice can be looked up there under the name it has here.
+COPY voices.json ./
+ARG PIPER_BASE=https://huggingface.co/rhasspy/piper-voices/resolve/main
+RUN set -eux; \
+  python -c "import json;[print(v['model']) for vs in json.load(open('voices.json')).values() for v in vs]" \
+    | while read -r model; do \
+        mkdir -p "piper/$(dirname "$model")"; \
+        curl -fsSL -o "piper/$model" "$PIPER_BASE/$model"; \
+        curl -fsSL -o "piper/$model.json" "$PIPER_BASE/$model.json"; \
+      done; \
+  du -sh piper
+
 COPY server.py ./
 
 # Debian's espeak-ng rather than the wheel's bundled copy — see load_kokoro in
@@ -46,9 +65,21 @@ RUN set -eux; \
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
     ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
-# Read one word at build time, so an image that cannot phonemise fails here
-# and not on the first request after a deploy that looked green.
-RUN python -c "from server import load_kokoro; load_kokoro().create('hello', voice='af_heart', lang='en-us')"
+# Read one word with each engine at build time, so an image that cannot
+# phonemise fails here and not on the first request after a deploy that looked
+# green. Every Piper voice, not a sample: a model that 404'd or arrived
+# truncated is indistinguishable from a good one until something loads it, and
+# the download above is the step most likely to go quietly wrong.
+#
+# Both engines in one interpreter on purpose. Each embeds its own espeak-ng,
+# and two copies of a C library with global state in one process is exactly the
+# failure that passes either test alone.
+RUN python -c "\
+import json; \
+from server import kokoro_wav, load_kokoro, load_piper, piper_wav, to_aac; \
+assert to_aac(kokoro_wav(*load_kokoro().create('hello', voice='af_heart', lang='en-us'))); \
+[print(lang, 'ok', flush=True) for lang, vs in sorted(json.load(open('voices.json')).items()) \
+ if all(to_aac(piper_wav(load_piper(v['id'], v['model']), 'hallo')) for v in vs)]"
 
 RUN useradd --create-home tts
 USER tts
