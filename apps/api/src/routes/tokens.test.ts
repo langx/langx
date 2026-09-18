@@ -1127,15 +1127,12 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       const body = (await summaryOf(viewer, 'stripowner')).json<Summary>()
 
       expect(body.topBadges).toHaveLength(PROFILE_BADGE_STRIP_MAX)
-      // Every streak rung is earned, so the first six are the first six rungs
-      // in catalogue order — not six rows of things they have not done.
+      // Every streak rung is earned, so what comes back is the first few rungs
+      // in catalogue order — not rows of things they have not done.
       expect(body.topBadges.map((badge) => badge.id)).toEqual([
         'streak.7',
         'streak.30',
         'streak.100',
-        'streak.180',
-        'streak.365',
-        'streak.730',
       ])
       // The count is the whole shelf, which is what "+N" on the strip counts.
       expect(body.badges).toBeGreaterThan(body.topBadges.length)

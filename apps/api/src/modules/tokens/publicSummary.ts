@@ -95,7 +95,7 @@ export async function getPublicSummary(
      * alone is the locked half and how far along it they are.
      *
      * `filter` before `slice`: the shelf holds locked rows too, and taking the
-     * first six of *those* would draw a strip of things this person has not
+     * first few of *those* would draw a strip of things this person has not
      * done. The catalogue's own order survives the filter, which is the order
      * `badgesEarnedFirst` leaves the earned half in on the badge page, so the
      * strip and the page agree on which badge comes first.

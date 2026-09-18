@@ -279,13 +279,21 @@ export type PublicBadges = z.infer<typeof publicBadgesSchema>
 /**
  * How many marks the profile's badge strip draws before it gives up and counts.
  *
- * Six, because the strip is one button and so cannot scroll: at 40px a mark
- * and 10px between them, six and a "+12" fit the 343px a 375px phone leaves
- * after its gutters, and seven do not. Sent capped from the server rather than
- * sliced on the client, so a member with forty badges does not ship
- * thirty-four of them to draw none.
+ * Three, and it is the mark's size that decides it. The strip is one button
+ * and so cannot scroll, which makes the row's width a hard budget: a 375px
+ * phone leaves 335px inside its gutters, and at the size the marks are now
+ * drawn — big enough to read as badges rather than as bullet points — three
+ * and a "+12" fit where four do not.
+ *
+ * It was six while the marks were 40px. Making them roughly twice that spends
+ * the same row on fewer, and that is the trade this number records: the strip
+ * is a glimpse that opens the shelf, so three legible marks say more than six
+ * illegible ones, and the rest were always going to be a count anyway.
+ *
+ * Sent capped from the server rather than sliced on the client, so a member
+ * with forty badges does not ship thirty-seven of them to draw none.
  */
-export const PROFILE_BADGE_STRIP_MAX = 6
+export const PROFILE_BADGE_STRIP_MAX = 3
 
 /** One mark on that strip: enough to draw it, and nothing else. */
 export const profileBadgeSchema = z.object({

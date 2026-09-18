@@ -10,12 +10,19 @@ import { useLocale, useT } from '../i18n'
  * for whatever did not fit.
  *
  * **One button, not one per badge.** Every mark would open the same page, so
- * separate targets would buy nothing and cost the two things a row of small
- * circles cannot afford — a 40px tap target each, and the ambiguity of a
- * horizontal scroll that is also a press. The strip does not scroll: the
- * server sends at most `PROFILE_BADGE_STRIP_MAX` marks and the rest becomes
- * "+12", which says the same thing in less room and cannot be missed by a
- * thumb.
+ * separate targets would buy nothing and cost the ambiguity of a horizontal
+ * scroll that is also a press. The strip does not scroll: the server sends at
+ * most `PROFILE_BADGE_STRIP_MAX` marks and the rest becomes "+12", which says
+ * the same thing in less room and cannot be missed by a thumb.
+ *
+ * **The marks size themselves to the row** rather than taking a number of
+ * pixels. Because the strip cannot scroll, a fixed width is a bet on the
+ * phone: 80px marks fit a 375px screen and overflow a 320px one, silently and
+ * only on the smallest devices anybody tests last. `flex: 1` against a square
+ * aspect ratio divides whatever the row has, and `maxWidth` stops a tablet
+ * from drawing three coasters. The glyph stays a fixed 40px: it reads well
+ * against every width that division can produce, and scaling it too would
+ * need a layout pass to find out how big the circle turned out.
  *
  * Colour and glyph come from the same `BADGE_MARKS` the badge page uses, so a
  * reader who has learned that green is teaching and blue is talking reads this
@@ -55,7 +62,7 @@ export function BadgeStrip({
         const mark = BADGE_MARKS[badge.kind](colors)
         return (
           <View key={badge.id} style={[styles.mark, { backgroundColor: mark.fill }]}>
-            <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={20} />
+            <BadgeGlyph icon={badge.icon ?? 'award'} color={mark.glyph} size={40} />
           </View>
         )
       })}
@@ -68,16 +75,21 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   strip: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: spacing.md,
     paddingVertical: spacing.lg,
   },
   pressed: { opacity: 0.6 },
   mark: {
     alignItems: 'center',
+    aspectRatio: 1,
     borderRadius: radius.pill,
-    height: 40,
+    flex: 1,
     justifyContent: 'center',
-    width: 40,
+    // Three marks share a 375px row at about 88px each, so this is a ceiling
+    // for wide screens rather than the size anybody's phone will draw.
+    maxWidth: 88,
   },
-  rest: { color: colors.textMuted, fontSize: 13, fontWeight: '700' },
+  // Out of the division: the count is as wide as its digits, and the marks
+  // take what is left.
+  rest: { color: colors.textMuted, flex: 0, fontSize: 15, fontWeight: '700' },
 }))
