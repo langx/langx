@@ -1303,7 +1303,7 @@ export const fr: Localized<EnMessages> = {
     followingCount: { one: '{count} abonnement', other: '{count} abonnements' },
     followersTitle: 'Abonnés',
     rankLabel: 'Cette semaine',
-    rankValue: 'Top {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: { one: '{count} badge gagné', other: '{count} badges gagnés' },
     followingTitle: 'Abonnements',
     followersEmptyTitle: 'Pas encore d’abonnés',

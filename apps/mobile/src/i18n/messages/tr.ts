@@ -1299,7 +1299,7 @@ export const tr: Localized<EnMessages> = {
     followingCount: { one: '{count} takip', other: '{count} takip' },
     followersTitle: 'Takipçiler',
     rankLabel: 'Bu hafta',
-    rankValue: 'İlk %{percent}',
+    rankValue: '%{percent}',
     badgeStrip: { one: '{count} rozet kazanıldı', other: '{count} rozet kazanıldı' },
     followingTitle: 'Takip edilenler',
     followersEmptyTitle: 'Henüz takipçi yok',

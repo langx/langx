@@ -1291,7 +1291,7 @@ export const ptBR: Localized<EnMessages> = {
     followingCount: { one: '{count} seguindo', other: '{count} seguindo' },
     followersTitle: 'Seguidores',
     rankLabel: 'Esta semana',
-    rankValue: 'Top {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: { one: '{count} emblema conquistado', other: '{count} emblemas conquistados' },
     followingTitle: 'Seguindo',
     followersEmptyTitle: 'Ainda sem seguidores',

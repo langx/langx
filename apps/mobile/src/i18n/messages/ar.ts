@@ -1489,7 +1489,7 @@ export const ar: Localized<EnMessages> = {
     },
     followersTitle: 'المتابعون',
     rankLabel: 'هذا الأسبوع',
-    rankValue: 'أفضل {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: {
       zero: '{count} شارة',
       one: 'شارة واحدة',

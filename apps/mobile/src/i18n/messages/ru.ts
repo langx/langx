@@ -1442,7 +1442,7 @@ export const ru: Localized<EnMessages> = {
     },
     followersTitle: 'Подписчики',
     rankLabel: 'На этой неделе',
-    rankValue: 'Топ {percent}%',
+    rankValue: '{percent}%',
     badgeStrip: {
       one: '{count} значок заработан',
       few: '{count} значка заработано',
