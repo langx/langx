@@ -1,6 +1,7 @@
 import {
   BADGES,
   TOKEN_RULES,
+  isCohortBadge,
   streakMilestoneBonus,
   type BadgeKind,
   type BadgeSummary,
@@ -10,6 +11,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { ApiError } from '../../lib/ApiError'
+import { cameFromV1 } from '../handles/legacyPrecreate'
 import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
@@ -59,10 +61,13 @@ export async function getBadgeSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError('NOT_FOUND', 'Complete onboarding first')
 
-  const [corrections, milestoneDates, aggregates] = await Promise.all([
+  const [corrections, milestoneDates, aggregates, fromV1] = await Promise.all([
     countCorrectionsWritten(db, userId),
     streakMilestoneDates(db, userId),
     readAggregates(db, userId),
+    // A point read on `user._id`, and inside the same `Promise.all` as the
+    // three above so it costs no round-trip. See `progress.origin`.
+    cameFromV1(db, userId),
   ])
 
   const joinedAt = new Date(profile.createdAt).getTime()
@@ -91,7 +96,34 @@ export async function getBadgeSummary(
     messages: profile.stats?.messagesSent ?? 0,
     tokens: aggregates.all,
     veteran: memberDays,
+    /**
+     * A boolean wearing a number, so the one `>=` below still serves every
+     * kind. Monotonic like the rest: `precreatedFromV1` is written once by a
+     * script that will never run again, and the v1 cohort is closed.
+     *
+     * Read from `user.precreatedFromV1` and not `profile.restoredFromV1`,
+     * which is already in hand and would be free. `restoredFromV1` exists only
+     * where a v1 profile was *staged*; `precreate-v1-users.ts` also opened rows
+     * for v1 auth users with nothing to stage, so it under-counts the cohort it
+     * looks like it names, and the people it misses are exactly the ones with
+     * least to show for having been here.
+     */
+    origin: fromV1 ? 1 : 0,
   }
+
+  /**
+   * The catalogue this account is shown.
+   *
+   * A cohort badge that is not theirs is dropped rather than sent locked, and
+   * both halves of that matter. `next` cannot offer a badge nobody can go and
+   * earn — a non-v1 account one correction short would otherwise be pointed at
+   * v1 the moment the fractions happened to tie — and the grid cannot draw a
+   * row reading "Locked" under a promise this app will never keep. For
+   * everybody who does have it, and for every counting kind, this is `BADGES`.
+   */
+  const catalogue = BADGES.filter(
+    (badge) => !isCohortBadge(badge.kind) || progress[badge.kind] >= badge.threshold,
+  )
 
   /**
    * The date a badge was earned, where that is knowable at all.
@@ -100,6 +132,10 @@ export async function getBadgeSummary(
    * arithmetic — the account's birthday plus its own threshold — and is worth
    * computing because it is exact. The counting kinds have nothing: the count
    * is a total, and nothing records which correction was the thousandth.
+   *
+   * Nor does `origin`, deliberately. The date it was earned is a date in v1
+   * that this database does not hold; `precreatedFromV1.at` is the day a
+   * script ran, and dating the badge to that is a lie shaped like a fact.
    */
   function earnedAtOf(kind: BadgeKind, threshold: number): string | null {
     if (kind === 'streak') return milestoneDates.get(threshold)?.toISOString() ?? null
@@ -109,7 +145,7 @@ export async function getBadgeSummary(
     return null
   }
 
-  const badges: EarnedBadge[] = BADGES.map((badge) => {
+  const badges: EarnedBadge[] = catalogue.map((badge) => {
     const earned = progress[badge.kind] >= badge.threshold
     return {
       id: badge.id,
@@ -132,12 +168,12 @@ export async function getBadgeSummary(
    * three-year streak instead. Ties go to the smaller threshold, so the
    * cheaper of two equally-close badges is the one offered.
    */
-  const nextDefinition = BADGES.filter((badge) => progress[badge.kind] < badge.threshold).sort(
-    (a, b) => {
+  const nextDefinition = catalogue
+    .filter((badge) => progress[badge.kind] < badge.threshold)
+    .sort((a, b) => {
       const byFraction = progress[b.kind] / b.threshold - progress[a.kind] / a.threshold
       return byFraction !== 0 ? byFraction : a.threshold - b.threshold
-    },
-  )[0]
+    })[0]
 
   const next = nextDefinition
     ? {

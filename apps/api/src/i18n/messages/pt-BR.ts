@@ -538,6 +538,12 @@ export const ptBR: Localized<ServerMessages> = {
     welcomeRate:
       'Mais uma coisinha, se você quiser: avaliar o LangX na {store} ajuda de verdade as pessoas a nos acharem. Sem pressão nenhuma.',
     welcomeClosing: 'Bons estudos — e boa sorte nessa jornada. 💛',
+    welcomeBack:
+      'Oi — que bom te ver de volta. 👋 Você esteve no primeiro LangX, e agora tem uma insígnia no seu perfil dizendo isso. Só quem veio da v1 tem, e ninguém novo vai ter.',
+    welcomeBackWhatsNew:
+      'Muita coisa mudou. As correções agora são uma coisa própria, você ganha tokens ajudando as pessoas, e o Descobrir procura alguém que esteja aprendendo o seu idioma e fale o que você quer. A mesma ideia, mas desta vez com espaço para fazer direito — dá uma olhada.',
+    welcomeBackClosing:
+      'É aqui que chegam as novidades do LangX, então vale a pena acompanhar. Se faltar alguma coisa ou algo quebrar, Configurações → Sobre → Feedback vem direto para a gente. Bom ter você de volta. 💛',
     assistantOffline:
       'Não consigo responder mensagens agora. Se puder esperar, tente mais tarde; se não, escreva para {email} e uma pessoa vai ler.',
     assistantLimit:

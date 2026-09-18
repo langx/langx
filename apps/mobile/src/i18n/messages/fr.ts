@@ -1854,6 +1854,7 @@ export const fr: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} jeton gagné', other: '{formatted} jetons gagnés' },
     memberDays: { one: '{formatted} jour de membre', other: '{formatted} jours de membre' },
     corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+    earlyAdopter: 'Utilisateur de la première heure',
     earnedOf: '{earned} sur {total} obtenus',
   },
 

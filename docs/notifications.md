@@ -72,19 +72,20 @@ carrying every kind cannot honestly offer to stop one of them.
 
 ## 1. Transactional — no switch, no unsubscribe
 
-| Message                            | Fires on                                          | Channels                      | Once because                                |
-| ---------------------------------- | ------------------------------------------------- | ----------------------------- | ------------------------------------------- |
-| Verify your email                  | sign-up                                           | email                         | Better Auth mints the link                  |
-| Reset your password                | forgot password                                   | email                         | —                                           |
-| Sign-in link                       | magic-link request                                | email                         | single-use, 15 min                          |
-| You already have an account        | sign-up over an existing address                  | email                         | —                                           |
-| Confirm account deletion           | delete request                                    | email                         | token burned on use                         |
-| **Welcome to LangX**               | onboarding completes                              | email                         | `createProfile` refuses a second profile    |
-| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`           |
-| **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`       |
-| Bounty paid                        | a report is confirmed                             | email + push                  | the ledger's unique `{userId, kind, refId}` |
-| **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`             |
-| Report received / feedback         | somebody reports or writes in                     | email to support              | —                                           |
+| Message                            | Fires on                                          | Channels                      | Once because                                    |
+| ---------------------------------- | ------------------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| Verify your email                  | sign-up                                           | email                         | Better Auth mints the link                      |
+| Reset your password                | forgot password                                   | email                         | —                                               |
+| Sign-in link                       | magic-link request                                | email                         | single-use, 15 min                              |
+| You already have an account        | sign-up over an existing address                  | email                         | —                                               |
+| Confirm account deletion           | delete request                                    | email                         | token burned on use                             |
+| **Welcome to LangX**               | onboarding completes                              | email                         | `createProfile` refuses a second profile        |
+| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`               |
+| **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`           |
+| Bounty paid                        | a report is confirmed                             | email + push                  | the ledger's unique `{userId, kind, refId}`     |
+| **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
+| **Welcome back from v1**           | first session on a `precreatedFromV1` row         | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
+| Report received / feedback         | somebody reports or writes in                     | email to support              | —                                               |
 
 The lifetime gift is the only transactional message that arrives as a
 **message in the app** as well as in the two usual places, and the push is the
@@ -95,8 +96,20 @@ converted at `legacyTokenDivisor`, and the balance as it stands when the
 letter is written — three numbers from three sources, which is why
 `lifetimeGiftNotice.ts` reads them itself rather than being handed them.
 
+The welcome-back is the second message in the app here, and the only line in
+this table with **no push at all**. Two reasons, and either alone would be
+enough. It is sent from `session.create.after`, which runs on every sign-in and
+not only the first — `deliverOfficialMessage` answers a repeated `clientId`
+with the message it already wrote, so a fan-out would push the same greeting
+forever, and a ledger claim would not stop it because those rows expire after
+thirty days. And the badge it is about pushes that evening anyway: two knocks
+for one piece of news is one too many.
+
 Whoever earned a rung and has **not** come back is not in this table at all:
-there is nothing to notify an account nobody has opened.
+there is nothing to notify an account nobody has opened. The same goes for the
+welcome-back — a `precreatedFromV1` row nobody has ever signed into has no
+languages to be written to in. That population's channel is the email
+win-back, `audiencePlan(db, 'v1')`.
 
 **Finish your profile** waits on the clock rather than on an event, because
 the event it waits for is one that never came: a `user` row is written at
@@ -231,6 +244,16 @@ coloured disc when there is none. Each face links to `app.langx.io/<handle>`.
 The badge section is the one that cannot be recomputed at seven o'clock: the
 round-up overwrites `notifiedBadgeIds` at six, so it leaves what it found in
 `stats.digestBadges` for the digest to collect.
+
+One badge in the catalogue is a **cohort** rather than a counter — `origin.v1`,
+"Early Adopter", derived from `user.precreatedFromV1`. It behaves like any other
+here: the round-up finds it missing from `notifiedBadgeIds`, writes the inbox
+row and pushes once. Two things about it are worth knowing. It is omitted from
+`GET /me/badges` entirely for everybody it is not true of, rather than sent
+locked, so nobody is ever shown a goal they cannot reach. And because first
+sight is never news, an account returning from v1 _after_ this shipped is never
+pushed about it — the @langx welcome-back is that person's greeting, and the
+badge push was for the people who had already come back.
 
 ### The three throttles that matter
 

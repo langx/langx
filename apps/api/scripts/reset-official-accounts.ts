@@ -60,8 +60,14 @@ import { supportsPut, type StorageProvider } from '../src/storage/StorageProvide
  * Every sender in `modules/official` and `modules/admin` stamps one of these.
  * A message from the account without one was typed by a person, before the
  * account was official.
+ *
+ * `welcomeback` is its own alternative rather than a suffix on `welcome`: the
+ * colon is required immediately after each name, so a prefix that is a prefix
+ * of another one does not come along for free — and a sender missing from this
+ * list is not a silent no-op, it is a reset deleting that message as if a
+ * person had typed it.
  */
-const OFFICIAL_CLIENT_ID = /^(welcome|broadcast|lifetime|admin):/
+const OFFICIAL_CLIENT_ID = /^(welcome|welcomeback|broadcast|lifetime|admin):/
 
 function personSentFilter(userId: string): Filter<Message> {
   // `$nor` rather than `$not`, so a row with no `clientId` at all matches too.

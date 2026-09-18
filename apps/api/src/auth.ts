@@ -25,6 +25,7 @@ import {
   UNRESOLVED_HANDLE_EMAIL,
 } from './modules/account/handleSignIn'
 import { isUnclaimedV1Row, settlePrecreatedUser } from './modules/handles/legacyPrecreate'
+import { sendWelcomeBackMessage } from './modules/official/welcomeBack'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { notifyLifetimeGift } from './modules/handles/lifetimeGiftNotice'
 import { recordTermsAcceptance } from './modules/account/terms'
@@ -521,7 +522,17 @@ export async function createAuth({
            */
           after: async (session) => {
             try {
-              await settlePrecreatedUser(db, session.userId, tryRestore)
+              /*
+               * `true` means the row was one of the script's, which is the
+               * cohort marker — so this is also the moment somebody from v1
+               * comes back, and the one place that sees every route in. It
+               * fires on every session and not only the first; the message is
+               * idempotent by `clientId` and sends no push, which is what
+               * makes that safe. See `welcomeBack.ts`.
+               */
+              if (await settlePrecreatedUser(db, session.userId, tryRestore)) {
+                await sendWelcomeBackMessage(db, session.userId)
+              }
             } catch (error) {
               console.error('[legacy-precreate] settle failed', { userId: session.userId, error })
             }

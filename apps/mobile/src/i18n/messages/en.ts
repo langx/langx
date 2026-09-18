@@ -1984,6 +1984,13 @@ export const en = {
     tokensEarned: { one: '{formatted} token earned', other: '{formatted} tokens earned' },
     memberDays: { one: '{formatted} day a member', other: '{formatted} days a member' },
     corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+    /**
+     * The only badge whose wording ignores `threshold` — there is no number in
+     * it. `origin.v1` is the only member of its kind, so this names it rather
+     * than switching. Keep every translation under 40 characters: the label
+     * goes straight into the share card's headline, which caps there.
+     */
+    earlyAdopter: 'Early Adopter',
     earnedOf: '{earned} of {total} earned',
   },
 

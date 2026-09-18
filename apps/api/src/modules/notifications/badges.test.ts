@@ -60,6 +60,7 @@ describe('the badge round-up', () => {
       notifications?: unknown
       withDevice?: boolean
       timezone?: string
+      fromV1?: boolean
     } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
@@ -77,9 +78,14 @@ describe('the badge round-up', () => {
       },
       createdAt: new Date('2026-09-01T00:00:00Z'),
     } as never)
-    await handle.db
-      .collection(COLLECTIONS.user)
-      .insertOne({ _id: authId(userId), email: `${userId}@example.com`, emailVerified: true })
+    await handle.db.collection(COLLECTIONS.user).insertOne({
+      _id: authId(userId),
+      email: `${userId}@example.com`,
+      emailVerified: true,
+      // The cohort marker `origin.v1` is derived from, written by
+      // `precreate-v1-users.ts` and read by `cameFromV1`.
+      ...(opts.fromV1 ? { precreatedFromV1: { at: now, legacyUserId: userId } } : {}),
+    })
     if (opts.withDevice) {
       await handle.db.collection<Device>(COLLECTIONS.devices).insertOne({
         userId,
@@ -106,6 +112,43 @@ describe('the badge round-up', () => {
       .findOne({ _id: userId })
     return profile?.stats.digestBadges
   }
+
+  /**
+   * `origin.v1` lands on an account that already has `notifiedBadgeIds` — that
+   * is every profile on the day this ships — so it is news exactly once, the
+   * same way crossing any other threshold is.
+   */
+  it('tells a v1 account about the badge it has always had', async () => {
+    const userId = await newProfile({ notifiedBadgeIds: [], withDevice: true, fromV1: true })
+
+    const result = await runBadgeRoundUpPass(handle.db, push, now)
+    expect(result).toEqual({ sent: 1, seeded: 0, failed: 0 })
+    expect(push.sent[0]?.title).toContain('Early Adopter')
+    expect(await notifiedIdsOf(userId)).toContain('origin.v1')
+
+    const row = await handle.db
+      .collection(COLLECTIONS.notifications)
+      .findOne({ userId, kind: 'badgeEarned' })
+    expect(row?.refId).toBe('origin.v1')
+    expect((await pendingOf(userId))?.count).toBe(1)
+
+    push.sent.length = 0
+    expect(await runBadgeRoundUpPass(handle.db, push, now)).toEqual({
+      sent: 0,
+      seeded: 0,
+      failed: 0,
+    })
+    expect(push.sent).toHaveLength(0)
+  })
+
+  it('never mentions it to anybody else', async () => {
+    const userId = await newProfile({ notifiedBadgeIds: [], withDevice: true })
+    await runBadgeRoundUpPass(handle.db, push, now)
+    // Not "has it locked" — `getBadgeSummary` drops a cohort badge that is not
+    // yours from the catalogue entirely, so there is nothing to be told about.
+    expect(await notifiedIdsOf(userId)).not.toContain('origin.v1')
+    expect(push.sent).toHaveLength(0)
+  })
 
   /**
    * The one that matters on the day this ships: everybody already has badges,

@@ -33,7 +33,9 @@ import {
   updateProfile,
 } from '../modules/profiles/profiles'
 import { deleteGuest } from '../modules/profiles/purgeGuests'
+import { cameFromV1 } from '../modules/handles/legacyPrecreate'
 import { sendWelcomeMessage } from '../modules/official/welcome'
+import { sendWelcomeBackMessage } from '../modules/official/welcomeBack'
 import { notifyLifetimeGift } from '../modules/handles/lifetimeGiftNotice'
 import { sendWelcome } from '../modules/profiles/welcome'
 import { isEmailVerified } from '../modules/profiles/emailVerified'
@@ -74,24 +76,36 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         },
       )
       /*
-       * And the same hello inside the app, from @langx.
+       * And a hello inside the app, from @langx — a different one depending on
+       * whether this person has been here before.
        *
-       * Not for somebody coming back from v1: they have the welcome-back
-       * screen, which says more than this could and says it about their own
-       * account. `createProfile` returns the restored profile, so the flag is
-       * already here.
+       * The question is `cameFromV1` and not `profile.restoredFromV1`, which
+       * is already in hand and would be free. `restoredFromV1` is only set
+       * where a v1 profile was *staged*, and `precreate-v1-users.ts` also
+       * opened rows for v1 auth users with nothing to stage — so asking it
+       * here sent the *new user's* welcome to people who had been on LangX for
+       * years, and skipped the welcome-back for exactly the half of the cohort
+       * with least to show for having been here.
+       *
+       * Most returning users never reach this route at all: `restoreByHash`
+       * writes their profile and `auth.ts` sends the welcome-back from the
+       * session hook. This covers the rest — nothing staged, or a staged
+       * record too thin to build a profile from — and the shared `clientId` is
+       * what stops the two paths from saying it twice.
        *
        * Wrapped and unawaited for the same reason as the mail above — the
        * profile is written and onboarding has succeeded, so nothing that
        * happens after it may turn that into a 500.
        */
-      if (!profile.restoredFromV1) {
-        void sendWelcomeMessage(app, request.userId, request.headers['user-agent']).catch(
-          (error: unknown) => {
-            request.log.error({ err: error }, 'welcome message failed')
-          },
-        )
-      }
+      void (async () => {
+        if (await cameFromV1(app.mongo.db, request.userId)) {
+          await sendWelcomeBackMessage(app.mongo.db, request.userId)
+          return
+        }
+        await sendWelcomeMessage(app, request.userId, request.headers['user-agent'])
+      })().catch((error: unknown) => {
+        request.log.error({ err: error }, 'welcome message failed')
+      })
       /*
        * And for the few who came back to a lifetime tier, the one @langx
        * message they do get. `createProfile` restores as well as creates, so

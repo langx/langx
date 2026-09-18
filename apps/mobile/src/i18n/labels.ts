@@ -108,6 +108,9 @@ export function badgeLabel(
     messages: () => t('badges.messagesSent', { count: threshold, formatted }),
     tokens: () => t('badges.tokensEarned', { count: threshold, formatted }),
     veteran: () => t('badges.memberDays', { count: threshold, formatted }),
+    // The one kind with no number in it: a cohort is a fact, not a count, so
+    // `threshold` and `formatted` go unused here on purpose.
+    origin: () => t('badges.earlyAdopter'),
   }
   return wording[kind]()
 }

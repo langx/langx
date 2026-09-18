@@ -2148,6 +2148,7 @@ export const ar: Localized<EnMessages> = {
       many: '{formatted} تصحيحًا',
       other: '{formatted} تصحيح',
     },
+    earlyAdopter: 'من الأوائل',
     earnedOf: 'حصلت على {earned} من {total}',
   },
 

@@ -387,7 +387,14 @@ export interface Profile {
    * `acknowledgedAt` is what stops the screen appearing twice.
    *
    * Deliberately absent from `toPublicProfile`: it is nobody else's business
-   * that this account came from v1, or what it was given for coming back.
+   * what this account was given for coming back.
+   *
+   * The *fact* that it came from v1 is no longer private — that is the Early
+   * Adopter badge, and its owner wears it by choice. The distinction is the
+   * point and survives here: a badge says "I was there", and these four
+   * numbers say what somebody's v1 wallet was worth. Read the cohort from
+   * `user.precreatedFromV1`, never from this field — see `cameFromV1`, and
+   * `docs/decisions.md`.
    */
   restoredFromV1?: {
     at: Date

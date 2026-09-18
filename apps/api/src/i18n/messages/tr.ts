@@ -524,6 +524,12 @@ export const tr: Localized<ServerMessages> = {
     welcomeRate:
       'Son bir şey, canın isterse: {store} üzerinde LangX’e puan vermen bizi bulmalarına cidden yardım ediyor. Zorunlu değil tabii.',
     welcomeClosing: 'İyi pratikler, kolay gelsin. 💛',
+    welcomeBack:
+      'Selam — tekrar hoş geldin. 👋 İlk LangX’te buradaydın ve profilinde bunu söyleyen bir rozet var. Yalnızca v1’den gelenlerde var; yeni kimsede hiç olmayacak.',
+    welcomeBackWhatsNew:
+      'Çok şey değişti. Düzeltmeler artık başlı başına bir iş, insanlara yardım ettikçe jeton kazanıyorsun ve Keşfet senin dilini öğrenen, senin öğrendiğin dili konuşan birini arıyor. Aynı fikir, ama bu sefer düzgün yapacak yer var — bir dolan bakalım.',
+    welcomeBackClosing:
+      'LangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Eksik ya da bozuk bir şey görürsen Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Yeniden aramızda olman güzel. 💛',
     assistantOffline:
       'Şu anda mesajlara yanıt veremiyorum. Acelesi yoksa sonra tekrar dene; varsa {email} adresine yaz, bir insan okuyacak.',
     assistantLimit:

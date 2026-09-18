@@ -2060,6 +2060,7 @@ export const ru: Localized<EnMessages> = {
       many: '{formatted} исправлений',
       other: '{formatted} исправления',
     },
+    earlyAdopter: 'Первопроходец',
     earnedOf: 'Получено {earned} из {total}',
   },
 

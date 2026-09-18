@@ -1841,6 +1841,7 @@ export const tr: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
     memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
+    earlyAdopter: 'İlk kullanıcılardan',
     earnedOf: '{total} rozetten {earned} tanesi kazanıldı',
   },
 
