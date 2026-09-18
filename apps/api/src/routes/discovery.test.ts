@@ -102,6 +102,29 @@ describe('Faz 3 — discovery aggregation', () => {
     )
   }
 
+  /**
+   * Generic so it hands back exactly what it was given — `newUser` returns a
+   * `SignedUpUser` *plus* the handle, and every assertion that uses this needs
+   * it. Out here rather than beside the nearby fixtures because the boosted
+   * strip sorts by distance too now, and two copies of this would be two
+   * places to notice the day the route moves.
+   */
+  async function share<T extends SignedUpUser>(
+    user: T,
+    at: { lat: number; lng: number },
+  ): Promise<T> {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles/me/location',
+      headers: { cookie: user.cookie },
+      payload: at,
+    })
+    if (response.statusCode !== 200) {
+      throw new Error(`sharing location failed (${response.statusCode}): ${response.body}`)
+    }
+    return user
+  }
+
   async function discover(user: SignedUpUser, qs = '') {
     return app.inject({
       method: 'GET',
@@ -1211,24 +1234,6 @@ describe('Faz 3 — discovery aggregation', () => {
     // radius dropped without anybody asking it to.
     const ABROAD = { lat: 52.52, lng: 13.405 } //     ~1,735 km (Berlin)
 
-    // Generic so it hands back exactly what it was given — `newUser` returns a
-    // `SignedUpUser` *plus* the handle, and every assertion below needs it.
-    async function share<T extends SignedUpUser>(
-      user: T,
-      at: { lat: number; lng: number },
-    ): Promise<T> {
-      const response = await app.inject({
-        method: 'POST',
-        url: '/profiles/me/location',
-        headers: { cookie: user.cookie },
-        payload: at,
-      })
-      if (response.statusCode !== 200) {
-        throw new Error(`sharing location failed (${response.statusCode}): ${response.body}`)
-      }
-      return user
-    }
-
     /** A candidate who mutually fits a `tr`-native viewer learning `en`. */
     async function candidate(email: string, overrides: Record<string, unknown> = {}) {
       return newUser(email, {
@@ -1733,7 +1738,7 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(response.json<BoostedProfilesPage>()).toEqual({ items: [] })
     })
 
-    it('applies the filters and ignores the sort — a free viewer is not refused over one', async () => {
+    it('applies the filters, and falls back rather than refusing a sort the viewer cannot buy', async () => {
       const viewer = await viewerFor('boost-filter-viewer@example.com')
       const here = await candidateFor('boost-country-here@example.com', { country: 'US' })
       const elsewhere = await candidateFor('boost-country-elsewhere@example.com', { country: 'FR' })
@@ -1745,14 +1750,131 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(filtered).not.toContain(elsewhere.handle)
 
       /*
-       * `sort` and `radiusKm` reach this route because it reuses
-       * `discoveryQuerySchema`, and the strip has neither. A free viewer must
-       * not be handed `UPGRADE_REQUIRED` or `LOCATION_REQUIRED` for a
-       * parameter that changed nothing.
+       * The list answers `sort=nearby` from a free account with
+       * `UPGRADE_REQUIRED`, and it is right to: it is the answer to the
+       * question that was asked. The strip is an advert above that answer, so
+       * it drops back to its own order and stays out of the way — and, since
+       * `$geoNear` is what puts `distanceKm` on an item, staying out of the
+       * way is also what keeps a Pro+ measurement behind the Pro+ wall.
        */
       const sorted = await boosted(viewer, 'sort=nearby')
       expect(sorted.statusCode).toBe(200)
-      expect(handlesOf(sorted)).toContain(here.handle)
+      const items = sorted.json<BoostedProfilesPage>().items
+      expect(items.map((item) => item.handle)).toContain(here.handle)
+      for (const item of items) expect(item.distanceKm).toBeUndefined()
+    })
+
+    /**
+     * Its own pair (`ne` / `si`), and no `setShowcase` anywhere: under Active
+     * the strip is ordered by the clock, so the photo-and-bio band that leads
+     * the default feed must not get a say. The Fluent member is the most
+     * recently seen of the three and still comes last — the tier band is the
+     * one term that does not vary by section.
+     */
+    it('orders by last active under sort=active, inside the tier band', async () => {
+      const viewer = await newUser('boost-active-viewer@example.com', {
+        nativeLanguages: [{ code: 'ne' }],
+        learning: [{ code: 'si', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'si' }],
+        learning: [{ code: 'ne', level: 'intermediate', priority: 1 }],
+      }
+      const plusDormant = await newUser('boost-active-plus-dormant@example.com', options)
+      const plusRecent = await newUser('boost-active-plus-recent@example.com', options)
+      const proNewest = await newUser('boost-active-pro-newest@example.com', options)
+
+      await setTier(plusDormant.userId, 'pro_plus')
+      await setTier(plusRecent.userId, 'pro_plus')
+      await setTier(proNewest.userId, 'pro')
+
+      const now = Date.now()
+      await setLastActiveAt(plusDormant.userId, new Date(now - 3 * 24 * 60 * 60 * 1000))
+      await setLastActiveAt(plusRecent.userId, new Date(now - 60 * 1000))
+      await setLastActiveAt(proNewest.userId, new Date(now))
+
+      expect(handlesOf(await boosted(viewer, 'sort=active'))).toEqual([
+        plusRecent.handle,
+        plusDormant.handle,
+        proNewest.handle,
+      ])
+    })
+
+    /**
+     * Its own pair (`km` / `lo`). The Fluent member is next door and the
+     * Polyglot ones are 1.5 km and 91 km out: distance decides between the two
+     * Polyglots and nothing decides across the band.
+     */
+    it('orders by distance under sort=nearby, inside the tier band', async () => {
+      const viewer = await newUser('boost-nearby-viewer@example.com', {
+        nativeLanguages: [{ code: 'km' }],
+        learning: [{ code: 'lo', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'lo' }],
+        learning: [{ code: 'km', level: 'intermediate', priority: 1 }],
+      }
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, { lat: 41.0082, lng: 28.9784 })
+
+      const plusFar = await newUser('boost-nearby-plus-far@example.com', options)
+      const plusClose = await newUser('boost-nearby-plus-close@example.com', options)
+      const proNearest = await newUser('boost-nearby-pro-nearest@example.com', options)
+      await setTier(plusFar.userId, 'pro_plus')
+      await setTier(plusClose.userId, 'pro_plus')
+      await setTier(proNearest.userId, 'pro')
+      await share(plusFar, { lat: 40.19, lng: 29.06 }) //   ~91 km
+      await share(plusClose, { lat: 41.02, lng: 28.99 }) // ~1.5 km
+      await share(proNearest, { lat: 41.01, lng: 28.98 }) // next door
+
+      const response = await boosted(viewer, 'sort=nearby')
+      expect(response.statusCode).toBe(200)
+      const items = response.json<BoostedProfilesPage>().items
+      expect(items.map((item) => item.handle)).toEqual([
+        plusClose.handle,
+        plusFar.handle,
+        proNearest.handle,
+      ])
+      // Bucketed on the way out, exactly as the list reports it.
+      for (const item of items) expect(DISTANCE_BUCKETS_KM).toContain(item.distanceKm)
+    })
+
+    /**
+     * Its own pair (`mn` / `uz`). Two consequences of sorting a paid placement
+     * by distance, both deliberate and both worth a test: the strip is bounded
+     * by the circle the list promised, and somebody who shares no point has no
+     * place in an order made of distances. A 2dsphere index is sparse, so the
+     * second falls out of the query rather than being written anywhere.
+     */
+    it('bounds the nearby strip by the radius, and drops a subscriber with no point', async () => {
+      const viewer = await newUser('boost-radius-viewer@example.com', {
+        nativeLanguages: [{ code: 'mn' }],
+        learning: [{ code: 'uz', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'uz' }],
+        learning: [{ code: 'mn', level: 'intermediate', priority: 1 }],
+      }
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, { lat: 41.0082, lng: 28.9784 })
+
+      const inside = await newUser('boost-radius-inside@example.com', options)
+      const outside = await newUser('boost-radius-outside@example.com', options)
+      const nowhere = await newUser('boost-radius-nowhere@example.com', options)
+      for (const person of [inside, outside, nowhere]) await setTier(person.userId, 'pro_plus')
+      await share(inside, { lat: 41.02, lng: 28.99 }) //  ~1.5 km
+      await share(outside, { lat: 39.93, lng: 32.86 }) // ~350 km
+
+      const bounded = handlesOf(await boosted(viewer, 'sort=nearby&radiusKm=10'))
+      expect(bounded).toEqual([inside.handle])
+
+      const unbounded = handlesOf(await boosted(viewer, 'sort=nearby'))
+      expect(unbounded).toEqual([inside.handle, outside.handle])
+      expect(unbounded).not.toContain(nowhere.handle)
+
+      // The same person is in the strip on every other sort: it is the order
+      // that has no room for them, not the entitlement.
+      expect(handlesOf(await boosted(viewer, 'sort=active'))).toContain(nowhere.handle)
     })
 
     /**

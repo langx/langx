@@ -561,11 +561,21 @@ export async function discoverProfiles(
  *
  * Not a sort of the list and not a page of it. Boosted people appear in both,
  * deliberately — the strip is a second chance to be seen, not a promotion out
- * of the feed — so there is no dedupe and no cursor. `sort`, `cursor`,
- * `limit` and `radiusKm` are accepted (the querystring is
- * `discoveryQuerySchema`, a refined schema that cannot be extended or
- * narrowed) and ignored: the strip has an order of its own — one order per
- * viewer per hour, see `orderBoosted` — and one size.
+ * of the feed — so there is no dedupe and no cursor. `cursor` and `limit` are
+ * accepted (the querystring is `discoveryQuerySchema`, a refined schema that
+ * cannot be extended or narrowed) and ignored: the strip has one size.
+ *
+ * `sort` is not ignored, and that is the one thing here worth reading twice.
+ * The strip sits at the top of a list the reader has asked a question of, so
+ * it answers the same question: under Active it runs most-recently-seen
+ * first, under Nearby nearest first, and only under the default feed does it
+ * turn on its own — one order per viewer per hour, see `orderBoosted`.
+ *
+ * What does not vary is the tier band. Polyglot above Fluent is what the
+ * paywall sells and what `rules.test.ts` pins, so it stays the outermost term
+ * of all three orders and the section's own criterion breaks ties inside it.
+ * Twelve cards is a small enough strip that the nearest Fluent member is
+ * still on screen.
  */
 export async function boostedProfiles(
   db: Db,
@@ -573,7 +583,7 @@ export async function boostedProfiles(
   query: DiscoveryQuery,
 ): Promise<BoostedProfilesPage> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
-  const { match } = await resolveDiscoveryScope(db, viewerId, query)
+  const { viewer, tier, match } = await resolveDiscoveryScope(db, viewerId, query)
   const now = new Date()
 
   /*
@@ -609,44 +619,96 @@ export async function boostedProfiles(
     $or: [{ 'entitlement.expiresAt': null }, { 'entitlement.expiresAt': { $gt: now } }],
   }
 
+  const eligible = { $and: [match, boostedConditions] }
+
+  /**
+   * Whether this request can be answered by distance at all.
+   *
+   * The entitlement check is not ceremony copied from the list: `distanceKm`
+   * rides back on every item `$geoNear` produces, so answering a free
+   * account's `sort=nearby` here would hand it the one thing Pro+ buys. A
+   * viewer with no point of their own has nothing to measure from.
+   *
+   * Neither case throws the way the list does. The list is the answer to the
+   * reader's question and owes them the reason it cannot give one; the strip
+   * is an advert above it, and an advert that 403s a screen already showing
+   * that reason is noise. It falls back to the rotation instead.
+   */
+  const byDistance =
+    query.sort === 'nearby' && hasFeature(tier, 'nearby') && viewer.location !== undefined
+
+  /*
+   * Two of the three orders are now entirely MQL, so the cut and the
+   * presentation are the same sort and the candidate ceiling has nothing left
+   * to do — `$limit` is the strip's own size.
+   *
+   * The default feed is still the exception, because `orderBoosted` hashes the
+   * viewer, the profile and the hour together and MQL has no string hash. There
+   * the sort below decides only the truncation: tier first, so a Polyglot can
+   * never be dropped in favour of a Fluent, then recency, because a ceiling has
+   * to cut somewhere and cutting by natural order could drop the person who
+   * paid the most.
+   */
+  const rotates = !byDistance && query.sort !== 'active'
+
   const docs = await profiles
-    .aggregate<Profile>([
-      { $match: { $and: [match, boostedConditions] } },
+    .aggregate<Profile & { distanceMeters?: number }>([
+      /*
+       * `$geoNear` must lead the pipeline, so the eligibility match goes in as
+       * its `query` — the same trick `discoverProfiles` explains at length.
+       * `maxDistance` appears only when the searcher drew a circle, and then
+       * the strip is bounded by the same circle as the list: a card 300 km
+       * away above a list that promised 10 is not a placement, it is a
+       * contradiction.
+       *
+       * A 2dsphere index is sparse, so this drops boosted members who share no
+       * location. They paid, and it is still right: the list underneath drops
+       * them for the same reason, and a distance-ordered strip has no honest
+       * place to put somebody with no distance.
+       */
+      byDistance && viewer.location
+        ? {
+            $geoNear: {
+              near: viewer.location,
+              distanceField: 'distanceMeters',
+              ...(query.radiusKm !== undefined ? { maxDistance: query.radiusKm * 1000 } : {}),
+              key: 'location',
+              spherical: true,
+              query: eligible,
+            },
+          }
+        : { $match: eligible },
       {
         $addFields: {
           boostedRank: { $indexOfArray: [[...DISCOVERY_BOOSTED_TIERS], '$entitlement.tier'] },
         },
       },
       /*
-       * This is no longer the order the strip is shown in — `orderBoosted`
-       * below is, and it cannot be a stage here because it hashes the viewer,
-       * the profile and the hour together and MQL has no string hash.
-       *
-       * What this sort still decides is the truncation: which candidates are
-       * even considered when there are more of them than the ceiling. Tier
-       * first, so a Polyglot can never be dropped in favour of a Fluent, then
-       * recency — the behaviour the rotation replaces, kept here because a
-       * ceiling has to cut somewhere and cutting by natural order could drop
-       * the person who paid the most.
-       *
        * A computed field, so the sort is in-memory and cannot be indexed. The
-       * `$match` above is still served by `discovery_native_active` /
-       * `discovery_learning_active`, and what reaches it is the paying members
-       * inside one language fit — a handful of documents, not a collection.
-       * That is why there is no new index for this.
+       * match above is still served by `discovery_native_active` /
+       * `discovery_learning_active` — or by `location_2dsphere` on the nearby
+       * branch — and what reaches it is the paying members inside one language
+       * fit: a handful of documents, not a collection. That is why there is no
+       * new index for this.
        */
-      { $sort: { boostedRank: 1, 'stats.lastActiveAt': -1, _id: 1 } },
-      { $limit: DISCOVERY_BOOSTED_CANDIDATE_MAX },
+      {
+        $sort: byDistance
+          ? { boostedRank: 1, distanceMeters: 1, _id: 1 }
+          : { boostedRank: 1, 'stats.lastActiveAt': -1, _id: 1 },
+      },
+      { $limit: rotates ? DISCOVERY_BOOSTED_CANDIDATE_MAX : DISCOVERY_BOOSTED_LIMIT },
     ])
     .toArray()
 
+  const ordered = rotates
+    ? orderBoosted(docs, viewerId, now).slice(0, DISCOVERY_BOOSTED_LIMIT)
+    : docs
+
   return {
-    items: orderBoosted(docs, viewerId, now)
-      .slice(0, DISCOVERY_BOOSTED_LIMIT)
-      .map((doc) => ({
-        ...toDiscoveryItem(doc, now),
-        // Narrowed by the `$match` above, which the driver's types cannot see.
-        tier: doc.entitlement.tier as BoostedProfile['tier'],
-      })),
+    items: ordered.map((doc) => ({
+      ...toDiscoveryItem(doc, now),
+      // Narrowed by the match above, which the driver's types cannot see.
+      tier: doc.entitlement.tier as BoostedProfile['tier'],
+    })),
   }
 }

@@ -155,8 +155,9 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
  * not the API's.
  *
  * `radiusKm` is deliberately absent: only `sort=nearby` does anything with it,
- * and this object is also the boosted strip's cache key. Discover adds it to
- * the nearby request itself — see the note there.
+ * and this object is also what the filter sheet is handed. Discover pairs it
+ * with the sort — for the list and for the boosted strip alike — see the note
+ * there.
  */
 export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   const query: Record<string, string> = {}

@@ -906,22 +906,35 @@ you are learnable to each other.
 
 **`GET /discovery/boosted`** is the strip above the list: the paying members
 inside exactly the same scope, capped at `DISCOVERY_BOOSTED_LIMIT` with no
-cursor. The client draws it on the **`recommended` sort only**: the other two
-are a question the reader asked — who is active, who is near me — and a strip
-ordered by somebody's subscription is not an answer to either. It
+cursor. The client draws it on **all three sorts**, and the server orders it
+by whichever one it was asked for — most recently seen under `active`,
+nearest under `nearby`, its own rotation under `recommended`. The gate that
+used to hide it on the other two said that Active and Nearby are questions the
+reader asked and a strip ordered by somebody's subscription answers neither.
+That was true of a strip with an order of its own; the answer was to give the
+strip the reader's order, not to hide it. A subscription decides who is in the
+strip, never where in it. It
 shares `resolveDiscoveryScope` with the feed, so mutual fit, blocks and every
-filter are one definition; the sort, the cursor and the radius are accepted
-and ignored, because the strip has an order of its own. Entitlement is
+filter are one definition; the cursor and the limit are accepted and ignored,
+because the strip has one size and no pages. Entitlement is
 re-checked per request (stored tier **and** `entitlement.expiresAt`, the Mongo
 half of `effectivePlanTier`), and `settings.boosted: false` opts out — an
 absent flag means on, so a first subscription boosts without a billing-side
 hook. Boosted people stay in the vertical list too: it is a second chance to
 be seen, not a promotion out of the feed.
 
-**The strip's order is three bands, not one sort** — `orderBoosted`.
-`DISCOVERY_BOOSTED_TIERS` first, Polyglot above Fluent, a hard band because
-the paywall sells that sentence and `rules.test.ts` pins the list it comes
-from. Then one coarse cut — ready to lead, or not: a photo, something written,
+**Tier is the outermost term of all three orders.**
+`DISCOVERY_BOOSTED_TIERS`, Polyglot above Fluent, a hard band because the
+paywall sells that sentence and `rules.test.ts` pins the list it comes from.
+Under `active` and `nearby` the section's own criterion breaks ties inside it
+and nothing else does — no rotation, no photo-and-bio band, because the reader
+asked for the clock or for distance and those are the answers. Twelve cards is
+a small enough strip that the nearest Fluent member is still on screen. Both
+are plain `$sort` stages, so the pipeline's `$limit` is simply the strip's
+size; only `recommended` needs the candidate ceiling below.
+
+**Under `recommended` the order is three bands, not one sort** —
+`orderBoosted`. Tier first, as above. Then one coarse cut — ready to lead, or not: a photo, something written,
 and a visit within `DISCOVERY_BOOSTED_FRESH_MS`. Then a rotation seeded on the
 viewer, the profile and the hour (`DISCOVERY_BOOSTED_ROTATION_MS`), with `_id`
 as the last tiebreak.
@@ -954,14 +967,28 @@ rather than the hour alone because one person sees very few hours in a day:
 with time alone a subscriber would wait a week to lead once.
 
 It is not a `$sort` stage because the rotation hashes three strings together
-and MQL has no string hash. So the ordering runs in Node, and the pipeline's
-`$sort` and `$limit` change jobs: they are now the **truncation rule**, tier
-first so a ceiling can never drop a Polyglot for a Fluent, limiting to
-`DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win a slot — with the
-strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering. There is deliberately
-no "online now" band: the strip's `isOnline` already has to respect
-`hidesOnlineStatus`, and a third band would mean a second copy of that rule,
-where a wrong copy leaks exactly what the setting hides.
+and MQL has no string hash. So the ordering runs in Node, and on this sort
+alone the pipeline's `$sort` and `$limit` change jobs: they become the
+**truncation rule**, tier first so a ceiling can never drop a Polyglot for a
+Fluent, limiting to `DISCOVERY_BOOSTED_CANDIDATE_MAX` — everyone who could win
+a slot — with the strip sliced to `DISCOVERY_BOOSTED_LIMIT` after ordering.
+There is deliberately no "online now" band: the strip's `isOnline` already has
+to respect `hidesOnlineStatus`, and a third band would mean a second copy of
+that rule, where a wrong copy leaks exactly what the setting hides.
+
+**The `nearby` strip is `$geoNear`, with the same consequences the list has.**
+It leads the pipeline with the eligibility match as its `query`, takes
+`maxDistance` from `radiusKm` when the searcher drew a circle — a card 300 km
+away above a list that promised 10 is a contradiction, not a placement — and,
+because a 2dsphere index is sparse, leaves out boosted members who share no
+location. They paid, and it is still right: the list underneath leaves them
+out for the same reason, and an order made of distances has no honest place
+for somebody with no distance. They are in the strip on both other sorts.
+Neither the Pro+ entitlement nor a missing viewer point throws here the way
+the list throws `UPGRADE_REQUIRED` / `LOCATION_REQUIRED`; the strip falls back
+to the rotation instead. That is not only politeness above a screen already
+showing the reason — `$geoNear` is what puts `distanceKm` on an item, so not
+running it is also what keeps a Pro+ measurement behind the Pro+ wall.
 
 **`sort=nearby` (Polyglot)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot

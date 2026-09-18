@@ -573,9 +573,10 @@ export function useDiscovery(
 /**
  * The paying members above the discovery list.
  *
- * Takes the filters only — no sort, no radius. The strip has an order of its
- * own, which the server turns once an hour and never by these, so passing
- * them would only give it a second cache entry per sort for the same answer.
+ * Takes the sort and the radius as well as the filters, because the strip is
+ * ordered by whatever the section under it is ordered by — most recently seen
+ * under Active, nearest under Nearby — and Nearby's circle bounds it too. Three
+ * sorts, three cache entries, three genuinely different answers.
  */
 export function useBoostedProfiles(params: Record<string, string>) {
   const search = new URLSearchParams(params).toString()
