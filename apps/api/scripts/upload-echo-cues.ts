@@ -62,9 +62,22 @@ async function purge(urls: string[]): Promise<void> {
     console.warn('  CLOUDFLARE_API_TOKEN or CLOUDFLARE_ZONE_ID is unset; nothing purged.')
     return
   }
+  /*
+   * A zone id is thirty-two hex characters and nothing else. Checked rather
+   * than trusted, because it is about to become part of a URL this process
+   * calls: a value with a slash or a host in it would send the token
+   * somewhere other than Cloudflare. It also catches the likelier mistake —
+   * an env var holding the account id, or a name, or a stray newline — before
+   * the request rather than after it.
+   */
+  if (!/^[0-9a-f]{32}$/.test(zone)) {
+    console.error('  CLOUDFLARE_ZONE_ID is not a zone id; nothing purged.')
+    return
+  }
+  const endpoint = `https://api.cloudflare.com/client/v4/zones/${zone}/purge_cache`
   for (let at = 0; at < urls.length; at += PURGE_BATCH) {
     const batch = urls.slice(at, at + PURGE_BATCH)
-    const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${zone}/purge_cache`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
       body: JSON.stringify({ files: batch }),
