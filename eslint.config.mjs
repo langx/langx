@@ -71,6 +71,35 @@ export default tseslint.config(
           ],
         },
       ],
+      /*
+       * `Dimensions.get` answers once, with the size the screen had when the
+       * module was first evaluated, and nothing tells the caller when that
+       * stops being true. On a phone that only rotates it is merely wrong at
+       * the wrong moment; on a device whose screen changes size while the app
+       * is running — the iPhone Duo folding and unfolding, a resizable window
+       * on the web build — it keeps the app drawing for a screen that is no
+       * longer there. `useWindowDimensions` is the same number, re-rendered.
+       *
+       * There is nothing to fix today: no call site exists, which is exactly
+       * why the rule is cheap now and expensive later. See
+       * `docs/plans/iphone-watch-and-carplay.md` → _The iPhone Duo_.
+       *
+       * A property rule rather than a banned import, deliberately: a
+       * file-scoped `no-restricted-imports` replaces the block above instead
+       * of extending it — the admin panel below already has to repeat the
+       * `Alert` entry for that reason — and a second list to keep in step is
+       * how this rule would quietly stop applying to the screens that add it
+       * back. Nothing overrides `no-restricted-properties`.
+       */
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'Dimensions',
+          property: 'get',
+          message:
+            'Dimensions.get is read once and never updates. Use useWindowDimensions so a fold or a resize re-renders.',
+        },
+      ],
     },
   },
   {
