@@ -1838,6 +1838,7 @@ export const ptBR: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} ficha ganha', other: '{formatted} fichas ganhas' },
     memberDays: { one: '{formatted} dia como membro', other: '{formatted} dias como membro' },
     corrections: { one: '{formatted} correção', other: '{formatted} correções' },
+    earlyAdopter: 'Usuário pioneiro',
     earnedOf: '{earned} de {total} conquistadas',
   },
 

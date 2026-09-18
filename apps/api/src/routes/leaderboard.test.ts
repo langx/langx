@@ -22,6 +22,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { authId } from '../lib/authId'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import type { DailyActivity } from '../modules/tokens/dailyActivity'
@@ -996,6 +997,58 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(summary.next?.current).toBe(99)
       // Only the streak milestones pay.
       expect(summary.next?.reward).toBe(0)
+    })
+
+    /**
+     * A cohort badge is dropped from the catalogue for everybody it is not
+     * true of, rather than sent locked.
+     *
+     * Both halves are the point. Nobody can work towards `origin.v1` — the v1
+     * cohort closed when the last pre-created row was written — so a locked
+     * row would be a goal the app can never let anybody reach, and `next`
+     * would eventually offer it to somebody with nothing else close.
+     */
+    it('hides the v1 badge from everybody who is not v1', async () => {
+      const user = await newUser()
+      const summary = await badgesOf(user)
+      expect(summary.badges.some((b) => b.id === 'origin.v1')).toBe(false)
+      expect(summary.next?.id).not.toBe('origin.v1')
+    })
+
+    it('shows it to somebody the pre-creation script opened an account for', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection(COLLECTIONS.user)
+        .updateOne(
+          { _id: authId(user.userId) },
+          { $set: { precreatedFromV1: { at: new Date(), legacyUserId: 'legacy-1' } } },
+        )
+
+      const summary = await badgesOf(user)
+      const badge = summary.badges.find((b) => b.id === 'origin.v1')
+      expect(badge?.earned).toBe(true)
+      // The day a script ran is not the day this was earned, so it has no date.
+      expect(badge?.earnedAt).toBeNull()
+    })
+
+    /**
+     * The regression that matters: a cohort badge sits at fraction 1 and must
+     * not disturb the ordering of the badges somebody can actually go and get.
+     */
+    it('still offers the nearest real badge to a v1 account', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection(COLLECTIONS.user)
+        .updateOne(
+          { _id: authId(user.userId) },
+          { $set: { precreatedFromV1: { at: new Date(), legacyUserId: 'legacy-2' } } },
+        )
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'stats.messagesSent': 99 } })
+
+      const summary = await badgesOf(user)
+      expect(summary.next?.id).toBe('messages.100')
     })
 
     it('dates a veteran badge exactly, and leaves the counting kinds undated', async () => {

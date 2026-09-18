@@ -15,8 +15,44 @@ import { TOKEN_RULES } from './token'
  * they are read straight off the milestones that pay out, so a badge can never
  * appear for a streak length the economy does not recognise.
  */
-export const BADGE_KINDS = ['streak', 'correction', 'messages', 'tokens', 'veteran'] as const
+export const BADGE_KINDS = [
+  'streak',
+  'correction',
+  'messages',
+  'tokens',
+  'veteran',
+  'origin',
+] as const
 export type BadgeKind = (typeof BADGE_KINDS)[number]
+
+/**
+ * What a kind *is*, which decides the two things the arithmetic cannot.
+ *
+ * `counter` is the shape every kind had until `origin`: a number that only
+ * goes up, with thresholds along it, so "99 of the way to 100" is a sentence
+ * somebody can act on. `cohort` is a fact about who somebody is — you were in
+ * v1 or you were not. There is no scale, so there is no progress to draw and
+ * no "one more" to offer, and a cohort badge that is not yours is dropped from
+ * the catalogue rather than sent locked.
+ *
+ * A `Record` for the same reason `progress` is one in `getBadgeSummary`: a
+ * kind added to `BADGE_KINDS` does not compile until somebody has said which
+ * of the two it is. Nothing else would fail — a cohort badge measured as a
+ * counter simply sits at the bottom of `next` forever, offering a badge nobody
+ * can go and earn.
+ */
+export const BADGE_SHAPES: Record<BadgeKind, 'counter' | 'cohort'> = {
+  streak: 'counter',
+  correction: 'counter',
+  messages: 'counter',
+  tokens: 'counter',
+  veteran: 'counter',
+  origin: 'cohort',
+}
+
+export function isCohortBadge(kind: BadgeKind): boolean {
+  return BADGE_SHAPES[kind] === 'cohort'
+}
 
 /**
  * Every kind has to be **monotonic** — a number that can only go up.
@@ -26,6 +62,11 @@ export type BadgeKind = (typeof BADGE_KINDS)[number]
  * one away. It is also why followers and banked freezes are not kinds here,
  * tempting as they are: both go down, and an achievement that can be revoked
  * is not an achievement.
+ *
+ * A `cohort` kind meets the rule the only way a boolean can — it goes 0 to 1
+ * once and never back — and meets it more firmly than the counters do: the v1
+ * cohort is closed, so `origin` cannot be taken away by definition rather than
+ * by care. See `BADGE_SHAPES`.
  */
 export interface BadgeDefinition {
   id: string
@@ -37,7 +78,10 @@ export interface BadgeDefinition {
   threshold: number
   label: string
   /**
-   * Feather glyph name.
+   * Glyph name — Feather for the counting kinds, and for the cohort badge the
+   * MaterialCommunityIcons name the grid draws it from, since Feather has no
+   * sprout. Which family a name belongs to follows from `BADGE_SHAPES`, so
+   * this stays one field rather than a tagged pair for the sake of one badge.
    *
    * On the definition rather than switched on in the grid: the icon is a
    * property of the kind, and a `kind === 'streak' ? … : …` ternary silently
@@ -118,6 +162,25 @@ export const BADGES: readonly BadgeDefinition[] = [
     label: `${days} days a member`,
     icon: 'calendar',
   })),
+  {
+    /**
+     * The one badge nobody new can ever earn: this account was opened by
+     * `precreate-v1-users.ts` for somebody who was on LangX v1.
+     *
+     * The id names the fact and the label does the wording, as everywhere else
+     * here — `Early Adopter` is what a reader sees, `origin.v1` is what the
+     * notification, the inbox row and `notifiedBadgeIds` carry, and neither
+     * moves if the other is reworded.
+     *
+     * A threshold of 1 is a boolean wearing a number, so the one `>=` in
+     * `getBadgeSummary` still serves every kind.
+     */
+    id: 'origin.v1',
+    kind: 'origin' as const,
+    threshold: 1,
+    label: 'Early Adopter',
+    icon: 'sprout',
+  },
 ]
 
 export function findBadge(id: string): BadgeDefinition | undefined {

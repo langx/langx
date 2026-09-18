@@ -1838,6 +1838,7 @@ export const es: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} ficha ganada', other: '{formatted} fichas ganadas' },
     memberDays: { one: '{formatted} día como miembro', other: '{formatted} días como miembro' },
     corrections: { one: '{formatted} corrección', other: '{formatted} correcciones' },
+    earlyAdopter: 'Usuario pionero',
     earnedOf: '{earned} de {total} conseguidas',
   },
 
