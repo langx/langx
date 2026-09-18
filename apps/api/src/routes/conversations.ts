@@ -11,6 +11,7 @@ import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listAllPhraseCards, listPhraseCards } from '../modules/chat/phraseCards'
 import { startConversation } from '../modules/chat/conversations'
+import { openingPage } from '../modules/chat/messages'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
 import { fanOutMessage } from '../ws/fanOut'
@@ -33,7 +34,24 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
       // unannounced until something happened to refetch, which for the person
       // being contacted is the message that matters most.
       void fanOutMessage(app, app.io, conversation, message, { pushWhenAway: true })
-      return reply.code(201).send(conversation)
+      /*
+       * The thread's first page travels with the conversation that was just
+       * created, so the client does not have to ask for it.
+       *
+       * The caller's next act is always the same — replace the composing
+       * screen with the thread — and it used to need a second round trip
+       * before it could, with a cleared composer and an empty thread on
+       * screen for the length of it. Every field of that page is already
+       * known here (see `openingPage`), so the request that wrote the message
+       * hands it back.
+       *
+       * Added alongside the conversation rather than nesting it under one:
+       * the shape a client reads `_id` off is the conversation itself, and
+       * `{ conversation, firstPage }` would break every one already deployed.
+       */
+      return reply
+        .code(201)
+        .send({ ...conversation, firstPage: openingPage(conversation, message, request.userId) })
     },
   )
 

@@ -206,6 +206,29 @@ describe('Faz 4 — starting a conversation', () => {
     expect(body.bothSpoke).toBe(false)
   })
 
+  /**
+   * The point of `firstPage` is that a client can put it straight into the
+   * cache the thread reads and be right, so this compares it against the page
+   * that thread would otherwise have fetched rather than against a shape
+   * written out by hand — which would go on passing the day the two drift.
+   */
+  it('answers with the thread’s first page, identical to the one a fetch returns', async () => {
+    const viewer = await newUser('convo-first-page@example.com')
+    const recipient = await newUser('convo-first-page-to@example.com')
+
+    const response = await startConversation(viewer, recipient.userId, 'ilk mesaj')
+    expect(response.statusCode, response.body).toBe(201)
+    const body = response.json<{ _id: string; firstPage: unknown }>()
+
+    const fetched = await app.inject({
+      method: 'GET',
+      url: `/conversations/${body._id}/messages`,
+      headers: { cookie: viewer.cookie },
+    })
+    expect(fetched.statusCode, fetched.body).toBe(200)
+    expect(body.firstPage).toEqual(fetched.json())
+  })
+
   it('rejects a second conversation between the same pair — pairKey is the real guard', async () => {
     const viewer = await newUser('convo-dupe-viewer@example.com')
     const recipient = await newUser('convo-dupe-recipient@example.com')

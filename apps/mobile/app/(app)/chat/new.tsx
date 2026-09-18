@@ -3,10 +3,11 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../../src/api/client'
-import { useStartConversation } from '../../../src/api/queries'
+import { useStartConversation, type MessageDto } from '../../../src/api/queries'
 import type { PublicProfileDto } from '../../../src/api/types'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
+import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -21,6 +22,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { outgoingId } from '../../../src/lib/outgoingMessages'
 import { addUnsent, newClientId } from '../../../src/lib/unsentMessages'
 import { loadUnsent, saveUnsent } from '../../../src/lib/unsentStore'
 
@@ -54,6 +56,20 @@ export default function NewChatScreen() {
   const partnerLoading =
     useProfileCacheStatus(partnerId ? [partnerId] : [])[partnerId] === 'pending'
   const [draft, setDraft] = useState('')
+  /**
+   * The sentence, drawn as its own bubble the moment Send is pressed, exactly
+   * as the thread draws one.
+   *
+   * The thread has done this since the composer stopped locking: what was
+   * typed moves into the conversation at once and the server's copy takes its
+   * place. This screen was the one send that did not — it cleared the
+   * composer, left the thread empty and waited out the round trip, which from
+   * the other side of the screen reads as the message having gone nowhere. A
+   * stand-in rather than the real thing: it carries no server id, so it is
+   * drawn and nothing else, and the thread this screen is replaced by has the
+   * real message in it.
+   */
+  const [sending, setSending] = useState<MessageDto | null>(null)
 
   /*
    * A conversation these two already have makes this the wrong screen: the
@@ -121,6 +137,15 @@ export default function NewChatScreen() {
     // Cleared at once, like a send in a thread. Put back if the send fails,
     // so nothing typed is lost to a cap or a dropped connection.
     setDraft('')
+    setSending({
+      _id: outgoingId(newClientId(Date.now(), Math.random())),
+      // No conversation to belong to yet — that is what this request creates.
+      conversationId: '',
+      senderId: session?.user.id ?? '',
+      type: 'text',
+      body,
+      createdAt: new Date().toISOString(),
+    })
     try {
       const conversation = await startConversation.mutateAsync({ toUserId: partnerId, body })
       // `inPlace`: the thread takes this screen's place without the stack's
@@ -129,6 +154,9 @@ export default function NewChatScreen() {
       router.replace(`/(app)/chat/${conversation._id}?inPlace=1`)
     } catch (caught) {
       setDraft(body)
+      // The words are back in the composer, so the bubble holding them would
+      // be a second copy of a message that was not sent.
+      setSending(null)
       if (caught instanceof ApiRequestError) {
         // The free tier's daily cap is the single most important thing this
         // screen has to explain well — a generic failure here reads as a bug.
@@ -205,6 +233,39 @@ export default function NewChatScreen() {
         */}
         <View style={styles.thread}>
           <ComposerHint slot="chat" style={styles.threadTip} />
+          {sending ? (
+            /*
+              At the bottom of the column, which is where the thread that
+              replaces this screen draws it — the list is inverted, so its
+              newest row sits nearest the composer. Drawing it under the tip
+              instead would move the sentence up the screen and back down
+              again in the time it takes to answer.
+
+              Every handler is `ignore`: a long press, a reply or an echo on a
+              message the server has not named yet has nothing to act on. The
+              thread does the same for its own stand-ins.
+            */
+            <View style={styles.sending}>
+              <MessageBubble
+                message={sending}
+                mine
+                endsGroup
+                partnerName={partner?.displayName ?? t('chat.them')}
+                translating={false}
+                highlighted={false}
+                pending
+                onLongPress={ignore}
+                onEcho={ignore}
+                onReply={ignore}
+                onAnswerAsk={ignore}
+                onRespondMeeting={ignore}
+                onAnswerQuiz={ignore}
+                onAddToCalendar={ignore}
+                onJumpTo={ignore}
+                onOpenMedia={ignore}
+              />
+            </View>
+          ) : null}
         </View>
 
         <ChatComposer
@@ -221,6 +282,9 @@ export default function NewChatScreen() {
     </Screen>
   )
 }
+
+/** Every action a bubble offers needs a message the server has named. */
+const ignore = () => undefined
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   screen: { paddingHorizontal: 0 },
@@ -254,6 +318,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   headerName: { ...font.heading, color: colors.text, fontSize: 17 },
   headerSkeletonGap: { marginTop: 6 },
   thread: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.lg },
+  // Pushed to the bottom of the column — see the note at the call site.
+  sending: { marginTop: 'auto' },
   threadTip: {
     ...font.caption,
     alignSelf: 'center',
