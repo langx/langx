@@ -9,8 +9,10 @@ therefore answers rather than questions:
 
 - **The CarPlay category is Communication, and the entitlement request goes
   in today.** Behic files it; nobody else can.
-- **The work starts at Phase 0** — the `react-native-carplay` spike — because
-  its outcome decides whether surface C is built the way this document says.
+- **The work starts with the widgets.** Phase 0, the `react-native-carplay`
+  spike, was the answer given; it needs a Mac, which is not where this is
+  being written, so its desk half was done instead and the build half waits
+  for one. Phase 1 leads.
 - **A bearer token may live in a shared Keychain.** So the Siri send path is
   in scope, with the REST twin and the security review it implies.
 
@@ -116,19 +118,92 @@ does not delete it, which is the whole reason for the dependency. Hand-wiring
 targets into a generated Xcode project does not survive a prebuild, and this
 project has no committed `ios/` directory to hand-wire into.
 
-**The widget reads a snapshot; it never calls the API.** On every foreground
-and on every relevant socket event, the app writes a small JSON blob into the
-App Group's `NSUserDefaults` — unread count, streak day and whether today is
-already safe, Echo cards due, the next scheduled exchange. The widget renders
+**The widget reads a snapshot; it never calls the API.** The app writes a
+small JSON blob into the App Group's `NSUserDefaults` and the widget renders
 that and nothing else. No cookie has to be shared, no token has to leave the
 Keychain, and a widget that has never been opened simply shows the empty
-state. A stale snapshot is the acceptable failure here: a widget is allowed
-to be a few minutes old, and is not allowed to be a second authenticated
-client.
+state. A stale snapshot is the acceptable failure here: a widget is allowed to
+be a few minutes old, and is not allowed to be a second authenticated client.
+That holds even though a bearer token now exists for Siri — the token buys one
+extension the right to send a message, not every extension the right to poll.
 
 The snapshot writer is a small local Expo module under `apps/mobile/modules/`
 — one function, `setCompanionSnapshot(json)`. It is a no-op on Android and on
 web, so call sites stay unconditional.
+
+### The widgets, in detail
+
+**What the snapshot holds**, and where each field already comes from:
+
+| Field                                | Source today                              |
+| ------------------------------------ | ----------------------------------------- |
+| `unread`                             | `GET /me/unread`, and every `message:new` |
+| `streak.current`, `streak.longest`   | the profile's `streak`                    |
+| `streak.lastQualifiedDay`, `freezes` | the same place `/me/activity` reads       |
+| `echo.due`, `echo.nextDueAt`         | `GET /echo/summary`                       |
+| `nextSession`                        | the agreed meeting (`message:meeting`)    |
+| `locale`, `writtenAt`                | the app, for formatting and for staleness |
+
+`lastQualifiedDay` and `freezes` are in that list for one reason: they are
+what let the widget say **"today has not counted yet"** without asking the
+server. `streakSavable` in `packages/shared` already decides it, and the
+widget runs the same rule against the device's own day — so the number on the
+Home Screen and the evening nudge at 20:00 (`STREAK_REMINDER_LOCAL_HOUR`)
+cannot disagree, which is the failure a second implementation would produce.
+
+**The streak is the widget's subject, and it is not the widget's to advance.**
+`POST /me/check-in` exists precisely so that a background refresh, a prefetch
+or a test cannot move a streak — "it advanced because something polled" is not
+a rule anybody could predict. A widget that checked in on its own timeline
+would be exactly that. Whether a person _tapping_ a widget button may check in
+is a different question, and it is open, at the end of this document.
+
+**Three families, and no more:**
+
+- **`systemSmall`** — the streak, and whether today is safe. The one a person
+  puts on the Home Screen and glances at.
+- **`systemMedium`** — streak, unread and cards due, the three numbers the
+  mockup shows; each one a deep link into its own tab.
+- **`accessoryCircular` / `accessoryRectangular`** — the Lock Screen and
+  StandBy pair. These are the same SwiftUI views the watch complications use,
+  which is why they are built here and reused in Phase 2 rather than written
+  twice.
+
+`systemLarge` is deliberately absent: there is nothing in the snapshot that a
+large widget would say that the medium one does not, and a widget that listed
+conversations would need names and photos in the App Group — a copy of other
+people's data sitting outside the app's own store, for no gain.
+
+**Keeping it fresh, without a second client.** The app calls
+`WidgetCenter.reloadTimelines` every time it writes a snapshot, so anything
+the person does in the app shows up at once. Two things happen while the app
+is closed, and each has an answer:
+
+- **A message arrives.** The push already reaches the phone. A **notification
+  service extension** — a second, tiny target sharing the App Group — bumps
+  `unread` in the snapshot as the push passes through it, so the Home Screen
+  is right even for somebody who never opens the app. It reads the payload it
+  was handed and makes no network call of its own.
+- **The day rolls over.** The timeline carries entries at the device's local
+  midnight and at 20:00, so "today has not counted yet" appears on its own
+  without waking anything.
+
+Neither path spends WidgetKit's reload budget on polling, because neither is a
+poll.
+
+**Strings mostly come with the snapshot.** The app knows the person's locale
+and already holds the eight catalogues, so it writes the words it has — "day
+streak", "unread", "cards due" — into the blob rather than making the widget
+look them up. What is left for the generated `.xcstrings` is the empty state:
+a phone with no snapshot yet, where there is no app-written text to render.
+That is three strings, not a catalogue.
+
+**Signed out and first install are the same state:** no snapshot. The widget
+shows the mark and one line inviting the person in. It never shows a zero,
+because a zero is a claim about somebody's streak and we do not have one.
+Sign-out clears the blob in the same breath it clears the session — a widget
+still showing a 42-day streak after somebody signs out is a leak of their data
+onto a shared phone's Home Screen.
 
 **The Live Activity is updated locally, not by push.** ActivityKit's push
 updates need an APNs token per activity, which the Expo push service does not
@@ -212,6 +287,16 @@ order to ship Echo would leave chat — the thing everybody opens — outside th
 car permanently. **This is a decision for Behic, and it is not reversible
 cheaply**; it is the first open question below.
 
+**The CarPlay dependency, as of 18 September 2026.** The desk half of Phase 0,
+which is all that can be done without a Mac: `react-native-carplay` itself was
+last published in **June 2024** and declares React ≤ 18 and React Native
+^0.60; the maintained fork `@g4rb4g3/react-native-carplay` (2.7.22, December 2025) declares React 18 or 19 and React Native 0.74, 0.76 or 0.79. This
+workspace is React **19.2.3** and React Native **0.86.3**, so neither one
+claims our stack — the fork is one minor line short, the original is two years
+behind. A peer range is not a verdict, which is why the build half of the
+spike still has to run; but it means the fork is the candidate, and a native
+CarPlay scene is a live fallback rather than a theoretical one.
+
 **The car UI is driven from JavaScript.** `react-native-carplay` renders
 Apple's templates from the JS side, which means the CarPlay scene runs inside
 the app's existing runtime and reuses the socket, the session cookie, the API
@@ -274,7 +359,9 @@ anything at all when nobody is signed in.
 
 `src/i18n/messages/en.ts` cannot be imported by Swift, and the rule that no
 user-facing string is written in a component does not stop being true because
-the component is a widget. So: **a generator**, run in `prebuild` and in CI,
+the component is a widget. The widgets mostly sidestep it by rendering words
+the app wrote into the snapshot, but the watch, the car and every empty state
+still need their own text. So: **a generator**, run in `prebuild` and in CI,
 that reads the existing catalogues and writes an Apple string catalogue
 (`.xcstrings`) for the native targets. One source of truth, eight locales,
 and the same failure mode the app already has — a key without a translation
@@ -299,7 +386,8 @@ is not, which is why its paperwork starts on day one.
    → in parallel, and on day one: file the CarPlay entitlement request
 
 1. iPhone: apple-targets wiring, the string generator, the snapshot module,
-   widgets, the session Live Activity, three App Intents
+   the three widget families, the notification service extension that keeps
+   the count true, the session Live Activity, three App Intents
    → verify: the list under Surface A, plus a clean prebuild
 
 2. Apple Watch: the notification pass first, then the dependent companion
@@ -330,8 +418,19 @@ Answered on 18 September 2026:
    not go into the car. Behic files the entitlement request the same day.
 2. **A bearer token may live in a shared Keychain**, so Siri keeps its send
    intent and the REST twin is in scope.
-3. **Work starts at Phase 0**, the spike — not at Phase 1.
+3. **The widgets come first.** Phase 0 was the answer until it met the room it
+   would be run in: the spike needs a Mac with Xcode and a CarPlay simulator,
+   and the machine this plan is written on has neither. The desk half of it is
+   done and is recorded under _The CarPlay dependency_ above. So Phase 1 leads,
+   and Phase 0 runs the moment there is a Mac.
 
-Still open: 4. **The first Live Activity: a scheduled exchange, or the streak?** The plan
-picks the exchange because the phone can drive it alone. 5. **Does the watch app go into the store listing now**, with its own
-screenshots, or wait until CarPlay is approved and both land together?
+Still open:
+
+1. **May a widget button check in?** A tap is explicit, which is what
+   `/me/check-in` asks for — but it would let somebody keep a streak alive for
+   weeks without opening the app, and the streak is meant to measure showing
+   up. The plan leaves the button out until this is answered.
+2. **The first Live Activity: a scheduled exchange, or the streak?** The plan
+   picks the exchange because the phone can drive it alone.
+3. **Does the watch app go into the store listing now**, with its own
+   screenshots, or wait until CarPlay is approved and both land together?
