@@ -1118,27 +1118,46 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     it('sends the earned badges only, capped, in the order the badge page draws them', async () => {
       const owner = await newUser('strip-owner@example.com', { handle: 'stripowner' })
       const viewer = await newUser('strip-viewer@example.com')
-      // Enough to clear every streak rung, so the cap is what limits the list
-      // rather than how much this account has done.
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: owner.userId }, { $set: { 'streak.longest': 2000 } })
+      /*
+       * Three kinds cleared at once, so this account holds more badges than
+       * the strip will carry and the cap is what shortens the list rather
+       * than how much they have done: every streak rung, every message rung,
+       * and the veteran ladder that an old `createdAt` earns.
+       */
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: owner.userId },
+        {
+          $set: {
+            'streak.longest': 2000,
+            'stats.messagesSent': 60_000,
+            createdAt: new Date(Date.now() - 1200 * 86_400_000),
+          },
+        },
+      )
 
       const body = (await summaryOf(viewer, 'stripowner')).json<Summary>()
 
+      expect(body.badges).toBeGreaterThan(PROFILE_BADGE_STRIP_MAX)
       expect(body.topBadges).toHaveLength(PROFILE_BADGE_STRIP_MAX)
-      // Every streak rung is earned, so the first six are the first six rungs
-      // in catalogue order — not six rows of things they have not done.
-      expect(body.topBadges.map((badge) => badge.id)).toEqual([
-        'streak.7',
-        'streak.30',
-        'streak.100',
-        'streak.180',
-        'streak.365',
-        'streak.730',
+      /*
+       * Newest first, which here means the veteran ladder: it is the only kind
+       * in this account that carries a date, and `createdAt` 1,200 days back
+       * puts the three-year rung most recently behind them.
+       */
+      expect(body.topBadges[0]?.id).toBe('veteran.1095')
+      expect(body.topBadges.slice(0, 3).map((badge) => badge.id)).toEqual([
+        'veteran.1095',
+        'veteran.730',
+        'veteran.365',
       ])
-      // The count is the whole shelf, which is what "+N" on the strip counts.
-      expect(body.badges).toBeGreaterThan(body.topBadges.length)
+      /*
+       * And the point of the order: what the cap drops is the oldest and
+       * lowest, not the newest. A seven-day streak is the first row of the
+       * catalogue and the last thing a stranger needs to see.
+       */
+      expect(body.topBadges.map((badge) => badge.id)).not.toContain('streak.7')
+      // Still only earned rungs — this account has written no corrections.
+      expect(body.topBadges.every((badge) => badge.kind !== 'correction')).toBe(true)
     })
 
     it('sends no marks at all for somebody who has earned none', async () => {

@@ -279,13 +279,19 @@ export type PublicBadges = z.infer<typeof publicBadgesSchema>
 /**
  * How many marks the profile's badge strip draws before it gives up and counts.
  *
- * Six, because the strip is one button and so cannot scroll: at 40px a mark
- * and 10px between them, six and a "+12" fit the 343px a 375px phone leaves
- * after its gutters, and seven do not. Sent capped from the server rather than
- * sliced on the client, so a member with forty badges does not ship
- * thirty-four of them to draw none.
+ * The row scrolls, so this is no longer the width of a phone deciding it —
+ * that was the constraint while the strip was a fixed row, and it put the
+ * number first at six 40px marks and then at three 80px ones. What is left to
+ * bound is the payload: a summary is read on every profile anybody opens, and
+ * a member with forty badges should not ship forty of them to a screen that
+ * is a glimpse.
+ *
+ * Twelve is well past what a thumb will travel on a row above the bio, and
+ * anyone holding more than that is told so by the "+28" at the end, which is
+ * the same sentence in less room. Sliced on the server rather than the client
+ * so the bytes are never sent at all.
  */
-export const PROFILE_BADGE_STRIP_MAX = 6
+export const PROFILE_BADGE_STRIP_MAX = 12
 
 /** One mark on that strip: enough to draw it, and nothing else. */
 export const profileBadgeSchema = z.object({
@@ -294,3 +300,54 @@ export const profileBadgeSchema = z.object({
   icon: z.string().nullable(),
 })
 export type ProfileBadge = z.infer<typeof profileBadgeSchema>
+
+/**
+ * Newest first, as closely as the data allows.
+ *
+ * It does not allow much, and the reason is worth knowing before reading the
+ * order this produces: only `streak` and `veteran` badges carry an `earnedAt`.
+ * A streak milestone has the ledger row that paid it and a veteran badge is
+ * arithmetic on the account's birthday; the counting kinds have no date at
+ * all, because a total is not an event and nothing records which correction
+ * was the thousandth. See `earnedBadgeSchema`.
+ *
+ * So the sort is in two halves. The dated badges go first, latest to earliest,
+ * which is the real answer where there is one. The undated ones follow in
+ * reverse catalogue order — and that is not a shrug: within a ladder the
+ * catalogue climbs, so reversing it puts the top rung first, and the top rung
+ * is by definition the most recently earned of its kind. Nobody is ever shown
+ * their 7-day badge ahead of their 365-day one.
+ *
+ * What it cannot do is order two ladders against each other, or a ladder
+ * against a dated badge. A correction badge earned this morning may sit behind
+ * a streak badge from March. That is the ceiling of what is recorded, not a
+ * choice — moving it would mean writing a date at the moment each counting
+ * badge is crossed, which is a migration and a new write on a hot path.
+ */
+export function badgesMostRecentFirst(badges: readonly EarnedBadge[]): EarnedBadge[] {
+  const rank = (id: string) => {
+    const index = CATALOGUE_INDEX.get(id)
+    // An id that is not in the catalogue sorts last rather than first: it is
+    // a badge this build does not know, and guessing it is the newest thing
+    // this person did is the wrong guess to make.
+    return index ?? -1
+  }
+
+  return [...badges].sort((a, b) => {
+    const at = a.earnedAt ? Date.parse(a.earnedAt) : Number.NaN
+    const bt = b.earnedAt ? Date.parse(b.earnedAt) : Number.NaN
+    const aDated = !Number.isNaN(at)
+    const bDated = !Number.isNaN(bt)
+    if (aDated && bDated) return bt - at
+    // An unparseable date is treated as no date rather than as an epoch,
+    // which would quietly promote a broken row to the front of the strip.
+    if (aDated !== bDated) return aDated ? -1 : 1
+    // The catalogue's index, not the caller's: reading the order off the input
+    // array would make this correct only for callers who happened to pass the
+    // badges in catalogue order, which is a precondition nothing states.
+    return rank(b.id) - rank(a.id)
+  })
+}
+
+/** `BADGES` by id, so the sort above does not scan the catalogue per compare. */
+const CATALOGUE_INDEX = new Map(BADGES.map((badge, index) => [badge.id, index]))
