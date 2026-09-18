@@ -4988,3 +4988,65 @@ is nobody to credit, and inventing one would make a model indistinguishable
 from the volunteer above it. `echoVoiceSchema` is a separate type from
 `echoAudioSchema` for that reason alone — the two are not interchangeable and
 the schema should not let them be confused.
+
+## A badge can be a cohort, and `next` must never offer one
+
+Every badge kind was a monotonic counter with thresholds along it, and the
+module header of `badges.ts` says why: a badge is a fact the ledger already
+holds, so a stored one would be a second copy written from a different code
+path, and the first time the two disagreed the badge would be the one lying.
+
+"Was on LangX v1" satisfies every word of that and none of the shape. It is
+derived — from `user.precreatedFromV1`, written once by a script that will
+never run again — and it is monotonic in the only sense a boolean can be. It is
+in fact the _safest_ kind in the catalogue: the v1 cohort is closed, so it
+cannot be taken away by definition rather than by care. But it has no scale, so
+there is no progress to draw and no next rung to sell.
+
+`BADGE_SHAPES` is that distinction, and it is a `Record<BadgeKind, …>` rather
+than an optional flag on the definition for exactly the reason `progress` in
+`getBadgeSummary` is one: a kind added to `BADGE_KINDS` must not compile until
+somebody has answered. Nothing else would fail. A cohort badge quietly measured
+as a counter sits at the bottom of `next` forever and eventually offers itself
+to somebody with nothing else close — a badge they can never earn, presented as
+the one to go and get.
+
+An unearned cohort badge is **dropped from the catalogue in the server**, not
+filtered in the grid. One line in `getBadgeSummary` then makes three things
+true at once that would otherwise need three fixes in three files: `next` never
+ranks it, the grid never draws a row reading "Locked" under a promise this app
+will never keep, and `earnedOf`'s denominator and `publicSummary.earnedCount`
+stay honest without either knowing the concept exists.
+
+`earnedAt` is `null` and not `precreatedFromV1.at`. The date it was earned is a
+date in v1 that this database does not hold; the field records the day a script
+ran. A date that looks exact and is not is worse than the "Earned" the three
+counting kinds already show.
+
+## `user.precreatedFromV1` is the cohort, `profiles.restoredFromV1` is not
+
+They look interchangeable and are not. `restoredFromV1` is written by
+`legacyRestore.ts` when a _staged_ v1 profile is claimed;
+`precreate-v1-users.ts` also opened rows for v1 auth users with nothing staged
+behind them. Asking `restoredFromV1` therefore under-counts the cohort it looks
+like it names — and the people it misses are the ones with least to show for
+having been here, which is precisely who a badge for being here is for. That
+mistake was live: `POST /profiles` gated the @langx hello on `restoredFromV1`,
+so people who had been on LangX for years were sent the new user's welcome.
+
+The right question costs one point read on `user._id` — `cameFromV1`, already
+written for the onboarding path. It is deliberately **not** denormalised onto
+`profiles`, where it would be free: that is a stored copy of a derived fact,
+the exact thing `badges.ts` exists to avoid, and it would need a write in two
+creation paths plus a backfill whose misses would make somebody's badge
+silently vanish. Better Auth's collections also stay unindexed — an index on
+`user` crash-loops the API with `IndexOptionsConflict`, and none is needed for
+a query on `_id`.
+
+The live trigger for the welcome-back is `session.create.after` in `auth.ts`,
+not `POST /profiles`. The restore moved out of onboarding: `restoreByHash`
+creates the profile itself, so a returning user never posts to `/profiles` at
+all. Onboarding still calls the sender, for the slice whose staged record was
+too thin to build a profile from, and the shared `welcomeback:<userId>`
+`clientId` is what lets both paths and the backfill script run without knowing
+about each other.
