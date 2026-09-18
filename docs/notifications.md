@@ -72,19 +72,19 @@ carrying every kind cannot honestly offer to stop one of them.
 
 ## 1. Transactional — no switch, no unsubscribe
 
-| Message                            | Fires on                                            | Channels                      | Once because                                |
-| ---------------------------------- | --------------------------------------------------- | ----------------------------- | ------------------------------------------- |
-| Verify your email                  | sign-up                                             | email                         | Better Auth mints the link                  |
-| Reset your password                | forgot password                                     | email                         | —                                           |
-| Sign-in link                       | magic-link request                                  | email                         | single-use, 15 min                          |
-| You already have an account        | sign-up over an existing address                    | email                         | —                                           |
-| Confirm account deletion           | delete request                                      | email                         | token burned on use                         |
-| **Welcome to LangX**               | onboarding completes                                | email                         | `createProfile` refuses a second profile    |
-| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week   | email                         | ledger `verifyReminder:<id>:once`           |
-| **Finish your profile** (reminder) | signed up, never finished onboarding — sent by hand | email                         | ledger `onboardingReminder:<id>:once`       |
-| Bounty paid                        | a report is confirmed                               | email + push                  | the ledger's unique `{userId, kind, refId}` |
-| **The v1 lifetime gift**           | a restore grants a lifetime tier                    | @langx message + push + email | ledger `lifetimeGift:<id>:once`             |
-| Report received / feedback         | somebody reports or writes in                       | email to support              | —                                           |
+| Message                            | Fires on                                          | Channels                      | Once because                                |
+| ---------------------------------- | ------------------------------------------------- | ----------------------------- | ------------------------------------------- |
+| Verify your email                  | sign-up                                           | email                         | Better Auth mints the link                  |
+| Reset your password                | forgot password                                   | email                         | —                                           |
+| Sign-in link                       | magic-link request                                | email                         | single-use, 15 min                          |
+| You already have an account        | sign-up over an existing address                  | email                         | —                                           |
+| Confirm account deletion           | delete request                                    | email                         | token burned on use                         |
+| **Welcome to LangX**               | onboarding completes                              | email                         | `createProfile` refuses a second profile    |
+| **Confirm your email** (reminder)  | unverified 24 h after sign-up, never after a week | email                         | ledger `verifyReminder:<id>:once`           |
+| **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old            | email                         | ledger `onboardingReminder:<id>:once`       |
+| Bounty paid                        | a report is confirmed                             | email + push                  | the ledger's unique `{userId, kind, refId}` |
+| **The v1 lifetime gift**           | a restore grants a lifetime tier                  | @langx message + push + email | ledger `lifetimeGift:<id>:once`             |
+| Report received / feedback         | somebody reports or writes in                     | email to support              | —                                           |
 
 The lifetime gift is the only transactional message that arrives as a
 **message in the app** as well as in the two usual places, and the push is the
@@ -98,18 +98,33 @@ letter is written — three numbers from three sources, which is why
 Whoever earned a rung and has **not** come back is not in this table at all:
 there is nothing to notify an account nobody has opened.
 
-**Finish your profile** is the one here that nothing fires: it is run from
-`scripts/send-onboarding-reminder.ts`, because the cohort it writes to is
-invisible to everything else. A `user` row is written at sign-in and a
-`profiles` row when the wizard ends, so somebody who stopped in between has an
-address and no profile — and consent lives on the profile. That is why it sits
-in this table rather than under promotions: there is no switch to respect and
-no consent to have, so what goes out has to be the service message it claims
-to be, one letter about the account they opened themselves. The ledger's
-`once` key is what makes "never a second one" true rather than intended.
+**Finish your profile** waits on the clock rather than on an event, because
+the event it waits for is one that never came: a `user` row is written at
+sign-in and a `profiles` row when the wizard ends, so somebody who stopped in
+between has an address and no profile, and an absence has nothing to fire on.
+Consent lives on the profile too, which is why this sits in this table rather
+than under promotions — there is no switch to respect and no consent to have,
+so what goes out has to be the service message it claims to be: one letter
+about the account they opened themselves. The ledger's `once` key is what makes
+"never a second one" true rather than intended.
+
 It splits in two on `emailVerified`: an unverified address cannot sign in at
 all, so telling that person to finish their profile would point them at a wall
 the server raises on purpose.
+
+Bounded at **both** ends. The floor is a day, so nobody who is mid-wizard hears
+from us; the ceiling is a week, so switching the pass on does not write to every
+abandoned sign-up there has ever been. Catching up on a backlog outside that
+window is a decision somebody makes once, and
+`scripts/send-onboarding-reminder.ts` is where it is made — the same cohort and
+the same two letters, with no upper bound and nothing sent until `--confirm`.
+The two share one copy of the letters, in `email/onboardingReminderLetters.ts`:
+the pass runs from `dist/` and cannot read a file under `scripts/`.
+
+It is the only mail here that is not translated. `localeFor` answers English for
+everybody in this cohort — it returns `null` when there is no profile yet, and
+having no profile is what defines them — so eight locales would be sixteen
+translations nothing could select.
 
 ### Security — the same class, and never gated
 

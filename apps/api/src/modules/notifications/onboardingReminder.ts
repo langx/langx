@@ -1,5 +1,13 @@
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { ONBOARDING_LETTERS } from '../../email/onboardingReminderLetters'
+import type { NotificationEmailContext } from '../../email/notify'
+import { unsubscribeHeaders } from '../../email/notify'
+import { EMAIL_BATCH_SIZE, type EmailMessage } from '../../email/sender'
+import { signUnsubscribeToken, unsubscribeUrl } from '../../email/unsubscribeToken'
+import { UNSUBSCRIBE_PLACEHOLDER } from './campaign'
+import { claimOnce } from './ledger'
+import { suppressedAmong } from './suppressions'
 
 /**
  * The people who opened an account and never finished onboarding, and which of
@@ -92,9 +100,23 @@ export function isOldEnough(user: { createdAt?: Date }, now: Date, minAgeHours: 
   return now.getTime() - user.createdAt.getTime() >= minAgeHours * 3600_000
 }
 
+/** The other end of the same measurement — see `CohortOptions.maxAgeHours`. */
+export function isOlderThan(user: { createdAt?: Date }, now: Date, maxAgeHours: number): boolean {
+  if (!user.createdAt) return true
+  return now.getTime() - user.createdAt.getTime() > maxAgeHours * 3600_000
+}
+
 export interface CohortOptions {
   now?: Date
   minAgeHours?: number
+  /**
+   * The far end, and why the scheduled pass has one where a manual run does
+   * not. Left out the cohort is every drop-off there has ever been, which is
+   * right for the one catch-up run somebody decides to make and wrong for a
+   * timer: switching a timer on would mail years of abandoned sign-ups in its
+   * first tick. `verifyReminder` draws the same line for the same reason.
+   */
+  maxAgeHours?: number
   limit?: number
 }
 
@@ -135,8 +157,12 @@ export async function reminderCohort(
     )
     .toArray()
 
+  const maxAgeHours = options.maxAgeHours
   const eligible = users.filter(
-    (user) => isReminderCandidate(user) && isOldEnough(user, now, minAgeHours),
+    (user) =>
+      isReminderCandidate(user) &&
+      isOldEnough(user, now, minAgeHours) &&
+      (maxAgeHours === undefined || !isOlderThan(user, now, maxAgeHours)),
   )
   if (eligible.length === 0) return []
 
@@ -165,4 +191,106 @@ export async function reminderCohort(
     })
 
   return options.limit ? recipients.slice(0, options.limit) : recipients
+}
+
+/**
+ * How long to wait before writing. A day, the same floor the manual run used
+ * and for the same reason: the wizard is five screens and people put their
+ * phone down. Mailing somebody who is on the languages screen right now is
+ * both useless and the fastest way to make a service message read as spam.
+ */
+export const ONBOARDING_REMINDER_AFTER_HOURS = 24
+
+/**
+ * And the far end. A week-old sign-up with no profile is not somebody who got
+ * distracted; a letter then is a letter about an account they have forgotten
+ * opening. The bound is also what makes switching this on safe — without it,
+ * the first tick would write to every abandoned sign-up this app has ever had.
+ */
+export const ONBOARDING_REMINDER_MAX_AGE_HOURS = 24 * 7
+
+/**
+ * What one tick will send at most.
+ *
+ * Inside a 24 h–7 day window a normal day's drop-offs are a handful, so this
+ * is not a ramp and not a budget — it is the ceiling that keeps a surprise
+ * (an import, a bot sign-up run, a week the timer was off) from leaving as one
+ * burst. Whoever is left is still inside the window on the next tick.
+ */
+export const ONBOARDING_REMINDER_PER_TICK = 50
+
+/**
+ * The scheduled half of the letter `send-onboarding-reminder.ts` sends by hand.
+ *
+ * The script stays, and stays unbounded: it is how a backlog gets caught up,
+ * which is a decision somebody makes once. This is the standing arrangement —
+ * the same cohort, the same two letters, the same ledger claim, bounded at both
+ * ends so it only ever writes to people who dropped off this week.
+ *
+ * It cannot use `sendNotificationEmail`: that helper answers `no-profile` and
+ * refuses, which is correct for everything else on this timer and is the exact
+ * condition every recipient here meets. So the send is assembled the way the
+ * script assembles it — claim, sign an unsubscribe token, substitute it into
+ * both bodies, batch.
+ *
+ * Suppressions *are* honoured, which the script does not do: a one-off run is
+ * somebody watching, and a timer is not. Somebody who bounced or complained
+ * must not be written to again by a machine.
+ */
+export async function runOnboardingReminderPass(
+  db: Db,
+  email: NotificationEmailContext,
+  now: Date = new Date(),
+): Promise<{ sent: number; skipped?: number }> {
+  const cohort = await reminderCohort(db, {
+    now,
+    minAgeHours: ONBOARDING_REMINDER_AFTER_HOURS,
+    maxAgeHours: ONBOARDING_REMINDER_MAX_AGE_HOURS,
+    limit: ONBOARDING_REMINDER_PER_TICK,
+  })
+  if (cohort.length === 0) return { sent: 0 }
+
+  const suppressed = await suppressedAmong(
+    db,
+    cohort.map((person) => person.email),
+  )
+  const writable = cohort.filter((person) => !suppressed.has(person.email.toLowerCase()))
+
+  let sent = 0
+  let skipped = cohort.length - writable.length
+  for (let index = 0; index < writable.length; index += EMAIL_BATCH_SIZE) {
+    const batch = writable.slice(index, index + EMAIL_BATCH_SIZE)
+
+    // Claimed before the send, one at a time, exactly as the script does and
+    // for the reason `ledger.ts` gives: a send that then fails is one letter
+    // nobody got, where a send that succeeded after an unrecorded claim is a
+    // second letter to somebody who never asked for the first.
+    const claimed: ReminderRecipient[] = []
+    for (const person of batch) {
+      if (await claimOnce(db, 'onboardingReminder', person.userId, 'once')) claimed.push(person)
+      else skipped++
+    }
+    if (claimed.length === 0) continue
+
+    const messages: EmailMessage[] = claimed.map((person) => {
+      const letter = ONBOARDING_LETTERS[person.variant]
+      const url = unsubscribeUrl(
+        email.apiBaseUrl,
+        signUnsubscribeToken(email.unsubscribeSecret, person.userId, 'all'),
+      )
+      return {
+        to: person.email,
+        subject: letter.subject,
+        html: letter.html.replaceAll(UNSUBSCRIBE_PLACEHOLDER, url),
+        text: letter.text.replaceAll(UNSUBSCRIBE_PLACEHOLDER, url),
+        headers: unsubscribeHeaders(url),
+      }
+    })
+
+    if (email.sender.sendBatch) await email.sender.sendBatch(messages)
+    else for (const message of messages) await email.sender.send(message)
+    sent += messages.length
+  }
+
+  return skipped > 0 ? { sent, skipped } : { sent }
 }

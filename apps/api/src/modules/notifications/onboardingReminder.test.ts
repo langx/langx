@@ -5,12 +5,19 @@ import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import { authId } from '../../lib/authId'
+import { ONBOARDING_LETTERS } from '../../email/onboardingReminderLetters'
+import type { EmailMessage } from '../../email/sender'
+import type { NotificationEmailContext } from '../../email/notify'
+import { UNSUBSCRIBE_PLACEHOLDER } from './campaign'
 import {
   isOldEnough,
   isReminderCandidate,
+  ONBOARDING_REMINDER_MAX_AGE_HOURS,
   reminderCohort,
   reminderVariant,
+  runOnboardingReminderPass,
 } from './onboardingReminder'
+import { suppressEmail } from './suppressions'
 
 const NOW = new Date('2026-09-10T12:00:00.000Z')
 const hoursAgo = (hours: number): Date => new Date(NOW.getTime() - hours * 3600_000)
@@ -92,7 +99,12 @@ describe('reading the cohort out of the database', () => {
   })
 
   beforeEach(async () => {
-    for (const name of [COLLECTIONS.profiles, COLLECTIONS.user]) {
+    for (const name of [
+      COLLECTIONS.profiles,
+      COLLECTIONS.user,
+      COLLECTIONS.notificationLedger,
+      COLLECTIONS.emailSuppressions,
+    ]) {
       await handle.db.collection(name).deleteMany({})
     }
   })
@@ -173,5 +185,110 @@ describe('reading the cohort out of the database', () => {
 
     const limited = await reminderCohort(handle.db, { now: NOW, limit: 1 })
     expect(limited.map((r) => r.email)).toEqual(['older@example.test'])
+  })
+  /**
+   * The scheduled half. Everything above decides *who*; these decide what the
+   * timer does with that answer — and the two that matter are the ones that
+   * stop it: the ledger, and the week.
+   */
+  describe('the pass the scheduler runs', () => {
+    function collector(): { sent: EmailMessage[]; email: NotificationEmailContext } {
+      const sent: EmailMessage[] = []
+      return {
+        sent,
+        email: {
+          sender: {
+            send: (message: EmailMessage) => {
+              sent.push(message)
+              return Promise.resolve()
+            },
+            sendBatch: (messages: EmailMessage[]) => {
+              sent.push(...messages)
+              return Promise.resolve()
+            },
+          },
+          unsubscribeSecret: 'a'.repeat(32),
+          apiBaseUrl: 'https://api.langx.test',
+        } as NotificationEmailContext,
+      }
+    }
+
+    it('writes each letter to the person whose step it describes', async () => {
+      await signUp({ email: 'confirmed@example.test', verified: true })
+      await signUp({ email: 'unproven@example.test', verified: false })
+
+      const { sent, email } = collector()
+      const result = await runOnboardingReminderPass(handle.db, email, NOW)
+
+      expect(result.sent).toBe(2)
+      const bySubject = new Map(sent.map((m) => [m.to, m.subject]))
+      expect(bySubject.get('confirmed@example.test')).toBe(ONBOARDING_LETTERS.reminder.subject)
+      expect(bySubject.get('unproven@example.test')).toBe(ONBOARDING_LETTERS.confirm.subject)
+    })
+
+    /** The whole promise the letter makes out loud, kept by the ledger. */
+    it('never writes a second time, however often the timer fires', async () => {
+      await signUp({ email: 'once@example.test' })
+
+      const first = collector()
+      expect((await runOnboardingReminderPass(handle.db, first.email, NOW)).sent).toBe(1)
+
+      const second = collector()
+      const again = await runOnboardingReminderPass(handle.db, second.email, NOW)
+      expect(again.sent).toBe(0)
+      expect(second.sent).toHaveLength(0)
+    })
+
+    /**
+     * Without this bound, switching the timer on would mail every abandoned
+     * sign-up the app has ever had, in one tick.
+     */
+    it('leaves a sign-up older than the window alone', async () => {
+      await signUp({
+        email: 'ancient@example.test',
+        hoursOld: ONBOARDING_REMINDER_MAX_AGE_HOURS + 1,
+      })
+
+      const { sent, email } = collector()
+      expect((await runOnboardingReminderPass(handle.db, email, NOW)).sent).toBe(0)
+      expect(sent).toHaveLength(0)
+    })
+
+    it('leaves somebody who is still mid-wizard alone', async () => {
+      await signUp({ email: 'midform@example.test', hoursOld: 1 })
+
+      const { sent, email } = collector()
+      expect((await runOnboardingReminderPass(handle.db, email, NOW)).sent).toBe(0)
+      expect(sent).toHaveLength(0)
+    })
+
+    /**
+     * The script does not check this, and a one-off run is somebody watching.
+     * A timer is not, so an address that bounced or complained must not be
+     * written to again by a machine.
+     */
+    it('does not write to an address that bounced', async () => {
+      await signUp({ email: 'bounced@example.test' })
+      await suppressEmail(handle.db, { email: 'bounced@example.test', reason: 'bounced' })
+
+      const { sent, email } = collector()
+      const result = await runOnboardingReminderPass(handle.db, email, NOW)
+      expect(result.sent).toBe(0)
+      expect(result.skipped).toBe(1)
+      expect(sent).toHaveLength(0)
+    })
+
+    it('leaves no unsubscribe placeholder in what it sends', async () => {
+      await signUp({ email: 'out@example.test' })
+
+      const { sent, email } = collector()
+      await runOnboardingReminderPass(handle.db, email, NOW)
+
+      const message = sent[0]
+      expect(message?.html).not.toContain(UNSUBSCRIBE_PLACEHOLDER)
+      expect(message?.text).not.toContain(UNSUBSCRIBE_PLACEHOLDER)
+      expect(message?.html).toContain('https://api.langx.test')
+      expect(message?.headers?.['List-Unsubscribe']).toContain('https://api.langx.test')
+    })
   })
 })
