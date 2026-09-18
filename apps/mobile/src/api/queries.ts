@@ -717,13 +717,15 @@ export interface MessageDto {
 }
 
 /**
- * The thread's live query, as options rather than a hook, so that the one
- * place that opens a thread before the screen exists — `useStartConversation`,
- * which replaces `chat/new` with the thread it just made — can fill the same
- * cache entry the screen will read.
+ * The thread itself.
+ *
+ * These options used to be a standalone `messagesQuery`, so that the one place
+ * that opens a thread before its screen exists — `useStartConversation` — could
+ * prefetch into the same cache entry. That call now seeds the entry from the
+ * answer it already has, and nothing else ever wanted the options on their own.
  */
-function messagesQuery(conversationId: string) {
-  return {
+export function useMessages(conversationId: string) {
+  return useInfiniteQuery({
     queryKey: keys.messages(conversationId),
     queryFn: ({ pageParam }: { pageParam: string }) =>
       api.get<MessagePageDto>(
@@ -736,12 +738,6 @@ function messagesQuery(conversationId: string) {
     // messages and `pages[0]` stays the newest. `messagesNewestFirst` is the
     // only sanctioned way to read this — see the note there.
     getNextPageParam: (last: MessagePageDto) => last.nextCursor ?? undefined,
-  }
-}
-
-export function useMessages(conversationId: string) {
-  return useInfiniteQuery({
-    ...messagesQuery(conversationId),
     enabled: conversationId.length > 0,
   })
 }
@@ -1621,12 +1617,25 @@ export function useContributors() {
   })
 }
 
+/**
+ * What `POST /conversations` answers with: the conversation, and the thread's
+ * one-message first page riding along so nobody has to ask for it.
+ *
+ * `firstPage` is optional against the API alone — a JS update reaches phones
+ * before the API deploy that goes with it, and for those minutes the answer
+ * has no page in it.
+ */
+interface StartedConversationDto {
+  _id: string
+  firstPage?: MessagePageDto
+}
+
 export function useStartConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (input: { toUserId: string; body: string }) =>
-      api.post<{ _id: string }>('/conversations', input),
-    onSuccess: async (conversation) => {
+      api.post<StartedConversationDto>('/conversations', input),
+    onSuccess: (conversation) => {
       // Starting a conversation spends quota and earns tokens — both visible
       // elsewhere in the UI, so both caches are now stale.
       void queryClient.invalidateQueries({ queryKey: ['conversations'] })
@@ -1641,16 +1650,28 @@ export function useStartConversation() {
       // by `useProfileCache`, and this mutation only knows the id.
       void queryClient.invalidateQueries({ queryKey: ['profile'] })
       /*
-       * Awaited, so `mutateAsync` resolves with the thread already in the
-       * cache. `chat/new` is drawn as the thread it is about to become and
-       * replaces itself with the real one on this answer; a thread that then
-       * mounts on an empty cache draws six skeleton bubbles over a
-       * conversation with one message in it, for as long as the fetch takes.
-       * The send already waits a round trip, and one more on the same cleared
-       * composer is invisible where the flash is not. `prefetch` never
-       * throws: if it fails, the thread loads itself the way it always did.
+       * The thread, in the cache, before the screen that reads it exists.
+       *
+       * `chat/new` is drawn as the thread it is about to become and replaces
+       * itself with the real one on this answer; a thread that then mounts on
+       * an empty cache draws six skeleton bubbles over a conversation with
+       * one message in it, for as long as the fetch takes. This used to be a
+       * `prefetchInfiniteQuery` — correct, and a second round trip on a
+       * screen that had already cleared its composer. The page now travels
+       * with the answer, so there is nothing to fetch.
+       *
+       * Shaped exactly as `useInfiniteQuery` would have left it: one page,
+       * whose `pageParams` entry is the `initialPageParam` `useMessages`
+       * declares. The guard is for the minutes after a JS update when the API
+       * has not been deployed yet — no page, no seed, and the thread loads
+       * itself the way it always did.
        */
-      await queryClient.prefetchInfiniteQuery(messagesQuery(conversation._id))
+      if (conversation.firstPage) {
+        queryClient.setQueryData<InfiniteData<MessagePageDto>>(keys.messages(conversation._id), {
+          pages: [conversation.firstPage],
+          pageParams: [''],
+        })
+      }
     },
   })
 }
