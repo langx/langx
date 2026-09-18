@@ -63,3 +63,6 @@ apps/mobile/fastlane/screenshots/
 apps/mobile/fastlane/metadata/
 apps/mobile/fastlane/README.md
 apps/mobile/fastlane/report.xml
+
+# Rendered cue pictures — see tools/echo-content/images/build.mjs.
+tools/echo-content/images/out/

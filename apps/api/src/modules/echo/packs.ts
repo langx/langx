@@ -289,6 +289,20 @@ export async function startPack(
         // Synthesised readings travel the same way and carry no name, because
         // there is nobody to credit — see `echoVoiceSchema`.
         ...(item.voices?.length ? { voices: item.voices } : {}),
+        /*
+         * The cue, with its size written down. Every one of these files is the
+         * same 4:3 plate, so the shape is known here and does not have to be
+         * discovered by loading the image — which is what `CardPicture` falls
+         * back to, and what makes a card jump once the picture arrives.
+         *
+         * `origin: 'pack'` is doing real work further on: `updateCard` deletes
+         * the object behind a replaced picture **only** for `origin: 'self'`,
+         * so somebody attaching their own photo to a pack card cannot take the
+         * cue away from the eight hundred other cards that share it.
+         */
+        ...(item.image
+          ? { image: { url: item.image, width: 400, height: 300, origin: 'pack' as const } }
+          : {}),
         source,
         sourceKey,
         srs: newCardSrs(now),

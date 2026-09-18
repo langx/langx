@@ -16,6 +16,17 @@ import { describe, expect, it } from 'vitest'
  */
 const CONTENT = resolve(import.meta.dirname, '../../../../../content/echo')
 
+/**
+ * Every slug `tools/echo-content/images/build.mjs` rendered, from the manifest
+ * it writes. The pictures themselves are build output and are not committed.
+ */
+function built(): Set<string> {
+  const credits = JSON.parse(
+    readFileSync(resolve(CONTENT, '../../tools/echo-content/images/credits.json'), 'utf8'),
+  ) as { langx: string[]; openmoji: { slug: string }[] }
+  return new Set([...credits.langx, ...credits.openmoji.map((row) => row.slug)])
+}
+
 function packFiles(): string[] {
   const found: string[] = []
   for (const lang of readdirSync(CONTENT, { withFileTypes: true })) {
@@ -86,5 +97,43 @@ describe('the packs in content/echo', () => {
       const lonely = pack.items.filter((item) => item.voices && item.voices.length < 2)
       expect(lonely.map((item) => item.text)).toEqual([])
     })
+
+    /*
+     * Every cue names a picture that was actually built.
+     *
+     * The pictures are not in the repository — they are rendered to
+     * `tools/echo-content/images/out/` and uploaded — so there is no directory
+     * here to compare against. `credits.json` is the manifest the renderer
+     * writes, and it is the thing that would disagree with the packs if a cue
+     * were renamed in one place and not the other. A slug that names no
+     * picture is a blank space above a sentence on somebody's phone, which is
+     * the one defect in this area nobody would report: a card with no picture
+     * looks like a card that never had one.
+     */
+    it(`${name} points every cue at a picture that was built`, () => {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      const dangling = pack.items
+        .filter((item) => item.image && !built().has(item.image.slice('cue:'.length)))
+        .map((item) => `${item.text} → ${item.image}`)
+      expect(dangling).toEqual([])
+    })
   }
+
+  /*
+   * And the other direction, once: a picture nothing points at.
+   *
+   * Harmless in production — an unused object in a bucket costs nothing — but
+   * it is the trace a renamed cue leaves behind, and the rename that did not
+   * reach the packs is the one worth catching.
+   */
+  it('builds no picture that no pack uses', () => {
+    const used = new Set<string>()
+    for (const path of files) {
+      const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
+      for (const item of pack.items) {
+        if (item.image) used.add(item.image.slice('cue:'.length))
+      }
+    }
+    expect([...built()].filter((slug) => !used.has(slug))).toEqual([])
+  })
 })
