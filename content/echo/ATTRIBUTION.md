@@ -172,25 +172,25 @@ person. That derivation is ours and is the expensive half of a French pack.
 Every card in these packs carries a cue above the sentence. There are two
 sources for them and they are kept apart on purpose — see `LICENSE`.
 
-**OpenMoji 15.1.0**, CC BY-SA 4.0, <https://openmoji.org>. Taken from
-`cdn.jsdelivr.net/npm/openmoji@15.1.0` on 18 September 2026. Two hundred and
-seventy-three of the three hundred and forty-eight cues are an OpenMoji glyph
-placed on our own plate, which makes each one a derived work: share-alike
-applies, and every one is named under `openmoji` in
-`tools/echo-content/images/credits.json`.
+**Nothing in them is borrowed.** All 348 cue pictures are drawn for this app,
+from the shapes in `tools/echo-content/images/drawings.mjs`, and every one of
+the 808 cards points at one of them.
 
-**The rest we drew.** Seventy-five of them, covering 378 of the 808 cards,
-because the concepts that repeat most are the ones worth the hours — one
-handshake serves sixteen phrases. Their shapes are in
-`tools/echo-content/images/drawings.mjs`, they are not derived from anything
-here, and they are the app's own under BSD-3-Clause.
+That is a change from how this started. The first version of the set was
+mostly **OpenMoji 15.1.0** (CC BY-SA 4.0, <https://openmoji.org>, taken from
+`cdn.jsdelivr.net/npm/openmoji@15.1.0` on 18 September 2026), each glyph placed
+on our own plate — which made each one a derived work and put the whole set
+under share-alike. They were replaced a batch at a time until none were left.
+What remains of OpenMoji is `concepts.json`: a table saying what each emoji is
+called, so that `💸` resolves to `money-with-wings` and names a file. A naming
+convention is not artwork, but it came from somewhere and this is where.
 
 **The pictures themselves are not committed.** They are rendered to PNG and
 uploaded to the bucket; the repository keeps the decision (`cues.json`), the
-geometry (`drawings.mjs`) and the provenance (`credits.json`). PNG rather than
-the vector they are drawn as because expo-image hands an SVG to each
-platform's own decoder, and iOS's mishandles the arc syntax most of OpenMoji is
-minified into.
+naming (`concepts.json`), the geometry (`drawings.mjs`) and the manifest
+(`credits.json`). PNG rather than the vector they are drawn as because
+expo-image hands an SVG to each platform's own decoder, and iOS's mishandles
+the arc syntax most minifiers emit.
 
 **Why a picture at all, and why this one.** `docs/echo.md` used to say a cue
 belonged only on "a noun you can point at", with abstract items left plain. No

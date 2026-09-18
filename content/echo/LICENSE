@@ -13,20 +13,16 @@ carry the attribution their sources require.
 
 **The cue pictures are not in this directory, or anywhere in the repository.**
 They are rendered by `tools/echo-content/images/build.mjs` and uploaded; what
-is kept here is the cue itself, as `image: "cue:<slug>"` on a pack item. The
-licence still has to be right, because the pictures are published:
+is kept here is the cue itself, as `image: "cue:<slug>"` on a pack item.
 
-- A cue whose slug appears under `openmoji` in
-  `tools/echo-content/images/credits.json` is an OpenMoji glyph, CC BY-SA 4.0,
-  placed on our plate. A derived work of a share-alike source, so CC BY-SA 4.0
-  it stays.
-- A cue whose slug appears under `langx` is drawn for this app, from the
-  shapes in `tools/echo-content/images/drawings.mjs`. Not derived from any
-  source above, so share-alike does not reach it; it is the repository's own
-  under BSD-3-Clause.
-
-That file is generated rather than kept by hand, and it is the only record of
-which is which — so it is committed even though the pictures are not. The licence binds this directory
+**They are not share-alike.** Every one of the 348 is drawn for this app, from
+the shapes in `tools/echo-content/images/drawings.mjs`, and is derived from
+none of the sources above — so the licence on this directory does not reach
+them and they are the repository's own under BSD-3-Clause. This was not true
+at first: the set began as OpenMoji glyphs on our plate, which made each one a
+derived work of a CC BY-SA source. Drawing the last of them ended that, and
+`concepts.json` is all that remains of it — a table of what each emoji is
+called, used to name a file. The licence binds this directory
 and nothing else: share-alike attaches to the derived content, not to the
 program that reads it, and the seed script, the API and the app stay
 BSD-3-Clause.

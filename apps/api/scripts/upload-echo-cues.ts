@@ -30,6 +30,7 @@
  * Usage:
  *   pnpm exec tsx scripts/upload-echo-cues.ts
  *   pnpm exec tsx --env-file=../../.env scripts/upload-echo-cues.ts --apply
+ *   pnpm exec tsx --env-file=../../.env scripts/upload-echo-cues.ts --apply --purge
  */
 import { readdir, readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
@@ -40,12 +41,61 @@ import type { StorageProviderWithPut } from '../src/storage/StorageProvider'
 
 const IMAGE_ROOT = resolve(import.meta.dirname, '../../../tools/echo-content/images/out')
 
+/** Cloudflare takes at most thirty URLs per purge call. */
+const PURGE_BATCH = 30
+
+/**
+ * Tells the CDN to forget the paths this run replaced.
+ *
+ * Read straight from `process.env` rather than through `loadEnv`, because
+ * these belong to a person running a script and not to the API: adding them to
+ * the schema would make the server demand credentials it never uses.
+ *
+ * A failure here is reported and does not stop the run. The bytes are in the
+ * bucket either way, and the remedy — purge again, or wait out the cache — is
+ * not worth losing the upload over.
+ */
+async function purge(urls: string[]): Promise<void> {
+  const token = process.env.CLOUDFLARE_API_TOKEN
+  const zone = process.env.CLOUDFLARE_ZONE_ID
+  if (!token || !zone) {
+    console.warn('  CLOUDFLARE_API_TOKEN or CLOUDFLARE_ZONE_ID is unset; nothing purged.')
+    return
+  }
+  /*
+   * A zone id is thirty-two hex characters and nothing else. Checked rather
+   * than trusted, because it is about to become part of a URL this process
+   * calls: a value with a slash or a host in it would send the token
+   * somewhere other than Cloudflare. It also catches the likelier mistake —
+   * an env var holding the account id, or a name, or a stray newline — before
+   * the request rather than after it.
+   */
+  if (!/^[0-9a-f]{32}$/.test(zone)) {
+    console.error('  CLOUDFLARE_ZONE_ID is not a zone id; nothing purged.')
+    return
+  }
+  const endpoint = `https://api.cloudflare.com/client/v4/zones/${zone}/purge_cache`
+  for (let at = 0; at < urls.length; at += PURGE_BATCH) {
+    const batch = urls.slice(at, at + PURGE_BATCH)
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ files: batch }),
+    })
+    if (!response.ok) {
+      console.error(`  purge failed (${response.status}): ${await response.text()}`)
+      return
+    }
+  }
+  console.log(`  Purged ${urls.length} path(s) from the CDN.`)
+}
+
 async function main(): Promise<void> {
   const apply = process.argv.includes('--apply')
+  const wantsPurge = process.argv.includes('--purge')
 
-  const storage = apply
-    ? (createStorageProvider(loadEnv(process.env)) as StorageProviderWithPut)
-    : null
+  const env = apply ? loadEnv(process.env) : undefined
+  const storage = apply ? (createStorageProvider(env!) as StorageProviderWithPut) : null
   if (apply && typeof storage?.putObject !== 'function') {
     throw new Error('Storage is not configured — see .env.example')
   }
@@ -58,6 +108,7 @@ async function main(): Promise<void> {
   }
 
   let uploaded = 0
+  const written: string[] = []
   for (const file of files) {
     const slug = file.replace(/\.png$/, '')
     const key = packImageKey(slug)
@@ -66,8 +117,17 @@ async function main(): Promise<void> {
       continue
     }
     await storage!.putObject(key, await readFile(join(IMAGE_ROOT, file)), 'image/png')
+    written.push(`${env!.STORAGE_PUBLIC_BASE_URL?.replace(/\/+$/, '') ?? ''}/${key}`)
     uploaded += 1
   }
+
+  /*
+   * Only worth doing where a CDN is in front of the bucket, and only for a
+   * replacement — a new slug has nothing cached to forget. Asking for it
+   * unconditionally would spend the zone's purge quota on the first upload of
+   * every picture.
+   */
+  if (apply && wantsPurge) await purge(written)
 
   console.log(
     apply ? `Uploaded ${uploaded} cue(s).` : `${files.length} cue(s). Pass --apply to upload.`,
