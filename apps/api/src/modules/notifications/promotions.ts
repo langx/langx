@@ -1,9 +1,10 @@
-import { PROMOTION_LOCAL_HOUR, localDayKey, localHour, notificationsAllowed } from '@langx/shared'
+import { PROMOTION_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
 import { promotionEmail, type PromotionScenario } from '../../email/templates'
 import { translator } from '../../i18n'
+import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
@@ -275,22 +276,17 @@ export async function runPromotionsPass(
   senders: { email: NotificationEmailContext; push: PushSender },
   now: Date = new Date(),
 ): Promise<{ sent: number }> {
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      deletedAt: { $exists: false },
-      guest: { $exists: false },
-      // Bounds the scan only; `notificationsAllowed` decides. Two of the three
-      // stored shapes are objects this cannot read into.
-      'settings.notifications': { $ne: false },
-    })
-    .toArray()
+  const readers = await profilesInLocalHour(db, PROMOTION_LOCAL_HOUR, now, {
+    deletedAt: { $exists: false },
+    guest: { $exists: false },
+    // Bounds the scan only; `notificationsAllowed` decides. Two of the three
+    // stored shapes are objects this cannot read into.
+    'settings.notifications': { $ne: false },
+  })
 
   let sent = 0
-  for (const profile of profiles) {
-    const zone = profile.timezone ?? 'UTC'
-    if (localHour(now, zone) !== PROMOTION_LOCAL_HOUR) continue
-    const day = localDayKey(now, zone)
+  for (const profile of readers) {
+    const day = localDayKey(now, profile.timezone ?? 'UTC')
     if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue
     if (await recentlyMarketed(db, profile._id, now)) continue
 

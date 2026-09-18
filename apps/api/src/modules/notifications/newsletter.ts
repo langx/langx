@@ -1,9 +1,10 @@
-import { PROMOTION_LOCAL_HOUR, localDayKey, localHour, notificationsAllowed } from '@langx/shared'
+import { PROMOTION_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
 import { newsletterEmail } from '../../email/templates'
 import { noteFor } from '../../email/newsletters'
+import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { alreadyClaimed, claimOnce } from './ledger'
 import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
@@ -105,29 +106,25 @@ export async function runNewsletterPass(
   now: Date = new Date(),
 ): Promise<{ sent: number }> {
   const month = lastMonthKey(now)
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      deletedAt: { $exists: false },
-      guest: { $exists: false },
-      'settings.notifications': { $ne: false },
-    })
-    .toArray()
+  // The marketing slot, which is an hour after the digest rather than the
+  // morning it used to be. Seven days of chances at it is what makes one
+  // missed evening not a missed month.
+  const readers = await profilesInLocalHour(db, PROMOTION_LOCAL_HOUR, now, {
+    deletedAt: { $exists: false },
+    guest: { $exists: false },
+    'settings.notifications': { $ne: false },
+  })
 
   let community: MonthlyRecap['community'] | null = null
   let sent = 0
 
-  for (const profile of profiles) {
+  for (const profile of readers) {
     if (!notificationsAllowed(profile.settings?.notifications, 'promotions', 'email')) continue
     const zone = profile.timezone ?? 'UTC'
     // Their first of the month — or one of the six days after it, so a
     // deploy that slipped does not skip a month.
     const day = localDayKey(now, zone)
     if (!isSendingDay(day)) continue
-    // The marketing slot, which is an hour after the digest rather than the
-    // morning it used to be. Seven days of chances at it is what makes one
-    // missed evening not a missed month.
-    if (localHour(now, zone) !== PROMOTION_LOCAL_HOUR) continue
     // The recap never takes the day's slot from the evening mail. Real news
     // outranks a summary of a month that has already finished.
     if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue

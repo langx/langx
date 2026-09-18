@@ -186,6 +186,20 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { 'streak.current': -1, _id: 1 }, name: 'streak_current_board' },
     { key: { 'streak.longest': -1, _id: 1 }, name: 'streak_longest_board' },
+    /*
+     * Which clocks exist, for the six passes that fire on a local hour —
+     * `profilesInLocalHour`. They ask `distinct('timezone')` and then fetch
+     * only the zones currently at their hour; unindexed, that `distinct` is a
+     * collection scan every half hour, which is the scan the two-step exists
+     * to remove. With the index it walks one entry per *value* — a few dozen
+     * strings, whatever the user count — and the `$in` that follows is served
+     * from it too.
+     *
+     * Not sparse: a profile with no zone is UTC rather than absent from the
+     * question, and a sparse index would leave it out of the `$in` that is
+     * looking for exactly it.
+     */
+    { key: { timezone: 1 }, name: 'timezone' },
     // Soft-deleted accounts must drop out of every list; sparse keeps it small.
     {
       key: { deletedAt: 1 },

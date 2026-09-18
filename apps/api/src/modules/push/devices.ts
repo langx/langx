@@ -3,7 +3,6 @@ import {
   DEFAULT_LOCALE,
   STREAK_REMINDER_LOCAL_HOUR,
   localDayKey,
-  localHour,
   shiftDayKey,
   streakSavable,
   utcDayKey,
@@ -14,7 +13,7 @@ import {
 } from '@langx/shared'
 import { type ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import type { Profile } from '../profiles/profiles'
+import { profilesInLocalHour } from '../profiles/localHour'
 
 export interface Device {
   _id: ObjectId
@@ -408,6 +407,20 @@ export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale
   return grouped
 }
 
+export interface StreakReminderCandidate {
+  userId: string
+  streak: number
+  push: boolean
+  email: boolean
+  /**
+   * The local day the nudge belongs to, which is the key the caller claims it
+   * under. Carried here because the zone it was derived from is already in
+   * hand — the tick used to read the profile back one at a time to ask the
+   * same question twice.
+   */
+  day: string
+}
+
 /**
  * Users who should get tonight's "keep your streak" nudge: it is
  * `STREAK_REMINDER_LOCAL_HOUR` **where they are**, and they have a streak that
@@ -431,35 +444,31 @@ export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale
 export async function streakReminderCandidates(
   db: Db,
   now: Date = new Date(),
-): Promise<{ userId: string; streak: number; push: boolean; email: boolean }[]> {
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      'streak.current': { $gte: 1 },
-      // Bounds the scan to streaks that can still be alive somewhere on
-      // Earth: the local day is never more than one behind UTC, so a streak
-      // savable locally has its last day within three UTC days. The real
-      // decision is `streakSavable` below, on the user's own day.
-      'streak.lastQualifiedDay': { $gte: shiftDayKey(utcDayKey(now), -3) },
-      // The streak nudge is its own switch. `$ne: false` only rules out the
-      // oldest shape, a bare `false` meaning silence for everything; the other
-      // two — the retired push/email matrix and today's boolean per kind — are
-      // objects this cannot read into, so `notificationsAllowed` settles them
-      // below. Its job is to bound the scan, not to decide.
-      'settings.notifications': { $ne: false },
-      deletedAt: { $exists: false },
-    })
-    .toArray()
+): Promise<StreakReminderCandidate[]> {
+  const profiles = await profilesInLocalHour(db, STREAK_REMINDER_LOCAL_HOUR, now, {
+    'streak.current': { $gte: 1 },
+    // Bounds the scan to streaks that can still be alive somewhere on
+    // Earth: the local day is never more than one behind UTC, so a streak
+    // savable locally has its last day within three UTC days. The real
+    // decision is `streakSavable` below, on the user's own day.
+    'streak.lastQualifiedDay': { $gte: shiftDayKey(utcDayKey(now), -3) },
+    // The streak nudge is its own switch. `$ne: false` only rules out the
+    // oldest shape, a bare `false` meaning silence for everything; the other
+    // two — the retired push/email matrix and today's boolean per kind — are
+    // objects this cannot read into, so `notificationsAllowed` settles them
+    // below. Its job is to bound the scan, not to decide.
+    'settings.notifications': { $ne: false },
+    deletedAt: { $exists: false },
+  })
 
-  const candidates: { userId: string; streak: number; push: boolean; email: boolean }[] = []
+  const candidates: StreakReminderCandidate[] = []
   for (const profile of profiles) {
     const push = notificationsAllowed(profile.settings?.notifications, 'streak', 'push')
     const email = notificationsAllowed(profile.settings?.notifications, 'streak', 'email')
     if (!push && !email) continue
-    const zone = profile.timezone ?? 'UTC'
-    if (localHour(now, zone) !== STREAK_REMINDER_LOCAL_HOUR) continue
-    if (!streakSavable(profile.streak, profile.streakFreezes ?? 0, localDayKey(now, zone))) continue
-    candidates.push({ userId: profile._id, streak: profile.streak.current, push, email })
+    const day = localDayKey(now, profile.timezone ?? 'UTC')
+    if (!streakSavable(profile.streak, profile.streakFreezes ?? 0, day)) continue
+    candidates.push({ userId: profile._id, streak: profile.streak.current, push, email, day })
   }
   return candidates
 }

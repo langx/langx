@@ -3,17 +3,16 @@ import {
   PROFILE_VISITS_LOCAL_HOUR,
   PROFILE_VISITS_WEEKLY_LOCAL_WEEKDAY,
   localDayKey,
-  localHour,
   notificationsAllowed,
   weekKey,
   type Locale,
   type NotificationChannel,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
-import { COLLECTIONS } from '../../db/collections'
 import { profileVisitsSection as buildSection } from '../../email/templates'
 import { translator } from '../../i18n'
 import { viewSummarySince } from '../moderation/profileViews'
+import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import type { DigestCandidate } from './digest'
@@ -26,7 +25,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
  * Everyone for whom it is `hour` on their own clock, and who has not switched
  * this kind off on `channel`.
  *
- * The same scan `streakReminderCandidates` does, and chosen over grouping
+ * The same read `streakReminderCandidates` does, and chosen over grouping
  * `profileViews` for the same reason: the block filter and the tier gate have
  * to be applied per viewed person anyway, so an aggregation would only move
  * the work rather than remove it — and this way both passes read like the
@@ -47,20 +46,16 @@ async function profilesAtLocalHour(
   type: 'profileVisits',
   now: Date,
 ): Promise<Profile[]> {
-  const profiles = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find({
-      deletedAt: { $exists: false },
-      // Bounds the scan; `notificationsAllowed` decides. Only the oldest
-      // stored shape is a bare `false` this can read.
-      'settings.notifications': { $ne: false },
-    })
-    .toArray()
+  const readers = await profilesInLocalHour(db, hour, now, {
+    deletedAt: { $exists: false },
+    // Bounds the scan; `notificationsAllowed` decides. Only the oldest
+    // stored shape is a bare `false` this can read.
+    'settings.notifications': { $ne: false },
+  })
 
-  return profiles.filter(
+  return readers.filter(
     (profile) =>
-      (channel === null || notificationsAllowed(profile.settings?.notifications, type, channel)) &&
-      localHour(now, profile.timezone ?? 'UTC') === hour,
+      channel === null || notificationsAllowed(profile.settings?.notifications, type, channel),
   )
 }
 
