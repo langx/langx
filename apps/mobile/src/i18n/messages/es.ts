@@ -1558,7 +1558,8 @@ export const es: Localized<EnMessages> = {
     showWeekChart: 'Mostrar el gráfico de la semana',
     showWeekChartBody: 'Qué días enviaste mensajes y correcciones, en tu perfil.',
     voiceCredits: 'Voces y licencias',
-    voiceCreditsBody: 'Los mensajes se leen en voz alta con modelos de voz de código abierto. La mayoría no nos pide nada; estas diez tienen licencia a condición de que acreditemos a quienes las grabaron.',
+    voiceCreditsBody:
+      'Los mensajes se leen en voz alta con modelos de voz de código abierto. La mayoría no nos pide nada; estas diez tienen licencia a condición de que acreditemos a quienes las grabaron.',
     voiceCreditsEngines: 'Los motores son Kokoro-82M y Piper, ambos de código abierto.',
     legalSection: 'Legal',
     linkDeviceBody: 'Aprueba un inicio de sesión y mira dónde tienes la sesión abierta.',

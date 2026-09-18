@@ -4896,6 +4896,48 @@ phonemises through espeak-ng and Japanese and Chinese were not trained on
 that — a reading a native speaker winces at is worse than the button not
 being there.
 
+**Thirty-one more, once chat wanted the same thing.** Six is a reasonable
+number for a deck somebody builds in the language they are studying and an
+absurd one for a chat thread, where the sentence is in whatever the two
+people write in. Kokoro cannot be made to read a seventh, so Piper went in
+beside it: one small model per language, the same espeak-ng, a quality below
+Kokoro's and far above nothing, and Kokoro keeps its six — which also keeps
+them on the cache keys they already occupy. Loaded three at a time, because
+thirty-one models at 60 MB do not fit beside Kokoro on a 2 GB machine and
+almost nobody needs the thirty-first.
+
+**And the list is decided by licences, not by the catalogue.** Piper's voices
+are each licensed separately; ours are CC0, MIT, Apache-2.0 or CC-BY, and the
+ten CC-BY ones are why `settings/voices` exists at all — crediting them is a
+condition of shipping them. The languages that are _still_ silent are silent
+for that reason and no other: the catalogue has Turkish, Arabic, Japanese and
+Korean voices and every one of them is CC BY-NC, which an app that sells
+subscriptions cannot use. This is the same bar that chose Kokoro over Coqui
+XTTS, applied a second time and costing us something this time.
+
+**Which language a message is in turned out to be the hard part.** There is no
+`lang` on a message and nothing in the repo detected one. The first shape
+asked `franc` only within the languages we can read, which is worse than it
+sounds: a detector confined to a list always answers from the list, so it can
+never say "none of these", and Turkish came back as Norwegian. Opening the
+question up fixes that one case and not the general one — on "bugün hava
+gerçekten çok güzel görünüyor" franc scores Norwegian _above_ Turkish, 1.0
+against 0.992, and we ship a Norwegian voice. Trigram detection on a single
+chat message is not reliable enough to be the only thing between a sentence
+and a voice.
+
+What this app has that a detector does not is the two people's own languages.
+So a detection is believed only when the conversation corroborates it — the
+language it names is one of the four sets on the two profiles — and a
+translation provider's `sourceLang` is believed without corroboration, because
+Google read that exact sentence. Everything else is refused. There is
+deliberately no third rule inferring the language from the conversation when
+detection fails: it was written first and was worse than nothing, because on a
+short message it confidently picks the pair's one readable language, which for
+a Turkish speaker practising English turns every "tamam" into an English
+reading. The price is that short messages often have no button, and that is
+the right way round.
+
 ## The opening is a ripple, because the old one looked like a fault
 
 The first version of `AppSplash` opened with four arcs: partial rings — two of

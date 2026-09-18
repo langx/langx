@@ -64,10 +64,7 @@ async function conversationLanguages(
  * the thirty-seven it was allowed. `detectSpeechLanguage` drops an answer
  * nothing reads, which is the behaviour that makes the refusal possible.
  */
-function languageOf(
-  message: Message,
-  contextLangs: readonly string[],
-): LanguageCode | undefined {
+function languageOf(message: Message, contextLangs: readonly string[]): LanguageCode | undefined {
   const text = message.body.trim()
   return detectSpeechLanguage(text, {
     sourceLang: message.translation?.sourceLang,
@@ -111,12 +108,7 @@ export async function speakMessage(
   conversationId: string,
   messageId: string,
 ): Promise<MessageSpeech> {
-  const { conversation, message } = await loadMutableMessage(
-    db,
-    userId,
-    conversationId,
-    messageId,
-  )
+  const { conversation, message } = await loadMutableMessage(db, userId, conversationId, messageId)
 
   // A withdrawn message keeps its row and loses its body; reading it aloud
   // would be the one way to hear what somebody took back.

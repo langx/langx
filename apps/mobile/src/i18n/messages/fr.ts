@@ -1571,7 +1571,8 @@ export const fr: Localized<EnMessages> = {
     showWeekChartBody:
       'Les jours où vous avez envoyé des messages et des corrections, sur votre profil.',
     voiceCredits: 'Voix et licences',
-    voiceCreditsBody: 'Les messages sont lus à voix haute par des modèles vocaux libres. La plupart ne nous demandent rien ; ces dix-là sont sous licence à condition que nous créditions les personnes qui les ont enregistrées.',
+    voiceCreditsBody:
+      'Les messages sont lus à voix haute par des modèles vocaux libres. La plupart ne nous demandent rien ; ces dix-là sont sous licence à condition que nous créditions les personnes qui les ont enregistrées.',
     voiceCreditsEngines: 'Les moteurs sont Kokoro-82M et Piper, tous deux libres.',
     legalSection: 'Mentions légales',
     linkDeviceBody: 'Approuver une connexion et voir où vous êtes connecté.',

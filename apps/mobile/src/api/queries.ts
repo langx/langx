@@ -3042,11 +3042,9 @@ function withVoiceTimeout<T>(path: string, init: RequestInit): Promise<T> {
   const timer = setTimeout(() => {
     controller.abort()
   }, VOICE_TIMEOUT_MS)
-  return api
-    .request<T>(path, { ...init, signal: controller.signal })
-    .finally(() => {
-      clearTimeout(timer)
-    })
+  return api.request<T>(path, { ...init, signal: controller.signal }).finally(() => {
+    clearTimeout(timer)
+  })
 }
 
 /**

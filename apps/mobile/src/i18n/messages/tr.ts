@@ -1561,7 +1561,8 @@ export const tr: Localized<EnMessages> = {
     showWeekChart: 'Bu haftanın grafiğini göster',
     showWeekChartBody: 'Hangi günler mesaj ve düzeltme gönderdiğin, profilinde.',
     voiceCredits: 'Sesler ve lisanslar',
-    voiceCreditsBody: 'Mesajlar açık kaynaklı ses modelleriyle okunuyor. Çoğu bizden bir şey istemiyor; aşağıdaki onu, kaydı yapanların anılması şartıyla lisanslı.',
+    voiceCreditsBody:
+      'Mesajlar açık kaynaklı ses modelleriyle okunuyor. Çoğu bizden bir şey istemiyor; aşağıdaki onu, kaydı yapanların anılması şartıyla lisanslı.',
     voiceCreditsEngines: 'Motorlar Kokoro-82M ve Piper, ikisi de açık kaynak.',
     legalSection: 'Hukuki',
     linkDeviceBody: 'Bir girişi onayla, nerelerde açık olduğunu gör.',

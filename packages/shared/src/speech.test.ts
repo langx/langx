@@ -75,14 +75,18 @@ describe('detectSpeechLanguage', () => {
    */
   it('refuses a detection nobody in the conversation could have written', () => {
     const turkish = 'bugün hava gerçekten çok güzel görünüyor'
-    expect(detectSpeechLanguage(turkish, { detected: 'nob', contextLangs: ['en', 'tr'] })).toBeUndefined()
+    expect(
+      detectSpeechLanguage(turkish, { detected: 'nob', contextLangs: ['en', 'tr'] }),
+    ).toBeUndefined()
     // And with no context at all there is nothing to corroborate against.
     expect(detectSpeechLanguage(german, { detected: 'deu' })).toBeUndefined()
   })
 
   it('ignores the detector below the minimum length', () => {
     expect('hallo'.length).toBeLessThan(SPEECH_MIN_DETECT_LENGTH)
-    expect(detectSpeechLanguage('hallo', { detected: 'deu', contextLangs: learners })).toBeUndefined()
+    expect(
+      detectSpeechLanguage('hallo', { detected: 'deu', contextLangs: learners }),
+    ).toBeUndefined()
   })
 
   it('drops a detected language no voice reads, corroborated or not', () => {

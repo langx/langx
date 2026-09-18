@@ -34,10 +34,7 @@ export function voiceKey(lang: string, voice: string, text: string): string {
 }
 
 /** Storage key to public URL, for those of `keys` that have already been read. */
-export async function lookupVoices(
-  db: Db,
-  keys: readonly string[],
-): Promise<Map<string, string>> {
+export async function lookupVoices(db: Db, keys: readonly string[]): Promise<Map<string, string>> {
   const rows = await db
     .collection<VoiceCacheDoc>(COLLECTIONS.echoVoiceCache)
     .find({ _id: { $in: [...keys] } })

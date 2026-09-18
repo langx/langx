@@ -58,7 +58,6 @@ export interface SpeechVoice {
  * to "Synthesised" for them rather than claiming a gender we did not check.
  */
 export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly SpeechVoice[]>>> = {
-
   /*
    * Kokoro's six, from `ECHO_SYNTH_VOICES` — which stays the definition for
    * Echo and the table `apps/tts/server.py` mirrors. Spelled out here rather
@@ -73,9 +72,7 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
     { id: 'ef_dora', engine: 'kokoro', license: 'Apache-2.0' },
     { id: 'em_alex', engine: 'kokoro', license: 'Apache-2.0' },
   ],
-  fr: [
-    { id: 'ff_siwis', engine: 'kokoro', license: 'Apache-2.0' },
-  ],
+  fr: [{ id: 'ff_siwis', engine: 'kokoro', license: 'Apache-2.0' }],
   it: [
     { id: 'if_sara', engine: 'kokoro', license: 'Apache-2.0' },
     { id: 'im_nicola', engine: 'kokoro', license: 'Apache-2.0' },
@@ -161,7 +158,8 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       engine: 'piper',
       model: 'et/et_EE/news/medium/et_EE-news-medium.onnx',
       license: 'CC-BY-4.0',
-      attribution: 'news (et_EE), https://metashare.ut.ee/repository/browse/speech-corpus-of-estonian-news-sentences/37b7c5d6a0d411eebb4773db10791bcfb0c0cf788d2d4030bfaf2f2e6e55dd8d/',
+      attribution:
+        'news (et_EE), https://metashare.ut.ee/repository/browse/speech-corpus-of-estonian-news-sentences/37b7c5d6a0d411eebb4773db10791bcfb0c0cf788d2d4030bfaf2f2e6e55dd8d/',
     },
   ],
   fa: [
@@ -335,7 +333,8 @@ export const SPEECH_VOICES: Readonly<Partial<Record<LanguageCode, readonly Speec
       engine: 'piper',
       model: 'vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx',
       license: 'CC-BY-4.0',
-      attribution: 'vais1000 (vi_VN), https://ieee-dataport.org/documents/vais-1000-vietnamese-speech-synthesis-corpus',
+      attribution:
+        'vais1000 (vi_VN), https://ieee-dataport.org/documents/vais-1000-vietnamese-speech-synthesis-corpus',
     },
   ],
   zh: [
@@ -378,12 +377,48 @@ export const SPEECH_LANGUAGES: readonly LanguageCode[] = Object.keys(
  * Tosk for Albanian, Western Farsi for Persian.
  */
 const ISO3_TO_APP: Readonly<Record<string, LanguageCode>> = {
-  bul: 'bg', ben: 'bn', cat: 'ca', ces: 'cs', cym: 'cy', dan: 'da', deu: 'de',
-  ell: 'el', eng: 'en', spa: 'es', est: 'et', fas: 'fa', pes: 'fa', fin: 'fi',
-  fra: 'fr', hin: 'hi', hun: 'hu', ita: 'it', kaz: 'kk', lit: 'lt', lav: 'lv',
-  mar: 'mr', nep: 'ne', npi: 'ne', nld: 'nl', nor: 'no', nob: 'no', pol: 'pl',
-  por: 'pt', ron: 'ro', rus: 'ru', slk: 'sk', slv: 'sl', sqi: 'sq', als: 'sq',
-  swe: 'sv', tel: 'te', ukr: 'uk', urd: 'ur', vie: 'vi', cmn: 'zh', zho: 'zh',
+  bul: 'bg',
+  ben: 'bn',
+  cat: 'ca',
+  ces: 'cs',
+  cym: 'cy',
+  dan: 'da',
+  deu: 'de',
+  ell: 'el',
+  eng: 'en',
+  spa: 'es',
+  est: 'et',
+  fas: 'fa',
+  pes: 'fa',
+  fin: 'fi',
+  fra: 'fr',
+  hin: 'hi',
+  hun: 'hu',
+  ita: 'it',
+  kaz: 'kk',
+  lit: 'lt',
+  lav: 'lv',
+  mar: 'mr',
+  nep: 'ne',
+  npi: 'ne',
+  nld: 'nl',
+  nor: 'no',
+  nob: 'no',
+  pol: 'pl',
+  por: 'pt',
+  ron: 'ro',
+  rus: 'ru',
+  slk: 'sk',
+  slv: 'sl',
+  sqi: 'sq',
+  als: 'sq',
+  swe: 'sv',
+  tel: 'te',
+  ukr: 'uk',
+  urd: 'ur',
+  vie: 'vi',
+  cmn: 'zh',
+  zho: 'zh',
 }
 
 /**

@@ -193,22 +193,15 @@ describe('Faz 5 — conversation/message history REST', () => {
         'speak-read',
         'guten morgen wie geht es dir heute',
         {
-        nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
-      },
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
       )
       const { storage, put } = fakeStorage()
       const { tts, asked } = fakeTts()
       const { speakMessage } = await import('../modules/chat/speak')
 
-      const reading = await speakMessage(
-        handle.db,
-        storage,
-        tts,
-        reader.userId,
-        thread,
-        messageId,
-      )
+      const reading = await speakMessage(handle.db, storage, tts, reader.userId, thread, messageId)
 
       // German, detected — and one voice, not the pair Echo asks for.
       expect(reading.lang).toBe('de')
@@ -216,9 +209,7 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(asked[0]?.voice).toBe('de_DE-thorsten-medium')
       expect(reading.cached).toBe(false)
       expect(put[0]?.contentType).toBe('audio/mp4')
-      expect(reading.url).toMatch(
-        /\/echo\/tts\/de\/de_DE-thorsten-medium\/[0-9a-f]{40}\.m4a$/,
-      )
+      expect(reading.url).toMatch(/\/echo\/tts\/de\/de_DE-thorsten-medium\/[0-9a-f]{40}\.m4a$/)
       expect(await spent(reader.userId)).toBe(1)
     })
 
@@ -282,14 +273,7 @@ describe('Faz 5 — conversation/message history REST', () => {
 
       const { storage } = fakeStorage()
       const { tts } = fakeTts()
-      const reading = await speakMessage(
-        handle.db,
-        storage,
-        tts,
-        reader.userId,
-        thread,
-        messageId,
-      )
+      const reading = await speakMessage(handle.db, storage, tts, reader.userId, thread, messageId)
 
       // Chat takes `[0]`, which is the voice Echo synthesises first.
       expect(reading.voice).toBe('ff_siwis')
@@ -329,9 +313,9 @@ describe('Faz 5 — conversation/message history REST', () => {
         'speak-withdrawn',
         'guten morgen wie geht es dir heute',
         {
-        nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
-      },
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
       )
       const { deleteMessage } = await import('../modules/chat/mutations')
       await deleteMessage(handle.db, speaker.userId, {
@@ -353,9 +337,9 @@ describe('Faz 5 — conversation/message history REST', () => {
         'speak-outsider',
         'guten morgen wie geht es dir heute',
         {
-        nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
-      },
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
       )
       const outsider = await newUser('speak-outsider-c@example.com')
       const { tts, asked } = fakeTts()
@@ -374,9 +358,9 @@ describe('Faz 5 — conversation/message history REST', () => {
         'speak-quota',
         'guten morgen mein freund wie war dein wochenende',
         {
-        nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
-      },
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
       )
       const limit = PLAN_LIMITS.free.chatVoicesPerDay ?? 0
       await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: reader.userId } as never, {
@@ -406,9 +390,9 @@ describe('Faz 5 — conversation/message history REST', () => {
         'speak-route',
         'guten morgen wie geht es dir heute',
         {
-        nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
-      },
+          nativeLanguages: [{ code: 'en' }],
+          learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
+        },
       )
 
       const anonymous = await app.inject({

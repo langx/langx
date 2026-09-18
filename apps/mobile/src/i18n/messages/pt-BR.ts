@@ -1555,7 +1555,8 @@ export const ptBR: Localized<EnMessages> = {
     showWeekChart: 'Mostrar o gráfico da semana',
     showWeekChartBody: 'Em quais dias você enviou mensagens e correções, no seu perfil.',
     voiceCredits: 'Vozes e licenças',
-    voiceCreditsBody: 'As mensagens são lidas em voz alta por modelos de voz de código aberto. A maioria não nos pede nada; estas dez são licenciadas com a condição de creditarmos quem as gravou.',
+    voiceCreditsBody:
+      'As mensagens são lidas em voz alta por modelos de voz de código aberto. A maioria não nos pede nada; estas dez são licenciadas com a condição de creditarmos quem as gravou.',
     voiceCreditsEngines: 'Os motores são Kokoro-82M e Piper, ambos de código aberto.',
     legalSection: 'Jurídico',
     linkDeviceBody: 'Aprove um login e veja onde você está conectado.',
