@@ -73,21 +73,10 @@ RUN set -eux; \
 ENV ESPEAK_LIBRARY=/usr/local/lib/libespeak-ng.so.1 \
     ESPEAK_DATA=/usr/local/share/espeak-ng-data
 
-# Read one word with each engine at build time, so an image that cannot
-# phonemise fails here and not on the first request after a deploy that looked
-# green. Every Piper voice, not a sample: a model that 404'd or arrived
-# truncated is indistinguishable from a good one until something loads it, and
-# the download above is the step most likely to go quietly wrong.
-#
-# Both engines in one interpreter on purpose. Each embeds its own espeak-ng,
-# and two copies of a C library with global state in one process is exactly the
-# failure that passes either test alone.
-RUN python -c "\
-import json; \
-from server import kokoro_wav, load_kokoro, load_piper, piper_wav, to_aac; \
-assert to_aac(kokoro_wav(*load_kokoro().create('hello', voice='af_heart', lang='en-us'))); \
-[print(lang, 'ok', flush=True) for lang, vs in sorted(json.load(open('voices.json')).items()) \
- if all(to_aac(piper_wav(load_piper(v['id'], v['model']), 'hallo')) for v in vs)]"
+# Every voice, loaded and encoded — see selftest.py for what it proves and why
+# it reports all of them rather than stopping at the first.
+COPY selftest.py ./
+RUN python selftest.py
 
 RUN useradd --create-home tts
 USER tts
