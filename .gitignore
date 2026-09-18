@@ -56,6 +56,10 @@ GoogleService-Info.plist
 # screenshots written by the tools/ext-lab scripts
 tools/ext-lab/shots/
 
+# Recordings, frames and the finished mp4 — see tools/promo-video/README.md.
+# The cut files belong in the branding checkout, not in a public git history.
+tools/promo-video/out/
+
 # Assembled from the branding checkout by collect-store-screenshots.mjs and
 # collect-play-screenshots.mjs; the images themselves live in langx/branding,
 # not here.

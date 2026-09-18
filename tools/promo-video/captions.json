@@ -1,0 +1,20 @@
+{
+  "en": {
+    "hook": ["Duolingo streak: 400 days.", "Still can't hold a conversation."],
+    "subtitles": [
+      {
+        "from": "journeyStart",
+        "text": "People who speak what you are learning"
+      },
+      {
+        "from": "profile",
+        "text": "What they teach. What they want to learn."
+      },
+      {
+        "from": "chat",
+        "text": "Say hi. That is the whole app."
+      }
+    ],
+    "message": "Hi Katya! Want to trade Russian for English?"
+  }
+}

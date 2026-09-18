@@ -1,0 +1,288 @@
+/**
+ * Records one scripted run through the app: Discover, a profile, a first
+ * message. Output is `out/raw/journey.webm` and `out/raw/marks.json`.
+ *
+ * The marks are the point. Every caption window and both trim points in
+ * `compose.mjs` are computed from the times measured here, so the cut survives
+ * the app getting faster or slower instead of needing its numbers retuned by
+ * hand after every run.
+ *
+ * What it records is the real app against a real API — the local one. It must
+ * never be pointed at production: the people on the Discover screen would be
+ * real users who did not agree to appear in an advert. The fixtures it expects
+ * are the ones `seed-test-users.ts` writes.
+ *
+ * Usage (see README.md for the stack it needs first):
+ *   PROMO_PLAYWRIGHT=/path/to/node_modules/playwright/index.js \
+ *     node tools/promo-video/capture.mjs
+ */
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const HERE = dirname(fileURLToPath(import.meta.url))
+const RAW = join(HERE, 'out/raw')
+const CAPTIONS = JSON.parse(readFileSync(join(HERE, 'captions.json'), 'utf8'))
+
+const WEB = process.env.PROMO_WEB ?? 'http://localhost:8081'
+const API = process.env.PROMO_API ?? 'http://localhost:4000'
+const EMAIL = process.env.PROMO_EMAIL ?? 'test_george@test.langx.invalid'
+const PASSWORD = process.env.PROMO_PASSWORD ?? 'TestUser!2026'
+/** Display name as Discover prints it; the capture clicks this. */
+const PARTNER = process.env.PROMO_PARTNER ?? 'Katya'
+/** The same person's handle, used only to warm their profile route. */
+const PARTNER_HANDLE = process.env.PROMO_PARTNER_HANDLE ?? 'test_katya'
+
+if (!/^https?:\/\/localhost[:/]/.test(API)) {
+  throw new Error(`refusing to record against ${API} — the API must be localhost`)
+}
+
+/**
+ * Playwright is not a dependency of this repo: it would put a browser download
+ * into everyone's `pnpm install` for a script only run when a video is being
+ * cut. Point `PROMO_PLAYWRIGHT` at one, or install it globally.
+ */
+async function loadChromium() {
+  const specifier = process.env.PROMO_PLAYWRIGHT ?? 'playwright'
+  const loaded = await import(specifier).catch(() => null)
+  if (!loaded) {
+    throw new Error(
+      `cannot import "${specifier}" — install playwright (npm i -g playwright) or set ` +
+        `PROMO_PLAYWRIGHT to the absolute path of its index.js`,
+    )
+  }
+  // The package is CommonJS, so a dynamic import hands it back under `default`.
+  return (loaded.default ?? loaded).chromium
+}
+
+/**
+ * Everything that would otherwise walk into frame. All of them are plain
+ * `localStorage` keys — `apps/mobile/src/lib/localFlags.ts`, `FLAG_KEYS` —
+ * read at startup, so setting them before the first script runs is enough.
+ */
+function quietFirstRun() {
+  localStorage.setItem('discoverTourSeen', '1')
+  localStorage.setItem('introSeen', '1')
+  // A promo run is not a user; keep it out of the product's own numbers.
+  localStorage.setItem('analyticsOptOut', '1')
+  localStorage.setItem('tips', JSON.stringify({ enabled: false, dismissed: {}, seen: {} }))
+}
+
+/**
+ * Scroll from inside the page, one `requestAnimationFrame` at a time.
+ *
+ * `mouse.wheel` in a loop is a CDP round-trip per step and the jitter shows at
+ * 25 fps; `scrollTo({ behavior: 'smooth' })` cannot be given a duration and
+ * snaps. This is the only one of the three that is both even and as slow as a
+ * thumb. Above roughly 600 px/s the virtualised list cannot mount rows fast
+ * enough and blank ones slide past.
+ */
+async function glide(page, { distance, durationMs }) {
+  await page.evaluate(
+    ({ distance, durationMs }) =>
+      new Promise((resolve) => {
+        const scroller = [...document.querySelectorAll('div')]
+          .filter((node) => node.scrollHeight > node.clientHeight + 50)
+          .sort((a, b) => b.scrollHeight - a.scrollHeight)[0]
+        if (!scroller) return resolve()
+        const from = scroller.scrollTop
+        const started = performance.now()
+        const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+        const step = (now) => {
+          const t = Math.min(1, (now - started) / durationMs)
+          scroller.scrollTop = from + distance * ease(t)
+          if (t < 1) requestAnimationFrame(step)
+          else resolve()
+        }
+        requestAnimationFrame(step)
+      }),
+    { distance, durationMs },
+  )
+}
+
+/**
+ * Wait for the thing that proves the screen arrived, and say how long it took.
+ * A screen that suddenly needs four seconds is the first sign that the next
+ * video will have a skeleton in the middle of it.
+ */
+async function settled(page, locator, label) {
+  const began = Date.now()
+  await locator.waitFor({ state: 'visible', timeout: 30000 })
+  console.log(`  ${label} painted in ${((Date.now() - began) / 1000).toFixed(2)}s`)
+}
+
+const CONTEXT = {
+  viewport: { width: 400, height: 860 },
+  deviceScaleFactor: 2,
+  hasTouch: true,
+  isMobile: false,
+  colorScheme: 'light',
+  locale: 'en-US',
+  // Fixed, so the timestamps in the chat are the same on every run.
+  timezoneId: 'Europe/London',
+}
+
+async function signIn(context) {
+  const response = await context.request.post(`${API}/api/auth/sign-in/email`, {
+    headers: { origin: WEB },
+    data: { email: EMAIL, password: PASSWORD },
+  })
+  if (!response.ok()) {
+    throw new Error(`sign-in failed: ${response.status()} ${await response.text()}`)
+  }
+}
+
+/**
+ * A throwaway pass that is not recorded.
+ *
+ * The first load of any route costs a fetch of a 6 MB bundle and the first
+ * paint of a list that has never been laid out. Recorded, that is four blank
+ * seconds at the head of the take. Done once in a context that is thrown away,
+ * the recorded pass starts warm.
+ */
+async function warmUp(browser) {
+  const context = await browser.newContext(CONTEXT)
+  await context.addInitScript(quietFirstRun)
+  await signIn(context)
+  const page = await context.newPage()
+  await page.goto(`${WEB}/discover`, { waitUntil: 'load', timeout: 240000 })
+  await page.waitForTimeout(6000)
+  await context.close()
+}
+
+async function main() {
+  const chromium = await loadChromium()
+  rmSync(RAW, { recursive: true, force: true })
+  mkdirSync(RAW, { recursive: true })
+
+  /*
+   * The system Chrome, so no browser has to be downloaded for one video;
+   * PROMO_CHANNEL=chromium uses Playwright's own build instead.
+   *
+   * `--force-device-scale-factor=2` is what makes the recording sharp, and it
+   * is not the same thing as the context's `deviceScaleFactor`. The context
+   * option scales what the page *renders*; the screencast that Playwright
+   * records from still hands over CSS-sized frames, so a 400-wide viewport
+   * arrives 400 wide and Playwright pads the rest of the requested 800 with
+   * flat gray. The launch flag moves the whole browser to 2x, and the frames
+   * arrive at 800. Change either one and `verify.mjs` fails on the gray.
+   */
+  const browser = await chromium.launch({
+    channel: process.env.PROMO_CHANNEL ?? 'chrome',
+    args: ['--force-device-scale-factor=2'],
+  })
+  console.log('warming up…')
+  await warmUp(browser)
+
+  const context = await browser.newContext({
+    ...CONTEXT,
+    // Explicit, and twice the viewport: left out, Playwright shrinks the
+    // recording to fit 800px and the phone arrives soft.
+    recordVideo: { dir: RAW, size: { width: 800, height: 1720 } },
+  })
+  await context.addInitScript(quietFirstRun)
+  await signIn(context)
+
+  const page = await context.newPage()
+  page.on('console', (message) => {
+    if (message.type() === 'error') console.log('page error:', message.text().slice(0, 200))
+  })
+
+  const started = Date.now()
+  const marks = []
+  const mark = (name) => {
+    marks.push({ name, at: (Date.now() - started) / 1000 })
+    console.log(`mark ${name} @ ${marks.at(-1).at.toFixed(2)}s`)
+  }
+
+  /*
+   * Walk the journey's routes once before the clock starts.
+   *
+   * Every screen the capture visits for the first time shows its skeleton
+   * while the route's chunk is fetched, and two seconds of grey placeholder is
+   * a long time in a twenty-second video. Doing it here rather than in the
+   * warm-up context is deliberate: a context has its own cache, so warming one
+   * does nothing for the other. These loads are recorded and then trimmed —
+   * `journeyStart` is marked after them.
+   */
+  for (const route of [`/profile/${PARTNER_HANDLE}`, '/chats', '/discover']) {
+    await page.goto(`${WEB}${route}`, { waitUntil: 'load', timeout: 240000 })
+    await page.waitForTimeout(2500)
+  }
+  await page.getByText('For you').first().waitFor({ timeout: 60000 })
+  await page.waitForTimeout(1500)
+  mark('journeyStart')
+
+  await page.waitForTimeout(900)
+  await glide(page, { distance: 760, durationMs: 1700 })
+  await page.waitForTimeout(600)
+  await glide(page, { distance: 620, durationMs: 1400 })
+  await page.waitForTimeout(700)
+  mark('scrolled')
+
+  await page.getByText(PARTNER, { exact: true }).first().click({ timeout: 15000 })
+  await page.waitForURL(/\/profile\//, { timeout: 30000 })
+  // The skeleton, not the screen, is what a fixed wait would have caught.
+  await settled(page, page.getByText('Teaches', { exact: false }).first(), 'profile')
+  await page.waitForTimeout(1300)
+  mark('profile')
+
+  // Down past the languages and the bio — which is also what puts the fixture
+  // handle out of frame and brings the call to action into it.
+  await glide(page, { distance: 520, durationMs: 1500 })
+  await page.waitForTimeout(900)
+
+  await page
+    .getByText(/Open your chat|Send a message/i)
+    .last()
+    .click({ timeout: 15000 })
+  await page.waitForURL(/\/chat\//, { timeout: 30000 })
+  // Not `textarea`: the composer of the screen underneath is still mounted, so
+  // that locator is satisfied before this chat has painted anything.
+  await settled(page, page.getByPlaceholder(/Say hello|Write a message/i).last(), 'chat')
+  await page.waitForTimeout(900)
+  mark('chat')
+
+  const composer = page.locator('textarea').last()
+  await composer.click({ timeout: 15000 })
+  // Chrome underlines "Katya" in red otherwise, which is the browser showing
+  // through a video that is meant to be a phone.
+  await page.evaluate(() => {
+    document.querySelectorAll('textarea, input').forEach((node) => {
+      node.spellcheck = false
+    })
+  })
+  await page.keyboard.type(CAPTIONS.en.message, { delay: 62 })
+  await page.waitForTimeout(500)
+  mark('typed')
+
+  await page
+    .getByRole('button', { name: /^Send$/i })
+    .last()
+    .click({ timeout: 15000 })
+  /*
+   * Wait for the bubble, not for a guess at how long it takes.
+   *
+   * The first message to somebody is what creates the conversation, so the
+   * screen is replaced by the real one on a new route and spends a moment
+   * empty. A fixed wait ended the video on that empty screen — the one frame
+   * the whole video exists to earn.
+   */
+  await settled(page, page.getByText(CAPTIONS.en.message).last(), 'sent message')
+  await page.waitForTimeout(1800)
+  mark('sent')
+  mark('journeyEnd')
+
+  const video = page.video()
+  // Nothing is written until the context closes; `saveAs` waits for that.
+  await context.close()
+  await video.saveAs(join(RAW, 'journey.webm'))
+  writeFileSync(join(RAW, 'marks.json'), `${JSON.stringify({ marks }, null, 2)}\n`)
+  await browser.close()
+  console.log(`captured ${join(RAW, 'journey.webm')}`)
+}
+
+main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})
