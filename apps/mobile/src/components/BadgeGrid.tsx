@@ -2,9 +2,29 @@ import Feather from '@expo/vector-icons/Feather'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Pressable, Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
-import { isCohortBadge, type BadgeSummary, type Locale } from '@langx/shared'
+import type { BadgeSummary, Locale } from '@langx/shared'
+import { BADGE_MARKS } from '../lib/badgeMark'
 import { makeStyles, useTheme } from '../lib/theme'
 import { badgeLabel, useLocale, useT } from '../i18n'
+
+/**
+ * The catalogue's glyph, from whichever set it names. `mci:` in front means
+ * MaterialCommunityIcons; everything else is Feather.
+ *
+ * The casts are the price of a name that arrives as data. Both libraries type
+ * `name` as a union of their own glyphs and neither exports a runtime guard;
+ * `badgeGlyph.test.ts` checks every name in `BADGES` against the shipped maps
+ * instead, which catches the only thing the union would have.
+ */
+function BadgeGlyph({ icon, color }: { icon: string; color: string }) {
+  if (icon.startsWith('mci:')) {
+    const name = icon.slice(4) as React.ComponentProps<typeof MaterialCommunityIcons>['name']
+    return <MaterialCommunityIcons name={name} size={22} color={color} />
+  }
+  return (
+    <Feather name={icon as React.ComponentProps<typeof Feather>['name']} size={22} color={color} />
+  )
+}
 
 /** "Apr 2026" — a badge is dated to the month, not the minute. */
 function earnedMonth(iso: string, locale: Locale): string {
@@ -14,19 +34,19 @@ function earnedMonth(iso: string, locale: Locale): string {
 }
 
 /**
- * One divided row per badge: the award mark in a circle, the name, when it
- * was earned, and hard right either a green tick or how far along the next
- * one is. The state lives in the circle — a warm fill for an earned badge, the
- * plain `fill` for one still to come — so the two differ in one place, and the
- * one mark serves every counting kind rather than a glyph per kind.
+ * One divided row per badge: the mark in a circle, the name, when it was
+ * earned, and hard right either a green tick or how far along the next one is.
  *
- * The exception is a cohort badge, which gets its own mark: an ink circle and
- * a sprout. That rule above is about tiers on a ladder — thirty days and a
- * hundred days are the same achievement at two sizes, and a glyph each would
- * only say so twice. A cohort badge is not on anybody's ladder and cannot be
- * worked towards, and looking different is the whole of what it has to say.
- * There is no locked state to draw: `getBadgeSummary` never sends one to
- * somebody who has not got it.
+ * The state still lives in the circle, and it is now the whole circle that
+ * carries it: an earned badge wears its kind's colours, a locked one the plain
+ * `fill` and a faint glyph. Colour is what earning it buys, so a locked row
+ * never shows any — which also means one glance sorts the screen into what you
+ * have and what you do not, without reading a word.
+ *
+ * Tiers inside a kind share a mark on purpose. Thirty days and a hundred days
+ * are the same achievement at two sizes; a glyph each would only say so twice,
+ * and the number in the label already says which rung. What differs is the
+ * kind, because that is the thing a reader cannot infer.
  */
 function BadgeRow({
   badge,
@@ -42,6 +62,7 @@ function BadgeRow({
   const t = useT()
   const { locale } = useLocale()
   const label = badgeLabel({ t, locale }, badge.kind, badge.threshold)
+  const mark = BADGE_MARKS[badge.kind](colors)
 
   /*
    * Only the nearest badge has a position on its own scale — `next.current`
@@ -55,15 +76,12 @@ function BadgeRow({
 
   const content = (
     <>
-      {isCohortBadge(badge.kind) ? (
-        <View style={[styles.mark, styles.markCohort]}>
-          <MaterialCommunityIcons name="sprout" size={22} color={colors.primary} />
-        </View>
-      ) : (
-        <View style={[styles.mark, badge.earned ? styles.markEarned : styles.markLocked]}>
-          <Feather name="award" size={22} color={badge.earned ? colors.streak : colors.textFaint} />
-        </View>
-      )}
+      <View style={[styles.mark, { backgroundColor: badge.earned ? mark.fill : colors.fill }]}>
+        <BadgeGlyph
+          icon={badge.icon ?? 'award'}
+          color={badge.earned ? mark.glyph : colors.textFaint}
+        />
+      </View>
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={1}>
           {label}
@@ -142,15 +160,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     justifyContent: 'center',
     width: 48,
   },
-  markEarned: { backgroundColor: colors.warningBg },
-  markLocked: { backgroundColor: colors.fill },
-  /**
-   * Ink and the committing yellow — the one pairing in this palette that
-   * appears nowhere else on the badges screen, which is the point. `primary`
-   * is deliberately the same in both schemes, so the mark is the colour it was
-   * given whatever the theme does; see `tokens.ts`.
-   */
-  markCohort: { backgroundColor: colors.ink },
+
   body: { flex: 1, gap: 2 },
   name: { ...font.heading, color: colors.text, fontSize: 16 },
   state: { color: colors.textMuted, fontSize: 14 },

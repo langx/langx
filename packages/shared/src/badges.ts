@@ -78,10 +78,16 @@ export interface BadgeDefinition {
   threshold: number
   label: string
   /**
-   * Glyph name — Feather for the counting kinds, and for the cohort badge the
-   * MaterialCommunityIcons name the grid draws it from, since Feather has no
-   * sprout. Which family a name belongs to follows from `BADGE_SHAPES`, so
-   * this stays one field rather than a tagged pair for the sake of one badge.
+   * Glyph name, Feather by default — `mci:` in front means
+   * MaterialCommunityIcons instead, for the two marks Feather has no glyph
+   * for (a sprout and a coin in a hand).
+   *
+   * A prefix rather than a second field: the family is a property of the name,
+   * not of the badge, and a `{ family, name }` pair for the sake of two
+   * entries would be read at every call site to answer a question only the
+   * grid asks. `badgeGlyph.test.ts` on the mobile side checks every name here
+   * against the shipped glyph maps, so a typo is a failing test rather than an
+   * empty circle.
    *
    * On the definition rather than switched on in the grid: the icon is a
    * property of the kind, and a `kind === 'streak' ? … : …` ternary silently
@@ -153,7 +159,10 @@ export const BADGES: readonly BadgeDefinition[] = [
     kind: 'tokens' as const,
     threshold: count,
     label: `${count.toLocaleString('en-US')} tokens earned`,
-    icon: 'award',
+    // Not Feather's `award`, which is a rosette — the same picture the badges
+    // screen is already made of, and so a mark that says "badge" where it
+    // should say "tokens".
+    icon: 'mci:hand-coin',
   })),
   ...VETERAN_THRESHOLDS.map((days) => ({
     id: `veteran.${days}`,
@@ -179,7 +188,7 @@ export const BADGES: readonly BadgeDefinition[] = [
     kind: 'origin' as const,
     threshold: 1,
     label: 'Early Adopter',
-    icon: 'sprout',
+    icon: 'mci:sprout',
   },
 ]
 
