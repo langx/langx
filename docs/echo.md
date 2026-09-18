@@ -299,11 +299,11 @@ One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' | 'self' }`:
   everything else: the pictures, the `image` fields, `credits.json`, and the
   `contentVersion` bump when a cue actually changed.
 
-  Seventy-five of the 348 are drawn for this app — their shapes are in
-  `drawings.mjs`, to `ILLUSTRATION.md` — and cover 378 cards. The rest are an
-  OpenMoji glyph (CC BY-SA 4.0) on the same plate at the same size, so a deck
-  reads as one set. `credits.json` records which is which and the licence
-  follows it; see `content/echo/LICENSE`.
+  **All 348 are drawn for this app**, their shapes in `drawings.mjs` to
+  `ILLUSTRATION.md`. The set began as OpenMoji glyphs on our own plate and was
+  replaced a batch at a time; what is left of that is `concepts.json`, a table
+  of what each emoji is called. Nothing borrowed means nothing share-alike —
+  see `content/echo/LICENSE`.
 
   **They ship as PNG**, though they are drawn as vector. expo-image hands an
   SVG to each platform's own decoder, and iOS's mishandles elliptical-arc

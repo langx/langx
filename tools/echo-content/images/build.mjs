@@ -1,30 +1,30 @@
 /**
  * Turns `cues.json` into the pictures the packs point at.
  *
- * `cues.json` is the editorial half and the only half worth reviewing: one
- * line per phrase, saying which *concept* is the cue for it. The concept is
- * written as an emoji because an emoji is a name everyone already reads —
- * `"I'm broke.": "💸"` needs no key to understand, where `"I'm broke.":
- * "money-with-wings"` needs one. Nothing ships the emoji character; it is
- * resolved here to a slug, and the slug is what the content and the bucket
- * use.
+ * Three files, and each one answers a different question:
  *
- * Two kinds of picture go in, in one directory and one namespace:
+ * - `cues.json` — which concept is the cue for which phrase. The editorial
+ *   half, one line each, and the only half worth reviewing. The concept is
+ *   written as an emoji because an emoji is a name everyone already reads:
+ *   `"I'm broke.": "💸"` needs no key, where `"I'm broke.":
+ *   "money-with-wings"` needs one. Nothing ships the emoji character.
+ * - `concepts.json` — what each of those emoji is called. A frozen table, so
+ *   the slug a cue resolves to cannot drift under it, and the manifest
+ *   `packContent.test.ts` checks the packs against.
+ * - `drawings.mjs` — the shapes. One entry per slug, all of them.
  *
- * - **Ours**, from `drawings.mjs`, drawn to `ILLUSTRATION.md`.
- * - **Everything else**: an OpenMoji glyph (CC BY-SA 4.0) placed on the same
- *   plate at the same size, so a deck of eight hundred cards reads as one set
- *   rather than as two.
+ * **Nothing here reaches the network and nothing is borrowed.** Every picture
+ * is drawn for this app, to `ILLUSTRATION.md`. It was not always so: most of
+ * these began as OpenMoji glyphs placed on our plate, and `concepts.json` is
+ * what remains of that — a naming table, not their artwork.
  *
  * **What comes out is PNG, and that is deliberate.** Vector would be a tenth
  * of the bytes and crisp at any size, and it is still the wrong file to ship:
  * expo-image decodes SVG with each platform's own decoder, and iOS's
- * mishandles elliptical-arc commands whose flags are packed — the form every
- * minifier emits, and so the form most of OpenMoji is written in. Expo
- * documents the failure and suggests a second renderer for the screens that
- * need one. A flat PNG has no decoder to disagree about: iOS, Android and the
- * web draw the same bytes. One format, no caveat, no second renderer on the
- * card screen.
+ * mishandles elliptical-arc commands whose flags are packed. Expo documents
+ * the failure and suggests a second renderer for the screens that need one. A
+ * flat PNG has no decoder to disagree about: iOS, Android and the web draw the
+ * same bytes.
  *
  * The plate is baked in rather than drawn by the app, for a related reason: a
  * card's picture is one URL with no theme to it, and every drawing here is
@@ -32,12 +32,10 @@
  * goes and the picture with it. One light plate inside the file is correct in
  * both themes.
  *
- * **Nothing it renders is committed.** The PNGs go to `out/`, which is
- * ignored, and from there to the bucket — the same shape as the synthesised
- * readings next door. What the repository keeps is what a person wrote:
- * `cues.json`, `drawings.mjs`, and `credits.json` as the record of which
- * glyphs were borrowed. Committing the pictures would put twelve megabytes of
- * regenerable binary in a public repository to save one command.
+ * **Nothing rendered is committed.** The PNGs go to `out/`, which is ignored,
+ * and from there to the bucket — the same shape as the synthesised readings
+ * next door. Twelve megabytes of regenerable binary in a public repository
+ * buys nothing that one command does not give back.
  *
  * Needs `rsvg-convert` (`brew install librsvg`), the way the readings need
  * python — this runs by hand when the content changes, never in CI.
@@ -55,16 +53,9 @@ import { DRAWINGS } from './drawings.mjs'
 
 const HERE = import.meta.dirname
 const OUT = resolve(HERE, 'out')
-const OPENMOJI_VERSION = '15.1.0'
-const DATA_URL = `https://cdn.jsdelivr.net/npm/openmoji@${OPENMOJI_VERSION}/data/openmoji.json`
-const SVG_URL = (hex) =>
-  `https://cdn.jsdelivr.net/npm/openmoji@${OPENMOJI_VERSION}/color/svg/${hex}.svg`
 
 /** The plate every picture sits on. See the note above, and ILLUSTRATION.md. */
 const PLATE = { width: 400, height: 300, radius: 28, fill: '#f4f5f7' }
-/** How much of the plate a borrowed glyph takes. Our own drawings compose
- *  their own space; a glyph is one object and wants air around it. */
-const GLYPH = 208
 /**
  * Three times the plate.
  *
@@ -74,72 +65,22 @@ const GLYPH = 208
  */
 const RENDER = { width: PLATE.width * 3, height: PLATE.height * 3 }
 
-/** `crying face` → `crying-face`, and stable enough to be a filename. */
-function slugify(annotation) {
-  return annotation
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
-
 /** U+FE0F, the variation selector. `⏱` and `⏱️` are the same cue. */
 const stripVariation = (text) => text.replace(/\uFE0F/g, '')
 
-/**
- * Fetched, never cached to disk.
- *
- * There was a disk cache here and it earned its removal twice over. CodeQL
- * objects to writing a network response to a file and is right to — the
- * pattern is worth a second look wherever it appears, and a build tool is not
- * where you want to be arguing the exception. The version is pinned, so
- * jsDelivr serves immutable bytes and the only cost of dropping the cache is
- * a few hundred kilobytes on a run that already spends a minute rendering.
- *
- * What it buys back: no cache directory, no ignore entries for it, and no
- * question about whether a stale file is why a picture changed.
- */
-async function fetchText(url) {
-  const response = await fetch(url)
-  if (!response.ok) throw new Error(`${url}: ${response.status}`)
-  return await response.text()
-}
-
-async function openmojiTable() {
-  const rows = JSON.parse(await fetchText(DATA_URL))
-  const byEmoji = new Map()
-  for (const row of rows) byEmoji.set(stripVariation(row.emoji), row)
-  return byEmoji
-}
-
-async function glyphBody(hex) {
-  const raw = await fetchText(SVG_URL(hex))
-  /*
-   * The glyph's own 72×72 box is thrown away and its children are re-placed on
-   * ours. Keeping the nested <svg> would work in some renderers and not
-   * others; a <g> with a transform works everywhere.
-   */
-  const inner = raw.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
-  const scale = GLYPH / 72
-  const dx = (PLATE.width - GLYPH) / 2
-  const dy = (PLATE.height - GLYPH) / 2
-  return `  <g transform="translate(${dx} ${dy}) scale(${scale.toFixed(4)})">\n${inner.trim()}\n  </g>`
-}
-
 /** The drawing, as the renderer is handed it. Never written to disk. */
-function scene(body, { label, ink }) {
-  const subject = ink
-    ? `  <g stroke="#17191c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">\n${body}\n  </g>`
-    : body
+function scene({ label, body }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PLATE.width} ${PLATE.height}" width="${PLATE.width}" height="${PLATE.height}" role="img" aria-label="${label}">
   <rect width="${PLATE.width}" height="${PLATE.height}" rx="${PLATE.radius}" fill="${PLATE.fill}"/>
-${subject}
+  <g stroke="#17191c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">${body}
+  </g>
 </svg>
 `
 }
 
 /**
  * `spawn` and not `execFile`, because the SVG goes in on stdin and `execFile`
- * has no way to put it there — its `input` option is a `execFileSync` option,
+ * has no way to put it there — its `input` option belongs to `execFileSync`,
  * and passing it to the async form is silently ignored, so rsvg-convert waits
  * on a stdin that never closes and the build hangs with no error at all.
  */
@@ -158,7 +99,7 @@ function renderPng(svg, path) {
     child.stdout.on('data', (chunk) => chunks.push(chunk))
     child.stderr.on('data', (chunk) => (stderr += chunk))
     child.on('error', (cause) =>
-      reject(new Error(`rsvg-convert is not installed (brew install librsvg)`, { cause })),
+      reject(new Error('rsvg-convert is not installed (brew install librsvg)', { cause })),
     )
     child.on('close', async (code) => {
       if (code !== 0) return reject(new Error(`rsvg-convert exited ${code} for ${path}: ${stderr}`))
@@ -189,60 +130,49 @@ async function writeJson(path, value) {
 async function main() {
   const apply = process.argv.includes('--apply')
   const cues = JSON.parse(await readFile(join(HERE, 'cues.json'), 'utf8'))
-  const table = await openmojiTable()
+  const concepts = JSON.parse(await readFile(join(HERE, 'concepts.json'), 'utf8'))
+  const slugOf = new Map(
+    Object.entries(concepts).map(([emoji, slug]) => [stripVariation(emoji), slug]),
+  )
 
-  /** slug → { hex, annotation, phrases } */
-  const concepts = new Map()
+  /** slug → the phrases that point at it. */
+  const used = new Map()
   const unknown = []
   for (const [phrase, emoji] of Object.entries(cues)) {
-    const row = table.get(stripVariation(emoji))
-    if (!row) {
+    const slug = slugOf.get(stripVariation(emoji))
+    if (!slug) {
       unknown.push(`${phrase} → ${emoji}`)
       continue
     }
-    const slug = slugify(row.annotation)
-    const concept = concepts.get(slug) ?? {
-      hex: row.hexcode,
-      annotation: row.annotation,
-      phrases: [],
-    }
-    concept.phrases.push(phrase)
-    concepts.set(slug, concept)
-  }
-
-  if (unknown.length > 0) {
-    console.error(`${unknown.length} cue(s) are not OpenMoji:`)
-    for (const line of unknown) console.error(`  ${line}`)
-    process.exitCode = 1
-    return
+    used.set(slug, [...(used.get(slug) ?? []), phrase])
   }
 
   /*
-   * A drawing whose slug no cue uses is a rename that did not reach
-   * `cues.json`, and it would otherwise sit in the tool being quietly ignored.
+   * Three ways the three files can disagree, each of them a silent failure
+   * otherwise: a cue nothing can resolve, a slug nothing has drawn, and a
+   * drawing nothing points at. The first two are a blank card; the third is a
+   * rename that only reached one file.
    */
-  const stray = Object.keys(DRAWINGS).filter((slug) => !concepts.has(slug))
-  if (stray.length > 0) {
-    console.error(`${stray.length} drawing(s) no cue points at: ${stray.join(', ')}`)
+  const undrawn = [...used.keys()].filter((slug) => !DRAWINGS[slug])
+  const stray = Object.keys(DRAWINGS).filter((slug) => !used.has(slug))
+  for (const [what, list] of [
+    ['cue(s) name an emoji concepts.json does not know', unknown],
+    ['cue(s) name a slug drawings.mjs has not drawn', undrawn],
+    ['drawing(s) no cue points at', stray],
+  ]) {
+    if (list.length === 0) continue
+    console.error(`${list.length} ${what}: ${list.join(', ')}`)
     process.exitCode = 1
-    return
   }
+  if (process.exitCode) return
 
-  const credits = { openmojiVersion: OPENMOJI_VERSION, langx: [], openmoji: [] }
   let bytes = 0
-  await mkdir(OUT, { recursive: true })
-  for (const [slug, concept] of [...concepts].sort(([a], [b]) => a.localeCompare(b))) {
-    const own = DRAWINGS[slug]
-    if (own) credits.langx.push(slug)
-    else credits.openmoji.push({ slug, hexcode: concept.hex, annotation: concept.annotation })
-    if (!apply) continue
-    const svg = own
-      ? scene(own.body, { label: own.label, ink: true })
-      : scene(await glyphBody(concept.hex), { label: concept.annotation, ink: false })
-    bytes += await renderPng(svg, join(OUT, `${slug}.png`))
+  if (apply) {
+    await mkdir(OUT, { recursive: true })
+    for (const slug of [...used.keys()].sort()) {
+      bytes += await renderPng(scene(DRAWINGS[slug]), join(OUT, `${slug}.png`))
+    }
   }
-
-  if (apply) await writeJson(join(HERE, 'credits.json'), credits)
 
   /*
    * And then the packs themselves, because `cues.json` is the source and the
@@ -255,9 +185,7 @@ async function main() {
    * draft, and a run that rewrote something must not keep the old number.
    */
   const bySlug = new Map()
-  for (const [slug, concept] of concepts) {
-    for (const phrase of concept.phrases) bySlug.set(phrase, slug)
-  }
+  for (const [slug, phrases] of used) for (const phrase of phrases) bySlug.set(phrase, slug)
   for (const level of ['absoluteBeginner', 'beginner', 'intermediate']) {
     const path = resolve(HERE, `../../../content/echo/en/${level}.json`)
     const pack = JSON.parse(await readFile(path, 'utf8'))
@@ -279,20 +207,9 @@ async function main() {
     if (apply) await writeJson(path, pack)
   }
 
-  const cards = Object.values(cues).length
-  const byOurs = credits.langx.reduce(
-    (sum, slug) => sum + (concepts.get(slug)?.phrases.length ?? 0),
-    0,
-  )
-  console.log(`${cards} cards, ${concepts.size} concepts`)
+  console.log(`${Object.keys(cues).length} cards, ${used.size} concepts, all drawn here`)
   console.log(
-    `  ours      ${credits.langx.length} concepts → ${byOurs} cards (${Math.round((byOurs / cards) * 100)}%)`,
-  )
-  console.log(`  openmoji  ${credits.openmoji.length} concepts → ${cards - byOurs} cards`)
-  console.log(
-    apply
-      ? `  wrote ${concepts.size} PNG(s), ${(bytes / 1024 / 1024).toFixed(1)} MB`
-      : '  (dry run)',
+    apply ? `  wrote ${used.size} PNG(s), ${(bytes / 1024 / 1024).toFixed(1)} MB` : '  (dry run)',
   )
 }
 

@@ -1,9 +1,9 @@
 # Patient Objects
 
 The drawing language for a cue — the picture above the sentence on an Echo
-card. It governs the files here marked `data-origin="langx"`; the OpenMoji ones
-follow it only as far as the plate and the size, which is the part that makes
-the two sit together.
+card. It governs every one of them: the set began as borrowed glyphs on our own
+plate and ended with all 348 drawn here, so there is no longer a second style
+for this to have to sit beside.
 
 ## The philosophy
 
@@ -46,13 +46,16 @@ reads a counted pattern as intention and a random one as noise. Scale is
 generous; one subject filling its plate beats three subjects explaining each
 other.
 
-No word ever enters the drawing. The card already carries the sentence in the
-language being learned and its meaning in the reader's own, and a picture that
-spells anything is a picture that works in one language out of eight. This is
-also why the marks — `?`, `OK`, `SOS`, `NEW` — were left to OpenMoji rather
-than redrawn: a glyph that is already a piece of typography gains nothing from
-being traced, and a hand-drawn copy of one is the fastest way to make a set
-look inconsistent.
+No word ever enters the drawing, with one exception that proves the rule. The
+card already carries the sentence in the language being learned and its meaning
+in the reader's own, so a picture that spells anything is a picture that works
+in one language out of eight.
+
+The exception is the badge whose content _is_ the symbol — `SOS`, `OK`, `NEW`,
+`FREE`, `P`, `100`, `abc`, `1234`. These are not prose and they are not
+translated: they read the same to all eight, the way a road sign does. They are
+set in one weight of one grotesque, centred on a coloured plate, and nothing
+else in the set is allowed to carry a letter.
 
 ## The rules, so they can be checked
 
@@ -61,6 +64,5 @@ look inconsistent.
 - Palette only: `#ffc409` `#ff571a` `#3b6cf6` `#009f70` `#e5484d` `#17191c`
   `#ffffff`, and the plate's `#f4f5f7`.
 - Plate: full bleed, 28-unit radius, `#f4f5f7`, on every file without exception.
-- `data-origin="langx"` on the `<svg>`, or `build.mjs` will overwrite it.
-- No gradient, no blur, no shadow, no text.
+- No gradient, no blur, no shadow, and no text outside a symbol badge.
 - Legible at 64pt and at 240pt. Checked at both, not assumed.

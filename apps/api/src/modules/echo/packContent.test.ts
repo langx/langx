@@ -17,14 +17,15 @@ import { describe, expect, it } from 'vitest'
 const CONTENT = resolve(import.meta.dirname, '../../../../../content/echo')
 
 /**
- * Every slug `tools/echo-content/images/build.mjs` rendered, from the manifest
- * it writes. The pictures themselves are build output and are not committed.
+ * Every slug a cue can resolve to. The pictures themselves are build output
+ * and are not committed, so `concepts.json` — the frozen emoji-to-slug table
+ * the renderer reads — is what the packs are checked against.
  */
 function built(): Set<string> {
-  const credits = JSON.parse(
-    readFileSync(resolve(CONTENT, '../../tools/echo-content/images/credits.json'), 'utf8'),
-  ) as { langx: string[]; openmoji: { slug: string }[] }
-  return new Set([...credits.langx, ...credits.openmoji.map((row) => row.slug)])
+  const concepts = JSON.parse(
+    readFileSync(resolve(CONTENT, '../../tools/echo-content/images/concepts.json'), 'utf8'),
+  ) as Record<string, string>
+  return new Set(Object.values(concepts))
 }
 
 function packFiles(): string[] {
@@ -110,7 +111,7 @@ describe('the packs in content/echo', () => {
      * the one defect in this area nobody would report: a card with no picture
      * looks like a card that never had one.
      */
-    it(`${name} points every cue at a picture that was built`, () => {
+    it(`${name} points every cue at a slug the renderer knows`, () => {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
       const dangling = pack.items
         .filter((item) => item.image && !built().has(item.image.slice('cue:'.length)))
@@ -126,7 +127,7 @@ describe('the packs in content/echo', () => {
    * it is the trace a renamed cue leaves behind, and the rename that did not
    * reach the packs is the one worth catching.
    */
-  it('builds no picture that no pack uses', () => {
+  it('names no concept that no pack uses', () => {
     const used = new Set<string>()
     for (const path of files) {
       const pack = echoPackFileSchema.parse(JSON.parse(readFileSync(path, 'utf8')))
