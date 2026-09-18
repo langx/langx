@@ -131,12 +131,19 @@ export function startNotificationScheduler(
    */
   async function run(
     name: string,
-    pass: () => Promise<{ sent: number; failed?: number }>,
+    pass: () => Promise<{ sent: number; failed?: number; skipped?: number }>,
   ): Promise<void> {
     try {
-      const { sent, failed } = await withJobHealth(db, name, pass)
+      const { sent, failed, skipped } = await withJobHealth(db, name, pass)
       if (sent > 0) logger.info({ sent, pass: name }, 'notifications sent')
-      if (failed) logger.warn({ failed, pass: name }, 'notifications skipped')
+      if (failed) logger.warn({ failed, pass: name }, 'notifications failed')
+      /*
+       * Not a failure and not a warning: somebody the pass deliberately did
+       * not write to — suppressed, or already claimed in the ledger. Worth a
+       * line, because "sent 0" and "sent 0, skipped 40" are very different
+       * mornings, and without this the second reads as the first.
+       */
+      if (skipped) logger.info({ skipped, pass: name }, 'notifications skipped')
     } catch (error) {
       logger.error({ err: error, pass: name }, 'notification pass failed')
     }
