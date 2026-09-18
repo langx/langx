@@ -2,15 +2,24 @@
 
 ## Status on 18 September 2026
 
-**Not started.** Written as a plan on the day it was asked for; nothing below
-is built, and no branch other than this document exists. It waits on Behic's
-go-ahead — and on two decisions that are his, not the implementer's, listed at
-the end.
+**Not started, and now decided.** Written as a plan on the day it was asked
+for; nothing below is built, and no branch other than this document exists.
+Behic answered the same day, and three of the questions at the end are
+therefore answers rather than questions:
 
-One of the three surfaces waits on **Apple** rather than on us. The CarPlay
-entitlement is applied for, not switched on, and Apple publishes no
-turnaround time. That is why the order of work below files the request first
-and builds against it afterwards.
+- **The CarPlay category is Communication, and the entitlement request goes
+  in today.** Behic files it; nobody else can.
+- **The work starts at Phase 0** — the `react-native-carplay` spike — because
+  its outcome decides whether surface C is built the way this document says.
+- **A bearer token may live in a shared Keychain.** So the Siri send path is
+  in scope, with the REST twin and the security review it implies.
+
+The rest of the list at the end is still open.
+
+One of the three surfaces waits on **Apple** rather than on us. The
+entitlement is requested, not switched on, and Apple publishes no turnaround
+time. That is why the order of work below files the request first and builds
+against it afterwards.
 
 Read `CLAUDE.md` first. Four of its rules bite in this change and each one
 bites in a place that is easy to miss from Xcode: no user-facing string is
@@ -247,9 +256,11 @@ things that do not exist today:
 
 Both are small. Neither is free: the second one puts a credential somewhere a
 cookie was deliberately never put, and it deserves the security review that
-`docs/decisions.md` gives things of that shape. **If the answer is no**, the
-fallback is a CarPlay app that reads and cannot answer — legal, useful,
-and a weaker entitlement application. That is the second open question.
+`docs/decisions.md` gives things of that shape. **Behic has said yes to it**,
+so the fallback this paragraph used to describe — a CarPlay app that reads
+and cannot answer — is off the table, and the token's lifecycle is part of
+Phase 3's definition of done: written at sign-in, cleared at sign-out and on
+account deletion, and never outliving the session it presents.
 
 **Verify:** the CarPlay simulator listing the same conversations as the
 phone, in the same order; a message read in the right language with the
@@ -311,15 +322,16 @@ layouts. Live Activities driven by the server. Echo as a CarPlay audio app —
 ruled out by the category decision above, and worth revisiting only if Apple
 refuses the communication entitlement.
 
-## What Behic decides before any of this starts
+## What Behic decided, and what is still open
 
-1. **CarPlay category: Communication or Audio?** One only. The plan
-   recommends Communication, and the reasoning is above.
-2. **May a bearer token live in a shared Keychain?** If not, CarPlay reads
-   but does not answer, and Siri loses its send intent.
-3. **Which surface first if only one gets built?** The plan assumes iPhone,
-   because it is the one nobody else has to approve.
-4. **The first Live Activity: a scheduled exchange, or the streak?** The plan
-   picks the exchange because the phone can drive it alone.
-5. **Does the watch app go into the store listing now**, with its own
-   screenshots, or wait until CarPlay is approved and both land together?
+Answered on 18 September 2026:
+
+1. **CarPlay category: Communication.** Audio is not asked for, and Echo does
+   not go into the car. Behic files the entitlement request the same day.
+2. **A bearer token may live in a shared Keychain**, so Siri keeps its send
+   intent and the REST twin is in scope.
+3. **Work starts at Phase 0**, the spike — not at Phase 1.
+
+Still open: 4. **The first Live Activity: a scheduled exchange, or the streak?** The plan
+picks the exchange because the phone can drive it alone. 5. **Does the watch app go into the store listing now**, with its own
+screenshots, or wait until CarPlay is approved and both land together?
