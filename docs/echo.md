@@ -288,12 +288,47 @@ One field, `image?: { url, width?, height?, origin: 'chat' | 'pack' | 'self' }`:
   chat and this section untrue. The caption is the front, the photo is the
   cue, and a photo with no caption is still refused.
 
-- **An icon for concrete pack words.** In the 300-item packs, nouns you can
-  point at — bread, train, dog — carry an OpenMoji glyph (CC BY-SA 4.0) as
-  `image: 'openmoji:<hex>'` in the content JSON, rendered as SVG in the app's
-  own colours. Abstract words stay plain; a forced picture for "maybe" teaches
-  nothing. Mapped by hand in the content pipeline, attributed in
-  `content/echo/ATTRIBUTION.md`. Phase 2.
+- **A cue for every pack item.** Each item carries `image: 'cue:<slug>'`, and
+  the slug names a picture in the bucket. A slug rather than a file per item,
+  because the cue is the _concept_: one drawing of a handshake serves the
+  sixteen phrases that are about agreeing, so 808 cards resolve to 348
+  pictures.
+
+  `tools/echo-content/images/cues.json` says which phrase points at which, one
+  line each, and is the half worth reviewing. `build.mjs` beside it derives
+  everything else: the pictures, the `image` fields, `credits.json`, and the
+  `contentVersion` bump when a cue actually changed.
+
+  Seventy-five of the 348 are drawn for this app — their shapes are in
+  `drawings.mjs`, to `ILLUSTRATION.md` — and cover 378 cards. The rest are an
+  OpenMoji glyph (CC BY-SA 4.0) on the same plate at the same size, so a deck
+  reads as one set. `credits.json` records which is which and the licence
+  follows it; see `content/echo/LICENSE`.
+
+  **They ship as PNG**, though they are drawn as vector. expo-image hands an
+  SVG to each platform's own decoder, and iOS's mishandles elliptical-arc
+  commands whose flags are packed — the form every minifier emits, and so the
+  form most of OpenMoji is written in. A flat raster has no decoder to
+  disagree about.
+
+  **Nothing rendered is committed.** The PNGs go to `out/`, which is ignored,
+  and from there to the bucket by `upload-echo-cues.ts` — the same shape as
+  the synthesised readings. The repository keeps the decision, the geometry
+  and the provenance; twelve megabytes of regenerable binary in a public repo
+  buys nothing.
+
+  **The plate is inside the picture**, not drawn by the app. A card's picture
+  is one URL with no theme to it, and every drawing is bounded by a dark ink
+  contour; unplated on a dark background the contour goes and the picture with
+  it. One light plate baked in is correct in both themes, and is why this
+  needed no change in `session.tsx` at all.
+
+  This section used to read _"nouns you can point at — bread, train, dog"_,
+  with abstract words left plain. There are no nouns in these packs — eight
+  hundred phrases, every one of them `kind: 'phrase'` — so that rule never
+  fired once and the field stayed empty from the day it was specified. A cue
+  for the meaning is the thing a phrase can actually have. Where no honest
+  picture exists the item still keeps none.
 
 - **A picture the owner put there**, from the edit screen. `origin: 'self'`.
 

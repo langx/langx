@@ -9,7 +9,24 @@ licence. A derived work is what a pack is — the word list, the ordering and th
 glosses all come from somewhere.
 
 So: **the JSON files under `content/echo/` are licensed CC BY-SA 4.0**, and
-carry the attribution their sources require. The licence binds this directory
+carry the attribution their sources require.
+
+**The cue pictures are not in this directory, or anywhere in the repository.**
+They are rendered by `tools/echo-content/images/build.mjs` and uploaded; what
+is kept here is the cue itself, as `image: "cue:<slug>"` on a pack item. The
+licence still has to be right, because the pictures are published:
+
+- A cue whose slug appears under `openmoji` in
+  `tools/echo-content/images/credits.json` is an OpenMoji glyph, CC BY-SA 4.0,
+  placed on our plate. A derived work of a share-alike source, so CC BY-SA 4.0
+  it stays.
+- A cue whose slug appears under `langx` is drawn for this app, from the
+  shapes in `tools/echo-content/images/drawings.mjs`. Not derived from any
+  source above, so share-alike does not reach it; it is the repository's own
+  under BSD-3-Clause.
+
+That file is generated rather than kept by hand, and it is the only record of
+which is which — so it is committed even though the pictures are not. The licence binds this directory
 and nothing else: share-alike attaches to the derived content, not to the
 program that reads it, and the seed script, the API and the app stay
 BSD-3-Clause.
