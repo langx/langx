@@ -126,20 +126,16 @@ rule (`assertMediaUnlocked`), not a fixture detail: move the voice note or the
 picture earlier in `seed-promo-chat.ts`'s script and the seed stops with
 MEDIA_LOCKED, correctly.
 
-**The music is synthesised, and should be replaced.** `music.mjs` writes one of
-three beds over the same four chords — `warm` (no rhythm), `lofi` (a soft kick
-and hats) and `pulse` (an eighth-note arpeggio) — because a public repository
-cannot carry somebody else's track and an unlicensed one under an advert gets
-the post muted. All three normalise to the same peak, so switching between them
-needs no change to the mix. Hear one on its own with:
+**The cut is silent, and should stay that way here.** Add the music in
+Instagram's or TikTok's own editor at upload, from their licensed libraries:
+that is the only music that cannot get the post muted, and both platforms
+favour posts using it. A public repository cannot carry somebody else's track
+either.
 
-```bash
-node tools/promo-video/music.mjs 22 /tmp/bed.wav lofi
-```
-
-The track worth having is whichever Instagram or TikTok adds from its own
-licensed library at upload; until then `PROMO_MUSIC=/path/to/track.mp3` takes a
-real file.
+`music.mjs` can synthesise a bed in three styles (`warm`, `lofi`, `pulse`) and
+`PROMO_MUSIC_STYLE` lays one under the cut, but sine waves do not sound like
+music under an advert — it is there to hear a cut's pacing, not to ship. For a
+real file, `PROMO_MUSIC=/path/to/track.mp3`.
 
 **Selectors are text.** There are no testIDs in the app, so a copy change in
 `src/i18n/messages/en.ts` breaks the capture. It fails loudly rather than

@@ -196,13 +196,24 @@ function main() {
   )
 
   /*
-   * The bed is synthesised unless a real track is named. A public repository
-   * cannot carry somebody else's music, and an unlicensed track under an
-   * advert gets the post muted — the one worth using is whatever Instagram or
-   * TikTok adds from its own library at upload time.
+   * Silent unless a track is named.
+   *
+   * `music.mjs` can synthesise a bed and it is there for a quick preview, but
+   * nothing built out of sine waves sounds like music under an advert, and a
+   * repository that is public cannot carry somebody else's track. The bed
+   * worth having is the one Instagram or TikTok adds from its own licensed
+   * library at upload — which is also the only kind that cannot get the post
+   * muted, and the kind those platforms push. `PROMO_MUSIC=/path/to.mp3` for
+   * anything else, `PROMO_MUSIC_STYLE=warm|lofi|pulse` for the synthesised one.
    */
-  const music = process.env.PROMO_MUSIC ?? writeBed(total + 1)
-  if (!existsSync(music)) throw new Error(`no music at ${music}`)
+  const style = process.env.PROMO_MUSIC_STYLE
+  const music =
+    process.env.PROMO_MUSIC ??
+    (style
+      ? writeBed(total + 1, undefined, style)
+      : 'anullsrc=channel_layout=stereo:sample_rate=48000')
+  const synthesised = music.startsWith('anullsrc')
+  if (!synthesised && !existsSync(music)) throw new Error(`no music at ${music}`)
 
   const out = join(OUT, `langx-promo-${LOCALE}.mp4`)
   const args = [
@@ -217,8 +228,8 @@ function main() {
     String(END_SECONDS),
     '-i',
     join(OUT, 'endcard.png'),
-    '-i',
-    music,
+    // `anullsrc` is a filter, not a file, so it needs `-f lavfi` in front of it.
+    ...(synthesised ? ['-f', 'lavfi', '-i', music] : ['-i', music]),
     '-filter_complex',
     steps.join(';'),
     '-map',
