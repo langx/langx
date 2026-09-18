@@ -31,6 +31,12 @@ store builds:
 | **Apple Watch** | A dependent companion app, complications, and replying from a mirrored notification                       | no                        |
 | **CarPlay**     | A chat list you can hear and answer without touching the phone                                            | **yes — an entitlement**  |
 
+**The pictures below are mockups, not screenshots.** Nothing here is built, so
+none of them came from a running app; they are drawn from the app's own dark
+tokens (`src/lib/theme/tokens.ts`) to show what each surface would carry.
+CarPlay's especially: those templates are drawn by the system, so the picture
+shows the content, never pixels that are ours to choose.
+
 None of them is a new product. Each is an existing thing — unread chats, the
 streak, an Echo queue, a scheduled exchange — put where the phone is not in
 the person's hand.
@@ -132,6 +138,8 @@ message to a named person_. The first two only route into the app and need
 nothing from the server. The third is the exception to everything above and
 is treated in its own section.
 
+![Two iPhone screens: a widget showing streak, unread and cards due beside a small widget for the next session, and a Live Activity in the Dynamic Island counting down a session](./iphone-watch-and-carplay/iphone.png)
+
 **Verify:** a fresh build where the widget shows the real unread count within
 a minute of a message arriving; a Live Activity that appears when a session
 starts and dismisses when it ends; "Hey Siri, open my LangX review" landing
@@ -166,6 +174,8 @@ Watch strings go through the generator below. The watch's own store
 screenshots and the listing update are in `docs/store` and are part of this
 phase's definition of done, not an afterthought — a watch app that ships
 without them is invisible.
+
+![Three Apple Watch screens: a list of unread chats, one thread with a Reply button, and a watch face with streak, unread and cards-due complications](./iphone-watch-and-carplay/watch.png)
 
 **Verify:** a message arriving while the phone is in a pocket, answered from
 the wrist, showing up in the thread on the phone; the complication updating
@@ -216,6 +226,8 @@ CarPlay communication app supports SiriKit's messaging intents; dictation is
 Siri's, and the app never draws its own keyboard or runs its own recorder in
 the car. Which means the send path leaves the app's process, and that is the
 one place this plan adds an authenticated non-app client.
+
+![Two CarPlay screens: a list of conversations with unread counts, and one message being read aloud with Reply with Siri and Next message actions](./iphone-watch-and-carplay/carplay.png)
 
 ### The Siri send path, and the only new auth in this plan
 
