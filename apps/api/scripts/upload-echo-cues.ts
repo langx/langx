@@ -13,6 +13,13 @@
  * reads the render directory, and says so plainly when it is empty rather than
  * uploading nothing and reporting success.
  *
+ * **Replacing a picture is not the same as adding one.** The key is the slug,
+ * so a redrawn cue overwrites the object that was there — and in production
+ * that object sits behind a CDN which has already cached it. New slugs appear
+ * immediately; a redraw of an existing one needs its path purged, or it will
+ * keep serving the old picture for as long as the cache holds it. Adding a
+ * drawing for a concept that currently borrows a glyph is exactly this case.
+ *
  * It uploads the whole directory rather than only the slugs the packs use.
  * The alternative — parse every pack, collect the cues, upload the
  * intersection — makes a picture's presence in the bucket depend on which
